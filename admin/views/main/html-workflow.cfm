@@ -421,7 +421,7 @@
 									<div class="col-xs-3">
 
 										<div class="s-default-list">
-											<h4>Preview Next 5 Run Times:</h4>
+											<h4>Schedule:</h4>
 
 											<div class="agenda">
 										        <div class="table-responsive">
@@ -434,8 +434,9 @@
 										                </thead> --->
 										                <tbody>
 
+										                    <!-- Multiple events in a single day (note the rowspan) -->
 										                    <tr>
-										                        <td class="agenda-date" class="active" rowspan="1">
+										                        <td class="agenda-date" class="active" rowspan="2">
 										                            <div class="dayofmonth">26</div>
 										                            <div class="shortdate">July, 2014</div>
 										                            <div class="dayofweek text-muted">Monday</div>
@@ -444,40 +445,32 @@
 										                            9:00 AM
 										                        </td>
 										                    </tr>
-
 										                    <tr>
-										                        <td class="agenda-date" class="active" rowspan="1">
-										                            <div class="dayofmonth">26</div>
-										                            <div class="shortdate">July, 2014</div>
-										                            <div class="dayofweek text-muted">Monday</div>
-										                        </td>
 										                        <td class="agenda-time">
 										                            5:00 PM
 										                        </td>
 										                    </tr>
+										                    <!-- //Multiple events in a single day -->
 
-															<tr>
-																<td class="agenda-date" class="active" rowspan="1">
-																	<div class="dayofmonth">27</div>
-																	<div class="shortdate">July, 2014</div>
-																	<div class="dayofweek text-muted">Tuesday</div>
-																</td>
-																<td class="agenda-time">
-																	9:00 am
-																</td>
-															</tr>
+										                    <!-- Multiple events in a single day (note the rowspan) -->
+										                    <tr>
+										                        <td class="agenda-date" class="active" rowspan="2">
+										                            <div class="dayofmonth">27</div>
+										                            <div class="shortdate">July, 2014</div>
+										                            <div class="dayofweek text-muted">Tuesday</div>
+										                        </td>
+										                        <td class="agenda-time">
+										                            9:00 AM
+										                        </td>
+										                    </tr>
+										                    <tr>
+										                        <td class="agenda-time">
+										                            5:00 PM
+										                        </td>
+										                    </tr>
+										                    <!-- //Multiple events in a single day -->
 
-															<tr>
-																<td class="agenda-date" class="active" rowspan="1">
-																	<div class="dayofmonth">27</div>
-																	<div class="shortdate">July, 2014</div>
-																	<div class="dayofweek text-muted">Tuesday</div>
-																</td>
-																<td class="agenda-time">
-																	5:00 PM
-																</td>
-															</tr>
-
+                                                            <!-- Single events (note the rowspan) -->
 															<tr>
 																<td class="agenda-date" class="active" rowspan="1">
 																	<div class="dayofmonth">28</div>
@@ -488,9 +481,11 @@
 																	9:00 AM
 																</td>
 															</tr>
+                                                            <!-- //Single events -->
 
 										                </tbody>
 										            </table>
+										            <button class="btn btn-xs btn-default">Show More <i class="fa fa-refresh fa-spin"></i></button>
 										        </div>
 										    </div>
 
