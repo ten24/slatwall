@@ -36,13 +36,13 @@
 Notes:
 
 */
-component entityname="SlatwallWorkflow" table="SwWorkflow" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="workflowService" hb_permission="this" {
+component displayname="Workflow" entityname="SlatwallWorkflow" table="SwWorkflow" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="workflowService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="workflowID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
 	property name="workflowName" ormtype="string";
-	property name="workflowObject" ormtype="string";
+	property name="workflowObject" ormtype="string" hb_formfieldType="select";
 
 	// Calculated Properties
 
@@ -66,13 +66,24 @@ component entityname="SlatwallWorkflow" table="SwWorkflow" persistent="true" acc
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	
+	property name="workflowObjectOptions" persistent="false";
 	// Deprecated Properties
 
-
-
-	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public array function getWorkflowObjectOptions(){
+		if(!structKeyExists(variables,'workflowObjectOptions')){
+			var entitiesMetaData = getService("hibachiService").getEntitiesMetaData();
+			var entitiesMetaDataArray = listToArray(structKeyList(entitiesMetaData));
+			arraySort(entitiesMetaDataArray,"text");
+			variables.workflowObjectOptions = [];
+			for(var i=1; i <=arrayLen(entitiesMetaDataArray); i++){
+				arrayAppend(variables.workflowObjectOptions,{name=rbKey('entity.#entitiesMetaDataArray[i]#'),value=entitiesMetaDataArray[i]});
+			}
+		}
+		
+		return variables.workflowObjectOptions;
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		

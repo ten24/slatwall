@@ -38,10 +38,10 @@
 				</h4>
 			</div>
 		</a>
-
+		
 		<div id="collapseBasic" class="panel-collapse collapse in">
 			<content class="s-body-box s-panel-header-info">
-
+				<!---TODO:convert to directive as basic workflow viewlet --->
 				<div class="col-md-6 s-header-left">
 					<div class="s-header-detail">
 						<dl class="dl-horizontal">
@@ -82,10 +82,10 @@
 
 		<div id="collapseTrigger" class="panel-collapse collapse">
 			<content class="s-body-box">
-
+				<!---TODO: convert to triggers directives containing triggers  --->
 				<div class="s-bundle-add-items s-workflow-objs">
 					<ul class="list-unstyled s-order-item-options s-negative-obj">
-
+						<!---TODO: convert to trigger directive --->
 						<li class="s-bundle-add-obj">
 							<ul class="list-unstyled list-inline">
 								<li class="s-item-type s-tooltip" data-toggle="tooltip" data-placement="right" title="Event"><i class="fa fa-flag"></i></li>

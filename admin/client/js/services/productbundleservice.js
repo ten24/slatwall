@@ -50,7 +50,6 @@ function(
 			}
 		},
 		setActive:function(value){
-			console.log('test');
 			this.active=value;
 		},
 		toggleEdit:function(){
