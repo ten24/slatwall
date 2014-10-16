@@ -24,8 +24,8 @@ function($timeout){
 			var alerts = [];
 			for(message in messages){
 				var alert = {
-					msg:messages[message].MESSAGE,
-					type:messages[message].MESSAGETYPE
+					msg:messages[message].message,
+					type:messages[message].messageType
 				};
 				alerts.push(alert);
 				if(alert.type === 'success' || alert.type === 'error'){
