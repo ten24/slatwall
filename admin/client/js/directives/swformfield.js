@@ -87,6 +87,9 @@ partialsPath
 			}
 			if(scope.propertyDisplay.meta.fieldType === 'yesno' || scope.propertyDisplay.meta.fieldType === 'hidden'){
 				formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.property]);
+				console.log('radio');
+				console.log(scope.propertyDisplay.object[scope.propertyDisplay.property]);
+				scope.propertyDisplay.selectedOptions = scope.propertyDisplay.object[scope.propertyDisplay.property];
 			}
 			
 			if(angular.isDefined(formController[scope.propertyDisplay.property])){

@@ -1,26 +1,22 @@
 
-<div class="{{propertyDisplay.meta.fieldType}}">
-	<input type="radio" name="{{propertyDisplay.property}}" 
-			ng-model="propertyDisplay.selectedOption"
-    		ng-disabled="propertyDisplay.editable"
+<div class="radio">
+	<input type="radio" name="{{propertyDisplay.property}}" id="{{propertyDisplay.property}}1"
+    		ng-model="propertyDisplay.selectedOption"
     		ng-show="propertyDisplay.editing"
-			ng-value="Yes"
-			ng-click="formFieldChanged(this)"
+			ng-value="Yes "
 	>
-	<label >
+	<label for="{{propertyDisplay.property}}1">
 			Yes
 	</label>
 </div>
-<div class="{{propertyDisplay.meta.fieldType}}">
+<div class="radio">
 	
-	<input type="radio" name="{{propertyDisplay.property}}" 
+	<input  type="radio" name="{{propertyDisplay.property}}"  id="{{propertyDisplay.property}}2"
 			ng-model="propertyDisplay.selectedOption"
-	   		ng-disabled="propertyDisplay.editable"
 	   		ng-show="propertyDisplay.editing"
-	   		ng-click="formFieldChanged(this)"
-	   		ng-value="No"
+	   		value="No "
 	>
-	<label >
+	<label for="{{propertyDisplay.property}}2">
 			No
 	</label>
 </div>

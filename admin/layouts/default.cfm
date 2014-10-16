@@ -352,6 +352,8 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/formservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/productbundleservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/propertydisplayservice.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/workflowservice.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/workflowtriggerservice.js"></script>
 
 		<!---services END --->
 
@@ -383,6 +385,7 @@ Notes:
 			<!---workflow  --->
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowbasic.js"></script>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowtriggers.js"></script>
+			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowtrigger.js"></script>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowtasks.js"></script>
 			<!---collection --->
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfiltergroups.js"></script>

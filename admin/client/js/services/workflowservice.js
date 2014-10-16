@@ -17,11 +17,15 @@ function(
 		this.activeFlag = false;
 		this.workflowName = "";
 		this.workflowObject = "";
+		this.workflowTriggers = [];
+		this.workflowTasks = [];
 	}
 		
 	_workflow.prototype = {
 		
 	};
+	
+	var _workflows = {};
 	
 	return workflowService = {
 		newWorkflow:function(){
@@ -33,6 +37,12 @@ function(
 				workflow[key] = workflowObject[key];
 			}
 			return workflow;
+		},
+		setWorkflow:function(workflow){
+			_workflows[workflow.workflowID] = workflow;
+		},
+		getWorkflow:function(workflowID){
+			return _workflows[workflowID];
 		}
 	};
 }]);

@@ -6,12 +6,14 @@ angular.module('slatwalladmin')
 '$slatwall',
 'formService',
 'workflowPartialsPath',
+'workflowService',
 function(
 $log,
 $location,
 $slatwall,
 formService,
-workflowPartialsPath
+workflowPartialsPath,
+workflowService
 ){
 	return {
 		require:"^form",
@@ -46,7 +48,7 @@ workflowPartialsPath
 				workflowPromise.then(function(value){
 					formService.setForm(scope.form.workflowForm);
 					scope.workflow = value;
-					
+					workflowService.setWorkflow(scope.workflow);
 					$log.debug('workflow loaded');
 					$log.debug(scope.workflow);
 				},function(reason){

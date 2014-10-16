@@ -1,6 +1,13 @@
 <div class="s-bundle-add-items s-workflow-objs">
 	<ul class="list-unstyled s-order-item-options s-negative-obj">
 		<!---TODO: convert to trigger directive --->
+		<span ng-repeat="workflowTrigger in workflowTriggers"> 
+			<span 	sw-workflow-trigger
+					
+			>
+			</span>
+		</span>
+		<!-- 
 		<li class="s-bundle-add-obj">
 			<ul class="list-unstyled list-inline">
 				<li class="s-item-type s-tooltip" data-toggle="tooltip" data-placement="right" title="Event"><i class="fa fa-flag"></i></li>
@@ -39,38 +46,54 @@
 			</ul>
 			<div class="clearfix"></div>
 		</li>
-
+		 -->
 	</ul>
 
-	<button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-create-new-trigger"><i class="fa fa-plus"></i> Add Trigger</button>
+	<button class="btn btn-xs s-btn-ten24" ng-click="addWorkflowTrigger()" data-toggle="collapse" data-target="#j-create-new-trigger"><i class="fa fa-plus"></i> Add Trigger</button>
 
 	<!--- Edit Filter Box --->
-	<div class="col-xs-12 collapse s-add-filter" id="j-create-new-trigger">
+	<div ng-if="workflowTriggers.selectedTrigger" class="col-xs-12 collapse s-add-filter" id="j-create-new-trigger">
 		<div class="row">
-			<h4> New Trigger <i class="fa fa-times" data-toggle="collapse" data-target="#j-create-new-trigger"></i></h4>
+			<h4> 
+				<span ng-show="workflowTriggers.selectedTrigger.isPersisted()">Edit</span>
+				<span ng-show="!workflowTriggers.selectedTrigger.isPersisted()">New</span>
+				 Trigger <i class="fa fa-times" data-toggle="collapse" data-target="#j-create-new-trigger"></i>
+			</h4>
 			<div class="col-xs-12">
 
 				<div class="row">
 					<div class="col-xs-3">
-
+						<!-- <span  	sw-property-display
+								data-object="selectedTrigger"
+								data-property="triggerType"
+								data-meta="propertyDisplayData['triggerType']"
+								data-editing="true"
+								data-editable="true"
+						> -->
 						<div class="s-create-obj-window">
 							<h4>Trigger Type:</h4>
 							<div class="form-group">
 								<div class="radio">
-									<input type="radio" name="radio3" id="radio2" value="option2" checked="checked">
+									<input  type="radio" name="radio3" id="radio2"
+											ng-model="workflowTriggers.selectedTrigger.triggerType"
+											value="Event"
+									>
 									<label for="radio2">
 										Event
 									</label>
 								</div>
 								<div class="radio">
-									<input type="radio" name="radio3" id="radio3" value="option3">
+									<input  type="radio" name="radio3" id="radio3"
+											
+											ng-model="workflowTriggers.selectedTrigger.triggerType"
+											value="Schedule" 
+									>
 									<label for="radio3">
 										Schedule
 									</label>
 								</div>
 							</div>
 						</div>
-
 					</div>
 					<div class="col-xs-6 s-criteria">
 
