@@ -15,7 +15,7 @@ workflowPartialsPath
 		},
 		templateUrl:workflowPartialsPath+"workflowtriggers.html",
 		link: function(scope, element,attrs,formController){
-						
+			$log.debug('workflow triggers init');			
 		}
 	};
 }]);

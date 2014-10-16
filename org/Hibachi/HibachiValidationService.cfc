@@ -52,6 +52,55 @@
 		return variables.validationStructs[ arguments.object.getClassName() ];
 	}
 	
+	public struct function getValidationStructByName(required string objectName) {
+		if(!structKeyExists(variables.validationStructs, objectName)) {
+			
+			// Get CORE Validations
+			var coreValidationFile = expandPath('/#getApplicationValue('applicationKey')#/model/validation/#objectName#.json'); 
+			var validation = {};
+			if(fileExists( coreValidationFile )) {
+				var rawCoreJSON = fileRead( coreValidationFile );
+				if(isJSON( rawCoreJSON )) {
+					validation = deserializeJSON( rawCoreJSON );
+				} else {
+					throw("The Validation File: #coreValidationFile# is not a valid JSON object");
+				}
+			}
+			
+			// Get Custom Validations
+			var customValidationFile = expandPath('/#getApplicationValue('applicationKey')#/custom/model/validation/#objectName#.json');
+			var customValidation = {};
+			if(fileExists( customValidationFile )) {
+				var rawCustomJSON = fileRead( customValidationFile );
+				if(isJSON( rawCustomJSON )) {
+					customValidation = deserializeJSON( rawCustomJSON );
+				} else {
+					logHibachi("The Validation File: #customValidationFile# is not a valid JSON object");
+				}
+			}
+			
+			// Make sure that the validation struct has contexts & properties
+			param name="validation.properties" default="#structNew()#";
+			
+			// Add any additional rules
+			if(structKeyExists(customValidation, "properties")) {
+				for(var key in customValidation.properties) {
+					if(!structKeyExists(validation.properties, key)) {
+						validation.properties[ key ] = customValidation.properties[ key ];
+					} else {
+						for(var r=1; r<=arrayLen(customValidation.properties[ key ]); r++) {
+							arrayAppend(validation.properties[ key ],customValidation.properties[ key ][r]);	
+						}
+					}
+				}
+			}
+			
+			variables.validationStructs[ objectName ] = validation;
+		}
+		
+		return variables.validationStructs[ objectName ];
+	}
+	
 	public struct function getValidationsByContext(required any object, string context="") {
 		
 		if(!structKeyExists(variables.validationByContextStructs, "#arguments.object.getClassName()#-#arguments.context#")) {

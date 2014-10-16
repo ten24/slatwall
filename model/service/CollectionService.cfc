@@ -163,7 +163,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getTransientCollectionByEntityName(required string entityName){
 		var collectionEntity = this.newCollection();
 		var properlyCasedFullEntityName = getProperlyCasedFullEntityName(arguments.entityName);
-		collectionEntity.setCollectionObject(properlyCasedFullEntityName);
+		collectionEntity.setCollectionObject(properlyCasedFullEntityName,false);
 		var collectionConfigStruct = {
 			baseEntityName=properlyCasedFullEntityName,
 			baseEntityAlias=getProperlyCasedShortEntityName(arguments.entityName)
@@ -214,7 +214,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					var nestedPropertyIdentifiers = arguments.pageRecord[arguments.propertyIdentifier].getDefaultPropertyIdentifierArray();
 					pageRecordStruct[arguments.propertyIdentifier] = getFormattedObjectRecords([arguments.pageRecord[arguments.propertyIdentifier]],nestedPropertyIdentifiers);
 				}else if(isArray(arguments.pageRecord[arguments.propertyIdentifier])){
-			
+					pageRecordStruct[ arguments.propertyIdentifier ] = value;
 				}else{
 					var value = arguments.pageRecord[arguments.propertyIdentifier];
 					if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
@@ -346,6 +346,14 @@ component extends="HibachiService" accessors="true" output="false" {
 			collectionConfigStruct.filterGroups = deserializeJson(arguments.rc.filterConfig);
 		}
 		
+		if(!isNull(arguments.rc.joinsConfig)){
+			collectionConfigStruct.joins = deserializeJson(arguments.rc.joinsConfig);
+		}
+		
+		if(!isNull(arguments.rc.columnsConfig)){
+			collectionConfigStruct.columns = deserializeJson(arguments.rc.columnsConfig);
+		}
+		
 		
 		//adds to columns section if preceeded by a period then add to joins section, check for parenthesis for aggregates
 		//&propertyIdentifiers=propertyIdentifier,join.propertyIdentifier,aggregate|join.propertyIdentifier
@@ -391,88 +399,71 @@ component extends="HibachiService" accessors="true" output="false" {
 		return collectionConfigStruct;
 	}
 	
-	public any function getAPIResponseForEntityName(required string entityName, string propertyIdentifiersList = "", numeric currentPage = 1, numeric pageShow = 10,keywords = "", string filterGroupsConfig){
+	public any function getAPIResponseForEntityName(required string entityName, required struct collectionOptions){
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
-		collectionEntity.setCurrentPageDeclaration(arguments.currentPage);
-		collectionEntity.setPageRecordsShow(arguments.pageShow);
-		collectionEntity.setKeywords(arguments.keywords);
-		//if propertyIdentifiers were specified add selects so we can refine what columns to return
-		if(len(arguments.propertyIdentifiersList)){
-			addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
-		}
-		
-		if(len(arguments.filterGroupsConfig)){
-			collectionEntity.getCollectionConfigStruct().filterGroups = deserializeJson(arguments.filterGroupsConfig);
-		}
-		
-		if(len(arguments.propertyIdentifiersList)){
-			var propertyIdentifierArray = ListToArray(arguments.propertyIdentifiersList);
-			return getFormattedPageRecords(collectionEntity,propertyIdentifierArray);
-		}else{
-			var defaultPropertyIdentifiers = getPropertyIdentifierArray(arguments.entityName);
-		
-			return getFormattedPageRecords(collectionEntity,defaultPropertyIdentifiers);
-		}
+		return getAPIResponseForCollection(collectionEntity,arguments.collectionOptions);
 	}
 	
-	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, string propertyIdentifiersList = "", numeric currentPage = 1, numeric pageShow = 10,keywords=""){
+	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, required struct collectionOptions){
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
-		collectionEntity.setCurrentPageDeclaration(arguments.currentPage);
-		collectionEntity.setPageRecordsShow(arguments.pageShow);
-		collectionEntity.setKeywords(arguments.keywords);
-		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
-		
-		if(len(arguments.propertyIdentifiersList)){
-			addColumnsToCollectionConfigStructByPropertyIdentifierList(collectionEntity,arguments.propertyIdentifiersList);
-		}
-		
-		var defaultPropertyIdentifiers = getPropertyIdentifierArray(arguments.entityName);
-
 		//set up search by id				
+		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
 			collectionConfigStruct.filterGroups = [];
+		}
+		if(!structKeyExists(collectionConfigStruct,'joins')){
+			collectionConfigStruct.joins = [];
+		}
+		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
+			collectionConfigStruct.isDistinct = false;
 		}
 		var capitalCaseEntityName = capitalCase(arguments.entityName);
 		var propertyIdentifier = capitalCaseEntityName & '.#arguments.entityName#ID';
 		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
-		
 		var filterGroupStruct.filterGroup = [];
 		arrayappend(filterGroupStruct.filterGroup,filterStruct);
 		
 		arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);
+		var collectionResponse = getAPIResponseForCollection(collectionEntity,arguments.collectionOptions);
+		var response = collectionResponse.pageRecords[1];
 		
-		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
-		
-		for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
-			if(isObject(paginatedCollectionOfEntities[1])) {
-				response[ defaultPropertyIdentifiers[p] ] = paginatedCollectionOfEntities[1].getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
-			}else{
-				if(structKeyExists(paginatedCollectionOfEntities[1],defaultPropertyIdentifiers[p])){
-					response[ defaultPropertyIdentifiers[p] ] = paginatedCollectionOfEntities[1][defaultPropertyIdentifiers[p]];
-				}
-			}
-		}
 		return response;
-		
 	}
 	
-	public any function getAPIResponseForCollection(required any collectionEntity, string propertyIdentifiersList = "", numeric currentPage=1, numeric pageShow = 10,keywords=""){
-		collectionEntity.setCurrentPageDeclaration(arguments.currentPage);
-		collectionEntity.setPageRecordsShow(arguments.pageShow);
-		collectionEntity.setKeywords(arguments.keywords);
+	public any function getAPIResponseForCollection(required any collectionEntity, required struct collectionOptions){
+		collectionEntity.setCurrentPageDeclaration(arguments.collectionOptions.currentPage);
+		collectionEntity.setPageRecordsShow(arguments.collectionOptions.pageShow);
+		collectionEntity.setKeywords(arguments.collectionOptions.keywords);
 		
-		if(len(arguments.propertyIdentifiersList)){
-			addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,arguments.propertyIdentifiersList);
+		if(len(arguments.collectionOptions.propertyIdentifiersList)){
+			addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,arguments.collectionOptions.propertyIdentifiersList);
+			var collectionPropertyIdentifiers = [];
+		}else{
+			var collectionPropertyIdentifiers = getPropertyIdentifierArray(collectionEntity.getCollectionObject());
 		}
 		
-		var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
+		if(len(arguments.collectionOptions.filterGroupsConfig)){
+			collectionEntity.getCollectionConfigStruct().filterGroups = deserializeJson(arguments.collectionOptions.filterGroupsConfig);
+		}
+		
+		if(len(arguments.collectionOptions.columnsConfig)){
+			collectionEntity.getCollectionConfigStruct().columns = deserializeJson(arguments.collectionOptions.columnsConfig);
+		}
+		
+		if(len(arguments.collectionOptions.joinsConfig)){
+			collectionEntity.getCollectionConfigStruct().joins = deserializeJson(arguments.collectionOptions.joinsConfig);
+		}
+		
+		collectionEntity.getCollectionConfigStruct().isDistinct = arguments.collectionOptions.isDistinct;
+		
+		
 		var response = {};
+		var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
 		for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
 			response[ defaultPropertyIdentifiers[p] ] = arguments.collectionEntity.getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
 		}
 		
 		//get default property identifiers for the records that the collection refers to
-		var collectionPropertyIdentifiers = getPropertyIdentifierArray(collectionEntity.getCollectionObject());
 		if(structKeyExists(collectionEntity.getCollectionConfigStruct(),'columns')){
 			for (var column in collectionEntity.getCollectionConfigStruct().columns){
 				var piAlias = ListLast(column.propertyIdentifier,'.');

@@ -15,7 +15,7 @@ workflowPartialsPath
 		},
 		templateUrl:workflowPartialsPath+"workflowtasks.html",
 		link: function(scope, element,attrs,formController){
-						
+			$log.debug('workflow tasks init');		
 		}
 	};
 }]);

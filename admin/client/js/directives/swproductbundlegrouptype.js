@@ -33,11 +33,14 @@ function(
 			$scope.productBundleGroupTypes.$$adding = false;
 			$scope.productBundleGroupTypes.setAdding = function(isAdding){
 				$scope.productBundleGroupTypes.$$adding = isAdding;
+				
+				var options = {
+					context:'AddProductBundleGroupType',
+					propertyIdentifiersList:'type.type,systemCode,typeDescription,parentType.TypeID'
+				};
 				var processObjectPromise = $slatwall.getProcessObject(
 					'Type',
-					null,
-					'AddProductBundleGroupType',
-					'type.type,systemCode,typeDescription,parentType.TypeID'
+					options
 				);
 				
 				processObjectPromise.then(function(value){
@@ -65,7 +68,7 @@ function(
 						"parentType.typeID":addProductBundleGroupTypeForm["parentType.TypeID"].$modelValue,
 						"typeDescription":addProductBundleGroupTypeForm['typeDescription'].$modelValue,
 						"systemCode":addProductBundleGroupTypeForm['systemCode'].$modelValue,
-						"propertyIdentifiers":"typeID,type"
+						"propertyIdentifiersList":"typeID,type"
 					};
 					$log.debug(params);
 					var saveProductBundleTypePromise = $slatwall.saveEntity('Type', null, params,'Save');
@@ -76,7 +79,7 @@ function(
 						alertService.addAlerts(alerts);
 						$scope.productBundleGroupTypes.$$adding = false;
 						$scope.showAddProductBundleGroupTypeBtn = false;
-						$scope.productBundleGroup.productBundleGroupType = value.DATA
+						$scope.productBundleGroup.productBundleGroupType = value.DATA;
 						formService.resetForm(addProductBundleGroupTypeForm);
 						
 					},function(reason){

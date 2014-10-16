@@ -70,19 +70,23 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public any function getProcessObject(required struct rc){
 		//need a Context, an entityName and propertyIdentifiers
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
-		var entity = entityService.invokeMethod("new#arguments.rc.entityName#");
+		if(isNull(rc.entityID)){
+			var entity = entityService.invokeMethod("new#arguments.rc.entityName#");
+		}else{
+			var entity = entityService.invokeMethod( "get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true} );
+		}
+		
 		var processObjectExists = entity.hasProcessObject( rc.context);
 		
 		if(processObjectExists) {
 			// Setup the processObject in the RC so that we can use it for our form
 			rc.processObject = entity.getProcessObject( rc.context );
 		}
+		var data = {};
 		data['validation'] = getService('hibachiValidationService').getValidationStruct(rc.processObject);
-		
-		var propertyIdentifiers = ListToArray(rc.propertyIdentifiers);
+		var propertyIdentifiers = ListToArray(rc.propertyIdentifiersList);
 		for(propertyIdentifier in propertyIdentifiers){
 			var data[propertyIdentifier] = {};
-			//entity.invokeMethod('set')rc.processObject.invokeMethod('get#propertyIdentifier#');
 			var propertyPath = listToArray(propertyIdentifier,'.');
 			var count = 1;
 			var value = javacast('null','');
@@ -107,10 +111,30 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			}
 			
 		}
-		
 		arguments.rc.apiResponse.content['data'] = data;
 	}
-	
+	/* pass in an entity name and property identifiers list and it will spit out releveant property display data*/
+	public any function getPropertyDisplayData(required struct rc){
+		var entity = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#');
+		var propertyIdentifiersArray = ListToArray(arguments.rc.propertyIdentifiersList);
+		var data = {};
+		for(property in propertyIdentifiersArray){
+			data[property]['title'] = entity.getPropertyTitle( property );
+			data[property]['hint'] = entity.getPropertyHint( property );
+			data[property]['fieldType'] = entity.getFieldTypeByPropertyIdentifier( property );
+			if(isDefined('entity.get#property#Options')){
+				data[property]['options'] = entity.invokeMethod('get#property#Options');
+			}
+			
+		}
+		arguments.rc.apiResponse.content['data'] = data;
+	}
+	/* pass in an entity name and recieve validation*/
+	public any function getValidation(required struct rc){
+		var data = {};
+		data['validation'] = getService('hibachiValidationService').getValidationStructByName(arguments.rc.entityName);
+		arguments.rc.apiResponse.content['data'] = data;
+	}
 	
 	public any function get( required struct rc ) {
 		/* TODO: handle filter parametes, add Select statements as list to access one-to-many relationships.
@@ -127,33 +151,59 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		} else {
 			//get entity service by entity name
 			var currentPage = 1;
-			if(structKeyExists(rc,'P:Current')){
-				currentPage = rc['P:Current'];
+			if(structKeyExists(arguments.rc,'P:Current')){
+				currentPage = arguments.rc['P:Current'];
 			}
 			var pageShow = 10;
-			if(structKeyExists(rc,'P:Show')){
-				pageShow = rc['P:Show'];
+			if(structKeyExists(arguments.rc,'P:Show')){
+				pageShow = arguments.rc['P:Show'];
 			}
 			
 			var keywords = "";
-			if(structKeyExists(rc,'keywords')){
-				keywords = rc['keywords'];
+			if(structKeyExists(arguments.rc,'keywords')){
+				keywords = arguments.rc['keywords'];
 			}
 			var filterGroupsConfig = ""; 
-			if(structKeyExists(rc,'filterGroupsConfig')){
-				filterGroupsConfig = rc['filterGroupsConfig'];
+			if(structKeyExists(arguments.rc,'filterGroupsConfig')){
+				filterGroupsConfig = arguments.rc['filterGroupsConfig'];
 			}
+			var joinsConfig = ""; 
+			if(structKeyExists(arguments.rc,'joinsConfig')){
+				joinsConfig = arguments.rc['joinsConfig'];
+			}
+			
+			var propertyIdentifiersList = "";
+			if(structKeyExists(arguments.rc,"propertyIdentifiersList")){
+				propertyIdentifiersList = arguments.rc['propertyIdentifiersList'];
+			}
+			
+			var columnsConfig = "";
+			if(structKeyExists(arguments.rc,'columnsConfig')){
+				columnsConfig = arguments.rc['columnsConfig'];
+			}
+			
+			var isDistinct = false;
+			if(structKeyExists(arguments.rc, "isDistinct")){
+				isDistinct = arguments.rc['isDistinct'];
+			}
+			
+			var collectionOptions = {
+				currentPage=currentPage,
+				pageShow=pageShow,
+				keywords=keywords,
+				filterGroupsConfig=filterGroupsConfig,
+				joinsConfig=joinsConfig,
+				propertyIdentifiersList=propertyIdentifiersList,
+				isDistinct=isDistinct,
+				columnsConfig=columnsConfig
+			};
 			
 			//considering using all url variables to create a transient collectionConfig for api response
 			//var transientCollectionConfigStruct = getCollectionService().getTransientCollectionConfigStructByURLParams(arguments.rc);			
 			if(!structKeyExists(arguments.rc,'entityID')){
 				//should be able to add select and where filters here
 				var result = getCollectionService().getAPIResponseForEntityName(	arguments.rc.entityName,
-																			arguments.rc.propertyIdentifiers,
-																			currentPage,
-																			pageShow,
-																			keywords,
-																			filterGroupsConfig);
+																			collectionOptions);
 				
 				structAppend(arguments.rc.apiResponse.content,result);
 			}else{
@@ -163,18 +213,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 					//should only be able to add selects (&propertyIdentifier=)
 					var result = getCollectionService().getAPIResponseForBasicEntityWithID(arguments.rc.entityName,
 																				arguments.rc.entityID,
-																				arguments.rc.propertyIdentifiers,
-																				currentPage,
-																				pageShow,
-																				keywords);
+																				collectionOptions);
 					structAppend(arguments.rc.apiResponse.content,result);
 				}else{
 					//should be able to add select and where filters here
 					var result = getCollectionService().getAPIResponseForCollection(	collectionEntity,
-																				arguments.rc.propertyIdentifiers,
-																				currentPage,
-																				pageShow,
-																				keywords);
+																				collectionOptions);
 					structAppend(arguments.rc.apiResponse.content,result);
 				}
 			}
@@ -185,7 +229,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		param name="arguments.rc.context" default="save";
 		param name="arguments.rc.entityID" default="";
 		param name="arguments.rc.apiResponse.content.errors" default="";
-		
 		
 		if(isNull(arguments.rc.apiResponse.content.messages)){
 			arguments.rc.apiResponse.content.messages = [];

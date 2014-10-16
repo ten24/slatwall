@@ -63,6 +63,16 @@ function(
 	};
 	
 	return productBundleService = {
+		formatProductBundleGroup:function(productBundleGroup){
+			var formattedProductBundleGroup = this.newProductBundle();
+			for(key in productBundleGroup){
+				formattedProductBundleGroup[key] = productBundleGroup[key];
+			}
+			
+			$log.debug('formattedProductBundleGroup');
+			$log.debug(formattedProductBundleGroup);
+			return formattedProductBundleGroup;
+		},
 		newProductBundle:function(){
 			return new _productBundleGroup;
 		},

@@ -11,6 +11,7 @@ function(
 	function _propertyDisplay(propertyDisplay){
 		this.object=propertyDisplay.object;
 		this.property=propertyDisplay.property;
+		this.meta=propertyDisplay.meta;
 		this.errors={};
 		this.editing=propertyDisplay.editing || false;
 		this.isEditable=propertyDisplay.isEditable || false;

@@ -36,6 +36,7 @@
 Notes:
 
 */
+
 component displayname="Workflow" entityname="SlatwallWorkflow" table="SwWorkflow" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="workflowService" hb_permission="this" {
 	
 	// Persistent Properties
@@ -78,7 +79,10 @@ component displayname="Workflow" entityname="SlatwallWorkflow" table="SwWorkflow
 			arraySort(entitiesMetaDataArray,"text");
 			variables.workflowObjectOptions = [];
 			for(var i=1; i <=arrayLen(entitiesMetaDataArray); i++){
-				arrayAppend(variables.workflowObjectOptions,{name=rbKey('entity.#entitiesMetaDataArray[i]#'),value=entitiesMetaDataArray[i]});
+				var entityMetaDataStruct = {};
+				entityMetaDataStruct['name'] = rbKey('entity.#entitiesMetaDataArray[i]#');
+				entityMetaDataStruct['value'] = entitiesMetaDataArray[i];
+				arrayAppend(variables.workflowObjectOptions,entityMetaDataStruct);
 			}
 		}
 		
