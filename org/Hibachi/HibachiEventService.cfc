@@ -41,6 +41,8 @@ component output="false" update="true" extends="HibachiService" {
 	variables.registeredEvents = {};
 	variables.registeredEventHandlers = {};
 	
+	
+	
 	public any function getEventHandler( required string objectFullname ) {
 		if(!structKeyExists(variables.registeredEventHandlers, arguments.objectFullname)) {
 			try {

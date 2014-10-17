@@ -41,6 +41,7 @@ function(
 			return workflowTrigger;
 		},
 		formatWorkflowTriggers:function(workflowTriggers){
+			
 			for(var i in workflowTriggers){
 				workflowTriggers[i] = formatWorkflowTrigger(workflowTriggers[i]);
 			}

@@ -3,13 +3,22 @@
 		<!---TODO: convert to trigger directive --->
 		<span ng-repeat="workflowTrigger in workflowTriggers"> 
 			<span 	sw-workflow-trigger
+					ng-if="workflowTrigger.isPersisted()"
 					data-workflow-trigger="workflowTrigger"
+					ng-init="workflowTrigger.$$index = $index"
 			>
 			</span>
 		</span>
 	</ul>
 
-	<button class="btn btn-xs s-btn-ten24" ng-click="addWorkflowTrigger()" data-toggle="collapse" data-target="#j-create-new-trigger"><i class="fa fa-plus"></i> Add Trigger</button>
+	<button ng-show="!workflowTriggers.selectedTrigger || workflowTriggers.selectedTrigger.isPersisted()" class="btn btn-xs s-btn-ten24" 
+			ng-click="addWorkflowTrigger()" 
+			data-toggle="collapse" 
+			data-target="#j-create-new-trigger"
+	>
+		<i class="fa fa-plus"></i>
+		 Add Trigger
+	</button>
 
 	<!--- Edit Filter Box --->
 	<div ng-if="workflowTriggers.selectedTrigger" class="col-xs-12 collapse s-add-filter" id="j-create-new-trigger">
@@ -17,7 +26,12 @@
 			<h4> 
 				<span ng-show="workflowTriggers.selectedTrigger.isPersisted()">Edit</span>
 				<span ng-show="!workflowTriggers.selectedTrigger.isPersisted()">New</span>
-				 Trigger <i class="fa fa-times" data-toggle="collapse" data-target="#j-create-new-trigger"></i>
+				 Trigger 
+				 <i class="fa fa-times" 
+				 	data-toggle="collapse" 
+				 	data-target="#j-create-new-trigger"
+				 	ng-click="removeWorkflowTrigger(workflowTriggers.selectedTrigger)"
+				 ></i>
 			</h4>
 			<div class="col-xs-12">
 
@@ -64,7 +78,7 @@
 								<div class="s-filter-group-item">
 	
 									<div class="form-group form-group-sm">
-										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Order Items:</label>
+										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.workflow.workflowObject}}:</label>
 										<div class="col-sm-12 s-no-paddings">
 	
 											<!--- search --->
@@ -73,10 +87,10 @@
 													<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
 													<ul class="dropdown-menu s-search-options">
 														<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
-														<li><a>On Order Item Save</a></li>
-														<li><a>On Order Item Update</a></li>
-														<li><a>On Order Item Cancel</a></li>
-														<li><a>On Order Item Delete</a></li>
+														<li><a>On {{workflowTriggers.selectedTrigger.workflow.workflowObject}} Item Save</a></li>
+														<li><a>On{{workflowTriggers.selectedTrigger.workflow.workflowObject}} Item Update</a></li>
+														<li><a>On {{workflowTriggers.selectedTrigger.workflow.workflowObject}} Item Cancel</a></li>
+														<li><a>On {{workflowTriggers.selectedTrigger.workflow.workflowObject}} Item Delete</a></li>
 														<li><hr/></li>
 														<li id="j-placeholder-trigger"><a>On Order Item Event</a></li>
 														<li><a>On Order Fulfillment Event</a></li>
@@ -179,7 +193,7 @@
 								<div class="s-filter-group-item">
 	
 									<div class="form-group form-group-sm">
-										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Order Collection:</label>
+										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.workflow.workflowObject}} Collection:</label>
 										<div class="col-sm-12 s-no-paddings">
 	
 											<!--- search --->

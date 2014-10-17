@@ -5,6 +5,7 @@ angular.module('slatwalladmin')
 '$location',
 '$slatwall',
 'alertService',
+'workflowService',
 'workflowTriggerService',
 'workflowPartialsPath',
 function(
@@ -12,6 +13,7 @@ $log,
 $location,
 $slatwall,
 alertService,
+workflowService,
 workflowTriggerService,
 workflowPartialsPath
 ){
@@ -74,12 +76,18 @@ workflowPartialsPath
 			scope.addWorkflowTrigger = function(){
 				$log.debug('addWorkflowTrigger');
 				var newWorkflowTrigger = workflowTriggerService.newWorkflowTrigger();
-				newWorkflowTrigger.workflow = {};
-				newWorkflowTrigger.workflow.workflowID = scope.workflowID;
+				newWorkflowTrigger.workflow = workflowService.getWorkflow(scope.workflowID);
 				scope.workflowTriggers.selectedTrigger = newWorkflowTrigger;
 				scope.workflowTriggers.push(newWorkflowTrigger);
 				$log.debug(scope.workflowTriggers);
-			}
+			};
+			
+			scope.removeWorkflowTrigger = function(workflowTrigger){
+				if(workflowTrigger === scope.workflowTriggers.selectedTrigger){
+					delete scope.workflowTriggers.selectedTrigger;
+				}
+				scope.workflowTriggers.splice(workflowTrigger.$$index,1);
+			};
 		}
 	};
 }]);
