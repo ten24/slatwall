@@ -1,6 +1,9 @@
 <li class="s-bundle-add-obj">
 	<ul class="list-unstyled list-inline">
-		<li class="s-item-type s-tooltip" data-toggle="tooltip" data-placement="right" title="Event"><i class="fa fa-flag"></i></li>
+		<li class="s-item-type s-tooltip" data-toggle="tooltip" data-placement="right" title="{{workflowTrigger.triggerType}}">
+			<i class="fa fa-flag" ng-show="workflowTrigger.triggerType === 'Event'"></i>
+			<i class="fa fa-calendar" ng-show="workflowTrigger.triggerType === 'Schedule'"></i>
+		</li>
 	</ul>
 	<ul class="list-unstyled list-inline s-middle">
 		<li class="j-tool-tip-item s-bundle-details">Order - Save Order Success</li>
