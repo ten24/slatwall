@@ -683,9 +683,7 @@
 		
 		// @hint returns the entity meta data object that is used by a lot of the helper methods below
 		public any function getEntityORMMetaDataObject( required string entityName ) {
-			
 			arguments.entityName = getProperlyCasedFullEntityName( arguments.entityName );
-			
 			if(!structKeyExists(variables.entityORMMetaDataObjects, arguments.entityName)) {
 				variables.entityORMMetaDataObjects[ arguments.entityName ] = ormGetSessionFactory().getClassMetadata( arguments.entityName );
 			}
