@@ -145,6 +145,8 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		var entityObject = getEntityObject( arguments.entityName );
 		var properties = getService('hibachiUtilityService').arrayConcat( entityObject.getFilterProperties(), entityObject.getAttributesProperties() );
 		
+		setApplicationValue("classPropertiesWithAttributesByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#", properties);
+		
 		return properties;
 	}
 	
