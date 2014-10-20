@@ -25,6 +25,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		arguments.rc.apiResponse.content = {data=data};
 	}
 	
+	
+	
 	public any function getExistingCollectionsByBaseEntity(required struct rc){
 		var collectionEntity = getCollectionService().getTransientCollectionByEntityName('collection');
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
@@ -134,6 +136,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var data = {};
 		data['validation'] = getService('hibachiValidationService').getValidationStructByName(arguments.rc.entityName);
 		arguments.rc.apiResponse.content['data'] = data;
+	}
+	
+	public void function getEventOptionsByEntityName(required struct rc){
+		var eventNameOptions = getService('hibachiEventService').getEventNameOptionsForObject(rc.entityName);
+		arguments.rc.apiResponse.content['data'] = eventNameOptions;
 	}
 	
 	public any function get( required struct rc ) {

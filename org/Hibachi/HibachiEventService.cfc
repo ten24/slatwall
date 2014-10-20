@@ -198,4 +198,108 @@ component output="false" update="true" extends="HibachiService" {
 		return opArr;
 	}
 	
+	public any function getEventNameOptionsForObject(required string objectName, boolean doOneToManyOptions = true) {
+		var opArr = [];
+		
+		if(arguments.doOneToManyOptions){
+			optionStruct['name'] ="#getHibachiScope().rbKey('define.select')#";
+			optionStruct['value']="";
+			arrayAppend(opArr, optionStruct);
+		}
+		
+		var emd = getEntityMetaData(arguments.objectName);
+		
+		var entityName = arguments.objectName;
+		
+		var optionStruct = {};
+		optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.before')# #getHibachiScope().rbKey('define.save')# | before#entityName#Save";
+		optionStruct['value'] = "before#entityName#Save";
+		optionStruct['entityName'] = arguments.objectName;
+		arrayAppend(opArr, optionStruct);
+		
+		optionStruct = {};
+		optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.save')# | after#entityName#Save";
+		optionStruct['value'] = "after#entityName#Save";
+		optionStruct['entityName'] = arguments.objectName;
+		arrayAppend(opArr, optionStruct);
+		
+		optionStruct = {};
+		optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.save')# #getHibachiScope().rbKey('define.success')# | after#entityName#SaveSuccess";
+		optionStruct['value'] = "after#entityName#SaveSuccess";
+		optionStruct['entityName'] = arguments.objectName;
+		arrayAppend(opArr, optionStruct);
+		
+		optionStruct = {};
+		optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.save')# #getHibachiScope().rbKey('define.failure')# | after#entityName#SaveFailure";
+		optionStruct['value'] = "after#entityName#SaveFailure";
+		optionStruct['entityName'] = arguments.objectName;
+		arrayAppend(opArr, optionStruct);
+		
+		optionStruct = {};
+		optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.before')# #getHibachiScope().rbKey('define.delete')# | before#entityName#Delete";
+		optionStruct['value'] = "before#entityName#Delete";
+		optionStruct['entityName'] = arguments.objectName;
+		arrayAppend(opArr, optionStruct);
+		
+		optionStruct = {};
+		optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.delete')# | after#entityName#Delete";
+		optionStruct['value'] = "after#entityName#Delete";
+		optionStruct['entityName'] = arguments.objectName;
+		arrayAppend(opArr, optionStruct);
+		
+		optionStruct = {};
+		optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.delete')# #getHibachiScope().rbKey('define.success')# | after#entityName#DeleteSuccess";
+		optionStruct['value'] = "after#entityName#DeleteSuccess";
+		optionStruct['entityName'] = arguments.objectName;
+		arrayAppend(opArr, optionStruct);
+		
+		optionStruct = {};
+		optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('define.delete')# #getHibachiScope().rbKey('define.failure')# | after#entityName#DeleteFailure";
+		optionStruct['value'] = "after#entityName#DeleteFailure";
+		optionStruct['entityName'] = arguments.objectName;
+		arrayAppend(opArr, optionStruct);
+		
+		if(structKeyExists(emd, "hb_processContexts")) {
+			for(var c=1; c<=listLen(emd.hb_processContexts); c++) {
+				var thisContext = listGetAt(emd.hb_processContexts, c);
+				
+				optionStruct = {};
+				optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.before')# #getHibachiScope().rbKey('entity.#entityName#.process.#thisContext#')# | before#entityName#Process_#thisContext#";
+				optionStruct['value'] = "before#entityName#Process_#thisContext#";
+				optionStruct['entityName'] = arguments.objectName;
+				arrayAppend(opArr, optionStruct);
+				
+				optionStruct = {};
+				optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('entity.#entityName#.process.#thisContext#')# | after#entityName#Process_#thisContext#";
+				optionStruct['value'] = "after#entityName#Process_#thisContext#";
+				optionStruct['entityName'] = arguments.objectName;
+				arrayAppend(opArr, optionStruct);
+				
+				optionStruct = {};
+				optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('entity.#entityName#.process.#thisContext#')# #getHibachiScope().rbKey('define.success')# | after#entityName#Process_#thisContext#Success";
+				optionStruct['value'] = "after#entityName#Process_#thisContext#Success";
+				optionStruct['entityName'] = arguments.objectName;
+				arrayAppend(opArr, optionStruct);
+				
+				optionStruct = {};
+				optionStruct['name'] = "#getHibachiScope().rbKey('entity.#entityName#')# - #getHibachiScope().rbKey('define.after')# #getHibachiScope().rbKey('entity.#entityName#.process.#thisContext#')# #getHibachiScope().rbKey('define.failure')# | after#entityName#Process_#thisContext#Failure";
+				optionStruct['value'] = "after#entityName#Process_#thisContext#Failure";
+				optionStruct['entityName'] = arguments.objectName;
+				arrayAppend(opArr, optionStruct);
+				
+			}
+		}
+		if(arguments.doOneToManyOptions){
+			var propertiesArrayLength = arrayLen(emd.properties);
+			for(var d=1; d<=propertiesArrayLength;d++){
+				var property = emd.properties[d];
+				if(structKeyExists(property,'fieldType') && property.fieldType == 'one-to-many' && property.cfc != arguments.objectName){
+					var relationshipOptions = getEventNameOptionsForObject(property.CFC,false);
+					opArr = getService('hibachiUtilityService').arrayConcat(opArr,relationshipOptions);
+				}
+			}
+		}
+		return opArr;
+	}
+	
 }

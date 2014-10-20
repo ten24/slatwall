@@ -44,6 +44,19 @@ function(){
 		  			return deferred.promise;
 		  			
 		  		},
+		  		getEventOptions:function(entityName){
+		  			var deferred = $q.defer();
+		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getEventOptionsByEntityName&entityName='+entityName;
+		  			
+		  			$http.get(urlString)
+		  			.success(function(data){
+		  				deferred.resolve(data);
+		  			}).error(function(reason){
+		  				deferred.reject(reason);
+		  			});
+		  			
+		  			return deferred.promise;
+		  		},
 		  		getValidation:function(entityName){
 		  			var deferred = $q.defer();
 		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getValidation&entityName='+entityName;
@@ -118,6 +131,7 @@ function(){
 		  			if(angular.isDefined(context)){
 		  				params.context = context;
 		  			}
+		  			
 		  			
 		  			$http({
 		  				url:urlString,

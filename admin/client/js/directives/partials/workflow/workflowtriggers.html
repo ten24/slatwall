@@ -84,19 +84,14 @@
 											<!--- search --->
 											<div class="s-search-filter">
 												<div class="input-group">
-													<input type="text" class="form-control input-sm" placeholder="Search&hellip;">
-													<ul class="dropdown-menu s-search-options" ng-show="true">
-														<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
-														<li><a>On {{workflowTriggers.selectedTrigger.workflow.workflowObject}} Item Save</a></li>
-														<li><a>On{{workflowTriggers.selectedTrigger.workflow.workflowObject}} Item Update</a></li>
-														<li><a>On {{workflowTriggers.selectedTrigger.workflow.workflowObject}} Item Cancel</a></li>
-														<li><a>On {{workflowTriggers.selectedTrigger.workflow.workflowObject}} Item Delete</a></li>
-														<li><hr/></li>
-														<li id="j-placeholder-trigger"><a>On Order Item Event</a></li>
-														<li><a>On Order Fulfillment Event</a></li>
+													<input type="text" class="form-control input-sm" placeholder="Search&hellip;" ng-model="searchEvent.name" ng-focus="searchEvent.name = ''">
+													<ul class="dropdown-menu " ng-show="showEventOptions">
+														<span ng-repeat="eventOption in eventOptions | filter:searchEvent.name">
+															<li><a ng-click="selectEvent(eventOption)">{{eventOption.name}}</a></li>
+														</span>
 													</ul>
 													<div class="input-group-btn">
-														<button type="button" class="btn btn-sm s-btn-grey" ng-click="showEntityOptions === !showEntityOptions"><span class="caret"></span></button>
+														<button type="button" class="btn btn-sm s-btn-grey" ng-click="getEventOptions(workflowTriggers.selectedTrigger.workflow.workflowObject);"><span class="caret"></span></button>
 													</div>
 												</div>
 	
@@ -354,7 +349,13 @@
 						</div>
 
 						<div class="s-button-select-group">
-							<button type="button" class="btn btn-sm s-btn-ten24 s-width-100">Save Trigger</button>
+							<button 
+									type="button" 
+									class="btn btn-sm s-btn-ten24 s-width-100"
+									ng-click="saveTrigger()"
+							>
+								Save Trigger
+							</button>
 						</div>
 					</div>
 				</div>

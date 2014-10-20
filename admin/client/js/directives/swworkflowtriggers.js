@@ -30,8 +30,6 @@ workflowPartialsPath
 			scope.workflowID = $location.search().workflowID;
 			scope.$id = 'swWorkflowTriggers'
 				
-			scope.showEntityOptions = false;
-				
 			/*scope.getPropertyDisplayData = function(){
 				var propertyDisplayDataPromise = $slatwall.getPropertyDisplayData('workflowTrigger',{propertyIdentifiersList:'triggerType'});
 				propertyDisplayDataPromise.then(function(value){
@@ -104,12 +102,50 @@ workflowPartialsPath
 					alertService.addAlerts(alerts);
 				});
 			};
+			scope.searchEvent = {
+				name:''	
+			};
+			scope.showEventOptions = false;
+			scope.eventOptions = [];
+			var unBindSearchEventWatch = scope.$watch('searchEvent.name',function(newValue,oldValue){
+				if(newValue !== oldValue){
+					scope.getEventOptions(scope.workflowTriggers.selectedTrigger.workflow.workflowObject);
+					unBindSearchEventWatch();
+				}
+			});
+			
+			scope.getEventOptions = function(objectName){
+				if(!scope.eventOptions.length){
+					var eventOptionsPromise = $slatwall.getEventOptions(objectName);
+					
+					eventOptionsPromise.then(function(value){
+						$log.debug('geteventOptions');
+						scope.eventOptions = value.data;
+						$log.debug(scope.eventOptions);
+						
+					},function(reason){
+						//display error message if getter fails
+						var messages = reason.MESSAGES;
+						var alerts = alertService.formatMessagesToAlerts(messages);
+						alertService.addAlerts(alerts);
+					});
+				}
+				scope.showEventOptions = !scope.showEventOptions;
+			};
+			
+			scope.selectEvent = function(eventOption){
+				$log.debug('selectEvent');
+				scope.workflowTriggers.selectedTrigger.triggerEvent = eventOption.value;
+				scope.searchEvent.name = eventOption.name;
+				$log.debug(eventOption);
+				$log.debug(scope.workflowTriggers);
+			};
 			
 			scope.selectCollection = function(collection){
 				$log.debug('selectCollection');
 				scope.workflowTriggers.selectedTrigger.scheduleCollection = collection;
 				scope.showCollections = false;
-			}
+			};
 			
 			scope.addWorkflowTrigger = function(){
 				$log.debug('addWorkflowTrigger');
@@ -125,6 +161,14 @@ workflowPartialsPath
 					delete scope.workflowTriggers.selectedTrigger;
 				}
 				scope.workflowTriggers.splice(workflowTrigger.$$index,1);
+			};
+			
+			scope.saveTrigger = function(){
+				//$slatwall.saveEntity('WorkflowTrigger',null,scope.workflowTriggers.selectedTrigger,'Save');
+				console.log(Object.getOwnPropertyNames(scope.workflowTriggers.selectedTrigger));
+				console.log(Object.keys(scope.workflowTriggers.selectedTrigger));
+				
+				//:function(entityName,id,params,context){
 			};
 		}
 	};
