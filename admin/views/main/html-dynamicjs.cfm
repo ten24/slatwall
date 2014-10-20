@@ -1,7 +1,5 @@
 <script type="text/javascript">
-	var jsEntities = {
-		'boot':true
-	};
+	var jsEntities = {};
 	
 	var loadJSEntity = function( entityName ) {
 		
@@ -24,7 +22,6 @@
 		}
 		
 	}
-	
 	
 </script>
 
