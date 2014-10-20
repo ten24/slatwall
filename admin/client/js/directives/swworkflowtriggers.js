@@ -30,6 +30,8 @@ workflowPartialsPath
 			scope.workflowID = $location.search().workflowID;
 			scope.$id = 'swWorkflowTriggers'
 				
+			scope.showEntityOptions = false;
+				
 			/*scope.getPropertyDisplayData = function(){
 				var propertyDisplayDataPromise = $slatwall.getPropertyDisplayData('workflowTrigger',{propertyIdentifiersList:'triggerType'});
 				propertyDisplayDataPromise.then(function(value){
@@ -72,6 +74,42 @@ workflowPartialsPath
 			};
 			
 			scope.getWorkflowTriggers();
+			
+			scope.showCollections = false;
+			scope.collections = [];
+			
+			scope.getCollectionByWorkflowObject = function(){
+				var filterGroupsConfig ='['+  
+					'{'+
+	                 	'"filterGroup":['+  
+				            '{'+
+				               '"propertyIdentifier":"Collection.collectionObject",'+
+				               '"comparisonOperator":"=",'+
+				               '"value":"Slatwall'+ scope.workflowTriggers.selectedTrigger.workflow.workflowObject +'"'+
+				           '}'+ 
+				         ']'+
+					'}'+
+				']';
+				var collectionsPromise = $slatwall.getEntity('Collection',{filterGroupsConfig:filterGroupsConfig});
+				
+				collectionsPromise.then(function(value){
+					$log.debug('getcollections');
+					scope.collections = value.pageRecords;
+					$log.debug(scope.collections);
+					
+				},function(reason){
+					//display error message if getter fails
+					var messages = reason.MESSAGES;
+					var alerts = alertService.formatMessagesToAlerts(messages);
+					alertService.addAlerts(alerts);
+				});
+			};
+			
+			scope.selectCollection = function(collection){
+				$log.debug('selectCollection');
+				scope.workflowTriggers.selectedTrigger.scheduleCollection = collection;
+				scope.showCollections = false;
+			}
 			
 			scope.addWorkflowTrigger = function(){
 				$log.debug('addWorkflowTrigger');
