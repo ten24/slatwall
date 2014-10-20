@@ -139,13 +139,8 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	}
 	
 	public any function getPropertiesWithAttributesByEntityName(required string entityName){
-		if( hasApplicationValue("classPropertiesWithAttributesByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
-			return getApplicationValue("classPropertiesWithAttributesByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
-		}
 		var entityObject = getEntityObject( arguments.entityName );
 		var properties = getService('hibachiUtilityService').arrayConcat( entityObject.getFilterProperties(), entityObject.getAttributesProperties() );
-		
-		setApplicationValue("classPropertiesWithAttributesByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#", properties);
 		
 		return properties;
 	}
