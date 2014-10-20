@@ -838,7 +838,7 @@ component extends="HibachiService" accessors="true" {
 		//var productBundleGroups = arguments.processObject.getProductBundleGroups;
 		
 		//deserialize productBundleGroups so we can persist it
-		var productBundleGroupsStruct = deserializeJson(data.productBundleGroups);
+		var productBundleGroupsStruct = deserializeJson(data['product.defaultSku.productBundleGroups']);
 		for(var productBundleGroupStruct in productBundleGroupsStruct){
 			var productBundleGroup = this.newProductBundleGroup();
 			productBundleGroup.setActiveFlag(productBundleGroupStruct.active);
