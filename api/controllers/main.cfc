@@ -255,13 +255,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=arguments.rc, 3=arguments.rc.context});
 		}
 
-		if(!isnull(arguments.rc.propertyIdentifiers)){
+		if(!isnull(arguments.rc.propertyIdentifiersList)){
 			//respond with data
-			arguments.rc.apiResponse.content.data = {};
-			for(propertyIdentifier in arguments.rc.propertyIdentifiers){
+			arguments.rc.apiResponse.content['data'] = {};
+			var propertyIdentifiersArray = ListToArray(arguments.rc.propertyIdentifiersList);
+			for(propertyIdentifier in propertyIdentifiersArray){
 				//check if method exists before trying to retrieve a property
 				if(isDefined('entity.get#propertyIdentifier#')){
-					arguments.rc.apiResponse.content.data[propertyIdentifier] = entity.invokeMethod("get#propertyIdentifier#");
+					arguments.rc.apiResponse.content['data'][propertyIdentifier] = entity.invokeMethod("get#propertyIdentifier#");
 				}
 			}
 		}

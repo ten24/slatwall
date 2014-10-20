@@ -26,7 +26,7 @@ function(){
 		  				params.filterGroupsConfig = options.filterGroupsConfig || '';
 		  				params.joinsConfig = options.joinsConfig || '';
 		  				params.isDistinct = options.isDistinct || false;
-		  				params.propertyIdentifiersList = options.propertyIdentifiersList || ''
+		  				params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 		  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName;
 		  			}
 		  			

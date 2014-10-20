@@ -65,11 +65,6 @@ workflowPartialsPath
 					scope.workflowTasks = workflowTaskService.formatWorkflowTasks(value.pageRecords);
 					$log.debug(scope.workflowTasks);
 					
-				},function(reason){
-					//display error message if getter fails
-					var messages = reason.MESSAGES;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlerts(alerts);
 				});
 			};
 			

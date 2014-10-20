@@ -4,7 +4,6 @@ angular.module('slatwalladmin')
 '$log',
 '$location',
 '$slatwall',
-'alertService',
 'workflowService',
 'workflowTriggerService',
 'workflowPartialsPath',
@@ -12,7 +11,6 @@ function(
 $log,
 $location,
 $slatwall,
-alertService,
 workflowService,
 workflowTriggerService,
 workflowPartialsPath
@@ -63,11 +61,6 @@ workflowPartialsPath
 					scope.workflowTriggers = workflowTriggerService.formatWorkflowTriggers(value.pageRecords);
 					$log.debug(scope.workflowTriggers);
 					
-				},function(reason){
-					//display error message if getter fails
-					var messages = reason.MESSAGES;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlerts(alerts);
 				});
 			};
 			
@@ -95,11 +88,6 @@ workflowPartialsPath
 					scope.collections = value.pageRecords;
 					$log.debug(scope.collections);
 					
-				},function(reason){
-					//display error message if getter fails
-					var messages = reason.MESSAGES;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlerts(alerts);
 				});
 			};
 			scope.searchEvent = {
@@ -123,11 +111,6 @@ workflowPartialsPath
 						scope.eventOptions = value.data;
 						$log.debug(scope.eventOptions);
 						
-					},function(reason){
-						//display error message if getter fails
-						var messages = reason.MESSAGES;
-						var alerts = alertService.formatMessagesToAlerts(messages);
-						alertService.addAlerts(alerts);
 					});
 				}
 				scope.showEventOptions = !scope.showEventOptions;
@@ -164,12 +147,26 @@ workflowPartialsPath
 			};
 			
 			scope.saveTrigger = function(){
-				//$slatwall.saveEntity('WorkflowTrigger',null,scope.workflowTriggers.selectedTrigger,'Save');
-				console.log(Object.getOwnPropertyNames(scope.workflowTriggers.selectedTrigger));
-				console.log(Object.keys(scope.workflowTriggers.selectedTrigger));
+				var params = {
+					'objectPropertyIdentifier':scope.workflowTriggers.selectedTrigger.objectPropertyIdentifier,
+					'triggerEvent':scope.workflowTriggers.selectedTrigger.triggerEvent,
+					'triggerType':scope.workflowTriggers.selectedTrigger.triggerType,
+					'workflow.workflowID':scope.workflowTriggers.selectedTrigger.workflow.workflowID,
+					'workflowTriggerID':'',
+					'propertyIdentifiersList':'workflowTriggerID'
+				};
+				var saveTriggerPromise = $slatwall.saveEntity('WorkflowTrigger',null,params,'Save');
 				
-				//:function(entityName,id,params,context){
+				saveTriggerPromise.then(function(value){
+					$log.debug('saveTrigger');
+					scope.workflowTriggers.selectedTrigger.workflowTriggerID = value.data.workflowTriggerID;
+					delete scope.workflowTriggers.selectedTrigger;
+				},function(reason){
+					
+				});
 			};
+			
+			
 		}
 	};
 }]);

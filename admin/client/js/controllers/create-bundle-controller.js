@@ -5,7 +5,6 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 	'$slatwall',
 	'$log',
 	'$rootScope',
-	'alertService',
 	'dialogService',
 	'productBundleService',
 	'formService',
@@ -15,7 +14,6 @@ function(
 	$slatwall,
 	$log,
 	$rootScope,
-	alertService,
 	dialogService,
 	productBundleService,
 	formService
@@ -40,11 +38,6 @@ function(
 		$scope.processObject = value.data;
 		formService.setForm($scope.form.createProductBundle);
 		$log.debug($scope.processObject);
-	},function(reason){
-		//display error message if getter fails
-		var messages = reason.MESSAGES;
-		var alerts = alertService.formatMessagesToAlerts(messages);
-		alertService.addAlerts(alerts);
 	});
 	
 	$scope.addProductBundleGroup = function(){
@@ -74,19 +67,12 @@ function(
 				var saveProductBundlePromise = $slatwall.saveEntity('Product', null, params,'CreateBundle');
 				saveProductBundlePromise.then(function(value){
 					$log.debug('saving Product Bundle');
-					var messages = value.MESSAGES;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlerts(alerts);
 					if(angular.isDefined(closeDialogIndex)){
 						$rootScope.closePageDialog(closeDialogIndex);
 					}
 					
 					formService.resetForm(createProductBundleForm);
 					
-				},function(reason){
-					var messages = reason.MESSAGES;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlerts(alerts);
 				});
 			}
 		}

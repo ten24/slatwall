@@ -6,10 +6,16 @@
 		</li>
 	</ul>
 	<ul class="list-unstyled list-inline s-middle">
-		<li class="j-tool-tip-item s-bundle-details">Order - Save Order Success</li>
+		<li class="j-tool-tip-item s-bundle-details" ng-bind="workflowTrigger.triggerEvent"></li>
 	</ul>
 	<ul class="list-unstyled list-inline s-last">
-		<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
+		<li class="col-xs-1 j-tool-tip-item s-bundle-details-add">
+			<a 	class="btn s-btn-dgrey s-remove"
+				ng-click="deleteTrigger(workflowTrigger)"
+			>
+				<i class="fa fa-trash"></i>
+			</a>
+		</li>
 	</ul>
 	<div class="clearfix"></div>
 </li>

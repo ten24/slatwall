@@ -34,10 +34,6 @@ workflowService
 					scope.propertyDisplayData = value.data;
 					$log.debug('getting property Display meta data');
 					$log.debug(scope.propertyDisplayData);
-				},function(reason){
-					var messages = reason.MESSAGES;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlers(alerts);
 				});
 			};
 			scope.getPropertyDisplayData();
@@ -51,10 +47,6 @@ workflowService
 					workflowService.setWorkflow(scope.workflow);
 					$log.debug('workflow loaded');
 					$log.debug(scope.workflow);
-				},function(reason){
-					var messages = reason.MESSAGES;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlers(alerts);
 				});
 			};
 			

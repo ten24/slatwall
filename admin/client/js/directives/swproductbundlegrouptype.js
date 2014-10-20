@@ -5,7 +5,6 @@ angular.module('slatwalladmin')
 	'$http',
 	'$log',
 	'$slatwall',
-	'alertService',
 	'formService',
 	'productBundlePartialsPath',
 	'productBundleService',
@@ -13,7 +12,6 @@ function(
 	$http,
 	$log,
 	$slatwall,
-	alertService,
 	formService,
 	productBundlePartialsPath,
 	productBundleService
@@ -48,11 +46,6 @@ function(
 					$scope.processObject = value.data;
 					$log.debug($scope.processObject);
 					formService.setForm($scope.form.addProductBundleGroupType);
-				},function(reason){
-					//display error message if getter fails
-					var messages = reason.MESSAGES;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlerts(alerts);
 				});
 				
 			};
@@ -74,18 +67,11 @@ function(
 					var saveProductBundleTypePromise = $slatwall.saveEntity('Type', null, params,'Save');
 					saveProductBundleTypePromise.then(function(value){
 						$log.debug('saving Product Bundle Group Type');
-						var messages = value.MESSAGES;
-						var alerts = alertService.formatMessagesToAlerts(messages);
-						alertService.addAlerts(alerts);
 						$scope.productBundleGroupTypes.$$adding = false;
 						$scope.showAddProductBundleGroupTypeBtn = false;
 						$scope.productBundleGroup.productBundleGroupType = value.DATA;
 						formService.resetForm(addProductBundleGroupTypeForm);
 						
-					},function(reason){
-						var messages = reason.MESSAGES;
-						var alerts = alertService.formatMessagesToAlerts(messages);
-						alertService.addAlerts(alerts);
 					});
 				}
 			};
@@ -135,11 +121,6 @@ function(
 						}
 					}
 					return $scope.productBundleGroupTypes.value;
-				},function(reason){
-					//display error message if getter fails
-					var messages = reason.MESSAGES;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlerts(alerts);
 				});
 			};
 			

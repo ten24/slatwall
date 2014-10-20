@@ -1,7 +1,7 @@
 'use strict';
 angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAnimate', function($locationProvider){
 	$locationProvider.html5Mode(true);
-}]).config(["$provide",'$logProvider','$filterProvider', function ($provide, $logProvider,$filterProvider) {
+}]).config(["$provide",'$logProvider','$filterProvider','$httpProvider', function ($provide, $logProvider,$filterProvider,$httpProvider) {
 	
 	var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/';
 	
@@ -57,6 +57,8 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
             return input;
         };
 	});
+	
+	$httpProvider.interceptors.push('slatwallInterceptor');
 	
 }]).run(['$rootScope','dialogService', function($rootScope, dialogService) {
     $rootScope.openPageDialog = function( partial ) {
