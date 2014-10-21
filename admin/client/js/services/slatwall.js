@@ -19,8 +19,8 @@ function(){
 		  			if(typeof options === 'String') {
 		  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options.id;
 		  			} else {
-		  				params.currentPage = options.currentPage || 1;
-		  				params.pageShow = options.pageShow || 10;
+		  				params['P:Current'] = options.currentPage || 1;
+		  				params['P:Show'] = options.pageShow || 10;
 		  				params.keywords = options.keywords || '';
 		  				params.columnsConfig = options.columnsConfig || '';
 		  				params.filterGroupsConfig = options.filterGroupsConfig || '';
