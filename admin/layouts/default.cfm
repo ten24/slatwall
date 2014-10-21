@@ -389,6 +389,9 @@ Notes:
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowtriggers.js"></script>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowtrigger.js"></script>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowtasks.js"></script>
+			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowconditiongroups.js"></script>
+			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowcondition.js"></script>
+			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowconditiongroupitem.js"></script>
 			<!---collection --->
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfiltergroups.js"></script>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfilteritem.js"></script>

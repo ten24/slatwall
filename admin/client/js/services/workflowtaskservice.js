@@ -16,7 +16,13 @@ function(
 		this.workflowTaskID = "";
 		this.activeFlag = 'Yes ';
 		this.taskName = '';
-		this.taskConditionsConfig = '';
+		this.taskConditionsConfig.workflowConditionGroups = [
+			{
+				workflowConditionGroup:[
+					
+				]
+			}
+		];
 	}
 		
 	_workflowTask.prototype = {
