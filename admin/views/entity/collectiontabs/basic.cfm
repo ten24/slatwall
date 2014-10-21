@@ -161,6 +161,7 @@
 			            		placeholder="Search" 
 			            		name="srch-term" 
 			            		ng-model="keywords"
+								ng-change="searchCollection()"
 			            />
 			            <div class="input-group-btn">
 			              <button   class="btn btn-default btn-sm" 
