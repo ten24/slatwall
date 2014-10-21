@@ -19,7 +19,7 @@ workflowService
 		restrict: 'A',
 		
 		templateUrl:workflowPartialsPath+"workflowcondition.html",
-		link: function(scope, element,attrs,formController){
+		link: function(scope, element,attrs){
 		}
 	};
 }]);

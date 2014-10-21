@@ -16,13 +16,26 @@ function(
 		this.workflowTaskID = "";
 		this.activeFlag = 'Yes ';
 		this.taskName = '';
-		this.taskConditionsConfig.workflowConditionGroups = [
-			{
-				workflowConditionGroup:[
-					
-				]
-			}
-		];
+		this.taskConditionsConfig = {
+			workflowConditionGroups : [
+		
+				{
+					workflowConditionGroup:[
+						
+					]
+				}
+			]
+		};
+	}
+	
+	function _workflowCondition(){
+		this.propertyIdentifier = "";
+		this.comparisonOperator = "";
+		this.value = "";
+	}
+	
+	function _workflowConditionGroupItem(){
+		this.workflowConditionGroup = [];
 	}
 		
 	_workflowTask.prototype = {
@@ -38,6 +51,22 @@ function(
 	return workflowTaskService = {
 		newWorkflowTask:function(){
 			return new _workflowTask;
+		},
+		
+		newWorkflowCondition:function(){
+			return new _workflowCondition;
+		},
+		addWorkflowCondition:function(groupItem,condition){
+			$log.debug('addWorkflowCondition');
+			$log.debug(groupItem);
+			$log.debug(condition);
+			groupItem.push(condition);
+		},
+		newWorkflowConditionGroupItem:function(){
+			return new _workflowConditionGroupItem;
+		},
+		addWorkflowConditionGroupItem:function(group,groupItem){
+			group.push(groupItem);
 		},
 		formatWorkflowTask:function(workflowTaskObject){
 			var workflowTask = this.newWorkflowTask();

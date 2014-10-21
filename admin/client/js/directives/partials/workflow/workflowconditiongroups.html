@@ -23,8 +23,24 @@
 	<li class="s-new-filter">
 		<!--- New Filter Panel Buttons --->
 		<div class="s-filter-item">
-			<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-2"><i class="fa fa-plus"></i> Add</button>
-			<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-another-2"><i class="fa fa-plus"></i> Add a New Group</button>
+			<button type="button" 
+					class="btn btn-xs btn-default" 
+					data-toggle="collapse" 
+					data-target="#j-add-2"
+					ng-click="addWorkflowCondition()"
+			>
+				<i class="fa fa-plus"></i> 
+				Add
+			</button>
+			<button type="button" 
+					class="btn btn-xs btn-default" 
+					data-toggle="collapse" 
+					data-target="#j-add-another-2"
+					ng-click="addWorkflowConditionGroupItem()"
+			>
+				<i class="fa fa-plus"></i>
+				 Add a New Group
+			</button>
 		</div>
 		<!--- //New Filter Panel Buttons --->
 	</li>
