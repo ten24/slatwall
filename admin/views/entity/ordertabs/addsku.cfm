@@ -49,7 +49,6 @@ Notes:
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.addSkuAddStockType" type="string" />
-
 <cfoutput>
 	<cf_HibachiListingDisplay smartList="#rc.order.getAddOrderItemSkuOptionsSmartList()#"
 							  recordProcessAction="admin:entity.processOrder"
@@ -58,6 +57,7 @@ Notes:
 							  recordProcessEntity="#rc.order#"
 							  recordProcessUpdateTableID="LD#replace(rc.order.getSaleItemSmartList().getSavedStateID(),'-','','all')#">
 							    
+		<cf_HibachiListingColumn propertyIdentifier="publishedFlag" />
 		<cf_HibachiListingColumn propertyIdentifier="skuCode" />
 		<cf_HibachiListingColumn propertyIdentifier="product.productCode" />
 		<cf_HibachiListingColumn propertyIdentifier="product.brand.brandName" />

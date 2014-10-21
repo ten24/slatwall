@@ -52,6 +52,10 @@ Notes:
 		<cf_SlatwallSetting settingName="accountEligiblePaymentTerms" />
 		<cf_SlatwallSetting settingName="accountPaymentTerm" />
 		<cf_SlatwallSetting settingName="accountTermCreditLimit" />
+		<cf_SlatwallSetting settingName="accountFailedAdminLoginAttemptCount" />
+		<cf_SlatwallSetting settingName="accountFailedPublicLoginAttemptCount" />
+		<cf_SlatwallSetting settingName="accountAdminForcePasswordResetAfterDays" />
+		<cf_SlatwallSetting settingName="accountLockMinutes" />
 	</cf_SlatwallSettingTable>
 </cfoutput>
 

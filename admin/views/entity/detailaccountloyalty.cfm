@@ -64,17 +64,11 @@ Notes:
 		
 		<!--- Hidden field to attach this to the account --->
 		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.accountLoyalty#" property="loyalty" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.accountLoyalty#" property="lifetimeBalance" edit="false">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.accountLoyalty#">
-			<cf_HibachiTab view="admin:entity/accountloyaltytabs/accountloyaltytransactions" />
-		</cf_HibachiTabGroup>
+
+		<cf_HibachiEntityDetailGroup object="#rc.accountLoyalty#">
+			<cf_HibachiEntityDetailItem view="admin:entity/accountloyaltytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cf_HibachiEntityDetailItem view="admin:entity/accountloyaltytabs/accountloyaltytransactions" />
+		</cf_HibachiEntityDetailGroup>
 			
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

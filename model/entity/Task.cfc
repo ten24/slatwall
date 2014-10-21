@@ -86,7 +86,8 @@ component displayname="Task" entityname="SlatwallTask" table="SwTask" persistent
 			{name="#rbKey('entity.task.taskMethod.customURL')#", value="customURL"},
 			{name="#rbKey('entity.task.taskMethod.subscriptionUsageRenew')#", value="subscriptionUsageRenew"},
 			{name="#rbKey('entity.task.taskMethod.subscriptionUsageRenewalReminder')#", value="subscriptionUsageRenewalReminder"},
-			{name="#rbKey('entity.task.taskMethod.updateCalculatedProperties')#", value="updateCalculatedProperties"}
+			{name="#rbKey('entity.task.taskMethod.updateCalculatedProperties')#", value="updateCalculatedProperties"},
+			{name="#rbKey('entity.task.taskMethod.updateEventWaitlists')#", value="updateEventWaitlists"}
 		];
 	}
 	

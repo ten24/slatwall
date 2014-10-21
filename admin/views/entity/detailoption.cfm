@@ -60,18 +60,12 @@ Notes:
 					deleteQueryString="redirectAction=admin:entity.detailoptiongroup&optionGroupID=#rc.optionGroup.getOptionGroupID()#" />
 					
 		<input type="hidden" name="optionGroup.optionGroupID" value="#rc.optionGroup.getOptionGroupID()#" />
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.option#" property="optionName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.option#" property="optionCode" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.option#">
+
+		<cf_HibachiEntityDetailGroup object="#rc.option#">
+			<cf_HibachiEntityDetailItem view="admin:entity/optiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<!--- Images --->
 			<cf_SlatwallAdminTabImages object="#rc.option#" />
-		</cf_HibachiTabGroup>
+		</cf_HibachiEntityDetailGroup>
 		
 	</cf_HibachiEntityDetailForm>
 	

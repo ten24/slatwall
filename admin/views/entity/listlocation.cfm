@@ -51,10 +51,8 @@ Notes:
 <cfoutput>
 
 	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.locationSmartList#" 
-							  recordEditAction="admin:entity.editlocation" 
-							  recordEditQueryString="redirectAction=admin:entity.listlocation" 
-							  recordEditModal="true" 
-							  recordDeleteAction="admin:entity.deletelocation">
+							  recordDetailAction="admin:entity.detaillocation"
+							  recordEditAction="admin:entity.editlocation">
 		
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >
@@ -62,7 +60,7 @@ Notes:
 		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationName" search="true" />
+		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 	</cf_HibachiListingDisplay>
 
 </cfoutput>
-

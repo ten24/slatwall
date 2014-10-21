@@ -89,7 +89,7 @@ Notes:
 			<cfset fdAttributes.valueOptions = attribute.getAttributeOptionsOptions() />
 		</cfif>
 		
-		<cfif attribute.getAttributeType().getSystemCode() eq 'atReleatedObjectMultiselect'>
+		<cfif attribute.getAttributeType() eq 'relatedObjectMultiselect'>
 			<cfset fdAttributes.multiselectPropertyIdentifier = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName( attribute.getRelatedObject() ) />
 			<cfset fdAttributes.valueOptionsSmartList = attributes.hibachiScope.getService('hibachiService').getServiceByEntityName( attribute.getRelatedObject() ).invokeMethod( "get#attribute.getRelatedObject()#SmartList" ) />
 		</cfif>

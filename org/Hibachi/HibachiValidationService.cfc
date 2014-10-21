@@ -76,12 +76,11 @@
 						
 						for(var constraint in rule) {
 							if(constraint != "contexts" && constraint != "conditions") {
-								var constraintDetails = {
-									constraintType=constraint,
-									constraintValue=rule[ constraint ]
-								};
+								var constraintDetails = {};
+								constraintDetails['constraintType'] = constraint;
+								constraintDetails['constraintValue'] = rule[ constraint ];
 								if(structKeyExists(rule, "conditions")) {
-									constraintDetails.conditions = rule.conditions;
+									constraintDetails['conditions'] = rule.conditions;
 								}
 								arrayAppend(contextValidations[ property ], constraintDetails);
 							}
@@ -205,7 +204,7 @@
 		var isValid = invokeMethod("validate_#arguments.constraintDetails.constraintType#", {object=arguments.object, propertyIdentifier=arguments.propertyIdentifier, constraintValue=arguments.constraintDetails.constraintValue});	
 					
 		if(!isValid) {
-			var thisPropertyName = listLast(arguments.propertyIdentifier, '._');
+			var thisPropertyName = listLast(arguments.propertyIdentifier, '.');
 			
 			var replaceTemplateStruct = {};
 			replaceTemplateStruct.propertyName = arguments.object.getPropertyTitle(thisPropertyName);
@@ -238,7 +237,7 @@
 	// ================================== VALIDATION CONSTRAINT LOGIC ===========================================
 	
 	public boolean function validate_required(required any object, required string propertyIdentifier, boolean constraintValue=true) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 		if(!isNull(propertyValue) && (isObject(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue)) || (isStruct(propertyValue) && structCount(propertyValue)) || (isSimpleValue(propertyValue) && len(trim(propertyValue))))) {
 			return true;
 		}
@@ -442,7 +441,7 @@
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
 		}
-		if(!isNull(propertyValue) && dateCompare(propertyValue, now())) {
+		if(isNull(propertyValue) || dateCompare(propertyValue, now()) eq 1) {
 			return true;
 		}
 		return false;
@@ -453,7 +452,7 @@
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
 		}
-		if(!isNull(propertyValue) && dateCompare(propertyValue, now()) eq -1) {
+		if(isNull(propertyValue) || dateCompare(propertyValue, now()) eq -1) {
 			return true;
 		}
 		return false;
@@ -625,7 +624,7 @@
 		if(isNull(propertyValue)) {
 			return true;
 		}
-		return getHibachiDAO().isUniqueProperty(propertyName=listLast(arguments.propertyIdentifier,'._'), entity=propertyObject);
+		return getHibachiDAO().isUniqueProperty(propertyName=listLast(arguments.propertyIdentifier,'.'), entity=propertyObject);
 	}
 	
 	public boolean function validate_regex(required any object, required string propertyIdentifier, required string constraintValue) {

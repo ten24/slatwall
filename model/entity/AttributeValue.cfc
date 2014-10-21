@@ -45,45 +45,57 @@
 
 Notes:
 
-	Valid Attribute Value Types
-	
-	product
-	orderItem
-	account
 */
 component displayname="Attribute Value" entityname="SlatwallAttributeValue" table="SwAttributeValue" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="attributeService" {
 	
 	// Persistent Properties
 	property name="attributeValueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="attributeValue" ormtype="string" length="4000" hb_formatType="custom";
-	property name="attributeValueEncrypted" ormtype="string";
+	property name="attributeValueEncrypted" ormtype="string" hb_auditable="false";
+	property name="attributeValueEncryptedDateTime" ormType="timestamp" hb_auditable="false" column="attributeValueEncryptDT";
+	property name="attributeValueEncryptedGenerator" ormType="string" hb_auditable="false" column="attributeValueEncryptGen";
 	property name="attributeValueType" ormType="string" hb_formFieldType="select" hb_formatType="custom" notnull="true";
 	
+	// Calculated Properties
+
 	// Related Object Properties (many-to-one)
 	property name="attribute" cfc="Attribute" fieldtype="many-to-one" fkcolumn="attributeID" notnull="true";
+	property name="attributeValueOption" cfc="AttributeOption" fieldtype="many-to-one" fkcolumn="attributeValueOptionID";
+	
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID";
+	property name="attributeOption" cfc="AttributeOption" fieldtype="many-to-one" fkcolumn="attributeOptionID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
 	property name="file" cfc="File" fieldtype="many-to-one" fkcolumn="fileID";
 	property name="image" cfc="Image" fieldtype="many-to-one" fkcolumn="imageID";
+	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="locationConfiguration" cfc="LocationConfiguration" fieldtype="many-to-one" fkcolumn="locationConfigurationID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
 	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 	property name="orderDelivery" cfc="OrderDelivery" fieldtype="many-to-one" fkcolumn="orderDeliveryID";
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
+	property name="productBundleGroup" cfc="ProductBundleGroup" fieldtype="many-to-one" fkcolumn="productBundleGroupID";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID";
 	property name="productReview" cfc="ProductReview" fieldtype="many-to-one" fkcolumn="productReviewID";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="subscriptionBenefit" cfc="SubscriptionBenefit" fieldtype="many-to-one" fkcolumn="subscriptionBenefitID";
+	property name="type" cfc="Type" fieldtype="many-to-one" fkcolumn="typeID";
 	property name="vendor" cfc="Vendor" fieldtype="many-to-one" fkcolumn="vendorID";
 	property name="vendorOrder" cfc="VendorOrder" fieldtype="many-to-one" fkcolumn="vendorOrderID";
+	
+	// Related Object Properties (one-to-many)
+	
+	// Related Object Properties (many-to-many - owner)
+
+	// Related Object Properties (many-to-many - inverse)
 	
 	// Quick Lookup Properties
 	property name="attributeID" length="32" insert="false" update="false";
 	
-	// Remote properties
-	property name="remoteID" ormtype="string";
+	// Remote Properties
+	property name="remoteID" hb_populateEnabled="false" ormtype="string";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -93,6 +105,12 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	
 	// Non-Persistent Properties
 	property name="attributeValueOptions" persistent="false";
+
+	public void function setupEncryptedProperties() {
+		if(!isNull(getAttribute()) && !isNull(getAttribute().getAttributeType()) && getAttribute().getAttributeType() == "password" && structKeyExists(variables, "attributeValue")) {
+			encryptProperty('attributeValue');
+		}
+	}
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -117,7 +135,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
-	
+		
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// Attribute (many-to-one)
@@ -154,6 +172,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			arrayDeleteAt(arguments.account.getAttributeValues(), index);
 		}
 		structDelete(variables, "account");
+	}
+	
+	// Attribute Option (many-to-one)    
+	public void function setAttributeOption(required any attributeOption) {    
+		variables.attributeOption = arguments.attributeOption;    
+		if(isNew() or !arguments.attributeOption.hasAttributeValue( this )) {    
+			arrayAppend(arguments.attributeOption.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeAttributeOption(any attributeOption) {    
+		if(!structKeyExists(arguments, "attributeOption")) {    
+			arguments.attributeOption = variables.attributeOption;    
+		}    
+		var index = arrayFind(arguments.attributeOption.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.attributeOption.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "attributeOption");    
 	}
 	
 	// Account Payment (many-to-one)
@@ -226,6 +262,42 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			arrayDeleteAt(arguments.image.getAttributeValues(), index);    
 		}    
 		structDelete(variables, "image");    
+	}
+	
+	// Location (many-to-one)    
+	public void function setLocation(required any location) {    
+		variables.location = arguments.location;    
+		if(isNew() or !arguments.location.hasAttributeValue( this )) {    
+			arrayAppend(arguments.location.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeLocation(any location) {    
+		if(!structKeyExists(arguments, "location")) {    
+			arguments.location = variables.location;    
+		}    
+		var index = arrayFind(arguments.location.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.location.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "location");    
+	}
+	
+	// Location Configuration (many-to-one)    
+	public void function setLocationConfiguration(required any locationconfiguration) {    
+		variables.locationconfiguration = arguments.locationconfiguration;    
+		if(isNew() or !arguments.locationconfiguration.hasAttributeValue( this )) {    
+			arrayAppend(arguments.locationconfiguration.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeLocationConfiguration(any locationconfiguration) {    
+		if(!structKeyExists(arguments, "locationconfiguration")) {    
+			arguments.locationconfiguration = variables.locationconfiguration;    
+		}    
+		var index = arrayFind(arguments.locationconfiguration.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.locationconfiguration.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "locationconfiguration");    
 	}
 	
 	// Order (many-to-one)    
@@ -336,6 +408,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		structDelete(variables, "product");
 	}
 	
+	// Product Bundle Group (many-to-one)    
+	public void function setProductBundleGroup(required any productBundleGroup) {    
+		variables.productBundleGroup = arguments.productBundleGroup;    
+		if(isNew() or !arguments.productBundleGroup.hasAttributeValue( this )) {    
+			arrayAppend(arguments.productBundleGroup.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeProductBundleGroup(any productBundleGroup) {    
+		if(!structKeyExists(arguments, "productBundleGroup")) {    
+			arguments.productBundleGroup = variables.productBundleGroup;    
+		}    
+		var index = arrayFind(arguments.productBundleGroup.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.productBundleGroup.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "productBundleGroup");    
+	}
+	
 	// Product Type (many-to-one)
 	public void function setProductType(required any productType) {
 		variables.productType = arguments.productType;
@@ -408,6 +498,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		structDelete(variables, "subscriptionBenefit");
 	}
 	
+	// Type (many-to-one)    
+	public void function setType(required any type) {    
+		variables.type = arguments.type;    
+		if(isNew() or !arguments.type.hasAttributeValue( this )) {    
+			arrayAppend(arguments.type.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeType(any type) {    
+		if(!structKeyExists(arguments, "type")) {    
+			arguments.type = variables.type;    
+		}    
+		var index = arrayFind(arguments.type.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.type.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "type");    
+	}
+	
 	// Vendor (many-to-one)
 	public void function setVendor(required any vendor) {
 		variables.vendor = arguments.vendor;
@@ -445,16 +553,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
 	
-	// ============== START: Overridden Implicet Getters ===================
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicit Getters ===================
 	
 	public any function getAttributeValue() {
 		if(structKeyExists(variables, "attributeValue") && len(variables.attributeValue)) {
 			return variables.attributeValue;
 		}
 		if(structKeyExists(variables, "attributeValueEncrypted") && len(variables.attributeValueEncrypted)) {
-			if(!isNull(getAttribute().getDecryptValueInAdminFlag()) && getAttribute().getDecryptValueInAdminFlag()) {
-				return decryptValue(variables.attributeValueEncrypted);	
+			if(!isNull(getAttribute().getDecryptValueInAdminFlag()) && getAttribute().getDecryptValueInAdminFlag()) {	
+				return decryptProperty("attributeValue");
 			}
 			return "********";
 		}
@@ -464,10 +580,15 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	
 	public void function setAttributeValue( any attributeValue ) {
 		variables.attributeValue = arguments.attributeValue;
+		setupEncryptedProperties();
 	}
 	
-	// ==============  END: Overridden Implicet Getters ====================
+	// ==============  END: Overridden Implicit Getters ====================
 	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	// =============  END: Overridden Smart List Getters ===================
+
 	// ================== START: Overridden Methods ========================
 	
 	// This overrides the base validation method to dynamically add rules based on setting specific requirements
@@ -506,7 +627,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	public string function getAttributeValueFormatted() {
-		if(getAttribute().getAttributeType().getSystemCode() eq 'atRelatedObjectSelect') {
+		if(getAttribute().getAttributeType() eq 'relatedObjectSelect') {
 			var thisEntityService = getService('hibachiService').getServiceByEntityName( getAttribute().getRelatedObject() );
 			var thisRelatedEntity = thisEntityService.invokeMethod("get#getAttribute().getRelatedObject()#", {1=getAttributeValue()});
 			if(!isNull(thisRelatedEntity)) {
@@ -517,27 +638,14 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	// ==================  END:  Overridden Methods ========================
-		
+	
 	// =================== START: ORM Event Hooks  =========================
 	
-	public void function preInsert(){
-		if(getAttribute().getAttributeType().getSystemCode() == "atPassword" && structKeyExists(variables, "attributeValue")) {
-			variables.attributeValueEncrypted = encryptValue(variables.attributeValue);
-			structDelete(variables, "attributeValue");
-		}
-		
-		super.preInsert();
-	}
-	
-	public void function preUpdate(struct oldData){
-		if(getAttribute().getAttributeType().getSystemCode() == "atPassword" && structKeyExists(variables, "attrubuteValue")) {
-			variables.attributeValueEncrypted = encryptValue(variables.attributeValue);
-			structDelete(variables, "attributeValue");
-		}
-		
-		super.preUpdate(argumentcollection=arguments);
-	}
-	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
+	
 }
 

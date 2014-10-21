@@ -88,10 +88,10 @@ Notes:
 			</cf_HibachiPropertyRow>
 			
 			<cf_HibachiPropertyRow>
-				<cf_HibachiPropertyList divClass="span6">
+				<cf_HibachiPropertyList divClass="col-md-6">
 					<cf_SlatwallAddressDisplay address="#$.slatwall.getService("addressService").newAddress()#" fieldnameprefix="billingAddress." edit="#rc.edit#" />
 				</cf_HibachiPropertyList>
-				<cf_HibachiPropertyList divClass="span6">
+				<cf_HibachiPropertyList divClass="col-md-6">
 					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="nameOnCreditCard" edit="#rc.edit#" />
 					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="creditCardNumber" edit="#rc.edit#" />
 					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="expirationMonth" edit="#rc.edit#" />
@@ -114,7 +114,7 @@ Notes:
 			<input type="hidden" name="termPaymentAccount.accountID" value="#rc.order.getAccount().getAccountID()#" />
 			
 			<cf_HibachiPropertyRow>
-				<cf_HibachiPropertyList divClass="span6">
+				<cf_HibachiPropertyList divClass="col-md-6">
 					<cf_HibachiPropertyDisplay object="#rc.order.getAccount()#" property="fullName" edit="false" />
 					<cf_HibachiPropertyDisplay object="#rc.order.getAccount()#" property="termAccountAvailableCredit" edit="false" />
 					<cf_HibachiPropertyDisplay object="#rc.order.getAccount()#" property="termAccountBalance" edit="false" />

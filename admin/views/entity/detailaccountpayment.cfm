@@ -59,28 +59,13 @@ Notes:
 		
 		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
-				<cfif rc.accountPayment.getPaymentMethodType() eq "creditCard">
-					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="nameOnCreditCard" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="creditCardType" />
-					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationMonth" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationYear" edit="#rc.edit#" />
-				</cfif>
-			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="amount" />
-				<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="amountReceived" />
-				<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="amountCredited" />
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.accountPayment#">
+		<cf_HibachiEntityDetailGroup object="#rc.accountPayment#">
+			<cf_HibachiEntityDetailItem view="admin:entity/accountpaymenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.accountPayment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.accountPayment#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiTabGroup>
+		</cf_HibachiEntityDetailGroup>
 		
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

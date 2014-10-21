@@ -51,7 +51,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.attributeOption#" sRenderItem="detailAttribute" edit="#rc.edit#"
+	<cf_HibachiEntityDetailForm object="#rc.attributeOption#" edit="#rc.edit#"
 								saveActionQueryString="attributeID=#rc.attribute.getAttributeID()#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.attributeOption#" edit="#rc.edit#" 
 									backAction="admin:entity.detailAttribute" 
@@ -64,5 +64,14 @@ Notes:
 
 		<cf_HibachiPropertyDisplay object="#rc.attributeOption#" property="attributeOptionLabel" edit="#rc.edit#">
 		<cf_HibachiPropertyDisplay object="#rc.attributeOption#" property="attributeOptionValue" edit="#rc.edit#">
+		
+		<cf_HibachiTabGroup object="#rc.attributeOption#">
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.attributeOption.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<cf_SlatwallAdminTabCustomAttributes object="#rc.attributeOption#" attributeSet="#attributeSet#" />
+			</cfloop>
+		</cf_HibachiTabGroup>
 	</cf_HibachiEntityDetailForm>
+	
+	
 </cfoutput>

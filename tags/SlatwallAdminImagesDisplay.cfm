@@ -62,13 +62,13 @@
 						</div>
 						<hr />
 						<div class="small em image-caption">#image.getImagePath()#</div>
-						<cf_HibachiActionCaller action="admin:entity.detailImage" querystring="imageID=#image.getImageID()#" class="btn" iconOnly="true" icon="eye-open" />
-						<cf_HibachiActionCaller action="admin:entity.editImage" querystring="imageID=#image.getImageID()#" class="btn" iconOnly="true" icon="pencil" />
-						<cf_HibachiActionCaller action="admin:entity.deleteImage" querystring="imageID=#image.getImageID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" class="btn" iconOnly="true" icon="trash" confirm="true" />				
+						<cf_HibachiActionCaller action="admin:entity.detailImage" querystring="imageID=#image.getImageID()#" class="btn btn-default" iconOnly="true" icon="eye-open" />
+						<cf_HibachiActionCaller action="admin:entity.editImage" querystring="imageID=#image.getImageID()#" class="btn btn-default" iconOnly="true" icon="pencil" />
+						<cf_HibachiActionCaller action="admin:entity.deleteImage" querystring="imageID=#image.getImageID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" class="btn btn-default" iconOnly="true" icon="trash" confirm="true" />				
     				</div>
   				</li>
 			</cfloop>
 		</ul>
-		<cf_HibachiActionCaller action="admin:entity.createImage" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&objectName=#attributes.object.getClassName()#&redirectAction=#request.context.slatAction#" modal="true" class="btn" icon="plus" />
+		<cf_HibachiActionCaller action="admin:entity.createImage" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&objectName=#attributes.object.getClassName()#&redirectAction=#request.context.slatAction#" modal="true" class="btn btn-default" icon="plus" />
 	</cfoutput>
 </cfif>

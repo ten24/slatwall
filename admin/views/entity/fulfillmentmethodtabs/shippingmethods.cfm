@@ -61,5 +61,5 @@ Notes:
 		
 	</cf_HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createshippingmethod" class="btn" icon="plus" queryString="fulfillmentMethodID=#rc.fulfillmentMethod.getFulfillmentMethodID()#" />
+	<cf_HibachiActionCaller action="admin:entity.createshippingmethod" class="btn btn-default" icon="plus" queryString="fulfillmentMethodID=#rc.fulfillmentMethod.getFulfillmentMethodID()#" />
 </cfoutput>

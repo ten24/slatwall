@@ -54,6 +54,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="addressService";
 	property name="commentService";
 	property name="emailService";
+	property name="eventRegistrationService";
 	property name="fulfillmentService";
 	property name="hibachiUtilityService";
 	property name="locationService";
@@ -134,11 +135,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// copy order item customization
 			for(var attributeValue in arguments.order.getOrderItems()[i].getAttributeValues()) {
-				var av = this.newAttributeValue();
-				av.setAttributeValueType(attributeValue.getAttributeValueType());
-				av.setAttribute(attributeValue.getAttribute());
-				av.setAttributeValue(attributeValue.getAttributeValue());
-				av.setOrderItem(newOrderItem);
+				newOrderItem.setAttributeValue( attributeValue.getAttribute().getAttributeCode(), attributeValue.getAttributeValue() );
 			}
 			
 			var orderFulfillmentFound = false;
@@ -264,11 +261,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// If this is a Sale Order Item then we need to setup the fulfillment
-		if(arguments.processObject.getOrderItemTypeSystemCode() eq "oitSale") {
+		if(listFindNoCase("oitSale,oitDeposit",arguments.processObject.getOrderItemTypeSystemCode())) {
 			
 			// First See if we can use an existing order fulfillment
 			var orderFulfillment = processObject.getOrderFulfillment();
-			
 			// Next if orderFulfillment is still null, then we can check the order to see if there is already an orderFulfillment
 			if(isNull(orderFulfillment) && ( isNull(processObject.getOrderFulfillmentID()) || processObject.getOrderFulfillmentID() != 'new' ) && arrayLen(arguments.order.getOrderFulfillments())) {
 				for(var f=1; f<=arrayLen(arguments.order.getOrderFulfillments()); f++) {
@@ -421,6 +417,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} else if (arguments.processObject.getOrderItemTypeSystemCode() eq "oitReturn") {
 				newOrderItem.setOrderReturn( orderReturn );
 				newOrderItem.setOrderItemType( getSettingService().getTypeBySystemCode('oitReturn') );
+			} else if (arguments.processObject.getOrderItemTypeSystemCode() eq "oitDeposit") {
+				newOrderItem.setOrderItemType( getSettingService().getTypeBySystemCode('oitDeposit') );
 			}
 			
 			// Setup the Sku / Quantity / Price details
@@ -448,6 +446,158 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(newOrderItem.hasErrors()) {
 				arguments.order.addError('addOrderItem', newOrderItem.getErrors());
 			}
+		}
+		
+		// If this is an event then we need to attach accounts and registrations to match the quantity of the order item. 		
+		if(arguments.processObject.getSku().getBaseProductType() == "event" && !isNull(arguments.processObject.getRegistrants())) {
+			
+			var depositsOnlyFlag = false;
+			var salesOnlyFlag = false;
+			var orderItemsToCreateCount = 1;
+			var salesCount = 0;
+			var depositsCount = 0;
+			var currentRegistrantCount = arguments.processObject.getSku().getRegistrantCount();
+			var hasSaleFlag = false;
+			var hasDepositFlag = false;
+			
+			// If order item contains both sales orders AND deposits we'll create the sale order item, then we'll create a separate deposit order item.	
+			for(var registrant in arguments.processObject.getRegistrants()) {
+				if(registrant.toWaitlistFlag == "1")	{
+					hasDepositFlag = true;
+				} else {
+					hasSaleFlag = true;
+				}
+				if(hasDepositFlag && hasSaleFlag) {
+					// Setup iterator to make 2 passes, the first for sales only
+					orderItemsToCreateCount = 2;
+					salesOnlyFlag = true;
+					break;
+				}
+			}
+			
+			for( var i=1;i<=orderItemsToCreateCount;i++) {
+				
+				if(i==2) {
+					// If we're here it means we had to split the order item into two and we're done with the first.
+					
+					// Create a separate order Item for deposits
+					var depositOrderItem = this.newOrderItem();
+					
+					// Set Header Info
+					depositOrderItem.setOrder( arguments.order );
+					depositOrderItem.setOrderItemType( getSettingService().getTypeBySystemCode('oitDeposit') );
+					
+					// Setup the Sku / Quantity / Price details
+					depositOrderItem.setSku( arguments.processObject.getSku() );
+					depositOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
+					depositOrderItem.setQuantity( arguments.processObject.getQuantity() );
+					depositOrderItem.setPrice( arguments.processObject.getPrice() );
+					depositOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( depositOrderItem.getCurrencyCode() ) );
+					
+					// Set any customizations
+					depositOrderItem.populate( arguments.data );
+					
+					// Save the deposit order items
+					depositOrderItem = this.saveOrderItem( depositOrderItem );
+					
+					if(depositOrderItem.hasErrors()) {
+						arguments.order.addError('addOrderItem', depositOrderItem.getErrors());
+					}
+				
+					// Update the quantities to reflect the sales/deposit split.
+					newOrderItem.setQuantity( salesCount );
+					depositOrderItem.setQuantity( arguments.processObject.getQuantity() - salesCount );
+					
+					// Update the flags that drive sales/deposit related specifics
+					salesOnlyFlag = false;
+					depositsOnlyFlag = true;
+				}
+				
+				// ProcessObject should contain account info in registrants array	
+				for(var registrant in arguments.processObject.getRegistrants()) {
+					
+					// Make sure we put the registrants in the right order item
+					if( (orderItemsToCreateCount == 1) || (salesOnlyFlag && registrant.toWaitlistFlag == "0") || (depositsOnlyFlag && registrant.toWaitlistFlag == "1") ) {
+						
+						// Create new event registration	 record
+						var eventRegistration = this.newEventRegistration();
+						if(depositsOnlyFlag) {
+							eventRegistration.setOrderItem(depositOrderItem);
+							eventRegistration.setSku(depositOrderItem.getSku());
+						} else {
+							eventRegistration.setOrderItem(newOrderItem);
+							eventRegistration.setSku(newOrderItem.getSku());
+						}
+						eventRegistration.generateAndSetAttendanceCode();
+						
+						// If newAccount registrant should contain an accountID otherwise should contain first, last, email, phone
+						if(registrant.newAccountFlag == 0) {
+							eventRegistration.setAccount( getAccountService().getAccount(registrant.accountID) );
+						} else {
+							//Create new account to associate with registration
+							var newAccount = getAccountService().newAccount();
+							if(isDefined("registrant.firstName") && len(registrant.firstName)) {
+								newAccount.setFirstName(registrant.firstName);
+							}
+							if(isDefined("registrant.lastName") && len(registrant.lastName)) {
+								newAccount.setLastName(registrant.lastName);
+							}
+							if(isDefined("registrant.emailAddress") && len(registrant.emailAddress)) {
+								var newEmailAddress = getAccountService().newAccountEmailAddress();
+								newEmailAddress.setEmailAddress(registrant.emailAddress);
+								newAccount.setPrimaryEmailAddress(newEmailAddress);
+								
+							}
+							if(isDefined("registrant.phoneNumber") && len(registrant.phoneNumber)) {
+								var newPhoneNumber = getAccountService().newAccountPhoneNumber();
+								newPhoneNumber.setPhoneNumber(registrant.phoneNumber);
+								newAccount.setPrimaryPhoneNumber(newPhoneNumber);
+							}
+							newAccount = getAccountService().saveAccount(newAccount);
+							eventRegistration.setAccount(newAccount);
+							
+						}
+						
+						// Set registration status - Should this be done when order is placed instead?
+						if(arguments.processObject.getSku().setting('skuRegistrationApprovalRequiredFlag')) {
+							eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPendingApproval"));
+						} else {
+							if( depositsOnlyFlag || registrant.toWaitlistFlag == "1" ) {
+								depositsCount++;
+								eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstWaitlisted"));
+							} else {
+								if( (arguments.processObject.getSku().getEventCapacity() > (currentRegistrantCount + salesCount) )  ) {
+									salesCount++;
+									eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
+									
+								} else {
+									// If we have an unexprected waitlister due to event filling before order item was created
+									// check to see if there were any sales that went through. If there were then move the registrant
+									// to a waitlist/deposit order item. If not then change the order item type to deposit and waitlist registrant. 
+									if( !salesOnlyFlag && salesCount > 0 ) {
+										registrant.toWaitlistFlag = "1";
+										orderItemsToCreateCount = 2;
+										salesOnlyFlag = true;
+									} else {
+										newOrderItem.setOrderItemType( getSettingService().getTypeBySystemCode('oitDeposit') );
+										eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstWaitlisted"));
+									}
+										
+								}
+							}
+							
+						}
+						
+						eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );
+							
+					}
+				
+				
+				}
+				
+				
+			}
+		
 		}
 		
 		// Call save order to place in the hibernate session and re-calculate all of the totals 
@@ -523,6 +673,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Save it
 			newAccountPaymentMethod = getAccountService().saveAccountPaymentMethod( newAccountPaymentMethod, {runSaveAccountPaymentMethodTransactionFlag=false} );
 			
+		}
+		
+		// WriteDump(var=arguments.order.getOrderStatusType(), top=3, abort=true);
+
+		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
+			newOrderPayment.setPaymentDueDate( newOrderpayment.getPaymentTerm().getTerm().getEndDate() );
 		}
 		
 
@@ -698,7 +854,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processOrder_createReturn(required any order, required any processObject) {
-		
 		// Create a new return order
 		var returnOrder = this.newOrder();
 		returnOrder.setAccount( arguments.order.getAccount() );
@@ -739,6 +894,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					orderItem.setReferencedOrderItem( originalOrderItem );
 					orderItem.setOrderReturn( orderReturn );
 					orderItem.setOrder( returnOrder );
+
+					if(originalOrderItem.getType() == "event") {
+						// If necessary, initiate the registration cancellation process. 
+						if( !structKeyExists(orderItemStruct, "cancelRegistrationFlag") || (structKeyExists(orderItemStruct, "cancelRegistrationFlag") && orderItemStruct.cancelRegistrationFlag) ) {
+							// Inform cancel process that the return has already been processed
+							originalOrderItem.getEventRegistration().createReturnOrderFlag = true;
+							getEventService().processEventRegistration( originalOrderItem.getEventRegistration(), {}, 'cancel');
+						}
+					}
 					
 					// Persist the new item
 					getHibachiDAO().save( orderItem );
@@ -748,7 +912,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
-		// Persit the new order
+		// Persist the new order
 		getHibachiDAO().save( returnOrder );
 		
 		// Recalculate the order amounts for tax and promotions
@@ -937,6 +1101,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								}
 							}
 						
+							// Loop over all orderPayments and if it's a term payment set the payment due date
+							for(var orderPayment in order.getOrderPayments()) {
+								if(orderPayment.getStatusCode() == 'opstActive' && orderPayment.getPaymentMethodType() == 'termPayment' && !isNull(orderPayment.getPaymentTerm())) {
+									orderPayment.setPaymentDueDate( orderPayment.getPaymentTerm().getTerm().getEndDate() );
+								}
+							}
+						
 							// Update the order status
 							order.setOrderStatusType( getSettingService().getTypeBySystemCode("ostNew") );
 							
@@ -951,6 +1122,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 							// Log that the order was placed
 							logHibachi(message="New Order Processed - Order Number: #order.getOrderNumber()# - Order ID: #order.getOrderID()#", generalLog=true);
+							
+							// Loop over the orderItems looking for any skus that are 'event' skus, and setting their registration value 
+							/*for(var orderitem in arguments.order.getOrderItems()) {
+								if(orderitem.getSku().getBaseProductType() == "event") {
+									for(var eventRegistration in orderitem.getEventRegistrations()) {
+										if(orderItem.getSku().setting('skuAllowWaitlistingFlag')) {
+											eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPending"));
+										} else {
+											eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));	
+										}
+									}
+								}
+							}*/
 							
 							// Look for 'auto' order fulfillments
 							for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
@@ -980,6 +1164,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 		}	// END OF LOCK
+		
+		
 		
 		return arguments.order;
 	}
@@ -1089,13 +1275,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Get the original order status code
 		var originalOrderStatus = arguments.order.getOrderStatusType().getSystemCode();
 		
-		// First we make sure that this order status is not 'closed', 'canceld', 'notPlaced' or 'onHold' because we cannot automatically update those statuses
+		// First we make sure that this order status is not 'closed', 'canceled', 'notPlaced' or 'onHold' because we cannot automatically update those statuses
 		if(!listFindNoCase("ostNotPlaced,ostOnHold,ostClosed,ostCanceled", arguments.order.getOrderStatusType().getSystemCode())) {
 			
 			// We can check to see if all the items have been delivered and the payments have all been received then we can close this order
 			if(precisionEvaluate(arguments.order.getPaymentAmountReceivedTotal() - arguments.order.getPaymentAmountCreditedTotal()) == arguments.order.getTotal() && arguments.order.getQuantityUndelivered() == 0 && arguments.order.getQuantityUnreceived() == 0)	{
 				arguments.order.setOrderStatusType(  getSettingService().getTypeBySystemCode("ostClosed") );
-				
 			// The default case is just to set it to processing
 			} else {
 				arguments.order.setOrderStatusType(  getSettingService().getTypeBySystemCode("ostProcessing") );
@@ -1136,7 +1321,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				for(orderItem in arguments.order.getOrderItems()){
 					var skuPrice = orderItem.getSkuPrice();
 					var SkuPriceByCurrencyCode = orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode());
-					if(orderItem.getOrderItemType().getSystemCode() == "oitSale" && skuPrice != SkuPriceByCurrencyCode){
+					if(listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode){
 						orderItem.setPrice(SkuPriceByCurrencyCode);
 						orderItem.setSkuPrice(SkuPriceByCurrencyCode);
 					}
@@ -1373,6 +1558,54 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	// Process: Order Item
+	public any function processOrderItem_updateEventRegistrationQuantity(required any orderItem,struct data={}) {
+		
+		// We need LESS event registrations due to order adjustment before order has been placed
+		if( arrayLen(orderItem.getActiveEventRegistrations()) > orderItem.getQuantity() && arguments.orderItem.getOrder().getStatusCode() == "ostNotPlaced" ) {
+			
+			var removableEvents = [];
+			var numberToRemove = arrayLen(orderItem.getEventRegistrations()) - orderItem.getQuantity();
+			
+			// Create an array of registrations we can safely remove, i.e. not associated with an account
+			for(var eventRegistration in orderItem.getEventRegistrations()) {
+				if(isNull(eventRegistration.getFirstName()) && isNull(eventRegistration.getLastName()) && isNull(eventRegistration.getEmailAddress()) && isNull(eventRegistration().getPhoneNumber())) {
+					arrayAppend(removableEvents, eventRegistration);
+					// Break from loop when we have enough registrations
+					if(arrayLen(removableEvents) == numberToRemove) {
+						break;
+					}
+				}
+			}
+			
+			// Delete extra event registrations
+			if(arrayLen(removableEvents) >= numberToRemove) {
+				for(var eventRegistration in eventsToRemove) {
+					eventRegistration.removeOrderItem();
+				}
+			}
+		
+		}
+		
+		// We need less event registration, but couldn't do it... add error
+		if(arrayLen(orderItem.getEventRegistrations()) > orderItem.getQuantity()) {
+			orderItem.addError('updateRegistrationQuantity', rbKey('validate.orderItem.quantity.tooManyEventRegistrations'));
+		}
+		
+		// We need MORE event registrations due to order adjustment before order has been placed
+		if(arrayLen(orderItem.getEventRegistrations()) < orderItem.getQuantity()) {
+			for(var i=1; i <= orderItem.getQuantity() - arrayLen(orderItem.getEventRegistrations()); i++ ) {
+				var eventRegistration = this.newEventRegistration();
+				eventRegistration.setOrderItem(orderitem);
+				eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstNotPlaced") );
+				eventRegistration.setAccount(arguments.order.getAccount());
+				eventRegistration = getEventRegistrationService().saveEventRegistration( eventRegistration );	
+			}
+		}
+		
+		return arguments.orderItem;
+	}
+
+	
 	public any function processOrderItem_updateStatus(required any orderItem) {
 		// First we make sure that this order item is not already fully fulfilled, or onHold because we cannont automatically update those statuses
 		if(!listFindNoCase("oistFulfilled,oistOnHold",arguments.orderItem.getOrderItemStatusType().getSystemCode())) {
@@ -1654,6 +1887,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Make sure the auto-state stuff gets called.
 			arguments.order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
+		}
+		
+		// Check for updateEventRegistrationQuantity Needs
+		if(!arguments.order.hasErrors() && !listFindNoCase("ostClosed,ostCanceled", arguments.order.getStatusCode())) {
+			
+			var updateEventRegistrationQuantityError = false;
+			
+			// Loop over the orderItems looking for any skus that are 'event' skus. 
+			for(var orderitem in arguments.order.getOrderItems()) {
+
+				// The number of reg & quantity don't match
+				if(orderItem.getSku().getBaseProductType() == "event" && arrayLen(orderItem.getEventRegistrations()) > orderItem.getQuantity()) {
+
+					orderItem = this.processOrderItem(orderItem, {}, 'updateEventRegistrationQuantity');
+					
+					if(orderItem.hasError('updateEventRegistrationQuantity')) {
+						updateEventRegistrationQuantityError = true;
+					}
+				}
+			}
+			
+			if(updateEventRegistrationQuantityError) {
+				order.addError('orderItems', rbKey('validate.order.orderItems.tooManyEventRegistrations') );
+			}
 		}
 		
 		return arguments.order;

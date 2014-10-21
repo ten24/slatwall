@@ -71,6 +71,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
 	property name="appliedTaxes" singularname="appliedTax" cfc="TaxApplied" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
+	property name="eventRegistrations" singularname="eventRegistration" hb_populateEnabled="public" fieldtype="one-to-many" fkcolumn="orderItemID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra" ;
 	property name="orderDeliveryItems" singularname="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="delete-orphan";
 	property name="stockReceiverItems" singularname="stockReceiverItem" cfc="StockReceiverItem" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true";
 	property name="referencingOrderItems" singularname="referencingOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="referencedOrderItemID" inverse="true" cascade="all"; // Used For Returns
@@ -86,6 +87,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non persistent properties
+	property name="activeEventRegistrations" persistent="false"; 
 	property name="discountAmount" persistent="false" hb_formatType="currency" hint="This is the discount amount after quantity (talk to Greg if you don't understand)" ;
 	property name="extendedPrice" persistent="false" hb_formatType="currency";
 	property name="extendedPriceAfterDiscount" persistent="false" hb_formatType="currency";
@@ -94,6 +96,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="quantityUndelivered" persistent="false";
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
+	property name="registrants" persistent="false";
 	property name="taxAmount" persistent="false" hb_formatType="currency";
 	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
@@ -123,14 +126,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	
 	public boolean function hasQuantityWithinMaxOrderQuantity() {
-		if(getOrderItemType().getSystemCode() == 'oitSale') {
+		if( listFindNoCase("oitSale,oitDeposit",getOrderItemType().getSystemCode()) ) {
 			return getQuantity() <= getMaximumOrderQuantity();	
 		}
 		return true;
 	}
 	
 	public boolean function hasQuantityWithinMinOrderQuantity() {
-		if(getOrderItemType().getSystemCode() == 'oitSale') {
+		if( listFindNoCase("oitSale,oitDeposit",getOrderItemType().getSystemCode()) ) {
 			return getQuantity() >= getSku().setting('skuOrderMinimumQuantity');
 		}
 		return true;
@@ -215,6 +218,16 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	
 	public numeric function getExtendedPriceAfterDiscount() {
 		return precisionEvaluate(getExtendedPrice() - getDiscountAmount());
+	}
+	
+	public any function getActiveEventRegistrations() {
+		if(!structKeyExists(variables, "activeRegistrationsSmartList")) {
+			variables.activeRegistrationsSmartList = getEventRegistrationService().getEventRegistrationSmartList();
+			variables.activeRegistrationsSmartList.addFilter('orderItemID', getOrderItemID());
+			variables.activeRegistrationsSmartList.addInFilter('eventRegistrationStatusType.systemCode', 'erstRegistered,erstWaitListed,erstPendingApproval,erstAttended,erstNotPlaced');
+		}
+
+		return variables.activeRegistrationsSmartList;
 	}
 	
 	public numeric function getTaxAmount() {
@@ -360,22 +373,22 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		structDelete(variables, "orderReturn");
 	}
 	
-	// Refrenced Order Item (many-to-one)
-	public void function setRefrencedOrderItem(required any refrencedOrderItem) {
-		variables.refrencedOrderItem = arguments.refrencedOrderItem;
-		if(isNew() or !arguments.refrencedOrderItem.hasRefrencingOrderItems( this )) {
-			arrayAppend(arguments.refrencedOrderItem.getRefrencingOrderItem(), this);
+	// Referenced Order Item (many-to-one)
+	public void function setReferencedOrderItem(required any referencedOrderItem) {
+		variables.referencedOrderItem = arguments.referencedOrderItem;
+		if(isNew() or !arguments.referencedOrderItem.hasReferencingOrderItems( this )) {
+			arrayAppend(arguments.referencedOrderItem.getReferencingOrderItem(), this);
 		}
 	}
-	public void function removeRefrencedOrderItem(any refrencedOrderItem) {
-		if(!structKeyExists(arguments, "refrencedOrderItem")) {
-			arguments.refrencedOrderItem = variables.refrencedOrderItem;
+	public void function removeReferencedOrderItem(any referencedOrderItem) {
+		if(!structKeyExists(arguments, "referencedOrderItem")) {
+			arguments.referencedOrderItem = variables.referencedOrderItem;
 		}
-		var index = arrayFind(arguments.refrencedOrderItem.getRefrencingOrderItem(), this);
+		var index = arrayFind(arguments.referencedOrderItem.getReferencingOrderItem(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.refrencedOrderItem.getRefrencingOrderItem(), index);
+			arrayDeleteAt(arguments.referencedOrderItem.getReferencingOrderItem(), index);
 		}
-		structDelete(variables, "refrencedOrderItem");
+		structDelete(variables, "referencedOrderItem");
 	}
 	
 	// Applied Promotions (one-to-many)
@@ -402,6 +415,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		arguments.attributeValue.removeOrderItem( this );
 	}
 	
+	// Event Registrations (one-to-many)
+ 	public void function addEventRegistration(required any eventRegistration) {
+		arguments.eventRegistration.setOrderItem( this );
+	}
+ 	public void function removeEventRegistration(required any eventRegistration) {
+		arguments.eventRegistration.removeOrderItem( this );
+	}
+ 
 	// Order Delivery Items (one-to-many)
 	public void function addOrderDeliveryItem(required any orderDeliveryItem) {
 		arguments.orderDeliveryItem.setOrderItem( this );
@@ -418,12 +439,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		arguments.stockReceiverItem.removeOrderItem( this );
 	}
 	
-	// Refrencing Order Items (one-to-many)
-	public void function addRefrencingOrderItem(required any refrencingOrderItem) {
-		arguments.refrencingOrderItem.setRefrencedOrderItem( this );
+	// Referencing Order Items (one-to-many)
+	public void function addReferencingOrderItem(required any referencingOrderItem) {
+		arguments.referencingOrderItem.setReferencedOrderItem( this );
 	}
-	public void function removeRefrencingOrderItem(required any refrencingOrderItem) {
-		arguments.refrencingOrderItem.removeRefrencedOrderItem( this );
+	public void function removeReferencingOrderItem(required any referencingOrderItem) {
+		arguments.referencingOrderItem.removeReferencedOrderItem( this );
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
@@ -469,7 +490,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
 
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
-			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'astOrderItem');
+			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', 'OrderItem');
 
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "productTypes", "left");
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "products", "left");

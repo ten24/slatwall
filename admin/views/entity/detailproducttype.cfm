@@ -57,30 +57,19 @@ Notes:
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.productType#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.productType#" edit="#rc.edit#" />
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.productType#" property="activeFlag" edit="#rc.edit#">
-				<cfif isNull(rc.productType.getSystemCode()) or !len(rc.productType.getSystemCode())>
-					<cf_HibachiPropertyDisplay object="#rc.productType#" property="parentProductType" edit="#rc.edit#" valueOptions="#rc.productType.getParentProductTypeOptions(rc.baseProductType)#">
-				</cfif>
-				<cf_HibachiPropertyDisplay object="#rc.productType#" property="productTypeName" edit="#rc.edit#">
-				<cfif not rc.productType.isNew()>
-					<cf_HibachiPropertyDisplay object="#rc.productType#" property="urlTitle" edit="#rc.edit#">
-				</cfif>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.productType#">
-			<cf_HibachiTab view="admin:entity/producttypetabs/producttypedescription" />
-			<cf_HibachiTab view="admin:entity/producttypetabs/products" />
-			<cf_HibachiTab view="admin:entity/producttypetabs/producttypesettings" />
-			<cf_HibachiTab view="admin:entity/producttypetabs/productsettings" />
-			<cf_HibachiTab view="admin:entity/producttypetabs/skusettings" />
+
+		<cf_HibachiEntityDetailGroup object="#rc.productType#">
+			<cf_HibachiEntityDetailItem view="admin:entity/producttypetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cf_HibachiEntityDetailItem view="admin:entity/producttypetabs/producttypedescription" />
+			<cf_HibachiEntityDetailItem view="admin:entity/producttypetabs/products" />
+			<cf_HibachiEntityDetailItem view="admin:entity/producttypetabs/producttypesettings" />
+			<cf_HibachiEntityDetailItem view="admin:entity/producttypetabs/productsettings" />
+			<cf_HibachiEntityDetailItem view="admin:entity/producttypetabs/skusettings" />
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.productType.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.productType#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiTabGroup>
+		</cf_HibachiEntityDetailGroup>
 		
 	</cf_HibachiEntityDetailForm>
 

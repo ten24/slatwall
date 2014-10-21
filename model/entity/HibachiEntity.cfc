@@ -64,7 +64,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			// Loop over attributes
 			for(var attribute in attributeSet.getAttributes()) {
 				if(structKeyExists(arguments.data, attribute.getAttributeCode())) {
-					setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], "") );
+					setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], ""), this.getRollbackProcessedFlag() && attribute.getAttributeType().getSystemCode() == "atPassword");
 				}
 			}
 			
@@ -148,7 +148,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		// Attribute was not found, and we wanted an entity back
 		} else if(arguments.returnEntity) {
 			var newAttributeValue = getService("attributeService").newAttributeValue();
-			newAttributeValue.setAttributeValueType( lcase( replace(getEntityName(),'Slatwall','') ) );
+			newAttributeValue.setAttributeValueType( getClassName() );
 			var thisAttribute = getService("attributeService").getAttributeByAttributeCode( arguments.attribute );
 			if(isNull(thisAttribute) && len(arguments.attribute) eq 32) {
 				thisAttribute = getService("attributeService").getAttributeByAttributeID( arguments.attribute );
@@ -156,7 +156,6 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			if(!isNull(thisAttribute)) {
 				newAttributeValue.setAttribute( thisAttribute );
 			}
-			//newAttributeValue.invokeMethod("set#getClassName()#", {1=this});
 			return newAttributeValue;
 
 		}
@@ -174,21 +173,34 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return "";
 	}
 	
-	public any function setAttributeValue(required string attribute, required any value){
+	public any function setAttributeValue(required string attribute, required any value, boolean valueHasBeenEncryptedFlag=false){
 		
 		var attributeValueEntity = getAttributeValue( arguments.attribute, true);
-		attributeValueEntity.setAttributeValue( arguments.value );
+		
+		// Value is already encrypted, if attributeValueEntity.setAttributeValue called instead of attributeValueEntity.setAttributeValueEncrypted the encrypted value would be encrypted again
+		if (arguments.valueHasBeenEncryptedFlag) {
+			attributeValueEntity.setAttributeValueEncrypted( arguments.value );
+		} else {
+			attributeValueEntity.setAttributeValue( arguments.value );
+		}
 		attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
-
+		
 		// If this attribute value is new, then we can add it to the array
 		if(attributeValueEntity.isNew()) {
-			this.addAttributeValue( attributeValueEntity );
+			attributeValueEntity.invokeMethod("set#attributeValueEntity.getAttributeValueType()#", {1=this});
 		}
-
+		
+		// If this attribute Value is from an attributeValueOption, then get the attributeValueOption and set it as well
+		if(listFindNoCase("radioGroup,select", attributeValueEntity.getAttribute().getAttributeType())) {
+			var attributeOption = getService('attributeService').getAttributeOption({attribute=attributeValueEntity.getAttribute(), attributeOptionValue=arguments.value});
+			if(!isNull(attributeOption)) {
+				attributeValueEntity.setAttributeValueOption( attributeOption );
+			}
+		}
+		
 		// Update the cache for this attribute value
 		getAttributeValuesByAttributeCodeStruct()[ attributeValueEntity.getAttribute().getAttributeCode() ] = attributeValueEntity;
 		getAttributeValuesByAttributeIDStruct()[ attributeValueEntity.getAttribute().getAttributeID() ] = attributeValueEntity;
-			
 	}
 
 	public any function getAssignedAttributeSetSmartList(){
@@ -198,7 +210,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "attributes", "INNER", true);
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
 			variables.assignedAttributeSetSmartList.addFilter('globalFlag', 1);
-			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'ast#replace(getEntityName(),'Slatwall','')#');
+			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', getClassName());
 		}
 
 		return variables.assignedAttributeSetSmartList;
@@ -286,5 +298,101 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 		return '';
 	}
+	
+	//can be overridden at the entity level in case we need to always return a relationship entity otherwise the default is only non-relationship and non-persistent
+	public any function getDefaultProperties(string includesList = "", string excludesList="modifiedDateTime,createdDateTime,remoteID"){
+		var properties = getProperties();
+		
+		var defaultProperties = [];
+		for(var p=1; p<=arrayLen(properties); p++) {
+			if(len(arguments.excludesList) && ListFind(arguments.excludesList,properties[p].name)){
+				
+			}else{
+				if((len(arguments.includesList) && ListFind(arguments.includesList,properties[p].name)) || 
+				!structKeyExists(properties[p],'FKColumn') && (!structKeyExists(properties[p], "persistent") || 
+				properties[p].persistent)){
+					arrayAppend(defaultProperties,properties[p]);	
+				}
+			}
+			
+		}
+		return defaultProperties;
+	}
+	
+	public any function getDefaultPropertiesIdentifierList(){
+		var defaultEntityPropertiesList = getDefaultProperties();
+	}
+	
+	public array function getDefaultPropertyIdentifierArray(){
+		
+		var defaultPropertyIdentifiersList = getDefaultPropertyIdentifiersList();
+		// Turn the property identifiers into an array
+		return listToArray( defaultPropertyIdentifiersList );
+	}
+	
+	public string function getDefaultPropertyIdentifiersList(){
+		// Lets figure out the properties that need to be returned
+		var defaultProperties = getDefaultProperties();
+		var defaultPropertyIdentifiersList = "";
+		for(var i=1; i<=arrayLen(defaultProperties); i++) {
+			defaultPropertyIdentifiersList = listAppend(defaultPropertyIdentifiersList, defaultProperties[i]['name']);
+		}
+		return defaultPropertyIdentifiersList;
+	}
+	
+	public string function getAttributesCodeList(){
+		var attributeCodesList = getService("HibachiCacheService").getOrCacheFunctionValue(
+			"attributeService_getAttributeCodesListByAttributeSetObject_#getService("hibachiService").getProperlyCasedShortEntityName(getClassName())#", 
+			"attributeService", "getAttributeCodesListByAttributeSetObject", 
+			{1=getService("hibachiService").getProperlyCasedShortEntityName(getClassName())}
+			
+		);
+		return attributeCodesList;
+	}
+	
+	public array function getAttributesArray(){
+		var attributes = [];
+		var attributesListArray = listToArray(getAttributesCodeList());
+		for(var attributeCode in attributesListArray){
+			var attribute = getService('attributeService').getAttributeByAttributeCode(attributeCode);
+			
+			ArrayAppend(attributes,attribute);
+		}
+		return attributes;
+	}
+	
+	public any function getAttributesProperties(){
+		var attributesProperties = [];
+		for(var attribute in getAttributesArray()){
+			var attributeProperty = {};
+			attributeProperty['displayPropertyIdentifier'] = attribute.getAttributeName();
+			attributeProperty['name'] = attribute.getAttributeCode();
+			attributeProperty['attributeID'] = attribute.getAttributeID();
+			attributeProperty['attributeSetObject'] = ReReplace(attribute.getAttributeSet().getAttributeSetObject(),"\b(\w)","\L\1","ALL");
+			//TODO: normalize attribute types to separate table
+			attributeProperty['ormtype'] = 'string';
+			ArrayAppend(attributesProperties,attributeProperty);
+		}
+		return attributesProperties;
+	}
+	
+	public any function getFilterProperties(string includesList = "", string excludesList = ""){
+		var properties = getProperties();
+		var defaultProperties = [];
+		for(var p=1; p<=arrayLen(properties); p++) {
+			if((len(includesList) && ListFind(arguments.includesList,properties[p].name) && !ListFind(arguments.excludesList,properties[p].name)) 
+			|| (!structKeyExists(properties[p], "persistent") || properties[p].persistent)){
+				/* TODO: stripping many-to-many and one-to-many */
+				if(structKeyExists(properties[p],'fieldtype') && (properties[p].fieldtype eq 'many-to-many' || properties[p].fieldtype eq 'one-to-many')){
+					
+				}else{
+					properties[p]['displayPropertyIdentifier'] = getPropertyTitle(properties[p].name);
+					arrayAppend(defaultProperties,properties[p]);	
+				}
+			}
+		}
+		return defaultProperties;
+	}
+	
 
 }

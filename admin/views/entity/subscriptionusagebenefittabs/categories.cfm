@@ -63,7 +63,7 @@ Notes:
 </cfloop>
 
 <cfoutput>
-	<div class="span6">
+	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.subscriptionBenefit.categories')#</h5>
 		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsageBenefit.getCategoriesOptionsSmartList()#" multiselectFieldName="categories" multiselectValues="#selectedCategoryIDs#" edit="#rc.edit#">
 			<cf_HibachiListingColumn propertyIdentifier="categoryName" tdclass="primary" />
@@ -71,7 +71,7 @@ Notes:
 		</cf_HibachiListingDisplay>
 	</div>
 	
-	<div class="span6">
+	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.subscriptionBenefit.excludedcategories')#</h5>
 		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsageBenefit.getExcludedCategoriesOptionsSmartList()#" multiselectFieldName="excludedCategories" multiselectValues="#selectedExcludedCategoryIDs#" edit="#rc.edit#">
 			<cf_HibachiListingColumn propertyIdentifier="categoryName" tdclass="primary" />
