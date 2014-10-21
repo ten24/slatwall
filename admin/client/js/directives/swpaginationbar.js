@@ -50,7 +50,11 @@ $log){
         	
         	var setPageRecordsInfo = function(recordsCount,pageStart,pageEnd,totalPages){
     			paginationService.setRecordsCount(recordsCount);
-    			paginationService.setPageStart(pageStart);
+    			if(paginationService.getRecordsCount() === 0 ){
+    				paginationService.setPageStart(0);
+    			} else{
+    				paginationService.setPageStart(pageStart);
+    			}
     			paginationService.setPageEnd(pageEnd);
     			paginationService.setTotalPages(totalPages);
     		};
