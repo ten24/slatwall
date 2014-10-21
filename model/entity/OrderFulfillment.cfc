@@ -58,7 +58,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// Related Object Properties (many-to-one)
 	property name="accountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="accountAddressID";
 	property name="accountEmailAddress" hb_populateEnabled="public" cfc="AccountEmailAddress" fieldtype="many-to-one" fkcolumn="accountEmailAddressID";
-	property name="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
+	property name="fulfillmentMethod" hb_populateEnabled="public" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="pickupLocation" hb_populateEnabled="public" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
@@ -122,6 +122,18 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	
 	public boolean function hasValidShippingMethodRate() {
 		return getService("shippingService").verifyOrderFulfillmentShippingMethodRate( this );
+	}
+	
+	public boolean function allOrderFulfillmentItemsAreEligibleForFulfillmentMethod() {
+		if(!isNull(getFulfillmentMethod())) {
+			for(var orderItem in orderFulfillmentItems()) {
+				if(!listFindNoCase(orderItem.getSku().setting('skuEligibleFulfillmentMethods'), getFulfillmentMethod().getFulfillmentMethodID()) ) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
 	}
 	
 	// Deprecated... now just delegates to getShippingAddress
