@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,24 +45,65 @@
 
 Notes:
 
---->
-<cfcomponent extends="HibachiDAO" accessors="true" output="false">
-	
-	<!--- This function returns all events that have been configured as workflow triggers --->
-	<cffunction name="getWorkflowTriggerEventsArray" returntype="array" access="public">
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+
+	public void function setUp() {
+		super.setup();
 		
-		<!--- TODO: This needs to query DB and return an array of ALL workflow events --->
-		<!--- ['onOrderSaveSuccess','onOrderProcess_placeOrderSuccess'] --->
-		<cfreturn ORMExecuteQuery('SELECT triggerEvent FROM SlatwallWorkflowTrigger where triggerType = :triggerType',{triggerType="Event"}) />
-	</cffunction>
+		variables.service = request.slatwallScope.getBean("workflowService");
+	}
 	
-	<cffunction name="getWorkflowTriggersForEvent" returnType="array" access="public">
-		<cfargument name="eventName" type="string" required="true" />
+	public void function processWorkflow_execute_Test(){
+		var workflowEntityData = {
+			workflowid = '',
+			workflowName = 'testWorkflow',
+			workflowObject = 'Order',
+			workflowTriggers = [
+				{
+					workflowTriggerID = '12',
+					triggerType = 'Event',
+					objectPropertyIdentifier = '',
+					triggerEvent="afterOrderSaveSuccess"
+				}
+			],
+			workflowTasks = [
+				{
+					workflowTaskID="",
+					taskName="testTask",
+					taskConditionsConfig='',
+					workflowTaskActions=[
+						{
+							workflowTaskActionID='',
+							actionType='',
+							updateData='',
+							emailTemplate={
+								emailTemplateID='dbb327e506090fde08cc4855fa14448d'
+							}
+						}
+					]
+				}
+			]
+		};
+		var workflowEntity = createPersistedTestEntity('workflow',workflowEntityData);
 		
-		<!--- TODO: This needs to query DB and return an array of workflowTrigger objects with workflows and tasks fetched for performance
-		but it should only be unique workflows that have a workflowTrigger with the eventName passed in --->
-		<cfreturn ORMExecuteQuery('FROM SlatwallWorkflowTrigger where triggerEvent = :triggerEvent',{triggerEvent=arguments.eventName}) />
-	</cffunction>
+		var data = {
+			entity={
+				
+			},
+			workflowTrigger={
+				workflowTriggerID = '12',
+				triggerType = 'Event',
+				objectPropertyIdentifier = '',
+				triggerEvent="afterOrderSaveSuccess"
+			}
+		};
+		variables.service.processWorkflow_execute(workflowEntity,data);
+		
+		//request.debug(workflowEntity.getWorkflowID());
+	}
 	
-</cfcomponent>
+	
+}
+
 

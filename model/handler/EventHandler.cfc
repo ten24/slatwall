@@ -2,6 +2,7 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 
 	public void function onEvent( required any eventName, required struct eventData={} ) {
 		
+		
 		// =============== WORKFLOW ==================
 		
 		// Make sure that there is an entity for this event

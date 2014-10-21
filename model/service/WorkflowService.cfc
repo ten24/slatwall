@@ -53,7 +53,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Logical Methods ===========================
 	
 	public any function runAllWorkflowsByEventTrigger( required any eventName, required any entity, required struct eventData={} ) {
-		
 		// Pull the workflowTriggerEventsArray out of cache so that it is quick and can be checked to see if we need to trigger an event
 		var allWorkflowTriggerEventsArray = getHibachiCacheService().getOrCacheFunctionValue("workflowDAO_getWorkflowTriggerEventsArray", getWorkflowDAO(), "getWorkflowTriggerEventsArray");
 		
@@ -61,17 +60,17 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(arrayFind(allWorkflowTriggerEventsArray, arguments.eventName)) {
 			
 			// Run all workflows inside of a thread
-			thread action="run" name="#createUUID()#" threadData=arguments {
+			//thread action="run" name="#createUUID()#" eventName=arguments.eventName entity=arguments.entity {
 				
-				var workflowTriggers = getWorflowDAO().getWorkflowTriggersForEvent( eventName=arguments.eventName );
+				var workflowTriggers = getWorkflowDAO().getWorkflowTriggersForEvent( eventName=arguments.eventName );
 				
 				for(var workflowTrigger in workflowTriggers) {
 					
 					var processData = {};
 					
 					// If the triggerObject is the same as this event, then we just use it
-					if(isNull(workflowTrigger.getTriggerObject()) || !len(workflowTrigger.getTriggerObject())) {
-						processData.entity = threadData.entity;
+					if(isNull(workflowTrigger.getObjectPropertyIdentifier()) || !len(workflowTrigger.getObjectPropertyIdentifier())) {
+						processData.entity = arguments.entity;
 					
 					} else {
 						processData.entity = getValueByPropertyIdentifier(arguments.entity, workflowTrigger.getObjectPropertyIdentifier());
@@ -87,7 +86,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					
 				}
 				
-			}
+			//}
 				
 		}
 		
@@ -102,7 +101,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	// ===================== START: Process Methods ===========================
 	
 	public any function processWorkflow_execute(required any workflow, required struct data) {
-		
 		// Loop over all of the tasks for this workflow
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
 			
@@ -193,7 +191,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 			
 		}
-		
+		return arguments.data.entity;
 	}
 	
 	// =====================  END: Process Methods ============================

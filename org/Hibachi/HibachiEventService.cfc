@@ -65,6 +65,7 @@ component output="false" update="true" extends="HibachiService" {
 	public void function announceEvent(required string eventName, struct eventData={}) {
 		logHibachi("Event Announced: #arguments.eventName#");
 		
+		
 		// Stick the Hibachi Scope in with the rest of the event data
 		arguments.eventData[ "#getApplicationValue('applicationKey')#Scope" ] = getHibachiScope();
 		
