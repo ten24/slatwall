@@ -4,13 +4,11 @@ component output="false" accessors="true" extends="HibachiService"  {
 	property name="orderService" type="any";
 	property name="hibachiAuditService" type="any";
 	property name="hibachiTagService" type="any";
-	
+	property name="hibachiUtilityService" type="any";
 
 	// ===================== START: Logical Methods ===========================
 	
 	public void function setPropperSession() {
-		var sessionFoundWithCookie = false;
-		
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
 		if(!hasSessionValue("sessionID")) {
 			setSessionValue('sessionID', '');
@@ -20,12 +18,10 @@ component output="false" accessors="true" extends="HibachiService"  {
 		if( len(getSessionValue('sessionID')) ) {
 			var sessionEntity = this.getSession( getSessionValue('sessionID'), true);
 		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#SessionID")) {
-			setSessionValue('sessionID', cookie["#getApplicationValue('applicationKey')#SessionID"]);
+			setSessionValue('sessionID', getSessionIDFromEncryptedCookie(cookie["#getApplicationValue('applicationKey')#SessionID"]));
 			var sessionEntity = this.getSession( getSessionValue('sessionID'), true);
 			if(sessionEntity.getNewFlag()) {
 				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#SessionID", value='', expires="now");
-			} else {
-				sessionFoundWithCookie = true;
 			}
 		} else {
 			var sessionEntity = this.newSession();
@@ -53,8 +49,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// If there was an integration, then check the verify method for any custom auto-logout logic
 		// If the sessions account is and admin and last request by the session was 15 min or longer ago. 
 		if(
-			(sessionFoundWithCookie && getHibachiScope().getLoggedInFlag()) 
-			|| (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccountAuthentication().getForceLogoutFlag()) 
+			(!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccountAuthentication().getForceLogoutFlag()) 
 			|| (isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getLoggedInFlag())
 			|| (!isNull(getHibachiScope().getSession().getAccountAuthentication()) && getHibachiScope().getSession().getAccount().getAdminAccountFlag() && DateDiff('n', previousRequestDateTime, Now()) >= 15 )
 			) {
@@ -69,8 +64,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// Save session ID in the session Scope & cookie scope for next request
 		setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
-		if(!structKeyExists(cookie, "#getApplicationValue('applicationKey')#SessionID") || cookie[ "#getApplicationValue('applicationKey')#SessionID" ] != getHibachiScope().getSession().getSessionID()) {
-			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#SessionID", value=getHibachiScope().getSession().getSessionID(), expires="never");
+		if(!structKeyExists(cookie, "#getApplicationValue('applicationKey')#SessionID") || getSessionIDFromEncryptedCookie(cookie[ "#getApplicationValue('applicationKey')#SessionID" ]) != getHibachiScope().getSession().getSessionID()) {
+			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#SessionID", value=getSessionIDEncryptedCookie(getHibachiScope().getSession().getSessionID()), expires="never");
 		}
 	}
 	
@@ -158,4 +153,23 @@ component output="false" accessors="true" extends="HibachiService"  {
 	
 	// ======================  END: Get Overrides =============================
 	
+	// ===================== START: Delete Overrides ==========================
+	
+	// =====================  END: Delete Overrides ===========================
+	
+	// ================== START: Private Helper Functions =====================
+	
+	private any function getSessionIDEncryptedCookie( required any sessionID ) {
+		return getHibachiUtilityService().encryptValue(value=arguments.sessionID, salt="validSlatwallSessionIDCookie");
+	}
+	
+	private any function getSessionIDFromEncryptedCookie( required any cookieData ) {
+		return getHibachiUtilityService().decryptValue(value=arguments.cookieData, salt="validSlatwallSessionIDCookie");
+	}
+	
+	// ==================  END:  Private Helper Functions =====================
+
+	// =================== START: Deprecated Functions ========================
+	
+	// ===================  END: Deprecated Functions =========================
 }
