@@ -26,7 +26,7 @@ workflowPartialsPath
 			$log.debug('workflow triggers init');	
 			
 			scope.workflowID = $location.search().workflowID;
-			scope.$id = 'swWorkflowTriggers'
+			scope.$id = 'swWorkflowTriggers';
 				
 			/*scope.getPropertyDisplayData = function(){
 				var propertyDisplayDataPromise = $slatwall.getPropertyDisplayData('workflowTrigger',{propertyIdentifiersList:'triggerType'});

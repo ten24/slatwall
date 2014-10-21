@@ -77,13 +77,29 @@ workflowPartialsPath
 				scope.workflowTasks.selectedTask = newWorkflowTask;
 				scope.workflowTasks.push(newWorkflowTask);
 				$log.debug(scope.workflowTasks);
-			}
+			};
+			
+			scope.addWorkflowTaskAction = function(){
+				var workflowTaskAction = workflowTaskService.newWorkflowTaskAction();
+				scope.workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction = workflowTaskAction;
+				workflowTaskService.addWorkflowTaskAction(scope.workflowTasks.selectedTask.workflowTaskActions,workflowTaskAction);
+			};
+			
+			scope.removeWorkflowTaskAction = function(index){
+				scope.workflowTasks.selectedTask.workflowTaskActions.splice(index,1);
+				for(var i in scope.workflowTasks.selectedTask.workflowTaskActions){
+					scope.workflowTasks.selectedTask.workflowTaskActions[i].$$index = i;
+				}
+			};
 			
 			scope.removeWorkflowTask = function(workflowTask){
 				if(workflowTask === scope.workflowTasks.selectedTask){
 					delete scope.workflowTasks.selectedTask;
 				}
 				scope.workflowTasks.splice(workflowTask.$$index,1);
+				for(var i in scope.workflowTasks){
+					scope.workflowTasks[i].$$index = i;
+				}
 			};
 		}
 	};

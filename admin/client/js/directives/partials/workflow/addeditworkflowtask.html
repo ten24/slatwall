@@ -87,53 +87,58 @@
 
 				<div class="tab-pane" id="j-actions-2">
 					<div class="s-bundle-add-items s-workflow-objs s-sortable">
-						<ul class="list-unstyled s-order-item-options">
-
-							<li class="s-bundle-add-obj">
-								<ul class="list-unstyled list-inline">
-									<li class="s-item-type">1</li>
-									<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>
-								</ul>
-								<ul class="list-unstyled list-inline s-middle">
-									<li class="j-tool-tip-item s-bundle-details">Type: <span>E-Mail</span></li>
-									<li class="j-tool-tip-item s-bundle-details">Object: <span>Order</span></li>
-									<li class="j-tool-tip-item s-bundle-details">Detail: <span>Order Feedback Template</span></li>
-								</ul>
-								<ul class="list-unstyled list-inline s-last">
-									<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
-								</ul>
-								<div class="clearfix"></div>
-							</li>
-
-							<li class="s-bundle-add-obj">
-								<ul class="list-unstyled list-inline">
-									<li class="s-item-type">2</li>
-									<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>
-								</ul>
-								<ul class="list-unstyled list-inline s-middle">
-									<li class="j-tool-tip-item s-bundle-details">Type: <span>E-Mail</span></li>
-									<li class="j-tool-tip-item s-bundle-details">Object: <span>Order</span></li>
-									<li class="j-tool-tip-item s-bundle-details">Detail: <span>Order Feedback Template</span></li>
-								</ul>
-								<ul class="list-unstyled list-inline s-last">
-									<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
-								</ul>
-								<div class="clearfix"></div>
-							</li>
-
+						<ul class="list-unstyled s-order-item-options" ng-repeat="workflowTaskAction in workflowTasks.selectedTask.workflowTaskActions">
+								<li class="s-bundle-add-obj">
+									<ul class="list-unstyled list-inline">
+										<li class="s-item-type" ng-bind="$index+1" ng-init="workflowTaskAction.$$index=$index"></li>
+										<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>
+									</ul>
+									<ul class="list-unstyled list-inline s-middle">
+										<li class="j-tool-tip-item s-bundle-details">Type: <span ng-bind="workflowTaskAction.actionType"></span></li>
+										<li class="j-tool-tip-item s-bundle-details">Object: <span>Order</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Detail: <span>Order Feedback Template</span></li>
+									</ul>
+									<ul class="list-unstyled list-inline s-last">
+										<li class="col-xs-1 j-tool-tip-item s-bundle-details-add">
+											<a 	class="btn s-btn-dgrey s-remove"
+												ng-click="removeWorkflowTaskAction($index)"
+											>
+												<i class="fa fa-trash"></i>
+											</a>
+										</li>
+									</ul>
+									<div class="clearfix"></div>
+								</li>
 						</ul>
 					</div>
 
 					<div class="form-group">
 
-						<button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-action-b"><i class="fa fa-plus"></i> Add Action</button>
+						<button class="btn btn-xs s-btn-ten24" 
+								data-toggle="collapse" 
+								data-target="#j-add-action-b"
+								ng-click="addWorkflowTaskAction()"
+								ng-show="!workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction || workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction.isPersisted()"
+						>
+							<i class="fa fa-plus"></i>
+							 Add Action
+						</button>
 
 					</div>
 
 					<!--- Edit Filter Box --->
-					<div class="col-xs-12 collapse s-add-filter" id="j-add-action-b">
+					<div 	class="col-xs-12 collapse s-add-filter" 
+							id="j-add-action-b"
+							ng-if="workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction"
+					>
 						<div class="row">
-							<h4> Add Action <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-action-b"></i></h4>
+							<h4> Add Action 
+								<i 	class="fa fa-times" 
+									data-toggle="collapse" 
+									data-target="#j-add-action-b"
+									ng-click="removeWorkflowTaskAction(workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction.$$index)"
+								></i>
+							</h4>
 							<div class="col-xs-12">
 
 								<div class="row">
@@ -141,7 +146,7 @@
 
 										<div class="form-group form-group-sm">
 											<label for="" class="s-width-100">Select Action Type:</label>
-											<select class="form-control input-sm">
+											<select class="form-control input-sm" ng-model="workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction.actionType">
 												<option>Print</option>
 												<option>Email</option>
 												<option>Update</option>
@@ -166,7 +171,9 @@
 									<div class="col-xs-6 s-criteria">
 
 										<!--- Filter Criteria Start --->
-										<div class="s-filter-group-item">
+										<div 	class="s-filter-group-item"
+												ng-if="workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction.actionType === 'Print'"
+										>
 
 											<h4>Print Template</h4>
 											<div class="form-group form-group-sm">
@@ -241,11 +248,10 @@
 										</div>
 										<!--- //Filter Criteria End --->
 
-/===================================================/
-
-
-																	<!--- Filter Criteria Start --->
-										<div class="s-filter-group-item">
+										<!--- Filter Criteria Start --->
+										<div 	class="s-filter-group-item" 
+												ng-if="workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction.actionType === 'Update'"
+										>
 
 											<h4>Update Data</h4>
 											<div class="form-group form-group-sm">
@@ -285,10 +291,11 @@
 										</div>
 										<!--- //Filter Criteria End --->
 
-/===================================================/
 
-																	<!--- Filter Criteria Start --->
-										<div class="s-filter-group-item">
+										<!--- Filter Criteria Start --->
+										<div 	class="s-filter-group-item"
+												ng-if="workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction.actionType === 'Process'"
+										>
 
 											<h4>Dynamic Numeric</h4>
 											<div class="row">
@@ -309,10 +316,11 @@
 										</div>
 										<!--- //Filter Criteria End --->
 
-/===================================================/
 
-																	<!--- Filter Criteria Start --->
-										<div class="s-filter-group-item">
+										<!--- Filter Criteria Start --->
+										<div 	class="s-filter-group-item"
+												ng-if="workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction.actionType === 'Delete'"
+										>
 											<h4>Delete</h4>
 											<div class="form-group form-group-sm s-checkbox">
 												<input type="checkbox" id="j-delete-confirm" checked="checked"><label for="j-delete-confirm"> Confirm "Orders" object will be deleted</label>
@@ -335,9 +343,7 @@
 					<!--- //Edit Filter Box --->
 					<div class="clearfix"></div>
 				</div>
-
 			</div>
 		</div>
 	</div>
-
 </div>

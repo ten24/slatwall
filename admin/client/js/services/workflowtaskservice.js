@@ -26,7 +26,36 @@ function(
 				}
 			]
 		};
+		this.workflowTaskActions = [];
 	}
+	
+	_workflowTask.prototype = {
+		isPersisted:function(){
+			if(this.workflowTaskID === ''){
+				return false;
+			}else{
+				return true;
+			}
+		}
+	};
+	
+	function _workflowTaskAction(){
+		this.workflowTaskActionID = "";
+		this.actionType = 'Print';
+		this.updateData = '';
+		this.emailTemplateID = '';
+		this.printTemplateID = '';
+	}
+	
+	_workflowTaskAction.prototype = {
+		isPersisted:function(){
+			if(this.workflowTaskActionID === ''){
+				return false;
+			}else{
+				return true;
+			}
+		}
+	};
 	
 	function _workflowCondition(){
 		this.propertyIdentifier = "";
@@ -38,24 +67,25 @@ function(
 		this.workflowConditionGroup = [];
 	}
 		
-	_workflowTask.prototype = {
-		isPersisted:function(){
-			if(this.workflowTaskID === ''){
-				return false;
-			}else{
-				return true;
-			}
-		}
-	};
+	
 	
 	return workflowTaskService = {
 		newWorkflowTask:function(){
 			return new _workflowTask;
 		},
 		
+		newWorkflowTaskAction:function(){
+			return new _workflowTaskAction;
+		},
+		
+		addWorkflowTaskAction:function(taskActions,taskAction){
+			taskActions.push(taskAction);
+		},
+		
 		newWorkflowCondition:function(){
 			return new _workflowCondition;
 		},
+		
 		addWorkflowCondition:function(groupItem,condition){
 			$log.debug('addWorkflowCondition');
 			$log.debug(groupItem);
