@@ -117,18 +117,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	/* pass in an entity name and property identifiers list and it will spit out releveant property display data*/
 	public any function getPropertyDisplayData(required struct rc){
-		var entity = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#');
 		var propertyIdentifiersArray = ListToArray(arguments.rc.propertyIdentifiersList);
 		var data = {};
-		for(property in propertyIdentifiersArray){
+		for(propertyPath in propertyIdentifiersArray){
+			var lastEntityName = getService('hibachiService').getLastEntityNameInPropertyIdentifier(arguments.rc.entityName,propertyPath);
+			var entity = getService('hibachiService').invokeMethod('new#lastEntityName#');
+			var property = ListLast(propertyPath,'.');
 			data[property]['title'] = entity.getPropertyTitle( property );
 			data[property]['hint'] = entity.getPropertyHint( property );
 			data[property]['fieldType'] = entity.getFieldTypeByPropertyIdentifier( property );
 			if(isDefined('entity.get#property#Options')){
 				data[property]['options'] = entity.invokeMethod('get#property#Options');
 			}
-			
 		}
+		
 		arguments.rc.apiResponse.content['data'] = data;
 	}
 	/* pass in an entity name and recieve validation*/
