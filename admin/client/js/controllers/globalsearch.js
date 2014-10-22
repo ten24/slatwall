@@ -95,17 +95,17 @@ function(
 				})(entityName);
 				
 			}
-			if($scope.resultsCounter > 0){
-				$scope.searchResults['noResult'] = {
-					'title': '',
-					'results' : []
-				};
-				
-				$scope.searchResults[ 'noResult' ].results.push({
-					'name':  $.slatwall.rbKey('admin.define.nosearchresults')
-				});
-			}
 		}, 500)
+		if($scope.resultsCounter > 0){
+			$scope.searchResults['noResult'] = {
+				'title': '',
+				'results' : []
+			};
+			
+			$scope.searchResults[ 'noResult' ].results.push({
+				'name':  $.slatwall.rbKey('admin.define.nosearchresults')
+			});
+		}
 	};
 	
 
