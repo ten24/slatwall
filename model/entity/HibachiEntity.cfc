@@ -64,7 +64,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			// Loop over attributes
 			for(var attribute in attributeSet.getAttributes()) {
 				if(structKeyExists(arguments.data, attribute.getAttributeCode())) {
-					setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], ""), this.getRollbackProcessedFlag() && attribute.getAttributeType().getSystemCode() == "atPassword");
+					setAttributeValue( attribute.getAttributeCode(), nullReplace(data[ attribute.getAttributeCode() ], ""), this.getRollbackProcessedFlag() && attribute.getAttributeInputType() == "password");
 				}
 			}
 			
@@ -191,7 +191,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 		
 		// If this attribute Value is from an attributeValueOption, then get the attributeValueOption and set it as well
-		if(listFindNoCase("radioGroup,select", attributeValueEntity.getAttribute().getAttributeType())) {
+		if(listFindNoCase("radioGroup,select", attributeValueEntity.getAttribute().getAttributeInputType())) {
 			var attributeOption = getService('attributeService').getAttributeOption({attribute=attributeValueEntity.getAttribute(), attributeOptionValue=arguments.value});
 			if(!isNull(attributeOption)) {
 				attributeValueEntity.setAttributeValueOption( attributeOption );

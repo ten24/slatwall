@@ -105,7 +105,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="attributeValueOptions" persistent="false";
 
 	public void function setupEncryptedProperties() {
-		if(!isNull(getAttribute()) && !isNull(getAttribute().getAttributeType()) && getAttribute().getAttributeType() == "password" && structKeyExists(variables, "attributeValue")) {
+		if(!isNull(getAttribute()) && !isNull(getAttribute().getAttributeInputType()) && getAttribute().getAttributeInputType() == "password" && structKeyExists(variables, "attributeValue")) {
 			encryptProperty('attributeValue');
 		}
 	}
@@ -119,13 +119,17 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			
 			if(!isNull(getAttribute())) {
 				
-				var ao = getAttribute().getAttributeOptions();
+				var attributeOptions = getAttribute().getAttributeOptions();
 				
-				for(var a=1; a<=arrayLen(ao); a++) {
-					if(!isNull(ao[a].getAttributeOptionLabel()) && !isNull(ao[a].getAttributeOptionValue())) {
-						arrayAppend(variables.attributeValueOptions, {name=ao[a].getAttributeOptionLabel(), value=ao[a].getAttributeOptionValue()});	
+				for(var attributeOption in attributeOptions) {
+					if(!isNull(attributeOption.getAttributeOptionLabel()) && !isNull(attributeOption.getAttributeOptionValue())) {
+						arrayAppend(variables.attributeValueOptions, {name=attributeOption.getAttributeOptionLabel(), value=attributeOption.getAttributeOptionValue()});	
 					}
-				}	
+				}
+				arrayPrepend(variables.attributeValueOptions, {value='',name=getAttribute().getAttributeInputType()});
+				if(!isNull(getAttribute().getAttributeInputType()) && getAttribute().getAttributeInputType() == 'select'){
+					arrayPrepend(variables.attributeValueOptions, {value='',name=rbKey('define.select')});
+				} 
 			}
 			
 		}
@@ -589,7 +593,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	public string function getAttributeValueFormatted() {
-		if(getAttribute().getAttributeType() eq 'relatedObjectSelect') {
+		if(getAttribute().getAttributeInputType() eq 'relatedObjectSelect') {
 			var thisEntityService = getService('hibachiService').getServiceByEntityName( getAttribute().getRelatedObject() );
 			var thisRelatedEntity = thisEntityService.invokeMethod("get#getAttribute().getRelatedObject()#", {1=getAttributeValue()});
 			if(!isNull(thisRelatedEntity)) {

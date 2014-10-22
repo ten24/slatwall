@@ -1,13 +1,13 @@
 {
 	"conditions":{
-		"attributeTypeRequiresObject":{
-			"attributeType":{"inList":"relatedObjectSelect,relatedObjectMultiselect"}
+		"attributeInputTypeRequiresObject":{
+			"attributeInputType":{"inList":"relatedObjectSelect,relatedObjectMultiselect"}
 		}  
 	},
 	"properties":{
-		"attributeName":		[{"contexts":"save","required":true}],
-		"attributeCode":		[{"contexts":"save","required":true,"unique":true}],
-		"attributeType":		[{"contexts":"save","required":true}],
-		"relatedObject":		[{"contexts":"save","conditions":"attributeTypeRequiresObject","required":true}]
+		"attributeName":			[{"contexts":"save","required":true}],
+		"attributeCode":			[{"contexts":"save","required":true,"unique":true}],
+		"attributeInputType":		[{"contexts":"save","required":true}],
+		"relatedObject":			[{"contexts":"save","conditions":"attributeInputTypeRequiresObject","required":true}]
 	}
 }
