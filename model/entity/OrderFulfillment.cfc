@@ -126,7 +126,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	
 	public boolean function allOrderFulfillmentItemsAreEligibleForFulfillmentMethod() {
 		if(!isNull(getFulfillmentMethod())) {
-			for(var orderItem in orderFulfillmentItems()) {
+			for(var orderItem in getOrderFulfillmentItems()) {
 				if(!listFindNoCase(orderItem.getSku().setting('skuEligibleFulfillmentMethods'), getFulfillmentMethod().getFulfillmentMethodID()) ) {
 					return false;
 				}

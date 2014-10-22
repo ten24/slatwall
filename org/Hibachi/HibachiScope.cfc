@@ -7,6 +7,9 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
+	property name="sessionFoundNPSIDCookieFlag" type="boolean";
+	property name="sessionFoundPSIDCookieFlag" type="boolean";
+	
 	property name="ormHasErrors" type="boolean" default="false";
 	property name="rbLocale";
 	property name="url" type="string";
@@ -23,6 +26,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setRBLocale( "en_us" );
 		setPublicPopulateFlag( false );
 		setPersistSessionFlag( true );
+		setSessionFoundNPSIDCookieFlag( false );
+		setSessionFoundPSIDCookieFlag( false );
 		
 		setCalledActions( [] );
 		setSuccessfulActions( [] );
