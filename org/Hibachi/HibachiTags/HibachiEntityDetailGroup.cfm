@@ -96,7 +96,7 @@
 						<div id="tabSystem" class="panel-collapse collapse">
 							<content class="s-body-box">
 								<cfoutput>
-									<div <cfif activeTab eq tab.tabid>class="tab-pane active"<cfelse>class="tab-pane"</cfif> id="tabSystem">
+									<div <cfif activeTab eq tab.tabid> class="tab-pane active" <cfelse> class="tab-pane" </cfif> id="tabSystem">
 										
 											<cf_HibachiPropertyList> 
 												<cf_HibachiPropertyDisplay object="#attributes.object#" property="#attributes.object.getPrimaryIDPropertyName()#" />
