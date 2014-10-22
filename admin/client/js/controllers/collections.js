@@ -80,12 +80,15 @@ $timeout
 	};
 	
 	$scope.keywords = "";
-	$scope.searchCollection = function(){
-		$log.debug('search with keywords');
-		$log.debug($scope.keywords);
-		$timeout($scope.getCollection(), 3000);
-		$log.debug();
+	$scope.searchCollection = function($timout){
+		var searchPromise = $timeout(function(){
+			$log.debug('search with keywords');
+			$log.debug($scope.keywords);
+			$scope.getCollection();
+		}, 500)
 	};
+		
+	
 
 	$scope.getCollection = function(){
 		var pageShow = 50;
