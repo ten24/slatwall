@@ -176,7 +176,11 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 				smartList.addSelect(propertyIdentifier="attributeOptionLabel", alias="name");
 				smartList.addSelect(propertyIdentifier="attributeOptionValue", alias="value");
 				smartList.addOrder("sortOrder|ASC");
-				variables.attributeOptionsOptions = smartList.getRecords();	
+				variables.attributeOptionsOptions = smartList.getRecords();
+				
+				if(getAttributeInputType() == 'select') {
+					arrayPrepend(variables.attributeOptionsOptions, {name=rbKey('define.select'), value=''});
+				}
 			} else if(listFindNoCase('relatedObjectSelect', getAttributeInputType()) && !isNull(getRelatedObject())) {
 				var entityService = getService( "hibachiService" ).getServiceByEntityName( getRelatedObject() );
 				var smartList = entityService.invokeMethod("get#getRelatedObject()#SmartList");
@@ -264,7 +268,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	
 	public any function getAttributeType() {
 		if(!structKeyExists(variables, "attributeType") && !isNull(getAttributeInputType()) ) {
-			variables.attributeType = getService('typeService').newType();
+			variables.attributeType = getService('settingService').newType();
 			variables.attributeType.setSystemCode( "at#getAttributeInputType()#" );
 		}
 		if(structKeyExists(variables, "attributeType")) {

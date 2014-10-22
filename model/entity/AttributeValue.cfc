@@ -105,7 +105,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="attributeValueOptions" persistent="false";
 
 	public void function setupEncryptedProperties() {
-		if(!isNull(getAttribute()) && !isNull(getAttribute().getAttributeInputType()) && getAttribute().getAttributeType() == "password" && structKeyExists(variables, "attributeValue")) {
+		if(!isNull(getAttribute()) && !isNull(getAttribute().getAttributeInputType()) && getAttribute().getAttributeInputType() == "password" && structKeyExists(variables, "attributeValue")) {
 			encryptProperty('attributeValue');
 		}
 	}
@@ -126,9 +126,9 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 						arrayAppend(variables.attributeValueOptions, {name=attributeOption.getAttributeOptionLabel(), value=attributeOption.getAttributeOptionValue()});	
 					}
 				}
-				
+				arrayPrepend(variables.attributeValueOptions, {value='',name=getAttribute().getAttributeInputType()});
 				if(!isNull(getAttribute().getAttributeInputType()) && getAttribute().getAttributeInputType() == 'select'){
-					arrayPrepend({value='',name=rbKey('define.select')});
+					arrayPrepend(variables.attributeValueOptions, {value='',name=rbKey('define.select')});
 				} 
 			}
 			
