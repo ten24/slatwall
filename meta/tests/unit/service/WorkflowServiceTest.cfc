@@ -71,7 +71,19 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				{
 					workflowTaskID="",
 					taskName="testTask",
-					taskConditionsConfig='',
+					taskConditionsConfig='[
+						{
+							"propertyIdentifier":"",
+							"constraintType":"",
+							"constraintValue":""
+						},
+						{
+							"logicalOperator":"OR"
+							"propertyIdentifier":"",
+							"constraintType":"",
+							"constraintValue":""
+						}
+					]',
 					workflowTaskActions=[
 						{
 							workflowTaskActionID='',
@@ -101,6 +113,117 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service.processWorkflow_execute(workflowEntity,data);
 		
 		//request.debug(workflowEntity.getWorkflowID());
+	}
+	
+	public void function entityPassesAllWorkflowTaskConditions(){
+		var productData = {
+			productid = '',
+			productName = 'testproduct1',
+			skus = [
+				{
+					skuID = "",
+					price = 3
+				}
+			]
+			
+		};
+		var product = createPersistedTestEntity('product',productData);
+		Product.setDefaultSku(Product.getSkus()[1]);
+		
+		var workflowTasksConditionsConfig = '[
+				{
+					"workflowConditionGroup":[
+						{
+							"propertyIdentifier":"defaultSku.price",
+							"constraintType":"minValue",
+							"constraintValue":"5"
+						},
+						{
+							"logicalOperator":"AND",
+							"propertyIdentifier":"defaultSku.price",
+							"constraintType":"minValue",
+							"constraintValue":"1"
+						}
+					]
+					
+				},
+				{
+					"logicalOperator":"AND",
+					"workflowConditionGroup":[
+						{
+							"propertyIdentifier":"defaultSku.price",
+							"constraintType":"maxValue",
+							"constraintValue":"5"
+						},
+						{
+							"logicalOperator":"OR",
+							"propertyIdentifier":"defaultSku.price",
+							"constraintType":"maxValue",
+							"constraintValue":"5"
+						}
+					]
+				}
+		]';
+		var workflowTasksConditionsConfigStruct = deserializeJson(workflowTasksConditionsConfig);
+		
+		MakePublic(variables.service,'entityPassesAllWorkflowTaskConditions');
+		var passed = variables.service.entityPassesAllWorkflowTaskConditions(product,workflowTasksConditionsConfigStruct);
+		request.debug(passed);
+	}
+	
+	public void function getWorkflowConditionGroupsString(){
+		var productData = {
+			productid = '',
+			productName = 'testproduct1',
+			skus = [
+				{
+					skuID = "",
+					price = 3
+				}
+			]
+			
+		};
+		var product = createPersistedTestEntity('product',productData);
+		Product.setDefaultSku(Product.getSkus()[1]);
+		
+		var workflowTasksConditionsConfig = '[
+				{
+					"workflowConditionGroup":[
+						{
+							"propertyIdentifier":"defaultSku.price",
+							"constraintType":"minValue",
+							"constraintValue":"5"
+						},
+						{
+							"logicalOperator":"AND",
+							"propertyIdentifier":"defaultSku.price",
+							"constraintType":"minValue",
+							"constraintValue":"1"
+						}
+					]
+					
+				},
+				{
+					"logicalOperator":"AND",
+					"workflowConditionGroup":[
+						{
+							"propertyIdentifier":"defaultSku.price",
+							"constraintType":"maxValue",
+							"constraintValue":"5"
+						},
+						{
+							"logicalOperator":"OR",
+							"propertyIdentifier":"defaultSku.price",
+							"constraintType":"maxValue",
+							"constraintValue":"5"
+						}
+					]
+				}
+		]';
+		var workflowTasksConditionsConfigStruct = deserializeJson(workflowTasksConditionsConfig);
+		MakePublic(variables.service,'getWorkflowConditionGroupsString');
+		var conditionsGroupString = variables.service.getWorkflowConditionGroupsString(product,workflowTasksConditionsConfigStruct);	
+		request.debug(conditionsGroupString);
 	}
 	
 	

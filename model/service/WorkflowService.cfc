@@ -105,7 +105,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
 			
 			// Check to see if the task is active and the entity object passes the conditions validation
-			if(workflowTask.getActiveFlag() && entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfig())) {
+			if(workflowTask.getActiveFlag() && entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())) {
 			
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
 				for(var workflowTaskAction in workflowTask.getWorkflowTaskActions()) {
@@ -248,10 +248,57 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// ================== START: Private Helper Functions =====================
 	
-	private boolean function entityPassesAllWorkflowTaskConditions( required any entity, required struct taskConditions ) {
+	private string function getLogicalOperator(required string logicalOperator){
+		switch(arguments.logicalOperator){
+			case "or":
+				return "OR";
+			break;
+			case "and":
+				return "AND";
+			break;
+		}
+		return 'AND';
+	}
+	
+	private string function getWorkflowConditionGroupsString(required any entity,required array workflowConditionGroups){
+		var workflowConditionGroupsString = '';
+		for(var workflowConditionGroup in arguments.workflowConditionGroups){
+			var logicalOperator = '';
+			
+			if(structKeyExists(workflowConditionGroup,'logicalOperator')){
+				logicalOperator = getLogicalOperator(workflowConditionGroup.logicalOperator);
+			}
+			//constuct HQL to be used in filterGroup
+			var workflowConditionGroupString = getWorkflowConditionGroupString(arguments.entity,workflowConditionGroup.workflowConditionGroup);
+			if(len(workflowConditionGroupString)){
+				workflowConditionGroupsString &= " #logicalOperator# (#workflowConditionGroupString#)";
+			}
+		}
+		return workflowConditionGroupsString;
+	}
+	
+	private string function getWorkflowConditionGroupString(required any entity,required array workflowConditionGroup){
+		var workflowConditionGroupString = '';
 		
+		for(workflowCondition in arguments.workflowConditionGroup){
+			var logicalOperator = '';
+			if(structKeyExists(workflowCondition,"logicalOperator")){
+				logicalOperator = workflowCondition.logicalOperator;
+			}
+			
+			if(structKeyExists(workflowCondition,'workflowConditionGroup')){
+				workflowConditionGroupString &= getWorkflowConditionGroupsString([workflowCondition]);
+			}else{
+				var conditionResult = getHibachiValidationService().invokeMethod('validate_#workflowCondition.constraintType#',{1=arguments.entity, 2=workflowCondition.propertyIdentifier, 3=workflowCondition.constraintValue});
+				workflowConditionGroupString &= " #logicalOperator# #conditionResult# " ;
+			}
+		}
+		
+		return workflowConditionGroupString;
+	}
+	
+	private boolean function entityPassesAllWorkflowTaskConditions( required any entity, required array taskConditions ) {
 		/*
-		TODO We actually need to write the logic here that calls the different validate functions in the validation service.
 		
 		You are going to want to use:
 		
@@ -270,9 +317,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		constraintValue = 'passwordConfirm'
 		
 		*/
+		return evaluate(getWorkflowConditionGroupsString(arguments.entity,arguments.taskConditions));
 		
-		
-		return true;
 	}
 	
 	private boolean function setupDynamicUpdateData(required any entity, required struct dynamicData) {

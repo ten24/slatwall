@@ -6,6 +6,7 @@ angular.module('slatwalladmin')
 '$slatwall',
 'workflowService',
 'workflowTaskService',
+'metadataService',
 'workflowPartialsPath',
 function(
 $log,
@@ -13,6 +14,7 @@ $location,
 $slatwall,
 workflowService,
 workflowTaskService,
+metadataService,
 workflowPartialsPath
 ){
 	return {
@@ -24,7 +26,6 @@ workflowPartialsPath
 		templateUrl:workflowPartialsPath+"workflowtasks.html",
 		link: function(scope, element,attrs,formController){
 			
-			
 			$log.debug('workflow tasks init');	
 			
 			scope.workflowPartialsPath = workflowPartialsPath;
@@ -32,19 +33,7 @@ workflowPartialsPath
 			scope.workflowID = $location.search().workflowID;
 			scope.$id = 'swWorkflowTasks'
 				
-			/*scope.getPropertyDisplayData = function(){
-				var propertyDisplayDataPromise = $slatwall.getPropertyDisplayData('workflowTrigger',{propertyIdentifiersList:'triggerType'});
-				propertyDisplayDataPromise.then(function(value){
-					scope.propertyDisplayData = value.data;
-					$log.debug('getting property Display meta data');
-					$log.debug(scope.propertyDisplayData);
-				},function(reason){
-					var messages = reason.MESSAGES;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlers(alerts);
-				});
-			};
-			scope.getPropertyDisplayData();*/
+			scope.propertiesList = {};
 				
 			scope.getWorkflowTasks = function(){
 				var filterGroupsConfig ='['+  
@@ -64,6 +53,19 @@ workflowPartialsPath
 					$log.debug('getWorkflowTasks');
 					scope.workflowTasks = workflowTaskService.formatWorkflowTasks(value.pageRecords);
 					$log.debug(scope.workflowTasks);
+					
+					var workflow = workflowService.getWorkflow(scope.workflowID)
+					if(angular.isUndefined(metadataService.getPropertiesListByBaseEntityAlias(workflow.workflowObject))){
+						var propertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(workflow.workflowObject);
+						propertiesPromise.then(function(value){
+							metadataService.setPropertiesList(value,workflow.workflowObject);
+							scope.propertiesList[workflow.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(workflow.workflowObject);
+							metadataService.formatPropertiesList(scope.propertiesList[workflow.workflowObject],workflow.workflowObject);
+							
+						});
+					}else{
+						scope.propertiesList = metadataService.getPropertiesListByBaseEntityAlias(workflow.workflowObject);
+					}
 					
 				});
 			};

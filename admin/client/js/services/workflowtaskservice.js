@@ -68,7 +68,6 @@ function(
 	}
 		
 	
-	
 	return workflowTaskService = {
 		newWorkflowTask:function(){
 			return new _workflowTask;

@@ -2,14 +2,24 @@
 
 	<!--- Filter display --->
 	<div class="s-filter-item">
-		<!--- <div class="btn-group-vertical">
-			<button class="btn btn-xs btn-default">OR</button>
-			<button class="btn btn-xs btn-default active">AND</button>
-		</div> --->
+		<div ng-if="workflowCondition.logicalOperator" class="btn-group-vertical btn-toggle">
+	      <button class="btn btn-xs " 
+	      			ng-click="logicalOperatorChanged('AND')" 
+	      			ng-class="{'btn\-default':workflowCondition.logicalOperator !== 'AND'}"
+	      			>
+	      			AND
+	      </button>
+	      <button class="btn btn-xs " 
+	      			ng-class="{'btn\-default':workflowCondition.logicalOperator !== 'OR'}"
+	      			ng-click="logicalOperatorChanged('OR')"
+	      			>
+	      			OR
+	      </button>
+	    </div>
 		<div class="panel panel-default">
-			<div class="panel-heading">Filter 1 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
+			<div class="panel-heading" ng-bind="workflowCondition.propertyIdentifier"><a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
 			<div data-toggle="collapse" data-target="#j-edit-filter-b" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-				Example 1 <a href="##"><i class="fa fa-pencil-square-o"></i></a>
+				<span ng-bind="workflowCondition.comparisonOperator + ' ' + workflowCondition.value"></span> <a href="##"><i class="fa fa-pencil-square-o"></i></a>
 			</div>
 		</div>
 	</div>
@@ -26,7 +36,9 @@
 						<div class="form-group form-group-sm">
 							<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From Orders</label>
 							<div class="col-sm-12 s-no-paddings">
-								<select class="form-control input-sm">
+								<select class="form-control input-sm"
+										ng-model="selectedProperty"
+								>
 									<option disabled="disabled" selected="selected">Select From Orders</option>
 									<option value="one">One</option>
 									<option value="two">Two</option>
