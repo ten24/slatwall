@@ -240,7 +240,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		param name="arguments.rc.apiResponse.content.errors" default="";
 		
 		if(isNull(arguments.rc.apiResponse.content.messages)){
-			arguments.rc.apiResponse.content.messages = [];
+			arguments.rc.apiResponse.content['messages'] = [];
 		}
 		
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
@@ -286,7 +286,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 			var successMessage = getHibachiUtilityService().replaceStringTemplate( getHibachiScope().rbKey( "api.main.#entityName#.#rc.context#_success" ), replaceValues);
 			getHibachiScope().showMessage( successMessage, "success" );
-			
 			
 			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_success" ), "${EntityName}", rbKey('entity.#arguments.rc.entityName#'), "all" ) , "success");
 		}

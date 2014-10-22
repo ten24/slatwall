@@ -11,7 +11,7 @@ angular.module('slatwalladmin.services')
 			// Successful response 
 			$log.debug('response');
 			$log.debug(response);
-			var messages = response.data.MESSAGES;
+			var messages = response.data.messages;
 			var alerts = alertService.formatMessagesToAlerts(messages);
 			alertService.addAlerts(alerts);
 			return response;
@@ -27,7 +27,7 @@ angular.module('slatwalladmin.services')
 			$log.debug(rejection);
 			// an error happened during response
 			//display error message if getter fails
-			var messages = rejection.data.MESSAGES;
+			var messages = rejection.data.messages;
 			var alerts = alertService.formatMessagesToAlerts(messages);
 			alertService.addAlerts(alerts);
 			return rejection;
