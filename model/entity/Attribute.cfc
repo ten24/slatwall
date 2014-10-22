@@ -56,7 +56,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="attributeCode" ormtype="string" index="PI_ATTRIBUTECODE";
 	property name="attributeDescription" ormtype="string" length="4000" ;
 	property name="attributeHint" ormtype="string";
-	property name="attributeType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
+	property name="attributeInputType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="defaultValue" ormtype="string";
 	property name="requiredFlag" ormtype="boolean" default="false" ;
 	property name="sortOrder" ormtype="integer" sortContext="attributeSet";
@@ -89,13 +89,13 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	property name="attributeTypeOptions" persistent="false";
+	property name="attributeInputTypeOptions" persistent="false";
 	property name="formFieldType" persistent="false";
 	property name="relatedObjectOptions" persistent="false";
 	property name="validationTypeOptions" persistent="false";
 	
 	// Deprecated Properties
-
+	property name="attributeType" persistent="false";
 
 	// ==================== START: Logical Methods =========================
 	
@@ -111,29 +111,29 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 		}
 	}
 	
-	public array function getAttributeTypeOptions() {
+	public array function getAttributeInputTypeOptions() {
 		return [
-			{value="checkbox", name=rbKey("entity.attribute.attributeType.checkbox")},
-			{value="checkboxGroup", name=rbKey("entity.attribute.attributeType.checkboxGroup")},
-			{value="date", name=rbKey("entity.attribute.attributeType.date")},
-			{value="dateTime", name=rbKey("entity.attribute.attributeType.dateTime")},
-			{value="multiselect", name=rbKey("entity.attribute.attributeType.multiselect")},
-			{value="password", name=rbKey("entity.attribute.attributeType.password")},
-			{value="radioGroup", name=rbKey("entity.attribute.attributeType.radioGroup")},
-			{value="relatedObjectSelect", name=rbKey("entity.attribute.attributeType.relatedObjectSelect")},
-			{value="relatedObjectMultiselect", name=rbKey("entity.attribute.attributeType.relatedObjectMultiselect")},
-			{value="select", name=rbKey("entity.attribute.attributeType.select")},
-			{value="text", name=rbKey("entity.attribute.attributeType.text")},
-			{value="textArea", name=rbKey("entity.attribute.attributeType.textArea")},
-			{value="time", name=rbKey("entity.attribute.attributeType.time")},
-			{value="wysiwyg", name=rbKey("entity.attribute.attributeType.wysiwyg")},
-			{value="yesNo", name=rbKey("entity.attribute.attributeType.yesNo")}
+			{value="checkbox", name=rbKey("entity.attribute.attributeInputType.checkbox")},
+			{value="checkboxGroup", name=rbKey("entity.attribute.attributeInputType.checkboxGroup")},
+			{value="date", name=rbKey("entity.attribute.attributeInputType.date")},
+			{value="dateTime", name=rbKey("entity.attribute.attributeInputType.dateTime")},
+			{value="multiselect", name=rbKey("entity.attribute.attributeInputType.multiselect")},
+			{value="password", name=rbKey("entity.attribute.attributeInputType.password")},
+			{value="radioGroup", name=rbKey("entity.attribute.attributeInputType.radioGroup")},
+			{value="relatedObjectSelect", name=rbKey("entity.attribute.attributeInputType.relatedObjectSelect")},
+			{value="relatedObjectMultiselect", name=rbKey("entity.attribute.attributeInputType.relatedObjectMultiselect")},
+			{value="select", name=rbKey("entity.attribute.attributeInputType.select")},
+			{value="text", name=rbKey("entity.attribute.attributeInputType.text")},
+			{value="textArea", name=rbKey("entity.attribute.attributeInputType.textArea")},
+			{value="time", name=rbKey("entity.attribute.attributeInputType.time")},
+			{value="wysiwyg", name=rbKey("entity.attribute.attributeInputType.wysiwyg")},
+			{value="yesNo", name=rbKey("entity.attribute.attributeInputType.yesNo")}
 		];
     }
     
 	public string function getFormFieldType() {
 		if(!structKeyExists(variables, "formFieldType")) {
-			variables.formFieldType = getAttributeType();
+			variables.formFieldType = getAttributeInputType();
 			if(variables.formFieldType eq 'relatedObjectSelect') {
 				variables.formFieldType = 'select';
 			} else if (variables.formFieldType eq 'relatedObjectMultiselect') {
@@ -171,13 +171,13 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	public array function getAttributeOptionsOptions() {
 		if(!structKeyExists(variables, "attributeOptionsOptions")) {
 			variables.attributeOptionsOptions = [];
-			if(listFindNoCase('checkBoxGroup,multiselect,radioGroup,select', getAttributeType())) {
+			if(listFindNoCase('checkBoxGroup,multiselect,radioGroup,select', getAttributeInputType())) {
 				var smartList = this.getAttributeOptionsSmartList();
 				smartList.addSelect(propertyIdentifier="attributeOptionLabel", alias="name");
 				smartList.addSelect(propertyIdentifier="attributeOptionValue", alias="value");
 				smartList.addOrder("sortOrder|ASC");
 				variables.attributeOptionsOptions = smartList.getRecords();	
-			} else if(listFindNoCase('relatedObjectSelect', getAttributeType()) && !isNull(getRelatedObject())) {
+			} else if(listFindNoCase('relatedObjectSelect', getAttributeInputType()) && !isNull(getRelatedObject())) {
 				var entityService = getService( "hibachiService" ).getServiceByEntityName( getRelatedObject() );
 				var smartList = entityService.invokeMethod("get#getRelatedObject()#SmartList");
 				var exampleEntity = entityService.invokeMethod("new#getRelatedObject()#");
@@ -261,6 +261,16 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	// ===================  END:  ORM Event Hooks  =========================
 	
 	// ================== START: Deprecated Methods ========================
+	
+	public any function getAttributeType() {
+		if(!structKeyExists(variables, "attributeType") && !isNull(getAttributeInputType()) ) {
+			variables.attributeType = getService('typeService').newType();
+			variables.attributeType.setSystemCode( "at#getAttributeInputType()#" );
+		}
+		if(structKeyExists(variables, "attributeType")) {
+			return variables.attributeType;
+		}
+	}
 	
 	// ==================  END:  Deprecated Methods ========================
 

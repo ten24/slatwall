@@ -105,7 +105,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="attributeValueOptions" persistent="false";
 
 	public void function setupEncryptedProperties() {
-		if(!isNull(getAttribute()) && !isNull(getAttribute().getAttributeType()) && getAttribute().getAttributeType() == "password" && structKeyExists(variables, "attributeValue")) {
+		if(!isNull(getAttribute()) && !isNull(getAttribute().getAttributeInputType()) && getAttribute().getAttributeType() == "password" && structKeyExists(variables, "attributeValue")) {
 			encryptProperty('attributeValue');
 		}
 	}
@@ -589,7 +589,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	public string function getAttributeValueFormatted() {
-		if(getAttribute().getAttributeType() eq 'relatedObjectSelect') {
+		if(getAttribute().getAttributeInputType() eq 'relatedObjectSelect') {
 			var thisEntityService = getService('hibachiService').getServiceByEntityName( getAttribute().getRelatedObject() );
 			var thisRelatedEntity = thisEntityService.invokeMethod("get#getAttribute().getRelatedObject()#", {1=getAttributeValue()});
 			if(!isNull(thisRelatedEntity)) {
