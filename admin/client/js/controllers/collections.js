@@ -10,6 +10,7 @@ angular.module('slatwalladmin')
 'metadataService',
 'paginationService',
 '$log',
+'$timeout',
 function($scope,
 $location,
 $slatwall,
@@ -17,7 +18,8 @@ alertService,
 collectionService,
 metadataService,
 paginationService,
-$log
+$log,
+$timeout
 ){
 	
 	//init values
@@ -78,12 +80,16 @@ $log
 	};
 	
 	$scope.keywords = "";
-	$scope.searchCollection = function(){
-		$log.debug('search with keywords');
-		$log.debug($scope.keywords);
-		$scope.getCollection();
+	$scope.searchCollection = function($timout){
+		var searchPromise = $timeout(function(){
+			$log.debug('search with keywords');
+			$log.debug($scope.keywords);
+			$scope.getCollection();
+		}, 500)
 	};
+		
 	
+
 	$scope.getCollection = function(){
 		var pageShow = 50;
 		if($scope.pageShow !== 'Auto'){
