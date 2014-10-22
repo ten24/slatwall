@@ -119,13 +119,17 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			
 			if(!isNull(getAttribute())) {
 				
-				var ao = getAttribute().getAttributeOptions();
+				var attributeOptions = getAttribute().getAttributeOptions();
 				
-				for(var a=1; a<=arrayLen(ao); a++) {
-					if(!isNull(ao[a].getAttributeOptionLabel()) && !isNull(ao[a].getAttributeOptionValue())) {
-						arrayAppend(variables.attributeValueOptions, {name=ao[a].getAttributeOptionLabel(), value=ao[a].getAttributeOptionValue()});	
+				for(var attributeOption in attributeOptions) {
+					if(!isNull(attributeOption.getAttributeOptionLabel()) && !isNull(attributeOption.getAttributeOptionValue())) {
+						arrayAppend(variables.attributeValueOptions, {name=attributeOption.getAttributeOptionLabel(), value=attributeOption.getAttributeOptionValue()});	
 					}
-				}	
+				}
+				
+				if(!isNull(getAttribute().getAttributeInputType()) && getAttribute().getAttributeInputType() == 'select'){
+					arrayPrepend({value='',name=rbKey('define.select')});
+				} 
 			}
 			
 		}
