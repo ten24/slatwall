@@ -136,11 +136,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return true;
 	}
 	
-	// Deprecated... now just delegates to getShippingAddress
-    public any function getAddress(){
-    	return getShippingAddress();
-    }
-    
     public void function checkNewAccountAddressSave() {
     	
 		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
@@ -530,6 +525,11 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// ===================  END:  ORM Event Hooks  =========================
 	
 	// ================== START: Deprecated Methods ========================
+	
+	// Now just delegates to getShippingAddress
+    public any function getAddress(){
+    	return getShippingAddress();
+    }
 	
 	public numeric function getDiscountTotal() {
 		return precisionEvaluate(getDiscountAmount() + getItemDiscountAmountTotal());
