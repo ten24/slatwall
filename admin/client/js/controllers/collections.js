@@ -100,6 +100,23 @@ $timeout
 		collectionListingPromise.then(function(value){
 			collectionService.setCollection(value);
 			$scope.collection = collectionService.getCollection();
+
+			var _collectionName = $scope.collection['collectionName'].toLowerCase();
+			var _recordKeyForObjectID = _collectionName + 'ID';
+			
+			for(var record in value.pageRecords){
+				var _detailLink;
+				var _pageRecord = $scope.collection.pageRecords[record];
+				var _objectID = _pageRecord[_recordKeyForObjectID];
+				if(_objectID && _collectionName !== 'country'){
+					var _detailLink = "?slatAction=entity.detail" + _collectionName + "&" + _collectionName + "ID=" + _objectID;
+				} else if (_collectionName === 'country' ){
+					var _countryCode = _pageRecord["countryCode"];
+					var _detailLink = "?slatAction=entity.detail" + _collectionName + "&countryCode=" + _countryCode;
+				}
+				_pageRecord["link"] = _detailLink;
+			}
+
 			$scope.collectionInitial = angular.copy(collectionService.getCollection());
 			if(angular.isUndefined($scope.collectionConfig)){
 				$scope.collectionConfig = collectionService.getCollectionConfig();
