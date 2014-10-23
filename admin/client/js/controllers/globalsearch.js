@@ -99,7 +99,6 @@ function(
 					
 				})(entityName);
 			}
-			console.log($scope.resultsCounter);
 		}, 500);
 		$scope.showResults();
 	};
