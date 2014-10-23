@@ -1145,6 +1145,32 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 	
+	public any function processOrder_removePersonalInfo(required any order) {
+		
+		// Remove order level info
+		arguments.order.removeAccount();
+		arguments.order.setShippingAddress(javaCast('null', ''));
+		arguments.order.setShippingAccountAddress(javaCast('null', ''));
+		arguments.order.setBillingAddress(javaCast('null', ''));
+		arguments.order.setBillingAccountAddress(javaCast('null', ''));
+		
+		// loop over orderFulfillments and remove any shipping info or emailAddress
+		for(var orderFulfillment in arguments.order.getOrderFulfillments()) {
+			
+			orderFulfillment.setShippingAddress(javaCast('null', ''));
+			orderFulfillment.setAccountAddress(javaCast('null', ''));
+			orderFulfillment.setEmailAddress(javaCast('null', ''));
+			
+		}
+		
+		// loop over and remove all orderPayments
+		for(var p=arrayLen(arguments.order.getOrderPayments()); p>=1; p--) {
+			arguments.order.getOrderPayments()[p].removeOrder();
+		}
+		
+		return this.saveOrder(arguments.order);	
+	}
+	
 	public any function processOrder_updateOrderAmounts(required any order, struct data) {
 		//only allow promos to be applied to orders that have not been closed or canceled
 		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {

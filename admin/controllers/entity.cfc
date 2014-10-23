@@ -155,19 +155,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	// Order
 	public void function detailOrder(required struct rc) {
-		rc.order = getOrderService().getOrder(rc.orderID);
-		if(rc.order.getStatusCode() eq "ostNotPlaced") {
-			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";
-		}
 		genericDetailMethod(entityName="Order", rc=arguments.rc);
+		if(!isNull(rc.order) && rc.order.getStatusCode() eq "ostNotPlaced") {
+			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";
+			rc.entityActionDetails.backAction = "admin:entity.listcartandquote";
+		}
 	}
 	
 	public void function editOrder(required struct rc) {
-		rc.order = getOrderService().getOrder(rc.orderID);
-		if(rc.order.getStatusCode() eq "ostNotPlaced") {
-			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";
-		}
 		genericEditMethod(entityName="Order", rc=arguments.rc);
+		if(!isNull(rc.order) && rc.order.getStatusCode() eq "ostNotPlaced") {
+			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";
+			rc.entityActionDetails.backAction = "admin:entity.listcartandquote";
+		}
 	}
 	
 	public void function listOrder(required struct rc) {

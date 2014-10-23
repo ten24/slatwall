@@ -47,6 +47,8 @@ Notes:
 
 */
 component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiSessionService" {
+	
+	property name="orderService" type="any";
 
 	// ======================= OVERRIDE METHODS =============================
 	
@@ -69,7 +71,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		
 		// If the current order is not new, and has an account, and  orderitems array length is greater than 1
 		if( !getHibachiScope().getSession().getOrder().getNewFlag() && !isNull(getHibachiScope().getSession().getOrder().getAccount()) && arrayLen(getHibachiScope().getSession().getOrder().getOrderItems())){
-			getService('orderService').processOrder( getHibachiScope().getCart(), {}, 'updateOrderAmounts');	
+			getService('orderService').processOrder( getHibachiScope().getSession().getOrder(), {}, 'updateOrderAmounts');	
 		}
 		
 		// Add the CKFinder Permissions
@@ -88,6 +90,14 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		// If the current session account was authenticated by an integration, then check the verifySessionLogin() method to make sure that we should still be logged in
 		if(!isNull(getHibachiScope().getSession().getAccountAuthentication()) && !isNull(getHibachiScope().getSession().getAccountAuthentication().getIntegration()) && !getHibachiScope().getSession().getAccountAuthentication().getIntegration().getIntegrationCFC("authentication").verifySessionLogin()) {
 			logoutAccount();
+		}
+		
+		// If the session was set with a persistent cookie, and the session has an non new order on it... then remove all of the personal information
+		if(getHibachiScope().getSessionFoundPSIDCookieFlag() && !getHibachiScope().getSession().getOrder().getNewFlag()) {
+			getOrderService().processOrder(getHibachiScope().getSession().getOrder(), 'removePersonalInfo');
+			
+			// Force persistance
+			getHibachiDAO().flushORMSession();
 		}
 	}
 	
