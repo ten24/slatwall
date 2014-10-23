@@ -19,6 +19,8 @@ propertyDisplayService
 			isEditable:"=",
 			editing:"=",
 			isHidden:"=",
+			optionsArguments:"=",
+			eagerLoadOptions:"="
 			/*value:"=",
 			valueOptions:"@",
 			fieldType:"@",
@@ -38,6 +40,8 @@ propertyDisplayService
 				editing:scope.editing,
 				isEditable:scope.isEditable,
 				isHidden:scope.isHidden,
+				optionsArguments:scope.optionsArguments,
+				eagerLoadOptions:scope.eagerLoadOptions
 				/*hint:scope.hint,
 				fieldType:scope.fieldType,
 				value:scope.value,

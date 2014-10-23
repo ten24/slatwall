@@ -30,7 +30,7 @@ function(
 	
 	$scope.getPropertyDisplayData = function(){
 		var propertyDisplayDataPromise = $slatwall.getPropertyDisplayData('product',
-				{propertyIdentifiersList:'productCode,productName,defaultSku.price,brand'}
+				{propertyIdentifiersList:'productCode,productName,defaultSku.price,brand,productType'}
 		);
 		propertyDisplayDataPromise.then(function(value){
 			$scope.propertyDisplayData = value.data;

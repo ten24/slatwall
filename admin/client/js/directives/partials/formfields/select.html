@@ -1,4 +1,4 @@
-<select type="{{propertyDisplay.fieldType}}" class="form-control" 
+<select id="{{propertyDisplay.property}}" type="{{propertyDisplay.fieldType}}" class="form-control" 
 		    		 ng-model="propertyDisplay.selectedOption"
 		    		 ng-disabled="propertyDisplay.editable"
 		    		 ng-show="propertyDisplay.editing"
@@ -6,7 +6,11 @@
   									 for propertyDisplayOption in propertyDisplay.meta.options
   									 track by propertyDisplayOption.value"
 					 ng-change="formFieldChanged(propertyDisplay.value)"
-></select>
+					 ng-click="getOptions()"
+					
+>
+	<option ng-bind="'Select '+propertyDisplay.meta.title"></option>
+</select>
 
 <!-- Error Messages -->
     

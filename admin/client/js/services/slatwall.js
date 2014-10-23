@@ -84,7 +84,21 @@ function(){
 		  			
 		  			return deferred.promise;
 		  		},
-		  		
+		  		getPropertyDisplayOptions:function(entityName,options){
+		  			var deferred = $q.defer();
+		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getPropertyDisplayOptions&entityName='+entityName;
+		  			var params = {};
+		  			params.property = options.property || '';
+		  			params.argument1 = options.argument1 || '';
+		  			$http.get(urlString,{params:params})
+		  			.success(function(data){
+		  				deferred.resolve(data);
+		  			}).error(function(reason){
+		  				deferred.reject(reason);
+		  			});
+		  			
+		  			return deferred.promise;
+		  		},
 		  		/*
 	  			 *
 	  			 * getProcessObject(entityName, options);

@@ -126,10 +126,24 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			data[property]['title'] = entity.getPropertyTitle( property );
 			data[property]['hint'] = entity.getPropertyHint( property );
 			data[property]['fieldType'] = entity.getFieldTypeByPropertyIdentifier( property );
-			if(isDefined('entity.get#property#Options')){
-				data[property]['options'] = entity.invokeMethod('get#property#Options');
-			}
 		}
+		
+		arguments.rc.apiResponse.content['data'] = data;
+	}
+	public any function getPropertyDisplayOptions(required struct rc){
+		/*
+			arguments-
+			entityName
+			property
+			argumentsCollection
+		*/
+		var data = [];
+		if(isNull(arguments.rc.argument1)){
+			data = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#').invokeMethod('get#arguments.rc.property#Options');
+		}else{
+			data = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#').invokeMethod('get#arguments.rc.property#Options',{1=arguments.rc.argument1});
+		}
+		
 		
 		arguments.rc.apiResponse.content['data'] = data;
 	}

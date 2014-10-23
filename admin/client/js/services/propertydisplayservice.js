@@ -22,6 +22,8 @@ function(
 		this.valueOptions=propertyDisplay.valueOptions || [];
 		this.fieldName=propertyDisplay.fieldName || '';
 		this.title=propertyDisplay.title || '';
+		this.optionsArguments=propertyDisplay.optionsArguments || {};
+		this.eagerLoadOptions=propertyDisplay.eagerLoadOptions || false;
 	}
 	
 	_propertyDisplay.prototype = {
