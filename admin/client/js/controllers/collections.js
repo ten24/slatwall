@@ -109,10 +109,10 @@ $timeout
 				var _pageRecord = $scope.collection.pageRecords[record];
 				var _objectID = _pageRecord[_recordKeyForObjectID];
 				if(_objectID && _collectionName !== 'country'){
-					var _detailLink = "?slatAction=entity.detail" + _collectionName + "&" + _collectionName + "ID=" + _objectID;
+					_detailLink = "?slatAction=entity.detail" + _collectionName + "&" + _collectionName + "ID=" + _objectID;
 				} else if (_collectionName === 'country' ){
 					var _countryCode = _pageRecord["countryCode"];
-					var _detailLink = "?slatAction=entity.detail" + _collectionName + "&countryCode=" + _countryCode;
+					_detailLink = "?slatAction=entity.detail" + _collectionName + "&countryCode=" + _countryCode;
 				}
 				_pageRecord["link"] = _detailLink;
 			}
