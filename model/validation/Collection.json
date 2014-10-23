@@ -1,6 +1,6 @@
 {
 	"properties":{
-		"collectionCode":	[{"contexts":"save","uniqueOrNull":true,"required":true}],
+		"collectionCode":	[{"contexts":"save","uniqueOrNull":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
 		"collectionName":		[{"contexts":"save","required":true}]
 	}
 }
