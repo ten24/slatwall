@@ -822,34 +822,11 @@ component extends="HibachiService" accessors="true" {
 	
 	//routed from processProduct_create
 	public any function processProduct_createBundle(required any product, required any processObject, any data){
-		
-		arguments.product = this.processProduct_createBundle(arguments.product,arguments.processObject);
-		
-		//add default sku
-		/*var thisSku = this.newSku();
-		thisSku.setProduct(arguments.product);
-		thisSku.setPrice(arguments.processObject.getPrice()); 
-		if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
-			thisSku.setListPrice(arguments.product.getlistPrice());	
-		}
-		thisSku.setSkuCode(arguments.product.getProductCode() & "-1");*/
-		//add product group bundles to sku
-		
-		
-		
-		//set sku to product
-		//arguments.product.setDefaultSku( thisSku );
 		arguments.product.getSkus()[1].setSkuCode(arguments.product.getProductCode() & "-1");
-		arguments.product.setDefaultSku(arguments.product.getSkus()[1]);
 		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
 		
-		// If some skus were created, then set the default sku to the first one
-		/*if(arrayLen(arguments.product.getSkus())) {
-			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
-		}*/
 		// Generate Image Files
 		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
-		
 		
 		arguments.product = this.saveProduct(arguments.product);
 		

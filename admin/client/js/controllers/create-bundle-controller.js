@@ -175,9 +175,9 @@ function(
 				$scope.transformProductBundleGroupFilters();
 				var params = {
 					"productID":$scope.product.productID,
-					"product.Skus[1].price":createProductBundleForm["price"].$modelValue,
-					//"product.productType.productTypeID":createProductBundleForm["product.productType"].$modelValue.value,
-					"product.productType.productTypeID":"154dcdd2f3fd4b5ab5498e93470957b8",
+					"product.skus[1].skuID":'',
+					"product.skus[1].price":createProductBundleForm["price"].$modelValue,
+					"product.productType.productTypeID":createProductBundleForm["productType"].$modelValue.value,
 					"product.productName":createProductBundleForm['productName'].$modelValue,
 					"product.productCode":createProductBundleForm['productCode'].$modelValue,
 					"product.brand.brandID":createProductBundleForm['brand'].$modelValue.value,
