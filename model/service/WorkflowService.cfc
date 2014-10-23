@@ -109,82 +109,83 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(workflowTask.getActiveFlag() && entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())) {
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
 				for(var workflowTaskAction in workflowTask.getWorkflowTaskActions()) {
-					
-					// Setup an action success variable
-					var actionSuccess = true;
-					
-					switch (workflowTaskAction.getActionType()) {
-						
-						// EMAIL
-						case 'email' :
-						
-							var email = getEmailService().generateAndSendFromEntityAndEmailTemplate(entity=arguments.data.entity, emailTemplate=workflowTaskAction.getEmailTemplate());
-							if(email.hasErrors()) {
-								actionSuccess = false;
-							}
+					if(!isnull(workflowTaskAction.getUpdateData())){
+						// Setup an action success variable
+						var actionSuccess = true;
+						arguments.data.entity.setAnnounceEvent(false);
+						switch (workflowTaskAction.getActionType()) {
 							
-							break;
+							// EMAIL
+							case 'email' :
 							
-						// PRINT
-						case 'print' :
-						
-							var print = getPrintService().generateAndPrintFromEntityAndPrintTemplate(entity=arguments.data.entity, emailTemplate=workflowTaskAction.getPrintTemplate());
-							if(print.hasErrors()) {
-								actionSuccess = false;
-							}
+								var email = getEmailService().generateAndSendFromEntityAndEmailTemplate(entity=arguments.data.entity, emailTemplate=workflowTaskAction.getEmailTemplate());
+								if(email.hasErrors()) {
+									actionSuccess = false;
+								}
+								
+								break;
+								
+							// PRINT
+							case 'print' :
 							
-							break;
-						
-						// UPDATE
-        				case 'update' :
-        				
-        					// Setup the updateData object that will be used during the save functions 'populate'
-        					var updateData = {};
-        					
-        					// Attempt to pull the update data out of the object
-        					if(isJSON(workflowTaskAction.getUpdateData())) {
-        						var allUpdateData = deserializeJSON(workflowTaskAction.getUpdateData());
-        						
-        						// If there is static data, set that as the updateData by default
-        						if(structKeyExists(allUpdateData, "staticData")) {
-        							updateData = allUpdateData.staticData;
-        						}
-        						
-        						// Then look for dynamic data that needs to be updated
-        						if(structKeyExists(allUpdateData, "dynamicData")) {
-        							structAppend(updateData, setupDynamicUpdateData(arguments.data.entity, allupdateData.dynamicData));
-        						}
-        					};
-        					//writeDump();
-        					arguments.data.entity = getHibachiScope().saveEntity(arguments.data.entity, updateData);
-        					//arguments.data.entity = getService('#arguments.data.entity.getClassName()#Service').save(arguments.data.entity,updateData);
-        					
-        					if(arguments.data.entity.hasErrors()) {
-        						actionSuccess = false;
-        					}
-        					
-        					break;
-        					
-        				case 'process' :
-        				
-        					// TODO: Impliment This
-        					break;
-        					
-        				case 'import' :
-        				
-        					// TODO: Impliment This
-        					break;
-        					
-        				case 'export' :
-        				
-        					// TODO: Impliment This
-        					break;
-        					
-        				case 'delete' :
-        				
-        					actionSuccess = getHibachiScope().deleteEntity(arguments.data.entity);
-        					
-        					break;
+								var print = getPrintService().generateAndPrintFromEntityAndPrintTemplate(entity=arguments.data.entity, emailTemplate=workflowTaskAction.getPrintTemplate());
+								if(print.hasErrors()) {
+									actionSuccess = false;
+								}
+								
+								break;
+							
+							// UPDATE
+	        				case 'update' :
+	        				
+	        					// Setup the updateData object that will be used during the save functions 'populate'
+	        					var updateData = {};
+	        					// Attempt to pull the update data out of the object
+	        					if(isJSON(workflowTaskAction.getUpdateData())) {
+	        						var allUpdateData = deserializeJSON(workflowTaskAction.getUpdateData());
+	        						
+	        						// If there is static data, set that as the updateData by default
+	        						if(structKeyExists(allUpdateData, "staticData")) {
+	        							updateData = allUpdateData.staticData;
+	        						}
+	        						
+	        						// Then look for dynamic data that needs to be updated
+	        						if(structKeyExists(allUpdateData, "dynamicData")) {
+	        							structAppend(updateData, setupDynamicUpdateData(arguments.data.entity, allupdateData.dynamicData));
+	        						}
+	        						
+	        						getHibachiScope().saveEntity(arguments.data.entity,updateData);
+	        					};
+	        					
+	        					
+	        					if(arguments.data.entity.hasErrors()) {
+	        						actionSuccess = false;
+	        					}
+	        					
+	        					break;
+	        					
+	        				case 'process' :
+	        				
+	        					// TODO: Impliment This
+	        					break;
+	        					
+	        				case 'import' :
+	        				
+	        					// TODO: Impliment This
+	        					break;
+	        					
+	        				case 'export' :
+	        				
+	        					// TODO: Impliment This
+	        					break;
+	        					
+	        				case 'delete' :
+	        				
+	        					actionSuccess = getHibachiScope().deleteEntity(arguments.data.entity);
+	        					
+	        					break;
+	        			}
+	        			arguments.data.entity.setAnnounceEvent(true);
         			}
         			
 				}
