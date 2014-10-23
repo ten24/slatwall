@@ -186,8 +186,6 @@ function(
 				for(var i=0; i < $scope.product.defaultSku.productBundleGroups.length; i++){
 					var productBundleGroup = $scope.product.defaultSku.productBundleGroups[i];
 					var productBundleString = 'product.Skus[1].productBundleGroups['+(i+1)+']';
-					console.log('productBundleGroup');
-					console.log(productBundleGroup);
 					for(var key in productBundleGroup){
 						if(!angular.isArray(productBundleGroup[key]) && key.charAt(0) !== '$' && !angular.isObject(productBundleGroup[key])){
 							params[productBundleString+'.'+key] = productBundleGroup[key];
