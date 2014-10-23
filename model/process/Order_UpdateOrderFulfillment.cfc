@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,27 +45,45 @@
 
 Notes:
 
---->
-<cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="globalUsageStats" />
-		<cf_SlatwallSetting settingName="globalCurrencyLocale" />
-		<cf_SlatwallSetting settingName="globalCurrencyType" />
-		<cf_SlatwallSetting settingName="globalDateFormat" />
-		<cf_SlatwallSetting settingName="globalLogMessages" />
-		<cf_SlatwallSetting settingName="globalTimeFormat" />
-		<cf_SlatwallSetting settingName="globalAuditAutoArchiveVersionLimit" />
-		<cf_SlatwallSetting settingName="globalAuditCommitMode" />
-		<cf_SlatwallSetting settingName="globalAssetsImageFolderPath" />
-		<cf_SlatwallSetting settingName="globalAssetsFileFolderPath" />
-		<cf_SlatwallSetting settingName="globalMissingImagePath" />
-		<cf_SlatwallSetting settingName="globalOrderNumberGeneration" />
-		<cf_SlatwallSetting settingName="globalURLKeyBrand" />
-		<cf_SlatwallSetting settingName="globalURLKeyProduct" />
-		<cf_SlatwallSetting settingName="globalURLKeyProductType" />
-		<cf_SlatwallSetting settingName="globalWeightUnitCode" />
-		<cf_SlatwallSetting settingName="globalAdminAutoLogoutMinutes" />
-		<cf_SlatwallSetting settingName="globalPublicAutoLogoutMinutes" />
-	</cf_SlatwallSettingTable>
-</cfoutput>
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
+	// Injected Entity
+	property name="order";
+	
+	// Data Properties
+	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
+	property name="orderItemIDList";
+	
+	property name="orderItems" hb_populateEnabled="false";
+	
+	public any function getOrderItems() {
+		if(!structKeyExists(variables, "orderItems")) {
+			variables.orderItems = [];
+			if(!isNull(getOrderItemIDList())) {
+				for(var i=1; i<=listLen(getOrderItemIDList()); i++) {
+					var orderItem = getService('orderService').getOrderItem( listGetAt(getOrderItemIDList(),i) );
+					if(!isNull(orderItem)) {
+						arrayAppend(variables.orderItems, orderItem);
+					}
+				}
+			}
+		}
+		
+		return variables.orderItems;
+	}
+	
+	public boolean function getOrderFulfillmentMatchesOrderFlag() {
+		return orderFulfillment.getNewFlag() || (!isNull(orderFulfillment.getOrder()) && orderFulfillment.getOrder().getOrderID() == getOrder().getOrderID());
+	}
+	
+	public boolean function getOrderItemIDListMatchesOrder() {
+		for(var orderItem in getOrderItems()) {
+			if(isNull(orderItem.getOrder) || orderItem.getOrder().getOrderID() != getOrder().getOrderID()) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+}
