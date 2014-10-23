@@ -55,16 +55,24 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function processWorkflow_execute_Test(){
+		var orderData = {
+			orderID = ''
+			
+			
+		};
+		var order = createPersistedTestEntity('order',orderData);
+		
+		
 		var workflowEntityData = {
 			workflowid = '',
 			workflowName = 'testWorkflow',
-			workflowObject = 'Order',
+			workflowObject = 'Product',
 			workflowTriggers = [
 				{
-					workflowTriggerID = '12',
+					workflowTriggerID = '',
 					triggerType = 'Event',
 					objectPropertyIdentifier = '',
-					triggerEvent="afterOrderSaveSuccess"
+					triggerEvent="afterProductSaveSuccess"
 				}
 			],
 			workflowTasks = [
@@ -73,25 +81,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					taskName="testTask",
 					taskConditionsConfig='[
 						{
-							"propertyIdentifier":"",
-							"constraintType":"",
-							"constraintValue":""
-						},
-						{
-							"logicalOperator":"OR"
-							"propertyIdentifier":"",
-							"constraintType":"",
-							"constraintValue":""
+							"workflowConditionGroup":[
+								{
+									"propertyIdentifier":"order.orderID",
+									"constraintType":"required",
+									"constraintValue":"true"
+								}
+							]
+									
 						}
 					]',
 					workflowTaskActions=[
 						{
 							workflowTaskActionID='',
-							actionType='',
-							updateData='',
-							emailTemplate={
-								emailTemplateID='dbb327e506090fde08cc4855fa14448d'
-							}
+							actionType='update',
+							updateData='{"staticData":{"orderNumber":"123"}}'
 						}
 					]
 				}
@@ -100,11 +104,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var workflowEntity = createPersistedTestEntity('workflow',workflowEntityData);
 		
 		var data = {
-			entity={
-				
-			},
+			
+		};
+		data = {
+			entity=order,
 			workflowTrigger={
-				workflowTriggerID = '12',
+				workflowTriggerID = '',
 				triggerType = 'Event',
 				objectPropertyIdentifier = '',
 				triggerEvent="afterOrderSaveSuccess"

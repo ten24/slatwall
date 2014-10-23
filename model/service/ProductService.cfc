@@ -823,7 +823,7 @@ component extends="HibachiService" accessors="true" {
 	//routed from processProduct_create
 	public any function processProduct_createBundle(required any product, required any processObject, any data){
 		
-		//arguments.product = this.processProduct_create(arguments.product,arguments.processObject);
+		arguments.product = this.processProduct_createBundle(arguments.product,arguments.processObject);
 		
 		//add default sku
 		/*var thisSku = this.newSku();
@@ -839,7 +839,8 @@ component extends="HibachiService" accessors="true" {
 		
 		//set sku to product
 		//arguments.product.setDefaultSku( thisSku );
-		
+		arguments.product.getSkus()[1].setSkuCode(arguments.product.getProductCode() & "-1");
+		arguments.product.setDefaultSku(arguments.product.getSkus()[1]);
 		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
 		
 		// If some skus were created, then set the default sku to the first one

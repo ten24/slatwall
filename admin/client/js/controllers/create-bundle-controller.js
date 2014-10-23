@@ -175,7 +175,7 @@ function(
 				$scope.transformProductBundleGroupFilters();
 				var params = {
 					"productID":$scope.product.productID,
-					"product.defaultSku.price":createProductBundleForm["price"].$modelValue,
+					"product.Skus[1].price":createProductBundleForm["price"].$modelValue,
 					//"product.productType.productTypeID":createProductBundleForm["product.productType"].$modelValue.value,
 					"product.productType.productTypeID":"154dcdd2f3fd4b5ab5498e93470957b8",
 					"product.productName":createProductBundleForm['productName'].$modelValue,
@@ -185,7 +185,7 @@ function(
 				//"product.defaultSku.productBundleGroups":angular.toJson()
 				for(var i=0; i < $scope.product.defaultSku.productBundleGroups.length; i++){
 					var productBundleGroup = $scope.product.defaultSku.productBundleGroups[i];
-					var productBundleString = 'product.defaultSku.productBundleGroups['+(i+1)+']';
+					var productBundleString = 'product.Skus[1].productBundleGroups['+(i+1)+']';
 					console.log('productBundleGroup');
 					console.log(productBundleGroup);
 					for(var key in productBundleGroup){

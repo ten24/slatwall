@@ -67,6 +67,8 @@ component entityname="SlatwallWorkflowTask" table="SwWorkflowTask" persistent="t
 	
 	// Non-Persistent Properties
 	
+	property name="taskConditionsConfigStruct" type="struct" persistent="false"; 
+	
 	// Deprecated Properties
 
 
@@ -81,7 +83,7 @@ component entityname="SlatwallWorkflowTask" table="SwWorkflowTask" persistent="t
 		return variables.taskConditionsConfigStruct;
 	}
 	
-	public any function deserializeTaskConditionConfig(){
+	public any function deserializeTaskConditionsConfig(){
 		return deserializeJSON(getTaskConditionsConfig());
 	}
 	

@@ -102,18 +102,18 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processWorkflow_execute(required any workflow, required struct data) {
 		// Loop over all of the tasks for this workflow
+		
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
 			
 			// Check to see if the task is active and the entity object passes the conditions validation
 			if(workflowTask.getActiveFlag() && entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())) {
-			
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
 				for(var workflowTaskAction in workflowTask.getWorkflowTaskActions()) {
 					
 					// Setup an action success variable
 					var actionSuccess = true;
 					
-					switch (action.getActionType()) {
+					switch (workflowTaskAction.getActionType()) {
 						
 						// EMAIL
 						case 'email' :
@@ -147,7 +147,7 @@ component extends="HibachiService" accessors="true" output="false" {
         						
         						// If there is static data, set that as the updateData by default
         						if(structKeyExists(allUpdateData, "staticData")) {
-        							updateData = staticData;
+        							updateData = allUpdateData.staticData;
         						}
         						
         						// Then look for dynamic data that needs to be updated
@@ -155,8 +155,9 @@ component extends="HibachiService" accessors="true" output="false" {
         							structAppend(updateData, setupDynamicUpdateData(arguments.data.entity, allupdateData.dynamicData));
         						}
         					};
-        					
+        					//writeDump();
         					arguments.data.entity = getHibachiScope().saveEntity(arguments.data.entity, updateData);
+        					//arguments.data.entity = getService('#arguments.data.entity.getClassName()#Service').save(arguments.data.entity,updateData);
         					
         					if(arguments.data.entity.hasErrors()) {
         						actionSuccess = false;
