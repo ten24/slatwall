@@ -137,8 +137,173 @@
 		</a>
 
 		<div id="collapseTwo" class="panel-collapse collapse in">
-			Nothing
+			<div class="panel-body">
+				<div class="col-md-6" style="padding:0px;">
 
+					<!--- //Tab panes for menu options end--->
+					<div class="s-table-header-nav">
+						<div class="col-xs-6">
+							<ul class="list-inline list-unstyled">
+								<li><h4>Example Title</h4></li>
+							</ul>
+						</div>
+						<div class="col-xs-6 s-table-view-options">
+							<ul class="list-inline list-unstyled">
+								<li>
+									<form class="s-table-header-search">
+										<div class="input-group">
+											<input type="text" class="form-control input-sm" placeholder="Search" name="srch-term" id="j-srch-term">
+											<div class="input-group-btn">
+												<button class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i></button>
+											</div>
+										</div>
+									</form>
+								</li>
+								<li>
+									<div class="btn-group navbar-left">
+										<button type="button" class="btn btn-sm s-btn-grey"><i class="fa fa-plus"></i></button>
+									</div>
+								</li>
+							</ul>
+
+						</div>
+					</div>
+
+					<div class="table-responsive s-filter-table-box">
+						<table class="table table-bordered table-striped">
+							<thead>
+								<tr>
+									<th>Row</th>
+									<th class="s-sortable">ID</th>
+									<th class="s-sortable">Brand</th>
+									<th class="s-sortable">Style</th>
+									<th></th>
+								</tr>
+							</thead>
+							<tbody>
+
+								<!---TR 1--->
+								<tr class="even-tr">
+									<td><div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
+									<td>2691402</td>
+									<td>Ario</td>
+									<td>Square Toe</td>
+									<td class="s-edit-elements">
+										<ul>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+										</ul>
+									</td>
+								</tr>
+
+								<!---TR 2--->
+								<tr class="even-tr">
+									<td><div class="s-checkbox"><input type="checkbox" id="j-checkbox2"><label for="j-checkbox2"></label></div></td>
+									<td>2691402</td>
+									<td>Ario</td>
+									<td>Square Toe</td>
+									<td class="s-edit-elements">
+										<ul>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+										</ul>
+									</td>
+								</tr>
+
+								<!---TR 3--->
+								<tr class="even-tr">
+									<td><div class="s-checkbox"><input type="checkbox" id="j-checkbox3"><label for="j-checkbox3"></label></div></td>
+									<td>2691402</td>
+									<td>Ario</td>
+									<td>Square Toe</td>
+									<td class="s-edit-elements">
+										<ul>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+										</ul>
+									</td>
+								</tr>
+
+								<!---TR 4--->
+								<tr class="even-tr">
+									<td><div class="s-checkbox"><input type="checkbox" id="j-checkbox4"><label for="j-checkbox4"></label></div></td>
+									<td>2691402</td>
+									<td>Ario</td>
+									<td>Square Toe</td>
+									<td class="s-edit-elements">
+										<ul>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+										</ul>
+									</td>
+								</tr>
+
+								<!---TR 11--->
+								<tr class="even-tr">
+									<td><div class="s-checkbox"><input type="checkbox" id="j-checkbox11"><label for="j-checkbox11"></label></div></td>
+									<td>2691402</td>
+									<td>Ario</td>
+									<td>Square Toe</td>
+									<td class="s-edit-elements">
+										<ul>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+										</ul>
+									</td>
+								</tr>
+
+								<!---TR 12--->
+								<tr class="even-tr">
+									<td><div class="s-checkbox"><input type="checkbox" id="j-checkbox12"><label for="j-checkbox12"></label></div></td>
+									<td>2691402</td>
+									<td>Ario</td>
+									<td>Square Toe</td>
+									<td class="s-edit-elements">
+										<ul>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+										</ul>
+									</td>
+								</tr>
+
+								<!---TR 13--->
+								<tr class="even-tr">
+									<td><div class="s-checkbox"><input type="checkbox" id="j-checkbox13"><label for="j-checkbox13"></label></div></td>
+									<td>2691402</td>
+									<td>Ario</td>
+									<td>Square Toe</td>
+									<td class="s-edit-elements">
+										<ul>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+										</ul>
+									</td>
+								</tr>
+
+								<!---TR 14--->
+								<tr class="even-tr">
+									<td><div class="s-checkbox"><input type="checkbox" id="j-checkbox14"><label for="j-checkbox14"></label></div></td>
+									<td>2691402</td>
+									<td>Ario</td>
+									<td>Square Toe</td>
+									<td class="s-edit-elements">
+										<ul>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="View"><a href="##"><i class="fa fa-eye"></i></a></span></li>
+											<li><span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="Edit"><a href="##"><i class="fa fa-pencil"></i></a></span></li>
+										</ul>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				</div>
+				<div class="col-md-6" style="padding-right:0px;">
+
+
+
+				</div>
+			</div>
 		</div>
 	</div>
 
