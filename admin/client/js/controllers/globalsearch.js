@@ -1,16 +1,16 @@
 'use strict';
 angular.module('slatwalladmin').controller('globalSearch', [
 	'$scope',
-	'$slatwall',
 	'$log',
 	'$window',
 	'$timeout',
+	'$slatwall',
 function(
 	$scope,
-	$slatwall,
 	$log,
 	$window,
-	$timeout
+	$timeout,
+	$slatwall
 ){
 	$scope.keywords = '';
 	$scope.searchResultsOpen = false;
@@ -74,7 +74,9 @@ function(
 				(function(entityName) {
 					
 					var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords} );
+					
 					searchPromise.then(function(data){
+						
 						if($scope.keywords === ''){
 							// clear out the results
 							$scope.searchResults[ entityName ].results = [];
@@ -99,6 +101,7 @@ function(
 					
 				})(entityName);
 			}
+			
 		}, 500);
 		$scope.showResults();
 	};
