@@ -847,7 +847,7 @@ function setupEventHandlers() {
 
 	//Initiate SelectBoxIt on select boxes
 	$("select").selectBoxIt();
-	
+
 }
 
 function initModal( modalWin ){
@@ -1185,7 +1185,7 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 				}
 
 				// Update the paging nav
-				
+
 				jQuery('div[class="j-pagination"][data-tableid="' + tableID + '"]').html(buildPagingNav(r["currentPage"], r["totalPages"], r["pageRecordsStart"], r["pageRecordsEnd"], r["recordsCount"]));
 				pagingShowToggleDefaultHidden();
 				// Update the saved state ID of the table
@@ -1270,7 +1270,7 @@ function buildPagingNav(currentPage, totalPages, pageRecordStart, pageRecordEnd,
 		nav += '<li><a href="##" class="show-option" data-show="100">100</a></li>';
 		nav += '<li><a href="##" class="show-option" data-show="500">500</a></li>';
 		nav += '<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>';
-	
+
 		if(currentPage > 1) {
 			nav += '<li><a href="#" class="listing-pager page-option prev" data-page="' + (currentPage - 1) + '">&laquo;</a></li>';
 		} else {
