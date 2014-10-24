@@ -836,3 +836,38 @@ top:50px;
     #slatwall-primary-nav .dropdown-menu a {color:#000;}
     #slatwall-primary-nav .dropdown-menu a:hover {background-color: #F58620;color:#fff;}
 }
+
+/* Hierarchical Depth */
+
+.depth1 {
+	margin-left:20px;
+}
+.depth2 {
+	margin-left:40px;
+}
+.depth3 {
+	margin-left:60px;
+}
+.depth4 {
+	margin-left:80px;
+}
+.depth5 {
+	margin-left:100px;
+}
+.depth6 {
+	margin-left:120px;
+}
+.depth7 {
+	margin-left:140px;
+}
+.depth8 {
+	margin-left:160px;
+}
+.depth9 {
+	margin-left:180px;
+}
+.depth10 {
+	margin-left:200px;
+}
+
+
