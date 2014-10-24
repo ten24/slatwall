@@ -50,9 +50,8 @@ Notes:
 <cfparam name="rc.productReviewSmartList" type="any" />
 
 <cfoutput>
-	<div class="alert-danger" >
-		<cf_HibachiMessageDisplay />
-	</div>
+	<cf_HibachiMessageDisplay />
+	
 	<div class="row">
 		<div class="col-md-6">
 			<cf_HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#" smartList="#rc.orderSmartList#" 

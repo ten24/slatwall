@@ -59,7 +59,7 @@ Notes:
 		<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 		<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
-<!--		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">-->
+		<!--- <link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet"> --->
 		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/main.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
 		<link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
@@ -274,28 +274,26 @@ Notes:
 			</cfif>
 		</div> <!--  /ng-controller | sidebarController -->
 
-
-
 	End new sidebar nav --->
 
 
 	<!--- Start old navbar --->
 	<body>
 
-		<div class="navbar navbar-fixed-top navbar-inverse" role="navigation" style="min-height: 46px;font-size: 14px;line-height: 14px;">
+		<div class="navbar navbar-fixed-top navbar-inverse" role="navigation" id="slatwall-navbar">
 			<div class="container-fluid" style="text-align:left;">
 
-				<div class="navbar-header" style="line-height: 43px;margin-right:20px;">
+				<div class="navbar-header">
 					<cfset homeLink = request.slatwallScope.getBaseURL() />
 					<cfif not len(homeLink)>
 						<cfset homeLink = "/" />
 					</cfif>
-					<a href="#homeLink#" class="brand" style="margin-left:-20px;"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" style="width:100px;heigh:16px;" title="Slatwall" /></a>
+					<a href="#homeLink#" class="brand"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" title="Slatwall" /></a>
 					<cfloop array="#$.slatwall.getService('integrationService').getAdminNavbarHTMLArray()#" index="navbarHTML">
 						#navbarHTML#
 					</cfloop>
 				</div>
-				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<div class="collapse navbar-collapse pull-right" id="bs-example-navbar-collapse-1">
 					<ul class="nav navbar-nav">
 						<li class="divider-vertical"></li>
 						<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="nav">
