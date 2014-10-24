@@ -1,6 +1,9 @@
 /*Import plugins*/
 @import url("../../../client/lib/selectBoxIt/selectBoxIt.css");
 
+
+
+
 /*Basic style overwrite*/
 body { background-color: #f3f3f4; font-family: 'Open Sans', sans-serif;color:#666666; padding-top: 60px; font-size:12px; }
 hr {border-right:1px solid #cccccc;}

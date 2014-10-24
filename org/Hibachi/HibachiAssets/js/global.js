@@ -712,10 +712,7 @@ function setupEventHandlers() {
 						jQuery('#adminModal').modal();
 						initUIElements('#adminModal');
 						jQuery('#adminModal').css({
-							'width': 'auto',
-							'margin-left': function () {
-					            return -(jQuery('#adminModal').width() / 2);
-					        }
+							'width': 'auto'
 						});
 					} else {
 						jQuery.each(r.messages, function(i, v){

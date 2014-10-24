@@ -54,23 +54,14 @@ Notes:
 	<cf_HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
 		<div class="s-top-spacer">
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionObject" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.collection#" property="description" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionCode" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<table class="sw-collection-display table" sw-collection-display="{'collectionObject': '#rc.collection.getCollectionObject()#', 'collectionID': '#rc.collection.getCollectionID()#'}">
-			<tr>
-				<th ng-repeat="pi in collection.propertyIdentifiers">{{pi}}</th>
-			</tr>
-			<tr ng-repeat="r in collection.pageRecords">
-				<td ng-repeat="pi in collection.propertyIdentifiers"><a ng-click="addFilter( pi )">{{r[pi]}}</a></td>
-			</tr>
-		</table>
+			<cf_HibachiPropertyRow>
+				<cf_HibachiPropertyList>
+					<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionName" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionObject" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.collection#" property="description" edit="#rc.edit#">
+					<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionCode" edit="#rc.edit#">
+				</cf_HibachiPropertyList>
+			</cf_HibachiPropertyRow>
 		</div>
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

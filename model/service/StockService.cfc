@@ -424,7 +424,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		// Set the status to closed
-		arguments.stockAdjustment.setStockAdjustmentStatusType( getSettingService().getTypeBySystemCode("sastClosed") );	
+		arguments.stockAdjustment.setStockAdjustmentStatusType( getTypeService().getTypeBySystemCode("sastClosed") );	
 
 	return arguments.stockAdjustment;
 

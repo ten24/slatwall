@@ -1,16 +1,16 @@
 'use strict';
 angular.module('slatwalladmin').controller('globalSearch', [
 	'$scope',
-	'$slatwall',
 	'$log',
 	'$window',
 	'$timeout',
+	'$slatwall',
 function(
 	$scope,
-	$slatwall,
 	$log,
 	$window,
-	$timeout
+	$timeout,
+	$slatwall
 ){
 	$scope.keywords = '';
 	$scope.searchResultsOpen = false;
@@ -62,15 +62,24 @@ function(
 
 	$scope.resultsCounter = 0;
 
+	var timeoutPromise;
+
+
 	$scope.updateSearchResults = function() {
-		var timeoutPromise = $timeout(function(){
+		if(timeoutPromise) {
+			$timeout.cancel(timeoutPromise);
+		}
+
+		timeoutPromise = $timeout(function(){
 			for (var entityName in $scope.searchResults){
 				$scope.loading = true;
 				(function(entityName) {
 
 					var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords} );
+
 					searchPromise.then(function(data){
-						if($scope.keywords == ''){
+
+						if($scope.keywords === ''){
 							// clear out the results
 							$scope.searchResults[ entityName ].results = [];
 							$scope.hideResults();
@@ -98,7 +107,6 @@ function(
 					});
 
 				})(entityName);
-
 			}
 		}, 500)
 		if($scope.resultsCounter > 0){
@@ -111,6 +119,7 @@ function(
 				'name':  $.slatwall.rbKey('admin.define.nosearchresults')
 			});
 		}
+		$scope.showResults();
 	};
 
 

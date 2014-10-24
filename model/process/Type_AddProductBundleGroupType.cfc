@@ -58,6 +58,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// Scheduling-related properties
 	public any function setupDefaults() {
-		variables.parentType=getService("settingService").getTypeBySystemCode("productBundleGroupType");
+		variables.parentType=getService("typeService").getTypeBySystemCode("productBundleGroupType");
 	}
 }

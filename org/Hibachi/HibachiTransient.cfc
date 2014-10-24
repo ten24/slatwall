@@ -4,6 +4,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	property name="hibachiMessages" type="any" persistent="false";
 	property name="populatedSubProperties" type="struct" persistent="false";
 	property name="validations" type="struct" persistent="false";
+	property name="announceEvent" type="boolean" persistent="false" default="true";
 
 	// ========================= START: ACCESSOR OVERRIDES ==========================================
 

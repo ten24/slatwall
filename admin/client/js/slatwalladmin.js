@@ -1,13 +1,14 @@
 'use strict';
 angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAnimate', function($locationProvider){
 	$locationProvider.html5Mode(true);
-}]).config(["$provide",'$logProvider','$filterProvider', function ($provide, $logProvider,$filterProvider) {
+}]).config(["$provide",'$logProvider','$filterProvider','$httpProvider', function ($provide, $logProvider,$filterProvider,$httpProvider) {
 	
 	var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/';
 	
 	$provide.constant("partialsPath", _partialsPath);
 	$provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');
 	$provide.constant("collectionPartialsPath", _partialsPath+'collection/');
+	$provide.constant("workflowPartialsPath", _partialsPath+'workflow/');
 	
 	// TODO: configure log provider on/off based on server side rules? 
 	var debugEnabled = true;
@@ -57,9 +58,9 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
         };
 	});
 	
-}]).run(['$rootScope','dialogService', function($rootScope, dialogService) {
+	$httpProvider.interceptors.push('slatwallInterceptor');
 	
-    
+}]).run(['$rootScope','dialogService', function($rootScope, dialogService) {
     $rootScope.openPageDialog = function( partial ) {
     	dialogService.addPageDialog( partial );
     };
