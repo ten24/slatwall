@@ -52,6 +52,7 @@ Notes:
 	<cf_HibachiPropertyRow>
 		<!--- Email Addresses --->
 		<cf_HibachiPropertyList divClass="col-md-6">
+		dfasdf
 			<h5>#$.slatwall.rbKey('entity.accountEmailAddress_plural')#</h5>
 			<cf_HibachiListingDisplay smartList="#rc.account.getAccountEmailAddressesSmartList()#"
 									  recordEditAction="admin:entity.editaccountemailaddress"
@@ -68,7 +69,6 @@ Notes:
 				<cf_HibachiListingColumn propertyIdentifier="accountEmailType.type" />
 				<cf_HibachiListingColumn propertyIdentifier="verifiedFlag" />
 			</cf_HibachiListingDisplay>
-			
 			<cf_HibachiActionCaller action="admin:entity.createaccountemailaddress" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
 		</cf_HibachiPropertyList>
 		
