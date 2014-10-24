@@ -555,12 +555,11 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/create-bundle-controller.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/edit-bundle-controller.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/preprocessaccount_addaccountpayment.js"></script>
-			<!---workflow controllers BEGIN --->
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/workflow/workflow-basic.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/workflow/workflow-triggers.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/workflow/workflow-tasks.js"></script>
-			<!---workflow controllers END --->
-
+		<!---workflow controllers BEGIN --->
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/workflow/workflow-basic.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/workflow/workflow-triggers.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/workflow/workflow-tasks.js"></script>
+		<!---workflow controllers END --->
 		<!---controllers END --->
 
 		<!---directives BEGIN--->

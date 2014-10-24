@@ -61,24 +61,40 @@ function(
 	};
 
 	$scope.resultsCounter = 0;
+<<<<<<< HEAD
 
 	var timeoutPromise;
 
 
+=======
+	
+	var timeoutPromise;
+	
+>>>>>>> abc85d0ad0d6d362608e050beeb776dbe11d2402
 	$scope.updateSearchResults = function() {
 		if(timeoutPromise) {
 			$timeout.cancel(timeoutPromise);
 		}
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> abc85d0ad0d6d362608e050beeb776dbe11d2402
 		timeoutPromise = $timeout(function(){
 			for (var entityName in $scope.searchResults){
 				$scope.loading = true;
 				(function(entityName) {
 
 					var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords} );
+<<<<<<< HEAD
 
 					searchPromise.then(function(data){
 
+=======
+					
+					searchPromise.then(function(data){
+						
+>>>>>>> abc85d0ad0d6d362608e050beeb776dbe11d2402
 						if($scope.keywords === ''){
 							// clear out the results
 							$scope.searchResults[ entityName ].results = [];
@@ -103,11 +119,15 @@ function(
 								$scope.loading = false;
 							}
 						}
+<<<<<<< HEAD
 
+=======
+>>>>>>> abc85d0ad0d6d362608e050beeb776dbe11d2402
 					});
 
 				})(entityName);
 			}
+<<<<<<< HEAD
 		}, 500)
 		if($scope.resultsCounter > 0){
 			$scope.searchResults['noResult'] = {
@@ -119,6 +139,10 @@ function(
 				'name':  $.slatwall.rbKey('admin.define.nosearchresults')
 			});
 		}
+=======
+			
+		}, 500);
+>>>>>>> abc85d0ad0d6d362608e050beeb776dbe11d2402
 		$scope.showResults();
 	};
 
