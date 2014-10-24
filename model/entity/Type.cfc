@@ -51,7 +51,7 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	// Persistent Properties
 	property name="typeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="typeIDPath" ormtype="string" length="4000";
-	property name="type" ormtype="string";
+	property name="typeName" ormtype="string";
 	property name="typeCode" ormtype="string";
 	property name="typeDescription" ormtype="string" length="4000";
 	property name="systemCode" ormtype="string" index="PI_SYSTEMCODE";
@@ -81,6 +81,7 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	// Non-Persistent Properties
 	
 	// Deprecated Properties
+	property name="type" type="string" persistent="false";
 
 
 	// ==================== START: Logical Methods =========================
@@ -136,10 +137,6 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 
 	// ================== START: Overridden Methods ========================
 
-	public string function getSimpleRepresentationPropertyName() {
-    	return "type";
-    }
-	
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
@@ -157,6 +154,10 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	// ===================  END:  ORM Event Hooks  =========================
 	
 	// ================== START: Deprecated Methods ========================
+	
+	public string function getType() {
+		return getTypeName();
+	}
 	
 	// ==================  END:  Deprecated Methods ========================
 

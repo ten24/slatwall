@@ -46,15 +46,45 @@
 Notes:
 
 --->
-<cfparam name="rc.type" type="any">
-<cfparam name="rc.edit" type="boolean">
 
-<cfoutput>
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<!---<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="false">--->
-			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeName" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeCode" edit="#rc.edit#">
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
-</cfoutput>
+<cfset local.scriptHasErrors = false />
+
+<!--- Update SwAttribute to move attributeTypeID to attributeType --->
+<cftry>
+	
+	<cfdbinfo type="Columns" name="local.typeColumns" table="SwType" datasource="#getApplicationValue("datasource")#" username="#getApplicationValue("datasourceUsername")#" password="#getApplicationValue("datasourcePassword")#" />
+	
+	<cfquery name="local.hasColumn" dbtype="query">
+		SELECT
+			*
+		FROM
+			typeColumns
+		WHERE
+			LOWER(COLUMN_NAME) = 'type'
+	</cfquery>
+	
+	<cfif local.hasColumn.recordCount>
+		<cfquery name="local.updateData">
+			<cfif getApplicationValue('databaseType') eq "Oracle10g">
+				UPDATE SwType SET SwType.typeName = SwType."type" WHERE SwType.typeName is null and SwType."type" is not null
+			<cfelse>
+				UPDATE SwType SET SwType.typeName = SwType.type WHERE SwType.typeName is null and SwType.type is not null
+			</cfif>
+		</cfquery>
+	</cfif>
+	
+	<cfcatch>
+		<Cfdump var="#cfcatch#" abort />
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update type to move the 'type' column to 'typeName'">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+	
+</cftry>
+
+
+<cfif local.scriptHasErrors>
+	<cflog file="Slatwall" text="General Log - Part of Script v4_0 had errors when running">
+	<cfthrow detail="Part of Script v4_0 had errors when running">
+<cfelse>
+	<cflog file="Slatwall" text="General Log - Script v4_0 has run with no errors">
+</cfif>
