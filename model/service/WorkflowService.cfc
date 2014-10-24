@@ -112,7 +112,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					if(!isnull(workflowTaskAction.getUpdateData())){
 						// Setup an action success variable
 						var actionSuccess = true;
-						arguments.data.entity.setAnnounceEvent(false);
+						
 						switch (workflowTaskAction.getActionType()) {
 							
 							// EMAIL
@@ -185,7 +185,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	        					
 	        					break;
 	        			}
-	        			arguments.data.entity.setAnnounceEvent(true);
+	        			
         			}
         			
 				}
