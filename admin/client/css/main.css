@@ -641,6 +641,7 @@ tabel .s-table-header {margin-bottom:10px;}
 
 .s-no-padding-left { padding-left:0px }
 .s-no-padding-right { padding-right:0px }
+.s-listing-head-margin { margin-bottom:55px }
 
 .s-create-window {margin-top:40px;margin-bottom: 36px;display: inline-block;width: 100%;background-color: #FFF;min-height:100vw;}
 .s-create-window .s-pannel-group {padding-top:20px;}

@@ -300,7 +300,7 @@
 
 	<cfoutput>
 		
-		<div class="s-table-header-nav" style="margin-bottom:60px">
+		<div class="s-table-header-nav s-listing-head-margin">
 			<div class="col-xs-6 s-no-padding-left">
 				<ul class="list-inline list-unstyled">
 					<li>
