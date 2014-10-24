@@ -3,9 +3,9 @@
 	  <section class="col-xs-12" >
 	
 	    
-	    <span 	ng-if="processObject.productBundleGroups.value"
+	    <span 	ng-if="productBundleGroups"
 	    		sw-product-bundle-groups
-	    		data-product-bundle-groups="processObject.productBundleGroups.value"
+	    		data-product-bundle-groups="productBundleGroups"
 	    >
 	    </span>
 	    <button class="btn btn-xs s-btn-grey s-create-bundle-btn"

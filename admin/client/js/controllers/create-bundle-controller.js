@@ -57,18 +57,18 @@ function(
 	$scope.getPropertyDisplayData();
 	
 	if(angular.isDefined(productID)){
-		/*var filterGroupsConfig = '[{"filterGroup":[{"propertyIdentifier":"ProductBundleGroup.productBundleSku.product.productID","comparisonOperator":"=","value":"'+productID+'"}]}]';
+		var filterGroupsConfig = '[{"filterGroup":[{"propertyIdentifier":"ProductBundleGroup.productBundleSku.product.productID","comparisonOperator":"=","value":"'+productID+'"}]}]';
 		
 		var productBundleGroupsOptions = {
 				context:'edit',
 				filterGroupsConfig:filterGroupsConfig.trim()
 		};
 		
-		$scope.processObject ={ 
+		/*$scope.processObject ={ 
 			productBundleGroups:{
 				value:[]
 			}
-		};
+		};*/
 			
 		var productBundleGroupPromise = $slatwall.getEntity(
 			'ProductBundleGroup',
@@ -76,14 +76,15 @@ function(
 		);
 		
 		productBundleGroupPromise.then(function(value){
-			$log.debug('getProcessObject');
-			$scope.processObject.productBundleGroups.value = value.pageRecords;
-			for(var i in $scope.processObject.productBundleGroups.value){
-				$scope.processObject.productBundleGroups.value[i] = productBundleService.formatProductBundleGroup($scope.processObject.productBundleGroups.value[i]);
-				$scope.processObject.productBundleGroups.value[i].$$editing = false;
+			$log.debug('getProductBundleGroups');
+			$scope.productBundleGroups = value.pageRecords;
+			$log.debug($scope.productBundleGroups);
+			for(var i in $scope.productBundleGroups){
+				$scope.productBundleGroups[i] = productBundleService.formatProductBundleGroup($scope.productBundleGroups[i]);
+				$scope.productBundleGroups[i].$$editing = false;
 				var productBundleGroupTypeOptions = {
 						propertyIdentifiersList:'ProductBundleGroup.productBundleGroupType',
-						id:$scope.processObject.productBundleGroups.value[i].productBundleGroupID
+						id:$scope.productBundleGroups[i].productBundleGroupID
 				};
 				
 				var productBundleGroupTypePromise = $slatwall.getEntity(
@@ -92,7 +93,7 @@ function(
 				);
 				
 				productBundleGroupTypePromise.then(function(value){
-					$scope.processObject.productBundleGroups.value[i].productBundleGroupType = value.productBundleGroupType[0];
+					$scope.productBundleGroups[i].productBundleGroupType = value.productBundleGroupType[0];
 				},function(reason){
 					//display error message if getter fails
 					var messages = reason.MESSAGES;
@@ -101,12 +102,7 @@ function(
 				});
 			}
 			$log.debug($scope.productBundleGroups);
-		},function(reason){
-			//display error message if getter fails
-			var messages = reason.MESSAGES;
-			var alerts = alertService.formatMessagesToAlerts(messages);
-			alertService.addAlerts(alerts);
-		});*/
+		});
 	}
 	
 	$scope.setForm = function(form){
@@ -193,7 +189,7 @@ function(
 					}
 					params[productBundleString+'.productBundleGroupID'] = '';
 					params[productBundleString+'.skuCollectionConfig'] = angular.toJson(productBundleGroup.skuCollectionConfig);
-					params[productBundleString+'.productBundleGroupType'] = productBundleGroup.productBundleGroupType.typeID;
+					params[productBundleString+'.productBundleGroupType.typeID'] = productBundleGroup.productBundleGroupType.typeID;
 					
 				}
 				$log.debug(params);
