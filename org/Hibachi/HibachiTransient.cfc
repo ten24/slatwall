@@ -155,9 +155,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	}
 
 	// ==========================  END: ERRORS / MESSAGES ===========================================
-	
-	public any function getAnnounced
-	
 	// ======================= START: POPULATION & VALIDATION =======================================
 	
 	public any function beforePopulate( required struct data={} ) {
