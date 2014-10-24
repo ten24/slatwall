@@ -823,7 +823,10 @@ component extends="HibachiService" accessors="true" {
 	//routed from processProduct_create
 	public any function processProduct_createBundle(required any product, required any processObject, any data){
 		arguments.product.getSkus()[1].setSkuCode(arguments.product.getProductCode() & "-1");
-		arguments.product.setDefaultSku(arguments.product.getSkus()[1]);
+		// If some skus were created, then set the default sku to the first one
+		if(arrayLen(arguments.product.getSkus())) {
+			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
+		}
 		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
 		
 		// Generate Image Files

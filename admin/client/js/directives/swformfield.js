@@ -101,10 +101,6 @@ partialsPath
 					if(scope.propertyDisplay.eagerLoadOptions === true){
 						scope.getOptions();
 					}
-					
-					
-					
-					
 		        	//formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
 		        }
 				if(scope.propertyDisplay.meta.fieldType === 'text' || scope.propertyDisplay.meta.fieldType === 'hidden'){
