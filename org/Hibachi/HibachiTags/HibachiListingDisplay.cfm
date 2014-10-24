@@ -324,7 +324,7 @@
 								</cfif>
 
 								<div class="input-group-btn">
-									<button class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i></button>
+									<button class="btn btn-default btn-sm" name="search" type="submit"><i class="fa fa-search"></i></button>
 								</div>
 							</div>
 						</form>
@@ -363,9 +363,7 @@
 								</cfif>
 							</div>
 						</div>
-					
-							
-							
+
 						</div>
 					</li>
 				</ul>
