@@ -124,7 +124,7 @@
 				<!--- Street Address (important the data-sw-address allows for this to be modified by jQuery below)--->
 				<cfif thisField eq "streetAddress">
 					<div class="control-group#iif(attributes.address.getCountry().getStreetAddressShowFlag(), de(''), de(' hide'))#" data-sw-property="streetAddress">
-						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.streetAddress')#</label>
+						<label class="control-label" for="rating" data-sw-label="true">#attributes.address.getCountry().getStreetAddressLabel()#</label>
 						<div class="controls" data-sw-field="true">
 							
 							<sw:formField type="text" name="#attributes.fieldNamePrefix#streetAddress" valueObject="#attributes.address#" valueObjectProperty="streetAddress" class="#attributes.fieldClass#" />
@@ -137,7 +137,7 @@
 				<!--- Street 2 Address (important the data-sw-address allows for this to be modified by jQuery below)--->
 				<cfif thisField eq "street2Address">
 					<div class="control-group#iif(attributes.address.getCountry().getStreet2AddressShowFlag(), de(''), de(' hide'))#" data-sw-property="street2Address">
-						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.street2Address')#</label>
+						<label class="control-label" for="rating" data-sw-label="true">#attributes.address.getCountry().getStreet2AddressLabel()#</label>
 						<div class="controls" data-sw-field="true">
 							
 							<sw:formField type="text" name="#attributes.fieldNamePrefix#street2Address" valueObject="#attributes.address#" valueObjectProperty="street2Address" class="#attributes.fieldClass#" />
@@ -150,7 +150,7 @@
 				<!--- Locality --->
 				<cfif thisField eq "locality">
 					<div class="control-group#iif(attributes.address.getCountry().getLocalityShowFlag(), de(''), de(' hide'))#" data-sw-property="locality">
-						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.locality')#</label>
+						<label class="control-label" for="rating" data-sw-label="true">#attributes.address.getCountry().getLocalityLabel()#</label>
 						<div class="controls" data-sw-field="true">
 							
 							<sw:formField type="text" name="#attributes.fieldNamePrefix#locality" valueObject="#attributes.address#" valueObjectProperty="locality" class="#attributes.fieldClass#" />
@@ -163,7 +163,7 @@
 				<!--- City --->
 				<cfif thisField eq "city">
 					<div class="control-group#iif(attributes.address.getCountry().getCityShowFlag(), de(''), de(' hide'))#" data-sw-property="city">
-						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.city')#</label>
+						<label class="control-label" for="rating" data-sw-label="true">#attributes.address.getCountry().getCityLabel()#</label>
 						<div class="controls" data-sw-field="true">
 							
 							<sw:formField type="text" name="#attributes.fieldNamePrefix#city" valueObject="#attributes.address#" valueObjectProperty="city" class="#attributes.fieldClass#" />
@@ -176,7 +176,7 @@
 				<!--- State Code --->
 				<cfif thisField eq "stateCode">
 					<div class="control-group#iif(attributes.address.getCountry().getStateCodeShowFlag(), de(''), de(' hide'))#" data-sw-property="stateCode">
-						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.stateCode')#</label>
+						<label class="control-label" for="rating" data-sw-label="true">#attributes.address.getCountry().getStateCodeLabel()#</label>
 						<div class="controls" data-sw-field="true">
 							
 							<cfif arrayLen(attributes.address.getStateCodeOptions())>
@@ -193,7 +193,7 @@
 				<!--- Postal Code --->
 				<cfif thisField eq "postalCode">
 					<div class="control-group#iif(attributes.address.getCountry().getPostalCodeShowFlag(), de(''), de(' hide'))#" data-sw-property="postalCode">
-						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.postalCode')#</label>
+						<label class="control-label" for="rating" data-sw-label="true">#attributes.address.getCountry().getPostalCodeLabel()#</label>
 						<div class="controls" data-sw-field="true">
 							
 							<sw:formField type="text" name="#attributes.fieldNamePrefix#postalCode" valueObject="#attributes.address#" valueObjectProperty="postalCode" class="#attributes.fieldClass#" />
