@@ -229,7 +229,7 @@
 						
 						// Now if a condition was meet we can actually test the individual validation rule
 						if(conditionMeet) {
-							validateConstraint(object=arguments.object, propertyIdentifier=propertyIdentifier, constraintDetails=contextValidations[ propertyIdentifier ][c]);
+							validateConstraint(object=arguments.object, propertyIdentifier=propertyIdentifier, constraintDetails=contextValidations[ propertyIdentifier ][c], errorBean=errorBean, context=arguments.context);
 						}
 					}	
 				}
@@ -245,7 +245,7 @@
 	}
 	
 	
-	public void function validateConstraint(required any object, required string propertyIdentifier, required struct constraintDetails, any errorBean, string context) {
+	public void function validateConstraint(required any object, required string propertyIdentifier, required struct constraintDetails, required any errorBean, required string context) {
 		if(!structKeyExists(variables, "validate_#arguments.constraintDetails.constraintType#")) {
 			throw("You have an error in the #arguments.object.getClassName()#.json validation file.  You have a constraint defined for '#arguments.propertyIdentifier#' that is called '#arguments.constraintDetails.constraintType#' which is not a valid constraint type");
 		}
