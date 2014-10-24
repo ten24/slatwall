@@ -299,7 +299,7 @@
 	</cfsilent>
 
 	<cfoutput>
-		<div class="table-responsive">
+		
 		<div class="s-table-header-nav">
 			<div class="col-xs-6">
 				<ul class="list-inline list-unstyled">
@@ -330,7 +330,8 @@
 						</form>
 					</li>
 					<li>
-						<div class="btn-group navbar-left">
+						<div class="btn-group navbar-left dropdown">
+							
 							<button type="button" class="btn btn-sm s-btn-grey dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus"></i></button>
 								<ul class="dropdown-menu pull-right" role="menu">
 									<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
@@ -372,7 +373,7 @@
 			</div>
 
 		
-		
+		<div class="table-responsive">
 			<table id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" #attributes.tableattributes#>
 				<thead>
 
