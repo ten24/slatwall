@@ -2,7 +2,7 @@
 @import url("../../../client/lib/selectBoxIt/selectBoxIt.css");
 
 /*Basic style overwrite*/
-body {background-color:#eeeeee;font-family: 'Open Sans', sans-serif;color:#666666;padding-top:51px;font-size:12px;}
+body { background-color: #f3f3f4; font-family: 'Open Sans', sans-serif;color:#666666;padding-top:51px;font-size:12px; }
 hr {border-right:1px solid #cccccc;}
 hr.s-dotted {border:none;border-bottom:3px dotted #eee;margin-top:20px;margin-bottom:20px;}
 th {font-weight:600;}
