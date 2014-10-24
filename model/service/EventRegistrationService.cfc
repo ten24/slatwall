@@ -47,10 +47,11 @@ Notes:
 
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
-	property name="commentService";
-	property name="settingService";
+	
+	property name="commentService" type="any";
 	property name="orderService" type="any";
-
+	property name="settingService" type="any";
+	property name="typeService" type="any";
 	
 	
 	// ===================== START: Logical Methods ===========================
@@ -81,7 +82,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Get list of all pending confirmations
 		var pendingConfirmationsSmartlist = getEventRegistrationSmartList();
 		pendingConfirmationsSmartlist.joinRelatedProperty("SlatwallType", "eventRegistrationStatusType", "left", true) ;
-		pendingConfirmationsSmartlist.addFilter("eventRegistrationStatusType.typeID","#getSettingService().getTypeBySystemCode('erstPendingConfirmation')#");
+		pendingConfirmationsSmartlist.addFilter("eventRegistrationStatusType.typeID","#getTypeService().getTypeBySystemCode('erstPendingConfirmation')#");
 		return pendingConfirmationsSmartlist;
 	}
 	
@@ -109,7 +110,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var smartList = this.getEventRegistrationSmartList();			
 		smartList.joinRelatedProperty("SlatwallEventRegistration", "sku", "left", true) ;
 		smartList.addInFilter('sku.skuID', '#arguments.sku.getSkuID()#');
-		smartList.addInFilter('eventRegistrationStatusType.typeID', '#getSettingService().getTypeBySystemCode('erstWaitlisted').getTypeID()#');
+		smartList.addInFilter('eventRegistrationStatusType.typeID', '#getTypeService().getTypeBySystemCode('erstWaitlisted').getTypeID()#');
 		smartList.addOrder("waitlistQueueDateTime|ASC");
 		return smartList.getRecords();
 	}
@@ -121,12 +122,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var smartlist = getEventRegistrationSmartList({},false);
 		smartList.joinRelatedProperty("SlatwallOrderItem", "sku", "left", true) ;
 		smartList.addFilter("skuID", "#arguments.sku.getSkuID()#");
-		smartList.addFilter("eventRegistrationStatusTypeID", "#getSettingService().getTypeBySystemCode("erstWaitlisted").getTypeID()#");
+		smartList.addFilter("eventRegistrationStatusTypeID", "#getTypeService().getTypeBySystemCode("erstWaitlisted").getTypeID()#");
 		smartList.addOrder("waitlistQueueDateTime|ASC");
 		if(smartlist.getRecordsCount()){
 			var registrants = smartlist.getRecords();
 			for(registrant in registrants) {
-					registrant.setRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPendingConfirmation"));
+					registrant.setRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPendingConfirmation"));
 					registrant.save();
 					if(notifiedCount==arguments.quantity) {
 						break;
@@ -137,7 +138,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getNonWaitlistedCountBySku(required any sku) {
 		var smartlist = getEventRegistrationSmartList({},false);
-		var waitlistedTypeID = getSettingService().getTypeBySystemCode('erstWaitlisted').getTypeID();
+		var waitlistedTypeID = getTypeService().getTypeBySystemCode('erstWaitlisted').getTypeID();
 		smartList.joinRelatedProperty("SlatwallEventRegistration", "sku", "left", true) ;
 		smartList.addInFilter('sku.skuID', '#arguments.sku.getSkuID()#');
 		smartlist.addWhereCondition("aslatwalleventregistration.eventRegistrationStatusType.typeID <> '#waitlistedTypeID#'");
@@ -146,7 +147,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getUnavailableSeatCountBySku(required any sku) {
 		var smartlist = getEventRegistrationSmartList({},false);
-		var cancelledTypeID = getSettingService().getTypeBySystemCode('erstCancelled').getTypeID();
+		var cancelledTypeID = getTypeService().getTypeBySystemCode('erstCancelled').getTypeID();
 		smartList.joinRelatedProperty("SlatwallEventRegistration", "sku", "left", true) ;
 		smartList.addInFilter('sku.skuID', '#arguments.sku.getSkuID()#');
 		smartlist.addWhereCondition("aslatwalleventregistration.eventRegistrationStatusType.typeID <> '#cancelledTypeID#'");
@@ -164,7 +165,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(availableSeatCount > 0) {
 			var waitlistedRegistrants = getWaitlistedRegistrants(arguments.sku);
 			for(registrant in waitlistedRegistrants) {
-				registrant.setRegistrationStatusType(getSettingService().getTypeBySystemCode("erstPendingConfirmation"));
+				registrant.setRegistrationStatusType(getTypeService().getTypeBySystemCode("erstPendingConfirmation"));
 				registrant.save();
 				notifiedCount++;
 				if(notifiedCount==availableSeatCount) {
@@ -194,7 +195,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Change the status
-		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstRegistered") );
+		arguments.eventRegistration.seteventRegistrationStatusType( getTypeService().getTypeBySystemCode("erstRegistered") );
 		
 		return arguments.eventRegistration;
 	}
@@ -207,7 +208,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Change the status
-		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstAttended") );
+		arguments.eventRegistration.seteventRegistrationStatusType( getTypeService().getTypeBySystemCode("erstAttended") );
 		
 		return arguments.eventRegistration;
 	}
@@ -242,7 +243,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Change the status
-		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstCancelled") );
+		arguments.eventRegistration.seteventRegistrationStatusType( getTypeService().getTypeBySystemCode("erstCancelled") );
 		getService("SkuService").processOrder(arguments.eventRegistration.getSku(), {}, 'notifyWaitlistOpenings');
 		
 		return arguments.eventRegistration;
@@ -256,7 +257,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var comment = getCommentService().newComment();
 			comment = getCommentService().saveComment(comment, arguments.processObject);
 		}
-		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstPendingConfirmation") );
+		arguments.eventRegistration.seteventRegistrationStatusType( getTypeService().getTypeBySystemCode("erstPendingConfirmation") );
 		
 		return arguments.eventRegistration;
 	}
@@ -277,7 +278,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Change the status
-		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstPending") );
+		arguments.eventRegistration.seteventRegistrationStatusType( getTypeService().getTypeBySystemCode("erstPending") );
 		
 		return arguments.eventRegistration;
 	}
@@ -290,7 +291,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Change the status
-		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstRegistered") );
+		arguments.eventRegistration.seteventRegistrationStatusType( getTypeService().getTypeBySystemCode("erstRegistered") );
 		
 		return arguments.eventRegistration;
 	}
@@ -303,7 +304,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Change the status
-		arguments.eventRegistration.seteventRegistrationStatusType( getSettingService().getTypeBySystemCode("erstWaitListed") );
+		arguments.eventRegistration.seteventRegistrationStatusType( getTypeService().getTypeBySystemCode("erstWaitListed") );
 		
 		return arguments.eventRegistration;
 	
@@ -348,7 +349,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function getRegistrationAttendenceSmartList(struct data={}) {
-		var attendanceTypes = [getSettingService().getTypeBySystemCode("erstRegistered").getTypeID(),getSettingService().getTypeBySystemCode("erstAttended").getTypeID()];
+		var attendanceTypes = [getTypeService().getTypeBySystemCode("erstRegistered").getTypeID(),getSettingService().getTypeBySystemCode("erstAttended").getTypeID()];
 		var attendanceTypesList = listQualify(arrayToList(attendanceTypes),"'");
 		arguments.entityName = "SlatwallEventRegistration";
 		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);

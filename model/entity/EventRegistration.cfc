@@ -95,7 +95,7 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	
 	public string function getRegistrationStatusTitle() {
 		if(!structKeyExists(variables,"registrationStatusTitle")) {
-			variables.registrationStatusTitle = this.getEventRegistrationStatusType().getType();
+			variables.registrationStatusTitle = this.getEventRegistrationStatusType().getTypeName();
 		}
 		return variables.registrationStatusTitle;
 	} 

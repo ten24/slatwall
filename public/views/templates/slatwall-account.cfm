@@ -985,7 +985,7 @@ Notes:
 											
 											<!--- This is the top accordian header row --->
 											<div class="accordion-heading">
-												<a class="accordion-toggle" data-toggle="collapse" data-parent="##order-history-acc" href="###orderDOMID#">Order ## #order.getOrderNumber()# &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; #order.getFormattedValue('orderOpenDateTime', 'date' )# &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; #order.getFormattedValue('total')# <span class="pull-right">Status: #order.getOrderStatusType().getType()#</span></a>
+												<a class="accordion-toggle" data-toggle="collapse" data-parent="##order-history-acc" href="###orderDOMID#">Order ## #order.getOrderNumber()# &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; #order.getFormattedValue('orderOpenDateTime', 'date' )# &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; #order.getFormattedValue('total')# <span class="pull-right">Status: #order.getOrderStatusType().getTypeName()#</span></a>
 											</div>
 											
 											<!--- This is the accordian details when expanded --->
@@ -1001,7 +1001,7 @@ Notes:
 															<table class="table table-bordered table-condensed">
 																<tr>
 																	<td>Order Status</td>
-																	<td>#order.getOrderStatusType().getType()#</td>
+																	<td>#order.getOrderStatusType().getTypeName()#</td>
 																</tr>
 																<tr>
 																	<td>Order ##</td>
@@ -1108,7 +1108,7 @@ Notes:
 																	</td>
 																	
 																	<!--- Status --->
-																	<td>#orderItem.getOrderItemStatusType().getType()#</td>
+																	<td>#orderItem.getOrderItemStatusType().getTypeName()#</td>
 																</tr>
 															</cfloop>
 															
@@ -1348,7 +1348,7 @@ Notes:
 																	</td>
 																	
 																	<!--- Status --->
-																	<td>#orderItem.getOrderItemStatusType().getType()#</td>
+																	<td>#orderItem.getOrderItemStatusType().getTypeName()#</td>
 																</tr>
 															</cfloop>
 															

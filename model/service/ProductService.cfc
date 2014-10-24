@@ -63,6 +63,7 @@ component extends="HibachiService" accessors="true" {
 	property name="settingService" type="any";
 	property name="skuService" type="any";
 	property name="subscriptionService" type="any";
+	property name="typeService" type="any";
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -358,19 +359,19 @@ component extends="HibachiService" accessors="true" {
 	private any function incrementDateTimeByRecurringTypeID(string recurringTypeID, string dateToIncrement) {
 		var result = "";
 
-		if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuDaily").getTypeID()) {
+		if(arguments.recurringTypeID == getTypeService().getTypeBySystemCode("rtuDaily").getTypeID()) {
 			result = dateAdd( "d", 1, arguments.dateToIncrement );
 		}
-		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuWeekdays").getTypeID()) {
+		else if(arguments.recurringTypeID == getTypeService().getTypeBySystemCode("rtuWeekdays").getTypeID()) {
 			result = dateAdd( "w" ,1, arguments.dateToIncrement );
 		}
-		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuWeekly").getTypeID()) {
+		else if(arguments.recurringTypeID == getTypeService().getTypeBySystemCode("rtuWeekly").getTypeID()) {
 			result = dateAdd( "ww", 1, arguments.dateToIncrement );
 		}
-		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuMonthly").getTypeID()) {
+		else if(arguments.recurringTypeID == getTypeService().getTypeBySystemCode("rtuMonthly").getTypeID()) {
 			result = dateAdd( "m", 1, arguments.dateToIncrement );
 		}
-		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuYearly").getTypeID()) {
+		else if(arguments.recurringTypeID == getTypeService().getTypeBySystemCode("rtuYearly").getTypeID()) {
 			result = dateAdd( "yyyy", 1, arguments.dateToIncrement );
 		}
 		

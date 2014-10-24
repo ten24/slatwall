@@ -90,7 +90,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public any function getScheduleEndDate() {
 		var result = "";
-		if(sku.hasProductSchedule() && sku.getProductSchedule().getScheduleEndType().getTypeID() == getService("SettingService").getTypeBySystemCode("setDate").getTypeID()) {
+		if(sku.hasProductSchedule() && sku.getProductSchedule().getScheduleEndType().getTypeID() == getService("typeService").getTypeBySystemCode("setDate").getTypeID()) {
 			result = sku.getProductSchedule().getScheduleEndDate();
 		}
 		return result;
@@ -99,7 +99,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public any function getScheduleEndOccurrences() {
 		var result = 1;
 		if(sku.hasProductSchedule()) {
-			if(sku.getProductSchedule().getScheduleEndType().getTypeID() == getService("SettingService").getTypeBySystemCode("setOccurrences").getTypeID()) {
+			if(sku.getProductSchedule().getScheduleEndType().getTypeID() == getService("typeService").getTypeBySystemCode("setOccurrences").getTypeID()) {
 				result = sku.getProductSchedule().getScheduleEndOccurrences();
 			} else {
 				result = "";
