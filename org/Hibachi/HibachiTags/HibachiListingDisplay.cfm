@@ -84,7 +84,7 @@
 		</cfif>
 
 		<!--- Setup the default table class --->
-		<cfset attributes.tableclass = listPrepend(attributes.tableclass, 'table table-bordered table-striped', ' ') />
+		<cfset attributes.tableclass = listPrepend(attributes.tableclass, 'table table-striped table-bordered table-condensed', ' ') />
 
 		<!--- Setup Select --->
 		<cfif len(attributes.selectFieldName)>
@@ -299,45 +299,16 @@
 	</cfsilent>
 
 	<cfoutput>
+		<div class="table-responsive">
+			<table id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" #attributes.tableattributes#>
+				<thead>
 
-
-
-
-			<div class="s-table-header-nav">
-				<div class="col-xs-6">
-					<ul class="list-inline list-unstyled">
-						<li><h4>Example Title</h4></li>
-					</ul>
-				</div>
-				<div class="col-xs-6 s-table-view-options">
-					<ul class="list-inline list-unstyled">
-						<li>
-							<form class="s-table-header-search ng-pristine ng-valid" novalidate="novalidate">
-								<div class="input-group">
-									<input type="text" class="form-control input-sm" placeholder="Search" name="srch-term" id="j-srch-term">
-									<div class="input-group-btn">
-										<button class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i></button>
-									</div>
-								</div>
-							</form>
-						</li>
-						<li>
-							<div class="btn-group navbar-left">
-								<button type="button" class="btn btn-sm s-btn-grey"><i class="fa fa-plus"></i></button>
-							</div>
-						</li>
-					</ul>
-
-				</div>
-			</div>
-
-
-<cfif attributes.showheader>
+					<cfif attributes.showheader>
 						<tr>
 							<th class="listing-display-header row" colspan='#thistag.columnCount#'>
 								<div class="col-md-8 s-content-left">
 									<cfif not thistag.expandable>
-										<input type="text" name="search" class="form-control input-sm" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
+										<input type="text" name="search" class="form-control general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
 									</cfif>
 									<cfif not thistag.expandable and len(attributes.title)>
 										<span style="font-size:14px;color:##666666;">&nbsp;|&nbsp;</span>
@@ -349,7 +320,7 @@
 								<div class="col-md-4 s-content-right">
 									<div class="groups">
 										<div class="btn-group">
-											<button class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
+											<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
 											<ul class="dropdown-menu pull-right" role="menu">
 												<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
 											</ul>
@@ -385,14 +356,6 @@
 							</th>
 						</tr>
 					</cfif>
-
-
-
-
-
-		<div class="table-responsive s-filter-table-box">
-			<table id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" #attributes.tableattributes#>
-				<thead>
 					<tr>
 						<!--- Selectable --->
 						<cfif thistag.selectable>
@@ -413,7 +376,7 @@
 							<th class="#class#">
 								<cfif not thistag.expandable and len(attributes.multiselectPropertyIdentifier)>
 									<div class="dropdown">
-										<a href="##" class="btn-sm dropdown-toggle" data-toggle="dropdown">&nbsp;<i class="glyphicon glyphicon-check"></i> </a>
+										<a href="##" class="dropdown-toggle" data-toggle="dropdown">&nbsp;<i class="glyphicon glyphicon-check"></i> </a>
 										<ul class="dropdown-menu nav">
 											<li><a href="##" class="multiselect-checked-filter"><i class="hibachi-ui-checkbox#IIF(attributes.edit, DE(''), DE('-checked'))#"></i> Show Selected</a></li>
 										</ul>
@@ -440,7 +403,7 @@
 									#column.title#
 								<cfelse>
 									<div class="dropdown">
-										<a href="##" class="btn-sm dropdown-toggle" data-toggle="dropdown">#column.title#</a>
+										<a href="##" class="dropdown-toggle" data-toggle="dropdown">#column.title#</a>
 										<ul class="dropdown-menu nav scrollable">
 											<cf_HibachiDividerHider>
 												<cfif column.sort and not thistag.expandable>

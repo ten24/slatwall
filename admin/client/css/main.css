@@ -146,7 +146,7 @@ a:-webkit-any-link {text-decoration:none !important;}
 .table>tbody>tr>td {border-top:0px !important;}
 .help-block {font-size:11px;}
 .has-error .form-control {border-color: #A94442 !important;}
-.navbar-inverse .navbar-nav>li>a {color: #999999;padding: 13px;font-size: 22px;}
+.navbar-inverse .navbar-nav>li>a {color: #999999;padding: 13px;font-size: 14px;}
 .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus {background-color: #1B1E24}
 .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus {background-color:#F58620;border-color:#F58620;}
 .pagination>.disabled>span, .pagination>.disabled>span:hover, .pagination>.disabled>span:focus, .pagination>.disabled>a, .pagination>.disabled>a:hover, .pagination>.disabled>a:focus {color: #CCC;}
@@ -470,6 +470,14 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-search-results #s-close-search {width:100%;text-align:right;margin-bottom:15px;}
 .s-search-results #s-close-search a {padding:5px;margin:0px;margin-right:10px;color:#aaaaaa;display:inline-block;}
 .s-search-results #s-close-search a:hover {color:#ffffff;}
+
+/*START Temp search result css - remove for left hand nav*/
+.s-temp-nav .s-search-results {margin-top: 10px;position: absolute;right: 0px;padding: 15px;top: 36px;min-width:340px;}
+.s-temp-nav .s-close-icon-search {right: 24px !important;position: absolute;font-size: 16px !important;top: 14px;color:#aaa;}
+.s-temp-nav .s-close-icon-search:hover {color:#666;}
+.s-not-logged-in .s-body-margin {margin-left:0px;margin-top:0px;}
+.s-body-margin {margin-left: 0px;}
+/*END Temp search result css - remove for left hand nav*/
 
 .s-bundle-group-items {margin-top:-1px;margin-bottom:15px;}
 .s-bundle-group-items .input-group .input-group-btn {z-index:1000;vertical-align:bottom;}
