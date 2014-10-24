@@ -54,8 +54,9 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	property name="typeName" ormtype="string";
 	property name="typeCode" ormtype="string";
 	property name="typeDescription" ormtype="string" length="4000";
+	property name="sortOrder" ormtype="integer" sortContext="parentType";
 	property name="systemCode" ormtype="string" index="PI_SYSTEMCODE";
-
+	
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)

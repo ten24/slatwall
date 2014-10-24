@@ -56,7 +56,8 @@ Notes:
 	<cf_HibachiListingDisplay smartList="#childTypesSmartList#"
 							   recordEditAction="admin:entity.edittype"
 							   recordDetailAction="admin:entity.detailtype"
-							   parentPropertyName="false">
+							   parentPropertyName="false"
+							   sortProperty="sortOrder">
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="type" />
 		<cf_HibachiListingColumn propertyIdentifier="typeCode" />
 		<cf_HibachiListingColumn propertyIdentifier="systemCode" />
