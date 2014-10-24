@@ -82,11 +82,6 @@ productBundleService){
 					
 					$log.debug('productBundleGroupFilters');
 					$log.debug(scope.productBundleGroupFilters);
-				},function(reason){
-					//display error message if getter fails
-					var messages = reason.MESSAGES;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlerts(alerts);
 				});
 			};
 			

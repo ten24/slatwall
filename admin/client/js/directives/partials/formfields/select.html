@@ -1,12 +1,16 @@
-<select type="{{propertyDisplay.fieldType}}" class="form-control" 
-		    		 ng-model="propertyDisplay.value"
+<select id="{{propertyDisplay.property}}" type="{{propertyDisplay.fieldType}}" class="form-control" 
+		    		 ng-model="propertyDisplay.selectedOption"
 		    		 ng-disabled="propertyDisplay.editable"
 		    		 ng-show="propertyDisplay.editing"
 		    		 ng-options="propertyDisplayOption.name
-  									 for propertyDisplayOption in propertyDisplay.object[propertyDisplay.valueOptions].value 
+  									 for propertyDisplayOption in propertyDisplay.meta.options
   									 track by propertyDisplayOption.value"
 					 ng-change="formFieldChanged(propertyDisplay.value)"
-></select>
+					 ng-click="getOptions()"
+					
+>
+	<option ng-bind="'Select '+propertyDisplay.meta.title"></option>
+</select>
 
 <!-- Error Messages -->
     
@@ -14,5 +18,5 @@
 	ng-repeat="(key,value) in propertyDisplay.errors"
 	ng-show="(propertyDisplay.form.$submitted && propertyDisplay.form[propertyDisplay.property].$invalid) || (propertyDisplay.form[propertyDisplay.property].$invalid && propertyDisplay.form[propertyDisplay.property].$dirty)"
 >
-  <span  ng-show="key === 'required'">{{propertyDisplay.title}} is a required field<br></span>
+  <span  ng-show="key === 'required'">{{propertyDisplay.meta.title}} is a required field<br></span>
 </span>

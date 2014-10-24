@@ -1,24 +1,22 @@
 
-<div class="{{propertyDisplay.fieldType}}">
-	<input type="radio" name="active" id="radio1"
-			ng-model="propertyDisplay.value"
-    		ng-disabled="propertyDisplay.editable"
+<div class="radio">
+	<input type="radio" name="{{propertyDisplay.property}}" id="{{propertyDisplay.property}}1"
+    		ng-model="propertyDisplay.selectedOption"
     		ng-show="propertyDisplay.editing"
-			value="true"
-			ng-change="formFieldChanged(propertyDisplay.value)"
+			ng-value="Yes "
 	>
-	<label for="radio1">
+	<label for="{{propertyDisplay.property}}1">
 			Yes
 	</label>
 </div>
-<div class="{{propertyDisplay.fieldType}}">
-	<input type="radio" name="active" id="radio2" 
-			ng-model="propertyDisplay.value"
-	   		ng-disabled="propertyDisplay.editable"
+<div class="radio">
+	
+	<input  type="radio" name="{{propertyDisplay.property}}"  id="{{propertyDisplay.property}}2"
+			ng-model="propertyDisplay.selectedOption"
 	   		ng-show="propertyDisplay.editing"
-	   		ng-change="formFieldChanged(propertyDisplay.value)"
+	   		value="No "
 	>
-	<label for="radio2">
+	<label for="{{propertyDisplay.property}}2">
 			No
 	</label>
 </div>
@@ -29,5 +27,5 @@
 	ng-repeat="(key,value) in propertyDisplay.errors"
 	ng-show="(propertyDisplay.form.$submitted && propertyDisplay.form[propertyDisplay.property].$invalid) || (propertyDisplay.form[propertyDisplay.property].$invalid && propertyDisplay.form[propertyDisplay.property].$dirty)"
 >
-  <span  ng-show="key === 'required'">{{propertyDisplay.title}} is a required field<br></span>
+  <span  ng-show="key === 'required'">{{propertyDisplay.meta.title}} is a required field<br></span>
 </span>

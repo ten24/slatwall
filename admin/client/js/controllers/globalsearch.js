@@ -61,15 +61,21 @@ function(
 	
 	$scope.resultsCounter = 0;
 	
+	var timeoutPromise;
+	
 	$scope.updateSearchResults = function() {
-		var timeoutPromise = $timeout(function(){
+		if(timeoutPromise) {
+			$timeout.cancel(timeoutPromise);
+		}
+		
+		timeoutPromise = $timeout(function(){
 			for (var entityName in $scope.searchResults){
 				
 				(function(entityName) {
 					
 					var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords} );
 					searchPromise.then(function(data){
-						if($scope.keywords == ''){
+						if($scope.keywords === ''){
 							// clear out the results
 							$scope.searchResults[ entityName ].results = [];
 							$scope.hideResults();
@@ -89,23 +95,12 @@ function(
 							}
 						
 						}
-						
 					});
 					
 				})(entityName);
-				
 			}
-		}, 500)
-		if($scope.resultsCounter > 0){
-			$scope.searchResults['noResult'] = {
-				'title': '',
-				'results' : []
-			};
-			
-			$scope.searchResults[ 'noResult' ].results.push({
-				'name':  $.slatwall.rbKey('admin.define.nosearchresults')
-			});
-		}
+		}, 500);
+		$scope.showResults();
 	};
 	
 

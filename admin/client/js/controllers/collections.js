@@ -5,7 +5,6 @@ angular.module('slatwalladmin')
 [ '$scope',
 '$location',
 '$slatwall',
-'alertService',
 'collectionService', 
 'metadataService',
 'paginationService',
@@ -14,7 +13,6 @@ angular.module('slatwalladmin')
 function($scope,
 $location,
 $slatwall,
-alertService,
 collectionService,
 metadataService,
 paginationService,
@@ -65,15 +63,10 @@ $timeout
 				
 				var collectionListingPromise = $slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.autoScrollPage, pageShow:50});
 				collectionListingPromise.then(function(value){
-					
 					$scope.collection.pageRecords = collectionService.getCollection().pageRecords.concat(value.pageRecords);
 					collectionService.setCollection($scope.collection);
 					$scope.autoScrollDisabled = false;
 				},function(reason){
-					//display error message if getter fails
-					var messages = reason.MESSAGES;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlerts(alerts);
 				});
 			}
 		}
@@ -107,10 +100,6 @@ $timeout
 			//check if we have any filter Groups
 			$scope.collectionConfig.filterGroups = collectionService.getRootFilterGroup();
 		},function(reason){
-			//display error message if getter fails
-			var messages = reason.MESSAGES;
-			var alerts = alertService.formatMessagesToAlerts(messages);
-			alertService.addAlerts(alerts);
 		});
 	};
 	
@@ -125,7 +114,6 @@ $timeout
 					metadataService.setPropertiesList(value,$scope.collectionConfig.baseEntityAlias);
 					$scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
 					metadataService.formatPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias],$scope.collectionConfig.baseEntityAlias);
-				}, function(reason){
 					
 				});
 			}
@@ -165,9 +153,7 @@ $timeout
 			
 			var saveCollectionPromise = $slatwall.saveEntity(entityName,collection.collectionID,data);
 			saveCollectionPromise.then(function(value){
-				var messages = value.MESSAGES;
-				var alerts = alertService.formatMessagesToAlerts(messages);
-				alertService.addAlerts(alerts);
+				
 				$scope.errorMessage = {};
 				//$scope.collectionForm.$setPristine();
 				$scope.getCollection();
@@ -180,9 +166,6 @@ $timeout
 					$scope.errorMessage[key] = value[0];
 				});
 				//$scope.collection = angular.copy($scope.collectionInitial);
-				var messages = reason.MESSAGES;
-				var alerts = alertService.formatMessagesToAlerts(messages);
-				alertService.addAlerts(alerts);
 			});
 		}
 	};
