@@ -46,19 +46,21 @@
 Notes:
 
 --->
-<cfparam name="rc.typeSmartList" type="any" />
-
+<cfparam name="rc.type" default="any" >
 <cfoutput>
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.typeSmartList#"
-							   recordDetailAction="admin:entity.detailtype"
+	
+	<cfset childTypesSmartList = $.slatwall.getSmartList('Type') />
+	<cfset childTypesSmartList.joinRelatedProperty('SlatwallType', 'parentType', 'inner') />
+	<cfset childTypesSmartList.addFilter('parentType.typeID', rc.type.getTypeID()) />
+	
+	<cf_HibachiListingDisplay smartList="#childTypesSmartList#"
 							   recordEditAction="admin:entity.edittype"
-							   parentPropertyName="parentType">
-							   
-		<!--- Create --->
-		<cf_HibachiListingDisplayButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createtype" class="btn btn-primary" icon="plus icon-white" />
-		</cf_HibachiListingDisplayButtonGroup>
-		
+							   recordDetailAction="admin:entity.detailtype"
+							   parentPropertyName="false">
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="type" />
+		<cf_HibachiListingColumn propertyIdentifier="typeCode" />
+		<cf_HibachiListingColumn propertyIdentifier="systemCode" />
 	</cf_HibachiListingDisplay>
+	
+	<cf_HibachiActionCaller action="admin:entity.createtype" class="btn btn-default" icon="plus" queryString="parentType.typeID=#rc.type.getTypeID()#" />
 </cfoutput>

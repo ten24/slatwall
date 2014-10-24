@@ -115,9 +115,9 @@
 				<cfset attributes.parentPropertyName = thisTag.entityMetaData.hb_parentPropertyName />
 			</cfif>
 		</cfif>
-
+		
 		<!--- Setup Hierarchy Expandable --->
-		<cfif len(attributes.parentPropertyName)>
+		<cfif len(attributes.parentPropertyName) && attributes.parentPropertyName neq 'false'>
 			<cfset thistag.expandable = true />
 
 			<cfset attributes.tableclass = listAppend(attributes.tableclass, 'table-expandable', ' ') />
@@ -131,7 +131,7 @@
 
 			<cfset attributes.smartList.setPageRecordsShow(1000000) />
 		</cfif>
-
+		
 		<!--- Setup Sortability --->
 		<cfif len(attributes.sortProperty)>
 			<cfif not arrayLen(attributes.smartList.getOrders())>

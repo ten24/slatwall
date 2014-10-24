@@ -50,15 +50,18 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.Type#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.Type#" />
+	<cf_HibachiEntityDetailForm object="#rc.type#" edit="#rc.edit#">
+		<cf_HibachiEntityActionBar type="detail" object="#rc.type#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.Type#" property="type" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<cf_HibachiEntityDetailGroup object="#rc.type#">
+			<cf_HibachiEntityDetailItem view="admin:entity/typetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cf_HibachiEntityDetailItem property="childTypes" />
+			
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.type.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<cf_SlatwallAdminTabCustomAttributes object="#rc.type#" attributeSet="#attributeSet#" />
+			</cfloop>
+		</cf_HibachiEntityDetailGroup>
 		
 	</cf_HibachiEntityDetailForm>
 </cfoutput>

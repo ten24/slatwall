@@ -46,19 +46,14 @@
 Notes:
 
 --->
-<cfparam name="rc.typeSmartList" type="any" />
+<cfparam name="rc.type" type="any">
+<cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.typeSmartList#"
-							   recordDetailAction="admin:entity.detailtype"
-							   recordEditAction="admin:entity.edittype"
-							   parentPropertyName="parentType">
-							   
-		<!--- Create --->
-		<cf_HibachiListingDisplayButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createtype" class="btn btn-primary" icon="plus icon-white" />
-		</cf_HibachiListingDisplayButtonGroup>
-		
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="type" />
-	</cf_HibachiListingDisplay>
+	<cf_HibachiPropertyRow>
+		<cf_HibachiPropertyList>
+			<!---<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="false">--->
+			<cf_HibachiPropertyDisplay object="#rc.Type#" property="type" edit="#rc.edit#">
+		</cf_HibachiPropertyList>
+	</cf_HibachiPropertyRow>
 </cfoutput>
