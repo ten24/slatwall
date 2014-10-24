@@ -2,7 +2,7 @@
 @import url("../../../client/lib/selectBoxIt/selectBoxIt.css");
 
 /*Basic style overwrite*/
-body { background-color: #f3f3f4; font-family: 'Open Sans', sans-serif;color:#666666; padding-top: 81px; font-size:12px; }
+body { background-color: #f3f3f4; font-family: 'Open Sans', sans-serif;color:#666666; padding-top: 60px; font-size:12px; }
 hr {border-right:1px solid #cccccc;}
 hr.s-dotted {border:none;border-bottom:3px dotted #eee;margin-top:20px;margin-bottom:20px;}
 th {font-weight:600;}
@@ -502,6 +502,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-body-margin {margin-left: 0px;}
 .navbar-inverse .navbar-collapse {min-height:60px;}
 .s-temp-nav #slatwall-navbar .nav {height:60px;}
+.navbar-inverse .navbar-nav>li>a:hover {background-color:#222 !important;}
 /*END Temp search result css - remove for left hand nav*/
 
 .s-bundle-group-items {margin-top:-1px;margin-bottom:15px;}
@@ -603,7 +604,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-bundle-group-items-list .s-bundle-add-obj .s-bundle-details-remove a {border-radius: 0px;position: absolute;right: -1px;top: -1px;height: 35px;padding-top: 7px;background-color: #666666;border-color:#666666;color: #FFF !important;}
 
 .s-remove:hover {background-color:#DA5757 !important;border:1px solid #DA5757 !important;color:#ffffff !important;}
-.s-pannel-group .panel-default .panel-heading {background-color:#aaaaaa;color:#ffffff; border-color:#888;border-bottom:1px solid #ccc;}
+.s-pannel-group .panel-default .panel-heading {background-color:#fff;color:#666; border-color:#888;border-bottom:1px solid #ccc;}
 .s-pannel-group .panel-default a {text-decoration:none;}
 .s-pannel-group .s-panel-header-info {display:inline-block;width:100%;}
 .s-panel-header-info .s-header-left {padding:0px;}

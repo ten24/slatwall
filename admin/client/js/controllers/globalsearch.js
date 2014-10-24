@@ -15,6 +15,7 @@ function(
 	$scope.keywords = '';
 	$scope.searchResultsOpen = false;
 	$scope.sidebarClass = 'sidebar';
+	$scope.loading = false; //Set loading wheel to false
 
 	$scope.searchResults = {
 		'product' : {
@@ -64,7 +65,7 @@ function(
 	$scope.updateSearchResults = function() {
 		var timeoutPromise = $timeout(function(){
 			for (var entityName in $scope.searchResults){
-
+				$scope.loading = true;
 				(function(entityName) {
 
 					var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords} );
@@ -86,8 +87,12 @@ function(
 							}
 							if($scope.searchResults[ entityName ].results.length){
 								$scope.resultsCounter++;
+								$scope.loading = false;
 							}
-
+							//Remove loading wheel if no results
+							if($scope.resultsCounter > 0){
+								$scope.loading = false;
+							}
 						}
 
 					});
