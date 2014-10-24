@@ -57,13 +57,10 @@ Notes:
 <cfoutput>
 	<cf_HibachiPropertyRow>
 		<cf_HibachiPropertyList>
-			<cfdump var="#rc.type.getChildTypesCount()#" />
-			<cfdump var="#$.slatwall.getService('hibachiValidationService').getValidationStruct( rc.type )#" />
-			<cfset eb = $.slatwall.getService('hibachiValidationService').validate( rc.type, 'delete') />
-			<cfdump var="#eb.getErrors()#" />
 			
-			
-			<input type="hidden" name="parentType.typeID" default="#rc.parentType.typeID#" />
+			<cfif rc.edit>
+				<input type="hidden" name="parentType.typeID" value="#rc.parentType.typeID#" />
+			</cfif>
 			
 			<!---<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="false">--->
 			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeName" edit="#rc.edit#">
