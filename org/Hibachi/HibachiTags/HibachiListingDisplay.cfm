@@ -300,62 +300,83 @@
 
 	<cfoutput>
 		<div class="table-responsive">
+		<div class="s-table-header-nav">
+			<div class="col-xs-6">
+				<ul class="list-inline list-unstyled">
+					<li>
+						<h4>
+							<cfif len(attributes.title)>
+								<span style="font-size:14px;color:##666666;">#attributes.title#</span>
+							</cfif>
+						</h4>
+					</li>
+				</ul>
+			</div>
+		
+			<div class="col-xs-6 s-table-view-options">
+				<ul class="list-inline list-unstyled">
+					<li>
+						<form class="s-table-header-search">
+							<div class="input-group">
+
+								<cfif not thistag.expandable>
+									<input type="text" name="search" class="form-control input-sm" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
+								</cfif>
+
+								<div class="input-group-btn">
+									<button class="btn btn-default btn-sm" type="submit"><i class="fa fa-search"></i></button>
+								</div>
+							</div>
+						</form>
+					</li>
+					<li>
+						<div class="btn-group navbar-left">
+							<button type="button" class="btn btn-sm s-btn-grey dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus"></i></button>
+								<ul class="dropdown-menu pull-right" role="menu">
+									<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
+								</ul>
+								<!--- Listing: Button Groups --->
+								<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
+									<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
+										<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
+											<cfif findNoCase('dropdown', #buttonGroup.generatedContent#)>
+													#buttonGroup.generatedContent#
+											<cfelse>
+												<div class="btn-group">
+													#buttonGroup.generatedContent#
+												</div>
+											</cfif>
+										</cfif>
+									</cfloop>
+								</cfif>
+
+								<!--- Listing: Create --->
+								<cfif len(attributes.createAction)>
+									<div class="btn-group">
+										<cfif attributes.createModal>
+											<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
+										<cfelse>
+											<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
+										</cfif>
+									</div>
+								</cfif>
+							</div>
+						</div>
+					
+							
+							
+						</div>
+					</li>
+				</ul>
+
+			</div>
+
+		
+		
 			<table id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" #attributes.tableattributes#>
 				<thead>
 
-					<cfif attributes.showheader>
-						<tr>
-							<th class="listing-display-header row" colspan='#thistag.columnCount#'>
-								<div class="col-md-8 s-content-left">
-									<cfif not thistag.expandable>
-										<input type="text" name="search" class="span3 general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
-									</cfif>
-									<cfif not thistag.expandable and len(attributes.title)>
-										<span style="font-size:14px;color:##666666;">&nbsp;|&nbsp;</span>
-									</cfif>
-									<cfif len(attributes.title)>
-										<span style="font-size:14px;color:##666666;">#attributes.title#</span>
-									</cfif>
-								</div>
-								<div class="col-md-4 s-content-right">
-									<div class="groups">
-										<div class="btn-group">
-											<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
-											<ul class="dropdown-menu pull-right" role="menu">
-												<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
-											</ul>
-										</div>
-
-										<!--- Listing: Button Groups --->
-										<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
-											<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
-												<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
-													<cfif findNoCase('dropdown', #buttonGroup.generatedContent#)>
-															#buttonGroup.generatedContent#
-													<cfelse>
-														<div class="btn-group">
-															#buttonGroup.generatedContent#
-														</div>
-													</cfif>
-												</cfif>
-											</cfloop>
-										</cfif>
-
-										<!--- Listing: Create --->
-										<cfif len(attributes.createAction)>
-											<div class="btn-group">
-												<cfif attributes.createModal>
-													<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
-												<cfelse>
-													<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
-												</cfif>
-											</div>
-										</cfif>
-									</div>
-								</div>
-							</th>
-						</tr>
-					</cfif>
+					
 					<tr>
 						<!--- Selectable --->
 						<cfif thistag.selectable>
@@ -544,7 +565,20 @@
 					</cfif>
 				</tbody>
 			</table>
+			
+			
+			
+			
+			
+			
+		</div><!--- reyjay's class --->
+				
+				
+				
+				
+				
 		</div><!--- table-responsive --->
+		
 		<!--- Pager --->
 		<cfsilent>
 			<cfset local.pageStart = 1 />
