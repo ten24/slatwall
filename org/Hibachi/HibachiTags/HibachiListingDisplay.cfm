@@ -308,7 +308,7 @@
 							<th class="listing-display-header row" colspan='#thistag.columnCount#'>
 								<div class="col-md-8 s-content-left">
 									<cfif not thistag.expandable>
-										<input type="text" name="search" class="span3 general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
+										<input type="text" name="search" class="form-control general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
 									</cfif>
 									<cfif not thistag.expandable and len(attributes.title)>
 										<span style="font-size:14px;color:##666666;">&nbsp;|&nbsp;</span>
