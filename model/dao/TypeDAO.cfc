@@ -46,35 +46,22 @@
 Notes:
 
 --->
-<cfparam name="rc.type" type="any">
-<cfparam name="rc.parentType.typeID" type="string" default="">
-<cfparam name="rc.edit" type="boolean">
-
-<cfif !isNull(rc.type.getParentType())>
-	<cfset local.parentType = rc.type.getParentType() />
-	<cfset rc.parentType.typeID = rc.type.getParentType().getTypeID() />
-<cfelseif isNull(rc.type.getParentType()) && len(rc.parentType.typeID)>
-	<cfset local.parentType = $.slatwall.getEntity('Type', rc.parentType.typeID) />
-<cfelse>
-	<cfset local.parentType = javaCast('null', '') />	
-</cfif>
-
-<cfoutput>
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			
-			<cfif rc.edit>
-				<input type="hidden" name="parentType.typeID" value="#rc.parentType.typeID#" />
-			</cfif>
-			
-			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeName" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeCode" edit="#rc.edit#">
-
-			<cfif !isNull(local.parentType) && !isNull(local.parentType.getSystemCode())>
-				<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="#rc.type.getNewFlag()#" fieldType="select" valueOptions="#$.slatwall.getService('typeService').getTypeSystemCodeOptionsByParentSystemCode(local.parentType.getSystemCode())#">
-			<cfelseif isNull(local.parentType) && !isNull(rc.type.getSystemCode())>
-				<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="false">
-			</cfif>
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
-</cfoutput>
+<cfcomponent extends="HibachiDAO" accessors="true" output="false">
+	
+	<cffunction name="getTypeSystemCodeOptionsByParentSystemCode" output="false" access="public">
+		<cfargument name="systemCode" type="string" required="true" >
+		
+		<cfset var options = ormExecuteQuery("SELECT DISTINCT NEW MAP(atype.systemCode as name, atype.systemCode as value) FROM SlatwallType atype WHERE atype.parentType.systemCode = ?", [arguments.systemCode]) />
+		
+		<cfset arrayPrepend(options, {name=rbKey('define.select'), value=""}) />
+		 
+		<cfreturn options />
+	</cffunction>
+	
+	<cffunction name="getSystemCodeTypeCount" output="false" access="public">
+		<cfargument name="systemCode" type="string" required="true" >
+		
+		<cfreturn ormExecuteQuery("SELECT count(atype.typeID) FROM SlatwallType atype WHERE atype.systemCode = ?", [arguments.systemCode])[1] />
+	</cffunction>
+	
+</cfcomponent>

@@ -55,7 +55,9 @@ Notes:
 		
 		<cf_HibachiEntityDetailGroup object="#rc.type#">
 			<cf_HibachiEntityDetailItem view="admin:entity/typetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cf_HibachiEntityDetailItem property="childTypes" />
+			<cfif isNull(rc.type.getParentType())>
+				<cf_HibachiEntityDetailItem property="childTypes" />
+			</cfif>
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.type.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">

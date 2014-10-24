@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallType" table="SwType" persistent="true" accessors="true" output="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="settingService" hb_permission="this" hb_parentPropertyName="parentType" {
+component entityname="SlatwallType" table="SwType" persistent="true" accessors="true" output="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="typeService" hb_permission="this" hb_parentPropertyName="parentType" {
 	
 	// Persistent Properties
 	property name="typeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -85,6 +85,14 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 
 
 	// ==================== START: Logical Methods =========================
+	
+	public boolean function hasPeerTypeWithMatchingSystemCode() {
+		if(isNull(getSystemCode())) {
+			return true;
+		} else {
+			return getService('typeService').getSystemCodeTypeCount( getSystemCode() ) > 1;
+		}
+	}
 	
 	// ====================  END: Logical Methods ==========================
 	

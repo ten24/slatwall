@@ -59,6 +59,8 @@ Notes:
 			<cf_HibachiActionCaller action="admin:entity.createtype" class="btn btn-primary" icon="plus icon-white" />
 		</cf_HibachiListingDisplayButtonGroup>
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="type" />
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="typeName" />
+		<cf_HibachiListingColumn propertyIdentifier="typeCode" />
+		<cf_HibachiListingColumn propertyIdentifier="systemCode" />
 	</cf_HibachiListingDisplay>
 </cfoutput>

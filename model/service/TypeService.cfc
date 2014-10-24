@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,36 +45,57 @@
 
 Notes:
 
---->
-<cfparam name="rc.type" type="any">
-<cfparam name="rc.parentType.typeID" type="string" default="">
-<cfparam name="rc.edit" type="boolean">
+*/
+component extends="HibachiService" accessors="true" output="false" {
+	
+	property name="typeDAO" type="any";
+	
+	// ===================== START: Logical Methods ===========================
+	
+	// =====================  END: Logical Methods ============================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	public array function getTypeSystemCodeOptionsByParentSystemCode( required string systemCode ) {
+		return getTypeDAO().getTypeSystemCodeOptionsByParentSystemCode(argumentCollection=arguments);
+	}
+	
+	public numeric function getSystemCodeTypeCount( required string systemCode ) {
+		return getTypeDAO().getSystemCodeTypeCount(argumentCollection=arguments);
+	}
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: Process Methods ===========================
+	
+	// =====================  END: Process Methods ============================
+	
+	// ====================== START: Status Methods ===========================
+	
+	// ======================  END: Status Methods ============================
+	
+	// ====================== START: Save Overrides ===========================
+	
+	// ======================  END: Save Overrides ============================
+	
+	// ==================== START: Smart List Overrides =======================
+	
+	// ====================  END: Smart List Overrides ========================
+	
+	// ====================== START: Get Overrides ============================
+	
+	// ======================  END: Get Overrides =============================
+	
+	// ===================== START: Delete Overrides ==========================
+	
+	// =====================  END: Delete Overrides ===========================
+	
+	// ================== START: Private Helper Functions =====================
+	
+	// ==================  END:  Private Helper Functions =====================
 
-<cfif !isNull(rc.type.getParentType())>
-	<cfset local.parentType = rc.type.getParentType() />
-	<cfset rc.parentType.typeID = rc.type.getParentType().getTypeID() />
-<cfelseif isNull(rc.type.getParentType()) && len(rc.parentType.typeID)>
-	<cfset local.parentType = $.slatwall.getEntity('Type', rc.parentType.typeID) />
-<cfelse>
-	<cfset local.parentType = javaCast('null', '') />	
-</cfif>
-
-<cfoutput>
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			
-			<cfif rc.edit>
-				<input type="hidden" name="parentType.typeID" value="#rc.parentType.typeID#" />
-			</cfif>
-			
-			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeName" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeCode" edit="#rc.edit#">
-
-			<cfif !isNull(local.parentType) && !isNull(local.parentType.getSystemCode())>
-				<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="#rc.type.getNewFlag()#" fieldType="select" valueOptions="#$.slatwall.getService('typeService').getTypeSystemCodeOptionsByParentSystemCode(local.parentType.getSystemCode())#">
-			<cfelseif isNull(local.parentType) && !isNull(rc.type.getSystemCode())>
-				<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="false">
-			</cfif>
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
-</cfoutput>
+	// =================== START: Deprecated Functions ========================
+	
+	// ===================  END: Deprecated Functions =========================
+	
+}

@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,36 +45,28 @@
 
 Notes:
 
---->
-<cfparam name="rc.type" type="any">
-<cfparam name="rc.parentType.typeID" type="string" default="">
-<cfparam name="rc.edit" type="boolean">
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-<cfif !isNull(rc.type.getParentType())>
-	<cfset local.parentType = rc.type.getParentType() />
-	<cfset rc.parentType.typeID = rc.type.getParentType().getTypeID() />
-<cfelseif isNull(rc.type.getParentType()) && len(rc.parentType.typeID)>
-	<cfset local.parentType = $.slatwall.getEntity('Type', rc.parentType.typeID) />
-<cfelse>
-	<cfset local.parentType = javaCast('null', '') />	
-</cfif>
+	public void function setUp() {
+		super.setup();
+		
+		variables.dao = request.slatwallScope.getDAO("typeDAO");
+	}
 
-<cfoutput>
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			
-			<cfif rc.edit>
-				<input type="hidden" name="parentType.typeID" value="#rc.parentType.typeID#" />
-			</cfif>
-			
-			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeName" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeCode" edit="#rc.edit#">
-
-			<cfif !isNull(local.parentType) && !isNull(local.parentType.getSystemCode())>
-				<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="#rc.type.getNewFlag()#" fieldType="select" valueOptions="#$.slatwall.getService('typeService').getTypeSystemCodeOptionsByParentSystemCode(local.parentType.getSystemCode())#">
-			<cfelseif isNull(local.parentType) && !isNull(rc.type.getSystemCode())>
-				<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="false">
-			</cfif>
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
-</cfoutput>
+	public void function inst_ok() {
+		assert(isObject(variables.dao));
+	}
+	
+	// getSystemCodeTypeCount()
+	public void function getSystemCodeTypeCount_returns_numeric_value_of_one_for_top_level_type() {
+		
+		assertEquals(1, variables.dao.getSystemCodeTypeCount( systemCode="orderStatusType" ));
+	}
+	
+	public void function getSystemCodeTypeCount_returns_numeric_value_of_zero_for_fake() {
+		
+		assertEquals(0, variables.dao.getSystemCodeTypeCount( systemCode="my-fake-system-code" ));
+	}
+	
+}
