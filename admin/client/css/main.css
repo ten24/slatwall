@@ -639,6 +639,9 @@ tabel .s-table-header {margin-bottom:10px;}
 .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a .caret { border-bottom-color: #F58620}
 .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #F58620}
 
+.s-no-padding-left { padding-left:0px }
+.s-no-padding-right { padding-right:0px }
+
 .s-create-window {margin-top:40px;margin-bottom: 36px;display: inline-block;width: 100%;background-color: #FFF;min-height:100vw;}
 .s-create-window .s-pannel-group {padding-top:20px;}
 .s-create-window .s-absolute-top-nav {}
