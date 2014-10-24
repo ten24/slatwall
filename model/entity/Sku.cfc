@@ -610,7 +610,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		if(!structKeyExists(variables, "registeredUserCount")) {
 			var ruCount = 0;
 			if(arrayLen(this.getEventRegistrations())) {
-				var statusList = "#getService('settingService').getTypeBySystemCode('erstRegistered').getTypeID()#,#getService('settingService').getTypeBySystemCode('erstPendingConfirmation').getTypeID()#";
+				var statusList = "#getService('typeService').getTypeBySystemCode('erstRegistered').getTypeID()#,#getService('typeService').getTypeBySystemCode('erstPendingConfirmation').getTypeID()#";
 				for(var er in this.getEventRegistrations()) {
 					if( listFindNoCase( statusList, er.getEventRegistrationStatusType().getTypeID() ) ) {
 						ruCount++;

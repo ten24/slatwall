@@ -63,6 +63,7 @@ component extends="HibachiService" accessors="true" {
 	property name="settingService" type="any";
 	property name="skuService" type="any";
 	property name="subscriptionService" type="any";
+	property name="typeService" type="any";
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -358,19 +359,19 @@ component extends="HibachiService" accessors="true" {
 	private any function incrementDateTimeByRecurringTypeID(string recurringTypeID, string dateToIncrement) {
 		var result = "";
 
-		if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuDaily").getTypeID()) {
+		if(arguments.recurringTypeID == getTypeService().getTypeBySystemCode("rtuDaily").getTypeID()) {
 			result = dateAdd( "d", 1, arguments.dateToIncrement );
 		}
-		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuWeekdays").getTypeID()) {
+		else if(arguments.recurringTypeID == getTypeService().getTypeBySystemCode("rtuWeekdays").getTypeID()) {
 			result = dateAdd( "w" ,1, arguments.dateToIncrement );
 		}
-		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuWeekly").getTypeID()) {
+		else if(arguments.recurringTypeID == getTypeService().getTypeBySystemCode("rtuWeekly").getTypeID()) {
 			result = dateAdd( "ww", 1, arguments.dateToIncrement );
 		}
-		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuMonthly").getTypeID()) {
+		else if(arguments.recurringTypeID == getTypeService().getTypeBySystemCode("rtuMonthly").getTypeID()) {
 			result = dateAdd( "m", 1, arguments.dateToIncrement );
 		}
-		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuYearly").getTypeID()) {
+		else if(arguments.recurringTypeID == getTypeService().getTypeBySystemCode("rtuYearly").getTypeID()) {
 			result = dateAdd( "yyyy", 1, arguments.dateToIncrement );
 		}
 		
@@ -823,6 +824,10 @@ component extends="HibachiService" accessors="true" {
 	//routed from processProduct_create
 	public any function processProduct_createBundle(required any product, required any processObject, any data){
 		arguments.product.getSkus()[1].setSkuCode(arguments.product.getProductCode() & "-1");
+		// If some skus were created, then set the default sku to the first one
+		if(arrayLen(arguments.product.getSkus())) {
+			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
+		}
 		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
 		
 		// Generate Image Files

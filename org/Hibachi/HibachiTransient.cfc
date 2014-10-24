@@ -4,7 +4,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	property name="hibachiMessages" type="any" persistent="false";
 	property name="populatedSubProperties" type="struct" persistent="false";
 	property name="validations" type="struct" persistent="false";
-	
+	property name="announceEvent" type="boolean" persistent="false" default="true";
+
 	// ========================= START: ACCESSOR OVERRIDES ==========================================
 
 	// @hint Returns the errorBean object, if one hasn't been setup yet it returns a new one

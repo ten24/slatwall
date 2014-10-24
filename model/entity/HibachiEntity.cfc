@@ -51,7 +51,6 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	property name="assignedAttributeSetSmartList" type="any" persistent="false";
 	property name="attributeValuesByAttributeIDStruct" type="struct" persistent="false";
 	property name="attributeValuesByAttributeCodeStruct" type="struct" persistent="false";
-	property name="triggeredWorkflowEvents" type="array" persistent="false";
 
 	// @hint Override the populate method to look for custom attributes
 	public any function populate( required struct data={} ) {
@@ -395,11 +394,5 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return defaultProperties;
 	}
 	
-	public array function getTriggeredWorkflowEvents() {
-		if(!structKeyExists(variables, "triggeredWorkflowEvents")) {
-			variables.triggeredWorkflowEvents = [];
-		}
-		return variables.triggeredWorkflowEvents; 
-	}
 
 }

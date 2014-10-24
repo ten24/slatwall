@@ -137,7 +137,7 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	}
 	
 	public string function getDisplayName(){
-		var displayName = "#getStockAdjustmentType().getType()#:";
+		var displayName = "#getStockAdjustmentType().getTypeName()#:";
 		if(!isNull(getFromLocation())) {
 			displayName = listAppend(displayName, getFromLocation().getLocationName(), " ");
 		}
@@ -210,14 +210,14 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 
 	public any function getStockAdjustmentType() {
 		if( !structKeyExists(variables, "stockAdjustmentType") ) {
-			variables.stockAdjustmentType = getService("settingService").getTypeBySystemCode("satLocationTransfer");
+			variables.stockAdjustmentType = getService("typeService").getTypeBySystemCode("satLocationTransfer");
 		}
 		return variables.stockAdjustmentType;
 	}
 	
 	public any function getStockAdjustmentStatusType() {
 		if( !structKeyExists(variables, "stockAdjustmentStatusType") ) {
-			variables.stockAdjustmentStatusType = getService("settingService").getTypeBySystemCode("sastNew");
+			variables.stockAdjustmentStatusType = getService("typeService").getTypeBySystemCode("sastNew");
 		}
 		return variables.stockAdjustmentStatusType;
 	}

@@ -712,10 +712,7 @@ function setupEventHandlers() {
 						jQuery('#adminModal').modal();
 						initUIElements('#adminModal');
 						jQuery('#adminModal').css({
-							'width': 'auto',
-							'margin-left': function () {
-					            return -(jQuery('#adminModal').width() / 2);
-					        }
+							'width': 'auto'
 						});
 					} else {
 						jQuery.each(r.messages, function(i, v){
@@ -818,16 +815,16 @@ function setupEventHandlers() {
 	});
 
 	//[TODO]: Change Up JS
-	jQuery('.panel-collapse.in').parent().find('.panel-title i').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
+	jQuery('.panel-collapse.in').parent().find('.s-accordion-toggle-icon').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
 
 	jQuery('body').on('shown.bs.collapse', '.j-panel', function(e){
 		e.preventDefault();
-		jQuery(this).find('.panel-title i').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
+		jQuery(this).find('.s-accordion-toggle-icon').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
 	});
 
 	jQuery('body').on('hidden.bs.collapse', '.j-panel', function(e){
 		e.preventDefault();
-		jQuery(this).find('.panel-title i').removeClass('fa fa-caret-down').addClass('fa fa-caret-left');
+		jQuery(this).find('.s-accordion-toggle-icon').removeClass('fa fa-caret-down').addClass('fa fa-caret-left');
 	});
 
 	//UI Collections - show export and delete options

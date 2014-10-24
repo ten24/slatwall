@@ -158,8 +158,8 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
    
     public array function getValidationTypeOptions() {
 		if(!structKeyExists(variables, "validationTypeOptions")) {
-			var smartList = getService("settingService").getTypeSmartList();
-			smartList.addSelect(propertyIdentifier="type", alias="name");
+			var smartList = getService("typeService").getTypeSmartList();
+			smartList.addSelect(propertyIdentifier="typeName", alias="name");
 			smartList.addSelect(propertyIdentifier="typeID", alias="value");
 			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="validationType"); 
 			variables.validationTypeOptions = smartList.getRecords();

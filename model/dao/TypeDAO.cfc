@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,19 +45,23 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="HibachiProcess" {
-
-	// Injected Entity
-	property name="type";
-
-	// Data Properties
-	property name="systemCode";
-	property name="typeDescription";
-	property name="parentType";
+--->
+<cfcomponent extends="HibachiDAO" accessors="true" output="false">
 	
-	// Scheduling-related properties
-	public any function setupDefaults() {
-		variables.parentType=getService("typeService").getTypeBySystemCode("productBundleGroupType");
-	}
-}
+	<cffunction name="getTypeSystemCodeOptionsByParentSystemCode" output="false" access="public">
+		<cfargument name="systemCode" type="string" required="true" >
+		
+		<cfset var options = ormExecuteQuery("SELECT DISTINCT NEW MAP(atype.systemCode as name, atype.systemCode as value) FROM SlatwallType atype WHERE atype.parentType.systemCode = ?", [arguments.systemCode]) />
+		
+		<cfset arrayPrepend(options, {name=rbKey('define.select'), value=""}) />
+		 
+		<cfreturn options />
+	</cffunction>
+	
+	<cffunction name="getSystemCodeTypeCount" output="false" access="public">
+		<cfargument name="systemCode" type="string" required="true" >
+		
+		<cfreturn ormExecuteQuery("SELECT count(atype.typeID) FROM SlatwallType atype WHERE atype.systemCode = ?", [arguments.systemCode])[1] />
+	</cffunction>
+	
+</cfcomponent>

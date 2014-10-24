@@ -48,15 +48,16 @@ Notes:
 */
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 	
-	property name="venderOrderDAO";
+	property name="venderOrderDAO" type="any";
 	
-	property name="addressService";
-	property name="locationService";
-	property name="productService";
-	property name="settingService";
-	property name="skuService";
-	property name="stockService";
-	property name="taxService";
+	property name="addressService" type="any";
+	property name="locationService" type="any";
+	property name="productService" type="any";
+	property name="settingService" type="any";
+	property name="skuService" type="any";
+	property name="stockService" type="any";
+	property name="taxService" type="any";
+	property name="typeService" type="any";
 	
 	public any function getVendorOrderSmartList(struct data={}) {
 		arguments.entityName = "SlatwallVendorOrder";
@@ -111,7 +112,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processVendorOrder_addVendorOrderItem(required any vendorOrder, required any processObject){
 		
-		var vendorOrderItemType = getSettingService().getTypeBySystemCode( arguments.processObject.getVendorOrderItemTypeSystemCode() );
+		var vendorOrderItemType = getTypeService().getTypeBySystemCode( arguments.processObject.getVendorOrderItemTypeSystemCode() );
 		var deliverToLocation = getStockService().getStockBySkuAndLocation(arguments.processObject.getSku(),getLocationService().getLocation(arguments.processObject.getDeliverToLocationID()));
 		
 		var newVendorOrderItem = this.newVendorOrderItem();

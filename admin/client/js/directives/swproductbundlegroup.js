@@ -68,10 +68,11 @@ productBundleService){
 			};
 			
 			scope.filterTemplatePath = productBundlePartialsPath+"productbundlefilter.html";
-			
 			scope.productBundleGroupFilters = {};
 			scope.productBundleGroupFilters.value = [];
-			scope.productBundleGroup.productBundleGroupFilters = [];
+			if(angular.isUndefined(scope.productBundleGroup.productBundleGroupFilters)){
+				scope.productBundleGroup.productBundleGroupFilters = [];
+			}
 			
 			scope.productBundleGroupFilters.getFiltersByTerm = function(keyword,filterTerm){
 				$slatwall.getEntity(filterTerm, {keywords:keyword})
@@ -82,6 +83,7 @@ productBundleService){
 					
 					$log.debug('productBundleGroupFilters');
 					$log.debug(scope.productBundleGroupFilters);
+					
 				});
 			};
 			

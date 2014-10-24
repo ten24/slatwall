@@ -96,19 +96,11 @@ partialsPath
 								}
 							});
 						}
-						var event = document.createEvent("HTMLEvents");
-				        event.initEvent('mousedown', true, true,window );
-				        console.log(document.getElementById(scope.propertyDisplay.property));
-				        document.getElementById(scope.propertyDisplay.property).dispatchEvent(event);
 						
 					};
 					if(scope.propertyDisplay.eagerLoadOptions === true){
 						scope.getOptions();
 					}
-					
-					
-					
-					
 		        	//formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
 		        }
 				if(scope.propertyDisplay.meta.fieldType === 'text' || scope.propertyDisplay.meta.fieldType === 'hidden'){

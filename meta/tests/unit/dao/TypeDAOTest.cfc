@@ -46,18 +46,27 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="HibachiProcess" {
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-	// Injected Entity
-	property name="type";
-
-	// Data Properties
-	property name="systemCode";
-	property name="typeDescription";
-	property name="parentType";
-	
-	// Scheduling-related properties
-	public any function setupDefaults() {
-		variables.parentType=getService("typeService").getTypeBySystemCode("productBundleGroupType");
+	public void function setUp() {
+		super.setup();
+		
+		variables.dao = request.slatwallScope.getDAO("typeDAO");
 	}
+
+	public void function inst_ok() {
+		assert(isObject(variables.dao));
+	}
+	
+	// getSystemCodeTypeCount()
+	public void function getSystemCodeTypeCount_returns_numeric_value_of_one_for_top_level_type() {
+		
+		assertEquals(1, variables.dao.getSystemCodeTypeCount( systemCode="orderStatusType" ));
+	}
+	
+	public void function getSystemCodeTypeCount_returns_numeric_value_of_zero_for_fake() {
+		
+		assertEquals(0, variables.dao.getSystemCodeTypeCount( systemCode="my-fake-system-code" ));
+	}
+	
 }
