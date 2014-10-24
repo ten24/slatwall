@@ -4,27 +4,27 @@ angular.module('slatwalladmin.services')
 	var interceptor = {
 		'request':function(config){
 			// Successful request method
-			$log.debug('request');
+			//$log.debug('request');
 			return config;
 		},
 		'response':function(response){
 			// Successful response 
-			$log.debug('response');
-			$log.debug(response);
+			//$log.debug('response');
+			//$log.debug(response);
 			var messages = response.data.messages;
 			var alerts = alertService.formatMessagesToAlerts(messages);
 			alertService.addAlerts(alerts);
 			return response;
 		},
 		'requestError':function(rejection){
-			$log.debug('requestReject');
-			$log.debug(rejection);
+			//$log.debug('requestReject');
+			//$log.debug(rejection);
 			// an error happend during request method
 			return rejection;
 		},
 		'responseError':function(rejection){
-			$log.debug('responseReject');
-			$log.debug(rejection);
+			//$log.debug('responseReject');
+			//$log.debug(rejection);
 			// an error happened during response
 			//display error message if getter fails
 			var messages = rejection.data.messages;

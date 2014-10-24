@@ -124,38 +124,41 @@ function(
 			var filterGroup = {};
 			filterGroup['filterGroup'] = [];
 			var filterCount = 0;
-			for(var productBundleGroupFilter in productBundleGroupFilters){
+			for(var j in productBundleGroupFilters){
+				$log.debug('productBundleGroupFilters[j]');
+				$log.debug(productBundleGroupFilters[j]);
 				var filter = {}; 
-				switch(productBundleGroupFilter.type){
+				switch(productBundleGroupFilters[j].type){
 					case "productType":
 						filter['propertyIdentifier'] = "Sku.product.productType.productTypeID";
 						filter['comparisonOperator'] = '=';
-						filter['value'] = productBundleGroupFilter.productTypeID;
+						filter['value'] = productBundleGroupFilters[j].productTypeID;
 						break;
 					case "collection":
 						break;
 					case "brand":
 						filter['propertyIdentifier'] = "Sku.product.brand.brandID";
 						filter['comparisonOperator'] = '=';
-						filter['value'] = productBundleGroupFilter.brandID;
+						filter['value'] = productBundleGroupFilters[j].brandID;
 						break;
 					case "product":
 						filter['propertyIdentifier'] = "Sku.product.productID";
 						filter['comparisonOperator'] = '=';
-						filter['value'] = productBundleGroupFilter.productID;
+						filter['value'] = productBundleGroupFilters[j].productID;
 						break;
 					case "sku":
 						filter['propertyIdentifier'] = "Sku.skuID";
 						filter['comparisonOperator'] = '=';
-						filter['value'] = productBundleGroupFilter.skuID;
+						filter['value'] = productBundleGroupFilters[j].skuID;
 						break;
 				}
 				if(filterCount > 0){
 					filter['logicalOperator'] = 'OR';
 				}
 				filterGroup['filterGroup'].push(filter);
-				//ArrayAppend(,filter);
 				filterCount++;
+				$log.debug('filterGroup');
+				$log.debug(filterGroup);
 			}
 			$scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig.filterGroups = filterGroup;
 		}
@@ -190,7 +193,6 @@ function(
 					params[productBundleString+'.productBundleGroupID'] = '';
 					params[productBundleString+'.skuCollectionConfig'] = angular.toJson(productBundleGroup.skuCollectionConfig);
 					params[productBundleString+'.productBundleGroupType.typeID'] = productBundleGroup.productBundleGroupType.typeID;
-					
 				}
 				$log.debug(params);
 				var saveProductBundlePromise = $slatwall.saveEntity('Product', null, params,'CreateBundle');

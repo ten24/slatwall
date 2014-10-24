@@ -96,10 +96,6 @@ partialsPath
 								}
 							});
 						}
-						var event = document.createEvent("HTMLEvents");
-				        event.initEvent('mousedown', true, true,window );
-				        console.log(document.getElementById(scope.propertyDisplay.property));
-				        document.getElementById(scope.propertyDisplay.property).dispatchEvent(event);
 						
 					};
 					if(scope.propertyDisplay.eagerLoadOptions === true){
