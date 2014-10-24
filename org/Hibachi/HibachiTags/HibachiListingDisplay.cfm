@@ -320,11 +320,11 @@
 							<div class="input-group">
 
 								<cfif not thistag.expandable>
-									<input type="text" name="search" class="form-control input-sm" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
+									<input type="text" name="search" class="form-control input-sm general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
 								</cfif>
 
 								<div class="input-group-btn">
-									<button class="btn btn-default btn-sm" name="search" type="submit"><i class="fa fa-search"></i></button>
+									<button class="btn btn-default btn-sm general-listing-search" name="search" type="submit"><i class="fa fa-search"></i></button>
 								</div>
 							</div>
 						</form>
