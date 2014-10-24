@@ -15,7 +15,8 @@ function(
 	$scope.keywords = '';
 	$scope.searchResultsOpen = false;
 	$scope.sidebarClass = 'sidebar';
-	
+	$scope.loading = false; //Set loading wheel to false
+
 	$scope.searchResults = {
 		'product' : {
 			'title': $.slatwall.rbKey('entity.product_plural'),
@@ -58,25 +59,25 @@ function(
 			}
 		}
 	};
-	
+
 	$scope.resultsCounter = 0;
-	
+
 	var timeoutPromise;
-	
+
 	$scope.updateSearchResults = function() {
 		if(timeoutPromise) {
 			$timeout.cancel(timeoutPromise);
 		}
-		
+
 		timeoutPromise = $timeout(function(){
 			for (var entityName in $scope.searchResults){
-				
+				$scope.loading = true;
 				(function(entityName) {
-					
+
 					var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords} );
-					
+
 					searchPromise.then(function(data){
-						
+
 						if($scope.keywords === ''){
 							// clear out the results
 							$scope.searchResults[ entityName ].results = [];
@@ -84,7 +85,7 @@ function(
 						}else {
 							// clear out the results
 							$scope.searchResults[ entityName ].results = [];
-							
+
 							// push in the new results
 							for(var i in data.pageRecords) {
 								$scope.searchResults[ entityName ].results.push({
@@ -94,18 +95,32 @@ function(
 							}
 							if($scope.searchResults[ entityName ].results.length){
 								$scope.resultsCounter++;
+								$scope.loading = false;
 							}
-						
+							//Remove loading wheel if no results
+							if($scope.resultsCounter > 0){
+								$scope.loading = false;
+							}
 						}
 					});
-					
+
 				})(entityName);
 			}
-			
-		}, 500);
+		}, 500)
+		if($scope.resultsCounter > 0){
+			$scope.searchResults['noResult'] = {
+				'title': '',
+				'results' : []
+			};
+
+			$scope.searchResults[ 'noResult' ].results.push({
+				'name':  $.slatwall.rbKey('admin.define.nosearchresults')
+			});
+		}
+
 		$scope.showResults();
 	};
-	
+
 
 	$scope.showResults = function() {
 		$scope.searchResultsOpen = true;
@@ -116,9 +131,9 @@ function(
 				$scope.hideResults();
 				$scope.$apply();
 			}
-		};	
+		};
 	};
-	
+
 	$scope.hideResults = function() {
 		$scope.searchResultsOpen = false;
 		$scope.sidebarClass = 'sidebar';
@@ -126,5 +141,5 @@ function(
 		$scope.keywords = "";
 		$window.onclick = null;
 	};
-	
+
 }]);
