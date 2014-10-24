@@ -6,8 +6,8 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		// =============== WORKFLOW ==================
 		
 		// Make sure that there is an entity for this event
-		if(structKeyExists(arguments, "entity") && isObject(arguments.entity) && !arrayFind(arguments.entity.getTriggeredEvents(), arguments.eventName)) {
-			arrayAppend(arguments.entity.getTriggeredEvents(), arguments.eventName);
+		if(structKeyExists(arguments, "entity") && isObject(arguments.entity) && !arrayFind(arguments.entity.getTriggeredWorkflowEvents(), arguments.eventName)) {
+			arrayAppend(arguments.entity.getTriggeredWorkflowEvents(), arguments.eventName);
 			getService("workflowService").runAllWorkflowsByEventTrigger(argumentCollection=arguments);	
 		}
 		

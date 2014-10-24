@@ -4,7 +4,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	property name="hibachiMessages" type="any" persistent="false";
 	property name="populatedSubProperties" type="struct" persistent="false";
 	property name="validations" type="struct" persistent="false";
-	property name="triggeredEvents" type="array" persistent="false";
 	
 	// ========================= START: ACCESSOR OVERRIDES ==========================================
 
@@ -156,6 +155,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	}
 
 	// ==========================  END: ERRORS / MESSAGES ===========================================
+	
+	public any function getAnnounced
+	
 	// ======================= START: POPULATION & VALIDATION =======================================
 	
 	public any function beforePopulate( required struct data={} ) {
