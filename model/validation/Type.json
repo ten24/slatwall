@@ -1,0 +1,13 @@
+{
+	"conditions":{
+	    "topLevelSystemType":{
+	        "systemCode":{"required":true},
+	        "parentType":{"null":true}
+	    }
+	},
+	"properties":{
+		"typeID":				[{"contexts":"delete","conditions":"topLevelSystemType","null":true}],
+	    "typeName": 			[{"contexts":"save","required":true}],
+	    "childTypes":			[{"contexts":"delete","maxCollection":0}],
+	}
+}

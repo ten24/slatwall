@@ -47,11 +47,24 @@ Notes:
 
 --->
 <cfparam name="rc.type" type="any">
+<cfparam name="rc.parentType.typeID" type="string" default="">
 <cfparam name="rc.edit" type="boolean">
+
+<cfif not isDefined('rc.parentType.typeID') and !isNull(rc.type.getParentType())>
+	<cfset rc.parentType.typeID = rc.type.getParentType().getTypeID() />
+</cfif>
 
 <cfoutput>
 	<cf_HibachiPropertyRow>
 		<cf_HibachiPropertyList>
+			<cfdump var="#rc.type.getChildTypesCount()#" />
+			<cfdump var="#$.slatwall.getService('hibachiValidationService').getValidationStruct( rc.type )#" />
+			<cfset eb = $.slatwall.getService('hibachiValidationService').validate( rc.type, 'delete') />
+			<cfdump var="#eb.getErrors()#" />
+			
+			
+			<input type="hidden" name="parentType.typeID" default="#rc.parentType.typeID#" />
+			
 			<!---<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="false">--->
 			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeName" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeCode" edit="#rc.edit#">
