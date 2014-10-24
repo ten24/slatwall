@@ -15,7 +15,7 @@ function(
 	$scope.keywords = '';
 	$scope.searchResultsOpen = false;
 	$scope.sidebarClass = 'sidebar';
-	
+
 	$scope.searchResults = {
 		'product' : {
 			'title': $.slatwall.rbKey('entity.product_plural'),
@@ -58,15 +58,15 @@ function(
 			}
 		}
 	};
-	
+
 	$scope.resultsCounter = 0;
-	
+
 	$scope.updateSearchResults = function() {
 		var timeoutPromise = $timeout(function(){
 			for (var entityName in $scope.searchResults){
-				
+
 				(function(entityName) {
-					
+
 					var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords} );
 					searchPromise.then(function(data){
 						if($scope.keywords == ''){
@@ -76,7 +76,7 @@ function(
 						}else {
 							// clear out the results
 							$scope.searchResults[ entityName ].results = [];
-							
+
 							// push in the new results
 							for(var i in data.pageRecords) {
 								$scope.searchResults[ entityName ].results.push({
@@ -87,13 +87,13 @@ function(
 							if($scope.searchResults[ entityName ].results.length){
 								$scope.resultsCounter++;
 							}
-						
+
 						}
-						
+
 					});
-					
+
 				})(entityName);
-				
+
 			}
 		}, 500)
 		if($scope.resultsCounter > 0){
@@ -101,13 +101,13 @@ function(
 				'title': '',
 				'results' : []
 			};
-			
+
 			$scope.searchResults[ 'noResult' ].results.push({
 				'name':  $.slatwall.rbKey('admin.define.nosearchresults')
 			});
 		}
 	};
-	
+
 
 	$scope.showResults = function() {
 		$scope.searchResultsOpen = true;
@@ -118,9 +118,9 @@ function(
 				$scope.hideResults();
 				$scope.$apply();
 			}
-		};	
+		};
 	};
-	
+
 	$scope.hideResults = function() {
 		$scope.searchResultsOpen = false;
 		$scope.sidebarClass = 'sidebar';
@@ -128,5 +128,5 @@ function(
 		$scope.keywords = "";
 		$window.onclick = null;
 	};
-	
+
 }]);

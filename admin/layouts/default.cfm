@@ -359,6 +359,7 @@ Notes:
 								<cf_HibachiActionCaller action="admin:entity.listintegration" type="list">
 								<li class="divider"></li>
 								<cf_HibachiActionCaller action="admin:entity.listaddresszone" type="list">
+								<cf_HibachiActionCaller action="admin:entity.listcollection" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listcountry" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listcurrency" type="list">
 								<cf_HibachiActionCaller action="admin:entity.listemailtemplate" type="list">
@@ -398,7 +399,38 @@ Notes:
 					</ul>
 					<div class="pull-right s-temp-nav" ng-controller="globalSearch">
 						<ul class="nav navbar-nav">
-							<cf_HibachiActionCallerDropdown title="" icon="cog icon-white" dropdownclass="pull-right" type="nav">
+							<li>
+								<cfif $.slatwall.getLoggedInAsAdminFlag()>
+
+									<!--- Start of Search --->
+									<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;" autocomplete="off" style="padding: 7px;margin-right: 0px;margin-left: 20px;">
+										<div class="form-group">
+											<input id="global-search" type="text" name="search" class="form-control search-query col-xs-2" placeholder="Search" ng-model="keywords" ng-change="updateSearchResults(); showResults()">
+												<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
+											</input>
+										</div>
+										<div class="row s-search-results" style="padding-top:15px;min-height: 116px;" ng-show="searchResultsOpen">
+											<ul class="col-md-12 list-unstyled">
+												<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length">
+													<div class="col-md-4 s-title">
+														<h2>{{ searchResult.title }}</h2>
+													</div>
+													<div class="col-md-8 s-body">
+														<ul class="list-unstyled" id="j-search-results"	>
+															<li ng-repeat="result in searchResult.results"><a target="_self" href="{{result.link}}">{{result.name}}</a></li>
+														</ul>
+													</div>
+												</li>
+
+											</ul>
+											<div class="spinner" ng-show="loading" style="position: absolute;top: 25%;left: 45%;font-size: 40px;opacity: .6;"><i class="fa fa-refresh fa-spin"></i></div>
+										</div>
+									</form>
+									<!--- End of Search --->
+
+								</cfif>
+							</li>
+							<cf_HibachiActionCallerDropdown title="" icon="cogs icon-white" dropdownclass="pull-right" type="nav">
 								<cfif $.slatwall.getLoggedInAsAdminFlag()>
 									<cf_HibachiActionCaller action="admin:entity.detailaccount" querystring="accountID=#$.slatwall.account('accountID')#" type="list">
 									<cf_HibachiActionCaller action="admin:main.logout" type="list">
@@ -414,34 +446,6 @@ Notes:
 								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=de_de&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-de'></i> #$.slatwall.rbKey('define.language.de_de')#" type="list">
 							</cf_HibachiActionCallerDropdown>
 						</ul>
-						<cfif $.slatwall.getLoggedInAsAdminFlag()>
-
-							<!--- Start of Search --->
-							<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;" autocomplete="off">
-								<div class="form-group">
-									<input id="global-search" type="text" name="search" class="form-control search-query col-xs-2" placeholder="Search" ng-model="keywords" ng-change="updateSearchResults(); showResults()">
-										<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
-									</input>
-								</div>
-								<div class="row s-search-results" style="padding-top:15px;" ng-show="searchResultsOpen">
-									<ul class="col-md-12 list-unstyled">
-										<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length">
-											<div class="col-md-4 s-title">
-												<h2>{{ searchResult.title }}</h2>
-											</div>
-											<div class="col-md-8 s-body">
-												<ul class="list-unstyled" id="j-search-results"	>
-													<li ng-repeat="result in searchResult.results"><a target="_self" href="{{result.link}}">{{result.name}}</a></li>
-												</ul>
-											</div>
-										</li>
-
-									</ul>
-								</div>
-							</form>
-							<!--- End of Search --->
-
-						</cfif>
 					</div>
 				</div><!--- navbar collapes --->
 
