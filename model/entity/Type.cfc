@@ -114,14 +114,6 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	
 	// ============== START: Overridden Implicit Getters ===================
 	
-	// This overrides the build in system code getter to look up to the parent if a system code doesn't exist for this type.
-	public string function getSystemCode() {
-		if(isNull(variables.systemCode)) {
-			return getParentType().getSystemCode();
-		}
-		return variables.systemCode;
-	}
-	
 	public string function getTypeIDPath() {
 		if(isNull(variables.typeIDPath)) {
 			variables.typeIDPath = buildIDPathList( "parentType" );
