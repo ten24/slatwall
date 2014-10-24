@@ -275,11 +275,9 @@
 				errorMessage = getHibachiUtilityService().replaceStringTemplate(errorMessage, replaceTemplateStruct);
 				arguments.errorBean.addError(arguments.propertyIdentifier, errorMessage);
 			} else {
-				if(!isNull(arguments.context)){
-					var errorMessage = getHibachiScope().rbKey('validate.#arguments.context#.#thisClassName#.#thisPropertyName#.#arguments.constraintDetails.constraintType#');
-					errorMessage = getHibachiUtilityService().replaceStringTemplate(errorMessage, replaceTemplateStruct);
-					arguments.errorBean.addError(arguments.propertyIdentifier, errorMessage);
-				}
+				var errorMessage = getHibachiScope().rbKey('validate.#arguments.context#.#thisClassName#.#thisPropertyName#.#arguments.constraintDetails.constraintType#');
+				errorMessage = getHibachiUtilityService().replaceStringTemplate(errorMessage, replaceTemplateStruct);
+				arguments.errorBean.addError(arguments.propertyIdentifier, errorMessage);
 			}
 		}
 	}
