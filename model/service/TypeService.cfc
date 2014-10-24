@@ -46,18 +46,56 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="HibachiProcess" {
-
-	// Injected Entity
-	property name="type";
-
-	// Data Properties
-	property name="systemCode";
-	property name="typeDescription";
-	property name="parentType";
+component extends="HibachiService" accessors="true" output="false" {
 	
-	// Scheduling-related properties
-	public any function setupDefaults() {
-		variables.parentType=getService("typeService").getTypeBySystemCode("productBundleGroupType");
+	property name="typeDAO" type="any";
+	
+	// ===================== START: Logical Methods ===========================
+	
+	// =====================  END: Logical Methods ============================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	public array function getTypeSystemCodeOptionsByParentSystemCode( required string systemCode ) {
+		return getTypeDAO().getTypeSystemCodeOptionsByParentSystemCode(argumentCollection=arguments);
 	}
+	
+	public numeric function getSystemCodeTypeCount( required string systemCode ) {
+		return getTypeDAO().getSystemCodeTypeCount(argumentCollection=arguments);
+	}
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: Process Methods ===========================
+	
+	// =====================  END: Process Methods ============================
+	
+	// ====================== START: Status Methods ===========================
+	
+	// ======================  END: Status Methods ============================
+	
+	// ====================== START: Save Overrides ===========================
+	
+	// ======================  END: Save Overrides ============================
+	
+	// ==================== START: Smart List Overrides =======================
+	
+	// ====================  END: Smart List Overrides ========================
+	
+	// ====================== START: Get Overrides ============================
+	
+	// ======================  END: Get Overrides =============================
+	
+	// ===================== START: Delete Overrides ==========================
+	
+	// =====================  END: Delete Overrides ===========================
+	
+	// ================== START: Private Helper Functions =====================
+	
+	// ==================  END:  Private Helper Functions =====================
+
+	// =================== START: Deprecated Functions ========================
+	
+	// ===================  END: Deprecated Functions =========================
+	
 }

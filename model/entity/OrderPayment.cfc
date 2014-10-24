@@ -660,14 +660,14 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	
 	public any function getOrderPaymentType() {
 		if( !structKeyExists(variables, "orderPaymentType") ) {
-			variables.orderPaymentType = getService("settingService").getTypeBySystemCode("optCharge");
+			variables.orderPaymentType = getService("typeService").getTypeBySystemCode("optCharge");
 		}
 		return variables.orderPaymentType;
 	}
 	
 	public any function getOrderPaymentStatusType() {
 		if( !structKeyExists(variables, "orderPaymentStatusType") ) {
-			variables.orderPaymentStatusType = getService("settingService").getTypeBySystemCode("opstActive");
+			variables.orderPaymentStatusType = getService("typeService").getTypeBySystemCode("opstActive");
 		}
 		return variables.orderPaymentStatusType;
 	}

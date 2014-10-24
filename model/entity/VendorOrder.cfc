@@ -210,14 +210,14 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 
 	public any function getVendorOrderType() {
 		if( !structKeyExists(variables, "vendorOrderType") ) {
-			variables.vendorOrderType = getService("settingService").getTypeBySystemCode("votPurchaseOrder");
+			variables.vendorOrderType = getService("typeService").getTypeBySystemCode("votPurchaseOrder");
 		}
 		return variables.vendorOrderType;
 	}
 	
 	public any function getVendorOrderStatusType() {
 		if( !structKeyExists(variables, "vendorOrderStatusType") ) {
-			variables.vendorOrderStatusType = getService("settingService").getTypeBySystemCode("vostNew");
+			variables.vendorOrderStatusType = getService("typeService").getTypeBySystemCode("vostNew");
 		}
 		return variables.vendorOrderStatusType;
 	}
