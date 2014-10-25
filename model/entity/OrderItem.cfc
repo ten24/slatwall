@@ -144,7 +144,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	
 	public string function getStatus(){
-		return getOrderItemStatusType().getType();
+		return getOrderItemStatusType().getTypeName();
 	}
 	
 	public string function getStatusCode() {
@@ -152,7 +152,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	
 	public string function getType(){
-		return getOrderItemType().getType();
+		return getOrderItemType().getTypeName();
 	}
 	
 	public string function getTypeCode(){
@@ -453,14 +453,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	
 	public any function getOrderItemType() {
 		if( !structKeyExists(variables, "orderItemType") ) {
-			variables.orderItemType = getService("settingService").getTypeBySystemCode("oitSale");
+			variables.orderItemType = getService("typeService").getTypeBySystemCode("oitSale");
 		}
 		return variables.orderItemType;
 	}
 	
 	public any function getOrderItemStatusType() {
 		if( !structKeyExists(variables, "orderItemStatusType") ) {
-			variables.orderItemStatusType = getService("settingService").getTypeBySystemCode("oistNew");
+			variables.orderItemStatusType = getService("typeService").getTypeBySystemCode("oistNew");
 		}
 		return variables.orderItemStatusType;
 	}

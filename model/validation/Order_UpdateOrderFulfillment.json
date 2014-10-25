@@ -1,0 +1,18 @@
+{
+	"conditions":{
+	    "newAccountSelected":{
+	        "newAccountFlag":{"eq":1}
+	    },
+	    "existingAccountSelected":{
+	        "newAccountFlag":{"eq":0}
+	    },
+	    "savePasswordSelected":{
+	        "newAccountFlag":{"eq":1},
+	        "createAuthenticationFlag":{"eq":1}
+	    }
+	},
+	"properties":{
+		"orderFulfillment":		[{"required":true,"method":"getOrderFulfillmentMatchesOrderFlag"}],
+		"orderItemIDList":		[{"required":true}]
+	}
+}

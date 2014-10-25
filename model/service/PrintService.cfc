@@ -64,48 +64,54 @@ Notes:
 		// Populate the email with any data that came in
 		arguments.print.populate( arguments.data );
 		
-		if(structKeyExists(arguments.data, "printTemplateID")) {
+		if(structKeyExists(arguments.data, "printTemplate") && isObject(arguments.data.printTemplate)) {
+			var printTemplate = arguments.data.printTemplate;
+		} else if (structKeyExists(arguments.data, "printTemplateID")) {
 			var printTemplate = getTemplateService().getPrintTemplate( arguments.data.printTemplateID );
+		}
+		
+		if(!isNull(printTemplate)) {
+			var templateObjectIDProperty = getPrimaryIDPropertyNameByEntityName(printTemplate.getPrintTemplateObject());
+			var templateObject = javaCast('null','');
 			
-			if(!isNull(printTemplate)) {
-				var templateObjectIDProperty = getPrimaryIDPropertyNameByEntityName(printTemplate.getPrintTemplateObject());
-						
-				if(structKeyExists(arguments.data, templateObjectIDProperty)) {
-					
-					var templateObject = getServiceByEntityName( printTemplate.getPrintTemplateObject() ).invokeMethod("get#printTemplate.getPrintTemplateObject()#", {1=arguments.data[ templateObjectIDProperty ]});
-					
-					if(!isNull(templateObject)) {
-						
-						// Setup the print content
-						if(!isNull(printTemplate.getPrintContent())) {
-							arguments.print.setPrintContent( templateObject.stringReplace( printTemplate.getPrintContent() ) );	
-						}
-						
-						var templateFileResponse = "";
-						var templatePath = getTemplateService().getTemplateFileIncludePath(templateType="print", objectName=printTemplate.getPrintTemplateObject(), fileName=printTemplate.getPrintTemplateFile());
-						
-						local.print = arguments.print;
-						local.printData = {};
-						local[ printTemplate.getPrintTemplateObject() ] = templateObject;
-						
-						if(len(templatePath)) {
-							savecontent variable="templateFileResponse" {
-								include '#templatePath#';
-							}
-						}
-						
-						if(len(templateFileResponse) && !structKeyExists(local.printData, "printContent")) {
-							local.printData.printContent = templateFileResponse;
-						}
-						
-						arguments.print.populate( local.printData );
-						
-						// Append the email to the email queue
-						arrayAppend(getHibachiScope().getPrintQueue(), arguments.print);
+			if(structKeyExists(arguments.data, printTemplate.getPrintTemplateObject()) && isObject(arguments.data[ printTemplate.getPrintTemplateObject() ])) {
+				var templateObject = arguments.data[ printTemplate.getPrintTemplateObject() ];
+			} else if(structKeyExists(arguments.data, templateObjectIDProperty)) {
+				var templateObject = getServiceByEntityName( printTemplate.getPrintTemplateObject() ).invokeMethod("get#printTemplate.getPrintTemplateObject()#", {1=arguments.data[ templateObjectIDProperty ]});
+			}
+			
+			if(!isNull(templateObject)) {
+				
+				// Setup the print content
+				if(!isNull(printTemplate.getPrintContent())) {
+					arguments.print.setPrintContent( templateObject.stringReplace( printTemplate.getPrintContent() ) );	
+				}
+				
+				var templateFileResponse = "";
+				var templatePath = getTemplateService().getTemplateFileIncludePath(templateType="print", objectName=printTemplate.getPrintTemplateObject(), fileName=printTemplate.getPrintTemplateFile());
+				
+				local.print = arguments.print;
+				local.printData = {};
+				local[ printTemplate.getPrintTemplateObject() ] = templateObject;
+				
+				if(len(templatePath)) {
+					savecontent variable="templateFileResponse" {
+						include '#templatePath#';
 					}
 				}
+				
+				if(len(templateFileResponse) && !structKeyExists(local.printData, "printContent")) {
+					local.printData.printContent = templateFileResponse;
+				}
+				
+				arguments.print.populate( local.printData );
+				
+				// Append the email to the email queue
+				arrayAppend(getHibachiScope().getPrintQueue(), arguments.print);
 			}
+			
 		}
+		
 		
 		return arguments.print;
 	}
@@ -117,6 +123,12 @@ Notes:
 		};
 		printData[ arguments.entity.getPrimaryIDPropertyName() ] = arguments.entity.getPrimaryIDValue();
 		print = this.processPrint(print, printData, 'addToQueue');
+	}
+	
+	public void function generateAndPrintFromEntityAndPrintTemplate( required any entity, required any printTemplate ) {
+		var print = this.newPrint();
+		print = this.processPrint(print, arguments, 'addToQueue');
+		return print;
 	}
 		
 	</cfscript>

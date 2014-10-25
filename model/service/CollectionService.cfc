@@ -424,8 +424,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		arrayappend(filterGroupStruct.filterGroup,filterStruct);
 		
 		arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);
-		var response = getAPIResponseForCollection(collectionEntity,arguments.collectionOptions);
-		return response.pageRecords[1];
+		var collectionResponse = getAPIResponseForCollection(collectionEntity,arguments.collectionOptions);
+		var response = collectionResponse.pageRecords[1];
+		
+		return response;
 	}
 	
 	public any function getAPIResponseForCollection(required any collectionEntity, required struct collectionOptions){

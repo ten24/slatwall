@@ -5,7 +5,6 @@ angular.module('slatwalladmin')
 [ '$scope',
 '$location',
 '$slatwall',
-'alertService',
 'collectionService', 
 'metadataService',
 'paginationService',
@@ -14,7 +13,6 @@ angular.module('slatwalladmin')
 function($scope,
 $location,
 $slatwall,
-alertService,
 collectionService,
 metadataService,
 paginationService,
@@ -65,15 +63,10 @@ $timeout
 				
 				var collectionListingPromise = $slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.autoScrollPage, pageShow:50});
 				collectionListingPromise.then(function(value){
-					
 					$scope.collection.pageRecords = collectionService.getCollection().pageRecords.concat(value.pageRecords);
 					collectionService.setCollection($scope.collection);
 					$scope.autoScrollDisabled = false;
 				},function(reason){
-					//display error message if getter fails
-					var messages = reason.MESSAGES;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlerts(alerts);
 				});
 			}
 		}
@@ -100,6 +93,23 @@ $timeout
 		collectionListingPromise.then(function(value){
 			collectionService.setCollection(value);
 			$scope.collection = collectionService.getCollection();
+
+			var _collectionName = $scope.collection['collectionName'].toLowerCase();
+			var _recordKeyForObjectID = _collectionName + 'ID';
+			
+			for(var record in value.pageRecords){
+				var _detailLink;
+				var _pageRecord = $scope.collection.pageRecords[record];
+				var _objectID = _pageRecord[_recordKeyForObjectID];
+				if(_objectID && _collectionName !== 'country'){
+					_detailLink = "?slatAction=entity.detail" + _collectionName + "&" + _collectionName + "ID=" + _objectID;
+				} else if (_collectionName === 'country' ){
+					var _countryCode = _pageRecord["countryCode"];
+					_detailLink = "?slatAction=entity.detail" + _collectionName + "&countryCode=" + _countryCode;
+				}
+				_pageRecord["link"] = _detailLink;
+			}
+
 			$scope.collectionInitial = angular.copy(collectionService.getCollection());
 			if(angular.isUndefined($scope.collectionConfig)){
 				$scope.collectionConfig = collectionService.getCollectionConfig();
@@ -107,10 +117,6 @@ $timeout
 			//check if we have any filter Groups
 			$scope.collectionConfig.filterGroups = collectionService.getRootFilterGroup();
 		},function(reason){
-			//display error message if getter fails
-			var messages = reason.MESSAGES;
-			var alerts = alertService.formatMessagesToAlerts(messages);
-			alertService.addAlerts(alerts);
 		});
 	};
 	
@@ -125,7 +131,6 @@ $timeout
 					metadataService.setPropertiesList(value,$scope.collectionConfig.baseEntityAlias);
 					$scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
 					metadataService.formatPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias],$scope.collectionConfig.baseEntityAlias);
-				}, function(reason){
 					
 				});
 			}
@@ -165,9 +170,7 @@ $timeout
 			
 			var saveCollectionPromise = $slatwall.saveEntity(entityName,collection.collectionID,data);
 			saveCollectionPromise.then(function(value){
-				var messages = value.MESSAGES;
-				var alerts = alertService.formatMessagesToAlerts(messages);
-				alertService.addAlerts(alerts);
+				
 				$scope.errorMessage = {};
 				//$scope.collectionForm.$setPristine();
 				$scope.getCollection();
@@ -180,9 +183,6 @@ $timeout
 					$scope.errorMessage[key] = value[0];
 				});
 				//$scope.collection = angular.copy($scope.collectionInitial);
-				var messages = reason.MESSAGES;
-				var alerts = alertService.formatMessagesToAlerts(messages);
-				alertService.addAlerts(alerts);
 			});
 		}
 	};

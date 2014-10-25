@@ -26,7 +26,7 @@ function(){
 		  				params.filterGroupsConfig = options.filterGroupsConfig || '';
 		  				params.joinsConfig = options.joinsConfig || '';
 		  				params.isDistinct = options.isDistinct || false;
-		  				params.propertyIdentifiersList = options.propertyIdentifiersList || ''
+		  				params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 		  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName;
 		  			}
 		  			
@@ -44,10 +44,53 @@ function(){
 		  			return deferred.promise;
 		  			
 		  		},
-		  		getValidation:function(validationFileName){
+		  		getEventOptions:function(entityName){
 		  			var deferred = $q.defer();
-		  			var urlString = _baseUrl+'/model/validation/'+validationFileName+'.json';
+		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getEventOptionsByEntityName&entityName='+entityName;
+		  			
 		  			$http.get(urlString)
+		  			.success(function(data){
+		  				deferred.resolve(data);
+		  			}).error(function(reason){
+		  				deferred.reject(reason);
+		  			});
+		  			
+		  			return deferred.promise;
+		  		},
+		  		getValidation:function(entityName){
+		  			var deferred = $q.defer();
+		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getValidation&entityName='+entityName;
+		  			
+		  			$http.get(urlString)
+		  			.success(function(data){
+		  				deferred.resolve(data);
+		  			}).error(function(reason){
+		  				deferred.reject(reason);
+		  			});
+		  			
+		  			return deferred.promise;
+		  		},
+		  		getPropertyDisplayData:function(entityName,options){
+		  			var deferred = $q.defer();
+		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getPropertyDisplayData&entityName='+entityName;
+		  			var params = {};
+		  			params.propertyIdentifiersList = options.propertyIdentifiersList || '';
+		  			$http.get(urlString,{params:params})
+		  			.success(function(data){
+		  				deferred.resolve(data);
+		  			}).error(function(reason){
+		  				deferred.reject(reason);
+		  			});
+		  			
+		  			return deferred.promise;
+		  		},
+		  		getPropertyDisplayOptions:function(entityName,options){
+		  			var deferred = $q.defer();
+		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getPropertyDisplayOptions&entityName='+entityName;
+		  			var params = {};
+		  			params.property = options.property || '';
+		  			params.argument1 = options.argument1 || '';
+		  			$http.get(urlString,{params:params})
 		  			.success(function(data){
 		  				deferred.resolve(data);
 		  			}).error(function(reason){
@@ -102,6 +145,7 @@ function(){
 		  			if(angular.isDefined(context)){
 		  				params.context = context;
 		  			}
+		  			
 		  			
 		  			$http({
 		  				url:urlString,

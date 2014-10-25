@@ -55,7 +55,7 @@ Notes:
 						      
 	<!--- Create ---> 
 	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiActionCaller action="admin:entity.createcollection" entity="collection" class="btn btn-primary" icon="plus icon-white" />
+		<cf_HibachiActionCaller action="admin:entity.createcollection" class="btn btn-primary" icon="plus icon-white" />
 	</cf_HibachiListingDisplayButtonGroup>
 	
 	<cf_HibachiListingColumn propertyIdentifier="collectionName" />

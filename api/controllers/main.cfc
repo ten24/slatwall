@@ -25,6 +25,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		arguments.rc.apiResponse.content = {data=data};
 	}
 	
+	
+	
 	public any function getExistingCollectionsByBaseEntity(required struct rc){
 		var collectionEntity = getCollectionService().getTransientCollectionByEntityName('collection');
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
@@ -87,7 +89,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var propertyIdentifiers = ListToArray(rc.propertyIdentifiersList);
 		for(propertyIdentifier in propertyIdentifiers){
 			var data[propertyIdentifier] = {};
-			//entity.invokeMethod('set')rc.processObject.invokeMethod('get#propertyIdentifier#');
 			var propertyPath = listToArray(propertyIdentifier,'.');
 			var count = 1;
 			var value = javacast('null','');
@@ -114,7 +115,49 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 		arguments.rc.apiResponse.content['data'] = data;
 	}
+	/* pass in an entity name and property identifiers list and it will spit out releveant property display data*/
+	public any function getPropertyDisplayData(required struct rc){
+		var propertyIdentifiersArray = ListToArray(arguments.rc.propertyIdentifiersList);
+		var data = {};
+		for(propertyPath in propertyIdentifiersArray){
+			var lastEntityName = getService('hibachiService').getLastEntityNameInPropertyIdentifier(arguments.rc.entityName,propertyPath);
+			var entity = getService('hibachiService').invokeMethod('new#lastEntityName#');
+			var property = ListLast(propertyPath,'.');
+			data[property]['title'] = entity.getPropertyTitle( property );
+			data[property]['hint'] = entity.getPropertyHint( property );
+			data[property]['fieldType'] = entity.getFieldTypeByPropertyIdentifier( property );
+		}
+		
+		arguments.rc.apiResponse.content['data'] = data;
+	}
+	public any function getPropertyDisplayOptions(required struct rc){
+		/*
+			arguments-
+			entityName
+			property
+			argumentsCollection
+		*/
+		var data = [];
+		if(isNull(arguments.rc.argument1)){
+			data = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#').invokeMethod('get#arguments.rc.property#Options');
+		}else{
+			data = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#').invokeMethod('get#arguments.rc.property#Options',{1=arguments.rc.argument1});
+		}
+		
+		
+		arguments.rc.apiResponse.content['data'] = data;
+	}
+	/* pass in an entity name and recieve validation*/
+	public any function getValidation(required struct rc){
+		var data = {};
+		data['validation'] = getService('hibachiValidationService').getValidationStructByName(arguments.rc.entityName);
+		arguments.rc.apiResponse.content['data'] = data;
+	}
 	
+	public void function getEventOptionsByEntityName(required struct rc){
+		var eventNameOptions = getService('hibachiEventService').getEventNameOptionsForObject(rc.entityName);
+		arguments.rc.apiResponse.content['data'] = eventNameOptions;
+	}
 	
 	public any function get( required struct rc ) {
 		/* TODO: handle filter parametes, add Select statements as list to access one-to-many relationships.
@@ -210,9 +253,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		param name="arguments.rc.entityID" default="";
 		param name="arguments.rc.apiResponse.content.errors" default="";
 		
-		
 		if(isNull(arguments.rc.apiResponse.content.messages)){
-			arguments.rc.apiResponse.content.messages = [];
+			arguments.rc.apiResponse.content['messages'] = [];
 		}
 		
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
@@ -229,13 +271,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=arguments.rc, 3=arguments.rc.context});
 		}
 
-		if(!isnull(arguments.rc.propertyIdentifiers)){
+		if(!isnull(arguments.rc.propertyIdentifiersList)){
 			//respond with data
-			arguments.rc.apiResponse.content.data = {};
-			for(propertyIdentifier in arguments.rc.propertyIdentifiers){
+			arguments.rc.apiResponse.content['data'] = {};
+			var propertyIdentifiersArray = ListToArray(arguments.rc.propertyIdentifiersList);
+			for(propertyIdentifier in propertyIdentifiersArray){
 				//check if method exists before trying to retrieve a property
 				if(isDefined('entity.get#propertyIdentifier#')){
-					arguments.rc.apiResponse.content.data[propertyIdentifier] = entity.invokeMethod("get#propertyIdentifier#");
+					arguments.rc.apiResponse.content['data'][propertyIdentifier] = entity.invokeMethod("get#propertyIdentifier#");
 				}
 			}
 		}
@@ -257,7 +300,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 			var successMessage = getHibachiUtilityService().replaceStringTemplate( getHibachiScope().rbKey( "api.main.#entityName#.#rc.context#_success" ), replaceValues);
 			getHibachiScope().showMessage( successMessage, "success" );
-			
 			
 			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_success" ), "${EntityName}", rbKey('entity.#arguments.rc.entityName#'), "all" ) , "success");
 		}

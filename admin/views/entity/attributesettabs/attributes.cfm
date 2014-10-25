@@ -62,7 +62,7 @@ Notes:
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="attributeName" />					      
 		<cf_HibachiListingColumn propertyIdentifier="attributeCode" />
-		<cf_HibachiListingColumn propertyIdentifier="attributeType" />
+		<cf_HibachiListingColumn propertyIdentifier="attributeInputType" />
 		<cf_HibachiListingColumn propertyIdentifier="relatedObject" />
 		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 	</cf_HibachiListingDisplay>

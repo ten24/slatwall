@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="addOrderItem,addOrderPayment,addPromotionCode,cancelOrder,changeCurrencyCode,clear,create,createReturn,placeOrder,placeOnHold,removeOrderItem,removeOrderPayment,removePromotionCode,takeOffHold,updateStatus,updateOrderAmounts" {
+component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="addOrderItem,addOrderPayment,addPromotionCode,cancelOrder,changeCurrencyCode,clear,create,createReturn,placeOrder,placeOnHold,removeOrderItem,removeOrderPayment,removePersonalInfo,removePromotionCode,takeOffHold,updateStatus,updateOrderAmounts,updateOrderFulfillment" {
 	
 	// Persistent Properties
 	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -148,7 +148,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalReturnQuantity" persistent="false";
 	
 	public string function getStatus() {
-		return getOrderStatusType().getType();
+		return getOrderStatusType().getTypeName();
 	}
 	
 	public string function getStatusCode() {
@@ -156,7 +156,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public string function getType(){
-		return getOrderType().getType();
+		return getOrderType().getTypeName();
 	}
 	
 	public string function getTypeCode(){
@@ -204,10 +204,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			var requiredAmount = precisionEvaluate(getTotal() - getPaymentAmountTotal());
 			if(requiredAmount > 0) {
 				variables.addPaymentRequirementDetails.amount = requiredAmount;
-				variables.addPaymentRequirementDetails.orderPaymentType = getService("settingService").getTypeBySystemCode("optCharge"); 
+				variables.addPaymentRequirementDetails.orderPaymentType = getService("typeService").getTypeBySystemCode("optCharge"); 
 			} else if (requiredAmount < 0) {
 				variables.addPaymentRequirementDetails.amount = requiredAmount * -1;
-				variables.addPaymentRequirementDetails.orderPaymentType = getService("settingService").getTypeBySystemCode("optCredit");
+				variables.addPaymentRequirementDetails.orderPaymentType = getService("typeService").getTypeBySystemCode("optCredit");
 			}
 		}
 		return variables.addPaymentRequirementDetails;
@@ -601,7 +601,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				inFilter = listDeleteAt(inFilter, listFindNoCase(inFilter, "otSalesOrder"));
 			}
 			sl.addInFilter('systemCode', inFilter);
-			sl.addSelect('type', 'name');
+			sl.addSelect('typeName', 'name');
 			sl.addSelect('typeID', 'value');
 			
 			variables.orderTypeOptions = sl.getRecords();
@@ -920,14 +920,14 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	public any function getOrderStatusType() {
 		if(!structKeyExists(variables, "orderStatusType")) {
-			variables.orderStatusType = getService("settingService").getTypeBySystemCode('ostNotPlaced');
+			variables.orderStatusType = getService("typeService").getTypeBySystemCode('ostNotPlaced');
 		}
 		return variables.orderStatusType;
 	}
 	
 	public any function getOrderType() {
 		if(!structKeyExists(variables, "orderType")) {
-			variables.orderType = getService("settingService").getTypeBySystemCode('otSalesOrder');
+			variables.orderType = getService("typeService").getTypeBySystemCode('otSalesOrder');
 		}
 		return variables.orderType;
 	}
