@@ -50,7 +50,10 @@ Notes:
 
 <cfoutput>
 	
-<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.stateSmartList#">
+<cf_HibachiEntityActionBar type="listing" object="#rc.stateSmartList#" showCreate="false" />
+
+	
+<cf_HibachiListingDisplay smartList="#rc.stateSmartList#">
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="stateName" />
 	<cf_HibachiListingColumn propertyIdentifier="stateCode" />
 	<cf_HibachiListingColumn propertyIdentifier="country.countryName" />

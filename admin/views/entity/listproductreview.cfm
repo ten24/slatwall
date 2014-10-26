@@ -49,8 +49,9 @@ Notes:
 <cfparam name="rc.productReviewSmartList" type="any" />
 <cfset rc.productReviewSmartList.addOrder("createdDateTime|DESC") />
 <cfoutput>
+	<cf_HibachiEntityActionBar type="listing" object="#rc.productReviewSmartList#" showCreate="false" />
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.productReviewSmartList#"
+	<cf_HibachiListingDisplay smartList="#rc.productReviewSmartList#"
 								recordDetailAction="admin:entity.detailproductreview"
 								recordEditAction="admin:entity.editproductreview">
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="reviewTitle" />

@@ -54,8 +54,9 @@ Notes:
 </cfif>	
 
 <cfoutput>
+	<cf_HibachiEntityActionBar type="listing" object="#rc.taskHistorySmartList#" showCreate="false" />
 
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartlist="#rc.taskHistorySmartList#" >
+	<cf_HibachiListingDisplay smartlist="#rc.taskHistorySmartList#" >
 		<cf_HibachiListingColumn propertyidentifier="startTime" />
 		<cf_HibachiListingColumn propertyidentifier="endTime" />
 		<cf_HibachiListingColumn propertyidentifier="task.taskName" tdclass="primary" />
