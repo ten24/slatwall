@@ -48,15 +48,20 @@ Notes:
 --->
 <cfparam name="rc.attributeSetSmartList" type="any" />
 
-<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.attributeSetSmartList#"
+<cf_HibachiEntityActionBar type="listing" object="#rc.attributeSetSmartList#" showCreate="false">
+	
+	<!--- Create ---> 
+	<cf_HibachiEntityActionBarButtonGroup>
+		<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+			<cf_HibachiActionCaller action="admin:entity.createattributeset" entity="attributeset" class="btn btn-primary" icon="plus icon-white"  modal="true" />
+		</cf_HibachiActionCallerDropdown>
+	</cf_HibachiEntityActionBarButtonGroup>
+</cf_HibachiEntityActionBar>
+
+<cf_HibachiListingDisplay smartList="#rc.attributeSetSmartList#"
 						   recordDetailAction="admin:entity.detailattributeset"
 						   recordEditAction="admin:entity.editattributeset"
 						   sortProperty="sortOrder">
-						      
-	<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createattributeset" entity="attributeset" class="btn btn-primary" icon="plus icon-white"  modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>	
 						      
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="attributeSetName" />
 	<cf_HibachiListingColumn propertyIdentifier="attributeSetObject" />

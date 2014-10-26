@@ -49,15 +49,21 @@ Notes:
 <cfparam name="rc.typeSmartList" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.typeSmartList#"
+	
+	<cf_HibachiEntityActionBar type="listing" object="#rc.typeSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<cf_HibachiEntityActionBarButtonGroup>
+			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+				<cf_HibachiActionCaller action="admin:entity.createtype" class="btn btn-primary" icon="plus icon-white" />
+			</cf_HibachiActionCallerDropdown>
+		</cf_HibachiEntityActionBarButtonGroup>
+	</cf_HibachiEntityActionBar>
+	
+	<cf_HibachiListingDisplay smartList="#rc.typeSmartList#"
 							   recordDetailAction="admin:entity.detailtype"
 							   recordEditAction="admin:entity.edittype"
 							   parentPropertyName="parentType">
-							   
-		<!--- Create --->
-		<cf_HibachiListingDisplayButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createtype" class="btn btn-primary" icon="plus icon-white" />
-		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="typeName" />
 		<cf_HibachiListingColumn propertyIdentifier="typeCode" />

@@ -49,8 +49,10 @@ Notes:
 <cfparam name="rc.settingSmartList" type="any" />
 
 <cfoutput>
+	<cf_HibachiEntityActionBar type="listing" object="#rc.settingSmartList#" showCreate="false" />
+
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.settingSmartList#"
+	<cf_HibachiListingDisplay smartList="#rc.settingSmartList#"
 							   recordDeleteAction="admin:entity.deleteSetting">
 		<cf_HibachiListingColumn propertyIdentifier="settingName" />
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="settingValue" />
