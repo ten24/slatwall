@@ -410,9 +410,8 @@ Notes:
 									<!--- Start of Search --->
 									<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;" autocomplete="off" style="padding: 7px;margin-right: 0px;margin-left: 20px;">
 										<div class="form-group">
-											<input id="global-search" type="text" name="search" class="form-control search-query col-xs-2" placeholder="Search" ng-model="keywords" ng-change="updateSearchResults(); showResults()">
-												<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
-											</input>
+											<input type="text" name="search" class="form-control search-query col-xs-2" placeholder="Search" ng-model="keywords" ng-change="updateSearchResults()">
+											<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
 										</div>
 										<!---<div class="row s-search-results" style="padding-top:15px;" ng-show="searchResultsOpen">
 											<ul class="col-md-12 list-unstyled">
