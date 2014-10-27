@@ -493,7 +493,7 @@
 							</cfif>
 							<!--- Sortable --->
 							<cfif thistag.sortable>
-								<td><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="icon-move"></i></a></td>
+								<td><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="fa fa-arrows"></i></a></td>
 							</cfif>
 							<cfloop array="#thistag.columns#" index="column">
 								<!--- Expandable Check --->
