@@ -10,7 +10,7 @@
 				]"
 		>
 		</span>--->
-		
+
 	    <!---</span>--->
 	    <div class="row s-header-bar">
 	      <div class="col-md-5 s-header-nav">
@@ -22,26 +22,26 @@
 	      </div>
 	    </div>
 	    <!--- //Header nav with title end --->
-	
+
 	    <!--- Tab panes for menu options start--->
-	    
+
 	    <div class="row s-options">
 	      <div class="tab-content" id="j-property-box">
-	
+
 	        <div class="tab-pane active" id="j-properties">
 	          <span class="s-edit-btn-group">
 	          	  <button class="btn btn-xs s-btn-ten24" id="j-save-btn" ng-click="saveCollection()" ng-show="collectionDetails.isOpen">
-	          		<i class="fa fa-floppy-o"></i> 
+	          		<i class="fa fa-floppy-o"></i>
 	          		Save
-		          </button> 
+		          </button>
 		          <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn" ng-click="collectionDetails.openCollectionDetails()" ng-show="!collectionDetails.isOpen">
-		          	<i class="fa fa-pencil"></i> 
+		          	<i class="fa fa-pencil"></i>
 		          	Edit
 		          </button>
 	         </span>
 	          <form  class="form-horizontal s-properties" role="form" name="collectionForm" ng-init="setCollectionFormScope(collectionForm)" >
 	            <input  style="display:none" name="entityID" ng-model="collection.collectionID" type="hidden" value="">
-	            	
+
 	           <!-- <span 	sw-property-display
 	            		object="collection"
 	            		property="collectionName",
@@ -85,7 +85,7 @@
 	              <div class="col-sm-10">
 	                <input ng-show="collectionDetails.isOpen" disabled="disabled"  ng-model="collectionConfig.baseEntityAlias" type="text" class="form-control" value="" >
 	                <p ng-show="!collectionDetails.isOpen" ng-bind="collectionConfig.baseEntityAlias  | AliasDisplayName" class="form-control-static"><!---collection base entity alias ---></p>
-	              	
+
 	              </div>
 	            </div>
 	          </form>
@@ -93,13 +93,13 @@
 	        <div class="tab-pane" id="j-filters">
 	          <div class="s-setting-options">
 	            <div class="row s-setting-options-body">
-	
+
 	              <!--- Start Filter Group --->
 	              <div class="col-xs-12 s-filters-selected">
 	                <div class="row">
 	                	<!---filterGroups gets taken apart here --->
-	                	<ul class="col-xs-12 list-unstyled" 
-	                		sw-filter-groups 
+	                	<ul class="col-xs-12 list-unstyled"
+	                		sw-filter-groups
 	                		data-filter-group="collectionConfig.filterGroups[0]"
 	                		data-filter-group-item="collectionConfig.filterGroups[0].filterGroup"
 	                		data-filter-properties-list="filterPropertiesList"
@@ -121,20 +121,20 @@
 					data-callbacks="callbacks"
 					data-base-entity-alias="collectionConfig.baseEntityAlias"
 				>
-					<li class="list-group-item" 
-							ng-repeat="column in collectionConfig.columns" 
+					<li class="list-group-item"
+							ng-repeat="column in collectionConfig.columns"
 							sw-column-item
 							data-column="column"
 							data-column-index="$index"
 							data-save-collection="saveCollection()"
 							data-properties-list="filterPropertiesList"
 							data-callbacks="callbacks"
-							
+
 					></li>
 				</span >
 			</div><!--- //Tab Pane --->
 	      </div>
-	
+
 	    </div><!--- //Row --->
 	    <!--- //Tab panes for menu options end--->
 	    <div class="row s-table-header-nav">
@@ -143,28 +143,28 @@
 		      <ul class="list-inline list-unstyled">
 			      <!--<li>
 		            <form role="search">
-		
+
 		                <label for="name" class="control-label"><i class="fa fa-level-down"></i></label>
 		                <select size="1" name="" aria-controls="" class="form-control accordion-dropdown">
 		                  <option value="15" selected="selected" disabled="disabled">Bulk Action</option>
 		                  <option value="j-export-link" data-toggle="collapse">Export</option>
 		                  <option value="j-delete-link" data-toggle="collapse">Delete</option>
 		                </select>
-		
+
 		            </form>
 		          </li>-->
 			      <li style="width:200px;">
 			        <form   class="s-table-header-search">
 			          <div class="input-group">
-			            <input  type="text" 
-			            		class="form-control input-sm" 
-			            		placeholder="Search" 
-			            		name="srch-term" 
+			            <input  type="text"
+			            		class="form-control input-sm"
+			            		placeholder="Search"
+			            		name="srch-term"
 			            		ng-model="keywords"
 								ng-change="searchCollection()"
 			            />
 			            <div class="input-group-btn">
-			              <button   class="btn btn-default btn-sm" 
+			              <button   class="btn btn-default btn-sm"
 			              			type="submit"
 			              			ng-click="searchCollection()"
 			              >
@@ -185,29 +185,29 @@
 		      		data-records-count="recordsCount"
 	        >
 	        </span>
-	        
+
 	 	</div>
-	 	
+
 	 	<span 	sw-export-action
-	 			
+
 	 	>
 	 	</span>
-	
+
 	    <!--delete batch action-->
 	    <div id="j-delete-link" class="row collapse s-batch-options">
 	      <div class="col-md-12 s-add-filter">
-	
+
 	        <!--- Edit Filter Box --->
-	
+
 	          <h4> Delete:<i class="fa fa-times" data-toggle="collapse" data-target="#j-delete-link"></i></h4>
 	          <div class="col-xs-12">
-	
+
 	            <div class="row">
 	              <div class="col-xs-2">
 	                <div class="form-group form-group-sm">
 	                  <label class="col-sm-12 control-label s-no-padding" for="formGroupInputSmall">Items To Delete:</label>
 	                  <div class="col-sm-12 s-no-paddings">
-	
+
 	                    <div class="radio">
 	                      <input type="radio" name="radio1" id="radio7" value="option2" checked="checked">
 	                      <label for="radio7">
@@ -231,15 +231,15 @@
 	                </div>
 	              </div>
 	              <div class="col-xs-7 s-criteria">
-	
+
 	                <div class="alert alert-danger" role="alert">
 	                  <div class="input-group">
 	                    <label>Confirm action by typing "DELETE" below.</label>
 	                    <input type="text" class="form-control j-delete-text" placeholder="">
-	
+
 	                  </div>
 	                </div>
-	
+
 	              </div>
 	              <div class="col-xs-2">
 	                <div class="s-button-select-group">
@@ -248,16 +248,16 @@
 	              </div>
 	            </div>
 	          </div>
-	
+
 	        <!--- //Edit Filter Box --->
 	      </div>
 	    </div>
 	    <!--//delete batch action-->
-	     
+
 		<!---TODO: make this list view section a directive that we pass a collection into --->
 	    <!---list view begin --->
 	     <div class="table-responsive s-filter-table-box">
-		    <table class="table table-bordered table-striped" > 
+		    <table class="table table-bordered table-striped" >
 		        <thead>
 		            <tr>
 		                <th style="display:none">Row</span></th>
@@ -265,8 +265,8 @@
 		                <th></th>
 		            </tr>
 		        </thead>
-		        <tbody sw-scroll-trigger 
-	    		infinite-scroll="appendToCollection()"		
+		        <tbody sw-scroll-trigger
+	    		infinite-scroll="appendToCollection()"
 	    		infinite-scroll-disabled="autoScrollDisabled"
 	    		infinite-scroll-distance="1">
 					<tr ng-repeat="pageRecord in collection.pageRecords">
@@ -289,5 +289,3 @@
 	    </div>
 	</div>
 </div>
-
-
