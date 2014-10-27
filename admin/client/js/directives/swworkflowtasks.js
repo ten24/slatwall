@@ -31,7 +31,7 @@ workflowPartialsPath
 			scope.workflowPartialsPath = workflowPartialsPath;
 			
 			scope.workflowID = $location.search().workflowID;
-			scope.$id = 'swWorkflowTasks'
+			scope.$id = 'swWorkflowTasks';
 				
 			scope.propertiesList = {};
 				
@@ -54,7 +54,7 @@ workflowPartialsPath
 					scope.workflowTasks = workflowTaskService.formatWorkflowTasks(value.pageRecords);
 					$log.debug(scope.workflowTasks);
 					
-					var workflow = workflowService.getWorkflow(scope.workflowID)
+					var workflow = workflowService.getWorkflow(scope.workflowID);
 					if(angular.isUndefined(metadataService.getPropertiesListByBaseEntityAlias(workflow.workflowObject))){
 						var propertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(workflow.workflowObject);
 						propertiesPromise.then(function(value){
