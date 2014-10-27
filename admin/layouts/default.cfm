@@ -292,7 +292,7 @@ Notes:
 					<cfif not len(homeLink)>
 						<cfset homeLink = "/" />
 					</cfif>
-					<a href="#homeLink#" class="brand"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" title="Slatwall" /></a>
+					<a href="#homeLink#" target="_self" class="brand"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" title="Slatwall" /></a>
 					<cfloop array="#$.slatwall.getService('integrationService').getAdminNavbarHTMLArray()#" index="navbarHTML">
 						#navbarHTML#
 					</cfloop>
