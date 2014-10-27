@@ -1138,7 +1138,7 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 
 						} else if( jQuery(cv).hasClass('sort') ) {
 
-							newtd += '<td><a href="#" class="table-action-sort" data-idvalue="' + jQuery.trim(rv[ idProperty ]) + '" data-sortpropertyvalue="' + rv.sortOrder + '"><i class="icon-move"></i></a></td>';
+							newtd += '<td><a href="#" class="table-action-sort" data-idvalue="' + jQuery.trim(rv[ idProperty ]) + '" data-sortpropertyvalue="' + rv.sortOrder + '"><i class="fa fa-arrows"></i></a></td>';
 
 						} else if( jQuery(cv).hasClass('multiselect') ) {
 

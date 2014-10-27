@@ -64,4 +64,10 @@ Notes:
 		<cfreturn ormExecuteQuery("SELECT count(atype.typeID) FROM SlatwallType atype WHERE atype.systemCode = ?", [arguments.systemCode])[1] />
 	</cffunction>
 	
+	<cffunction name="getTypeBySystemCode" output="false" access="public">
+		<cfargument name="systemCode" type="string" required="true" >
+		
+		<cfreturn ormExecuteQuery("SELECT atype FROM SlatwallType atype WHERE atype.systemCode = ? ORDER BY sortOrder ASC", [arguments.systemCode], true, {maxResults=1}) />
+	</cffunction>
+	
 </cfcomponent>

@@ -64,6 +64,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		return getTypeDAO().getSystemCodeTypeCount(argumentCollection=arguments);
 	}
 	
+	public any function getTypeBySystemCode( required string systemCode ) {
+		return getTypeDAO().getTypeBySystemCode(argumentCollection=arguments);
+	}
+	
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================

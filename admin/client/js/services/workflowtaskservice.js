@@ -106,7 +106,7 @@ function(
 		},
 		formatWorkflowTasks:function(workflowTasks){
 			for(var i in workflowTasks){
-				workflowTasks[i] = formatWorkflowTask(workflowTasks[i]);
+				workflowTasks[i] = this.formatWorkflowTask(workflowTasks[i]);
 			}
 			return workflowTasks;
 		}

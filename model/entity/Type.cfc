@@ -56,6 +56,7 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	property name="typeDescription" ormtype="string" length="4000";
 	property name="sortOrder" ormtype="integer" sortContext="parentType";
 	property name="systemCode" ormtype="string" index="PI_SYSTEMCODE";
+	property name="childRequiresSystemCodeFlag" ormtype="boolean";
 	
 	// Calculated Properties
 
