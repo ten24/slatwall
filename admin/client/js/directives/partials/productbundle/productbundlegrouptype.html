@@ -5,10 +5,10 @@
 			<span class="s-search-input" >
 			<!--   -->
 				<input  type="text" 
-						ng-model="productBundleGroup.productBundleGroupType.type" 
+						ng-model="productBundleGroup.productBundleGroupType.typeName" 
 						placeholder="Search" 
 						class="form-control"
-						typeahead="type.type for type in productBundleGroupTypes.getTypesByKeyword($viewValue) | filter:$viewValue"
+						typeahead="type.typeName for type in productBundleGroupTypes.getTypesByKeyword($viewValue) | filter:$viewValue"
 						typeahead-on-select='selectProductBundleGroupType($item, $model, $label)'
 				>
 				<div ng-show="showAddProductBundleGroupTypeBtn">
@@ -17,7 +17,7 @@
 							ng-show="showAddProductBundleGroupTypeBtn"
 							ng-click="productBundleGroupTypes.setAdding(true)"
 					>
-						<i class="fa fa-plus"></i> Add "{{productBundleGroup.productBundleGroupType.type}}"
+						<i class="fa fa-plus"></i> Add "{{productBundleGroup.productBundleGroupType.typeName}}"
 					</button>
 					<div ng-show="productBundleGroupTypes.$$adding">
 						<form 	
@@ -35,7 +35,7 @@
 						          		data-is-hidden="false"
 						          		data-editing="true"
 						          		data-title="Group Name"
-						          		data-value="productBundleGroup.productBundleGroupType.type"
+						          		data-value="productBundleGroup.productBundleGroupType.typeName"
 						          ></span>
 						          <span sw-property-display 
 						          		data-property="typeCode"

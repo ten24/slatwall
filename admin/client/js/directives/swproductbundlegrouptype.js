@@ -41,33 +41,15 @@ function(
 						$log.debug($scope.propertyDisplayData);
 						$scope.productBundleGroupType = {
 							"parentType.typeID":'154dcdd2f3fd4b5ab5498e93470957b8',
-							"typeCode":$scope.productBundleGroup.productBundleGroupType.type,
+							"typeName":$scope.productBundleGroup.productBundleGroupType.typeName,
 							"typeDescription":"",
-							"typeName":""
+							"typeNameCode":""
 						};
 						formService.setForm($scope.form.addProductBundleGroupType);
 						$log.debug('productBundleGroupType');
 						$log.debug($scope.productBundleGroupType);
 					});
 				}();
-				
-				
-				
-				/*var options = {
-					context:'AddProductBundleGroupType',
-					propertyIdentifiersList:'type.typeCode,systemCode,typeDescription,parentType.TypeID'
-				};
-				var processObjectPromise = $slatwall.getProcessObject(
-					'Type',
-					options
-				);
-				
-				processObjectPromise.then(function(value){
-					$log.debug('getProcessObject');
-					$scope.processObject = value.data;
-					$log.debug($scope.processObject);
-					
-				});*/
 				
 			};
 			
@@ -92,6 +74,8 @@ function(
 						$scope.productBundleGroupTypes.$$adding = false;
 						$scope.showAddProductBundleGroupTypeBtn = false;
 						$scope.productBundleGroup.productBundleGroupType = value.data;
+						console.log($scope.productBundleGroup.productBundleGroupType);
+						//$scope.productBundleGroup.productBundleGroupType = value.data;
 						formService.resetForm(addProductBundleGroupTypeForm);
 					});
 				}
@@ -113,7 +97,7 @@ function(
 				         '},'+
 				         '{'+
 				         	'"logicalOperator":"AND",'+
-				        	' "propertyIdentifier":"Type.typeCode",'+
+				        	' "propertyIdentifier":"Type.typeName",'+
 				        	' "comparisonOperator":"like",'+
 				        	 ' "ormtype":"string",'+
 				        	' "value":"%'+keyword+'%"'+
