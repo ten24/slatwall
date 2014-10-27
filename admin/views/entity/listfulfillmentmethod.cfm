@@ -48,15 +48,20 @@ Notes:
 --->
 <cfparam name="rc.fulfillmentMethodSmartList" type="any" />
 
-<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.fulfillmentMethodSmartList#"
+<cf_HibachiEntityActionBar type="listing" object="#rc.fulfillmentMethodSmartList#" showCreate="false">
+		
+	<!--- Create ---> 
+	<cf_HibachiEntityActionBarButtonGroup>
+		<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+			<cf_HibachiActionCaller action="admin:entity.createfulfillmentmethod" entity="fulfillmentmethod" class="btn btn-primary" icon="plus icon-white" />
+		</cf_HibachiActionCallerDropdown>
+	</cf_HibachiEntityActionBarButtonGroup>
+</cf_HibachiEntityActionBar>
+
+<cf_HibachiListingDisplay smartList="#rc.fulfillmentMethodSmartList#"
 		recordEditAction="admin:entity.editfulfillmentmethod"
 		recordDetailAction="admin:entity.detailfulfillmentmethod"
 		sortProperty="sortOrder">
-		
-	<!--- Create ---> 
-	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiActionCaller action="admin:entity.createfulfillmentmethod" entity="fulfillmentmethod" class="btn btn-primary" icon="plus icon-white" />
-	</cf_HibachiListingDisplayButtonGroup>
 		
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="fulfillmentMethodName" />
 	<cf_HibachiListingColumn propertyIdentifier="fulfillmentMethodType" />

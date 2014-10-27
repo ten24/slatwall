@@ -50,6 +50,9 @@ Notes:
 
 <cfset rc.auditSmartList.addOrder('auditDateTime|DESC') />
 
+<cf_HibachiEntityActionBar type="listing" object="#rc.auditSmartList#" showCreate="false">
+</cf_HibachiEntityActionBar>
+
 <cf_HibachiListingDisplay smartList="#rc.auditSmartList#"
 						   recordDetailAction="admin:entity.preprocessaudit"
 						   recordDetailQueryString="processContext=rollback"

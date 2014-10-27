@@ -48,15 +48,20 @@ Notes:
 --->
 <cfparam name="rc.workflowSmartList" type="any" />
 
-<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.workflowSmartList#"
+<cf_HibachiEntityActionBar type="listing" object="#rc.workflowSmartList#" showCreate="false">
+		
+	<!--- Create ---> 
+	<cf_HibachiEntityActionBarButtonGroup>
+		<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+			<cf_HibachiActionCaller action="admin:entity.createworkflow" class="btn btn-primary" icon="plus icon-white" />
+		</cf_HibachiActionCallerDropdown>
+	</cf_HibachiEntityActionBarButtonGroup>
+</cf_HibachiEntityActionBar>
+
+<cf_HibachiListingDisplay smartList="#rc.workflowSmartList#"
 						   recordDetailAction="admin:entity.detailworkflow"
 						   recordEditAction="admin:entity.editworkflow"
 						   recordDeleteAction="admin:entity.deleteworkflow">
-						      
-	<!--- Create ---> 
-	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiActionCaller action="admin:entity.createworkflow" class="btn btn-primary" icon="plus icon-white" />
-	</cf_HibachiListingDisplayButtonGroup>
 	
 	<cf_HibachiListingColumn propertyIdentifier="workflowName" />
 	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />

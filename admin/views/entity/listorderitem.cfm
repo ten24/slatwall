@@ -62,8 +62,9 @@ Notes:
 </cfif>
 
 <cfoutput>
+	<cf_HibachiEntityActionBar type="listing" object="#rc.orderItemSmartList#" showCreate="false" />
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.orderItemSmartList#"
+	<cf_HibachiListingDisplay smartList="#rc.orderItemSmartList#"
 							   recorddetailaction="admin:entity.detailorderitem"
 							   recordeditaction="admin:entity.editorderitem">
 		<cf_HibachiListingColumn propertyIdentifier="order.account.firstName" />

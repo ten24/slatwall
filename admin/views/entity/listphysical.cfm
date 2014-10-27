@@ -50,15 +50,20 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartlist="#rc.physicalSmartList#" 
+	<cf_HibachiEntityActionBar type="listing" object="#rc.physicalSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<cf_HibachiEntityActionBarButtonGroup>
+			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+			<cf_HibachiActionCaller action="admin:entity.createphysical" entity="physical" class="btn btn-primary" icon="plus icon-white" modal="true" />
+			</cf_HibachiActionCallerDropdown>
+		</cf_HibachiEntityActionBarButtonGroup>
+	</cf_HibachiEntityActionBar>
+	
+	<cf_HibachiListingDisplay smartlist="#rc.physicalSmartList#" 
 	                          recordeditaction="admin:entity.editphysical"
 							  recorddetailaction="admin:entity.detailphysical">
-		
-		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createphysical" entity="physical" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>
-		
+	
 		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="physicalName" />	
 		<cf_HibachiListingColumn propertyidentifier="physicalStatusType.type" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" />					    
 		<cf_HibachiListingColumn propertyidentifier="createdDateTime" />

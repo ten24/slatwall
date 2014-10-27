@@ -48,13 +48,19 @@ Notes:
 --->
 <cfparam name="rc.countrySmartList" type="any" />
 
-<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.countrySmartList#"
+<cf_HibachiEntityActionBar type="listing" object="#rc.countrySmartList#" showCreate="false">
+		
+	<!--- Create ---> 
+	<cf_HibachiEntityActionBarButtonGroup>
+		<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+			<cf_HibachiActionCaller action="admin:entity.createcountry" entity="country" class="btn btn-primary" icon="plus icon-white" />
+		</cf_HibachiActionCallerDropdown>
+	</cf_HibachiEntityActionBarButtonGroup>
+</cf_HibachiEntityActionBar>
+
+<cf_HibachiListingDisplay smartList="#rc.countrySmartList#"
 						  recordDetailAction="admin:entity.detailcountry"
 						  recordEditAction="admin:entity.editcountry">
-	<!--- Create ---> 
-	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiActionCaller action="admin:entity.createcountry" entity="country" class="btn btn-primary" icon="plus icon-white" />
-	</cf_HibachiListingDisplayButtonGroup>
 	
 	<cf_HibachiListingColumn propertyIdentifier="countryName" />
 	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />

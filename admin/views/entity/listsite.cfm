@@ -50,14 +50,19 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.siteSmartList#"
+	<cf_HibachiEntityActionBar type="listing" object="#rc.siteSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<cf_HibachiEntityActionBarButtonGroup>
+			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+				<cf_HibachiActionCaller action="admin:entity.createsite" entity="site" class="btn btn-primary" icon="plus icon-white" modal="true" />
+			</cf_HibachiActionCallerDropdown>
+		</cf_HibachiEntityActionBarButtonGroup>
+	</cf_HibachiEntityActionBar>
+	
+	<cf_HibachiListingDisplay smartList="#rc.siteSmartList#"
 							   recordEditAction="admin:entity.editSite"
 							   recordDetailAction="admin:entity.detailSite">
-		
-		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createsite" entity="site" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="siteName" />
 	</cf_HibachiListingDisplay>
