@@ -78,8 +78,8 @@ function(
 				$scope.product.defaultSku.productBundleGroups[i] = productBundleService.formatProductBundleGroup($scope.product.defaultSku.productBundleGroups[i]);
 				$scope.product.defaultSku.productBundleGroups[i].$$editing = false;
 				var productBundleGroupTypeOptions = {
-						propertyIdentifiersList:'ProductBundleGroup.productBundleGroupType',
-						id:$scope.product.defaultSku.productBundleGroups[i].productBundleGroupID
+					propertyIdentifiersList:'ProductBundleGroup.productBundleGroupType',
+					id:$scope.product.defaultSku.productBundleGroups[i].productBundleGroupID
 				};
 				
 				var skuFilterGroups = angular.fromJson($scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig).filterGroups.filterGroup;
@@ -122,7 +122,12 @@ function(
 	$scope.transformProductBundleGroupFilters = function(){
 		
 		for(var i in $scope.product.defaultSku.productBundleGroups){
-			$scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig.filterGroups = [];
+			if(angular.isUndefined($scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig)){
+				$scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig.filterGroups = [];
+			}else{
+				$scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig = angular.fromJson($scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig);
+			}
+			
 			var productBundleGroupFilters = $scope.product.defaultSku.productBundleGroups[i].productBundleGroupFilters;
 			var filterGroup = {};
 			filterGroup['filterGroup'] = [];
@@ -179,33 +184,42 @@ function(
 			if(isProductBundleGroupsValid()){
 				$scope.transformProductBundleGroupFilters();
 				var params = {
-					"productID":$scope.product.productID,
-				};
-				if(!$scope.product.productID){
 					
+				};
+				var context;
+				if(angular.isUndefined(productID)){
+					params["productID"]=$scope.product.productID;
 					params["product.skus[1].skuID"]='';
 					params["product.skus[1].price"]=createProductBundleForm["price"].$modelValue;
 					params["product.productType.productTypeID"]=createProductBundleForm["productType"].$modelValue.value;
 					params["product.productName"]=createProductBundleForm['productName'].$modelValue;
 					params["product.productCode"]=createProductBundleForm['productCode'].$modelValue;
 					params["product.brand.brandID"]=createProductBundleForm['brand'].$modelValue.value;
+					context = 'CreateBundle';
+				}else{
+					context = "Save";
 				}
 				
-				//"product.defaultSku.productBundleGroups":angular.toJson()
 				for(var i=0; i < $scope.product.defaultSku.productBundleGroups.length; i++){
 					var productBundleGroup = $scope.product.defaultSku.productBundleGroups[i];
-					var productBundleString = 'product.Skus[1].productBundleGroups['+(i+1)+']';
+					var productBundleString;
+					if(angular.isUndefined(productID)){
+						productBundleString = 'product.Skus[1].productBundleGroups['+(i+1)+']';
+					}else{
+						
+					}
+					
 					for(var key in productBundleGroup){
 						if(!angular.isArray(productBundleGroup[key]) && key.charAt(0) !== '$' && !angular.isObject(productBundleGroup[key])){
 							params[productBundleString+'.'+key] = productBundleGroup[key];
 						}
 					}
-					params[productBundleString+'.productBundleGroupID'] = '';
+					params[productBundleString+'.productBundleGroupID'] = productBundleGroup.productBundleGroupID;
 					params[productBundleString+'.skuCollectionConfig'] = angular.toJson(productBundleGroup.skuCollectionConfig);
 					params[productBundleString+'.productBundleGroupType.typeID'] = productBundleGroup.productBundleGroupType.typeID;
 				}
 				$log.debug(params);
-				var saveProductBundlePromise = $slatwall.saveEntity('Product', null, params,'CreateBundle');
+				var saveProductBundlePromise = $slatwall.saveEntity('Product', null, params,context);
 				saveProductBundlePromise.then(function(value){
 					$log.debug('saving Product Bundle');
 					if(angular.isDefined(closeDialogIndex)){

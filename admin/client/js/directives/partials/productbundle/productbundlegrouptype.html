@@ -5,10 +5,10 @@
 			<span class="s-search-input" >
 			<!--   -->
 				<input  type="text" 
-						ng-model="productBundleGroup.productBundleGroupType.type" 
+						ng-model="productBundleGroup.productBundleGroupType.typeName" 
 						placeholder="Search" 
 						class="form-control"
-						typeahead="type.type for type in productBundleGroupTypes.getTypesByKeyword($viewValue) | filter:$viewValue"
+						typeahead="type.typeName for type in productBundleGroupTypes.getTypesByKeyword($viewValue) | filter:$viewValue"
 						typeahead-on-select='selectProductBundleGroupType($item, $model, $label)'
 				>
 				<div ng-show="showAddProductBundleGroupTypeBtn">
@@ -17,7 +17,7 @@
 							ng-show="showAddProductBundleGroupTypeBtn"
 							ng-click="productBundleGroupTypes.setAdding(true)"
 					>
-						<i class="fa fa-plus"></i> Add "{{productBundleGroup.productBundleGroupType.type}}"
+						<i class="fa fa-plus"></i> Add "{{productBundleGroup.productBundleGroupType.typeName}}"
 					</button>
 					<div ng-show="productBundleGroupTypes.$$adding">
 						<form 	
@@ -25,33 +25,38 @@
 								role="form"
 								name="form.addProductBundleGroupType"
 						>
-							<span ng-if="productBundleGroupTypes.$$adding && processObject" >
+							
+							<span ng-if="productBundleGroupTypes.$$adding && productBundleGroupType" >
 								 <span sw-property-display 
-						          		data-property="type.type"
-						          		data-object="processObject"
+						          		data-property="typeName"
+						          		data-object="productBundleGroupType"
+						          		data-meta="propertyDisplayData['typeName']"
 						          		data-is-editable="true"
 						          		data-is-hidden="false"
 						          		data-editing="true"
 						          		data-title="Group Name"
-						          		data-value="productBundleGroup.productBundleGroupType.type"
+						          		data-value="productBundleGroup.productBundleGroupType.typeName"
 						          ></span>
 						          <span sw-property-display 
-						          		data-property="systemCode"
-						          		data-object="processObject"
+						          		data-property="typeCode"
+						          		data-object="productBundleGroupType"
+						          		data-meta="propertyDisplayData['typeCode']"
 						          		data-is-editable="true"
 						          		data-is-hidden="false"
 						          		data-editing="true"
 						          ></span>
 						          <span sw-property-display 
 						          		data-property="typeDescription"
-						          		data-object="processObject"
+						          		data-meta="propertyDisplayData['typeDescription']"
+						          		data-object="productBundleGroupType"
 						          		data-is-editable="true"
 						          		data-is-hidden="false"
 						          		data-editing="true"
 						          ></span>
 						          <span sw-property-display 
 						          		data-property="parentType.TypeID"
-						          		data-object="processObject"
+						          		data-object="productBundleGroupType"
+						          		data-meta="propertyDisplayData['typeID']"
 						          		data-is-editable="true"
 						          		data-is-hidden="true"
 						          		data-field-type="hidden"

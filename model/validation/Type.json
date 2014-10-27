@@ -15,6 +15,6 @@
 	    							{"contexts":"save","conditions":"requiresSystemCode","required":true},
 	    							{"contexts":"delete","method":"hasPeerTypeWithMatchingSystemCode"}
 		],
-	    "childTypes":			[{"contexts":"delete","maxCollection":0}],
+	    "childTypes":			[{"contexts":"delete","maxCollection":0}]
 	}
 }
