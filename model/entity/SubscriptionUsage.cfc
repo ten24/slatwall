@@ -149,7 +149,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	
 	public string function getCurrentStatusType() {
 		if(!isNull(getCurrentStatus())) {
-			return getCurrentStatus().getSubscriptionStatusType().getType();
+			return getCurrentStatus().getSubscriptionStatusType().getTypeName();
 		}
 		return "";
 	}

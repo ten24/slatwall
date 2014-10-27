@@ -46,17 +46,22 @@
 Notes:
 
 --->
-<cfparam name="rc.stateSmartList" type="any" />
-
-<cfoutput>
+<cfcomponent extends="HibachiDAO" accessors="true" output="false">
 	
-<cf_HibachiEntityActionBar type="listing" object="#rc.stateSmartList#" showCreate="false" />
-
+	<cffunction name="getTypeSystemCodeOptionsByParentSystemCode" output="false" access="public">
+		<cfargument name="systemCode" type="string" required="true" >
+		
+		<cfset var options = ormExecuteQuery("SELECT DISTINCT NEW MAP(atype.systemCode as name, atype.systemCode as value) FROM SlatwallType atype WHERE atype.parentType.systemCode = ?", [arguments.systemCode]) />
+		
+		<cfset arrayPrepend(options, {name=rbKey('define.select'), value=""}) />
+		 
+		<cfreturn options />
+	</cffunction>
 	
-<cf_HibachiListingDisplay smartList="#rc.stateSmartList#">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="stateName" />
-	<cf_HibachiListingColumn propertyIdentifier="stateCode" />
-	<cf_HibachiListingColumn propertyIdentifier="country.countryName" />
-</cf_HibachiListingDisplay>
-
-</cfoutput>
+	<cffunction name="getSystemCodeTypeCount" output="false" access="public">
+		<cfargument name="systemCode" type="string" required="true" >
+		
+		<cfreturn ormExecuteQuery("SELECT count(atype.typeID) FROM SlatwallType atype WHERE atype.systemCode = ?", [arguments.systemCode])[1] />
+	</cffunction>
+	
+</cfcomponent>

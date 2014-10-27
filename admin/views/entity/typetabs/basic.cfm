@@ -46,17 +46,35 @@
 Notes:
 
 --->
-<cfparam name="rc.stateSmartList" type="any" />
+<cfparam name="rc.type" type="any">
+<cfparam name="rc.parentType.typeID" type="string" default="">
+<cfparam name="rc.edit" type="boolean">
+
+<cfif !isNull(rc.type.getParentType())>
+	<cfset local.parentType = rc.type.getParentType() />
+	<cfset rc.parentType.typeID = rc.type.getParentType().getTypeID() />
+<cfelseif isNull(rc.type.getParentType()) && len(rc.parentType.typeID)>
+	<cfset local.parentType = $.slatwall.getEntity('Type', rc.parentType.typeID) />
+<cfelse>
+	<cfset local.parentType = javaCast('null', '') />	
+</cfif>
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.stateSmartList#" showCreate="false" />
+	<cf_HibachiPropertyRow>
+		<cf_HibachiPropertyList>
+			
+			<cfif rc.edit>
+				<input type="hidden" name="parentType.typeID" value="#rc.parentType.typeID#" />
+			</cfif>
+			
+			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeName" edit="#rc.edit#">
+			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeCode" edit="#rc.edit#">
 
-	
-<cf_HibachiListingDisplay smartList="#rc.stateSmartList#">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="stateName" />
-	<cf_HibachiListingColumn propertyIdentifier="stateCode" />
-	<cf_HibachiListingColumn propertyIdentifier="country.countryName" />
-</cf_HibachiListingDisplay>
-
+			<cfif !isNull(local.parentType) && !isNull(local.parentType.getSystemCode())>
+				<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="#rc.type.getNewFlag()#" fieldType="select" valueOptions="#$.slatwall.getService('typeService').getTypeSystemCodeOptionsByParentSystemCode(local.parentType.getSystemCode())#">
+			<cfelseif isNull(local.parentType) && !isNull(rc.type.getSystemCode())>
+				<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="false">
+			</cfif>
+		</cf_HibachiPropertyList>
+	</cf_HibachiPropertyRow>
 </cfoutput>

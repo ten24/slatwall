@@ -62,20 +62,20 @@
 							<cfif attributes.type eq "listing" >
 								<cfparam name="request.context.keywords" default="" />
 
-								<!--- Listing: Search --->
+							<!---	<!--- Listing: Search --->
 								<form name="search" class="action-bar-search btn-group" action="/" method="get">
 									<input type="hidden" name="slatAction" value="#request.context.entityActionDetails.thisAction#" />
 									<input type="text" name="keywords" value="#request.context.keywords#" placeholder="#attributes.hibachiScope.rbKey('define.search')# #attributes.pageTitle#" data-tableid="LD#replace(attributes.object.getSavedStateID(),'-','','all')#">
-								</form>
+								</form>--->
 
-								<!--- Listing: Actions --->
+							<!---	<!--- Listing: Actions --->
 								<div class="btn-group">
 									<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
 									<ul class="dropdown-menu">
 										<cf_HibachiActionCaller action="#request.context.entityActionDetails.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
 									</ul>
 								</div>
-							</div>
+							</div>--->
 							<div class="btn-group btn-group-sm">
 								<!--- Listing: Button Groups --->
 								<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>

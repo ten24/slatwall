@@ -49,15 +49,21 @@ Notes:
 <cfparam name="rc.eventTriggerSmartList" type="any" />
 
 <cfoutput>
+	
+	<cf_HibachiEntityActionBar type="listing" object="#rc.eventTriggerSmartList#" showCreate="false">
+		
+		<!--- Create ---> 
+		<cf_HibachiEntityActionBarButtonGroup>
+			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+				<cf_HibachiActionCaller action="admin:entity.createeventtrigger" entity="eventtrigger" class="btn btn-primary" icon="plus icon-white" modal="true" />
+			</cf_HibachiActionCallerDropdown>
+		</cf_HibachiEntityActionBarButtonGroup>
+	</cf_HibachiEntityActionBar>
+	
 
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.eventTriggerSmartList#"
+	<cf_HibachiListingDisplay smartList="#rc.eventTriggerSmartList#"
 							   recordDetailAction="admin:entity.detaileventtrigger"
 							   recordEditAction="admin:entity.editeventtrigger">
-							      
-		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createeventtrigger" entity="eventtrigger" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn propertyIdentifier="eventTriggerName" />
 		<cf_HibachiListingColumn propertyIdentifier="eventTriggerType" />

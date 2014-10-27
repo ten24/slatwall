@@ -51,25 +51,26 @@ Notes:
 
 <cfset rc.orderItemSmartList.addOrder("order.orderOpenDateTime|DESC") />
 
-<cfif not len(rc.orderItemSmartList.getFilters("order.orderStatusType.type")) >
-	<cfset local.defaultStatusFilter = $.slatwall.getService('settingService').getTypeBySystemCode("ostNew").getType() />
-	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('settingService').getTypeBySystemCode("ostNew").getType()) />
-	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('settingService').getTypeBySystemCode("ostProcessing").getType()) />
-	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('settingService').getTypeBySystemCode("ostOnHold").getType()) />
-	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('settingService').getTypeBySystemCode("ostClosed").getType()) />
-	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('settingService').getTypeBySystemCode("ostCanceled").getType()) />
-	<cfset rc.orderItemSmartList.addFilter('order.orderStatusType.type', local.defaultStatusFilter) />
+<cfif not len(rc.orderItemSmartList.getFilters("order.orderStatusType.typeName")) >
+	<cfset local.defaultStatusFilter = $.slatwall.getService('typeService').getTypeBySystemCode("ostNew").getTypeName() />
+	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('typeService').getTypeBySystemCode("ostNew").getTypeName()) />
+	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('typeService').getTypeBySystemCode("ostProcessing").getTypeName()) />
+	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('typeService').getTypeBySystemCode("ostOnHold").getTypeName()) />
+	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('typeService').getTypeBySystemCode("ostClosed").getTypeName()) />
+	<cfset local.defaultStatusFilter = listAppend(local.defaultStatusFilter, $.slatwall.getService('typeService').getTypeBySystemCode("ostCanceled").getTypeName()) />
+	<cfset rc.orderItemSmartList.addFilter('order.orderStatusType.typeName', local.defaultStatusFilter) />
 </cfif>
 
 <cfoutput>
+	<cf_HibachiEntityActionBar type="listing" object="#rc.orderItemSmartList#" showCreate="false" />
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.orderItemSmartList#"
+	<cf_HibachiListingDisplay smartList="#rc.orderItemSmartList#"
 							   recorddetailaction="admin:entity.detailorderitem"
 							   recordeditaction="admin:entity.editorderitem">
 		<cf_HibachiListingColumn propertyIdentifier="order.account.firstName" />
 		<cf_HibachiListingColumn propertyIdentifier="order.account.lastName" />
 		<cf_HibachiListingColumn propertyIdentifier="order.orderNumber" />
-		<cf_HibachiListingColumn propertyIdentifier="order.orderStatusType.type" />
+		<cf_HibachiListingColumn propertyIdentifier="order.orderStatusType.typeName" />
 		<cf_HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.calculatedTitle" />
 		<cf_HibachiListingColumn propertyIdentifier="price" />

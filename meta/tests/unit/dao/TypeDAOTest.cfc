@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,18 +45,28 @@
 
 Notes:
 
---->
-<cfparam name="rc.stateSmartList" type="any" />
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
-<cfoutput>
+	public void function setUp() {
+		super.setup();
+		
+		variables.dao = request.slatwallScope.getDAO("typeDAO");
+	}
+
+	public void function inst_ok() {
+		assert(isObject(variables.dao));
+	}
 	
-<cf_HibachiEntityActionBar type="listing" object="#rc.stateSmartList#" showCreate="false" />
-
+	// getSystemCodeTypeCount()
+	public void function getSystemCodeTypeCount_returns_numeric_value_of_one_for_top_level_type() {
+		
+		assertEquals(1, variables.dao.getSystemCodeTypeCount( systemCode="orderStatusType" ));
+	}
 	
-<cf_HibachiListingDisplay smartList="#rc.stateSmartList#">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="stateName" />
-	<cf_HibachiListingColumn propertyIdentifier="stateCode" />
-	<cf_HibachiListingColumn propertyIdentifier="country.countryName" />
-</cf_HibachiListingDisplay>
-
-</cfoutput>
+	public void function getSystemCodeTypeCount_returns_numeric_value_of_zero_for_fake() {
+		
+		assertEquals(0, variables.dao.getSystemCodeTypeCount( systemCode="my-fake-system-code" ));
+	}
+	
+}

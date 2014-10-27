@@ -54,11 +54,12 @@
 	<cfoutput>
 		<cfif not attributes.createOrModalFlag>
 			<div class="row s-pannel-control">
-				<div class="col-md-12">
-					<a href="##" class="j-openall">Open All</a>
-					<a href="##" class="j-closeall">Close All</a>
+				<div class="col-md-12 s-toggle-panels">
+					<a href="##" class="j-openall j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Expand All"><i class="fa fa-expand"></i></a>
+					<a href="##" class="j-closeall j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Collapse All"><i class="fa fa-compress"></i></a>
 				</div>
 			</div>
+
 			<cfset iteration = 0 />
 			<div class="panel-group s-pannel-group" id="accordion">		  
 				<cfloop array="#thistag.tabs#" index="tab">
@@ -68,7 +69,7 @@
 							<div class="panel-heading">
 								<h4 class="panel-title">
 									<span>#tab.text#</span><cfif len(tab.count) and tab.count gt 0> <span class="badge">#tab.count#</span></cfif>
-									<i class="fa fa-caret-left"></i>
+									<i class="fa fa-caret-right"></i>
 								</h4>
 							</div>
 						</a>
@@ -89,7 +90,7 @@
 							<div class="panel-heading">
 								<h4 class="panel-title">
 									<span>#attributes.hibachiScope.rbKey('define.system')#</span>
-									<i class="fa fa-caret-left"></i>
+									<i class="fa fa-caret-left s-accordion-toggle-icon"></i>
 								</h4>
 							</div>
 						</a>

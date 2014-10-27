@@ -274,7 +274,7 @@
 			            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[column.propertyIdentifier.split('.').pop()]" ng-show="column.isVisible"></td>
 			            <td class="s-edit-elements">
 			              <ul>
-			                <li><a href="?slatAction=admin:entity.detailorder&orderID={{pageRecord.orderID}}" target="_self"><i class="fa fa-eye"></i></a></li>
+			                <li><a href="{{pageRecord.link}}" target="_self"><i class="fa fa-eye"></i></a></li>
 			              </ul>
 			            </td>
 		          	</tr>

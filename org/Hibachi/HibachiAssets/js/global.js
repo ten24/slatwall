@@ -712,10 +712,7 @@ function setupEventHandlers() {
 						jQuery('#adminModal').modal();
 						initUIElements('#adminModal');
 						jQuery('#adminModal').css({
-							'width': 'auto',
-							'margin-left': function () {
-					            return -(jQuery('#adminModal').width() / 2);
-					        }
+							'width': 'auto'
 						});
 					} else {
 						jQuery.each(r.messages, function(i, v){
@@ -818,16 +815,16 @@ function setupEventHandlers() {
 	});
 
 	//[TODO]: Change Up JS
-	jQuery('.panel-collapse.in').parent().find('.panel-title i').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
+	jQuery('.panel-collapse.in').parent().find('.s-accordion-toggle-icon').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
 
 	jQuery('body').on('shown.bs.collapse', '.j-panel', function(e){
 		e.preventDefault();
-		jQuery(this).find('.panel-title i').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
+		jQuery(this).find('.s-accordion-toggle-icon').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
 	});
 
 	jQuery('body').on('hidden.bs.collapse', '.j-panel', function(e){
 		e.preventDefault();
-		jQuery(this).find('.panel-title i').removeClass('fa fa-caret-down').addClass('fa fa-caret-left');
+		jQuery(this).find('.s-accordion-toggle-icon').removeClass('fa fa-caret-down').addClass('fa fa-caret-left');
 	});
 
 	//UI Collections - show export and delete options
@@ -850,7 +847,7 @@ function setupEventHandlers() {
 
 	//Initiate SelectBoxIt on select boxes
 	$("select").selectBoxIt();
-	
+
 }
 
 function initModal( modalWin ){
@@ -1188,7 +1185,7 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 				}
 
 				// Update the paging nav
-				
+
 				jQuery('div[class="j-pagination"][data-tableid="' + tableID + '"]').html(buildPagingNav(r["currentPage"], r["totalPages"], r["pageRecordsStart"], r["pageRecordsEnd"], r["recordsCount"]));
 				pagingShowToggleDefaultHidden();
 				// Update the saved state ID of the table
@@ -1273,7 +1270,7 @@ function buildPagingNav(currentPage, totalPages, pageRecordStart, pageRecordEnd,
 		nav += '<li><a href="##" class="show-option" data-show="100">100</a></li>';
 		nav += '<li><a href="##" class="show-option" data-show="500">500</a></li>';
 		nav += '<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>';
-	
+
 		if(currentPage > 1) {
 			nav += '<li><a href="#" class="listing-pager page-option prev" data-page="' + (currentPage - 1) + '">&laquo;</a></li>';
 		} else {

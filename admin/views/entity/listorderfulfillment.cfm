@@ -53,7 +53,10 @@ Notes:
 	<cfset rc.orderFulfillmentSmartList.addOrder('order.orderOpenDateTime|desc') />
 </cfsilent>
 
-<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.orderFulfillmentSmartList#"
+<cf_HibachiEntityActionBar type="listing" object="#rc.orderFulfillmentSmartList#" showCreate="false" />
+
+
+<cf_HibachiListingDisplay smartList="#rc.orderFulfillmentSmartList#"
 		recorddetailaction="admin:entity.detailorderfulfillment"
 		recordeditaction="admin:entity.editorderfulfillment">
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="order.account.fullName" />

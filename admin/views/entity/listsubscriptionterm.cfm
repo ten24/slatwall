@@ -49,16 +49,21 @@ Notes:
 <cfparam name="rc.subscriptionTermSmartList" type="any" />
 
 <cfoutput>
-
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.subscriptionTermSmartList#"
+	
+	<cf_HibachiEntityActionBar type="listing" object="#rc.subscriptionTermSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<cf_HibachiEntityActionBarButtonGroup>
+			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+				<cf_HibachiActionCaller action="admin:entity.createsubscriptionterm" entity="subscriptionterm" class="btn btn-primary" icon="plus icon-white" />
+			</cf_HibachiActionCallerDropdown>
+		</cf_HibachiEntityActionBarButtonGroup>
+	</cf_HibachiEntityActionBar>
+	
+	<cf_HibachiListingDisplay smartList="#rc.subscriptionTermSmartList#"
 							recordDetailAction="admin:entity.detailsubscriptionterm"
 							recordEditAction="admin:entity.editsubscriptionterm">
-							
-		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createsubscriptionterm" entity="subscriptionterm" class="btn btn-primary" icon="plus icon-white" />
-		</cf_HibachiListingDisplayButtonGroup>	
-							
+
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionTermName" />
 	</cf_HibachiListingDisplay>
 

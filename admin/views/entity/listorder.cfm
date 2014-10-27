@@ -1,4 +1,3 @@
-
 <!---
 
     Slatwall - An Open Source eCommerce Platform
@@ -52,15 +51,20 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" type="listing" smartList="#rc.orderSmartList#"
+	<cf_HibachiEntityActionBar type="listing" object="#rc.orderSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<cf_HibachiEntityActionBarButtonGroup>
+			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+				<cf_HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
+			</cf_HibachiActionCallerDropdown>
+		</cf_HibachiEntityActionBarButtonGroup>
+	</cf_HibachiEntityActionBar>
+	
+	<cf_HibachiListingDisplay type="listing" smartList="#rc.orderSmartList#"
 			recordDetailAction="admin:entity.detailorder"
 			recordEditAction="admin:entity.editorder"
 			showCreate="true">
-			
-		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup>
-			<cf_HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>
 			
 		<cfif rc.slatAction eq "admin:entity.listorder">
 			<cf_HibachiListingColumn propertyIdentifier="orderNumber" />

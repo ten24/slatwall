@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,18 +45,57 @@
 
 Notes:
 
---->
-<cfparam name="rc.stateSmartList" type="any" />
-
-<cfoutput>
+*/
+component extends="HibachiService" accessors="true" output="false" {
 	
-<cf_HibachiEntityActionBar type="listing" object="#rc.stateSmartList#" showCreate="false" />
-
+	property name="typeDAO" type="any";
 	
-<cf_HibachiListingDisplay smartList="#rc.stateSmartList#">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="stateName" />
-	<cf_HibachiListingColumn propertyIdentifier="stateCode" />
-	<cf_HibachiListingColumn propertyIdentifier="country.countryName" />
-</cf_HibachiListingDisplay>
+	// ===================== START: Logical Methods ===========================
+	
+	// =====================  END: Logical Methods ============================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	public array function getTypeSystemCodeOptionsByParentSystemCode( required string systemCode ) {
+		return getTypeDAO().getTypeSystemCodeOptionsByParentSystemCode(argumentCollection=arguments);
+	}
+	
+	public numeric function getSystemCodeTypeCount( required string systemCode ) {
+		return getTypeDAO().getSystemCodeTypeCount(argumentCollection=arguments);
+	}
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: Process Methods ===========================
+	
+	// =====================  END: Process Methods ============================
+	
+	// ====================== START: Status Methods ===========================
+	
+	// ======================  END: Status Methods ============================
+	
+	// ====================== START: Save Overrides ===========================
+	
+	// ======================  END: Save Overrides ============================
+	
+	// ==================== START: Smart List Overrides =======================
+	
+	// ====================  END: Smart List Overrides ========================
+	
+	// ====================== START: Get Overrides ============================
+	
+	// ======================  END: Get Overrides =============================
+	
+	// ===================== START: Delete Overrides ==========================
+	
+	// =====================  END: Delete Overrides ===========================
+	
+	// ================== START: Private Helper Functions =====================
+	
+	// ==================  END:  Private Helper Functions =====================
 
-</cfoutput>
+	// =================== START: Deprecated Functions ========================
+	
+	// ===================  END: Deprecated Functions =========================
+	
+}

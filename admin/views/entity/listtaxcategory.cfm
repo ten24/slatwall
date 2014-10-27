@@ -50,14 +50,19 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.taxCategorySmartList#" rc="#rc#"
+	<cf_HibachiEntityActionBar type="listing" object="#rc.taxCategorySmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<cf_HibachiEntityActionBarButtonGroup>
+			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+				<cf_HibachiActionCaller action="admin:entity.createtaxcategory" entity="taxcategory" class="btn btn-primary" icon="plus icon-white" />
+			</cf_HibachiActionCallerDropdown>
+		</cf_HibachiEntityActionBarButtonGroup>
+	</cf_HibachiEntityActionBar>
+	
+	<cf_HibachiListingDisplay smartList="#rc.taxCategorySmartList#" rc="#rc#"
 							   recordEditAction="admin:entity.editTaxCategory"
 							   recordDetailAction="admin:entity.detailTaxCategory">
-							      
-		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createtaxcategory" entity="taxcategory" class="btn btn-primary" icon="plus icon-white" />
-		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="taxCategoryName" />
 		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
