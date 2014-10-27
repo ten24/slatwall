@@ -60,6 +60,7 @@ Notes:
 				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=event" type="list" />
 				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.merchandise')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=merchandise" type="list" />
 				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.subscription')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=subscription" type="list" disabled="#!$.slatwall.getSmartList("SubscriptionTerm").getRecordsCount() or !$.slatwall.getSmartList("SubscriptionBenefit").getRecordsCount()#"  disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoSubscriptionBenefitOrTerm')#" />
+				<button type="button" class="btn btn-default j-test-button" style="margin-top:40px;width:100%;" ng-click="openPageDialog( 'productbundle/createproductbundle' )">Create Product Bundle</button>
 			</cf_HibachiActionCallerDropdown>
 		</cf_HibachiEntityActionBarButtonGroup>
 	</cf_HibachiEntityActionBar>
@@ -78,7 +79,5 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="publishedFlag" />
 		<cf_HibachiListingColumn propertyIdentifier="calculatedQATS" />
 	</cf_HibachiListingDisplay>
-	
-	<button type="button" class="btn btn-default j-test-button" style="margin-top:40px;width:100%;" ng-click="openPageDialog( 'productbundle/createproductbundle' )">Create Product Bundle</button>
 	
 </cfoutput>
