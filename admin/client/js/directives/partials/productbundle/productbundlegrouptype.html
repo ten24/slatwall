@@ -25,10 +25,12 @@
 								role="form"
 								name="form.addProductBundleGroupType"
 						>
-							<span ng-if="productBundleGroupTypes.$$adding && processObject" >
+							
+							<span ng-if="productBundleGroupTypes.$$adding && productBundleGroupType" >
 								 <span sw-property-display 
-						          		data-property="type.type"
-						          		data-object="processObject"
+						          		data-property="typeName"
+						          		data-object="productBundleGroupType"
+						          		data-meta="propertyDisplayData['typeName']"
 						          		data-is-editable="true"
 						          		data-is-hidden="false"
 						          		data-editing="true"
@@ -36,22 +38,25 @@
 						          		data-value="productBundleGroup.productBundleGroupType.type"
 						          ></span>
 						          <span sw-property-display 
-						          		data-property="systemCode"
-						          		data-object="processObject"
+						          		data-property="typeCode"
+						          		data-object="productBundleGroupType"
+						          		data-meta="propertyDisplayData['typeCode']"
 						          		data-is-editable="true"
 						          		data-is-hidden="false"
 						          		data-editing="true"
 						          ></span>
 						          <span sw-property-display 
 						          		data-property="typeDescription"
-						          		data-object="processObject"
+						          		data-meta="propertyDisplayData['typeDescription']"
+						          		data-object="productBundleGroupType"
 						          		data-is-editable="true"
 						          		data-is-hidden="false"
 						          		data-editing="true"
 						          ></span>
 						          <span sw-property-display 
 						          		data-property="parentType.TypeID"
-						          		data-object="processObject"
+						          		data-object="productBundleGroupType"
+						          		data-meta="propertyDisplayData['typeID']"
 						          		data-is-editable="true"
 						          		data-is-hidden="true"
 						          		data-field-type="hidden"
