@@ -65,12 +65,15 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="order" hb_populateEnabled="false" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID" hb_cascadeCalculate="true" fetch="join";
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 	property name="orderReturn" cfc="OrderReturn" fieldtype="many-to-one" fkcolumn="orderReturnID";
+	property name="parentOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="parentOrderItemID";
+	property name="productBundleGroup" cfc="ProductBundleGroup" fieldtype="many-to-one" fkcolumn="productBundleGroupID";
 	property name="referencedOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="referencedOrderItemID"; // Used For Returns. This is set when this order is a return.
 	
 	// Related Object Properties (one-to-many)
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
 	property name="appliedTaxes" singularname="appliedTax" cfc="TaxApplied" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
+	property name="childOrderItems" singularname="childOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="parentOrderItemID" inverse="true" cascade="all-delete-orphan";
 	property name="eventRegistrations" singularname="eventRegistration" hb_populateEnabled="public" fieldtype="one-to-many" fkcolumn="orderItemID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra" ;
 	property name="orderDeliveryItems" singularname="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="delete-orphan";
 	property name="stockReceiverItems" singularname="stockReceiverItem" cfc="StockReceiverItem" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true";
@@ -373,6 +376,24 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		structDelete(variables, "orderReturn");
 	}
 	
+	// Parent Order Item (many-to-one)
+	public void function setParentOrderItem(required any parentOrderItem) {
+		variables.parentOrderItem = arguments.parentOrderItem;
+		if(isNew() or !arguments.parentOrderItem.hasChildOrderItem( this )) {
+			arrayAppend(arguments.parentOrderItem.getChildOrderItems(), this);
+		}
+	}
+	public void function removeParentOrderItem(any parentOrderItem) {
+		if(!structKeyExists(arguments, "parentOrderItem")) {
+			arguments.parentOrderItem = variables.parentOrderItem;
+		}
+		var index = arrayFind(arguments.parentOrderItem.getChildOrderItems(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.parentOrderItem.getChildOrderItems(), index);
+		}
+		structDelete(variables, "parentOrderItem");
+	}
+	
 	// Referenced Order Item (many-to-one)
 	public void function setReferencedOrderItem(required any referencedOrderItem) {
 		variables.referencedOrderItem = arguments.referencedOrderItem;
@@ -413,6 +434,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeOrderItem( this );
+	}
+	
+	// Child Order Items (one-to-many)
+	public void function addChildOrderItem(required any childOrderItem) {
+		arguments.childOrderItem.setParentOrderItem( this );
+	}
+	public void function removeChildOrderItem(required any childOrderItem) {
+		arguments.childOrderItem.removeParentOrderItem( this );
 	}
 	
 	// Event Registrations (one-to-many)

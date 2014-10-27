@@ -422,6 +422,35 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				newOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitDeposit') );
 			}
 			
+			// Setup child items for a bundle
+			if( arguments.processObject.getSku().getBaseProductType() == 'productBundle' ) {
+				
+				for(var childItemData in arguments.processObject.getSelectedBundleItems()) {
+					
+					if(structKeyExists(childItemData, "skuID")) {
+						
+						var thisChildSku = getSkuService().getSku( childItemData.skuID );
+						var thisBundleGroup = getProductService().getProductBundleGroup( childItemData.productBundleGroupID );
+						
+						if(!isNull(thisChildSku)) {
+							var childOrderItem = this.newOrderItem();
+							
+							childOrderItem.setSku( thisChildSku );
+							childOrderItem.setProductBundleGroup( thisBundleGroup );
+							
+							if(structKeyExists(childItemData, "quantity")) {
+								childOrderItem.setQuantity( childItemData.quantity );	
+							} else {
+								childOrderItem.setQuantity( 1 );
+							}
+							
+							childOrderItem.setParentOrderItem( newOrderItem );
+						}
+					}
+				}
+				
+			}
+			
 			// Setup the Sku / Quantity / Price details
 			newOrderItem.setSku( arguments.processObject.getSku() );
 			newOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
