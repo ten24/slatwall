@@ -8,18 +8,21 @@
     </div>
   </header>
   <span ng-controller="create-bundle-controller">
-		<form class="form-horizontal s-properties" 
-					role="form" 
-					name="form.createProductBundle"
-				> 
-		  <section class="col-xs-12" >
-		
+
+     	
+		  <section class="col-xs-12" ng-if="product">
+			<form class="form-horizontal s-properties"
+								role="form"
+					
+								name="form.createProductBundle"
+					
+							> 
 		    <div class="row s-bundle-header" >
-		     	 
-					<span ng-init="setForm(form.createProductBundle);"></span>
-					<span ng-if="product">
+					<span >
+						 
+						<span ng-init="setForm(form.createProductBundle);"></span>
 				        <div class="col-xs-6">
-				       	 <span sw-property-display 
+				       	 <span sw-property-display
 				          		data-property="productName"
 				          		data-object="product"
 				          		data-object-name="product"
@@ -27,7 +30,7 @@
 				          		data-editing="true"
 								data-editable="true"
 				          ></span>
-				         <span sw-property-display 
+				         <span sw-property-display
 				          		data-property="productCode"
 				          		data-object="product"
 				          		data-object-name="product"
@@ -35,7 +38,7 @@
 				          		data-editing="true"
 								data-editable="true"
 				          ></span>
-				          <span sw-property-display 
+				          <span sw-property-display
 				          		data-property="price"
 				          		data-object="product.defaultSku"
 				          		data-object-name="product"
@@ -44,9 +47,9 @@
 								data-editable="true"
 				          ></span>
 				        </div>
-				
+
 				        <div class="col-xs-6">
-				        <span sw-property-display 
+				        <span sw-property-display
 				          		data-property="productType"
 				          		data-object="product"
 				          		data-object-name="product"
@@ -55,8 +58,8 @@
 								data-editable="true"
 								data-options-arguments="{property:'productType',argument1:'productBundle'}"
 								data-eager-load-options="true"
-				          ></span> 
-				         <span sw-property-display 
+				          ></span>
+				         <span sw-property-display
 				          		data-property="brand"
 				          		data-object="product"
 				          		data-object-name="product"
@@ -70,19 +73,20 @@
 					</span>
 				
 		    </div><!-- //bundle head -->
-		    
+
 		    <span 	sw-product-bundle-groups
 		    		data-product-bundle-groups="product.defaultSku.productBundleGroups"
 		    >
 		    </span>
-		    </form>
+		     </form>
 		    <button class="btn btn-xs s-btn-grey s-create-bundle-btn"
-		    		data-toggle="collapse" 
+		    		data-toggle="collapse"
 		    		ng-click="addProductBundleGroup()"
 		    >
 		    	<i class="fa fa-plus"></i> Bundle Group
 		    </button>
 		  </section>
+		
 	  <footer>
 	    <div class="navbar navbar-s-navbar-ten24 s-dialog-footer">
 	      <ul class="nav navbar-nav pull-right">

@@ -53,10 +53,8 @@ Notes:
 	<cf_HibachiEntityActionBar type="listing" object="#rc.accountSmartList#" showCreate="false">
 	
 	<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
-				<cf_HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />
-			</cf_HibachiActionCallerDropdown>
+		<cf_HibachiEntityActionBarButtonGroup>			
+			<cf_HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />			
 		</cf_HibachiEntityActionBarButtonGroup>
 	</cf_HibachiEntityActionBar>
 

@@ -109,6 +109,7 @@ function(
 	}
 	
 	$scope.setForm = function(form){
+		console.log(form);
 		formService.setForm(form);
 	};
 	

@@ -115,9 +115,9 @@
 				<cfset attributes.parentPropertyName = thisTag.entityMetaData.hb_parentPropertyName />
 			</cfif>
 		</cfif>
-		
+
 		<!--- Setup Hierarchy Expandable --->
-		<cfif len(attributes.parentPropertyName) && attributes.parentPropertyName neq 'false'>
+		<cfif len(attributes.parentPropertyName)>
 			<cfset thistag.expandable = true />
 
 			<cfset attributes.tableclass = listAppend(attributes.tableclass, 'table-expandable', ' ') />
@@ -131,7 +131,7 @@
 
 			<cfset attributes.smartList.setPageRecordsShow(1000000) />
 		</cfif>
-		
+
 		<!--- Setup Sortability --->
 		<cfif len(attributes.sortProperty)>
 			<cfif not arrayLen(attributes.smartList.getOrders())>
@@ -299,76 +299,63 @@
 	</cfsilent>
 
 	<cfoutput>
-		
-		<div class="s-table-header-nav s-listing-head-margin">
-			<div class="col-xs-6 s-no-padding-left">
-				<ul class="list-inline list-unstyled">
-					<li>
-						<h4>
-							<cfif len(attributes.title)>
-								<span style="font-size:14px;color:##666666;">#attributes.title#</span>
-							</cfif>
-						</h4>
-					</li>
-				</ul>
-			</div>
-		
-			<div class="col-xs-6 s-table-view-options s-no-padding-right">
-				<ul class="list-inline list-unstyled">
-					<li>
-						<form class="s-table-header-search">
-							<div class="input-group">
-
-								<cfif not thistag.expandable>
-									<input type="text" name="search" class="form-control input-sm general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
-								</cfif>
-							</div>
-						</form>
-					</li>
-					<li>
-						<div class="btn-group navbar-left dropdown">
-							
-							<button type="button" class="btn btn-sm s-btn-grey dropdown-toggle" data-toggle="dropdown"><i class="fa fa-plus"></i></button>
-								<ul class="dropdown-menu pull-right" role="menu">
-									<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
-								</ul>
-								<!--- Listing: Button Groups --->
-								<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
-									<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
-										<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
-											<cfif findNoCase('dropdown', #buttonGroup.generatedContent#)>
-													#buttonGroup.generatedContent#
-											<cfelse>
-												<div class="btn-group">
-													#buttonGroup.generatedContent#
-												</div>
-											</cfif>
-										</cfif>
-									</cfloop>
-								</cfif>
-
-								<!--- Listing: Create --->
-								<cfif len(attributes.createAction)>
-									<div class="btn-group">
-										<cfif attributes.createModal>
-											<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
-										<cfelse>
-											<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
-										</cfif>
-									</div>
-								</cfif>
-								
-						</div>
-					</li>
-				</ul>
-
-			</div>
-		</div><!--- reyjay's class --->
-		
 		<div class="table-responsive">
 			<table id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" #attributes.tableattributes#>
 				<thead>
 
+					<cfif attributes.showheader>
+						<tr>
+							<th class="listing-display-header row" colspan='#thistag.columnCount#'>
+								<div class="col-md-8 s-content-left">
+									<cfif not thistag.expandable>
+										<input type="text" name="search" class="form-control general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
+									</cfif>
+									<cfif not thistag.expandable and len(attributes.title)>
+										<span style="font-size:14px;color:##666666;">&nbsp;|&nbsp;</span>
+									</cfif>
+									<cfif len(attributes.title)>
+										<span style="font-size:14px;color:##666666;">#attributes.title#</span>
+									</cfif>
+								</div>
+								<div class="col-md-4 s-content-right">
+									<div class="groups">
+										<div class="btn-group">
+											<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
+											<ul class="dropdown-menu pull-right" role="menu">
+												<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
+											</ul>
+										</div>
+
+										<!--- Listing: Button Groups --->
+										<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
+											<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
+												<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
+													<cfif findNoCase('dropdown', #buttonGroup.generatedContent#)>
+															#buttonGroup.generatedContent#
+													<cfelse>
+														<div class="btn-group">
+															#buttonGroup.generatedContent#
+														</div>
+													</cfif>
+												</cfif>
+											</cfloop>
+										</cfif>
+
+										<!--- Listing: Create --->
+										<cfif len(attributes.createAction)>
+											<div class="btn-group">
+												<cfif attributes.createModal>
+													<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
+												<cfelse>
+													<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
+												</cfif>
+											</div>
+										</cfif>
+									</div>
+								</div>
+							</th>
+						</tr>
+					</cfif>
 					<tr>
 						<!--- Selectable --->
 						<cfif thistag.selectable>
@@ -493,7 +480,7 @@
 							</cfif>
 							<!--- Sortable --->
 							<cfif thistag.sortable>
-								<td><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="fa fa-arrows"></i></a></td>
+								<td><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="icon-move"></i></a></td>
 							</cfif>
 							<cfloop array="#thistag.columns#" index="column">
 								<!--- Expandable Check --->
@@ -557,10 +544,7 @@
 					</cfif>
 				</tbody>
 			</table>
-			
-			</div><!--- table-responsive --->	
-		
-		
+		</div><!--- table-responsive --->
 		<!--- Pager --->
 		<cfsilent>
 			<cfset local.pageStart = 1 />

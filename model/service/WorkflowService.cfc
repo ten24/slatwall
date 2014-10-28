@@ -319,6 +319,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		constraintValue = 'passwordConfirm'
 		
 		*/
+		writeDump(var=arguments.entity,top=2);
+		writeDump(getWorkflowConditionGroupsString(arguments.entity,arguments.taskConditions));abort;
 		return evaluate(getWorkflowConditionGroupsString(arguments.entity,arguments.taskConditions));
 		
 	}
