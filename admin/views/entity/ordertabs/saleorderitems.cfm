@@ -50,7 +50,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.order.getSaleItemSmartList()#"
+	<cf_HibachiListingDisplay smartList="#rc.order.getOrderItemsSmartList()#"
 							  recordDetailAction="admin:entity.detailorderitem"
 							  recordEditAction="admin:entity.editorderitem">
 							    
