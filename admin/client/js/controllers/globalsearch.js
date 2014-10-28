@@ -60,11 +60,12 @@ function(
 		}
 	};
 
-	$scope.resultsCounter = 0;
 
 	var timeoutPromise;
 
 	$scope.updateSearchResults = function() {
+		$scope.resultsFound = false;
+		$scope.loading = false;
 		if(timeoutPromise) {
 			$timeout.cancel(timeoutPromise);
 		}
@@ -94,29 +95,17 @@ function(
 								});
 							}
 							if($scope.searchResults[ entityName ].results.length){
-								$scope.resultsCounter++;
+								$scope.resultsFound = true;
 								$scope.loading = false;
 							}
-							//Remove loading wheel if no results
-							if($scope.resultsCounter > 0){
-								$scope.loading = false;
-							}
+							//Remove loading wheel
+							$scope.loading = false;
 						}
 					});
 
 				})(entityName);
 			}
 		}, 500)
-		if($scope.resultsCounter > 0){
-			$scope.searchResults['noResult'] = {
-				'title': '',
-				'results' : []
-			};
-
-			$scope.searchResults[ 'noResult' ].results.push({
-				'name':  $.slatwall.rbKey('admin.define.nosearchresults')
-			});
-		}
 
 		$scope.showResults();
 	};
