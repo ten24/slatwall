@@ -73,7 +73,7 @@ Notes:
 		</cfif>
 
 		<cf_HibachiEntityDetailGroup object="#rc.shippingMethod#">
-			<cf_HibachiEntityDetailItem view="admin:entity/shippingmethodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<cf_HibachiEntityDetailItem view="admin:entity/shippingmethodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cf_HibachiEntityDetailItem view="admin:entity/shippingmethodtabs/shippingmethodrates" />
 			<cf_HibachiEntityDetailItem view="admin:entity/shippingmethodtabs/shippingmethodsettings" />
 			<cf_HibachiEntityDetailItem view="admin:entity/shippingmethodtabs/shippingmethodratesettings" />

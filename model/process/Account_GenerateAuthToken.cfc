@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,35 +45,13 @@
 
 Notes:
 
---->
-<cfparam name="rc.attribute" type="any">
-<cfparam name="rc.attributeSet" type="any" default="#rc.attribute.getAttributeSet()#">
-<cfparam name="rc.edit" type="boolean">
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
-<cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.attribute#" edit="#rc.edit#"
-								saveActionQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#">
-									
-		<cf_HibachiEntityActionBar type="detail" object="#rc.attribute#" edit="#rc.edit#"
-								   backAction="admin:entity.detailAttributeSet"
-								   backQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#"
-								   cancelAction="admin:entity.detailAttributeSet"
-								   cancelQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#" 
-								   deleteQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#&redirectAction=admin:entity.detailAttributeSet" />
-		
-		<cfif rc.edit>
-			
-			<!--- Hidden field to attach this to the attributeSet --->
-			<input type="hidden" name="attributeSet.attributeSetID" value="#rc.attributeSet.getAttributeSetID()#" />
-		</cfif>
+	// Injected Entity
+	property name="account";
 
-		<cf_HibachiEntityDetailGroup object="#rc.attribute#">
-			<cf_HibachiEntityDetailItem view="admin:entity/attributetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cfif not rc.attribute.getNewFlag() and listFindNoCase( "text,password,checkboxGroup,multiselect,radioGroup,select",rc.attribute.getAttributeInputType() )>
-				<cf_HibachiEntityDetailItem view="admin:entity/attributetabs/attributeoptions" />
-			</cfif>
-			<cf_HibachiEntityDetailItem view="admin:entity/attributetabs/description" />
-		</cf_HibachiEntityDetailGroup>
-
-	</cf_HibachiEntityDetailForm>
-</cfoutput>
+	// Data Properties
+	property name="authenticationDescription";
+	
+}

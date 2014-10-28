@@ -62,6 +62,7 @@ Notes:
 		<cf_HibachiEntityActionBar type="detail" object="#rc.account#" edit="#rc.edit#">
 			<cf_HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="createPassword" type="list" modal="true" hideDisabled="false" />
 			<cf_HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="changePassword" type="list" modal="true" />
+			<cf_HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="generateAuthToken" type="list" modal="true" />
 			<li class="divider"></li>
 			<cf_HibachiActionCaller action="admin:entity.createaccountaddress" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
 			<cf_HibachiActionCaller action="admin:entity.createaccountemailaddress" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />

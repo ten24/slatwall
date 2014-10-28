@@ -46,34 +46,19 @@
 Notes:
 
 --->
-<cfparam name="rc.attribute" type="any">
-<cfparam name="rc.attributeSet" type="any" default="#rc.attribute.getAttributeSet()#">
-<cfparam name="rc.edit" type="boolean">
 
-<cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.attribute#" edit="#rc.edit#"
-								saveActionQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#">
-									
-		<cf_HibachiEntityActionBar type="detail" object="#rc.attribute#" edit="#rc.edit#"
-								   backAction="admin:entity.detailAttributeSet"
-								   backQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#"
-								   cancelAction="admin:entity.detailAttributeSet"
-								   cancelQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#" 
-								   deleteQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#&redirectAction=admin:entity.detailAttributeSet" />
-		
-		<cfif rc.edit>
-			
-			<!--- Hidden field to attach this to the attributeSet --->
-			<input type="hidden" name="attributeSet.attributeSetID" value="#rc.attributeSet.getAttributeSetID()#" />
-		</cfif>
+<cfparam name="rc.account" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
-		<cf_HibachiEntityDetailGroup object="#rc.attribute#">
-			<cf_HibachiEntityDetailItem view="admin:entity/attributetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cfif not rc.attribute.getNewFlag() and listFindNoCase( "text,password,checkboxGroup,multiselect,radioGroup,select",rc.attribute.getAttributeInputType() )>
-				<cf_HibachiEntityDetailItem view="admin:entity/attributetabs/attributeoptions" />
-			</cfif>
-			<cf_HibachiEntityDetailItem view="admin:entity/attributetabs/description" />
-		</cf_HibachiEntityDetailGroup>
-
-	</cf_HibachiEntityDetailForm>
-</cfoutput>
+<cf_HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#">
+	<cf_HibachiEntityActionBar type="preprocess" object="#rc.account#"></cf_HibachiEntityActionBar>
+	<cf_HibachiPropertyRow>
+		<cf_HibachiPropertyList>
+			<cfoutput>
+				Would you like to generate an API Authentication Token for #rc.account.getFullName()#? </br></br>
+			</cfoutput>
+			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="authenticationDescription" edit="#rc.edit#">
+		</cf_HibachiPropertyList>
+	</cf_HibachiPropertyRow>
+</cf_HibachiEntityProcessForm>
