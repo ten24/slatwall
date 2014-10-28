@@ -57,9 +57,7 @@ Notes:
 		
 		<!--- Create ---> 
 		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
-				<cf_HibachiActionCaller action="admin:entity.createvendororder" entity="brand" class="btn btn-primary" icon="plus icon-white" modal="true" />
-			</cf_HibachiActionCallerDropdown>
+			<cf_HibachiActionCaller action="admin:entity.createvendororder" entity="brand" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</cf_HibachiEntityActionBarButtonGroup>
 	</cf_HibachiEntityActionBar>
 		
