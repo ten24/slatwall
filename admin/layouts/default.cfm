@@ -445,10 +445,10 @@ Notes:
 														</ul>
 													</div>
 												</li>
-												<li ng-show="!resultsFound">
-													<div class="col-md-4 s-title">
-														<h2>#$.slatwall.rbKey('admin.define.nosearchresults')#</h2>
-													</div>
+												<li ng-hide="resultsFound" class="ng-hide col-md-8 s-body"">
+													<ul class="list-unstyled">
+														<li>#$.slatwall.rbKey('admin.define.nosearchresults')#</li>
+													</ul>
 												</li>
 											</ul>
 											<div class="spinner" ng-show="loading" style="position: absolute;top: 25%;left: 45%;font-size: 40px;opacity: .6;"><i class="fa fa-refresh fa-spin"></i></div>
