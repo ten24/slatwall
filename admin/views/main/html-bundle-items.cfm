@@ -721,7 +721,7 @@
 										<div class="tab-pane" id="j-selections-tab-9">
 
 											<!-- Selected filters -->
-											<div class="s-bundle-add-items s-workflow-objs">
+											
 												<ul class="list-unstyled s-order-item-options">
 
 													<li class="s-bundle-add-obj">

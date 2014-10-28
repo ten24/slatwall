@@ -1,33 +1,33 @@
 
-<div class="form-group" ng-if="propertyDisplay">
-  <label class="col-sm-2 control-label" ng-if="propertyDisplay.meta.fieldType !== 'hidden'">
+<div ng-if="propertyDisplay">
+  <label class="control-label" ng-if="propertyDisplay.meta.fieldType !== 'hidden'">
   	<!-- property RB key --><span ng-bind="propertyDisplay.meta.title"></span>:
-  	<span 	class="j-tool-tip-item" 
-  			data-toggle="tooltip" 
-  			data-placement="top" 
+  	<span 	class="j-tool-tip-item"
+  			data-toggle="tooltip"
+  			data-placement="top"
   			data-original-title="{{propertyDisplay.meta.hint}}"
   			ng-show="propertyDisplay.meta.hint.length"
-  	> 
+  	>
   		<i class="fa fa-question-circle"></i>
   	</span>
   </label>
-  <div  class="col-sm-10">
+  <div style="margin-bottom:10px;">
   	<!-- Model-->
-  	
+
   	<span 	sw-form-field
   			ng-if="propertyDisplay.meta.fieldType"
   			data-property-display="propertyDisplay"
   	>
   	</span>
-    
+
     <!-- Display -->
-    
-    <p  class="form-control-static" 
+
+    <p  class="form-control-static"
     	ng-if="propertyDisplay.meta.fieldType !== 'hidden'"
     	ng-bind="propertyDisplay.object[propertyDisplay.property]"
     	ng-show="!propertyDisplay.editing"
     >
     	<!---property value --->
     </p>
-  </div> 
+  </div>
 </div>
