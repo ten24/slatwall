@@ -513,8 +513,9 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-bundle-group-items .dropdown-menu {border-radius: 0px;margin-top: -1px;}
 .s-bundle-group-items .search-panel button {color:#555;border-radius: 0px;background-color: #EEE;text-align: right;width:100%;border-top-left-radius: 2px;}
 .s-bundle-group-items .search-panel button:hover, .s-bundle-group-items .search-panel button:active, .s-bundle-group-items .search-panel button:focus {color:#333 !important;border-color:#cccccc!important;background-color:#ccc;}
-.s-bundle-group-items .s-search-input {height: 31px;outline: none;-webkit-box-shadow: inset 0px 0px 1px 0px #CCC;-moz-box-shadow: inset 0px 0px 1px 0px rgba(204,204,204,1);box-shadow: inset 0px 0px 1px 0px #CCC;border-right: 0px;border-left: 0px;}
+.s-bundle-group-items .s-search-input {height: 30px;outline: none;-webkit-box-shadow: inset 0px 0px 1px 0px #CCC;-moz-box-shadow: inset 0px 0px 1px 0px rgba(204,204,204,1);box-shadow: inset 0px 0px 1px 0px #CCC;border-left: 0px;border-bottom-right-radius: 0px;}
 .s-bundle-group-items .s-search-button {border-radius: 0px;background-color: #EEE;vertical-align:bottom;border-top-right-radius: 2px;}
+.s-bundle-group-items .s-search-input:focus {border-color:#ccc;}
 .s-bundle-group-items .s-search-button:hover, .s-bundle-group-items .s-search-button:active, .s-bundle-group-items .s-search-button:focus {color:#333!important;border-color:#cccccc!important;background-color:#ccc;}
 
 .s-bundle-add-items .s-bundle-add-items-inner {padding: 15px;background: #ffffff;border: 1px solid #CCC;border-top:0px;margin-bottom:0px;border-bottom-left-radius: 2px;border-bottom-right-radius: 2px;}
@@ -758,6 +759,74 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 .s-dialog-container.ng-enter.ng-enter-active,
 .s-dialog-container.ng-leave,
 .s-dialog-container.ng-leave.ng-leave-active {overflow:hidden;}
+
+.autocomplete-options {
+position: absolute;
+top: 28px;
+left: -130px;
+margin: 3px 0px 0px 0px;
+width: 350px;
+max-height: 300px;
+overflow-y: auto;
+overflow-x: hidden;
+padding: 0px;
+z-index: 1000;
+border: 1px solid #eee;
+-moz-box-shadow: 3px 3px 4px #eee;
+-webkit-box-shadow: 3px 3px 4px #eee;
+box-shadow: 3px 3px 4px #eee;
+}
+.autocomplete-options ul {
+list-style: none;
+margin: 0px;
+padding: 0px;
+}
+.autocomplete-options ul li {
+list-style: none;
+background-color: #ffffff;
+}
+.autocomplete-options ul li a {
+display: block;
+color: #333;
+text-decoration: none;
+height: 55px;
+width: 334px;
+padding: 7px;
+border: 1px solid #efefef;
+margin: 0px;
+font-size: 11px;
+line-height: 14px;
+overflow: hidden;
+}
+.autocomplete-options ul li a span {
+display: block;
+float: left;
+width: 265px;
+margin-right: 5px;
+}
+.autocomplete-options ul li a .adminIcon {
+width: 55px;
+}
+.autocomplete-options ul li a .first {
+font-size: 12px;
+font-weight: bold;
+}
+.autocomplete-options ul li a:hover {
+background-color: rgba(85, 170, 239, 0.04);
+border: 1px solid rgba(85, 170, 239, 0.5);
+}
+.autocomplete-options ul.accountid .fullName {
+width: auto;
+}
+.autocomplete-options ul.accountid .company {
+width: auto;
+}
+.autocomplete-options ul.skuid .productName {
+width: auto;
+}
+.autocomplete-options ul.skuid .productTypeName {
+width: auto;
+}
 
 /*
 .s-slide-in-page-dialog {

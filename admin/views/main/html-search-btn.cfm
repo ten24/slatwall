@@ -1,9 +1,17 @@
 <!--- search --->
 <div class="s-search-filter">
 	<div class="input-group">
-		<input type="text" class="form-control input-sm" placeholder="Search&hellip;">
+		<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
+		<ul class="dropdown-menu s-search-options">
+			<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
+			<li><a>OnOrderItemUpdate</a></li>
+			<li><a>OnOrderItemCancel</a></li>
+			<li><a>OnOrderItemDelete</a></li>
+			<li><hr/></li>
+			<li><a>OnOrderItemDelete</a></li>
+		</ul>
 		<div class="input-group-btn">
-			<button type="button" class="btn btn-sm s-btn-grey"><span class="caret"></span></button>
+			<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
 		</div>
 	</div>
 
