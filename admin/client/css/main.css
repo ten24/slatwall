@@ -761,11 +761,11 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 .s-dialog-container.ng-leave.ng-leave-active {overflow:hidden;}
 
 .autocomplete-options {
-position: absolute;
-top: 28px;
-left: -130px;
+position: absolute !important;
+top: 28px !important;
+left: 15px !important;
 margin: 3px 0px 0px 0px;
-width: 350px;
+width: 362px;
 max-height: 300px;
 overflow-y: auto;
 overflow-x: hidden;
@@ -789,8 +789,8 @@ background-color: #ffffff;
 display: block;
 color: #333;
 text-decoration: none;
-height: 55px;
-width: 334px;
+height: 72px;
+width: 100%;
 padding: 7px;
 border: 1px solid #efefef;
 margin: 0px;
@@ -828,37 +828,6 @@ width: auto;
 width: auto;
 }
 
-/*
-.s-slide-in-page-dialog {
-padding:10px;
-}
-.s-slide-in-page-dialog.ng-enter, .s-slide-in-page-dialog.ng-leave {
--webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
-
-position:absolute;
-top:0;
-left:0;
-right:0;
-bottom:0;
-display:block;
-padding:10px;
-}
-.s-slide-in-page-dialog.ng-enter .header {
-top:-50px;
-
-}
-.s-slide-in-page-dialog.ng-enter.ng-enter-active {
-top:0;
-}
-
-.s-slide-in-page-dialog.ng-leave {
-top:0;
-}
-.s-slide-in-page-dialog.ng-leave.ng-leave-active {
-top:50px;
-}
-*/
 .autocomplete-selected {
 	position:absolute;
 	float:left;
@@ -868,78 +837,6 @@ top:50px;
 	padding:4px 5px 4px 5px;
 }
 
-.autocomplete-options {
-	position:absolute;
-	top:183px !important;
-	left:216px !important;
-	margin:3px 0px 0px 0px;
-	width:350px;
-	max-height:300px;
-	overflow-y: auto;
-	overflow-x: hidden;
-	padding:0px;
-	z-index: 1000;
-	border: 1px solid #eee;
-	-moz-box-shadow: 3px 3px 4px #eee;
-	-webkit-box-shadow: 3px 3px 4px #eee;
-	box-shadow: 3px 3px 4px #eee;
-	background-color:#fff;
-	ul {
-		list-style:none;
-		margin:0px;
-		li {
-			list-style:none;
-			background-color: #ffffff;
-			a {
-				display:block !important;
-				color:#333;
-				text-decoration:none;
-				height:55px;
-				width:334px;
-				padding: 7px;
-				border: 1px solid #efefef;
-				margin:0px;
-				font-size:11px;
-				line-height:14px;
-				overflow:hidden;
-				span {
-					display:block;
-					float:left;
-					width:265px;
-					margin-right:5px;
-				}
-				.adminIcon {
-					width:55px;
-				}
-				.first {
-					font-size:12px;
-					font-weight:bold;
-				}
-
-			}
-			a:hover {
-				background-color: rgba(85, 170, 239, 0.04);
-				border: 1px solid rgba(85, 170, 239, 0.50);
-			}
-		}
-	}
-	ul.accountid {
-		.fullName {
-			width:auto;
-		}
-		.company {
-			width:auto;
-		}
-	}
-	ul.skuid {
-		.productName {
-			width:auto;
-		}
-		.productTypeName {
-			width:auto;
-		}
-	}
-}
 
 .s-metric-bullet-icon span:before {font-family:FontAwesome;content:"\f111";font-size: 8px;}
 .s-report-title-padder {padding-left: 15px !important;}
