@@ -69,7 +69,7 @@ Notes:
 
 		<cf_HibachiEntityDetailGroup object="#rc.attribute#">
 			<cf_HibachiEntityDetailItem view="admin:entity/attributetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cfif not rc.attribute.isNew() and listFindNoCase( "text,password,checkboxGroup,multiselect,radioGroup,select",rc.attribute.getAttributeType() )>
+			<cfif not rc.attribute.getNewFlag() and listFindNoCase( "text,password,checkboxGroup,multiselect,radioGroup,select",rc.attribute.getAttributeInputType() )>
 				<cf_HibachiEntityDetailItem view="admin:entity/attributetabs/attributeoptions" />
 			</cfif>
 			<cf_HibachiEntityDetailItem view="admin:entity/attributetabs/description" />
