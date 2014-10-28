@@ -46,13 +46,15 @@
 			<div class="s-options">
 				<div class="tab-content" style="padding-top:20px;padding-bottom:20px;" >
 
+                    <h4 style="border-bottom: 1px solid #DDD;margin-bottom: 15px;font-size: 16px;text-align: left;padding-bottom: 3px;">Basic</h4>
+
 					<span   sw-product-bundle-group-type
 							data-product-bundle-group="productBundleGroup"
 					>
 					</span>
 
 					<div class="row form-group">
-						<div class="col-xs-2">
+						<div class="col-md-2 col-xs-6">
 							<label for="">Minimum Quantity:</label>
 							<input  type="text"
 									class="form-control"
@@ -61,7 +63,7 @@
 							>
 						</div>
 
-						<div class="col-xs-2">
+						<div class="col-md-2 col-xs-6">
 							<label for="">Maximum Quantity:</label>
 							<input  type="text"
 									class="form-control"
@@ -93,11 +95,10 @@
 						<div class="clearfix"></div>
 					</div>
 
-                    <hr style="border-bottom: 4px dotted #ccc;"/>
-
+                    <h4 style="border-bottom: 1px solid #DDD;margin-bottom: 15px;font-size: 16px;text-align: left;padding-bottom: 3px;">Selections</h4>
                     <!-- Selected filters -->
                     <div class="s-bundle-add-items s-workflow-objs">
-                        <ul class="list-unstyled s-order-item-options" ng-show="productBundleGroup.productBundleGroupFilters.length">
+                        <ul class="list-unstyled s-order-item-options" ng-show="productBundleGroup.productBundleGroupFilters.length" style="border-bottom: 3px dotted #DDD;padding-bottom: 12px;">
 
                             <li class="s-bundle-add-obj" ng-repeat="productBundleGroupFilter in productBundleGroup.productBundleGroupFilters track by $index">
                                 <ul class="list-unstyled list-inline s-middle">
@@ -117,8 +118,16 @@
                     <div class="row s-bundle-group-items">
                         <div class="col-xs-12">
                             <div class="input-group">
+
+                                <input  class="form-control s-search-input"
+                                        placeholder="Search {{searchOptions.selected.name}} ..."
+                                        type="text"
+                                        ng-model="productBundleGroupFilters.keyword"
+                                        ng-change="productBundleGroupFilters.getFiltersByTerm(productBundleGroupFilters.keyword,searchOptions.selected.value)"
+                                >
+
                                 <div class="dropdown input-group-btn search-panel">
-                                    <button class="btn btn-sm s-btn-lgrey dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                                    <button class="btn btn-sm s-btn-lgrey dropdown-toggle" style="border-bottom-right-radius: 4px;border-top-right-radius: 4px;" type="button" id="dropdownMenu1" data-toggle="dropdown">
                                         <span ng-bind="searchOptions.selected.name">Any</span>
                                         <span class="caret"></span>
                                     </button>
@@ -131,12 +140,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <input  class="form-control s-search-input"
-                                        placeholder="Search {{searchOptions.selected.name}} ..."
-                                        type="text"
-                                        ng-model="productBundleGroupFilters.keyword"
-                                        ng-change="productBundleGroupFilters.getFiltersByTerm(productBundleGroupFilters.keyword,searchOptions.selected.value)"
-                                >
+
                             </div>
                         </div>
 
@@ -180,6 +184,8 @@
 
 
 					</div> -->
+
+
 				</div>
 			</div>
 		</div>
