@@ -10,7 +10,6 @@ partialsPath,
 propertyDisplayService
 ){
 	return {
-		require:"^form",
 		restrict: 'A',
 		scope:{
 			object:"=",
@@ -31,7 +30,7 @@ propertyDisplayService
 			fieldName:"@"*/
 		},
 		templateUrl:partialsPath+"propertydisplay.html",
-		link: function(scope, element,attrs,formController){
+		link: function(scope, element,attrs){
 			
 			var propertyDisplay = {
 				object:scope.object,

@@ -39,13 +39,12 @@ partialsPath
 	};
 	
 	return {
-		require:"^form",
 		restrict: 'A',
 		scope:{
 			propertyDisplay:"="
 		},
 		replace:true,
-		link: function(scope, element,attrs, formController){
+		link: function(scope, element,attrs){
 		
 			scope.$id = 'formField:'+scope.propertyDisplay.property;			
 					
@@ -113,11 +112,11 @@ partialsPath
 					scope.propertyDisplay.selectedOptions = scope.propertyDisplay.object[scope.propertyDisplay.property];
 				}
 				
-				if(angular.isDefined(formController[scope.propertyDisplay.property])){
+				/*if(angular.isDefined(formController[scope.propertyDisplay.property])){
 					scope.propertyDisplay.errors = formController[scope.propertyDisplay.property].$error;
 				}
 				
-				scope.propertyDisplay.form = formController;
+				scope.propertyDisplay.form = formController;*/
 						
 			});
 		}

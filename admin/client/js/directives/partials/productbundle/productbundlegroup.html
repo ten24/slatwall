@@ -1,4 +1,4 @@
-<li class="s-bundle-group-item" ng-if="propertyDisplayData">
+<li class="s-bundle-group-item" ng-if="propertyDisplayData && productBundleGroup">
   <div class="row">
     <div class="col-xs-8 s-bundle-group-title">
       <div class="s-bundle-group-range">
@@ -22,7 +22,7 @@
         	data-toggle="tooltip"
         	data-placement="bottom"
         	data-original-title="Edit"
-        	ng-click="productBundleGroup.toggleEdit()"
+        	ng-click="productBundleGroup.$$toggleEdit()"
         >
         	<i class="fa fa-pencil"></i>
         </a>
@@ -57,7 +57,7 @@
 							<input  type="text"
 									class="form-control"
 									ng-model="productBundleGroup.minimumQuantity"
-									ng-change="productBundleGroup.setMinimumQuantity(productBundleGroup.minimumQuantity)"
+									ng-change="productBundleGroup.$$setMinimumQuantity(productBundleGroup.minimumQuantity)"
 							>
 						</div>
 
@@ -66,11 +66,11 @@
 							<input  type="text"
 									class="form-control"
 									ng-model="productBundleGroup.maximumQuantity"
-									ng-change="productBundleGroup.setMaximumQuantity(productBundleGroup.maximumQuantity)"
+									ng-change="productBundleGroup.$$setMaximumQuantity(productBundleGroup.maximumQuantity)"
 							>
 						</div>
 					</div>
-					<div class="row form-group">
+					<div class="row form-group" >
 						<span sw-property-display 
 				          		data-property="amountType"
 				          		data-object="productBundleGroup"

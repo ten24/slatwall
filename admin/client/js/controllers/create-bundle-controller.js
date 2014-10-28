@@ -24,7 +24,6 @@ function(
 		$scope.scrollToTopOfDialog();
 	}
 	
-	
 	var productID = $location.search().productID;
 	
 	$scope.propertyDisplayData = {};
@@ -176,6 +175,8 @@ function(
 	};
 	
 	$scope.saveProductBundle = function(closeDialogIndex){
+		console.log('saveForm');
+		console.log($scope.form.createProductBundle);
 		var createProductBundleForm = formService.getForm('form.createProductBundle');
 		console.log(createProductBundleForm);
 		//only save the form if it passes validation
@@ -209,10 +210,15 @@ function(
 					}else{
 						
 					}
-					
 					for(var key in productBundleGroup){
-						if(!angular.isArray(productBundleGroup[key]) && key.charAt(0) !== '$' && !angular.isObject(productBundleGroup[key])){
-							params[productBundleString+'.'+key] = productBundleGroup[key];
+						if(!angular.isArray(productBundleGroup[key]) && key.charAt(0) !== '$'){
+							if(!angular.isObject(productBundleGroup[key])){
+								params[productBundleString+'.'+key] = productBundleGroup[key];
+							}else{
+								if(angular.isDefined(productBundleGroup[key].value)){
+									params[productBundleString+'.'+key] = productBundleGroup[key].value;
+								}
+							}
 						}
 					}
 					params[productBundleString+'.productBundleGroupID'] = productBundleGroup.productBundleGroupID;
@@ -236,8 +242,6 @@ function(
 	
 	var isProductBundleGroupsValid = function(){
 		var isValid = true;
-		console.log('productBundleGroups');
-		console.log($scope.product.defaultSku.productBundleGroups);
 		if(!$scope.product.defaultSku.productBundleGroups.length){
 			$log.debug('hasnogroup');
 			isValid = false;
