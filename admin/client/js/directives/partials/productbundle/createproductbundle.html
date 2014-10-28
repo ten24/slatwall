@@ -8,20 +8,21 @@
     </div>
   </header>
   <span ng-controller="create-bundle-controller">
-		
-		  <section class="col-xs-12" >
-		
-		    <div class="row s-bundle-header" >
-		     	 <form class="form-horizontal s-properties" 
+		<form class="form-horizontal s-properties" 
 					role="form" 
 					name="form.createProductBundle"
 				> 
+		  <section class="col-xs-12" >
+		
+		    <div class="row s-bundle-header" >
+		     	 
 					<span ng-init="setForm(form.createProductBundle);"></span>
 					<span ng-if="product">
 				        <div class="col-xs-6">
 				       	 <span sw-property-display 
 				          		data-property="productName"
 				          		data-object="product"
+				          		data-object-name="product"
 				          		data-meta="propertyDisplayData['productName']"
 				          		data-editing="true"
 								data-editable="true"
@@ -29,6 +30,7 @@
 				         <span sw-property-display 
 				          		data-property="productCode"
 				          		data-object="product"
+				          		data-object-name="product"
 				          		data-meta="propertyDisplayData['productCode']"
 				          		data-editing="true"
 								data-editable="true"
@@ -36,6 +38,7 @@
 				          <span sw-property-display 
 				          		data-property="price"
 				          		data-object="product.defaultSku"
+				          		data-object-name="product"
 				          		data-meta="propertyDisplayData['price']"
 				          		data-editing="true"
 								data-editable="true"
@@ -46,6 +49,7 @@
 				        <span sw-property-display 
 				          		data-property="productType"
 				          		data-object="product"
+				          		data-object-name="product"
 				          		data-meta="propertyDisplayData['productType']"
 				          		data-editing="true"
 								data-editable="true"
@@ -55,6 +59,7 @@
 				         <span sw-property-display 
 				          		data-property="brand"
 				          		data-object="product"
+				          		data-object-name="product"
 				          		data-meta="propertyDisplayData['brand']"
 				          		data-editing="true"
 								data-editable="true"
@@ -63,13 +68,14 @@
 				          ></span>
 						</div>
 					</span>
-				</form>
+				
 		    </div><!-- //bundle head -->
 		    
 		    <span 	sw-product-bundle-groups
 		    		data-product-bundle-groups="product.defaultSku.productBundleGroups"
 		    >
 		    </span>
+		    </form>
 		    <button class="btn btn-xs s-btn-grey s-create-bundle-btn"
 		    		data-toggle="collapse" 
 		    		ng-click="addProductBundleGroup()"

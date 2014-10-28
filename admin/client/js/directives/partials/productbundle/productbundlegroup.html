@@ -1,4 +1,4 @@
-<li class="s-bundle-group-item" >
+<li class="s-bundle-group-item" ng-if="propertyDisplayData">
   <div class="row">
     <div class="col-xs-8 s-bundle-group-title">
       <div class="s-bundle-group-range">
@@ -11,7 +11,7 @@
           <li ng-bind="productBundleGroup.maximumQuantity"></li>
         </ul>
       </div>
-      <span class="s-bundle-group-title-text" ng-bind="productBundleGroup.productBundleGroupType.type"></span>
+      <span class="s-bundle-group-title-text" ng-bind="productBundleGroup.productBundleGroupType.typeName"></span>
       <span class="s-bundle-group-title-edit"><input type="text" class="form-control" value="T-Shirts: Closeout Selections">
       	<button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button>
       </span>
@@ -80,6 +80,26 @@
 										ng-change="productBundleGroup.setMaximumQuantity(productBundleGroup.maximumQuantity)"
 								>
 							</div>
+						</div>
+						<div class="row form-group">
+							<span sw-property-display 
+					          		data-property="amountType"
+					          		data-object="productBundleGroup"
+					          		data-object-name="productBundleGroup"
+					          		data-options-arguments="{property:'amountType'}"
+					          		data-meta="propertyDisplayData['amountType']"
+					          		data-editing="true"
+									data-editable="true"
+									data-eager-load-options="true"
+					          ></span>
+					         <span sw-property-display 
+					          		data-property="amount"
+					          		data-object="productBundleGroup"
+					          		data-object-name="productBundleGroup"
+					          		data-meta="propertyDisplayData['amount']"
+					          		data-editing="true"
+									data-editable="true"
+					          ></span>
 						</div>
 						<div class="form-group s-bundle-group-active">
 							<label class="control-label">Active: </label>

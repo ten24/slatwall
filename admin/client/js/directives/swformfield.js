@@ -54,7 +54,7 @@ partialsPath
 			scope.formFieldChanged = function(value){
 				$log.debug('formfieldchanged');
 				$log.debug(value);
-			}
+			};
 			
 			var templateLoader = getTemplate(scope.propertyDisplay.meta.fieldType);
 	    	var promise = templateLoader.success(function(html){
@@ -80,7 +80,7 @@ partialsPath
 					scope.getOptions = function(){
 						if(angular.isUndefined(scope.propertyDisplay.meta.options)){
 							
-							var optionsPromise = $slatwall.getPropertyDisplayOptions('product',
+							var optionsPromise = $slatwall.getPropertyDisplayOptions(scope.propertyDisplay.objectName,
 								 scope.propertyDisplay.optionsArguments
 							);
 							optionsPromise.then(function(value){

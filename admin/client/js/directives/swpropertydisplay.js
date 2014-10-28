@@ -14,6 +14,7 @@ propertyDisplayService
 		restrict: 'A',
 		scope:{
 			object:"=",
+			objectName:"@",
 			property:"@",
 			meta:"=",
 			isEditable:"=",
@@ -34,6 +35,7 @@ propertyDisplayService
 			
 			var propertyDisplay = {
 				object:scope.object,
+				objectName:scope.objectName,
 				property:scope.property,
 				meta:scope.meta,
 				errors:{},
@@ -54,24 +56,6 @@ propertyDisplayService
 			scope.$id = 'propertyDisplay:'+scope.property;
 			scope.propertyDisplay = propertyDisplayService.newPropertyDisplay(propertyDisplay);
 			$log.debug(scope.propertyDisplay);
-			/*if(!scope.propertyDisplay.fieldType.length && angular.isDefined(scope.meta[scope.property].fieldType)){
-				scope.propertyDisplay.fieldType = scope.meta[scope.property].fieldType;
-			}
-			if(angular.isDefined(scope.meta[scope.property].hint)){
-				scope.propertyDisplay.hint = scope.meta[scope.property].hint;
-				$(function(){
-				    $('.j-tool-tip-item').tooltip();
-				  });
-			}
-			
-			if(!scope.propertyDisplay.title.length && angular.isDefined(scope.meta[scope.property].title)){
-				scope.propertyDisplay.title = scope.meta[scope.property].title;
-			}
-			if(angular.isDefined(scope.object[scope.property])){
-				scope.propertyDisplay.value = scope.object[scope.property];
-			}
-			if(angular.isDefined(scope.object[scope.valueOptions])){
-			}*/
 						
 			
 			$log.debug('propertyDisplay');
