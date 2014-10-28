@@ -296,6 +296,18 @@ component extends="HibachiService" accessors="true" output="false" {
 		return account;	
 	}
 	
+	public any function processAccount_generateAuthToken(required any account, required any processObject){
+		var accountAuthentication = this.newAccountAuthentication();
+		accountAuthentication.setAccount( arguments.account );
+	
+		// Set the authToken
+		accountAuthentication.setAuthToken(createUUID());
+		accountAuthentication.setAuthenticationDescription(arguments.processObject.getAuthenticationDescription());
+		
+		return arguments.account;
+		
+	}
+	
 	public any function processAccount_login(required any account, required any processObject) {
 		// Take the email address and get all of the user accounts by primary e-mail address
 		var accountAuthentication =getAccountDAO().getActivePasswordByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
@@ -1190,10 +1202,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	public boolean function deleteAccountAuthentication(required any accountAuthentication) {
 		// Check delete validation
 		if(arguments.accountAuthentication.isDeletable()) {
-			
 			// Remove the primary fields so that we can delete this entity
 			getAccountDAO().removeAccountAuthenticationFromSessions( arguments.accountAuthentication.getAccountAuthenticationID() );
-			
+			arguments.accountAuthentication.removeAccount();
 		}
 		
 		return delete( arguments.accountAuthentication );
