@@ -73,8 +73,13 @@ $timeout
 	};
 	
 	$scope.keywords = "";
+	var searchPromise;
 	$scope.searchCollection = function($timout){
-		var searchPromise = $timeout(function(){
+		if(searchPromise) {
+			$timeout.cancel(searchPromise);
+		}
+		
+		searchPromise = $timeout(function(){
 			$log.debug('search with keywords');
 			$log.debug($scope.keywords);
 			$scope.getCollection();

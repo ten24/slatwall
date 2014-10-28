@@ -436,7 +436,7 @@
 
 										                    <!-- Multiple events in a single day (note the rowspan) -->
 										                    <tr>
-										                        <td class="agenda-date" class="active" rowspan="2">
+										                        <td class="agenda-date active" rowspan="2">
 										                            <div class="dayofmonth">26</div>
 										                            <div class="shortdate">July, 2014</div>
 										                            <div class="dayofweek text-muted">Monday</div>
@@ -454,7 +454,7 @@
 
 										                    <!-- Multiple events in a single day (note the rowspan) -->
 										                    <tr>
-										                        <td class="agenda-date" class="active" rowspan="2">
+										                        <td class="agenda-date active" rowspan="2">
 										                            <div class="dayofmonth">27</div>
 										                            <div class="shortdate">July, 2014</div>
 										                            <div class="dayofweek text-muted">Tuesday</div>
@@ -472,7 +472,7 @@
 
                                                             <!-- Single events (note the rowspan) -->
 															<tr>
-																<td class="agenda-date" class="active" rowspan="1">
+																<td class="agenda-date active" rowspan="1">
 																	<div class="dayofmonth">28</div>
 																	<div class="shortdate">July, 2014</div>
 																	<div class="dayofweek text-muted">Wednesday</div>
