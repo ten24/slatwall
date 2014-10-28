@@ -52,9 +52,7 @@ Notes:
 		
 	<!--- Create ---> 
 	<cf_HibachiEntityActionBarButtonGroup>
-		<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
-			<cf_HibachiActionCaller action="admin:entity.createfulfillmentmethod" entity="fulfillmentmethod" class="btn btn-primary" icon="plus icon-white" />
-		</cf_HibachiActionCallerDropdown>
+		<cf_HibachiActionCaller action="admin:entity.createfulfillmentmethod" entity="fulfillmentmethod" class="btn btn-primary" icon="plus icon-white" />
 	</cf_HibachiEntityActionBarButtonGroup>
 </cf_HibachiEntityActionBar>
 

@@ -410,13 +410,12 @@ Notes:
 									<!--- Start of Search --->
 									<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;" autocomplete="off" style="padding: 7px;margin-right: 0px;margin-left: 20px;">
 										<div class="form-group">
-											<input id="global-search" type="text" name="search" class="form-control search-query col-xs-2" placeholder="Search" ng-model="keywords" ng-change="updateSearchResults(); showResults()">
-												<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
-											</input>
+											<input type="text" name="search" class="form-control search-query col-xs-2" placeholder="Search" ng-model="keywords" ng-change="updateSearchResults()">
+											<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
 										</div>
-										<div class="row s-search-results" style="padding-top:15px;min-height: 116px;" ng-show="searchResultsOpen">
+										<!---<div class="row s-search-results" style="padding-top:15px;" ng-show="searchResultsOpen">
 											<ul class="col-md-12 list-unstyled">
-												<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length">
+												<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length && resultsCounter">
 													<div class="col-md-4 s-title">
 														<h2>{{ searchResult.title }}</h2>
 													</div>
@@ -426,7 +425,31 @@ Notes:
 														</ul>
 													</div>
 												</li>
-
+												<li  ng-show="!resultsCounter">
+													<div class="col-md-4 s-title">
+														<h2>No Results</h2>
+													</div>
+												</li>
+											</ul>
+										</div>--->
+										
+										<div class="row s-search-results" style="padding-top:15px;min-height: 116px;" ng-show="searchResultsOpen">
+											<ul class="col-md-12 list-unstyled">
+												<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length && resultsFound">
+													<div class="col-md-4 s-title">
+														<h2>{{ searchResult.title }}</h2>
+													</div>
+													<div class="col-md-8 s-body">
+														<ul class="list-unstyled" id="j-search-results"	>
+															<li ng-repeat="result in searchResult.results"><a target="_self" href="{{result.link}}">{{result.name}}</a></li>
+														</ul>
+													</div>
+												</li>
+												<li ng-hide="resultsFound" class="ng-hide col-md-8 s-body"">
+													<ul class="list-unstyled">
+														<li>#$.slatwall.rbKey('admin.define.nosearchresults')#</li>
+													</ul>
+												</li>
 											</ul>
 											<div class="spinner" ng-show="loading" style="position: absolute;top: 25%;left: 45%;font-size: 40px;opacity: .6;"><i class="fa fa-refresh fa-spin"></i></div>
 										</div>
