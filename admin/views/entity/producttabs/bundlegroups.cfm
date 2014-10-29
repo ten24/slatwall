@@ -1,17 +1,17 @@
- 
+
 <form></form>
 <span ng-controller="create-bundle-controller">
 	  <section class="col-xs-12" ng-if="product.defaultSku.productBundleGroups">
-			<form name="form.createProductBundle"> 
+			<form name="form.createProductBundle">
 				<span ng-init="setForm(form.createProductBundle)"></span>
 				<input type="hidden" ng-model="product.productID">
-			    <span 	
+			    <span
 			    		sw-product-bundle-groups
 			    		data-product-bundle-groups="product.defaultSku.productBundleGroups"
 			    >
 			    </span>
-			    <button class="btn btn-xs s-btn-grey s-create-bundle-btn"
-			    		data-toggle="collapse" 
+			    <button class="btn btn-sm s-btn-grey s-create-bundle-btn"
+			    		data-toggle="collapse"
 			    		ng-click="addProductBundleGroup()"
 			    >
 			    	<i class="fa fa-plus"></i> Bundle Group
@@ -25,5 +25,5 @@
 			    </ul>
 	   		</form>
 	  </section>
- 
+
 </span>

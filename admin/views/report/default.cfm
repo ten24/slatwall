@@ -54,7 +54,7 @@ Notes:
 	      	<div class="col-md-4 s-header-info">
 				<ul class="list-unstyled list-inline">
 				</ul>
-				<h1 class="actionbar-title">Reporting Dashboard</h1>
+				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.report')#</h1>
 			</div>
 
 			<div class="col-md-8">
