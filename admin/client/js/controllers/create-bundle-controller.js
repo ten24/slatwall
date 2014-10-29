@@ -19,7 +19,7 @@ function(
 	formService
 ){
 	$scope.$id="create-bundle-controller";
-		//if this view is part of the dialog section, call the inherited function
+	//if this view is part of the dialog section, call the inherited function
 	if(angular.isDefined($scope.scrollToTopOfDialog)){
 		$scope.scrollToTopOfDialog();
 	}
