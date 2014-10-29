@@ -34,6 +34,7 @@ $filter){
 		link: function(scope, element,attrs,filterGroupsController){
 			
 			scope.baseEntityAlias = collectionService.getBaseEntityAlias();
+			scope.displayBaseEntityName = collectionService.getDisplayBaseEntityName();
 			
 			if(angular.isUndefined(scope.filterItem.breadCrumbs)){
 				scope.filterItem.breadCrumbs = [];
@@ -43,17 +44,21 @@ $filter){
 					                     	{
 					                     		entityAlias:scope.baseEntityAlias,
 					                     		cfc:scope.baseEntityAlias,
-					                     		propertyIdentifier:scope.baseEntityAlias
+					                     		propertyIdentifier:scope.baseEntityAlias,
+					                     		displayEntityName:scope.displayBaseEntityName
 					                     	}
 					                    ];
 				}else{
+					console.log('filterItem');
+					console.log(scope.filterItem);
 					var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
 					entityAliasArrayFromString.pop();
 					for(var i in entityAliasArrayFromString){
 						var breadCrumb = {
 								entityAlias:entityAliasArrayFromString[i],
 								cfc:entityAliasArrayFromString[i],
-								propertyIdentifier:entityAliasArrayFromString[i]
+								propertyIdentifier:entityAliasArrayFromString[i],
+								displayEntityName:scope.filterItem.displayPropertyIdentifier
 						};
 						scope.filterItem.breadCrumbs.push(breadCrumb);
 					}
@@ -82,10 +87,6 @@ $filter){
 									}
 								}
 							}
-								
-							//scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
-						}, function(reason){
-							
 						});
 					}else{
 						var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');

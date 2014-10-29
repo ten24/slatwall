@@ -65,8 +65,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	public any function getFilterPropertiesByBaseEntityName( required struct rc){
-		arguments.rc.apiResponse.content['data'] = getHibachiService().getPropertiesWithAttributesByEntityName(rereplace(rc.entityName,'_',''));
+		var entityName = rereplace(rc.entityName,'_','');
+		arguments.rc.apiResponse.content['data'] = getHibachiService().getPropertiesWithAttributesByEntityName(entityName);
 		arguments.rc.apiResponse.content['entityName'] = rc.entityName;
+		arguments.rc.apiResponse.content['displayEntityName'] = rbKey('entity.#entityName#');
 	}
 	
 	public any function getProcessObject(required struct rc){

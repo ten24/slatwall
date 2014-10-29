@@ -137,7 +137,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			slatwallBaseEntity = getService('hibachiService').getProperlyCasedFullEntityName(arguments.collectionObject);
 		}
 		
-		variables.collectionObject = "#slatwallBaseEntity#";
+		variables.collectionObject = arguments.collectionObject;
 		if(variables.collectionConfig eq '{}' ){
 			//get default columns
 			var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
@@ -167,6 +167,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			variables.collectionConfig = '{
 				"baseEntityName":"#slatwallBaseEntity#",
 				"baseEntityAlias":"_#lcase(arguments.collectionObject)#",
+				"displayBaseEntityName":"#rbKey("entity.#arguments.collectionObject#")#",
 				"columns":#columnsJson#
 			}';
 		}
