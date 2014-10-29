@@ -1,5 +1,5 @@
-<input  type="{{propertyDisplay.fieldType}}" class="form-control" 
-		    		 ng-model="propertyDisplay.value"
+<input  type="{{propertyDisplay.meta.fieldType}}" class="form-control" 
+		    		 ng-model="propertyDisplay.object[propertyDisplay.property]"
 		    		 ng-disabled="propertyDisplay.editable"
 		    		 ng-show="propertyDisplay.editing"
 />
@@ -9,5 +9,5 @@
 	ng-repeat="(key,value) in propertyDisplay.errors"
 	ng-show="(propertyDisplay.form.$submitted && propertyDisplay.form[propertyDisplay.property].$invalid) || (propertyDisplay.form[propertyDisplay.property].$invalid && propertyDisplay.form[propertyDisplay.property].$dirty)"
 >
-  <span  ng-show="key === 'required'">{{propertyDisplay.title}} is a required field<br></span>
+  <span  ng-show="key === 'required'">{{propertyDisplay.meta.title}} is a required field<br></span>
 </span>

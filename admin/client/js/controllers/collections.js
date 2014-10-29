@@ -5,19 +5,19 @@ angular.module('slatwalladmin')
 [ '$scope',
 '$location',
 '$slatwall',
-'alertService',
 'collectionService', 
 'metadataService',
 'paginationService',
 '$log',
+'$timeout',
 function($scope,
 $location,
 $slatwall,
-alertService,
 collectionService,
 metadataService,
 paginationService,
-$log
+$log,
+$timeout
 ){
 	
 	//init values
@@ -63,27 +63,31 @@ $log
 				
 				var collectionListingPromise = $slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.autoScrollPage, pageShow:50});
 				collectionListingPromise.then(function(value){
-					
 					$scope.collection.pageRecords = collectionService.getCollection().pageRecords.concat(value.pageRecords);
 					collectionService.setCollection($scope.collection);
 					$scope.autoScrollDisabled = false;
 				},function(reason){
-					//display error message if getter fails
-					var messages = reason.MESSAGES;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlerts(alerts);
 				});
 			}
 		}
 	};
 	
 	$scope.keywords = "";
-	$scope.searchCollection = function(){
-		$log.debug('search with keywords');
-		$log.debug($scope.keywords);
-		$scope.getCollection();
+	var searchPromise;
+	$scope.searchCollection = function($timout){
+		if(searchPromise) {
+			$timeout.cancel(searchPromise);
+		}
+		
+		searchPromise = $timeout(function(){
+			$log.debug('search with keywords');
+			$log.debug($scope.keywords);
+			$scope.getCollection();
+		}, 500)
 	};
+		
 	
+
 	$scope.getCollection = function(){
 		var pageShow = 50;
 		if($scope.pageShow !== 'Auto'){
@@ -94,6 +98,32 @@ $log
 		collectionListingPromise.then(function(value){
 			collectionService.setCollection(value);
 			$scope.collection = collectionService.getCollection();
+
+			var _collectionObject = $scope.collection['collectionObject'].toLowerCase().replace('slatwall', '');
+			var _recordKeyForObjectID = _collectionObject + 'ID';
+			
+			for(var record in value.pageRecords){
+				var _detailLink;
+				var _editLink;
+				
+				var _pageRecord = $scope.collection.pageRecords[ record ];
+				var _objectID = _pageRecord[ _recordKeyForObjectID ];
+				
+				if(_objectID && _collectionObject !== 'country'){
+					_detailLink = "?slatAction=entity.detail" + _collectionObject + "&" + _collectionObject + "ID=" + _objectID;
+					_editLink = "?slatAction=entity.edit" + _collectionObject + "&" + _collectionObject + "ID=" + _objectID;
+					
+				} else if (_collectionObject === 'country' ){
+					
+					_detailLink = "?slatAction=entity.detail" + _collectionObject + "&countryCode=" + _pageRecord["countryCode"];
+					_detailLink = "?slatAction=entity.edit" + _collectionObject + "&countryCode=" + _pageRecord["countryCode"];
+					
+				}
+				
+				_pageRecord["detailLink"] = _detailLink;
+				_pageRecord["editLink"] = _editLink;
+			}
+
 			$scope.collectionInitial = angular.copy(collectionService.getCollection());
 			if(angular.isUndefined($scope.collectionConfig)){
 				$scope.collectionConfig = collectionService.getCollectionConfig();
@@ -101,10 +131,6 @@ $log
 			//check if we have any filter Groups
 			$scope.collectionConfig.filterGroups = collectionService.getRootFilterGroup();
 		},function(reason){
-			//display error message if getter fails
-			var messages = reason.MESSAGES;
-			var alerts = alertService.formatMessagesToAlerts(messages);
-			alertService.addAlerts(alerts);
 		});
 	};
 	
@@ -119,7 +145,6 @@ $log
 					metadataService.setPropertiesList(value,$scope.collectionConfig.baseEntityAlias);
 					$scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
 					metadataService.formatPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias],$scope.collectionConfig.baseEntityAlias);
-				}, function(reason){
 					
 				});
 			}
@@ -159,9 +184,7 @@ $log
 			
 			var saveCollectionPromise = $slatwall.saveEntity(entityName,collection.collectionID,data);
 			saveCollectionPromise.then(function(value){
-				var messages = value.MESSAGES;
-				var alerts = alertService.formatMessagesToAlerts(messages);
-				alertService.addAlerts(alerts);
+				
 				$scope.errorMessage = {};
 				//$scope.collectionForm.$setPristine();
 				$scope.getCollection();
@@ -174,9 +197,6 @@ $log
 					$scope.errorMessage[key] = value[0];
 				});
 				//$scope.collection = angular.copy($scope.collectionInitial);
-				var messages = reason.MESSAGES;
-				var alerts = alertService.formatMessagesToAlerts(messages);
-				alertService.addAlerts(alerts);
 			});
 		}
 	};

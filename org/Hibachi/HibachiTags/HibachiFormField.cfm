@@ -7,16 +7,16 @@
 	<cfparam name="attributes.valueOptionsSmartList" type="any" default="" />
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />
 	<cfparam name="attributes.modalCreateAction" type="string" default="" />			<!--- hint: This allows for a special admin action to be passed in where the saving of that action will automatically return the results to this field --->
-		
+
 	<cfparam name="attributes.autocompletePropertyIdentifiers" type="string" default="" />
 	<cfparam name="attributes.autocompleteNameProperty" type="string" default="" />
-	<cfparam name="attributes.autocompleteValueProperty" type="string" default="" /> 
+	<cfparam name="attributes.autocompleteValueProperty" type="string" default="" />
 	<cfparam name="attributes.autocompleteSelectedValueDetails" type="struct" default="#structNew()#" />
-	
+
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
 	<!---
 		attributes.fieldType have the following options:
-		
+
 		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
 		checkboxgroup		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
 		date				|	This is still just a textbox, but it adds the jQuery date picker
@@ -33,7 +33,7 @@
 		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
 		hidden				|	This is used mostly for processing
 	--->
-	
+
 	<cfsilent>
 		<cfloop collection="#attributes#" item="key">
 			<cfif left(key,5) eq "data-">
@@ -172,7 +172,7 @@
 				<cfset suggestionsID = reReplace(lcase(attributes.fieldName), '[^a-z]', '', 'all') & "suggestions" />
 				<div class="autoselect-container">
 					<input type="hidden" name="#attributes.fieldName#" value="#htmlEditFormat(attributes.value)#" />
-					<input type="text" name="#attributes.fieldName#-autocompletesearch" autocomplete="off" class="textautocomplete #attributes.fieldClass#" data-acfieldname="#attributes.fieldName#" data-sugessionsid="#suggestionsID#" #attributes.fieldAttributes# <cfif len(attributes.value)>disabled="disabled"</cfif> />
+					<input type="text" name="#attributes.fieldName#-autocompletesearch" autocomplete="off" class="textautocomplete #attributes.fieldClass# form-control" data-acfieldname="#attributes.fieldName#" data-sugessionsid="#suggestionsID#" #attributes.fieldAttributes# <cfif len(attributes.value)>disabled="disabled"</cfif> />
 					<div class="autocomplete-selected" <cfif not len(attributes.value)>style="display:none;"</cfif>><a href="##" class="textautocompleteremove"><i class="glyphicon glyphicon-remove"></i></a> <span class="value" id="selected-#suggestionsID#"><cfif len(attributes.value)>#attributes.autocompleteSelectedValueDetails[ attributes.autocompleteNameProperty ]#</cfif></span></div>
 					<div class="autocomplete-options" style="display:none;">
 						<ul class="#listLast(lcase(attributes.fieldName),".")#" id="#suggestionsID#">
@@ -222,5 +222,5 @@
 			</cfoutput>
 		</cfcase>
 	</cfswitch>
-	
+
 </cfif>

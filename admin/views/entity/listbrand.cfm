@@ -50,15 +50,19 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.brandSmartList#"
+	<cf_HibachiEntityActionBar type="listing" object="#rc.brandSmartList#" showCreate="false">
+		
+		<!--- Create ---> 
+		<cf_HibachiEntityActionBarButtonGroup>
+			<cf_HibachiActionCaller action="admin:entity.createbrand" entity="brand" class="btn btn-primary" icon="plus icon-white" modal="false" />
+		</cf_HibachiEntityActionBarButtonGroup>
+	</cf_HibachiEntityActionBar>
+
+	<cf_HibachiListingDisplay smartList="#rc.brandSmartList#"
 							recordDetailAction="admin:entity.detailbrand"
 							recordEditAction="admin:entity.editbrand"
 							showCreate="false">
-		
-		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createbrand" entity="brand" class="btn btn-primary" icon="plus icon-white" modal="false" />
-		</cf_HibachiListingDisplayButtonGroup>
+
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="brandName" />
 		<cf_HibachiListingColumn propertyIdentifier="brandWebsite" />

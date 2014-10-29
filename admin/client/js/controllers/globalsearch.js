@@ -1,19 +1,22 @@
 'use strict';
 angular.module('slatwalladmin').controller('globalSearch', [
 	'$scope',
-	'$slatwall',
 	'$log',
 	'$window',
+	'$timeout',
+	'$slatwall',
 function(
 	$scope,
-	$slatwall,
 	$log,
-	$window
+	$window,
+	$timeout,
+	$slatwall
 ){
 	$scope.keywords = '';
 	$scope.searchResultsOpen = false;
 	$scope.sidebarClass = 'sidebar';
-	
+	$scope.loading = false; //Set loading wheel to false
+
 	$scope.searchResults = {
 		'product' : {
 			'title': $.slatwall.rbKey('entity.product_plural'),
@@ -56,55 +59,57 @@ function(
 			}
 		}
 	};
-	
-	$scope.resultsCounter = 0;
-	
+
+
+	var timeoutPromise;
+
 	$scope.updateSearchResults = function() {
-		
-		for (var entityName in $scope.searchResults){
-			
-			(function(entityName) {
-				
-				var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords} );
-				searchPromise.then(function(data){
-					if($scope.keywords == ''){
-						// clear out the results
-						$scope.searchResults[ entityName ].results = [];
-						$scope.hideResults();
-					}else {
-						// clear out the results
-						$scope.searchResults[ entityName ].results = [];
-						
-						// push in the new results
-						for(var i in data.pageRecords) {
-							$scope.searchResults[ entityName ].results.push({
-								'name': $scope.searchResults[ entityName ].resultNameFilter( data.pageRecords[i] ),
-								'link': '?slatAction=entity.detail'+entityName+'&'+entityName+'ID='+$scope.searchResults[ entityName ].id(data.pageRecords[i]),
-							});
-						}
-						if($scope.searchResults[ entityName ].results.length){
-							$scope.resultsCounter++;
-						}
-					
-					}
-					
-				});
-				
-			})(entityName);
-			
+		$scope.resultsFound = false;
+		$scope.loading = false;
+		if(timeoutPromise) {
+			$timeout.cancel(timeoutPromise);
 		}
-		if($scope.resultsCounter > 0){
-			$scope.searchResults['noResult'] = {
-				'title': '',
-				'results' : []
-			};
-			
-			$scope.searchResults[ 'noResult' ].results.push({
-				'name':  $.slatwall.rbKey('admin.define.nosearchresults')
-			});
-		}
+
+		timeoutPromise = $timeout(function(){
+			for (var entityName in $scope.searchResults){
+				$scope.loading = true;
+				(function(entityName) {
+
+					var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords} );
+
+					searchPromise.then(function(data){
+
+						if($scope.keywords === ''){
+							// clear out the results
+							$scope.searchResults[ entityName ].results = [];
+							$scope.hideResults();
+						}else {
+							// clear out the results
+							$scope.searchResults[ entityName ].results = [];
+
+							// push in the new results
+							for(var i in data.pageRecords) {
+								$scope.searchResults[ entityName ].results.push({
+									'name': $scope.searchResults[ entityName ].resultNameFilter( data.pageRecords[i] ),
+									'link': '?slatAction=entity.detail'+entityName+'&'+entityName+'ID='+$scope.searchResults[ entityName ].id(data.pageRecords[i]),
+								});
+							}
+							if($scope.searchResults[ entityName ].results.length){
+								$scope.resultsFound = true;
+								$scope.loading = false;
+							}
+							//Remove loading wheel
+							$scope.loading = false;
+						}
+					});
+
+				})(entityName);
+			}
+		}, 500)
+
+		$scope.showResults();
 	};
-	
+
 
 	$scope.showResults = function() {
 		$scope.searchResultsOpen = true;
@@ -115,9 +120,9 @@ function(
 				$scope.hideResults();
 				$scope.$apply();
 			}
-		};	
+		};
 	};
-	
+
 	$scope.hideResults = function() {
 		$scope.searchResultsOpen = false;
 		$scope.sidebarClass = 'sidebar';
@@ -125,5 +130,5 @@ function(
 		$scope.keywords = "";
 		$window.onclick = null;
 	};
-	
+
 }]);

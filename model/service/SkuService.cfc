@@ -56,6 +56,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="contentService" type="any";
 	property name="stockService" type="any";
 	property name="settingService" type="any";
+	property name="typeService" type="any";
 	
 	public any function processImageUpload(required any Sku, required struct imageUploadResult) {
 		var imagePath = arguments.Sku.getImagePath();
@@ -181,9 +182,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		if(arguments.sku.getAvailableSeatCount > 0 ) {
-			eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
+			eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
 		} else {
-			eventRegistration.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstWaitlisted"));
+			eventRegistration.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstWaitlisted"));
 		}	
 		
 		eventRegistration = getService("EventRegistrationService").saveEventRegistration( eventRegistration );
@@ -279,9 +280,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var registrantsSmartlist = arguments.sku.getRegistrationAttendanceSmartlist();
 		for(registrant in registrantsSmartlist.getRecords()) {
 			if( listFindNoCase(attendedList,registrant.getEventRegistrationID()) > 0 ) {
-				registrant.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstAttended"));
+				registrant.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstAttended"));
 			} else {
-				registrant.setEventRegistrationStatusType(getSettingService().getTypeBySystemCode("erstRegistered"));
+				registrant.setEventRegistrationStatusType(getTypeService().getTypeBySystemCode("erstRegistered"));
 			}
 		}
 		return sku;
@@ -433,7 +434,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Create a stockAdjustment
 		var stockAdjustment = getStockService().newStockAdjustment();
-		stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode('satMakeupBundledSkus') ); 
+		stockAdjustment.setStockAdjustmentType( getTypeService().getTypeBySystemCode('satMakeupBundledSkus') ); 
 		stockAdjustment.setToLocation( arguments.processObject.getLocation() );
 		stockAdjustment.setFromLocation( arguments.processObject.getLocation() );
 		
@@ -467,7 +468,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Create a stockAdjustment
 		var stockAdjustment = getStockService().newStockAdjustment();
-		stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode('satBreakupBundledSkus') ); 
+		stockAdjustment.setStockAdjustmentType( getTypeService().getTypeBySystemCode('satBreakupBundledSkus') ); 
 		stockAdjustment.setToLocation( arguments.processObject.getLocation() );
 		stockAdjustment.setFromLocation( arguments.processObject.getLocation() );
 		

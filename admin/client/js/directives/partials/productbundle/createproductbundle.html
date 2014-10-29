@@ -8,67 +8,70 @@
     </div>
   </header>
   <span ng-controller="create-bundle-controller">
-		
+
 		  <section class="col-xs-12" >
-		
+
 		    <div class="row s-bundle-header" >
-		     	 <form class="form-horizontal s-properties" 
-					role="form" 
+		     	 <form class="form-horizontal s-properties"
+					role="form"
 					name="form.createProductBundle"
-				> 
-					<span ng-if="processObject">
+				>
+					<span ng-init="setForm(form.createProductBundle);"></span>
+					<span ng-if="product">
 				        <div class="col-xs-6">
-				       	 <span sw-property-display 
-				          		data-property="product.productName"
-				          		data-object="processObject"
-				          		data-is-editable="true"
-				          		data-is-hidden="false"
+				       	 <span sw-property-display
+				          		data-property="productName"
+				          		data-object="product"
+				          		data-meta="propertyDisplayData['productName']"
 				          		data-editing="true"
+								data-editable="true"
 				          ></span>
-				         <span sw-property-display 
-				          		data-property="product.productCode"
-				          		data-object="processObject"
-				          		data-is-editable="true"
-				          		data-is-hidden="false"
+				         <span sw-property-display
+				          		data-property="productCode"
+				          		data-object="product"
+				          		data-meta="propertyDisplayData['productCode']"
 				          		data-editing="true"
+								data-editable="true"
 				          ></span>
-				          <span sw-property-display 
-				          		data-property="product.price"
-				          		data-object="processObject"
-				          		data-is-editable="true"
-				          		data-is-hidden="false"
+				          <span sw-property-display
+				          		data-property="price"
+				          		data-object="product.defaultSku"
+				          		data-meta="propertyDisplayData['price']"
 				          		data-editing="true"
+								data-editable="true"
 				          ></span>
 				        </div>
-				
+
 				        <div class="col-xs-6">
-				        	<span sw-property-display 
-				          		data-property="product.productType"
-				          		data-object="processObject"
-				          		data-is-editable="true"
-				          		data-is-hidden="false"
+				        <span sw-property-display
+				          		data-property="productType"
+				          		data-object="product"
+				          		data-meta="propertyDisplayData['productType']"
 				          		data-editing="true"
-				          		data-value-options="productTypeOptions"
+								data-editable="true"
+								data-options-arguments="{property:'productType',argument1:'productBundle'}"
+								data-eager-load-options="true"
 				          ></span>
-				         <span sw-property-display 
-				          		data-property="product.brand"
-				          		data-object="processObject"
-				          		data-is-editable="true"
-				          		data-is-hidden="false"
+				         <span sw-property-display
+				          		data-property="brand"
+				          		data-object="product"
+				          		data-meta="propertyDisplayData['brand']"
 				          		data-editing="true"
-				          		data-value-options="product.brandOptions"
+								data-editable="true"
+								data-options-arguments="{property:'brand'}"
+								data-eager-load-options="true"
 				          ></span>
 						</div>
 					</span>
 				</form>
 		    </div><!-- //bundle head -->
-		    
+
 		    <span 	sw-product-bundle-groups
-		    		data-product-bundle-groups="processObject.productBundleGroups.value"
+		    		data-product-bundle-groups="product.defaultSku.productBundleGroups"
 		    >
 		    </span>
 		    <button class="btn btn-xs s-btn-grey s-create-bundle-btn"
-		    		data-toggle="collapse" 
+		    		data-toggle="collapse"
 		    		ng-click="addProductBundleGroup()"
 		    >
 		    	<i class="fa fa-plus"></i> Bundle Group

@@ -53,14 +53,15 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="emailService" type="any";
 	property name="eventRegistrationService" type="any";
 	property name="hibachiAuditService" type="any";
+	property name="loyaltyService" type="any";
+	property name="orderService" type="any";
 	property name="paymentService" type="any";
 	property name="permissionService" type="any";
 	property name="priceGroupService" type="any";
 	property name="settingService" type="any";
 	property name="siteService" type="any";
-	property name="loyaltyService" type="any";
+	property name="typeService" type="any";
 	property name="validationService" type="any";
-	property name="orderService" type="any";
 	
 	public string function getHashedAndSaltedPassword(required string password, required string salt) {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
@@ -167,7 +168,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				// Link to the order payment if the payment is assigned to a term order. Also set the payment type
 				if(!isNull(orderPayment)) {
 					newAccountPaymentApplied.setOrderPayment( orderPayment );
-					newAccountPaymentApplied.setAccountPaymentType( getSettingService().getType( appliedOrderPayment.paymentTypeID  ) );
+					newAccountPaymentApplied.setAccountPaymentType( getTypeService().getType( appliedOrderPayment.paymentTypeID  ) );
 				}
 				
 				// Save the account payment applied
@@ -293,6 +294,18 @@ component extends="HibachiService" accessors="true" output="false" {
 		arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
 		
 		return account;	
+	}
+	
+	public any function processAccount_generateAuthToken(required any account, required any processObject){
+		var accountAuthentication = this.newAccountAuthentication();
+		accountAuthentication.setAccount( arguments.account );
+	
+		// Set the authToken
+		accountAuthentication.setAuthToken(createUUID());
+		accountAuthentication.setAuthenticationDescription(arguments.processObject.getAuthenticationDescription());
+		
+		return arguments.account;
+		
 	}
 	
 	public any function processAccount_login(required any account, required any processObject) {
@@ -1189,10 +1202,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	public boolean function deleteAccountAuthentication(required any accountAuthentication) {
 		// Check delete validation
 		if(arguments.accountAuthentication.isDeletable()) {
-			
 			// Remove the primary fields so that we can delete this entity
 			getAccountDAO().removeAccountAuthenticationFromSessions( arguments.accountAuthentication.getAccountAuthenticationID() );
-			
+			arguments.accountAuthentication.removeAccount();
 		}
 		
 		return delete( arguments.accountAuthentication );

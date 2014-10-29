@@ -27,7 +27,7 @@
 				</cfif>
 				<cf_HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="false" displayType="table">
 				<cfloop array="#rc.sku.getAlternateSkuCodes()#" index="asc">
-					<cf_HibachiPropertyDisplay object="#asc#" title="#asc.getAlternateSkuCodeType().getType()#" property="alternateSkuCode" edit="false" displayType="table">	
+					<cf_HibachiPropertyDisplay object="#asc#" title="#asc.getAlternateSkuCodeType().getTypeName()#" property="alternateSkuCode" edit="false" displayType="table">	
 				</cfloop>
 				<cfloop array="#rc.sku.getOptions()#" index="option">
 					<cf_HibachiPropertyDisplay object="#option#" title="#option.getOptionGroup().getOptionGroupName()#" property="optionName" edit="false" displayType="table">

@@ -193,6 +193,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		arguments.rc.$.slatwall.addActionResult( "public:cart.removeOrderItem", cart.hasErrors() );
 	}
 	
+	// Update Order Fulfillment
+	public void function updateOrderFulfillment(required any rc) {
+		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'updateOrderFulfillment');
+		
+		arguments.rc.$.slatwall.addActionResult( "public:cart.updateOrderFulfillment", cart.hasErrors() );
+	}
+	
 	// Add Promotion Code
 	public void function addPromotionCode(required any rc) {
 		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'addPromotionCode');
@@ -234,6 +241,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		arguments.rc.$.slatwall.addActionResult( "public:cart.addOrderPayment", cart.hasErrors() );
 	}
 	
+	// Remove Order Payment
+	public void function removeOrderPayment(required any rc) {
+		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'removeOrderPayment');
+		
+		arguments.rc.$.slatwall.addActionResult( "public:cart.removeOrderPayment", cart.hasErrors() );
+	}
+	
 	// Place Order
 	public void function placeOrder(required any rc) {
 		
@@ -272,12 +286,4 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 	
 	}
-	
-	// Remove Order Payment
-	public void function removeOrderPayment(required any rc) {
-		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'removeOrderPayment');
-		
-		arguments.rc.$.slatwall.addActionResult( "public:cart.removeOrderPayment", cart.hasErrors() );
-	}
-	
 }

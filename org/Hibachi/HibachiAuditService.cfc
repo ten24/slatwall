@@ -173,7 +173,7 @@ component extends="HibachiService" accessors="true" {
 				var propertyChangeData = {};
 				propertyChangeData['newPropertyData'] = {};
 				propertyChangeData['newPropertyData'][arguments.entity.getAttribute().getAttributeCode()] = arguments.entity.getAttributeValue();
-				if (arguments.entity.getAttribute().getAttributeType() == "password") {
+				if (arguments.entity.getAttribute().getAttributeInputType() == "password") {
 					propertyChangeData['newPropertyData'][arguments.entity.getAttribute().getAttributeCode()] = arguments.entity.getAttributeValueEncrypted();
 				}
 				
@@ -182,7 +182,7 @@ component extends="HibachiService" accessors="true" {
 				
 				if(structKeyExists(arguments, "oldData") && structKeyExists(arguments.oldData, "attributeValue")) {
 					propertyChangeData['oldPropertyData'][arguments.entity.getAttribute().getAttributeCode()] = arguments.oldData.attributeValue;
-				} else if (structKeyExists(arguments, "oldData") && arguments.entity.getAttribute().getAttributeType() == "password" && structKeyExists(arguments.oldData, "attributeValueEncrypted")) {
+				} else if (structKeyExists(arguments, "oldData") && arguments.entity.getAttribute().getAttributeInputType() == "password" && structKeyExists(arguments.oldData, "attributeValueEncrypted")) {
 					propertyChangeData['oldPropertyData'][arguments.entity.getAttribute().getAttributeCode()] = arguments.oldData.attributeValueEncrypted;
 				}
 			} else {

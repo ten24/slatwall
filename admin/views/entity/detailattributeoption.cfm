@@ -59,18 +59,15 @@ Notes:
 								    cancelAction="admin:entity.detailAttribute"
 									cancelQueryString="attributeID=#rc.attribute.getAttributeID()#" />
 		
-		<!--- Hidden field to attach this to the attribute --->
-		<input type="hidden" name="attribute.attributeID" value="#rc.attribute.getAttributeID()#" />
-
-		<cf_HibachiPropertyDisplay object="#rc.attributeOption#" property="attributeOptionLabel" edit="#rc.edit#">
-		<cf_HibachiPropertyDisplay object="#rc.attributeOption#" property="attributeOptionValue" edit="#rc.edit#">
 		
-		<cf_HibachiTabGroup object="#rc.attributeOption#">
+		
+		<cf_HibachiEntityDetailGroup object="#rc.attributeOption#">
+			<cf_HibachiEntityDetailItem view="admin:entity/attributeoptiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.attributeOption.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.attributeOption#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiTabGroup>
+		</cf_HibachiEntityDetailGroup>
 	</cf_HibachiEntityDetailForm>
 	
 	

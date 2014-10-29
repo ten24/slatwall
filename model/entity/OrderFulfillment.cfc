@@ -58,7 +58,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// Related Object Properties (many-to-one)
 	property name="accountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="accountAddressID";
 	property name="accountEmailAddress" hb_populateEnabled="public" cfc="AccountEmailAddress" fieldtype="many-to-one" fkcolumn="accountEmailAddressID";
-	property name="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
+	property name="fulfillmentMethod" hb_populateEnabled="public" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="pickupLocation" hb_populateEnabled="public" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
@@ -124,11 +124,18 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return getService("shippingService").verifyOrderFulfillmentShippingMethodRate( this );
 	}
 	
-	// Deprecated... now just delegates to getShippingAddress
-    public any function getAddress(){
-    	return getShippingAddress();
-    }
-    
+	public boolean function allOrderFulfillmentItemsAreEligibleForFulfillmentMethod() {
+		if(!isNull(getFulfillmentMethod())) {
+			for(var orderItem in getOrderFulfillmentItems()) {
+				if(!listFindNoCase(orderItem.getSku().setting('skuEligibleFulfillmentMethods'), getFulfillmentMethod().getFulfillmentMethodID()) ) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
     public void function checkNewAccountAddressSave() {
     	
 		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
@@ -518,6 +525,11 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// ===================  END:  ORM Event Hooks  =========================
 	
 	// ================== START: Deprecated Methods ========================
+	
+	// Now just delegates to getShippingAddress
+    public any function getAddress(){
+    	return getShippingAddress();
+    }
 	
 	public numeric function getDiscountTotal() {
 		return precisionEvaluate(getDiscountAmount() + getItemDiscountAmountTotal());

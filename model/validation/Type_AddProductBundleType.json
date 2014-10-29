@@ -1,7 +1,0 @@
-{
-	"properties":{
-	    "typeName": 				[{"required":true}],
-		"systemCode": 				[{"required":true}]
-	}
-}
-

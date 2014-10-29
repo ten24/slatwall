@@ -26,6 +26,11 @@ function(
 		this.productBundleGroupType={
 			type:null
 		};
+		this.skuCollectionConfig = {
+				baseEntityName:"SlatwallSku",
+				baseEntityAlias:"Sku",
+				filterGroups:[]
+		};
 		this.$$editing=true;
 	}
 	
@@ -50,7 +55,6 @@ function(
 			}
 		},
 		setActive:function(value){
-			console.log('test');
 			this.active=value;
 		},
 		toggleEdit:function(){

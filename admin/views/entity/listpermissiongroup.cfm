@@ -50,14 +50,17 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.permissionGroupSmartList#" 
+	<cf_HibachiEntityActionBar type="listing" object="#rc.permissionGroupSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<cf_HibachiEntityActionBarButtonGroup>
+			<cf_HibachiActionCaller action="admin:entity.createpermissiongroup" entity="permissiongroup" class="btn btn-primary" icon="plus icon-white" />
+		</cf_HibachiEntityActionBarButtonGroup>
+	</cf_HibachiEntityActionBar>
+
+	<cf_HibachiListingDisplay smartList="#rc.permissionGroupSmartList#" 
 							  recordDetailAction="admin:entity.detailpermissiongroup" 
 							  recordEditAction="admin:entity.editpermissiongroup">
-		
-		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createpermissiongroup" entity="permissiongroup" class="btn btn-primary" icon="plus icon-white" />
-		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="permissionGroupName" search="true" />
 	</cf_HibachiListingDisplay>

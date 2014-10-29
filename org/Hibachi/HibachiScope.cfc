@@ -7,6 +7,9 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
+	property name="sessionFoundNPSIDCookieFlag" type="boolean";
+	property name="sessionFoundPSIDCookieFlag" type="boolean";
+	
 	property name="ormHasErrors" type="boolean" default="false";
 	property name="rbLocale";
 	property name="url" type="string";
@@ -23,6 +26,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setRBLocale( "en_us" );
 		setPublicPopulateFlag( false );
 		setPersistSessionFlag( true );
+		setSessionFoundNPSIDCookieFlag( false );
+		setSessionFoundPSIDCookieFlag( false );
 		
 		setCalledActions( [] );
 		setSuccessfulActions( [] );
@@ -204,10 +209,12 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public void function showMessage(string message="", string messageType="info") {
-		param name="request.context.messages" default="#arrayNew(1)#";
-		
-		message=getService('HibachiUtilityService').replaceStringTemplate(arguments.message,request.context);
-		arrayAppend(request.context.messages, arguments);
+		param name="request.context['messages']" default="#arrayNew(1)#";
+		arguments.message=getService('HibachiUtilityService').replaceStringTemplate(arguments.message,request.context);
+		var messageStruct = {};
+		messageStruct['message'] = arguments.message;
+		messageStruct['messageType'] = arguments.messageType;
+		arrayAppend(request.context['messages'], messageStruct);
 	}
 	
 	// ========================== HELPER DELIGATION METHODS ===============================

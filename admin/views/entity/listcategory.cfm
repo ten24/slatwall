@@ -49,8 +49,8 @@ Notes:
 <cfparam name="rc.categorySmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.categorySmartList#"
+<cf_HibachiEntityActionBar type="listing" object="#rc.categorySmartList#" showCreate="false">
+<cf_HibachiListingDisplay smartList="#rc.categorySmartList#"
 						   recordDetailAction="admin:entity.detailcategory"
 						   recordDetailModal="true"
 						   recordEditAction="admin:entity.editcategory"

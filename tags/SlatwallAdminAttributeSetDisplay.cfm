@@ -63,7 +63,7 @@ Notes:
 		<cfset fdAttributes.hint = attribute.getAttributeHint() />
 		<cfset fdAttributes.edit = attributes.edit />
 		<cfset fdAttributes.fieldname = "#attributes.fieldNamePrefix##attribute.getAttributeCode()#" />
-		<cfset fdAttributes.fieldType = attribute.getFormFieldType() />
+		<cfset fdAttributes.fieldType = attribute.getAttributeInputType() />
 		
 		<!--- Setup fieldClass --->
 		<cfset fdAttributes.fieldClass = "" />
@@ -89,7 +89,7 @@ Notes:
 			<cfset fdAttributes.valueOptions = attribute.getAttributeOptionsOptions() />
 		</cfif>
 		
-		<cfif attribute.getAttributeType() eq 'relatedObjectMultiselect'>
+		<cfif attribute.getAttributeInputType() eq 'relatedObjectMultiselect'>
 			<cfset fdAttributes.multiselectPropertyIdentifier = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName( attribute.getRelatedObject() ) />
 			<cfset fdAttributes.valueOptionsSmartList = attributes.hibachiScope.getService('hibachiService').getServiceByEntityName( attribute.getRelatedObject() ).invokeMethod( "get#attribute.getRelatedObject()#SmartList" ) />
 		</cfif>

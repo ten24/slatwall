@@ -64,6 +64,8 @@ Notes:
 		<cf_SlatwallSetting settingName="globalURLKeyProduct" />
 		<cf_SlatwallSetting settingName="globalURLKeyProductType" />
 		<cf_SlatwallSetting settingName="globalWeightUnitCode" />
+		<cf_SlatwallSetting settingName="globalAdminAutoLogoutMinutes" />
+		<cf_SlatwallSetting settingName="globalPublicAutoLogoutMinutes" />
 	</cf_SlatwallSettingTable>
 </cfoutput>
 

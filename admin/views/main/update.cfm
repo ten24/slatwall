@@ -60,6 +60,19 @@ Notes:
 </cfif>
 
 <cfoutput>
+	
+	<div class="row s-body-nav">
+	    <nav class="navbar navbar-default" role="navigation">
+	      <div class="col-md-4 s-header-info">
+			
+				<!--- Page Title --->
+				<ul class="list-unstyled list-inline">
+				</ul>
+				<h1 class="actionbar-title">Update</h1>
+			</div>
+		 </div>
+	   </nav>
+	</div>
 	<cf_HibachiPropertyList divClass="col-md-12">
 		<div class="s-no-tab-wrapper">
 			<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentVersion')#" value="#rc.currentVersion#" />

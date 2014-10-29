@@ -53,15 +53,17 @@ Notes:
 </cfsilent>
 
 <cfoutput>
-	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.vendorOrderSmartList#"
+	<cf_HibachiEntityActionBar type="listing" object="#rc.vendorOrderSmartList#" showCreate="false">
+		
+		<!--- Create ---> 
+		<cf_HibachiEntityActionBarButtonGroup>
+			<cf_HibachiActionCaller action="admin:entity.createvendororder" entity="brand" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</cf_HibachiEntityActionBarButtonGroup>
+	</cf_HibachiEntityActionBar>
+		
+	<cf_HibachiListingDisplay smartList="#rc.vendorOrderSmartList#"
 							   recordDetailAction="admin:entity.detailvendororder"
 							   recordEditAction="admin:entity.editvendororder">
-							      
-		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createvendororder" entity="brand" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="vendor.vendorName" />
 		<cf_HibachiListingColumn propertyIdentifier="vendorOrderNumber" />

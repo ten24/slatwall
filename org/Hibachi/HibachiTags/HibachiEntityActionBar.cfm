@@ -62,20 +62,20 @@
 							<cfif attributes.type eq "listing" >
 								<cfparam name="request.context.keywords" default="" />
 
-								<!--- Listing: Search --->
+							<!---	<!--- Listing: Search --->
 								<form name="search" class="action-bar-search btn-group" action="/" method="get">
 									<input type="hidden" name="slatAction" value="#request.context.entityActionDetails.thisAction#" />
 									<input type="text" name="keywords" value="#request.context.keywords#" placeholder="#attributes.hibachiScope.rbKey('define.search')# #attributes.pageTitle#" data-tableid="LD#replace(attributes.object.getSavedStateID(),'-','','all')#">
-								</form>
+								</form>--->
 
-								<!--- Listing: Actions --->
+							<!---	<!--- Listing: Actions --->
 								<div class="btn-group">
 									<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
 									<ul class="dropdown-menu">
 										<cf_HibachiActionCaller action="#request.context.entityActionDetails.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
 									</ul>
 								</div>
-							</div>
+							</div>--->
 							<div class="btn-group btn-group-sm">
 								<!--- Listing: Button Groups --->
 								<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
@@ -137,7 +137,7 @@
 									<!--- Email --->
 									<cfif arrayLen(attributes.object.getEmailTemplates())>
 										<div class="btn-group">
-											<a class="btn dropdown-toggle" data-toggle="dropdown" href="##"><i class="icon-envelope"></i></a>
+											<a class="btn dropdown-toggle s-btn-grey" data-toggle="dropdown" href="##"><i class="fa fa-envelope"></i></a>
 											<ul class="dropdown-menu pull-right">
 												<cfloop array="#attributes.object.getEmailTemplates()#" index="template">
 													<cf_HibachiProcessCaller action="admin:entity.preprocessemail" entity="Email" processContext="addToQueue" queryString="emailTemplateID=#template.getEmailTemplateID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getEmailTemplateName()#" modal="true" modalfullwidth="true" type="list" />
@@ -148,7 +148,7 @@
 									<!--- Print --->
 									<cfif arrayLen(attributes.object.getPrintTemplates())>
 										<div class="btn-group">
-											<a class="btn dropdown-toggle" data-toggle="dropdown" href="##"><i class="icon-print"></i></a>
+											<a class="btn dropdown-toggle s-btn-grey" data-toggle="dropdown" href="##"><i class="fa fa-print"></i></a>
 											<ul class="dropdown-menu pull-right">
 												<cfloop array="#attributes.object.getPrintTemplates()#" index="template">
 													<cf_HibachiProcessCaller action="admin:entity.processprint" entity="Print" processContext="addToQueue" queryString="printTemplateID=#template.getPrintTemplateID()#&printID=&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getPrintTemplateName()#" type="list" />
