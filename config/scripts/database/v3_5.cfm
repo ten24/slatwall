@@ -65,54 +65,54 @@ Notes:
 	
 	<cfif local.hasColumn.recordCount>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeType = 'checkbox' WHERE attributeTypeID = '444df2aaed92cb33d16a83d2bde93e72'
+			UPDATE SwAttribute SET attributeInputType = 'checkbox' WHERE attributeTypeID = '444df2aaed92cb33d16a83d2bde93e72'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeType = 'checkBoxGroup' WHERE attributeTypeID = '444df2d2bd86e1f290c2cce99d5ca2d8'
+			UPDATE SwAttribute SET attributeInputType = 'checkBoxGroup' WHERE attributeTypeID = '444df2d2bd86e1f290c2cce99d5ca2d8'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeType = 'date' WHERE attributeTypeID = '444df2d3c0420d6b13d2baf2a0c7e1f2'
+			UPDATE SwAttribute SET attributeInputType = 'date' WHERE attributeTypeID = '444df2d3c0420d6b13d2baf2a0c7e1f2'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeType = 'dateTime' WHERE attributeTypeID = '444df2d4cad3af5f4465a21f7d1b5f6c'
+			UPDATE SwAttribute SET attributeInputType = 'dateTime' WHERE attributeTypeID = '444df2d4cad3af5f4465a21f7d1b5f6c'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeType = 'multiselect' WHERE attributeTypeID = '444df2d5973447a85033d6c6735e002a'
+			UPDATE SwAttribute SET attributeInputType = 'multiselect' WHERE attributeTypeID = '444df2d5973447a85033d6c6735e002a'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeType = 'password' WHERE attributeTypeID = '444df2d6ff67aedc177f35d1e672dd82'
+			UPDATE SwAttribute SET attributeInputType = 'password' WHERE attributeTypeID = '444df2d6ff67aedc177f35d1e672dd82'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeType = 'radioGroup' WHERE attributeTypeID = '444df2a9fe732d3ec9d8b495ab1dddf7'
+			UPDATE SwAttribute SET attributeInputType = 'radioGroup' WHERE attributeTypeID = '444df2a9fe732d3ec9d8b495ab1dddf7'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeType = 'relatedObjectSelect' WHERE attributeTypeID = '8fac11726ecc439f99e41452a12813f9'
+			UPDATE SwAttribute SET attributeInputType = 'relatedObjectSelect' WHERE attributeTypeID = '8fac11726ecc439f99e41452a12813f9'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeType = 'relatedObjectMultiselect' WHERE attributeTypeID = '3abffdd9710f4643bf9f527807851c45'
+			UPDATE SwAttribute SET attributeInputType = 'relatedObjectMultiselect' WHERE attributeTypeID = '3abffdd9710f4643bf9f527807851c45'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeType = 'select' WHERE attributeTypeID = '444df2a8bfb73ecb3a777c8599950d5f'
+			UPDATE SwAttribute SET attributeInputType = 'select' WHERE attributeTypeID = '444df2a8bfb73ecb3a777c8599950d5f'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeType = 'text' WHERE attributeTypeID = '444df2a5a9088e72342c0b5eaf731c64'
+			UPDATE SwAttribute SET attributeInputType = 'text' WHERE attributeTypeID = '444df2a5a9088e72342c0b5eaf731c64'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeType = 'textArea' WHERE attributeTypeID = '444df2a60dbf45cfad1b1b96baa44c47'
+			UPDATE SwAttribute SET attributeInputType = 'textArea' WHERE attributeTypeID = '444df2a60dbf45cfad1b1b96baa44c47'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeType = 'time' WHERE attributeTypeID = '444df2d7dddd6c7549632a58d2887bd0'
+			UPDATE SwAttribute SET attributeInputType = 'time' WHERE attributeTypeID = '444df2d7dddd6c7549632a58d2887bd0'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeType = 'wysiwyg' WHERE attributeTypeID = '444df2a7a2c39796d2b15516840344ea'
+			UPDATE SwAttribute SET attributeInputType = 'wysiwyg' WHERE attributeTypeID = '444df2a7a2c39796d2b15516840344ea'
 		</cfquery>
 		<cfquery name="local.updateData">
-			UPDATE SwAttribute SET attributeType = 'yesNo' WHERE attributeTypeID = '444df2d8eb236c42dbbef7ea66200f1b'
+			UPDATE SwAttribute SET attributeInputType = 'yesNo' WHERE attributeTypeID = '444df2d8eb236c42dbbef7ea66200f1b'
 		</cfquery>
 	</cfif>
 	
 	<cfcatch>
-		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update attribute to move attributeTypeID to attributeType">
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update attribute to move attributeTypeID to attributeInputType">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 	

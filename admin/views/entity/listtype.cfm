@@ -49,12 +49,22 @@ Notes:
 <cfparam name="rc.typeSmartList" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.typeSmartList#"
-							   recordDetailModal=true
+	
+	<cf_HibachiEntityActionBar type="listing" object="#rc.typeSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<cf_HibachiEntityActionBarButtonGroup>
+			<cf_HibachiActionCaller action="admin:entity.createtype" class="btn btn-primary" icon="plus icon-white" />
+		</cf_HibachiEntityActionBarButtonGroup>
+	</cf_HibachiEntityActionBar>
+	
+	<cf_HibachiListingDisplay smartList="#rc.typeSmartList#"
 							   recordDetailAction="admin:entity.detailtype"
-							   recordEditModal=true
 							   recordEditAction="admin:entity.edittype"
 							   parentPropertyName="parentType">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="type" />
+		
+		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="typeName" />
+		<cf_HibachiListingColumn propertyIdentifier="typeCode" />
+		<cf_HibachiListingColumn propertyIdentifier="systemCode" />
 	</cf_HibachiListingDisplay>
 </cfoutput>

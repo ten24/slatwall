@@ -63,7 +63,7 @@ Notes:
 			
 		<!--- We call the function in a serializable transaction so that a new one can be created one at a time if needed --->
 		<cfelse>
-			<cftransaction isolation="serializable">
+			<cftransaction isolation="read_committed">
 				<cfset var shortReferenceID = selectOrGenerateShortReferenceID(argumentcollection=arguments) />
 			</cftransaction>
 		</cfif>

@@ -10,7 +10,9 @@ function(
 	//properties
 	function _propertyDisplay(propertyDisplay){
 		this.object=propertyDisplay.object;
+		this.objectName=propertyDisplay.objectName || '';
 		this.property=propertyDisplay.property;
+		this.meta=propertyDisplay.meta;
 		this.errors={};
 		this.editing=propertyDisplay.editing || false;
 		this.isEditable=propertyDisplay.isEditable || false;
@@ -21,6 +23,9 @@ function(
 		this.valueOptions=propertyDisplay.valueOptions || [];
 		this.fieldName=propertyDisplay.fieldName || '';
 		this.title=propertyDisplay.title || '';
+		this.optionsArguments=propertyDisplay.optionsArguments || {};
+		this.eagerLoadOptions=propertyDisplay.eagerLoadOptions || false;
+		
 	}
 	
 	_propertyDisplay.prototype = {

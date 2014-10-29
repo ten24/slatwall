@@ -1,0 +1,20 @@
+{
+	"conditions":{
+	    "topLevelSystemType":{
+	        "systemCode":{"required":true},
+	        "parentType":{"null":true}
+	    },
+	    "requiresSystemCode":{
+	        "parentType.childRequiresSystemCodeFlag":{"required":"true","eq":true}
+	    }
+	},
+	"properties":{
+		"typeID":				[{"contexts":"delete","conditions":"topLevelSystemType","null":true}],
+	    "typeName": 			[{"contexts":"save","required":true}],
+	    "systemCode": 			[
+	    							{"contexts":"save","conditions":"requiresSystemCode","required":true},
+	    							{"contexts":"delete","method":"hasPeerTypeWithMatchingSystemCode"}
+		],
+	    "childTypes":			[{"contexts":"delete","maxCollection":0}]
+	}
+}

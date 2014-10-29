@@ -10,62 +10,51 @@ partialsPath,
 propertyDisplayService
 ){
 	return {
-		require:"^form",
 		restrict: 'A',
 		scope:{
 			object:"=",
+			objectName:"@",
+			property:"@",
+			meta:"=",
 			isEditable:"=",
 			editing:"=",
 			isHidden:"=",
-			value:"=",
+			optionsArguments:"=",
+			eagerLoadOptions:"="
+			/*value:"=",
 			valueOptions:"@",
 			fieldType:"@",
-			property:"@",
+			
 			title:"@",
 			hint:"@",
-			fieldName:"@"
+			fieldName:"@"*/
 		},
 		templateUrl:partialsPath+"propertydisplay.html",
-		link: function(scope, element,attrs,formController){
-						
+		link: function(scope, element,attrs){
 			
 			var propertyDisplay = {
 				object:scope.object,
+				objectName:scope.objectName,
 				property:scope.property,
+				meta:scope.meta,
 				errors:{},
 				editing:scope.editing,
 				isEditable:scope.isEditable,
 				isHidden:scope.isHidden,
-				hint:scope.hint,
+				optionsArguments:scope.optionsArguments,
+				eagerLoadOptions:scope.eagerLoadOptions
+				/*hint:scope.hint,
 				fieldType:scope.fieldType,
 				value:scope.value,
 				valueOptions:scope.valueOptions,
 				fieldName:scope.fieldName,
 				title:scope.title,
-				fieldType:scope.fieldType
+				fieldType:scope.fieldType*/
 			};
 			
-			scope.$id = 'propertyDisplay:'+scope.property ;
-			console.log(scope.$id);
+			scope.$id = 'propertyDisplay:'+scope.property;
 			scope.propertyDisplay = propertyDisplayService.newPropertyDisplay(propertyDisplay);
-			if(!scope.propertyDisplay.fieldType.length && angular.isDefined(scope.object[scope.property].fieldType)){
-				scope.propertyDisplay.fieldType = scope.object[scope.property].fieldType;
-			}
-			if(angular.isDefined(scope.object[scope.property].hint)){
-				scope.propertyDisplay.hint = scope.object[scope.property].hint;
-				$(function(){
-				    $('.j-tool-tip-item').tooltip();
-				  });
-			}
-			
-			if(!scope.propertyDisplay.title.length && angular.isDefined(scope.object[scope.property].title)){
-				scope.propertyDisplay.title = scope.object[scope.property].title;
-			}
-			if(angular.isDefined(scope.object[scope.property].value)){
-				scope.propertyDisplay.value = scope.object[scope.property].value;
-			}
-			if(angular.isDefined(scope.object[scope.valueOptions])){
-			}
+			$log.debug(scope.propertyDisplay);
 						
 			
 			$log.debug('propertyDisplay');

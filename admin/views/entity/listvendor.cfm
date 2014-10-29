@@ -48,14 +48,17 @@ Notes:
 --->
 <cfparam name="rc.vendorSmartList" type="any" />
 
-<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.vendorSmartList#"
+<cf_HibachiEntityActionBar type="listing" object="#rc.vendorSmartList#" showCreate="false">
+		
+	<!--- Create ---> 
+	<cf_HibachiEntityActionBarButtonGroup>
+		<cf_HibachiActionCaller action="admin:entity.createvendor" entity="vendor" class="btn btn-primary" icon="plus icon-white" />
+	</cf_HibachiEntityActionBarButtonGroup>
+</cf_HibachiEntityActionBar>
+
+<cf_HibachiListingDisplay smartList="#rc.vendorSmartList#"
 						   recordEditAction="admin:entity.editvendor"
 						   recordDetailAction="admin:entity.detailvendor">
-						      
-	<!--- Create ---> 
-	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiActionCaller action="admin:entity.createvendor" entity="vendor" class="btn btn-primary" icon="plus icon-white" />
-	</cf_HibachiListingDisplayButtonGroup>
 	
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="vendorName" search="true" />
 	<cf_HibachiListingColumn propertyIdentifier="accountNumber" search="true" />

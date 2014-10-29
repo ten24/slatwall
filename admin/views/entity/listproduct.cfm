@@ -51,21 +51,24 @@ Notes:
 <cfset subscriptionDisabled = "" />
 
 <cfoutput>
-
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.productSmartList#"
-			recordEditAction="admin:entity.editproduct"
-			recorddetailaction="admin:entity.detailproduct"
-			showCreate="false">
-			
-		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup>
+	<cf_HibachiEntityActionBar type="listing" object="#rc.productSmartList#" showCreate="false">
+	
+	<!--- Create ---> 
+		<cf_HibachiEntityActionBarButtonGroup>
 			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+				<li><a ng-click="openPageDialog( 'productbundle/createproductbundle' )">#rc.$.slatwall.rbKey('define.bundleProduct')#</a></li>
 				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.contentAccess')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=contentAccess" disabled="#!$.slatwall.getSmartList("Content").getRecordsCount()#" disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoContent')#" type="list" />
 				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=event" type="list" />
 				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.merchandise')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=merchandise" type="list" />
 				<cf_HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.subscription')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=subscription" type="list" disabled="#!$.slatwall.getSmartList("SubscriptionTerm").getRecordsCount() or !$.slatwall.getSmartList("SubscriptionBenefit").getRecordsCount()#"  disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoSubscriptionBenefitOrTerm')#" />
 			</cf_HibachiActionCallerDropdown>
-		</cf_HibachiListingDisplayButtonGroup>
+		</cf_HibachiEntityActionBarButtonGroup>
+	</cf_HibachiEntityActionBar>
+	
+	<cf_HibachiListingDisplay smartList="#rc.productSmartList#"
+			recordEditAction="admin:entity.editproduct"
+			recorddetailaction="admin:entity.detailproduct"
+			showCreate="false">
 			
 		<cf_HibachiListingColumn propertyIdentifier="productType.productTypeName" />
 		<cf_HibachiListingColumn propertyIdentifier="brand.brandName" />
@@ -77,5 +80,4 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="calculatedQATS" />
 	</cf_HibachiListingDisplay>
 	
-	<button type="button" class="btn btn-default j-test-button" style="margin-top:40px;width:100%;" ng-click="openPageDialog( 'productbundle/createproductbundle' )">Create Product Bundle</button>
 </cfoutput>

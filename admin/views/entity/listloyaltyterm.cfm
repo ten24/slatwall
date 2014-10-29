@@ -52,14 +52,17 @@ Notes:
 	
 	<cfset rc.loyaltyTermSmartList.addOrder("loyaltyTermName|ASC") />
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.loyaltyTermSmartList#"
+	<cf_HibachiEntityActionBar type="listing" object="#rc.loyaltyTermSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<cf_HibachiEntityActionBarButtonGroup>
+			<cf_HibachiActionCaller action="admin:entity.createloyaltyterm" entity="loyaltyterm" class="btn btn-primary" icon="plus icon-white" />
+		</cf_HibachiEntityActionBarButtonGroup>
+	</cf_HibachiEntityActionBar>
+	
+	<cf_HibachiListingDisplay smartList="#rc.loyaltyTermSmartList#"
 							   recorddetailaction="admin:entity.detailloyaltyterm"
 							   recordEditAction="admin:entity.editloyaltyterm">
-		
-		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createloyaltyterm" entity="loyaltyterm" class="btn btn-primary" icon="plus icon-white" />
-		</cf_HibachiListingDisplayButtonGroup>
 		
 		<cf_HibachiListingColumn propertyIdentifier="loyaltyTermName" />
 		<cf_HibachiListingColumn propertyIdentifier="loyaltyTermStartDateTime" />

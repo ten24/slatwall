@@ -63,6 +63,7 @@ component extends="HibachiService" accessors="true" {
 	property name="settingService" type="any";
 	property name="skuService" type="any";
 	property name="subscriptionService" type="any";
+	property name="typeService" type="any";
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -358,19 +359,19 @@ component extends="HibachiService" accessors="true" {
 	private any function incrementDateTimeByRecurringTypeID(string recurringTypeID, string dateToIncrement) {
 		var result = "";
 
-		if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuDaily").getTypeID()) {
+		if(arguments.recurringTypeID == getTypeService().getTypeBySystemCode("rtuDaily").getTypeID()) {
 			result = dateAdd( "d", 1, arguments.dateToIncrement );
 		}
-		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuWeekdays").getTypeID()) {
+		else if(arguments.recurringTypeID == getTypeService().getTypeBySystemCode("rtuWeekdays").getTypeID()) {
 			result = dateAdd( "w" ,1, arguments.dateToIncrement );
 		}
-		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuWeekly").getTypeID()) {
+		else if(arguments.recurringTypeID == getTypeService().getTypeBySystemCode("rtuWeekly").getTypeID()) {
 			result = dateAdd( "ww", 1, arguments.dateToIncrement );
 		}
-		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuMonthly").getTypeID()) {
+		else if(arguments.recurringTypeID == getTypeService().getTypeBySystemCode("rtuMonthly").getTypeID()) {
 			result = dateAdd( "m", 1, arguments.dateToIncrement );
 		}
-		else if(arguments.recurringTypeID == getSettingService().getTypeBySystemCode("rtuYearly").getTypeID()) {
+		else if(arguments.recurringTypeID == getTypeService().getTypeBySystemCode("rtuYearly").getTypeID()) {
 			result = dateAdd( "yyyy", 1, arguments.dateToIncrement );
 		}
 		
@@ -822,94 +823,15 @@ component extends="HibachiService" accessors="true" {
 	
 	//routed from processProduct_create
 	public any function processProduct_createBundle(required any product, required any processObject, any data){
-		
-		//arguments.product = this.processProduct_create(arguments.product,arguments.processObject);
-		
-		//add default sku
-		var thisSku = this.newSku();
-		thisSku.setProduct(arguments.product);
-		thisSku.setPrice(arguments.processObject.getPrice()); 
-		if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
-			thisSku.setListPrice(arguments.product.getlistPrice());	
-		}
-		thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
-		//add product group bundles to sku
-		
-		//var productBundleGroups = arguments.processObject.getProductBundleGroups;
-		
-		//deserialize productBundleGroups so we can persist it
-		var productBundleGroupsStruct = deserializeJson(data.productBundleGroups);
-		for(var productBundleGroupStruct in productBundleGroupsStruct){
-			var productBundleGroup = this.newProductBundleGroup();
-			productBundleGroup.setActiveFlag(productBundleGroupStruct.active);
-			productBundleGroup.setMaximumQuantity(productBundleGroupStruct.maximumQuantity);
-			productBundleGroup.setMinimumQuantity(productBundleGroupStruct.minimumQuantity);
-			productBundleGroup.setProductBundleSku(thisSku);
-			
-			//save productBundleGroupType
-			var productBundleGroupType = this.getTypeByTypeID(productBundleGroupStruct.productBundleGroupType.typeID);
-			productBundleGroup.setProductBundleGroupType(productBundleGroupType);
-			
-			//process productBundleGroupFilters to make the skuCollectionConfig;
-			
-			var skuCollectionConfigStruct = {};
-			skuCollectionConfigStruct['baseEntityName'] = "SlatwallSku";
-			skuCollectionConfigStruct['baseEntityAlias'] = "Sku";
-			skuCollectionConfigStruct['filterGroups'] = [];
-			
-			var filterGroup = {};
-			filterGroup['filterGroup'] = [];
-			var filterCount = 0;
-			for(var productBundleGroupFilter in productBundleGroupStruct.productBundleGroupFilters){
-				var filter = {}; 
-				switch(productBundleGroupFilter.type){
-					case "productType":
-						filter['propertyIdentifier'] = "Sku.product.productType.productTypeID";
-						filter['comparisonOperator'] = '=';
-						filter['value'] = productBundleGroupFilter.productTypeID;
-						break;
-					case "collection":
-						break;
-					case "brand":
-						filter['propertyIdentifier'] = "Sku.product.brand.brandID";
-						filter['comparisonOperator'] = '=';
-						filter['value'] = productBundleGroupFilter.brandID;
-						break;
-					case "product":
-						filter['propertyIdentifier'] = "Sku.product.productID";
-						filter['comparisonOperator'] = '=';
-						filter['value'] = productBundleGroupFilter.productID;
-						break;
-					case "sku":
-						filter['propertyIdentifier'] = "Sku.skuID";
-						filter['comparisonOperator'] = '=';
-						filter['value'] = productBundleGroupFilter.skuID;
-						break;
-				}
-				if(filterCount > 0){
-					filter['logicalOperator'] = 'OR';
-				}
-				ArrayAppend(filterGroup['filterGroup'],filter);
-				filterCount++;
-			}
-			ArrayAppend(skuCollectionConfigStruct['filterGroups'],filterGroup);
-			
-			productBundleGroup.setSkuCollectionConfig(serializeJson(skuCollectionConfigStruct));
-			productBundleGroup.setProductBundleSku(thisSku);
-		}
-		
-		//set sku to product
-		arguments.product.setDefaultSku( thisSku );
-		
-		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
-		
+		arguments.product.getSkus()[1].setSkuCode(arguments.product.getProductCode() & "-1");
 		// If some skus were created, then set the default sku to the first one
 		if(arrayLen(arguments.product.getSkus())) {
 			arguments.product.setDefaultSku( arguments.product.getSkus()[1] );
 		}
+		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
+		
 		// Generate Image Files
 		arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
-		
 		
 		arguments.product = this.saveProduct(arguments.product);
 		

@@ -65,6 +65,7 @@ component extends="HibachiService" output="false" accessors="true" {
 	property name="siteService" type="any";
 	property name="taskService" type="any";
 	property name="taxService" type="any";
+	property name="typeService" type="any";
 		
 	// ====================== START: META DATA SETUP ============================
 	
@@ -181,6 +182,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalURLKeyProduct = {fieldType="text",defaultValue="sp"},
 			globalURLKeyProductType = {fieldType="text",defaultValue="spt"},
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
+			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
+			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
 			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
@@ -834,5 +837,25 @@ component extends="HibachiService" output="false" accessors="true" {
 	// ====================== START: Get Overrides ============================
 	
 	// ======================  END: Get Overrides =============================
+	
+	// ===================== START: Delete Overrides ==========================
+	
+	// =====================  END: Delete Overrides ===========================
+	
+	// ================== START: Private Helper Functions =====================
+	
+	// ==================  END:  Private Helper Functions =====================
+
+	// =================== START: Deprecated Functions ========================
+	
+	public any function getType() {
+		return getTypeService().getType(argumentCollection=arguments);
+	}
+	
+	public any function getTypeBySystemCode() {
+		return getTypeService().getTypeBySystemCode(argumentCollection=arguments);
+	}
+	
+	// ===================  END: Deprecated Functions =========================
 
 }

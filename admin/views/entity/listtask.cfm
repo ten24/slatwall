@@ -49,15 +49,18 @@ Notes:
 <cfparam name="rc.taskSmartList" type="any"/>
 
 <cfoutput>
+	<cf_HibachiEntityActionBar type="listing" object="#rc.taskSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<cf_HibachiEntityActionBarButtonGroup>
+			<cf_HibachiActionCaller action="admin:entity.createtask" entity="task" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</cf_HibachiEntityActionBarButtonGroup>
+	</cf_HibachiEntityActionBar>
 
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartlist="#rc.taskSmartList#" 
+	<cf_HibachiListingDisplay smartlist="#rc.taskSmartList#" 
 	                          recorddetailaction="admin:entity.detailtask"
 							  recordeditaction="admin:entity.edittask">
-		
-		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createtask" entity="task" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>
+
 		
 		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="taskName" />
 		<cf_HibachiListingColumn propertyidentifier="runningFlag" />

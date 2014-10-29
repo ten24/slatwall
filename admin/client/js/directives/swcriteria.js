@@ -715,11 +715,6 @@ $filter){
 							var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
 							existingCollectionsPromise.then(function(value){
 								scope.collectionOptions = value.data;
-							},function(reason){
-								//display error message if getter fails
-								var messages = reason.MESSAGES;
-								var alerts = alertService.formatMessagesToAlerts(messages);
-								alertService.addAlerts(alerts);
 							});
 							break;
 					}

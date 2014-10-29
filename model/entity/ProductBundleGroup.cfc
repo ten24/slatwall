@@ -53,7 +53,7 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
 	property name="activeFlag" ormtype="boolean";
 	property name="minimumQuantity" ormtype="integer";
 	property name="maximumQuantity" ormtype="integer";
-	property name="amountType" ormtype="string";
+	property name="amountType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="amount" ormtype="big_decimal";
 	property name="skuCollectionConfig" ormtype="string" length="4000";
 
@@ -80,11 +80,29 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	
+	property name="amountTypeOptions" persistent="false";
 	// Deprecated Properties
 
 
 	// ==================== START: Logical Methods =========================
+	public array function getAmountTypeOptions() {
+		//none | fixed | fixedPerQuantity | skuPrice | skuPricePercentageIncrease | skuPricePercentageDecrease
+		var amountOptions = [];
+		var valuesList = 'none,fixed,skuPrice,skuPricePercentageIncrease,skuPricePercentageDecrease';
+		var namesList = 'entity.productBundleGroup.none,entity.productBundleGroup.fixed,entity.productBundleGroup.skuPrice,entity.productBundleGroup.skuPricePercentageIncrease,entity.productBundleGroup.skuPricePercentageDecrease';
+		var valuesArray = ListToArray(valuesList);
+		var namesArray = ListToArray(namesList);
+		var valuesArrayLength = arrayLen(valuesArray);
+		
+		for(var i = 1; i <= valuesArrayLength; i++){
+			var optionStruct = {};
+			optionStruct['value'] = valuesArray[i];
+			optionStruct['name'] = rbKey(namesArray[i]);
+			arrayAppend(amountOptions,optionStruct);
+		}
+    	return amountOptions;
+    }
+	
 	/*
 	public any function getSkuOptionsCollection() {
 		

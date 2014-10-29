@@ -23,15 +23,22 @@ function(
 		this.minimumQuantity=1;
 		this.maximumQuantity=1;
 		this.active=true;
+		this.amount=0;
+		this.amountType='None',
 		this.productBundleGroupType={
 			type:null
+		};
+		this.skuCollectionConfig = {
+				baseEntityName:"SlatwallSku",
+				baseEntityAlias:"Sku",
+				filterGroups:[]
 		};
 		this.$$editing=true;
 	}
 	
 	_productBundleGroup.prototype = {
-		setMinimumQuantity:function(quantity) {
-			if(quantity < 0 || !angular.isNumber(quantity)){
+		$$setMinimumQuantity:function(quantity) {
+			if(quantity < 0 || !angular.isNumber(parseInt(quantity))){
 				this.minimumQuantity = 0;
 			}
 			
@@ -40,8 +47,8 @@ function(
 			} 
 			
 		},
-		setMaximumQuantity:function(quantity){
-			if(quantity < 1 || !angular.isNumber(quantity)){
+		$$setMaximumQuantity:function(quantity){
+			if(quantity < 1 || !angular.isNumber(parseInt(quantity))){
 				this.maximumQuantity = 1;
 			}
 			if(quantity < this.minimumQuantity){
@@ -49,11 +56,10 @@ function(
 				 
 			}
 		},
-		setActive:function(value){
-			console.log('test');
+		$$setActive:function(value){
 			this.active=value;
 		},
-		toggleEdit:function(){
+		$$toggleEdit:function(){
 			if(angular.isUndefined(this.$$editing) || this.$$editing === false){
 				this.$$editing = true;
 			}else{
