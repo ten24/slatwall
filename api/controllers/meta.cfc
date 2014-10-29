@@ -14,4 +14,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		rc.entity = arguments.rc.$.slatwall.newEntity( arguments.rc.entityName ); 
 	}
+	
+	public void function jsobjects( required struct rc ) {
+		rc.entities = [];
+		for(var entityName in listToArray(structKeyList(rc.$.slatwall.getService('hibachiService').getEntitiesMetaData()))) {
+			arrayAppend(rc.entities, rc.$.slatwall.newEntity(entityName));
+		}
+	}
 }
