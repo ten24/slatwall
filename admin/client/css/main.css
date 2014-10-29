@@ -393,7 +393,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-tab-layout.s-tab-layout  > .row > .s-body-box {padding-top:0px;}
 
 /* Custom Slatwall Styles */
-.s-table-header-nav {margin-top:20px;margin-bottom:10px;}
+.s-table-header-nav {display:inline-block;width:100%;}
 .s-table-header-nav ul {vertical-align:bottom;margin-bottom:0px;margin-top:0px;}
 .s-table-header-nav ul > li {vertical-align:bottom;}
 .s-table-header-nav ul > li {padding-right:0px;}
@@ -460,7 +460,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-define-filter-group .s-define-filter-remove {float:right;}
 .s-define-filter-group .s-define-filter-remove a {border: none;border-radius: 0px;background-color: #DA5757;color: #FFF !important;}
 
-.s-body-nav {background-color: #FFF;margin-bottom: 0px;border-radius: 0px;border-top: 0px;border:none;}
+.s-body-nav {background-color: #FFF;margin-bottom: 0px;border-radius: 0px;border-top: 0px;border:none;margin-bottom: 20px;}
 .s-body-nav .navbar { margin-bottom: 0px; border-radius: 0px; background-color: #FFF; border-bottom: 2px solid #e7eaec; padding: 0px 0px 9px 0px;height: 53px;}
 .s-body-nav .navbar h1 {padding: 0px;margin: 0px;font-size: 20px;font-weight: normal;vertical-align: middle; color: #000; }
 .s-body-nav .navbar .btn-toolbar {margin-top: 10px;}
@@ -653,7 +653,6 @@ tabel .s-table-header {margin-bottom:10px;}
 
 .s-no-padding-left { padding-left:0px }
 .s-no-padding-right { padding-right:0px }
-.s-listing-head-margin { margin-bottom:55px }
 
 .s-create-window {margin-top:40px;margin-bottom: 36px;display: inline-block;width: 100%;background-color: #FFF;min-height:100vw;}
 .s-create-window .s-pannel-group {padding-top:20px;}
