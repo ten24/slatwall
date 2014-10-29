@@ -13,7 +13,7 @@
       </div>
       <span class="s-bundle-group-title-text" ng-bind="productBundleGroup.productBundleGroupType.typeName"></span>
       <span class="s-bundle-group-title-edit"><input type="text" class="form-control" value="T-Shirts: Closeout Selections">
-      	<button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button>
+      	<button class="btn btn-sm s-btn-ten24 s-save-btn">Save</button>
       </span>
     </div>
     <div class="col-xs-4">
@@ -72,26 +72,32 @@
 							>
 						</div>
 					</div>
-					<div class="row form-group" >
-						<span sw-property-display 
-				          		data-property="amountType"
-				          		data-object="productBundleGroup"
-				          		data-object-name="productBundleGroup"
-				          		data-options-arguments="{property:'amountType'}"
-				          		data-meta="propertyDisplayData['amountType']"
-				          		data-editing="true"
-								data-editable="true"
-								data-eager-load-options="true"
-				          ></span>
-				         <span sw-property-display 
-				          		data-property="amount"
-				          		data-object="productBundleGroup"
-				          		data-object-name="productBundleGroup"
-				          		data-meta="propertyDisplayData['amount']"
-				          		data-editing="true"
-								data-editable="true"
-				          ></span>
-					</div>
+                    <div class="row form-group">
+                        <div class="col-md-2 col-xs-6">
+                            <span sw-property-display
+                                      data-property="amountType"
+                                      data-object="productBundleGroup"
+                                      data-object-name="productBundleGroup"
+                                      data-options-arguments="{property:'amountType'}"
+                                      data-meta="propertyDisplayData['amountType']"
+                                      data-editing="true"
+                                    data-editable="true"
+                                    data-eager-load-options="true"
+                              ></span>
+                        </div>
+
+                        <div class="col-md-2 col-xs-6">
+                            <span sw-property-display
+                                     data-property="amount"
+                                     data-object="productBundleGroup"
+                                     data-object-name="productBundleGroup"
+                                     data-meta="propertyDisplayData['amount']"
+                                     data-editing="true"
+                                   data-editable="true"
+                             ></span>
+                        </div>
+                    </div>
+
 					<div class="form-group s-bundle-group-active">
 						<label class="control-label">Active: </label>
 						<div class="radio" >
@@ -140,7 +146,7 @@
                             <div class="input-group">
 
                                 <div class="dropdown input-group-btn search-panel">
-                                    <button class="btn btn-sm s-btn-lgrey dropdown-toggle" style="border-bottom-right-radius: 4px;border-top-right-radius: 4px;" type="button" id="dropdownMenu1" data-toggle="dropdown">
+                                    <button class="btn btn-sm s-btn-lgrey dropdown-toggle" style="border-bottom-left-radius: 4px;border-top-left-radius: 4px;" type="button" id="dropdownMenu1" data-toggle="dropdown">
                                         <span ng-bind="searchOptions.selected.name" id="j-search-concept">Any</span>
                                         <span class="caret"></span>
                                     </button>
@@ -153,15 +159,55 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <input  class="form-control s-search-input"
+                                <input  style="border-left: 0px;"
+                                        class="form-control s-search-input"
                                         placeholder="Search {{searchOptions.selected.name}} ..."
                                         type="text"
                                         ng-model="productBundleGroupFilters.keyword"
                                         ng-change="productBundleGroupFilters.getFiltersByTerm(productBundleGroupFilters.keyword,searchOptions.selected.value)"
                                 >
+                                <div class="input-group-btn" style="width: 109px;">
+                                    <div class="btn-group btn-group-sm s-btn-toggle" data-toggle="buttons" style="">
+                                        <label class="btn btn-primary active">
+                                            <input type="radio" name="options" value="option1"> Include
+                                        </label>
+                                        <label class="btn btn-default">
+                                            <input type="radio" name="options" value="option2" checked=""> Exclude
+                                        </label>
+                                    </div>
+                                </div>
 
                             </div>
+
                         </div>
+
+                        <style>
+                            .s-btn-toggle .btn {padding:6px 6px 4px 6px;}
+                            .s-btn-toggle label {border: 1px solid #CCC;}
+                            .s-btn-toggle .btn-group-sm>.btn {border-radius: 4px;}
+                            .s-btn-toggle .btn.active {background-color: #666;border-color: #666;}
+                        </style>
+                        <script>
+                            $('.s-btn-toggle').click(function() {
+                                $(this).find('.btn').toggleClass('active');
+
+                                if ($(this).find('.btn-primary').size()>0) {
+                                	$(this).find('.btn').toggleClass('btn-primary');
+                                }
+                                if ($(this).find('.btn-danger').size()>0) {
+                                	$(this).find('.btn').toggleClass('btn-danger');
+                                }
+                                if ($(this).find('.btn-success').size()>0) {
+                                	$(this).find('.btn').toggleClass('btn-success');
+                                }
+                                if ($(this).find('.btn-info').size()>0) {
+                                	$(this).find('.btn').toggleClass('btn-info');
+                                }
+
+                                $(this).find('.btn').toggleClass('btn-default');
+
+                            });
+                        </script>
 
                         <div class="col-xs-12 s-bundle-add-items" ng-show="productBundleGroupFilters.keyword.length">
                             <div class="col-xs-12 s-bundle-add-items-inner">
@@ -196,8 +242,9 @@
                         </div>
                     </div>
                     <!-- //Search for product -->
-
-                    <button class="btn btn-xs s-btn-ten24" style="display:inline-block;margin-bottom:10px;"><i class="fa fa-plus"></i> Save & Add</button>
+                    <br/>
+                    <button class="btn btn-sm s-btn-ten24" style="display:inline-block;margin-bottom:10px;"><i class="fa fa-plus"></i> Save</button>
+                    <button class="btn btn-sm s-btn-ten24" style="display:inline-block;margin-bottom:10px;"><i class="fa fa-plus"></i> Save & Add Bundle Group</button>
 
 					<!-- <div class="tab-pane" ng-class="{active:navigation.value ==='Selections'}" ng-show="navigation.value === 'Selections'">
 
