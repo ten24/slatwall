@@ -188,7 +188,7 @@ Notes:
 		
 		if(structKeyExists(arguments.data, "emailTemplate") && isObject(arguments.data.emailTemplate)) {
 			var emailTemplate = arguments.data.emailTemplate;
-		} else if(tructKeyExists(arguments.data, "emailTemplateID")) {
+		} else if(structKeyExists(arguments.data, "emailTemplateID")) {
 			var emailTemplate = getTemplateService().getEmailTemplate( arguments.data.emailTemplateID );
 		}
 		
