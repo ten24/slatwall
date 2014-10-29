@@ -1,4 +1,4 @@
-<li class="s-bundle-group-item" >
+<li class="s-bundle-group-item" ng-if="propertyDisplayData && productBundleGroup">
   <div class="row">
     <div class="col-xs-8 s-bundle-group-title">
       <div class="s-bundle-group-range">
@@ -11,7 +11,7 @@
           <li ng-bind="productBundleGroup.maximumQuantity"></li>
         </ul>
       </div>
-      <span class="s-bundle-group-title-text" ng-bind="productBundleGroup.productBundleGroupType.type"></span>
+      <span class="s-bundle-group-title-text" ng-bind="productBundleGroup.productBundleGroupType.typeName"></span>
       <span class="s-bundle-group-title-edit"><input type="text" class="form-control" value="T-Shirts: Closeout Selections">
       	<button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button>
       </span>
@@ -22,7 +22,7 @@
         	data-toggle="tooltip"
         	data-placement="bottom"
         	data-original-title="Edit"
-        	ng-click="productBundleGroup.toggleEdit()"
+        	ng-click="productBundleGroup.$$toggleEdit()"
         >
         	<i class="fa fa-pencil"></i>
         </a>
@@ -59,7 +59,7 @@
 							<input  type="text"
 									class="form-control"
 									ng-model="productBundleGroup.minimumQuantity"
-									ng-change="productBundleGroup.setMinimumQuantity(productBundleGroup.minimumQuantity)"
+									ng-change="productBundleGroup.$$setMinimumQuantity(productBundleGroup.minimumQuantity)"
 							>
 						</div>
 
@@ -68,9 +68,29 @@
 							<input  type="text"
 									class="form-control"
 									ng-model="productBundleGroup.maximumQuantity"
-									ng-change="productBundleGroup.setMaximumQuantity(productBundleGroup.maximumQuantity)"
+									ng-change="productBundleGroup.$$setMaximumQuantity(productBundleGroup.maximumQuantity)"
 							>
 						</div>
+					</div>
+					<div class="row form-group" >
+						<span sw-property-display 
+				          		data-property="amountType"
+				          		data-object="productBundleGroup"
+				          		data-object-name="productBundleGroup"
+				          		data-options-arguments="{property:'amountType'}"
+				          		data-meta="propertyDisplayData['amountType']"
+				          		data-editing="true"
+								data-editable="true"
+								data-eager-load-options="true"
+				          ></span>
+				         <span sw-property-display 
+				          		data-property="amount"
+				          		data-object="productBundleGroup"
+				          		data-object-name="productBundleGroup"
+				          		data-meta="propertyDisplayData['amount']"
+				          		data-editing="true"
+								data-editable="true"
+				          ></span>
 					</div>
 					<div class="form-group s-bundle-group-active">
 						<label class="control-label">Active: </label>
@@ -159,7 +179,7 @@
 
                                         <li class="s-bundle-add-obj" ng-repeat="filterItem in productBundleGroupFilters.value track by $index">
                                             <ul class="list-unstyled list-inline s-middle">
-                                                <li class="s-bundle-details"><span style="font-weight:600;margin-left:0px;color:#666;" ng-bind="searchOptions.selected.name"></span>:<span ng-bind="filterItem[searchOptions.selected.value+'Name']"></span></li>
+                                                <li class="j-tool-tip-item s-bundle-details" ng-bind="filterItem[searchOptions.selected.value+'Name']"></li>
                                             </ul>
                                             <ul class="list-unstyled list-inline s-last">
                                                 <li class="col-xs-1 s-bundle-details-add">

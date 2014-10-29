@@ -89,7 +89,10 @@ function(){
 		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getPropertyDisplayOptions&entityName='+entityName;
 		  			var params = {};
 		  			params.property = options.property || '';
-		  			params.argument1 = options.argument1 || '';
+		  			if(angular.isDefined(options.argument1)){
+		  				params.argument1 = options.argument1;
+		  			}
+		  			
 		  			$http.get(urlString,{params:params})
 		  			.success(function(data){
 		  				deferred.resolve(data);

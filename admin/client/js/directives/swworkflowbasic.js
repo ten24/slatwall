@@ -53,10 +53,6 @@ workflowService
 			if(angular.isDefined(workflowID)){
 				scope.getWorkflow();
 			}
-			
-			
-			
-			
 		}
 	};
 }]);
