@@ -18,7 +18,7 @@ input::-moz-focus-inner { border: 0; }
 a, a:active, a:focus {outline: none;}
 label {font-weight:600;}
 .s-width-100 {width:100%;}
-.btn {border-radius:2px;}
+.btn {border-radius:3px;}
 .btn-sm, .btn-group-sm>.btn {border-radius:2px;}
 .tooltip {z-index:3500;}
 .s-not-active {color:#bbbbbb;}
@@ -451,7 +451,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-define-filter-group .s-define-filter-remove a {border: none;border-radius: 0px;background-color: #DA5757;color: #FFF !important;}
 
 .s-body-nav {background-color: #FFF;margin-bottom: 0px;border-radius: 0px;border-top: 0px;border:none;}
-.s-body-nav .navbar { margin-bottom: 0px; border-radius: 0px; background-color: #FFF; border-width: 0px 0px 4px 0px; border-style: solid; border-color: #e7eaec; padding: 12px 0px 16px 0px; }
+.s-body-nav .navbar { margin-bottom: 0px; border-radius: 0px; background-color: #FFF; border-width: 0px 0px 4px 0px; border-style: solid; border-color: #e7eaec; padding: 0px 0px 9px 0px;height: 53px;}
 .s-body-nav .navbar h1 {padding: 0px;margin: 0px;font-size: 20px;font-weight: normal;vertical-align: middle; color: #000; }
 .s-body-nav .navbar .btn-toolbar {margin-top: 10px;}
 .row.s-pannel-control { text-align: right; margin: 12px 0px 3px 0px; }
