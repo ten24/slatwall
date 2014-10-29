@@ -430,7 +430,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			var tempAA = getAccountDAO().getPasswordResetAccountAuthentication(accountID=arguments.account.getAccountID());
 			
 			// Delete the temporary auth
-			tempAA.removeAccount();
 			this.deleteAccountAuthentication( tempAA );
 			
 			// Then flush the ORM session so that an account can be logged in right away
@@ -1204,7 +1203,9 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(arguments.accountAuthentication.isDeletable()) {
 			// Remove the primary fields so that we can delete this entity
 			getAccountDAO().removeAccountAuthenticationFromSessions( arguments.accountAuthentication.getAccountAuthenticationID() );
-			arguments.accountAuthentication.removeAccount();
+			if(!isNull(arguments.accountAuthentication.getAccount())) {
+				arguments.accountAuthentication.removeAccount();	
+			}
 		}
 		
 		return delete( arguments.accountAuthentication );
@@ -1371,7 +1372,6 @@ component extends="HibachiService" accessors="true" output="false" {
 				var activePassword = getAccountDAO().getActivePasswordByAccountID(arguments.data.Account.getAccountID());
 				getHibachiScope().getSession().setAccountAuthentication(activePassword);
 			}
-			accountAuthenticationsArray[i].removeAccount();
 			this.deleteAccountAuthentication( accountAuthenticationsArray[i] );
 		}
 		
