@@ -233,6 +233,11 @@ a:-webkit-any-link {text-decoration:none !important;}
 .btn-group-vertical .btn-default.active {-webkit-box-shadow: inset 0px 0px 1px 1px rgba(219,119,31,1);-moz-box-shadow: inset 0px 0px 1px 1px rgba(219,119,31,1);box-shadow: inset 0px 0px 1px 1px rgba(219,119,31,1);border-color:#db771f;}
 .btn-group-vertical .btn-default:hover {background-color: #F58620;color: #FFF;border-color: #DB771F;}
 
+.s-btn-toggle .btn {padding:6px 6px 4px 6px;}
+.s-btn-toggle label {border: 1px solid #CCC;}
+.s-btn-toggle .btn-group-sm>.btn {border-radius: 4px;}
+.s-btn-toggle .btn.active {background-color: #666;border-color: #666;}
+
 .s-display-options .s-none-selected {width:100%;text-align:center;font-weight:bold;}
 .s-header-bar h1{font-size:16px;margin-bottom:0;margin-top:9px;font-weight:600;}
 .s-header-bar .s-header-nav{text-align:left;}

@@ -181,34 +181,6 @@
 
                         </div>
 
-                        <style>
-                            .s-btn-toggle .btn {padding:6px 6px 4px 6px;}
-                            .s-btn-toggle label {border: 1px solid #CCC;}
-                            .s-btn-toggle .btn-group-sm>.btn {border-radius: 4px;}
-                            .s-btn-toggle .btn.active {background-color: #666;border-color: #666;}
-                        </style>
-                        <script>
-                            $('.s-btn-toggle').click(function() {
-                                $(this).find('.btn').toggleClass('active');
-
-                                if ($(this).find('.btn-primary').size()>0) {
-                                	$(this).find('.btn').toggleClass('btn-primary');
-                                }
-                                if ($(this).find('.btn-danger').size()>0) {
-                                	$(this).find('.btn').toggleClass('btn-danger');
-                                }
-                                if ($(this).find('.btn-success').size()>0) {
-                                	$(this).find('.btn').toggleClass('btn-success');
-                                }
-                                if ($(this).find('.btn-info').size()>0) {
-                                	$(this).find('.btn').toggleClass('btn-info');
-                                }
-
-                                $(this).find('.btn').toggleClass('btn-default');
-
-                            });
-                        </script>
-
                         <div class="col-xs-12 s-bundle-add-items" ng-show="productBundleGroupFilters.keyword.length">
                             <div class="col-xs-12 s-bundle-add-items-inner">
                                 <h4  class="s-no-items"

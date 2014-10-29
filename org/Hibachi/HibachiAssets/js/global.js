@@ -848,6 +848,16 @@ function setupEventHandlers() {
 	//Initiate SelectBoxIt on select boxes
 	$("select").selectBoxIt();
 
+	//Toggles the defualt toggle buttons
+	jQuery('body').on('click', '.s-btn-toggle', function(e){
+		$(this).find('.btn').toggleClass('active');
+
+		if ($(this).find('.btn-primary').size()>0) {
+			$(this).find('.btn').toggleClass('btn-primary');
+		}
+		$(this).find('.btn').toggleClass('btn-default');
+	});
+
 }
 
 function initModal( modalWin ){
