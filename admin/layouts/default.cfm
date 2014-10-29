@@ -430,7 +430,7 @@ Notes:
 											</ul>
 										</div>--->
 
-										<div class="row s-search-results" style="padding-top:15px;min-height: 116px;" ng-show="searchResultsOpen">
+										<div class="row s-search-results ng-cloak" style="padding-top:15px;min-height: 116px;" ng-show="searchResultsOpen">
 											<ul class="col-md-12 list-unstyled">
 												<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length && resultsFound">
 													<div class="col-md-4 s-title">

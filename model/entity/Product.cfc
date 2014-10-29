@@ -695,7 +695,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	public string function getTitle() {
 		if(!structKeyExists(variables, "title")) {
-			variables.title = getService("hibachiUtilityService").replaceStringTemplate(template=setting('productTitleString'), object=this);
+			variables.title = trim(getService("hibachiUtilityService").replaceStringTemplate(template=setting('productTitleString'), object=this));
 		}
 		return variables.title;
 	}
