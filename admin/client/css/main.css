@@ -150,6 +150,11 @@ a:-webkit-any-link {text-decoration:none !important;}
 .help-block {font-size:11px;}
 .has-error .form-control {border-color: #A94442 !important;}
 
+.modal-header {padding: 15px;}
+.modal-footer {padding: 8px  15px;}
+.modal-header h3 {font-size: 20px;padding: 0px;margin: 0px;line-height: 20px;}
+.modal-header .close {font-size: 26px;margin-top: -1px;}
+
 .navbar-inverse .navbar-nav>li>a { color: #fff; padding: 20px 13px; font-size: 12px; }
 .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus {background-color: #1B1E24}
 
@@ -456,7 +461,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-define-filter-group .s-define-filter-remove a {border: none;border-radius: 0px;background-color: #DA5757;color: #FFF !important;}
 
 .s-body-nav {background-color: #FFF;margin-bottom: 0px;border-radius: 0px;border-top: 0px;border:none;}
-.s-body-nav .navbar { margin-bottom: 0px; border-radius: 0px; background-color: #FFF; border-width: 0px 0px 4px 0px; border-style: solid; border-color: #e7eaec; padding: 0px 0px 9px 0px;height: 53px;}
+.s-body-nav .navbar { margin-bottom: 0px; border-radius: 0px; background-color: #FFF; border-bottom: 2px solid #e7eaec; padding: 0px 0px 9px 0px;height: 53px;}
 .s-body-nav .navbar h1 {padding: 0px;margin: 0px;font-size: 20px;font-weight: normal;vertical-align: middle; color: #000; }
 .s-body-nav .navbar .btn-toolbar {margin-top: 10px;}
 .row.s-pannel-control { text-align: right; margin: 12px 0px 3px 0px; }
