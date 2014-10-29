@@ -19,11 +19,10 @@ function(
 	formService
 ){
 	$scope.$id="create-bundle-controller";
-		//if this view is part of the dialog section, call the inherited function
+	//if this view is part of the dialog section, call the inherited function
 	if(angular.isDefined($scope.scrollToTopOfDialog)){
 		$scope.scrollToTopOfDialog();
 	}
-	
 	
 	var productID = $location.search().productID;
 	
@@ -89,7 +88,6 @@ function(
 							type:skuFilterGroups[k].type,
 							name:skuFilterGroups[k].name
 					};
-					console.log(filter);
 					
 					productBundleGroupFilters.push(filter);
 				}
@@ -176,7 +174,6 @@ function(
 	
 	$scope.saveProductBundle = function(closeDialogIndex){
 		var createProductBundleForm = formService.getForm('form.createProductBundle');
-		console.log(createProductBundleForm);
 		//only save the form if it passes validation
 		createProductBundleForm.$submitted = true;
 		if(createProductBundleForm.$valid === true){
@@ -208,10 +205,15 @@ function(
 					}else{
 						
 					}
-					
 					for(var key in productBundleGroup){
-						if(!angular.isArray(productBundleGroup[key]) && key.charAt(0) !== '$' && !angular.isObject(productBundleGroup[key])){
-							params[productBundleString+'.'+key] = productBundleGroup[key];
+						if(!angular.isArray(productBundleGroup[key]) && key.charAt(0) !== '$'){
+							if(!angular.isObject(productBundleGroup[key])){
+								params[productBundleString+'.'+key] = productBundleGroup[key];
+							}else{
+								if(angular.isDefined(productBundleGroup[key].value)){
+									params[productBundleString+'.'+key] = productBundleGroup[key].value;
+								}
+							}
 						}
 					}
 					params[productBundleString+'.productBundleGroupID'] = productBundleGroup.productBundleGroupID;
@@ -235,8 +237,6 @@ function(
 	
 	var isProductBundleGroupsValid = function(){
 		var isValid = true;
-		console.log('productBundleGroups');
-		console.log($scope.product.defaultSku.productBundleGroups);
 		if(!$scope.product.defaultSku.productBundleGroups.length){
 			$log.debug('hasnogroup');
 			isValid = false;

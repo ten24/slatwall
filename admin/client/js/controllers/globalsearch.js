@@ -105,8 +105,9 @@ function(
 
 				})(entityName);
 			}
-		}, 500)
 
+		}, 500);
+	
 		$scope.showResults();
 	};
 

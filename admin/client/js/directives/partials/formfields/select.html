@@ -1,5 +1,5 @@
 <select id="{{propertyDisplay.property}}" type="{{propertyDisplay.fieldType}}" class="form-control" 
-		    		 ng-model="propertyDisplay.selectedOption"
+		    		 ng-model="propertyDisplay.object[propertyDisplay.property]"
 		    		 ng-disabled="propertyDisplay.editable"
 		    		 ng-show="propertyDisplay.editing"
 		    		 ng-options="propertyDisplayOption.name
