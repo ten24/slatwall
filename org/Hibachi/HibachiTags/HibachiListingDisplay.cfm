@@ -317,12 +317,9 @@
 				<ul class="list-inline list-unstyled">
 					<li>
 						<form class="s-table-header-search">
-							<div class="input-group">
-
-								<cfif not thistag.expandable>
-									<input type="text" name="search" class="form-control input-sm general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
-								</cfif>
-							</div>
+							<cfif not thistag.expandable>
+								<input type="text" name="search" class="form-control input-sm general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
+							</cfif>
 						</form>
 					</li>
 					<li>
