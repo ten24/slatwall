@@ -199,3 +199,12 @@ function(){
 	$slatwallProvider.setBaseUrl($.slatwall.getConfig().baseURL);
 });
 
+
+
+var entityScript = document.createElement('script');
+entityScript.type = 'text/javascript';
+entityScript.async = true;
+entityScript.src = '?slatAction=api:meta.jsobjects';
+
+var scripts = document.getElementsByTagName('script')[0];
+scripts.parentNode.insertBefore(entityScript, scripts);
