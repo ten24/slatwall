@@ -86,7 +86,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="fulfillmentRefundAmount" hb_rbKey="entity.orderReturn.fulfillmentRefundAmount";
 	property name="emailAddress" hb_rbKey="entity.orderFulfillment.emailAddress";
 	property name="registrants" type="array" hb_populateArray="true"; 
-	property name="selectedBundleItems" type="array" hb_populateArray="true";
+	property name="childOrderItems" type="array" hb_populateArray="true";
 	
 	// Data Properties (Related Entity Populate)
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";
@@ -106,7 +106,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="assignedOrderItemAttributeSets";
 	property name="fulfillmentMethodType";
 	
-	variables.selectedBundleItems = [];
+	variables.childOrderItems = [];
 	
 	// ======================== START: Defaults ============================
 	

@@ -425,7 +425,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Setup child items for a bundle
 			if( arguments.processObject.getSku().getBaseProductType() == 'productBundle' ) {
 				
-				for(var childItemData in arguments.processObject.getSelectedBundleItems()) {
+				for(var childItemData in arguments.processObject.getChildOrderItems()) {
 					var childOrderItem = this.newOrderItem();
 					
 					// Populate the childOrderItem with the data
