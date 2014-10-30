@@ -42,8 +42,10 @@
 				     		ng-change="selectedPropertyChanged(selectedProperty)" 
 				     		ng-options="property as property.displayPropertyIdentifier
 				     					for property in propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].data 
-				     					track by property.propertyIdentifier
-				     					| orderBy:property.name" 
+				     					| orderBy:property.name
+				     					| filter:{fieldtype:'!one-to-many'}
+				     					| filter:{fieldtype:'!many-to-many'}
+				     					" 
 				     		class="form-control input-sm">
 				       <option value="">Select From <span ng-bind="propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName"></span>{{propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName}}:</option>
 				     </select>

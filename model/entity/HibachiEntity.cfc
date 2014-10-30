@@ -382,13 +382,8 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		for(var p=1; p<=arrayLen(properties); p++) {
 			if((len(includesList) && ListFind(arguments.includesList,properties[p].name) && !ListFind(arguments.excludesList,properties[p].name)) 
 			|| (!structKeyExists(properties[p], "persistent") || properties[p].persistent)){
-				/* TODO: stripping many-to-many and one-to-many */
-				if(structKeyExists(properties[p],'fieldtype') && (properties[p].fieldtype eq 'many-to-many' || properties[p].fieldtype eq 'one-to-many')){
-					
-				}else{
-					properties[p]['displayPropertyIdentifier'] = getPropertyTitle(properties[p].name);
-					arrayAppend(defaultProperties,properties[p]);	
-				}
+				properties[p]['displayPropertyIdentifier'] = getPropertyTitle(properties[p].name);
+				arrayAppend(defaultProperties,properties[p]);	
 			}
 		}
 		return defaultProperties;

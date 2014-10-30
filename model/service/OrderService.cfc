@@ -1211,21 +1211,53 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(structKeyExists(arguments.data, "orderItemID")) {
 			
 			// Loop over all of the items in this order
-			for(var i = 1; i <= arrayLen(arguments.order.getOrderItems()); i++)	{
+			for(var orderItem in arguments.order.getOrderItems())	{
 			
 				// Check to see if this item is the same ID as the one passed in to remove
-				if(arguments.order.getOrderItems()[i].getOrderItemID() == arguments.data.orderItemID) {
+				if(orderItem.getOrderItemID() == arguments.data.orderItemID) {
 				
-					// Actually Remove that Item
-					arguments.order.removeOrderItem( arguments.order.getOrderItems()[i] );
+					var okToRemove = true;
+					
+					// If there was a parentOrderItem, then we need to run some logic to test that this child item can be removed
+					if(!isNull(orderItem.getParentOrderItem())) {
+						
+						var parentItem = orderItem.getParentOrderItem();
+						
+						// First remove the orderItem to check if the parentItem still validated
+						orderItem.removeParentOrderItem();
+						
+						// Make sure that the parentOrderItem still passes validation (to check for bundle rules)
+						parentItem.validate(context='save');
+						
+						// If there were errors
+						if(parentItem.hasErrors()) {
+							
+							okToRemove = false;
+							
+							// Put the parentItem back
+							orderItem.setParentOrderItem( parentItem );
+							
+							// Add an error to the order so that this process fails
+							argument.order.addError('removeOrderItem', rbKey('entity.order.process.removeOrderItem.parentFailsValidationError'));
+						}
+					}
+					
+					if(okToRemove) {
+						
+						// Remove the order and delete this item
+						orderItem.removeOrder();
+						this.deleteOrderItem( orderItem );
+						
+						// Call saveOrder to recalculate all the orderTotal stuff
+						arguments.order = this.saveOrder(arguments.order);
+		
+					}
+					
 					break;
 				}
 			}
 			
 		}
-		
-		// Call saveOrder to recalculate all the orderTotal stuff
-		arguments.order = this.saveOrder(arguments.order);
 		
 		return arguments.order;
 	}
