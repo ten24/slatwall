@@ -1,3 +1,5 @@
+<cfset auditSmartList = $.slatwall.getService('hibachiAuditService').getAuditSmartList( rc ) />
+<cfoutput>
 <div class="row s-body-nav">
     <nav class="navbar navbar-default" role="navigation">
       <div class="col-md-4 s-header-info">
@@ -5,14 +7,13 @@
 			<!--- Page Title --->
 			<ul class="list-unstyled list-inline">
 			</ul>
-			<h1 class="actionbar-title">Audit Log</h1>
+			<h1 class="actionbar-title">#$.slatwall.rbKey('admin.entity.listAudit')#</h1>
 		</div>
 	 </div>
    </nav>
 </div>
 
-<cfset auditSmartList = $.slatwall.getService('hibachiAuditService').getAuditSmartList( rc ) />
-<cfoutput>
+
 
 <!---
 <form action="" method="get">
