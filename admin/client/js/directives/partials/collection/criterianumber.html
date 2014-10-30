@@ -17,7 +17,7 @@
     <div class="form-group form-group-sm">
 		<label ng-show="selectedFilterProperty.showCriteriaValue" class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Value:</label>
 		<div class="col-sm-12 s-no-paddings" ng-show="selectedFilterProperty.showCriteriaValue">
-			<input  style="" type="text" class="form-control" 
+			<input  style="" type="number" class="form-control" 
 					ng-model="selectedFilterProperty.criteriaValue"
 					
 					/>
@@ -25,7 +25,7 @@
       	<label ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd" class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Start Range:</label>
 		
 		<p class="input-group" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaStart">
-		  <input 	type="text" class="form-control" 
+		  <input 	type="number" class="form-control" 
 		  			ng-model="selectedFilterProperty.criteriaRangeStart" 
 		  			ng-change="criteriaRangeChanged(selectedFilterProperty)"
 		  			ng-disabled="selectedFilterProperty.selectedCriteriaType.disableCriteriaStart"
@@ -34,7 +34,7 @@
 		<label ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd" class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">End Range:</label>
 		  
 		    <p class="input-group" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd">
-		  <input 	type="text" class="form-control" 
+		  <input 	type="number" class="form-control" 
 		  			ng-model="selectedFilterProperty.criteriaRangeEnd" 
 		  			ng-change="criteriaRangeChanged(selectedFilterProperty)"
 		  			ng-disabled="selectedFilterProperty.selectedCriteriaType.disableCriteriaEnd"

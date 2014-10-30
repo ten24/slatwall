@@ -64,7 +64,7 @@ function(
 	var timeoutPromise;
 
 	$scope.updateSearchResults = function() {
-		$scope.resultsFound = false;
+		
 		$scope.loading = false;
 		if(timeoutPromise) {
 			$timeout.cancel(timeoutPromise);
@@ -104,6 +104,7 @@ function(
 					});
 
 				})(entityName);
+				$scope.resultsFound = false;
 			}
 
 		}, 500);

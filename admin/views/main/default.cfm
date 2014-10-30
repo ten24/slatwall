@@ -50,20 +50,18 @@ Notes:
 <cfparam name="rc.productReviewSmartList" type="any" />
 
 <cfoutput>
-	<div class="row s-body-nav" style="margin-bottom: 30px;">
-		<nav class="navbar navbar-default" role="navigation">
-			<div class="col-md-4 s-header-info">
+	<div class="row s-body-nav">
+	    <nav class="navbar navbar-default" role="navigation">
+	      <div class="col-md-4 s-header-info">
+
+				<!--- Page Title --->
 				<ul class="list-unstyled list-inline">
 				</ul>
-				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.main')#</h1>
+				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.main.default')#</h1>
 			</div>
-
-			<div class="col-md-8">
-
-			</div>
-		</nav>
-	</div>
-
+		 </div>
+	   </nav>
+	 </div>
 	<cf_HibachiMessageDisplay />
 
 	<div class="row">

@@ -52,7 +52,7 @@ Notes:
 
 <cf_HibachiEntityActionBar type="listing" object="#rc.contentSmartList#" showCreate="false" />
 
-<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.contentSmartList#"
+<cf_HibachiListingDisplay smartList="#rc.contentSmartList#"
 						   recordDetailAction="admin:entity.detailcontent"
 						   recordEditAction="admin:entity.editcontent">
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="title" />

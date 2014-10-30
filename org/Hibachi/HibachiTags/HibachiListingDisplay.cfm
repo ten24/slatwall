@@ -317,18 +317,16 @@
 				<ul class="list-inline list-unstyled">
 					<li>
 						<form class="s-table-header-search">
-							<div class="input-group">
-
-								<cfif not thistag.expandable>
-									<input type="text" name="search" class="form-control input-sm general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
-								</cfif>
-							</div>
+							<cfif not thistag.expandable>
+								<input type="text" name="search" class="form-control input-sm general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
+							</cfif>
 						</form>
 					</li>
 					<li>
 						<div class="btn-group navbar-left dropdown">
 
 							<button type="button" class="btn btn-sm s-btn-blue dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cog"></i></button>
+
 								<ul class="dropdown-menu pull-right" role="menu">
 									<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
 								</ul>
