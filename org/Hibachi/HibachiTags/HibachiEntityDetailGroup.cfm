@@ -69,7 +69,7 @@
 							<div class="panel-heading">
 								<h4 class="panel-title">
 									<span>#tab.text#</span><cfif len(tab.count) and tab.count gt 0> <span class="badge">#tab.count#</span></cfif>
-									<i class="fa fa-caret-right"></i>
+									<i class="fa fa-caret-left s-accordion-toggle-icon"></i>
 								</h4>
 							</div>
 						</a>
