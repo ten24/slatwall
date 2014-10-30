@@ -1232,7 +1232,7 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 }
 
 function addLoadingDiv( elementID ) {
-	var loadingDiv = '<div id="loading' + elementID + '" style="position:absolute;float:left;text-align:center;background-color:#FFFFFF;opacity:.9;z-index:900;"><img src="' + hibachiConfig.baseURL + '/org/Hibachi/HibachiAssets/images/loading.gif" title="loading" /></div>';
+	var loadingDiv = '<div id="loading' + elementID + '" style="position:fixed;top:50%;left:50%;text-align:center;background-color:#FFFFFF;opacity:.9;z-index:900;"><img src="' + hibachiConfig.baseURL + '/org/Hibachi/HibachiAssets/images/loading.gif" title="loading" /></div>';
 	jQuery('#' + elementID).before(loadingDiv);
 	jQuery('#loading' + elementID).width(jQuery('#' + elementID).width() + 2);
 	jQuery('#loading' + elementID).height(jQuery('#' + elementID).height() + 2);
