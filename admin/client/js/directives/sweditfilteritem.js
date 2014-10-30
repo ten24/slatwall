@@ -43,7 +43,7 @@ $filter){
 					                     	{
 					                     		entityAlias:scope.baseEntityAlias,
 					                     		cfc:scope.baseEntityAlias,
-					                     		propertyIdentifier:scope.baseEntityAlias,
+					                     		propertyIdentifier:scope.baseEntityAlias
 					                     	}
 					                    ];
 				}else{
@@ -53,7 +53,7 @@ $filter){
 						var breadCrumb = {
 								entityAlias:entityAliasArrayFromString[i],
 								cfc:entityAliasArrayFromString[i],
-								propertyIdentifier:entityAliasArrayFromString[i],
+								propertyIdentifier:entityAliasArrayFromString[i]
 						};
 						scope.filterItem.breadCrumbs.push(breadCrumb);
 					}
