@@ -64,27 +64,27 @@ Notes:
 	 </div>
 	<cf_HibachiMessageDisplay />
 
-	<div class="row">
-		<div class="col-md-6">
-			<cf_HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#" smartList="#rc.orderSmartList#"
-					recordDetailAction="admin:entity.detailorder">
-				<cf_HibachiListingColumn propertyIdentifier="orderNumber" />
-				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="account.fullName" />
-				<cf_HibachiListingColumn propertyIdentifier="orderOpenDateTime" />
-				<cf_HibachiListingColumn propertyIdentifier="orderStatusType.type" title="#$.slatwall.rbKey('define.status')#" />
-				<cf_HibachiListingColumn propertyIdentifier="calculatedTotal" />
-			</cf_HibachiListingDisplay>
-			<br />
-			<cf_HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.recentproductreviews")#" smartList="#rc.productReviewSmartList#"
-					recordDetailAction="admin:entity.detailproductreview">
-				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="product.calculatedTitle" />
-				<cf_HibachiListingColumn propertyIdentifier="reviewerName" />
-				<cf_HibachiListingColumn propertyIdentifier="reviewTitle" />
-			</cf_HibachiListingDisplay>
-		</div>
-		<div class="col-md-6">
-			<!---<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>--->
-			<cf_HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />
-		</div>
+
+	<div class="col-md-6">
+		<cf_HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#" smartList="#rc.orderSmartList#"
+				recordDetailAction="admin:entity.detailorder">
+			<cf_HibachiListingColumn propertyIdentifier="orderNumber" />
+			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="account.fullName" />
+			<cf_HibachiListingColumn propertyIdentifier="orderOpenDateTime" />
+			<cf_HibachiListingColumn propertyIdentifier="orderStatusType.type" title="#$.slatwall.rbKey('define.status')#" />
+			<cf_HibachiListingColumn propertyIdentifier="calculatedTotal" />
+		</cf_HibachiListingDisplay>
+		<br />
+		<cf_HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.recentproductreviews")#" smartList="#rc.productReviewSmartList#"
+				recordDetailAction="admin:entity.detailproductreview">
+			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="product.calculatedTitle" />
+			<cf_HibachiListingColumn propertyIdentifier="reviewerName" />
+			<cf_HibachiListingColumn propertyIdentifier="reviewTitle" />
+		</cf_HibachiListingDisplay>
 	</div>
+	<div class="col-md-6">
+		<!---<h5>#request.slatwallScope.rbKey("admin.main.dashboard.timeline")#</h5>--->
+		<cf_HibachiTimeline baseObjectList="Product,Order,Brand,Account" recordsShow="20" />
+	</div>
+
 </cfoutput>
