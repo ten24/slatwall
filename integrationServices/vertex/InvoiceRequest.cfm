@@ -62,26 +62,26 @@
 				<urn:InvoiceRequest documentDate="#dateTimeFormat(Now(), 'yyyy-mm-dd')#" documentNumber="#arguments.requestBean.getOrderID()#" transactionId="#createUUID()#" transactionType="SALE">
 				  	<urn:Currency isoCurrencyCodeAlpha="USD"/>
 				  	<urn:Seller>
-				    	<urn:Company>#setting('company')#</urn:Company>
-				    	<urn:Division>#setting('division')#</urn:Division>
-				    	<urn:Department>#setting('department')#</urn:Department>
+				    	<urn:Company>#xmlFormat(setting('company'))#</urn:Company>
+				    	<urn:Division>#xmlFormat(setting('division'))#</urn:Division>
+				    	<urn:Department>#xmlFormat(setting('department'))#</urn:Department>
 				    	<urn:PhysicalOrigin>
-				      		<urn:City>#setting('originCity')#</urn:City>
-				      		<urn:MainDivision>#setting('originMainDivision')#</urn:MainDivision>
-				      		<urn:PostalCode>#setting('originPostalCode')#</urn:PostalCode>
-				     		<urn:Country>#setting('originCountry')#</urn:Country>
+				      		<urn:City>#xmlFormat(setting('originCity'))#</urn:City>
+				      		<urn:MainDivision>#xmlFormat(setting('originMainDivision'))#</urn:MainDivision>
+				      		<urn:PostalCode>#xmlFormat(setting('originPostalCode'))#</urn:PostalCode>
+				     		<urn:Country>#xmlFormat(setting('originCountry'))#</urn:Country>
 				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
 				   		</urn:PhysicalOrigin>
 				  	</urn:Seller>
  -		  			<urn:Customer>
-				    	<urn:CustomerCode>#arguments.requestBean.getAccountID()#</urn:CustomerCode>
+				    	<urn:CustomerCode>#xmlFormat(arguments.requestBean.getAccountID())#</urn:CustomerCode>
 				    	<urn:Destination>
-				    		<urn:StreetAddress1>#addressTaxRequestItems[ 1 ].getTaxStreetAddress()#</urn:StreetAddress1>
-				      		<urn:StreetAddress2>#addressTaxRequestItems[ 1 ].getTaxStreet2Address()#</urn:StreetAddress2>
-							<urn:City>#addressTaxRequestItems[ 1 ].getTaxCity()#</urn:City>
-				      		<urn:MainDivision>#addressTaxRequestItems[ 1 ].getTaxStateCode()#</urn:MainDivision>
-				      		<urn:PostalCode>#addressTaxRequestItems[ 1 ].getTaxPostalCode()#</urn:PostalCode>
-				     		<urn:Country>#addressTaxRequestItems[ 1 ].getTaxCountryCode()#</urn:Country>
+				    		<urn:StreetAddress1>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxStreetAddress())#</urn:StreetAddress1>
+				      		<urn:StreetAddress2>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxStreet2Address())#</urn:StreetAddress2>
+							<urn:City>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxCity())#</urn:City>
+				      		<urn:MainDivision>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxStateCode())#</urn:MainDivision>
+				      		<urn:PostalCode>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxPostalCode())#</urn:PostalCode>
+				     		<urn:Country>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxCountryCode())#</urn:Country>
 				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
 				    	</urn:Destination>
 					 </urn:Customer>
@@ -92,10 +92,10 @@
 					    	<urn:ExtendedPrice>#taxRequestItem.getExtendedPriceAfterDiscount()#</urn:ExtendedPrice>
 							<urn:FlexibleFields>
 								<cfif !isNull(arguments.requestBean.getAccount())>
-						      		<urn:FlexibleCodeField fieldId="7">#left(arguments.requestBean.getAccount().getFullName(), 40)#</urn:FlexibleCodeField>
+						      		<urn:FlexibleCodeField fieldId="7">#left(xmlFormat(arguments.requestBean.getAccount().getFullName()), 40)#</urn:FlexibleCodeField>
 								</cfif>
-					      		<urn:FlexibleCodeField fieldId="11">#taxRequestItem.getTaxCategoryRateCode()#</urn:FlexibleCodeField>
-					      		<urn:FlexibleCodeField fieldId="12">#left(taxRequestItem.getOrderItem().getSku().getProduct().getProductName(), 40)#</urn:FlexibleCodeField>
+					      		<urn:FlexibleCodeField fieldId="11">#xmlFormat(taxRequestItem.getTaxCategoryRateCode())#</urn:FlexibleCodeField>
+					      		<urn:FlexibleCodeField fieldId="12">#left(xmlFormat(taxRequestItem.getOrderItem().getSku().getProduct().getProductName()), 40)#</urn:FlexibleCodeField>
 					    	</urn:FlexibleFields>
 					  	</urn:LineItem>
 					</cfloop>		 
