@@ -83,7 +83,7 @@
 	
 </cfloop>
 
-<cfset oYUICompressor = createObject("component", "integrationServices.yuicompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('integrationServices/yuicompressor/lib')) />
+<cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
 <cfset compressedJS = oYUICompressor.compress(
 											inputType = 'js'
 											,inputString = local.jsOutput
