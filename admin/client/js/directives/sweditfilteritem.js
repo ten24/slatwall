@@ -33,6 +33,21 @@ $filter){
 		templateUrl:collectionPartialsPath+"editfilteritem.html",
 		link: function(scope, element,attrs,filterGroupsController){
 			
+			function daysBetween(first, second) {
+
+			    // Copy date parts of the timestamps, discarding the time parts.
+			    var one = new Date(first.getFullYear(), first.getMonth(), first.getDate());
+			    var two = new Date(second.getFullYear(), second.getMonth(), second.getDate());
+
+			    // Do the math.
+			    var millisecondsPerDay = 1000 * 60 * 60 * 24;
+			    var millisBetween = two.getTime() - one.getTime();
+			    var days = millisBetween / millisecondsPerDay;
+
+			    // Round down.
+			    return Math.floor(days);
+			}
+			
 			scope.baseEntityAlias = collectionService.getBaseEntityAlias();
 			
 			if(angular.isUndefined(scope.filterItem.breadCrumbs)){
@@ -212,17 +227,34 @@ $filter){
 			            	//retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
 			            	filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
 			            	//is it null or a range
+			            	
+			            	console.log('test');
+			            	console.log(selectedFilterProperty.selectedCriteriaType);
 							if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
 								filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
 								filterItem.displayValue = filterItem.value;
 							}else{
-								var dateValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
-								filterItem.value = dateValueString;
-								var formattedDateValueString = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
-								filterItem.displayValue = formattedDateValueString;
-								if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
-									filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
+								if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.dateInfo.type) && selectedFilterProperty.selectedCriteriaType.dateInfo.type === 'calculation'){
+									var _daysBetween = daysBetween(new Date(selectedFilterProperty.criteriaRangeStart),new Date(selectedFilterProperty.criteriaRangeEnd));
+									
+									filterItem.value = _daysBetween;
+									filterItem.displayValue = selectedFilterProperty.selectedCriteriaType.display;
+									if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
+										filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
+									}
+									
+								}else
+								{
+									var dateValueString = selectedFilterProperty.criteriaRangeStart + '-' + selectedFilterProperty.criteriaRangeEnd;
+									filterItem.value = dateValueString;
+									var formattedDateValueString = $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeStart),'MM/dd/yyyy @ h:mma') + '-' + $filter('date')(angular.copy(selectedFilterProperty.criteriaRangeEnd),'MM/dd/yyyy @ h:mma');
+									filterItem.displayValue = formattedDateValueString;
+									if(angular.isDefined(selectedFilterProperty.criteriaNumberOf)){
+										filterItem.criteriaNumberOf = selectedFilterProperty.criteriaNumberOf;
+									}
 								}
+								
+								
 							}
 							
 			                break;	
