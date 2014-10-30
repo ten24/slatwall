@@ -167,7 +167,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			variables.collectionConfig = '{
 				"baseEntityName":"#slatwallBaseEntity#",
 				"baseEntityAlias":"_#lcase(arguments.collectionObject)#",
-				"displayBaseEntityName":"#rbKey("entity.#arguments.collectionObject#")#",
 				"columns":#columnsJson#
 			}';
 		}

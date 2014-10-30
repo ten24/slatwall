@@ -1,7 +1,7 @@
 <div class="col-xs-12 s-add-filter"  ng-class="{collapse:filterItem.$$isClosed}">
 	<div class="row">
 	  <h4> Define Filter: <span ng-repeat="breadCrumb in filterItem.breadCrumbs"> 
-	        	<span ng-show="filterItem.breadCrumbs.length - 1 !== $index" ng-click="selectBreadCrumb($index)">{{breadCrumb.displayEntityName}}<span ng-if="$index !== filterItem.breadCrumbs.length - 2"> > </span></span>
+	        	<span ng-show="filterItem.breadCrumbs.length - 1 !== $index" ng-click="selectBreadCrumb($index)">{{breadCrumb.entityAlias}}<span ng-if="$index !== filterItem.breadCrumbs.length - 2"> > </span></span>
 	        </span>
 		  <i class="fa fa-times" ng-click="cancelFilterItem()" ></i>
 	  </h4>
@@ -11,7 +11,7 @@
 	      <div class="col-xs-3">
 	        <div class="form-group form-group-sm">
 	        
-	          <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From <span ng-bind="filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].displayEntityName"></span>:</label>
+	          <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From <span ng-bind="filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].entityName | AliasDisplayName"></span>:</label>
 	          <div class="col-sm-12 s-no-paddings">
 	            <select ng-model="selectedFilterProperty" 
 	            		ng-change="selectedFilterPropertyChanged(selectedFilterProperty)" 
@@ -20,7 +20,7 @@
 	            					
 	            					" 
 	            		class="form-control input-sm">
-	              	<option value="">Select From {{filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].displayEntityName}}:</option>
+	              	<option value="">Select From {{filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].entityName | AliasDisplayName}}:</option>
 	            </select>
 	          </div>
 	          <div class="clearfix"></div>

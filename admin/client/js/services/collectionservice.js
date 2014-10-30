@@ -34,9 +34,6 @@ function($filter,$log){
 		getBaseEntityAlias: function(){
 			return this.getCollectionConfig().baseEntityAlias;
 		},
-		getDisplayBaseEntityName: function(){
-			return this.getCollectionConfig().displayBaseEntityName;
-		},
 		getCollectionConfig: function(){
 			if(!angular.isObject(_collectionConfig)){
 				_collectionConfig = angular.fromJson(_collection.collectionConfig);

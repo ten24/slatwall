@@ -34,7 +34,6 @@ $filter){
 		link: function(scope, element,attrs,filterGroupsController){
 			
 			scope.baseEntityAlias = collectionService.getBaseEntityAlias();
-			scope.displayBaseEntityName = collectionService.getDisplayBaseEntityName();
 			
 			if(angular.isUndefined(scope.filterItem.breadCrumbs)){
 				scope.filterItem.breadCrumbs = [];
@@ -45,12 +44,9 @@ $filter){
 					                     		entityAlias:scope.baseEntityAlias,
 					                     		cfc:scope.baseEntityAlias,
 					                     		propertyIdentifier:scope.baseEntityAlias,
-					                     		displayEntityName:scope.displayBaseEntityName
 					                     	}
 					                    ];
 				}else{
-					console.log('filterItem');
-					console.log(scope.filterItem);
 					var entityAliasArrayFromString = scope.filterItem.propertyIdentifier.split('.');
 					entityAliasArrayFromString.pop();
 					for(var i in entityAliasArrayFromString){
@@ -58,7 +54,6 @@ $filter){
 								entityAlias:entityAliasArrayFromString[i],
 								cfc:entityAliasArrayFromString[i],
 								propertyIdentifier:entityAliasArrayFromString[i],
-								displayEntityName:scope.filterItem.displayPropertyIdentifier
 						};
 						scope.filterItem.breadCrumbs.push(breadCrumb);
 					}
@@ -260,8 +255,6 @@ $filter){
 			            	break;
 			            case 'one-to-many':
 			            case 'many-to-many':
-			            	console.log('savemanytomany');
-			            	console.log(selectedFilterProperty);
 			            	filterItem.collectionCode = selectedFilterProperty.selectedCollection.collectionCode;
 			            	filterItem.displayValue = selectedFilterProperty.selectedCollection.collectionName;
 			            	filterItem.criteria = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
