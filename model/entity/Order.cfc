@@ -948,6 +948,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
 			return variables.billingAddress;
 		}
+		return getService("addressService").newAddress();
 	}
 
 	public any function getShippingAddress() {
@@ -957,6 +958,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			setShippingAddress( getShippingAccountAddress().getAddress().copyAddress( true ) );
 			return variables.shippingAddress;
 		}
+		return getService("addressService").newAddress();
 	}
 	
 	public any function getOrderStatusType() {
