@@ -228,8 +228,6 @@ $filter){
 			            	filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
 			            	//is it null or a range
 			            	
-			            	console.log('test');
-			            	console.log(selectedFilterProperty.selectedCriteriaType);
 							if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
 								filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
 								filterItem.displayValue = filterItem.value;
