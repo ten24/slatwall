@@ -430,7 +430,7 @@ Notes:
 											</ul>
 										</div>--->
 
-										<div class="row s-search-results" style="padding-top:15px;min-height: 116px;" ng-show="searchResultsOpen">
+										<div class="row s-search-results ng-cloak" style="padding-top:15px;min-height: 116px;" ng-show="searchResultsOpen">
 											<ul class="col-md-12 list-unstyled">
 												<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length && resultsFound">
 													<div class="col-md-4 s-title">
@@ -496,7 +496,7 @@ Notes:
 					<div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h3>#request.slatwallScope.rbKey('define.disabled')#</h3></div>
 					<div class="modal-body"></div>
 					<div class="modal-footer">
-						<a href="##" class="btn btn-default btn-inverse" data-dismiss="modal" id="disabledOkLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.ok')#</a>
+						<a href="##" class="btn btn-sm btn-default btn-inverse" data-dismiss="modal" id="disabledOkLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.ok')#</a>
 					</div>
 				</div>
 			</div>
@@ -507,20 +507,20 @@ Notes:
 					<div class="modal-header"><a class="close" data-dismiss="modal">&times;</a><h3>#request.slatwallScope.rbKey('define.confirm')#</h3></div>
 					<div class="modal-body"></div>
 					<div class="modal-footer">
-						<a href="##" target="_self" class="btn btn-default btn-inverse" data-dismiss="modal" id="confirmNoLink"><i class="icon-remove icon-white"></i> #request.slatwallScope.rbKey('define.no')#</a>
-						<a href="##" target="_self" class="btn btn-default btn-primary" id="confirmYesLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.yes')#</a>
+						<a href="##" target="_self" class="btn btn-sm btn-default btn-inverse" data-dismiss="modal" id="confirmNoLink"><i class="icon-remove icon-white"></i> #request.slatwallScope.rbKey('define.no')#</a>
+						<a href="##" target="_self" class="btn btn-sm btn-default btn-primary" id="confirmYesLink"><i class="icon-ok icon-white"></i> #request.slatwallScope.rbKey('define.yes')#</a>
 					</div>
 				</div>
 			</div>
 		</div>
 
 		<!--- Page Dialog Controller --->
-		<div ng-controller="pageDialog" >
-			<span id="topOfPageDialog">
-				<span style="z-index:3000" class="s-dialog-container" ng-repeat="pageDialog in pageDialogs" >
-					<span  ng-include="pageDialog.path"></span>
-				</span>
-			</span>
+		<div ng-controller="pageDialog">
+			<div id="topOfPageDialog">
+				<div style="z-index:3000" class="s-dialog-container" ng-repeat="pageDialog in pageDialogs" >
+					<div  ng-include="pageDialog.path"></div>
+				</div>
+			</div>
 		</div>
 
 		<!---displays alerts to the user --->

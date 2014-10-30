@@ -63,7 +63,7 @@ Notes:
 				<!--- Page Title --->
 				<ul class="list-unstyled list-inline">
 				</ul>
-				<h1 class="actionbar-title">Log</h1>
+				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.main.log')#</h1>
 			</div>
 		 </div>
 	   </nav>

@@ -595,7 +595,7 @@
 
 					</ul>
 				</div>
-				<button class="btn btn-xs s-btn-grey s-create-bundle-btn" data-toggle="collapse" data-target="#j-edit-filter-9"><i class="fa fa-plus"></i> Bundle Group</button>
+				<button class="btn btn-sm s-btn-grey s-create-bundle-btn" data-toggle="collapse" data-target="#j-edit-filter-9"><i class="fa fa-plus"></i> Bundle Group</button>
 
 
 				<!--- Edit Filter Box --->
@@ -721,7 +721,7 @@
 										<div class="tab-pane" id="j-selections-tab-9">
 
 											<!-- Selected filters -->
-											
+
 												<ul class="list-unstyled s-order-item-options">
 
 													<li class="s-bundle-add-obj">

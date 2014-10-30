@@ -56,7 +56,7 @@ component displayname="Task" entityname="SlatwallTask" table="SwTask" persistent
 	property name="taskUrl" ormtype="string";
 	property name="taskConfig" ormtype="string" length="4000";
 	property name="runningFlag" ormtype="boolean" hb_formatType="yesno";
-	property name="timeout" ormtype="int" ;
+	property name="timeout" ormtype="integer" ;
 
 	// Related Object Properties (many-to-one)
 	
