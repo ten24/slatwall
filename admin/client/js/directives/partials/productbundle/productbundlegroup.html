@@ -122,27 +122,33 @@
 					</div>
 
                     <h4 style="border-bottom: 1px solid #DDD;margin-bottom: 15px;font-size: 16px;text-align: left;padding-bottom: 3px;">Selections</h4>
-                    <!-- Selected filters -->
-                    <div class="s-bundle-add-items s-workflow-objs">
-                        <ul class="list-unstyled s-order-item-options" ng-show="productBundleGroup.productBundleGroupFilters.length" style="border-bottom: 3px dotted #DDD;padding-bottom: 12px;">
-
-                            <li class="s-bundle-add-obj" ng-repeat="productBundleGroupFilter in productBundleGroup.productBundleGroupFilters track by $index">
-                                <ul class="list-unstyled list-inline s-middle">
-                                    <li class="s-bundle-details"><span style="font-weight:600;margin-left:0px;color:#666;" ng-bind="productBundleGroupFilter.type"></span>:<span ng-bind="productBundleGroupFilter.name"></span></li>
-                                </ul>
-                                <ul class="list-unstyled list-inline s-last">
-                                    <li class="col-xs-1 s-bundle-details-add"><a class="btn s-btn-dgrey s-remove" ng-click="removeProductBundleGroupFilter($index)"><i class="fa fa-trash"></i></a></li>
-                                </ul>
-                                <div class="clearfix"></div>
-                            </li>
-
-                        </ul>
-                    </div>
-                    <!-- //Selected filters -->
 
                     <!-- Search for product -->
                     <div class="row s-bundle-group-items">
-                        <div class="col-xs-12">
+
+                        <div class="col-xs-12 col-md-6" style="float:right;">
+                            <!-- Selected filters -->
+                            <div class="s-bundle-add-items s-workflow-objs">
+                                <ul class="list-unstyled s-order-item-options" ng-show="productBundleGroup.productBundleGroupFilters.length" style="padding-bottom: 12px;">
+
+                                    <li class="s-bundle-add-obj" ng-repeat="productBundleGroupFilter in productBundleGroup.productBundleGroupFilters track by $index">
+                                        <ul class="list-unstyled list-inline">
+                                            <li class="s-item-type s-tooltip" style="background-color:#aaa;" data-toggle="tooltip" data-placement="right" title="Tooltip example"><i class="fa fa-sign-out"></i></li>
+                                        </ul>
+                                        <ul class="list-unstyled list-inline s-middle">
+                                            <li class="s-bundle-details"><span style="font-weight:600;margin-left:0px;color:#666;" ng-bind="productBundleGroupFilter.type"></span>:<span ng-bind="productBundleGroupFilter.name"></span></li>
+                                        </ul>
+                                        <ul class="list-unstyled list-inline s-last">
+                                            <li class="col-xs-1 s-bundle-details-add"><a class="btn s-btn-dgrey s-remove" ng-click="removeProductBundleGroupFilter($index)"><i class="fa fa-trash"></i></a></li>
+                                        </ul>
+                                        <div class="clearfix"></div>
+                                    </li>
+
+                                </ul>
+                            </div>
+                            <!-- //Selected filters -->
+                        </div>
+                        <div class="col-sm-12 col-md-6 s-arrow-border" style="float:left;">
                             <div class="input-group">
 
                                 <div class="dropdown input-group-btn search-panel">
@@ -166,52 +172,49 @@
                                         ng-model="productBundleGroupFilters.keyword"
                                         ng-change="productBundleGroupFilters.getFiltersByTerm(productBundleGroupFilters.keyword,searchOptions.selected.value)"
                                 >
-                                <div class="input-group-btn" style="width: 109px;">
-                                    <div class="btn-group btn-group-sm s-btn-toggle" data-toggle="buttons" style="">
-                                        <label class="btn btn-primary active">
-                                            <input type="radio" name="options" value="option1"> Include
-                                        </label>
-                                        <label class="btn btn-default">
-                                            <input type="radio" name="options" value="option2" checked=""> Exclude
-                                        </label>
+
+                            </div>
+                            <!-- Options items -->
+                            <div class="s-bundle-add-items" ng-show="productBundleGroupFilters.keyword.length">
+                                <div class="col-xs-12 s-bundle-add-items-inner">
+                                    <h4  class="s-no-items"
+                                        ng-show="!productBundleGroupFilters.value.length"
+                                    >
+                                        There are no items selected
+                                    </h4>
+
+                                    <!-- Selected filters -->
+                                    <div class="s-bundle-add-items s-workflow-objs">
+                                        <ul class="list-unstyled s-order-item-options s-negative-obj"
+                                            ng-show="productBundleGroupFilters.value.length">
+
+                                            <li class="s-bundle-add-obj" ng-repeat="filterItem in productBundleGroupFilters.value track by $index">
+                                                <ul class="list-unstyled list-inline s-middle">
+                                                    <li class="j-tool-tip-item s-bundle-details" ng-bind="filterItem[searchOptions.selected.value+'Name']"></li>
+                                                </ul>
+                                                <ul class="list-unstyled list-inline s-last">
+                                                    <li class="col-xs-1 s-bundle-details-add" style="width:79px;margin-right:1px;">
+                                                        <a class="btn s-btn-lgrey" style="border-radius:0px;color:#fff;background-color:#B8B6B6;" ng-click="addFilterToProductBundle(filterItem)"><i class="fa fa-sign-out"></i> Exclude</a>
+                                                    </li>
+                                                    <li class="col-xs-1 s-bundle-details-add" style="width:79px;">
+                                                        <a class="btn s-btn-blue" ng-click="addFilterToProductBundle(filterItem)"><i class="fa fa-sign-in"></i> Include</a>
+                                                    </li>
+                                                </ul>
+                                                <div class="clearfix"></div>
+                                            </li>
+
+                                        </ul>
                                     </div>
-                                </div>
+                                    <!-- //Selected filters -->
 
+                                </div>
                             </div>
+                            <!-- //Options items -->
+
+                            <div class="clearfix"></div>
 
                         </div>
 
-                        <div class="col-xs-12 s-bundle-add-items" ng-show="productBundleGroupFilters.keyword.length">
-                            <div class="col-xs-12 s-bundle-add-items-inner">
-                                <h4  class="s-no-items"
-                                    ng-show="!productBundleGroupFilters.value.length"
-                                >
-                                    There are no items selected
-                                </h4>
-
-                                <!-- Selected filters -->
-                                <div class="s-bundle-add-items s-workflow-objs">
-                                    <ul class="list-unstyled s-order-item-options"
-                                        ng-show="productBundleGroupFilters.value.length">
-
-                                        <li class="s-bundle-add-obj" ng-repeat="filterItem in productBundleGroupFilters.value track by $index">
-                                            <ul class="list-unstyled list-inline s-middle">
-                                                <li class="j-tool-tip-item s-bundle-details" ng-bind="filterItem[searchOptions.selected.value+'Name']"></li>
-                                            </ul>
-                                            <ul class="list-unstyled list-inline s-last">
-                                                <li class="col-xs-1 s-bundle-details-add">
-                                                    <a class="btn s-btn-ten24" ng-click="addFilterToProductBundle(filterItem)"><i class="fa fa-plus"></i></a>
-                                                </li>
-                                            </ul>
-                                            <div class="clearfix"></div>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                                <!-- //Selected filters -->
-
-                            </div>
-                        </div>
                     </div>
                     <!-- //Search for product -->
                     <br/>
