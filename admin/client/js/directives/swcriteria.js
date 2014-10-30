@@ -43,7 +43,8 @@ $filter){
 	                break;
 	            case 'big_decimal':
 	            case 'integer':
-	            	templatePath = collectionPartialsPath+"criteriabigdecimal.html";
+	            case 'float':
+	            	templatePath = collectionPartialsPath+"criterianumber.html";
 	            	break;
 	            
 	            	
@@ -309,8 +310,8 @@ $filter){
     	return dateOptions;
     };
     
-    var getBigDecimalOptions = function(){
-    	var bigDecimalOptions = [
+    var getNumberOptions = function(){
+    	var numberOptions = [
     		{
 				display:"Equals",
 				comparisonOperator:"="
@@ -364,7 +365,7 @@ $filter){
 				value:"null"
 			}
     	];
-    	return bigDecimalOptions;
+    	return numberOptions;
     };
     	
     
@@ -673,7 +674,8 @@ $filter){
 			    			break;
 			    		case "big_decimal":
 			    		case "integer":
-			    			scope.conditionOptions = getBigDecimalOptions();
+			    		case "float":
+			    			scope.conditionOptions = getNumberOptions();
 			    			scope.criteriaRangeChanged = function(selectedFilterProperty){
 							  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
 			    			};
