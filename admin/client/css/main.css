@@ -642,7 +642,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .navbar-s-navbar-ten24 .navbar-brand {height:38px;padding:8px;}
 .navbar-s-navbar-ten24 .navbar-nav>.active>a:hover,.navbar-s-navbar-ten24 .navbar-nav>li>a:hover, .navbar-s-navbar-ten24 .navbar-nav>li>a:focus { background-color:#727E8B}
 .navbar-s-navbar-ten24 .navbar-nav>.active>a,.navbar-s-navbar-ten24 .navbar-nav>.open>a,.navbar-s-navbar-ten24 .navbar-nav>.open>a, .navbar-s-navbar-ten24 .navbar-nav>.open>a:hover,.navbar-s-navbar-ten24 .navbar-nav>.open>a, .navbar-s-navbar-ten24 .navbar-nav>.open>a:hover, .navbar-s-navbar-ten24 .navbar-nav>.open>a:focus { background-color: #526375;opacity:.8;}
-.dropdown-menu { background-color: #F9F9F9}
+.dropdown-menu { background-color: #ffffff}
 .dropdown-menu>li>a {cursor:pointer;text-align: left;}
 .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-color: #F58620;}
 .navbar-s-navbar-ten24 { background-image: none; }
