@@ -652,19 +652,24 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	
 	public any function getBillingAddress() {
-		if( !structKeyExists(variables, "billingAddress") ) {
-
-			if(!isNull(getBillingAccountAddress())) {
-				// Get the account address, copy it, and save as the shipping address
-    			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
-    			return variables.billingAddress;
-			} else if(!isNull(getOrder()) && !isNull(getOrder().getBillingAddress())) {
-				return getOrder().getBillingAddress();
-			}
-
-			return getService("addressService").newAddress();
+		// Check Here
+		if(structKeyExists(variables, "billingAddress")) {
+			return variables.billingAddress;
+			
+		// Check Billing Account Address
+		} else if(!isNull(getBillingAccountAddress())) {
+			
+			// Get the account address, copy it, and save as the shipping address
+			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
+			return variables.billingAddress;
+			
+		// Check Order
+		} else if (!isNull(getOrder())) {
+			return getOrder().getBillingAddress();
 		}
-		return variables.billingAddress;
+		
+		// Return New
+		return getService("addressService").newAddress();
 	}
 	
 	public any function getCurrencyCode() {
