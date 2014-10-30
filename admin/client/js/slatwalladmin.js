@@ -16,8 +16,7 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
 	
 	$filterProvider.register('likeFilter',function(){
 		return function(text){
-			
-			if(angular.isDefined(text)){
+			if(angular.isDefined(text) && angular.isString(text)){
 				return text.replace(new RegExp('%', 'g'), '');
 			}
 		};
