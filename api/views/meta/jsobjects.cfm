@@ -1,5 +1,5 @@
 <cfparam name="rc.entities" />
-
+<cfcontent type="text/javascript">
 <cfset local.jsOutput = " var jsEntities = {}; " />
 <cfloop array="#rc.entities#" index="local.entity">
 	<cftry>
