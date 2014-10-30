@@ -242,7 +242,7 @@ $timeout
 	
 	$scope.setSelectedFilterProperty = function(selectedFilterProperty){
 		$scope.selectedFilterProperty = selectedFilterProperty;
-		
+		/*
 		//after we have selected a property we need to figure out what to show them
 		if(angular.isDefined($scope.selectedFilterProperty.ormtype)){
 			switch($scope.selectedFilterProperty.ormtype){
@@ -273,6 +273,7 @@ $timeout
 					break;
 			}
 		}
+		*/
 	};
 	
 	
