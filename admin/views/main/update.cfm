@@ -68,7 +68,7 @@ Notes:
 				<!--- Page Title --->
 				<ul class="list-unstyled list-inline">
 				</ul>
-				<h1 class="actionbar-title">Update</h1>
+				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.main.update')#</h1>
 			</div>
 		 </div>
 	   </nav>
