@@ -87,16 +87,13 @@ $log){
 					} ];
 					unbindBaseEntityAlias();
 				}
-				
 			});
 			
 			$scope.selectedPropertyChanged = function(selectedProperty){
 				// drill down or select field?
-				console.log('show property list');
-				console.log($scope.propertiesList);
+				$log.debug('selectedPropertyChanged');
+				$log.debug(selectedProperty);
 				$scope.selectedProperty = selectedProperty;
-				
-				
 			};
 			
 			jQuery(function($) {
