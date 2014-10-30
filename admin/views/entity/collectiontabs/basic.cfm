@@ -1,5 +1,5 @@
 <div ng-controller="collections" style="margin-top:12px;">
-	<div class="col-xs-12 s-filter-content ng-cloak">
+	<div class="col-xs-12 s-filter-content">
 	    <!--- Header nav with title start --->
 	   <!--- <span ng-controller="collectionsTabController">--->
 		<!---<span 	sw-header-with-tabs
