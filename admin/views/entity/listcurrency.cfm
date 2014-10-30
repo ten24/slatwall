@@ -62,11 +62,6 @@ Notes:
 							   recordDetailAction="admin:entity.detailcurrency"
 							   recordEditAction="admin:entity.editcurrency">
 		
-		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createcurrency" entity="currency" class="btn btn-primary" icon="plus icon-white" />
-		</cf_HibachiListingDisplayButtonGroup>
-		
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="currencyName" />
 		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 		<cf_HibachiListingColumn propertyIdentifier="currencyCode" />
