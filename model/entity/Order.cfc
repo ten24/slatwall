@@ -718,11 +718,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	public any function getDepositItemSmartList() {
 		if(!structKeyExists(variables, "depositItemSmartList")) {
-			variables.saleItemSmartList = getService("orderService").getOrderItemSmartList();
-			variables.saleItemSmartList.addFilter('order.orderID', getOrderID());
-			variables.saleItemSmartList.addInFilter('orderItemType.systemCode', 'oitDeposit');
+			variables.depositItemSmartList = getService("orderService").getOrderItemSmartList();
+			variables.depositItemSmartList.addFilter('order.orderID', getOrderID());
+			variables.depositItemSmartList.addInFilter('orderItemType.systemCode', 'oitDeposit');
 		}
-		return variables.saleItemSmartList;	
+		return variables.depositItemSmartList;	
 	}
 	
 	public any function getSaleItemSmartList() {
