@@ -242,38 +242,7 @@ $timeout
 	
 	$scope.setSelectedFilterProperty = function(selectedFilterProperty){
 		$scope.selectedFilterProperty = selectedFilterProperty;
-		/*
-		//after we have selected a property we need to figure out what to show them
-		if(angular.isDefined($scope.selectedFilterProperty.ormtype)){
-			switch($scope.selectedFilterProperty.ormtype){
-				case "boolean":
-					//then display partial for boolean toggle
-					break;
-				case "one-to-many":
-					//load partial of join relationship
-					break;
-				case "timestamp":
-					//load partial for handling dates and times
-					break;
-			}
-		}
-		if(angular.isDefined($scope.selectedFilterProperty.fieldtype)){
-			switch($scope.selectedFilterProperty.fieldtype){
-				case "many-to-one":
-					//display partial for many-to-one
-					break;
-				case "one-to-many":
-					//display partial for one-to-many
-					break;
-				case "many-to-many":
-					//display partail for many-to-many
-					break;
-				case "one-to-one":
-					//... one-to-one
-					break;
-			}
-		}
-		*/
+		
 	};
 	
 	
