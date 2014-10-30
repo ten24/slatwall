@@ -284,13 +284,13 @@ $filter){
 							filterItem.displayValue = filterItem.value;
 			            	break;
 			            case 'one-to-many':
+			            	
 			            case 'many-to-many':
-			            	filterItem.collectionCode = selectedFilterProperty.selectedCollection.collectionCode;
+			            	filterItem.collectionID = selectedFilterProperty.selectedCollection.collectionID;
 			            	filterItem.displayValue = selectedFilterProperty.selectedCollection.collectionName;
 			            	filterItem.criteria = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
 			            	
 			            	break;
-			            	//filterItem.displayValue = filterItem.collectionCode;
 					}
 					
 					if(angular.isUndefined(filterItem.displayValue)){

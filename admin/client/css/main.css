@@ -718,9 +718,6 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-panel-header-info .s-header-detail .s-total {border-top:2px solid #eeeeee;font-weight:bold;padding-top:5px;margin-right:15px;}
 .s-panel-header-info .s-header-right .s-header-detail:first-child h2 {margin-top:0px;}
 
-.s-export-ul {min-width:0px !important;}
-.s-export-align-left {text-align:left;}
-
 [class^="hibachi-ui-"], [class*=" hibachi-ui-"]{
 display:inline-block;
 width:16px;
