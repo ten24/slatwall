@@ -42,11 +42,11 @@ $filter){
 	                templatePath = collectionPartialsPath+"criteriadate.html";
 	                break;
 	            case 'big_decimal':
+	            case 'integer':
 	            	templatePath = collectionPartialsPath+"criteriabigdecimal.html";
 	            	break;
-	            case 'integer':
-	            	templatePath = collectionPartialsPath+"criteriainteger.html";
-	            	break;	
+	            
+	            	
 	        }
 	        
 	        switch(criteriafieldtype){
@@ -367,63 +367,6 @@ $filter){
     	return bigDecimalOptions;
     };
     	
-    	var getIntegerOptions = function(){
-    	    var integerOptions = [
-    		{
-				display:"Equals",
-				comparisonOperator:"="
-			},
-			{
-				display:"Doesn't Equal",
-				comparisonOperator:"<>"
-			},
-			{
-    			display:"In Range",
-    			comparisonOperator:	"between",
-    			type:"range"
-    		},
-    		{
-    			display:"Not In Range",
-    			comparisonOperator:	"not between",
-    			type:"range"
-    		},
-    		{
-    			display:"Greater Than",
-    			comparisonOperator:">"
-    		},
-    		{
-    			display:"Greater Than Or Equal",
-    			comparisonOperator:">="
-    		},
-    		{
-    			display:"Less Than",
-    			comparisonOperator:"<"
-    		},
-    		{
-    			display:"Less Than Or Equal",
-    			comparisonOperator:"<="
-    		},
-			{
-				display:"In List",
-				comparisonOperator:"in"
-			},
-			{
-				display:"Not In List",
-				comparisonOperator:"not in"
-			},
-			{
-				display:"Defined",
-				comparisonOperator:"is not",
-				value:"null"
-			},
-			{
-				display:"Not Defined",
-				comparisonOperator:"is",
-				value:"null"
-			}
-    	];
-    	return integerOptions;
-    };
     
     var getOneToManyOptions = function(){
     	var oneToManyOptions = [
@@ -729,27 +672,8 @@ $filter){
 							  };
 			    			break;
 			    		case "big_decimal":
-			    			scope.conditionOptions = getBigDecimalOptions();
-			    			scope.criteriaRangeChanged = function(selectedFilterProperty){
-							  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
-			    			};
-			    			
-			    			scope.selectedConditionChanged = function(selectedFilterProperty){
-			    				selectedFilterProperty.showCriteriaValue = true;
-			    				//check whether the type is a range
-			    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.type)){
-			    					selectedFilterProperty.showCriteriaValue = false;
-			    					selectedFilterProperty.selectedCriteriaType.showCriteriaStart = true;
-			    					selectedFilterProperty.selectedCriteriaType.showCriteriaEnd = true;
-			    				}
-			    				//is null or is not null
-			    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
-			    					selectedFilterProperty.showCriteriaValue = false;
-			    				}
-			    			};
-			    			break;
 			    		case "integer":
-			    			scope.conditionOptions = getIntegerOptions();
+			    			scope.conditionOptions = getBigDecimalOptions();
 			    			scope.criteriaRangeChanged = function(selectedFilterProperty){
 							  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
 			    			};
