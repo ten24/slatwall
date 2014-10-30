@@ -1956,6 +1956,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If the order has no errors & it has not been placed yet, then we can make necessary implicit updates
 		if(!arguments.order.hasErrors() && arguments.order.getStatusCode() == "ostNotPlaced") {
 			
+			// Save Billing & Shipping Account Addresses if needed
+			checkNewBillingAccountAddressSave();
+			checkNewShippingAccountAddressSave();
+			
+			
 			// setup a variable to keep all of the orderFulfillments used by orderItems
 			var orderFulfillmentsInUse = [];
 			
