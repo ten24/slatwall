@@ -426,26 +426,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if( arguments.processObject.getSku().getBaseProductType() == 'productBundle' ) {
 				
 				for(var childItemData in arguments.processObject.getSelectedBundleItems()) {
+					var childOrderItem = this.newOrderItem();
 					
-					if(structKeyExists(childItemData, "skuID")) {
+					// Populate the childOrderItem with the data
+					childOrderItem.populate( childItemData );
+					
+					if(!isNull(childOrderItem.getSku()) && !isNull(childOrderItem.getProductBundleGroup())) {
 						
-						var thisChildSku = getSkuService().getSku( childItemData.skuID );
-						var thisBundleGroup = getProductService().getProductBundleGroup( childItemData.productBundleGroupID );
-						
-						if(!isNull(thisChildSku)) {
-							var childOrderItem = this.newOrderItem();
-							
-							childOrderItem.setSku( thisChildSku );
-							childOrderItem.setProductBundleGroup( thisBundleGroup );
-							
-							if(structKeyExists(childItemData, "quantity")) {
-								childOrderItem.setQuantity( childItemData.quantity );	
-							} else {
-								childOrderItem.setQuantity( 1 );
-							}
-							
-							childOrderItem.setParentOrderItem( newOrderItem );
+						// Set quantity if needed
+						if(isNull(childOrderItem.getQuantity())) {
+							childOrderItem.setQuantity( 1 );
 						}
+						// Set orderFulfillment if needed
+						if(isNull(childOrderItem.getOrderFulfillment())) {
+							childOrderItem.setOrderFulfillment( orderFulfillment );
+						}
+						// Set fulfillmentMethod if needed
+						if(isNull(childOrderItem.getOrderFulfillment().getFulfillmentMethod())) {
+							childOrderItem.getOrderFulfillment().setFulfillmentMethod( listFirst(childOrderItem.getSku().setting('skuEligibleFulfillmentMethods')) );
+						}
+						childOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
+						newOrderItem.setSkuPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+						childOrderItem.setParentOrderItem( newOrderItem );
+						
 					}
 				}
 				
