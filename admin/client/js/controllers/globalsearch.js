@@ -16,6 +16,7 @@ function(
 	$scope.searchResultsOpen = false;
 	$scope.sidebarClass = 'sidebar';
 	$scope.loading = false; //Set loading wheel to false
+	$scope.resultsFound = true; // Set the results Found to true because no search has been done yet
 
 	$scope.searchResults = {
 		'product' : {
@@ -61,32 +62,44 @@ function(
 	};
 
 
-	var timeoutPromise;
-
+	var _timeoutPromise;
+	var _loadingCount = 0;
+	
 	$scope.updateSearchResults = function() {
-		$scope.resultsFound = true;
+		
 		$scope.loading = true;
-		if(timeoutPromise) {
-			$timeout.cancel(timeoutPromise);
+		
+		if(_timeoutPromise) {
+			$timeout.cancel(_timeoutPromise);
 		}
 
-		timeoutPromise = $timeout(function(){
-			for (var entityName in $scope.searchResults){
+		_timeoutPromise = $timeout(function(){
+			
+			// If no keywords, then set everything back to their defaults
+			if($scope.keywords === ''){
+				$scope.hideResults();
 				
-				(function(entityName) {
-
-					var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords} );
-
-					searchPromise.then(function(data){
-
-						if($scope.keywords === ''){
-							// clear out the results
+			// Otherwise performe the search
+			} else {
+				$scope.showResults();
+			
+				// Set the loadingCount to the number of AJAX Calls we are about to do
+				_loadingCount = Object.keys($scope.searchResults).length;
+				
+				for (var entityName in $scope.searchResults){
+					
+					(function(entityName) {
+	
+						var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords} );
+	
+						searchPromise.then(function(data){
+							
+							$log.debug($scope.searchResults);
+							$log.debug(entityName);
+							
+							// Clear out the old Results
 							$scope.searchResults[ entityName ].results = [];
-							$scope.hideResults();
-						}else {
-							// clear out the results
-							$scope.searchResults[ entityName ].results = [];
-
+							
 							// push in the new results
 							for(var i in data.pageRecords) {
 								$scope.searchResults[ entityName ].results.push({
@@ -94,25 +107,35 @@ function(
 									'link': '?slatAction=entity.detail'+entityName+'&'+entityName+'ID='+$scope.searchResults[ entityName ].id(data.pageRecords[i]),
 								});
 							}
-							if($scope.searchResults[ entityName ].results.length){
-								$scope.resultsFound = true;
-								$scope.loading = false;
-							} else {
-								$scope.resultsFound = false;
+							
+							// Increment Down The Loading Count
+							_loadingCount--;
+							
+							// If the loadingCount drops to 0, then we can update scope
+							if(_loadingCount == 0){
+								$scope.loading = false;	
+								
+								var _foundResults = false;
+								for (var _thisEntityName in $scope.searchResults){
+									if($scope.searchResults[ _thisEntityName ].results.length){
+										_foundResults = true;
+										break;
+									}
+								}
+								
+								$scope.resultsFound = _foundResults;
 							}
 							
-							//Remove loading wheel
-							$scope.loading = false;
-						}
-					});
-
-				})(entityName);
-				
+						});
+	
+					})( entityName );
+					
+				}
 			}
 
 		}, 500);
 	
-		$scope.showResults();
+		
 	};
 
 
@@ -134,6 +157,12 @@ function(
 		$scope.search.$setPristine();
 		$scope.keywords = "";
 		$window.onclick = null;
+		$scope.loading = false;
+		$scope.resultsFound = true;
+		
+		for (var entityName in $scope.searchResults){
+			$scope.searchResults[ entityName ].results = [];
+		}
 	};
 
 }]);

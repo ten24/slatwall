@@ -410,8 +410,7 @@ Notes:
 											<input type="text" name="search" class="form-control search-query col-xs-2" placeholder="Search" ng-model="keywords" ng-change="updateSearchResults()">
 											<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
 										</div>
-										<div class="row s-search-results" style="padding-top:15px;min-height: 116px;" ng-show="searchResultsOpen">
-											<div class="spinner" ng-show="loading"><i class="fa fa-refresh fa-spin"></i></div>
+										<div class="row s-search-results" style="padding-top:15px;" ng-show="searchResultsOpen">
 											<ul class="col-md-12 list-unstyled">
 												<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length && resultsFound">
 													<div class="col-md-4 s-title">
@@ -425,10 +424,11 @@ Notes:
 												</li>
 												<li ng-hide="resultsFound" class="ng-hide col-md-8 s-body"">
 													<ul class="list-unstyled">
-														<li class="s-no-results">#$.slatwall.rbKey('admin.define.nosearchresults')#</li>
+														<li class="s-no-results"><br /><em>#$.slatwall.rbKey('admin.define.nosearchresults')#</em></li>
 													</ul>
 												</li>
 											</ul>
+											<div class="spinner" ng-show="loading"><i class="fa fa-refresh fa-spin"></i></div>
 										</div>
 									</form>
 									<!--- End of Search --->
