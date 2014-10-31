@@ -50,9 +50,6 @@ Notes:
 <cfparam name="rc.edit" type="boolean" default="false" />
 
 <cfoutput>
-	
-	<cfdump var="#rc.product.getBaseProductType()#" />
-	
 	<cf_HibachiEntityDetailForm object="#rc.product#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.product#" edit="#rc.edit#">
 			<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="updateSkus" type="list" modal="true" />
