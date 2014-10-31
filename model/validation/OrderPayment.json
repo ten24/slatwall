@@ -1,0 +1,43 @@
+{
+	"conditions":{
+		"creditCardWithoutToken": {
+		    "paymentMethodType":{"eq":"creditCard"},
+		    "providerToken":{"null":true}
+		},
+		"paymentTypeCreditCardNoTokenAndNew": {
+			"paymentMethodType":{"eq":"creditCard"},
+			"newFlag":{"eq":true},
+			"providerToken":{"null":true}
+		},
+	    "paymentTypeCreditCard":{
+	        "paymentMethodType":{"eq":"creditCard"}
+	    },
+	    "paymentTypeTermPayment":{
+	        "paymentMethodType":{"eq":"termPayment"}
+	    },
+	    "peerNullValueAlreadyExists":{
+	        "peerOrderPaymentNullAmountExistsFlag":{"eq":true}
+	    }
+	},
+	"properties":{
+	    "amount":				[{"contexts":"save","dataType":"numeric","minValue":0},{"contexts":"save","conditions":"peerNullValueAlreadyExists","required":true}],
+	    "paymentMethod":		[{"contexts":"save","required":true}],
+		"paymentTransactions":	[{"contexts":"delete","maxCollection":0}],
+		"expirationMonth":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
+		"expirationYear":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
+		"nameOnCreditCard":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
+		"creditCardNumber":		[{"contexts":"save","conditions":"creditCardWithoutToken","required":true,"dataType":"creditCard"}],
+		"securityCode":			[{"contexts":"save","conditions":"paymentTypeCreditCardNoTokenAndNew","required":true}],
+		"orderStatusCode":		[
+		    {"contexts":"createTransaction","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
+			{"contexts":"edit","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}
+		],
+		"termPaymentAccount":	[{"contexts":"save","required":true,"conditions":"paymentTypeTermPayment"}]
+	},
+	"populatedPropertyValidation":{
+	    "billingAddress":[
+	    	{"conditions":"paymentTypeCreditCard,paymentTypeTermPayment","validate":"full"}
+	    ]
+	}
+	
+}

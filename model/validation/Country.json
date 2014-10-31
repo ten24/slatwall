@@ -1,0 +1,6 @@
+{
+	"properties":{
+		"countryCode":			[{"contexts":"save","required":true}],
+		"countryName":			[{"contexts":"save","required":true}]
+	}
+}
