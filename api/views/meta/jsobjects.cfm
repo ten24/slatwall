@@ -287,7 +287,7 @@
 								};
 					
 					
-					<cfset local.jsOutput &= local.thisJSOutput />
+					<!---<cfset local.jsOutput &= local.thisJSOutput />--->
 					
 					<cfcatch>
 						<cfdump var="#local.entity.getClassName()#" />
@@ -302,10 +302,10 @@
 			
 		});
 	</cfsavecontent>
+	<cfset local.jsOutput &= local.thisJSOutput />
 </cfoutput>
 				
 							
-			
 
 <cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
 <cfset compressedJS = oYUICompressor.compress(
