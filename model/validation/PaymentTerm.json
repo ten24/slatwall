@@ -1,6 +1,0 @@
-{
-	"properties":{
-		"accountPaymentMethods":	[{"contexts":"delete","maxCollection":0}],
-		"orderPayments":			[{"contexts":"delete","maxCollection":0}]
-	}
-}

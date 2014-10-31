@@ -1,6 +1,0 @@
-{
-	"properties":{
-		"emailAddress":		[{"required":true, "dataType":"email"}],
-		"password":			[{"required":true}]
-	}
-}

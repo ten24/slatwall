@@ -1,8 +1,0 @@
-{
-	"properties":{
-		"location":		[{"contexts":"save","required":true}]
-	},
-	"populatedPropertyValidation":{
-	    "address":[{"validate":"location"}]
-	}
-}

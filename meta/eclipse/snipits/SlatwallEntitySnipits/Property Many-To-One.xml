@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<snippet filetemplate="false" extension="">
-<name>Property Many-To-One</name>
-<help></help>
-<starttext><![CDATA[property name="$${propertyName}" cfc="$${CFC}" fieldtype="many-to-one" fkcolumn="$${foriegnIDPropertyName}";]]></starttext>
-<endtext><![CDATA[]]></endtext>
-</snippet>

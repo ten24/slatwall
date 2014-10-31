@@ -1,7 +1,0 @@
-{
-	"properties":{
-	    "physicalCount":						[{"contexts":"save","required":true}],
-		"quantity":								[{"contexts":"save","required":true}],
-		"physicalStatusTypeSystemCode":			[{"contexts":"delete,edit","inList":"pstOpen"}]
-	}
-}

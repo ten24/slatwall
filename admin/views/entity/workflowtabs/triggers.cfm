@@ -1,1 +1,0 @@
-<span sw-workflow-triggers></span>

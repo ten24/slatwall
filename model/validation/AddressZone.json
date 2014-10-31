@@ -1,8 +1,0 @@
-{
-	"properties":{
-		"addressZoneName":		[{"contexts":"save","required":true}],
-		"shippingMethods":		[{"contexts":"delete","maxCollection":0}],
-		"shippingRates":		[{"contexts":"delete","maxCollection":0}],
-		"taxCategoryRates":		[{"contexts":"delete","maxCollection":0}]
-	}
-}

@@ -1,5 +1,0 @@
-{
-	"properties":{
-		"phoneNumber":		[{"contexts":"save","required":true}]
-	}
-}

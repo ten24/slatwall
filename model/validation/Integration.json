@@ -1,5 +1,0 @@
-{
-	"properties":{
-		"integrationPackage":					[{"contexts":"save","required":true}]
-	}
-}

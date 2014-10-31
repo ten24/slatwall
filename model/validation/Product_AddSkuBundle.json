@@ -1,8 +1,0 @@
-{
-
-	"properties":{
-		"price":						[{"dataType":"numeric","required":true,"minValue":0}],
-		"skuCode":						[{"required":true}],
-		"skus":							[{"required":true}]
-	}
-}

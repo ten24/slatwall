@@ -1,6 +1,0 @@
-{
-	"properties":{
-		"workflowName":				[{"contexts":"save","required":true}],
-		"workflowObject":			[{"contexts":"save","required":true}]
-	}
-}

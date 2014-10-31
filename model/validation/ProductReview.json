@@ -1,7 +1,0 @@
-{
-	"properties":{
-		"reviewerName":			[{"contexts":"save","required":true}],
-		"review":				[{"contexts":"save","required":true}],
-		"product":				[{"contexts":"save","required":true}]
-	}
-}

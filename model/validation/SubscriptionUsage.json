@@ -1,6 +1,0 @@
-{
-	"properties":{
-		"subscriptionUsageID":				[{"contexts":"delete","maxLength":0}],
-		"currentStatusCode":				[{"contexts":"cancel","inList":"sstActive,sstSuspended"}]
-	}
-}

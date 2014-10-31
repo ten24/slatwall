@@ -1,7 +1,0 @@
-{
-	"properties":{
-	    "productName": 				[{"required":true}],
-		"productCode": 				[{"required":true}]
-	}
-}
-

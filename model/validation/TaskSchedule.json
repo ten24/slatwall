@@ -1,7 +1,0 @@
-{
-	"properties":{
-		"startDateTime":			[{"contexts":"save","required":true}],
-		"schedule":					[{"contexts":"save","required":true}],
-		"task":						[{"contexts":"save","required":true}]
-	}
-}

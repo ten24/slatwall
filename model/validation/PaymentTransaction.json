@@ -1,7 +1,0 @@
-{
-	"properties":{
-		"paymentTransactionID":		[{"contexts":"delete,edit","maxLength":0}],
-		"orderPayment":				[{"contexts":"save","method":"hasOrderPaymentOrAccountPayment"}],
-		"accountPayment":			[{"contexts":"save","method":"hasOrderPaymentOrAccountPayment"}]
-	}
-}

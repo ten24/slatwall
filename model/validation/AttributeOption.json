@@ -1,6 +1,0 @@
-{
-	"properties":{
-		"attributeOptionLabel":		[{"contexts":"save","required":true}],
-		"attributeOptionValue":		[{"contexts":"save","required":true}]
-	}
-}

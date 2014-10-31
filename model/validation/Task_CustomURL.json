@@ -1,5 +1,0 @@
-{
-	"properties":{
-		"url":				[{"required":true,"dataType":"url"}]
-	}
-}

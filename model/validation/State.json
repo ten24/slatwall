@@ -1,7 +1,0 @@
-{
-	"properties":{
-		"stateCode":		[{"contexts":"save","required":true}],
-		"countryCode":		[{"contexts":"save","required":true}],
-		"stateName":		[{"contexts":"save","required":true}]
-	}
-}

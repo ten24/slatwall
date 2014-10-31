@@ -1,8 +1,0 @@
-{
-	"properties":{
-		"subscriptionBenefitName":		[{"contexts":"save","required":true}],
-		"accessType":					[{"contexts":"save","required":true}],
-		"maxUseCount":					[{"contexts":"save","required":true,"dataType":"numeric"}],
-		"skus":							[{"contexts":"delete","maxCollection":0}]
-	}
-}

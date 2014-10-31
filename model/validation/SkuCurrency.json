@@ -1,7 +1,0 @@
-{
-	"properties":{
-	    "price":			    [{"contexts":"save","required":true,"dataType":"numeric","minValue":0}],
-		"listPrice":			[{"contexts":"save","dataType":"numeric","minValue":0}],
-		"renewalPrice":		    [{"contexts":"save","dataType":"numeric","minValue":0}]
-	}
-}

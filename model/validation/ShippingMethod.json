@@ -1,6 +1,0 @@
-{
-	"properties":{
-		"shippingMethodName":			[{"contexts":"save","required":true}],
-		"orderFulfillments":			[{"contexts":"delete","maxCollection":0}]
-	}
-}

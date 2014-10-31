@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<snippet filetemplate="false" extension="">
-<name>Property One-To-Many</name>
-<help></help>
-<starttext><![CDATA[property name="$${propertyName}" singularname="$${singularName}" cfc="$${CFC}" type="array" fieldtype="one-to-many" fkcolumn="$${thisIDPropertyName}" cascade="all-delete-orphan" inverse="true";]]></starttext>
-<endtext><![CDATA[]]></endtext>
-</snippet>

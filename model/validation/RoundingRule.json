@@ -1,8 +1,0 @@
-{
-	"properties":{
-		"roundingRuleName":			[{"contexts":"save","required":true}],
-		"roundingRuleExpression":	[{"contexts":"save","required":true,"method":"hasExpressionWithListOfNumericValuesOnly"}],
-		"roundingRuleDirection":	[{"contexts":"save","required":true}],
-		"priceGroupRates":			[{"contexts":"delete","maxCollection":0}]
-	}
-}

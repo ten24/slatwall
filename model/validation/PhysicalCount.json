@@ -1,7 +1,0 @@
-{
-	"properties":{
-	    "location":								[{"contexts":"save","required":true}],
-		"physicalStatusTypeSystemCode":			[{"contexts":"delete","inList":"pstOpen"}],
-		"countPostDateTime":					[{"contexts":"save","required":true,"dataType":"date"}]
-	}
-}

@@ -1,5 +1,0 @@
-{
-	"properties":{
-		"emailName" : [{"contexts":"save","required":true}]
-	}
-}
