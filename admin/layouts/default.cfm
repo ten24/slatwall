@@ -410,25 +410,6 @@ Notes:
 											<input type="text" name="search" class="form-control search-query col-xs-2" placeholder="Search" ng-model="keywords" ng-change="updateSearchResults()">
 											<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
 										</div>
-										<!---<div class="row s-search-results" style="padding-top:15px;" ng-show="searchResultsOpen">
-											<ul class="col-md-12 list-unstyled">
-												<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length && resultsCounter">
-													<div class="col-md-4 s-title">
-														<h2>{{ searchResult.title }}</h2>
-													</div>
-													<div class="col-md-8 s-body">
-														<ul class="list-unstyled" id="j-search-results"	>
-															<li ng-repeat="result in searchResult.results"><a target="_self" href="{{result.link}}">{{result.name}}</a></li>
-														</ul>
-													</div>
-												</li>
-												<li  ng-show="!resultsCounter">
-													<div class="col-md-4 s-title">
-														<h2>No Results</h2>
-													</div>
-												</li>
-											</ul>
-										</div>--->
 
 										<div class="row s-search-results" style="padding-top:15px;min-height: 116px;" ng-show="searchResultsOpen">
 											<ul class="col-md-12 list-unstyled">

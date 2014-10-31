@@ -172,7 +172,7 @@ a:-webkit-any-link {text-decoration:none !important;}
 
 #slatwall-navbar .nav .dropdown-menu a { color: #000; }
 
-#slatwall-navbar input { background-color: #626262; border: none; color: #333; font-size: 13px; }
+#slatwall-navbar input { background-color: #626262 !important; border: none; color: #333; font-size: 13px; }
 #slatwall-navbar input:focus { outline: none; border: none; background: #fff; color: #000; }
 
 /* ALERTS */
