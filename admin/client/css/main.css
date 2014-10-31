@@ -173,7 +173,7 @@ a:-webkit-any-link {text-decoration:none !important;}
 
 #slatwall-navbar .nav { color: #fff; }
 #slatwall-navbar .nav a { color: #fff; font-size: 13px;  }
-#slatwall-navbar .nav a i { width: 14px; font-size: 12px; }
+#slatwall-navbar .nav a i { width: 14px; font-size: 12px; text-align: right; margin-right: -5px;}
 
 #slatwall-navbar .nav .dropdown-menu a { color: #000; }
 
