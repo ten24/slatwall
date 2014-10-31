@@ -1247,8 +1247,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					if(okToRemove) {
 						
-						// Remove the order and delete this item
-						orderItem.removeOrder();
+						// Delete this item
 						this.deleteOrderItem( orderItem );
 						
 						// Call saveOrder to recalculate all the orderTotal stuff
