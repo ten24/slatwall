@@ -410,8 +410,8 @@ Notes:
 											<input type="text" name="search" class="form-control search-query col-xs-2" placeholder="Search" ng-model="keywords" ng-change="updateSearchResults()">
 											<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
 										</div>
-
 										<div class="row s-search-results" style="padding-top:15px;min-height: 116px;" ng-show="searchResultsOpen">
+											<div class="spinner" ng-show="loading"><i class="fa fa-refresh fa-spin"></i></div>
 											<ul class="col-md-12 list-unstyled">
 												<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length && resultsFound">
 													<div class="col-md-4 s-title">
@@ -429,7 +429,6 @@ Notes:
 													</ul>
 												</li>
 											</ul>
-											<div class="spinner" ng-show="loading" style="position: absolute;top: 25%;left: 45%;font-size: 40px;opacity: .6;"><i class="fa fa-refresh fa-spin"></i></div>
 										</div>
 									</form>
 									<!--- End of Search --->

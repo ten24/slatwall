@@ -65,7 +65,7 @@ function(
 
 	$scope.updateSearchResults = function() {
 		
-		$scope.loading = false;
+		$scope.loading = true;
 		if(timeoutPromise) {
 			$timeout.cancel(timeoutPromise);
 		}

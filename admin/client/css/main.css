@@ -5,6 +5,7 @@
 display: none !important;
 }
 
+.spinner {display: inline-block; font-size: 40px; opacity: .6; margin-bottom: 20px !important; width: 100%; text-align: center; font-size: 40px;opacity: .6;}
 
 /*Basic style overwrite*/
 body { background-color: #f3f3f4; font-family: 'Open Sans', sans-serif;color:#666666; padding-top: 60px; font-size:12px; }
