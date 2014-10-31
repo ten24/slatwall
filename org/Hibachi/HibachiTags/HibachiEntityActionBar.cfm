@@ -82,51 +82,53 @@
 
 								<!--- ================ Detail ===================== --->
 								<cfelseif attributes.type eq "detail">
-								
-									<!--- Detail: Back Button --->
-									<cf_HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn s-btn-grey" icon="arrow-left">
+									<div class="btn-group">
+										<!--- Detail: Back Button --->
+										<cf_HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn s-btn-grey" icon="arrow-left">
+		
+										<!--- Detail: Actions --->
+										<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1>
+											<button class="btn dropdown-toggle s-btn-grey" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
+											<ul class="dropdown-menu pull-right">
+												<cf_HibachiDividerHider>
+													#thistag.generatedcontent#
+												</cf_HibachiDividerHider>
+											</ul>
+										</cfif>
 	
-									<!--- Detail: Actions --->
-									<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1>
-										<button class="btn dropdown-toggle s-btn-grey" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
-										<ul class="dropdown-menu pull-right">
-											<cf_HibachiDividerHider>
-												#thistag.generatedcontent#
-											</cf_HibachiDividerHider>
-										</ul>
-									</cfif>
-
-									<!--- Detail: Button Groups --->
-									<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
-										<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
-											<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>											
-												#buttonGroup.generatedContent#
-											</cfif>
-										</cfloop>
-									</cfif>
+										<!--- Detail: Button Groups --->
+										<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
+											<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
+												<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>											
+													#buttonGroup.generatedContent#
+												</cfif>
+											</cfloop>
+										</cfif>
+									</div>
 	
 									<!--- Detail: Email / Print --->
-									<cfif arrayLen(attributes.object.getEmailTemplates()) || arrayLen(attributes.object.getPrintTemplates())>
-										<!--- Email --->
-										<cfif arrayLen(attributes.object.getEmailTemplates())>
-											<a class="btn dropdown-toggle s-btn-grey" data-toggle="dropdown" href="##"><i class="fa fa-envelope"></i></a>
-											<ul class="dropdown-menu pull-right">
-												<cfloop array="#attributes.object.getEmailTemplates()#" index="template">
-													<cf_HibachiProcessCaller action="admin:entity.preprocessemail" entity="Email" processContext="addToQueue" queryString="emailTemplateID=#template.getEmailTemplateID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getEmailTemplateName()#" modal="true" modalfullwidth="true" type="list" />
-												</cfloop>
-											</ul>
+									<div class="btn-group">
+										<cfif arrayLen(attributes.object.getEmailTemplates()) || arrayLen(attributes.object.getPrintTemplates())>
+											<!--- Email --->
+											<cfif arrayLen(attributes.object.getEmailTemplates())>
+												<a class="btn dropdown-toggle s-btn-grey" data-toggle="dropdown" href="##"><i class="fa fa-envelope"></i></a>
+												<ul class="dropdown-menu pull-right">
+													<cfloop array="#attributes.object.getEmailTemplates()#" index="template">
+														<cf_HibachiProcessCaller action="admin:entity.preprocessemail" entity="Email" processContext="addToQueue" queryString="emailTemplateID=#template.getEmailTemplateID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getEmailTemplateName()#" modal="true" modalfullwidth="true" type="list" />
+													</cfloop>
+												</ul>
+											</cfif>
+											<!--- Print --->
+											<cfif arrayLen(attributes.object.getPrintTemplates())>
+												<a class="btn dropdown-toggle s-btn-grey" data-toggle="dropdown" href="##"><i class="fa fa-print"></i></a>
+												<ul class="dropdown-menu pull-right">
+													<cfloop array="#attributes.object.getPrintTemplates()#" index="template">
+														<cf_HibachiProcessCaller action="admin:entity.processprint" entity="Print" processContext="addToQueue" queryString="printTemplateID=#template.getPrintTemplateID()#&printID=&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getPrintTemplateName()#" type="list" />
+													</cfloop>
+												</ul>
+											</cfif>
 										</cfif>
-										<!--- Print --->
-										<cfif arrayLen(attributes.object.getPrintTemplates())>
-											<a class="btn dropdown-toggle s-btn-grey" data-toggle="dropdown" href="##"><i class="fa fa-print"></i></a>
-											<ul class="dropdown-menu pull-right">
-												<cfloop array="#attributes.object.getPrintTemplates()#" index="template">
-													<cf_HibachiProcessCaller action="admin:entity.processprint" entity="Print" processContext="addToQueue" queryString="printTemplateID=#template.getPrintTemplateID()#&printID=&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getPrintTemplateName()#" type="list" />
-												</cfloop>
-											</ul>
-										</cfif>
-									</cfif>
-	
+									</div>
 									<!--- Detail: Print --->
 	
 									<!--- Detail: Additional Button Groups --->
@@ -140,40 +142,41 @@
 	
 									<!--- Detail: CRUD Buttons --->
 									
+									<div class="btn-group">
+										<!--- Setup delete Details --->
+										<cfset local.deleteErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=attributes.object, context="delete", setErrors=false) />
+										<cfset local.deleteDisabled = local.deleteErrors.hasErrors() />
+										<cfset local.deleteDisabledText = local.deleteErrors.getAllErrorsHTML() />
 	
-									<!--- Setup delete Details --->
-									<cfset local.deleteErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=attributes.object, context="delete", setErrors=false) />
-									<cfset local.deleteDisabled = local.deleteErrors.hasErrors() />
-									<cfset local.deleteDisabledText = local.deleteErrors.getAllErrorsHTML() />
-
-									<cfif attributes.edit>
-										<!--- Delete --->
-										<cfif not attributes.object.isNew() and attributes.showdelete>
-											<cfset attributes.deleteQueryString = listAppend(attributes.deleteQueryString, "#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#", "&") />
-											<cf_HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn s-btn-grey s-remove" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
+										<cfif attributes.edit>
+											<!--- Delete --->
+											<cfif not attributes.object.isNew() and attributes.showdelete>
+												<cfset attributes.deleteQueryString = listAppend(attributes.deleteQueryString, "#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#", "&") />
+												<cf_HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn s-btn-grey s-remove" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
+											</cfif>
+	
+											<!--- Cancel --->
+											<cfif !len(attributes.cancelQueryString)>
+												<!--- Setup default cancel query string --->
+												<cfset attributes.cancelQueryString = "#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" />
+											</cfif>
+											<cf_HibachiActionCaller action="#attributes.cancelAction#" querystring="#attributes.cancelQueryString#" text="#attributes.hibachiScope.rbKey('define.cancel')#" class="btn s-btn-grey" icon="remove icon-white">
+	
+											<!--- Save --->
+											<cf_HibachiActionCaller action="#request.context.entityActionDetails.saveAction#" text="#attributes.hibachiScope.rbKey('define.save')#" class="btn btn-success" type="button" submit="true" icon="ok icon-white">
+										<cfelse>
+											<!--- Delete --->
+											<cfif attributes.showdelete>
+												<cfset attributes.deleteQueryString = listAppend(attributes.deleteQueryString, "#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#", "&") />
+												<cf_HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn s-btn-grey s-remove" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
+											</cfif>
+	
+											<!--- Edit --->
+											<cfif attributes.showedit>
+												<cf_HibachiActionCaller action="#request.context.entityActionDetails.editAction#" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" text="#attributes.hibachiScope.rbKey('define.edit')#" class="btn s-btn-grey" icon="pencil icon-white" submit="true" disabled="#attributes.object.isNotEditable()#">
+											</cfif>
 										</cfif>
-
-										<!--- Cancel --->
-										<cfif !len(attributes.cancelQueryString)>
-											<!--- Setup default cancel query string --->
-											<cfset attributes.cancelQueryString = "#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" />
-										</cfif>
-										<cf_HibachiActionCaller action="#attributes.cancelAction#" querystring="#attributes.cancelQueryString#" text="#attributes.hibachiScope.rbKey('define.cancel')#" class="btn s-btn-grey" icon="remove icon-white">
-
-										<!--- Save --->
-										<cf_HibachiActionCaller action="#request.context.entityActionDetails.saveAction#" text="#attributes.hibachiScope.rbKey('define.save')#" class="btn btn-success" type="button" submit="true" icon="ok icon-white">
-									<cfelse>
-										<!--- Delete --->
-										<cfif attributes.showdelete>
-											<cfset attributes.deleteQueryString = listAppend(attributes.deleteQueryString, "#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#", "&") />
-											<cf_HibachiActionCaller action="#attributes.deleteAction#" querystring="#attributes.deleteQueryString#" text="#attributes.hibachiScope.rbKey('define.delete')#" class="btn s-btn-grey s-remove" icon="trash icon-white" confirm="true" disabled="#local.deleteDisabled#" disabledText="#local.deleteDisabledText#">
-										</cfif>
-
-										<!--- Edit --->
-										<cfif attributes.showedit>
-											<cf_HibachiActionCaller action="#request.context.entityActionDetails.editAction#" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" text="#attributes.hibachiScope.rbKey('define.edit')#" class="btn s-btn-grey" icon="pencil icon-white" submit="true" disabled="#attributes.object.isNotEditable()#">
-										</cfif>
-									</cfif>
+									</div>
 
 								<!--- ================= Process =================== --->
 								<cfelseif attributes.type eq "preprocess">
