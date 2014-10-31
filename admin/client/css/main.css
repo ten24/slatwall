@@ -5,7 +5,6 @@
 display: none !important;
 }
 
-
 /*Basic style overwrite*/
 body { background-color: #f3f3f4; font-family: 'Open Sans', sans-serif;color:#666666; padding-top: 60px; font-size:12px; }
 hr {border-right:1px solid #cccccc;}
@@ -643,6 +642,7 @@ tabel .s-table-header {margin-bottom:10px;}
 
 .s-remove:hover {background-color:#DA5757 !important;border:1px solid #DA5757 !important;color:#ffffff !important;}
 .s-pannel-group .panel-default .panel-heading {background-color:#fff;color:#666; border-color:#888;border-bottom:1px solid #ccc;}
+.s-pannel-group .panel-default {overflow: visible;}
 .s-pannel-group .panel-default a {text-decoration:none;}
 .s-pannel-group .s-panel-header-info {display:inline-block;width:100%;}
 .s-panel-header-info .s-header-left {padding:0px;}
