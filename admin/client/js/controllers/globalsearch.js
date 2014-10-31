@@ -64,15 +64,15 @@ function(
 	var timeoutPromise;
 
 	$scope.updateSearchResults = function() {
-		
-		$scope.loading = false;
+		$scope.resultsFound = true;
+		$scope.loading = true;
 		if(timeoutPromise) {
 			$timeout.cancel(timeoutPromise);
 		}
 
 		timeoutPromise = $timeout(function(){
 			for (var entityName in $scope.searchResults){
-				$scope.loading = true;
+				
 				(function(entityName) {
 
 					var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords} );
@@ -97,14 +97,17 @@ function(
 							if($scope.searchResults[ entityName ].results.length){
 								$scope.resultsFound = true;
 								$scope.loading = false;
+							} else {
+								$scope.resultsFound = false;
 							}
+							
 							//Remove loading wheel
 							$scope.loading = false;
 						}
 					});
 
 				})(entityName);
-				$scope.resultsFound = false;
+				
 			}
 
 		}, 500);
