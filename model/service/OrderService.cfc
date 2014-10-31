@@ -425,27 +425,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Setup child items for a bundle
 			if( arguments.processObject.getSku().getBaseProductType() == 'productBundle' ) {
 				
-				for(var childItemData in arguments.processObject.getSelectedBundleItems()) {
+				for(var childItemData in arguments.processObject.getChildOrderItems()) {
+					var childOrderItem = this.newOrderItem();
 					
-					if(structKeyExists(childItemData, "skuID")) {
+					// Populate the childOrderItem with the data
+					childOrderItem.populate( childItemData );
+					
+					if(!isNull(childOrderItem.getSku()) && !isNull(childOrderItem.getProductBundleGroup())) {
 						
-						var thisChildSku = getSkuService().getSku( childItemData.skuID );
-						var thisBundleGroup = getProductService().getProductBundleGroup( childItemData.productBundleGroupID );
-						
-						if(!isNull(thisChildSku)) {
-							var childOrderItem = this.newOrderItem();
-							
-							childOrderItem.setSku( thisChildSku );
-							childOrderItem.setProductBundleGroup( thisBundleGroup );
-							
-							if(structKeyExists(childItemData, "quantity")) {
-								childOrderItem.setQuantity( childItemData.quantity );	
-							} else {
-								childOrderItem.setQuantity( 1 );
-							}
-							
-							childOrderItem.setParentOrderItem( newOrderItem );
+						// Set quantity if needed
+						if(isNull(childOrderItem.getQuantity())) {
+							childOrderItem.setQuantity( 1 );
 						}
+						// Set orderFulfillment if needed
+						if(isNull(childOrderItem.getOrderFulfillment())) {
+							childOrderItem.setOrderFulfillment( orderFulfillment );
+						}
+						// Set fulfillmentMethod if needed
+						if(isNull(childOrderItem.getOrderFulfillment().getFulfillmentMethod())) {
+							childOrderItem.getOrderFulfillment().setFulfillmentMethod( listFirst(childOrderItem.getSku().setting('skuEligibleFulfillmentMethods')) );
+						}
+						childOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
+						newOrderItem.setSkuPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+						childOrderItem.setParentOrderItem( newOrderItem );
+						
 					}
 				}
 				
@@ -1211,21 +1214,53 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(structKeyExists(arguments.data, "orderItemID")) {
 			
 			// Loop over all of the items in this order
-			for(var i = 1; i <= arrayLen(arguments.order.getOrderItems()); i++)	{
+			for(var orderItem in arguments.order.getOrderItems())	{
 			
 				// Check to see if this item is the same ID as the one passed in to remove
-				if(arguments.order.getOrderItems()[i].getOrderItemID() == arguments.data.orderItemID) {
+				if(orderItem.getOrderItemID() == arguments.data.orderItemID) {
 				
-					// Actually Remove that Item
-					arguments.order.removeOrderItem( arguments.order.getOrderItems()[i] );
+					var okToRemove = true;
+					
+					// If there was a parentOrderItem, then we need to run some logic to test that this child item can be removed
+					if(!isNull(orderItem.getParentOrderItem())) {
+						
+						var parentItem = orderItem.getParentOrderItem();
+						
+						// First remove the orderItem to check if the parentItem still validated
+						orderItem.removeParentOrderItem();
+						
+						// Make sure that the parentOrderItem still passes validation (to check for bundle rules)
+						parentItem.validate(context='save');
+						
+						// If there were errors
+						if(parentItem.hasErrors()) {
+							
+							okToRemove = false;
+							
+							// Put the parentItem back
+							orderItem.setParentOrderItem( parentItem );
+							
+							// Add an error to the order so that this process fails
+							argument.order.addError('removeOrderItem', rbKey('entity.order.process.removeOrderItem.parentFailsValidationError'));
+						}
+					}
+					
+					if(okToRemove) {
+						
+						// Remove the order and delete this item
+						orderItem.removeOrder();
+						this.deleteOrderItem( orderItem );
+						
+						// Call saveOrder to recalculate all the orderTotal stuff
+						arguments.order = this.saveOrder(arguments.order);
+		
+					}
+					
 					break;
 				}
 			}
 			
 		}
-		
-		// Call saveOrder to recalculate all the orderTotal stuff
-		arguments.order = this.saveOrder(arguments.order);
 		
 		return arguments.order;
 	}
@@ -1920,6 +1955,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 		// If the order has no errors & it has not been placed yet, then we can make necessary implicit updates
 		if(!arguments.order.hasErrors() && arguments.order.getStatusCode() == "ostNotPlaced") {
+			
+			// Save Billing & Shipping Account Addresses if needed
+			checkNewBillingAccountAddressSave();
+			checkNewShippingAccountAddressSave();
+			
 			
 			// setup a variable to keep all of the orderFulfillments used by orderItems
 			var orderFulfillmentsInUse = [];

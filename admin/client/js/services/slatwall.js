@@ -166,7 +166,7 @@ function(){
 		  		},
 		  		getExistingCollectionsByBaseEntity:function(entityName){
 		  			var deferred = $q.defer();
-		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName=Slatwall'+entityName;
+		  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
 		  			
 		  			$http.get(urlString)
 		  			.success(function(data){

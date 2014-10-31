@@ -257,7 +257,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var taxAddresses = {};
 		
 		// If the order has a billing address, use that to potentially calculate taxes for all items
-		if(!isNull(arguments.order.getBillingAddress()) && !getHibachiValidationService().validate(object=arguments.order.getBillingAddress(), context="full", setErrors=false).hasErrors()) {
+		if(!getHibachiValidationService().validate(object=arguments.order.getBillingAddress(), context="full", setErrors=false).hasErrors()) {
 			taxAddresses.taxBillingAddress = arguments.order.getBillingAddress();
 		} else {
 			// Loop over orderPayments to try and set the taxBillingAddress from an active order payment
@@ -335,8 +335,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// Setup the orderItem level taxShippingAddress
 				structDelete(taxAddresses, "taxShippingAddress");
-				if(!isNull(orderItem.getOrderFulfillment()) && !isNull(orderItem.getOrderFulfillment().getAddress())) {
-					taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getAddress();
+				if(!isNull(orderItem.getOrderFulfillment()) && !getHibachiValidationService().validate(object=orderItem.getOrderFulfillment().getShippingAddress(), context="full", setErrors=false).hasErrors()) {
+					taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getShippingAddress();
 				}
 				
 				// Loop over the rates of that category, looking for a unique integration

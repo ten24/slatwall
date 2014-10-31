@@ -52,8 +52,8 @@
 	              <div class="col-sm-10">
 	                <input ng-show="collectionDetails.isOpen"  ng-model="collection.collectionName" name="collectionName" type="text" class="form-control" id="inputPassword" value="" required>
 	               	<span style="color:red"
-				      ng-show="collectionForm.collectionName.$invalid && collectionForm.collectionName.$dirty">
-				      {{errorMessage.collectionName}}
+				      ng-show="collectionForm.collectionName.$invalid && collectionForm.collectionName.$dirty" ng-bind="collection.collectionName">
+				     
 				    </span>
 	                <p ng-show="!collectionDetails.isOpen" class="form-control-static" ng-bind="collection.collectionName"><!---collection Name ---></p>
 	              </div>
@@ -61,11 +61,11 @@
 	            <div class="form-group">
 	              <label for="inputPassword" class="col-sm-2 control-label">Code: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection code"> <i class="fa fa-question-circle"></i></span></label>
 	              <div class="col-sm-10">
-	                <input ng-show="collectionDetails.isOpen" ng-model="collection.collectionCode"  name="collectionCode" type="text" class="form-control" id="inputPassword" value="" required>
+	                <input ng-show="collectionDetails.isOpen" ng-model="collection.collectionCode"  name="collectionCode" type="text" class="form-control" id="inputPassword" value="" >
 	                <p ng-show="!collectionDetails.isOpen" class="form-control-static" ng-bind="collection.collectionCode"><!---collection Code ---></p>
 	              	<span  style="color:red"
-				      ng-show="collectionForm.collectionCode.$invalid && collectionForm.collectionCode.$dirty">
-				      {{errorMessage.collectionCode}}
+				      ng-show="collectionForm.collectionCode.$invalid && collectionForm.collectionCode.$dirty" ng-bind="collection.collectionCode">
+				  
 				    </span>
 	              </div>
 	            </div>
@@ -75,8 +75,8 @@
 	                <input ng-show="collectionDetails.isOpen"  ng-model="collection.description" name="description" type="text" class="form-control" id="inputPassword" value="" >
 	                <p ng-show="!collectionDetails.isOpen" ng-bind="collection.description" class="form-control-static"><!---collection description ---></p>
 	              	<span  style="color:red"
-				      ng-show="collectionForm.description.$invalid && collectionForm.description.$dirty">
-				      {{errorMessage.description}}
+				      ng-show="collectionForm.description.$invalid && collectionForm.description.$dirty" ng-bind="collection.description" >
+				      
 				    </span>
 	              </div>
 	            </div>

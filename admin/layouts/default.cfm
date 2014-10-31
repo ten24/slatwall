@@ -430,15 +430,15 @@ Notes:
 											</ul>
 										</div>--->
 
-										<div class="row s-search-results ng-cloak" style="padding-top:15px;min-height: 116px;" ng-show="searchResultsOpen">
+										<div class="row s-search-results" style="padding-top:15px;min-height: 116px;" ng-show="searchResultsOpen">
 											<ul class="col-md-12 list-unstyled">
 												<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length && resultsFound">
 													<div class="col-md-4 s-title">
-														<h2>{{ searchResult.title }}</h2>
+														<h2 ng-bind="searchResult.title"></h2>
 													</div>
 													<div class="col-md-8 s-body">
 														<ul class="list-unstyled" id="j-search-results"	>
-															<li ng-repeat="result in searchResult.results"><a target="_self" href="{{result.link}}">{{result.name}}</a></li>
+															<li ng-repeat="result in searchResult.results"><a target="_self" href="{{result.link}}" ng-bind="result.name"></a></li>
 														</ul>
 													</div>
 												</li>

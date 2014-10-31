@@ -16,8 +16,7 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
 	
 	$filterProvider.register('likeFilter',function(){
 		return function(text){
-			
-			if(angular.isDefined(text)){
+			if(angular.isDefined(text) && angular.isString(text)){
 				return text.replace(new RegExp('%', 'g'), '');
 			}
 		};
@@ -26,7 +25,7 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
 	$filterProvider.register('AliasDisplayName',function(){
 		return function(text){
 			
-			if(angular.isDefined(text)){
+			if(angular.isDefined(text) && angular.isString(text)){
 				text = text.replace('_', '');
 				text = text.charAt(0).toUpperCase() + text.slice(1);
 				return text;

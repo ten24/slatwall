@@ -35,7 +35,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				propertyIdentifier="Collection.collectionName"	
 			},
 			{
-				propertyIdentifier="Collection.collectionCode"	
+				propertyIdentifier="Collection.collectionID"	
 			},
 			{
 				propertyIdentifier="Collection.collectionConfig"	
@@ -46,7 +46,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			{
 				filterGroup = [
 					{
-						propertyIdentifier = "baseEntityName",
+						propertyIdentifier = "collectionObject",
 						comparisonOperator = "=",
 						value=rc.entityName
 					}
@@ -65,7 +65,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	public any function getFilterPropertiesByBaseEntityName( required struct rc){
-		arguments.rc.apiResponse.content['data'] = getHibachiService().getPropertiesWithAttributesByEntityName(rereplace(rc.entityName,'_',''));
+		var entityName = rereplace(rc.entityName,'_','');
+		arguments.rc.apiResponse.content['data'] = getHibachiService().getPropertiesWithAttributesByEntityName(entityName);
 		arguments.rc.apiResponse.content['entityName'] = rc.entityName;
 	}
 	

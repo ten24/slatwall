@@ -124,8 +124,10 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="originalAuthorizationProviderTransactionID" persistent="false";
 	property name="originalChargeProviderTransactionID" persistent="false";
 	property name="originalProviderTransactionID" persistent="false";
-	property name="statusCode" persistent="false";
+	property name="saveBillingAccountAddressFlag" persistent="false";
+	property name="saveBillingAccountAddressName" persistent="false";
 	property name="securityCode" persistent="false" hb_populateEnabled="public";
+	property name="statusCode" persistent="false";
 	property name="sucessfulPaymentTransactionExistsFlag" persistent="false";
 	property name="orderAmountNeeded" persistent="false";
 	property name="creditCardOrProviderTokenExistsFlag" persistent="false";
@@ -258,6 +260,24 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		}
 	}
 	
+	public void function checkNewBillingAccountAddressSave() {
+		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
+    	if(!isNull(getSaveBillingAccountAddressFlag()) && getSaveBillingAccountAddressFlag() && !isNull(getOrder().getAccount()) && !getOrder().getAccount().getGuestAccountFlag() && isNull(getBillingAccountAddress()) && !isNull(getBillingAddress()) && !getBillingAddress().hasErrors()) {
+    		
+    		// Create a New Account Address, Copy over Shipping Address, and save
+    		var accountAddress = getService('accountService').newAccountAddress();
+    		if(!isNull(getSaveBillingAccountAddressName())) {
+				accountAddress.setAccountAddressName( getSaveBillingAccountAddressName() );
+			}
+			accountAddress.setAddress( getBillingAddress().copyAddress( true ) );
+			accountAddress.setAccount( getOrder().getAccount() );
+			accountAddress = getService('accountService').saveAccountAddress( accountAddress );
+			
+			// Set the accountAddress
+			setBillingAccountAddress( accountAddress );
+		}
+	}
+    
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public boolean function getDynamicAmountFlag() {
@@ -632,19 +652,24 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	
 	public any function getBillingAddress() {
-		if( !structKeyExists(variables, "billingAddress") ) {
-
-			if(!isNull(getBillingAccountAddress())) {
-				// Get the account address, copy it, and save as the shipping address
-    			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
-    			return variables.billingAddress;
-			} else if(!isNull(getOrder()) && !isNull(getOrder().getBillingAddress())) {
-				return getOrder().getBillingAddress();
-			}
-
-			return getService("addressService").newAddress();
+		// Check Here
+		if(structKeyExists(variables, "billingAddress")) {
+			return variables.billingAddress;
+			
+		// Check Billing Account Address
+		} else if(!isNull(getBillingAccountAddress())) {
+			
+			// Get the account address, copy it, and save as the shipping address
+			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
+			return variables.billingAddress;
+			
+		// Check Order
+		} else if (!isNull(getOrder())) {
+			return getOrder().getBillingAddress();
 		}
-		return variables.billingAddress;
+		
+		// Return New
+		return getService("addressService").newAddress();
 	}
 	
 	public any function getCurrencyCode() {

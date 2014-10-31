@@ -48,7 +48,19 @@ Notes:
 --->
 
 <cfoutput>
-	<cf_HibachiPropertyList divClass="span12">
+	<div class="row s-body-nav">
+	    <nav class="navbar navbar-default" role="navigation">
+	      <div class="col-md-4 s-header-info">
+
+				<!--- Page Title --->
+				<ul class="list-unstyled list-inline">
+				</ul>
+				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.main.encryption.updatePassword_title')#</h1>
+			</div>
+		 </div>
+	   </nav>
+	 </div>
+	<cf_HibachiPropertyList divClass="col-md-12">
 		<form method="post" action="?s=1" class="form-horizontal">
 			<input type="hidden" name="slatAction" value="admin:main.encryptionupdatepassword" />
 			<input type="hidden" name="process" value="1" />

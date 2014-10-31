@@ -137,7 +137,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			slatwallBaseEntity = getService('hibachiService').getProperlyCasedFullEntityName(arguments.collectionObject);
 		}
 		
-		variables.collectionObject = "#slatwallBaseEntity#";
+		variables.collectionObject = arguments.collectionObject;
 		if(variables.collectionConfig eq '{}' ){
 			//get default columns
 			var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
@@ -355,14 +355,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		for(filter in arguments.filterGroup){
 			//add property and value to HQLParams
 			//if using a like parameter we need to add % to the value using angular
-			if(!isnull(filter.collectionCode)){
-				filterGroupHQL &= getHQLForCollectionFilter(filter);
+			var logicalOperator = '';
+			if(structKeyExists(filter,"logicalOperator")){
+				logicalOperator = filter.logicalOperator;
+			}
+			
+			if(!isnull(filter.collectionID)){
+				
+				filterGroupHQL &=  " #logicalOperator# #getHQLForCollectionFilter(filter)# ";;
 			}else{
 				
-				var logicalOperator = '';
-				if(structKeyExists(filter,"logicalOperator")){
-					logicalOperator = filter.logicalOperator;
-				}
+				
 				//check filter is a nested filterGroup or a filter itself
 				if(structKeyExists(filter,"filterGroup")){
 					
@@ -449,9 +452,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var filterCriteria = getfilterCriteria(arguments.filter.criteria);
 		collectionFilterHQL &= ' #filterCriteria# (';
 		
-		var collectionEntity = getService('collectionService').getCollectionByCollectionCode(arguments.filter.collectionCode);
+		var collectionEntity = getService('collectionService').getCollectionByCollectionID(arguments.filter.collectionID);
 		var mainCollectionAlias = listFirst(arguments.filter.propertyIdentifier,'.');
-		var collectionProperty = getService('HibachiService').getPropertyByEntityNameAndPropertyName(collectionEntity.getCollectionObject(),maincollectionAlias).name;
+		var mainCollectionObject = replace(listFirst(arguments.filter.propertyIdentifier,'.'),'_','');
+		var collectionProperty = getService('HibachiService').getPropertyByEntityNameAndPropertyName(collectionEntity.getCollectionObject(),mainCollectionObject).name;
 		
 		//None,One,All
 		/*withaliases
@@ -466,12 +470,27 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		*/
 		
 		if(arguments.filter.criteria eq 'None' || arguments.filter.criteria eq 'One'){
-			collectionFilterHQL &= ' #collectionEntity.getHQL()# AND #maincollectionAlias# = #collectionEntity.getCollectionObject()#.#collectionProperty# ';
+			var collectionHQL = collectionEntity.getHQL(true);
+			var hasWhereClause = Find('where',collectionHQL);
+			
+			var predicate = 'AND';
+			if(!hasWhereClause){
+				predicate = 'WHERE';
+			}
+			
+			collectionFilterHQL &= ' #collectionEntity.getHQL(true)# #predicate# #maincollectionAlias# = #collectionEntity.getCollectionConfigStruct().baseEntityAlias#.#collectionProperty# ';
 		}else{
 			var fullEntityName = getService('hibachiService').getProperlyCasedFullEntityName(collectionEntity.getCollectionObject());
 			
-			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getCollectionObject()#) FROM #fullEntityName# as #collectionEntity.getCollectionObject()# WHERE #collectionEntity.getCollectionObject()#.#collectionProperty# = #mainCollectionAlias#) 
-			= (SELECT count(#collectionEntity.getCollectionObject()#) #collectionEntity.getHQL(true)# AND #collectionEntity.getCollectionObject()#.#collectionProperty# = #mainCollectionAlias#) ';
+			var collectionHQL = collectionEntity.getHQL(true);
+			var hasWhereClause = Find('where',collectionHQL);
+			
+			var predicate = 'AND';
+			if(!hasWhereClause){
+				predicate = 'WHERE';
+			}
+			
+			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getCollectionObject()#) FROM #fullEntityName# as #collectionEntity.getCollectionObject()# WHERE #collectionEntity.getCollectionObject()#.#collectionProperty# = #mainCollectionAlias#) = (SELECT count(#collectionEntity.getCollectionConfigStruct().baseEntityAlias#) #collectionHQL# #predicate# #collectionEntity.getCollectionConfigStruct().baseEntityAlias#.#collectionProperty# = #mainCollectionAlias#) ';
 		}
 		
 		//add all params from subqueries to parent HQL
