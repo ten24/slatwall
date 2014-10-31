@@ -94,9 +94,6 @@ function(
 	
 						searchPromise.then(function(data){
 							
-							$log.debug($scope.searchResults);
-							$log.debug(entityName);
-							
 							// Clear out the old Results
 							$scope.searchResults[ entityName ].results = [];
 							
