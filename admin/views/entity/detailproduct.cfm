@@ -50,6 +50,9 @@ Notes:
 <cfparam name="rc.edit" type="boolean" default="false" />
 
 <cfoutput>
+	
+	<cfdump var="#rc.product.getBaseProductType()#" />
+	
 	<cf_HibachiEntityDetailForm object="#rc.product#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.product#" edit="#rc.edit#">
 			<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="updateSkus" type="list" modal="true" />
@@ -76,10 +79,14 @@ Notes:
 			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/basic" open="true" text="#$.slatwall.rbKey('admin.entity.producttabs.basic')#" />
 
 			<!--- TODO: We need to show "Bundle Groups" if this is a bundle product, and "Skus" if this is any other type of product --->
-			<!--- Bundle Groups --->
-			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/bundlegroups" text="#$.slatwall.rbKey('entity.productBundleGroup_plural')#" />
-			<!--- Skus --->
-			<cf_HibachiEntityDetailItem property="skus" />
+			
+			<cfif rc.product.getBaseProductType() eq "productBundle">
+				<!--- Bundle Groups --->
+				<cf_HibachiEntityDetailItem view="admin:entity/producttabs/bundlegroups" text="#$.slatwall.rbKey('entity.productBundleGroup_plural')#" />
+			<cfelse>
+				<!--- Skus --->
+				<cf_HibachiEntityDetailItem property="skus" />
+			</cfif>
 			<!--- TODO: END --->
 
 			<!--- Event Registrations --->
