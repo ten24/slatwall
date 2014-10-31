@@ -537,11 +537,12 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-bundle-group-items .s-search-input {height: 30px;outline: none;-webkit-box-shadow: inset 0px 0px 1px 0px #CCC;-moz-box-shadow: inset 0px 0px 1px 0px rgba(204,204,204,1);box-shadow: inset 0px 0px 1px 0px #CCC;}
 .s-bundle-group-items .s-search-button {border-radius: 0px;background-color: #EEE;vertical-align:bottom;border-top-right-radius: 2px;}
 .s-bundle-group-items .s-search-input:focus {border-color:#ccc;}
+.s-bundle-group-items .fa-plus-square-o, .s-bundle-group-items .fa-minus-square-o {position:relative;top:1px;font-size:14px;}
 .s-bundle-group-items .s-search-button:hover, .s-bundle-group-items .s-search-button:active, .s-bundle-group-items .s-search-button:focus {color:#333!important;border-color:#cccccc!important;background-color:#ccc;}
 .s-bundle-add-items .s-bundle-add-items-inner {padding: 15px;background: #ffffff;border: 1px solid #CCC;border-top:0px;margin-bottom:0px;border-bottom-left-radius: 2px;border-bottom-right-radius: 2px;}
 
 /* .s-bundle-add-items h4 {width:100%;text-align:center;display:none;} */
-.s-bundle-add-items .list-unstyled .s-bundle-add-obj {background: #eeeeee;margin-bottom:4px;height: 35px;border: 1px solid #DDD;}
+.s-bundle-add-items .list-unstyled .s-bundle-add-obj {background: #eeeeee;margin-bottom:4px;height: 35px;border: 1px solid #DDD;border-top-left-radius: 3px;border-bottom-left-radius: 3px;}
 .s-bundle-add-items .list-unstyled .s-bundle-add-obj .s-bundle-details {font-size: 12px;border-right: 1px solid #DDD;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;}
 .s-bundle-add-items .list-unstyled .s-bundle-add-obj .s-bundle-details:first-child {font-weight:600;}
 .s-bundle-add-items .list-unstyled .s-bundle-add-obj .s-bundle-details:last-child {border:0px;}
@@ -550,7 +551,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a.s-edit {background-color: #EEE;border: 0px;border-top: 1px solid #DDD;border-bottom: 1px solid #DDD;border-radius: 0px;}
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a.s-edit:hover {background-color:#E7E5E5;}
 .s-bundle-add-obj ul {float:left;}
-.s-bundle-add-obj .s-middle {white-space: nowrap;overflow: scroll;float:left;width:67%;margin-left:4px;}
+.s-bundle-add-obj .s-middle {white-space: nowrap;overflow: scroll;float:left;width:60%;margin-left:4px;}
 .s-bundle-add-obj .s-last {float:right;}
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj.s-no-edit .s-item-type {background-color:#aaa;}
 
@@ -566,12 +567,15 @@ tabel .s-table-header {margin-bottom:10px;}
 
 .s-bundle-group-items .s-selected-items {float:right;}
 .s-bundle-group-items .s-selected-items .s-order-item-options {padding-bottom: 12px;}
-.s-bundle-group-items .s-selected-items .s-item-type {background-color:#aaa !important;}
+.s-bundle-group-items .s-selected-items .s-include {background-color:#526375 !important;}
+.s-bundle-group-items .s-selected-items .s-exclude {background-color:#EAEAEA !important;color: #5E5E5E !important;}
 .s-bundle-group-items .s-selected-items .s-bundle-details span:first-child {font-weight:600 !important;margin-left:0px !important;color:#666 !important;}
 .s-bundle-group-items .s-select-item {float:left;}
 .s-bundle-group-items .s-select-item .search-panel > button.dropdown-toggle {border-bottom-left-radius: 4px;border-top-left-radius: 4px;width:100px;}
 .s-bundle-group-items .s-select-item .s-search-input {border-left: 0px !important;}
 .s-bundle-group-items .s-select-item .s-last .s-bundle-details-add {width:79px !important;margin-right:1px !important;}
+.s-bundle-group-items .s-workflow-objs .well ul {text-align: center;margin:0px;}
+.s-bundle-group-items .s-workflow-objs .well ul li:first-child {font-weight:600;font-size: 16px;}
 .s-bundle-group-items .s-select-item .s-workflow-objs .s-bundle-add-obj .s-last .s-bundle-details-add a.btn {border-radius:0px;}
 .s-bundle-group-items .s-select-item:after {font: normal normal normal 14px/1 FontAwesome;content: "\f0da";position: absolute;right: 1px;font-size: 47px;top: -7px;color: #CCC;}
 .tab-content .s-bundle-group-active .radio {display:inline-block;margin-right:5px;}
@@ -885,6 +889,8 @@ width: auto;
     #slatwall-primary-nav .dropdown-menu a {color:#000;}
     #slatwall-primary-nav .dropdown-menu a:hover {background-color: #F58620;color:#fff;}
 }
+@media only screen and (max-width: 979px) {
+	.s-bundle-group-items .s-select-item:after {font: normal normal normal 14px/1 FontAwesome;content: "\f0d8";position: absolute;right: 47%;font-size: 47px;top: -30px;color: #CCC;}}
 
 /* Hierarchical Depth */
 

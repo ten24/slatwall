@@ -4,7 +4,7 @@
       <div class="s-bundle-group-range">
         <ul class="list-unstyled s-bundle-group-min">
           <li>Min</li>
-          <li ng-bind="productBundleGroup.minimumQuantity">/li>
+          <li ng-bind="productBundleGroup.minimumQuantity"></li>
         </ul>
         <ul class="list-unstyled s-bundle-group-max">
           <li>Max</li>
@@ -129,11 +129,19 @@
                         <div class="col-xs-12 col-md-6 s-selected-items">
                             <!-- Selected filters -->
                             <div class="s-bundle-add-items s-workflow-objs">
+
+                                <div class="well well-sm">
+                                    <ul class="list-unstyled">
+                                        <li>No items selected <!-- #$.slatwall.rbKey('admin.define.no_items_selected')# --></li>
+                                        <li>Please add one or more items to this bundle group. <!-- #$.slatwall.rbKey('entity.ProductBundleBuildItem.selectBundleGroup')# --></li>
+                                    </ul>
+                                </div>
                                 <ul class="list-unstyled s-order-item-options" ng-show="productBundleGroup.productBundleGroupFilters.length">
 
                                     <li class="s-bundle-add-obj" ng-repeat="productBundleGroupFilter in productBundleGroup.productBundleGroupFilters track by $index">
                                         <ul class="list-unstyled list-inline">
-                                            <li class="s-item-type s-tooltip" data-toggle="tooltip" data-placement="right" title="Tooltip example"><i class="fa fa-sign-out"></i></li>
+                                            <!-- You can change the s-include to s-exclude for stye diff -->
+                                            <li class="s-item-type s-tooltip s-include" data-toggle="tooltip" data-placement="right" title="Tooltip example"><i class="fa fa-plus-square-o"></i></li>
                                         </ul>
                                         <ul class="list-unstyled list-inline s-middle">
                                             <li class="s-bundle-details"><span ng-bind="productBundleGroupFilter.type"></span>:<span ng-bind="productBundleGroupFilter.name"></span></li>
@@ -193,10 +201,10 @@
                                                 </ul>
                                                 <ul class="list-unstyled list-inline s-last">
                                                     <li class="col-xs-1 s-bundle-details-add">
-                                                        <a class="btn s-btn-grey" ng-click="addFilterToProductBundle(filterItem)"><i class="fa fa-sign-out"></i> Exclude</a>
+                                                        <a class="btn s-btn-grey" ng-click="addFilterToProductBundle(filterItem)"><i class="fa fa-minus-square-o"></i> Exclude</a>
                                                     </li>
                                                     <li class="col-xs-1 s-bundle-details-add">
-                                                        <a class="btn s-btn-blue" ng-click="addFilterToProductBundle(filterItem)"><i class="fa fa-sign-in"></i> Include</a>
+                                                        <a class="btn s-btn-blue" ng-click="addFilterToProductBundle(filterItem)"><i class="fa fa-plus-square-o"></i> Include</a>
                                                     </li>
                                                 </ul>
                                                 <div class="clearfix"></div>
