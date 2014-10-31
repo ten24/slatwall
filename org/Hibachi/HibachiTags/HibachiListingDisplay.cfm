@@ -115,7 +115,7 @@
 				<cfset attributes.parentPropertyName = thisTag.entityMetaData.hb_parentPropertyName />
 			</cfif>
 		</cfif>
-		
+
 		<!--- Setup Hierarchy Expandable --->
 		<cfif len(attributes.parentPropertyName) && attributes.parentPropertyName neq 'false'>
 			<cfset thistag.expandable = true />
@@ -131,7 +131,7 @@
 
 			<cfset attributes.smartList.setPageRecordsShow(1000000) />
 		</cfif>
-		
+
 		<!--- Setup Sortability --->
 		<cfif len(attributes.sortProperty)>
 			<cfif not arrayLen(attributes.smartList.getOrders())>
@@ -299,7 +299,7 @@
 	</cfsilent>
 
 	<cfoutput>
-		
+
 		<div class="s-table-header-nav s-listing-head-margin">
 			<div class="col-xs-6 s-no-padding-left">
 				<ul class="list-inline list-unstyled">
@@ -312,7 +312,7 @@
 					</li>
 				</ul>
 			</div>
-		
+
 			<div class="col-xs-6 s-table-view-options s-no-padding-right">
 				<ul class="list-inline list-unstyled">
 					<li>
@@ -324,8 +324,9 @@
 					</li>
 					<li>
 						<div class="btn-group navbar-left dropdown">
-							
-							<button type="button" target="_self" class="form-control btn btn-sm s-btn-grey dropdown-toggle"><i class="fa fa-plus"></i></button>
+
+							<button type="button" class="btn btn-sm s-btn-blue dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cog"></i></button>
+
 								<ul class="dropdown-menu pull-right" role="menu">
 									<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
 								</ul>
@@ -354,14 +355,14 @@
 										</cfif>
 									</div>
 								</cfif>
-								
+
 						</div>
 					</li>
 				</ul>
 
 			</div>
 		</div><!--- reyjay's class --->
-		
+
 		<div class="table-responsive">
 			<table id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" #attributes.tableattributes#>
 				<thead>
@@ -554,10 +555,10 @@
 					</cfif>
 				</tbody>
 			</table>
-			
-			</div><!--- table-responsive --->	
-		
-		
+
+			</div><!--- table-responsive --->
+
+
 		<!--- Pager --->
 		<cfsilent>
 			<cfset local.pageStart = 1 />
