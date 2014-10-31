@@ -180,8 +180,8 @@ a:-webkit-any-link {text-decoration:none !important;}
 
 /* ALERTS */
 .alert { border-radius: 3px; }
-.alert .close { font-size: 16px; margin-top: -10px; }
-.alert-error { background-color: #f2dede; border-color: #ebccd1; color: #a94442; }
+.alert .close { }
+.alert-error { background-color: #f2dede; border-color: #ebccd1; color: #a94442;display: inline-block;width: 100%;}
 
 
 .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus {background-color:#F58620;border-color:#F58620;}
@@ -517,6 +517,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-search-results #s-close-search {width:100%;text-align:right;margin-bottom:15px;}
 .s-search-results #s-close-search a {padding:5px;margin:0px;margin-right:10px;color:#aaaaaa;display:inline-block;}
 .s-search-results #s-close-search a:hover {color:#ffffff;}
+.s-search-results .s-no-results {text-align: center;}
 
 /*START Temp search result css - remove for left hand nav*/
 .s-temp-nav .s-search-results {margin-top: 10px;position: absolute;right: 0px;padding: 15px;top: 50px;min-width:340px;}
@@ -572,7 +573,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-bundle-group-items .s-select-item .search-panel > button.dropdown-toggle {border-bottom-left-radius: 4px;border-top-left-radius: 4px;}
 .s-bundle-group-items .s-select-item .s-search-input {border-left: 0px !important;}
 .s-bundle-group-items .s-select-item .s-last .s-bundle-details-add {width:79px !important;margin-right:1px !important;}
-.s-bundle-group-items .s-select-item .s-workflow-objs .s-bundle-add-obj .s-last .s-bundle-details-add a.btn {border-radius:0px;color:#fff;}
+.s-bundle-group-items .s-select-item .s-workflow-objs .s-bundle-add-obj .s-last .s-bundle-details-add a.btn {border-radius:0px;}
 .s-bundle-group-items .s-select-item:after {font: normal normal normal 14px/1 FontAwesome;content: "\f0da";position: absolute;right: 1px;font-size: 47px;top: -7px;color: #CCC;}
 .tab-content .s-bundle-group-active .radio {display:inline-block;margin-right:5px;}
 

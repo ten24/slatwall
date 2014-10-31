@@ -444,7 +444,7 @@ Notes:
 												</li>
 												<li ng-hide="resultsFound" class="ng-hide col-md-8 s-body"">
 													<ul class="list-unstyled">
-														<li>#$.slatwall.rbKey('admin.define.nosearchresults')#</li>
+														<li class="s-no-results">#$.slatwall.rbKey('admin.define.nosearchresults')#</li>
 													</ul>
 												</li>
 											</ul>
