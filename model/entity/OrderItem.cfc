@@ -81,6 +81,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	
 	// Remote properties
+	property name="publicRemoteID" ormtype="string" hb_populateEnabled="public";
 	property name="remoteID" ormtype="string";
 	
 	// Audit Properties

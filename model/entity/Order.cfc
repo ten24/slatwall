@@ -137,6 +137,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="returnItemSmartList" persistent="false";
 	property name="referencingPaymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
 	property name="saleItemSmartList" persistent="false";
+	property name="saveBillingAccountAddressFlag" persistent="false";
+	property name="saveBillingAccountAddressName" persistent="false";
+	property name="saveShippingAccountAddressFlag" persistent="false";
+	property name="saveShippingAccountAddressName" persistent="false";
 	property name="statusCode" persistent="false";
 	property name="subTotal" persistent="false" hb_formatType="currency";
 	property name="subTotalAfterItemDiscounts" persistent="false" hb_formatType="currency";
@@ -287,7 +291,44 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		
 		return arr;
 	}
+	
+	public void function checkNewBillingAccountAddressSave() {
+		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
+    	if(!isNull(getSaveBillingAccountAddressFlag()) && getSaveBillingAccountAddressFlag() && !isNull(getAccount()) && !getAccount().getGuestAccountFlag() && isNull(getBillingAccountAddress()) && !isNull(getBillingAddress()) && !getBillingAddress().hasErrors()) {
+    		
+    		// Create a New Account Address, Copy over Shipping Address, and save
+    		var accountAddress = getService('accountService').newAccountAddress();
+    		if(!isNull(getSaveBillingAccountAddressName())) {
+				accountAddress.setAccountAddressName( getSaveBillingAccountAddressName() );
+			}
+			accountAddress.setAddress( getBillingAddress().copyAddress( true ) );
+			accountAddress.setAccount( getAccount() );
+			accountAddress = getService('accountService').saveAccountAddress( accountAddress );
+			
+			// Set the accountAddress
+			setBillingAccountAddress( accountAddress );
+		}
+	}
     
+	public void function checkNewShippingAccountAddressSave() {
+    	
+		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
+    	if(!isNull(getSaveShippingAccountAddressFlag()) && getSaveShippingAccountAddressFlag() && !isNull(getAccount()) && !getAccount().getGuestAccountFlag() && isNull(getShippingAccountAddress()) && !isNull(getShippingAddress()) && !getShippingAddress().hasErrors()) {
+    		
+    		// Create a New Account Address, Copy over Shipping Address, and save
+    		var accountAddress = getService('accountService').newAccountAddress();
+    		if(!isNull(getSaveShippingAccountAddressName())) {
+    			accountAddress.setAccountAddressName( getSaveShippingAccountAddressName() );	
+    		}
+			accountAddress.setAddress( getShippingAddress().copyAddress( true ) );
+			accountAddress.setAccount( getAccount() );
+			accountAddress = getService('accountService').saveAccountAddress( accountAddress );
+			
+			// Set the accountAddress
+			setShippingAccountAddress( accountAddress );
+		}
+    	
+	}
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public any function getAddOrderItemSkuOptionsSmartList() {
@@ -907,6 +948,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
 			return variables.billingAddress;
 		}
+		return getService("addressService").newAddress();
 	}
 
 	public any function getShippingAddress() {
@@ -916,6 +958,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			setShippingAddress( getShippingAccountAddress().getAddress().copyAddress( true ) );
 			return variables.shippingAddress;
 		}
+		return getService("addressService").newAddress();
 	}
 	
 	public any function getOrderStatusType() {

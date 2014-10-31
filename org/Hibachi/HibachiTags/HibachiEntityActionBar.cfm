@@ -58,122 +58,89 @@
 						<div class="btn-toolbar">
 
 							<div class="btn-group btn-group-sm">
-							<!--- ================ Listing =================== --->
-							<cfif attributes.type eq "listing" >
-								<cfparam name="request.context.keywords" default="" />
+								<!--- ================ Listing =================== --->
+								<cfif attributes.type eq "listing" >
+									<cfparam name="request.context.keywords" default="" />
 
-							<!---	<!--- Listing: Search --->
-								<form name="search" class="action-bar-search btn-group" action="/" method="get">
-									<input type="hidden" name="slatAction" value="#request.context.entityActionDetails.thisAction#" />
-									<input type="text" name="keywords" value="#request.context.keywords#" placeholder="#attributes.hibachiScope.rbKey('define.search')# #attributes.pageTitle#" data-tableid="LD#replace(attributes.object.getSavedStateID(),'-','','all')#">
-								</form>--->
-
-							<!---	<!--- Listing: Actions --->
-								<div class="btn-group">
-									<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
-									<ul class="dropdown-menu">
-										<cf_HibachiActionCaller action="#request.context.entityActionDetails.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
-									</ul>
-								</div>
-							</div>--->
-							<div class="btn-group btn-group-sm">
-								<!--- Listing: Button Groups --->
-								<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
-									<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
-										<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
-											<div class="btn-group">
+									<!--- Listing: Button Groups --->
+									<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
+										<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
+											<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
 												#buttonGroup.generatedContent#
-											</div>
-										</cfif>
-									</cfloop>
-								</cfif>
-
-								<!--- Listing: Create --->
-								<cfif attributes.showCreate>
-									<div class="btn-group">
+											</cfif>
+										</cfloop>
+									</cfif>
+	
+									<!--- Listing: Create --->
+									<cfif attributes.showCreate>
 										<cfif attributes.createModal>
 											<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
 										<cfelse>
 											<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
 										</cfif>
-									</div>
-								</cfif>
-							</div>
-							<div class="btn-group btn-group-sm">
-							<!--- ================ Detail ===================== --->
-							<cfelseif attributes.type eq "detail">
+									</cfif>
 
-								<!--- Detail: Back Button --->
-								<div class="btn-group">
+								<!--- ================ Detail ===================== --->
+								<cfelseif attributes.type eq "detail">
+								
+									<!--- Detail: Back Button --->
 									<cf_HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn s-btn-grey" icon="arrow-left">
-								</div>
-
-								<!--- Detail: Actions --->
-								<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1>
-									<div class="btn-group">
+	
+									<!--- Detail: Actions --->
+									<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1>
 										<button class="btn dropdown-toggle s-btn-grey" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
 										<ul class="dropdown-menu pull-right">
 											<cf_HibachiDividerHider>
 												#thistag.generatedcontent#
 											</cf_HibachiDividerHider>
 										</ul>
-									</div>
-								</cfif>
-							</div>
-							<div class="btn-group btn-group-sm">
-								<!--- Detail: Button Groups --->
-								<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
-									<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
-										<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
-											<div class="btn-group">
-												#buttonGroup.generatedContent#
-											</div>
-										</cfif>
-									</cfloop>
-								</cfif>
+									</cfif>
 
-								<!--- Detail: Email / Print --->
-								<cfif arrayLen(attributes.object.getEmailTemplates()) || arrayLen(attributes.object.getPrintTemplates())>
-									<!--- Email --->
-									<cfif arrayLen(attributes.object.getEmailTemplates())>
-										<div class="btn-group">
+									<!--- Detail: Button Groups --->
+									<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
+										<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
+											<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>											
+												#buttonGroup.generatedContent#
+											</cfif>
+										</cfloop>
+									</cfif>
+	
+									<!--- Detail: Email / Print --->
+									<cfif arrayLen(attributes.object.getEmailTemplates()) || arrayLen(attributes.object.getPrintTemplates())>
+										<!--- Email --->
+										<cfif arrayLen(attributes.object.getEmailTemplates())>
 											<a class="btn dropdown-toggle s-btn-grey" data-toggle="dropdown" href="##"><i class="fa fa-envelope"></i></a>
 											<ul class="dropdown-menu pull-right">
 												<cfloop array="#attributes.object.getEmailTemplates()#" index="template">
 													<cf_HibachiProcessCaller action="admin:entity.preprocessemail" entity="Email" processContext="addToQueue" queryString="emailTemplateID=#template.getEmailTemplateID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getEmailTemplateName()#" modal="true" modalfullwidth="true" type="list" />
 												</cfloop>
 											</ul>
-										</div>
-									</cfif>
-									<!--- Print --->
-									<cfif arrayLen(attributes.object.getPrintTemplates())>
-										<div class="btn-group">
+										</cfif>
+										<!--- Print --->
+										<cfif arrayLen(attributes.object.getPrintTemplates())>
 											<a class="btn dropdown-toggle s-btn-grey" data-toggle="dropdown" href="##"><i class="fa fa-print"></i></a>
 											<ul class="dropdown-menu pull-right">
 												<cfloop array="#attributes.object.getPrintTemplates()#" index="template">
 													<cf_HibachiProcessCaller action="admin:entity.processprint" entity="Print" processContext="addToQueue" queryString="printTemplateID=#template.getPrintTemplateID()#&printID=&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getPrintTemplateName()#" type="list" />
 												</cfloop>
 											</ul>
-										</div>
-									</cfif>
-								</cfif>
-
-								<!--- Detail: Print --->
-
-								<!--- Detail: Additional Button Groups --->
-								<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
-									<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
-										<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
-											<div class="btn-group">
-												#buttonGroup.generatedContent#
-											</div>
 										</cfif>
-									</cfloop>
-								</cfif>
-
-								<!--- Detail: CRUD Buttons --->
-								<div class="btn-group">
-
+									</cfif>
+	
+									<!--- Detail: Print --->
+	
+									<!--- Detail: Additional Button Groups --->
+									<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
+										<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
+											<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
+												#buttonGroup.generatedContent#
+											</cfif>
+										</cfloop>
+									</cfif>
+	
+									<!--- Detail: CRUD Buttons --->
+									
+	
 									<!--- Setup delete Details --->
 									<cfset local.deleteErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=attributes.object, context="delete", setErrors=false) />
 									<cfset local.deleteDisabled = local.deleteErrors.hasErrors() />
@@ -207,23 +174,22 @@
 											<cf_HibachiActionCaller action="#request.context.entityActionDetails.editAction#" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#" text="#attributes.hibachiScope.rbKey('define.edit')#" class="btn s-btn-grey" icon="pencil icon-white" submit="true" disabled="#attributes.object.isNotEditable()#">
 										</cfif>
 									</cfif>
-								</div>
 
-							<!--- ================= Process =================== --->
-							<cfelseif attributes.type eq "preprocess">
-
-								<cfif !len(attributes.processContext) and structKeyExists(request.context, "processContext")>
-									<cfset attributes.processContext = request.context.processContext />
+								<!--- ================= Process =================== --->
+								<cfelseif attributes.type eq "preprocess">
+	
+									<cfif !len(attributes.processContext) and structKeyExists(request.context, "processContext")>
+										<cfset attributes.processContext = request.context.processContext />
+									</cfif>
+									<cfif !len(attributes.processAction) and structKeyExists(request.context.entityActionDetails, "processAction")>
+										<cfset attributes.processAction = request.context.entityActionDetails.processAction />
+									</cfif>
+	
+									<div class="btn-group">
+										<button type="submit" class="btn btn-primary">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
+									</div>
 								</cfif>
-								<cfif !len(attributes.processAction) and structKeyExists(request.context.entityActionDetails, "processAction")>
-									<cfset attributes.processAction = request.context.entityActionDetails.processAction />
-								</cfif>
-
-								<div class="btn-group">
-									<button type="submit" class="btn btn-primary">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
-								</div>
-							</cfif>
-							</div>
+							
 
 							<!--- Clear the generated content so that it isn't rendered --->
 							<cfset thistag.generatedcontent = "" />
