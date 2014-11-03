@@ -81,13 +81,24 @@ function(
 					id:$scope.product.defaultSku.productBundleGroups[i].productBundleGroupID
 				};
 				
-				var skuFilterGroups = angular.fromJson($scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig).filterGroups.filterGroup;
+				var skuFilterGroups = angular.fromJson($scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig).filterGroups[0].filterGroup;
 				var productBundleGroupFilters = [];
 				for(var k in skuFilterGroups){
-					var filter = {
-							type:skuFilterGroups[k].type,
-							name:skuFilterGroups[k].name
-					};
+					var filter = {};
+					if(skuFilterGroups[k].type && skuFilterGroups[k].name){
+						filter = {
+								type:skuFilterGroups[k].type,
+								name:skuFilterGroups[k].name
+						};
+					}else{
+						
+						filter = {
+								type:skuFilterGroups[k].propertyIdentifier,
+								name:skuFilterGroups[k].displayPropertyIdentifier
+						};
+					}
+					
+					
 					
 					productBundleGroupFilters.push(filter);
 				}
@@ -168,7 +179,7 @@ function(
 				$log.debug('filterGroup');
 				$log.debug(filterGroup);
 			}
-			$scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig.filterGroups = filterGroup;
+			$scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig.filterGroups.push(filterGroup);
 		}
 	};
 	
