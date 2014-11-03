@@ -535,7 +535,7 @@ Notes:
 			</span>
 		</span>
 	</div>
-	/* TODO:use api to combine and compress all js*/
+		<!--- TODO:use api to combine and compress all js --->
 		<!---lib BEGIN --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/date/date.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
