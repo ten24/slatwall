@@ -66,7 +66,7 @@ Notes:
 
 		<cfif rc.product.getEventConflictExistsFlag()>
 			<div class="alert alert-error">
-				#$.slatwallrbKey('define.eventConflict')#
+				#$.slatwall.rbKey('define.eventConflict')#
 			</div>
 		</cfif>
 
