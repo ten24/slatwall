@@ -66,7 +66,7 @@ Notes:
 
 		<cfif rc.product.getEventConflictExistsFlag()>
 			<div class="alert alert-error">
-				There are event time and location conflicts with one of this product's events. Review the Skus tab for details.
+				#$.slatwall.rbKey('entity.product.eventConflict')#
 			</div>
 		</cfif>
 
