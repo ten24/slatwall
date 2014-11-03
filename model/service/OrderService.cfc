@@ -1247,8 +1247,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					if(okToRemove) {
 						
-						// Remove the order and delete this item
-						orderItem.removeOrder();
+						// Delete this item
 						this.deleteOrderItem( orderItem );
 						
 						// Call saveOrder to recalculate all the orderTotal stuff
@@ -1957,9 +1956,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!arguments.order.hasErrors() && arguments.order.getStatusCode() == "ostNotPlaced") {
 			
 			// Save Billing & Shipping Account Addresses if needed
-			checkNewBillingAccountAddressSave();
-			checkNewShippingAccountAddressSave();
-			
+			arguments.order.checkNewBillingAccountAddressSave();
+			arguments.order.checkNewShippingAccountAddressSave();
 			
 			// setup a variable to keep all of the orderFulfillments used by orderItems
 			var orderFulfillmentsInUse = [];
