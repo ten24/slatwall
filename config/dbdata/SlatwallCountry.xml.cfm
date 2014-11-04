@@ -24,6 +24,7 @@
 		<column name="postalCodeLabel" update="false" />
 		<column name="postalCodeShowFlag" update="false" datatype="bit" />
 		<column name="postalCodeRequiredFlag" update="false" datatype="bit" />
+		<column name="defaultCurrencyCode" update="false" />
 	</Columns>
 	<Records>
 		<Record countryCode="AD" countryCode3Digit="AND" countryISONumber="20" countryName="Andorra" activeFlag="1" streetAddressLabel="Street Address" streetAddressShowFlag="1" streetAddressRequiredFlag="1" street2AddressLabel="Street Address 2" street2AddressShowFlag="1" street2AddressRequiredFlag="0" localityLabel="Locality" localityShowFlag="0" localityRequiredFlag="0" cityLabel="City" cityShowFlag="1" cityRequiredFlag="1" stateCodeLabel="State" stateCodeShowFlag="1" stateCodeRequiredFlag="0" postalCodeLabel="Postal Code" postalCodeShowFlag="1" postalCodeRequiredFlag="1" />
