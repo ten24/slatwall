@@ -119,6 +119,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		// Populate with orderItem quantities, price, and orderItemID fields
 		taxRateItemRequestBean.setOrderItemID(arguments.orderItem.getOrderItemID());
 		taxRateItemRequestBean.setQuantity(arguments.orderItem.getQuantity());
+		taxRateItemRequestBean.setCurrencyCode(arguments.orderItem.getCurrencyCode());
 		if(!isNull(arguments.orderItem.getPrice())) {
 			taxRateItemRequestBean.setPrice(arguments.orderItem.getPrice());
 		}
