@@ -81,13 +81,17 @@ function(
 					id:$scope.product.defaultSku.productBundleGroups[i].productBundleGroupID
 				};
 				
-				var skuFilterGroups = angular.fromJson($scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig).filterGroups.filterGroup;
+				var skuFilterGroups = angular.fromJson($scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig).filterGroups[0].filterGroup;
 				var productBundleGroupFilters = [];
 				for(var k in skuFilterGroups){
-					var filter = {
-							type:skuFilterGroups[k].type,
-							name:skuFilterGroups[k].name
-					};
+					var filter = {};
+					if(skuFilterGroups[k].type && skuFilterGroups[k].name){
+						filter = {
+								type:skuFilterGroups[k].type,
+								name:skuFilterGroups[k].name,
+								comparisonOperator:skuFilterGroups[k].comparisonOperator
+						};
+					}
 					
 					productBundleGroupFilters.push(filter);
 				}
@@ -137,27 +141,24 @@ function(
 				switch(productBundleGroupFilters[j].type){
 					case "productType":
 						filter['propertyIdentifier'] = "Sku.product.productType.productTypeID";
-						filter['comparisonOperator'] = '=';
 						filter['value'] = productBundleGroupFilters[j].productTypeID;
 						break;
 					case "collection":
 						break;
 					case "brand":
 						filter['propertyIdentifier'] = "Sku.product.brand.brandID";
-						filter['comparisonOperator'] = '=';
 						filter['value'] = productBundleGroupFilters[j].brandID;
 						break;
 					case "product":
 						filter['propertyIdentifier'] = "Sku.product.productID";
-						filter['comparisonOperator'] = '=';
 						filter['value'] = productBundleGroupFilters[j].productID;
 						break;
 					case "sku":
 						filter['propertyIdentifier'] = "Sku.skuID";
-						filter['comparisonOperator'] = '=';
 						filter['value'] = productBundleGroupFilters[j].skuID;
 						break;
 				}
+				filter['comparisonOperator'] = productBundleGroupFilters[j].comparisonOperator;
 				filter['type'] = productBundleGroupFilters[j].type;
 				filter['name'] = productBundleGroupFilters[j].name;
 				if(filterCount > 0){
@@ -168,7 +169,7 @@ function(
 				$log.debug('filterGroup');
 				$log.debug(filterGroup);
 			}
-			$scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig.filterGroups = filterGroup;
+			$scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig.filterGroups.push(filterGroup);
 		}
 	};
 	

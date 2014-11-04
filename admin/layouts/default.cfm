@@ -407,7 +407,7 @@ Notes:
 									<!--- Start of Search --->
 									<form name="search" class="navbar-form navbar-right s-header-search" action="/" onSubmit="return false;" autocomplete="off" style="padding: 7px;margin-right: 0px;margin-left: 20px;">
 										<div class="form-group">
-											<input type="text" name="search" class="form-control search-query col-xs-2" placeholder="Search" ng-model="keywords" ng-change="updateSearchResults()">
+											<input type="text" name="search" class="form-control search-query col-xs-2" placeholder="#$.slatwall.rbKey('define.search')#" ng-model="keywords" ng-change="updateSearchResults()">
 											<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
 										</div>
 										<div class="row s-search-results" style="padding-top:15px;" ng-show="searchResultsOpen">
@@ -441,8 +441,8 @@ Notes:
 									<cf_HibachiActionCaller action="admin:main.logout" type="list">
 									<li class="divider"></li>
 								</cfif>
-								<li><a title="User Docs" href="http://docs.getslatwall.com/##users-administrator-overview" target="_blank">User Guide</a></li>
-								<li><a title="Developer Docs" href="http://docs.getslatwall.com/##developer" target="_blank">Developer Docs</a></li>
+								<li><a title="User Docs" href="http://docs.getslatwall.com/##users-administrator-overview" target="_blank">#$.slatwall.rbKey('define.userGuide')#</a></li>
+								<li><a title="Developer Docs" href="http://docs.getslatwall.com/##developer" target="_blank">#$.slatwall.rbKey('define.developerDocs')#</a></li>
 								<cf_HibachiActionCaller action="admin:main.about" type="list">
 								<li class="divider"></li>
 								<cf_HibachiActionCaller action="admin:main.changelanguage" queryString="?rbLocale=en_us&redirectURL=#urlEncodedFormat($.slatwall.getURL())#" text="<i class='flag-icon flag-icon-us'></i> #$.slatwall.rbKey('define.language.en_us')#" type="list">
