@@ -91,7 +91,7 @@ function(
 					
 					(function(entityName) {
 	
-						var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords} );
+						var searchPromise = $slatwall.getEntity(entityName, {keywords : $scope.keywords, pageShow : 4, deferkey : 'global-search-'+entityName} );
 	
 						searchPromise.then(function(data){
 							
