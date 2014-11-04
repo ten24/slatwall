@@ -46,7 +46,6 @@
 Notes:
 
 --->
-
 <cfoutput>
 <!DOCTYPE html>
 <html lang="en" ng-app="slatwall">
@@ -57,6 +56,11 @@ Notes:
 		<link rel="icon" href="#request.slatwallScope.getBaseURL()#/assets/images/favicon.png" type="image/png" />
 		<link rel="shortcut icon" href="#request.slatwallScope.getBaseURL()#/assets/images/favicon.png" type="image/png" />
 		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<cfset baseHREF=request.slatwallScope.getBaseURL() />
+		<cfif len(baseHREF) gt 1>
+			<cfset baseHREF = right(baseHREF, len(baseHREF)-1) & '/'>
+		</cfif>
+		<base href="#baseHREF#" />
 
 		<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
 		<!--- <link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet"> --->
@@ -93,10 +97,11 @@ Notes:
 			</script>
 		</cfif>
 	</head>
+	</cfoutput>
 
 
-
-	<!---  Start new sidebar nav
+	<!---  
+	Start new sidebar nav
 	<body class="<cfif NOT $.slatwall.getLoggedInAsAdminFlag()>s-not-logged-in</cfif>">
 		<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" id="slatwall-primary-navbar" role="navigation">
 			<div class="container-fluid">
@@ -282,6 +287,7 @@ Notes:
 
 
 	<!--- Start old navbar --->
+	<cfoutput>
 	<body>
 
 		<div class="navbar navbar-fixed-top navbar-inverse" role="navigation" id="slatwall-navbar">
@@ -422,7 +428,7 @@ Notes:
 														</ul>
 													</div>
 												</li>
-												<li ng-hide="resultsFound" class="ng-hide col-md-8 s-body"">
+												<li ng-hide="resultsFound" class="ng-hide col-md-8 s-body">
 													<ul class="list-unstyled">
 														<li class="s-no-results"><br /><em>#$.slatwall.rbKey('admin.define.nosearchresults')#</em></li>
 													</ul>
@@ -598,39 +604,3 @@ Notes:
 	</body>
 </html>
 </cfoutput>
-
-<script type="text/javascript">
-	var guid = (function() {
-		function s4() {
-			return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-		}
-		return function() {
-			return s4() + s4() + s4() + s4() + s4() + s4() + s4() + s4();
-		};
-	})();
-</script>
-
-<script>
-	$(function() {
-		$('#menu').metisMenu();
-	});
-</script>
-
-<script charset="utf-8">
-
-	$('body').on('click','#j-toggle-sidebar',function() {
-		mobileNav();
-	});
-
-	function mobileNav() {
-		$('.navbar-header').toggle();
-		$('.sidebar').toggleClass('s-sidebarHide');
-		if($('#j-main-content').hasClass('s-body-margin')){
-			$('#j-main-content').removeClass('s-body-margin').css('margin-left','0px !important');
-
-		}else{
-			$('#j-main-content').addClass('s-body-margin').css('margin-left','174px !important');;
-		};
-	};
-
-</script>
