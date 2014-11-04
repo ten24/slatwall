@@ -56,7 +56,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 	property name="taxLocality" type="string";
 	property name="taxCity" type="string";   
 	property name="taxStateCode" type="string";   
-	property name="taxPostalCode" type="string";   
+	property name="taxPostalCode" type="string";
 	property name="taxCountryCode" type="string";  
 	
 	// Order Item Price and Quantity Properies
@@ -66,6 +66,7 @@ component output="false" accessors="true" extends="Slatwall.model.transient.Requ
 	property name="extendedPrice" type="string" default="";
 	property name="discountAmount" type="string" default="";
 	property name="extendedPriceAfterDiscount" type="string" default="";
+	property name="currencyCode" type="string" default="";
 	
 	// Tax Codes
 	property name="taxCategoryCode" type="string" default="";
