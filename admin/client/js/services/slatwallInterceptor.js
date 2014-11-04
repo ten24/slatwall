@@ -23,13 +23,16 @@ angular.module('slatwalladmin.services')
 			return rejection;
 		},
 		'responseError':function(rejection){
-			//$log.debug('responseReject');
-			//$log.debug(rejection);
+			$log.debug('responseReject');
+			$log.debug(rejection);
 			// an error happened during response
 			//display error message if getter fails
-			var messages = rejection.data.messages;
-			var alerts = alertService.formatMessagesToAlerts(messages);
-			alertService.addAlerts(alerts);
+			if(angular.isDefined(rejection.data.messages)){
+				var messages = rejection.data.messages;
+				var alerts = alertService.formatMessagesToAlerts(messages);
+				alertService.addAlerts(alerts);
+			}
+			
 			return rejection;
 		},
 	};

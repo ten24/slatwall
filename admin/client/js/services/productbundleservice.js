@@ -72,6 +72,7 @@ function(
 	return productBundleService = {
 		formatProductBundleGroup:function(productBundleGroup){
 			var formattedProductBundleGroup = this.newProductBundle();
+			
 			for(key in productBundleGroup){
 				formattedProductBundleGroup[key] = productBundleGroup[key];
 			}
@@ -87,11 +88,13 @@ function(
 			return new _productBundleGroupType(productBundleGroupType);
 		},
 		formatProductBundleGroupFilters:function(productBundelGroupFilters,filterTerm){
-			console.log('formatProductBundleGroupFilters');
+			$log.debug('formatProductBundleGroupFilters');
+			$log.debug(filterTerm);
 			for(i in productBundelGroupFilters){
-				productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm+'Name'];
-				productBundelGroupFilters[i].type = filterTerm;
+				productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value+'Name'];
+				productBundelGroupFilters[i].type = filterTerm.name;
 			}
+			$log.debug(productBundelGroupFilters);
 			return productBundelGroupFilters;
 		}
 	};
