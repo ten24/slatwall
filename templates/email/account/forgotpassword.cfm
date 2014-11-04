@@ -79,7 +79,9 @@ Notes:
 	<cfset resetLink = "http://" />
 	<cfset resetLink &= CGI.HTTP_HOST /> <!--- This adds the current domain name --->
 	<cfset resetLink &= CGI.SCRIPT_NAME /> <!--- This adds the script name which includes the sub-directories that a site is in --->
-	<cfset resetLink &= CGI.PATH_INFO /> <!--- This adds the current path information, basically what page you are on --->
+	<cfif CGI.SCRIPT_NAME NEQ CGI.PATH_INFO> <!--- In IIS PATH_INFO is the same as SCRIPT_NAME by default where in Apache it is blank --->
+		<cfset resetLink &= CGI.PATH_INFO /> <!--- This adds the current path information, basically what page you are on --->
+	</cfif>
 	<cfset resetLink &= "?swprid=#account.getPasswordResetID()#" /> <!--- This is what tells the page to execute a password reset --->
 </cfsilent>
 
