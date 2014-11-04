@@ -69,6 +69,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			originMainDivision = {fieldType="text"},
 			originPostalCode = {fieldType="text"},
 			originCountry = {fieldType="text"},
+			originCurrencyCode = {fieldType="text", defaultValue="USD"},
 			sendInvoiceFlag = {fieldType="yesno", defaultValue="1"},
 			webServicesURL = {fieldType="text"},
 			webServicesPassword = {fieldType="password", encryptValue=true},
