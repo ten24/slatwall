@@ -52,9 +52,7 @@ Notes:
 	
 	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.currencySmartList#"
 							   recordDetailAction="admin:entity.detailcurrency"
-							   recordDetailModal="true"
-							   recordEditAction="admin:entity.editcurrency"
-							   recordEditModal="true">
+							   recordEditAction="admin:entity.editcurrency">
 		
 		<!--- Create ---> 
 		<cf_HibachiListingDisplayButtonGroup >

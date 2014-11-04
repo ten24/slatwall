@@ -80,25 +80,6 @@ Notes:
 			return arguments.value & " " & getSettingService().getSettingValue("globalWeightUnitCode");
 		}
 		
-		public string function encryptValue(required string value) {
-			return encrypt(arguments.value, getEncryptionKey(), getSettingService().getSettingValue("globalEncryptionAlgorithm"), getSettingService().getSettingValue("globalEncryptionEncoding"));
-		}
-	
-		public string function decryptValue(required string value) {
-			try {
-				return decrypt(arguments.value, getEncryptionKey(), getSettingService().getSettingValue("globalEncryptionAlgorithm"), getSettingService().getSettingValue("globalEncryptionEncoding"));	
-			} catch (any e) {
-				logHibachi("There was an error decrypting a value from the database.  This is usually because the application cannot find the Encryption key used to encrypt the data.  Verify that you have a key file in the location specified in the advanced settings of the admin.", true);
-				return "";
-			}
-		}
-		
-		public string function createEncryptionKey() {
-			var	theKey = generateSecretKey(getSettingService().getSettingValue("globalEncryptionAlgorithm"), getSettingService().getSettingValue("globalEncryptionKeySize"));
-			storeEncryptionKey(theKey);
-			return theKey;
-		}
-		
 		private string function getEncryptionKeyLocation() {
 			var keyLocation = getSettingService().getSettingValue("globalEncryptionKeyLocation");
 			if(len(keyLocation)) {
@@ -109,6 +90,18 @@ Notes:
 				return keyLocation & '/';
 			}
 			return expandPath('/#getApplicationValue('applicationKey')#/custom/config/');
+		}
+		
+		public string function getLegacyEncryptionAlgorithm() {
+			return getSettingService().getSettingValue("globalEncryptionAlgorithm");
+		}
+		
+		public string function getLegacyEncryptionEncoding() {
+			return getSettingService().getSettingValue("globalEncryptionEncoding");
+		}
+		
+		public string function getLegacyEncryptionKeySize() {
+			return getSettingService().getSettingValue("globalEncryptionKeySize");
 		}
 		
 	</cfscript>

@@ -134,11 +134,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// copy order item customization
 			for(var attributeValue in arguments.order.getOrderItems()[i].getAttributeValues()) {
-				var av = this.newAttributeValue();
-				av.setAttributeValueType(attributeValue.getAttributeValueType());
-				av.setAttribute(attributeValue.getAttribute());
-				av.setAttributeValue(attributeValue.getAttributeValue());
-				av.setOrderItem(newOrderItem);
+				newOrderItem.setAttributeValue( attributeValue.getAttribute().getAttributeCode(), attributeValue.getAttributeValue() );
 			}
 			
 			var orderFulfillmentFound = false;
@@ -1127,6 +1123,54 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 	
+	public any function processOrder_updateOrderFulfillment(required any order, required any processObject) {
+		var orderFulfillment = processObject.getOrderFulfillment();
+		
+		if(orderFulfillment.getNewFlag()) {
+			orderFulfillment.setOrder( arguments.order );
+		}
+		
+		for(var orderItem in arguments.processObject.getOrderItems) {
+			orderItem.setOrderFulfillment( orderFulfillment );
+		}
+		
+		orderFulfillment = this.saveOrderFulfillment( orderFulfillment );
+		
+		if(!orderFulfillment.hasErrors()) {
+			arguments.order = this.saveOrder(arguments.order);	
+		} else {
+			arguments.order.addError('updateOrderFulfillment', orderFulfillment.getErrors());
+		}
+		
+		return arguments.order;
+	}
+	
+	public any function processOrder_removePersonalInfo(required any order) {
+		
+		// Remove order level info
+		arguments.order.removeAccount();
+		arguments.order.setShippingAddress(javaCast('null', ''));
+		arguments.order.setShippingAccountAddress(javaCast('null', ''));
+		arguments.order.setBillingAddress(javaCast('null', ''));
+		arguments.order.setBillingAccountAddress(javaCast('null', ''));
+		
+		// loop over orderFulfillments and remove any shipping info or emailAddress
+		for(var orderFulfillment in arguments.order.getOrderFulfillments()) {
+			
+			orderFulfillment.setShippingAddress(javaCast('null', ''));
+			orderFulfillment.setAccountAddress(javaCast('null', ''));
+			orderFulfillment.setEmailAddress(javaCast('null', ''));
+			
+		}
+		
+		// loop over and remove all orderPayments
+		for(var p=arrayLen(arguments.order.getOrderPayments()); p>=1; p--) {
+			arguments.order.getOrderPayments()[p].removeOrder();
+		}
+		
+		return this.saveOrder(arguments.order);	
+	}
+	
 	public any function processOrder_updateOrderAmounts(required any order, struct data) {
 		//only allow promos to be applied to orders that have not been closed or canceled
 		if(!listFindNoCase("ostCanceled,ostClosed", arguments.order.getOrderStatusType().getSystemCode())) {
@@ -1619,17 +1663,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If the order has no errors & it has not been placed yet, then we can make necessary implicit updates
 		if(!arguments.order.hasErrors() && arguments.order.getStatusCode() == "ostNotPlaced") {
 			
+			// setup a variable to keep all of the orderFulfillments used by orderItems
+			var orderFulfillmentsInUse = [];
+			
 			// loop over the orderItems to remove any that have a qty of 0
 			for(var i = arrayLen(arguments.order.getOrderItems()); i >= 1; i--) {
 				if(arguments.order.getOrderItems()[i].getQuantity() < 1) {
 					arguments.order.removeOrderItem(arguments.order.getOrderItems()[i]);
+				} else if(!arrayFind(orderFulfillmentsInUse, arguments.order.getOrderItems()[i].getOrderFulfillment())) {
+					arrayAppend(orderFulfillmentsInUse, arguments.order.getOrderItems()[i].getOrderFulfillment());
 				}
 			}
 			
 			// loop over any fulfillments and update the shippingMethodOptions for any shipping fulfillments
 			for(var orderFulfillment in arguments.order.getOrderFulfillments()) {
 				
-				if(orderFulfillment.getFulfillmentMethodType() eq "shipping") {
+				// If that orderFulfillment isn't in use anymore, then we need to remove it from the order
+				if(!arrayFind(orderFulfillmentsInUse, orderFulfillment)) {
+					arguments.order.removeOrderFulfillment(orderFulfillment);
+					
+				// If is is still in use, and a shipping fulfillment then we need to update some stuff.
+				} else if(orderFulfillment.getFulfillmentMethodType() eq "shipping") {
 					
 					// Update the shipping methods
 					getShippingService().updateOrderFulfillmentShippingMethodOptions( orderFulfillment );

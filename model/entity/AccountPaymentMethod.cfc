@@ -55,7 +55,9 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="bankRoutingNumberEncrypted" ormType="string";
 	property name="bankAccountNumberEncrypted" ormType="string";
 	property name="companyPaymentMethodFlag" hb_populateEnabled="public" ormType="boolean";
-	property name="creditCardNumberEncrypted" ormType="string";
+	property name="creditCardNumberEncrypted" ormType="string" hb_auditable="false";
+	property name="creditCardNumberEncryptedDateTime" ormType="timestamp" hb_auditable="false" column="creditCardNumberEncryptDT";
+	property name="creditCardNumberEncryptedGenerator" ormType="string" hb_auditable="false" column="creditCardNumberEncryptGen";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
 	property name="expirationMonth" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
@@ -224,6 +226,12 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		
 	}
 	
+	public void function setupEncryptedProperties() {
+		if(getCreditCardType() != "Invalid" && !isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) && getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) {
+			encryptProperty('creditCardNumber');
+		}
+	}
+	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public any function getPaymentMethodOptionsSmartList() {
@@ -314,17 +322,12 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		return variables.billingAddress;
 	}
 	
-	public any function afterPopulate() {
-		if(getCreditCardType() != "Invalid" && !isNull(getPaymentMethod()) && !isNull(getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) && getPaymentMethod().getSaveAccountPaymentMethodEncryptFlag()) {
-			setCreditCardNumberEncrypted(encryptValue(getCreditCardNumber()));
-		}
-	}
-	
 	public void function setCreditCardNumber(required string creditCardNumber) {
 		if(len(arguments.creditCardNumber)) {
 			variables.creditCardNumber = REReplaceNoCase(arguments.creditCardNumber, '[^0-9]', '', 'ALL');
 			setCreditCardLastFour(Right(variables.creditCardNumber, 4));
 			setCreditCardType(getService("paymentService").getCreditCardTypeFromNumber(variables.creditCardNumber));
+			setupEncryptedProperties();
 		} else {
 			structDelete(variables, "creditCardNumber");
 			setCreditCardLastFour(javaCast("null", ""));
@@ -336,7 +339,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	public string function getCreditCardNumber() {
 		if(!structKeyExists(variables,"creditCardNumber")) {
 			if(nullReplace(getCreditCardNumberEncrypted(), "") NEQ "") {
-				variables.creditCardNumber = decryptValue(getCreditCardNumberEncrypted());
+				variables.creditCardNumber = decryptProperty("creditCardNumber");
 			} else {	
 				variables.creditCardNumber = "";
 			}
@@ -383,6 +386,12 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		
 		// Set the actual accountAddress
 		variables.billingAccountAddress = arguments.accountAddress;
+	}
+	
+	public any function populate( required struct data={} ) {
+		super.populate(argumentCollection=arguments);
+		
+		setupEncryptedProperties();
 	}
 
 	// ==================  END:  Overridden Methods ========================

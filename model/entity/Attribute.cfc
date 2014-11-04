@@ -48,6 +48,7 @@ Notes:
 */
 component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttribute" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="attributeService" hb_permission="attributeSet.attributes" {
 	
+	
 	// Persistent Properties
 	property name="attributeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" default=1;
@@ -55,6 +56,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="attributeCode" ormtype="string" index="PI_ATTRIBUTECODE";
 	property name="attributeDescription" ormtype="string" length="4000" ;
 	property name="attributeHint" ormtype="string";
+	property name="attributeInputType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="defaultValue" ormtype="string";
 	property name="requiredFlag" ormtype="boolean" default="false" ;
 	property name="sortOrder" ormtype="integer" sortContext="attributeSet";
@@ -62,15 +64,23 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="validationRegex" ormtype="string";
 	property name="decryptValueInAdminFlag" ormtype="boolean";
 	property name="relatedObject" ormtype="string" hb_formFieldType="select";
-	
-	// Related Object Properties (Many-To-One)
-	property name="attributeSet" cfc="AttributeSet" fieldtype="many-to-one" fkcolumn="attributeSetID" hb_optionsNullRBKey="define.select";
-	property name="attributeType" cfc="Type" fieldtype="many-to-one" fkcolumn="attributeTypeID" hb_optionsSmartListData="f:parentType.systemCode=attributeType" fetch="join";
-	property name="validationType" cfc="Type" fieldtype="many-to-one" fkcolumn="validationTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=validationType";
 
-	// Related Object Properties (One-To-Many)
+	// Calculated Properties
+
+	// Related Object Properties (many-to-one)
+	property name="attributeSet" cfc="AttributeSet" fieldtype="many-to-one" fkcolumn="attributeSetID" hb_optionsNullRBKey="define.select";
+	property name="validationType" cfc="Type" fieldtype="many-to-one" fkcolumn="validationTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=validationType";
+	
+	// Related Object Properties (one-to-many)
 	property name="attributeOptions" singularname="attributeOption" cfc="AttributeOption" fieldtype="one-to-many" fkcolumn="attributeID" inverse="true" cascade="all-delete-orphan" orderby="sortOrder";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="attributeID" inverse="true" cascade="delete-orphan";
+	
+	// Related Object Properties (many-to-many - owner)
+
+	// Related Object Properties (many-to-many - inverse)
+	
+	// Remote Properties
+	property name="remoteID" hb_populateEnabled="false" ormtype="string";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -79,10 +89,19 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	property name="attributeTypeOptions" persistent="false";
+	property name="attributeInputTypeOptions" persistent="false";
 	property name="formFieldType" persistent="false";
 	property name="relatedObjectOptions" persistent="false";
 	property name="validationTypeOptions" persistent="false";
+	
+	// Deprecated Properties
+	property name="attributeType" persistent="false";
+
+	// ==================== START: Logical Methods =========================
+	
+	// ====================  END: Logical Methods ==========================
+	
+	// ============ START: Non-Persistent Property Methods =================
 	
 	public array function getAttributeOptions(string orderby, string sortType="text", string direction="asc") {
 		if(!structKeyExists(arguments,"orderby")) {
@@ -91,29 +110,33 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 			return getService("hibachiUtilityService").sortObjectArray(variables.AttributeOptions,arguments.orderby,arguments.sortType,arguments.direction);
 		}
 	}
-
-    // ============ START: Non-Persistent Property Methods =================
-    
-	public array function getAttributeTypeOptions() {
-		if(!structKeyExists(variables, "attributeTypeOptions")) {
-			var smartList = getService("settingService").getTypeSmartList();
-			smartList.addSelect(propertyIdentifier="type", alias="name");
-			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addSelect(propertyIdentifier="systemCode", alias="systemCode");
-			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="attributeType"); 
-			smartList.addOrder("type|ASC");
-			variables.attributeTypeOptions = smartList.getRecords();
-		}
-		return variables.attributeTypeOptions;
+	
+	public array function getAttributeInputTypeOptions() {
+		return [
+			{value="checkbox", name=rbKey("entity.attribute.attributeInputType.checkbox")},
+			{value="checkboxGroup", name=rbKey("entity.attribute.attributeInputType.checkboxGroup")},
+			{value="date", name=rbKey("entity.attribute.attributeInputType.date")},
+			{value="dateTime", name=rbKey("entity.attribute.attributeInputType.dateTime")},
+			{value="multiselect", name=rbKey("entity.attribute.attributeInputType.multiselect")},
+			{value="password", name=rbKey("entity.attribute.attributeInputType.password")},
+			{value="radioGroup", name=rbKey("entity.attribute.attributeInputType.radioGroup")},
+			{value="relatedObjectSelect", name=rbKey("entity.attribute.attributeInputType.relatedObjectSelect")},
+			{value="relatedObjectMultiselect", name=rbKey("entity.attribute.attributeInputType.relatedObjectMultiselect")},
+			{value="select", name=rbKey("entity.attribute.attributeInputType.select")},
+			{value="text", name=rbKey("entity.attribute.attributeInputType.text")},
+			{value="textArea", name=rbKey("entity.attribute.attributeInputType.textArea")},
+			{value="time", name=rbKey("entity.attribute.attributeInputType.time")},
+			{value="wysiwyg", name=rbKey("entity.attribute.attributeInputType.wysiwyg")},
+			{value="yesNo", name=rbKey("entity.attribute.attributeInputType.yesNo")}
+		];
     }
     
 	public string function getFormFieldType() {
 		if(!structKeyExists(variables, "formFieldType")) {
-			var attributeTypeSystemCode = getAttributeType().getSystemCode();
-			variables.formFieldType = right(attributeTypeSystemCode, len(attributeTypeSystemCode)-2);
+			variables.formFieldType = getAttributeInputType();
 			if(variables.formFieldType eq 'relatedObjectSelect') {
 				variables.formFieldType = 'select';
-			} else if (variables.formFieldType eq 'releatedObjectMultiselect') {
+			} else if (variables.formFieldType eq 'relatedObjectMultiselect') {
 				variables.formFieldType = 'listingMultiselect';	
 			}
 		}
@@ -148,13 +171,17 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	public array function getAttributeOptionsOptions() {
 		if(!structKeyExists(variables, "attributeOptionsOptions")) {
 			variables.attributeOptionsOptions = [];
-			if(listFindNoCase('atCheckBoxGroup,atMultiSelect,atRadioGroup,atSelect', getAttributeType().getSystemCode())) {
+			if(listFindNoCase('checkBoxGroup,multiselect,radioGroup,select', getAttributeInputType())) {
 				var smartList = this.getAttributeOptionsSmartList();
 				smartList.addSelect(propertyIdentifier="attributeOptionLabel", alias="name");
 				smartList.addSelect(propertyIdentifier="attributeOptionValue", alias="value");
 				smartList.addOrder("sortOrder|ASC");
-				variables.attributeOptionsOptions = smartList.getRecords();	
-			} else if(listFindNoCase('atRelatedObjectSelect', getAttributeType().getSystemCode()) && !isNull(getRelatedObject())) {
+				variables.attributeOptionsOptions = smartList.getRecords();
+				
+				if(getAttributeInputType() == 'select') {
+					arrayPrepend(variables.attributeOptionsOptions, {name=rbKey('define.select'), value=''});
+				}
+			} else if(listFindNoCase('relatedObjectSelect', getAttributeInputType()) && !isNull(getRelatedObject())) {
 				var entityService = getService( "hibachiService" ).getServiceByEntityName( getRelatedObject() );
 				var smartList = entityService.invokeMethod("get#getRelatedObject()#SmartList");
 				var exampleEntity = entityService.invokeMethod("new#getRelatedObject()#");
@@ -168,11 +195,11 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 		}
 		return variables.attributeOptionsOptions;
     }
-   
-	// ============  END:  Non-Persistent Property Methods =================
 	
-    // ============= START: Bidirectional Helper Methods ===================
-    
+	// ============  END:  Non-Persistent Property Methods =================
+		
+	// ============= START: Bidirectional Helper Methods ===================
+	
 	// Attribute Set (many-to-one)    
 	public void function setAttributeSet(required any attributeSet) {    
 		variables.attributeSet = arguments.attributeSet;
@@ -208,17 +235,48 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
-	
-	// ================== START: Overridden Methods ========================
 
+	// =============== START: Custom Validation Methods ====================
+	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicit Getters ===================
+	
+	// ==============  END: Overridden Implicit Getters ====================
+	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	// =============  END: Overridden Smart List Getters ===================
+
+	// ================== START: Overridden Methods ========================
+	
 	public any function getAttributeOptionsSmartlist() {
 		return getPropertySmartList( "attributeOptions" );
 	}
 	
 	// ==================  END:  Overridden Methods ========================
-		
+	
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	public any function getAttributeType() {
+		if(!structKeyExists(variables, "attributeType") && !isNull(getAttributeInputType()) ) {
+			variables.attributeType = getService('settingService').newType();
+			variables.attributeType.setSystemCode( "at#getAttributeInputType()#" );
+		}
+		if(structKeyExists(variables, "attributeType")) {
+			return variables.attributeType;
+		}
+	}
+	
+	// ==================  END:  Deprecated Methods ========================
+
 }
 

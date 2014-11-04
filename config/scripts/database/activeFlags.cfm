@@ -76,3 +76,8 @@ Notes:
 <cfquery name="local.activeFlag">
 	UPDATE SwShippingMethodRate SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
 </cfquery>
+
+<!--- Account Authentication --->
+<cfquery name="local.activeFlag">
+	UPDATE SwAccountAuthentication SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
+</cfquery>

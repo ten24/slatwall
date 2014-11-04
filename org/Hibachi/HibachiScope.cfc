@@ -7,6 +7,9 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
+	property name="sessionFoundNPSIDCookieFlag" type="boolean";
+	property name="sessionFoundPSIDCookieFlag" type="boolean";
+	
 	property name="ormHasErrors" type="boolean" default="false";
 	property name="rbLocale";
 	property name="url" type="string";
@@ -23,6 +26,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setRBLocale( "en_us" );
 		setPublicPopulateFlag( false );
 		setPersistSessionFlag( true );
+		setSessionFoundNPSIDCookieFlag( false );
+		setSessionFoundPSIDCookieFlag( false );
 		
 		setCalledActions( [] );
 		setSuccessfulActions( [] );
@@ -200,13 +205,13 @@ component output="false" accessors="true" extends="HibachiTransient" {
 				message = replace(message, "${itemEntityName}", rbKey("entity.#entityName#") );
 			}
 		}
-		
 		showMessage(message=message, messageType=messageType);
 	}
 	
 	public void function showMessage(string message="", string messageType="info") {
 		param name="request.context.messages" default="#arrayNew(1)#";
 		
+		message=getService('HibachiUtilityService').replaceStringTemplate(arguments.message,request.context);
 		arrayAppend(request.context.messages, arguments);
 	}
 	

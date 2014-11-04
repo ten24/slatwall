@@ -53,6 +53,10 @@ Notes:
 <cfset rc.ordersPlacedSmartList = rc.account.getOrdersPlacedSmartList() />
 <cfset rc.ordersNotPlacedSmartList = rc.account.getOrdersNotPlacedSmartList() />
 
+<cfif !isNull(rc.account.getLoginLockExpiresDateTime()) AND DateCompare(Now(), rc.account.getLoginLockExpiresDateTime()) EQ -1 >
+	<cfset rc.$.slatwall.showMessageKey( 'admin.main.lockAccount.tooManyAttempts_error' ) />
+</cfif>
+
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.account#" edit="#rc.edit#">
 		<cf_HibachiEntityActionBar type="detail" object="#rc.account#" edit="#rc.edit#">
@@ -87,7 +91,7 @@ Notes:
 					<!--- Authentication Details --->
 					<cf_HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailaccount.authenticationDetails')#" hint="#$.slatwall.rbKey("admin.entity.detailaccount.authenticationDetails_hint")#" />
 					<cf_HibachiPropertyDisplay object="#rc.account#" property="guestAccountFlag" edit="false" displayType="table">
-					<cfloop array="#rc.account.getAccountAuthentications()#" index="accountAuthentication">
+					<cfloop array="#rc.account.getActiveAccountAuthentications()#" index="accountAuthentication">
 						<cfsavecontent variable="thisValue">
 							<cf_HibachiActionCaller text="#$.slatwall.rbKey('define.remove')#" action="admin:entity.deleteAccountAuthentication" queryString="accountAuthenticationID=#accountAuthentication.getAccountAuthenticationID()#&redirectAction=admin:entity.detailAccount&accountID=#rc.account.getAccountID()#" />
 						</cfsavecontent>

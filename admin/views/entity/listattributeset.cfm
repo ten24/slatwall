@@ -59,7 +59,7 @@ Notes:
 		</cf_HibachiListingDisplayButtonGroup>	
 						      
 	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="attributeSetName" />
-	<cf_HibachiListingColumn propertyIdentifier="attributeSetType.type" />
+	<cf_HibachiListingColumn propertyIdentifier="attributeSetObject" />
 	<cf_HibachiListingColumn propertyIdentifier="globalFlag" />
 	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
 </cf_HibachiListingDisplay>

@@ -78,7 +78,7 @@ Notes:
 						<dd>
 							<input type="hidden" name="attributeValues[#attributeValueIndex#].attributeValueID" value="#local.attributeValue.getAttributeValueID()#" />
 							<input type="hidden" name="attributeValues[#attributeValueIndex#].attribute.attributeID" value="#local.attribute.getAttributeID()#" />
-							<cf_SlatwallFormField fieldName="attributeValues[#attributeValueIndex#].attributeValue" fieldType="#replace(local.attribute.getAttributeType().getSystemCode(), 'at', '', 'all')#" value="#local.attributeValue.getAttributeValue()#" valueOptions="#local.attribute.getAttributeOptionsOptions()#" />
+							<cf_SlatwallFormField fieldName="attributeValues[#attributeValueIndex#].attributeValue" fieldType="#local.attribute.getAttributeInputType()#" value="#local.attributeValue.getAttributeValue()#" valueOptions="#local.attribute.getAttributeOptionsOptions()#" />
 						</dd>
 					</cfif>
 				</cfloop>

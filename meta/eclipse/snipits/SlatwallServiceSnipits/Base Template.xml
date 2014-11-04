@@ -85,6 +85,10 @@ component extends="HibachiService" accessors="true" {
 	
 	// =====================  END: Delete Overrides ===========================
 	
+	// ================== START: Private Helper Functions =====================
+	
+	// ==================  END:  Private Helper Functions =====================
+
 	// =================== START: Deprecated Functions ========================
 	
 	// ===================  END: Deprecated Functions =========================

@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="createPassword,changePassword,create,setupInitialAdmin,addAccountPayment,login,logout,forgotPassword,resetPassword,addAccountLoyalty" {
+component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="addAccountLoyalty,addAccountPayment,createPassword,changePassword,create,forgotPassword,lock,login,logout,resetPassword,setupInitialAdmin,unlock,updatePassword" {
 	
 	// Persistent Properties
 	property name="accountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -54,6 +54,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="firstName" hb_populateEnabled="public" ormtype="string";
 	property name="lastName" hb_populateEnabled="public" ormtype="string";
 	property name="company" hb_populateEnabled="public" ormtype="string";
+	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" hb_auditable="false"; 
 	
 	// CMS Properties
 	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";
@@ -120,7 +122,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
-	
+
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);	
 	}
@@ -326,6 +328,22 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return variables.unenrolledAccountLoyaltyOptions;
 	}
 	
+	public any function getActiveAccountAuthentications(){
+		var authentications = getAccountAuthentications();
+	
+		var activeAuthentications = [];
+		
+		for (i = ArrayLen(authentications); i >= 1; i--){
+			var authentication = authentications[i];
+			
+			if( !(isNull(authentication.getIntegration()) && !isNull(authentication.getPassword()) && authentication.getActiveFlag() == false)){
+				arrayAppend(activeAuthentications, authentication);
+			}
+		}
+
+		return activeAuthentications;
+	}
+
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================
@@ -624,7 +642,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	
 	// ================== START: Deprecated Methods ========================
 	
-	public array function getAttributeSets(array attributeSetTypeCode){
+	public array function getAttributeSets(){
 		return getAssignedAttributeSetSmartList().getRecords();
 	}
 	

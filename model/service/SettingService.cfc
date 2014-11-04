@@ -113,6 +113,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			accountEligiblePaymentTerms = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentTerm", defaultValue=getPaymentService().getAllActivePaymentTermIDList()},
 			accountPaymentTerm = {fieldType="select"},
 			accountTermCreditLimit = {fieldType="text", formatType="currency",defaultValue=0},
+			accountFailedAdminLoginAttemptCount = {fieldType="text", defaultValue=6, validate={dataType="numeric", required=true, maxValue=6}},
+			accountFailedPublicLoginAttemptCount = {fieldType="text", defaultValue=0, validate={dataType="numeric", required=true}},
+			accountAdminForcePasswordResetAfterDays = {fieldType="text", defaultValue=90, validate={dataType="numeric", required=true, maxValue=90}},
+			accountLockMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true, minValue=30}},
 			
 			// Account Authentication
 			accountAuthenticationAutoLogoutTimespan = {fieldType="text"},
@@ -175,6 +179,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalURLKeyProduct = {fieldType="text",defaultValue="sp"},
 			globalURLKeyProductType = {fieldType="text",defaultValue="spt"},
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
+			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
+			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
 			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
@@ -449,7 +455,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		if(rs.recordCount) {
 			var metaData = getSettingMetaData( arguments.settingName );
 			if(structKeyExists(metaData, "encryptValue") && metaData.encryptValue) {
-				rs.settingValue = decryptValue( rs.settingValue );
+				rs.settingValue = decryptValue( rs.settingValue, rs.settingValueEncryptGen );
 			}
 		}
 		
@@ -789,15 +795,6 @@ component extends="HibachiService" output="false" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 		
 	public any function saveSetting(required any entity, struct data={}) {
-		
-		// Check for values that need to be encrypted
-		if(structKeyExists(arguments.data, "settingName") && structKeyExists(arguments.data, "settingValue")) {
-			var metaData = getSettingMetaData(arguments.data.settingName);
-			if(structKeyExists(metaData, "encryptValue") && metaData.encryptValue == true) {
-				arguments.data.settingValue = encryptValue(arguments.data.settingValue);
-			}
-		}
-		
 		// Call the default save logic
 		arguments.entity = super.save(argumentcollection=arguments);
 		

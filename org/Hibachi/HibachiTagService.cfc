@@ -3,10 +3,14 @@
 	<cffunction name="cfcookie">
 		<cfargument name="name" type="string" required="true" />
 		<cfargument name="value" type="any" required="true" />
-		<cfargument name="expires" type="string" default="session only" />
+		<cfargument name="expires" type="string" />
 		<cfargument name="secure" type="boolean" default="false" />
 		
-		<cfcookie name="#arguments.name#" value="#arguments.value#" expires="#arguments.expires#" secure="#arguments.secure#">
+		<cfif structKeyExists(arguments, "expires")>
+			<cfcookie name="#arguments.name#" value="#arguments.value#" expires="#arguments.expires#" secure="#arguments.secure#">
+		<cfelse>
+			<cfcookie name="#arguments.name#" value="#arguments.value#" secure="#arguments.secure#">
+		</cfif>
 	</cffunction>
 	
 	<cffunction name="cfhtmlhead">

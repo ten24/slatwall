@@ -2,6 +2,6 @@
 	"properties":{
 		"attributeSetName":			[{"contexts":"save","required":true}],
 		"attributeSetCode":			[{"contexts":"save","unique":true}],
-		"attributeSetType":			[{"contexts":"save","required":true}]
+		"attributeSetObject":		[{"contexts":"save","required":true}]
 	}
 }
