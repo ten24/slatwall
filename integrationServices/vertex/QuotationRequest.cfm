@@ -87,8 +87,9 @@
 				      		<urn:PostalCode>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxPostalCode())#</urn:PostalCode>
 				     		<urn:Country>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxCountryCode())#</urn:Country>
 				     		<cfset local.destinationCurrencyCode = 'USD' />
-				     		<cfif addressTaxRequestItems[ 1 ].getTaxCountryCode() eq 'CA'>
-				     			<cfset local.destinationCurrencyCode = 'CAD' />
+				     		<cfset local.destinationCountry = getService('addressService').getCountry(addressTaxRequestItems[ 1 ].getTaxCountryCode()) />
+				     		<cfif !isNull(local.destinationCountry) and !isNull(local.destinationCountry.getDefaultCurrency())>
+				     			<cfset local.destinationCurrencyCode = local.destinationCountry.getDefaultCurrency().getCurrencyCode() />
 				     		</cfif>
 				     		<cfif addressTaxRequestItems[ 1 ].getCurrencyCode() neq local.destinationCurrencyCode>
 			     				<urn:CurrencyConversion isoCurrencyCodeAlpha="#xmlFormat(local.destinationCurrencyCode)#">#getService('currencyCode').getCurrencyConversionRate(originalCurrencyCode=addressTaxRequestItems[ 1 ].getCurrencyCode(), convertToCurrencyCode=local.destinationCurrencyCode)#</urn:CurrencyConversion>
