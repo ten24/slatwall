@@ -86,7 +86,15 @@
 				      		<urn:MainDivision>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxStateCode())#</urn:MainDivision>
 				      		<urn:PostalCode>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxPostalCode())#</urn:PostalCode>
 				     		<urn:Country>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxCountryCode())#</urn:Country>
-				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
+				     		<cfset local.destinationCurrencyCode = 'USD' />
+				     		<cfif addressTaxRequestItems[ 1 ].getTaxCountryCode() eq 'CA'>
+				     			<cfset local.destinationCurrencyCode = 'CAD' />
+				     		</cfif>
+				     		<cfif addressTaxRequestItems[ 1 ].getCurrencyCode() neq local.destinationCurrencyCode>
+			     				<urn:CurrencyConversion isoCurrencyCodeAlpha="#xmlFormat(local.destinationCurrencyCode)#">#getService('currencyCode').getCurrencyConversionRate(originalCurrencyCode=addressTaxRequestItems[ 1 ].getCurrencyCode(), convertToCurrencyCode=local.destinationCurrencyCode)#</urn:CurrencyConversion>
+			     			<cfelse>
+			     				<urn:CurrencyConversion isoCurrencyCodeAlpha="#xmlFormat(local.destinationCurrencyCode)#">1</urn:CurrencyConversion>
+			     			</cfif>
 				    	</urn:Destination>
 					 </urn:Customer>
 					 <cfset var count = 0 />
