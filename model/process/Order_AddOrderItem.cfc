@@ -87,6 +87,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="emailAddress" hb_rbKey="entity.orderFulfillment.emailAddress";
 	property name="registrants" type="array" hb_populateArray="true"; 
 	property name="childOrderItems" type="array" hb_populateArray="true";
+	property name="publicRemoteID";
 	
 	// Data Properties (Related Entity Populate)
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";

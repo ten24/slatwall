@@ -130,7 +130,7 @@
                             <!-- Selected filters -->
                             <div class="s-bundle-add-items s-workflow-objs">
 
-                                <div class="well well-sm">
+                                <div class="well well-sm"  ng-show="!productBundleGroup.productBundleGroupFilters.length">
                                     <ul class="list-unstyled">
                                         <li>No items selected <!-- #$.slatwall.rbKey('admin.define.no_items_selected')# --></li>
                                         <li>Please add one or more items to this bundle group. <!-- #$.slatwall.rbKey('entity.ProductBundleBuildItem.selectBundleGroup')# --></li>
@@ -141,7 +141,17 @@
                                     <li class="s-bundle-add-obj" ng-repeat="productBundleGroupFilter in productBundleGroup.productBundleGroupFilters track by $index">
                                         <ul class="list-unstyled list-inline">
                                             <!-- You can change the s-include to s-exclude for stye diff -->
-                                            <li class="s-item-type s-tooltip s-include" data-toggle="tooltip" data-placement="right" title="Tooltip example"><i class="fa fa-plus-square-o"></i></li>
+                                            <li class="s-item-type s-tooltip" 
+                                            	data-toggle="tooltip" 
+                                            	data-placement="right" title="Tooltip example"
+                                            	ng-class="{'s-include':productBundleGroupFilter.comparisonOperator==='=','s-exclude':productBundleGroupFilter.comparisonOperator==='!='} "  
+                                            >
+                                            
+                                            	<i 	class="fa"
+                                            		ng-class="{'fa-plus-square-o':productBundleGroupFilter.comparisonOperator==='=','fa-minus-square-o':productBundleGroupFilter.comparisonOperator==='!='} "  
+                                          
+                                            	></i>
+                                            </li>
                                         </ul>
                                         <ul class="list-unstyled list-inline s-middle">
                                             <li class="s-bundle-details"><span ng-bind="productBundleGroupFilter.type"></span>:<span ng-bind="productBundleGroupFilter.name"></span></li>
@@ -177,7 +187,7 @@
                                         placeholder="Search {{searchOptions.selected.name}} ..."
                                         type="text"
                                         ng-model="productBundleGroupFilters.keyword"
-                                        ng-change="productBundleGroupFilters.getFiltersByTerm(productBundleGroupFilters.keyword,searchOptions.selected.value)"
+                                        ng-change="productBundleGroupFilters.getFiltersByTerm(productBundleGroupFilters.keyword,searchOptions.selected)"
                                 >
 
                             </div>
@@ -192,19 +202,21 @@
 
                                     <!-- Selected filters -->
                                     <div class="s-bundle-add-items s-workflow-objs">
+                                    	<div class="spinner" ng-show="loading"><i class="fa fa-refresh fa-spin"></i></div>
                                         <ul class="list-unstyled s-order-item-options s-negative-obj"
                                             ng-show="productBundleGroupFilters.value.length">
 
                                             <li class="s-bundle-add-obj" ng-repeat="filterItem in productBundleGroupFilters.value track by $index">
                                                 <ul class="list-unstyled list-inline s-middle">
-                                                    <li class="j-tool-tip-item s-bundle-details" ng-bind="filterItem[searchOptions.selected.value+'Name']"></li>
+                                                	<li class="j-tool-tip-item s-bundle-details" ng-bind="filterItem.type"></li>
+                                                    <li class="j-tool-tip-item s-bundle-details" ng-bind="filterItem.name"></li>
                                                 </ul>
                                                 <ul class="list-unstyled list-inline s-last">
                                                     <li class="col-xs-1 s-bundle-details-add">
-                                                        <a class="btn s-btn-grey" ng-click="addFilterToProductBundle(filterItem)"><i class="fa fa-minus-square-o"></i> Exclude</a>
+                                                        <a class="btn s-btn-grey" ng-click="addFilterToProductBundle(filterItem,false)"><i class="fa fa-minus-square-o"></i> Exclude</a>
                                                     </li>
                                                     <li class="col-xs-1 s-bundle-details-add">
-                                                        <a class="btn s-btn-blue" ng-click="addFilterToProductBundle(filterItem)"><i class="fa fa-plus-square-o"></i> Include</a>
+                                                        <a class="btn s-btn-blue" ng-click="addFilterToProductBundle(filterItem,true)"><i class="fa fa-plus-square-o"></i> Include</a>
                                                     </li>
                                                 </ul>
                                                 <div class="clearfix"></div>
@@ -225,8 +237,8 @@
                     </div>
                     <!-- //Search for product -->
                     <br/>
-                    <button class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Save</button>
-                    <button class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Save & Add Bundle Group</button>
+                    <button class="btn btn-sm s-btn-ten24" ng-click="productBundleGroup.$$toggleEdit()"><i class="fa fa-plus" ></i> Save</button>
+                    <button class="btn btn-sm s-btn-ten24" ng-click="productBundleGroup.$$toggleEdit();addProductBundleGroup();"><i class="fa fa-plus" ></i> Save & Add Bundle Group</button>
 
 					<!-- <div class="tab-pane" ng-class="{active:navigation.value ==='Selections'}" ng-show="navigation.value === 'Selections'">
 

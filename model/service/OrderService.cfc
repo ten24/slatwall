@@ -412,6 +412,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Set Header Info
 			newOrderItem.setOrder( arguments.order );
+			newOrderItem.setPublicRemoteID( arguments.processObject.getPublicRemoteID() );
 			if(arguments.processObject.getOrderItemTypeSystemCode() eq "oitSale") {
 				newOrderItem.setOrderFulfillment( orderFulfillment );
 				newOrderItem.setOrderItemType( getTypeService().getTypeBySystemCode('oitSale') );
@@ -448,6 +449,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						childOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
 						newOrderItem.setSkuPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
 						childOrderItem.setParentOrderItem( newOrderItem );
+						childOrderItem.setOrder( arguments.order );
 						
 					}
 				}
@@ -1422,9 +1424,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Loop over the orderItems to see if the skuPrice Changed
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
 				for(orderItem in arguments.order.getOrderItems()){
-					var skuPrice = orderItem.getSkuPrice();
-					var SkuPriceByCurrencyCode = orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode());
-					if(listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode){
+					var skuPrice = val(orderItem.getSkuPrice());
+					var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode()));
+ 					if(listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode){
 						orderItem.setPrice(SkuPriceByCurrencyCode);
 						orderItem.setSkuPrice(SkuPriceByCurrencyCode);
 					}
