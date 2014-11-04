@@ -1,9 +1,7 @@
-//collection service is used to maintain the state of the ui
 
 angular.module('slatwalladmin.services')
 .factory('metadataService',['$filter','$log',
 function($filter,$log){
-	//properties
 	var _propertiesList = {};
 	var _orderBy = $filter('orderBy');
 	
@@ -74,7 +72,6 @@ function($filter,$log){
 		orderBy: function(propertiesList,predicate,reverse){
 			return _orderBy(propertiesList,predicate,reverse);
 		}
-		//private functions
 		
 	};
 }]);

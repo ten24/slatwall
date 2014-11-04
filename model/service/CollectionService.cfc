@@ -164,11 +164,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		var collectionEntity = this.newCollection();
 		var properlyCasedFullEntityName = getProperlyCasedFullEntityName(arguments.entityName);
 		collectionEntity.setCollectionObject(properlyCasedFullEntityName,false);
-		var collectionConfigStruct = {
-			baseEntityName=properlyCasedFullEntityName,
-			baseEntityAlias=getProperlyCasedShortEntityName(arguments.entityName)
-		};
-		collectionEntity.setCollectionConfigStruct(collectionConfigStruct);
 		return collectionEntity;
 	}
 	
@@ -262,6 +257,15 @@ component extends="HibachiService" accessors="true" output="false" {
 		formattedPageRecords[ "totalPages" ] = arguments.collectionEntity.getTotalPages();
 		
 		return formattedPageRecords;
+	}
+	
+	public any function getFormattedRecords(required any collectionEntity, required array propertyIdentifiers){
+		
+		var collectionOfEntities = collectionEntity.getRecords();
+		
+		var formattedRecords[ "records" ] = getFormattedObjectRecords(collectionOfEntities,arguments.propertyIdentifiers);
+		
+		return formattedRecords;
 	}
 	
 	private array function getPropertyIdentifierArray(required string entityName){
@@ -472,10 +476,14 @@ component extends="HibachiService" accessors="true" output="false" {
 				}
 			}
 		}
-		
-		var paginatedCollectionOfEntities = arguments.collectionEntity.getPageRecords();
-		var collectionPaginationStruct = getFormattedPageRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
-		structAppend(response,collectionPaginationStruct);
+		var collectionPaginationStruct = {};
+		if(arguments.collectionOptions.allRecords){
+			collectionStruct = getFormattedRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
+		}else{
+			//paginated collection struct
+			collectionStruct = getFormattedPageRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
+		}
+		structAppend(response,collectionStruct);
 		return response;
 	}
 	

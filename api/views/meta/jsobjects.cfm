@@ -10,7 +10,6 @@
 							var _jsEntities;
 							var _deferred = {};
 		
-		
 			return {
 				
 			    $get:['$q','$http','$log', function ($q,$http,$log)
@@ -44,6 +43,7 @@
 				  				params.joinsConfig = options.joinsConfig || '';
 				  				params.isDistinct = options.isDistinct || false;
 				  				params.propertyIdentifiersList = options.propertyIdentifiersList || '';
+				  				params.allRecords = options.allRecords || '';
 				  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName;
 				  			}
 				  			
@@ -250,18 +250,6 @@
 								</cfloop>
 								
 							};
-							<cfcatch>
-								<cfdump var="#local.entity.getClassName()#" />
-								<cfdump var="#local.property#" />
-								<cfdump var="#cfcatch#" />
-								<cfabort />
-							</cfcatch>
-						</cftry>
-						
-					</cfloop>
-					
-					<cfloop array="#rc.entities#" index="local.entity">
-						<cftry>
 							_jsEntities[ '#local.entity.getClassName()#' ].prototype = {
 								
 								$$init:function( data ) {
@@ -283,11 +271,9 @@
 								<cfloop array="#local.entity.getProperties()#" index="local.property">
 									<cfif !structKeyExists(local.property, "persistent")>
 										<cfif structKeyExists(local.property, "fieldtype")>
-											<!---<cfcontent type="text/html" >
-										<cfdump var="#local.entity.getProperties()#"><cfabort>--->
+											
 											<cfif listFindNoCase('many-to-one', local.property.fieldtype)>
 												,$$get#local.property.name#Options:function() {
-													console.log('many-to-one');
 													/* This should get pulled down */
 													/*
 													var options = {
@@ -305,44 +291,73 @@
 														}]);
 													}
 													var collectionPromise = slatwallService.getEntity('_#local.entity.getClassName()#',options);
-													console.log(collectionPromise);
 													return collectionPromise;*/
 												}
 												,$$get#local.property.name#:function() {
-													console.log('many-to-one');
-													/* This should get pulled down */
-													
-													var options = {
-														columnsConfig:angular.fromJson({
-															"propertyIdentifier":"_#local.entity.getClassName()#.#local.property.name#"
-														})
-													};
 													if(angular.isDefined(this.$$get#LCase(local.entity.getClassName())#ID())){
-														filterGroups = [{
-															"filterGroup":[
+														var options = {
+															columnsConfig:angular.toJson([
 																{
-																	"propertyIdentifier":"_#local.entity.getClassName()#.#local.entity.getClassName()#ID",
-																	"comparisonOperator":"=",
-																	"value":this.$$get#LCase(local.entity.getClassName())#ID()
+																	"propertyIdentifier":"_#lcase(local.entity.getClassName())#_#local.property.name#"
 																}
-															]
-														}];
-														options.filterGroupsConfig = angular.toJson(filterGroups);
+															]),
+															joinsConfig:angular.toJson([
+																{
+																	"associationName":"#local.property.name#",
+																	"alias":"_#lcase(local.entity.getClassName())#_#local.property.name#"
+																}
+															]),
+															filterGroupsConfig:angular.toJson([{
+																"filterGroup":[
+																	{
+																		"propertyIdentifier":"_#lcase(local.entity.getClassName())#.#lcase(local.entity.getClassName())#ID",
+																		"comparisonOperator":"=",
+																		"value":this.$$get#LCase(local.entity.getClassName())#ID()
+																	}
+																]
+															}]),
+															allRecords:true
+														};
+														
+														var collectionPromise = slatwallService.getEntity('#local.entity.getClassName()#',options);
+														return collectionPromise;
 													}
-													console.log(slatwallService);
-													var collectionPromise = slatwallService.getEntity('#local.entity.getClassName()#',options);
-													console.log(collectionPromise);
-													return collectionPromise;
+													
+													return null;
 												}
 											<cfelseif listFindNoCase('one-to-many,many-to-many', local.property.fieldtype)>
 												,$$get#local.property.name#Collection:function() {
-													console.log('one-to-many,many-to-many');
-													/*var c = {};
-													return angular('slatwallservice').getCollection(c);*/
+													if(angular.isDefined(this.$$get#LCase(local.entity.getClassName())#ID())){
+														var options = {
+															columnsConfig:angular.toJson([
+																{
+																	"propertyIdentifier":"_#lcase(local.entity.getClassName())#_#local.property.name#"
+																}
+															]),
+															joinsConfig:angular.toJson([
+																{
+																	"associationName":"#local.property.name#",
+																	"alias":"_#lcase(local.entity.getClassName())#_#local.property.name#"
+																}
+															]),
+															filterGroupsConfig:angular.toJson([{
+																"filterGroup":[
+																	{
+																		"propertyIdentifier":"_#lcase(local.entity.getClassName())#.#lcase(local.entity.getClassName())#ID",
+																		"comparisonOperator":"=",
+																		"value":this.$$get#LCase(local.entity.getClassName())#ID()
+																	}
+																]
+															}]),
+															allRecords:true
+														};
+														
+														var collectionPromise = slatwallService.getEntity('#local.entity.getClassName()#',options);
+														return collectionPromise;
+													}
 												}
 											<cfelseif listFindNoCase('id',local.property.fieldtype)>
 												,$$get#local.property.name#:function() {
-													console.log('id');
 													return this.data.#local.property.name#;
 												}
 											</cfif>
@@ -350,7 +365,6 @@
 										</cfif>
 									<cfelse>
 										,$$get#local.property.name#:function() {
-											console.log('simple');
 											return this.data.#local.property.name#;
 										}
 									</cfif>
@@ -387,14 +401,39 @@
 		});
 	</cfsavecontent>
 	<cfset local.jsOutput &= local.thisJSOutput />
+	<!---the order these are loaded matters --->
+	<cfset local.jsDirectoryArray = [
+		expandPath( './admin/client/js/services' ),
+		expandPath( './admin/client/js/controllers' ),
+		expandPath( './admin/client/js/directives' )
+	]>
 	
+	<cfloop array="#local.jsDirectoryArray#" index="local.jsDirectory">
+		<cfdirectory
+		    action="list"
+		    directory="#local.jsDirectory#"
+		    listinfo="name"
+		    name="local.jsFileList"
+		    filter="*.js"
+	    />
+	    
+	    <cfloop query="#local.jsFileList#">
+		    <cfset local.jsFilePath = local.jsDirectory & '/' & name>
+		    <cfset local.fileContent = FileRead(local.jsFilePath,'utf-8')>
+		     <cfset local.jsOutput &= local.fileContent />
+	    </cfloop>
+	   
+	   
+	</cfloop>
+    	
+    
 	
 </cfoutput>
-<!---<cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
+<cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
 <cfset compressedJS = oYUICompressor.compress(
 											inputType = 'js'
 											,inputString = local.jsOutput
 											) />
-<cfoutput>#compressedJS.results#</cfoutput>--->
-<cfoutput>#local.jsOutput#</cfoutput>
+<cfoutput>#compressedJS.results#</cfoutput>
+<!---<cfoutput>#local.jsOutput#</cfoutput>--->
 	

@@ -1,9 +1,9 @@
-//collection service is used to maintain the state of the ui
+/*collection service is used to maintain the state of the ui*/
 
 angular.module('slatwalladmin.services')
 .factory('collectionService',['$filter','$log',
 function($filter,$log){
-	//properties
+	/*properties*/
 	var _collection = null;
 	var _collectionConfig = null;
 	var _filterPropertiesList = {};
@@ -241,7 +241,6 @@ function($filter,$log){
 		orderBy: function(propertiesList,predicate,reverse){
 			return _orderBy(propertiesList,predicate,reverse);
 		}
-		//private functions
 		
 	};
 }]);

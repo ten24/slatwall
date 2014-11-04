@@ -536,7 +536,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#?slatAction=api:meta.jsobjects"></script>
 		<!---<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#?slatAction=api:meta.admin"></script>--->
 		
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/metadataservice.js"></script>
+		<!---<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/metadataservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/alertservice.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwallInterceptor.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/collectionservice.js"></script>
@@ -598,7 +598,7 @@ Notes:
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swproductbundlegroups.js"></script>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swproductbundlegroup.js"></script>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swproductbundlegrouptype.js"></script>
-		<!---directives END --->
+		<!---directives END --->--->
 	</body>
 </html>
 </cfoutput>

@@ -1,4 +1,3 @@
-//collection service is used to maintain the state of the ui
 
 angular.module('slatwalladmin.services')
 .factory('workflowService',
@@ -11,7 +10,6 @@ function(
 	$slatwall,
 	alertService
 ){
-	//properties
 	function _workflow(){
 		this.workflowID = "";
 		this.activeFlag = false;

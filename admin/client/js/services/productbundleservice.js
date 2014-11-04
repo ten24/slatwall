@@ -1,4 +1,3 @@
-//collection service is used to maintain the state of the ui
 
 angular.module('slatwalladmin.services')
 .factory('productBundleService',
@@ -11,7 +10,6 @@ function(
 	$slatwall,
 	alertService
 ){
-	//properties
 	function _productBundleGroupType(productBundleGroupType){
 		this.parentTypeID = '154dcdd2f3fd4b5ab5498e93470957b8';
 		this.type=productBundleGroupType.type;

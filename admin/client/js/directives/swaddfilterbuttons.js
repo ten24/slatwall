@@ -28,7 +28,6 @@ collectionPartialsPath){
 			
 			scope.addFilterGroupItem = function(){
 				collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse,true);
-				//collectionService.newFilterGroupItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse);
 			};
 		}
 	};

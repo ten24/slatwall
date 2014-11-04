@@ -211,6 +211,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				isDistinct = arguments.rc['isDistinct'];
 			}
 			
+			var allRecords = false;
+			if(structKeyExists(arguments.rc,'allRecords')){
+				allRecords = arguments.rc['allRecords'];
+			}
+			
 			var collectionOptions = {
 				currentPage=currentPage,
 				pageShow=pageShow,
@@ -219,11 +224,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				joinsConfig=joinsConfig,
 				propertyIdentifiersList=propertyIdentifiersList,
 				isDistinct=isDistinct,
-				columnsConfig=columnsConfig
+				columnsConfig=columnsConfig,
+				allRecords=allRecords
 			};
 			
 			//considering using all url variables to create a transient collectionConfig for api response
-			//var transientCollectionConfigStruct = getCollectionService().getTransientCollectionConfigStructByURLParams(arguments.rc);			
 			if(!structKeyExists(arguments.rc,'entityID')){
 				//should be able to add select and where filters here
 				var result = getCollectionService().getAPIResponseForEntityName(	arguments.rc.entityName,
