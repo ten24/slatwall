@@ -523,7 +523,7 @@ tabel .s-table-header {margin-bottom:10px;}
 
 /*START Temp search result css - remove for left hand nav*/
 .s-temp-nav .s-search-results {margin-top: 10px;position: absolute;right: 0px;padding: 15px;top: 50px;min-width:340px;}
-.s-temp-nav .s-close-icon-search {right: 24px !important;position: absolute;font-size: 16px !important;top: 22px;color:#aaa;}
+.s-temp-nav .s-close-icon-search {right: 8px !important;position: absolute;font-size: 16px !important;top: 22px;color:#aaa;}
 .s-temp-nav .s-close-icon-search:hover {color:#666;}
 .s-not-logged-in .s-body-margin {margin-left:0px;margin-top:0px;}
 .s-body-margin {margin-left: 0px;}
