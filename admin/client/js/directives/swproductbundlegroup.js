@@ -3,14 +3,12 @@ angular.module('slatwalladmin')
 .directive('swProductBundleGroup', 
 ['$http',
  '$log',
- '$q',
  '$timeout',
  '$slatwall',
 'productBundlePartialsPath',
 'productBundleService',
 function($http,
 $log,
-$q,
 $timeout,
 $slatwall,
 productBundlePartialsPath,
@@ -108,7 +106,6 @@ productBundleService){
 					if(filterTerm.value === 'All'){
 						scope.productBundleGroupFilters.value = [];
 						_loadingCount = scope.searchOptions.options.length - 1;
-						var defer = $q.defer();
 						for(var i in scope.searchOptions.options){
 							if(i > 0){
 								var option = scope.searchOptions.options[i];
