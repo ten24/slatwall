@@ -13,7 +13,7 @@ productBundleService){
 		restrict: 'A',
 		templateUrl:productBundlePartialsPath+"productbundlegroups.html",
 		scope:{
-			productBundleGroups:"=" 
+			addProductBundleGroup:"&"
 		},
 		controller: function($scope, $element,$attrs){
 			$scope.$id = 'productBundleGroups';

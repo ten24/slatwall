@@ -86,6 +86,7 @@ partialsPath
 								scope.propertyDisplay.meta.options = value.data;
 								//var selectElement = element.find('select');
 								//selectElement.blur();
+								
 								if(angular.isDefined(scope.propertyDisplay.object[scope.propertyDisplay.property])){
 									for(var i in scope.propertyDisplay.meta.options){
 										if(scope.propertyDisplay.meta.options[i].value === scope.propertyDisplay.object[scope.propertyDisplay.property]){
@@ -93,6 +94,7 @@ partialsPath
 										}
 									}
 								}
+								scope.propertyDisplay.object[scope.propertyDisplay.property] = scope.propertyDisplay.meta.options[0];
 							});
 						}
 						

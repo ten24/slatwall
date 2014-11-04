@@ -88,17 +88,10 @@ function(
 					if(skuFilterGroups[k].type && skuFilterGroups[k].name){
 						filter = {
 								type:skuFilterGroups[k].type,
-								name:skuFilterGroups[k].name
-						};
-					}else{
-						
-						filter = {
-								type:skuFilterGroups[k].propertyIdentifier,
-								name:skuFilterGroups[k].displayPropertyIdentifier
+								name:skuFilterGroups[k].name,
+								comparisonOperator:skuFilterGroups[k].comparisonOperator
 						};
 					}
-					
-					
 					
 					productBundleGroupFilters.push(filter);
 				}
@@ -148,27 +141,24 @@ function(
 				switch(productBundleGroupFilters[j].type){
 					case "productType":
 						filter['propertyIdentifier'] = "Sku.product.productType.productTypeID";
-						filter['comparisonOperator'] = '=';
 						filter['value'] = productBundleGroupFilters[j].productTypeID;
 						break;
 					case "collection":
 						break;
 					case "brand":
 						filter['propertyIdentifier'] = "Sku.product.brand.brandID";
-						filter['comparisonOperator'] = '=';
 						filter['value'] = productBundleGroupFilters[j].brandID;
 						break;
 					case "product":
 						filter['propertyIdentifier'] = "Sku.product.productID";
-						filter['comparisonOperator'] = '=';
 						filter['value'] = productBundleGroupFilters[j].productID;
 						break;
 					case "sku":
 						filter['propertyIdentifier'] = "Sku.skuID";
-						filter['comparisonOperator'] = '=';
 						filter['value'] = productBundleGroupFilters[j].skuID;
 						break;
 				}
+				filter['comparisonOperator'] = productBundleGroupFilters[j].comparisonOperator;
 				filter['type'] = productBundleGroupFilters[j].type;
 				filter['name'] = productBundleGroupFilters[j].name;
 				if(filterCount > 0){

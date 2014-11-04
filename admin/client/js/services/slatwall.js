@@ -3,18 +3,33 @@ angular.module('slatwalladmin.services',[])
 .provider('$slatwall',[
 function(){
 	var _baseUrl;
+	var _deferred = {};
 	return {
 	    $get:['$q','$http','$log', function ($q,$http,$log)
 	    {
 	      return {
 	    		//basic entity getter where id is optional, returns a promise
-		  		getEntity:function(entityName, options){
+		  		getDefer:function(deferKey){
+		  			return _deferred[deferKey];
+		  		},
+		  		cancelPromise:function(deferKey){
+		  			var deferred = this.getDefer(deferKey);
+		  			if(angular.isDefined(deferred)){
+		  				deferred.resolve({messages:[{messageType:'error',message:'User Cancelled'}]});
+		  			}
+		  		},
+	    	  	getEntity:function(entityName, options){
 		  			/*
 		  			 *
 		  			 * getEntity('Product', '12345-12345-12345-12345');
 		  			 * getEntity('Product', {keywords='Hello'});
 		  			 * 
 		  			 */
+	    	  		
+	    	  		if(options.deferKey){
+	    	  			this.cancelPromise(options.deferKey);
+	    	  		}
+	    	  		
 		  			var params = {};
 		  			if(typeof options === 'String') {
 		  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options.id;
@@ -31,16 +46,21 @@ function(){
 		  			}
 		  			
 		  			var deferred = $q.defer();
+		  			
 		  			if(angular.isDefined(options.id)) {
 		  				urlString += '&entityId='+options.id;	
 		  			}
 		  			
-		  			$http.get(urlString,{params:params})
+		  			$http.get(urlString,{params:params,timeout:deferred.promise})
 		  			.success(function(data){
 		  				deferred.resolve(data);
 		  			}).error(function(reason){
 		  				deferred.reject(reason);
 		  			});
+		  			
+		  			if(options.deferKey){
+		  				_deferred[options.deferKey] = deferred;
+		  			}
 		  			return deferred.promise;
 		  			
 		  		},

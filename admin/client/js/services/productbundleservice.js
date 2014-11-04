@@ -88,10 +88,13 @@ function(
 			return new _productBundleGroupType(productBundleGroupType);
 		},
 		formatProductBundleGroupFilters:function(productBundelGroupFilters,filterTerm){
+			$log.debug('formatProductBundleGroupFilters');
+			$log.debug(filterTerm);
 			for(i in productBundelGroupFilters){
-				productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm+'Name'];
-				productBundelGroupFilters[i].type = filterTerm;
+				productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value+'Name'];
+				productBundelGroupFilters[i].type = filterTerm.name;
 			}
+			$log.debug(productBundelGroupFilters);
 			return productBundelGroupFilters;
 		}
 	};
