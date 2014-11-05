@@ -54,9 +54,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public void function addModifiedEntity( required any entity ) {
-		if(!arrayFind(getModifiedEntities(), arguments.entity)) {
-			arrayAppend(getModifiedEntities(), arguments.entity);
-		}
+		arrayAppend(getModifiedEntities(), arguments.entity);
 	}
 	
 	public void function clearModifiedEntities() {
