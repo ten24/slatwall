@@ -57,13 +57,17 @@ Notes:
 		<link rel="icon" href="#request.slatwallScope.getBaseURL()#/assets/images/favicon.png" type="image/png" />
 		<link rel="shortcut icon" href="#request.slatwallScope.getBaseURL()#/assets/images/favicon.png" type="image/png" />
 		<meta name="viewport" content="width=device-width,initial-scale=1.0">
-		<!---
-		<cfset baseHREF=request.slatwallScope.getBaseURL() />
-		<cfif len(baseHREF) gt 1>
-			<cfset baseHREF = right(baseHREF, len(baseHREF)-1) & '/'>
+		
+		<cfif CGI.HTTP_USER_AGENT CONTAINS "MSIE 9">
+			<cfset baseHREF=request.slatwallScope.getBaseURL() />
+			<cfif len(baseHREF) gt 1>
+				<cfset baseHREF = right(baseHREF, len(baseHREF)-1) & '/index.cfm/'>
+			<cfelse>
+				<cfset baseHREF = "index.cfm/">
+			</cfif>
+			
+			<base href="#baseHREF#" />
 		</cfif>
-		<base href="#baseHREF#" />
-		--->
 
 		<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
 		<!--- <link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet"> --->
