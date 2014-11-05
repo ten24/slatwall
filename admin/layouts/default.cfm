@@ -51,6 +51,7 @@ Notes:
 <html lang="en" ng-app="slatwall">
 	<head>
 		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<title>#rc.pageTitle# &##124; Slatwall</title>
 
 		<link rel="icon" href="#request.slatwallScope.getBaseURL()#/assets/images/favicon.png" type="image/png" />
@@ -100,7 +101,7 @@ Notes:
 	</cfoutput>
 
 
-	<!---  
+	<!---
 	Start new sidebar nav
 	<body class="<cfif NOT $.slatwall.getLoggedInAsAdminFlag()>s-not-logged-in</cfif>">
 		<nav class="navbar navbar-default navbar-fixed-top navbar-inverse" id="slatwall-primary-navbar" role="navigation">
