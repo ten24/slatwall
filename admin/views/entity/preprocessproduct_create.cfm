@@ -139,7 +139,7 @@ Notes:
 
 		</cf_HibachiPropertyRow>
 
-		<hr style="border-top: 3px dotted ##CCC;" />
+		<hr style="border-top: 1px solid ##CCC;" />
 
 		<!--- CONTENT ACCESS --->
 		<cfif rc.processObject.getBaseProductType() eq "contentAccess">
