@@ -533,6 +533,25 @@
 			
 			return deserializeJSON(decrypt(fileRead(getEncryptionPasswordFilePath()), hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
 		}
+		
+		public any function updateCF9DataForJSONOutput( required any data ) {
+			if(isStruct(arguments.data)) {
+				for(var key in arguments.data) {
+					arguments.data[ key ] = updateCF9DataForJSONOutput( arguments.data[ key ] );
+				}
+			} else if (isArray(arguments.data)) {
+				for(var i=1; i<=arrayLen(arguments.data); i++) {
+					arguments.data[i] = updateCF9DataForJSONOutput( arguments.data[i] );
+				}
+			} else if (isSimpleValue(arguments.data) && isNumeric(arguments.data)) {
+				if(listLen(arguments.data, ".") eq 2) {
+					arguments.data = LSParseValue(precisionEvaluate(listFirst(arguments.data, ".")) & '.' & listLast(arguments.data, "."));
+				} else {
+					arguments.data = precisionEvaluate(arguments.data);
+				}
+			}
+			return data;
+		}
 	</cfscript>
 	
 	<cffunction name="logException" returntype="void" access="public">
