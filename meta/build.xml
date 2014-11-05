@@ -68,7 +68,7 @@
 		<echo file="../custom/config/configApplication.cfm">&lt;cfset this.name = &quot;slatwalltestbuild-${touch.time}&quot; /&gt;${line.separator}&lt;cfset this.datasource.name = &quot;${slatwall.test.datasource}&quot; /&gt;</echo>
 		<delete file="../custom/config/lastFullUpdate.txt.cfm" failonerror="false"/>
 		
-		<get src="http://${slatwall.test.server}/?reload=true&amp;update=true" />
+		<post to="http://${slatwall.test.server}/?reload=true&amp;update=true" />
 	</target>
 	
 	<target name="setupMachineTestsConfig" depends="init">
