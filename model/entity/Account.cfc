@@ -258,8 +258,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		if(!structKeyExists(variables, "slatwallAuthenticationExistsFlag")) {
 			variables.slatwallAuthenticationExistsFlag = false;
 			var authArray = getAccountAuthentications();
-			for(var a=1; a<=arrayLen(authArray); a++) {
-				if(isNull(authArray[a].getIntegration())) {
+			for(auth in authArray) {
+				if(isNull(auth.getIntegration()) && !isNull(auth.getPassword()) && auth.getActiveFlag() ) {
 					variables.slatwallAuthenticationExistsFlag = true;
 					break;
 				}
