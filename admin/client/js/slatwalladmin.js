@@ -1,6 +1,6 @@
 'use strict';
 angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAnimate', function($locationProvider){
-	$locationProvider.html5Mode(true);
+	$locationProvider.html5Mode(true).hashPrefix('!');
 }]).config(["$provide",'$logProvider','$filterProvider','$httpProvider', function ($provide, $logProvider,$filterProvider,$httpProvider) {
 	
 	var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/';
