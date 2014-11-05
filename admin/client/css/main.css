@@ -554,7 +554,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a.s-edit {background-color: #EEE;border: 0px;border-top: 1px solid #DDD;border-bottom: 1px solid #DDD;border-radius: 0px;}
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a.s-edit:hover {background-color:#E7E5E5;}
 .s-bundle-add-obj ul {float:left;}
-.s-bundle-add-obj .s-middle {white-space: nowrap;overflow: scroll;float:left;width:60%;margin-left:4px;}
+.s-bundle-add-obj .s-middle {white-space: nowrap;overflow: scroll;float:left;width:60%;margin-left:4px;-ms-overflow-style: none;}
 .s-bundle-add-obj .s-last {float:right;}
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj.s-no-edit .s-item-type {background-color:#aaa;}
 
