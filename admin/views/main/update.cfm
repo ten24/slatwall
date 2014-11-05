@@ -61,6 +61,8 @@ Notes:
 
 <cfoutput>
 	<cf_HibachiPropertyList divClass="span12">
+		<h3>#$.slatwall.rbKey('admin.main.update.backup')#</h3>
+		<hr />
 		<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentVersion')#" value="#rc.currentVersion#" />
 		<cfif rc.currentBranch eq 'master'>
 			<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentReleaseType')#" value="#$.slatwall.rbKey('admin.main.update.stable')#" />
