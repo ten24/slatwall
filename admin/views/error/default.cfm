@@ -68,9 +68,9 @@ Notes:
 						<cfdump var="#request.exception#" />	
 					</cfmailpart>
 				</cfmail>
-				An error notification email was sent to the administrator.<br /><br />
+				<strong>An error notification email was sent to the administrator.</strong><br /><br />
 			<cfelse>
-				Please notify your system administrator.<br /><br />
+				<strong>Please notify your system administrator.</strong><br /><br />
 			</cfif>
 			
 			<cfcatch>
