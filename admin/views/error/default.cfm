@@ -70,7 +70,7 @@ Notes:
 				</cfmail>
 				An error notification email was sent to the administrator.<br /><br />
 			<cfelse>
-				Please notify your system administrator.<br />
+				Please notify your system administrator.<br /><br />
 			</cfif>
 			
 			<cfcatch>
