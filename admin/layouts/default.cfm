@@ -539,7 +539,7 @@ Notes:
 
 		<!---services BEGIN--->
 		<!---<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwall.js"></script>--->
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#?slatAction=api:meta.jsobjects"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#?slatAction=api:meta.getcompressedjs"></script>
 		<!---<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#?slatAction=api:meta.admin"></script>--->
 		
 		<!---<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/metadataservice.js"></script>

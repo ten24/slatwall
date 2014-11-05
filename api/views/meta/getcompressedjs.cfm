@@ -439,11 +439,11 @@
     
 	
 </cfoutput>
-<!---<cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
+<cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
 <cfset compressedJS = oYUICompressor.compress(
 											inputType = 'js'
 											,inputString = local.jsOutput
 											) />
-<cfoutput>#compressedJS.results#</cfoutput>--->
-<cfoutput>#local.jsOutput#</cfoutput>
+<cfoutput>#compressedJS.results#</cfoutput>
+<!---<cfoutput>#local.jsOutput#</cfoutput>--->
 	
