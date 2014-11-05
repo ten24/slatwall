@@ -70,7 +70,7 @@
 		
 		<delete dir="${slatwall.test.output.xml}/reloadget" failonerror="false"/>
 		<mkdir dir="${slatwall.test.output.xml}/reloadget" />
-		<get src="http://${slatwall.test.server}/?reload=true&amp;update=true" dest="${slatwall.test.output.xml}/reloadget/reload.html"/>
+		<get src="http://${slatwall.test.server}/?slatAction=main.login&amp;reload=true&amp;update=true" dest="${slatwall.test.output.xml}/reloadget/reload.html"/>
 	</target>
 	
 	<target name="setupMachineTestsConfig" depends="init">
