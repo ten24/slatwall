@@ -60,32 +60,35 @@ Notes:
 	<cfif local.errorDisplayFlag>
 		<cfdump var="#request.exception#" />
 	<cfelse>
-		<h1>There was an Unexpected error while processing your request.</h1><br />
+		<h1>There was an unexpected error while processing your request.</h1><br />
 		<cftry>
 			<cfif len(local.errorNotifyEmailAddresses)>
 				<cfmail to="#local.errorNotifyEmailAddresses#" from="#listFirst(local.errorNotifyEmailAddresses)#" subject="Slatwall Error Notification">
-					<cfdump var="#request.exception#" />
+					<cfmailpart type="text/html">
+						<cfdump var="#request.exception#" />	
+					</cfmailpart>
 				</cfmail>
-				An error notification was sent to the administrator.
+				An error notification email was sent to the administrator.<br /><br />
 			<cfelse>
 				Please notify your system administrator.<br />
 			</cfif>
 			
 			<cfcatch>
-				Please notify your system administrator.<br />
-				An error notification was unable to be sent likely because of an invalid 'errorNotifyEmailAddresses' setting configuration.
+				Please notify your system administrator.<br /><br />
+				An error notification email was unable to be sent likely because of an invalid 'errorNotifyEmailAddresses' setting configuration<cfif isSimpleValue(local.errorNotifyEmailAddresses)> which is currently set to: <strong><cfoutput>#local.errorNotifyEmailAddresses#</cfoutput></strong> and should be a comma seperated list of email addresses (see below for example)</cfif><br /><br />
 			</cfcatch>
 		</cftry>
-		<hr />
-		<br />
-		To see errors, add the following line to /Slatwall/custom/config/configFramework.cfm:<br />
-		<pre>&lt;cfset variables.framework.hibachi.errorDisplayFlag = true /&gt;</pre><br /><br />
-		To have errors emailed you can add the following line to /Slatwall/custom/config/configFramework.cfm:<br />
-		<pre>&lt;cfset variables.framework.hibachi.errorNotifyEmailAddresses = "admin1@mysite.com,admin2@mysite.com" /&gt;</pre>
 	</cfif>
 	<cfcatch>
 		An Unexpected Error occured and the error cannot be displayed or emailed
+		<cfdump var="#cfcatch#" />
 	</cfcatch>
 </cftry>
-
+<hr />
+<br />
+To see errors, add the following line to /Slatwall/custom/config/configFramework.cfm:<br />
+<pre>&lt;cfset variables.framework.hibachi.errorDisplayFlag = true /&gt;</pre><br /><br />
+To have errors emailed you can add the following line to /Slatwall/custom/config/configFramework.cfm:<br />
+<pre>&lt;cfset variables.framework.hibachi.errorNotifyEmailAddresses = "admin1@mysite.com,admin2@mysite.com" /&gt;</pre>
+		
 <cfabort />
