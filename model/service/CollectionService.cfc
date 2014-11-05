@@ -477,7 +477,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		}
 		var collectionPaginationStruct = {};
-		if(arguments.collectionOptions.allRecords){
+		if(structKeyExists(arguments.collectionOptions,'allRecords') && arguments.collectionOptions.allRecords == 'true'){
 			collectionStruct = getFormattedRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
 		}else{
 			//paginated collection struct

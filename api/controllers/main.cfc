@@ -32,13 +32,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		collectionConfigStruct.columns = [
 			{
-				propertyIdentifier="Collection.collectionName"	
+				propertyIdentifier="_collection.collectionName"	
 			},
 			{
-				propertyIdentifier="Collection.collectionID"	
+				propertyIdentifier="_collection.collectionID"	
 			},
 			{
-				propertyIdentifier="Collection.collectionConfig"	
+				propertyIdentifier="_collection.collectionConfig"	
 			}
 		];
 			
@@ -46,7 +46,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			{
 				filterGroup = [
 					{
-						propertyIdentifier = "collectionObject",
+						propertyIdentifier = "_collection.collectionObject",
 						comparisonOperator = "=",
 						value=rc.entityName
 					}
@@ -56,7 +56,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 		collectionConfigStruct.orderBy = [
 			{
-				propertyIdentifier="Collection.collectionName",
+				propertyIdentifier="_collection.collectionName",
 				direction="ASC"
 			}
 		];

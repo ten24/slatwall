@@ -40,7 +40,7 @@ workflowPartialsPath
 					'{'+
                      	'"filterGroup":['+  
 				            '{'+
-				               '"propertyIdentifier":"workflow.workflowID",'+
+				               '"propertyIdentifier":"_workflow.workflowID",'+
 				               '"comparisonOperator":"=",'+
 				               '"value":"'+scope.workflowID+'"'+
 				           '}'+ 

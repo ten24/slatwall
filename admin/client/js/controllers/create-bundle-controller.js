@@ -57,7 +57,7 @@ function(
 	$scope.getPropertyDisplayData();
 	
 	if(angular.isDefined(productID)){
-		var filterGroupsConfig = '[{"filterGroup":[{"propertyIdentifier":"ProductBundleGroup.productBundleSku.product.productID","comparisonOperator":"=","value":"'+productID+'"}]}]';
+		var filterGroupsConfig = '[{"filterGroup":[{"propertyIdentifier":"_productBundleGroup.productBundleSku.product.productID","comparisonOperator":"=","value":"'+productID+'"}]}]';
 		
 		var productBundleGroupsOptions = {
 				context:'edit',

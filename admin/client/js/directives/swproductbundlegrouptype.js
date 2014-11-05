@@ -89,7 +89,7 @@ function(
 				  ' {  '+
 				      '"filterGroup":[  '+
 				        ' {  '+
-				           ' "propertyIdentifier":"Type.parentType.systemCode",'+
+				           ' "propertyIdentifier":"_type.parentType.systemCode",'+
 				           ' "comparisonOperator":"=",'+
 				           ' "value":"productBundleGroupType",'+
 				           ' "ormtype":"string",'+
@@ -97,7 +97,7 @@ function(
 				         '},'+
 				         '{'+
 				         	'"logicalOperator":"AND",'+
-				        	' "propertyIdentifier":"Type.typeName",'+
+				        	' "propertyIdentifier":"_type.typeName",'+
 				        	' "comparisonOperator":"like",'+
 				        	 ' "ormtype":"string",'+
 				        	' "value":"%'+keyword+'%"'+

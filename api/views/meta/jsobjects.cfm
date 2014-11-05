@@ -15,6 +15,16 @@
 			    $get:['$q','$http','$log', function ($q,$http,$log)
 			    {
 			    	var slatwallService = {
+			    		//basic entity getter where id is optional, returns a promise
+				  		getDefer:function(deferKey){
+				  			return _deferred[deferKey];
+				  		},
+				  		cancelPromise:function(deferKey){
+				  			var deferred = this.getDefer(deferKey);
+				  			if(angular.isDefined(deferred)){
+				  				deferred.resolve({messages:[{messageType:'error',message:'User Cancelled'}]});
+				  			}
+				  		},
 				      	newEntity:function(entityName){
 				      		return new _jsEntities[entityName];
 				      	},
@@ -30,7 +40,7 @@
 				  			if(options.deferKey){
 			    	  			this.cancelPromise(options.deferKey);
 			    	  		}
-				  			
+			    	  		
 				  			var params = {};
 				  			if(typeof options === 'String') {
 				  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options.id;
@@ -187,7 +197,7 @@
 				  		},
 				  		getExistingCollectionsByBaseEntity:function(entityName){
 				  			var deferred = $q.defer();
-				  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName=Slatwall'+entityName;
+				  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
 				  			
 				  			$http.get(urlString)
 				  			.success(function(data){
@@ -429,11 +439,11 @@
     
 	
 </cfoutput>
-<cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
+<!---<cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
 <cfset compressedJS = oYUICompressor.compress(
 											inputType = 'js'
 											,inputString = local.jsOutput
 											) />
-<cfoutput>#compressedJS.results#</cfoutput>
-<!---<cfoutput>#local.jsOutput#</cfoutput>--->
+<cfoutput>#compressedJS.results#</cfoutput>--->
+<cfoutput>#local.jsOutput#</cfoutput>
 	
