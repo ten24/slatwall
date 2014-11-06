@@ -1105,6 +1105,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getPromotionDAO().getPromotionCodeAccountUseCount(argumentcollection=arguments);
 	}
 	
+	public any function getPromotionCodeByPromotionCode(required string promotionCode) {
+		return getPromotionDAO().getPromotionCodeByPromotionCode(argumentcollection=arguments);
+	}
+	
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
