@@ -189,7 +189,7 @@
 									</cfif>
 	
 									<div class="btn-group btn-group-sm">
-										<button type="submit" class="btn btn-primary">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
+										<button type="submit" class="btn s-btn-blue">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
 									</div>
 								</cfif>
 							
