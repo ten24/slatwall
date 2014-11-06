@@ -20,7 +20,7 @@ function(
 
 	$scope.searchResults = {
 		'product' : {
-			'title': $slatwall.getRBKey('entity.product_plural'),
+			'title': 'Products',
 			'resultNameFilter': function(data) {
 				return data['productName'];
 			},
@@ -30,7 +30,7 @@ function(
 			}
 		},
 		'brand' : {
-			'title': $slatwall.getRBKey('entity.brand_plural'),
+			'title': 'Brands',
 			'resultNameFilter': function(data) {
 				return data['brandName'];
 			},
@@ -40,7 +40,7 @@ function(
 			}
 		},
 		'account' : {
-			'title': $slatwall.getRBKey('entity.account_plural'),
+			'title': 'Accounts',
 			'resultNameFilter': function(data) {
 				return data['firstName'] + ' ' + data['lastName'];
 			},
@@ -50,7 +50,7 @@ function(
 			}
 		},
 		'vendor' : {
-			'title': $slatwall.getRBKey('entity.vendor_plural'),
+			'title': 'Vendors',
 			'resultNameFilter': function(data) {
 				return data['vendorName'];
 			},
