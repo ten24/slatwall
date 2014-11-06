@@ -52,7 +52,7 @@ Notes:
 		
 	<!--- Create ---> 
 	<cf_HibachiEntityActionBarButtonGroup>
-		<cf_HibachiActionCaller action="admin:entity.createcollection" class="btn btn-primary" icon="plus icon-white" />
+		<cf_HibachiActionCaller action="admin:entity.createcollection" class="btn s-btn-blue" icon="plus icon-white" />
 	</cf_HibachiEntityActionBarButtonGroup>
 </cf_HibachiEntityActionBar>
 

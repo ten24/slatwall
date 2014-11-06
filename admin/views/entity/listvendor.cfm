@@ -52,7 +52,7 @@ Notes:
 		
 	<!--- Create ---> 
 	<cf_HibachiEntityActionBarButtonGroup>
-		<cf_HibachiActionCaller action="admin:entity.createvendor" entity="vendor" class="btn btn-primary" icon="plus icon-white" />
+		<cf_HibachiActionCaller action="admin:entity.createvendor" entity="vendor" class="btn s-btn-blue" icon="plus icon-white" />
 	</cf_HibachiEntityActionBarButtonGroup>
 </cf_HibachiEntityActionBar>
 
