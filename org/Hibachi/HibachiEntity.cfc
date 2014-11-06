@@ -848,6 +848,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		
 	}
 	
+	
+	
 	/*
 	public void function preDelete(any entity){
 	}

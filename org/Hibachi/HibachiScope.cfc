@@ -46,6 +46,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		config[ 'action' ] = getApplicationValue('action');
 		config[ 'dateFormat' ] = 'mmm dd, yyyy';
 		config[ 'timeFormat' ] = 'hh:mm tt';
+		config[ 'rbLocale' ] = '#getRBLocale()#';
+		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
 		
 		var returnHTML = '';
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';

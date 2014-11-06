@@ -10,9 +10,7 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
 	$provide.constant("collectionPartialsPath", _partialsPath+'collection/');
 	$provide.constant("workflowPartialsPath", _partialsPath+'workflow/');
 	
-	// TODO: configure log provider on/off based on server side rules? 
-	var debugEnabled = true;
-	$logProvider.debugEnabled(debugEnabled);
+	$logProvider.debugEnabled( $.slatwall.getConfig().debugFlag );
 	
 	$filterProvider.register('likeFilter',function(){
 		return function(text){

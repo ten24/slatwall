@@ -47,7 +47,7 @@ workflowPartialsPath
 					'{'+
                      	'"filterGroup":['+  
 				            '{'+
-				               '"propertyIdentifier":"workflow.workflowID",'+
+				               '"propertyIdentifier":"_workflow.workflowID",'+
 				               '"comparisonOperator":"=",'+
 				               '"value":"'+scope.workflowID+'"'+
 				           '}'+ 
@@ -74,7 +74,7 @@ workflowPartialsPath
 					'{'+
 	                 	'"filterGroup":['+  
 				            '{'+
-				               '"propertyIdentifier":"Collection.collectionObject",'+
+				               '"propertyIdentifier":"_collection.collectionObject",'+
 				               '"comparisonOperator":"=",'+
 				               '"value":"Slatwall'+ scope.workflowTriggers.selectedTrigger.workflow.workflowObject +'"'+
 				           '}'+ 

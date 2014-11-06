@@ -1,4 +1,3 @@
-//collection service is used to maintain the state of the ui
 
 angular.module('slatwalladmin.services')
 .factory('propertyDisplayService',
@@ -7,7 +6,6 @@ angular.module('slatwalladmin.services')
 function(
 	$log
 ){
-	//properties
 	function _propertyDisplay(propertyDisplay){
 		this.object=propertyDisplay.object;
 		this.objectName=propertyDisplay.objectName || '';

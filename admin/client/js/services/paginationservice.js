@@ -1,9 +1,7 @@
-//collection service is used to maintain the state of the ui
 
 angular.module('slatwalladmin.services')
 .factory('paginationService',[
 function(){
-	//properties
 	var _pageRecords = [];
 	var _pageShowOptions = [
 		{display:10,value:10},

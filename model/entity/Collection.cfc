@@ -166,7 +166,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var columnsJson = serializeJson(columnsArray);
 			variables.collectionConfig = '{
 				"baseEntityName":"#slatwallBaseEntity#",
-				"baseEntityAlias":"_#lcase(arguments.collectionObject)#",
+				"baseEntityAlias":"_#lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject))#",
 				"columns":#columnsJson#
 			}';
 		}
