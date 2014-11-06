@@ -75,6 +75,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	        var httpRequest = new http();
 	        httpRequest.setMethod("POST");
 			httpRequest.setUrl( httpURL );
+			httpRequest.setTimeout( setting('webServicesTimeout') );
 			httpRequest.addParam(type="XML", name="name",value=xmlPacket);
 	
 			// Parse response and set to struct
@@ -151,6 +152,8 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			} else {
 				
 			 	logHibachi('Unable to connect to: #httpURL#', true);
+			 	
+			 	logHibachi('Request XML: #xmlPacket#');
 			 	
 				if(structKeyExists(htmlResponse, "fileContent")) {
 					logHibachi('Server response was: #htmlResponse.fileContent#', true);

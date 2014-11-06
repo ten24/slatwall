@@ -73,6 +73,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			sendInvoiceFlag = {fieldType="yesno", defaultValue="1"},
 			webServicesURL = {fieldType="text"},
 			webServicesPassword = {fieldType="password", encryptValue=true},
+			webServicesTimeout = {fieldType="text", defaultValue=60, validate={dataType="numeric", required=true, minValue=1}},
 			webServicesTrustedID = {fieldType="text"},
 			webServicesUsername = {fieldType="text"}
 		};
