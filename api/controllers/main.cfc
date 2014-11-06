@@ -131,6 +131,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		arguments.rc.apiResponse.content['data'] = data;
 	}
+	
+	public any function getResourceBundle(required struct rc){
+		var data = getService('HibachiRBService').getResourceBundle(arguments.rc.locale);
+		
+		arguments.rc.apiResponse.content['data'] = data;
+	}
+	
 	public any function getPropertyDisplayOptions(required struct rc){
 		/*
 			arguments-

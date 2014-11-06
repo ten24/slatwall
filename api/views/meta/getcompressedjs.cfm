@@ -4,12 +4,22 @@
 <cfoutput>
 	<cfsavecontent variable="local.thisJSOutput">
 		angular.module('slatwalladmin.services',[])
-						.provider('$slatwall',[
-						function(){
-							var _baseUrl;
-							var _jsEntities;
-							var _deferred = {};
-		
+		.provider('$slatwall',[
+		function(){
+			var _deferred = {};
+			
+			var _config = {
+				dateFormat : 'MM/DD/YYYY',
+				timeFormat : 'HH:MM',
+				rbLocale : '#request.slatwallScope.getRBLocal()#',
+				baseURL : '/',
+				applicationKey : 'Slatwall',
+			};
+			
+			if(slatwallConfig){
+				angular.extend(_config,slatwallConfig);
+			}
+			
 			return {
 				
 			    $get:['$q','$http','$log', function ($q,$http,$log)
@@ -43,7 +53,7 @@
 			    	  		
 				  			var params = {};
 				  			if(typeof options === 'String') {
-				  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options.id;
+				  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options.id;
 				  			} else {
 				  				params['P:Current'] = options.currentPage || 1;
 				  				params['P:Show'] = options.pageShow || 10;
@@ -54,7 +64,7 @@
 				  				params.isDistinct = options.isDistinct || false;
 				  				params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 				  				params.allRecords = options.allRecords || '';
-				  				var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.get&entityName='+entityName;
+				  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName;
 				  			}
 				  			
 				  			var deferred = $q.defer();
@@ -77,7 +87,7 @@
 				  		},
 				  		getEventOptions:function(entityName){
 				  			var deferred = $q.defer();
-				  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getEventOptionsByEntityName&entityName='+entityName;
+				  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getEventOptionsByEntityName&entityName='+entityName;
 				  			
 				  			$http.get(urlString)
 				  			.success(function(data){
@@ -90,7 +100,7 @@
 				  		},
 				  		getValidation:function(entityName){
 				  			var deferred = $q.defer();
-				  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getValidation&entityName='+entityName;
+				  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getValidation&entityName='+entityName;
 				  			
 				  			$http.get(urlString)
 				  			.success(function(data){
@@ -103,7 +113,7 @@
 				  		},
 				  		getPropertyDisplayData:function(entityName,options){
 				  			var deferred = $q.defer();
-				  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getPropertyDisplayData&entityName='+entityName;
+				  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getPropertyDisplayData&entityName='+entityName;
 				  			var params = {};
 				  			params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 				  			$http.get(urlString,{params:params})
@@ -117,7 +127,7 @@
 				  		},
 				  		getPropertyDisplayOptions:function(entityName,options){
 				  			var deferred = $q.defer();
-				  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getPropertyDisplayOptions&entityName='+entityName;
+				  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getPropertyDisplayOptions&entityName='+entityName;
 				  			var params = {};
 				  			params.property = options.property || '';
 				  			if(angular.isDefined(options.argument1)){
@@ -145,7 +155,7 @@
 			  			 */
 				  		getProcessObject:function(entityName,options){
 				  			var deferred = $q.defer();
-				  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getProcessObject&entityName='+entityName;
+				  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getProcessObject&entityName='+entityName;
 				  			
 				  			if(angular.isDefined(options.id)) {
 				  				urlString += '&entityId='+options.id;	
@@ -167,7 +177,7 @@
 				  			$log.debug('save'+ entityName);
 				  			var deferred = $q.defer();
 			
-				  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.post';	
+				  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.post';	
 				  			
 				  			if(angular.isDefined(entityName)){
 				  				params.entityName = entityName;
@@ -197,7 +207,7 @@
 				  		},
 				  		getExistingCollectionsByBaseEntity:function(entityName){
 				  			var deferred = $q.defer();
-				  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
+				  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getExistingCollectionsByBaseEntity&entityName='+entityName;
 				  			
 				  			$http.get(urlString)
 				  			.success(function(data){
@@ -210,7 +220,7 @@
 				  		},
 				  		getFilterPropertiesByBaseEntityName:function(entityName){
 				  			var deferred = $q.defer();
-				  			var urlString = _baseUrl+'/index.cfm/?slatAction=api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
+				  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getFilterPropertiesByBaseEntityName&EntityName='+entityName;
 				  			
 				  			$http.get(urlString)
 				  			.success(function(data){
@@ -219,18 +229,57 @@
 				  				deferred.reject(reason);
 				  			});
 				  			return deferred.promise;
+				  		},
+				  		getResourceBundle:function(){
+			  				if(_resourceBundle[_config.rbLocale]){
+			  					return _resourceBundle[_config.rbLocale];
+			  				}
+			  				
+			  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle'
+				  			var params = {
+				  				locale:_config.rbLocale,
+				  			};
+			  				$http.get(urlString,{params:params}).success(function(response){
+			  					_resourceBundle[_config.rbLocale] = response.data;
+			  					slatwallService.getResourceBundle();
+				  			});
+			  				
+				  			return _resourceBundle[_config.rbLocale];
+				  		},
+				  		getRBKey:function(rbKey){
+				  			return _resourceBundle[_config.rbLocale][rbKey];
 				  		}
-				      	
 				      };
 				  			 
-			    	
+			    	var _resourceBundle = {};
 			    	var _jsEntities = {};
 			
 					<cfloop array="#rc.entities#" index="local.entity">
 						<cftry>
+							
+							<!---
+									/*
+						  			 *
+						  			 * getEntity('Product', '12345-12345-12345-12345');
+						  			 * getEntity('Product', {keywords='Hello'});
+						  			 * 
+						  			 */
+								 --->
+							 <!---decorate slatwallService --->
+							slatwallService.$$get#local.entity.getClassName()# = function(options){
+								var entityInstance = slatwallService.newEntity('#local.entity.getClassName()#');
+								var entityDataPromise = slatwallService.getEntity('#lcase(local.entity.getClassName())#',options);
+								entityDataPromise.then(function(response){
+									<!--- Set the values to the values in the data passed in, or API promisses, excluding methods because they are prefaced with $ --->
+									entityInstance.$$init(response);
+								});
+								return entityInstance
+							}
+							
 							_jsEntities[ '#local.entity.getClassName()#' ]=function() {
 										
 								this.metaData = #serializeJSON(local.entity.getPropertiesStruct())#;
+								this.metaData.className = '#local.entity.getClassName()#';
 								this.data = {};
 								this.modifiedData = {};
 								
@@ -261,14 +310,14 @@
 								
 							};
 							_jsEntities[ '#local.entity.getClassName()#' ].prototype = {
-								
 								$$init:function( data ) {
-									<!--- Set the values to the values in the data passed in, or API promisses, excluding methods because they are prefaced with $ --->
-									for(var key in this) {
-										if(key.charAt(0) !== '$'){
-											this.key = data.key;
+									(function(entityInstance,data){
+										for(var key in data) {
+											if(key.charAt(0) !== '$'){
+												entityInstance.data[key] = data[key];
+											}
 										}
-									}
+									})(this,data);
 								}
 								<!--- used to retrieve info about the object properties --->
 								,$$getMetaData:function( propertyName ) {
@@ -283,26 +332,16 @@
 										<cfif structKeyExists(local.property, "fieldtype")>
 											
 											<cfif listFindNoCase('many-to-one', local.property.fieldtype)>
-												,$$get#local.property.name#Options:function() {
-													/* This should get pulled down */
-													/*
+												<!---get many-to-one options --->
+												,$$get#local.property.name#Options:function(args) {
 													var options = {
-														columnsConfig:angular.fromJson({
-															"propertyIdentifier":"_#local.entity.getClassName()#.#local.property.name#"
-														})
+														property:'#local.property.name#',
+														args:args || []
 													};
-													if(angular.isDefined(this.$$get#LCase(local.entity.getClassName())#ID())){
-														options.filterGroupsConfig = angular.fromJson([{
-															"filterGroup":{
-																"propertyIdentifier":"_#local.entity.getClassName()#._#local.entity.getClassName()#ID",
-																"comparisonOperator":"=",
-																"value":this.$$get#LCase(local.entity.getClassName())#ID()
-															}
-														}]);
-													}
-													var collectionPromise = slatwallService.getEntity('_#local.entity.getClassName()#',options);
-													return collectionPromise;*/
+													var collectionOptionsPromise = slatwallService.getPropertyDisplayOptions('#local.entity.getClassName()#',options);
+													return collectionOptionsPromise;
 												}
+												<!---get many-to-one  via REST--->
 												,$$get#local.property.name#:function() {
 													if(angular.isDefined(this.$$get#LCase(local.entity.getClassName())#ID())){
 														var options = {
@@ -329,14 +368,28 @@
 															allRecords:true
 														};
 														
-														var collectionPromise = slatwallService.getEntity('#local.entity.getClassName()#',options);
-														return collectionPromise;
+														var collection = (function(thisEntityInstance,options){
+															var collection = {};
+															var collectionPromise = slatwallService.getEntity('#local.entity.getClassName()#',options);
+															collectionPromise.then(function(response){
+																for(var i in response.records){
+																	var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
+																	
+																	entityInstance.$$init(response.records[i]['_#lcase(local.entity.getClassName())#_#local.property.name#'][0]);
+																	collection=entityInstance;
+																}
+															});
+															return collection;
+														})(this,options);
+														
+														return collection;
 													}
 													
 													return null;
 												}
 											<cfelseif listFindNoCase('one-to-many,many-to-many', local.property.fieldtype)>
-												,$$get#local.property.name#Collection:function() {
+												<!--- get one-to-many, many-to-many via REST --->
+												,$$get#local.property.name#:function() {
 													if(angular.isDefined(this.$$get#LCase(local.entity.getClassName())#ID())){
 														var options = {
 															columnsConfig:angular.toJson([
@@ -362,29 +415,37 @@
 															allRecords:true
 														};
 														
-														var collectionPromise = slatwallService.getEntity('#local.entity.getClassName()#',options);
-														return collectionPromise;
+														var collection = (function(thisEntityInstance,options){
+															var collection = [];
+															var collectionPromise = slatwallService.getEntity('#local.entity.getClassName()#',options);
+															collectionPromise.then(function(response){
+																for(var i in response.records){
+																	var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
+																	
+																	entityInstance.$$init(response.records[i]['_#lcase(local.entity.getClassName())#_#local.property.name#'][0]);
+																	collection.push(entityInstance);
+																}
+															});
+															return collection;
+														})(this,options);
+														
+														return collection;
 													}
 												}
-											<cfelseif listFindNoCase('id',local.property.fieldtype)>
+											<cfelse>
 												,$$get#local.property.name#:function() {
 													return this.data.#local.property.name#;
 												}
 											</cfif>
-										
 										</cfif>
-									<cfelse>
-										,$$get#local.property.name#:function() {
-											return this.data.#local.property.name#;
-										}
 									</cfif>
 								</cfloop>
 							};
 							
 							
 							<cfcatch>
+								<cfcontent type="text/html">
 								<cfdump var="#local.entity.getClassName()#" />
-								<cfdump var="#local.property#" />
 								<cfdump var="#cfcatch#" />
 								<cfabort />
 							</cfcatch>
@@ -394,20 +455,29 @@
 				
 		      return slatwallService;
 	       }],
-		    setBaseUrl: function(baseUrl){
-		    	_baseUrl=baseUrl;
-		    },
 		    setJsEntities: function(jsEntities){
 		    	_jsEntities=jsEntities;
 		    },
 		    getJsEntities: function(){
 		    	return _jsEntities;
+		    },
+		    getConfig:function(){
+		    	return _config;
+		    },
+		    getConfigValue:function(key){
+		    	return _config[key];
+		    },
+		    setConfigValue:function(key,value){
+		    	_config[key] = value;
+		    },
+		    setConfig:function(config){
+		    	_config = config;
 		    }
 		};
 		}]).config(function ($slatwallProvider) {
-			$slatwallProvider.setBaseUrl($.slatwall.getConfig().baseURL);
+			//$slatwallProvider.setConfigValue($.slatwall.getConfig().baseURL);
 		}).run(function($slatwall){
-			
+			$slatwall.getResourceBundle();
 		});
 	</cfsavecontent>
 	<cfset local.jsOutput &= local.thisJSOutput />
@@ -439,11 +509,13 @@
     
 	
 </cfoutput>
+
 <cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
 <cfset compressedJS = oYUICompressor.compress(
 											inputType = 'js'
 											,inputString = local.jsOutput
 											) />
 <cfoutput>#compressedJS.results#</cfoutput>
+
 <!---<cfoutput>#local.jsOutput#</cfoutput>--->
 	

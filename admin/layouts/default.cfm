@@ -531,7 +531,9 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-animate.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/metismenu/metismenu.js"></script>
 		<!---lib END --->
-
+		<script type="text/javascript">
+			var slatwallConfig = $.slatwall.getConfig();
+		</script>
 		<!---modules BEGIN--->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/client/js/slatwall.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/slatwalladmin.js"></script>

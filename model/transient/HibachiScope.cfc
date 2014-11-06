@@ -80,6 +80,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		config[ 'action' ] = getApplicationValue('action');
 		config[ 'dateFormat' ] = setting('globalDateFormat');
 		config[ 'timeFormat' ] = setting('globalTimeFormat');
+		config[ 'rbLocale' ] = '#getRBLocale()#';
 		
 		var returnHTML = '';
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';
