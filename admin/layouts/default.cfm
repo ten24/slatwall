@@ -537,6 +537,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-animate.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/metismenu/metismenu.js"></script>
 		<!---lib END --->
+		<!---lib END --->
 
 		<!---modules BEGIN--->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/client/js/slatwall.js"></script>
@@ -566,6 +567,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/pagedialog.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/alertcontroller.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/globalsearch.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/date-select.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/create-bundle-controller.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/edit-bundle-controller.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/preprocessaccount_addaccountpayment.js"></script>
