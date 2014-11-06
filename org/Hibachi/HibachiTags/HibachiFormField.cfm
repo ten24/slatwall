@@ -70,7 +70,20 @@
 		</cfcase>
 		<cfcase value="dateTime">
 			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="#attributes.value#" class="#attributes.fieldClass# datetimepicker form-control" #attributes.fieldAttributes# />
+				<input 
+					ng-controller="datepicker-controller"
+					show-weeks="false" 
+					ng-model="formData.dueDate" 
+					type="text" 
+					name="#attributes.fieldName#" 
+					value="#attributes.value#" 
+					class="#attributes.fieldClass# form-control" 
+					datepicker-popup="MM-dd-yyyy" 
+					datepicker-append-to-body="true"
+					is-open="data.isOpen" 
+					ng-click="data.isOpen = true" 
+					#attributes.fieldAttributes#
+				>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="file">

@@ -121,7 +121,6 @@ label.control-label.col-md-4 {margin-bottom:10px;align:left;position:relative;te
 
 .table>thead>tr>td.admin.admin3, .table>tbody>tr>td.admin.admin3 {text-align:center;width:100px;}
 table tr th.s-sortable:after {font-family:'FontAwesome';content: "\f0dc";float:right;font-size:10px;margin-top:3px;cursor: pointer;color:#ccc;}
-table tr th .glyphicon {vertical-align:text-top;}
 
 .s-accordion-header {width:100%;margin-top:-10px;margin-bottom:-10px;padding-top:10px;padding-bottom:10px;cursor:pointer;}
 .row .s-body-nav nav.navbar.navbar-default {background-color: #FFF;margin-bottom: 0px;border-radius: 0px;border-top: 0px;}
@@ -662,7 +661,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .navbar-s-navbar-ten24 .navbar-brand {height:38px;padding:8px;}
 .navbar-s-navbar-ten24 .navbar-nav>.active>a:hover,.navbar-s-navbar-ten24 .navbar-nav>li>a:hover, .navbar-s-navbar-ten24 .navbar-nav>li>a:focus { background-color:#727E8B}
 .navbar-s-navbar-ten24 .navbar-nav>.active>a,.navbar-s-navbar-ten24 .navbar-nav>.open>a,.navbar-s-navbar-ten24 .navbar-nav>.open>a, .navbar-s-navbar-ten24 .navbar-nav>.open>a:hover,.navbar-s-navbar-ten24 .navbar-nav>.open>a, .navbar-s-navbar-ten24 .navbar-nav>.open>a:hover, .navbar-s-navbar-ten24 .navbar-nav>.open>a:focus { background-color: #526375;opacity:.8;}
-.dropdown-menu { background-color: #ffffff}
+.dropdown-menu { background-color: #ffffff;}
 .dropdown-menu>li>a {cursor:pointer;text-align: left;}
 .dropdown-menu>li>a:hover, .dropdown-menu>li>a:focus { background-color: #F58620;}
 .navbar-s-navbar-ten24 { background-image: none; }
@@ -680,6 +679,17 @@ tabel .s-table-header {margin-bottom:10px;}
 .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a:hover .caret { border-top-color: #F58620}
 .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a .caret { border-bottom-color: #F58620}
 .navbar-s-navbar-ten24 .navbar-nav>.dropdown>a:hover .caret { border-bottom-color: #F58620}
+
+.s-date-picker {padding:10px;}
+.s-date-picker:focus, .s-date-picker li:focus, .s-date-picker div:focus, .s-date-picker table:focus { outline: none !important; } 
+.s-date-picker .btn-default {background-color:#fff;}
+.s-date-picker tr td {padding:1px;}
+.s-date-picker .text-info {color:#fff;}
+.s-date-picker .btn-default:hover, .s-date-picker .btn-default.active {background-color:#428BCA;border-color:#428BCA;color:#fff;}
+.s-date-picker span.btn-group {float:left !important;}
+.s-date-picker button.btn-info, .s-date-picker button.btn-danger, .s-date-picker button.btn-success {background-color: #EAEAEA;border-color: #EAEAEA;color: #5E5E5E;}
+.s-date-picker button.btn-info:hover, .s-date-picker button.btn-success:hover {background-color: #DDD;border-color: #D1D1D1;color: #5E5E5E;}
+.s-date-picker button.btn-danger:hover {background-color:#D9534F;border-color:#D9534F;color:#fff;}
 
 .s-no-padding-left { padding-left:0px }
 .s-no-padding-right { padding-right:0px }
