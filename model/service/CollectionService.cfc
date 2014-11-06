@@ -438,7 +438,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		collectionEntity.setCurrentPageDeclaration(arguments.collectionOptions.currentPage);
 		collectionEntity.setPageRecordsShow(arguments.collectionOptions.pageShow);
 		collectionEntity.setKeywords(arguments.collectionOptions.keywords);
-		
 		if(len(arguments.collectionOptions.propertyIdentifiersList)){
 			addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,arguments.collectionOptions.propertyIdentifiersList);
 			var collectionPropertyIdentifiers = [];
