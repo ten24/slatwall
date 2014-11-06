@@ -49,10 +49,10 @@ Notes:
 <cfparam name="rc.product" type="any" />
 
 <cfoutput>
-	<ul class="thumbnails">
+	<ul class="thumbnails list-unstyled s-product-image" >
 		<cfloop array="#rc.product.getDefaultProductImageFiles()#" index="imageFile">
-			<li class="col-md-4">
-				<div class="thumbnail"<cfif imageFile eq rc.product.getDefaultSku().getImageFile()> style="border-color:##08C;"</cfif>>
+			<li class="col-md-4 s-image">
+				<div class="thumbnail<cfif imageFile eq rc.product.getDefaultSku().getImageFile()> s-default-image</cfif>">
 					<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#imageFile#" />
 					<div class="img-container">
 						<a href="#$.slatwall.getResizedImagePath(imagePath=thisImagePath, width=210, height=210)#" target="_blank">
@@ -60,14 +60,17 @@ Notes:
 						</a>
 					</div>
 					<hr />
-					<div class="small em image-caption">#imageFile#</div>
-					<cf_HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn s-btn-dgrey" iconOnly="true" icon="upload" modal="true" />
-					<cfif fileExists(expandPath(thisImagePath))>
-						<cf_HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn s-btn-dgrey" iconOnly="true" icon="trash" />
-					</cfif>
+					<div class="small em image-caption s-info">
+						<h2>#imageFile#</h2>
+						<ul class="list-unstyled">
+							<li><cf_HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="upload" modal="true" /></li>
+							<cfif fileExists(expandPath(thisImagePath))>
+								<li><cf_HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="trash" /></li>
+							</cfif>
+						</ul>
+					</div>
 				</div>
 			</li>
 		</cfloop>
 	</ul>
 </cfoutput>
-
