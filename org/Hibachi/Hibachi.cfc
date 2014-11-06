@@ -57,16 +57,18 @@ component extends="FW1.framework" {
 	
 	// Hibachi Setup
 	variables.framework.hibachi = {};
+	variables.framework.hibachi.authenticationSubsystems = "admin,public";
+	variables.framework.hibachi.debuggingFlag = false;
+	variables.framework.hibachi.errorDisplayFlag = false;
+	variables.framework.hibachi.errorNotifyEmailAddresses = '';
 	variables.framework.hibachi.fullUpdateKey = "update";
 	variables.framework.hibachi.fullUpdatePassword = "true";
-	variables.framework.hibachi.authenticationSubsystems = "admin,public";
 	variables.framework.hibachi.loginSubsystems = "admin,public";
 	variables.framework.hibachi.loginDefaultSubsystem = 'admin';
 	variables.framework.hibachi.loginDefaultSection = 'main';
 	variables.framework.hibachi.loginDefaultItem = 'login';
 	variables.framework.hibachi.useCachingEngineFlag = false;
-	variables.framework.hibachi.errorDisplayFlag = false;
-	variables.framework.hibachi.errorNotifyEmailAddresses = '';
+	
 	variables.framework.hibachi.noaccessDefaultSubsystem = 'admin';
 	variables.framework.hibachi.noaccessDefaultSection = 'main';
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
@@ -299,6 +301,7 @@ component extends="FW1.framework" {
 					applicationInitData["applicationReloadPassword"] =	variables.framework.password;
 					applicationInitData["applicationUpdateKey"] = 		variables.framework.hibachi.fullUpdateKey;
 					applicationInitData["applicationUpdatePassword"] =	variables.framework.hibachi.fullUpdatePassword;
+					applicationInitData["debugFlag"] =					variables.framework.hibachi.debugFlag;
 					applicationInitData["errorDisplayFlag"] =			variables.framework.hibachi.errorDisplayFlag;
 					applicationInitData["errorNotifyEmailAddresses"] =	variables.framework.hibachi.errorNotifyEmailAddresses;
 					applicationInitData["baseURL"] = 					variables.framework.baseURL;

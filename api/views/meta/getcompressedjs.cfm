@@ -14,6 +14,7 @@
 				rbLocale : '#request.slatwallScope.getRBLocal()#',
 				baseURL : '/',
 				applicationKey : 'Slatwall',
+				debugFlag : #request.slatwallScope.getApplicationValue('debugFlag')#
 			};
 			
 			if(slatwallConfig){
@@ -510,12 +511,13 @@
 	
 </cfoutput>
 
-<cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
-<cfset compressedJS = oYUICompressor.compress(
-											inputType = 'js'
-											,inputString = local.jsOutput
-											) />
-<cfoutput>#compressedJS.results#</cfoutput>
-
-<!---<cfoutput>#local.jsOutput#</cfoutput>--->
-	
+<cfif request.slatwallScope.getApplicationValue('debugFlag')>
+	<cfoutput>#local.jsOutput#</cfoutput>	
+<cfelse>
+	<cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
+	<cfset compressedJS = oYUICompressor.compress(
+												inputType = 'js'
+												,inputString = local.jsOutput
+												) />
+	<cfoutput>#compressedJS.results#</cfoutput>
+</cfif>
