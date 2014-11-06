@@ -504,6 +504,11 @@ component extends="FW1.framework" {
     		//leaving a note here in case we ever wish to support XML for api responses
     		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/json'){
     			responseString = serializeJSON(request.context.apiResponse.content);
+    			
+    			// If running CF9 we need to fix strings that were improperly cast to numbers
+    			if(left(server.coldFusion.productVersion, 1) eq 9) {
+    				responseString = getHibachiScope().getService("hibachiUtilityService").updateCF9SerializeJSONOutput(responseString);
+    			}
     		}
     		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/xml'){
     			//response String to xml placeholder
