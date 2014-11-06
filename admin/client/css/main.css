@@ -158,6 +158,10 @@ a:-webkit-any-link {text-decoration:none !important;}
 .help-block {font-size:11px;}
 .has-error .form-control {border-color: #A94442 !important;}
 
+.dropdown-menu>li>a {padding: 5px 15px;}
+.dropdown-menu .dropdown-header {padding: 3px 15px;text-transform: uppercase;}
+.dropdown-menu .search-filter {margin-right:15px;margin-left:15px;margin-bottom:5px;}
+
 .modal-header {padding: 15px;}
 .modal-footer {padding: 8px  15px;}
 .modal-header h3 {font-size: 20px;padding: 0px;margin: 0px;line-height: 20px;}
