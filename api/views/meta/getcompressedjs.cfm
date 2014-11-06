@@ -14,6 +14,7 @@
 				rbLocale : '#request.slatwallScope.getRBLocal()#',
 				baseURL : '/',
 				applicationKey : 'Slatwall',
+				debugFlag : #request.slatwallScope.getApplicationValue('debugFlag')#
 			};
 			
 			if(slatwallConfig){
@@ -230,22 +231,33 @@
 				  			});
 				  			return deferred.promise;
 				  		},
-				  		getResourceBundle:function(){
-			  				if(_resourceBundle[_config.rbLocale]){
-			  					return _resourceBundle[_config.rbLocale];
+				  		loadResourceBundle:function(locale){
+				  			var deferred = $q.defer();
+				  			$http.get(urlString,{params:params}).success(function(response){
+			  					_resourceBundle[locale] = response.data;
+				  				deferred.resolve(response);
+				  				
+				  			}).error(function(reason){
+				  				deferred.reject(reason);
+				  			});
+				  			return deferred.promise;
+				  		},
+				  		getResourceBundle:function(locale){
+				  			var locale = locale || _config.rbLocale;
+				  			
+				  			
+			  				if(_resourceBundle[locale]){
+			  					return _resourceBundle[locale];
 			  				}
 			  				
 			  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle'
 				  			var params = {
 				  				locale:_config.rbLocale,
 				  			};
-			  				$http.get(urlString,{params:params}).success(function(response){
-			  					_resourceBundle[_config.rbLocale] = response.data;
-			  					slatwallService.getResourceBundle();
-				  			});
 			  				
-				  			return _resourceBundle[_config.rbLocale];
+			  					
 				  		},
+						
 				  		<!---replaceStringTemplate:function(template,object,formatValues,removeMissingKeys){
 				  			/*formatValues = formatValues || false;
 				  			removeMissingKeys = removeMissingKeys || false;
@@ -259,25 +271,29 @@
 				  			}*/
 				  		}--->
 				  		rbKey:function(key,replaceStringData){
-				  			var keyValue = getRBKey(key,_config.locale);
+				  			var keyValue = this.getRBKey(key,_config.locale);
 				  			<!---if(angular.isDefined(replaceStringData) && ('"${'.toLowerCase().indexOf(keyValue))){
 				  				keyValue = slatwallService.replaceStringTemplate(keyValue,replaceStringData);
 				  			}--->
 				  			return keyValue;
 				  		},
 				  		getRBKey:function(key,locale,checkedKeys,originalKey){
+				  			checkedKeys = checkedKeys || "";
+				  			locale = locale || 'en_us';
+				  			
 				  			<!---// Check to see if a list was passed in as the key--->
-				  			var listArray = key.split(',');
-							if(listArray.length > 1) {
+				  			var keyListArray = key.split(',');
+				  			
+							if(keyListArray.length > 1) {
 								
 								<!---// Set up "" as the key value to be passed as 'checkedKeys'--->
 								var keyValue = "";
 								
 								<!---// If there was a list then try to get the key for each item in order--->
-								for(var i=0; i<listArray.length; i++) {
+								for(var i=0; i<keyListArray.length; i++) {
 									
 									<!---// Get the keyValue from this iteration--->
-									var keyValue = this.getRBKey(listArray[i], locale, keyValue);
+									var keyValue = this.getRBKey(keyListArray[i], locale, keyValue);
 									
 									<!---// If the keyValue was found, then we can break out of the loop--->
 									if(keyValue.slice(-8) != "_missing") {
@@ -289,17 +305,45 @@
 							}
 							
 							<!---// Check the exact bundle file--->
-							if(angular.isDefined(_resourceBundle[locale][key])) {
-								return _resourceBundle[locale];
+							var bundle = this.getResourceBundle(locale);
+							if(angular.isDefined(bundle[key])) {
+								return bundle[key];
 							}
 							
-							<!---// Because the value was not found, we can add this to the checkedKeys, and setup the original Kye--->
-							arguments.checkedKeys = listAppend(arguments.checkedKeys, arguments.key & "_" & arguments.locale & "_missing");
-							if(!structKeyExists(arguments, "originalKey")) {
-								arguments.originalKey = arguments.key;
+							<!---// Because the value was not found, we can add this to the checkedKeys, and setup the original Key--->
+							var checkedKeysListArray = checkedKeys.split(',');
+							checkedKeys = checkedKeysListArray.push(key+'_'+locale+'_missing');
+							if(angular.isUndefined(originalKey)){
+								originalKey = key;
 							}
 							
-				  			
+							<!---// Check the broader bundle file--->
+							var localeListArray = locale.split('_');
+							if(localeListArray.length === 2){
+								bundle = this.getResourceBundle(localeListArray[0]);
+								if(angular.isDefined(bundle[key])){
+									return bundle[key];
+								}
+								<!---// Add this more broad term to the checked keys--->
+								checkedKeys = checkedKeysListArray.push(key+'_'+localeListArray[0]+'_missing');
+							}
+							
+							<!---// Recursivly step the key back with the word 'define' replacing the previous.  Basically Look for just the "xxx.yyy.define.zzz" version of the end key and then "yyy.define.zzz" and then "define.zzz"--->
+							var keyDotListArray = key.split('.');
+							if(	keyDotListArray.length >= 3
+								&& keyDotListArray[keyDotListArray.length - 2] === 'define'
+							){
+								var newKey = key.replace(keyDotListArray[keyDotListArray.length - 3]+'.define','define');
+								return this.getRBKey(newKey,local,checkedKeys,originalKey)
+							}else if( keyDotListArray >= 2 && keyDotListArray[keyDotListArray.length - 2]){
+								var newKey = key.replace(keyDotListArray[keyDotListArray.length -2]+'.','define');
+								return getRBKey(newKey,locale,checkedKeys,originalKey)
+							}
+							
+							if(localeListArray[0] !== "en"){
+								return this.getRBKey(originalKey,'en',checkedKeys);
+							}
+							
 				  			return checkedKeys;
 				  		}
 				      };
@@ -343,16 +387,16 @@
 								};
 								
 								this.metaData.$$getPropertyTitle = function(propertyName){
-									var propertyMetaData = this.metaData[propertyName];
+									<!---var propertyMetaData = this.metaData[propertyName];
 									if(angular.isDefined(propertyMetaData['hb_rbKey'])){
 										return this.metaData.$$getRBKey(propertyMetaData['hb_rbKey']);
 									}else if (angular.isDefined(propertyMetaData['fieldtype']) 
 										&& angular.isDefined(propertyMetaData['cfc'])
 										&& if('"one-to-many","many-to-many"'.toLowerCase().indexOf(propertyMetaData.fieldtype))
 									){
-										return this.metaData.$$getRBKey("entity."+this.metaData.className+".#arguments.propertyName#,entity.#propertyMetaData.cfc#_plural");
-										return this.metaData.$$getRBKey("entity."+)
-									}
+										<!---//return this.metaData.$$getRBKey("entity."+this.metaData.className+".#arguments.propertyName#,entity.#propertyMetaData.cfc#_plural");
+										//return this.metaData.$$getRBKey("entity."+)--->
+									}--->
 								}
 								
 								this.data = {};
@@ -585,12 +629,13 @@
 	
 </cfoutput>
 
-<!---<cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
-<cfset compressedJS = oYUICompressor.compress(
-											inputType = 'js'
-											,inputString = local.jsOutput
-											) />
-<cfoutput>#compressedJS.results#</cfoutput>--->
-
-<cfoutput>#local.jsOutput#</cfoutput>
-	
+<cfif request.slatwallScope.getApplicationValue('debugFlag')>
+	<cfoutput>#local.jsOutput#</cfoutput>	
+<cfelse>
+	<cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
+	<cfset compressedJS = oYUICompressor.compress(
+												inputType = 'js'
+												,inputString = local.jsOutput
+												) />
+	<cfoutput>#compressedJS.results#</cfoutput>
+</cfif>

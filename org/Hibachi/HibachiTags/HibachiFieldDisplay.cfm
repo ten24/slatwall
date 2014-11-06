@@ -35,8 +35,8 @@
 			<cfif attributes.edit>
 				<cfoutput>
 					<div class="form-group">
-						<label for="#attributes.fieldName#" class="control-label col-sm-2" style="text-align:left">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></dt>
-						<div class="col-sm-8">
+						<label for="#attributes.fieldName#" class="control-label col-sm-12" style="text-align:left">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></dt>
+						<div class="col-sm-12">
 							<cf_HibachiFormField attributecollection="#attributes#" />
 							<cf_HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
 						</div>

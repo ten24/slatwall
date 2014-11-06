@@ -47,6 +47,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		config[ 'dateFormat' ] = 'mmm dd, yyyy';
 		config[ 'timeFormat' ] = 'hh:mm tt';
 		config[ 'rbLocale' ] = '#getRBLocale()#';
+		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
 		
 		var returnHTML = '';
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';
@@ -55,9 +56,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public void function addModifiedEntity( required any entity ) {
-		if(!arrayFind(getModifiedEntities(), arguments.entity)) {
-			arrayAppend(getModifiedEntities(), arguments.entity);
-		}
+		arrayAppend(getModifiedEntities(), arguments.entity);
 	}
 	
 	public void function clearModifiedEntities() {

@@ -16,17 +16,17 @@
 	<cfparam name="attributes.fRenderItem" type="string" default="#request.context.entityActionDetails.fRenderItem#">
 	<cfparam name="attributes.sRedirectQS" type="string" default="#request.context.entityActionDetails.sRedirectQS#">
 	<cfparam name="attributes.fRedirectQS" type="string" default="#request.context.entityActionDetails.fRedirectQS#">
-	
+
 	<cfset formAction = "?s=1" />
-	
+
 	<cfif len(attributes.processActionQueryString)>
 		<cfset formAction &= "&#attributes.processActionQueryString#" />
 	</cfif>
-	
+
 	<cfif len(attributes.processActionHash)>
 		<cfset formAction &= "###attributes.processActionHash#" />
 	</cfif>
-	
+
 	<cfoutput>
 		<form method="post" action="#formAction#" class="form-horizontal" enctype="#attributes.enctype#" id="#replaceNoCase(replaceNoCase(lcase(attributes.processAction),':','','all'),'.','','all')#_#lcase(attributes.processContext)#">
 			<input type="hidden" name="#request.context.fw.getAction()#" value="#attributes.processAction#" />
@@ -41,7 +41,7 @@
 			<cfif len(attributes.fRedirectAction)><input type="hidden" name="fRedirectAction" value="#attributes.fRedirectAction#" /></cfif>
 			<cfif len(attributes.fRenderItem)><input type="hidden" name="fRenderItem" value="#attributes.fRenderItem#" /></cfif>
 			<cfif len(attributes.fRedirectQS)><input type="hidden" name="fRedirectQS" value="#attributes.fRedirectQS#" /></cfif>
-			
+
 			<!--- Additional Model Header --->
 			<cfif structKeyExists(request.context, "modal") and request.context.modal>
 				<div class="modal-dialog">
@@ -53,27 +53,25 @@
 						<div class="modal-body">
 			</cfif>
 			<!--- END: Additional Model Header --->
-				
+
 	</cfoutput>
 <cfelse>
 	<cfoutput>
-		
+
 			<!--- Additional Model Footer --->
 			<cfif structKeyExists(request.context, "modal") and request.context.modal>
 					</div>
 					<div class="modal-footer">
 						<cfif attributes.edit>
-							<div class="btn-group">
-								<a href="##" class="btn btn-inverse" data-dismiss="modal"><i class="icon-remove icon-white"></i> #attributes.hibachiScope.rbKey('define.cancel')#</a>
-								<cf_HibachiActionCaller type="button" action="##" class="btn-success" icon="ok icon-white" text="#attributes.hibachiScope.rbKey( 'entity.#attributes.entity.getClassName()#.process.#attributes.processContext#' )#" disabled="#attributes.disableProcess#" disabledText="#attributes.disableProcessText#">
-							</div>
+							<a href="##" class="btn btn-default s-remove" data-dismiss="modal"><i class="fa fa-trash-o"></i> #attributes.hibachiScope.rbKey('define.cancel')#</a>
+							<cf_HibachiActionCaller type="button" action="##" class="btn-success" icon="ok icon-white" text="#attributes.hibachiScope.rbKey( 'entity.#attributes.entity.getClassName()#.process.#attributes.processContext#' )#" disabled="#attributes.disableProcess#" disabledText="#attributes.disableProcessText#">
 						</cfif>
 					</div>
 				</div>
 			</div>
 			</cfif>
 			<!--- END: Additional Model Footer --->
-				
+
 		</form>
 	</cfoutput>
 </cfif>

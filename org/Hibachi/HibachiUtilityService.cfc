@@ -533,6 +533,15 @@
 			
 			return deserializeJSON(decrypt(fileRead(getEncryptionPasswordFilePath()), hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
 		}
+		
+		public any function updateCF9SerializeJSONOutput( required any data ) {
+			var reMatchArray = reMatch(':0[0-9][0-9]*\.?[0-9]*', arguments.data);
+			for(var i=1; i<=arrayLen(reMatchArray); i++) {
+				arguments.data = reReplace(arguments.data, ':0[0-9][0-9]*\.?[0-9]*', ':"#right(reMatchArray[i], len(reMatchArray[i])-1)#"');
+			}
+			
+			return arguments.data;
+		}
 	</cfscript>
 	
 	<cffunction name="logException" returntype="void" access="public">

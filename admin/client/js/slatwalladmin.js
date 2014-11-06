@@ -10,9 +10,7 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
 	$provide.constant("collectionPartialsPath", _partialsPath+'collection/');
 	$provide.constant("workflowPartialsPath", _partialsPath+'workflow/');
 	
-	// TODO: configure log provider on/off based on server side rules? 
-	var debugEnabled = true;
-	$logProvider.debugEnabled(debugEnabled);
+	$logProvider.debugEnabled( $.slatwall.getConfig().debugFlag );
 	
 	$filterProvider.register('likeFilter',function(){
 		return function(text){
@@ -59,7 +57,7 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
 	
 	$httpProvider.interceptors.push('slatwallInterceptor');
 	
-}]).run(['$rootScope','dialogService', function($rootScope, dialogService) {
+}]).run(['$rootScope','$slatwall','dialogService', function($rootScope,$slatwall, dialogService) {
     $rootScope.openPageDialog = function( partial ) {
     	dialogService.addPageDialog( partial );
     };
@@ -67,6 +65,8 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
     $rootScope.closePageDialog = function( index ) {
 		dialogService.removePageDialog( index );
     };
+    var account = $slatwall.newAccount();
+    
 }]);
 
 

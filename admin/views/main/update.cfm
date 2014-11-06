@@ -60,11 +60,9 @@ Notes:
 </cfif>
 
 <cfoutput>
-	
 	<div class="row s-body-nav">
 	    <nav class="navbar navbar-default" role="navigation">
 	      <div class="col-md-4 s-header-info">
-			
 				<!--- Page Title --->
 				<ul class="list-unstyled list-inline">
 				</ul>
@@ -75,6 +73,8 @@ Notes:
 	</div>
 	<cf_HibachiPropertyList divClass="col-md-12">
 		<div class="s-no-tab-wrapper">
+			<h3>#$.slatwall.rbKey('admin.main.update.backup')#</h3>
+			<hr />
 			<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentVersion')#" value="#rc.currentVersion#" />
 			<cfif rc.currentBranch eq 'master'>
 				<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentReleaseType')#" value="#$.slatwall.rbKey('admin.main.update.stable')#" />
