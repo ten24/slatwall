@@ -540,74 +540,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/slatwalladmin.js"></script>
 		<!---modules END --->
 
-		<!---services BEGIN--->
-		<!---<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwall.js"></script>--->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#?slatAction=api:meta.getcompressedjs"></script>
-		<!---<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#?slatAction=api:meta.admin"></script>--->
-		
-		<!---<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/metadataservice.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/alertservice.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/slatwallInterceptor.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/collectionservice.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/paginationservice.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/dialogservice.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/formservice.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/productbundleservice.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/propertydisplayservice.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/workflowservice.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/workflowtriggerservice.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/services/workflowtaskservice.js"></script>
-
-		<!---services END --->
-
-		<!---controllers BEGIN--->
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collections.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/collectionstabcontroller.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/pagedialog.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/alertcontroller.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/globalsearch.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/create-bundle-controller.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/edit-bundle-controller.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/preprocessaccount_addaccountpayment.js"></script>
-		<!---workflow controllers BEGIN --->
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/workflow/workflow-basic.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/workflow/workflow-triggers.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/controllers/workflow/workflow-tasks.js"></script>
-		<!---workflow controllers END --->
-		<!---controllers END --->
-
-		<!---directives BEGIN--->
-			<!---core directives --->
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swheaderwithtabs.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swdirective.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swpaginationbar.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swscrolltrigger.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swexportaction.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swpropertydisplay.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swformfield.js"></script>
-			<!---workflow  --->
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowbasic.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowtriggers.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowtrigger.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowtasks.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowconditiongroups.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowcondition.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swworkflowconditiongroupitem.js"></script>
-			<!---collection --->
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfiltergroups.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfilteritem.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swaddfilterbuttons.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/sweditfilteritem.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swfiltergroupitem.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swcriteria.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swdisplayoptions.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swdisplayitem.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swcolumnitem.js"></script>
-			<!---product bundle --->
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swproductbundlegroups.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swproductbundlegroup.js"></script>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/directives/swproductbundlegrouptype.js"></script>
-		<!---directives END --->--->
 	</body>
 </html>
 </cfoutput>
