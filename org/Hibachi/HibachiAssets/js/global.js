@@ -862,7 +862,7 @@ function setupEventHandlers() {
 
 function initModal( modalWin ){
 
-	jQuery('#adminModal').html('<img src="' + hibachiConfig.baseURL + '/org/Hibachi/HibachiAssets/images/loading.gif" style="padding:20px;" />');
+	jQuery('#adminModal').html('<img src="' + hibachiConfig.baseURL + '/org/Hibachi/HibachiAssets/images/loading.gif" style="position:absolute;top:50%;left:50%;padding:20px;" />');
 	var modalLink = jQuery( modalWin ).attr( 'href' );
 
 	if( modalLink.indexOf("?") !== -1) {
