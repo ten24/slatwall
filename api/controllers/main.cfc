@@ -32,13 +32,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		collectionConfigStruct.columns = [
 			{
-				propertyIdentifier="Collection.collectionName"	
+				propertyIdentifier="_collection.collectionName"	
 			},
 			{
-				propertyIdentifier="Collection.collectionID"	
+				propertyIdentifier="_collection.collectionID"	
 			},
 			{
-				propertyIdentifier="Collection.collectionConfig"	
+				propertyIdentifier="_collection.collectionConfig"	
 			}
 		];
 			
@@ -46,7 +46,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			{
 				filterGroup = [
 					{
-						propertyIdentifier = "collectionObject",
+						propertyIdentifier = "_collection.collectionObject",
 						comparisonOperator = "=",
 						value=rc.entityName
 					}
@@ -56,7 +56,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 		collectionConfigStruct.orderBy = [
 			{
-				propertyIdentifier="Collection.collectionName",
+				propertyIdentifier="_collection.collectionName",
 				direction="ASC"
 			}
 		];
@@ -131,6 +131,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		arguments.rc.apiResponse.content['data'] = data;
 	}
+	
+	public any function getResourceBundle(required struct rc){
+		var data = getService('HibachiRBService').getResourceBundle(arguments.rc.locale);
+		
+		arguments.rc.apiResponse.content['data'] = data;
+	}
+	
 	public any function getPropertyDisplayOptions(required struct rc){
 		/*
 			arguments-
@@ -211,6 +218,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				isDistinct = arguments.rc['isDistinct'];
 			}
 			
+			var allRecords = false;
+			if(structKeyExists(arguments.rc,'allRecords')){
+				allRecords = arguments.rc['allRecords'];
+			}
+			
 			var collectionOptions = {
 				currentPage=currentPage,
 				pageShow=pageShow,
@@ -219,11 +231,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				joinsConfig=joinsConfig,
 				propertyIdentifiersList=propertyIdentifiersList,
 				isDistinct=isDistinct,
-				columnsConfig=columnsConfig
+				columnsConfig=columnsConfig,
+				allRecords=allRecords
 			};
 			
 			//considering using all url variables to create a transient collectionConfig for api response
-			//var transientCollectionConfigStruct = getCollectionService().getTransientCollectionConfigStructByURLParams(arguments.rc);			
 			if(!structKeyExists(arguments.rc,'entityID')){
 				//should be able to add select and where filters here
 				var result = getCollectionService().getAPIResponseForEntityName(	arguments.rc.entityName,

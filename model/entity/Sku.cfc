@@ -166,18 +166,24 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	// @hint Returns sku purchaseStartDateTime if defined, or product purchaseStartDateTime if not defined in sku.
 	public any function getPurchaseStartDateTime() {
-		if(isDefined("purchaseStartDateTime")) {
-			return purchaseStartDateTime;
+		if(!structKeyExists(variables, "purchaseStartDateTime")) {
+			if(!isNull(getProduct())) {
+				return getProduct().getPurchaseStartDateTime();
+			}
+		} else {
+			return variables.purchaseStartDateTime;
 		}
-		return this.getProduct().getPurchaseStartDateTime();
 	}
 	
 	// @hint Returns sku purchaseEndDateTime if defined, or product purchaseStartDateTime if not defined in sku.
 	public any function getPurchaseEndDateTime() {
-		if(isDefined("purchaseEndDateTime")) {
-			return purchaseEndDateTime;
+		if(!structKeyExists(variables, "purchaseEndDateTime")) {
+			if(!isNull(getProduct())) {
+				return getProduct().getPurchaseEndDateTime();
+			}
+		} else {
+			return variables.purchaseEndDateTime;
 		}
-		return this.getProduct().getPurchaseStartDateTime();
 	}
 	
 	// START: Image Methods

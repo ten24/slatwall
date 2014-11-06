@@ -164,11 +164,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		var collectionEntity = this.newCollection();
 		var properlyCasedFullEntityName = getProperlyCasedFullEntityName(arguments.entityName);
 		collectionEntity.setCollectionObject(properlyCasedFullEntityName,false);
-		var collectionConfigStruct = {
-			baseEntityName=properlyCasedFullEntityName,
-			baseEntityAlias=getProperlyCasedShortEntityName(arguments.entityName)
-		};
-		collectionEntity.setCollectionConfigStruct(collectionConfigStruct);
 		return collectionEntity;
 	}
 	
@@ -262,6 +257,15 @@ component extends="HibachiService" accessors="true" output="false" {
 		formattedPageRecords[ "totalPages" ] = arguments.collectionEntity.getTotalPages();
 		
 		return formattedPageRecords;
+	}
+	
+	public any function getFormattedRecords(required any collectionEntity, required array propertyIdentifiers){
+		
+		var collectionOfEntities = collectionEntity.getRecords();
+		
+		var formattedRecords[ "records" ] = getFormattedObjectRecords(collectionOfEntities,arguments.propertyIdentifiers);
+		
+		return formattedRecords;
 	}
 	
 	private array function getPropertyIdentifierArray(required string entityName){
@@ -417,8 +421,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
 			collectionConfigStruct.isDistinct = false;
 		}
-		var capitalCaseEntityName = capitalCase(arguments.entityName);
-		var propertyIdentifier = capitalCaseEntityName & '.#arguments.entityName#ID';
+		
+		var propertyIdentifier = '_' & lcase(arguments.entityName) & '.#arguments.entityName#ID';
 		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
 		var filterGroupStruct.filterGroup = [];
 		arrayappend(filterGroupStruct.filterGroup,filterStruct);
@@ -464,6 +468,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		//get default property identifiers for the records that the collection refers to
+		
 		if(structKeyExists(collectionEntity.getCollectionConfigStruct(),'columns')){
 			for (var column in collectionEntity.getCollectionConfigStruct().columns){
 				var piAlias = ListLast(column.propertyIdentifier,'.');
@@ -473,9 +478,14 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 		}
 		
-		var paginatedCollectionOfEntities = arguments.collectionEntity.getPageRecords();
-		var collectionPaginationStruct = getFormattedPageRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
-		structAppend(response,collectionPaginationStruct);
+		var collectionStruct = {};
+		if(structKeyExists(arguments.collectionOptions,'allRecords') && arguments.collectionOptions.allRecords == 'true'){
+			collectionStruct = getFormattedRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
+		}else{
+			//paginated collection struct
+			collectionStruct = getFormattedPageRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
+		}
+		structAppend(response,collectionStruct);
 		return response;
 	}
 	
