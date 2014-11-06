@@ -246,8 +246,61 @@
 			  				
 				  			return _resourceBundle[_config.rbLocale];
 				  		},
-				  		getRBKey:function(rbKey){
-				  			return _resourceBundle[_config.rbLocale][rbKey];
+				  		<!---replaceStringTemplate:function(template,object,formatValues,removeMissingKeys){
+				  			/*formatValues = formatValues || false;
+				  			removeMissingKeys = removeMissingKeys || false;
+				  			//var res = str.replace(/microsoft/i, "W3Schools");
+				  			var templateKeys = template.replace(\${[^}]+},);
+				  			var replacementArray = [];
+				  			var returnString = template;
+				  			
+				  			for(var i=0; i > templateKeys.length;i++){
+				  				
+				  			}*/
+				  		}--->
+				  		rbKey:function(key,replaceStringData){
+				  			var keyValue = getRBKey(key,_config.locale);
+				  			<!---if(angular.isDefined(replaceStringData) && ('"${'.toLowerCase().indexOf(keyValue))){
+				  				keyValue = slatwallService.replaceStringTemplate(keyValue,replaceStringData);
+				  			}--->
+				  			return keyValue;
+				  		},
+				  		getRBKey:function(key,locale,checkedKeys,originalKey){
+				  			<!---// Check to see if a list was passed in as the key--->
+				  			var listArray = key.split(',');
+							if(listArray.length > 1) {
+								
+								<!---// Set up "" as the key value to be passed as 'checkedKeys'--->
+								var keyValue = "";
+								
+								<!---// If there was a list then try to get the key for each item in order--->
+								for(var i=0; i<listArray.length; i++) {
+									
+									<!---// Get the keyValue from this iteration--->
+									var keyValue = this.getRBKey(listArray[i], locale, keyValue);
+									
+									<!---// If the keyValue was found, then we can break out of the loop--->
+									if(keyValue.slice(-8) != "_missing") {
+										break;
+									}
+								}
+								
+								return keyValue;
+							}
+							
+							<!---// Check the exact bundle file--->
+							if(angular.isDefined(_resourceBundle[locale][key])) {
+								return _resourceBundle[locale];
+							}
+							
+							<!---// Because the value was not found, we can add this to the checkedKeys, and setup the original Kye--->
+							arguments.checkedKeys = listAppend(arguments.checkedKeys, arguments.key & "_" & arguments.locale & "_missing");
+							if(!structKeyExists(arguments, "originalKey")) {
+								arguments.originalKey = arguments.key;
+							}
+							
+				  			
+				  			return checkedKeys;
 				  		}
 				      };
 				  			 
@@ -266,7 +319,7 @@
 						  			 */
 								 --->
 							 <!---decorate slatwallService --->
-							slatwallService.$$get#local.entity.getClassName()# = function(options){
+							slatwallService.get#local.entity.getClassName()# = function(options){
 								var entityInstance = slatwallService.newEntity('#local.entity.getClassName()#');
 								var entityDataPromise = slatwallService.getEntity('#lcase(local.entity.getClassName())#',options);
 								entityDataPromise.then(function(response){
@@ -276,10 +329,32 @@
 								return entityInstance
 							}
 							
+							slatwallService.new#local.entity.getClassName()# = function(){
+								return slatwallService.newEntity('#local.entity.getClassName()#');
+							}
+							
 							_jsEntities[ '#local.entity.getClassName()#' ]=function() {
 										
 								this.metaData = #serializeJSON(local.entity.getPropertiesStruct())#;
 								this.metaData.className = '#local.entity.getClassName()#';
+								
+								this.metaData.$$getRBKey = function(rbKey,replaceStringData){
+									return slatwallService.rbKey(rbKey,replaceStringData);
+								};
+								
+								this.metaData.$$getPropertyTitle = function(propertyName){
+									var propertyMetaData = this.metaData[propertyName];
+									if(angular.isDefined(propertyMetaData['hb_rbKey'])){
+										return this.metaData.$$getRBKey(propertyMetaData['hb_rbKey']);
+									}else if (angular.isDefined(propertyMetaData['fieldtype']) 
+										&& angular.isDefined(propertyMetaData['cfc'])
+										&& if('"one-to-many","many-to-many"'.toLowerCase().indexOf(propertyMetaData.fieldtype))
+									){
+										return this.metaData.$$getRBKey("entity."+this.metaData.className+".#arguments.propertyName#,entity.#propertyMetaData.cfc#_plural");
+										return this.metaData.$$getRBKey("entity."+)
+									}
+								}
+								
 								this.data = {};
 								this.modifiedData = {};
 								
@@ -510,12 +585,12 @@
 	
 </cfoutput>
 
-<cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
+<!---<cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
 <cfset compressedJS = oYUICompressor.compress(
 											inputType = 'js'
 											,inputString = local.jsOutput
 											) />
-<cfoutput>#compressedJS.results#</cfoutput>
+<cfoutput>#compressedJS.results#</cfoutput>--->
 
-<!---<cfoutput>#local.jsOutput#</cfoutput>--->
+<cfoutput>#local.jsOutput#</cfoutput>
 	

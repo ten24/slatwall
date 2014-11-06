@@ -26,7 +26,7 @@ workflowService
 			
 			var workflowID = $location.search().workflowID;
 			
-			scope.propertyDisplayData = {};
+			/*scope.propertyDisplayData = {};
 			
 			scope.getPropertyDisplayData = function(){
 				var propertyDisplayDataPromise = $slatwall.getPropertyDisplayData('workflow',{propertyIdentifiersList:'workflowName,workflowObject,activeFlag'});
@@ -38,16 +38,18 @@ workflowService
 			};
 			scope.getPropertyDisplayData();
 			
-			
+			*/
 			scope.getWorkflow = function(){
-				var workflowPromise = $slatwall.getEntity('workflow',{id:workflowID});
-				workflowPromise.then(function(value){
-					formService.setForm(scope.form.workflowForm);
+				scope.workflow = $slatwall.getWorkflow({id:workflowID});
+				formService.setForm(scope.form.workflowForm);
+				$log.debug('workflow loaded');
+				$log.debug(scope.workflow);
+				/*workflowPromise.then(function(value){
+					
 					scope.workflow = value;
 					workflowService.setWorkflow(scope.workflow);
-					$log.debug('workflow loaded');
-					$log.debug(scope.workflow);
-				});
+					
+				});*/
 			};
 			
 			if(angular.isDefined(workflowID)){

@@ -32,7 +32,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			return bundle[ arguments.key ];
 		}
 		
-		// Because the value was not found, we can add this to the checkedKeys, and setup the original Kye
+		// Because the value was not found, we can add this to the checkedKeys, and setup the original Key
 		arguments.checkedKeys = listAppend(arguments.checkedKeys, arguments.key & "_" & arguments.locale & "_missing");
 		if(!structKeyExists(arguments, "originalKey")) {
 			arguments.originalKey = arguments.key;
