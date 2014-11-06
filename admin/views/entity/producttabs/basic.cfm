@@ -17,8 +17,10 @@
 		<cf_HibachiPropertyList divClass="col-md-6">
 			<cf_HibachiPropertyDisplay object="#rc.product#" property="brand" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.product#" property="productType" edit="#rc.edit#">
-			<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('define.qats.full')#" value="#rc.product.getQuantity('QATS')#">
-			<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('define.qiats.full')#" value="#rc.product.getQuantity('QIATS')#">
+			<cfif !rc.edit>
+				<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('define.qats.full')#" value="#rc.product.getQuantity('QATS')#">
+				<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('define.qiats.full')#" value="#rc.product.getQuantity('QIATS')#">
+			</cfif>
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>
 </cfoutput>
