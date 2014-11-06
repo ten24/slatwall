@@ -423,7 +423,7 @@ Notes:
 											<input type="text" name="search" class="form-control search-query col-xs-2" placeholder="#$.slatwall.rbKey('define.search')#" ng-model="keywords" ng-change="updateSearchResults()">
 											<a ng-show="searchResultsOpen" class="s-close-icon-search" id="s-close-search" href="##" ng-click="hideResults()"><i class="fa fa-times"></i></a>
 										</div>
-										<div class="row s-search-results" style="padding-top:15px;" ng-show="searchResultsOpen">
+										<div class="row s-search-results ng-hide" style="padding-top:15px;" ng-show="searchResultsOpen">
 											<ul class="col-md-12 list-unstyled">
 												<li ng-repeat="searchResult in searchResults" ng-show="searchResult.results.length && resultsFound">
 													<div class="col-md-4 s-title">
