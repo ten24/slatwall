@@ -632,7 +632,7 @@
 <cfif request.slatwallScope.getApplicationValue('debugFlag')>
 	<cfoutput>#local.jsOutput#</cfoutput>	
 <cfelse>
-	<!---
+
 	<cfset oYUICompressor = createObject("component", "Slatwall.org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'Slatwall.org.Hibachi.YUIcompressor.javaloader.JavaLoader', libPath = expandPath('/Slatwall/org/Hibachi/YUIcompressor/lib')) />
 	<cfset compressedJS = oYUICompressor.compress(
 												inputType = 'js'
