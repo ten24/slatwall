@@ -594,7 +594,7 @@
 		    }
 		};
 		}]).config(function ($slatwallProvider) {
-			//$slatwallProvider.setConfigValue($.slatwall.getConfig().baseURL);
+			/* $slatwallProvider.setConfigValue($.slatwall.getConfig().baseURL); */
 		}).run(function($slatwall){
 			$slatwall.getResourceBundle();
 		});
@@ -632,10 +632,13 @@
 <cfif request.slatwallScope.getApplicationValue('debugFlag')>
 	<cfoutput>#local.jsOutput#</cfoutput>	
 <cfelse>
-	<cfset oYUICompressor = createObject("component", "org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'javaloader.JavaLoader', libPath = expandPath('org/Hibachi/YUIcompressor/lib')) />
+	<!---
+	<cfset oYUICompressor = createObject("component", "Slatwall.org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'Slatwall.org.Hibachi.YUIcompressor.javaloader.JavaLoader', libPath = expandPath('/Slatwall/org/Hibachi/YUIcompressor/lib')) />
 	<cfset compressedJS = oYUICompressor.compress(
 												inputType = 'js'
 												,inputString = local.jsOutput
 												) />
-	<cfoutput>#compressedJS.results#</cfoutput>
+
+	<cfoutput>#local.jsOutput#</cfoutput>
 </cfif>
+
