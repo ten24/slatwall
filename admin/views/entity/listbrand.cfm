@@ -54,7 +54,7 @@ Notes:
 		
 		<!--- Create ---> 
 		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createbrand" entity="brand" class="btn btn-primary" icon="plus icon-white" modal="false" />
+			<cf_HibachiActionCaller action="admin:entity.createbrand" entity="brand" class="btn s-btn-blue" icon="plus icon-white" modal="false" />
 		</cf_HibachiEntityActionBarButtonGroup>
 	</cf_HibachiEntityActionBar>
 

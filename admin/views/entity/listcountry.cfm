@@ -52,7 +52,7 @@ Notes:
 		
 	<!--- Create ---> 
 	<cf_HibachiEntityActionBarButtonGroup>
-		<cf_HibachiActionCaller action="admin:entity.createcountry" entity="country" class="btn btn-primary" icon="plus icon-white" />
+		<cf_HibachiActionCaller action="admin:entity.createcountry" entity="country" class="btn s-btn-blue" icon="plus icon-white" />
 	</cf_HibachiEntityActionBarButtonGroup>
 </cf_HibachiEntityActionBar>
 
