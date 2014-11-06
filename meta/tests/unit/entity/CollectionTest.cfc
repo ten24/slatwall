@@ -1029,13 +1029,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionid = '',
 			collectionCode = 'RyansTen24Product',
 			collectionName = 'RyansTen24Product',
-			collectionObject = 'SlatwallProduct',
+			collectionObject = 'Product',
 			collectionConfig = '{
 					"baseEntityName":"SlatwallProduct",
-					"baseEntityAlias":"Product",
+					"baseEntityAlias":"_product",
 					"columns":[
 						{
-							"propertyIdentifier":"Product.defaultSku.productBundleGroups"
+							"propertyIdentifier":"_Product_defaultSku_productBundleGroups"
 						}
 					],
 					"joins":[
@@ -1045,7 +1045,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 							"joins":[
 								{
 									"associationName":"productBundleGroups",
-									"alias":"Product_defaultSku_productBundleGroups"
+									"alias":"_Product_defaultSku_productBundleGroups"
 								}
 							]
 						}
@@ -1062,17 +1062,17 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
 			collectionCode = 'BestAccountEmailAddresses',
-			collectionObject="SlatwallAccount",
+			collectionObject="Account",
 			collectionConfig = '
 				{
 					"baseEntityName":"SlatwallAccount",
-					"baseEntityAlias":"Account",
+					"baseEntityAlias":"_account",
 					
 					"filterGroups":[
 						{
 							"filterGroup":[
 								{
-									"propertyIdentifier":"Account.firstName",
+									"propertyIdentifier":"_account.firstName",
 									"comparisonOperator":"like",
 									"value":"Ryan%"
 								}
@@ -1088,8 +1088,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		
 		var filter = {
-						propertyIdentifier="Account.accountEmailAddresses",
-						collectionCode="BestAccountEmailAddresses",
+						propertyIdentifier="_account.accountEmailAddresses",
+						collectionID=collectionBestAcountEmailAddresses.getCollectionID(),
 						criteria="One"
 					};
 						

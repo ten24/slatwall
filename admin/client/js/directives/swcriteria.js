@@ -19,7 +19,6 @@ $slatwall,
 collectionService,
 metadataService,
 $filter){
-	//private functions
 /* Template info begin*/
 	var getTemplate = function(selectedFilterProperty){
         var template = '';
@@ -30,7 +29,7 @@ $filter){
 		}else{
 			var criteriaormtype = selectedFilterProperty.ormtype;
 			var criteriafieldtype = selectedFilterProperty.fieldtype;
-			//TODO: convert all switches to object literals
+			/*TODO: convert all switches to object literals*/
 	        switch(criteriaormtype){
 	            case 'boolean':
 	               templatePath = collectionPartialsPath+"criteriaboolean.html";
@@ -445,7 +444,7 @@ $filter){
 /* Options info end */
     
     var linker = function(scope, element, attrs){
-    	//show the user the value without % symbols as these are reserved
+    	/*show the user the value without % symbols as these are reserved*/
     	scope.$watch('selectedFilterProperty.criteriaValue',function(criteriaValue){
     		if(angular.isDefined(criteriaValue)){
     			scope.selectedFilterProperty.criteriaValue = $filter('likeFilter')(criteriaValue);
@@ -456,7 +455,7 @@ $filter){
 			if(angular.isDefined(selectedFilterProperty)){
 				$log.debug('watchSelectedFilterProperty');
 				$log.debug(scope.selectedFilterProperty);
-				//prepopulate if we have a comparison operator and value
+				/*prepopulate if we have a comparison operator and value*/
 				if(selectedFilterProperty === null){
 					return;
 				}

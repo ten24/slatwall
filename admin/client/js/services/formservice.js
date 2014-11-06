@@ -1,9 +1,7 @@
-//collection service is used to maintain the state of the ui
 
 angular.module('slatwalladmin.services')
 .factory('formService',['$log',
 function($log){
-	//properties
 	var _forms = {};
 	var _pristinePropertyValue = {};
 	
@@ -59,7 +57,6 @@ function($log){
 			form.$submitted = false;
 			form.$setPristine();
 		}
-		//private functions
 		
 	};
 }]);

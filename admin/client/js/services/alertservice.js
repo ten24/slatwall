@@ -1,4 +1,4 @@
-//services return promises which can be handled uniquely based on success or failure by the controller
+/*services return promises which can be handled uniquely based on success or failure by the controller*/
 
 angular.module('slatwalladmin.services')
 .factory('alertService',[ '$timeout',
