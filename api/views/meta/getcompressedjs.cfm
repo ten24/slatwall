@@ -311,13 +311,14 @@
 								return bundle[key];
 							}
 							
+							
 							<!---// Because the value was not found, we can add this to the checkedKeys, and setup the original Key--->
 							var checkedKeysListArray = checkedKeys.split(',');
-							checkedKeys = checkedKeysListArray.push(key+'_'+locale+'_missing');
+							checkedKeysListArray.push(key+'_'+locale+'_missing');
+							checkedKeys = checkedKeysListArray.join(",");
 							if(angular.isUndefined(originalKey)){
 								originalKey = key;
 							}
-							
 							<!---// Check the broader bundle file--->
 							var localeListArray = locale.split('_');
 							if(localeListArray.length === 2){
@@ -326,9 +327,9 @@
 									return bundle[key];
 								}
 								<!---// Add this more broad term to the checked keys--->
-								checkedKeys = checkedKeysListArray.push(key+'_'+localeListArray[0]+'_missing');
+								checkedKeysListArray.push(key+'_'+localeListArray[0]+'_missing');
+								checkedKeys = checkedKeysListArray.join(",");
 							}
-							
 							<!---// Recursivly step the key back with the word 'define' replacing the previous.  Basically Look for just the "xxx.yyy.define.zzz" version of the end key and then "yyy.define.zzz" and then "define.zzz"--->
 							var keyDotListArray = key.split('.');
 							if(	keyDotListArray.length >= 3
@@ -337,14 +338,12 @@
 								var newKey = key.replace(keyDotListArray[keyDotListArray.length - 3]+'.define','define');
 								return this.getRBKey(newKey,local,checkedKeys,originalKey);
 							}else if( keyDotListArray.length >= 2 && keyDotListArray[keyDotListArray.length - 2]){
-								var newKey = key.replace(keyDotListArray[keyDotListArray.length -2]+'.','define');
+								var newKey = key.replace(keyDotListArray[keyDotListArray.length -2]+'.','define.');
 								return this.getRBKey(newKey,locale,checkedKeys,originalKey);
 							}
-							
 							if(localeListArray[0] !== "en"){
 								return this.getRBKey(originalKey,'en',checkedKeys);
 							}
-							
 				  			return checkedKeys;
 				  		},
 				  		 getConfig:function(){
@@ -609,8 +608,6 @@
 		}]).config(function ($slatwallProvider) {
 			/* $slatwallProvider.setConfigValue($.slatwall.getConfig().baseURL); */
 		}).run(function($slatwall){
-			console.log($slatwall);
-			console.log($slatwall.getConfigValue('rbLocale'));
 			var localeListArray = $slatwall.getConfigValue('rbLocale').split('_');
 			$slatwall.getResourceBundle($slatwall.getConfigValue('rbLocale'));
 			if(localeListArray.length === 2){
