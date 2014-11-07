@@ -6,17 +6,17 @@
 	<cfoutput>
 		<div class="#attributes.divClass#">
 			<cfif attributes.edit>
-				<fieldset class="dl-horizontal">
+				<div class="form-horizontal " style="max-width: 650px;">
 			<cfelse>
-				<dl class="dl-horizontal">
+				<div class="form-horizontal  s-property-info" style="max-width: 650px;">
 			</cfif>
 	</cfoutput>
 <cfelse>
 	<cfoutput>
 			<cfif attributes.edit>
-				</fieldset>
+				</div>
 			<cfelse>
-				</dl>
+				</div>
 			</cfif>
 		</div>
 	</cfoutput>
