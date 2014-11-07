@@ -38,6 +38,7 @@ input[type="file"] {display: block;width: auto;height: auto;padding: 0px;backgro
 .s-zero-left {padding-left:0px!important;margin-left:0px !important;}
 
 .s-top-spacer {margin-top:25px;}
+.s-top-spacer .form-control {background-color:#fff;}
 
 .s-helper-text {color: #aaaaaa;font-size: 10px;}
 .s-helper-text span {font-weight:600;}
@@ -424,6 +425,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-table-header-nav .s-table-header-search button {color:#5E5E5E;background-color:#eeeeee;}
 .s-table-header-nav .s-table-view-options {text-align:right;}
 .s-table-header-nav .s-table-header-search {max-width: 200px;}
+.s-table-header-nav .s-table-header-search .form-control {max-width: 200px;background-color:#fff;}
 
 .dropdown-toggle .fa-sort-desc:before {top: -2px;position: relative;}
 
