@@ -8,7 +8,7 @@
 			<cfif attributes.edit>
 				<fieldset class="dl-horizontal">
 			<cfelse>
-				<dl class="dl-horizontal">
+				<dl class="dl-horizontal s-property-info">
 			</cfif>
 	</cfoutput>
 <cfelse>
