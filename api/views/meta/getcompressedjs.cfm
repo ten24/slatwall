@@ -636,7 +636,7 @@
 		    filter="*.js"
 	    />
 	    
-	    <cfloop query="#local.jsFileList#">
+	    <cfloop query="local.jsFileList">
 		    <cfset local.jsFilePath = local.jsDirectory & '/' & name>
 		    <cfset local.fileContent = FileRead(local.jsFilePath,'utf-8')>
 		     <cfset local.jsOutput &= local.fileContent />

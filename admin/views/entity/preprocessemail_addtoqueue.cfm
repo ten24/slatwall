@@ -64,13 +64,30 @@ Notes:
 		
 		<cf_HibachiPropertyRow>
 			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailTo" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailFrom" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailCC" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailBCC" edit="#rc.edit#">
+				
+				<div class="row">
+					<div class="col-xs-6">
+						<cf_HibachiPropertyDisplay object="#rc.email#" property="emailTo" edit="#rc.edit#">
+					</div>
+					<div class="col-xs-6">
+						<cf_HibachiPropertyDisplay object="#rc.email#" property="emailFrom" edit="#rc.edit#">
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-xs-6">
+						<cf_HibachiPropertyDisplay object="#rc.email#" property="emailCC" edit="#rc.edit#">
+					</div>
+					<div class="col-xs-6">
+						<cf_HibachiPropertyDisplay object="#rc.email#" property="emailBCC" edit="#rc.edit#">
+					</div>
+				</div>
+
 				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailSubject" edit="#rc.edit#">
+					
 			</cf_HibachiPropertyList>
 		</cf_HibachiPropertyRow>
+		
 		<hr />
 		<div style="width:100%;">
 			<div style="width:100%;">

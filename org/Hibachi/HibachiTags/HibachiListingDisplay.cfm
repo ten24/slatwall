@@ -414,7 +414,7 @@
 									#column.title#
 								<cfelse>
 									<div class="dropdown">
-										<a href="##" class="dropdown-toggle">#column.title#</a>
+										<a href="##" class="dropdown-toggle">#column.title# <i class="fa fa-sort-desc"></i></a>
 										<ul class="dropdown-menu nav scrollable">
 											<cf_HibachiDividerHider>
 												<cfif column.sort and not thistag.expandable>

@@ -54,7 +54,7 @@ Notes:
 		
 		<!--- Create ---> 
 		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
+			<cf_HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
 		</cf_HibachiEntityActionBarButtonGroup>
 	</cf_HibachiEntityActionBar>
 	

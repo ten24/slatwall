@@ -56,7 +56,7 @@ Notes:
 			
 		<!--- Create ---> 
 		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createloyalty" entity="loyalty" class="btn btn-primary" icon="plus icon-white" />
+			<cf_HibachiActionCaller action="admin:entity.createloyalty" entity="loyalty" class="btn s-btn-blue" icon="plus icon-white" />
 		</cf_HibachiEntityActionBarButtonGroup>
 	</cf_HibachiEntityActionBar>
 	
