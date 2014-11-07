@@ -54,26 +54,34 @@
 					</span>
 
 					<div class="row form-group">
-						<div class="col-md-2 col-xs-6">
-							<label for="">Minimum Quantity:</label>
-							<input  type="text"
-									class="form-control"
-									ng-model="productBundleGroup.minimumQuantity"
-									ng-change="productBundleGroup.$$setMinimumQuantity(productBundleGroup.minimumQuantity)"
-							>
+						<div class="col-md-6">
+                            
+    							<label class="col-md-3 control-label">Minimum Quantity:</label>
+                                <div class="col-md-9">
+        							<input  type="text"
+        									class="form-control"
+        									ng-model="productBundleGroup.minimumQuantity"
+        									ng-change="productBundleGroup.$$setMinimumQuantity(productBundleGroup.minimumQuantity)"
+        							>
+                                </div>
+                            
 						</div>
 
-						<div class="col-md-2 col-xs-6">
-							<label for="">Maximum Quantity:</label>
-							<input  type="text"
-									class="form-control"
-									ng-model="productBundleGroup.maximumQuantity"
-									ng-change="productBundleGroup.$$setMaximumQuantity(productBundleGroup.maximumQuantity)"
-							>
+						<div class="col-md-6">
+                            
+    							<label class="col-md-3 control-label">Maximum Quantity:</label>
+                                <div class="col-md-9">
+        							<input  type="text"
+        									class="form-control"
+        									ng-model="productBundleGroup.maximumQuantity"
+        									ng-change="productBundleGroup.$$setMaximumQuantity(productBundleGroup.maximumQuantity)"
+        							>
+                                </div>
+                            
 						</div>
 					</div>
                     <div class="row form-group">
-                        <div class="col-md-2 col-xs-6">
+                        <div class="col-md-6">
                             <span sw-property-display
                                       data-property="amountType"
                                       data-object="productBundleGroup"
@@ -86,7 +94,7 @@
                               ></span>
                         </div>
 
-                        <div class="col-md-2 col-xs-6">
+                        <div class="col-md-6">
                             <span sw-property-display
                                      data-property="amount"
                                      data-object="productBundleGroup"
@@ -98,27 +106,33 @@
                         </div>
                     </div>
 
-					<div class="form-group s-bundle-group-active">
-						<label class="control-label">Active: </label>
-						<div class="radio" >
-							<input type="radio" name="active" id="random1"
-									ng-model="productBundleGroup.active"
-									ng-value="true"
-							>
-							<label for="random1" >
-									Yes
-							</label>
-						</div>
-						<div class="radio" >
-							<input type="radio" name="active" id="random2"
-									ng-model="productBundleGroup.active"
-									ng-value="false"
-							>
-							<label for="random2" >
-									No
-							</label>
-						</div>
-						<div class="clearfix"></div>
+					<div class="form-group">
+                        <div class="col-md-6">
+                            <div class="row">
+        						<label class="col-md-3">Active: </label>
+                                <div class="col-md-9">
+            						<div class="radio"  style="float:left;">
+            							<input type="radio" name="active" id="random1"
+            									ng-model="productBundleGroup.active"
+            									ng-value="true"
+            							>
+            							<label class="control-label" for="random1" >
+            									Yes
+            							</label>
+            						</div>
+            						<div class="radio" style="float:left;">
+            							<input type="radio" name="active" id="random2"
+            									ng-model="productBundleGroup.active"
+            									ng-value="false"
+            							>
+            							<label class="control-label" for="random2" >
+            									No
+            							</label>
+            						</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
 					</div>
 
                     <h4>Selections</h4>
