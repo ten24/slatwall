@@ -57,7 +57,7 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
 	
 	$httpProvider.interceptors.push('slatwallInterceptor');
 	
-}]).run(['$rootScope','$slatwall','dialogService', function($rootScope,$slatwall, dialogService) {
+}]).run(['$rootScope','dialogService', function($rootScope, dialogService) {
     $rootScope.openPageDialog = function( partial ) {
     	dialogService.addPageDialog( partial );
     };
