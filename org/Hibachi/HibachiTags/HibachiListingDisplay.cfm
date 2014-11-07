@@ -325,7 +325,7 @@
 					<li>
 						<div class="btn-group navbar-left dropdown">
 
-							<button type="button" class="btn btn-sm s-btn-blue dropdown-toggle" data-toggle="dropdown"><i class="fa fa-cog"></i></button>
+							<button type="button" class="btn btn-sm s-btn-blue dropdown-toggle"><i class="fa fa-cog"></i></button>
 
 								<ul class="dropdown-menu pull-right" role="menu">
 									<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
