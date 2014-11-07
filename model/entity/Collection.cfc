@@ -37,7 +37,7 @@ Notes:
 
 */
 component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="collectionService" {
-	//TODO:add permission base property. public/protected/private?
+	
 	// Persistent Properties
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="collectionName" ormtype="string";
@@ -45,8 +45,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="description" ormtype="string";
 	property name="collectionObject" ormtype="string" hb_formFieldType="select";
 	property name="parentCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="parentCollectionID";
-	
-	property name="collectionConfig" ormtype="string" length="4000" hint="json object used to construct the base collection HQL query";
+	property name="collectionConfig" ormtype="string" length="8000" hb_auditable="false" hint="json object used to construct the base collection HQL query";
 	
 	// Calculated Properties
 
@@ -760,7 +759,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public void function addPostFiltersFromKeywords(required any collectionConfig, numeric hasFilterHQL){
-		if(structKeyExists(arguments.collectionConfig,'columns')){
+		if(structKeyExists(arguments.collectionConfig,'columns') && arrayLen(arguments.collectionConfig.columns)){
 			for(column in arguments.collectionConfig.columns){
 				if(structKeyExists(column,'isSearchable') && column.isSearchable){
 					//use keywords to create some post filters
@@ -817,7 +816,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}else{
 			//if we don't have columns then we need default properties searching
-			var defaultPropertiesWithAttributes = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityAlias);
+			var defaultPropertiesWithAttributes = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
 			for(propertyItem in defaultPropertiesWithAttributes){
 				if(structKeyExists(propertyItem,'ormtype') 
 					&& propertyItem.ormtype neq 'boolean' 

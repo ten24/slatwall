@@ -35,8 +35,8 @@
 			<cfif attributes.edit>
 				<cfoutput>
 					<div class="form-group">
-						<label for="#attributes.fieldName#" class="control-label col-sm-12" style="text-align:left;">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></dt>
-						<div class="col-sm-12">
+						<label for="#attributes.fieldName#" class="control-label col-sm-3" style="text-align:left;">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></dt>
+						<div class="col-sm-9">
 							<cf_HibachiFormField attributecollection="#attributes#" />
 							<cf_HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
 						</div>
@@ -44,17 +44,21 @@
 				</cfoutput>
 			<cfelse>
 				<cfoutput>
-					<dt class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></dt>
-
-					<cfif attributes.fieldType eq "listingMultiselect">
-						<dd class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><cf_HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></cf_HibachiListingDisplay></dd>
-					<cfelse>
-						<cfif attributes.valueLink neq "">
-							<dd class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a></dd>
-						<cfelse>
-							<dd class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</dd>
-						</cfif>
-					</cfif>
+					<div class="form-group">
+						<label class="control-label col-sm-3 title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>" style="text-align:left;">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label>
+						
+						<div class="col-sm-9">
+							<cfif attributes.fieldType eq "listingMultiselect">
+								<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><cf_HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></cf_HibachiListingDisplay></p>
+							<cfelse>
+								<cfif attributes.valueLink neq "">
+									<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a></p>
+								<cfelse>
+									<p class="form-control-static value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">#attributes.value#</p>
+								</cfif>
+							</cfif>
+						</div>
+					</div>
 				</cfoutput>
 			</cfif>
 		</cfcase>

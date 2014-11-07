@@ -112,8 +112,10 @@ Notes:
 		<!--- Allow nulls in the AccountPayment amount field since we are using AccountPaymentApplied --->
 		<cfif local.hasColumn.recordCount>
 			<cfquery name="local.allowNull">
-				 <cfif getApplicationValue("databaseType") eq "MySQL">
+				<cfif getApplicationValue("databaseType") eq "MySQL">
 					ALTER TABLE SwAccountPayment MODIFY COLUMN amount decimal(19,2) NULL
+				<cfelseif getApplicationValue("databaseType") eq "Oracle10g">
+					ALTER TABLE SwAccountPayment MODIFY (amount decimal(19,2) NULL)
 				<cfelse>
 					ALTER TABLE SwAccountPayment ALTER COLUMN amount decimal(19,2) NULL
 				</cfif>

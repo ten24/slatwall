@@ -8,11 +8,13 @@
 	<cfif len(trim(thisTag.generatedContent)) gt 5>
 		<cfif attributes.type eq "button">
 			<cfoutput>
-				<button class="btn #attributes.buttonClass# dropdown-toggle s-btn-blue" data-toggle="dropdown"><i class="fa fa-#attributes.icon#"></i> #attributes.title# <span class="caret"></span></button>
-				<ul class="dropdown-menu #attributes.dropdownClass#">
-					#thisTag.generatedContent#
-					<cfset thisTag.generatedContent = "" />
-				</ul>
+				<div class="btn-group">
+					<button class="btn #attributes.buttonClass# dropdown-toggle s-btn-blue" data-toggle="dropdown"><i class="fa fa-#attributes.icon#"></i> #attributes.title# <span class="caret"></span></button>
+					<ul class="dropdown-menu #attributes.dropdownClass#">
+						#thisTag.generatedContent#
+						<cfset thisTag.generatedContent = "" />
+					</ul>
+				</div>
 			</cfoutput>
 		<cfelseif attributes.type eq "nav">
 			<cfoutput>

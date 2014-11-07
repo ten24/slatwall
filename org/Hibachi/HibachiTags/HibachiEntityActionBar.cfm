@@ -38,7 +38,7 @@
 
 			<div class="row s-body-nav">
 			    <nav class="navbar navbar-default" role="navigation">
-			      <div class="col-md-4 s-header-info">
+			      <div class="col-md-6 s-header-info">
 					<!---<div class="actionnav well well-sm">
 						<div class="row">
 							<div class="col-md-4">--->
@@ -54,7 +54,7 @@
 						<h1 class="actionbar-title">#attributes.pageTitle#</h1>
 					</div>
 
-					<div class="col-md-8">
+					<div class="col-md-6">
 						<div class="btn-toolbar">
 
 							<!--- ================ Listing =================== --->
