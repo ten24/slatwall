@@ -759,7 +759,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public void function addPostFiltersFromKeywords(required any collectionConfig, numeric hasFilterHQL){
-		if(structKeyExists(arguments.collectionConfig,'columns')){
+		if(structKeyExists(arguments.collectionConfig,'columns') && arrayLen(arguments.collectionConfig.columns)){
 			for(column in arguments.collectionConfig.columns){
 				if(structKeyExists(column,'isSearchable') && column.isSearchable){
 					//use keywords to create some post filters
@@ -816,7 +816,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}else{
 			//if we don't have columns then we need default properties searching
-			var defaultPropertiesWithAttributes = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityAlias);
+			var defaultPropertiesWithAttributes = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
 			for(propertyItem in defaultPropertiesWithAttributes){
 				if(structKeyExists(propertyItem,'ormtype') 
 					&& propertyItem.ormtype neq 'boolean' 
