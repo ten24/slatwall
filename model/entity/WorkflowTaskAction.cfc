@@ -41,7 +41,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 	// Persistent Properties
 	property name="workflowTaskActionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="actionType" ormtype="string";
-	property name="updateData" ormtype="string" length="8000";
+	property name="updateData" ormtype="string" length="8000" hb_auditable="false";
 	
 	// Calculated Properties
 
