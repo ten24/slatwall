@@ -7,7 +7,7 @@
 		<column name="typeName" update="false" />
 		<column name="systemCode" update="false" />
 		<column name="sortOrder" update="false" />
-		<column name="childRequiresSystemCodeFlag" />
+		<column name="childRequiresSystemCodeFlag" datatype="bit" />
 	</Columns>
 	<Records>
 		<Record typeID="444df32cee42886828d43a685445e6a0" typeIDPath="444df32cee42886828d43a685445e6a0" parentTypeID="NULL" typeName="Account Payment Types" systemCode="accountPaymentType" childRequiresSystemCodeFlag="1" />
