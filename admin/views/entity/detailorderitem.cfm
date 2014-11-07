@@ -53,7 +53,7 @@ Notes:
 
 <cfoutput>
 	<cf_HibachiEntityDetailForm object="#rc.orderItem#" edit="#rc.edit#" >
-		<cf_HibachiEntityActionBar type="detail" object="#rc.orderItem#" edit="#rc.edit#"
+		<cf_HibachiEntityActionBar pageTitle="#rc.sku.getProduct().getProductName()#" type="detail" object="#rc.orderItem#" edit="#rc.edit#"
 								   backaction="admin:entity.detailorder"
 								   backquerystring="orderID=#rc.order.getOrderID()#"
 								   deleteQueryString="redirectAction=admin:entity.detailorder&orderID=#rc.order.getOrderID()#">
