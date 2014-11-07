@@ -363,6 +363,14 @@
 			    	var _resourceBundle = {};
 			    	var _jsEntities = {};
 			    	
+			    	var _init = function(entityInstance,data){
+						for(var key in data) {
+							if(key.charAt(0) !== '$'){
+								entityInstance.data[key] = data[key];
+							}
+						}
+					}
+			    	
 			    	var _getPropertyTitle = function(propertyName,metaData){
 			    		var propertyMetaData = metaData[propertyName];
 									
@@ -529,13 +537,7 @@
 							};
 							_jsEntities[ '#local.entity.getClassName()#' ].prototype = {
 								$$init:function( data ) {
-									(function(entityInstance,data){
-										for(var key in data) {
-											if(key.charAt(0) !== '$'){
-												entityInstance.data[key] = data[key];
-											}
-										}
-									})(this,data);
+									_init(this,data);
 								}
 								<!--- used to retrieve info about the object properties --->
 								,$$getMetaData:function( propertyName ) {
