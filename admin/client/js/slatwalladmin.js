@@ -65,7 +65,6 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
     $rootScope.closePageDialog = function( index ) {
 		dialogService.removePageDialog( index );
     };
-    var account = $slatwall.newAccount();
     
 }]);
 

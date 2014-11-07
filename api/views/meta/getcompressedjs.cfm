@@ -48,7 +48,7 @@
 				  			 * getEntity('Product', {keywords='Hello'});
 				  			 * 
 				  			 */
-				  			if(options.deferKey){
+				  			if(angular.isDefined(options.deferKey)){
 			    	  			this.cancelPromise(options.deferKey);
 			    	  		}
 			    	  		
@@ -245,16 +245,17 @@
 				  		getResourceBundle:function(locale){
 				  			var locale = locale || _config.rbLocale;
 				  			
-				  			
 			  				if(_resourceBundle[locale]){
 			  					return _resourceBundle[locale];
 			  				}
 			  				
 			  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle'
 				  			var params = {
-				  				locale:_config.rbLocale,
+				  				locale:locale,
 				  			};
-			  				
+			  				$http.get(urlString,{params:params}).success(function(response){
+			  					_resourceBundle[locale] = response.data;
+			  				});
 			  					
 				  		},
 						
@@ -334,10 +335,10 @@
 								&& keyDotListArray[keyDotListArray.length - 2] === 'define'
 							){
 								var newKey = key.replace(keyDotListArray[keyDotListArray.length - 3]+'.define','define');
-								return this.getRBKey(newKey,local,checkedKeys,originalKey)
-							}else if( keyDotListArray >= 2 && keyDotListArray[keyDotListArray.length - 2]){
+								return this.getRBKey(newKey,local,checkedKeys,originalKey);
+							}else if( keyDotListArray.length >= 2 && keyDotListArray[keyDotListArray.length - 2]){
 								var newKey = key.replace(keyDotListArray[keyDotListArray.length -2]+'.','define');
-								return getRBKey(newKey,locale,checkedKeys,originalKey)
+								return this.getRBKey(newKey,locale,checkedKeys,originalKey);
 							}
 							
 							if(localeListArray[0] !== "en"){
@@ -345,7 +346,19 @@
 							}
 							
 				  			return checkedKeys;
-				  		}
+				  		},
+				  		 getConfig:function(){
+					    	return _config;
+					    },
+					    getConfigValue:function(key){
+					    	return _config[key];
+					    },
+					    setConfigValue:function(key,value){
+					    	_config[key] = value;
+					    },
+					    setConfig:function(config){
+					    	_config = config;
+					    }
 				      };
 				  			 
 			    	var _resourceBundle = {};
@@ -596,7 +609,17 @@
 		}]).config(function ($slatwallProvider) {
 			/* $slatwallProvider.setConfigValue($.slatwall.getConfig().baseURL); */
 		}).run(function($slatwall){
-			$slatwall.getResourceBundle();
+			console.log($slatwall);
+			console.log($slatwall.getConfigValue('rbLocale'));
+			var localeListArray = $slatwall.getConfigValue('rbLocale').split('_');
+			$slatwall.getResourceBundle($slatwall.getConfigValue('rbLocale'));
+			if(localeListArray.length === 2){
+				$slatwall.getResourceBundle(localeListArray[0]);
+			}
+			if(localeListArray[0] != 'en'){
+				$slatwall.getResourceBundle('en_us');
+				$slatwall.getResourceBundle('en');
+			}	
 		});
 	</cfsavecontent>
 	<cfset local.jsOutput &= local.thisJSOutput />
