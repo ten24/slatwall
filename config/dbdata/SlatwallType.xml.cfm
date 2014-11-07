@@ -98,7 +98,7 @@
 		<Record typeID="444df2e7dba550b7a24a03acbb37e717" typeIDPath="444df2e4e0ec725f718318de5bd3b973,444df2e7dba550b7a24a03acbb37e717" parentTypeID="444df2e4e0ec725f718318de5bd3b973" typeName="Manual Out" systemCode="satManualOut" sortOrder="4" />
 		<Record typeID="5accbf51d91d4c3badc6f22b1caace97" typeIDPath="444df2e4e0ec725f718318de5bd3b973,5accbf51d91d4c3badc6f22b1caace97" parentTypeID="444df2e4e0ec725f718318de5bd3b973" typeName="Physical Count" systemCode="satPhysicalCount" sortOrder="5" />
 		<Record typeID="3749e30bcf8179d5531d6713db673565" typeIDPath="444df2e4e0ec725f718318de5bd3b973,3749e30bcf8179d5531d6713db673565" parentTypeID="444df2e4e0ec725f718318de5bd3b973" typeName="Makeup Bundled Skus" systemCode="satMakeupBundledSkus" sortOrder="6" />
-		<Record typeID="37a1ceb6969fd35927b67733d849532a" typeIDPath="444df2e4e0ec725f718318de5bd3b973,37a1ceb6969fd35927b67733d849532a" parentTypeID="444df2e4e0ec725f718318de5bd3b973" typeName="Breakup Bundled Skus" systemCode="satBreakupBundledSkus" sortOrder=7" />
+		<Record typeID="37a1ceb6969fd35927b67733d849532a" typeIDPath="444df2e4e0ec725f718318de5bd3b973,37a1ceb6969fd35927b67733d849532a" parentTypeID="444df2e4e0ec725f718318de5bd3b973" typeName="Breakup Bundled Skus" systemCode="satBreakupBundledSkus" sortOrder="7" />
 		
 		<Record typeID="444df2e1afee04d4971094d467a2c619" typeIDPath="444df2e1afee04d4971094d467a2c619" parentTypeID="NULL" typeName="Stock Adjustment Status Types" systemCode="stockAdjustmentStatusType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df2e2f66ddfaf9c60caf5c76349a6" typeIDPath="444df2e1afee04d4971094d467a2c619,444df2e2f66ddfaf9c60caf5c76349a6" parentTypeID="444df2e1afee04d4971094d467a2c619" typeName="New" systemCode="sastNew" sortOrder="1" />
