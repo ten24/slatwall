@@ -109,8 +109,11 @@ input[type="file"] {display: block;width: auto;height: auto;padding: 0px;backgro
 .s-centered-logo {position: absolute;margin-left: -110px !important;}
 
 /* Detail Views */
+.s-property-info table {border:1px solid #ddd;}
+.s-property-info .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {border: 1px solid #DDD;}
 .s-property-info dt, .s-property-info dd {text-align:left;padding: 7px 0px 11px 0px; }
 .s-property-info dd {padding-left:10px;}
+.s-property-info dt {font-weight:600;}
 label.control-label.col-md-4 {margin-bottom:10px;align:left;position:relative;text-align:left;left:15px;}
 .form-horizontal .control-label {margin-bottom:4px;}
 
@@ -222,7 +225,6 @@ a:-webkit-any-link {text-decoration:none !important;}
 .form-control {color: #767676;height: 30px;box-shadow:none;box-shadow:none;font-weight:normal;font-size:12px;}
 
 /*Custom CSS*/
-.title {font-weight: 600;}
 .s-pannel-group .panel {border:none;border-radius:2px;}
 .s-pannel-group .s-body-box {padding: 15px 15px;display: inline-block;width: 100%;}
 .form-group label i.fa-asterisk {color: #A94442;font-size: 6px;position: relative;top: -7px;}
