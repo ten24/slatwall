@@ -222,7 +222,7 @@ a:-webkit-any-link {text-decoration:none !important;}
 .nav-tabs>li>a:hover {background:none;border:none;color:#555;}
 .s-properties label {font-weight:600;}
 .s-properties .tooltip {width:200px !important;}
-.form-control {color: #767676;height: 30px;box-shadow:none;box-shadow:none;font-weight:normal;font-size:12px;}
+.form-control {color: #767676;background-color:#F9F9F9;height: 30px;box-shadow:none;box-shadow:none;font-weight:normal;font-size:12px;}
 
 /*Custom CSS*/
 .s-pannel-group .panel {border:none;border-radius:2px;}
