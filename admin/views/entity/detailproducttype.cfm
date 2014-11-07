@@ -61,7 +61,7 @@ Notes:
 		<cf_HibachiEntityDetailGroup object="#rc.productType#">
 			<cf_HibachiEntityDetailItem view="admin:entity/producttypetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cf_HibachiEntityDetailItem view="admin:entity/producttypetabs/producttypedescription" />
-			<cf_HibachiEntityDetailItem view="admin:entity/producttypetabs/products" />
+			<cf_HibachiEntityDetailItem property="products" count="#rc.productType.getProductsSmartList().getRecordsCount()#" />
 			<cf_HibachiEntityDetailItem view="admin:entity/producttypetabs/producttypesettings" />
 			<cf_HibachiEntityDetailItem view="admin:entity/producttypetabs/productsettings" />
 			<cf_HibachiEntityDetailItem view="admin:entity/producttypetabs/skusettings" />
