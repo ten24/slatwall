@@ -46,6 +46,8 @@
 	Notes:
 	
 --->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "end">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.object" type="any" />
@@ -60,13 +62,13 @@
 	
 	<cfsavecontent variable="attributes.tabcontent">
 		<div class="tab-pane" id="attSet#attributes.attributeSet.getAttributeSetCode()#">
-			<cf_HibachiPropertyRow>
-				<cf_HibachiPropertyList>
+			<hb:HibachiPropertyRow>
+				<hb:HibachiPropertyList>
 					<cf_SlatwallAdminAttributeSetDisplay attributeSet="#attributes.attributeSet#" entity="#attributes.object#" edit="#attributes.edit#" />
-				</cf_HibachiPropertyList>
-			</cf_HibachiPropertyRow>
+				</hb:HibachiPropertyList>
+			</hb:HibachiPropertyRow>
 		</div>
 	</cfsavecontent>
 	
-	<cfassociate basetag="cf_HibachiTabGroup" datacollection="tabs">
+	<cfassociate basetag="hb:HibachiTabGroup" datacollection="tabs">
 </cfif>

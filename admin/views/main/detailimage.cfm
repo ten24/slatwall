@@ -66,19 +66,19 @@ Notes:
 </cfif>	
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.image#" edit="#rc.edit#" enctype="multipart/form-data">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.image#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.image#" edit="#rc.edit#" enctype="multipart/form-data">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.image#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 		
 		<input type="hidden" name="directory" value="#rc.directory#" />
 		<input type="hidden" name="product.productID" value="#rc.productID#" />
 		<input type="hidden" name="promotion.promotionID" value="#rc.promotionID#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageDescription" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageType" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageFile" edit="#rc.edit#" fieldtype="file">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.image#" property="imageName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.image#" property="imageDescription" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.image#" property="imageType" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.image#" property="imageFile" edit="#rc.edit#" fieldtype="file">
 				<cfif not rc.image.isNew()>
 					<div class="control-group">
 						<label class="control-label">&nbsp;</label>
@@ -87,9 +87,9 @@ Notes:
 						</div>
 					</div>
 				</cfif>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 
 </cfoutput>
