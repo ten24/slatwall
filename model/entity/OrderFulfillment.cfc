@@ -243,12 +243,15 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     		var sortType = getFulfillmentMethod().setting('fulfillmentMethodShippingOptionSortType');
     		
     		for(var shippingMethodOption in getFulfillmentShippingMethodOptions()) {
-    			var thisOption = {
-    				name = shippingMethodOption.getSimpleRepresentation(),
-    				value = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID(),
-    				totalCharge = shippingMethodOption.getTotalCharge(),
-    				shippingMethodSortOrder = shippingMethodOption.getShippingMethodRate().getShippingMethod().getSortOrder()
-    			};
+    			
+    			var thisOption = {};
+    			thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
+    			thisOption['value'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID();
+    			thisOption['totalCharge'] = shippingMethodOption.getTotalCharge();
+    			thisOption['shippingMethodSortOrder'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getSortOrder();
+    			if( !isNull(shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode()) ){
+    				thisOption['shippingMethodCode'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode();
+    			}
     			
     			var inserted = false;
     			
