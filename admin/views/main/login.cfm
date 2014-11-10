@@ -51,7 +51,7 @@ Notes:
 <cfparam name="rc.integrationLoginHTMLArray" type="array" />
 
 <cfoutput>
-	<div style="width:100%;">
+	<div class="s-alert-position">
 		<cf_HibachiMessageDisplay />
 
 		<div class="well tabable s-login-box" style="max-width:350px;margin: 0px auto;">
