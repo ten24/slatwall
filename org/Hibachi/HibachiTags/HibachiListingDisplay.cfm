@@ -425,7 +425,7 @@
 												</cfif>
 												<cfif column.search and not thistag.expandable>
 													<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.search')#</li>
-													<li class="search-filter"><input type="text" class="listing-search" name="FK:#column.propertyIdentifier#" value="" /> <i class="icon-search"></i></li>
+													<li class="search-filter"><input type="text" class="listing-search form-control" name="FK:#column.propertyIdentifier#" value="" /> <i class="icon-search"></i></li>
 													<li class="divider"></li>
 												</cfif>
 												<cfif column.range and not thistag.expandable>
@@ -437,8 +437,8 @@
 														</cfif>
 													</cfsilent>
 													<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.range')#</li>
-													<li class="range-filter"><label for="">From</label><input type="text" class="#local.rangeClass# range-filter-lower" name="R:#column.propertyIdentifier#" value="" /></li>
-													<li class="range-filter"><label for="">To</label><input type="text" class="#local.rangeClass# range-filter-upper" name="R:#column.propertyIdentifier#" value="" /></li>
+													<li class="range-filter"><label for="">From</label><input type="text" class="#local.rangeClass# form-control range-filter-lower" name="R:#column.propertyIdentifier#" value="" /></li>
+													<li class="range-filter"><label for="">To</label><input type="text" class="#local.rangeClass# form-control range-filter-upper" name="R:#column.propertyIdentifier#" value="" /></li>
 													<li class="divider"></li>
 												</cfif>
 												<cfif column.filter and not thistag.expandable>
