@@ -80,7 +80,7 @@ Notes:
 		<hb:HibachiTabGroup object="#rc.accountPayment#">
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.accountPayment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.accountPayment#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.accountPayment#" attributeSet="#attributeSet#" />
 			</cfloop>
 		</hb:HibachiTabGroup>
 		

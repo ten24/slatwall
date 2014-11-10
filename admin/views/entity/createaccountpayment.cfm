@@ -89,7 +89,7 @@ Notes:
 			
 			<hb:HibachiPropertyRow>
 				<hb:HibachiPropertyList divClass="span6">
-					<cf_SlatwallAddressDisplay address="#$.slatwall.getService("addressService").newAddress()#" fieldnameprefix="billingAddress." edit="#rc.edit#" />
+					<swa:SlatwallAddressDisplay address="#$.slatwall.getService("addressService").newAddress()#" fieldnameprefix="billingAddress." edit="#rc.edit#" />
 				</hb:HibachiPropertyList>
 				<hb:HibachiPropertyList divClass="span6">
 					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="nameOnCreditCard" edit="#rc.edit#" />

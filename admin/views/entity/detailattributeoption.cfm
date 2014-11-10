@@ -70,7 +70,7 @@ Notes:
 		<hb:HibachiTabGroup object="#rc.attributeOption#">
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.attributeOption.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.attributeOption#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.attributeOption#" attributeSet="#attributeSet#" />
 			</cfloop>
 		</hb:HibachiTabGroup>
 	</hb:HibachiEntityDetailForm>

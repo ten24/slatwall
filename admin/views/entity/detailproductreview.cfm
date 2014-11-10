@@ -67,7 +67,7 @@ Notes:
 				
 		<!--- Custom Attributes --->
 		<cfloop array="#rc.productReview.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-			<cf_SlatwallAdminTabCustomAttributes object="#rc.productReview#" attributeSet="#attributeSet#" />
+			<swa:SlatwallAdminTabCustomAttributes object="#rc.productReview#" attributeSet="#attributeSet#" />
 		</cfloop>
 		
 		</hb:HibachiTabGroup>

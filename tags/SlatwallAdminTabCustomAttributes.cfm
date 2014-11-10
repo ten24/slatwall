@@ -64,7 +64,7 @@
 		<div class="tab-pane" id="attSet#attributes.attributeSet.getAttributeSetCode()#">
 			<hb:HibachiPropertyRow>
 				<hb:HibachiPropertyList>
-					<cf_SlatwallAdminAttributeSetDisplay attributeSet="#attributes.attributeSet#" entity="#attributes.object#" edit="#attributes.edit#" />
+					<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributes.attributeSet#" entity="#attributes.object#" edit="#attributes.edit#" />
 				</hb:HibachiPropertyList>
 			</hb:HibachiPropertyRow>
 		</div>

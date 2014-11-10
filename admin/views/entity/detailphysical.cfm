@@ -76,7 +76,7 @@ Notes:
 			<cfelse>
 				<hb:HibachiTab view="admin:entity/physicaltabs/discrepancies" />
 			</cfif>
-			<cf_SlatwallAdminTabComments object="#rc.physical#" />
+			<swa:SlatwallAdminTabComments object="#rc.physical#" />
 		</hb:HibachiTabGroup>
 		
 	</hb:HibachiEntityDetailForm>

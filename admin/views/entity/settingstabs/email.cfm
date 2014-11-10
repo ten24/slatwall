@@ -49,11 +49,11 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="emailFromAddress" />
-		<cf_SlatwallSetting settingName="emailToAddress" />
-		<cf_SlatwallSetting settingName="emailCCAddress" />
-		<cf_SlatwallSetting settingName="emailBCCAddress" />
-		<cf_SlatwallSetting settingName="emailSubject" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="emailFromAddress" />
+		<swa:SlatwallSetting settingName="emailToAddress" />
+		<swa:SlatwallSetting settingName="emailCCAddress" />
+		<swa:SlatwallSetting settingName="emailBCCAddress" />
+		<swa:SlatwallSetting settingName="emailSubject" />
+	</swa:SlatwallSettingTable>
 </cfoutput>

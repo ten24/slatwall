@@ -51,6 +51,6 @@ Notes:
 <cfparam name="rc.product" type="any" />
 
 <cfoutput>
-	<cf_SlatwallAdminImagesDisplay object="#rc.product#" />
+	<swa:SlatwallAdminImagesDisplay object="#rc.product#" />
 </cfoutput>
 

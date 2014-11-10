@@ -76,11 +76,11 @@ Notes:
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.vendorOrder.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.vendorOrder#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.vendorOrder#" attributeSet="#attributeSet#" />
 			</cfloop>
 			
 			<!--- Comments --->
-			<cf_SlatwallAdminTabComments object="#rc.vendorOrder#" />
+			<swa:SlatwallAdminTabComments object="#rc.vendorOrder#" />
 		</hb:HibachiTabGroup>
 		
 	</hb:HibachiEntityDetailForm>

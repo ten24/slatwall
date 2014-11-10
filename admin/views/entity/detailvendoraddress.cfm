@@ -65,7 +65,7 @@ Notes:
 		<input type="hidden" name="vendor.vendorID" value="#rc.vendor.getVendorID()#" />
 		<input type="hidden" name="vendorID" value="#rc.vendor.getVendorID()#" />
 		
-		<cf_SlatwallAdminAddressDisplay address="#rc.vendorAddress.getAddress()#" fieldNamePrefix="address." showCompany="false" edit="#rc.edit#">
+		<swa:SlatwallAdminAddressDisplay address="#rc.vendorAddress.getAddress()#" fieldNamePrefix="address." showCompany="false" edit="#rc.edit#">
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

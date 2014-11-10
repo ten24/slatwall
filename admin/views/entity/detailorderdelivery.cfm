@@ -74,7 +74,7 @@ Notes:
 			<hb:HibachiTab view="admin:entity/orderdeliverytabs/orderdeliveryitems">
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.orderDelivery.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.orderDelivery#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.orderDelivery#" attributeSet="#attributeSet#" />
 			</cfloop>
 		</hb:HibachiTabGroup>
 

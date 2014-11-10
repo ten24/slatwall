@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<!--- One of these three attributes should be defined for each option --->
 	<cfparam name="attributes.print" type="string" default="" />
@@ -57,6 +59,6 @@ Notes:
 	<cfparam name="attributes.value" type="string" default="" />
 	<cfparam name="attributes.valueOptions" type="array" default="#arrayNew(1)#" />
 	
-	<cfassociate basetag="cf_SlatwallProcessOptionBar" datacollection="options">
+	<cfassociate basetag="swa:SlatwallProcessOptionBar" datacollection="options">
 </cfif>
 

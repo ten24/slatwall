@@ -77,7 +77,7 @@ Notes:
 		<hb:HibachiTabGroup object="#rc.stockAdjustment#" allowComments="true">
 			<hb:HibachiTab property="stockadjustmentitems" />
 			<hb:HibachiTab property="stockreceivers" />
-			<cf_SlatwallAdminTabComments object="#rc.stockAdjustment#" />
+			<swa:SlatwallAdminTabComments object="#rc.stockAdjustment#" />
 		</hb:HibachiTabGroup>
 		
 	</hb:HibachiEntityDetailForm>

@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.title" type="string" default="" />
 	<cfparam name="attributes.tdClass" type="string" default="" />
@@ -57,5 +59,5 @@ Notes:
 	<cfparam name="attributes.valueOptions" type="array" default="#arrayNew(1)#" />
 	<cfparam name="attributes.valueOptionsMethod" type="string" default="" />
 	
-	<cfassociate basetag="cf_SlatwallProcessListing" datacollection="columns">
+	<cfassociate basetag="swa:SlatwallProcessListing" datacollection="columns">
 </cfif>

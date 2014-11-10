@@ -89,13 +89,13 @@ Notes:
 				<div class="span6">
 					<h5>#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#</h5>
 					<br />
-					<cf_SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionBenefits" />
+					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionBenefits" />
 					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" edit="true">
 						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
 					</hb:HibachiListingDisplay>
 					<h5>#$.slatwall.rbKey('admin.entity.createproduct.selectrenewalsubscriptionbenifits')#</h5>
 					<br />
-					<cf_SlatwallErrorDisplay object="#rc.product#" errorName="renewalsubscriptionBenefits" />
+					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalsubscriptionBenefits" />
 					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" edit="true">
 						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
 					</hb:HibachiListingDisplay>
@@ -103,7 +103,7 @@ Notes:
 				<div class="span6">
 					<h5>#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionterms')#</h5>
 					<br />
-					<cf_SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionTerms" />
+					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionTerms" />
 					<hb:HibachiListingDisplay smartList="SubscriptionTerm" multiselectFieldName="subscriptionTerms" edit="true">
 						<hb:HibachiListingColumn propertyIdentifier="subscriptionTermName" tdclass="primary" />
 					</hb:HibachiListingDisplay>
@@ -112,7 +112,7 @@ Notes:
 		<cfelseif rc.baseProductType eq "contentAccess">
 			<cfset contentAccessList = $.slatwall.getService("contentService").getContentSmartList() />
 			<!---<cfset contentAccessList.addFilter("allowPurchaseFlag", 1) />--->
-			<cf_SlatwallErrorDisplay object="#rc.product#" errorName="accessContents" />
+			<swa:SlatwallErrorDisplay object="#rc.product#" errorName="accessContents" />
 			<hb:HibachiFieldDisplay fieldType="yesno" fieldName="bundleContentAccess" value="0" title="#$.slatwall.rbKey('admin.entity.createproduct.bundleContentAccess')#" hint="#$.slatwall.rbKey('admin.entity.createproduct.bundleContentAccess_hint')#" edit="true" />
 			<hb:HibachiListingDisplay smartList="#contentAccessList#" multiselectFieldName="accessContents" edit="true">
 				<hb:HibachiListingColumn propertyIdentifier="title" tdclass="primary" />

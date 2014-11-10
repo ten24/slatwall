@@ -72,7 +72,7 @@ Notes:
 		
 		<hb:HibachiTabGroup object="#rc.option#">
 			<!--- Images --->
-			<cf_SlatwallAdminTabImages object="#rc.option#" />
+			<swa:SlatwallAdminTabImages object="#rc.option#" />
 		</hb:HibachiTabGroup>
 		
 	</hb:HibachiEntityDetailForm>

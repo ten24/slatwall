@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	
@@ -75,5 +77,5 @@ Notes:
 		<cfset attributes.settingFilterEntitiesURL = listAppend(attributes.settingFilterEntitiesURL, "#fe.getPrimaryIDPropertyName()#=#fe.getPrimaryIDValue()#", "&") />
 	</cfloop>
 	
-	<cfassociate basetag="cf_SlatwallSettingTable" datacollection="settings">
+	<cfassociate basetag="swa:SlatwallSettingTable" datacollection="settings">
 </cfif>

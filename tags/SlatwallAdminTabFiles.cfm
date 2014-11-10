@@ -46,6 +46,8 @@
 	Notes:
 	
 --->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.object" type="any" />
@@ -58,7 +60,7 @@
 	
 	<cfsavecontent variable="attributes.tabcontent" >
 		<div class="tab-pane" id="tabFiles">
-			<cf_SlatwallAdminFilesDisplay object="#attributes.object#" />
+			<swa:SlatwallAdminFilesDisplay object="#attributes.object#" />
 		</div>
 	</cfsavecontent>
 	
