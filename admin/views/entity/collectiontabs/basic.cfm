@@ -136,24 +136,13 @@
 	      </div>
 
 	    </div><!--- //Row --->
+		
 	    <!--- //Tab panes for menu options end--->
-	    <div class="row s-table-header-nav">
-	      <div class="col-xs-6">
-	      	<!---TODO: implement keyword searching and bulk actions --->
-		      <ul class="list-inline list-unstyled">
-			      <!--<li>
-		            <form role="search">
-
-		                <label for="name" class="control-label"><i class="fa fa-level-down"></i></label>
-		                <select size="1" name="" aria-controls="" class="form-control accordion-dropdown">
-		                  <option value="15" selected="selected" disabled="disabled">Bulk Action</option>
-		                  <option value="j-export-link" data-toggle="collapse">Export</option>
-		                  <option value="j-delete-link" data-toggle="collapse">Delete</option>
-		                </select>
-
-		            </form>
-		          </li>-->
-			      <li style="width:200px;">
+	    <div class="s-table-header-nav">
+	        <div class="col-xs-6" style="padding-left:0px;">
+	            <!---TODO: implement keyword searching and bulk actions --->
+		      	<ul class="list-inline list-unstyled">
+			      <li>
 			        <form   class="s-table-header-search">
 			          <div class="input-group">
 			            <input  type="text"
@@ -176,16 +165,22 @@
 			      </li>
 			    </ul>
 		  	</div>
-	        <span   sw-pagination-bar
-		      		data-collection="collection"
-		      		data-current-page="currentPage"
-		      		data-page-show="pageShow"
-		      		data-page-start="pageStart"
-		      		data-page-end="pageEnd"
-		      		data-records-count="recordsCount"
-	        >
-	        </span>
-
+			
+			<div class="col-xs-6 s-table-view-options">
+				<ul class="list-inline list-unstyled">
+					<li>
+						<span   sw-pagination-bar
+								data-collection="collection"
+								data-current-page="currentPage"
+								data-page-show="pageShow"
+								data-page-start="pageStart"
+								data-page-end="pageEnd"
+								data-records-count="recordsCount"
+						>
+						</span>
+					</li>
+				</ul>
+			</div>
 	 	</div>
 
 	 	<span 	sw-export-action
