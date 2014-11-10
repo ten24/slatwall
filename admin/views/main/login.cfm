@@ -51,17 +51,17 @@ Notes:
 <cfparam name="rc.integrationLoginHTMLArray" type="array" />
 
 <cfoutput>
-	<div style="width:100%;">
+	<div class="s-login">
 		<cf_HibachiMessageDisplay />
 
-		<div class="well tabable s-login-box" style="max-width:350px;margin: 0px auto;">
+		<div class="well tabable s-login-box">
 
 			<!--- RESET PASSWORD FROM FORGOT PASSWORD EMAIL --->
 			<cfif len(rc.swprid) eq 64>
 
 				<h2>Reset Password</h2>
 				<br />
-				<form id="adminResetPasswordForm" action="?s=1" class="form-horizontal" method="post" style="display:inline-block;width:100%;">
+				<form id="adminResetPasswordForm" action="?s=1" class="form-horizontal s-login-reset" method="post">
 					<input type="hidden" name="slatAction" value="admin:main.resetPassword" />
 					<input type="hidden" name="swprid" value="#rc.swprid#" />
 					<input type="hidden" name="accountID" value="#left(rc.swprid, 32)#" />
