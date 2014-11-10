@@ -432,6 +432,7 @@
 							}else if (angular.isDefined(propertyMetaData.type)){
 								dataType = propertyMetaData.type;
 							}
+							
 							if(["boolean","yes_no","true_false"].indexOf(dataType) > -1){
 								return "yesno";
 							}else if (["date","timestamp"].indexOf(dataType) > -1){
@@ -453,6 +454,52 @@
 						}
 					
 			    		return "text";
+			    	}
+			    	
+			    	var _getPropertyFormatType = function(propertyName,metaData){
+			    		var propertyMetaData = metaData[propertyName];
+			    		
+			    		if(angular.isDefined(propertyMetaData['hb_formattype'])){
+			    			return propertyMetaData['hb_formattype'];
+			    		}else if(angular.isUndefined(propertyMetaData.fieldtype) || propertyMetaData.fieldtype === 'column'){
+			    			var dataType = "";
+							
+							if(angular.isDefined(propertyMetaData.ormtype)){
+								dataType = propertyMetaData.ormtype;
+							}else if (angular.isDefined(propertyMetaData.type)){
+								dataType = propertyMetaData.type;
+							}
+							
+							if(["boolean","yes_no","true_false"].indexOf(dataType) > -1){
+								return "yesno";
+							}else if (["date","timestamp"].indexOf(dataType) > -1){
+								return "dateTime";
+							}else if (["big_decimal"].indexOf(dataType) > -1 && propertyName.slice(-6) === 'weight'){
+								return "weight";
+							}else if (["big_decimal"].indexOf(dataType) > -1){
+								return "currency";
+							}
+			    		}
+			    		return 'none';
+			    	}
+			    	
+			    	var _getPropertyFormattedValue = function(propertyName,formatType,entityInstance){
+			    		var value = entityInstance['$$get'+propertyName]();
+			    		if(angular.isUndefined(formatType)){
+			    			formatType = entityInstance.metaData.$$getPropertyFormatType(propertyName);
+			    		}
+			    		
+			    		<!---add custom format here --->
+			    		<!---if(formatType === 'custom'){
+			    			
+			    		}else if (formatType === 'rbkey'){
+			    			if(angular.isDefined(value) && value.length){
+			    				return entityInstance.metaData.$$getRBKey('entity');
+			    			}
+			    		}--->
+			    		
+			    		
+			    		
 			    	}
 			
 					<cfloop array="#rc.entities#" index="local.entity">
@@ -504,6 +551,14 @@
 								<!---// @hint public method for inspecting the property of a given object and determining the most appropriate field type for that property, this is used a lot by the HibachiPropertyDisplay --->
 								this.metaData.$$getPropertyFieldType = function(propertyName){
 									return _getPropertyFieldType(propertyName,this);
+								}
+								<!---// @hint public method for getting the display format for a given property, this is used a lot by the HibachiPropertyDisplay --->
+								this.metaData.$$getPropertyFormatType = function(propertyName){
+									return _getPropertyFormatType(propertyName,this);
+								}
+								
+								this.$$getPropertyFormattedValue = function(propertyName,formatType){
+									return _getPropertyFormatType(propertyName,formatType,this);
 								}
 								
 								this.data = {};

@@ -17,6 +17,8 @@ propertyDisplayService
 			isEditable:"=",
 			editing:"=",
 			isHidden:"=",
+			optionsArguments:"=",
+			eagerLoadOptions:"="
 		},
 		templateUrl:partialsPath+"propertydisplay.html",
 		link: function(scope, element,attrs){
@@ -28,10 +30,13 @@ propertyDisplayService
 				editing:scope.editing,
 				isEditable:scope.isEditable,
 				isHidden:scope.isHidden,
+				optionsArguments:scope.optionsArguments,
+				eagerLoadOptions:scope.eagerLoadOptions
 			};
 			
 			scope.$id = 'propertyDisplay:'+scope.property;
 			scope.propertyDisplay = propertyDisplayService.newPropertyDisplay(propertyDisplay);
+			
 			$log.debug(scope.propertyDisplay);
 						
 			

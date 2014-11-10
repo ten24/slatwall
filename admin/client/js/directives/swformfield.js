@@ -55,7 +55,7 @@ partialsPath
 				$log.debug(value);
 			};
 			
-			var templateLoader = getTemplate(scope.propertyDisplay.meta.fieldType);
+			var templateLoader = getTemplate(scope.propertyDisplay.fieldType);
 	    	var promise = templateLoader.success(function(html){
 	    		var formfield = angular.element(html);
 	    		//dynamic formfield name mapping
@@ -75,26 +75,27 @@ partialsPath
 	    		element.html(formfield);
 				$compile(element.contents())(scope);
 				
-				if(scope.propertyDisplay.meta.fieldType === 'select'){
+				if(scope.propertyDisplay.fieldType === 'select'){
 					scope.getOptions = function(){
-						if(angular.isUndefined(scope.propertyDisplay.meta.options)){
+						console.log(scope.propertyDisplay);
+						if(angular.isUndefined(scope.propertyDisplay.options)){
 							
-							var optionsPromise = $slatwall.getPropertyDisplayOptions(scope.propertyDisplay.objectName,
+							var optionsPromise = $slatwall.getPropertyDisplayOptions(scope.propertyDisplay.object.metaData.className,
 								 scope.propertyDisplay.optionsArguments
 							);
 							optionsPromise.then(function(value){
-								scope.propertyDisplay.meta.options = value.data;
+								scope.propertyDisplay.options = value.data;
 								//var selectElement = element.find('select');
 								//selectElement.blur();
 								
 								if(angular.isDefined(scope.propertyDisplay.object[scope.propertyDisplay.property])){
-									for(var i in scope.propertyDisplay.meta.options){
-										if(scope.propertyDisplay.meta.options[i].value === scope.propertyDisplay.object[scope.propertyDisplay.property]){
-											scope.propertyDisplay.selectedOption = scope.propertyDisplay.meta.options[i];
+									for(var i in scope.propertyDisplay.options){
+										if(scope.propertyDisplay.options[i].value === scope.propertyDisplay.object[scope.propertyDisplay.property]){
+											scope.propertyDisplay.selectedOption = scope.propertyDisplay.options[i];
 										}
 									}
 								}
-								scope.propertyDisplay.object[scope.propertyDisplay.property] = scope.propertyDisplay.meta.options[0];
+								scope.propertyDisplay.object[scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
 							});
 						}
 						
@@ -104,10 +105,10 @@ partialsPath
 					}
 		        	//formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
 		        }
-				if(scope.propertyDisplay.meta.fieldType === 'text' || scope.propertyDisplay.meta.fieldType === 'hidden'){
+				if(scope.propertyDisplay.fieldType === 'text' || scope.propertyDisplay.fieldType === 'hidden'){
 					formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.property]);
 				}
-				if(scope.propertyDisplay.meta.fieldType === 'yesno' || scope.propertyDisplay.meta.fieldType === 'hidden'){
+				if(scope.propertyDisplay.fieldType === 'yesno' || scope.propertyDisplay.fieldType === 'hidden'){
 					formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.property]);
 					console.log('radio');
 					console.log(scope.propertyDisplay.object[scope.propertyDisplay.property]);
