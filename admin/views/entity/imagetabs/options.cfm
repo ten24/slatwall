@@ -46,8 +46,8 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfset selectedValues = "" >
 <cfloop array="#rc.image.getOptions()#" index="option">
 	<cfset selectedValues = listAppend(selectedValues,option.getOptionID()) />
