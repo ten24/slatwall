@@ -202,6 +202,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return joinHQL;
 	}
 	
+	private string function addJoin(required any join){
+		if(!structKeyExists(getCollectionConfigStruct(),'joins')){
+			getCollectionConfigStruct().joins = [];
+		}
+		var joinFound = false;
+		for(configJoin in getCollectionConfigStruct().joins){
+			if(configJoin.alias == arguments.join.alias){
+				joinFound = true;
+			}
+		}
+		if(!joinFound){
+			ArrayAppend(getCollectionConfigStruct().joins,arguments.join);
+		}
+		
+	}
+	
 	
 	//the post functions are most likely to be called after a user posts to the server in order to update the base query with user chosen filters from the UI list view
 	public void function addPostFilterGroup(required any postFilterGroup){
@@ -663,11 +679,47 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			isDistinctValue = "DISTINCT";
 		}
 		
+		
+		
 		var HQL = 'SELECT #isDistinctValue#';
 		var columnCount = arraylen(arguments.columns);
 		HQL &= ' new Map(';
 		for(var i = 1; i <= columnCount; i++){
 			var column = arguments.columns[i];
+			
+			var currentAlias = '';
+			var currentAliasStepped = '';
+			var columnPropertyIdentiferArray = listToArray(column.propertyIdentifier,'.');
+			var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
+			for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
+				if(columnPropertyIdentiferArrayCount > 2){
+					if(j != 1 && j != columnPropertyIdentiferArrayCount){
+						var dotNeeded = '';
+						if(j >= 3){
+							dotNeeded = '.';
+						}
+						
+						var join = {
+								associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
+								alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
+						};
+						
+						currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
+						currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
+						
+						addJoin(join);
+						
+					}
+					if(j == columnPropertyIdentiferArrayCount){
+						column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
+					}
+				}
+				if(!len(currentAlias)){
+					currentAlias = columnPropertyIdentiferArray[1];
+				};
+				
+			}
+			
 			
 			if(structKeyExists(column,'attributeID')){
 				HQL &= getColumnAttributeHQL(column);
