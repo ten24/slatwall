@@ -43,7 +43,9 @@ workflowPartialsPath
 			scope.getPropertyDisplayData();*/
 				
 			scope.getWorkflowTriggers = function(){
-				var filterGroupsConfig ='['+  
+				
+				scope.workflowTriggers = scope.workflow.$$getWorkflowTriggers();
+				/*var filterGroupsConfig ='['+  
 					'{'+
                      	'"filterGroup":['+  
 				            '{'+
@@ -54,14 +56,16 @@ workflowPartialsPath
 				         ']'+
 					'}'+
 				']';
-				var workflowTriggerPromise = $slatwall.getEntity('workflowTrigger',{filterGroupsConfig:filterGroupsConfig});
+				scope.workflowTriggers = $slatwall.getWorkflowTrigger({filterGroupsConfig:filterGroupsConfig});
 				
 				workflowTriggerPromise.then(function(value){
 					$log.debug('getWorkflowTriggers');
-					scope.workflowTriggers = workflowTriggerService.formatWorkflowTriggers(value.pageRecords);
+					//scope.workflowTriggers = workflowTriggerService.formatWorkflowTriggers(value.pageRecords);
 					$log.debug(scope.workflowTriggers);
 					
 				});
+				console.log('workflowTriggers');
+				console.log(scope.workflowTriggers);*/
 			};
 			
 			scope.getWorkflowTriggers();
