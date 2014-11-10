@@ -51,16 +51,16 @@ Notes:
 <cfparam name="rc.contentSmartList" type="any" />
 
 <cfoutput>
-<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.contentSmartList#"
+<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.contentSmartList#"
 						   recordDetailAction="admin:entity.detailcontent"
 						   recordEditAction="admin:entity.editcontent">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="title" />
-	<cf_HibachiListingColumn propertyIdentifier="site.siteName" />
-	<cf_HibachiListingColumn propertyIdentifier="contentTemplateType.type" />
-	<cf_HibachiListingColumn propertyIdentifier="allowPurchaseFlag" />
-	<cf_HibachiListingColumn propertyIdentifier="productListingPageFlag" />
-	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="title" />
+	<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
+	<hb:HibachiListingColumn propertyIdentifier="contentTemplateType.type" />
+	<hb:HibachiListingColumn propertyIdentifier="allowPurchaseFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="productListingPageFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+</hb:HibachiListingDisplay>
 
 </cfoutput>
 

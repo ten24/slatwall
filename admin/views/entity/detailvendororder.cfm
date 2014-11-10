@@ -52,27 +52,27 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.vendorOrder#" edit="#rc.edit#" sRedirectAction="admin:entity.editvendororder">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.vendorOrder#" edit="#rc.edit#">
-			<cf_HibachiProcessCaller entity="#rc.vendorOrder#" action="admin:entity.preprocessvendororder" processContext="receive" type="list" />
-			<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="vendorOrderID=#rc.vendorOrder.getVendorOrderID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
-		</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.vendorOrder#" edit="#rc.edit#" sRedirectAction="admin:entity.editvendororder">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.vendorOrder#" edit="#rc.edit#">
+			<hb:HibachiProcessCaller entity="#rc.vendorOrder#" action="admin:entity.preprocessvendororder" processContext="receive" type="list" />
+			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="vendorOrderID=#rc.vendorOrder.getVendorOrderID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 				<cfif rc.vendorOrder.isNew()>
-					<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="currencyCode" edit="true">
+					<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="currencyCode" edit="true">
 				</cfif>
-				<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="vendor" autocompletePropertyIdentifiers="vendorName,vendorWebsite,accountNumber,primaryEmailAddress.emailAddress" fieldtype="textautocomplete" edit="#rc.vendorOrder.isNew()#">
-				<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="vendorOrderNumber" edit="#rc.vendorOrder.isNew()#">
-				<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="estimatedReceivalDateTime" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="billToLocation" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+				<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="vendor" autocompletePropertyIdentifiers="vendorName,vendorWebsite,accountNumber,primaryEmailAddress.emailAddress" fieldtype="textautocomplete" edit="#rc.vendorOrder.isNew()#">
+				<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="vendorOrderNumber" edit="#rc.vendorOrder.isNew()#">
+				<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="estimatedReceivalDateTime" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="billToLocation" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.vendorOrder#">
-			<cf_HibachiTab property="vendorOrderItems" />
-			<cf_HibachiTab view="admin:entity/vendorordertabs/stockreceivers" />
+		<hb:HibachiTabGroup object="#rc.vendorOrder#">
+			<hb:HibachiTab property="vendorOrderItems" />
+			<hb:HibachiTab view="admin:entity/vendorordertabs/stockreceivers" />
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.vendorOrder.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
@@ -81,7 +81,7 @@ Notes:
 			
 			<!--- Comments --->
 			<cf_SlatwallAdminTabComments object="#rc.vendorOrder#" />
-		</cf_HibachiTabGroup>
+		</hb:HibachiTabGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

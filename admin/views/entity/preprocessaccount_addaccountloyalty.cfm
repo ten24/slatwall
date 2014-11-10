@@ -53,16 +53,16 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 
-<cf_HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#">
+<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#">
 	
-	<cf_HibachiEntityActionBar type="preprocess" object="#rc.account#">
-	</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.account#">
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="loyaltyID" edit="#rc.edit#">
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="loyaltyID" edit="#rc.edit#">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 		
-</cf_HibachiEntityProcessForm>
+</hb:HibachiEntityProcessForm>
 

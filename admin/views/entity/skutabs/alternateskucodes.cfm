@@ -52,17 +52,17 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.sku.getAlternateSkuCodesSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.sku.getAlternateSkuCodesSmartList()#"
 			recordEditAction="admin:entity.editalternateskucode"
 			recordEditQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#"
 			recordEditModal=true
 			recordDeleteAction="admin:entity.deletealternateskucode"
 			recordDeleteQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()###tabalternateskucodes">
 			
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="alternateSkuCode" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="alternateSkuCodeType.type" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="alternateSkuCode" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="alternateSkuCodeType.type" />
 		
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createalternateskucode" class="btn" icon="plus" queryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#" modal="true" />
+	<hb:HibachiActionCaller action="admin:entity.createalternateskucode" class="btn" icon="plus" queryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#" modal="true" />
 </cfoutput>

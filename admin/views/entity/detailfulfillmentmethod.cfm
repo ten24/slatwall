@@ -51,26 +51,26 @@ Notes:
 <cfparam name="rc.fulfillmentMethod" type="any" />
 <cfparam name="rc.edit" type="boolean" default="false" />
 
-<cf_HibachiEntityDetailForm object="#rc.fulfillmentMethod#" edit="#rc.edit#">
-	<cf_HibachiEntityActionBar type="detail" object="#rc.fulfillmentMethod#" edit="#rc.edit#">
+<hb:HibachiEntityDetailForm object="#rc.fulfillmentMethod#" edit="#rc.edit#">
+	<hb:HibachiEntityActionBar type="detail" object="#rc.fulfillmentMethod#" edit="#rc.edit#">
 		<cfif rc.fulfillmentMethod.getFulfillmentMethodType() eq "shipping">
-			<cf_HibachiActionCaller action="admin:entity.createshippingmethod" queryString="fulfillmentMethodID=#rc.fulfillmentMethod.getFulfillmentMethodID()#" type="list" />
+			<hb:HibachiActionCaller action="admin:entity.createshippingmethod" queryString="fulfillmentMethodID=#rc.fulfillmentMethod.getFulfillmentMethodID()#" type="list" />
 		</cfif>
-	</cf_HibachiEntityActionBar>
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="activeFlag" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="fulfillmentMethodName" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="fulfillmentMethodType" edit="#rc.fulfillmentMethod.isNew()#">
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="activeFlag" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="fulfillmentMethodName" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.fulfillmentMethod#" property="fulfillmentMethodType" edit="#rc.fulfillmentMethod.isNew()#">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 	
-	<cf_HibachiTabGroup object="#rc.fulfillmentMethod#">
+	<hb:HibachiTabGroup object="#rc.fulfillmentMethod#">
 		<cfif rc.fulfillmentMethod.getFulfillmentMethodType() eq "shipping">
-			<cf_HibachiTab view="admin:entity/fulfillmentmethodtabs/shippingmethods">	
+			<hb:HibachiTab view="admin:entity/fulfillmentmethodtabs/shippingmethods">	
 		</cfif>
-		<cf_HibachiTab view="admin:entity/fulfillmentmethodtabs/fulfillmentsettings">
-	</cf_HibachiTabGroup>
+		<hb:HibachiTab view="admin:entity/fulfillmentmethodtabs/fulfillmentsettings">
+	</hb:HibachiTabGroup>
 
-</cf_HibachiEntityDetailForm>
+</hb:HibachiEntityDetailForm>

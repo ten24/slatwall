@@ -52,20 +52,20 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.eventTriggerSmartList#"
+	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.eventTriggerSmartList#"
 							   recordDetailAction="admin:entity.detaileventtrigger"
 							   recordEditAction="admin:entity.editeventtrigger">
 							      
 		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createeventtrigger" entity="eventtrigger" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>
+		<hb:HibachiListingDisplayButtonGroup >
+			<hb:HibachiActionCaller action="admin:entity.createeventtrigger" entity="eventtrigger" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiListingDisplayButtonGroup>
 		
-		<cf_HibachiListingColumn propertyIdentifier="eventTriggerName" />
-		<cf_HibachiListingColumn propertyIdentifier="eventTriggerType" />
-		<cf_HibachiListingColumn propertyIdentifier="eventTriggerObject" />
-		<cf_HibachiListingColumn propertyIdentifier="eventName" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="eventTriggerName" />
+		<hb:HibachiListingColumn propertyIdentifier="eventTriggerType" />
+		<hb:HibachiListingColumn propertyIdentifier="eventTriggerObject" />
+		<hb:HibachiListingColumn propertyIdentifier="eventName" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

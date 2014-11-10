@@ -53,13 +53,13 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.detailorder">
+	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.detailorder">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.order#">
-		</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 				
 				<cfset rc.addOrderPaymentProcessObject = rc.processObject />
 				
@@ -70,7 +70,7 @@ Notes:
 				<cfif not rc.addOrderPaymentProcessObject.hasErrors() && not rc.addOrderPaymentProcessObject.getNewOrderPayment().hasErrors() && rc.order.getOrderPaymentAmountNeeded() lt 0>
 					<cfset orderPaymentTypeID = "444df2f1cc40d0ea8a2de6f542ab4f1d" />	
 				</cfif>
-				<cf_HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="orderPaymentType" value="#orderPaymentTypeID#" fieldName="newOrderPayment.orderPaymentType.typeID" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="orderPaymentType" value="#orderPaymentTypeID#" fieldName="newOrderPayment.orderPaymentType.typeID" edit="#rc.edit#">
 				
 				<div class="control-group">
 					<label class="control-label">#$.slatwall.rbKey('define.amount')#</label>
@@ -155,11 +155,11 @@ Notes:
 				
 				<cfinclude template="preprocessorder_include/addorderpayment.cfm" />
 				
-			</cf_HibachiPropertyList>
+			</hb:HibachiPropertyList>
 			
-		</cf_HibachiPropertyRow>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>
 
 
@@ -189,10 +189,10 @@ Notes:
 	
 <!--- Only Show Payment Amount if this is the second account payment --->
 <cfelse>
-	<cf_HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="amount" fieldName="newOrderPayment.amount" edit="#rc.edit#">
+	<hb:HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="amount" fieldName="newOrderPayment.amount" edit="#rc.edit#">
 </cfif>
 
-<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard" loadVisable="#loadPaymentMethodType eq 'creditCard'#">
+<hb:HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard" loadVisable="#loadPaymentMethodType eq 'creditCard'#">
 	
-</cf_HibachiDisplayToggle>
+</hb:HibachiDisplayToggle>
 --->

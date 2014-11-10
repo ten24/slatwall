@@ -52,18 +52,18 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartlist="#rc.physicalSmartList#" 
+	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartlist="#rc.physicalSmartList#" 
 	                          recordeditaction="admin:entity.editphysical"
 							  recorddetailaction="admin:entity.detailphysical">
 		
 		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createphysical" entity="physical" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>
+		<hb:HibachiListingDisplayButtonGroup >
+			<hb:HibachiActionCaller action="admin:entity.createphysical" entity="physical" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiListingDisplayButtonGroup>
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="physicalName" />	
-		<cf_HibachiListingColumn propertyidentifier="physicalStatusType.type" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" />					    
-		<cf_HibachiListingColumn propertyidentifier="createdDateTime" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="physicalName" />	
+		<hb:HibachiListingColumn propertyidentifier="physicalStatusType.type" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" />					    
+		<hb:HibachiListingColumn propertyidentifier="createdDateTime" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

@@ -52,38 +52,38 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.schedule#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.schedule#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.schedule#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.schedule#" edit="#rc.edit#" />
 		
-		<cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
 			
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.schedule#" property="scheduleName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.schedule#" property="recuringType" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.schedule#" property="frequencyStartTime" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.schedule#" property="frequencyEndTime" edit="#rc.edit#">
+			<hb:HibachiPropertyList divClass="span6">
+				<hb:HibachiPropertyDisplay object="#rc.schedule#" property="scheduleName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.schedule#" property="recuringType" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.schedule#" property="frequencyStartTime" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.schedule#" property="frequencyEndTime" edit="#rc.edit#">
 				
-				<cf_HibachiDisplayToggle selector="input[name='frequencyEndTime']" showValues="*" loadVisable="#len(rc.schedule.getValueByPropertyIdentifier('frequencyEndTime'))#">
-					<cf_HibachiPropertyDisplay object="#rc.schedule#" property="frequencyInterval" edit="#rc.edit#">
-				</cf_HibachiDisplayToggle>
-			</cf_HibachiPropertyList>
+				<hb:HibachiDisplayToggle selector="input[name='frequencyEndTime']" showValues="*" loadVisable="#len(rc.schedule.getValueByPropertyIdentifier('frequencyEndTime'))#">
+					<hb:HibachiPropertyDisplay object="#rc.schedule#" property="frequencyInterval" edit="#rc.edit#">
+				</hb:HibachiDisplayToggle>
+			</hb:HibachiPropertyList>
 			
-			<cf_HibachiPropertyList divClass="span6">
+			<hb:HibachiPropertyList divClass="span6">
 				
-				<cf_HibachiDisplayToggle selector="select[name='recuringType']" showValues="weekly" loadVisable="#rc.schedule.getValueByPropertyIdentifier('recuringType') eq 'weekly'#">
-					<cf_HibachiPropertyDisplay object="#rc.schedule#" property="daysOfWeekToRun" edit="#rc.edit#">
-				</cf_HibachiDisplayToggle>
-				<cf_HibachiDisplayToggle selector="select[name='recuringType']" showValues="monthly" loadVisable="#rc.schedule.getValueByPropertyIdentifier('recuringType') eq 'monthly'#">
-					<cf_HibachiPropertyDisplay object="#rc.schedule#" property="daysOfMonthToRun" edit="#rc.edit#">	
-				</cf_HibachiDisplayToggle>
-			</cf_HibachiPropertyList>
+				<hb:HibachiDisplayToggle selector="select[name='recuringType']" showValues="weekly" loadVisable="#rc.schedule.getValueByPropertyIdentifier('recuringType') eq 'weekly'#">
+					<hb:HibachiPropertyDisplay object="#rc.schedule#" property="daysOfWeekToRun" edit="#rc.edit#">
+				</hb:HibachiDisplayToggle>
+				<hb:HibachiDisplayToggle selector="select[name='recuringType']" showValues="monthly" loadVisable="#rc.schedule.getValueByPropertyIdentifier('recuringType') eq 'monthly'#">
+					<hb:HibachiPropertyDisplay object="#rc.schedule#" property="daysOfMonthToRun" edit="#rc.edit#">	
+				</hb:HibachiDisplayToggle>
+			</hb:HibachiPropertyList>
 			
-		</cf_HibachiPropertyRow>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.schedule#">
+		<hb:HibachiTabGroup object="#rc.schedule#">
 			
-		</cf_HibachiTabGroup>
+		</hb:HibachiTabGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

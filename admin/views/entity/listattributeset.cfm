@@ -50,19 +50,19 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.attributeSetSmartList" type="any" />
 
-<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.attributeSetSmartList#"
+<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.attributeSetSmartList#"
 						   recordDetailAction="admin:entity.detailattributeset"
 						   recordEditAction="admin:entity.editattributeset"
 						   sortProperty="sortOrder">
 						      
 	<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createattributeset" entity="attributeset" class="btn btn-primary" icon="plus icon-white"  modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>	
+		<hb:HibachiListingDisplayButtonGroup >
+			<hb:HibachiActionCaller action="admin:entity.createattributeset" entity="attributeset" class="btn btn-primary" icon="plus icon-white"  modal="true" />
+		</hb:HibachiListingDisplayButtonGroup>	
 						      
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="attributeSetName" />
-	<cf_HibachiListingColumn propertyIdentifier="attributeSetObject" />
-	<cf_HibachiListingColumn propertyIdentifier="globalFlag" />
-	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="attributeSetName" />
+	<hb:HibachiListingColumn propertyIdentifier="attributeSetObject" />
+	<hb:HibachiListingColumn propertyIdentifier="globalFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+</hb:HibachiListingDisplay>
 

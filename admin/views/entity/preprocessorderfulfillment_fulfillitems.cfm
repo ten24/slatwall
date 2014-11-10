@@ -51,13 +51,13 @@ Notes:
 <cfparam name="rc.orderFulfillment" type="any" />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.orderFulfillment#" edit="#rc.edit#" processAction="admin:entity.preprocessorderdelivery" processContext="create">
+	<hb:HibachiEntityProcessForm entity="#rc.orderFulfillment#" edit="#rc.edit#" processAction="admin:entity.preprocessorderdelivery" processContext="create">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.orderFulfillment#">
-		</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderFulfillment#">
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 				
 				<!--- Pass the info across --->
 				<input type="hidden" name="order.orderID" value="#rc.orderFulfillment.getOrder().getOrderID()#" />
@@ -70,7 +70,7 @@ Notes:
 				</cfif>
 				
 				<!--- Location --->
-				<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('entity.location')#" fieldName="location.locationID" valueOptions="#$.slatwall.getService('locationService').getLocationOptions()#" fieldType="select" edit="true" />
+				<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('entity.location')#" fieldName="location.locationID" valueOptions="#$.slatwall.getService('locationService').getLocationOptions()#" fieldType="select" edit="true" />
 				
 				<hr />
 				
@@ -102,8 +102,8 @@ Notes:
 						</tr>
 					</cfloop>
 				</table>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

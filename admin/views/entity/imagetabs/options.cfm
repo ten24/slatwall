@@ -53,12 +53,12 @@ Notes:
 	<cfset selectedValues = listAppend(selectedValues,option.getOptionID()) />
 </cfloop>
 <!--- Options --->
-<cf_HibachiListingDisplay smartList="#rc.image.getOptionsSmartList()#"
+<hb:HibachiListingDisplay smartList="#rc.image.getOptionsSmartList()#"
 						  multiselectFieldName="options"
 						  multiselectValues="#selectedValues#"
 						  edit="#rc.edit#">
-	<cf_HibachiListingColumn propertyIdentifier="optionGroup.optionGroupName" />
-	<cf_HibachiListingColumn propertyIdentifier="optionName" />    
-	<cf_HibachiListingColumn propertyIdentifier="optionCode" />    
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn propertyIdentifier="optionGroup.optionGroupName" />
+	<hb:HibachiListingColumn propertyIdentifier="optionName" />    
+	<hb:HibachiListingColumn propertyIdentifier="optionCode" />    
+</hb:HibachiListingDisplay>
 

@@ -53,11 +53,11 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.accountPaymentMethod#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.accountPaymentMethod#" edit="#rc.edit#" 
 								saveActionQueryString="accountID=#rc.account.getAccountID()#"
 								saveActionHash="tabaccountpaymentmethods">
 								
-		<cf_HibachiEntityActionBar type="detail" object="#rc.accountPaymentMethod#" edit="#rc.edit#"
+		<hb:HibachiEntityActionBar type="detail" object="#rc.accountPaymentMethod#" edit="#rc.edit#"
 					backAction="admin:entity.detailAccount" 
 					backQueryString="accountID=#rc.account.getAccountID()#"
 					cancelAction="admin:entity.detailAccount"
@@ -67,11 +67,11 @@ Notes:
 		<!--- Hidden field to attach this to the account --->
 		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="accountPaymentMethodName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="paymentMethod" edit="#rc.edit#">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList divClass="span6">
+				<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="activeFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="accountPaymentMethodName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="paymentMethod" edit="#rc.edit#">
 				
 				<cfset loadPaymentMethodType = rc.accountPaymentMethod.getPaymentMethodOptions()[1]['paymentmethodtype'] />
 				<cfif !isNull(rc.accountPaymentMethod.getPaymentMethod())>
@@ -79,42 +79,42 @@ Notes:
 				</cfif>
 				
 				<!--- Credit Card Details --->
-				<cf_HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard" loadVisable="#loadPaymentMethodType eq 'creditCard'#">
+				<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard" loadVisable="#loadPaymentMethodType eq 'creditCard'#">
 					<hr />
 					<h5>#$.slatwall.rbKey('admin.define.creditCardDetials')#</h5>
-					<cf_HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="creditCardNumber" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="nameOnCreditCard" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="expirationMonth" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="expirationYear" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="securityCode" edit="#rc.edit#" />
-				</cf_HibachiDisplayToggle>
+					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="creditCardNumber" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="nameOnCreditCard" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="expirationMonth" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="expirationYear" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="securityCode" edit="#rc.edit#" />
+				</hb:HibachiDisplayToggle>
 				
 				<!--- Gift Card Details --->
-				<cf_HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="giftCard" loadVisable="#loadPaymentMethodType eq 'giftCard'#">
+				<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="giftCard" loadVisable="#loadPaymentMethodType eq 'giftCard'#">
 					<hr />
 					<h5>#$.slatwall.rbKey('admin.define.giftCardDetails')#</h5>
-					<cf_HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="giftCardNumber" edit="#rc.edit#" />
-				</cf_HibachiDisplayToggle>
+					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="giftCardNumber" edit="#rc.edit#" />
+				</hb:HibachiDisplayToggle>
 				
 				<!--- Term Payment Details --->
-				<cf_HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="termPayment" loadVisable="#loadPaymentMethodType eq 'termPayment'#">
+				<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="termPayment" loadVisable="#loadPaymentMethodType eq 'termPayment'#">
 					<hr />
 					<h5>#$.slatwall.rbKey('admin.define.termPaymentDetails')#</h5>
-					<cf_HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="paymentTerm" edit="#rc.edit#" />
-				</cf_HibachiDisplayToggle>
+					<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="paymentTerm" edit="#rc.edit#" />
+				</hb:HibachiDisplayToggle>
 				<!--- Just uses Billing Address --->
-			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="span6">
+			</hb:HibachiPropertyList>
+			<hb:HibachiPropertyList divClass="span6">
 				<!--- Billing Address Details --->
-				<cf_HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,termPayment" loadVisable="#listFindNoCase('creditCard,termPayment', loadPaymentMethodType)#">
+				<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,termPayment" loadVisable="#listFindNoCase('creditCard,termPayment', loadPaymentMethodType)#">
 					<h5>#$.slatwall.rbKey('entity.accountpaymentmethod.billingaddress')#</h5>
 					<cf_SlatwallAdminAddressDisplay address="#rc.accountPaymentMethod.getBillingAddress()#" fieldNamePrefix="billingaddress." edit="#rc.edit#">
-				</cf_HibachiDisplayToggle>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+				</hb:HibachiDisplayToggle>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.accountPaymentMethod#">
-			<cf_HibachiTab property="paymentTransactions" />
-		</cf_HibachiTabGroup>
-	</cf_HibachiEntityDetailForm>
+		<hb:HibachiTabGroup object="#rc.accountPaymentMethod#">
+			<hb:HibachiTab property="paymentTransactions" />
+		</hb:HibachiTabGroup>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

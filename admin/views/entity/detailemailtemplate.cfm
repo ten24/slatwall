@@ -52,25 +52,25 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.emailTemplate#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.emailTemplate#" />
+	<hb:HibachiEntityDetailForm object="#rc.emailTemplate#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.emailTemplate#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateFile" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateObject" edit="false">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList divClass="span6">
+				<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateFile" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+			<hb:HibachiPropertyList divClass="span6">
+				<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateObject" edit="false">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 
-		<cf_HibachiTabGroup object="#rc.emailTemplate#">
-			<cf_HibachiTab view="admin:entity/emailtemplatetabs/htmlbody">
-			<cf_HibachiTab view="admin:entity/emailtemplatetabs/textbody">
-			<cf_HibachiTab view="admin:entity/emailtemplatetabs/emailsettings">
-		</cf_HibachiTabGroup>
+		<hb:HibachiTabGroup object="#rc.emailTemplate#">
+			<hb:HibachiTab view="admin:entity/emailtemplatetabs/htmlbody">
+			<hb:HibachiTab view="admin:entity/emailtemplatetabs/textbody">
+			<hb:HibachiTab view="admin:entity/emailtemplatetabs/emailsettings">
+		</hb:HibachiTabGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

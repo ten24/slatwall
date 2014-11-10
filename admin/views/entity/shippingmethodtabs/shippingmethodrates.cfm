@@ -51,7 +51,7 @@ Notes:
 <cfparam name="rc.shippingMethod" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.shippingMethod.getShippingMethodRatesSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.shippingMethod.getShippingMethodRatesSmartList()#"
 							   recordEditAction="admin:entity.editshippingmethodrate"
 							   recordDeleteAction="admin:entity.deleteshippingmethodrate"
 							   recordDetailAction="admin:entity.detailshippingmethodrate"
@@ -59,19 +59,19 @@ Notes:
 							   sortProperty="sortOrder"
 							   sortContextIDColumn="shippingMethodID"
 							   sortContextIDValue="#rc.shippingMethod.getShippingMethodID()#">
-		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="shippingMethodRateName" />
-		<cf_HibachiListingColumn propertyidentifier="addressZone.addressZoneName" />
-		<cf_HibachiListingColumn propertyidentifier="shipmentWeightRange" />
-		<cf_HibachiListingColumn propertyidentifier="shipmentItemPriceRange" />
-		<cf_HibachiListingColumn propertyidentifier="defaultAmount" />
-		<cf_HibachiListingColumn propertyidentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="shippingMethodRateName" />
+		<hb:HibachiListingColumn propertyidentifier="addressZone.addressZoneName" />
+		<hb:HibachiListingColumn propertyidentifier="shipmentWeightRange" />
+		<hb:HibachiListingColumn propertyidentifier="shipmentItemPriceRange" />
+		<hb:HibachiListingColumn propertyidentifier="defaultAmount" />
+		<hb:HibachiListingColumn propertyidentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 	
-	<cf_HibachiActionCallerDropdown title="#request.slatwallScope.rbKey('define.add')# #request.slatwallScope.rbKey('entity.shippingmethodrate')#" icon="plus" buttonClass="btn-inverse">
+	<hb:HibachiActionCallerDropdown title="#request.slatwallScope.rbKey('define.add')# #request.slatwallScope.rbKey('entity.shippingmethodrate')#" icon="plus" buttonClass="btn-inverse">
 		<cfset local.integrationOptions = rc.shippingMethod.getShippingMethodRateIntegrationOptions()>
 		<cfloop array="#local.integrationOptions#" index="local.integration">
-			<cf_HibachiActionCaller text="#local.integration['name']# #request.slatwallScope.rbKey('define.rate')#" action="admin:entity.createshippingmethodrate" type="list" queryString="shippingMethodID=#rc.shippingMethod.getShippingMethodID()#&integrationID=#local.integration['value']#" modal="true" />
+			<hb:HibachiActionCaller text="#local.integration['name']# #request.slatwallScope.rbKey('define.rate')#" action="admin:entity.createshippingmethodrate" type="list" queryString="shippingMethodID=#rc.shippingMethod.getShippingMethodID()#&integrationID=#local.integration['value']#" modal="true" />
 		</cfloop>
-		<cf_HibachiActionCaller action="admin:entity.createshippingmethodrate" type="list" queryString="shippingMethodID=#rc.shippingMethod.getShippingMethodID()#" modal="true" />
-	</cf_HibachiActionCallerDropdown>
+		<hb:HibachiActionCaller action="admin:entity.createshippingmethodrate" type="list" queryString="shippingMethodID=#rc.shippingMethod.getShippingMethodID()#" modal="true" />
+	</hb:HibachiActionCallerDropdown>
 </cfoutput>

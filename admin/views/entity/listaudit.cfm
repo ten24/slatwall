@@ -52,18 +52,18 @@ Notes:
 
 <cfset rc.auditSmartList.addOrder('auditDateTime|DESC') />
 
-<cf_HibachiListingDisplay smartList="#rc.auditSmartList#"
+<hb:HibachiListingDisplay smartList="#rc.auditSmartList#"
 						   recordDetailAction="admin:entity.preprocessaudit"
 						   recordDetailQueryString="processContext=rollback"
 						   recordDetailModal=true>
 	
-	<cf_HibachiListingColumn propertyIdentifier="auditDateTime" />
-	<cf_HibachiListingColumn propertyIdentifier="sessionAccountFullName" />
-	<cf_HibachiListingColumn propertyIdentifier="sessionAccountEmailAddress" />
-	<cf_HibachiListingColumn propertyIdentifier="auditType" filter="true" />
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="title" />
-	<cf_HibachiListingColumn propertyIdentifier="baseObject" />
-	<cf_HibachiListingColumn propertyIdentifier="baseID" />
+	<hb:HibachiListingColumn propertyIdentifier="auditDateTime" />
+	<hb:HibachiListingColumn propertyIdentifier="sessionAccountFullName" />
+	<hb:HibachiListingColumn propertyIdentifier="sessionAccountEmailAddress" />
+	<hb:HibachiListingColumn propertyIdentifier="auditType" filter="true" />
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="title" />
+	<hb:HibachiListingColumn propertyIdentifier="baseObject" />
+	<hb:HibachiListingColumn propertyIdentifier="baseID" />
 	
-</cf_HibachiListingDisplay>
+</hb:HibachiListingDisplay>
 

@@ -51,7 +51,7 @@ Notes:
 <cfparam name="rc.account" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.account.getAccountPaymentMethodsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.account.getAccountPaymentMethodsSmartList()#"
 							  recordEditAction="admin:entity.editaccountpaymentmethod"
 							  recordEditQueryString="accountID=#rc.account.getAccountID()#"
 							  recordDetailAction="admin:entity.detailaccountpaymentmethod"
@@ -61,10 +61,10 @@ Notes:
 							  selectTitle="#$.slatwall.rbKey('define.primary')#"
 							  edit="#rc.edit#">
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="simpleRepresentation" title="#$.slatwall.rbKey('entity.accountPaymentMethod')#" />
-		<cf_HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />					    
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="simpleRepresentation" title="#$.slatwall.rbKey('entity.accountPaymentMethod')#" />
+		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />					    
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 	
 	<cfset disabled = false />
 	<cfset disabledText = "" />
@@ -76,6 +76,6 @@ Notes:
 		<cfset disabled = true />
 		<cfset disabledText = $.slatwall.rbKey('admin.entity.accounttabs.accountpaymentmethods.adddisabled') />	
 	</cfif>
-	<cf_HibachiActionCaller action="admin:entity.createaccountpaymentmethod" class="btn" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true disabled="#disabled#" disabledText="#disabledText#" />
+	<hb:HibachiActionCaller action="admin:entity.createaccountpaymentmethod" class="btn" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true disabled="#disabled#" disabledText="#disabledText#" />
 </cfoutput>
 

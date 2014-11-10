@@ -57,33 +57,33 @@ Notes:
 <cfset rc.sitesArray = sites.getRecords() />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.productType#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.productType#" edit="#rc.edit#" />
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.productType#" property="activeFlag" edit="#rc.edit#">
+	<hb:HibachiEntityDetailForm object="#rc.productType#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.productType#" edit="#rc.edit#" />
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.productType#" property="activeFlag" edit="#rc.edit#">
 				<cfif isNull(rc.productType.getSystemCode()) or !len(rc.productType.getSystemCode())>
-					<cf_HibachiPropertyDisplay object="#rc.productType#" property="parentProductType" edit="#rc.edit#" valueOptions="#rc.productType.getParentProductTypeOptions(rc.baseProductType)#">
+					<hb:HibachiPropertyDisplay object="#rc.productType#" property="parentProductType" edit="#rc.edit#" valueOptions="#rc.productType.getParentProductTypeOptions(rc.baseProductType)#">
 				</cfif>
-				<cf_HibachiPropertyDisplay object="#rc.productType#" property="productTypeName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.productType#" property="productTypeName" edit="#rc.edit#">
 				<cfif not rc.productType.isNew()>
-					<cf_HibachiPropertyDisplay object="#rc.productType#" property="urlTitle" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.productType#" property="urlTitle" edit="#rc.edit#">
 				</cfif>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.productType#">
-			<cf_HibachiTab view="admin:entity/producttypetabs/producttypedescription" />
-			<cf_HibachiTab view="admin:entity/producttypetabs/products" />
-			<cf_HibachiTab view="admin:entity/producttypetabs/producttypesettings" />
-			<cf_HibachiTab view="admin:entity/producttypetabs/productsettings" />
-			<cf_HibachiTab view="admin:entity/producttypetabs/skusettings" />
+		<hb:HibachiTabGroup object="#rc.productType#">
+			<hb:HibachiTab view="admin:entity/producttypetabs/producttypedescription" />
+			<hb:HibachiTab view="admin:entity/producttypetabs/products" />
+			<hb:HibachiTab view="admin:entity/producttypetabs/producttypesettings" />
+			<hb:HibachiTab view="admin:entity/producttypetabs/productsettings" />
+			<hb:HibachiTab view="admin:entity/producttypetabs/skusettings" />
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.productType.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.productType#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiTabGroup>
+		</hb:HibachiTabGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 
 </cfoutput>

@@ -52,23 +52,23 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.integration#" edit="#rc.edit#">
+	<hb:HibachiEntityDetailForm object="#rc.integration#" edit="#rc.edit#">
 		
-		<cf_HibachiEntityActionBar type="detail" object="#rc.integration#" showDelete="false" />
+		<hb:HibachiEntityActionBar type="detail" object="#rc.integration#" showDelete="false" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.integration#" property="integrationPackage" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.integration#" property="activeFlag" edit="#rc.edit#" />
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.integration#" property="integrationPackage" edit="false">
+				<hb:HibachiPropertyDisplay object="#rc.integration#" property="activeFlag" edit="#rc.edit#" />
 				
-			</cf_HibachiPropertyList>
+			</hb:HibachiPropertyList>
 			
 			
-		</cf_HibachiPropertyRow>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.integration#">
-			<cf_HibachiTab view="admin:entity/integrationtabs/settings" />
-		</cf_HibachiTabGroup>
+		<hb:HibachiTabGroup object="#rc.integration#">
+			<hb:HibachiTab view="admin:entity/integrationtabs/settings" />
+		</hb:HibachiTabGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

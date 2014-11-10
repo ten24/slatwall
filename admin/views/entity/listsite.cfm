@@ -52,16 +52,16 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.siteSmartList#"
+	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.siteSmartList#"
 							   recordEditAction="admin:entity.editSite"
 							   recordDetailAction="admin:entity.detailSite">
 		
 		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createsite" entity="site" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>
+		<hb:HibachiListingDisplayButtonGroup >
+			<hb:HibachiActionCaller action="admin:entity.createsite" entity="site" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiListingDisplayButtonGroup>
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="siteName" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="siteName" />
+	</hb:HibachiListingDisplay>
 	
 </cfoutput>

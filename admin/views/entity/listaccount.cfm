@@ -52,22 +52,22 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.accountSmartList#"
+	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.accountSmartList#"
 							   recordEditAction="admin:entity.editaccount"
 							   recordDetailAction="admin:entity.detailaccount">
 							      
 		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>
+		<hb:HibachiListingDisplayButtonGroup >
+			<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />
+		</hb:HibachiListingDisplayButtonGroup>
 							      
-		<cf_HibachiListingColumn propertyIdentifier="firstName" />
-		<cf_HibachiListingColumn propertyIdentifier="lastName" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
-		<cf_HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
-		<cf_HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
-		<cf_HibachiListingColumn propertyIdentifier="guestAccountFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="firstName" />
+		<hb:HibachiListingColumn propertyIdentifier="lastName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
+		<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
+		<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
+		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
 		
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

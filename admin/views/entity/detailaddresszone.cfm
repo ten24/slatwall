@@ -51,19 +51,19 @@ Notes:
 <cfparam name="rc.addressZone" type="any">
 <cfparam name="rc.edit" type="boolean">
 
-<cf_HibachiEntityDetailForm object="#rc.addressZone#" edit="#rc.edit#">
-	<cf_HibachiEntityActionBar type="detail" object="#rc.addressZone#" edit="#rc.edit#">
-		<cf_HibachiActionCaller action="admin:entity.createaddresszonelocation" queryString="addressZoneID=#rc.addressZone.getAddressZoneID()#" type="list" modal=true />
-	</cf_HibachiEntityActionBar>
+<hb:HibachiEntityDetailForm object="#rc.addressZone#" edit="#rc.edit#">
+	<hb:HibachiEntityActionBar type="detail" object="#rc.addressZone#" edit="#rc.edit#">
+		<hb:HibachiActionCaller action="admin:entity.createaddresszonelocation" queryString="addressZoneID=#rc.addressZone.getAddressZoneID()#" type="list" modal=true />
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.addressZone#" property="addressZoneName" edit="#rc.edit#">
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.addressZone#" property="addressZoneName" edit="#rc.edit#">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 	
-	<cf_HibachiTabGroup object="#rc.addressZone#">
-		<cf_HibachiTab view="admin:entity/addresszonetabs/locations" />
-	</cf_HibachiTabGroup>
+	<hb:HibachiTabGroup object="#rc.addressZone#">
+		<hb:HibachiTab view="admin:entity/addresszonetabs/locations" />
+	</hb:HibachiTabGroup>
 	
-</cf_HibachiEntityDetailForm>
+</hb:HibachiEntityDetailForm>

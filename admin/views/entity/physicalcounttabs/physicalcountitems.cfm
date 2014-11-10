@@ -51,7 +51,7 @@ Notes:
 <cfparam name="rc.physicalCount" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.physicalCount.getPhysicalCountItemsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.physicalCount.getPhysicalCountItemsSmartList()#"
 							recordEditAction="admin:entity.editphysicalcountitem"
 							recordEditQueryString="redirectAction=admin:entity.detailphysicalcount"  
 							recordEditModal=true
@@ -59,14 +59,14 @@ Notes:
 							recordDeleteQueryString="physicalCountID=#rc.physicalCount.getPhysicalCountID()#&redirectAction=admin:entity.detailphysicalcount"
 							edit="#rc.edit#">
 							
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.productName" />
-		<cf_HibachiListingColumn propertyIdentifier="skuCode" />	
-		<cf_HibachiListingColumn propertyIdentifier="quantity" />
-		<cf_HibachiListingColumn propertyIdentifier="countPostDateTime" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.productName" />
+		<hb:HibachiListingColumn propertyIdentifier="skuCode" />	
+		<hb:HibachiListingColumn propertyIdentifier="quantity" />
+		<hb:HibachiListingColumn propertyIdentifier="countPostDateTime" />
 		
-	</cf_HibachiListingDisplay>	
+	</hb:HibachiListingDisplay>	
 	
 	<cfif rc.physicalCount.getPhysical().getPhysicalStatusType().getSystemCode() eq "pstOpen">
-		<cf_HibachiActionCaller entity="#rc.physicalCount#" action="admin:entity.createphysicalcountitem" class="btn" icon="plus" queryString="physicalCountID=#rc.physicalCount.getPhysicalCountID()#&redirectAction=admin:entity.detailphysicalcount" modal="true" />
+		<hb:HibachiActionCaller entity="#rc.physicalCount#" action="admin:entity.createphysicalcountitem" class="btn" icon="plus" queryString="physicalCountID=#rc.physicalCount.getPhysicalCountID()#&redirectAction=admin:entity.detailphysicalcount" modal="true" />
 	</cfif>
 </cfoutput>

@@ -54,8 +54,8 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.vendorOrderItem#" edit="#rc.edit#" saveActionQueryString="vendorOrderID=#rc.vendorOrder.getVendorOrderID()#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.vendorOrderItem#" edit="#rc.edit#"
+	<hb:HibachiEntityDetailForm object="#rc.vendorOrderItem#" edit="#rc.edit#" saveActionQueryString="vendorOrderID=#rc.vendorOrder.getVendorOrderID()#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.vendorOrderItem#" edit="#rc.edit#"
 								   backAction="admin:entity.detailvendororder"
 								   backQueryString="vendorOrderID=#rc.vendorOrder.getVendorOrderID()#"
 								   cancelAction="admin:entity.detailvendororder"
@@ -63,14 +63,14 @@ Notes:
 								   
 		<input type="hidden" name="vendorOrder.vendorOrderID" value="#rc.vendorOrder.getVendorOrderID()#" />
 
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.vendorOrderItem.getStock().getLocation()#" property="locationName" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.vendorOrderItem#" property="quantity" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.vendorOrderItem#" property="cost" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.vendorOrderItem#" property="estimatedReceivalDateTime" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.vendorOrderItem.getStock().getLocation()#" property="locationName" edit="false">
+				<hb:HibachiPropertyDisplay object="#rc.vendorOrderItem#" property="quantity" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.vendorOrderItem#" property="cost" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.vendorOrderItem#" property="estimatedReceivalDateTime" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

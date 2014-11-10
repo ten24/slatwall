@@ -53,19 +53,19 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.stockReceiver#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.stockReceiver#" edit="#rc.edit#">
-		</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.stockReceiver#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.stockReceiver#" edit="#rc.edit#">
+		</hb:HibachiEntityActionBar>
 			
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.stockReceiver#" property="packingSlipNumber" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.stockReceiver#" property="boxCount" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.stockReceiver#" property="packingSlipNumber" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.stockReceiver#" property="boxCount" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.stockReceiver#">
-			<cf_HibachiTab view="admin:entity/stockreceivertabs/stockreceiveritems" />
-		</cf_HibachiTabGroup>
-	</cf_HibachiEntityDetailForm>
+		<hb:HibachiTabGroup object="#rc.stockReceiver#">
+			<hb:HibachiTab view="admin:entity/stockreceivertabs/stockreceiveritems" />
+		</hb:HibachiTabGroup>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

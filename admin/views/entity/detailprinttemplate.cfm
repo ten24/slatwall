@@ -52,22 +52,22 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.printTemplate#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.printTemplate#" />
+	<hb:HibachiEntityDetailForm object="#rc.printTemplate#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.printTemplate#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateFile" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateObject" edit="false">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList divClass="span6">
+				<hb:HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateFile" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+			<hb:HibachiPropertyList divClass="span6">
+				<hb:HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateObject" edit="false">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 
-		<cf_HibachiTabGroup object="#rc.printTemplate#">
-			<cf_HibachiTab property="printContent" />
-		</cf_HibachiTabGroup>
+		<hb:HibachiTabGroup object="#rc.printTemplate#">
+			<hb:HibachiTab property="printContent" />
+		</hb:HibachiTabGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

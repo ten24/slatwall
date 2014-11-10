@@ -51,8 +51,8 @@ Notes:
 <cfparam name="rc.orderItem" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.orderItem.getAppliedPromotionsSmartList()#">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="promotion.promotionName" />
-		<cf_HibachiListingColumn propertyIdentifier="discountAmount" />
-	</cf_HibachiListingDisplay>
+	<hb:HibachiListingDisplay smartList="#rc.orderItem.getAppliedPromotionsSmartList()#">
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="promotion.promotionName" />
+		<hb:HibachiListingColumn propertyIdentifier="discountAmount" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

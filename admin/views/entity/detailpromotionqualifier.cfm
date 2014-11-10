@@ -62,8 +62,8 @@ Notes:
 <cfset local.qualifierType = rc.promotionQualifier.getQualifierType() />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.promotionQualifier#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.promotionQualifier#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.promotionQualifier#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.promotionQualifier#" edit="#rc.edit#" 
 							  cancelAction="admin:entity.detailpromotionqualifier"
 							  cancelQueryString="promotionQualifierID=#rc.promotionQualifier.getPromotionQualifierID()#" 
 							  backAction="admin:entity.detailpromotionperiod" 
@@ -75,41 +75,41 @@ Notes:
 		<input type="hidden" name="promotionPeriod.promotionPeriodID" value="#rc.promotionperiod.getPromotionperiodID()#" />
 		<input type="hidden" name="promotionPeriodID" value="#rc.promotionperiod.getPromotionperiodID()#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 				<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.qualifierType)>
-					<cf_HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumItemQuantity" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumItemQuantity" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumItemPrice" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumItemPrice" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.promotionQualifier#" property="rewardMatchingType" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumItemQuantity" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumItemQuantity" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumItemPrice" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumItemPrice" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="rewardMatchingType" edit="#rc.edit#" />
 				<cfelseif rc.qualifierType eq "fulfillment">
-					<cf_HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumFulfillmentWeight" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumFulfillmentWeight" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumFulfillmentWeight" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumFulfillmentWeight" edit="#rc.edit#" />
 				<cfelseif rc.qualifierType eq "order">
-					<cf_HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumOrderQuantity" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumOrderQuantity" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumOrderSubtotal" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumOrderSubtotal" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumOrderQuantity" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumOrderQuantity" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumOrderSubtotal" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumOrderSubtotal" edit="#rc.edit#" />
 				</cfif>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.promotionQualifier#">
+		<hb:HibachiTabGroup object="#rc.promotionQualifier#">
 			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.qualifierType)>
-				<cf_HibachiTab view="admin:entity/promotionqualifiertabs/producttypes" />
-				<cf_HibachiTab view="admin:entity/promotionqualifiertabs/products" />
-				<cf_HibachiTab view="admin:entity/promotionqualifiertabs/skus" />
-				<cf_HibachiTab view="admin:entity/promotionqualifiertabs/brands" />
+				<hb:HibachiTab view="admin:entity/promotionqualifiertabs/producttypes" />
+				<hb:HibachiTab view="admin:entity/promotionqualifiertabs/products" />
+				<hb:HibachiTab view="admin:entity/promotionqualifiertabs/skus" />
+				<hb:HibachiTab view="admin:entity/promotionqualifiertabs/brands" />
 				<cfif rc.qualifierType eq "merchandise">
-					<cf_HibachiTab view="admin:entity/promotionqualifiertabs/options" />
+					<hb:HibachiTab view="admin:entity/promotionqualifiertabs/options" />
 				</cfif>
 			<cfelseif rc.qualifierType eq "fulfillment">
-				<cf_HibachiTab view="admin:entity/promotionqualifiertabs/fulfillmentMethods" />
-				<cf_HibachiTab view="admin:entity/promotionqualifiertabs/shippingMethods" />
-				<cf_HibachiTab view="admin:entity/promotionqualifiertabs/shippingAddressZones" />
+				<hb:HibachiTab view="admin:entity/promotionqualifiertabs/fulfillmentMethods" />
+				<hb:HibachiTab view="admin:entity/promotionqualifiertabs/shippingMethods" />
+				<hb:HibachiTab view="admin:entity/promotionqualifiertabs/shippingAddressZones" />
 			</cfif>
-		</cf_HibachiTabGroup>
+		</hb:HibachiTabGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

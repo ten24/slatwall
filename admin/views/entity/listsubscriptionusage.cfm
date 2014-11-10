@@ -52,21 +52,21 @@ Notes:
 
 <cfoutput>
 
-<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.subscriptionUsageSmartList#"
+<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.subscriptionUsageSmartList#"
 						   recordDetailAction="admin:entity.detailsubscriptionUsage"
 						   recordEditAction="admin:entity.editsubscriptionUsage">
 
-	<cf_HibachiListingColumn propertyIdentifier="account.firstName" />
-	<cf_HibachiListingColumn propertyIdentifier="account.lastName" />
-	<cf_HibachiListingColumn propertyIdentifier="account.company" />
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionOrderItemName" />
-	<cf_HibachiListingColumn propertyIdentifier="currentStatusType" />
-	<cf_HibachiListingColumn propertyIdentifier="nextBillDate" />
-	<cf_HibachiListingColumn propertyIdentifier="expirationDate" />
-	<cf_HibachiListingColumn propertyIdentifier="gracePeriodTerm.termName" title="#$.slatwall.rbKey('define.gracePeriod')#" />
-	<cf_HibachiListingColumn propertyIdentifier="renewalPrice" />
-	<cf_HibachiListingColumn propertyIdentifier="autoPayFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="account.firstName" />
+	<hb:HibachiListingColumn propertyIdentifier="account.lastName" />
+	<hb:HibachiListingColumn propertyIdentifier="account.company" />
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionOrderItemName" />
+	<hb:HibachiListingColumn propertyIdentifier="currentStatusType" />
+	<hb:HibachiListingColumn propertyIdentifier="nextBillDate" />
+	<hb:HibachiListingColumn propertyIdentifier="expirationDate" />
+	<hb:HibachiListingColumn propertyIdentifier="gracePeriodTerm.termName" title="#$.slatwall.rbKey('define.gracePeriod')#" />
+	<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
+	<hb:HibachiListingColumn propertyIdentifier="autoPayFlag" />
 
-</cf_HibachiListingDisplay>
+</hb:HibachiListingDisplay>
 
 </cfoutput>

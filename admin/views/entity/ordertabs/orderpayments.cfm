@@ -66,42 +66,42 @@ Notes:
 
 <cfoutput>
 	<h5>#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.charges')#</h5>
-	<cf_HibachiListingDisplay smartList="#local.chargeList#" 
+	<hb:HibachiListingDisplay smartList="#local.chargeList#" 
 			recordDetailAction="admin:entity.detailorderpayment"
 			recordEditAction="admin:entity.editorderpayment">
-		<cf_HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
-		<cf_HibachiListingColumn propertyIdentifier="orderPaymentType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="dynamicAmountFlag" />
-		<cf_HibachiListingColumn propertyIdentifier="amount" />
-		<cf_HibachiListingColumn propertyIdentifier="amountReceived" />
-		<cf_HibachiListingColumn propertyIdentifier="amountCredited" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
+		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="dynamicAmountFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="amount" />
+		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
+		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
+	</hb:HibachiListingDisplay>
 	
 	<h5>#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.credits')#</h5>
-	<cf_HibachiListingDisplay smartList="#local.creditList#" 
+	<hb:HibachiListingDisplay smartList="#local.creditList#" 
 			recordDetailAction="admin:entity.detailorderpayment"
 			recordEditAction="admin:entity.editorderpayment">
-		<cf_HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
-		<cf_HibachiListingColumn propertyIdentifier="orderPaymentType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="dynamicAmountFlag" />
-		<cf_HibachiListingColumn propertyIdentifier="amount" />
-		<cf_HibachiListingColumn propertyIdentifier="amountReceived" />
-		<cf_HibachiListingColumn propertyIdentifier="amountCredited" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
+		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="dynamicAmountFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="amount" />
+		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
+		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
+	</hb:HibachiListingDisplay>
 	
 	<h5>#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.nonActive')#</h5>
-	<cf_HibachiListingDisplay smartList="#local.nonActiveList#" 
+	<hb:HibachiListingDisplay smartList="#local.nonActiveList#" 
 			recordDetailAction="admin:entity.detailorderpayment"
 			recordEditAction="admin:entity.editorderpayment">
-		<cf_HibachiListingColumn propertyIdentifier="orderPaymentStatusType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
-		<cf_HibachiListingColumn propertyIdentifier="orderPaymentType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="dynamicAmountFlag" search="false" range="false" sort="false" filter="false" />
-		<cf_HibachiListingColumn propertyIdentifier="amount" />
-		<cf_HibachiListingColumn propertyIdentifier="amountReceived" />
-		<cf_HibachiListingColumn propertyIdentifier="amountCredited" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="orderPaymentStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
+		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="dynamicAmountFlag" search="false" range="false" sort="false" filter="false" />
+		<hb:HibachiListingColumn propertyIdentifier="amount" />
+		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
+		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
+	</hb:HibachiListingDisplay>
 	
-	<cf_HibachiProcessCaller action="admin:entity.preprocessorder" entity="#rc.order#" processContext="addOrderPayment" class="btn" icon="plus" modal="true" />
+	<hb:HibachiProcessCaller action="admin:entity.preprocessorder" entity="#rc.order#" processContext="addOrderPayment" class="btn" icon="plus" modal="true" />
 	
 </cfoutput>

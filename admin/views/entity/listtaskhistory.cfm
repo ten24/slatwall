@@ -57,12 +57,12 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartlist="#rc.taskHistorySmartList#" >
-		<cf_HibachiListingColumn propertyidentifier="startTime" />
-		<cf_HibachiListingColumn propertyidentifier="endTime" />
-		<cf_HibachiListingColumn propertyidentifier="task.taskName" tdclass="primary" />
-		<cf_HibachiListingColumn propertyidentifier="successFlag" />
-		<cf_HibachiListingColumn propertyidentifier="response" />
-	</cf_HibachiListingDisplay>
+	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartlist="#rc.taskHistorySmartList#" >
+		<hb:HibachiListingColumn propertyidentifier="startTime" />
+		<hb:HibachiListingColumn propertyidentifier="endTime" />
+		<hb:HibachiListingColumn propertyidentifier="task.taskName" tdclass="primary" />
+		<hb:HibachiListingColumn propertyidentifier="successFlag" />
+		<hb:HibachiListingColumn propertyidentifier="response" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

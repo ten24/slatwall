@@ -65,17 +65,17 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.orderItemSmartList#"
+	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.orderItemSmartList#"
 							   recorddetailaction="admin:entity.detailorderitem"
 							   recordeditaction="admin:entity.editorderitem">
-		<cf_HibachiListingColumn propertyIdentifier="order.account.firstName" />
-		<cf_HibachiListingColumn propertyIdentifier="order.account.lastName" />
-		<cf_HibachiListingColumn propertyIdentifier="order.orderNumber" />
-		<cf_HibachiListingColumn propertyIdentifier="order.orderStatusType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.calculatedTitle" />
-		<cf_HibachiListingColumn propertyIdentifier="price" />
-		<cf_HibachiListingColumn propertyIdentifier="quantity" />
-		<cf_HibachiListingColumn propertyIdentifier="extendedPrice" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="order.account.firstName" />
+		<hb:HibachiListingColumn propertyIdentifier="order.account.lastName" />
+		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
+		<hb:HibachiListingColumn propertyIdentifier="order.orderStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.calculatedTitle" />
+		<hb:HibachiListingColumn propertyIdentifier="price" />
+		<hb:HibachiListingColumn propertyIdentifier="quantity" />
+		<hb:HibachiListingColumn propertyIdentifier="extendedPrice" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

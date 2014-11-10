@@ -53,36 +53,36 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.accountPayment#" edit="#rc.edit#">
+	<hb:HibachiEntityDetailForm object="#rc.accountPayment#" edit="#rc.edit#">
 								
-		<cf_HibachiEntityActionBar type="detail" object="#rc.accountPayment#" edit="#rc.edit#"
+		<hb:HibachiEntityActionBar type="detail" object="#rc.accountPayment#" edit="#rc.edit#"
 								   backAction="admin:entity.detailaccount"
 								   backQueryString="accountID=#rc.account.getAccountID()#" />
 		
 		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList divClass="span6">
 				<cfif rc.accountPayment.getPaymentMethodType() eq "creditCard">
-					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="nameOnCreditCard" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="creditCardType" />
-					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationMonth" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationYear" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="nameOnCreditCard" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="creditCardType" />
+					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationMonth" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationYear" edit="#rc.edit#" />
 				</cfif>
-			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="amount" />
-				<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="amountReceived" />
-				<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="amountCredited" />
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+			<hb:HibachiPropertyList divClass="span6">
+				<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="amount" />
+				<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="amountReceived" />
+				<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="amountCredited" />
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.accountPayment#">
+		<hb:HibachiTabGroup object="#rc.accountPayment#">
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.accountPayment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.accountPayment#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiTabGroup>
+		</hb:HibachiTabGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

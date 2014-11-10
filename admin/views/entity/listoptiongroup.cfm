@@ -52,17 +52,17 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.optionGroupSmartList#" 
+	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.optionGroupSmartList#" 
 							   recordDetailAction="admin:entity.detailoptiongroup"
 							   recordEditAction="admin:entity.editoptiongroup"
 							   sortProperty="sortOrder">
 		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createoptiongroup" entity="optiongroup" class="btn btn-primary" icon="plus icon-white" />
-		</cf_HibachiListingDisplayButtonGroup>
+		<hb:HibachiListingDisplayButtonGroup >
+			<hb:HibachiActionCaller action="admin:entity.createoptiongroup" entity="optiongroup" class="btn btn-primary" icon="plus icon-white" />
+		</hb:HibachiListingDisplayButtonGroup>
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="optionGroupName" />
-		<cf_HibachiListingColumn propertyIdentifier="optionGroupCode" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="optionGroupName" />
+		<hb:HibachiListingColumn propertyIdentifier="optionGroupCode" />
+	</hb:HibachiListingDisplay>
 	
 </cfoutput>

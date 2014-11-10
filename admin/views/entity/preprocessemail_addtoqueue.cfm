@@ -55,31 +55,31 @@ Notes:
 <cfset primaryIDPropertyName = $.slatwall.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(rc.emailTemplate.getEmailTemplateObject()) />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.email#" edit="#rc.edit#" processActionQueryString="#primaryIDPropertyName#=#rc[primaryIDPropertyName]#">
+	<hb:HibachiEntityProcessForm entity="#rc.email#" edit="#rc.edit#" processActionQueryString="#primaryIDPropertyName#=#rc[primaryIDPropertyName]#">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.email#">
-		</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.email#">
+		</hb:HibachiEntityActionBar>
 		
 		<cfif not isNull(rc.email.getEmailBodyText()) and len(rc.email.getEmailBodyText())>
 			<input type="hidden" name="EmailBodyText" value="#rc.email.getEmailBodyText()#" />
 		</cfif>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailTo" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailFrom" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailCC" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailBCC" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailSubject" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailTo" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailFrom" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailCC" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailBCC" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailSubject" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		<hr />
 		<div style="width:100%;">
 			<div style="width:100%;">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailBodyHTML" edit="#rc.edit#" fieldType="wysiwyg" displayType="plain">
+				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailBodyHTML" edit="#rc.edit#" fieldType="wysiwyg" displayType="plain">
 			</div>
 		</div>
 		
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>
 

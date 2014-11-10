@@ -51,9 +51,9 @@ Notes:
 <cfparam name="rc.product" type="any" />
 
 <cfoutput>
-	<cf_HibachiTabGroup tabLocation="top">
-		<cf_HibachiTab view="admin:entity/producttabs/defaultimages" text="#$.slatwall.rbKey('admin.entity.producttabs.images.defaultImages')#" />
-		<cf_HibachiTab view="admin:entity/producttabs/alternateimages" text="#$.slatwall.rbKey('admin.entity.producttabs.images.alternateImages')#" />
-	</cf_HibachiTabGroup>
+	<hb:HibachiTabGroup tabLocation="top">
+		<hb:HibachiTab view="admin:entity/producttabs/defaultimages" text="#$.slatwall.rbKey('admin.entity.producttabs.images.defaultImages')#" />
+		<hb:HibachiTab view="admin:entity/producttabs/alternateimages" text="#$.slatwall.rbKey('admin.entity.producttabs.images.alternateImages')#" />
+	</hb:HibachiTabGroup>
 </cfoutput>
 

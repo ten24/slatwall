@@ -52,48 +52,48 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.task#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.task#">
+	<hb:HibachiEntityDetailForm object="#rc.task#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.task#">
 			<cfif rc.task.hasProcessObject( rc.task.getTaskMethod() )>
-				<cf_HibachiProcessCaller action="admin:entity.preprocesstask" processContext="runTask" entity="#rc.task#" type="list" modal="true">
+				<hb:HibachiProcessCaller action="admin:entity.preprocesstask" processContext="runTask" entity="#rc.task#" type="list" modal="true">
 			<cfelse>
-				<cf_HibachiProcessCaller action="admin:entity.processtask" processContext="runTask" entity="#rc.task#" type="list">
+				<hb:HibachiProcessCaller action="admin:entity.processtask" processContext="runTask" entity="#rc.task#" type="list">
 			</cfif>
-        </cf_HibachiEntityActionBar>    
+        </hb:HibachiEntityActionBar>    
 		
-		<cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
 			
 			<!--- Left Side Top --->
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.task#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.task#" property="runningFlag" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.task#" property="taskName" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
+			<hb:HibachiPropertyList divClass="span6">
+				<hb:HibachiPropertyDisplay object="#rc.task#" property="activeFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.task#" property="runningFlag" edit="false">
+				<hb:HibachiPropertyDisplay object="#rc.task#" property="taskName" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
 			
 			<!--- Right Side Top --->
-			<cf_HibachiPropertyList divClass="span6">
+			<hb:HibachiPropertyList divClass="span6">
 				
-				<cf_HibachiPropertyDisplay object="#rc.task#" property="taskMethod" edit="false">
+				<hb:HibachiPropertyDisplay object="#rc.task#" property="taskMethod" edit="false">
 				
 				<!--- Show the config for this task's process method --->
 				<cfif rc.task.hasProcessObject( rc.task.getTaskMethod() )>
 					<cfset processObject = rc.task.getProcessObject( rc.task.getTaskMethod() ) />
 					<cfloop array="#processObject.getProperties()#" index="property">
 						<cfif structKeyExists(property, "sw_taskConfig") and property.sw_taskConfig>
-							<cf_HibachiPropertyDisplay object="#processObject#" fieldName="taskConfig.#property.name#" property="#property.name#" edit="#rc.edit#">
+							<hb:HibachiPropertyDisplay object="#processObject#" fieldName="taskConfig.#property.name#" property="#property.name#" edit="#rc.edit#">
 						</cfif>
 					</cfloop>
 				</cfif>
 				
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.task#">
-			<cf_HibachiTab property="taskschedules" />
-			<cf_HibachiTab property="taskhistories" />
-			<cf_HibachiTab view="admin:entity/tasktabs/tasksettings" />
-		</cf_HibachiTabGroup>
+		<hb:HibachiTabGroup object="#rc.task#">
+			<hb:HibachiTab property="taskschedules" />
+			<hb:HibachiTab property="taskhistories" />
+			<hb:HibachiTab view="admin:entity/tasktabs/tasksettings" />
+		</hb:HibachiTabGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

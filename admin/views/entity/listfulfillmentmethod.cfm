@@ -50,17 +50,17 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.fulfillmentMethodSmartList" type="any" />
 
-<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.fulfillmentMethodSmartList#"
+<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.fulfillmentMethodSmartList#"
 		recordEditAction="admin:entity.editfulfillmentmethod"
 		recordDetailAction="admin:entity.detailfulfillmentmethod"
 		sortProperty="sortOrder">
 		
 	<!--- Create ---> 
-	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiActionCaller action="admin:entity.createfulfillmentmethod" entity="fulfillmentmethod" class="btn btn-primary" icon="plus icon-white" />
-	</cf_HibachiListingDisplayButtonGroup>
+	<hb:HibachiListingDisplayButtonGroup >
+		<hb:HibachiActionCaller action="admin:entity.createfulfillmentmethod" entity="fulfillmentmethod" class="btn btn-primary" icon="plus icon-white" />
+	</hb:HibachiListingDisplayButtonGroup>
 		
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="fulfillmentMethodName" />
-	<cf_HibachiListingColumn propertyIdentifier="fulfillmentMethodType" />
-	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fulfillmentMethodName" />
+	<hb:HibachiListingColumn propertyIdentifier="fulfillmentMethodType" />
+	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+</hb:HibachiListingDisplay>

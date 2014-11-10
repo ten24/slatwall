@@ -58,5 +58,5 @@ Notes:
 	<cfset det = rc.$.slatwall.getService('priceGroupService').getBestPriceGroupDetailsBasedOnSkuAndAccount(rc.sku, rc.$.slatwall.getAccount()) />
 	<cfdump var="#det#" top="3" />
 
-	<cf_HibachiPropertyDisplay object="#rc.sku#" property="priceGroupRates" edit="#rc.edit#" displayType="plain" />
+	<hb:HibachiPropertyDisplay object="#rc.sku#" property="priceGroupRates" edit="#rc.edit#" displayType="plain" />
 --->

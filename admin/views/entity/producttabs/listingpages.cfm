@@ -57,7 +57,7 @@ Notes:
 	<cfset selectedListingPageIDs = listAppend(selectedListingPageIDs, lp.getPrimaryIDValue()) />
 </cfloop>
 
-<cf_HibachiListingDisplay smartList="#rc.product.getListingPagesOptionsSmartList()#" multiselectFieldName="listingPages" multiselectValues="#selectedListingPageIDs#" edit="#rc.edit#">
-	<cf_HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
-	<cf_HibachiListingColumn propertyIdentifier="site.siteName" />
-</cf_HibachiListingDisplay>
+<hb:HibachiListingDisplay smartList="#rc.product.getListingPagesOptionsSmartList()#" multiselectFieldName="listingPages" multiselectValues="#selectedListingPageIDs#" edit="#rc.edit#">
+	<hb:HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
+	<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
+</hb:HibachiListingDisplay>

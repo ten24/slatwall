@@ -52,15 +52,15 @@ Notes:
 <cfset rc.productReviewSmartList.addOrder("createdDateTime|DESC") />
 <cfoutput>
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.productReviewSmartList#"
+	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.productReviewSmartList#"
 								recordDetailAction="admin:entity.detailproductreview"
 								recordEditAction="admin:entity.editproductreview">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="reviewTitle" />
-		<cf_HibachiListingColumn propertyIdentifier="reviewerName" />
-		<cf_HibachiListingColumn propertyIdentifier="rating" />
-		<cf_HibachiListingColumn propertyIdentifier="product.productName" />
-		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="reviewTitle" />
+		<hb:HibachiListingColumn propertyIdentifier="reviewerName" />
+		<hb:HibachiListingColumn propertyIdentifier="rating" />
+		<hb:HibachiListingColumn propertyIdentifier="product.productName" />
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

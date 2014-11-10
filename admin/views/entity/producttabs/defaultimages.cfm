@@ -63,9 +63,9 @@ Notes:
 					</div>
 					<hr />
 					<div class="small em image-caption">#imageFile#</div>
-					<cf_HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn" iconOnly="true" icon="upload" modal="true" />
+					<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn" iconOnly="true" icon="upload" modal="true" />
 					<cfif fileExists(expandPath(thisImagePath))>
-						<cf_HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn" iconOnly="true" icon="trash" />
+						<hb:HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn" iconOnly="true" icon="trash" />
 					</cfif>
 				</div>
 			</li>

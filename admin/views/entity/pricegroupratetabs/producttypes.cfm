@@ -51,4 +51,4 @@ Notes:
 <cfparam name="rc.priceGroupRate" type="any">
 <cfparam name="rc.edit" type="boolean">
 
-<cf_HibachiPropertyDisplay object="#rc.pricegrouprate#" property="productTypes" edit="#rc.edit#" displaytype="plain" />
+<hb:HibachiPropertyDisplay object="#rc.pricegrouprate#" property="productTypes" edit="#rc.edit#" displaytype="plain" />

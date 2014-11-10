@@ -51,9 +51,9 @@ Notes:
 <cfparam name="rc.subscriptionUsage" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionStatusSmartList()#">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionStatusType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="changeDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="effectiveDateTime" />
-	</cf_HibachiListingDisplay>
+	<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionStatusSmartList()#">
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="changeDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="effectiveDateTime" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

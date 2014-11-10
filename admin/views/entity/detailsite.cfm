@@ -52,18 +52,18 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.site#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.site#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.site#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.site#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.site#" property="siteName" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.site#" property="siteName" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.site#">
-			<cf_HibachiTab view="admin:entity/sitetabs/sitesettings" />
-		</cf_HibachiTabGroup>
+		<hb:HibachiTabGroup object="#rc.site#">
+			<hb:HibachiTab view="admin:entity/sitetabs/sitesettings" />
+		</hb:HibachiTabGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

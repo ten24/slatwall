@@ -52,17 +52,17 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.subscriptionTermSmartList#"
+	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.subscriptionTermSmartList#"
 							recordDetailAction="admin:entity.detailsubscriptionterm"
 							recordEditAction="admin:entity.editsubscriptionterm">
 							
 		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createsubscriptionterm" entity="subscriptionterm" class="btn btn-primary" icon="plus icon-white" />
-		</cf_HibachiListingDisplayButtonGroup>	
+		<hb:HibachiListingDisplayButtonGroup >
+			<hb:HibachiActionCaller action="admin:entity.createsubscriptionterm" entity="subscriptionterm" class="btn btn-primary" icon="plus icon-white" />
+		</hb:HibachiListingDisplayButtonGroup>	
 							
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionTermName" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionTermName" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 
