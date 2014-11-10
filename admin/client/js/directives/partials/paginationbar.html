@@ -1,20 +1,23 @@
-<div class="col-xs-6" style="text-align:right;">
+<div>
 	  <ul class="list-inline list-unstyled">
           <li>
 			  <form class="form-horizontal">
-			      <label for="inputPassword" class="control-label">View</label>
-			      <select 	size="1" 
-			      			name="pageShowOptions" 
-			      			aria-controls="" 
-			      			class="form-control"
-			      			ng-model="pageShowOptions.selectedPageShowOption" 
-			        		ng-options="pageShowOption as pageShowOption.display 
-			        					for pageShowOption in pageShowOptions 
-			        					
-			        					" 
-			        		ng-change="pageShowOptionChanged(pageShowOptions.selectedPageShowOption)"	
-			        		>
-			      </select>
+				
+				<div class="form-group s-page-show">
+			      <label for="inputPassword" class="control-label col-xs-4">View</label>
+			      <div class="col-xs-8">
+						<select size="1"
+								class="form-control" 
+								name="pageShowOptions" 
+								aria-controls="" 
+								class="form-control"
+								ng-model="pageShowOptions.selectedPageShowOption" 
+								ng-options="pageShowOption as pageShowOption.display for pageShowOption in pageShowOptions" 
+								ng-change="pageShowOptionChanged(pageShowOptions.selectedPageShowOption)"	
+								>
+						</select>
+			      </div>
+			    </div>
 			  </form>
 		  </li>
 		  <li>
