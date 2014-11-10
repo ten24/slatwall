@@ -1,6 +1,6 @@
 
 <div ng-if="propertyDisplay">
-  <label class="control-label" ng-if="propertyDisplay.meta.fieldType !== 'hidden'">
+  <label class="control-label col-md-3" ng-if="propertyDisplay.meta.fieldType !== 'hidden'">
   	<!-- property RB key --><span ng-bind="propertyDisplay.meta.title"></span>:
   	<span 	class="j-tool-tip-item"
   			data-toggle="tooltip"
@@ -11,7 +11,7 @@
   		<i class="fa fa-question-circle"></i>
   	</span>
   </label>
-  <div style="margin-bottom:10px;">
+  <div class="col-md-9" style="margin-bottom:10px;">
   	<!-- Model-->
 
   	<span 	sw-form-field
