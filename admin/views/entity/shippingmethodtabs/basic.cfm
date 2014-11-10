@@ -6,6 +6,7 @@
 		<cf_HibachiPropertyList>
 			<cf_HibachiPropertyDisplay object="#rc.shippingMethod#" property="activeFlag" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.shippingMethod#" property="shippingMethodName" edit="#rc.edit#">
+			<cf_HibachiPropertyDisplay object="#rc.shippingMethod#" property="shippingMethodCode" edit="#rc.edit#">
 		</cf_HibachiPropertyList>
 	</cf_HibachiPropertyRow>
 </cfoutput>
