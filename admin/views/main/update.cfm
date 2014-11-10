@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.currentVersion" type="string" />
 <cfparam name="rc.currentBranch" type="string" />
 <cfparam name="rc.availableDevelopVersion" type="string" />

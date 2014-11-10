@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.attributeOption" type="any">
 <cfparam name="rc.attribute" type="any" default="#rc.attributeOption.getAttribute()#">
 <cfparam name="rc.edit" type="boolean">

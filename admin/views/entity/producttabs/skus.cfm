@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfoutput>
 	<cfset local.skusSmartList = rc.product.getSkusSmartList() />
 	<cfset local.skusSmartList.joinRelatedProperty("SlatwallSku", "options", "left", false) />

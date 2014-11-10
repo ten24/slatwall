@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.fulfillmentMethodSmartList" type="any" />
 
 <cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.fulfillmentMethodSmartList#"

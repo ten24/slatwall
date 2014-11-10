@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.shippingMethodRate" type="any" />
 <cfparam name="rc.shippingMethod" type="any" default="#rc.shippingMethodRate.getShippingMethod()#" />
 <cfparam name="rc.integration" type="any" default="" />

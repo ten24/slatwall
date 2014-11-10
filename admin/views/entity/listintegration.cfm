@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.integrationSmartList" type="any" />
 <cfset rc.integrationSmartList.addFilter('installedFlag', 1) />
 

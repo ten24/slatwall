@@ -46,7 +46,8 @@
 Notes:
 
 --->
-
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfoutput>
 	<cf_HibachiPropertyList divClass="span12">
 		<form method="post" action="?s=1" class="form-horizontal">

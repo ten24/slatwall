@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.physicalCount" type="any">
 <cfparam name="rc.physical" type="any" default="#rc.physicalCount.getPhysical()#">
 <cfparam name="rc.edit" type="boolean">

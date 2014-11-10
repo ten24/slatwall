@@ -1,3 +1,5 @@
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfset auditSmartList = $.slatwall.getService('hibachiAuditService').getAuditSmartList( rc ) />
 <cfoutput>
 

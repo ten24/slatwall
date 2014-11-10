@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.priceGroupRate" type="any" />
 <cfparam name="rc.priceGroup" type="any" default="#rc.priceGroupRate.getPriceGroup()#" />
 <cfparam name="rc.edit" type="boolean" default="false" />
