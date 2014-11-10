@@ -427,6 +427,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-table-header-nav .s-table-view-options select {height:28px;margin-left:5px;}
 .s-table-header-nav .s-table-view-options label {line-height: 28px;margin:0px;padding:0px;text-align:right;}
 .s-table-header-nav .s-table-header-search {max-width: 200px;}
+.s-table-header-nav .s-page-show {min-width: 150px;vertical-align: middle;margin:0px;}
 
 .dropdown-toggle .fa-sort-desc:before {top: -2px;position: relative;}
 
