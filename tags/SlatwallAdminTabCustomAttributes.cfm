@@ -70,5 +70,5 @@
 		</div>
 	</cfsavecontent>
 	
-	<cfassociate basetag="hb:HibachiTabGroup" datacollection="tabs">
+	<cfassociate basetag="cf_HibachiTabGroup" datacollection="tabs">
 </cfif>

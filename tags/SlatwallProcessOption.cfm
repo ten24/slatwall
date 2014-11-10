@@ -59,6 +59,6 @@ Notes:
 	<cfparam name="attributes.value" type="string" default="" />
 	<cfparam name="attributes.valueOptions" type="array" default="#arrayNew(1)#" />
 	
-	<cfassociate basetag="swa:SlatwallProcessOptionBar" datacollection="options">
+	<cfassociate basetag="cf_SlatwallProcessOptionBar" datacollection="options">
 </cfif>
 

@@ -77,5 +77,5 @@ Notes:
 		<cfset attributes.settingFilterEntitiesURL = listAppend(attributes.settingFilterEntitiesURL, "#fe.getPrimaryIDPropertyName()#=#fe.getPrimaryIDValue()#", "&") />
 	</cfloop>
 	
-	<cfassociate basetag="swa:SlatwallSettingTable" datacollection="settings">
+	<cfassociate basetag="cf_SlatwallSettingTable" datacollection="settings">
 </cfif>
