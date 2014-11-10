@@ -1249,6 +1249,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					if(okToRemove) {
 						
+						// Loop over and call delete on any childOrderItems
+						for(var ci=arrayLen(orderItem.getChildOrderItems()); ci>=1; ci--) {
+							// Delete child item
+							this.deleteOrderItem( orderItem.getChildOrderItems()[ci] );
+						}
+						
 						// Delete this item
 						this.deleteOrderItem( orderItem );
 						
@@ -2222,6 +2228,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			order.removeOrderItem( arguments.orderItem );
 			
+			if(!isNull(arguments.orderItem.getParentOrderItem())) {
+				arguments.orderItem.removeParentOrderItem();
+			}
 			if(!isNull(arguments.orderItem.getOrderFulfillment())) {
 				arguments.orderItem.removeOrderFulfillment();
 			}
