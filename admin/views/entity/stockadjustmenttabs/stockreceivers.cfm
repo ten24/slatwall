@@ -46,16 +46,18 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.stockAdjustment" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.stockAdjustment.getStockReceiversSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.stockAdjustment.getStockReceiversSmartList()#"
 							   recorddetailaction="admin:entity.detailStockReceiver"
 							   recorddetailmodal="true" 
 							   recorddetailquerystring="redirectAction=admin:warehouse.detailStockAdjustment&stockAdjustmentID=#rc.stockAdjustment.getStockAdjustmentID()#">
 			
-		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="createdDateTime" />
-		<cf_HibachiListingColumn propertyidentifier="boxCount" />
-		<cf_HibachiListingColumn propertyidentifier="packingSlipNumber" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="createdDateTime" />
+		<hb:HibachiListingColumn propertyidentifier="boxCount" />
+		<hb:HibachiListingColumn propertyidentifier="packingSlipNumber" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

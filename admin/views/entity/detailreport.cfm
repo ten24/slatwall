@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.report" type="any">
 <cfparam name="rc.edit" type="boolean">
 <cfparam name="rc.reportName" type="any" default="#rc.report.getReportName()#">
@@ -56,8 +58,8 @@ Notes:
 <cfparam name="rc.metrics" type="any" default="#rc.report.getMetrics()#">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.report#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.report#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.report#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.report#" edit="#rc.edit#" />
 		
 		<input type="hidden" name="reportName" value="#rc.reportName#" />
 		<input type="hidden" name="reportDateTime" value="#rc.reportDateTime#" />
@@ -66,21 +68,21 @@ Notes:
 		<input type="hidden" name="dimensions" value="#rc.dimensions#" />
 		<input type="hidden" name="metrics" value="#rc.metrics#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.report#" property="reportTitle" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.report#" property="dynamicDateRangeFlag" edit="#rc.edit#">
-				<cf_HibachiDisplayToggle selector="input[name='dynamicDateRangeFlag']" loadVisable="#rc.report.getDynamicDateRangeFlag()#">
-					<cf_HibachiPropertyDisplay object="#rc.report#" property="dynamicDateRangeEndType" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.report#" property="dynamicDateRangeType" edit="#rc.edit#">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.report#" property="reportTitle" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.report#" property="dynamicDateRangeFlag" edit="#rc.edit#">
+				<hb:HibachiDisplayToggle selector="input[name='dynamicDateRangeFlag']" loadVisable="#rc.report.getDynamicDateRangeFlag()#">
+					<hb:HibachiPropertyDisplay object="#rc.report#" property="dynamicDateRangeEndType" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.report#" property="dynamicDateRangeType" edit="#rc.edit#">
 					<cfset showValuesList = "years,quarters,months,weeks,days" />
-					<cf_HibachiDisplayToggle selector="select[name='dynamicDateRangeType']" showValues="#showValuesList#" loadVisable="#listFindNoCase(showValuesList, rc.report.getDynamicDateRangeType())#">
-						<cf_HibachiPropertyDisplay object="#rc.report#" property="dynamicDateRangeInterval" edit="#rc.edit#">
-					</cf_HibachiDisplayToggle>
-				</cf_HibachiDisplayToggle>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+					<hb:HibachiDisplayToggle selector="select[name='dynamicDateRangeType']" showValues="#showValuesList#" loadVisable="#listFindNoCase(showValuesList, rc.report.getDynamicDateRangeType())#">
+						<hb:HibachiPropertyDisplay object="#rc.report#" property="dynamicDateRangeInterval" edit="#rc.edit#">
+					</hb:HibachiDisplayToggle>
+				</hb:HibachiDisplayToggle>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

@@ -46,11 +46,13 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.site" type="any" />
 
 <cfoutput>
-	<cf_SlatwallSettingTable>
-		<cf_SlatwallSetting settingName="siteForgotPasswordEmailTemplate" settingObject="#rc.site#" />
-		<cf_SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" settingObject="#rc.site#" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable>
+		<swa:SlatwallSetting settingName="siteForgotPasswordEmailTemplate" settingObject="#rc.site#" />
+		<swa:SlatwallSetting settingName="siteVerifyAccountEmailAddressEmailTemplate" settingObject="#rc.site#" />
+	</swa:SlatwallSettingTable>
 </cfoutput>

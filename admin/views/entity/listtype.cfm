@@ -46,15 +46,17 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.typeSmartList" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.typeSmartList#"
+	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.typeSmartList#"
 							   recordDetailModal=true
 							   recordDetailAction="admin:entity.detailtype"
 							   recordEditModal=true
 							   recordEditAction="admin:entity.edittype"
 							   parentPropertyName="parentType">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="type" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="type" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <div class="modal-header">
 	<a class="close" data-dismiss="modal">&times;</a>
 	<h3>File Manager</h3>

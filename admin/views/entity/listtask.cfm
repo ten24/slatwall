@@ -46,22 +46,24 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.taskSmartList" type="any"/>
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartlist="#rc.taskSmartList#" 
+	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartlist="#rc.taskSmartList#" 
 	                          recorddetailaction="admin:entity.detailtask"
 							  recordeditaction="admin:entity.edittask">
 		
 		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createtask" entity="task" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>
+		<hb:HibachiListingDisplayButtonGroup >
+			<hb:HibachiActionCaller action="admin:entity.createtask" entity="task" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiListingDisplayButtonGroup>
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="taskName" />
-		<cf_HibachiListingColumn propertyidentifier="runningFlag" />
-		<cf_HibachiListingColumn propertyidentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="taskName" />
+		<hb:HibachiListingColumn propertyidentifier="runningFlag" />
+		<hb:HibachiListingColumn propertyidentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

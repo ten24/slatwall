@@ -46,13 +46,15 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.option" type="any" />
 <cfparam name="rc.optiongroup" type="any" default="#rc.option.getOptionGroup()#" />
 <cfparam name="rc.edit" default="false" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.option#" edit="#rc.edit#" saveActionQueryString="optionGroupID=#rc.optionGroup.getOptionGroupID()#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.option#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.option#" edit="#rc.edit#" saveActionQueryString="optionGroupID=#rc.optionGroup.getOptionGroupID()#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.option#" edit="#rc.edit#" 
 					backAction="admin:entity.detailoptiongroup" 
 					backQueryString="optionGroupID=#rc.optionGroup.getOptionGroupID()#"
 					cancelAction="admin:entity.detailoptiongroup"
@@ -61,18 +63,18 @@ Notes:
 					
 		<input type="hidden" name="optionGroup.optionGroupID" value="#rc.optionGroup.getOptionGroupID()#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.option#" property="optionName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.option#" property="optionCode" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.option#" property="optionName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.option#" property="optionCode" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.option#">
+		<hb:HibachiTabGroup object="#rc.option#">
 			<!--- Images --->
-			<cf_SlatwallAdminTabImages object="#rc.option#" />
-		</cf_HibachiTabGroup>
+			<swa:SlatwallAdminTabImages object="#rc.option#" />
+		</hb:HibachiTabGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 	
 </cfoutput>

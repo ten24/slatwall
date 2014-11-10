@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.orderDeliveryShipping" type="any" />
 
 <cfoutput>
@@ -89,7 +91,7 @@ Notes:
 	<body>
 		<h1>Packing Slip</h1>
 		<div class="shippingAddress">
-			<cf_SlatwallAddressDisplay address="#rc.orderDeliveryShipping.getShippingAddress()#" edit="false" />
+			<swa:SlatwallAddressDisplay address="#rc.orderDeliveryShipping.getShippingAddress()#" edit="false" />
 		</div>
 		<div class="orderDetails">
 			<dl>

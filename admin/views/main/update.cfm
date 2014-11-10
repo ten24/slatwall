@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.currentVersion" type="string" />
 <cfparam name="rc.currentBranch" type="string" />
 <cfparam name="rc.availableDevelopVersion" type="string" />
@@ -60,17 +62,17 @@ Notes:
 </cfif>
 
 <cfoutput>
-	<cf_HibachiPropertyList divClass="span12">
+	<hb:HibachiPropertyList divClass="span12">
 		<h3>#$.slatwall.rbKey('admin.main.update.backup')#</h3>
 		<hr />
-		<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentVersion')#" value="#rc.currentVersion#" />
+		<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentVersion')#" value="#rc.currentVersion#" />
 		<cfif rc.currentBranch eq 'master'>
-			<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentReleaseType')#" value="#$.slatwall.rbKey('admin.main.update.stable')#" />
+			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentReleaseType')#" value="#$.slatwall.rbKey('admin.main.update.stable')#" />
 		<cfelse>
-			<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentReleaseType')#" value="#$.slatwall.rbKey('admin.main.update.bleedingEdge')#" />
+			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentReleaseType')#" value="#$.slatwall.rbKey('admin.main.update.bleedingEdge')#" />
 		</cfif>
-		<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableStableVersion')#" value="#rc.availableMasterVersion#" />
-		<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableBleedingEdgeVersion')#" value="#rc.availableDevelopVersion#" />
+		<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableStableVersion')#" value="#rc.availableMasterVersion#" />
+		<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableBleedingEdgeVersion')#" value="#rc.availableDevelopVersion#" />
 		<hr />
 		<form method="post" action="?s=1">
 			<input type="hidden" name="slatAction" value="admin:main.update" />
@@ -90,5 +92,5 @@ Notes:
 			
 			<button class="btn adminmainupdate btn-primary" title="#$.slatwall.rbKey('admin.main.update_title')#" type="submit">#$.slatwall.rbKey('admin.main.update_title')#</button>
 		</form>
-	</cf_HibachiPropertyList>
+	</hb:HibachiPropertyList>
 </cfoutput>

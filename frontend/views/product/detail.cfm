@@ -46,15 +46,17 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfoutput>
 	<div class="svoproductdetail">
 		<div class="image">
 			<a href="#$.slatwall.Product().getImagePath()#" target="_blank">#$.slatwall.Product().getImage(size="m")#</a>
 		</div>
 		<dl>
-			<cf_SlatwallPropertyDisplay object="#$.slatwall.Product()#" property="productCode">
-			<cf_SlatwallPropertyDisplay object="#$.slatwall.Product()#" property="livePrice">
-			<cf_SlatwallPropertyDisplay object="#$.slatwall.Product()#" property="productDescription">
+			<swa:SlatwallPropertyDisplay object="#$.slatwall.Product()#" property="productCode">
+			<swa:SlatwallPropertyDisplay object="#$.slatwall.Product()#" property="livePrice">
+			<swa:SlatwallPropertyDisplay object="#$.slatwall.Product()#" property="productDescription">
 		</dl>
 		<form action="#$.createHREF(filename=$.slatwall.setting('globalPageShoppingCart'),queryString='nocache=1')#" method="post">
 			<input type="hidden" name="productID" value="#$.slatwall.Product().getProductID()#" />
@@ -116,7 +118,7 @@ Notes:
 				<div class="productCustomizationSet #lcase(replace(local.customizationAttributeSet.getAttributeSetName(), ' ', '', 'all'))#">
 					<h5>#local.customizationAttributeSet.getAttributeSetName()#</h5>
 					<dl>
-						<cf_SlatwallAttributeSetDisplay attributeSet="#local.customizationAttributeSet#" entity="#$.slatwall.product()#" edit="true" />
+						<swa:SlatwallAttributeSetDisplay attributeSet="#local.customizationAttributeSet#" entity="#$.slatwall.product()#" edit="true" />
 					</dl>
 				</div>
 			</cfloop>

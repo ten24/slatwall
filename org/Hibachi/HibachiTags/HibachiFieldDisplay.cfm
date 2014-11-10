@@ -1,3 +1,5 @@
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	
 	<cfparam name="attributes.edit" type="boolean" default="false" />					<!--- hint: When in edit mode this will create a Form Field, otherwise it will just display the value" --->
@@ -37,8 +39,8 @@
 					<div class="control-group">
 						<label for="#attributes.fieldName#" class="control-label">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></dt>
 						<div class="controls">
-							<cf_HibachiFormField attributecollection="#attributes#" />
-							<cf_HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
+							<hb:HibachiFormField attributecollection="#attributes#" />
+							<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
 						</div>
 					</div>
 				</cfoutput>
@@ -47,7 +49,7 @@
 					<dt class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></dt>
 					
 					<cfif attributes.fieldType eq "listingMultiselect">
-						<dd class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><cf_HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></cf_HibachiListingDisplay></dd>
+						<dd class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></hb:HibachiListingDisplay></dd>
 					<cfelse>
 						<cfif attributes.valueLink neq "">
 							<dd class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a></dd>
@@ -65,8 +67,8 @@
 					<tr>
 						<td class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>"><label for="#attributes.fieldName#">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></td>
 						<td class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">
-							<cf_HibachiFormField attributecollection="#attributes#" />
-							<cf_HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
+							<hb:HibachiFormField attributecollection="#attributes#" />
+							<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
 						</td>
 					</tr>
 				</cfoutput>
@@ -89,8 +91,8 @@
 				<cfoutput>
 					<span class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>"><label for="#attributes.fieldName#">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" rel="tooltip" class="hint" title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></span>
 					<span class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">
-						<cf_HibachiFormField attributecollection="#attributes#" />
-						<cf_HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
+						<hb:HibachiFormField attributecollection="#attributes#" />
+						<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
 					</span>
 				</cfoutput>
 			<cfelse>
@@ -108,8 +110,8 @@
 		<cfcase value="plain">
 			<cfif attributes.edit>
 				<cfoutput>
-					<cf_HibachiFormField attributecollection="#attributes#" />
-					<cf_HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
+					<hb:HibachiFormField attributecollection="#attributes#" />
+					<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
 				</cfoutput>
 			<cfelse>
 				<cfoutput>
@@ -117,7 +119,7 @@
 						<a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a>
 					<cfelse>
 						<cfif attributes.fieldType eq "listingMultiselect">
-							<cf_HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></cf_HibachiListingDisplay>
+							<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></hb:HibachiListingDisplay>
 						<cfelse>
 							#attributes.value#
 						</cfif>

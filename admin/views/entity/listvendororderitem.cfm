@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.vendorOrderItemSmartList" type="any" />
 
@@ -53,18 +55,18 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.vendorOrderItemSmartList#"
+	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.vendorOrderItemSmartList#"
 							   recorddetailaction="admin:entity.detailvendororderitem"
 							   recorddetailmodal="true"
 							   recordeditaction="admin:entity.editvendororderitem"
 							   recordEditQueryString="redirectAction=admin:entity.listVendorOrderItem"
 							   recordeditmodal="true">
-		<cf_HibachiListingColumn propertyIdentifier="vendorOrder.vendor.vendorName" />
-		<cf_HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderNumber" />
-		<cf_HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderStatusType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="stock.sku.product.brand.brandName" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.calculatedTitle" />
-		<cf_HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="quantity" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendor.vendorName" />
+		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderNumber" />
+		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="stock.sku.product.brand.brandName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.calculatedTitle" />
+		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
+		<hb:HibachiListingColumn propertyIdentifier="quantity" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

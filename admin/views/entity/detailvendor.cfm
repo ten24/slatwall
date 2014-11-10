@@ -46,35 +46,37 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.vendor" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cf_HibachiEntityDetailForm object="#rc.vendor#" edit="#rc.edit#">
-	<cf_HibachiEntityActionBar type="detail" object="#rc.vendor#" edit="#rc.edit#">
-		<cf_HibachiActionCaller action="admin:entity.createvendoraddress" queryString="vendorID=#rc.vendor.getVendorID()#" type="list" modal=true />
-	</cf_HibachiEntityActionBar>
+<hb:HibachiEntityDetailForm object="#rc.vendor#" edit="#rc.edit#">
+	<hb:HibachiEntityActionBar type="detail" object="#rc.vendor#" edit="#rc.edit#">
+		<hb:HibachiActionCaller action="admin:entity.createvendoraddress" queryString="vendorID=#rc.vendor.getVendorID()#" type="list" modal=true />
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.vendor#" property="vendorName" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.vendor#" property="accountNumber" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.vendor#" property="vendorWebsite" edit="#rc.edit#">
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.vendor#" property="vendorName" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.vendor#" property="accountNumber" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.vendor#" property="vendorWebsite" edit="#rc.edit#">
 			
 			<input type="hidden" name="primaryEmailAddress.vendorEmailAddressID" value="#rc.Vendor.getPrimaryEmailAddress().getVendorEmailAddressID()#" />
-			<cf_HibachiPropertyDisplay object="#rc.Vendor.getPrimaryEmailAddress()#" property="emailAddress" fieldName="primaryEmailAddress.emailAddress" edit="#rc.edit#" valueLink="mailto:#rc.Vendor.getEmailAddress()#">
+			<hb:HibachiPropertyDisplay object="#rc.Vendor.getPrimaryEmailAddress()#" property="emailAddress" fieldName="primaryEmailAddress.emailAddress" edit="#rc.edit#" valueLink="mailto:#rc.Vendor.getEmailAddress()#">
 			
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 	
-	<cf_HibachiTabGroup object="#rc.vendor#">
-		<cf_HibachiTab view="admin:entity/vendortabs/vendoraddresses" />
-		<cf_HibachiTab view="admin:entity/vendortabs/vendorbrands" />
-		<cf_HibachiTab view="admin:entity/vendortabs/vendororders" />
+	<hb:HibachiTabGroup object="#rc.vendor#">
+		<hb:HibachiTab view="admin:entity/vendortabs/vendoraddresses" />
+		<hb:HibachiTab view="admin:entity/vendortabs/vendorbrands" />
+		<hb:HibachiTab view="admin:entity/vendortabs/vendororders" />
 		
 		<!--- Custom Attributes --->
 		<cfloop array="#rc.vendor.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-			<cf_SlatwallAdminTabCustomAttributes object="#rc.vendor#" attributeSet="#attributeSet#" />
+			<swa:SlatwallAdminTabCustomAttributes object="#rc.vendor#" attributeSet="#attributeSet#" />
 		</cfloop>
-	</cf_HibachiTabGroup>
+	</hb:HibachiTabGroup>
 	
-</cf_HibachiEntityDetailForm>
+</hb:HibachiEntityDetailForm>

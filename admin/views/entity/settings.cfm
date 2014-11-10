@@ -46,32 +46,34 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfset sites = $.slatwall.getService('siteService').getSiteSmartList() />
 <cfset sites.addFilter('activeFlag', 1) />
 
 <cfset rc.sitesArray = sites.getRecords() />
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="static"></cf_HibachiEntityActionBar>
+	<hb:HibachiEntityActionBar type="static"></hb:HibachiEntityActionBar>
 	
-	<cf_HibachiTabGroup>
-		<cf_HibachiTab view="admin:entity/settingstabs/global" />
-		<cf_HibachiTab view="admin:entity/settingstabs/globaladvanced" />
-		<cf_HibachiTab view="admin:entity/settingstabs/account" />
-		<cf_HibachiTab view="admin:entity/settingstabs/brand" />
-		<cf_HibachiTab view="admin:entity/settingstabs/content" />
-		<cf_HibachiTab view="admin:entity/settingstabs/email" />
-		<cf_HibachiTab view="admin:entity/settingstabs/fulfillmentmethod" />
-		<cf_HibachiTab view="admin:entity/settingstabs/image" />
-		<cf_HibachiTab view="admin:entity/settingstabs/paymentmethod" />
-		<cf_HibachiTab view="admin:entity/settingstabs/producttype" />
-		<cf_HibachiTab view="admin:entity/settingstabs/product" />
-		<cf_HibachiTab view="admin:entity/settingstabs/site" />
-		<cf_HibachiTab view="admin:entity/settingstabs/shippingmethod" />
-		<cf_HibachiTab view="admin:entity/settingstabs/shippingmethodrate" />
-		<cf_HibachiTab view="admin:entity/settingstabs/sku" />
-		<cf_HibachiTab view="admin:entity/settingstabs/subscriptionusage" />
-		<cf_HibachiTab view="admin:entity/settingstabs/task" />
-	</cf_HibachiTabGroup>
+	<hb:HibachiTabGroup>
+		<hb:HibachiTab view="admin:entity/settingstabs/global" />
+		<hb:HibachiTab view="admin:entity/settingstabs/globaladvanced" />
+		<hb:HibachiTab view="admin:entity/settingstabs/account" />
+		<hb:HibachiTab view="admin:entity/settingstabs/brand" />
+		<hb:HibachiTab view="admin:entity/settingstabs/content" />
+		<hb:HibachiTab view="admin:entity/settingstabs/email" />
+		<hb:HibachiTab view="admin:entity/settingstabs/fulfillmentmethod" />
+		<hb:HibachiTab view="admin:entity/settingstabs/image" />
+		<hb:HibachiTab view="admin:entity/settingstabs/paymentmethod" />
+		<hb:HibachiTab view="admin:entity/settingstabs/producttype" />
+		<hb:HibachiTab view="admin:entity/settingstabs/product" />
+		<hb:HibachiTab view="admin:entity/settingstabs/site" />
+		<hb:HibachiTab view="admin:entity/settingstabs/shippingmethod" />
+		<hb:HibachiTab view="admin:entity/settingstabs/shippingmethodrate" />
+		<hb:HibachiTab view="admin:entity/settingstabs/sku" />
+		<hb:HibachiTab view="admin:entity/settingstabs/subscriptionusage" />
+		<hb:HibachiTab view="admin:entity/settingstabs/task" />
+	</hb:HibachiTabGroup>
 </cfoutput>
 

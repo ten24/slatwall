@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.order" type="any" />
 
 <cfoutput>
@@ -55,11 +57,11 @@ Notes:
 		<cfelse>
 			<p class="success">Your order has been placed!</p>
 			<dl>
-				<cf_SlatwallPropertyDisplay object="#rc.order#" property="OrderNumber">
-				<cf_SlatwallPropertyDisplay object="#rc.order#" property="orderOpenDateTime">
-				<cf_SlatwallPropertyDisplay object="#rc.order.getAccount()#" property="fullName">
-				<cf_SlatwallPropertyDisplay object="#rc.order.getAccount()#" property="emailAddress">
-				<cf_SlatwallPropertyDisplay object="#rc.order.getAccount()#" property="phoneNumber">
+				<swa:SlatwallPropertyDisplay object="#rc.order#" property="OrderNumber">
+				<swa:SlatwallPropertyDisplay object="#rc.order#" property="orderOpenDateTime">
+				<swa:SlatwallPropertyDisplay object="#rc.order.getAccount()#" property="fullName">
+				<swa:SlatwallPropertyDisplay object="#rc.order.getAccount()#" property="emailAddress">
+				<swa:SlatwallPropertyDisplay object="#rc.order.getAccount()#" property="phoneNumber">
 			</dl>
 			<table>
 				<tr>
@@ -86,13 +88,13 @@ Notes:
 				</cfloop>
 			</table>
 			<dl>
-				<cf_SlatwallPropertyDisplay object="#rc.order#" property="subtotal">
-				<cf_SlatwallPropertyDisplay object="#rc.order#" property="taxtotal">
-				<cf_SlatwallPropertyDisplay object="#rc.order#" property="fulfillmentTotal">
+				<swa:SlatwallPropertyDisplay object="#rc.order#" property="subtotal">
+				<swa:SlatwallPropertyDisplay object="#rc.order#" property="taxtotal">
+				<swa:SlatwallPropertyDisplay object="#rc.order#" property="fulfillmentTotal">
 				<cfif rc.order.getDiscountTotal() GT 0> 
-					<cf_SlatwallPropertyDisplay object="#rc.order#" property="discountTotal">
+					<swa:SlatwallPropertyDisplay object="#rc.order#" property="discountTotal">
 				</cfif>
-				<cf_SlatwallPropertyDisplay object="#rc.order#" property="total">
+				<swa:SlatwallPropertyDisplay object="#rc.order#" property="total">
 			</dl>
 		</cfif>
 	</div>

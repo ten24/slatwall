@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfparam name="params.orderFulfillment" type="any" />
 <cfparam name="params.orderFulfillmentIndex" type="string" />
 <cfparam name="params.edit" type="boolean" />
@@ -104,7 +106,7 @@ Notes:
 								<dd><input type="text" name="orderFulfillments[#params.orderFulfillmentIndex#].accountAddresses[#local.addressIndex#].accountAddressName" value="#local.accountAddress.getAccountAddressName()#" /></dd>	
 							</dl>
 							--->
-							<cf_SlatwallAddressDisplay address="#local.accountAddress.getAddress()#" fieldNamePrefix="orderFulfillments[#params.orderFulfillmentIndex#].accountAddresses[#local.addressIndex#].address." edit="true">
+							<swa:SlatwallAddressDisplay address="#local.accountAddress.getAddress()#" fieldNamePrefix="orderFulfillments[#params.orderFulfillmentIndex#].accountAddresses[#local.addressIndex#].address." edit="true">
 							<input type="hidden" name="orderFulfillments[#params.orderFulfillmentIndex#].accountAddresses[#local.addressIndex#].accountAddressID" value="#local.accountAddress.getAccountAddressID()#" />
 						</div>
 					</cfloop>
@@ -112,7 +114,7 @@ Notes:
 				
 				<!--- New Address Form --->
 				<div id="shippingAddress_0" class="addressBlock" style="display:none;">
-					<cf_SlatwallAddressDisplay address="#local.address#" fieldNamePrefix="orderFulfillments[#params.orderFulfillmentIndex#].shippingAddress." edit="#params.edit#">
+					<swa:SlatwallAddressDisplay address="#local.address#" fieldNamePrefix="orderFulfillments[#params.orderFulfillmentIndex#].shippingAddress." edit="#params.edit#">
 					
 					<!--- Save New Address Option (Only if not a guest account) --->
 					<cfif not $.slatwall.account().isGuestAccount()>
@@ -136,14 +138,14 @@ Notes:
 
 			<!--- If NOT In Edit Mode, just display the address --->
 			<cfelse>
-				<cf_SlatwallAddressDisplay address="#local.address#" edit="false">
+				<swa:SlatwallAddressDisplay address="#local.address#" edit="false">
 			</cfif>
 		</div>
 		
 		<cfif arrayLen(params.orderFulfillment.getShippingMethodOptions())>
 			<div class="shippingMethod">
 				<h5>Shipping Method</h5>
-				<cf_SlatwallShippingMethodDisplay orderFulfillmentIndex="#params.orderFulfillmentIndex#" orderFulfillmentShipping="#params.orderFulfillment#" edit="#local.edit#">
+				<swa:SlatwallShippingMethodDisplay orderFulfillmentIndex="#params.orderFulfillmentIndex#" orderFulfillmentShipping="#params.orderFulfillment#" edit="#local.edit#">
 			</div>
 		</cfif>
 	</div>
