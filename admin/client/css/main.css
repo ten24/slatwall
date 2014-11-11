@@ -9,7 +9,7 @@ input[type="file"] {display: block;width: auto;height: auto;padding: 0px;backgro
 
 /*Basic style overwrite*/
 body { background-color: #f3f3f4; font-family: 'Open Sans', sans-serif;color:#666666; padding-top: 60px; font-size:12px; }
-hr {border-right:1px solid #cccccc;}
+hr {border-color:#cccccc;}
 hr.s-dotted {border:none;border-bottom:3px dotted #eee;margin-top:20px;margin-bottom:20px;}
 th {font-weight:600;}
 a {color:#666666;}
@@ -765,6 +765,9 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-panel-header-info .s-header-detail h2 {font-size: 14px;background-color: #EEE;padding: 6px 15px;}
 .s-panel-header-info .s-header-detail .s-total {border-top:2px solid #eeeeee;font-weight:bold;padding-top:5px;margin-right:15px;}
 .s-panel-header-info .s-header-right .s-header-detail:first-child h2 {margin-top:0px;}
+
+/* Update Page */
+.s-update-branch .control-label {display: inline-block;width: auto;}
 
 [class^="hibachi-ui-"], [class*=" hibachi-ui-"]{
 display:inline-block;
