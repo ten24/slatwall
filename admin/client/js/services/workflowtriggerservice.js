@@ -1,4 +1,4 @@
-
+'use strict';
 angular.module('slatwalladmin')
 .factory('workflowTriggerService',
 [
@@ -27,7 +27,7 @@ function(
 		}
 	};
 	
-	return workflowTriggerService = {
+	return {
 		newWorkflowTrigger:function(){
 			return new _workflowTrigger;
 		},

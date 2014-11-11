@@ -1,4 +1,4 @@
-
+'use strict';
 angular.module('slatwalladmin')
 .factory('paginationService',[
 function(){
@@ -17,7 +17,7 @@ function(){
 	var _recordsCount = 0;
 	var _totalPages = 0;
 	
-	return paginationService = {
+	return {
 		
 		getTotalPages:function(){
 			return _totalPages;

@@ -1,4 +1,4 @@
-
+'use strict';
 angular.module('slatwalladmin')
 .factory('workflowTaskService',
 [
@@ -66,7 +66,7 @@ function(
 	}
 		
 	
-	return workflowTaskService = {
+	return {
 		newWorkflowTask:function(){
 			return new _workflowTask;
 		},

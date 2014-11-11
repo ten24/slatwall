@@ -1,4 +1,4 @@
-
+'use strict';
 angular.module('slatwalladmin')
 .factory('propertyDisplayService',
 [
@@ -30,7 +30,7 @@ function(
 			
 	};
 	
-	return propertyDisplayService = {
+	return {
 		newPropertyDisplay:function(propertyDisplay){
 			return new _propertyDisplay(propertyDisplay);
 		}

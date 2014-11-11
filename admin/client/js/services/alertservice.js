@@ -1,11 +1,11 @@
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
-
+'use strict';
 angular.module('slatwalladmin')
 .factory('alertService',[ '$timeout',
 function($timeout){
 	var _alerts = [];
 	
-	return factory = {
+	return {
 		addAlert: function(alert){
 			_alerts.push(alert);
 			$timeout(function() {

@@ -1,3 +1,4 @@
+'use strict';
 angular.module('slatwalladmin').factory('dialogService', [
 'partialsPath',
 function(
@@ -5,7 +6,7 @@ partialsPath
 ){
 	var _pageDialogs = [];
 	
-	return factory = {
+	return {
 		
 		addPageDialog: function( name ){
 			var newDialog = {

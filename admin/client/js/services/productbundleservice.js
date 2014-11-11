@@ -1,4 +1,4 @@
-
+'use strict';
 angular.module('slatwalladmin')
 .factory('productBundleService',
 [
@@ -67,7 +67,7 @@ function(
 		
 	};
 	
-	return productBundleService = {
+	return {
 		formatProductBundleGroup:function(productBundleGroup){
 			var formattedProductBundleGroup = this.newProductBundle();
 			

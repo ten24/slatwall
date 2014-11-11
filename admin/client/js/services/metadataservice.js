@@ -1,11 +1,11 @@
-
+'use strict';
 angular.module('slatwalladmin')
 .factory('metadataService',['$filter','$log',
 function($filter,$log){
 	var _propertiesList = {};
 	var _orderBy = $filter('orderBy');
 	
-	return collectionService = {
+	return {
 		getPropertiesList:function(){
 			return _propertiesList;
 		},

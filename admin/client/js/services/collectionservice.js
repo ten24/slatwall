@@ -1,5 +1,5 @@
 /*collection service is used to maintain the state of the ui*/
-
+'use strict';
 angular.module('slatwalladmin')
 .factory('collectionService',['$filter','$log',
 function($filter,$log){
@@ -10,7 +10,7 @@ function($filter,$log){
 	var _filterCount = 0;
 	var _orderBy = $filter('orderBy');
 	
-	return collectionService = {
+	return {
 		incrementFilterCount: function(number){
 			$log.debug('incrementFilterCount');
 			_filterCount += number;

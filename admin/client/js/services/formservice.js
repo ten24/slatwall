@@ -1,4 +1,4 @@
-
+'use strict';
 angular.module('slatwalladmin')
 .factory('formService',['$log',
 function($log){
@@ -11,7 +11,7 @@ function($log){
 		this.editing = editing;
 	};
 	
-	return formService = {
+	return {
 		setPristinePropertyValue:function(property,value){
 			_pristinePropertyValue[property] = value;
 		},
