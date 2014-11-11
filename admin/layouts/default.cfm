@@ -546,7 +546,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/slatwalladmin.js"></script>
 		<!---modules END --->
 
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#?slatAction=api:meta.getcompressedjs"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#?slatAction=api:js.ngslatwall"></script>
 	</body>
 </html>
 </cfoutput>
