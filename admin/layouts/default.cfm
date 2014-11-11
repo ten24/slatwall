@@ -48,7 +48,7 @@ Notes:
 --->
 <cfoutput>
 <!DOCTYPE html>
-<html lang="en" ng-app="slatwall">
+<html lang="en" ng-app="slatwalladmin">
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -541,10 +541,6 @@ Notes:
 		<script type="text/javascript">
 			var slatwallConfig = $.slatwall.getConfig();
 		</script>
-		<!---modules BEGIN--->
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/client/js/slatwall.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/slatwalladmin.js"></script>
-		<!---modules END --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#?slatAction=api:js.ngslatwall"></script>
 	</body>
 </html>
