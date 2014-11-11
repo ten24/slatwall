@@ -65,7 +65,7 @@ Notes:
 		<cfset fdAttributes.hint = attribute.getAttributeHint() />
 		<cfset fdAttributes.edit = attributes.edit />
 		<cfset fdAttributes.fieldname = "#attributes.fieldNamePrefix##attribute.getAttributeCode()#" />
-		<cfset fdAttributes.fieldType = attribute.getAttributeInputType() />
+		<cfset fdAttributes.fieldType = attribute.getFormFieldType() />
 		
 		<!--- Setup fieldClass --->
 		<cfset fdAttributes.fieldClass = "" />
