@@ -25,7 +25,7 @@ function(
 	
 	var _workflows = {};
 	
-	return {
+	var workflowService = {
 		newWorkflow:function(){
 			return new _workflow;
 		},
@@ -43,4 +43,6 @@ function(
 			return _workflows[workflowID];
 		}
 	};
+	
+	return workflowService;
 }]);

@@ -11,7 +11,7 @@ function($log){
 		this.editing = editing;
 	};
 	
-	return {
+	var formService = {
 		setPristinePropertyValue:function(property,value){
 			_pristinePropertyValue[property] = value;
 		},
@@ -59,4 +59,6 @@ function($log){
 		}
 		
 	};
+	
+	return formService;
 }]);

@@ -5,7 +5,7 @@ angular.module('slatwalladmin')
 function($timeout){
 	var _alerts = [];
 	
-	return {
+	var alertService = {
 		addAlert: function(alert){
 			_alerts.push(alert);
 			$timeout(function() {
@@ -57,4 +57,6 @@ function($timeout){
 			_alert.splice(0,1);
 		}
 	};
+	
+	return alertService;
 }]);

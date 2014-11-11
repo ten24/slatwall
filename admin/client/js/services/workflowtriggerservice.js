@@ -27,7 +27,7 @@ function(
 		}
 	};
 	
-	return {
+	var workflowTriggerService = {
 		newWorkflowTrigger:function(){
 			return new _workflowTrigger;
 		},
@@ -46,4 +46,6 @@ function(
 			return workflowTriggers;
 		}
 	};
+	
+	return workflowTriggerService;
 }]);
