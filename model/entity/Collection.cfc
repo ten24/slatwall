@@ -374,12 +374,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(structKeyExists(filter,"logicalOperator")){
 				logicalOperator = filter.logicalOperator;
 			}
-			
 			if(!isnull(filter.collectionID)){
-				
 				filterGroupHQL &=  " #logicalOperator# #getHQLForCollectionFilter(filter)# ";;
 			}else{
-				
 				
 				//check filter is a nested filterGroup or a filter itself
 				if(structKeyExists(filter,"filterGroup")){

@@ -1,11 +1,12 @@
-angular.module('slatwalladmin.services').factory('dialogService', [
+'use strict';
+angular.module('slatwalladmin').factory('dialogService', [
 'partialsPath',
 function(
 partialsPath
 ){
 	var _pageDialogs = [];
 	
-	return factory = {
+	var dialogService = {
 		
 		addPageDialog: function( name ){
 			var newDialog = {
@@ -22,4 +23,6 @@ partialsPath
 			return _pageDialogs;
 		}
 	};
+	
+	return dialogService;
 }]);

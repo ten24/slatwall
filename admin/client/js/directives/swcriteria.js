@@ -381,7 +381,8 @@ $filter){
         	{
         		display:"Some Exist In Collection",
         		comparisonOperator:"One"
-        	},
+        	}
+        	/*,
         	{
         		display:"Empty",
         		comparisonOperator:"is",
@@ -391,7 +392,7 @@ $filter){
         		display:"Not Empty",
         		comparisonOperator:"is not",
         		value:"null"
-        	}
+        	}*/
         ];
     	return oneToManyOptions;
     };
@@ -721,6 +722,18 @@ $filter){
 							var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
 							existingCollectionsPromise.then(function(value){
 								scope.collectionOptions = value.data;
+								if(angular.isDefined(scope.filterItem.collectionID)){
+									for(var i in scope.collectionOptions){
+										if(scope.collectionOptions[i].collectionID === scope.filterItem.collectionID){
+											scope.selectedFilterProperty.selectedCollection = scope.collectionOptions[i];
+										}
+									}
+									for(var i in scope.oneToManyOptions){
+										if(scope.oneToManyOptions[i].comparisonOperator === scope.filterItem.criteria){
+											scope.selectedFilterProperty.selectedCriteriaType = scope.oneToManyOptions[i];
+										}
+									}
+								}
 							});
 							break;
 					}
@@ -729,7 +742,10 @@ $filter){
 				$log.debug('filterItem');
 				$log.debug(scope.filterItem);
 				
+				
+				
 				angular.forEach(scope.conditionOptions, function(conditionOption){
+					
 					if(conditionOption.display == scope.filterItem.conditionDisplay ){
 						scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
 						scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
@@ -750,6 +766,9 @@ $filter){
 						if(angular.isDefined(scope.selectedConditionChanged)){
 							scope.selectedConditionChanged(scope.selectedFilterProperty);
 						}
+						
+						
+						
 					}
 				});
 				

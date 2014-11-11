@@ -1,5 +1,5 @@
-
-angular.module('slatwalladmin.services')
+'use strict';
+angular.module('slatwalladmin')
 .factory('formService',['$log',
 function($log){
 	var _forms = {};
@@ -11,7 +11,7 @@ function($log){
 		this.editing = editing;
 	};
 	
-	return formService = {
+	var formService = {
 		setPristinePropertyValue:function(property,value){
 			_pristinePropertyValue[property] = value;
 		},
@@ -59,4 +59,6 @@ function($log){
 		}
 		
 	};
+	
+	return formService;
 }]);

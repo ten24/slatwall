@@ -1,5 +1,5 @@
-
-angular.module('slatwalladmin.services')
+'use strict';
+angular.module('slatwalladmin')
 .factory('paginationService',[
 function(){
 	var _pageRecords = [];
@@ -17,7 +17,7 @@ function(){
 	var _recordsCount = 0;
 	var _totalPages = 0;
 	
-	return paginationService = {
+	var paginationService = {
 		
 		getTotalPages:function(){
 			return _totalPages;
@@ -86,4 +86,6 @@ function(){
 			}
 		}
 	};
+	
+	return paginationService;
 }]);

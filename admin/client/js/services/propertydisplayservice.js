@@ -1,5 +1,5 @@
-
-angular.module('slatwalladmin.services')
+'use strict';
+angular.module('slatwalladmin')
 .factory('propertyDisplayService',
 [
 	'$log',
@@ -26,9 +26,11 @@ function(
 			
 	};
 	
-	return propertyDisplayService = {
+	var propertyDisplayService = {
 		newPropertyDisplay:function(propertyDisplay){
 			return new _propertyDisplay(propertyDisplay);
 		}
 	};
+	
+	return propertyDisplayService;
 }]);

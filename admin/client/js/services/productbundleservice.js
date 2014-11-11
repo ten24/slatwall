@@ -1,5 +1,5 @@
-
-angular.module('slatwalladmin.services')
+'use strict';
+angular.module('slatwalladmin')
 .factory('productBundleService',
 [
 	'$log',
@@ -67,7 +67,7 @@ function(
 		
 	};
 	
-	return productBundleService = {
+	var productBundleService = {
 		formatProductBundleGroup:function(productBundleGroup){
 			var formattedProductBundleGroup = this.newProductBundle();
 			
@@ -96,4 +96,6 @@ function(
 			return productBundelGroupFilters;
 		}
 	};
+	
+	return productBundleService;
 }]);

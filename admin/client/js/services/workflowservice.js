@@ -1,5 +1,5 @@
-
-angular.module('slatwalladmin.services')
+'use strict';
+angular.module('slatwalladmin')
 .factory('workflowService',
 [
 	'$log',
@@ -25,7 +25,7 @@ function(
 	
 	var _workflows = {};
 	
-	return workflowService = {
+	var workflowService = {
 		newWorkflow:function(){
 			return new _workflow;
 		},
@@ -43,4 +43,6 @@ function(
 			return _workflows[workflowID];
 		}
 	};
+	
+	return workflowService;
 }]);

@@ -1,4 +1,5 @@
-angular.module('slatwalladmin.services')
+'use strict';
+angular.module('slatwalladmin')
 .factory('slatwallInterceptor',['$q','$log','alertService',function($q,$log,alertService){
 	var interceptor = {
 		'request':function(config){

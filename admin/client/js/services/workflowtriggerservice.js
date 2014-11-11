@@ -1,5 +1,5 @@
-
-angular.module('slatwalladmin.services')
+'use strict';
+angular.module('slatwalladmin')
 .factory('workflowTriggerService',
 [
 	'$log',
@@ -27,7 +27,7 @@ function(
 		}
 	};
 	
-	return workflowTriggerService = {
+	var workflowTriggerService = {
 		newWorkflowTrigger:function(){
 			return new _workflowTrigger;
 		},
@@ -46,4 +46,6 @@ function(
 			return workflowTriggers;
 		}
 	};
+	
+	return workflowTriggerService;
 }]);

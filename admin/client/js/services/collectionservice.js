@@ -1,6 +1,6 @@
 /*collection service is used to maintain the state of the ui*/
-
-angular.module('slatwalladmin.services')
+'use strict';
+angular.module('slatwalladmin')
 .factory('collectionService',['$filter','$log',
 function($filter,$log){
 	/*properties*/
@@ -10,7 +10,7 @@ function($filter,$log){
 	var _filterCount = 0;
 	var _orderBy = $filter('orderBy');
 	
-	return collectionService = {
+	var collectionService = {
 		incrementFilterCount: function(number){
 			$log.debug('incrementFilterCount');
 			_filterCount += number;
@@ -120,7 +120,7 @@ function($filter,$log){
 			filterItem = {
 					displayPropertyIdentifier:"",
 					propertyIdentifier:"",
-					comparisonOperator:"=",
+					comparisonOperator:"",
 					value:"",
 					$$disabled:false,
 					$$isClosed:true,
@@ -243,4 +243,6 @@ function($filter,$log){
 		}
 		
 	};
+	
+	return collectionService;
 }]);
