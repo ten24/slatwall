@@ -6,7 +6,7 @@ partialsPath
 ){
 	var _pageDialogs = [];
 	
-	return {
+	var dialogService = {
 		
 		addPageDialog: function( name ){
 			var newDialog = {
@@ -23,4 +23,6 @@ partialsPath
 			return _pageDialogs;
 		}
 	};
+	
+	return dialogService;
 }]);

@@ -30,9 +30,11 @@ function(
 			
 	};
 	
-	return {
+	var propertyDisplayService = {
 		newPropertyDisplay:function(propertyDisplay){
 			return new _propertyDisplay(propertyDisplay);
 		}
 	};
+	
+	return propertyDisplayService;
 }]);

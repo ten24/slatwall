@@ -67,7 +67,7 @@ function(
 		
 	};
 	
-	return {
+	var productBundleService = {
 		formatProductBundleGroup:function(productBundleGroup){
 			var formattedProductBundleGroup = this.newProductBundle();
 			
@@ -96,4 +96,6 @@ function(
 			return productBundelGroupFilters;
 		}
 	};
+	
+	return productBundleService;
 }]);

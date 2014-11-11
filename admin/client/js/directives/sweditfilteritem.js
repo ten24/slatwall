@@ -196,7 +196,6 @@ $filter){
 							
 							//retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
 							if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
-							
 								filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
 								filterItem.displayValue = filterItem.value;
 							}else{
@@ -204,20 +203,20 @@ $filter){
 								if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)){
 									switch(selectedFilterProperty.selectedCriteriaType.pattern){
 										case "%w%":
-											filterItem.value = '%'+selectedFilterProperty.criteriaValue+'%';
+											filterItem.value = '%'+filterItem.value+'%';
 											break;
 										case "%w":
-											filterItem.value = '%'+selectedFilterProperty.criteriaValue;
+											filterItem.value = '%'+filterItem.value;
 											break;
 										case "w%":
-											filterItem.value = selectedFilterProperty.criteriaValue+'%';
+											filterItem.value = filterItem.value+'%';
 											break;
 									}
 									
-									filterItem.displayValue = selectedFilterProperty.criteriaValue;
+									filterItem.displayValue = filterItem.value;
 								}else{
-									filterItem.value = selectedFilterProperty.criteriaValue;
-									filterItem.displayValue = selectedFilterProperty.criteriaValue;
+									filterItem.value = filterItem.value;
+									filterItem.displayValue = filterItem.value;
 								}
 							}
 							

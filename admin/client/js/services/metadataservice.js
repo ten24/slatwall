@@ -5,7 +5,7 @@ function($filter,$log){
 	var _propertiesList = {};
 	var _orderBy = $filter('orderBy');
 	
-	return {
+	var metadataService = {
 		getPropertiesList:function(){
 			return _propertiesList;
 		},
@@ -44,7 +44,7 @@ function($filter,$log){
 			propertiesList.data.push(attributeCollections);
 			
 			
-			for(i in propertiesList.data){
+			for(var i in propertiesList.data){
 				if(angular.isDefined(propertiesList.data[i].ormtype)){
 					if(angular.isDefined(propertiesList.data[i].attributeID)){
 						propertiesList.data[i].$$group = 'attribute';
@@ -74,4 +74,6 @@ function($filter,$log){
 		}
 		
 	};
+	
+	return metadataService;
 }]);

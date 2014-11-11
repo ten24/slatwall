@@ -66,7 +66,7 @@ function(
 	}
 		
 	
-	return {
+	var workflowTaskService = {
 		newWorkflowTask:function(){
 			return new _workflowTask;
 		},
@@ -109,4 +109,6 @@ function(
 			return workflowTasks;
 		}
 	};
+	
+	return workflowTaskService;
 }]);
