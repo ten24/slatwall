@@ -52,8 +52,7 @@ Notes:
 	<cf_HibachiPropertyRow>
 		<!--- Email Addresses --->
 		<cf_HibachiPropertyList divClass="col-md-6">
-			<h5>#$.slatwall.rbKey('entity.accountEmailAddress_plural')#</h5>
-			<cf_HibachiListingDisplay smartList="#rc.account.getAccountEmailAddressesSmartList()#"
+			<cf_HibachiListingDisplay title="#$.slatwall.rbKey('entity.accountEmailAddress_plural')#" smartList="#rc.account.getAccountEmailAddressesSmartList()#"
 									  recordEditAction="admin:entity.editaccountemailaddress"
 									  recordEditQueryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount"
 									  recordEditModal=true
@@ -73,8 +72,7 @@ Notes:
 
 		<!--- Phone Numbers --->
 		<cf_HibachiPropertyList divClass="col-md-6">
-			<h5>#$.slatwall.rbKey('entity.accountPhoneNumber_plural')#</h5>
-			<cf_HibachiListingDisplay smartList="#rc.account.getAccountPhoneNumbersSmartList()#"
+			<cf_HibachiListingDisplay title="#$.slatwall.rbKey('entity.accountPhoneNumber_plural')#" smartList="#rc.account.getAccountPhoneNumbersSmartList()#"
 									  recordEditAction="admin:entity.editaccountphonenumber"
 									  recordEditQueryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount"
 									  recordEditModal=true
@@ -97,8 +95,7 @@ Notes:
 	<cf_HibachiPropertyRow>
 		<!--- Addresses --->
 		<cf_HibachiPropertyList divClass="col-md-12">
-			<h5>#$.slatwall.rbKey('entity.accountAddress_plural')#</h5>
-			<cf_HibachiListingDisplay smartList="#rc.account.getAccountAddressesSmartList()#"
+			<cf_HibachiListingDisplay title="#$.slatwall.rbKey('entity.accountAddress_plural')#" smartList="#rc.account.getAccountAddressesSmartList()#"
 									  recordEditAction="admin:entity.editaccountaddress"
 									  recordEditQueryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount"
 									  recordEditModal=true

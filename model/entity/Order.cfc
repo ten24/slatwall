@@ -137,10 +137,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="returnItemSmartList" persistent="false";
 	property name="referencingPaymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
 	property name="saleItemSmartList" persistent="false";
-	property name="saveBillingAccountAddressFlag" persistent="false";
-	property name="saveBillingAccountAddressName" persistent="false";
-	property name="saveShippingAccountAddressFlag" persistent="false";
-	property name="saveShippingAccountAddressName" persistent="false";
+	property name="saveBillingAccountAddressFlag" hb_populateEnabled="public" persistent="false";
+	property name="saveBillingAccountAddressName" hb_populateEnabled="public" persistent="false";
+	property name="saveShippingAccountAddressFlag" hb_populateEnabled="public" persistent="false";
+	property name="saveShippingAccountAddressName" hb_populateEnabled="public" persistent="false";
 	property name="statusCode" persistent="false";
 	property name="subTotal" persistent="false" hb_formatType="currency";
 	property name="subTotalAfterItemDiscounts" persistent="false" hb_formatType="currency";
