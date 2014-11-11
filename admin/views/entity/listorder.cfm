@@ -71,8 +71,8 @@ Notes:
 		<cf_HibachiListingColumn propertyIdentifier="account.firstName" />
 		<cf_HibachiListingColumn propertyIdentifier="account.lastName" />
 		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="account.company" />
-		<cf_HibachiListingColumn propertyIdentifier="orderType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="orderStatusType.type" title="#$.slatwall.rbKey('define.status')#" />
+		<cf_HibachiListingColumn propertyIdentifier="orderType.type" sort=true />
+		<cf_HibachiListingColumn propertyIdentifier="orderStatusType.type" title="#$.slatwall.rbKey('define.status')#" sort=true/>
 		<cf_HibachiListingColumn propertyIdentifier="orderOrigin.orderOriginName" />
 		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<cf_HibachiListingColumn propertyIdentifier="calculatedTotal" />
