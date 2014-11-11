@@ -112,7 +112,6 @@ input[type="file"] {display: block;width: auto;height: auto;padding: 0px;backgro
 .s-centered-logo {position: absolute;margin-left: -110px !important;}
 
 /* Detail Views */
-.s-property-info {min-width: 360px;max-width: 450px;}
 .s-property-info table {border:1px solid #ddd;}
 .s-property-info .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {border: 1px solid #DDD;}
 .s-property-info dt, .s-property-info dd {text-align:left;padding: 7px 0px 11px 0px; }
