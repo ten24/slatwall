@@ -358,12 +358,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(structKeyExists(filter,"logicalOperator")){
 				logicalOperator = filter.logicalOperator;
 			}
-			
 			if(!isnull(filter.collectionID)){
-				
 				filterGroupHQL &=  " #logicalOperator# #getHQLForCollectionFilter(filter)# ";;
 			}else{
-				
 				
 				//check filter is a nested filterGroup or a filter itself
 				if(structKeyExists(filter,"filterGroup")){
@@ -449,6 +446,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private string function getHQLForCollectionFilter(required struct filter){
 		var collectionFilterHQL = '';
 		var filterCriteria = getfilterCriteria(arguments.filter.criteria);
+		/*if(isNull(filterCriteria)){
+			filterCriteria ='';
+		}*/
 		collectionFilterHQL &= ' #filterCriteria# (';
 		
 		var collectionEntity = getService('collectionService').getCollectionByCollectionID(arguments.filter.collectionID);
