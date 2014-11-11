@@ -539,10 +539,6 @@ Notes:
 			var slatwallConfig = $.slatwall.getConfig();
 		</script>
 		
-		<!---modules BEGIN--->
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/slatwalladmin.js"></script>
-		<!---modules END --->
-		
 		<!--- Load up the Slatwall Angular Provider --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#?slatAction=api:js.ngslatwall"></script>
 		

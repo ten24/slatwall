@@ -54,9 +54,10 @@ Notes:
 
 <!---the order these are loaded matters --->
 <cfset local.jsDirectoryArray = [
-	expandPath( '/Slatwall/admin/client/js/services' ),
-	expandPath( '/Slatwall/admin/client/js/controllers' ),
-	expandPath( '/Slatwall/admin/client/js/directives' )
+	expandPath( '/Slatwall/#rc.jspath#' ),
+	expandPath( '/Slatwall/#rc.jspath#/services' ),
+	expandPath( '/Slatwall/#rc.jspath#/controllers' ),
+	expandPath( '/Slatwall/#rc.jspath#/directives' )
 ]>
 
 <cfloop array="#local.jsDirectoryArray#" index="local.jsDirectory">
@@ -70,12 +71,13 @@ Notes:
     
     <cfloop query="local.jsFileList">
 	    <cfset local.jsFilePath = local.jsDirectory & '/' & name>
-	    <cfset local.fileContent = FileRead(local.jsFilePath,'utf-8')>
+	    <cfset local.fileContent = fileRead(local.jsFilePath, 'utf-8')>
 		<cfset local.jsOutput &= local.fileContent />
     </cfloop>
 </cfloop>
 
 <cfif request.slatwallScope.getApplicationValue('debugFlag')>
+	<cfset getPageContext().getOut().clearBuffer() />
 	<cfoutput>#local.jsOutput#</cfoutput>	
 <cfelse>
 	<!---
@@ -85,5 +87,6 @@ Notes:
 												,inputString = local.jsOutput
 												) />
 	--->
+	<cfset getPageContext().getOut().clearBuffer() />
 	<cfoutput>#local.jsOutput#</cfoutput>
 </cfif>
