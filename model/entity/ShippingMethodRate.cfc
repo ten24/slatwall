@@ -222,6 +222,10 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	
 	// ================== START: Overridden Methods ========================
 	
+	public any function getSimpleRepresentation() {
+		return '#getShippingMethod().getShippingMethodName()# - #getShippingMethodRateName()# #rbKey("define.rate")#';	
+	}
+	
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================

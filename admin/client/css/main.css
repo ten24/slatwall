@@ -28,7 +28,7 @@ label {font-weight:600;}
 .s-disabled {opacity: .4;pointer-events: none;}
 .s-dotted-border-bottom {border-bottom: 3px dotted #EEE;padding-bottom: 20px !important;margin-bottom: 20px !important;}
 .s-hide-trans {display:none;-webkit-transition: all .5s ease-in-out;-moz-transition: all .5s ease-in-out;-ms-transition: all .5s ease-in-out;-o-transition: all .5s ease-in-out;transition: all .5s ease-in-out;}
-.modal-body {max-height:400px;overflow: scroll;}
+.modal-body {max-height:400px;overflow-y: auto;overflow-x:hidden;}
 .ui-datepicker {padding:10px;z-index:3000 !important;}
 
 input[type="file"] {display: block;width: auto;height: auto;padding: 0px;background-color: none;background-image: none;border: none; border-radius: none;-webkit-box-shadow: none;box-shadow: none;-webkit-transition: none;transition: none; } 
@@ -112,6 +112,7 @@ input[type="file"] {display: block;width: auto;height: auto;padding: 0px;backgro
 .s-centered-logo {position: absolute;margin-left: -110px !important;}
 
 /* Detail Views */
+.s-property-info {min-width: 360px;max-width: 450px;}
 .s-property-info table {border:1px solid #ddd;}
 .s-property-info .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {border: 1px solid #DDD;}
 .s-property-info dt, .s-property-info dd {text-align:left;padding: 7px 0px 11px 0px; }
