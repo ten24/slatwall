@@ -120,7 +120,7 @@ function($filter,$log){
 			filterItem = {
 					displayPropertyIdentifier:"",
 					propertyIdentifier:"",
-					comparisonOperator:"=",
+					comparisonOperator:"",
 					value:"",
 					$$disabled:false,
 					$$isClosed:true,
