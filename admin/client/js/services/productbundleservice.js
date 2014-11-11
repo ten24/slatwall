@@ -1,5 +1,5 @@
 
-angular.module('slatwalladmin.services')
+angular.module('slatwalladmin')
 .factory('productBundleService',
 [
 	'$log',

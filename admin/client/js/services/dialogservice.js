@@ -1,4 +1,4 @@
-angular.module('slatwalladmin.services').factory('dialogService', [
+angular.module('slatwalladmin').factory('dialogService', [
 'partialsPath',
 function(
 partialsPath

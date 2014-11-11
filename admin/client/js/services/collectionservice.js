@@ -1,6 +1,6 @@
 /*collection service is used to maintain the state of the ui*/
 
-angular.module('slatwalladmin.services')
+angular.module('slatwalladmin')
 .factory('collectionService',['$filter','$log',
 function($filter,$log){
 	/*properties*/

@@ -48,7 +48,7 @@ Notes:
 --->
 <cfoutput>
 <!DOCTYPE html>
-<html lang="en" ng-app="slatwall">
+<html lang="en" ng-app="slatwalladmin">
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -104,8 +104,7 @@ Notes:
 			</script>
 		</cfif>
 	</head>
-	</cfoutput>
-
+	
 
 	<!---
 	Start new sidebar nav
@@ -294,7 +293,6 @@ Notes:
 
 
 	<!--- Start old navbar --->
-	<cfoutput>
 	<body>
 
 		<div class="navbar navbar-fixed-top navbar-inverse" role="navigation" id="slatwall-navbar">
@@ -466,10 +464,9 @@ Notes:
 						</ul>
 					</div>
 				</div><!--- navbar collapes --->
-
 			</div>
 		</div>
-		 <!---End old navbar --->
+		<!--- End old navbar --->
 
 		<section class="content s-body-margin" id="j-main-content">
 
@@ -527,8 +524,7 @@ Notes:
 				</div>
 			</span>
 		</span>
-	</div>
-		<!--- TODO:use api to combine and compress all js --->
+	
 		<!---lib BEGIN --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/date/date.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
@@ -537,16 +533,21 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-animate.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/metismenu/metismenu.js"></script>
+		
 		<!---lib END --->
 		<script type="text/javascript">
 			var slatwallConfig = $.slatwall.getConfig();
 		</script>
+		
 		<!---modules BEGIN--->
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/client/js/slatwall.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/slatwalladmin.js"></script>
 		<!---modules END --->
-
+		
+		<!--- Load up the Slatwall Angular Provider --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#?slatAction=api:js.ngslatwall"></script>
+		
+		<!--- Load up the Slatwall Admin --->
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#?slatAction=api:js.ngcompressor&jspath=admin/client/js"></script>
 	</body>
 </html>
 </cfoutput>

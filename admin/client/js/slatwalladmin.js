@@ -1,5 +1,5 @@
 'use strict';
-angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAnimate', function($locationProvider){
+angular.module('slatwalladmin', ['ngSlatwall','ui.bootstrap', 'ngAnimate', function($locationProvider){
 	$locationProvider.html5Mode(true).hashPrefix('!');
 }]).config(["$provide",'$logProvider','$filterProvider','$httpProvider', function ($provide, $logProvider,$filterProvider,$httpProvider) {
 	
@@ -66,6 +66,3 @@ angular.module('slatwalladmin', ['slatwalladmin.services','ui.bootstrap', 'ngAni
 		dialogService.removePageDialog( index );
     };
 }]);
-
-
-angular.module('slatwall',['slatwalladmin']);

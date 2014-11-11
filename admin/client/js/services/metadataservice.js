@@ -1,5 +1,5 @@
 
-angular.module('slatwalladmin.services')
+angular.module('slatwalladmin')
 .factory('metadataService',['$filter','$log',
 function($filter,$log){
 	var _propertiesList = {};
