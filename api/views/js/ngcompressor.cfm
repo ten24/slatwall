@@ -81,11 +81,13 @@ Notes:
 	<cfoutput>#local.jsOutput#</cfoutput>	
 <cfelse>
 	<!---
-	<cfset oYUICompressor = createObject("component", "Slatwall.org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'Slatwall.org.Hibachi.YUIcompressor.javaloader.JavaLoader', libPath = expandPath('/Slatwall/org/Hibachi/YUIcompressor/lib')) />
-	<cfset compressedJS = oYUICompressor.compress(
+	<cfset local.oYUICompressor = createObject("component", "Slatwall.org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'Slatwall.org.Hibachi.YUIcompressor.javaloader.JavaLoader', libPath = expandPath('/Slatwall/org/Hibachi/YUIcompressor/lib')) />
+	<cfset local.jsOutputCompressed = oYUICompressor.compress(
 												inputType = 'js'
 												,inputString = local.jsOutput
 												) />
+												
+	<cfoutput>#local.jsOutputCompressed#</cfoutput>
 	--->
 	<cfset getPageContext().getOut().clearBuffer() />
 	<cfoutput>#local.jsOutput#</cfoutput>

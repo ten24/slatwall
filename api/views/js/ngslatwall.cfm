@@ -760,6 +760,7 @@ Notes:
 </cfsavecontent>
 
 <cfif request.slatwallScope.getApplicationValue('debugFlag')>
+	<cfset getPageContext().getOut().clearBuffer() />
 	<cfoutput>#local.jsOutput#</cfoutput>	
 <cfelse>
 	<!---
@@ -771,5 +772,6 @@ Notes:
 												
 	<cfoutput>#local.jsOutputCompressed#</cfoutput>
 	--->
+	<cfset getPageContext().getOut().clearBuffer() />
 	<cfoutput>#local.jsOutput#</cfoutput>
 </cfif>
