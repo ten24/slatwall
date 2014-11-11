@@ -9,16 +9,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		setFW( arguments.fw );
 	}
 	
-	/*public void function jsentity( required struct rc ) {
-		param name="arguments.rc.entityName" default="";
-		
-		rc.entity = arguments.rc.$.slatwall.newEntity( arguments.rc.entityName ); 
-	}*/
-	
-	public void function getCompressedJs( required struct rc ) {
+	public void function ngSlatwall( required struct rc ) {
 		rc.entities = [];
 		for(var entityName in listToArray(structKeyList(rc.$.slatwall.getService('hibachiService').getEntitiesMetaData()))) {
 			arrayAppend(rc.entities, rc.$.slatwall.newEntity(entityName));
 		}
 	}
+	
 }
