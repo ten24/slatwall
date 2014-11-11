@@ -50,8 +50,8 @@ Notes:
 
 <cfcontent type="text/javascript">
 <cfset local.jsOutput = "" />
-<cfoutput>
-	<cfsavecontent variable="local.thisJSOutput">
+<cfsavecontent variable="local.jsOutput">
+	<cfoutput>
 		'use strict';
 		angular.module('slatwalladmin', ['ngSlatwall','ui.bootstrap','ngAnimate', function($locationProvider){
 			$locationProvider.html5Mode(true).hashPrefix('!');
@@ -726,14 +726,14 @@ Notes:
 											
 											<cfif listFindNoCase('many-to-one', local.property.fieldtype)>
 												<!---get many-to-one options --->
-												,$$get#local.property.name#Options:function(args) {
+												<!---,$$get#local.property.name#Options:function(args) {
 													var options = {
 														property:'#local.property.name#',
 														args:args || []
 													};
 													var collectionOptionsPromise = slatwallService.getPropertyDisplayOptions('#local.entity.getClassName()#',options);
 													return collectionOptionsPromise;
-												}
+												}--->
 												<!---get many-to-one  via REST--->
 												,$$get#local.property.name#:function() {
 													if(angular.isDefined(this.$$get#LCase(local.entity.getClassName())#ID())){
