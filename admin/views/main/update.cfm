@@ -84,21 +84,27 @@ Notes:
 			<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableStableVersion')#" value="#rc.availableMasterVersion#" />
 			<cf_HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableBleedingEdgeVersion')#" value="#rc.availableDevelopVersion#" />
 			<hr />
-			<form method="post" action="?s=1">
+			<form method="post" action="?s=1" class="form-horizontal s-update-branch">
 				<input type="hidden" name="slatAction" value="admin:main.update" />
 				<input type="hidden" name="process" value="1" />
 				
 				<!--- Custom Branch --->
-				<input type="radio" name="branchType" value="custom" />
-				<input type="text" name="customBranch" value="" placeholder="Custom Branch (ex: feature-newadmin)" /><br />
+				<div class="form-group">
+					<label class="col-xs-2 control-label"><input type="radio" name="branchType" value="custom" /></label>
+					<input type="text" class="col-xs-10" name="customBranch" value="" placeholder="Custom Branch (ex: feature-newadmin)" /><br />
+				</div>
 				
 				<!--- Standard --->
-				<input type="radio" name="branchType" value="standard" checked="checked" />
-				<select name="updateBranch">
-					<cfloop array="#local.updateOptions#" index="local.updateOption">
-						<option value="#local.updateOption.value#" <cfif rc.currentBranch eq local.updateOption.value>selected="selected"</cfif>>#local.updateOption.name#</option>
-					</cfloop>
-				</select><br />
+				<div class="form-group">
+					<label class="col-xs-2 control-label"><input type="radio" name="branchType" value="standard" checked="checked" /></label>
+					<div class="col-xs-10" style="padding:0px;">
+						<select name="updateBranch" class="form-control">
+							<cfloop array="#local.updateOptions#" index="local.updateOption">
+								<option value="#local.updateOption.value#" <cfif rc.currentBranch eq local.updateOption.value>selected="selected"</cfif>>#local.updateOption.name#</option>
+							</cfloop>
+						</select>
+					</div>
+				</div>
 				
 				<button class="btn adminmainupdate btn-primary" title="#$.slatwall.rbKey('admin.main.update_title')#" type="submit">#$.slatwall.rbKey('admin.main.update_title')#</button>
 			</form>
