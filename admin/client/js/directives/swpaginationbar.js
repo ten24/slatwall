@@ -1,12 +1,12 @@
 angular.module('slatwalladmin')
 .directive('swPaginationBar',
-['partialsPath', 
+['$log',
+ 'partialsPath', 
 'paginationService',
-'$log',
 function(
+$log,
 partialsPath,
-paginationService,
-$log){
+paginationService){
 	return {
 		restrict:'A',
 		templateUrl: partialsPath+'paginationbar.html',
