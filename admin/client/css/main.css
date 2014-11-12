@@ -436,14 +436,14 @@ tabel .s-table-header {margin-bottom:10px;}
 
 .dropdown-toggle .fa-sort-desc:before {top: -2px;position: relative;}
 
-.s-j-draggablePanelList a {height: 40px;border-radius: 0px;border:0px !important;margin:0px !important;}
-.s-j-draggable-panel-list a:hover {background-color:#eeeeee;color:#767676;border:0px !important;}
-.s-j-draggablePanelList a.active {border:0px;box-shadow:none;border:0px;}
-.s-j-draggablePanelList a i {margin-top:50%;}
-.s-j-draggablePanelList a.active:hover {background-color:#F79C49;color:#ffffff;}
+.s-j-draggablePanelList a {height: 40px;border-radius: 0px;border:0px !important;margin:0px !important;background-color:#ffffff;color:#cccccc;}
+.s-j-draggablePanelList a:hover {border:0px !important;background:#eeeeee;color:#cccccc;}
+.s-j-draggablePanelList a.active {border:0px;box-shadow:none;border:0px;background-color:#ffffff;color:#666666;}
+.s-j-draggablePanelList a i {margin-top: 8px;}
+.s-j-draggablePanelList a.active:hover {background-color:#eeeeee;color:#666666;}
 .s-j-draggablePanelList a:last-child {border:0px;}
-.s-j-draggablePanelList .s-remove {background-color:#DA5757;color:#ffffff !important;}
-.s-j-draggablePanelList .s-remove:hover {background-color:#D66B6B !important;border:none !important;}
+.s-j-draggablePanelList .s-remove {background-color:#666666;color:#ffffff !important;}
+.s-j-draggablePanelList .s-remove:hover {border:none !important;}
 .s-j-draggablePanelList .s-remove.active {background-color:#DA5757 !important;color:#ffffff !important;}
 .s-j-draggablePanelList .s-sort-num {text-align:center;float:left;position:relative;background-color: #EEE;font-size:12px;padding:0px;height:40px;width:40px;}
 .s-j-draggablePanelList .s-sort-num > a:first-child {padding: 12px;display:inline-block;cursor:pointer;}
