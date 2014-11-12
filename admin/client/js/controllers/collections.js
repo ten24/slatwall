@@ -5,20 +5,19 @@ angular.module('slatwalladmin')
 [ '$scope',
 '$location',
 '$slatwall',
+'$log',
+'$timeout',
 'collectionService', 
 'metadataService',
 'paginationService',
-'$log',
-'$timeout',
 function($scope,
 $location,
 $slatwall,
+$log,
+$timeout,
 collectionService,
 metadataService,
-paginationService,
-$log,
-$timeout
-){
+paginationService){
 	
 	//init values
 	//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
