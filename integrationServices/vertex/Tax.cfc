@@ -119,7 +119,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 												taxAmount = n4.xmlText;
 											}
 											if(n4.xmlName == "EffectiveRate"){
-												taxRate = n4.xmlText;
+												taxRate = n4.xmlText * 100;
 											}
 											if(n4.xmlName == "Imposition"){
 												taxImpositionName = n4.xmlText;
