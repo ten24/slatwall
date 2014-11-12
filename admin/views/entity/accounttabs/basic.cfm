@@ -3,7 +3,7 @@
 
 <cfoutput>
 	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList divclass="col-md-8">
+		<cf_HibachiPropertyList divclass="col-md-6">
 			<cf_HibachiPropertyDisplay object="#rc.account#" property="firstName" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.account#" property="lastName" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.account#" property="company" edit="#rc.edit#">
@@ -11,7 +11,7 @@
 		</cf_HibachiPropertyList>
 		
 		<!--- Overview --->
-		<cf_HibachiPropertyList divclass="col-md-4">
+		<cf_HibachiPropertyList divclass="col-md-6">
 			<cf_HibachiPropertyTable>
 				
 				<!--- Term Payment Details --->
