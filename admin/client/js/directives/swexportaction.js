@@ -1,10 +1,11 @@
 angular.module('slatwalladmin')
 .directive('swExportAction',
-['partialsPath', 
+[
 '$log',
+'partialsPath', 
 function(
-partialsPath,
-$log){
+$log,
+partialsPath){
 	return {
 		restrict:'A',
 		templateUrl: partialsPath+'exportaction.html',

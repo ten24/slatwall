@@ -4,21 +4,21 @@ angular.module('slatwalladmin')
 ['$http',
 '$compile',
 '$templateCache',
-'collectionPartialsPath',
 '$log',
 '$slatwall',
+'$filter',
+'collectionPartialsPath',
 'collectionService',
 'metadataService',
-'$filter',
 function($http,
 $compile,
 $templateCache,
-collectionPartialsPath,
 $log,
 $slatwall,
+$filter,
+collectionPartialsPath,
 collectionService,
-metadataService,
-$filter){
+metadataService){
 /* Template info begin*/
 	var getTemplate = function(selectedFilterProperty){
         var template = '';
