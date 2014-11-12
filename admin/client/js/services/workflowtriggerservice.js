@@ -33,7 +33,7 @@ function(
 		},
 		formatWorkflowTrigger:function(workflowTriggerObject){
 			var workflowTrigger = this.newWorkflowTrigger();
-			for(key in workflowTriggerObject){
+			for(var key in workflowTriggerObject){
 				workflowTrigger[key] = workflowTriggerObject[key];
 			}
 			return workflowTrigger;
