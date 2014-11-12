@@ -2,16 +2,16 @@
 angular.module('slatwalladmin').controller('pageDialog', [
 	'$scope',
 	'$location',
-	'$slatwall',
 	'$log',
 	'$anchorScroll',
+	'$slatwall',
 	'dialogService',
 function(
 	$scope,
 	$location,
-	$slatwall,
 	$log,
 	$anchorScroll,
+	$slatwall,
 	dialogService
 	
 ){
