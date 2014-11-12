@@ -62,9 +62,116 @@
 					<div id="collapse{{$index}}" class="panel-collapse"
 						style="height: 0px;">
 						<content class="s-body-box" ng-if="openTab">
-							<ng-include src="tabPartialPath+detailTabs.toLowerCase()"></ng-include>
+							<ng-include src="tabPartialPath+entityName+'/'+detailTabs.toLowerCase()"></ng-include>
 						</content>
 					</div>
+				</div>
+				<div class="j-panel panel panel-default">
+					<a data-toggle="collapse" href="#collapseSystem" ng-init="openTab=false" ng-click="openTab = !openTab">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<span >System</span> <i
+									class="s-accordion-toggle-icon fa fa-caret-left"></i>
+							</h4>
+						</div>
+					</a>
+					<div id="collapseSystem" class="panel-collapse"
+						style="height: 0px;">
+						<content class="s-body-box" ng-if="openTab">
+						<div class="tab-pane" id="tabSystem">
+							<div class="col-md-12">
+								<div class="form-horizontal" style="max-width: 650px;">
+									<div class="form-group">
+										<label class="control-label col-sm-4 title"
+											style="text-align: left;" 
+											ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+entityName.toLowerCase()+'id')"></label>
+
+										<div class="col-sm-8">
+
+											<p class="form-control-static value" ng-bind="entity.data[entityName.toLowerCase()+'ID']"></p>
+
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="control-label col-sm-4 title"
+											style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'remoteid')">Remote ID</label>
+
+										<div class="col-sm-8">
+
+											<p class="form-control-static value" ng-bind="entity.data.remoteID"></p>
+
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="control-label col-sm-4 title"
+											style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'createddatetime')">Created Date Time</label>
+
+										<div class="col-sm-8">
+
+											<p class="form-control-static value" ng-bind="entity.data.createdDateTime"></p>
+
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="control-label col-sm-4 title"
+											style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'createdby')">Created By</label>
+
+										<div class="col-sm-8">
+
+											<p class="form-control-static value" ng-bind="entity.data.createdBy"></p>
+
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="control-label col-sm-4 title"
+											style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'modifieddatetime')">Modified Date Time</label>
+
+										<div class="col-sm-8">
+
+											<p class="form-control-static value" ng-bind="entity.data.modifiedDateTime"></p>
+
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="control-label col-sm-4 title"
+											style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'modifiedby')">Modified By</label>
+
+										<div class="col-sm-8">
+
+											<p class="form-control-static value" ng-bind="entity.data.modifiedBy"></p>
+
+										</div>
+									</div>
+
+								</div>
+
+							</div>
+
+							<div class="table-responsive">
+								<table
+									class="table table-striped table-bordered table-condensed">
+									<tbody>
+
+										<tr>
+											<td colspan="5" style="text-align: center;"><em>There
+													is no audit history available</em></td>
+										</tr>
+
+									</tbody>
+								</table>
+							</div>
+
+
+						</div>
+
+						</content>
+					</div>
+
 				</div>
 			</div>
 		</form>

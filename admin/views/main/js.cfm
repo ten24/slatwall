@@ -48,39 +48,25 @@ Notes:
 --->
 
 <cfset local.jsOutput = "" />
-
-<!---the order these are loaded matters --->
-<cfset local.jsDirectoryArray = [
-	expandPath( '/Slatwall/admin/client/js/services' ),
-	expandPath( '/Slatwall/admin/client/js/controllers' ),
-	expandPath( '/Slatwall/admin/client/js/directives' )
-]>
-
-<cfloop array="#local.jsDirectoryArray#" index="local.jsDirectory">
-	<cfdirectory
-	    action="list"
-	    directory="#local.jsDirectory#"
-	    listinfo="name"
-	    name="local.jsFileList"
-	    filter="*.js"
-    />
-    
-    <cfloop query="local.jsFileList">
-	    <cfset local.jsFilePath = local.jsDirectory & '/' & name>
-	    <cfset local.fileContent = FileRead(local.jsFilePath,'utf-8')>
-		<cfset local.jsOutput &= local.fileContent />
-    </cfloop>
-</cfloop>
+<cfcontent type="text/javascript">
+<cfsavecontent variable="local.jsOutput" >
+	
+	
+</cfsavecontent>
 
 <cfif request.slatwallScope.getApplicationValue('debugFlag')>
+	<cfset getPageContext().getOut().clearBuffer() />
 	<cfoutput>#local.jsOutput#</cfoutput>	
 <cfelse>
 	<!---
-	<cfset oYUICompressor = createObject("component", "Slatwall.org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'Slatwall.org.Hibachi.YUIcompressor.javaloader.JavaLoader', libPath = expandPath('/Slatwall/org/Hibachi/YUIcompressor/lib')) />
-	<cfset compressedJS = oYUICompressor.compress(
+	<cfset local.oYUICompressor = createObject("component", "Slatwall.org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'Slatwall.org.Hibachi.YUIcompressor.javaloader.JavaLoader', libPath = expandPath('/Slatwall/org/Hibachi/YUIcompressor/lib')) />
+	<cfset local.jsOutputCompressed = oYUICompressor.compress(
 												inputType = 'js'
 												,inputString = local.jsOutput
 												) />
+												
+	<cfoutput>#local.jsOutputCompressed#</cfoutput>
 	--->
+	<cfset getPageContext().getOut().clearBuffer() />
 	<cfoutput>#local.jsOutput#</cfoutput>
 </cfif>

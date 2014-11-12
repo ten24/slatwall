@@ -19,7 +19,8 @@ function(
 	};*/
 	$scope.entity = $slatwall['new'+$scope.entityName]();
 	$scope.getRBKey = $slatwall.getRBKey;
-	$scope.tabPartialPath = partialsPath+'entity/'+$scope.entityName+'/';
+	$scope.tabPartialPath = partialsPath+'entity/';
+	
 	$scope.getEntity = function(){
 		
 		$scope.entity = $slatwall['get'+$scope.entityName]({id:$scope.entityID});
