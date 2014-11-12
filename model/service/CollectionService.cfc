@@ -160,10 +160,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		return UCase(left(arguments.phrase,1)) & Right(arguments.phrase,Len(arguments.phrase)-1);
 	}
 	
-	public any function getTransientCollectionByEntityName(required string entityName){
+	public any function getTransientCollectionByEntityName(required string entityName,struct collectionOptions){
 		var collectionEntity = this.newCollection();
 		var properlyCasedFullEntityName = getProperlyCasedFullEntityName(arguments.entityName);
-		collectionEntity.setCollectionObject(properlyCasedFullEntityName,false);
+		collectionEntity.setCollectionObject(properlyCasedFullEntityName,arguments.collectionOptions.defaultColumns);
 		return collectionEntity;
 	}
 	
@@ -404,12 +404,23 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function getAPIResponseForEntityName(required string entityName, required struct collectionOptions){
-		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
+		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,arguments.collectionOptions);
+		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
+		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
+			collectionConfigStruct.filterGroups = [];
+		}
+		if(!structKeyExists(collectionConfigStruct,'joins')){
+			collectionConfigStruct.joins = [];
+		}
+		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
+			collectionConfigStruct.isDistinct = false;
+		}
+		
 		return getAPIResponseForCollection(collectionEntity,arguments.collectionOptions);
 	}
 	
 	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, required struct collectionOptions){
-		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName);
+		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,arguments.collectionOptions);
 		//set up search by id				
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		if(!structKeyExists(collectionConfigStruct,'filterGroups')){

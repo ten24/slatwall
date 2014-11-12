@@ -471,7 +471,11 @@ Notes:
 		<section class="content s-body-margin" id="j-main-content">
 
 			<div class="col-md-12">
-				#body#
+				<cfif structKeyExists(url, 'ng')>
+					<ng-view></ng-view>
+				<cfelse>
+					#body#
+				</cfif>
 			</div>
 
 		</section>
@@ -532,6 +536,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-resource.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-animate.min.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-route.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/metismenu/metismenu.js"></script>
 		
 		<!---lib END --->

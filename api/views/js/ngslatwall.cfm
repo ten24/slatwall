@@ -53,9 +53,14 @@ Notes:
 <cfsavecontent variable="local.jsOutput">
 	<cfoutput>
 		'use strict';
-		angular.module('slatwalladmin', ['ngSlatwall','ui.bootstrap','ngAnimate', function($locationProvider){
-			$locationProvider.html5Mode(true).hashPrefix('!');
-		}]).config(["$provide",'$logProvider','$filterProvider','$httpProvider', function ($provide, $logProvider,$filterProvider,$httpProvider) {
+		angular.module('slatwalladmin', ['ngSlatwall','ui.bootstrap','ngAnimate','ngRoute']).
+		config(
+			["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$locationProvider', 
+			function ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$locationProvider
+		) {
+			
+			$locationProvider.html5Mode( false ).hashPrefix('!');
+			$provide.constant("baseURL", $.slatwall.getConfig().baseURL);
 			
 			var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/';
 			
@@ -110,6 +115,17 @@ Notes:
 			
 			$httpProvider.interceptors.push('slatwallInterceptor');
 			
+			<!--- route provider configuration --->
+			$routeProvider.when('/entity/:entityName/', {
+				templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/router.html',
+				controller: 'routerController'
+			}).when('/entity/:entityName/:entityID', {
+				templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/router.html',
+				controller: 'routerController'
+			}).otherwise({
+				templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
+			});
+			
 		}]).run(['$rootScope','dialogService', function($rootScope, dialogService) {
 		    $rootScope.openPageDialog = function( partial ) {
 		    	dialogService.addPageDialog( partial );
@@ -120,7 +136,7 @@ Notes:
 		    };
 		}]);
 
-
+		
 
 		angular.module('ngSlatwall',[])
 		.provider('$slatwall',[
@@ -184,6 +200,7 @@ Notes:
 				  				params.isDistinct = options.isDistinct || false;
 				  				params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 				  				params.allRecords = options.allRecords || '';
+				  				params.defaultColumns = options.defaultColumns || true;
 				  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName;
 				  			}
 				  			

@@ -133,7 +133,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	public any function getResourceBundle(required struct rc){
-		var data = getService('HibachiRBService').getResourceBundle(arguments.rc.locale);
+		var resourceBundle = getService('HibachiRBService').getResourceBundle(arguments.rc.locale);
+		data = {};
+		//lcase all the resourceBundle keys so we can have consistent casing for the js
+		for(var key in resourceBundle){
+			data[lcase(key)] = resourceBundle[key];
+		}
 		
 		arguments.rc.apiResponse.content['data'] = data;
 	}
@@ -223,6 +228,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				allRecords = arguments.rc['allRecords'];
 			}
 			
+			var defaultColumns = false;
+			if(structKeyExists(arguments.rc,'defaultColumns')){
+				defaultColumns = arguments.rc['defaultColumns'];
+			}
+			
 			var collectionOptions = {
 				currentPage=currentPage,
 				pageShow=pageShow,
@@ -232,7 +242,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				propertyIdentifiersList=propertyIdentifiersList,
 				isDistinct=isDistinct,
 				columnsConfig=columnsConfig,
-				allRecords=allRecords
+				allRecords=allRecords,
+				defaultColumns=defaultColumns
 			};
 			
 			//considering using all url variables to create a transient collectionConfig for api response

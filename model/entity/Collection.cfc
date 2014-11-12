@@ -146,7 +146,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(addDefaultColumns){
 				for(defaultProperty in defaultProperties){
 					var columnStruct = {};
-					columnStruct['propertyIdentifier'] = '_' &lcase(arguments.collectionObject) & '.' & defaultProperty.name;
+					columnStruct['propertyIdentifier'] = '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject)) & '.' & defaultProperty.name;
 					columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
 					columnStruct['isVisible'] = true;
 					columnStruct['isSearchable'] = true;
