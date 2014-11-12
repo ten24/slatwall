@@ -13,7 +13,7 @@ function($timeout){
 		    }, 3500);
 		},
 		addAlerts: function(alerts){
-			for(alert in alerts){
+			for(var alert in alerts){
 				_alerts.push(alerts[alert]);
 				$timeout(function() {
 			      _alerts.splice(0,1);
@@ -22,7 +22,7 @@ function($timeout){
 		},
 		formatMessagesToAlerts: function(messages){
 			var alerts = [];
-			for(message in messages){
+			for(var message in messages){
 				var alert = {
 					msg:messages[message].message,
 					type:messages[message].messageType
@@ -46,7 +46,7 @@ function($timeout){
 			return _alerts;
 		},
 		removeAlert:function(alert){
-			for(i in _alerts){
+			for(var i in _alerts){
 				if(_alerts[i] === alert){
 					delete _alerts[i];
 				}
