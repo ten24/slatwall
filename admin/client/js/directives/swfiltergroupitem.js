@@ -10,7 +10,7 @@ angular.module('slatwalladmin')
 function($http,
 $compile,
 $templateCache,
-$log
+$log,
 collectionService,
 collectionPartialsPath){
 	return {
