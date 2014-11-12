@@ -82,7 +82,7 @@ function($filter,$log){
 		},
 		selectFilterItem: function(filterItem){
 			if(filterItem.$$isClosed){
-				for(i in filterItem.$$siblingItems){
+				for(var i in filterItem.$$siblingItems){
 					filterItem.$$siblingItems[i].$$isClosed = true;
 					filterItem.$$siblingItems[i].$$disabled = true;
 				}
@@ -90,7 +90,7 @@ function($filter,$log){
 				filterItem.$$disabled = false;
 				filterItem.setItemInUse(true);
 			}else{
-				for(i in filterItem.$$siblingItems){
+				for(var i in filterItem.$$siblingItems){
 					filterItem.$$siblingItems[i].$$disabled = false;
 				}
 				filterItem.$$isClosed = true;
@@ -100,13 +100,13 @@ function($filter,$log){
 		},
 		selectFilterGroupItem: function(filterGroupItem){
 			if(filterGroupItem.$$isClosed){
-				for(i in filterGroupItem.$$siblingItems){
+				for(var i in filterGroupItem.$$siblingItems){
 					filterGroupItem.$$siblingItems[i].$$disabled = true;
 				}
 				filterGroupItem.$$isClosed = false;
 				filterGroupItem.$$disabled = false;
 			}else{
-				for(i in filterGroupItem.$$siblingItems){
+				for(var i in filterGroupItem.$$siblingItems){
 					filterGroupItem.$$siblingItems[i].$$disabled = false;
 				}
 				filterGroupItem.$$isClosed = true;
@@ -117,7 +117,7 @@ function($filter,$log){
 			if(angular.isUndefined(prepareForFilterGroup)){
 				prepareForFilterGroup = false;
 			}
-			filterItem = {
+			var filterItem = {
 					displayPropertyIdentifier:"",
 					propertyIdentifier:"",
 					comparisonOperator:"",
@@ -213,7 +213,7 @@ function($filter,$log){
 			
 			filterPropertiesList.data.push(attributeCollections);
 			
-			for(i in filterPropertiesList.data){
+			for(var i in filterPropertiesList.data){
 				if(angular.isDefined(filterPropertiesList.data[i].ormtype)){
 					if(angular.isDefined(filterPropertiesList.data[i].attributeID)){
 						filterPropertiesList.data[i].$$group = 'attribute';

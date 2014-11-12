@@ -63,7 +63,7 @@ partialsPath
 	    		
 	    		if(angular.isDefined(scope.propertyDisplay.object.validation) && angular.isDefined(scope.propertyDisplay.object.validation.properties[scope.propertyDisplay.property.split('.').pop()])){
 	    			var validationProperties = scope.propertyDisplay.object.validation.properties[scope.propertyDisplay.property.split('.').pop()];
-	    			for(i in validationProperties){
+	    			for(var i in validationProperties){
 	    				for(key in validationProperties[i]){
 	    					var validationProperty = validationProperties[i];
 	    					if(key === 'required'){

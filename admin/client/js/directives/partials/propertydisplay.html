@@ -5,7 +5,7 @@
   	<span 	class="j-tool-tip-item"
   			data-toggle="tooltip"
   			data-placement="top"
-  			data-original-title="{{propertyDisplay.hint}}"
+  			data-original-title="propertyDisplay.object.metaData.$$getPropertyHint(property)"
   			ng-show="propertyDisplay.hint.length"
   	>
   		<i class="fa fa-question-circle"></i>
@@ -23,7 +23,7 @@
     <!-- Display -->
 
     <p  class="form-control-static"
-    	ng-if="propertyDisplay.meta.fieldType !== 'hidden'"
+    	ng-if="propertyDisplay.object.metaData.$$getPropertyFieldType(property) !== 'hidden'"
     	ng-bind="propertyDisplay.object[propertyDisplay.property]"
     	ng-show="!propertyDisplay.editing"
     >

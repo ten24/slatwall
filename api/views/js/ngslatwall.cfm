@@ -442,7 +442,7 @@ Notes:
 							}
 							
 							<!---// Check the exact bundle file--->
-							var bundle = this.getResourceBundle(locale);
+							var bundle = slatwallService.getResourceBundle(locale);
 							if(angular.isDefined(bundle[key])) {
 								return bundle[key];
 							}
@@ -457,7 +457,7 @@ Notes:
 							<!---// Check the broader bundle file--->
 							var localeListArray = locale.split('_');
 							if(localeListArray.length === 2){
-								bundle = this.getResourceBundle(localeListArray[0]);
+								bundle = slatwallService.getResourceBundle(localeListArray[0]);
 								if(angular.isDefined(bundle[key])){
 									return bundle[key];
 								}
@@ -692,9 +692,36 @@ Notes:
 									return _getPropertyFormatType(propertyName,this);
 								}
 								
+								this.metaData.$$getDetailTabs = function(){
+									<cfset local.tabsDirectory = expandPath( '/Slatwall/admin/client/js/directives/partials/entity/#local.entity.getClassName()#/' )>
+									<cfdirectory
+									    action="list"
+									    directory="#local.tabsDirectory#"
+									    listinfo="name"
+									    name="local.tabsFileList"
+									    filter="*.html"
+								    />
+								    var detailsTab = [
+								    	<cfset tabCount = 0 />
+								    	<cfloop query="local.tabsFileList">
+								    		<cfset tabCount++ />
+								    		
+								    		<cfif tabCount neq local.tabsFileList.recordCount>
+								    			'#name#',
+								    		<cfelse>
+								    			'#name#'
+								    		</cfif>
+								   		</cfloop>
+								    ];
+								    
+									return detailsTab;
+								}
+								
 								this.$$getPropertyFormattedValue = function(propertyName,formatType){
 									return _getPropertyFormatType(propertyName,formatType,this);
 								}
+								
+								
 								
 								this.data = {};
 								this.modifiedData = {};

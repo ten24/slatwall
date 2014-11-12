@@ -88,7 +88,7 @@ function(
 		formatProductBundleGroupFilters:function(productBundelGroupFilters,filterTerm){
 			$log.debug('formatProductBundleGroupFilters');
 			$log.debug(filterTerm);
-			for(i in productBundelGroupFilters){
+			for(var i in productBundelGroupFilters){
 				productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value+'Name'];
 				productBundelGroupFilters[i].type = filterTerm.name;
 			}

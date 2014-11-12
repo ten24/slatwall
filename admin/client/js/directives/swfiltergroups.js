@@ -46,7 +46,7 @@ $log){
 			};
 			
 			$scope.deselectItems = function(filterItem){
-				for(i in filterItem.$$siblingItems){
+				for(var i in filterItem.$$siblingItems){
 					filterItem.$$siblingItems[i].$$disabled = false;
 				}
 			};

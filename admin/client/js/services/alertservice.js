@@ -46,7 +46,7 @@ function($timeout){
 			return _alerts;
 		},
 		removeAlert:function(alert){
-			for(i in _alerts){
+			for(var i in _alerts){
 				if(_alerts[i] === alert){
 					delete _alerts[i];
 				}
