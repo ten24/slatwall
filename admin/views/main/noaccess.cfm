@@ -47,7 +47,7 @@ Notes:
 
 --->
 <cfoutput>
-	<div class="svoadminmainnoaccess">
+	<div class="svoadminmainnoaccess s-access-denied">
 		<h3>Access Denied</h3>
 		<p>You are logged in but do not have access to view this section. <cf_HibachiActionCaller action="admin:main.logout"></p>
 	</div>	
