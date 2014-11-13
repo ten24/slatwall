@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode eq "end">
 	<cfparam name="attributes.smartList" type="any" default="" />
 	<cfparam name="attributes.allowComment" type="boolean" default="false" />
