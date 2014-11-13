@@ -21,7 +21,7 @@ workflowPartialsPath
 			$log.debug('workflow trigger init');
 			
 			scope.deleteTrigger = function(workflowTrigger){
-				var deleteTriggerPromise = $slatwall.saveEntity('WorkflowTrigger',workflowTrigger.workflowTriggerID,{},'Delete');
+				var deleteTriggerPromise = $slatwall.saveEntity('WorkflowTrigger',workflowTrigger.data.workflowTriggerID,{},'Delete');
 				deleteTriggerPromise.then(function(value){
 					$log.debug('deleteTrigger');
 					scope.workflowTriggers.splice(workflowTrigger.$$index,1);

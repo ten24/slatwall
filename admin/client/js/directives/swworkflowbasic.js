@@ -6,14 +6,12 @@ angular.module('slatwalladmin')
 '$slatwall',
 'formService',
 'workflowPartialsPath',
-'workflowService',
 function(
 $log,
 $location,
 $slatwall,
 formService,
-workflowPartialsPath,
-workflowService
+workflowPartialsPath
 ){
 	return {
 		require:"^form",

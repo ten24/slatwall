@@ -562,7 +562,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public array function getRecords(boolean refresh=false) {
 		if( !structKeyExists(variables, "records") || arguments.refresh == true) {
 			variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+			
 		}
+		writeDump(var=variables.records,top=2);
 		return variables.records;
 	}
 	

@@ -42,7 +42,7 @@ component entityname="SlatwallWorkflowTask" table="SwWorkflowTask" persistent="t
 	property name="workflowTaskID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
 	property name="taskName" ormtype="string";
-	property name="taskConditionsConfig" ormtype="string" length="8000" hb_auditable="false";
+	property name="taskConditionsConfig" ormtype="string" length="8000" hb_auditable="false" hb_json;
 
 	// Calculated Properties
 
@@ -81,6 +81,19 @@ component entityname="SlatwallWorkflowTask" table="SwWorkflowTask" persistent="t
 			variables.taskConditionsConfigStruct = deserializeTaskConditionsConfig();
 		}
 		return variables.taskConditionsConfigStruct;
+	}
+	
+	public any function getTaskConditionsConfig(){
+		if(isNull(variables.taskConditionsConfig)){
+			variables.taskConditionsConfig = '';
+			var defaultTaskConditionsConfig = {};
+			defaultTaskConditionsConfig["workflowConditionGroups"] = ArrayNew(1);
+			var workflowConditionGroupStuct = {};
+			workflowConditionGroupStuct["workflowConditionGroup"] = ArrayNew(1);
+			ArrayAppend(defaultTaskConditionsConfig["workflowConditionGroups"],workflowConditionGroupStuct);
+			variables.taskConditionsConfig = serializeJson(defaultTaskConditionsConfig);
+		}
+		return variables.taskConditionsConfig;
 	}
 	
 	public any function deserializeTaskConditionsConfig(){

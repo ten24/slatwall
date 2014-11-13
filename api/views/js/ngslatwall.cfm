@@ -635,8 +635,6 @@ Notes:
 									return _getPropertyFormatType(propertyName,formatType,this);
 								}
 								
-								
-								
 								this.data = {};
 								this.modifiedData = {};
 								
@@ -668,7 +666,6 @@ Notes:
 							};
 							_jsEntities[ '#local.entity.getClassName()#' ].prototype = {
 								$$isPersisted:function(){
-									console.log(this);
 									if(this['$$get'+this.metaData.className+'ID']() === ''){
 										return false;
 									}else{
@@ -733,8 +730,7 @@ Notes:
 															collectionPromise.then(function(response){
 																for(var i in response.records){
 																	var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
-																	
-																	entityInstance.$$init(response.records[i]['_#lcase(local.entity.getClassName())#_#local.property.name#'][0]);
+																	entityInstance.$$init(response.records[i]);
 																	collection=entityInstance;
 																}
 															});
@@ -751,21 +747,10 @@ Notes:
 												,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
 													if(angular.isDefined(this.$$get#local.entity.getClassName()#ID())){
 														var options = {
-															columnsConfig:angular.toJson([
-																{
-																	"propertyIdentifier":"_#lcase(local.entity.getClassName())#_#local.property.name#"
-																}
-															]),
-															joinsConfig:angular.toJson([
-																{
-																	"associationName":"#local.property.name#",
-																	"alias":"_#lcase(local.entity.getClassName())#_#local.property.name#"
-																}
-															]),
 															filterGroupsConfig:angular.toJson([{
 																"filterGroup":[
 																	{
-																		"propertyIdentifier":"_#lcase(local.entity.getClassName())#.#lcase(local.entity.getClassName())#ID",
+																		"propertyIdentifier":"_#lcase(local.property.cfc)#.#ReReplace(local.entity.getClassName(),"\b(\w)","\l\1","ALL")#.#ReReplace(local.entity.getClassName(),"\b(\w)","\l\1","ALL")#ID",
 																		"comparisonOperator":"=",
 																		"value":this.$$get#local.entity.getClassName()#ID()
 																	}
@@ -776,12 +761,11 @@ Notes:
 														
 														var collection = (function(thisEntityInstance,options){
 															var collection = [];
-															var collectionPromise = slatwallService.getEntity('#local.entity.getClassName()#',options);
+															var collectionPromise = slatwallService.getEntity('#local.property.cfc#',options);
 															collectionPromise.then(function(response){
 																for(var i in response.records){
 																	var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
-																	
-																	entityInstance.$$init(response.records[i]['_#lcase(local.entity.getClassName())#_#local.property.name#'][0]);
+																	entityInstance.$$init(response.records[i]);
 																	collection.push(entityInstance);
 																}
 															});

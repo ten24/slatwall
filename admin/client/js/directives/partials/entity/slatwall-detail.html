@@ -51,7 +51,7 @@
 			</div>
 			<div class="panel-group s-pannel-group" id="accordion">
 				<div class="j-panel panel panel-default" ng-repeat="detailTabs in entity.metaData.$$getDetailTabs()">
-					<a data-toggle="collapse" href="#collapse{{$index}}" ng-init="openTab=false" ng-click="openTab = !openTab">
+					<a data-toggle="collapse" href="#collapse{{$index}}" ng-init="openTab=false" ng-click="openTab = true">
 						<div class="panel-heading">
 							<h4 class="panel-title">
 								<span ng-bind="getRBKey('admin.entity.'+entityName.toLowerCase()+'tabs.'+detailTabs.toLowerCase().replace('.html',''))"></span> <i
@@ -67,7 +67,7 @@
 					</div>
 				</div>
 				<div class="j-panel panel panel-default">
-					<a data-toggle="collapse" href="#collapseSystem" ng-init="openTab=false" ng-click="openTab = !openTab">
+					<a data-toggle="collapse" href="#collapseSystem" ng-init="openTab=false" ng-click="openTab = true">
 						<div class="panel-heading">
 							<h4 class="panel-title">
 								<span >System</span> <i

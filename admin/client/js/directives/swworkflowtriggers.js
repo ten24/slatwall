@@ -4,15 +4,11 @@ angular.module('slatwalladmin')
 '$log',
 '$location',
 '$slatwall',
-'workflowService',
-'workflowTriggerService',
 'workflowPartialsPath',
 function(
 $log,
 $location,
 $slatwall,
-workflowService,
-workflowTriggerService,
 workflowPartialsPath
 ){
 	return {
@@ -28,34 +24,11 @@ workflowPartialsPath
 			scope.$id = 'swWorkflowTriggers';
 				
 			scope.getWorkflowTriggers = function(){
-				
 				scope.workflowTriggers = scope.workflow.$$getWorkflowTriggers();
-				console.log(scope.workflowTriggers);
-				/*var filterGroupsConfig ='['+  
-					'{'+
-                     	'"filterGroup":['+  
-				            '{'+
-				               '"propertyIdentifier":"_workflow.workflowID",'+
-				               '"comparisonOperator":"=",'+
-				               '"value":"'+scope.workflowID+'"'+
-				           '}'+ 
-				         ']'+
-					'}'+
-				']';
-				scope.workflowTriggers = $slatwall.getWorkflowTrigger({filterGroupsConfig:filterGroupsConfig});
-				
-				workflowTriggerPromise.then(function(value){
-					$log.debug('getWorkflowTriggers');
-					//scope.workflowTriggers = workflowTriggerService.formatWorkflowTriggers(value.pageRecords);
-					$log.debug(scope.workflowTriggers);
-					
-				});
-				console.log('workflowTriggers');
-				console.log(scope.workflowTriggers);*/
 			};
 			
 			scope.getWorkflowTriggers();
-			/*
+			
 			scope.showCollections = false;
 			scope.collections = [];
 			
@@ -66,7 +39,7 @@ workflowPartialsPath
 				            '{'+
 				               '"propertyIdentifier":"_collection.collectionObject",'+
 				               '"comparisonOperator":"=",'+
-				               '"value":"Slatwall'+ scope.workflowTriggers.selectedTrigger.workflow.workflowObject +'"'+
+				               '"value":"Slatwall'+ scope.workflowTriggers.selectedTrigger.data.workflow.workflowObject +'"'+
 				           '}'+ 
 				         ']'+
 					'}'+
@@ -87,7 +60,7 @@ workflowPartialsPath
 			scope.eventOptions = [];
 			var unBindSearchEventWatch = scope.$watch('searchEvent.name',function(newValue,oldValue){
 				if(newValue !== oldValue){
-					scope.getEventOptions(scope.workflowTriggers.selectedTrigger.workflow.workflowObject);
+					scope.getEventOptions(scope.workflowTriggers.selectedTrigger.data.workflow.workflowObject);
 					unBindSearchEventWatch();
 				}
 			});
@@ -108,7 +81,7 @@ workflowPartialsPath
 			
 			scope.selectEvent = function(eventOption){
 				$log.debug('selectEvent');
-				scope.workflowTriggers.selectedTrigger.triggerEvent = eventOption.value;
+				scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
 				scope.searchEvent.name = eventOption.name;
 				$log.debug(eventOption);
 				$log.debug(scope.workflowTriggers);
@@ -116,17 +89,8 @@ workflowPartialsPath
 			
 			scope.selectCollection = function(collection){
 				$log.debug('selectCollection');
-				scope.workflowTriggers.selectedTrigger.scheduleCollection = collection;
+				scope.workflowTriggers.selectedTrigger.data.scheduleCollection = collection;
 				scope.showCollections = false;
-			};
-			
-			scope.addWorkflowTrigger = function(){
-				$log.debug('addWorkflowTrigger');
-				var newWorkflowTrigger = workflowTriggerService.newWorkflowTrigger();
-				newWorkflowTrigger.workflow = workflowService.getWorkflow(scope.workflowID);
-				scope.workflowTriggers.selectedTrigger = newWorkflowTrigger;
-				scope.workflowTriggers.push(newWorkflowTrigger);
-				$log.debug(scope.workflowTriggers);
 			};
 			
 			scope.removeWorkflowTrigger = function(workflowTrigger){
@@ -137,11 +101,12 @@ workflowPartialsPath
 			};
 			
 			scope.saveTrigger = function(){
+				/*TODO: evaluate dirty and only grad modifiedData*/
 				var params = {
-					'objectPropertyIdentifier':scope.workflowTriggers.selectedTrigger.objectPropertyIdentifier,
-					'triggerEvent':scope.workflowTriggers.selectedTrigger.triggerEvent,
-					'triggerType':scope.workflowTriggers.selectedTrigger.triggerType,
-					'workflow.workflowID':scope.workflowTriggers.selectedTrigger.workflow.workflowID,
+					'objectPropertyIdentifier':scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier,
+					'triggerEvent':scope.workflowTriggers.selectedTrigger.data.triggerEvent,
+					'triggerType':scope.workflowTriggers.selectedTrigger.data.triggerType,
+					'workflow.workflowID':scope.workflowTriggers.selectedTrigger.data.workflow.workflowID,
 					'workflowTriggerID':'',
 					'propertyIdentifiersList':'workflowTriggerID'
 				};
@@ -149,14 +114,21 @@ workflowPartialsPath
 				
 				saveTriggerPromise.then(function(value){
 					$log.debug('saveTrigger');
-					scope.workflowTriggers.selectedTrigger.workflowTriggerID = value.data.workflowTriggerID;
+					scope.workflowTriggers.selectedTrigger.data.workflowTriggerID = value.data.workflowTriggerID;
 					delete scope.workflowTriggers.selectedTrigger;
 				},function(reason){
 					
 				});
 			};
-			*/
 			
+			scope.addWorkflowTrigger = function(){
+				$log.debug('addWorkflowTrigger');
+				var newWorkflowTrigger = $slatwall.newWorkflowTrigger();
+				newWorkflowTrigger.data.workflow = scope.workflow.data;
+				scope.workflowTriggers.selectedTrigger = newWorkflowTrigger;
+				scope.workflowTriggers.push(newWorkflowTrigger);
+				$log.debug(scope.workflowTriggers);
+			};
 		}
 	};
 }]);

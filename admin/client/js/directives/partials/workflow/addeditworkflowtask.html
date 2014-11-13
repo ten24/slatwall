@@ -27,7 +27,7 @@
 
 								<div class="form-group">
 									<label>Task Name:</label>
-									<input 	ng-model="workflowTasks.selectedTask.taskName" 
+									<input 	ng-model="workflowTasks.selectedTask.data.taskName" 
 											type="text" 
 											class="form-control" 
 											placeholder=""
@@ -38,7 +38,7 @@
 									<label>Active:</label>
 
 									<div class="radio">
-										<input 	ng-model="workflowTasks.selectedTask.activeFlag"
+										<input 	ng-model="workflowTasks.selectedTask.data.activeFlag"
 												type="radio" 
 												name="workflowTrigger.activeFlag" 
 												id="radio5" 
@@ -53,7 +53,7 @@
 												name="workflowTrigger.activeFlag" 
 												id="radio6" 
 												value="No "
-												ng-model="workflowTasks.selectedTask.activeFlag"
+												ng-model="workflowTasks.selectedTask.data.activeFlag"
 										>
 										<label for="radio6">
 												No
@@ -75,9 +75,9 @@
 							<div class="col-xs-12 s-filters-selected">
 								<div class="row">
 									<span 	sw-workflow-condition-groups
-											ng-if="workflowTasks.selectedTask.taskConditionsConfig.workflowConditionGroups[0]"
-											data-workflow-condition-group="workflowTasks.selectedTask.taskConditionsConfig.workflowConditionGroups[0]"
-					                		data-workflow-condition-group-item="workflowTasks.selectedTask.taskConditionsConfig.workflowConditionGroups[0].workflowConditionGroup"
+											ng-if="workflowTasks.selectedTask.data.taskConditionsConfig.workflowConditionGroups[0]"
+											data-workflow-condition-group="workflowTasks.selectedTask.data.taskConditionsConfig.workflowConditionGroups[0]"
+					                		data-workflow-condition-group-item="workflowTasks.selectedTask.data.taskConditionsConfig.workflowConditionGroups[0].workflowConditionGroup"
 									></span>
 								</div>
 							</div>
@@ -87,7 +87,7 @@
 
 				<div class="tab-pane" id="j-actions-2">
 					<div class="s-bundle-add-items s-workflow-objs s-sortable">
-						<ul class="list-unstyled s-order-item-options" ng-repeat="workflowTaskAction in workflowTasks.selectedTask.workflowTaskActions">
+						<ul class="list-unstyled s-order-item-options" ng-repeat="workflowTaskAction in workflowTasks.selectedTask.data.workflowTaskActions">
 								<li class="s-bundle-add-obj">
 									<ul class="list-unstyled list-inline">
 										<li class="s-item-type" ng-bind="$index+1" ng-init="workflowTaskAction.$$index=$index"></li>
@@ -118,7 +118,7 @@
 								data-toggle="collapse" 
 								data-target="#j-add-action-b"
 								ng-click="addWorkflowTaskAction()"
-								ng-show="!workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction || workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction.$$isPersisted()"
+								ng-show="!workflowTasks.selectedTask.data.workflowTaskActions.selectedTaskAction || workflowTasks.selectedTask.data.workflowTaskActions.selectedTaskAction.$$isPersisted()"
 						>
 							<i class="fa fa-plus"></i>
 							 Add Action
@@ -129,14 +129,14 @@
 					<!--- Edit Filter Box --->
 					<div 	class="col-xs-12 collapse s-add-filter" 
 							id="j-add-action-b"
-							ng-if="workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction"
+							ng-if="workflowTasks.selectedTask.data.workflowTaskActions.selectedTaskAction"
 					>
 						<div class="row">
 							<h4> Add Action 
 								<i 	class="fa fa-times" 
 									data-toggle="collapse" 
 									data-target="#j-add-action-b"
-									ng-click="removeWorkflowTaskAction(workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction.$$index)"
+									ng-click="removeWorkflowTaskAction(workflowTasks.selectedTask.data.workflowTaskActions.selectedTaskAction.$$index)"
 								></i>
 							</h4>
 							<div class="col-xs-12">
@@ -146,7 +146,7 @@
 
 										<div class="form-group form-group-sm">
 											<label for="" class="s-width-100">Select Action Type:</label>
-											<select class="form-control input-sm" ng-model="workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction.actionType">
+											<select class="form-control input-sm" ng-model="workflowTasks.selectedTask.data.workflowTaskActions.selectedTaskAction.actionType">
 												<option>Print</option>
 												<option>Email</option>
 												<option>Update</option>
@@ -172,7 +172,7 @@
 
 										<!--- Filter Criteria Start --->
 										<div 	class="s-filter-group-item"
-												ng-if="workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction.actionType === 'Print'"
+												ng-if="workflowTasks.selectedTask.data.workflowTaskActions.selectedTaskAction.actionType === 'Print'"
 										>
 
 											<h4>Print Template</h4>
@@ -250,7 +250,7 @@
 
 										<!--- Filter Criteria Start --->
 										<div 	class="s-filter-group-item" 
-												ng-if="workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction.actionType === 'Update'"
+												ng-if="workflowTasks.selectedTask.data.workflowTaskActions.selectedTaskAction.actionType === 'Update'"
 										>
 
 											<h4>Update Data</h4>
@@ -295,7 +295,7 @@
 
 										<!--- Filter Criteria Start --->
 										<div 	class="s-filter-group-item"
-												ng-if="workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction.actionType === 'Process'"
+												ng-if="workflowTasks.selectedTask.data.workflowTaskActions.selectedTaskAction.actionType === 'Process'"
 										>
 
 											<h4>Dynamic Numeric</h4>
@@ -320,7 +320,7 @@
 
 										<!--- Filter Criteria Start --->
 										<div 	class="s-filter-group-item"
-												ng-if="workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction.actionType === 'Delete'"
+												ng-if="workflowTasks.selectedTask.data.workflowTaskActions.selectedTaskAction.actionType === 'Delete'"
 										>
 											<h4>Delete</h4>
 											<div class="form-group form-group-sm s-checkbox">

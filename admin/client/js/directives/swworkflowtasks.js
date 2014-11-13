@@ -4,7 +4,6 @@ angular.module('slatwalladmin')
 '$log',
 '$location',
 '$slatwall',
-'workflowService',
 'workflowTaskService',
 'metadataService',
 'workflowPartialsPath',
@@ -12,7 +11,6 @@ function(
 $log,
 $location,
 $slatwall,
-workflowService,
 workflowTaskService,
 metadataService,
 workflowPartialsPath
@@ -34,41 +32,7 @@ workflowPartialsPath
 			scope.propertiesList = {};
 				
 			scope.getWorkflowTasks = function(){
-				/*var filterGroupsConfig ='['+  
-					'{'+
-                     	'"filterGroup":['+  
-				            '{'+
-				               '"propertyIdentifier":"_workflow.workflowID",'+
-				               '"comparisonOperator":"=",'+
-				               '"value":"'+scope.workflowID+'"'+
-				           '}'+ 
-				         ']'+
-					'}'+
-				']';
-				var workflowTasksPromise = $slatwall.getEntity('workflowTask',{filterGroupsConfig:filterGroupsConfig});*/
-				//console.log(scope.workflow);
 				scope.workflowTasks = scope.workflow.$$getWorkflowTasks();
-				console.log(scope.workflowTasks);
-				
-				/*workflowTasksPromise.then(function(value){
-					$log.debug('getWorkflowTasks');
-					scope.workflowTasks = workflowTaskService.formatWorkflowTasks(value.pageRecords);
-					$log.debug(scope.workflowTasks);
-					
-					var workflow = workflowService.getWorkflow(scope.workflowID);
-					if(angular.isUndefined(metadataService.getPropertiesListByBaseEntityAlias(workflow.workflowObject))){
-						var propertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(workflow.workflowObject);
-						propertiesPromise.then(function(value){
-							metadataService.setPropertiesList(value,workflow.workflowObject);
-							scope.propertiesList[workflow.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(workflow.workflowObject);
-							metadataService.formatPropertiesList(scope.propertiesList[workflow.workflowObject],workflow.workflowObject);
-							
-						});
-					}else{
-						scope.propertiesList = metadataService.getPropertiesListByBaseEntityAlias(workflow.workflowObject);
-					}
-					
-				});*/
 			};
 			
 			scope.getWorkflowTasks();
@@ -76,7 +40,7 @@ workflowPartialsPath
 			scope.addWorkflowTask = function(){
 				$log.debug('addWorkflowTasks');
 				var newWorkflowTask = $slatwall.newWorkflowTask();
-				newWorkflowTask.workflow = scope.workflow;
+				newWorkflowTask.data.workflow = scope.workflow.data;
 				scope.workflowTasks.selectedTask = newWorkflowTask;
 				scope.workflowTasks.push(newWorkflowTask);
 				$log.debug(scope.workflowTasks);
@@ -84,7 +48,7 @@ workflowPartialsPath
 			
 			scope.addWorkflowTaskAction = function(){
 				var workflowTaskAction = $slatwall.newWorkflowTaskAction();
-				scope.workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction = workflowTaskAction;
+				scope.workflowTasks.selectedTask.data.workflowTaskActions.selectedTaskAction = workflowTaskAction;
 				workflowTaskService.addWorkflowTaskAction(scope.workflowTasks.selectedTask.workflowTaskActions,workflowTaskAction);
 			};
 			
