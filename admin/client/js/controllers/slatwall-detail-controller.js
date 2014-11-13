@@ -31,4 +31,6 @@ function(
 	};
 	$scope.getEntity();
 	
+	$scope.allTabsOpen = false;
+	
 }]);

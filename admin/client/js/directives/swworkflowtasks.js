@@ -4,14 +4,12 @@ angular.module('slatwalladmin')
 '$log',
 '$location',
 '$slatwall',
-'workflowTaskService',
 'metadataService',
 'workflowPartialsPath',
 function(
 $log,
 $location,
 $slatwall,
-workflowTaskService,
 metadataService,
 workflowPartialsPath
 ){
@@ -33,6 +31,7 @@ workflowPartialsPath
 				
 			scope.getWorkflowTasks = function(){
 				scope.workflowTasks = scope.workflow.$$getWorkflowTasks();
+				
 			};
 			
 			scope.getWorkflowTasks();
@@ -49,7 +48,7 @@ workflowPartialsPath
 			scope.addWorkflowTaskAction = function(){
 				var workflowTaskAction = $slatwall.newWorkflowTaskAction();
 				scope.workflowTasks.selectedTask.data.workflowTaskActions.selectedTaskAction = workflowTaskAction;
-				workflowTaskService.addWorkflowTaskAction(scope.workflowTasks.selectedTask.workflowTaskActions,workflowTaskAction);
+				//workflowTaskService.addWorkflowTaskAction(scope.workflowTasks.selectedTask.workflowTaskActions,workflowTaskAction);
 			};
 			
 			scope.removeWorkflowTaskAction = function(index){

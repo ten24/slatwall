@@ -2,11 +2,11 @@ angular.module('slatwalladmin')
 .directive('swWorkflowConditionGroups', 
 [
 '$log',
-'workflowTaskService',
+'workflowConditionService',
 'workflowPartialsPath',
 function(
 $log,
-workflowTaskService,
+workflowConditionService,
 workflowPartialsPath
 ){
 	return {
@@ -17,14 +17,19 @@ workflowPartialsPath
 		},
 		templateUrl:workflowPartialsPath+"workflowconditiongroups.html",
 		link: function(scope, element,attrs){
+			$log.debug('workflowconditiongroups init');
+			console.log(scope.workflowConditionGroup);
+			console.log(scope.workflowConditionGroupItem);
+			
 			scope.addWorkflowCondition = function(){
-				var workflowCondition = workflowTaskService.newWorkflowCondition();
-				workflowTaskService.addWorkflowCondition(scope.workflowConditionGroupItem,workflowCondition);
+				var workflowCondition = workflowConditionService.newWorkflowCondition();
+				console.log(scope.workflowConditionGroupItem);
+				workflowConditionService.addWorkflowCondition(workflowCondition,scope.workflowConditionGroupItem);
 			};
 			
 			scope.addWorkflowGroupItem = function(){
-				var workflowConditionGroupItem = workflowTaskService.newWorkflowConditionGroupItem();
-				workflowTaskService.addWorkflowConditionGroupItem(scope.workflowConditionItem,workflowConditionGroupItem);
+				var workflowConditionGroupItem = workflowConditionService.newWorkflowConditionGroupItem();
+				workflowConditionService.addWorkflowConditionGroupItem(scope.workflowConditionItem,workflowConditionGroupItem);
 			};
 		}
 	};

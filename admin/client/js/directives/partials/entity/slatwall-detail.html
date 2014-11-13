@@ -42,11 +42,15 @@
 			<div class="row s-pannel-control">
 				<div class="col-md-12 s-toggle-panels">
 					<a href="#" class="j-openall j-tool-tip-item" data-toggle="tooltip"
-						data-placement="bottom" title="" data-original-title="Expand All"><i
+						data-placement="bottom" title="" data-original-title="Expand All"
+						ng-click="allTabsOpen = true"
+						><i
 						class="fa fa-expand"></i></a> <a href="#"
 						class="j-closeall j-tool-tip-item" data-toggle="tooltip"
 						data-placement="bottom" title=""
-						data-original-title="Collapse All"><i class="fa fa-compress"></i></a>
+						data-original-title="Collapse All"><i class="fa fa-compress"
+						
+						></i></a>
 				</div>
 			</div>
 			<div class="panel-group s-pannel-group" id="accordion">
@@ -61,7 +65,7 @@
 					</a>
 					<div id="collapse{{$index}}" class="panel-collapse"
 						style="height: 0px;">
-						<content class="s-body-box" ng-if="openTab">
+						<content class="s-body-box" ng-if="openTab || allTabsOpen">
 							<ng-include src="tabPartialPath+entityName+'/'+detailTabs.toLowerCase()"></ng-include>
 						</content>
 					</div>
@@ -77,7 +81,7 @@
 					</a>
 					<div id="collapseSystem" class="panel-collapse"
 						style="height: 0px;">
-						<content class="s-body-box" ng-if="openTab">
+						<content class="s-body-box" ng-if="openTab || allTabsOpen">
 						<div class="tab-pane" id="tabSystem">
 							<div class="col-md-12">
 								<div class="form-horizontal" style="max-width: 650px;">
