@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfparam name="params.edit" type="boolean" default="true" />
 <cfparam name="params.orderPayment" type="any" />
 <cfparam name="params.orderPaymentIndex" type="string" />
@@ -73,26 +75,26 @@ Notes:
 					<dt>Same As Shipping</dt>
 					<dd><input type="hidden" name="orderPayments[#params.orderPaymentIndex#].billingAddress.sameAsShipping" value="" /><input type="checkbox" name="orderPayments[#params.orderPaymentIndex#].billingAddress.sameAsShipping" value="1" checked="checked" /></dd>
 				</dl>
-				<cf_SlatwallAddressDisplay address="#local.address#" fieldNamePrefix="orderPayments[#params.orderPaymentIndex#].billingAddress." edit="#params.edit#">
+				<swa:SlatwallAddressDisplay address="#local.address#" fieldNamePrefix="orderPayments[#params.orderPaymentIndex#].billingAddress." edit="#params.edit#">
 			<cfelse>
-				<cf_SlatwallAddressDisplay address="#local.address#" fieldNamePrefix="orderPayments[#params.orderPaymentIndex#].billingAddress." edit="#params.edit#">
+				<swa:SlatwallAddressDisplay address="#local.address#" fieldNamePrefix="orderPayments[#params.orderPaymentIndex#].billingAddress." edit="#params.edit#">
 			</cfif>
 		</div>
 		<div class="paymentMethod">
 			<h5>Credit Card Details</h5>
 			<input type="hidden" name="orderPayments[#params.orderPaymentIndex#].paymentMethod.paymentMethodID" value="#params.paymentMethod.getPaymentMethodID()#" />
 			<input type="hidden" name="orderPayments[#params.orderPaymentIndex#].orderPaymentID" value="#params.orderPayment.getOrderPaymentID()#" />
-			<cf_SlatwallErrorDisplay object="#params.orderPayment#" errorName="processing" displayType="div" />
+			<swa:SlatwallErrorDisplay object="#params.orderPayment#" errorName="processing" displayType="div" />
 			<dl>
-				<cf_SlatwallPropertyDisplay object="#params.orderPayment#" fieldName="orderPayments[#params.orderPaymentIndex#].nameOnCreditCard" property="nameOnCreditCard" edit="#params.edit#" /> 
-				<cf_SlatwallPropertyDisplay object="#params.orderPayment#" fieldName="orderPayments[#params.orderPaymentIndex#].creditCardNumber" property="creditCardNumber" noValue="true" edit="#params.edit#" />
-				<cf_SlatwallPropertyDisplay object="#params.orderPayment#" fieldName="orderPayments[#params.orderPaymentIndex#].securityCode" property="securityCode" noValue="true" edit="#params.edit#" />
+				<swa:SlatwallPropertyDisplay object="#params.orderPayment#" fieldName="orderPayments[#params.orderPaymentIndex#].nameOnCreditCard" property="nameOnCreditCard" edit="#params.edit#" /> 
+				<swa:SlatwallPropertyDisplay object="#params.orderPayment#" fieldName="orderPayments[#params.orderPaymentIndex#].creditCardNumber" property="creditCardNumber" noValue="true" edit="#params.edit#" />
+				<swa:SlatwallPropertyDisplay object="#params.orderPayment#" fieldName="orderPayments[#params.orderPaymentIndex#].securityCode" property="securityCode" noValue="true" edit="#params.edit#" />
 				<dt class="spdcreditcardexperationdate">
 					<label for="experationMonth">Expires</label>
 				</dt>
 				<dd id="spdcreditcardexpirationdate">
-					<cf_SlatwallPropertyDisplay displaytype="plain" object="#params.orderPayment#" fieldName="orderPayments[#params.orderPaymentIndex#].expirationMonth" property="expirationMonth" noValue="true" edit="#params.edit#" /> /
-					<cf_SlatwallPropertyDisplay displaytype="plain" object="#params.orderPayment#" fieldName="orderPayments[#params.orderPaymentIndex#].expirationYear" property="expirationYear" noValue="true" edit="#params.edit#" />
+					<swa:SlatwallPropertyDisplay displaytype="plain" object="#params.orderPayment#" fieldName="orderPayments[#params.orderPaymentIndex#].expirationMonth" property="expirationMonth" noValue="true" edit="#params.edit#" /> /
+					<swa:SlatwallPropertyDisplay displaytype="plain" object="#params.orderPayment#" fieldName="orderPayments[#params.orderPaymentIndex#].expirationYear" property="expirationYear" noValue="true" edit="#params.edit#" />
 				</dd>
 			</dl>
 		</div>

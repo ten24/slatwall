@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.setting" type="any">
 <cfparam name="rc.settingName" type="string">
 <cfparam name="rc.currentValue" type="string">
@@ -76,24 +78,24 @@ Notes:
 <cfset rc.setting.setSettingName(rc.settingName) />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.setting#" edit="#rc.edit#" fRedirectQS="#local.redirectQS#" sRedirectQS="#local.redirectQS#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.setting#" />
+	<hb:HibachiEntityDetailForm object="#rc.setting#" edit="#rc.edit#" fRedirectQS="#local.redirectQS#" sRedirectQS="#local.redirectQS#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.setting#" />
 		
 		<input type="hidden" name="settingName" value="#rc.settingName#" />
 		#local.hiddenKeyFields#
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 				<cfif not rc.setting.isNew() and structKeyExists(rc.setting.getSettingMetaData(), "encryptValue")>
-					<cf_HibachiPropertyDisplay object="#rc.setting#" property="settingValue" edit="#rc.edit#" fieldAttributes='placeholder="********"' displayType="plain">
+					<hb:HibachiPropertyDisplay object="#rc.setting#" property="settingValue" edit="#rc.edit#" fieldAttributes='placeholder="********"' displayType="plain">
 				<cfelse>
-					<cf_HibachiPropertyDisplay object="#rc.setting#" property="settingValue" value="#rc.currentValue#" edit="#rc.edit#" displayType="plain">
+					<hb:HibachiPropertyDisplay object="#rc.setting#" property="settingValue" value="#rc.currentValue#" edit="#rc.edit#" displayType="plain">
 				</cfif>
-			</cf_HibachiPropertyList>
+			</hb:HibachiPropertyList>
 			<cfif !rc.setting.isNew() and local.hasRelationshipKey>
-				<cf_HibachiActionCaller action="admin:entity.deletesetting" queryString="settingID=#rc.setting.getSettingID()#&#local.redirectQS#&redirectAction=#rc.entityActionDetails.sRedirectAction#" class="btn btn-danger" />
+				<hb:HibachiActionCaller action="admin:entity.deletesetting" queryString="settingID=#rc.setting.getSettingID()#&#local.redirectQS#&redirectAction=#rc.entityActionDetails.sRedirectAction#" class="btn btn-danger" />
 			</cfif>
-		</cf_HibachiPropertyRow>
-	</cf_HibachiEntityDetailForm>
+		</hb:HibachiPropertyRow>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

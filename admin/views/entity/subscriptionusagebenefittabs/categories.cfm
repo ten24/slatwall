@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.subscriptionUsageBenefit" type="any">
 <cfparam name="rc.edit" type="boolean">
 
@@ -65,17 +67,17 @@ Notes:
 <cfoutput>
 	<div class="span6">
 		<h5>#$.slatwall.rbKey('entity.subscriptionBenefit.categories')#</h5>
-		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsageBenefit.getCategoriesOptionsSmartList()#" multiselectFieldName="categories" multiselectValues="#selectedCategoryIDs#" edit="#rc.edit#">
-			<cf_HibachiListingColumn propertyIdentifier="categoryName" tdclass="primary" />
-			<cf_HibachiListingColumn propertyIdentifier="site.siteName" />
-		</cf_HibachiListingDisplay>
+		<hb:HibachiListingDisplay smartList="#rc.subscriptionUsageBenefit.getCategoriesOptionsSmartList()#" multiselectFieldName="categories" multiselectValues="#selectedCategoryIDs#" edit="#rc.edit#">
+			<hb:HibachiListingColumn propertyIdentifier="categoryName" tdclass="primary" />
+			<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
+		</hb:HibachiListingDisplay>
 	</div>
 	
 	<div class="span6">
 		<h5>#$.slatwall.rbKey('entity.subscriptionBenefit.excludedcategories')#</h5>
-		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsageBenefit.getExcludedCategoriesOptionsSmartList()#" multiselectFieldName="excludedCategories" multiselectValues="#selectedExcludedCategoryIDs#" edit="#rc.edit#">
-			<cf_HibachiListingColumn propertyIdentifier="categoryName" tdclass="primary" />
-			<cf_HibachiListingColumn propertyIdentifier="site.siteName" />
-		</cf_HibachiListingDisplay>	
+		<hb:HibachiListingDisplay smartList="#rc.subscriptionUsageBenefit.getExcludedCategoriesOptionsSmartList()#" multiselectFieldName="excludedCategories" multiselectValues="#selectedExcludedCategoryIDs#" edit="#rc.edit#">
+			<hb:HibachiListingColumn propertyIdentifier="categoryName" tdclass="primary" />
+			<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
+		</hb:HibachiListingDisplay>	
 	</div>
 </cfoutput>

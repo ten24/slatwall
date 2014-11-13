@@ -1,3 +1,5 @@
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 <cfparam name="attributes.object" type="any" default="" />
 <cfparam name="attributes.subsystem" type="string" default="#request.context.fw.getSubsystem( request.context[ request.context.fw.getAction() ])#">
@@ -41,7 +43,7 @@
 					<cfset tab.tabcontent = request.context.fw.view(tab.view, {rc=request.context, params=tab.params}) />
 				<cfelseif len(tab.property)>
 					<cfsavecontent variable="tab.tabcontent">
-						<cf_HibachiPropertyDisplay object="#attributes.object#" property="#tab.property#" edit="#request.context.edit#" displaytype="plain" />
+						<hb:HibachiPropertyDisplay object="#attributes.object#" property="#tab.property#" edit="#request.context.edit#" displaytype="plain" />
 					</cfsavecontent>
 				</cfif>
 			</cfif>
@@ -74,28 +76,28 @@
 					<cfif isObject(attributes.object)>
 						<div <cfif arrayLen(thistag.tabs)>class="tab-pane"<cfelse>class="tab-pane active"</cfif> id="tabSystem">
 							<div class="row-fluid">
-								<cf_HibachiPropertyList> 
-									<cf_HibachiPropertyDisplay object="#attributes.object#" property="#attributes.object.getPrimaryIDPropertyName()#" />
+								<hb:HibachiPropertyList> 
+									<hb:HibachiPropertyDisplay object="#attributes.object#" property="#attributes.object.getPrimaryIDPropertyName()#" />
 									<cfif attributes.object.hasProperty('remoteID')>
-										<cf_HibachiPropertyDisplay object="#attributes.object#" property="remoteID" edit="#iif(request.context.edit && attributes.hibachiScope.setting('globalRemoteIDEditFlag'), true, false)#" />
+										<hb:HibachiPropertyDisplay object="#attributes.object#" property="remoteID" edit="#iif(request.context.edit && attributes.hibachiScope.setting('globalRemoteIDEditFlag'), true, false)#" />
 									</cfif>
 									<cfif !attributes.object.getAuditSmartList().getRecordsCount()>
 										<cfif attributes.object.hasProperty('createdDateTime')>
-											<cf_HibachiPropertyDisplay object="#attributes.object#" property="createdDateTime" />
+											<hb:HibachiPropertyDisplay object="#attributes.object#" property="createdDateTime" />
 										</cfif>
 										<cfif attributes.object.hasProperty('createdByAccount')>
-											<cf_HibachiPropertyDisplay object="#attributes.object#" property="createdByAccount" />
+											<hb:HibachiPropertyDisplay object="#attributes.object#" property="createdByAccount" />
 										</cfif>
 										<cfif attributes.object.hasProperty('modifiedDateTime')>
-											<cf_HibachiPropertyDisplay object="#attributes.object#" property="modifiedDateTime" />
+											<hb:HibachiPropertyDisplay object="#attributes.object#" property="modifiedDateTime" />
 										</cfif>
 										<cfif attributes.object.hasProperty('modifiedByAccount')>
-											<cf_HibachiPropertyDisplay object="#attributes.object#" property="modifiedByAccount" />
+											<hb:HibachiPropertyDisplay object="#attributes.object#" property="modifiedByAccount" />
 										</cfif>
 									</cfif>
-								</cf_HibachiPropertyList>
+								</hb:HibachiPropertyList>
 								
-								<cf_HibachiTimeline object="#attributes.object#" />
+								<hb:HibachiTimeline object="#attributes.object#" />
 							</div>
 						</div>
 					</cfif>
