@@ -54,7 +54,7 @@ Notes:
 
 <cfoutput>
 	<div class="s-login">
-		<cf_HibachiMessageDisplay />
+		<hb:HibachiMessageDisplay />
 
 		<div class="well tabable s-login-box">
 
@@ -70,10 +70,10 @@ Notes:
 
 					<cfset processObject = rc.fw.getHibachiScope().getAccount().getProcessObject("resetPassword") />
 
-					<cf_HibachiErrorDisplay object="#processObject#" errorName="swprid" />
+					<hb:HibachiErrorDisplay object="#processObject#" errorName="swprid" />
 
-					<cf_HibachiPropertyDisplay object="#processObject#" property="password" edit="true" />
-					<cf_HibachiPropertyDisplay object="#processObject#" property="passwordConfirm" edit="true" />
+					<hb:HibachiPropertyDisplay object="#processObject#" property="password" edit="true" />
+					<hb:HibachiPropertyDisplay object="#processObject#" property="passwordConfirm" edit="true" />
 
 					<button type="submit" class="btn btn-sm s-btn-ten24 pull-right">Reset & Login</button>
 				</form>
@@ -92,10 +92,10 @@ Notes:
 					<form id="adminLoginForm" action="?s=1" class="form-horizontal" method="post">
 						<input type="hidden" name="slatAction" value="admin:main.updatePassword" />
 
-						<cf_HibachiPropertyDisplay object="#updateProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" />
-						<cf_HibachiPropertyDisplay object="#updateProcessObject#" property="existingPassword" edit="true" />
-						<cf_HibachiPropertyDisplay object="#updateProcessObject#" property="password" edit="true" />
-						<cf_HibachiPropertyDisplay object="#updateProcessObject#" property="passwordConfirm" edit="true" />
+						<hb:HibachiPropertyDisplay object="#updateProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" />
+						<hb:HibachiPropertyDisplay object="#updateProcessObject#" property="existingPassword" edit="true" />
+						<hb:HibachiPropertyDisplay object="#updateProcessObject#" property="password" edit="true" />
+						<hb:HibachiPropertyDisplay object="#updateProcessObject#" property="passwordConfirm" edit="true" />
 
 						<button type="submit" class="btn btn-sm s-btn-ten24 pull-right">#$.slatwall.rbKey('define.login')#</button>
 
@@ -114,8 +114,8 @@ Notes:
 						</cfif>
 
 
-						<cf_HibachiPropertyDisplay object="#authorizeProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" />
-						<cf_HibachiPropertyDisplay object="#authorizeProcessObject#" property="password" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.password')#" />
+						<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" />
+						<hb:HibachiPropertyDisplay object="#authorizeProcessObject#" property="password" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.password')#" />
 
 						<button type="submit" class="btn btn-sm s-btn-ten24 pull-right">#$.slatwall.rbKey('define.login')#</button>
 
@@ -128,7 +128,7 @@ Notes:
 					<form id="adminForgotPasswordForm" action="?s=1" class="form-horizontal" method="post">
 						<input type="hidden" name="slatAction" value="admin:main.forgotpassword" />
 
-						<cf_HibachiPropertyDisplay object="#forgotPasswordProcessObject#" property="emailAddress" edit="true" />
+						<hb:HibachiPropertyDisplay object="#forgotPasswordProcessObject#" property="emailAddress" edit="true" />
 
 						<button type="submit" class="btn btn-sm s-btn-ten24 pull-right">#$.slatwall.rbKey('admin.main.sendPasswordReset')#</button>
 
@@ -152,13 +152,13 @@ Notes:
 
 					<cfset processObject = rc.fw.getHibachiScope().getAccount().getProcessObject("setupInitialAdmin") />
 
-					<cf_HibachiPropertyDisplay object="#processObject#" property="firstName" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.firstName')#" />
-					<cf_HibachiPropertyDisplay object="#processObject#" property="lastName" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.lastName')#" />
-					<cf_HibachiPropertyDisplay object="#processObject#" property="company" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.company')#" />
-					<cf_HibachiPropertyDisplay object="#processObject#" property="emailAddress" edit="true" />
-					<cf_HibachiPropertyDisplay object="#processObject#" property="emailAddressConfirm" edit="true" />
-					<cf_HibachiPropertyDisplay object="#processObject#" property="password" edit="true" />
-					<cf_HibachiPropertyDisplay object="#processObject#" property="passwordConfirm" edit="true" />
+					<hb:HibachiPropertyDisplay object="#processObject#" property="firstName" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.firstName')#" />
+					<hb:HibachiPropertyDisplay object="#processObject#" property="lastName" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.lastName')#" />
+					<hb:HibachiPropertyDisplay object="#processObject#" property="company" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.company')#" />
+					<hb:HibachiPropertyDisplay object="#processObject#" property="emailAddress" edit="true" />
+					<hb:HibachiPropertyDisplay object="#processObject#" property="emailAddressConfirm" edit="true" />
+					<hb:HibachiPropertyDisplay object="#processObject#" property="password" edit="true" />
+					<hb:HibachiPropertyDisplay object="#processObject#" property="passwordConfirm" edit="true" />
 					<button type="submit" class="btn btn-sm s-btn-ten24 pull-right">Create & Login</button>
 
 				</form>
