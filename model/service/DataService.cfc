@@ -161,11 +161,10 @@ component output="false" accessors="true" extends="HibachiService" {
 			}
 			
 			var insertedData = getDataDAO().getInsertedDataFile();
+			var updateOnly = ignorePreviouslyInserted && listFindNoCase(insertedData, idKey);
 			
-			if(!ignorePreviouslyInserted || !listFindNoCase(insertedData, idKey)) {
-				getDataDAO().recordUpdate(xmlData.table.xmlAttributes.tableName, idColumns, updateData, insertData);
-				getDataDAO().updateInsertedDataFile( idKey );
-			}
+			getDataDAO().recordUpdate(xmlData.table.xmlAttributes.tableName, idColumns, updateData, insertData, updateOnly);
+			getDataDAO().updateInsertedDataFile( idKey );
 		}
 		
 		return includesCircular;
