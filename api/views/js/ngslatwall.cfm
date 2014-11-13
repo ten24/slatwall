@@ -668,7 +668,8 @@ Notes:
 							};
 							_jsEntities[ '#local.entity.getClassName()#' ].prototype = {
 								$$isPersisted:function(){
-									if(this['$$get'+this.metaData.className.toLowerCase()+'ID']() === ''){
+									console.log(this);
+									if(this['$$get'+this.metaData.className+'ID']() === ''){
 										return false;
 									}else{
 										return true;
@@ -700,8 +701,8 @@ Notes:
 													return collectionOptionsPromise;
 												}--->
 												<!---get many-to-one  via REST--->
-												,$$get#local.property.name#:function() {
-													if(angular.isDefined(this.$$get#LCase(local.entity.getClassName())#ID())){
+												,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
+													if(angular.isDefined(this.$$get#local.entity.getClassName()#ID())){
 														var options = {
 															columnsConfig:angular.toJson([
 																{
@@ -719,7 +720,7 @@ Notes:
 																	{
 																		"propertyIdentifier":"_#lcase(local.entity.getClassName())#.#lcase(local.entity.getClassName())#ID",
 																		"comparisonOperator":"=",
-																		"value":this.$$get#LCase(local.entity.getClassName())#ID()
+																		"value":this.$$get#local.entity.getClassName()#ID()
 																	}
 																]
 															}]),
@@ -747,8 +748,8 @@ Notes:
 												}
 											<cfelseif listFindNoCase('one-to-many,many-to-many', local.property.fieldtype)>
 												<!--- get one-to-many, many-to-many via REST --->
-												,$$get#local.property.name#:function() {
-													if(angular.isDefined(this.$$get#LCase(local.entity.getClassName())#ID())){
+												,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
+													if(angular.isDefined(this.$$get#local.entity.getClassName()#ID())){
 														var options = {
 															columnsConfig:angular.toJson([
 																{
@@ -766,7 +767,7 @@ Notes:
 																	{
 																		"propertyIdentifier":"_#lcase(local.entity.getClassName())#.#lcase(local.entity.getClassName())#ID",
 																		"comparisonOperator":"=",
-																		"value":this.$$get#LCase(local.entity.getClassName())#ID()
+																		"value":this.$$get#local.entity.getClassName()#ID()
 																	}
 																]
 															}]),
@@ -791,7 +792,7 @@ Notes:
 													}
 												}
 											<cfelse>
-												,$$get#local.property.name#:function() {
+												,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
 													return this.data.#local.property.name#;
 												}
 											</cfif>

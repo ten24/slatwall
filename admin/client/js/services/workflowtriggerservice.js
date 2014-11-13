@@ -10,27 +10,10 @@ function(
 	$slatwall,
 	alertService
 ){
-	function _workflowTrigger(){
-		this.workflowTriggerID = "";
-		this.triggerType = 'Event';
-		this.objectPropertyIdentifier = '';
-		this.triggerEvent = '';
-	}
-		
-	_workflowTrigger.prototype = {
-		isPersisted:function(){
-			if(this.workflowTriggerID === ''){
-				return false;
-			}else{
-				return true;
-			}
-		}
-	};
+	
 	
 	var workflowTriggerService = {
-		newWorkflowTrigger:function(){
-			return new _workflowTrigger;
-		},
+		
 		formatWorkflowTrigger:function(workflowTriggerObject){
 			var workflowTrigger = this.newWorkflowTrigger();
 			for(var key in workflowTriggerObject){

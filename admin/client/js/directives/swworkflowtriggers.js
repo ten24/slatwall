@@ -25,26 +25,12 @@ workflowPartialsPath
 		link: function(scope, element,attrs,formController){
 			$log.debug('workflow triggers init');	
 			
-			scope.workflowID = $location.search().workflowID;
 			scope.$id = 'swWorkflowTriggers';
-				
-			/*scope.getPropertyDisplayData = function(){
-				var propertyDisplayDataPromise = $slatwall.getPropertyDisplayData('workflowTrigger',{propertyIdentifiersList:'triggerType'});
-				propertyDisplayDataPromise.then(function(value){
-					scope.propertyDisplayData = value.data;
-					$log.debug('getting property Display meta data');
-					$log.debug(scope.propertyDisplayData);
-				},function(reason){
-					var messages = reason.MESSAGES;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlers(alerts);
-				});
-			};
-			scope.getPropertyDisplayData();*/
 				
 			scope.getWorkflowTriggers = function(){
 				
 				scope.workflowTriggers = scope.workflow.$$getWorkflowTriggers();
+				console.log(scope.workflowTriggers);
 				/*var filterGroupsConfig ='['+  
 					'{'+
                      	'"filterGroup":['+  
@@ -69,7 +55,7 @@ workflowPartialsPath
 			};
 			
 			scope.getWorkflowTriggers();
-			
+			/*
 			scope.showCollections = false;
 			scope.collections = [];
 			
@@ -169,7 +155,7 @@ workflowPartialsPath
 					
 				});
 			};
-			
+			*/
 			
 		}
 	};

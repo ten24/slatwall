@@ -47,7 +47,8 @@ workflowPartialsPath
 				']';
 				var workflowTasksPromise = $slatwall.getEntity('workflowTask',{filterGroupsConfig:filterGroupsConfig});*/
 				//console.log(scope.workflow);
-				scope.workflowTasks = scope.workflow.$$getworkflowTasks();
+				scope.workflowTasks = scope.workflow.$$getWorkflowTasks();
+				console.log(scope.workflowTasks);
 				
 				/*workflowTasksPromise.then(function(value){
 					$log.debug('getWorkflowTasks');
