@@ -532,23 +532,100 @@ Notes:
 			    		return 'none';
 			    	}
 			    	
-			    	var _getPropertyFormattedValue = function(propertyName,formatType,entityInstance){
+			    	var _isSimpleValue = function(value){
+			    		<!---string, number, Boolean, or date/time value; False --->
+			    		if(	
+			    			angular.isString(value) || angular.isNumber(value) 
+			    			|| angular.isDate(value) || value === false || value === true
+			    		){
+			    			return true;
+			    		}else{
+			    			return false;
+			    		}
+			    	}
+			    	
+			    	var utilityService = {
+			    		formatValue = function(value,formatType,formatDetails){
+			    			if(angular.isUndefined(formatDetails)){
+			    				formatDetails = {};
+			    			}
+							var typeList = ["currency","date","datetime","pixels","percentage","second","time","truefalse","url","weight","yesno","json"];
+							
+							if(typeList.indexOf(formatType)){
+								utilityService['format'+formatType](value,formatDetails);
+							}
+							return value;
+			    		},
+			    		format_currency = function(){
+			    			if(angular.isUndefined){
+			    				formatDetails = {};
+			    			}
+			    		},
+			    		format_date = function(){
+			    			if(angular.isUndefined){
+			    				formatDetails = {};
+			    			}
+			    		},
+			    		format_datetime = function(){
+			    			if(angular.isUndefined){
+			    				formatDetails = {};
+			    			}
+			    		},
+			    		format_pixels = function(){
+			    			if(angular.isUndefined){
+			    				formatDetails = {};
+			    			}
+			    		},
+			    		format_yesno = function(value,formatDetails){
+			    			if(angular.isUndefined){
+			    				formatDetails = {};
+			    			}
+							if(value === true){
+								return entityInstance.$$getRBKey("define.yes");
+							}else if(value === false){
+								return entityInstance.$$getRBKey("define.no");
+							}
+			    		},
+			    		format_json = function(value,formatDetails){
+			    			if(angular.isUndefined){
+			    				formatDetails = {};
+			    			}
+			    			return angular.fromJson(value);
+			    		}
+			    	}
+			    	
+			    	var _getFormattedValue = function(propertyName,formatType,entityInstance){
 			    		var value = entityInstance['$$get'+propertyName]();
+			    		
 			    		if(angular.isUndefined(formatType)){
-			    			formatType = entityInstance.metaData.$$getPropertyFormatType(propertyName);
+			    			formatType = entityInstance.getPropertyFormatType(propertyName);
 			    		}
 			    		
-			    		<!---add custom format here --->
-			    		<!---if(formatType === 'custom'){
-			    			
-			    		}else if (formatType === 'rbkey'){
-			    			if(angular.isDefined(value) && value.length){
-			    				return entityInstance.metaData.$$getRBKey('entity');
+			    		if(formatType === "custom"){
+			    			return entityInstance['$$get'+propertyName+Formatted]();
+			    		}else if(formatType === "rbkey"){
+			    			if(angular.isDefined(value)){
+			    				return entityInstance.$$getRBKey('entity.'+entityInstance.metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+'.'+value);
+			    			}else{
+			    				return '';
 			    			}
-			    		}--->
+			    		}
 			    		
-			    		
-			    		
+			    		if(angular.isUndefined(value)){
+			    			var propertyMeta = entityInstance.metaData[propertyName];
+			    			if(angular.isDefined(propertyMeta['hb_nullRBKey'])){
+			    				return entityInstance.$$getRbKey(propertyMeta['hb_nullRBKey']);
+			    			}
+			    			
+			    			return "";
+			    		}else if (_isSimpleValue(value)){
+			    			var formatDetails = {};
+			    			if(angular.isDefined(entityInstance.data['currencyCode'])){
+			    				formatDetails.currencyCode = entityInstance.$$getCurrencyCode();
+			    			}
+			    			<!---return getService("hibachiUtilityService").formatValue(value=arguments.value, formatType=arguments.formatType, formatDetails=formatDetails); --->
+			    			return '';
+			    		}
 			    	}
 			
 					<cfloop array="#rc.entities#" index="local.entity">
