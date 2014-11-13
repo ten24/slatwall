@@ -68,7 +68,7 @@ Notes:
 		<hb:HibachiEntityDetailGroup object="#rc.option#">
 			<hb:HibachiEntityDetailItem view="admin:entity/optiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<!--- Images --->
-			<cf_SlatwallAdminTabImages object="#rc.option#" />
+			<swa:SlatwallAdminTabImages object="#rc.option#" />
 		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>

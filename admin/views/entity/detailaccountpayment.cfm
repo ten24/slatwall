@@ -67,7 +67,7 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/accountpaymenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.accountPayment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.accountPayment#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.accountPayment#" attributeSet="#attributeSet#" />
 			</cfloop>
 		</hb:HibachiEntityDetailGroup>
 		

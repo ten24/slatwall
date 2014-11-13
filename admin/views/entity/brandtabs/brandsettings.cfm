@@ -56,13 +56,13 @@ Notes:
 <cfset sites.addFilter('activeFlag', 1) /> 
 <cfset rc.sitesArray = sites.getRecords() />
 
-<cf_SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#">
-	<cf_SlatwallSetting settingName="brandHTMLTitleString" settingObject="#rc.brand#" />
-	<cf_SlatwallSetting settingName="brandMetaDescriptionString" settingObject="#rc.brand#" />
-	<cf_SlatwallSetting settingName="brandMetaKeywordsString" settingObject="#rc.brand#" />
+<swa:SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#">
+	<swa:SlatwallSetting settingName="brandHTMLTitleString" settingObject="#rc.brand#" />
+	<swa:SlatwallSetting settingName="brandMetaDescriptionString" settingObject="#rc.brand#" />
+	<swa:SlatwallSetting settingName="brandMetaKeywordsString" settingObject="#rc.brand#" />
 	
 	<!--- Site Specific Settings --->
 	<cfloop array="#rc.sitesArray#" index="site">
-		<cf_SlatwallSetting settingName="brandDisplayTemplate" settingObject="#rc.brand#" settingFilterEntities="#[site]#" />
+		<swa:SlatwallSetting settingName="brandDisplayTemplate" settingObject="#rc.brand#" settingFilterEntities="#[site]#" />
 	</cfloop>
-</cf_SlatwallSettingTable>
+</swa:SlatwallSettingTable>

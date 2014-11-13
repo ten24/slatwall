@@ -72,7 +72,7 @@ Notes:
 			<div class="col-md-6">
 				<h5>#$.slatwall.rbKey('admin.entity.sku.subscriptionBenefits')#</h5>
 				<br />
-				<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionBenefits" />
+				<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionBenefits" />
 				<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" edit="true">
 					<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
 				</hb:HibachiListingDisplay>
@@ -80,7 +80,7 @@ Notes:
 			<div class="col-md-6">
 				<h5>#$.slatwall.rbKey('admin.entity.sku.renewalSubscriptionBenefits')#</h5>
 				<br />
-				<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalsubscriptionBenefits" />
+				<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalsubscriptionBenefits" />
 				<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" edit="true">
 					<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
 				</hb:HibachiListingDisplay>

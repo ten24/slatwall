@@ -132,7 +132,7 @@ Notes:
 				<!--- SUBSCRIPTION --->
 				<cfelseif rc.processObject.getBaseProductType() eq "subscription">
 
-					<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionTerms" />
+					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionTerms" />
 					<hb:HibachiListingDisplay smartList="SubscriptionTerm" multiselectFieldName="subscriptionTerms" edit="true">
 						<hb:HibachiListingColumn propertyIdentifier="subscriptionTermName" />
 					</hb:HibachiListingDisplay>
@@ -154,7 +154,7 @@ Notes:
 					<cfset contentSmartList = $.slatwall.getSmartList("Content") />
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="bundleContentAccessFlag" />
 
-					<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="contents" />
+					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="contents" />
 					<hb:HibachiListingDisplay smartList="#contentSmartList#" multiselectFieldName="contents" edit="true">
 						<hb:HibachiListingColumn propertyIdentifier="title" />
 					</hb:HibachiListingDisplay>
@@ -171,7 +171,7 @@ Notes:
 					<!---
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="bundleLocationConfigurationFlag" edit="true" />
 					<br />
-					<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="locationConfigurations" />
+					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="locationConfigurations" />
 					<hb:HibachiListingDisplay smartList="#$.slatwall.getSmartList("LocationConfiguration")#" multiselectFieldName="locationConfigurations" multiselectValues="#rc.processObject.getLocationConfigurations()#" edit="true">
 						<hb:HibachiListingColumn propertyIdentifier="locationConfigurationName" />
 						<hb:HibachiListingColumn propertyIdentifier="locationConfigurationCapacity" />
@@ -214,7 +214,7 @@ Notes:
 
 					<h5>#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#</h5>
 					<br />
-					<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionBenefits" />
+					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionBenefits" />
 					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" edit="true">
 						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
 					</hb:HibachiListingDisplay>
@@ -226,7 +226,7 @@ Notes:
 
 					<h5>#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits')#</h5>
 					<br />
-					<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalsubscriptionBenefits" />
+					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalsubscriptionBenefits" />
 					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" edit="true">
 						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
 					</hb:HibachiListingDisplay>

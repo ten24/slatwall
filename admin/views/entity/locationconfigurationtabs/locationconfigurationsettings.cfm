@@ -52,10 +52,10 @@ Notes:
 <cfparam name="rc.locationConfiguration" type="any" />
 
 <cfoutput>
-	<cf_SlatwallSettingTable>
-		<!---<cf_SlatwallSetting settingName="locationConfigurationCapacity" settingObject="#rc.locationConfiguration#" />--->
-		<cf_SlatwallSetting settingName="locationConfigurationAdditionalPreReservationTime" settingObject="#rc.locationConfiguration#" />
-		<cf_SlatwallSetting settingName="locationConfigurationAdditionalPostReservationTime" settingObject="#rc.locationConfiguration#" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable>
+		<!---<swa:SlatwallSetting settingName="locationConfigurationCapacity" settingObject="#rc.locationConfiguration#" />--->
+		<swa:SlatwallSetting settingName="locationConfigurationAdditionalPreReservationTime" settingObject="#rc.locationConfiguration#" />
+		<swa:SlatwallSetting settingName="locationConfigurationAdditionalPostReservationTime" settingObject="#rc.locationConfiguration#" />
+	</swa:SlatwallSettingTable>
 </cfoutput>
 

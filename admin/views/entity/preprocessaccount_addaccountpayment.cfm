@@ -139,7 +139,7 @@ Notes:
 						<h5>#$.slatwall.rbKey('entity.accountPayment.billingAddress')#</h5>
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountAddressID" edit="#rc.edit#">
 						<hb:HibachiDisplayToggle selector="select[name='accountAddressID']" showValues="" loadVisable="#!len(rc.processObject.getAccountAddressID())#">
-							<cf_SlatwallAdminAddressDisplay address="#rc.processObject.getNewAccountPayment().getBillingAddress()#" fieldNamePrefix="newAccountPayment.billingAddress." edit="#rc.edit#" />
+							<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getNewAccountPayment().getBillingAddress()#" fieldNamePrefix="newAccountPayment.billingAddress." edit="#rc.edit#" />
 						</hb:HibachiDisplayToggle>	
 					</hb:HibachiDisplayToggle>
 				</hb:HibachiDisplayToggle>

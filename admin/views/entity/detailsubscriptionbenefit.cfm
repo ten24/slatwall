@@ -65,7 +65,7 @@ Notes:
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.subscriptionBenefit.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.subscriptionBenefit#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.subscriptionBenefit#" attributeSet="#attributeSet#" />
 			</cfloop>
 		</hb:HibachiEntityDetailGroup>
 

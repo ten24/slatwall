@@ -92,11 +92,11 @@ Notes:
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.account.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.account#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.account#" attributeSet="#attributeSet#" />
 			</cfloop>
 			
 			<!--- Comments --->
-			<cf_SlatwallAdminTabComments object="#rc.account#" />
+			<swa:SlatwallAdminTabComments object="#rc.account#" />
 		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>

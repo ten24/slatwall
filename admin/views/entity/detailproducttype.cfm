@@ -71,7 +71,7 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/producttypetabs/skusettings" />
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.productType.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.productType#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.productType#" attributeSet="#attributeSet#" />
 			</cfloop>
 		</hb:HibachiEntityDetailGroup>
 		

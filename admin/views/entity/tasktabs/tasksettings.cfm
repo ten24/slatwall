@@ -52,8 +52,8 @@ Notes:
 <cfparam name="rc.task" type="any" />
 
 <cfoutput>
-	<cf_SlatwallSettingTable>
-		<cf_SlatwallSetting settingName="taskFailureEmailTemplate" settingObject="#rc.task#" />
-		<cf_SlatwallSetting settingName="taskSuccessEmailTemplate" settingObject="#rc.task#" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable>
+		<swa:SlatwallSetting settingName="taskFailureEmailTemplate" settingObject="#rc.task#" />
+		<swa:SlatwallSetting settingName="taskSuccessEmailTemplate" settingObject="#rc.task#" />
+	</swa:SlatwallSettingTable>
 </cfoutput>

@@ -50,9 +50,9 @@ Notes:
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="imageAltString" />
-		<cf_SlatwallSetting settingName="imageMissingImagePath" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="imageAltString" />
+		<swa:SlatwallSetting settingName="imageMissingImagePath" />
+	</swa:SlatwallSettingTable>
 </cfoutput>
 

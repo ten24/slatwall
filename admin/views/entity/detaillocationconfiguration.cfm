@@ -77,7 +77,7 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/locationconfigurationtabs/locationconfigurationsettings" />
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.locationConfiguration.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.locationConfiguration#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.locationConfiguration#" attributeSet="#attributeSet#" />
 			</cfloop>
 		</hb:HibachiEntityDetailGroup>
 		

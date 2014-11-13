@@ -90,7 +90,7 @@ Notes:
 			</cfif>
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.image.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.image#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.image#" attributeSet="#attributeSet#" />
 			</cfloop>
 		</hb:HibachiTabGroup>
 	</hb:HibachiEntityDetailForm>

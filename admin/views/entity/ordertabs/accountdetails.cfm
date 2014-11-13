@@ -130,7 +130,7 @@ Notes:
 			
 			<!--- Comments --->
 			<h5>#$.slatwall.rbKey('entity.comment_plural')#</h5>
-			<cf_SlatwallAdminCommentsDisplay object="#rc.account#" adminComments="false" />
+			<swa:SlatwallAdminCommentsDisplay object="#rc.account#" adminComments="false" />
 			
 		</hb:HibachiPropertyList>
 		

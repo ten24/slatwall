@@ -116,7 +116,7 @@ Notes:
 						<cfloop array="#rc.processObject.getAssignedOrderItemAttributeSets()#" index="attributeSet">
 							<hr />
 							<h5>#attributeSet.getAttributeSetName()#</h5>
-							<cf_SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
+							<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
 						</cfloop>
 						
 						<!--- Order Fulfillment --->
@@ -170,7 +170,7 @@ Notes:
 									<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
 										
 										<!--- Address Display --->
-										<cf_SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
+										<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
 										
 										<!--- Save New Address --->
 										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressFlag" edit="#rc.edit#" />

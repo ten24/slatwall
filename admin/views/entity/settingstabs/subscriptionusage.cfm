@@ -50,10 +50,10 @@ Notes:
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="subscriptionUsageAutoRetryPaymentDays" />
-		<cf_SlatwallSetting settingName="subscriptionUsageRenewalReminderDays" />
-		<cf_SlatwallSetting settingName="subscriptionUsageRenewalReminderEmailTemplate" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="subscriptionUsageAutoRetryPaymentDays" />
+		<swa:SlatwallSetting settingName="subscriptionUsageRenewalReminderDays" />
+		<swa:SlatwallSetting settingName="subscriptionUsageRenewalReminderEmailTemplate" />
+	</swa:SlatwallSettingTable>
 </cfoutput>
 

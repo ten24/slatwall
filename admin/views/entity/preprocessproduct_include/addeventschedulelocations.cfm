@@ -53,7 +53,7 @@ Notes:
 
 <hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="bundleLocationConfigurationFlag" edit="true" />
 <br />
-<cf_SlatwallErrorDisplay object="#rc.addEventScheduleProcessObject#" errorName="locationConfigurations" />
+<swa:SlatwallErrorDisplay object="#rc.addEventScheduleProcessObject#" errorName="locationConfigurations" />
 <hb:HibachiListingDisplay smartList="#$.slatwall.getSmartList("LocationConfiguration")#" multiselectFieldName="locationConfigurations" multiselectValues="#rc.addEventScheduleProcessObject.getLocationConfigurations()#" edit="true">
 	<hb:HibachiListingColumn propertyIdentifier="location.locationName" />
 	<hb:HibachiListingColumn propertyIdentifier="locationConfigurationName" />

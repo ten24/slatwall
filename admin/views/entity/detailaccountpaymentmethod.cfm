@@ -110,7 +110,7 @@ Notes:
 				<!--- Billing Address Details --->
 				<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,termPayment" loadVisable="#listFindNoCase('creditCard,termPayment', loadPaymentMethodType)#">
 					<h5>#$.slatwall.rbKey('entity.accountpaymentmethod.billingaddress')#</h5>
-					<cf_SlatwallAdminAddressDisplay address="#rc.accountPaymentMethod.getBillingAddress()#" fieldNamePrefix="billingaddress." edit="#rc.edit#">
+					<swa:SlatwallAdminAddressDisplay address="#rc.accountPaymentMethod.getBillingAddress()#" fieldNamePrefix="billingaddress." edit="#rc.edit#">
 				</hb:HibachiDisplayToggle>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>

@@ -101,7 +101,7 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/images" />
 
 			<!--- Files --->
-			<cf_SlatwallAdminTabFiles object="#rc.product#" />
+			<swa:SlatwallAdminTabFiles object="#rc.product#" />
 
 			<!--- Description --->
 			<hb:HibachiEntityDetailItem property="productDescription" />
@@ -125,7 +125,7 @@ Notes:
 			</cfloop>
 
 			<!--- Comments --->
-			<cf_SlatwallAdminTabComments object="#rc.product#" />
+			<swa:SlatwallAdminTabComments object="#rc.product#" />
 		</hb:HibachiEntityDetailGroup>
 
 	</hb:HibachiEntityDetailForm>

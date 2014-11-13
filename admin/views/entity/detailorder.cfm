@@ -145,11 +145,11 @@ Notes:
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.order.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.order#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.order#" attributeSet="#attributeSet#" />
 			</cfloop>
 			
 			<!--- Comments --->
-			<cf_SlatwallAdminTabComments object="#rc.order#" />
+			<swa:SlatwallAdminTabComments object="#rc.order#" />
 			
 		</hb:HibachiEntityDetailGroup>
 

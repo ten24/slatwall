@@ -81,7 +81,7 @@ Notes:
 				<cfloop array="#rc.account.getAttributeSets()#" index="attributeSet">
 					<hr />
 					<h5>#attributeSet.getAttributeSetName()#</h5>
-					<cf_SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
+					<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
 				</cfloop>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>

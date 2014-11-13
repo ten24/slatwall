@@ -65,7 +65,7 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/orderfulfillmenttabs/orderfulfillmentitems">
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.orderFulfillment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.orderFulfillment#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.orderFulfillment#" attributeSet="#attributeSet#" />
 			</cfloop>
 		</hb:HibachiEntityDetailGroup>
 		
