@@ -133,7 +133,10 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
     
 	public string function getFormFieldType() {
 		if(!structKeyExists(variables, "formFieldType")) {
-			variables.formFieldType = getAttributeInputType();
+			variables.formFieldType = "text";
+			if(!isNull(getAttributeInputType())) {
+				variables.formFieldType = getAttributeInputType();	
+			}
 			if(variables.formFieldType eq 'relatedObjectSelect') {
 				variables.formFieldType = 'select';
 			} else if (variables.formFieldType eq 'relatedObjectMultiselect') {

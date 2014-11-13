@@ -50,7 +50,6 @@ Notes:
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.order" type="any" />
-<cfparam name="rc.account" type="any" default="#rc.order.getAccount()#"/>
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
@@ -61,7 +60,7 @@ Notes:
 			
 			<!--- Email Addresses --->
 			<h5>#$.slatwall.rbKey('entity.accountEmailAddress_plural')#</h5>
-			<hb:HibachiListingDisplay smartList="#rc.account.getAccountEmailAddressesSmartList()#">
+			<hb:HibachiListingDisplay smartList="#rc.order.getAccount().getAccountEmailAddressesSmartList()#">
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="emailAddress" />
 				<hb:HibachiListingColumn propertyIdentifier="accountEmailType.type" />
 				<hb:HibachiListingColumn propertyIdentifier="verifiedFlag" />
@@ -72,7 +71,7 @@ Notes:
 			
 			<!--- Phone Numbers --->
 			<h5>#$.slatwall.rbKey('entity.accountPhoneNumber_plural')#</h5>
-			<hb:HibachiListingDisplay smartList="#rc.account.getAccountPhoneNumbersSmartList()#">
+			<hb:HibachiListingDisplay smartList="#rc.order.getAccount().getAccountPhoneNumbersSmartList()#">
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="phoneNumber" />
 				<hb:HibachiListingColumn propertyIdentifier="accountPhoneType.type" />
 			</hb:HibachiListingDisplay>
@@ -82,7 +81,7 @@ Notes:
 			
 			<!--- Price Gruops --->
 			<h5>#$.slatwall.rbKey('entity.priceGroup_plural')#</h5>
-			<hb:HibachiListingDisplay smartList="#rc.account.getPriceGroupsSmartList()#">
+			<hb:HibachiListingDisplay smartList="#rc.order.getAccount().getPriceGroupsSmartList()#">
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="priceGroupName" />
 			</hb:HibachiListingDisplay>
 			
@@ -91,8 +90,8 @@ Notes:
 			
 			<!--- Term Account Info --->
 			<h5>#$.slatwall.rbKey('admin.order.accountDetails.termAccountCreditDetails.info')#</h5>	
-			<hb:HibachiPropertyDisplay object="#rc.account#" property="termAccountAvailableCredit" edit="false">
-			<hb:HibachiPropertyDisplay object="#rc.account#" property="termAccountBalance" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="termAccountAvailableCredit" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="termAccountBalance" edit="false">
 			
 		</hb:HibachiPropertyList>
 		
@@ -101,9 +100,9 @@ Notes:
 			
 			<!--- Payment Methods --->
 			<h5>#$.slatwall.rbKey('entity.accountPaymentMethod_plural')#</h5>
-			<hb:HibachiListingDisplay smartList="#rc.account.getAccountPaymentMethodsSmartList()#"
+			<hb:HibachiListingDisplay smartList="#rc.order.getAccount().getAccountPaymentMethodsSmartList()#"
 								  recordDetailAction="admin:entity.detailaccountpaymentmethod"
-								  recordDetailQueryString="accountID=#rc.account.getAccountID()#"
+								  recordDetailQueryString="accountID=#rc.order.getAccount().getAccountID()#"
 								  recordDetailModal=true>
 								    
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="accountPaymentMethodName" />
@@ -115,7 +114,7 @@ Notes:
 			
 			<!--- Addresses --->
 			<h5>#$.slatwall.rbKey('entity.accountAddress_plural')#</h5>
-			<hb:HibachiListingDisplay smartList="#rc.account.getAccountAddressesSmartList()#">
+			<hb:HibachiListingDisplay smartList="#rc.order.getAccount().getAccountAddressesSmartList()#">
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="accountAddressName" />
 				<hb:HibachiListingColumn propertyIdentifier="address.name" />
 				<hb:HibachiListingColumn propertyIdentifier="address.streetAddress" />
@@ -130,7 +129,7 @@ Notes:
 			
 			<!--- Comments --->
 			<h5>#$.slatwall.rbKey('entity.comment_plural')#</h5>
-			<swa:SlatwallAdminCommentsDisplay object="#rc.account#" adminComments="false" />
+			<swa:SlatwallAdminCommentsDisplay object="#rc.order.getAccount()#" adminComments="false" />
 			
 		</hb:HibachiPropertyList>
 		

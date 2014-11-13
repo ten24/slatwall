@@ -44,6 +44,7 @@
 					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantityReceived" edit="false" displayType="table" />
 					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantityUnreceived" edit="false" displayType="table" />
 				</cfif>
+				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="estimatedFulfillmentDateTime" edit="false" displayType="table" />
 				<hb:HibachiPropertyTableBreak header="Price Totals" />
 				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPrice" edit="false" displayType="table" />
 				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="discountAmount" edit="false" displayType="table" />

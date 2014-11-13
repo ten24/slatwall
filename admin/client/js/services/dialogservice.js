@@ -1,28 +1,29 @@
 'use strict';
 angular.module('slatwalladmin').factory('dialogService', [
-'partialsPath',
-function(
-partialsPath
-){
-	var _pageDialogs = [];
-	
-	var dialogService = {
+	'partialsPath',
+	function(
+		partialsPath
+	){
+		var _pageDialogs = [];
 		
-		addPageDialog: function( name ){
-			var newDialog = {
-				'path' : partialsPath + name + '.html'
-			};
-			_pageDialogs.push( newDialog );
-		},
+		var dialogService = {
+			
+			addPageDialog: function( name ){
+				var newDialog = {
+					'path' : partialsPath + name + '.html'
+				};
+				_pageDialogs.push( newDialog );
+			},
+			
+			removePageDialog: function( index ){
+				_pageDialogs.splice(index, 1);
+			},
+			
+			getPageDialogs: function(){
+				return _pageDialogs;
+			}
+		};
 		
-		removePageDialog: function( index ){
-			_pageDialogs.splice(index, 1);
-		},
-		
-		getPageDialogs: function(){
-			return _pageDialogs;
-		}
-	};
-	
-	return dialogService;
-}]);
+		return dialogService;
+	}
+]);
