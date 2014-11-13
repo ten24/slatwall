@@ -71,7 +71,7 @@ function(
 		formatProductBundleGroup:function(productBundleGroup){
 			var formattedProductBundleGroup = this.newProductBundle();
 			
-			for(key in productBundleGroup){
+			for(var key in productBundleGroup){
 				formattedProductBundleGroup[key] = productBundleGroup[key];
 			}
 			
@@ -88,7 +88,7 @@ function(
 		formatProductBundleGroupFilters:function(productBundelGroupFilters,filterTerm){
 			$log.debug('formatProductBundleGroupFilters');
 			$log.debug(filterTerm);
-			for(i in productBundelGroupFilters){
+			for(var i in productBundelGroupFilters){
 				productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value+'Name'];
 				productBundelGroupFilters[i].type = filterTerm.name;
 			}

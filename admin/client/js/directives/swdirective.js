@@ -3,7 +3,6 @@ angular.module('slatwalladmin')
 .directive('swDirective',
 [
 '$compile',
-
 function(
 $compile){
 	return {

@@ -43,7 +43,7 @@ function($log){
 			return _form;
 		},
 		resetForm:function(form){
-			for(key in form){
+			for(var key in form){
 				if(key.charAt(0) !== '$'){
 					if(angular.isDefined(this.getPristinePropertyValue(key))){
 						form[key].$setViewValue(this.getPristinePropertyValue(key));

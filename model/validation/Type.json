@@ -5,7 +5,8 @@
 	        "parentType":{"null":true}
 	    },
 	    "requiresSystemCode":{
-	        "parentType.childRequiresSystemCodeFlag":{"required":"true","eq":true}
+	    	"parentType":{"required":"true"},
+	        "parentType.childRequiresSystemCodeFlag":{"eq":"true"}
 	    }
 	},
 	"properties":{
