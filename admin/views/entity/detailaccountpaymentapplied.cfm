@@ -46,22 +46,26 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.accountPaymentApplied" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.accountPaymentApplied#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.accountPaymentApplied#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.accountPaymentApplied#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.accountPaymentApplied#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.accountPaymentApplied.getAccountPayment()#" property="accountPaymentID">
-				<cf_HibachiPropertyDisplay object="#rc.accountPaymentApplied#" property="accountPayment">
-				<cf_HibachiPropertyDisplay object="#rc.accountPaymentApplied.getOrderPayment()#" property="orderPaymentID">
-				<cf_HibachiPropertyDisplay object="#rc.accountPaymentApplied#" property="orderPayment">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.accountPaymentApplied.getAccountPayment()#" property="accountPaymentID">
+				<hb:HibachiPropertyDisplay object="#rc.accountPaymentApplied#" property="accountPayment">
+				<hb:HibachiPropertyDisplay object="#rc.accountPaymentApplied.getOrderPayment()#" property="orderPaymentID">
+				<hb:HibachiPropertyDisplay object="#rc.accountPaymentApplied#" property="orderPayment">
 				
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

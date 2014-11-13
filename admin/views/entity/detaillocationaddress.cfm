@@ -46,25 +46,29 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.locationAddress" type="any">
 <cfparam name="rc.location" type="any" default="#rc.locationAddress.getLocation()#">
 <cfparam name="rc.edit" type="boolean">
 	
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.locationAddress#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.locationAddress#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.locationAddress#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.locationAddress#" edit="#rc.edit#" 
 								   backAction="admin:entity.detailLocation" 
 								   backQueryString="locationID=#rc.location.getLocationID()#"
 								   cancelAction="admin:entity.detailLocation"
 								   cancelQueryString="locationID=#rc.location.getLocationID()#">
 								   	   
-		</cf_HibachiEntityActionBar>
+		</hb:HibachiEntityActionBar>
 			
 		<input type="hidden" name="location.locationID" value="#rc.location.getLocationID()#" />
 		<input type="hidden" name="locationID" value="#rc.location.getLocationID()#" />
 		
-		<cf_SlatwallAdminAddressDisplay address="#rc.locationAddress.getAddress()#" fieldNamePrefix="address." showCompany="false" edit="#rc.edit#">
-	</cf_HibachiEntityDetailForm>
+		<swa:SlatwallAdminAddressDisplay address="#rc.locationAddress.getAddress()#" fieldNamePrefix="address." showCompany="false" edit="#rc.edit#">
+	</hb:HibachiEntityDetailForm>
 	
 </cfoutput>
 

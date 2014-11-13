@@ -46,33 +46,37 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfset sites = $.slatwall.getService('siteService').getSiteSmartList() />
 <cfset sites.addFilter('activeFlag', 1) />
 
 <cfset rc.sitesArray = sites.getRecords() />
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="static"></cf_HibachiEntityActionBar>
+	<hb:HibachiEntityActionBar type="static"></hb:HibachiEntityActionBar>
 	
-	<cf_HibachiEntityDetailGroup>
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/global" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/globaladvanced" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/account" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/brand" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/content" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/email" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/fulfillmentmethod" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/image" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/locationConfiguration" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/paymentmethod" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/producttype" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/product" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/site" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/shippingmethod" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/shippingmethodrate" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/sku" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/subscriptionusage" />
-		<cf_HibachiEntityDetailItem view="admin:entity/settingstabs/task" />
-	</cf_HibachiEntityDetailGroup>
+	<hb:HibachiEntityDetailGroup>
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/global" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/globaladvanced" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/account" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/brand" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/content" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/email" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/fulfillmentmethod" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/image" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/locationConfiguration" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/paymentmethod" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/producttype" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/product" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/site" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/shippingmethod" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/shippingmethodrate" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/sku" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/subscriptionusage" />
+		<hb:HibachiEntityDetailItem view="admin:entity/settingstabs/task" />
+	</hb:HibachiEntityDetailGroup>
 </cfoutput>
 

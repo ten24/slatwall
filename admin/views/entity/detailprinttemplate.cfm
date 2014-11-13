@@ -46,17 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.printTemplate" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.printTemplate#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.printTemplate#" />
+	<hb:HibachiEntityDetailForm object="#rc.printTemplate#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.printTemplate#" />
 
-		<cf_HibachiEntityDetailGroup object="#rc.printTemplate#">
-			<cf_HibachiEntityDetailItem view="admin:entity/printtemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cf_HibachiEntityDetailItem property="printContent" />
-		</cf_HibachiEntityDetailGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.printTemplate#">
+			<hb:HibachiEntityDetailItem view="admin:entity/printtemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem property="printContent" />
+		</hb:HibachiEntityDetailGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

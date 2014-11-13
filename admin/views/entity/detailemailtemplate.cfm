@@ -46,20 +46,24 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.emailTemplate" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.emailTemplate#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.emailTemplate#" />
+	<hb:HibachiEntityDetailForm object="#rc.emailTemplate#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.emailTemplate#" />
 
-		<cf_HibachiEntityDetailGroup object="#rc.emailTemplate#">
-			<cf_HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cf_HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/htmlbody">
-			<cf_HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/textbody">
-			<cf_HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/emailsettings">
-		</cf_HibachiEntityDetailGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.emailTemplate#">
+			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/htmlbody">
+			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/textbody">
+			<hb:HibachiEntityDetailItem view="admin:entity/emailtemplatetabs/emailsettings">
+		</hb:HibachiEntityDetailGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

@@ -46,23 +46,27 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderFulfillment" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.orderFulfillment#" edit="#rc.edit#" sRedirectAction="admin:entity.detailorderfulfillment">
+	<hb:HibachiEntityProcessForm entity="#rc.orderFulfillment#" edit="#rc.edit#" sRedirectAction="admin:entity.detailorderfulfillment">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.orderFulfillment#">
-		</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderFulfillment#">
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 				
-				<cf_HibachiPropertyDisplay object="#rc.orderFulfillment#" property="fulfillmentCharge" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="fulfillmentCharge" edit="#rc.edit#">
 				
-			</cf_HibachiPropertyList>
+			</hb:HibachiPropertyList>
 			
-		</cf_HibachiPropertyRow>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

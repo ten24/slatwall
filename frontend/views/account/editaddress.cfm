@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.accountAddress" type="any" />
 <cfoutput>
@@ -53,8 +55,8 @@ Notes:
 	<form name="accountAddress" method="post">
 		<h5>Address Details</h5>
 
-		<cf_SlatwallPropertyDisplay object="#rc.accountAddress#" fieldname="accountAddressName" property="accountAddressName" edit="true">
-		<cf_SlatwallAddressDisplay address="#rc.accountAddress.getAddress()#" fieldNamePrefix="address." edit="true">
+		<swa:SlatwallPropertyDisplay object="#rc.accountAddress#" fieldname="accountAddressName" property="accountAddressName" edit="true">
+		<swa:SlatwallAddressDisplay address="#rc.accountAddress.getAddress()#" fieldNamePrefix="address." edit="true">
 		
 		<input type="hidden" name="slatAction" value="frontend:account.saveAddress" />
 		<button type="submit">Save</button>

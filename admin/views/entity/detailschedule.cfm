@@ -46,17 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.schedule" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.schedule#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.schedule#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.schedule#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.schedule#" edit="#rc.edit#" />
 	
-		<cf_HibachiEntityDetailGroup object="#rc.schedule#">
-			<cf_HibachiEntityDetailItem view="admin:entity/scheduletabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-		</cf_HibachiEntityDetailGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.schedule#">
+			<hb:HibachiEntityDetailItem view="admin:entity/scheduletabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

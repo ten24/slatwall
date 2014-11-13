@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.audit" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.disableProcess" default="#!rc.audit.getAuditRollbackValidFlag()#" />
@@ -91,14 +95,14 @@ Notes:
 								<cfif isSimpleValue(changeDetail.old)>
 									<td>#changeDetail.old#</td>
 								<cfelseif isObject(changeDetail.old)>
-									<td><cf_HibachiActionCaller action="admin:entity.detail#changeDetail.old.getClassName()#" queryString="#changeDetail.old.getPrimaryIDPropertyName()#=#changeDetail.old.getPrimaryIDValue()#" text="#changeDetail.old.getSimpleRepresentation()#" /></td>
+									<td><hb:HibachiActionCaller action="admin:entity.detail#changeDetail.old.getClassName()#" queryString="#changeDetail.old.getPrimaryIDPropertyName()#=#changeDetail.old.getPrimaryIDValue()#" text="#changeDetail.old.getSimpleRepresentation()#" /></td>
 								</cfif>
 							</cfif>
 							
 							<cfif isSimpleValue(changeDetail.new)>
 								<td>#changeDetail.new#</td>
 							<cfelseif isObject(changeDetail.new)>
-								<td><cf_HibachiActionCaller action="admin:entity.detail#changeDetail.new.getClassName()#" queryString="#changeDetail.new.getPrimaryIDPropertyName()#=#changeDetail.new.getPrimaryIDValue()#" text="#changeDetail.new.getSimpleRepresentation()#" /></td>
+								<td><hb:HibachiActionCaller action="admin:entity.detail#changeDetail.new.getClassName()#" queryString="#changeDetail.new.getPrimaryIDPropertyName()#=#changeDetail.new.getPrimaryIDValue()#" text="#changeDetail.new.getSimpleRepresentation()#" /></td>
 							</cfif>
 						</tr>
 					</cfloop>
@@ -107,30 +111,30 @@ Notes:
 		</cfsavecontent>
 	</cfif>
 	
-	<cf_HibachiEntityProcessForm entity="#rc.audit#" edit="#rc.edit#" processActionQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" disableProcess="#rc.disableProcess#" disableProcessText="#rc.disableProcessText#">		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divclass="col-md-12">
-				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditID">
-				<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditType">
-				<cf_HibachiPropertyDisplay object="#rc.audit#" property="sessionAccountFullName">
+	<hb:HibachiEntityProcessForm entity="#rc.audit#" edit="#rc.edit#" processActionQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" disableProcess="#rc.disableProcess#" disableProcessText="#rc.disableProcessText#">		
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList divclass="col-md-12">
+				<hb:HibachiPropertyDisplay object="#rc.audit#" property="auditID">
+				<hb:HibachiPropertyDisplay object="#rc.audit#" property="auditType">
+				<hb:HibachiPropertyDisplay object="#rc.audit#" property="sessionAccountFullName">
 				<cfif not listFindNoCase("login,loginInvalid,logout", rc.audit.getAuditType())>
-					<cf_HibachiPropertyDisplay object="#rc.audit#" property="baseObject" valueLink="?slatAction=admin:entity.detail#rc.audit.getBaseObject()#&#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#">
+					<hb:HibachiPropertyDisplay object="#rc.audit#" property="baseObject" valueLink="?slatAction=admin:entity.detail#rc.audit.getBaseObject()#&#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#">
 					
 					<cfif rc.audit.getAuditType() eq "archive">
-						<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditArchiveStartDateTime">
-						<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditArchiveEndDateTime">
-						<cf_HibachiPropertyDisplay object="#rc.audit#" property="auditArchiveCreatedDateTime">
+						<hb:HibachiPropertyDisplay object="#rc.audit#" property="auditArchiveStartDateTime">
+						<hb:HibachiPropertyDisplay object="#rc.audit#" property="auditArchiveEndDateTime">
+						<hb:HibachiPropertyDisplay object="#rc.audit#" property="auditArchiveCreatedDateTime">
 					</cfif>
 					
 					<cfif !isNull(rc.audit.getChangeDetails())>
-						<cf_HibachiPropertyDisplay object="#rc.audit#" property="changeDetails" value="#changeDetailsHTML#">
+						<hb:HibachiPropertyDisplay object="#rc.audit#" property="changeDetails" value="#changeDetailsHTML#">
 					</cfif>
 				<cfelse>
-					<cf_HibachiPropertyDisplay object="#rc.audit#" property="sessionAccountEmailAddress">
-					<cf_HibachiPropertyDisplay object="#rc.audit#" property="sessionIPAddress">
+					<hb:HibachiPropertyDisplay object="#rc.audit#" property="sessionAccountEmailAddress">
+					<hb:HibachiPropertyDisplay object="#rc.audit#" property="sessionIPAddress">
 				</cfif>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

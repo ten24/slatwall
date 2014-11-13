@@ -46,24 +46,28 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.subscriptionTermSmartList" type="any" />
 
 <cfoutput>
 	
-	<cf_HibachiEntityActionBar type="listing" object="#rc.subscriptionTermSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionTermSmartList#" showCreate="false">
 			
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createsubscriptionterm" entity="subscriptionterm" class="btn s-btn-blue" icon="plus icon-white" />
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createsubscriptionterm" entity="subscriptionterm" class="btn s-btn-blue" icon="plus icon-white" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiListingDisplay smartList="#rc.subscriptionTermSmartList#"
+	<hb:HibachiListingDisplay smartList="#rc.subscriptionTermSmartList#"
 							recordDetailAction="admin:entity.detailsubscriptionterm"
 							recordEditAction="admin:entity.editsubscriptionterm">
 
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionTermName" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionTermName" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

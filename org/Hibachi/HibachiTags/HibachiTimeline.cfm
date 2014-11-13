@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.auditTypeList" type="string" default="create,update,rollback,delete,archive" />
@@ -163,7 +165,7 @@ Notes:
 									<cfif not listFindNoCase("login,loginInvalid,logout", currentAudit.getAuditType())>
 										#currentAudit.getFormattedValue('auditType')#<cfif thisTag.mode neq 'object'> #currentAudit.getBaseObject()# - </cfif>
 										<cfif listFindNoCase("create,update,rollback,archive", currentAudit.getAuditType())>
-											<cf_HibachiActionCaller action="admin:entity.detail#currentAudit.getBaseObject()#" queryString="#currentAudit.getBaseObject()#ID=#currentAudit.getBaseID()#" text="#currentAudit.getTitle()#" />
+											<hb:HibachiActionCaller action="admin:entity.detail#currentAudit.getBaseObject()#" queryString="#currentAudit.getBaseObject()#ID=#currentAudit.getBaseID()#" text="#currentAudit.getTitle()#" />
 										<cfelse>
 											#currentAudit.getTitle()#
 										</cfif>
@@ -195,7 +197,7 @@ Notes:
 									</cfif>
 								</td>
 								<td class="admin admin1">
-									<cf_HibachiActionCaller action="admin:entity.preprocessaudit" queryString="processContext=rollback&#currentAudit.getPrimaryIDPropertyName()#=#currentAudit.getPrimaryIDValue()#&redirectAction=admin:entity.detail#currentAudit.getBaseObject()#" class="btn btn-xs" modal="true" icon="eye-open" iconOnly="true" />
+									<hb:HibachiActionCaller action="admin:entity.preprocessaudit" queryString="processContext=rollback&#currentAudit.getPrimaryIDPropertyName()#=#currentAudit.getPrimaryIDValue()#&redirectAction=admin:entity.detail#currentAudit.getBaseObject()#" class="btn btn-xs" modal="true" icon="eye-open" iconOnly="true" />
 								</td>
 							</tr>
 						</cfloop>

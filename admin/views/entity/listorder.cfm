@@ -46,36 +46,40 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 
 <cfparam name="rc.orderSmartList" type="any" />
 
 <cfoutput>
 	
-	<cf_HibachiEntityActionBar type="listing" object="#rc.orderSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.orderSmartList#" showCreate="false">
 			
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiListingDisplay type="listing" smartList="#rc.orderSmartList#"
+	<hb:HibachiListingDisplay type="listing" smartList="#rc.orderSmartList#"
 			recordDetailAction="admin:entity.detailorder"
 			recordEditAction="admin:entity.editorder"
 			showCreate="true">
 			
 		<cfif rc.slatAction eq "admin:entity.listorder">
-			<cf_HibachiListingColumn propertyIdentifier="orderNumber" />
-			<cf_HibachiListingColumn propertyIdentifier="orderOpenDateTime" />
+			<hb:HibachiListingColumn propertyIdentifier="orderNumber" />
+			<hb:HibachiListingColumn propertyIdentifier="orderOpenDateTime" />
 		</cfif>
-		<cf_HibachiListingColumn propertyIdentifier="account.firstName" />
-		<cf_HibachiListingColumn propertyIdentifier="account.lastName" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="account.company" />
-		<cf_HibachiListingColumn propertyIdentifier="orderType.type" sort=true />
-		<cf_HibachiListingColumn propertyIdentifier="orderStatusType.type" title="#$.slatwall.rbKey('define.status')#" sort=true/>
-		<cf_HibachiListingColumn propertyIdentifier="orderOrigin.orderOriginName" />
-		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="calculatedTotal" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="account.firstName" />
+		<hb:HibachiListingColumn propertyIdentifier="account.lastName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.company" />
+		<hb:HibachiListingColumn propertyIdentifier="orderType.type" sort=true />
+		<hb:HibachiListingColumn propertyIdentifier="orderStatusType.type" title="#$.slatwall.rbKey('define.status')#" sort=true/>
+		<hb:HibachiListingColumn propertyIdentifier="orderOrigin.orderOriginName" />
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

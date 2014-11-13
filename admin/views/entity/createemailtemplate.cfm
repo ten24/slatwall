@@ -46,20 +46,24 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.emailTemplate" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.emailTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.editemailtemplate">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.emailTemplate#" />
+	<hb:HibachiEntityDetailForm object="#rc.emailTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.editemailtemplate">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.emailTemplate#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateObject" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateObject" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

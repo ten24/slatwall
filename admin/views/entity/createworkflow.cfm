@@ -46,23 +46,27 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.workflow" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
 	
-	<cf_HibachiEntityDetailForm object="#rc.workflow#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.workflow#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.workflow#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.workflow#" edit="#rc.edit#" />
 		<div class="s-top-spacer">
-			<cf_HibachiPropertyRow>
-				<cf_HibachiPropertyList>
-					<cf_HibachiPropertyDisplay object="#rc.workflow#" property="workflowName" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.workflow#" property="workflowObject" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.workflow#" property="activeFlag" edit="#rc.edit#">
+			<hb:HibachiPropertyRow>
+				<hb:HibachiPropertyList>
+					<hb:HibachiPropertyDisplay object="#rc.workflow#" property="workflowName" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.workflow#" property="workflowObject" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.workflow#" property="activeFlag" edit="#rc.edit#">
 					
-				</cf_HibachiPropertyList>
-			</cf_HibachiPropertyRow>
+				</hb:HibachiPropertyList>
+			</hb:HibachiPropertyRow>
 		</div>
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

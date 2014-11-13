@@ -46,21 +46,25 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.roundingRule" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.roundingRule#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.roundingRule#" />
+	<hb:HibachiEntityDetailForm object="#rc.roundingRule#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.roundingRule#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.roundingRule#" property="roundingRuleName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.roundingRule#" property="roundingRuleExpression" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.roundingRule#" property="roundingRuleDirection" edit="#rc.edit#" fieldType="select">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.roundingRule#" property="roundingRuleName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.roundingRule#" property="roundingRuleExpression" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.roundingRule#" property="roundingRuleDirection" edit="#rc.edit#" fieldType="select">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

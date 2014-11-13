@@ -46,26 +46,30 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.taskhistory" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.taskhistory#" edit="#rc.edit#">
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.taskhistory#" property="task" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.taskhistory#" property="successFlag" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.taskhistory#" property="message" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.taskhistory#" property="startTime" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.taskhistory#" property="endTime" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.taskhistory.getTask().getSchedule()#" property="scheduleName" edit="false">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+	<hb:HibachiEntityDetailForm object="#rc.taskhistory#" edit="#rc.edit#">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.taskhistory#" property="task" edit="false">
+				<hb:HibachiPropertyDisplay object="#rc.taskhistory#" property="successFlag" edit="false">
+				<hb:HibachiPropertyDisplay object="#rc.taskhistory#" property="message" edit="false">
+				<hb:HibachiPropertyDisplay object="#rc.taskhistory#" property="startTime" edit="false">
+				<hb:HibachiPropertyDisplay object="#rc.taskhistory#" property="endTime" edit="false">
+				<hb:HibachiPropertyDisplay object="#rc.taskhistory.getTask().getSchedule()#" property="scheduleName" edit="false">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.taskhistory#">
+		<hb:HibachiTabGroup object="#rc.taskhistory#">
 			
-		</cf_HibachiTabGroup>
+		</hb:HibachiTabGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

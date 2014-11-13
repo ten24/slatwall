@@ -46,27 +46,31 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.term" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.Term#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.Term#" />
+	<hb:HibachiEntityDetailForm object="#rc.Term#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.Term#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.Term#" property="termName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.Term#" property="termHours" edit="#rc.edit && rc.term.isNew()#">
-				<cf_HibachiPropertyDisplay object="#rc.Term#" property="termDays" edit="#rc.edit && rc.term.isNew()#">
-				<cf_HibachiPropertyDisplay object="#rc.Term#" property="termMonths" edit="#rc.edit && rc.term.isNew()#">
-				<cf_HibachiPropertyDisplay object="#rc.Term#" property="termYears" edit="#rc.edit && rc.term.isNew()#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.Term#" property="termName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.Term#" property="termHours" edit="#rc.edit && rc.term.isNew()#">
+				<hb:HibachiPropertyDisplay object="#rc.Term#" property="termDays" edit="#rc.edit && rc.term.isNew()#">
+				<hb:HibachiPropertyDisplay object="#rc.Term#" property="termMonths" edit="#rc.edit && rc.term.isNew()#">
+				<hb:HibachiPropertyDisplay object="#rc.Term#" property="termYears" edit="#rc.edit && rc.term.isNew()#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.term#">
+		<hb:HibachiTabGroup object="#rc.term#">
 			
-		</cf_HibachiTabGroup>
+		</hb:HibachiTabGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

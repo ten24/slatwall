@@ -46,31 +46,35 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderPayment" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.orderPayment#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.orderPayment#" edit="#rc.edit#"
+	<hb:HibachiEntityDetailForm object="#rc.orderPayment#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.orderPayment#" edit="#rc.edit#"
 								   backaction="admin:entity.detailorder"
 								   backquerystring="orderID=#rc.orderPayment.getOrder().getOrderID()#"
 								   deleteQueryString="redirectAction=admin:entity.detailOrder&orderID=#rc.orderPayment.getOrder().getOrderID()#">
-			<cf_HibachiProcessCaller entity="#rc.orderPayment#" action="admin:entity.preprocessorderpayment" processContext="createTransaction" type="list" modal="true">
-		</cf_HibachiEntityActionBar>
+			<hb:HibachiProcessCaller entity="#rc.orderPayment#" action="admin:entity.preprocessorderpayment" processContext="createTransaction" type="list" modal="true">
+		</hb:HibachiEntityActionBar>
 
-		<cf_HibachiEntityDetailGroup object="#rc.orderPayment#">
-			<cf_HibachiEntityDetailItem view="admin:entity/orderpaymenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		<hb:HibachiEntityDetailGroup object="#rc.orderPayment#">
+			<hb:HibachiEntityDetailItem view="admin:entity/orderpaymenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<cfif rc.orderPayment.getPaymentMethodType() eq "termPayment">
-				<cf_HibachiEntityDetailItem view="admin:entity/orderpaymenttabs/appliedaccountpayments" />
+				<hb:HibachiEntityDetailItem view="admin:entity/orderpaymenttabs/appliedaccountpayments" />
 			</cfif>
 
-			<cf_HibachiEntityDetailItem view="admin:entity/orderpaymenttabs/paymenttransactions" />
+			<hb:HibachiEntityDetailItem view="admin:entity/orderpaymenttabs/paymenttransactions" />
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.orderPayment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.orderPayment#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.orderPayment#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiEntityDetailGroup>
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

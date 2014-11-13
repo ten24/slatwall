@@ -46,13 +46,17 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.accountEmailAddress" type="any">
 <cfparam name="rc.account" type="any" default="#rc.accountEmailAddress.getAccount()#">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.accountEmailAddress#" edit="#rc.edit#" saveActionQueryString="accountID=#rc.account.getAccountID()#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.accountEmailAddress#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.accountEmailAddress#" edit="#rc.edit#" saveActionQueryString="accountID=#rc.account.getAccountID()#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.accountEmailAddress#" edit="#rc.edit#" 
 								   backAction="admin:entity.detailaccount"
 								   backQueryString="accountID=#rc.account.getAccountID()#"
 								   cancelAction="admin:entity.detailaccount"
@@ -61,13 +65,13 @@ Notes:
 		<!--- Hidden field to attach this to the account --->
 		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.accountEmailAddress#" property="emailAddress" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.accountEmailAddress#" property="accountEmailType" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>	
-	</cf_HibachiEntityDetailForm>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.accountEmailAddress#" property="emailAddress" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.accountEmailAddress#" property="accountEmailType" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>	
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 
 

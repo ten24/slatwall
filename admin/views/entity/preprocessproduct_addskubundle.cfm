@@ -46,33 +46,37 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.product" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
+	<hb:HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.product#">
-		</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.product#">
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuCode" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="skuCode" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
 		<!--- Skus --->
-		<cf_HibachiListingDisplay smartList="#rc.processObject.getSkusSmartList()#"
+		<hb:HibachiListingDisplay smartList="#rc.processObject.getSkusSmartList()#"
 								  multiselectFieldName="skus"
 								  edit="#rc.edit#">
-			<cf_HibachiListingColumn propertyIdentifier="skuCode" />
-			<cf_HibachiListingColumn propertyIdentifier="skuDefinition" />    
-			<cf_HibachiListingColumn propertyIdentifier="product.productName" />
-			<cf_HibachiListingColumn propertyIdentifier="product.productCode" />
-			<cf_HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
-		</cf_HibachiListingDisplay>
+			<hb:HibachiListingColumn propertyIdentifier="skuCode" />
+			<hb:HibachiListingColumn propertyIdentifier="skuDefinition" />    
+			<hb:HibachiListingColumn propertyIdentifier="product.productName" />
+			<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
+			<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
+		</hb:HibachiListingDisplay>
 		
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

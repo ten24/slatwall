@@ -46,21 +46,25 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.eventRegistration" type="any" />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.eventRegistration#" edit="#rc.edit#" sRedirectAction="admin:entity.editeventRegistration">
+	<hb:HibachiEntityProcessForm entity="#rc.eventRegistration#" edit="#rc.edit#" sRedirectAction="admin:entity.editeventRegistration">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.eventRegistration#">
-		</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.eventRegistration#">
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 				
 				<cfinclude template="preprocesseventRegistration_include/changestatuscomment.cfm" />
 				
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>
