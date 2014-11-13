@@ -52,22 +52,22 @@ Notes:
 
 <cfparam name="rc.attributeSetSmartList" type="any" />
 
-<cf_HibachiEntityActionBar type="listing" object="#rc.attributeSetSmartList#" showCreate="false">
+<hb:HibachiEntityActionBar type="listing" object="#rc.attributeSetSmartList#" showCreate="false">
 	
 	<!--- Create ---> 
-	<cf_HibachiEntityActionBarButtonGroup>
-		<cf_HibachiActionCaller action="admin:entity.createattributeset" entity="attributeset" class="btn s-btn-blue" icon="plus icon-white"  modal="true" />
-	</cf_HibachiEntityActionBarButtonGroup>
-</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityActionBarButtonGroup>
+		<hb:HibachiActionCaller action="admin:entity.createattributeset" entity="attributeset" class="btn s-btn-blue" icon="plus icon-white"  modal="true" />
+	</hb:HibachiEntityActionBarButtonGroup>
+</hb:HibachiEntityActionBar>
 
-<cf_HibachiListingDisplay smartList="#rc.attributeSetSmartList#"
+<hb:HibachiListingDisplay smartList="#rc.attributeSetSmartList#"
 						   recordDetailAction="admin:entity.detailattributeset"
 						   recordEditAction="admin:entity.editattributeset"
 						   sortProperty="sortOrder">
 						      
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="attributeSetName" />
-	<cf_HibachiListingColumn propertyIdentifier="attributeSetObject" />
-	<cf_HibachiListingColumn propertyIdentifier="globalFlag" />
-	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="attributeSetName" />
+	<hb:HibachiListingColumn propertyIdentifier="attributeSetObject" />
+	<hb:HibachiListingColumn propertyIdentifier="globalFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+</hb:HibachiListingDisplay>
 

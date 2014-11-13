@@ -54,19 +54,19 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiEntityActionBar type="listing" object="#rc.scheduleSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.scheduleSmartList#" showCreate="false">
 			
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createschedule" entity="schedule" class="btn s-btn-blue" icon="plus icon-white" />
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createschedule" entity="schedule" class="btn s-btn-blue" icon="plus icon-white" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 
-	<cf_HibachiListingDisplay smartlist="#rc.scheduleSmartList#"
+	<hb:HibachiListingDisplay smartlist="#rc.scheduleSmartList#"
 							  recorddetailaction="admin:entity.detailschedule" 
 	                          recordeditaction="admin:entity.editschedule">
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="scheduleName" search="true" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="scheduleName" search="true" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

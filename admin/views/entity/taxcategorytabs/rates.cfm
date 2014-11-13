@@ -51,7 +51,7 @@ Notes:
 
 <cfparam name="rc.taxCategory" type="any" />
 
-<cf_HibachiListingDisplay smartList="#rc.taxCategory.getTaxCategoryRatesSmartList()#"
+<hb:HibachiListingDisplay smartList="#rc.taxCategory.getTaxCategoryRatesSmartList()#"
 						   recordEditAction="admin:entity.edittaxcategoryrate"
 						   recordEditQueryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#"
 						   recordEditModal=true
@@ -62,16 +62,16 @@ Notes:
 						   recordDeleteQueryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#&redirectAction=admin:entity.detailtaxcategory">
 		
 	
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="taxIntegration.integrationName" />
-	<cf_HibachiListingColumn propertyIdentifier="taxRate" />
-	<cf_HibachiListingColumn propertyIdentifier="addressZone.addressZoneName" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="taxIntegration.integrationName" />
+	<hb:HibachiListingColumn propertyIdentifier="taxRate" />
+	<hb:HibachiListingColumn propertyIdentifier="addressZone.addressZoneName" />
+</hb:HibachiListingDisplay>
 
 
-<cf_HibachiActionCallerDropdown title="#request.slatwallScope.rbKey('define.add')# #request.slatwallScope.rbKey('entity.taxCategory.taxCategoryRate')#" icon="plus" buttonClass="btn-inverse">
+<hb:HibachiActionCallerDropdown title="#request.slatwallScope.rbKey('define.add')# #request.slatwallScope.rbKey('entity.taxCategory.taxCategoryRate')#" icon="plus" buttonClass="btn-inverse">
 	<cfset local.integrationOptions = rc.taxCategory.getTaxCategoryRateIntegrationOptions()>
 	<cfloop array="#local.integrationOptions#" index="local.integration">
-		<cf_HibachiActionCaller text="#local.integration['name']# #request.slatwallScope.rbKey('define.rate')#" action="admin:entity.createtaxcategoryrate" type="list" queryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#&integrationID=#local.integration['value']#" modal="true" />
+		<hb:HibachiActionCaller text="#local.integration['name']# #request.slatwallScope.rbKey('define.rate')#" action="admin:entity.createtaxcategoryrate" type="list" queryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#&integrationID=#local.integration['value']#" modal="true" />
 	</cfloop>
-	<cf_HibachiActionCaller action="admin:entity.createtaxcategoryrate" type="list" queryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#" modal="true" />
-</cf_HibachiActionCallerDropdown>
+	<hb:HibachiActionCaller action="admin:entity.createtaxcategoryrate" type="list" queryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#" modal="true" />
+</hb:HibachiActionCallerDropdown>

@@ -54,21 +54,21 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiEntityActionBar type="listing" object="#rc.taxCategorySmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.taxCategorySmartList#" showCreate="false">
 			
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createtaxcategory" entity="taxcategory" class="btn s-btn-blue" icon="plus icon-white" />
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createtaxcategory" entity="taxcategory" class="btn s-btn-blue" icon="plus icon-white" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiListingDisplay smartList="#rc.taxCategorySmartList#" rc="#rc#"
+	<hb:HibachiListingDisplay smartList="#rc.taxCategorySmartList#" rc="#rc#"
 							   recordEditAction="admin:entity.editTaxCategory"
 							   recordDetailAction="admin:entity.detailTaxCategory">
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="taxCategoryName" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="taxCategoryName" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

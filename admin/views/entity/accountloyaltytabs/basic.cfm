@@ -5,10 +5,10 @@
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.accountLoyalty#" property="loyalty" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.accountLoyalty#" property="lifetimeBalance" edit="false">
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.accountLoyalty#" property="loyalty" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.accountLoyalty#" property="lifetimeBalance" edit="false">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 </cfoutput>

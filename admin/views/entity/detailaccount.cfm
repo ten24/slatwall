@@ -62,33 +62,33 @@ Notes:
 </cfif>
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.account#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.account#" edit="#rc.edit#">
-			<cf_HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="createPassword" type="list" modal="true" hideDisabled="false" />
-			<cf_HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="changePassword" type="list" modal="true" />
-			<cf_HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="generateAuthToken" type="list" modal="true" />
+	<hb:HibachiEntityDetailForm object="#rc.account#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.account#" edit="#rc.edit#">
+			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="createPassword" type="list" modal="true" hideDisabled="false" />
+			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="changePassword" type="list" modal="true" />
+			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="generateAuthToken" type="list" modal="true" />
 			<li class="divider"></li>
-			<cf_HibachiActionCaller action="admin:entity.createaccountaddress" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
-			<cf_HibachiActionCaller action="admin:entity.createaccountemailaddress" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
-			<cf_HibachiActionCaller action="admin:entity.createaccountphonenumber" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
-			<cf_HibachiActionCaller action="admin:entity.createaccountpaymentmethod" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
-			<cf_HibachiActionCaller action="admin:entity.createaccountloyalty" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
-			<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" modal="true" type="list" />
-		</cf_HibachiEntityActionBar>
+			<hb:HibachiActionCaller action="admin:entity.createaccountaddress" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
+			<hb:HibachiActionCaller action="admin:entity.createaccountemailaddress" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
+			<hb:HibachiActionCaller action="admin:entity.createaccountphonenumber" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
+			<hb:HibachiActionCaller action="admin:entity.createaccountpaymentmethod" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
+			<hb:HibachiActionCaller action="admin:entity.createaccountloyalty" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
+			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" modal="true" type="list" />
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiEntityDetailGroup object="#rc.account#">
-			<cf_HibachiEntityDetailItem view="admin:entity/accounttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cf_HibachiEntityDetailItem view="admin:entity/accounttabs/contactdetails" />
-			<cf_HibachiEntityDetailItem property="accountPaymentMethods" count="#rc.account.getAccountPaymentMethodsSmartList().getRecordsCount()#" />
-			<cf_HibachiEntityDetailItem property="priceGroups" />
-			<cf_HibachiEntityDetailItem property="orders" count="#rc.ordersPlacedSmartList.getRecordsCount()#" />
-			<cf_HibachiEntityDetailItem view="admin:entity/accounttabs/cartsandquotes" count="#rc.ordersNotPlacedSmartList.getRecordsCount()#" />
-			<cf_HibachiEntityDetailItem property="accountPayments" />
-			<cf_HibachiEntityDetailItem property="accountLoyalties" count="#rc.account.getAccountLoyaltiesSmartList().getRecordsCount()#" />
-			<cf_HibachiEntityDetailItem property="productReviews" />
-			<cf_HibachiEntityDetailItem view="admin:entity/accounttabs/subscriptionusage" count="#rc.account.getSubscriptionUsagesSmartList().getRecordsCount()#" />
-			<cf_HibachiEntityDetailItem property="permissionGroups" />
-			<cf_HibachiEntityDetailItem view="admin:entity/accounttabs/accountsettings" />
+		<hb:HibachiEntityDetailGroup object="#rc.account#">
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/contactdetails" />
+			<hb:HibachiEntityDetailItem property="accountPaymentMethods" count="#rc.account.getAccountPaymentMethodsSmartList().getRecordsCount()#" />
+			<hb:HibachiEntityDetailItem property="priceGroups" />
+			<hb:HibachiEntityDetailItem property="orders" count="#rc.ordersPlacedSmartList.getRecordsCount()#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/cartsandquotes" count="#rc.ordersNotPlacedSmartList.getRecordsCount()#" />
+			<hb:HibachiEntityDetailItem property="accountPayments" />
+			<hb:HibachiEntityDetailItem property="accountLoyalties" count="#rc.account.getAccountLoyaltiesSmartList().getRecordsCount()#" />
+			<hb:HibachiEntityDetailItem property="productReviews" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/subscriptionusage" count="#rc.account.getSubscriptionUsagesSmartList().getRecordsCount()#" />
+			<hb:HibachiEntityDetailItem property="permissionGroups" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/accountsettings" />
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.account.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
@@ -97,7 +97,7 @@ Notes:
 			
 			<!--- Comments --->
 			<cf_SlatwallAdminTabComments object="#rc.account#" />
-		</cf_HibachiEntityDetailGroup>
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

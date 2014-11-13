@@ -53,14 +53,14 @@ Notes:
 <cfparam name="rc.accountLoyalty" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.accountLoyalty.getAccountLoyaltyTransactionsSmartList()#">
-		<cf_HibachiListingColumn propertyIdentifier="order.orderNumber" />
-		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />		
-		<cf_HibachiListingColumn propertyIdentifier="accruementType" />
-		<cf_HibachiListingColumn propertyIdentifier="redemptionType" />
-		<cf_HibachiListingColumn propertyIdentifier="pointsIn" />
-		<cf_HibachiListingColumn propertyIdentifier="pointsOut" />
-	</cf_HibachiListingDisplay>
+	<hb:HibachiListingDisplay smartList="#rc.accountLoyalty.getAccountLoyaltyTransactionsSmartList()#">
+		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />		
+		<hb:HibachiListingColumn propertyIdentifier="accruementType" />
+		<hb:HibachiListingColumn propertyIdentifier="redemptionType" />
+		<hb:HibachiListingColumn propertyIdentifier="pointsIn" />
+		<hb:HibachiListingColumn propertyIdentifier="pointsOut" />
+	</hb:HibachiListingDisplay>
 	
-	<cf_HibachiProcessCaller action="admin:entity.preprocessaccountloyalty" entity="#rc.accountLoyalty#" processContext="manualTransaction" class="btn btn-default" icon="plus" modal="true" />
+	<hb:HibachiProcessCaller action="admin:entity.preprocessaccountloyalty" entity="#rc.accountLoyalty#" processContext="manualTransaction" class="btn btn-default" icon="plus" modal="true" />
 </cfoutput>

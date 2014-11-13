@@ -54,21 +54,21 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiEntityActionBar type="listing" object="#rc.emailTemplateSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.emailTemplateSmartList#" showCreate="false">
 		
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createemailtemplate" entity="emailtemplate" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createemailtemplate" entity="emailtemplate" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 
-	<cf_HibachiListingDisplay smartList="#rc.emailTemplateSmartList#"
+	<hb:HibachiListingDisplay smartList="#rc.emailTemplateSmartList#"
 							   recordDetailAction="admin:entity.detailemailTemplate"
 							   recordEditAction="admin:entity.editemailTemplate">
 		
-		<cf_HibachiListingColumn propertyIdentifier="emailTemplateName" />
-		<cf_HibachiListingColumn propertyIdentifier="emailTemplateObject" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="emailTemplateName" />
+		<hb:HibachiListingColumn propertyIdentifier="emailTemplateObject" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

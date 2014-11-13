@@ -55,11 +55,11 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiEntityActionBar type="listing" object="#rc.integrationSmartList#" showCreate="false" />
+	<hb:HibachiEntityActionBar type="listing" object="#rc.integrationSmartList#" showCreate="false" />
 	
-	<cf_HibachiListingDisplay smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="integrationName" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
+	<hb:HibachiListingDisplay smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="integrationName" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

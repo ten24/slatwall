@@ -54,20 +54,20 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.stockAdjustment#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.stockAdjustment#" edit="#rc.edit#">
-			<cf_HibachiProcessCaller entity="#rc.stockAdjustment#" action="admin:entity.processStockAdjustment" processContext="processAdjustment" queryString="redirectAction=admin:entity.detailStockAdjustment" type="list" />
-			<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="stockAdjustmentID=#rc.stockAdjustment.getStockAdjustmentID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
-		</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.stockAdjustment#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.stockAdjustment#" edit="#rc.edit#">
+			<hb:HibachiProcessCaller entity="#rc.stockAdjustment#" action="admin:entity.processStockAdjustment" processContext="processAdjustment" queryString="redirectAction=admin:entity.detailStockAdjustment" type="list" />
+			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="stockAdjustmentID=#rc.stockAdjustment.getStockAdjustmentID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+		</hb:HibachiEntityActionBar>
 
 
-		<cf_HibachiEntityDetailGroup object="#rc.stockAdjustment#" allowComments="true">
-			<cf_HibachiEntityDetailItem view="admin:entity/stockadjustmenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cf_HibachiEntityDetailItem property="stockadjustmentitems" />
-			<cf_HibachiEntityDetailItem property="stockreceivers" />
+		<hb:HibachiEntityDetailGroup object="#rc.stockAdjustment#" allowComments="true">
+			<hb:HibachiEntityDetailItem view="admin:entity/stockadjustmenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem property="stockadjustmentitems" />
+			<hb:HibachiEntityDetailItem property="stockreceivers" />
 
 			<cf_SlatwallAdminTabComments object="#rc.stockAdjustment#" />
-		</cf_HibachiEntityDetailGroup>
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

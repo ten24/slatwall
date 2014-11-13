@@ -53,15 +53,15 @@ Notes:
 
 <cfoutput>
 
-<cf_HibachiListingDisplay smartList="#rc.priceGroup.getAccountsOptionsSmartList()#" multiselectFieldName="accounts" multiselectPropertyIdentifier="accountID" multiselectValues="#rc.priceGroup.getAccountsAssignedIDList()#" edit="#rc.edit#">
+<hb:HibachiListingDisplay smartList="#rc.priceGroup.getAccountsOptionsSmartList()#" multiselectFieldName="accounts" multiselectPropertyIdentifier="accountID" multiselectValues="#rc.priceGroup.getAccountsAssignedIDList()#" edit="#rc.edit#">
 						      
-	<cf_HibachiListingColumn propertyIdentifier="firstName" />
-	<cf_HibachiListingColumn propertyIdentifier="lastName" />
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
-	<cf_HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
-	<cf_HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
-	<cf_HibachiListingColumn propertyIdentifier="guestAccountFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="firstName" />
+	<hb:HibachiListingColumn propertyIdentifier="lastName" />
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
+	<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
+	<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
+	<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
 	
-</cf_HibachiListingDisplay>
+</hb:HibachiListingDisplay>
 
 </cfoutput>

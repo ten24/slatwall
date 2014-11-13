@@ -55,10 +55,10 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.loyaltyAccruement#" edit="#rc.edit#"  
+	<hb:HibachiEntityDetailForm object="#rc.loyaltyAccruement#" edit="#rc.edit#"  
 								saveActionQueryString="loyaltyID=#rc.loyalty.getLoyaltyID()#">
 								
-		<cf_HibachiEntityActionBar type="detail" object="#rc.loyaltyAccruement#" edit="#rc.edit#"
+		<hb:HibachiEntityActionBar type="detail" object="#rc.loyaltyAccruement#" edit="#rc.edit#"
 								   backAction="admin:entity.detailloyalty"
 								   backQueryString="loyaltyID=#rc.loyalty.getLoyaltyID()#"
 								   cancelAction="admin:entity.detailloyalty"
@@ -69,13 +69,13 @@ Notes:
 		
 		
 		<cfif not listFindNoCase("orderClosed,enrollment", rc.loyaltyAccruement.getAccruementType())>
-			<cf_HibachiEntityDetailGroup object="#rc.loyaltyAccruement#">
-				<cf_HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-				<cf_HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/producttypes" />
-				<cf_HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/products" />
-				<cf_HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/skus" />
-				<cf_HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/brands" />
-			</cf_HibachiEntityDetailGroup>
+			<hb:HibachiEntityDetailGroup object="#rc.loyaltyAccruement#">
+				<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+				<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/producttypes" />
+				<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/products" />
+				<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/skus" />
+				<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/brands" />
+			</hb:HibachiEntityDetailGroup>
 		</cfif>
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

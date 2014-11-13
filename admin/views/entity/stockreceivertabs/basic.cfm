@@ -5,10 +5,10 @@
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.stockReceiver#" property="packingSlipNumber" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.stockReceiver#" property="boxCount" edit="#rc.edit#">
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.stockReceiver#" property="packingSlipNumber" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.stockReceiver#" property="boxCount" edit="#rc.edit#">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 </cfoutput>

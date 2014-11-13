@@ -54,13 +54,13 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.subscriptionTerm#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.subscriptionTerm#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.subscriptionTerm#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.subscriptionTerm#" edit="#rc.edit#" />
 		
-		<cf_HibachiEntityDetailGroup object="#rc.subscriptionTerm#">
-			<cf_HibachiEntityDetailItem view="admin:entity/subscriptiontermtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cf_HibachiEntityDetailItem view="admin:entity/subscriptiontermtabs/subscriptionusagesettings" />
-		</cf_HibachiEntityDetailGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.subscriptionTerm#">
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptiontermtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptiontermtabs/subscriptionusagesettings" />
+		</hb:HibachiEntityDetailGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

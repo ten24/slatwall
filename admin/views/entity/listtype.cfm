@@ -54,21 +54,21 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiEntityActionBar type="listing" object="#rc.typeSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.typeSmartList#" showCreate="false">
 			
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createtype" class="btn s-btn-blue" icon="plus icon-white" />
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createtype" class="btn s-btn-blue" icon="plus icon-white" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiListingDisplay smartList="#rc.typeSmartList#"
+	<hb:HibachiListingDisplay smartList="#rc.typeSmartList#"
 							   recordDetailAction="admin:entity.detailtype"
 							   recordEditAction="admin:entity.edittype"
 							   parentPropertyName="parentType">
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="typeName" />
-		<cf_HibachiListingColumn propertyIdentifier="typeCode" />
-		<cf_HibachiListingColumn propertyIdentifier="systemCode" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="typeName" />
+		<hb:HibachiListingColumn propertyIdentifier="typeCode" />
+		<hb:HibachiListingColumn propertyIdentifier="systemCode" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

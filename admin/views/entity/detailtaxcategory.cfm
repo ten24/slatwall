@@ -53,14 +53,14 @@ Notes:
 <cfparam name="rc.taxCategory" type="any">
 <cfparam name="rc.edit" type="boolean">
 
-<cf_HibachiEntityDetailForm object="#rc.taxCategory#" edit="#rc.edit#">
-	<cf_HibachiEntityActionBar type="detail" object="#rc.taxCategory#" edit="#rc.edit#">
-		<cf_HibachiActionCaller action="admin:entity.createtaxcategoryrate" queryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#" type="list" modal=true />
-	</cf_HibachiEntityActionBar>
+<hb:HibachiEntityDetailForm object="#rc.taxCategory#" edit="#rc.edit#">
+	<hb:HibachiEntityActionBar type="detail" object="#rc.taxCategory#" edit="#rc.edit#">
+		<hb:HibachiActionCaller action="admin:entity.createtaxcategoryrate" queryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#" type="list" modal=true />
+	</hb:HibachiEntityActionBar>
 
-	<cf_HibachiEntityDetailGroup object="#rc.taxCategory#">
-		<cf_HibachiEntityDetailItem view="admin:entity/taxcategorytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-		<cf_HibachiEntityDetailItem view="admin:entity/taxcategorytabs/rates" />
-	</cf_HibachiEntityDetailGroup>
+	<hb:HibachiEntityDetailGroup object="#rc.taxCategory#">
+		<hb:HibachiEntityDetailItem view="admin:entity/taxcategorytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailItem view="admin:entity/taxcategorytabs/rates" />
+	</hb:HibachiEntityDetailGroup>
 	
-</cf_HibachiEntityDetailForm>
+</hb:HibachiEntityDetailForm>

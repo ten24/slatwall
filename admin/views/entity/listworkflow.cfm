@@ -52,20 +52,20 @@ Notes:
 
 <cfparam name="rc.workflowSmartList" type="any" />
 
-<cf_HibachiEntityActionBar type="listing" object="#rc.workflowSmartList#" showCreate="false">
+<hb:HibachiEntityActionBar type="listing" object="#rc.workflowSmartList#" showCreate="false">
 		
 	<!--- Create ---> 
-	<cf_HibachiEntityActionBarButtonGroup>
-		<cf_HibachiActionCaller action="admin:entity.createworkflow" class="btn s-btn-blue" icon="plus icon-white" />
-	</cf_HibachiEntityActionBarButtonGroup>
-</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityActionBarButtonGroup>
+		<hb:HibachiActionCaller action="admin:entity.createworkflow" class="btn s-btn-blue" icon="plus icon-white" />
+	</hb:HibachiEntityActionBarButtonGroup>
+</hb:HibachiEntityActionBar>
 
-<cf_HibachiListingDisplay smartList="#rc.workflowSmartList#"
+<hb:HibachiListingDisplay smartList="#rc.workflowSmartList#"
 						   recordDetailAction="admin:entity.detailworkflow"
 						   recordEditAction="admin:entity.editworkflow"
 						   recordDeleteAction="admin:entity.deleteworkflow">
 	
-	<cf_HibachiListingColumn propertyIdentifier="workflowName" />
-	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	<cf_HibachiListingColumn propertyIdentifier="workflowObject" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn propertyIdentifier="workflowName" />
+	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="workflowObject" />
+</hb:HibachiListingDisplay>

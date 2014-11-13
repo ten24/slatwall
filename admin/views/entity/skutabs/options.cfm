@@ -52,9 +52,9 @@ Notes:
 <cfparam name="rc.sku" type="any" />
 
 <cfoutput>
-	<cf_HibachiPropertyList>
+	<hb:HibachiPropertyList>
 		<cfloop array="#rc.sku.getOptions()#" index="option">
-			<cf_HibachiFieldDisplay title="#option.getOptionGroup().getOptionGroupName()#" value="#option.getOptionName()#" edit="false">
+			<hb:HibachiFieldDisplay title="#option.getOptionGroup().getOptionGroupName()#" value="#option.getOptionName()#" edit="false">
 		</cfloop>
-	</cf_HibachiPropertyList>
+	</hb:HibachiPropertyList>
 </cfoutput>

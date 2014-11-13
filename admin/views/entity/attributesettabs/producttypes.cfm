@@ -54,5 +54,5 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="productTypes" edit="#rc.edit#" displaytype="plain" />
+	<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="productTypes" edit="#rc.edit#" displaytype="plain" />
 </cfoutput>

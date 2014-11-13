@@ -53,15 +53,15 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay smartList="#rc.location.getLocationConfigurationsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.location.getLocationConfigurationsSmartList()#"
 							  recordEditAction="admin:entity.editlocationconfiguration"
 							  recordDetailAction="admin:entity.detaillocationconfiguration">
 							    
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationConfigurationName" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationConfigurationCapacity" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="locationConfigurationName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="locationConfigurationCapacity" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 		
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createlocationconfiguration" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" />
+	<hb:HibachiActionCaller action="admin:entity.createlocationconfiguration" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" />
 </cfoutput>

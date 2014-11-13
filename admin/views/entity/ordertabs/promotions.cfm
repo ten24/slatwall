@@ -53,14 +53,14 @@ Notes:
 
 <cfoutput>
 	<!---
-	<cf_HibachiListingDisplay smartList="#rc.order.getPromotionCodesSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.order.getPromotionCodesSmartList()#"
 							  recordDeleteAction="admin:entity.processOrder"
 							  recordDeleteQueryString="processContent=removePromotionCode&redirectAction=admin:entity.detailOrder&orderID=#rc.order.getOrderID()#">
 			
-		<cf_HibachiListingColumn propertyIdentifier="promotionCode" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="promotion.promotionName" />
+		<hb:HibachiListingColumn propertyIdentifier="promotionCode" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="promotion.promotionName" />
 		
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 	--->
 	<cfif arrayLen(rc.order.getPromotionCodes())>
 		<table class="table table-striped table-bordered table-condensed">
@@ -71,11 +71,11 @@ Notes:
 			<cfloop array="#rc.order.getPromotionCodes()#" index="appliedPromotionCode">
 				<tr>
 					<td class="primary">#appliedPromotionCode.getPromotionCode()#</td>
-					<td><cf_HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="removePromotionCode" queryString="promotionCodeID=#appliedPromotionCode.getPromotionCodeID()#" class="btn btn-default btn-xs" iconOnly="true" icon="trash"></td>
+					<td><hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="removePromotionCode" queryString="promotionCodeID=#appliedPromotionCode.getPromotionCodeID()#" class="btn btn-default btn-xs" iconOnly="true" icon="trash"></td>
 				</tr>
 			</cfloop>
 		</table>
 	</cfif>
 	
-	<cf_HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addPromotionCode" class="btn btn-default" icon="plus" modal="true" />
+	<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addPromotionCode" class="btn btn-default" icon="plus" modal="true" />
 </cfoutput>

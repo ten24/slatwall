@@ -52,20 +52,20 @@ Notes:
 
 <cfparam name="rc.collectionSmartList" type="any" />
 
-<cf_HibachiEntityActionBar type="listing" object="#rc.collectionSmartList#" showCreate="false">
+<hb:HibachiEntityActionBar type="listing" object="#rc.collectionSmartList#" showCreate="false">
 		
 	<!--- Create ---> 
-	<cf_HibachiEntityActionBarButtonGroup>
-		<cf_HibachiActionCaller action="admin:entity.createcollection" class="btn s-btn-blue" icon="plus icon-white" />
-	</cf_HibachiEntityActionBarButtonGroup>
-</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityActionBarButtonGroup>
+		<hb:HibachiActionCaller action="admin:entity.createcollection" class="btn s-btn-blue" icon="plus icon-white" />
+	</hb:HibachiEntityActionBarButtonGroup>
+</hb:HibachiEntityActionBar>
 
-<cf_HibachiListingDisplay smartList="#rc.collectionSmartList#"
+<hb:HibachiListingDisplay smartList="#rc.collectionSmartList#"
 						   recordDetailAction="admin:entity.detailcollection"
 						   recordEditAction="admin:entity.editcollection"
 						   recordDeleteAction="admin:entity.deletecollection">
 
-	<cf_HibachiListingColumn propertyIdentifier="collectionName" />
-	<cf_HibachiListingColumn propertyIdentifier="collectionCode" />
-	<cf_HibachiListingColumn propertyIdentifier="collectionObject" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn propertyIdentifier="collectionName" />
+	<hb:HibachiListingColumn propertyIdentifier="collectionCode" />
+	<hb:HibachiListingColumn propertyIdentifier="collectionObject" />
+</hb:HibachiListingDisplay>

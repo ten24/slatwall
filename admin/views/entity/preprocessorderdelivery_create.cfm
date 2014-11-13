@@ -57,13 +57,13 @@ Notes:
 <cfset rc.processObject.setOrderFulfillment( rc.orderFulfillment ) />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.orderDelivery#" edit="#rc.edit#" processActionQueryString="orderFulfillmentID=#rc.processObject.getOrderFulfillment().getOrderFulfillmentID()#" sRedirectAction="admin:entity.detailorderfulfillment" fRenderItem="preprocessorderdelivery">
+	<hb:HibachiEntityProcessForm entity="#rc.orderDelivery#" edit="#rc.edit#" processActionQueryString="orderFulfillmentID=#rc.processObject.getOrderFulfillment().getOrderFulfillmentID()#" sRedirectAction="admin:entity.detailorderfulfillment" fRenderItem="preprocessorderdelivery">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.orderDelivery#">
-		</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderDelivery#">
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 				
 				<input type="hidden" name="order.orderID" value="#rc.processObject.getOrder().getOrderID()#" />
 				<input type="hidden" name="orderFulfillment.orderFulfillmentID" value="#rc.processObject.getOrderFulfillment().getOrderFulfillmentID()#" />
@@ -77,7 +77,7 @@ Notes:
 				
 				<!--- Shipping - Inputs --->
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
 				</cfif>
 				
 				<!---Loop through order payments to see if we paid with a credit card--->
@@ -91,8 +91,8 @@ Notes:
 				</cfloop>
 				
 				<cfif rc.processObject.getCapturableAmount() gt 0 AND foundCredit>
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="captureAuthorizedPaymentsFlag" edit="true" />
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="capturableAmount" edit="false" />
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="captureAuthorizedPaymentsFlag" edit="true" />
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="capturableAmount" edit="false" />
 				</cfif>
 				
 				<hr />
@@ -132,8 +132,8 @@ Notes:
 						</cfif>
 					</cfloop>
 				</table>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

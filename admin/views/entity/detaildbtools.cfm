@@ -63,7 +63,7 @@ Notes:
 			<br />
 			<input type="hidden" name="confirmDelete" value="" />
 			Confirm Delete: <input type="checkbox" name="confirmDelete" value="1" />
-			<cf_HibachiActionCaller action="admin:entity.deleteallorders" type="submit" class="button" confirmRequired="true">
+			<hb:HibachiActionCaller action="admin:entity.deleteallorders" type="submit" class="button" confirmRequired="true">
 		</form>
 		<hr />
 		<h2>Delete All Products (and Orders)</h2>
@@ -79,7 +79,7 @@ Notes:
 			<br />
 			<input type="hidden" name="confirmDelete" value="" />
 			Confirm Delete: <input type="checkbox" name="confirmDelete" value="1" />
-			<cf_HibachiActionCaller action="admin:entity.deleteallproducts" type="submit" class="button" confirmRequired="true">
+			<hb:HibachiActionCaller action="admin:entity.deleteallproducts" type="submit" class="button" confirmRequired="true">
 		</form>
 		<hr />
 		<h2>Import Data From Bundle</h2>
@@ -89,7 +89,7 @@ Notes:
 			<br />
 			<input type="hidden" name="confirmImport" value="" />
 			Confirm Import: <input type="checkbox" name="confirmImport" value="1" />
-			<cf_HibachiActionCaller action="admin:entity.importbundledata" type="submit" class="button" confirmRequired="true">
+			<hb:HibachiActionCaller action="admin:entity.importbundledata" type="submit" class="button" confirmRequired="true">
 		</form>
 		<hr />
 	</div>

@@ -53,35 +53,35 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.order.getSaleItemSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.order.getSaleItemSmartList()#"
 							  recordDetailAction="admin:entity.detailorderitem"
 							  recordEditAction="admin:entity.editorderitem">
 							    
-		<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.product.calculatedTitle" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
-		<cf_HibachiListingColumn propertyIdentifier="orderItemStatusType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="quantity" />
-		<cf_HibachiListingColumn propertyIdentifier="price" />
-		<cf_HibachiListingColumn propertyIdentifier="discountAmount" />
-		<cf_HibachiListingColumn propertyIdentifier="extendedPriceAfterDiscount" />
-		<cf_HibachiListingColumn propertyIdentifier="quantityDelivered" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.product.calculatedTitle" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
+		<hb:HibachiListingColumn propertyIdentifier="orderItemStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="quantity" />
+		<hb:HibachiListingColumn propertyIdentifier="price" />
+		<hb:HibachiListingColumn propertyIdentifier="discountAmount" />
+		<hb:HibachiListingColumn propertyIdentifier="extendedPriceAfterDiscount" />
+		<hb:HibachiListingColumn propertyIdentifier="quantityDelivered" />
+	</hb:HibachiListingDisplay>
 	
 	<!--- If in edit and order is of correct status then we can add sale order items --->
 	<cfif rc.edit and listFindNoCase("ostNotPlaced,ostNew,ostProcessing,ostOnHold", rc.order.getOrderStatusType().getSystemCode())>
 		<cfset rc.addSkuAddStockType = "oitSale" />
 		
-		<cf_HibachiTabGroup tabLocation="top">
+		<hb:HibachiTabGroup tabLocation="top">
 			<cfif !isnull(rc.order.getDefaultStockLocation())>
-				<cf_HibachiTab view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />	
-				<cf_HibachiTab view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
+				<hb:HibachiTab view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />	
+				<hb:HibachiTab view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
 			<cfelse>
-				<cf_HibachiTab view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
-				<cf_HibachiTab view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />	
+				<hb:HibachiTab view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
+				<hb:HibachiTab view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />	
 			</cfif>
 			
-		</cf_HibachiTabGroup>
+		</hb:HibachiTabGroup>
 	</cfif>
 	
 </cfoutput>

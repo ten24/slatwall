@@ -51,4 +51,4 @@ Notes:
 
 <cfparam name="rc.permissionGroup" type="any" />
 
-<cf_HibachiPermissionGroupActionPermissions permissionGroup="#rc.permissionGroup#" />
+<hb:HibachiPermissionGroupActionPermissions permissionGroup="#rc.permissionGroup#" />

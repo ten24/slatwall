@@ -4,12 +4,12 @@
 <cfparam name="rc.collection" type="any">
 <cfparam name="rc.edit" type="boolean">
 
-<cf_HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
-	<cf_HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
-	<cf_HibachiEntityDetailGroup object="#rc.collection#">
-		<cf_HibachiEntityDetailItem view="admin:entity/collectiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-	</cf_HibachiEntityDetailGroup>		
-</cf_HibachiEntityDetailForm>
+<hb:HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
+	<hb:HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailGroup object="#rc.collection#">
+		<hb:HibachiEntityDetailItem view="admin:entity/collectiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+	</hb:HibachiEntityDetailGroup>		
+</hb:HibachiEntityDetailForm>
 
 <script charset="utf-8">
   //activate tooltips

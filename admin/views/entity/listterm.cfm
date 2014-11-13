@@ -54,24 +54,24 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiEntityActionBar type="listing" object="#rc.termSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.termSmartList#" showCreate="false">
 			
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createterm" entity="term" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createterm" entity="term" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 
-	<cf_HibachiListingDisplay smartList="#rc.termSmartList#"
+	<hb:HibachiListingDisplay smartList="#rc.termSmartList#"
 							   recordEditAction="admin:entity.editterm"
 							   recordEditQueryString="redirectAction=admin:entity.listterm"
 							   recordEditModal="true"
 							   recordDeleteAction="admin:entity.deleteterm"
 							   sortProperty="sortOrder">
 							      
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="termName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="termName" />
 		
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

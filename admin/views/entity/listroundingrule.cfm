@@ -54,20 +54,20 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiEntityActionBar type="listing" object="#rc.roundingruleSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.roundingruleSmartList#" showCreate="false">
 			
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createroundingrule" entity="roundingrule" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createroundingrule" entity="roundingrule" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiListingDisplay smartList="#rc.roundingruleSmartList#" rc="#rc#" recordEditAction="admin:entity.editroundingrule" recordEditQueryString="redirectAction=admin:entity.listroundingrule" recordEditModal="true" recordDeleteAction="admin:entity.deleteroundingrule">
+	<hb:HibachiListingDisplay smartList="#rc.roundingruleSmartList#" rc="#rc#" recordEditAction="admin:entity.editroundingrule" recordEditQueryString="redirectAction=admin:entity.listroundingrule" recordEditModal="true" recordDeleteAction="admin:entity.deleteroundingrule">
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="roundingruleName" />
-		<cf_HibachiListingColumn propertyIdentifier="roundingRuleExpression" />
-		<cf_HibachiListingColumn propertyIdentifier="roundingRuleDirection" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="roundingruleName" />
+		<hb:HibachiListingColumn propertyIdentifier="roundingRuleExpression" />
+		<hb:HibachiListingColumn propertyIdentifier="roundingRuleDirection" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

@@ -54,31 +54,31 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.orderDelivery#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.orderDelivery#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.orderDelivery#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.orderDelivery#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.orderDelivery#" property="createdDateTime">
-				<cf_HibachiPropertyDisplay object="#rc.orderDelivery#" property="fulfillmentMethod">
-				<cf_HibachiPropertyDisplay object="#rc.orderDelivery#" property="trackingNumber" edit="#rc.edit#">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="createdDateTime">
+				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="fulfillmentMethod">
+				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="trackingNumber" edit="#rc.edit#">
 				<cfif !isNull(rc.orderDelivery.getShippingMethod())>	
-					<cf_HibachiPropertyDisplay object="#rc.orderDelivery.getShippingMethod()#" property="shippingMethodName">
+					<hb:HibachiPropertyDisplay object="#rc.orderDelivery.getShippingMethod()#" property="shippingMethodName">
 				</cfif>
 				<cfif !isNull(rc.orderDelivery.getLocation())>
-					<cf_HibachiPropertyDisplay object="#rc.orderDelivery.getLocation()#" property="locationName">
+					<hb:HibachiPropertyDisplay object="#rc.orderDelivery.getLocation()#" property="locationName">
 				</cfif>
-				<cf_HibachiPropertyDisplay object="#rc.orderDelivery.getOrder()#" property="orderNumber"  valuelink="?slatAction=admin:entity.detailorder&orderID=#rc.orderDelivery.getOrder().getOrderID()#">			
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+				<hb:HibachiPropertyDisplay object="#rc.orderDelivery.getOrder()#" property="orderNumber"  valuelink="?slatAction=admin:entity.detailorder&orderID=#rc.orderDelivery.getOrder().getOrderID()#">			
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.orderDelivery#">
-			<cf_HibachiTab view="admin:entity/orderdeliverytabs/orderdeliveryitems">
+		<hb:HibachiTabGroup object="#rc.orderDelivery#">
+			<hb:HibachiTab view="admin:entity/orderdeliverytabs/orderdeliveryitems">
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.orderDelivery.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.orderDelivery#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiTabGroup>
+		</hb:HibachiTabGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

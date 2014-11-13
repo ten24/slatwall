@@ -68,79 +68,79 @@ Notes:
 </cfif>
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.order#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.order#" edit="#rc.edit#" deleteQueryString="#deleteQueryString#">
+	<hb:HibachiEntityDetailForm object="#rc.order#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.order#" edit="#rc.edit#" deleteQueryString="#deleteQueryString#">
 			
 			<!--- Place Order --->
 			<cfif rc.order.getOrderStatusType().getSystemCode() eq "ostNotPlaced">
 				<cfif len(rc.order.getOrderRequirementsList())>
-					<cf_HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="placeOrder" queryString="sRedirectAction=admin:entity.detailorder" type="list" modal="true" />
+					<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="placeOrder" queryString="sRedirectAction=admin:entity.detailorder" type="list" modal="true" />
 				<cfelse>
-					<cf_HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="placeOrder" type="list" />
+					<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="placeOrder" type="list" />
 				</cfif>
 			</cfif>
 			
 			<!--- Change Status (onHold, close, cancel, offHold) --->
-			<cf_HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="placeOnHold" type="list" modal="true" />
-			<cf_HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="takeOffHold" type="list" modal="true" />
-			<cf_HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="cancelOrder" type="list" modal="true" />
-			<cf_HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateStatus" type="list" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="placeOnHold" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="takeOffHold" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="cancelOrder" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="updateStatus" type="list" />
 			
 			<!--- Create Return --->
-			<cf_HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="createReturn" type="list" modal="true" />
 			
 			<li class="divider"></li>
 			
 			<!--- Add Elements --->
-			<cf_HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addOrderPayment" type="list" modal="true" />
-			<cf_HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addPromotionCode" type="list" modal="true" />
-			<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="orderID=#rc.order.getOrderID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
-		</cf_HibachiEntityActionBar>
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addOrderPayment" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addPromotionCode" type="list" modal="true" />
+			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="orderID=#rc.order.getOrderID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+		</hb:HibachiEntityActionBar>
 		
 		<!--- Tabs --->
-		<cf_HibachiEntityDetailGroup object="#rc.order#">
-			<cf_HibachiEntityDetailItem view="admin:entity/ordertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		<hb:HibachiEntityDetailGroup object="#rc.order#">
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<!--- Sale Items --->
 			<cfif listFindNoCase("otSalesOrder,otExchangeOrder", rc.order.getOrderType().getSystemCode())>
-				<cf_HibachiEntityDetailItem view="admin:entity/ordertabs/saleorderitems" count="#rc.order.getSaleItemSmartList().getRecordsCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/saleorderitems" count="#rc.order.getSaleItemSmartList().getRecordsCount()#" />
 			</cfif>
 			
 			<!--- Deposit Items --->
 			<cfif listFindNoCase("otSalesOrder,otExchangeOrder", rc.order.getOrderType().getSystemCode())>
-				<cf_HibachiEntityDetailItem view="admin:entity/ordertabs/depositorderitems" count="#rc.order.getDepositItemSmartList().getRecordsCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/depositorderitems" count="#rc.order.getDepositItemSmartList().getRecordsCount()#" />
 			</cfif>
 			
 			<!--- Return Items --->
 			<cfif listFindNoCase("otReturnOrder,otExchangeOrder", rc.order.getOrderType().getSystemCode())>
-				<cf_HibachiEntityDetailItem view="admin:entity/ordertabs/returnorderitems" count="#rc.order.getReturnItemSmartList().getRecordsCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/returnorderitems" count="#rc.order.getReturnItemSmartList().getRecordsCount()#" />
 			</cfif>
 			
 			<!--- Payments --->
-			<cf_HibachiEntityDetailItem view="admin:entity/ordertabs/orderpayments" count="#rc.order.getOrderPaymentsCount()#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderpayments" count="#rc.order.getOrderPaymentsCount()#" />
 			
 			<!--- Fulfillment / Delivery --->
 			<cfif rc.order.getOrderType().getSystemCode() eq "otSalesOrder" or rc.order.getOrderType().getSystemCode() eq "otExchangeOrder">
-				<cf_HibachiEntityDetailItem view="admin:entity/ordertabs/orderfulfillments" count="#rc.order.getOrderFulfillmentsCount()#" />
-				<cf_HibachiEntityDetailItem view="admin:entity/ordertabs/orderdeliveries" count="#rc.order.getOrderDeliveriesCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderfulfillments" count="#rc.order.getOrderFulfillmentsCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderdeliveries" count="#rc.order.getOrderDeliveriesCount()#" />
 			</cfif>
 			
 			<!--- Returns / Receivers --->
 			<cfif rc.order.getOrderType().getSystemCode() eq "otReturnOrder" or rc.order.getOrderType().getSystemCode() eq "otExchangeOrder">
-				<cf_HibachiEntityDetailItem view="admin:entity/ordertabs/orderreturns" count="#rc.order.getOrderReturnsCount()#" />
-				<cf_HibachiEntityDetailItem view="admin:entity/ordertabs/stockreceivers" count="#rc.order.getStockReceiversCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderreturns" count="#rc.order.getOrderReturnsCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/stockreceivers" count="#rc.order.getStockReceiversCount()#" />
 			</cfif>
 			
 			<!--- Promotions --->
-			<cf_HibachiEntityDetailItem view="admin:entity/ordertabs/promotions" count="#rc.order.getPromotionCodesCount()#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/promotions" count="#rc.order.getPromotionCodesCount()#" />
 			
 			<!--- Referencing Orders --->
 			<cfif rc.order.getReferencingOrdersCount()>
-				<cf_HibachiEntityDetailItem view="admin:entity/ordertabs/referencingOrders" count="#rc.order.getReferencingOrdersCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/referencingOrders" count="#rc.order.getReferencingOrdersCount()#" />
 			</cfif>
 			
 			<!--- Account Details --->
 			<cfif not isNull(rc.order.getAccount()) and not rc.order.getAccount().getNewFlag()>
-				<cf_HibachiEntityDetailItem view="admin:entity/ordertabs/accountdetails" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/accountdetails" />
 			</cfif>
 			
 			<!--- Custom Attributes --->
@@ -151,8 +151,8 @@ Notes:
 			<!--- Comments --->
 			<cf_SlatwallAdminTabComments object="#rc.order#" />
 			
-		</cf_HibachiEntityDetailGroup>
+		</hb:HibachiEntityDetailGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 
 </cfoutput>

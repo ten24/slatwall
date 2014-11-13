@@ -54,16 +54,16 @@ Notes:
 	
 	<cfset local.eventRegSmartList = rc.product.geteventRegistrationsSmartList()/>
 	
-		<cf_HibachiListingDisplay smartList="#local.eventRegSmartList#"
+		<hb:HibachiListingDisplay smartList="#local.eventRegSmartList#"
 				recordEditAction="admin:entity.editeventregistration"
 				recorddetailaction="admin:entity.detaileventregistration">
-			<cf_HibachiListingColumn propertyIdentifier="account.firstname" />
-			<cf_HibachiListingColumn propertyIdentifier="account.lastname" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.skudefinition" title="#$.slatwall.rbKey('entity.eventRegistration.skuDefinition')#" />
-			<cf_HibachiListingColumn propertyIdentifier="eventRegistrationStatusType.type" title="#$.slatwall.rbKey('entity.eventRegistration.eventRegistrationStatusType')#" />
-		</cf_HibachiListingDisplay>
+			<hb:HibachiListingColumn propertyIdentifier="account.firstname" />
+			<hb:HibachiListingColumn propertyIdentifier="account.lastname" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.skudefinition" title="#$.slatwall.rbKey('entity.eventRegistration.skuDefinition')#" />
+			<hb:HibachiListingColumn propertyIdentifier="eventRegistrationStatusType.type" title="#$.slatwall.rbKey('entity.eventRegistration.eventRegistrationStatusType')#" />
+		</hb:HibachiListingDisplay>
 	
 </cfoutput>

@@ -55,14 +55,14 @@ Notes:
 <cfparam name="rc.editEntityName" type="string" default="" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.permissionGroup#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.permissionGroup#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.permissionGroup#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.permissionGroup#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 
-		<cf_HibachiEntityDetailGroup object="#rc.permissionGroup#">
-			<cf_HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cf_HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/entitypermissions">
-			<cf_HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/actionpermissions">
-		</cf_HibachiEntityDetailGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.permissionGroup#">
+			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/entitypermissions">
+			<hb:HibachiEntityDetailItem view="admin:entity/permissiongrouptabs/actionpermissions">
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

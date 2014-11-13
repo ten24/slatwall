@@ -55,30 +55,30 @@ Notes:
 
 <cfoutput>
 	
-<cf_HibachiEntityDetailForm object="#rc.attributeSet#" edit="#rc.edit#">
-	<cf_HibachiEntityActionBar type="detail" object="#rc.attributeSet#" edit="#rc.edit#">
-		<cf_HibachiActionCaller action="admin:entity.createattribute" queryString="attributesetid=#rc.attributeset.getAttributeSetID()#" type="list" modal=true />
-	</cf_HibachiEntityActionBar>
+<hb:HibachiEntityDetailForm object="#rc.attributeSet#" edit="#rc.edit#">
+	<hb:HibachiEntityActionBar type="detail" object="#rc.attributeSet#" edit="#rc.edit#">
+		<hb:HibachiActionCaller action="admin:entity.createattribute" queryString="attributesetid=#rc.attributeset.getAttributeSetID()#" type="list" modal=true />
+	</hb:HibachiEntityActionBar>
 
-	<cf_HibachiEntityDetailGroup object="#rc.attributeSet#">
-		<cf_HibachiEntityDetailItem view="admin:entity/attributesettabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-		<cf_HibachiEntityDetailItem view="admin:entity/attributesettabs/attributes" />
-		<cf_HibachiEntityDetailItem view="admin:entity/attributesettabs/description" />
+	<hb:HibachiEntityDetailGroup object="#rc.attributeSet#">
+		<hb:HibachiEntityDetailItem view="admin:entity/attributesettabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailItem view="admin:entity/attributesettabs/attributes" />
+		<hb:HibachiEntityDetailItem view="admin:entity/attributesettabs/description" />
 		<cfif not rc.attributeSet.getGlobalFlag()>
 			<cfif listFindNoCase("OrderItem,ProductType,Product,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
-				<cf_HibachiEntityDetailItem property="producttypes" />
+				<hb:HibachiEntityDetailItem property="producttypes" />
 			</cfif>
 			<cfif listFindNoCase("OrderItem,Product,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
-				<cf_HibachiEntityDetailItem property="products" />
-				<cf_HibachiEntityDetailItem property="brands" />
+				<hb:HibachiEntityDetailItem property="products" />
+				<hb:HibachiEntityDetailItem property="brands" />
 			</cfif>
 			<cfif listFindNoCase("OrderItem,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
-				<cf_HibachiEntityDetailItem property="skus" />
+				<hb:HibachiEntityDetailItem property="skus" />
 			</cfif>
 		</cfif>
-	</cf_HibachiEntityDetailGroup>
+	</hb:HibachiEntityDetailGroup>
 	
-</cf_HibachiEntityDetailForm>
+</hb:HibachiEntityDetailForm>
 
 </cfoutput>
 

@@ -53,5 +53,5 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiPropertyDisplay object="#rc.subscriptionUsageBenefit#" property="pricegroups" edit="#rc.edit#" displaytype="plain" />
+	<hb:HibachiPropertyDisplay object="#rc.subscriptionUsageBenefit#" property="pricegroups" edit="#rc.edit#" displaytype="plain" />
 </cfoutput>

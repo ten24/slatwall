@@ -54,21 +54,21 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.brand#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.brand#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.brand#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.brand#" edit="#rc.edit#" />
 		
-		<cf_HibachiEntityDetailGroup object="#rc.brand#">
-			<cf_HibachiEntityDetailItem view="admin:entity/brandtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cf_HibachiEntityDetailItem property="products" text="#$.slatwall.rbkey('entity.brand.products')#" />
-			<cf_HibachiEntityDetailItem property="vendors" />
-			<cf_HibachiEntityDetailItem view="admin:entity/brandtabs/brandsettings" />
+		<hb:HibachiEntityDetailGroup object="#rc.brand#">
+			<hb:HibachiEntityDetailItem view="admin:entity/brandtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem property="products" text="#$.slatwall.rbkey('entity.brand.products')#" />
+			<hb:HibachiEntityDetailItem property="vendors" />
+			<hb:HibachiEntityDetailItem view="admin:entity/brandtabs/brandsettings" />
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.brand.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.brand#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiEntityDetailGroup>
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

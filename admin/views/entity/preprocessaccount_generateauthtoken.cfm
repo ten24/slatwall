@@ -55,14 +55,14 @@ Notes:
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cf_HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#">
-	<cf_HibachiEntityActionBar type="preprocess" object="#rc.account#"></cf_HibachiEntityActionBar>
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
+<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#">
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.account#"></hb:HibachiEntityActionBar>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
 			<cfoutput>
 				Would you like to generate an API Authentication Token for #rc.account.getFullName()#? </br></br>
 			</cfoutput>
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="authenticationDescription" edit="#rc.edit#">
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
-</cf_HibachiEntityProcessForm>
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="authenticationDescription" edit="#rc.edit#">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
+</hb:HibachiEntityProcessForm>

@@ -59,15 +59,15 @@ Notes:
 		<cfset rc.paymentMethod.setPaymentMethodType(rc.paymentMethodType) />
 	</cfif>
 	
-	<cf_HibachiEntityDetailForm object="#rc.paymentMethod#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.paymentMethod#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.paymentMethod#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.paymentMethod#" edit="#rc.edit#" />
 	
 		<input type="hidden" name="paymentMethodType" value="#rc.paymentMethod.getPaymentMethodType()#" />
 
-		<cf_HibachiEntityDetailGroup object="#rc.paymentMethod#">
-			<cf_HibachiEntityDetailItem view="admin:entity/paymentmethodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cf_HibachiEntityDetailItem view="admin:entity/paymentmethodtabs/settings" />
-		</cf_HibachiEntityDetailGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.paymentMethod#">
+			<hb:HibachiEntityDetailItem view="admin:entity/paymentmethodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/paymentmethodtabs/settings" />
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

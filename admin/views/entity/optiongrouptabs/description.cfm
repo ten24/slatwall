@@ -52,6 +52,6 @@ Notes:
 <cfparam name="rc.optionGroup" type="any"/>
 <cfparam name="rc.edit" type="boolean" />
 
-<cf_HibachiPropertyList>
-	<cf_HibachiPropertyDisplay object="#rc.optionGroup#" property="optionGroupDescription" edit="#rc.edit#" fieldType="wysiwyg" displayType="plain">
-</cf_HibachiPropertyList>
+<hb:HibachiPropertyList>
+	<hb:HibachiPropertyDisplay object="#rc.optionGroup#" property="optionGroupDescription" edit="#rc.edit#" fieldType="wysiwyg" displayType="plain">
+</hb:HibachiPropertyList>

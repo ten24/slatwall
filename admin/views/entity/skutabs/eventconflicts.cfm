@@ -54,16 +54,16 @@ Notes:
 <cfoutput>
 
 	
-		<cf_HibachiListingDisplay smartList="#rc.sku.getEventConflictsSmartList()#"
+		<hb:HibachiListingDisplay smartList="#rc.sku.getEventConflictsSmartList()#"
 								  recordEditAction="admin:entity.editsku"
 								  recordDetailAction="admin:entity.detailsku"
 								  edit="false">
 								    
-			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="skucode" />
-			<cf_HibachiListingColumn propertyIdentifier="skuDefinition" />
-			<cf_HibachiListingColumn propertyIdentifier="eventStartDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="eventEndDateTime" />
+			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="skucode" />
+			<hb:HibachiListingColumn propertyIdentifier="skuDefinition" />
+			<hb:HibachiListingColumn propertyIdentifier="eventStartDateTime" />
+			<hb:HibachiListingColumn propertyIdentifier="eventEndDateTime" />
 			
-		</cf_HibachiListingDisplay>
+		</hb:HibachiListingDisplay>
 	
 </cfoutput>

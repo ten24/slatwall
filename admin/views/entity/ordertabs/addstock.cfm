@@ -59,27 +59,27 @@ Notes:
 </cfif>
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.order.getAddOrderItemStockOptionsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.order.getAddOrderItemStockOptionsSmartList()#"
 							  recordProcessAction="admin:entity.processOrder"
 							  recordProcessQueryString="orderItemTypeSystemCode=#rc.addSkuAddStockType#"
 							  recordProcessContext="addOrderItem"
 							  recordProcessEntity="#rc.order#"
 							  recordProcessUpdateTableID="LD#replace(rc.order.getSaleItemSmartList().getSavedStateID(),'-','','all')#">
 		
-		<cf_HibachiListingColumn propertyIdentifier="location.locationName" filter="true" />					    
-		<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.product.productCode" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.product.brand.brandName" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.productName" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.product.productType.productTypeName" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
-		<cf_HibachiListingColumn propertyIdentifier="calculatedQATS" />
+		<hb:HibachiListingColumn propertyIdentifier="location.locationName" filter="true" />					    
+		<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.product.productCode" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.product.brand.brandName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.productName" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.product.productType.productTypeName" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
+		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
 		<cfif rc.addSkuAddStockType eq "oitSale">
-			<cf_HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />
+			<hb:HibachiListingColumn processObjectProperty="orderFulfillmentID" title="#$.slatwall.rbKey('entity.orderFulfillment')#" fieldClass="span2" />
 		<cfelse>
-			<cf_HibachiListingColumn processObjectProperty="orderReturnID" title="#$.slatwall.rbKey('entity.orderReturn')#" fieldClass="span2" />
+			<hb:HibachiListingColumn processObjectProperty="orderReturnID" title="#$.slatwall.rbKey('entity.orderReturn')#" fieldClass="span2" />
 		</cfif>
-		<cf_HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" fieldClass="span1" />
-		<cf_HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" fieldClass="span1" />
+		<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

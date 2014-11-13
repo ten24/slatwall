@@ -55,26 +55,26 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.taskSchedule#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.taskSchedule#" edit="#rc.edit#" 
 								saveActionQueryString="taskID=#rc.task.getTaskID()#">
 								
-		<cf_HibachiEntityActionBar type="detail" object="#rc.taskSchedule#" 
+		<hb:HibachiEntityActionBar type="detail" object="#rc.taskSchedule#" 
 								backAction="admin:entity.detailTask" 
 								backQueryString="taskID=#rc.task.getTaskID()#"
 								deleteQueryString="redirectAction=admin:entity.detailTask&taskID=#rc.task.getTaskID()#"/>
 		
 		<input type="hidden" name="task.taskID" value="#rc.task.getTaskID()#"/>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.taskschedule#" property="schedule" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.taskschedule#" property="startDateTime" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.taskschedule#" property="endDateTime" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.taskschedule#" property="successEmailList" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.taskschedule#" property="failureEmailList" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.taskschedule#" property="schedule" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.taskschedule#" property="startDateTime" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.taskschedule#" property="endDateTime" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.taskschedule#" property="successEmailList" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.taskschedule#" property="failureEmailList" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

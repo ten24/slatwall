@@ -52,41 +52,41 @@ Notes:
 <cfparam name="rc.addEventScheduleProcessObject" type="any" />
 
 <cfoutput>
-	<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="eventStartDateTime" edit="true">
-	<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="eventEndDateTime" edit="true">
+	<hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="eventStartDateTime" edit="true">
+	<hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="eventEndDateTime" edit="true">
 	
-	<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" fieldname="schedulingType" property="schedulingType" edit="true">
+	<hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" fieldname="schedulingType" property="schedulingType" edit="true">
 	
 	<!--- Schedule - Recurring --->
-	<cf_HibachiDisplayToggle selector="select[name='schedulingType']" loadVisable="#rc.addEventScheduleProcessObject.getSchedulingType() eq 'recurring'#" showValues="recurring">
+	<hb:HibachiDisplayToggle selector="select[name='schedulingType']" loadVisable="#rc.addEventScheduleProcessObject.getSchedulingType() eq 'recurring'#" showValues="recurring">
 		
-		<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="recurringTimeUnit" edit="true">
+		<hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="recurringTimeUnit" edit="true">
 		
 		<!--- Weekly schedule --->
-		<cf_HibachiDisplayToggle selector="select[name='recurringTimeUnit']" loadVisable="#rc.addEventScheduleProcessObject.getRecurringTimeUnit() EQ 'weekly'#" showValues="weekly">
+		<hb:HibachiDisplayToggle selector="select[name='recurringTimeUnit']" loadVisable="#rc.addEventScheduleProcessObject.getRecurringTimeUnit() EQ 'weekly'#" showValues="weekly">
 			
-			<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="weeklyRepeatDays" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="weeklyRepeatDays" edit="#rc.edit#">
 			
-		</cf_HibachiDisplayToggle>
+		</hb:HibachiDisplayToggle>
 		<!--- /Weekly schedule --->
 		
 		<!--- Monthly schedule --->
-		<cf_HibachiDisplayToggle selector="select[name='recurringTimeUnit']" loadVisable="#rc.addEventScheduleProcessObject.getRecurringTimeUnit() EQ 'monthly'#" showValues="monthly">
+		<hb:HibachiDisplayToggle selector="select[name='recurringTimeUnit']" loadVisable="#rc.addEventScheduleProcessObject.getRecurringTimeUnit() EQ 'monthly'#" showValues="monthly">
 		
-			<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="monthlyRepeatByType" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="monthlyRepeatByType" edit="#rc.edit#">
 			
 			<div id="monthlyRepeatBySummary" class="alert alert-block alert-info">Select a start date</div>
 			
-		</cf_HibachiDisplayToggle>
+		</hb:HibachiDisplayToggle>
 		<!--- /Monthly schedule --->
 		
-		<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="scheduleEndDate" edit="#rc.edit#">
+		<hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="scheduleEndDate" edit="#rc.edit#">
 			
-		<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="createBundleFlag" edit="true" />
+		<hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="createBundleFlag" edit="true" />
 		
-		<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="sellIndividualSkuFlag" edit="true" />
+		<hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="sellIndividualSkuFlag" edit="true" />
 		
-	</cf_HibachiDisplayToggle>
+	</hb:HibachiDisplayToggle>
 	
 	<script type="text/javascript">
 		$(document).ready(function () {

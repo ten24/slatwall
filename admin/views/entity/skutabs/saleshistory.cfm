@@ -53,23 +53,23 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay smartList="#rc.sku.getPlacedOrderItemsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.sku.getPlacedOrderItemsSmartList()#"
 			recordEditAction="admin:entity.editorderitem"
 			recorddetailaction="admin:entity.detailorderitem">
-		<cf_HibachiListingColumn propertyIdentifier="order.account.firstname" />
-		<cf_HibachiListingColumn propertyIdentifier="order.account.lastname" />
-		<cf_HibachiListingColumn propertyIdentifier="order.orderNumber" />
-		<cf_HibachiListingColumn propertyIdentifier="order.orderStatusType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="order.orderCloseDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.product.productName" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.skudefinition" />
+		<hb:HibachiListingColumn propertyIdentifier="order.account.firstname" />
+		<hb:HibachiListingColumn propertyIdentifier="order.account.lastname" />
+		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
+		<hb:HibachiListingColumn propertyIdentifier="order.orderStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="order.orderCloseDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.product.productName" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.skudefinition" />
 		
 		<cfif rc.sku.getProduct().getBaseProductType() EQ "event">
-			<cf_HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
 		</cfif>
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

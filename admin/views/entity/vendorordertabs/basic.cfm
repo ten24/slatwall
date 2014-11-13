@@ -5,15 +5,15 @@
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
 			<cfif rc.vendorOrder.isNew()>
-				<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="currencyCode" edit="true">
+				<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="currencyCode" edit="true">
 			</cfif>
-			<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="vendor" autocompletePropertyIdentifiers="vendorName,vendorWebsite,accountNumber,primaryEmailAddress.emailAddress" fieldtype="textautocomplete" edit="#rc.vendorOrder.isNew()#">
-			<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="vendorOrderNumber" edit="#rc.vendorOrder.isNew()#">
-			<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="estimatedReceivalDateTime" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.vendorOrder#" property="billToLocation" edit="#rc.edit#">
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+			<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="vendor" autocompletePropertyIdentifiers="vendorName,vendorWebsite,accountNumber,primaryEmailAddress.emailAddress" fieldtype="textautocomplete" edit="#rc.vendorOrder.isNew()#">
+			<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="vendorOrderNumber" edit="#rc.vendorOrder.isNew()#">
+			<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="estimatedReceivalDateTime" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="billToLocation" edit="#rc.edit#">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 </cfoutput>

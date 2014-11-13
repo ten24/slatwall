@@ -53,4 +53,4 @@ Notes:
 <cfparam name="rc.attribute" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cf_HibachiPropertyDisplay object="#rc.attribute#" property="attributeDescription" fieldtype="wysiwyg" edit="#rc.edit#" displayType="plain">
+<hb:HibachiPropertyDisplay object="#rc.attribute#" property="attributeDescription" fieldtype="wysiwyg" edit="#rc.edit#" displayType="plain">

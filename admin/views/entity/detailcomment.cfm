@@ -67,23 +67,23 @@ Notes:
 </cfloop>
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.comment#" edit="#rc.edit#" saveActionQueryString="#local.returnActionQueryString#" saveActionHash="tabComments">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.comment#" />
+	<hb:HibachiEntityDetailForm object="#rc.comment#" edit="#rc.edit#" saveActionQueryString="#local.returnActionQueryString#" saveActionHash="tabComments">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.comment#" />
 		
 		<!--- Only Runs if new --->
 		<cfif rc.comment.isNew()>#local.hiddenKeyFields#</cfif>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.comment#" property="publicFlag" edit="#rc.edit#">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.comment#" property="publicFlag" edit="#rc.edit#">
 				<cfif !rc.comment.isNew()>
-					<cf_HibachiPropertyDisplay object="#rc.comment#" property="createdDateTime">
-					<cf_HibachiPropertyDisplay object="#rc.comment#" property="createdByAccount">
+					<hb:HibachiPropertyDisplay object="#rc.comment#" property="createdDateTime">
+					<hb:HibachiPropertyDisplay object="#rc.comment#" property="createdByAccount">
 				</cfif>
 				<hr />
-				<cf_HibachiPropertyDisplay object="#rc.comment#" property="comment" displaytype="plain" fieldClass="col-md-12" edit="#rc.comment.isNew()#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+				<hb:HibachiPropertyDisplay object="#rc.comment#" property="comment" displaytype="plain" fieldClass="col-md-12" edit="#rc.comment.isNew()#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

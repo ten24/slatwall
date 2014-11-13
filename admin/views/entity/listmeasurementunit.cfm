@@ -54,13 +54,13 @@ Notes:
 
 <cfoutput>
 
-<cf_HibachiEntityActionBar type="listing" object="#rc.measurementUnitSmartList#" showCreate="false" />
+<hb:HibachiEntityActionBar type="listing" object="#rc.measurementUnitSmartList#" showCreate="false" />
 
-<cf_HibachiListingDisplay smartList="#rc.measurementUnitSmartList#" recordDetailAction="admin:entity.detailmeasurementunit" recordDetailModal="true">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="unitName" />
-	<cf_HibachiListingColumn propertyIdentifier="unitCode" />
-	<cf_HibachiListingColumn propertyIdentifier="measurementType" />
-</cf_HibachiListingDisplay>
+<hb:HibachiListingDisplay smartList="#rc.measurementUnitSmartList#" recordDetailAction="admin:entity.detailmeasurementunit" recordDetailModal="true">
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="unitName" />
+	<hb:HibachiListingColumn propertyIdentifier="unitCode" />
+	<hb:HibachiListingColumn propertyIdentifier="measurementType" />
+</hb:HibachiListingDisplay>
 
 </cfoutput>
 

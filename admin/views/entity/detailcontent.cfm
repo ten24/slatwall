@@ -54,18 +54,18 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.content#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.content#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.content#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.content#" edit="#rc.edit#" />
 
-		<cf_HibachiEntityDetailGroup object="#rc.content#">
-			<cf_HibachiEntityDetailItem view="admin:entity/contenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		<hb:HibachiEntityDetailGroup object="#rc.content#">
+			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<cfif rc.content.getProductListingPageFlag()>
-				<cf_HibachiEntityDetailItem view="admin:entity/contenttabs/products">
+				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/products">
 			</cfif>
 			
-			<cf_HibachiEntityDetailItem view="admin:entity/contenttabs/settings">
-		</cf_HibachiEntityDetailGroup>
+			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/settings">
+		</hb:HibachiEntityDetailGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

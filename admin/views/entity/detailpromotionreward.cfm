@@ -65,30 +65,30 @@ Notes:
 </cfif>
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.promotionreward#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.promotionreward#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.promotionreward#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.promotionreward#" edit="#rc.edit#" 
 							  cancelAction="admin:entity.detailpromotionreward"
 							  cancelQueryString="promotionRewardID=#rc.promotionReward.getPromotionRewardID()#" 
 							  backAction="admin:entity.detailpromotionperiod" 
 							  backQueryString="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()###tabPromotionRewards" 
 							  deleteQueryString="redirectAction=admin:entity.detailpromotionperiod&promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#" />
 		
-		<cf_HibachiEntityDetailGroup object="#rc.promotionreward#">
-			<cf_HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailGroup object="#rc.promotionreward#">
+			<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.rewardType)>
-				<cf_HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/producttypes" />
-				<cf_HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/products" />
-				<cf_HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/skus" />
-				<cf_HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/brands" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/producttypes" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/products" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/skus" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/brands" />
 				<cfif rc.rewardType eq "merchandise">
-					<cf_HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/options" />
+					<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/options" />
 				</cfif>
 			<cfelseif rc.rewardType eq "fulfillment">
-				<cf_HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/fulfillmentMethods" />
-				<cf_HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingMethods" />
-				<cf_HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingAddressZones" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/fulfillmentMethods" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingMethods" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/shippingAddressZones" />
 			</cfif>
-		</cf_HibachiEntityDetailGroup>
+		</hb:HibachiEntityDetailGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

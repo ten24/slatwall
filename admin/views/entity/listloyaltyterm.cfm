@@ -56,22 +56,22 @@ Notes:
 	
 	<cfset rc.loyaltyTermSmartList.addOrder("loyaltyTermName|ASC") />
 	
-	<cf_HibachiEntityActionBar type="listing" object="#rc.loyaltyTermSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.loyaltyTermSmartList#" showCreate="false">
 			
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createloyaltyterm" entity="loyaltyterm" class="btn s-btn-blue" icon="plus icon-white" />
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createloyaltyterm" entity="loyaltyterm" class="btn s-btn-blue" icon="plus icon-white" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiListingDisplay smartList="#rc.loyaltyTermSmartList#"
+	<hb:HibachiListingDisplay smartList="#rc.loyaltyTermSmartList#"
 							   recorddetailaction="admin:entity.detailloyaltyterm"
 							   recordEditAction="admin:entity.editloyaltyterm">
 		
-		<cf_HibachiListingColumn propertyIdentifier="loyaltyTermName" />
-		<cf_HibachiListingColumn propertyIdentifier="loyaltyTermStartDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="loyalty.loyaltyName" />
-		<cf_HibachiListingColumn propertyIdentifier="term.termName" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="loyaltyTermName" />
+		<hb:HibachiListingColumn propertyIdentifier="loyaltyTermStartDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="loyalty.loyaltyName" />
+		<hb:HibachiListingColumn propertyIdentifier="term.termName" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

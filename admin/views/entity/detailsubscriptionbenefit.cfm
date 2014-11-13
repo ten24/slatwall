@@ -54,23 +54,23 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.subscriptionBenefit#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.subscriptionBenefit#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.subscriptionBenefit#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.subscriptionBenefit#" edit="#rc.edit#" />
 		
-		<cf_HibachiEntityDetailGroup object="#rc.subscriptionBenefit#">
-			<cf_HibachiEntityDetailItem view="admin:entity/subscriptionbenefittabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cf_HibachiEntityDetailItem view="admin:entity/subscriptionbenefittabs/categories" />
-			<cf_HibachiEntityDetailItem view="admin:entity/subscriptionbenefittabs/contents" />
-			<cf_HibachiEntityDetailItem view="admin:entity/subscriptionbenefittabs/pricegroups" />
+		<hb:HibachiEntityDetailGroup object="#rc.subscriptionBenefit#">
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionbenefittabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionbenefittabs/categories" />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionbenefittabs/contents" />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionbenefittabs/pricegroups" />
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.subscriptionBenefit.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.subscriptionBenefit#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiEntityDetailGroup>
+		</hb:HibachiEntityDetailGroup>
 
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 
 

@@ -56,9 +56,9 @@ Notes:
 <cfparam name="rc.baseID" type="string">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.file#" edit="#rc.edit#" enctype="multipart/form-data" saveActionQueryString="#rc.baseObject#ID=#rc.baseID#">
+	<hb:HibachiEntityDetailForm object="#rc.file#" edit="#rc.edit#" enctype="multipart/form-data" saveActionQueryString="#rc.baseObject#ID=#rc.baseID#">
 	
-		<cf_HibachiEntityActionBar type="detail" object="#rc.file#" edit="#rc.edit#"
+		<hb:HibachiEntityActionBar type="detail" object="#rc.file#" edit="#rc.edit#"
 								   cancelAction="#request.context.entityActionDetails.sRedirectAction#"
 								   cancelQueryString="#rc.baseObject#ID=#rc.baseID#"
 								   backAction="#request.context.entityActionDetails.sRedirectAction#"
@@ -73,24 +73,24 @@ Notes:
 			<input type="hidden" name="fileRelationships[1].baseID" value="#rc.baseID#" />
 		</cfif>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divclass="col-md-12">
-				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileUpload" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.file#" property="activeFlag" edit="#rc.edit#">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList divclass="col-md-12">
+				<hb:HibachiPropertyDisplay object="#rc.file#" property="fileUpload" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.file#" property="fileName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.file#" property="activeFlag" edit="#rc.edit#">
 				<cfif not rc.file.getNewFlag()>
-					<cf_HibachiPropertyDisplay object="#rc.file#" property="urlTitle" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.file#" property="urlTitle" edit="#rc.edit#">
 				</cfif>
-				<cf_HibachiPropertyDisplay object="#rc.file#" property="fileDescription" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+				<hb:HibachiPropertyDisplay object="#rc.file#" property="fileDescription" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.file#">
+		<hb:HibachiTabGroup object="#rc.file#">
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.file.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.file#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiTabGroup>
-	</cf_HibachiEntityDetailForm>
+		</hb:HibachiTabGroup>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

@@ -53,10 +53,10 @@ Notes:
 <cfparam name="rc.edit" type="boolean" /> 
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.order.getStockReceiversSmartList()#" 
+	<hb:HibachiListingDisplay smartList="#rc.order.getStockReceiversSmartList()#" 
 			recordDetailAction="admin:entity.detailstockreceiver">
-		<cf_HibachiListingColumn tdClass="primary" propertyIdentifier="packingSlipNumber" />
-		<cf_HibachiListingColumn propertyIdentifier="boxCount" />
-		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="packingSlipNumber" />
+		<hb:HibachiListingColumn propertyIdentifier="boxCount" />
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

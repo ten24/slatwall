@@ -55,13 +55,13 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.stockReceiver#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.stockReceiver#" edit="#rc.edit#">
-		</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.stockReceiver#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.stockReceiver#" edit="#rc.edit#">
+		</hb:HibachiEntityActionBar>
 
-		<cf_HibachiEntityDetailGroup object="#rc.stockReceiver#">
-			<cf_HibachiEntityDetailItem view="admin:entity/stockreceivertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cf_HibachiEntityDetailItem view="admin:entity/stockreceivertabs/stockreceiveritems" />
-		</cf_HibachiEntityDetailGroup>
-	</cf_HibachiEntityDetailForm>
+		<hb:HibachiEntityDetailGroup object="#rc.stockReceiver#">
+			<hb:HibachiEntityDetailItem view="admin:entity/stockreceivertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/stockreceivertabs/stockreceiveritems" />
+		</hb:HibachiEntityDetailGroup>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

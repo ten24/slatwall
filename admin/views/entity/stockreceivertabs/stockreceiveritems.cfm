@@ -53,11 +53,11 @@ Notes:
 <cfparam name="rc.edit" type="boolean" /> 
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.stockReceiver.getStockReceiverItemsSmartList()#">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.calculatedTitle" />
-		<cf_HibachiListingColumn propertyIdentifier="stock.sku.skuDefinition" sort="false" />
-		<cf_HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="stock.location.locationName" />
-		<cf_HibachiListingColumn propertyIdentifier="quantity" />
-	</cf_HibachiListingDisplay>
+	<hb:HibachiListingDisplay smartList="#rc.stockReceiver.getStockReceiverItemsSmartList()#">
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.calculatedTitle" />
+		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuDefinition" sort="false" />
+		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
+		<hb:HibachiListingColumn propertyIdentifier="stock.location.locationName" />
+		<hb:HibachiListingColumn propertyIdentifier="quantity" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

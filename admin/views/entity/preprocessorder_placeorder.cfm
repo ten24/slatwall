@@ -56,13 +56,13 @@ Notes:
 <cfset rc.placeOrderNeedsFulifllmentCharge = false />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#">
+	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.order#">
-		</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 				
 				<h3>Required Details</h3>
 				<hr />
@@ -81,17 +81,17 @@ Notes:
 							
 							<!--- Email --->
 							<cfif orderFulfillment.getFulfillmentMethodType() eq "email">
-								<cf_HibachiPropertyDisplay object="#orderFulfillment#" property="emailAddress" fieldName="orderFulfillments[#ofIndex#].emailAddress" fieldClass="required" edit="#rc.edit#" />
+								<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="emailAddress" fieldName="orderFulfillments[#ofIndex#].emailAddress" fieldClass="required" edit="#rc.edit#" />
 								
 							<!--- Pickup --->
 							<cfelseif orderFulfillment.getFulfillmentMethodType() eq "pickup">
-								<cf_HibachiPropertyDisplay object="#orderFulfillment#" property="pickupLocation" fieldName="orderFulfillments[#ofIndex#].pickupLocation.locationID" fieldClass="required" edit="#rc.edit#" />
+								<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="pickupLocation" fieldName="orderFulfillments[#ofIndex#].pickupLocation.locationID" fieldClass="required" edit="#rc.edit#" />
 								
 							<!--- Shippint --->
 							<cfelseif orderFulfillment.getFulfillmentMethodType() eq "shipping">
 								<cfif structKeyExists(thisErrorBean.getErrors(), "shippingMethod")>
 									<cfset rc.placeOrderNeedsFulifllmentCharge = true />
-									<cf_HibachiPropertyDisplay object="#orderFulfillment#" property="shippingMethod" fieldName="orderFulfillments[#ofIndex#].shippingMethod.shippingMethodID" fieldClass="required" edit="#rc.edit#" />
+									<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="shippingMethod" fieldName="orderFulfillments[#ofIndex#].shippingMethod.shippingMethodID" fieldClass="required" edit="#rc.edit#" />
 								</cfif>
 								<cfif structKeyExists(thisErrorBean.getErrors(), "shippingAddress")>
 									<cf_SlatwallAdminAddressDisplay address="#orderFulfillment.getAddress()#" fieldNamePrefix="orderFulfillments[#ofIndex#].shippingAddress" edit="#rc.edit#" />
@@ -119,18 +119,18 @@ Notes:
 						<cfif rc.placeOrderNeedsFulifllmentCharge>
 							<cfset amountToChargeDisplay &= " + #$.slatwall.rbKey('entity.orderFulfillment.fulfillmentCharge')#" />
 						</cfif>
-						<cf_HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="amount" value="#amountToChargeDisplay#" edit="false">
+						<hb:HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="amount" value="#amountToChargeDisplay#" edit="false">
 						
 						<!--- Add hidden value for payment type, and display what it is going to be --->
 						<input type="hidden" name="newOrderPayment.orderPaymentType.typeID" value="#rc.order.getAddPaymentRequirementDetails().orderPaymentType.getTypeID()#" />
-						<cf_HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="orderPaymentType" value="#rc.order.getAddPaymentRequirementDetails().orderPaymentType.getType()#" edit="false">
+						<hb:HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="orderPaymentType" value="#rc.order.getAddPaymentRequirementDetails().orderPaymentType.getType()#" edit="false">
 						
 						<cfinclude template="preprocessorder_include/addorderpayment.cfm" />
 					</cfif>
 				</cfif>
 				
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

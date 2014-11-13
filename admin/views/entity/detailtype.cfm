@@ -54,21 +54,21 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.type#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.type#" />
+	<hb:HibachiEntityDetailForm object="#rc.type#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.type#" />
 		
-		<cf_HibachiEntityDetailGroup object="#rc.type#">
-			<cf_HibachiEntityDetailItem view="admin:entity/typetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailGroup object="#rc.type#">
+			<hb:HibachiEntityDetailItem view="admin:entity/typetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cfif isNull(rc.type.getParentType())>
-				<cf_HibachiEntityDetailItem property="childTypes" />
+				<hb:HibachiEntityDetailItem property="childTypes" />
 			</cfif>
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.type.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.type#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiEntityDetailGroup>
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

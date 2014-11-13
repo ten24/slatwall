@@ -55,18 +55,18 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
 		<div class="s-top-spacer">
-			<cf_HibachiPropertyRow>
-				<cf_HibachiPropertyList>
-					<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionName" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionObject" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.collection#" property="description" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.collection#" property="collectionCode" edit="#rc.edit#">
-				</cf_HibachiPropertyList>
-			</cf_HibachiPropertyRow>
+			<hb:HibachiPropertyRow>
+				<hb:HibachiPropertyList>
+					<hb:HibachiPropertyDisplay object="#rc.collection#" property="collectionName" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.collection#" property="collectionObject" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.collection#" property="description" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.collection#" property="collectionCode" edit="#rc.edit#">
+				</hb:HibachiPropertyList>
+			</hb:HibachiPropertyRow>
 		</div>
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

@@ -58,24 +58,24 @@ Notes:
 	<!--- If there are sku bundles then we can display them seperately here ---> 
 	<cfif local.bundleSkusSmartList.getRecordsCount()>
 		<h4>Sku Bundles</h4>
-		<cf_HibachiListingDisplay smartList="#local.bundleSkusSmartList#"
+		<hb:HibachiListingDisplay smartList="#local.bundleSkusSmartList#"
 							   recordDetailAction="admin:entity.detailsku"
 							   recordDetailQueryString="productID=#rc.product.getProductID()#"
 							   recordEditAction="admin:entity.editsku"
 							   recordEditQueryString="productID=#rc.product.getProductID()#">
 			<cfif rc.product.getBaseProductType() eq "event">
-				<cf_HibachiListingColumn propertyIdentifier="skuName" />
+				<hb:HibachiListingColumn propertyIdentifier="skuName" />
 			</cfif>			      
-			<cf_HibachiListingColumn propertyIdentifier="skuCode" />
-			<cf_HibachiListingColumn propertyIdentifier="skuDefinition" />
-			<cf_HibachiListingColumn propertyIdentifier="imageFile" />
-			<cf_HibachiListingColumn propertyIdentifier="listPrice" />
-			<cf_HibachiListingColumn propertyIdentifier="price" />
+			<hb:HibachiListingColumn propertyIdentifier="skuCode" />
+			<hb:HibachiListingColumn propertyIdentifier="skuDefinition" />
+			<hb:HibachiListingColumn propertyIdentifier="imageFile" />
+			<hb:HibachiListingColumn propertyIdentifier="listPrice" />
+			<hb:HibachiListingColumn propertyIdentifier="price" />
 			<cfif  rc.product.getProductType().getBaseProductType() eq "subscription">
-				<cf_HibachiListingColumn propertyIdentifier="renewalPrice" />
+				<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
 			</cfif>
-			<cf_HibachiListingColumn propertyIdentifier="salePrice" />
-		</cf_HibachiListingDisplay>
+			<hb:HibachiListingColumn propertyIdentifier="salePrice" />
+		</hb:HibachiListingDisplay>
 		<br />
 		<hr />
 		<h4>Skus</h4>
@@ -88,7 +88,7 @@ Notes:
 		<cfset local.skusSmartList.addFilter("bundleFlag", "false")>
 		
 	
-		<cf_HibachiListingDisplay smartList="#local.skusSmartList#"
+		<hb:HibachiListingDisplay smartList="#local.skusSmartList#"
 								   edit="#rc.edit#"
 								   recordDetailAction="admin:entity.detailsku"
 								   recordDetailQueryString="productID=#rc.product.getProductID()#"
@@ -99,35 +99,35 @@ Notes:
 								   selectTitle="#$.slatwall.rbKey('define.default')#">
 								      
 			<cfif rc.product.getBaseProductType() eq "event">
-				<cf_HibachiListingColumn propertyIdentifier="skuName" />
+				<hb:HibachiListingColumn propertyIdentifier="skuName" />
 			</cfif>
-			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
-			<cf_HibachiListingColumn propertyIdentifier="skuDefinition" />
+			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
+			<hb:HibachiListingColumn propertyIdentifier="skuDefinition" />
 			<cfif rc.product.getBaseProductType() eq "event">
-				<cf_HibachiListingColumn propertyIdentifier="eventStartDateTime" />
-				<cf_HibachiListingColumn propertyIdentifier="eventEndDateTime" />
-				<cf_HibachiListingColumn propertyIdentifier="eventAttendanceCode" />
-				<cf_HibachiListingColumn propertyIdentifier="eventConflictExistsFlag" />
-				<cf_HibachiListingColumn propertyIdentifier="availableSeatCount" />
+				<hb:HibachiListingColumn propertyIdentifier="eventStartDateTime" />
+				<hb:HibachiListingColumn propertyIdentifier="eventEndDateTime" />
+				<hb:HibachiListingColumn propertyIdentifier="eventAttendanceCode" />
+				<hb:HibachiListingColumn propertyIdentifier="eventConflictExistsFlag" />
+				<hb:HibachiListingColumn propertyIdentifier="availableSeatCount" />
 			</cfif>
-			<cf_HibachiListingColumn propertyIdentifier="imageFile" />
+			<hb:HibachiListingColumn propertyIdentifier="imageFile" />
 			<cfif isNull(rc.product.getDefaultSku().getUserDefinedPriceFlag()) || !rc.product.getDefaultSku().getUserDefinedPriceFlag()>
-				<cf_HibachiListingColumn propertyIdentifier="listPrice" />
-				<cf_HibachiListingColumn propertyIdentifier="price" />
+				<hb:HibachiListingColumn propertyIdentifier="listPrice" />
+				<hb:HibachiListingColumn propertyIdentifier="price" />
 				<cfif  rc.product.getProductType().getBaseProductType() eq "subscription">
-					<cf_HibachiListingColumn propertyIdentifier="renewalPrice" />
+					<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
 				</cfif>
-				<cf_HibachiListingColumn propertyIdentifier="salePrice" />
+				<hb:HibachiListingColumn propertyIdentifier="salePrice" />
 			</cfif>
-		</cf_HibachiListingDisplay>
+		</hb:HibachiListingDisplay>
 	</cfif>
 	
-	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addEventSchedule" class="btn" icon="plus icon" modal="false" />
-	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSku" class="btn" icon="plus icon" modal="true" />
-	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOptionGroup" class="btn" icon="plus icon" modal="true" />
-	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOption" class="btn" icon="plus icon" modal="true" />
-	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSubscriptionSku" class="btn" icon="plus icon" modal="true" />
-	<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSkuBundle" class="btn" icon="plus icon" modal="false" />
+	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addEventSchedule" class="btn" icon="plus icon" modal="false" />
+	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSku" class="btn" icon="plus icon" modal="true" />
+	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOptionGroup" class="btn" icon="plus icon" modal="true" />
+	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOption" class="btn" icon="plus icon" modal="true" />
+	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSubscriptionSku" class="btn" icon="plus icon" modal="true" />
+	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSkuBundle" class="btn" icon="plus icon" modal="false" />
 
 </cfoutput>
 

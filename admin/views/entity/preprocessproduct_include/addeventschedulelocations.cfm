@@ -51,11 +51,11 @@ Notes:
 
 <cfparam name="rc.addEventScheduleProcessObject" type="any" />
 
-<cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="bundleLocationConfigurationFlag" edit="true" />
+<hb:HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="bundleLocationConfigurationFlag" edit="true" />
 <br />
 <cf_SlatwallErrorDisplay object="#rc.addEventScheduleProcessObject#" errorName="locationConfigurations" />
-<cf_HibachiListingDisplay smartList="#$.slatwall.getSmartList("LocationConfiguration")#" multiselectFieldName="locationConfigurations" multiselectValues="#rc.addEventScheduleProcessObject.getLocationConfigurations()#" edit="true">
-	<cf_HibachiListingColumn propertyIdentifier="location.locationName" />
-	<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
-	<cf_HibachiListingColumn propertyIdentifier="locationConfigurationCapacity" />
-</cf_HibachiListingDisplay>
+<hb:HibachiListingDisplay smartList="#$.slatwall.getSmartList("LocationConfiguration")#" multiselectFieldName="locationConfigurations" multiselectValues="#rc.addEventScheduleProcessObject.getLocationConfigurations()#" edit="true">
+	<hb:HibachiListingColumn propertyIdentifier="location.locationName" />
+	<hb:HibachiListingColumn propertyIdentifier="locationConfigurationName" />
+	<hb:HibachiListingColumn propertyIdentifier="locationConfigurationCapacity" />
+</hb:HibachiListingDisplay>

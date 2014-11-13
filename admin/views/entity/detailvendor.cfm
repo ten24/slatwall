@@ -53,21 +53,21 @@ Notes:
 <cfparam name="rc.vendor" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cf_HibachiEntityDetailForm object="#rc.vendor#" edit="#rc.edit#">
-	<cf_HibachiEntityActionBar type="detail" object="#rc.vendor#" edit="#rc.edit#">
-		<cf_HibachiActionCaller action="admin:entity.createvendoraddress" queryString="vendorID=#rc.vendor.getVendorID()#" type="list" modal=true />
-	</cf_HibachiEntityActionBar>
+<hb:HibachiEntityDetailForm object="#rc.vendor#" edit="#rc.edit#">
+	<hb:HibachiEntityActionBar type="detail" object="#rc.vendor#" edit="#rc.edit#">
+		<hb:HibachiActionCaller action="admin:entity.createvendoraddress" queryString="vendorID=#rc.vendor.getVendorID()#" type="list" modal=true />
+	</hb:HibachiEntityActionBar>
 
-	<cf_HibachiEntityDetailGroup object="#rc.vendor#">
-		<cf_HibachiEntityDetailItem view="admin:entity/vendortabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-		<cf_HibachiEntityDetailItem view="admin:entity/vendortabs/vendoraddresses" />
-		<cf_HibachiEntityDetailItem view="admin:entity/vendortabs/vendorbrands" />
-		<cf_HibachiEntityDetailItem view="admin:entity/vendortabs/vendororders" />
+	<hb:HibachiEntityDetailGroup object="#rc.vendor#">
+		<hb:HibachiEntityDetailItem view="admin:entity/vendortabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailItem view="admin:entity/vendortabs/vendoraddresses" />
+		<hb:HibachiEntityDetailItem view="admin:entity/vendortabs/vendorbrands" />
+		<hb:HibachiEntityDetailItem view="admin:entity/vendortabs/vendororders" />
 		
 		<!--- Custom Attributes --->
 		<cfloop array="#rc.vendor.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 			<cf_SlatwallAdminTabCustomAttributes object="#rc.vendor#" attributeSet="#attributeSet#" />
 		</cfloop>
-	</cf_HibachiEntityDetailGroup>
+	</hb:HibachiEntityDetailGroup>
 	
-</cf_HibachiEntityDetailForm>
+</hb:HibachiEntityDetailForm>

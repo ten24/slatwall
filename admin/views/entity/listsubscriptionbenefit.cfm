@@ -54,22 +54,22 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiEntityActionBar type="listing" object="#rc.subscriptionBenefitSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionBenefitSmartList#" showCreate="false">
 			
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createsubscriptionbenefit" entity="subscriptionbenefit" class="btn s-btn-blue" icon="plus icon-white" modal="true" />			
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createsubscriptionbenefit" entity="subscriptionbenefit" class="btn s-btn-blue" icon="plus icon-white" modal="true" />			
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 
-	<cf_HibachiListingDisplay smartList="#rc.subscriptionBenefitSmartList#"
+	<hb:HibachiListingDisplay smartList="#rc.subscriptionBenefitSmartList#"
 							   recordDetailAction="admin:entity.detailsubscriptionbenefit"
 							   recordEditAction="admin:entity.editsubscriptionbenefit">
 		
 	
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionBenefitName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionBenefitName" />
 	
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

@@ -51,11 +51,11 @@ Notes:
 
 <cfparam name="rc.vendor" type="any" />
 
-<cf_HibachiListingDisplay smartList="#rc.vendor.getVendorOrdersSmartList()#" recordDetailAction="admin:entity.detailvendororder">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="vendorOrderNumber" />
-	<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
-	<cf_HibachiListingColumn propertyIdentifier="vendorOrderType.type" />
-	<cf_HibachiListingColumn propertyIdentifier="total" />
-</cf_HibachiListingDisplay>
+<hb:HibachiListingDisplay smartList="#rc.vendor.getVendorOrdersSmartList()#" recordDetailAction="admin:entity.detailvendororder">
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="vendorOrderNumber" />
+	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+	<hb:HibachiListingColumn propertyIdentifier="vendorOrderType.type" />
+	<hb:HibachiListingColumn propertyIdentifier="total" />
+</hb:HibachiListingDisplay>
 
 

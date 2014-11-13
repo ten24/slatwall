@@ -55,10 +55,10 @@ Notes:
 <cfoutput>
 	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.loyaltyRedemption.skus')#</h5>
-		<cf_HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="skus" edit="#rc.edit#" displayType="plain" />
+		<hb:HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="skus" edit="#rc.edit#" displayType="plain" />
 	</div>
 	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.loyaltyRedemption.excludedskus')#</h5>
-		<cf_HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="excludedSkus" edit="#rc.edit#" displayType="plain" />
+		<hb:HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="excludedSkus" edit="#rc.edit#" displayType="plain" />
 	</div>
 </cfoutput>

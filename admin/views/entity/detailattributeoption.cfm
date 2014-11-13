@@ -55,9 +55,9 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.attributeOption#" edit="#rc.edit#"
+	<hb:HibachiEntityDetailForm object="#rc.attributeOption#" edit="#rc.edit#"
 								saveActionQueryString="attributeID=#rc.attribute.getAttributeID()#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.attributeOption#" edit="#rc.edit#" 
+		<hb:HibachiEntityActionBar type="detail" object="#rc.attributeOption#" edit="#rc.edit#" 
 									backAction="admin:entity.detailAttribute" 
 								    backQueryString="attributeID=#rc.attribute.getAttributeID()#" 
 								    cancelAction="admin:entity.detailAttribute"
@@ -65,14 +65,14 @@ Notes:
 		
 		
 		
-		<cf_HibachiEntityDetailGroup object="#rc.attributeOption#">
-			<cf_HibachiEntityDetailItem view="admin:entity/attributeoptiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailGroup object="#rc.attributeOption#">
+			<hb:HibachiEntityDetailItem view="admin:entity/attributeoptiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.attributeOption.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.attributeOption#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiEntityDetailGroup>
-	</cf_HibachiEntityDetailForm>
+		</hb:HibachiEntityDetailGroup>
+	</hb:HibachiEntityDetailForm>
 	
 	
 </cfoutput>

@@ -53,19 +53,19 @@ Notes:
 <cfparam name="rc.fulfillmentMethod" type="any" />
 <cfparam name="rc.edit" type="boolean" default="false" />
 
-<cf_HibachiEntityDetailForm object="#rc.fulfillmentMethod#" edit="#rc.edit#">
-	<cf_HibachiEntityActionBar type="detail" object="#rc.fulfillmentMethod#" edit="#rc.edit#">
+<hb:HibachiEntityDetailForm object="#rc.fulfillmentMethod#" edit="#rc.edit#">
+	<hb:HibachiEntityActionBar type="detail" object="#rc.fulfillmentMethod#" edit="#rc.edit#">
 		<cfif rc.fulfillmentMethod.getFulfillmentMethodType() eq "shipping">
-			<cf_HibachiActionCaller action="admin:entity.createshippingmethod" queryString="fulfillmentMethodID=#rc.fulfillmentMethod.getFulfillmentMethodID()#" type="list" />
+			<hb:HibachiActionCaller action="admin:entity.createshippingmethod" queryString="fulfillmentMethodID=#rc.fulfillmentMethod.getFulfillmentMethodID()#" type="list" />
 		</cfif>
-	</cf_HibachiEntityActionBar>
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiEntityDetailGroup object="#rc.fulfillmentMethod#">
-		<cf_HibachiEntityDetailItem view="admin:entity/fulfillmentmethodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+	<hb:HibachiEntityDetailGroup object="#rc.fulfillmentMethod#">
+		<hb:HibachiEntityDetailItem view="admin:entity/fulfillmentmethodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 		<cfif rc.fulfillmentMethod.getFulfillmentMethodType() eq "shipping">
-			<cf_HibachiEntityDetailItem view="admin:entity/fulfillmentmethodtabs/shippingmethods">	
+			<hb:HibachiEntityDetailItem view="admin:entity/fulfillmentmethodtabs/shippingmethods">	
 		</cfif>
-		<cf_HibachiEntityDetailItem view="admin:entity/fulfillmentmethodtabs/fulfillmentsettings">
-	</cf_HibachiEntityDetailGroup>
+		<hb:HibachiEntityDetailItem view="admin:entity/fulfillmentmethodtabs/fulfillmentsettings">
+	</hb:HibachiEntityDetailGroup>
 
-</cf_HibachiEntityDetailForm>
+</hb:HibachiEntityDetailForm>

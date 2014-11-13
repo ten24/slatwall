@@ -54,26 +54,26 @@ Notes:
 
 <cfoutput>
 	
-	<cf_HibachiEntityActionBar type="listing" object="#rc.eventregistrationsmartlist#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.eventregistrationsmartlist#" showCreate="false">
 		
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiListingDisplay type="listing" object="#rc.eventregistrationsmartlist#" 
+	<hb:HibachiListingDisplay type="listing" object="#rc.eventregistrationsmartlist#" 
 							  smartList="#rc.eventregistrationsmartlist#" 
 							  showCreate="false"
 							  recordEditAction="admin:entity.editeventregistration"
 							  recorddetailaction="admin:entity.detaileventregistration">
 	
-		<cf_HibachiListingColumn propertyIdentifier="account.firstname" />
-		<cf_HibachiListingColumn propertyIdentifier="account.lastname" />
-		<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.product.productName" />
-		<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.eventStartDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.eventEndDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="orderitem.sku.skudefinition" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="account.firstname" />
+		<hb:HibachiListingColumn propertyIdentifier="account.lastname" />
+		<hb:HibachiListingColumn propertyIdentifier="orderitem.sku.product.productName" />
+		<hb:HibachiListingColumn propertyIdentifier="orderitem.sku.eventStartDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="orderitem.sku.eventEndDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="orderitem.sku.skudefinition" />
+	</hb:HibachiListingDisplay>
 	
 </cfoutput>

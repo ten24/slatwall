@@ -56,30 +56,30 @@ Notes:
 <cfparam name="rc.edittype" default="single" >
 <cfparam name="rc._eventEndDateTime" default="#rc.processObject.dateTimePickerFormat(rc.sku.getEventEndDateTime())#" >
 
-<cf_HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#">
+<hb:HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#">
 	
-	<cf_HibachiEntityActionBar type="preprocess" object="#rc.sku#">
-	</cf_HibachiEntityActionBar>
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.sku#">
+	</hb:HibachiEntityActionBar>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
 			
 			<cfif rc.sku.hasProductSchedule()>
 				<cfif rc.edittype EQ "all">
 					<!--- If we're here it means we're editing a product schedule as opposed to a sku so we don't want to prompt --->
 					<input type="hidden" id="editScope" name="editScope" value="all" />
 				<cfelse>
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="editScope" property="editScope" edit="#rc.edit#" valueOptions="#rc.processObject.getEditScopeOptions()#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" fieldname="editScope" property="editScope" edit="#rc.edit#" valueOptions="#rc.processObject.getEditScopeOptions()#">
 				</cfif>
 			</cfif>
 			
-			<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventStartDateTime" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.sku#" property="startReservationDateTime" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.sku#" property="endReservationDateTime" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.sku#" property="eventStartDateTime" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.sku#" property="eventEndDateTime" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.sku#" property="startReservationDateTime" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.sku#" property="endReservationDateTime" edit="#rc.edit#">
 			
 			
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 	
-</cf_HibachiEntityProcessForm>
+</hb:HibachiEntityProcessForm>
 

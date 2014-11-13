@@ -55,21 +55,21 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.accountPayment#" edit="#rc.edit#">
+	<hb:HibachiEntityDetailForm object="#rc.accountPayment#" edit="#rc.edit#">
 								
-		<cf_HibachiEntityActionBar type="detail" object="#rc.accountPayment#" edit="#rc.edit#"
+		<hb:HibachiEntityActionBar type="detail" object="#rc.accountPayment#" edit="#rc.edit#"
 								   backAction="admin:entity.detailaccount"
 								   backQueryString="accountID=#rc.account.getAccountID()#" />
 		
 		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
 		
-		<cf_HibachiEntityDetailGroup object="#rc.accountPayment#">
-			<cf_HibachiEntityDetailItem view="admin:entity/accountpaymenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailGroup object="#rc.accountPayment#">
+			<hb:HibachiEntityDetailItem view="admin:entity/accountpaymenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.accountPayment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<cf_SlatwallAdminTabCustomAttributes object="#rc.accountPayment#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiEntityDetailGroup>
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

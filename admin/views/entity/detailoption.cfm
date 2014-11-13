@@ -55,8 +55,8 @@ Notes:
 <cfparam name="rc.edit" default="false" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.option#" edit="#rc.edit#" saveActionQueryString="optionGroupID=#rc.optionGroup.getOptionGroupID()#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.option#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.option#" edit="#rc.edit#" saveActionQueryString="optionGroupID=#rc.optionGroup.getOptionGroupID()#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.option#" edit="#rc.edit#" 
 					backAction="admin:entity.detailoptiongroup" 
 					backQueryString="optionGroupID=#rc.optionGroup.getOptionGroupID()#"
 					cancelAction="admin:entity.detailoptiongroup"
@@ -65,12 +65,12 @@ Notes:
 					
 		<input type="hidden" name="optionGroup.optionGroupID" value="#rc.optionGroup.getOptionGroupID()#" />
 
-		<cf_HibachiEntityDetailGroup object="#rc.option#">
-			<cf_HibachiEntityDetailItem view="admin:entity/optiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailGroup object="#rc.option#">
+			<hb:HibachiEntityDetailItem view="admin:entity/optiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<!--- Images --->
 			<cf_SlatwallAdminTabImages object="#rc.option#" />
-		</cf_HibachiEntityDetailGroup>
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 	
 </cfoutput>

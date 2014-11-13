@@ -52,17 +52,17 @@ Notes:
 <cfparam name="rc.fulfillmentMethod" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.fulfillmentMethod.getShippingMethodsSmartList()#" 
+	<hb:HibachiListingDisplay smartList="#rc.fulfillmentMethod.getShippingMethodsSmartList()#" 
 							   recordEditAction="admin:entity.editshippingmethod" 
 							   recordDetailAction="admin:entity.detailshippingmethod"
 							   sortproperty="sortOrder"
 							   sortContextIDColumn="fulfillmentMethodID"
 							   sortContextIDValue="#rc.fulfillmentMethod.getFulfillmentMethodID()#">
 			
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="shippingMethodName" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="activeFlag" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="shippingMethodName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="activeFlag" />
 		
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createshippingmethod" class="btn btn-default" icon="plus" queryString="fulfillmentMethodID=#rc.fulfillmentMethod.getFulfillmentMethodID()#" />
+	<hb:HibachiActionCaller action="admin:entity.createshippingmethod" class="btn btn-default" icon="plus" queryString="fulfillmentMethodID=#rc.fulfillmentMethod.getFulfillmentMethodID()#" />
 </cfoutput>

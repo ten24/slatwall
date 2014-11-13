@@ -55,19 +55,19 @@ Notes:
 	
 	<cfset local.eventRegSmartList = rc.sku.geteventRegistrationsSmartlist()/>
 	
-		<cf_HibachiListingDisplay smartList="#local.eventRegSmartList#"
+		<hb:HibachiListingDisplay smartList="#local.eventRegSmartList#"
 				recordEditAction="admin:entity.editeventregistration"
 				recorddetailaction="admin:entity.detaileventregistration">
-			<cf_HibachiListingColumn propertyIdentifier="account.firstname" />
-			<cf_HibachiListingColumn propertyIdentifier="account.lastname" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.product.productName" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.skudefinition" />
-			<cf_HibachiListingColumn propertyIdentifier="eventRegistrationStatusType.type" title="#$.slatwall.rbKey('entity.eventRegistration.eventRegistrationStatusType')#" />
-		</cf_HibachiListingDisplay>
+			<hb:HibachiListingColumn propertyIdentifier="account.firstname" />
+			<hb:HibachiListingColumn propertyIdentifier="account.lastname" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.product.productName" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.skudefinition" />
+			<hb:HibachiListingColumn propertyIdentifier="eventRegistrationStatusType.type" title="#$.slatwall.rbKey('entity.eventRegistration.eventRegistrationStatusType')#" />
+		</hb:HibachiListingDisplay>
 		
-		<cf_HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="addEventRegistration" class="btn" icon="plus icon" modal="true" />
+		<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="addEventRegistration" class="btn" icon="plus icon" modal="true" />
 	
 </cfoutput>

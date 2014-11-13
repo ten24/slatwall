@@ -52,4 +52,4 @@ Notes:
 
 <cfparam name="rc.emailTemplate" type="any" />
 
-<cf_HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailBodyHTML" edit="#rc.edit#" fieldtype="wysiwyg" displaytype="plain">
+<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailBodyHTML" edit="#rc.edit#" fieldtype="wysiwyg" displaytype="plain">

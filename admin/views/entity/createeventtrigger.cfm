@@ -54,17 +54,17 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.eventTrigger#" edit="#rc.edit#" sRedirectAction="admin:entity.editeventtrigger">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.eventTrigger#" />
+	<hb:HibachiEntityDetailForm object="#rc.eventTrigger#" edit="#rc.edit#" sRedirectAction="admin:entity.editeventtrigger">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.eventTrigger#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventTriggerName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventTriggerType" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventTriggerObject" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventTriggerName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventTriggerType" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.eventTrigger#" property="eventTriggerObject" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

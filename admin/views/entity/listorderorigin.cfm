@@ -54,24 +54,24 @@ Notes:
 
 <cfoutput>
 
-	<cf_HibachiEntityActionBar type="listing" object="#rc.orderOriginSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.orderOriginSmartList#" showCreate="false">
 			
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createorderorigin" entity="orderorigin" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createorderorigin" entity="orderorigin" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 
-	<cf_HibachiListingDisplay smartList="#rc.orderOriginSmartList#"
+	<hb:HibachiListingDisplay smartList="#rc.orderOriginSmartList#"
 			recordEditAction="admin:entity.editorderorigin"
 			recordEditQueryString="redirectAction=admin:entity.listorderorigin"
 			recordDeleteAction="admin:entity.deleteorderorigin"
 			recordEditModal="true">
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="orderOriginName" />
-		<cf_HibachiListingColumn propertyIdentifier="orderOriginType" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="orderOriginName" />
+		<hb:HibachiListingColumn propertyIdentifier="orderOriginType" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

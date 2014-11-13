@@ -51,7 +51,7 @@ Notes:
 
 <cfparam name="rc.stockAdjustment" type="any" />
 
-<cf_HibachiListingDisplay smartList="#rc.stockAdjustment.getstockAdjustmentItemsSmartList()#"
+<hb:HibachiListingDisplay smartList="#rc.stockAdjustment.getstockAdjustmentItemsSmartList()#"
 						  recordDeleteAction="admin:entity.deleteStockAdjustmentItem"
 						  recordDeleteQueryString="redirectAction=admin:entity.editstockadjustment&stockAdjustmentID=#rc.stockadjustment.getStockAdjustmentID()#"
 						  recordEditAction="admin:entity.editStockAdjustmentItem"
@@ -59,37 +59,37 @@ Notes:
 						  recordEditModal="true">
 						   	   
 	<cfif listFindNoCase("satLocationTransfer,satManualOut,satPhysicalCount", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="fromstock.sku.skucode" />
-		<cf_HibachiListingColumn propertyIdentifier="fromstock.sku.product.brand.brandName" />
-		<cf_HibachiListingColumn propertyIdentifier="fromstock.sku.product.productName" />
-		<cf_HibachiListingColumn propertyIdentifier="fromstock.sku.skuDefinition" sort="false" />
-		<cf_HibachiListingColumn propertyIdentifier="fromstock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.fromlocationname')#" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="fromstock.sku.skucode" />
+		<hb:HibachiListingColumn propertyIdentifier="fromstock.sku.product.brand.brandName" />
+		<hb:HibachiListingColumn propertyIdentifier="fromstock.sku.product.productName" />
+		<hb:HibachiListingColumn propertyIdentifier="fromstock.sku.skuDefinition" sort="false" />
+		<hb:HibachiListingColumn propertyIdentifier="fromstock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.fromlocationname')#" />
 		<cfif rc.stockAdjustment.getStockAdjustmentType().getSystemCode() eq "satLocationTransfer">
-			<cf_HibachiListingColumn propertyIdentifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" />
+			<hb:HibachiListingColumn propertyIdentifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" />
 		</cfif>
 	<cfelse>
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="tostock.sku.skucode" />
-		<cf_HibachiListingColumn propertyIdentifier="tostock.sku.product.brand.brandName" />
-		<cf_HibachiListingColumn propertyIdentifier="tostock.sku.product.productName" />
-		<cf_HibachiListingColumn propertyIdentifier="tostock.sku.skuDefinition" sort="false" />
-		<cf_HibachiListingColumn propertyIdentifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="tostock.sku.skucode" />
+		<hb:HibachiListingColumn propertyIdentifier="tostock.sku.product.brand.brandName" />
+		<hb:HibachiListingColumn propertyIdentifier="tostock.sku.product.productName" />
+		<hb:HibachiListingColumn propertyIdentifier="tostock.sku.skuDefinition" sort="false" />
+		<hb:HibachiListingColumn propertyIdentifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" />
 	</cfif>
 	
-	<cf_HibachiListingColumn propertyIdentifier="quantity" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn propertyIdentifier="quantity" />
+</hb:HibachiListingDisplay>
 
 <cfif rc.edit>
-	<cf_HibachiListingDisplay smartList="#rc.stockAdjustment.getAddStockAdjustmentItemSkuOptionsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.stockAdjustment.getAddStockAdjustmentItemSkuOptionsSmartList()#"
 							  recordProcessAction="admin:entity.processStockAdjustment"
 							  recordProcessContext="addStockAdjustmentItem"
 							  recordProcessEntity="#rc.stockAdjustment#"
 							  recordProcessUpdateTableID="LD#replace(rc.stockAdjustment.getstockAdjustmentItemsSmartList().getSavedStateID(),'-','','all')#">
 							    
-		<cf_HibachiListingColumn propertyIdentifier="skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="product.productCode" />
-		<cf_HibachiListingColumn propertyIdentifier="product.brand.brandName" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
-		<cf_HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
-		<cf_HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="skuCode" />
+		<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
+		<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
+		<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
+		<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
+	</hb:HibachiListingDisplay>
 </cfif>

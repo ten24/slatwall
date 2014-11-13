@@ -64,8 +64,8 @@ Notes:
 <cfset local.qualifierType = rc.promotionQualifier.getQualifierType() />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.promotionQualifier#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.promotionQualifier#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.promotionQualifier#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.promotionQualifier#" edit="#rc.edit#" 
 							  cancelAction="admin:entity.detailpromotionqualifier"
 							  cancelQueryString="promotionQualifierID=#rc.promotionQualifier.getPromotionQualifierID()#" 
 							  backAction="admin:entity.detailpromotionperiod" 
@@ -77,22 +77,22 @@ Notes:
 		<input type="hidden" name="promotionPeriod.promotionPeriodID" value="#rc.promotionperiod.getPromotionperiodID()#" />
 		<input type="hidden" name="promotionPeriodID" value="#rc.promotionperiod.getPromotionperiodID()#" />
 		
-		<cf_HibachiEntityDetailGroup object="#rc.promotionQualifier#">
-			<cf_HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailGroup object="#rc.promotionQualifier#">
+			<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.qualifierType)>
-				<cf_HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/producttypes" />
-				<cf_HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/products" />
-				<cf_HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/skus" />
-				<cf_HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/brands" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/producttypes" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/products" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/skus" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/brands" />
 				<cfif rc.qualifierType eq "merchandise">
-					<cf_HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/options" />
+					<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/options" />
 				</cfif>
 			<cfelseif rc.qualifierType eq "fulfillment">
-				<cf_HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/fulfillmentMethods" />
-				<cf_HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/shippingMethods" />
-				<cf_HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/shippingAddressZones" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/fulfillmentMethods" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/shippingMethods" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/shippingAddressZones" />
 			</cfif>
-		</cf_HibachiEntityDetailGroup>
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

@@ -57,10 +57,10 @@ Notes:
 <cfoutput>
 	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.promotionreward.options')#</h5>
-		<cf_HibachiPropertyDisplay object="#rc.promotionreward#" property="options" edit="#rc.edit#" displaytype="plain" />
+		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="options" edit="#rc.edit#" displaytype="plain" />
 	</div>
 	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.promotionreward.excludedoptions')#</h5>
-		<cf_HibachiPropertyDisplay object="#rc.promotionreward#" property="excludedOptions" edit="#rc.edit#" displaytype="plain" />		
+		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="excludedOptions" edit="#rc.edit#" displaytype="plain" />		
 	</div>
 </cfoutput>
