@@ -46,7 +46,8 @@
 Notes:
 
 --->
-
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfset local.jsOutput = "" />
 
 <!---the order these are loaded matters --->

@@ -46,32 +46,35 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.order.getReturnItemSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.order.getReturnItemSmartList()#"
 							   recordDetailAction="admin:entity.detailorderitem"
 							   recordEditAction="admin:entity.editorderitem">
 		
-		<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />					      
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.title" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
-		<cf_HibachiListingColumn propertyIdentifier="orderItemStatusType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="quantity" />
-		<cf_HibachiListingColumn propertyIdentifier="price" />
-		<cf_HibachiListingColumn propertyIdentifier="discountAmount" />
-		<cf_HibachiListingColumn propertyIdentifier="extendedPriceAfterDiscount" />
-		<cf_HibachiListingColumn propertyIdentifier="quantityReceived" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />					      
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.title" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
+		<hb:HibachiListingColumn propertyIdentifier="orderItemStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="quantity" />
+		<hb:HibachiListingColumn propertyIdentifier="price" />
+		<hb:HibachiListingColumn propertyIdentifier="discountAmount" />
+		<hb:HibachiListingColumn propertyIdentifier="extendedPriceAfterDiscount" />
+		<hb:HibachiListingColumn propertyIdentifier="quantityReceived" />
+	</hb:HibachiListingDisplay>
 	
 	<!--- If in edit and order is of correct status then we can add return order items --->
 	<cfif rc.edit and listFindNoCase("ostNotPlaced,ostNew,ostProcessing,ostOnHold", rc.order.getOrderStatusType().getSystemCode())>
 		<cfset rc.addSkuAddStockType = "oitReturn" />
 		
-		<cf_HibachiTabGroup tabLocation="top">
-			<cf_HibachiTab view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
-			<cf_HibachiTab view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />
-		</cf_HibachiTabGroup>
+		<hb:HibachiTabGroup tabLocation="top">
+			<hb:HibachiTab view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
+			<hb:HibachiTab view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />
+		</hb:HibachiTabGroup>
 	</cfif>
 </cfoutput>

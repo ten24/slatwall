@@ -46,24 +46,27 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.productType" type="any" />
 <cfparam name="rc.sitesArray" />
 
 <cfoutput>
-	<cf_SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#">
-		<cf_SlatwallSetting settingName="productShowDetailWhenNotPublishedFlag" settingObject="#rc.productType#" />
-		<cf_SlatwallSetting settingName="productImageDefaultExtension" settingObject="#rc.productType#" />
-		<cf_SlatwallSetting settingName="productImageOptionCodeDelimiter" settingObject="#rc.productType#" />
-		<cf_SlatwallSetting settingName="productTitleString" settingObject="#rc.productType#" />
-		<cf_SlatwallSetting settingName="productHTMLTitleString" settingObject="#rc.productType#" />
-		<cf_SlatwallSetting settingName="productMetaDescriptionString" settingObject="#rc.productType#" />
-		<cf_SlatwallSetting settingName="productMetaKeywordsString" settingObject="#rc.productType#" />
-		<cf_SlatwallSetting settingName="productAutoApproveReviewsFlag" settingObject="#rc.productType#" />
+	<swa:SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#">
+		<swa:SlatwallSetting settingName="productShowDetailWhenNotPublishedFlag" settingObject="#rc.productType#" />
+		<swa:SlatwallSetting settingName="productImageDefaultExtension" settingObject="#rc.productType#" />
+		<swa:SlatwallSetting settingName="productImageOptionCodeDelimiter" settingObject="#rc.productType#" />
+		<swa:SlatwallSetting settingName="productTitleString" settingObject="#rc.productType#" />
+		<swa:SlatwallSetting settingName="productHTMLTitleString" settingObject="#rc.productType#" />
+		<swa:SlatwallSetting settingName="productMetaDescriptionString" settingObject="#rc.productType#" />
+		<swa:SlatwallSetting settingName="productMetaKeywordsString" settingObject="#rc.productType#" />
+		<swa:SlatwallSetting settingName="productAutoApproveReviewsFlag" settingObject="#rc.productType#" />
 		
 		<!--- Site Specific Settings --->
 		<cfloop array="#rc.sitesArray#" index="site">
-			<cf_SlatwallSetting settingName="productDisplayTemplate" settingObject="#rc.productType#" settingFilterEntities="#[site]#" />
+			<swa:SlatwallSetting settingName="productDisplayTemplate" settingObject="#rc.productType#" settingFilterEntities="#[site]#" />
 		</cfloop>
-	</cf_SlatwallSettingTable>
+	</swa:SlatwallSettingTable>
 </cfoutput>
 

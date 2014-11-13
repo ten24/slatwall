@@ -46,6 +46,9 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.product" type="any" />
 
 <cfoutput>
@@ -63,9 +66,9 @@ Notes:
 					<div class="small em image-caption s-info">
 						<h2>#imageFile#</h2>
 						<ul class="list-unstyled">
-							<li><cf_HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="upload" modal="true" /></li>
+							<li><hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="upload" modal="true" /></li>
 							<cfif fileExists(expandPath(thisImagePath))>
-								<li><cf_HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="trash" /></li>
+								<li><hb:HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="trash" /></li>
 							</cfif>
 						</ul>
 					</div>

@@ -46,13 +46,17 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.account" type="any" />
 
 <cfoutput>
-	<cf_HibachiPropertyRow>
+	<hb:HibachiPropertyRow>
 		<!--- Email Addresses --->
-		<cf_HibachiPropertyList divClass="col-md-6">
-			<cf_HibachiListingDisplay title="#$.slatwall.rbKey('entity.accountEmailAddress_plural')#" smartList="#rc.account.getAccountEmailAddressesSmartList()#"
+		<hb:HibachiPropertyList divClass="col-md-6">
+			<hb:HibachiListingDisplay title="#$.slatwall.rbKey('entity.accountEmailAddress_plural')#" smartList="#rc.account.getAccountEmailAddressesSmartList()#"
 									  recordEditAction="admin:entity.editaccountemailaddress"
 									  recordEditQueryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount"
 									  recordEditModal=true
@@ -63,16 +67,16 @@ Notes:
 									  selectTitle="#$.slatwall.rbKey('define.primary')#"
 									  edit="#rc.edit#">
 
-				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="emailAddress" />
-				<cf_HibachiListingColumn propertyIdentifier="accountEmailType.type" />
-				<cf_HibachiListingColumn propertyIdentifier="verifiedFlag" />
-			</cf_HibachiListingDisplay>
-			<cf_HibachiActionCaller action="admin:entity.createaccountemailaddress" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
-		</cf_HibachiPropertyList>
+				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="emailAddress" />
+				<hb:HibachiListingColumn propertyIdentifier="accountEmailType.type" />
+				<hb:HibachiListingColumn propertyIdentifier="verifiedFlag" />
+			</hb:HibachiListingDisplay>
+			<hb:HibachiActionCaller action="admin:entity.createaccountemailaddress" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
+		</hb:HibachiPropertyList>
 
 		<!--- Phone Numbers --->
-		<cf_HibachiPropertyList divClass="col-md-6">
-			<cf_HibachiListingDisplay title="#$.slatwall.rbKey('entity.accountPhoneNumber_plural')#" smartList="#rc.account.getAccountPhoneNumbersSmartList()#"
+		<hb:HibachiPropertyList divClass="col-md-6">
+			<hb:HibachiListingDisplay title="#$.slatwall.rbKey('entity.accountPhoneNumber_plural')#" smartList="#rc.account.getAccountPhoneNumbersSmartList()#"
 									  recordEditAction="admin:entity.editaccountphonenumber"
 									  recordEditQueryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount"
 									  recordEditModal=true
@@ -83,19 +87,19 @@ Notes:
 									  selectTitle="#$.slatwall.rbKey('define.primary')#"
 									  edit="#rc.edit#">
 
-				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="phoneNumber" />
-				<cf_HibachiListingColumn propertyIdentifier="accountPhoneType.type" />
+				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="phoneNumber" />
+				<hb:HibachiListingColumn propertyIdentifier="accountPhoneType.type" />
 
-			</cf_HibachiListingDisplay>
+			</hb:HibachiListingDisplay>
 
-			<cf_HibachiActionCaller action="admin:entity.createaccountphonenumber" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+			<hb:HibachiActionCaller action="admin:entity.createaccountphonenumber" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 	<hr />
-	<cf_HibachiPropertyRow>
+	<hb:HibachiPropertyRow>
 		<!--- Addresses --->
-		<cf_HibachiPropertyList divClass="col-md-12">
-			<cf_HibachiListingDisplay title="#$.slatwall.rbKey('entity.accountAddress_plural')#" smartList="#rc.account.getAccountAddressesSmartList()#"
+		<hb:HibachiPropertyList divClass="col-md-12">
+			<hb:HibachiListingDisplay title="#$.slatwall.rbKey('entity.accountAddress_plural')#" smartList="#rc.account.getAccountAddressesSmartList()#"
 									  recordEditAction="admin:entity.editaccountaddress"
 									  recordEditQueryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount"
 									  recordEditModal=true
@@ -106,17 +110,17 @@ Notes:
 									  selectTitle="#$.slatwall.rbKey('define.primary')#"
 									  edit="#rc.edit#">
 
-				<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="accountAddressName" />
-				<cf_HibachiListingColumn propertyIdentifier="address.name" />
-				<cf_HibachiListingColumn propertyIdentifier="address.streetAddress" />
-				<cf_HibachiListingColumn propertyIdentifier="address.street2Address" />
-				<cf_HibachiListingColumn propertyIdentifier="address.city" />
-				<cf_HibachiListingColumn propertyIdentifier="address.stateCode" />
-				<cf_HibachiListingColumn propertyIdentifier="address.postalCode" />
-				<cf_HibachiListingColumn propertyIdentifier="address.countryCode" />
-			</cf_HibachiListingDisplay>
+				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="accountAddressName" />
+				<hb:HibachiListingColumn propertyIdentifier="address.name" />
+				<hb:HibachiListingColumn propertyIdentifier="address.streetAddress" />
+				<hb:HibachiListingColumn propertyIdentifier="address.street2Address" />
+				<hb:HibachiListingColumn propertyIdentifier="address.city" />
+				<hb:HibachiListingColumn propertyIdentifier="address.stateCode" />
+				<hb:HibachiListingColumn propertyIdentifier="address.postalCode" />
+				<hb:HibachiListingColumn propertyIdentifier="address.countryCode" />
+			</hb:HibachiListingDisplay>
 
-			<cf_HibachiActionCaller action="admin:entity.createaccountaddress" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+			<hb:HibachiActionCaller action="admin:entity.createaccountaddress" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 </cfoutput>

@@ -46,23 +46,27 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.product" type="any" />
 <cfparam name="rc.edit" type="boolean" default="false" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.product#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.product#" edit="#rc.edit#">
-			<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="updateSkus" type="list" modal="true" />
-			<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.processproduct" processContext="updateDefaultImageFileNames" type="list" confirm="true" confirmtext="#$.slatwall.rbKey('entity.Product.process.updateDefaultImageFileNames_confirm')#" />
+	<hb:HibachiEntityDetailForm object="#rc.product#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.product#" edit="#rc.edit#">
+			<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="updateSkus" type="list" modal="true" />
+			<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.processproduct" processContext="updateDefaultImageFileNames" type="list" confirm="true" confirmtext="#$.slatwall.rbKey('entity.Product.process.updateDefaultImageFileNames_confirm')#" />
 			<li class="divider"></li>
-			<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOptionGroup" type="list" modal="true" />
-			<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOption" type="list" modal="true" />
-			<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSku" type="list" modal="true" />
-			<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSubscriptionSku" type="list" modal="true" />
-			<cf_HibachiActionCaller action="admin:entity.createImage" querystring="productID=#rc.product.getProductID()#&objectName=product&redirectAction=#request.context.slatAction#" modal="true" type="list" />
-			<cf_HibachiActionCaller action="admin:entity.createfile" querystring="baseObject=#rc.product.getClassName()#&baseID=#rc.product.getProductID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
-			<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="productID=#rc.product.getProductID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
-		</cf_HibachiEntityActionBar>
+			<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOptionGroup" type="list" modal="true" />
+			<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOption" type="list" modal="true" />
+			<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSku" type="list" modal="true" />
+			<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSubscriptionSku" type="list" modal="true" />
+			<hb:HibachiActionCaller action="admin:entity.createImage" querystring="productID=#rc.product.getProductID()#&objectName=product&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+			<hb:HibachiActionCaller action="admin:entity.createfile" querystring="baseObject=#rc.product.getClassName()#&baseID=#rc.product.getProductID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="productID=#rc.product.getProductID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+		</hb:HibachiEntityActionBar>
 
 		<cfif rc.product.getEventConflictExistsFlag()>
 			<div class="alert alert-error">
@@ -70,60 +74,60 @@ Notes:
 			</div>
 		</cfif>
 
-		<cf_HibachiEntityDetailGroup object="#rc.product#">
+		<hb:HibachiEntityDetailGroup object="#rc.product#">
 
 			<!--- Basic --->
-			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/basic" open="true" text="#$.slatwall.rbKey('admin.entity.producttabs.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/basic" open="true" text="#$.slatwall.rbKey('admin.entity.producttabs.basic')#" />
 
 			<!--- TODO: We need to show "Bundle Groups" if this is a bundle product, and "Skus" if this is any other type of product --->
 			
 			<cfif rc.product.getBaseProductType() eq "productBundle">
 				<!--- Bundle Groups --->
-				<cf_HibachiEntityDetailItem view="admin:entity/producttabs/bundlegroups" text="#$.slatwall.rbKey('entity.productBundleGroup_plural')#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/producttabs/bundlegroups" text="#$.slatwall.rbKey('entity.productBundleGroup_plural')#" />
 			<cfelse>
 				<!--- Skus --->
-				<cf_HibachiEntityDetailItem property="skus" />
+				<hb:HibachiEntityDetailItem property="skus" />
 			</cfif>
 			<!--- TODO: END --->
 
 			<!--- Event Registrations --->
 			<cfif rc.product.getBaseProductType() EQ "event">
-				<cf_HibachiEntityDetailItem property="productSchedules" />
-				<cf_HibachiEntityDetailItem property="eventregistrations" />
+				<hb:HibachiEntityDetailItem property="productSchedules" />
+				<hb:HibachiEntityDetailItem property="eventregistrations" />
 			</cfif>
-			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/saleshistory" />
+			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/saleshistory" />
 
 			<!--- Images --->
-			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/images" />
+			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/images" />
 
 			<!--- Files --->
-			<cf_SlatwallAdminTabFiles object="#rc.product#" />
+			<swa:SlatwallAdminTabFiles object="#rc.product#" />
 
 			<!--- Description --->
-			<cf_HibachiEntityDetailItem property="productDescription" />
+			<hb:HibachiEntityDetailItem property="productDescription" />
 
 			<!--- Relating --->
-			<cf_HibachiEntityDetailItem property="listingPages" />
-			<cf_HibachiEntityDetailItem property="categories" />
-			<cf_HibachiEntityDetailItem property="relatedProducts" />
+			<hb:HibachiEntityDetailItem property="listingPages" />
+			<hb:HibachiEntityDetailItem property="categories" />
+			<hb:HibachiEntityDetailItem property="relatedProducts" />
 
 			<!--- Reference --->
-			<cf_HibachiEntityDetailItem property="productReviews" />
-			<cf_HibachiEntityDetailItem property="vendors" />
+			<hb:HibachiEntityDetailItem property="productReviews" />
+			<hb:HibachiEntityDetailItem property="vendors" />
 
 			<!--- Settings --->
-			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/productsettings" />
-			<cf_HibachiEntityDetailItem view="admin:entity/producttabs/skusettings" />
+			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/productsettings" />
+			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/skusettings" />
 
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.product.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_HibachiEntityDetailItem object="#rc.product#" attributeSet="#attributeSet#" />
+				<hb:HibachiEntityDetailItem object="#rc.product#" attributeSet="#attributeSet#" />
 			</cfloop>
 
 			<!--- Comments --->
-			<cf_SlatwallAdminTabComments object="#rc.product#" />
-		</cf_HibachiEntityDetailGroup>
+			<swa:SlatwallAdminTabComments object="#rc.product#" />
+		</hb:HibachiEntityDetailGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 
 </cfoutput>

@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfset selectedPriceGroups = rc.account.getPriceGroups() />
 <cfset selectedPriceGroupIDs = "" />
 <cfloop array="#selectedPriceGroups#" index="pg">
@@ -53,6 +57,6 @@ Notes:
 </cfloop>
 
 
-<cf_HibachiListingDisplay smartList="#rc.account.getPriceGroupsOptionsSmartList()#" multiselectFieldName="priceGroups" multiselectPropertyIdentifier="priceGroupID" multiselectValues="#selectedPriceGroupIDs#" edit="#rc.edit#">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="priceGroupName" />
-</cf_HibachiListingDisplay>
+<hb:HibachiListingDisplay smartList="#rc.account.getPriceGroupsOptionsSmartList()#" multiselectFieldName="priceGroups" multiselectPropertyIdentifier="priceGroupID" multiselectValues="#selectedPriceGroupIDs#" edit="#rc.edit#">
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="priceGroupName" />
+</hb:HibachiListingDisplay>

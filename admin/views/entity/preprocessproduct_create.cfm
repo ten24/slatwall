@@ -46,37 +46,41 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.product" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.processObject.getProduct()#" edit="#rc.edit#">
+	<hb:HibachiEntityProcessForm entity="#rc.processObject.getProduct()#" edit="#rc.edit#">
 
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.processObject.getProduct()#"></cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.processObject.getProduct()#"></hb:HibachiEntityActionBar>
 
 		<!--- Submit the baseProductType as well in case of a validation error --->
 		<input type="hidden" name="baseProductType" value="#rc.processObject.getBaseProductType()#" />
 
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="col-md-6">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList divClass="col-md-6">
 
 				<!--- Select Product Type --->
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productType" fieldName="product.productType.productTypeID" edit="true" valueOptions="#rc.product.getProductTypeOptions(rc.processObject.getBaseProductType())#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productType" fieldName="product.productType.productTypeID" edit="true" valueOptions="#rc.product.getProductTypeOptions(rc.processObject.getBaseProductType())#">
 
 				<!--- MERCHANDISE --->
 				<cfif rc.processObject.getBaseProductType() eq "merchandise">
-					<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" fieldName="product.brand.brandID" edit="true">
+					<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="brand" fieldName="product.brand.brandID" edit="true">
 				</cfif>
 
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product.productName" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productName')#">
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product.productCode" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productCode')#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product.productName" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productName')#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product.productCode" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productCode')#">
 
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
 
-			</cf_HibachiPropertyList>
+			</hb:HibachiPropertyList>
 
-			<cf_HibachiPropertyList divClass="col-md-6">
+			<hb:HibachiPropertyList divClass="col-md-6">
 
 				<!--- EVENT --->
 				<cfif rc.processObject.getBaseProductType() eq "event">
@@ -85,100 +89,100 @@ Notes:
 					<cfinclude template="preprocessproduct_include/addeventschedule.cfm" />
 
 					<!---
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="eventStartDateTime" edit="true">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="eventEndDateTime" edit="true">
 
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="schedulingType" property="schedulingType" valueOptions="#rc.processObject.getSchedulingTypeOptions()#" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" fieldname="schedulingType" property="schedulingType" valueOptions="#rc.processObject.getSchedulingTypeOptions()#" edit="#rc.edit#">
 
 					<!--- Schedule - Recurring --->
-					<cf_HibachiDisplayToggle selector="select[name='schedulingType']" loadVisable="#rc.processObject.getSchedulingType() eq 'recurring'#" showValues="recurring">
+					<hb:HibachiDisplayToggle selector="select[name='schedulingType']" loadVisable="#rc.processObject.getSchedulingType() eq 'recurring'#" showValues="recurring">
 
-						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="recurringTimeUnit" valueOptions="#rc.processObject.getRecurringTimeUnitOptions()#" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="recurringTimeUnit" valueOptions="#rc.processObject.getRecurringTimeUnitOptions()#" edit="#rc.edit#">
 
 						<!--- Weekly schedule --->
-						<cf_HibachiDisplayToggle selector="select[name='recurringTimeUnit']" loadVisable="no" showValues="#rc.processObject.getService('typeService').getTypeBySystemCode('rtuWeekly').getTypeID()#">
+						<hb:HibachiDisplayToggle selector="select[name='recurringTimeUnit']" loadVisable="no" showValues="#rc.processObject.getService('typeService').getTypeBySystemCode('rtuWeekly').getTypeID()#">
 
-							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="weeklyDaysOfOccurrence" edit="#rc.edit#" valueOptions="#rc.processObject.getDaysOfWeekOptions()#">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="weeklyDaysOfOccurrence" edit="#rc.edit#" valueOptions="#rc.processObject.getDaysOfWeekOptions()#">
 
-						</cf_HibachiDisplayToggle>
+						</hb:HibachiDisplayToggle>
 						<!--- /Weekly schedule --->
 
 						<!--- Monthly schedule --->
-						<cf_HibachiDisplayToggle selector="select[name='recurringTimeUnit']" loadVisable="#rc.processObject.getRecurringTimeUnit() EQ rc.processObject.getService('typeService').getTypeBySystemCode('rtuMonthly').getTypeID()#" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('rtuMonthly').getTypeID()#">
+						<hb:HibachiDisplayToggle selector="select[name='recurringTimeUnit']" loadVisable="#rc.processObject.getRecurringTimeUnit() EQ rc.processObject.getService('typeService').getTypeBySystemCode('rtuMonthly').getTypeID()#" showValues="#rc.processObject.getService('SettingService').getTypeBySystemCode('rtuMonthly').getTypeID()#">
 
-							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="monthlyRepeatByType" edit="#rc.edit#" valueOptions="#rc.processObject.getMonthlyRepeatByOptions()#">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="monthlyRepeatByType" edit="#rc.edit#" valueOptions="#rc.processObject.getMonthlyRepeatByOptions()#">
 
-							<cf_HibachiDisplayToggle selector="input[name='monthlyRepeatBy']" loadVisable="yes" showValues="dayOfWeek">
+							<hb:HibachiDisplayToggle selector="input[name='monthlyRepeatBy']" loadVisable="yes" showValues="dayOfWeek">
 								<div id="monthlyRepeatByWeekdaySummary"  class="alert alert-block">Select a start date</div>
-							</cf_HibachiDisplayToggle>
-							<cf_HibachiDisplayToggle selector="input[name='monthlyRepeatBy']" loadVisable="no" showValues="dayOfMonth">
+							</hb:HibachiDisplayToggle>
+							<hb:HibachiDisplayToggle selector="input[name='monthlyRepeatBy']" loadVisable="no" showValues="dayOfMonth">
 								<div id="monthlyRepeatByMonthdaySummary" class="alert alert-block">Select a start date</div>
-							</cf_HibachiDisplayToggle>
+							</hb:HibachiDisplayToggle>
 
-						</cf_HibachiDisplayToggle>
+						</hb:HibachiDisplayToggle>
 						<!--- /Monthly schedule --->
 
-						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndDate" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="scheduleEndDate" edit="#rc.edit#">
 
 						<input type="hidden" name="scheduleEndType" value="#rc.processObject.getService('typeService').getTypeBySystemCode('setDate').getTypeID()#" />
 
-					</cf_HibachiDisplayToggle>
+					</hb:HibachiDisplayToggle>
 					--->
 
 				<!--- SUBSCRIPTION --->
 				<cfelseif rc.processObject.getBaseProductType() eq "subscription">
 
-					<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionTerms" />
-					<cf_HibachiListingDisplay smartList="SubscriptionTerm" multiselectFieldName="subscriptionTerms" edit="true">
-						<cf_HibachiListingColumn propertyIdentifier="subscriptionTermName" />
-					</cf_HibachiListingDisplay>
+					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionTerms" />
+					<hb:HibachiListingDisplay smartList="SubscriptionTerm" multiselectFieldName="subscriptionTerms" edit="true">
+						<hb:HibachiListingColumn propertyIdentifier="subscriptionTermName" />
+					</hb:HibachiListingDisplay>
 
 				</cfif>
 
-			</cf_HibachiPropertyList>
+			</hb:HibachiPropertyList>
 
-		</cf_HibachiPropertyRow>
+		</hb:HibachiPropertyRow>
 
 		<hr style="border-top: 1px solid ##CCC;" />
 
 		<!--- CONTENT ACCESS --->
 		<cfif rc.processObject.getBaseProductType() eq "contentAccess">
 
-			<cf_HibachiPropertyRow>
-				<cf_HibachiPropertyList>
+			<hb:HibachiPropertyRow>
+				<hb:HibachiPropertyList>
 
 					<cfset contentSmartList = $.slatwall.getSmartList("Content") />
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="bundleContentAccessFlag" />
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="bundleContentAccessFlag" />
 
-					<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="contents" />
-					<cf_HibachiListingDisplay smartList="#contentSmartList#" multiselectFieldName="contents" edit="true">
-						<cf_HibachiListingColumn propertyIdentifier="title" />
-					</cf_HibachiListingDisplay>
+					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="contents" />
+					<hb:HibachiListingDisplay smartList="#contentSmartList#" multiselectFieldName="contents" edit="true">
+						<hb:HibachiListingColumn propertyIdentifier="title" />
+					</hb:HibachiListingDisplay>
 
-				</cf_HibachiPropertyList>
-			</cf_HibachiPropertyRow>
+				</hb:HibachiPropertyList>
+			</hb:HibachiPropertyRow>
 
 		<!--- Event --->
 		<cfelseif rc.processObject.getBaseProductType() eq "event">
 
-			<cf_HibachiPropertyRow>
-				<cf_HibachiPropertyList>
+			<hb:HibachiPropertyRow>
+				<hb:HibachiPropertyList>
 
 					<!---
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="bundleLocationConfigurationFlag" edit="true" />
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="bundleLocationConfigurationFlag" edit="true" />
 					<br />
-					<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="locationConfigurations" />
-					<cf_HibachiListingDisplay smartList="#$.slatwall.getSmartList("LocationConfiguration")#" multiselectFieldName="locationConfigurations" multiselectValues="#rc.processObject.getLocationConfigurations()#" edit="true">
-						<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
-						<cf_HibachiListingColumn propertyIdentifier="locationConfigurationCapacity" />
-						<cf_HibachiListingColumn propertyIdentifier="location.locationName" />
-					</cf_HibachiListingDisplay>
+					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="locationConfigurations" />
+					<hb:HibachiListingDisplay smartList="#$.slatwall.getSmartList("LocationConfiguration")#" multiselectFieldName="locationConfigurations" multiselectValues="#rc.processObject.getLocationConfigurations()#" edit="true">
+						<hb:HibachiListingColumn propertyIdentifier="locationConfigurationName" />
+						<hb:HibachiListingColumn propertyIdentifier="locationConfigurationCapacity" />
+						<hb:HibachiListingColumn propertyIdentifier="location.locationName" />
+					</hb:HibachiListingDisplay>
 					--->
 
 					<cfinclude template="preprocessproduct_include/addeventschedulelocations.cfm" />
 
-				</cf_HibachiPropertyList>
-			</cf_HibachiPropertyRow>
+				</hb:HibachiPropertyList>
+			</hb:HibachiPropertyRow>
 
 		<!--- Merchandise --->
 		<cfelseif rc.processObject.getBaseProductType() eq "merchandise">
@@ -188,50 +192,50 @@ Notes:
 
 			<cfif optionsSmartList.getRecordsCount()>
 
-				<cf_HibachiPropertyRow>
-					<cf_HibachiPropertyList>
+				<hb:HibachiPropertyRow>
+					<hb:HibachiPropertyList>
 
-						<cf_HibachiListingDisplay smartList="#optionsSmartList#" multiselectfieldname="options" edit="true">
-							<cf_HibachiListingColumn propertyIdentifier="optionGroup.optionGroupName" />
-							<cf_HibachiListingColumn propertyIdentifier="optionName" />
-						</cf_HibachiListingDisplay>
+						<hb:HibachiListingDisplay smartList="#optionsSmartList#" multiselectfieldname="options" edit="true">
+							<hb:HibachiListingColumn propertyIdentifier="optionGroup.optionGroupName" />
+							<hb:HibachiListingColumn propertyIdentifier="optionName" />
+						</hb:HibachiListingDisplay>
 
-					</cf_HibachiPropertyList>
-				</cf_HibachiPropertyRow>
+					</hb:HibachiPropertyList>
+				</hb:HibachiPropertyRow>
 
 			</cfif>
 
 		<!--- Subscription --->
 		<cfelseif rc.processObject.getBaseProductType() eq "subscription">
 
-			<cf_HibachiPropertyRow>
+			<hb:HibachiPropertyRow>
 
-				<cf_HibachiPropertyList divClass="col-md-6">
+				<hb:HibachiPropertyList divClass="col-md-6">
 
 					<h5>#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#</h5>
 					<br />
-					<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionBenefits" />
-					<cf_HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" edit="true">
-						<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
-					</cf_HibachiListingDisplay>
+					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionBenefits" />
+					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" edit="true">
+						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
+					</hb:HibachiListingDisplay>
 
 
-				</cf_HibachiPropertyList>
+				</hb:HibachiPropertyList>
 
-				<cf_HibachiPropertyList divClass="col-md-6">
+				<hb:HibachiPropertyList divClass="col-md-6">
 
 					<h5>#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits')#</h5>
 					<br />
-					<cf_SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalsubscriptionBenefits" />
-					<cf_HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" edit="true">
-						<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
-					</cf_HibachiListingDisplay>
+					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalsubscriptionBenefits" />
+					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" edit="true">
+						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
+					</hb:HibachiListingDisplay>
 
-				</cf_HibachiPropertyList>
+				</hb:HibachiPropertyList>
 
-			</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyRow>
 
 		</cfif>
 
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

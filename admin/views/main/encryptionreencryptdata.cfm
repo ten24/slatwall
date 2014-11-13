@@ -1,4 +1,7 @@
-﻿<cfoutput>
+﻿<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+<cfoutput>
 <div class="row s-body-nav">
     <nav class="navbar navbar-default" role="navigation">
       <div class="col-md-4 s-header-info">

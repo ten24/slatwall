@@ -46,23 +46,27 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.loyaltyTerm" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.loyaltyTerm#" edit="#rc.edit#" saveActionQueryString="loyaltyTermID=#rc.loyaltyTerm.getLoyaltyTermID()#">
+	<hb:HibachiEntityDetailForm object="#rc.loyaltyTerm#" edit="#rc.edit#" saveActionQueryString="loyaltyTermID=#rc.loyaltyTerm.getLoyaltyTermID()#">
 		
-		<cf_HibachiEntityActionBar type="detail" object="#rc.loyaltyTerm#" edit="#rc.edit#" />
+		<hb:HibachiEntityActionBar type="detail" object="#rc.loyaltyTerm#" edit="#rc.edit#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyTerm#" property="loyaltyTermName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyTerm#" property="loyaltyTermStartDateTime" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyTerm#" property="loyalty" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyTerm#" property="term" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.loyaltyTerm#" property="loyaltyTermName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.loyaltyTerm#" property="loyaltyTermStartDateTime" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.loyaltyTerm#" property="loyalty" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.loyaltyTerm#" property="term" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

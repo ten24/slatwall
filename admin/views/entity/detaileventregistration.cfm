@@ -54,37 +54,40 @@ Notes:
 	erstAttended
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.eventregistration" type="any" />
 <cfparam name="rc.edit" type="boolean" default="false" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.eventregistration#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.eventregistration#" edit="#rc.edit#"
+	<hb:HibachiEntityDetailForm object="#rc.eventregistration#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.eventregistration#" edit="#rc.edit#"
 								   backaction="admin:entity.detailsku"
 								   backquerystring="skuID=#rc.eventregistration.getsku().getSkuID()###tabeventregistrations">
 
 			<!--- Change Status --->
-			<cf_HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="approve" type="list" modal="true" />
-			<cf_HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="attend" type="list" modal="true" />
-			<cf_HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="cancel" type="list" modal="true" />
-			<cf_HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="pending" type="list" modal="true" />
-			<cf_HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="register" type="list" modal="true" />
-			<cf_HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="waitlist" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="approve" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="attend" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="cancel" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="pending" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="register" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preprocessEventRegistration" entity="#rc.eventRegistration#" processContext="waitlist" type="list" modal="true" />
 
-		</cf_HibachiEntityActionBar>
+		</hb:HibachiEntityActionBar>
 
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="col-md-6">
-				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getaccount()#" property="fullName" valuelink="?slatAction=admin:entity.detailaccount&accountID=#rc.eventregistration.getaccount().getAccountID()#">
-				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getsku().getproduct()#" property="productName"  valuelink="?slatAction=admin:entity.detailproduct&productID=#rc.eventregistration.getsku().getproduct().getProductID()#">
-				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getsku()#" property="eventStartDateTime" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getsku()#" property="eventEndDateTime" edit="false" >
-				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getsku()#" property="startReservationDateTime" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.eventregistration.getsku()#" property="endReservationDateTime" edit="false" >
-				<cf_HibachiPropertyDisplay object="#rc.eventregistration#" property="eventRegistrationStatusType" edit="false" title="#$.slatwall.rbKey('entity.type.parentType.eventRegistrationStatusType')#" >
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList divClass="col-md-6">
+				<hb:HibachiPropertyDisplay object="#rc.eventregistration.getaccount()#" property="fullName" valuelink="?slatAction=admin:entity.detailaccount&accountID=#rc.eventregistration.getaccount().getAccountID()#">
+				<hb:HibachiPropertyDisplay object="#rc.eventregistration.getsku().getproduct()#" property="productName"  valuelink="?slatAction=admin:entity.detailproduct&productID=#rc.eventregistration.getsku().getproduct().getProductID()#">
+				<hb:HibachiPropertyDisplay object="#rc.eventregistration.getsku()#" property="eventStartDateTime" edit="false">
+				<hb:HibachiPropertyDisplay object="#rc.eventregistration.getsku()#" property="eventEndDateTime" edit="false" >
+				<hb:HibachiPropertyDisplay object="#rc.eventregistration.getsku()#" property="startReservationDateTime" edit="false">
+				<hb:HibachiPropertyDisplay object="#rc.eventregistration.getsku()#" property="endReservationDateTime" edit="false" >
+				<hb:HibachiPropertyDisplay object="#rc.eventregistration#" property="eventRegistrationStatusType" edit="false" title="#$.slatwall.rbKey('entity.type.parentType.eventRegistrationStatusType')#" >
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 
 </cfoutput>

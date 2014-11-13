@@ -46,6 +46,9 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.order" type="any" />
 <cfset rc.comment = $.slatwall.getService("commentService").newComment() />
 
@@ -54,8 +57,8 @@ Notes:
 	<input type="hidden" name="commentRelationships[1].order.orderID" value="#rc.order.getOrderID()#">
 	<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_include.changestatuscomment')#</h5>
 	<hr />
-	<cf_HibachiPropertyDisplay object="#rc.comment#" property="publicFlag" edit="true">
-	<cf_HibachiPropertyDisplay object="#rc.comment#" property="comment" displaytype="plain" edit="true">			
+	<hb:HibachiPropertyDisplay object="#rc.comment#" property="publicFlag" edit="true">
+	<hb:HibachiPropertyDisplay object="#rc.comment#" property="comment" displaytype="plain" edit="true">			
 </cfoutput>
 
 			

@@ -46,32 +46,35 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.sku" type="any" />
 
 <cfoutput>
-	<cf_SlatwallSettingTable>
-		<cf_SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuCurrency" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuEligibleOrderOrigins" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuEligiblePaymentMethods" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuHoldBackQuantity" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuOrderMinimumQuantity" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuOrderMaximumQuantity" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuShippingWeight" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuShippingWeightUnitCode" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuTrackInventoryFlag" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROROFlag" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.sku#" />
-		<cf_SlatwallSetting settingName="skuTaxCategory" settingObject="#rc.sku#" />
+	<swa:SlatwallSettingTable>
+		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuCurrency" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuEligibleOrderOrigins" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuEligiblePaymentMethods" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuHoldBackQuantity" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuOrderMinimumQuantity" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuOrderMaximumQuantity" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuShippingWeight" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuShippingWeightUnitCode" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuTrackInventoryFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuTaxCategory" settingObject="#rc.sku#" />
 		<cfif rc.sku.getProduct().getProductType().getBaseProductType() eq "merchandise">
 			<!--- Wrap this arround settings if you want to disable them for certain product types --->
 		</cfif>
-	</cf_SlatwallSettingTable>
+	</swa:SlatwallSettingTable>
 </cfoutput>

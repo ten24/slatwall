@@ -46,6 +46,9 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.sku" default="any" >
 <cfparam name="rc.edit" type="boolean">
 
@@ -57,26 +60,26 @@ Notes:
 		<cfloop array="#rc.sku.getLocationConfigurations()#" index="lc">
 			<cfset selectedLocationConfigurationIDs = listAppend(selectedLocationConfigurationIDs, lc.getlocationConfigurationID()) />
 		</cfloop>
-		<cf_HibachiListingDisplay smartList="#locationConfigurationSmartList#" 
+		<hb:HibachiListingDisplay smartList="#locationConfigurationSmartList#" 
 								  multiselectFieldName="locationConfigurations"
 								  multiselectPropertyIdentifier="locationConfigurationID" 
 								  multiselectValues="#selectedLocationConfigurationIDs#"
 								  edit="#rc.edit#">
-			<cf_HibachiListingColumn propertyIdentifier="locationPathName" />
-			<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
-		</cf_HibachiListingDisplay>
+			<hb:HibachiListingColumn propertyIdentifier="locationPathName" />
+			<hb:HibachiListingColumn propertyIdentifier="locationConfigurationName" />
+		</hb:HibachiListingDisplay>
 	<cfelse>--->
-		<cf_HibachiListingDisplay smartList="#rc.sku.getLocationConfigurationsSmartList()#"
+		<hb:HibachiListingDisplay smartList="#rc.sku.getLocationConfigurationsSmartList()#"
 								  recordEditAction="admin:entity.editlocationconfiguration"
 								  recordDetailAction="admin:entity.detaillocationconfiguration"
 								  edit="false">
 								    
-			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationPathName" />
-			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationConfigurationName" />
-			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationConfigurationCapacity" />
-			<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
+			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="locationPathName" />
+			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="locationConfigurationName" />
+			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="locationConfigurationCapacity" />
+			<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 			
-		</cf_HibachiListingDisplay>
+		</hb:HibachiListingDisplay>
 	<!---</cfif>--->
-	<!---<cf_HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocesssku" processContext="addlocation" class="btn" icon="plus icon" modal="false" />--->
+	<!---<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocesssku" processContext="addlocation" class="btn" icon="plus icon" modal="false" />--->
 </cfoutput>

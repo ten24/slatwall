@@ -46,21 +46,25 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.measurementUnit" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.measurementUnit#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.measurementUnit#" />
+	<hb:HibachiEntityDetailForm object="#rc.measurementUnit#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.measurementUnit#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.measurementUnit#" property="unitCode" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.measurementUnit#" property="unitName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.measurementUnit#" property="measurementType" edit="#rc.measurementUnit.isNew()#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.measurementUnit#" property="unitCode" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.measurementUnit#" property="unitName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.measurementUnit#" property="measurementType" edit="#rc.measurementUnit.isNew()#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

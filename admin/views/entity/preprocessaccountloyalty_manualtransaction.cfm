@@ -46,24 +46,28 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.accountloyalty" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cf_HibachiEntityProcessForm entity="#rc.accountloyalty#" edit="#rc.edit#">
+<hb:HibachiEntityProcessForm entity="#rc.accountloyalty#" edit="#rc.edit#">
 	
-	<cf_HibachiEntityActionBar type="preprocess" object="#rc.accountloyalty#">
-	</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.accountloyalty#">
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="manualAdjustmentType" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="points" edit="#rc.edit#">
-			<cf_HibachiDisplayToggle selector="select[name=manualAdjustmentType]" showValues="manualIn" loadVisable="#rc.processObject.getValueByPropertyIdentifier('manualAdjustmentType') eq 'manualIn'#">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="expirationDateTime" edit="#rc.edit#">
-			</cf_HibachiDisplayToggle>
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="manualAdjustmentType" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="points" edit="#rc.edit#">
+			<hb:HibachiDisplayToggle selector="select[name=manualAdjustmentType]" showValues="manualIn" loadVisable="#rc.processObject.getValueByPropertyIdentifier('manualAdjustmentType') eq 'manualIn'#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="expirationDateTime" edit="#rc.edit#">
+			</hb:HibachiDisplayToggle>
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 	
-</cf_HibachiEntityProcessForm>
+</hb:HibachiEntityProcessForm>
 

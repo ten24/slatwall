@@ -46,14 +46,17 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.sku" type="any" />
 
-<cf_HibachiPropertyRow>
-	<cf_HibachiPropertyList>
-		<cf_HibachiPropertyDisplay object="#rc.sku#" property="subscriptionTerm" edit="false">
-		<cf_HibachiPropertyDisplay object="#rc.sku#" property="subscriptionBenefits" edit="#rc.edit#" displayType="plain">
-		<cf_HibachiPropertyDisplay object="#rc.sku#" property="renewalSubscriptionBenefits" title="#$.slatwall.rbKey('define.renewalSubscriptionBenefits')#" edit="#rc.edit#" displayType="plain">
-	</cf_HibachiPropertyList>
-</cf_HibachiPropertyRow>
+<hb:HibachiPropertyRow>
+	<hb:HibachiPropertyList>
+		<hb:HibachiPropertyDisplay object="#rc.sku#" property="subscriptionTerm" edit="false">
+		<hb:HibachiPropertyDisplay object="#rc.sku#" property="subscriptionBenefits" edit="#rc.edit#" displayType="plain">
+		<hb:HibachiPropertyDisplay object="#rc.sku#" property="renewalSubscriptionBenefits" title="#$.slatwall.rbKey('define.renewalSubscriptionBenefits')#" edit="#rc.edit#" displayType="plain">
+	</hb:HibachiPropertyList>
+</hb:HibachiPropertyRow>
 			
 

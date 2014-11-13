@@ -46,19 +46,23 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.printTemplate" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.printTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.editprinttemplate">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.printTemplate#" />
+	<hb:HibachiEntityDetailForm object="#rc.printTemplate#" edit="#rc.edit#" sRedirectAction="admin:entity.editprinttemplate">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.printTemplate#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateObject" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateObject" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

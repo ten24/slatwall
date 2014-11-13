@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.product" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
@@ -53,15 +57,15 @@ Notes:
 <cfset rc.addEventScheduleProcessObject = rc.processObject />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
+	<hb:HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.product#"></cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.product#"></hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 				
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="skuName" edit="true">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="skuName" edit="true">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
 				
 				<cfinclude template="preprocessproduct_include/addeventschedule.cfm" />
 				
@@ -69,8 +73,8 @@ Notes:
 				
 				<cfinclude template="preprocessproduct_include/addeventschedulelocations.cfm" />
 				
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

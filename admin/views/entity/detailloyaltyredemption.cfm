@@ -46,15 +46,19 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.loyaltyRedemption" type="any">
 <cfparam name="rc.loyalty" type="any" default="#rc.loyaltyRedemption.getLoyalty()#">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.loyaltyRedemption#" edit="#rc.edit#"  
+	<hb:HibachiEntityDetailForm object="#rc.loyaltyRedemption#" edit="#rc.edit#"  
 								saveActionQueryString="loyaltyID=#rc.loyalty.getLoyaltyID()#">
 								
-		<cf_HibachiEntityActionBar type="detail" object="#rc.loyaltyRedemption#" edit="#rc.edit#"
+		<hb:HibachiEntityActionBar type="detail" object="#rc.loyaltyRedemption#" edit="#rc.edit#"
 								   backAction="admin:entity.detailloyalty"
 								   backQueryString="loyaltyID=#rc.loyalty.getLoyaltyID()###tabloyaltyRedemption"
 								   cancelAction="admin:entity.detailloyalty"
@@ -63,33 +67,33 @@ Notes:
 		
 		<input type="hidden" name="loyalty.loyaltyID" value="#rc.loyalty.getLoyaltyID()#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="redemptionPointType" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="minimumPointQuantity" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="autoRedemptionType" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="redemptionType" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="priceGroup" edit="#rc.edit#">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="activeFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="redemptionPointType" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="minimumPointQuantity" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="autoRedemptionType" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="redemptionType" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="priceGroup" edit="#rc.edit#">
 				<!--- Add this back when the feature is available --->
-				<!---<cf_HibachiDisplayToggle selector="select[name=autoRedemptionType]" showValues="loyaltyTermEnd" loadVisable="#rc.loyaltyRedemption.getNewFlag() or rc.loyaltyRedemption.getValueByPropertyIdentifier('autoRedemptionType') eq 'loyaltyTermEnd'#">
-					<cf_HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="loyaltyTerm" edit="#rc.edit#">
-				</cf_HibachiDisplayToggle>--->
-				<!---<cf_HibachiDisplayToggle selector="select[name=redemptionType]" showValues="pointPurchase" loadVisable="#rc.loyaltyRedemption.getNewFlag() or rc.loyaltyRedemption.getValueByPropertyIdentifier('redemptionType') eq 'pointPurchase'#">
-					<cf_HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="amountType" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="amount" edit="#rc.edit#">	
-				</cf_HibachiDisplayToggle>--->
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+				<!---<hb:HibachiDisplayToggle selector="select[name=autoRedemptionType]" showValues="loyaltyTermEnd" loadVisable="#rc.loyaltyRedemption.getNewFlag() or rc.loyaltyRedemption.getValueByPropertyIdentifier('autoRedemptionType') eq 'loyaltyTermEnd'#">
+					<hb:HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="loyaltyTerm" edit="#rc.edit#">
+				</hb:HibachiDisplayToggle>--->
+				<!---<hb:HibachiDisplayToggle selector="select[name=redemptionType]" showValues="pointPurchase" loadVisable="#rc.loyaltyRedemption.getNewFlag() or rc.loyaltyRedemption.getValueByPropertyIdentifier('redemptionType') eq 'pointPurchase'#">
+					<hb:HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="amountType" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.loyaltyRedemption#" property="amount" edit="#rc.edit#">	
+				</hb:HibachiDisplayToggle>--->
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
 		<cfif not rc.loyaltyRedemption.getRedemptionType() eq "priceGroupAssignment">
-			<cf_HibachiTabGroup object="#rc.loyaltyRedemption#">
-				<cf_HibachiTab view="admin:entity/loyaltyRedemptiontabs/producttypes" />
-				<cf_HibachiTab view="admin:entity/loyaltyRedemptiontabs/products" />
-				<cf_HibachiTab view="admin:entity/loyaltyRedemptiontabs/skus" />
-				<cf_HibachiTab view="admin:entity/loyaltyRedemptiontabs/brands" />
-			</cf_HibachiTabGroup>
+			<hb:HibachiTabGroup object="#rc.loyaltyRedemption#">
+				<hb:HibachiTab view="admin:entity/loyaltyRedemptiontabs/producttypes" />
+				<hb:HibachiTab view="admin:entity/loyaltyRedemptiontabs/products" />
+				<hb:HibachiTab view="admin:entity/loyaltyRedemptiontabs/skus" />
+				<hb:HibachiTab view="admin:entity/loyaltyRedemptiontabs/brands" />
+			</hb:HibachiTabGroup>
 		</cfif>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

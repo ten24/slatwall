@@ -46,9 +46,12 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.vendor" type="any" />
 
-<cf_HibachiPropertyList>
-	<cf_HibachiPropertyDisplay object="#rc.vendor#" property="brands" edit="#rc.edit#" displayType="plain"/>
-</cf_HibachiPropertyList>
+<hb:HibachiPropertyList>
+	<hb:HibachiPropertyDisplay object="#rc.vendor#" property="brands" edit="#rc.edit#" displayType="plain"/>
+</hb:HibachiPropertyList>
 

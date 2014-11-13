@@ -46,24 +46,28 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderFulfillment" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.orderFulfillment#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.orderFulfillment#" edit="#rc.edit#" backaction="admin:entity.detailorder" backquerystring="orderID=#rc.orderFulfillment.getOrder().getOrderID()#">
-			<cf_HibachiProcessCaller entity="#rc.orderFulfillment#" action="admin:entity.preprocessorderfulfillment" processContext="fulfillItems" type="list" />
-			<cf_HibachiProcessCaller entity="#rc.orderFulfillment#" action="admin:entity.preprocessorderfulfillment" processContext="manualFulfillmentCharge" type="list" modal="true" />
-		</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.orderFulfillment#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.orderFulfillment#" edit="#rc.edit#" backaction="admin:entity.detailorder" backquerystring="orderID=#rc.orderFulfillment.getOrder().getOrderID()#">
+			<hb:HibachiProcessCaller entity="#rc.orderFulfillment#" action="admin:entity.preprocessorderfulfillment" processContext="fulfillItems" type="list" />
+			<hb:HibachiProcessCaller entity="#rc.orderFulfillment#" action="admin:entity.preprocessorderfulfillment" processContext="manualFulfillmentCharge" type="list" modal="true" />
+		</hb:HibachiEntityActionBar>
 
-		<cf_HibachiEntityDetailGroup object="#rc.orderFulfillment#">
-			<cf_HibachiEntityDetailItem view="admin:entity/orderfulfillmenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cf_HibachiEntityDetailItem view="admin:entity/orderfulfillmenttabs/orderfulfillmentitems">
+		<hb:HibachiEntityDetailGroup object="#rc.orderFulfillment#">
+			<hb:HibachiEntityDetailItem view="admin:entity/orderfulfillmenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/orderfulfillmenttabs/orderfulfillmentitems">
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.orderFulfillment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.orderFulfillment#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.orderFulfillment#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiEntityDetailGroup>
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
