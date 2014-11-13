@@ -671,7 +671,7 @@
 
                 			<!--- Edit Filter Box --->
 
-                				<h4> Delete:<i class="fa fa-times" data-toggle="collapse" data-target="#j-delete-link"></i></h4>
+                				<h4> Filters:<i class="fa fa-times" data-toggle="collapse" data-target="#j-delete-link"></i></h4>
                 				<div class="col-xs-12">
 
                 					<div class="row">
@@ -729,18 +729,18 @@
                 	<div class="table-responsive s-filter-table-box">
                 		<table class="table table-bordered table-striped">
                 				<thead>
-                						<tr>
-                								<th>Row</span></th>
-                								<th class="s-sortable">ID</th>
-                								<th class="s-sortable">Brand</th>
-                								<th class="s-sortable">Style</th>
-                								<th class="s-sortable">Color</th>
-                								<th class="s-sortable">Gender</th>
-                								<th class="s-sortable">Material</th>
-                								<th class="s-sortable">Purchase Date</th>
-                								<th class="s-sortable">Price</th>
-                								<th></th>
-                						</tr>
+            						<tr>
+        								<th>Row</span></th>
+        								<th class="s-sortable">ID</th>
+        								<th class="s-sortable">Brand</th>
+        								<th class="s-sortable">Style</th>
+        								<th class="s-sortable">Color</th>
+        								<th class="s-sortable">Gender</th>
+        								<th class="s-sortable">Material</th>
+        								<th class="s-sortable">Purchase Date</th>
+        								<th class="s-sortable">Price</th>
+        								<th></th>
+            						</tr>
                 				</thead>
                 				<tbody>
 
