@@ -42,7 +42,7 @@ component entityname="SlatwallWorkflowTask" table="SwWorkflowTask" persistent="t
 	property name="workflowTaskID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
 	property name="taskName" ormtype="string";
-	property name="taskConditionsConfig" ormtype="string" length="8000" hb_auditable="false" hb_json;
+	property name="taskConditionsConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
 
 	// Calculated Properties
 

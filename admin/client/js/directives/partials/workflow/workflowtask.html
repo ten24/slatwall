@@ -1,5 +1,4 @@
 <div class="s-body-box">
-
 	<div class="s-bundle-add-items s-workflow-objs">
 		<ul class="list-unstyled s-order-item-options s-negative-obj">
 
@@ -29,7 +28,7 @@
 								<ul class="nav nav-tabs" role="tablist">
 									<li class="active"><a href="##j-basic-2" role="tab" data-toggle="tab">Basic</a></li>
 									<li><a href="##j-conditions-2" role="tab" data-toggle="tab">Conditions</a></li>
-									<li><a href="##j-actions-2" role="tab" data-toggle="tab">Actions</a></li>
+									<li><a href="##j-actions-2" role="tab" data-toggle="tab" ng-click="openActions=true">Actions</a></li>
 								</ul>
 							</div>
 						</div>
@@ -856,7 +855,8 @@
 									</div>
 								</div>
 
-								<div class="tab-pane" id="j-actions-2">
+								<div class="tab-pane" id="j-actions-2" ng-if="openActions === true">
+								test
 									<div class="s-bundle-add-items s-workflow-objs s-sortable">
 										<ul class="list-unstyled s-order-item-options">
 
