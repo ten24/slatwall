@@ -5,41 +5,42 @@ angular.module('slatwalladmin')
 	'$log',
 	'$slatwall',
 	'alertService',
-function(
-	$log,
-	$slatwall,
-	alertService
-){
-	
-	function _workflowCondition(){
-		this.propertyIdentifier = "";
-		this.comparisonOperator = "";
-		this.value = "";
-	}
-	
-	function _workflowConditionGroupItem(){
-		this.workflowConditionGroup = [];
-	}
+	function(
+		$log,
+		$slatwall,
+		alertService
+	){
 		
-	
-	var workflowConditionService = {
-		newWorkflowCondition:function(){
-			return new _workflowCondition;
-		},
-		
-		addWorkflowCondition:function(groupItem,condition){
-			$log.debug('addWorkflowCondition');
-			$log.debug(groupItem);
-			$log.debug(condition);
-			groupItem.push(condition);
-		},
-		newWorkflowConditionGroupItem:function(){
-			return new _workflowConditionGroupItem;
-		},
-		addWorkflowConditionGroupItem:function(group,groupItem){
-			group.push(groupItem);
+		function _workflowCondition(){
+			this.propertyIdentifier = "";
+			this.comparisonOperator = "";
+			this.value = "";
 		}
-	};
-	
-	return workflowConditionService;
-}]);
+		
+		function _workflowConditionGroupItem(){
+			this.workflowConditionGroup = [];
+		}
+			
+		
+		var workflowConditionService = {
+			newWorkflowCondition:function(){
+				return new _workflowCondition;
+			},
+			
+			addWorkflowCondition:function(groupItem,condition){
+				$log.debug('addWorkflowCondition');
+				$log.debug(groupItem);
+				$log.debug(condition);
+				groupItem.push(condition);
+			},
+			newWorkflowConditionGroupItem:function(){
+				return new _workflowConditionGroupItem;
+			},
+			addWorkflowConditionGroupItem:function(group,groupItem){
+				group.push(groupItem);
+			}
+		};
+		
+		return workflowConditionService;
+	}
+]);

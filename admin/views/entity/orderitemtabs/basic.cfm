@@ -41,6 +41,7 @@
 					<cf_HibachiPropertyDisplay object="#rc.orderItem#" property="quantityReceived" edit="false" displayType="table" />
 					<cf_HibachiPropertyDisplay object="#rc.orderItem#" property="quantityUnreceived" edit="false" displayType="table" />
 				</cfif>
+				<cf_HibachiPropertyDisplay object="#rc.orderItem#" property="estimatedFulfillmentDateTime" edit="false" displayType="table" />
 				<cf_HibachiPropertyTableBreak header="Price Totals" />
 				<cf_HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPrice" edit="false" displayType="table" />
 				<cf_HibachiPropertyDisplay object="#rc.orderItem#" property="discountAmount" edit="false" displayType="table" />

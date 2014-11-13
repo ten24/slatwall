@@ -1,16 +1,18 @@
 'use strict';
 angular.module('slatwalladmin')
-.directive('swEditFilterItem', 
-['$http',
+.directive('swEditFilterItem', [
+	'$http',
 '$compile',
 '$templateCache',
+	'$filter',
 '$log',
 '$filter',
 '$slatwall',
 'collectionPartialsPath',
 'collectionService',
 'metadataService',
-function($http,
+	function(
+		$http,
 $compile,
 $templateCache,
 $log,
@@ -18,7 +20,8 @@ $filter,
 $slatwall,
 collectionPartialsPath,
 collectionService,
-metadataService){
+		metadataService
+	){
 	return {
 		require:'^swFilterGroups',
 		restrict: 'A',
@@ -323,5 +326,6 @@ metadataService){
 			};
 		},
 	};
-}]);
+	}
+]);
 	

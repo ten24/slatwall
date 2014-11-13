@@ -279,4 +279,5 @@ function(
 		}
 		return isValid;
 	};
-}]);
+	}
+]);
