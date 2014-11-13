@@ -61,9 +61,9 @@
 							<td>
 								<cfif not attributes.edit>
 									<cfif attributes.editEntityName eq entityName>
-										<cf_HibachiActionCaller action="admin:entity.detailPermissionGroup" queryString="permissionGroupID=#attributes.permissionGroup.getPermissionGroupID()#" class="btn btn-xs" iconOnly="true" icon="remove">
+										<hb:HibachiActionCaller action="admin:entity.detailPermissionGroup" queryString="permissionGroupID=#attributes.permissionGroup.getPermissionGroupID()#" class="btn btn-xs" iconOnly="true" icon="remove">
 									<cfelse>
-										<cf_HibachiActionCaller action="admin:entity.editPermissionGroup" queryString="permissionGroupID=#attributes.permissionGroup.getPermissionGroupID()#&editEntityName=#entityName#" class="btn btn-xs" iconOnly="true" icon="pencil">	
+										<hb:HibachiActionCaller action="admin:entity.editPermissionGroup" queryString="permissionGroupID=#attributes.permissionGroup.getPermissionGroupID()#&editEntityName=#entityName#" class="btn btn-xs" iconOnly="true" icon="pencil">	
 									</cfif>
 								</cfif>
 							</td>
@@ -75,14 +75,14 @@
 							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('delete', entityName, attributes.permissionGroup), "yesno")#</td>
 							<td>#attributes.hibachiScope.formatValue(attributes.hibachiScope.getService("hibachiAuthenticationService").authenticateEntityByPermissionGroup('process', entityName, attributes.permissionGroup), "yesno")#</td>
 							<td>
-								<cfif not attributes.edit><cf_HibachiActionCaller action="admin:entity.editPermissionGroup" queryString="permissionGroupID=#attributes.permissionGroup.getPermissionGroupID()#&editEntityName=#entityName#" class="btn btn-xs" iconOnly="true" icon="pencil"></cfif>
+								<cfif not attributes.edit><hb:HibachiActionCaller action="admin:entity.editPermissionGroup" queryString="permissionGroupID=#attributes.permissionGroup.getPermissionGroupID()#&editEntityName=#entityName#" class="btn btn-xs" iconOnly="true" icon="pencil"></cfif>
 							</td>
 						</cfif>
 					</tr>
 					<cfif attributes.editEntityName eq entityName>
-						<cf_HibachiPermissionGroupPropertyPermissions permissionGroup="#attributes.permissionGroup#" entityName="#entityName#" entityPermissionDetails="#attributes.entityPermissionDetails#" parentIndex="#request.context.permissionFormIndex#" depth="1" edit="true" />
+						<hb:HibachiPermissionGroupPropertyPermissions permissionGroup="#attributes.permissionGroup#" entityName="#entityName#" entityPermissionDetails="#attributes.entityPermissionDetails#" parentIndex="#request.context.permissionFormIndex#" depth="1" edit="true" />
 					<cfelse>
-						<cf_HibachiPermissionGroupPropertyPermissions permissionGroup="#attributes.permissionGroup#" entityName="#entityName#" entityPermissionDetails="#attributes.entityPermissionDetails#" parentIndex="#request.context.permissionFormIndex#" depth="1" edit="false" />
+						<hb:HibachiPermissionGroupPropertyPermissions permissionGroup="#attributes.permissionGroup#" entityName="#entityName#" entityPermissionDetails="#attributes.entityPermissionDetails#" parentIndex="#request.context.permissionFormIndex#" depth="1" edit="false" />
 					</cfif>
 				</cfif>
 			</cfloop>

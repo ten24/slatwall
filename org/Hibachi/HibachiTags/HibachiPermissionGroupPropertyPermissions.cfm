@@ -99,7 +99,7 @@
 					<td></td>
 				</cfif>
 			</tr>
-			<cf_HibachiPermissionGroupPropertyPermissions permissionGroup="#attributes.permissionGroup#" entityName="#subPropertyInheriting[ propertyName ]#" entityPermissionDetails="#attributes.entityPermissionDetails#" parentIndex="#request.context.permissionFormIndex#" depth="#attributes.depth + 1#" edit="#attributes.edit#" />
+			<hb:HibachiPermissionGroupPropertyPermissions permissionGroup="#attributes.permissionGroup#" entityName="#subPropertyInheriting[ propertyName ]#" entityPermissionDetails="#attributes.entityPermissionDetails#" parentIndex="#request.context.permissionFormIndex#" depth="#attributes.depth + 1#" edit="#attributes.edit#" />
 		</cfloop>
 	</cfoutput>
 </cfif>

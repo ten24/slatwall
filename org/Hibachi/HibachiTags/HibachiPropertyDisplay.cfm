@@ -207,7 +207,7 @@
 			</cfif>
 		</cfsilent>
 		
-		<cf_HibachiFieldDisplay attributecollection="#attributes#" />
+		<hb:HibachiFieldDisplay attributecollection="#attributes#" />
 	</cfif>
 
 </cfif>

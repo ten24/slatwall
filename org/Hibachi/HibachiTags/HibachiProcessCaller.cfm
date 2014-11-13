@@ -50,6 +50,6 @@
 	
 	<!--- If either no entity object was passed in, or if the entity object that was passed in is in fact processable, then deligate to the action caller for the actual info --->
 	<cfif !isObject(attributes.entity) || (isObject(attributes.entity) && ( !attributes.disabled || !attributes.hideDisabled ) )>
-		<cf_HibachiActionCaller attributecollection="#attributes#" />
+		<hb:HibachiActionCaller attributecollection="#attributes#" />
 	</cfif>
 </cfif>
