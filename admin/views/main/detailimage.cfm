@@ -46,6 +46,9 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.image" type="any" />
 <cfparam name="rc.directory" type="any" default="" />
 <cfparam name="rc.edit" type="boolean" default="false" />

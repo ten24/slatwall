@@ -46,7 +46,8 @@
 Notes:
 
 --->
-
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfoutput>
 
 	<div class="row s-body-nav" style="margin-bottom: 30px;">

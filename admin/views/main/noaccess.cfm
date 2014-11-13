@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfoutput>
 	<div class="svoadminmainnoaccess s-access-denied">
 		<h3>Access Denied</h3>
