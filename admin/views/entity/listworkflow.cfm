@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.workflowSmartList" type="any" />
 
 <cf_HibachiEntityActionBar type="listing" object="#rc.workflowSmartList#" showCreate="false">

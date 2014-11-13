@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.locationConfiguration" type="any">
 <cfparam name="rc.location" type="any" default="#rc.locationConfiguration.getLocation()#">
 <cfparam name="rc.edit" type="boolean">

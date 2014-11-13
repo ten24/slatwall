@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.eventRegistration" type="any" />
 <cfset rc.comment = $.slatwall.getService("commentService").newComment() />
 

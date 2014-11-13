@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.promotionReward" type="any">
 <cfparam name="rc.promotionPeriod" type="any" default="#rc.promotionReward.getPromotionPeriod()#">
 <cfparam name="rc.rewardType" type="string" default="#rc.promotionReward.getRewardType()#">

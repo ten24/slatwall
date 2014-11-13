@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfoutput>
 	<cf_SlatwallSettingTable showInheritance="false">
 		<cf_SlatwallSetting settingName="skuAllowBackorderFlag" />

@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderItem" type="any" />
 <cfparam name="rc.order" type="any" default="#rc.orderItem.getOrder()#" />
 <cfparam name="rc.sku" type="any" default="#rc.orderItem.getSku()#" />

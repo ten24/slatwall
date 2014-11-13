@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.paymentMethod" type="any" />
 <cfparam name="rc.paymentMethodType" type="string" default="#rc.paymentMethod.getPaymentMethodType()#" />
 <cfparam name="rc.edit" type="boolean" default="false" />

@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfset sites = $.slatwall.getService('siteService').getSiteSmartList() />
 <cfset sites.addFilter('activeFlag', 1) />
 

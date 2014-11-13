@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.addEventScheduleProcessObject" type="any" />
 
 <cf_HibachiPropertyDisplay object="#rc.addEventScheduleProcessObject#" property="bundleLocationConfigurationFlag" edit="true" />

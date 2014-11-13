@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.currencyRate" type="any" />
 <cfparam name="rc.currencyCode" type="any" default="" />
 <cfparam name="rc.edit" type="boolean" />

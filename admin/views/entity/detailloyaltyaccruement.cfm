@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.loyaltyAccruement" type="any">
 <cfparam name="rc.loyalty" type="any" default="#rc.loyaltyAccruement.getLoyalty()#">
 <cfparam name="rc.edit" type="boolean">

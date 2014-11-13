@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.vendorOrder" type="any"/>
 
 <cf_HibachiListingDisplay smartlist="#rc.$.slatwall.getService('VendorOrderService').getStockReceiverSmartList(rc.vendorOrder.getVendorOrderID())#" 

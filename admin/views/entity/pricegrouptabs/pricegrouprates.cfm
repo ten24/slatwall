@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.priceGroup" type="any" />
 
 <cf_HibachiListingDisplay smartList="#rc.priceGroup.getPriceGroupRatesSmartList()#"
