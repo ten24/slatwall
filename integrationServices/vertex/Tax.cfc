@@ -136,7 +136,15 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 												taxJurisdictionID=taxJurisdictionID,
 												taxJurisdictionType=taxJurisdictionType,
 												taxImpositionName=taxImpositionName,
-												taxImpositionType=taxImpositionType);
+												taxImpositionType=taxImpositionType,
+												taxStreetAddress=addressTaxRequestItems[ 1 ].getTaxStreetAddress(),
+												taxStreet2Address=addressTaxRequestItems[ 1 ].getTaxStreet2Address(),
+												taxLocality=addressTaxRequestItems[ 1 ].getTaxLocality(),
+												taxCity=addressTaxRequestItems[ 1 ].getTaxCity(),
+												taxStateCode=addressTaxRequestItems[ 1 ].getTaxStateCode(),
+												taxPostalCode=addressTaxRequestItems[ 1 ].getTaxPostalCode(),
+												taxCountryCode=addressTaxRequestItems[ 1 ].getTaxCountryCode()
+										);
 										
 									}								
 									

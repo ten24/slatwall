@@ -136,15 +136,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 											var newAppliedTax = this.newTaxApplied();
 											newAppliedTax.setAppliedType("orderItem");
 											newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
+											newAppliedTax.setTaxCategoryRate( taxCategoryRate );
+											newAppliedTax.setOrderItem( orderItem );
+											newAppliedTax.setTaxLiabilityAmount( taxRateItemResponse.getTaxAmount() );
 											newAppliedTax.setTaxImpositionID( taxRateItemResponse.getTaxImpositionID() );
 											newAppliedTax.setTaxImpositionName( taxRateItemResponse.getTaxImpositionName() );
 											newAppliedTax.setTaxImpositionType( taxRateItemResponse.getTaxImpositionType() );
 											newAppliedTax.setTaxJurisdictionID( taxRateItemResponse.getTaxJurisdictionID() );
 											newAppliedTax.setTaxJurisdictionName( taxRateItemResponse.getTaxJurisdictionName() );
 											newAppliedTax.setTaxJurisdictionType( taxRateItemResponse.getTaxJurisdictionType() );
-											newAppliedTax.setTaxCategoryRate( taxCategoryRate );
-											newAppliedTax.setOrderItem( orderItem );
-											newAppliedTax.setTaxLiabilityAmount( taxRateItemResponse.getTaxAmount() );
+											newAppliedTax.setTaxStreetAddress( taxRateItemResponse.getTaxStreetAddress() );  
+											newAppliedTax.setTaxStreet2Addres( taxRateItemResponse.getTaxStreet2Addres() );
+											newAppliedTax.setTaxLocality( taxRateItemResponse.getTaxLocality() );
+											newAppliedTax.setTaxCity( taxRateItemResponse.getTaxCity() );
+											newAppliedTax.setTaxStateCode( taxRateItemResponse.getTaxStateCode() );   
+											newAppliedTax.setTaxPostalCode( taxRateItemResponse.getTaxPostalCode() );
+											newAppliedTax.setTaxCountryCode( taxRateItemResponse.getTaxCountryCode() );  
 											
 											// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
 											if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
