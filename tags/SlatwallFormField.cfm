@@ -127,7 +127,7 @@ Notes:
 			</cfoutput>
 		</cfcase>
 		<cfcase value="listingMultiselect">
-			<cf_HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" edit="true"></cf_HibachiListingDisplay>
+			<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" edit="true"></hb:HibachiListingDisplay>
 		</cfcase>
 		<cfcase value="multiselect">
 			<cfoutput>
@@ -211,7 +211,7 @@ Notes:
 						</ul>
 					</div>
 					<cfif len(attributes.modalCreateAction)>
-						<cf_HibachiActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn btn-default modal-fieldupdate-textautocomplete" icononly="true">
+						<hb:HibachiActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn btn-default modal-fieldupdate-textautocomplete" icononly="true">
 					</cfif>
 				</div>
 			</cfoutput>

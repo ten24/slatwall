@@ -62,7 +62,7 @@
 	
 	<cfsavecontent variable="attributes.tabcontent" >
 		<div class="tab-pane" id="tabImages">
-			<cf_SlatwallAdminImagesDisplay object="#attributes.object#" />
+			<swa:SlatwallAdminImagesDisplay object="#attributes.object#" />
 		</div>
 	</cfsavecontent>
 	

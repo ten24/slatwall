@@ -96,6 +96,6 @@ Notes:
 			<cfset fdAttributes.valueOptionsSmartList = attributes.hibachiScope.getService('hibachiService').getServiceByEntityName( attribute.getRelatedObject() ).invokeMethod( "get#attribute.getRelatedObject()#SmartList" ) />
 		</cfif>
 		
-		<cf_HibachiFieldDisplay attributeCollection="#fdAttributes#" />
+		<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
 	</cfloop>
 </cfif>

@@ -64,11 +64,11 @@
 	
 	<cfsavecontent variable="attributes.tabcontent">
 		<div class="tab-pane" id="attSet#attributes.attributeSet.getAttributeSetCode()#">
-			<cf_HibachiPropertyRow>
-				<cf_HibachiPropertyList>
-					<cf_SlatwallAdminAttributeSetDisplay attributeSet="#attributes.attributeSet#" entity="#attributes.object#" edit="#attributes.edit#" />
-				</cf_HibachiPropertyList>
-			</cf_HibachiPropertyRow>
+			<hb:HibachiPropertyRow>
+				<hb:HibachiPropertyList>
+					<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributes.attributeSet#" entity="#attributes.object#" edit="#attributes.edit#" />
+				</hb:HibachiPropertyList>
+			</hb:HibachiPropertyRow>
 		</div>
 	</cfsavecontent>
 	

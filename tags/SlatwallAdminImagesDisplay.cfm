@@ -64,13 +64,13 @@
 						</div>
 						<hr />
 						<div class="small em image-caption">#image.getImagePath()#</div>
-						<cf_HibachiActionCaller action="admin:entity.detailImage" querystring="imageID=#image.getImageID()#" class="btn s-btn-dgrey" iconOnly="true" icon="eye-open" />
-						<cf_HibachiActionCaller action="admin:entity.editImage" querystring="imageID=#image.getImageID()#" class="btn s-btn-dgrey" iconOnly="true" icon="pencil" />
-						<cf_HibachiActionCaller action="admin:entity.deleteImage" querystring="imageID=#image.getImageID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" class="btn s-btn-dgrey" iconOnly="true" icon="trash" confirm="true" />				
+						<hb:HibachiActionCaller action="admin:entity.detailImage" querystring="imageID=#image.getImageID()#" class="btn s-btn-dgrey" iconOnly="true" icon="eye-open" />
+						<hb:HibachiActionCaller action="admin:entity.editImage" querystring="imageID=#image.getImageID()#" class="btn s-btn-dgrey" iconOnly="true" icon="pencil" />
+						<hb:HibachiActionCaller action="admin:entity.deleteImage" querystring="imageID=#image.getImageID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" class="btn s-btn-dgrey" iconOnly="true" icon="trash" confirm="true" />				
     				</div>
   				</li>
 			</cfloop>
 		</ul>
-		<cf_HibachiActionCaller action="admin:entity.createImage" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&objectName=#attributes.object.getClassName()#&redirectAction=#request.context.slatAction#" modal="true" class="btn s-btn-dgrey" icon="plus" />
+		<hb:HibachiActionCaller action="admin:entity.createImage" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&objectName=#attributes.object.getClassName()#&redirectAction=#request.context.slatAction#" modal="true" class="btn s-btn-dgrey" icon="plus" />
 	</cfoutput>
 </cfif>
