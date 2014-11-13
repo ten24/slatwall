@@ -76,6 +76,7 @@ Notes:
 		<cfargument name="idColumns" required="true" type="string" />
 		<cfargument name="updateData" required="true" type="struct" />
 		<cfargument name="insertData" required="true" type="struct" />
+		<cfargument name="updateOnlyFlag" required="true" type="boolean" />
 		
 		<cfset var keyList = structKeyList(arguments.updateData) />
 		<cfset var rs = "" />
@@ -100,7 +101,7 @@ Notes:
 					<cfif listLen(arguments.idColumns) gt i>AND </cfif>
 				</cfloop>
 		</cfquery>
-		<cfif !sqlResult.recordCount>
+		<cfif !sqlResult.recordCount and !arguments.updateOnlyFlag>
 			<cfset recordInsert(tableName=arguments.tableName, insertData=arguments.insertData) />
 		</cfif>
 	</cffunction>
