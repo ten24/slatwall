@@ -435,11 +435,11 @@ Notes:
 							}else if(angular.isDefined(propertyMetaData.fieldtype)
 							&& angular.isDefined(propertyMetaData.cfc)
 							&& ["many-to-one"].indexOf(propertyMetaData.fieldtype) > -1){
-								return metaData.$$getRBKey("entity."+metaData.className.toLowerCase()+'.'+propertyName+',entity.'+propertyMetaData.cfc);
+								return metaData.$$getRBKey("entity."+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc);
 							}
-							return metaData.$$getRBKey('entity.'+metaData.className.toLowerCase()+'.'+propertyName);
+							return metaData.$$getRBKey('entity.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
 						}
-						return metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName);
+						return metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
 			    	}
 			    	
 			    	var _getPropertyHint = function(propertyName,metaData){
@@ -448,9 +448,9 @@ Notes:
 			    		if(angular.isDefined(propertyMetaData['hb_rbkey'])){
 							keyValue = metaData.$$getRBKey(propertyMetaData['hb_rbkey']+'_hint');
 						}else if (angular.isUndefined(propertyMetaData['persistent']) || (angular.isDefined(propertyMetaData['persistent']) && propertyMetaData['persistent'] === true)){
-							keyValue = metaData.$$getRBKey('entity.'+metaData.className.toLowerCase()+'.'+propertyName+'_hint');
+							keyValue = metaData.$$getRBKey('entity.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+'_hint');
 						}else{
-							keyValue = metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName);
+							keyValue = metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
 						}
 						if(keyValue.slice(-8) !== '_missing'){
 							return keyValue;
@@ -667,6 +667,13 @@ Notes:
 								
 							};
 							_jsEntities[ '#local.entity.getClassName()#' ].prototype = {
+								$$isPersisted:function(){
+									if(this['$$get'+this.metaData.className.toLowerCase()+'ID']() === ''){
+										return false;
+									}else{
+										return true;
+									}
+								},
 								$$init:function( data ) {
 									_init(this,data);
 								}

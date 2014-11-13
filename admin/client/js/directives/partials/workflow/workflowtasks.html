@@ -3,7 +3,7 @@
 	<div class="s-bundle-add-items s-workflow-objs">
 		<ul class="list-unstyled s-order-item-options s-negative-obj">
 			<span ng-repeat="workflowTask in workflowTasks">
-				<li class="s-bundle-add-obj s-no-edit" ng-show="workflowTask.isPersisted()" ng-init="workflowTask.$$index = $index">
+				<li class="s-bundle-add-obj s-no-edit" ng-show="workflowTask.$$isPersisted()" ng-init="workflowTask.$$index = $index">
 					<ul class="list-unstyled list-inline">
 						<li class="s-item-type s-tooltip">{{$index}}</li>
 					</ul>
@@ -19,7 +19,7 @@
 					</ul>
 					<div class="clearfix"></div>
 				</li>
-				<div class="s-bundle-edit-obj collapse" id="s-add-obj-1" ng-if="workflowTasks.selectedTrigger.index === $index && workflowTasks.selectedTrigger.isPersisted()">
+				<div class="s-bundle-edit-obj collapse" id="s-add-obj-1" ng-if="workflowTasks.selectedTrigger.index === $index && workflowTasks.selectedTrigger.$$isPersisted()">
 	
 					<span ng-include="{{workflowPartialsPath}}addeditworkflowtask.html"></span>
 	
@@ -32,13 +32,13 @@
 			data-toggle="collapse" 
 			data-target="#j-create-new-task"
 			ng-click="addWorkflowTask()" 
-			ng-show="!workflowTasks.selectedTask || workflowTasks.selectedTask.isPersisted()"
+			ng-show="!workflowTasks.selectedTask || workflowTasks.selectedTask.$$isPersisted()"
 	>
 		<i class="fa fa-plus"></i> Create New Task
 	</button>
 
 	<!--- Edit Filter Box --->
-	<div class="col-xs-12 collapse s-add-filter s-tab-layout" id="j-create-new-task" ng-if="!workflowTasks.selectedTasks.isPersisted()">
+	<div class="col-xs-12 collapse s-add-filter s-tab-layout" id="j-create-new-task" ng-if="!workflowTasks.selectedTasks.$$isPersisted()">
 		<div class="row">
 			<h4>
 				 Create New Task 

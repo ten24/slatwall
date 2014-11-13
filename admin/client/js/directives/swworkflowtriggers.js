@@ -19,7 +19,7 @@ workflowPartialsPath
 		require:"^form",
 		restrict: 'A',
 		scope:{
-			
+			workflow:"="
 		},
 		templateUrl:workflowPartialsPath+"workflowtriggers.html",
 		link: function(scope, element,attrs,formController){

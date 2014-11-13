@@ -88,14 +88,18 @@ partialsPath
 								//var selectElement = element.find('select');
 								//selectElement.blur();
 								
-								if(angular.isDefined(scope.propertyDisplay.object[scope.propertyDisplay.property])){
+								if(angular.isDefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])){
+									console.log(scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
 									for(var i in scope.propertyDisplay.options){
-										if(scope.propertyDisplay.options[i].value === scope.propertyDisplay.object[scope.propertyDisplay.property]){
-											scope.propertyDisplay.selectedOption = scope.propertyDisplay.options[i];
+										console.log(scope.propertyDisplay.options[i].value);
+										if(scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]){
+											scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
 										}
 									}
+								}else{
+									scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
 								}
-								scope.propertyDisplay.object[scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
+								
 							});
 						}
 						
@@ -106,13 +110,13 @@ partialsPath
 		        	//formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
 		        }
 				if(scope.propertyDisplay.fieldType === 'text' || scope.propertyDisplay.fieldType === 'hidden'){
-					formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.property]);
+					formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
 				}
 				if(scope.propertyDisplay.fieldType === 'yesno' || scope.propertyDisplay.fieldType === 'hidden'){
-					formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.property]);
+					formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
 					console.log('radio');
-					console.log(scope.propertyDisplay.object[scope.propertyDisplay.property]);
-					scope.propertyDisplay.selectedOptions = scope.propertyDisplay.object[scope.propertyDisplay.property];
+					console.log(scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
+					scope.propertyDisplay.selectedOptions = scope.propertyDisplay.object.data[scope.propertyDisplay.property];
 				}
 				
 				/*if(angular.isDefined(formController[scope.propertyDisplay.property])){

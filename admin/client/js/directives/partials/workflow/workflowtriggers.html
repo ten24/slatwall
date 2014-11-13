@@ -3,7 +3,7 @@
 		<!---TODO: convert to trigger directive --->
 		<span ng-repeat="workflowTrigger in workflowTriggers"> 
 			<span 	sw-workflow-trigger
-					ng-if="workflowTrigger.isPersisted()"
+					ng-if="workflowTrigger.$$isPersisted()"
 					data-workflow-trigger="workflowTrigger"
 					data-workflow-triggers="workflowTriggers"
 					ng-init="workflowTrigger.$$index = $index"
@@ -12,7 +12,7 @@
 		</span>
 	</ul>
 
-	<button ng-show="!workflowTriggers.selectedTrigger || workflowTriggers.selectedTrigger.isPersisted()" class="btn btn-xs s-btn-ten24" 
+	<button ng-show="!workflowTriggers.selectedTrigger || workflowTriggers.selectedTrigger.$$isPersisted()" class="btn btn-xs s-btn-ten24" 
 			ng-click="addWorkflowTrigger()" 
 			data-toggle="collapse" 
 			data-target="#j-create-new-trigger"
@@ -25,8 +25,8 @@
 	<div ng-if="workflowTriggers.selectedTrigger" class="col-xs-12 collapse s-add-filter" id="j-create-new-trigger">
 		<div class="row">
 			<h4> 
-				<span ng-show="workflowTriggers.selectedTrigger.isPersisted()">Edit</span>
-				<span ng-show="!workflowTriggers.selectedTrigger.isPersisted()">New</span>
+				<span ng-show="workflowTriggers.selectedTrigger.$$isPersisted()">Edit</span>
+				<span ng-show="!workflowTriggers.selectedTrigger.$$isPersisted()">New</span>
 				 Trigger 
 				 <i class="fa fa-times" 
 				 	data-toggle="collapse" 

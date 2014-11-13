@@ -87,6 +87,7 @@ component entityname="SlatwallWorkflowTask" table="SwWorkflowTask" persistent="t
 		return deserializeJSON(getTaskConditionsConfig());
 	}
 	
+	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================

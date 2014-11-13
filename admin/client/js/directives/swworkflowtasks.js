@@ -21,7 +21,7 @@ workflowPartialsPath
 		require:"^form",
 		restrict: 'A',
 		scope:{
-			
+			workflow:"="
 		},
 		templateUrl:workflowPartialsPath+"workflowtasks.html",
 		link: function(scope, element,attrs,formController){
@@ -30,13 +30,11 @@ workflowPartialsPath
 			
 			scope.workflowPartialsPath = workflowPartialsPath;
 			
-			scope.workflowID = $location.search().workflowID;
-			scope.$id = 'swWorkflowTasks';
 				
 			scope.propertiesList = {};
 				
 			scope.getWorkflowTasks = function(){
-				var filterGroupsConfig ='['+  
+				/*var filterGroupsConfig ='['+  
 					'{'+
                      	'"filterGroup":['+  
 				            '{'+
@@ -47,9 +45,11 @@ workflowPartialsPath
 				         ']'+
 					'}'+
 				']';
-				var workflowTasksPromise = $slatwall.getEntity('workflowTask',{filterGroupsConfig:filterGroupsConfig});
+				var workflowTasksPromise = $slatwall.getEntity('workflowTask',{filterGroupsConfig:filterGroupsConfig});*/
+				//console.log(scope.workflow);
+				scope.workflowTasks = scope.workflow.$$getworkflowTasks();
 				
-				workflowTasksPromise.then(function(value){
+				/*workflowTasksPromise.then(function(value){
 					$log.debug('getWorkflowTasks');
 					scope.workflowTasks = workflowTaskService.formatWorkflowTasks(value.pageRecords);
 					$log.debug(scope.workflowTasks);
@@ -67,22 +67,22 @@ workflowPartialsPath
 						scope.propertiesList = metadataService.getPropertiesListByBaseEntityAlias(workflow.workflowObject);
 					}
 					
-				});
+				});*/
 			};
 			
 			scope.getWorkflowTasks();
 			
 			scope.addWorkflowTask = function(){
 				$log.debug('addWorkflowTasks');
-				var newWorkflowTask = workflowTaskService.newWorkflowTask();
-				newWorkflowTask.workflow = workflowService.getWorkflow(scope.workflowID);
+				var newWorkflowTask = $slatwall.newWorkflowTask();
+				newWorkflowTask.workflow = scope.workflow;
 				scope.workflowTasks.selectedTask = newWorkflowTask;
 				scope.workflowTasks.push(newWorkflowTask);
 				$log.debug(scope.workflowTasks);
 			};
 			
 			scope.addWorkflowTaskAction = function(){
-				var workflowTaskAction = workflowTaskService.newWorkflowTaskAction();
+				var workflowTaskAction = $slatwall.newWorkflowTaskAction();
 				scope.workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction = workflowTaskAction;
 				workflowTaskService.addWorkflowTaskAction(scope.workflowTasks.selectedTask.workflowTaskActions,workflowTaskAction);
 			};
