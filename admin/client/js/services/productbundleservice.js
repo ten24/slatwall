@@ -71,7 +71,7 @@ function(
 		formatProductBundleGroup:function(productBundleGroup){
 			var formattedProductBundleGroup = this.newProductBundle();
 			
-			for(key in productBundleGroup){
+			for(var key in productBundleGroup){
 				formattedProductBundleGroup[key] = productBundleGroup[key];
 			}
 			

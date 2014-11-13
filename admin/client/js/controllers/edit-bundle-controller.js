@@ -2,18 +2,18 @@
 angular.module('slatwalladmin').controller('edit-bundle-controller', [
 	'$scope',
 	'$location',
-	'$slatwall',
 	'$log',
 	'$rootScope',
+	'$slatwall',
 	'dialogService',
 	'productBundleService',
 	'formService',
 function(
 	$scope,
 	$location,
-	$slatwall,
 	$log,
 	$rootScope,
+	$slatwall,
 	dialogService,
 	productBundleService,
 	formService

@@ -31,7 +31,7 @@ function(
 		},
 		formatWorkflow:function(workflowObject){
 			var workflow = this.newWorkflow();
-			for(key in workflowObject){
+			for(var key in workflowObject){
 				workflow[key] = workflowObject[key];
 			}
 			return workflow;

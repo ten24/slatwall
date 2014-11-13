@@ -97,7 +97,7 @@ function(
 		},
 		formatWorkflowTask:function(workflowTaskObject){
 			var workflowTask = this.newWorkflowTask();
-			for(key in workflowTaskObject){
+			for(var key in workflowTaskObject){
 				workflowTask[key] = workflowTaskObject[key];
 			}
 			return workflowTask;

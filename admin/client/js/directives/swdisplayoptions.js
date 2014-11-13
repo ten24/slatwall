@@ -3,15 +3,15 @@ angular.module('slatwalladmin')
 ['$http',
 '$compile',
 '$templateCache',
+'$log',
 'collectionService',
 'collectionPartialsPath',
-'$log',
 function($http,
 $compile,
 $templateCache,
+$log,
 collectionService,
-collectionPartialsPath,
-$log){
+collectionPartialsPath){
 	return {
 		restrict: 'A',
 		transclude:true,
