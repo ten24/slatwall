@@ -344,8 +344,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// Setup the orderItem level taxShippingAddress
 				structDelete(taxAddresses, "taxShippingAddress");
-				if(!isNull(orderItem.getOrderFulfillment()) && !isNull(orderItem.getOrderFulfillment().getAddress())) {
-					taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getAddress();
+				if(!isNull(orderItem.getOrderFulfillment()) && !getHibachiValidationService().validate(object=orderItem.getOrderFulfillment().getShippingAddress(), context="full", setErrors=false).hasErrors()) {
+					taxAddresses.taxShippingAddress = orderItem.getOrderFulfillment().getShippingAddress();
 				}
 				
 				// Loop over the rates of that category, looking for a unique integration
