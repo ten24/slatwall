@@ -69,6 +69,7 @@ Notes:
 			
 			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeName" edit="#rc.edit#">
 			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeCode" edit="#rc.edit#">
+			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeDescription" edit="#rc.edit#">
 
 			<cfif !isNull(local.parentType) && !isNull(local.parentType.getSystemCode())>
 				<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="#rc.type.getNewFlag()#" fieldType="select" valueOptions="#$.slatwall.getService('typeService').getTypeSystemCodeOptionsByParentSystemCode(local.parentType.getSystemCode())#">
