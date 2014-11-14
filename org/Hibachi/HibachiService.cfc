@@ -61,9 +61,8 @@
 	    	arguments[ lcase(arguments.entity.getClassName()) ] = arguments.entity;
 			
 			// Announce Before Event
-			if(arguments.entity.getAnnounceEvent()){
-				getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Delete", arguments);
-			}
+			getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Delete", arguments);
+			
 			// Do delete validation
 			arguments.entity.validate(context="delete");
 			
@@ -75,20 +74,19 @@
 				
 				// Call delete in the DAO
 				getHibachiDAO().delete(target=arguments.entity);
-				if(arguments.entity.getAnnounceEvent()){
-					// Announce After Events for Success
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Delete", arguments);
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#DeleteSuccess", arguments);
-				}
+				
+				// Announce After Events for Success
+				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Delete", arguments);
+				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#DeleteSuccess", arguments);
+				
 				// Return that the delete was sucessful
 				return true;
 				
 			}
-			if(arguments.entity.getAnnounceEvent()){
-				// Announce After Events for Failure
-				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Delete", arguments);
-				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#DeleteFailure", arguments);
-			}
+			
+			// Announce After Events for Failure
+			getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Delete", arguments);
+			getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#DeleteFailure", arguments);
 			
 			return false;
 		}
@@ -104,9 +102,8 @@
 			invokeArguments.entity = arguments.entity;
 			
 			// Announce the processContext specific  event
-			if(arguments.entity.getAnnounceEvent()){
-				getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Process_#arguments.processContext#", invokeArguments);
-			}
+			getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Process_#arguments.processContext#", invokeArguments);
+			
 			// Verify the preProcess
 			arguments.entity.validate( context=arguments.processContext );
 			
@@ -138,15 +135,13 @@
 			}	
 
 			// Announce the after events
-			if(arguments.entity.getAnnounceEvent()){
-				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_#arguments.processContext#", invokeArguments);
-				if(arguments.entity.hasErrors()) {
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_#arguments.processContext#Failure", invokeArguments);
-				} else {
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_#arguments.processContext#Success", invokeArguments);
-				}
+			getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_#arguments.processContext#", invokeArguments);
+			if(arguments.entity.hasErrors()) {
+				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_#arguments.processContext#Failure", invokeArguments);
+			} else {
+				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_#arguments.processContext#Success", invokeArguments);
 			}
-
+			
 			return arguments.entity;
 		}
 		
@@ -161,9 +156,7 @@
 	    	arguments[ lcase(arguments.entity.getClassName()) ] = arguments.entity;
 	    	
 	    	// Announce Before Event
-	    	if(arguments.entity.getAnnounceEvent()){
-	    		getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Save", arguments);
-	    	}
+	    	getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Save", arguments);
 	    	
 			// If data was passed in to this method then populate it with the new data
 	        if(structKeyExists(arguments,"data")){
@@ -179,17 +172,15 @@
 	        // If the object passed validation then call save in the DAO, otherwise set the errors flag
 	        if(!arguments.entity.hasErrors()) {
 	            arguments.entity = getHibachiDAO().save(target=arguments.entity);
-	            if(arguments.entity.getAnnounceEvent()){
-		            // Announce After Events for Success
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveSuccess", arguments);
-				}
-	        } else {
-	            if(arguments.entity.getAnnounceEvent()){
-		            // Announce After Events for Failure
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
-					getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveFailure", arguments);
-				}
+        
+                // Announce After Events for Success
+				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
+				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveSuccess", arguments);
+		    } else {
+            
+                // Announce After Events for Failure
+				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
+				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveFailure", arguments);
 	        }
 	        
 	        // Return the entity
