@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
@@ -53,46 +57,46 @@ Notes:
 <!--- Set AngularJS controller --->
 <div ng-controller="preprocessaccount_addaccountpayment">
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#" sRedirectAction="admin:entity.detailaccount">
+	<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#" sRedirectAction="admin:entity.detailaccount">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.account#">
-		</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.account#">
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyList divClass="col-md-6">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyList divClass="col-md-6">
 				<!--- Add a hidden field for the accountID --->
 				<input type="hidden" name="newAccountPayment.account.accountID" value="#rc.account.getAccountID()#" />
 				
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="amount" fieldName="newAccountPayment.amount" edit="#rc.edit#"fieldAttributes="ng-model='amount' ng-change='updateSubTotal()' placeholder='0' ng-readonly='!paymentTypeLock'">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" fieldName="newAccountPayment.currencyCode" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="accountPaymentType" fieldName="newAccountPayment.accountPaymentType.typeID" edit="#rc.edit#" fieldAttributes="ng-model='paymentType' ng-change='updatePaymentType()' ng-init='paymentType = ""444df32dd2b0583d59a19f1b77869025""'">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="accountPaymentMethodID" edit="#rc.edit#">
-				</cf_HibachiPropertyList>
-				<cf_HibachiPropertyList divClass="col-md-6">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="amount" fieldName="newAccountPayment.amount" edit="#rc.edit#"fieldAttributes="ng-model='amount' ng-change='updateSubTotal()' placeholder='0' ng-readonly='!paymentTypeLock'">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="currencyCode" fieldName="newAccountPayment.currencyCode" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="accountPaymentType" fieldName="newAccountPayment.accountPaymentType.typeID" edit="#rc.edit#" fieldAttributes="ng-model='paymentType' ng-change='updatePaymentType()' ng-init='paymentType = ""444df32dd2b0583d59a19f1b77869025""'">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountPaymentMethodID" edit="#rc.edit#">
+				</hb:HibachiPropertyList>
+				<hb:HibachiPropertyList divClass="col-md-6">
 				<!--- New Payment Method --->
-				<cf_HibachiDisplayToggle selector="select[name='accountPaymentMethodID']" showValues="" loadVisable="#!len(rc.processObject.getAccountPaymentMethodID())#">
+				<hb:HibachiDisplayToggle selector="select[name='accountPaymentMethodID']" showValues="" loadVisable="#!len(rc.processObject.getAccountPaymentMethodID())#">
 					
 					<input type="hidden" name="newAccountPayment.accountPaymentID" value="" />
 					
 					<!--- New Payment Type --->
-					<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="paymentMethod" fieldName="newAccountPayment.paymentMethod.paymentMethodID" valueOptions="#rc.processObject.getPaymentMethodIDOptions()#" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="paymentMethod" fieldName="newAccountPayment.paymentMethod.paymentMethodID" valueOptions="#rc.processObject.getPaymentMethodIDOptions()#" edit="#rc.edit#">
 					
 					<!--- Save Account Payment as Account Payment Method --->
 					<cfset loadVisable = rc.processObject.getNewAccountPayment().getPaymentMethodOptions()[1]['allowsave'] />
 					<cfif !isNull(rc.processObject.getNewAccountPayment().getPaymentMethod())>
 						<cfset loadVisable = rc.processObject.getNewAccountPayment().getPaymentMethod().getAllowSaveFlag() />
 					</cfif>
-					<cf_HibachiDisplayToggle selector="select[name='newAccountPayment.paymentMethod.paymentMethodID']" valueAttribute="allowsave" showValues="true" loadVisable="#loadVisable#">
+					<hb:HibachiDisplayToggle selector="select[name='newAccountPayment.paymentMethod.paymentMethodID']" valueAttribute="allowsave" showValues="true" loadVisable="#loadVisable#">
 						
 						<!--- Save New Payment Method --->
-						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="saveAccountPaymentMethodFlag" edit="#rc.edit#" />
+						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveAccountPaymentMethodFlag" edit="#rc.edit#" />
 						
 						<!--- Save New Address Name --->
-						<cf_HibachiDisplayToggle selector="input[name='saveAccountPaymentMethodFlag']">
-							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="saveAccountPaymentMethodName" edit="#rc.edit#" />
-						</cf_HibachiDisplayToggle>
-					</cf_HibachiDisplayToggle>
+						<hb:HibachiDisplayToggle selector="input[name='saveAccountPaymentMethodFlag']">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveAccountPaymentMethodName" edit="#rc.edit#" />
+						</hb:HibachiDisplayToggle>
+					</hb:HibachiDisplayToggle>
 					
 					<cfset loadPaymentMethodType = rc.processObject.getNewAccountPayment().getPaymentMethodOptions()[1]['paymentmethodtype'] />
 					<cfif !isNull(rc.processObject.getNewAccountPayment().getPaymentMethod())>
@@ -100,49 +104,49 @@ Notes:
 					</cfif>
 					
 					<!--- Credit Card Payment Details --->
-					<cf_HibachiDisplayToggle selector="select[name='newAccountPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard" loadVisable="#loadPaymentMethodType eq 'creditCard'#">
+					<hb:HibachiDisplayToggle selector="select[name='newAccountPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard" loadVisable="#loadPaymentMethodType eq 'creditCard'#">
 						<h5>#$.slatwall.rbKey('admin.define.creditCardDetails')#</h5>
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.creditCardNumber" property="creditCardNumber" edit="#rc.edit#">
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.nameOnCreditCard" property="nameOnCreditCard" edit="#rc.edit#">
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.expirationMonth" property="expirationMonth" edit="#rc.edit#">
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.expirationYear" property="expirationYear" edit="#rc.edit#">
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.securityCode" property="securityCode" edit="#rc.edit#">
-					</cf_HibachiDisplayToggle>
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.creditCardNumber" property="creditCardNumber" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.nameOnCreditCard" property="nameOnCreditCard" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.expirationMonth" property="expirationMonth" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.expirationYear" property="expirationYear" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.securityCode" property="securityCode" edit="#rc.edit#">
+					</hb:HibachiDisplayToggle>
 					
 					<!--- Term Payment Details --->
-					<cf_HibachiDisplayToggle selector="select[name='newAccountPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="termPayment" loadVisable="#loadPaymentMethodType eq 'termPayment'#">
+					<hb:HibachiDisplayToggle selector="select[name='newAccountPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="termPayment" loadVisable="#loadPaymentMethodType eq 'termPayment'#">
 						<h5>#$.slatwall.rbKey('admin.define.termPaymentDetails')#</h5>
-						<cf_HibachiPropertyDisplay object="#rc.account#" property="termAccountBalance" edit="false">
-						<cf_HibachiPropertyDisplay object="#rc.account#" property="termAccountAvailableCredit" edit="false">
-					</cf_HibachiDisplayToggle>
+						<hb:HibachiPropertyDisplay object="#rc.account#" property="termAccountBalance" edit="false">
+						<hb:HibachiPropertyDisplay object="#rc.account#" property="termAccountAvailableCredit" edit="false">
+					</hb:HibachiDisplayToggle>
 					
 					<!--- Gift Card Details --->
-					<cf_HibachiDisplayToggle selector="select[name='newAccountPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="giftCard" loadVisable="#loadPaymentMethodType eq 'giftCard'#">
+					<hb:HibachiDisplayToggle selector="select[name='newAccountPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="giftCard" loadVisable="#loadPaymentMethodType eq 'giftCard'#">
 						<h5>#$.slatwall.rbKey('admin.define.giftCardDetails')#</h5>
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.giftCardNumber" property="giftCardNumber" edit="#rc.edit#">
-					</cf_HibachiDisplayToggle>
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.giftCardNumber" property="giftCardNumber" edit="#rc.edit#">
+					</hb:HibachiDisplayToggle>
 					
 					<!--- Check Details --->
-					<cf_HibachiDisplayToggle selector="select[name='newAccountPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="check" loadVisable="#loadPaymentMethodType eq 'check'#">
+					<hb:HibachiDisplayToggle selector="select[name='newAccountPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="check" loadVisable="#loadPaymentMethodType eq 'check'#">
 						<h5>#$.slatwall.rbKey('admin.define.checkDetails')#</h5>
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.checkNumber" property="checkNumber" edit="#rc.edit#">
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.bankRoutingNumber" property="bankRoutingNumber" edit="#rc.edit#">
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.bankAccountNumber" property="bankAccountNumber" edit="#rc.edit#">
-					</cf_HibachiDisplayToggle>
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.checkNumber" property="checkNumber" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.bankRoutingNumber" property="bankRoutingNumber" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" fieldName="newAccountPayment.bankAccountNumber" property="bankAccountNumber" edit="#rc.edit#">
+					</hb:HibachiDisplayToggle>
 					
 					<!--- Billing Address --->
-					<cf_HibachiDisplayToggle selector="select[name='newAccountPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,check,termPayment" loadVisable="#listFindNoCase('creditCard,check,termPayment', loadPaymentMethodType)#">
+					<hb:HibachiDisplayToggle selector="select[name='newAccountPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,check,termPayment" loadVisable="#listFindNoCase('creditCard,check,termPayment', loadPaymentMethodType)#">
 						<h5>#$.slatwall.rbKey('entity.accountPayment.billingAddress')#</h5>
-						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="accountAddressID" edit="#rc.edit#">
-						<cf_HibachiDisplayToggle selector="select[name='accountAddressID']" showValues="" loadVisable="#!len(rc.processObject.getAccountAddressID())#">
-							<cf_SlatwallAdminAddressDisplay address="#rc.processObject.getNewAccountPayment().getBillingAddress()#" fieldNamePrefix="newAccountPayment.billingAddress." edit="#rc.edit#" />
-						</cf_HibachiDisplayToggle>	
-					</cf_HibachiDisplayToggle>
-				</cf_HibachiDisplayToggle>
-				</cf_HibachiPropertyList>
-			</cf_HibachiPropertyList>
+						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountAddressID" edit="#rc.edit#">
+						<hb:HibachiDisplayToggle selector="select[name='accountAddressID']" showValues="" loadVisable="#!len(rc.processObject.getAccountAddressID())#">
+							<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getNewAccountPayment().getBillingAddress()#" fieldNamePrefix="newAccountPayment.billingAddress." edit="#rc.edit#" />
+						</hb:HibachiDisplayToggle>	
+					</hb:HibachiDisplayToggle>
+				</hb:HibachiDisplayToggle>
+				</hb:HibachiPropertyList>
+			</hb:HibachiPropertyList>
 			
-		</cf_HibachiPropertyRow>
+		</hb:HibachiPropertyRow>
 		
 		<cfset orderPaymentList = rc.account.getTermOrderPaymentsByDueDateSmartList() />
 
@@ -175,7 +179,7 @@ Notes:
 					<td>#orderPayment.getOrder().getFormattedValue('paymentAmountDue')#</td>
 					
 					<td>
-						<cf_HibachiFormField fieldType='select' fieldName='appliedOrderPayments[#i#].paymentTypeID' valueOptions='#rc.processObject.getNewAccountPayment().getAccountPaymentAppliedOptions()#' fieldAttributes="ng-model='appliedOrderPayment.input#i#.paymentType' ng-hide='paymentTypeLock' ng-change='updateSubTotal()' ng-init='appliedOrderPayment.input#i#.paymentType = ""444df32dd2b0583d59a19f1b77869025""'" />
+						<hb:HibachiFormField fieldType='select' fieldName='appliedOrderPayments[#i#].paymentTypeID' valueOptions='#rc.processObject.getNewAccountPayment().getAccountPaymentAppliedOptions()#' fieldAttributes="ng-model='appliedOrderPayment.input#i#.paymentType' ng-hide='paymentTypeLock' ng-change='updateSubTotal()' ng-init='appliedOrderPayment.input#i#.paymentType = ""444df32dd2b0583d59a19f1b77869025""'" />
 						<div ng-if="paymentTypeLock">{{paymentTypeName}}</div>
 					</td>
 					<td>
@@ -217,6 +221,6 @@ Notes:
  				<td>{{#rc.account.getTermAccountBalance()# + accountBalanceChange | number:2}}</td>
  			</tr>				
 		</table>
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>
 </div>

@@ -1,3 +1,5 @@
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfset auditSmartList = $.slatwall.getService('hibachiAuditService').getAuditSmartList( rc ) />
 <cfoutput>
 <div class="row s-body-nav">
@@ -38,15 +40,15 @@
 					<div class="btn-group">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #request.context.fw.getHibachiScope().rbKey('entity.audit.auditType')# <span class="caret"></span></button>
 						<ul class="dropdown-menu pull-right">
-							<cf_HibachiActionCaller action="#auditSmartList.buildURL('fr:auditType=true', false)#" text="#request.context.fw.getHibachiScope().rbKey('define.all')#" type="list">
-							<cf_HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=create', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.create')#" type="list">
-							<cf_HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=update', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.update')#" type="list">
-							<cf_HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=rollback', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.rollback')#" type="list">
-							<cf_HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=archive', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.archive')#" type="list">
-							<cf_HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=delete', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.delete')#" type="list">
-							<cf_HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=login', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.login')#" type="list">
-							<cf_HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=loginInvalid', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.loginInvalid')#" type="list">
-							<cf_HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=logout', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.logout')#" type="list">
+							<hb:HibachiActionCaller action="#auditSmartList.buildURL('fr:auditType=true', false)#" text="#request.context.fw.getHibachiScope().rbKey('define.all')#" type="list">
+							<hb:HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=create', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.create')#" type="list">
+							<hb:HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=update', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.update')#" type="list">
+							<hb:HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=rollback', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.rollback')#" type="list">
+							<hb:HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=archive', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.archive')#" type="list">
+							<hb:HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=delete', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.delete')#" type="list">
+							<hb:HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=login', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.login')#" type="list">
+							<hb:HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=loginInvalid', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.loginInvalid')#" type="list">
+							<hb:HibachiActionCaller action="#auditSmartList.buildURL('f:auditType=logout', false)#" text="#request.context.fw.getHibachiScope().rbKey('entity.audit.auditType.logout')#" type="list">
 						</ul>
 					</div>
 				</div>

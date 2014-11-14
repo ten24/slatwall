@@ -46,16 +46,19 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.loyaltyAccruement" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
 	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.loyaltyAccruement.skus')#</h5>
-		<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="skus" edit="#rc.edit#" displayType="plain" />
+		<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="skus" edit="#rc.edit#" displayType="plain" />
 	</div>
 	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.loyaltyAccruement.excludedskus')#</h5>
-		<cf_HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="excludedSkus" edit="#rc.edit#" displayType="plain" />
+		<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="excludedSkus" edit="#rc.edit#" displayType="plain" />
 	</div>
 </cfoutput>

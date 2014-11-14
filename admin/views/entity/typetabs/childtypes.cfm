@@ -46,6 +46,9 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.type" default="any" >
 <cfoutput>
 	
@@ -53,15 +56,15 @@ Notes:
 	<cfset childTypesSmartList.joinRelatedProperty('SlatwallType', 'parentType', 'inner') />
 	<cfset childTypesSmartList.addFilter('parentType.typeID', rc.type.getTypeID()) />
 	
-	<cf_HibachiListingDisplay smartList="#childTypesSmartList#"
+	<hb:HibachiListingDisplay smartList="#childTypesSmartList#"
 							   recordEditAction="admin:entity.edittype"
 							   recordDetailAction="admin:entity.detailtype"
 							   parentPropertyName="false"
 							   sortProperty="sortOrder">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="type" />
-		<cf_HibachiListingColumn propertyIdentifier="typeCode" />
-		<cf_HibachiListingColumn propertyIdentifier="systemCode" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="type" />
+		<hb:HibachiListingColumn propertyIdentifier="typeCode" />
+		<hb:HibachiListingColumn propertyIdentifier="systemCode" />
+	</hb:HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createtype" class="btn btn-default" icon="plus" queryString="parentType.typeID=#rc.type.getTypeID()#" />
+	<hb:HibachiActionCaller action="admin:entity.createtype" class="btn btn-default" icon="plus" queryString="parentType.typeID=#rc.type.getTypeID()#" />
 </cfoutput>

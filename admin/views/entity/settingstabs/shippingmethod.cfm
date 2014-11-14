@@ -46,9 +46,12 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="shippingMethodQualifiedRateSelection" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="shippingMethodQualifiedRateSelection" />
+	</swa:SlatwallSettingTable>
 </cfoutput>
 

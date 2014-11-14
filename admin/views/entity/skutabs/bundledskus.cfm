@@ -46,12 +46,14 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.sku" type="any" />
 <cfparam name="rc.product" type="any">
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.sku.getBundledSkusSmartList()#"  
+	<hb:HibachiListingDisplay smartList="#rc.sku.getBundledSkusSmartList()#"  
 							recordEditAction="admin:entity.editskubundle"
 							recordEditQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#"
 							recordEditModal=true
@@ -59,11 +61,11 @@ Notes:
 							recordDeleteQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()###tabbundledskus"
 							edit="#rc.edit#">
 							
-		<cf_HibachiListingColumn propertyIdentifier="bundledSku.skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="bundledSku.product.productCode" />
-		<cf_HibachiListingColumn propertyIdentifier="bundledQuantity" />
+		<hb:HibachiListingColumn propertyIdentifier="bundledSku.skuCode" />
+		<hb:HibachiListingColumn propertyIdentifier="bundledSku.product.productCode" />
+		<hb:HibachiListingColumn propertyIdentifier="bundledQuantity" />
 		
-	</cf_HibachiListingDisplay>	
+	</hb:HibachiListingDisplay>	
 	
-	<cf_HibachiActionCaller action="admin:entity.createskubundle" text="#request.slatwallScope.rbKey('admin.define.createskubundle')#" class="btn" icon="plus" queryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#" modal="true" />
+	<hb:HibachiActionCaller action="admin:entity.createskubundle" text="#request.slatwallScope.rbKey('admin.define.createskubundle')#" class="btn" icon="plus" queryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()#" modal="true" />
 </cfoutput>

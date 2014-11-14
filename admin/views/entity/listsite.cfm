@@ -46,23 +46,27 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.siteSmartList" type="any" />
 
 <cfoutput>
 	
-	<cf_HibachiEntityActionBar type="listing" object="#rc.siteSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.siteSmartList#" showCreate="false">
 			
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createsite" entity="site" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createsite" entity="site" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiListingDisplay smartList="#rc.siteSmartList#"
+	<hb:HibachiListingDisplay smartList="#rc.siteSmartList#"
 							   recordEditAction="admin:entity.editSite"
 							   recordDetailAction="admin:entity.detailSite">
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="siteName" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="siteName" />
+	</hb:HibachiListingDisplay>
 	
 </cfoutput>

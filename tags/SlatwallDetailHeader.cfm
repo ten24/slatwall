@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfparam name="attributes.fluidDisplay" type="boolean" default="true" />
 
 <cfif thisTag.executionMode is "start">

@@ -46,11 +46,13 @@
 Notes:
 
 --->
-<cf_SlatwallPropertyDisplay object="#rc.accountPaymentMethod#" fieldname="accountPaymentMethodName" property="accountPaymentMethodName" edit="true" />
-<cf_SlatwallPropertyDisplay object="#rc.accountPaymentMethod#" fieldname="nameOnCreditCard" property="nameOnCreditCard" edit="true" />
-<cf_SlatwallPropertyDisplay object="#rc.accountPaymentMethod#" fieldname="creditCardNumber" property="creditCardNumber" edit="true" />
-<cf_SlatwallPropertyDisplay object="#rc.accountPaymentMethod#" fieldName="expirationMonth" property="expirationMonth" edit="true" />
-<cf_SlatwallPropertyDisplay object="#rc.accountPaymentMethod#" fieldName="expirationYear" property="expirationYear" edit="true" />
-<cf_SlatwallAddressDisplay address="#rc.accountPaymentMethod.getBillingAddress()#" fieldNamePrefix="billingAddress." edit="true" showName="false" showCompany="false" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<swa:SlatwallPropertyDisplay object="#rc.accountPaymentMethod#" fieldname="accountPaymentMethodName" property="accountPaymentMethodName" edit="true" />
+<swa:SlatwallPropertyDisplay object="#rc.accountPaymentMethod#" fieldname="nameOnCreditCard" property="nameOnCreditCard" edit="true" />
+<swa:SlatwallPropertyDisplay object="#rc.accountPaymentMethod#" fieldname="creditCardNumber" property="creditCardNumber" edit="true" />
+<swa:SlatwallPropertyDisplay object="#rc.accountPaymentMethod#" fieldName="expirationMonth" property="expirationMonth" edit="true" />
+<swa:SlatwallPropertyDisplay object="#rc.accountPaymentMethod#" fieldName="expirationYear" property="expirationYear" edit="true" />
+<swa:SlatwallAddressDisplay address="#rc.accountPaymentMethod.getBillingAddress()#" fieldNamePrefix="billingAddress." edit="true" showName="false" showCompany="false" />
 
 

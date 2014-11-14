@@ -46,6 +46,9 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.type" type="any">
 <cfparam name="rc.parentType.typeID" type="string" default="">
 <cfparam name="rc.edit" type="boolean">
@@ -60,22 +63,22 @@ Notes:
 </cfif>
 
 <cfoutput>
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
 			
 			<cfif rc.edit>
 				<input type="hidden" name="parentType.typeID" value="#rc.parentType.typeID#" />
 			</cfif>
 			
-			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeName" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeCode" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.Type#" property="typeDescription" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.Type#" property="typeName" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.Type#" property="typeCode" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.Type#" property="typeDescription" edit="#rc.edit#">
 
 			<cfif !isNull(local.parentType) && !isNull(local.parentType.getSystemCode())>
-				<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="#rc.type.getNewFlag()#" fieldType="select" valueOptions="#$.slatwall.getService('typeService').getTypeSystemCodeOptionsByParentSystemCode(local.parentType.getSystemCode())#">
+				<hb:HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="#rc.type.getNewFlag()#" fieldType="select" valueOptions="#$.slatwall.getService('typeService').getTypeSystemCodeOptionsByParentSystemCode(local.parentType.getSystemCode())#">
 			<cfelseif isNull(local.parentType) && !isNull(rc.type.getSystemCode())>
-				<cf_HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="false">
+				<hb:HibachiPropertyDisplay object="#rc.Type#" property="systemCode" edit="false">
 			</cfif>
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 </cfoutput>

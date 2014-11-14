@@ -46,20 +46,24 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderItem" type="any" />
 <cfparam name="rc.order" type="any" default="#rc.orderItem.getOrder()#" />
 <cfparam name="rc.sku" type="any" default="#rc.orderItem.getSku()#" />
 <cfparam name="rc.edit" default="false" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.orderItem#" edit="#rc.edit#" >
-		<cf_HibachiEntityActionBar type="detail" object="#rc.orderItem#" edit="#rc.edit#"
+	<hb:HibachiEntityDetailForm object="#rc.orderItem#" edit="#rc.edit#" >
+		<hb:HibachiEntityActionBar type="detail" object="#rc.orderItem#" edit="#rc.edit#"
 								   backaction="admin:entity.detailorder"
 								   backquerystring="orderID=#rc.order.getOrderID()#"
 								   deleteQueryString="redirectAction=admin:entity.detailorder&orderID=#rc.order.getOrderID()#">
 								      
-			<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="orderID=#rc.orderItem.getOrderItemID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
-		</cf_HibachiEntityActionBar>
+			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="orderID=#rc.orderItem.getOrderItemID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+		</hb:HibachiEntityActionBar>
 		<cfif rc.edit>
 			<!--- Hidden field to allow rc.order to be set on invalid submit --->
 			<input type="hidden" name="orderID" value="#rc.order.getOrderID()#" />
@@ -69,25 +73,25 @@ Notes:
 		</cfif>
 
 		<!--- Tabs --->
-		<cf_HibachiEntityDetailGroup object="#rc.orderItem#">
-			<cf_HibachiEntityDetailItem view="admin:entity/orderitemtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cf_HibachiEntityDetailItem view="admin:entity/orderitemtabs/taxes" />
-			<cf_HibachiEntityDetailItem view="admin:entity/orderitemtabs/promotions" />
+		<hb:HibachiEntityDetailGroup object="#rc.orderItem#">
+			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/taxes" />
+			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/promotions" />
 			
 			<cfif rc.orderItem.getOrderItemType().getSystemCode() eq "oitSale">
-				<cf_HibachiEntityDetailItem view="admin:entity/orderitemtabs/deliveryitems" />
+				<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/deliveryitems" />
 			<cfelse>
-				<cf_HibachiEntityDetailItem view="admin:entity/orderitemtabs/stockReceiverItems" />
+				<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/stockReceiverItems" />
 			</cfif>
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.orderItem.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.orderItem#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.orderItem#" attributeSet="#attributeSet#" />
 			</cfloop>
 			
 			<!--- Comments --->
-			<cf_SlatwallAdminTabComments object="#rc.orderItem#" />
-		</cf_HibachiEntityDetailGroup>
+			<swa:SlatwallAdminTabComments object="#rc.orderItem#" />
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

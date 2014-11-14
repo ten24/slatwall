@@ -46,6 +46,9 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.product" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
@@ -55,7 +58,7 @@ Notes:
 	<cfset selectedListingPageIDs = listAppend(selectedListingPageIDs, lp.getPrimaryIDValue()) />
 </cfloop>
 
-<cf_HibachiListingDisplay smartList="#rc.product.getListingPagesOptionsSmartList()#" multiselectFieldName="listingPages" multiselectValues="#selectedListingPageIDs#" edit="#rc.edit#">
-	<cf_HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
-	<cf_HibachiListingColumn propertyIdentifier="site.siteName" />
-</cf_HibachiListingDisplay>
+<hb:HibachiListingDisplay smartList="#rc.product.getListingPagesOptionsSmartList()#" multiselectFieldName="listingPages" multiselectValues="#selectedListingPageIDs#" edit="#rc.edit#">
+	<hb:HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
+	<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
+</hb:HibachiListingDisplay>

@@ -1,3 +1,5 @@
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.fieldType" type="string" />
 	<cfparam name="attributes.fieldName" type="string" />
@@ -79,7 +81,7 @@
 			</cfoutput>
 		</cfcase>
 		<cfcase value="listingMultiselect">
-			<cf_HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="true"></cf_HibachiListingDisplay>
+			<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="true"></hb:HibachiListingDisplay>
 		</cfcase>
 		<cfcase value="multiselect">
 			<cfoutput>
@@ -195,7 +197,7 @@
 						</ul>
 					</div>
 					<cfif len(attributes.modalCreateAction)>
-						<cf_HibachiActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn modal-fieldupdate-textautocomplete" icononly="true">
+						<hb:HibachiActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn modal-fieldupdate-textautocomplete" icononly="true">
 					</cfif>
 				</div>
 			</cfoutput>

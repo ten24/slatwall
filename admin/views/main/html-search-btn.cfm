@@ -1,3 +1,5 @@
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <!--- search --->
 <div class="s-search-filter">
 	<div class="input-group">

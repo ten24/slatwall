@@ -46,6 +46,9 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.eventRegistration" type="any" />
 <cfset rc.comment = $.slatwall.getService("commentService").newComment() />
 
@@ -54,8 +57,8 @@ Notes:
 	<input type="hidden" name="commentRelationships[1].eventRegistration.eventRegistrationID" value="#rc.eventRegistration.geteventRegistrationID()#">
 	<h5>#$.slatwall.rbKey('admin.entity.preprocesseventregistration_include.changestatuscomment')#</h5>
 	<hr />
-	<cf_HibachiPropertyDisplay object="#rc.comment#" property="publicFlag" edit="true">
-	<cf_HibachiPropertyDisplay object="#rc.comment#" property="comment" displaytype="plain" edit="true">			
+	<hb:HibachiPropertyDisplay object="#rc.comment#" property="publicFlag" edit="true">
+	<hb:HibachiPropertyDisplay object="#rc.comment#" property="comment" displaytype="plain" edit="true">			
 </cfoutput>
 
 			

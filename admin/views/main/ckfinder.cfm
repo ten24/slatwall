@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <div class="modal-dialog">
 	<div class="modal-content" style="width:910px;">
 		<div class="modal-header">

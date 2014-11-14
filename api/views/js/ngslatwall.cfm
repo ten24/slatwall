@@ -545,7 +545,7 @@ Notes:
 			    	}
 			    	
 			    	var utilityService = {
-			    		formatValue = function(value,formatType,formatDetails){
+			    		formatValue:function(value,formatType,formatDetails){
 			    			if(angular.isUndefined(formatDetails)){
 			    				formatDetails = {};
 			    			}
@@ -556,27 +556,27 @@ Notes:
 							}
 							return value;
 			    		},
-			    		format_currency = function(){
+			    		format_currency:function(){
 			    			if(angular.isUndefined){
 			    				formatDetails = {};
 			    			}
 			    		},
-			    		format_date = function(){
+			    		format_date:function(){
 			    			if(angular.isUndefined){
 			    				formatDetails = {};
 			    			}
 			    		},
-			    		format_datetime = function(){
+			    		format_datetime:function(){
 			    			if(angular.isUndefined){
 			    				formatDetails = {};
 			    			}
 			    		},
-			    		format_pixels = function(){
+			    		format_pixels:function(){
 			    			if(angular.isUndefined){
 			    				formatDetails = {};
 			    			}
 			    		},
-			    		format_yesno = function(value,formatDetails){
+			    		format_yesno:function(value,formatDetails){
 			    			if(angular.isUndefined){
 			    				formatDetails = {};
 			    			}
@@ -586,7 +586,7 @@ Notes:
 								return entityInstance.$$getRBKey("define.no");
 							}
 			    		},
-			    		format_json = function(value,formatDetails){
+			    		format_json:function(value,formatDetails){
 			    			if(angular.isUndefined){
 			    				formatDetails = {};
 			    			}

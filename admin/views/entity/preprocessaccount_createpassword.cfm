@@ -46,21 +46,25 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cf_HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#">
+<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#">
 	
-	<cf_HibachiEntityActionBar type="preprocess" object="#rc.account#">
-	</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.account#">
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="password" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="passwordConfirm" edit="#rc.edit#">
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="password" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="passwordConfirm" edit="#rc.edit#">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 	
-</cf_HibachiEntityProcessForm>
+</hb:HibachiEntityProcessForm>
 

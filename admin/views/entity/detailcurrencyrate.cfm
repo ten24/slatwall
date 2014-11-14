@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.currencyRate" type="any" />
 <cfparam name="rc.currencyCode" type="any" default="" />
 <cfparam name="rc.edit" type="boolean" />
@@ -68,18 +72,18 @@ Notes:
 </cfsilent>
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.currencyRate#" edit="#rc.edit#" sRedirectAction="admin:entity.detailcurrency" saveActionQueryString="currencyCode=#rc.currencyCode#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.currencyRate#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.currencyRate#" edit="#rc.edit#" sRedirectAction="admin:entity.detailcurrency" saveActionQueryString="currencyCode=#rc.currencyCode#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.currencyRate#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 		
 		<input type="hidden" name="currency.currencyCode" value="#rc.currencyCode#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.currencyRate#" property="conversionCurrency" edit="#rc.edit#" valueOptions="#local.conversionCurrencyOptions#">
-				<cf_HibachiPropertyDisplay object="#rc.currencyRate#" property="conversionRate" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.currencyRate#" property="effectiveStartDateTime" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.currencyRate#" property="conversionCurrency" edit="#rc.edit#" valueOptions="#local.conversionCurrencyOptions#">
+				<hb:HibachiPropertyDisplay object="#rc.currencyRate#" property="conversionRate" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.currencyRate#" property="effectiveStartDateTime" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

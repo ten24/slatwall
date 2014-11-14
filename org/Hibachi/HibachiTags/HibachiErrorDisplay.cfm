@@ -1,3 +1,5 @@
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<!--- You can pass in a object, or just an array of errors --->
 	<cfparam name="attributes.object" type="any" default="" />

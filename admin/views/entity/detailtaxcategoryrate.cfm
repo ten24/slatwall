@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.taxCategoryRate" type="any" />
 <cfparam name="rc.taxCategory" type="any" default="#rc.taxCategoryRate.getTaxCategory()#" />
 <cfparam name="rc.integration" type="any" default="" />
@@ -56,8 +60,8 @@ Notes:
 </cfif>
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.taxCategoryRate#" srenderItem="detailtaxCategory" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.taxCategoryRate#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.taxCategoryRate#" srenderItem="detailtaxCategory" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.taxCategoryRate#" edit="#rc.edit#" 
 						backAction="admin:entity.detailtaxCategory" 
 						backQueryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#"
 						cancelAction="admin:entity.detailtaxCategory"
@@ -71,18 +75,18 @@ Notes:
 			</cfif>
 		</cfif>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#" property="taxAddressLookup" edit="#rc.edit#">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.taxCategoryRate#" property="taxAddressLookup" edit="#rc.edit#">
 				<cfif not isObject(rc.integration)>
-					<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="taxRate" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="taxRate" edit="#rc.edit#" />
 				</cfif>
 				<cfset rc.taxCategoryRate.getAddressZoneOptions()[1]["name"] = request.slatwallScope.rbKey('define.all') />
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="addressZone" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#" property="taxCategoryRateCode" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.taxCategoryRate#" property="taxLiabilityAppliedToItemFlag" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+				<hb:HibachiPropertyDisplay object="#rc.taxCategoryRate#"  property="addressZone" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.taxCategoryRate#" property="taxCategoryRateCode" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.taxCategoryRate#" property="taxLiabilityAppliedToItemFlag" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

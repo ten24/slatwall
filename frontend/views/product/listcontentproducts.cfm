@@ -46,10 +46,11 @@
 Notes:
 
 --->
-
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfoutput>
 	<div class="svolistcontentproducts">
-		<cf_SlatwallSmartListPager smartList="#$.slatwall.productList()#">
+		<swa:SlatwallSmartListPager smartList="#$.slatwall.productList()#">
 		<div class="productList">
 			<cfloop array="#$.slatwall.productList().getPageRecords()#" index="local.product">
 				<a href="#local.product.getListingProductURL()#">
@@ -61,7 +62,7 @@ Notes:
 				</a>
 			</cfloop>
 		</div>
-		<cf_SlatwallSmartListPager smartList="#$.slatwall.productList()#">
+		<swa:SlatwallSmartListPager smartList="#$.slatwall.productList()#">
 	</div>
 </cfoutput>
 

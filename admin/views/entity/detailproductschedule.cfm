@@ -46,32 +46,36 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.productschedule" type="any" />
 <cfset rc.edit=false />
 <cfset rc.whatever="" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.productschedule#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.productschedule#" edit="#rc.edit#"
+	<hb:HibachiEntityDetailForm object="#rc.productschedule#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.productschedule#" edit="#rc.edit#"
 					backAction="admin:entity.detailproduct"
 					backQueryString="productID=#rc.productschedule.getProduct().getProductID()#">
-			<cf_HibachiProcessCaller entity="#rc.productschedule.getFirstScheduledSku()#" action="admin:entity.preprocesssku" processContext="changeeventdates" type="list" modal="true" querystring="edittype=all	" />
-	</cf_HibachiEntityActionBar>
+			<hb:HibachiProcessCaller entity="#rc.productschedule.getFirstScheduledSku()#" action="admin:entity.preprocesssku" processContext="changeeventdates" type="list" modal="true" querystring="edittype=all	" />
+	</hb:HibachiEntityActionBar>
 			
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 				
-				<cf_HibachiPropertyDisplay object="#rc.productschedule#" property="eventStartTime" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.productschedule#" property="eventEndTime" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.productschedule#" property="reservationStartTime" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.productschedule#" property="reservationEndTime" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.productschedule#" property="eventStartTime" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.productschedule#" property="eventEndTime" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.productschedule#" property="reservationStartTime" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.productschedule#" property="reservationEndTime" edit="#rc.edit#">
 				
-			</cf_HibachiPropertyList>
+			</hb:HibachiPropertyList>
 	
-		</cf_HibachiPropertyRow>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 
 <script>

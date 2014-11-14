@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="address" type="any" />
 <cfparam name="edit" type="boolean" default="true" />
 <cfparam name="fieldNamePrefix" type="string" default="" />
@@ -64,32 +66,32 @@ Notes:
 		<cfif edit>
 			<dl>
 				<cfif showCountry>
-					<cf_SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#countryCode" property="countryCode" fieldType="select" edit="true" />
+					<swa:SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#countryCode" property="countryCode" fieldType="select" edit="true" />
 				</cfif>
 				<cfif showName>
-					<cf_SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#name" property="name" edit="true" />
+					<swa:SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#name" property="name" edit="true" />
 				</cfif>
 				<cfif showCompany>
-					<cf_SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#company" property="company" edit="true" />
+					<swa:SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#company" property="company" edit="true" />
 				</cfif>
 				<cfif address.getCountry().getStreetAddressShowFlag() and showStreetAddress>
-					<cf_SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#streetAddress" property="streetAddress" edit="true" />
+					<swa:SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#streetAddress" property="streetAddress" edit="true" />
 				</cfif>
 				<cfif address.getCountry().getStreet2AddressShowFlag() and showStreet2Address>
-					<cf_SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#street2Address" property="street2Address" edit="true" />
+					<swa:SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#street2Address" property="street2Address" edit="true" />
 				</cfif>
 				<cfif address.getCountry().getCityShowFlag() and showCity>
-					<cf_SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#city" property="city" edit="true" />
+					<swa:SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#city" property="city" edit="true" />
 				</cfif>
 				<cfif address.getCountry().getStateCodeShowFlag() and showState>
 					<cfif arrayLen(address.getStateCodeOptions()) gt 1>
-						<cf_SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#stateCode" property="stateCode" fieldType="select" edit="true" />
+						<swa:SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#stateCode" property="stateCode" fieldType="select" edit="true" />
 					<cfelse>
-						<cf_SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#stateCode" property="stateCode" fieldType="text" edit="true" />
+						<swa:SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#stateCode" property="stateCode" fieldType="text" edit="true" />
 					</cfif>
 				</cfif>
 				<cfif address.getCountry().getPostalCodeShowFlag() and showPostalCode>
-					<cf_SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#postalCode" property="postalCode" edit="#edit#" />
+					<swa:SlatwallPropertyDisplay object="#address#" fieldName="#fieldNamePrefix#postalCode" property="postalCode" edit="#edit#" />
 				</cfif>
 				<input type="hidden" name="#fieldNamePrefix#addressID" value="#address.getAddressID()#" />
 			</dl>

@@ -46,31 +46,35 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.physicalCountItem" type="any">
 <cfparam name="rc.physicalCount" type="any" default="#rc.physicalCountItem.getPhysicalCount()#" />
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.physicalCountItem#" edit="#rc.edit#" saveActionQueryString="physicalCountID=#rc.physicalCount.getphysicalCountID()#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.physicalCountItem#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.physicalCountItem#" edit="#rc.edit#" saveActionQueryString="physicalCountID=#rc.physicalCount.getphysicalCountID()#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.physicalCountItem#" edit="#rc.edit#" 
 					backAction="admin:entity.detailPhysicalCount" 
 					backQueryString="physicalCountID=#rc.physicalCount.getphysicalCountID()#"
 					cancelAction="admin:entity.detailPhysicalCount"
 					cancelQueryString="physicalCountID=#rc.physicalCount.getphysicalCountID()#">
-		</cf_HibachiEntityActionBar>
+		</hb:HibachiEntityActionBar>
 		
 		<!--- Attach Count Item to Count --->
 		<cfif rc.edit>
 			<input type="hidden" name="physicalCount.physicalCountID" value="#rc.physicalCount.getphysicalCountID()#" />
 		</cfif>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.physicalCountItem#" property="sku" edit="#rc.edit#" fieldtype="textautocomplete" autocompletePropertyIdentifiers="adminIcon,skuCode,product.productName,product.productType.productTypeName">
-				<cf_HibachiPropertyDisplay object="#rc.physicalCountItem#" property="quantity" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.physicalCountItem#" property="countPostDateTime" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-	</cf_HibachiEntityDetailForm>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.physicalCountItem#" property="sku" edit="#rc.edit#" fieldtype="textautocomplete" autocompletePropertyIdentifiers="adminIcon,skuCode,product.productName,product.productType.productTypeName">
+				<hb:HibachiPropertyDisplay object="#rc.physicalCountItem#" property="quantity" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.physicalCountItem#" property="countPostDateTime" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 
