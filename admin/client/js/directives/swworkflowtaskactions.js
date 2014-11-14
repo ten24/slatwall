@@ -15,8 +15,9 @@ angular.module('slatwalladmin')
 			},
 			templateUrl:workflowPartialsPath+"workflowtaskactions.html",
 			link: function(scope, element,attrs){
-				$log.debug('workflow task init');	
+				$log.debug('workflow task actions init');	
 				scope.openActions = false;
+				console.log(scope.workflowTaskActions);
 				
 				scope.addWorkflowTaskAction = function(){
 					var workflowTaskAction = $slatwall.newWorkflowTaskAction();
