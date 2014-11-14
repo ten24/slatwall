@@ -59,7 +59,7 @@ Notes:
 	<hb:HibachiEntityActionBar type="detail" object="#rc.attributeSet#" edit="#rc.edit#">
 		<hb:HibachiActionCaller action="admin:entity.createattribute" queryString="attributesetid=#rc.attributeset.getAttributeSetID()#" type="list" modal=true />
 	</hb:HibachiEntityActionBar>
-
+	
 	<hb:HibachiEntityDetailGroup object="#rc.attributeSet#">
 		<hb:HibachiEntityDetailItem view="admin:entity/attributesettabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 		<hb:HibachiEntityDetailItem view="admin:entity/attributesettabs/attributes" />
@@ -74,6 +74,9 @@ Notes:
 			</cfif>
 			<cfif listFindNoCase("OrderItem,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
 				<hb:HibachiEntityDetailItem property="skus" />
+			</cfif>
+			<cfif listFindNoCase("Type", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
+				<hb:HibachiEntityDetailItem property="types" />
 			</cfif>
 		</cfif>
 	</hb:HibachiEntityDetailGroup>

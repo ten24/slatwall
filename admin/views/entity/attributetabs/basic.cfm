@@ -17,6 +17,9 @@
 			<hb:HibachiDisplayToggle selector="select[name='attributeInputType']" showValues="relatedObjectSelect,relatedObjectMultiselect" loadVisable="#(!isNull(rc.attribute.getAttributeInputType()) && listFindNoCase('relatedObjectSelect,releatedObjectMultiselect', rc.attribute.getAttributeInputType()))#">
 				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="relatedObject" edit="#rc.edit and rc.attribute.isNew()#">
 			</hb:HibachiDisplayToggle>
+			<hb:HibachiDisplayToggle selector="select[name='attributeInputType']" showValues="typeSelect" loadVisable="#(!isNull(rc.attribute.getAttributeInputType()) && listFindNoCase('typeSelect', rc.attribute.getAttributeInputType()))#">
+				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="typeSet" edit="#rc.edit and rc.attribute.isNew()#">
+			</hb:HibachiDisplayToggle>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

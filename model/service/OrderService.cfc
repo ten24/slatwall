@@ -2219,6 +2219,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function deleteOrderItem( required any orderItem ) {
+		getHibachiEventService().announceEvent("beforeOrderItemDelete", arguments);
 		
 		// Check delete validation
 		if(arguments.orderItem.isDeletable()) {
@@ -2245,8 +2246,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Actually delete the entity
 			getHibachiDAO().delete( arguments.orderItem );
 			
+			getHibachiEventService().announceEvent("afterOrderItemDelete", arguments);
+			getHibachiEventService().announceEvent("afterOrderItemDeleteSuccess", arguments);
+			
 			return true;
 		}
+		
+		getHibachiEventService().announceEvent("afterOrderItemDelete", arguments);
+		getHibachiEventService().announceEvent("afterOrderItemDeleteFailure", arguments);
 		
 		return false;
 	}
