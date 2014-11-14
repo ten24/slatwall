@@ -64,8 +64,7 @@ Notes:
 		 </div>
 	   </nav>
 	 </div>
-	<hb:HibachiMessageDisplay />
-
+	<div class="col-md-12"><hb:HibachiMessageDisplay /></div>
 
 	<div class="col-md-6">
 		<hb:HibachiListingDisplay title="#request.slatwallScope.rbKey("admin.main.dashboard.neworders")#" smartList="#rc.orderSmartList#"
