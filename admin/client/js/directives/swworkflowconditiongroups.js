@@ -21,12 +21,16 @@ angular.module('slatwalladmin')
 				console.log(scope.workflowConditionGroupItem);
 				
 				scope.addWorkflowCondition = function(){
+					$log.debug('addWorkflowCondition');
 					var workflowCondition = workflowConditionService.newWorkflowCondition();
+					console.log(workflowCondition);
 					console.log(scope.workflowConditionGroupItem);
-					workflowConditionService.addWorkflowCondition(workflowCondition,scope.workflowConditionGroupItem);
+					
+					workflowConditionService.addWorkflowCondition(scope.workflowConditionGroupItem,workflowCondition);
 				};
 				
 				scope.addWorkflowGroupItem = function(){
+					$log.debug('addWorkflowGrouptItem');
 					var workflowConditionGroupItem = workflowConditionService.newWorkflowConditionGroupItem();
 					workflowConditionService.addWorkflowConditionGroupItem(scope.workflowConditionItem,workflowConditionGroupItem);
 				};

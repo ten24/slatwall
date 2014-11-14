@@ -194,36 +194,6 @@ Notes:
 				  			
 				  			return deferred.promise;
 				  		},
-				  		/*
-			  			 *
-			  			 * getProcessObject(entityName, options);
-			  			 * options = {
-			  			 * 				id:id,
-			  			 * 				context:context,
-			  			 * 				propertyIdentifiers
-			  			 * 			}
-			  			 * 
-			  			 */
-				  		getProcessObject:function(entityName,options){
-				  			var deferred = $q.defer();
-				  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getProcessObject&entityName='+entityName;
-				  			
-				  			if(angular.isDefined(options.id)) {
-				  				urlString += '&entityId='+options.id;	
-				  			}
-				  			var params = {
-				  				context:options.context,
-				  				propertyIdentifiersList:options.propertyIdentifiersList
-				  			};
-				  			$http.get(urlString,{params:params})
-				  			.success(function(data){
-				  				deferred.resolve(data);
-				  			}).error(function(reason){
-				  				deferred.reject(reason);
-				  			});
-				  			
-				  			return deferred.promise;
-				  		},
 				  		saveEntity:function(entityName,id,params,context){
 				  			$log.debug('save'+ entityName);
 				  			var deferred = $q.defer();
@@ -416,6 +386,7 @@ Notes:
 			    	var _init = function(entityInstance,data){
 						for(var key in data) {
 							if(key.charAt(0) !== '$'){
+								
 								entityInstance.data[key] = data[key];
 							}
 						}
@@ -549,7 +520,7 @@ Notes:
 			    			if(angular.isUndefined(formatDetails)){
 			    				formatDetails = {};
 			    			}
-							var typeList = ["currency","date","datetime","pixels","percentage","second","time","truefalse","url","weight","yesno","json"];
+							var typeList = ["currency","date","datetime","pixels","percentage","second","time","truefalse","url","weight","yesno"];
 							
 							if(typeList.indexOf(formatType)){
 								utilityService['format'+formatType](value,formatDetails);
@@ -585,12 +556,6 @@ Notes:
 							}else if(value === false){
 								return entityInstance.$$getRBKey("define.no");
 							}
-			    		},
-			    		format_json:function(value,formatDetails){
-			    			if(angular.isUndefined){
-			    				formatDetails = {};
-			    			}
-			    			return angular.fromJson(value);
 			    		}
 			    	}
 			    	
@@ -708,8 +673,8 @@ Notes:
 									return detailsTab;
 								}
 								
-								this.$$getPropertyFormattedValue = function(propertyName,formatType){
-									return _getPropertyFormatType(propertyName,formatType,this);
+								this.$$getFormattedValue = function(propertyName,formatType){
+									return _getFormattedValue(propertyName,formatType,this);
 								}
 								
 								this.data = {};

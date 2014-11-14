@@ -30,7 +30,6 @@ angular.module('slatwalladmin')
 					
 				scope.getWorkflowTasks = function(){
 					scope.workflowTasks = scope.workflow.$$getWorkflowTasks();
-					
 				};
 				
 				scope.getWorkflowTasks();
@@ -39,21 +38,22 @@ angular.module('slatwalladmin')
 					$log.debug('addWorkflowTasks');
 					var newWorkflowTask = $slatwall.newWorkflowTask();
 					newWorkflowTask.data.workflow = scope.workflow.data;
-					scope.workflowTasks.selectedTask = newWorkflowTask;
+					scope.selectWorkflowTask(newWorkflowTask);
 					scope.workflowTasks.push(newWorkflowTask);
 					$log.debug(scope.workflowTasks);
 				};
 				
-				scope.addWorkflowTaskAction = function(){
-					var workflowTaskAction = $slatwall.newWorkflowTaskAction();
-					scope.workflowTasks.selectedTask.data.workflowTaskActions.selectedTaskAction = workflowTaskAction;
-					//workflowTaskService.addWorkflowTaskAction(scope.workflowTasks.selectedTask.workflowTaskActions,workflowTaskAction);
-				};
-				
-				scope.removeWorkflowTaskAction = function(index){
-					scope.workflowTasks.selectedTask.workflowTaskActions.splice(index,1);
-					for(var i in scope.workflowTasks.selectedTask.workflowTaskActions){
-						scope.workflowTasks.selectedTask.workflowTaskActions[i].$$index = i;
+				scope.selectWorkflowTask = function(workflowTask){
+					scope.workflowTasks.selectedTask = workflowTask;
+					if(angular.isString(workflowTask.data.taskConditionsConfig)){
+						workflowTask.data.taskConditionsConfig = angular.fromJson(workflowTask.data.taskConditionsConfig);
+					}
+					if(workflowTask.$$isPersisted()){
+						var workflowTaskActions = workflowTask.$$getWorkflowTaskActions();
+						workflowTask.data.workflowTaskActions = workflowTaskActions;
+					}else{
+						workflowTask.data.workflowTaskActions = [];
+						console.log(workflowTask);
 					}
 				};
 				
