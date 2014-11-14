@@ -31,6 +31,10 @@ angular.module('slatwalladmin')
 				$log.debug('addWorkflowCondition');
 				$log.debug(groupItem);
 				$log.debug(condition);
+				if(groupItem.length >= 1){
+					condition.logicalOperator = 'AND';
+				}
+				
 				groupItem.push(condition);
 			},
 			newWorkflowConditionGroupItem:function(){

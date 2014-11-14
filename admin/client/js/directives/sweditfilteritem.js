@@ -4,7 +4,6 @@ angular.module('slatwalladmin')
 	'$http',
 '$compile',
 '$templateCache',
-	'$filter',
 '$log',
 '$filter',
 '$slatwall',
@@ -13,14 +12,14 @@ angular.module('slatwalladmin')
 'metadataService',
 	function(
 		$http,
-$compile,
-$templateCache,
-$log,
-$filter,
-$slatwall,
-collectionPartialsPath,
-collectionService,
-		metadataService
+	$compile,
+	$templateCache,
+	$log,
+	$filter,
+	$slatwall,
+	collectionPartialsPath,
+	collectionService,
+	metadataService
 	){
 	return {
 		require:'^swFilterGroups',

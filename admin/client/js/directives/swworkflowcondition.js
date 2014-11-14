@@ -17,6 +17,8 @@ angular.module('slatwalladmin')
 			
 			templateUrl:workflowPartialsPath+"workflowcondition.html",
 			link: function(scope, element,attrs){
+				
+				
 			}
 		};
 	}

@@ -66,6 +66,15 @@ angular.module('slatwalladmin')
 						scope.workflowTasks[i].$$index = i;
 					}
 				};
+				
+				scope.filterPropertiesList = {};
+				var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
+				filterPropertiesPromise.then(function(value){
+					metadataService.setPropertiesList(value,scope.workflow.data.workflowObject);
+					scope.filterPropertiesList[scope.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflow.data.workflowObject);
+					metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflow.data.workflowObject],scope.workflow.data.workflowObject);
+					
+				});
 			}
 		};
 	}

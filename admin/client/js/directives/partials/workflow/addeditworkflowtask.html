@@ -74,6 +74,7 @@
 											ng-if="workflowTasks.selectedTask.data.taskConditionsConfig.workflowConditionGroups.length"
 											data-workflow-condition-group="workflowTasks.selectedTask.data.taskConditionsConfig.workflowConditionGroups[0]"
 					                		data-workflow-condition-group-item="workflowTasks.selectedTask.data.taskConditionsConfig.workflowConditionGroups[0].workflowConditionGroup"
+					                		data-workflow="workflow"
 									></span>
 								</div>
 							</div>
@@ -82,7 +83,6 @@
 				</div>
 				
 				<div class="tab-pane" id="j-actions-2" ng-if="taskActionsTabOpen">
-					{{}}
 					<sw-workflow-task-actions
 						data-workflow-task-actions="workflowTasks.selectedTask.data.workflowTaskActions"
 					>
