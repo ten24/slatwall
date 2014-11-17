@@ -22,7 +22,7 @@ angular.module('slatwalladmin')
 			link: function(scope, element,attrs,formController){
 				
 				$log.debug('workflow tasks init');	
-				
+				$log.debug(scope);
 				scope.workflowPartialsPath = workflowPartialsPath;
 				
 					
@@ -75,6 +75,9 @@ angular.module('slatwalladmin')
 					metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflow.data.workflowObject],scope.workflow.data.workflowObject);
 					
 				});
+				
+				
+				
 			}
 		};
 	}

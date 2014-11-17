@@ -12,7 +12,9 @@ angular.module('slatwalladmin')
 			restrict: 'A',
 			scope:{
 				workflowConditionGroupItem: "=",
-				workflowConditionGroup:"="
+				workflowConditionGroup:"=",
+				workflow:"=",
+				filterPropertiesList:"="
 			},
 			templateUrl:workflowPartialsPath+"workflowconditiongroups.html",
 			link: function(scope, element,attrs){
