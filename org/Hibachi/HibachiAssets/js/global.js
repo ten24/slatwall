@@ -716,7 +716,7 @@ function setupEventHandlers() {
 						});
 					} else {
 						jQuery.each(r.messages, function(i, v){
-							jQuery('#' + updateTableID).after('<div class="alert alert-error"><a class="close" data-dismiss="alert">x</a>' + v.MESSAGE + '</div>');
+							jQuery('#' + updateTableID).after('<div class="alert alert-error"><a class="close" data-dismiss="alert"><i class="fa fa-times"></i></a>' + v.MESSAGE + '</div>');
 						});
 					}
 				}
@@ -857,7 +857,11 @@ function setupEventHandlers() {
 		}
 		$(this).find('.btn').toggleClass('btn-default');
 	});
-
+	
+	//Close alerts on global click
+	jQuery('body').on('click', document, function(e){
+		$('div.alert:visible').alert('close');
+	});
 }
 
 function initModal( modalWin ){
