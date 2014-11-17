@@ -64,7 +64,7 @@
 							<span class="icon-bar"></span>
 						</button>
 					</div>
-					<div class="collapse navbar-collapse" id="main-tab-nav">
+					<div class="row collapse navbar-collapse" id="main-tab-nav">
 						<ul class="nav nav-tabs">
 							<cfloop array="#thistag.tabs#" index="tab">
 								<li <cfif activeTab eq tab.tabid>class="active"</cfif>><a href="###tab.tabid#" data-toggle="tab">#tab.text#<cfif len(tab.count) and tab.count gt 0> <span class="badge pull-right" style="padding-left:10px;">#tab.count#</span></cfif></a></li>
