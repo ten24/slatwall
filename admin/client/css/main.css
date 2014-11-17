@@ -199,8 +199,8 @@ table tr th .glyphicon {vertical-align:text-top;}
 #slatwall-navbar input:focus { outline: none; border: none; background: #fff; color: #000; }
 
 /* ALERTS */
-.alert { border-radius: 3px; }
-.alert .close { position:relative;top:-3px; }
+.alert { border-radius: 0px;border:0px; }
+.alert .close { position: relative;top: 0px;font-size: 17px; }
 .alert-error { background-color: #f2dede; border-color: #ebccd1; color: #a94442;display: inline-block;width: 100%;}
 
 .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus {background-color:#666666;border-color:#666666;}
