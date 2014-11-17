@@ -66,8 +66,7 @@ Notes:
 </cfsilent>
 
 <cfoutput>
-	<h5>#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.charges')#</h5>
-	<hb:HibachiListingDisplay smartList="#local.chargeList#" 
+	<hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.charges')#" smartList="#local.chargeList#" 
 			recordDetailAction="admin:entity.detailorderpayment"
 			recordEditAction="admin:entity.editorderpayment">
 		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
@@ -78,8 +77,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
 	</hb:HibachiListingDisplay>
 	
-	<h5>#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.credits')#</h5>
-	<hb:HibachiListingDisplay smartList="#local.creditList#" 
+	<hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.credits')#" smartList="#local.creditList#" 
 			recordDetailAction="admin:entity.detailorderpayment"
 			recordEditAction="admin:entity.editorderpayment">
 		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
@@ -90,8 +88,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
 	</hb:HibachiListingDisplay>
 	
-	<h5>#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.nonActive')#</h5>
-	<hb:HibachiListingDisplay smartList="#local.nonActiveList#" 
+	<hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.nonActive')#" smartList="#local.nonActiveList#" 
 			recordDetailAction="admin:entity.detailorderpayment"
 			recordEditAction="admin:entity.editorderpayment">
 		<hb:HibachiListingColumn propertyIdentifier="orderPaymentStatusType.type" />
