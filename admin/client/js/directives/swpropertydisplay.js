@@ -9,6 +9,7 @@ angular.module('slatwalladmin')
 	propertyDisplayService
 	){
 		return {
+			require:'^form',
 			restrict: 'A',
 			scope:{
 				object:"=",
@@ -20,7 +21,9 @@ angular.module('slatwalladmin')
 				eagerLoadOptions:"="
 			},
 			templateUrl:partialsPath+"propertydisplay.html",
-			link: function(scope, element,attrs){
+			link: function(scope, element,attrs,formController){
+				
+				console.log(formController);
 				
 				var propertyDisplay = {
 					object:scope.object,

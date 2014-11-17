@@ -75,9 +75,6 @@ angular.module('slatwalladmin')
 					metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflow.data.workflowObject],scope.workflow.data.workflowObject);
 					
 				});
-				
-				
-				
 			}
 		};
 	}

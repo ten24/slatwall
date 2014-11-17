@@ -16,8 +16,8 @@
 								class="glyphicon glyphicon-arrow-left"></i> <span ng-bind="entityDisplay.plural"></span></a>
 						</div>
 						<div class="btn-group btn-group-sm"></div>
-						<!-- <div class="btn-group btn-group-sm">
-							<a title="Delete"
+						 <div class="btn-group btn-group-sm">
+							<!--<a title="Delete"
 								class="adminentitydeleteworkflow btn s-btn-grey s-remove alert-confirm"
 								target="_self"
 								href="?slatAction=entity.deleteworkflow&amp;workflowID=40288188498aeea401498b80b99e002a"
@@ -26,17 +26,19 @@
 								title="Cancel" class="adminentitydetailworkflow btn s-btn-grey"
 								target="_self"
 								href="?slatAction=entity.detailworkflow&amp;workflowID=40288188498aeea401498b80b99e002a"><i
-								class="glyphicon glyphicon-remove icon-white"></i> Cancel</a>
+								class="glyphicon glyphicon-remove icon-white"></i> Cancel</a>-->
 							<button class="btn adminentitysaveworkflow btn btn-success"
-								title="Save" type="submit">
+								title="Save" type="submit"
+								ng-click="entity.$$save()"	
+							>
 								<i class="glyphicon glyphicon-ok icon-white"></i> Save
 							</button>
-						</div> -->
+						</div> 
 					</div>
 				</div>
 			</nav>
 		</div>
-		<form name="form.workflowForm" novalidate="novalidate"
+		<form name="form.{{entityName}}" novalidate="novalidate"
 			class="ng-pristine ng-valid">
 
 			<div class="row s-pannel-control">
@@ -66,7 +68,9 @@
 					<div id="collapse{{$index}}" class="panel-collapse"
 						style="height: 0px;">
 						<content class="s-body-box" ng-if="openTab || allTabsOpen">
+							<form name="{{entityName+'.'+detailTabs.toLowerCase()}}">
 							<ng-include src="tabPartialPath+entityName+'/'+detailTabs.toLowerCase()"></ng-include>
+							</form>
 						</content>
 					</div>
 				</div>

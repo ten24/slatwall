@@ -38,12 +38,13 @@ angular.module('slatwalladmin')
 		};
 		
 		return {
+			require:"^form",
 			restrict: 'A',
 			scope:{
 				propertyDisplay:"="
 			},
 			replace:true,
-			link: function(scope, element,attrs){
+			link: function(scope, element,attrs,formController){
 			
 				scope.$id = 'formField:'+scope.propertyDisplay.property;			
 						
@@ -54,11 +55,15 @@ angular.module('slatwalladmin')
 					$log.debug(value);
 				};
 				
+				/*scope.$watch(scope.propertyDisplay.form[scope.propertyDisplay.property],function(newValue,oldValue){
+					$log.debug('field dirty');
+				});*/
+				
 				var templateLoader = getTemplate(scope.propertyDisplay.fieldType);
 		    	var promise = templateLoader.success(function(html){
 		    		var formfield = angular.element(html);
 		    		//dynamic formfield name mapping
-		    		formfield.attr('name',scope.propertyDisplay.property);
+		    		formfield.attr('name',scope.propertyDisplay.object.metaData.className+'.'+scope.propertyDisplay.property);
 		    		
 		    		if(angular.isDefined(scope.propertyDisplay.object.validation) && angular.isDefined(scope.propertyDisplay.object.validation.properties[scope.propertyDisplay.property.split('.').pop()])){
 		    			var validationProperties = scope.propertyDisplay.object.validation.properties[scope.propertyDisplay.property.split('.').pop()];
@@ -76,7 +81,6 @@ angular.module('slatwalladmin')
 					
 					if(scope.propertyDisplay.fieldType === 'select'){
 						scope.getOptions = function(){
-							console.log(scope.propertyDisplay);
 							if(angular.isUndefined(scope.propertyDisplay.options)){
 								
 								var optionsPromise = $slatwall.getPropertyDisplayOptions(scope.propertyDisplay.object.metaData.className,
@@ -88,9 +92,7 @@ angular.module('slatwalladmin')
 									//selectElement.blur();
 									
 									if(angular.isDefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])){
-										console.log(scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
 										for(var i in scope.propertyDisplay.options){
-											console.log(scope.propertyDisplay.options[i].value);
 											if(scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]){
 												scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
 											}
@@ -113,16 +115,15 @@ angular.module('slatwalladmin')
 					}
 					if(scope.propertyDisplay.fieldType === 'yesno' || scope.propertyDisplay.fieldType === 'hidden'){
 						formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
-						console.log('radio');
-						console.log(scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
 						scope.propertyDisplay.selectedOptions = scope.propertyDisplay.object.data[scope.propertyDisplay.property];
 					}
-					
-					/*if(angular.isDefined(formController[scope.propertyDisplay.property])){
+					if(angular.isDefined(formController[scope.propertyDisplay.property])){
 						scope.propertyDisplay.errors = formController[scope.propertyDisplay.property].$error;
+						formController[scope.propertyDisplay.property].formType = scope.propertyDisplay.fieldType;
 					}
-					
-					scope.propertyDisplay.form = formController;*/
+					console.log('formController');
+					console.log(formController);
+					scope.propertyDisplay.object.metaData.form = formController;
 							
 				});
 			}

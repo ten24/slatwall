@@ -592,6 +592,26 @@ Notes:
 			    			return '';
 			    		}
 			    	}
+			    	
+			    	var _save = function(entityInstance){
+			    		console.log('save');
+			    		console.log(entityInstance);
+			    		var modifiedData = _getModifiedData(entityInstance);
+			    		console.log(modifiedData);
+			    	}
+			    	
+			    	var _getModifiedData = function(entityInstance){
+			    		var form = entityInstance.metaData.form;
+			    		for(key in form){
+			    			if(key.charAt(0) !== '$'){
+			    				var inputField = form[key];
+			    				if(inputField.$valid && inputField.$dirty){
+		    						entityInstance.modifiedData[key] = form[key];
+			    				}
+			    			}
+			    		}
+			    		return entityInstance.modifiedData;
+			    	}
 			
 					<cfloop array="#rc.entities#" index="local.entity">
 						<cftry>
@@ -716,6 +736,9 @@ Notes:
 								},
 								$$init:function( data ) {
 									_init(this,data);
+								},
+								$$save:function(){
+									_save(this);
 								}
 								<!--- used to retrieve info about the object properties --->
 								,$$getMetaData:function( propertyName ) {

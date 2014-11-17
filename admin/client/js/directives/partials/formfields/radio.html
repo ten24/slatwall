@@ -1,5 +1,5 @@
-
 <div class="radio">
+
 	<input type="radio" name="{{propertyDisplay.property}}" id="{{propertyDisplay.property}}1"
     		ng-model="propertyDisplay.selectedOption"
     		ng-show="propertyDisplay.editing"
@@ -20,7 +20,7 @@
 			No
 	</label>
 </div>
-
+{{propertyDisplay.object.data[propertyDipslay.property]}}
 <!-- Error Messages -->
     
 <span style="color:red"

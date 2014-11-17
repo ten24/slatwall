@@ -15,6 +15,12 @@ angular.module('slatwalladmin')
 			this.propertyIdentifier = "";
 			this.comparisonOperator = "";
 			this.value = "";
+			this.displayPropertyIdentifier="";
+			this.$$disabled=false;
+			this.$$isClosed=true;
+			this.$$isNew=true;
+			//$$siblingItems=filterItemGroup,
+			//setItemInUse=setItemInUse	
 		}
 		
 		function _workflowConditionGroupItem(){
