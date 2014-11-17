@@ -27,6 +27,21 @@ angular.module('slatwalladmin')
 				$log.debug('workflowCondition init');
 				$log.debug(scope);
 				
+				scope.selectBreadCrumb = function(breadCrumbIndex){
+					//splice out array items above index
+					var removeCount = scope.filterItem.breadCrumbs.length - 1 - breadCrumbIndex;
+					scope.filterItem.breadCrumbs.splice(breadCrumbIndex + 1,removeCount);
+					scope.selectedFilterPropertyChanged(null);
+					
+				};
+				
+				scope.selectedFilterPropertyChanged = function(selectedFilterProperty){
+					$log.debug('selectedFilterProperty');
+					$log.debug(selectedFilterProperty);
+					
+					scope.selectedFilterProperty = selectedFilterProperty;
+				};
+				
 				if(angular.isUndefined(scope.workflowCondition.breadCrumbs)){
 					scope.workflowCondition.breadCrumbs = [];
 					if(scope.workflowCondition.propertyIdentifier === ""){
