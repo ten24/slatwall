@@ -88,7 +88,6 @@ component extends="FW1.framework" {
 	
 	
 	// =============== configCustomTags
-	this.customTagPathsArray = ['#replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all")#HibachiTags'];
 	
 	// Allow For Application Config 
 	try{include "../../config/configCustomTags.cfm";}catch(any e){}
@@ -96,7 +95,9 @@ component extends="FW1.framework" {
 	try{include "../../custom/config/configCustomTags.cfm";}catch(any e){}
 	
 	// set the custom tag mapping 
-	this.customTagPaths = arrayToList(this.customTagPathsArray);
+	if(structKeyExists(this, "customTagPathsArray") && isArray(this.customTagPathsArray) && arrayLen(this.customTagPathsArray)) {
+		this.customTagPaths = arrayToList(this.customTagPathsArray);	
+	}
 	
 	// =============== configORM
 	

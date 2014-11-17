@@ -46,38 +46,40 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.stockAdjustment" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.stockAdjustment#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.stockAdjustment#" edit="#rc.edit#">
-			<cf_HibachiProcessCaller entity="#rc.stockAdjustment#" action="admin:entity.processStockAdjustment" processContext="processAdjustment" queryString="redirectAction=admin:entity.detailStockAdjustment" type="list" />
-			<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="stockAdjustmentID=#rc.stockAdjustment.getStockAdjustmentID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
-		</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.stockAdjustment#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.stockAdjustment#" edit="#rc.edit#">
+			<hb:HibachiProcessCaller entity="#rc.stockAdjustment#" action="admin:entity.processStockAdjustment" processContext="processAdjustment" queryString="redirectAction=admin:entity.detailStockAdjustment" type="list" />
+			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="stockAdjustmentID=#rc.stockAdjustment.getStockAdjustmentID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+		</hb:HibachiEntityActionBar>
 					
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 				<cfif rc.edit>
 					<input type="hidden" name="stockAdjustmentType.typeID" value="#rc.stockadjustment.getStockAdjustmentType().getTypeID()#" />
 				</cfif>
-				<cf_HibachiPropertyDisplay object="#rc.stockAdjustment#" property="stockAdjustmentType" edit="false">
-				<cf_HibachiPropertyDisplay object="#rc.stockAdjustment#" property="stockAdjustmentStatusType" edit="false">
+				<hb:HibachiPropertyDisplay object="#rc.stockAdjustment#" property="stockAdjustmentType" edit="false">
+				<hb:HibachiPropertyDisplay object="#rc.stockAdjustment#" property="stockAdjustmentStatusType" edit="false">
 				<cfif listFindNoCase("satLocationTransfer,satManualOut", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>
-					<cf_HibachiPropertyDisplay object="#rc.stockAdjustment#" property="fromLocation" edit="#rc.stockAdjustment.isNew()#">
+					<hb:HibachiPropertyDisplay object="#rc.stockAdjustment#" property="fromLocation" edit="#rc.stockAdjustment.isNew()#">
 				</cfif>
 				<cfif listFindNoCase("satLocationTransfer,satManualIn", rc.stockAdjustment.getStockAdjustmentType().getSystemCode())>
-					<cf_HibachiPropertyDisplay object="#rc.stockAdjustment#" property="toLocation" edit="#rc.stockAdjustment.isNew()#">
+					<hb:HibachiPropertyDisplay object="#rc.stockAdjustment#" property="toLocation" edit="#rc.stockAdjustment.isNew()#">
 				</cfif>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.stockAdjustment#" allowComments="true">
-			<cf_HibachiTab property="stockadjustmentitems" />
-			<cf_HibachiTab property="stockreceivers" />
-			<cf_SlatwallAdminTabComments object="#rc.stockAdjustment#" />
-		</cf_HibachiTabGroup>
+		<hb:HibachiTabGroup object="#rc.stockAdjustment#" allowComments="true">
+			<hb:HibachiTab property="stockadjustmentitems" />
+			<hb:HibachiTab property="stockreceivers" />
+			<swa:SlatwallAdminTabComments object="#rc.stockAdjustment#" />
+		</hb:HibachiTabGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

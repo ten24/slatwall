@@ -46,60 +46,62 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.edit" default="false" />
 <cfparam name="rc.attributeSet" type="any" />
 
 <cfoutput>
 	
-<cf_HibachiEntityDetailForm object="#rc.attributeSet#" edit="#rc.edit#">
-	<cf_HibachiEntityActionBar type="detail" object="#rc.attributeSet#" edit="#rc.edit#">
-		<cf_HibachiActionCaller action="admin:entity.createattribute" queryString="attributesetid=#rc.attributeset.getAttributeSetID()#" type="list" modal=true />
-	</cf_HibachiEntityActionBar>
+<hb:HibachiEntityDetailForm object="#rc.attributeSet#" edit="#rc.edit#">
+	<hb:HibachiEntityActionBar type="detail" object="#rc.attributeSet#" edit="#rc.edit#">
+		<hb:HibachiActionCaller action="admin:entity.createattribute" queryString="attributesetid=#rc.attributeset.getAttributeSetID()#" type="list" modal=true />
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList divclass="span6">
-			<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetObject" edit="#rc.attributeSet.isNew()#">
-			<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="activeFlag" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetName" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetCode" edit="#rc.edit#">
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList divclass="span6">
+			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetObject" edit="#rc.attributeSet.isNew()#">
+			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="activeFlag" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetName" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetCode" edit="#rc.edit#">
 			<cfif rc.attributeSet.isNew()>
-				<cf_HibachiDisplayToggle selector="select[name='attributeSetObject']" showValues="OrderItem,Product,ProductType,Sku" loadVisable="#listFindNoCase('OrderItem,Product,ProductType,Sku', rc.attributeSet.getAttributeSetObject())#">
-					<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#rc.edit#">
-				</cf_HibachiDisplayToggle>
+				<hb:HibachiDisplayToggle selector="select[name='attributeSetObject']" showValues="OrderItem,Product,ProductType,Sku" loadVisable="#listFindNoCase('OrderItem,Product,ProductType,Sku', rc.attributeSet.getAttributeSetObject())#">
+					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#rc.edit#">
+				</hb:HibachiDisplayToggle>
 			</cfif>
-		</cf_HibachiPropertyList>
+		</hb:HibachiPropertyList>
 		
 		<cfif !rc.attributeSet.isNew()>
-			<cf_HibachiPropertyList divclass="span6">
+			<hb:HibachiPropertyList divclass="span6">
 				<cfset local.canEditGlobal = listFindNoCase( "OrderItem,Product", rc.attributeSet.getAttributeSetObject() ) && rc.edit />
-				<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#local.canEditGlobal#">
+				<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#local.canEditGlobal#">
 				<cfif listFind( "OrderItem", rc.attributeSet.getAttributeSetObject() )>
-					<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="requiredFlag" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="accountSaveFlag" edit="#rc.edit#">
-					<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="additionalCharge" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="requiredFlag" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="accountSaveFlag" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="additionalCharge" edit="#rc.edit#">
 				</cfif>
-			</cf_HibachiPropertyList>
+			</hb:HibachiPropertyList>
 		</cfif>
-	</cf_HibachiPropertyRow>
+	</hb:HibachiPropertyRow>
 	
-	<cf_HibachiTabGroup object="#rc.attributeSet#">
-		<cf_HibachiTab view="admin:entity/attributesettabs/attributes" />
-		<cf_HibachiTab view="admin:entity/attributesettabs/description" />
+	<hb:HibachiTabGroup object="#rc.attributeSet#">
+		<hb:HibachiTab view="admin:entity/attributesettabs/attributes" />
+		<hb:HibachiTab view="admin:entity/attributesettabs/description" />
 		<cfif not rc.attributeSet.getGlobalFlag()>
 			<cfif listFindNoCase("OrderItem,ProductType,Product,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
-				<cf_HibachiTab property="producttypes" />
+				<hb:HibachiTab property="producttypes" />
 			</cfif>
 			<cfif listFindNoCase("OrderItem,Product,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
-				<cf_HibachiTab property="products" />
-				<cf_HibachiTab property="brands" />
+				<hb:HibachiTab property="products" />
+				<hb:HibachiTab property="brands" />
 			</cfif>
 			<cfif listFindNoCase("OrderItem,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
-				<cf_HibachiTab property="skus" />
+				<hb:HibachiTab property="skus" />
 			</cfif>
 		</cfif>
-	</cf_HibachiTabGroup>
+	</hb:HibachiTabGroup>
 	
-</cf_HibachiEntityDetailForm>
+</hb:HibachiEntityDetailForm>
 
 </cfoutput>
 

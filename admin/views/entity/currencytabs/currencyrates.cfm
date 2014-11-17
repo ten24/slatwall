@@ -36,6 +36,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.currency" type="any">
 <cfparam name="rc.edit" type="boolean">
 
@@ -44,7 +46,7 @@ Notes:
 	<cfset local.ratesSmartList = rc.currency.getCurrencyRatesSmartList() />
 	<cfset local.ratesSmartList.addOrder('effectiveStartDateTime|DESC') />
 	
-	<cf_HibachiListingDisplay smartList="#rc.currency.getCurrencyRatesSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.currency.getCurrencyRatesSmartList()#"
 								<!---
 								Detail isn't needed because all data values are in the listing 
 								recordDetailAction="admin:entity.detailCurrencyRate"
@@ -58,11 +60,11 @@ Notes:
 							   	recordDeleteAction="admin:entity.deleteCurrencyRate"
 							   	recordDeleteQueryString="currencyCode=#rc.currencyCode#&redirectAction=admin:entity.detailCurrency">
 							   
-		<cf_HibachiListingColumn propertyIdentifier="conversionCurrency.currencyCode" />
-		<cf_HibachiListingColumn propertyIdentifier="conversionRate" />
-		<cf_HibachiListingColumn propertyIdentifier="effectiveStartDateTime" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="conversionCurrency.currencyCode" />
+		<hb:HibachiListingColumn propertyIdentifier="conversionRate" />
+		<hb:HibachiListingColumn propertyIdentifier="effectiveStartDateTime" />
+	</hb:HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createCurrencyRate" class="btn" icon="plus" queryString="currencyCode=#rc.currency.getCurrencyCode()#" modal="true"  />
+	<hb:HibachiActionCaller action="admin:entity.createCurrencyRate" class="btn" icon="plus" queryString="currencyCode=#rc.currency.getCurrencyCode()#" modal="true"  />
 
 </cfoutput>

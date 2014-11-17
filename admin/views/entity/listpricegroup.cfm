@@ -46,22 +46,24 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.priceGroupSmartList" type="any" />
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.priceGroupSmartList#" 
+	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.priceGroupSmartList#" 
 								recordDetailAction="admin:entity.detailpricegroup"
 								recordEditAction="admin:entity.editpricegroup">
 								
 		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createpricegroup" entity="pricegroup" class="btn btn-primary" icon="plus icon-white" />
-		</cf_HibachiListingDisplayButtonGroup>
+		<hb:HibachiListingDisplayButtonGroup >
+			<hb:HibachiActionCaller action="admin:entity.createpricegroup" entity="pricegroup" class="btn btn-primary" icon="plus icon-white" />
+		</hb:HibachiListingDisplayButtonGroup>
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="priceGroupName" />
-		<cf_HibachiListingColumn propertyIdentifier="priceGroupCode" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="priceGroupName" />
+		<hb:HibachiListingColumn propertyIdentifier="priceGroupCode" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

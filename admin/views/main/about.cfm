@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfoutput>
 <div class="svohelpabout">
 	<strong>Documentation: </strong><a href="http://docs.getslatwall.com">http://docs.getslatwall.com</a><br /><br />

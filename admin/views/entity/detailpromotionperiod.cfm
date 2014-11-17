@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.promotionperiod" type="any">
 <cfparam name="rc.promotion" type="any" default="#rc.promotionPeriod.getPromotion()#">
 <cfparam name="rc.edit" type="boolean">
@@ -57,9 +59,9 @@ Notes:
 </cfif>
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.promotionperiod#" edit="#rc.edit#" saveActionQueryString="promotionID=#rc.promotion.getPromotionID()#">
+	<hb:HibachiEntityDetailForm object="#rc.promotionperiod#" edit="#rc.edit#" saveActionQueryString="promotionID=#rc.promotion.getPromotionID()#">
 						   	   
-		<cf_HibachiEntityActionBar type="detail" object="#rc.promotionPeriod#" edit="#rc.edit#"
+		<hb:HibachiEntityActionBar type="detail" object="#rc.promotionPeriod#" edit="#rc.edit#"
 							backAction="admin:entity.detailpromotion"
 							backQueryString="promotionID=#rc.promotion.getPromotionID()#"
 							cancelAction="admin:entity.detailpromotion"
@@ -68,21 +70,21 @@ Notes:
 							    			  	  
 		<input type="hidden" name="promotion.promotionID" value="#rc.promotion.getPromotionID()#" />
 
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.promotionperiod#" property="startdatetime" edit="#rc.edit#" fieldclass="noautofocus">
-				<cf_HibachiPropertyDisplay object="#rc.promotionperiod#" property="enddatetime" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.promotionperiod#" property="maximumusecount" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.promotionperiod#" property="maximumaccountusecount" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.promotionperiod#" property="startdatetime" edit="#rc.edit#" fieldclass="noautofocus">
+				<hb:HibachiPropertyDisplay object="#rc.promotionperiod#" property="enddatetime" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.promotionperiod#" property="maximumusecount" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.promotionperiod#" property="maximumaccountusecount" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 	
-	<cf_HibachiTabGroup object="#rc.promotionperiod#">
-			<cf_HibachiTab view="admin:entity/promotionperiodtabs/promotionrewards" />
-			<cf_HibachiTab view="admin:entity/promotionperiodtabs/promotionqualifiers" />
-	</cf_HibachiTabGroup>
+	<hb:HibachiTabGroup object="#rc.promotionperiod#">
+			<hb:HibachiTab view="admin:entity/promotionperiodtabs/promotionrewards" />
+			<hb:HibachiTab view="admin:entity/promotionperiodtabs/promotionqualifiers" />
+	</hb:HibachiTabGroup>
 	
 </cfoutput>
 

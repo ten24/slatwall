@@ -46,32 +46,34 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.content" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.content#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.content#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.content#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.content#" edit="#rc.edit#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.content#" property="title">
-				<cf_HibachiPropertyDisplay object="#rc.content#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.content#" property="contentTemplateType" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.content#" property="productListingPageFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.content#" property="allowPurchaseFlag" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.content#" property="title">
+				<hb:HibachiPropertyDisplay object="#rc.content#" property="activeFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.content#" property="contentTemplateType" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.content#" property="productListingPageFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.content#" property="allowPurchaseFlag" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 
-		<cf_HibachiTabGroup object="#rc.content#">
+		<hb:HibachiTabGroup object="#rc.content#">
 			
 			<cfif rc.content.getProductListingPageFlag()>
-				<cf_HibachiTab view="admin:entity/contenttabs/products">
+				<hb:HibachiTab view="admin:entity/contenttabs/products">
 			</cfif>
 			
-			<cf_HibachiTab view="admin:entity/contenttabs/settings">
-		</cf_HibachiTabGroup>
+			<hb:HibachiTab view="admin:entity/contenttabs/settings">
+		</hb:HibachiTabGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

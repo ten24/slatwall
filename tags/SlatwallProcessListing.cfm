@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode eq "end">
 	<cfparam name="attributes.processSmartList" type="any" default="" />
 	<cfparam name="attributes.processHeaderString" type="any" default="" />
@@ -110,9 +112,9 @@ Notes:
 											<cfset local.thisValue = processRecord.getValueByPropertyIdentifier( replace(replace(column.value, '${', '', 'all'),'}','','all') ) />
 										</cfif>
 										<cfif column.fieldType neq "hidden">
-											<td class="#column.tdClass#"><cf_SlatwallFormField fieldname="processRecords[#hi#].records[#ri#].#column.data#" fieldtype="#column.fieldType#" fieldclass="#column.fieldClass#" valueOptions="#column.valueOptions#" value="#local.thisValue#"></td>
+											<td class="#column.tdClass#"><swa:SlatwallFormField fieldname="processRecords[#hi#].records[#ri#].#column.data#" fieldtype="#column.fieldType#" fieldclass="#column.fieldClass#" valueOptions="#column.valueOptions#" value="#local.thisValue#"></td>
 										<cfelse>
-											<cf_SlatwallFormField fieldname="processRecords[#hi#].records[#ri#].#column.data#" fieldtype="#column.fieldType#" fieldclass="#column.fieldClass#" valueOptions="#column.valueOptions#" value="#local.thisValue#">
+											<swa:SlatwallFormField fieldname="processRecords[#hi#].records[#ri#].#column.data#" fieldtype="#column.fieldType#" fieldclass="#column.fieldClass#" valueOptions="#column.valueOptions#" value="#local.thisValue#">
 										</cfif>	
 									</cfif>
 								</cfloop>
@@ -133,9 +135,9 @@ Notes:
 										<cfset local.thisValue = parentRecord.getValueByPropertyIdentifier( replace(replace(column.value, '${', '', 'all'),'}','','all') ) />
 									</cfif>
 									<cfif column.fieldType neq "hidden">
-										<td class="#column.tdClass#"><cf_SlatwallFormField fieldname="processRecords[#hi#].#column.data#" fieldtype="#column.fieldType#" fieldclass="#column.fieldClass#" valueOptions="#column.valueOptions#" value="#local.thisValue#"></td>
+										<td class="#column.tdClass#"><swa:SlatwallFormField fieldname="processRecords[#hi#].#column.data#" fieldtype="#column.fieldType#" fieldclass="#column.fieldClass#" valueOptions="#column.valueOptions#" value="#local.thisValue#"></td>
 									<cfelse>
-										<cf_SlatwallFormField fieldname="processRecords[#hi#].#column.data#" fieldtype="#column.fieldType#" fieldclass="#column.fieldClass#" valueOptions="#column.valueOptions#" value="#local.thisValue#">
+										<swa:SlatwallFormField fieldname="processRecords[#hi#].#column.data#" fieldtype="#column.fieldType#" fieldclass="#column.fieldClass#" valueOptions="#column.valueOptions#" value="#local.thisValue#">
 									</cfif>	
 								</cfif>
 							</cfloop>

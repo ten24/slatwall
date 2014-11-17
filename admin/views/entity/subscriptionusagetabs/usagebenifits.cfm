@@ -46,27 +46,29 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.subscriptionUsage" type="any" />
 
 <cfoutput>
 	<div class="span6">
 		<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.benefits')#</h4>
-		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionUsageBenefitsSmartList()#"
+		<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionUsageBenefitsSmartList()#"
 								  recordEditAction="admin:entity.editSubscriptionUsageBenefit"
 								  recordDeleteAction="admin:entity.deleteSubscriptionUsageBenefit"
 								  recordDeleteQueryString="redirectAction=admin:entity.detailsubscriptionUsage&subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#">
-			<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefit.subscriptionBenefitName" />
-		</cf_HibachiListingDisplay>
+			<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefit.subscriptionBenefitName" />
+		</hb:HibachiListingDisplay>
 		
 		
 	</div>
 	<div class="span6">
 		<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.renewalBenefits')#</h4>
-		<cf_HibachiListingDisplay smartList="#rc.subscriptionUsage.getRenewalSubscriptionUsageBenefitsSmartList()#"
+		<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getRenewalSubscriptionUsageBenefitsSmartList()#"
 								  recordEditAction="admin:entity.editSubscriptionUsageBenefit"
 								  recordDeleteAction="admin:entity.deleteSubscriptionUsageBenefit"
 								  recordDeleteQueryString="redirectAction=admin:entity.detailsubscriptionUsage&subscriptionUsageID=#rc.subscriptionUsage.getSubscriptionUsageID()#">
-			<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefit.subscriptionBenefitName" />
-		</cf_HibachiListingDisplay>
+			<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefit.subscriptionBenefitName" />
+		</hb:HibachiListingDisplay>
 	</div>
 </cfoutput>

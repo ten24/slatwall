@@ -46,13 +46,15 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.physicalCount" type="any">
 <cfparam name="rc.physical" type="any" default="#rc.physicalCount.getPhysical()#">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.physicalCount#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.physicalCount#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.physicalCount#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.physicalCount#" edit="#rc.edit#" 
 									backAction="admin:entity.detailPhysical" 
 								    backQueryString="physicalID=#rc.physical.getPhysicalID()#"
 								    deleteQueryString="redirectAction=admin:entity.detailPhysical&physicalID=#rc.physical.getPhysicalID()#"
@@ -60,24 +62,24 @@ Notes:
 									cancelQueryString="physicalCountID=#rc.physicalCount.getPhysicalCountID()#">
 									
 			<cfif rc.physicalCount.getPhysical().getPhysicalStatusType().getSystemCode() eq "pstOpen">
-				<cf_HibachiActionCaller entity="#rc.physicalCount#" action="admin:entity.createphysicalcountitem" queryString="physicalCountID=#rc.physicalCount.getPhysicalCountID()#&redirectAction=admin:entity.detailphysicalcount" type="list" modal="true" />
+				<hb:HibachiActionCaller entity="#rc.physicalCount#" action="admin:entity.createphysicalcountitem" queryString="physicalCountID=#rc.physicalCount.getPhysicalCountID()#&redirectAction=admin:entity.detailphysicalcount" type="list" modal="true" />
 			</cfif>
-		</cf_HibachiEntityActionBar>
+		</hb:HibachiEntityActionBar>
 		
 		
 		<input type="hidden" name="physical.physicalID" value="#rc.physical.getPhysicalID()#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.physicalCount#" property="location" edit="#rc.edit#" />
-				<cf_HibachiPropertyDisplay object="#rc.physicalCount#" property="countPostDateTime" edit="#rc.edit#" />
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.physicalCount#" property="location" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.physicalCount#" property="countPostDateTime" edit="#rc.edit#" />
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.physicalCount#">
-			<cf_HibachiTab view="admin:entity/physicalcounttabs/physicalcountitems" text="#$.slatwall.rbKey('entity.physicalCount.physicalCountItems')#" />
-		</cf_HibachiTabGroup>
+		<hb:HibachiTabGroup object="#rc.physicalCount#">
+			<hb:HibachiTab view="admin:entity/physicalcounttabs/physicalcountitems" text="#$.slatwall.rbKey('entity.physicalCount.physicalCountItems')#" />
+		</hb:HibachiTabGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

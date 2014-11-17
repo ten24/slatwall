@@ -46,11 +46,13 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.termSmartList" type="any" />
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.termSmartList#"
+	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.termSmartList#"
 							   recordEditAction="admin:entity.editterm"
 							   recordEditQueryString="redirectAction=admin:entity.listterm"
 							   recordEditModal="true"
@@ -58,13 +60,13 @@ Notes:
 							   sortProperty="sortOrder">
 							      
 		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createterm" entity="term" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>
+		<hb:HibachiListingDisplayButtonGroup >
+			<hb:HibachiActionCaller action="admin:entity.createterm" entity="term" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiListingDisplayButtonGroup>
 							      
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="termName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="termName" />
 		
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

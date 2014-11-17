@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.attributeSet" type="any" />
@@ -94,6 +96,6 @@ Notes:
 			<cfset fdAttributes.valueOptionsSmartList = attributes.hibachiScope.getService('hibachiService').getServiceByEntityName( attribute.getRelatedObject() ).invokeMethod( "get#attribute.getRelatedObject()#SmartList" ) />
 		</cfif>
 		
-		<cf_HibachiFieldDisplay attributeCollection="#fdAttributes#" />
+		<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
 	</cfloop>
 </cfif>

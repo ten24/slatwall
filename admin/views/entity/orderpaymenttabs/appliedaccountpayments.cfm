@@ -46,18 +46,20 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.orderPayment" type="any" />
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay smartList="#rc.orderPayment.getAppliedAccountPaymentsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.orderPayment.getAppliedAccountPaymentsSmartList()#"
 			recordDetailAction="admin:entity.detailaccountpaymentapplied"
 			recordDetailModal="true">
 			
 			
-		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="accountpayment.paymentMethod.paymentMethodName" />
-		<cf_HibachiListingColumn propertyIdentifier="amount" />	
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="accountpayment.paymentMethod.paymentMethodName" />
+		<hb:HibachiListingColumn propertyIdentifier="amount" />	
 		
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 </cfoutput>

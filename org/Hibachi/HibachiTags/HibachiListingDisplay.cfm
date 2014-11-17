@@ -1,3 +1,5 @@
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<!--- Implicit --->
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />	
@@ -321,7 +323,7 @@
 									<div class="btn-group">
 										<button class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
 										<ul class="dropdown-menu pull-right">
-											<cf_HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
+											<hb:HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
 										</ul>
 									</div>
 										
@@ -344,9 +346,9 @@
 									<cfif len(attributes.createAction)>
 										<div class="btn-group">
 											<cfif attributes.createModal>
-												<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
+												<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
 											<cfelse>
-												<cf_HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
+												<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
 											</cfif>
 										</div>
 									</cfif>		
@@ -403,7 +405,7 @@
 								<div class="dropdown">
 									<a href="##" class="dropdown-toggle" data-toggle="dropdown">#column.title#</a>
 									<ul class="dropdown-menu nav scrollable">
-										<cf_HibachiDividerHider>
+										<hb:HibachiDividerHider>
 											<cfif column.sort and not thistag.expandable>
 												<li class="nav-header">#attributes.hibachiScope.rbKey('define.sort')#</li>
 												<li><a href="##" class="listing-sort" data-sortdirection="ASC"><i class="icon-arrow-down"></i> Sort Ascending</a></li>
@@ -436,7 +438,7 @@
 													<li><a href="##" class="listing-filter" data-filtervalue="#filter['value']#"><i class="hibachi-ui-checkbox"></i> #filter['name']#</a></li>
 												</cfloop>
 											</cfif>
-										</cf_HibachiDividerHider>
+										</hb:HibachiDividerHider>
 									</ul>
 								</div>
 							</cfif>
@@ -497,7 +499,7 @@
 										<cfif structKeyExists(attData, "recordFieldNamePrefix") and len(attData.recordFieldNamePrefix)>
 											<cfset attData.fieldName = "#attData.recordFieldNamePrefix#[#thistag.loopIndex#].#attData.fieldName#" />
 										</cfif>
-										<cf_HibachiPropertyDisplay attributeCollection="#attData#" />
+										<hb:HibachiPropertyDisplay attributeCollection="#attData#" />
 									</cfif>
 								</td>
 							</cfif>
@@ -507,7 +509,7 @@
 								<!--- Detail --->
 								<cfif len(attributes.recordDetailAction)>
 									<cfset thisID = "#replace(replace(lcase(attributes.recordDetailAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
-									<cf_HibachiActionCaller action="#attributes.recordDetailAction#" queryString="#listPrepend(attributes.recordDetailQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-mini" icon="eye-open" iconOnly="true" modal="#attributes.recordDetailModal#" id="#thisID#" />
+									<hb:HibachiActionCaller action="#attributes.recordDetailAction#" queryString="#listPrepend(attributes.recordDetailQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-mini" icon="eye-open" iconOnly="true" modal="#attributes.recordDetailModal#" id="#thisID#" />
 								</cfif>
 								
 								<!--- Edit --->
@@ -516,7 +518,7 @@
 									<cfset local.editErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="edit", setErrors=false) />
 									<cfset local.disabled = local.editErrors.hasErrors() />
 									<cfset local.disabledText = local.editErrors.getAllErrorsHTML() />
-									<cf_HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-mini" icon="pencil" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" modal="#attributes.recordEditModal#" id="#thisID#" />
+									<hb:HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-mini" icon="pencil" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" modal="#attributes.recordEditModal#" id="#thisID#" />
 								</cfif>
 								
 								<!--- Delete --->
@@ -525,13 +527,13 @@
 									<cfset local.deleteErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="delete", setErrors=false) />
 									<cfset local.disabled = local.deleteErrors.hasErrors() />
 									<cfset local.disabledText = local.deleteErrors.getAllErrorsHTML() />
-									<cf_HibachiActionCaller action="#attributes.recordDeleteAction#" queryString="#listPrepend(attributes.recordDeleteQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-mini" icon="trash" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" confirm="true" id="#thisID#" />
+									<hb:HibachiActionCaller action="#attributes.recordDeleteAction#" queryString="#listPrepend(attributes.recordDeleteQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-mini" icon="trash" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" confirm="true" id="#thisID#" />
 								</cfif>
 								
 								<!--- Process --->
 								<cfif len(attributes.recordProcessAction)>
 									<cfset thisID = "#replace(replace(lcase(attributes.recordProcessAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
-									<cf_HibachiProcessCaller action="#attributes.recordProcessAction#" entity="#attributes.recordProcessEntity#" processContext="#attributes.recordProcessContext#" queryString="#listPrepend(attributes.recordProcessQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn hibachi-ajax-submit" id="#thisID#" />
+									<hb:HibachiProcessCaller action="#attributes.recordProcessAction#" entity="#attributes.recordProcessEntity#" processContext="#attributes.recordProcessContext#" queryString="#listPrepend(attributes.recordProcessQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn hibachi-ajax-submit" id="#thisID#" />
 								</cfif>
 							</td>
 						</cfif>

@@ -46,11 +46,13 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.paymentTermSmartList" type="any" />
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.paymentTermSmartList#"
+	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.paymentTermSmartList#"
 							  recordEditAction="admin:entity.editpaymentTerm"
 							  recordEditQueryString="redirectAction=admin:entity.listpaymentterm"
 							  recordEditModal="true"
@@ -60,13 +62,13 @@ Notes:
 							  recordDeleteQueryString="redirectAction=admin:entity.listpaymentterm">
 		
 		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createpaymentterm" entity="paymentterm" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>
+		<hb:HibachiListingDisplayButtonGroup >
+			<hb:HibachiActionCaller action="admin:entity.createpaymentterm" entity="paymentterm" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiListingDisplayButtonGroup>
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="paymentTermName" />
-		<cf_HibachiListingColumn propertyIdentifier="term.termName" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="paymentTermName" />
+		<hb:HibachiListingColumn propertyIdentifier="term.termName" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 	
 </cfoutput>

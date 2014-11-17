@@ -46,26 +46,28 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="globalUsageStats" />
-		<cf_SlatwallSetting settingName="globalCurrencyLocale" />
-		<cf_SlatwallSetting settingName="globalCurrencyType" />
-		<cf_SlatwallSetting settingName="globalDateFormat" />
-		<cf_SlatwallSetting settingName="globalLogMessages" />
-		<cf_SlatwallSetting settingName="globalTimeFormat" />
-		<cf_SlatwallSetting settingName="globalAuditAutoArchiveVersionLimit" />
-		<cf_SlatwallSetting settingName="globalAuditCommitMode" />
-		<cf_SlatwallSetting settingName="globalAssetsImageFolderPath" />
-		<cf_SlatwallSetting settingName="globalAssetsFileFolderPath" />
-		<cf_SlatwallSetting settingName="globalMissingImagePath" />
-		<cf_SlatwallSetting settingName="globalOrderNumberGeneration" />
-		<cf_SlatwallSetting settingName="globalURLKeyBrand" />
-		<cf_SlatwallSetting settingName="globalURLKeyProduct" />
-		<cf_SlatwallSetting settingName="globalURLKeyProductType" />
-		<cf_SlatwallSetting settingName="globalWeightUnitCode" />
-		<cf_SlatwallSetting settingName="globalAdminAutoLogoutMinutes" />
-		<cf_SlatwallSetting settingName="globalPublicAutoLogoutMinutes" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="globalUsageStats" />
+		<swa:SlatwallSetting settingName="globalCurrencyLocale" />
+		<swa:SlatwallSetting settingName="globalCurrencyType" />
+		<swa:SlatwallSetting settingName="globalDateFormat" />
+		<swa:SlatwallSetting settingName="globalLogMessages" />
+		<swa:SlatwallSetting settingName="globalTimeFormat" />
+		<swa:SlatwallSetting settingName="globalAuditAutoArchiveVersionLimit" />
+		<swa:SlatwallSetting settingName="globalAuditCommitMode" />
+		<swa:SlatwallSetting settingName="globalAssetsImageFolderPath" />
+		<swa:SlatwallSetting settingName="globalAssetsFileFolderPath" />
+		<swa:SlatwallSetting settingName="globalMissingImagePath" />
+		<swa:SlatwallSetting settingName="globalOrderNumberGeneration" />
+		<swa:SlatwallSetting settingName="globalURLKeyBrand" />
+		<swa:SlatwallSetting settingName="globalURLKeyProduct" />
+		<swa:SlatwallSetting settingName="globalURLKeyProductType" />
+		<swa:SlatwallSetting settingName="globalWeightUnitCode" />
+		<swa:SlatwallSetting settingName="globalAdminAutoLogoutMinutes" />
+		<swa:SlatwallSetting settingName="globalPublicAutoLogoutMinutes" />
+	</swa:SlatwallSettingTable>
 </cfoutput>
 
