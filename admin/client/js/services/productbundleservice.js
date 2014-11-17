@@ -36,7 +36,7 @@ angular.module('slatwalladmin')
 		
 		_productBundleGroup.prototype = {
 			$$setMinimumQuantity:function(quantity) {
-				if(quantity < 0 || !angular.isNumber(parseInt(quantity))){
+				if(quantity < 0 || quantity === null ){
 					this.minimumQuantity = 0;
 				}
 				
@@ -46,11 +46,11 @@ angular.module('slatwalladmin')
 				
 			},
 			$$setMaximumQuantity:function(quantity){
-				if(quantity < 1 || !angular.isNumber(parseInt(quantity))){
+				if(quantity < 1 || quantity === null ){
 					this.maximumQuantity = 1;
 				}
-				if(quantity < this.minimumQuantity){
-					this.minimumQuantity = quantity;
+				if(this.maximumQuantity < this.minimumQuantity){
+					this.minimumQuantity = this.maximumQuantity;
 					 
 				}
 			},

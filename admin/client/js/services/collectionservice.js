@@ -122,7 +122,7 @@ angular.module('slatwalladmin')
 				if(angular.isUndefined(prepareForFilterGroup)){
 					prepareForFilterGroup = false;
 				}
-				filterItem = {
+				var filterItem = {
 						displayPropertyIdentifier:"",
 						propertyIdentifier:"",
 						comparisonOperator:"",
