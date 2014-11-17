@@ -244,7 +244,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 				$log.debug('hasnogroup');
 				var alert = {
 						dismissable: false,
-						msg: "A Bundle Group is Required",
+						msg: $.slatwall.rbKey('validate.define.bundleGroupRequired'),
 						type: "error",
 						};
 
@@ -258,7 +258,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 						$log.debug('hasnotypeid');
 						var alert = {
 								dismissable: false,
-								msg: "Type ID is Required",
+								msg: $.slatwall.rbKey('validate.define.typeIDRequired'),
 								type: "error",
 								};
 
@@ -269,7 +269,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 						$log.debug('hasnofilters');
 						var alert = {
 								dismissable: false,
-								msg: "Filter(s) are required",
+								msg: $.slatwall.rbKey('validate.define.filtersRequired'),
 								type: "error",
 								};
 
