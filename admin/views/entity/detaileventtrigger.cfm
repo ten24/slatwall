@@ -46,17 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.eventTrigger" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.eventTrigger#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.eventTrigger#" />
+	<hb:HibachiEntityDetailForm object="#rc.eventTrigger#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.eventTrigger#" />
 		
-		<cf_HibachiEntityDetailGroup object="#rc.eventTrigger#">
-			<cf_HibachiEntityDetailItem view="admin:entity/eventtriggertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-		</cf_HibachiEntityDetailGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.eventTrigger#">
+			<hb:HibachiEntityDetailItem view="admin:entity/eventtriggertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		</hb:HibachiEntityDetailGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

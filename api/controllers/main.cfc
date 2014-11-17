@@ -5,6 +5,24 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="hibachiService" type="any";
 	property name="hibachiUtilityService" type="any";
 	
+	this.publicMethods='';
+	
+	this.anyAdminMethods='';
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getObjectOptions');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getExistingCollectionsByBaseEntity');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getFilterPropertiesByBaseEntityName');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getProcessObject');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayData');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getResourceBundle');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayOptions');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getEventOptionsByEntityName');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'get');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'post');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'put');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
+	
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
 	}
@@ -24,8 +42,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var data = getCollectionService().getObjectOptions();
 		arguments.rc.apiResponse.content = {data=data};
 	}
-	
-	
 	
 	public any function getExistingCollectionsByBaseEntity(required struct rc){
 		var collectionEntity = getCollectionService().getTransientCollectionByEntityName('collection');

@@ -46,9 +46,12 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.productType" type="any" />
 <cfparam name="rc.edit" default="false" >
 
 <cfoutput>
-	<cf_HibachiPropertyDisplay object="#rc.productType#" property="attributeSets" edit="#rc.edit#" displayType="plain" />
+	<hb:HibachiPropertyDisplay object="#rc.productType#" property="attributeSets" edit="#rc.edit#" displayType="plain" />
 </cfoutput>

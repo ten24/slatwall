@@ -46,28 +46,31 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.product" type="any" />
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay smartList="#rc.product.getPlacedOrderItemsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.product.getPlacedOrderItemsSmartList()#"
 			recordEditAction="admin:entity.editorderitem"
 			recorddetailaction="admin:entity.detailorderitem">
 			
-		<cf_HibachiListingColumn propertyIdentifier="orderItemStatusType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="order.orderNumber" />
-		<cf_HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="order.orderCloseDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="quantity" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="price" />
+		<hb:HibachiListingColumn propertyIdentifier="orderItemStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
+		<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="order.orderCloseDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="quantity" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />
+		<hb:HibachiListingColumn propertyIdentifier="price" />
 		
 		<cfif rc.product.getBaseProductType() EQ "event">
-			<cf_HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
-			<cf_HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
+			<hb:HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
 		</cfif>
 		
-		<cf_HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
+	</hb:HibachiListingDisplay>
 	
 </cfoutput>

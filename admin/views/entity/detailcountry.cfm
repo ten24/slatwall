@@ -46,19 +46,23 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.country" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.country#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.country#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.country#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.country#" edit="#rc.edit#" />
 	
-		<cf_HibachiEntityDetailGroup object="#rc.country#">
-			<cf_HibachiEntityDetailItem view="admin:entity/countrytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cf_HibachiEntityDetailItem view="admin:entity/countrytabs/addressRequirements" text="#$.slatwall.rbKey('admin.entity.detailcountry.addressrequirements')#" />
-			<cf_HibachiEntityDetailItem property="states" />
-		</cf_HibachiEntityDetailGroup>
-	</cf_HibachiEntityDetailForm>
+		<hb:HibachiEntityDetailGroup object="#rc.country#">
+			<hb:HibachiEntityDetailItem view="admin:entity/countrytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/countrytabs/addressRequirements" text="#$.slatwall.rbKey('admin.entity.detailcountry.addressrequirements')#" />
+			<hb:HibachiEntityDetailItem property="states" />
+		</hb:HibachiEntityDetailGroup>
+	</hb:HibachiEntityDetailForm>
 	
 </cfoutput>
 

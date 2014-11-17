@@ -46,20 +46,24 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.physical" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.physical#" edit="#rc.edit#" sRedirectAction="admin:entity.editPhysical">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.physical#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.physical#" edit="#rc.edit#" sRedirectAction="admin:entity.editPhysical">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.physical#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.physical#" property="physicalName" edit="true" />
-				<cf_HibachiPropertyDisplay object="#rc.physical#" property="locations" edit="true" />
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.physical#" property="physicalName" edit="true" />
+				<hb:HibachiPropertyDisplay object="#rc.physical#" property="locations" edit="true" />
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

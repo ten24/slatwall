@@ -46,12 +46,15 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.orderDelivery" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.orderDelivery.getOrderDeliveryItemsSmartList()#">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.title" />
-		<cf_HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="quantity" />
-	</cf_HibachiListingDisplay>
+	<hb:HibachiListingDisplay smartList="#rc.orderDelivery.getOrderDeliveryItemsSmartList()#">
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.title" />
+		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
+		<hb:HibachiListingColumn propertyIdentifier="quantity" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

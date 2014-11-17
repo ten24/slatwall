@@ -46,13 +46,17 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.priceGroupRate" type="any" />
 <cfparam name="rc.priceGroup" type="any" default="#rc.priceGroupRate.getPriceGroup()#" />
 <cfparam name="rc.edit" type="boolean" default="false" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.priceGroupRate#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.priceGroupRate#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.priceGroupRate#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.priceGroupRate#" edit="#rc.edit#" 
 								   backAction="admin:entity.detailpricegroup"
 								   backQueryString="priceGroupID=#rc.priceGroup.getPriceGroupID()#"
 								   deleteQueryString="redirectAction=admin:entity.detailPriceGroup&priceGroupID=#rc.priceGroup.getPriceGroupID()#" />
@@ -64,12 +68,12 @@ Notes:
 			<input type="hidden" name="priceGroup.priceGroupID" value="#rc.priceGroup.getPricegroupID()#" />
 		</cfif>
 		
-		<cf_HibachiEntityDetailGroup object="#rc.pricegrouprate#">
-			<cf_HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cf_HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/producttypes" />
-			<cf_HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/products" />
-			<cf_HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/skus" />
-		</cf_HibachiEntityDetailGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.pricegrouprate#">
+			<hb:HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/producttypes" />
+			<hb:HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/products" />
+			<hb:HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/skus" />
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

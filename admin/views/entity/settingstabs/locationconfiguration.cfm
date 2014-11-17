@@ -46,11 +46,13 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<!---<cf_SlatwallSetting settingName="locationConfigurationCapacity" />--->
-		<cf_SlatwallSetting settingName="locationConfigurationAdditionalPreReservationTime" />
-		<cf_SlatwallSetting settingName="locationConfigurationAdditionalPostReservationTime" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable showInheritance="false">
+		<!---<swa:SlatwallSetting settingName="locationConfigurationCapacity" />--->
+		<swa:SlatwallSetting settingName="locationConfigurationAdditionalPreReservationTime" />
+		<swa:SlatwallSetting settingName="locationConfigurationAdditionalPostReservationTime" />
+	</swa:SlatwallSettingTable>
 </cfoutput>
 

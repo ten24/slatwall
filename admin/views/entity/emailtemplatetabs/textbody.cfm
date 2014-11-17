@@ -46,7 +46,11 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.emailTemplate" type="any" />
 
 
-<cf_HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailBodyText" edit="#rc.edit#" fieldtype="textarea" displaytype="plain">
+<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailBodyText" edit="#rc.edit#" fieldtype="textarea" displaytype="plain">

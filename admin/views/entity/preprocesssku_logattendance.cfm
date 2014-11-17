@@ -46,36 +46,40 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.sku" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cf_HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#">
+<hb:HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#">
 	
-	<cf_HibachiEntityActionBar type="preprocess" object="#rc.sku#">
-	</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.sku#">
+	</hb:HibachiEntityActionBar>
 	<cfset selectedEventRegistrationIDs = "" />
 	<cfloop array="#rc.sku.getRegistrationAttendanceSmartlist().getRecords()#" index="er">
 		<cfif er.getAttendedFlag()>
 			<cfset selectedEventRegistrationIDs = listAppend(selectedEventRegistrationIDs, er.getEventRegistrationID()) />
 		</cfif>
 	</cfloop>
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
 			
-			<cf_HibachiListingDisplay smartList="#rc.sku.getRegistrationAttendanceSmartlist()#" 
+			<hb:HibachiListingDisplay smartList="#rc.sku.getRegistrationAttendanceSmartlist()#" 
 									  multiselectFieldName="eventRegistrations"
 									  multiselectPropertyIdentifier="eventRegistrationID" 
 									  multiselectValues="#selectedEventRegistrationIDs#"
 									  edit="#rc.edit#">
-				<!---<cf_HibachiListingColumn propertyIdentifier="attendedFlag" />--->
-				<cf_HibachiListingColumn propertyIdentifier="firstName" />
-				<cf_HibachiListingColumn propertyIdentifier="lastName" />
-				<!---<cf_HibachiListingColumn propertyIdentifier="emailAddress" />--->
-			</cf_HibachiListingDisplay>
+				<!---<hb:HibachiListingColumn propertyIdentifier="attendedFlag" />--->
+				<hb:HibachiListingColumn propertyIdentifier="firstName" />
+				<hb:HibachiListingColumn propertyIdentifier="lastName" />
+				<!---<hb:HibachiListingColumn propertyIdentifier="emailAddress" />--->
+			</hb:HibachiListingDisplay>
 			
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 	
-</cf_HibachiEntityProcessForm>
+</hb:HibachiEntityProcessForm>
 

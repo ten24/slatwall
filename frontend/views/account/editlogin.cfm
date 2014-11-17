@@ -46,12 +46,14 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfoutput>
 <div class="accountDetails">
 	<form name="account" method="post">
 		<h5>Login Details</h5>
 		<dl>
-			<cf_SlatwallErrorDisplay object="#rc.account#" errorName="cmsError" />
+			<swa:SlatwallErrorDisplay object="#rc.account#" errorName="cmsError" />
 			<!--- login info --->
 			<dt class="spdemailaddress">
 				<label for="emailAddress" class="required">#$.slatwall.rbKey('entity.accountEmailAddress.emailAddress')#</label>
@@ -62,14 +64,14 @@ Notes:
 					<cfset emailValue = rc.account.getPrimaryEmailAddress().getEmailAddress() />	
 				</cfif>
 				<input type="text" name="emailAddress" value="#emailValue#" />
-				<cf_SlatwallErrorDisplay object="#rc.account#" errorName="primaryEmailAddress" for="emailAddress" />
+				<swa:SlatwallErrorDisplay object="#rc.account#" errorName="primaryEmailAddress" for="emailAddress" />
 			</dd>
 			<dt class="spdpassword">
 				<label for="password">Password</label>
 			</dt>
 			<dd id="spdpassword">
 				<input type="password" name="password" value="" />
-				<cf_SlatwallErrorDisplay object="#rc.account#" errorName="password" for="password" />
+				<swa:SlatwallErrorDisplay object="#rc.account#" errorName="password" for="password" />
 			</dd>
 		</dl>
 		<input type="hidden" name="slatAction" value="frontend:account.save" />

@@ -46,12 +46,15 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="shippingMethodRateAdjustmentType" />
-		<cf_SlatwallSetting settingName="shippingMethodRateAdjustmentAmount" />
-		<cf_SlatwallSetting settingName="shippingMethodRateMinimumAmount" />
-		<cf_SlatwallSetting settingName="shippingMethodRateMaximumAmount" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="shippingMethodRateAdjustmentType" />
+		<swa:SlatwallSetting settingName="shippingMethodRateAdjustmentAmount" />
+		<swa:SlatwallSetting settingName="shippingMethodRateMinimumAmount" />
+		<swa:SlatwallSetting settingName="shippingMethodRateMaximumAmount" />
+	</swa:SlatwallSettingTable>
 </cfoutput>
 

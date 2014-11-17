@@ -6,22 +6,23 @@ angular.module('slatwalladmin').controller('pageDialog', [
 	'$anchorScroll',
 	'$slatwall',
 	'dialogService',
-function(
-	$scope,
-	$location,
-	$log,
-	$anchorScroll,
-	$slatwall,
-	dialogService
-	
-){
-	$scope.$id = 'pageDialogController';
+	function(
+		$scope,
+		$location,
+		$log,
+		$anchorScroll,
+		$slatwall,
+		dialogService
 		
-	//get url param to retrieve collection listing
-	$scope.pageDialogs = dialogService.getPageDialogs();
-	$scope.scrollToTopOfDialog = function(){
-		$location.hash('topOfPageDialog');
-		$anchorScroll();
-	};
+	){
+		$scope.$id = 'pageDialogController';
+			
+		//get url param to retrieve collection listing
+		$scope.pageDialogs = dialogService.getPageDialogs();
+		$scope.scrollToTopOfDialog = function(){
+			$location.hash('topOfPageDialog');
+			$anchorScroll();
+		};
 	
-}]);
+	}
+]);

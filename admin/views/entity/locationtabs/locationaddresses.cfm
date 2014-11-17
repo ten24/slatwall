@@ -46,13 +46,16 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.location" default="any" >
  
 <cfoutput>
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList divClass="span12">
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList divClass="span12">
 			<h5>#$.slatwall.rbKey('entity.locationAddress_plural')#</h5>
-			<cf_HibachiListingDisplay smartList="#rc.location.getLocationAddressesSmartList()#"
+			<hb:HibachiListingDisplay smartList="#rc.location.getLocationAddressesSmartList()#"
 									  recordEditAction="admin:entity.editlocationaddress"
 									  recordEditQueryString="locationID=#rc.location.getLocationID()#"
 									  recordEditModal=true
@@ -63,16 +66,16 @@ Notes:
 									  selectTitle="#$.slatwall.rbKey('define.primary')#"
 									  edit="#rc.edit#">
 						
-				<cf_HibachiListingColumn propertyIdentifier="address.name" />
-				<cf_HibachiListingColumn propertyIdentifier="address.streetAddress" />
-				<cf_HibachiListingColumn propertyIdentifier="address.street2Address" />
-				<cf_HibachiListingColumn propertyIdentifier="address.city" />
-				<cf_HibachiListingColumn propertyIdentifier="address.stateCode" />
-				<cf_HibachiListingColumn propertyIdentifier="address.postalCode" />
-			</cf_HibachiListingDisplay>
+				<hb:HibachiListingColumn propertyIdentifier="address.name" />
+				<hb:HibachiListingColumn propertyIdentifier="address.streetAddress" />
+				<hb:HibachiListingColumn propertyIdentifier="address.street2Address" />
+				<hb:HibachiListingColumn propertyIdentifier="address.city" />
+				<hb:HibachiListingColumn propertyIdentifier="address.stateCode" />
+				<hb:HibachiListingColumn propertyIdentifier="address.postalCode" />
+			</hb:HibachiListingDisplay>
 			
-			<cf_HibachiActionCaller action="admin:entity.createlocationaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" modal=true />
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+			<hb:HibachiActionCaller action="admin:entity.createlocationaddress" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detaillocation&locationID=#rc.location.getLocationID()#" modal=true />
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 	
 </cfoutput>

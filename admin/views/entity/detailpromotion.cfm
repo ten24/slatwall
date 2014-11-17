@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.promotion" type="any">
 <cfparam name="rc.edit" type="boolean">
 
@@ -59,20 +63,20 @@ Notes:
 
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.promotion#" edit="#rc.edit#" saveActionQueryString="promotionID=#rc.promotion.getPromotionID()#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.promotion#" edit="#rc.edit#" >
-			<cf_HibachiActionCaller action="admin:entity.createpromotioncode" querystring="promotionID=#rc.promotion.getPromotionID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
-			<cf_HibachiActionCaller action="admin:entity.createpromotionperiod" querystring="promotionID=#rc.promotion.getPromotionID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
-		</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.promotion#" edit="#rc.edit#" saveActionQueryString="promotionID=#rc.promotion.getPromotionID()#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.promotion#" edit="#rc.edit#" >
+			<hb:HibachiActionCaller action="admin:entity.createpromotioncode" querystring="promotionID=#rc.promotion.getPromotionID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
+			<hb:HibachiActionCaller action="admin:entity.createpromotionperiod" querystring="promotionID=#rc.promotion.getPromotionID()#&redirectAction=#request.context.slatAction#" type="list" modal="true" />
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiEntityDetailGroup object="#rc.promotion#">
-			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionperiods" />
-			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/promotioncodes" />
-			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionsummary" />
-			<cf_HibachiEntityDetailItem view="admin:entity/promotiontabs/promotiondescription" />
-		</cf_HibachiEntityDetailGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.promotion#">
+			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionperiods" />
+			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotioncodes" />
+			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotionsummary" />
+			<hb:HibachiEntityDetailItem view="admin:entity/promotiontabs/promotiondescription" />
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

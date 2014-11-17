@@ -1,3 +1,5 @@
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.fieldType" type="string" />
 	<cfparam name="attributes.fieldName" type="string" />
@@ -79,7 +81,7 @@
 			</cfoutput>
 		</cfcase>
 		<cfcase value="listingMultiselect">
-			<cf_HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="true"></cf_HibachiListingDisplay>
+			<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="true"></hb:HibachiListingDisplay>
 		</cfcase>
 		<cfcase value="multiselect">
 			<cfoutput>
@@ -172,7 +174,7 @@
 				<cfset suggestionsID = reReplace(lcase(attributes.fieldName), '[^a-z]', '', 'all') & "suggestions" />
 				<div class="autoselect-container">
 					<input type="hidden" name="#attributes.fieldName#" value="#htmlEditFormat(attributes.value)#" />
-					<input type="text" name="#attributes.fieldName#-autocompletesearch" autocomplete="off" class="textautocomplete #attributes.fieldClass# form-control" data-acfieldname="#attributes.fieldName#" data-sugessionsid="#suggestionsID#" #attributes.fieldAttributes# <cfif len(attributes.value)>disabled="disabled"</cfif> />
+					<input type="text" name="#replace(attributes.fieldName, '.','_','all')#-autocompletesearch" autocomplete="off" class="textautocomplete #attributes.fieldClass# form-control" data-acfieldname="#attributes.fieldName#" data-sugessionsid="#suggestionsID#" #attributes.fieldAttributes# <cfif len(attributes.value)>disabled="disabled"</cfif> />
 					<div class="autocomplete-selected" <cfif not len(attributes.value)>style="display:none;"</cfif>><a href="##" class="textautocompleteremove"><i class="glyphicon glyphicon-remove"></i></a> <span class="value" id="selected-#suggestionsID#"><cfif len(attributes.value)>#attributes.autocompleteSelectedValueDetails[ attributes.autocompleteNameProperty ]#</cfif></span></div>
 					<div class="autocomplete-options" style="display:none;">
 						<ul class="#listLast(lcase(attributes.fieldName),".")#" id="#suggestionsID#">
@@ -195,7 +197,7 @@
 						</ul>
 					</div>
 					<cfif len(attributes.modalCreateAction)>
-						<cf_HibachiActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn modal-fieldupdate-textautocomplete" icononly="true">
+						<hb:HibachiActionCaller action="#attributes.modalCreateAction#" modal="true" icon="plus" type="link" class="btn modal-fieldupdate-textautocomplete" icononly="true">
 					</cfif>
 				</div>
 			</cfoutput>

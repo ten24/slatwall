@@ -46,33 +46,37 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.sku" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cf_HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#">
+<hb:HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#">
 	
-	<cf_HibachiEntityActionBar type="preprocess" object="#rc.sku#">
-	</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.sku#">
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
 			
 			<cfif rc.sku.hasProductSchedule()>
 				<!--- Edit entire schedule or just this event? --->
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" fieldname="editScope" property="editScope" edit="#rc.edit#" valueOptions="#rc.processObject.getEditScopeOptions()#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" fieldname="editScope" property="editScope" edit="#rc.edit#" valueOptions="#rc.processObject.getEditScopeOptions()#">
 			</cfif>
 			
-			<cf_HibachiListingDisplay smartList="#rc.processObject.getSelectedLocationsSmartList()#" 
+			<hb:HibachiListingDisplay smartList="#rc.processObject.getSelectedLocationsSmartList()#" 
 									  multiselectFieldName="locationConfigurations"
 									  multiselectPropertyIdentifier="locationConfigurationID" 
 									  edit="#rc.edit#">
-				<cf_HibachiListingColumn propertyIdentifier="locationPathName" />
-				<cf_HibachiListingColumn propertyIdentifier="locationConfigurationName" />
-			</cf_HibachiListingDisplay>
+				<hb:HibachiListingColumn propertyIdentifier="locationPathName" />
+				<hb:HibachiListingColumn propertyIdentifier="locationConfigurationName" />
+			</hb:HibachiListingDisplay>
 			
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 	
-</cf_HibachiEntityProcessForm>
+</hb:HibachiEntityProcessForm>
 

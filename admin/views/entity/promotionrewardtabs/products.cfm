@@ -46,6 +46,9 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.promotionreward" type="any">
 <cfparam name="rc.promotionperiod" type="any" default="#rc.promotionreward.getPromotionPeriod()#" />
 <cfparam name="rc.rewardType" type="string" default="#rc.promotionReward.getRewardType()#">
@@ -54,10 +57,10 @@ Notes:
 <cfoutput>
 	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.promotionreward.products')#</h5>
-		<cf_HibachiPropertyDisplay object="#rc.promotionreward#" property="products" edit="#rc.edit#" displaytype="plain" />
+		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="products" edit="#rc.edit#" displaytype="plain" />
 	</div>
 	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.promotionreward.excludedproducts')#</h5>
-		<cf_HibachiPropertyDisplay object="#rc.promotionreward#" property="excludedProducts" edit="#rc.edit#" displaytype="plain" />	
+		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="excludedProducts" edit="#rc.edit#" displaytype="plain" />	
 	</div>
 </cfoutput>

@@ -59,7 +59,8 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 	// Related Object Properties (many-to-one)
 	
 	// Related Object Properties (one-to-many)
-	
+	property name="eventTriggers" singularname="eventTrigger" cfc="EventTrigger" fieldtype="one-to-many" fkcolumn="emailTemplateID" cascade="all" inverse="true" lazy="extra";
+
 	// Related Object Properties (many-to-many)
 	
 	// Remote Properties

@@ -46,16 +46,20 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.alternateSkuCode" type="any" />
 <cfparam name="rc.sku" type="any" default="#rc.alternateSkuCode.getSku()#" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.alternateSkuCode#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.alternateSkuCode#" edit="#rc.edit#" 
 					saveActionQueryString="skuID=#rc.sku.getSkuID()#" 
 					saveActionHash="tabalternateskucodes">
 		
-		<cf_HibachiEntityActionBar type="detail" object="#rc.alternateSkuCode#" edit="#rc.edit#" 
+		<hb:HibachiEntityActionBar type="detail" object="#rc.alternateSkuCode#" edit="#rc.edit#" 
 					backAction="admin:entity.detailSku" 
 					backQueryString="skuID=#rc.sku.getSkuID()#"
 					cancelAction="admin:entity.detailSku"
@@ -63,12 +67,12 @@ Notes:
 		
 		<input type="hidden" name="sku.skuID" value="#rc.sku.getSkuID()#" />			
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.alternateSkuCode#" property="alternateSkuCode" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.alternateSkuCode#" property="alternateSkuCodeType" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.alternateSkuCode#" property="alternateSkuCode" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.alternateSkuCode#" property="alternateSkuCodeType" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

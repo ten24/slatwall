@@ -46,26 +46,29 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.loyalty" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.loyalty.getloyaltyRedemptionsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.loyalty.getloyaltyRedemptionsSmartList()#"
 							   recordEditAction="admin:entity.editloyaltyRedemption"
 							   recorddetailaction="admin:entity.detailloyaltyRedemption">
-		<cf_HibachiListingColumn propertyIdentifier="redemptionPointType" />
-		<cf_HibachiListingColumn propertyIdentifier="minimumPointQuantity" />
-		<cf_HibachiListingColumn propertyIdentifier="autoRedemptionType" />
-		<cf_HibachiListingColumn propertyIdentifier="redemptionType" />
-		<cf_HibachiListingColumn propertyIdentifier="priceGroup.priceGroupName" />
+		<hb:HibachiListingColumn propertyIdentifier="redemptionPointType" />
+		<hb:HibachiListingColumn propertyIdentifier="minimumPointQuantity" />
+		<hb:HibachiListingColumn propertyIdentifier="autoRedemptionType" />
+		<hb:HibachiListingColumn propertyIdentifier="redemptionType" />
+		<hb:HibachiListingColumn propertyIdentifier="priceGroup.priceGroupName" />
 		<!--- Add this back when this feature is available in the future--->
-		<!---<cf_HibachiListingColumn propertyIdentifier="loyaltyTerm.loyaltyTermName" />
-		<cf_HibachiListingColumn propertyIdentifier="amountType" />
-		<cf_HibachiListingColumn propertyIdentifier="amount" />--->
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-	</cf_HibachiListingDisplay>
+		<!---<hb:HibachiListingColumn propertyIdentifier="loyaltyTerm.loyaltyTermName" />
+		<hb:HibachiListingColumn propertyIdentifier="amountType" />
+		<hb:HibachiListingColumn propertyIdentifier="amount" />--->
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createloyaltyredemption" class="btn btn-default" icon="plus" queryString="loyaltyID=#rc.loyalty.getLoyaltyID()#&sRedirectAction=admin:entity.editloyaltyRedemption" modal="true"  />
+	<hb:HibachiActionCaller action="admin:entity.createloyaltyredemption" class="btn btn-default" icon="plus" queryString="loyaltyID=#rc.loyalty.getLoyaltyID()#&sRedirectAction=admin:entity.editloyaltyRedemption" modal="true"  />
 
 </cfoutput>
 

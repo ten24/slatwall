@@ -46,32 +46,36 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.stockAdjustmentSmartList" type="any"/>
 
 <cfoutput>
 	
-	<cf_HibachiEntityActionBar type="listing" object="#rc.stockAdjustmentSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.stockAdjustmentSmartList#" showCreate="false">
 			
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
-				<cf_HibachiActionCaller action="admin:entity.createstockadjustment" text="#rc.$.slatwall.rbKey('define.locationtransfer')# #rc.$.slatwall.rbKey('entity.stockadjustment')#" querystring="stockAdjustmentType=satLocationTransfer" type="list" createModal="true" />
-				<cf_HibachiActionCaller action="admin:entity.createstockadjustment" text="#rc.$.slatwall.rbKey('define.manualin')# #rc.$.slatwall.rbKey('entity.stockadjustment')#" querystring="stockAdjustmentType=satManualIn" type="list" createModal="true" />
-				<cf_HibachiActionCaller action="admin:entity.createstockadjustment" text="#rc.$.slatwall.rbKey('define.manualout')# #rc.$.slatwall.rbKey('entity.stockadjustment')#" querystring="stockAdjustmentType=satManualOut" type="list" createModal="true" />			
-			</cf_HibachiActionCallerDropdown>
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+				<hb:HibachiActionCaller action="admin:entity.createstockadjustment" text="#rc.$.slatwall.rbKey('define.locationtransfer')# #rc.$.slatwall.rbKey('entity.stockadjustment')#" querystring="stockAdjustmentType=satLocationTransfer" type="list" createModal="true" />
+				<hb:HibachiActionCaller action="admin:entity.createstockadjustment" text="#rc.$.slatwall.rbKey('define.manualin')# #rc.$.slatwall.rbKey('entity.stockadjustment')#" querystring="stockAdjustmentType=satManualIn" type="list" createModal="true" />
+				<hb:HibachiActionCaller action="admin:entity.createstockadjustment" text="#rc.$.slatwall.rbKey('define.manualout')# #rc.$.slatwall.rbKey('entity.stockadjustment')#" querystring="stockAdjustmentType=satManualOut" type="list" createModal="true" />			
+			</hb:HibachiActionCallerDropdown>
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiListingDisplay smartList="#rc.stockAdjustmentSmartList#"
+	<hb:HibachiListingDisplay smartList="#rc.stockAdjustmentSmartList#"
 			recordeditaction="admin:entity.editstockadjustment"
 			recorddetailaction="admin:entity.detailstockadjustment"
 			showCreate="true">
 			
-		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="stockAdjustmentType.type" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentType')#" />
-		<cf_HibachiListingColumn propertyidentifier="stockAdjustmentStatusType.type" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentStatusType')#" />
-		<cf_HibachiListingColumn propertyidentifier="fromLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.fromLocation')#" />
-		<cf_HibachiListingColumn propertyidentifier="toLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.toLocation')#" />
-		<cf_HibachiListingColumn propertyidentifier="createdDateTime" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="stockAdjustmentType.type" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentType')#" />
+		<hb:HibachiListingColumn propertyidentifier="stockAdjustmentStatusType.type" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentStatusType')#" />
+		<hb:HibachiListingColumn propertyidentifier="fromLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.fromLocation')#" />
+		<hb:HibachiListingColumn propertyidentifier="toLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.toLocation')#" />
+		<hb:HibachiListingColumn propertyidentifier="createdDateTime" />
+	</hb:HibachiListingDisplay>
 	
 </cfoutput>

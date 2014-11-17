@@ -46,4 +46,8 @@
 Notes:
 
 --->
-<cf_HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetDescription" edit="#rc.edit#" fieldType="wysiwyg" displayType="plain">
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
+<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetDescription" edit="#rc.edit#" fieldType="wysiwyg" displayType="plain">

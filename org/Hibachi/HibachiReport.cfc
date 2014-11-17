@@ -1,3 +1,5 @@
+<cfimport prefix="hb" taglib="./HibachiTags" />
+
 <cfcomponent accessors="true" persistent="false" output="false" extends="HibachiTransient">
 	
 	<!--- Title Information --->
@@ -598,7 +600,7 @@
 					<cfset variables.chartData["series"][dataSeriesID]["type"] = "area" />
 				</cfif>
 				
-				<cf_HibachiDateLoop index="thisDate" from="#getReportStartDateTime()#" to="#chartReportEndDateTime#" datepart="#loopdatepart#">
+				<hb:HibachiDateLoop index="thisDate" from="#getReportStartDateTime()#" to="#chartReportEndDateTime#" datepart="#loopdatepart#">
 					<cfset var thisData = [] />
 					<cfset arrayAppend(thisData, dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000) />
  					<cfif addChartSeriesDataCheck(thisDate, getReportDateTimeGroupBy(), chartDataQuery, chartRow)>
@@ -608,7 +610,7 @@
 						<cfset arrayAppend(thisData, 0) />
 					</cfif>
 					<cfset arrayAppend(variables.chartData["series"][dataSeriesID]["data"], thisData) />
-				</cf_HibachiDateLoop>
+				</hb:HibachiDateLoop>
 				
 				<!--- Setup Compare data Series --->
 				<cfif getReportCompareFlag()>
@@ -622,7 +624,7 @@
 					<cfset variables.chartData["series"][dataSeriesID]["xAxis"] = 1 />
 					<cfset variables.chartData["series"][dataSeriesID]["color"] = getMetricColorDetails()[m]['compareColor'] />
 					
-					<cf_HibachiDateLoop index="thisDate" from="#getReportCompareStartDateTime()#" to="#chartReportEndDateTime#" datepart="#loopdatepart#">
+					<hb:HibachiDateLoop index="thisDate" from="#getReportCompareStartDateTime()#" to="#chartReportEndDateTime#" datepart="#loopdatepart#">
 						<cfset var thisData = [] />
 						<cfset arrayAppend(thisData, dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000) />
 						<cfif addChartSeriesDataCheck(thisDate, getReportDateTimeGroupBy(), chartDataQuery, chartRow)>
@@ -632,7 +634,7 @@
 							<cfset arrayAppend(thisData, 0) />
 						</cfif>
 						<cfset arrayAppend(variables.chartData["series"][dataSeriesID]["data"], thisData) />
-					</cf_HibachiDateLoop>
+					</hb:HibachiDateLoop>
 				</cfif>
 			</cfloop>
 			
@@ -926,7 +928,7 @@
 	<cffunction name="getReportDataTable" access="public" output="false">
 		<cfif(!structKeyExists(variables, "reportDataTable"))>
 			<cfsavecontent variable="variables.reportDataTable">
-				<cf_HibachiReportDataTable report="#this#">
+				<hb:HibachiReportDataTable report="#this#">
 			</cfsavecontent>
 		</cfif>
 		
@@ -936,7 +938,7 @@
 	<cffunction name="getReportConfigureBar" access="public" output="false">
 		<cfif(!structKeyExists(variables, "reportConfigureBar"))>
 			<cfsavecontent variable="variables.reportConfigureBar">
-				<cf_HibachiReportConfigureBar report="#this#">
+				<hb:HibachiReportConfigureBar report="#this#">
 			</cfsavecontent>
 		</cfif>
 		

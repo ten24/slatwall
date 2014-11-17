@@ -46,20 +46,22 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfoutput>
-	<cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable>
 			
 		<cfif rc.fulfillmentMethod.getFulfillmentMethodType() eq "auto">
-			<cf_SlatwallSetting settingName="fulfillmentMethodAutoLocation" settingObject="#rc.fulfillmentMethod#" />
-			<cf_SlatwallSetting settingName="fulfillmentMethodAutoMinReceivedPercentage" settingObject="#rc.fulfillmentMethod#" />
+			<swa:SlatwallSetting settingName="fulfillmentMethodAutoLocation" settingObject="#rc.fulfillmentMethod#" />
+			<swa:SlatwallSetting settingName="fulfillmentMethodAutoMinReceivedPercentage" settingObject="#rc.fulfillmentMethod#" />
 		<cfelseif rc.fulfillmentMethod.getFulfillmentMethodType() eq "email">
-			<cf_SlatwallSetting settingName="fulfillmentMethodEmailFrom" settingObject="#rc.fulfillmentMethod#" />
-			<cf_SlatwallSetting settingName="fulfillmentMethodEmailCC" settingObject="#rc.fulfillmentMethod#" />
-			<cf_SlatwallSetting settingName="fulfillmentMethodEmailSubjectString" settingObject="#rc.fulfillmentMethod#" />
+			<swa:SlatwallSetting settingName="fulfillmentMethodEmailFrom" settingObject="#rc.fulfillmentMethod#" />
+			<swa:SlatwallSetting settingName="fulfillmentMethodEmailCC" settingObject="#rc.fulfillmentMethod#" />
+			<swa:SlatwallSetting settingName="fulfillmentMethodEmailSubjectString" settingObject="#rc.fulfillmentMethod#" />
 		<cfelseif rc.fulfillmentMethod.getFulfillmentMethodType() eq "shipping">
-			<cf_SlatwallSetting settingName="fulfillmentMethodShippingOptionSortType" settingObject="#rc.fulfillmentMethod#" />
+			<swa:SlatwallSetting settingName="fulfillmentMethodShippingOptionSortType" settingObject="#rc.fulfillmentMethod#" />
 		</cfif>
 
-	</cf_SlatwallSettingTable>
+	</swa:SlatwallSettingTable>
 </cfoutput>

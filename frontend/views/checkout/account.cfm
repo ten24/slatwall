@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.edit" type="string" default="" />
 <cfparam name="rc.orderRequirementsList" type="string" default="" />
 <cfparam name="rc.account" type="any" />
@@ -71,12 +73,12 @@ Notes:
 						<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
 						<cfif rc.edit eq "account"><h5>Edit Account Details</h5><cfelse><h5>New Customer</h5></cfif>
 						<dl>
-							<cf_SlatwallErrorDisplay object="#rc.account#" errorName="cmsError" />
-							<cf_SlatwallPropertyDisplay object="#rc.account#" fieldname="account.firstName" property="firstName" edit="true">
-							<cf_SlatwallPropertyDisplay object="#rc.account#" fieldname="account.lastName" property="lastName" edit="true">
-							<cf_SlatwallPropertyDisplay object="#rc.account#" fieldname="account.company" property="company" edit="true">
-							<cf_SlatwallPropertyDisplay object="#rc.account#" fieldname="account.emailAddress" property="emailAddress" edit="true">
-							<cf_SlatwallPropertyDisplay object="#rc.account#" fieldname="account.phoneNumber" property="phoneNumber" edit="true">
+							<swa:SlatwallErrorDisplay object="#rc.account#" errorName="cmsError" />
+							<swa:SlatwallPropertyDisplay object="#rc.account#" fieldname="account.firstName" property="firstName" edit="true">
+							<swa:SlatwallPropertyDisplay object="#rc.account#" fieldname="account.lastName" property="lastName" edit="true">
+							<swa:SlatwallPropertyDisplay object="#rc.account#" fieldname="account.company" property="company" edit="true">
+							<swa:SlatwallPropertyDisplay object="#rc.account#" fieldname="account.emailAddress" property="emailAddress" edit="true">
+							<swa:SlatwallPropertyDisplay object="#rc.account#" fieldname="account.phoneNumber" property="phoneNumber" edit="true">
 							<cfif rc.account.isGuestAccount()>
 								<dt class="spdguestcheckout">
 									<label for="account.createMuraAccount">#$.slatwall.rbKey('frontend.checkout.detail.guestcheckout')#</label>
@@ -90,7 +92,7 @@ Notes:
 								</dt>
 								<dd id="spdpassword" class="guestHide">
 									<input type="password" name="account.password" value="" />
-									<cf_SlatwallErrorDisplay object="#rc.account#" errorName="password" for="password" />
+									<swa:SlatwallErrorDisplay object="#rc.account#" errorName="password" for="password" />
 								</dd>
 							<cfelse>
 								<a href="?doaction=logout">Logout</a>

@@ -1248,19 +1248,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					
 					if(okToRemove) {
-						
-						// Loop over and call delete on any childOrderItems
-						for(var ci=arrayLen(orderItem.getChildOrderItems()); ci>=1; ci--) {
-							// Delete child item
-							this.deleteOrderItem( orderItem.getChildOrderItems()[ci] );
-						}
-						
 						// Delete this item
 						this.deleteOrderItem( orderItem );
 						
 						// Call saveOrder to recalculate all the orderTotal stuff
 						arguments.order = this.saveOrder(arguments.order);
-		
 					}
 					
 					break;
@@ -2219,6 +2211,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function deleteOrderItem( required any orderItem ) {
+		getHibachiEventService().announceEvent("beforeOrderItemDelete", arguments);
 		
 		// Check delete validation
 		if(arguments.orderItem.isDeletable()) {
@@ -2226,32 +2219,54 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Remove the primary fields so that we can delete this entity
 			var order = arguments.orderItem.getOrder();
 			
-			order.removeOrderItem( arguments.orderItem );
-			
-			if(!isNull(arguments.orderItem.getParentOrderItem())) {
-				arguments.orderItem.removeParentOrderItem();
-			}
-			if(!isNull(arguments.orderItem.getOrderFulfillment())) {
-				arguments.orderItem.removeOrderFulfillment();
-			}
-			if(!isNull(arguments.orderItem.getOrderReturn())) {
-				arguments.orderItem.removeOrderReturn();	
-			}
+			removeOrderItemAndChildItemRelationshipsAndDelete( arguments.orderItem );
 			
 			// Recalculate the order amounts
 			this.processOrder( order, {}, 'updateOrderAmounts' );
 			order.updateCalculatedProperties();
 			
-			// Actually delete the entity
-			getHibachiDAO().delete( arguments.orderItem );
+			getHibachiEventService().announceEvent("afterOrderItemDelete", arguments);
+			getHibachiEventService().announceEvent("afterOrderItemDeleteSuccess", arguments);
 			
 			return true;
 		}
+		
+		getHibachiEventService().announceEvent("afterOrderItemDelete", arguments);
+		getHibachiEventService().announceEvent("afterOrderItemDeleteFailure", arguments);
 		
 		return false;
 	}
 	
 	// =====================  END: Delete Overrides ===========================
+	
+	// ================== START: Private Helper Functions =====================
+	
+	private void function removeOrderItemAndChildItemRelationshipsAndDelete( required any orderItem ) {
+		
+		// Call on all ChildItems First
+		for(var ci=arrayLen(arguments.orderItem.getChildOrderItems()); ci >= 1; ci--) {
+			removeOrderItemAndChildItemRelationshipsAndDelete( arguments.orderItem.getChildOrderItems()[ci] );
+		}
+		
+		// Remove relationships
+		arguments.orderItem.removeOrder();
+		
+		if(!isNull(arguments.orderItem.getParentOrderItem())) {
+			arguments.orderItem.removeParentOrderItem();
+		}
+		if(!isNull(arguments.orderItem.getOrderFulfillment())) {
+			arguments.orderItem.removeOrderFulfillment();
+		}
+		if(!isNull(arguments.orderItem.getOrderReturn())) {
+			arguments.orderItem.removeOrderReturn();	
+		}
+		
+		// Actually delete the entity
+		getHibachiDAO().delete( arguments.orderItem );
+		
+	}
+	
+	// ==================  END:  Private Helper Functions =====================
 	
 	// =================== START: Deprecated Functions ========================
 	

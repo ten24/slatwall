@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <!--- You can pass in a object, or just an array of errors --->
 <cfparam name="attributes.object" type="any" default="" />
 <cfparam name="attributes.errors" type="array" default="#arrayNew(1)#" />

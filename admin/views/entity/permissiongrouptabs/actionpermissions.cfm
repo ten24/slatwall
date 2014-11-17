@@ -46,6 +46,9 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.permissionGroup" type="any" />
 
-<cf_HibachiPermissionGroupActionPermissions permissionGroup="#rc.permissionGroup#" />
+<hb:HibachiPermissionGroupActionPermissions permissionGroup="#rc.permissionGroup#" />

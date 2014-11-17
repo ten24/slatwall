@@ -46,25 +46,29 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.printTemplateSmartList" type="any" />
 
 <cfoutput>
 
-	<cf_HibachiEntityActionBar type="listing" object="#rc.printTemplateSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.printTemplateSmartList#" showCreate="false">
 			
 		<!--- Create ---> 
-		<cf_HibachiEntityActionBarButtonGroup>
-			<cf_HibachiActionCaller action="admin:entity.createprinttemplate" entity="printtemplate" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
-		</cf_HibachiEntityActionBarButtonGroup>
-	</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createprinttemplate" entity="printtemplate" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 
 	
-	<cf_HibachiListingDisplay smartList="#rc.printTemplateSmartList#"
+	<hb:HibachiListingDisplay smartList="#rc.printTemplateSmartList#"
 							   recordDetailAction="admin:entity.detailPrintTemplate"
 							   recordEditAction="admin:entity.editPrintTemplate">
 
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="printTemplateName" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="printTemplateName" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

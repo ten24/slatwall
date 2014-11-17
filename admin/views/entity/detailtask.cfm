@@ -46,26 +46,30 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.task" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.task#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.task#">
+	<hb:HibachiEntityDetailForm object="#rc.task#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.task#">
 			<cfif rc.task.hasProcessObject( rc.task.getTaskMethod() )>
-				<cf_HibachiProcessCaller action="admin:entity.preprocesstask" processContext="runTask" entity="#rc.task#" type="list" modal="true">
+				<hb:HibachiProcessCaller action="admin:entity.preprocesstask" processContext="runTask" entity="#rc.task#" type="list" modal="true">
 			<cfelse>
-				<cf_HibachiProcessCaller action="admin:entity.processtask" processContext="runTask" entity="#rc.task#" type="list">
+				<hb:HibachiProcessCaller action="admin:entity.processtask" processContext="runTask" entity="#rc.task#" type="list">
 			</cfif>
-        </cf_HibachiEntityActionBar>    
+        </hb:HibachiEntityActionBar>    
 
-		<cf_HibachiEntityDetailGroup object="#rc.task#">
-			<cf_HibachiEntityDetailItem view="admin:entity/tasktabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cf_HibachiEntityDetailItem property="taskschedules" />
-			<cf_HibachiEntityDetailItem property="taskhistories" />
-			<cf_HibachiEntityDetailItem view="admin:entity/tasktabs/tasksettings" />
-		</cf_HibachiEntityDetailGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.task#">
+			<hb:HibachiEntityDetailItem view="admin:entity/tasktabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem property="taskschedules" />
+			<hb:HibachiEntityDetailItem property="taskhistories" />
+			<hb:HibachiEntityDetailItem view="admin:entity/tasktabs/tasksettings" />
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

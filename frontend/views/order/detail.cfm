@@ -46,7 +46,8 @@
 Notes:
 
 --->
-
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.orderID" type="string" />
@@ -73,10 +74,10 @@ Notes:
 			</form>
 		<cfelse>
 			<dl>
-				<cf_SlatwallPropertyDisplay object="#rc.order#" property="OrderNumber">
-				<cf_SlatwallPropertyDisplay object="#rc.order.getOrderStatusType()#" title="#rc.$.Slatwall.rbKey('entity.order.orderStatusType')#" property="Type">
-				<cf_SlatwallPropertyDisplay object="#rc.order#" property="orderOpenDateTime">
-				<cf_SlatwallPropertyDisplay object="#rc.order#" property="total">
+				<swa:SlatwallPropertyDisplay object="#rc.order#" property="OrderNumber">
+				<swa:SlatwallPropertyDisplay object="#rc.order.getOrderStatusType()#" title="#rc.$.Slatwall.rbKey('entity.order.orderStatusType')#" property="Type">
+				<swa:SlatwallPropertyDisplay object="#rc.order#" property="orderOpenDateTime">
+				<swa:SlatwallPropertyDisplay object="#rc.order#" property="total">
 			</dl>
 			<table>
 				<tr>

@@ -46,41 +46,45 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.sku" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#" sRedirectAction="admin:entity.editsku">
+	<hb:HibachiEntityProcessForm entity="#rc.sku#" edit="#rc.edit#" sRedirectAction="admin:entity.editsku">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.sku#">
-		</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.sku#">
+		</hb:HibachiEntityActionBar>
 		
-			<cf_HibachiPropertyRow>
-				<cf_HibachiPropertyList>
+			<hb:HibachiPropertyRow>
+				<hb:HibachiPropertyList>
 					<!--- Add form fields to add registrant accounts --->
 					<cfif rc.sku.getAvailableSeatCount() LT 1 >
 						<p class="alert-error">There are not enough seats available. Entering account information here will cause this registrant to be placed on a waitlist. Note that a % deposit will be required to be waitlisted.</p>
 					</cfif>
-					<cf_HibachiFieldDisplay fieldname="newAccountFlag" fieldType="yesno" title="#$.slatwall.rbKey('processObject.Sku_AddEventRegistration.newAccountFlag')#" edit="#rc.edit#" value="1">
+					<hb:HibachiFieldDisplay fieldname="newAccountFlag" fieldType="yesno" title="#$.slatwall.rbKey('processObject.Sku_AddEventRegistration.newAccountFlag')#" edit="#rc.edit#" value="1">
 					<!--- New Account --->
-					<cf_HibachiDisplayToggle selector="input[name='newAccountFlag']" loadVisable="yes">
-						<cf_HibachiFieldDisplay fieldname="firstName"  title="#$.slatwall.rbKey('entity.account.firstName')#" fieldType="text" edit="#rc.edit#">
-						<cf_HibachiFieldDisplay fieldname="lastName" title="#$.slatwall.rbKey('entity.account.lastName')#" fieldType="text" edit="#rc.edit#">
-						<cf_HibachiFieldDisplay fieldname="emailAddress" title="#$.slatwall.rbKey('entity.account.emailAddress')#" fieldType="text" edit="#rc.edit#">
-						<cf_HibachiFieldDisplay fieldname="phoneNumber" title="#$.slatwall.rbKey('entity.account.phoneNumber')#" fieldType="text" edit="#rc.edit#">
-					</cf_HibachiDisplayToggle>
+					<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" loadVisable="yes">
+						<hb:HibachiFieldDisplay fieldname="firstName"  title="#$.slatwall.rbKey('entity.account.firstName')#" fieldType="text" edit="#rc.edit#">
+						<hb:HibachiFieldDisplay fieldname="lastName" title="#$.slatwall.rbKey('entity.account.lastName')#" fieldType="text" edit="#rc.edit#">
+						<hb:HibachiFieldDisplay fieldname="emailAddress" title="#$.slatwall.rbKey('entity.account.emailAddress')#" fieldType="text" edit="#rc.edit#">
+						<hb:HibachiFieldDisplay fieldname="phoneNumber" title="#$.slatwall.rbKey('entity.account.phoneNumber')#" fieldType="text" edit="#rc.edit#">
+					</hb:HibachiDisplayToggle>
 					<!--- Existing Account --->
-					<cf_HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0" >
+					<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0" >
 						<cfset fieldAttributes = 'data-acpropertyidentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" data-entityname="Account" data-acvalueproperty="AccountID" data-acnameproperty="simpleRepresentation"' />
-						<cf_HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"/>
-					</cf_HibachiDisplayToggle>
-					<!---<cf_HibachiFieldDisplay fieldname="createOrderFlag" title="#$.slatwall.rbKey('processObject.Sku_AddEventRegistration.createOrderFlag')#" fieldType="yesno" edit="#rc.edit#" value="1">--->
+						<hb:HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"/>
+					</hb:HibachiDisplayToggle>
+					<!---<hb:HibachiFieldDisplay fieldname="createOrderFlag" title="#$.slatwall.rbKey('processObject.Sku_AddEventRegistration.createOrderFlag')#" fieldType="yesno" edit="#rc.edit#" value="1">--->
 				
-				</cf_HibachiPropertyList>
+				</hb:HibachiPropertyList>
 				
-			</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyRow>
 			
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 	
 </cfoutput>

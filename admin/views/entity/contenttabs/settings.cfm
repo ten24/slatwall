@@ -46,17 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.content" type="any" />
 
 <cfoutput>
-	<cf_SlatwallSettingTable>
-		<cf_SlatwallSetting settingName="contentRestrictAccessFlag" settingObject="#rc.content#" />
-		<cf_SlatwallSetting settingName="contentRequirePurchaseFlag" settingObject="#rc.content#" />
-		<cf_SlatwallSetting settingName="contentRequireSubscriptionFlag" settingObject="#rc.content#" />
-		<cf_SlatwallSetting settingName="contentIncludeChildContentProductsFlag" settingObject="#rc.content#" />
-		<cf_SlatwallSetting settingName="contentRestrictedContentDisplayTemplate" settingObject="#rc.content#" />
-		<cf_SlatwallSetting settingName="contentHTMLTitleString" settingObject="#rc.content#" />
-		<cf_SlatwallSetting settingName="contentMetaDescriptionString" settingObject="#rc.content#" />
-		<cf_SlatwallSetting settingName="contentMetaKeywordsString" settingObject="#rc.content#" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable>
+		<swa:SlatwallSetting settingName="contentRestrictAccessFlag" settingObject="#rc.content#" />
+		<swa:SlatwallSetting settingName="contentRequirePurchaseFlag" settingObject="#rc.content#" />
+		<swa:SlatwallSetting settingName="contentRequireSubscriptionFlag" settingObject="#rc.content#" />
+		<swa:SlatwallSetting settingName="contentIncludeChildContentProductsFlag" settingObject="#rc.content#" />
+		<swa:SlatwallSetting settingName="contentRestrictedContentDisplayTemplate" settingObject="#rc.content#" />
+		<swa:SlatwallSetting settingName="contentHTMLTitleString" settingObject="#rc.content#" />
+		<swa:SlatwallSetting settingName="contentMetaDescriptionString" settingObject="#rc.content#" />
+		<swa:SlatwallSetting settingName="contentMetaKeywordsString" settingObject="#rc.content#" />
+	</swa:SlatwallSettingTable>
 </cfoutput>

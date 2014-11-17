@@ -46,24 +46,28 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.task" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cf_HibachiEntityProcessForm entity="#rc.task#" edit="#rc.edit#" sRedirectAction="admin:entity.detailtask">
+<hb:HibachiEntityProcessForm entity="#rc.task#" edit="#rc.edit#" sRedirectAction="admin:entity.detailtask">
 	
-	<cf_HibachiEntityActionBar type="preprocess" object="#rc.task#">
-	</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.task#">
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
 			<cfset runTaskConfigObject = rc.task.getProcessObject( rc.task.getTaskMethod() ) />
 			<cfloop array="#runTaskConfigObject.getProperties()#" index="property">
 				<cfif structKeyExists(property, "sw_taskConfig") and property.sw_taskConfig>
-					<cf_HibachiPropertyDisplay object="#runTaskConfigObject#" fieldName="runTaskConfig.#property.name#" property="#property.name#" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#runTaskConfigObject#" fieldName="runTaskConfig.#property.name#" property="#property.name#" edit="#rc.edit#">
 				</cfif>
 			</cfloop>
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 	
-</cf_HibachiEntityProcessForm>
+</hb:HibachiEntityProcessForm>
 

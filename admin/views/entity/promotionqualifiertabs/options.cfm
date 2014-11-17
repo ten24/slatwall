@@ -46,16 +46,19 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.promotionQualifier" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
 	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.promotionQualifier.options')#</h5>
-		<cf_HibachiPropertyDisplay object="#rc.promotionQualifier#" property="options" edit="#rc.edit#" displaytype="plain" />
+		<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="options" edit="#rc.edit#" displaytype="plain" />
 	</div>
 	<div class="col-md-6">
 		<h5>#$.slatwall.rbKey('entity.promotionQualifier.excludedoptions')#</h5>
-		<cf_HibachiPropertyDisplay object="#rc.promotionQualifier#" property="excludedOptions" edit="#rc.edit#" displaytype="plain" />		
+		<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="excludedOptions" edit="#rc.edit#" displaytype="plain" />		
 	</div>
 </cfoutput>

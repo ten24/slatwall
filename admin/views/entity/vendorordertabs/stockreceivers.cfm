@@ -46,14 +46,17 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.vendorOrder" type="any"/>
 
-<cf_HibachiListingDisplay smartlist="#rc.$.slatwall.getService('VendorOrderService').getStockReceiverSmartList(rc.vendorOrder.getVendorOrderID())#" 
+<hb:HibachiListingDisplay smartlist="#rc.$.slatwall.getService('VendorOrderService').getStockReceiverSmartList(rc.vendorOrder.getVendorOrderID())#" 
                            recorddetailaction="admin:entity.detailStockReceiver"
 						   recorddetailmodal="true" 
                            recorddetailquerystring="redirectAction=admin:entity.detailvendororder&vendorOrderID=#rc.VendorOrder.getVendorOrderID()#">
 	
-	<cf_HibachiListingColumn tdclass="primary" propertyidentifier="createdDateTime"/>
-	<cf_HibachiListingColumn propertyidentifier="boxCount"/>
-	<cf_HibachiListingColumn propertyidentifier="packingSlipNumber"/>
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn tdclass="primary" propertyidentifier="createdDateTime"/>
+	<hb:HibachiListingColumn propertyidentifier="boxCount"/>
+	<hb:HibachiListingColumn propertyidentifier="packingSlipNumber"/>
+</hb:HibachiListingDisplay>
