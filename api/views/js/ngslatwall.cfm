@@ -602,17 +602,22 @@ Notes:
 			    		var entityID = entityInstance.data[lcaseEntityName+"ID"];
 			    		var params = modifiedData;
 			    		var context = 'save';
-			    		slatwallService.saveEntity(entityName,entityID,params,context);
+			    		var savePromise = slatwallService.saveEntity(entityName,entityID,params,context);
+			    		savePromise.then(function(value){
+							entityInstance.metaData.form.$setPristine();
+							
+						});
 			    		console.log(modifiedData);
 			    	}
 			    	
 			    	var _getModifiedData = function(entityInstance){
 			    		var form = entityInstance.metaData.form;
+			    		entityInstance.modifiedData = {};
 			    		console.log(form);
 			    		for(key in form){
 			    			if(key.charAt(0) !== '$'){
 			    				var inputField = form[key];
-			    				if(inputField.$valid && inputField.$dirty){
+			    				if(inputField.$valid === true && inputField.$dirty === true){
 		    						entityInstance.modifiedData[key] = form[key].$modelValue;
 			    				}
 			    			}
