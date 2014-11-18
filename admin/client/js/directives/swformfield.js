@@ -50,23 +50,15 @@ angular.module('slatwalladmin')
 						
 				scope.revertValue = angular.copy(scope.propertyDisplay);
 				
-				/*scope.$watch(scope.propertyDisplay.form[scope.propertyDisplay.property],function(newValue,oldValue){
-					$log.debug('field dirty');
-				});*/
-				
 				var templateLoader = getTemplate(scope.propertyDisplay.fieldType);
 		    	var promise = templateLoader.success(function(html){
 		    		var formfieldTemplate = angular.element(html);
-		    		//console.log('formfield');
-		    		//console.log(formfield);
-		    		//dynamic formfield name mapping
-		    		//formfield.attr('name',scope.propertyDisplay.object.metaData.className+'.'+scope.propertyDisplay.property);
 		    		
 		    		angular.forEach(formfieldTemplate,function(node){
 		    			if(angular.isDefined(node.type) && node.type === 'text'){
 		    				console.log('found text node');
 		    				console.log(node);
-		    				node.name = scope.propertyDisplay.object.metaData.className+'.'+scope.propertyDisplay.property;
+		    				node.name = scope.propertyDisplay.property;
 		    			}
 		    		});
 		    		
@@ -119,7 +111,7 @@ angular.module('slatwalladmin')
 							$log.debug('formfieldchanged');
 							$log.debug(option);
 							scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
-							scope.propertyDisplay.object.metaData.form[scope.propertyDisplay.object.metaData.className+'.'+scope.propertyDisplay.property].$dirty = true;
+							scope.propertyDisplay.object.metaData.form[scope.propertyDisplay.property].$dirty = true;
 						};
 						
 						if(scope.propertyDisplay.eagerLoadOptions === true){

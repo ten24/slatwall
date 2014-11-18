@@ -13,10 +13,6 @@ function(
 	$scope.$id="slatwallDetailController";
 	$log.debug('slatwallDetailController');
 	
-	/*$scope.getRBKey = function(key){
-		console.log(key);
-		return $slatwall.getRBKey(key);
-	};*/
 	$scope.entity = $slatwall['new'+$scope.entityName]();
 	$scope.getRBKey = $slatwall.getRBKey;
 	$scope.tabPartialPath = partialsPath+'entity/';

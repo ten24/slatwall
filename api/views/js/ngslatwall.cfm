@@ -597,6 +597,12 @@ Notes:
 			    		console.log('save');
 			    		console.log(entityInstance);
 			    		var modifiedData = _getModifiedData(entityInstance);
+			    		var entityName = entityInstance.metaData.className;
+			    		var lcaseEntityName = entityName.charAt(0).toLowerCase() + entityName.slice(1);
+			    		var entityID = entityInstance.data[lcaseEntityName+"ID"];
+			    		var params = modifiedData;
+			    		var context = 'save';
+			    		slatwallService.saveEntity(entityName,entityID,params,context);
 			    		console.log(modifiedData);
 			    	}
 			    	
@@ -607,7 +613,7 @@ Notes:
 			    			if(key.charAt(0) !== '$'){
 			    				var inputField = form[key];
 			    				if(inputField.$valid && inputField.$dirty){
-		    						entityInstance.modifiedData[key] = form[key];
+		    						entityInstance.modifiedData[key] = form[key].$modelValue;
 			    				}
 			    			}
 			    		}
