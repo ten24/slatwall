@@ -53,7 +53,6 @@ angular.module('slatwalladmin')
 						workflowTask.data.workflowTaskActions = workflowTaskActions;
 					}else{
 						workflowTask.data.workflowTaskActions = [];
-						console.log(workflowTask);
 					}
 				};
 				

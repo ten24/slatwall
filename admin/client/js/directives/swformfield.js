@@ -56,8 +56,6 @@ angular.module('slatwalladmin')
 		    		
 		    		angular.forEach(formfieldTemplate,function(node){
 		    			if(angular.isDefined(node.type) && node.type === 'text'){
-		    				console.log('found text node');
-		    				console.log(node);
 		    				node.name = scope.propertyDisplay.property;
 		    			}
 		    		});
@@ -145,26 +143,11 @@ angular.module('slatwalladmin')
 							scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[0].value;
 						}
 						
-						
-						
-						//formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
-						//scope.propertyDisplay.selectedOptions = scope.propertyDisplay.object.data[scope.propertyDisplay.property];
-						/*scope.$watch(,function(newValue,oldValue){
-							console.log('setRadio');
-							console.log(scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
-							console.log(newValue);
-							console.log(oldValue);
-							if(angular.isUndefined(newValue)){
-								
-							}
-						});*/
 					}
 					if(angular.isDefined(formController[scope.propertyDisplay.property])){
 						scope.propertyDisplay.errors = formController[scope.propertyDisplay.property].$error;
 						formController[scope.propertyDisplay.property].formType = scope.propertyDisplay.fieldType;
 					}
-					console.log('formController');
-					console.log(formController);
 					scope.propertyDisplay.object.metaData.form = formController;
 							
 				});

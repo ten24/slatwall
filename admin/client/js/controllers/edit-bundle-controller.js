@@ -107,8 +107,6 @@ function(
 							type:skuFilterGroups[k].type,
 							name:skuFilterGroups[k].name
 					};
-					console.log(filter);
-					
 					productBundleGroupFilters.push(filter);
 				}
 				
@@ -194,7 +192,6 @@ function(
 	
 	$scope.saveProductBundle = function(closeDialogIndex){
 		var createProductBundleForm = formService.getForm('form.createProductBundle');
-		console.log(createProductBundleForm);
 		//only save the form if it passes validation
 		createProductBundleForm.$submitted = true;
 		if(createProductBundleForm.$valid === true){
@@ -205,7 +202,6 @@ function(
 					
 				};
 				var context;
-				console.log($scope.product.productID);
 				if(angular.isUndefined(productID)){
 					params["productID"]=$scope.product.productID;
 					params["product.skus[1].skuID"]='';

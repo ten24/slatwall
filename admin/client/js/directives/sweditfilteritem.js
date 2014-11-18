@@ -170,7 +170,6 @@ angular.module('slatwalladmin')
 			
 			scope.saveFilter = function(selectedFilterProperty,filterItem,callback){
 				$log.debug('saveFilter begin');
-				console.log(selectedFilterProperty.selectedCriteriaType);
 				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType) && angular.equals({}, selectedFilterProperty.selectedCriteriaType)){
 					return;
 				}

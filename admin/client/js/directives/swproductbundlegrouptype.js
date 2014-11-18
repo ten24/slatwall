@@ -73,7 +73,6 @@ angular.module('slatwalladmin')
 							$scope.productBundleGroupTypes.$$adding = false;
 							$scope.showAddProductBundleGroupTypeBtn = false;
 							$scope.productBundleGroup.productBundleGroupType = value.data;
-							console.log($scope.productBundleGroup.productBundleGroupType);
 							//$scope.productBundleGroup.productBundleGroupType = value.data;
 							formService.resetForm(addProductBundleGroupTypeForm);
 						});
