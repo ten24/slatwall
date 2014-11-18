@@ -25,7 +25,6 @@ angular.module('slatwalladmin')
 				$log.debug(scope);
 				scope.workflowPartialsPath = workflowPartialsPath;
 				
-					
 				scope.propertiesList = {};
 					
 				scope.getWorkflowTasks = function(){

@@ -50,7 +50,4 @@ function(
 	
 	$scope.partialRoute = partial;
 	
-	
-	
-	
 }]);

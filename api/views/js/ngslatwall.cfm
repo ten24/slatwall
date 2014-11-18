@@ -386,7 +386,6 @@ Notes:
 			    	var _init = function(entityInstance,data){
 						for(var key in data) {
 							if(key.charAt(0) !== '$'){
-								
 								entityInstance.data[key] = data[key];
 							}
 						}
@@ -843,6 +842,9 @@ Notes:
 																for(var i in response.records){
 																	var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
 																	entityInstance.$$init(response.records[i]);
+																	for(var key in entityInstance.data){
+																		thisEntityInstance.data['#local.property.name#['+i+']'+'.'+key] = entityInstance.data[key];
+																	}
 																	collection.push(entityInstance);
 																}
 															});

@@ -24,6 +24,7 @@ angular.module('slatwalladmin')
 					
 				scope.getWorkflowTriggers = function(){
 					scope.workflowTriggers = scope.workflow.$$getWorkflowTriggers();
+					console.log(scope.workflow);
 				};
 				
 				scope.getWorkflowTriggers();
@@ -99,8 +100,7 @@ angular.module('slatwalladmin')
 					scope.workflowTriggers.splice(workflowTrigger.$$index,1);
 				};
 				
-				scope.saveTrigger = function(){
-					/*TODO: evaluate dirty and only grad modifiedData*/
+				/*scope.saveTrigger = function(){
 					var params = {
 						'objectPropertyIdentifier':scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier,
 						'triggerEvent':scope.workflowTriggers.selectedTrigger.data.triggerEvent,
@@ -118,7 +118,7 @@ angular.module('slatwalladmin')
 					},function(reason){
 						
 					});
-				};
+				};*/
 				
 				scope.addWorkflowTrigger = function(){
 					$log.debug('addWorkflowTrigger');
