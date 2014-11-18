@@ -1,17 +1,19 @@
-<select id="{{propertyDisplay.property}}" type="{{propertyDisplay.fieldType}}" class="form-control" 
-		    		 ng-model="propertyDisplay.object.data[propertyDisplay.property]"
+<select type="{{propertyDisplay.fieldType}}" class="form-control" 
+		    		 ng-model="propertyDisplay.object.data['selected'+propertyDisplay.property]"
 		    		 ng-disabled="propertyDisplay.editable"
 		    		 ng-show="propertyDisplay.editing"
 		    		 ng-options="propertyDisplayOption.name
   									 for propertyDisplayOption in propertyDisplay.options
   									 track by propertyDisplayOption.value"
-					 ng-change="formFieldChanged(propertyDisplay.value)"
+					 ng-change="formFieldChanged(propertyDisplay.object.data['selected'+propertyDisplay.property])"
 					 ng-click="getOptions()"
 					
 >
 	<option ng-bind="'Select '+propertyDisplay.title"></option>
 </select>
-
+<input 	type="hidden"
+		ng-model="propertyDisplay.object.data[propertyDisplay.property]"
+/>
 <!-- Error Messages -->
     
 <span style="color:red"

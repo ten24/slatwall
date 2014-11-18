@@ -602,6 +602,7 @@ Notes:
 			    	
 			    	var _getModifiedData = function(entityInstance){
 			    		var form = entityInstance.metaData.form;
+			    		console.log(form);
 			    		for(key in form){
 			    			if(key.charAt(0) !== '$'){
 			    				var inputField = form[key];
