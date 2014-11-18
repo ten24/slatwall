@@ -121,7 +121,7 @@ Notes:
 
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.product.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<hb:HibachiEntityDetailItem object="#rc.product#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.product#" attributeSet="#attributeSet#" />
 			</cfloop>
 
 			<!--- Comments --->

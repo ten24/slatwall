@@ -6,6 +6,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 	'$rootScope',
 	'$slatwall',
 	'dialogService',
+	'alertService',
 	'productBundleService',
 	'formService',
 	function(
@@ -15,6 +16,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		$rootScope,
 		$slatwall,
 		dialogService,
+		alertService,
 		productBundleService,
 		formService
 	){
@@ -240,6 +242,13 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 			var isValid = true;
 			if(!$scope.product.defaultSku.productBundleGroups.length){
 				$log.debug('hasnogroup');
+				var alert = {
+						dismissable: false,
+						msg: $slatwall.rbKey('validate.define.bundleGroupRequired'),
+						type: "error",
+						};
+
+				alertService.addAlert(alert);
 				isValid = false;
 			}else{
 				//validate each productBundleGroup
@@ -247,10 +256,24 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 					var productBundleGroup = $scope.product.defaultSku.productBundleGroups[i];
 					if(angular.isUndefined(productBundleGroup.productBundleGroupType.typeID)){
 						$log.debug('hasnotypeid');
+						var alert = {
+								dismissable: false,
+								msg: $slatwall.rbKey('validate.define.typeIDRequired'),
+								type: "error",
+								};
+
+						alertService.addAlert(alert);
 						isValid = false;
 					}
 					if(!productBundleGroup.productBundleGroupFilters.length){
 						$log.debug('hasnofilters');
+						var alert = {
+								dismissable: false,
+								msg: $slatwall.rbKey('validate.define.filtersRequired'),
+								type: "error",
+								};
+
+						alertService.addAlert(alert);
 						isValid = false;
 					}
 				}
