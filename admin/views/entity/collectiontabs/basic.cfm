@@ -270,10 +270,8 @@
 			            <td style="display:none"> <div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
 			            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[column.propertyIdentifier.split('.').pop()]" ng-show="column.isVisible"></td>
 			            <td class="s-edit-elements">
-			              <ul>
-			                <li><a href="{{pageRecord.detailLink}}" target="_self"><i class="fa fa-eye"></i></a></li>
-			                <li><a href="{{pageRecord.editLink}}" target="_self"><i class="fa fa-pencil"></i></a></li>
-			              </ul>
+			                <a class="btn btn-default btn-xs" href="{{pageRecord.detailLink}}" target="_self"><i class="glyphicon glyphicon-eye-open"></i></a>
+			                <a class="btn btn-default btn-xs" href="{{pageRecord.editLink}}" target="_self"><i class="glyphicon glyphicon-pencil"></i></a>
 			            </td>
 		          	</tr>
 		        </tbody>
