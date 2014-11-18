@@ -88,10 +88,18 @@ angular.module('slatwalladmin')
 			formatProductBundleGroupFilters:function(productBundelGroupFilters,filterTerm){
 				$log.debug('formatProductBundleGroupFilters');
 				$log.debug(filterTerm);
-				for(var i in productBundelGroupFilters){
-					productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value+'Name'];
-					productBundelGroupFilters[i].type = filterTerm.name;
+				if(filterTerm.value === 'sku'){
+					for(var i in productBundelGroupFilters){
+						productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value+'Code'];
+						productBundelGroupFilters[i].type = filterTerm.name;
+					}
+				} else {
+					for(var i in productBundelGroupFilters){
+						productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value+'Name'];
+						productBundelGroupFilters[i].type = filterTerm.name;
+					}
 				}
+				
 				$log.debug(productBundelGroupFilters);
 				return productBundelGroupFilters;
 			}

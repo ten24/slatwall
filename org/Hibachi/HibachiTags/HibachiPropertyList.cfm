@@ -8,7 +8,7 @@
 	<cfoutput>
 		<div class="#attributes.divClass#">
 			<cfif attributes.edit>
-				<div class="form-horizontal" style="max-width: 650px;">
+				<div class="form-horizontal">
 			<cfelse>
 				<div class="form-horizontal  s-property-info">
 			</cfif>
