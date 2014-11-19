@@ -140,7 +140,7 @@
 		</cfcase>
 		<cfcase value="select">
 			<cfoutput>
-				<select name="#attributes.fieldName#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes#>
+				<select name="#attributes.fieldName#" class="form-control #attributes.fieldClass# j-custom-select" #attributes.fieldAttributes#>
 					<cfloop array="#attributes.valueOptions#" index="option">
 						<cfset thisOptionName = "" />
 						<cfset thisOptionValue = "" />
