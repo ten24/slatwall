@@ -564,7 +564,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 			
 		}
-		writeDump(var=variables.records,top=2);
+		
 		return variables.records;
 	}
 	
