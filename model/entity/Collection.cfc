@@ -146,7 +146,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(addDefaultColumns){
 				for(defaultProperty in defaultProperties){
 					var columnStruct = {};
-					columnStruct['propertyIdentifier'] = '_' &lcase(arguments.collectionObject) & '.' & defaultProperty.name;
+					columnStruct['propertyIdentifier'] = '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject)) & '.' & defaultProperty.name;
 					columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
 					columnStruct['isVisible'] = true;
 					columnStruct['isSearchable'] = true;
@@ -456,6 +456,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 		HQL = createHQLFromCollectionObject(this,arguments.excludeSelect);
+		
 		return HQL;
 	}
 	
@@ -467,7 +468,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var collectionEntity = getService('collectionService').getCollectionByCollectionID(arguments.filter.collectionID);
 		var mainCollectionAlias = listFirst(arguments.filter.propertyIdentifier,'.');
 		var mainCollectionObject = replace(listFirst(arguments.filter.propertyIdentifier,'.'),'_','');
-		var collectionProperty = getService('HibachiService').getPropertyByEntityNameAndPropertyName(collectionEntity.getCollectionObject(),mainCollectionObject).name;
+		var collectionProperty = '';
+		if(mainCollectionObject != collectionEntity.getCollectionObject()){
+			collectionProperty = getService('HibachiService').getPropertyByEntityNameAndPropertyName(collectionEntity.getCollectionObject(),mainCollectionObject).name;
+		}else{
+			collectionProperty = mainCollectionObject;
+		}
 		
 		//None,One,All
 		/*withaliases
@@ -489,8 +495,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(!hasWhereClause){
 				predicate = 'WHERE';
 			}
+			var comparator = '';
+			if(mainCollectionObject != collectionEntity.getCollectionObject()){
+				comparator = replace(collectionEntity.getCollectionConfigStruct().baseEntityAlias&'.'&collectionProperty,'_','__','ALL');
+			}else{
+				comparator = replace(collectionEntity.getCollectionConfigStruct().baseEntityAlias,'_','__','ALL');
+			}
 			
-			collectionFilterHQL &= ' #collectionEntity.getHQL(true)# #predicate# #maincollectionAlias# = #collectionEntity.getCollectionConfigStruct().baseEntityAlias#.#collectionProperty# ';
+			collectionFilterHQL &= ' #replace(collectionEntity.getHQL(true),'_','__','ALL')# #predicate# #maincollectionAlias# = #comparator# ';
 		}else{
 			var fullEntityName = getService('hibachiService').getProperlyCasedFullEntityName(collectionEntity.getCollectionObject());
 			
@@ -502,7 +514,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				predicate = 'WHERE';
 			}
 			
-			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getCollectionObject()#) FROM #fullEntityName# as #collectionEntity.getCollectionObject()# WHERE #collectionEntity.getCollectionObject()#.#collectionProperty# = #mainCollectionAlias#) = (SELECT count(#collectionEntity.getCollectionConfigStruct().baseEntityAlias#) #collectionHQL# #predicate# #collectionEntity.getCollectionConfigStruct().baseEntityAlias#.#collectionProperty# = #mainCollectionAlias#) ';
+			var comparator = '';
+			if(mainCollectionObject != collectionEntity.getCollectionObject()){
+				comparator = '#collectionEntity.getCollectionConfigStruct().baseEntityAlias#.#collectionProperty#';
+			}else{
+				comparator = '#collectionEntity.getCollectionConfigStruct().baseEntityAlias#';
+			}
+			var innerComparator = '';
+			if(collectionEntity.getCollectionObject() == collectionProperty){
+				innerComparator = '#collectionEntity.getCollectionObject()#';
+			}else{
+				innerComparator = '#collectionEntity.getCollectionObject()#.#collectionProperty#';
+			}
+			
+			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getCollectionObject()#) FROM #fullEntityName# as #collectionEntity.getCollectionObject()# WHERE #innerComparator# = #mainCollectionAlias#) = (SELECT count(#collectionEntity.getCollectionConfigStruct().baseEntityAlias#) #collectionHQL# #predicate# #comparator# = #mainCollectionAlias#) ';
 		}
 		
 		//add all params from subqueries to parent HQL
