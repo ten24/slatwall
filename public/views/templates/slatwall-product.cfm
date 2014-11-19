@@ -212,18 +212,20 @@ Notes:
 		    					<div class="controls">
 
 									<!--- Sku Select Dropdown --->
-									<select name="skuID" class="required">
+									<span class="s-custom-select-wrapper">
+										<select name="skuID" class="required form-control s-custom-select">
 
-										<!--- Blank option to force user to select (this is optional) --->
-										<option value="">Select Option</option>
+											<!--- Blank option to force user to select (this is optional) --->
+											<option value="">Select Option</option>
 
-										<!--- Loop over the skus to display options --->
-										<cfloop array="#skus#" index="sku">
-											<!--- This provides an option for each sku, with the 'displayOptions' method to show the optionGroup / option names --->
-											<option value="#sku.getSkuID()#">#sku.displayOptions()#</option>
-										</cfloop>
+											<!--- Loop over the skus to display options --->
+											<cfloop array="#skus#" index="sku">
+												<!--- This provides an option for each sku, with the 'displayOptions' method to show the optionGroup / option names --->
+												<option value="#sku.getSkuID()#">#sku.displayOptions()#</option>
+											</cfloop>
 
-									</select>
+										</select>
+									</span>
 									<sw:ErrorDisplay object="#$.slatwall.cart().getProcessObject('addOrderItem')#" errorName="sku" />
 
 		    					</div>
@@ -276,13 +278,15 @@ Notes:
 		    					<div class="controls">
 
 									<!--- Option Select Dropdown --->
-									<select name="selectedOptionIDList">
+									<span class="s-custom-select-wrapper">
+										<select name="selectedOptionIDList" class="form-control s-custom-select">
 
-										<cfloop array="#optionsArr#" index="option">
-											<option value="#option.getOptionID()#" <cfif listFindNoCase(defaultSelectedOptions, option.getOptionID())> selected="selected"</cfif>>#option.getOptionName()#</option>
-										</cfloop>
+											<cfloop array="#optionsArr#" index="option">
+												<option value="#option.getOptionID()#" <cfif listFindNoCase(defaultSelectedOptions, option.getOptionID())> selected="selected"</cfif>>#option.getOptionName()#</option>
+											</cfloop>
 
-									</select>
+										</select>
+									</span>
 
 
 		    					</div>
@@ -338,22 +342,25 @@ Notes:
 										<cfset optionGroupOptions = skuOptionDetails[ optionGroup.getOptionGroupCode() ].options />
 
 										<!--- Option Select Dropdown --->
-										<select name="selectedOptionIDList" data-optiongroupcode="#optionGroup.getOptionGroupCode()#" class="ajax-option-selector">
+										<span class="s-custom-select-wrapper">
+											<select name="selectedOptionIDList" data-optiongroupcode="#optionGroup.getOptionGroupCode()#" class="ajax-option-selector s-custom-select form-control">
+												
 
-											<!--- First we include the unselected option --->
-											<option value="" selected="selected">Select #optionGroup.getOptionGroupName()#...</option>
+												<!--- First we include the unselected option --->
+												<option value="" selected="selected">Select #optionGroup.getOptionGroupName()#...</option>
 
-											<!--- New we loop over all options for this optionGroup --->
-											<cfloop array="#optionGroupOptions#" index="optionDetails">
+												<!--- New we loop over all options for this optionGroup --->
+												<cfloop array="#optionGroupOptions#" index="optionDetails">
 
-												<!--- Make sure that this option has a totalQATS > 0 --->
-												<cfif optionDetails.totalQATS gte 1>
-													<option value="#optionDetails.optionID#">#optionDetails.optionName#</option>
-												</cfif>
+													<!--- Make sure that this option has a totalQATS > 0 --->
+													<cfif optionDetails.totalQATS gte 1>
+														<option value="#optionDetails.optionID#">#optionDetails.optionName#</option>
+													</cfif>
 
-											</cfloop>
+												</cfloop>
 
-										</select>
+											</select>
+										</span>
 
 
 			    					</div>

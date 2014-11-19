@@ -85,11 +85,13 @@ Notes:
 			</cfif>
 			<cfset selectID = createUUID().toString() />
 			<span class="show">Show: </span>
-			<select id="#selectID#" name="P:Show">
-				<cfloop list="#attributes.showOptions#" index="i" >
-					<option value="#attributes.smartList.buildURL('P:Show=#i#')#" <cfif attributes.showValue eq i>selected='selected'</cfif>>#i#</option>
-				</cfloop>
-			</select>
+			<span class="s-custom-select-wrapper">
+				<select id="#selectID#" name="P:Show" class="form-control s-custom-select">
+					<cfloop list="#attributes.showOptions#" index="i" >
+						<option value="#attributes.smartList.buildURL('P:Show=#i#')#" <cfif attributes.showValue eq i>selected='selected'</cfif>>#i#</option>
+					</cfloop>
+				</select>
+			</span>
 			
 			<script type="text/javascript">
 				$('###selectID#').change(function() {

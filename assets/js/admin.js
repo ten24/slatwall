@@ -52,7 +52,7 @@ $(document).ready(function(e){
 			
 			if(stateSmartList.recordsCount > 0) {
 				if( jQuery(stateField)[0].tagName === "INPUT" ) {
-					var newSelectInput = '<select name="' + jQuery(stateField).attr('name') + '" class="' + jQuery(stateField).attr('class') + '" /></select>';
+					var newSelectInput = '<span class="s-custom-select-wrapper"><select name="' + jQuery(stateField).attr('name') + '" class="s-custom-select' + jQuery(stateField).attr('class') + '" /></select></span>';
 					jQuery( stateField ).replaceWith( newSelectInput );
 					var stateField = jQuery( this ).closest('.slatwall-address-container').find( '.slatwall-address-stateCode' );
 				}

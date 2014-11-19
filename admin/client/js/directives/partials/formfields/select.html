@@ -1,16 +1,18 @@
-<select id="{{propertyDisplay.property}}" type="{{propertyDisplay.fieldType}}" class="form-control" 
-		    		 ng-model="propertyDisplay.object[propertyDisplay.property]"
-		    		 ng-disabled="propertyDisplay.editable"
-		    		 ng-show="propertyDisplay.editing"
-		    		 ng-options="propertyDisplayOption.name
-  									 for propertyDisplayOption in propertyDisplay.meta.options
-  									 track by propertyDisplayOption.value"
-					 ng-change="formFieldChanged(propertyDisplay.value)"
-					 ng-click="getOptions()"
-					
->
-	<option ng-bind="'Select '+propertyDisplay.meta.title"></option>
-</select>
+<span class="s-custom-select-wrapper">
+	<select id="{{propertyDisplay.property}}" type="{{propertyDisplay.fieldType}}" class="form-control s-custom-select" 
+			    		 ng-model="propertyDisplay.object[propertyDisplay.property]"
+			    		 ng-disabled="propertyDisplay.editable"
+			    		 ng-show="propertyDisplay.editing"
+			    		 ng-options="propertyDisplayOption.name
+	  									 for propertyDisplayOption in propertyDisplay.meta.options
+	  									 track by propertyDisplayOption.value"
+						 ng-change="formFieldChanged(propertyDisplay.value)"
+						 ng-click="getOptions()"
+						
+	>
+		<option ng-bind="'Select '+propertyDisplay.meta.title"></option>
+	</select>
+</span>
 
 <!-- Error Messages -->
     

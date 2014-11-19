@@ -100,11 +100,13 @@
 					<!--- DateTime Selector --->
 					<div class="pull-right" style="margin-right:10px;">
 						<div style="margin-bottom:5px;">
-							<select name="reportDateTime" class="hibachi-report-date form-control" style="width:192px;margin-bottom:15px;">
-								<cfloop array="#attributes.report.getReportDateTimeDefinitions()#" index="dateTimeAlias">
-									<option value="#dateTimeAlias['alias']#" <cfif dateTimeAlias['alias'] eq attributes.report.getReportDateTime()>selected="selected"</cfif>>#attributes.report.getReportDateTimeTitle(dateTimeAlias['alias'])#</option>
-								</cfloop>
-							</select>
+							<span class="s-custom-select-wrapper">
+								<select name="reportDateTime" class="hibachi-report-date form-control s-custom-select" style="width:192px;margin-bottom:15px;">
+									<cfloop array="#attributes.report.getReportDateTimeDefinitions()#" index="dateTimeAlias">
+										<option value="#dateTimeAlias['alias']#" <cfif dateTimeAlias['alias'] eq attributes.report.getReportDateTime()>selected="selected"</cfif>>#attributes.report.getReportDateTimeTitle(dateTimeAlias['alias'])#</option>
+									</cfloop>
+								</select>
+							</span>
 						</div>
 						<div style="margin-bottom:-5px;">
 							<span style="display:block;font-size:11px;font-weight:bold;padding-bottom:2px;">Start - End: <a href="##" id="hibachi-report-enable-compare" class="pull-right<cfif attributes.report.getReportCompareFlag()> hide</cfif>">+Compare</a></span>

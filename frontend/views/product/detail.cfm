@@ -69,19 +69,21 @@ Notes:
 				<dl>
 					<dt>Select Option</dt>
 					<dd>
-						<select name="skuID">
-							<cfset local.skus = $.slatwall.product().getSkus(sorted=true, fetchOptions=true) />
-							<cfloop array="#local.skus#" index="local.sku">
-								<option value="#local.sku.getSkuID()#">#local.sku.displayOptions()#</option>
-								<cfloop list="#local.sku.setting('skuEligibleFulfillmentMethods')#" index="local.fulfillmentMethodID">
-									<cfif structKeyExists(fulfillmentMethodSkus,local.fulfillmentMethodID)>
-										<cfset fulfillmentMethodSkus[local.fulfillmentMethodID] = listAppend(fulfillmentMethodSkus[local.fulfillmentMethodID],local.sku.getSkuID()) />
-									<cfelse>
-										<cfset fulfillmentMethodSkus[local.fulfillmentMethodID] = local.sku.getSkuID() />
-									</cfif>
+						<span class="s-custom-select-wrapper">
+							<select name="skuID" class="form-control s-custom-select">
+								<cfset local.skus = $.slatwall.product().getSkus(sorted=true, fetchOptions=true) />
+								<cfloop array="#local.skus#" index="local.sku">
+									<option value="#local.sku.getSkuID()#">#local.sku.displayOptions()#</option>
+									<cfloop list="#local.sku.setting('skuEligibleFulfillmentMethods')#" index="local.fulfillmentMethodID">
+										<cfif structKeyExists(fulfillmentMethodSkus,local.fulfillmentMethodID)>
+											<cfset fulfillmentMethodSkus[local.fulfillmentMethodID] = listAppend(fulfillmentMethodSkus[local.fulfillmentMethodID],local.sku.getSkuID()) />
+										<cfelse>
+											<cfset fulfillmentMethodSkus[local.fulfillmentMethodID] = local.sku.getSkuID() />
+										</cfif>
+									</cfloop>
 								</cfloop>
-							</cfloop>
-						</select>
+							</select>
+						</span>
 					</dd>
 				</dl>
 			</cfif>
@@ -101,11 +103,13 @@ Notes:
 				<dl>
 					<dt>Select Fulfillment Option</dt>
 					<dd>
-						<select name="fulfillmentMethodID">
-							<cfloop array="#local.fulfillmentMethods#" index="local.fulfillmentMethod">
-								<option value="#local.fulfillmentMethod.getFulfillmentMethodID()#" skuIDs="#local.fulfillmentMethodSkus[local.fulfillmentMethod.getFulfillmentMethodID()]#">#local.fulfillmentMethod.getFulfillmentMethodName()#</option>
-							</cfloop>
-						</select>
+						<span class="s-custom-select-wrapper">
+							<select name="fulfillmentMethodID" class="form-control s-custom-select">
+								<cfloop array="#local.fulfillmentMethods#" index="local.fulfillmentMethod">
+									<option value="#local.fulfillmentMethod.getFulfillmentMethodID()#" skuIDs="#local.fulfillmentMethodSkus[local.fulfillmentMethod.getFulfillmentMethodID()]#">#local.fulfillmentMethod.getFulfillmentMethodName()#</option>
+								</cfloop>
+							</select>
+						</span>
 					</dd>
 				</dl>
 			</cfif>	
@@ -144,13 +148,15 @@ Notes:
 					<dd><input type="text" name="reviewerName" value="#$.slatwall.account('fullname')#" /></dd>
 					<dt>Rating</dt>
 					<dd>
-						<select name="rating">
-							<option value="5" selected="selected">5</option>
-							<option value="4">4</option>
-							<option value="3">3</option>
-							<option value="2">2</option>
-							<option value="1">1</option>
-						</select>
+						<span class="s-custom-select-wrapper">
+							<select name="rating" class="form-control s-custom-select">
+								<option value="5" selected="selected">5</option>
+								<option value="4">4</option>
+								<option value="3">3</option>
+								<option value="2">2</option>
+								<option value="1">1</option>
+							</select>
+						</span>
 					</dd>
 					<dt>Title</dt>
 					<dd><input type="text" name="reviewTitle" value="" /></dd>
