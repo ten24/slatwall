@@ -65,6 +65,17 @@ Notes:
 			{alias='taxImpositionType', title=rbKey('entity.taxApplied.taxImpositionType')},
 			{alias='taxJurisdictionName', title=rbKey('entity.taxApplied.taxJurisdictionName')},
 			{alias='taxJurisdictionType', title=rbKey('entity.taxApplied.taxJurisdictionType')},
+			{alias='taxStreetAddress', title=rbKey('entity.taxApplied.taxStreetAddress')},
+			{alias='taxStreet2Address', title=rbKey('entity.taxApplied.taxStreet2Address')},
+			{alias='taxLocality', title=rbKey('entity.taxApplied.taxLocality')},
+			{alias='taxCity', title=rbKey('entity.taxApplied.taxCity')},
+			{alias='taxStateCode', title=rbKey('entity.taxApplied.taxStateCode')},
+			{alias='taxPostalCode', title=rbKey('entity.taxApplied.taxPostalCode')},
+			{alias='taxCountryCode', title=rbKey('entity.taxApplied.taxCountryCode')},
+			{alias='orderID', title=rbKey('entity.order.orderID')},
+			{alias='orderNumber', title=rbKey('entity.order.orderNumber')},
+			{alias='referencedOrderID', title=rbKey('entity.order.referencedOrderID')},
+			{alias='referencedOrderNumber', title=rbKey('entity.order.referencedOrderNumber')},
 			{alias='fulfillmentMethodName', title=rbKey('entity.fulfillmentMethod.fulfillmentMethodName')}
 		] />
 	</cffunction>
@@ -98,6 +109,9 @@ Notes:
 					SwProductType.productTypeID,
 					SwProductType.productTypeName,
 					SwOrder.orderID,
+					SwOrder.orderNumber,
+					ro.orderID as referencedOrderID,
+					ro.orderNumber as referencedOrderNumber,
 					SwFulfillmentMethod.fulfillmentMethodName,
 					SwAddress.countryCode,
 					SwAddress.stateCode,
@@ -142,6 +156,8 @@ Notes:
 				  	SwProductType on SwProduct.productTypeID = SwProductType.productTypeID
 				  LEFT JOIN
 				  	SwAddress on SwOrderFulfillment.shippingAddressID = SwAddress.addressID
+				  LEFT JOIN
+				  	SwOrder ro on SwOrder.orderID = ro.referencedOrderID 
 				WHERE
 					SwOrder.orderOpenDateTime is not null
 				  AND

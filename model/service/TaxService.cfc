@@ -146,7 +146,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 											newAppliedTax.setTaxJurisdictionName( taxRateItemResponse.getTaxJurisdictionName() );
 											newAppliedTax.setTaxJurisdictionType( taxRateItemResponse.getTaxJurisdictionType() );
 											newAppliedTax.setTaxStreetAddress( taxRateItemResponse.getTaxStreetAddress() );  
-											newAppliedTax.setTaxStreet2Addres( taxRateItemResponse.getTaxStreet2Addres() );
+											newAppliedTax.setTaxStreet2Address( taxRateItemResponse.getTaxStreet2Address() );
 											newAppliedTax.setTaxLocality( taxRateItemResponse.getTaxLocality() );
 											newAppliedTax.setTaxCity( taxRateItemResponse.getTaxCity() );
 											newAppliedTax.setTaxStateCode( taxRateItemResponse.getTaxStateCode() );   
