@@ -133,7 +133,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 						edit=true,
 						displayType='plain'
 					};
-					thisRecord[ popArray[p] ] = getHibachiTagService().cfmodule(name="HibachiPropertyDisplay", attributeCollection=attributes);
+					thisRecord[ popArray[p] ] = getHibachiTagService().cfmodule(template="./HibachiTags/HibachiPropertyDisplay.cfm", attributeCollection=attributes);
 				}
 			}
 			
@@ -150,7 +150,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 						iconOnly="true",
 						modal=admin.detailModal
 					};
-					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(name="HibachiActionCaller", attributeCollection=attributes);
+					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(template="./HibachiTags/HibachiActionCaller.cfm", attributeCollection=attributes);
 				}
 				if(structKeyExists(admin, "editAction")) {
 					var attributes = {
@@ -162,7 +162,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 						modal=admin.editModal,
 						disabled=record.isNotEditable()
 					};
-					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(name="HibachiActionCaller", attributeCollection=attributes);
+					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(template="./HibachiTags/HibachiActionCaller.cfm", attributeCollection=attributes);
 				}
 				if(structKeyExists(admin, "deleteAction")) {
 					var deleteErrors = record.validate(context="delete");
@@ -176,7 +176,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 						disabledText=deleteErrors.getAllErrorsHTML(),
 						confirm=true
 					};
-					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(name="HibachiActionCaller", attributeCollection=attributes);
+					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(template="./HibachiTags/HibachiActionCaller.cfm", attributeCollection=attributes);
 				}
 				if(structKeyExists(admin, "processAction")) {
 					var attributes = {
@@ -186,7 +186,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 						queryString="#listPrepend(admin.processQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
 						class="btn hibachi-ajax-submit"
 					};
-					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(name="HibachiProcessCaller", attributeCollection=attributes);
+					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(template="./HibachiTags/HibachiProcessCaller.cfm", attributeCollection=attributes);
 				}
 			}
 			

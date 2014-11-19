@@ -117,14 +117,21 @@
 	</cffunction>
 	
 	<cffunction name="cfmodule">
-		<cfargument name="name" type="string" required="true" />
+		<cfargument name="name" type="string" />
+		<cfargument name="template" type="string" />
 		<cfargument name="attributeCollection" type="struct" required="true" />
 		
 		<cfset var returnContent = "" /> 
-		<cfsavecontent variable="returnContent">
-			<cfmodule name="#arguments.name#" attributecollection="#arguments.attributeCollection#" />
-		</cfsavecontent>
+		<cfif structKeyExists(arguments, "name")>
+			<cfsavecontent variable="returnContent">
+				<cfmodule name="#arguments.name#" attributecollection="#arguments.attributeCollection#" />
+			</cfsavecontent>
+		<cfelseif structKeyExists(arguments, "template")>
+			<cfsavecontent variable="returnContent">
+				<cfmodule template="#arguments.template#" attributecollection="#arguments.attributeCollection#" />
+			</cfsavecontent>
+		</cfif>
+		
 		<cfreturn returnContent />
 	</cffunction>
-	
 </cfcomponent>
