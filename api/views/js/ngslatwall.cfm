@@ -601,12 +601,35 @@ Notes:
 			    		var entityID = entityInstance.data[lcaseEntityName+"ID"];
 			    		var params = modifiedData;
 			    		var context = 'save';
+			    		<!---validate based on context --->
+			    		<!---probably need to validat against data to make sure existing data passes and then against modified? --->
+			    		
 			    		var savePromise = slatwallService.saveEntity(entityName,entityID,params,context);
 			    		savePromise.then(function(value){
 							entityInstance.metaData.form.$setPristine();
 							
 						});
 			    		console.log(modifiedData);
+			    	}
+			    	
+			    	var _getValidationsByProperty = function(entityInstance,property){
+			    		return entityInstance.validations.properties[property];
+			    	}
+			    	
+			    	var _getValidationByPropertyAndContext = function(entityInstance,property,context){
+			    		var validations = _getValidationsByProperty(entityInstance,property);
+			    		for(var i in validations){
+			    			console.log(validations[i]);
+			    			<!---get list of contexts for this validation --->
+			    			var contexts = validations[i].contexts.split(',');
+			    			console.log(contexts);
+			    			for(var j in contexts){
+			    				if(contexts[j] === context){
+				    				return validations[i];
+				    			}
+			    			}
+			    			
+			    		}
 			    	}
 			    	
 			    	var _getModifiedData = function(entityInstance){
@@ -651,7 +674,9 @@ Notes:
 							}
 							
 							_jsEntities[ '#local.entity.getClassName()#' ]=function() {
-										
+								
+								this.validations = #serializeJSON($.slatwall.getService('hibachiValidationService').getValidationStruct(local.entity))#;
+								
 								this.metaData = #serializeJSON(local.entity.getPropertiesStruct())#;
 								this.metaData.className = '#local.entity.getClassName()#';
 								
@@ -750,6 +775,12 @@ Notes:
 								},
 								$$save:function(){
 									_save(this);
+								},
+								$$getValidationsByProperty:function(property){
+									return _getValidationsByProperty(this,property);
+								},
+								$$getValidationByPropertyAndContext:function(property,context){
+									return _getValidationByPropertyAndContext(this,property,context);
 								}
 								<!--- used to retrieve info about the object properties --->
 								,$$getMetaData:function( propertyName ) {
