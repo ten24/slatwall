@@ -619,10 +619,8 @@ Notes:
 			    	var _getValidationByPropertyAndContext = function(entityInstance,property,context){
 			    		var validations = _getValidationsByProperty(entityInstance,property);
 			    		for(var i in validations){
-			    			console.log(validations[i]);
 			    			<!---get list of contexts for this validation --->
 			    			var contexts = validations[i].contexts.split(',');
-			    			console.log(contexts);
 			    			for(var j in contexts){
 			    				if(contexts[j] === context){
 				    				return validations[i];

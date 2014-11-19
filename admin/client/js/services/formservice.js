@@ -36,6 +36,9 @@ angular.module('slatwalladmin')
 			getForm:function(formName){
 				return _forms[formName];
 			},
+			getForms:function(){
+				return _forms;
+			},
 			createForm:function(name,object,editing){
 				var _form = new form(
 					name,
