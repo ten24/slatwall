@@ -86,30 +86,32 @@
 		<cfcase value="multiselect">
 			<cfoutput>
 				<input name="#attributes.fieldName#" type="hidden" value="" />
-				<select name="#attributes.fieldName#" class="#attributes.fieldClass# multiselect" multiple="multiple" #attributes.fieldAttributes#>
-					<cfloop array="#attributes.valueOptions#" index="option">
-						<cfset thisOptionName = "" />
-						<cfset thisOptionValue = "" />
-						<cfset thisOptionData = "" />
-						<cfif isSimpleValue(option)>
-							<cfset thisOptionName = option />
-							<cfset thisOptionValue = option />
-						<cfelse>
-							<cfloop collection="#option#" item="key">
-								<cfif key eq "name">
-									<cfset thisOptionName = option[ key ] />
-								<cfelseif key eq "value">
-									<cfset thisOptionValue = option[ key ] />
-								<cfelseif not isNull(key) and structKeyExists(option, key) and not isNull(option[key])>
-									<cfset thisOptionData = listAppend(thisOptionData, 'data-#replace(lcase(key), '_', '-', 'all')#="#option[key]#"', ' ') />
-								</cfif>
-							</cfloop>
-						</cfif>
-						<cfset thisOptionValue = isSimpleValue(option) ? option : structKeyExists(option, 'value') ? structFind(option, 'value') : '' />
-						<cfset thisOptionName = isSimpleValue(option) ? option : structFind(option, 'name') />
-						<option value="#thisOptionValue#" <cfif listFindNoCase(attributes.value, thisOptionValue)> selected="selected"</cfif>>#thisOptionName#</option>
-					</cfloop>
-				</select>
+				<span class="s-custom-select-wrapper">
+					<select name="#attributes.fieldName#" class="#attributes.fieldClass# multiselect s-custom-select" multiple="multiple" #attributes.fieldAttributes#>
+						<cfloop array="#attributes.valueOptions#" index="option">
+							<cfset thisOptionName = "" />
+							<cfset thisOptionValue = "" />
+							<cfset thisOptionData = "" />
+							<cfif isSimpleValue(option)>
+								<cfset thisOptionName = option />
+								<cfset thisOptionValue = option />
+							<cfelse>
+								<cfloop collection="#option#" item="key">
+									<cfif key eq "name">
+										<cfset thisOptionName = option[ key ] />
+									<cfelseif key eq "value">
+										<cfset thisOptionValue = option[ key ] />
+									<cfelseif not isNull(key) and structKeyExists(option, key) and not isNull(option[key])>
+										<cfset thisOptionData = listAppend(thisOptionData, 'data-#replace(lcase(key), '_', '-', 'all')#="#option[key]#"', ' ') />
+									</cfif>
+								</cfloop>
+							</cfif>
+							<cfset thisOptionValue = isSimpleValue(option) ? option : structKeyExists(option, 'value') ? structFind(option, 'value') : '' />
+							<cfset thisOptionName = isSimpleValue(option) ? option : structFind(option, 'name') />
+							<option value="#thisOptionValue#" <cfif listFindNoCase(attributes.value, thisOptionValue)> selected="selected"</cfif>>#thisOptionName#</option>
+						</cfloop>
+					</select>
+				</span>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="password">
@@ -140,28 +142,30 @@
 		</cfcase>
 		<cfcase value="select">
 			<cfoutput>
-				<select name="#attributes.fieldName#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes#>
-					<cfloop array="#attributes.valueOptions#" index="option">
-						<cfset thisOptionName = "" />
-						<cfset thisOptionValue = "" />
-						<cfset thisOptionData = "" />
-						<cfif isSimpleValue(option)>
-							<cfset thisOptionName = option />
-							<cfset thisOptionValue = option />
-						<cfelse>
-							<cfloop collection="#option#" item="key">
-								<cfif key eq "name">
-									<cfset thisOptionName = option[ key ] />
-								<cfelseif key eq "value">
-									<cfset thisOptionValue = option[ key ] />
-								<cfelseif not isNull(key) and structKeyExists(option, key) and not isNull(option[key])>
-									<cfset thisOptionData = listAppend(thisOptionData, 'data-#replace(lcase(key), '_', '-', 'all')#="#option[key]#"', ' ') />
-								</cfif>
-							</cfloop>
-						</cfif>
-						<option value="#thisOptionValue#" #thisOptionData#<cfif attributes.value EQ thisOptionValue> selected="selected"</cfif>>#thisOptionName#</option>
-					</cfloop>
-				</select>
+				<span class="s-custom-select-wrapper">
+					<select name="#attributes.fieldName#" class="form-control #attributes.fieldClass# s-custom-select" #attributes.fieldAttributes#>
+						<cfloop array="#attributes.valueOptions#" index="option">
+							<cfset thisOptionName = "" />
+							<cfset thisOptionValue = "" />
+							<cfset thisOptionData = "" />
+							<cfif isSimpleValue(option)>
+								<cfset thisOptionName = option />
+								<cfset thisOptionValue = option />
+							<cfelse>
+								<cfloop collection="#option#" item="key">
+									<cfif key eq "name">
+										<cfset thisOptionName = option[ key ] />
+									<cfelseif key eq "value">
+										<cfset thisOptionValue = option[ key ] />
+									<cfelseif not isNull(key) and structKeyExists(option, key) and not isNull(option[key])>
+										<cfset thisOptionData = listAppend(thisOptionData, 'data-#replace(lcase(key), '_', '-', 'all')#="#option[key]#"', ' ') />
+									</cfif>
+								</cfloop>
+							</cfif>
+							<option value="#thisOptionValue#" #thisOptionData#<cfif attributes.value EQ thisOptionValue> selected="selected"</cfif>>#thisOptionName#</option>
+						</cfloop>
+					</select>
+				</span>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="text">

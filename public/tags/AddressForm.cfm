@@ -248,7 +248,7 @@
 										if($(that).closest('.sw-address').find('[data-sw-property="stateCode"] input').length && !$(that).closest('.sw-address').find('[data-sw-property="stateCode"] select').length) {
 											var dname = $(that).closest('.sw-address').find('[data-sw-property="stateCode"] input').attr('name');
 											var dclass = $(that).closest('.sw-address').find('[data-sw-property="stateCode"] input').attr('class');
-											var newSelect = '<select name="' + dname + '" class="' + dclass + '"></select>';
+											var newSelect = '<span class="s-custom-select-wrapper"><select name="' + dname + '" class="s-custom-select' + dclass + '"></select></span>';
 											$(that).closest('.sw-address').find('[data-sw-property="stateCode"] input').replaceWith( newSelect );
 										}
 										

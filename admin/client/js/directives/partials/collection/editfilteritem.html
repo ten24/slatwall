@@ -13,15 +13,17 @@
 	        
 	          <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From <span ng-bind="filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].entityName | AliasDisplayName"></span>:</label>
 	          <div class="col-sm-12 s-no-paddings">
-	            <select ng-model="selectedFilterProperty" 
-	            		ng-change="selectedFilterPropertyChanged(selectedFilterProperty)" 
-	            		ng-options="filterProperty as filterProperty.displayPropertyIdentifier
-	            					for filterProperty in filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].data 
-	            					
-	            					" 
-	            		class="form-control input-sm">
-	              	<option value="">Select From {{filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].entityName | AliasDisplayName}}:</option>
-	            </select>
+				<span class="s-custom-select-wrapper">
+		            <select ng-model="selectedFilterProperty" 
+		            		ng-change="selectedFilterPropertyChanged(selectedFilterProperty)" 
+		            		ng-options="filterProperty as filterProperty.displayPropertyIdentifier
+		            					for filterProperty in filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].data 
+		            					
+		            					" 
+		            		class="form-control input-sm s-custom-select">
+		              	<option value="">Select From {{filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].entityName | AliasDisplayName}}:</option>
+		            </select>
+				</span>
 	          </div>
 	          <div class="clearfix"></div>
 	        </div>

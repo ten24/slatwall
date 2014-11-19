@@ -100,11 +100,13 @@ Notes:
 				<div class="form-group">
 					<label class="col-xs-2 control-label"><input type="radio" name="branchType" value="standard" checked="checked" /></label>
 					<div class="col-xs-10" style="padding:0px;">
-						<select name="updateBranch" class="form-control">
-							<cfloop array="#local.updateOptions#" index="local.updateOption">
-								<option value="#local.updateOption.value#" <cfif rc.currentBranch eq local.updateOption.value>selected="selected"</cfif>>#local.updateOption.name#</option>
-							</cfloop>
-						</select>
+						<span class="s-custom-select-wrapper">
+							<select name="updateBranch" class="form-control s-custom-select">
+								<cfloop array="#local.updateOptions#" index="local.updateOption">
+									<option value="#local.updateOption.value#" <cfif rc.currentBranch eq local.updateOption.value>selected="selected"</cfif>>#local.updateOption.name#</option>
+								</cfloop>
+							</select>
+						</span>
 					</div>
 				</div>
 				
