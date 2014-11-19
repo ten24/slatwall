@@ -96,7 +96,7 @@ Notes:
 		<hb:HibachiPropertyList divClass="col-md-6">
 			
 			<!--- Payment Methods --->
-			<hb:HibachiListingDisplay title="" smartList="#rc.order.getAccount().getAccountPaymentMethodsSmartList()#"
+			<hb:HibachiListingDisplay title="#$.slatwall.rbKey('entity.accountPaymentMethod_plural')#" smartList="#rc.order.getAccount().getAccountPaymentMethodsSmartList()#"
 								  recordDetailAction="admin:entity.detailaccountpaymentmethod"
 								  recordDetailQueryString="accountID=#rc.order.getAccount().getAccountID()#"
 								  recordDetailModal=true>
