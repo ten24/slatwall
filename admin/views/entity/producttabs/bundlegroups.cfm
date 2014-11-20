@@ -1,6 +1,21 @@
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
-<form></form>
+
+<cfparam name="rc.product" type="any" />
+<cfparam name="rc.edit" type="boolean" default="false" />
+
+<cfloop index="record" array="#rc.product.getSkus()#"> 
+	<hb:HibachiListingDisplay smartList="#record.getProductBundleGroupsSmartlist()#">
+		
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="minimumQuantity" />
+		<hb:HibachiListingColumn propertyIdentifier="maximumQuantity" />
+		<hb:HibachiListingColumn propertyIdentifier="amountType" />
+		<hb:HibachiListingColumn propertyIdentifier="amount" />
+	</hb:HibachiListingDisplay>
+</cfloop>
+
+<!---<form></form>
 <span ng-controller="create-bundle-controller">
 	  <section class="col-xs-12" ng-if="product.defaultSku.productBundleGroups">
 			<form name="form.createProductBundle">
@@ -26,5 +41,5 @@
 			    </ul>
 	   		</form>
 	  </section>
+</span>--->
 
-</span>
