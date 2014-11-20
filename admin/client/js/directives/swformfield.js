@@ -72,11 +72,16 @@ angular.module('slatwalladmin')
 		    			}
 		    		}*/
 		    		element.html(formfieldTemplate);
-		    		
-		    		
 					$compile(element.contents())(scope);
 					
 					if(scope.propertyDisplay.fieldType === 'select'){
+						scope.formFieldChanged = function(option){
+							$log.debug('formfieldchanged');
+							$log.debug(option);
+							scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
+							scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
+						};
+						
 						scope.getOptions = function(){
 							if(angular.isUndefined(scope.propertyDisplay.options)){
 								
@@ -105,13 +110,6 @@ angular.module('slatwalladmin')
 							
 						};
 						
-						scope.formFieldChanged = function(option){
-							$log.debug('formfieldchanged');
-							$log.debug(option);
-							scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
-							scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
-						};
-						
 						if(scope.propertyDisplay.eagerLoadOptions === true){
 							scope.getOptions();
 						}
@@ -121,14 +119,28 @@ angular.module('slatwalladmin')
 						formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
 					}
 					if(scope.propertyDisplay.fieldType === 'yesno' || scope.propertyDisplay.fieldType === 'hidden'){
+						//format value
+						console.log('format');
+						console.log(scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
+						/*convert boolean to number*/
+						scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.object.data[scope.propertyDisplay.property] === 'YES ' || scope.propertyDisplay.object.data[scope.propertyDisplay.property] == 1 ? 1 : 0;
+						console.log(scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
+						scope.formFieldChanged = function(option){
+							$log.debug('formfieldchanged');
+							$log.debug(option);
+							scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
+							scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
+							scope.propertyDisplay.form['selected'+scope.propertyDisplay.object.metaData.className+scope.propertyDisplay.property].$dirty = false;
+						};
+						
 						scope.propertyDisplay.options = [
 							{
 								name:'Yes',
-								value:'YES '
+								value:1
 							},
 							{
 								name:'No',
-								value:'NO '
+								value:0
 							}
 						];
 						if(angular.isDefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])){

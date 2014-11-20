@@ -15,6 +15,7 @@ angular.module('slatwalladmin')
 					parentObject:scope.parentObject,
 					context:scope.context
 				};
+				scope.form = formController;
 				/*register form with service*/
 				formService.setForm(formController);
 				

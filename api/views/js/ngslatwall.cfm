@@ -516,54 +516,57 @@ Notes:
 			    	}
 			    	
 			    	var utilityService = {
-			    		formatValue:function(value,formatType,formatDetails){
+			    		formatValue:function(value,formatType,formatDetails,entityInstance){
 			    			if(angular.isUndefined(formatDetails)){
 			    				formatDetails = {};
 			    			}
+			    			console.log(value);
+			    			console.log(formatType)
 							var typeList = ["currency","date","datetime","pixels","percentage","second","time","truefalse","url","weight","yesno"];
 							
 							if(typeList.indexOf(formatType)){
-								utilityService['format'+formatType](value,formatDetails);
+								utilityService['format_'+formatType](value,formatDetails,entityInstance);
 							}
 							return value;
 			    		},
-			    		format_currency:function(){
+			    		format_currency:function(value,formatDetails,entityInstance){
 			    			if(angular.isUndefined){
 			    				formatDetails = {};
 			    			}
 			    		},
-			    		format_date:function(){
+			    		format_date:function(value,formatDetails,entityInstance){
 			    			if(angular.isUndefined){
 			    				formatDetails = {};
 			    			}
 			    		},
-			    		format_datetime:function(){
+			    		format_datetime:function(value,formatDetails,entityInstance){
 			    			if(angular.isUndefined){
 			    				formatDetails = {};
 			    			}
 			    		},
-			    		format_pixels:function(){
+			    		format_pixels:function(value,formatDetails,entityInstance){
 			    			if(angular.isUndefined){
 			    				formatDetails = {};
 			    			}
 			    		},
-			    		format_yesno:function(value,formatDetails){
+			    		format_yesno:function(value,formatDetails,entityInstance){
 			    			if(angular.isUndefined){
 			    				formatDetails = {};
 			    			}
-							if(value === true){
-								return entityInstance.$$getRBKey("define.yes");
-							}else if(value === false){
-								return entityInstance.$$getRBKey("define.no");
+							if(Boolean(value) === true ){
+								return entityInstance.metaData.$$getRBKey("define.yes");
+							}else if(value === false || value.trim() === 'No' || value.trim === 'NO' || value.trim() === '0'){
+								return entityInstance.metaData.$$getRBKey("define.no");
 							}
 			    		}
 			    	}
 			    	
 			    	var _getFormattedValue = function(propertyName,formatType,entityInstance){
-			    		var value = entityInstance['$$get'+propertyName]();
+			    		var value = entityInstance.$$getPropertyByName(propertyName);
 			    		
 			    		if(angular.isUndefined(formatType)){
-			    			formatType = entityInstance.getPropertyFormatType(propertyName);
+			    			formatType = entityInstance.metaData.$$getPropertyFormatType(propertyName);
+			    			console.log(formatType);
 			    		}
 			    		
 			    		if(formatType === "custom"){
@@ -575,7 +578,6 @@ Notes:
 			    				return '';
 			    			}
 			    		}
-			    		
 			    		if(angular.isUndefined(value)){
 			    			var propertyMeta = entityInstance.metaData[propertyName];
 			    			if(angular.isDefined(propertyMeta['hb_nullRBKey'])){
@@ -588,8 +590,9 @@ Notes:
 			    			if(angular.isDefined(entityInstance.data['currencyCode'])){
 			    				formatDetails.currencyCode = entityInstance.$$getCurrencyCode();
 			    			}
-			    			<!---return getService("hibachiUtilityService").formatValue(value=arguments.value, formatType=arguments.formatType, formatDetails=formatDetails); --->
-			    			return '';
+			    			//formatValue:function(value,formatType,formatDetails){
+			    			
+			    			return utilityService.formatValue(value,formatType,formatDetails,entityInstance);
 			    		}
 			    	}
 			    	
@@ -606,7 +609,7 @@ Notes:
 			    		
 			    		var savePromise = slatwallService.saveEntity(entityName,entityID,params,context);
 			    		savePromise.then(function(value){
-							entityInstance.form.$setPristine();
+							//entityInstance.form.$setPristine();
 							
 						});
 			    		console.log(modifiedData);
@@ -638,20 +641,24 @@ Notes:
 			    	}
 			    	
 			    	var _getModifiedData = function(entityInstance){
-			    		var form = entityInstance.form;
+			    		var forms = entityInstance.forms;
 			    		
 			    		entityInstance.modifiedData = {};
 			    		
-			    		//var parentObjectIDs = getParentObjectID
-			    		console.log(form);
-			    		for(key in form){
-			    			if(key.charAt(0) !== '$'){
-			    				var inputField = form[key];
-			    				if(inputField.$valid === true && inputField.$dirty === true){
-		    						entityInstance.modifiedData[key] = form[key].$modelValue;
-			    				}
-			    			}
+			    		for(var f in forms){
+			    			var form = forms[f];
+			    			//var parentObjectIDs = getParentObjectID
+				    		console.log(form);
+				    		for(var key in form){
+				    			if(key.charAt(0) !== '$'){
+				    				var inputField = form[key];
+				    				if(inputField.$valid === true && inputField.$dirty === true){
+			    						entityInstance.modifiedData[key] = form[key].$modelValue;
+				    				}
+				    			}
+				    		}
 			    		}
+			    		
 			    		return entityInstance.modifiedData;
 			    	}
 			
@@ -778,6 +785,9 @@ Notes:
 									var IDNameString = this.metaData.className+'ID';
 									IDNameString = IDNameString.charAt(0).toLowerCase() + entityName.slice(1);
 									return IDNameString;
+								},
+								$$getPropertyByName:function(propertyName){
+									return this['$$get'+propertyName.charAt(0).toUpperCase() + propertyName.slice(1)]();
 								},
 								$$isPersisted:function(){
 									if(this.$$getID() === ''){
@@ -906,6 +916,10 @@ Notes:
 													return this.data.#local.property.name#;
 												}
 											</cfif>
+										<cfelse>
+											,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
+												return this.data.#local.property.name#;
+											}
 										</cfif>
 									</cfif>
 								</cfloop>

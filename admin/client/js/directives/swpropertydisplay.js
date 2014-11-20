@@ -22,7 +22,6 @@ angular.module('slatwalladmin')
 			},
 			templateUrl:partialsPath+"propertydisplay.html",
 			link: function(scope, element,attrs,formController){
-				
 				var propertyDisplay = {
 					object:scope.object,
 					property:scope.property,
