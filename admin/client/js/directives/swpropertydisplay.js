@@ -10,7 +10,7 @@ angular.module('slatwalladmin')
 	){
 		return {
 			require:'^form',
-			restrict: 'A',
+			restrict: 'AE',
 			scope:{
 				object:"=",
 				property:"@",
@@ -35,7 +35,12 @@ angular.module('slatwalladmin')
 				};
 				
 				scope.$id = 'propertyDisplay:'+scope.property;
+				
+				
 				scope.propertyDisplay = propertyDisplayService.newPropertyDisplay(propertyDisplay);
+				
+				/* register form that the propertyDisplay belongs to*/
+				scope.propertyDisplay.form = formController;
 				
 				$log.debug(scope.propertyDisplay);
 							

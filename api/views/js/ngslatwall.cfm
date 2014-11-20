@@ -439,7 +439,8 @@ Notes:
 			    	
 			    	var _getPropertyFieldType = function(propertyName,metaData){
 			    		var propertyMetaData = metaData[propertyName];
-			    		
+			    		console.log(metaData);
+			    		console.log(propertyName);
 						if(angular.isDefined(propertyMetaData['hb_formfieldtype'])){
 							return propertyMetaData['hb_formfieldtype'];
 						}
@@ -597,8 +598,7 @@ Notes:
 			    		console.log(entityInstance);
 			    		var modifiedData = _getModifiedData(entityInstance);
 			    		var entityName = entityInstance.metaData.className;
-			    		var lcaseEntityName = entityName.charAt(0).toLowerCase() + entityName.slice(1);
-			    		var entityID = entityInstance.data[lcaseEntityName+"ID"];
+			    		var entityID = entityInstance.$$getID();
 			    		var params = modifiedData;
 			    		var context = 'save';
 			    		<!---validate based on context --->
@@ -606,7 +606,7 @@ Notes:
 			    		
 			    		var savePromise = slatwallService.saveEntity(entityName,entityID,params,context);
 			    		savePromise.then(function(value){
-							entityInstance.metaData.form.$setPristine();
+							entityInstance.form.$setPristine();
 							
 						});
 			    		console.log(modifiedData);
@@ -630,9 +630,19 @@ Notes:
 			    		}
 			    	}
 			    	
+			    	var _getParentObjectIDs = function(){
+			    		if(angular.isDefined(form.$$swFormInfo.parentObject)){
+			    			var parentObject = form.$$swFormInfo.parentObject;
+			    			parentObject.modifiedData[parentObject.$$getIDName()] = parentObject.$$getID();
+			    		}
+			    	}
+			    	
 			    	var _getModifiedData = function(entityInstance){
-			    		var form = entityInstance.metaData.form;
+			    		var form = entityInstance.form;
+			    		
 			    		entityInstance.modifiedData = {};
+			    		
+			    		//var parentObjectIDs = getParentObjectID
 			    		console.log(form);
 			    		for(key in form){
 			    			if(key.charAt(0) !== '$'){
@@ -761,8 +771,16 @@ Notes:
 								
 							};
 							_jsEntities[ '#local.entity.getClassName()#' ].prototype = {
+								$$getID:function(){
+									return this['$$get'+this.metaData.className+'ID']();
+								},
+								$$getIDName:function(){
+									var IDNameString = this.metaData.className+'ID';
+									IDNameString = IDNameString.charAt(0).toLowerCase() + entityName.slice(1);
+									return IDNameString;
+								},
 								$$isPersisted:function(){
-									if(this['$$get'+this.metaData.className+'ID']() === ''){
+									if(this.$$getID() === ''){
 										return false;
 									}else{
 										return true;

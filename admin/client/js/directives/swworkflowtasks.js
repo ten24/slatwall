@@ -13,13 +13,12 @@ angular.module('slatwalladmin')
 	workflowPartialsPath
 	){
 		return {
-			require:"^form",
 			restrict: 'A',
 			scope:{
 				workflow:"="
 			},
 			templateUrl:workflowPartialsPath+"workflowtasks.html",
-			link: function(scope, element,attrs,formController){
+			link: function(scope, element,attrs){
 				
 				$log.debug('workflow tasks init');	
 				$log.debug(scope);

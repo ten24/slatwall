@@ -56,26 +56,22 @@
 				</div>
 			</div>
 			<div class="panel-group s-pannel-group" id="accordion">
-				<sw-form name="{{entityName}}">
-					<div class="j-panel panel panel-default" ng-repeat="detailTabs in entity.metaData.$$getDetailTabs()">
-						<a data-toggle="collapse" href="#collapse{{$index}}" ng-init="openTab=false" ng-click="openTab = true">
-							<div class="panel-heading">
-								<h4 class="panel-title">
-									<span ng-bind="getRBKey('admin.entity.'+entityName.toLowerCase()+'tabs.'+detailTabs.toLowerCase().replace('.html',''))"></span> <i
-										class="s-accordion-toggle-icon fa fa-caret-left"></i>
-								</h4>
-							</div>
-						</a>
-						<div id="collapse{{$index}}" class="panel-collapse"
-							style="height: 0px;">
-							<content class="s-body-box" ng-if="openTab || allTabsOpen">
-								<sw-form name="{{entityName+'.'+detailTabs.toLowerCase()}}">
-									<ng-include src="tabPartialPath+entityName+'/'+detailTabs.toLowerCase()"></ng-include>
-								</sw-form>
-							</content>
+				<div class="j-panel panel panel-default" ng-repeat="detailTabs in entity.metaData.$$getDetailTabs()">
+					<a data-toggle="collapse" href="#collapse{{$index}}" ng-init="openTab=false" ng-click="openTab = true">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<span ng-bind="getRBKey('admin.entity.'+entityName.toLowerCase()+'tabs.'+detailTabs.toLowerCase().replace('.html',''))"></span> <i
+									class="s-accordion-toggle-icon fa fa-caret-left"></i>
+							</h4>
 						</div>
+					</a>
+					<div id="collapse{{$index}}" class="panel-collapse"
+						style="height: 0px;">
+						<content class="s-body-box" ng-if="openTab || allTabsOpen">
+							<ng-include src="tabPartialPath+entityName+'/'+detailTabs.toLowerCase()"></ng-include>
+						</content>
 					</div>
-				</sw-form>
+				</div>
 				<div class="j-panel panel panel-default">
 					<a data-toggle="collapse" href="#collapseSystem" ng-init="openTab=false" ng-click="openTab = true">
 						<div class="panel-heading">

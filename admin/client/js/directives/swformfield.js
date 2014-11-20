@@ -109,7 +109,7 @@ angular.module('slatwalladmin')
 							$log.debug('formfieldchanged');
 							$log.debug(option);
 							scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
-							scope.propertyDisplay.object.metaData.form[scope.propertyDisplay.property].$dirty = true;
+							scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
 						};
 						
 						if(scope.propertyDisplay.eagerLoadOptions === true){
@@ -148,7 +148,6 @@ angular.module('slatwalladmin')
 						scope.propertyDisplay.errors = formController[scope.propertyDisplay.property].$error;
 						formController[scope.propertyDisplay.property].formType = scope.propertyDisplay.fieldType;
 					}
-					scope.propertyDisplay.object.metaData.form = formController;
 							
 				});
 			}

@@ -39,7 +39,7 @@
 	</button>
 
 	<!--- Edit Filter Box --->
-	<div class="col-xs-12 collapse s-add-filter s-tab-layout" id="j-create-new-task" ng-if="!workflowTasks.selectedTasks.$$isPersisted()">
+	<div class="col-xs-12 collapse s-add-filter s-tab-layout" id="j-create-new-task" ng-if="!workflowTasks.selectedTask.$$isPersisted()">
 		<div class="row">
 			<h4>
 				 Create New Task 
@@ -49,7 +49,9 @@
 				 	ng-click="removeWorkflowTask(workflowTasks.selectedTask)"
 				 ></i>
 			</h4>
-			<span ng-include="workflowPartialsPath+'addeditworkflowtask.html'"></span>
+			<span ng-if="workflowTasks.selectedTask">
+				<span ng-include="workflowPartialsPath+'addeditworkflowtask.html'"></span>
+			</span>
 		</div>
 	</div>
 	<!--- //Edit Filter Box --->

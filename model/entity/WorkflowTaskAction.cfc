@@ -40,8 +40,8 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 	
 	// Persistent Properties
 	property name="workflowTaskActionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="actionType" ormtype="string";
-	property name="updateData" ormtype="string" length="8000" hb_auditable="false";
+	property name="actionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
+	property name="updateData" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
 	
 	// Calculated Properties
 
@@ -66,13 +66,30 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	
+	property name="actionTypeOptions" persistent="false"; 
 	// Deprecated Properties
-
-
-
 	
 	// ============ START: Non-Persistent Property Methods =================
+	public array function getActionTypeOptions() {
+		/*
+			Print || Email || Update || Process || Import || Export || Delete
+		*/
+		var actionTypeOptions = [];
+		var valuesList = 'print,email,update,process,import,export,delete';
+		var namesList = 'entity.workflowtaskaction.print,entity.workflowtaskaction.email,entity.workflowtaskaction.update,
+						entity.workflowtaskaction.process,entity.workflowtaskaction.import,entity.workflowtaskaction.export,entity.workflowtaskaction.delete';
+		var valuesArray = ListToArray(valuesList);
+		var namesArray = ListToArray(namesList);
+		var valuesArrayLength = arrayLen(valuesArray);
+		
+		for(var i = 1; i <= valuesArrayLength; i++){
+			var optionStruct = {};
+			optionStruct['value'] = valuesArray[i];
+			optionStruct['name'] = rbKey(namesArray[i]);
+			arrayAppend(actionTypeOptions,optionStruct);
+		}
+    	return actionTypeOptions;
+    }
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		

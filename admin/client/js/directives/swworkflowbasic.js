@@ -13,14 +13,13 @@ angular.module('slatwalladmin')
 	workflowPartialsPath
 	){
 		return {
-			require:"^form",
 			restrict: 'A',
 			scope:{
 				workflow:"="
 			},
 			templateUrl:workflowPartialsPath+"workflowbasic.html",
-			link: function(scope, element,attrs,formController){
-				//formService.setForm(scope.form.workflowForm);
+			link: function(scope, element,attrs){
+				console.log(scope.workflow);
 			}
 		};
 	}
