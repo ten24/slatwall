@@ -335,8 +335,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			
 			// IMPORTANT & CUSTOM!!!
 			// if this was the last item in the fulfillment remove this fulfillment from order
-			if(!arrayLen(variables.orderFulfillment.getOrderFulfillmentItems())) {
-				variables.order.removeOrderFulfillment(variables.orderFulfillment);
+			if(!arrayLen(arguments.orderFulfillment.getOrderFulfillmentItems()) && !isNull(getOrder())) {
+				getOrder().removeOrderFulfillment(arguments.orderFulfillment);
 			}
 		}
 		structDelete(variables, "orderFulfillment");
