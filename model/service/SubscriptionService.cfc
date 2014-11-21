@@ -186,7 +186,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// add this benefit to access
 		if(arguments.subscriptionUsageBenefit.getAccessType().getSystemCode() == "satPerSubscription") {
 			var accessSmartList = getAccessService().getAccessSmartList();
-			accessSmartList.addFilter(propertyIdentifier="subscriptionUsage_subscriptionUsageID", value=arguments.subscriptionUsageBenefit.getSubscriptionUsage().getSubscriptionUsageID());
+			accessSmartList.addFilter(propertyIdentifier="subscriptionUsage.subscriptionUsageID", value=arguments.subscriptionUsageBenefit.getSubscriptionUsage().getSubscriptionUsageID());
 			if(!accessSmartList.getRecordsCount()) {
 				var access = getAccessService().getAccessBySubscriptionUsage(arguments.subscriptionUsageBenefit.getSubscriptionUsage(),true);
 				access.setSubscriptionUsage(arguments.subscriptionUsageBenefit.getSubscriptionUsage());
