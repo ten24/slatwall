@@ -4,6 +4,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 	'$location',
 	'$log',
 	'$rootScope',
+	'$window',
 	'$slatwall',
 	'dialogService',
 	'alertService',
@@ -14,6 +15,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		$location,
 		$log,
 		$rootScope,
+		$window,
 		$slatwall,
 		dialogService,
 		alertService,
@@ -229,6 +231,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 						$log.debug('saving Product Bundle');
 						if(angular.isDefined(closeDialogIndex)){
 							$rootScope.closePageDialog(closeDialogIndex);
+							 $window.location.reload();
 						}
 						
 						formService.resetForm(createProductBundleForm);
