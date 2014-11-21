@@ -13,32 +13,16 @@
 		>
 		</span>--->
 
-	    <!---</span>--->
-	    <div class="row s-header-bar">
-	      <div class="col-md-5 s-header-nav">
-	        <ul class="nav nav-tabs" role="tablist">
-	          <li class="active"><a href="##j-properties" role="tab" data-toggle="tab">PROPERTIES</a></li>
-	        </ul>
-	      </div>
-	    </div>
+	   
 	    <!--- //Header nav with title end --->
 
 	    <!--- Tab panes for menu options start--->
 
 	    <div class="row s-options">
-	      <div class="tab-content" id="j-property-box">
+	      
 
-	        <div class="tab-pane active" id="j-properties">
-	          <span class="s-edit-btn-group">
-	          	  <button class="btn btn-xs s-btn-ten24" id="j-save-btn" ng-click="saveCollection()" ng-show="collectionDetails.isOpen">
-	          		<i class="fa fa-floppy-o"></i>
-	          		Save
-		          </button>
-		          <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn" ng-click="collectionDetails.openCollectionDetails()" ng-show="!collectionDetails.isOpen">
-		          	<i class="fa fa-pencil"></i>
-		          	Edit
-		          </button>
-	         </span>
+	        
+	          
 	          <form  class="form-horizontal s-properties" role="form" name="collectionForm" ng-init="setCollectionFormScope(collectionForm)" >
 	            <input  style="display:none" name="entityID" ng-model="collection.collectionID" type="hidden" value="">
 
@@ -48,7 +32,7 @@
 						is-editable="true"
 	            ></span>-->
 	            <div class="form-group">
-	              <label class="col-sm-2 control-label">Title:<span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection title"> <i class="fa fa-question-circle"></i></span></label>
+	              <label class="col-sm-2 control-label" style="text-align:left;padding-left:40px;">Title:<span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection title"> <i class="fa fa-question-circle"></i></span></label>
 	              <div class="col-sm-10">
 	                <input ng-show="collectionDetails.isOpen"  ng-model="collection.collectionName" name="collectionName" type="text" class="form-control" id="inputPassword" value="" required>
 	               	<span style="color:red"
@@ -59,7 +43,7 @@
 	              </div>
 	            </div>
 	            <div class="form-group">
-	              <label for="inputPassword" class="col-sm-2 control-label">Code: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection code"> <i class="fa fa-question-circle"></i></span></label>
+	              <label for="inputPassword" class="col-sm-2 control-label" style="text-align:left;padding-left:40px;">Code: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection code"> <i class="fa fa-question-circle"></i></span></label>
 	              <div class="col-sm-10">
 	                <input ng-show="collectionDetails.isOpen" ng-model="collection.collectionCode"  name="collectionCode" type="text" class="form-control" id="inputPassword" value="" >
 	                <p ng-show="!collectionDetails.isOpen" class="form-control-static" ng-bind="collection.collectionCode"><!---collection Code ---></p>
@@ -70,7 +54,7 @@
 	              </div>
 	            </div>
 	            <div class="form-group">
-	              <label for="inputPassword" class="col-sm-2 control-label">Description: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection description"> <i class="fa fa-question-circle"></i></span></label>
+	              <label for="inputPassword" class="col-sm-2 control-label" style="text-align:left;padding-left:40px;">Description: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection description"> <i class="fa fa-question-circle"></i></span></label>
 	              <div class="col-sm-10">
 	                <input ng-show="collectionDetails.isOpen"  ng-model="collection.description" name="description" type="text" class="form-control" id="inputPassword" value="" >
 	                <p ng-show="!collectionDetails.isOpen" ng-bind="collection.description" class="form-control-static"><!---collection description ---></p>
@@ -81,7 +65,7 @@
 	              </div>
 	            </div>
 	            <div class="form-group">
-	              <label for="inputPassword" class="col-sm-2 control-label">Collection Type: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection type"> <i class="fa fa-question-circle"></i></span></label>
+	              <label for="inputPassword" class="col-sm-2 control-label" style="text-align:left;padding-left:40px;">Collection Type: <span class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="The collection type"> <i class="fa fa-question-circle"></i></span></label>
 	              <div class="col-sm-10">
 	                <input ng-show="collectionDetails.isOpen" disabled="disabled"  ng-model="collectionConfig.baseEntityAlias" type="text" class="form-control" value="" >
 	                <p ng-show="!collectionDetails.isOpen" ng-bind="collectionConfig.baseEntityAlias  | AliasDisplayName" class="form-control-static"><!---collection base entity alias ---></p>
@@ -90,8 +74,8 @@
 	            </div>
 	          </form>
 	        </div>
-	      </div>
+	      
 
-	    </div><!--- //Row --->
+	    
 	</div>
 </div>
