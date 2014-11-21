@@ -439,8 +439,6 @@ Notes:
 			    	
 			    	var _getPropertyFieldType = function(propertyName,metaData){
 			    		var propertyMetaData = metaData[propertyName];
-			    		console.log(metaData);
-			    		console.log(propertyName);
 						if(angular.isDefined(propertyMetaData['hb_formfieldtype'])){
 							return propertyMetaData['hb_formfieldtype'];
 						}
@@ -520,8 +518,6 @@ Notes:
 			    			if(angular.isUndefined(formatDetails)){
 			    				formatDetails = {};
 			    			}
-			    			console.log(value);
-			    			console.log(formatType)
 							var typeList = ["currency","date","datetime","pixels","percentage","second","time","truefalse","url","weight","yesno"];
 							
 							if(typeList.indexOf(formatType)){
@@ -566,7 +562,6 @@ Notes:
 			    		
 			    		if(angular.isUndefined(formatType)){
 			    			formatType = entityInstance.metaData.$$getPropertyFormatType(propertyName);
-			    			console.log(formatType);
 			    		}
 			    		
 			    		if(formatType === "custom"){
@@ -596,17 +591,19 @@ Notes:
 			    		}
 			    	}
 			    	
+			    	var _getParentEntityData = function(){
+			    		
+			    	}
+			    	
 			    	var _save = function(entityInstance){
 			    		console.log('save');
 			    		console.log(entityInstance);
-			    		/*loop over forms for dirty values by object*/
-			    		var modifiedData = _getModifiedData(entityInstance);
+			    		
 			    		var entityName = entityInstance.metaData.className;
 			    		var entityID = entityInstance.$$getID();
-			    		if(entityID === ""){
-			    			/*check if the object has a parent*/
-			    		}
 			    		
+			    		
+			    		var modifiedData = _getModifiedData(entityInstance);
 			    		
 			    		var params = modifiedData;
 			    		var context = 'save';
@@ -619,6 +616,57 @@ Notes:
 							
 						});
 			    		console.log(modifiedData);
+			    	}
+			    	
+			    	var _getModifiedData = function(entityInstance){
+			    		var modifiedData = {};
+			    		
+			    		modifiedData = getModifiedDataByInstance(entityInstance);
+			    		
+			    		return modifiedData;
+			    	}
+			    	
+			    	var getModifiedDataByInstance = function(entityInstance,parentPath){
+			    		var modifiedData = {};
+			    		var forms = entityInstance.forms;
+			    		if(angular.isUndefined(parentPath)){
+			    			parentPath = '';
+			    		}
+			    		for(var f in forms){
+			    			var form = forms[f];
+				    		for(var key in form){
+				    			if(key.charAt(0) !== '$'){
+				    				var inputField = form[key];
+				    				if(inputField.$valid === true && inputField.$dirty === true){
+			    						modifiedData[key] = form[key].$modelValue;
+				    				}
+				    			}
+				    		}
+			    		}
+			    		
+			    		var entityID = entityInstance.$$getID();	
+			    		
+			    		if(entityID === ""){
+			    			<!---/*check if the object has a parent*/--->
+			    			if(angular.isDefined(entityInstance.data[entityInstance.parentObject])){
+			    				<!---get parent instance --->
+			    				
+			    				var parentEntityInstance = entityInstance.data[entityInstance.parentObject];
+			    				parentPath = entityInstance.parentObject+'.'+parentPath;
+			    				var parentModifiedData = getModifiedDataByInstance(parentEntityInstance,parentPath);
+			    				for(var p in parentModifiedData){
+			    					modifiedData[entityInstance.parentObject+'.'+p] = parentModifiedData[p];
+			    				}
+			    				//var parentEntityInstanceName = parentEntityInstance.metaData.className;
+			    				//var parentEntityInstanceID = parentEntityInstance.$$getID();
+			    				modifiedData[entityInstance.parentObject+'.'+parentEntityInstance.$$getIDName()] =  parentEntityInstance.$$getID();
+			    			}
+			    		}else{
+			    			//modifiedData[parentPath+entityInstance.$$getIDName()] = entityInstance.$$getID();
+			    		}
+			    		
+			    		
+			    		return modifiedData;
 			    	}
 			    	
 			    	var _getValidationsByProperty = function(entityInstance,property){
@@ -637,35 +685,6 @@ Notes:
 			    			}
 			    			
 			    		}
-			    	}
-			    	
-			    	var _getParentObjectIDs = function(){
-			    		if(angular.isDefined(form.$$swFormInfo.parentObject)){
-			    			var parentObject = form.$$swFormInfo.parentObject;
-			    			parentObject.modifiedData[parentObject.$$getIDName()] = parentObject.$$getID();
-			    		}
-			    	}
-			    	
-			    	var _getModifiedData = function(entityInstance){
-			    		var forms = entityInstance.forms;
-			    		
-			    		entityInstance.modifiedData = {};
-			    		
-			    		for(var f in forms){
-			    			var form = forms[f];
-			    			//var parentObjectIDs = getParentObjectID
-				    		console.log(form);
-				    		for(var key in form){
-				    			if(key.charAt(0) !== '$'){
-				    				var inputField = form[key];
-				    				if(inputField.$valid === true && inputField.$dirty === true){
-			    						entityInstance.modifiedData[key] = form[key].$modelValue;
-				    				}
-				    			}
-				    		}
-			    		}
-			    		
-			    		return entityInstance.modifiedData;
 			    	}
 			
 					<cfloop array="#rc.entities#" index="local.entity">
@@ -789,7 +808,7 @@ Notes:
 								},
 								$$getIDName:function(){
 									var IDNameString = this.metaData.className+'ID';
-									IDNameString = IDNameString.charAt(0).toLowerCase() + entityName.slice(1);
+									IDNameString = IDNameString.charAt(0).toLowerCase() + IDNameString.slice(1);
 									return IDNameString;
 								},
 								$$getPropertyByName:function(propertyName){
@@ -886,6 +905,9 @@ Notes:
 												,$$add#ReReplace(local.property.singularname,"\b(\w)","\u\1","ALL")#:function() {
 													var entityInstance = slatwallService.newEntity(this.metaData['#local.property.name#'].cfc);
 													entityInstance.data[this.metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1)] = this;
+													if(angular.isDefined(this.metaData['#local.property.name#'].cascade)){
+														entityInstance.parentObject = this.metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1);
+													}
 													if(angular.isUndefined(this.data['#local.property.name#'])){
 														this.data['#local.property.name#'] = [];
 													}
@@ -928,8 +950,6 @@ Notes:
 															return collection;
 														})(this,options);
 													}
-														console.log('collection');
-														console.log(collection);
 													return collection;
 												}
 											<cfelse>
