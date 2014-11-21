@@ -717,8 +717,8 @@
 					
 					var assetSetting = $.slatwall.getService("settingService").getSettingBySettingName("globalAssetsImageFolderPath", true);
 					if(assetSetting.isNew()) {
-						assetSetting.setSettingValue( replace(expandPath('/muraWRM'), '\', '/', 'all') & '/default/assets/Image/Slatwall' );
 						assetSetting.setSettingName('globalAssetsImageFolderPath');
+						assetSetting.setSettingValue( replace(expandPath('/muraWRM'), '\', '/', 'all') & '/default/assets/Image/Slatwall' );
 						$.slatwall.getService("settingService").saveSetting( assetSetting );
 					}
 				}
