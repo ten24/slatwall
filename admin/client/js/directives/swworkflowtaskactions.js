@@ -19,8 +19,11 @@ angular.module('slatwalladmin')
 				scope.openActions = false;
 				
 				scope.getWorkflowTaskActions = function(){
-					scope.workflowTaskActions = scope.workflowTask.$$getWorkflowTaskActions();
-					$log.debug(scope.workflowTaskActions);
+					var workflowTaskPromise = scope.workflowTask.$$getWorkflowTaskActions();
+					workflowTaskPromise.then(function(){
+						scope.workflowTaskActions = scope.workflowTask.workflowTaskActions;
+						$log.debug(scope.workflowTaskActions);
+					});
 				};
 				
 				scope.getWorkflowTaskActions();
@@ -34,8 +37,19 @@ angular.module('slatwalladmin')
 					scope.workflowTaskActions.selectedTaskAction = workflowTaskAction;
 				};
 				
-				scope.removeWorkflowTaskAction = function(index){
-					scope.workflowTasks.selectedTask.workflowTaskActions.splice(index,1);
+				scope.removeWorkflowTaskAction = function(workflowTaskAction){
+					var deletePromise = workflowTaskAction.$$delete();
+		    		deletePromise.then(function(){
+						if(workflowTaskAction === scope.workflowTaskActions.selectedTaskAction){
+							delete scope.workflowTaskActions.selectedTaskAction;
+						}
+						scope.workflowTaskActions.splice(workflowTaskAction.$$index,1);
+						for(var i in scope.workflowTaskActions){
+							scope.workflowTaskActions[i].$$index = i;
+						}
+					});
+					
+					scope.workflowTask.workflowTaskActions.splice(index,1);
 					for(var i in scope.workflowTaskActions){
 						scope.workflowTasks.selectedTask.workflowTaskActions[i].$$index = i;
 					}

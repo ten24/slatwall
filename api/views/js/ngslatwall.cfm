@@ -611,6 +611,7 @@ Notes:
 					        return _setValueByPropertyPath(obj[is[0]],is.slice(1), value);
 					}
 			    	
+			    	
 			    	var _addReturnedIDs = function(returnedIDs,entityInstance){
 			    		entityInstance.data.workflowTask.data.workflowTaskID = 'test';
 			    		for(var key in returnedIDs){
