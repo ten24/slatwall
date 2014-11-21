@@ -95,14 +95,16 @@
                         </div>
 
                         <div class="col-md-6">
-                            <span sw-property-display
-                                     data-property="amount"
-                                     data-object="productBundleGroup"
-                                     data-object-name="productBundleGroup"
-                                     data-meta="propertyDisplayData['amount']"
-                                     data-editing="true"
-                                   data-editable="true"
-                             ></span>
+                        	<span ng-show="productBundleGroup['amountType'].value === 'fixed' || productBundleGroup['amountType'].value === 'skuPricePercentageIncrease' || productBundleGroup['amountType'].value === 'skuPricePercentageDecrease'">
+	                            <span sw-property-display
+	                                     data-property="amount"
+	                                     data-object="productBundleGroup"
+	                                     data-object-name="productBundleGroup"
+	                                     data-meta="propertyDisplayData['amount']"
+	                                     data-editing="true"
+	                                   data-editable="true"
+	                             ></span>
+							 </span>
                         </div>
                     </div>
 
