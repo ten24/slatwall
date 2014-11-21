@@ -1374,7 +1374,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			orderFulfillment.setOrder( arguments.order );
 		}
 		
-		for(var orderItem in arguments.processObject.getOrderItems) {
+		for(var orderItem in arguments.processObject.getOrderItems()) {
+			if(!isNull(orderItem.getOrderFulfillment())) {
+				orderItem.removeOrderFulfillment();
+			}
 			orderItem.setOrderFulfillment( orderFulfillment );
 		}
 		
@@ -1967,27 +1970,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(arguments.order.getOrderItems()[i].getQuantity() < 1) {
 					arguments.order.removeOrderItem(arguments.order.getOrderItems()[i]);
 				} else if(!arrayFind(orderFulfillmentsInUse, arguments.order.getOrderItems()[i].getOrderFulfillment())) {
-					arrayAppend(orderFulfillmentsInUse, arguments.order.getOrderItems()[i].getOrderFulfillment());
+					arrayAppend(orderFulfillmentsInUse, arguments.order.getOrderItems()[i].getOrderFulfillment().getOrderFulfillmentID());
 				}
 			}
 			
-			// loop over any fulfillments and update the shippingMethodOptions for any shipping fulfillments
-			for(var orderFulfillment in arguments.order.getOrderFulfillments()) {
-				
+			// loop over any fulfillments, remove any that aren't in use and update the shippingMethodOptions for any shipping fulfillments
+			for(var ofi=arrayLen(arguments.order.getOrderFulfillments()); ofi>=1; ofi--) {
+			
+				var orderFulfillment = arguments.order.getOrderFulfillments()[ofi];
+			
 				// If that orderFulfillment isn't in use anymore, then we need to remove it from the order
-				if(!arrayFind(orderFulfillmentsInUse, orderFulfillment)) {
-					arguments.order.removeOrderFulfillment(orderFulfillment);
+				if(!arrayFind(orderFulfillmentsInUse, orderFulfillment.getOrderFulfillmentID())) {
+					orderFulfillment.removeOrder();
 					
 				// If is is still in use, and a shipping fulfillment then we need to update some stuff.
 				} else if(orderFulfillment.getFulfillmentMethodType() eq "shipping") {
-					
+				
 					// Update the shipping methods
 					getShippingService().updateOrderFulfillmentShippingMethodOptions( orderFulfillment );
 					
 					// Save the accountAddress if needed
 					orderFulfillment.checkNewAccountAddressSave();
 				}
-				
+			
 			}
 			
 			// Loop over any orderPayments that were just populated, and may have previously been marked as invalid.  This is specifically used for the legacy checkouts on repeated attempts
