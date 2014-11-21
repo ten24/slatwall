@@ -1131,6 +1131,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		for(var orderItem in arguments.processObject.getOrderItems()) {
+			if(!isNull(orderItem.getOrderFulfillment())) {
+				orderItem.removeOrderFulfillment();
+			}
 			orderItem.setOrderFulfillment( orderFulfillment );
 		}
 		
