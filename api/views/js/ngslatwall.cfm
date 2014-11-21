@@ -602,10 +602,19 @@ Notes:
 			    		var entityName = entityInstance.metaData.className;
 			    		var entityID = entityInstance.$$getID();
 			    		
-			    		
 			    		var modifiedData = _getModifiedData(entityInstance);
 			    		
 			    		var params = modifiedData;
+			    		<!---figure out what IDs to return for persisted data --->
+			    		var propertyIdentifiersArray = [];
+			    		for(var key in params){
+			    			if(key.slice(-2) === 'ID'){
+			    				if(params[key] === ''){
+			    					propertyIdentifiersArray.push(key);
+			    				}
+			    			}
+			    		}
+			    		params.propertyIdentifiersList = propertyIdentifiersArray.join(",") || '';
 			    		var context = 'save';
 			    		<!---validate based on context --->
 			    		<!---probably need to validat against data to make sure existing data passes and then against modified? --->
@@ -631,6 +640,7 @@ Notes:
 			    		var forms = entityInstance.forms;
 			    		if(angular.isUndefined(parentPath)){
 			    			parentPath = '';
+			    			modifiedData[entityInstance.$$getIDName()] = entityInstance.$$getID();
 			    		}
 			    		for(var f in forms){
 			    			var form = forms[f];
@@ -661,10 +671,7 @@ Notes:
 			    				//var parentEntityInstanceID = parentEntityInstance.$$getID();
 			    				modifiedData[entityInstance.parentObject+'.'+parentEntityInstance.$$getIDName()] =  parentEntityInstance.$$getID();
 			    			}
-			    		}else{
-			    			//modifiedData[parentPath+entityInstance.$$getIDName()] = entityInstance.$$getID();
 			    		}
-			    		
 			    		
 			    		return modifiedData;
 			    	}

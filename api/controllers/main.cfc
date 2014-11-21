@@ -317,9 +317,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			var propertyIdentifiersArray = ListToArray(arguments.rc.propertyIdentifiersList);
 			for(propertyIdentifier in propertyIdentifiersArray){
 				//check if method exists before trying to retrieve a property
-				if(isDefined('entity.get#propertyIdentifier#')){
-					arguments.rc.apiResponse.content['data'][propertyIdentifier] = entity.invokeMethod("get#propertyIdentifier#");
-				}
+				arguments.rc.apiResponse.content['data'][propertyIdentifier] = entity.getValueByPropertyIdentifier(propertyIdentifier);
 			}
 		}
 		
