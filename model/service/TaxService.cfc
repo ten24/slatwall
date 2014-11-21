@@ -175,6 +175,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 								newAppliedTax.setOrderItem( orderItem );
 								newAppliedTax.setTaxLiabilityAmount( round(orderItem.getExtendedPriceAfterDiscount() * taxCategoryRate.getTaxRate()) / 100 );
+								newAppliedTax.setTaxStreetAddress( taxAddress.getStreetAddress() );  
+								newAppliedTax.setTaxStreet2Address( taxAddress.getStreet2Address() );
+								newAppliedTax.setTaxLocality( taxAddress.getLocality() );
+								newAppliedTax.setTaxCity( taxAddress.getCity() );
+								newAppliedTax.setTaxStateCode( taxAddress.getStateCode() );   
+								newAppliedTax.setTaxPostalCode( taxAddress.getPostalCode() );
+								newAppliedTax.setTaxCountryCode( taxAddress.getCountryCode() ); 
 								
 								// Set the taxAmount to the taxLiabilityAmount, if that is supposed to be charged to the customer
 								if(taxCategoryRate.getTaxLiabilityAppliedToItemFlag() == true){
@@ -207,7 +214,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						newAppliedTax.setTaxCategoryRate( originalAppliedTax.getTaxCategoryRate() );
 						newAppliedTax.setOrderItem( orderItem );
 						newAppliedTax.setTaxLiabilityAmount( round(orderItem.getExtendedPriceAfterDiscount() * originalAppliedTax.getTaxRate()) / 100 );
-						
+						newAppliedTax.setTaxStreetAddress( originalAppliedTax.getTaxStreetAddress() );  
+						newAppliedTax.setTaxStreet2Address( originalAppliedTax.getTaxStreet2Address() );
+						newAppliedTax.setTaxLocality( originalAppliedTax.getTaxLocality() );
+						newAppliedTax.setTaxCity( originalAppliedTax.getTaxCity() );
+						newAppliedTax.setTaxStateCode( originalAppliedTax.getTaxStateCode() );   
+						newAppliedTax.setTaxPostalCode( originalAppliedTax.getTaxPostalCode() );
+						newAppliedTax.setTaxCountryCode( originalAppliedTax.getTaxCountryCode() ); 
 						if(originalAppliedTax.getTaxCategoryRate().getTaxLiabilityAppliedToItemFlag() == true){
 							newAppliedTax.setTaxAmount( newAppliedTax.getTaxLiabilityAmount() );
 						} else {
