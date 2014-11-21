@@ -19,7 +19,6 @@ angular.module('slatwalladmin')
 				scope.openActions = false;
 				
 				scope.getWorkflowTaskActions = function(){
-					console.log(scope.workflowTask);
 					scope.workflowTaskActions = scope.workflowTask.$$getWorkflowTaskActions();
 					$log.debug(scope.workflowTaskActions);
 				};

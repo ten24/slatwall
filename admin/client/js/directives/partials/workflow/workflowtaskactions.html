@@ -1,26 +1,26 @@
 <div class="s-bundle-add-items s-workflow-objs s-sortable">
 	<ul class="list-unstyled s-order-item-options" ng-repeat="workflowTaskAction in workflowTaskActions">
-			<li class="s-bundle-add-obj">
-				<ul class="list-unstyled list-inline">
-					<li class="s-item-type" ng-bind="$index+1" ng-init="workflowTaskAction.$$index=$index"></li>
-					<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>
-				</ul>
-				<ul class="list-unstyled list-inline s-middle">
-					<li class="j-tool-tip-item s-bundle-details">Type: <span ng-bind="workflowTaskAction.actionType"></span></li>
-					<li class="j-tool-tip-item s-bundle-details">Object: <span>Order</span></li>
-					<li class="j-tool-tip-item s-bundle-details">Detail: <span>Order Feedback Template</span></li>
-				</ul>
-				<ul class="list-unstyled list-inline s-last">
-					<li class="col-xs-1 j-tool-tip-item s-bundle-details-add">
-						<a 	class="btn s-btn-dgrey s-remove"
-							ng-click="removeWorkflowTaskAction($index)"
-						>
-							<i class="fa fa-trash"></i>
-						</a>
-					</li>
-				</ul>
-				<div class="clearfix"></div>
-			</li>
+		<li class="s-bundle-add-obj">
+			<ul class="list-unstyled list-inline">
+				<li class="s-item-type" ng-bind="$index+1" ng-init="workflowTaskAction.$$index=$index"></li>
+				<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>
+			</ul>
+			<ul class="list-unstyled list-inline s-middle">
+				<li class="j-tool-tip-item s-bundle-details">Type: <span ng-bind="workflowTaskAction.actionType"></span></li>
+				<li class="j-tool-tip-item s-bundle-details">Object: <span>Order</span></li>
+				<li class="j-tool-tip-item s-bundle-details">Detail: <span>Order Feedback Template</span></li>
+			</ul>
+			<ul class="list-unstyled list-inline s-last">
+				<li class="col-xs-1 j-tool-tip-item s-bundle-details-add">
+					<a 	class="btn s-btn-dgrey s-remove"
+						ng-click="removeWorkflowTaskAction($index)"
+					>
+						<i class="fa fa-trash"></i>
+					</a>
+				</li>
+			</ul>
+			<div class="clearfix"></div>
+		</li>
 	</ul>
 </div>
 

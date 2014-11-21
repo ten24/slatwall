@@ -6,7 +6,7 @@
 			<span ng-repeat="workflowTask in workflowTasks" ng-init="workflowTask.index = $index">
 				<li class="s-bundle-add-obj s-no-edit" ng-show="workflowTask.$$isPersisted()">
 					<ul class="list-unstyled list-inline">
-						<li class="s-item-type s-tooltip">{{$index}}</li>
+						<li class="s-item-type s-tooltip">{{$index+1}}</li>
 					</ul>
 					<ul class="list-unstyled list-inline s-middle">
 						<li class="j-tool-tip-item s-bundle-details" ng-bind="workflowTask.data.taskName"></li>
@@ -16,7 +16,15 @@
 					</ul>
 					<ul class="list-unstyled list-inline s-last">
 						<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-lgrey s-edit" data-toggle="collapse" data-target="#s-add-obj-1"><i class="fa fa-pencil"></i></a></li>
-						<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove" data-toggle="collapse" data-target="#s-add-obj-1"><i class="fa fa-trash"></i></a></li>
+						<li class="col-xs-1 j-tool-tip-item s-bundle-details-add">
+							<a 	class="btn s-btn-dgrey s-remove" 
+								data-toggle="collapse" 
+								data-target="#s-add-obj-1"
+								ng-click="removeWorkflowTask(workflowTasks[$index])"
+							>
+								<i class="fa fa-trash"></i>
+							</a>
+						</li>
 					</ul>
 					<div class="clearfix"></div>
 				</li>

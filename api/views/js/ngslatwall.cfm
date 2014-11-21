@@ -591,7 +591,34 @@ Notes:
 			    		}
 			    	}
 			    	
-			    	var _getParentEntityData = function(){
+			    	var _delete = function(entityInstance){
+			    		console.log('delete');
+			    		var entityName = entityInstance.metaData.className;
+			    		var entityID = entityInstance.$$getID();
+			    		var context = 'delete';
+			    		var deletePromise = slatwallService.saveEntity(entityName,entityID,{},context);
+			    		return deletePromise;
+			    	}
+			    	
+			    	var _setValueByPropertyPath = function (obj,is, value) {
+					    if (typeof is == 'string')
+					        return _setValueByPropertyPath(obj,is.split('.'), value);
+					    else if (is.length==1 && value!==undefined)
+					        return obj[is[0]] = value;
+					    else if (is.length==0)
+					        return obj;
+					    else
+					        return _setValueByPropertyPath(obj[is[0]],is.slice(1), value);
+					}
+			    	
+			    	var _addReturnedIDs = function(returnedIDs,entityInstance){
+			    		entityInstance.data.workflowTask.data.workflowTaskID = 'test';
+			    		for(var key in returnedIDs){
+			    			var returnedIDPathArray = key.split('.');
+			    			var ID = returnedIDs[key]; 
+			    			var keyString = key.replace(/\./g,'.data.');
+			    			_setValueByPropertyPath(entityInstance,'data.'+keyString,String(ID));
+			    		}
 			    		
 			    	}
 			    	
@@ -620,11 +647,13 @@ Notes:
 			    		<!---probably need to validat against data to make sure existing data passes and then against modified? --->
 			    		
 			    		var savePromise = slatwallService.saveEntity(entityName,entityID,params,context);
-			    		savePromise.then(function(value){
+			    		savePromise.then(function(response){
+			    			var returnedIDs = response.data;
+			    			<!--- TODO: restet form --->
 							//entityInstance.form.$setPristine();
-							
+							_addReturnedIDs(returnedIDs,entityInstance);
 						});
-			    		console.log(modifiedData);
+						return savePromise;
 			    	}
 			    	
 			    	var _getModifiedData = function(entityInstance){
@@ -832,7 +861,11 @@ Notes:
 									_init(this,data);
 								},
 								$$save:function(){
-									_save(this);
+									return _save(this);
+								},
+								$$delete:function(){
+									var deletePromise =_delete(this)
+									return deletePromise;
 								},
 								$$getValidationsByProperty:function(property){
 									return _getValidationsByProperty(this,property);
@@ -924,8 +957,7 @@ Notes:
 												}
 												<!--- get one-to-many, many-to-many via REST --->
 												,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
-													var collection = [];
-													
+													var thisEntityInstance = this;
 													if(angular.isDefined(this.$$get#local.entity.getClassName()#ID())){
 														var options = {
 															filterGroupsConfig:angular.toJson([{
@@ -940,24 +972,22 @@ Notes:
 															allRecords:true
 														};
 														
-														collection = (function(thisEntityInstance,options){
-															var collection = [];
-															var collectionPromise = slatwallService.getEntity('#local.property.cfc#',options);
-															collectionPromise.then(function(response){
-																for(var i in response.records){
-																	var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
-																	entityInstance.$$init(response.records[i]);
-																	for(var key in entityInstance.data){
-																		thisEntityInstance.data['#local.property.name#['+i+']'+'.'+key] = entityInstance.data[key];
-																		
-																	}
-																	collection.push(entityInstance);
+														var collectionPromise = slatwallService.getEntity('#local.property.cfc#',options);
+														collectionPromise.then(function(response){
+															<!---returns array of related objects --->
+															for(var i in response.records){
+																<!---creates new instance --->
+																var entityInstance = thisEntityInstance['$$add'+thisEntityInstance.metaData['#local.property.name#'].cfc]();
+																entityInstance.$$init(response.records[i]);
+																if(angular.isUndefined(thisEntityInstance['#local.property.name#'])){
+																	thisEntityInstance['#local.property.name#'] = [];
 																}
-															});
-															return collection;
-														})(this,options);
+																thisEntityInstance['#local.property.name#'].push(entityInstance);
+															}
+														});
 													}
-													return collection;
+													
+													return collectionPromise;
 												}
 											<cfelse>
 												,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {

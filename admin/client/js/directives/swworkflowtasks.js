@@ -26,7 +26,10 @@ angular.module('slatwalladmin')
 				scope.propertiesList = {};
 					
 				scope.getWorkflowTasks = function(){
-					scope.workflowTasks = scope.workflow.$$getWorkflowTasks();
+					var workflowTasksPromise = scope.workflow.$$getWorkflowTasks();
+					workflowTasksPromise.then(function(){
+						scope.workflowTasks = scope.workflow.data.workflowTasks;
+					});
 					$log.debug(scope.workflowTasks);
 				};
 				
@@ -44,22 +47,19 @@ angular.module('slatwalladmin')
 					if(angular.isString(workflowTask.data.taskConditionsConfig)){
 						workflowTask.data.taskConditionsConfig = angular.fromJson(workflowTask.data.taskConditionsConfig);
 					}
-					if(workflowTask.$$isPersisted()){
-						var workflowTaskActions = workflowTask.$$getWorkflowTaskActions();
-						workflowTask.data.workflowTaskActions = workflowTaskActions;
-					}else{
-						workflowTask.data.workflowTaskActions = [];
-					}
 				};
 				
 				scope.removeWorkflowTask = function(workflowTask){
-					if(workflowTask === scope.workflowTasks.selectedTask){
-						delete scope.workflowTasks.selectedTask;
-					}
-					scope.workflowTasks.splice(workflowTask.$$index,1);
-					for(var i in scope.workflowTasks){
-						scope.workflowTasks[i].$$index = i;
-					}
+					var deletePromise = workflowTask.$$delete();
+		    		deletePromise.then(function(){
+						if(workflowTask === scope.workflowTasks.selectedTask){
+							delete scope.workflowTasks.selectedTask;
+						}
+						scope.workflowTasks.splice(workflowTask.$$index,1);
+						for(var i in scope.workflowTasks){
+							scope.workflowTasks[i].$$index = i;
+						}
+					});
 				};
 				
 				scope.filterPropertiesList = {};
