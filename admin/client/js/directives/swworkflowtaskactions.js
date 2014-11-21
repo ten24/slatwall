@@ -11,17 +11,24 @@ angular.module('slatwalladmin')
 		return {
 			restrict: 'AE',
 			scope:{
-				workflowTaskActions:"="
+				workflowTask:"="
 			},
 			templateUrl:workflowPartialsPath+"workflowtaskactions.html",
 			link: function(scope, element,attrs){
 				$log.debug('workflow task actions init');	
 				scope.openActions = false;
 				
+				scope.getWorkflowTaskActions = function(){
+					console.log(scope.workflowTask);
+					scope.workflowTaskActions = scope.workflowTask.$$getWorkflowTaskActions();
+					$log.debug(scope.workflowTaskActions);
+				};
+				
+				scope.getWorkflowTaskActions();
+				
 				scope.addWorkflowTaskAction = function(){
-					var workflowTaskAction = $slatwall.newWorkflowTaskAction();
+					var workflowTaskAction = scope.workflowTask.$$addWorkflowTaskAction();
 					scope.selectWorkflowTaskAction(workflowTaskAction);
-					scope.workflowTaskActions.push(workflowTaskAction);
 				};
 				
 				scope.selectWorkflowTaskAction = function(workflowTaskAction){

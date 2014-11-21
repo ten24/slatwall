@@ -21,23 +21,21 @@ angular.module('slatwalladmin')
 			link: function(scope, element,attrs){
 				
 				$log.debug('workflow tasks init');	
-				$log.debug(scope);
 				scope.workflowPartialsPath = workflowPartialsPath;
 				
 				scope.propertiesList = {};
 					
 				scope.getWorkflowTasks = function(){
 					scope.workflowTasks = scope.workflow.$$getWorkflowTasks();
+					$log.debug(scope.workflowTasks);
 				};
 				
 				scope.getWorkflowTasks();
 				
 				scope.addWorkflowTask = function(){
 					$log.debug('addWorkflowTasks');
-					var newWorkflowTask = $slatwall.newWorkflowTask();
-					newWorkflowTask.data.workflow = scope.workflow.data;
+					var newWorkflowTask = scope.workflow.$$addWorkflowTask();
 					scope.selectWorkflowTask(newWorkflowTask);
-					scope.workflowTasks.push(newWorkflowTask);
 					$log.debug(scope.workflowTasks);
 				};
 				

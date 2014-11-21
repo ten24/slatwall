@@ -3,7 +3,7 @@
 
 	<div class="s-bundle-add-items s-workflow-objs">
 		<ul class="list-unstyled s-order-item-options s-negative-obj">
-			<span ng-repeat="workflowTask in workflowTasks">
+			<span ng-repeat="workflowTask in workflowTasks" ng-init="workflowTask.index = $index">
 				<li class="s-bundle-add-obj s-no-edit" ng-show="workflowTask.$$isPersisted()">
 					<ul class="list-unstyled list-inline">
 						<li class="s-item-type s-tooltip">{{$index}}</li>

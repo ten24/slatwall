@@ -48,8 +48,9 @@
 				data-object="workflowTaskActions.selectedTaskAction"
 				data-context="save"
 	>
+		<input type="text" name="workflowTask[{{workflowTaskActions.selectedTaskAction.index}}]" ng-model="workflowTaskActions.selectedTaskAction.data.workflowTask"/> 
 		<div class="row">
-			<h4> Add Action 
+			<h4> Add Action {{workflowTaskActions.selectedTaskAction.data.actionType}}
 				<i 	class="fa fa-times" 
 					data-toggle="collapse" 
 					data-target="#j-add-action-b"
@@ -86,7 +87,7 @@
 	
 						<!--- Filter Criteria Start --->
 						<div 	class="s-filter-group-item"
-								ng-if="workflowTaskActions.selectedTaskAction.actionType === 'Print'"
+								ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'print'"
 						>
 	
 							<h4>Print Template</h4>
@@ -164,7 +165,7 @@
 	
 						<!--- Filter Criteria Start --->
 						<div 	class="s-filter-group-item" 
-								ng-if="workflowTaskActions.selectedTaskAction.actionType === 'Update'"
+								ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'update'"
 						>
 	
 							<h4>Update Data</h4>
@@ -209,7 +210,7 @@
 	
 						<!--- Filter Criteria Start --->
 						<div 	class="s-filter-group-item"
-								ng-if="workflowTaskActions.selectedTaskAction.actionType === 'Process'"
+								ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'process'"
 						>
 	
 							<h4>Dynamic Numeric</h4>
@@ -234,7 +235,7 @@
 	
 						<!--- Filter Criteria Start --->
 						<div 	class="s-filter-group-item"
-								ng-if="workflowTaskActions.selectedTaskAction.actionType === 'Delete'"
+								ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'delete'"
 						>
 							<h4>Delete</h4>
 							<div class="form-group form-group-sm s-checkbox">

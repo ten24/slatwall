@@ -599,9 +599,15 @@ Notes:
 			    	var _save = function(entityInstance){
 			    		console.log('save');
 			    		console.log(entityInstance);
+			    		/*loop over forms for dirty values by object*/
 			    		var modifiedData = _getModifiedData(entityInstance);
 			    		var entityName = entityInstance.metaData.className;
 			    		var entityID = entityInstance.$$getID();
+			    		if(entityID === ""){
+			    			/*check if the object has a parent*/
+			    		}
+			    		
+			    		
 			    		var params = modifiedData;
 			    		var context = 'save';
 			    		<!---validate based on context --->
@@ -876,8 +882,21 @@ Notes:
 													return null;
 												}
 											<cfelseif listFindNoCase('one-to-many,many-to-many', local.property.fieldtype)>
+												<!--- add method --->
+												,$$add#ReReplace(local.property.singularname,"\b(\w)","\u\1","ALL")#:function() {
+													var entityInstance = slatwallService.newEntity(this.metaData['#local.property.name#'].cfc);
+													entityInstance.data[this.metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1)] = this;
+													if(angular.isUndefined(this.data['#local.property.name#'])){
+														this.data['#local.property.name#'] = [];
+													}
+													
+													this.data['#local.property.name#'].push(entityInstance);
+													return entityInstance;
+												}
 												<!--- get one-to-many, many-to-many via REST --->
 												,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
+													var collection = [];
+													
 													if(angular.isDefined(this.$$get#local.entity.getClassName()#ID())){
 														var options = {
 															filterGroupsConfig:angular.toJson([{
@@ -892,7 +911,7 @@ Notes:
 															allRecords:true
 														};
 														
-														var collection = (function(thisEntityInstance,options){
+														collection = (function(thisEntityInstance,options){
 															var collection = [];
 															var collectionPromise = slatwallService.getEntity('#local.property.cfc#',options);
 															collectionPromise.then(function(response){
@@ -901,15 +920,17 @@ Notes:
 																	entityInstance.$$init(response.records[i]);
 																	for(var key in entityInstance.data){
 																		thisEntityInstance.data['#local.property.name#['+i+']'+'.'+key] = entityInstance.data[key];
+																		
 																	}
 																	collection.push(entityInstance);
 																}
 															});
 															return collection;
 														})(this,options);
-														
-														return collection;
 													}
+														console.log('collection');
+														console.log(collection);
+													return collection;
 												}
 											<cfelse>
 												,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {

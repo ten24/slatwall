@@ -120,11 +120,8 @@ angular.module('slatwalladmin')
 					}
 					if(scope.propertyDisplay.fieldType === 'yesno' || scope.propertyDisplay.fieldType === 'hidden'){
 						//format value
-						console.log('format');
-						console.log(scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
 						/*convert boolean to number*/
 						scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.object.data[scope.propertyDisplay.property] === 'YES ' || scope.propertyDisplay.object.data[scope.propertyDisplay.property] == 1 ? 1 : 0;
-						console.log(scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
 						scope.formFieldChanged = function(option){
 							$log.debug('formfieldchanged');
 							$log.debug(option);

@@ -23,6 +23,8 @@
 							data-object="workflowTasks.selectedTask"	
 							data-context="save"
 						>
+							<input type="text" name="workflow[{{workflowTask.selectedTask.index}}]" ng-model="workflowTasks.selectedTask.data.workflow"/> 
+		
 							<div class="row">
 								<div class="col-xs-4">
 		
@@ -80,7 +82,7 @@
 				<div class="tab-pane" id="j-actions-2" ng-if="taskActionsTabOpen">
 					
 					<sw-workflow-task-actions
-						data-workflow-task-actions="workflowTasks.selectedTask.data.workflowTaskActions"
+						data-workflow-task="workflowTasks.selectedTask"
 					>
 					</sw-workflow-task-actions>
 				</div>
