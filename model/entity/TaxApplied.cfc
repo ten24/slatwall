@@ -58,6 +58,13 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	property name="taxRate" ormtype="big_decimal" hb_formatType="percentage";
 	property name="appliedType" ormtype="string";
 	property name="currencyCode" ormtype="string" length="3";
+	property name="taxStreetAddress" hb_populateEnabled="public" ormtype="string";
+	property name="taxStreet2Address" hb_populateEnabled="public" ormtype="string";
+	property name="taxLocality" hb_populateEnabled="public" ormtype="string";
+	property name="taxCity" hb_populateEnabled="public" ormtype="string";
+	property name="taxStateCode" hb_populateEnabled="public" ormtype="string";
+	property name="taxPostalCode" hb_populateEnabled="public" ormtype="string";
+	property name="taxCountryCode" hb_populateEnabled="public" ormtype="string";
 	
 	//Persitent Integration Properties
 	property name="taxImpositionID" ormtype="string";
