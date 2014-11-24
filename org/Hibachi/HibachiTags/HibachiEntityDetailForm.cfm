@@ -7,7 +7,7 @@
 	<cfparam name="attributes.saveActionQueryString" type="string" default="" />
 	<cfparam name="attributes.saveActionHash" type="string" default="" />
 	<cfparam name="attributes.edit" type="boolean" default="false" />
-	<cfparam name="attributes.enctype" type="string" default="application/x-www-form-urlencoded">
+	<cfparam name="attributes.enctype" type="string" default="multipart/form-data">
 	<cfparam name="attributes.sRedirectURL" type="string" default="#request.context.entityActionDetails.sRedirectURL#">
 	<cfparam name="attributes.sRedirectAction" type="string" default="#request.context.entityActionDetails.sRedirectAction#">
 	<cfparam name="attributes.sRenderItem" type="string" default="#request.context.entityActionDetails.sRenderItem#">
