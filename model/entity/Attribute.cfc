@@ -90,6 +90,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	
 	// Non-Persistent Properties
 	property name="attributeInputTypeOptions" persistent="false";
+	property name="attributeValueUploadDirectory" persistent="false";
 	property name="formFieldType" persistent="false";
 	property name="relatedObjectOptions" persistent="false";
 	property name="validationTypeOptions" persistent="false";
@@ -117,6 +118,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 			{value="checkboxGroup", name=rbKey("entity.attribute.attributeInputType.checkboxGroup")},
 			{value="date", name=rbKey("entity.attribute.attributeInputType.date")},
 			{value="dateTime", name=rbKey("entity.attribute.attributeInputType.dateTime")},
+			{value="file", name=rbKey("entity.attribute.attributeInputType.file")},
 			{value="multiselect", name=rbKey("entity.attribute.attributeInputType.multiselect")},
 			{value="password", name=rbKey("entity.attribute.attributeInputType.password")},
 			{value="radioGroup", name=rbKey("entity.attribute.attributeInputType.radioGroup")},
@@ -131,6 +133,16 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 		];
     }
     
+    public string function getAttributeValueUploadDirectory() {
+		var uploadDirectory = setting('globalAssetsFileFolderPath') & "/";
+		
+		if(!isNull(getAttributeCode()) && len(getAttributeCode())) {
+			uploadDirectory &= "#lcase(getAttributeCode())#/";
+		}
+		
+		return uploadDirectory;
+	}
+	
 	public string function getFormFieldType() {
 		if(!structKeyExists(variables, "formFieldType")) {
 			variables.formFieldType = "text";
