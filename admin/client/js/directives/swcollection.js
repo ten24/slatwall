@@ -4,18 +4,20 @@ angular.module('slatwalladmin')
 	'$http',
 	'$compile',
 	'$log',
+	'collectionPartialsPath',
+	'collectionService',
 	function(
 		$http,
 		$compile,
-		$log
+		$log,
+		collectionPartialsPath,
+		collectionService
 	){
 		return {
 			restrict: 'A',
-			//require:"",
-			//templateUrl:collectionPartialsPath+"columnitem.html",
-			link: function(scope){
-				scope.toggleCogOpen = false;
-					
+			templateUrl:collectionPartialsPath+"collectiontable.html",
+			link: function(scope,$element,$attrs){
+				scope.toggleCogOpen = $attrs.toggleoption;
 				//Toggles open/close of filters and display options
 				scope.toggleFiltersAndOptions = function(){
 					if(scope.toggleCogOpen === false){
@@ -24,7 +26,6 @@ angular.module('slatwalladmin')
 						scope.toggleCogOpen = false;
 					}
 				}
-
 			}
 		};
 	}
