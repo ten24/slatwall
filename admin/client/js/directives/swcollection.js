@@ -15,7 +15,7 @@ angular.module('slatwalladmin')
 	){
 		return {
 			restrict: 'A',
-			templateUrl:collectionPartialsPath+"collectiontable.html",
+			templateUrl:collectionPartialsPath+"collection.html",
 			link: function(scope,$element,$attrs){
 				scope.toggleCogOpen = $attrs.toggleoption;
 				//Toggles open/close of filters and display options
