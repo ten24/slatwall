@@ -583,7 +583,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 				}
 	
 				// Do the upload
-				var uploadData = fileUpload( destination=uploadDirectory, fileField=getAttribute().getAttributeCode(), nameConflict='makeUnique' );
+				var uploadData = fileUpload( uploadDirectory, getAttribute().getAttributeCode(), '*', 'makeUnique' );
 				
 				// Update the property with the serverFile name
 				variables.attributeValue =  uploadData.serverFile;
