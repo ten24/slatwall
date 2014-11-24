@@ -97,6 +97,9 @@ component {
 				omitIndex = true;
 			}
 		}
+		if(right(path,1) neq '/' && right(path,9) neq 'index.cfm'){
+			path &= '/';
+		}
 		// if queryString is a struct, massage it into a string
 		if ( isStruct( queryString ) && structCount( queryString ) ) {
 			var q = '';
