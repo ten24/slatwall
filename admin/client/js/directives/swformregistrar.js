@@ -11,8 +11,6 @@ angular.module('slatwalladmin')
 				/*add form info at the form level*/
 				formController.$$swFormInfo={
 					object:scope.object,
-					parentForm:scope.parentForm,
-					parentObject:scope.parentObject,
 					context:scope.context
 				};
 				scope.form = formController;
