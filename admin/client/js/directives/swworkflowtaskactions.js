@@ -18,12 +18,17 @@ angular.module('slatwalladmin')
 				$log.debug('workflow task actions init');	
 				scope.openActions = false;
 				
+				
 				scope.getWorkflowTaskActions = function(){
 					var workflowTaskPromise = scope.workflowTask.$$getWorkflowTaskActions();
 					workflowTaskPromise.then(function(){
-						scope.workflowTaskActions = scope.workflowTask.workflowTaskActions;
+						scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
 						$log.debug(scope.workflowTaskActions);
 					});
+					if(angular.isUndefined(scope.workflowTask.data.workflowTaskActions)){
+						scope.workflowTask.data.workflowTaskActions = [];
+						scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
+					}
 				};
 				
 				scope.getWorkflowTaskActions();
