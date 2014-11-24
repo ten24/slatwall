@@ -13,69 +13,11 @@
 		>
 		</span>--->
 
-	    <!---</span>--->
-	    <div class="row s-header-bar">
-	      <div class="col-md-5 s-header-nav">
-	        <ul class="nav nav-tabs" role="tablist">
-	          <li class="active"><a href="##j-filters" role="tab" data-toggle="tab">FILTERS <span>(<span ng-bind="filterCount()"></span>)</span></a></li>
-	          <li><a href="##j-display-options" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>
-	        </ul>
-	      </div>
-	    </div>
-	    <!--- //Header nav with title end --->
-
-	    <!--- Tab panes for menu options start--->
-
-	    <div class="row s-options">
-	      <div class="tab-content" id="j-property-box">
-
-	        <div class="tab-pane active" id="j-filters">
-	          <div class="s-setting-options">
-	            <div class="row s-setting-options-body">
-
-	              <!--- Start Filter Group --->
-	              <div class="col-xs-12 s-filters-selected">
-	                <div class="row">
-	                	<!---filterGroups gets taken apart here --->
-	                	<ul class="col-xs-12 list-unstyled"
-	                		sw-filter-groups
-	                		data-filter-group="collectionConfig.filterGroups[0]"
-	                		data-filter-group-item="collectionConfig.filterGroups[0].filterGroup"
-	                		data-filter-properties-list="filterPropertiesList"
-	                		data-save-collection="saveCollection()"
-	                		>
-	                	</ul>
-	                </div>
-	                <!--- //New Filter Panel --->
-	              </div>
-	              <!--- //End Filter Group --->
-	            </div>
-	          </div>
-	        </div><!--- //Tab Pane --->
-	        <div class="tab-pane s-display-options" id="j-display-options">
-				<span  sw-display-options
-					data-columns="collectionConfig.columns"
-					data-properties-list="filterPropertiesList"
-					data-save-collection="saveCollection()"
-					data-callbacks="callbacks"
-					data-base-entity-alias="collectionConfig.baseEntityAlias"
-				>
-					<li class="list-group-item"
-							ng-repeat="column in collectionConfig.columns"
-							sw-column-item
-							data-column="column"
-							data-column-index="$index"
-							data-save-collection="saveCollection()"
-							data-properties-list="filterPropertiesList"
-							data-callbacks="callbacks"
-
-					></li>
-				</span >
-			</div><!--- //Tab Pane --->
-	      </div>
-
-	    </div><!--- //Row --->
-		
+	   
+		<!---</span>--->
+		<!--- Collection Directive Start --->
+		<span sw-collection>
+			
 	    <!--- //Tab panes for menu options end--->
 	    <div class="s-table-header-nav">
 	    	<div class="col-md-12 s-header-nav">
@@ -119,14 +61,88 @@
 						>
 						</span>
 					</li>
+					<li>
+						<button class="btn btn-default btn-sm" target="_self" ng-click="toggleFiltersAndOptions()">
+							<i class="fa fa-cog"></i>
+						</button>
+					</li>
 				</ul>
 			</div>
-	 		</div>
+	 		
+			
+		  </div>
 		</div>
 	 	<span 	sw-export-action
 
 	 	>
 	 	</span>
+
+		
+ 		<!--- Filters and Display Options --->
+		<div ng-model="toggleCogOpen" ng-show="toggleCogOpen">
+		    <div class="row s-header-bar">
+		      <div class="col-md-5 s-header-nav">
+		        <ul class="nav nav-tabs" role="tablist">
+		          <li class="active"><a href="##j-filters" role="tab" data-toggle="tab">FILTERS <span>(<span ng-bind="filterCount()"></span>)</span></a></li>
+		          <li><a href="##j-display-options" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>
+		        </ul>
+		      </div>
+		    </div>
+		    <!--- //Header nav with title end --->
+	
+		    <!--- Tab panes for menu options start--->
+	
+		    <div class="row s-options">
+		      <div class="tab-content" id="j-property-box">
+	
+		        <div class="tab-pane active" id="j-filters">
+		          <div class="s-setting-options">
+		            <div class="row s-setting-options-body">
+	
+		              <!--- Start Filter Group --->
+		              <div class="col-xs-12 s-filters-selected">
+		                <div class="row">
+		                	<!---filterGroups gets taken apart here --->
+		                	<ul class="col-xs-12 list-unstyled"
+		                		sw-filter-groups
+		                		data-filter-group="collectionConfig.filterGroups[0]"
+		                		data-filter-group-item="collectionConfig.filterGroups[0].filterGroup"
+		                		data-filter-properties-list="filterPropertiesList"
+		                		data-save-collection="saveCollection()"
+		                		>
+		                	</ul>
+		                </div>
+		                <!--- //New Filter Panel --->
+		              </div>
+		              <!--- //End Filter Group --->
+		            </div>
+		          </div>
+		        </div><!--- //Tab Pane --->
+		        <div class="tab-pane s-display-options" id="j-display-options">
+					<span  sw-display-options
+						data-columns="collectionConfig.columns"
+						data-properties-list="filterPropertiesList"
+						data-save-collection="saveCollection()"
+						data-callbacks="callbacks"
+						data-base-entity-alias="collectionConfig.baseEntityAlias"
+					>
+						<li class="list-group-item"
+								ng-repeat="column in collectionConfig.columns"
+								sw-column-item
+								data-column="column"
+								data-column-index="$index"
+								data-save-collection="saveCollection()"
+								data-properties-list="filterPropertiesList"
+								data-callbacks="callbacks"
+	
+						></li>
+					</span >
+				</div><!--- //Tab Pane --->
+		      </div>
+	
+		    </div><!--- //Row --->
+		</div><!--- toggleCogOpen --->
+
 
 	    <!--delete batch action-->
 	    <div id="j-delete-link" class="row collapse s-batch-options">
@@ -221,5 +237,8 @@
 	        <div class="dataTables_info" id="example3_info" >Showing <b><span ng-bind="pageStart()"><!--- record start ---></span> to <span ng-bind="pageEnd()"><!---records end ---><span></b> of <span ng-bind="recordsCount()"><!--- records Count ---></span> entries</div>
 	      </div>
 	    </div>
+		
+		</span> <!--- sw-collection end --->
+		
 	</div>
 </div>
