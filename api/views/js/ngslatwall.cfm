@@ -53,7 +53,7 @@ Notes:
 <cfsavecontent variable="local.jsOutput">
 	<cfoutput>
 		angular.module('ngSlatwall',[])
-		.provider('$slatwall',[
+		.provider('$slatwall',[ 
 		function(){
 			var _deferred = {};
 			
@@ -72,7 +72,7 @@ Notes:
 			
 			return {
 				
-			    $get:['$q','$http','$log', function ($q,$http,$log)
+			    $get:['$q','$http','$log', 'formService', function ($q,$http,$log,formService)
 			    {
 			    	var slatwallService = {
 			    		//basic entity getter where id is optional, returns a promise
@@ -633,6 +633,7 @@ Notes:
 			    		var modifiedData = _getModifiedData(entityInstance);
 			    		
 			    		var params = modifiedData;
+			    		/*
 			    		<!---figure out what IDs to return for persisted data --->
 			    		var propertyIdentifiersArray = [];
 			    		for(var key in params){
@@ -654,7 +655,7 @@ Notes:
 							//entityInstance.form.$setPristine();
 							_addReturnedIDs(returnedIDs,entityInstance);
 						});
-						return savePromise;
+						return savePromise;*/
 			    	}
 			    	
 			    	var _getModifiedData = function(entityInstance){
@@ -665,55 +666,128 @@ Notes:
 			    		return modifiedData;
 			    	}
 			    	
-			    	var getModifiedDataByInstance = function(entityInstance,parentPath){
+			    	var getObjectSaveLevel = function(entityInstance){
+			    		var objectLevel = entityInstance;
+			    		<!--- get entity id --->
+			    		var entityID = entityInstance.$$getID();	
+			    		<!---check we have an entityID and whether a parent object exists --->
+			    		if(angular.isDefined(entityInstance.data[entityInstance.parentObject]) && (angular.isUndefined(entityID) || !entityID.trim().length)){
+			    			<!--- if id is undefined then set the object save level --->
+
+			    			var parentEntityInstance = entityInstance.data[entityInstance.parentObject]; 
+			    			var parentEntityID = parentEntityInstance.$$getID();
+			    			if(angular.isUndefined(parentEntityID) || !parentEntityID.trim().length){
+			    				objectLevel = getObjectSaveLevel(parentEntityInstance);
+			    			}
+		    			}
+
+		    			return objectLevel;
+			    	}
+
+			    	var validateObject = function(entityInstance){
 			    		var modifiedData = {};
-			    		
-			    		<!---set object leve as the starting object --->
-			    		var objectLevel = entityInstance.metaData.className;
-			    		
-			    		<!---get all forms at the objects level --->
-			    		var forms = entityInstance.forms;
-			    		
-			    		<!---find top level and validate all forms on the way --->
-			    		
-			    		<!---
-			    		/*if(angular.isUndefined(parentPath)){
-			    			parentPath = '';
-			    			modifiedData[entityInstance.$$getIDName()] = entityInstance.$$getID();
-			    		}*/
-			    		
-			    		for(var f in forms){
+
+			    		<!--- after finding the object level we will be saving at perform dirty checking object save level--->
+						var forms = entityInstance.forms;
+						for(var f in forms){
 			    			var form = forms[f];
 				    		for(var key in form){
 				    			if(key.charAt(0) !== '$'){
 				    				var inputField = form[key];
 				    				if(inputField.$valid === true && inputField.$dirty === true){
 				    					<!--- set modifiedData --->
-			    						<!---modifiedData[key] = form[key].$modelValue;--->
+			    						modifiedData[key] = form[key].$modelValue;
 				    				}
 				    			}
 				    		}
 			    		}
+			    		modifiedData[entityInstance.$$getIDName()] = entityInstance.$$getID();
+						<!--- check if we have a parent with an id that we check, and all children --->
+						if(angular.isDefined(entityInstance.parentObject)){
+							var parentObject = entityInstance.data[entityInstance.parentObject];
+							var forms = parentObject.forms;
+							for(var f in forms){
+				    			var form = forms[f];
+					    		for(var key in form){
+					    			if(key.charAt(0) !== '$'){
+					    				var inputField = form[key];
+					    				if(inputField.$valid === true && inputField.$dirty === true){
+					    					<!--- set modifiedData --->
+				    						modifiedData[parentObject.metaData.className+'.'+key] = form[key].$modelValue;
+					    				}
+					    			}
+					    		}
+				    		}
+
+				    		modifiedData[parentObject.metaData.className.charAt(0).toLowerCase() + parentObject.metaData.className.slice(1)+'.'+parentObject.$$getIDName()] = parentObject.$$getID();
+						}
+
+						<!--- dirty check all children --->
+						var data = validateChildren(entityInstance);
+						angular.extend(modifiedData,data);
+						return modifiedData;
+			    	}
+
+			    	<!--- validate children --->
+			    	var validateChildren = function(entityInstance){
+			    		var data = {}
+			    		<!--- check if we even have children --->
+						if(angular.isDefined(entityInstance.children) && entityInstance.children.length){
+							<!--- loop through children --->
+							data = getDataFromChildren(entityInstance);
+						}
+						return data;
+			    	}
+
+			    	var getDataFromChildren = function(entityInstance,path){
+						var data = {};
+						
+						if(angular.isUndefined(path)){
+							path = '';
+						}
+
+			    		for(var c in entityInstance.children){
+			    			var child = entityInstance.children[c];
+
+							<!--- get forms related to the child --->
+							var forms = formService.getFormsByObjectName(child.cfc);
+							if(forms.length){
+								<!--- validate forms --->
+								var object = forms[0].$$swFormInfo.object;
+								path = path + child.name+'['+(object.$$index+1)+'].';
+								for(var f in forms){
+					    			var form = forms[f];
+						    		for(var key in form){
+						    			if(key.charAt(0) !== '$'){
+						    				var inputField = form[key];
+						    				if(inputField.$valid === true && inputField.$dirty === true){
+						    					<!--- set modifiedData --->
+					    						data[path+ key] = form[key].$modelValue;
+						    				}
+						    			}
+						    		}
+								}
+								data[path+object.$$getIDName()] = object.$$getID();
+								if(angular.isDefined(object.children) && entityInstance.object.length){
+									var parentData = getDataFromChildren(object,path);
+									angular.extend(data,parentData);
+								}
+							}
+						}
+						return data;
+			    	}
+			    	
+			    	var getModifiedDataByInstance = function(entityInstance){
+			    		var modifiedData = {};
 			    		
-			    		var entityID = entityInstance.$$getID();	
+			    		<!---get all forms at the objects level --->
 			    		
-			    		if(entityID === ""){
-			    			<!---/*check if the object has a parent*/--->
-			    			if(angular.isDefined(entityInstance.data[entityInstance.parentObject])){
-			    				<!---get parent instance --->
-			    				
-			    				var parentEntityInstance = entityInstance.data[entityInstance.parentObject];
-			    				parentPath = entityInstance.parentObject+'.'+parentPath;
-			    				var parentModifiedData = getModifiedDataByInstance(parentEntityInstance,parentPath);
-			    				for(var p in parentModifiedData){
-			    					modifiedData[entityInstance.parentObject+'.'+p] = parentModifiedData[p];
-			    				}
-			    				//var parentEntityInstanceName = parentEntityInstance.metaData.className;
-			    				//var parentEntityInstanceID = parentEntityInstance.$$getID();
-			    				modifiedData[entityInstance.parentObject+'.'+parentEntityInstance.$$getIDName()] =  parentEntityInstance.$$getID();
-			    			}
-			    		}--->
 			    		
+			    		<!---find top level and validate all forms on the way --->
+			    		var objectSaveLevel = getObjectSaveLevel(entityInstance);
+						
+						modifiedData = validateObject(objectSaveLevel);
+						
 			    		return modifiedData;
 			    	}
 			    	
@@ -959,7 +1033,16 @@ Notes:
 													entityInstance.data[this.metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1)] = this;
 													if(angular.isDefined(this.metaData['#local.property.name#'].cascade)){
 														entityInstance.parentObject = this.metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1);
-													}
+														if(angular.isUndefined(this.children)){
+															this.children = [];
+														}
+
+														var child = this.metaData['#local.property.name#'];
+														
+														if(this.children.indexOf(child) === -1){
+															this.children.push(child);
+														}
+																											}
 													if(angular.isUndefined(this.data['#local.property.name#'])){
 														this.data['#local.property.name#'] = [];
 													}

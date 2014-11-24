@@ -1,6 +1,5 @@
 
 <div class="s-body-box">
-
 	<div class="s-bundle-add-items s-workflow-objs">
 		<ul class="list-unstyled s-order-item-options s-negative-obj">
 			<span ng-repeat="workflowTask in workflowTasks" ng-init="workflowTask.index = $index">
@@ -34,11 +33,6 @@
 					</ul>
 					<div class="clearfix"></div>
 				</li>
-				<div class="s-bundle-edit-obj collapse" id="s-add-obj-1" ng-if="workflowTasks.selectedTrigger.index === $index && workflowTasks.selectedTrigger.$$isPersisted()">
-	
-					<span ng-include="{{workflowPartialsPath}}addeditworkflowtask.html"></span>
-	
-				</div>
 			</span>
 		</ul>
 	</div>
