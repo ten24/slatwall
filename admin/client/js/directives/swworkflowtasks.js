@@ -29,7 +29,6 @@ angular.module('slatwalladmin')
 					var workflowTasksPromise = scope.workflow.$$getWorkflowTasks();
 					workflowTasksPromise.then(function(){
 						scope.workflowTasks = scope.workflow.data.workflowTasks;
-						console.log(scope.workflowTasks);
 					});
 					if(angular.isUndefined(scope.workflow.data.workflowTasks)){
 						scope.workflow.data.workflowTasks = [];
@@ -38,6 +37,13 @@ angular.module('slatwalladmin')
 					
 				};
 				
+				scope.saveWorkflowTask = function(){
+					var savePromise = scope.workflow.workflowTasks.selectedTask.$$save();
+					savePromise.then(function(){
+						scope.getWorkflowTasks();			
+					});
+				}
+
 				scope.getWorkflowTasks();
 				
 				scope.addWorkflowTask = function(){

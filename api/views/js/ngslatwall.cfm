@@ -627,15 +627,17 @@ Notes:
 			    		console.log('save');
 			    		console.log(entityInstance);
 			    		
-			    		var entityName = entityInstance.metaData.className;
 			    		var entityID = entityInstance.$$getID();
 			    		
 			    		var modifiedData = _getModifiedData(entityInstance);
 			    		
-			    		var params = modifiedData;
-			    		/*
+			    		var params = modifiedData.value;
+			    		console.log(modifiedData);
+			    		var entityName = modifiedData.objectLevel.metaData.className;
+			    		var context = 'save';
+			    		
 			    		<!---figure out what IDs to return for persisted data --->
-			    		var propertyIdentifiersArray = [];
+			    		<!---var propertyIdentifiersArray = [];
 			    		for(var key in params){
 			    			if(key.slice(-2) === 'ID'){
 			    				if(params[key] === ''){
@@ -643,19 +645,25 @@ Notes:
 			    				}
 			    			}
 			    		}
-			    		params.propertyIdentifiersList = propertyIdentifiersArray.join(",") || '';
-			    		var context = 'save';
-			    		<!---validate based on context --->
-			    		<!---probably need to validat against data to make sure existing data passes and then against modified? --->
+			    		params.propertyIdentifiersList = propertyIdentifiersArray.join(",") || '';--->
 			    		
-			    		var savePromise = slatwallService.saveEntity(entityName,entityID,params,context);
+			    		var savePromise = slatwallService.saveEntity(entityName,null,params,context);
 			    		savePromise.then(function(response){
 			    			var returnedIDs = response.data;
 			    			<!--- TODO: restet form --->
 							//entityInstance.form.$setPristine();
-							_addReturnedIDs(returnedIDs,entityInstance);
+							//_addReturnedIDs(returnedIDs,entityInstance);
 						});
-						return savePromise;*/
+						return savePromise;
+			    		/*
+			    		
+			    		
+			    		
+			    		
+			    		<!---validate based on context --->
+			    		<!---probably need to validat against data to make sure existing data passes and then against modified? --->
+			    		
+			    		*/
 			    	}
 			    	
 			    	var _getModifiedData = function(entityInstance){
@@ -786,8 +794,12 @@ Notes:
 			    		<!---find top level and validate all forms on the way --->
 			    		var objectSaveLevel = getObjectSaveLevel(entityInstance);
 						
-						modifiedData = validateObject(objectSaveLevel);
+						var value = validateObject(objectSaveLevel);
 						
+						modifiedData = {
+							objectLevel:objectSaveLevel,
+							value:value	
+						}
 			    		return modifiedData;
 			    	}
 			    	
