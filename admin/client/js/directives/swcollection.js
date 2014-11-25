@@ -25,7 +25,7 @@ angular.module('slatwalladmin')
 					} else {
 						scope.toggleCogOpen = false;
 					}
-				}
+				};
 			}
 		};
 	}
