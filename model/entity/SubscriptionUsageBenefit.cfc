@@ -84,7 +84,7 @@ component entityname="SlatwallSubscriptionUsageBenefit" table="SwSubsUsageBenefi
 	
 	public numeric function getCurrentUseCount() {
 		var subscriptionUsageBenefitAccountSmartList = getService("SubscriptionService").getSubscriptionUsageBenefitAccountSmartList();
-		subscriptionUsageBenefitAccountSmartList.addFilter(propertyIdentifier="subscriptionUsageBenefit_subscriptionUsageBenefitID", value=variables.subscriptionUsageBenefitID);
+		subscriptionUsageBenefitAccountSmartList.addFilter(propertyIdentifier="subscriptionUsageBenefit.subscriptionUsageBenefitID", value=variables.subscriptionUsageBenefitID);
 		return subscriptionUsageBenefitAccountSmartList.getRecordsCount();
 	}
 	
