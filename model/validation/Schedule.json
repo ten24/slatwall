@@ -9,6 +9,6 @@
 		"recuringType":			[{"contexts":"save","required":true}],
 		"frequencyInterval":	[{"contexts":"save","conditions":"frequencyEndTimeExists","required":true}],
 		"frequencyStartTime":	[{"contexts":"save","required":true}],
-		"frequencyEndTime":		[{"contexts":"save","conditions":"frequencyEndTimeExists","gtProperty":"frequencyStartTime"}]
+		"frequencyEndTime":		[{"contexts":"save","conditions":"frequencyEndTimeExists","gtDateTimeProperty":"frequencyStartTime"}]
 	}
 }

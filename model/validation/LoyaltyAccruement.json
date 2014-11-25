@@ -11,7 +11,7 @@
 	"properties":{
 		"pointQuantity":			[{"contexts":"save","required":true,"dataType":"numeric"}],
 		"startDateTime":			[{"contexts":"save","dataType":"date"}],
-		"endDateTime":				[{"contexts":"save","dataType":"date"},{"contexts":"save","conditions":"needsEndAfterStart","gtProperty":"startDateTime"}],
+		"endDateTime":				[{"contexts":"save","dataType":"date"},{"contexts":"save","conditions":"needsEndAfterStart","gtDateTimeProperty":"startDateTime"}],
 		"pointType":				[{"contexts":"save","conditions":"accruementTypeEnroll","inList":"fixed"}]
 	}
 }
