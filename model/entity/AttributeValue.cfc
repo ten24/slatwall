@@ -105,7 +105,8 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	
 	// Non-Persistent Properties
 	property name="attributeValueOptions" persistent="false";
-
+	property name="attributeValueFileURL" persistent="false";
+	
 	public void function setupEncryptedProperties() {
 		if(!isNull(getAttribute()) && !isNull(getAttribute().getAttributeInputType()) && getAttribute().getAttributeInputType() == "password" && structKeyExists(variables, "attributeValue")) {
 			encryptProperty('attributeValue');
@@ -113,6 +114,21 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public string function getAttributeValueFileURL() {
+		if(!isNull(getAttribute())
+			&& !isNull(getAttribute().getAttributeCode())
+			&& len(getAttribute().getAttributeCode())
+			&& !isNull(getAttribute().getAttributeInputType())
+			&& getAttribute().getAttributeInputType() == 'file'
+			&& !isNull(getAttributeValue())
+			&& len(getAttributeValue())) {
+			
+			return getURLFromPath(getAttribute().getAttributeValueUploadDirectory()) & getAttributeValue();
+		}
+		
+		return "";
+	}
 	
 	public array function getAttributeValueOptions() {
 		if(!structKeyExists(variables, "attributeValueOptions")) {
@@ -583,7 +599,41 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	public void function setAttributeValue( any attributeValue ) {
+		
+		// Set the value
 		variables.attributeValue = arguments.attributeValue;
+		
+		// Attempt to upload file for this value if needed
+		if(!isNull(getAttribute())
+			&& !isNull(getAttribute().getAttributeCode())
+			&& len(getAttribute().getAttributeCode())
+			&& !isNull(getAttribute().getAttributeInputType())
+			&& getAttribute().getAttributeInputType() == 'file') {
+				
+			try {
+		
+				// Get the upload directory for the current property
+				var uploadDirectory = getAttribute().getAttributeValueUploadDirectory();
+	
+				// If the directory where this file is going doesn't exists, then create it
+				if(!directoryExists(uploadDirectory)) {
+					directoryCreate(uploadDirectory);
+				}
+	
+				// Do the upload
+				var uploadData = fileUpload( uploadDirectory, getAttribute().getAttributeCode(), '*', 'makeUnique' );
+				
+				// Update the property with the serverFile name
+				variables.attributeValue =  uploadData.serverFile;
+				
+			} catch(any e) {
+				// Add an error if there were any hard errors during upload
+				this.addError('attributeValue', rbKey('validate.fileUpload'));
+			}
+			
+		}
+		
+		// Encrypt attribute value if needed
 		setupEncryptedProperties();
 	}
 	

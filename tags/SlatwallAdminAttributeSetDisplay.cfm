@@ -96,6 +96,11 @@ Notes:
 			<cfset fdAttributes.valueOptionsSmartList = attributes.hibachiScope.getService('hibachiService').getServiceByEntityName( attribute.getRelatedObject() ).invokeMethod( "get#attribute.getRelatedObject()#SmartList" ) />
 		</cfif>
 		
+		<!--- Setup file link --->
+		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'file' and len(fdAttributes.value)>
+			<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
+		</cfif>
+		
 		<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
 	</cfloop>
 </cfif>
