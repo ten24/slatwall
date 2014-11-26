@@ -64,14 +64,15 @@ Notes:
 									cancelQueryString="attributeID=#rc.attribute.getAttributeID()#" />
 		
 		
-		
-		<hb:HibachiEntityDetailGroup object="#rc.attributeOption#">
-			<hb:HibachiEntityDetailItem view="admin:entity/attributeoptiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.attributeOption.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.attributeOption#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
+		<div class="col-md-6">
+			<hb:HibachiEntityDetailGroup object="#rc.attributeOption#">
+				<hb:HibachiEntityDetailItem view="admin:entity/attributeoptiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+				<!--- Custom Attributes --->
+				<cfloop array="#rc.attributeOption.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+					<swa:SlatwallAdminTabCustomAttributes object="#rc.attributeOption#" attributeSet="#attributeSet#" />
+				</cfloop>
+			</hb:HibachiEntityDetailGroup>
+		</div>
 	</hb:HibachiEntityDetailForm>
 	
 	
