@@ -54,7 +54,6 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	
 	<hb:HibachiEntityDetailForm object="#rc.collection#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
 		<div class="s-top-spacer">
