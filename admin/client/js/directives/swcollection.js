@@ -13,21 +13,17 @@ angular.module('slatwalladmin')
 		collectionPartialsPath,
 		collectionService
 	){
+		
 		return {
 			restrict: 'A',
 			templateUrl:collectionPartialsPath+"collection.html",
 			link: function(scope,$element,$attrs){
+				//Defaults Cog to whatever the user passes into the directive
 				scope.toggleCogOpen = $attrs.toggleoption;
-				//Toggles open/close of filters and display options
-				scope.toggleFiltersAndOptions = function(){
-					if(scope.toggleCogOpen === false){
-						scope.toggleCogOpen = true;
-					} else {
-						scope.toggleCogOpen = false;
-					}
-				};
+				scope.toggleCogOpen = false;
 			}
 		};
+
 	}
 ]);
 	
