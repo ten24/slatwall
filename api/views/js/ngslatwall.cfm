@@ -865,6 +865,17 @@ Notes:
 								this.metaData.$$getPropertyHint = function(propertyName){
 									return _getPropertyHint(propertyName,this);
 								}
+
+								this.metaData.$$getManyToManyName = function(singularname){
+									console.log(singularname);
+									console.log(this);
+									var metaData = this;
+									for(var i in metaData){
+										if(metaData[i].fieldtype === 'many-to-many' && metaData[i].singularname === singularname){
+											return metaData[i].name;
+										}
+									}
+								}
 								<!---// @hint public method for returning the name of the field for this property, this is used a lot by the PropertyDisplay --->
 								<!---this.metaData.$$getPropertyFieldName = function(propertyName){
 									return _getPropertyFieldName(propertyName,this);
@@ -1041,20 +1052,34 @@ Notes:
 											<cfelseif listFindNoCase('one-to-many,many-to-many', local.property.fieldtype)>
 												<!--- add method --->
 												,$$add#ReReplace(local.property.singularname,"\b(\w)","\u\1","ALL")#:function() {
+													<!--- create related instance --->
 													var entityInstance = slatwallService.newEntity(this.metaData['#local.property.name#'].cfc);
-													entityInstance.data[this.metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1)] = this;
-													if(angular.isDefined(this.metaData['#local.property.name#'].cascade)){
-														entityInstance.parentObject = this.metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1);
+													var metaData = this.metaData;
+													<!--- one-to-many --->
+													if(metaData['#local.property.name#'].fieldtype === 'one-to-many'){
+														entityInstance.data[metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1)] = this;
+													<!--- many-to-many --->
+													}else if(metaData['#local.property.name#'].fieldtype === 'many-to-many'){
+														<!--- if the array hasn't been defined then create it otherwise retrieve it and push the instance --->
+														var manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1));
+														if(angular.isUndefined(entityInstance.data[manyToManyName])){
+															entityInstance.data[manyToManyName] = [];
+														}
+														entityInstance.data[manyToManyName].push(this);
+													}
+													
+													if(angular.isDefined(metaData['#local.property.name#'].cascade)){
+														entityInstance.parentObject = entityInstance.metaData[metaData.className.charAt(0).toLowerCase() + metaData.className.slice(1)];
 														if(angular.isUndefined(this.children)){
 															this.children = [];
 														}
 
-														var child = this.metaData['#local.property.name#'];
+														var child = metaData['#local.property.name#'];
 														
 														if(this.children.indexOf(child) === -1){
 															this.children.push(child);
 														}
-																											}
+													}
 													if(angular.isUndefined(this.data['#local.property.name#'])){
 														this.data['#local.property.name#'] = [];
 													}
@@ -1063,6 +1088,7 @@ Notes:
 													return entityInstance;
 												}
 												<!--- get one-to-many, many-to-many via REST --->
+												<!--- TODO: ability to add post options to the transient collection --->
 												,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
 													var thisEntityInstance = this;
 													if(angular.isDefined(this.$$get#local.entity.getClassName()#ID())){
