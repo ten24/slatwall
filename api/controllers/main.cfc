@@ -320,11 +320,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		// respond with data
 		arguments.rc.apiResponse.content['data'] = {};
 		
+		// Add ID's of any sub-property population
+		arguments.rc.apiResponse.content['data'] = addPopulatedSubPropertyIDsToData(entity=entity, data=arguments.rc.apiResponse.content['data']);
+		
 		// Get any new ID's created by the post
 		arguments.rc.apiResponse.content['data'][ entity.getPrimaryIDPropertyName() ] = entity.getPrimaryIDValue();
 		
-		// Add ID's of any sub-property population
-		arguments.rc.apiResponse.content['data'] = addPopulatedSubPropertyIDsToData(entity=entity, data=arguments.rc.apiResponse.content['data']);
+		
 		/*if(!isnull(arguments.rc.propertyIdentifiersList)){
 			//respond with data
 			arguments.rc.apiResponse.content['data'] = {};

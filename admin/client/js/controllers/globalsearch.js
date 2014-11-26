@@ -30,7 +30,7 @@ angular.module('slatwalladmin').controller('globalSearch', [
 				}
 			},
 			'brand' : {
-				'title': 'Brands',
+				'title': $slatwall.getRBKey('entity.Brands'),
 				'resultNameFilter': function(data) {
 					return data['brandName'];
 				},

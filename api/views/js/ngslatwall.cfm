@@ -262,7 +262,36 @@ Notes:
 				  			});
 				  			return deferred.promise;
 				  		},
+				  		hasResourceBundle:function(){
+				  			
+				  			if(!_loadingResourceBundle && !_loadedResourceBundle){
+				  				_loadingResourceBundle = true;
+				  				var localeListArray = slatwallService.getConfigValue('rbLocale').split('_');
+				  				var rbPromise;
+				  				var rbPromises = [];
+								rbPromise = slatwallService.getResourceBundle(slatwallService.getConfigValue('rbLocale'));
+								rbPromises.push(rbPromise);
+								if(localeListArray.length === 2){
+									rbPromise = slatwallService.getResourceBundle(localeListArray[0]);
+									rbPromises.push(rbPromises);
+								}
+								if(localeListArray[0] != 'en'){
+									slatwallService.getResourceBundle('en_us');
+									slatwallService.getResourceBundle('en');
+								}	
+								$q.all(rbPromises).then(function(){
+									_loadingResourceBundle = true
+									_loadedResourceBundle = true;
+								});
+								
+								
+				  			}
+			  				
+			  				return _loadedResourceBundle;
+				  			
+				  		},
 				  		getResourceBundle:function(locale){
+				  			var deferred = $q.defer();
 				  			var locale = locale || _config.rbLocale;
 				  			
 			  				if(_resourceBundle[locale]){
@@ -275,8 +304,10 @@ Notes:
 				  			};
 			  				$http.get(urlString,{params:params}).success(function(response){
 			  					_resourceBundle[locale] = response.data;
+			  					deferred.resolve(response);
 			  				});
-			  					
+			  				return deferred.promise;
+			  				
 				  		},
 						
 				  		<!---replaceStringTemplate:function(template,object,formatValues,removeMissingKeys){
@@ -299,6 +330,7 @@ Notes:
 				  			return keyValue;
 				  		},
 				  		getRBKey:function(key,locale,checkedKeys,originalKey){
+				  			key = key.toLowerCase();
 				  			checkedKeys = checkedKeys || "";
 				  			locale = locale || 'en_us';
 				  			
@@ -381,6 +413,8 @@ Notes:
 				      };
 				  			 
 			    	var _resourceBundle = {};
+			    	var _loadingResourceBundle = false;
+			    	var _loadedResourceBundle = false;
 			    	var _jsEntities = {};
 			    	
 			    	var _init = function(entityInstance,data){
@@ -631,8 +665,8 @@ Notes:
 			    		
 			    		var modifiedData = _getModifiedData(entityInstance);
 			    		
-			    		var params = modifiedData.value;
-			    		console.log(modifiedData);
+			    		var params = {};
+						params.serializedJsonData = angular.toJson(modifiedData.value);
 			    		var entityName = modifiedData.objectLevel.metaData.className;
 			    		var context = 'save';
 			    		
@@ -656,9 +690,6 @@ Notes:
 						});
 						return savePromise;
 			    		/*
-			    		
-			    		
-			    		
 			    		
 			    		<!---validate based on context --->
 			    		<!---probably need to validat against data to make sure existing data passes and then against modified? --->
@@ -713,6 +744,9 @@ Notes:
 						<!--- check if we have a parent with an id that we check, and all children --->
 						if(angular.isDefined(entityInstance.parentObject)){
 							var parentObject = entityInstance.data[entityInstance.parentObject.name];
+							if(angular.isUndefined(modifiedData[parentObject.metaData.className])){
+								modifiedData[parentObject.metaData.className.charAt(0).toLowerCase() + parentObject.metaData.className.slice(1)] = {};
+							}
 							var forms = parentObject.forms;
 							for(var f in forms){
 				    			var form = forms[f];
@@ -721,13 +755,13 @@ Notes:
 					    				var inputField = form[key];
 					    				if(inputField.$valid === true && inputField.$dirty === true){
 					    					<!--- set modifiedData --->
-				    						modifiedData[parentObject.metaData.className+'.'+key] = form[key].$modelValue;
+				    						modifiedData[parentObject.metaData.className.charAt(0).toLowerCase() + parentObject.metaData.className.slice(1)][key] = form[key].$modelValue;
 					    				}
 					    			}
 					    		}
 				    		}
 
-				    		modifiedData[parentObject.metaData.className.charAt(0).toLowerCase() + parentObject.metaData.className.slice(1)+'.'+parentObject.$$getIDName()] = parentObject.$$getID();
+				    		modifiedData[parentObject.metaData.className.charAt(0).toLowerCase() + parentObject.metaData.className.slice(1)][parentObject.$$getIDName()] = parentObject.$$getID();
 						}
 
 						<!--- dirty check all children --->
@@ -762,7 +796,10 @@ Notes:
 							if(forms.length){
 								<!--- validate forms --->
 								var object = forms[0].$$swFormInfo.object;
-								path = path + child.name+'['+(object.$$index+1)+'].';
+								path = path + child.name;
+								if(angular.isUndefined(data[path])){
+									data[path] = [];
+								}
 								for(var f in forms){
 					    			var form = forms[f];
 						    		for(var key in form){
@@ -770,12 +807,12 @@ Notes:
 						    				var inputField = form[key];
 						    				if(inputField.$valid === true && inputField.$dirty === true){
 						    					<!--- set modifiedData --->
-					    						data[path+ key] = form[key].$modelValue;
+					    						data[path][key] = form[key].$modelValue;
 						    				}
 						    			}
 						    		}
 								}
-								data[path+object.$$getIDName()] = object.$$getID();
+								data[path][object.$$getIDName()] = object.$$getID();
 								if(angular.isDefined(object.children) && entityInstance.object.length){
 									var parentData = getDataFromChildren(object,path);
 									angular.extend(data,parentData);
@@ -1171,15 +1208,7 @@ Notes:
 		}]).config(function ($slatwallProvider) {
 			/* $slatwallProvider.setConfigValue($.slatwall.getConfig().baseURL); */
 		}).run(function($slatwall){
-			var localeListArray = $slatwall.getConfigValue('rbLocale').split('_');
-			$slatwall.getResourceBundle($slatwall.getConfigValue('rbLocale'));
-			if(localeListArray.length === 2){
-				$slatwall.getResourceBundle(localeListArray[0]);
-			}
-			if(localeListArray[0] != 'en'){
-				$slatwall.getResourceBundle('en_us');
-				$slatwall.getResourceBundle('en');
-			}	
+			
 		});
 	</cfoutput>
 </cfsavecontent>
