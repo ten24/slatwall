@@ -373,7 +373,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 			// Many-To-One Populated Entity
 			if(!isNull(propertyData) && isObject(propertyData)) {
-				
+				var mtoEntity = propertyData;
 				arguments.data[ key ][ mtoEntity.getPrimaryIDPropertyName() ] = mtoEntity.getPrimaryIDValue();
 				arguments.data[ key ] = addPopulatedSubPropertyIDsToData(propertyData, arguments.data[ key ]);
 			

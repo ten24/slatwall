@@ -682,7 +682,7 @@ Notes:
 			    		if(angular.isDefined(entityInstance.data[entityInstance.parentObject]) && (angular.isUndefined(entityID) || !entityID.trim().length)){
 			    			<!--- if id is undefined then set the object save level --->
 
-			    			var parentEntityInstance = entityInstance.data[entityInstance.parentObject]; 
+			    			var parentEntityInstance = entityInstance.data[entityInstance.parentObject.name]; 
 			    			var parentEntityID = parentEntityInstance.$$getID();
 			    			if(angular.isUndefined(parentEntityID) || !parentEntityID.trim().length){
 			    				objectLevel = getObjectSaveLevel(parentEntityInstance);
@@ -712,7 +712,7 @@ Notes:
 			    		modifiedData[entityInstance.$$getIDName()] = entityInstance.$$getID();
 						<!--- check if we have a parent with an id that we check, and all children --->
 						if(angular.isDefined(entityInstance.parentObject)){
-							var parentObject = entityInstance.data[entityInstance.parentObject];
+							var parentObject = entityInstance.data[entityInstance.parentObject.name];
 							var forms = parentObject.forms;
 							for(var f in forms){
 				    			var form = forms[f];
