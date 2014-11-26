@@ -44,6 +44,8 @@
 	
 	<cfparam name="attributes.fieldAttributes" type="string" default="" />					<!--- hint: This is used to pass specific additional fieldAttributes when in edit mode --->
 	
+	<cfparam name="attributes.isRequired" type="boolean" default="false" />					<!--- hint: This is used to determine is a field is required --->
+
 	<!---
 		attributes.fieldType have the following options:
 		
