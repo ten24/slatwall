@@ -796,6 +796,8 @@ Notes:
 							if(forms.length){
 								<!--- validate forms --->
 								var object = forms[0].$$swFormInfo.object;
+									console.log('child');
+								console.log(child);
 								path = path + child.name;
 								if(angular.isUndefined(data[path])){
 									data[path] = [];
@@ -807,12 +809,15 @@ Notes:
 						    				var inputField = form[key];
 						    				if(inputField.$valid === true && inputField.$dirty === true){
 						    					<!--- set modifiedData --->
-					    						data[path][key] = form[key].$modelValue;
+						    					var item = {};
+						    					item[key] = form[key].$modelValue;
+						    					item[object.$$getIDName()] = object.$$getID();
+					    						data[path].push(item);
 						    				}
 						    			}
 						    		}
 								}
-								data[path][object.$$getIDName()] = object.$$getID();
+								
 								if(angular.isDefined(object.children) && entityInstance.object.length){
 									var parentData = getDataFromChildren(object,path);
 									angular.extend(data,parentData);

@@ -365,7 +365,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	private struct function addPopulatedSubPropertyIDsToData(required any entity, required struct data) {
-		writeDump(var=arguments.entity.getPopulatedSubProperties(),top=2);
 		if(isNull(arguments.entity.getPopulatedSubProperties())){
 			return {};
 		}
