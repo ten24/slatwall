@@ -8,7 +8,7 @@
 	<hb:HibachiEntityActionBar type="detail" object="#rc.collection#" edit="#rc.edit#" />
 	<hb:HibachiEntityDetailGroup object="#rc.collection#">
 		<hb:HibachiEntityDetailItem view="admin:entity/collectiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-		<hb:HibachiEntityDetailItem view="admin:entity/collectiontabs/options" open="false" text="#$.slatwall.rbKey('admin.define.options')#" />
+		<hb:HibachiEntityDetailItem view="admin:entity/collectiontabs/options" open="true" text="#$.slatwall.rbKey('admin.define.configuration')#" />
 	</hb:HibachiEntityDetailGroup>		
 </hb:HibachiEntityDetailForm>
 
