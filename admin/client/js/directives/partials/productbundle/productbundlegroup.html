@@ -1,17 +1,17 @@
-<li class="s-bundle-group-item" ng-if="propertyDisplayData && productBundleGroup">
+<li class="s-bundle-group-item" ng-if="productBundleGroup">
   <div class="row">
     <div class="col-xs-8 s-bundle-group-title">
       <div class="s-bundle-group-range">
         <ul class="list-unstyled s-bundle-group-min">
           <li>Min</li>
-          <li ng-bind="productBundleGroup.minimumQuantity"></li>
+          <li ng-bind="productBundleGroup.data.minimumQuantity"></li>
         </ul>
         <ul class="list-unstyled s-bundle-group-max">
           <li>Max</li>
-          <li ng-bind="productBundleGroup.maximumQuantity"></li>
+          <li ng-bind="productBundleGroup.data.maximumQuantity"></li>
         </ul>
       </div>
-      <span class="s-bundle-group-title-text" ng-bind="productBundleGroup.productBundleGroupType.typeName"></span>
+      <span class="s-bundle-group-title-text" ng-bind="productBundleGroup.data.productBundleGroupType.data.typeName"></span>
       <span class="s-bundle-group-title-edit"><input type="text" class="form-control" value="T-Shirts: Closeout Selections">
       	<button class="btn btn-sm s-btn-ten24 s-save-btn">Save</button>
       </span>
@@ -22,7 +22,7 @@
         	data-toggle="tooltip"
         	data-placement="bottom"
         	data-original-title="Edit"
-        	ng-click="productBundleGroup.$$toggleEdit()"
+        	ng-click="productBundleGroup.data.$$toggleEdit()"
         >
         	<i class="fa fa-pencil"></i>
         </a>
@@ -38,7 +38,7 @@
     </div>
   </div>
 
-  <div ng-show="productBundleGroup.$$editing" class="s-bundle-group-dropdown">
+  <div ng-if="productBundleGroup.data.$$editing" ng-show="productBundleGroup.data.$$editing" class="s-bundle-group-dropdown">
 	<div class="s-bundle-group-dropdown-content">
 		<div class="s-filter-content">
 
@@ -60,8 +60,8 @@
                                 <div class="col-md-9">
         							<input  type="number"
         									class="form-control"
-        									ng-model="productBundleGroup.minimumQuantity"
-        									ng-change="productBundleGroup.$$setMinimumQuantity(productBundleGroup.minimumQuantity)"
+        									ng-model="productBundleGroup.data.minimumQuantity"
+        									ng-change="productBundleGroup.data.$$setMinimumQuantity(productBundleGroup.data.minimumQuantity)"
         							>
                                 </div>
                             
@@ -73,8 +73,8 @@
                                 <div class="col-md-9">
         							<input  type="number"
         									class="form-control"
-        									ng-model="productBundleGroup.maximumQuantity"
-        									ng-change="productBundleGroup.$$setMaximumQuantity(productBundleGroup.maximumQuantity)"
+        									ng-model="productBundleGroup.data.maximumQuantity"
+        									ng-change="productBundleGroup.data.$$setMaximumQuantity(productBundleGroup.data.maximumQuantity)"
         							>
                                 </div>
                             
@@ -82,28 +82,23 @@
 					</div>
                     <div class="row form-group">
                         <div class="col-md-6">
-                            <span sw-property-display
-                                      data-property="amountType"
-                                      data-object="productBundleGroup"
-                                      data-object-name="productBundleGroup"
-                                      data-options-arguments="{property:'amountType'}"
-                                      data-meta="propertyDisplayData['amountType']"
-                                      data-editing="true"
+                            <sw-property-display
+                                    data-object="productBundleGroup"
+                                    data-property="amountType"
+                                    data-options-arguments="{property:'amountType'}"
+                                    data-editing="true"
                                     data-editable="true"
-                                    data-eager-load-options="true"
-                              ></span>
+                            ></sw-property-display>
                         </div>
 
                         <div class="col-md-6">
                         	<span ng-show="productBundleGroup['amountType'].value === 'fixed' || productBundleGroup['amountType'].value === 'skuPricePercentageIncrease' || productBundleGroup['amountType'].value === 'skuPricePercentageDecrease'">
-	                            <span sw-property-display
-	                                     data-property="amount"
-	                                     data-object="productBundleGroup"
-	                                     data-object-name="productBundleGroup"
-	                                     data-meta="propertyDisplayData['amount']"
-	                                     data-editing="true"
-	                                   data-editable="true"
-	                             ></span>
+                                <sw-property-display
+                                    data-object="productBundleGroup"
+                                    data-property="amount"
+                                    data-editing="true"
+                                    data-editable="true"
+                                ></sw-property-display>
 							 </span>
                         </div>
                     </div>
@@ -111,26 +106,13 @@
 					<div class="form-group">
                         <div class="col-md-6">
                             <div class="row">
-        						<label class="col-md-3 control-label">Active: </label>
                                 <div class="col-md-9">
-            						<div class="radio" style="display:inline-block;">
-            							<input type="radio" name="active" id="random1"
-            									ng-model="productBundleGroup.active"
-            									ng-value="true"
-            							>
-            							<label class="control-label" for="random1" >
-            									Yes
-            							</label>
-            						</div>
-            						<div class="radio" style="display:inline-block;">
-            							<input type="radio" name="active" id="random2"
-            									ng-model="productBundleGroup.active"
-            									ng-value="false"
-            							>
-            							<label class="control-label" for="random2" >
-            									No
-            							</label>
-            						</div>
+                                    <sw-property-display
+                                        data-object="productBundleGroup"
+                                        data-property="activeFlag"
+                                        data-editing="true"
+                                        data-editable="true"
+                                    ></sw-property-display>
                                 </div>
                             </div>
                         </div>
@@ -146,15 +128,15 @@
                             <!-- Selected filters -->
                             <div class="s-bundle-add-items s-workflow-objs">
 
-                                <div class="well well-sm"  ng-show="!productBundleGroup.productBundleGroupFilters.length">
+                                <div class="well well-sm"  ng-show="!productBundleGroup.data.productBundleGroupFilters.length">
                                     <ul class="list-unstyled">
                                         <li>No items selected <!-- #$.slatwall.rbKey('admin.define.no_items_selected')# --></li>
                                         <li>Please add one or more items to this bundle group. <!-- #$.slatwall.rbKey('entity.ProductBundleBuildItem.selectBundleGroup')# --></li>
                                     </ul>
                                 </div>
-                                <ul class="list-unstyled s-order-item-options" ng-show="productBundleGroup.productBundleGroupFilters.length">
+                                <ul class="list-unstyled s-order-item-options" ng-show="productBundleGroup.data.productBundleGroupFilters.length">
 
-                                    <li class="s-bundle-add-obj" ng-repeat="productBundleGroupFilter in productBundleGroup.productBundleGroupFilters track by $index">
+                                    <li class="s-bundle-add-obj" ng-repeat="productBundleGroupFilter in productBundleGroup.data.productBundleGroupFilters track by $index">
                                         <ul class="list-unstyled list-inline">
                                             <!-- You can change the s-include to s-exclude for stye diff -->
                                             <li class="s-item-type s-tooltip" 
@@ -253,8 +235,8 @@
                     </div>
                     <!-- //Search for product -->
                     <br/>
-                    <button class="btn btn-sm s-btn-ten24" ng-click="productBundleGroup.$$toggleEdit()"><i class="fa fa-plus" ></i> Save</button>
-                    <button class="btn btn-sm s-btn-ten24" ng-click="productBundleGroup.$$toggleEdit();addProductBundleGroup();"><i class="fa fa-plus" ></i> Save & Add Bundle Group</button>
+                    <button class="btn btn-sm s-btn-ten24" ng-click="productBundleGroup.data.$$toggleEdit()"><i class="fa fa-plus" ></i> Save</button>
+                    <button class="btn btn-sm s-btn-ten24" ng-click="productBundleGroup.data.$$toggleEdit();addProductBundleGroup();"><i class="fa fa-plus" ></i> Save & Add Bundle Group</button>
 
 					<!-- <div class="tab-pane" ng-class="{active:navigation.value ==='Selections'}" ng-show="navigation.value === 'Selections'">
 

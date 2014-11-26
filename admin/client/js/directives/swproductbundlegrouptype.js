@@ -28,28 +28,19 @@ angular.module('slatwalladmin')
 				$scope.$$id="productBundleGroupType";
 				$scope.productBundleGroupTypes.value = [];
 				$scope.productBundleGroupTypes.$$adding = false;
+				$scope.productBundleGroupType = {};
 				$scope.productBundleGroupTypes.setAdding = function(isAdding){
 					$scope.productBundleGroupTypes.$$adding = isAdding;
-					$scope.getPropertyDisplayData = function(){
-						var propertyDisplayDataPromise = $slatwall.getPropertyDisplayData('Type',
-								{propertyIdentifiersList:'typeCode,typeName,typeDescription,parentType.TypeID'}
-						);
-						propertyDisplayDataPromise.then(function(value){
-							$scope.propertyDisplayData = value.data;
-							$log.debug('getting property Display meta data');
-							$log.debug($scope.propertyDisplayData);
-							$scope.productBundleGroupType = {
-								"parentType.typeID":'154dcdd2f3fd4b5ab5498e93470957b8',
-								"typeName":$scope.productBundleGroup.productBundleGroupType.typeName,
-								"typeDescription":"",
-								"typeNameCode":""
-							};
-							formService.setForm($scope.form.addProductBundleGroupType);
-							$log.debug('productBundleGroupType');
-							$log.debug($scope.productBundleGroupType);
-						});
-					}();
-					
+
+					var productBundleGroupType = $slatwall.newType();
+					//productBundleGroup.productBundleGroupType.$$add
+					productBundleGroupType.data.parentType = {};
+					productBundleGroupType.data.parentType.data = {};
+					productBundleGroupType.data.parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
+					productBundleGroupType.data.typeName=$scope.productBundleGroup.data.productBundleGroupType.data.typeName;
+					productBundleGroupType.data.typeDescription = '';
+					productBundleGroupType.data.typeNameCode='';
+					$scope.productBundleGroup.data.productBundleGroupType = productBundleGroupType;
 				};
 				
 				$scope.saveProductBundleGroupType = function(){

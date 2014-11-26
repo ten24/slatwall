@@ -799,9 +799,7 @@ Notes:
 									console.log('child');
 								console.log(child);
 								path = path + child.name;
-								if(angular.isUndefined(data[path])){
-									data[path] = [];
-								}
+								
 								for(var f in forms){
 					    			var form = forms[f];
 						    		for(var key in form){
@@ -809,10 +807,21 @@ Notes:
 						    				var inputField = form[key];
 						    				if(inputField.$valid === true && inputField.$dirty === true){
 						    					<!--- set modifiedData --->
-						    					var item = {};
-						    					item[key] = form[key].$modelValue;
-						    					item[object.$$getIDName()] = object.$$getID();
-					    						data[path].push(item);
+						    					if(child.fieldtype === 'one-to-many' || child.fieldtype === 'many-to-many'){
+						    						if(angular.isUndefined(data[path])){
+														data[path] = [];
+													}
+						    						var item = {};
+							    					item[key] = form[key].$modelValue;
+							    					item[object.$$getIDName()] = object.$$getID();
+						    						data[path].push(item);
+						    					}else{
+						    						if(angular.isUndefined(data[path])){
+														data[path] = {};
+													}
+						    						data[path][key] = form[key].$modelValue;
+						    					}
+						    					
 						    				}
 						    			}
 						    		}
@@ -972,8 +981,14 @@ Notes:
 							
 										<cfif isNull(local.defaultValue)>
 											this.data.#local.property.name# = null;
-										<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,string,big_decimal', local.property.ormType)>
-											this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
+										<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,big_decimal', local.property.ormType)>
+											this.data.#local.property.name# = #local.entity.invokeMethod('get#local.property.name#')#;
+										<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('string', local.property.ormType)>
+											<cfif structKeyExists(local.property, "hb_formFieldType") and local.property.hb_formFieldType eq "json">
+												this.data.#local.property.name# = angular.fromJson('#local.entity.invokeMethod('get#local.property.name#')#');
+											<cfelse>
+												this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
+											</cfif>
 										<cfelseif structKeyExists(local.property, "ormType") and local.property.ormType eq 'timestamp'>
 											<cfif local.entity.invokeMethod('get#local.property.name#') eq ''>
 												this.data.#local.property.name# = '';
@@ -985,7 +1000,6 @@ Notes:
 										</cfif>
 									<cfelse>
 									</cfif>
-									
 								</cfloop>
 								
 							};

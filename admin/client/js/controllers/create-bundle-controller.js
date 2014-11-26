@@ -30,100 +30,23 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		
 		var productID = $location.search().productID;
 		
-		$scope.propertyDisplayData = {};
-		
-		$scope.getPropertyDisplayData = function(){
-			var propertyDisplayDataPromise = $slatwall.getPropertyDisplayData('product',
-					{propertyIdentifiersList:'productCode,productName,defaultSku.price,brand,productType'}
-			);
-			propertyDisplayDataPromise.then(function(value){
-				$scope.propertyDisplayData = value.data;
-				$log.debug('getting property Display meta data');
-				$log.debug($scope.propertyDisplayData);
-				$scope.product = {
-					productID:"",
-					productName:"",
-					productCode:"",
-					defaultSku:{
-						skuID:"",
-						price:"0",
-						productBundleGroups:[]
-					},
-					brand:{
-						brandID:""
-					},
-					productType:{
-						typeID:""
-					}
-				};
-			});
-		};
-		$scope.getPropertyDisplayData();
+		$scope.productBundleGroup;
 		
 		if(angular.isDefined(productID)){
-			var filterGroupsConfig = '[{"filterGroup":[{"propertyIdentifier":"_productBundleGroup.productBundleSku.product.productID","comparisonOperator":"=","value":"'+productID+'"}]}]';
+			$scope.product = $slatwall.getProduct({id:productID});
 			
-			var productBundleGroupsOptions = {
-					context:'edit',
-					filterGroupsConfig:filterGroupsConfig.trim()
-			};
-			
-			var productBundleGroupPromise = $slatwall.getEntity(
-				'ProductBundleGroup',
-				productBundleGroupsOptions
-			);
-			
-			productBundleGroupPromise.then(function(value){
-				$log.debug('getProductBundleGroups');
-				$scope.product.defaultSku.productBundleGroups = value.pageRecords;
-				$log.debug($scope.product.defaultSku.productBundleGroups);
-				for(var i in $scope.product.defaultSku.productBundleGroups){
-					$scope.product.defaultSku.productBundleGroups[i] = productBundleService.formatProductBundleGroup($scope.product.defaultSku.productBundleGroups[i]);
-					$scope.product.defaultSku.productBundleGroups[i].$$editing = false;
-					var productBundleGroupTypeOptions = {
-						propertyIdentifiersList:'ProductBundleGroup.productBundleGroupType',
-						id:$scope.product.defaultSku.productBundleGroups[i].productBundleGroupID
-					};
-					
-					var skuFilterGroups = angular.fromJson($scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig).filterGroups[0].filterGroup;
-					var productBundleGroupFilters = [];
-					for(var k in skuFilterGroups){
-						var filter = {};
-						if(skuFilterGroups[k].type && skuFilterGroups[k].name){
-							filter = {
-									type:skuFilterGroups[k].type,
-									name:skuFilterGroups[k].name,
-									comparisonOperator:skuFilterGroups[k].comparisonOperator
-							};
-						}
-						
-						productBundleGroupFilters.push(filter);
-					}
-					
-					var productBundleGroupTypePromise = $slatwall.getEntity(
-						'productBundleGroup',
-						productBundleGroupTypeOptions
-					);
-					
-					productBundleGroupTypePromise.then(function(value){
-						$scope.product.defaultSku.productBundleGroups[i].productBundleGroupType = value.productBundleGroupType[0];
-					});
-					$scope.product.defaultSku.productBundleGroups[i].productBundleGroupFilters = productBundleGroupFilters;
-					
-				}
-			});
+		}else{
+			$scope.product = $slatwall.newProduct();
+			$scope.product.$$addSku();
+			$scope.product.data.skus[0].data.productBundleGroups = [];
+			console.log($scope.product);
 		}
-		
-		$scope.setForm = function(form){
-			formService.setForm(form);
-		};
-		
-		$scope.addProductBundleGroup = function(){
-			$log.debug('add bundle group');
-			var productBundleGroup = productBundleService.newProductBundle();
-			$scope.product.defaultSku.productBundleGroups.push(productBundleGroup);
-			$log.debug($scope.product.defaultSku.productBundleGroups);
-		};
+
+		$scope.saveProductBundle = function(closeDialogIndex){
+
+		}
+
+		/*
 		
 		$scope.transformProductBundleGroupFilters = function(){
 			for(var i in $scope.product.defaultSku.productBundleGroups){
@@ -292,6 +215,6 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 				}
 			}
 			return isValid;
-		};
+		};*/
 	}
 ]);

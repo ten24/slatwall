@@ -4,13 +4,11 @@ angular.module('slatwalladmin')
 [
 	'$log',
 	'$slatwall',
-	'alertService',
 	function(
 		$log,
-		$slatwall,
-		alertService
+		$slatwall
 	){
-		function _productBundleGroupType(productBundleGroupType){
+		/*function _productBundleGroupType(productBundleGroupType){
 			this.parentTypeID = '154dcdd2f3fd4b5ab5498e93470957b8';
 			this.type=productBundleGroupType.type;
 			this.systemCode=productBundleGroupType.systemCode;
@@ -65,10 +63,46 @@ angular.module('slatwalladmin')
 				}
 			}
 			
-		};
+		};*/
 		
 		var productBundleService = {
-			formatProductBundleGroup:function(productBundleGroup){
+			decorateProductBundleGroup:function(productBundleGroup){
+				productBundleGroup.data.$$editing = true;
+				var prototype = {
+					$$setMinimumQuantity:function(quantity) {
+						if(quantity < 0 || quantity === null ){
+							this.minimumQuantity = 0;
+						}
+						
+						if(quantity > this.maximumQuantity){
+							this.maximumQuantity = quantity;
+						} 
+						
+					},
+					$$setMaximumQuantity:function(quantity){
+						if(quantity < 1 || quantity === null ){
+							this.maximumQuantity = 1;
+						}
+						if(this.maximumQuantity < this.minimumQuantity){
+							this.minimumQuantity = this.maximumQuantity;
+							 
+						}
+					},
+					$$setActive:function(value){
+						this.active=value;
+					},
+					$$toggleEdit:function(){
+						if(angular.isUndefined(this.$$editing) || this.$$editing === false){
+							this.$$editing = true;
+						}else{
+							this.$$editing = false;
+						}
+					}
+				}
+				angular.extend(productBundleGroup.data,prototype);
+			}
+
+			/*formatProductBundleGroup:function(productBundleGroup){
 				var formattedProductBundleGroup = this.newProductBundle();
 				
 				for(var key in productBundleGroup){
@@ -102,7 +136,7 @@ angular.module('slatwalladmin')
 				
 				$log.debug(productBundelGroupFilters);
 				return productBundelGroupFilters;
-			}
+			}*/
 		};
 		
 		return productBundleService;
