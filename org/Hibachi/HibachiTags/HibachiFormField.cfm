@@ -165,9 +165,16 @@
 			</cfoutput>
 		</cfcase>
 		<cfcase value="text">
-			<cfoutput>
-				<input type="text" name="#attributes.fieldName#" value="#htmlEditFormat(attributes.value)#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes# />
-			</cfoutput>
+			<cfif attributes.isRequired>
+				<cfoutput>
+					<input type="text" name="#attributes.fieldName#" value="#htmlEditFormat(attributes.value)#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes# placeholder="required" />
+				</cfoutput>
+			<cfelse>
+				<cfoutput>
+					<input type="text" name="#attributes.fieldName#" value="#htmlEditFormat(attributes.value)#" class="form-control #attributes.fieldClass#" #attributes.fieldAttributes# />
+				</cfoutput>
+			</cfif>
+			
 		</cfcase>
 		<cfcase value="textautocomplete">
 			<cfoutput>
