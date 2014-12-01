@@ -52,7 +52,7 @@ component displayname="Task" entityname="SlatwallTask" table="SwTask" persistent
 	property name="taskID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" hb_formatType="yesno";
 	property name="taskName" ormtype="string";
-	property name="taskMethod" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
+	property name="taskMethod" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey" default="customURL";
 	property name="taskUrl" ormtype="string";
 	property name="taskConfig" ormtype="string" length="4000";
 	property name="runningFlag" ormtype="boolean" hb_formatType="yesno";
