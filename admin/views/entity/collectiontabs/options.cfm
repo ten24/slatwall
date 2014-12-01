@@ -3,7 +3,7 @@
 
 
 <span sw-collection
-	  toggleoption="true"
+	  toggleoption="false"
 	  >
 	
 </span>
