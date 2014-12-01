@@ -34,8 +34,7 @@ angular.module('slatwalladmin')
 
 					var productBundleGroupType = $slatwall.newType();
 					//productBundleGroup.productBundleGroupType.$$add
-					productBundleGroupType.data.parentType = {};
-					productBundleGroupType.data.parentType.data = {};
+					productBundleGroupType.data.parentType = $slatwall.newType();
 					productBundleGroupType.data.parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
 					productBundleGroupType.data.typeName=$scope.productBundleGroup.data.productBundleGroupType.data.typeName;
 					productBundleGroupType.data.typeDescription = '';

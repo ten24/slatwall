@@ -75,7 +75,7 @@ Notes:
 			    $get:['$q','$http','$log', 'formService', function ($q,$http,$log,formService)
 			    {
 			    	var slatwallService = {
-			    		//basic entity getter where id is optional, returns a promise
+			    		/*basic entity getter where id is optional, returns a promise*/
 				  		getDefer:function(deferKey){
 				  			return _deferred[deferKey];
 				  		},
@@ -89,7 +89,7 @@ Notes:
 				      		return new _jsEntities[entityName];
 				      	},
 				      	
-				      	//basic entity getter where id is optional, returns a promise
+				      	/*basic entity getter where id is optional, returns a promise*/
 				  		getEntity:function(entityName, options){
 				  			/*
 				  			 *
@@ -313,7 +313,7 @@ Notes:
 				  		<!---replaceStringTemplate:function(template,object,formatValues,removeMissingKeys){
 				  			/*formatValues = formatValues || false;
 				  			removeMissingKeys = removeMissingKeys || false;
-				  			//var res = str.replace(/microsoft/i, "W3Schools");
+				  			var res = str.replace(/microsoft/i, "W3Schools");
 				  			var templateKeys = template.replace(\${[^}]+},);
 				  			var replacementArray = [];
 				  			var returnString = template;
@@ -619,7 +619,7 @@ Notes:
 			    			if(angular.isDefined(entityInstance.data['currencyCode'])){
 			    				formatDetails.currencyCode = entityInstance.$$getCurrencyCode();
 			    			}
-			    			//formatValue:function(value,formatType,formatDetails){
+			    			<!---//formatValue:function(value,formatType,formatDetails){--->
 			    			
 			    			return utilityService.formatValue(value,formatType,formatDetails,entityInstance);
 			    		}
@@ -685,8 +685,8 @@ Notes:
 			    		savePromise.then(function(response){
 			    			var returnedIDs = response.data;
 			    			<!--- TODO: restet form --->
-							//entityInstance.form.$setPristine();
-							//_addReturnedIDs(returnedIDs,entityInstance);
+							<!---//entityInstance.form.$setPristine();
+							//_addReturnedIDs(returnedIDs,entityInstance);--->
 						});
 						return savePromise;
 			    		/*
@@ -1236,15 +1236,33 @@ Notes:
 	<cfset getPageContext().getOut().clearBuffer() />
 	<cfoutput>#local.jsOutput#</cfoutput>	
 <cfelse>
-	<!---
+	<cfset getPageContext().getOut().clearBuffer() />
+	<!--- perform YUI compression --->
 	<cfset local.oYUICompressor = createObject("component", "Slatwall.org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'Slatwall.org.Hibachi.YUIcompressor.javaloader.JavaLoader', libPath = expandPath('/Slatwall/org/Hibachi/YUIcompressor/lib')) />
 	<cfset local.jsOutputCompressed = oYUICompressor.compress(
 												inputType = 'js'
 												,inputString = local.jsOutput
-												) />
-												
-	<cfoutput>#local.jsOutputCompressed#</cfoutput>
-	--->
-	<cfset getPageContext().getOut().clearBuffer() />
-	<cfoutput>#local.jsOutput#</cfoutput>
+												).results />
+	<!---perform GZip Compression --->
+	<cfscript>
+		ioOutput = CreateObject("java","java.io.ByteArrayOutputStream");
+		gzOutput = CreateObject("java","java.util.zip.GZIPOutputStream");
+		
+		ioOutput.init();
+		gzOutput.init(ioOutput);
+		
+		gzOutput.write(local.jsOutputCompressed.getBytes(), 0, Len(local.jsOutputCompressed.getBytes()));
+		
+		gzOutput.finish();
+		gzOutput.close();
+		ioOutput.flush();
+		ioOutput.close();
+		
+		toOutput=ioOutput.toByteArray();
+	</cfscript>
+	
+	<cfheader name="Content-Encoding" value="gzip">
+	<cfheader name="Content-Length" value="#ArrayLen(toOutput)#" >
+	<cfcontent reset="yes" variable="#toOutput#" />
+	<cfabort />
 </cfif>
