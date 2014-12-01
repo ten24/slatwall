@@ -65,6 +65,12 @@
 		<Record typeID="444df2b8b98441f8e8fc6b5b4266548c" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,444df2b8b98441f8e8fc6b5b4266548c" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Closed" systemCode="ostClosed" sortOrder="5" />
 		<Record typeID="444df2b90f62f72711eb5b3c90848e7e" typeIDPath="444df2b3df09f67ddcb27918f02c2d83,444df2b90f62f72711eb5b3c90848e7e" parentTypeID="444df2b3df09f67ddcb27918f02c2d83" typeName="Canceled" systemCode="ostCanceled" sortOrder="6" />
 		
+		<Record typeID="723ada44efad4ce090a46479ba9c57ae" typeIDPath="723ada44efad4ce090a46479ba9c57ae" parentTypeID="NULL" typeName="Vendor Order Status Types" systemCode="vendorOrderStatusType" childRequiresSystemCodeFlag="1" />
+		<Record typeID="ee9669f448c949a98a8b1d4d988afe1a" typeIDPath="723ada44efad4ce090a46479ba9c57ae,ee9669f448c949a98a8b1d4d988afe1a" parentTypeID="723ada44efad4ce090a46479ba9c57ae" typeName="New" systemCode="vostNew" sortOrder="1" />
+		<Record typeID="6b0f53eb598e42dcb995ed333cc8464a" typeIDPath="723ada44efad4ce090a46479ba9c57ae,6b0f53eb598e42dcb995ed333cc8464a" parentTypeID="723ada44efad4ce090a46479ba9c57ae" typeName="Partially Received" systemCode="vostPartiallyReceived" sortOrder="2" />
+		<Record typeID="9b038283edff412a8c4e3d10a6a7b738" typeIDPath="723ada44efad4ce090a46479ba9c57ae,9b038283edff412a8c4e3d10a6a7b738" parentTypeID="723ada44efad4ce090a46479ba9c57ae" typeName="Closed" systemCode="vostClosed" sortOrder="3" />
+		
+		
 		<Record typeID="444df2e8db2712fe6cf790d12afc9661" typeIDPath="444df2e8db2712fe6cf790d12afc9661," parentTypeID="NULL" typeName="Order Item Types" systemCode="orderItemType" childRequiresSystemCodeFlag="1" />
 		<Record typeID="444df2e9a6622ad1614ea75cd5b982ce" typeIDPath="444df2e8db2712fe6cf790d12afc9661,444df2e9a6622ad1614ea75cd5b982ce" parentTypeID="444df2e8db2712fe6cf790d12afc9661" typeName="Sale" systemCode="oitSale" sortOrder="1" />
 		<Record typeID="444df2eac18fa589af0f054442e12733" typeIDPath="444df2e8db2712fe6cf790d12afc9661,444df2eac18fa589af0f054442e12733" parentTypeID="444df2e8db2712fe6cf790d12afc9661" typeName="Return" systemCode="oitReturn" sortOrder="2" />

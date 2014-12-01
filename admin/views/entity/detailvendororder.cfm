@@ -60,18 +60,6 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="vendorOrderID=#rc.vendorOrder.getVendorOrderID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
 		</hb:HibachiEntityActionBar>
 
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<cfif rc.vendorOrder.isNew()>
-					<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="currencyCode" edit="true">
-					<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="vendor" autocompletePropertyIdentifiers="vendorName,vendorWebsite,accountNumber,primaryEmailAddress.emailAddress" fieldtype="textautocomplete" edit="#rc.vendorOrder.isNew()#">
-					<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="vendorOrderNumber" edit="#rc.vendorOrder.isNew()#">
-					<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="estimatedReceivalDateTime" edit="#rc.edit#">
-					<hb:HibachiPropertyDisplay object="#rc.vendorOrder#" property="billToLocation" edit="#rc.edit#">
-				</cfif>
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-
 		<hb:HibachiEntityDetailGroup object="#rc.vendorOrder#">
 			<hb:HibachiEntityDetailItem view="admin:entity/vendorordertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<hb:HibachiEntityDetailItem property="vendorOrderItems" />
