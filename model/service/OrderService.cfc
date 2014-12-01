@@ -762,14 +762,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				returnOrderPayment.setOrder( returnOrder );
 				returnOrderPayment.setCurrencyCode( returnOrder.getCurrencyCode() );
 				returnOrderPayment.setOrderPaymentType( getSettingService().getType( '444df2f1cc40d0ea8a2de6f542ab4f1d' ) );
-				returnOrderPayment.setAmount( returnOrder.getTotal() * -1 );
+				returnOrderPayment.setAmount( precisionEvaluate(returnOrder.getTotal() * -1) );
 			}
 			
 		// Otherwise the order needs to have a new orderPayment created
 		} else {
 			
 			arguments.data.newOrderPayment.order.orderID = returnOrder.getOrderID();
-			arguments.data.newOrderPayment.amount = returnOrder.getTotal() * -1;
+			arguments.data.newOrderPayment.amount = precisionEvaluate(returnOrder.getTotal() * -1);
 			arguments.data.newOrderPayment.orderPaymentType.typeID = "444df2f1cc40d0ea8a2de6f542ab4f1d";
 			
 			returnOrder = this.processOrder(returnOrder, arguments.data, 'addOrderPayment');
