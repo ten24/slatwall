@@ -1668,13 +1668,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// setup a variable to keep all of the orderFulfillments used by orderItems
 			var orderFulfillmentsInUse = [];
+			var orderReturnsInUse = [];
 			
 			// loop over the orderItems to remove any that have a qty of 0
 			for(var i = arrayLen(arguments.order.getOrderItems()); i >= 1; i--) {
 				if(arguments.order.getOrderItems()[i].getQuantity() < 1) {
 					arguments.order.removeOrderItem(arguments.order.getOrderItems()[i]);
-				} else if(!arrayFind(orderFulfillmentsInUse, arguments.order.getOrderItems()[i].getOrderFulfillment())) {
+				} else if( !isNull(arguments.order.getOrderItems()[i].getOrderFulfillment()) && !arrayFind(orderFulfillmentsInUse, arguments.order.getOrderItems()[i].getOrderFulfillment().getOrderFulfillmentID())) {
 					arrayAppend(orderFulfillmentsInUse, arguments.order.getOrderItems()[i].getOrderFulfillment().getOrderFulfillmentID());
+				} else if( !isNull(arguments.order.getOrderItems()[i].getOrderReturn()) && !arrayFind(orderReturnsInUse, arguments.order.getOrderItems()[i].getOrderReturn().getOrderReturnID())) {
+					arrayAppend(orderFulfillmentsInUse, arguments.order.getOrderItems()[i].getOrderReturn().getOrderReturnID());
 				}
 			}
 			
@@ -1695,6 +1698,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					// Save the accountAddress if needed
 					orderFulfillment.checkNewAccountAddressSave();
+				}
+			
+			}
+			
+			// loop over any order return and remove any that aren't in use
+			for(var ori=arrayLen(arguments.order.getOrderReturns()); ori>=1; ori--) {
+			
+				var orderReturn = arguments.order.getOrderReturns()[ori];
+			
+				// If that orderFulfillment isn't in use anymore, then we need to remove it from the order
+				if(!arrayFind(orderReturnsInUse, orderReturn.getOrderReturnID())) {
+					orderReturn.removeOrder();
 				}
 			
 			}
