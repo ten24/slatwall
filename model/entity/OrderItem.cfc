@@ -330,7 +330,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}
 		
 		// Remove from order fulfillment to trigger those actions
-		removeOrderFulfillment();
+		if(!isNull(getOrderFulfillment())) {
+			removeOrderFulfillment();	
+		} else if (!isNull(getOrderReturn())) {
+			removeOrderReturn();
+		}
+		
 
 		structDelete(variables, "order");
 	}
@@ -372,7 +377,13 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}
 		var index = arrayFind(arguments.orderReturn.getorderReturnItems(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.orderReturn.getorderReturnItems(), index);
+			arrayDeleteAt(arguments.orderReturn.getOrderReturnItems(), index);
+			
+			// IMPORTANT & CUSTOM!!!
+			// if this was the last item in the return remove this return from order
+			if(!arrayLen(arguments.orderReturn.getOrderReturnItems()) && !isNull(getOrder())) {
+				getOrder().removeOrderReturn(arguments.orderReturn);
+			}
 		}
 		structDelete(variables, "orderReturn");
 	}
