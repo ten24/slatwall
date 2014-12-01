@@ -762,14 +762,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				returnOrderPayment.setOrder( returnOrder );
 				returnOrderPayment.setCurrencyCode( returnOrder.getCurrencyCode() );
 				returnOrderPayment.setOrderPaymentType( getSettingService().getType( '444df2f1cc40d0ea8a2de6f542ab4f1d' ) );
-				returnOrderPayment.setAmount( returnOrder.getTotal() * -1 );
+				returnOrderPayment.setAmount( precisionEvaluate(returnOrder.getTotal() * -1) );
 			}
 			
 		// Otherwise the order needs to have a new orderPayment created
 		} else {
 			
 			arguments.data.newOrderPayment.order.orderID = returnOrder.getOrderID();
-			arguments.data.newOrderPayment.amount = returnOrder.getTotal() * -1;
+			arguments.data.newOrderPayment.amount = precisionEvaluate(returnOrder.getTotal() * -1);
 			arguments.data.newOrderPayment.orderPaymentType.typeID = "444df2f1cc40d0ea8a2de6f542ab4f1d";
 			
 			returnOrder = this.processOrder(returnOrder, arguments.data, 'addOrderPayment');
@@ -1668,13 +1668,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// setup a variable to keep all of the orderFulfillments used by orderItems
 			var orderFulfillmentsInUse = [];
+			var orderReturnsInUse = [];
 			
 			// loop over the orderItems to remove any that have a qty of 0
 			for(var i = arrayLen(arguments.order.getOrderItems()); i >= 1; i--) {
 				if(arguments.order.getOrderItems()[i].getQuantity() < 1) {
 					arguments.order.removeOrderItem(arguments.order.getOrderItems()[i]);
-				} else if(!arrayFind(orderFulfillmentsInUse, arguments.order.getOrderItems()[i].getOrderFulfillment())) {
+				} else if( !isNull(arguments.order.getOrderItems()[i].getOrderFulfillment()) && !arrayFind(orderFulfillmentsInUse, arguments.order.getOrderItems()[i].getOrderFulfillment().getOrderFulfillmentID())) {
 					arrayAppend(orderFulfillmentsInUse, arguments.order.getOrderItems()[i].getOrderFulfillment().getOrderFulfillmentID());
+				} else if( !isNull(arguments.order.getOrderItems()[i].getOrderReturn()) && !arrayFind(orderReturnsInUse, arguments.order.getOrderItems()[i].getOrderReturn().getOrderReturnID())) {
+					arrayAppend(orderReturnsInUse, arguments.order.getOrderItems()[i].getOrderReturn().getOrderReturnID());
 				}
 			}
 			
@@ -1695,6 +1698,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					// Save the accountAddress if needed
 					orderFulfillment.checkNewAccountAddressSave();
+				}
+			
+			}
+			
+			// loop over any order return and remove any that aren't in use
+			for(var ori=arrayLen(arguments.order.getOrderReturns()); ori>=1; ori--) {
+			
+				var orderReturn = arguments.order.getOrderReturns()[ori];
+			
+				// If that orderFulfillment isn't in use anymore, then we need to remove it from the order
+				if(!arrayFind(orderReturnsInUse, orderReturn.getOrderReturnID())) {
+					orderReturn.removeOrder();
 				}
 			
 			}
