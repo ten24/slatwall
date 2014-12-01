@@ -37,7 +37,7 @@
 			<cfif attributes.edit>
 				<cfoutput>
 					<div class="form-group">
-						<label for="#attributes.fieldName#" class="control-label col-sm-4" style="text-align:left;">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></dt>
+						<label for="#attributes.fieldName#" class="control-label col-sm-4" style="text-align:left;">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif><cfif attributes.requiredFlag><i class="fa fa-asterisk"></i></cfif></label></dt>
 						<div class="col-sm-8">
 							<hb:HibachiFormField attributecollection="#attributes#" />
 							<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
@@ -47,7 +47,7 @@
 			<cfelse>
 				<cfoutput>
 					<div class="form-group">
-						<label class="control-label col-sm-4 title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>" style="text-align:left;">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label>
+						<label class="control-label col-sm-4 title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>" style="text-align:left;">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif><cfif attributes.requiredFlag><i class="fa fa-asterisk"></i></cfif></label>
 						
 						<div class="col-sm-8">
 							<cfif attributes.fieldType eq "listingMultiselect">
@@ -69,7 +69,7 @@
 			<cfif attributes.edit>
 				<cfoutput>
 					<tr>
-						<td class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>"><label for="#attributes.fieldName#">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></td>
+						<td class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>"><label for="#attributes.fieldName#">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif><cfif attributes.requiredFlag><i class="fa fa-asterisk"></i></cfif></label></td>
 						<td class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">
 							<hb:HibachiFormField attributecollection="#attributes#" />
 							<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
@@ -93,8 +93,8 @@
 		<cfcase value="span">
 			<cfif attributes.edit>
 				<cfoutput>
-					<span class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>"><label for="#attributes.fieldName#">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" rel="tooltip" class="hint" title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></label></span>
-					<span class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>">
+					<span class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>"><label for="#attributes.fieldName#">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" rel="tooltip" class="hint" title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif><cfif attributes.requiredFlag><i class="fa fa-asterisk"></i></cfif></label></span>
+					<span class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><cfif attributes.requiredFlag><i class="fa fa-asterisk"></i></cfif>
 						<hb:HibachiFormField attributecollection="#attributes#" />
 						<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
 					</span>
