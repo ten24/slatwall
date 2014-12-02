@@ -141,10 +141,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var location = getLocationService().getLocation( arguments.processObject.getLocationID() );
 		
-		// Sets up flag to determine what status type code to set against the vendorOrder
-		var partiallyReceivedFlag = false;
-		var closedFlag = false;
-		
 		for(var thisRecord in arguments.data.vendorOrderItems) {
 			
 			if(val(thisRecord.quantity) gt 0) {
@@ -161,23 +157,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				stockreceiverItem.setStockReceiver( stockReceiver );
 				
 			}
-			// Determines whether or not to set the partiallyRecievedFlag or closedFlag to true,
-			// so they can be used later outside of the loop
-			if(val(thisRecord.quantity) gt 0 
-					&& val(vendorOrderItem.getQuantityReceived()) neq val(thisRecord.quantity) 
-					&& val(vendorOrderItem.getQuantityUnreceived()) gt 0 
-					&& val(vendorOrderItem.getQuantityReceived()) gt 0 ) {
-				partiallyReceivedFlag = true;
-			} else if(val(thisRecord.quantity) gt 0 
-					&& val(vendorOrderItem.getQuantityReceived()) eq val(thisRecord.quantity) ) {
-				closedFlag = true;
-			}
 		}
 		
 		getStockService().saveStockReceiver( stockReceiver );
 		
+		var closedFlag = true;
+		var partiallyReceivedFlag = false;
+		
+		for(var vendorOrderItem in arguments.vendorOrder.getVendorOrderItems()) {
+			if(vendorOrderItem.getQuantityUnreceived() > 0) {
+				closedFlag = false;
+			}
+			if(vendorOrderItem.getQuantityReceived() > 0) {
+				partiallyReceivedFlag = true;
+			}
+		}
 		// Change the status depending on what value the partiallyReceivedFlag or closedFlag
-		if(partiallyReceivedFlag){
+		if(partiallyReceivedFlag && !closedFlag){
 			arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostPartiallyReceived") );
 		} else if(closedFlag) {
 			arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostClosed") );
