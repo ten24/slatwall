@@ -517,6 +517,10 @@
 			}
 		}
 		
+		public void function reencryptData() {
+			getHibachiDAO().reencryptData();
+		}
+		
 		private void function writeEncryptionPasswordFile(array encryptionPasswordArray) {
 			// WARNING DO NOT CHANGE THIS ENCRYPTION KEY FOR ANY REASON
 			var hardCodedFileEncryptionKey = generatePasswordBasedEncryptionKey('0ae8fc11293444779bd4358177931793', 1024);

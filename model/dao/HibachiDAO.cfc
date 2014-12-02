@@ -51,5 +51,136 @@
 	<cffunction name="createSlatwallUUID" returntype="string" access="public">
 		<cfreturn createHibachiUUID() />
 	</cffunction>
-
+	
+	<cffunction name="reencryptData" returntype="void" access="public">
+		<cfscript>
+		super.reencryptData();
+		
+		var latestEncryptionDateTime = getService('hibachiUtilityService').getEncryptionPasswordArray()[1].createdDateTime;
+		var entitiesMetaData = getService('hibachiService').getEntitiesMetaData();
+		var updateStatements = [];
+		
+		var reencryptionMetaData = {};
+		
+		// Inspect all entity data for encrypted properties when necessary
+		for (var entityName in entitiesMetaData) {
+			
+			// Get instance for inspection purposes
+			var entityObject = getService('hibachiService').getEntityObject(entityName);
+			var entityAlias = 'a#lCase(entityName)#';
+			
+			// Further proceed for entity that has any encrypted properties
+			if ((structKeyExists(entityObject, 'getEncryptedPropertiesExistFlag') && entityObject.getEncryptedPropertiesExistFlag()) || entityName == 'Setting') {
+				
+				// Determine relevant fields and generate where clause for select statement
+				var fieldNames = [entityObject.getPrimaryIDPropertyName()];
+				var encryptedProperties = [];
+				var whereClause = "";
+				var mapClause = "#entityAlias#.#entityObject.getPrimaryIDPropertyName()# as #entityObject.getPrimaryIDPropertyName()#";
+				
+				var encyptedPropertiesStruct = entityObject.getEncryptedPropertiesStruct();
+				if (entityName == 'Setting') {
+					encyptedPropertiesStruct = {'settingValue' = {}};
+				}
+				
+				// Add any encrypted properties to the select statement for retrieval
+				for (var encryptedPropertyName in encyptedPropertiesStruct) {
+					arrayAppend(encryptedProperties, encryptedPropertyName);
+					arrayAppend(fieldNames, encryptedPropertyName);
+					if (entityName == 'Setting' && encryptedPropertyName == 'settingValue') {
+						arrayAppend(fieldNames, '#encryptedPropertyName#EncryptedDateTime');
+						arrayAppend(fieldNames, '#encryptedPropertyName#EncryptedGenerator');
+					} else {
+						arrayAppend(fieldNames, '#encryptedPropertyName#DateTime');
+						arrayAppend(fieldNames, '#encryptedPropertyName#Generator');
+					}
+					
+					if (len(whereClause)) {
+						whereClause &= "or ";
+					}
+					
+					mapClause &= ', #entityAlias#.#encryptedPropertyName# as #encryptedPropertyName#';
+					
+					// Override behavior for Setting entity because it does not adhere to conventions
+					if (entityName == 'Setting' && encryptedPropertyName == 'settingValue') {
+						mapClause &= ', #entityAlias#.#encryptedPropertyName#EncryptedDateTime as #encryptedPropertyName#EncryptedDateTime';
+						mapClause &= ', #entityAlias#.#encryptedPropertyName#EncryptedGenerator as #encryptedPropertyName#EncryptedGenerator';
+						//whereClause &= '#entityAlias#.#encryptedPropertyName#EncryptedDateTime < :latestEncryptionDateTime';
+						whereClause &= '#entityAlias#.#encryptedPropertyName#EncryptedDateTime < :latestEncryptionDateTime and #entityAlias#.#encryptedPropertyName#EncryptedGenerator is not null';
+					} else {
+						mapClause &= ', #entityAlias#.#encryptedPropertyName#DateTime as #encryptedPropertyName#DateTime';
+						mapClause &= ', #entityAlias#.#encryptedPropertyName#Generator as #encryptedPropertyName#Generator';
+						
+						// Interested only in reencrypting the outdated encrypted records
+						whereClause &= '#entityAlias#.#encryptedPropertyName#DateTime < :latestEncryptionDateTime ';
+					}
+				}
+				
+				// Build HQL statement
+				if (structCount(encyptedPropertiesStruct)) {
+					selectStatement = 'select new map( #mapClause# ) from #entityObject.getEntityName()# as #entityAlias# where #whereClause#';
+					reencryptionMetaData['#entityName#'] = {
+						'entityObject' = entityObject,
+						'entityAlias' = entityAlias,
+						'fieldNames' = fieldNames,
+						'encryptedProperties' = encryptedProperties,
+						'selectStatement' = selectStatement
+					};
+				}
+			}
+		}
+		
+		// Build update statements
+		for (var entityName in reencryptionMetaData) {
+			var rmd = reencryptionMetaData[entityName];
+			
+			// Execute sql statement to retrieve data
+			var records = ormExecuteQuery(rmd.selectStatement, {latestEncryptionDateTime=latestEncryptionDateTime});
+			
+			for (var record in records) {
+				var updateSetColumnClause = '';
+				for (var encryptedPropertyName in rmd.encryptedProperties) {
+					
+					var generatorKey = '#encryptedPropertyName#Generator';
+					if (entityName == 'Setting' && encryptedPropertyName == 'settingValue') {
+						generatorKey = '#encryptedPropertyName#EncryptedGenerator';
+					}
+					
+					var decryptedValue = getService('hibachiUtilityService').decryptValue(value=record[encryptedPropertyName],salt=record[generatorKey]);
+					if (len(decryptedValue)) {
+						var generatorValue = createHibachiUUID();
+						var encryptedValue = getService('hibachiUtilityService').encryptValue(decryptedValue, generatorValue);
+						
+						// Determine if appending to update statement when multiple encrypted properties exist for an entity
+						if (len(updateSetColumnClause)) {
+							updateSetColumnClause &= ', ';
+						}
+						
+						if (entityName == 'Setting' && encryptedPropertyName == 'settingValue') {
+							updateSetColumnClause &= "#rmd.entityAlias#.#encryptedPropertyName#='#encryptedValue#', #rmd.entityAlias#.#encryptedPropertyName#EncryptedGenerator='#generatorValue#', #rmd.entityAlias#.#encryptedPropertyName#EncryptedDateTime=:nowDateTime";
+						} else {
+							updateSetColumnClause &= "#rmd.entityAlias#.#encryptedPropertyName#='#encryptedValue#', #rmd.entityAlias#.#encryptedPropertyName#Generator='#generatorValue#', #rmd.entityAlias#.#encryptedPropertyName#DateTime=:nowDateTime";
+						}
+					}
+				}
+				
+				if (len(updateSetColumnClause)) {
+					// Build update statement
+					arrayAppend(updateStatements, "update #rmd.entityObject.getEntityName()# as #rmd.entityAlias# set #updateSetColumnClause# where #rmd.entityObject.getPrimaryIDPropertyName()#='#record[rmd.entityObject.getPrimaryIDPropertyName()]#'");
+				}
+			}
+		}
+		
+		// TODO How do we specifically want to handle the batch updates as smaller units
+		// Do we want to create threads? What scope should we store the update statements in memory ie. thread, variables?
+		// Track the status of the task so it cannot again run without finishing
+		// Could the TaskService be utilized for any of this?
+		// At this point we have all of our update statements generated and ready to execute
+		// Need to convert HQL statements to SQL equivalent if necessary
+		for (var hqlStatement in updateStatements) {
+			ormExecuteQuery(hqlStatement, {nowDateTime=now()});
+		}
+		</cfscript>
+	</cffunction>
+	
 </cfcomponent>

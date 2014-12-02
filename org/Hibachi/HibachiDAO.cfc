@@ -129,7 +129,8 @@
 			return exportQry;
 		}
 		
-		
+		public void function reencryptData() {
+		}
 		
 		// ===================== START: Private Helper Methods ===========================
 		

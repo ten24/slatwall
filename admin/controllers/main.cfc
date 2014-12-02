@@ -152,6 +152,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.edit = true;
 	}
 	
+	public void function encryptionReencryptData() {
+		getHibachiUtilityService().reencryptData();
+	}
+	
 	public void function update(required struct rc) {
 		param name="rc.process" default="0";
 		param name="rc.branchType" default="standard";
