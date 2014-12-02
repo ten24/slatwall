@@ -866,11 +866,13 @@ Notes:
 								if(angular.isUndefined(data[childMetaData.name])){
 									data[childMetaData.name] = [];
 								}
-								for(var ch in entityInstance.data[childMetaData.name]){
-									var child = entityInstance.data[childMetaData.name][ch];
+								angular.forEach(entityInstance.data[childMetaData.name],function(child,key){
+								console.log('foreach');
+									console.log(key);
+									console.log(child);
 									var childData = processChild(child);
 									data[childMetaData.name].push(childData);
-								}
+								});
 							}else{
 								if(angular.isUndefined(data[childMetaData.name])){
 									data[childMetaData.name] = {};

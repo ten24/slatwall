@@ -30,6 +30,10 @@ angular.module('slatwalladmin')
 					break;
 				case 'yesno':
 					templatePath = partialsPath + 'formfields/radio.html';
+					break;
+				case 'number':
+					templatePath = partialsPath + 'formfields/number.html';
+					break;
 			};
 			
 			var templateLoader = $http.get(templatePath,{cache:$templateCache});

@@ -48,7 +48,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 
 		$scope.saveProductBundle = function(closeDialogIndex){
 			$scope.product.$$save();
-		}
+		};
 
 		/*
 		

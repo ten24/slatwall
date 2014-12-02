@@ -28,7 +28,7 @@
 					<div class="s-add-content" ng-show="productBundleGroupTypes.$$adding">
 						
 
-							<span ng-if="productBundleGroupTypes.$$adding && productBundleGroup.data.productBundleGroupType" >
+							<span ng-show="productBundleGroupTypes.$$adding && productBundleGroup.data.productBundleGroupType" >
 								<sw-form name="form.addProductBundleGroupType"
 									data-object="productBundleGroup.data.productBundleGroupType"
 									data-context="save"

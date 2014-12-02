@@ -53,8 +53,8 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
 	// Persistent Properties
 	property name="productBundleGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" hb_formatType="yesno";
-	property name="minimumQuantity" ormtype="integer" default="1";
-	property name="maximumQuantity" ormtype="integer" default="1";
+	property name="minimumQuantity" ormtype="integer" hb_formFieldType="number" default="1";
+	property name="maximumQuantity" ormtype="integer"hb_formFieldType="number" default="1";
 	property name="amountType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="amount" ormtype="big_decimal" default="0";
 	property name="skuCollectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json";
