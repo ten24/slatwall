@@ -173,10 +173,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		// Change the status depending on what value the partiallyReceivedFlag or closedFlag
-		if(partiallyReceivedFlag && !closedFlag){
-			arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostPartiallyReceived") );
-		} else if(closedFlag) {
+		if(closedFlag){
 			arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostClosed") );
+		} else if(partiallyReceivedFlag) {
+			arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostPartiallyReceived") );
+
 		}
 		
 		
