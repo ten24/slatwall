@@ -161,38 +161,3 @@ Notes:
 		
 	</hb:HibachiEntityProcessForm>
 </cfoutput>
-
-
-<!---
-<!--- Display the amount that is going to be used, but allow for override --->				
-<cfif not arrayLen(rc.order.getOrderPayments()) || (arrayLen(rc.order.getOrderPayments()) eq 1 && rc.order.getOrderPayments()[1].hasErrors())>
-	<div class="control-group">
-		<label class="control-label">#$.slatwall.rbKey('define.amount')#</label>
-		<div class="controls">
-			#$.slatwall.rbKey('admin.entity.detailOrderPayment.entireOrderTotal')#: <span <cfif rc.order.getTotal() lt 0>class="negative"</cfif>>#rc.order.getFormattedValue('total')#</span><br />
-			<a href="##" id='changeAmount'>#$.slatwall.rbKey('admin.entity.detailOrderPayment.changeAmount')#</a>
-		</div>
-		<script type="text/javascript">
-			(function($){
-				$(document).ready(function(e){
-					
-					// Bind to split button
-					$('body').on('click', '##changeAmount', function(e){
-						e.preventDefault();
-						$(this).closest('div').html('<input type="text" name="newOrderPayment.amount" value="#rc.order.getTotal()#" class="span3 required numeric" />');
-					});
-					
-				});
-			})( jQuery );
-		</script>
-	</div>
-	
-<!--- Only Show Payment Amount if this is the second account payment --->
-<cfelse>
-	<hb:HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="amount" fieldName="newOrderPayment.amount" edit="#rc.edit#">
-</cfif>
-
-<hb:HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard" loadVisable="#loadPaymentMethodType eq 'creditCard'#">
-	
-</hb:HibachiDisplayToggle>
---->
