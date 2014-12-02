@@ -30,6 +30,7 @@ label {font-weight:600;}
 .s-hide-trans {display:none;-webkit-transition: all .5s ease-in-out;-moz-transition: all .5s ease-in-out;-ms-transition: all .5s ease-in-out;-o-transition: all .5s ease-in-out;transition: all .5s ease-in-out;}
 .modal-body {max-height:400px;overflow-y: auto;overflow-x:auto;}
 .ui-datepicker {padding:10px;z-index:3000 !important;}
+label.error {font-weight:normal;color:#D85353;}
 
 input[type="file"] {display: block;width: auto;height: auto;padding: 0px;background-color: none;background-image: none;border: none; border-radius: none;-webkit-box-shadow: none;box-shadow: none;-webkit-transition: none;transition: none; } 
 
@@ -232,7 +233,7 @@ table tr th .glyphicon {vertical-align:text-top;}
 /*Custom CSS*/
 .s-pannel-group .panel {border:none;border-radius:2px;}
 .s-pannel-group .s-body-box {padding: 15px 15px;display: inline-block;width: 100%;}
-.form-group label i.fa-asterisk {color: #A94442;font-size: 6px;position: relative;top: -7px;}
+.form-group label i.fa-asterisk {color: #666;font-size: 5px;position: relative;top: -6px;left: 3px;}
 
 .btn-default {background-color: #eaeaea;border-color: #eaeaea;color:#5E5E5E;}
 .btn-default:hover,.btn-default:focus,.btn-default:active,.btn-default.active {background-color: #dddddd;border-color: #d1d1d1;color:#5E5E5E;}
@@ -506,15 +507,17 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-title .s-bundle-group-title-text {margin-left:10px;display: inline-block;position: relative;top: -5px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-title .s-bundle-group-title-edit {margin-left:10px;display:none;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-range {text-align:right;display:inline-block;}
-.s-bundle-group .s-bundle-group-item .s-bundle-group-range .s-bundle-group-min {display: inline-block;width: 38px;margin-right:-2px;background-color: #606060;text-align: center;color: #DDD;height:40px;}
+.s-bundle-group .s-bundle-group-item .s-bundle-group-range ul {display:inline-block;border-right:1px solid #ccc;height:32px;padding: 8px;}
+.s-bundle-group .s-bundle-group-item .s-bundle-group-range ul li:first-child {font-weight:bold;}
+/* .s-bundle-group .s-bundle-group-item .s-bundle-group-range .s-bundle-group-min {display: inline-block;width: 38px;margin-right:-2px;background-color: #606060;text-align: center;color: #DDD;height:40px;vertical-align:top;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-range ul li:first-child {background: #757575;font-size: 10px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-range ul li:last-child {padding: 3px;font-weight: 600;}
-.s-bundle-group .s-bundle-group-item .s-bundle-group-range .s-bundle-group-max {display: inline-block;width: 38px;background-color: #606060;text-align: center;color: #DDD;height:40px;}
-.s-bundle-group .s-bundle-group-item .s-bundle-group-options a {height: 40px;border-radius: 0px;border: 0px !important;margin: 0px !important;height: 40px;}
+.s-bundle-group .s-bundle-group-item .s-bundle-group-range .s-bundle-group-max {display: inline-block;width: 38px;background-color: #606060;text-align: center;color: #DDD;height:40px;vertical-align:top;} */
+.s-bundle-group .s-bundle-group-item .s-bundle-group-options a {height: 32px;border-radius: 0px;border: 0px !important;margin: 0px !important;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-options a.s-remove {background-color: #606060;color: #FFF;position: absolute;display: block;right: -1px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-options a.s-edit {background-color: #ffffff;color: #767676;right:32px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-options a.s-edit:hover {background-color: #eeeeee;color: #767676;}
-.s-bundle-group .s-bundle-group-item .s-bundle-group-options a i {padding-top:8px;}
+.s-bundle-group .s-bundle-group-item .s-bundle-group-options a i {padding-top:5px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown {background: #F1F1F1;border-top: 0px;}
 .s-bundle-group-dropdown h4 i {float: right;color: #DDD;font-size:18px;cursor: pointer;margin-top: -1px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content {.padding:15px;}

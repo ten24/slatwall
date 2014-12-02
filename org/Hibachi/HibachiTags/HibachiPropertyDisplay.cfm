@@ -10,6 +10,7 @@
 	
 	<!--- These are optional Attributes --->
 	<cfparam name="attributes.edit" type="boolean" default="false" />						<!--- hint: When in edit mode this will create a Form Field, otherwise it will just display the value" --->
+	<cfparam name="attributes.requiredFlag" type="boolean" default="false" />				<!--- Determines whether property is required or not in edit mode --->
 	
 	<cfparam name="attributes.title" type="string" default="" />							<!--- hint: This can be used to override the displayName of a property" --->
 	<cfparam name="attributes.hint" type="string" default="" />								<!--- hint: If specified, then this will produce a tooltip around the title --->
@@ -92,6 +93,9 @@
 			<!--- If this is in edit mode then get the pertinent field info --->
 			<cfif attributes.edit or attributes.fieldType eq "listingMultiselect">
 				<cfset attributes.fieldClass = listAppend(attributes.fieldClass, attributes.object.getPropertyValidationClass( attributes.property ), " ") />
+				<cfif listFindNoCase(attributes.fieldClass, "required", " ")>
+					<cfset attributes.requiredFlag = true />
+				</cfif>
 				<cfif attributes.fieldName eq "">
 					<cfset attributes.fieldName = attributes.object.getPropertyFieldName( attributes.property ) />
 				</cfif>
@@ -204,6 +208,8 @@
 			<!--- Setup null value --->
 			<cfif structKeyExists(attributes.object.getPropertyMetaData(attributes.property), "hb_nullRBKey")>
 				 <cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'placeholder="#attributes.hibachiScope.rbKey( attributes.object.getPropertyMetaData(attributes.property).hb_nullRBKey )#"', " ") />
+			<cfelseif attributes.requiredFlag>
+				<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'placeholder="#attributes.hibachiScope.rbKey( 'define.required' )#"', " ") />
 			</cfif>
 		</cfsilent>
 		
