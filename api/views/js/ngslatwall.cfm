@@ -680,16 +680,30 @@ Notes:
 					}
 			    	
 			    	var _addReturnedIDs = function(returnedIDs,entityInstance){
-			    		entityInstance.data.workflowTask.data.workflowTaskID = 'test';
-			    		for(var key in returnedIDs){
-			    			var returnedIDPathArray = key.split('.');
-			    			var ID = returnedIDs[key]; 
-			    			var keyString = key.replace(/\./g,'.data.');
-			    			_setValueByPropertyPath(entityInstance,'data.'+keyString,String(ID));
-			    		}
 			    		
+			    		for(var key in returnedIDs){
+			    			if(angular.isArray(returnedIDs[key])){
+								var arrayItems = returnedIDs[key];
+								var entityInstanceArray = entityInstance.data[key];
+								for(var i in arrayItems){
+									var arrayItem = arrayItems[i];
+									var entityInstanceArrayItem = entityInstance.data[key][i];
+									console.log('test');
+									console.log(arrayItem);
+									console.log(entityInstanceArrayItem);
+									_addReturnedIDs(arrayItem,entityInstanceArrayItem)
+								}
+			    			}else if(angular.isObject(returnedIDs[key])){
+			    				for(var k in returnedIDs[key]){
+									addReturnedIDs(returnedIDs[key][k],entityInstance.data[key][k]);
+								}
+			    			}else{
+			    				entityInstance.data[key] = returnedIDs[key];
+			    			}
+			    		}
 			    	}
 			    	
+
 			    	var _save = function(entityInstance){
 			    		console.log('save');
 			    		console.log(entityInstance);
@@ -703,23 +717,14 @@ Notes:
 			    		var entityName = modifiedData.objectLevel.metaData.className;
 			    		var context = 'save';
 			    		
-			    		<!---figure out what IDs to return for persisted data --->
-			    		<!---var propertyIdentifiersArray = [];
-			    		for(var key in params){
-			    			if(key.slice(-2) === 'ID'){
-			    				if(params[key] === ''){
-			    					propertyIdentifiersArray.push(key);
-			    				}
-			    			}
-			    		}
-			    		params.propertyIdentifiersList = propertyIdentifiersArray.join(",") || '';--->
 			    		
 			    		var savePromise = slatwallService.saveEntity(entityName,null,params,context);
 			    		savePromise.then(function(response){
 			    			var returnedIDs = response.data;
 			    			<!--- TODO: restet form --->
 							<!---//entityInstance.form.$setPristine();
-							//_addReturnedIDs(returnedIDs,entityInstance);--->
+							//--->
+							_addReturnedIDs(returnedIDs,entityInstance);
 						});
 						return savePromise;
 			    		/*
