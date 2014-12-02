@@ -150,7 +150,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 				variables.formFieldType = getAttributeInputType();	
 			}
 			if(variables.formFieldType eq 'relatedObjectSelect') {
-				variables.formFieldType = 'select';
+				variables.formFieldType = 'listingSelect';
 			} else if (variables.formFieldType eq 'relatedObjectMultiselect') {
 				variables.formFieldType = 'listingMultiselect';	
 			}

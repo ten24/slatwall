@@ -81,7 +81,10 @@
 			</cfoutput>
 		</cfcase>
 		<cfcase value="listingMultiselect">
-			<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="true"></hb:HibachiListingDisplay>
+			<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectValues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="true"></hb:HibachiListingDisplay>
+		</cfcase>
+		<cfcase value="listingSelect">
+			<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" selectFieldName="#attributes.fieldName#" selectvalue="#attributes.value#" edit="true"></hb:HibachiListingDisplay>
 		</cfcase>
 		<cfcase value="multiselect">
 			<cfoutput>
