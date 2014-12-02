@@ -19,7 +19,7 @@ angular.module('slatwalladmin')
 			this.optionsArguments=propertyDisplay.optionsArguments || {};
 			this.eagerLoadOptions=propertyDisplay.eagerLoadOptions || true;
 			this.isDirty = propertyDisplay.isDirty || false;
-			
+			this.onChange = propertyDisplay.onChange || function(){};
 		}
 		
 		_propertyDisplay.prototype = {

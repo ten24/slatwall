@@ -19,7 +19,8 @@ angular.module('slatwalladmin')
 				isHidden:"=",
 				optionsArguments:"=",
 				eagerLoadOptions:"=",
-				isDirty:"="
+				isDirty:"=",
+				onChange:"="
 			},
 			templateUrl:partialsPath+"propertydisplay.html",
 			link: function(scope, element,attrs,formController){
@@ -34,7 +35,8 @@ angular.module('slatwalladmin')
 					isHidden:scope.isHidden,
 					optionsArguments:scope.optionsArguments,
 					eagerLoadOptions:scope.eagerLoadOptions,
-					isDirty:scope.isDirty
+					isDirty:scope.isDirty,
+					onChange:scope.onChange
 				};
 				
 				scope.$id = 'propertyDisplay:'+scope.property;
