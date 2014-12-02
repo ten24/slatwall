@@ -122,6 +122,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		newVendorOrderItem.setStock( deliverToLocation );
 		newVendorOrderItem.setQuantity( arguments.processObject.getQuantity() );
 		newVendorOrderItem.setCost( arguments.processObject.getCost() );
+		// Change the status
+		arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostNew") );
 		
 		return arguments.vendorOrder;
 	}
@@ -140,6 +142,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		var location = getLocationService().getLocation( arguments.processObject.getLocationID() );
+		var partiallyReceivedFlag = false;
 		
 		for(var thisRecord in arguments.data.vendorOrderItems) {
 			
@@ -157,9 +160,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				stockreceiverItem.setStockReceiver( stockReceiver );
 				
 			}
+		/*	if(val(thisRecord.quantity) gt 0 
+					&& val(thisRecord.getQuantityReceived()) neq val(thisRecord.quantity) 
+					&& val(thisRecord.getQuantityReceived()) gt 0 ) {
+				partiallyReceivedFlag = true;
+			}*/
 		}
 		
 		getStockService().saveStockReceiver( stockReceiver );
+		
+		// Change the status
+		if(partiallyReceivedFlag){
+			arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostPartiallyReceived") );
+		} else {
+			arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostClosed") );
+		}
+		
 		
 		return arguments.vendorOrder;
 	}
