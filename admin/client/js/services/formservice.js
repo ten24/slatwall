@@ -31,7 +31,7 @@ angular.module('slatwalladmin')
 				}
 			},
 			setForm: function(form){
-				_forms[form.$name] = form;
+				_forms[form.name] = form;
 			},
 			getForm:function(formName){
 				return _forms[formName];

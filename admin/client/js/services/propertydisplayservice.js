@@ -18,6 +18,7 @@ angular.module('slatwalladmin')
 			this.hint = propertyDisplay.hint || this.object.metaData.$$getPropertyHint(propertyDisplay.property);
 			this.optionsArguments=propertyDisplay.optionsArguments || {};
 			this.eagerLoadOptions=propertyDisplay.eagerLoadOptions || true;
+			this.isDirty = propertyDisplay.isDirty || false;
 			
 		}
 		

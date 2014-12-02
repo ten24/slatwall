@@ -634,17 +634,50 @@ Notes:
 			    		return deletePromise;
 			    	}
 			    	
-			    	var _setValueByPropertyPath = function (obj,is, value) {
-					    if (typeof is == 'string')
+			    	var _setValueByPropertyPath = function (obj,path, value) {
+						var a = path.split('.');
+					    var context = obj;
+					    var selector;
+					    var myregexp = /([a-zA-Z]+)(\[(\d)\])+/; // matches:  item[0]
+					    var match = null;
+
+					    for (var i = 0; i < a.length - 1; i += 1) {
+					        match = myregexp.exec(a[i]);
+					        if (match !== null) context = context[match[1]][match[3]];
+					        else context = context[a[i]];
+
+					    }
+
+					    // check for ending item[xx] syntax
+					    match = myregexp.exec([a[a.length - 1]]);
+
+					    if (match !== null) context[match[1]][match[3]] = value;
+					    else context[a[a.length - 1]] = value;
+
+					    <!--- if (typeof is == 'string')
 					        return _setValueByPropertyPath(obj,is.split('.'), value);
 					    else if (is.length==1 && value!==undefined)
 					        return obj[is[0]] = value;
 					    else if (is.length==0)
 					        return obj;
 					    else
-					        return _setValueByPropertyPath(obj[is[0]],is.slice(1), value);
+					        return _setValueByPropertyPath(obj[is[0]],is.slice(1), value); --->
 					}
 			    	
+			    	var _getValueByPropertyPath = function(obj,path) {
+						  var paths = path.split('.')
+						    , current = obj
+						    , i;
+
+						  for (i = 0; i < paths.length; ++i) {
+						    if (current[paths[i]] == undefined) {
+						      return undefined;
+						    } else {
+						      current = current[paths[i]];
+						    }
+						  }
+						  return current;
+					}
 			    	
 			    	var _addReturnedIDs = function(returnedIDs,entityInstance){
 			    		entityInstance.data.workflowTask.data.workflowTaskID = 'test';
@@ -742,26 +775,31 @@ Notes:
 			    		}
 			    		modifiedData[entityInstance.$$getIDName()] = entityInstance.$$getID();
 						<!--- check if we have a parent with an id that we check, and all children --->
-						if(angular.isDefined(entityInstance.parentObject)){
-							var parentObject = entityInstance.data[entityInstance.parentObject.name];
-							if(angular.isUndefined(modifiedData[parentObject.metaData.className])){
-								modifiedData[parentObject.metaData.className.charAt(0).toLowerCase() + parentObject.metaData.className.slice(1)] = {};
-							}
-							var forms = parentObject.forms;
-							for(var f in forms){
-				    			var form = forms[f];
-					    		for(var key in form){
-					    			if(key.charAt(0) !== '$'){
-					    				var inputField = form[key];
-					    				if(inputField.$valid === true && inputField.$dirty === true){
-					    					<!--- set modifiedData --->
-				    						modifiedData[parentObject.metaData.className.charAt(0).toLowerCase() + parentObject.metaData.className.slice(1)][key] = form[key].$modelValue;
-					    				}
-					    			}
+						if(angular.isDefined(entityInstance.parents)){
+							for(var p in entityInstance.parents){
+								var parentObject = entityInstance.parents[p];
+								var parentInstance = entityInstance.data[parentObject.name];
+								if(angular.isUndefined(modifiedData[parentObject.name])){
+									modifiedData[parentObject.name] = {};
+								}
+								var forms = parentInstance.forms;
+								for(var f in forms){
+					    			var form = forms[f];
+						    		for(var key in form){
+						    			if(key.charAt(0) !== '$'){
+						    				var inputField = form[key];
+						    				if(inputField.$valid === true && inputField.$dirty === true){
+						    					<!--- set modifiedData --->
+					    						modifiedData[parentObject.name][key] = form[key].$modelValue;
+						    				}
+						    			}
+						    		}
 					    		}
-				    		}
-
-				    		modifiedData[parentObject.metaData.className.charAt(0).toLowerCase() + parentObject.metaData.className.slice(1)][parentObject.$$getIDName()] = parentObject.$$getID();
+								console.log('parentINstance');
+								console.log(parentInstance);
+								console.log(parentInstance.$$getID());
+					    		modifiedData[parentObject.name][parentInstance.$$getIDName()] = parentInstance.$$getID();
+							}
 						}
 
 						<!--- dirty check all children --->
@@ -780,60 +818,103 @@ Notes:
 						}
 						return data;
 			    	}
-
-			    	var getDataFromChildren = function(entityInstance,path){
-						var data = {};
-						
-						if(angular.isUndefined(path)){
-							path = '';
+			    	
+			    	var processChild = function(entityInstance){
+			    		var data = {};
+			    		var forms = entityInstance.forms;
+						for(var f in forms){
+							var form = forms[f];
+							data = processForm(form,entityInstance);
 						}
-
-			    		for(var c in entityInstance.children){
-			    			var child = entityInstance.children[c];
-
-							<!--- get forms related to the child --->
-							var forms = formService.getFormsByObjectName(child.cfc);
-							if(forms.length){
-								<!--- validate forms --->
-								var object = forms[0].$$swFormInfo.object;
-									console.log('child');
-								console.log(child);
-								path = path + child.name;
-								
-								for(var f in forms){
-					    			var form = forms[f];
-						    		for(var key in form){
-						    			if(key.charAt(0) !== '$'){
-						    				var inputField = form[key];
-						    				if(inputField.$valid === true && inputField.$dirty === true){
-						    					<!--- set modifiedData --->
-						    					if(child.fieldtype === 'one-to-many' || child.fieldtype === 'many-to-many'){
-						    						if(angular.isUndefined(data[path])){
-														data[path] = [];
-													}
-						    						var item = {};
-							    					item[key] = form[key].$modelValue;
-							    					item[object.$$getIDName()] = object.$$getID();
-						    						data[path].push(item);
-						    					}else{
-						    						if(angular.isUndefined(data[path])){
-														data[path] = {};
-													}
-						    						data[path][key] = form[key].$modelValue;
-						    					}
-						    					
-						    				}
-						    			}
-						    		}
-								}
-								
-								if(angular.isDefined(object.children) && entityInstance.object.length){
-									var parentData = getDataFromChildren(object,path);
-									angular.extend(data,parentData);
+						
+						if(angular.isDefined(entityInstance.children) && entityInstance.children.length){
+							<!--- loop through children --->
+							var childData = getDataFromChildren(entityInstance);
+							angular.extend(data,childData);
+							console.log('processChildData');
+							console.log(childData);
+							console.log(data);
+						}
+						
+						return data;
+		    		}
+		    		
+		    		var processForm = function(form,entityInstance){
+		    			var data = {};
+		    			for(var key in form){
+			    			if(key.charAt(0) !== '$'){
+			    				var inputField = form[key];
+			    				if(inputField.$valid === true && inputField.$dirty === true){		
+			    					data[key] = form[key].$modelValue;					
 								}
 							}
 						}
+						data[entityInstance.$$getIDName()] = entityInstance.$$getID();
 						return data;
+		    		}
+
+			    	var getDataFromChildren = function(entityInstance){
+						var data = {};
+						<!--- loop through all children --->
+						console.log('childrenFound');
+						console.log(entityInstance.children);
+			    		for(var c in entityInstance.children){
+			    			var childMetaData = entityInstance.children[c];
+							var children = entityInstance.data[childMetaData.name];
+							
+							if(angular.isArray(entityInstance.data[childMetaData.name])){
+								if(angular.isUndefined(data[childMetaData.name])){
+									data[childMetaData.name] = [];
+								}
+								for(var ch in entityInstance.data[childMetaData.name]){
+									var child = entityInstance.data[childMetaData.name][ch];
+									var childData = processChild(child);
+									data[childMetaData.name].push(childData);
+								}
+							}else{
+								if(angular.isUndefined(data[childMetaData.name])){
+									data[childMetaData.name] = {};
+								}
+								var child = entityInstance.data[childMetaData.name];
+								var childData = processChild(child);
+								angular.extend(data,childData);
+							}
+							 
+						}
+						return data;
+			    	}
+			    	
+			    	var getChildInfo = function(forms){
+			    		var data = {}
+			    		<!--- loop over all forms --->
+						for(var f in forms){
+			    			var form = forms[f];
+			    			console.log('form');
+			    			console.log(form);
+				    		for(var key in form){
+				    			if(key.charAt(0) !== '$'){
+				    				var inputField = form[key];
+				    				if(inputField.$valid === true && inputField.$dirty === true){
+				    					<!--- set modifiedData --->
+			    						if(angular.isUndefined(data[child.name])){
+											data[child.name] = {};
+										}
+			    						data[child.name][key] = form[key].$modelValue;
+				    					
+				    				}
+				    			}
+				    		}
+						}
+						return data;
+						console.log('object');
+						console.log(object);
+
+						<!---if(angular.isDefined(object.children)){
+							var parentData = getDataFromChildren(object,path);
+							console.log('parentData');
+							console.log(parentData);
+							angular.extend(data,parentData);
+						}--->
 			    	}
 			    	
 			    	var getModifiedDataByInstance = function(entityInstance){
@@ -922,7 +1003,7 @@ Notes:
 									console.log(this);
 									var metaData = this;
 									for(var i in metaData){
-										if(metaData[i].fieldtype === 'many-to-many' && metaData[i].singularname === singularname){
+										if(metaData[i].singularname === singularname){
 											return metaData[i].name;
 										}
 									}
@@ -1051,6 +1132,9 @@ Notes:
 										<cfif structKeyExists(local.property, "fieldtype")>
 											
 											<cfif listFindNoCase('many-to-one', local.property.fieldtype)>
+												<!--- <cfcontent type="text/html">
+												<cfdump var="#local.entity.getClassName()#">
+												<cfdump var="#local.property#"><cfabort> --->
 												<!---get many-to-one options --->
 												<!---,$$get#local.property.name#Options:function(args) {
 													var options = {
@@ -1105,6 +1189,43 @@ Notes:
 													
 													return null;
 												}
+												,$$set#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function(entityInstance) {
+													<!--- check if property is self referencing --->
+													var thisEntityInstance = this;
+													var metaData = this.metaData;
+													var manyToManyName = '';
+													if('#local.property.name#' === 'parent#local.entity.getClassName()#'){
+														var childName = 'child#local.entity.getClassName()#';
+														manyToManyName = entityInstance.metaData.$$getManyToManyName(childName);
+														
+													}else{
+														manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1));
+													}
+													
+													if(angular.isUndefined(thisEntityInstance.parents)){
+														thisEntityInstance.parents = [];
+													}
+														
+													thisEntityInstance.parents.push(thisEntityInstance.metaData['#local.property.name#']);
+
+													if(angular.isUndefined(entityInstance.children)){
+														entityInstance.children = [];
+													}
+													
+													var child = entityInstance.metaData[manyToManyName];;
+													
+													if(entityInstance.children.indexOf(child) === -1){
+														entityInstance.children.push(child);
+													}
+													
+													if(angular.isUndefined(entityInstance.data[manyToManyName])){
+														entityInstance.data[manyToManyName] = [];
+													}
+													entityInstance.data[manyToManyName].push(thisEntityInstance);
+
+													thisEntityInstance.data['#local.property.name#'] = entityInstance;
+
+												}
 											<cfelseif listFindNoCase('one-to-many,many-to-many', local.property.fieldtype)>
 												<!--- add method --->
 												,$$add#ReReplace(local.property.singularname,"\b(\w)","\u\1","ALL")#:function() {
@@ -1125,7 +1246,12 @@ Notes:
 													}
 													
 													if(angular.isDefined(metaData['#local.property.name#'].cascade)){
-														entityInstance.parentObject = entityInstance.metaData[metaData.className.charAt(0).toLowerCase() + metaData.className.slice(1)];
+														
+														if(angular.isUndefined(entityInstance.parents)){
+															entityInstance.parents = [];
+														}
+
+														entityInstance.parents.push(entityInstance.metaData[metaData.className.charAt(0).toLowerCase() + metaData.className.slice(1)]);
 														if(angular.isUndefined(this.children)){
 															this.children = [];
 														}

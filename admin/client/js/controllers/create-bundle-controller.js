@@ -37,13 +37,17 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 			
 		}else{
 			$scope.product = $slatwall.newProduct();
+			var brand = $slatwall.newBrand();
+			var productType = $slatwall.newProductType();
+			$scope.product.$$setBrand(brand);
+			$scope.product.$$setProductType(productType);
 			$scope.product.$$addSku();
 			$scope.product.data.skus[0].data.productBundleGroups = [];
 			console.log($scope.product);
 		}
 
 		$scope.saveProductBundle = function(closeDialogIndex){
-
+			$scope.product.$$save();
 		}
 
 		/*

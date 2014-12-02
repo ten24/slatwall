@@ -18,10 +18,13 @@ angular.module('slatwalladmin')
 				editing:"=",
 				isHidden:"=",
 				optionsArguments:"=",
-				eagerLoadOptions:"="
+				eagerLoadOptions:"=",
+				isDirty:"="
 			},
 			templateUrl:partialsPath+"propertydisplay.html",
 			link: function(scope, element,attrs,formController){
+				//if the item is new, then all fields at the object level are dirty
+
 				var propertyDisplay = {
 					object:scope.object,
 					property:scope.property,
@@ -30,11 +33,13 @@ angular.module('slatwalladmin')
 					isEditable:scope.isEditable,
 					isHidden:scope.isHidden,
 					optionsArguments:scope.optionsArguments,
-					eagerLoadOptions:scope.eagerLoadOptions
+					eagerLoadOptions:scope.eagerLoadOptions,
+					isDirty:scope.isDirty
 				};
 				
 				scope.$id = 'propertyDisplay:'+scope.property;
 				
+
 				
 				scope.propertyDisplay = propertyDisplayService.newPropertyDisplay(propertyDisplay);
 				

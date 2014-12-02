@@ -12,7 +12,7 @@
 	<option ng-bind="'Select '+propertyDisplay.title"></option>
 </select>
 <input style="display:none"	type="text"
-		ng-model="propertyDisplay.object.data[propertyDisplay.property]"
+		ng-model="propertyDisplay.object.data[propertyDisplay.property][propertyDisplay.object.data[propertyDisplay.property].$$getIDName()]"
 />
 <!-- Error Messages -->
     

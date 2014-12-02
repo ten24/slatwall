@@ -22,7 +22,8 @@ angular.module('slatwalladmin')
 			scope:{
 				productBundleGroup:"=",
 				index:"=",
-				addProductBundleGroup:"&"
+				addProductBundleGroup:"&",
+				formName:"@"
 			},
 			link: function(scope, element,attrs,productBundleGroupsController){
 				var timeoutPromise;
@@ -41,18 +42,6 @@ angular.module('slatwalladmin')
 						this.value = value;
 					}
 				};
-				
-				scope.getPropertyDisplayData = function(){
-					var propertyDisplayDataPromise = $slatwall.getPropertyDisplayData('productBundleGroup',
-							{propertyIdentifiersList:'amount,amountType'}
-					);
-					propertyDisplayDataPromise.then(function(value){
-						scope.propertyDisplayData = value.data;
-						$log.debug('getting property Display meta data');
-						$log.debug(scope.propertyDisplayData);
-						
-					});
-				}();
 				
 				scope.searchOptions = {
 					options:[

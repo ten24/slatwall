@@ -9,7 +9,8 @@ angular.module('slatwalladmin')
 			transclude:true,
 			scope:{
 				object:"=",
-				context:"@"
+				context:"@",
+				name:"@"
 			},
 			template:'<ng-form><sw-form-registrar ng-transclude></sw-form-registrar></ng-form>',
 			replace:true,

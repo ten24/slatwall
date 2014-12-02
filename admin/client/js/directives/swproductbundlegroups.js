@@ -31,8 +31,9 @@ angular.module('slatwalladmin')
 				$scope.addProductBundleGroup = function(){
 					var productBundleGroup = $scope.sku.$$addProductBundleGroup();
 					productBundleService.decorateProductBundleGroup(productBundleGroup);
+					
 					$scope.sku.data.productBundleGroups.selectedProductBundleGroup = productBundleGroup;
-				}
+				};
 				
 			}
 		};
