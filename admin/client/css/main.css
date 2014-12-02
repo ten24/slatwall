@@ -507,15 +507,17 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-title .s-bundle-group-title-text {margin-left:10px;display: inline-block;position: relative;top: -5px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-title .s-bundle-group-title-edit {margin-left:10px;display:none;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-range {text-align:right;display:inline-block;}
-.s-bundle-group .s-bundle-group-item .s-bundle-group-range .s-bundle-group-min {display: inline-block;width: 38px;margin-right:-2px;background-color: #606060;text-align: center;color: #DDD;height:40px;}
+.s-bundle-group .s-bundle-group-item .s-bundle-group-range ul {display:inline-block;border-right:1px solid #ccc;height:32px;padding: 8px;}
+.s-bundle-group .s-bundle-group-item .s-bundle-group-range ul li:first-child {font-weight:bold;}
+/* .s-bundle-group .s-bundle-group-item .s-bundle-group-range .s-bundle-group-min {display: inline-block;width: 38px;margin-right:-2px;background-color: #606060;text-align: center;color: #DDD;height:40px;vertical-align:top;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-range ul li:first-child {background: #757575;font-size: 10px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-range ul li:last-child {padding: 3px;font-weight: 600;}
-.s-bundle-group .s-bundle-group-item .s-bundle-group-range .s-bundle-group-max {display: inline-block;width: 38px;background-color: #606060;text-align: center;color: #DDD;height:40px;}
-.s-bundle-group .s-bundle-group-item .s-bundle-group-options a {height: 40px;border-radius: 0px;border: 0px !important;margin: 0px !important;height: 40px;}
+.s-bundle-group .s-bundle-group-item .s-bundle-group-range .s-bundle-group-max {display: inline-block;width: 38px;background-color: #606060;text-align: center;color: #DDD;height:40px;vertical-align:top;} */
+.s-bundle-group .s-bundle-group-item .s-bundle-group-options a {height: 32px;border-radius: 0px;border: 0px !important;margin: 0px !important;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-options a.s-remove {background-color: #606060;color: #FFF;position: absolute;display: block;right: -1px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-options a.s-edit {background-color: #ffffff;color: #767676;right:32px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-options a.s-edit:hover {background-color: #eeeeee;color: #767676;}
-.s-bundle-group .s-bundle-group-item .s-bundle-group-options a i {padding-top:8px;}
+.s-bundle-group .s-bundle-group-item .s-bundle-group-options a i {padding-top:5px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown {background: #F1F1F1;border-top: 0px;}
 .s-bundle-group-dropdown h4 i {float: right;color: #DDD;font-size:18px;cursor: pointer;margin-top: -1px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content {.padding:15px;}
