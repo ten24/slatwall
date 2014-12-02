@@ -171,6 +171,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			} else {
 				var paymentTermsArray = paymentTermSmartList.getRecords();
 			}
+			
+			arrayAppend(variables.paymentTermIDOptions, {
+				name = rbKey('define.select'),
+				value = ''
+			});
 				
 			for (var paymentTerm in paymentTermsArray) {
 				arrayAppend(variables.paymentTermIDOptions, {
