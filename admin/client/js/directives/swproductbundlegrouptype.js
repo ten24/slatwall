@@ -29,6 +29,13 @@ angular.module('slatwalladmin')
 				$scope.productBundleGroupTypes.value = [];
 				$scope.productBundleGroupTypes.$$adding = false;
 				$scope.productBundleGroupType = {};
+				if(angular.isUndefined($scope.productBundleGroup.data.productBundleGroupType)){
+					var productBundleGroupType = $slatwall.newType();
+					var parentType = $slatwall.newType();
+					parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
+					productBundleGroupType.$$setParentType(parentType);
+					$scope.productBundleGroup.$$setProductBundleGroupType(productBundleGroupType);
+				}
 
 				$scope.productBundleGroupTypes.setAdding = function(isAdding){
 					$scope.productBundleGroupTypes.$$adding = isAdding;
@@ -41,7 +48,7 @@ angular.module('slatwalladmin')
 
 					productBundleGroupType.data.typeDescription = '';
 					productBundleGroupType.data.typeNameCode='';
-					$scope.productBundleGroup.data.productBundleGroupType = productBundleGroupType;
+					angular.extend($scope.productBundleGroup.data.productBundleGroupType,productBundleGroup);
 
 					console.log('productBundleGroupType.data.typeName');
 					console.log($scope.productBundleGroup.data.productBundleGroupType);
@@ -107,13 +114,12 @@ angular.module('slatwalladmin')
 				    console.log($item);
 				    console.log($model);
 				    console.log($label);
-				    var productBundleGroupType = $slatwall.newType();
-				    angular.extend(productBundleGroupType,$item);
+				 
+					angular.extend($scope.productBundleGroup.data.productBundleGroupType.data,$item);
 					var parentType = $slatwall.newType();
 					parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
-					productBundleGroupType.$$setParentType(parentType);
-					productBundleGroupType.data.typeName=$scope.productBundleGroup.data.productBundleGroupType.data.typeName;
-				    $scope.productBundleGroup.$$setProductBundleGroupType(productBundleGroupType);
+					$scope.productBundleGroup.data.productBundleGroupType.$$setParentType(parentType);
+				    
 				    $scope.showAddProductBundleGroupTypeBtn = false;
 				};
 			}

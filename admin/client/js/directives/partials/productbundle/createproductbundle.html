@@ -28,6 +28,7 @@
 								data-property="productCode"
 								data-editing="true"
 								data-editable="true"
+								data-on-change="product.data.skus[0].data.skuCode = product.data.productCode + '-1'"
 						></sw-property-display>
 				        <sw-property-display
 				        		ng-if="product.data.skus[0]"
@@ -81,10 +82,20 @@
 				ng-if="product.data.skus[0]"
 	     >
 			<sw-property-display
+								style="display:block"
 								data-object="product.data.skus[0]"
 								data-property="skuID"
 								data-editing="true"
 								data-editable="true"
+
+			></sw-property-display>	
+			<sw-property-display
+								style="display:block"
+								data-object="product.data.skus[0]"
+								data-property="skuCode"
+								data-editing="true"
+								data-editable="true"
+								data-is-dirty="true"
 			></sw-property-display>		
 	     </sw-form>
 	    <span 	sw-product-bundle-groups

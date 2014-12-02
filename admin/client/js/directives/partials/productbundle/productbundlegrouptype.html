@@ -32,7 +32,16 @@
 								<sw-form name="form.addProductBundleGroupType"
 									data-object="productBundleGroup.data.productBundleGroupType"
 									data-context="save"
+									ng-if="productBundleGroup.data.productBundleGroupType"
 								>
+									<sw-property-display
+											sytle="display:none"
+											data-object="productBundleGroup.data.productBundleGroupType"
+											data-property="typeID"
+											data-editing="true"
+											data-editable="true"
+											data-is-dirty="true"
+									></sw-property-display> 
 									<sw-property-display
 											data-object="productBundleGroup.data.productBundleGroupType"
 											data-property="typeName"
@@ -52,7 +61,12 @@
 											data-editing="true"
 											data-editable="true"
 									></sw-property-display> 
-									<span style="display:none">
+								</sw-form>
+								<sw-form name="form.addProductBundleGroupTypeParentType"
+									data-object="productBundleGroup.data.productBundleGroupType.data.parentType"
+									data-context="save"
+									ng-if="productBundleGroup.data.productBundleGroupType.data.parentType"
+								>
 										<sw-property-display
 											data-object="productBundleGroup.data.productBundleGroupType.data.parentType"
 											data-property="typeID"
@@ -60,7 +74,6 @@
 											data-editable="true"
 											data-is-dirty="true"
 										></sw-property-display> 
-									</span>
 						        </sw-form>
 								<div class="form-group">
 									<button type="button"

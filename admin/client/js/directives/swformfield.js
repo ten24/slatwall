@@ -66,7 +66,7 @@ angular.module('slatwalladmin')
 		    				}else{
 		    					node.name = scope.propertyDisplay.property;
 		    				}
-		    			}else{
+		    			}else if(angular.isDefined(node.type) && node.type === 'number'){
 	    					node.name = scope.propertyDisplay.property;
 	    				}
 		    		});
@@ -139,6 +139,7 @@ angular.module('slatwalladmin')
 					if(scope.propertyDisplay.fieldType === 'text' || scope.propertyDisplay.fieldType === 'hidden'){
 						formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
 					}
+
 					if(scope.propertyDisplay.fieldType === 'yesno' || scope.propertyDisplay.fieldType === 'hidden'){
 						//format value
 						/*convert boolean to number*/

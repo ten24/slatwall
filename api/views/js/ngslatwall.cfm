@@ -831,14 +831,28 @@ Notes:
 							<!--- loop through children --->
 							var childData = getDataFromChildren(entityInstance);
 							angular.extend(data,childData);
-							console.log('processChildData');
-							console.log(childData);
-							console.log(data);
+						}
+						if(angular.isDefined(entityInstance.parents) && entityInstance.parents.length){
+							<!--- loop through children --->
+							var parentData = getDataFromParents(entityInstance);
+							angular.extend(data,parentData);
 						}
 						
 						return data;
 		    		}
-		    		
+
+		    		var processParent = function(entityInstance){
+		    			var data = {};
+		    			
+			    		var forms = entityInstance.forms;
+						for(var f in forms){
+							var form = forms[f];
+							data = processForm(form,entityInstance);
+						}
+						
+						return data;
+		    		}
+
 		    		var processForm = function(form,entityInstance){
 		    			var data = {};
 		    			for(var key in form){
@@ -852,6 +866,31 @@ Notes:
 						data[entityInstance.$$getIDName()] = entityInstance.$$getID();
 						return data;
 		    		}
+
+		    		var getDataFromParents = function(entityInstance){
+						var data = {};
+						<!--- loop through all children --->
+						for(var c in entityInstance.parents){
+							var parentMetaData = entityInstance.parents[c];
+							console.log(parentMetaData);
+							if(angular.isDefined(parentMetaData)){
+								var parent = entityInstance.data[parentMetaData.name];
+							
+								var parent = entityInstance.data[parentMetaData.name];
+								if(angular.isObject(parent) && parent.$$getID() !== '') {
+									if(angular.isUndefined(data[parentMetaData.name])){
+										data[parentMetaData.name] = {};
+									}
+									
+									var parentData = processParent(parent);
+									angular.extend(data[parentMetaData.name],parentData);
+								}
+							}
+							
+						};
+			    		
+						return data;
+			    	}
 
 			    	var getDataFromChildren = function(entityInstance){
 						var data = {};
@@ -886,7 +925,7 @@ Notes:
 						return data;
 			    	}
 			    	
-			    	var getChildInfo = function(forms){
+			    	<!--- var getChildInfo = function(forms){
 			    		var data = {}
 			    		<!--- loop over all forms --->
 						for(var f in forms){
@@ -917,7 +956,7 @@ Notes:
 							console.log(parentData);
 							angular.extend(data,parentData);
 						}--->
-			    	}
+			    	} --->
 			    	
 			    	var getModifiedDataByInstance = function(entityInstance){
 			    		var modifiedData = {};
