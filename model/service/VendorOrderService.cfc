@@ -160,11 +160,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				stockreceiverItem.setStockReceiver( stockReceiver );
 				
 			}
-		/*	if(val(thisRecord.quantity) gt 0 
-					&& val(thisRecord.getQuantityReceived()) neq val(thisRecord.quantity) 
-					&& val(thisRecord.getQuantityReceived()) gt 0 ) {
+			if(val(thisRecord.quantity) gt 0 
+					&& val(vendorOrderItem.getQuantityReceived()) neq val(thisRecord.quantity) 
+					&& val(vendorOrderItem.getQuantityReceived()) gt 0 ) {
 				partiallyReceivedFlag = true;
-			}*/
+			}
 		}
 		
 		getStockService().saveStockReceiver( stockReceiver );
