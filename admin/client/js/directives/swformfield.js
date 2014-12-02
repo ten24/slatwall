@@ -66,7 +66,9 @@ angular.module('slatwalladmin')
 		    				}else{
 		    					node.name = scope.propertyDisplay.property;
 		    				}
-		    			}
+		    			}else{
+	    					node.name = scope.propertyDisplay.property;
+	    				}
 		    		});
 		    		
 		    		/*if(angular.isDefined(scope.propertyDisplay.object.validation) && angular.isDefined(scope.propertyDisplay.object.validation.properties[scope.propertyDisplay.property.split('.').pop()])){
