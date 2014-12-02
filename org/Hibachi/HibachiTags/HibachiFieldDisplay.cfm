@@ -3,7 +3,8 @@
 <cfif thisTag.executionMode is "start">
 
 	<cfparam name="attributes.edit" type="boolean" default="false" />					<!--- hint: When in edit mode this will create a Form Field, otherwise it will just display the value" --->
-
+	<cfparam name="attributes.requiredFlag" type="boolean" default="false" />			<!--- Determines whether property is required or not in edit mode --->
+	
 	<cfparam name="attributes.title" type="string" default="" />						<!--- hint: This can be used to override the displayName of a property" --->
 	<cfparam name="attributes.hint" type="string" default="" />							<!--- hint: This is the hint value associated with whatever field we are displaying.  If specified, you will get a tooltip popup --->
 
