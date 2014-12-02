@@ -4,6 +4,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	property name="hibachiMessages" type="any" persistent="false";
 	property name="populatedSubProperties" type="struct" persistent="false";
 	property name="validations" type="struct" persistent="false";
+	property name="announceEvent" type="boolean" persistent="false" default="true";
 
 	// ========================= START: ACCESSOR OVERRIDES ==========================================
 
@@ -252,8 +253,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 							thisEntity.populate(manyToOneStructData);
 
 							// Tell the variables scope that we populated this sub-property
-							variables.populatedSubProperties[ currentProperty.name ] = thisEntity;
-
+							addPopulatedSubProperty(currentProperty.name, thisEntity);
 
 						// If there were no additional values in the strucuture then we just try to get the entity and set it... in this way a null is a valid option
 						} else {
@@ -269,7 +269,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 								if(!isNull(thisEntity)) {
 									// Set the value of the property as the loaded entity
-									_setProperty(currentProperty.name, thisEntity );
+									_setProperty(currentProperty.name, thisEntity );	
 								}
 
 							}
@@ -305,11 +305,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 								// Populate the sub property
 								thisEntity.populate(oneToManyArrayData[a]);
-
-								if(!structKeyExists(variables, "populatedSubProperties") || !structKeyExists(variables.populatedSubProperties, currentProperty.name)) {
-									variables.populatedSubProperties[ currentProperty.name ] = [];
-								}
-								arrayAppend(variables.populatedSubProperties[ currentProperty.name ], thisEntity);
+								
+								addPopulatedSubProperty(currentProperty.name, thisEntity);
 							}
 						}
 					}
@@ -405,6 +402,29 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		// Return this object
 		return this;
 	}
+	
+	public void function addPopulatedSubProperty( required string propertyName, required any entity ) {
+		// Make sure the structure exists
+		if(!structKeyExists(variables, "populatedSubProperties")){
+			variables.populatedSubProperties = {};
+		}
+		
+		// Get the meta data from the objects property
+		var propertyMeta = getPropertyMetaData( arguments.propertyName );
+		
+		// If fieldtype = many-to-one
+		if(structKeyExists(propertyMeta, "fieldtype") && propertyMeta.fieldType == "many-to-one") {
+			variables.populatedSubProperties[ arguments.propertyName ] = arguments.entity;
+			
+		// If fieldtype = one-to-many
+		} else if (structKeyExists(propertyMeta, "fieldtype") && propertyMeta.fieldType == "one-to-many") {
+			if(!structKeyExists(variables.populatedSubProperties, arguments.propertyName)) {
+				variables.populatedSubProperties[ arguments.propertyName ] = [];			
+			}
+			arrayAppend(variables.populatedSubProperties[ arguments.propertyName ], arguments.entity);
+		}
+	}
+	
 
 	// @hind public method to see all of the validations for a particular context
 	public struct function getValidations( string context="" ) {
@@ -472,7 +492,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	// @hint Public method to retrieve a value based on a propertyIdentifier string format
 	public any function getValueByPropertyIdentifier(required string propertyIdentifier, boolean formatValue=false) {
 		var object = getLastObjectByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier );
-		var propertyName = listLast(arguments.propertyIdentifier,'._');
+		var propertyName = listLast(arguments.propertyIdentifier,'.');
 
 		if(!isNull(object) && !isSimpleValue(object)) {
 			if(arguments.formatValue) {
@@ -488,12 +508,12 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	}
 
 	public any function getLastObjectByPropertyIdentifier(required string propertyIdentifier) {
-		if(listLen(arguments.propertyIdentifier, "._") eq 1) {
+		if(listLen(arguments.propertyIdentifier, ".") eq 1) {
 			return this;
 		}
-		var object = invokeMethod("get#listFirst(arguments.propertyIdentifier, '._')#");
+		var object = invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
 		if(!isNull(object) && isObject(object)) {
-			return object.getLastObjectByPropertyIdentifier(listDeleteAt(arguments.propertyIdentifier, 1, "._"));
+			return object.getLastObjectByPropertyIdentifier(listDeleteAt(arguments.propertyIdentifier, 1, "."));
 		}
 	}
 
@@ -601,7 +621,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 		return validationClass;
 	}
-
+	
 	// @hint public method for getting the title to be used for a property from the rbFactory, this is used a lot by the HibachiPropertyDisplay
 	public string function getPropertyTitle(required string propertyName) {
 
@@ -777,6 +797,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 	public array function getProperties() {
 		if( !getHibachiScope().hasApplicationValue("classPropertyCache_#getClassFullname()#") ) {
 			var metaData = getMetaData(this);
+			
 			var hasExtends = structKeyExists(metaData, "extends");
 			var metaProperties = [];
 			do {
@@ -788,11 +809,40 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 					metaData = metaData.extends;
 				}
 			} while( hasExtends );
-
+			
+			var metaPropertiesArrayCount = arraylen(metaProperties);
+			for(var i=1; i < metaPropertiesArrayCount;i++){
+				metaProperties[i] = convertStructToLowerCase(metaProperties[i]);
+			}
 			setApplicationValue("classPropertyCache_#getClassFullname()#", metaProperties);
 		}
 
 		return getApplicationValue("classPropertyCache_#getClassFullname()#");
+	}
+	
+	private struct function convertStructToLowerCase(struct st){
+		var aKeys = structKeyArray(st);
+        var stN = structNew();
+        var i= 0;
+        var ai= 0;
+        for(i in aKeys){
+        	 if (isStruct(st[i])){
+        		stN['#lCase(i)#'] = convertStructToLower(st[i]);
+        	}else if (isArray(st[i])){
+        		for(var ai = 1; ai < arraylen(st[i]); ai++){
+        			if (isStruct(st[i][ai])){
+        				st[i][ai] = convertStructToLower(st[i][ai]);
+        			}else{
+        				st[i][ai] = st[i][ai];
+        			}
+        		}
+                stN['#lcase(i)#'] = st[i];
+        	}else{
+        		stN['#lcase(i)#'] = st[i];
+        	}
+        }
+       
+        return stn;
 	}
 
 	public struct function getPropertiesStruct() {

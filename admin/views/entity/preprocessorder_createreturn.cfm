@@ -46,22 +46,26 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.processObject" type="any" />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#">
+	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.order#">
-		</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 				<!--- Order Type --->
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeCode"  edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="location" edit="true" />
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentRefundAmount" edit="true" />
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="receiveItemsFlag" edit="true" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderTypeCode"  edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="location" edit="true" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentRefundAmount" edit="true" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="receiveItemsFlag" edit="true" />
 				
 				<hr />
 				
@@ -91,21 +95,24 @@ Notes:
 							<td>#orderItem.getQuantityDelivered()#</td>
 							<td><input type="text" name="orderItems[#orderItemIndex#].price" value="#precisionEvaluate(orderItem.getExtendedPriceAfterDiscount() / orderItem.getQuantity())#" class="span1 number" /></td>
 							<td><input type="text" name="orderItems[#orderItemIndex#].quantity" value="" class="span1 number" /></td>
+							<!--- IF THIS IS AN EVENT ORDER ITEM
+								ADD CHECKBOX THAT SAYS CANCEL REGISTRATION
+							--->
 						</tr>
 					</cfloop>
 				</table>
 				
 				<hr />
 				
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="refundOrderPaymentID" edit="true" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="refundOrderPaymentID" edit="true" />
 				
-				<cf_HibachiDisplayToggle selector="select[name='refundOrderPaymentID']" showValues="" loadVisable="#!len(rc.processObject.getRefundOrderPaymentID())#">
+				<hb:HibachiDisplayToggle selector="select[name='refundOrderPaymentID']" showValues="" loadVisable="#!len(rc.processObject.getRefundOrderPaymentID())#">
 					<cfset rc.addOrderPaymentProcessObject = rc.order.getProcessObject("addOrderPayment") />
 					<cfinclude template="preprocessorder_include/addorderpayment.cfm" />
-				</cf_HibachiDisplayToggle>
+				</hb:HibachiDisplayToggle>
 				
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

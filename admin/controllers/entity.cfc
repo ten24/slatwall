@@ -155,19 +155,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	// Order
 	public void function detailOrder(required struct rc) {
-		rc.order = getOrderService().getOrder(rc.orderID);
-		if(rc.order.getStatusCode() eq "ostNotPlaced") {
-			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";
-		}
 		genericDetailMethod(entityName="Order", rc=arguments.rc);
+		if(!isNull(rc.order) && rc.order.getStatusCode() eq "ostNotPlaced") {
+			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";
+			rc.entityActionDetails.backAction = "admin:entity.listcartandquote";
+		}
 	}
 	
 	public void function editOrder(required struct rc) {
-		rc.order = getOrderService().getOrder(rc.orderID);
-		if(rc.order.getStatusCode() eq "ostNotPlaced") {
-			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";
-		}
 		genericEditMethod(entityName="Order", rc=arguments.rc);
+		if(!isNull(rc.order) && rc.order.getStatusCode() eq "ostNotPlaced") {
+			rc.entityActionDetails.listAction = "admin:entity.listcartandquote";
+			rc.entityActionDetails.backAction = "admin:entity.listcartandquote";
+		}
 	}
 	
 	public void function listOrder(required struct rc) {
@@ -371,7 +371,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		genericCreateMethod(entityName="StockAdjustment", rc=arguments.rc);
 		
 		// Set the type correctly
-		rc.stockAdjustment.setStockAdjustmentType( getSettingService().getTypeBySystemCode(rc.stockAdjustmentType) );
+		rc.stockAdjustment.setStockAdjustmentType( getTypeService().getTypeBySystemCode(rc.stockAdjustmentType) );
 	}
 	
 	// Task
@@ -380,6 +380,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		super.genericSaveMethod('Task',rc);
 	}
+	
+	
 	
 	// Task Schedule
 	public void function saveTaskSchedule(required struct rc){

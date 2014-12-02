@@ -46,22 +46,26 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.productImage" type="any" />
 <cfparam name="rc.product" type="any" default="#rc.productImage.getProduct()#"/>
 <cfparam name="rc.edit" type="boolean" default="false" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.productImage#" edit="#rc.edit#" enctype="multipart/form-data">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.productImage#" edit="#rc.edit#">
-		</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.productImage#" edit="#rc.edit#" enctype="multipart/form-data">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.productImage#" edit="#rc.edit#">
+		</hb:HibachiEntityActionBar>
 		<input type="hidden" name="product.productID" value="#rc.product.getProductID()#" />
 		<input type="hidden" name="redirectAction" value="admin:entity.editProduct&productID=#rc.product.getProductID()###tabalternateimages" />
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.productImage#" property="imageName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.productImage#" property="imageDescription" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.productImage#" property="imageType" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.productImage#" property="imageFile" edit="#rc.edit#" fieldtype="file">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.productImage#" property="imageName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.productImage#" property="imageDescription" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.productImage#" property="imageType" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.productImage#" property="imageFile" edit="#rc.edit#" fieldtype="file">
 				
 				<div class="control-group">
 					<label class="control-label">&nbsp;</label>
@@ -72,9 +76,9 @@ Notes:
 						</cfif>	
 					</div>
 				</div>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 
 </cfoutput>

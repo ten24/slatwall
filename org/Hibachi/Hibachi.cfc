@@ -49,21 +49,26 @@ component extends="FW1.framework" {
 	variables.framework.maxNumContextsPreserved = 10;
 	variables.framework.cacheFileExists = false;
 	variables.framework.trace = false;
+	/* TODO: add solution to api routing for Rest api*/
 	variables.framework.routes = [
-		{ "$GET/api/:entityName/:entityID" = "/admin:api/get/entityName/:entityName/entityID/:entityID"},
-		{ "$GET/api/:entityName/" = "/admin:api/get/entityName/:entityName/"}
+		{ "$GET/api/:entityName/:entityID" = "/api:main.get/entityName/:entityName/entityID/:entityID"},
+		{ "$GET/api/:entityName/" = "/api:main.get/entityName/:entityName/"}
 	];
 	
 	// Hibachi Setup
 	variables.framework.hibachi = {};
+	variables.framework.hibachi.authenticationSubsystems = "admin,public";
+	variables.framework.hibachi.debugFlag = false;
+	variables.framework.hibachi.errorDisplayFlag = false;
+	variables.framework.hibachi.errorNotifyEmailAddresses = '';
 	variables.framework.hibachi.fullUpdateKey = "update";
 	variables.framework.hibachi.fullUpdatePassword = "true";
-	variables.framework.hibachi.authenticationSubsystems = "admin,public";
 	variables.framework.hibachi.loginSubsystems = "admin,public";
 	variables.framework.hibachi.loginDefaultSubsystem = 'admin';
 	variables.framework.hibachi.loginDefaultSection = 'main';
 	variables.framework.hibachi.loginDefaultItem = 'login';
 	variables.framework.hibachi.useCachingEngineFlag = false;
+	
 	variables.framework.hibachi.noaccessDefaultSubsystem = 'admin';
 	variables.framework.hibachi.noaccessDefaultSection = 'main';
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
@@ -86,7 +91,6 @@ component extends="FW1.framework" {
 	
 	
 	// =============== configCustomTags
-	this.customTagPathsArray = ['#replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all")#HibachiTags'];
 	
 	// Allow For Application Config 
 	try{include "../../config/configCustomTags.cfm";}catch(any e){}
@@ -94,7 +98,9 @@ component extends="FW1.framework" {
 	try{include "../../custom/config/configCustomTags.cfm";}catch(any e){}
 	
 	// set the custom tag mapping 
-	this.customTagPaths = arrayToList(this.customTagPathsArray);
+	if(structKeyExists(this, "customTagPathsArray") && isArray(this.customTagPathsArray) && arrayLen(this.customTagPathsArray)) {
+		this.customTagPaths = arrayToList(this.customTagPathsArray);	
+	}
 	
 	// =============== configORM
 	
@@ -181,6 +187,14 @@ component extends="FW1.framework" {
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setPropperSession();
 			
+			// If there is no account on the session, then we can look for an authToken to setup that account for this one request
+			if(!getHibachiScope().getLoggedInFlag() && structKeyExists(request, "context") && structKeyExists(request.context, "authToken") && len(request.context.authToken)) {
+				var authTokenAccount = getHibachiScope().getDAO('hibachiDAO').getAccountByAuthToken(authToken=request.context.authToken);
+				if(!isNull(authTokenAccount)) {
+					getHibachiScope().getSession().setAccount( authTokenAccount );
+				}
+			}
+			
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
@@ -191,7 +205,7 @@ component extends="FW1.framework" {
 		
 		application[ "#variables.framework.applicationKey#Bootstrap" ] = this.bootstrap;
 		
-		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount());
+		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount());	
 		
 		// Verify Authentication before anything happens
 		if(!authorizationDetails.authorizedFlag) {
@@ -288,6 +302,9 @@ component extends="FW1.framework" {
 					applicationInitData["applicationReloadPassword"] =	variables.framework.password;
 					applicationInitData["applicationUpdateKey"] = 		variables.framework.hibachi.fullUpdateKey;
 					applicationInitData["applicationUpdatePassword"] =	variables.framework.hibachi.fullUpdatePassword;
+					applicationInitData["debugFlag"] =					variables.framework.hibachi.debugFlag;
+					applicationInitData["errorDisplayFlag"] =			variables.framework.hibachi.errorDisplayFlag;
+					applicationInitData["errorNotifyEmailAddresses"] =	variables.framework.hibachi.errorNotifyEmailAddresses;
 					applicationInitData["baseURL"] = 					variables.framework.baseURL;
 					applicationInitData["action"] = 					variables.framework.action;
 					applicationInitData["hibachiConfig"] =				variables.framework.hibachi;
@@ -462,12 +479,48 @@ component extends="FW1.framework" {
 	public void function setupResponse() {
 		param name="request.context.ajaxRequest" default="false";
 		param name="request.context.ajaxResponse" default="#structNew()#";
+		param name="request.context.apiRequest" default="false";
+		param name="request.context.apiResponse.content" default="#structNew()#";
 		
 		endHibachiLifecycle();
-		
-		// Announce the applicatoinRequestStart event
+		// Announce the applicationRequestStart event
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="onApplicationRequestEnd");
 		
+		
+		// Check for an API Response
+		if(request.context.apiRequest) {
+				
+			param name="request.context.headers.contentType" default="application/json"; 
+    		//need response header for api
+    		var context = getPageContext();
+    		context.getOut().clearBuffer();
+    		var response = context.getResponse();
+    		for(header in request.context.headers){
+    			response.setHeader(header,request.context.headers[header]);
+    		}
+    		
+    		var responseString = '';
+    		
+    		if(structKeyExists(request.context, "messages")) {
+				request.context.apiResponse.content["messages"] = request.context.messages;	
+			}
+    		
+    		//leaving a note here in case we ever wish to support XML for api responses
+    		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/json'){
+    			responseString = serializeJSON(request.context.apiResponse.content);
+    			
+    			// If running CF9 we need to fix strings that were improperly cast to numbers
+    			if(left(server.coldFusion.productVersion, 1) eq 9) {
+    				responseString = getHibachiScope().getService("hibachiUtilityService").updateCF9SerializeJSONOutput(responseString);
+    			}
+    		}
+    		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/xml'){
+    			//response String to xml placeholder
+    		}
+    		
+			writeOutput( responseString );
+		}		
+		// Check for an Ajax Response
 		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {
 			if(isStruct(request.context.ajaxResponse)){
 				if(structKeyExists(request.context, "messages")) {
@@ -659,6 +712,14 @@ component extends="FW1.framework" {
 		var appKey = hash(filePath);
 		
 		return appKey;
+	}
+	
+	public void function onError(any exception, string event){
+		//if something fails for any reason then we want to set the response status so our javascript can handle rest errors
+		var context = getPageContext();
+		var response = context.getResponse();
+		response.setStatus(500);
+		super.onError(arguments.exception,arguments.event);
 	}
 	
 	// THESE METHODS ARE INTENTIONALLY LEFT BLANK

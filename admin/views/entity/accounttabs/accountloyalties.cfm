@@ -46,23 +46,27 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.account" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.account.getAccountLoyaltiesSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.account.getAccountLoyaltiesSmartList()#"
 							  recorddetailAction="admin:entity.detailaccountloyalty"
 							  recordEditAction="admin:entity.editaccountloyalty"
 							  recordEditQueryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount"
 							  recordDeleteQueryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount"
 							  edit="#rc.edit#">
 
-		<cf_HibachiListingColumn propertyIdentifier="loyalty.loyaltyName" />
-		<cf_HibachiListingColumn propertyIdentifier="loyalty.activeFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="loyalty.loyaltyName" />
+		<hb:HibachiListingColumn propertyIdentifier="loyalty.activeFlag" />
 
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 
 
-	<!---<cf_HibachiActionCaller action="admin:entity.createaccountloyalty" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal="true"  />--->
-	<cf_HibachiProcessCaller action="admin:entity.preprocessaccount" entity="#rc.account#" processContext="addAccountLoyalty" class="btn" icon="plus" modal="true" />
+	<!---<hb:HibachiActionCaller action="admin:entity.createaccountloyalty" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal="true"  />--->
+	<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="#rc.account#" processContext="addAccountLoyalty" class="btn btn-default" icon="plus" modal="true" />
 
 </cfoutput>

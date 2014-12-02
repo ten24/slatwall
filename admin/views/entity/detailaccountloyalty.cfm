@@ -46,37 +46,35 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.accountLoyalty" type="any">
 <cfparam name="rc.account" type="any" default="#rc.accountLoyalty.getAccount()#">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.accountLoyalty#" edit="#rc.edit#" saveActionQueryString="accountID=#rc.account.getAccountID()#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.accountLoyalty#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.accountLoyalty#" edit="#rc.edit#" saveActionQueryString="accountID=#rc.account.getAccountID()#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.accountLoyalty#" edit="#rc.edit#" 
 								   backAction="admin:entity.detailaccount"
 								   backQueryString="accountID=#rc.account.getAccountID()#"
 								   cancelAction="admin:entity.detailaccount"
 								   cancelQueryString="accountID=#rc.account.getAccountID()#" 
 								   deleteQueryString="redirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#">
 								      
-			<cf_HibachiProcessCaller action="admin:entity.preprocessaccountloyalty" entity="#rc.accountLoyalty#" processContext="manualTransaction" type="list" modal="true" />		
-		</cf_HibachiEntityActionBar>
+			<hb:HibachiProcessCaller action="admin:entity.preprocessaccountloyalty" entity="#rc.accountLoyalty#" processContext="manualTransaction" type="list" modal="true" />		
+		</hb:HibachiEntityActionBar>
 		
 		<!--- Hidden field to attach this to the account --->
 		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.accountLoyalty#" property="loyalty" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.accountLoyalty#" property="lifetimeBalance" edit="false">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.accountLoyalty#">
-			<cf_HibachiTab view="admin:entity/accountloyaltytabs/accountloyaltytransactions" />
-		</cf_HibachiTabGroup>
+
+		<hb:HibachiEntityDetailGroup object="#rc.accountLoyalty#">
+			<hb:HibachiEntityDetailItem view="admin:entity/accountloyaltytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/accountloyaltytabs/accountloyaltytransactions" />
+		</hb:HibachiEntityDetailGroup>
 			
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 
 

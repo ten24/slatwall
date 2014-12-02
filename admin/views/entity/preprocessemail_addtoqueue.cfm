@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.email" type="any" />
 <cfparam name="rc.emailTemplate" type="any" />
 <cfparam name="rc.edit" type="boolean" />
@@ -53,27 +57,48 @@ Notes:
 <cfset primaryIDPropertyName = $.slatwall.getService('hibachiService').getPrimaryIDPropertyNameByEntityName(rc.emailTemplate.getEmailTemplateObject()) />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.email#" edit="#rc.edit#" processActionQueryString="#primaryIDPropertyName#=#rc[primaryIDPropertyName]#">
+	<hb:HibachiEntityProcessForm entity="#rc.email#" edit="#rc.edit#" processActionQueryString="#primaryIDPropertyName#=#rc[primaryIDPropertyName]#">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.email#">
-		</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.email#">
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailTo" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailFrom" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailCC" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailBCC" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailSubject" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<cfif not isNull(rc.email.getEmailBodyText()) and len(rc.email.getEmailBodyText())>
+			<input type="hidden" name="EmailBodyText" value="#rc.email.getEmailBodyText()#" />
+		</cfif>
+		
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				
+				<div class="row">
+					<div class="col-xs-6">
+						<hb:HibachiPropertyDisplay object="#rc.email#" property="emailTo" edit="#rc.edit#">
+					</div>
+					<div class="col-xs-6">
+						<hb:HibachiPropertyDisplay object="#rc.email#" property="emailFrom" edit="#rc.edit#">
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-xs-6">
+						<hb:HibachiPropertyDisplay object="#rc.email#" property="emailCC" edit="#rc.edit#">
+					</div>
+					<div class="col-xs-6">
+						<hb:HibachiPropertyDisplay object="#rc.email#" property="emailBCC" edit="#rc.edit#">
+					</div>
+				</div>
+
+				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailSubject" edit="#rc.edit#">
+					
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+		
 		<hr />
 		<div style="width:100%;">
 			<div style="width:100%;">
-				<cf_HibachiPropertyDisplay object="#rc.email#" property="emailBodyHTML" edit="#rc.edit#" fieldType="wysiwyg" displayType="plain">
+				<hb:HibachiPropertyDisplay object="#rc.email#" property="emailBodyHTML" edit="#rc.edit#" fieldType="wysiwyg" displayType="plain">
 			</div>
 		</div>
 		
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>
 

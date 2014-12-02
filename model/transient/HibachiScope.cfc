@@ -80,6 +80,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		config[ 'action' ] = getApplicationValue('action');
 		config[ 'dateFormat' ] = setting('globalDateFormat');
 		config[ 'timeFormat' ] = setting('globalTimeFormat');
+		config[ 'rbLocale' ] = '#getRBLocale()#';
 		
 		var returnHTML = '';
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';
@@ -213,16 +214,24 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		data["hasErrors"] = getAccount().hasErrors();
 		data["errors"] = getAccount().getErrors();
 		
+		// add process object error messages
+		data[ 'processObjects' ] = {};
+		for(var key in getAccount().getProcessObjects()) {
+			data[ 'processObjects' ][ key ] = {};
+			data[ 'processObjects' ][ key ][ 'hasErrors' ] = getAccount().getProcessObjects()[ key ].hasErrors();
+			data[ 'processObjects' ][ key ][ 'errors' ] = getAccount().getProcessObjects()[ key ].getErrors();
+		}
+		
 		return data;
 	}
 
 	public any function getCartData(string propertyList) {
 		
-		var availablePropertyList = "orderID,orderOpenDateTime,calculatedTotal,
-							orderitems.orderItemID,orderitems.price,orderitems.skuPrice,orderitems.currencyCode,orderitems.quantity,orderitems.extendedPrice,orderitems.extendedPriceAfterDiscount,
+		var availablePropertyList = "orderID,orderOpenDateTime,calculatedTotal,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,
+							orderitems.orderItemID,orderitems.price,orderitems.skuPrice,orderitems.currencyCode,orderitems.quantity,orderitems.extendedPrice,orderitems.extendedPriceAfterDiscount,orderitems.taxAmount,orderItems.taxLiabilityAmount,
 							orderitems.orderFulfillment.orderFulfillmentID,
-							orderitems.sku.skuID,orderitems.sku.skuCode,
-							orderitems.sku.product.productID,orderitems.sku.product.productName,orderitems.sku.product.productCode,orderitems.sku.product.urltitle,
+							orderitems.sku.skuID,orderitems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,
+							orderitems.sku.product.productID,orderitems.sku.product.productName,orderitems.sku.product.productCode,orderitems.sku.product.urltitle,orderitems.sku.product.baseProductType,
 							orderFulfillments.orderFulfillmentID,orderFulfillments.fulfillmentCharge,orderFulfillments.currencyCode,
 							orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,
 							orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,
@@ -231,7 +240,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 							orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount,
 							orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard,
 							orderPayments.billingAddress.addressID,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.statecode,orderPayments.billingAddress.postalcode,orderPayments.billingAddress.countrycode,
-							orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName";
+							orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName
+							promotionCodes,promotionCode";
 		
 		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
 		
@@ -244,6 +254,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		// add error messages
 		data["hasErrors"] = getCart().hasErrors();
 		data["errors"] = getCart().getErrors();
+		
+		// add process object error messages
+		data[ 'processObjects' ] = {};
+		for(var key in getAccount().getProcessObjects()) {
+			data[ 'processObjects' ][ key ] = {};
+			data[ 'processObjects' ][ key ][ 'hasErrors' ] = getAccount().getProcessObjects()[ key ].hasErrors();
+			data[ 'processObjects' ][ key ][ 'errors' ] = getAccount().getProcessObjects()[ key ].getErrors();
+		}
 		
 		return data;
 	}

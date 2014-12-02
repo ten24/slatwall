@@ -46,65 +46,35 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderPayment" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.orderPayment#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.orderPayment#" edit="#rc.edit#"
+	<hb:HibachiEntityDetailForm object="#rc.orderPayment#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.orderPayment#" edit="#rc.edit#"
 								   backaction="admin:entity.detailorder"
 								   backquerystring="orderID=#rc.orderPayment.getOrder().getOrderID()#"
 								   deleteQueryString="redirectAction=admin:entity.detailOrder&orderID=#rc.orderPayment.getOrder().getOrderID()#">
-			<cf_HibachiProcessCaller entity="#rc.orderPayment#" action="admin:entity.preprocessorderpayment" processContext="createTransaction" type="list" modal="true">
-		</cf_HibachiEntityActionBar>
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
-				<cfif rc.orderPayment.getPaymentMethodType() eq "creditCard">
-					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="nameOnCreditCard" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="creditCardType" />
-					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="expirationMonth" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="expirationYear" edit="#rc.edit#" />
-				<cfelseif rc.orderPayment.getPaymentMethodType() eq "termPayment">
-					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="termPaymentAccount" edit="false" />
-					<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="paymentTerm" edit="false" />
-				</cfif>
-				
-				<cfif listFindNoCase("creditCard,termPayment", rc.orderPayment.getPaymentMethodType()) or not isNull(rc.orderPayment.getBillingAddress())>
-					<hr />
-					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="name" edit="#rc.edit#" title="Address nickname"/>
-					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="company" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="streetAddress" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="street2Address" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="city" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="stateCode" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="postalCode" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.orderPayment.getBillingAddress()#" property="countryCode" edit="#rc.edit#" />
-				</cfif>
-			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="dynamicAmountFlag" edit="false" />
-				<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="orderPaymentType" />
-				<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="amount" edit="#rc.edit and not rc.orderPayment.getDynamicAmountFlag()#" />
-				<hr />
-				<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="amountAuthorized" />
-				<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="amountReceived" />
-				<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="amountCredited" />
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.orderPayment#">
+			<hb:HibachiProcessCaller entity="#rc.orderPayment#" action="admin:entity.preprocessorderpayment" processContext="createTransaction" type="list" modal="true">
+		</hb:HibachiEntityActionBar>
+
+		<hb:HibachiEntityDetailGroup object="#rc.orderPayment#">
+			<hb:HibachiEntityDetailItem view="admin:entity/orderpaymenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<cfif rc.orderPayment.getPaymentMethodType() eq "termPayment">
-				<cf_HibachiTab view="admin:entity/orderpaymenttabs/appliedaccountpayments" />
+				<hb:HibachiEntityDetailItem view="admin:entity/orderpaymenttabs/appliedaccountpayments" />
 			</cfif>
 
-			<cf_HibachiTab view="admin:entity/orderpaymenttabs/paymenttransactions" />
+			<hb:HibachiEntityDetailItem view="admin:entity/orderpaymenttabs/paymenttransactions" />
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.orderPayment.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.orderPayment#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.orderPayment#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

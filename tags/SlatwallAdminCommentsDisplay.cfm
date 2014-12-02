@@ -46,6 +46,8 @@
 	Notes:
 	
 --->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.object" type="any" />
@@ -88,7 +90,7 @@
 							<td>#attributes.hibachiScope.formatValue(commentRelationship['comment'].getPublicFlag(), "yesno")#</td>
 							<td><cfif !isNull(commentRelationship['comment'].getCreatedByAccount())>#commentRelationship['comment'].getCreatedByAccount().getFullName()#</cfif></td>
 							<td>#attributes.hibachiScope.formatValue(commentRelationship['comment'].getCreatedDateTime(), "datetime")#</td>
-							<cfif attributes.adminComments><td class="admin1"><cf_HibachiActionCaller action="admin:entity.editcomment" queryString="commentID=#commentRelationship['comment'].getCommentID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&sRenderItem=detail#attributes.object.getClassName()#&fRenderItem=detail#attributes.object.getClassName()#" modal="true" class="btn btn-mini" icon="pencil" iconOnly="true" /></td></cfif>
+							<cfif attributes.adminComments><td class="admin1"><hb:HibachiActionCaller action="admin:entity.editcomment" queryString="commentID=#commentRelationship['comment'].getCommentID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&sRenderItem=detail#attributes.object.getClassName()#&fRenderItem=detail#attributes.object.getClassName()#" modal="true" class="btn btn-default btn-xs" icon="pencil" iconOnly="true" /></td></cfif>
 						</cfif>
 					</tr>
 				</cfloop>
@@ -97,7 +99,7 @@
 				</cfif>
 			</table>
 			<cfif attributes.adminComments>
-				<cf_HibachiActionCaller action="admin:entity.createcomment" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" modal="true" class="btn" icon="plus" />
+				<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" modal="true" class="btn btn-default" icon="plus" />
 			</cfif>
 		</cfoutput>
 	</div>

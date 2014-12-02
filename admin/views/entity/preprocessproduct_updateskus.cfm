@@ -46,27 +46,31 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.product" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<cf_HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
+<hb:HibachiEntityProcessForm entity="#rc.product#" edit="#rc.edit#">
 	
-	<cf_HibachiEntityActionBar type="preprocess" object="#rc.product#">
-	</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.product#">
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="updatePriceFlag" fieldType="yesno" edit="#rc.edit#">
-			<cf_HibachiDisplayToggle selector="input[name='updatePriceFlag']">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
-			</cf_HibachiDisplayToggle>
-			<cf_HibachiPropertyDisplay object="#rc.processObject#" property="updateListPriceFlag" fieldType="yesno" edit="#rc.edit#">
-			<cf_HibachiDisplayToggle selector="input[name='updateListPriceFlag']">
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="listPrice" edit="#rc.edit#">
-			</cf_HibachiDisplayToggle>
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="updatePriceFlag" fieldType="yesno" edit="#rc.edit#">
+			<hb:HibachiDisplayToggle selector="input[name='updatePriceFlag']">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
+			</hb:HibachiDisplayToggle>
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="updateListPriceFlag" fieldType="yesno" edit="#rc.edit#">
+			<hb:HibachiDisplayToggle selector="input[name='updateListPriceFlag']">
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="listPrice" edit="#rc.edit#">
+			</hb:HibachiDisplayToggle>
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
 	
-</cf_HibachiEntityProcessForm>
+</hb:HibachiEntityProcessForm>
 

@@ -46,14 +46,17 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="fulfillmentMethodAutoLocation" />
-		<cf_SlatwallSetting settingName="fulfillmentMethodAutoMinReceivedPercentage" />
-		<cf_SlatwallSetting settingName="fulfillmentMethodEmailFrom" />
-		<cf_SlatwallSetting settingName="fulfillmentMethodEmailCC" />
-		<cf_SlatwallSetting settingName="fulfillmentMethodEmailSubjectString" />
-		<cf_SlatwallSetting settingName="fulfillmentMethodShippingOptionSortType" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="fulfillmentMethodAutoLocation" />
+		<swa:SlatwallSetting settingName="fulfillmentMethodAutoMinReceivedPercentage" />
+		<swa:SlatwallSetting settingName="fulfillmentMethodEmailFrom" />
+		<swa:SlatwallSetting settingName="fulfillmentMethodEmailCC" />
+		<swa:SlatwallSetting settingName="fulfillmentMethodEmailSubjectString" />
+		<swa:SlatwallSetting settingName="fulfillmentMethodShippingOptionSortType" />
+	</swa:SlatwallSettingTable>
 </cfoutput>
 

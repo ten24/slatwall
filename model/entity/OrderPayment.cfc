@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderPayments" hb_processContexts="processTransaction" {
+component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderPayments" hb_processContexts="processTransaction,createTransaction,runPlaceOrderTransaction" {
 	
 	// Persistent Properties
 	property name="orderPaymentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -57,8 +57,8 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="checkNumberEncrypted" ormType="string";
 	property name="companyPaymentMethodFlag" hb_populateEnabled="public" ormType="boolean";
 	property name="creditCardNumberEncrypted" ormType="string" hb_auditable="false";
-	property name="creditCardNumberEncryptedDateTime" ormType="timestamp" hb_auditable="false";
-	property name="creditCardNumberEncryptedGenerator" ormType="string" hb_auditable="false";
+	property name="creditCardNumberEncryptedDateTime" ormType="timestamp" hb_auditable="false" column="creditCardNumberEncryptDT";
+	property name="creditCardNumberEncryptedGenerator" ormType="string" hb_auditable="false" column="creditCardNumberEncryptGen";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
 	property name="expirationMonth" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
@@ -124,8 +124,10 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="originalAuthorizationProviderTransactionID" persistent="false";
 	property name="originalChargeProviderTransactionID" persistent="false";
 	property name="originalProviderTransactionID" persistent="false";
-	property name="statusCode" persistent="false";
+	property name="saveBillingAccountAddressFlag" persistent="false";
+	property name="saveBillingAccountAddressName" persistent="false";
 	property name="securityCode" persistent="false" hb_populateEnabled="public";
+	property name="statusCode" persistent="false";
 	property name="sucessfulPaymentTransactionExistsFlag" persistent="false";
 	property name="orderAmountNeeded" persistent="false";
 	property name="creditCardOrProviderTokenExistsFlag" persistent="false";
@@ -258,6 +260,24 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		}
 	}
 	
+	public void function checkNewBillingAccountAddressSave() {
+		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
+    	if(!isNull(getSaveBillingAccountAddressFlag()) && getSaveBillingAccountAddressFlag() && !isNull(getOrder().getAccount()) && !getOrder().getAccount().getGuestAccountFlag() && isNull(getBillingAccountAddress()) && !isNull(getBillingAddress()) && !getBillingAddress().hasErrors()) {
+    		
+    		// Create a New Account Address, Copy over Shipping Address, and save
+    		var accountAddress = getService('accountService').newAccountAddress();
+    		if(!isNull(getSaveBillingAccountAddressName())) {
+				accountAddress.setAccountAddressName( getSaveBillingAccountAddressName() );
+			}
+			accountAddress.setAddress( getBillingAddress().copyAddress( true ) );
+			accountAddress.setAccount( getOrder().getAccount() );
+			accountAddress = getService('accountService').saveAccountAddress( accountAddress );
+			
+			// Set the accountAddress
+			setBillingAccountAddress( accountAddress );
+		}
+	}
+    
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public boolean function getDynamicAmountFlag() {
@@ -632,19 +652,24 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	
 	public any function getBillingAddress() {
-		if( !structKeyExists(variables, "billingAddress") ) {
-
-			if(!isNull(getBillingAccountAddress())) {
-				// Get the account address, copy it, and save as the shipping address
-    			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
-    			return variables.billingAddress;
-			} else if(!isNull(getOrder()) && !isNull(getOrder().getBillingAddress())) {
-				return getOrder().getBillingAddress();
-			}
-
-			return getService("addressService").newAddress();
+		// Check Here
+		if(structKeyExists(variables, "billingAddress")) {
+			return variables.billingAddress;
+			
+		// Check Billing Account Address
+		} else if(!isNull(getBillingAccountAddress())) {
+			
+			// Get the account address, copy it, and save as the shipping address
+			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
+			return variables.billingAddress;
+			
+		// Check Order
+		} else if (!isNull(getOrder())) {
+			return getOrder().getBillingAddress();
 		}
-		return variables.billingAddress;
+		
+		// Return New
+		return getService("addressService").newAddress();
 	}
 	
 	public any function getCurrencyCode() {
@@ -660,14 +685,14 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	
 	public any function getOrderPaymentType() {
 		if( !structKeyExists(variables, "orderPaymentType") ) {
-			variables.orderPaymentType = getService("settingService").getTypeBySystemCode("optCharge");
+			variables.orderPaymentType = getService("typeService").getTypeBySystemCode("optCharge");
 		}
 		return variables.orderPaymentType;
 	}
 	
 	public any function getOrderPaymentStatusType() {
 		if( !structKeyExists(variables, "orderPaymentStatusType") ) {
-			variables.orderPaymentStatusType = getService("settingService").getTypeBySystemCode("opstActive");
+			variables.orderPaymentStatusType = getService("typeService").getTypeBySystemCode("opstActive");
 		}
 		return variables.orderPaymentStatusType;
 	}
@@ -726,12 +751,14 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		if(structKeyExists(arguments.data, "billingAccountAddress")
 			&& structKeyExists(arguments.data.billingAccountAddress, "accountAddressID")
 			&& len(arguments.data.billingAccountAddress.accountAddressID)
-			&& (isNull(getBillingAccountAddress()) || getBillingAccountAddress().getAccountAddressID() != arguments.data.billingAccountAddress.accountAddressID)) {
+			&& ( !structKeyExists(arguments.data, "billingAddress") || !structKeyExists(arguments.data.billingAddress, "addressID") || !len(arguments.data.billingAddress.addressID) ) ) {
 				
 			structDelete(arguments.data, "billingAddress");
 		}
 		
 		super.populate(argumentCollection=arguments);
+		
+		setupEncryptedProperties();
 	}
 	
 	// ==================  END:  Overridden Methods ========================

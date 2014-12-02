@@ -51,15 +51,17 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="accountDAO" type="any";
 	
 	property name="emailService" type="any";
+	property name="eventRegistrationService" type="any";
 	property name="hibachiAuditService" type="any";
+	property name="loyaltyService" type="any";
+	property name="orderService" type="any";
 	property name="paymentService" type="any";
 	property name="permissionService" type="any";
 	property name="priceGroupService" type="any";
 	property name="settingService" type="any";
 	property name="siteService" type="any";
-	property name="loyaltyService" type="any";
+	property name="typeService" type="any";
 	property name="validationService" type="any";
-	property name="orderService" type="any";
 	
 	public string function getHashedAndSaltedPassword(required string password, required string salt) {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
@@ -166,7 +168,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				// Link to the order payment if the payment is assigned to a term order. Also set the payment type
 				if(!isNull(orderPayment)) {
 					newAccountPaymentApplied.setOrderPayment( orderPayment );
-					newAccountPaymentApplied.setAccountPaymentType( getSettingService().getType( appliedOrderPayment.paymentTypeID  ) );
+					newAccountPaymentApplied.setAccountPaymentType( getTypeService().getType( appliedOrderPayment.paymentTypeID  ) );
 				}
 				
 				// Save the account payment applied
@@ -221,16 +223,9 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function processAccount_changePassword(required any account, required any processObject) {
-		
-		var authArray = arguments.account.getAccountAuthentications();
-		for(var i=1; i<=arrayLen(authArray); i++) {
-			
-			// Find the non-integration authentication
-			if(isNull(authArray[i].getIntegration()) && !isNull(authArray[i].getPassword())) {
-				// Set the password
-				authArray[i].setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), authArray[i].getAccountAuthenticationID()) );		
-			}
-		}
+		//change password and create password functions should be combined at some point. Work needed to do this still needs to be scoped out.
+		//For now they are just calling this function that handles the actual work. 
+		arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
 		
 		return arguments.account;
 	}
@@ -277,38 +272,102 @@ component extends="HibachiService" accessors="true" output="false" {
 			accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );	
 		}
 		
+		// Call save on the account now that it is all setup
+		arguments.account = this.saveAccount(arguments.account);
+
+		// Look for eventRegistrationID in the data and attach this account to that eventRegistrationID 
+		var eventRegistration = getEventRegistrationService().getEventRegistration( arguments.account.geteventRegistrationID() );
+	 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
+	 		eventRegistration().setFirstName( javaCast("null", "") );
+	 		eventRegistration().setLastName( javaCast("null", "") );
+	 		eventRegistration().setEmailAddress( javaCast("null", "") );
+	 		eventRegistration().setPhoneNumber( javaCast("null", "") );
+	 		eventRegistration().setAccount( arguments.account );
+	 	}
+		
 		return arguments.account;
 	}
 
 	public any function processAccount_createPassword(required any account, required any processObject) {
-		var accountAuthentication = this.newAccountAuthentication();
-		accountAuthentication.setAccount( arguments.account );
-	
-		// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
-		getHibachiDAO().save(accountAuthentication);
-	
-		// Set the password
-		accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
+		//change password and create password functions should be combined at some point. Work needed to do this still needs to be scoped out.
+		//For now they are just calling this function that handles the actual work. 
+		arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
 		
 		return account;	
 	}
 	
-	public any function processAccount_login(required any account, required any processObject) {
+	public any function processAccount_generateAuthToken(required any account, required any processObject){
+		var accountAuthentication = this.newAccountAuthentication();
+		accountAuthentication.setAccount( arguments.account );
+	
+		// Set the authToken
+		accountAuthentication.setAuthToken(createUUID());
+		accountAuthentication.setAuthenticationDescription(arguments.processObject.getAuthenticationDescription());
 		
+		return arguments.account;
+		
+	}
+	
+	public any function processAccount_login(required any account, required any processObject) {
 		// Take the email address and get all of the user accounts by primary e-mail address
-		var accountAuthentications = getInternalAccountAuthenticationsByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
+		var accountAuthentication =getAccountDAO().getActivePasswordByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
 		var invalidLoginData = {emailAddress=arguments.processObject.getEmailAddress()};
 		
-		if(arrayLen(accountAuthentications)) {
-			for(var i=1; i<=arrayLen(accountAuthentications); i++) {
+		if(!isNull(accountAuthentication)) {
+			//Make sure that the account is not locked 
+			if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
 				// If the password matches what it should be, then set the account in the session and 
-				if(!isNull(accountAuthentications[i].getPassword()) && len(accountAuthentications[i].getPassword()) && accountAuthentications[i].getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentications[i].getAccountAuthenticationID())) {
-					getHibachiSessionService().loginAccount( accountAuthentications[i].getAccount(), accountAuthentications[i] );
+				if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {							
+					
+					//Check to see if a password reset is required
+					if(checkPasswordResetRequired(accountAuthentication, arguments.processObject)){
+						arguments.processObject.addError('passwordUpdateRequired',  rbKey('validate.newPassword.duplicatePassword'));	
+					}else{
+						getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
+					}
+					
+					/*
+					// Look for eventRegistrationID in the data and attach this account to that eventRegistrationID 
+					var eventRegistration = getEventRegistrationService().getEventRegistration( arguments.account.geteventRegistrationID() );
+				 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
+				 		eventRegistration().setFirstName( javaCast("null", "") );
+				 		eventRegistration().setLastName( javaCast("null", "") );
+				 		eventRegistration().setEmailAddress( javaCast("null", "") );
+				 		eventRegistration().setPhoneNumber( javaCast("null", "") );
+				 		eventRegistartion().setAccount( accountAuthentications[i].getAccount() );
+				 	}
+					*/
+					
+					accountAuthentication.getAccount().setFailedLoginAttemptCount(0); 
+					accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
+					
 					return arguments.account;
 				}
+				
+				arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.password.incorrect'));
+				invalidLoginData.account = accountAuthentication.getAccount();
+				
+				
+				//Log the failed attempt to account.failedLoginAttemptCount
+				var failedLogins = nullReplace(invalidLoginData.account.getFailedLoginAttemptCount(), 0) + 1;
+				invalidLoginData.account.setFailedLoginAttemptCount(failedLogins); 
+				
+				//Get the max number of failed attempts before the account is locked based on account type 
+				if(accountAuthentication.getAccount().getAdminAccountFlag()){
+					var maxLoginAttempts = arguments.account.setting('accountFailedAdminLoginAttemptCount');
+				}else{
+					var maxLoginAttempts = arguments.account.setting('accountFailedPublicLoginAttemptCount');
+				}	
+						
+				//If the log attempt is greater than the failedLoginSetting, call function to lockAccount
+				if (!isNull(maxLoginAttempts) && maxLoginAttempts > 0 && failedLogins >= maxLoginAttempts){
+					this.processAccount(invalidLoginData.account, 'lock');
+				}
+				
+			} 
+			else{
+				arguments.processObject.addError('password',rbKey('validate.account.loginblocked'));
 			}
-			arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.password.incorrect'));
-			invalidLoginData.account = accountAuthentications[1].getAccount();
 		} else {
 			arguments.processObject.addError('emailAddress', rbKey('validate.account_authorizeAccount.emailAddress.notfound'));
 		}
@@ -363,7 +422,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			password = arguments.processObject.getPassword(),
 			passwordConfirm = arguments.processObject.getPasswordConfirm()
 		};
-		
 		arguments.account = this.processAccount(arguments.account, changeProcessData, 'changePassword');
 		
 		// If there are no errors
@@ -372,12 +430,54 @@ component extends="HibachiService" accessors="true" output="false" {
 			var tempAA = getAccountDAO().getPasswordResetAccountAuthentication(accountID=arguments.account.getAccountID());
 			
 			// Delete the temporary auth
-			tempAA.removeAccount();
 			this.deleteAccountAuthentication( tempAA );
 			
 			// Then flush the ORM session so that an account can be logged in right away
 			getHibachiDAO().flushORMSession();
 		}
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_updatePassword(required any account, required any processObject){
+		//This function needs to check and make sure that the old password equals is valid
+		
+		var accountAuthentication =getAccountDAO().getActivePasswordByEmailAddress( emailAddress= arguments.processObject.getEmailAddress() );
+		
+		if(!isNull(accountAuthentication)) {
+			if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getExistingPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {	
+				//create the new pasword the updated password 
+				arguments.account = createNewAccountPassword(accountAuthentication.getAccount(), arguments.processObject);	
+				if(!arguments.processObject.hasErrors()){
+					if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
+						getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
+					}else{
+						arguments.processObject.addError('password',rbKey('validate.account.loginblocked'));
+					}
+					
+				
+				}
+				
+			}else{
+				arguments.processObject.addError('existingPassword', rbKey('validate.account_authorizeAccount.password.incorrect'));
+			}
+		}else{
+			arguments.processObject.addError('emailAddress', rbKey('validate.account_authorizeAccount.emailAddress.notfound'));
+		}
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_lock(required any account){
+		var expirationDateTime= dateAdd('n', arguments.account.setting('accountLockMinutes'), Now());
+		arguments.account.setLoginLockExpiresDateTime(expirationDateTime);
+		arguments.account.setFailedLoginAttemptCount(0);
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_unlock(required any account){
+		arguments.account.setLoginLockExpiresDateTime(javacast("null",""));
 		
 		return arguments.account;
 	}
@@ -1035,6 +1135,22 @@ component extends="HibachiService" accessors="true" output="false" {
 		return smartList;
 	}
 	
+	public any function getAccountAuthenticationSmartList(struct data={}){
+		arguments.entityName = "SlatwallAccountAuthentication";
+		
+		var smartList = this.getSmartList(argumentCollection=arguments);
+		
+		smartList.joinRelatedProperty("SlatwallAccountAuthentication", "account", "left" );
+		
+		smartList.joinRelatedProperty("SlatwallAccountAuthentication", "integration", "left");
+		
+		smartList.addKeywordProperty(propertyIdentifier="account.accountID", weight=1 );
+		
+		smartList.addKeywordProperty(propertyIdentifier="integration.integrationID", weight=1 );
+		
+		return smartList;
+	}
+	
 	public any function getAccountEmailAddressSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallAccountEmailAddress";
 		
@@ -1080,6 +1196,19 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		return delete( arguments.account );
+	}
+	
+	public boolean function deleteAccountAuthentication(required any accountAuthentication) {
+		// Check delete validation
+		if(arguments.accountAuthentication.isDeletable()) {
+			// Remove the primary fields so that we can delete this entity
+			getAccountDAO().removeAccountAuthenticationFromSessions( arguments.accountAuthentication.getAccountAuthenticationID() );
+			if(!isNull(arguments.accountAuthentication.getAccount())) {
+				arguments.accountAuthentication.removeAccount();	
+			}
+		}
+		
+		return delete( arguments.accountAuthentication );
 	}
 	
 	public boolean function deleteAccountEmailAddress(required any accountEmailAddress) {
@@ -1152,7 +1281,117 @@ component extends="HibachiService" accessors="true" output="false" {
 		return delete(arguments.accountPaymentMethod);
 	}
 	
+	
 	// =====================  END: Delete Overrides ===========================
 	
-}
+	// ===================== START: Private Helper Functions ==================
 
+	private any function createNewAccountPassword (required any account, required any processObject ){
+	
+		var existingPasswords = getInternalAccountAuthenticationsByEmailAddress(arguments.account.getPrimaryEmailAddress().getEmailAddress());
+		
+		if(arguments.account.getAdminAccountFlag() == true){
+			
+			//Check to see if the password is a duplicate
+			var duplicatePasswordCount = checkForDuplicatePasswords(arguments.processObject.getPassword(), existingPasswords);
+			
+			if(duplicatePasswordCount > 0){
+				arguments.processObject.addError('password', rbKey('validate.newPassword.duplicatePassword'));
+				
+				return arguments.account;
+			}
+		}
+		
+		//Because we only want to store 5 passwords, this gets old passwords that put the lenth of the limit.
+		if (arrayLen(existingPasswords) >= 4){
+			deleteAccountPasswords(arguments, 4);
+		}
+		
+		//Before creating the new password, make sure that all other passwords have an activeFlag of false
+		markOldPasswordsInactive(existingPasswords);
+		
+		//Save the new password
+		var accountAuthentication = this.newAccountAuthentication();
+		accountAuthentication.setAccount( arguments.account );
+		
+		// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
+		getHibachiDAO().save(accountAuthentication);
+	
+		// Set the password
+		accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
+		
+		return arguments.account;
+	}
+	
+	private any function checkForDuplicatePasswords(required any newPassword, required array authArray){
+		
+		//Initilize variable to store the number of duplicate passwords
+		var duplicatePasswordCount = 0;
+		
+		//Loop over the existing authentications for this account
+		for(authentication in arguments.authArray){
+			if(isNull(authentication.getIntegration()) && !isNull(authentication.getPassword())) {
+				//Check to see if the password for this authentication is the same as the one being created
+				if(authentication.getPassword() == getHashedAndSaltedPassword(arguments.newPassword, authentication.getAccountAuthenticationID())){
+					//Because they are the same add 1 to the duplicatePasswordCount
+					duplicatePasswordCount++;
+					
+				}
+			}
+		}
+		
+		return duplicatePasswordCount;
+	}
+	
+	private void function markOldPasswordsInactive(required array authArray){
+		for(authentication in arguments.authArray){
+			if(isNull(authentication.getIntegration()) && !isNull(authentication.getPassword()) && authentication.getActiveFlag() == true) {
+				authentication.setActiveFlag(false);
+			}
+		}
+	}
+
+	private void function deleteAccountPasswords(required struct data, required any maxAuthenticationsCount ){
+		
+		//First need to get an array of all the accountAuthentications for this account ordered by creationDateTime ASC
+		var accountAuthentications = getAccountAuthenticationSmartList(data=data);
+		accountAuthentications.addFilter("account.accountID", arguments.data.Account.getAccountID());
+		accountAuthentications.addWhereCondition("aslatwallaccountauthentication.password IS NOT NULL AND aslatwallintegration.integrationID IS NULL");
+		accountAuthentications.addOrder("createdDateTime|ASC");
+		
+		//Get the actual records from the SmartList and store in an array
+		accountAuthenticationsArray = accountAuthentications.getPageRecords();
+		
+		//Create a variable to hold the length of the new array
+		var numberOfRecordsToBeDeleted = arrayLen(accountAuthenticationsArray) - arguments.maxAuthenticationsCount + 1;
+		
+		//Loop through the length of the array until you are under the maxAuthenticationsCount for that Account.	
+		for(var i=1; i <= numberOfRecordsToBeDeleted; i++){
+			//if the password that is going to be deleted is how the user logged in, updated the session to the new active password
+			if( !isNull(getHibachiScope().getSession().getAccountAuthentication()) && accountAuthenticationsArray[i].getAccountAuthenticationID() == getHibachiScope().getSession().getAccountAuthentication().getAccountAuthenticationID()){
+				var activePassword = getAccountDAO().getActivePasswordByAccountID(arguments.data.Account.getAccountID());
+				getHibachiScope().getSession().setAccountAuthentication(activePassword);
+			}
+			this.deleteAccountAuthentication( accountAuthenticationsArray[i] );
+		}
+		
+	}
+
+	private boolean function checkPasswordResetRequired(required any accountAuthentication, required any processObject){
+		if (accountAuthentication.getUpdatePasswordOnNextLoginFlag() == true 
+			|| ( accountAuthentication.getAccount().getAdminAccountFlag() && 
+					( dateCompare(Now(), dateAdd('d', arguments.accountAuthentication.getAccount().setting('accountAdminForcePasswordResetAfterDays'), accountAuthentication.getCreatedDateTime()))  == 1 
+					|| !REFind("^.*(?=.{7,})(?=.*[0-9])(?=.*[a-zA-Z]).*$" , arguments.processObject.getPassword()) 
+					|| ( !isNull(accountAuthentication.getCreatedByAccount()) && accountAuthentication.getCreatedByAccount().getAccountID() != accountAuthentication.getAccount().getAccountId())
+					)
+				)
+			)
+		{ 
+			return true;
+		}
+				
+		return false;	
+	}
+	// =====================  END:  Private Helper Functions ==================
+	
+}

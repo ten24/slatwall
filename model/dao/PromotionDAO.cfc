@@ -295,6 +295,12 @@ Notes:
 		<cfreturn results[1] />
 	</cffunction>
 	
+	<cffunction name="getPromotionCodeByPromotionCode" returntype="any" access="public">
+		<cfargument name="promotionCode" required="true" type="string" />
+		
+		<cfreturn ormExecuteQuery("SELECT pc FROM SlatwallPromotionCode pc WHERE LOWER(pc.promotionCode) = ?", [lcase(arguments.promotionCode)], true) />
+	</cffunction>
+	
 	<cffunction name="getSalePricePromotionRewardsQuery">
 		<cfargument name="productID" type="string">
 		

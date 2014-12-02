@@ -64,6 +64,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderFulfillment = createPersistedTestEntity('orderFulfillment',orderFulfillmentData);
 		
 		
+		
 		var promotionRewardData = {
 			promotionRewardid = ''
 		};
@@ -134,6 +135,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		// different then the one on the promotion reward, remove the appliedPromo and return true
 		assertTrue(shouldAddNewPromotion3);
 		assertEquals(0,arraylen(orderFulfillment.getAppliedPromotions()));
+		
 	}
 	
 	public void function setupPromotionRewardUsageDetailsTest(){
@@ -359,131 +361,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var discountAmount = variables.service.getDiscountAmount(promotionReward,price,quantity);
 		assertEquals(discountAmount,42);
 	}	
-	
-	public void function getShippingMethodOptionsDiscountAmountDetailsTest(){
-		
-		//args shippingMethodOption
-		//data setup begin
-		var promotionData = {
-			activeFlag = true,
-			promotionPeriods = [
-				{
-					promotionPeriodID = '',
-					promotionCode = 'TestPromotionCode',
-					promotionRewards = [
-						{
-							promotionRewardid = '',
-							rewardType = 'fulfillment',
-							amountType = 'amountOff',
-							amount = 3
-						}
-					]
-				}
-			],
-			promotionCodes = [
-				{
-					promotionCodeID = '',
-					promotionCode = 'TestPromotionCode'
-					
-				}
-			]
-		};
-		var promotion = createPersistedTestEntity('promotion',promotionData);
-		
-		var orderData = {
-		};
-		var order = createPersistedTestEntity('order',orderData);
-		
-		var orderFulfillmentData = {
-			fulfillmentMethod = {
-				fulfillmentMethodID = ''
-			}
-		};
-		var orderFulfillment = createPersistedTestEntity('orderFulfillment',orderFulfillmentData);
-		
-		order.addOrderfulfillment(orderFulfillment);
-		orderFulfillment.setOrder(order);
-		promotion.getpromotionCodes()[1].addOrder(order);
-		
-		var shippingMethodOptionData = {
-			TotalCharge = 9.95
-		};
-		var shippingMethodOption = createPersistedTestEntity('shippingMethodOption',shippingMethodOptionData);
-		
-		shippingMethodOption.setOrderFulfillment(orderFulfillment);
-		
-		//data setup end
-		
-		var discountAmountStruct = variables.service.getShippingMethodOptionsDiscountAmountDetails(shippingMethodOption);
-		
-		addToDebug(discountAmountStruct);
-		
-		//assert that we have a struct with the discountamount and the promotion related to it
-		assertEquals(discountAmountStruct.discountAmount,3.00);
-		
-		/* TODO: assertion may be wrong because of railo caching?*/
-		//assertEquals(discountAmountStruct.promotionID,promotion.getPromotionID());
-		
-	}
-	
-	public void function getShippingMethodOptionsDiscountAmountDetails_totalchargeLessThanReward_Test(){
-		//args shippingMethodOption
-		//data setup begin
-		var promotionData = {
-			activeFlag = true,
-			promotionPeriods = [
-				{
-					promotionPeriodID = '',
-					promotionCode = 'TestPromotionCode',
-					promotionRewards = [
-						{
-							promotionRewardid = '',
-							rewardType = 'fulfillment',
-							amountType = 'amountOff',
-							amount = 3
-						}
-					]
-				}
-			],
-			promotionCodes = [
-				{
-					promotionCodeID = '',
-					promotionCode = 'TestPromotionCode'
-					
-				}
-			]
-		};
-		var promotion = createPersistedTestEntity('promotion',promotionData);
-		
-		var shippingMethodOptionData = {
-			TotalCharge = 1.55
-		};
-		var shippingMethodOption = createPersistedTestEntity('shippingMethodOption',shippingMethodOptionData);
-		
-		var orderData = {
-		};
-		var order = createPersistedTestEntity('order',orderData);
-		
-		var orderFulfillmentData = {
-			fulfillmentMethod = {
-				fulfillmentMethodID = ''
-			}
-		};
-		var orderFulfillment = createPersistedTestEntity('orderFulfillment',orderFulfillmentData);
-		
-		order.addOrderfulfillment(orderFulfillment);
-		orderFulfillment.setOrder(order);
-		promotion.getpromotionCodes()[1].addOrder(order);
-		shippingMethodOption.setOrderFulfillment(orderFulfillment);
-		//data setup end
-		
-		var discountAmountStruct = variables.service.getShippingMethodOptionsDiscountAmountDetails(shippingMethodOption);
-		
-		//assert that we have a struct with the discountamount and the promotion related to it
-		assertEquals(discountAmountStruct.discountAmount,1.55);
-		//assertEquals(discountAmountStruct.promotionID,promotion.getPromotionID());
-		
-	}
 	
 	public void function getSalePriceDetailsForProductSkusTest(){
 		//data setup begin
@@ -1656,110 +1533,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var isOrderItemInReward = variables.service.getOrderItemInReward(promotionReward,orderItem);
 		assertFalse(isOrderItemInReward);
-	}
-	
-	public void function setupOrderItemQualifiedDiscountsTest(){
-		MakePublic(variables.service,'setupOrderItemQualifiedDiscounts');
-		
-		// Setup the products
-		var productData = {
-			productName = 'TestProduct',
-			productCode = 'TestProductCode-#getTickCount()#',
-			urlTitle = 'url#getTickCount()#',
-			productType = {
-				productTypeID = '444df2f7ea9c87e60051f3cd87b435a1'
-			},
-			skus = [
-				{
-					skuID = '',
-					skuCode = "1-#getTickCount()#",
-					price = 23 
-				}
-			]
-		};
-		var product = createPersistedTestEntity('product', productData);
-		
-		var productData2 = {
-			productName = 'TestProduct2',
-			productCode = 'TestProductCode2-#getTickCount()#',
-			urlTitle = 'url2#getTickCount()#',
-			productType = {
-				productTypeID = '444df2f7ea9c87e60051f3cd87b435a1'
-			},
-			skus = [
-				{
-					skuID = '',
-					skuCode = "2-#getTickCount()#",
-					price = 12 
-				}
-			]
-		};
-		var product2 = createPersistedTestEntity('product', productData2);
-		
-		// Setup the order
-		var order = createPersistedTestEntity('order');
-		
-		var orderItemData = {
-			order = {
-				orderID = order.getOrderID()
-			},
-			quantity = 3,
-			sku = {
-				skuID = product.getSkus()[1].getSkuID()
-			}
-		};
-		var orderItem = createPersistedTestEntity('orderItem', orderItemData);
-		
-		var orderItem2Data = {
-			order = {
-				orderID = order.getOrderID()
-			},
-			quantity = 5,
-			sku = {
-				skuID = product2.getSkus()[1].getSkuID()
-			}
-		};
-		var orderItem2 = createPersistedTestEntity('orderItem', orderItem2Data);
-		
-		// Setup the promotion
-		var promotionData = {
-			promotionName = 'Test Promotion #getTickCount()#',
-			promotionPeriods = [
-				{
-					promotionPeriodID = '',
-					promotionRewards = [
-						{
-							promotionRewardID = '',
-							amount = 3,
-							amountType = 'amountOff',
-							rewardType = 'merchandise', 
-							skus = "#product.getSkus()[1].getSkuID()#,#product2.getSkus()[1].getSkuID()#"
-						}
-					]
-				}
-			]
-			
-		};
-		var promotion = createPersistedTestEntity('promotion', promotionData);
-		
-		
-		// Clear the sale price out of the products and skus so that it is reloaded from the DB
-		product.getSkus()[1].setSalePriceDetails( javaCast('null', '') );
-		product.setSalePriceDetailsForSkus( javaCast('null', '') );
-		product2.getSkus()[1].setSalePriceDetails( javaCast('null', '') );
-		product2.setSalePriceDetailsForSkus( javaCast('null', '') );
-		
-		var orderItemQualifiedDiscounts = {};
-		variables.service.setupOrderItemQualifiedDiscounts(order, orderItemQualifiedDiscounts);
-		
-		// assert discounts
-		assertEquals(orderItemQualifiedDiscounts[ order.getOrderItems()[1].getOrderItemID() ][1].promotion.getPromotionID(), promotion.getPromotionID());
-		assertEquals(orderItemQualifiedDiscounts[ order.getOrderItems()[1].getOrderItemID() ][1].discountAmount,9);
-		assertEquals(orderItemQualifiedDiscounts[ order.getOrderItems()[1].getOrderItemID() ][1].promotionRewardID,'');
-		
-		assertEquals(orderItemQualifiedDiscounts[ order.getOrderItems()[2].getOrderItemID() ][1].promotion.getPromotionID(), promotion.getPromotionID());
-		assertEquals(orderItemQualifiedDiscounts[ order.getOrderItems()[2].getOrderItemID() ][1].discountAmount,15);
-		assertEquals(orderItemQualifiedDiscounts[ order.getOrderItems()[2].getOrderItemID() ][1].promotionRewardID,'');
 	}
 	
 	public void function getPromotionPeriodQualifiedFulfillmentIDListTest(){

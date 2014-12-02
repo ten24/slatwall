@@ -81,7 +81,7 @@
 		
 		public any function buildPropertyIdentifierDataStruct(required parentObject, required string propertyIdentifier, required any data) {
 			if(listLen(arguments.propertyIdentifier, ".") eq 1) {
-				data[ arguments.propertyIdentifier ] = parentObject.invokeMethod("get#arguments.propertyIdentifier#");
+				data[ arguments.propertyIdentifier ] = parentObject.getValueByPropertyIdentifier( arguments.propertyIdentifier );
 				return;
 			}
 			var object = parentObject.invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
@@ -149,6 +149,8 @@
 					replaceDetails.value = arguments.object[ valueKey ];
 				} else if (isObject(arguments.object) && (
 					(arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
+						||
+					(arguments.object.isPersistent() && getHasAttributeByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
 						||
 					(!arguments.object.isPersistent() && arguments.object.hasProperty(valueKey))	
 					)) {
@@ -534,6 +536,15 @@
 			var hardCodedFileEncryptionKey = generatePasswordBasedEncryptionKey('0ae8fc11293444779bd4358177931793', 1024);
 			
 			return deserializeJSON(decrypt(fileRead(getEncryptionPasswordFilePath()), hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
+		}
+		
+		public any function updateCF9SerializeJSONOutput( required any data ) {
+			var reMatchArray = reMatch(':0[0-9][0-9]*\.?[0-9]*,', arguments.data);
+			for(var i=1; i<=arrayLen(reMatchArray); i++) {
+				arguments.data = reReplace(arguments.data, ':0[0-9][0-9]*\.?[0-9]*,', ':"#right(reMatchArray[i], len(reMatchArray[i])-1)#",');
+			}
+			
+			return arguments.data;
 		}
 	</cfscript>
 	

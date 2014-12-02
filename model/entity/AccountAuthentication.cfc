@@ -51,11 +51,15 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	// Persistent Properties
 	property name="accountAuthenticationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="password" ormtype="string";
+	property name="authToken" ormtype="string";
 	property name="expirationDateTime" ormtype="timestamp";
 	property name="integrationAccountID" ormtype="string";
 	property name="integrationAccessToken" ormtype="string";
 	property name="integrationAccessTokenExpiration" ormtype="string" column="integrationAccessTokenExp";
 	property name="integrationRefreshToken" ormtype="string";
+	property name="activeFlag" ormtype="boolean";
+	property name="updatePasswordOnNextLoginFlag" ormtype="boolean";
+	property name="authenticationDescription" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
@@ -136,7 +140,16 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	
 	public string function getSimpleRepresentation() {
 		var rep = "";
-		if(isNull(getIntegration())) {
+		if(!isNull(getAuthToken())){
+				rep &= "API Token";
+				if(!isNull(getAuthenticationDescription())){
+					rep &=" - #getAuthenticationDescription()#";
+				}
+				if(getHibachiScope().getAccount().getAccountID() == getAccount().getAccountID()){
+					rep &=" - #getAuthToken()#";
+				}
+		}
+		else if(isNull(getIntegration())) {
 			rep &= "Slatwall";
 			if(isNull(getPassword())) {
 				rep &= " - #rbKey('define.temporary')# #rbKey('define.reset')#";	

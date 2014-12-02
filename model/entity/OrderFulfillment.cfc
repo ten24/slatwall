@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" table="SwOrderFulfillment" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderFulfillments" hb_processContexts="fulfillItems" {
+component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" table="SwOrderFulfillment" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderFulfillments" hb_processContexts="fulfillItems,manualFulfillmentCharge" {
 	
 	// Persistent Properties
 	property name="orderFulfillmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -58,7 +58,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// Related Object Properties (many-to-one)
 	property name="accountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="accountAddressID";
 	property name="accountEmailAddress" hb_populateEnabled="public" cfc="AccountEmailAddress" fieldtype="many-to-one" fkcolumn="accountEmailAddressID";
-	property name="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
+	property name="fulfillmentMethod" hb_populateEnabled="public" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="pickupLocation" hb_populateEnabled="public" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
@@ -124,11 +124,18 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return getService("shippingService").verifyOrderFulfillmentShippingMethodRate( this );
 	}
 	
-	// Deprecated... now just delegates to getShippingAddress
-    public any function getAddress(){
-    	return getShippingAddress();
-    }
-    
+	public boolean function allOrderFulfillmentItemsAreEligibleForFulfillmentMethod() {
+		if(!isNull(getFulfillmentMethod())) {
+			for(var orderItem in getOrderFulfillmentItems()) {
+				if(!listFindNoCase(orderItem.getSku().setting('skuEligibleFulfillmentMethods'), getFulfillmentMethod().getFulfillmentMethodID()) ) {
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
     public void function checkNewAccountAddressSave() {
     	
 		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
@@ -220,8 +227,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     }
     
     public boolean function getRequiredShippingInfoExistsFlag() {
-    	var eb = getShippingAddress().validate(context="full", setErrors=false);
-    	return !eb.hasErrors();
+    	return !getService('hibachiValidationService').validate(object=getShippingAddress(), context="full", setErrors=false).hasErrors();
     }
     
     public any function getShippingMethodOptions() {
@@ -237,12 +243,15 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     		var sortType = getFulfillmentMethod().setting('fulfillmentMethodShippingOptionSortType');
     		
     		for(var shippingMethodOption in getFulfillmentShippingMethodOptions()) {
-    			var thisOption = {
-    				name = shippingMethodOption.getSimpleRepresentation(),
-    				value = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID(),
-    				totalCharge = shippingMethodOption.getTotalCharge(),
-    				shippingMethodSortOrder = shippingMethodOption.getShippingMethodRate().getShippingMethod().getSortOrder()
-    			};
+    			
+    			var thisOption = {};
+    			thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
+    			thisOption['value'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID();
+    			thisOption['totalCharge'] = shippingMethodOption.getTotalCharge();
+    			thisOption['shippingMethodSortOrder'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getSortOrder();
+    			if( !isNull(shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode()) ){
+    				thisOption['shippingMethodCode'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode();
+    			}
     			
     			var inserted = false;
     			
@@ -417,20 +426,24 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 	
 	public any function getShippingAddress() {
-		if(!structKeyExists(variables, "shippingAddress")) {
+		// Check Here
+		if(structKeyExists(variables, "shippingAddress")) {
+			return variables.shippingAddress;
 			
-			if(!isNull(getAccountAddress())) {
-				// Get the account address, copy it, and save as the shipping address
-				setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
-				return variables.shippingAddress;
-			} else if (!isNull(getOrder()) && !isNull(getOrder().getShippingAddress()) ) {
-				return getOrder().getShippingAddress();
-			}
+		// Check Account Address
+		} else if(!isNull(getAccountAddress())) {
 			
-			return getService("addressService").newAddress();
+			// Get the account address, copy it, and save as the shipping address
+			setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
+			return variables.shippingAddress;
+			
+		// Check Order
+		} else if (!isNull(getOrder())) {
+			return getOrder().getShippingAddress();
 		}
 		
-		return variables.shippingAddress;
+		// Return New
+		return getService("addressService").newAddress();
 	}
 	
 	// sets it up so that the charge for the shipping method is pulled out of the shippingMethodOptions
@@ -466,7 +479,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 		if(!isNull(getFulfillmentMethod())) {
 			rep &= "#rbKey('enity.orderFulfillment.orderFulfillmentType.#getFulfillmentMethodType()#')#";
-			if(getFulfillmentMethodType() eq "shipping" && !isNull(getAddress()) && !getAddress().isNew() && !isNull(getAddress().getStreetAddress())) {
+			if(getFulfillmentMethodType() eq "shipping" && !isNull(getShippingAddress().getStreetAddress())) {
 				rep &= " - #getAddress().getStreetAddress()#";
 			}
 			if(getFulfillmentMethodType() eq "email" && !isNull(getEmailAddress())) {
@@ -504,7 +517,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		if(structKeyExists(arguments.data, "accountAddress")
 			&& structKeyExists(arguments.data.accountAddress, "accountAddressID")
 			&& len(arguments.data.accountAddress.accountAddressID)
-			&& (isNull(getAccountAddress()) || getAccountAddress().getAccountAddressID() != arguments.data.accountAddress.accountAddressID)) {
+			&& ( !structKeyExists(arguments.data, "shippingAddress") || !structKeyExists(arguments.data.shippingAddress, "addressID") || !len(arguments.data.shippingAddress.addressID) ) ) {
 				
 			structDelete(arguments.data, "shippingAddress");
 		}
@@ -519,6 +532,11 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	// ===================  END:  ORM Event Hooks  =========================
 	
 	// ================== START: Deprecated Methods ========================
+	
+	// Now just delegates to getShippingAddress
+    public any function getAddress(){
+    	return getShippingAddress();
+    }
 	
 	public numeric function getDiscountTotal() {
 		return precisionEvaluate(getDiscountAmount() + getItemDiscountAmountTotal());

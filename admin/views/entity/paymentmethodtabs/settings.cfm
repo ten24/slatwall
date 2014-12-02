@@ -46,9 +46,12 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.paymentMethod" type="any" />
 
-<cf_SlatwallSettingTable>
-	<cf_SlatwallSetting settingName="paymentMethodMaximumOrderTotalPercentageAmount" settingObject="#rc.paymentMethod#" />
-</cf_SlatwallSettingTable>
+<swa:SlatwallSettingTable>
+	<swa:SlatwallSetting settingName="paymentMethodMaximumOrderTotalPercentageAmount" settingObject="#rc.paymentMethod#" />
+</swa:SlatwallSettingTable>
 

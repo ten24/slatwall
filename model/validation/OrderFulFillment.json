@@ -22,6 +22,7 @@
 		"orderFulfillmentID":				[{"contexts":"delete","maxValue":0}],
 		"order":							[{"contexts":"save","required":true}],
 		"fulfillmentCharge":				[{"contexts":"save","dataType":"numeric","minValue":0}],
+		"fulfillmentMethod":				[{"contexts":"save","required":true,"method":"allOrderFulfillmentItemsAreEligibleForFulfillmentMethod"}],
 		"orderFulfillmentItems":			[{"contexts":"placeOrder,fulfillItems","minCollection":1}],
 		"quantityUndelivered":				[{"contexts":"fulfillItems","minValue":0}],
 		"emailAddress":						[{"contexts":"placeOrder","conditions":"fulfillmentTypeEmail","required":true}],

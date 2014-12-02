@@ -46,14 +46,19 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.attribute" type="any">
 <cfparam name="rc.attributeSet" type="any" default="#rc.attribute.getAttributeSet()#">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.attribute#" edit="#rc.edit#" 
-									saveActionQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.attribute#" edit="#rc.edit#"
+	<hb:HibachiEntityDetailForm object="#rc.attribute#" edit="#rc.edit#"
+								saveActionQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#">
+									
+		<hb:HibachiEntityActionBar type="detail" object="#rc.attribute#" edit="#rc.edit#"
 								   backAction="admin:entity.detailAttributeSet"
 								   backQueryString="attributeSetID=#rc.attributeSet.getAttributeSetID()#"
 								   cancelAction="admin:entity.detailAttributeSet"
@@ -66,27 +71,13 @@ Notes:
 			<input type="hidden" name="attributeSet.attributeSetID" value="#rc.attributeSet.getAttributeSetID()#" />
 		</cfif>
 
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="requiredFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="attributeName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="attributeCode" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="attributeHint" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="defaultValue" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.attribute#" property="attributeType" valueDefault="text" edit="#rc.edit and rc.attribute.isNew()#">
-				<cf_HibachiDisplayToggle selector="select[name='attributeType']" showValues="relatedObjectSelect,relatedObjectMultiselect" loadVisable="#(!isNull(rc.attribute.getAttributeType()) && listFindNoCase('relatedObjectSelect,releatedObjectMultiselect', rc.attribute.getAttributeType()))#">
-					<cf_HibachiPropertyDisplay object="#rc.attribute#" property="relatedObject" edit="#rc.edit and rc.attribute.isNew()#">
-				</cf_HibachiDisplayToggle>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-
-		<cf_HibachiTabGroup object="#rc.attribute#">
-			<cfif not rc.attribute.isNew() and listFindNoCase( "text,password,checkboxGroup,multiselect,radioGroup,select",rc.attribute.getAttributeType() )>
-				<cf_HibachiTab view="admin:entity/attributetabs/attributeoptions" />
+		<hb:HibachiEntityDetailGroup object="#rc.attribute#">
+			<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cfif not rc.attribute.getNewFlag() and listFindNoCase( "text,password,checkboxGroup,multiselect,radioGroup,select",rc.attribute.getAttributeInputType() )>
+				<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/attributeoptions" />
 			</cfif>
-			<cf_HibachiTab view="admin:entity/attributetabs/description" />
-		</cf_HibachiTabGroup>
+			<hb:HibachiEntityDetailItem view="admin:entity/attributetabs/description" />
+		</hb:HibachiEntityDetailGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

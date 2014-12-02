@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="subscriptionService" hb_permission="this" {
+component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="subscriptionService" hb_permission="this" hb_processContexts="addUsageBenefit,cancel,renew,sendRenewalReminder,updateStatus" {
 	
 	// Persistent Properties
 	property name="subscriptionUsageID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -149,7 +149,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	
 	public string function getCurrentStatusType() {
 		if(!isNull(getCurrentStatus())) {
-			return getCurrentStatus().getSubscriptionStatusType().getType();
+			return getCurrentStatus().getSubscriptionStatusType().getTypeName();
 		}
 		return "";
 	}

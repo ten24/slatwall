@@ -46,27 +46,24 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.optiongroup" type="any" />
 <cfparam name="rc.edit" default="false" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.optiongroup#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.optiongroup#" edit="#rc.edit#">
-			<cf_HibachiActionCaller action="admin:entity.createoption" queryString="optionGroupID=#rc.optionGroup.getOptionGroupID()#&renderItem=detailOptionGroup" type="list" modal=true />
-		</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.optiongroup#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.optiongroup#" edit="#rc.edit#">
+			<hb:HibachiActionCaller action="admin:entity.createoption" queryString="optionGroupID=#rc.optionGroup.getOptionGroupID()#&renderItem=detailOptionGroup" type="list" modal=true />
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.optiongroup#" property="optionGroupName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.optiongroup#" property="optionGroupCode" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.optiongroup#" property="imageGroupFlag" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiEntityDetailGroup object="#rc.optiongroup#">
+			<hb:HibachiEntityDetailItem view="admin:entity/optiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/optiongrouptabs/options" />
+			<hb:HibachiEntityDetailItem view="admin:entity/optiongrouptabs/description" />
+		</hb:HibachiEntityDetailGroup>
 		
-		<cf_HibachiTabGroup object="#rc.optiongroup#">
-			<cf_HibachiTab view="admin:entity/optiongrouptabs/options" />
-			<cf_HibachiTab view="admin:entity/optiongrouptabs/description" />
-		</cf_HibachiTabGroup>
-		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

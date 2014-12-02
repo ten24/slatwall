@@ -56,11 +56,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.getService( variables.entityService ).newAddress();
 	}
 	
-	// Addresses are alowed to be saved with no data
-	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
-		variables.entity.validate(context="save");
-		assertFalse(variables.entity.hasErrors());
-	}
 	
 }
 

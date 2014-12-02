@@ -46,19 +46,23 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderDeliverySmartList" type="any" />
 
 <cfoutput>
-	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.orderDeliverySmartList#"
+	<hb:HibachiEntityActionBar type="listing" object="#rc.orderDeliverySmartList#" showCreate="false" />
+	<hb:HibachiListingDisplay smartList="#rc.orderDeliverySmartList#"
 			recorddetailaction="admin:entity.detailorderdelivery">
-		<cf_HibachiListingColumn propertyIdentifier="order.orderNumber" />
-		<cf_HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />	
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="order.account.fullName" />
-		<cf_HibachiListingColumn propertyIdentifier="location.locationName" />
-		<cf_HibachiListingColumn propertyIdentifier="fulfillmentMethod.fulfillmentMethodType" />
-		<cf_HibachiListingColumn propertyIdentifier="shippingMethod.shippingMethodName" />
-		<cf_HibachiListingColumn propertyIdentifier="trackingNumber" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
+		<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />	
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="order.account.fullName" />
+		<hb:HibachiListingColumn propertyIdentifier="location.locationName" />
+		<hb:HibachiListingColumn propertyIdentifier="fulfillmentMethod.fulfillmentMethodType" />
+		<hb:HibachiListingColumn propertyIdentifier="shippingMethod.shippingMethodName" />
+		<hb:HibachiListingColumn propertyIdentifier="trackingNumber" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

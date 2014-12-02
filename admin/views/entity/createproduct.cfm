@@ -46,75 +46,79 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.product" type="any" />
 <cfparam name="rc.baseProductType" type="string" />
 <cfparam name="rc.edit" type="boolean" default="true" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.product#" edit="true">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.product#" edit="true"></cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.product#" edit="true">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.product#" edit="true"></hb:HibachiEntityActionBar>
 		
 		<cfif rc.product.isNew() and rc.edit>
 			<!--- Submit the baseProductType as well in case of a validation error --->
 			<input type="hidden" name="baseProductType" value="#rc.baseProductType#" />
 		</cfif>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="productType" edit="true" valueOptions="#rc.product.getProductTypeOptions(rc.baseProductType)#">
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.product#" property="productType" edit="true" valueOptions="#rc.product.getProductTypeOptions(rc.baseProductType)#">
 				<cfif rc.baseProductType eq "merchandise">
-					<cf_HibachiPropertyDisplay object="#rc.product#" property="brand" edit="true">
+					<hb:HibachiPropertyDisplay object="#rc.product#" property="brand" edit="true">
 				</cfif>
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="productName" edit="true">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="productCode" edit="true">
-				<cf_HibachiPropertyDisplay object="#rc.product#" property="price" edit="true">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+				<hb:HibachiPropertyDisplay object="#rc.product#" property="productName" edit="true">
+				<hb:HibachiPropertyDisplay object="#rc.product#" property="productCode" edit="true">
+				<hb:HibachiPropertyDisplay object="#rc.product#" property="price" edit="true">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		<hr />
 		<cfif rc.baseProductType eq "merchandise">
-			<div class="row-fluid">
+			<div class="row">
 				<cfset optionsSmartList = $.slatwall.getService("optionService").getOptionSmartList() />
 				<cfset optionsSmartList.addOrder("optionGroup.sortOrder|ASC") />
 				<cfif optionsSmartList.getRecordsCount()>
-					<cf_HibachiListingDisplay smartList="#optionsSmartList#" multiselectfieldname="options" edit="true">
-						<cf_HibachiListingColumn propertyIdentifier="optionGroup.optionGroupName" />
-						<cf_HibachiListingColumn propertyIdentifier="optionName" tdclass="primary" />
-					</cf_HibachiListingDisplay>
+					<hb:HibachiListingDisplay smartList="#optionsSmartList#" multiselectfieldname="options" edit="true">
+						<hb:HibachiListingColumn propertyIdentifier="optionGroup.optionGroupName" />
+						<hb:HibachiListingColumn propertyIdentifier="optionName" tdclass="primary" />
+					</hb:HibachiListingDisplay>
 				</cfif>
 			</div>
 		<cfelseif rc.baseProductType eq "subscription">
-			<div class="row-fluid">
-				<div class="span6">
+			<div class="row">
+				<div class="col-md-6">
 					<h5>#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#</h5>
 					<br />
-					<cf_SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionBenefits" />
-					<cf_HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" edit="true">
-						<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
-					</cf_HibachiListingDisplay>
+					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionBenefits" />
+					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" edit="true">
+						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
+					</hb:HibachiListingDisplay>
 					<h5>#$.slatwall.rbKey('admin.entity.createproduct.selectrenewalsubscriptionbenifits')#</h5>
 					<br />
-					<cf_SlatwallErrorDisplay object="#rc.product#" errorName="renewalsubscriptionBenefits" />
-					<cf_HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" edit="true">
-						<cf_HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
-					</cf_HibachiListingDisplay>
+					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalsubscriptionBenefits" />
+					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" edit="true">
+						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
+					</hb:HibachiListingDisplay>
 				</div>
-				<div class="span6">
+				<div class="col-md-6">
 					<h5>#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionterms')#</h5>
 					<br />
-					<cf_SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionTerms" />
-					<cf_HibachiListingDisplay smartList="SubscriptionTerm" multiselectFieldName="subscriptionTerms" edit="true">
-						<cf_HibachiListingColumn propertyIdentifier="subscriptionTermName" tdclass="primary" />
-					</cf_HibachiListingDisplay>
+					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionTerms" />
+					<hb:HibachiListingDisplay smartList="SubscriptionTerm" multiselectFieldName="subscriptionTerms" edit="true">
+						<hb:HibachiListingColumn propertyIdentifier="subscriptionTermName" tdclass="primary" />
+					</hb:HibachiListingDisplay>
 				</div>
 			</div>
 		<cfelseif rc.baseProductType eq "contentAccess">
 			<cfset contentAccessList = $.slatwall.getService("contentService").getContentSmartList() />
 			<!---<cfset contentAccessList.addFilter("allowPurchaseFlag", 1) />--->
-			<cf_SlatwallErrorDisplay object="#rc.product#" errorName="accessContents" />
-			<cf_HibachiFieldDisplay fieldType="yesno" fieldName="bundleContentAccess" value="0" title="#$.slatwall.rbKey('admin.entity.createproduct.bundleContentAccess')#" hint="#$.slatwall.rbKey('admin.entity.createproduct.bundleContentAccess_hint')#" edit="true" />
-			<cf_HibachiListingDisplay smartList="#contentAccessList#" multiselectFieldName="accessContents" edit="true">
-				<cf_HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
-			</cf_HibachiListingDisplay>
+			<swa:SlatwallErrorDisplay object="#rc.product#" errorName="accessContents" />
+			<hb:HibachiFieldDisplay fieldType="yesno" fieldName="bundleContentAccess" value="0" title="#$.slatwall.rbKey('admin.entity.createproduct.bundleContentAccess')#" hint="#$.slatwall.rbKey('admin.entity.createproduct.bundleContentAccess_hint')#" edit="true" />
+			<hb:HibachiListingDisplay smartList="#contentAccessList#" multiselectFieldName="accessContents" edit="true">
+				<hb:HibachiListingColumn propertyIdentifier="title" tdclass="primary" />
+			</hb:HibachiListingDisplay>
 		</cfif>
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

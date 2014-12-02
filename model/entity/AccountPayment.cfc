@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Account Payment" entityname="SlatwallAccountPayment" table="SwAccountPayment" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountPayment" hb_processContexts="offlineTransaction,process" {
+component displayname="Account Payment" entityname="SlatwallAccountPayment" table="SwAccountPayment" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountPayment" hb_processContexts="offlineTransaction,process,createTransaction" {
 	
 	// Persistent Properties
 	property name="accountPaymentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -373,7 +373,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	
 	public array function getAccountPaymentAppliedOptions( ) {
 		if(!structKeyExists(variables, "appliedAccountPaymentOptions")) {
-			var smartList = getService('settingService').getTypeSmartList();
+			var smartList = getService('typeService').getTypeSmartList();
 			smartList.addInFilter('systemCode','aptCredit,aptCharge');
 			smartList.addSelect('type','name');
 			smartList.addSelect('typeID','value');

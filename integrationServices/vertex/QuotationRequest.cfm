@@ -60,29 +60,42 @@
 	         	</cfif>
 	      		</urn:Login>
 	         	<urn:QuotationRequest documentDate="#dateTimeFormat(Now(), 'yyyy-mm-dd')#" documentNumber="#arguments.requestBean.getOrderID()#" transactionId="#createUUID()#" transactionType="SALE">
-				  	<urn:Currency isoCurrencyCodeAlpha="USD"/>
+				  	<urn:Currency isoCurrencyCodeAlpha="#addressTaxRequestItems[ 1 ].getCurrencyCode()#"/>
 				  	<urn:Seller>
-				    	<urn:Company>#setting('company')#</urn:Company>
-				    	<urn:Division>#setting('division')#</urn:Division>
-				    	<urn:Department>#setting('department')#</urn:Department>
+				    	<urn:Company>#xmlFormat(setting('company'))#</urn:Company>
+				    	<urn:Division>#xmlFormat(setting('division'))#</urn:Division>
+				    	<urn:Department>#xmlFormat(setting('department'))#</urn:Department>
 				    	<urn:PhysicalOrigin>
-				      		<urn:City>#setting('originCity')#</urn:City>
-				      		<urn:MainDivision>#setting('originMainDivision')#</urn:MainDivision>
-				      		<urn:PostalCode>#setting('originPostalCode')#</urn:PostalCode>
-				     		<urn:Country>#setting('originCountry')#</urn:Country>
-				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
+				      		<urn:City>#xmlFormat(setting('originCity'))#</urn:City>
+				      		<urn:MainDivision>#xmlFormat(setting('originMainDivision'))#</urn:MainDivision>
+				      		<urn:PostalCode>#xmlFormat(setting('originPostalCode'))#</urn:PostalCode>
+				     		<urn:Country>#xmlFormat(setting('originCountry'))#</urn:Country>
+				     		<cfif addressTaxRequestItems[ 1 ].getCurrencyCode() neq setting('originCurrencyCode')>
+			     				<urn:CurrencyConversion isoCurrencyCodeAlpha="#xmlFormat(setting('originCurrencyCode'))#">#getService('currencyCode').getCurrencyConversionRate(originalCurrencyCode=addressTaxRequestItems[ 1 ].getCurrencyCode(), convertToCurrencyCode=setting('originCurrencyCode'))#</urn:CurrencyConversion>
+			     			<cfelse>
+			     				<urn:CurrencyConversion isoCurrencyCodeAlpha="#xmlFormat(setting('originCurrencyCode'))#">1</urn:CurrencyConversion>
+			     			</cfif>
 				   		</urn:PhysicalOrigin>
 				  	</urn:Seller>
 				  	<urn:Customer>
 				    	<urn:CustomerCode>#arguments.requestBean.getAccountID()#</urn:CustomerCode>
 				    	<urn:Destination>
-				    		<urn:StreetAddress1>#addressTaxRequestItems[ 1 ].getTaxStreetAddress()#</urn:StreetAddress1>
-				      		<urn:StreetAddress2>#addressTaxRequestItems[ 1 ].getTaxStreet2Address()#</urn:StreetAddress2>
-							<urn:City>#addressTaxRequestItems[ 1 ].getTaxCity()#</urn:City>
-				      		<urn:MainDivision>#addressTaxRequestItems[ 1 ].getTaxStateCode()#</urn:MainDivision>
-				      		<urn:PostalCode>#addressTaxRequestItems[ 1 ].getTaxPostalCode()#</urn:PostalCode>
-				     		<urn:Country>#addressTaxRequestItems[ 1 ].getTaxCountryCode()#</urn:Country>
-				     		<urn:CurrencyConversion isoCurrencyCodeAlpha="USD">1</urn:CurrencyConversion>
+				    		<urn:StreetAddress1>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxStreetAddress())#</urn:StreetAddress1>
+				      		<urn:StreetAddress2>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxStreet2Address())#</urn:StreetAddress2>
+							<urn:City>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxCity())#</urn:City>
+				      		<urn:MainDivision>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxStateCode())#</urn:MainDivision>
+				      		<urn:PostalCode>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxPostalCode())#</urn:PostalCode>
+				     		<urn:Country>#xmlFormat(addressTaxRequestItems[ 1 ].getTaxCountryCode())#</urn:Country>
+				     		<cfset local.destinationCurrencyCode = 'USD' />
+				     		<cfset local.destinationCountry = getService('addressService').getCountry(addressTaxRequestItems[ 1 ].getTaxCountryCode()) />
+				     		<cfif !isNull(local.destinationCountry) and !isNull(local.destinationCountry.getDefaultCurrency())>
+				     			<cfset local.destinationCurrencyCode = local.destinationCountry.getDefaultCurrency().getCurrencyCode() />
+				     		</cfif>
+				     		<cfif addressTaxRequestItems[ 1 ].getCurrencyCode() neq local.destinationCurrencyCode>
+			     				<urn:CurrencyConversion isoCurrencyCodeAlpha="#xmlFormat(local.destinationCurrencyCode)#">#getService('currencyCode').getCurrencyConversionRate(originalCurrencyCode=addressTaxRequestItems[ 1 ].getCurrencyCode(), convertToCurrencyCode=local.destinationCurrencyCode)#</urn:CurrencyConversion>
+			     			<cfelse>
+			     				<urn:CurrencyConversion isoCurrencyCodeAlpha="#xmlFormat(local.destinationCurrencyCode)#">1</urn:CurrencyConversion>
+			     			</cfif>
 				    	</urn:Destination>
 					 </urn:Customer>
 					 <cfset var count = 0 />
@@ -91,9 +104,11 @@
 					 	 <urn:LineItem lineItemNumber="#count#" materialCode="#taxRequestItem.getOrderItemID()#">
 					    	<urn:ExtendedPrice>#taxRequestItem.getExtendedPriceAfterDiscount()#</urn:ExtendedPrice>
 							<urn:FlexibleFields>
-					      		<urn:FlexibleCodeField fieldId="7">CUST_NAME</urn:FlexibleCodeField>
-					      		<urn:FlexibleCodeField fieldId="11">TAX_CODE</urn:FlexibleCodeField>
-					      		<urn:FlexibleCodeField fieldId="12">PRODUCT_NAME</urn:FlexibleCodeField>
+								<cfif !isNull(arguments.requestBean.getAccount())>
+						      		<urn:FlexibleCodeField fieldId="7">#left(xmlFormat(arguments.requestBean.getAccount().getFullName()), 40)#</urn:FlexibleCodeField>
+								</cfif>
+					      		<urn:FlexibleCodeField fieldId="11">#xmlFormat(taxRequestItem.getTaxCategoryRateCode())#</urn:FlexibleCodeField>
+					      		<urn:FlexibleCodeField fieldId="12">#left(xmlFormat(taxRequestItem.getOrderItem().getSku().getProduct().getProductName()), 40)#</urn:FlexibleCodeField>
 					    	</urn:FlexibleFields>
 					  	</urn:LineItem>
 					</cfloop>			 

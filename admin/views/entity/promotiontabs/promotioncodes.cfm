@@ -46,27 +46,29 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.promotion" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay smartList="#rc.promotion.getPromotionCodesSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.promotion.getPromotionCodesSmartList()#"
 							  recordEditAction="admin:entity.editpromotioncode"
 							  recordEditQueryString="redirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()#"
 							  recordEditModal=true
 							  recordDeleteAction="admin:entity.deletepromotioncode"
 							  recordDeleteQueryString="redirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()###tabpromotioncodes">
 
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="promotionCode" />
-		<cf_HibachiListingColumn propertyIdentifier="startDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="endDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="maximumUseCount" />
-		<cf_HibachiListingColumn propertyIdentifier="maximumAccountUseCount" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="promotionCode" />
+		<hb:HibachiListingColumn propertyIdentifier="startDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="endDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="maximumUseCount" />
+		<hb:HibachiListingColumn propertyIdentifier="maximumAccountUseCount" />
 
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createpromotioncode" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()#" modal="true" />
+	<hb:HibachiActionCaller action="admin:entity.createpromotioncode" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()#" modal="true" />
 </cfoutput>
 

@@ -46,18 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" /> 
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.order.getOrderFulfillmentsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.order.getOrderFulfillmentsSmartList()#"
 							   recordDetailAction="admin:entity.detailorderfulfillment"
 							   recordEditAction="admin:entity.editorderfulfillment">
-		<cf_HibachiListingColumn tdClass="primary" propertyIdentifier="fulfillmentMethod.fulfillmentMethodName" />
-		<cf_HibachiListingColumn propertyIdentifier="fulfillmentCharge" />
-		<cf_HibachiListingColumn propertyIdentifier="discountAmount" />
-		<cf_HibachiListingColumn propertyIdentifier="chargeAfterDiscount" />
-		<cf_HibachiListingColumn propertyIdentifier="quantityDelivered" />
-		<cf_HibachiListingColumn propertyIdentifier="quantityUndelivered" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="fulfillmentMethod.fulfillmentMethodName" />
+		<hb:HibachiListingColumn propertyIdentifier="fulfillmentCharge" />
+		<hb:HibachiListingColumn propertyIdentifier="discountAmount" />
+		<hb:HibachiListingColumn propertyIdentifier="chargeAfterDiscount" />
+		<hb:HibachiListingColumn propertyIdentifier="quantityDelivered" />
+		<hb:HibachiListingColumn propertyIdentifier="quantityUndelivered" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

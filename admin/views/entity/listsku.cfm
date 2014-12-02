@@ -46,33 +46,41 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.skuSmartList" type="any" />
 
 <cfoutput>
 	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.skuSmartList#"
+	<hb:HibachiEntityActionBar type="listing" object="#rc.skuSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
+				<hb:HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.contentAccess')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=contentAccess" disabled="#!$.slatwall.getSmartList("Content").getRecordsCount()#" disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoContent')#" type="list" />
+				<hb:HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=event" type="list" />
+				<hb:HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.merchandise')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=merchandise" type="list" />
+				<hb:HibachiProcessCaller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.subscription')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=subscription" type="list" disabled="#!$.slatwall.getSmartList("SubscriptionTerm").getRecordsCount() or !$.slatwall.getSmartList("SubscriptionBenefit").getRecordsCount()#"  disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoSubscriptionBenefitOrTerm')#" />			
+			</hb:HibachiActionCallerDropdown>
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiListingDisplay smartList="#rc.skuSmartList#"
 			recordEditAction="admin:entity.editsku"
 			recorddetailaction="admin:entity.detailsku">
 			
-		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
-				<cf_HibachiActionCaller action="admin:entity.createproduct" text="#rc.$.slatwall.rbKey('define.contentAccess')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=contentAccess" type="list" />
-				<cf_HibachiActionCaller action="admin:entity.createproduct" text="#rc.$.slatwall.rbKey('define.merchandise')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=merchandise" type="list" />
-				<cf_HibachiActionCaller action="admin:entity.createproduct" text="#rc.$.slatwall.rbKey('define.subscription')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=subscription" type="list" />
-			</cf_HibachiActionCallerDropdown>
-		</cf_HibachiListingDisplayButtonGroup>
-			
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="product.productName" />
-		<cf_HibachiListingColumn propertyIdentifier="product.productCode" />		
-		<cf_HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
-		<cf_HibachiListingColumn propertyIdentifier="product.brand.brandName" />
-		<cf_HibachiListingColumn propertyIdentifier="listPrice" />
-		<cf_HibachiListingColumn propertyIdentifier="price" />
-		<cf_HibachiListingColumn propertyIdentifier="renewalPrice" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-		<cf_HibachiListingColumn propertyIdentifier="calculatedQATS" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
+		<hb:HibachiListingColumn propertyIdentifier="product.productName" />
+		<hb:HibachiListingColumn propertyIdentifier="product.productCode" />		
+		<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
+		<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
+		<hb:HibachiListingColumn propertyIdentifier="listPrice" />
+		<hb:HibachiListingColumn propertyIdentifier="price" />
+		<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

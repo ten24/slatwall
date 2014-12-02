@@ -52,8 +52,8 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="settingID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="settingName" ormtype="string";
 	property name="settingValue" ormtype="string" length="4000";
-	property name="settingValueEncryptedDateTime" ormType="timestamp" hb_auditable="false";
-	property name="settingValueEncryptedGenerator" ormType="string" hb_auditable="false";
+	property name="settingValueEncryptedDateTime" ormType="timestamp" hb_auditable="false" column="settingValueEncryptDT";
+	property name="settingValueEncryptedGenerator" ormType="string" hb_auditable="false" column="settingValueEncryptGen";
 
 	// Non-Constrained related entity
 	property name="cmsContentID" ormtype="string";
@@ -65,6 +65,8 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="email" cfc="Email" fieldtype="many-to-one" fkcolumn="emailID";
 	property name="emailTemplate" cfc="EmailTemplate" fieldtype="many-to-one" fkcolumn="emailTemplateID";
 	property name="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
+	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="locationConfiguration" cfc="LocationConfiguration" fieldtype="many-to-one" fkcolumn="locationConfigurationID";
 	property name="paymentMethod" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID"; 
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID";
@@ -140,7 +142,7 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	
 	public struct function getAuditablePropertiesStruct() {
 		// Clears cached auditablePropertiesStruct because 'settingValue' inclusion/exclusion changes based on instance
-		setApplicationValue('classAuditablePropertyStructCache_#getClassFullname()#', javacast("null", ""));
+		clearApplicationValue('classAuditablePropertyStructCache_#getClassFullname()#');
 		return super.getAuditablePropertiesStruct();
 	}
 	

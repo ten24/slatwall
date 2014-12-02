@@ -46,7 +46,8 @@
 Notes:
 
 --->
-
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <!--- These are required Attributes --->
 <cfparam name="attributes.object" type="any" />										<!--- hint: This is a required attribute that defines the object that contains the property to display --->
 <cfparam name="attributes.property" type="string" /> 								<!--- hint: This is a required attribute as the property that you want to display" --->
@@ -197,8 +198,8 @@ Notes:
 				<cfoutput>
 					<dt class="#attributes.titleClass#"><label for="#attributes.fieldName#">#attributes.title#</label></dt>
 					<dd class="#attributes.valueClass#">
-						<cf_SlatwallFormField fieldType="#attributes.fieldType#" fieldName="#attributes.fieldName#" fieldClass="#attributes.fieldClass#" value="#attributes.value#" valueOptions="#attributes.valueOptions#" />
-						<cf_SlatwallErrorDisplay object="#attributes.object#" errorName="#attributes.property#" displayType="label" for="#attributes.fieldName#" />
+						<swa:SlatwallFormField fieldType="#attributes.fieldType#" fieldName="#attributes.fieldName#" fieldClass="#attributes.fieldClass#" value="#attributes.value#" valueOptions="#attributes.valueOptions#" />
+						<swa:SlatwallErrorDisplay object="#attributes.object#" errorName="#attributes.property#" displayType="label" for="#attributes.fieldName#" />
 					</dd>
 				</cfoutput>
 			<cfelse>
@@ -219,8 +220,8 @@ Notes:
 					<tr>
 						<td class="#attributes.titleClass#"><label for="#attributes.fieldName#">#attributes.title#</label></td>
 						<td class="#attributes.valueClass#">
-							<cf_SlatwallFormField fieldType="#attributes.fieldType#" fieldName="#attributes.fieldName#" fieldClass="#attributes.fieldClass#" value="#attributes.value#" valueOptions="#attributes.valueOptions#" />
-							<cf_SlatwallErrorDisplay object="#attributes.object#" errorName="#attributes.property#" displayType="label" for="#attributes.fieldName#" />
+							<swa:SlatwallFormField fieldType="#attributes.fieldType#" fieldName="#attributes.fieldName#" fieldClass="#attributes.fieldClass#" value="#attributes.value#" valueOptions="#attributes.valueOptions#" />
+							<swa:SlatwallErrorDisplay object="#attributes.object#" errorName="#attributes.property#" displayType="label" for="#attributes.fieldName#" />
 						</td>
 					</tr>
 				</cfoutput>
@@ -243,8 +244,8 @@ Notes:
 				<cfoutput>
 					<span class="#attributes.titleClass#"><label for="#attributes.fieldName#">#attributes.title#</label></span>
 					<span class="#attributes.valueClass#">
-						<cf_SlatwallFormField fieldType="#attributes.fieldType#" fieldName="#attributes.fieldName#" fieldClass="#attributes.fieldClass#" value="#attributes.value#" valueOptions="#attributes.valueOptions#" />
-						<cf_SlatwallErrorDisplay object="#attributes.object#" errorName="#attributes.property#" displayType="label" for="#attributes.fieldName#" />
+						<swa:SlatwallFormField fieldType="#attributes.fieldType#" fieldName="#attributes.fieldName#" fieldClass="#attributes.fieldClass#" value="#attributes.value#" valueOptions="#attributes.valueOptions#" />
+						<swa:SlatwallErrorDisplay object="#attributes.object#" errorName="#attributes.property#" displayType="label" for="#attributes.fieldName#" />
 					</span>
 				</cfoutput>
 			<cfelse>
@@ -262,8 +263,8 @@ Notes:
 		<cfcase value="plain">
 			<cfif attributes.edit>
 				<cfoutput>
-					<cf_SlatwallFormField fieldType="#attributes.fieldType#" fieldName="#attributes.fieldName#" fieldClass="#attributes.fieldClass#" value="#attributes.value#" valueOptions="#attributes.valueOptions#" />
-					<cf_SlatwallErrorDisplay object="#attributes.object#" errorName="#attributes.property#" displayType="label" for="#attributes.fieldName#" />
+					<swa:SlatwallFormField fieldType="#attributes.fieldType#" fieldName="#attributes.fieldName#" fieldClass="#attributes.fieldClass#" value="#attributes.value#" valueOptions="#attributes.valueOptions#" />
+					<swa:SlatwallErrorDisplay object="#attributes.object#" errorName="#attributes.property#" displayType="label" for="#attributes.fieldName#" />
 				</cfoutput>
 			<cfelse>
 				<cfoutput>

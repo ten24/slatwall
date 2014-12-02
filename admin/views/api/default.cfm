@@ -47,7 +47,9 @@
 	
 --->
 <!--- Left Blank on Purpose --->
-<div class="row-fluid">
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<div class="row">
 	<div class="span3">
 		<div class="well">
 			<ul class="nav">
@@ -60,17 +62,17 @@
 		</div>
 	</div>
 	<div class="span9">
-		<div class="row-fluid">
-			<div class="span12">
+		<div class="row">
+			<div class="col-md-12">
 				<div class="well">
 					<form method="get">
-						<input name="id" type="text" value="" /><button type="submit" name="update" class="btn">Update</button>
+						<input name="id" type="text" value="" /><button type="submit" name="update" class="btn btn-default">Update</button>
 					</form>
 				</div>
 			</div>
 		</div>
-		<div class="row-fluid">
-			<div class="span12">
+		<div class="row">
+			<div class="col-md-12">
 				<iframe id="api" style="width:100%;height:500px;border:none;"></iframe>		
 			</div>
 		</div>

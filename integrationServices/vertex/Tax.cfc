@@ -75,6 +75,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	        var httpRequest = new http();
 	        httpRequest.setMethod("POST");
 			httpRequest.setUrl( httpURL );
+			httpRequest.setTimeout( setting('webServicesTimeout') );
 			httpRequest.addParam(type="XML", name="name",value=xmlPacket);
 	
 			// Parse response and set to struct
@@ -118,7 +119,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 												taxAmount = n4.xmlText;
 											}
 											if(n4.xmlName == "EffectiveRate"){
-												taxRate = n4.xmlText;
+												taxRate = n4.xmlText * 100;
 											}
 											if(n4.xmlName == "Imposition"){
 												taxImpositionName = n4.xmlText;
@@ -135,7 +136,15 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 												taxJurisdictionID=taxJurisdictionID,
 												taxJurisdictionType=taxJurisdictionType,
 												taxImpositionName=taxImpositionName,
-												taxImpositionType=taxImpositionType);
+												taxImpositionType=taxImpositionType,
+												taxStreetAddress=addressTaxRequestItems[ 1 ].getTaxStreetAddress(),
+												taxStreet2Address=addressTaxRequestItems[ 1 ].getTaxStreet2Address(),
+												taxLocality=addressTaxRequestItems[ 1 ].getTaxLocality(),
+												taxCity=addressTaxRequestItems[ 1 ].getTaxCity(),
+												taxStateCode=addressTaxRequestItems[ 1 ].getTaxStateCode(),
+												taxPostalCode=addressTaxRequestItems[ 1 ].getTaxPostalCode(),
+												taxCountryCode=addressTaxRequestItems[ 1 ].getTaxCountryCode()
+										);
 										
 									}								
 									
@@ -151,6 +160,8 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			} else {
 				
 			 	logHibachi('Unable to connect to: #httpURL#', true);
+			 	
+			 	logHibachi('Request XML: #xmlPacket#');
 			 	
 				if(structKeyExists(htmlResponse, "fileContent")) {
 					logHibachi('Server response was: #htmlResponse.fileContent#', true);

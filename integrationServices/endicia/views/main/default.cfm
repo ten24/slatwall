@@ -46,7 +46,7 @@
 	Notes:
 	
 --->
-<cf_HibachiMessageDisplay />
+<hb:HibachiMessageDisplay />
 
 <a href="?slatAction=endicia:main.syncPush">Manual Sync Push</a><br /><br />
 <!---

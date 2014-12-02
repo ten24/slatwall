@@ -51,7 +51,7 @@ Notes:
 
 */
 
-component extends="HibachiService" accessors="true" {
+component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -84,6 +84,14 @@ component extends="HibachiService" accessors="true" {
 	// ===================== START: Delete Overrides ==========================
 	
 	// =====================  END: Delete Overrides ===========================
+	
+	// ================== START: Private Helper Functions =====================
+	
+	// ==================  END:  Private Helper Functions =====================
+
+	// =================== START: Deprecated Functions ========================
+	
+	// ===================  END: Deprecated Functions =========================
 	
 }]]></starttext>
 <endtext><![CDATA[]]></endtext>

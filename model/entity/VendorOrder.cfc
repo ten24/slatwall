@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="vendorOrderService" hb_permission="this" hb_processContexts="addOrderItems,receiveStock" {
+component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="vendorOrderService" hb_permission="this" hb_processContexts="addOrderItems,receiveStock,addVendorOrderItem,receive" {
 	
 	// Persistent Properties
 	property name="vendorOrderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -210,14 +210,14 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 
 	public any function getVendorOrderType() {
 		if( !structKeyExists(variables, "vendorOrderType") ) {
-			variables.vendorOrderType = getService("settingService").getTypeBySystemCode("votPurchaseOrder");
+			variables.vendorOrderType = getService("typeService").getTypeBySystemCode("votPurchaseOrder");
 		}
 		return variables.vendorOrderType;
 	}
 	
 	public any function getVendorOrderStatusType() {
 		if( !structKeyExists(variables, "vendorOrderStatusType") ) {
-			variables.vendorOrderStatusType = getService("settingService").getTypeBySystemCode("vostNew");
+			variables.vendorOrderStatusType = getService("typeService").getTypeBySystemCode("vostNew");
 		}
 		return variables.vendorOrderStatusType;
 	}

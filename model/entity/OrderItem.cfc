@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderItems" {
+component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderItems" hb_processContext="updateStatus" {
 	
 	// Persistent Properties
 	property name="orderItemID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -60,23 +60,28 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="appliedPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="appliedPriceGroupID";
 	property name="orderItemType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderItemTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderItemType" fetch="join";
 	property name="orderItemStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderItemStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderItemStatusType" fetch="join";
-	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID" hb_cascadeCalculate="true" fetch="join";
-	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
-	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID" hb_cascadeCalculate="true" fetch="join";
+	property name="sku" hb_populateEnabled="public" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID" hb_cascadeCalculate="true" fetch="join";
+	property name="stock" hb_populateEnabled="public" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
+	property name="order" hb_populateEnabled="false" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID" hb_cascadeCalculate="true" fetch="join";
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 	property name="orderReturn" cfc="OrderReturn" fieldtype="many-to-one" fkcolumn="orderReturnID";
+	property name="parentOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="parentOrderItemID";
+	property name="productBundleGroup" hb_populateEnabled="public" cfc="ProductBundleGroup" fieldtype="many-to-one" fkcolumn="productBundleGroupID";
 	property name="referencedOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="referencedOrderItemID"; // Used For Returns. This is set when this order is a return.
 	
 	// Related Object Properties (one-to-many)
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
 	property name="appliedTaxes" singularname="appliedTax" cfc="TaxApplied" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
+	property name="childOrderItems" hb_populateEnabled="public" singularname="childOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="parentOrderItemID" inverse="true" cascade="all-delete-orphan";
+	property name="eventRegistrations" singularname="eventRegistration" hb_populateEnabled="public" fieldtype="one-to-many" fkcolumn="orderItemID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra" ;
 	property name="orderDeliveryItems" singularname="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="delete-orphan";
 	property name="stockReceiverItems" singularname="stockReceiverItem" cfc="StockReceiverItem" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true";
 	property name="referencingOrderItems" singularname="referencingOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="referencedOrderItemID" inverse="true" cascade="all"; // Used For Returns
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	
 	// Remote properties
+	property name="publicRemoteID" ormtype="string" hb_populateEnabled="public";
 	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
@@ -86,6 +91,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non persistent properties
+	property name="activeEventRegistrations" persistent="false"; 
 	property name="discountAmount" persistent="false" hb_formatType="currency" hint="This is the discount amount after quantity (talk to Greg if you don't understand)" ;
 	property name="extendedPrice" persistent="false" hb_formatType="currency";
 	property name="extendedPriceAfterDiscount" persistent="false" hb_formatType="currency";
@@ -94,7 +100,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="quantityUndelivered" persistent="false";
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
+	property name="registrants" persistent="false";
 	property name="taxAmount" persistent="false" hb_formatType="currency";
+	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
 
 	public numeric function getMaximumOrderQuantity() {
@@ -106,12 +114,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			if(getSku().setting('skuTrackInventoryFlag') && !getSku().setting('skuAllowBackorderFlag')) {
 				if( !isNull(getStock()) && getStock().getQuantity('QATS') < maxQTY ) {
 					maxQTY = getStock().getQuantity('QATS');
-					if(!getNewFlag()) {
+					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
 						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
 					}
 				} else if(getSKU().getQuantity('QATS') < maxQTY) {
 					maxQTY = getSku().getQuantity('QATS');
-					if(!getNewFlag()) {
+					if(!isNull(getOrder()) && getOrder().getOrderStatusType().getSystemCode() neq 'ostNotPlaced') {
 						maxQTY += getService('orderService').getOrderItemDBQuantity( orderItemID=this.getOrderItemID() );
 					}
 				}
@@ -122,14 +130,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	
 	public boolean function hasQuantityWithinMaxOrderQuantity() {
-		if(getOrderItemType().getSystemCode() == 'oitSale') {
+		if( listFindNoCase("oitSale,oitDeposit",getOrderItemType().getSystemCode()) ) {
 			return getQuantity() <= getMaximumOrderQuantity();	
 		}
 		return true;
 	}
 	
 	public boolean function hasQuantityWithinMinOrderQuantity() {
-		if(getOrderItemType().getSystemCode() == 'oitSale') {
+		if( listFindNoCase("oitSale,oitDeposit",getOrderItemType().getSystemCode()) ) {
 			return getQuantity() >= getSku().setting('skuOrderMinimumQuantity');
 		}
 		return true;
@@ -140,7 +148,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	
 	public string function getStatus(){
-		return getOrderItemStatusType().getType();
+		return getOrderItemStatusType().getTypeName();
 	}
 	
 	public string function getStatusCode() {
@@ -148,7 +156,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	
 	public string function getType(){
-		return getOrderItemType().getType();
+		return getOrderItemType().getTypeName();
 	}
 	
 	public string function getTypeCode(){
@@ -216,14 +224,34 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return precisionEvaluate(getExtendedPrice() - getDiscountAmount());
 	}
 	
+	public any function getActiveEventRegistrations() {
+		if(!structKeyExists(variables, "activeRegistrationsSmartList")) {
+			variables.activeRegistrationsSmartList = getEventRegistrationService().getEventRegistrationSmartList();
+			variables.activeRegistrationsSmartList.addFilter('orderItemID', getOrderItemID());
+			variables.activeRegistrationsSmartList.addInFilter('eventRegistrationStatusType.systemCode', 'erstRegistered,erstWaitListed,erstPendingApproval,erstAttended,erstNotPlaced');
+		}
+
+		return variables.activeRegistrationsSmartList;
+	}
+	
 	public numeric function getTaxAmount() {
 		var taxAmount = 0;
 		
-		for(var i=1; i<=arrayLen(getAppliedTaxes()); i++) {
-			taxAmount = precisionEvaluate(taxAmount + getAppliedTaxes()[i].getTaxAmount());
+		for(var taxApplied in getAppliedTaxes()) {
+			taxAmount = precisionEvaluate(taxAmount + taxApplied.getTaxAmount());
 		}
 		
 		return taxAmount;
+	}
+	
+	public numeric function getTaxLiabilityAmount() {
+		var taxLiabilityAmount = 0;
+		
+		for(var taxApplied in getAppliedTaxes()) {
+			taxLiabilityAmount = precisionEvaluate(taxLiabilityAmount + taxApplied.getTaxLiabilityAmount());
+		}
+		
+		return taxLiabilityAmount;
 	}
 	
 	public numeric function getQuantityDelivered() {
@@ -302,7 +330,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}
 		
 		// Remove from order fulfillment to trigger those actions
-		removeOrderFulfillment();
+		if(!isNull(getOrderFulfillment())) {
+			removeOrderFulfillment();	
+		} else if (!isNull(getOrderReturn())) {
+			removeOrderReturn();
+		}
+		
 
 		structDelete(variables, "order");
 	}
@@ -324,8 +357,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			
 			// IMPORTANT & CUSTOM!!!
 			// if this was the last item in the fulfillment remove this fulfillment from order
-			if(!arrayLen(variables.orderFulfillment.getOrderFulfillmentItems())) {
-				variables.order.removeOrderFulfillment(variables.orderFulfillment);
+			if(!arrayLen(arguments.orderFulfillment.getOrderFulfillmentItems()) && !isNull(getOrder())) {
+				getOrder().removeOrderFulfillment(arguments.orderFulfillment);
 			}
 		}
 		structDelete(variables, "orderFulfillment");
@@ -344,27 +377,51 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		}
 		var index = arrayFind(arguments.orderReturn.getorderReturnItems(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.orderReturn.getorderReturnItems(), index);
+			arrayDeleteAt(arguments.orderReturn.getOrderReturnItems(), index);
+			
+			// IMPORTANT & CUSTOM!!!
+			// if this was the last item in the return remove this return from order
+			if(!arrayLen(arguments.orderReturn.getOrderReturnItems()) && !isNull(getOrder())) {
+				getOrder().removeOrderReturn(arguments.orderReturn);
+			}
 		}
 		structDelete(variables, "orderReturn");
 	}
 	
-	// Refrenced Order Item (many-to-one)
-	public void function setRefrencedOrderItem(required any refrencedOrderItem) {
-		variables.refrencedOrderItem = arguments.refrencedOrderItem;
-		if(isNew() or !arguments.refrencedOrderItem.hasRefrencingOrderItems( this )) {
-			arrayAppend(arguments.refrencedOrderItem.getRefrencingOrderItem(), this);
+	// Parent Order Item (many-to-one)
+	public void function setParentOrderItem(required any parentOrderItem) {
+		variables.parentOrderItem = arguments.parentOrderItem;
+		if(isNew() or !arguments.parentOrderItem.hasChildOrderItem( this )) {
+			arrayAppend(arguments.parentOrderItem.getChildOrderItems(), this);
 		}
 	}
-	public void function removeRefrencedOrderItem(any refrencedOrderItem) {
-		if(!structKeyExists(arguments, "refrencedOrderItem")) {
-			arguments.refrencedOrderItem = variables.refrencedOrderItem;
+	public void function removeParentOrderItem(any parentOrderItem) {
+		if(!structKeyExists(arguments, "parentOrderItem")) {
+			arguments.parentOrderItem = variables.parentOrderItem;
 		}
-		var index = arrayFind(arguments.refrencedOrderItem.getRefrencingOrderItem(), this);
+		var index = arrayFind(arguments.parentOrderItem.getChildOrderItems(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.refrencedOrderItem.getRefrencingOrderItem(), index);
+			arrayDeleteAt(arguments.parentOrderItem.getChildOrderItems(), index);
 		}
-		structDelete(variables, "refrencedOrderItem");
+		structDelete(variables, "parentOrderItem");
+	}
+	
+	// Referenced Order Item (many-to-one)
+	public void function setReferencedOrderItem(required any referencedOrderItem) {
+		variables.referencedOrderItem = arguments.referencedOrderItem;
+		if(isNew() or !arguments.referencedOrderItem.hasReferencingOrderItems( this )) {
+			arrayAppend(arguments.referencedOrderItem.getReferencingOrderItem(), this);
+		}
+	}
+	public void function removeReferencedOrderItem(any referencedOrderItem) {
+		if(!structKeyExists(arguments, "referencedOrderItem")) {
+			arguments.referencedOrderItem = variables.referencedOrderItem;
+		}
+		var index = arrayFind(arguments.referencedOrderItem.getReferencingOrderItem(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.referencedOrderItem.getReferencingOrderItem(), index);
+		}
+		structDelete(variables, "referencedOrderItem");
 	}
 	
 	// Applied Promotions (one-to-many)
@@ -391,6 +448,22 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		arguments.attributeValue.removeOrderItem( this );
 	}
 	
+	// Child Order Items (one-to-many)
+	public void function addChildOrderItem(required any childOrderItem) {
+		arguments.childOrderItem.setParentOrderItem( this );
+	}
+	public void function removeChildOrderItem(required any childOrderItem) {
+		arguments.childOrderItem.removeParentOrderItem( this );
+	}
+	
+	// Event Registrations (one-to-many)
+ 	public void function addEventRegistration(required any eventRegistration) {
+		arguments.eventRegistration.setOrderItem( this );
+	}
+ 	public void function removeEventRegistration(required any eventRegistration) {
+		arguments.eventRegistration.removeOrderItem( this );
+	}
+ 
 	// Order Delivery Items (one-to-many)
 	public void function addOrderDeliveryItem(required any orderDeliveryItem) {
 		arguments.orderDeliveryItem.setOrderItem( this );
@@ -407,12 +480,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		arguments.stockReceiverItem.removeOrderItem( this );
 	}
 	
-	// Refrencing Order Items (one-to-many)
-	public void function addRefrencingOrderItem(required any refrencingOrderItem) {
-		arguments.refrencingOrderItem.setRefrencedOrderItem( this );
+	// Referencing Order Items (one-to-many)
+	public void function addReferencingOrderItem(required any referencingOrderItem) {
+		arguments.referencingOrderItem.setReferencedOrderItem( this );
 	}
-	public void function removeRefrencingOrderItem(required any refrencingOrderItem) {
-		arguments.refrencingOrderItem.removeRefrencedOrderItem( this );
+	public void function removeReferencingOrderItem(required any referencingOrderItem) {
+		arguments.referencingOrderItem.removeReferencedOrderItem( this );
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
@@ -421,14 +494,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	
 	public any function getOrderItemType() {
 		if( !structKeyExists(variables, "orderItemType") ) {
-			variables.orderItemType = getService("settingService").getTypeBySystemCode("oitSale");
+			variables.orderItemType = getService("typeService").getTypeBySystemCode("oitSale");
 		}
 		return variables.orderItemType;
 	}
 	
 	public any function getOrderItemStatusType() {
 		if( !structKeyExists(variables, "orderItemStatusType") ) {
-			variables.orderItemStatusType = getService("settingService").getTypeBySystemCode("oistNew");
+			variables.orderItemStatusType = getService("typeService").getTypeBySystemCode("oistNew");
 		}
 		return variables.orderItemStatusType;
 	}

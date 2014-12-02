@@ -46,21 +46,25 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.addressZone" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.addressZone.getAddressZoneLocationsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.addressZone.getAddressZoneLocationsSmartList()#"
 			recordEditAction="admin:entity.editaddresszonelocation"
 			recordEditQueryString="addressZoneID=#rc.addressZone.getAddressZoneID()#"
 			recordEditModal=true
 			recordDeleteAction="admin:entity.deleteaddresszonelocation"
 			recordDeleteQueryString="addressZoneID=#rc.addressZone.getAddressZoneID()#">
 			
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="countryCode" />
-		<cf_HibachiListingColumn propertyIdentifier="stateCode" />
-		<cf_HibachiListingColumn propertyIdentifier="city"  />
-		<cf_HibachiListingColumn propertyIdentifier="postalCode"  />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="countryCode" />
+		<hb:HibachiListingColumn propertyIdentifier="stateCode" />
+		<hb:HibachiListingColumn propertyIdentifier="city"  />
+		<hb:HibachiListingColumn propertyIdentifier="postalCode"  />
+	</hb:HibachiListingDisplay>
 </cfoutput>
 
-<cf_HibachiActionCaller action="admin:entity.createaddresszonelocation" class="btn" icon="plus" queryString="addressZoneID=#rc.addressZone.getAddressZoneID()#" modal=true />
+<hb:HibachiActionCaller action="admin:entity.createaddresszonelocation" class="btn btn-default" icon="plus" queryString="addressZoneID=#rc.addressZone.getAddressZoneID()#" modal=true />

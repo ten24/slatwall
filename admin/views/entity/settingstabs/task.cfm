@@ -46,10 +46,13 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="taskFailureEmailTemplate" />
-		<cf_SlatwallSetting settingName="taskSuccessEmailTemplate" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="taskFailureEmailTemplate" />
+		<swa:SlatwallSetting settingName="taskSuccessEmailTemplate" />
+	</swa:SlatwallSettingTable>
 </cfoutput>
 

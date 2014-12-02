@@ -1,5 +1,6 @@
 component output="false" accessors="true" extends="HibachiService" {
 
+	property name="hibachiService" type="any";
 	property name="hibachiSessionService" type="any";
 
 	// ============================ PUBLIC AUTHENTICATION METHODS =================================

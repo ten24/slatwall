@@ -46,20 +46,24 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.categorySmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.categorySmartList#"
+<hb:HibachiEntityActionBar type="listing" object="#rc.categorySmartList#" showCreate="false">
+<hb:HibachiListingDisplay smartList="#rc.categorySmartList#"
 						   recordDetailAction="admin:entity.detailcategory"
 						   recordDetailModal="true"
 						   recordEditAction="admin:entity.editcategory"
 						   recordEditQueryString="redirectAction=admin:entity.listcategory"
 						   recordEditModal="true">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="categoryName" />
-	<cf_HibachiListingColumn propertyIdentifier="restrictAccessFlag" />
-	<cf_HibachiListingColumn propertyIdentifier="allowProductAssignmentFlag" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="categoryName" />
+	<hb:HibachiListingColumn propertyIdentifier="restrictAccessFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="allowProductAssignmentFlag" />
+</hb:HibachiListingDisplay>
 
 </cfoutput>
 

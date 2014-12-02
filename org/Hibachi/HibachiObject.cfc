@@ -216,6 +216,13 @@ component accessors="true" output="false" persistent="false" {
 		return false;
 	}
 	
+	// @hint facade method to check the application scope for a value
+	public void function clearApplicationValue(required any key) {
+		if( structKeyExists(application, getHibachiInstanceApplicationScopeKey()) && structKeyExists(application[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
+			structDelete(application[ getHibachiInstanceApplicationScopeKey() ], arguments.key);
+		}
+	}
+	
 	// @hint facade method to get values from the application scope
 	public any function getApplicationValue(required any key) {
 		if( structKeyExists(application, getHibachiInstanceApplicationScopeKey()) && structKeyExists(application[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {

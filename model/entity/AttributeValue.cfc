@@ -52,8 +52,8 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="attributeValueID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="attributeValue" ormtype="string" length="4000" hb_formatType="custom";
 	property name="attributeValueEncrypted" ormtype="string" hb_auditable="false";
-	property name="attributeValueEncryptedDateTime" ormType="timestamp" hb_auditable="false";
-	property name="attributeValueEncryptedGenerator" ormType="string" hb_auditable="false";
+	property name="attributeValueEncryptedDateTime" ormType="timestamp" hb_auditable="false" column="attributeValueEncryptDT";
+	property name="attributeValueEncryptedGenerator" ormType="string" hb_auditable="false" column="attributeValueEncryptGen";
 	property name="attributeValueType" ormType="string" hb_formFieldType="select" hb_formatType="custom" notnull="true";
 	
 	// Calculated Properties
@@ -68,6 +68,8 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
 	property name="file" cfc="File" fieldtype="many-to-one" fkcolumn="fileID";
 	property name="image" cfc="Image" fieldtype="many-to-one" fkcolumn="imageID";
+	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="locationConfiguration" cfc="LocationConfiguration" fieldtype="many-to-one" fkcolumn="locationConfigurationID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
 	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";
@@ -103,14 +105,30 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	
 	// Non-Persistent Properties
 	property name="attributeValueOptions" persistent="false";
-
+	property name="attributeValueFileURL" persistent="false";
+	
 	public void function setupEncryptedProperties() {
-		if(!isNull(getAttribute()) && !isNull(getAttribute().getAttributeType()) && getAttribute().getAttributeType() == "password" && structKeyExists(variables, "attributeValue")) {
+		if(!isNull(getAttribute()) && !isNull(getAttribute().getAttributeInputType()) && getAttribute().getAttributeInputType() == "password" && structKeyExists(variables, "attributeValue")) {
 			encryptProperty('attributeValue');
 		}
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public string function getAttributeValueFileURL() {
+		if(!isNull(getAttribute())
+			&& !isNull(getAttribute().getAttributeCode())
+			&& len(getAttribute().getAttributeCode())
+			&& !isNull(getAttribute().getAttributeInputType())
+			&& getAttribute().getAttributeInputType() == 'file'
+			&& !isNull(getAttributeValue())
+			&& len(getAttributeValue())) {
+			
+			return getURLFromPath(getAttribute().getAttributeValueUploadDirectory()) & getAttributeValue();
+		}
+		
+		return "";
+	}
 	
 	public array function getAttributeValueOptions() {
 		if(!structKeyExists(variables, "attributeValueOptions")) {
@@ -119,13 +137,17 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			
 			if(!isNull(getAttribute())) {
 				
-				var ao = getAttribute().getAttributeOptions();
+				var attributeOptions = getAttribute().getAttributeOptions();
 				
-				for(var a=1; a<=arrayLen(ao); a++) {
-					if(!isNull(ao[a].getAttributeOptionLabel()) && !isNull(ao[a].getAttributeOptionValue())) {
-						arrayAppend(variables.attributeValueOptions, {name=ao[a].getAttributeOptionLabel(), value=ao[a].getAttributeOptionValue()});	
+				for(var attributeOption in attributeOptions) {
+					if(!isNull(attributeOption.getAttributeOptionLabel()) && !isNull(attributeOption.getAttributeOptionValue())) {
+						arrayAppend(variables.attributeValueOptions, {name=attributeOption.getAttributeOptionLabel(), value=attributeOption.getAttributeOptionValue()});	
 					}
-				}	
+				}
+				arrayPrepend(variables.attributeValueOptions, {value='',name=getAttribute().getAttributeInputType()});
+				if(!isNull(getAttribute().getAttributeInputType()) && getAttribute().getAttributeInputType() == 'select'){
+					arrayPrepend(variables.attributeValueOptions, {value='',name=rbKey('define.select')});
+				} 
 			}
 			
 		}
@@ -260,6 +282,42 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			arrayDeleteAt(arguments.image.getAttributeValues(), index);    
 		}    
 		structDelete(variables, "image");    
+	}
+	
+	// Location (many-to-one)    
+	public void function setLocation(required any location) {    
+		variables.location = arguments.location;    
+		if(isNew() or !arguments.location.hasAttributeValue( this )) {    
+			arrayAppend(arguments.location.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeLocation(any location) {    
+		if(!structKeyExists(arguments, "location")) {    
+			arguments.location = variables.location;    
+		}    
+		var index = arrayFind(arguments.location.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.location.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "location");    
+	}
+	
+	// Location Configuration (many-to-one)    
+	public void function setLocationConfiguration(required any locationconfiguration) {    
+		variables.locationconfiguration = arguments.locationconfiguration;    
+		if(isNew() or !arguments.locationconfiguration.hasAttributeValue( this )) {    
+			arrayAppend(arguments.locationconfiguration.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeLocationConfiguration(any locationconfiguration) {    
+		if(!structKeyExists(arguments, "locationconfiguration")) {    
+			arguments.locationconfiguration = variables.locationconfiguration;    
+		}    
+		var index = arrayFind(arguments.locationconfiguration.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.locationconfiguration.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "locationconfiguration");    
 	}
 	
 	// Order (many-to-one)    
@@ -541,7 +599,41 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	public void function setAttributeValue( any attributeValue ) {
+		
+		// Set the value
 		variables.attributeValue = arguments.attributeValue;
+		
+		// Attempt to upload file for this value if needed
+		if(!isNull(getAttribute())
+			&& !isNull(getAttribute().getAttributeCode())
+			&& len(getAttribute().getAttributeCode())
+			&& !isNull(getAttribute().getAttributeInputType())
+			&& getAttribute().getAttributeInputType() == 'file') {
+				
+			try {
+		
+				// Get the upload directory for the current property
+				var uploadDirectory = getAttribute().getAttributeValueUploadDirectory();
+	
+				// If the directory where this file is going doesn't exists, then create it
+				if(!directoryExists(uploadDirectory)) {
+					directoryCreate(uploadDirectory);
+				}
+	
+				// Do the upload
+				var uploadData = fileUpload( uploadDirectory, getAttribute().getAttributeCode(), '*', 'makeUnique' );
+				
+				// Update the property with the serverFile name
+				variables.attributeValue =  uploadData.serverFile;
+				
+			} catch(any e) {
+				// Add an error if there were any hard errors during upload
+				this.addError('attributeValue', rbKey('validate.fileUpload'));
+			}
+			
+		}
+		
+		// Encrypt attribute value if needed
 		setupEncryptedProperties();
 	}
 	
@@ -589,7 +681,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	}
 	
 	public string function getAttributeValueFormatted() {
-		if(getAttribute().getAttributeType() eq 'relatedObjectSelect') {
+		if(getAttribute().getAttributeInputType() eq 'relatedObjectSelect') {
 			var thisEntityService = getService('hibachiService').getServiceByEntityName( getAttribute().getRelatedObject() );
 			var thisRelatedEntity = thisEntityService.invokeMethod("get#getAttribute().getRelatedObject()#", {1=getAttributeValue()});
 			if(!isNull(thisRelatedEntity)) {

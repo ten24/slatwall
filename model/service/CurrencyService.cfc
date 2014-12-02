@@ -49,6 +49,8 @@ Notes:
 
 component  extends="HibachiService" accessors="true" {
 
+	property name="currencyDAO" type="any";
+
 	// Cached in Application Scope
 	property name="europeanCentralBankRates" type="struct";
 
@@ -77,17 +79,27 @@ component  extends="HibachiService" accessors="true" {
 	}
 	
 	public numeric function convertCurrency(required numeric amount, required originalCurrencyCode, required convertToCurrencyCode) {
-		// If an integration exists for currency conversion, then pass to that integration
-		// TODO: Add integration support
-		
+		return precisionEvaluate(arguments.amount * getCurrencyConversionRate(originalCurrencyCode=originalCurrencyCode, convertToCurrencyCode=convertToCurrencyCode));
+	}
+	
+	public numeric function getCurrencyConversionRate(required originalCurrencyCode, required convertToCurrencyCode) {
+		// First, check to see if there is a conversion record stored locally.
+		var currencyRate = getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=arguments.originalCurrencyCode, convertToCurrencyCode=arguments.convertToCurrencyCode);
+		if(!isNull(currencyRate)) {
+			if(currencyRate.getConversionCurrencyCode() == arguments.convertToCurrencyCode) {
+				return currencyRate.getConversionRate();
+			} else if (currencyRate.getCurrencyCode() == arguments.convertToCurrencyCode) {
+				return precisionEvaluate(1 / currencyRate.getConversionRate());
+			}
+		}
 		
 		// If both currencyCodes exist in the European Central Bank list then convert based on that info
 		var cbRates = getEuropeanCentralBankRates();
 		if( ( structKeyExists(cbRates, arguments.originalCurrencyCode) || arguments.originalCurrencyCode eq "EUR" ) && ( structKeyExists(cbRates, arguments.convertToCurrencyCode) || arguments.convertToCurrencyCode eq "EUR" ) ) {
 			if(arguments.originalCurrencyCode eq "EUR") {
-				var amountInEUR = arguments.amount;	
+				var amountInEUR = 1;	
 			} else {
-				var amountInEUR = arguments.amount / cbRates[ arguments.originalCurrencyCode ];
+				var amountInEUR = 1 / cbRates[ arguments.originalCurrencyCode ];
 			}
 			
 			if(arguments.convertToCurrencyCode eq "EUR") {
@@ -98,7 +110,7 @@ component  extends="HibachiService" accessors="true" {
 		}
 		
 		// If no conversion could be done, just return the original amount
-		return arguments.amount;
+		return 1;
 	}
 	
 	public struct function getEuropeanCentralBankRates() {

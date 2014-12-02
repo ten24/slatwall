@@ -1,6 +1,7 @@
 {
 	"properties":{
 		"emailTemplateName" : [{"contexts":"save","required":true}],
-		"emails":		[{"contexts":"delete","maxCollection":0}]
+		"emails":		[{"contexts":"delete","maxCollection":0}],
+		"eventTriggers" : [{"contexts":"delete","maxCollection":0}]
 	}
 }

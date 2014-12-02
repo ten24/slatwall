@@ -46,20 +46,24 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.country" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.country.getStatesSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.country.getStatesSmartList()#"
 							  recordEditAction="admin:entity.editstate"
 							  recordEditQueryString="countryCode=#rc.country.getCountryCode()#"
 							  recordEditModal="true"
 							  recordDeleteAction="admin:entity.deletestate"
 							  recordDeleteQueryString="redirectAction=admin:entity.detailcountry&countryCode=#rc.country.getCountryCode()###tabstates">
 
-		<cf_HibachiListingColumn propertyIdentifier="stateCode" />
-		<cf_HibachiListingColumn propertyIdentifier="stateName" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="stateCode" />
+		<hb:HibachiListingColumn propertyIdentifier="stateName" />
+	</hb:HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createstate" class="btn" icon="plus" querystring="countryCode=#rc.country.getCountryCode()#" modal=true />
+	<hb:HibachiActionCaller action="admin:entity.createstate" class="btn btn-default" icon="plus" querystring="countryCode=#rc.country.getCountryCode()#" modal=true />
 </cfoutput>
 

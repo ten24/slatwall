@@ -46,25 +46,32 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="skuAllowBackorderFlag" />
-		<cf_SlatwallSetting settingName="skuAllowPreorderFlag" />
-		<cf_SlatwallSetting settingName="skuCurrency" />
-		<cf_SlatwallSetting settingName="skuEligibleCurrencies" />
-		<cf_SlatwallSetting settingName="skuEligibleFulfillmentMethods" />
-		<cf_SlatwallSetting settingName="skuEligibleOrderOrigins" />
-		<cf_SlatwallSetting settingName="skuEligiblePaymentMethods" />
-		<cf_SlatwallSetting settingName="skuHoldBackQuantity" />
-		<cf_SlatwallSetting settingName="skuOrderMinimumQuantity" />
-		<cf_SlatwallSetting settingName="skuOrderMaximumQuantity" />
-		<cf_SlatwallSetting settingName="skuShippingWeight" />
-		<cf_SlatwallSetting settingName="skuShippingWeightUnitCode" />
-		<cf_SlatwallSetting settingName="skuTrackInventoryFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROROFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" />
-		<cf_SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" />
-		<cf_SlatwallSetting settingName="skuTaxCategory" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" />
+		<swa:SlatwallSetting settingName="skuAllowPreorderFlag" />
+		<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" />
+		<swa:SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" />
+		<swa:SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" />
+		<swa:SlatwallSetting settingName="skuCurrency" />
+		<swa:SlatwallSetting settingName="skuEligibleCurrencies" />
+		<swa:SlatwallSetting settingName="skuEligibleFulfillmentMethods" />
+		<swa:SlatwallSetting settingName="skuEligibleOrderOrigins" />
+		<swa:SlatwallSetting settingName="skuEligiblePaymentMethods" />
+		<swa:SlatwallSetting settingName="skuHoldBackQuantity" />
+		<swa:SlatwallSetting settingName="skuOrderMinimumQuantity" />
+		<swa:SlatwallSetting settingName="skuOrderMaximumQuantity" />
+		<swa:SlatwallSetting settingName="skuRegistrationApprovalRequiredFlag" />
+		<swa:SlatwallSetting settingName="skuShippingWeight" />
+		<swa:SlatwallSetting settingName="skuShippingWeightUnitCode" />
+		<swa:SlatwallSetting settingName="skuTrackInventoryFlag" />
+		<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" />
+		<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" />
+		<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" />
+		<swa:SlatwallSetting settingName="skuTaxCategory" />
+	</swa:SlatwallSettingTable>
 </cfoutput>
 

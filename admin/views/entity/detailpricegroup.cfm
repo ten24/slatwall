@@ -46,30 +46,24 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.priceGroup" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.priceGroup#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.priceGroup#" edit="#rc.edit#">
-			<cf_HibachiActionCaller action="admin:entity.createpricegrouprate"  type="list" queryString="pricegroupID=#rc.pricegroup.getpricegroupID()#" modal="true" />
-		</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.priceGroup#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.priceGroup#" edit="#rc.edit#">
+			<hb:HibachiActionCaller action="admin:entity.createpricegrouprate"  type="list" queryString="pricegroupID=#rc.pricegroup.getpricegroupID()#" modal="true" />
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.priceGroup#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.priceGroup#" property="priceGroupName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.priceGroup#" property="priceGroupCode" edit="#rc.edit#">
-				<cfif arrayLen( rc.priceGroup.getParentPriceGroupOptions() ) gt 1>
-					<cf_HibachiPropertyDisplay object="#rc.priceGroup#" property="parentPriceGroup" edit="#rc.edit#">
-				</cfif>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiEntityDetailGroup object="#rc.priceGroup#">
+			<hb:HibachiEntityDetailItem view="admin:entity/pricegrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem property="pricegrouprates" />
+			<hb:HibachiEntityDetailItem view="admin:entity/pricegrouptabs/assignedaccounts" />
+		</hb:HibachiEntityDetailGroup>
 		
-		<cf_HibachiTabGroup object="#rc.priceGroup#">
-			<cf_HibachiTab property="pricegrouprates" />
-			<cf_HibachiTab view="admin:entity/pricegrouptabs/assignedaccounts" />
-		</cf_HibachiTabGroup>
-		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

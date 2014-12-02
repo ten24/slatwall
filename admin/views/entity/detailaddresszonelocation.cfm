@@ -46,21 +46,25 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 
 <cfparam name="rc.addressZone" type="any">
 <cfparam name="rc.addressZoneLocation" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.addressZone#" saveAction="admin:entity.saveAddressZone" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.addressZoneLocation#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.addressZone#" saveAction="admin:entity.saveAddressZone" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.addressZoneLocation#" edit="#rc.edit#" 
 					backAction="admin:entity.detailAddressZone" 
 					backQueryString="addressZoneID=#rc.addressZone.getAddressZoneID()#"
 					cancelAction="admin:entity.detailAddressZone"
 					cancelQueryString="addressZoneID=#rc.addressZone.getAddressZoneID()#">
-		</cf_HibachiEntityActionBar>
+		</hb:HibachiEntityActionBar>
 		
-		<cf_SlatwallAdminAddressDisplay address="#rc.addressZoneLocation#" fieldNamePrefix="addressZoneLocations[1]." edit="#rc.edit#" showName="false" showCompany="false" showStreetAddress="false" showStreet2Address="false">
+		<swa:SlatwallAdminAddressDisplay address="#rc.addressZoneLocation#" fieldNamePrefix="addressZoneLocations[1]." edit="#rc.edit#" showName="false" showCompany="false" showStreetAddress="false" showStreet2Address="false">
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

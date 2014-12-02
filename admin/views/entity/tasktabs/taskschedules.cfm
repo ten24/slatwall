@@ -46,19 +46,22 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.task" type="any"/>
 
-<cf_HibachiListingDisplay smartlist="#rc.task.getTaskSchedulesSmartList()#" 
+<hb:HibachiListingDisplay smartlist="#rc.task.getTaskSchedulesSmartList()#" 
                         recordeditaction="admin:entity.editTaskSchedule" recordeditmodal="true" 
                         recordeditquerystring="redirectAction=admin:entity.detailTask&taskID=#rc.task.getTaskID()#" 
                         recorddeleteaction="admin:entity.deleteTaskSchedule"
 						recorddeletequerystring="redirectAction=admin:entity.detailTask&taskID=#rc.task.getTaskID()#">
 						
-	<cf_HibachiListingColumn tdclass="primary" propertyidentifier="schedule.schedulename" />
-	<cf_HibachiListingColumn propertyidentifier="startDateTime" />
-	<cf_HibachiListingColumn propertyidentifier="endDateTime" />
-	<cf_HibachiListingColumn propertyidentifier="nextRunDateTime" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn tdclass="primary" propertyidentifier="schedule.schedulename" />
+	<hb:HibachiListingColumn propertyidentifier="startDateTime" />
+	<hb:HibachiListingColumn propertyidentifier="endDateTime" />
+	<hb:HibachiListingColumn propertyidentifier="nextRunDateTime" />
+</hb:HibachiListingDisplay>
 
-<cf_HibachiActionCaller action="admin:entity.createTaskSchedule" class="btn" icon="plus" 
+<hb:HibachiActionCaller action="admin:entity.createTaskSchedule" class="btn btn-default" icon="plus" 
                       querystring="sRedirectAction=admin:entity.detailTask&taskID=#rc.task.getTaskID()#" modal=true/>

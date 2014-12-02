@@ -46,34 +46,38 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.state" type="any">
 <cfparam name="rc.country" type="any" default="#rc.state.getCountry()#">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.state#" edit="#rc.edit#"
+	<hb:HibachiEntityDetailForm object="#rc.state#" edit="#rc.edit#"
 								saveActionQueryString="countryCode=#rc.country.getCountryCode()#&sRedirectAction=admin:entity.detailCountry"
 								saveActionHash="tabstates">
 								
-		<cf_HibachiEntityActionBar type="detail" object="#rc.state#" edit="#rc.edit#" 
+		<hb:HibachiEntityActionBar type="detail" object="#rc.state#" edit="#rc.edit#" 
 									backAction="admin:entity.detailCountry" 
 								    backQueryString="countryCode=#rc.country.getCountryCode()#"
 								    deleteQueryString="redirectAction=admin:entity.detailCountry&countryCode=#rc.country.getCountryCode()#"
 									cancelAction="admin:entity.detailState"
 									cancelQueryString="stateCode=#rc.state.getStateCode()#&countryCode=#rc.country.getCountryCode()#">
 									
-		</cf_HibachiEntityActionBar>
+		</hb:HibachiEntityActionBar>
 		
 		
 		<input type="hidden" name="countryCode" value="#rc.country.getCountryCode()#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.state#" property="stateCode" edit="#rc.state.getNewFlag()#" />
-				<cf_HibachiPropertyDisplay object="#rc.state#" property="stateName" edit="#rc.edit#" />
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.state#" property="stateCode" edit="#rc.state.getNewFlag()#" />
+				<hb:HibachiPropertyDisplay object="#rc.state#" property="stateName" edit="#rc.edit#" />
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

@@ -52,6 +52,55 @@
 		return variables.validationStructs[ arguments.object.getClassName() ];
 	}
 	
+	public struct function getValidationStructByName(required string objectName) {
+		if(!structKeyExists(variables.validationStructs, objectName)) {
+			
+			// Get CORE Validations
+			var coreValidationFile = expandPath('/#getApplicationValue('applicationKey')#/model/validation/#objectName#.json'); 
+			var validation = {};
+			if(fileExists( coreValidationFile )) {
+				var rawCoreJSON = fileRead( coreValidationFile );
+				if(isJSON( rawCoreJSON )) {
+					validation = deserializeJSON( rawCoreJSON );
+				} else {
+					throw("The Validation File: #coreValidationFile# is not a valid JSON object");
+				}
+			}
+			
+			// Get Custom Validations
+			var customValidationFile = expandPath('/#getApplicationValue('applicationKey')#/custom/model/validation/#objectName#.json');
+			var customValidation = {};
+			if(fileExists( customValidationFile )) {
+				var rawCustomJSON = fileRead( customValidationFile );
+				if(isJSON( rawCustomJSON )) {
+					customValidation = deserializeJSON( rawCustomJSON );
+				} else {
+					logHibachi("The Validation File: #customValidationFile# is not a valid JSON object");
+				}
+			}
+			
+			// Make sure that the validation struct has contexts & properties
+			param name="validation.properties" default="#structNew()#";
+			
+			// Add any additional rules
+			if(structKeyExists(customValidation, "properties")) {
+				for(var key in customValidation.properties) {
+					if(!structKeyExists(validation.properties, key)) {
+						validation.properties[ key ] = customValidation.properties[ key ];
+					} else {
+						for(var r=1; r<=arrayLen(customValidation.properties[ key ]); r++) {
+							arrayAppend(validation.properties[ key ],customValidation.properties[ key ][r]);	
+						}
+					}
+				}
+			}
+			
+			variables.validationStructs[ objectName ] = validation;
+		}
+		
+		return variables.validationStructs[ objectName ];
+	}
+	
 	public struct function getValidationsByContext(required any object, string context="") {
 		
 		if(!structKeyExists(variables.validationByContextStructs, "#arguments.object.getClassName()#-#arguments.context#")) {
@@ -76,12 +125,11 @@
 						
 						for(var constraint in rule) {
 							if(constraint != "contexts" && constraint != "conditions") {
-								var constraintDetails = {
-									constraintType=constraint,
-									constraintValue=rule[ constraint ]
-								};
+								var constraintDetails = {};
+								constraintDetails['constraintType'] = constraint;
+								constraintDetails['constraintValue'] = rule[ constraint ];
 								if(structKeyExists(rule, "conditions")) {
-									constraintDetails.conditions = rule.conditions;
+									constraintDetails['conditions'] = rule.conditions;
 								}
 								arrayAppend(contextValidations[ property ], constraintDetails);
 							}
@@ -151,13 +199,13 @@
 	}
 	
 	public any function validate(required any object, string context="", boolean setErrors=true) {
+		
 		// Setup an error bean
 		if(setErrors) {
 			var errorBean = arguments.object.getHibachiErrors();
 		} else {
 			var errorBean = getTransient("hibachiErrors");
 		}
-		
 		// If the context was 'false' then we don't do any validation
 		if(!isBoolean(arguments.context) || arguments.context) {
 			
@@ -181,7 +229,7 @@
 						
 						// Now if a condition was meet we can actually test the individual validation rule
 						if(conditionMeet) {
-							validateConstraint(object=arguments.object, propertyIdentifier=propertyIdentifier, constraintDetails=contextValidations[ propertyIdentifier ][c], errorBean=errorBean, context=arguments.context);	
+							validateConstraint(object=arguments.object, propertyIdentifier=propertyIdentifier, constraintDetails=contextValidations[ propertyIdentifier ][c], errorBean=errorBean, context=arguments.context);
 						}
 					}	
 				}
@@ -197,16 +245,16 @@
 	}
 	
 	
-	public any function validateConstraint(required any object, required string propertyIdentifier, required struct constraintDetails, required any errorBean, required string context) {
+	public void function validateConstraint(required any object, required string propertyIdentifier, required struct constraintDetails, required any errorBean, required string context) {
 		if(!structKeyExists(variables, "validate_#arguments.constraintDetails.constraintType#")) {
 			throw("You have an error in the #arguments.object.getClassName()#.json validation file.  You have a constraint defined for '#arguments.propertyIdentifier#' that is called '#arguments.constraintDetails.constraintType#' which is not a valid constraint type");
 		}
 		
 		var isValid = invokeMethod("validate_#arguments.constraintDetails.constraintType#", {object=arguments.object, propertyIdentifier=arguments.propertyIdentifier, constraintValue=arguments.constraintDetails.constraintValue});	
-					
+	
 		if(!isValid) {
-			var thisPropertyName = listLast(arguments.propertyIdentifier, '._');
-			
+			var thisPropertyName = listLast(arguments.propertyIdentifier, '.');
+				
 			var replaceTemplateStruct = {};
 			replaceTemplateStruct.propertyName = arguments.object.getPropertyTitle(thisPropertyName);
 			if(arguments.object.isPersistent()) {
@@ -234,11 +282,10 @@
 		}
 	}
 	
-	
 	// ================================== VALIDATION CONSTRAINT LOGIC ===========================================
 	
 	public boolean function validate_required(required any object, required string propertyIdentifier, boolean constraintValue=true) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 		if(!isNull(propertyValue) && (isObject(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue)) || (isStruct(propertyValue) && structCount(propertyValue)) || (isSimpleValue(propertyValue) && len(trim(propertyValue))))) {
 			return true;
 		}
@@ -442,7 +489,7 @@
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
 		}
-		if(!isNull(propertyValue) && dateCompare(propertyValue, now())) {
+		if(isNull(propertyValue) || dateCompare(propertyValue, now()) eq 1) {
 			return true;
 		}
 		return false;
@@ -453,7 +500,7 @@
 		if(!isNull(propertyObject)) {
 			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
 		}
-		if(!isNull(propertyValue) && dateCompare(propertyValue, now()) eq -1) {
+		if(isNull(propertyValue) || dateCompare(propertyValue, now()) eq -1) {
 			return true;
 		}
 		return false;
@@ -625,7 +672,7 @@
 		if(isNull(propertyValue)) {
 			return true;
 		}
-		return getHibachiDAO().isUniqueProperty(propertyName=listLast(arguments.propertyIdentifier,'._'), entity=propertyObject);
+		return getHibachiDAO().isUniqueProperty(propertyName=listLast(arguments.propertyIdentifier,'.'), entity=propertyObject);
 	}
 	
 	public boolean function validate_regex(required any object, required string propertyIdentifier, required string constraintValue) {

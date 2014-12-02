@@ -46,16 +46,24 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.countrySmartList" type="any" />
 
-<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.countrySmartList#"
+<hb:HibachiEntityActionBar type="listing" object="#rc.countrySmartList#" showCreate="false">
+		
+	<!--- Create ---> 
+	<hb:HibachiEntityActionBarButtonGroup>
+		<hb:HibachiActionCaller action="admin:entity.createcountry" entity="country" class="btn s-btn-blue" icon="plus icon-white" />
+	</hb:HibachiEntityActionBarButtonGroup>
+</hb:HibachiEntityActionBar>
+
+<hb:HibachiListingDisplay smartList="#rc.countrySmartList#"
 						  recordDetailAction="admin:entity.detailcountry"
 						  recordEditAction="admin:entity.editcountry">
-	<!--- Create ---> 
-	<cf_HibachiListingDisplayButtonGroup >
-		<cf_HibachiActionCaller action="admin:entity.createcountry" entity="country" class="btn btn-primary" icon="plus icon-white" />
-	</cf_HibachiListingDisplayButtonGroup>
 	
-	<cf_HibachiListingColumn propertyIdentifier="countryName" />
-	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn propertyIdentifier="countryName" />
+	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+</hb:HibachiListingDisplay>

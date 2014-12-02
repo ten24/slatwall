@@ -46,32 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.subscriptionTerm" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.subscriptionTerm#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.subscriptionTerm#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.subscriptionTerm#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.subscriptionTerm#" edit="#rc.edit#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList divClass="span6">
-				<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="subscriptionTermName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="initialTerm" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="renewalTerm" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="gracePeriodTerm" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-			<cf_HibachiPropertyList divClass="span6">
-				<!---<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="allowProrateFlag" edit="#rc.edit#">--->
-				<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="autoRenewFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.subscriptionTerm#" property="autoPayFlag" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.subscriptionTerm#">
-			<cf_HibachiTab view="admin:entity/subscriptiontermtabs/subscriptionusagesettings" />
-		</cf_HibachiTabGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.subscriptionTerm#">
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptiontermtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptiontermtabs/subscriptionusagesettings" />
+		</hb:HibachiEntityDetailGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
-
-

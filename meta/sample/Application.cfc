@@ -53,7 +53,10 @@ component {
 	// Allow For Instance Config
 	try{include "../../custom/config/configApplication.cfm";}catch(any e){}
 	
+	this.sessionManagement = true;
+	
 	this.mappings[ "/Slatwall" ] = replace(replace(getDirectoryFromPath(getCurrentTemplatePath()),"\","/","all"), "/meta/sample/", "");
+	
 	this.ormEnabled = true;
 	this.ormSettings.cfclocation = ["/Slatwall/model/entity","/Slatwall/integrationServices"];
 	this.ormSettings.dbcreate = "update";
@@ -68,9 +71,19 @@ component {
 		application.slatwallFW1Application.bootstrap();
 		
 		if(structKeyExists(form, "slatAction")) {
-			request.slatwallScope.doAction( form.slatAction );
+			for(var action in listToArray(form.slatAction)) {
+				request.slatwallScope.doAction( action );
+				if(request.slatwallScope.hasFailureAction(action)) {
+					break;
+				}
+			}
 		} else if (structKeyExists(url, "slatAction")) {
-			request.slatwallScope.doAction( url.slatAction );
+			for(var action in listToArray(url.slatAction)) {
+				var actionResult = request.slatwallScope.doAction( action );
+				if(request.slatwallScope.hasFailureAction(action)) {
+					break;
+				}
+			}
 		}
 		
 		// This is only to setup the nav elements on the sample app

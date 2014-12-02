@@ -46,23 +46,29 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.locationSmartList" type="any" />
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.locationSmartList#" 
-							  recordEditAction="admin:entity.editlocation" 
-							  recordEditQueryString="redirectAction=admin:entity.listlocation" 
-							  recordEditModal="true" 
-							  recordDeleteAction="admin:entity.deletelocation">
-		
+	<hb:HibachiEntityActionBar type="listing" object="#rc.locationSmartList#" showCreate="false">
+			
 		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createlocation" entity="location" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createlocation" entity="location" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+
+	<hb:HibachiListingDisplay smartList="#rc.locationSmartList#" 
+							  recordDetailAction="admin:entity.detaillocation"
+							  recordEditAction="admin:entity.editlocation">
+
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="locationName" search="true" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="locationName" search="true" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
-

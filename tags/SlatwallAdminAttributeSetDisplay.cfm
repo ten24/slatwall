@@ -46,6 +46,8 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.attributeSet" type="any" />
@@ -89,11 +91,16 @@ Notes:
 			<cfset fdAttributes.valueOptions = attribute.getAttributeOptionsOptions() />
 		</cfif>
 		
-		<cfif attribute.getAttributeType() eq 'relatedObjectMultiselect'>
+		<cfif attribute.getAttributeInputType() eq 'relatedObjectMultiselect'>
 			<cfset fdAttributes.multiselectPropertyIdentifier = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName( attribute.getRelatedObject() ) />
 			<cfset fdAttributes.valueOptionsSmartList = attributes.hibachiScope.getService('hibachiService').getServiceByEntityName( attribute.getRelatedObject() ).invokeMethod( "get#attribute.getRelatedObject()#SmartList" ) />
 		</cfif>
 		
-		<cf_HibachiFieldDisplay attributeCollection="#fdAttributes#" />
+		<!--- Setup file link --->
+		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'file' and len(fdAttributes.value)>
+			<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
+		</cfif>
+		
+		<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
 	</cfloop>
 </cfif>

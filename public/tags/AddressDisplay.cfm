@@ -64,6 +64,9 @@
 			<cfif !isNull(attributes.address.getStreet2Address()) and len(attributes.address.getStreet2Address())>
 				#attributes.address.getStreet2Address()#<br />
 			</cfif>
+			<cfif !isNull(attributes.address.getLocality()) and len(attributes.address.getLocality())>
+				#attributes.address.getLocality()#<br />
+			</cfif>
 			<cfif !isNull(attributes.address.getCity()) and len(attributes.address.getCity())>
 				#attributes.address.getCity()#,
 			</cfif>

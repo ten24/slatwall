@@ -46,12 +46,14 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfoutput>
 <div class="accountDetails">
 	<form name="account" method="post">
 		<h5>Account Details</h5>
 		<dl>
-			<cf_SlatwallErrorDisplay object="#rc.account#" errorName="cmsError" />
+			<swa:SlatwallErrorDisplay object="#rc.account#" errorName="cmsError" />
 			<!--- login info --->
 			<dt class="spdemailaddress">
 				<label for="emailAddress" class="required">#$.slatwall.rbKey('entity.accountEmailAddress.emailAddress')#</label>
@@ -62,19 +64,19 @@ Notes:
 					<cfset emailValue = rc.account.getPrimaryEmailAddress().getEmailAddress() />	
 				</cfif>
 				<input type="text" name="emailAddress" value="#emailValue#" />
-				<cf_SlatwallErrorDisplay object="#rc.account#" errorName="primaryEmailAddress" for="emailAddress" />
+				<swa:SlatwallErrorDisplay object="#rc.account#" errorName="primaryEmailAddress" for="emailAddress" />
 			</dd>
 			<dt class="spdpassword">
 				<label for="password">Password</label>
 			</dt>
 			<dd id="spdpassword">
 				<input type="password" name="password" value="" />
-				<cf_SlatwallErrorDisplay object="#rc.account#" errorName="password" for="password" />
+				<swa:SlatwallErrorDisplay object="#rc.account#" errorName="password" for="password" />
 			</dd>
 			<!--- account info --->
-			<cf_SlatwallPropertyDisplay object="#rc.account#" fieldname="firstName" property="firstName" edit="true">
-			<cf_SlatwallPropertyDisplay object="#rc.account#" fieldname="lastName" property="lastName" edit="true">
-			<cf_SlatwallPropertyDisplay object="#rc.account#" fieldname="company" property="company" edit="true">
+			<swa:SlatwallPropertyDisplay object="#rc.account#" fieldname="firstName" property="firstName" edit="true">
+			<swa:SlatwallPropertyDisplay object="#rc.account#" fieldname="lastName" property="lastName" edit="true">
+			<swa:SlatwallPropertyDisplay object="#rc.account#" fieldname="company" property="company" edit="true">
 			<dt class="spdphonenumber">
 				<label for="phoneNumber" class="required">#$.slatwall.rbKey('entity.accountPhoneNumber.phoneNumber')#</label>
 			</dt>
@@ -84,7 +86,7 @@ Notes:
 					<cfset phoneValue = rc.account.getPrimaryPhoneNumber().getPhoneNumber() />	
 				</cfif>
 				<input type="text" name="phoneNumber" value="#phoneValue#" />
-				<cf_SlatwallErrorDisplay object="#rc.account#" errorName="phoneNumber" for="phoneNumber" />
+				<swa:SlatwallErrorDisplay object="#rc.account#" errorName="phoneNumber" for="phoneNumber" />
 			</dd>
 			<!--- extended attribute --->
 			<!---<cfset attributeValueIndex = 0 />
@@ -99,7 +101,7 @@ Notes:
 						<dd>
 							<input type="hidden" name="attributeValues[#attributeValueIndex#].attributeValueID" value="#local.attributeValue.getAttributeValueID()#" />
 							<input type="hidden" name="attributeValues[#attributeValueIndex#].attribute.attributeID" value="#local.attribute.getAttributeID()#" />
-							<cf_SlatwallFormField fieldName="attributeValues[#attributeValueIndex#].attributeValue" fieldType="#local.attribute.getAttributeType()#" value="#local.attributeValue.getAttributeValue()#" valueOptions="#local.attribute.getAttributeOptionsOptions()#" />
+							<swa:SlatwallFormField fieldName="attributeValues[#attributeValueIndex#].attributeValue" fieldType="#local.attribute.getAttributeInputType()#" value="#local.attributeValue.getAttributeValue()#" valueOptions="#local.attribute.getAttributeOptionsOptions()#" />
 						</dd>
 					</cfif>
 				</cfloop>

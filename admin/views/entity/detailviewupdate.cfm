@@ -46,12 +46,16 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfoutput>
 	<div class="svoadminsettingdetailviewupdate">
 		<form action="#buildURL(action='admin:entity.updatefrontendviews')#" method="post">
 			<p>Only Click this button if you are 100% sure that you want to updated all of the views the following site directory</p>
 			<input type="text" name="siteid" value="default" />
-			<cf_HibachiActionCaller action="admin:entity.updatefrontendviews" class="btn-primary" type="button" submit="true">
+			<hb:HibachiActionCaller action="admin:entity.updatefrontendviews" class="btn-primary" type="button" submit="true">
 		</form>
 	</div>
 </cfoutput>

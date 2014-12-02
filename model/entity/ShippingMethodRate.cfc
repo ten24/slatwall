@@ -50,9 +50,9 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	
 	// Persistent Properties
 	property name="shippingMethodRateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="sortOrder" ormtype="int" sortContext="shippingMethod";
-	property name="minimumShipmentWeight" ormtype="int" hb_nullRBKey="define.0";
-	property name="maximumShipmentWeight" ormtype="int" hb_nullRBKey="define.unlimited";
+	property name="sortOrder" ormtype="integer" sortContext="shippingMethod";
+	property name="minimumShipmentWeight" ormtype="float" hb_nullRBKey="define.0";
+	property name="maximumShipmentWeight" ormtype="float" hb_nullRBKey="define.unlimited";
 	property name="minimumShipmentItemPrice" ormtype="big_decimal" hb_nullRBKey="define.0";
 	property name="maximumShipmentItemPrice" ormtype="big_decimal" hb_nullRBKey="define.unlimited";
 	property name="defaultAmount" ormtype="big_decimal" hb_formatType="currency" hb_nullRBKey="define.0";
@@ -62,7 +62,7 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	// Related Object Properties (many-to-one)
 	property name="shippingIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="shippingIntegrationID";
 	property name="shippingMethod" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
-	property name="addressZone" cfc="AddressZone" fieldtype="many-to-one" fkcolumn="addressZoneID";
+	property name="addressZone" cfc="AddressZone" fieldtype="many-to-one" fkcolumn="addressZoneID" hb_nullRBKey="define.all";
 	
 	// Related Object Properties (one-to-many)
 	property name="shippingMethodOptions" singularname="shippingMethodOption" cfc="ShippingMethodOption" type="array" fieldtype="one-to-many" fkcolumn="shippingMethodRateID" cascade="delete-orphan" inverse="true" lazy="extra";
@@ -221,6 +221,10 @@ component entityname="SlatwallShippingMethodRate" table="SwShippingMethodRate" p
 	// ===============  END: Custom Formatting Methods =====================
 	
 	// ================== START: Overridden Methods ========================
+	
+	public any function getSimpleRepresentation() {
+		return '#getShippingMethod().getShippingMethodName()# - #getShippingMethodRateName()# #rbKey("define.rate")#';	
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	

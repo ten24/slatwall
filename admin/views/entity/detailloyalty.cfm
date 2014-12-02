@@ -36,28 +36,31 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.loyalty" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.loyalty#" edit="#rc.edit#" saveActionQueryString="loyaltyID=#rc.loyalty.getLoyaltyID()#">
+	<hb:HibachiEntityDetailForm object="#rc.loyalty#" edit="#rc.edit#" saveActionQueryString="loyaltyID=#rc.loyalty.getLoyaltyID()#">
 		
-		<cf_HibachiEntityActionBar type="detail" object="#rc.loyalty#" edit="#rc.edit#">
-			<cf_HibachiActionCaller action="admin:entity.createloyaltyaccruement" queryString="redirectAction=admin:entity.detailloyalty&loyaltyID=#rc.loyalty.getLoyaltyID()#"type="list" modal="true" />
-			<cf_HibachiActionCaller action="admin:entity.createloyaltyredemption" queryString="redirectAction=admin:entity.detailloyalty&loyaltyID=#rc.loyalty.getLoyaltyID()#"type="list" modal="true" />		
-		</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="detail" object="#rc.loyalty#" edit="#rc.edit#">
+			<hb:HibachiActionCaller action="admin:entity.createloyaltyaccruement" queryString="redirectAction=admin:entity.detailloyalty&loyaltyID=#rc.loyalty.getLoyaltyID()#"type="list" modal="true" />
+			<hb:HibachiActionCaller action="admin:entity.createloyaltyredemption" queryString="redirectAction=admin:entity.detailloyalty&loyaltyID=#rc.loyalty.getLoyaltyID()#"type="list" modal="true" />		
+		</hb:HibachiEntityActionBar>
+
+		<hb:HibachiEntityDetailGroup object="#rc.loyalty#">
+			<hb:HibachiEntityDetailItem view="admin:entity/loyaltytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/loyaltytabs/loyaltyAccruement" />
+			<hb:HibachiEntityDetailItem view="admin:entity/loyaltytabs/loyaltyRedemption" />
+		</hb:HibachiEntityDetailGroup>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.loyalty#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.loyalty#" property="loyaltyName" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.loyalty#">
-			<cf_HibachiTab view="admin:entity/loyaltytabs/loyaltyAccruement" />
-			<cf_HibachiTab view="admin:entity/loyaltytabs/loyaltyRedemption" />
-		</cf_HibachiTabGroup>
-		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
+

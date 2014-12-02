@@ -52,9 +52,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="subscriptionDAO" type="any";
 	
 	property name="accessService" type="any";
+	property name="emailService" type="any";
 	property name="orderService" type="any";
 	property name="paymentService" type="any";
-	property name="emailService" type="any";
+	property name="typeService" type="any";
 	
 	public boolean function createSubscriptionUsageBenefitAccountByAccess(required any access, required any account) {
 		var subscriptionUsageBenefitAccountCreated = false;
@@ -145,7 +146,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// create new subscription orderItem
 		var subscriptionOrderItem = this.newSubscriptionOrderItem();
 		subscriptionOrderItem.setOrderItem(arguments.orderItem);
-		subscriptionOrderItem.setSubscriptionOrderItemType(this.getTypeBySystemCode(subscriptionOrderItemType));
+		subscriptionOrderItem.setSubscriptionOrderItemType(getTypeService().getTypeBySystemCode(subscriptionOrderItemType));
 		subscriptionOrderItem.setSubscriptionUsage(subscriptionUsage);
 		
 		// call save on this entity to make it persistent so we can use it for further lookup
@@ -186,7 +187,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// add this benefit to access
 		if(arguments.subscriptionUsageBenefit.getAccessType().getSystemCode() == "satPerSubscription") {
 			var accessSmartList = getAccessService().getAccessSmartList();
-			accessSmartList.addFilter(propertyIdentifier="subscriptionUsage_subscriptionUsageID", value=arguments.subscriptionUsageBenefit.getSubscriptionUsage().getSubscriptionUsageID());
+			accessSmartList.addFilter(propertyIdentifier="subscriptionUsage.subscriptionUsageID", value=arguments.subscriptionUsageBenefit.getSubscriptionUsage().getSubscriptionUsageID());
 			if(!accessSmartList.getRecordsCount()) {
 				var access = getAccessService().getAccessBySubscriptionUsage(arguments.subscriptionUsageBenefit.getSubscriptionUsage(),true);
 				access.setSubscriptionUsage(arguments.subscriptionUsageBenefit.getSubscriptionUsage());
@@ -251,9 +252,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public void function setSubscriptionUsageStatus(required any subscriptionUsage, required string subscriptionStatusTypeCode, any effectiveDateTime = now(), any subscriptionStatusChangeReasonTypeCode) {
 		var subscriptionStatus = this.newSubscriptionStatus();
-		subscriptionStatus.setSubscriptionStatusType(this.getTypeBySystemCode(arguments.subscriptionStatusTypeCode));
+		subscriptionStatus.setSubscriptionStatusType(getTypeService().getTypeBySystemCode(arguments.subscriptionStatusTypeCode));
 		if(structKeyExists(arguments, "subscriptionStatusChangeReasonTypeCode") && arguments.subscriptionStatusChangeReasonTypeCode != "") {
-			subscriptionStatus.setSubscriptionStatusChangeReasonType(this.getTypeBySystemCode(arguments.subscriptionStatusChangeReasonTypeCode));
+			subscriptionStatus.setSubscriptionStatusChangeReasonType(getTypeService().getTypeBySystemCode(arguments.subscriptionStatusChangeReasonTypeCode));
 		}
 		subscriptionStatus.setEffectiveDateTime(arguments.effectiveDateTime);
 		subscriptionStatus.setChangeDateTime(now());
@@ -337,6 +338,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: Process Methods ===========================
 	
+	public any function processSubscriptionUsage_addUsageBenefit(required any subscriptionUsage, required any processObject) {
+		
+		var subscriptionBenefit = this.getSubscriptionBenefit(processObject.getSubscriptionBenefitID());
+		
+		if(listFindNoCase("both,initial", arguments.processObject.getBenefitTermType())) {
+			var subscriptionUsageBenefit = this.newSubscriptionUsageBenefit();
+			subscriptionUsageBenefit.copyFromSubscriptionBenefit( subscriptionBenefit );
+			
+			var subscriptionUsageBenefitAccount = this.newSubscriptionUsageBenefitAccount();
+			subscriptionUsageBenefitAccount.setSubscriptionUsageBenefit( subscriptionUsageBenefit );
+			subscriptionUsageBenefitAccount.setAccount( arguments.subscriptionUsage.getAccount() );
+			
+			arguments.subscriptionUsage.addSubscriptionUsageBenefit( subscriptionUsageBenefit );	
+		}
+		if(listFindNoCase("both,renewal", arguments.processObject.getBenefitTermType())) {
+			var renewalSubscriptionUsageBenefit = this.newSubscriptionUsageBenefit();
+			
+			renewalSubscriptionUsageBenefit.copyFromSubscriptionBenefit( subscriptionBenefit );
+			
+			arguments.subscriptionUsage.addRenewalSubscriptionUsageBenefit( renewalSubscriptionUsageBenefit );
+		}
+			
+		return arguments.subscriptionUsage;
+	}
+	
 	public any function processSubscriptionUsage_cancel(required any subscriptionUsage, required any processObject) {
 		if(isNull(processObject.getEffectiveDateTime())) {
 			processObject.setEffectiveDateTime( now() );
@@ -404,7 +430,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// create new subscription orderItem
 				var subscriptionOrderItem = this.newSubscriptionOrderItem();
 				subscriptionOrderItem.setOrderItem( order.getOrderItems()[1] );
-				subscriptionOrderItem.setSubscriptionOrderItemType( this.getTypeBySystemCode('soitRenewal') );
+				subscriptionOrderItem.setSubscriptionOrderItemType( getTypeService().getTypeBySystemCode('soitRenewal') );
 				subscriptionOrderItem.setSubscriptionUsage( arguments.subscriptionUsage );
 				this.saveSubscriptionOrderItem( subscriptionOrderItem );
 				
@@ -521,31 +547,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
-		return arguments.subscriptionUsage;
-	}
-	
-	public any function processSubscriptionUsage_addUsageBenefit(required any subscriptionUsage, required any processObject) {
-		
-		var subscriptionBenefit = this.getSubscriptionBenefit(processObject.getSubscriptionBenefitID());
-		
-		if(listFindNoCase("both,initial", arguments.processObject.getBenefitTermType())) {
-			var subscriptionUsageBenefit = this.newSubscriptionUsageBenefit();
-			subscriptionUsageBenefit.copyFromSubscriptionBenefit( subscriptionBenefit );
-			
-			var subscriptionUsageBenefitAccount = this.newSubscriptionUsageBenefitAccount();
-			subscriptionUsageBenefitAccount.setSubscriptionUsageBenefit( subscriptionUsageBenefit );
-			subscriptionUsageBenefitAccount.setAccount( arguments.subscriptionUsage.getAccount() );
-			
-			arguments.subscriptionUsage.addSubscriptionUsageBenefit( subscriptionUsageBenefit );	
-		}
-		if(listFindNoCase("both,renewal", arguments.processObject.getBenefitTermType())) {
-			var renewalSubscriptionUsageBenefit = this.newSubscriptionUsageBenefit();
-			
-			renewalSubscriptionUsageBenefit.copyFromSubscriptionBenefit( subscriptionBenefit );
-			
-			arguments.subscriptionUsage.addRenewalSubscriptionUsageBenefit( renewalSubscriptionUsageBenefit );
-		}
-			
 		return arguments.subscriptionUsage;
 	}
 	

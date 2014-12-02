@@ -7,6 +7,9 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
 	property name="persistSessionFlag" type="boolean";
+	property name="sessionFoundNPSIDCookieFlag" type="boolean";
+	property name="sessionFoundPSIDCookieFlag" type="boolean";
+	
 	property name="ormHasErrors" type="boolean" default="false";
 	property name="rbLocale";
 	property name="url" type="string";
@@ -23,6 +26,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		setRBLocale( "en_us" );
 		setPublicPopulateFlag( false );
 		setPersistSessionFlag( true );
+		setSessionFoundNPSIDCookieFlag( false );
+		setSessionFoundPSIDCookieFlag( false );
 		
 		setCalledActions( [] );
 		setSuccessfulActions( [] );
@@ -41,6 +46,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		config[ 'action' ] = getApplicationValue('action');
 		config[ 'dateFormat' ] = 'mmm dd, yyyy';
 		config[ 'timeFormat' ] = 'hh:mm tt';
+		config[ 'rbLocale' ] = '#getRBLocale()#';
+		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
 		
 		var returnHTML = '';
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';
@@ -49,9 +56,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public void function addModifiedEntity( required any entity ) {
-		if(!arrayFind(getModifiedEntities(), arguments.entity)) {
-			arrayAppend(getModifiedEntities(), arguments.entity);
-		}
+		arrayAppend(getModifiedEntities(), arguments.entity);
 	}
 	
 	public void function clearModifiedEntities() {
@@ -200,14 +205,16 @@ component output="false" accessors="true" extends="HibachiTransient" {
 				message = replace(message, "${itemEntityName}", rbKey("entity.#entityName#") );
 			}
 		}
-		
 		showMessage(message=message, messageType=messageType);
 	}
 	
 	public void function showMessage(string message="", string messageType="info") {
-		param name="request.context.messages" default="#arrayNew(1)#";
-		
-		arrayAppend(request.context.messages, arguments);
+		param name="request.context['messages']" default="#arrayNew(1)#";
+		arguments.message=getService('HibachiUtilityService').replaceStringTemplate(arguments.message,request.context);
+		var messageStruct = {};
+		messageStruct['message'] = arguments.message;
+		messageStruct['messageType'] = arguments.messageType;
+		arrayAppend(request.context['messages'], messageStruct);
 	}
 	
 	// ========================== HELPER DELIGATION METHODS ===============================
@@ -219,6 +226,10 @@ component output="false" accessors="true" extends="HibachiTransient" {
 			keyValue = getService("hibachiUtilityService").replaceStringTemplate(keyValue, arguments.replaceStringData);
 		}
 		return keyValue;
+	}
+	
+	public string function getRBKey(required string key, struct replaceStringData) {
+		return rbKey(argumentcollection=arguments);
 	}
 	
 	public boolean function authenticateAction( required string action ) {

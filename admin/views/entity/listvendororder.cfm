@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.vendorOrderSmartList" type="any" />
 
 <cfsilent>
@@ -53,22 +57,24 @@ Notes:
 </cfsilent>
 
 <cfoutput>
-	
-	<cf_HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.vendorOrderSmartList#"
+	<hb:HibachiEntityActionBar type="listing" object="#rc.vendorOrderSmartList#" showCreate="false">
+		
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createvendororder" entity="brand" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+		
+	<hb:HibachiListingDisplay smartList="#rc.vendorOrderSmartList#"
 							   recordDetailAction="admin:entity.detailvendororder"
 							   recordEditAction="admin:entity.editvendororder">
-							      
-		<!--- Create ---> 
-		<cf_HibachiListingDisplayButtonGroup >
-			<cf_HibachiActionCaller action="admin:entity.createvendororder" entity="brand" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</cf_HibachiListingDisplayButtonGroup>
 		
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="vendor.vendorName" />
-		<cf_HibachiListingColumn propertyIdentifier="vendorOrderNumber" />
-		<cf_HibachiListingColumn propertyIdentifier="vendorOrderType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="estimatedReceivalDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="total" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="vendor.vendorName" />
+		<hb:HibachiListingColumn propertyIdentifier="vendorOrderNumber" />
+		<hb:HibachiListingColumn propertyIdentifier="vendorOrderType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="estimatedReceivalDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="total" />
+	</hb:HibachiListingDisplay>
 	
 </cfoutput>

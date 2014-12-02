@@ -46,37 +46,36 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.physical" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.physical#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.physical#" edit="#rc.edit#">
-			<cf_HibachiProcessCaller action="admin:entity.preprocessphysical" entity="#rc.physical#" processContext="addPhysicalCount" modal="true" type="list" />
-			<cf_HibachiProcessCaller action="admin:entity.processphysical" entity="#rc.physical#" processContext="commit" type="list" />
-		</cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.physical#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.physical#" edit="#rc.edit#">
+			<hb:HibachiProcessCaller action="admin:entity.preprocessphysical" entity="#rc.physical#" processContext="addPhysicalCount" modal="true" type="list" />
+			<hb:HibachiProcessCaller action="admin:entity.processphysical" entity="#rc.physical#" processContext="commit" type="list" />
+		</hb:HibachiEntityActionBar>
 
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.physical#" property="physicalStatusType" edit="false">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.physical#">
-			<cf_HibachiTab property="productTypes" />
-			<cf_HibachiTab property="brands" />
-			<cf_HibachiTab property="products" />
-			<cf_HibachiTab property="skus" />
-			<cf_HibachiTab property="locations" />
-			<cf_HibachiTab property="physicalcounts" />
+		<hb:HibachiEntityDetailGroup object="#rc.physical#">
+			<hb:HibachiEntityDetailItem view="admin:entity/physicaltabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem property="productTypes" />
+			<hb:HibachiEntityDetailItem property="brands" />
+			<hb:HibachiEntityDetailItem property="products" />
+			<hb:HibachiEntityDetailItem property="skus" />
+			<hb:HibachiEntityDetailItem property="locations" />
+			<hb:HibachiEntityDetailItem property="physicalcounts" />
 			<cfif rc.physical.getPhysicalStatusType().getSystemCode() eq "pstClosed">
-				<cf_HibachiTab property="stockadjustments" />
+				<hb:HibachiEntityDetailItem property="stockadjustments" />
 			<cfelse>
-				<cf_HibachiTab view="admin:entity/physicaltabs/discrepancies" />
+				<hb:HibachiEntityDetailItem view="admin:entity/physicaltabs/discrepancies" />
 			</cfif>
-			<cf_SlatwallAdminTabComments object="#rc.physical#" />
-		</cf_HibachiTabGroup>
+			<swa:SlatwallAdminTabComments object="#rc.physical#" />
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

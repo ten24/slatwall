@@ -1,0 +1,109 @@
+<div class="s-create-window" >
+  <header>
+    <div class="navbar navbar-s-navbar-ten24 s-dialog-header">
+      <span class="navbar-brand" >Create Bundle</span>
+      <ul class="nav navbar-nav pull-right">
+        <li class="active"><a ng-href="#" ng-click="closePageDialog($index)"><i class="fa fa-times"></i></a></li>
+      </ul>
+    </div>
+  </header>
+  <span ng-controller="create-bundle-controller">
+
+
+		  <section class="col-xs-12" >
+
+			    <div class="row s-bundle-header" >
+			     	 <form class="form-horizontal s-properties"
+				role="form"
+
+				name="form.createProductBundle"
+
+			>
+					<span ng-init="setForm(form.createProductBundle);"></span>
+						<span ng-if="product">
+					        <div class="col-xs-6">
+					       	 <span sw-property-display
+					          		data-property="productName"
+					          		data-object="product"
+					          		data-object-name="product"
+					          		data-meta="propertyDisplayData['productName']"
+					          		data-editing="true"
+									data-editable="true"
+					          ></span>
+					         <span sw-property-display
+					          		data-property="productCode"
+					          		data-object="product"
+					          		data-object-name="product"
+					          		data-meta="propertyDisplayData['productCode']"
+					          		data-editing="true"
+									data-editable="true"
+					          ></span>
+					          <span sw-property-display
+					          		data-property="price"
+					          		data-object="product.defaultSku"
+					          		data-object-name="product"
+					          		data-meta="propertyDisplayData['price']"
+					          		data-editing="true"
+									data-editable="true"
+					          ></span>
+					        </div>
+
+					        <div class="col-xs-6">
+					        <span sw-property-display
+					          		data-property="productType"
+					          		data-object="product"
+					          		data-object-name="product"
+					          		data-meta="propertyDisplayData['productType']"
+					          		data-editing="true"
+									data-editable="true"
+									data-options-arguments="{property:'productType',argument1:'productBundle'}"
+									data-eager-load-options="true"
+					          ></span>
+					         <span sw-property-display
+					          		data-property="brand"
+					          		data-object="product"
+					          		data-object-name="product"
+					          		data-meta="propertyDisplayData['brand']"
+					          		data-editing="true"
+									data-editable="true"
+									data-options-arguments="{property:'brand'}"
+									data-eager-load-options="true"
+					          ></span>
+							</div>
+						</span>
+					</form>
+			    </div><!-- //bundle head -->
+
+		    <span 	sw-product-bundle-groups
+		    		data-product-bundle-groups="product.defaultSku.productBundleGroups"
+		    		data-add-product-bundle-group="addProductBundleGroup()"
+		    >
+		    </span>
+
+		    <button class="btn btn-sm s-btn-grey s-create-bundle-btn"
+		    		data-toggle="collapse"
+		    		ng-click="addProductBundleGroup()"
+		    >
+		    	<i class="fa fa-plus"></i> Bundle Group
+		    </button>
+		  </section>
+
+	  <footer>
+	    <div class="navbar navbar-s-navbar-ten24 s-dialog-footer">
+	      <ul class="nav navbar-nav pull-right">
+	        <li class="active">
+	        	<a  ng-href="#" style="padding: 9px 12px;font-size: 16px;"
+	        		ng-click="saveProductBundle()"
+	        	>Save & New</a>
+	        </li>
+	        <li class="active">
+	        	<a  ng-href="#" style="padding: 9px 12px;font-size: 16px;"
+	        		ng-click="saveProductBundle($index)"
+	        	>Save & Finish</a>
+	        </li>
+	      </ul>
+	    </div>
+	  </footer>
+	</span>
+
+</div><!--//wrapper end-->

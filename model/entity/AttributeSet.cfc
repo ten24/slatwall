@@ -71,6 +71,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	property name="products" singularname="product" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwAttributeSetProduct" fkcolumn="attributeSetID" inversejoincolumn="productID";
 	property name="brands" singularname="brand" cfc="Brand" type="array" fieldtype="many-to-many" linktable="SwAttributeSetBrand" fkcolumn="attributeSetID" inversejoincolumn="brandID";
 	property name="skus" singularname="sku" cfc="Sku" type="array" fieldtype="many-to-many" linktable="SwAttributeSetSku" fkcolumn="attributeSetID" inversejoincolumn="skuID";
+	property name="types" singularname="type" cfc="Type" type="array" fieldtype="many-to-many" linktable="SwAttributeSetType" fkcolumn="attributeSetID" inversejoincolumn="typeID";
 
 	// Related Object Properties (many-to-many - inverse)
 	
@@ -102,6 +103,8 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 			{value="Brand", name=rbKey("entity.Brand")},
 			{value="File", name=rbKey("entity.File")},
 			{value="Image", name=rbKey("entity.Image")},
+			{value="Location", name=rbKey("entity.Location")},
+			{value="LocationConfiguration", name=rbKey("entity.LocationConfiguration")},
 			{value="Order", name=rbKey("entity.Order")},
 			{value="OrderItem", name=rbKey("entity.OrderItem")},
 			{value="OrderPayment", name=rbKey("entity.OrderPayment")},
@@ -159,7 +162,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 		if(!structKeyExists(variables, "globalFlag")) {
 			variables.globalFlag = 1;
 		}
-		if(!isNull(getAttributeSetObject()) && !listFindNoCase("OrderItem,ProductType,Product,Sku", getAttributeSetObject())) {
+		if(!isNull(getAttributeSetObject()) && !listFindNoCase("OrderItem,ProductType,Product,Sku,Type", getAttributeSetObject())) {
 			variables.globalFlag = 1;
 		}
 		return variables.globalFlag;

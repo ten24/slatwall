@@ -54,7 +54,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 	// @hint leverages the getEntityHasAttributeByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 	public boolean function getHasAttributeByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
-		return getEntityHasAttributeByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), attributeCode=listLast(arguments.propertyIdentifier, "._") );
+		return getEntityHasAttributeByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), attributeCode=listLast(arguments.propertyIdentifier, ".") );
 	}
 	
 	// @hint returns true or false based on an entityName, and checks if that entity has an extended attribute with that attributeCode
@@ -102,5 +102,57 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 		return arguments.entity;
 	}
-
+	
+	//used by the rest api to return default property values
+	public any function getDefaultPropertiesByEntityName(required string entityName){
+		// First Check the application cache
+		if( hasApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+			return getApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		}
+		
+		// Pull the meta data from the object (which in turn will cache it in the application for the next time)
+		return getEntityObject( arguments.entityName ).getDefaultProperties();
+	}
+	
+	public string function getAttributeCodeListByEntityName(required string entityName){
+		if( hasApplicationValue("classAttributeCodeListByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+			return getApplicationValue("classAttributeCodeListByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		}
+		
+		return getEntityObject( arguments.entityName ).getAttributesCodeList();
+	}
+	
+	public array function getAttributesArrayByEntityName(required string entityName){
+		if( hasApplicationValue("classAttributesArrayByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+			return getApplicationValue("classAttributesArrayByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		}
+		
+		return getEntityObject( arguments.entityName ).getAttributesArray();
+	}
+	
+	public any function getAttributesPropertiesByEntityName(required string entityName){
+		if( hasApplicationValue("classAttributesPropertiesByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+			return getApplicationValue("classAttributesPropertiesByEntityNameCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		}
+		
+		return getEntityObject( arguments.entityName ).getAttributesProperties();
+	}
+	
+	public any function getPropertiesWithAttributesByEntityName(required string entityName){
+		var entityObject = getEntityObject( arguments.entityName );
+		var properties = getService('hibachiUtilityService').arrayConcat( entityObject.getFilterProperties(), entityObject.getAttributesProperties() );
+		
+		return properties;
+	}
+	
+	public any function getFilterPropertiesByEntityName(required string entityName){
+		// First Check the application cache
+		if( hasApplicationValue("classDefaultFilterablePropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+			return getApplicationValue("classDefaultFilterablePropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+		}
+		
+		// Pull the meta data from the object (which in turn will cache it in the application for the next time)
+		return getEntityObject( arguments.entityName ).getFilterProperties();
+	}
+	
 }

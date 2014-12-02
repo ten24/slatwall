@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Account Payment Method" entityname="SlatwallAccountPaymentMethod" table="SwAccountPaymentMethod" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountPaymentMethods" {
+component displayname="Account Payment Method" entityname="SlatwallAccountPaymentMethod" table="SwAccountPaymentMethod" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountPaymentMethods" hb_processContext="createTransaction" {
 	
 	// Persistent Properties
 	property name="accountPaymentMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -56,8 +56,8 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	property name="bankAccountNumberEncrypted" ormType="string";
 	property name="companyPaymentMethodFlag" hb_populateEnabled="public" ormType="boolean";
 	property name="creditCardNumberEncrypted" ormType="string" hb_auditable="false";
-	property name="creditCardNumberEncryptedDateTime" ormType="timestamp" hb_auditable="false";
-	property name="creditCardNumberEncryptedGenerator" ormType="string" hb_auditable="false";
+	property name="creditCardNumberEncryptedDateTime" ormType="timestamp" hb_auditable="false" column="creditCardNumberEncryptDT";
+	property name="creditCardNumberEncryptedGenerator" ormType="string" hb_auditable="false" column="creditCardNumberEncryptGen";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
 	property name="expirationMonth" hb_populateEnabled="public" ormType="string" hb_formfieldType="select";
@@ -323,10 +323,17 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 	}
 	
 	public void function setCreditCardNumber(required string creditCardNumber) {
-		variables.creditCardNumber = REReplaceNoCase(arguments.creditCardNumber, '[^0-9]', '', 'ALL');
-		setCreditCardLastFour(Right(arguments.creditCardNumber, 4));
-		setCreditCardType(getService("paymentService").getCreditCardTypeFromNumber(arguments.creditCardNumber));
-		setupEncryptedProperties();
+		if(len(arguments.creditCardNumber)) {
+			variables.creditCardNumber = REReplaceNoCase(arguments.creditCardNumber, '[^0-9]', '', 'ALL');
+			setCreditCardLastFour(Right(variables.creditCardNumber, 4));
+			setCreditCardType(getService("paymentService").getCreditCardTypeFromNumber(variables.creditCardNumber));
+			setupEncryptedProperties();
+		} else {
+			structDelete(variables, "creditCardNumber");
+			setCreditCardLastFour(javaCast("null", ""));
+			setCreditCardType(javaCast("null", ""));
+			setCreditCardNumberEncrypted(javaCast("null", ""));
+		}
 	}
 	
 	public string function getCreditCardNumber() {
@@ -379,6 +386,12 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		
 		// Set the actual accountAddress
 		variables.billingAccountAddress = arguments.accountAddress;
+	}
+	
+	public any function populate( required struct data={} ) {
+		super.populate(argumentCollection=arguments);
+		
+		setupEncryptedProperties();
 	}
 
 	// ==================  END:  Overridden Methods ========================

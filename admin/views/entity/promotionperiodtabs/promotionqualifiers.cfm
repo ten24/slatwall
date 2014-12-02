@@ -46,27 +46,29 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.promotionPeriod" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.promotionPeriod.getPromotionQualifiersSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.promotionPeriod.getPromotionQualifiersSmartList()#"
 							   recordEditAction="admin:entity.editpromotionqualifier"
 							   recordEditQueryString="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#"
 							   recorddetailaction="admin:entity.detailpromotionqualifier">
 							      
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="qualifierType" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="qualifierType" />
+	</hb:HibachiListingDisplay>
 	
 	<cfif !rc.promotionperiod.isExpired()>
-		<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" buttonClass="btn-inverse">
-			<cf_HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionqualifiermerchandise')#" action="admin:entity.createpromotionqualifier" querystring="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#&qualifierType=merchandise" modal="true" type="list" />
-			<cf_HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionqualifiersubscription')#" action="admin:entity.createpromotionqualifier" querystring="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#&qualifierType=subscription" modal="true" type="list" />
-			<cf_HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionqualifiercontentaccess')#" action="admin:entity.createpromotionqualifier" querystring="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#&qualifierType=contentAccess" modal="true" type="list" />
-			<cf_HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionqualifierfulfillment')#" action="admin:entity.createpromotionqualifier" querystring="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#&qualifierType=fulfillment" modal="true" type="list" />
-			<cf_HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionqualifierorder')#" action="admin:entity.createpromotionqualifier" querystring="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#&qualifierType=order" modal="true" type="list" />
-		</cf_HibachiActionCallerDropdown>
+		<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" buttonClass="btn-inverse" dropdownClass="pull-right">
+			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionqualifiermerchandise')#" action="admin:entity.createpromotionqualifier" querystring="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#&qualifierType=merchandise" modal="true" type="list" />
+			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionqualifiersubscription')#" action="admin:entity.createpromotionqualifier" querystring="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#&qualifierType=subscription" modal="true" type="list" />
+			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionqualifiercontentaccess')#" action="admin:entity.createpromotionqualifier" querystring="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#&qualifierType=contentAccess" modal="true" type="list" />
+			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionqualifierfulfillment')#" action="admin:entity.createpromotionqualifier" querystring="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#&qualifierType=fulfillment" modal="true" type="list" />
+			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionqualifierorder')#" action="admin:entity.createpromotionqualifier" querystring="promotionPeriodID=#rc.promotionPeriod.getPromotionPeriodID()#&qualifierType=order" modal="true" type="list" />
+		</hb:HibachiActionCallerDropdown>
 	</cfif>
 	
 </cfoutput>

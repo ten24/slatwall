@@ -58,5 +58,12 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Resp
 	property name="taxJurisdictionID" ormtype="string";
 	property name="taxJurisdictionName" ormtype="string";
 	property name="taxJurisdictionType" ormtype="string";
+	property name="taxStreetAddress" type="string";  
+	property name="taxStreet2Address" type="string";
+	property name="taxLocality" type="string";
+	property name="taxCity" type="string";   
+	property name="taxStateCode" type="string";   
+	property name="taxPostalCode" type="string";
+	property name="taxCountryCode" type="string";  
 	
 }
