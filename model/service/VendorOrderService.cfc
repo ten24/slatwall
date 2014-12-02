@@ -162,7 +162,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			if(val(thisRecord.quantity) gt 0 
 					&& val(vendorOrderItem.getQuantityReceived()) neq val(thisRecord.quantity) 
-					&& val(vendorOrderItem.getQuantityReceived()) gt 0 ) {
+					&& val(vendorOrderItem.getQuantityunReceived()) gt 0 ) {
 				partiallyReceivedFlag = true;
 			}
 		}
