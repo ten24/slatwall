@@ -880,13 +880,11 @@ Notes:
 							console.log(parentMetaData);
 							if(angular.isDefined(parentMetaData)){
 								var parent = entityInstance.data[parentMetaData.name];
-							
 								var parent = entityInstance.data[parentMetaData.name];
 								if(angular.isObject(parent) && entityInstanceParent !== parent && parent.$$getID() !== '') {
 									if(angular.isUndefined(data[parentMetaData.name])){
 										data[parentMetaData.name] = {};
 									}
-									
 									var parentData = processParent(parent);
 									angular.extend(data[parentMetaData.name],parentData);
 								}

@@ -1,12 +1,12 @@
-<div class="radio" ng-repeat="propertyDisplayOption in propertyDisplay.options track by propertyDisplayOption.value">
-	<input type="radio" name="{{'selected'+propertyDisplay.object.metaData.className+propertyDisplay.property}}" id="{{propertyDisplay.object.metaData.className+'.'+propertyDisplay.property+$index}}"
+<div  ng-repeat="propertyDisplayOption in propertyDisplay.options track by propertyDisplayOption.value" ng-if="selectedRadioFormName">
+	<input type="radio" name="{{'selected'+propertyDisplay.object.metaData.className+propertyDisplay.property+selectedRadioFormName}}" id="{{propertyDisplay.object.metaData.className+'.'+propertyDisplay.property+$index}}"
     		ng-model="$parent.selected"
     		ng-show="propertyDisplay.editing"
 			ng-value="propertyDisplayOption"
-			ng-change="formFieldChanged($parent.selected)"
+			ng-click="formFieldChanged($parent.selected)"
 	>
 	<label for="{{propertyDisplay.object.metaData.className+'.'+propertyDisplay.property+$index}}">
-			<span ng-bind="propertyDisplayOption.name"></span>
+		<span ng-bind="propertyDisplayOption.name"></span>
 	</label>
 </div>
 <input style="display:none"	type="text" 

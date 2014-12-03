@@ -136,6 +136,18 @@ angular.module('slatwalladmin')
 						}
 			        	//formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object[scope.propertyDisplay.valueOptions].value[0]);
 			        }
+			        var makeRandomID = function makeid(count)
+					{
+					    var text = "";
+					    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+					
+					    for( var i=0; i < count; i++ )
+					        text += possible.charAt(Math.floor(Math.random() * possible.length));
+					
+					    return text;
+					}
+
+			     
 					if(scope.propertyDisplay.fieldType === 'text' || scope.propertyDisplay.fieldType === 'hidden'){
 						formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
 					}
@@ -143,13 +155,15 @@ angular.module('slatwalladmin')
 					if(scope.propertyDisplay.fieldType === 'yesno' || scope.propertyDisplay.fieldType === 'hidden'){
 						//format value
 						/*convert boolean to number*/
+						scope.selectedRadioFormName = makeRandomID(26);
+
 						scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.object.data[scope.propertyDisplay.property] === 'YES ' || scope.propertyDisplay.object.data[scope.propertyDisplay.property] == 1 ? 1 : 0;
 						scope.formFieldChanged = function(option){
 							$log.debug('formfieldchanged');
 							$log.debug(option);
 							scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
 							scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
-							scope.propertyDisplay.form['selected'+scope.propertyDisplay.object.metaData.className+scope.propertyDisplay.property].$dirty = false;
+							scope.propertyDisplay.form['selected'+scope.propertyDisplay.object.metaData.className+scope.propertyDisplay.property+scope.selectedRadioFormName].$dirty = false;
 						};
 						
 						scope.propertyDisplay.options = [
