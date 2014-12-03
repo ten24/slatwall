@@ -152,9 +152,11 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 			if(!isNull(getAttributeInputType())) {
 				variables.formFieldType = getAttributeInputType();	
 			}
-			if(listFindNoCase('relatedObjectSelect,typeSelect', variables.formFieldType)) {
+			if(variables.formFieldType eq 'typeSelect') {
 				variables.formFieldType = 'select';
-			} else if (variables.formFieldType == 'relatedObjectMultiselect') {
+			} else if(variables.formFieldType eq 'relatedObjectSelect') {
+				variables.formFieldType = 'listingSelect';
+			} else if (variables.formFieldType eq 'relatedObjectMultiselect') {
 				variables.formFieldType = 'listingMultiselect';	
 			}
 		}

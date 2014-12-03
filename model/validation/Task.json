@@ -1,5 +1,6 @@
 {
 	"properties":{
-		"taskName":			[{"contexts":"save","required":true}]
+		"taskName":			[{"contexts":"save","required":true}],
+		"taskMethod":		[{"contexts":"save","required":true}]
 	}
 }
