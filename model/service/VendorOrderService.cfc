@@ -161,6 +161,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		getStockService().saveStockReceiver( stockReceiver );
 		
+		var closedFlag = true;
+		var partiallyReceivedFlag = false;
+		
+		for(var vendorOrderItem in arguments.vendorOrder.getVendorOrderItems()) {
+			if(vendorOrderItem.getQuantityUnreceived() > 0) {
+				closedFlag = false;
+			}
+			if(vendorOrderItem.getQuantityReceived() > 0) {
+				partiallyReceivedFlag = true;
+			}
+		}
+		// Change the status depending on what value the partiallyReceivedFlag or closedFlag
+		if(closedFlag){
+			arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostClosed") );
+		} else if(partiallyReceivedFlag) {
+			arguments.vendorOrder.setVendorOrderStatusType( getTypeService().getTypeBySystemCode("vostPartiallyReceived") );
+
+		}
+		
+		
 		return arguments.vendorOrder;
 	}
 	
