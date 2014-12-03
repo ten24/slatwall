@@ -600,37 +600,39 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	
 	public void function setAttributeValue( any attributeValue ) {
 		
-		// Set the value
-		variables.attributeValue = arguments.attributeValue;
-		
 		// Attempt to upload file for this value if needed
 		if(!isNull(getAttribute())
 			&& !isNull(getAttribute().getAttributeCode())
 			&& len(getAttribute().getAttributeCode())
 			&& !isNull(getAttribute().getAttributeInputType())
 			&& getAttribute().getAttributeInputType() == 'file') {
-				
-			try {
-		
-				// Get the upload directory for the current property
-				var uploadDirectory = getAttribute().getAttributeValueUploadDirectory();
-	
-				// If the directory where this file is going doesn't exists, then create it
-				if(!directoryExists(uploadDirectory)) {
-					directoryCreate(uploadDirectory);
-				}
-	
-				// Do the upload
-				var uploadData = fileUpload( uploadDirectory, getAttribute().getAttributeCode(), '*', 'makeUnique' );
-				
-				// Update the property with the serverFile name
-				variables.attributeValue =  uploadData.serverFile;
-				
-			} catch(any e) {
-				// Add an error if there were any hard errors during upload
-				this.addError('attributeValue', rbKey('validate.fileUpload'));
-			}
 			
+			// Make sure that a new value was passed in to be set
+			if(structKeyExists(form, getAttribute().getAttributeCode()) && len(form[getAttribute().getAttributeCode()])) {
+				try {
+			
+					// Get the upload directory for the current property
+					var uploadDirectory = getAttribute().getAttributeValueUploadDirectory();
+		
+					// If the directory where this file is going doesn't exists, then create it
+					if(!directoryExists(uploadDirectory)) {
+						directoryCreate(uploadDirectory);
+					}
+		
+					// Do the upload
+					var uploadData = fileUpload( uploadDirectory, getAttribute().getAttributeCode(), '*', 'makeUnique' );
+					
+					// Update the property with the serverFile name
+					variables.attributeValue =  uploadData.serverFile;
+					
+				} catch(any e) {
+					// Add an error if there were any hard errors during upload
+					this.addError('attributeValue', rbKey('validate.fileUpload'));
+				}
+			}
+		} else {
+			// Set the value
+			variables.attributeValue = arguments.attributeValue;
 		}
 		
 		// Encrypt attribute value if needed
