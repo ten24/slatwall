@@ -134,7 +134,7 @@ component extends="HibachiService" accessors="true" {
 			}
 			
 			//If both the newPropertyData and the oldPropertyData are empty, skip these steps.
-			if(!structIsEmpty(propertyChangeData.newPropertyData) && !structIsEmpty(propertyChangeData.oldPropertyData)){
+			if(!structIsEmpty(propertyChangeData.newPropertyData) || !structIsEmpty(propertyChangeData.oldPropertyData)){
 			
 				var auditType = '';
 				var baseObject = getBaseObjectForEntity( arguments.entity );
