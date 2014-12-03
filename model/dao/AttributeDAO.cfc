@@ -70,6 +70,21 @@ Notes:
 				SwAttributeSet.attributeSetObject = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeSetObject#"/>
 		</cfquery>
 		<cfreturn rs />
-	</cffunction> 
+	</cffunction>
+	
+	<cffunction name="removeAttributeOptionFromAllAttributeValues">
+		<cfargument name="attributeOptionID" type="string" required="true" >
+		
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			UPDATE
+				SwAttributeValue
+			SET
+				attributeValueOptionID = null
+			WHERE
+				attributeValueOptionID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeOptionID#" /> 
+		</cfquery>
+	</cffunction>
 	
 </cfcomponent>
