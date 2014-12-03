@@ -131,6 +131,16 @@ component  extends="HibachiService" accessors="true" {
 		return deleteOK;
 	}
 	
+	public boolean function deleteAttributeOption(required any attributeOption) {
+		if(arguments.attributeOption.isDeletable()) {
+			getAttributeDAO().removeAttributeOptionFromAllAttributeValues( arguments.attributeOption.getAttributeOptionID() );
+			
+			return super.delete(arguments.attributeOption);
+		}
+
+		return false;
+	}
+	
 	// ======================  END: Delete Overrides ==========================
 	
 	// ==================== START: Smart List Overrides =======================
