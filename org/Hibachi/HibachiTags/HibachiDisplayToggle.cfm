@@ -4,7 +4,7 @@
 	<cfparam name="attributes.selector" type="string" />
 	<cfparam name="attributes.showValues" type="string" default="1">
 	<cfparam name="attributes.valueAttribute" type="string" default="" />
-	<cfparam name="attributes.loadVisable" type="string" default="false" />
+	<cfparam name="attributes.loadVisable" type="boolean" default="false" />
 	
 	<cfset id = createUUID() />
 	
