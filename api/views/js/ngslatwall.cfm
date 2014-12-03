@@ -863,8 +863,13 @@ Notes:
 		    			for(var key in form){
 			    			if(key.charAt(0) !== '$'){
 			    				var inputField = form[key];
-			    				if(inputField.$valid === true && inputField.$dirty === true){		
-			    					data[key] = form[key].$modelValue;					
+			    				if(inputField.$valid === true && inputField.$dirty === true){	
+			    					if(entityInstance.metaData[key].hb_formfieldtype === 'json'){
+			    						data[key] = angular.toJson(form[key].$modelValue);		
+			    					}else{
+			    						data[key] = form[key].$modelValue;		
+			    					}
+			    								
 								}
 							}
 						}

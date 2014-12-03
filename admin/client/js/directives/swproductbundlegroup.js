@@ -143,12 +143,13 @@ angular.module('slatwalladmin')
 					}else{
 						filterItem.comparisonOperator = '=';
 					}
-					
-					scope.productBundleGroup.productBundleGroupFilters.push(filterItem);
+					console.log(scope.productBundleGroup);
+					console.log(filterItem);
+					scope.productBundleGroup.data.skuCollectionConfig.filterGroups.push(filterItem);
 				};
 				
 				scope.removeProductBundleGroupFilter = function(index){
-					scope.productBundleGroup.productBundleGroupFilters.splice(index,1);
+					scope.productBundleGroup.data.skuCollectionConfig.filterGroups.splice(index,1);
 				};
 				
 				

@@ -119,6 +119,12 @@
     	                            </div>
     	                            <div class="clearfix"></div>
     	    					</div>
+    	    					<sw-property-display
+                                    data-object="productBundleGroup"
+                                    data-property="skuCollectionConfig"
+                                    data-editing="true"
+                                    data-editable="true"
+                                ></sw-property-display>
                             </sw-form>
 	
 	                        <h4>Selections</h4>
@@ -130,15 +136,15 @@
 	                                <!-- Selected filters -->
 	                                <div class="s-bundle-add-items s-workflow-objs">
 	
-	                                    <div class="well well-sm"  ng-show="!productBundleGroup.data.productBundleGroupFilters.length">
+	                                    <div class="well well-sm"  ng-show="!productBundleGroup.data.skuCollectionConfig.filterGroups.length">
 	                                        <ul class="list-unstyled">
 	                                            <li>No items selected <!-- #$.slatwall.rbKey('admin.define.no_items_selected')# --></li>
 	                                            <li>Please add one or more items to this bundle group. <!-- #$.slatwall.rbKey('entity.ProductBundleBuildItem.selectBundleGroup')# --></li>
 	                                        </ul>
 	                                    </div>
-	                                    <ul class="list-unstyled s-order-item-options" ng-show="productBundleGroup.data.productBundleGroupFilters.length">
+	                                    <ul class="list-unstyled s-order-item-options" ng-show="productBundleGroup.data.skuCollectionConfig.filterGroups.length">
 	
-	                                        <li class="s-bundle-add-obj" ng-repeat="productBundleGroupFilter in productBundleGroup.data.productBundleGroupFilters track by $index">
+	                                        <li class="s-bundle-add-obj" ng-repeat="productBundleGroupFilter in productBundleGroup.data.skuCollectionConfig.filterGroups track by $index">
 	                                            <ul class="list-unstyled list-inline">
 	                                                <!-- You can change the s-include to s-exclude for stye diff -->
 	                                                <li class="s-item-type s-tooltip" 

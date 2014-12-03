@@ -100,24 +100,6 @@ angular.module('slatwalladmin')
 					}
 				}
 				angular.extend(productBundleGroup.data,prototype);
-			}
-
-			/*formatProductBundleGroup:function(productBundleGroup){
-				var formattedProductBundleGroup = this.newProductBundle();
-				
-				for(var key in productBundleGroup){
-					formattedProductBundleGroup[key] = productBundleGroup[key];
-				}
-				
-				$log.debug('formattedProductBundleGroup');
-				$log.debug(formattedProductBundleGroup);
-				return formattedProductBundleGroup;
-			},
-			newProductBundle:function(){
-				return new _productBundleGroup;
-			},
-			newProductBundleGroupType:function(productBundleGroupType){
-				return new _productBundleGroupType(productBundleGroupType);
 			},
 			formatProductBundleGroupFilters:function(productBundelGroupFilters,filterTerm){
 				$log.debug('formatProductBundleGroupFilters');
@@ -136,7 +118,8 @@ angular.module('slatwalladmin')
 				
 				$log.debug(productBundelGroupFilters);
 				return productBundelGroupFilters;
-			}*/
+			}
+		
 		};
 		
 		return productBundleService;

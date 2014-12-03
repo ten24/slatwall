@@ -34,6 +34,9 @@ angular.module('slatwalladmin')
 				case 'number':
 					templatePath = partialsPath + 'formfields/number.html';
 					break;
+				case 'json':
+					templatePath = partialsPath + 'formfields/json.html';
+					break;
 			};
 			
 			var templateLoader = $http.get(templatePath,{cache:$templateCache});
