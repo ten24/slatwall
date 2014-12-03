@@ -83,10 +83,11 @@ component displayname="Task" entityname="SlatwallTask" table="SwTask" persistent
 	
 	public array function getTaskMethodOptions() {
 		return [
-			{name="#rbKey('entity.task.taskMethod.customURL')#", value="customURL"},
-			{name="#rbKey('entity.task.taskMethod.subscriptionUsageRenew')#", value="subscriptionUsageRenew"},
-			{name="#rbKey('entity.task.taskMethod.subscriptionUsageRenewalReminder')#", value="subscriptionUsageRenewalReminder"},
-			{name="#rbKey('entity.task.taskMethod.updateCalculatedProperties')#", value="updateCalculatedProperties"}
+			{name=rbKey('define.select'), value=""},
+			{name=rbKey('entity.task.taskMethod.customURL'), value="customURL"},
+			{name=rbKey('entity.task.taskMethod.subscriptionUsageRenew'), value="subscriptionUsageRenew"},
+			{name=rbKey('entity.task.taskMethod.subscriptionUsageRenewalReminder'), value="subscriptionUsageRenewalReminder"},
+			{name=rbKey('entity.task.taskMethod.updateCalculatedProperties'), value="updateCalculatedProperties"}
 		];
 	}
 	

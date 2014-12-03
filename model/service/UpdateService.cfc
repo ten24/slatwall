@@ -62,8 +62,13 @@ Notes:
 			<cfset var deleteDestinationContentExclusionList = "/integrationServices,/config/custom" />
 			<cfset var copyContentExclusionList = "" />
 			
+			<!--- If the meta directory exists, and it hasn't been dismissed then we want to delete without user action --->
+			<cfif getMetaFolderExistsWithoutDismissalFlag()>
+				<cfset removeMeta() />
+			</cfif>
+			
 			<!--- if the meta directory doesn't exist, add it tothe exclusion list--->
-			<cfif !checkForMetaFolderExists()>
+			<cfif !getMetaFolderExistsFlag()>
 				<cfset copyContentExclusionList = "meta" />
 			</cfif>
 			
@@ -147,7 +152,7 @@ Notes:
 		<cfreturn versions />
 	</cffunction>
 	
-	<cffunction name='checkForMetaFolderWithoutDismissal'>
+	<cffunction name='getMetaFolderExistsWithoutDismissalFlag'>
 		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) && !fileExists( expandPath('/Slatwall/custom/config/metaDismiss.txt.cfm') ) />
 	</cffunction>
 	
@@ -159,7 +164,7 @@ Notes:
 		<cfset fileWrite( expandPath('/Slatwall/custom/config') & '/metaDismiss.txt.cfm', now() ) />
 	</cffunction>
 	
-	<cffunction name="checkForMetaFolderExists">
+	<cffunction name="getMetaFolderExistsFlag">
 		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) >
 	</cffunction>
 	

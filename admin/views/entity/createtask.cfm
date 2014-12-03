@@ -68,7 +68,7 @@ Notes:
 							<cfset tmoProcessObject = rc.task.getProcessObject( tmo.value ) />
 							<cfloop array="#tmoProcessObject.getProperties()#" index="property">
 								<cfif structKeyExists(property, "sw_taskConfig") and property.sw_taskConfig>
-									<hb:HibachiPropertyDisplay object="#tmoProcessObject#" property="#property.name#" edit="#rc.edit#">
+									<hb:HibachiPropertyDisplay object="#tmoProcessObject#" fieldName="taskConfig.#property.name#" property="#property.name#" edit="#rc.edit#">
 								</cfif>
 							</cfloop>
 						</hb:HibachiDisplayToggle>

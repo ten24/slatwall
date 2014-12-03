@@ -49,7 +49,7 @@
 					<dt class="title<cfif len(attributes.titleClass)> #attributes.titleClass#</cfif>">#attributes.title#<cfif len(attributes.hint)> <a href="##" tabindex="-1" data-toggle="tooltip" class="hint" data-title="#attributes.hint#"><i class="icon-question-sign"></i></a></cfif></dt>
 					
 					<cfif attributes.fieldType eq "listingMultiselect">
-						<dd class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></hb:HibachiListingDisplay></dd>
+						<dd class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectValues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="false"></hb:HibachiListingDisplay></dd>
 					<cfelse>
 						<cfif attributes.valueLink neq "">
 							<dd class="value<cfif len(attributes.valueClass)> #attributes.valueClass#</cfif>"><a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a></dd>

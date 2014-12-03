@@ -104,7 +104,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.productReviewSmartList.addFilter("activeFlag", 0);
 		rc.productReviewSmartList.setPageRecordsShow(10);
 		
-		if(getUpdateService().checkForMetaFolderWithoutDismissal()) {
+		if(getUpdateService().getMetaFolderExistsWithoutDismissalFlag()) {
 			rc.$.slatwall.showMessageKey( 'admin.metaexists_error' );
 		}
 	}
