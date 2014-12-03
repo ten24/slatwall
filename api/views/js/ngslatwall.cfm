@@ -718,7 +718,7 @@ Notes:
 			    		var context = 'save';
 			    		
 			    		
-			    		var savePromise = slatwallService.saveEntity(entityName,null,params,context);
+			    		var savePromise = slatwallService.saveEntity(entityName,entityInstance.$$getID(),params,context);
 			    		savePromise.then(function(response){
 			    			var returnedIDs = response.data;
 			    			<!--- TODO: restet form --->
@@ -824,7 +824,7 @@ Notes:
 						return data;
 			    	}
 			    	
-			    	var processChild = function(entityInstance){
+			    	var processChild = function(entityInstance,entityInstanceParent){
 			    		var data = {};
 			    		var forms = entityInstance.forms;
 						for(var f in forms){
@@ -839,7 +839,7 @@ Notes:
 						}
 						if(angular.isDefined(entityInstance.parents) && entityInstance.parents.length){
 							<!--- loop through children --->
-							var parentData = getDataFromParents(entityInstance);
+							var parentData = getDataFromParents(entityInstance,entityInstanceParent);
 							angular.extend(data,parentData);
 						}
 						
@@ -872,7 +872,7 @@ Notes:
 						return data;
 		    		}
 
-		    		var getDataFromParents = function(entityInstance){
+		    		var getDataFromParents = function(entityInstance,entityInstanceParent){
 						var data = {};
 						<!--- loop through all children --->
 						for(var c in entityInstance.parents){
@@ -882,7 +882,7 @@ Notes:
 								var parent = entityInstance.data[parentMetaData.name];
 							
 								var parent = entityInstance.data[parentMetaData.name];
-								if(angular.isObject(parent) && parent.$$getID() !== '') {
+								if(angular.isObject(parent) && entityInstanceParent !== parent && parent.$$getID() !== '') {
 									if(angular.isUndefined(data[parentMetaData.name])){
 										data[parentMetaData.name] = {};
 									}
@@ -914,7 +914,7 @@ Notes:
 								console.log('foreach');
 									console.log(key);
 									console.log(child);
-									var childData = processChild(child);
+									var childData = processChild(child,entityInstance);
 									data[childMetaData.name].push(childData);
 								});
 							}else{
@@ -922,46 +922,13 @@ Notes:
 									data[childMetaData.name] = {};
 								}
 								var child = entityInstance.data[childMetaData.name];
-								var childData = processChild(child);
+								var childData = processChild(child,entityInstance);
 								angular.extend(data,childData);
 							}
 							 
 						}
 						return data;
 			    	}
-			    	
-			    	<!--- var getChildInfo = function(forms){
-			    		var data = {}
-			    		<!--- loop over all forms --->
-						for(var f in forms){
-			    			var form = forms[f];
-			    			console.log('form');
-			    			console.log(form);
-				    		for(var key in form){
-				    			if(key.charAt(0) !== '$'){
-				    				var inputField = form[key];
-				    				if(inputField.$valid === true && inputField.$dirty === true){
-				    					<!--- set modifiedData --->
-			    						if(angular.isUndefined(data[child.name])){
-											data[child.name] = {};
-										}
-			    						data[child.name][key] = form[key].$modelValue;
-				    					
-				    				}
-				    			}
-				    		}
-						}
-						return data;
-						console.log('object');
-						console.log(object);
-
-						<!---if(angular.isDefined(object.children)){
-							var parentData = getDataFromChildren(object,path);
-							console.log('parentData');
-							console.log(parentData);
-							angular.extend(data,parentData);
-						}--->
-			    	} --->
 			    	
 			    	var getModifiedDataByInstance = function(entityInstance){
 			    		var modifiedData = {};
