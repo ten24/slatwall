@@ -1118,7 +1118,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			optionsList = listAppend(optionsList, getOptions()[i].getOptionID());
 		}
 		
-		if(isNull(getProduct()) || !len(optionsList)) {
+		if(isNull(getProduct()) || getProduct().getNewFlag()) {
 			return true;
 		}
 		var skus = getProduct().getSkusBySelectedOptions(selectedOptions=optionsList);
