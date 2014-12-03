@@ -126,7 +126,6 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		};
 		
 		$scope.transformProductBundleGroupFilters = function(){
-			
 			for(var i in $scope.product.defaultSku.productBundleGroups){
 				if(angular.isUndefined($scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig)){
 					$scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig.filterGroups = [];
@@ -243,11 +242,22 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		
 		var isProductBundleGroupsValid = function(){
 			var isValid = true;
+			$log.debug($scope.product.price);
 			if(!$scope.product.defaultSku.productBundleGroups.length){
 				$log.debug('hasnogroup');
 				var alert = {
 						dismissable: false,
 						msg: $slatwall.rbKey('validate.define.bundleGroupRequired'),
+						type: "error",
+						};
+
+				alertService.addAlert(alert);
+				isValid = false;
+			} else if(isNaN($scope.product.defaultSku.price)) {
+				$log.debug('Price Must Be Numeric');
+				var alert = {
+						dismissable: false,
+						msg: $slatwall.rbKey('validate.define.pricemustbenumeric'),
 						type: "error",
 						};
 

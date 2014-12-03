@@ -846,7 +846,7 @@ function setupEventHandlers() {
 	});
 
 	//Initiate SelectBoxIt on select boxes
-	$("select").selectBoxIt();
+	$("select.j-custom-select").selectBoxIt();
 
 	//Toggles the defualt toggle buttons
 	jQuery('body').on('click', '.s-btn-toggle', function(e){

@@ -100,7 +100,7 @@
 					<!--- DateTime Selector --->
 					<div class="pull-right" style="margin-right:10px;">
 						<div style="margin-bottom:5px;">
-							<select name="reportDateTime" class="hibachi-report-date form-control" style="width:192px;margin-bottom:15px;">
+							<select name="reportDateTime" class="hibachi-report-date form-control j-custom-select" style="width:192px;margin-bottom:15px;">
 								<cfloop array="#attributes.report.getReportDateTimeDefinitions()#" index="dateTimeAlias">
 									<option value="#dateTimeAlias['alias']#" <cfif dateTimeAlias['alias'] eq attributes.report.getReportDateTime()>selected="selected"</cfif>>#attributes.report.getReportDateTimeTitle(dateTimeAlias['alias'])#</option>
 								</cfloop>
