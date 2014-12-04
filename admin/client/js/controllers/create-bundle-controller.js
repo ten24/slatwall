@@ -44,16 +44,12 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		$scope.productBundleGroup;
 		
 		if(angular.isDefined(productID)){
-			console.log('product');
-			console.log(productID);
 			var productPromise = $slatwall.getProduct({id:productID});
 			
 			productPromise.promise.then(function(){
 				productPromise.value.$$getSkus().then(function(){
 					productPromise.value.data.skus[0].$$getProductBundleGroups().then(function(){
 						$scope.product = productPromise.value;
-						console.log('product');
-						console.log($scope.product);
 					});
 				});
 			});
@@ -67,7 +63,6 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 			$scope.product.$$setProductType(productType);
 			$scope.product.$$addSku();
 			$scope.product.data.skus[0].data.productBundleGroups = [];
-			console.log($scope.product);
 		}
 
 		$scope.saveProductBundle = function(closeDialogIndex){

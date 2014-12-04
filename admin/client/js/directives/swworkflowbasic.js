@@ -19,7 +19,6 @@ angular.module('slatwalladmin')
 			},
 			templateUrl:workflowPartialsPath+"workflowbasic.html",
 			link: function(scope, element,attrs){
-				console.log(scope.workflow);
 			}
 		};
 	}

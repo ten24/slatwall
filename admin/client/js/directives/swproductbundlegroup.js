@@ -143,8 +143,6 @@ angular.module('slatwalladmin')
 					}else{
 						filterItem.comparisonOperator = '=';
 					}
-					console.log(scope.productBundleGroup);
-					console.log(filterItem);
 					scope.productBundleGroup.data.skuCollectionConfig.filterGroups.push(filterItem);
 				};
 				

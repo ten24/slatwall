@@ -24,7 +24,6 @@ angular.module('slatwalladmin')
 					
 				scope.getWorkflowTriggers = function(){
 					scope.workflowTriggers = scope.workflow.$$getWorkflowTriggers();
-					console.log(scope.workflow);
 				};
 				
 				scope.getWorkflowTriggers();

@@ -50,8 +50,6 @@ angular.module('slatwalladmin')
 					productBundleGroupType.data.typeNameCode='';
 					angular.extend($scope.productBundleGroup.data.productBundleGroupType,productBundleGroup);
 
-					console.log('productBundleGroupType.data.typeName');
-					console.log($scope.productBundleGroup.data.productBundleGroupType);
 				};
 				
 				$scope.showAddProductBundleGroupTypeBtn = false;
@@ -94,9 +92,6 @@ angular.module('slatwalladmin')
 						}
 						
 						for(var i in $scope.productBundleGroupTypes.value){
-							console.log('test');
-							console.log($scope.productBundleGroup);
-							console.log($scope.productBundleGroupTypes);
 							if($scope.productBundleGroupTypes.value[i].typeCode === $scope.productBundleGroup.data.productBundleGroupType.data.typeCode){
 								$scope.showAddProductBundleGroupTypeBtn = false;
 							}
@@ -106,14 +101,9 @@ angular.module('slatwalladmin')
 				};
 				
 				$scope.selectProductBundleGroupType = function ($item, $model, $label) {
-					console.log('select');
 				    $scope.$item = $item;
 				    $scope.$model = $model;
 				    $scope.$label = $label;
-				    console.log('item');
-				    console.log($item);
-				    console.log($model);
-				    console.log($label);
 				 
 					angular.extend($scope.productBundleGroup.data.productBundleGroupType.data,$item);
 					var parentType = $slatwall.newType();
