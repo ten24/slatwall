@@ -7,6 +7,9 @@
 <cfoutput>
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList divClass="col-md-6">
+			<cfif !rc.orderFulfillment.isNew()>
+ 				<hb:HibachiPropertyDisplay object="#rc.orderFulfillment#" property="orderFulfillmentStatusType">
+			</cfif>
 			
 			<!--- Email --->
 			<cfif rc.orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
