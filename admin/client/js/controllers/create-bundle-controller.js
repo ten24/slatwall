@@ -43,7 +43,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		
 		$scope.productBundleGroup;
 		
-		if(angular.isDefined(productID)){
+		if(angular.isDefined(productID) && productID !== ''){
 			var productPromise = $slatwall.getProduct({id:productID});
 			
 			productPromise.promise.then(function(){
