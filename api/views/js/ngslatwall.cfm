@@ -988,7 +988,10 @@ Notes:
 									<!--- Set the values to the values in the data passed in, or API promisses, excluding methods because they are prefaced with $ --->
 									entityInstance.$$init(response);
 								});
-								return entityInstance
+								return {
+									promise:entityDataPromise,
+									value:entityInstance	
+								}
 							}
 							
 							slatwallService.new#local.entity.getClassName()# = function(){
@@ -1187,7 +1190,17 @@ Notes:
 															allRecords:true
 														};
 														
-														var collection = (function(thisEntityInstance,options){
+														var collectionPromise = slatwallService.getEntity('#local.entity.getClassName()#',options);
+														collectionPromise.then(function(response){
+															for(var i in response.records){
+																var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
+																entityInstance.$$init(response.records[i]);
+																collection=entityInstance;
+															}
+														});
+														return collectionPromise;
+														
+														<!---var collection = (function(thisEntityInstance,options){
 															var collection = {};
 															var collectionPromise = slatwallService.getEntity('#local.entity.getClassName()#',options);
 															collectionPromise.then(function(response){
@@ -1200,7 +1213,7 @@ Notes:
 															return collection;
 														})(this,options);
 														
-														return collection;
+														return collection;--->
 													}
 													
 													return null;
@@ -1294,7 +1307,8 @@ Notes:
 															filterGroupsConfig:angular.toJson([{
 																"filterGroup":[
 																	{
-																		"propertyIdentifier":"_#lcase(local.property.cfc)#.#ReReplace(local.entity.getClassName(),"\b(\w)","\l\1","ALL")#.#ReReplace(local.entity.getClassName(),"\b(\w)","\l\1","ALL")#ID",
+																		
+																		"propertyIdentifier":"_#lcase(local.property.cfc)#.#Replace(ReReplace(local.property.fkcolumn,"\b(\w)","\l\1","ALL"),'ID','')#.#ReReplace(local.entity.getClassName(),"\b(\w)","\l\1","ALL")#ID",
 																		"comparisonOperator":"=",
 																		"value":this.$$get#local.entity.getClassName()#ID()
 																	}
