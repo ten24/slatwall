@@ -123,7 +123,7 @@ component extends="HibachiService" output="false" accessors="true"{
 			threadData.taskData = deserializeJSON(arguments.task.getTaskConfig());
 		}
 		
-		thread action="run" name="taskThread" threadData="#threadData#" {
+		thread action="run" name="taskThread-#createUUID()#" threadData="#threadData#" {
 			
 			// Create a new taskHistory to be logged
 			var taskHistory = this.newTaskHistory();
