@@ -420,7 +420,13 @@ Notes:
 			    	var _init = function(entityInstance,data){
 						for(var key in data) {
 							if(key.charAt(0) !== '$'){
-								entityInstance.data[key] = data[key];
+								console.log(entityInstance.metaData);
+								console.log(key);
+								if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
+									entityInstance.data[key] = angular.fromJson(data[key]);
+		    					}else{
+		    						entityInstance.data[key] = data[key];	
+		    					}
 							}
 						}
 					}
@@ -1003,11 +1009,15 @@ Notes:
 								this.validations = #serializeJSON($.slatwall.getService('hibachiValidationService').getValidationStruct(local.entity))#;
 								
 								this.metaData = #serializeJSON(local.entity.getPropertiesStruct())#;
+								
 								this.metaData.className = '#local.entity.getClassName()#';
+								 
 								
 								this.metaData.$$getRBKey = function(rbKey,replaceStringData){
 									return slatwallService.rbKey(rbKey,replaceStringData);
 								};
+								
+								
 								<!---// @hint public method for getting the title to be used for a property from the rbFactory, this is used a lot by the HibachiPropertyDisplay --->
 								this.metaData.$$getPropertyTitle = function(propertyName){
 									return _getPropertyTitle(propertyName,this);
@@ -1231,7 +1241,6 @@ Notes:
 														if(angular.isUndefined(entityInstance.children)){
 															entityInstance.children = [];
 														}
-													
 														
 														var child = entityInstance.metaData[manyToManyName];;
 														
