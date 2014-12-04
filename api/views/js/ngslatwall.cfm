@@ -1165,6 +1165,7 @@ Notes:
 												}--->
 												<!---get many-to-one  via REST--->
 												,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
+													var thisEntityInstance = this;
 													if(angular.isDefined(this.$$get#local.entity.getClassName()#ID())){
 														var options = {
 															columnsConfig:angular.toJson([
@@ -1181,7 +1182,7 @@ Notes:
 															filterGroupsConfig:angular.toJson([{
 																"filterGroup":[
 																	{
-																		"propertyIdentifier":"_#lcase(local.entity.getClassName())#.#lcase(local.entity.getClassName())#ID",
+																		"propertyIdentifier":"_#lcase(local.entity.getClassName())#.#ReReplace(local.entity.getClassName(),"\b(\w)","\l\1","ALL")#ID",
 																		"comparisonOperator":"=",
 																		"value":this.$$get#local.entity.getClassName()#ID()
 																	}
@@ -1194,26 +1195,14 @@ Notes:
 														collectionPromise.then(function(response){
 															for(var i in response.records){
 																var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
-																entityInstance.$$init(response.records[i]);
-																collection=entityInstance;
+																entityInstance.$$init(response.records[i]._#lcase(local.entity.getClassName())#_#local.property.name#[0]);
+																thisEntityInstance.$$set#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#(entityInstance);
+																//thisEntityInstance.data['#local.property.name#'] = entityInstance;
+																
 															}
 														});
 														return collectionPromise;
 														
-														<!---var collection = (function(thisEntityInstance,options){
-															var collection = {};
-															var collectionPromise = slatwallService.getEntity('#local.entity.getClassName()#',options);
-															collectionPromise.then(function(response){
-																for(var i in response.records){
-																	var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
-																	entityInstance.$$init(response.records[i]);
-																	collection=entityInstance;
-																}
-															});
-															return collection;
-														})(this,options);
-														
-														return collection;--->
 													}
 													
 													return null;
@@ -1236,21 +1225,25 @@ Notes:
 													}
 														
 													thisEntityInstance.parents.push(thisEntityInstance.metaData['#local.property.name#']);
-
-													if(angular.isUndefined(entityInstance.children)){
-														entityInstance.children = [];
-													}
 													
-													var child = entityInstance.metaData[manyToManyName];;
+													<!---only set the property if we can actually find a related property --->
+													if(angular.isDefined(manyToManyName)){
+														if(angular.isUndefined(entityInstance.children)){
+															entityInstance.children = [];
+														}
 													
-													if(entityInstance.children.indexOf(child) === -1){
-														entityInstance.children.push(child);
+														
+														var child = entityInstance.metaData[manyToManyName];;
+														
+														if(entityInstance.children.indexOf(child) === -1){
+															entityInstance.children.push(child);
+														}
+														
+														if(angular.isUndefined(entityInstance.data[manyToManyName])){
+															entityInstance.data[manyToManyName] = [];
+														}
+														entityInstance.data[manyToManyName].push(thisEntityInstance);
 													}
-													
-													if(angular.isUndefined(entityInstance.data[manyToManyName])){
-														entityInstance.data[manyToManyName] = [];
-													}
-													entityInstance.data[manyToManyName].push(thisEntityInstance);
 
 													thisEntityInstance.data['#local.property.name#'] = entityInstance;
 
