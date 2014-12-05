@@ -53,8 +53,12 @@
 	</cffunction>
 	
 	<cffunction name="reencryptData" returntype="void" access="public">
+		<cfargument name="batchSizeLimit" default="" />
 		<cfscript>
-		super.reencryptData();
+		super.reencryptData(argumentCollection=arguments);
+		
+		var batchSizeLimitFlag = isNumeric(arguments.batchSizeLimit) && arguments.batchSizeLimit > 0;
+		var batchSizeLimitReachedFlag = false;
 		
 		var latestEncryptionDateTime = getService('hibachiUtilityService').getEncryptionPasswordArray()[1].createdDateTime;
 		var entitiesMetaData = getService('hibachiService').getEntitiesMetaData();
@@ -73,7 +77,6 @@
 			if ((structKeyExists(entityObject, 'getEncryptedPropertiesExistFlag') && entityObject.getEncryptedPropertiesExistFlag()) || entityName == 'Setting') {
 				
 				// Determine relevant fields and generate where clause for select statement
-				var fieldNames = [entityObject.getPrimaryIDPropertyName()];
 				var encryptedProperties = [];
 				var whereClause = "";
 				var mapClause = "#entityAlias#.#entityObject.getPrimaryIDPropertyName()# as #entityObject.getPrimaryIDPropertyName()#";
@@ -86,34 +89,34 @@
 				// Add any encrypted properties to the select statement for retrieval
 				for (var encryptedPropertyName in encyptedPropertiesStruct) {
 					arrayAppend(encryptedProperties, encryptedPropertyName);
-					arrayAppend(fieldNames, encryptedPropertyName);
-					if (entityName == 'Setting' && encryptedPropertyName == 'settingValue') {
-						arrayAppend(fieldNames, '#encryptedPropertyName#EncryptedDateTime');
-						arrayAppend(fieldNames, '#encryptedPropertyName#EncryptedGenerator');
-					} else {
-						arrayAppend(fieldNames, '#encryptedPropertyName#DateTime');
-						arrayAppend(fieldNames, '#encryptedPropertyName#Generator');
-					}
 					
 					if (len(whereClause)) {
-						whereClause &= "or ";
+						whereClause &= " or ";
+					}
+					
+					// Convention is to add 'DateTime' or 'Generator' to encrypted property name
+					var encryptedDateTimePropertyName = '#encryptedPropertyName#DateTime';
+					var encryptedGeneratorPropertyName = '#encryptedPropertyName#Generator';
+					
+					// Handle Setting entity because it does not adhere to naming convention
+					if (entityName == 'Setting' && encryptedPropertyName == 'settingValue') {
+						encryptedDateTimePropertyName = '#encryptedPropertyName#EncryptedDateTime';
+						encryptedGeneratorPropertyName = '#encryptedPropertyName#EncryptedGenerator';
 					}
 					
 					mapClause &= ', #entityAlias#.#encryptedPropertyName# as #encryptedPropertyName#';
+					mapClause &= ', #entityAlias#.#encryptedDateTimePropertyName# as #encryptedDateTimePropertyName#';
+					mapClause &= ', #entityAlias#.#encryptedGeneratorPropertyName# as #encryptedGeneratorPropertyName#';
 					
-					// Override behavior for Setting entity because it does not adhere to conventions
+					// Interested only in reencrypting the outdated encrypted records
+					whereClause &= '(#entityAlias#.#encryptedDateTimePropertyName# < :latestEncryptionDateTime';
+					
+					// Add additional where condition for Setting entity to determine whether value is encrypted or not
 					if (entityName == 'Setting' && encryptedPropertyName == 'settingValue') {
-						mapClause &= ', #entityAlias#.#encryptedPropertyName#EncryptedDateTime as #encryptedPropertyName#EncryptedDateTime';
-						mapClause &= ', #entityAlias#.#encryptedPropertyName#EncryptedGenerator as #encryptedPropertyName#EncryptedGenerator';
-						//whereClause &= '#entityAlias#.#encryptedPropertyName#EncryptedDateTime < :latestEncryptionDateTime';
-						whereClause &= '#entityAlias#.#encryptedPropertyName#EncryptedDateTime < :latestEncryptionDateTime and #entityAlias#.#encryptedPropertyName#EncryptedGenerator is not null';
-					} else {
-						mapClause &= ', #entityAlias#.#encryptedPropertyName#DateTime as #encryptedPropertyName#DateTime';
-						mapClause &= ', #entityAlias#.#encryptedPropertyName#Generator as #encryptedPropertyName#Generator';
-						
-						// Interested only in reencrypting the outdated encrypted records
-						whereClause &= '#entityAlias#.#encryptedPropertyName#DateTime < :latestEncryptionDateTime ';
+						whereClause &= ' and #entityAlias#.#encryptedGeneratorPropertyName# is not null';
 					}
+					
+					whereClause &= ')';
 				}
 				
 				// Build HQL statement
@@ -122,10 +125,11 @@
 					reencryptionMetaData['#entityName#'] = {
 						'entityObject' = entityObject,
 						'entityAlias' = entityAlias,
-						'fieldNames' = fieldNames,
 						'encryptedProperties' = encryptedProperties,
 						'selectStatement' = selectStatement
 					};
+					logHibachi(latestEncryptionDateTime);
+					logHibachi(selectStatement);
 				}
 			}
 		}
@@ -134,8 +138,13 @@
 		for (var entityName in reencryptionMetaData) {
 			var rmd = reencryptionMetaData[entityName];
 			
-			// Execute sql statement to retrieve data
-			var records = ormExecuteQuery(rmd.selectStatement, {latestEncryptionDateTime=latestEncryptionDateTime});
+			// Execute sql select statement to retrieve data
+			var queryOptions = {};
+			if (batchSizeLimitFlag) {
+				queryOptions.maxResults = batchSizeLimit;
+			}
+			
+			var records = ormExecuteQuery(rmd.selectStatement, {latestEncryptionDateTime=latestEncryptionDateTime}, false, queryOptions);
 			
 			for (var record in records) {
 				var updateSetColumnClause = '';
@@ -166,7 +175,18 @@
 				
 				if (len(updateSetColumnClause)) {
 					// Build update statement
-					arrayAppend(updateStatements, "update #rmd.entityObject.getEntityName()# as #rmd.entityAlias# set #updateSetColumnClause# where #rmd.entityObject.getPrimaryIDPropertyName()#='#record[rmd.entityObject.getPrimaryIDPropertyName()]#'");
+					arrayAppend(updateStatements, "update #rmd.entityObject.getEntityName()# as #rmd.entityAlias# set #updateSetColumnClause# where #rmd.entityObject.getPrimaryIDPropertyName()#='#record[rmd.entityObject.getPrimaryIDPropertyName()]#' and #rmd.entityAlias#.#generatorKey#='#record[generatorKey]#'");
+				}
+			}
+			
+			// Decrement to fetch the batch size remaining
+			if (batchSizeLimitFlag) {
+				batchSizeLimit -= arraylen(records);
+				
+				// Batch size limit reached, stop generating sql statements
+				if (batchSizeLimit <= 0) {
+					batchSizeLimitReachedFlag = true;
+					break;
 				}
 			}
 		}
@@ -180,6 +200,7 @@
 		for (var hqlStatement in updateStatements) {
 			ormExecuteQuery(hqlStatement, {nowDateTime=now()});
 		}
+		
 		</cfscript>
 	</cffunction>
 	
