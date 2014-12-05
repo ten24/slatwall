@@ -58,7 +58,7 @@ Notes:
 			
 		<!--- Create ---> 
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller action="admin:entity.createroundingrule" entity="roundingrule" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
+			<hb:HibachiActionCaller action="admin:entity.createroundingrule" entity="roundingrule" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	

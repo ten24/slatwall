@@ -58,7 +58,7 @@ Notes:
 			
 		<!--- Create ---> 
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller action="admin:entity.createschedule" entity="schedule" class="btn s-btn-blue" icon="plus icon-white" />
+			<hb:HibachiActionCaller action="admin:entity.createschedule" entity="schedule" class="btn btn-primary" icon="plus icon-white" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 

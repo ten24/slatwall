@@ -58,7 +58,7 @@
 					<div class="modal-footer">
 						<cfif attributes.edit>
 							<div class="btn-group">
-								<button href="##" class="btn s-btn-grey" data-dismiss="modal"><i class="icon-remove icon-white"></i> #attributes.hibachiScope.rbKey('define.cancel')#</button>
+								<button href="##" class="btn btn-default" data-dismiss="modal"><i class="icon-remove icon-white"></i> #attributes.hibachiScope.rbKey('define.cancel')#</button>
 								<button type="submit" class="btn btn-success"><i class="icon-ok icon-white"></i> #attributes.hibachiScope.rbKey('define.save')#</button>
 							</div>
 						</cfif>
