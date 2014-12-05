@@ -410,7 +410,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public void function setReferencedOrderItem(required any referencedOrderItem) {
 		variables.referencedOrderItem = arguments.referencedOrderItem;
 		if(isNew() or !arguments.referencedOrderItem.hasReferencingOrderItems( this )) {
-			arrayAppend(arguments.referencedOrderItem.getReferencingOrderItem(), this);
+			arrayAppend(arguments.referencedOrderItem.getReferencingOrderItems(), this);
 		}
 	}
 	public void function removeReferencedOrderItem(any referencedOrderItem) {
