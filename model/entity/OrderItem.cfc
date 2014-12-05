@@ -417,9 +417,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		if(!structKeyExists(arguments, "referencedOrderItem")) {
 			arguments.referencedOrderItem = variables.referencedOrderItem;
 		}
-		var index = arrayFind(arguments.referencedOrderItem.getReferencingOrderItem(), this);
+		var index = arrayFind(arguments.referencedOrderItem.getReferencingOrderItems(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.referencedOrderItem.getReferencingOrderItem(), index);
+			arrayDeleteAt(arguments.referencedOrderItem.getReferencingOrderItems(), index);
 		}
 		structDelete(variables, "referencedOrderItem");
 	}
