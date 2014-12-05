@@ -422,6 +422,7 @@ Notes:
 							if(key.charAt(0) !== '$'){
 								console.log(entityInstance.metaData);
 								console.log(key);
+								console.log(data[key])
 								if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
 									entityInstance.data[key] = angular.fromJson(data[key]);
 		    					}else{
@@ -783,7 +784,11 @@ Notes:
 				    				var inputField = form[key];
 				    				if(inputField.$valid === true && inputField.$dirty === true){
 				    					<!--- set modifiedData --->
-			    						modifiedData[key] = form[key].$modelValue;
+				    					if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
+				    						modifiedData[key] = angular.toJson(form[key].$modelValue);		
+				    					}else{
+				    						modifiedData[key] = form[key].$modelValue;
+				    					}
 				    				}
 				    			}
 				    		}
@@ -805,7 +810,11 @@ Notes:
 						    				var inputField = form[key];
 						    				if(inputField.$valid === true && inputField.$dirty === true){
 						    					<!--- set modifiedData --->
-					    						modifiedData[parentObject.name][key] = form[key].$modelValue;
+						    					if(angular.isDefined(parentInstance.metaData[key]) && angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) && parentInstance.metaData[key].hb_formfieldtype === 'json'){
+						    						modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);		
+						    					}else{
+						    						modifiedData[parentObject.name][key] = form[key].$modelValue;
+						    					}
 						    				}
 						    			}
 						    		}
