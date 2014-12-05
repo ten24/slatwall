@@ -702,7 +702,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		return getPaymentMethod().getPaymentMethodName() & ' - ' & getFormattedValue('amount');
 	}
 	
-	public any function setBillingAccountAddress( required any accountAddress ) {
+	public any function setBillingAccountAddress( any accountAddress ) {
 		if(isNull(arguments.accountAddress)) {
 			structDelete(variables, "billingAccountAddress");
 		} else {

@@ -485,7 +485,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return rep;
 	}
 	
-	public any function setAccountAddress( required any accountAddress ) {
+	public any function setAccountAddress( any accountAddress ) {
 		if(isNull(arguments.accountAddress)) {
 			structDelete(variables, "accountAddress");
 		} else {
