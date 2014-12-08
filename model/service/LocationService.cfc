@@ -140,7 +140,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getHibachiDAO().flushORMSession();
 			
 			// If this location has any stocks then we need to update them
-			if( arrayLen(arguments.location.getStocks()) ) {
+			if( arrayLen(arguments.location.getStocks()) && !isNull(arguments.location.getParentLocation()) ) {
 				updateStockLocation( fromLocationID=arguments.location.getParentLocation().getlocationID(), toLocationID=arguments.location.getlocationID());
 			}
 		} 
