@@ -61,7 +61,7 @@ Notes:
 						   recordEditAction="admin:entity.editcontent">
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="title" />
 	<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
-	<hb:HibachiListingColumn propertyIdentifier="contentTemplateType.type" />
+	<hb:HibachiListingColumn propertyIdentifier="contentTemplateType.typeName" />
 	<hb:HibachiListingColumn propertyIdentifier="allowPurchaseFlag" />
 	<hb:HibachiListingColumn propertyIdentifier="productListingPageFlag" />
 	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />

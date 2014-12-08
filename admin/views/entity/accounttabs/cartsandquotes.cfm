@@ -58,7 +58,7 @@ Notes:
 						  recordEditAction="admin:entity.editorder">
 
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.fullName" />
-	<hb:HibachiListingColumn propertyIdentifier="orderStatusType.type" />
+	<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" />
 	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 	<hb:HibachiListingColumn propertyIdentifier="modifiedDateTime" />
 	<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />

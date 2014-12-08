@@ -68,7 +68,7 @@ Notes:
 									  edit="#rc.edit#">
 
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="emailAddress" />
-				<hb:HibachiListingColumn propertyIdentifier="accountEmailType.type" />
+				<hb:HibachiListingColumn propertyIdentifier="accountEmailType.typeName" />
 				<hb:HibachiListingColumn propertyIdentifier="verifiedFlag" />
 			</hb:HibachiListingDisplay>
 			<hb:HibachiActionCaller action="admin:entity.createaccountemailaddress" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true />
@@ -88,7 +88,7 @@ Notes:
 									  edit="#rc.edit#">
 
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="phoneNumber" />
-				<hb:HibachiListingColumn propertyIdentifier="accountPhoneType.type" />
+				<hb:HibachiListingColumn propertyIdentifier="accountPhoneType.typeName" />
 
 			</hb:HibachiListingDisplay>
 

@@ -61,7 +61,7 @@ Notes:
 			<!--- Email Addresses --->
 			<hb:HibachiListingDisplay title="#$.slatwall.rbKey('entity.accountEmailAddress_plural')#" smartList="#rc.order.getAccount().getAccountEmailAddressesSmartList()#">
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="emailAddress" />
-				<hb:HibachiListingColumn propertyIdentifier="accountEmailType.type" />
+				<hb:HibachiListingColumn propertyIdentifier="accountEmailType.typeName" />
 				<hb:HibachiListingColumn propertyIdentifier="verifiedFlag" />
 			</hb:HibachiListingDisplay>
 			
@@ -71,7 +71,7 @@ Notes:
 			<!--- Phone Numbers --->
 			<hb:HibachiListingDisplay title="#$.slatwall.rbKey('entity.accountPhoneNumber_plural')#" smartList="#rc.order.getAccount().getAccountPhoneNumbersSmartList()#">
 				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="phoneNumber" />
-				<hb:HibachiListingColumn propertyIdentifier="accountPhoneType.type" />
+				<hb:HibachiListingColumn propertyIdentifier="accountPhoneType.typeName" />
 			</hb:HibachiListingDisplay>
 			
 			<hr />

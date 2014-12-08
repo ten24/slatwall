@@ -58,7 +58,7 @@ Notes:
 							   recordEditAction="admin:entity.editaccountpayment">
 
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="paymentMethod.paymentMethodName" />
-		<hb:HibachiListingColumn propertyIdentifier="accountPaymentType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="accountPaymentType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="amount" />
 		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
 		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />

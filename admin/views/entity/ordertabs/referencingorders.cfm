@@ -57,7 +57,7 @@ Notes:
 			recordDetailAction="admin:entity.detailorder">
 		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="orderNumber" />
 		<hb:HibachiListingColumn propertyIdentifier="account.fullName" sort="false" />
-		<hb:HibachiListingColumn propertyIdentifier="orderType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="orderType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />
 	</hb:HibachiListingDisplay>
 </cfoutput>

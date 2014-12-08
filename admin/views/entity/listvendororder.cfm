@@ -71,9 +71,9 @@ Notes:
 		
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="vendor.vendorName" />
 		<hb:HibachiListingColumn propertyIdentifier="vendorOrderNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="vendorOrderType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="vendorOrderType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="estimatedReceivalDateTime" />
-		<hb:HibachiListingColumn propertyIdentifier="vendorOrderStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="vendorOrderStatusType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="total" />
 	</hb:HibachiListingDisplay>

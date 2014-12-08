@@ -67,7 +67,7 @@ Notes:
 							  recorddetailaction="admin:entity.detailphysical">
 	
 		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="physicalName" />	
-		<hb:HibachiListingColumn propertyidentifier="physicalStatusType.type" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" />					    
+		<hb:HibachiListingColumn propertyidentifier="physicalStatusType.typeName" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" />					    
 		<hb:HibachiListingColumn propertyidentifier="createdDateTime" />
 	</hb:HibachiListingDisplay>
 

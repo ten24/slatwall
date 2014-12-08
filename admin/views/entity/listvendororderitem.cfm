@@ -66,7 +66,7 @@ Notes:
 							   recordeditmodal="true">
 		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendor.vendorName" />
 		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="vendorOrder.vendorOrderStatusType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="stock.sku.product.brand.brandName" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="stock.sku.product.calculatedTitle" />
 		<hb:HibachiListingColumn propertyIdentifier="stock.sku.skuCode" />
