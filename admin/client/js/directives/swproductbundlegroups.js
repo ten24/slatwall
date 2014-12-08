@@ -15,6 +15,7 @@ angular.module('slatwalladmin')
 			restrict: 'A',
 			templateUrl:productBundlePartialsPath+"productbundlegroups.html",
 			scope:{
+				sku:"=",
 				productBundleGroups:"=",
 				addProductBundleGroup:"&"
 			},
@@ -26,6 +27,12 @@ angular.module('slatwalladmin')
 				this.removeProductBundleGroup = function(index){
 					//delete $scope.productBundleGroups[index];
 					$scope.productBundleGroups.splice(index,1);
+				};
+				$scope.addProductBundleGroup = function(){
+					var productBundleGroup = $scope.sku.$$addProductBundleGroup();
+					productBundleService.decorateProductBundleGroup(productBundleGroup);
+					
+					$scope.sku.data.productBundleGroups.selectedProductBundleGroup = productBundleGroup;
 				};
 				
 			}

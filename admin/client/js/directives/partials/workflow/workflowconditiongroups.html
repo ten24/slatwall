@@ -1,17 +1,13 @@
 <ul class="col-xs-12 list-unstyled">
 	
-	<!-- <span 	sw-filter-groups 
-      		data-filter-group="workflowConditionGroup"
-      		data-filter-group-item="workflowConditionGroupItem"
-      		data-filter-properties-list="propertiesList"
-    >
-    </span> -->
 	<span ng-repeat="workflowConditionGroup in workflowConditionGroupItem">
 		<span ng-switch on="workflowConditionGroup.hasOwnProperty('workflowConditionGroup')" >
 			<span 	ng-switch-when="false" 
 					sw-workflow-condition 
 					data-workflow-condition="workflowConditionGroup" 
 					data-workflow-condition-index="$index"
+					data-workflow="workflow"
+					data-filter-properties-list="filterPropertiesList"
 					>
 			</span>
 			<span 	ng-switch-when="true" 
@@ -19,6 +15,7 @@
 					data-workflow-condition-group-item="workflowConditionGroup",
 					data-sibling-items="workflowConditionGroupItem"
 					data-workflow-condition-group-item-index="$index"
+					data-workflow="workflow"
 					>
 			</span>
 		</span>

@@ -105,6 +105,7 @@ Notes:
 		
 	// returns product skus which matches ALL options (list of optionIDs) that are passed in
 	public any function getSkusBySelectedOptions(required string selectedOptions, string productID) {
+		
 		var params = [];
 		var hql = "select distinct sku from SlatwallSku as sku 
 					inner join sku.options as opt 

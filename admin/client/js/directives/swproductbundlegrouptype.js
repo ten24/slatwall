@@ -28,56 +28,28 @@ angular.module('slatwalladmin')
 				$scope.$$id="productBundleGroupType";
 				$scope.productBundleGroupTypes.value = [];
 				$scope.productBundleGroupTypes.$$adding = false;
+				$scope.productBundleGroupType = {};
+				if(angular.isUndefined($scope.productBundleGroup.data.productBundleGroupType)){
+					var productBundleGroupType = $slatwall.newType();
+					var parentType = $slatwall.newType();
+					parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
+					productBundleGroupType.$$setParentType(parentType);
+					$scope.productBundleGroup.$$setProductBundleGroupType(productBundleGroupType);
+				}
+
 				$scope.productBundleGroupTypes.setAdding = function(isAdding){
 					$scope.productBundleGroupTypes.$$adding = isAdding;
-					$scope.getPropertyDisplayData = function(){
-						var propertyDisplayDataPromise = $slatwall.getPropertyDisplayData('Type',
-								{propertyIdentifiersList:'typeCode,typeName,typeDescription,parentType.TypeID'}
-						);
-						propertyDisplayDataPromise.then(function(value){
-							$scope.propertyDisplayData = value.data;
-							$log.debug('getting property Display meta data');
-							$log.debug($scope.propertyDisplayData);
-							$scope.productBundleGroupType = {
-								"parentType.typeID":'154dcdd2f3fd4b5ab5498e93470957b8',
-								"typeName":$scope.productBundleGroup.productBundleGroupType.typeName,
-								"typeDescription":"",
-								"typeNameCode":""
-							};
-							formService.setForm($scope.form.addProductBundleGroupType);
-							$log.debug('productBundleGroupType');
-							$log.debug($scope.productBundleGroupType);
-						});
-					}();
-					
-				};
-				
-				$scope.saveProductBundleGroupType = function(){
-					var addProductBundleGroupTypeForm = formService.getForm('form.addProductBundleGroupType');
-					//only save the form if it passes validation
-					addProductBundleGroupTypeForm.$submitted = true;
-					if(addProductBundleGroupTypeForm.$valid === true){
-						
-						var params = {
-							'typeID':"",
-							"typeName":addProductBundleGroupTypeForm["typeName"].$modelValue,
-							"parentType.typeID":$scope.productBundleGroupType["parentType.typeID"],
-							"typeDescription":addProductBundleGroupTypeForm['typeDescription'].$modelValue,
-							"typeCode":addProductBundleGroupTypeForm['typeCode'].$modelValue,
-							"propertyIdentifiersList":"typeID,typeName,typeCode,typeDescription"
-						};
-						$log.debug(params);
-						var saveProductBundleTypePromise = $slatwall.saveEntity('Type', null, params,'Save');
-						saveProductBundleTypePromise.then(function(value){
-							$log.debug('saving Product Bundle Group Type');
-							$scope.productBundleGroupTypes.$$adding = false;
-							$scope.showAddProductBundleGroupTypeBtn = false;
-							$scope.productBundleGroup.productBundleGroupType = value.data;
-							console.log($scope.productBundleGroup.productBundleGroupType);
-							//$scope.productBundleGroup.productBundleGroupType = value.data;
-							formService.resetForm(addProductBundleGroupTypeForm);
-						});
-					}
+
+					var productBundleGroupType = $slatwall.newType();
+					var parentType = $slatwall.newType();
+					parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
+					productBundleGroupType.$$setParentType(parentType);
+					productBundleGroupType.data.typeName=$scope.productBundleGroup.data.productBundleGroupType.data.typeName;
+
+					productBundleGroupType.data.typeDescription = '';
+					productBundleGroupType.data.typeNameCode='';
+					angular.extend($scope.productBundleGroup.data.productBundleGroupType,productBundleGroup);
+
 				};
 				
 				$scope.showAddProductBundleGroupTypeBtn = false;
@@ -120,7 +92,7 @@ angular.module('slatwalladmin')
 						}
 						
 						for(var i in $scope.productBundleGroupTypes.value){
-							if($scope.productBundleGroupTypes.value[i].typeCode === $scope.productBundleGroup.productBundleGroupType.typeCode){
+							if($scope.productBundleGroupTypes.value[i].typeCode === $scope.productBundleGroup.data.productBundleGroupType.data.typeCode){
 								$scope.showAddProductBundleGroupTypeBtn = false;
 							}
 						}
@@ -132,7 +104,12 @@ angular.module('slatwalladmin')
 				    $scope.$item = $item;
 				    $scope.$model = $model;
 				    $scope.$label = $label;
-				    $scope.productBundleGroup.productBundleGroupType = $item;
+				 
+					angular.extend($scope.productBundleGroup.data.productBundleGroupType.data,$item);
+					var parentType = $slatwall.newType();
+					parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
+					$scope.productBundleGroup.data.productBundleGroupType.$$setParentType(parentType);
+				    
 				    $scope.showAddProductBundleGroupTypeBtn = false;
 				};
 			}

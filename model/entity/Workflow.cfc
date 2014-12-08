@@ -41,7 +41,7 @@ component displayname="Workflow" entityname="SlatwallWorkflow" table="SwWorkflow
 	
 	// Persistent Properties
 	property name="workflowID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="activeFlag" ormtype="boolean";
+	property name="activeFlag" ormtype="boolean" hb_formatType="yesno";
 	property name="workflowName" ormtype="string";
 	property name="workflowObject" ormtype="string" hb_formfieldType="select";
 

@@ -91,7 +91,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="skuID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra"; 
 	property name="assignedSkuBundles" singularname="assignedSkuBundle" fieldtype="one-to-many" fkcolumn="bundledSkuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
 	property name="productBundleGroups" type="array" cfc="ProductBundleGroup" singularname="productBundleGroup"  fieldtype="one-to-many" fkcolumn="productBundleSkuID" cascade="all-delete-orphan" inverse="true";
-	property name="productReviews" singlularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
+	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 	property name="options" singularname="option" cfc="Option" fieldtype="many-to-many" linktable="SwSkuOption" fkcolumn="skuID" inversejoincolumn="optionID"; 
@@ -1118,7 +1118,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			optionsList = listAppend(optionsList, getOptions()[i].getOptionID());
 		}
 		
-		if(isNull(getProduct())) {
+		if(isNull(getProduct()) || getProduct().getNewFlag()) {
 			return true;
 		}
 		var skus = getProduct().getSkusBySelectedOptions(selectedOptions=optionsList);

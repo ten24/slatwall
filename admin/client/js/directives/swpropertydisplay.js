@@ -1,58 +1,53 @@
 angular.module('slatwalladmin')
 .directive('swPropertyDisplay', [
-	'$log',
-	'partialsPath',
-	'propertyDisplayService',
+'$log',
+'partialsPath',
+'propertyDisplayService',
 	function(
-		$log,
-		partialsPath,
-		propertyDisplayService
+	$log,
+	partialsPath,
+	propertyDisplayService
 	){
 		return {
-			restrict: 'A',
+			require:'^form',
+			restrict: 'AE',
 			scope:{
 				object:"=",
-				objectName:"@",
 				property:"@",
-				meta:"=",
 				isEditable:"=",
 				editing:"=",
 				isHidden:"=",
 				optionsArguments:"=",
-				eagerLoadOptions:"="
-				/*value:"=",
-				valueOptions:"@",
-				fieldType:"@",
-				
-				title:"@",
-				hint:"@",
-				fieldName:"@"*/
+				eagerLoadOptions:"=",
+				isDirty:"=",
+				onChange:"="
 			},
 			templateUrl:partialsPath+"propertydisplay.html",
-			link: function(scope, element,attrs){
-				
+			link: function(scope, element,attrs,formController){
+				//if the item is new, then all fields at the object level are dirty
+
 				var propertyDisplay = {
 					object:scope.object,
-					objectName:scope.objectName,
 					property:scope.property,
-					meta:scope.meta,
 					errors:{},
 					editing:scope.editing,
 					isEditable:scope.isEditable,
 					isHidden:scope.isHidden,
 					optionsArguments:scope.optionsArguments,
-					eagerLoadOptions:scope.eagerLoadOptions
-					/*hint:scope.hint,
-					fieldType:scope.fieldType,
-					value:scope.value,
-					valueOptions:scope.valueOptions,
-					fieldName:scope.fieldName,
-					title:scope.title,
-					fieldType:scope.fieldType*/
+					eagerLoadOptions:scope.eagerLoadOptions,
+					isDirty:scope.isDirty,
+					onChange:scope.onChange
 				};
 				
 				scope.$id = 'propertyDisplay:'+scope.property;
+				
+
+				
 				scope.propertyDisplay = propertyDisplayService.newPropertyDisplay(propertyDisplay);
+				
+				/* register form that the propertyDisplay belongs to*/
+				scope.propertyDisplay.form = formController;
+				
 				$log.debug(scope.propertyDisplay);
 							
 				

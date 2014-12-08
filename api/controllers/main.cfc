@@ -149,7 +149,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	public any function getResourceBundle(required struct rc){
-		var data = getService('HibachiRBService').getResourceBundle(arguments.rc.locale);
+		var resourceBundle = getService('HibachiRBService').getResourceBundle(arguments.rc.locale);
+		data = {};
+		//lcase all the resourceBundle keys so we can have consistent casing for the js
+		for(var key in resourceBundle){
+			data[lcase(key)] = resourceBundle[key];
+		}
 		
 		arguments.rc.apiResponse.content['data'] = data;
 	}
@@ -239,6 +244,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				allRecords = arguments.rc['allRecords'];
 			}
 			
+			var defaultColumns = false;
+			if(structKeyExists(arguments.rc,'defaultColumns')){
+				defaultColumns = arguments.rc['defaultColumns'];
+			}
+			
 			var collectionOptions = {
 				currentPage=currentPage,
 				pageShow=pageShow,
@@ -248,7 +258,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				propertyIdentifiersList=propertyIdentifiersList,
 				isDistinct=isDistinct,
 				columnsConfig=columnsConfig,
-				allRecords=allRecords
+				allRecords=allRecords,
+				defaultColumns=defaultColumns
 			};
 			
 			//considering using all url variables to create a transient collectionConfig for api response
@@ -286,31 +297,45 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			arguments.rc.apiResponse.content['messages'] = [];
 		}
 		
+		if(structKEyExists(arguments.rc, 'serializedJSONData') && isSimpleValue(arguments.rc.serializedJSONData) && isJSON(arguments.rc.serializedJSONData)) {
+			var structuredData = deserializeJSON(arguments.rc.serializedJSONData);
+		} else {
+			var structuredData = arguments.rc;
+		}
+		
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
 		var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
+		
 		// SAVE
 		if(arguments.rc.context eq 'save') {
-			entity = entityService.invokeMethod("save#arguments.rc.entityName#", {1=entity, 2=arguments.rc});
+			entity = entityService.invokeMethod("save#arguments.rc.entityName#", {1=entity, 2=structuredData});
 		// DELETE
 		} else if (arguments.rc.context eq 'delete') {
 			var deleteOK = entityService.invokeMethod("delete#arguments.rc.entityName#", {1=entity});
-		
 		// PROCESS
 		} else {
 			entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=arguments.rc, 3=arguments.rc.context});
 		}
-
-		if(!isnull(arguments.rc.propertyIdentifiersList)){
+		
+		// respond with data
+		arguments.rc.apiResponse.content['data'] = {};
+		
+		// Add ID's of any sub-property population
+		arguments.rc.apiResponse.content['data'] = addPopulatedSubPropertyIDsToData(entity=entity, data=arguments.rc.apiResponse.content['data']);
+		
+		// Get any new ID's created by the post
+		arguments.rc.apiResponse.content['data'][ entity.getPrimaryIDPropertyName() ] = entity.getPrimaryIDValue();
+		
+		
+		/*if(!isnull(arguments.rc.propertyIdentifiersList)){
 			//respond with data
 			arguments.rc.apiResponse.content['data'] = {};
 			var propertyIdentifiersArray = ListToArray(arguments.rc.propertyIdentifiersList);
 			for(propertyIdentifier in propertyIdentifiersArray){
 				//check if method exists before trying to retrieve a property
-				if(isDefined('entity.get#propertyIdentifier#')){
-					arguments.rc.apiResponse.content['data'][propertyIdentifier] = entity.invokeMethod("get#propertyIdentifier#");
-				}
+				arguments.rc.apiResponse.content['data'][propertyIdentifier] = entity.getValueByPropertyIdentifier(propertyIdentifier);
 			}
-		}
+		}*/
 		
 		if(entity.hasErrors()){
 			arguments.rc.apiResponse.content.success = false;
@@ -337,6 +362,40 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
 			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", rbKey('entity.#arguments.rc.entityName#'), "all" ) , "error");
 		}
+	}
+	
+	private struct function addPopulatedSubPropertyIDsToData(required any entity, required struct data) {
+		if(isNull(arguments.entity.getPopulatedSubProperties())){
+			return {};
+		}
+		for(var key in arguments.entity.getPopulatedSubProperties()) {
+			
+			var propertyData = arguments.entity.getPopulatedSubProperties()[key];
+			
+			// Many-To-One Populated Entity
+			if(!isNull(propertyData) && isObject(propertyData)) {
+				var mtoEntity = propertyData;
+				arguments.data[ key ][ mtoEntity.getPrimaryIDPropertyName() ] = mtoEntity.getPrimaryIDValue();
+				arguments.data[ key ] = addPopulatedSubPropertyIDsToData(propertyData, arguments.data[ key ]);
+			
+			// One-To-Many Populated Entities
+			} else if (!isNull(propertyData) && isArray(propertyData)) {
+				
+				arguments.data[ key ] = [];
+				
+				for(var otmEntity in propertyData) {
+					
+					var thisData = {};
+					thisData = addPopulatedSubPropertyIDsToData(otmEntity, thisData);
+					thisData[ otmEntity.getPrimaryIDPropertyName() ] = otmEntity.getPrimaryIDValue();
+					arrayAppend(arguments.data[ key ], thisData);
+				}
+				
+			}
+			
+		}
+		
+		return arguments.data;
 	}
 	
 	public any function put( required struct rc ) {

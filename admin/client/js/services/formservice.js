@@ -31,10 +31,24 @@ angular.module('slatwalladmin')
 				}
 			},
 			setForm: function(form){
-				_forms[form.$name] = form;
+				_forms[form.name] = form;
 			},
 			getForm:function(formName){
 				return _forms[formName];
+			},
+			getForms:function(){
+				return _forms;
+			},
+			getFormsByObjectName:function(objectName){
+				var forms = [];
+
+				for(var f in _forms){
+
+					if(angular.isDefined(_forms[f].$$swFormInfo.object) && _forms[f].$$swFormInfo.object.metaData.className === objectName){
+						forms.push(_forms[f]);
+					}
+				}
+				return forms;
 			},
 			createForm:function(name,object,editing){
 				var _form = new form(

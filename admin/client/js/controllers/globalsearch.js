@@ -30,7 +30,7 @@ angular.module('slatwalladmin').controller('globalSearch', [
 				}
 			},
 			'brand' : {
-				'title': 'Brands',
+				'title': $slatwall.getRBKey('entity.Brands'),
 				'resultNameFilter': function(data) {
 					return data['brandName'];
 				},
@@ -97,7 +97,7 @@ angular.module('slatwalladmin').controller('globalSearch', [
 								
 								// Clear out the old Results
 								$scope.searchResults[ entityName ].results = [];
-								
+								$scope.searchResults[ entityName ].title = $slatwall.getRBKey('entity.'+entityName.toLowerCase()+'_plural');
 								// push in the new results
 								for(var i in data.pageRecords) {
 									$scope.searchResults[ entityName ].results.push({

@@ -1,75 +1,94 @@
-<div class="row form-group" >
-	<div class="col-md-6">
-		<label class="col-md-3 control-label" for="">Bundle Group Type:</label>
-		<div class="col-md-9 s-search-filter">
 
-			<div class="input-group">
-				<input  type="text"
-						ng-model="productBundleGroup.productBundleGroupType.typeName"
-						placeholder="Search"
-						class="form-control input-sm"
-						typeahead="type.typeName for type in productBundleGroupTypes.getTypesByKeyword($viewValue) | filter:$viewValue"
-						typeahead-on-select='selectProductBundleGroupType($item, $model, $label)'
-				>
-				<div class="input-group-btn">
-					<button type="button" class="btn btn-sm s-btn-grey"><span class="caret"></span></button>
-				</div>
-			</div>
-
-			<div ng-show="showAddProductBundleGroupTypeBtn">
-				<button type="button"
-						class="btn s-btn-dgrey"
-						ng-show="showAddProductBundleGroupTypeBtn"
-						ng-click="productBundleGroupTypes.setAdding(true)"
-				>
-					<i class="fa fa-plus"></i> Add "{{productBundleGroup.productBundleGroupType.typeName}}"
-				</button>
-				<div class="s-add-content" ng-show="productBundleGroupTypes.$$adding">
-					<form
-							role="form"
-							name="form.addProductBundleGroupType"
+	<div class="row form-group" >
+		<div class="col-md-6">
+			<label class="col-md-3 control-label" for="">Bundle Group Type:</label>
+			<div class="col-md-9 s-search-filter">
+			
+				<div class="input-group">
+					<input  type="text"
+							ng-model="productBundleGroup.data.productBundleGroupType.data.typeName"
+							placeholder="Search"
+							class="form-control input-sm"
+							typeahead="type.typeName for type in productBundleGroupTypes.getTypesByKeyword($viewValue) | filter:$viewValue"
+							typeahead-on-select="selectProductBundleGroupType($item, $model, $label)"
 					>
-
-						<span ng-if="productBundleGroupTypes.$$adding && productBundleGroupType" >
-							 <span sw-property-display
-					          		data-property="typeName"
-					          		data-object="productBundleGroupType"
-					          		data-meta="propertyDisplayData['typeName']"
-					          		data-is-editable="true"
-					          		data-is-hidden="false"
-					          		data-editing="true"
-					          		data-title="Group Name"
-					          		data-value="productBundleGroup.productBundleGroupType.typeName"
-					          ></span>
-					          <span sw-property-display
-					          		data-property="typeCode"
-					          		data-object="productBundleGroupType"
-					          		data-meta="propertyDisplayData['typeCode']"
-					          		data-is-editable="true"
-					          		data-is-hidden="false"
-					          		data-editing="true"
-					          ></span>
-					          <span sw-property-display
-					          		data-property="typeDescription"
-					          		data-meta="propertyDisplayData['typeDescription']"
-					          		data-object="productBundleGroupType"
-					          		data-is-editable="true"
-					          		data-is-hidden="false"
-					          		data-editing="true"
-					          ></span>
-							<div class="form-group">
-								<button type="button"
-										class="btn btn-xs s-btn-ten24"
-										ng-click="saveProductBundleGroupType(form)"
-								>
-									<i class="fa fa-plus"></i> Add Group Type
-								</button>
-							</div>
-						</span>
-					</form>
+					<div class="input-group-btn">
+						<button type="button" class="btn btn-sm s-btn-grey"><span class="caret"></span></button>
+					</div>
 				</div>
-			</div>
 
+				<div ng-show="showAddProductBundleGroupTypeBtn">
+					<button type="button"
+							class="btn s-btn-dgrey"
+							ng-show="showAddProductBundleGroupTypeBtn"
+							ng-click="productBundleGroupTypes.setAdding(true)"
+					>
+						<i class="fa fa-plus"></i> Add "{{productBundleGroup.data.productBundleGroupType.data.typeName}}"
+					</button>
+					<div class="s-add-content" ng-show="productBundleGroupTypes.$$adding">
+						
+
+							<span ng-show="productBundleGroupTypes.$$adding && productBundleGroup.data.productBundleGroupType" >
+								<sw-form name="form.addProductBundleGroupType"
+									data-object="productBundleGroup.data.productBundleGroupType"
+									data-context="save"
+									ng-if="productBundleGroup.data.productBundleGroupType"
+								>
+									<sw-property-display
+											sytle="display:none"
+											data-object="productBundleGroup.data.productBundleGroupType"
+											data-property="typeID"
+											data-editing="true"
+											data-editable="true"
+											data-is-dirty="true"
+									></sw-property-display> 
+									<sw-property-display
+											data-object="productBundleGroup.data.productBundleGroupType"
+											data-property="typeName"
+											data-editing="true"
+											data-editable="true"
+											data-is-dirty="true"
+									></sw-property-display> 
+									<sw-property-display
+											data-object="productBundleGroup.data.productBundleGroupType"
+											data-property="typeCode"
+											data-editing="true"
+											data-editable="true"
+									></sw-property-display>
+									<sw-property-display
+											data-object="productBundleGroup.data.productBundleGroupType"
+											data-property="typeDescription"
+											data-editing="true"
+											data-editable="true"
+									></sw-property-display> 
+								</sw-form>
+								<sw-form name="form.addProductBundleGroupTypeParentType"
+									data-object="productBundleGroup.data.productBundleGroupType.data.parentType"
+									data-context="save"
+									ng-if="productBundleGroup.data.productBundleGroupType.data.parentType"
+								>
+										<sw-property-display
+											data-object="productBundleGroup.data.productBundleGroupType.data.parentType"
+											data-property="typeID"
+											data-editing="true"
+											data-editable="true"
+											data-is-dirty="true"
+										></sw-property-display> 
+						        </sw-form>
+								<div class="form-group">
+									<button type="button"
+											class="btn btn-xs s-btn-ten24"
+											ng-click="productBundleGroup.data.productBundleGroupType.$$save()"
+									>
+										<i class="fa fa-plus"></i> Add Group Type
+									</button>
+								</div>
+							</span>
+						</form>
+					</div>
+				</div>
+
+			</div>
 		</div>
 	</div>
-</div>
+

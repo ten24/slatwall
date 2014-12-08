@@ -1,25 +1,17 @@
-
-<div class="radio">
-	<input type="radio" name="{{propertyDisplay.property}}" id="{{propertyDisplay.property}}1"
-    		ng-model="propertyDisplay.selectedOption"
+<div class="radio"  ng-repeat="propertyDisplayOption in propertyDisplay.options track by propertyDisplayOption.value" ng-if="selectedRadioFormName">
+	<input type="radio" name="{{'selected'+propertyDisplay.object.metaData.className+propertyDisplay.property+selectedRadioFormName}}" id="{{propertyDisplay.object.metaData.className+'.'+propertyDisplay.property+selectedRadioFormName+$index}}"
+    		ng-model="$parent.selected"
     		ng-show="propertyDisplay.editing"
-			ng-value="Yes "
+			ng-value="propertyDisplayOption"
+			ng-click="formFieldChanged($parent.selected)"
 	>
-	<label for="{{propertyDisplay.property}}1">
-			Yes
+	<label for="{{propertyDisplay.object.metaData.className+'.'+propertyDisplay.property+selectedRadioFormName+$index}}">
+		<span ng-bind="propertyDisplayOption.name"></span>
 	</label>
 </div>
-<div class="radio">
-	
-	<input  type="radio" name="{{propertyDisplay.property}}"  id="{{propertyDisplay.property}}2"
-			ng-model="propertyDisplay.selectedOption"
-	   		ng-show="propertyDisplay.editing"
-	   		value="No "
-	>
-	<label for="{{propertyDisplay.property}}2">
-			No
-	</label>
-</div>
+<input style="display:none"	type="text" 
+		ng-model="propertyDisplay.object.data[propertyDisplay.property]"
+/>
 
 <!-- Error Messages -->
     
@@ -27,5 +19,5 @@
 	ng-repeat="(key,value) in propertyDisplay.errors"
 	ng-show="(propertyDisplay.form.$submitted && propertyDisplay.form[propertyDisplay.property].$invalid) || (propertyDisplay.form[propertyDisplay.property].$invalid && propertyDisplay.form[propertyDisplay.property].$dirty)"
 >
-  <span  ng-show="key === 'required'">{{propertyDisplay.meta.title}} is a required field<br></span>
+  <span  ng-show="key === 'required'">{{propertyDisplay.title}} is a required field<br></span>
 </span>

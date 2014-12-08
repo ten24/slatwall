@@ -3,7 +3,7 @@
 		<!---TODO: convert to trigger directive --->
 		<span ng-repeat="workflowTrigger in workflowTriggers"> 
 			<span 	sw-workflow-trigger
-					ng-if="workflowTrigger.isPersisted()"
+					ng-if="workflowTrigger.$$isPersisted()"
 					data-workflow-trigger="workflowTrigger"
 					data-workflow-triggers="workflowTriggers"
 					ng-init="workflowTrigger.$$index = $index"
@@ -12,7 +12,7 @@
 		</span>
 	</ul>
 
-	<button ng-show="!workflowTriggers.selectedTrigger || workflowTriggers.selectedTrigger.isPersisted()" class="btn btn-xs s-btn-ten24" 
+	<button ng-show="!workflowTriggers.selectedTrigger || workflowTriggers.selectedTrigger.$$isPersisted()" class="btn btn-xs s-btn-ten24" 
 			ng-click="addWorkflowTrigger()" 
 			data-toggle="collapse" 
 			data-target="#j-create-new-trigger"
@@ -25,8 +25,8 @@
 	<div ng-if="workflowTriggers.selectedTrigger" class="col-xs-12 collapse s-add-filter" id="j-create-new-trigger">
 		<div class="row">
 			<h4> 
-				<span ng-show="workflowTriggers.selectedTrigger.isPersisted()">Edit</span>
-				<span ng-show="!workflowTriggers.selectedTrigger.isPersisted()">New</span>
+				<span ng-show="workflowTriggers.selectedTrigger.$$isPersisted()">Edit</span>
+				<span ng-show="!workflowTriggers.selectedTrigger.$$isPersisted()">New</span>
 				 Trigger 
 				 <i class="fa fa-times" 
 				 	data-toggle="collapse" 
@@ -41,7 +41,6 @@
 						<!-- <span  	sw-property-display
 								data-object="selectedTrigger"
 								data-property="triggerType"
-								data-meta="propertyDisplayData['triggerType']"
 								data-editing="true"
 								data-editable="true"
 						> -->
@@ -50,7 +49,7 @@
 							<div class="form-group">
 								<div class="radio">
 									<input  type="radio" name="radio3" id="radio2"
-											ng-model="workflowTriggers.selectedTrigger.triggerType"
+											ng-model="workflowTriggers.selectedTrigger.data.triggerType"
 											value="Event"
 									>
 									<label for="radio2">
@@ -60,7 +59,7 @@
 								<div class="radio">
 									<input  type="radio" name="radio3" id="radio3"
 											
-											ng-model="workflowTriggers.selectedTrigger.triggerType"
+											ng-model="workflowTriggers.selectedTrigger.data.triggerType"
 											value="Schedule" 
 									>
 									<label for="radio3">
@@ -71,7 +70,7 @@
 						</div>
 					</div>
 					<div class="col-xs-6 s-criteria">
-						<span ng-show="workflowTriggers.selectedTrigger.triggerType === 'Event'">
+						<span ng-show="workflowTriggers.selectedTrigger.data.triggerType === 'Event'">
 							<h4>Select Trigger Event:</h4>
 							<!--- Filter Criteria Start --->
 							<form action="index.html" method="post">
@@ -79,7 +78,7 @@
 								<div class="s-filter-group-item">
 	
 									<div class="form-group form-group-sm">
-										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.workflow.workflowObject}}:</label>
+										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.data.workflow.workflowObject}}:</label>
 										<div class="col-sm-12 s-no-paddings">
 	
 											<!--- search --->
@@ -92,7 +91,7 @@
 														</span>
 													</ul>
 													<div class="input-group-btn">
-														<button type="button" class="btn btn-sm s-btn-grey" ng-click="getEventOptions(workflowTriggers.selectedTrigger.workflow.workflowObject);"><span class="caret"></span></button>
+														<button type="button" class="btn btn-sm s-btn-grey" ng-click="getEventOptions(workflowTriggers.selectedTrigger.data.workflow.workflowObject);"><span class="caret"></span></button>
 													</div>
 												</div>
 	
@@ -180,7 +179,7 @@
 							</form>
 						</span>
 						<!--- //Filter Criteria End --->
-						<span ng-show="workflowTriggers.selectedTrigger.triggerType === 'Schedule'">
+						<span ng-show="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
 							<h4>Select Trigger Schedule:</h4>
 	
 							<!--- Filter Criteria Start --->
@@ -189,7 +188,7 @@
 								<div class="s-filter-group-item">
 	
 									<div class="form-group form-group-sm">
-										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.workflow.workflowObject}} Collection:</label>
+										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.data.workflow.workflowObject}} Collection:</label>
 										<div class="col-sm-12 s-no-paddings">
 	
 											<!--- search --->
@@ -340,7 +339,7 @@
 					</div>
 					<div class="col-xs-3">
 
-						<div class="s-default-list" ng-show="workflowTriggers.selectedTrigger.triggerType === 'Schedule'">
+						<div class="s-default-list" ng-show="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
 							<h2>Estimated Schedule</h2>
 							<dl class="dl-horizontal">
 								<dt class="title">September 29th, 2014:</dt>

@@ -1,107 +1,86 @@
 angular.module('slatwalladmin')
 .directive('swWorkflowTasks', [
-	'$log',
-	'$location',
-	'$slatwall',
-	'workflowService',
-	'workflowTaskService',
-	'metadataService',
-	'workflowPartialsPath',
+'$log',
+'$location',
+'$slatwall',
+'metadataService',
+'workflowPartialsPath',
 	function(
-		$log,
-		$location,
-		$slatwall,
-		workflowService,
-		workflowTaskService,
-		metadataService,
-		workflowPartialsPath
+	$log,
+	$location,
+	$slatwall,
+	metadataService,
+	workflowPartialsPath
 	){
 		return {
-			require:"^form",
 			restrict: 'A',
 			scope:{
-				
+				workflow:"="
 			},
 			templateUrl:workflowPartialsPath+"workflowtasks.html",
-			link: function(scope, element,attrs,formController){
+			link: function(scope, element,attrs){
 				
 				$log.debug('workflow tasks init');	
-				
 				scope.workflowPartialsPath = workflowPartialsPath;
 				
-				scope.workflowID = $location.search().workflowID;
-				scope.$id = 'swWorkflowTasks';
-					
 				scope.propertiesList = {};
 					
 				scope.getWorkflowTasks = function(){
-					var filterGroupsConfig ='['+  
-						'{'+
-	                     	'"filterGroup":['+  
-					            '{'+
-					               '"propertyIdentifier":"_workflow.workflowID",'+
-					               '"comparisonOperator":"=",'+
-					               '"value":"'+scope.workflowID+'"'+
-					           '}'+ 
-					         ']'+
-						'}'+
-					']';
-					var workflowTasksPromise = $slatwall.getEntity('workflowTask',{filterGroupsConfig:filterGroupsConfig});
-					
-					workflowTasksPromise.then(function(value){
-						$log.debug('getWorkflowTasks');
-						scope.workflowTasks = workflowTaskService.formatWorkflowTasks(value.pageRecords);
-						$log.debug(scope.workflowTasks);
-						
-						var workflow = workflowService.getWorkflow(scope.workflowID);
-						if(angular.isUndefined(metadataService.getPropertiesListByBaseEntityAlias(workflow.workflowObject))){
-							var propertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(workflow.workflowObject);
-							propertiesPromise.then(function(value){
-								metadataService.setPropertiesList(value,workflow.workflowObject);
-								scope.propertiesList[workflow.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(workflow.workflowObject);
-								metadataService.formatPropertiesList(scope.propertiesList[workflow.workflowObject],workflow.workflowObject);
-								
-							});
-						}else{
-							scope.propertiesList = metadataService.getPropertiesListByBaseEntityAlias(workflow.workflowObject);
-						}
-						
+					var workflowTasksPromise = scope.workflow.$$getWorkflowTasks();
+					workflowTasksPromise.then(function(){
+						scope.workflowTasks = scope.workflow.data.workflowTasks;
 					});
+					if(angular.isUndefined(scope.workflow.data.workflowTasks)){
+						scope.workflow.data.workflowTasks = [];
+						scope.workflowTasks = scope.workflow.data.workflowTasks;
+					}
+					
 				};
 				
+				scope.saveWorkflowTask = function(){
+					var savePromise = scope.workflow.workflowTasks.selectedTask.$$save();
+					savePromise.then(function(){
+						scope.getWorkflowTasks();			
+					});
+				}
+
 				scope.getWorkflowTasks();
 				
 				scope.addWorkflowTask = function(){
 					$log.debug('addWorkflowTasks');
-					var newWorkflowTask = workflowTaskService.newWorkflowTask();
-					newWorkflowTask.workflow = workflowService.getWorkflow(scope.workflowID);
-					scope.workflowTasks.selectedTask = newWorkflowTask;
-					scope.workflowTasks.push(newWorkflowTask);
-					$log.debug(scope.workflowTasks);
+					var newWorkflowTask = scope.workflow.$$addWorkflowTask();
+					scope.selectWorkflowTask(newWorkflowTask);
 				};
 				
-				scope.addWorkflowTaskAction = function(){
-					var workflowTaskAction = workflowTaskService.newWorkflowTaskAction();
-					scope.workflowTasks.selectedTask.workflowTaskActions.selectedTaskAction = workflowTaskAction;
-					workflowTaskService.addWorkflowTaskAction(scope.workflowTasks.selectedTask.workflowTaskActions,workflowTaskAction);
-				};
-				
-				scope.removeWorkflowTaskAction = function(index){
-					scope.workflowTasks.selectedTask.workflowTaskActions.splice(index,1);
-					for(var i in scope.workflowTasks.selectedTask.workflowTaskActions){
-						scope.workflowTasks.selectedTask.workflowTaskActions[i].$$index = i;
+				scope.selectWorkflowTask = function(workflowTask){
+					scope.workflowTasks.selectedTask = workflowTask;
+					if(angular.isString(workflowTask.data.taskConditionsConfig) && workflowTask.data.taskConditionsConfig.trim().length){
+						workflowTask.data.taskConditionsConfig = angular.fromJson(workflowTask.data.taskConditionsConfig);
 					}
 				};
 				
 				scope.removeWorkflowTask = function(workflowTask){
-					if(workflowTask === scope.workflowTasks.selectedTask){
-						delete scope.workflowTasks.selectedTask;
-					}
-					scope.workflowTasks.splice(workflowTask.$$index,1);
-					for(var i in scope.workflowTasks){
-						scope.workflowTasks[i].$$index = i;
-					}
+					var deletePromise = workflowTask.$$delete();
+		    		deletePromise.then(function(){
+						if(workflowTask === scope.workflowTasks.selectedTask){
+							delete scope.workflowTasks.selectedTask;
+						}
+						scope.workflowTasks.splice(workflowTask.$$index,1);
+						for(var i in scope.workflowTasks){
+							scope.workflowTasks[i].$$index = i;
+						}
+					});
 				};
+				
+				scope.filterPropertiesList = {};
+				var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
+				filterPropertiesPromise.then(function(value){
+					metadataService.setPropertiesList(value,scope.workflow.data.workflowObject);
+					scope.filterPropertiesList[scope.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflow.data.workflowObject);
+					metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflow.data.workflowObject],scope.workflow.data.workflowObject);
+					
+				});
+				
 			}
 		};
 	}

@@ -233,7 +233,7 @@ table tr th .glyphicon {vertical-align:text-top;}
 /*Custom CSS*/
 .s-pannel-group .panel {border:none;border-radius:2px;}
 .s-pannel-group .s-body-box {padding: 15px 15px;display: inline-block;width: 100%;}
-.form-group label i.fa-asterisk {color: #A94442;font-size: 6px;position: relative;top: -7px;}
+.form-group label i.fa-asterisk {color: #666;font-size: 5px;position: relative;top: -6px;left: 3px;}
 
 .btn-default {background-color: #eaeaea;border-color: #eaeaea;color:#5E5E5E;}
 .btn-default:hover,.btn-default:focus,.btn-default:active,.btn-default.active {background-color: #dddddd;border-color: #d1d1d1;color:#5E5E5E;}

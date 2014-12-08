@@ -2,19 +2,19 @@
 angular.module('slatwalladmin')
 .directive('swFilterGroups', [
 	'$http',
-	'$compile',
-	'$templateCache',
-	'$log',
-	'collectionService',
-	'collectionPartialsPath',
+'$compile',
+'$templateCache',
+'$log',
+'collectionService',
+'collectionPartialsPath',
 	function(
-		$http,
-		$compile,
-		$templateCache,
-		$log,
-		collectionService,
-		collectionPartialsPath
-	){
+	$http,
+	$compile,
+	$templateCache,
+	$log,
+	collectionService,
+			collectionPartialsPath
+		){
 		return {
 			restrict: 'A',
 			scope:{

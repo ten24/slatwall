@@ -56,7 +56,6 @@ angular.module('slatwalladmin')
 				}
 			},
 			removeOldestAlert:function(){
-				console.log('removeoldest');
 				_alert.splice(0,1);
 			}
 		};
