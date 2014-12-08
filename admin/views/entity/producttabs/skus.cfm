@@ -58,6 +58,7 @@ Notes:
 	<!--- If there are sku bundles then we can display them seperately here ---> 
 	<cfif local.bundleSkusSmartList.getRecordsCount()>
 		<h4>Sku Bundles</h4>
+		
 		<hb:HibachiListingDisplay smartList="#local.bundleSkusSmartList#"
 							   recordDetailAction="admin:entity.detailsku"
 							   recordDetailQueryString="productID=#rc.product.getProductID()#"
@@ -87,39 +88,40 @@ Notes:
 		<cfset local.skusSmartList.addKeywordProperty(propertyIdentifier="hasEventConflict", weight=1)>
 		<cfset local.skusSmartList.addFilter("bundleFlag", "false")>
 		
-	
-		<hb:HibachiListingDisplay smartList="#local.skusSmartList#"
-								   edit="#rc.edit#"
-								   recordDetailAction="admin:entity.detailsku"
-								   recordDetailQueryString="productID=#rc.product.getProductID()#"
-								   recordEditAction="admin:entity.editsku"
-								   recordEditQueryString="productID=#rc.product.getProductID()#"
-								   selectFieldName="defaultSku.skuID"
-								   selectValue="#rc.product.getDefaultSku().getSkuID()#"
-								   selectTitle="#$.slatwall.rbKey('define.default')#">
-								      
-			<cfif rc.product.getBaseProductType() eq "event">
-				<hb:HibachiListingColumn propertyIdentifier="skuName" />
-			</cfif>
-			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
-			<hb:HibachiListingColumn propertyIdentifier="skuDefinition" />
-			<cfif rc.product.getBaseProductType() eq "event">
-				<hb:HibachiListingColumn propertyIdentifier="eventStartDateTime" />
-				<hb:HibachiListingColumn propertyIdentifier="eventEndDateTime" />
-				<hb:HibachiListingColumn propertyIdentifier="eventAttendanceCode" />
-				<hb:HibachiListingColumn propertyIdentifier="eventConflictExistsFlag" />
-				<hb:HibachiListingColumn propertyIdentifier="availableSeatCount" />
-			</cfif>
-			<hb:HibachiListingColumn propertyIdentifier="imageFile" />
-			<cfif isNull(rc.product.getDefaultSku().getUserDefinedPriceFlag()) || !rc.product.getDefaultSku().getUserDefinedPriceFlag()>
-				<hb:HibachiListingColumn propertyIdentifier="listPrice" />
-				<hb:HibachiListingColumn propertyIdentifier="price" />
-				<cfif  rc.product.getProductType().getBaseProductType() eq "subscription">
-					<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
+		<cfif !isNull(rc.product.getDefaultSku())>
+			<hb:HibachiListingDisplay smartList="#local.skusSmartList#"
+									   edit="#rc.edit#"
+									   recordDetailAction="admin:entity.detailsku"
+									   recordDetailQueryString="productID=#rc.product.getProductID()#"
+									   recordEditAction="admin:entity.editsku"
+									   recordEditQueryString="productID=#rc.product.getProductID()#"
+									   selectFieldName="defaultSku.skuID"
+									   selectValue="#rc.product.getDefaultSku().getSkuID()#"
+									   selectTitle="#$.slatwall.rbKey('define.default')#">
+									      
+				<cfif rc.product.getBaseProductType() eq "event">
+					<hb:HibachiListingColumn propertyIdentifier="skuName" />
 				</cfif>
-				<hb:HibachiListingColumn propertyIdentifier="salePrice" />
-			</cfif>
-		</hb:HibachiListingDisplay>
+				<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="skuCode" />
+				<hb:HibachiListingColumn propertyIdentifier="skuDefinition" />
+				<cfif rc.product.getBaseProductType() eq "event">
+					<hb:HibachiListingColumn propertyIdentifier="eventStartDateTime" />
+					<hb:HibachiListingColumn propertyIdentifier="eventEndDateTime" />
+					<hb:HibachiListingColumn propertyIdentifier="eventAttendanceCode" />
+					<hb:HibachiListingColumn propertyIdentifier="eventConflictExistsFlag" />
+					<hb:HibachiListingColumn propertyIdentifier="availableSeatCount" />
+				</cfif>
+				<hb:HibachiListingColumn propertyIdentifier="imageFile" />
+				<cfif isNull(rc.product.getDefaultSku().getUserDefinedPriceFlag()) || !rc.product.getDefaultSku().getUserDefinedPriceFlag()>
+					<hb:HibachiListingColumn propertyIdentifier="listPrice" />
+					<hb:HibachiListingColumn propertyIdentifier="price" />
+					<cfif  rc.product.getProductType().getBaseProductType() eq "subscription">
+						<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
+					</cfif>
+					<hb:HibachiListingColumn propertyIdentifier="salePrice" />
+				</cfif>
+			</hb:HibachiListingDisplay>
+		</cfif>
 	</cfif>
 	
 	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addEventSchedule" class="btn" icon="plus icon" modal="false" />
