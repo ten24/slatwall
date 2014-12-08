@@ -57,7 +57,7 @@ Notes:
 			recordEditAction="admin:entity.editorderitem"
 			recorddetailaction="admin:entity.detailorderitem">
 			
-		<hb:HibachiListingColumn propertyIdentifier="orderItemStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="orderItemStatusType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
 		<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="order.orderCloseDateTime" />

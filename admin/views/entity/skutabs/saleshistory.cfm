@@ -59,7 +59,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="order.account.firstname" />
 		<hb:HibachiListingColumn propertyIdentifier="order.account.lastname" />
 		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="order.orderStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="order.orderStatusType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="order.orderCloseDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="sku.product.productName" />

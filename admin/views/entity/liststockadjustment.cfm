@@ -71,8 +71,8 @@ Notes:
 			recorddetailaction="admin:entity.detailstockadjustment"
 			showCreate="true">
 			
-		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="stockAdjustmentType.type" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentType')#" />
-		<hb:HibachiListingColumn propertyidentifier="stockAdjustmentStatusType.type" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentStatusType')#" />
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="stockAdjustmentType.typeName" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentType')#" />
+		<hb:HibachiListingColumn propertyidentifier="stockAdjustmentStatusType.typeName" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentStatusType')#" />
 		<hb:HibachiListingColumn propertyidentifier="fromLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.fromLocation')#" />
 		<hb:HibachiListingColumn propertyidentifier="toLocation.locationName" title="#$.slatwall.rbKey('entity.stockAdjustment.toLocation')#" />
 		<hb:HibachiListingColumn propertyidentifier="createdDateTime" />

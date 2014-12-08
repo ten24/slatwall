@@ -1005,7 +1005,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return variables.referencingOrdersSmartList;
 	}
 	
-	public any function setShippingAccountAddress( required any accountAddress ) {
+	public any function setShippingAccountAddress( any accountAddress ) {
 		if(isNull(arguments.accountAddress)) {
 			structDelete(variables, "shippingAccountAddress");
 		} else {
@@ -1024,7 +1024,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 	}
 	
-	public any function setBillingAccountAddress( required any accountAddress ) {
+	public any function setBillingAccountAddress( any accountAddress ) {
 		if(isNull(arguments.accountAddress)) {
 			structDelete(variables, "billingAccountAddress");
 		} else {

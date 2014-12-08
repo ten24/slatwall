@@ -23,9 +23,13 @@ angular.module('slatwalladmin')
 				$scope.$id = 'productBundleGroups';
 				$log.debug('productBundleGroups');
 				$log.debug($scope.productBundleGroups);
+				$scope.editing = $scope.editing || true;
+				angular.forEach($scope.productBundleGroups,function(obj){
+					productBundleService.decorateProductBundleGroup(obj);
+					obj.data.$$editing = false;
+				});
 				
 				this.removeProductBundleGroup = function(index){
-					//delete $scope.productBundleGroups[index];
 					$scope.productBundleGroups.splice(index,1);
 				};
 				$scope.addProductBundleGroup = function(){

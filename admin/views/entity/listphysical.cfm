@@ -58,7 +58,7 @@ Notes:
 			
 		<!--- Create ---> 
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller action="admin:entity.createphysical" entity="physical" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
+			<hb:HibachiActionCaller action="admin:entity.createphysical" entity="physical" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
@@ -67,7 +67,7 @@ Notes:
 							  recorddetailaction="admin:entity.detailphysical">
 	
 		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="physicalName" />	
-		<hb:HibachiListingColumn propertyidentifier="physicalStatusType.type" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" />					    
+		<hb:HibachiListingColumn propertyidentifier="physicalStatusType.typeName" title="#$.slatwall.rbKey('entity.physical.physicalStatusType')#" />					    
 		<hb:HibachiListingColumn propertyidentifier="createdDateTime" />
 	</hb:HibachiListingDisplay>
 

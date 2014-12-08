@@ -59,7 +59,7 @@ Notes:
 			
 		<!--- Create ---> 
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preprocessorder" entity="order" processContext="create" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	
@@ -75,8 +75,8 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="account.firstName" />
 		<hb:HibachiListingColumn propertyIdentifier="account.lastName" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.company" />
-		<hb:HibachiListingColumn propertyIdentifier="orderType.type" sort=true />
-		<hb:HibachiListingColumn propertyIdentifier="orderStatusType.type" title="#$.slatwall.rbKey('define.status')#" sort=true/>
+		<hb:HibachiListingColumn propertyIdentifier="orderType.typeName" sort=true />
+		<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" title="#$.slatwall.rbKey('define.status')#" sort=true/>
 		<hb:HibachiListingColumn propertyIdentifier="orderOrigin.orderOriginName" />
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />

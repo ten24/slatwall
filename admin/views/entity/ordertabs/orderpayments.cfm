@@ -70,7 +70,7 @@ Notes:
 			recordDetailAction="admin:entity.detailorderpayment"
 			recordEditAction="admin:entity.editorderpayment">
 		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
-		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="dynamicAmountFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="amount" />
 		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
@@ -81,7 +81,7 @@ Notes:
 			recordDetailAction="admin:entity.detailorderpayment"
 			recordEditAction="admin:entity.editorderpayment">
 		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
-		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="dynamicAmountFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="amount" />
 		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
@@ -91,9 +91,9 @@ Notes:
 	<hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderpayments.nonActive')#" smartList="#local.nonActiveList#" 
 			recordDetailAction="admin:entity.detailorderpayment"
 			recordEditAction="admin:entity.editorderpayment">
-		<hb:HibachiListingColumn propertyIdentifier="orderPaymentStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="orderPaymentStatusType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
-		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="dynamicAmountFlag" search="false" range="false" sort="false" filter="false" />
 		<hb:HibachiListingColumn propertyIdentifier="amount" />
 		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />

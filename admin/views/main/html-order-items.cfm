@@ -16,7 +16,7 @@
 
 				<div class="btn-group btn-group-sm">
 					<div class="btn-group btn-group-sm">
-						<button type="button" class="btn s-btn-grey dropdown-toggle" data-toggle="dropdown">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 							Actions
 							<span class="caret"></span>
 						</button>
@@ -29,8 +29,8 @@
 				</div>
 
 				<div class="btn-group btn-group-sm">
-					<button type="button" class="btn s-btn-grey s-remove">Delete</button>
-					<button type="button" class="btn s-btn-grey">Cancel</button>
+					<button type="button" class="btn btn-default s-remove">Delete</button>
+					<button type="button" class="btn btn-default">Cancel</button>
 					<button type="button" class="btn btn-success">Save</button>
 				</div>
 

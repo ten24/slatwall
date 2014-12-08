@@ -58,7 +58,7 @@ Notes:
 		
 		<!--- Create ---> 
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller action="admin:entity.createbrand" entity="brand" class="btn s-btn-blue" icon="plus icon-white" modal="false" />
+			<hb:HibachiActionCaller action="admin:entity.createbrand" entity="brand" class="btn btn-primary" icon="plus icon-white" modal="false" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 

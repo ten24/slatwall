@@ -60,7 +60,7 @@ Notes:
 			recordDeleteQueryString="redirectAction=admin:entity.detailsku&skuID=#rc.sku.getSkuID()###tabalternateskucodes">
 			
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="alternateSkuCode" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="alternateSkuCodeType.type" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="alternateSkuCodeType.typeName" />
 		
 	</hb:HibachiListingDisplay>
 	

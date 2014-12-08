@@ -65,7 +65,7 @@ Notes:
 			<hb:HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
 			<hb:HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
 			<hb:HibachiListingColumn propertyIdentifier="sku.skudefinition" />
-			<hb:HibachiListingColumn propertyIdentifier="eventRegistrationStatusType.type" title="#$.slatwall.rbKey('entity.eventRegistration.eventRegistrationStatusType')#" />
+			<hb:HibachiListingColumn propertyIdentifier="eventRegistrationStatusType.typeName" title="#$.slatwall.rbKey('entity.eventRegistration.eventRegistrationStatusType')#" />
 		</hb:HibachiListingDisplay>
 		
 		<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="addEventRegistration" class="btn" icon="plus icon" modal="true" />

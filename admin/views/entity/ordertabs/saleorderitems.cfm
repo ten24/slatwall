@@ -60,7 +60,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />
 		<hb:HibachiListingColumn propertyIdentifier="sku.product.calculatedTitle" />
 		<hb:HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
-		<hb:HibachiListingColumn propertyIdentifier="orderItemStatusType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="orderItemStatusType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="quantity" />
 		<hb:HibachiListingColumn propertyIdentifier="price" />
 		<hb:HibachiListingColumn propertyIdentifier="discountAmount" />

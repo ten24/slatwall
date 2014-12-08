@@ -420,7 +420,14 @@ Notes:
 			    	var _init = function(entityInstance,data){
 						for(var key in data) {
 							if(key.charAt(0) !== '$'){
-								entityInstance.data[key] = data[key];
+								console.log(entityInstance.metaData);
+								console.log(key);
+								console.log(data[key])
+								if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
+									entityInstance.data[key] = angular.fromJson(data[key]);
+		    					}else{
+		    						entityInstance.data[key] = data[key];	
+		    					}
 							}
 						}
 					}
@@ -748,16 +755,20 @@ Notes:
 			    		<!--- get entity id --->
 			    		var entityID = entityInstance.$$getID();	
 			    		<!---check we have an entityID and whether a parent object exists --->
-			    		if(angular.isDefined(entityInstance.data[entityInstance.parentObject]) && (angular.isUndefined(entityID) || !entityID.trim().length)){
-			    			<!--- if id is undefined then set the object save level --->
-
-			    			var parentEntityInstance = entityInstance.data[entityInstance.parentObject.name]; 
-			    			var parentEntityID = parentEntityInstance.$$getID();
-			    			if(angular.isUndefined(parentEntityID) || !parentEntityID.trim().length){
-			    				objectLevel = getObjectSaveLevel(parentEntityInstance);
+			    		angular.forEach(entityInstance.parents,function(parentObject){
+			    			if(angular.isDefined(entityInstance.data[parentObject.name]) && entityInstance.data[parentObject.name].$$getID() === '' && (angular.isUndefined(entityID) || !entityID.trim().length)){
+				    			
+				    			<!--- if id is undefined then set the object save level --->
+								
+				    			var parentEntityInstance = entityInstance.data[parentObject.name]; 
+				    			var parentEntityID = parentEntityInstance.$$getID();
+				    			if(parentEntityID === ''){
+				    				console.log(parentEntityInstance);
+				    				objectLevel = getObjectSaveLevel(parentEntityInstance);
+				    			}
 			    			}
-		    			}
-
+			    		});
+			    		
 		    			return objectLevel;
 			    	}
 
@@ -773,7 +784,11 @@ Notes:
 				    				var inputField = form[key];
 				    				if(inputField.$valid === true && inputField.$dirty === true){
 				    					<!--- set modifiedData --->
-			    						modifiedData[key] = form[key].$modelValue;
+				    					if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
+				    						modifiedData[key] = angular.toJson(form[key].$modelValue);		
+				    					}else{
+				    						modifiedData[key] = form[key].$modelValue;
+				    					}
 				    				}
 				    			}
 				    		}
@@ -795,7 +810,11 @@ Notes:
 						    				var inputField = form[key];
 						    				if(inputField.$valid === true && inputField.$dirty === true){
 						    					<!--- set modifiedData --->
-					    						modifiedData[parentObject.name][key] = form[key].$modelValue;
+						    					if(angular.isDefined(parentInstance.metaData[key]) && angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) && parentInstance.metaData[key].hb_formfieldtype === 'json'){
+						    						modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);		
+						    					}else{
+						    						modifiedData[parentObject.name][key] = form[key].$modelValue;
+						    					}
 						    				}
 						    			}
 						    		}
@@ -863,8 +882,9 @@ Notes:
 		    			for(var key in form){
 			    			if(key.charAt(0) !== '$'){
 			    				var inputField = form[key];
-			    				if(inputField.$valid === true && inputField.$dirty === true){	
-			    					if(entityInstance.metaData[key].hb_formfieldtype === 'json'){
+			    				console.log(inputField);
+			    				if(angular.isDefined(inputField) && inputField.$valid === true && inputField.$dirty === true){	
+			    					if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
 			    						data[key] = angular.toJson(form[key].$modelValue);		
 			    					}else{
 			    						data[key] = form[key].$modelValue;		
@@ -1003,11 +1023,15 @@ Notes:
 								this.validations = #serializeJSON($.slatwall.getService('hibachiValidationService').getValidationStruct(local.entity))#;
 								
 								this.metaData = #serializeJSON(local.entity.getPropertiesStruct())#;
+								
 								this.metaData.className = '#local.entity.getClassName()#';
+								 
 								
 								this.metaData.$$getRBKey = function(rbKey,replaceStringData){
 									return slatwallService.rbKey(rbKey,replaceStringData);
 								};
+								
+								
 								<!---// @hint public method for getting the title to be used for a property from the rbFactory, this is used a lot by the HibachiPropertyDisplay --->
 								this.metaData.$$getPropertyTitle = function(propertyName){
 									return _getPropertyTitle(propertyName,this);
@@ -1165,6 +1189,7 @@ Notes:
 												}--->
 												<!---get many-to-one  via REST--->
 												,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
+													var thisEntityInstance = this;
 													if(angular.isDefined(this.$$get#local.entity.getClassName()#ID())){
 														var options = {
 															columnsConfig:angular.toJson([
@@ -1181,7 +1206,7 @@ Notes:
 															filterGroupsConfig:angular.toJson([{
 																"filterGroup":[
 																	{
-																		"propertyIdentifier":"_#lcase(local.entity.getClassName())#.#lcase(local.entity.getClassName())#ID",
+																		"propertyIdentifier":"_#lcase(local.entity.getClassName())#.#ReReplace(local.entity.getClassName(),"\b(\w)","\l\1","ALL")#ID",
 																		"comparisonOperator":"=",
 																		"value":this.$$get#local.entity.getClassName()#ID()
 																	}
@@ -1194,26 +1219,12 @@ Notes:
 														collectionPromise.then(function(response){
 															for(var i in response.records){
 																var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
-																entityInstance.$$init(response.records[i]);
-																collection=entityInstance;
+																entityInstance.$$init(response.records[i]._#lcase(local.entity.getClassName())#_#local.property.name#[0]);
+																thisEntityInstance.$$set#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#(entityInstance);
 															}
 														});
 														return collectionPromise;
 														
-														<!---var collection = (function(thisEntityInstance,options){
-															var collection = {};
-															var collectionPromise = slatwallService.getEntity('#local.entity.getClassName()#',options);
-															collectionPromise.then(function(response){
-																for(var i in response.records){
-																	var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
-																	entityInstance.$$init(response.records[i]);
-																	collection=entityInstance;
-																}
-															});
-															return collection;
-														})(this,options);
-														
-														return collection;--->
 													}
 													
 													return null;
@@ -1234,23 +1245,26 @@ Notes:
 													if(angular.isUndefined(thisEntityInstance.parents)){
 														thisEntityInstance.parents = [];
 													}
-														
+													
 													thisEntityInstance.parents.push(thisEntityInstance.metaData['#local.property.name#']);
-
-													if(angular.isUndefined(entityInstance.children)){
-														entityInstance.children = [];
-													}
 													
-													var child = entityInstance.metaData[manyToManyName];;
-													
-													if(entityInstance.children.indexOf(child) === -1){
-														entityInstance.children.push(child);
+													<!---only set the property if we can actually find a related property --->
+													if(angular.isDefined(manyToManyName)){
+														if(angular.isUndefined(entityInstance.children)){
+															entityInstance.children = [];
+														}
+														
+														var child = entityInstance.metaData[manyToManyName];;
+														
+														if(entityInstance.children.indexOf(child) === -1){
+															entityInstance.children.push(child);
+														}
+														
+														if(angular.isUndefined(entityInstance.data[manyToManyName])){
+															entityInstance.data[manyToManyName] = [];
+														}
+														entityInstance.data[manyToManyName].push(thisEntityInstance);
 													}
-													
-													if(angular.isUndefined(entityInstance.data[manyToManyName])){
-														entityInstance.data[manyToManyName] = [];
-													}
-													entityInstance.data[manyToManyName].push(thisEntityInstance);
 
 													thisEntityInstance.data['#local.property.name#'] = entityInstance;
 
@@ -1263,7 +1277,9 @@ Notes:
 													var metaData = this.metaData;
 													<!--- one-to-many --->
 													if(metaData['#local.property.name#'].fieldtype === 'one-to-many'){
-														entityInstance.data[metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1)] = this;
+														console.log('many');
+														console.log(metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1));
+														entityInstance.data[metaData['#local.property.name#'].fkcolumn.slice(0,-2)] = this;
 													<!--- many-to-many --->
 													}else if(metaData['#local.property.name#'].fieldtype === 'many-to-many'){
 														<!--- if the array hasn't been defined then create it otherwise retrieve it and push the instance --->
@@ -1274,13 +1290,16 @@ Notes:
 														entityInstance.data[manyToManyName].push(this);
 													}
 													
-													if(angular.isDefined(metaData['#local.property.name#'].cascade)){
-														
-														if(angular.isUndefined(entityInstance.parents)){
-															entityInstance.parents = [];
+													if(angular.isDefined(metaData['#local.property.name#'])){
+														if(angular.isDefined(entityInstance.metaData[metaData['#local.property.name#'].fkcolumn.slice(0,-2)])){
+															
+															if(angular.isUndefined(entityInstance.parents)){
+																entityInstance.parents = [];
+															}
+	
+															entityInstance.parents.push(entityInstance.metaData[metaData['#local.property.name#'].fkcolumn.slice(0,-2)]);
 														}
-
-														entityInstance.parents.push(entityInstance.metaData[metaData.className.charAt(0).toLowerCase() + metaData.className.slice(1)]);
+														
 														if(angular.isUndefined(this.children)){
 															this.children = [];
 														}
@@ -1307,7 +1326,6 @@ Notes:
 															filterGroupsConfig:angular.toJson([{
 																"filterGroup":[
 																	{
-																		
 																		"propertyIdentifier":"_#lcase(local.property.cfc)#.#Replace(ReReplace(local.property.fkcolumn,"\b(\w)","\l\1","ALL"),'ID','')#.#ReReplace(local.entity.getClassName(),"\b(\w)","\l\1","ALL")#ID",
 																		"comparisonOperator":"=",
 																		"value":this.$$get#local.entity.getClassName()#ID()

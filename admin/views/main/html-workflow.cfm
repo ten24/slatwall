@@ -13,11 +13,11 @@
 			<div class="btn-toolbar">
 
 				<div class="btn-group btn-group-sm">
-					<button type="button" class="btn s-btn-grey"><i class="glyphicon glyphicon-arrow-left"></i> Workflows</button>
+					<button type="button" class="btn btn-default"><i class="glyphicon glyphicon-arrow-left"></i> Workflows</button>
 				</div>
 
 				<div class="btn-group btn-group-sm">
-					<button type="button" class="btn s-btn-grey s-remove">Cancel</button>
+					<button type="button" class="btn btn-default s-remove">Cancel</button>
 					<button type="button" class="btn btn-success">Save</button>
 				</div>
 
@@ -186,7 +186,7 @@
 																	<li><a>On Order Fulfillment Event</a></li>
 																</ul>
 																<div class="input-group-btn">
-																	<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
+																	<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
 																</div>
 															</div>
 
@@ -237,7 +237,7 @@
 																	<li><a>On Order Fulfillment Event</a></li>
 																</ul>
 																<div class="input-group-btn">
-																	<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
+																	<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
 																</div>
 															</div>
 
@@ -295,7 +295,7 @@
 																	<li><a>Todays Orders</a></li>
 																</ul>
 																<div class="input-group-btn">
-																	<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
+																	<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
 																</div>
 															</div>
 
@@ -341,7 +341,7 @@
 																	<li><a>Bob's Daily Schedule</a></li>
 																</ul>
 																<div class="input-group-btn">
-																	<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
+																	<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
 																</div>
 															</div>
 
@@ -535,7 +535,7 @@
 								<li class="j-tool-tip-item s-bundle-details">Active: <span>No</span></li>
 							</ul>
 							<ul class="list-unstyled list-inline s-last">
-								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-lgrey s-edit" data-toggle="collapse" data-target="#s-add-obj-1"><i class="fa fa-pencil"></i></a></li>
+								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-edit" data-toggle="collapse" data-target="#s-add-obj-1"><i class="fa fa-pencil"></i></a></li>
 								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove" data-toggle="collapse" data-target="#s-add-obj-1"><i class="fa fa-trash"></i></a></li>
 							</ul>
 							<div class="clearfix"></div>
@@ -669,7 +669,7 @@
 																							<form action="index.html" method="post">
 																								<div class="s-filter-group-item">
 																									<span>
-																										<button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+																										<button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
 																									</span>
 																									<div class="form-group form-group-sm">
 																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
@@ -750,7 +750,7 @@
 																							<form action="index.html" method="post">
 																								<div class="s-filter-group-item">
 																									<span>
-																										<button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+																										<button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
 																									</span>
 																									<div class="form-group form-group-sm">
 																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
@@ -1208,7 +1208,7 @@
 																						<li><a>Order Feedback</a></li>
 																					</ul>
 																					<div class="input-group-btn">
-																						<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
+																						<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
 																					</div>
 																				</div>
 
@@ -1379,7 +1379,7 @@
 								<li class="j-tool-tip-item s-bundle-details">Active: <span>Yes</span></li>
 							</ul>
 							<ul class="list-unstyled list-inline s-last">
-								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-lgrey s-edit" data-toggle="collapse" data-target="#s-add-obj-2"><i class="fa fa-pencil"></i></a></li>
+								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-edit" data-toggle="collapse" data-target="#s-add-obj-2"><i class="fa fa-pencil"></i></a></li>
 								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove" data-toggle="collapse" data-target="#s-add-obj-2"><i class="fa fa-trash"></i></a></li>
 							</ul>
 							<div class="clearfix"></div>
@@ -1514,7 +1514,7 @@
 																							<form action="index.html" method="post">
 																								<div class="s-filter-group-item">
 																									<span>
-																										<button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+																										<button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
 																									</span>
 																									<div class="form-group form-group-sm">
 																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
@@ -1595,7 +1595,7 @@
 																							<form action="index.html" method="post">
 																								<div class="s-filter-group-item">
 																									<span>
-																										<button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+																										<button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
 																									</span>
 																									<div class="form-group form-group-sm">
 																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
@@ -2094,7 +2094,7 @@
 																						<li><a>Order Feedback</a></li>
 																					</ul>
 																					<div class="input-group-btn">
-																						<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
+																						<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
 																					</div>
 																				</div>
 
@@ -2395,7 +2395,7 @@
 																							<form action="index.html" method="post">
 																								<div class="s-filter-group-item">
 																									<span>
-																										<button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+																										<button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
 																									</span>
 																									<div class="form-group form-group-sm">
 																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
@@ -2476,7 +2476,7 @@
 																							<form action="index.html" method="post">
 																								<div class="s-filter-group-item">
 																									<span>
-																										<button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+																										<button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
 																									</span>
 																									<div class="form-group form-group-sm">
 																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
@@ -2934,7 +2934,7 @@
 																						<li><a>Order Feedback</a></li>
 																					</ul>
 																					<div class="input-group-btn">
-																						<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
+																						<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
 																					</div>
 																				</div>
 

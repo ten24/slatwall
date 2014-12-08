@@ -66,7 +66,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="order.account.lastName" />
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="paymentMethod.paymentMethodName" />
-		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="amount" />
 		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
 		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
