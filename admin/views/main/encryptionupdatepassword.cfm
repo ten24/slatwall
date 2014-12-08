@@ -62,7 +62,7 @@ Notes:
 		 </div>
 	   </nav>
 	 </div>
-	<cf_hb:HibachipertyList divClass="col-md-12">
+	<hb:HibachiPropertyList divClass="span12">
 		<form method="post" action="?s=1" class="form-horizontal">
 			<input type="hidden" name="slatAction" value="admin:main.encryptionupdatepassword" />
 			<input type="hidden" name="process" value="1" />
@@ -70,10 +70,10 @@ Notes:
 			<cfif rc.process>
 				<cfset passwordFieldAttributes = 'placeholder="********"' />
 			</cfif>
-			<cf_hb:HibachildDisplay title="#$.slatwall.rbKey('admin.main.encryption.password')#" value="#rc.password#-123434" fieldType="password" fieldName="password" fieldAttributes="#passwordFieldAttributes#" edit="#rc.edit#" />
-			<cf_hb:HibachildDisplay title="#$.slatwall.rbKey('admin.main.encryption.iterationCount')#" value="#rc.iterationCount#" fieldType="text" fieldName="iterationCount" edit="#rc.edit#" />
+			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.encryption.password')#" value="#rc.password#" fieldType="password" fieldName="password" fieldAttributes="#passwordFieldAttributes#" edit="#rc.edit#" />
+			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.encryption.iterationCount')#" value="#rc.iterationCount#" fieldType="text" fieldName="iterationCount" edit="#rc.edit#" />
 			
 			<button class="btn btn-primary" title="#$.slatwall.rbKey('admin.main.encryption.updatePassword_title')#" type="submit">#$.slatwall.rbKey('admin.main.encryption.updatePassword_title')#</button>
 		</form>
-	</cf_hb:HibachipertyList>
+	</hb:HibachiPropertyList>
 </cfoutput>

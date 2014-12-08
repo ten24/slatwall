@@ -53,11 +53,11 @@
 	</cffunction>
 	
 	<cffunction name="reencryptData" returntype="void" access="public">
-		<cfargument name="batchSizeLimit" default="" />
+		<cfargument name="batchSizeLimit" default="0" type="numeric" />
 		<cfscript>
 		super.reencryptData(argumentCollection=arguments);
 		
-		var batchSizeLimitFlag = isNumeric(arguments.batchSizeLimit) && arguments.batchSizeLimit > 0;
+		var batchSizeLimitFlag = arguments.batchSizeLimit > 0;
 		var batchSizeLimitReachedFlag = false;
 		
 		var latestEncryptionDateTime = getService('hibachiUtilityService').getEncryptionPasswordArray()[1].createdDateTime;

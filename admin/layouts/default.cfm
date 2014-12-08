@@ -406,7 +406,7 @@ Notes:
 								<hb:HibachiActionCaller action="admin:main.update" type="list">
 								<cfif $.slatwall.getAccount().getSuperUserFlag()>
 									<hb:HibachiActionCaller action="admin:main.encryptionupdatepassword" type="list">
-									<hb:HibachiActionCaller action="admin:main.encryptionreencryptdata" type="list" confirm="true" confirmText="#$.slatwall.rbKey('admin.main.encryptionreencryptdata_confirm')#">
+									<hb:HibachiActionCaller action="admin:main.encryptionreencryptdata" type="list">
 									<hb:HibachiActionCaller action="admin:main.default" querystring="reload=true" type="list" text="Reload Slatwall">
 								</cfif>
 							</hb:HibachiDividerHider>

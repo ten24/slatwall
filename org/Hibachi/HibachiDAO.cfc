@@ -129,7 +129,7 @@
 			return exportQry;
 		}
 		
-		public void function reencryptData() {
+		public void function reencryptData(numeric batchSizeLimit=0) {
 		}
 
 		public any function getAccountByAuthToken(required string authToken) {

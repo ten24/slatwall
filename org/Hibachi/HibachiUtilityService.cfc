@@ -519,8 +519,8 @@
 			}
 		}
 		
-		public void function reencryptData() {
-			getHibachiDAO().reencryptData();
+		public void function reencryptData(numeric batchSizeLimit=0) {
+			getHibachiDAO().reencryptData(argumentCollection=arguments);
 		}
 		
 		private void function writeEncryptionPasswordFile(array encryptionPasswordArray) {
