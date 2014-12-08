@@ -23,7 +23,7 @@ delay = function(func, wait) {
 jQuery(document).ready(function() {
 
 	setupEventHandlers();
-
+	
 	initUIElements( 'body' );
 
 	// Focus on the first tab index
@@ -33,6 +33,10 @@ jQuery(document).ready(function() {
 
 	if(jQuery('#global-search').val() !== '') {
 		jQuery('#global-search').keyup();
+	}
+	
+	if(jQuery('.paging-show-toggle').length) {
+		jQuery('.paging-show-toggle').closest('ul').find('.show-option').hide();
 	}
 
 });
@@ -1280,7 +1284,8 @@ function buildPagingNav(currentPage, totalPages, pageRecordStart, pageRecordEnd,
 		nav += '<li><a href="##" class="show-option" data-show="100">100</a></li>';
 		nav += '<li><a href="##" class="show-option" data-show="500">500</a></li>';
 		nav += '<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>';
-
+		nav += '</ul>';
+		nav += '<ul class="pagination">';
 		if(currentPage > 1) {
 			nav += '<li><a href="#" class="listing-pager page-option prev" data-page="' + (currentPage - 1) + '">&laquo;</a></li>';
 		} else {

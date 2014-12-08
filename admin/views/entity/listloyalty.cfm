@@ -60,7 +60,7 @@ Notes:
 			
 		<!--- Create ---> 
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller action="admin:entity.createloyalty" entity="loyalty" class="btn s-btn-blue" icon="plus icon-white" />
+			<hb:HibachiActionCaller action="admin:entity.createloyalty" entity="loyalty" class="btn btn-primary" icon="plus icon-white" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	

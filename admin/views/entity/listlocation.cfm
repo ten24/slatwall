@@ -58,7 +58,7 @@ Notes:
 			
 		<!--- Create ---> 
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller action="admin:entity.createlocation" entity="location" class="btn s-btn-blue" icon="plus icon-white" modal="true" />
+			<hb:HibachiActionCaller action="admin:entity.createlocation" entity="location" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 

@@ -8,62 +8,6 @@ angular.module('slatwalladmin')
 		$log,
 		$slatwall
 	){
-		/*function _productBundleGroupType(productBundleGroupType){
-			this.parentTypeID = '154dcdd2f3fd4b5ab5498e93470957b8';
-			this.type=productBundleGroupType.type;
-			this.systemCode=productBundleGroupType.systemCode;
-			this.typeDescription=productBundleGroupType.typeDescription;
-		}
-			
-		function _productBundleGroup(){
-			this.minimumQuantity=1;
-			this.maximumQuantity=1;
-			this.active=true;
-			this.amount=0;
-			this.amountType='None',
-			this.productBundleGroupType={
-				type:null
-			};
-			this.skuCollectionConfig = {
-					baseEntityName:"SlatwallSku",
-					baseEntityAlias:"Sku",
-					filterGroups:[]
-			};
-			this.$$editing=true;
-		}
-		
-		_productBundleGroup.prototype = {
-			$$setMinimumQuantity:function(quantity) {
-				if(quantity < 0 || quantity === null ){
-					this.minimumQuantity = 0;
-				}
-				
-				if(quantity > this.maximumQuantity){
-					this.maximumQuantity = quantity;
-				} 
-				
-			},
-			$$setMaximumQuantity:function(quantity){
-				if(quantity < 1 || quantity === null ){
-					this.maximumQuantity = 1;
-				}
-				if(this.maximumQuantity < this.minimumQuantity){
-					this.minimumQuantity = this.maximumQuantity;
-					 
-				}
-			},
-			$$setActive:function(value){
-				this.active=value;
-			},
-			$$toggleEdit:function(){
-				if(angular.isUndefined(this.$$editing) || this.$$editing === false){
-					this.$$editing = true;
-				}else{
-					this.$$editing = false;
-				}
-			}
-			
-		};*/
 		
 		var productBundleService = {
 			decorateProductBundleGroup:function(productBundleGroup){
