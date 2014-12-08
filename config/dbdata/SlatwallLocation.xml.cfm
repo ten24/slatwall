@@ -6,6 +6,6 @@
 		<column name="locationName" update="false" />
 	</Columns>
 	<Records>
-		<Record locationID="88e6d435d3ac2e5947c81ab3da60eba2" locationIDPath="de398e784e8e4af2bb6b72e600d66114" locationName="Default" />
+		<Record locationID="88e6d435d3ac2e5947c81ab3da60eba2" locationIDPath="88e6d435d3ac2e5947c81ab3da60eba2" locationName="Default" />
 	</Records>
 </Table>
