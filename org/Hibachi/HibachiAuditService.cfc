@@ -112,62 +112,6 @@ component extends="HibachiService" accessors="true" {
 		// Entity must be auditable and modifications should not have been triggered by a delete
 		if (arguments.entity.getAuditableFlag() && (!structKeyExists(getHibachiScope().getAuditsToCommitStruct(), baseID) || !structKeyExists(getHibachiScope().getAuditsToCommitStruct()[baseID], 'delete'))) {
 			
-			var auditType = '';
-			var baseObject = getBaseObjectForEntity( arguments.entity );
-			var baseTitle = getBaseTitleForEntity( arguments.entity );
-			
-			// AuditType for attributeValue is always an update
-			if (arguments.entity.getClassName() == "AttributeValue") {
-				auditType = 'update';
-				
-			// Audit type is create when no old data available
-			} else if (isNull(arguments.oldData)) {
-				auditType = 'create';
-				
-			// Audit type is rollback
-			} else if (arguments.entity.getRollbackProcessedFlag()) {
-				auditType = 'rollback';
-				
-			// Audit type is update
-			} else {
-				auditType = 'update';
-			}
-			
-			// An audit may already exist in the request waiting to commit with the same related base object and similar audit type
-			// We can just update the existing audit and consolidate rather than create a new audit
-			if (arguments.entity.getClassName() == "AttributeValue") {
-				var audit = getExistingAuditToCommit(baseID=baseID, auditType='update,create');
-			} else {
-				var audit = getExistingAuditToCommit(baseID=baseID, auditType=auditType);	
-			} 
-			var commitPendingFlag = true;
-			if (isNull(audit)) {
-				commitPendingFlag = false;
-				audit = this.newAudit();
-				audit.setBaseID(baseID);
-				audit.setBaseObject(baseObject);
-				audit.setAuditType(auditType);
-				
-				// Additional population logic for 'create'
-				if (audit.getAuditType() == 'create') {
-					// Set auditDateTime using entity.createdDate
-					if(structKeyExists(arguments.entity, 'getCreatedDateTime') && isDate(arguments.entity.getCreatedDateTime())) {
-						audit.setAuditDateTime(arguments.entity.getCreatedDateTime());
-					}
-					
-					// Set session account information using entity.getCreatedByAccount
-					if(structKeyExists(arguments.entity, 'getCreatedByAccount') && !isNull(arguments.entity.getCreatedByAccount())) {
-						audit.setSessionAccountID(arguments.entity.getCreatedByAccount().getAccountID());
-						audit.setSessionAccountFullName(arguments.entity.getCreatedByAccount().getFullName());
-						if (!isNull(arguments.entity.getCreatedByAccount().getEmailAddress())) {
-							audit.setSessionAccountEmailAddress(arguments.entity.getCreatedByAccount().getEmailAddress());
-						}
-					}
-				}
-			}
-			
-			audit.setTitle(baseTitle);
-			
 			// Determine property change data
 			if(arguments.entity.getClassName() == "AttributeValue") {
 				var propertyChangeData = {};
@@ -189,45 +133,105 @@ component extends="HibachiService" accessors="true" {
 				var propertyChangeData = generatePropertyChangeDataForEntity(argumentCollection=arguments);	
 			}
 			
-			// If audit commit was already pending, just append new property change data to existing property change data 
-			if (!isNull(audit.getData()) && isJSON(audit.getData())) {
-				var existingPropertyChangeData = deserializeJSON(audit.getData());
+			//If both the newPropertyData and the oldPropertyData are empty, skip these steps.
+			if(!structIsEmpty(propertyChangeData.newPropertyData) || !structIsEmpty(propertyChangeData.oldPropertyData)){
+			
+				var auditType = '';
+				var baseObject = getBaseObjectForEntity( arguments.entity );
+				var baseTitle = getBaseTitleForEntity( arguments.entity );
 				
-				// Append existing to new without overwriting new
-				structAppend(propertyChangeData.newPropertyData, existingPropertyChangeData.newPropertyData, false);
+				// AuditType for attributeValue is always an update
+				if (arguments.entity.getClassName() == "AttributeValue") {
+					auditType = 'update';
+					
+				// Audit type is create when no old data available
+				} else if (isNull(arguments.oldData)) {
+					auditType = 'create';
+					
+				// Audit type is rollback
+				} else if (arguments.entity.getRollbackProcessedFlag()) {
+					auditType = 'rollback';
+					
+				// Audit type is update
+				} else {
+					auditType = 'update';
+				}
 				
-				// Append existing to new without overwriting new
-				if (structKeyExists(propertyChangeData, 'oldPropertyData') && structKeyExists(existingPropertyChangeData, 'oldPropertyData')) {
-					structAppend(propertyChangeData.oldPropertyData, existingPropertyChangeData.oldPropertyData, false);
-				// Insert entire struct from existing to new because oldPropertyData not present in new
-				} else if (structKeyExists(existingPropertyChangeData, 'oldPropertyData')) {
-					structInsert(propertyChangeData, 'oldPropertyData', existingPropertyChangeData.oldPropertyData);
-				}
-			}
-			
-			audit.setData(serializeJSON(propertyChangeData));
-			
-			// Defer audit commit to end of request if not already pending
-			if (!commitPendingFlag) {
-				addAuditToCommit(audit);
-			}
-			
-			// If no previous audit create data available, manually add a 'create' audit for legacy data and make necessary adjustments to the data
-			if(!arguments.entity.getClassName() == "AttributeValue") {
-				var auditSmartList = getAuditSmartListForEntity(entity=arguments.entity, auditTypeList='create');
-				if (!isNull(arguments.oldData) && auditSmartList.getRecordsCount()  == 0) {
-					var auditLegacyCreate = logEntityModify(arguments.entity);
+				// An audit may already exist in the request waiting to commit with the same related base object and similar audit type
+				// We can just update the existing audit and consolidate rather than create a new audit
+				if (arguments.entity.getClassName() == "AttributeValue") {
+					var audit = getExistingAuditToCommit(baseID=baseID, auditType='update,create');
+				} else {
+					var audit = getExistingAuditToCommit(baseID=baseID, auditType=auditType);	
+				} 
+				var commitPendingFlag = true;
+				if (isNull(audit)) {
+					commitPendingFlag = false;
+					audit = this.newAudit();
+					audit.setBaseID(baseID);
+					audit.setBaseObject(baseObject);
+					audit.setAuditType(auditType);
 					
-					// Remove oldData from arguments if it was provided because it is not applicable for property change data
-					var propertyChangeDataForLegacyCreate = generatePropertyChangeDataForEntity(entity=arguments.entity);
-					
-					// Revert new values back to the old values to capture an initial state
-					structAppend(propertyChangeDataForLegacyCreate.newPropertyData, propertyChangeData.oldPropertyData);
-					auditLegacyCreate.setData(serializeJSON(propertyChangeDataForLegacyCreate));
+					// Additional population logic for 'create'
+					if (audit.getAuditType() == 'create') {
+						// Set auditDateTime using entity.createdDate
+						if(structKeyExists(arguments.entity, 'getCreatedDateTime') && isDate(arguments.entity.getCreatedDateTime())) {
+							audit.setAuditDateTime(arguments.entity.getCreatedDateTime());
+						}
+						
+						// Set session account information using entity.getCreatedByAccount
+						if(structKeyExists(arguments.entity, 'getCreatedByAccount') && !isNull(arguments.entity.getCreatedByAccount())) {
+							audit.setSessionAccountID(arguments.entity.getCreatedByAccount().getAccountID());
+							audit.setSessionAccountFullName(arguments.entity.getCreatedByAccount().getFullName());
+							if (!isNull(arguments.entity.getCreatedByAccount().getEmailAddress())) {
+								audit.setSessionAccountEmailAddress(arguments.entity.getCreatedByAccount().getEmailAddress());
+							}
+						}
+					}
 				}
+				
+				audit.setTitle(baseTitle);
+				
+				// If audit commit was already pending, just append new property change data to existing property change data 
+				if (!isNull(audit.getData()) && isJSON(audit.getData())) {
+					var existingPropertyChangeData = deserializeJSON(audit.getData());
+					
+					// Append existing to new without overwriting new
+					structAppend(propertyChangeData.newPropertyData, existingPropertyChangeData.newPropertyData, false);
+					
+					// Append existing to new without overwriting new
+					if (structKeyExists(propertyChangeData, 'oldPropertyData') && structKeyExists(existingPropertyChangeData, 'oldPropertyData')) {
+						structAppend(propertyChangeData.oldPropertyData, existingPropertyChangeData.oldPropertyData, false);
+					// Insert entire struct from existing to new because oldPropertyData not present in new
+					} else if (structKeyExists(existingPropertyChangeData, 'oldPropertyData')) {
+						structInsert(propertyChangeData, 'oldPropertyData', existingPropertyChangeData.oldPropertyData);
+					}
+				}
+				
+				audit.setData(serializeJSON(propertyChangeData));
+				
+				// Defer audit commit to end of request if not already pending
+				if (!commitPendingFlag) {
+					addAuditToCommit(audit);
+				}
+				
+				// If no previous audit create data available, manually add a 'create' audit for legacy data and make necessary adjustments to the data
+				if(!arguments.entity.getClassName() == "AttributeValue") {
+					var auditSmartList = getAuditSmartListForEntity(entity=arguments.entity, auditTypeList='create');
+					if (!isNull(arguments.oldData) && auditSmartList.getRecordsCount()  == 0) {
+						var auditLegacyCreate = logEntityModify(arguments.entity);
+						
+						// Remove oldData from arguments if it was provided because it is not applicable for property change data
+						var propertyChangeDataForLegacyCreate = generatePropertyChangeDataForEntity(entity=arguments.entity);
+						
+						// Revert new values back to the old values to capture an initial state
+						structAppend(propertyChangeDataForLegacyCreate.newPropertyData, propertyChangeData.oldPropertyData);
+						auditLegacyCreate.setData(serializeJSON(propertyChangeDataForLegacyCreate));
+					}
+				}
+				
+				return audit;
 			}
-			
-			return audit;
 		}
 	}
 	
