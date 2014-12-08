@@ -11,7 +11,7 @@
 		<cfif attributes.type eq "button">
 			<cfoutput>
 				<div class="btn-group">
-					<button class="btn #attributes.buttonClass# dropdown-toggle s-btn-blue" data-toggle="dropdown"><i class="fa fa-#attributes.icon#"></i> #attributes.title# <span class="caret"></span></button>
+					<button class="btn #attributes.buttonClass# dropdown-toggle btn-primary" data-toggle="dropdown"><i class="fa fa-#attributes.icon#"></i> #attributes.title# <span class="caret"></span></button>
 					<ul class="dropdown-menu #attributes.dropdownClass#">
 						#thisTag.generatedContent#
 						<cfset thisTag.generatedContent = "" />

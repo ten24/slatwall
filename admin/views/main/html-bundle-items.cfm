@@ -16,7 +16,7 @@
 
 				<div class="btn-group btn-group-sm">
 					<div class="btn-group btn-group-sm">
-						<button type="button" class="btn s-btn-grey dropdown-toggle" data-toggle="dropdown">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 							Actions
 							<span class="caret"></span>
 						</button>
@@ -29,8 +29,8 @@
 				</div>
 
 				<div class="btn-group btn-group-sm">
-					<button type="button" class="btn s-btn-grey s-remove">Delete</button>
-					<button type="button" class="btn s-btn-grey">Cancel</button>
+					<button type="button" class="btn btn-default s-remove">Delete</button>
+					<button type="button" class="btn btn-default">Cancel</button>
 					<button type="button" class="btn btn-success">Save</button>
 				</div>
 
@@ -597,7 +597,7 @@
 
 					</ul>
 				</div>
-				<button class="btn btn-sm s-btn-grey s-create-bundle-btn" data-toggle="collapse" data-target="#j-edit-filter-9"><i class="fa fa-plus"></i> Bundle Group</button>
+				<button class="btn btn-sm btn-default s-create-bundle-btn" data-toggle="collapse" data-target="#j-edit-filter-9"><i class="fa fa-plus"></i> Bundle Group</button>
 
 
 				<!--- Edit Filter Box --->
@@ -641,7 +641,7 @@
 																<li><a>OnOrderItemDelete</a></li>
 															</ul>
 															<div class="input-group-btn">
-																<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
+																<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
 															</div>
 														</div>
 

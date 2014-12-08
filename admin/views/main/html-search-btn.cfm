@@ -13,7 +13,7 @@
 			<li><a>OnOrderItemDelete</a></li>
 		</ul>
 		<div class="input-group-btn">
-			<button type="button" class="btn btn-sm s-btn-grey j-dropdown-options"><span class="caret"></span></button>
+			<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
 		</div>
 	</div>
 

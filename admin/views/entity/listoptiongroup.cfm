@@ -58,7 +58,7 @@ Notes:
 			
 		<!--- Create ---> 
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller action="admin:entity.createoptiongroup" entity="optiongroup" class="btn s-btn-blue" icon="plus icon-white" />
+			<hb:HibachiActionCaller action="admin:entity.createoptiongroup" entity="optiongroup" class="btn btn-primary" icon="plus icon-white" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 	

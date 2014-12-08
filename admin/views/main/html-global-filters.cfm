@@ -14,7 +14,7 @@
 
                 <div class="btn-group btn-group-sm">
                     <div class="btn-group btn-group-sm">
-                        <button type="button" class="btn s-btn-grey dropdown-toggle" data-toggle="dropdown">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                             Actions
                             <span class="caret"></span>
                         </button>
@@ -27,8 +27,8 @@
                 </div>
 
                 <div class="btn-group btn-group-sm">
-                    <button type="button" class="btn s-btn-grey s-remove">Delete</button>
-                    <button type="button" class="btn s-btn-grey">Cancel</button>
+                    <button type="button" class="btn btn-default s-remove">Delete</button>
+                    <button type="button" class="btn btn-default">Cancel</button>
                     <button type="button" class="btn btn-success">Save</button>
                 </div>
 
@@ -98,17 +98,17 @@
     				</li>
     				<!--- <li>
     					<div class="btn-group" class="navbar-left">
-    						<button type="button" class="btn btn-sm s-btn-grey" data-toggle="collapse" data-target="#j-download-link"><i class="fa fa-download"></i></button>
+    						<button type="button" class="btn btn-sm btn-default" data-toggle="collapse" data-target="#j-download-link"><i class="fa fa-download"></i></button>
     					</div>
     				</li> --->
     				<li>
     					<div class="btn-group navbar-left">
-    						<button type="button" class="btn btn-sm s-btn-lgrey" data-toggle="collapse" data-target="#j-filter-link"><i class="fa fa-cog"></i></button>
+    						<button type="button" class="btn btn-sm s-btn-dgrey" data-toggle="collapse" data-target="#j-filter-link"><i class="fa fa-cog"></i></button>
     					</div>
     				</li>
                     <!--- <li>
                         <div class="btn-group navbar-left">
-                            <button type="button" class="btn btn-sm s-btn-blue"><i class="fa fa-plus"></i></button>
+                            <button type="button" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i></button>
                         </div>
                     </li> --->
     			</ul>

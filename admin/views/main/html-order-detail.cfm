@@ -9,10 +9,10 @@
 			<div class="btn-toolbar">
 
 				<div class="btn-group btn-group-sm">
-					<button type="button" class="btn s-btn-grey"><i class="fa fa-reply"></i> Products</button>
+					<button type="button" class="btn btn-default"><i class="fa fa-reply"></i> Products</button>
 
 					<div class="btn-group btn-group-sm">
-						<button type="button" class="btn s-btn-grey dropdown-toggle" data-toggle="dropdown">
+						<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 							Actions
 							<span class="caret"></span>
 						</button>
@@ -25,8 +25,8 @@
 				</div>
 
 				<div class="btn-group btn-group-sm">
-					<button type="button" class="btn s-btn-grey s-remove">Delete</button>
-					<button type="button" class="btn s-btn-grey">Cancel</button>
+					<button type="button" class="btn btn-default s-remove">Delete</button>
+					<button type="button" class="btn btn-default">Cancel</button>
 					<button type="button" class="btn btn-success">Save</button>
 				</div>
 
@@ -163,7 +163,7 @@
 								</li>
 								<li>
 									<div class="btn-group navbar-left">
-										<button type="button" class="btn btn-sm s-btn-grey"><i class="fa fa-plus"></i></button>
+										<button type="button" class="btn btn-sm btn-default"><i class="fa fa-plus"></i></button>
 									</div>
 								</li>
 							</ul>
@@ -400,7 +400,7 @@
 							<div class="tab-pane active" id="j-properties">
 								<!--- <span class="s-edit-btn-group">
 									<button class="btn btn-xs s-btn-ten24" id="j-save-btn" style="display:none;"><i class="fa fa-floppy-o"></i> Save</button>
-									<button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-pencil"></i> Edit</button>
+									<button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-pencil"></i> Edit</button>
 								</span> --->
 								<form class="row form-horizontal s-properties" role="form">
 									<div class="col-sm-6">
@@ -513,7 +513,7 @@
 																			<form action="index.html" method="post">
 																				<div class="s-filter-group-item">
 																					<span>
-																						<button class="btn btn-xs s-btn-ten24" style="display:none;"> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+																						<button class="btn btn-xs s-btn-ten24" style="display:none;"> <button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
 																					</span>
 																					<div class="form-group form-group-sm">
 																						<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
@@ -544,7 +544,7 @@
 																				</div>
 																				<div class="s-filter-group-item">
 																					<span>
-																						<button class="btn btn-xs s-btn-ten24" style="display:none;"> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+																						<button class="btn btn-xs s-btn-ten24" style="display:none;"> <button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
 																					</span>
 																					<div class="form-group form-group-sm">
 																						<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
@@ -625,7 +625,7 @@
 																			<form action="index.html" method="post">
 																				<div class="s-filter-group-item">
 																					<span>
-																						<button class="btn btn-xs s-btn-ten24"> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+																						<button class="btn btn-xs s-btn-ten24"> <button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
 																					</span>
 																					<div class="form-group form-group-sm">
 																						<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
@@ -669,7 +669,7 @@
 																				</div>
 																				<div>
 																					<span>
-																						<button class="btn btn-xs s-btn-ten24" style="display:none;"> <button class="btn btn-xs s-btn-lgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+																						<button class="btn btn-xs s-btn-ten24" style="display:none;"> <button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
 																					</span>
 																					<div class="form-group form-group-sm">
 																						<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
@@ -1540,12 +1540,12 @@
 								</li>
 								<!--- <li>
 									<div class="btn-group" class="navbar-left">
-										<button type="button" class="btn btn-sm s-btn-grey" data-toggle="collapse" data-target="#j-download-link"><i class="fa fa-download"></i></button>
+										<button type="button" class="btn btn-sm btn-default" data-toggle="collapse" data-target="#j-download-link"><i class="fa fa-download"></i></button>
 									</div>
 								</li> --->
 								<li>
 									<div class="btn-group navbar-left">
-										<button type="button" class="btn btn-sm s-btn-grey"><i class="fa fa-plus"></i></button>
+										<button type="button" class="btn btn-sm btn-default"><i class="fa fa-plus"></i></button>
 									</div>
 								</li>
 							</ul>
