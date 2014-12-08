@@ -1436,6 +1436,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// First Re-Calculate the 'amounts' base on price groups
 			getPriceGroupService().updateOrderAmountsWithPriceGroups( arguments.order );
+			
 			// Then Re-Calculate the 'amounts' based on permotions ext.  This is done second so that the order already has priceGroup specific info added
 			getPromotionService().updateOrderAmountsWithPromotions( arguments.order );
 			
@@ -2019,11 +2020,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 			
-			// Recalculate the order amounts for tax and promotions
-			arguments.order = this.processOrder( order, {}, 'updateOrderAmounts');
-			
 			// Make sure the auto-state stuff gets called.
 			arguments.order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
+		}
+		
+		// Recalculate the order amounts for tax and promotions
+		if(!arguments.orderItem.hasErrors()) {
+			arguments.order = this.processOrder( order, {}, 'updateOrderAmounts');	
 		}
 		
 		// Check for updateEventRegistrationQuantity Needs
@@ -2071,9 +2074,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderFulfillment.checkNewAccountAddressSave();
 			}
 			
-			// Recalculate the order amounts for tax and promotions
+		}
+		
+		// Recalculate the order amounts for tax and promotions
+		if(!arguments.orderFulfillment.hasErrors()) {
 			this.processOrder( arguments.orderFulfillment.getOrder(), {}, 'updateOrderAmounts' );
-			
 		}
 		
 		return arguments.orderFulfillment;
@@ -2092,7 +2097,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				getShippingService().updateOrderFulfillmentShippingMethodOptions( arguments.orderItem.getOrderFulfillment() );
 			}
 			
-			// Recalculate the order amounts for tax and promotions
+		}
+		
+		// Recalculate the order amounts for tax and promotions
+		if(!arguments.orderItem.hasErrors()){
 			this.processOrder( arguments.orderItem.getOrder(), {}, 'updateOrderAmounts' );
 		}
 		
