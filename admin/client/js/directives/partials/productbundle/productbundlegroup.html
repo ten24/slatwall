@@ -52,7 +52,7 @@
     							data-product-bundle-group="productBundleGroup"
     					>
     					</span>
-						  <sw-form ng-if="formName" 
+						  <sw-form ng-if="formName && formName !== ''" 
                                 name="{{formName}}" 
                                 data-object="productBundleGroup"    
                                 data-context="save"
@@ -89,16 +89,18 @@
     	                                        data-options-arguments="{property:'amountType'}"
     	                                        data-editing="true"
     	                                        data-editable="true"
+    	                                        data-is-dirty="true"
     	                                ></sw-property-display>
     	                            </div>
     	
     	                            <div class="col-md-6">
-    	                            	<span ng-show="productBundleGroup['amountType'].value === 'fixed' || productBundleGroup['amountType'].value === 'skuPricePercentageIncrease' || productBundleGroup['amountType'].value === 'skuPricePercentageDecrease'">
+    	                            	<span ng-show="productBundleGroup.data['amountType'] === 'fixed' || productBundleGroup.data['amountType'] === 'skuPricePercentageIncrease' || productBundleGroup.data['amountType'] === 'skuPricePercentageDecrease'">
     	                                    <sw-property-display
     	                                        data-object="productBundleGroup"
     	                                        data-property="amount"
     	                                        data-editing="true"
     	                                        data-editable="true"
+    	                                        data-is-dirty="true"
     	                                    ></sw-property-display>
     	    							 </span>
     	                            </div>

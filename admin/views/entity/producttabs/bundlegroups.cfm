@@ -31,6 +31,7 @@
 	    		data-product-bundle-groups="product.data.skus[0].data.productBundleGroups"
 	    		data-add-product-bundle-group="addProductBundleGroup()"
 	    		data-editing="false"
+	    		
 	    >
 	    </span>
 	  </section>
