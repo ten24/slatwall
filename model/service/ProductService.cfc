@@ -904,7 +904,7 @@ component extends="HibachiService" accessors="true" {
 	
 	// ====================== START: Save Overrides ===========================
 
-	public any function saveProduct(required any product, required struct data){
+	public any function saveProduct(required any product, struct data={}){
 
 		if( (isNull(arguments.product.getURLTitle()) || !len(arguments.product.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
 			if(structKeyExists(arguments.data, "productName") && len(arguments.data.productName)) {
@@ -919,7 +919,7 @@ component extends="HibachiService" accessors="true" {
 		return arguments.product;
 	}
 	
-	public any function saveProductType(required any productType, required struct data) {
+	public any function saveProductType(required any productType, struct data={}) {
 		if( (isNull(arguments.productType.getURLTitle()) || !len(arguments.productType.getURLTitle())) && (!structKeyExists(arguments.data, "urlTitle") || !len(arguments.data.urlTitle)) ) {
 			if(structKeyExists(arguments.data, "productTypeName") && len(arguments.data.productTypeName)) {
 				data.urlTitle = getDataService().createUniqueURLTitle(titleString=arguments.data.productTypeName, tableName="SwProductType");	
