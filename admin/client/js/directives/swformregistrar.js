@@ -14,6 +14,17 @@ angular.module('slatwalladmin')
 					context:scope.context,
 					name:scope.name
 				};
+				var makeRandomID = function makeid(count)
+				{
+				    var text = "";
+				    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+				
+				    for( var i=0; i < count; i++ )
+				        text += possible.charAt(Math.floor(Math.random() * possible.length));
+				
+				    return text;
+				};
+				
 				scope.form = formController;
 				/*register form with service*/
 				formController.name = scope.name
