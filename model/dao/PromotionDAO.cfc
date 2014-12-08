@@ -52,6 +52,7 @@ Notes:
 		<cfargument name="rewardTypeList" required="true" type="string" />
 		<cfargument name="promotionCodeList" required="true" type="string" />
 		<cfargument name="qualificationRequired" type="boolean" default="false" />
+		<cfargument name="promotionEffectiveDateTime" type="date" default="#now()#" />
 		
 		<cfset var noQualRequiredList = "" />
 		<cfif listFindNoCase(arguments.rewardTypeList,"fulfillment")>
@@ -70,9 +71,9 @@ Notes:
 			WHERE
 				spr.rewardType IN (:rewardTypeList)
 			  and
-				(spp.startDateTime is null or spp.startDateTime < :now) 
+				(spp.startDateTime is null or spp.startDateTime < :promotionEffectiveDateTime) 
 			  and
-				(spp.endDateTime is null or spp.endDateTime > :now)
+				(spp.endDateTime is null or spp.endDateTime > :promotionEffectiveDateTime)
 			  and
 				sp.activeFlag = :activeFlag" />
 		
@@ -87,7 +88,7 @@ Notes:
 
 			<!--- Or a promotion code exists --->
 			<cfif len(promotionCodeList)>
-				<cfset hql &= " OR EXISTS ( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID AND c.promotionCode IN (:promotionCodeList) AND (c.startDateTime is null or c.startDateTime < :now) AND (c.endDateTime is null or c.endDateTime > :now) )" />
+				<cfset hql &= " OR EXISTS ( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID AND c.promotionCode IN (:promotionCodeList) AND (c.startDateTime is null or c.startDateTime < :promotionEffectiveDateTime) AND (c.endDateTime is null or c.endDateTime > :promotionEffectiveDateTime) )" />
 			</cfif>
 
 			<!--- Or we still want these to show up because they are order/fulfillment rewards --->
@@ -107,14 +108,14 @@ Notes:
 
 		<!--- Or if there are promotion codes then we have passed that pomotion code in --->
 		<cfif len(promotionCodeList)>
-			<cfset hql &= " OR EXISTS ( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID AND c.promotionCode IN (:promotionCodeList) AND (c.startDateTime is null or c.startDateTime < :now) AND (c.endDateTime is null or c.endDateTime > :now) )" />	
+			<cfset hql &= " OR EXISTS ( SELECT c.promotionCodeID FROM SlatwallPromotionCode c WHERE c.promotion.promotionID = sp.promotionID AND c.promotionCode IN (:promotionCodeList) AND (c.startDateTime is null or c.startDateTime < :promotionEffectiveDateTime) AND (c.endDateTime is null or c.endDateTime > :promotionEffectiveDateTime) )" />	
 		</cfif>
 
 		<!--- End additional where --->
 		<cfset hql &= " )" />
 			
 		<cfset var params = {
-			now = now(),
+			promotionEffectiveDateTime = arguments.promotionEffectiveDateTime,
 			activeFlag = 1
 		} />
 		
