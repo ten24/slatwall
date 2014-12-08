@@ -148,7 +148,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					var columnStruct = {};
 					columnStruct['propertyIdentifier'] = '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject)) & '.' & defaultProperty.name;
 					columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
-					columnStruct['isVisible'] = true;
+					
+					if(structKeyExists(defaultProperty,"fieldtype") &&defaultProperty.fieldtype == 'id'){
+						columnStruct['isDeletable'] = false;
+						columnStruct['isVisible'] = false;
+					}else{
+						columnStruct['isDeletable'] = true;
+						columnStruct['isVisible'] = true;
+					}
 					columnStruct['isSearchable'] = true;
 					columnStruct['isExportable'] = true;
 					if(structKeyExists(defaultProperty,"ormtype")){

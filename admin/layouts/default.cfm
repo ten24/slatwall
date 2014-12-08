@@ -551,7 +551,7 @@ Notes:
 		<script type="text/javascript" >
 			angular.module('slatwalladmin', ['ngSlatwall','ui.bootstrap','ngAnimate','ngRoute']).
 			config(
-				["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$locationProvider', 
+				["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$locationProvider',
 				function ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$locationProvider
 			) {
 				
@@ -571,17 +571,6 @@ Notes:
 					return function(text){
 						if(angular.isDefined(text) && angular.isString(text)){
 							return text.replace(new RegExp('%', 'g'), '');
-						}
-					};
-				});
-				
-				$filterProvider.register('AliasDisplayName',function(){
-					return function(text){
-						
-						if(angular.isDefined(text) && angular.isString(text)){
-							text = text.replace('_', '');
-							text = text.charAt(0).toUpperCase() + text.slice(1);
-							return text;
 						}
 					};
 				});
@@ -622,7 +611,7 @@ Notes:
 					templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
 				});
 				
-			}]).run(['$rootScope','$slatwall','dialogService', function($rootScope, $slatwall ,dialogService) {
+			}]).run(['$rootScope','$filter','$slatwall','dialogService', function($rootScope,$filter, $slatwall ,dialogService) {
 			    $rootScope.openPageDialog = function( partial ) {
 			    	dialogService.addPageDialog( partial );
 			    };
@@ -634,6 +623,15 @@ Notes:
 			    $rootScope.hasResourceBundle = function(){
 			    	return $slatwall.hasResourceBundle();
 			    };
+			}]).filter('entityRBKey',['$slatwall', function($slatwall) {
+				
+			  	return function(text){
+					if(angular.isDefined(text) && angular.isString(text)){
+						text = text.replace('_', '').toLowerCase();
+						text = $slatwall.getRBKey('entity.'+text);
+						return text;
+					}
+				};
 			}]);
 			
 		</script>
