@@ -58,6 +58,7 @@ angular.module('slatwalladmin')
 					
 					scope.filterItem.breadCrumbs = [
 					                     	{
+					                     		rbKey:$slatwall.getRBKey('entity.'+scope.baseEntityAlias.replace('_','')),
 					                     		entityAlias:scope.baseEntityAlias,
 					                     		cfc:scope.baseEntityAlias,
 					                     		propertyIdentifier:scope.baseEntityAlias
@@ -68,6 +69,7 @@ angular.module('slatwalladmin')
 					entityAliasArrayFromString.pop();
 					for(var i in entityAliasArrayFromString){
 						var breadCrumb = {
+								rbKey:$slatwall.getRBKey('entity.'+scope.baseEntityAlias.replace('_','')),
 								entityAlias:entityAliasArrayFromString[i],
 								cfc:entityAliasArrayFromString[i],
 								propertyIdentifier:entityAliasArrayFromString[i]

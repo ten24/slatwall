@@ -68,7 +68,6 @@ angular.module('slatwalladmin')
 							propertiesList.data[i].$$group = 'compareCollections';
 						}
 					}
-					
 					propertiesList.data[i].propertyIdentifier = propertyIdentifier + '.' +propertiesList.data[i].name;
 				}
 				propertiesList.data = _orderBy(propertiesList.data,['-$$group','propertyIdentifier'],false);
