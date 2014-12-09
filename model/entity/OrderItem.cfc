@@ -409,7 +409,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	// Referenced Order Item (many-to-one)
 	public void function setReferencedOrderItem(required any referencedOrderItem) {
 		variables.referencedOrderItem = arguments.referencedOrderItem;
-		if(isNew() or !arguments.referencedOrderItem.hasReferencingOrderItems( this )) {
+		if(isNew() or !arguments.referencedOrderItem.hasReferencingOrderItem( this )) {
 			arrayAppend(arguments.referencedOrderItem.getReferencingOrderItems(), this);
 		}
 	}
