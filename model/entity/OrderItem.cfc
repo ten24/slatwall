@@ -375,16 +375,16 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public void function setRefrencedOrderItem(required any refrencedOrderItem) {
 		variables.refrencedOrderItem = arguments.refrencedOrderItem;
 		if(isNew() or !arguments.refrencedOrderItem.hasRefrencingOrderItems( this )) {
-			arrayAppend(arguments.refrencedOrderItem.getRefrencingOrderItem(), this);
+			arrayAppend(arguments.refrencedOrderItem.getRefrencingOrderItems(), this);
 		}
 	}
 	public void function removeRefrencedOrderItem(any refrencedOrderItem) {
 		if(!structKeyExists(arguments, "refrencedOrderItem")) {
 			arguments.refrencedOrderItem = variables.refrencedOrderItem;
 		}
-		var index = arrayFind(arguments.refrencedOrderItem.getRefrencingOrderItem(), this);
+		var index = arrayFind(arguments.refrencedOrderItem.getRefrencingOrderItems(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.refrencedOrderItem.getRefrencingOrderItem(), index);
+			arrayDeleteAt(arguments.refrencedOrderItem.getRefrencingOrderItems(), index);
 		}
 		structDelete(variables, "refrencedOrderItem");
 	}
