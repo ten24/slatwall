@@ -1364,7 +1364,6 @@ function updateSelectTableUI( selectField ) {
 }
 
 function tableSelectClick( toggleLink ) {
-	
 	if( jQuery(toggleLink).children('.hibachi-ui-radio').length ) {
 		
 		// Remove old checked icon
@@ -1376,7 +1375,14 @@ function tableSelectClick( toggleLink ) {
 		// Update the value
 		jQuery( 'input[name="' + jQuery( toggleLink ).closest( 'table' ).data('selectfield') + '"]' ).val( jQuery( toggleLink ).data( 'idvalue' ) );
 		
+	} else {
+		// Remove old checked icon
+		jQuery( toggleLink ).closest( 'table' ).find('.hibachi-ui-radio-checked').addClass('hibachi-ui-radio').removeClass('hibachi-ui-radio-checked');
+		
+		// Update the value to null
+		jQuery( 'input[name="' + jQuery( toggleLink ).closest( 'table' ).data('selectfield') + '"]' ).val( null );
 	}
+	
 }
 
 function globalSearchHold() {
