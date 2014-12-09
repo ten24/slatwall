@@ -19,6 +19,7 @@ angular.module('slatwalladmin')
 			require:"^swDisplayOptions",
 			scope:{
 				column:"=",
+				columns:"=",
 				columnIndex:"=",
 				saveCollection:"&",
 				propertiesList:"="
@@ -28,7 +29,7 @@ angular.module('slatwalladmin')
 				$log.debug('displayOptionsController');
 				if(angular.isUndefined(scope.column.sorting)){
 					scope.column.sorting = {
-							active:true,
+							active:false,
 							sortOrder:'asc'
 					};
 				}
@@ -62,10 +63,11 @@ angular.module('slatwalladmin')
 				
 				scope.toggleSortable = function(column){
 					$log.debug('toggle sortable');
-					/*if(angular.isUndefined(column.sorting)){
+					if(angular.isUndefined(column.sorting)){
 						column.sorting = {
 								active:true,
-								sortOrder:'asc'
+								sortOrder:'asc',
+								priority:0
 						};
 					}
 					
@@ -74,12 +76,48 @@ angular.module('slatwalladmin')
 							column.sorting.sortOrder = 'desc';
 						}else{
 							column.sorting.active = false;
+							removeSorting(column);
 						}
 					}else{
 						column.sorting.active = true;
 						column.sorting.sortOrder = 'asc';
+						column.sorting.priority = getActivelySorting().length;
 					}
-					scope.saveCollection();*/
+//					scope.saveCollection();
+				};
+				
+				var removeSorting = function(column){
+					for(var i in scope.columns){
+						if(scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority > column.sorting.priority){
+							scope.columns[i].sorting.priority = scope.columns[i].sorting.priority - 1;
+						}
+					}
+					column.sorting.priority = 0;
+				};
+				
+				scope.prioritize = function(column){
+					if(column.sorting.priority !== 1){
+						for(var i in scope.columns){
+							if(scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority < column.sorting.priority){
+								scope.columns[i].sorting.priority = scope.columns[i].sorting.priority + 1;
+							}
+						}
+						column.sorting.priority = 1;
+					}
+				};
+				
+				var getActivelySorting = function(){
+					var activelySorting = [];
+					for(var i in scope.columns){
+						if(scope.columns[i].sorting.active === true){
+							activelySorting.push(scope.columns[i]);
+						}
+					}
+					return activelySorting;
+				};
+				
+				var shiftSortOrder = function(){
+					
 				};
 				
 				scope.removeColumn = function(columnIndex){
