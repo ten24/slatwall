@@ -92,6 +92,46 @@
 	"This is a blockquote. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl."
 </blockquote>
 
+<hr />
+
+<h1 id="headings">List Select Component</h1>
+	
+	<div class="s-select-list-wrapper"><!--- Add select component Wrapper --->
+		
+		<div class="form-group"><!--- Option select field wrapper --->
+			<div class="input-group">
+				<input type="text" class="form-control" placeholder="" name="" id="">
+				<div class="input-group-btn">
+					<button class="btn btn-sm s-btn-dgrey" type="submit"><i class="fa fa-plus"></i></button>
+				</div>
+			</div>
+			<p class="help-block">Error text here.</p>
+		</div>
+		
+		<div class="s-selected-list"><!--- Selected options wrapper --->
+			
+			<div class="alert s-selected-item"><!--- Example Item 2 --->
+				<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<strong>Search Result Title 1</strong>
+			</div>
+			
+			<div class="alert s-selected-item"><!--- Example Item 2 --->
+				<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<strong>Search Result Title 2</strong>
+			</div>
+			
+		</div>
+		
+	</div>
+	
+	<style media="screen">
+		.s-select-list-wrapper button.btn {margin-left: 0px !important;}
+		.s-select-list-wrapper .s-selected-item {border:1px solid #ccc;background-color:#ddd;padding: 5px 10px 5px 15px;margin-bottom:5px;border-radius: 2px;}
+	</style>
+
+
+<hr />
+
 <h1 id="text-elements"> Text Elements</h1>
 
 <p>The <a href="#">a element</a> example</p>
@@ -348,7 +388,7 @@
 								</div>		
 								<div class="form-group">
 									<label for="range">Range:</label><br />
-									<input type="range" name="points" min="1" max="10" class="form-control">
+									<input type="range" name="points" min="1" max="10">
 								</div>
 													
 								<div class="form-group">
