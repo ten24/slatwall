@@ -374,17 +374,17 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	// Referenced Order Item (many-to-one)
 	public void function setReferencedOrderItem(required any referencedOrderItem) {
 		variables.referencedOrderItem = arguments.referencedOrderItem;
-		if(isNew() or !arguments.referencedOrderItem.hasRefrencingOrderItems( this )) {
-			arrayAppend(arguments.referencedOrderItem.getRefrencingOrderItems(), this);
+		if(isNew() or !arguments.referencedOrderItem.hasReferencingOrderItem( this )) {
+			arrayAppend(arguments.referencedOrderItem.getReferencingOrderItems(), this);
 		}
 	}
 	public void function removeReferencedOrderItem(any referencedOrderItem) {
 		if(!structKeyExists(arguments, "referencedOrderItem")) {
 			arguments.referencedOrderItem = variables.referencedOrderItem;
 		}
-		var index = arrayFind(arguments.referencedOrderItem.getRefrencingOrderItems(), this);
+		var index = arrayFind(arguments.referencedOrderItem.getReferencingOrderItems(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.referencedOrderItem.getRefrencingOrderItems(), index);
+			arrayDeleteAt(arguments.referencedOrderItem.getReferencingOrderItems(), index);
 		}
 		structDelete(variables, "referencedOrderItem");
 	}
@@ -431,10 +431,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	
 	// Referencing Order Items (one-to-many)
 	public void function addReferencingOrderItem(required any referencingOrderItem) {
-		arguments.referencingOrderItem.setRefrencedOrderItem( this );
+		arguments.referencingOrderItem.setReferencedOrderItem( this );
 	}
 	public void function removeReferencingOrderItem(required any referencingOrderItem) {
-		arguments.referencingOrderItem.removeRefrencedOrderItem( this );
+		arguments.referencingOrderItem.removeReferencedOrderItem( this );
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
