@@ -18,6 +18,7 @@ angular.module('slatwalladmin')
 			restrict: 'A',
 			transclude:true,
 			scope:{
+				orderBy:"=",
 				columns:'=',
 				propertiesList:"=",
 				saveCollection:"&",
@@ -26,6 +27,7 @@ angular.module('slatwalladmin')
 			templateUrl:collectionPartialsPath+"displayoptions.html",
 			controller: function($scope,$element,$attrs){
 				$log.debug('display options initialize');
+				
 				
 				this.removeColumn = function(columnIndex){
 					$log.debug('parent remove column');
@@ -97,6 +99,7 @@ angular.module('slatwalladmin')
 					$log.debug(selectedProperty);
 					$scope.selectedProperty = selectedProperty;
 				};
+				
 				
 				jQuery(function($) {
 					

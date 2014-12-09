@@ -207,13 +207,18 @@ metadataService,
 				var data = angular.copy(collection);
 				//has to be removed in order to save transient correctly
 				delete data.pageRecords;
-				
+				data.propertyIdentifiersList = 'collectionID,pageRecords';
 				var saveCollectionPromise = $slatwall.saveEntity(entityName,collection.collectionID,data);
 				saveCollectionPromise.then(function(value){
 					
 					$scope.errorMessage = {};
 					//$scope.collectionForm.$setPristine();
-					$scope.getCollection();
+					console.log('value');
+					console.log(value);
+					
+					$scope.collection.pageRecords = value.data.pageRecords;
+					$scope.collection.collectionID = value.data.collectionID;
+					//$scope.getCollection();
 					$scope.collectionDetails.isOpen = false;
 					//$scope.collectionConfig = $scope.collectionConfigCopy;
 				}, function(reason){

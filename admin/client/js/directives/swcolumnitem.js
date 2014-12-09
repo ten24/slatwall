@@ -22,7 +22,8 @@ angular.module('slatwalladmin')
 				columns:"=",
 				columnIndex:"=",
 				saveCollection:"&",
-				propertiesList:"="
+				propertiesList:"=",
+				orderBy:"="
 			},
 			templateUrl:collectionPartialsPath+"columnitem.html",
 			link: function(scope, element,attrs,displayOptionsController){
@@ -61,6 +62,38 @@ angular.module('slatwalladmin')
 					scope.saveCollection();
 				};
 				
+				var compareByPriority = function(a,b){
+					if(angular.isDefined(a.sorting) && angular.isDefined(a.sorting.priority)){
+						if(a.sorting.priority < b.sorting.priority){
+							return -1;
+						}
+						if(a.sorting.priority > b.sorting.priority){
+							return 1;
+						}
+					}
+					return 0;
+				};
+				
+				var updateOrderBy = function(){
+					if(angular.isDefined(scope.columns)){
+						var columnsCopy = angular.copy(scope.columns);
+						columnsCopy.sort(compareByPriority);
+						scope.orderBy = [];
+						
+						angular.forEach(columnsCopy,function(column){
+							if(angular.isDefined(column.sorting) && column.sorting.active === true){
+								var orderBy = {
+									propertyIdentifier:column.propertyIdentifier,
+									direction:column.sorting.sortOrder
+								};
+								scope.orderBy.push(orderBy);
+							}
+						});
+					}
+					console.log('update');
+					return scope.orderBy;
+				};
+				
 				scope.toggleSortable = function(column){
 					$log.debug('toggle sortable');
 					if(angular.isUndefined(column.sorting)){
@@ -83,16 +116,25 @@ angular.module('slatwalladmin')
 						column.sorting.sortOrder = 'asc';
 						column.sorting.priority = getActivelySorting().length;
 					}
-//					scope.saveCollection();
+					if(updateOrderBy()){
+						scope.saveCollection();
+					};
 				};
 				
-				var removeSorting = function(column){
+				var removeSorting = function(column,saving){
 					for(var i in scope.columns){
 						if(scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority > column.sorting.priority){
 							scope.columns[i].sorting.priority = scope.columns[i].sorting.priority - 1;
 						}
 					}
 					column.sorting.priority = 0;
+					
+					if(!saving){
+						if(updateOrderBy()){
+							scope.saveCollection();
+						};
+					}
+					
 				};
 				
 				scope.prioritize = function(column){
@@ -104,6 +146,9 @@ angular.module('slatwalladmin')
 						}
 						column.sorting.priority = 1;
 					}
+					if(updateOrderBy()){
+						scope.saveCollection();
+					};
 				};
 				
 				var getActivelySorting = function(){
@@ -116,17 +161,15 @@ angular.module('slatwalladmin')
 					return activelySorting;
 				};
 				
-				var shiftSortOrder = function(){
-					
-				};
-				
 				scope.removeColumn = function(columnIndex){
 					$log.debug('remove column');
 					$log.debug(columnIndex);
+					removeSorting(scope.columns[columnIndex],true);
 					displayOptionsController.removeColumn(columnIndex);
-					scope.saveCollection();
+					if(updateOrderBy()){
+						scope.saveCollection();
+					};
 				};
-				
 			}
 		};
 	}

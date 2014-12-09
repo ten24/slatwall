@@ -190,7 +190,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 	}
 	
-	private any function getFormattedPageRecord(required any pageRecord, required any propertyIdentifier){
+	public any function getFormattedPageRecord(required any pageRecord, required any propertyIdentifier){
 		//populate pageRecordStruct with pageRecord info based on the passed in property identifier
 		
 		var pageRecordStruct = {};

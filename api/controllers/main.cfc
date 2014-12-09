@@ -327,15 +327,25 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		arguments.rc.apiResponse.content['data'][ entity.getPrimaryIDPropertyName() ] = entity.getPrimaryIDValue();
 		
 		
-		/*if(!isnull(arguments.rc.propertyIdentifiersList)){
+		if(!isnull(arguments.rc.propertyIdentifiersList)){
 			//respond with data
 			arguments.rc.apiResponse.content['data'] = {};
 			var propertyIdentifiersArray = ListToArray(arguments.rc.propertyIdentifiersList);
 			for(propertyIdentifier in propertyIdentifiersArray){
 				//check if method exists before trying to retrieve a property
-				arguments.rc.apiResponse.content['data'][propertyIdentifier] = entity.getValueByPropertyIdentifier(propertyIdentifier);
+				/*if(propertyIdentifier == 'pageRecords'){
+					var pageRecords = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier,format=true);
+					var propertyIdentifiers = [];
+					if(arraylen(pageRecords)){
+						propertyIdentifiers = structKeyArray(pageRecords[1]);
+					}	
+					pageRecords = getService('collectionService').getFormattedObjectRecords(pageRecords,propertyIdentifiers);
+					arguments.rc.apiResponse.content['data'][propertyIdentifier] = pageRecords;
+				}else{*/
+					arguments.rc.apiResponse.content['data'][propertyIdentifier] = entity.getValueByPropertyIdentifier(propertyIdentifier=propertyIdentifier);
+				//}
 			}
-		}*/
+		}
 		
 		if(entity.hasErrors()){
 			arguments.rc.apiResponse.content.success = false;
