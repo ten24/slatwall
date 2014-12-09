@@ -2025,7 +2025,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// Recalculate the order amounts for tax and promotions
-		if(!arguments.orderItem.hasErrors()) {
+		if(!arguments.order.hasErrors()) {
 			arguments.order = this.processOrder( order, {}, 'updateOrderAmounts');	
 		}
 		
