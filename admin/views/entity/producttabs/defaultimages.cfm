@@ -55,7 +55,7 @@ Notes:
 	<ul class="thumbnails list-unstyled s-product-image" >
 		<cfloop array="#rc.product.getDefaultProductImageFiles()#" index="imageFile">
 			<li class="col-md-4 s-image">
-				<div class="thumbnail<cfif imageFile eq rc.product.getDefaultSku().getImageFile()> s-default-image</cfif>">
+				<div class="thumbnail<cfif not isNull(rc.product.getDefaultSku()) and imageFile eq rc.product.getDefaultSku().getImageFile()> s-default-image</cfif>">
 					<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#imageFile#" />
 					<div class="img-container">
 						<a href="#$.slatwall.getResizedImagePath(imagePath=thisImagePath, width=210, height=210)#" target="_blank">

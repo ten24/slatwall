@@ -61,6 +61,7 @@
 		var batchSizeLimitReachedFlag = false;
 		
 		var latestEncryptionDateTime = getService('hibachiUtilityService').getEncryptionPasswordArray()[1].createdDateTime;
+		var nowDateTime = now();
 		var entitiesMetaData = getService('hibachiService').getEntitiesMetaData();
 		var updateStatements = [];
 		
@@ -109,7 +110,9 @@
 					mapClause &= ', #entityAlias#.#encryptedGeneratorPropertyName# as #encryptedGeneratorPropertyName#';
 					
 					// Interested only in reencrypting the outdated encrypted records
-					whereClause &= '(#entityAlias#.#encryptedDateTimePropertyName# < :latestEncryptionDateTime';
+					// HQL parameter binding ignoring time portion in comparison
+					// whereClause &= '(#entityAlias#.#encryptedDateTimePropertyName# < :latestEncryptionDateTime';
+					whereClause &= '(#entityAlias#.#encryptedDateTimePropertyName# < ''#dateFormat(latestEncryptionDateTime, "yyyy-mm-dd")# #timeFormat(latestEncryptionDateTime, "HH:mm:ss")#''';
 					
 					// Add additional where condition for Setting entity to determine whether value is encrypted or not
 					if (entityName == 'Setting' && encryptedPropertyName == 'settingValue') {
@@ -128,8 +131,6 @@
 						'encryptedProperties' = encryptedProperties,
 						'selectStatement' = selectStatement
 					};
-					logHibachi(latestEncryptionDateTime);
-					logHibachi(selectStatement);
 				}
 			}
 		}
@@ -167,8 +168,10 @@
 						
 						if (entityName == 'Setting' && encryptedPropertyName == 'settingValue') {
 							updateSetColumnClause &= "#rmd.entityAlias#.#encryptedPropertyName#='#encryptedValue#', #rmd.entityAlias#.#encryptedPropertyName#EncryptedGenerator='#generatorValue#', #rmd.entityAlias#.#encryptedPropertyName#EncryptedDateTime=:nowDateTime";
+							//updateSetColumnClause &= "#rmd.entityAlias#.#encryptedPropertyName#='#encryptedValue#', #rmd.entityAlias#.#encryptedPropertyName#EncryptedGenerator='#generatorValue#', #rmd.entityAlias#.#encryptedPropertyName#EncryptedDateTime='#dateFormat(nowDateTime, "yyyy-mm-dd")# #timeFormat(nowDateTime, "HH:mm:ss")#'";
 						} else {
 							updateSetColumnClause &= "#rmd.entityAlias#.#encryptedPropertyName#='#encryptedValue#', #rmd.entityAlias#.#encryptedPropertyName#Generator='#generatorValue#', #rmd.entityAlias#.#encryptedPropertyName#DateTime=:nowDateTime";
+							//updateSetColumnClause &= "#rmd.entityAlias#.#encryptedPropertyName#='#encryptedValue#', #rmd.entityAlias#.#encryptedPropertyName#Generator='#generatorValue#', #rmd.entityAlias#.#encryptedPropertyName#DateTime='#dateFormat(nowDateTime, "yyyy-mm-dd")# #timeFormat(nowDateTime, "HH:mm:ss")#'";
 						}
 					}
 				}
@@ -198,9 +201,8 @@
 		// At this point we have all of our update statements generated and ready to execute
 		// Need to convert HQL statements to SQL equivalent if necessary
 		for (var hqlStatement in updateStatements) {
-			ormExecuteQuery(hqlStatement, {nowDateTime=now()});
+			ormExecuteQuery(hqlStatement, {nowDateTime=nowDateTime});
 		}
-		
 		</cfscript>
 	</cffunction>
 	

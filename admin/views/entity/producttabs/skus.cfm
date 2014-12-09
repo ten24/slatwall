@@ -55,6 +55,11 @@ Notes:
 	
 	<cfset local.bundleSkusSmartList = rc.product.getBundleSkusSmartList() />
 	
+	<cfset local.defaultSkuID = "" />
+	<cfif not isNull(rc.product.getDefaultSku())>
+		<cfset local.defaultSkuID = rc.product.getDefaultSku().getSkuID() />	
+	</cfif>
+	
 	<!--- If there are sku bundles then we can display them seperately here ---> 
 	<cfif local.bundleSkusSmartList.getRecordsCount()>
 		<h4>Sku Bundles</h4>
@@ -95,7 +100,7 @@ Notes:
 								   recordEditAction="admin:entity.editsku"
 								   recordEditQueryString="productID=#rc.product.getProductID()#"
 								   selectFieldName="defaultSku.skuID"
-								   selectValue="#rc.product.getDefaultSku().getSkuID()#"
+								   selectValue="#local.defaultSkuID#"
 								   selectTitle="#$.slatwall.rbKey('define.default')#">
 								      
 			<cfif rc.product.getBaseProductType() eq "event">
@@ -111,7 +116,7 @@ Notes:
 				<hb:HibachiListingColumn propertyIdentifier="availableSeatCount" />
 			</cfif>
 			<hb:HibachiListingColumn propertyIdentifier="imageFile" />
-			<cfif isNull(rc.product.getDefaultSku().getUserDefinedPriceFlag()) || !rc.product.getDefaultSku().getUserDefinedPriceFlag()>
+			<cfif not isNull(rc.product.getDefaultSku()) and (isNull(rc.product.getDefaultSku().getUserDefinedPriceFlag()) || !rc.product.getDefaultSku().getUserDefinedPriceFlag())>
 				<hb:HibachiListingColumn propertyIdentifier="listPrice" />
 				<hb:HibachiListingColumn propertyIdentifier="price" />
 				<cfif  rc.product.getProductType().getBaseProductType() eq "subscription">
