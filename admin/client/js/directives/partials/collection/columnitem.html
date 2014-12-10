@@ -9,28 +9,33 @@
     <div class="col-xs-7 s-pannel-body">
 
       <div class="btn-group">
-       <!-- <span class="s-sort-num">
-         <a class="s-pannel-title j-tool-tip-item j-edit-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit">1</a>
-         <span class="s-title-edit-menu" style="display:none;position: absolute;z-index: 3000;width: 150px;left: 0px;top:0px;background: #EEE;height: 40px;moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;text-align: left;">
-           <select class="form-control">
-             <option value="1">1</option>
-             <option value="2">2</option>
-             <option value="3">3</option>
-           </select>
-           <button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button>
-         </span>
+       <span class="s-sort-num">
+         <a class="s-pannel-title j-tool-tip-item j-edit-item s-active" 
+         	data-toggle="tooltip" 
+         	data-placement="right" 
+         	data-original-title="Edit" 
+         	ng-show="column.sorting.active" 
+         	ng-bind="column.sorting.priority"
+         	ng-click="prioritize(column)"
+         >
+         </a>
        </span>
-       <a class="btn btn-default s-sort j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Sort Order">
+       <a 	data-no-drag 
+       		class="btn btn-default s-sort j-tool-tip-item" 
+       		data-toggle="tooltip" data-placement="bottom" 
+       		data-original-title="Sort Order"
+       		ng-click="toggleSortable(column)"
+       	>
        		<i  
-       		class="fa"
+       		class="fa fa-sort"
        			ng-class="{
-       				's-not-active':!column.sorting.active,
+       				's-not-active':column.sorting.active === false,
        				'fa-sort-amount-asc':column.sorting.sortOrder === 'asc',
        				'fa-sort-amount-desc':column.sorting.sortOrder === 'desc'
        			}"
-       			ng-click="toggleSortable(column)"
+       			
        		></i>
-       </a> -->
+       </a>
         <a data-no-drag	class="btn btn-default j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" data-original-title="Visible" 
         	ng-class="{active:column.isVisible}"
         	ng-click="toggleVisible(column)"

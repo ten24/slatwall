@@ -109,7 +109,7 @@ metadataService,
 				$log.debug('search with keywords');
 				$log.debug($scope.keywords);
 				$scope.getCollection();
-			}, 500)
+			}, 500);
 		};
 			
 		
@@ -196,26 +196,25 @@ metadataService,
 		
 		$scope.saveCollection = function(){
 			$log.debug('saving Collection');
-			
 			var entityName = 'collection';
 			var collection = $scope.collection;
 			$log.debug($scope.collectionConfig);
-			var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
-			$log.debug(collectionConfigString);
-			collection.collectionConfig = collectionConfigString;
+			
+			
 			if(isFormValid($scope.collectionForm)){
+				var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
+				$log.debug(collectionConfigString);
 				var data = angular.copy(collection);
+				
+				data.collectionConfig = collectionConfigString;
 				//has to be removed in order to save transient correctly
 				delete data.pageRecords;
-				
 				var saveCollectionPromise = $slatwall.saveEntity(entityName,collection.collectionID,data);
 				saveCollectionPromise.then(function(value){
 					
 					$scope.errorMessage = {};
-					//$scope.collectionForm.$setPristine();
 					$scope.getCollection();
 					$scope.collectionDetails.isOpen = false;
-					//$scope.collectionConfig = $scope.collectionConfigCopy;
 				}, function(reason){
 					//revert to original
 					angular.forEach(reason.errors,function(value,key){
