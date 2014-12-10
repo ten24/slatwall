@@ -5,12 +5,14 @@ angular.module('slatwalladmin')
 	'$compile',
 	'$templateCache',
 	'$log',
+	'$timeout',
 	'collectionService',
 	'collectionPartialsPath',
 	function($http,
 		$compile,
 		$templateCache,
 		$log,
+		$timeout,
 		collectionService,
 		collectionPartialsPath
 	){
@@ -19,17 +21,20 @@ angular.module('slatwalladmin')
 			require:"^swDisplayOptions",
 			scope:{
 				column:"=",
+				columns:"=",
 				columnIndex:"=",
 				saveCollection:"&",
-				propertiesList:"="
+				propertiesList:"=",
+				orderBy:"="
 			},
 			templateUrl:collectionPartialsPath+"columnitem.html",
 			link: function(scope, element,attrs,displayOptionsController){
 				$log.debug('displayOptionsController');
 				if(angular.isUndefined(scope.column.sorting)){
 					scope.column.sorting = {
-							active:true,
-							sortOrder:'asc'
+						active:false,
+						sortOrder:'asc',
+						priority:0
 					};
 				}
 				
@@ -60,12 +65,43 @@ angular.module('slatwalladmin')
 					scope.saveCollection();
 				};
 				
+				var compareByPriority = function(a,b){
+					if(angular.isDefined(a.sorting) && angular.isDefined(a.sorting.priority)){
+						if(a.sorting.priority < b.sorting.priority){
+							return -1;
+						}
+						if(a.sorting.priority > b.sorting.priority){
+							return 1;
+						}
+					}
+					return 0;
+				};
+				
+				var updateOrderBy = function(){
+					if(angular.isDefined(scope.columns)){
+						var columnsCopy = angular.copy(scope.columns);
+						columnsCopy.sort(compareByPriority);
+						scope.orderBy = [];
+						
+						angular.forEach(columnsCopy,function(column){
+							if(angular.isDefined(column.sorting) && column.sorting.active === true){
+								var orderBy = {
+									propertyIdentifier:column.propertyIdentifier,
+									direction:column.sorting.sortOrder
+								};
+								scope.orderBy.push(orderBy);
+							}
+						});
+					}
+				};
+				
 				scope.toggleSortable = function(column){
 					$log.debug('toggle sortable');
-					/*if(angular.isUndefined(column.sorting)){
+					if(angular.isUndefined(column.sorting)){
 						column.sorting = {
 								active:true,
-								sortOrder:'asc'
+								sortOrder:'asc',
+								priority:0
 						};
 					}
 					
@@ -74,21 +110,74 @@ angular.module('slatwalladmin')
 							column.sorting.sortOrder = 'desc';
 						}else{
 							column.sorting.active = false;
+							removeSorting(column);
 						}
 					}else{
 						column.sorting.active = true;
 						column.sorting.sortOrder = 'asc';
+						column.sorting.priority = getActivelySorting().length;
 					}
-					scope.saveCollection();*/
+					updateOrderBy();
+					$timeout(function(){
+						scope.saveCollection();
+					},200);
+					
+				};
+				
+				var removeSorting = function(column,saving){
+					if(column.sorting.active === true){
+						for(var i in scope.columns){
+							if(scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority > column.sorting.priority){
+								scope.columns[i].sorting.priority = scope.columns[i].sorting.priority - 1;
+							}
+						}
+						column.sorting.priority = 0;
+					}
+					
+					if(!saving){
+						updateOrderBy();
+						$timeout(function(){
+							scope.saveCollection();
+						},200);
+					}
+					
+				};
+				
+				scope.prioritize = function(column){
+					if(column.sorting.priority !== 1){
+						for(var i in scope.columns){
+							if(scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority < column.sorting.priority){
+								scope.columns[i].sorting.priority = scope.columns[i].sorting.priority + 1;
+							}
+						}
+						column.sorting.priority = 1;
+					}
+					updateOrderBy();
+					$timeout(function(){
+						scope.saveCollection();
+					},200);
+				};
+				
+				var getActivelySorting = function(){
+					var activelySorting = [];
+					for(var i in scope.columns){
+						if(scope.columns[i].sorting.active === true){
+							activelySorting.push(scope.columns[i]);
+						}
+					}
+					return activelySorting;
 				};
 				
 				scope.removeColumn = function(columnIndex){
 					$log.debug('remove column');
 					$log.debug(columnIndex);
+					removeSorting(scope.columns[columnIndex],true);
 					displayOptionsController.removeColumn(columnIndex);
-					scope.saveCollection();
+					updateOrderBy();
+					$timeout(function(){
+						scope.saveCollection();
+					},200);
 				};
-				
 			}
 		};
 	}

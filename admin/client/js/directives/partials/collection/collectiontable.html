@@ -108,7 +108,9 @@
 				<li class="list-group-item"
 						ng-repeat="column in collectionConfig.columns"
 						sw-column-item
+						data-order-by="collectionConfig.orderBy"
 						data-column="column"
+						data-columns="collectionConfig.columns"
 						data-column-index="$index"
 						data-save-collection="saveCollection()"
 						data-properties-list="filterPropertiesList"
@@ -147,7 +149,7 @@
 	            <div class="radio">
 	              <input type="radio" name="radio1" id="radio7" value="option2">
 	              <label for="radio7">
-	                  Visable
+	                  Visible
 	              </label>
 	            </div>
 	            <div class="radio">

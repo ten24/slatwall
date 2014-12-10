@@ -18,6 +18,7 @@ angular.module('slatwalladmin')
 			restrict: 'A',
 			transclude:true,
 			scope:{
+				orderBy:"=",
 				columns:'=',
 				propertiesList:"=",
 				saveCollection:"&",
@@ -26,6 +27,7 @@ angular.module('slatwalladmin')
 			templateUrl:collectionPartialsPath+"displayoptions.html",
 			controller: function($scope,$element,$attrs){
 				$log.debug('display options initialize');
+				
 				
 				this.removeColumn = function(columnIndex){
 					$log.debug('parent remove column');
@@ -57,6 +59,7 @@ angular.module('slatwalladmin')
 							column.title = selectedProperty.displayPropertyIdentifier;
 							column.propertyIdentifier = selectedProperty.propertyIdentifier;
 							column.isVisible = true;
+							column.isDeletable = true;
 							//only add attributeid if the selectedProperty is attributeid
 							if(angular.isDefined(selectedProperty.attributeID)){
 								column.attributeID = selectedProperty.attributeID;
@@ -97,6 +100,7 @@ angular.module('slatwalladmin')
 					$log.debug(selectedProperty);
 					$scope.selectedProperty = selectedProperty;
 				};
+				
 				
 				jQuery(function($) {
 					
