@@ -578,10 +578,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
-		/*if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
-			saveState();*/
+		if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
+			saveState();
 			variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
-		//}
+		}
 		
 		return variables.pageRecords;
 	}

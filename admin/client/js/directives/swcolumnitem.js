@@ -5,12 +5,14 @@ angular.module('slatwalladmin')
 	'$compile',
 	'$templateCache',
 	'$log',
+	'$timeout',
 	'collectionService',
 	'collectionPartialsPath',
 	function($http,
 		$compile,
 		$templateCache,
 		$log,
+		$timeout,
 		collectionService,
 		collectionPartialsPath
 	){
@@ -30,8 +32,9 @@ angular.module('slatwalladmin')
 				$log.debug('displayOptionsController');
 				if(angular.isUndefined(scope.column.sorting)){
 					scope.column.sorting = {
-							active:false,
-							sortOrder:'asc'
+						active:false,
+						sortOrder:'asc',
+						priority:0
 					};
 				}
 				
@@ -90,8 +93,6 @@ angular.module('slatwalladmin')
 							}
 						});
 					}
-					console.log('update');
-					return scope.orderBy;
 				};
 				
 				scope.toggleSortable = function(column){
@@ -116,9 +117,11 @@ angular.module('slatwalladmin')
 						column.sorting.sortOrder = 'asc';
 						column.sorting.priority = getActivelySorting().length;
 					}
-					if(updateOrderBy()){
+					updateOrderBy();
+					$timeout(function(){
 						scope.saveCollection();
-					};
+					},200);
+					
 				};
 				
 				var removeSorting = function(column,saving){
@@ -130,9 +133,10 @@ angular.module('slatwalladmin')
 					column.sorting.priority = 0;
 					
 					if(!saving){
-						if(updateOrderBy()){
+						updateOrderBy();
+						$timeout(function(){
 							scope.saveCollection();
-						};
+						},200);
 					}
 					
 				};
@@ -146,9 +150,10 @@ angular.module('slatwalladmin')
 						}
 						column.sorting.priority = 1;
 					}
-					if(updateOrderBy()){
+					updateOrderBy();
+					$timeout(function(){
 						scope.saveCollection();
-					};
+					},200);
 				};
 				
 				var getActivelySorting = function(){
@@ -166,9 +171,10 @@ angular.module('slatwalladmin')
 					$log.debug(columnIndex);
 					removeSorting(scope.columns[columnIndex],true);
 					displayOptionsController.removeColumn(columnIndex);
-					if(updateOrderBy()){
+					updateOrderBy();
+					$timeout(function(){
 						scope.saveCollection();
-					};
+					},200);
 				};
 			}
 		};

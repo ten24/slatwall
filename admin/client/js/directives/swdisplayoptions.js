@@ -59,6 +59,7 @@ angular.module('slatwalladmin')
 							column.title = selectedProperty.displayPropertyIdentifier;
 							column.propertyIdentifier = selectedProperty.propertyIdentifier;
 							column.isVisible = true;
+							column.isDeletable = true;
 							//only add attributeid if the selectedProperty is attributeid
 							if(angular.isDefined(selectedProperty.attributeID)){
 								column.attributeID = selectedProperty.attributeID;
