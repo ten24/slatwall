@@ -92,7 +92,8 @@
 	"This is a blockquote. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl."
 </blockquote>
 
-<hr />
+<hr/>
+
 
 <h1 id="headings">Create List Component</h1>
 
