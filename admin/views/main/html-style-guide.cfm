@@ -94,18 +94,19 @@
 
 <hr />
 
-<h1 id="headings">List Select Component</h1>
-	
+<h1 id="headings">Create List Component</h1>
+
+
+	<!--////////////////////////////////Create List Component///////////////////////////////////-->
 	<div class="s-select-list-wrapper"><!--- Add select component Wrapper --->
 		
 		<div class="form-group"><!--- Option select field wrapper --->
 			<div class="input-group">
-				<input type="text" class="form-control" placeholder="" name="" id="">
+				<input type="text" class="form-control" placeholder="Any Text..." name="" id="">
 				<div class="input-group-btn">
 					<button class="btn btn-sm s-btn-dgrey" type="submit"><i class="fa fa-plus"></i></button>
 				</div>
 			</div>
-			<p class="help-block">Error text here.</p>
 		</div>
 		
 		<div class="s-selected-list"><!--- Selected options wrapper --->
@@ -123,20 +124,70 @@
 		</div>
 		
 	</div>
+	<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
 	
-	<style media="screen">
-		.s-select-list-wrapper button.btn {margin-left: 0px !important;}
-		.s-select-list-wrapper .s-selected-item {border:1px solid #ccc;background-color:#ddd;padding: 5px 10px 5px 15px;margin-bottom:5px;border-radius: 2px;}
-	</style>
-
-
+	<hr />
+	
+	<h1 id="headings">Create List Component With Dropdown</h1>
+	
+	<!--//////////////////////////////////Create List Component With Dropdown/////////////////////////////////-->
+	<div class="s-select-list-wrapper"><!--- Add select component Wrapper --->
+		
+		<div class="form-group"><!--- Option select field wrapper --->
+			<div class="input-group">
+				<input type="text" class="form-control" placeholder="Search" name="" id="">
+				<div class="input-group-btn">
+					<button class="btn btn-sm s-btn-dgrey" type="submit"><i class="fa fa-caret-down"></i></button>
+				</div>
+			</div>
+		</div>
+		
+		<div class="dropdown s-search-results-wrapper"><!--- Dropdown wrapper --->
+			<ul class="dropdown-menu">
+				<li class="s-new-item"><a title="" class="" href="##"><i class="fa fa-plus"></i> "Example Item"</a></li>
+				<li><a href="##">Item One</a></li> 
+				<li><a href="##">Item Two</a></li> 
+				<li><a href="##">Item Three</a></li> 
+				<li><a href="##">Item Four</a></li> 
+				<li><a href="##">Item Five</a></li> 
+				<li class="s-spinner"><i class="fa fa-refresh fa-spin"></i></li> 
+			</ul>
+		</div>	
+		
+		<div class="s-selected-list"><!--- Selected options wrapper --->
+			
+			<div class="alert s-selected-item"><!--- Example Item 2 --->
+				<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<strong>Search Result Title 1</strong>
+			</div>
+			
+			<div class="alert s-selected-item"><!--- Example Item 2 --->
+				<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+				<strong>Search Result Title 2</strong>
+			</div>
+			
+		</div>
+		
+	</div>
+	
+	<script charset="utf-8">
+		//Not for production use
+		$('.s-select-list-wrapper input').focusin(function() {
+			$('.s-search-results-wrapper').show();
+		}).focusout(function () {
+			$('.s-search-results-wrapper').hide();
+		});
+		$('.s-search-results-wrapper').hide();
+	</script>
+	<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component With Dropdown End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+	
 <hr />
 
-<h1 id="text-elements"> Text Elements</h1>
+	<h1 id="text-elements"> Text Elements</h1>
 
-<p>The <a href="#">a element</a> example</p>
-<p>The <abbr>abbr element</abbr> and an <abbr title="Abbreviation">abbr</abbr> element with title examples</p>
-<p>The <acronym title="A Cowboy Ran One New York Marathon">ACRONYM</acronym> element example
+	<p>The <a href="#">a element</a> example</p>
+	<p>The <abbr>abbr element</abbr> and an <abbr title="Abbreviation">abbr</abbr> element with title examples</p>
+	<p>The <acronym title="A Cowboy Ran One New York Marathon">ACRONYM</acronym> element example
 	<p>The <b>b element</b> example</p>
 	<p>The <cite>cite element</cite> example</p>
 	<p>The <code>code element</code> example</p>
