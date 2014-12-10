@@ -61,27 +61,27 @@
 
 							<!--- ================ Listing =================== --->
 							<cfif attributes.type eq "listing" >
-								<div class="btn-group btn-group-sm">
-									<cfparam name="request.context.keywords" default="" />
-	
-									<!--- Listing: Button Groups --->
-									<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
-										<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
-											<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
-												#buttonGroup.generatedContent#
-											</cfif>
-										</cfloop>
-									</cfif>
-	
-									<!--- Listing: Create --->
-									<cfif attributes.showCreate>
-										<cfif attributes.createModal>
-											<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
-										<cfelse>
-											<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
+								
+								<cfparam name="request.context.keywords" default="" />
+
+								<!--- Listing: Button Groups --->
+								<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
+									<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
+										<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
+											#buttonGroup.generatedContent#
 										</cfif>
+									</cfloop>
+								</cfif>
+
+								<!--- Listing: Create --->
+								<cfif attributes.showCreate>
+									<cfif attributes.createModal>
+										<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
+									<cfelse>
+										<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
 									</cfif>
-								</div>
+								</cfif>
+								
 							<!--- ================ Detail ===================== --->
 							<cfelseif attributes.type eq "detail">
 								<div class="btn-group btn-group-sm">
