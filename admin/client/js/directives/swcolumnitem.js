@@ -125,12 +125,14 @@ angular.module('slatwalladmin')
 				};
 				
 				var removeSorting = function(column,saving){
-					for(var i in scope.columns){
-						if(scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority > column.sorting.priority){
-							scope.columns[i].sorting.priority = scope.columns[i].sorting.priority - 1;
+					if(column.sorting.active === true){
+						for(var i in scope.columns){
+							if(scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority > column.sorting.priority){
+								scope.columns[i].sorting.priority = scope.columns[i].sorting.priority - 1;
+							}
 						}
+						column.sorting.priority = 0;
 					}
-					column.sorting.priority = 0;
 					
 					if(!saving){
 						updateOrderBy();
