@@ -405,7 +405,6 @@ function setupEventHandlers() {
 	jQuery('body').on('click', '.paging-show-toggle', function(e) {
 		e.preventDefault();
 		jQuery(this).closest('ul').find('.show-option').toggle();
-		jQuery(this).closest('ul').find('.page-option').toggle();
 	});
 	// Listing Display - Paging Show Select
 	jQuery('body').on('click', '.show-option', function(e) {
@@ -1276,7 +1275,6 @@ function buildPagingNav(currentPage, totalPages, pageRecordStart, pageRecordEnd,
 			pageCount = totalPages;
 		}
 
-
 		nav += '<li><a href="##" class="paging-show-toggle">Show <span class="details">(' + pageRecordStart + ' - ' + pageRecordEnd + ' of ' + recordsCount + ')</a></li>';
 		nav += '<li><a href="##" class="show-option" data-show="10">10</a></li>';
 		nav += '<li><a href="##" class="show-option" data-show="25">25</a></li>';
@@ -1284,8 +1282,7 @@ function buildPagingNav(currentPage, totalPages, pageRecordStart, pageRecordEnd,
 		nav += '<li><a href="##" class="show-option" data-show="100">100</a></li>';
 		nav += '<li><a href="##" class="show-option" data-show="500">500</a></li>';
 		nav += '<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>';
-		nav += '</ul>';
-		nav += '<ul class="pagination">';
+	
 		if(currentPage > 1) {
 			nav += '<li><a href="#" class="listing-pager page-option prev" data-page="' + (currentPage - 1) + '">&laquo;</a></li>';
 		} else {
@@ -1428,8 +1425,15 @@ function tableSelectClick( toggleLink ) {
 
 		// Update the value
 		jQuery( 'input[name="' + jQuery( toggleLink ).closest( 'table' ).data('selectfield') + '"]' ).val( jQuery( toggleLink ).data( 'idvalue' ) );
-
+		
+	} else {
+		// Remove old checked icon
+		jQuery( toggleLink ).closest( 'table' ).find('.hibachi-ui-radio-checked').addClass('hibachi-ui-radio').removeClass('hibachi-ui-radio-checked');
+		
+		// Update the value to null
+		jQuery( 'input[name="' + jQuery( toggleLink ).closest( 'table' ).data('selectfield') + '"]' ).val( "" );
 	}
+	
 }
 
 function globalSearchHold() {
