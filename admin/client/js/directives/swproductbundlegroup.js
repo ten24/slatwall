@@ -18,7 +18,6 @@ angular.module('slatwalladmin')
 		return {
 			require:"^swProductBundleGroups",
 			restrict: 'E',
-			transclude:true,
 			templateUrl:productBundlePartialsPath+"productbundlegroup.html",
 			scope:{
 				productBundleGroup:"=",
