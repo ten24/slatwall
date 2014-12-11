@@ -109,8 +109,9 @@ angular.module('slatwalladmin')
 						if(column.sorting.sortOrder === 'asc'){
 							column.sorting.sortOrder = 'desc';
 						}else{
-							column.sorting.active = false;
 							removeSorting(column);
+							column.sorting.active = false;
+							
 						}
 					}else{
 						column.sorting.active = true;
@@ -118,9 +119,7 @@ angular.module('slatwalladmin')
 						column.sorting.priority = getActivelySorting().length;
 					}
 					updateOrderBy();
-					$timeout(function(){
-						scope.saveCollection();
-					},200);
+					scope.saveCollection();
 					
 				};
 				
@@ -136,9 +135,7 @@ angular.module('slatwalladmin')
 					
 					if(!saving){
 						updateOrderBy();
-						$timeout(function(){
-							scope.saveCollection();
-						},200);
+						scope.saveCollection();
 					}
 					
 				};
@@ -153,9 +150,7 @@ angular.module('slatwalladmin')
 						column.sorting.priority = 1;
 					}
 					updateOrderBy();
-					$timeout(function(){
-						scope.saveCollection();
-					},200);
+					scope.saveCollection();
 				};
 				
 				var getActivelySorting = function(){
@@ -174,9 +169,7 @@ angular.module('slatwalladmin')
 					removeSorting(scope.columns[columnIndex],true);
 					displayOptionsController.removeColumn(columnIndex);
 					updateOrderBy();
-					$timeout(function(){
-						scope.saveCollection();
-					},200);
+					scope.saveCollection();
 				};
 			}
 		};

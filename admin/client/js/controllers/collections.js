@@ -195,35 +195,36 @@ metadataService,
 		};
 		
 		$scope.saveCollection = function(){
-			$log.debug('saving Collection');
-			var entityName = 'collection';
-			var collection = $scope.collection;
-			$log.debug($scope.collectionConfig);
-			
-			
-			if(isFormValid($scope.collectionForm)){
-				var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
-				$log.debug(collectionConfigString);
-				var data = angular.copy(collection);
+			$timeout(function(){
+				$log.debug('saving Collection');
+				var entityName = 'collection';
+				var collection = $scope.collection;
+				$log.debug($scope.collectionConfig);
 				
-				data.collectionConfig = collectionConfigString;
-				//has to be removed in order to save transient correctly
-				delete data.pageRecords;
-				var saveCollectionPromise = $slatwall.saveEntity(entityName,collection.collectionID,data);
-				saveCollectionPromise.then(function(value){
+				if(isFormValid($scope.collectionForm)){
+					var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
+					$log.debug(collectionConfigString);
+					var data = angular.copy(collection);
 					
-					$scope.errorMessage = {};
-					$scope.getCollection();
-					$scope.collectionDetails.isOpen = false;
-				}, function(reason){
-					//revert to original
-					angular.forEach(reason.errors,function(value,key){
-						$scope.collectionForm[key].$invalid = true;
-						$scope.errorMessage[key] = value[0];
+					data.collectionConfig = collectionConfigString;
+					//has to be removed in order to save transient correctly
+					delete data.pageRecords;
+					var saveCollectionPromise = $slatwall.saveEntity(entityName,collection.collectionID,data);
+					saveCollectionPromise.then(function(value){
+						
+						$scope.errorMessage = {};
+						$scope.getCollection();
+						$scope.collectionDetails.isOpen = false;
+					}, function(reason){
+						//revert to original
+						angular.forEach(reason.errors,function(value,key){
+							$scope.collectionForm[key].$invalid = true;
+							$scope.errorMessage[key] = value[0];
+						});
+						//$scope.collection = angular.copy($scope.collectionInitial);
 					});
-					//$scope.collection = angular.copy($scope.collectionInitial);
-				});
-			}
+				}
+			});
 		};
 		
 		var isFormValid = function (angularForm){
