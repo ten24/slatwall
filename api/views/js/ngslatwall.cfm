@@ -420,10 +420,12 @@ Notes:
 			    	var _init = function(entityInstance,data){
 						for(var key in data) {
 							if(key.charAt(0) !== '$'){
-								console.log(entityInstance.metaData);
-								console.log(key);
-								console.log(data[key])
-								if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
+								if(angular.isDefined(entityInstance.metaData[key]) 
+									&& angular.isString(entityInstance.data[key]) 
+									&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
+									&& entityInstance.metaData[key].hb_formfieldtype === 'json'
+								){
+									console.log(entityInstance.data[key]);
 									entityInstance.data[key] = angular.fromJson(data[key]);
 		    					}else{
 		    						entityInstance.data[key] = data[key];	
@@ -1085,7 +1087,6 @@ Notes:
 								    		</cfif>
 								   		</cfloop>
 								    ];
-								    
 									return detailsTab;
 								}
 								

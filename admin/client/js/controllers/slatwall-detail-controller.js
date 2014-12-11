@@ -15,17 +15,19 @@ function(
 	
 	var propertyCasedEntityName = $scope.entityName.charAt(0).toUpperCase() + $scope.entityName.slice(1);
 	
-	$scope.entity = $slatwall['new'+propertyCasedEntityName]();
 	$scope.getRBKey = $slatwall.getRBKey;
 	$scope.tabPartialPath = partialsPath+'entity/';
 	
 	$scope.getEntity = function(){
-		
-		$scope.entity = $slatwall['get'+propertyCasedEntityName]({id:$scope.entityID});
-		$scope[$scope.entityName.toLowerCase()] = $scope.entity;
-		$scope.entityDisplay = {
-			plural:$slatwall.getRBKey('entity.'+$scope.entityName.toLowerCase()+'_plural')
-		};
+		var entityPromise = $slatwall['get'+propertyCasedEntityName]({id:$scope.entityID});
+		entityPromise.promise.then(function(){
+			$scope.entity = entityPromise.value;
+			$scope[$scope.entityName.toLowerCase()] = $scope.entity;
+			$scope.entityDisplay = {
+				plural:$slatwall.getRBKey('entity.'+$scope.entityName.toLowerCase()+'_plural')
+			};
+			$scope.detailTabs = $scope.entity.metaData.$$getDetailTabs();
+		});
 	};
 	$scope.getEntity();
 	

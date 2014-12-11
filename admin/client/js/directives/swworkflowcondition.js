@@ -15,7 +15,7 @@ angular.module('slatwalladmin')
 	workflowPartialsPath
 	){
 		return {
-			restrict: 'A',
+			restrict: 'E',
 			scope:{
 				workflowCondition:"=", 
 				workflowConditionIndex:"=",
