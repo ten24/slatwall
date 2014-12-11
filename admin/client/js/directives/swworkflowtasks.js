@@ -37,15 +37,15 @@ angular.module('slatwalladmin')
 					}
 					
 				};
-				
-				scope.saveWorkflowTask = function(){
+				scope.getWorkflowTasks();
+				/*scope.saveWorkflowTask = function(){
 					var savePromise = scope.workflow.workflowTasks.selectedTask.$$save();
 					savePromise.then(function(){
 						scope.getWorkflowTasks();			
 					});
-				};
+				};*/
 
-				scope.getWorkflowTasks();
+				
 				
 				scope.addWorkflowTask = function(){
 					$log.debug('addWorkflowTasks');

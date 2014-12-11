@@ -58,7 +58,6 @@
 					</div>
 					<div class="tab-pane" id="j-conditions-2">
 						<sw-form name="selectedTaskConditions" 
-							data-parentObject="workflow"
 							data-object="workflowTasks.selectedTask"	
 						>
 							<div class="s-setting-options">
@@ -78,6 +77,13 @@
 									</div>
 								</div>
 							</div>
+							<sw-property-display
+                                data-object="workflowTasks.selectedTask"
+                                data-property="taskConditionsConfig"
+                                data-editing="true"
+                                data-editable="true"
+                                data-is-dirty="true"
+                            ></sw-property-display>
 						</sw-form>
 					</div>
 				

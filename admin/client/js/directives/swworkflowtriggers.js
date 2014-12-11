@@ -11,8 +11,7 @@ angular.module('slatwalladmin')
 	workflowPartialsPath
 	){
 		return {
-			require:"^form",
-			restrict: 'A',
+			restrict: 'E',
 			scope:{
 				workflow:"="
 			},
@@ -23,7 +22,15 @@ angular.module('slatwalladmin')
 				scope.$id = 'swWorkflowTriggers';
 					
 				scope.getWorkflowTriggers = function(){
-					scope.workflowTriggers = scope.workflow.$$getWorkflowTriggers();
+					var workflowTriggersPromise = scope.workflow.$$getWorkflowTriggers();
+					workflowTriggersPromise.then(function(){
+						scope.workflowTriggers = scope.workflow.data.workflowTriggers;
+					});
+					
+					if(angular.isUndefined(scope.workflow.data.workflowTriggers)){
+						scope.workflow.data.workflowTriggers = [];
+						scope.workflowTriggers = scope.workflow.data.workflowTriggers;
+					}
 				};
 				
 				scope.getWorkflowTriggers();

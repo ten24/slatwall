@@ -18,7 +18,6 @@ angular.module('slatwalladmin')
 				$log.debug('workflow task actions init');	
 				scope.openActions = false;
 				
-				
 				scope.getWorkflowTaskActions = function(){
 					var workflowTaskPromise = scope.workflowTask.$$getWorkflowTaskActions();
 					workflowTaskPromise.then(function(){
@@ -43,6 +42,7 @@ angular.module('slatwalladmin')
 				scope.addWorkflowTaskAction = function(){
 					var workflowTaskAction = scope.workflowTask.$$addWorkflowTaskAction();
 					scope.selectWorkflowTaskAction(workflowTaskAction);
+					console.log(scope.workflow);
 				};
 				
 				scope.selectWorkflowTaskAction = function(workflowTaskAction){
