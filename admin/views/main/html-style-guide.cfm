@@ -74,7 +74,7 @@
 		</div>
 	</div>
 	
-	<script charset="utf-8">
+	<script>
 		angular.module('slatwalladmin').controller('CollapseDemoCtrl', function ($scope) {
 			$scope.isCollapsed = false;
 		});
