@@ -109,8 +109,9 @@ angular.module('slatwalladmin')
 						if(column.sorting.sortOrder === 'asc'){
 							column.sorting.sortOrder = 'desc';
 						}else{
-							column.sorting.active = false;
 							removeSorting(column);
+							column.sorting.active = false;
+							
 						}
 					}else{
 						column.sorting.active = true;
