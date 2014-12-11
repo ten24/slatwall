@@ -149,7 +149,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					columnStruct['propertyIdentifier'] = '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject)) & '.' & defaultProperty.name;
 					columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
 					
-					if(structKeyExists(defaultProperty,"fieldtype") &&defaultProperty.fieldtype == 'id'){
+					if(structKeyExists(defaultProperty,"fieldtype") && defaultProperty.fieldtype == 'id'){
 						columnStruct['isDeletable'] = false;
 						columnStruct['isVisible'] = false;
 					}else{
@@ -463,7 +463,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 		HQL = createHQLFromCollectionObject(this,arguments.excludeSelect);
-		
 		return HQL;
 	}
 	

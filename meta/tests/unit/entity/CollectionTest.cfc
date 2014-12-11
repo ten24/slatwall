@@ -919,6 +919,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				direction="DESC"
 			},
 			{
+				propertyIdentifier="Account.company",
+				direction="DESC"
+			},
+			{
 				propertyIdentifier="Account.firstName",
 				direction="ASC"
 			}
@@ -926,7 +930,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var orderByHQL = variables.entity.getOrderByHQL(orderBy);
 		//not truly false, using Compare to test case-sensitive strings 1 is greater, 0 is equal, -1 is less than. Coldfusion saying 0 is equal, i know awesome! :)
-		assertFalse(Compare(" ORDER BY Account.lastName DESC ,Account.firstName ASC ",orderByHQL));
+		assertFalse(Compare(" ORDER BY Account.lastName DESC ,Account.company DESC ,Account.firstName ASC ",orderByHQL));
 		
 		request.debug(orderByHQL); 
 	}
