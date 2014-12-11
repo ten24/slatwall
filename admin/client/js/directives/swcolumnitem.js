@@ -144,26 +144,23 @@ angular.module('slatwalladmin')
 					if(column.sorting.priority === 1){
 						
 						var activelySorting = getActivelySorting();
-						
+						for(var i in scope.columns){
+							if(scope.columns[i].sorting.active === true){
+								scope.columns[i].sorting.priority = scope.columns[i].sorting.priority - 1;
+							}
+						}
 						column.sorting.priority = activelySorting.length;
 						
 					}else{
 						for(var i in scope.columns){
-							if(scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority === column.sorting.priority + 1){
+							if(scope.columns[i].sorting.active === true && scope.columns[i].sorting.priority === column.sorting.priority - 1){
 								scope.columns[i].sorting.priority = scope.columns[i].sorting.priority + 1;
 							}
 						}
 						
 						column.sorting.priority -= 1;
 					}
-					//if(column.sorting.priority !== 1){
-						/*for(var i in scope.columns){
-							if(scope.columns[i].sorting.active === true){
-								scope.columns[i].sorting.priority = scope.columns[i].sorting.priority - 1;
-							}
-						}*/
-						column.sorting.priority = 1;
-					//}
+					
 					updateOrderBy();
 					scope.saveCollection();
 				};
