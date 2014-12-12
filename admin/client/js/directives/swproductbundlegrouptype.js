@@ -94,6 +94,10 @@ angular.module('slatwalladmin')
 									$scope.showAddProductBundleGroupTypeBtn = false;
 									$scope.productBundleGroup.data.productBundleGroupType.data.typeName = '';
 									$scope.$apply();
+									
+								}
+								if(!$scope.showAddProductBundleGroupTypeBtn){
+									$window.onclick = null;
 								}
 							};
 							//$('.s-add-bundle-type').show();
