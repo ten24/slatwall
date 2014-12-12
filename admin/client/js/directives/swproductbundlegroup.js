@@ -76,6 +76,7 @@ angular.module('slatwalladmin')
 			        },
 					setSelected:function(searchOption){
 						this.selected = searchOption;
+						scope.productBundleGroupFilters.getFiltersByTerm(scope.productBundleGroupFilters.keyword,searchOption);
 					}
 				};
 				
