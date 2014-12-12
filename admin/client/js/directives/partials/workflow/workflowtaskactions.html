@@ -1,12 +1,12 @@
 <div class="s-bundle-add-items s-workflow-objs s-sortable">
 	<ul class="list-unstyled s-order-item-options" ng-repeat="workflowTaskAction in workflowTaskActions">
-		<li class="s-bundle-add-obj">
+		<li class="s-bundle-add-obj" ng-if="workflowTaskAction.$$isPersisted()">
 			<ul class="list-unstyled list-inline">
 				<li class="s-item-type" ng-bind="$index+1" ng-init="workflowTaskAction.$$index=$index"></li>
 				<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>
 			</ul>
 			<ul class="list-unstyled list-inline s-middle">
-				<li class="j-tool-tip-item s-bundle-details">Type: <span ng-bind="workflowTaskAction.actionType"></span></li>
+				<li class="j-tool-tip-item s-bundle-details">Type: <span ng-bind="workflowTaskAction.data.actionType"></span></li>
 				<li class="j-tool-tip-item s-bundle-details">Object: <span>Order</span></li>
 				<li class="j-tool-tip-item s-bundle-details">Detail: <span>Order Feedback Template</span></li>
 			</ul>
