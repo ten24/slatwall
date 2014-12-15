@@ -55,6 +55,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalEncryptionKeySize" />
 		<swa:SlatwallSetting settingName="globalEncryptionKeyLocation" />
 		<swa:SlatwallSetting settingName="globalEncryptionService" />
+		<swa:SlatwallSetting settingName="globalForceCreditCardOverSSL" />
 		<swa:SlatwallSetting settingName="globalNoSessionIPRegex" />
 		<swa:SlatwallSetting settingName="globalNoSessionPersistDefault" />
 		<swa:SlatwallSetting settingName="globalRemoteIDShowFlag" />
