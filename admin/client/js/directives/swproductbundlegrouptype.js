@@ -3,6 +3,7 @@ angular.module('slatwalladmin')
 .directive('swProductBundleGroupType', [
 	'$http',
 	'$log',
+	'$window',
 	'$slatwall',
 	'formService',
 	'productBundlePartialsPath',
@@ -10,6 +11,7 @@ angular.module('slatwalladmin')
 	function(
 		$http,
 		$log,
+		$window,
 		$slatwall,
 		formService,
 		productBundlePartialsPath,
@@ -36,7 +38,8 @@ angular.module('slatwalladmin')
 					productBundleGroupType.$$setParentType(parentType);
 					$scope.productBundleGroup.$$setProductBundleGroupType(productBundleGroupType);
 				}
-
+				
+			
 				$scope.productBundleGroupTypes.setAdding = function(isAdding){
 					$scope.productBundleGroupTypes.$$adding = isAdding;
 
@@ -51,6 +54,7 @@ angular.module('slatwalladmin')
 					angular.extend($scope.productBundleGroup.data.productBundleGroupType,productBundleGroup);
 
 				};
+				
 				
 				$scope.showAddProductBundleGroupTypeBtn = false;
 				
@@ -85,6 +89,17 @@ angular.module('slatwalladmin')
 						
 						if (myLength > 0) {
 							$scope.showAddProductBundleGroupTypeBtn = true;
+							$window.onclick = function(event){
+								if(!event.target.parentElement.offsetParent.classList.contains('s-search-filter')){
+									$scope.showAddProductBundleGroupTypeBtn = false;
+									$scope.productBundleGroup.data.productBundleGroupType.data.typeName = '';
+									$scope.$apply();
+									
+								}
+								if(!$scope.showAddProductBundleGroupTypeBtn){
+									$window.onclick = null;
+								}
+							};
 							//$('.s-add-bundle-type').show();
 						}else{
 							$scope.showAddProductBundleGroupTypeBtn = false;
