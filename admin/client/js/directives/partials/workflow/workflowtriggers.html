@@ -52,26 +52,48 @@
 								<h4>Trigger Type:</h4>
 								<div class="form-group">
 									<div class="radio">
-										<input  type="radio" name="triggerType" id="radio2"
+										<input  type="radio" name="triggerType" id="radioEvent{{$index}}"
 												ng-model="workflowTriggers.selectedTrigger.data.triggerType"
 												value="Event"
 										>
-										<label for="radio2">
+										<label for="radioEvent{{$index}}">
 											Event
 										</label>
 									</div>
 									<div class="radio">
-										<input  type="radio" name="triggerType" id="radio3"
+										<input  type="radio" name="triggerType" id="radioScheduled{{$index}}"
 												
 												ng-model="workflowTriggers.selectedTrigger.data.triggerType"
 												value="Schedule" 
 										>
-										<label for="radio3">
+										<label for="radioScheduled{{$index}}">
 											Schedule
 										</label>
 									</div>
 								</div>
 							</div>
+							<sw-property-display
+									style="display:none"
+									data-object="workflowTriggers.selectedTrigger"
+									data-property="triggerType"
+									data-editing="true"
+									data-is-dirty="true"
+							></sw-property-display> 
+							<sw-property-display
+									style="display:none"
+									data-object="workflowTriggers.selectedTrigger"
+									data-property="triggerEvent"
+									data-editing="true"
+									data-is-dirty="true"
+							></sw-property-display> 
+							<sw-property-display
+									style="display:none"
+									data-object="workflowTriggers.selectedTrigger"
+									data-property="objectPropertyIdentifier"
+									data-editing="true"
+									data-is-dirty="true"
+							></sw-property-display> 
+									
 						</div>
 						<div class="col-xs-6 s-criteria">
 							<span ng-show="workflowTriggers.selectedTrigger.data.triggerType === 'Event'">
@@ -81,21 +103,23 @@
 									<div class="s-filter-group-item">
 		
 										<div class="form-group form-group-sm">
-											<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.data.workflow.workflowObject}}:</label>
+											<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflow.data.workflowObject}}:</label>
 											<div class="col-sm-12 s-no-paddings">
 		
 												<!--- search --->
 												<div class="s-search-filter">
 													<div class="input-group">
+														
 														<input type="text" class="form-control input-sm" placeholder="Search&hellip;" ng-model="searchEvent.name" ng-focus="searchEvent.name = ''">
 														<ul class="dropdown-menu " ng-show="showEventOptions">
 															<span ng-repeat="eventOption in eventOptions | filter:searchEvent.name">
 																<li><a ng-click="selectEvent(eventOption)">{{eventOption.name}}</a></li>
 															</span>
 														</ul>
-														<div class="input-group-btn">
-															<button type="button" class="btn btn-sm btn-default" ng-click="getEventOptions(workflowTriggers.selectedTrigger.data.workflow.workflowObject);"><span class="caret"></span></button>
+														<div class="input-group-btn" ng-if="workflow.data.workflowObject">
+															<button type="button" class="btn btn-sm btn-default" ng-click="getEventOptions(workflow.data.workflowObject);"><span class="caret"></span></button>
 														</div>
+														
 													</div>
 		
 													<div class="s-add-content collapse" id="j-toggle-add-bundle-type">

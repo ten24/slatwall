@@ -4,11 +4,13 @@ angular.module('slatwalladmin')
 '$location',
 '$slatwall',
 'workflowPartialsPath',
+'formService',
 	function(
 	$log,
 	$location,
 	$slatwall,
-	workflowPartialsPath
+	workflowPartialsPath,
+	formService
 	){
 		return {
 			restrict: 'E',
@@ -25,12 +27,12 @@ angular.module('slatwalladmin')
 					var workflowTriggersPromise = scope.workflow.$$getWorkflowTriggers();
 					workflowTriggersPromise.then(function(){
 						scope.workflowTriggers = scope.workflow.data.workflowTriggers;
+						
+						if(angular.isUndefined(scope.workflow.data.workflowTriggers)){
+							scope.workflow.data.workflowTriggers = [];
+							scope.workflowTriggers = scope.workflow.data.workflowTriggers;
+						}
 					});
-					
-					if(angular.isUndefined(scope.workflow.data.workflowTriggers)){
-						scope.workflow.data.workflowTriggers = [];
-						scope.workflowTriggers = scope.workflow.data.workflowTriggers;
-					}
 				};
 				
 				scope.getWorkflowTriggers();
@@ -66,7 +68,7 @@ angular.module('slatwalladmin')
 				scope.eventOptions = [];
 				var unBindSearchEventWatch = scope.$watch('searchEvent.name',function(newValue,oldValue){
 					if(newValue !== oldValue){
-						scope.getEventOptions(scope.workflowTriggers.selectedTrigger.data.workflow.workflowObject);
+						scope.getEventOptions(scope.workflow.data.workflowObject);
 						unBindSearchEventWatch();
 					}
 				});
@@ -88,6 +90,7 @@ angular.module('slatwalladmin')
 				scope.selectEvent = function(eventOption){
 					$log.debug('selectEvent');
 					scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
+					scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
 					scope.searchEvent.name = eventOption.name;
 					$log.debug(eventOption);
 					$log.debug(scope.workflowTriggers);
@@ -128,10 +131,8 @@ angular.module('slatwalladmin')
 				
 				scope.addWorkflowTrigger = function(){
 					$log.debug('addWorkflowTrigger');
-					var newWorkflowTrigger = $slatwall.newWorkflowTrigger();
-					newWorkflowTrigger.data.workflow = scope.workflow.data;
+					var newWorkflowTrigger = scope.workflow.$$addWorkflowTrigger();
 					scope.workflowTriggers.selectedTrigger = newWorkflowTrigger;
-					scope.workflowTriggers.push(newWorkflowTrigger);
 					$log.debug(scope.workflowTriggers);
 				};
 			}

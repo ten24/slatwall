@@ -96,6 +96,13 @@ component displayname="Workflow" entityname="SlatwallWorkflow" table="SwWorkflow
 	public void function removeWorkflowTask(required any WorkflowTask) {
 		arguments.WorkflowTask.removeWorkflow( this );
 	}
+	// WorkflowTrigger (one-to-many)
+	public void function addWorkflowTrigger(required any WorkflowTrigger) {
+		arguments.WorkflowTrigger.setWorkflow( this );
+	}
+	public void function removeWorkflowTrigger(required any WorkflowTrigger) {
+		arguments.WorkflowTrigger.removeWorkflow( this );
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
