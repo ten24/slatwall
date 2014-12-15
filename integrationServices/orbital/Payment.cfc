@@ -124,6 +124,14 @@ component accessors="true" output="false" displayname="PayFlowPro" implements="S
 		httpRequest.addParam(type="header",name="Accept",VALUE="application/xml");
 		httpRequest.addParam(type="body",value="#trim(requestXML)#");
 		
+		var objSecurity = createObject("java", "java.security.Security");
+		var storeProvider = objSecurity.getProvider("JsafeJCE");
+		objSecurity.removeProvider("JsafeJCE");
+		
+		var response = httpRequest.send().getPrefix();
+		
+		objSecurity.insertProviderAt(storeProvider, 1) ;
+		
 		var response = httpRequest.send().getPrefix();
 		
 		return response;
