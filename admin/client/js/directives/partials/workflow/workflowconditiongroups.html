@@ -2,22 +2,22 @@
 	
 	<span ng-repeat="workflowConditionGroup in workflowConditionGroupItem">
 		<span ng-switch on="workflowConditionGroup.hasOwnProperty('workflowConditionGroup')" >
-			<span 	ng-switch-when="false" 
-					sw-workflow-condition 
+			<sw-workflow-condition 	
+					ng-switch-when="false" 
 					data-workflow-condition="workflowConditionGroup" 
 					data-workflow-condition-index="$index"
 					data-workflow="workflow"
 					data-filter-properties-list="filterPropertiesList"
 					>
-			</span>
-			<span 	ng-switch-when="true" 
-					sw-workflow-condition-group-item 
+			</sw-workflow-condition>
+			<sw-workflow-condition-group-item  	
+					ng-switch-when="true" 
 					data-workflow-condition-group-item="workflowConditionGroup",
 					data-sibling-items="workflowConditionGroupItem"
 					data-workflow-condition-group-item-index="$index"
 					data-workflow="workflow"
 					>
-			</span>
+			</sw-workflow-condition-group-item >
 		</span>
 	</span>
 

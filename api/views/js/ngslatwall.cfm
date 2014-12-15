@@ -72,7 +72,7 @@ Notes:
 			
 			return {
 				
-			    $get:['$q','$http','$log', 'formService', function ($q,$http,$log,formService)
+			    $get:['$q','$http','$timeout','$log', 'formService', function ($q,$http,$timeout,$log,formService)
 			    {
 			    	var slatwallService = {
 			    		/*basic entity getter where id is optional, returns a promise*/
@@ -195,6 +195,7 @@ Notes:
 				  			return deferred.promise;
 				  		},
 				  		saveEntity:function(entityName,id,params,context){
+				  			
 				  			$log.debug('save'+ entityName);
 				  			var deferred = $q.defer();
 			
@@ -420,10 +421,11 @@ Notes:
 			    	var _init = function(entityInstance,data){
 						for(var key in data) {
 							if(key.charAt(0) !== '$'){
-								console.log(entityInstance.metaData);
-								console.log(key);
-								console.log(data[key])
-								if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
+								if(angular.isDefined(entityInstance.metaData[key]) 
+									&& angular.isString(entityInstance.data[key]) 
+									&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
+									&& entityInstance.metaData[key].hb_formfieldtype === 'json'
+								){
 									entityInstance.data[key] = angular.fromJson(data[key]);
 		    					}else{
 		    						entityInstance.data[key] = data[key];	
@@ -690,14 +692,15 @@ Notes:
 			    		
 			    		for(var key in returnedIDs){
 			    			if(angular.isArray(returnedIDs[key])){
+			    				console.log(key);
+			    				console.log(entityInstance);
 								var arrayItems = returnedIDs[key];
 								var entityInstanceArray = entityInstance.data[key];
+								console.log(entityInstanceArray);
 								for(var i in arrayItems){
 									var arrayItem = arrayItems[i];
+									console.log(arrayItems);
 									var entityInstanceArrayItem = entityInstance.data[key][i];
-									console.log('test');
-									console.log(arrayItem);
-									console.log(entityInstanceArrayItem);
 									_addReturnedIDs(arrayItem,entityInstanceArrayItem)
 								}
 			    			}else if(angular.isObject(returnedIDs[key])){
@@ -712,28 +715,30 @@ Notes:
 			    	
 
 			    	var _save = function(entityInstance){
-			    		console.log('save');
-			    		console.log(entityInstance);
-			    		
-			    		var entityID = entityInstance.$$getID();
-			    		
-			    		var modifiedData = _getModifiedData(entityInstance);
-			    		
-			    		var params = {};
-						params.serializedJsonData = angular.toJson(modifiedData.value);
-			    		var entityName = modifiedData.objectLevel.metaData.className;
-			    		var context = 'save';
-			    		
-			    		
-			    		var savePromise = slatwallService.saveEntity(entityName,entityInstance.$$getID(),params,context);
-			    		savePromise.then(function(response){
-			    			var returnedIDs = response.data;
-			    			<!--- TODO: restet form --->
-							<!---//entityInstance.form.$setPristine();
-							//--->
-							_addReturnedIDs(returnedIDs,entityInstance);
+			    		$timeout(function(){
+				    		console.log('save');
+				    		console.log(entityInstance);
+				    		
+				    		var entityID = entityInstance.$$getID();
+				    		
+				    		var modifiedData = _getModifiedData(entityInstance);
+				    		
+				    		var params = {};
+							params.serializedJsonData = angular.toJson(modifiedData.value);
+				    		var entityName = modifiedData.objectLevel.metaData.className;
+				    		var context = 'save';
+				    		
+				    		
+				    		var savePromise = slatwallService.saveEntity(entityName,entityInstance.$$getID(),params,context);
+				    		savePromise.then(function(response){
+				    			var returnedIDs = response.data;
+				    			<!--- TODO: restet form --->
+								<!---//entityInstance.form.$setPristine();
+								//--->
+								_addReturnedIDs(returnedIDs,modifiedData.objectLevel);
+							});
+							return savePromise;
 						});
-						return savePromise;
 			    		/*
 			    		
 			    		<!---validate based on context --->
@@ -819,9 +824,6 @@ Notes:
 						    			}
 						    		}
 					    		}
-								console.log('parentINstance');
-								console.log(parentInstance);
-								console.log(parentInstance.$$getID());
 					    		modifiedData[parentObject.name][parentInstance.$$getIDName()] = parentInstance.$$getID();
 							}
 						}
@@ -882,7 +884,6 @@ Notes:
 		    			for(var key in form){
 			    			if(key.charAt(0) !== '$'){
 			    				var inputField = form[key];
-			    				console.log(inputField);
 			    				if(angular.isDefined(inputField) && inputField.$valid === true && inputField.$dirty === true){	
 			    					if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
 			    						data[key] = angular.toJson(form[key].$modelValue);		
@@ -902,7 +903,6 @@ Notes:
 						<!--- loop through all children --->
 						for(var c in entityInstance.parents){
 							var parentMetaData = entityInstance.parents[c];
-							console.log(parentMetaData);
 							if(angular.isDefined(parentMetaData)){
 								var parent = entityInstance.data[parentMetaData.name];
 								var parent = entityInstance.data[parentMetaData.name];
@@ -934,9 +934,6 @@ Notes:
 									data[childMetaData.name] = [];
 								}
 								angular.forEach(entityInstance.data[childMetaData.name],function(child,key){
-								console.log('foreach');
-									console.log(key);
-									console.log(child);
 									var childData = processChild(child,entityInstance);
 									data[childMetaData.name].push(childData);
 								});
@@ -1042,8 +1039,6 @@ Notes:
 								}
 
 								this.metaData.$$getManyToManyName = function(singularname){
-									console.log(singularname);
-									console.log(this);
 									var metaData = this;
 									for(var i in metaData){
 										if(metaData[i].singularname === singularname){
@@ -1085,7 +1080,6 @@ Notes:
 								    		</cfif>
 								   		</cfloop>
 								    ];
-								    
 									return detailsTab;
 								}
 								
@@ -1277,8 +1271,6 @@ Notes:
 													var metaData = this.metaData;
 													<!--- one-to-many --->
 													if(metaData['#local.property.name#'].fieldtype === 'one-to-many'){
-														console.log('many');
-														console.log(metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1));
 														entityInstance.data[metaData['#local.property.name#'].fkcolumn.slice(0,-2)] = this;
 													<!--- many-to-many --->
 													}else if(metaData['#local.property.name#'].fieldtype === 'many-to-many'){
