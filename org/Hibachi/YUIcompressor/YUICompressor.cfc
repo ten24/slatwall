@@ -57,7 +57,7 @@ Homepage:	http://yuicompressorcfc.riaforge.org/
 		<cfset joInput = createObject('java','java.io.StringReader').init(arguments.inputString) />
 		
 		<cfif arguments.inputType eq 'js'>
-			<cfset getJavaLoader().create('com.yahoo.platform.yui.compressor.JavaScriptCompressor').init(joInput,getJavaLoader().create('org.mozilla.javascript.ErrorReporter')).compress(joOutput,javaCast('int',arguments.linebreak),javaCast('boolean',arguments.munge),javaCast('boolean',arguments.verbose),javaCast('boolean',arguments.preserveAllSemiColons),javaCast('boolean',arguments.disableOptimizations)) />
+			<cfset getJavaLoader().create('com.yahoo.platform.yui.compressor.JavaScriptCompressor').init(joInput,javacast('null','')).compress(joOutput,javaCast('int',arguments.linebreak),javaCast('boolean',arguments.munge),javaCast('boolean',arguments.verbose),javaCast('boolean',arguments.preserveAllSemiColons),javaCast('boolean',arguments.disableOptimizations)) />
 		<cfelseif arguments.inputType eq 'css'>
 			<cfset getJavaLoader().create('com.yahoo.platform.yui.compressor.CssCompressor').init(joInput).compress(joOutput, javaCast('int',arguments.linebreak)) />
 		<cfelse>
