@@ -47,7 +47,7 @@ angular.module('slatwalladmin')
 					            '{'+
 					               '"propertyIdentifier":"_collection.collectionObject",'+
 					               '"comparisonOperator":"=",'+
-					               '"value":"Slatwall'+ scope.workflowTriggers.selectedTrigger.data.workflow.workflowObject +'"'+
+					               '"value":"Slatwall'+ scope.workflow.data.workflowObject +'"'+
 					           '}'+ 
 					         ']'+
 						'}'+
