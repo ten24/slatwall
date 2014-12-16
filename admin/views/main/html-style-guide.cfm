@@ -97,378 +97,364 @@
 <h1 id="headings">Create List Component</h1>
 
 
-	<!--////////////////////////////////Create List Component///////////////////////////////////-->
-	<div class="s-select-list-wrapper"><!--- Add select component Wrapper --->
-		
-		<div class="form-group"><!--- Option select field wrapper --->
-			<div class="input-group">
-				<input type="text" class="form-control" placeholder="Any Text..." name="" id="">
-				<div class="input-group-btn">
-					<button class="btn btn-sm s-btn-dgrey" type="submit"><i class="fa fa-plus"></i></button>
-				</div>
+<!--////////////////////////////////Create List Component///////////////////////////////////-->
+<div class="s-select-list-wrapper"><!--- Add select component Wrapper --->
+	
+	<div class="form-group"><!--- Option select field wrapper --->
+		<div class="input-group">
+			<input type="text" class="form-control" placeholder="Any Text..." name="" id="">
+			<div class="input-group-btn">
+				<button class="btn btn-sm s-btn-dgrey" type="submit"><i class="fa fa-plus"></i></button>
 			</div>
 		</div>
-		
-		<div class="s-selected-list"><!--- Selected options wrapper --->
-			
-			<div class="alert s-selected-item"><!--- Example Item 2 --->
-				<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<strong>Search Result Title 1</strong>
-			</div>
-			
-			<div class="alert s-selected-item"><!--- Example Item 2 --->
-				<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<strong>Search Result Title 2</strong>
-			</div>
-			
-		</div>
-		
 	</div>
-	<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
 	
-	<hr />
-	
-	<h1 id="headings">Create List Component With Dropdown</h1>
-	
-	<!--//////////////////////////////////Create List Component With Dropdown/////////////////////////////////-->
-	<div class="s-select-list-wrapper"><!--- Add select component Wrapper --->
+	<div class="s-selected-list"><!--- Selected options wrapper --->
 		
-		<div class="form-group"><!--- Option select field wrapper --->
-			<div class="input-group">
-				<input type="text" class="form-control" placeholder="Search" name="" id="">
-				<div class="input-group-btn">
-					<button class="btn btn-sm s-btn-dgrey" type="submit"><i class="fa fa-caret-down"></i></button>
-				</div>
-			</div>
+		<div class="alert s-selected-item"><!--- Example Item 2 --->
+			<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			<strong>Search Result Title 1</strong>
 		</div>
 		
-		<div class="dropdown s-search-results-wrapper"><!--- Dropdown wrapper --->
-			<ul class="dropdown-menu">
-				<li class="s-new-item"><a title="" class="" href="##"><i class="fa fa-plus"></i> "Example Item"</a></li>
-				<li><a href="##">Item One</a></li> 
-				<li><a href="##">Item Two</a></li> 
-				<li><a href="##">Item Three</a></li> 
-				<li><a href="##">Item Four</a></li> 
-				<li><a href="##">Item Five</a></li> 
-				<li class="s-spinner"><i class="fa fa-refresh fa-spin"></i></li> 
-			</ul>
-		</div>	
-		
-		<div class="s-selected-list"><!--- Selected options wrapper --->
-			
-			<div class="alert s-selected-item"><!--- Example Item 2 --->
-				<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<strong>Search Result Title 1</strong>
-			</div>
-			
-			<div class="alert s-selected-item"><!--- Example Item 2 --->
-				<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-				<strong>Search Result Title 2</strong>
-			</div>
-			
+		<div class="alert s-selected-item"><!--- Example Item 2 --->
+			<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			<strong>Search Result Title 2</strong>
 		</div>
 		
 	</div>
 	
-	<script charset="utf-8">
-		//Not for production use
-		$('.s-select-list-wrapper input').focusin(function() {
-			$('.s-search-results-wrapper').show();
-		}).focusout(function () {
-			$('.s-search-results-wrapper').hide();
-		});
-		$('.s-search-results-wrapper').hide();
-	</script>
-	<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component With Dropdown End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+</div>
+<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+
+<hr />
+
+<h1 id="headings">Create List Component With Dropdown</h1>
+
+<!--//////////////////////////////////Create List Component With Dropdown/////////////////////////////////-->
+<div class="s-select-list-wrapper"><!--- Add select component Wrapper --->
 	
-	<hr />
-
-	<h1 id="headings">Toggle Content Component</h1>
-
-
-	<!--////////////////////////////////Toggle Content Component///////////////////////////////////-->
-	<div ng-controller="CollapseDemoCtrl">
-		<button class="btn btn-primary" ng-click="isCollapsed = !isCollapsed">Toggle collapse</button>
-		<hr>
-		<div collapse="isCollapsed">
-			<div class="well well-lg">Some content</div> 
+	<div class="form-group"><!--- Option select field wrapper --->
+		<div class="input-group">
+			<input type="text" class="form-control" placeholder="Search" name="" id="">
+			<div class="input-group-btn">
+				<button class="btn btn-sm s-btn-dgrey" type="submit"><i class="fa fa-caret-down"></i></button>
+			</div>
 		</div>
 	</div>
-
-	<script>
-	angular.module('slatwalladmin').controller('CollapseDemoCtrl', function ($scope) {
-		$scope.isCollapsed = false;
-	});
-	</script>
-	<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Toggle Content Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
-
-
-	<hr/>
-
-	<h1 id="text-elements"> Text Elements</h1>
-
-	<p>The <a href="#">a element</a> example</p>
-	<p>The <abbr>abbr element</abbr> and an <abbr title="Abbreviation">abbr</abbr> element with title examples</p>
-	<p>The <acronym title="A Cowboy Ran One New York Marathon">ACRONYM</acronym> element example
-	<p>The <b>b element</b> example</p>
-	<p>The <cite>cite element</cite> example</p>
-	<p>The <code>code element</code> example</p>
-	<p>The <em>em element</em> example</p>
-	<p>The <del>del element</del> example</p>
-	<p>The <dfn>dfn element</dfn> and <dfn title="Title text">dfn element with title</dfn> examples</p>
-	<p>The <i>i element</i> example</p>
-	<p>The <ins>ins element</ins> example</p>
-	<p>The <kbd>kbd element</kbd> example</p>
-	<p>The <mark>mark element</mark> example</p>
-	<p>The <q>q element</q> example</p>
-	<p>The <q>q element <q>inside</q> a q element</q> example</p>
-	<p>The <s>s element</s> example</p>
-	<p>The <samp>samp element</samp> example</p>
-	<p>The <small>small element</small> example</p>
-	<p>The <span>span element</span> example</p>
-	<p>The <strong>strong element</strong> example</p>
-	<p>The <sub>sub element</sub> example</p>
-	<p>The <sup>sup element</sup> example</p>
-	<p>The <u>u element</u> example</p>
-	<p>The <var>var element</var> example</p>
 	
-	<hr />
-	
-	<h1 id="monospace">Monospace / Preformatted</h1>
-	<p>Code block wrapped in "pre" and "code" tags</p>
-	<pre><code>// Loop through Divs using Javascript.
-		var divs = document.querySelectorAll('div'), i;
-		
-		for (i = 0; i < divs.length; ++i) {
-			divs[i].style.color = "green";
-		}</code></pre>
-		<p>Monospace Text wrapped in "pre" tags</p>
-		<pre><p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p></pre>
-		
-		<hr />
-		
-		<h1 id="list_types">List Types</h1>
-		
-		<h3>Ordered List</h3>
-		<ol>
-			<li>List Item 1</li>
-			<li>List Item 2</li>
-			<li>List Item 3</li>
-		</ol>
-		
-		<h3>Unordered List</h3>
-		<ul>
-			<li>List Item 1</li>
-			<li>List Item 2</li>
-			<li>List Item 3</li>
+	<div class="dropdown s-search-results-wrapper"><!--- Dropdown wrapper --->
+		<ul class="dropdown-menu">
+			<li class="s-new-item"><a title="" class="" href="##"><i class="fa fa-plus"></i> "Example Item"</a></li>
+			<li><a href="##">Item One</a></li> 
+			<li><a href="##">Item Two</a></li> 
+			<li><a href="##">Item Three</a></li> 
+			<li><a href="##">Item Four</a></li> 
+			<li><a href="##">Item Five</a></li> 
+			<li class="s-spinner"><i class="fa fa-refresh fa-spin"></i></li> 
 		</ul>
+	</div>	
+	
+	<div class="s-selected-list"><!--- Selected options wrapper --->
 		
-		<h3>Definition List</h3>
-		<dl>
-			<dt>Definition List Term 1</dt>
-			<dd>This is a definition list description.</dd>
-			<dt>Definition List Term 2</dt>
-			<dd>This is a definition list description.</dd>
-			<dt>Definition List Term 3</dt>
-			<dd>This is a definition list description.</dd>
-		</dl>
+		<div class="alert s-selected-item"><!--- Example Item 2 --->
+			<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			<strong>Search Result Title 1</strong>
+		</div>
 		
-		<hr />
+		<div class="alert s-selected-item"><!--- Example Item 2 --->
+			<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			<strong>Search Result Title 2</strong>
+		</div>
 		
-		<h1 id="tables">Tables</h1>
+	</div>
+	
+</div>
+
+<script charset="utf-8">
+	//Not for production use
+	$('.s-select-list-wrapper input').focusin(function() {
+		$('.s-search-results-wrapper').show();
+	}).focusout(function () {
+		$('.s-search-results-wrapper').hide();
+	});
+	$('.s-search-results-wrapper').hide();
+</script>
+<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component With Dropdown End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+
+<hr />
+
+<h1 id="headings">Toggle Content Component</h1>
+
+<!--////////////////////////////////Toggle Content Component///////////////////////////////////-->
+<div ng-controller="sw-toggle">
+	<button class="btn btn-primary" ng-click="isCollapsed = !isCollapsed">Toggle collapse</button>
+	<hr style="border-style: dashed;">
+	<div collapse="isCollapsed">
+		<div class="well well-lg" style="margin-bottom:0px;">Some content</div> 
+	</div>
+</div>
+<br/>
+<!--- Uses the toggle.js controller /Slatwall/admin/client/js/controllers/toggle.js --->
+<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Toggle Content Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+
+<hr/>
+
+<h1 id="text-elements"> Text Elements</h1>
+
+<p>The <a href="#">a element</a> example</p>
+<p>The <abbr>abbr element</abbr> and an <abbr title="Abbreviation">abbr</abbr> element with title examples</p>
+<p>The <acronym title="A Cowboy Ran One New York Marathon">ACRONYM</acronym> element example
+<p>The <b>b element</b> example</p>
+<p>The <cite>cite element</cite> example</p>
+<p>The <code>code element</code> example</p>
+<p>The <em>em element</em> example</p>
+<p>The <del>del element</del> example</p>
+<p>The <dfn>dfn element</dfn> and <dfn title="Title text">dfn element with title</dfn> examples</p>
+<p>The <i>i element</i> example</p>
+<p>The <ins>ins element</ins> example</p>
+<p>The <kbd>kbd element</kbd> example</p>
+<p>The <mark>mark element</mark> example</p>
+<p>The <q>q element</q> example</p>
+<p>The <q>q element <q>inside</q> a q element</q> example</p>
+<p>The <s>s element</s> example</p>
+<p>The <samp>samp element</samp> example</p>
+<p>The <small>small element</small> example</p>
+<p>The <span>span element</span> example</p>
+<p>The <strong>strong element</strong> example</p>
+<p>The <sub>sub element</sub> example</p>
+<p>The <sup>sup element</sup> example</p>
+<p>The <u>u element</u> example</p>
+<p>The <var>var element</var> example</p>
+
+<hr />
+
+<h1 id="monospace">Monospace / Preformatted</h1>
+<p>Code block wrapped in "pre" and "code" tags</p>
+<pre><code>// Loop through Divs using Javascript.
+var divs = document.querySelectorAll('div'), i;
+
+for (i = 0; i < divs.length; ++i) {
+	divs[i].style.color = "green";
+}</code></pre>
+<p>Monospace Text wrapped in "pre" tags</p>
+<pre><p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p></pre>
+
+<hr />
+
+<h1 id="list_types">List Types</h1>
+
+<h3>Ordered List</h3>
+<ol>
+	<li>List Item 1</li>
+	<li>List Item 2</li>
+	<li>List Item 3</li>
+</ol>
+
+<h3>Unordered List</h3>
+<ul>
+	<li>List Item 1</li>
+	<li>List Item 2</li>
+	<li>List Item 3</li>
+</ul>
+
+<h3>Definition List</h3>
+<dl>
+	<dt>Definition List Term 1</dt>
+	<dd>This is a definition list description.</dd>
+	<dt>Definition List Term 2</dt>
+	<dd>This is a definition list description.</dd>
+	<dt>Definition List Term 3</dt>
+	<dd>This is a definition list description.</dd>
+</dl>
+
+<hr />
+
+<h1 id="tables">Tables</h1>
+
+<table cellspacing="0" cellpadding="0">
+	<tr>
+		<th>Table Header 1</th><th>Table Header 2</th><th>Table Header 3</th>
+	</tr>
+	<tr>
+		<td>Division 1</td><td>Division 2</td><td>Division 3</td>
+	</tr>
+	<tr class="even">
+		<td>Division 1</td><td>Division 2</td><td>Division 3</td>
+	</tr>
+	<tr>
+		<td>Division 1</td><td>Division 2</td><td>Division 3</td>
+	</tr>
+</table>
+
+<hr />
+
+<h1 id="form_elements">Media and Form Elements</h1>
+
+<p>This last section contains elements that don't render well in markdown. Please consult the final section in <a href="https://github.com/bryanbraun/poor-mans-styleguide/blob/gh-pages/index.html">index.html</a>, to see the rest of the styleguide.</p>
+
+<h2>Media</h2>
 		
-		<table cellspacing="0" cellpadding="0">
-			<tr>
-				<th>Table Header 1</th><th>Table Header 2</th><th>Table Header 3</th>
-			</tr>
-			<tr>
-				<td>Division 1</td><td>Division 2</td><td>Division 3</td>
-			</tr>
-			<tr class="even">
-				<td>Division 1</td><td>Division 2</td><td>Division 3</td>
-			</tr>
-			<tr>
-				<td>Division 1</td><td>Division 2</td><td>Division 3</td>
-			</tr>
-		</table>
-		
-		<hr />
-		
-		<h1 id="form_elements">Media and Form Elements</h1>
-		
-		<p>This last section contains elements that don't render well in markdown. Please consult the final section in <a href="https://github.com/bryanbraun/poor-mans-styleguide/blob/gh-pages/index.html">index.html</a>, to see the rest of the styleguide.</p>
-		
-		<h2>Media</h2>
-		
-		<p>The Audio Element:</p>
-		<audio controls>
-			<source src="http://www.w3schools.com/tags/horse.ogg" type="audio/ogg">
-				<source src="http://www.w3schools.com/tags/horse.mp3" type="audio/mpeg">
-					Your browser does not support the audio element.
-				</audio>
+<p>The Audio Element:</p>
+<audio controls>
+	<source src="http://www.w3schools.com/tags/horse.ogg" type="audio/ogg">
+	<source src="http://www.w3schools.com/tags/horse.mp3" type="audio/mpeg">
+	Your browser does not support the audio element.
+</audio>
 				
-				<p>The Video Element:</p>
-				<video width="320" height="240" controls>
-					<source src="http://www.w3schools.com/tags/movie.mp4" type="video/mp4">
-						<source src="http://www.w3schools.com/tags/movie.ogg" type="video/ogg">
-							Your browser does not support the video tag.
-						</video>
+<p>The Video Element:</p>
+<video width="320" height="240" controls>
+	<source src="http://www.w3schools.com/tags/movie.mp4" type="video/mp4">
+	<source src="http://www.w3schools.com/tags/movie.ogg" type="video/ogg">
+	Your browser does not support the video tag.
+</video>
 						
-						<h2>Form Elements</h2>
+<h2>Form Elements</h2>
+
+<p>The Fieldset:</p>
+<fieldset>
+	<legend>Legend</legend>
+	
+	<p>The Form:</p>
+	
+	<form>
+		
+		<div class="form-group">
+			<label for="text_field">Text Field:</label><br />
+			<input type="text" class="form-control" id="text_field" />
+		</div>
+	
+		<div class="form-group">
+			<label for="text_area">Text Area:</label><br />
+			<textarea id="text_area" class="form-control"></textarea>
+		</div>
+			
+		<div class="form-group">
+			<label for="select_element">Select Element:</label><br />
+			<select class="form-control" name="select_element">
+				<optgroup label="Option Group 1">
+					<option value="1">Option 1</option>
+					<option value="2">Option 2</option>
+					<option value="3">Option 3</option>
+				</optgroup>
+				<optgroup label="Option Group 2">
+					<option value="1">Option 1</option>
+					<option value="2">Option 2</option>
+					<option value="3">Option 3</option>
+				</optgroup>
+			</select>
+		</div>
+			
+		<div class="form-group">
+			<label for="radio_buttons">Radio Buttons:</label><br />
+			<div class="radio">
+				<input type="radio" name="radio" id="radio1" value="option1">
+				<label for="radio1">
+					Radio One
+				</label>
+			</div>
+			<div class="radio">
+				<input type="radio" name="radio" id="radio2" value="option2">
+				<label for="radio2">
+					Radio Two
+				</label>
+			</div>
+			<div class="radio">
+				<input type="radio" name="radio" id="radio3" value="option3">
+				<label for="radio3">
+					Radio Three
+				</label>
+			</div>
+		</div>
+								
+		<div class="form-group">
+			<label for="checkboxes">Checkboxes:</label><br />
+			<div class="s-checkbox">
+				<input type="checkbox" id="checkbox1">
+				<label for="checkbox1"> Checkbox One</label>
+			</div>
+			<div class="s-checkbox">
+				<input type="checkbox" id="checkbox2">
+				<label for="checkbox2"> Checkbox Two</label>
+			</div>
+			<div class="s-checkbox">
+				<input type="checkbox" id="checkbox3">
+				<label for="checkbox3"> Checkbox Three</label>
+			</div>
+		</div>
+		
+		<div class="form-group">
+			<label for="password">Password:</label><br />
+			<input type="password" class="password form-control" name="password" />
+		</div>
+		
+		<div class="form-group">
+			<label for="file">File Input:</label><br />
+			<input type="file" class="file" name="file" />
+		</div>
+								
+		<h3>HTML5-specific Form Elements</h3>
+		
+		<div class="form-group">
+			<label for="email">Email:</label><br />
+			<input type="email" class="form-control">
+		</div>
+		
+		<div class="form-group">
+			<label for="url">URL:</label><br />
+			<input type="url" class="form-control">
+		</div>
+		
+		<div class="form-group">
+			<label for="tel">Telephone:</label><br />
+			<input type="tel" class="form-control">
+		</div>
+		
+		<div class="form-group">
+			<label for="number">Number:</label><br />
+			<input type="number" min="0" max="10" step="1" value="5" class="form-control">
+		</div>
+		
+		<div class="form-group">
+			<label for="search">Search:</label><br />
+			<input type="search" class="form-control">
+		</div>
+		
+		<div class="form-group">
+			<label for="date">Date:</label><br />
+			<input type="date" class="form-control">
+		</div>
+		
+		<div class="form-group">
+			<label for="time">Time:</label><br />
+			<input type="time" class="form-control">
+		</div>
+		
+		<div class="form-group">
+			<label for="color">Color:</label><br />
+			<input type="color">
+		</div>
+		
+		<div class="form-group">
+			<label for="datalist">Datalist:</label><br />
+			<input list="browsers" name="browser" type="datalist" class="form-control">
+			<datalist id="browsers">
+				<option value="Internet Explorer">
+				<option value="Firefox">
+				<option value="Chrome">
+				<option value="Opera">
+				<option value="Safari">
+			</datalist>
+		</div>		
+		<div class="form-group">
+			<label for="range">Range:</label><br />
+			<input type="range" name="points" min="1" max="10">
+		</div>
+							
+		<div class="form-group">
+			<input class="button" type="reset" value="Clear" /> <input class="button" type="submit" value="Submit" />
+		</div>
+	</form>
 						
-						<p>The Fieldset:</p>
-						<fieldset>
-							<legend>Legend</legend>
-							
-							<p>The Form:</p>
-							
-							<form>
-								
-								<div class="form-group">
-									<label for="text_field">Text Field:</label><br />
-									<input type="text" class="form-control" id="text_field" />
-								</div>
-							
-								
-								
-								<div class="form-group">
-									<label for="text_area">Text Area:</label><br />
-									<textarea id="text_area" class="form-control"></textarea>
-								</div>
-								
-									
-									
-								<div class="form-group">
-									<label for="select_element">Select Element:</label><br />
-									<select class="form-control" name="select_element">
-										<optgroup label="Option Group 1">
-											<option value="1">Option 1</option>
-											<option value="2">Option 2</option>
-											<option value="3">Option 3</option>
-										</optgroup>
-										<optgroup label="Option Group 2">
-											<option value="1">Option 1</option>
-											<option value="2">Option 2</option>
-											<option value="3">Option 3</option>
-										</optgroup>
-									</select>
-								</div>
-									
-											
-											
-								<div class="form-group">
-									<label for="radio_buttons">Radio Buttons:</label><br />
-									<div class="radio">
-										<input type="radio" name="radio" id="radio1" value="option1">
-										<label for="radio1">
-											Radio One
-										</label>
-									</div>
-									<div class="radio">
-										<input type="radio" name="radio" id="radio2" value="option2">
-										<label for="radio2">
-											Radio Two
-										</label>
-									</div>
-									<div class="radio">
-										<input type="radio" name="radio" id="radio3" value="option3">
-										<label for="radio3">
-											Radio Three
-										</label>
-									</div>
-								</div>
-											
-											
-								<div class="form-group">
-									<label for="checkboxes">Checkboxes:</label><br />
-									<div class="s-checkbox">
-										<input type="checkbox" id="checkbox1">
-										<label for="checkbox1"> Checkbox One</label>
-									</div>
-									<div class="s-checkbox">
-										<input type="checkbox" id="checkbox2">
-										<label for="checkbox2"> Checkbox Two</label>
-									</div>
-									<div class="s-checkbox">
-										<input type="checkbox" id="checkbox3">
-										<label for="checkbox3"> Checkbox Three</label>
-									</div>
-								</div>
-								
-								<div class="form-group">
-									<label for="password">Password:</label><br />
-									<input type="password" class="password form-control" name="password" />
-								</div>
-								
-								<div class="form-group">
-									<label for="file">File Input:</label><br />
-									<input type="file" class="file" name="file" />
-								</div>
-											
-											
-								<h3>HTML5-specific Form Elements</h3>
-								
-								<div class="form-group">
-									<label for="email">Email:</label><br />
-									<input type="email" class="form-control">
-								</div>
-								
-								<div class="form-group">
-									<label for="url">URL:</label><br />
-									<input type="url" class="form-control">
-								</div>
-								
-								<div class="form-group">
-									<label for="tel">Telephone:</label><br />
-									<input type="tel" class="form-control">
-								</div>
-								
-								<div class="form-group">
-									<label for="number">Number:</label><br />
-									<input type="number" min="0" max="10" step="1" value="5" class="form-control">
-								</div>
-								
-								<div class="form-group">
-									<label for="search">Search:</label><br />
-									<input type="search" class="form-control">
-								</div>
-								
-								<div class="form-group">
-									<label for="date">Date:</label><br />
-									<input type="date" class="form-control">
-								</div>
-								
-								<div class="form-group">
-									<label for="time">Time:</label><br />
-									<input type="time" class="form-control">
-								</div>
-								
-								<div class="form-group">
-									<label for="color">Color:</label><br />
-									<input type="color">
-								</div>
-								
-								<div class="form-group">
-									<label for="datalist">Datalist:</label><br />
-									<input list="browsers" name="browser" type="datalist" class="form-control">
-									<datalist id="browsers">
-										<option value="Internet Explorer">
-										<option value="Firefox">
-										<option value="Chrome">
-										<option value="Opera">
-										<option value="Safari">
-									</datalist>
-								</div>		
-								<div class="form-group">
-									<label for="range">Range:</label><br />
-									<input type="range" name="points" min="1" max="10">
-								</div>
-													
-								<div class="form-group">
-									<input class="button" type="reset" value="Clear" /> <input class="button" type="submit" value="Submit" />
-								</div>
-							</form>
-												
-						</fieldset>
-											
-						<!-- End of Styleguide -->
+</fieldset>
+					
+<!-- End of Styleguide -->
