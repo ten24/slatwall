@@ -299,36 +299,6 @@
 	}
 }
 
-//
-// Mixins: utilities
-// --------------------------------------------------
-
-// Clearfix
-//
-// Source: http://nicolasgallagher.com/micro-clearfix-hack/
-//
-// For modern browsers
-// 1. The space content is one way to avoid an Opera bug when the
-//    contenteditable attribute is included anywhere else in the document.
-//    Otherwise it causes space to appear at the top and bottom of elements
-//    that are clearfixed.
-// 2. The use of `table` rather than `block` is only necessary if using
-//    `:before` to contain the top-margins of child elements.
-.clearfix() {
-	*zoom: 1;
-	&:before,
-	&:after {
-		content: " "; // 1
-		display: table; // 2
-		// Fixes Opera/contenteditable bug:
-		// http://nicolasgallagher.com/micro-clearfix-hack/#comment-36952
-		line-height: 0;
-	}
-	&:after {
-		clear: both;
-	}
-}
-
 // Center-align a block level element
 .center-block() {
 	display: block;
@@ -408,6 +378,7 @@ label {font-weight:600;}
 .modal-body {max-height:400px;overflow-y: auto;overflow-x:auto;}
 .ui-datepicker {padding:10px;z-index:3000 !important;}
 label.error {font-weight:normal;color:@brand-danger;}
+.col-lg-12, .col-md-12, .col-sm-12, .col-xs-12 {float:none;}
 
 input[type="file"] {display: block;width: auto;height: auto;padding: 0px;background-color: none;background-image: none;border: none; border-radius: none;-webkit-box-shadow: none;box-shadow: none;-webkit-transition: none;transition: none; } 
 
@@ -598,7 +569,7 @@ table tr th .glyphicon {vertical-align:text-top;}
 .s-table-content-nav .dropdown-menu {background-color:#F9F9F9;}
 .dropdown-menu li.active > a:hover, .dropdown-menu li > a:hover {background-color: #FC770D;background-image: -moz-linear-gradient(top, @brand-ten24, @brand-ten24);background-image: -ms-linear-gradient(top, @brand-ten24, @brand-ten24);background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@brand-ten24), to(@brand-ten24));background-image: -webkit-linear-gradient(top, @brand-ten24, @brand-ten24);background-image: -o-linear-gradient(top, @brand-ten24, @brand-ten24);background-image: linear-gradient(top, @brand-ten24, @brand-ten24);color: @white !important;}
 .nav-tabs {padding:0px 15px;}
-.tab-content {background-color: #F9F9F9;padding:15px 15px;-moz-box-shadow: inset 0 0 2px #ddd;-webkit-box-shadow: inset 0 0 2px #ddd;box-shadow:inset 0 0 2px #ddd;border-bottom-left-radius: 2px;border-bottom-right-radius: 2px;}
+.tab-content {background-color: #F9F9F9;padding:15px 15px;-moz-box-shadow: inset 0 0 2px #ddd;-webkit-box-shadow: inset 0 0 2px #ddd;box-shadow:inset 0 0 2px #ddd;border-bottom-left-radius: 2px;border-bottom-right-radius: 2px;display:inline-block;}
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {color: #555;cursor: default;background: none;border: none;border-bottom-color: none;border-bottom:4px solid @brand-ten24}
 .nav-tabs>li>a {border:none;color:#999999;}
 .nav-tabs>li>a:hover {background:none;border:none;color:#555;}
