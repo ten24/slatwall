@@ -83,7 +83,7 @@
 		<cfif not len(attributes.disabledtext)>
 		    <cfset attributes.disabledtext = attributes.hibachiScope.rbKey("#Replace(attributes.action, ":", ".", "all")#_disabled") />
 		</cfif>
-		<cfset attributes.class &= "alert-disabled" />
+		<cfset attributes.class &= " s-btn-disabled" />
 		<cfset attributes.confirm = false />
 	<cfelseif attributes.confirm>
 		<cfif not len(attributes.confirmtext)>
