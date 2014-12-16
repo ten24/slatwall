@@ -62,28 +62,6 @@
 
 <hr />
 
-<h1 id="headings">Toggle Content Component</h1>
-
-
-<!--////////////////////////////////Toggle Content Component///////////////////////////////////-->
-	<div ng-controller="CollapseDemoCtrl">
-		<button class="btn btn-primary" ng-click="isCollapsed = !isCollapsed">Toggle collapse</button>
-		
-		<div collapse="isCollapsed">
-			<div>Some content...</div> 
-		</div>
-	</div>
-	
-	<script>
-		angular.module('slatwalladmin').controller('CollapseDemoCtrl', function ($scope) {
-			$scope.isCollapsed = false;
-		});
-	</script>
-<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Toggle Content Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
-
-
-<hr/>
-
 <h1 id="headings">Headings with Text</h1>
 
 <h1>Heading 1</h1>
@@ -203,7 +181,29 @@
 	</script>
 	<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component With Dropdown End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
 	
-<hr />
+	<hr />
+
+	<h1 id="headings">Toggle Content Component</h1>
+
+
+	<!--////////////////////////////////Toggle Content Component///////////////////////////////////-->
+	<div ng-controller="CollapseDemoCtrl">
+		<button class="btn btn-primary" ng-click="isCollapsed = !isCollapsed">Toggle collapse</button>
+		<hr>
+		<div collapse="isCollapsed">
+			<div class="well well-lg">Some content</div> 
+		</div>
+	</div>
+
+	<script>
+	angular.module('slatwalladmin').controller('CollapseDemoCtrl', function ($scope) {
+		$scope.isCollapsed = false;
+	});
+	</script>
+	<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Toggle Content Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+
+
+	<hr/>
 
 	<h1 id="text-elements"> Text Elements</h1>
 
