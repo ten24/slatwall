@@ -286,7 +286,7 @@ function setupEventHandlers() {
 		jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );
 		jQuery('#adminConfirm').modal();
 	});
-	jQuery('body').on('click', '.alert-disabled', function(e){
+	jQuery('body').on('click', '.s-btn-disabled', function(e){	
 		e.preventDefault();
 		jQuery('#adminDisabled .modal-body').html( jQuery(this).data('disabled') );
 		jQuery('#adminDisabled').modal();
