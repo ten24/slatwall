@@ -51,61 +51,71 @@ Notes:
 <cfset local.jsOutput = "" />
 
 <cfcontent type="text/javascript">
-
-<!---the order these are loaded matters --->
-<cfset local.jsDirectoryArray = [
-	expandPath( '/Slatwall/#rc.jspath#' ),
-	expandPath( '/Slatwall/#rc.jspath#/services' ),
-	expandPath( '/Slatwall/#rc.jspath#/controllers' ),
-	expandPath( '/Slatwall/#rc.jspath#/directives' )
-]>
-
-<cfloop array="#local.jsDirectoryArray#" index="local.jsDirectory">
-	<cfdirectory
-	    action="list"
-	    directory="#local.jsDirectory#"
-	    listinfo="name"
-	    name="local.jsFileList"
-	    filter="*.js"
-    />
-    
-    <cfloop query="local.jsFileList">
-	    <cfset local.jsFilePath = local.jsDirectory & '/' & name>
-	    <cfset local.fileContent = fileRead(local.jsFilePath, 'utf-8')>
-		<cfset local.jsOutput &= local.fileContent />
-    </cfloop>
-</cfloop>
+<cfif !request.slatwallScope.hasApplicationValue('ngCompressor')>
+	<!---the order these are loaded matters --->
+	<cfset local.jsDirectoryArray = [
+		expandPath( '/Slatwall/#rc.jspath#' ),
+		expandPath( '/Slatwall/#rc.jspath#/services' ),
+		expandPath( '/Slatwall/#rc.jspath#/controllers' ),
+		expandPath( '/Slatwall/#rc.jspath#/directives' )
+	]>
+	
+	<cfloop array="#local.jsDirectoryArray#" index="local.jsDirectory">
+		<cfdirectory
+		    action="list"
+		    directory="#local.jsDirectory#"
+		    listinfo="name"
+		    name="local.jsFileList"
+		    filter="*.js"
+	    />
+	    
+	    <cfloop query="local.jsFileList">
+		    <cfset local.jsFilePath = local.jsDirectory & '/' & name>
+		    <cfset local.fileContent = fileRead(local.jsFilePath, 'utf-8')>
+			<cfset local.jsOutput &= local.fileContent />
+	    </cfloop>
+	</cfloop>
+	
+	<cfif request.slatwallScope.getApplicationValue('debugFlag')>
+		<cfset getPageContext().getOut().clearBuffer() />
+		<cfset request.slatwallScope.setApplicationValue('ngCompressor',local.jsOutput)>
+	<cfelse>
+		<cfset getPageContext().getOut().clearBuffer() />
+		<cfset local.oYUICompressor = createObject("component", "Slatwall.org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'Slatwall.org.Hibachi.YUIcompressor.javaloader.JavaLoader', libPath = expandPath('/Slatwall/org/Hibachi/YUIcompressor/lib')) />
+		<cfset local.jsOutputCompressed = oYUICompressor.compress(
+													inputType = 'js'
+													,inputString = local.jsOutput
+													).results />
+													
+		<cfscript>
+			ioOutput = CreateObject("java","java.io.ByteArrayOutputStream");
+			gzOutput = CreateObject("java","java.util.zip.GZIPOutputStream");
+			
+			ioOutput.init();
+			gzOutput.init(ioOutput);
+			
+			gzOutput.write(local.jsOutputCompressed.getBytes(), 0, Len(local.jsOutputCompressed.getBytes()));
+			
+			gzOutput.finish();
+			gzOutput.close();
+			ioOutput.flush();
+			ioOutput.close();
+			
+			toOutput=ioOutput.toByteArray();
+		</cfscript>
+		
+		<cfset request.slatwallScope.setApplicationValue('ngCompressor',toOutput)>
+		<cfset local.jsOutput = toOutput>
+	</cfif>
+<cfelse>
+	<cfset local.jsOutput = request.slatwallScope.getApplicationValue('ngCompressor')>
+</cfif>
 
 <cfif request.slatwallScope.getApplicationValue('debugFlag')>
-	<cfset getPageContext().getOut().clearBuffer() />
-	<cfoutput>#local.jsOutput#</cfoutput>	
+	<cfoutput>#local.jsOutput#</cfoutput>
 <cfelse>
-	<cfset getPageContext().getOut().clearBuffer() />
-	<cfset local.oYUICompressor = createObject("component", "Slatwall.org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'Slatwall.org.Hibachi.YUIcompressor.javaloader.JavaLoader', libPath = expandPath('/Slatwall/org/Hibachi/YUIcompressor/lib')) />
-	<cfset local.jsOutputCompressed = oYUICompressor.compress(
-												inputType = 'js'
-												,inputString = local.jsOutput
-												).results />
-												
-	<cfscript>
-		ioOutput = CreateObject("java","java.io.ByteArrayOutputStream");
-		gzOutput = CreateObject("java","java.util.zip.GZIPOutputStream");
-		
-		ioOutput.init();
-		gzOutput.init(ioOutput);
-		
-		gzOutput.write(local.jsOutputCompressed.getBytes(), 0, Len(local.jsOutputCompressed.getBytes()));
-		
-		gzOutput.finish();
-		gzOutput.close();
-		ioOutput.flush();
-		ioOutput.close();
-		
-		toOutput=ioOutput.toByteArray();
-	</cfscript>
-	
 	<cfheader name="Content-Encoding" value="gzip">
-	<cfheader name="Content-Length" value="#ArrayLen(toOutput)#" >
-	<cfcontent reset="yes" variable="#toOutput#" />
+	<cfheader name="Content-Length" value="#ArrayLen(local.jsOutput)#" >
+	<cfcontent reset="yes" variable="#local.jsOutput#" />
 	<cfabort />
 </cfif>
