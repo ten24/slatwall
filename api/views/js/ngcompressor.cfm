@@ -51,7 +51,7 @@ Notes:
 <cfset local.jsOutput = "" />
 
 <cfcontent type="text/javascript">
-<cfif !request.slatwallScope.hasApplicationValue('ngCompressor')>
+<cfif !request.slatwallScope.hasApplicationValue('ngCompressor_#hash(rc.jspath)#')>
 	<!---the order these are loaded matters --->
 	<cfset local.jsDirectoryArray = [
 		expandPath( '/Slatwall/#rc.jspath#' ),
@@ -78,7 +78,7 @@ Notes:
 	
 	<cfif request.slatwallScope.getApplicationValue('debugFlag')>
 		<cfset getPageContext().getOut().clearBuffer() />
-		<cfset request.slatwallScope.setApplicationValue('ngCompressor',local.jsOutput)>
+		<cfset request.slatwallScope.setApplicationValue('ngCompressor_#hash(rc.jspath)#',local.jsOutput)>
 	<cfelse>
 		<cfset getPageContext().getOut().clearBuffer() />
 		<cfset local.oYUICompressor = createObject("component", "Slatwall.org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'Slatwall.org.Hibachi.YUIcompressor.javaloader.JavaLoader', libPath = expandPath('/Slatwall/org/Hibachi/YUIcompressor/lib')) />
@@ -104,11 +104,11 @@ Notes:
 			toOutput=ioOutput.toByteArray();
 		</cfscript>
 		
-		<cfset request.slatwallScope.setApplicationValue('ngCompressor',toOutput)>
+		<cfset request.slatwallScope.setApplicationValue('ngCompressor_#hash(rc.jspath)#',toOutput)>
 		<cfset local.jsOutput = toOutput>
 	</cfif>
 <cfelse>
-	<cfset local.jsOutput = request.slatwallScope.getApplicationValue('ngCompressor')>
+	<cfset local.jsOutput = request.slatwallScope.getApplicationValue('ngCompressor_#hash(rc.jspath)#')>
 </cfif>
 
 <cfif request.slatwallScope.getApplicationValue('debugFlag')>
