@@ -777,11 +777,26 @@ angular.module('slatwalladmin')
 					
 					$log.debug('templateLoader');
 					$log.debug(selectedFilterProperty);
+					
+					scope.inListArray = [];
+					scope.addToValueInListFormat = function(inListItem){
+						//var dressedUpInListItem = "'" + inListItem + "'";
+						scope.inListArray.push(inListItem);
+						
+						$log.debug('hey stuffs working dude');
+						//scope.inListArray.toString();
+						
+						//set value field to the user generated list
+						scope.filterItem.value = scope.inListArray.toString();
+						$log.debug(selectedFilterProperty);
+						
+					};
 					var templateLoader = getTemplate(selectedFilterProperty);
 			    	var promise = templateLoader.success(function(html){
 						element.html(html);
 						$compile(element.contents())(scope);
 					});
+			    	
 				}
 	    	}); 
 			
@@ -802,6 +817,7 @@ angular.module('slatwalladmin')
 				//update criteria to display the condition of the new critera we have selected
 				
 			};
+			
 	    	
 	    };
 	    
