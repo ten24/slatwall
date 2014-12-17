@@ -12,7 +12,8 @@ angular.module('slatwalladmin')
 		productBundleService
 	){
 		return {
-			restrict: 'A',
+			restrict: 'E',
+			
 			templateUrl:productBundlePartialsPath+"productbundlegroups.html",
 			scope:{
 				sku:"=",

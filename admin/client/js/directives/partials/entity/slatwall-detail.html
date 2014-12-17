@@ -1,4 +1,4 @@
-<section class="content s-body-margin" id="j-main-content" ng-controller="slatwall-detail-controller">
+<section class="content s-body-margin" id="j-main-content" ng-controller="slatwall-detail-controller" >
 	<div class="col-md-12" ng-if="entity">
 		<div class="row s-body-nav">
 			<nav class="navbar navbar-default" role="navigation">
@@ -38,148 +38,149 @@
 				</div>
 			</nav>
 		</div>
-		<form name="form.{{entityName}}" novalidate="novalidate"
-			class="ng-pristine ng-valid">
+		
 
-			<div class="row s-pannel-control">
-				<div class="col-md-12 s-toggle-panels">
-					<a href="#" class="j-openall j-tool-tip-item" data-toggle="tooltip"
-						data-placement="bottom" title="" data-original-title="Expand All"
-						ng-click="allTabsOpen = true"
-						><i
-						class="fa fa-expand"></i></a> <a href="#"
-						class="j-closeall j-tool-tip-item" data-toggle="tooltip"
-						data-placement="bottom" title=""
-						data-original-title="Collapse All"><i class="fa fa-compress"
-						
-						></i></a>
+		<div class="row s-pannel-control">
+			<div class="col-md-12 s-toggle-panels">
+				<a href="#" class="j-openall j-tool-tip-item" data-toggle="tooltip"
+					data-placement="bottom" title="" data-original-title="Expand All"
+					ng-click="allTabsOpen = true"
+					><i
+					class="fa fa-expand"></i></a> <a href="#"
+					class="j-closeall j-tool-tip-item" data-toggle="tooltip"
+					data-placement="bottom" title=""
+					data-original-title="Collapse All"><i class="fa fa-compress"
+					
+					></i>
+				</a>
+			</div>
+		</div>
+		<div class="panel-group s-pannel-group" id="accordion">
+			<div class="j-panel panel panel-default" ng-repeat="detailTab in detailTabs">
+			
+				<a data-toggle="collapse" href="#collapse{{$index}}" ng-init="openTab=false" ng-click="openTab = true">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<span ng-bind="getRBKey('admin.entity.'+entityName.toLowerCase()+'tabs.'+detailTab.toLowerCase().replace('.html',''))"></span> <i
+								class="s-accordion-toggle-icon fa fa-caret-left"></i>
+						</h4>
+					</div>
+				</a>
+				<div id="collapse{{$index}}" class="panel-collapse"
+					style="height: 0px;">
+					<content class="s-body-box" ng-if="openTab || allTabsOpen">
+						<ng-include src="tabPartialPath+entityName+'/'+detailTab.toLowerCase()"></ng-include>
+					</content>
 				</div>
 			</div>
-			<div class="panel-group s-pannel-group" id="accordion">
-				<div class="j-panel panel panel-default" ng-repeat="detailTabs in entity.metaData.$$getDetailTabs()">
-					<a data-toggle="collapse" href="#collapse{{$index}}" ng-init="openTab=false" ng-click="openTab = true">
-						<div class="panel-heading">
-							<h4 class="panel-title">
-								<span ng-bind="getRBKey('admin.entity.'+entityName.toLowerCase()+'tabs.'+detailTabs.toLowerCase().replace('.html',''))"></span> <i
-									class="s-accordion-toggle-icon fa fa-caret-left"></i>
-							</h4>
-						</div>
-					</a>
-					<div id="collapse{{$index}}" class="panel-collapse"
-						style="height: 0px;">
-						<content class="s-body-box" ng-if="openTab || allTabsOpen">
-							<ng-include src="tabPartialPath+entityName+'/'+detailTabs.toLowerCase()"></ng-include>
-						</content>
+			<div class="j-panel panel panel-default">
+				<a data-toggle="collapse" href="#collapseSystem" ng-init="openTab=false" ng-click="openTab = true">
+					<div class="panel-heading">
+						<h4 class="panel-title">
+							<span >System</span> <i
+								class="s-accordion-toggle-icon fa fa-caret-left"></i>
+						</h4>
 					</div>
-				</div>
-				<div class="j-panel panel panel-default">
-					<a data-toggle="collapse" href="#collapseSystem" ng-init="openTab=false" ng-click="openTab = true">
-						<div class="panel-heading">
-							<h4 class="panel-title">
-								<span >System</span> <i
-									class="s-accordion-toggle-icon fa fa-caret-left"></i>
-							</h4>
-						</div>
-					</a>
-					<div id="collapseSystem" class="panel-collapse"
-						style="height: 0px;">
-						<content class="s-body-box" ng-if="openTab || allTabsOpen">
-						<div class="tab-pane" id="tabSystem">
-							<div class="col-md-12">
-								<div class="form-horizontal" style="max-width: 650px;">
-									<div class="form-group">
-										<label class="control-label col-sm-4 title"
-											style="text-align: left;" 
-											ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+entityName.toLowerCase()+'id')"></label>
+				</a>
+				<div id="collapseSystem" class="panel-collapse"
+					style="height: 0px;">
+					<content class="s-body-box" ng-if="openTab || allTabsOpen">
+					<div class="tab-pane" id="tabSystem">
+						<div class="col-md-12">
+							<div class="form-horizontal" style="max-width: 650px;">
+								<div class="form-group">
+									<label class="control-label col-sm-4 title"
+										style="text-align: left;" 
+										ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+entityName.toLowerCase()+'id')"></label>
 
-										<div class="col-sm-8">
+									<div class="col-sm-8">
 
-											<p class="form-control-static value" ng-bind="entity.data[entityName.toLowerCase()+'ID']"></p>
+										<p class="form-control-static value" ng-bind="entity.data[entityName.toLowerCase()+'ID']"></p>
 
-										</div>
 									</div>
+								</div>
 
-									<div class="form-group">
-										<label class="control-label col-sm-4 title"
-											style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'remoteid')">Remote ID</label>
+								<div class="form-group">
+									<label class="control-label col-sm-4 title"
+										style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'remoteid')">Remote ID</label>
 
-										<div class="col-sm-8">
+									<div class="col-sm-8">
 
-											<p class="form-control-static value" ng-bind="entity.data.remoteID"></p>
+										<p class="form-control-static value" ng-bind="entity.data.remoteID"></p>
 
-										</div>
 									</div>
+								</div>
 
-									<div class="form-group">
-										<label class="control-label col-sm-4 title"
-											style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'createddatetime')">Created Date Time</label>
+								<div class="form-group">
+									<label class="control-label col-sm-4 title"
+										style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'createddatetime')">Created Date Time</label>
 
-										<div class="col-sm-8">
+									<div class="col-sm-8">
 
-											<p class="form-control-static value" ng-bind="entity.data.createdDateTime"></p>
+										<p class="form-control-static value" ng-bind="entity.data.createdDateTime"></p>
 
-										</div>
 									</div>
+								</div>
 
-									<div class="form-group">
-										<label class="control-label col-sm-4 title"
-											style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'createdby')">Created By</label>
+								<div class="form-group">
+									<label class="control-label col-sm-4 title"
+										style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'createdby')">Created By</label>
 
-										<div class="col-sm-8">
+									<div class="col-sm-8">
 
-											<p class="form-control-static value" ng-bind="entity.data.createdBy"></p>
+										<p class="form-control-static value" ng-bind="entity.data.createdBy"></p>
 
-										</div>
 									</div>
+								</div>
 
-									<div class="form-group">
-										<label class="control-label col-sm-4 title"
-											style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'modifieddatetime')">Modified Date Time</label>
+								<div class="form-group">
+									<label class="control-label col-sm-4 title"
+										style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'modifieddatetime')">Modified Date Time</label>
 
-										<div class="col-sm-8">
+									<div class="col-sm-8">
 
-											<p class="form-control-static value" ng-bind="entity.data.modifiedDateTime"></p>
+										<p class="form-control-static value" ng-bind="entity.data.modifiedDateTime"></p>
 
-										</div>
 									</div>
+								</div>
 
-									<div class="form-group">
-										<label class="control-label col-sm-4 title"
-											style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'modifiedby')">Modified By</label>
+								<div class="form-group">
+									<label class="control-label col-sm-4 title"
+										style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'modifiedby')">Modified By</label>
 
-										<div class="col-sm-8">
+									<div class="col-sm-8">
 
-											<p class="form-control-static value" ng-bind="entity.data.modifiedBy"></p>
+										<p class="form-control-static value" ng-bind="entity.data.modifiedBy"></p>
 
-										</div>
 									</div>
-
 								</div>
 
 							</div>
 
-							<div class="table-responsive">
-								<table
-									class="table table-striped table-bordered table-condensed">
-									<tbody>
-										
-										<tr>
-											<td colspan="5" style="text-align: center;"><em>There
-													is no audit history available</em></td>
-										</tr>
-
-									</tbody>
-								</table>
-							</div>
-
-
 						</div>
 
-						</content>
+						<div class="table-responsive">
+							<table
+								class="table table-striped table-bordered table-condensed">
+								<tbody>
+									
+									<tr>
+										<td colspan="5" style="text-align: center;"><em>There
+												is no audit history available</em></td>
+									</tr>
+
+								</tbody>
+							</table>
+						</div>
+
+
 					</div>
 
+					</content>
 				</div>
+
 			</div>
-		</form>
+		</div>
+		
 	</div>
 </section>

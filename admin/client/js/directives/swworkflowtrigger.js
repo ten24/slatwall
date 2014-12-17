@@ -9,14 +9,13 @@ angular.module('slatwalladmin')
 	workflowPartialsPath
 	){
 		return {
-			require:"^form",
 			restrict: 'A',
 			scope:{
 				workflowTrigger:"=",
 				workflowTriggers:"="
 			},
 			templateUrl:workflowPartialsPath+"workflowtrigger.html",
-			link: function(scope, element,attrs,formController){
+			link: function(scope, element,attrs){
 				$log.debug('workflow trigger init');
 				
 				scope.deleteTrigger = function(workflowTrigger){

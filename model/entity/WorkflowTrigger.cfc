@@ -68,6 +68,28 @@ component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persist
 	
 	// Non-Persistent Properties
 	
+	
+	// Workflow (many-to-one)
+	public void function setWorkflow(required any workflow) {
+		variables.workflow = arguments.workflow;
+		
+		if(isNew() or !arguments.workflow.hasWorkflowTrigger(this)) {
+			arrayAppend(arguments.Workflow.getWorkflowTriggers(),this);
+		}
+	}
+
+	public void function removeWorkflow(any workflow) {
+		if(!structKeyExists(arguments, 'workflow')) {
+			arguments.workflow = variables.workflow;
+		}
+		var index = arrayFind(arguments.workflow.getWorkflowTriggers(),this);
+		
+		if(index > 0) {
+			arrayDeleteAt(arguments.workflow.getWorkflowTriggers(),index);
+		}
+		structDelete(variables, "workflow");
+    }
+	
 	// Deprecated Properties
 
 

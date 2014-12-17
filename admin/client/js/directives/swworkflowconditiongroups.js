@@ -9,7 +9,7 @@ angular.module('slatwalladmin')
 	workflowPartialsPath
 	){
 		return {
-			restrict: 'A',
+			restrict: 'E',
 			scope:{
 				workflowConditionGroupItem: "=",
 				workflowConditionGroup:"=",

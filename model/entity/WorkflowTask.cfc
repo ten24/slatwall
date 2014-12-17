@@ -50,7 +50,7 @@ component entityname="SlatwallWorkflowTask" table="SwWorkflowTask" persistent="t
 	property name="workflow" cfc="Workflow" fieldtype="many-to-one" fkcolumn="workflowID";
 	
 	// Related Object Properties (one-to-many)
-	property name="workflowTaskActions" singularname="workflowTaskAction" cfc="WorkflowTaskAction" type="array" fieldtype="one-to-many" fkcolumn="workflowTaskID" cascade="all-delete-orphan" inverse="true";
+	property name="workflowTaskActions" type="array" cfc="WorkflowTaskAction" singularname="workflowTaskAction" fieldtype="one-to-many" fkcolumn="workflowTaskID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -99,6 +99,35 @@ component entityname="SlatwallWorkflowTask" table="SwWorkflowTask" persistent="t
 	public any function deserializeTaskConditionsConfig(){
 		return deserializeJSON(getTaskConditionsConfig());
 	}
+	
+	// WorkflowTask (one-to-many)
+	public void function addWorkflowTaskAction(required any WorkflowTaskAction) {
+		arguments.WorkflowTaskAction.setWorkflowTask( this );
+	}
+	public void function removeWorkflowTaskAction(required any WorkflowTaskAction) {
+		arguments.WorkflowTaskAction.removeWorkflowTask( this );
+	}
+	
+	// Workflow (many-to-one)
+	public void function setWorkflow(required any workflow) {
+		variables.workflow = arguments.workflow;
+		
+		if(isNew() or !arguments.workflow.hasWorkflowTask(this)) {
+			arrayAppend(arguments.Workflow.getWorkflowTasks(),this);
+		}
+	}
+
+	public void function removeWorkflow(any workflow) {
+		if(!structKeyExists(arguments, 'workflow')) {
+			arguments.workflow = variables.workflow;
+		}
+		var index = arrayFind(arguments.workflow.getWorkflowTasks(),this);
+		
+		if(index > 0) {
+			arrayDeleteAt(arguments.workflow.getWorkflowTasks(),index);
+		}
+		structDelete(variables, "workflow");
+    }
 	
 	
 	// ============  END:  Non-Persistent Property Methods =================
