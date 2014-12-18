@@ -447,7 +447,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							childOrderItem.getOrderFulfillment().setFulfillmentMethod( listFirst(childOrderItem.getSku().setting('skuEligibleFulfillmentMethods')) );
 						}
 						childOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
-						newOrderItem.setSkuPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+						childOrderItem.setSkuPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
 						childOrderItem.setParentOrderItem( newOrderItem );
 						childOrderItem.setOrder( arguments.order );
 						
