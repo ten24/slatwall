@@ -4,12 +4,14 @@ angular.module('slatwalladmin')
 '$location',
 '$slatwall',
 'metadataService',
+'collectionService',
 'workflowPartialsPath',
 	function(
 	$log,
 	$location,
 	$slatwall,
 	metadataService,
+	collectionService,
 	workflowPartialsPath
 	){
 		return {
@@ -29,6 +31,7 @@ angular.module('slatwalladmin')
 					var workflowTasksPromise = scope.workflow.$$getWorkflowTasks();
 					workflowTasksPromise.then(function(){
 						scope.workflowTasks = scope.workflow.data.workflowTasks;
+						
 					});
 					
 					if(angular.isUndefined(scope.workflow.data.workflowTasks)){
@@ -54,7 +57,22 @@ angular.module('slatwalladmin')
 				};
 				
 				scope.selectWorkflowTask = function(workflowTask){
+					
 					scope.workflowTasks.selectedTask = workflowTask;
+					collectionService.setCollection({baseEntityName:'Slatwall'+scope.workflow.data.workflowObject});
+					collectionService.setCollectionConfig(workflowTask.data.taskConditionsConfig);
+					collectionService.setBaseEntityAlias('_'+scope.workflow.data.workflowObject);
+					collectionService.setBaseEntityName(scope.workflow.data.workflowObject);
+					var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
+					filterPropertiesPromise.then(function(value){
+						scope.filterPropertiesList = {
+							baseEntityName:scope.workflow.data.workflowObject,
+							baseEntityAlias:"_"+ scope.workflow.data.workflowObject
+						};
+						metadataService.setPropertiesList(value,scope.workflow.data.workflowObject);
+						scope.filterPropertiesList[scope.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflow.data.workflowObject);
+						metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflow.data.workflowObject],scope.workflow.data.workflowObject);
+					});
 				};
 				
 				scope.removeWorkflowTask = function(workflowTask){
@@ -69,15 +87,9 @@ angular.module('slatwalladmin')
 						}
 					});
 				};
+						
 				
-				scope.filterPropertiesList = {};
-				var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
-				filterPropertiesPromise.then(function(value){
-					metadataService.setPropertiesList(value,scope.workflow.data.workflowObject);
-					scope.filterPropertiesList[scope.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflow.data.workflowObject);
-					metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflow.data.workflowObject],scope.workflow.data.workflowObject);
 					
-				});
 				
 			}
 		};

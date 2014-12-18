@@ -39,6 +39,12 @@ angular.module('slatwalladmin')
 			getBaseEntityAlias: function(){
 				return this.getCollectionConfig().baseEntityAlias;
 			},
+			setBaseEntityAlias: function(baseEntityAlias){
+				this.getCollectionConfig().baseEntityAlias = baseEntityAlias;
+			},
+			setBaseEntityName: function(baseEntityName){
+				this.getCollectionConfig().baseEntityName = baseEntityName;
+			},
 			getCollectionConfig: function(){
 				if(!angular.isObject(_collectionConfig)){
 					_collectionConfig = angular.fromJson(_collection.collectionConfig);

@@ -16,7 +16,7 @@ angular.module('slatwalladmin')
 			collectionPartialsPath
 		){
 		return {
-			restrict: 'A',
+			restrict: 'EA',
 			scope:{
 				filterGroupItem: "=",
 				filterPropertiesList:"=",
