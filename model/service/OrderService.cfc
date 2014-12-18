@@ -447,6 +447,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							childOrderItem.getOrderFulfillment().setFulfillmentMethod( listFirst(childOrderItem.getSku().setting('skuEligibleFulfillmentMethods')) );
 						}
 						childOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
+						if(childOrderItem.getSku().getUserDefinedPriceFlag() && structKeyExists(childItemData, 'price') && isNumeric(childItemData.price)) {
+							childOrderItem.setPrice( childItemData.price );
+						} else {
+							// TODO: calculate price base on adjustment type rule of bundle group
+							childOrderItem.setPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+						}
 						childOrderItem.setSkuPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
 						childOrderItem.setParentOrderItem( newOrderItem );
 						childOrderItem.setOrder( arguments.order );
@@ -460,8 +466,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setSku( arguments.processObject.getSku() );
 			newOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
 			newOrderItem.setQuantity( arguments.processObject.getQuantity() );
-			newOrderItem.setPrice( arguments.processObject.getPrice() );
 			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( newOrderItem.getCurrencyCode() ) );
+			if(newOrderItem.getSku().getUserDefinedPriceFlag() && isNumeric(arguments.processObject.getPrice()) ) {
+				newOrderItem.setPrice( arguments.processObject.getPrice() );	
+			} else {
+				newOrderItem.setPrice( newOrderItem.getSkuPrice() );
+			}
 			
 			// If a stock was passed in assign it to this new item
 			if( !isNull(arguments.processObject.getStock()) ) {
@@ -1428,7 +1438,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var skuPrice = val(orderItem.getSkuPrice());
 					var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode()));
  					if(listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode){
-						orderItem.setPrice(SkuPriceByCurrencyCode);
+ 						if(!orderItem.getSku().getUserDefinedPriceFlag()) {
+ 							orderItem.setPrice(SkuPriceByCurrencyCode);	
+ 						}
 						orderItem.setSkuPrice(SkuPriceByCurrencyCode);
 					}
 				}
