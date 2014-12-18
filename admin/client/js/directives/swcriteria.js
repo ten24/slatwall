@@ -785,12 +785,14 @@ angular.module('slatwalladmin')
 					$log.debug(selectedFilterProperty);
 					
 					scope.inListArray = [];
+					scope.newListItem = '';
 					scope.addToValueInListFormat = function(inListItem){
 						// Adds item into array
 						scope.inListArray.push(inListItem);
 					
 						//set value field to the user generated list
 						scope.filterItem.value = scope.inListArray.toString();
+						scope.newListItem = '';
 					};
 					
 					scope.removelistItem = function(argListItem){
