@@ -23,34 +23,34 @@
       </div>
 	  <div class="clearfix"></div>
 	</div>
-		<div class="s-select-list-wrapper" ng-show="comparisonOperatorInAndNotInFlag"><!--- Add select component Wrapper --->
-		
-			<div class="form-group"><!--- Option select field wrapper --->
-				<div class="input-group">
-					<div class="s-input-btn">
-						<input id="searchinput"
-							ng-model="newListItem"  
-        					type="text" class="form-control" 
-        					/>
-						<span class="glyphicon glyphicon-remove"></span>
-						<!---<i class="fa fa-refresh fa-spin"></i>---><!--- Loading Icon --->
-					</div>
-					<div class="input-group-btn">
-						<button class="btn btn-sm btn-primary" ng-click="addToValueInListFormat(newListItem)"><i class="fa fa-plus"></i></button>
-					</div>
+	<div class="s-select-list-wrapper" ng-show="comparisonOperatorInAndNotInFlag"><!--- Add select component Wrapper --->
+	
+		<div class="form-group"><!--- Option select field wrapper --->
+			<div class="input-group">
+				<div class="s-input-btn">
+					<input id="searchinput"
+						ng-model="newListItem"  
+    					type="text" class="form-control" 
+    					/>
+					<span class="glyphicon glyphicon-remove"></span>
+					<!---<i class="fa fa-refresh fa-spin"></i>---><!--- Loading Icon --->
+				</div>
+				<div class="input-group-btn">
+					<button class="btn btn-sm btn-primary" ng-click="addToValueInListFormat(newListItem)"><i class="fa fa-plus"></i></button>
 				</div>
 			</div>
+		</div>
+		
+		<div class="s-selected-list" ng-repeat="listItem in inListArray track by $index"><!--- Selected options wrapper --->
 			
-			<div class="s-selected-list" ng-repeat="listItem in inListArray track by $index"><!--- Selected options wrapper --->
-				
-				<div class="alert s-selected-item" ng-show="listItem.length"><!--- Example Item 2 --->
-					<button type="button" class="close" ng-click="removelistItem(listItem)"><span aria-hidden="true" >&times;</span><span class="sr-only">Close</span></button>
-					<strong ng-bind="listItem"></strong>
-				</div>
-				
+			<div class="alert s-selected-item" ng-show="listItem.length"><!--- Example Item 2 --->
+				<button type="button" class="close" ng-click="removelistItem(listItem)"><span aria-hidden="true" >&times;</span><span class="sr-only">Close</span></button>
+				<strong ng-bind="listItem"></strong>
 			</div>
 			
 		</div>
+		
+	</div>
 	  
       
     
