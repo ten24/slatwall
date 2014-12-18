@@ -476,7 +476,13 @@ angular.module('slatwalladmin')
 				    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
 				    					selectedFilterProperty.showCriteriaValue = false;
 				    				}else{
-				    					selectedFilterProperty.showCriteriaValue = true;
+				    					if(selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'in' || selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'not in'){
+				    						selectedFilterProperty.showCriteriaValue = false;
+				    						scope.comparisonOperatorInAndNotInFlag = true;
+				    					}else{
+				    						selectedFilterProperty.showCriteriaValue = true;
+				    					}
+				    					
 				    				}
 				    			};
 				    			break;
@@ -777,11 +783,36 @@ angular.module('slatwalladmin')
 					
 					$log.debug('templateLoader');
 					$log.debug(selectedFilterProperty);
+					
+					scope.inListArray = [];
+					scope.newListItem = '';
+					scope.addToValueInListFormat = function(inListItem){
+						// Adds item into array
+						scope.inListArray.push(inListItem);
+					
+						//set value field to the user generated list
+						scope.filterItem.value = scope.inListArray.toString();
+						scope.newListItem = '';
+					};
+					
+					scope.removelistItem = function(argListItem){
+						
+						for(var item = 0; item < scope.inListArray.length; item++){
+							if(argListItem === scope.inListArray[item]){
+								$log.debug(scope.inListArray);
+								delete scope.inListArray[item];
+							}
+						}
+						scope.filterItem.value = scope.inListArray.toString();
+					};
+					
+					
 					var templateLoader = getTemplate(selectedFilterProperty);
 			    	var promise = templateLoader.success(function(html){
 						element.html(html);
 						$compile(element.contents())(scope);
 					});
+			    	
 				}
 	    	}); 
 			
@@ -802,6 +833,7 @@ angular.module('slatwalladmin')
 				//update criteria to display the condition of the new critera we have selected
 				
 			};
+			
 	    	
 	    };
 	    
