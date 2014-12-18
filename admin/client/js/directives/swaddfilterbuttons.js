@@ -24,7 +24,9 @@ angular.module('slatwalladmin')
 				scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
 				
 				scope.addFilterItem = function(){
+					console.log(filterGroupsController.getFilterGroupItem());
 					collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse);
+					console.log(filterGroupsController.getFilterGroupItem());
 				};
 				
 				scope.addFilterGroupItem = function(){

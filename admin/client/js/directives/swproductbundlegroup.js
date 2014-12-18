@@ -7,13 +7,17 @@ angular.module('slatwalladmin')
 	'$slatwall',
 	'productBundlePartialsPath',
 	'productBundleService',
+	'collectionService',
+	'metadataService',
 	function(
 	$http,
 		$log,
 		$timeout,
 		$slatwall,
 		productBundlePartialsPath,
-		productBundleService
+		productBundleService,
+		collectionService,
+		metadataService
 	){
 		return {
 			require:"^swProductBundleGroups",
@@ -35,6 +39,13 @@ angular.module('slatwalladmin')
 				scope.removeProductBundleGroup = function(){
 					productBundleGroupsController.removeProductBundleGroup(scope.index);
 				};
+				
+				scope.collection = {
+					baseEntityName:"Sku",
+					baseEntityAlias:"_Sku",
+					collectionConfig:angular.fromJson(scope.productBundleGroup.data.skuCollectionConfig)
+				};
+				
 				
 				scope.navigation = {
 					value:'Basic',
@@ -144,11 +155,24 @@ angular.module('slatwalladmin')
 					}else{
 						filterItem.comparisonOperator = '=';
 					}
-					scope.productBundleGroup.data.skuCollectionConfig.filterGroups.push(filterItem);
+					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(filterItem);
 				};
 				
+				if(angular.isUndefined(scope.filterPropertiesList)){
+					scope.filterPropertiesList = {};
+					var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName('_Sku');
+					filterPropertiesPromise.then(function(value){
+						metadataService.setPropertiesList(value,'_Sku');
+						scope.filterPropertiesList['_Sku'] = metadataService.getPropertiesListByBaseEntityAlias('_Sku');
+						console.log('test');
+						console.log(scope.filterPropertiesList['_Sku']);
+						metadataService.formatPropertiesList(scope.filterPropertiesList['_Sku'],'_Sku');
+						
+					});
+				}
+				
 				scope.removeProductBundleGroupFilter = function(index){
-					scope.productBundleGroup.data.skuCollectionConfig.filterGroups.splice(index,1);
+					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index,1);
 				};
 				
 				

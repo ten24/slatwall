@@ -25,6 +25,7 @@ angular.module('slatwalladmin')
 		require:'^swFilterGroups',
 		restrict: 'A',
 		scope:{
+			collectionConfig:"=",
 			filterItem:"=",
 			filterPropertiesList:"=",
 			saveCollection:"&",
@@ -50,7 +51,7 @@ angular.module('slatwalladmin')
 			    return Math.floor(days);
 			}
 			
-			scope.baseEntityAlias = collectionService.getBaseEntityAlias();
+			scope.baseEntityAlias = scope.collectionConfig.baseEntityAlias;
 			
 			if(angular.isUndefined(scope.filterItem.breadCrumbs)){
 				scope.filterItem.breadCrumbs = [];

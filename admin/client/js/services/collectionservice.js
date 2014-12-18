@@ -24,7 +24,7 @@ angular.module('slatwalladmin')
 				return _filterCount;
 			},
 				
-			getCollection: function(){
+			/*getCollection: function(){
 				return _collection;
 			},
 			setCollection: function(collection){
@@ -34,9 +34,11 @@ angular.module('slatwalladmin')
 				return _collection.collectionConfig;
 			},
 			getBaseEntityName: function(){
+				console.log(this.getCollectionConfig());
 				return this.getCollectionConfig().baseEntityName;
 			},
 			getBaseEntityAlias: function(){
+				console.log(this.getCollectionConfig());
 				return this.getCollectionConfig().baseEntityAlias;
 			},
 			getCollectionConfig: function(){
@@ -46,7 +48,10 @@ angular.module('slatwalladmin')
 				return _collectionConfig;
 			},
 			setCollectionConfig: function(collectionConfig){
+				console.log('setCollectionCOnfig');
+				console.log(collectionConfig);
 				_collection.collectionConfig = collectionConfig;
+				_collectionConfig = collectionConfig;
 			},
 			
 			getRootFilterGroup: function(){
@@ -61,7 +66,7 @@ angular.module('slatwalladmin')
 					];
 				}
 				return collectionConfig.filterGroups;
-			},
+			},*/
 			
 			getColumns:function(){
 				return _collection.collectionConfig.columns;

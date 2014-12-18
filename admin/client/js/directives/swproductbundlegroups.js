@@ -3,16 +3,20 @@ angular.module('slatwalladmin')
 .directive('swProductBundleGroups', [
 	'$http',
 	'$log',
+	'$slatwall',
+	'metadataService',
 	'productBundlePartialsPath',
 	'productBundleService',
 	function(
 		$http,
 		$log,
+		$slatwall,
+		metadataService,
 		productBundlePartialsPath,
 		productBundleService
 	){
 		return {
-			restrict: 'E',
+			restrict: 'EA',
 			
 			templateUrl:productBundlePartialsPath+"productbundlegroups.html",
 			scope:{
@@ -39,6 +43,8 @@ angular.module('slatwalladmin')
 					
 					$scope.sku.data.productBundleGroups.selectedProductBundleGroup = productBundleGroup;
 				};
+				
+				
 				
 			}
 		};

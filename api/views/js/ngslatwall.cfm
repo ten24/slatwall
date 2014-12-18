@@ -423,7 +423,6 @@ Notes:
 							for(var key in data) {
 								if(key.charAt(0) !== '$'){
 									if(angular.isDefined(entityInstance.metaData[key]) 
-										&& angular.isString(entityInstance.data[key]) 
 										&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
 										&& entityInstance.metaData[key].hb_formfieldtype === 'json'
 									){
@@ -786,11 +785,14 @@ Notes:
 							for(var f in forms){
 				    			var form = forms[f];
 					    		for(var key in form){
+					    			console.log('key:'+key);
 					    			if(key.charAt(0) !== '$'){
 					    				var inputField = form[key];
 					    				if(inputField.$valid === true && inputField.$dirty === true){
 					    					<!--- set modifiedData --->
-					    					if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
+					    					if(angular.isDefined(entityInstance.metaData[key]) 
+				    						&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
+				    						&& entityInstance.metaData[key].hb_formfieldtype === 'json'){
 					    						modifiedData[key] = angular.toJson(form[key].$modelValue);		
 					    					}else{
 					    						modifiedData[key] = form[key].$modelValue;
@@ -816,7 +818,9 @@ Notes:
 							    				var inputField = form[key];
 							    				if(inputField.$valid === true && inputField.$dirty === true){
 							    					<!--- set modifiedData --->
-							    					if(angular.isDefined(parentInstance.metaData[key]) && angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) && parentInstance.metaData[key].hb_formfieldtype === 'json'){
+							    					if(angular.isDefined(parentInstance.metaData[key]) 
+							    					&& angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) 
+							    					&& parentInstance.metaData[key].hb_formfieldtype === 'json'){
 							    						modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);		
 							    					}else{
 							    						modifiedData[parentObject.name][key] = form[key].$modelValue;

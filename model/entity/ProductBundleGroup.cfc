@@ -108,9 +108,9 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
     public string function getSkuCollectionConfig(){
     	if(isNull(variables.skuCollectionConfig)){
     		var defaultSkuCollectionConfig = {};
-    		defaultSkuCollectionConfig["baseEntityName"]='SlatwallSku';
-			defaultSkuCollectionConfig["baseEntityAlias"]='Sku';
-			defaultSkuCollectionConfig["filterGroups"]=[];
+    		defaultSkuCollectionConfig["baseEntityName"]='Sku';
+			defaultSkuCollectionConfig["baseEntityAlias"]='_Sku';
+			defaultSkuCollectionConfig["filterGroups"]=[{"filterGroup":[]}];
     		variables.skuCollectionConfig = serializeJson(defaultSkuCollectionConfig);
     	}
     	return variables.skuCollectionConfig;

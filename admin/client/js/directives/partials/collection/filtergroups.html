@@ -5,6 +5,7 @@
 			<!-- filter Item -->
 			<span 	ng-switch-when="false" 
 					sw-filter-item 
+					data-collection-config="collectionConfig"
 					data-filter-item="filterGroup" 
 					data-filter-properties-list="filterPropertiesList"
 					data-sibling-items="filterGroupItem"
@@ -15,6 +16,7 @@
 			<!-- filter Group Item -->
 			<span 	ng-switch-when="true" 
 					sw-filter-group-item 
+					data-collection-config="collectionConfig"
 					data-filter-group-item="filterGroup",
 					data-sibling-items="filterGroupItem"
 					data-filter-properties-list="filterPropertiesList"
