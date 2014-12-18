@@ -803,6 +803,7 @@ angular.module('slatwalladmin')
 								delete scope.inListArray[item];
 							}
 						}
+						scope.filterItem.value = scope.inListArray.toString();
 					};
 					
 					
