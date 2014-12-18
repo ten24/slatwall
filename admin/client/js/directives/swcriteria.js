@@ -476,7 +476,13 @@ angular.module('slatwalladmin')
 				    				if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
 				    					selectedFilterProperty.showCriteriaValue = false;
 				    				}else{
-				    					selectedFilterProperty.showCriteriaValue = true;
+				    					if(selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'in' || selectedFilterProperty.selectedCriteriaType.comparisonOperator === 'not in'){
+				    						selectedFilterProperty.showCriteriaValue = false;
+				    						scope.comparisonOperatorInAndNotInFlag = true;
+				    					}else{
+				    						selectedFilterProperty.showCriteriaValue = true;
+				    					}
+				    					
 				    				}
 				    			};
 				    			break;
@@ -780,17 +786,24 @@ angular.module('slatwalladmin')
 					
 					scope.inListArray = [];
 					scope.addToValueInListFormat = function(inListItem){
-						//var dressedUpInListItem = "'" + inListItem + "'";
+						// Adds item into array
 						scope.inListArray.push(inListItem);
-						
-						$log.debug('hey stuffs working dude');
-						//scope.inListArray.toString();
-						
+					
 						//set value field to the user generated list
 						scope.filterItem.value = scope.inListArray.toString();
-						$log.debug(selectedFilterProperty);
-						
 					};
+					
+					scope.removelistItem = function(argListItem){
+						
+						for(var item = 0; item < scope.inListArray.length; item++){
+							if(argListItem === scope.inListArray[item]){
+								$log.debug(scope.inListArray);
+								delete scope.inListArray[item];
+							}
+						}
+					};
+					
+					
 					var templateLoader = getTemplate(selectedFilterProperty);
 			    	var promise = templateLoader.success(function(html){
 						element.html(html);
