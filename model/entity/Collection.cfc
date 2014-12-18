@@ -678,7 +678,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}else if(arguments.filter.comparisonOperator eq 'is' || arguments.filter.comparisonOperator eq 'is not'){
 			predicate = filter.value;
 		}else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in'){
-			predicate = '(' & filter.value & ')';
+			predicate = "(" & ListQualify(filter.value,"'") & ")";
 		}else{
 			var paramID = getParamID();
 			if(!structKeyExists(filter,"value")){
