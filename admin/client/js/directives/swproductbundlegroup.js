@@ -10,7 +10,7 @@ angular.module('slatwalladmin')
 	'collectionService',
 	'metadataService',
 	function(
-	$http,
+		$http,
 		$log,
 		$timeout,
 		$slatwall,
@@ -39,7 +39,10 @@ angular.module('slatwalladmin')
 				
 				scope.removeProductBundleGroup = function(){
 					productBundleGroupsController.removeProductBundleGroup(scope.index);
+					scope.productBundleGroup.$$delete();
 				};
+				
+				
 				
 				scope.collection = {
 					baseEntityName:"Sku",
@@ -47,6 +50,24 @@ angular.module('slatwalladmin')
 					collectionConfig:angular.fromJson(scope.productBundleGroup.data.skuCollectionConfig)
 				};
 				
+				scope.getCollection = function(){
+					var options = {
+							filterGroupsConfig:angular.toJson(scope.productBundleGroup.data.skuCollectionConfig.filterGroups),
+							columnsConfig:angular.toJson(scope.productBundleGroup.data.skuCollectionConfig.columns),
+							currentPage:1, 
+							pageShow:10
+						};
+					var collectionPromise = $slatwall.getEntity('Sku',options);
+					console.log('collectionPromise');
+					console.log(collectionPromise);
+					collectionPromise.then(function(response){
+						console.log('got collection');
+						console.log(response);
+						scope.collection = response;
+					});
+				};
+				
+				scope.getCollection();
 				
 				scope.navigation = {
 					value:'Basic',

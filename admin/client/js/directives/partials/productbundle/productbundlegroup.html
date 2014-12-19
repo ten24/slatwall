@@ -261,7 +261,7 @@
 								            		data-filter-group="productBundleGroup.data.skuCollectionConfig.filterGroups[0]"
 								            		data-filter-group-item="productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup"
 								            		data-filter-properties-list="filterPropertiesList"
-								            		data-save-collection="productBundleGroup.$$save()"
+								            		data-save-collection="productBundleGroup.$$save();getCollection();"
 								            		>
 								            	</ul>
 								            </div>
@@ -270,6 +270,11 @@
 								          <!--- //End Filter Group --->
 								        </div>
 								    </div>
+								    <sw-collection-table
+										data-collection="collection"
+										data-collection-config="productBundleGroup.data.skuCollectionConfig"
+									>
+									</sw-collection-table>
 								</span>
 	                        </div>
                         <!-- //Search for product -->

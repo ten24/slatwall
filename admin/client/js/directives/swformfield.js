@@ -111,7 +111,6 @@ angular.module('slatwalladmin')
 							if(selectType === 'object'){
 								scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = option.value;
 								scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()].$dirty = true;
-								
 							}else if(selectType === 'string'){
 								scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
 								scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
