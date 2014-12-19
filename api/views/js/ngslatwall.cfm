@@ -427,7 +427,6 @@ Notes:
 							for(var key in data) {
 								if(key.charAt(0) !== '$'){
 									if(angular.isDefined(entityInstance.metaData[key]) 
-										&& angular.isString(entityInstance.data[key]) 
 										&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
 										&& entityInstance.metaData[key].hb_formfieldtype === 'json'
 									){
@@ -640,7 +639,6 @@ Notes:
 				    	}
 				    	
 				    	var _delete = function(entityInstance){
-				    		console.log('delete');
 				    		var entityName = entityInstance.metaData.className;
 				    		var entityID = entityInstance.$$getID();
 				    		var context = 'delete';
@@ -697,14 +695,10 @@ Notes:
 				    		
 				    		for(var key in returnedIDs){
 				    			if(angular.isArray(returnedIDs[key])){
-				    				console.log(key);
-				    				console.log(entityInstance);
 									var arrayItems = returnedIDs[key];
 									var entityInstanceArray = entityInstance.data[key];
-									console.log(entityInstanceArray);
 									for(var i in arrayItems){
 										var arrayItem = arrayItems[i];
-										console.log(arrayItems);
 										var entityInstanceArrayItem = entityInstance.data[key][i];
 										_addReturnedIDs(arrayItem,entityInstanceArrayItem)
 									}
@@ -721,8 +715,6 @@ Notes:
 	
 				    	var _save = function(entityInstance){
 				    		$timeout(function(){
-					    		console.log('save');
-					    		console.log(entityInstance);
 					    		
 					    		var entityID = entityInstance.$$getID();
 					    		
@@ -754,9 +746,7 @@ Notes:
 				    	
 				    	var _getModifiedData = function(entityInstance){
 				    		var modifiedData = {};
-				    		
 				    		modifiedData = getModifiedDataByInstance(entityInstance);
-				    		
 				    		return modifiedData;
 				    	}
 				    	
@@ -787,14 +777,18 @@ Notes:
 	
 				    		<!--- after finding the object level we will be saving at perform dirty checking object save level--->
 							var forms = entityInstance.forms;
+							
 							for(var f in forms){
 				    			var form = forms[f];
 					    		for(var key in form){
+					    			console.log('key:'+key);
 					    			if(key.charAt(0) !== '$'){
 					    				var inputField = form[key];
-					    				if(inputField.$valid === true && inputField.$dirty === true){
+					    				if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
 					    					<!--- set modifiedData --->
-					    					if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
+					    					if(angular.isDefined(entityInstance.metaData[key]) 
+				    						&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
+				    						&& entityInstance.metaData[key].hb_formfieldtype === 'json'){
 					    						modifiedData[key] = angular.toJson(form[key].$modelValue);		
 					    					}else{
 					    						modifiedData[key] = form[key].$modelValue;
@@ -818,9 +812,11 @@ Notes:
 							    		for(var key in form){
 							    			if(key.charAt(0) !== '$'){
 							    				var inputField = form[key];
-							    				if(inputField.$valid === true && inputField.$dirty === true){
+							    				if(angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
 							    					<!--- set modifiedData --->
-							    					if(angular.isDefined(parentInstance.metaData[key]) && angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) && parentInstance.metaData[key].hb_formfieldtype === 'json'){
+							    					if(angular.isDefined(parentInstance.metaData[key]) 
+							    					&& angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) 
+							    					&& parentInstance.metaData[key].hb_formfieldtype === 'json'){
 							    						modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);		
 							    					}else{
 							    						modifiedData[parentObject.name][key] = form[key].$modelValue;
@@ -889,7 +885,7 @@ Notes:
 			    			for(var key in form){
 				    			if(key.charAt(0) !== '$'){
 				    				var inputField = form[key];
-				    				if(angular.isDefined(inputField) && inputField.$valid === true && inputField.$dirty === true){	
+				    				if(angular.isDefined(inputField) && angular.isDefined(inputField) && inputField.$valid === true && inputField.$dirty === true){	
 				    					if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
 				    						data[key] = angular.toJson(form[key].$modelValue);		
 				    					}else{

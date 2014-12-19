@@ -19,6 +19,7 @@ angular.module('slatwalladmin')
 			restrict: 'A',
 			require:"^swFilterGroups",
 			scope:{
+				collectionConfig:"=",
 				filterGroupItem: "=",
 				siblingItems:"=",
 				filterPropertiesList:"=",
