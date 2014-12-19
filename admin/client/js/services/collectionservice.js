@@ -23,50 +23,6 @@ angular.module('slatwalladmin')
 			getFilterCount: function(){
 				return _filterCount;
 			},
-				
-			/*getCollection: function(){
-				return _collection;
-			},
-			setCollection: function(collection){
-				_collection = collection;
-			},
-			getCollectionConfigJson: function(){
-				return _collection.collectionConfig;
-			},
-			getBaseEntityName: function(){
-				console.log(this.getCollectionConfig());
-				return this.getCollectionConfig().baseEntityName;
-			},
-			getBaseEntityAlias: function(){
-				console.log(this.getCollectionConfig());
-				return this.getCollectionConfig().baseEntityAlias;
-			},
-			getCollectionConfig: function(){
-				if(!angular.isObject(_collectionConfig)){
-					_collectionConfig = angular.fromJson(_collection.collectionConfig);
-				}
-				return _collectionConfig;
-			},
-			setCollectionConfig: function(collectionConfig){
-				console.log('setCollectionCOnfig');
-				console.log(collectionConfig);
-				_collection.collectionConfig = collectionConfig;
-				_collectionConfig = collectionConfig;
-			},
-			
-			getRootFilterGroup: function(){
-				var collectionConfig = this.getCollectionConfig();
-				if(angular.isUndefined(collectionConfig.filterGroups)){
-					collectionConfig.filterGroups = [
-						{
-							filterGroup:[
-								
-							]
-						}
-					];
-				}
-				return collectionConfig.filterGroups;
-			},*/
 			
 			getColumns:function(){
 				return _collection.collectionConfig.columns;

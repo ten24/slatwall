@@ -232,13 +232,6 @@ angular.module('slatwalladmin')
 						formController[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;	
 					}
 					
-					if(scope.propertyDisplay.fieldType === 'json'){
-						console.log('tojson object');
-						//console.log(scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
-						//scope.propertyDisplay.object.data[scope.propertyDisplay.property] = angular.toJson(scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
-					}
-
-							
 				});
 			}
 		};

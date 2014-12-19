@@ -54,11 +54,7 @@ angular.module('slatwalladmin')
 							pageShow:10
 						};
 					var collectionPromise = $slatwall.getEntity('Sku',options);
-					console.log('collectionPromise');
-					console.log(collectionPromise);
 					collectionPromise.then(function(response){
-						console.log('got collection');
-						console.log(response);
 						scope.collection = response;
 					});
 				};
@@ -192,8 +188,6 @@ angular.module('slatwalladmin')
 					filterPropertiesPromise.then(function(value){
 						metadataService.setPropertiesList(value,'_sku');
 						scope.filterPropertiesList['_sku'] = metadataService.getPropertiesListByBaseEntityAlias('_sku');
-						console.log('test');
-						console.log(scope.filterPropertiesList['_sku']);
 						metadataService.formatPropertiesList(scope.filterPropertiesList['_sku'],'_sku');
 						
 					});

@@ -639,7 +639,6 @@ Notes:
 				    	}
 				    	
 				    	var _delete = function(entityInstance){
-				    		console.log('delete');
 				    		var entityName = entityInstance.metaData.className;
 				    		var entityID = entityInstance.$$getID();
 				    		var context = 'delete';
@@ -696,14 +695,10 @@ Notes:
 				    		
 				    		for(var key in returnedIDs){
 				    			if(angular.isArray(returnedIDs[key])){
-				    				console.log(key);
-				    				console.log(entityInstance);
 									var arrayItems = returnedIDs[key];
 									var entityInstanceArray = entityInstance.data[key];
-									console.log(entityInstanceArray);
 									for(var i in arrayItems){
 										var arrayItem = arrayItems[i];
-										console.log(arrayItems);
 										var entityInstanceArrayItem = entityInstance.data[key][i];
 										_addReturnedIDs(arrayItem,entityInstanceArrayItem)
 									}
@@ -720,8 +715,6 @@ Notes:
 	
 				    	var _save = function(entityInstance){
 				    		$timeout(function(){
-					    		console.log('save');
-					    		console.log(entityInstance);
 					    		
 					    		var entityID = entityInstance.$$getID();
 					    		
@@ -753,10 +746,7 @@ Notes:
 				    	
 				    	var _getModifiedData = function(entityInstance){
 				    		var modifiedData = {};
-				    		console.log('mod');
-				    		console.log(entityInstance);
 				    		modifiedData = getModifiedDataByInstance(entityInstance);
-				    		console.log(entityInstance);
 				    		return modifiedData;
 				    	}
 				    	
