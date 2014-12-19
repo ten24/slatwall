@@ -122,6 +122,7 @@
     	                            <div class="clearfix"></div>
     	    					</div>
     	    					<sw-property-display
+    	    						ng-show="false"
                                     data-object="productBundleGroup"
                                     data-property="skuCollectionConfig"
                                     data-editing="true"
@@ -189,7 +190,7 @@
 		                                        </button>
 		                                        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
 		                                            <li ng-repeat="searchOption in searchOptions.options">
-		                                                <a 	href="#all"
+		                                                <a 	
 		                                                    ng-bind="searchOption.name"
 		                                                    ng-click="searchOptions.setSelected(searchOption)"
 		                                                ></a>

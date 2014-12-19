@@ -170,7 +170,7 @@ angular.module('slatwalladmin')
 					$log.debug(filterItem);
 					
 					filterItem.displayPropertyIdentifier = filterItem.type; 
-					filterItem.propertyIdentifier = filterItem.entityType + '.' + filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID'; 
+					filterItem.propertyIdentifier = filterItem.propertyIdentifier; 
 					filterItem.displayValue = filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']; 
 					filterItem.value = filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']; 
 					

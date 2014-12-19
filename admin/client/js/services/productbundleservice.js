@@ -58,12 +58,19 @@ angular.module('slatwalladmin')
 						productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value+'Code'];
 						productBundelGroupFilters[i].type = filterTerm.name;
 						productBundelGroupFilters[i].entityType = filterTerm.value;
+						productBundelGroupFilters[i].propertyIdentifier='_sku.skuID';
 					}
-				} else {
+				} else{
 					for(var i in productBundelGroupFilters){
 						productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value+'Name'];
 						productBundelGroupFilters[i].type = filterTerm.name;
 						productBundelGroupFilters[i].entityType = filterTerm.value;
+						if(filterTerm.value === 'brand' || filterTerm.value === 'productType'){
+							productBundelGroupFilters[i].propertyIdentifier='_sku.product.'+filterTerm.value+'.'+filterTerm.value+'ID';
+						}else{
+							productBundelGroupFilters[i].propertyIdentifier='_sku.'+filterTerm.value+'.'+filterTerm.value+'ID';
+						}
+						
 					}
 				}
 				
