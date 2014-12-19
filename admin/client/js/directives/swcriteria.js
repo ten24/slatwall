@@ -786,7 +786,7 @@ angular.module('slatwalladmin')
 					
 					scope.inListArray = [];
 					scope.newListItem = '';
-					scope.removeButtonDisplayFlag = false;
+					
 					scope.addToValueInListFormat = function(inListItem){
 						// Adds item into array
 						scope.inListArray.push(inListItem);
@@ -794,7 +794,7 @@ angular.module('slatwalladmin')
 						//set value field to the user generated list
 						scope.filterItem.value = scope.inListArray.toString();
 						scope.newListItem = '';
-						scope.removeButtonDisplayFlag = false;
+	
 					};
 					
 					scope.removelistItem = function(argListItem){
@@ -808,15 +808,8 @@ angular.module('slatwalladmin')
 						scope.filterItem.value = scope.inListArray.toString();
 					};
 					
-					scope.setRemoveButtonDisplayFlag = function(){
-						if(scope.newListItem.length){
-							scope.removeButtonDisplayFlag = true;
-						}
-					}
-					
 					scope.clearField = function(){
 						scope.newListItem = '';
-						scope.removeButtonDisplayFlag = false;
 					}
 					
 					

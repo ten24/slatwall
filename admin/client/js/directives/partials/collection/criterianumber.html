@@ -49,10 +49,9 @@
 				<div class="s-input-btn">
 					<input id="searchinput"
 						ng-model="newListItem"
-						ng-change="setRemoveButtonDisplayFlag()"  
     					type="text" class="form-control" 
     					/>
-					<span ng-show="removeButtonDisplayFlag" class="glyphicon glyphicon-remove" ng-click="clearField()"></span>
+					<span ng-show="newListItem.length > 0" class="glyphicon glyphicon-remove" ng-click="clearField()"></span>
 				</div>
 				<div class="input-group-btn">
 					<button class="btn btn-sm btn-primary" ng-click="addToValueInListFormat(newListItem)"><i class="fa fa-plus"></i></button>
