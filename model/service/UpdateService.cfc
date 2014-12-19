@@ -59,8 +59,9 @@ Notes:
 			<cfset var downloadURL = "https://github.com/ten24/Slatwall/zipball/#arguments.branch#" />	
 			<cfset var slatwallRootPath = expandPath("/Slatwall") />
 			<cfset var downloadFileName = "slatwall#createUUID()#.zip" />
-			<cfset var deleteDestinationContentExclusionList = "/integrationServices,/config/custom" />
+			<cfset var deleteDestinationContentExclusionList = "/integrationServices,/custom,/WEB-INF" />
 			<cfset var copyContentExclusionList = "" />
+			<cfset var slatwallDirectoryList = "" />
 			
 			<!--- If the meta directory exists, and it hasn't been dismissed then we want to delete without user action --->
 			<cfif getMetaFolderExistsWithoutDismissalFlag()>
@@ -73,7 +74,18 @@ Notes:
 			</cfif>
 			
 			<!--- before we do anything, make a backup --->
-			<cfzip action="zip" file="#getTempDirectory()#slatwall_bak.zip" source="#slatwallRootPath#" recurse="yes" overwrite="yes" />
+			<cfdirectory action="list" directory="#slatwallRootPath#" name="slatwallDirectoryList">
+			<cfzip action="zip" file="#getTempDirectory()#slatwall_bak.zip" recurse="yes" overwrite="yes" source="#slatwallRootPath#">
+				<cfloop query="slatwallDirectoryList">
+					<cfif slatwallDirectoryList.name neq "WEB-INF">
+						<cfif slatwallDirectoryList.type eq "File">
+							<cfzipparam source="#slatwallDirectoryList.name#" />
+						<cfelse>
+							<cfzipparam source="#slatwallDirectoryList.name#" prefix="#slatwallDirectoryList.name#" />
+						</cfif>
+					</cfif>
+				</cfloop>
+			</cfzip>
 			
 			<!--- start download --->
 			<cfhttp url="#downloadURL#" method="get" path="#getTempDirectory()#" file="#downloadFileName#" throwonerror="true" />
