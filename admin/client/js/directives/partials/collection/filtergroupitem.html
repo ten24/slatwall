@@ -4,11 +4,13 @@
   
    	<div ng-if="filterGroupItem.logicalOperator" class="btn-group-vertical btn-toggle">
       <button 	class="btn btn-xs btn-default" 
+      			type="button"
       			ng-class="{active:filterGroupItem.logicalOperator === 'AND'}"
       			ng-click="logicalOperatorChanged('OR')"
       			>AND
       </button>
       <button 	class="btn btn-xs btn-default" 
+      			type="button"
       			ng-class="{active:filterGroupItem.logicalOperator === 'OR'}"
       			ng-click="logicalOperatorChanged('OR')"
       			>OR

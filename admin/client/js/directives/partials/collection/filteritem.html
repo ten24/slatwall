@@ -5,12 +5,14 @@
   <div class="s-filter-item" ng-show="!filterItem.$$isNew">
   	<div ng-if="filterItem.logicalOperator" class="btn-group-vertical btn-toggle">
       <button class="btn btn-xs " 
+      			type="button"
       			ng-click="logicalOperatorChanged('AND')" 
       			ng-class="{'btn\-default':filterItem.logicalOperator !== 'AND'}"
       			>
       			AND
       </button>
       <button class="btn btn-xs " 
+      			type="button"
       			ng-class="{'btn\-default':filterItem.logicalOperator !== 'OR'}"
       			ng-click="logicalOperatorChanged('OR')"
       			>
