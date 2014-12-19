@@ -296,7 +296,7 @@ Notes:
 
 	<!--- Start old navbar --->
 	<body>
-		<span ng-if="hasResourceBundle()">
+		<span>
 			<div class="navbar navbar-fixed-top navbar-inverse" role="navigation" id="slatwall-navbar">
 				<div class="container-fluid" style="text-align:left;">
 	
