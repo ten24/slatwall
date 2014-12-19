@@ -1,4 +1,4 @@
-
+{{productBundleGroup.forms}}
 <li class="s-bundle-group-item" ng-if="productBundleGroup">
       <div class="row">
         <div class="col-xs-8 s-bundle-group-title">
@@ -39,7 +39,7 @@
         </div>
       </div>
 
-      <div ng-if="productBundleGroup.data.$$editing" ng-show="productBundleGroup.data.$$editing" class="s-bundle-group-dropdown">
+      <div  ng-show="productBundleGroup.data.$$editing" class="s-bundle-group-dropdown">
     	<div class="s-bundle-group-dropdown-content">
     		<div class="s-filter-content">
 
@@ -64,6 +64,7 @@
                                                 data-property="minimumQuantity"
                                                 data-editing="true"
                                                 data-editable="true"
+                                                data-is-dirty="true"
                                                 data-on-change="productBundleGroup.data.$$setMinimumQuantity(productBundleGroup.data.minimumQuantity)"
                                             >
                                             </sw-property-display>
@@ -76,6 +77,7 @@
                                                 data-property="maximumQuantity"
                                                 data-editing="true"
                                                 data-editable="true"
+                                                data-is-dirty="true"
                                                 data-on-change="productBundleGroup.data.$$setMaximumQuantity(productBundleGroup.data.maximumQuantity)"
                                             ></sw-property-display>
     	    						</div>
@@ -114,6 +116,7 @@
 	                                            data-property="activeFlag"
 	                                            data-editing="true"
 	                                            data-editable="true"
+	                                            data-is-dirty="true"
 	                                        ></sw-property-display>
     	                                </div>
     	                            </div>

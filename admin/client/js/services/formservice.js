@@ -41,7 +41,6 @@ angular.module('slatwalladmin')
 			},
 			getFormsByObjectName:function(objectName){
 				var forms = [];
-
 				for(var f in _forms){
 
 					if(angular.isDefined(_forms[f].$$swFormInfo.object) && _forms[f].$$swFormInfo.object.metaData.className === objectName){

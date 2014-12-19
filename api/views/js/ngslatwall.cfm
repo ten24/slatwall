@@ -749,9 +749,10 @@ Notes:
 				    	
 				    	var _getModifiedData = function(entityInstance){
 				    		var modifiedData = {};
-				    		
+				    		console.log('mod');
+				    		console.log(entityInstance);
 				    		modifiedData = getModifiedDataByInstance(entityInstance);
-				    		
+				    		console.log(entityInstance);
 				    		return modifiedData;
 				    	}
 				    	
@@ -782,13 +783,14 @@ Notes:
 	
 				    		<!--- after finding the object level we will be saving at perform dirty checking object save level--->
 							var forms = entityInstance.forms;
+							
 							for(var f in forms){
 				    			var form = forms[f];
 					    		for(var key in form){
 					    			console.log('key:'+key);
 					    			if(key.charAt(0) !== '$'){
 					    				var inputField = form[key];
-					    				if(inputField.$valid === true && inputField.$dirty === true){
+					    				if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
 					    					<!--- set modifiedData --->
 					    					if(angular.isDefined(entityInstance.metaData[key]) 
 				    						&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
@@ -816,7 +818,7 @@ Notes:
 							    		for(var key in form){
 							    			if(key.charAt(0) !== '$'){
 							    				var inputField = form[key];
-							    				if(inputField.$valid === true && inputField.$dirty === true){
+							    				if(angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
 							    					<!--- set modifiedData --->
 							    					if(angular.isDefined(parentInstance.metaData[key]) 
 							    					&& angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) 
@@ -889,7 +891,7 @@ Notes:
 			    			for(var key in form){
 				    			if(key.charAt(0) !== '$'){
 				    				var inputField = form[key];
-				    				if(angular.isDefined(inputField) && inputField.$valid === true && inputField.$dirty === true){	
+				    				if(angular.isDefined(inputField) && angular.isDefined(inputField) && inputField.$valid === true && inputField.$dirty === true){	
 				    					if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
 				    						data[key] = angular.toJson(form[key].$modelValue);		
 				    					}else{

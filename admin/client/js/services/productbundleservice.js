@@ -43,20 +43,27 @@ angular.module('slatwalladmin')
 						}
 					}
 				}
+				console.log('right here');
+				console.log(productBundleGroup);
+				
 				angular.extend(productBundleGroup.data,prototype);
+				console.log(productBundleGroup);
 			},
 			formatProductBundleGroupFilters:function(productBundelGroupFilters,filterTerm){
 				$log.debug('formatProductBundleGroupFilters');
 				$log.debug(filterTerm);
+				console.log(productBundelGroupFilters);
 				if(filterTerm.value === 'sku'){
 					for(var i in productBundelGroupFilters){
 						productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value+'Code'];
 						productBundelGroupFilters[i].type = filterTerm.name;
+						productBundelGroupFilters[i].entityType = filterTerm.value;
 					}
 				} else {
 					for(var i in productBundelGroupFilters){
 						productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value+'Name'];
 						productBundelGroupFilters[i].type = filterTerm.name;
+						productBundelGroupFilters[i].entityType = filterTerm.value;
 					}
 				}
 				

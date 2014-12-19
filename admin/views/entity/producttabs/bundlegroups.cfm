@@ -25,13 +25,12 @@
 								data-is-dirty="true"
 			></sw-property-display>		
 	     </sw-form>
+	     
 	    <span 	sw-product-bundle-groups
 	    		ng-if="product.data.skus[0].data.productBundleGroups"
 	    		data-sku="product.data.skus[0]"
 	    		data-product-bundle-groups="product.data.skus[0].data.productBundleGroups"
 	    		data-add-product-bundle-group="addProductBundleGroup()"
-	    		data-editing="false"
-	    		
 	    >
 	    </span>
 	  </section>

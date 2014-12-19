@@ -32,6 +32,7 @@ angular.module('slatwalladmin')
 			link: function(scope, element,attrs,productBundleGroupsController){
 				var timeoutPromise;
 				
+				
 				scope.$id = 'productBundleGroup';
 				$log.debug('productBundleGroup');
 				$log.debug(scope.productBundleGroup);
@@ -150,10 +151,20 @@ angular.module('slatwalladmin')
 				scope.addFilterToProductBundle = function(filterItem,include){
 					$log.debug('addFilterToProductBundle');
 					$log.debug(filterItem);
+					
+					filterItem.displayPropertyIdentifier = filterItem.type; 
+					filterItem.propertyIdentifier = filterItem.entityType + '.' + filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID'; 
+					filterItem.displayValue = filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']; 
+					filterItem.value = filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']; 
+					
 					if(include === false){
 						filterItem.comparisonOperator = '!=';
 					}else{
 						filterItem.comparisonOperator = '=';
+					}
+					
+					if(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length > 0){
+						filterItem.logicalOperator = 'OR';
 					}
 					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(filterItem);
 				};
