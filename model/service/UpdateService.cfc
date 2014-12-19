@@ -59,7 +59,7 @@ Notes:
 			<cfset var downloadURL = "https://github.com/ten24/Slatwall/zipball/#arguments.branch#" />	
 			<cfset var slatwallRootPath = expandPath("/Slatwall") />
 			<cfset var downloadFileName = "slatwall#createUUID()#.zip" />
-			<cfset var deleteDestinationContentExclusionList = "/integrationServices,/custom,/WEB-INF" />
+			<cfset var deleteDestinationContentExclusionList = "/integrationServices,/custom,/WEB-INF,.project,setting.xml" />
 			<cfset var copyContentExclusionList = "" />
 			<cfset var slatwallDirectoryList = "" />
 			
@@ -77,7 +77,7 @@ Notes:
 			<cfdirectory action="list" directory="#slatwallRootPath#" name="slatwallDirectoryList">
 			<cfzip action="zip" file="#getTempDirectory()#slatwall_bak.zip" recurse="yes" overwrite="yes" source="#slatwallRootPath#">
 				<cfloop query="slatwallDirectoryList">
-					<cfif slatwallDirectoryList.name neq "WEB-INF">
+					<cfif not listFindNoCase("WEB-INF,.project,setting.xml", slatwallDirectoryList.name)>
 						<cfif slatwallDirectoryList.type eq "File">
 							<cfzipparam source="#slatwallDirectoryList.name#" />
 						<cfelse>
@@ -100,6 +100,10 @@ Notes:
 			</cfif>
 			<cfset updateCopyStarted = true /> 
 			<cfset getHibachiUtilityService().duplicateDirectory(source=sourcePath, destination=slatwallRootPath, overwrite=true, recurse=true, copyContentExclusionList=copyContentExclusionList, deleteDestinationContent=true, deleteDestinationContentExclusionList=deleteDestinationContentExclusionList ) />
+			
+			<!--- Delete .zip file and unzipped folder --->
+			<cffile action="delete" file="#getTempDirectory()##downloadFileName#" >
+			<cfdirectory action="delete" directory="#sourcePath#" >
 			
 			<!--- if there is any error during update, restore the old files and throw the error --->
 			<cfcatch type="any">
