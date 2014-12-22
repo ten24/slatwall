@@ -332,73 +332,77 @@ Notes:
 					  			return keyValue;
 					  		},
 					  		getRBKey:function(key,locale,checkedKeys,originalKey){
-					  			key = key.toLowerCase();
-					  			checkedKeys = checkedKeys || "";
-					  			locale = locale || 'en_us';
-					  			
-					  			<!---// Check to see if a list was passed in as the key--->
-					  			var keyListArray = key.split(',');
-					  			
-								if(keyListArray.length > 1) {
-									
-									<!---// Set up "" as the key value to be passed as 'checkedKeys'--->
-									var keyValue = "";
-									
-									<!---// If there was a list then try to get the key for each item in order--->
-									for(var i=0; i<keyListArray.length; i++) {
+					  			if(!slatwallService.hasResourceBundle()) {
+					  				$timeout(function(){return slatwallService.getRBKey(key,locale,checkedKeys,originalKey)}, 100);
+					  			} else {
+					  				key = key.toLowerCase();
+						  			checkedKeys = checkedKeys || "";
+						  			locale = locale || 'en_us';
+						  			
+						  			<!---// Check to see if a list was passed in as the key--->
+						  			var keyListArray = key.split(',');
+						  			
+									if(keyListArray.length > 1) {
 										
-										<!---// Get the keyValue from this iteration--->
-										var keyValue = this.getRBKey(keyListArray[i], locale, keyValue);
+										<!---// Set up "" as the key value to be passed as 'checkedKeys'--->
+										var keyValue = "";
 										
-										<!---// If the keyValue was found, then we can break out of the loop--->
-										if(keyValue.slice(-8) != "_missing") {
-											break;
+										<!---// If there was a list then try to get the key for each item in order--->
+										for(var i=0; i<keyListArray.length; i++) {
+											
+											<!---// Get the keyValue from this iteration--->
+											var keyValue = this.getRBKey(keyListArray[i], locale, keyValue);
+											
+											<!---// If the keyValue was found, then we can break out of the loop--->
+											if(keyValue.slice(-8) != "_missing") {
+												break;
+											}
 										}
+										
+										return keyValue;
 									}
 									
-									return keyValue;
-								}
-								
-								<!---// Check the exact bundle file--->
-								var bundle = slatwallService.getResourceBundle(locale);
-								if(angular.isDefined(bundle[key])) {
-									return bundle[key];
-								}
-								
-								<!---// Because the value was not found, we can add this to the checkedKeys, and setup the original Key--->
-								var checkedKeysListArray = checkedKeys.split(',');
-								checkedKeysListArray.push(key+'_'+locale+'_missing');
-								checkedKeys = checkedKeysListArray.join(",");
-								if(angular.isUndefined(originalKey)){
-									originalKey = key;
-								}
-								<!---// Check the broader bundle file--->
-								var localeListArray = locale.split('_');
-								if(localeListArray.length === 2){
-									bundle = slatwallService.getResourceBundle(localeListArray[0]);
-									if(angular.isDefined(bundle[key])){
+									<!---// Check the exact bundle file--->
+									var bundle = slatwallService.getResourceBundle(locale);
+									if(angular.isDefined(bundle[key])) {
 										return bundle[key];
 									}
-									<!---// Add this more broad term to the checked keys--->
-									checkedKeysListArray.push(key+'_'+localeListArray[0]+'_missing');
-									checkedKeys = checkedKeysListArray.join(",");
-								}
-								<!---// Recursivly step the key back with the word 'define' replacing the previous.  Basically Look for just the "xxx.yyy.define.zzz" version of the end key and then "yyy.define.zzz" and then "define.zzz"--->
-								var keyDotListArray = key.split('.');
-								if(	keyDotListArray.length >= 3
-									&& keyDotListArray[keyDotListArray.length - 2] === 'define'
-								){
-									var newKey = key.replace(keyDotListArray[keyDotListArray.length - 3]+'.define','define');
-									return this.getRBKey(newKey,locale,checkedKeys,originalKey);
-								}else if( keyDotListArray.length >= 2 && keyDotListArray[keyDotListArray.length - 2] !== 'define'){
-									var newKey = key.replace(keyDotListArray[keyDotListArray.length -2]+'.','define.');
-									return this.getRBKey(newKey,locale,checkedKeys,originalKey);
-								}
-								if(localeListArray[0] !== "en"){
 									
-									return this.getRBKey(originalKey,'en',checkedKeys);
-								}
-					  			return checkedKeys;
+									<!---// Because the value was not found, we can add this to the checkedKeys, and setup the original Key--->
+									var checkedKeysListArray = checkedKeys.split(',');
+									checkedKeysListArray.push(key+'_'+locale+'_missing');
+									checkedKeys = checkedKeysListArray.join(",");
+									if(angular.isUndefined(originalKey)){
+										originalKey = key;
+									}
+									<!---// Check the broader bundle file--->
+									var localeListArray = locale.split('_');
+									if(localeListArray.length === 2){
+										bundle = slatwallService.getResourceBundle(localeListArray[0]);
+										if(angular.isDefined(bundle[key])){
+											return bundle[key];
+										}
+										<!---// Add this more broad term to the checked keys--->
+										checkedKeysListArray.push(key+'_'+localeListArray[0]+'_missing');
+										checkedKeys = checkedKeysListArray.join(",");
+									}
+									<!---// Recursivly step the key back with the word 'define' replacing the previous.  Basically Look for just the "xxx.yyy.define.zzz" version of the end key and then "yyy.define.zzz" and then "define.zzz"--->
+									var keyDotListArray = key.split('.');
+									if(	keyDotListArray.length >= 3
+										&& keyDotListArray[keyDotListArray.length - 2] === 'define'
+									){
+										var newKey = key.replace(keyDotListArray[keyDotListArray.length - 3]+'.define','define');
+										return this.getRBKey(newKey,locale,checkedKeys,originalKey);
+									}else if( keyDotListArray.length >= 2 && keyDotListArray[keyDotListArray.length - 2] !== 'define'){
+										var newKey = key.replace(keyDotListArray[keyDotListArray.length -2]+'.','define.');
+										return this.getRBKey(newKey,locale,checkedKeys,originalKey);
+									}
+									if(localeListArray[0] !== "en"){
+										
+										return this.getRBKey(originalKey,'en',checkedKeys);
+									}
+						  			return checkedKeys;
+					  			}
 					  		},
 					  		 getConfig:function(){
 						    	return _config;
@@ -423,7 +427,6 @@ Notes:
 							for(var key in data) {
 								if(key.charAt(0) !== '$'){
 									if(angular.isDefined(entityInstance.metaData[key]) 
-										&& angular.isString(entityInstance.data[key]) 
 										&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
 										&& entityInstance.metaData[key].hb_formfieldtype === 'json'
 									){
@@ -636,7 +639,6 @@ Notes:
 				    	}
 				    	
 				    	var _delete = function(entityInstance){
-				    		console.log('delete');
 				    		var entityName = entityInstance.metaData.className;
 				    		var entityID = entityInstance.$$getID();
 				    		var context = 'delete';
@@ -693,14 +695,10 @@ Notes:
 				    		
 				    		for(var key in returnedIDs){
 				    			if(angular.isArray(returnedIDs[key])){
-				    				console.log(key);
-				    				console.log(entityInstance);
 									var arrayItems = returnedIDs[key];
 									var entityInstanceArray = entityInstance.data[key];
-									console.log(entityInstanceArray);
 									for(var i in arrayItems){
 										var arrayItem = arrayItems[i];
-										console.log(arrayItems);
 										var entityInstanceArrayItem = entityInstance.data[key][i];
 										_addReturnedIDs(arrayItem,entityInstanceArrayItem)
 									}
@@ -717,8 +715,6 @@ Notes:
 	
 				    	var _save = function(entityInstance){
 				    		$timeout(function(){
-					    		console.log('save');
-					    		console.log(entityInstance);
 					    		
 					    		var entityID = entityInstance.$$getID();
 					    		
@@ -750,9 +746,7 @@ Notes:
 				    	
 				    	var _getModifiedData = function(entityInstance){
 				    		var modifiedData = {};
-				    		
 				    		modifiedData = getModifiedDataByInstance(entityInstance);
-				    		
 				    		return modifiedData;
 				    	}
 				    	
@@ -783,14 +777,18 @@ Notes:
 	
 				    		<!--- after finding the object level we will be saving at perform dirty checking object save level--->
 							var forms = entityInstance.forms;
+							
 							for(var f in forms){
 				    			var form = forms[f];
 					    		for(var key in form){
+					    			console.log('key:'+key);
 					    			if(key.charAt(0) !== '$'){
 					    				var inputField = form[key];
-					    				if(inputField.$valid === true && inputField.$dirty === true){
+					    				if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
 					    					<!--- set modifiedData --->
-					    					if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
+					    					if(angular.isDefined(entityInstance.metaData[key]) 
+				    						&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
+				    						&& entityInstance.metaData[key].hb_formfieldtype === 'json'){
 					    						modifiedData[key] = angular.toJson(form[key].$modelValue);		
 					    					}else{
 					    						modifiedData[key] = form[key].$modelValue;
@@ -814,9 +812,11 @@ Notes:
 							    		for(var key in form){
 							    			if(key.charAt(0) !== '$'){
 							    				var inputField = form[key];
-							    				if(inputField.$valid === true && inputField.$dirty === true){
+							    				if(angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
 							    					<!--- set modifiedData --->
-							    					if(angular.isDefined(parentInstance.metaData[key]) && angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) && parentInstance.metaData[key].hb_formfieldtype === 'json'){
+							    					if(angular.isDefined(parentInstance.metaData[key]) 
+							    					&& angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) 
+							    					&& parentInstance.metaData[key].hb_formfieldtype === 'json'){
 							    						modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);		
 							    					}else{
 							    						modifiedData[parentObject.name][key] = form[key].$modelValue;
@@ -885,7 +885,7 @@ Notes:
 			    			for(var key in form){
 				    			if(key.charAt(0) !== '$'){
 				    				var inputField = form[key];
-				    				if(angular.isDefined(inputField) && inputField.$valid === true && inputField.$dirty === true){	
+				    				if(angular.isDefined(inputField) && angular.isDefined(inputField) && inputField.$valid === true && inputField.$dirty === true){	
 				    					if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
 				    						data[key] = angular.toJson(form[key].$modelValue);		
 				    					}else{

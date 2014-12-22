@@ -5,19 +5,18 @@ angular.module('slatwalladmin')
 '$compile',
 '$templateCache',
 '$log',
-'collectionService',
 'collectionPartialsPath',
 	function(
 	$http,
 	$compile,
 	$templateCache,
 	$log,
-	collectionService,
-			collectionPartialsPath
+	collectionPartialsPath
 		){
 		return {
 			restrict: 'EA',
 			scope:{
+				collectionConfig:"=",
 				filterGroupItem: "=",
 				filterPropertiesList:"=",
 				saveCollection:"&",
@@ -25,6 +24,7 @@ angular.module('slatwalladmin')
 			},
 			templateUrl:collectionPartialsPath+"filtergroups.html",
 			controller: function($scope, $element,$attrs){
+				
 				$scope.itemInUse = false;
 				
 				this.getFilterGroup = function(){

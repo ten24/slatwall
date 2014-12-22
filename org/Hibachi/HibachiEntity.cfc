@@ -852,9 +852,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			// Log audit only if admin user
 			if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
 			
-				// Manually populate primary ID in old data because it doesn't exist by default
-				arguments.oldData[getPrimaryIDPropertyName()] = getPrimaryIDValue();
-			
 				getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
 			}
 			

@@ -86,6 +86,7 @@
 			            	<!---filterGroups gets taken apart here --->
 			            	<ul class="col-xs-12 list-unstyled"
 			            		sw-filter-groups
+			            		data-collection-config="collectionConfig"
 			            		data-filter-group="collectionConfig.filterGroups[0]"
 			            		data-filter-group-item="collectionConfig.filterGroups[0].filterGroup"
 			            		data-filter-properties-list="filterPropertiesList"
@@ -189,30 +190,11 @@
 		</div>
 		<!--//delete batch action-->
 		
-		<div class="table-responsive s-filter-table-box">
-			<table class="table table-bordered table-striped" >
-			    <thead>
-			        <tr>
-			            <th style="display:none">Row</span></th>
-			            <th ng-repeat="(key,column) in collectionConfig.columns" class="s-sortable" ng-bind="column.title" ng-show="column.isVisible"></th>
-			            <th></th>
-			        </tr>
-			    </thead>
-			    <tbody sw-scroll-trigger
-				infinite-scroll="appendToCollection()"
-				infinite-scroll-disabled="autoScrollDisabled"
-				infinite-scroll-distance="1">
-					<tr ng-repeat="pageRecord in collection.pageRecords">
-			            <td style="display:none"> <div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
-			            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[column.propertyIdentifier.split('.').pop()]" ng-show="column.isVisible"></td>
-			            <td class="s-edit-elements">
-			                <a class="btn btn-default btn-xs" href="{{pageRecord.detailLink}}" target="_self"><i class="glyphicon glyphicon-eye-open"></i></a>
-			                <a class="btn btn-default btn-xs" href="{{pageRecord.editLink}}" target="_self"><i class="glyphicon glyphicon-pencil"></i></a>
-			            </td>
-			      	</tr>
-			    </tbody>
-			</table>
-		</div>
+		<sw-collection-table
+			data-collection="collection"
+			data-collection-config="collectionConfig"
+		>
+		</sw-collection-table>
 		<!---list view end --->
 		<div class="row">
 		  <div class="col-md-12" span ng-show="pageShow !== 'Auto'">
