@@ -72,6 +72,13 @@ Notes:
 				<swa:SlatwallAdminAddressDisplay address="#rc.accountAddress.getAddress()#" fieldNamePrefix="address." edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
+		<!--- Custom Attributes --->
+		<hb:HibachiEntityDetailGroup object="#rc.accountAddress#">
+		
+			<cfloop array="#rc.accountAddress.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.accountAddress#" attributeSet="#attributeSet#" edit="#rc.edit#" showOnCreateFlag="true"   />
+			</cfloop>
+		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
 
