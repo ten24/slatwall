@@ -18,8 +18,16 @@
 	<cfparam name="attributes.fRenderItem" type="string" default="#request.context.entityActionDetails.fRenderItem#">
 	<cfparam name="attributes.sRedirectQS" type="string" default="#request.context.entityActionDetails.sRedirectQS#">
 	<cfparam name="attributes.fRedirectQS" type="string" default="#request.context.entityActionDetails.fRedirectQS#">
+	<cfparam name="attributes.forceSSL" type="boolean" default="#request.context.entityActionDetails.forceSSL#" />
 	
-	<cfset formAction = "?s=1" />
+	<cfset formAction ="">
+	
+	<cfif attributes.forceSSL>
+		<!--- <cfset formAction &= replace(request.slatwallScope.getURL(), "http", "https")> --->
+		<cfset formAction &= "https://#cgi.SERVER_NAME#/" >
+	</cfif>
+	
+	<cfset formAction &= "?s=1" />
 	
 	<cfif len(attributes.processActionQueryString)>
 		<cfset formAction &= "&#attributes.processActionQueryString#" />

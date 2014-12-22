@@ -119,12 +119,14 @@ Notes:
 <!--- We are paraming this variable so that we can use it later to see if a specific step was clicked on.  Using the url.step is just a templating thing and it has nothing to do really with the core of Slatwall.  This could be changed to anything --->
 <cfparam name="url.step" default="" />
 
+<cfset paymentFormAction="">
+
 <!--- If using HTTP, override the form to send over http if the setting Force Credit Card Over SSL is true --->
 <cfif $.slatwall.setting('globalForceCreditCardOverSSL') EQ true AND (findNoCase("off", CGI.HTTPS) OR NOT CGI.SERVER_PORT_SECURE)>
-	<cfset paymentFormAction = '#replace($.slatwall.getURL(), "http", "https")#?s=1' /> 
-<cfelse>
-	<cfset paymentFormAction = '?s=1' />
+	<cfset paymentFormAction &= '#replace($.slatwall.getURL(), "http", "https")#' /> 
 </cfif>
+
+<cfset paymentFormAction &= '?s=1' />
 
 <cfoutput>
 	<div class="container">
