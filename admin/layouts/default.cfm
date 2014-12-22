@@ -446,10 +446,10 @@ Notes:
 			}]);
 			
 		</script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#?slatAction=api:js.ngslatwall"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngslatwall"></script>
 		
 		<!--- Load up the Slatwall Admin --->
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#?slatAction=api:js.ngcompressor&jspath=admin/client/js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngcompressor&jspath=admin/client/js"></script>
 		
 	</body>
 </html>
