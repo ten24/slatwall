@@ -49,6 +49,16 @@ Notes:
 <cfparam name="rc.entities" />
 
 <cfcontent type="text/javascript">
+<!--- Let's have this page persist on the client for 60 days or until the version changes. --->
+<cfset dtExpires = (Now() + 60) />
+ 
+<cfset strExpires = GetHTTPTimeString( dtExpires ) />
+ 
+<cfheader
+    name="expires"
+    value="#strExpires#"
+/>
+
 <cfset local.jsOutput = "" />
 <cfif !request.slatwallScope.hasApplicationValue('ngSlatwall')>
 	<cfsavecontent variable="local.jsOutput">
