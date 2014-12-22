@@ -52,6 +52,8 @@ component extends="HibachiService" output="false" accessors="true"{
 	property name="subscriptionService" type="any";
 	property name="skuService" type="any";
 	
+	property name="taskDAO" type="any";
+	
 	// ===================== START: Logical Methods ===========================
 	
 	public void function updateEntityCalculatedProperties(required any entityName, struct smartListData={}) {
@@ -132,8 +134,10 @@ component extends="HibachiService" output="false" accessors="true"{
 			// Get the task from the DB
 			var task = this.getTask(attributes.threadData.taskID);
 			
-			// Setup the task as running, and initial the taskHistory data
-			task.setRunningFlag( true );
+			// Setup the task as running
+			getTaskDAO().updateTaskRunning( taskID=attributes.threadData.taskID, runningFlag=true );
+			
+			// Initiate the taskHistory data
 			taskHistory.setTask( task );
 			taskHistory.setStartTime( now() );
 			
@@ -164,8 +168,10 @@ component extends="HibachiService" output="false" accessors="true"{
 				taskHistory.setResponse( e.Message );
 			}
 			
-			// Update the task, and set the end for history
-			task.setRunningFlag( false );
+			// Set the task as no longer running
+			getTaskDAO().updateTaskRunning( taskID=attributes.threadData.taskID, runningFlag=false );
+			
+			// Set the end for history
 			taskHistory.setEndTime( now() );
 			
 			// Persist the info to the DB

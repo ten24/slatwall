@@ -27,9 +27,8 @@ angular.module('slatwalladmin')
 				
 				scope.form = formController;
 				/*register form with service*/
-				formController.name = scope.name
+				formController.name = scope.name;
 				formService.setForm(formController);
-				
 				/*register form at object level*/
 				if(angular.isUndefined(scope.object.forms)){
 					scope.object.forms = {};

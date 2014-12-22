@@ -19,6 +19,7 @@ angular.module('slatwalladmin')
 			restrict: 'A',
 			require:'^swFilterGroups',
 			scope:{
+				collectionConfig:"=",
 				filterItem: "=",
 				siblingItems: "=",
 				filterPropertiesList:"=",
@@ -27,7 +28,7 @@ angular.module('slatwalladmin')
 			},
 			templateUrl:collectionPartialsPath+"filteritem.html",
 			link: function(scope, element,attrs,filterGroupsController){
-				scope.baseEntityAlias = collectionService.getBaseEntityAlias();
+				scope.baseEntityAlias = scope.collectionConfig.baseEntityAlias;
 				collectionService.incrementFilterCount(1);
 				
 				if(angular.isUndefined(scope.filterItem.$$isClosed)){

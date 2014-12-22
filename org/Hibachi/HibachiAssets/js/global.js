@@ -286,7 +286,7 @@ function setupEventHandlers() {
 		jQuery('#adminConfirm .btn-primary').attr( 'href', jQuery(this).attr('href') );
 		jQuery('#adminConfirm').modal();
 	});
-	jQuery('body').on('click', '.alert-disabled', function(e){
+	jQuery('body').on('click', '.s-btn-disabled', function(e){	
 		e.preventDefault();
 		jQuery('#adminDisabled .modal-body').html( jQuery(this).data('disabled') );
 		jQuery('#adminDisabled').modal();
@@ -512,8 +512,7 @@ function setupEventHandlers() {
 	});
 
 		//General Listing Search
-	jQuery('.general-listing-search').keyup(function(e){
-
+	jQuery('body').on('keyup', '.general-listing-search', function(e){
 		if(e.which >= 47 || e.which ==13 || e.which==8  ){  //only react to visible chrs
 			//Should stop bootstrap dropdowns from opening, *should*
 			e.stopPropagation();

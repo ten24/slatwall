@@ -13,7 +13,7 @@ angular.module('slatwalladmin')
 	workflowPartialsPath
 	){
 		return {
-			restrict: 'A',
+			restrict: 'E',
 			
 			templateUrl:workflowPartialsPath+"workflowconditiongroupitem.html",
 			link: function(scope, element,attrs){

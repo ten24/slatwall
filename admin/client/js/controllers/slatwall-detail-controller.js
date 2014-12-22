@@ -13,21 +13,35 @@ function(
 	$scope.$id="slatwallDetailController";
 	$log.debug('slatwallDetailController');
 	
-	var propertyCasedEntityName = $scope.entityName.charAt(0).toUpperCase() + $scope.entityName.slice(1);
-	
-	$scope.entity = $slatwall['new'+propertyCasedEntityName]();
-	$scope.getRBKey = $slatwall.getRBKey;
-	$scope.tabPartialPath = partialsPath+'entity/';
-	
-	$scope.getEntity = function(){
-		
-		$scope.entity = $slatwall['get'+propertyCasedEntityName]({id:$scope.entityID});
+	var setupMetaData = function(){
 		$scope[$scope.entityName.toLowerCase()] = $scope.entity;
 		$scope.entityDisplay = {
 			plural:$slatwall.getRBKey('entity.'+$scope.entityName.toLowerCase()+'_plural')
 		};
+		$scope.detailTabs = $scope.entity.metaData.$$getDetailTabs();
+	}
+	
+	var propertyCasedEntityName = $scope.entityName.charAt(0).toUpperCase() + $scope.entityName.slice(1);
+	
+	$scope.getRBKey = $slatwall.getRBKey;
+	$scope.tabPartialPath = partialsPath+'entity/';
+	
+	$scope.getEntity = function(){
+		if($scope.entityID === 'null'){
+			$scope.entity = $slatwall['new'+propertyCasedEntityName]();
+			setupMetaData();
+		}else{
+			var entityPromise = $slatwall['get'+propertyCasedEntityName]({id:$scope.entityID});
+			entityPromise.promise.then(function(){
+				$scope.entity = entityPromise.value;
+				setupMetaData();
+			});
+		}
+		
 	};
 	$scope.getEntity();
+	
+	
 	
 	$scope.allTabsOpen = false;
 	

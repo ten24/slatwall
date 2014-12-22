@@ -108,9 +108,19 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
     public string function getSkuCollectionConfig(){
     	if(isNull(variables.skuCollectionConfig)){
     		var defaultSkuCollectionConfig = {};
-    		defaultSkuCollectionConfig["baseEntityName"]='SlatwallSku';
-			defaultSkuCollectionConfig["baseEntityAlias"]='Sku';
-			defaultSkuCollectionConfig["filterGroups"]=[];
+    		defaultSkuCollectionConfig["baseEntityName"]='Sku';
+			defaultSkuCollectionConfig["baseEntityAlias"]='_sku';
+			defaultSkuCollectionConfig["filterGroups"]=[{"filterGroup":[]}];
+			defaultSkuCollectionConfig["columns"]=[];
+			var defaultColumnsArray = ['skuID','activeFlag','publishedFlag','skuName','skuDescription','skuCode','listPrice','price','renewalPrice'];
+			
+			for(var column in defaultColumnsArray){
+				var columnStruct = {};
+				columnStruct['propertyIdentifier'] = '_sku.#column#';
+				columnStruct['title'] = getService('HibachiRBService').getRBKey('entity.sku.#column#');
+				columnStruct['isVisible'] = true;
+				ArrayAppend(defaultSkuCollectionConfig["columns"],columnStruct);
+			}
     		variables.skuCollectionConfig = serializeJson(defaultSkuCollectionConfig);
     	}
     	return variables.skuCollectionConfig;

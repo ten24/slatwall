@@ -89,6 +89,21 @@ component displayname="Workflow" entityname="SlatwallWorkflow" table="SwWorkflow
 		return variables.workflowObjectOptions;
 	}
 	
+	// WorkflowTask (one-to-many)
+	public void function addWorkflowTask(required any WorkflowTask) {
+		arguments.WorkflowTask.setWorkflow( this );
+	}
+	public void function removeWorkflowTask(required any WorkflowTask) {
+		arguments.WorkflowTask.removeWorkflow( this );
+	}
+	// WorkflowTrigger (one-to-many)
+	public void function addWorkflowTrigger(required any WorkflowTrigger) {
+		arguments.WorkflowTrigger.setWorkflow( this );
+	}
+	public void function removeWorkflowTrigger(required any WorkflowTrigger) {
+		arguments.WorkflowTrigger.removeWorkflow( this );
+	}
+	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================

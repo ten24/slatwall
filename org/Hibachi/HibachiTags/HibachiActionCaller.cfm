@@ -2,7 +2,7 @@
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
-	<cfparam name="attributes.action" type="string" />
+	<cfparam name="attributes.action" type="string" default=""/>
 	<cfparam name="attributes.text" type="string" default="">
 	<cfparam name="attributes.type" type="string" default="link">
 	<cfparam name="attributes.queryString" type="string" default="" />
@@ -83,7 +83,7 @@
 		<cfif not len(attributes.disabledtext)>
 		    <cfset attributes.disabledtext = attributes.hibachiScope.rbKey("#Replace(attributes.action, ":", ".", "all")#_disabled") />
 		</cfif>
-		<cfset attributes.class &= " disabled alert-disabled" />
+		<cfset attributes.class &= " s-btn-disabled" />
 		<cfset attributes.confirm = false />
 	<cfelseif attributes.confirm>
 		<cfif not len(attributes.confirmtext)>

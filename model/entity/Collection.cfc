@@ -42,14 +42,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="collectionName" ormtype="string";
 	property name="collectionCode" ormtype="string" unique="true" index="PI_COLLECTIONCODE";
-	property name="description" ormtype="string";
+	property name="collectionDescription" ormtype="string";
 	property name="collectionObject" ormtype="string" hb_formFieldType="select";
-	property name="parentCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="parentCollectionID";
 	property name="collectionConfig" ormtype="string" length="8000" hb_auditable="false" hb_formFieldType="json" hint="json object used to construct the base collection HQL query";
 	
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
+	property name="parentCollection" cfc="Collection" fieldtype="many-to-one" fkcolumn="parentCollectionID";
 	
 	// Related Object Properties (one-to-many)
 	
@@ -463,6 +463,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 		HQL = createHQLFromCollectionObject(this,arguments.excludeSelect);
+		
 		return HQL;
 	}
 	
@@ -678,7 +679,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}else if(arguments.filter.comparisonOperator eq 'is' || arguments.filter.comparisonOperator eq 'is not'){
 			predicate = filter.value;
 		}else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in'){
-			predicate = '(' & filter.value & ')';
+			  predicate = "(" & ListQualify(filter.value,"'") & ")";
 		}else{
 			var paramID = getParamID();
 			if(!structKeyExists(filter,"value")){

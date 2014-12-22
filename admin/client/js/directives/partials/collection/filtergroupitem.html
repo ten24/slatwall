@@ -4,11 +4,13 @@
   
    	<div ng-if="filterGroupItem.logicalOperator" class="btn-group-vertical btn-toggle">
       <button 	class="btn btn-xs btn-default" 
+      			type="button"
       			ng-class="{active:filterGroupItem.logicalOperator === 'AND'}"
       			ng-click="logicalOperatorChanged('OR')"
       			>AND
       </button>
       <button 	class="btn btn-xs btn-default" 
+      			type="button"
       			ng-class="{active:filterGroupItem.logicalOperator === 'OR'}"
       			ng-click="logicalOperatorChanged('OR')"
       			>OR
@@ -35,6 +37,7 @@
   <div class="col-xs-12" ng-class="{collapse:filterGroupItem.$$isClosed}">
     <div class="row">
       <span sw-filter-groups 
+      		data-collection-config="collectionConfig"
       		data-filter-group="filterGroupItem"
 		    data-filter-group-item="filterGroupItem.filterGroup"
 		    data-filter-properties-list="filterPropertiesList"

@@ -92,19 +92,23 @@
 	"This is a blockquote. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl."
 </blockquote>
 
-<hr />
+<hr/>
+
 
 <h1 id="headings">Create List Component</h1>
 
-
-<!--////////////////////////////////Create List Component///////////////////////////////////-->
-<div class="s-select-list-wrapper"><!--- Add select component Wrapper --->
-	
-	<div class="form-group"><!--- Option select field wrapper --->
-		<div class="input-group">
-			<input type="text" class="form-control" placeholder="Any Text..." name="" id="">
-			<div class="input-group-btn">
-				<button class="btn btn-sm s-btn-dgrey" type="submit"><i class="fa fa-plus"></i></button>
+	<div class="s-select-list-wrapper"><!--- Add select component Wrapper --->
+		
+		<div class="form-group"><!--- Option select field wrapper --->
+			<div class="input-group">
+				<div class="s-input-btn">
+					<input id="searchinput" type="search" class="form-control">
+					<span class="glyphicon glyphicon-remove"></span>
+					<!---<i class="fa fa-refresh fa-spin"></i>---><!--- Loading Icon --->
+				</div>
+				<div class="input-group-btn">
+					<button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-plus"></i></button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -133,11 +137,20 @@
 <!--//////////////////////////////////Create List Component With Dropdown/////////////////////////////////-->
 <div class="s-select-list-wrapper"><!--- Add select component Wrapper --->
 	
-	<div class="form-group"><!--- Option select field wrapper --->
-		<div class="input-group">
-			<input type="text" class="form-control" placeholder="Search" name="" id="">
-			<div class="input-group-btn">
-				<button class="btn btn-sm s-btn-dgrey" type="submit"><i class="fa fa-caret-down"></i></button>
+	<!--//////////////////////////////////Create List Component With Dropdown/////////////////////////////////-->
+	<div class="s-select-list-wrapper s-dropdown"><!--- Add select component Wrapper --->
+		
+		<div class="form-group"><!--- Option select field wrapper --->
+			<div class="input-group">
+				<div class="s-input-btn">
+					<input id="searchinput" type="search" class="form-control">
+					<span class="glyphicon glyphicon-remove"></span>
+					<!---<i class="fa fa-refresh fa-spin"></i>---><!--- Loading Icon --->
+				</div>
+				<div class="input-group-btn">
+					<button class="btn btn-sm btn-default" type="submit"><i class="fa fa-caret-down"></i></button>
+					<button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-plus"></i></button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -156,10 +169,15 @@
 	
 	<div class="s-selected-list"><!--- Selected options wrapper --->
 		
-		<div class="alert s-selected-item"><!--- Example Item 2 --->
-			<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-			<strong>Search Result Title 1</strong>
-		</div>
+		<div class="dropdown s-search-results-wrapper"><!--- Dropdown wrapper --->
+			<ul class="dropdown-menu">
+				<li><a href="##">Item One</a></li> 
+				<li><a href="##">Item Two</a></li> 
+				<li><a href="##">Item Three</a></li> 
+				<li><a href="##">Item Four</a></li> 
+				<li><a href="##">Item Five</a></li> 
+			</ul>
+		</div>	
 		
 		<div class="alert s-selected-item"><!--- Example Item 2 --->
 			<button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>

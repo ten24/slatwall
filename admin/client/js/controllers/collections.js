@@ -89,8 +89,7 @@ metadataService,
 					
 					var collectionListingPromise = $slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.autoScrollPage, pageShow:50});
 					collectionListingPromise.then(function(value){
-						$scope.collection.pageRecords = collectionService.getCollection().pageRecords.concat(value.pageRecords);
-						collectionService.setCollection($scope.collection);
+						$scope.collection.pageRecords = $scope.collection.pageRecords.concat(value.pageRecords);
 						$scope.autoScrollDisabled = false;
 					},function(reason){
 					});
@@ -122,8 +121,7 @@ metadataService,
 			
 			var collectionListingPromise = $slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.currentPage, pageShow:pageShow, keywords:$scope.keywords});
 			collectionListingPromise.then(function(value){
-				collectionService.setCollection(value);
-				$scope.collection = collectionService.getCollection();
+				$scope.collection = value;
 	
 				var _collectionObject = $scope.collection['collectionObject'].toLowerCase().replace('slatwall', '');
 				var _recordKeyForObjectID = _collectionObject + 'ID';
@@ -150,12 +148,21 @@ metadataService,
 					_pageRecord["editLink"] = _editLink;
 				}
 	
-				$scope.collectionInitial = angular.copy(collectionService.getCollection());
+				$scope.collectionInitial = angular.copy($scope.collection);
 				if(angular.isUndefined($scope.collectionConfig)){
-					$scope.collectionConfig = collectionService.getCollectionConfig();
+					$scope.collectionConfig = angular.fromJson($scope.collection.collectionConfig);
 				}
 				//check if we have any filter Groups
-				$scope.collectionConfig.filterGroups = collectionService.getRootFilterGroup();
+				if(angular.isUndefined($scope.collectionConfig.filterGroups)){
+					$scope.collectionConfig.filterGroups = [
+						{
+							filterGroup:[
+								
+							]
+						}
+					];
+				}
+				
 			},function(reason){
 			});
 		};
@@ -164,7 +171,7 @@ metadataService,
 		
 		var unbindCollectionObserver = $scope.$watch('collection',function(newValue,oldValue){
 			if(newValue !== oldValue){
-				if(angular.isUndefined($scope.filterPropertiesList)){
+				if(angular.isUndefined($scope.filterPropertiesList) ){
 					$scope.filterPropertiesList = {};
 					var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName($scope.collectionConfig.baseEntityAlias);
 					filterPropertiesPromise.then(function(value){
@@ -195,35 +202,36 @@ metadataService,
 		};
 		
 		$scope.saveCollection = function(){
-			$log.debug('saving Collection');
-			var entityName = 'collection';
-			var collection = $scope.collection;
-			$log.debug($scope.collectionConfig);
-			
-			
-			if(isFormValid($scope.collectionForm)){
-				var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
-				$log.debug(collectionConfigString);
-				var data = angular.copy(collection);
+			$timeout(function(){
+				$log.debug('saving Collection');
+				var entityName = 'collection';
+				var collection = $scope.collection;
+				$log.debug($scope.collectionConfig);
 				
-				data.collectionConfig = collectionConfigString;
-				//has to be removed in order to save transient correctly
-				delete data.pageRecords;
-				var saveCollectionPromise = $slatwall.saveEntity(entityName,collection.collectionID,data);
-				saveCollectionPromise.then(function(value){
+				if(isFormValid($scope.collectionForm)){
+					var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
+					$log.debug(collectionConfigString);
+					var data = angular.copy(collection);
 					
-					$scope.errorMessage = {};
-					$scope.getCollection();
-					$scope.collectionDetails.isOpen = false;
-				}, function(reason){
-					//revert to original
-					angular.forEach(reason.errors,function(value,key){
-						$scope.collectionForm[key].$invalid = true;
-						$scope.errorMessage[key] = value[0];
+					data.collectionConfig = collectionConfigString;
+					//has to be removed in order to save transient correctly
+					delete data.pageRecords;
+					var saveCollectionPromise = $slatwall.saveEntity(entityName,collection.collectionID,data);
+					saveCollectionPromise.then(function(value){
+						
+						$scope.errorMessage = {};
+						$scope.getCollection();
+						$scope.collectionDetails.isOpen = false;
+					}, function(reason){
+						//revert to original
+						angular.forEach(reason.errors,function(value,key){
+							$scope.collectionForm[key].$invalid = true;
+							$scope.errorMessage[key] = value[0];
+						});
+						//$scope.collection = angular.copy($scope.collectionInitial);
 					});
-					//$scope.collection = angular.copy($scope.collectionInitial);
-				});
-			}
+				}
+			});
 		};
 		
 		var isFormValid = function (angularForm){

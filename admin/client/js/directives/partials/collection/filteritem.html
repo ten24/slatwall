@@ -5,12 +5,14 @@
   <div class="s-filter-item" ng-show="!filterItem.$$isNew">
   	<div ng-if="filterItem.logicalOperator" class="btn-group-vertical btn-toggle">
       <button class="btn btn-xs " 
+      			type="button"
       			ng-click="logicalOperatorChanged('AND')" 
       			ng-class="{'btn\-default':filterItem.logicalOperator !== 'AND'}"
       			>
       			AND
       </button>
       <button class="btn btn-xs " 
+      			type="button"
       			ng-class="{'btn\-default':filterItem.logicalOperator !== 'OR'}"
       			ng-click="logicalOperatorChanged('OR')"
       			>
@@ -20,7 +22,7 @@
     <div class="panel panel-default"  ng-class="{'s\-focus':!filterItem.$$isClosed}" >
       <div class="panel-heading">
       	<span ng-bind="filterItem.displayPropertyIdentifier | truncate:15"></span> 
-      	<a href="##" class="j-tool-tip-item" 
+      	<a  class="j-tool-tip-item" 
       		data-toggle="tooltip" data-placement="top" 
       		title="" data-original-title="Remove" 
       		
@@ -32,7 +34,7 @@
       	</a>
       </div>
       <div ng-click="selectFilterItem(filterItem)" ng-class="{}"   class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-        <span ng-bind="filterItem.comparisonOperator"></span>&nbsp;<span ng-bind="filterItem.displayValue | truncate:15"></span> <a  href="##"><i class="fa fa-pencil-square-o"></i></a>
+        <span ng-bind="filterItem.comparisonOperator"></span>&nbsp;<span ng-bind="filterItem.displayValue | truncate:15 | limitTo:filterItem.value.length+1"></span> <i class="fa fa-pencil-square-o"></i>
       </div>
     </div>
     
@@ -41,6 +43,7 @@
 
   <!--- Edit Filter Box --->
   <span sw-edit-filter-item
+  		data-collection-config="collectionConfig"
   		data-filter-item="filterItem"
   		data-filter-properties-list="filterPropertiesList"
   		ng-if="filterPropertiesList.hasOwnProperty(baseEntityAlias)"

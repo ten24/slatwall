@@ -90,6 +90,27 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 		}
     	return actionTypeOptions;
     }
+    
+    // Workflow (many-to-one)
+	public void function setWorkflowTask(required any WorkflowTask) {
+		variables.WorkflowTask = arguments.WorkflowTask;
+		
+		if(isNew() or !arguments.WorkflowTask.hasWorkflowTaskAction(this)) {
+			arrayAppend(arguments.WorkflowTask.getWorkflowTaskActions(),this);
+		}
+	}
+
+	public void function removeWorkflowTask(any WorkflowTask) {
+		if(!structKeyExists(arguments, 'WorkflowTask')) {
+			arguments.WorkflowTask = variables.WorkflowTask;
+		}
+		var index = arrayFind(arguments.WorkflowTask.getWorkflowTaskActions(),this);
+		
+		if(index > 0) {
+			arrayDeleteAt(arguments.WorkflowTask.getWorkflowTaskActions(),index);
+		}
+		structDelete(variables, "WorkflowTask");
+    }
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
