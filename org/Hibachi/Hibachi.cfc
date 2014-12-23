@@ -295,6 +295,7 @@ component extends="FW1.framework" {
 					// Setup the app init data
 					var applicationInitData = {}; 
 					applicationInitData["initialized"] = 				false;
+					applicationInitData["instantiationKey"] =			createUUID();
 					applicationInitData["application"] = 				this;
 					applicationInitData["applicationKey"] = 			variables.framework.applicationKey;
 					applicationInitData["applicationRootMappingPath"] = this.mappings[ "/#variables.framework.applicationKey#" ];

@@ -81,6 +81,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		config[ 'dateFormat' ] = setting('globalDateFormat');
 		config[ 'timeFormat' ] = setting('globalTimeFormat');
 		config[ 'rbLocale' ] = '#getRBLocale()#';
+		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
+		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
 		
 		var returnHTML = '';
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';
