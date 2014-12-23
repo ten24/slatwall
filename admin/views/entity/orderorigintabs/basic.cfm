@@ -10,9 +10,6 @@
 			<hb:HibachiPropertyDisplay object="#rc.orderOrigin#" property="orderOriginName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.orderOrigin#" property="activeFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.orderOrigin#" property="orderOriginType" edit="#rc.orderOrigin.isNew()#">
-			<cfif !rc.orderOrigin.isNew()>
-				<hb:HibachiPropertyDisplay object="#rc.orderOrigin#" property="orderOriginID" edit="false">
-			</cfif>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>
