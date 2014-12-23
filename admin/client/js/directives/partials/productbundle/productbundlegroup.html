@@ -168,10 +168,19 @@
 		                                                </li>
 		                                            </ul>
 		                                            <ul class="list-unstyled list-inline s-middle">
-		                                                <li class="s-bundle-details"><span ng-bind="productBundleGroupFilter.type"></span>:<span ng-bind="productBundleGroupFilter.name"></span></li>
+		                                                <li class="s-bundle-details" ng-show="productBundleGroupFilter.type">
+		                                                	<span ng-bind="productBundleGroupFilter.type"></span>:<span ng-bind="productBundleGroupFilter.name"></span>
+		                                                </li>
+		                                                <li class="s-bundle-details" ng-show="!productBundleGroupFilter.type">
+		                                                	<span ng-bind="productBundleGroupFilter.propertyIdentifier"></span>:<span ng-bind="productBundleGroupFilter.value"></span>
+		                                                </li>
 		                                            </ul>
 		                                            <ul class="list-unstyled list-inline s-last">
-		                                                <li class="col-xs-1 s-bundle-details-add"><a class="btn s-btn-dgrey s-remove" ng-click="removeProductBundleGroupFilter($index)"><i class="fa fa-trash"></i></a></li>
+		                                                <li class="col-xs-1 s-bundle-details-add">
+		                                                	<a class="btn s-btn-dgrey s-remove" ng-click="removeProductBundleGroupFilter($index)">
+		                                                		<i class="fa fa-trash"></i>
+		                                                	</a>
+		                                                </li>
 		                                            </ul>
 		                                            <div class="clearfix"></div>
 		                                        </li>
