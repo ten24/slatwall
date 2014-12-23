@@ -157,6 +157,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		var resourceBundle = getService('HibachiRBService').getResourceBundle(arguments.rc.locale);
 		data = {};
+		
+		getPageContext().getResponse().setHeader('expires', GetHTTPTimeString( now() + 60 ));
 		//lcase all the resourceBundle keys so we can have consistent casing for the js
 		for(var key in resourceBundle){
 			data[lcase(key)] = resourceBundle[key];
