@@ -18,6 +18,17 @@ angular.module('slatwalladmin')
 				propertyDisplay:"="
 			},
 			link:function(scope,element,attr,formController){
+				var makeRandomID = function makeid(count)
+				{
+				    var text = "";
+				    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+				
+				    for( var i=0; i < count; i++ )
+				        text += possible.charAt(Math.floor(Math.random() * possible.length));
+				
+				    return text;
+				}
+				
 				if(scope.propertyDisplay.fieldType === 'yesno' || scope.propertyDisplay.fieldType === 'hidden'){
 					//format value
 					scope.selectedRadioFormName = makeRandomID(26);
