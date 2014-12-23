@@ -23,7 +23,6 @@
 	<cfset formAction ="">
 	
 	<cfif attributes.forceSSLFlag AND (findNoCase("off", CGI.HTTPS) OR NOT CGI.SERVER_PORT_SECURE)>
-		<!--- <cfset formAction &= replace(request.slatwallScope.getURL(), "http", "https")> --->
 		<cfset formAction &= "https://#cgi.SERVER_NAME##attributes.hibachiScope.getApplicationValue('baseURL')#/" >
 	</cfif>
 	

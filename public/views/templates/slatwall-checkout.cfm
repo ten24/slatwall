@@ -123,7 +123,7 @@ Notes:
 
 <!--- If using HTTP, override the form to send over http if the setting Force Credit Card Over SSL is true --->
 <cfif $.slatwall.setting('globalForceCreditCardOverSSL') EQ true AND (findNoCase("off", CGI.HTTPS) OR NOT CGI.SERVER_PORT_SECURE)>
-	<cfset paymentFormAction &= '#replace($.slatwall.getURL(), "http", "https")#' /> 
+	<cfset paymentFormAction &= 'https://#cgi.SERVER_NAME##$.slatwall.getApplicationValue('baseURL')#/' /> 
 </cfif>
 
 <cfset paymentFormAction &= '?s=1' />
