@@ -5,6 +5,7 @@ angular.module('slatwalladmin').factory('dialogService', [
 		partialsPath
 	){
 		var _pageDialogs = [];
+		var _clickOutsideDialogs = {};
 		
 		var dialogService = {
 			
@@ -21,7 +22,24 @@ angular.module('slatwalladmin').factory('dialogService', [
 			
 			getPageDialogs: function(){
 				return _pageDialogs;
-			}
+			},
+						
+			closeDialogClickedOutside: function( event ) {
+				for(var key in _clickOutsideDialogs) {
+					if(!event.target.parentElement.offsetParent.idList.contains( key )){
+						_clickOutsideDialogs[ key ]();
+						delete _clickOutsideDialogs[domID];
+					}
+				}
+			},
+			
+			addDialogToCloseOnClickOutside: function( domID, callbackFunction ) {
+				_clickOutsideDialogs[ domID ] = callbackFunction;
+			},
+			
+			removeDialogToCloseOnClickOutside: function( domID ) {
+				delete _clickOutsideDialogs[domID];
+ 			}
 		};
 		
 		return dialogService;

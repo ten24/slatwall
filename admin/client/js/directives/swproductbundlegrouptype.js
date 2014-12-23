@@ -7,13 +7,15 @@ angular.module('slatwalladmin')
 	'formService',
 	'productBundlePartialsPath',
 	'productBundleService',
+	'dialogService',
 	function(
 		$http,
 		$log,
 		$slatwall,
 		formService,
 		productBundlePartialsPath,
-		productBundleService
+		productBundleService,
+		dialogService
 	){
 		return {
 			restrict: 'A',
