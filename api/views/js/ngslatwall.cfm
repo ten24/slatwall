@@ -313,6 +313,7 @@ Notes:
 				  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle'
 					  			var params = {
 					  				locale:locale,
+					  				version:'#$.slatwall.getApplicationValue('version')#'
 					  			};
 				  				$http.get(urlString,{params:params}).success(function(response){
 				  					_resourceBundle[locale] = response.data;
