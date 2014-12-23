@@ -208,8 +208,6 @@
 			<!--- Setup null value --->
 			<cfif structKeyExists(attributes.object.getPropertyMetaData(attributes.property), "hb_nullRBKey")>
 				 <cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'placeholder="#attributes.hibachiScope.rbKey( attributes.object.getPropertyMetaData(attributes.property).hb_nullRBKey )#"', " ") />
-			<cfelseif attributes.requiredFlag>
-				<cfset attributes.fieldAttributes = listAppend(attributes.fieldAttributes, 'placeholder="#attributes.hibachiScope.rbKey( 'define.required' )#"', " ") />
 			</cfif>
 		</cfsilent>
 		
