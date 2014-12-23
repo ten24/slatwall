@@ -52,17 +52,10 @@ Notes:
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
-<!--- Determine if SSL is required --->
-<cfset forceSSL = false />
-
-<cfif $.slatwall.setting('globalForceCreditCardOverSSL') EQ true AND (findNoCase("off", CGI.HTTPS) OR NOT CGI.SERVER_PORT_SECURE)>
-	<cfset forceSSL = true/> 
-</cfif>
-
 <!--- Set AngularJS controller --->
 <div ng-controller="admin-entity-preprocessaccount_addaccountpayment">
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#" sRedirectAction="admin:entity.detailaccount" forceSSL="#forceSSL#">
+	<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#" sRedirectAction="admin:entity.detailaccount" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 		
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.account#">
 		</hb:HibachiEntityActionBar>

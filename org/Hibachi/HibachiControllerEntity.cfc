@@ -23,9 +23,6 @@ component output="false" accessors="true" extends="HibachiController" {
 		arguments.rc.entityActionDetails.fRenderItem = "";
 		arguments.rc.entityActionDetails.fRedirectQS = "";
 		
-		//Setup EntityActionDetails with boolean determine if the form needs to be rerouted over SSL
-		arguments.rc.entityActionDetails.forceSSL = false;
-		
 		// Setup EntityActionDetails with all next actions set to this action
 		arguments.rc.entityActionDetails.itemEntityName = "";
 		arguments.rc.entityActionDetails.backAction = arguments.rc.entityActionDetails.thisAction;
