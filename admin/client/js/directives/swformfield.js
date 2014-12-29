@@ -14,11 +14,9 @@ angular.module('slatwalladmin')
 	formService,
 	partialsPath
 	){
-		
-		
 		return {
 			require:"^form",
-			restrict: 'A',
+			restrict: 'AE',
 			replace:"true",
 			scope:{
 				propertyDisplay:"="

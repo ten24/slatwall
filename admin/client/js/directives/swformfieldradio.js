@@ -1,11 +1,13 @@
 angular.module('slatwalladmin')
 .directive('swFormFieldRadio', [
 '$log',
+'$timeout',
 '$slatwall',
 'formService',
 'partialsPath',
 	function(
 	$log,
+	$timeout,
 	$slatwall,
 	formService,
 	partialsPath
@@ -27,11 +29,12 @@ angular.module('slatwalladmin')
 				        text += possible.charAt(Math.floor(Math.random() * possible.length));
 				
 				    return text;
-				}
-				
-				if(scope.propertyDisplay.fieldType === 'yesno' || scope.propertyDisplay.fieldType === 'hidden'){
+				};
+				if(scope.propertyDisplay.fieldType === 'yesno'){
 					//format value
 					scope.selectedRadioFormName = makeRandomID(26);
+					console.log('selectedRadioFOrmName');
+					console.log(scope.selectedRadioFormName);
 
 					scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.object.data[scope.propertyDisplay.property] === 'YES ' || scope.propertyDisplay.object.data[scope.propertyDisplay.property] == 1 ? 1 : 0;
 					scope.formFieldChanged = function(option){
@@ -64,6 +67,10 @@ angular.module('slatwalladmin')
 						scope.selected = scope.propertyDisplay.options[0];
 						scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[0].value;
 					}
+					
+					$timeout(function(){
+						scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
+					});
 					
 				}
 			}
