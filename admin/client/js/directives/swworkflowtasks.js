@@ -57,8 +57,6 @@ angular.module('slatwalladmin')
 				};
 				
 				scope.$watch('workflowTasks.selectedTask.data.workflow.data.workflowObject',function(newValue,oldValue){
-					console.log('workflowObject changed');
-					console.log(newValue);
 					if(newValue){
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
@@ -67,8 +65,6 @@ angular.module('slatwalladmin')
 				
 				scope.selectWorkflowTask = function(workflowTask){
 					scope.workflowTasks.selectedTask = workflowTask;
-					console.log('selectworkflow');
-					console.log(scope.workflowTasks.selectedTask.data);
 
 					var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
 					filterPropertiesPromise.then(function(value){

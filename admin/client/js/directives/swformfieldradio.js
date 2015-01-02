@@ -33,8 +33,6 @@ angular.module('slatwalladmin')
 				if(scope.propertyDisplay.fieldType === 'yesno'){
 					//format value
 					scope.selectedRadioFormName = makeRandomID(26);
-					console.log('selectedRadioFOrmName');
-					console.log(scope.selectedRadioFormName);
 
 					scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.object.data[scope.propertyDisplay.property] === 'YES ' || scope.propertyDisplay.object.data[scope.propertyDisplay.property] == 1 ? 1 : 0;
 					scope.formFieldChanged = function(option){
