@@ -49,6 +49,16 @@ Notes:
 <cfparam name="rc.entities" />
 
 <cfcontent type="text/javascript">
+<!--- Let's have this page persist on the client for 60 days or until the version changes. --->
+<cfset dtExpires = (Now() + 60) />
+ 
+<cfset strExpires = GetHTTPTimeString( dtExpires ) />
+ 
+<cfheader
+    name="expires"
+    value="#strExpires#"
+/>
+
 <cfset local.jsOutput = "" />
 <cfif !request.slatwallScope.hasApplicationValue('ngSlatwall')>
 	<cfsavecontent variable="local.jsOutput">
@@ -64,11 +74,12 @@ Notes:
 					rbLocale : '#request.slatwallScope.getRBLocal()#',
 					baseURL : '/',
 					applicationKey : 'Slatwall',
-					debugFlag : #request.slatwallScope.getApplicationValue('debugFlag')#
+					debugFlag : #request.slatwallScope.getApplicationValue('debugFlag')#,
+					instantiationKey : '#request.slatwallScope.getApplicationValue('instantiationKey')#'
 				};
 				
 				if(slatwallConfig){
-					angular.extend(_config,slatwallConfig);
+					angular.extend(_config, slatwallConfig);
 				}
 				
 				return {
@@ -300,9 +311,9 @@ Notes:
 				  					return _resourceBundle[locale];
 				  				}
 				  				
-				  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle'
+				  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+_config.instantiationKey;
 					  			var params = {
-					  				locale:locale,
+					  				locale:locale
 					  			};
 				  				$http.get(urlString,{params:params}).success(function(response){
 				  					_resourceBundle[locale] = response.data;

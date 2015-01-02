@@ -57,13 +57,9 @@ Notes:
 	<hb:HibachiEntityDetailForm object="#rc.orderOrigin#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.orderOrigin#" />
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.orderOrigin#" property="orderOriginName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.orderOrigin#" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.orderOrigin#" property="orderOriginType" edit="#rc.orderOrigin.isNew()#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
+		<hb:HibachiEntityDetailGroup object="#rc.orderOrigin#">
+			<hb:HibachiEntityDetailItem view="admin:entity/orderorigintabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		</hb:HibachiEntityDetailGroup>
 
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

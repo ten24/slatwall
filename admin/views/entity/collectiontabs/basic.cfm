@@ -9,8 +9,8 @@
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
 				<hb:HibachiPropertyDisplay object="#rc.collection#" property="collectionName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.collection#" property="collectionObject" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.collection#" property="description" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.collection#" property="collectionObject" edit="false">
+				<hb:HibachiPropertyDisplay object="#rc.collection#" property="collectionDescription" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.collection#" property="collectionCode" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>

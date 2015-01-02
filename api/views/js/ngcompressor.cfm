@@ -50,6 +50,16 @@ Notes:
 
 <cfset local.jsOutput = "" />
 
+<!--- Let's have this page persist on the client for 60 days or until the version changes. --->
+<cfset dtExpires = (Now() + 60) />
+ 
+<cfset strExpires = GetHTTPTimeString( dtExpires ) />
+ 
+<cfheader
+    name="expires"
+    value="#strExpires#"
+/>
+
 <cfcontent type="text/javascript">
 <cfif !request.slatwallScope.hasApplicationValue('ngCompressor_#hash(rc.jspath)#')>
 	<!---the order these are loaded matters --->
