@@ -77,6 +77,15 @@ Notes:
 																				
 --->
 
+<cfset paymentFormAction="">
+
+<!--- If using HTTP, override the form to send over http if the setting Force Credit Card Over SSL is true --->
+<cfif $.slatwall.setting('globalForceCreditCardOverSSL') EQ true AND (findNoCase("off", CGI.HTTPS) OR NOT CGI.SERVER_PORT_SECURE)>
+	<cfset paymentFormAction &= 'https://#cgi.SERVER_NAME##$.slatwall.getApplicationValue('baseURL')#/' /> 
+</cfif>
+
+<cfset paymentFormAction &= '?s=1' />
+
 <cfoutput>
 	<div class="container">
 		
@@ -667,7 +676,7 @@ Notes:
 														<div class="apm#accountPaymentMethodIndex#<cfif not accountPaymentMethod.hasErrors()> hide</cfif>">
 															
 															<!--- Start: Edit Payment Method Form --->
-															<form action="?s=1" method="post">
+															<form action="#paymentFormAction#" method="post">
 																
 																<!--- This hidden input is what tells slatwall to 'create' an account, it is then chained by the 'login' method so that happens directly after --->
 																<input type="hidden" name="slatAction" value="public:account.update" />
