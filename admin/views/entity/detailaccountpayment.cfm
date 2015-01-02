@@ -55,7 +55,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.accountPayment#" edit="#rc.edit#">
+	<hb:HibachiEntityDetailForm object="#rc.accountPayment#" edit="#rc.edit#" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 								
 		<hb:HibachiEntityActionBar type="detail" object="#rc.accountPayment#" edit="#rc.edit#"
 								   backAction="admin:entity.detailaccount"

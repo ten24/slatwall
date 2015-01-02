@@ -58,7 +58,7 @@ Notes:
 	</cfif>
 	
 	<!--- New Payment Method --->
-	<hb:HibachiDisplayToggle selector="select[name='accountPaymentMethodID']" showValues="" loadVisable="#!len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#">
+	<hb:HibachiDisplayToggle selector="select[name='accountPaymentMethodID']" showValues="" loadVisable="#!len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 		
 		<input type="hidden" name="newOrderPayment.orderPaymentID" value="#rc.addOrderPaymentProcessObject.getNewOrderPayment().getOrderPaymentID()#" />
 		
