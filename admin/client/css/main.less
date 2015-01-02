@@ -23,7 +23,7 @@
 @brand-ten24:             #F58620; //Orange
 @brand-success:           #5CB85C; //Green
 @brand-warning:           #F0AD4E; //Yellow
-@brand-danger:            #D9534F; //Red
+@brand-danger:            #A94442; //Red
 @brand-info:              #5BC0DE; //Light Blue
 @white:                   #ffffff; //White
 @black:                   #000000; //Black
@@ -559,6 +559,9 @@ table tr th .glyphicon {vertical-align:text-top;}
 .dropdown-menu .search-filter, .dropdown-menu .range-filter {margin-right:15px;margin-left:15px;margin-bottom:5px;}
 
 .form-group {margin-bottom:5px;display: inline-block;width: 100%;}
+input:focus, textarea:focus, select:focus {-webkit-box-shadow: none !important;box-shadow: none !important;}
+.form-group.s-required label:after {font-family: fontAwesome;content: "\f069";font-size: 5px;top: -6px;position: relative;padding-left: 2px;}
+.form-group.s-required input:focus {border-color: @brand-danger;-webkit-box-shadow: none;box-shadow: none;}
 
 .modal-header {padding: 15px;}
 .modal-footer {padding: 8px  15px;}
