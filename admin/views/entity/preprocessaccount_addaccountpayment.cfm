@@ -57,7 +57,7 @@ Notes:
 <!--- Set AngularJS controller --->
 <div ng-controller="preprocessaccount_addaccountpayment">
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#" sRedirectAction="admin:entity.detailaccount">
+	<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#" sRedirectAction="admin:entity.detailaccount" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 		
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.account#">
 		</hb:HibachiEntityActionBar>

@@ -57,7 +57,7 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.accountPaymentMethod#" edit="#rc.edit#" 
 								saveActionQueryString="accountID=#rc.account.getAccountID()#"
-								saveActionHash="tabaccountpaymentmethods">
+								saveActionHash="tabaccountpaymentmethods" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 								
 		<hb:HibachiEntityActionBar type="detail" object="#rc.accountPaymentMethod#" edit="#rc.edit#"
 					backAction="admin:entity.detailAccount" 
