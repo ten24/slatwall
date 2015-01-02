@@ -329,26 +329,29 @@
 							<form>
 								
 								<div class="form-group">
-									<label for="text_field">Text Field</label>
-									<input type="text" class="form-control" id="text_field" />
+									<label class="control-label">Text Field</label>
+									<input type="text" class="form-control" />
 								</div>
 							
 								<div class="form-group s-required">
-									<label for="text_field">Required Text Field</label>
-									<input type="text" class="form-control" id="text_field" />
+									<label class="control-label">Required Text Field</label>
+									<input type="text" class="form-control" />
 									<span id="helpBlock" class="help-block">Required fields must have the s-required class on the form-group div.</span>
-									
+								</div>
+								
+								<div class="form-group has-error">
+									<label class="control-label">Text Field Error</label>
+									<input type="text" class="form-control" />
+									<span id="helpBlock" class="help-block">Required fields must have the s-error class on the form-group div.</span>
 								</div>
 								
 								<div class="form-group">
-									<label for="text_area">Text Area</label>
-									<textarea id="text_area" class="form-control"></textarea>
+									<label class="control-label">Text Area</label>
+									<textarea class="form-control"></textarea>
 								</div>
-								
-									
 									
 								<div class="form-group">
-									<label for="select_element">Select Element</label>
+									<label>Select Element</label>
 									<select class="form-control" name="select_element">
 										<optgroup label="Option Group 1">
 											<option value="1">Option 1</option>
