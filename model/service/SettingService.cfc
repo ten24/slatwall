@@ -181,6 +181,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
 			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
+			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
 			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
@@ -325,7 +326,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			case "globalEncryptionKeySize":
 				return ['128','256','512'];
 			case "globalEncryptionAlgorithm":
-				return ['AES','DES','DES-EDE','DESX','RC2','RC4','RC5','PBE','MD2','MD5','RIPEMD160','SHA-1','SHA-224','SHA-256','SHA-384','SHA-512','HMAC-MD5','HMAC-RIPEMD160','HMAC-SHA1','HMAC-SHA224','HMAC-SHA256','HMAC-SHA384','HMAC-SHA512','RSA','DSA','Diffie-Hellman','CFMX_COMPAT','BLOWFISH'];
+				return ['AES'];
 			case "globalEncryptionEncoding":
 				return ['Base64','Hex','UU'];
 			case "globalEncryptionService":

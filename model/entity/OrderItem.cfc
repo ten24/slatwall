@@ -371,22 +371,22 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		structDelete(variables, "orderReturn");
 	}
 	
-	// Refrenced Order Item (many-to-one)
-	public void function setRefrencedOrderItem(required any refrencedOrderItem) {
-		variables.refrencedOrderItem = arguments.refrencedOrderItem;
-		if(isNew() or !arguments.refrencedOrderItem.hasRefrencingOrderItems( this )) {
-			arrayAppend(arguments.refrencedOrderItem.getRefrencingOrderItem(), this);
+	// Referenced Order Item (many-to-one)
+	public void function setReferencedOrderItem(required any referencedOrderItem) {
+		variables.referencedOrderItem = arguments.referencedOrderItem;
+		if(isNew() or !arguments.referencedOrderItem.hasReferencingOrderItem( this )) {
+			arrayAppend(arguments.referencedOrderItem.getReferencingOrderItems(), this);
 		}
 	}
-	public void function removeRefrencedOrderItem(any refrencedOrderItem) {
-		if(!structKeyExists(arguments, "refrencedOrderItem")) {
-			arguments.refrencedOrderItem = variables.refrencedOrderItem;
+	public void function removeReferencedOrderItem(any referencedOrderItem) {
+		if(!structKeyExists(arguments, "referencedOrderItem")) {
+			arguments.referencedOrderItem = variables.referencedOrderItem;
 		}
-		var index = arrayFind(arguments.refrencedOrderItem.getRefrencingOrderItem(), this);
+		var index = arrayFind(arguments.referencedOrderItem.getReferencingOrderItems(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.refrencedOrderItem.getRefrencingOrderItem(), index);
+			arrayDeleteAt(arguments.referencedOrderItem.getReferencingOrderItems(), index);
 		}
-		structDelete(variables, "refrencedOrderItem");
+		structDelete(variables, "referencedOrderItem");
 	}
 	
 	// Applied Promotions (one-to-many)
@@ -429,12 +429,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		arguments.stockReceiverItem.removeOrderItem( this );
 	}
 	
-	// Refrencing Order Items (one-to-many)
-	public void function addRefrencingOrderItem(required any refrencingOrderItem) {
-		arguments.refrencingOrderItem.setRefrencedOrderItem( this );
+	// Referencing Order Items (one-to-many)
+	public void function addReferencingOrderItem(required any referencingOrderItem) {
+		arguments.referencingOrderItem.setReferencedOrderItem( this );
 	}
-	public void function removeRefrencingOrderItem(required any refrencingOrderItem) {
-		arguments.refrencingOrderItem.removeRefrencedOrderItem( this );
+	public void function removeReferencingOrderItem(required any referencingOrderItem) {
+		arguments.referencingOrderItem.removeReferencedOrderItem( this );
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

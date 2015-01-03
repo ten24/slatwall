@@ -46,31 +46,16 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-<cfparam name="rc.orderReturn" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+<cfcomponent extends="HibachiDAO">
+	
+	<cffunction name="updateTaskRunning">
+		<cfargument name="taskID" required="true" type="string" />
+		<cfargument name="runningFlag" required="true" type="boolean" />
+		
+		<cfset var rs = "" />
+		<cfquery name="rs">
+			UPDATE SwTask SET runningFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="#arguments.runningFlag#"> WHERE taskID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.taskID#">
+		</cfquery>
+	</cffunction>
 
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.orderReturn#" edit="#rc.edit#" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
-		
-		<hb:HibachiEntityActionBar type="detail" object="#rc.orderReturn#" edit="#rc.edit#"
-								   backaction="admin:entity.detailorder"
-								   backquerystring="orderID=#rc.orderReturn.getOrder().getOrderID()#">
-			
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrderReturn" entity="#rc.orderReturn#" processContext="receive" type="list" />
-		</hb:HibachiEntityActionBar>
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.orderReturn#" property="returnLocation" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.orderReturn#" property="fulfillmentRefundAmount" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.orderReturn#">
-			<hb:HibachiTab view="admin:entity/orderreturntabs/orderreturnitems">
-		</hb:HibachiTabGroup>
-		
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+</cfcomponent>
