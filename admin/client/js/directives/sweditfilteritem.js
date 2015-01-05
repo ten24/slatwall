@@ -51,18 +51,16 @@ angular.module('slatwalladmin')
 			    return Math.floor(days);
 			}
 			
-			scope.baseEntityAlias = scope.collectionConfig.baseEntityAlias;
-			
 			if(angular.isUndefined(scope.filterItem.breadCrumbs)){
 				scope.filterItem.breadCrumbs = [];
 				if(scope.filterItem.propertyIdentifier === ""){
 					
 					scope.filterItem.breadCrumbs = [
 					                     	{
-					                     		rbKey:$slatwall.getRBKey('entity.'+scope.baseEntityAlias.replace('_','')),
-					                     		entityAlias:scope.baseEntityAlias,
-					                     		cfc:scope.baseEntityAlias,
-					                     		propertyIdentifier:scope.baseEntityAlias
+					                     		rbKey:$slatwall.getRBKey('entity.'+scope.collectionConfig.baseEntityAlias.replace('_','')),
+					                     		entityAlias:scope.collectionConfig.baseEntityAlias,
+					                     		cfc:scope.collectionConfig.baseEntityAlias,
+					                     		propertyIdentifier:scope.collectionConfig.baseEntityAlias
 					                     	}
 					                    ];
 				}else{
@@ -70,7 +68,7 @@ angular.module('slatwalladmin')
 					entityAliasArrayFromString.pop();
 					for(var i in entityAliasArrayFromString){
 						var breadCrumb = {
-								rbKey:$slatwall.getRBKey('entity.'+scope.baseEntityAlias.replace('_','')),
+								rbKey:$slatwall.getRBKey('entity.'+scope.collectionConfig.baseEntityAlias.replace('_','')),
 								entityAlias:entityAliasArrayFromString[i],
 								cfc:entityAliasArrayFromString[i],
 								propertyIdentifier:entityAliasArrayFromString[i]
