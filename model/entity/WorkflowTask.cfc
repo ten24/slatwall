@@ -87,10 +87,10 @@ component entityname="SlatwallWorkflowTask" table="SwWorkflowTask" persistent="t
 		if(isNull(variables.taskConditionsConfig)){
 			variables.taskConditionsConfig = '';
 			var defaultTaskConditionsConfig = {};
-			defaultTaskConditionsConfig["workflowConditionGroups"] = ArrayNew(1);
+			defaultTaskConditionsConfig["filterGroups"] = ArrayNew(1);
 			var workflowConditionGroupStuct = {};
-			workflowConditionGroupStuct["workflowConditionGroup"] = ArrayNew(1);
-			ArrayAppend(defaultTaskConditionsConfig["workflowConditionGroups"],workflowConditionGroupStuct);
+			workflowConditionGroupStuct["filterGroup"] = ArrayNew(1);
+			ArrayAppend(defaultTaskConditionsConfig["filterGroups"],workflowConditionGroupStuct);
 			variables.taskConditionsConfig = serializeJson(defaultTaskConditionsConfig);
 		}
 		return variables.taskConditionsConfig;

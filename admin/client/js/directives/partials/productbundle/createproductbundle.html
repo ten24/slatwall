@@ -3,7 +3,7 @@
     <div class="navbar navbar-s-navbar-ten24 s-dialog-header">
       <span class="navbar-brand" >Create Bundle</span>
       <ul class="nav navbar-nav pull-right">
-        <li class="active"><a ng-href="#" ng-click="closePageDialog($index)"><i class="fa fa-times"></i></a></li>
+        <li class="active"><a ng-click="closePageDialog($index)"><i class="fa fa-times"></i></a></li>
       </ul>
     </div>
   </header>
@@ -38,13 +38,10 @@
 								data-editable="true"
 						></sw-property-display> 
 			        </div>
-				</sw-form>
 				
-		        <div class="col-xs-6">
-		        	<sw-form name="form.createProductType" 
-			     		data-object="product.data.productType"	
-						data-context="save"
-			     	>
+				
+			        <div class="col-xs-6">
+			        	
 				        <sw-property-display
 								data-object="product"
 								data-property="productType"
@@ -53,11 +50,6 @@
 								data-options-arguments="{property:'productType',argument1:'productBundle'}"
 								data-is-dirty="true"
 						></sw-property-display> 
-					</sw-form>
-					<sw-form name="form.createBrand" 
-			     		data-object="product.data.brand"	
-						data-context="save"
-			     	>
 				        <sw-property-display
 								data-object="product"
 								data-property="brand"
@@ -66,8 +58,8 @@
 								data-options-arguments="{property:'brand'}"
 								data-is-dirty="true"
 						></sw-property-display> 
-					</sw-form>
-				</div>
+					</div>
+				</sw-form>
 			</span>
 			
 	    </div><!-- //bundle head -->

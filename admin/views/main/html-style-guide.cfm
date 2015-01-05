@@ -324,30 +324,34 @@
 						
 						<h2>Form Elements</h2>
 						
-						<p>The Fieldset:</p>
 						<fieldset>
-							<legend>Legend</legend>
-							
-							<p>The Form:</p>
 							
 							<form>
 								
 								<div class="form-group">
-									<label for="text_field">Text Field:</label><br />
-									<input type="text" class="form-control" id="text_field" />
+									<label class="control-label">Text Field</label>
+									<input type="text" class="form-control" />
 								</div>
 							
-								
-								
-								<div class="form-group">
-									<label for="text_area">Text Area:</label><br />
-									<textarea id="text_area" class="form-control"></textarea>
+								<div class="form-group s-required">
+									<label class="control-label">Required Text Field</label>
+									<input type="text" class="form-control" />
+									<span id="helpBlock" class="help-block">Required fields must have the s-required class on the form-group div.</span>
 								</div>
 								
-									
+								<div class="form-group has-error">
+									<label class="control-label">Text Field Error</label>
+									<input type="text" class="form-control" />
+									<span id="helpBlock" class="help-block">Required fields must have the s-error class on the form-group div.</span>
+								</div>
+								
+								<div class="form-group">
+									<label class="control-label">Text Area</label>
+									<textarea class="form-control"></textarea>
+								</div>
 									
 								<div class="form-group">
-									<label for="select_element">Select Element:</label><br />
+									<label>Select Element</label>
 									<select class="form-control" name="select_element">
 										<optgroup label="Option Group 1">
 											<option value="1">Option 1</option>
@@ -365,7 +369,7 @@
 											
 											
 								<div class="form-group">
-									<label for="radio_buttons">Radio Buttons:</label><br />
+									<label for="radio_buttons">Radio Buttons:</label>
 									<div class="radio">
 										<input type="radio" name="radio" id="radio1" value="option1">
 										<label for="radio1">
@@ -388,7 +392,7 @@
 											
 											
 								<div class="form-group">
-									<label for="checkboxes">Checkboxes:</label><br />
+									<label for="checkboxes">Checkboxes:</label>
 									<div class="s-checkbox">
 										<input type="checkbox" id="checkbox1">
 										<label for="checkbox1"> Checkbox One</label>
@@ -404,12 +408,12 @@
 								</div>
 								
 								<div class="form-group">
-									<label for="password">Password:</label><br />
+									<label for="password">Password:</label>
 									<input type="password" class="password form-control" name="password" />
 								</div>
 								
 								<div class="form-group">
-									<label for="file">File Input:</label><br />
+									<label for="file">File Input:</label>
 									<input type="file" class="file" name="file" />
 								</div>
 											
@@ -417,47 +421,47 @@
 								<h3>HTML5-specific Form Elements</h3>
 								
 								<div class="form-group">
-									<label for="email">Email:</label><br />
+									<label for="email">Email:</label>
 									<input type="email" class="form-control">
 								</div>
 								
 								<div class="form-group">
-									<label for="url">URL:</label><br />
+									<label for="url">URL:</label>
 									<input type="url" class="form-control">
 								</div>
 								
 								<div class="form-group">
-									<label for="tel">Telephone:</label><br />
+									<label for="tel">Telephone:</label>
 									<input type="tel" class="form-control">
 								</div>
 								
 								<div class="form-group">
-									<label for="number">Number:</label><br />
+									<label for="number">Number:</label>
 									<input type="number" min="0" max="10" step="1" value="5" class="form-control">
 								</div>
 								
 								<div class="form-group">
-									<label for="search">Search:</label><br />
+									<label for="search">Search:</label>
 									<input type="search" class="form-control">
 								</div>
 								
 								<div class="form-group">
-									<label for="date">Date:</label><br />
+									<label for="date">Date:</label>
 									<input type="date" class="form-control">
 								</div>
 								
 								<div class="form-group">
-									<label for="time">Time:</label><br />
+									<label for="time">Time:</label>
 									<input type="time" class="form-control">
 								</div>
 								
 								<div class="form-group">
-									<label for="color">Color:</label><br />
+									<label for="color">Color:</label>
 									<input type="color">
 								</div>
 								
 								<div class="form-group">
-									<label for="datalist">Datalist:</label><br />
+									<label for="datalist">Datalist:</label>
 									<input list="browsers" name="browser" type="datalist" class="form-control">
 									<datalist id="browsers">
 										<option value="Internet Explorer">
@@ -468,7 +472,7 @@
 									</datalist>
 								</div>		
 								<div class="form-group">
-									<label for="range">Range:</label><br />
+									<label for="range">Range:</label>
 									<input type="range" name="points" min="1" max="10">
 								</div>
 													
