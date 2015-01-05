@@ -180,7 +180,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}else{
 			data = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#').invokeMethod('get#arguments.rc.property#Options',{1=arguments.rc.argument1});
 		}
-		
+		data = getService('HibachiUtilityService').arrayOfStructsSort(data,'name');
 		
 		arguments.rc.apiResponse.content['data'] = data;
 	}
