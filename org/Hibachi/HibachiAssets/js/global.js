@@ -137,10 +137,12 @@ function initUIElements( scopeSelector ) {
 
 
 	});
-
+	
+	
 	// Form Empty value clear (IMPORTANT!!! KEEP THIS ABOVE THE VALIDATION ASIGNMENT)
 	jQuery.each(jQuery( scopeSelector ).find(jQuery('form')), function(index, value) {
 		jQuery(value).on('submit', function(e){
+			
 			jQuery.each(jQuery( this ).find(jQuery('input[data-emptyvalue]')), function(i, v){
 				if(jQuery(v).val() == jQuery(v).data('emptyvalue')) {
 					jQuery(v).val('');
@@ -378,11 +380,16 @@ function setupEventHandlers() {
 				});
 
 	});
-
-	// Listing Page - Searching
+	
 	jQuery('body').on('submit', '.action-bar-search', function(e){
 		e.preventDefault();
 	});
+
+	// Listing Page - Searching
+	jQuery('body').on('submit',function(e){
+		jQuery('ng-form').remove();
+	});
+	
 	jQuery('body').on('keyup', '.action-bar-search input', function(e){
 		var data = {};
 		data[ 'keywords' ] = jQuery(this).val();
