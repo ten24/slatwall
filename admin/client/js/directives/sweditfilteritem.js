@@ -51,6 +51,15 @@ angular.module('slatwalladmin')
 			    return Math.floor(days);
 			}
 			
+			scope.rbkeys = {
+				'saveAndAdd' 	: $.slatwall.rbKey('admin.define.collection.editfilteritem.saveandaddanotherfilter'),
+				'saveAndFinish' : $.slatwall.rbKey('admin.define.collection.editfilteritem.saveandfinish'),
+				'or'		 	: $.slatwall.rbKey('admin.define.collection.editfilteritem.or'),
+				'criteria'		: $.slatwall.rbKey('admin.define.collection.editfilteritem.criteria'),
+				'selectFrom'	: $.slatwall.rbKey('admin.define.collection.editfilteritem.selectfrom'),
+				'defineFilter'	: $.slatwall.rbKey('admin.define.collection.editfilteritem.definefilter')
+			}
+			
 			scope.baseEntityAlias = scope.collectionConfig.baseEntityAlias;
 			
 			if(angular.isUndefined(scope.filterItem.breadCrumbs)){
