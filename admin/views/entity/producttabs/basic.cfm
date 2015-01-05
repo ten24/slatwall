@@ -20,6 +20,7 @@
 		<hb:HibachiPropertyList divClass="col-md-6">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="brand" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="productType" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.product#" property="calculatedSalePrice" edit="#rc.edit#">
 			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('define.qats.full')#" value="#rc.product.getQuantity('QATS')#">
 			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('define.qiats.full')#" value="#rc.product.getQuantity('QIATS')#">
 		</hb:HibachiPropertyList>
