@@ -54,7 +54,7 @@ Notes:
 <cfparam name="rc.processObject" type="any" />
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.subscriptionUsage#" edit="#rc.edit#" sRedirectAction="admin:entity.detailSubscriptionUsage">
+	<hb:HibachiEntityProcessForm entity="#rc.subscriptionUsage#" edit="#rc.edit#" sRedirectAction="admin:entity.detailSubscriptionUsage" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 		
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.subscriptionUsage#">
 		</hb:HibachiEntityActionBar>
