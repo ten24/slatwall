@@ -184,6 +184,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalWeightUnitCode = {fieldType="select",defaultValue="lb"},
 			globalAdminAutoLogoutMinutes = {fieldtype="text", defaultValue=15, validate={dataType="numeric",required=true,maxValue=15}},
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
+			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
 			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},

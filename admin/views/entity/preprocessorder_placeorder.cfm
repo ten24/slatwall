@@ -56,7 +56,7 @@ Notes:
 <cfset rc.placeOrderNeedsFulifllmentCharge = false />
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#">
+	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 		
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
 		</hb:HibachiEntityActionBar>

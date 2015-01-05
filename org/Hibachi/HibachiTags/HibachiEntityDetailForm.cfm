@@ -16,8 +16,15 @@
 	<cfparam name="attributes.fRenderItem" type="string" default="#request.context.entityActionDetails.fRenderItem#">
 	<cfparam name="attributes.sRedirectQS" type="string" default="#request.context.entityActionDetails.sRedirectQS#">
 	<cfparam name="attributes.fRedirectQS" type="string" default="#request.context.entityActionDetails.fRedirectQS#">
+	<cfparam name="attributes.forceSSLFlag" type="boolean" default="false" />
 	
-	<cfset formAction = "?s=1" />
+	<cfset formAction ="" />
+	
+	<cfif attributes.forceSSLFlag AND (findNoCase("off", CGI.HTTPS) OR NOT CGI.SERVER_PORT_SECURE)>
+		<cfset formAction &= "https://#cgi.SERVER_NAME##attributes.hibachiScope.getApplicationValue('baseURL')#/" >
+	</cfif>
+	
+	<cfset formAction &= "?s=1" />
 	
 	<cfif len(attributes.saveActionQueryString)>
 		<cfset formAction &= "&#attributes.saveActionQueryString#" />

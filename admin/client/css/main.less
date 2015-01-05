@@ -23,7 +23,7 @@
 @brand-ten24:             #F58620; //Orange
 @brand-success:           #5CB85C; //Green
 @brand-warning:           #F0AD4E; //Yellow
-@brand-danger:            #D9534F; //Red
+@brand-danger:            #A94442; //Red
 @brand-info:              #5BC0DE; //Light Blue
 @white:                   #ffffff; //White
 @black:                   #000000; //Black
@@ -559,6 +559,9 @@ table tr th .glyphicon {vertical-align:text-top;}
 .dropdown-menu .search-filter, .dropdown-menu .range-filter {margin-right:15px;margin-left:15px;margin-bottom:5px;}
 
 .form-group {margin-bottom:5px;display: inline-block;width: 100%;}
+input:focus, textarea:focus, select:focus {-webkit-box-shadow: none !important;box-shadow: none !important;}
+.form-group.s-required label:after {font-family: fontAwesome;content: "\f069";font-size: 5px;top: -6px;position: relative;padding-left: 2px;}
+.form-group.s-required input:focus {border-color: @brand-danger;-webkit-box-shadow: none;box-shadow: none;}
 
 .modal-header {padding: 15px;}
 .modal-footer {padding: 8px  15px;}
@@ -860,7 +863,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-bundle-group .s-bundle-group-item {background-color: @white;border: 1px solid @black-10;margin-bottom:4px;border-radius: 3px;}
 .s-bundle-group .s-bundle-group-item h2 {font-size: 16px;border-bottom: 1px solid @black-20;padding-bottom: 4px;margin-top:0px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-title a i.fa-pencil {background-color: #606060;color: @white;padding: 13px;}
-.s-bundle-group .s-bundle-group-item .s-bundle-group-title .s-bundle-group-title-text {margin-left:10px;display: inline-block;position: relative;top: -5px;}
+.s-bundle-group .s-bundle-group-item .s-bundle-group-title .s-bundle-group-title-text {margin-left:10px;display: inline-block;position: relative;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-title .s-bundle-group-title-edit {margin-left:10px;display:none;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-range {text-align:right;display:inline-block;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-range ul {display:inline-block;border-right:1px solid @black-20;height:32px;padding: 8px;}

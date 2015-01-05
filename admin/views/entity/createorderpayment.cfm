@@ -65,7 +65,7 @@ Notes:
 </cfsilent>
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.orderPayment#" edit="#rc.edit#">
+	<hb:HibachiEntityDetailForm object="#rc.orderPayment#" edit="#rc.edit#" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 		
 		<input type="hidden" name="order.orderID" value="#rc.order.getOrderID()#" />
 		<input type="hidden" name="paymentMethod.paymentMethodID" value="#rc.paymentMethod.getPaymentMethodID()#" />
