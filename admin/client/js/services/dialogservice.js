@@ -1,12 +1,14 @@
 'use strict';
 angular.module('slatwalladmin').factory('dialogService', [
+	'$rootScope',
 	'partialsPath',
 	function(
+		$rootScope,
 		partialsPath
 	){
 		var _pageDialogs = [];
 		var _clickOutsideDialogs = {};
-		
+	
 		var dialogService = {
 			
 			addPageDialog: function( name ){
@@ -23,12 +25,14 @@ angular.module('slatwalladmin').factory('dialogService', [
 			getPageDialogs: function(){
 				return _pageDialogs;
 			},
-						
+			
+
+			
 			closeDialogClickedOutside: function( event ) {
 				for(var key in _clickOutsideDialogs) {
-					if(!event.target.parentElement.offsetParent.idList.contains( key )){
+					if(!event.target.parentElement.offsetParent.classList.contains( key )){						
 						_clickOutsideDialogs[ key ]();
-						delete _clickOutsideDialogs[domID];
+						delete _clickOutsideDialogs[ key ];
 					}
 				}
 			},

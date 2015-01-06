@@ -51,7 +51,12 @@ angular.module('slatwalladmin')
 					productBundleGroupType.data.typeDescription = '';
 					productBundleGroupType.data.typeNameCode='';
 					angular.extend($scope.productBundleGroup.data.productBundleGroupType,productBundleGroupType);
-
+					
+					dialogService.addDialogToCloseOnClickOutside('s-search-filter', function(){
+						$scope.productBundleGroupTypes.$$adding = false;
+						$scope.$apply();
+					});
+					
 				};
 				
 				$scope.showAddProductBundleGroupTypeBtn = false;
