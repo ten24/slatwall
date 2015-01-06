@@ -44,7 +44,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	public any function getExistingCollectionsByBaseEntity(required struct rc){
-		var collectionEntity = getCollectionService().getTransientCollectionByEntityName('collection');
+		var currentPage = 1;
+			if(structKeyExists(arguments.rc,'P:Current')){
+				currentPage = arguments.rc['P:Current'];
+			}
+			var pageShow = 10;
+			if(structKeyExists(arguments.rc,'P:Show')){
+				pageShow = arguments.rc['P:Show'];
+			}
+			
+			
+			var collectionOptions = {
+				allRecords=true,
+				defaultColumns=false
+			};
+		
+		var collectionEntity = getCollectionService().getTransientCollectionByEntityName('collection',collectionOptions);
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		collectionConfigStruct.columns = [
 			{
