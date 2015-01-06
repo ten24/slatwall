@@ -36,7 +36,9 @@
   <!---Nested Filter Box --->
   <div class="col-xs-12" ng-class="{collapse:filterGroupItem.$$isClosed}">
     <div class="row">
+    	<span ng-if="1===0">
       <span sw-filter-groups 
+      		
       		data-collection-config="collectionConfig"
       		data-filter-group="filterGroupItem"
 		    data-filter-group-item="filterGroupItem.filterGroup"
@@ -44,6 +46,7 @@
 		    data-save-collection="saveCollection()"
       >
 
+      </span>
       </span>
     </div>
   </div>

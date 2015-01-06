@@ -110,7 +110,7 @@ component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" p
     		var defaultSkuCollectionConfig = {};
     		defaultSkuCollectionConfig["baseEntityName"]='Sku';
 			defaultSkuCollectionConfig["baseEntityAlias"]='_sku';
-			defaultSkuCollectionConfig["filterGroups"]=[{"filterGroup":[]}];
+			defaultSkuCollectionConfig["filterGroups"]=[{'filterGroup':[]}];
 			defaultSkuCollectionConfig["columns"]=[];
 			var defaultColumnsArray = ['skuID','activeFlag','publishedFlag','skuName','skuDescription','skuCode','listPrice','price','renewalPrice'];
 			

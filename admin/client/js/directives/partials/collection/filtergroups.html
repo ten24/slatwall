@@ -1,9 +1,8 @@
-<ul class="col-xs-12 list-unstyled s-no-paddings" >
+<ul class="col-xs-12 list-unstyled s-no-paddings" ng-if="filterPropertiesList && saveCollection && collectionConfig">
 	<span ng-repeat="filterGroup in filterGroupItem">
 		<!-- figure out if item is filterItem or filterGroup-->
-		<span ng-switch on="filterGroup.hasOwnProperty('filterGroup')" >
 			<!-- filter Item -->
-			<span 	ng-switch-when="false" 
+			<span 	ng-if="!filterGroup.hasOwnProperty('filterGroup')" 
 					sw-filter-item 
 					data-collection-config="collectionConfig"
 					data-filter-item="filterGroup" 
@@ -14,10 +13,10 @@
 					>
 			</span>
 			<!-- filter Group Item -->
-			<span 	ng-switch-when="true" 
+			<span 	ng-if="filterGroup.filterGroup"
 					sw-filter-group-item 
 					data-collection-config="collectionConfig"
-					data-filter-group-item="filterGroup",
+					data-filter-group-item="filterGroup"
 					data-sibling-items="filterGroupItem"
 					data-filter-properties-list="filterPropertiesList"
 					data-filter-group-item-index="$index"

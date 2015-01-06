@@ -1,16 +1,10 @@
 'use strict';
 angular.module('slatwalladmin')
 .directive('swFilterGroupItem', [
-	'$http',
-	'$compile',
-	'$templateCache',
 	'$log',
 	'collectionService',
 	'collectionPartialsPath',
 	function(
-		$http,
-		$compile,
-		$templateCache,
 		$log,
 		collectionService,
 		collectionPartialsPath
@@ -26,14 +20,8 @@ angular.module('slatwalladmin')
 				filterGroupItemIndex:"=",
 				saveCollection:"&"
 			},
+			templateUrl:collectionPartialsPath+"filtergroupitem.html",
 			link: function(scope, element,attrs,filterGroupsController){
-				var Partial = collectionPartialsPath+"filtergroupitem.html";
-				var templateLoader = $http.get(Partial,{cache:$templateCache});
-				var promise = templateLoader.success(function(html){
-					element.html(html);
-				}).then(function(response){
-					element.replaceWith($compile(element.html())(scope));
-				});
 				
 				collectionService.incrementFilterCount(1);
 				
