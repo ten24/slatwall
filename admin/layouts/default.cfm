@@ -434,7 +434,7 @@ Notes:
 			    $rootScope.closePageDialog = function( index ) {
 					dialogService.removePageDialog( index );
 			    };
-				$rootScope.clickMonitor = $(document).on('click', function(event){
+				$rootScope.clickMonitor = $document.on('click', function(event){
 					dialogService.closeDialogClickedOutside( event );
 				});
 
