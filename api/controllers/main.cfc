@@ -44,7 +44,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	public any function getExistingCollectionsByBaseEntity(required struct rc){
-		var collectionEntity = getCollectionService().getTransientCollectionByEntityName('collection');
+		var currentPage = 1;
+			if(structKeyExists(arguments.rc,'P:Current')){
+				currentPage = arguments.rc['P:Current'];
+			}
+			var pageShow = 10;
+			if(structKeyExists(arguments.rc,'P:Show')){
+				pageShow = arguments.rc['P:Show'];
+			}
+			
+			
+			var collectionOptions = {
+				allRecords=true,
+				defaultColumns=false
+			};
+		
+		var collectionEntity = getCollectionService().getTransientCollectionByEntityName('collection',collectionOptions);
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		collectionConfigStruct.columns = [
 			{
@@ -149,6 +164,12 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 	
 	public any function getResourceBundle(required struct rc){
+		var dtExpires = (Now() + 60);
+ 
+ 		var strExpires = GetHTTPTimeString( dtExpires );
+ 
+		getPageContext().getResponse().setHeader('expires',strExpires);
+		
 		var resourceBundle = getService('HibachiRBService').getResourceBundle(arguments.rc.locale);
 		data = {};
 		
@@ -174,7 +195,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}else{
 			data = getService('hibachiService').invokeMethod('new#arguments.rc.entityName#').invokeMethod('get#arguments.rc.property#Options',{1=arguments.rc.argument1});
 		}
-		
+		data = getService('HibachiUtilityService').arrayOfStructsSort(data,'name');
 		
 		arguments.rc.apiResponse.content['data'] = data;
 	}

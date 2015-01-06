@@ -671,6 +671,34 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
+	public void function getHQLTest_list(){
+		
+		
+		
+		var collectionEntityData = {
+			collectionid = '12',
+			collectionCode = 'BestAccounts',
+			baseEntityName = 'Sku',
+			collectionConfig = '
+				{"baseEntityName":"SlatwallAccount","baseEntityAlias":"_account","columns":[{"isExportable":true,"propertyIdentifier":"_account.accountID","ormtype":"id","isVisible":true,"isSearchable":true,"title":"accountID","sorting":{"active":true,"sortOrder":"asc"}},{"isExportable":true,"propertyIdentifier":"_account.superUserFlag","ormtype":"boolean","isVisible":true,"isSearchable":true,"title":"Super User","sorting":{"active":true,"sortOrder":"asc"}},{"isExportable":true,"propertyIdentifier":"_account.firstName","ormtype":"string","isVisible":true,"isSearchable":true,"title":"First Name","sorting":{"active":true,"sortOrder":"asc"}},{"isExportable":true,"propertyIdentifier":"_account.lastName","ormtype":"string","isVisible":true,"isSearchable":true,"title":"Last Name","sorting":{"active":true,"sortOrder":"asc"}},{"isExportable":true,"propertyIdentifier":"_account.company","ormtype":"string","isVisible":true,"isSearchable":true,"title":"Company","sorting":{"active":true,"sortOrder":"asc"}},{"isExportable":true,"propertyIdentifier":"_account.loginLockExpiresDateTime","ormtype":"timestamp","isVisible":true,"isSearchable":true,"title":"Account Locked","sorting":{"active":true,"sortOrder":"asc"}},{"isExportable":true,"propertyIdentifier":"_account.failedLoginAttemptCount","ormtype":"integer","isVisible":true,"isSearchable":true,"title":"Failed Login Attempts","sorting":{"active":true,"sortOrder":"asc"}},{"isExportable":true,"propertyIdentifier":"_account.cmsAccountID","ormtype":"string","isVisible":true,"isSearchable":true,"title":"CMS Account ID","sorting":{"active":true,"sortOrder":"asc"}},{"isExportable":true,"propertyIdentifier":"_account.remoteEmployeeID","ormtype":"string","isVisible":true,"isSearchable":true,"title":"Remote Employee ID","sorting":{"active":true,"sortOrder":"asc"}},{"isExportable":true,"propertyIdentifier":"_account.remoteCustomerID","ormtype":"string","isVisible":true,"isSearchable":true,"title":"Remote Customer ID","sorting":{"active":true,"sortOrder":"asc"}},{"isExportable":true,"propertyIdentifier":"_account.remoteContactID","ormtype":"string","isVisible":true,"isSearchable":true,"title":"Remote Contact ID","sorting":{"active":true,"sortOrder":"asc"}},{"isExportable":true,"propertyIdentifier":"_account.createdByAccountID","ormtype":"string","isVisible":true,"isSearchable":true,"title":"Created By AccountID","sorting":{"active":true,"sortOrder":"asc"}},{"isExportable":true,"propertyIdentifier":"_account.modifiedByAccountID","ormtype":"string","isVisible":true,"isSearchable":true,"title":"Modified By AccountID","sorting":{"active":true,"sortOrder":"asc"}},{"title":"Created Date Time","propertyIdentifier":"_account.createdDateTime","isVisible":true,"sorting":{"active":true,"sortOrder":"asc"}}],
+				"filterGroups":[
+					{"filterGroup":[
+						{
+							"propertyIdentifier":"_account.firstName",
+							"comparisonOperator":"in",
+							"value":"Ryan,TestRunnerAccount"
+						}
+					]}
+				]}
+			'
+		};
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		request.debug(collectionEntity.getPageRecords());
+		
+		
+		
+	}
+	
 	public void function getHQLTest_emptyFilterGroup(){
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',

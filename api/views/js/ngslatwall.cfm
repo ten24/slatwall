@@ -773,8 +773,7 @@ Notes:
 									
 					    			var parentEntityInstance = entityInstance.data[parentObject.name]; 
 					    			var parentEntityID = parentEntityInstance.$$getID();
-					    			if(parentEntityID === ''){
-					    				console.log(parentEntityInstance);
+					    			if(parentEntityID === '' && parentEntityInstance.form){
 					    				objectLevel = getObjectSaveLevel(parentEntityInstance);
 					    			}
 				    			}
