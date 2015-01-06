@@ -31,6 +31,7 @@ angular.module('slatwalladmin')
 				$scope.productBundleGroupTypes.value = [];
 				$scope.productBundleGroupTypes.$$adding = false;
 				$scope.productBundleGroupType = {};
+				$scope.showAddProductBundleGroupTypeBtn = false;
 				if(angular.isUndefined($scope.productBundleGroup.data.productBundleGroupType)){
 					var productBundleGroupType = $slatwall.newType();
 					var parentType = $slatwall.newType();
@@ -54,12 +55,12 @@ angular.module('slatwalladmin')
 					
 					dialogService.addDialogToCloseOnClickOutside('s-search-filter', function(){
 						$scope.productBundleGroupTypes.$$adding = false;
+						$scope.showAddProductBundleGroupTypeBtn = false;
+						$scope.productBundleGroup.data.productBundleGroupType.data.typeName = '';
 						$scope.$apply();
 					});
 					
 				};
-				
-				$scope.showAddProductBundleGroupTypeBtn = false;
 				
 				$scope.productBundleGroupTypes.getTypesByKeyword=function(keyword){
 					$log.debug('getTypesByKeyword');
