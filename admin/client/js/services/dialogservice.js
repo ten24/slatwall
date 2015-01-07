@@ -37,7 +37,7 @@ angular.module('slatwalladmin').factory('dialogService', [
 							needsToBeClosedCtr--;
 						}
 					}
-					console.log('running');
+					
 					if(needsToBeClosedCtr === 0){
 						for(var key in _clickOutsideDialogs) {
 							_clickOutsideDialogs[ key ]();
