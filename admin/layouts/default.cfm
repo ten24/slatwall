@@ -426,7 +426,7 @@ Notes:
 					templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
 				});
 				
-			}]).run(['$rootScope','$filter','$slatwall','dialogService', function($rootScope,$filter, $slatwall ,dialogService) {
+			}]).run(['$rootScope','$document','$filter','$slatwall','dialogService', function($rootScope, $document, $filter, $slatwall ,dialogService) {
 			    $rootScope.openPageDialog = function( partial ) {
 			    	dialogService.addPageDialog( partial );
 			    };
@@ -434,6 +434,10 @@ Notes:
 			    $rootScope.closePageDialog = function( index ) {
 					dialogService.removePageDialog( index );
 			    };
+				$rootScope.clickMonitor = $document.on('click', function(event){
+					dialogService.closeDialogClickedOutside( event );
+				});
+
 			}]).filter('entityRBKey',['$slatwall', function($slatwall) {
 				
 			  	return function(text){
