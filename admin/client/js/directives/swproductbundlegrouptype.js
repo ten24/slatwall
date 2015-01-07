@@ -53,7 +53,9 @@ angular.module('slatwalladmin')
 					productBundleGroupType.data.typeNameCode='';
 					angular.extend($scope.productBundleGroup.data.productBundleGroupType,productBundleGroupType);
 					
-					dialogService.addDialogToCloseOnClickOutside('s-search-filter', function(){
+					var arrayOfClasses = ['s-search-filter','s-form-input'];
+					
+					dialogService.addDialogToCloseOnClickOutside(arrayOfClasses, function(){
 						$scope.productBundleGroupTypes.$$adding = false;
 						$scope.showAddProductBundleGroupTypeBtn = false;
 						$scope.productBundleGroup.data.productBundleGroupType.data.typeName = '';

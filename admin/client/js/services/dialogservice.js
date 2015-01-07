@@ -29,21 +29,28 @@ angular.module('slatwalladmin').factory('dialogService', [
 
 			
 			closeDialogClickedOutside: function( event ) {
+				var needsToBeClosedCtr = Object.keys(_clickOutsideDialogs).length;
 				for(var key in _clickOutsideDialogs) {
+					//click event.target not in dialog
 					if(!event.target.parentElement.offsetParent.classList.contains( key )){						
+						needsToBeClosedCtr--;
+					}
+				}
+				
+				if(needsToBeClosedCtr === 0){
+					for(var key in _clickOutsideDialogs) {
 						_clickOutsideDialogs[ key ]();
 						delete _clickOutsideDialogs[ key ];
 					}
 				}
 			},
 			
-			addDialogToCloseOnClickOutside: function( domID, callbackFunction ) {
-				_clickOutsideDialogs[ domID ] = callbackFunction;
-			},
+			addDialogToCloseOnClickOutside: function( classArray, callbackFunction ) {
+				for(var i in classArray){
+					_clickOutsideDialogs[ classArray[i] ] = callbackFunction;
+				}
+			}
 			
-			removeDialogToCloseOnClickOutside: function( domID ) {
-				delete _clickOutsideDialogs[domID];
- 			}
 		};
 		
 		return dialogService;
