@@ -444,6 +444,14 @@ Notes:
 						return text;
 					}
 				};
+			}]).filter('rbKey',['$slatwall', function($slatwall) {
+				
+			  	return function(text){
+					if(angular.isDefined(text) && angular.isString(text)){
+						text = $slatwall.getRBKey(text);
+						return text;
+					}
+				};
 			}]);
 			
 		</script>
