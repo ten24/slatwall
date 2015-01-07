@@ -29,20 +29,23 @@ angular.module('slatwalladmin').factory('dialogService', [
 
 			
 			closeDialogClickedOutside: function( event ) {
-				var needsToBeClosedCtr = Object.keys(_clickOutsideDialogs).length;
-				for(var key in _clickOutsideDialogs) {
-					//click event.target not in dialog
-					if(!event.target.parentElement.offsetParent.classList.contains( key )){						
-						needsToBeClosedCtr--;
+				if(Object.keys(_clickOutsideDialogs).length){
+					var needsToBeClosedCtr = Object.keys(_clickOutsideDialogs).length;
+					for(var key in _clickOutsideDialogs) {
+						//click event.target not in dialog
+						if(!event.target.parentElement.offsetParent.classList.contains( key )){						
+							needsToBeClosedCtr--;
+						}
 					}
+					console.log('running');
+					if(needsToBeClosedCtr === 0){
+						for(var key in _clickOutsideDialogs) {
+							_clickOutsideDialogs[ key ]();
+							delete _clickOutsideDialogs[ key ];
+						}
+					}	
 				}
 				
-				if(needsToBeClosedCtr === 0){
-					for(var key in _clickOutsideDialogs) {
-						_clickOutsideDialogs[ key ]();
-						delete _clickOutsideDialogs[ key ];
-					}
-				}
 			},
 			
 			addDialogToCloseOnClickOutside: function( classArray, callbackFunction ) {
