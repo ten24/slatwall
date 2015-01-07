@@ -49,7 +49,7 @@ angular.module('slatwalladmin')
 			    
 			    scope.manyToManyOptions = getManyToManyOptions();
 				scope.oneToManyOptions = getOneToManyOptions();
-				var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
+				var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(scope.selectedFilterProperty.cfc);
 				existingCollectionsPromise.then(function(value){
 					scope.collectionOptions = value.data;
 					if(angular.isDefined(scope.filterItem.collectionID)){
@@ -74,7 +74,8 @@ angular.module('slatwalladmin')
 					var breadCrumb = {
 							entityAlias:scope.selectedFilterProperty.name,
 							cfc:scope.selectedFilterProperty.cfc,
-							propertyIdentifier:scope.selectedFilterProperty.propertyIdentifier
+							propertyIdentifier:scope.selectedFilterProperty.propertyIdentifier,
+							rbKey:$slatwall.getRBKey('entity.'+scope.selectedFilterProperty.cfc.replace('_',''))
 					};
 					scope.filterItem.breadCrumbs.push(breadCrumb);
 					

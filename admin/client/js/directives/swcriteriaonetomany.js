@@ -48,9 +48,12 @@ angular.module('slatwalladmin')
 			        ];
 			    	return oneToManyOptions;
 			    };
+			    
+			    console.log('onetomany');
+			    console.log(scope.selectedFilterProperty)
 				
 				scope.oneToManyOptions = getOneToManyOptions();
-				var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(selectedFilterProperty.cfc);
+				var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(scope.selectedFilterProperty.cfc);
 				existingCollectionsPromise.then(function(value){
 					scope.collectionOptions = value.data;
 					if(angular.isDefined(scope.filterItem.collectionID)){
@@ -66,6 +69,7 @@ angular.module('slatwalladmin')
 						}
 					}
 				});
+				
 				scope.selectedCriteriaChanged = function(selectedCriteria){
 					$log.debug(selectedCriteria);
 					//update breadcrumbs as array of filterpropertylist keys
@@ -74,10 +78,14 @@ angular.module('slatwalladmin')
 					var breadCrumb = {
 							entityAlias:scope.selectedFilterProperty.name,
 							cfc:scope.selectedFilterProperty.cfc,
-							propertyIdentifier:scope.selectedFilterProperty.propertyIdentifier
+							propertyIdentifier:scope.selectedFilterProperty.propertyIdentifier,
+							rbKey:$slatwall.getRBKey('entity.'+scope.selectedFilterProperty.cfc.replace('_','')),
+							filterProperty:scope.selectedFilterProperty
 					};
 					scope.filterItem.breadCrumbs.push(breadCrumb);
+					console.log('criteriaChanged');
 					console.log(selectedFilterPropertyChanged);
+					console.log(scope.selectedFilterProperty);
 					//populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
 					scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
 					//update criteria to display the condition of the new critera we have selected

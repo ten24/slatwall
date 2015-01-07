@@ -434,6 +434,8 @@ Notes:
 			    $rootScope.closePageDialog = function( index ) {
 					dialogService.removePageDialog( index );
 			    };
+			    
+			    $rootScope.getRBKey = $slatwall.getRBKey;
 			}]).filter('entityRBKey',['$slatwall', function($slatwall) {
 				
 			  	return function(text){
