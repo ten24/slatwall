@@ -23,7 +23,7 @@ function(
 	
 	var propertyCasedEntityName = $scope.entityName.charAt(0).toUpperCase() + $scope.entityName.slice(1);
 	
-	$scope.getRBKey = $slatwall.getRBKey;
+	
 	$scope.tabPartialPath = partialsPath+'entity/';
 	
 	$scope.getEntity = function(){

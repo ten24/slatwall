@@ -654,9 +654,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var predicate = '';
 		if(arguments.filter.comparisonOperator eq 'between' || arguments.filter.comparisonOperator eq 'not between'){
 			if(listLen(arguments.filter.value,'-') > 1){
-				var fromValue = listFirst(arguments.filter.value,'-');
-				var toValue = listLast(arguments.filter.value,'-');
-				
+				//convert unix timestamp
+				var fromDate = DateAdd("s", listFirst(arguments.filter.value,'-')/1000, "January 1 1970 00:00:00");
+				var fromValue = dateFormat(fromDate,"yyyy-mm-dd") & " " & timeFormat(fromDate, "HH:MM:SS");
+				var toDate = DateAdd("s", listLast(arguments.filter.value,'-')/1000, "January 1 1970 00:00:00");
+				var toValue = dateFormat(toDate,"yyyy-mm-dd") & " " & timeFormat(toDate, "HH:MM:SS");
+				writeDump(fromValue);
+				writeDump(toValue);
 				var fromParamID = getParamID();
 				addHQLParam(fromParamID,fromValue);
 				var toParamID = getParamID();

@@ -23,7 +23,7 @@ angular.module('slatwalladmin')
 	){
 	return {
 		require:'^swFilterGroups',
-		restrict: 'A',
+		restrict: 'E',
 		scope:{
 			collectionConfig:"=",
 			filterItem:"=",
@@ -140,14 +140,25 @@ angular.module('slatwalladmin')
 				//splice out array items above index
 				var removeCount = scope.filterItem.breadCrumbs.length - 1 - breadCrumbIndex;
 				scope.filterItem.breadCrumbs.splice(breadCrumbIndex + 1,removeCount);
+				$log.debug('selectBreadCrumb');
+				$log.debug(scope.selectedFilterProperty);
+				//scope.selectedFilterPropertyChanged(scope.filterItem.breadCrumbs[scope.filterItem.breadCrumbs.length -1].filterProperty);
 				scope.selectedFilterPropertyChanged(null);
-				
 			};
 			
 			scope.selectedFilterPropertyChanged = function(selectedFilterProperty){
 				$log.debug('selectedFilterProperty');
 				$log.debug(selectedFilterProperty);
 				
+				
+				if(angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType)){
+					delete scope.selectedFilterProperty.selectedCriteriaType;
+				}
+				if(angular.isDefined(scope.filterItem.value)){
+					delete scope.filterItem.value;
+				}
+				
+				scope.selectedFilterProperty.showCriteriaValue = false;
 				scope.selectedFilterProperty = selectedFilterProperty;
 			};
 			
