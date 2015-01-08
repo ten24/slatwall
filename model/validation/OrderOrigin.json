@@ -1,5 +1,6 @@
 {
 	"properties":{
-		"orderOriginName":					[{"contexts":"save","required":true}]
+		"orderOriginName":					[{"contexts":"save","required":true}],
+		"orders":							[{"contexts":"delete","maxCollection":0}]
 	}
 }
