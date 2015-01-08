@@ -434,12 +434,23 @@ Notes:
 			    $rootScope.closePageDialog = function( index ) {
 					dialogService.removePageDialog( index );
 			    };
+
+				$rootScope.getRBKey = $slatwall.getRBKey;
+
 			}]).filter('entityRBKey',['$slatwall', function($slatwall) {
 				
 			  	return function(text){
 					if(angular.isDefined(text) && angular.isString(text)){
 						text = text.replace('_', '').toLowerCase();
 						text = $slatwall.getRBKey('entity.'+text);
+						return text;
+					}
+				};
+			}]).filter('rbKey',['$slatwall', function($slatwall) {
+				
+			  	return function(text){
+					if(angular.isDefined(text) && angular.isString(text)){
+						text = $slatwall.getRBKey(text);
 						return text;
 					}
 				};

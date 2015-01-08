@@ -20,7 +20,7 @@ angular.module('slatwalladmin').controller('pageDialog', [
 		//get url param to retrieve collection listing
 		$scope.pageDialogs = dialogService.getPageDialogs();
 		$scope.scrollToTopOfDialog = function(){
-			$location.hash('topOfPageDialog');
+			$location.hash('/#topOfPageDialog');
 			$anchorScroll();
 		};
 	

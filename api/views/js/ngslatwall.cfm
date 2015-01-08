@@ -768,12 +768,11 @@ Notes:
 				    		<!---check we have an entityID and whether a parent object exists --->
 				    		angular.forEach(entityInstance.parents,function(parentObject){
 				    			if(angular.isDefined(entityInstance.data[parentObject.name]) && entityInstance.data[parentObject.name].$$getID() === '' && (angular.isUndefined(entityID) || !entityID.trim().length)){
-					    			
 					    			<!--- if id is undefined then set the object save level --->
 									
 					    			var parentEntityInstance = entityInstance.data[parentObject.name]; 
 					    			var parentEntityID = parentEntityInstance.$$getID();
-					    			if(parentEntityID === '' && parentEntityInstance.form){
+					    			if(parentEntityID === '' && parentEntityInstance.forms){
 					    				objectLevel = getObjectSaveLevel(parentEntityInstance);
 					    			}
 				    			}
