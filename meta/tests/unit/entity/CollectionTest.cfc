@@ -504,6 +504,239 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
+	public void function getHQLTest_date_in_range(){
+		var collectionData = {
+			collectionid = '',
+			collectionName='dateInRange',
+			collectionConfig = '
+				{  
+				   "baseEntityName":"SlatwallAccount",
+				   "baseEntityAlias":"_account",
+				   "columns":[  
+				      {  
+				         "isDeletable":false,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.accountID",
+				         "ormtype":"id",
+				         "isVisible":false,
+				         "isSearchable":true,
+				         "title":"accountID",
+				         "sorting":{  
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {  
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.superUserFlag",
+				         "ormtype":"boolean",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Super User",
+				         "sorting":{  
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {  
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.firstName",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"First Name",
+				         "sorting":{  
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {  
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.lastName",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Last Name",
+				         "sorting":{  
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {  
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.company",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Company",
+				         "sorting":{  
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {  
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.loginLockExpiresDateTime",
+				         "ormtype":"timestamp",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Account Locked",
+				         "sorting":{  
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {  
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.failedLoginAttemptCount",
+				         "ormtype":"integer",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Failed Login Attempts",
+				         "sorting":{  
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {  
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.cmsAccountID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"CMS Account ID",
+				         "sorting":{  
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {  
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.remoteEmployeeID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Remote Employee ID",
+				         "sorting":{  
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {  
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.remoteCustomerID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Remote Customer ID",
+				         "sorting":{  
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {  
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.remoteContactID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Remote Contact ID",
+				         "sorting":{  
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {  
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.createdByAccountID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Created By AccountID",
+				         "sorting":{  
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {  
+				         "isDeletable":true,
+				         "isExportable":true,
+				         "propertyIdentifier":"_account.modifiedByAccountID",
+				         "ormtype":"string",
+				         "isVisible":true,
+				         "isSearchable":true,
+				         "title":"Modified By AccountID",
+				         "sorting":{  
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      },
+				      {  
+				         "title":"Created Date Time",
+				         "propertyIdentifier":"_account.createdDateTime",
+				         "isVisible":true,
+				         "isDeletable":true,
+				         "sorting":{  
+				            "active":false,
+				            "sortOrder":"asc",
+				            "priority":0
+				         }
+				      }
+				   ],
+				   "filterGroups":[  
+				      {  
+				         "filterGroup":[  
+				            {  
+				               "displayPropertyIdentifier":"Created Date Time",
+				               "propertyIdentifier":"_account.createdDateTime",
+				               "comparisonOperator":"between",
+				               "breadCrumbs":[  
+				                  {  
+				                     "rbKey":"Account",
+				                     "entityAlias":"_account",
+				                     "cfc":"_account",
+				                     "propertyIdentifier":"_account"
+				                  }
+				               ],
+				               "value":"1393218000000-1420693199999",
+				               "displayValue":"02/24/2014 @ 12:00AM-01/07/2015 @ 11:59PM",
+				               "ormtype":"timestamp",
+				               "conditionDisplay":"In Range"
+				            }
+				         ]
+				      }
+				   ]
+				}	
+			'
+		};
+		var collectionEntity = createPersistedTestEntity('collection',collectionData);
+		request.debug(collectionEntity.getPageRecords());
+	}
+	
 	public void function getHQLTest_Contains(){
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
