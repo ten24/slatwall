@@ -129,6 +129,19 @@ angular.module('slatwalladmin')
 					});
 				};*/
 				
+				scope.setAsEvent = function(workflowTrigger){
+					//add event,  clear schedule
+				};
+				
+				scope.setAsSchedule = function(workflowTrigger){
+					//add schedule object, may need to clear event data if changed
+//					if(angular.isUndefined(workflowTrigger.data.schedule)){
+//						workflowTrigger.addSchedule();
+//					}
+					
+					
+				};
+				
 				scope.addWorkflowTrigger = function(){
 					$log.debug('addWorkflowTrigger');
 					var newWorkflowTrigger = scope.workflow.$$addWorkflowTrigger();
