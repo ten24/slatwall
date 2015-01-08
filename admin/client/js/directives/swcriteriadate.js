@@ -291,6 +291,7 @@ angular.module('slatwalladmin')
 				  };
 				  
 				  scope.criteriaRangeChanged = function(selectedFilterProperty){
+					  $log.debug(selectedFilterProperty);
 				  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
 				  	if(selectedCondition.dateInfo.type === 'calculation'){
 					  	var measureCount = selectedFilterProperty.criteriaNumberOf;
@@ -348,13 +349,15 @@ angular.module('slatwalladmin')
 	  					selectedFilterProperty.criteriaRangeStart = selectedFilterProperty.criteriaRangeStart.setHours(0,0,0,0);
 	  					selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeStart).setHours(23,59,59,999);
 	  				}
-	  				if(selectedCondition.dateInfo.type === 'range' && angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart.setHours)){
-	  					if(angular.isDefined(selectedFilterProperty.criteriaRangeStart)){
+	  				if(selectedCondition.dateInfo.type === 'range' ){
+	  					if(angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart) ){
 	  						selectedFilterProperty.criteriaRangeStart = new Date(selectedFilterProperty.criteriaRangeStart).setHours(0,0,0,0);
 	  					}
-	  					if(angular.isDefined(selectedFilterProperty.criteriaRangeEnd) && angular.isDefined(selectedFilterProperty.criteriaRangeStart) && angular.isDefined(selectedFilterProperty.criteriaRangeStart.setHours)){
+	  					
+	  					if(angular.isDefined(selectedFilterProperty.criteriaRangeEnd) && angular.isDefined(selectedFilterProperty.criteriaRangeStart)){
 	  						selectedFilterProperty.criteriaRangeEnd = new Date(selectedFilterProperty.criteriaRangeEnd).setHours(23,59,59,999);
 	  					}
+	  					
 	  				}
 				  	
 				  	$log.debug('criteriaRangeChanged');
