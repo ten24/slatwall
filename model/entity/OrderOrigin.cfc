@@ -57,6 +57,7 @@ component entityname="SlatwallOrderOrigin" table="SwOrderOrigin" persistent="tru
 	// Related Object Properties (many-to-one)
 	
 	// Related Object Properties (one-to-many)
+	property name="orders" singularname="order" cfc="Order" fieldtype="one-to-many" fkcolumn="orderOriginID" inverse="true" lazy="extra";						// Set to lazy, just used for delete validation
 	
 	// Related Object Properties (many-to-many - owner)
 
