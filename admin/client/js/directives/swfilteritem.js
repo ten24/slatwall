@@ -1,16 +1,10 @@
 'use strict';
 angular.module('slatwalladmin')
 .directive('swFilterItem', [
-	'$http',
-	'$compile',
-	'$templateCache',
 	'$log',
 	'collectionService',
 	'collectionPartialsPath',
 	function(
-		$http,
-		$compile,
-		$templateCache,
 		$log,
 		collectionService,
 		collectionPartialsPath
