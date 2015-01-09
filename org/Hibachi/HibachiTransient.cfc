@@ -517,8 +517,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		}
 	}
 
-	public any function getFormattedValue(required string propertyName, string formatType ) {
-		arguments.value = invokeMethod("get#arguments.propertyName#");
+	public any function getFormattedValue(required string propertyName, string formatType, struct formatDetails, struct methodArguments) {
+		if(!structKeyExists(arguments, "methodArguments")){
+			arguments.value = invokeMethod("get#arguments.propertyName#");
+		}else{
+			arguments.value = invokeMethod("get#arguments.propertyName#",arguments.methodArguments);
+		}
+		
 
 		// check if a formatType was passed in, if not then use the getPropertyFormatType() method to figure out what it should be by default
 		if(!structKeyExists(arguments, "formatType")) {
@@ -527,7 +532,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 		// If the formatType is custom then deligate back to the property specific getXXXFormatted() method.
 		if(arguments.formatType eq "custom") {
-			return this.invokeMethod("get#arguments.propertyName#Formatted");
+			if(!structKeyExists(arguments, "methodArguments")){
+				return this.invokeMethod("get#arguments.propertyName#Formatted");
+			}else{
+				return this.invokeMethod("get#arguments.propertyName#Formatted",arguments.methodArguments);
+			}
 		} else if(arguments.formatType eq "rbKey") {
 			if(!isNull(arguments.value)) {
 				return rbKey('entity.#replace(getEntityName(),getApplicationValue('applicationKey'),"")#.#arguments.propertyName#.#arguments.value#');
@@ -545,12 +554,14 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 			return "";
 		// This is a simple value, so now lets try to actually format the value
-		} else if (isSimpleValue(arguments.value)) {
+		} else if (isSimpleValue(arguments.value) && !structKeyExists(arguments, "formatDetails")) {
 			var formatDetails = {};
 			if(this.hasProperty('currencyCode') && !isNull(getCurrencyCode())) {
 				formatDetails.currencyCode = getCurrencyCode();
 			}
 			return getService("hibachiUtilityService").formatValue(value=arguments.value, formatType=arguments.formatType, formatDetails=formatDetails);
+		}else if (isSimpleValue(arguments.value) && structKeyExists(arguments, "formatDetails")){
+			return getService("hibachiUtilityService").formatValue(value=arguments.value, formatType=arguments.formatType, formatDetails=arguments.formatDetails);
 		}
 
 		// If the value has not yet been returned, then it is because the value was complex
