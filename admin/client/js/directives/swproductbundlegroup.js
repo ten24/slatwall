@@ -21,7 +21,7 @@ angular.module('slatwalladmin')
 	){
 		return {
 			require:"^swProductBundleGroups",
-			restrict: 'A',
+			restrict: 'E',
 			templateUrl:productBundlePartialsPath+"productbundlegroup.html",
 			scope:{
 				productBundleGroup:"=",
