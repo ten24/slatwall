@@ -84,7 +84,7 @@ Notes:
 				
 				return {
 					
-				    $get:['$q','$http','$timeout','$log', 'formService', function ($q,$http,$timeout,$log,formService)
+				    $get:['$q','$http','$timeout','$log','$rootScope', 'formService', function ($q,$http,$timeout,$log,$rootScope,formService)
 				    {
 				    	var slatwallService = {
 				    		/*basic entity getter where id is optional, returns a promise*/
@@ -276,28 +276,34 @@ Notes:
 					  			return deferred.promise;
 					  		},
 					  		hasResourceBundle:function(){
-					  			
+					  			$log.debug('hasResourceBundle');
 					  			if(!_loadingResourceBundle && !_loadedResourceBundle){
 					  				_loadingResourceBundle = true;
+					  				$log.debug(slatwallService.getConfigValue('rbLocale').split('_'));
 					  				var localeListArray = slatwallService.getConfigValue('rbLocale').split('_');
 					  				var rbPromise;
 					  				var rbPromises = [];
 									rbPromise = slatwallService.getResourceBundle(slatwallService.getConfigValue('rbLocale'));
 									rbPromises.push(rbPromise);
 									if(localeListArray.length === 2){
+										$log.debug('has two');
 										rbPromise = slatwallService.getResourceBundle(localeListArray[0]);
-										rbPromises.push(rbPromises);
+										rbPromises.push(rbPromise);
 									}
-									if(localeListArray[0] != 'en'){
+									if(localeListArray[0] !== 'en'){
+										$log.debug('get english');
 										slatwallService.getResourceBundle('en_us');
 										slatwallService.getResourceBundle('en');
 									}	
-									$q.all(rbPromises).then(function(){
-										_loadingResourceBundle = true
+									$log.debug(rbPromises);
+									$q.all(rbPromises).then(function(data){
+										$log.debug('hasRB');
+										$log.debug(data);
+										$rootScope.loadedResourceBundle = true;
+										_loadingResourceBundle = false;
 										_loadedResourceBundle = true;
+										
 									});
-									
-									
 					  			}
 				  				
 				  				return _loadedResourceBundle;
@@ -343,13 +349,15 @@ Notes:
 					  			return keyValue;
 					  		},
 					  		getRBKey:function(key,locale,checkedKeys,originalKey){
-					  			if(!slatwallService.hasResourceBundle()) {
-					  				$timeout(function(){return slatwallService.getRBKey(key,locale,checkedKeys,originalKey)}, 100);
-					  			} else {
+					  			$log.debug('getRBKey');
+					  			$log.debug(_loadingResourceBundle);
+					  			$log.debug(_loadedResourceBundle);
+					  			if(!_loadingResourceBundle && _loadedResourceBundle){
 					  				key = key.toLowerCase();
 						  			checkedKeys = checkedKeys || "";
 						  			locale = locale || 'en_us';
-						  			
+						  			$log.debug('locale');
+						  			$log.debug(locale);
 						  			<!---// Check to see if a list was passed in as the key--->
 						  			var keyListArray = key.split(',');
 						  			
@@ -375,45 +383,53 @@ Notes:
 									
 									<!---// Check the exact bundle file--->
 									var bundle = slatwallService.getResourceBundle(locale);
-									if(angular.isDefined(bundle[key])) {
-										return bundle[key];
-									}
-									
-									<!---// Because the value was not found, we can add this to the checkedKeys, and setup the original Key--->
-									var checkedKeysListArray = checkedKeys.split(',');
-									checkedKeysListArray.push(key+'_'+locale+'_missing');
-									checkedKeys = checkedKeysListArray.join(",");
-									if(angular.isUndefined(originalKey)){
-										originalKey = key;
-									}
-									<!---// Check the broader bundle file--->
-									var localeListArray = locale.split('_');
-									if(localeListArray.length === 2){
-										bundle = slatwallService.getResourceBundle(localeListArray[0]);
-										if(angular.isDefined(bundle[key])){
+									$log.debug('bundle');
+									$log.debug(bundle);
+									if(!angular.isFunction(bundle.then)){
+										if(angular.isDefined(bundle[key])) {
 											return bundle[key];
 										}
-										<!---// Add this more broad term to the checked keys--->
-										checkedKeysListArray.push(key+'_'+localeListArray[0]+'_missing');
-										checkedKeys = checkedKeysListArray.join(",");
-									}
-									<!---// Recursivly step the key back with the word 'define' replacing the previous.  Basically Look for just the "xxx.yyy.define.zzz" version of the end key and then "yyy.define.zzz" and then "define.zzz"--->
-									var keyDotListArray = key.split('.');
-									if(	keyDotListArray.length >= 3
-										&& keyDotListArray[keyDotListArray.length - 2] === 'define'
-									){
-										var newKey = key.replace(keyDotListArray[keyDotListArray.length - 3]+'.define','define');
-										return this.getRBKey(newKey,locale,checkedKeys,originalKey);
-									}else if( keyDotListArray.length >= 2 && keyDotListArray[keyDotListArray.length - 2] !== 'define'){
-										var newKey = key.replace(keyDotListArray[keyDotListArray.length -2]+'.','define.');
-										return this.getRBKey(newKey,locale,checkedKeys,originalKey);
-									}
-									if(localeListArray[0] !== "en"){
 										
-										return this.getRBKey(originalKey,'en',checkedKeys);
-									}
-						  			return checkedKeys;
-					  			}
+										<!---// Because the value was not found, we can add this to the checkedKeys, and setup the original Key--->
+										var checkedKeysListArray = checkedKeys.split(',');
+										checkedKeysListArray.push(key+'_'+locale+'_missing');
+										checkedKeys = checkedKeysListArray.join(",");
+										if(angular.isUndefined(originalKey)){
+											originalKey = key;
+										}
+										<!---// Check the broader bundle file--->
+										var localeListArray = locale.split('_');
+										$log.debug(localeListArray);
+										if(localeListArray.length === 2){
+											bundle = slatwallService.getResourceBundle(localeListArray[0]);
+											if(angular.isDefined(bundle[key])){
+												return bundle[key];
+											}
+											<!---// Add this more broad term to the checked keys--->
+											checkedKeysListArray.push(key+'_'+localeListArray[0]+'_missing');
+											checkedKeys = checkedKeysListArray.join(",");
+										}
+										<!---// Recursivly step the key back with the word 'define' replacing the previous.  Basically Look for just the "xxx.yyy.define.zzz" version of the end key and then "yyy.define.zzz" and then "define.zzz"--->
+										var keyDotListArray = key.split('.');
+										if(	keyDotListArray.length >= 3
+											&& keyDotListArray[keyDotListArray.length - 2] === 'define'
+										){
+											var newKey = key.replace(keyDotListArray[keyDotListArray.length - 3]+'.define','define');
+											return this.getRBKey(newKey,locale,checkedKeys,originalKey);
+										}else if( keyDotListArray.length >= 2 && keyDotListArray[keyDotListArray.length - 2] !== 'define'){
+											var newKey = key.replace(keyDotListArray[keyDotListArray.length -2]+'.','define.');
+											return this.getRBKey(newKey,locale,checkedKeys,originalKey);
+										}
+										$log.debug(localeListArray);
+										$log.debug(this.getRBKey(originalKey,'en',checkedKeys));
+										if(localeListArray[0] != "en"){
+											
+											return this.getRBKey(originalKey,'en',checkedKeys);
+										}
+							  			return checkedKeys;
+							  		}
+						  		}
+						  		return 'empty';
 					  		},
 					  		 getConfig:function(){
 						    	return _config;
@@ -790,7 +806,7 @@ Notes:
 							for(var f in forms){
 				    			var form = forms[f];
 					    		for(var key in form){
-					    			console.log('key:'+key);
+					    			$log.debug('key:'+key);
 					    			if(key.charAt(0) !== '$'){
 					    				var inputField = form[key];
 					    				if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
@@ -933,8 +949,8 @@ Notes:
 				    	var getDataFromChildren = function(entityInstance){
 							var data = {};
 							<!--- loop through all children --->
-							console.log('childrenFound');
-							console.log(entityInstance.children);
+							$log.debug('childrenFound');
+							$log.debug(entityInstance.children);
 				    		for(var c in entityInstance.children){
 				    			var childMetaData = entityInstance.children[c];
 								var children = entityInstance.data[childMetaData.name];
