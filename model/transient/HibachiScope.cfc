@@ -242,7 +242,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 							orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount,
 							orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard,
 							orderPayments.billingAddress.addressID,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.statecode,orderPayments.billingAddress.postalcode,orderPayments.billingAddress.countrycode,
-							orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName
+							orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName,
 							promotionCodes,promotionCode";
 		
 		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
