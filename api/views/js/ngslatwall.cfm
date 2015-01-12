@@ -276,6 +276,9 @@ Notes:
 					  			});
 					  			return deferred.promise;
 					  		},
+					  		getRBLoaded:function(){
+					  			return _loadedResourceBundle;
+					  		},
 					  		hasResourceBundle:function(){
 					  			$log.debug('hasResourceBundle');
 					  			$log.debug(_loadedResourceBundle);
