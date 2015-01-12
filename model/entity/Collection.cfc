@@ -463,7 +463,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 		HQL = createHQLFromCollectionObject(this,arguments.excludeSelect);
-		
 		return HQL;
 	}
 	
@@ -818,8 +817,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(arraylen(getPostFilterGroups())){
 				if(len(filterHQL) eq 0){
 					postFilterHQL &= ' where ';
-				}
-				postFilterHQL &= getFilterGroupsHQL(postFilterGroups);
+					postFilterHQL &= '(' & getFilterGroupsHQL(postFilterGroups) & ')';
+				}else{
+					postFilterHQL &= ' AND ' & '(' & getFilterGroupsHQL(postFilterGroups) & ')';
+				}	
+				
 			}
 			
 			//override defaultconfig if we have postOrderBys
@@ -840,14 +842,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			fromHQL &= getFromHQL(collectionConfig.baseEntityName, collectionConfig.baseEntityAlias, joins);
 			
-			HQL = SelectHQL & FromHQL & filterHQL & postFilterHQL & orderByHQL;
+			HQL = SelectHQL & FromHQL & filterHQL  & postFilterHQL  & orderByHQL;
 		}
 		return HQL;
 	}
 	
 	public void function addPostFiltersFromKeywords(required any collectionConfig, numeric hasFilterHQL){
+		var keywordCount = 0;
 		if(structKeyExists(arguments.collectionConfig,'columns') && arrayLen(arguments.collectionConfig.columns)){
+			
 			for(column in arguments.collectionConfig.columns){
+				
 				if(structKeyExists(column,'isSearchable') && column.isSearchable){
 					//use keywords to create some post filters
 					if(structKeyExists(column,'ormtype') 
@@ -856,6 +861,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						&& column.ormtype neq 'big_decimal'
 						&& column.ormtype neq 'integer'
 						){
+						
 						for(keyword in getKeywordArray()){
 							
 							var postFilterGroup = {
@@ -867,13 +873,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									}
 								]
 							};
-							if(arguments.hasFilterHQL){
+							if(keywordCount != 0){
 								postFilterGroup.logicalOperator = "OR";
 							}else{
 								arguments.hasFilterHQL = 1;
 							}
 							//add post filter per column that is searchable
 							addPostFilterGroup(postFilterGroup);
+							keywordCount++;
 						}
 					}
 					if(structKeyExists(column,'attributeID')){
@@ -890,16 +897,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									}
 								] 
 							};
-							if(arguments.hasFilterHQL){
+							
+							if(keywordCount != 0){
 								postFilterGroup.logicalOperator = "OR";
 							}else{
 								arguments.hasFilterHQL = 1;
 							}
+							
 							//add post filter per column that is searchable
 							addPostFilterGroup(postFilterGroup);
+							keywordCount++;
 						}
 					}
 				}
+				keywordCount++;
 			}
 		}else{
 			//if we don't have columns then we need default properties searching
@@ -921,13 +932,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								}
 							]
 						};
-						if(arguments.hasFilterHQL){
+						if(keywordCount != 0){
 							postFilterGroup.logicalOperator = "OR";
 						}else{
 							arguments.hasFilterHQL = 1;
 						}
 						//add post filter per column that is searchable
 						addPostFilterGroup(postFilterGroup);
+						keywordCount++;
 					}
 				}
 				if(structKeyExists(propertyItem,'attributeID')){
@@ -943,15 +955,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 								}
 							] 
 						};
-						if(arguments.hasFilterHQL){
+						if(keywordCount != 0){
 							postFilterGroup.logicalOperator = "OR";
 						}else{
 							arguments.hasFilterHQL = 1;
 						}
 						//add post filter per propertyItem that is searchable
 						addPostFilterGroup(postFilterGroup);
+						keywordCount++;
 					}
 				}
+				keywordCount++;
 			}
 		}
 	}
