@@ -278,7 +278,7 @@ Notes:
 					  		},
 					  		hasResourceBundle:function(){
 					  			$log.debug('hasResourceBundle');
-					  			console.log(_loadedResourceBundle);
+					  			$log.debug(_loadedResourceBundle);
 					  			if(!_loadingResourceBundle && !_loadedResourceBundle){
 					  				_loadingResourceBundle = true;
 					  				$log.debug(slatwallService.getConfigValue('rbLocale').split('_'));
@@ -344,12 +344,12 @@ Notes:
 					  			}*/
 					  		}--->
 					  		rbKey:function(key,replaceStringData){
-					  			console.log('rbkey');
-					  			console.log(key);
-					  			console.log(_config.rbLocale);
+					  			$log.debug('rbkey');
+					  			$log.debug(key);
+					  			$log.debug(_config.rbLocale);
 					  		
 					  			var keyValue = this.getRBKey(key,_config.rbLocale);
-					  			console.log(keyValue);
+					  			$log.debug(keyValue);
 					  			<!---if(angular.isDefined(replaceStringData) && ('"${'.toLowerCase().indexOf(keyValue))){
 					  				keyValue = slatwallService.replaceStringTemplate(keyValue,replaceStringData);
 					  			}--->
@@ -379,7 +379,7 @@ Notes:
 											
 											<!---// Get the keyValue from this iteration--->
 											var keyValue = this.getRBKey(keyListArray[i], locale, keyValue);
-											console.log('keyvalue:'+keyValue);
+											$log.debug('keyvalue:'+keyValue);
 											<!---// If the keyValue was found, then we can break out of the loop--->
 											if(keyValue.slice(-8) != "_missing") {
 												break;
@@ -481,9 +481,7 @@ Notes:
 				    	
 				    	var _getPropertyTitle = function(propertyName,metaData){
 				    		var propertyMetaData = metaData[propertyName];
-							console.log('getPropertyTitle');
 							if(angular.isDefined(propertyMetaData['hb_rbkey'])){
-								console.log('hbkey');
 								return metaData.$$getRBKey(propertyMetaData['hb_rbkey']);
 							}else if (angular.isUndefined(propertyMetaData['persistent']) || (angular.isDefined(propertyMetaData['persistent']) && propertyMetaData['persistent'] === true)){
 								if(angular.isDefined(propertyMetaData['fieldtype']) 
@@ -511,8 +509,6 @@ Notes:
 							}else{
 								keyValue = metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
 							}
-							console.log('-8');
-							console.log(keyValue.slice(-8));
 							if(keyValue.slice(-8) !== '_missing'){
 								return keyValue;
 							}

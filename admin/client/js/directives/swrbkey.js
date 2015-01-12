@@ -4,11 +4,11 @@ angular.module('slatwalladmin')
 [
 '$slatwall',
 '$rootScope',
-'$compile',
+'$log',
 function(
 	$slatwall,
 	$rootScope,
-	$compile
+	$log
 ){
 	return {
 		restrict: 'A',
@@ -18,19 +18,18 @@ function(
 		link: function(scope, element,attrs){
 			var rbKeyValue = scope.swRbkey;
 			
-			console.log('running rbkey');
-			console.log(rbKeyValue);
+			$log.debug('running rbkey');
+			$log.debug(rbKeyValue);
 			if(angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)){
-				console.log($slatwall.getRBKey(rbKeyValue));
+				$log.debug($slatwall.getRBKey(rbKeyValue));
 				element.text($slatwall.getRBKey(rbKeyValue));
 			}
 			
 			var hasResourceBundleListener = $rootScope.$on('hasResourceBundle',function(event,data){
-				console.log('received event');
-				console.log(rbKeyValue);
-			//	console.log($slatwall.getRBKey(rbKeyValue));
+				$log.debug('received event');
+				$log.debug(rbKeyValue);
 				if(angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)){
-					console.log($slatwall.getRBKey(rbKeyValue));
+					$log.debug($slatwall.getRBKey(rbKeyValue));
 					element.text($slatwall.getRBKey(rbKeyValue));
 				}
 				hasResourceBundleListener();
