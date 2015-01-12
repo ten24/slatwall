@@ -1,12 +1,10 @@
 
 <div ng-if="propertyDisplay" class="form-group">
   <label class="control-label col-md-3" ng-if="propertyDisplay.fieldType !== 'hidden'">
-  	<!-- property RB key --><span ng-bind="propertyDisplay.title"></span>:
+  	<!-- property RB key --><span sw-rbkey="'entity.'+object.metaData.className+'.'+property"></span>:
   	<span 	class="j-tool-tip-item"
   			data-toggle="tooltip"
   			data-placement="top"
-  			data-original-title="propertyDisplay.hint"
-  			ng-show="propertyDisplay.hint.length"
   	>
   		<i class="fa fa-question-circle"></i>
   	</span>
@@ -15,7 +13,6 @@
   	<!-- Model-->
 
   	<span 	sw-form-field
-  			ng-if="propertyDisplay.property"
   			data-property-display="propertyDisplay"
   	>
   	</span>

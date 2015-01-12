@@ -1,3 +1,4 @@
+
 <!---
 
     Slatwall - An Open Source eCommerce Platform
@@ -277,6 +278,7 @@ Notes:
 					  		},
 					  		hasResourceBundle:function(){
 					  			$log.debug('hasResourceBundle');
+					  			console.log(_loadedResourceBundle);
 					  			if(!_loadingResourceBundle && !_loadedResourceBundle){
 					  				_loadingResourceBundle = true;
 					  				$log.debug(slatwallService.getConfigValue('rbLocale').split('_'));
@@ -342,7 +344,12 @@ Notes:
 					  			}*/
 					  		}--->
 					  		rbKey:function(key,replaceStringData){
-					  			var keyValue = this.getRBKey(key,_config.locale);
+					  			console.log('rbkey');
+					  			console.log(key);
+					  			console.log(_config.rbLocale);
+					  		
+					  			var keyValue = this.getRBKey(key,_config.rbLocale);
+					  			console.log(keyValue);
 					  			<!---if(angular.isDefined(replaceStringData) && ('"${'.toLowerCase().indexOf(keyValue))){
 					  				keyValue = slatwallService.replaceStringTemplate(keyValue,replaceStringData);
 					  			}--->
@@ -350,8 +357,8 @@ Notes:
 					  		},
 					  		getRBKey:function(key,locale,checkedKeys,originalKey){
 					  			$log.debug('getRBKey');
-					  			$log.debug(_loadingResourceBundle);
-					  			$log.debug(_loadedResourceBundle);
+					  			$log.debug('loading:'+_loadingResourceBundle);
+					  			$log.debug('loaded'+_loadedResourceBundle);
 					  			if(!_loadingResourceBundle && _loadedResourceBundle){
 					  				key = key.toLowerCase();
 						  			checkedKeys = checkedKeys || "";
@@ -360,7 +367,8 @@ Notes:
 						  			$log.debug(locale);
 						  			<!---// Check to see if a list was passed in as the key--->
 						  			var keyListArray = key.split(',');
-						  			
+						  			$log.debug('keylistAray');
+						  			$log.debug(keyListArray);
 									if(keyListArray.length > 1) {
 										
 										<!---// Set up "" as the key value to be passed as 'checkedKeys'--->
@@ -371,7 +379,7 @@ Notes:
 											
 											<!---// Get the keyValue from this iteration--->
 											var keyValue = this.getRBKey(keyListArray[i], locale, keyValue);
-											
+											console.log('keyvalue:'+keyValue);
 											<!---// If the keyValue was found, then we can break out of the loop--->
 											if(keyValue.slice(-8) != "_missing") {
 												break;
@@ -387,22 +395,27 @@ Notes:
 									$log.debug(bundle);
 									if(!angular.isFunction(bundle.then)){
 										if(angular.isDefined(bundle[key])) {
+											$log.debug('rbkeyfound:'+bundle[key]);
 											return bundle[key];
 										}
 										
 										<!---// Because the value was not found, we can add this to the checkedKeys, and setup the original Key--->
 										var checkedKeysListArray = checkedKeys.split(',');
 										checkedKeysListArray.push(key+'_'+locale+'_missing');
+										
 										checkedKeys = checkedKeysListArray.join(",");
 										if(angular.isUndefined(originalKey)){
 											originalKey = key;
 										}
+										$log.debug('originalKey:'+key);
+										$log.debug(checkedKeysListArray);
 										<!---// Check the broader bundle file--->
 										var localeListArray = locale.split('_');
 										$log.debug(localeListArray);
 										if(localeListArray.length === 2){
 											bundle = slatwallService.getResourceBundle(localeListArray[0]);
 											if(angular.isDefined(bundle[key])){
+												$log.debug('rbkey found:'+bundle[key]);
 												return bundle[key];
 											}
 											<!---// Add this more broad term to the checked keys--->
@@ -415,15 +428,16 @@ Notes:
 											&& keyDotListArray[keyDotListArray.length - 2] === 'define'
 										){
 											var newKey = key.replace(keyDotListArray[keyDotListArray.length - 3]+'.define','define');
+											$log.debug('newkey1:'+newKey);
 											return this.getRBKey(newKey,locale,checkedKeys,originalKey);
 										}else if( keyDotListArray.length >= 2 && keyDotListArray[keyDotListArray.length - 2] !== 'define'){
 											var newKey = key.replace(keyDotListArray[keyDotListArray.length -2]+'.','define.');
+											$log.debug('newkey:'+newKey);
 											return this.getRBKey(newKey,locale,checkedKeys,originalKey);
 										}
 										$log.debug(localeListArray);
-										$log.debug(this.getRBKey(originalKey,'en',checkedKeys));
-										if(localeListArray[0] != "en"){
-											
+										
+										if(localeListArray[0] !== "en"){
 											return this.getRBKey(originalKey,'en',checkedKeys);
 										}
 							  			return checkedKeys;
@@ -467,8 +481,9 @@ Notes:
 				    	
 				    	var _getPropertyTitle = function(propertyName,metaData){
 				    		var propertyMetaData = metaData[propertyName];
-										
+							console.log('getPropertyTitle');
 							if(angular.isDefined(propertyMetaData['hb_rbkey'])){
+								console.log('hbkey');
 								return metaData.$$getRBKey(propertyMetaData['hb_rbkey']);
 							}else if (angular.isUndefined(propertyMetaData['persistent']) || (angular.isDefined(propertyMetaData['persistent']) && propertyMetaData['persistent'] === true)){
 								if(angular.isDefined(propertyMetaData['fieldtype']) 
@@ -496,6 +511,8 @@ Notes:
 							}else{
 								keyValue = metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
 							}
+							console.log('-8');
+							console.log(keyValue.slice(-8));
 							if(keyValue.slice(-8) !== '_missing'){
 								return keyValue;
 							}
