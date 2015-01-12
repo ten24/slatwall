@@ -77,16 +77,13 @@ angular.module('slatwalladmin')
 			    	return numberOptions;
 			    };
 			    
-			    
-    			
     			 scope.$watch('selectedFilterProperty.criteriaValue',function(criteriaValue){
  		    		if(angular.isDefined(criteriaValue)){
  		    			scope.selectedFilterProperty.criteriaValue = criteriaValue;
- 		    			console.log(scope.selectedFilterProperty);
+ 		    			$log.debug(scope.selectedFilterProperty);
  		    		}
  		    	});
     			 
-    			scope.$watch('selectedFilterProperty', function(selectedFilterProperty) {
     				scope.conditionOptions = getNumberOptions();
 	    			scope.criteriaRangeChanged = function(selectedFilterProperty){
 					  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
@@ -106,9 +103,20 @@ angular.module('slatwalladmin')
 	    			};
 	    			
 	    			angular.forEach(scope.conditionOptions, function(conditionOption){
+	    				$log.debug('populate');
+	    				
 						if(conditionOption.display == scope.filterItem.conditionDisplay ){
 							scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
-							scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+							$log.debuge.log(scope.filterItem);
+		    				if(scope.filterItem.comparisonOperator === 'between' || scope.filterItem.comparisonOperator === 'not between'){
+		    					var criteriaRangeArray = scope.filterItem.value.split('-');
+		    					$log.debug(criteriaRangeArray);
+		    					scope.selectedFilterProperty.criteriaRangeStart = parseInt(criteriaRangeArray[0]);
+		    					scope.selectedFilterProperty.criteriaRangeEnd = parseInt(criteriaRangeArray[1]);
+		    				}else{
+		    					scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+		    				}
+							
 							
 							if(angular.isDefined(scope.filterItem.criteriaNumberOf)){
 								scope.selectedFilterProperty.criteriaNumberOf = scope.filterItem.criteriaNumberOf;
@@ -119,7 +127,6 @@ angular.module('slatwalladmin')
 							}
 						}
 					});
-    			});
     			
     			
 				
