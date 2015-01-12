@@ -269,6 +269,8 @@ angular.module('slatwalladmin')
 							
 			                break;	
 			            case 'big_decimal':
+			            case 'integer':
+			            case 'float':
 							filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;
 							//is null, is not null
 							if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
