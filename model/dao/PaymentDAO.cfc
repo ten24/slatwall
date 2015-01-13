@@ -88,7 +88,7 @@ Notes:
 		<cfargument name="accountPaymentID" type="string" />
 		
 		<cfset var hql = "SELECT NEW MAP(spt.authorizationCode as authorizationCode) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.authorizationCode is not null AND spt.transactionType IN ( :transactionType ) AND " />
-		<cfset hqlParams = {} />
+		<cfset var hqlParams = {} />
 		<cfset hqlParams['transactionType'] = ["authorize", "authorizeAndCharge"] />
 		
 		<cfif structKeyExists(arguments, "orderPaymentID") and structKeyExists(arguments, "referencedOrderPaymentID")>
@@ -118,7 +118,7 @@ Notes:
 		<cfargument name="accountPaymentID" type="string" />
 		
 		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND spt.transactionType IN (:transactionType) AND " />
-		<cfset hqlParams = {} />
+		<cfset var hqlParams = {} />
 		<cfset hqlParams['transactionType'] = ["authorize","authorizeAndCharge"] />
 		
 		<cfif structKeyExists(arguments, "orderPaymentID") and structKeyExists(arguments, "referencedOrderPaymentID")>
@@ -148,7 +148,7 @@ Notes:
 		<cfargument name="accountPaymentID" type="string" />
 		
 		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND spt.transactionType IN (:transactionType) AND " />
-		<cfset hqlParams = {} />
+		<cfset var hqlParams = {} />
 		<cfset hqlParams['transactionType'] = ["chargePreAuthorization","authorizeAndCharge"] />
 		
 		<cfif structKeyExists(arguments, "orderPaymentID") and structKeyExists(arguments, "referencedOrderPaymentID")>
@@ -178,7 +178,7 @@ Notes:
 		<cfargument name="accountPaymentID" type="string" />
 		
 		<cfset var hql = "SELECT NEW MAP(spt.providerTransactionID as providerTransactionID) FROM SlatwallPaymentTransaction spt WHERE spt.transactionSuccessFlag = 1 AND spt.providerTransactionID is not null AND " />
-		<cfset hqlParams = {} />
+		<cfset var hqlParams = {} />
 		
 		<cfif structKeyExists(arguments, "orderPaymentID") and structKeyExists(arguments, "referencedOrderPaymentID")>
 			<cfset hql &= "(spt.orderPayment.orderPaymentID = :orderPaymentID OR spt.orderPayment.orderPaymentID = :referencedOrderPaymentID) " />
@@ -210,7 +210,7 @@ Notes:
 		
 		<cfset var hql = "UPDATE SlatwallPaymentTransaction SET authorizationCodeInvalidFlag = 1, modifiedDateTime = :now WHERE authorizationCode = :authorizationCode AND transactionType = :transactionType AND " />
 		
-		<cfset hqlParams = {} />
+		<cfset var hqlParams = {} />
 		<cfset hqlParams['authorizationCode'] = arguments.authorizationCode />
 		<cfset hqlParams['transactionType'] = "authorize" />
 		<cfset hqlParams.now = now() />

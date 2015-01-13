@@ -66,7 +66,7 @@ Notes:
 				currencyrate.effectiveStartDateTime DESC" />
 		
 		<!--- Setup HQL Params --->
-		<cfset hqlParams = {} />
+		<cfset var hqlParams = {} />
 		<cfset hqlParams['now'] = now() />
 		<cfset hqlParams['originalCurrencyCode'] = arguments.originalCurrencyCode />
 		<cfset hqlParams['convertToCurrencyCode'] = arguments.convertToCurrencyCode />

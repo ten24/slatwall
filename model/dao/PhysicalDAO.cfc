@@ -50,7 +50,7 @@ Notes:
 	<cffunction name="getPhysicalDiscrepancyQuery">
 		<cfargument name="physicalID" type="string" required="true">
 		
-		<cfset rs = "" />
+		<cfset var rs = "" />
 		
 		<cfquery name="rs">
 			SELECT
