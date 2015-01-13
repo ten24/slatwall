@@ -313,7 +313,7 @@ Notes:
 		<cfset var timeNow = now() />
 		<cfset var salePromotionPeriodIDs = "" />
 		
-		<cfquery name="noQualifierCurrentActivePromotionPeriods">
+		<cfquery name="local.noQualifierCurrentActivePromotionPeriods">
 			SELECT
 				promotionPeriodID
 			FROM
