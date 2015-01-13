@@ -1,4 +1,4 @@
-<ng-switch on="propertyDisplay.fieldType">
+<ng-switch on="propertyDisplay.fieldType" ng-if="propertyDisplay">
 	<sw-form-field-text data-property-display="propertyDisplay" ng-switch-when="text"></sw-form-field-text>
 	<sw-form-field-select data-property-display="propertyDisplay" ng-switch-when="select"></sw-form-field-select>
 	<sw-form-field-radio data-property-display="propertyDisplay" ng-switch-when="yesno"></sw-form-field-radio>

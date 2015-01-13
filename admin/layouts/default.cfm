@@ -327,9 +327,9 @@ Notes:
 	
 			<!--- Page Dialog Controller --->
 			<div ng-controller="pageDialog">
-				<div id="topOfPageDialog">
+				<div id="topOfPageDialog" >
 					<div style="z-index:3000" class="s-dialog-container" ng-repeat="pageDialog in pageDialogs" >
-						<div  ng-include="pageDialog.path"></div>
+						<div  ng-include="pageDialog.path" ></div>
 					</div>
 				</div>
 			</div>
@@ -346,7 +346,7 @@ Notes:
 				</span>
 			</span>
 		</span>
-	
+		
 		<!---lib BEGIN --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/date/date.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
@@ -434,8 +434,16 @@ Notes:
 			    $rootScope.closePageDialog = function( index ) {
 					dialogService.removePageDialog( index );
 			    };
-
-				$rootScope.getRBKey = $slatwall.getRBKey;
+			    
+			    $rootScope.loadedResourceBundle = false;
+			    $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
+			    
+			    var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
+			   		if(newValue !== oldValue){
+			    		$rootScope.$broadcast('hasResourceBundle');
+			    		rbListener();
+			    	}
+			    });
 
 			}]).filter('entityRBKey',['$slatwall', function($slatwall) {
 				
@@ -443,14 +451,6 @@ Notes:
 					if(angular.isDefined(text) && angular.isString(text)){
 						text = text.replace('_', '').toLowerCase();
 						text = $slatwall.getRBKey('entity.'+text);
-						return text;
-					}
-				};
-			}]).filter('rbKey',['$slatwall', function($slatwall) {
-				
-			  	return function(text){
-					if(angular.isDefined(text) && angular.isString(text)){
-						text = $slatwall.getRBKey(text);
 						return text;
 					}
 				};
