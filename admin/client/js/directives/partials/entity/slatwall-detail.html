@@ -42,11 +42,11 @@
 
 		<div class="row s-pannel-control">
 			<div class="col-md-12 s-toggle-panels">
-				<a href="#" class="j-openall j-tool-tip-item" data-toggle="tooltip"
+				<a href="/#" class="j-openall j-tool-tip-item" data-toggle="tooltip"
 					data-placement="bottom" title="" data-original-title="Expand All"
 					ng-click="allTabsOpen = true"
 					><i
-					class="fa fa-expand"></i></a> <a href="#"
+					class="fa fa-expand"></i></a> <a href="/#"
 					class="j-closeall j-tool-tip-item" data-toggle="tooltip"
 					data-placement="bottom" title=""
 					data-original-title="Collapse All"><i class="fa fa-compress"
@@ -58,10 +58,10 @@
 		<div class="panel-group s-pannel-group" id="accordion">
 			<div class="j-panel panel panel-default" ng-repeat="detailTab in detailTabs">
 			
-				<a data-toggle="collapse" href="#collapse{{$index}}" ng-init="openTab=false" ng-click="openTab = true">
+				<a data-toggle="collapse" href="/#collapse{{$index}}" ng-init="openTab=false" ng-click="openTab = true">
 					<div class="panel-heading">
 						<h4 class="panel-title">
-							<span ng-bind="getRBKey('admin.entity.'+entityName.toLowerCase()+'tabs.'+detailTab.toLowerCase().replace('.html',''))"></span> <i
+							<span sw-rbkey="'admin.entity.'+entityName.toLowerCase()+'tabs.'+detailTab.toLowerCase().replace('.html','')"></span> <i
 								class="s-accordion-toggle-icon fa fa-caret-left"></i>
 						</h4>
 					</div>
@@ -74,7 +74,7 @@
 				</div>
 			</div>
 			<div class="j-panel panel panel-default">
-				<a data-toggle="collapse" href="#collapseSystem" ng-init="openTab=false" ng-click="openTab = true">
+				<a data-toggle="collapse" href="/#collapseSystem" ng-init="openTab=false" ng-click="openTab = true">
 					<div class="panel-heading">
 						<h4 class="panel-title">
 							<span >System</span> <i
@@ -91,7 +91,7 @@
 								<div class="form-group">
 									<label class="control-label col-sm-4 title"
 										style="text-align: left;" 
-										ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+entityName.toLowerCase()+'id')"></label>
+										sw-rbkey="'entity.'+entityName.toLowerCase()+'.'+entityName.toLowerCase()+'id'"></label>
 
 									<div class="col-sm-8">
 
@@ -102,7 +102,7 @@
 
 								<div class="form-group">
 									<label class="control-label col-sm-4 title"
-										style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'remoteid')">Remote ID</label>
+										style="text-align: left;" sw-rbkey="'entity.'+entityName.toLowerCase()+'.'+'remoteid'">Remote ID</label>
 
 									<div class="col-sm-8">
 
@@ -113,7 +113,7 @@
 
 								<div class="form-group">
 									<label class="control-label col-sm-4 title"
-										style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'createddatetime')">Created Date Time</label>
+										style="text-align: left;" sw-rbkey="'entity.'+entityName.toLowerCase()+'.'+'createddatetime'">Created Date Time</label>
 
 									<div class="col-sm-8">
 
@@ -124,7 +124,7 @@
 
 								<div class="form-group">
 									<label class="control-label col-sm-4 title"
-										style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'createdby')">Created By</label>
+										style="text-align: left;" sw-rbkey="'entity.'+entityName.toLowerCase()+'.'+'createdby'">Created By</label>
 
 									<div class="col-sm-8">
 
@@ -135,7 +135,7 @@
 
 								<div class="form-group">
 									<label class="control-label col-sm-4 title"
-										style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'modifieddatetime')">Modified Date Time</label>
+										style="text-align: left;" sw-rbkey="'entity.'+entityName.toLowerCase()+'.'+'modifieddatetime'">Modified Date Time</label>
 
 									<div class="col-sm-8">
 
@@ -146,7 +146,7 @@
 
 								<div class="form-group">
 									<label class="control-label col-sm-4 title"
-										style="text-align: left;" ng-bind="getRBKey('entity.'+entityName.toLowerCase()+'.'+'modifiedby')">Modified By</label>
+										style="text-align: left;" sw-rbkey="'entity.'+entityName.toLowerCase()+'.'+'modifiedby'">Modified By</label>
 
 									<div class="col-sm-8">
 

@@ -1,6 +1,6 @@
 <input type="number" class="form-control" 
 		    		 ng-model="propertyDisplay.object.data[propertyDisplay.property]"
-		    		 ng-disabled="propertyDisplay.editable"
+		    		 ng-disabled="!propertyDisplay.editable"
 		    		 ng-show="propertyDisplay.editing"
 		    		 ng-change="propertyDisplay.onChange"
 		    		 name="{{propertyDisplay.property}}"
