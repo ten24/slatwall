@@ -15,6 +15,8 @@ angular.module('slatwalladmin')
 				editable:"=",
 				editing:"=",
 				isHidden:"=",
+				title:"=",
+				hint:"=",
 				optionsArguments:"=",
 				eagerLoadOptions:"=",
 				isDirty:"=",
@@ -23,9 +25,9 @@ angular.module('slatwalladmin')
 			templateUrl:partialsPath+"propertydisplay.html",
 			link: function(scope, element,attrs,formController){
 				//if the item is new, then all fields at the object level are dirty
-				console.log('editingproper');
-				console.log(scope.property);
-				console.log(scope.editable);
+				$log.debug('editingproper');
+				$log.debug(scope.property);
+				$log.debug(scope.editable);
 				
 				scope.propertyDisplay = {
 					object:scope.object,

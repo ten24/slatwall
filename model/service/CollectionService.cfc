@@ -433,6 +433,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			collectionConfigStruct.isDistinct = false;
 		}
 		
+		
 		var propertyIdentifier = '_' & lcase(arguments.entityName) & '.#arguments.entityName#ID';
 		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
 		var filterGroupStruct.filterGroup = [];
