@@ -694,6 +694,26 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			predicate = filter.value;
 		}else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in'){
 			predicate = "(" & ListQualify(filter.value,"'") & ")";
+		}else if(arguments.filter.comparisonOperator eq 'like' || arguments.filter.comparisonOperator eq 'not like'){
+			var paramID = getParamID();
+			if(!structKeyExists(filter,"value")){
+				filter.value = "";
+			}
+			if(structKeyExists(filter,'pattern')){
+				switch(filter.pattern){
+					case '%w%':
+						filter.value = '%#filter.value#%';
+						break;
+					case 'w%':
+						filter.value = '#filter.value#%';
+						break;
+					case '%w':	
+						filter.value = '%#filter.value#';
+						break;
+				}	
+			}
+			addHQLParam(paramID,arguments.filter.value);
+			predicate = ":#paramID#";
 		}else{
 			var paramID = getParamID();
 			if(!structKeyExists(filter,"value")){
