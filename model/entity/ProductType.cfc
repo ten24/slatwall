@@ -50,7 +50,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 			
 	// Persistent Properties
 	property name="productTypeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="productTypeIDPath" ormtype="string";
+	property name="productTypeIDPath" ormtype="string" length="4000";
 	property name="activeFlag" ormtype="boolean" hint="As A ProductType Get Old, They would be marked as Not Active";
 	property name="publishedFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" unique="true" hint="This is the name that is used in the URL string";
@@ -71,6 +71,10 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	property name="promotionRewardExclusions" singularname="promotionRewardExclusion" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardExclProductType" fkcolumn="productTypeID" inversejoincolumn="promotionRewardID" inverse="true";
 	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" fieldtype="many-to-many" linktable="SwPromoQualProductType" fkcolumn="productTypeID" inversejoincolumn="promotionQualifierID" inverse="true";
 	property name="promotionQualifierExclusions" singularname="promotionQualifierExclusion" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualExclProductType" fkcolumn="productTypeID" inversejoincolumn="promotionQualifierID" inverse="true";
+	property name="loyaltyAccruements" singularname="loyaltyAccruement" cfc="LoyaltyAccruement" fieldtype="many-to-many" linktable="SwLoyaltyAccruProductType" fkcolumn="productTypeID" inversejoincolumn="loyaltyAccruementID" inverse="true";
+	property name="loyaltyAccruementExclusions" singularname="loyaltyAccruementExclusion" cfc="LoyaltyAccruement" type="array" fieldtype="many-to-many" linktable="SwLoyaltyAccruExclProductType" fkcolumn="productTypeID" inversejoincolumn="loyaltyAccruementID" inverse="true";
+	property name="loyaltyRedemptions" singularname="loyaltyRedemption" cfc="LoyaltyRedemption" type="array" fieldtype="many-to-many" linktable="SwLoyaltyRedemptionProductType" fkcolumn="productTypeID" inversejoincolumn="loyaltyRedemptionID" inverse="true";
+	property name="loyaltyRedemptionExclusions" singularname="loyaltyRedemptionExclusion" cfc="LoyaltyRedemption" type="array" fieldtype="many-to-many" linktable="SwLoyaltyRedempExclProductType" fkcolumn="productTypeID" inversejoincolumn="loyaltyRedemptionID" inverse="true";
 	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SwPriceGroupRateProductType" fkcolumn="productTypeID" inversejoincolumn="priceGroupRateID" inverse="true";
 	property name="priceGroupRateExclusions" singularname="priceGroupRateExclusion" cfc="PriceGroupRate" fieldtype="many-to-many" linktable="SwPriceGrpRateExclProductType" fkcolumn="productTypeID" inversejoincolumn="priceGroupRateID" inverse="true";
 	property name="attributeSets" singularname="attributeSet" cfc="AttributeSet" type="array" fieldtype="many-to-many" linktable="SwAttributeSetProductType" fkcolumn="productTypeID" inversejoincolumn="attributeSetID" inverse="true";
@@ -79,11 +83,11 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="parentProductTypeOptions" type="array" persistent="false";
@@ -164,11 +168,11 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	}
 	
 	// Child Product Types (one-to-many)
-	public void function addchildProductType(required any ChildProductType) {
-		arguments.ChildProductType.setParentProductType( this );
+	public void function addchildProductType(required any childProductType) {
+		arguments.childProductType.setParentProductType( this );
 	}
-	public void function removechildProductType(required any ChildProductType) {
-		arguments.ChildProductType.removeParentProductType( this );
+	public void function removechildProductType(required any childProductType) {
+		arguments.childProductType.removeParentProductType( this );
 	}
 	
 	// Promotion Rewards (many-to-many - inverse)
@@ -243,6 +247,38 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 		arguments.physical.removeProductType( this );
 	}
 	
+	// Loyalty Accruements (many-to-many - inverse)
+	public void function addLoyaltyAccruement(required any loyaltyAccruement) {
+		arguments.loyaltyAccruement.addProductType( this );
+	}
+	public void function removeloyaltyAccruement(required any loyaltyAccruement) {
+		arguments.loyaltyAccruement.removeProductType( this );
+	}
+	
+	// Loyalty Accruements Exclusions (many-to-many - inverse)
+	public void function addLoyaltyAccruementExclusion(required any loyaltyAccruementExclusion) {
+		arguments.loyaltyAccruementExclusion.addProductType( this );
+	}
+	public void function removeloyaltyAccruementExclusion(required any loyaltyAccruementExclusion) {
+		arguments.loyaltyAccruementExclusion.removeProductType( this );
+	}
+	
+	// Loyalty Redemptions (many-to-many - inverse)
+	public void function addLoyaltyRedemption(required any loyaltyRedemption) {
+		arguments.loyaltyRedemption.addProductType( this );
+	}
+	public void function removeLoyaltyRedemption(required any loyaltyRedemption) {
+		arguments.loyaltyRedemption.removeProductType( this );
+	}
+	
+	// Loyalty Redemption Exclusions (many-to-many - inverse)
+	public void function addLoyaltyRedemptionExclusion(required any loyaltyRedemptionExclusion) {
+		arguments.loyaltyRedemptionExclusion.addProductType( this );
+	}
+	public void function removeLoyaltyRedemptionExclusion(required any loyaltyRedemptionExclusion) {
+		arguments.loyaltyRedemptionExclusion.removeProductType( this );
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ============== START: Overridden Implicet Getters ===================
@@ -283,8 +319,8 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
 			
 			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
-			variables.assignedAttributeSetSmartList.addFilter('attributeSetType.systemCode', 'astProductType');
-			
+			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', 'ProductType');
+			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
 			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "productTypes", "left");
 			
 			var wc = "(";

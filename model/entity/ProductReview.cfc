@@ -54,20 +54,24 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 	property name="reviewerName" hb_populateEnabled="public" ormtype="string";
 	property name="review" hb_populateEnabled="public" ormtype="string" length="4000" hint="HTML Formated review of the Product";
 	property name="reviewTitle" hb_populateEnabled="public" ormtype="string";
-	property name="rating" hb_populateEnabled="public" ormtpe="int";
+	property name="rating" hb_populateEnabled="public" ormtype="int";
 
 	// Related Object Properties (many-to-one)
 	property name="product" hb_populateEnabled="public" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+	property name="sku" hb_populateEnabled="public" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
+	
+	// Related Object Properties (one-to-many)
+ 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productReviewID" inverse="true" cascade="all-delete-orphan";
 
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="ratingOptions" type="array" persistent="false";
@@ -145,6 +149,32 @@ component displayname="Product Review" entityname="SlatwallProductReview" table=
 		}
 		structDelete(variables, "account");
 	}
+	
+	// Sku (many-to-one)
+	public void function setSku(required any sku) {
+		variables.sku = arguments.sku;
+		if(isNew() or !arguments.sku.hasProductReview( this )) {
+			arrayAppend(arguments.sku.getProductReviews(), this);
+		}
+	}
+	public void function removeSku(any sku) {
+		if(!structKeyExists(arguments, "sku")) {
+			arguments.sku = variables.sku;
+		}
+		var index = arrayFind(arguments.sku.getProductReviews(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.sku.getProductReviews(), index);
+		}
+		structDelete(variables, "sku");
+	}
+	
+	// Attribute Values (one-to-many)
+ 	public void function addAttributeValue(required any attributeValue) {
+ 		arguments.attributeValue.setProductReview( this );
+ 	}
+ 	public void function removeAttributeValue(required any attributeValue) {
+ 		arguments.attributeValue.removeProductReview( this );
+ 	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
 

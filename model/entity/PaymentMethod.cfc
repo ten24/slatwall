@@ -51,7 +51,7 @@ Notes:
 		creditCard		
 		external		
 		giftCard		
-		paymentTerm		
+		termPayment		
 						
 	paymentTransactionTypes
 		credit					
@@ -91,11 +91,11 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="saveAccountPaymentMethodTransactionTypeOptions" persistent="false";
@@ -147,8 +147,11 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 				arrayAppend(variables.placeOrderChargeTransactionTypeOptions, {name=rbKey('define.generateToken'), value="generateToken"});
 				arrayAppend(variables.placeOrderChargeTransactionTypeOptions, {name=rbKey('define.authorize'), value="authorize"});
 				arrayAppend(variables.placeOrderChargeTransactionTypeOptions, {name=rbKey('define.authorizeAndCharge'), value="authorizeAndCharge"});
-			} else if (!isNull(getPaymentMethodType()) && getPaymentMethodType() eq "external") {
-				// TODO [issue #1765]: Get external transaction types here
+			} else if (!isNull(getPaymentMethodType()) && getPaymentMethodType() eq "external" && !isNull(getPaymentIntegration())) {
+				var integrationChargeTransactionTypes = getPaymentIntegration().getIntegrationCFC( "payment" ).getSupportedChargeTransactionTypes();
+				for(var i=1; i<=listLen(integrationChargeTransactionTypes); i++) {
+					arrayAppend(variables.placeOrderChargeTransactionTypeOptions, {name=rbKey('define.#listGetAt(integrationChargeTransactionTypes, i)#'), value="#listGetAt(integrationChargeTransactionTypes, i)#"});	
+				}
 			} else {
 				arrayAppend(variables.placeOrderChargeTransactionTypeOptions, {name=rbKey('define.receive'), value="receive"});
 			}
@@ -163,28 +166,32 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 			// If the payment method type isn't null then we can look at the active integrations with those payment method types
 			if(!isNull(getPaymentMethodType()) && getPaymentMethodType() eq "creditCard") {
 				arrayAppend(variables.placeOrderCreditTransactionTypeOptions, {name=rbKey('define.generateToken'), value="generateToken"});
-			} else if (!isNull(getPaymentMethodType()) && getPaymentMethodType() eq "external") {
-				// TODO [issue #1765]: Get external transaction types here
+				arrayAppend(variables.placeOrderCreditTransactionTypeOptions, {name=rbKey('define.credit'), value="credit"});
+			} else if (!isNull(getPaymentMethodType()) && getPaymentMethodType() eq "external" && !isNull(getPaymentIntegration())) {
+				var integrationCreditTransactionTypes = getPaymentIntegration().getIntegrationCFC( "payment" ).getSupportedCreditTransactionTypes();
+				for(var i=1; i<=listLen(integrationCreditTransactionTypes); i++) {
+					arrayAppend(variables.placeOrderCreditTransactionTypeOptions, {name=rbKey('define.#listGetAt(integrationCreditTransactionTypes, i)#'), value="#listGetAt(integrationCreditTransactionTypes, i)#"});	
+				}
+			} else {
+				arrayAppend(variables.placeOrderCreditTransactionTypeOptions, {name=rbKey('define.credit'), value="credit"});	
 			}
-			
-			arrayAppend(variables.placeOrderCreditTransactionTypeOptions, {name=rbKey('define.credit'), value="credit"});
 			
 		}
 		return variables.placeOrderCreditTransactionTypeOptions;
 	}
-	
-	
+
+
 	public array function getPaymentIntegrationOptions() {
 		if(!structKeyExists(variables, "paymentIntegrationOptions")) {
 			variables.paymentIntegrationOptions = [{name=rbKey('define.select'), value=""}];
-			
+
 			// If the payment method type isn't null then we can look at the active integrations with those payment method types
 			if(!isNull(getPaymentMethodType())) {
 				var optionsSL = getService("integrationService").getIntegrationSmartList();
 				optionsSL.addFilter('installedFlag', '1');
-				optionsSL.addFilter('paymentReadyFlag', '1');
-				optionsSL.addFilter('paymentActiveFlag', '1');
-				
+				optionsSL.addFilter('activeFlag', '1');
+				optionsSL.addLikeFilter('integrationTypeList', '%payment%');
+
 				for(var i=1; i<=arrayLen(optionsSL.getRecords()); i++) {
 					if(listFindNoCase(optionsSL.getRecords()[i].getIntegrationCFC("payment").getPaymentMethodTypes(), getPaymentMethodType())) {
 						arrayAppend(variables.paymentIntegrationOptions, {name=optionsSL.getRecords()[i].getIntegrationName(), value=optionsSL.getRecords()[i].getIntegrationID()});	
@@ -192,10 +199,10 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 				}	
 			}
 		}
-		
+
 		return variables.paymentIntegrationOptions;
-	}
-	
+	} 
+
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================

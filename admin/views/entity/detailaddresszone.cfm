@@ -46,22 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.addressZone" type="any">
 <cfparam name="rc.edit" type="boolean">
 
-<cf_HibachiEntityDetailForm object="#rc.addressZone#" edit="#rc.edit#">
-	<cf_HibachiEntityActionBar type="detail" object="#rc.addressZone#" edit="#rc.edit#">
-		<cf_HibachiActionCaller action="admin:entity.createaddresszonelocation" queryString="addressZoneID=#rc.addressZone.getAddressZoneID()#" type="list" modal=true />
-	</cf_HibachiEntityActionBar>
+<hb:HibachiEntityDetailForm object="#rc.addressZone#" edit="#rc.edit#">
+	<hb:HibachiEntityActionBar type="detail" object="#rc.addressZone#" edit="#rc.edit#">
+		<hb:HibachiActionCaller action="admin:entity.createaddresszonelocation" queryString="addressZoneID=#rc.addressZone.getAddressZoneID()#" type="list" modal=true />
+	</hb:HibachiEntityActionBar>
 	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.addressZone#" property="addressZoneName" edit="#rc.edit#">
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
+	<hb:HibachiEntityDetailGroup object="#rc.addressZone#">
+		<hb:HibachiEntityDetailItem view="admin:entity/addresszonetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailItem view="admin:entity/addresszonetabs/locations" />
+	</hb:HibachiEntityDetailGroup>
 	
-	<cf_HibachiTabGroup object="#rc.addressZone#">
-		<cf_HibachiTab view="admin:entity/addresszonetabs/locations" />
-	</cf_HibachiTabGroup>
-	
-</cf_HibachiEntityDetailForm>
+</hb:HibachiEntityDetailForm>

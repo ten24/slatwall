@@ -57,17 +57,31 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="accountAddressID" hb_rbKey="entity.accountAddress" hb_formFieldType="select";
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno";
 	property name="saveAccountPaymentMethodName" hb_rbKey="entity.accountPaymentMethod.accountPaymentMethodName";
+	property name="currencyCode" hb_rbKey="entity.currency" hb_formFieldType="select";
+	property name="appliedOrderPayments" type="array" hb_populateArray="true";
 	
 	// Cached Properties
 	property name="accountPaymentMethodIDOptions";
 	property name="paymentMethodIDOptions";
 	property name="accountAddressIDOptions";
 	
+	public any function setupDefaults() {
+		variables.accountAddressID = getAccountAddressIDOptions()[1]['value'];
+		variables.accountPaymentMethodID = getAccountPaymentMethodIDOptions()[1]['value'];
+	}
+	
 	public string function getAccountPaymentMethodID() {
 		if(!structKeyExists(variables, "accountPaymentMethodID")) {
-			variables.accountPaymentMethodID = getAccountPaymentMethodIDOptions()[1]['value'];
+			variables.accountPaymentMethodID = "";
 		}
 		return variables.accountPaymentMethodID;
+	}
+	
+	public string function getAccountAddressID() {
+		if(!structKeyExists(variables, "accountAddressID")) {
+			variables.accountAddressID = "";
+		}
+		return variables.accountAddressID;
 	}
 	
 	public array function getAccountPaymentMethodIDOptions() {
@@ -75,7 +89,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.accountPaymentMethodIDOptions = [];
 			var pmArr = getAccount().getAccountPaymentMethods();
 			for(var i=1; i<=arrayLen(pmArr); i++) {
-				if(!isNull(pmArr[i].getActiveFlag()) && pmArr[i].getActiveFlag()) {
+				if(!isNull(pmArr[i].getActiveFlag()) && pmArr[i].getActiveFlag() && !isNull(pmArr[i].getPaymentMethodType()) && pmArr[i].getPaymentMethodType() != "termPayment") {
 					arrayAppend(variables.accountPaymentMethodIDOptions, {name=pmArr[i].getSimpleRepresentation(), value=pmArr[i].getAccountPaymentMethodID()});	
 				}
 			}
@@ -84,11 +98,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.accountPaymentMethodIDOptions;
 	}
 	
-	public string function getAccountAddressID() {
-		if(!structKeyExists(variables, "accountAddressID")) {
-			variables.accountAddressID = getAccountAddressIDOptions()[1]['value'];
+	public array function getCurrencyCodeOptions() {
+		return getService("currencyService").getCurrencyOptions();
+	}
+	
+	public array function getPaymentMethodIDOptions() {
+		if(!structKeyExists(variables, "paymentMethodIDOptions")) {
+			var pmsl = getAccount().getEligibleAccountPaymentMethodsSmartList();
+			pmsl.addSelect('paymentMethodID', 'value');
+			pmsl.addSelect('paymentMethodName', 'name');
+			pmsl.addSelect('paymentMethodType', 'paymentmethodtype');
+			pmsl.addSelect('allowSaveFlag', 'allowsave');
+			variables.paymentMethodIDOptions = pmsl.getRecords();
 		}
-		return variables.accountAddressID;
+		return variables.paymentMethodIDOptions;
 	}
 	
 	public array function getAccountAddressIDOptions() {

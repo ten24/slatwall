@@ -47,7 +47,7 @@
 	
 --->
 <!--- This import allows for the custom tags required by this page to work --->
-<cfimport prefix="sw" taglib="/Slatwall/public/tags" />
+<cfimport prefix="sw" taglib="./" />
 
 <!---[DEVELOPER NOTES]															
 																				
@@ -68,6 +68,10 @@
 <cfparam name="attributes.fieldNamePrefix" type="string" default="" />
 <cfparam name="attributes.fieldList" type="string" default="countryCode,name,company,streetAddress,street2Address,locality,city,stateCode,postalCode" />
 <cfparam name="attributes.fieldClass" type="string" default="" />
+
+<cfif isNull(attributes.address.getCountryCode())>
+	<cfset attributes.address.setCountryCode('US') />
+</cfif>
 
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
@@ -175,7 +179,7 @@
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.stateCode')#</label>
 						<div class="controls" data-sw-field="true">
 							
-							<cfif arrayLen(attributes.address.getCountry().getStateCodeOptions())>
+							<cfif arrayLen(attributes.address.getStateCodeOptions())>
 								<sw:formField type="select" name="#attributes.fieldNamePrefix#stateCode" valueObject="#attributes.address#" valueObjectProperty="stateCode" valueOptions="#attributes.address.getCountry().getStateCodeOptions()#" class="#attributes.fieldClass#" />
 							<cfelse>
 								<sw:formField type="text" name="#attributes.fieldNamePrefix#stateCode" valueObject="#attributes.address#" valueObjectProperty="stateCode" class="#attributes.fieldClass#" />

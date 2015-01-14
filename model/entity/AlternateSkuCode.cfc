@@ -50,18 +50,17 @@ component displayname="Alternate Sku Code" entityname="SlatwallAlternateSkuCode"
 	
 	// Persistent Properties
 	property name="alternateSkuCodeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="alternateSkuCode" ormtype="string";
+	property name="alternateSkuCode" ormtype="string" index="PI_ALTERNATESKUCODE";
 	
 	// Related Object Properties (Many-To-One)
 	property name="alternateSkuCodeType" cfc="Type" fieldtype="many-to-one" fkcolumn="skuTypeID" hb_optionsSmartListData="f:parentType.systemCode=alternateSkuCodeType";
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
-	
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

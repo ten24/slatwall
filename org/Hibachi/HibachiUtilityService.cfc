@@ -67,6 +67,73 @@
 			return '<a href="#arguments.value#" target="_blank">' & arguments.value & '</a>';
 		}
 		
+		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
+			var responseData = {};
+			
+			for(var propertyIdentifier in listToArray(arguments.propertyIdentifierList)) {
+				if( listFindNoCase(arguments.availablePropertyIdentifierList, trim(propertyIdentifier)) ) {
+					buildPropertyIdentifierDataStruct(arguments.object, trim(propertyIdentifier), responseData);
+				}
+			}
+			
+			return responseData;
+		}
+		
+		public any function buildPropertyIdentifierDataStruct(required parentObject, required string propertyIdentifier, required any data) {
+			if(listLen(arguments.propertyIdentifier, ".") eq 1) {
+				data[ arguments.propertyIdentifier ] = parentObject.getValueByPropertyIdentifier( arguments.propertyIdentifier );
+				return;
+			}
+			var object = parentObject.invokeMethod("get#listFirst(arguments.propertyIdentifier, '.')#");
+			if(!isNull(object) && isObject(object)) {
+				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
+				param name="data[thisProperty]" default="#structNew()#";
+				
+				if(!structKeyExists(data[thisProperty],"errors")) {
+					// add error messages
+					data[thisProperty]["hasErrors"] = object.hasErrors();
+					data[thisProperty]["errors"] = object.getErrors();
+				}
+				
+				buildPropertyIdentifierDataStruct(object,listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty]);
+			} else if(!isNull(object) && isArray(object)) {
+				var thisProperty = listFirst(arguments.propertyIdentifier, '.');
+				param name="data[thisProperty]" default="#arrayNew(1)#";
+	
+				for(var i = 1; i <= arrayLen(object); i++){
+					param name="data[thisProperty][i]" default="#structNew()#";
+	
+					if(!structKeyExists(data[thisProperty][i],"errors")) {
+						// add error messages
+						data[thisProperty][i]["hasErrors"] = object[i].hasErrors();
+						data[thisProperty][i]["errors"] = object[i].getErrors();
+					}
+					
+					buildPropertyIdentifierDataStruct(object[i],listDeleteAt(arguments.propertyIdentifier, 1, "."), data[thisProperty][i]);
+				}
+			}
+		}
+		
+		public any function lcaseStructKeys( required any data ) {
+			if( isStruct(arguments.data) ) {
+				var newData = {};
+				for(var key in arguments.data) {
+					if(!structKeyExists(arguments.data, key )) {
+						newData[ lcase(key) ] = javaCast('null', '');	
+					} else {
+						newData[ lcase(key) ] = lcaseStructKeys(arguments.data[ key ]);	
+					}
+				}
+				return newData;
+			} else if (isArray(arguments.data)) {
+				for(var i=1; i<=arrayLen(arguments.data); i++) {
+					arguments.data[i] = lcaseStructKeys(arguments.data[i]);
+				}
+			}
+			
+			return arguments.data;
+		}
+		
 		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
 			var templateKeys = reMatchNoCase("\${[^}]+}",arguments.template);
 			var replacementArray = [];
@@ -82,6 +149,8 @@
 					replaceDetails.value = arguments.object[ valueKey ];
 				} else if (isObject(arguments.object) && (
 					(arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
+						||
+					(arguments.object.isPersistent() && getHasAttributeByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
 						||
 					(!arguments.object.isPersistent() && arguments.object.hasProperty(valueKey))	
 					)) {
@@ -222,32 +291,165 @@
 			getHibachiTagService().cfcontent(type="#arguments.contentType#", file="#arguments.filePath#", deletefile="#arguments.deleteFile#");
 		}
 		
-		public string function encryptValue(required string value) {
-			return encrypt(arguments.value, getEncryptionKey(), "AES", "Base64");
+		public string function encryptValue(required string value, string salt="") {
+			var passwords = getEncryptionPasswordArray();
+			return encrypt(arguments.value, generatePasswordBasedEncryptionKey(password=passwords[1].password, salt=arguments.salt, iterationCount=passwords[1].iterationCount), getEncryptionAlgorithm(), getEncryptionEncoding());
 		}
 	
-		public string function decryptValue(required string value) {
-			try {
-				return decrypt(arguments.value, getEncryptionKey(), "AES", "Base64");	
-			} catch (any e) {
-				logHibachi("There was an error decrypting a value from the database.  This is usually because the application cannot find the Encryption key used to encrypt the data.  Verify that you have a key file in the location specified in the advanced settings of the admin.", true);
-				return "";
+		public string function decryptValue(required string value, string salt="") {
+			for (var passwordData in getEncryptionPasswordArray()) {
+				var key = "";
+				var algorithm = getEncryptionAlgorithm();
+				var encoding = getEncryptionEncoding();
+				// Using key with password based derivation method
+				if (structKeyExists(passwordData, 'password')) {
+					key = generatePasswordBasedEncryptionKey(password=passwordData.password, salt=arguments.salt, iterationCount=passwordData.iterationCount);
+				// Using legacy key (absolute)
+				} else if (structKeyExists(passwordData, 'legacyKey')) {
+					key = passwordData.legacyKey;
+					
+					// Override decrypt arguments to work with legacy encrypt/decrypt
+					algorithm = passwordData.legacyEncryptionAlgorithm;
+					encoding = passwordData.legacyEncryptionEncoding;
+				}
+				
+				// Attempt to decrypt
+				try {
+					var decryptedResult = decrypt(arguments.value, key, algorithm, encoding);
+					// Necessary due to a possible edge case when no error occurs during a 
+					// decryption attempt with an incorrect key
+					if (!len(decryptedResult)) {
+						continue;
+					}
+					
+					return decryptedResult;
+						
+				// Graceful handling of decrypt failure
+				} catch (any e) {}
 			}
+			
+			logHibachi("There was an error decrypting a value from the database.  This is usually because the application cannot derive the Encryption key used to encrypt the data.  Verify that you have a password file in the location specified in the advanced settings of the admin.", true);
+			return "";
 		}
 		
-		public string function createEncryptionKey() {
-			var	theKey = generateSecretKey("Base64", "128");
-			storeEncryptionKey(theKey);
-			return theKey;
+		public function generatePasswordBasedEncryptionKey(required string password, string salt="", numeric iterationCount=1000) {
+			// Notes: Another possible implementation using Java 'PBKDF2WithHmacSHA1'
+			// https://gist.github.com/scotttam/874426
+			
+			var hashResult = "";
+			var key = "";
+			var iterationIndex = 1;
+			
+			// Derive key using password, salt, and current iteration index
+			// Use current iteration generated key output as salt input for the next iteration
+			do {
+				hashResult = hash("#arguments.password##arguments.salt##iterationIndex#", "MD5" );
+				key = binaryEncode(binaryDecode(hashResult, "hex"), "base64");
+				
+				// Update salt for next iteration
+				arguments.salt = key;
+				iterationIndex++;
+			} while (iterationIndex <= arguments.iterationCount);
+			
+			return key;
 		}
 		
-		public string function getEncryptionKey() {
-			if(!encryptionKeyExists()){
-				createEncryptionKey();
+		public any function createDefaultEncryptionPasswordData() {
+			return {'iterationCount'= randRange(500, 2500), 'password'=createHibachiUUID(), 'createdDateTime'=dateFormat(now(),"yyyy-mm-dd") & " " & timeFormat(now(), "HH:MM:SS")};
+		}
+		
+		public any function addEncryptionPasswordData(required struct data) {
+			if (!isNumeric(arguments.data.iterationCount)) {
+				arguments.data.iterationCount = randRange(500, 2500);
 			}
-			var encryptionFileData = fileRead(getEncryptionKeyFilePath());
-			var encryptionInfoXML = xmlParse(encryptionFileData);
-			return encryptionInfoXML.crypt.key.xmlText;
+			
+			var passwordData = {'iterationCount'= arguments.data.iterationCount, 'password'=arguments.data.password, 'createdDateTime'=dateFormat(now(),"yyyy-mm-dd") & " " & timeFormat(now(), "HH:MM:SS")};
+			
+			var passwords = [passwordData];
+			
+			// NOTE: Do not want to call getEncryptionPasswordArray() if no password file existed prior, otherwise a unnecessary password will be also generated automatically in addition
+			if (encryptionPasswordFileExists()) {
+				passwords = getEncryptionPasswordArray();
+				
+				// Prepend new password data to existing passwords so it becomes the newest password used
+				arrayInsertAt(passwords, 1, passwordData);
+			}
+			
+			// Write new contents to the encryption password file
+			writeEncryptionPasswordFile(passwords);
+		}
+		
+		public any function getEncryptionPasswordArray() {
+			var passwords = [];
+			
+			// Generate default password if necessary
+			if (!encryptionPasswordFileExists()) {
+				arrayAppend(passwords, createDefaultEncryptionPasswordData());
+				writeEncryptionPasswordFile(passwords);
+			}
+			
+			// Read password file
+			passwords = readEncryptionPasswordFile().passwords;
+			
+			// Migrate legacy key to encryption password file
+			if (encryptionKeyExists()) {
+				var migrateLegacyKeyFlag = true;
+				var legacyKey = getLegacyEncryptionKey();
+				
+				// Make sure key does not already exist in passwords
+				// eg. file could have been restored by version control, etc.
+				for (var passwordData in passwords) {
+					if (structKeyExists(passwordData, "legacyKey") && passwordData.legacyKey == legacyKey) {
+						migrateLegacyKeyFlag = false;
+						break;
+					}
+				}
+				
+				// Update passwords file
+				if (migrateLegacyKeyFlag) {
+					arrayAppend(passwords, {'legacyKey'=legacyKey, 'legacyEncryptionAlgorithm'=getLegacyEncryptionAlgorithm(), 'legacyEncryptionEncoding'=getLegacyEncryptionEncoding(), 'legacyEncryptionKeySize'=getLegacyEncryptionKeySize()});
+					writeEncryptionPasswordFile(passwords);
+				}
+				
+				// Remove legacy key file from file system
+				removeLegacyEncryptionKeyFile();
+			}
+			
+			var legacyPasswords = [];
+			var sortedPasswords = [];
+			
+			//  Sort passwords array from newest to oldest
+			if (arraylen(passwords) > 1) {
+				var unsortedPasswordsStruct = {};
+				for (var p in passwords) {
+					if (structKeyExists(p, 'createdDateTime')) {
+						// Create temporary uniqueID used for identification purposes during sorting
+						p['uniqueID'] = createHibachiUUID();
+						structInsert(unsortedPasswordsStruct, p.uniqueID, p);
+					} else {
+						arrayAppend(legacyPasswords, p);
+					}
+				}
+				
+				// Perform sort on createdDateTime
+				sortedPasswordKeys = structSort(unsortedPasswordsStruct, 'textnocase', 'desc', 'createdDateTime');
+				
+				// Build array of sorted passwords
+				for (var spk in sortedPasswordKeys) {
+					// Delete temporary uniqueID used for identification purposes during sorting
+					structDelete(unsortedPasswordsStruct[spk], 'uniqueID');
+					arrayAppend(sortedPasswords, unsortedPasswordsStruct[spk]);
+				}
+				
+				// Append legacy keys to end
+				for (var lp in legacyPasswords) {
+					arrayAppend(sortedPasswords, lp);
+				}
+				
+				passwords = sortedPasswords;
+			}
+			
+			return passwords;
 		}
 		
 		private string function getEncryptionKeyFilePath() {
@@ -262,13 +464,87 @@
 			return "key.xml.cfm";
 		}
 		
-		private boolean function encryptionKeyExists() {
+		public boolean function encryptionKeyExists() {
 			return fileExists(getEncryptionKeyFilePath());
 		}
 		
-		private void function storeEncryptionKey(required string key) {
-			var theKey = "<crypt><key>#arguments.key#</key></crypt>";
-			fileWrite(getEncryptionKeyFilePath(),theKey);
+		private string function getEncryptionPasswordFilePath() {
+			return getEncryptionKeyLocation() & getEncryptionPasswordFileName();
+		}
+		
+		private string function getEncryptionPasswordFileName() {
+			return "password.txt.cfm";
+		}
+		
+		private boolean function encryptionPasswordFileExists() {
+			return fileExists(getEncryptionPasswordFilePath());
+		}
+		
+		public string function getEncryptionAlgorithm() {
+			//return "AES";
+			return "AES/CBC/PKCS5Padding";
+		}
+		
+		public string function getEncryptionEncoding() {
+			return "Base64";
+		}
+		
+		public string function getLegacyEncryptionKey() {
+			var encryptionFileData = fileRead(getEncryptionKeyFilePath());
+			var encryptionInfoXML = xmlParse(encryptionFileData);
+			return encryptionInfoXML.crypt.key.xmlText;
+		}
+		
+		public string function getLegacyEncryptionAlgorithm() {
+			return "AES";
+		}
+		
+		public string function getLegacyEncryptionEncoding() {
+			return "Base64";
+		}
+		
+		public string function getLegacyEncryptionKeySize() {
+			return "128";
+		}
+		
+		public void function removeLegacyEncryptionKeyFile(string method) {
+			if (fileExists(getEncryptionKeyFilePath())) {
+				if (!isNull(arguments.method) && arguments.method == "rename") {
+					// Filename without extension
+					var filename = listDeleteAt(getEncryptionKeyFileName(),listLen(getEncryptionKeyFileName(), "."),".");
+					fileMove(getEncryptionKeyFilePath(), '#getEncryptionKeyLocation()##filename#.#hash(getTickCount(), "SHA", "utf-8")#.cfm');
+				} else {
+					fileDelete(getEncryptionKeyFilePath());
+				}	
+			}
+		}
+		
+		public void function reencryptData(numeric batchSizeLimit=0) {
+			getHibachiDAO().reencryptData(argumentCollection=arguments);
+		}
+		
+		private void function writeEncryptionPasswordFile(array encryptionPasswordArray) {
+			// WARNING DO NOT CHANGE THIS ENCRYPTION KEY FOR ANY REASON
+			var hardCodedFileEncryptionKey = generatePasswordBasedEncryptionKey('0ae8fc11293444779bd4358177931793', 1024);
+			
+			var passwordsJSON = serializeJSON({'passwords'=arguments.encryptionPasswordArray});
+			fileWrite(getEncryptionPasswordFilePath(), encrypt(passwordsJSON, hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
+		}
+		
+		private any function readEncryptionPasswordFile() {
+			// WARNING DO NOT CHANGE THIS ENCRYPTION KEY FOR ANY REASON
+			var hardCodedFileEncryptionKey = generatePasswordBasedEncryptionKey('0ae8fc11293444779bd4358177931793', 1024);
+			
+			return deserializeJSON(decrypt(fileRead(getEncryptionPasswordFilePath()), hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
+		}
+		
+		public any function updateCF9SerializeJSONOutput( required any data ) {
+			var reMatchArray = reMatch(':0[0-9][0-9]*\.?[0-9]*,', arguments.data);
+			for(var i=1; i<=arrayLen(reMatchArray); i++) {
+				arguments.data = reReplace(arguments.data, ':0[0-9][0-9]*\.?[0-9]*,', ':"#right(reMatchArray[i], len(reMatchArray[i])-1)#",');
+			}
+			
+			return arguments.data;
 		}
 	</cfscript>
 	
@@ -476,4 +752,138 @@
 		</cfif>
 		<cfreturn arguments.formCollectionsList />
 	</cffunction>
+	
+	<cffunction name="QueryToCSV" access="public" returntype="string" output="false" hint="I take a query and convert it to a comma separated value string.">
+	 
+	    <!--- Define arguments. --->
+	    <cfargument name="Query" type="query" required="true" hint="I am the query being converted to CSV." />
+	    <cfargument name="Fields" type="string" required="true" hint="I am the list of query fields to be used when creating the CSV value." />
+	    <cfargument name="CreateHeaderRow" type="boolean" required="false" default="true" hint="I flag whether or not to create a row of header values." />
+	    <cfargument name="Delimiter" type="string" required="false" default="," hint="I am the field delimiter in the CSV value." />
+	 
+	    <!--- Define the local scope. --->
+	    <cfset var LOCAL = {} />
+	 
+	    <!---
+	        First, we want to set up a column index so that we can
+	        iterate over the column names faster than if we used a
+	        standard list loop on the passed-in list.
+	    --->
+	    <cfset LOCAL.ColumnNames = [] />
+	 
+	    <!---
+	        Loop over column names and index them numerically. We
+	        are working with an array since I believe its loop times
+	        are faster than that of a list.
+	    --->
+	    <cfloop
+	        index="LOCAL.ColumnName"
+	        list="#ARGUMENTS.Fields#"
+	        delimiters=",">
+	 
+	        <!--- Store the current column name. --->
+	        <cfset ArrayAppend(
+	            LOCAL.ColumnNames,
+	            Trim( LOCAL.ColumnName )
+	            ) />
+	 
+	    </cfloop>
+	 
+	    <!--- Store the column count. --->
+	    <cfset LOCAL.ColumnCount = ArrayLen( LOCAL.ColumnNames ) />
+	 
+	 
+	    <!---
+	        Now that we have our index in place, let's create
+	        a string buffer to help us build the CSV value more
+	        effiently.
+	    --->
+	    <cfset LOCAL.Buffer = CreateObject( "java", "java.lang.StringBuffer" ).Init() />
+	 
+	    <!--- Create a short hand for the new line characters. --->
+	    <cfset LOCAL.NewLine = (Chr( 13 ) & Chr( 10 )) />
+	 
+	 
+	    <!--- Check to see if we need to add a header row. --->
+	    <cfif ARGUMENTS.CreateHeaderRow>
+	 
+	        <!--- Create array to hold row data. --->
+	        <cfset LOCAL.RowData = [] />
+	 
+	        <!--- Loop over the column names. --->
+	        <cfloop
+	            index="LOCAL.ColumnIndex"
+	            from="1"
+	            to="#LOCAL.ColumnCount#"
+	            step="1">
+	 
+	            <!--- Add the field name to the row data. --->
+	            <cfset LOCAL.RowData[ LOCAL.ColumnIndex ] = """#LOCAL.ColumnNames[ LOCAL.ColumnIndex ]#""" />
+	 
+	        </cfloop>
+	 
+	        <!--- Append the row data to the string buffer. --->
+	        <cfset LOCAL.Buffer.Append(
+	            JavaCast(
+	                "string",
+	                (
+	                    ArrayToList(
+	                        LOCAL.RowData,
+	                        ARGUMENTS.Delimiter
+	                        ) &
+	                    LOCAL.NewLine
+	                ))
+	            ) />
+	 
+	    </cfif>
+	 
+	 
+	    <!---
+	        Now that we have dealt with any header value, let's
+	        convert the query body to CSV. When doing this, we are
+	        going to qualify each field value. This is done be
+	        default since it will be much faster than actually
+	        checking to see if a field needs to be qualified.
+	    --->
+	 
+	    <!--- Loop over the query. --->
+	    <cfloop query="ARGUMENTS.Query">
+	 
+	        <!--- Create array to hold row data. --->
+	        <cfset LOCAL.RowData = [] />
+	 
+	        <!--- Loop over the columns. --->
+	        <cfloop
+	            index="LOCAL.ColumnIndex"
+	            from="1"
+	            to="#LOCAL.ColumnCount#"
+	            step="1">
+	 
+	            <!--- Add the field to the row data. --->
+	            <cfset LOCAL.RowData[ LOCAL.ColumnIndex ] = """#Replace( ARGUMENTS.Query[ LOCAL.ColumnNames[ LOCAL.ColumnIndex ] ][ ARGUMENTS.Query.CurrentRow ], """", """""", "all" )#""" />
+	 
+	        </cfloop>
+	 
+	 
+	        <!--- Append the row data to the string buffer. --->
+	        <cfset LOCAL.Buffer.Append(
+	            JavaCast(
+	                "string",
+	                (
+	                    ArrayToList(
+	                        LOCAL.RowData,
+	                        ARGUMENTS.Delimiter
+	                        ) &
+	                    LOCAL.NewLine
+	                ))
+	            ) />
+	 
+	    </cfloop>
+	 
+	 
+	    <!--- Return the CSV value. --->
+	    <cfreturn LOCAL.Buffer.ToString() />
+	</cffunction>
+	
+	
 </cfcomponent>

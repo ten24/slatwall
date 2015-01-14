@@ -46,16 +46,27 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.scheduleSmartList" type="any"/>
 
 <cfoutput>
 
-	<cf_HibachiEntityActionBar type="listing" object="#rc.scheduleSmartList#" />
+	<hb:HibachiEntityActionBar type="listing" object="#rc.scheduleSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createschedule" entity="schedule" class="btn btn-primary" icon="plus icon-white" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 
-	<cf_HibachiListingDisplay smartlist="#rc.scheduleSmartList#"
+	<hb:HibachiListingDisplay smartlist="#rc.scheduleSmartList#"
 							  recorddetailaction="admin:entity.detailschedule" 
 	                          recordeditaction="admin:entity.editschedule">
-		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="scheduleName" search="true" />
-	</cf_HibachiListingDisplay>
+		
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="scheduleName" search="true" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

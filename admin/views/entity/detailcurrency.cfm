@@ -46,28 +46,31 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.currency" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.currency#" edit="#rc.edit#" sRedirectAction="admin:entity.listcurrency">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.currency#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.currency#" edit="#rc.edit#" sRedirectAction="admin:entity.listcurrency">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.currency#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="currencyCode">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="currencyName">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="currencySymbol" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.currency#" property="formattedExample">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.currency#" property="activeFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.currency#" property="currencyCode">
+				<hb:HibachiPropertyDisplay object="#rc.currency#" property="currencyName">
+				<hb:HibachiPropertyDisplay object="#rc.currency#" property="currencySymbol" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.currency#" property="formattedExample">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<!---
-		<cf_HibachiTabGroup object="#rc.currency#">
-			<!--- <cf_HibachiTab view="admin:section/tabsfolder/view" /> --->
-		</cf_HibachiTabGroup>
-		--->
 		
-	</cf_HibachiEntityDetailForm>
+		<hb:HibachiTabGroup object="#rc.currency#">
+			<hb:HibachiTab property="currencyrates" />
+		</hb:HibachiTabGroup>
+		
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

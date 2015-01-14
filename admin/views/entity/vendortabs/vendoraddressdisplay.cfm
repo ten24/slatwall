@@ -46,12 +46,14 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfoutput>
 	<div class="vendorAddressDisplay">
 		<dl class="twoColumn">
 			<input type="hidden" name="vendorAddresses[1].vendorAddressID" value="#rc.vendorAddress.getVendorAddressID()#"/>
-			<cf_SlatwallAddressDisplay address="#rc.vendorAddress.getAddress()#" edit="#rc.edit#" fieldNamePrefix="vendorAddresses[1].address." />
+			<swa:SlatwallAddressDisplay address="#rc.vendorAddress.getAddress()#" edit="#rc.edit#" fieldNamePrefix="vendorAddresses[1].address." />
 		</dl>
 	</div>
 </cfoutput>

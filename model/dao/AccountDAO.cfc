@@ -53,9 +53,25 @@ Notes:
 		<cfargument name="accountID" type="string" />
 		
 		<cfif structKeyExists(arguments, "accountID")>
-			<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE pea.emailAddress=:emailAddress AND a.accountID <> :accountID", {emailAddress=arguments.emailAddress, accountID=arguments.accountID})) />
+			<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress AND a.accountID <> :accountID", {emailAddress=lcase(arguments.emailAddress), accountID=arguments.accountID})) />
 		</cfif>
-		<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE pea.emailAddress=:emailAddress", {emailAddress=arguments.emailAddress})) />
+		<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress", {emailAddress=lcase(arguments.emailAddress)})) />
+	</cffunction>
+	
+	<cffunction name="removeAccountAuthenticationFromSessions">
+		<cfargument name="accountAuthenticationID" type="string" required="true" >
+		
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			UPDATE
+				SwSession
+			SET
+				accountAuthenticationID = null,
+				accountID = null
+			WHERE
+				accountAuthenticationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAuthenticationID#" /> 
+		</cfquery>
 	</cffunction>
 	
 	<cffunction name="removeAccountAddressFromOrderFulfillments">
@@ -65,7 +81,7 @@ Notes:
 		
 		<cfquery name="rs">
 			UPDATE
-				SlatwallOrderFulfillment
+				SwOrderFulfillment
 			SET
 				accountAddressID = null 
 			WHERE
@@ -73,10 +89,77 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name="removeAccountAddressFromOrderPayments">
+		<cfargument name="accountAddressID" type="string" required="true" >
+
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwOrderPayment
+			SET
+				billingAccountAddressID = null
+			WHERE
+				billingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
+		</cfquery>
+	</cffunction>
+
+	<cffunction name="removeAccountAddressFromOrders">
+		<cfargument name="accountAddressID" type="string" required="true" >
+		
+		<cfset var rs = "" />
+
+		<cfquery name="rs">
+			UPDATE
+				SwOrder
+			SET
+				billingAccountAddressID = null
+			WHERE
+				billingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
+		</cfquery>
+
+		<cfquery name="rs">
+			UPDATE
+				SwOrder
+			SET
+				shippingAccountAddressID = null
+			WHERE
+				shippingAccountAddressID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAddressID#" />
+		</cfquery>
+
+	</cffunction>
+	
+	<cffunction name="removeAccountPaymentMethodFromOrderPayments">
+		<cfargument name="accountPaymentMethodID" type="string" required="true" >
+		
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			UPDATE
+				SwOrderPayment
+			SET
+				accountPaymentMethodID = null 
+			WHERE
+				accountPaymentMethodID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountPaymentMethodID#" /> 
+		</cfquery>
+	</cffunction>
+	
 	<cffunction name="getInternalAccountAuthenticationsByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		
-		<cfreturn ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND pea.emailAddress=:emailAddress", {emailAddress=arguments.emailAddress}) />
+		<cfreturn ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND lower(pea.emailAddress)=:emailAddress", {emailAddress=lcase(arguments.emailAddress)}) />
+	</cffunction>
+	
+	<cffunction name="getActivePasswordByEmailAddress" returntype="any" access="public">
+		<cfargument name="emailAddress" required="true" type="string" />
+		
+		<cfreturn ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND lower(pea.emailAddress)=:emailAddress AND aa.activeFlag = true", {emailAddress=lcase(arguments.emailAddress)}, true) />
+	</cffunction>
+	
+	<cffunction name="getActivePasswordByAccountID" returntype="any" access="public">
+		<cfargument name="accountID" required="true" type="string" />
+		
+		<cfreturn ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a WHERE aa.password is not null AND aa.integration.integrationID is null AND a.accountID=:accountid AND aa.activeFlag = true", {accountid=arguments.accountID}, true) />
 	</cffunction>
 	
 	<cffunction name="getAccountAuthenticationExists" returntype="any" access="public">
@@ -87,7 +170,7 @@ Notes:
 	<cffunction name="getAccountWithAuthenticationByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		
-		<cfset var accounts = ormExecuteQuery("SELECT a FROM SlatwallAccount a INNER JOIN a.primaryEmailAddress pea WHERE pea.emailAddress = :emailAddress AND EXISTS(SELECT aa.accountAuthenticationID FROM SlatwallAccountAuthentication aa WHERE aa.account.accountID = a.accountID)", {emailAddress=arguments.emailAddress}) />
+		<cfset var accounts = ormExecuteQuery("SELECT a FROM SlatwallAccount a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress) = :emailAddress AND EXISTS(SELECT aa.accountAuthenticationID FROM SlatwallAccountAuthentication aa WHERE aa.account.accountID = a.accountID)", {emailAddress=lcase(arguments.emailAddress)}) />
 		<cfif arrayLen(accounts)>
 			<cfreturn accounts[1] />
 		</cfif>
@@ -169,5 +252,23 @@ Notes:
 			DELETE FROM SwAccount WHERE accountID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.oldAccountID#" />
 		</cfquery>
 	</cffunction>
+	
+	<cffunction name="getNewAccountLoyaltyNumber" output="false">
+		<cfargument name="loyaltyID" type="string" required="true" />
+		
+		<cfset var accountLoyaltyNumber="1234" />
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			SELECT MAX(accountLoyaltyNumber) as maxAccountLoyaltyNumber FROM SwAccountLoyalty WHERE loyaltyID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.loyaltyID#" />	
+		</cfquery>
+		
+		<cfif rs.maxAccountLoyaltyNumber gt 0 >
+			<cfset accountLoyaltyNumber = rs.maxAccountLoyaltyNumber + 1 />
+		</cfif>
+		
+		<cfreturn accountLoyaltyNumber />
+	</cffunction>
+
 </cfcomponent>
 

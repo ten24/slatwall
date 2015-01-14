@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="create,addSaleOrderItem,placeOrder,createReturn,placeOnHold,takeOffHold,cancelOrder,addPromotionCode" {
+component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="this" hb_processContexts="addOrderItem,addOrderPayment,addPromotionCode,cancelOrder,changeCurrencyCode,clear,create,createReturn,placeOrder,placeOnHold,removeOrderItem,removeOrderPayment,removePersonalInfo,removePromotionCode,takeOffHold,updateStatus,updateOrderAmounts,updateOrderFulfillment" {
 	
 	// Persistent Properties
 	property name="orderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -61,10 +61,16 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
-	property name="referencedOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="referencedOrderID";	// Points at the "parent" (NOT return) order.
+	property name="assignedAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="assignedAccountID";
+	property name="billingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="billingAccountAddressID";
+	property name="billingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="billingAddressID";
+	property name="defaultStockLocation" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 	property name="orderType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderType";
 	property name="orderStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderStatusType";
-	property name="orderOrigin" cfc="OrderOrigin" fieldtype="many-to-one" fkcolumn="orderOriginID";
+	property name="orderOrigin" cfc="OrderOrigin" fieldtype="many-to-one" fkcolumn="orderOriginID" hb_optionsNullRBKey="define.none";
+	property name="referencedOrder" cfc="Order" fieldtype="many-to-one" fkcolumn="referencedOrderID";	// Points at the "parent" (NOT return) order.
+	property name="shippingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="shippingAccountAddressID";
+	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	
 	// Related Object Properties (one-To-many)
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
@@ -76,6 +82,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderReturns" hb_populateEnabled="public" singularname="orderReturn" cfc="OrderReturn" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="stockReceivers" singularname="stockReceiver" cfc="StockReceiver" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all-delete-orphan" inverse="true";
 	property name="referencingOrders" singularname="referencingOrder" cfc="Order" fieldtype="one-to-many" fkcolumn="referencedOrderID" cascade="all-delete-orphan" inverse="true";
+	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderID" cascade="all" inverse="true";
 	
 	// Related Object Properties (many-To-many - owner)
 	property name="promotionCodes" singularname="promotionCode" cfc="PromotionCode" fieldtype="many-to-many" linktable="SwOrderPromotionCode" fkcolumn="orderID" inversejoincolumn="promotionCodeID";
@@ -85,17 +92,18 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non persistent properties
 	property name="addOrderItemSkuOptionsSmartList" persistent="false";
 	property name="addOrderItemStockOptionsSmartList" persistent="false";
 	property name="addPaymentRequirementDetails" persistent="false";
 	property name="deliveredItemsAmountTotal" persistent="false";
+	property name="depositItemSmartList" persistent="false";
 	property name="discountTotal" persistent="false" hb_formatType="currency";
 	property name="dynamicChargeOrderPayment" persistent="false";
 	property name="dynamicCreditOrderPayment" persistent="false";
@@ -105,6 +113,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="itemDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentTotal" persistent="false" hb_formatType="currency";
+	property name="fulfillmentChargeTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentRefundTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentChargeAfterDiscountTotal" persistent="false" hb_formatType="currency";
 	property name="orderDiscountAmountTotal" persistent="false" hb_formatType="currency";
@@ -114,6 +123,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderPaymentRefundOptions" persistent="false";
 	property name="orderRequirementsList" persistent="false";
 	property name="orderTypeOptions" persistent="false";
+	property name="defaultStockLocationOptions" persistent="false";
 	property name="paymentAmountTotal" persistent="false" hb_formatType="currency";
 	property name="paymentAmountReceivedTotal" persistent="false" hb_formatType="currency";
 	property name="paymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
@@ -127,6 +137,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="returnItemSmartList" persistent="false";
 	property name="referencingPaymentAmountCreditedTotal" persistent="false" hb_formatType="currency";
 	property name="saleItemSmartList" persistent="false";
+	property name="saveBillingAccountAddressFlag" hb_populateEnabled="public" persistent="false";
+	property name="saveBillingAccountAddressName" hb_populateEnabled="public" persistent="false";
+	property name="saveShippingAccountAddressFlag" hb_populateEnabled="public" persistent="false";
+	property name="saveShippingAccountAddressName" hb_populateEnabled="public" persistent="false";
 	property name="statusCode" persistent="false";
 	property name="subTotal" persistent="false" hb_formatType="currency";
 	property name="subTotalAfterItemDiscounts" persistent="false" hb_formatType="currency";
@@ -138,7 +152,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="totalReturnQuantity" persistent="false";
 	
 	public string function getStatus() {
-		return getOrderStatusType().getType();
+		return getOrderStatusType().getTypeName();
 	}
 	
 	public string function getStatusCode() {
@@ -146,7 +160,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public string function getType(){
-		return getOrderType().getType();
+		return getOrderType().getTypeName();
 	}
 	
 	public string function getTypeCode(){
@@ -162,16 +176,42 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return true;
 	}
 	
+	public struct function getOrderItemQualifiedDiscounts(){
+		var orderItemQualifiedDiscounts = {};
+		
+		
+		for(var orderItem in this.getOrderItems()) {
+			var salePriceDetails = orderItem.getSku().getSalePriceDetails();
+
+			if(structKeyExists(salePriceDetails, "salePrice") && salePriceDetails.salePrice < orderItem.getSku().getPrice()) {
+				
+				var discountAmount = precisionEvaluate((orderItem.getSku().getPrice() * orderItem.getQuantity()) - (salePriceDetails.salePrice * orderItem.getQuantity()));
+				
+				orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
+				
+				// Insert this value into the potential discounts array
+				arrayAppend(orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], {
+					promotionRewardID = "",
+					promotion = this.getPromotion(salePriceDetails.promotionID),
+					discountAmount = discountAmount
+				});
+				
+			}
+		}
+		return orderItemQualifiedDiscounts;
+	}
+		
+	
 	public struct function getAddPaymentRequirementDetails() {
 		if(!structKeyExists(variables, "addPaymentRequirementDetails")) {
 			variables.addPaymentRequirementDetails = {};
 			var requiredAmount = precisionEvaluate(getTotal() - getPaymentAmountTotal());
 			if(requiredAmount > 0) {
 				variables.addPaymentRequirementDetails.amount = requiredAmount;
-				variables.addPaymentRequirementDetails.orderPaymentType = getService("settingService").getTypeBySystemCode("optCharge"); 
+				variables.addPaymentRequirementDetails.orderPaymentType = getService("typeService").getTypeBySystemCode("optCharge"); 
 			} else if (requiredAmount < 0) {
 				variables.addPaymentRequirementDetails.amount = requiredAmount * -1;
-				variables.addPaymentRequirementDetails.orderPaymentType = getService("settingService").getTypeBySystemCode("optCredit");
+				variables.addPaymentRequirementDetails.orderPaymentType = getService("typeService").getTypeBySystemCode("optCredit");
 			}
 		}
 		return variables.addPaymentRequirementDetails;
@@ -185,8 +225,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	public any function getOrderNumber() {
 		if(isNull(variables.orderNumber)) {
-			variables.orderNumber = "";
 			confirmOrderNumberOpenDateCloseDatePaymentAmount();
+			if(isNull(variables.orderNumber)) {
+				return "";
+			}
 		}
 		return variables.orderNumber;
 	}
@@ -223,10 +265,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				orderPayment.setAmount( orderPayment.getAmount() );
 			}
 			
-			// Loop over the order fulfillments to remove and accountAddresses
-			for(var orderFulfillment in getOrderFulfillments()) {
-				orderFulfillment.setAccountAddress( javaCast("null", "") );
-			}
 		}
 		
 		// If the order is closed, and has no close dateTime
@@ -253,7 +291,44 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		
 		return arr;
 	}
+	
+	public void function checkNewBillingAccountAddressSave() {
+		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
+    	if(!isNull(getSaveBillingAccountAddressFlag()) && getSaveBillingAccountAddressFlag() && !isNull(getAccount()) && !getAccount().getGuestAccountFlag() && isNull(getBillingAccountAddress()) && !isNull(getBillingAddress()) && !getBillingAddress().hasErrors()) {
+    		
+    		// Create a New Account Address, Copy over Shipping Address, and save
+    		var accountAddress = getService('accountService').newAccountAddress();
+    		if(!isNull(getSaveBillingAccountAddressName())) {
+				accountAddress.setAccountAddressName( getSaveBillingAccountAddressName() );
+			}
+			accountAddress.setAddress( getBillingAddress().copyAddress( true ) );
+			accountAddress.setAccount( getAccount() );
+			accountAddress = getService('accountService').saveAccountAddress( accountAddress );
+			
+			// Set the accountAddress
+			setBillingAccountAddress( accountAddress );
+		}
+	}
     
+	public void function checkNewShippingAccountAddressSave() {
+    	
+		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
+    	if(!isNull(getSaveShippingAccountAddressFlag()) && getSaveShippingAccountAddressFlag() && !isNull(getAccount()) && !getAccount().getGuestAccountFlag() && isNull(getShippingAccountAddress()) && !isNull(getShippingAddress()) && !getShippingAddress().hasErrors()) {
+    		
+    		// Create a New Account Address, Copy over Shipping Address, and save
+    		var accountAddress = getService('accountService').newAccountAddress();
+    		if(!isNull(getSaveShippingAccountAddressName())) {
+    			accountAddress.setAccountAddressName( getSaveShippingAccountAddressName() );	
+    		}
+			accountAddress.setAddress( getShippingAddress().copyAddress( true ) );
+			accountAddress.setAccount( getAccount() );
+			accountAddress = getService('accountService').saveAccountAddress( accountAddress );
+			
+			// Set the accountAddress
+			setShippingAccountAddress( accountAddress );
+		}
+    	
+	}
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public any function getAddOrderItemSkuOptionsSmartList() {
@@ -288,7 +363,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				
 				if(orderItem.getQuantityDelivered()) {
 					
-					variables.deliveredItemsAmountTotal = precisionEvaluate(variables.deliveredItemsAmountTotal + ((orderItem.getQuantityDelivered() / orderItem.getQuantity()) * orderItem.getExtendedPriceAfterDiscount()));
+					variables.deliveredItemsAmountTotal = precisionEvaluate(variables.deliveredItemsAmountTotal + ((orderItem.getQuantityDelivered() / orderItem.getQuantity()) * orderItem.getItemTotal()));
 					
 					if(!listFindNoCase(fulfillmentChargeAddedList, orderItem.getOrderFulfillment().getOrderFulfillmentID())) {
 						
@@ -317,7 +392,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getItemDiscountAmountTotal() {
 		var discountTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( getOrderItems()[i].getTypeCode() == "oitSale" ) {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
 				discountTotal = precisionEvaluate(discountTotal + getOrderItems()[i].getDiscountAmount());
 			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
 				discountTotal = precisionEvaluate(discountTotal - getOrderItems()[i].getDiscountAmount());
@@ -337,11 +412,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public numeric function getFulfillmentTotal() {
-		var fulfillmentTotal = 0;
+		return precisionEvaluate(getFulfillmentChargeTotal() - getFulfillmentRefundTotal());
+	}
+	
+	public numeric function getFulfillmentChargeTotal() {
+		var fulfillmentChargeTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderFulfillments()); i++) {
-			fulfillmentTotal = precisionEvaluate(fulfillmentTotal + getOrderFulfillments()[i].getFulfillmentCharge());
+			fulfillmentChargeTotal = precisionEvaluate(fulfillmentChargeTotal + getOrderFulfillments()[i].getFulfillmentCharge());
 		}
-		return fulfillmentTotal;
+		return fulfillmentChargeTotal;
 	}
 	
 	public numeric function getFulfillmentRefundTotal() {
@@ -379,7 +458,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getOrderPaymentAmountNeeded() {
 		
 		var nonNullPayments = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
-		var orderPaymentAmountNeeded = precisionEvaluate( getTotal() - nonNullPayments );
+		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
 		
 		if(orderPaymentAmountNeeded gt 0 && isNull(getDynamicChargeOrderPayment())) {
 			return orderPaymentAmountNeeded;
@@ -437,7 +516,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	public any function getDynamicChargeOrderPaymentAmount() {
 		var nonNullPayments = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
-		var orderPaymentAmountNeeded = precisionEvaluate( getTotal() - nonNullPayments );
+		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
 		
 		if(orderPaymentAmountNeeded gt 0) {
 			return orderPaymentAmountNeeded;
@@ -448,7 +527,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	
 	public any function getDynamicCreditOrderPaymentAmount() {
 		var nonNullPayments = getService("orderService").getOrderPaymentNonNullAmountTotal(orderID=getOrderID());
-		var orderPaymentAmountNeeded = precisionEvaluate( getTotal() - nonNullPayments );
+		var orderPaymentAmountNeeded = precisionEvaluate(getTotal() - nonNullPayments);
 		
 		if(orderPaymentAmountNeeded lt 0) {
 			return orderPaymentAmountNeeded * -1;
@@ -499,6 +578,10 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 		
 		return totalPaymentsReceived;
+	}
+	
+	public numeric function getTotalDiscountableAmount(){
+		return getSubtotalAfterItemDiscounts() + getFulfillmentChargeAfterDiscountTotal();
 	}
 	
 	public numeric function getPaymentAmountCreditedTotal() {
@@ -559,22 +642,31 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 				inFilter = listDeleteAt(inFilter, listFindNoCase(inFilter, "otSalesOrder"));
 			}
 			sl.addInFilter('systemCode', inFilter);
-			sl.addSelect('type', 'name');
+			sl.addSelect('typeName', 'name');
 			sl.addSelect('typeID', 'value');
 			
 			variables.orderTypeOptions = sl.getRecords();
 		}
 		return variables.orderTypeOptions;
 	}
-	
-	public string function getPromotionCodeList() {
-		if(!structKeyExists(variables, "promotionCodeList")) {
-			variables.promotionCodeList = "";
-			for(var i=1; i<=arrayLen(getPromotionCodes()); i++) {
-				variables.promotionCodeList = listAppend(variables.promotionCodeList, getPromotionCodes()[i].getPromotionCode());
-			}
+
+	public array function getDefaultStockLocationOptions() {
+		if(!structKeyExists(variables, "defaultStockLocationOptions")) {
+			var defaultStockLocationOptions=getService("locationService").getLocationOptions();
+			arrayPrepend(defaultStockLocationOptions, {"name"=rbKey('define.none'),"value"=""});
+			variables.defaultStockLocationOptions=defaultStockLocationOptions;
 		}
-		return variables.promotionCodeList;
+		return variables.defaultStockLocationOptions;
+	}
+		
+	public string function getPromotionCodeList() {
+		var promotionCodeList = "";
+		
+		for(var promotionCodeEntity in getPromotionCodes()) {
+			promotionCodeList = listAppend(promotionCodeList, promotionCodeEntity.getPromotionCode());
+		}
+		
+		return promotionCodeList;
 	}
 	
 	public numeric function getDeliveredItemsPaymentAmountUnreceived() {
@@ -600,7 +692,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 						amountDelivered = precisionEvaluate(amountDelivered + item.getItemTotal());
 					} else if (item.getQuantityDelivered() > 0) {
 						var itemQDValue = (round(item.getItemTotal() * (item.getQuantityDelivered() / item.getQuantity()) * 100) / 100);
-						amountDelivered = precisionEvaluate(amountDelivered + itemQDValue );
+						amountDelivered = precisionEvaluate(amountDelivered + itemQDValue);
 					}
 					
 				}
@@ -624,7 +716,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTotalSaleQuantity() {
 		var saleQuantity = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if(getOrderItems()[1].getOrderItemType().getSystemCode() eq "oitSale") {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[1].getOrderItemType().getSystemCode()) ) {
 				saleQuantity += getOrderItems()[i].getQuantity();	
 			}
 		}
@@ -665,6 +757,15 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return this.getTotalReturnQuantity() - this.getQuantityReceived();
 	}
 	
+	public any function getDepositItemSmartList() {
+		if(!structKeyExists(variables, "depositItemSmartList")) {
+			variables.depositItemSmartList = getService("orderService").getOrderItemSmartList();
+			variables.depositItemSmartList.addFilter('order.orderID', getOrderID());
+			variables.depositItemSmartList.addInFilter('orderItemType.systemCode', 'oitDeposit');
+		}
+		return variables.depositItemSmartList;	
+	}
+	
 	public any function getSaleItemSmartList() {
 		if(!structKeyExists(variables, "saleItemSmartList")) {
 			variables.saleItemSmartList = getService("orderService").getOrderItemSmartList();
@@ -686,7 +787,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getSubtotal() {
 		var subtotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( getOrderItems()[i].getTypeCode() == "oitSale" ) {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
 				subtotal = precisionEvaluate(subtotal + getOrderItems()[i].getExtendedPrice());	
 			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
 				subtotal = precisionEvaluate(subtotal - getOrderItems()[i].getExtendedPrice());
@@ -704,7 +805,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTaxTotal() {
 		var taxTotal = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( getOrderItems()[i].getTypeCode() == "oitSale" ) {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getTypeCode()) ) {
 				taxTotal = precisionEvaluate(taxTotal + getOrderItems()[i].getTaxAmount());	
 			} else if ( getOrderItems()[i].getTypeCode() == "oitReturn" ) {
 				taxTotal = precisionEvaluate(taxTotal - getOrderItems()[i].getTaxAmount());
@@ -716,7 +817,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public numeric function getTotal() {
-		return precisionEvaluate(getSubtotal() + getTaxTotal() + getFulfillmentTotal() - getFulfillmentRefundTotal() - getDiscountTotal());
+		return precisionEvaluate(getSubtotal() + getTaxTotal() + getFulfillmentTotal() - getDiscountTotal());
 	}
 	
 	public numeric function getTotalItems() {
@@ -754,22 +855,22 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		arguments.attributeValue.removeOrder( this );    
 	}
 	
-	// Refrenced Order (many-to-one)
-	public void function setRefrencedOrder(required any refrencedOrder) {
-		variables.refrencedOrder = arguments.refrencedOrder;
-		if(isNew() or !arguments.refrencedOrder.hasRefrencingOrder( this )) {
-			arrayAppend(arguments.refrencedOrder.getRefrencingOrders(), this);
+	// Referenced Order (many-to-one)
+	public void function setReferencedOrder(required any referencedOrder) {
+		variables.referencedOrder = arguments.referencedOrder;
+		if(isNew() or !arguments.referencedOrder.hasReferencingOrder( this )) {
+			arrayAppend(arguments.referencedOrder.getReferencingOrders(), this);
 		}
 	}
-	public void function removeRefrencedOrder(any refrencedOrder) {
-		if(!structKeyExists(arguments, "refrencedOrder")) {
-			arguments.refrencedOrder = variables.refrencedOrder;
+	public void function removeReferencedOrder(any referencedOrder) {
+		if(!structKeyExists(arguments, "referencedOrder")) {
+			arguments.referencedOrder = variables.referencedOrder;
 		}
-		var index = arrayFind(arguments.refrencedOrder.getRefrencingOrders(), this);
+		var index = arrayFind(arguments.referencedOrder.getReferencingOrders(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.refrencedOrder.getRefrencingOrders(), index);
+			arrayDeleteAt(arguments.referencedOrder.getReferencingOrders(), index);
 		}
-		structDelete(variables, "refrencedOrder");
+		structDelete(variables, "referencedOrder");
 	}
 
 	// Order Items (one-to-many)
@@ -820,12 +921,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		arguments.stockReceiver.removeOrder( this );    
 	}
 	
-	// Refrencing Order Items (one-to-many)
-	public void function addRefrencingOrderItem(required any refrencingOrderItem) {
-		arguments.refrencingOrderItem.setRefrencedOrder( this );
+	// Referencing Order Items (one-to-many)
+	public void function addReferencingOrderItem(required any referencingOrderItem) {
+		arguments.referencingOrderItem.setReferencedOrder( this );
 	}
-	public void function removeRefrencingOrderItem(required any refrencingOrderItem) {
-		arguments.refrencingOrderItem.removeRefrencedOrder( this );
+	public void function removeReferencingOrderItem(required any referencingOrderItem) {
+		arguments.referencingOrderItem.removeReferencedOrder( this );
 	}
 	
 	// Applied Promotions (one-to-many)
@@ -835,41 +936,41 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public void function removeAppliedPromotion(required any appliedPromotion) {
 		arguments.appliedPromotion.removeOrder( this );
 	}
-	
-	// Promotion Codes (many-to-many - owner)
-	public void function addPromotionCode(required any promotionCode) {
-		if(arguments.promotionCode.isNew() or !hasPromotionCode(arguments.promotionCode)) {
-			arrayAppend(variables.promotionCodes, arguments.promotionCode);
-		}
-		if(isNew() or !arguments.promotionCode.hasOrder( this )) {
-			arrayAppend(arguments.promotionCode.getOrders(), this);
-		}
-	}
-	public void function removePromotionCode(required any promotionCode) {
-		var thisIndex = arrayFind(variables.promotionCodes, arguments.promotionCode);
-		if(thisIndex > 0) {
-			arrayDeleteAt(variables.promotionCodes, thisIndex);
-		}
-		var thatIndex = arrayFind(arguments.promotionCode.getOrders(), this);
-		if(thatIndex > 0) {
-			arrayDeleteAt(arguments.promotionCode.getOrders(), thatIndex);
-		}
-	}
-	
+
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ============== START: Overridden Implicet Getters ===================
 	
+	public any function getBillingAddress() {
+		if(structKeyExists(variables, "billingAddress")) {
+			return variables.billingAddress;
+		} else if (!isNull(getBillingAccountAddress())) {
+			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
+			return variables.billingAddress;
+		}
+		return getService("addressService").newAddress();
+	}
+
+	public any function getShippingAddress() {
+		if(structKeyExists(variables, "shippingAddress")) {
+			return variables.shippingAddress;
+		} else if (!isNull(getShippingAccountAddress())) {
+			setShippingAddress( getShippingAccountAddress().getAddress().copyAddress( true ) );
+			return variables.shippingAddress;
+		}
+		return getService("addressService").newAddress();
+	}
+	
 	public any function getOrderStatusType() {
-		if(isNull(variables.orderStatusType)) {
-			variables.orderStatusType = getService("settingService").getTypeBySystemCode('ostNotPlaced');
+		if(!structKeyExists(variables, "orderStatusType")) {
+			variables.orderStatusType = getService("typeService").getTypeBySystemCode('ostNotPlaced');
 		}
 		return variables.orderStatusType;
 	}
 	
 	public any function getOrderType() {
-		if(isNull(variables.orderType)) {
-			variables.orderType = getService("settingService").getTypeBySystemCode('otSalesOrder');
+		if(!structKeyExists(variables, "orderType")) {
+			variables.orderType = getService("typeService").getTypeBySystemCode('otSalesOrder');
 		}
 		return variables.orderType;
 	}
@@ -904,6 +1005,67 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return variables.referencingOrdersSmartList;
 	}
 	
+	public any function setShippingAccountAddress( any accountAddress ) {
+		if(isNull(arguments.accountAddress)) {
+			structDelete(variables, "shippingAccountAddress");
+		} else {
+			// If the shippingAddress is a new shippingAddress
+			if( isNull(getShippingAddress()) ) {
+				setShippingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
+			
+			// Else if there was no accountAddress before, or the accountAddress has changed
+			} else if (!structKeyExists(variables, "shippingAccountAddress") || (structKeyExists(variables, "shippingAccountAddress") && variables.shippingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+				getShippingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+				
+			}
+			
+			// Set the actual accountAddress
+			variables.shippingAccountAddress = arguments.accountAddress;	
+		}
+	}
+	
+	public any function setBillingAccountAddress( any accountAddress ) {
+		if(isNull(arguments.accountAddress)) {
+			structDelete(variables, "billingAccountAddress");
+		} else {
+			// If the shippingAddress is a new shippingAddress
+			if( isNull(getBillingAddress()) ) {
+				setBillingAddress( arguments.accountAddress.getAddress().copyAddress( true ) );
+			
+			// Else if there was no accountAddress before, or the accountAddress has changed
+			} else if (!structKeyExists(variables, "billingAccountAddress") || (structKeyExists(variables, "billingAccountAddress") && variables.billingAccountAddress.getAccountAddressID() != arguments.accountAddress.getAccountAddressID()) ) {
+				getBillingAddress().populateFromAddressValueCopy( arguments.accountAddress.getAddress() );
+				
+			}
+			
+			// Set the actual accountAddress
+			variables.billingAccountAddress = arguments.accountAddress;
+		}
+	}
+	
+	public any function populate( required struct data={} ) {
+		// Before we populate we need to cleanse the shippingAddress data if the shippingAccountAddress is being changed in any way
+		if(structKeyExists(arguments.data, "shippingAccountAddress")
+			&& structKeyExists(arguments.data.shippingAccountAddress, "accountAddressID")
+			&& len(arguments.data.shippingAccountAddress.accountAddressID)
+			&& ( !structKeyExists(arguments.data, "shippingAddress") || !structKeyExists(arguments.data.shippingAddress, "addressID") || !len(arguments.data.shippingAddress.addressID) ) ) {
+				
+			structDelete(arguments.data, "shippingAddress");
+		}
+		
+		// Before we populate we need to cleanse the billingAddress data if the shippingAccountAddress is being changed in any way
+		if(structKeyExists(arguments.data, "billingAccountAddress")
+			&& structKeyExists(arguments.data.billingAccountAddress, "accountAddressID")
+			&& len(arguments.data.billingAccountAddress.accountAddressID)
+			&& ( !structKeyExists(arguments.data, "billingAddress") || !structKeyExists(arguments.data.billingAddress, "addressID") || !len(arguments.data.billingAddress.addressID) ) ) {
+				
+			structDelete(arguments.data, "billingAddress");
+		}
+		
+		
+		super.populate(argumentCollection=arguments);
+	}
+	
 	// ==================  END:  Overridden Methods ========================
 		
 	// =================== START: ORM Event Hooks  =========================
@@ -919,7 +1081,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public void function preUpdate(Struct oldData){
-		super.preUpdate();
+		super.preUpdate(argumentCollection=arguments);
 		confirmOrderNumberOpenDateCloseDatePaymentAmount();
 	}
 	

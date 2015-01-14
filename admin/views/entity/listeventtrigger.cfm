@@ -46,18 +46,32 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.eventTriggerSmartList" type="any" />
 
 <cfoutput>
 	
-<cf_HibachiEntityActionBar type="listing" object="#rc.eventTriggerSmartList#" createModal=true />
+	<hb:HibachiEntityActionBar type="listing" object="#rc.eventTriggerSmartList#" showCreate="false">
+		
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createeventtrigger" entity="eventtrigger" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+	
 
-<cf_HibachiListingDisplay smartList="#rc.eventTriggerSmartList#"
-						   recordDetailAction="admin:entity.detaileventtrigger"
-						   recordEditAction="admin:entity.editeventtrigger">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="eventTriggerName" />
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="eventTriggerType" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingDisplay smartList="#rc.eventTriggerSmartList#"
+							   recordDetailAction="admin:entity.detaileventtrigger"
+							   recordEditAction="admin:entity.editeventtrigger">
+		
+		<hb:HibachiListingColumn propertyIdentifier="eventTriggerName" />
+		<hb:HibachiListingColumn propertyIdentifier="eventTriggerType" />
+		<hb:HibachiListingColumn propertyIdentifier="eventTriggerObject" />
+		<hb:HibachiListingColumn propertyIdentifier="eventName" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

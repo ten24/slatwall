@@ -46,20 +46,24 @@
 Notes:
 
 --->
-<div class="modal-header">
-	<a class="close" data-dismiss="modal">&times;</a>
-	<h3>File Manager</h3>
-</div>
-<div class="modal-body" style="padding:0px;">
-	<div style="width:900px;">
-		<cfscript>
-			ckfinder = createObject( "component", "Slatwall.org.Hibachi.ckfinder.ckfinder" ) ;
-			ckfinder.BasePath = "#rc.$.slatwall.getApplicationValue('baseURL')#/org/Hibachi/ckfinder" ;
-			ckfinder.SelectFunction = 'ShowFileInfo' ;
-			ckfinder.Height = 460;
-			ckfinder.Width = 900;
-			ckfinder.Create() ;
-		</cfscript>
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<div class="modal-dialog">
+	<div class="modal-content" style="width:910px;">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">&times;</a>
+			<h3>File Manager</h3>
+		</div>
+		<div class="modal-body" style="padding:0px;">
+			<cfscript>
+				ckfinder = createObject( "component", "Slatwall.org.Hibachi.ckfinder.ckfinder" ) ;
+				ckfinder.BasePath = "#rc.$.slatwall.getApplicationValue('baseURL')#/org/Hibachi/ckfinder" ;
+				ckfinder.SelectFunction = 'ShowFileInfo' ;
+				ckfinder.Height = 460;
+				ckfinder.Width = 900;
+				ckfinder.Create() ;
+			</cfscript>
+		</div>
+		<div class="modal-footer"></div>
 	</div>
 </div>
-<div class="modal-footer"></div>

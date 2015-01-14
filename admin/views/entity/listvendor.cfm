@@ -46,16 +46,27 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.vendorSmartList" type="any" />
 
-<cf_HibachiEntityActionBar type="listing" object="#rc.vendorSmartList#" />
+<hb:HibachiEntityActionBar type="listing" object="#rc.vendorSmartList#" showCreate="false">
+		
+	<!--- Create ---> 
+	<hb:HibachiEntityActionBarButtonGroup>
+		<hb:HibachiActionCaller action="admin:entity.createvendor" entity="vendor" class="btn btn-primary" icon="plus icon-white" />
+	</hb:HibachiEntityActionBarButtonGroup>
+</hb:HibachiEntityActionBar>
 
-<cf_HibachiListingDisplay smartList="#rc.vendorSmartList#"
+<hb:HibachiListingDisplay smartList="#rc.vendorSmartList#"
 						   recordEditAction="admin:entity.editvendor"
 						   recordDetailAction="admin:entity.detailvendor">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="vendorName" search="true" />
-	<cf_HibachiListingColumn propertyIdentifier="accountNumber" search="true" />
-	<cf_HibachiListingColumn propertyIdentifier="vendorWebsite" search="true" />
-	<cf_HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" search="true" />
-</cf_HibachiListingDisplay>
+	
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="vendorName" search="true" />
+	<hb:HibachiListingColumn propertyIdentifier="accountNumber" search="true" />
+	<hb:HibachiListingColumn propertyIdentifier="vendorWebsite" search="true" />
+	<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" search="true" />
+</hb:HibachiListingDisplay>
 

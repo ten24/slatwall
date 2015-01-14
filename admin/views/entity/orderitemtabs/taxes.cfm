@@ -46,13 +46,20 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.orderItem" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.orderItem.getAppliedTaxesSmartList()#">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="taxCategoryRate.taxCategory.taxCategoryName" />
-		<cf_HibachiListingColumn propertyIdentifier="taxCategoryRate.addressZone.addressZoneName" />
-		<cf_HibachiListingColumn propertyIdentifier="taxRate" />
-		<cf_HibachiListingColumn propertyIdentifier="taxAmount" />
-	</cf_HibachiListingDisplay>
+	<hb:HibachiListingDisplay smartList="#rc.orderItem.getAppliedTaxesSmartList()#">
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="taxCategoryRate.taxCategory.taxCategoryName" />
+		<hb:HibachiListingColumn propertyIdentifier="taxCategoryRate.addressZone.addressZoneName" />
+		<hb:HibachiListingColumn propertyIdentifier="taxCategoryRate.taxIntegration.integrationName" />
+		<hb:HibachiListingColumn propertyIdentifier="taxImpositionName" />
+		<hb:HibachiListingColumn propertyIdentifier="taxJurisdictionName" />
+		<hb:HibachiListingColumn propertyIdentifier="taxRate" />
+		<hb:HibachiListingColumn propertyIdentifier="taxAmount" />
+		<hb:HibachiListingColumn propertyIdentifier="taxLiabilityAmount" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 
 <cfparam name="rc.orderPaymentSmartList" type="any" />
 
@@ -53,18 +57,18 @@ Notes:
 <cfset rc.orderPaymentSmartList.addInFilter("order.orderStatusType.systemCode", "ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceld") />
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="listing" object="#rc.orderPaymentSmartList#" showCreate="false" />
-	
-	<cf_HibachiListingDisplay smartList="#rc.orderPaymentSmartList#"
+	<hb:HibachiEntityActionBar type="listing" object="#rc.orderPaymentSmartList#" showCreate="false" />
+
+	<hb:HibachiListingDisplay smartList="#rc.orderPaymentSmartList#"
 							   recorddetailaction="admin:entity.detailorderpayment">
-		<cf_HibachiListingColumn propertyIdentifier="order.orderNumber" />
-		<cf_HibachiListingColumn propertyIdentifier="order.account.firstName" />
-		<cf_HibachiListingColumn propertyIdentifier="order.account.lastName" />
-		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="paymentMethod.paymentMethodName" />
-		<cf_HibachiListingColumn propertyIdentifier="orderPaymentType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="amount" />
-		<cf_HibachiListingColumn propertyIdentifier="amountReceived" />
-		<cf_HibachiListingColumn propertyIdentifier="amountCredited" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
+		<hb:HibachiListingColumn propertyIdentifier="order.account.firstName" />
+		<hb:HibachiListingColumn propertyIdentifier="order.account.lastName" />
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="paymentMethod.paymentMethodName" />
+		<hb:HibachiListingColumn propertyIdentifier="orderPaymentType.typeName" />
+		<hb:HibachiListingColumn propertyIdentifier="amount" />
+		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
+		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

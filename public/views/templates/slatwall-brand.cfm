@@ -51,7 +51,7 @@ Notes:
 <cfinclude template="_slatwall-header.cfm" />
 
 <!--- This import allows for the custom tags required by this page to work --->
-<cfimport prefix="sw" taglib="/Slatwall/public/tags" />
+<cfimport prefix="sw" taglib="../../tags" />
 
 <!---[DEVELOPER NOTES]															
 																				
@@ -68,7 +68,7 @@ Notes:
 --->
 
 <cfoutput>
-	
+	<div class="container">
 		
 		<div class="row">
 			<div class="span12">
@@ -114,7 +114,7 @@ Notes:
 				</ul>
 			</div>
 		</div>
-	
+	</div>
 </cfoutput>
 
 <cfinclude template="_slatwall-footer.cfm" />

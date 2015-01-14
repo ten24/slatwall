@@ -55,7 +55,9 @@ Notes:
 		public any function formatValue_currency( required string value, struct formatDetails={} ) {
 			if(structKeyExists(arguments.formatDetails, "currencyCode")) {
 				var currency = getService("currencyService").getCurrency( arguments.formatDetails.currencyCode );
-				return currency.getCurrencySymbol() & LSNumberFormat(arguments.value, ',.__');
+				if(!isNull(currency)){
+					return currency.getCurrencySymbol() & LSNumberFormat(arguments.value, ',.__');
+				}
 			}
 			
 			// Otherwsie use the global currencyLocal
@@ -78,27 +80,28 @@ Notes:
 			return arguments.value & " " & getSettingService().getSettingValue("globalWeightUnitCode");
 		}
 		
-		public string function encryptValue(required string value) {
-			return encrypt(arguments.value, getEncryptionKey(), getSettingService().getSettingValue("globalEncryptionAlgorithm"), getSettingService().getSettingValue("globalEncryptionEncoding"));
-		}
-	
-		public string function decryptValue(required string value) {
-			try {
-				return decrypt(arguments.value, getEncryptionKey(), getSettingService().getSettingValue("globalEncryptionAlgorithm"), getSettingService().getSettingValue("globalEncryptionEncoding"));	
-			} catch (any e) {
-				logHibachi("There was an error decrypting a value from the database.  This is usually because the application cannot find the Encryption key used to encrypt the data.  Verify that you have a key file in the location specified in the advanced settings of the admin.", true);
-				return "";
-			}
-		}
-		
-		public string function createEncryptionKey() {
-			var	theKey = generateSecretKey(getSettingService().getSettingValue("globalEncryptionAlgorithm"), getSettingService().getSettingValue("globalEncryptionKeySize"));
-			storeEncryptionKey(theKey);
-			return theKey;
-		}
-		
 		private string function getEncryptionKeyLocation() {
-			return getSettingService().getSettingValue("globalEncryptionKeyLocation") NEQ "" ? getSettingService().getSettingValue("globalEncryptionKeyLocation") : expandPath('/#getApplicationValue('applicationKey')#/custom/config/');
+			var keyLocation = getSettingService().getSettingValue("globalEncryptionKeyLocation");
+			if(len(keyLocation)) {
+				if(right(keyLocation, 1) eq '/' or right(keyLocation, 1) eq '\') {
+					return keyLocation;	
+				}
+				
+				return keyLocation & '/';
+			}
+			return expandPath('/#getApplicationValue('applicationKey')#/custom/config/');
+		}
+		
+		public string function getLegacyEncryptionAlgorithm() {
+			return getSettingService().getSettingValue("globalEncryptionAlgorithm");
+		}
+		
+		public string function getLegacyEncryptionEncoding() {
+			return getSettingService().getSettingValue("globalEncryptionEncoding");
+		}
+		
+		public string function getLegacyEncryptionKeySize() {
+			return getSettingService().getSettingValue("globalEncryptionKeySize");
 		}
 		
 	</cfscript>
@@ -528,6 +531,54 @@ Notes:
 			arrayAppend(sortedArray, sortedStruct[keyArray[i]]);
 		}
 		return sortedArray;
+	}
+	
+	/**
+	* Sorts an array of structures based on a key in the structures.
+	*
+	* @param aofS      Array of structures.
+	* @param key      Key to sort by.
+	* @param sortOrder      Order to sort by, asc or desc.
+	* @param sortType      Text, textnocase, or numeric.
+	* @param delim      Delimiter used for temporary data storage. Must not exist in data. Defaults to a period.
+	* @return Returns a sorted array.
+	* @author Nathan Dintenfass (nathan@changemedia.com)
+	* @version 1, December 10, 2001
+	*/
+	public function arrayOfStructsSort(aOfS,key){
+	        //by default we'll use an ascending sort
+	        var sortOrder = "asc";        
+	        //by default, we'll use a textnocase sort
+	        var sortType = "textnocase";
+	        //by default, use ascii character 30 as the delim
+	        var delim = ".";
+	        //make an array to hold the sort stuff
+	        var sortArray = arraynew(1);
+	        //make an array to return
+	        var returnArray = arraynew(1);
+	        //grab the number of elements in the array (used in the loops)
+	        var count = arrayLen(aOfS);
+	        //make a variable to use in the loop
+	        var ii = 1;
+	        //if there is a 3rd argument, set the sortOrder
+	        if(arraylen(arguments) GT 2)
+	            sortOrder = arguments[3];
+	        //if there is a 4th argument, set the sortType
+	        if(arraylen(arguments) GT 3)
+	            sortType = arguments[4];
+	        //if there is a 5th argument, set the delim
+	        if(arraylen(arguments) GT 4)
+	            delim = arguments[5];
+	        //loop over the array of structs, building the sortArray
+	        for(ii = 1; ii lte count; ii = ii + 1)
+	            sortArray[ii] = aOfS[ii][key] & delim & ii;
+	        //now sort the array
+	        arraySort(sortArray,sortType,sortOrder);
+	        //now build the return array
+	        for(ii = 1; ii lte count; ii = ii + 1)
+	            returnArray[ii] = aOfS[listLast(sortArray[ii],delim)];
+	        //return the array
+	        return returnArray;
 	}
 	
 	public struct function queryToStructOfStructures(theQuery, primaryKey){

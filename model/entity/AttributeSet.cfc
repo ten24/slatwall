@@ -52,8 +52,9 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	property name="attributeSetID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
 	property name="attributeSetName" ormtype="string";
-	property name="attributeSetCode" ormtype="string";
-	property name="attributeSetDescription" ormtype="string" length="2000" ;
+	property name="attributeSetCode" ormtype="string" index="PI_ATTRIBUTESETCODE";
+	property name="attributeSetDescription" ormtype="string" length="2000";
+	property name="attributeSetObject" ormtype="string" hb_formFieldType="select";
 	property name="globalFlag" ormtype="boolean" default="1";
 	property name="requiredFlag" ormtype="boolean";
 	property name="accountSaveFlag" ormtype="boolean";
@@ -61,7 +62,6 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	property name="sortOrder" ormtype="integer";
 	
 	// Related Object Properties (many-to-one)
-	property name="attributeSetType" cfc="Type" fieldtype="many-to-one" fkcolumn="attributeSetTypeID" hb_optionsSmartListData="f:parentType.systemCode=attributeSetType";
 	
 	// Related Object Properties (one-to-many)
 	property name="attributes" singularname="attribute" cfc="Attribute" fieldtype="one-to-many" fkcolumn="attributeSetID" inverse="true" cascade="all-delete-orphan" orderby="sortOrder";
@@ -71,14 +71,15 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	property name="products" singularname="product" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwAttributeSetProduct" fkcolumn="attributeSetID" inversejoincolumn="productID";
 	property name="brands" singularname="brand" cfc="Brand" type="array" fieldtype="many-to-many" linktable="SwAttributeSetBrand" fkcolumn="attributeSetID" inversejoincolumn="brandID";
 	property name="skus" singularname="sku" cfc="Sku" type="array" fieldtype="many-to-many" linktable="SwAttributeSetSku" fkcolumn="attributeSetID" inversejoincolumn="skuID";
+	property name="types" singularname="type" cfc="Type" type="array" fieldtype="many-to-many" linktable="SwAttributeSetType" fkcolumn="attributeSetID" inversejoincolumn="typeID";
 
 	// Related Object Properties (many-to-many - inverse)
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	public array function getAttributes(orderby, sortType="text", direction="asc") {
 		if(!structKeyExists(arguments, "orderby")) {
@@ -93,6 +94,33 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public array function getAttributeSetObjectOptions() {
+		return [
+			{value="Account", name=rbKey("entity.Account")},
+			{value="AccountPayment", name=rbKey("entity.AccountPayment")},
+			{value="AttributeOption", name=rbKey("entity.AttributeOption")},
+			{value="Brand", name=rbKey("entity.Brand")},
+			{value="File", name=rbKey("entity.File")},
+			{value="Image", name=rbKey("entity.Image")},
+			{value="Location", name=rbKey("entity.Location")},
+			{value="LocationConfiguration", name=rbKey("entity.LocationConfiguration")},
+			{value="Order", name=rbKey("entity.Order")},
+			{value="OrderItem", name=rbKey("entity.OrderItem")},
+			{value="OrderPayment", name=rbKey("entity.OrderPayment")},
+			{value="OrderFulfillment", name=rbKey("entity.OrderFulfillment")},
+			{value="OrderDelivery", name=rbKey("entity.OrderDelivery")},
+			{value="Product", name=rbKey("entity.Product")},
+			{value="ProductBundleGroup", name=rbKey("entity.ProductBundleGroup")},
+			{value="ProductType", name=rbKey("entity.ProductType")},
+			{value="ProductReview", name=rbKey("entity.ProductReview")},
+			{value="Sku", name=rbKey("entity.Sku")},
+			{value="SubscriptionBenefit", name=rbKey("entity.SubscriptionBenefit")},
+			{value="Type", name=rbKey("entity.Type")},
+			{value="Vendor", name=rbKey("entity.Vendor")},
+			{value="VendorOrder", name=rbKey("entity.VendorOrder")}
+		];
+    }
     
 	// ============  END:  Non-Persistent Property Methods =================
 	
@@ -134,7 +162,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 		if(!structKeyExists(variables, "globalFlag")) {
 			variables.globalFlag = 1;
 		}
-		if(!isNull(getAttributeSetType()) && !listFindNoCase("astProductType,astProduct,astSku,astOrderItem", getAttributeSetType().getSystemCode())) {
+		if(!isNull(getAttributeSetObject()) && !listFindNoCase("OrderItem,ProductType,Product,Sku,Type", getAttributeSetObject())) {
 			variables.globalFlag = 1;
 		}
 		return variables.globalFlag;

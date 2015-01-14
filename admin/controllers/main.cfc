@@ -60,6 +60,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="updateService" type="any";
 	
 	property name="hibachiSessionService" type="any";
+	property name="hibachiUtilityService" type="any";
 	
 	this.publicMethods='';
 	this.publicMethods=listAppend(this.publicMethods, 'login');
@@ -70,6 +71,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.publicMethods=listAppend(this.publicMethods, 'forgotPassword');
 	this.publicMethods=listAppend(this.publicMethods, 'resetPassword');
 	this.publicMethods=listAppend(this.publicMethods, 'setupInitialAdmin');
+	this.publicMethods=listAppend(this.publicMethods, 'changeLanguage');
+	this.publicMethods=listAppend(this.publicMethods, 'updatePassword');
 	
 	this.anyAdminMethods='';
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'default');
@@ -77,24 +80,23 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'deleteImage');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'detailImage');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'editImage');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'removemeta');
+	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'dismissmeta');
 	
 	this.secureMethods='';
 	this.secureMethods=listAppend(this.secureMethods, 'ckfinder');
 	this.secureMethods=listAppend(this.secureMethods, 'about');
 	this.secureMethods=listAppend(this.secureMethods, 'update');
 	this.secureMethods=listAppend(this.secureMethods, 'log');
+	this.secureMethods=listAppend(this.secureMethods, 'unlockAccount');
 	
 	public void function before(required struct rc) {
 		rc.pagetitle = rc.$.slatwall.rbKey(replace(rc.slatAction, ':', '.', 'all'));
 	}
 	
 	public void function default(required struct rc) {
-		rc.productSmartList = getProductService().getProductSmartList();
-		rc.productSmartList.addOrder("modifiedDateTime|DESC");
-		rc.productSmartList.setPageRecordsShow(10);
-		
 		rc.orderSmartList = getOrderService().getOrderSmartList();
-		rc.orderSmartList.addFilter("orderStatusType.systemCode", "ostNew");
+		rc.orderSmartList.addInFilter("orderStatusType.systemCode", "ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled");
 		rc.orderSmartList.addOrder("orderOpenDateTime|DESC");
 		rc.orderSmartList.setPageRecordsShow(10);
 		
@@ -102,9 +104,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.productReviewSmartList.addFilter("activeFlag", 0);
 		rc.productReviewSmartList.setPageRecordsShow(10);
 		
-		rc.vendorOrderSmartList = getVendorService().getVendorOrderSmartList();
-		rc.vendorOrderSmartList.addOrder("modifiedDateTime|DESC");
-		rc.vendorOrderSmartList.setPageRecordsShow(10);
+		if(getUpdateService().getMetaFolderExistsWithoutDismissalFlag()) {
+			rc.$.slatwall.showMessageKey( 'admin.metaexists_error' );
+		}
 	}
 
 	public void function saveImage(required struct rc){
@@ -138,6 +140,33 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 	}
 	
+	public void function encryptionUpdatePassword(required struct rc) {
+		param name="rc.process" default="0";
+		param name="rc.password" default="";
+		param name="rc.iterationCount" default="#randRange(500, 2500)#";
+		
+		if (rc.process) {
+			getHibachiUtilityService().addEncryptionPasswordData(data=rc);
+			rc.$.slatwall.showMessageKey("admin.main.encryption.updatePassword_success");
+			getFW().redirect(action="admin:main.default", preserve="messages");
+		}
+		
+		rc.edit = true;
+	}
+	
+	public void function encryptionReencryptData(required struct rc) {
+		param name="rc.process" default="0";
+		param name="rc.batchSizeLimit" default="0"; 
+		
+		if (rc.process) {
+			getHibachiUtilityService().reencryptData(val(rc.batchSizeLimit));
+			rc.$.slatwall.showMessageKey("admin.main.encryption.reencryptdata_success");
+			getFW().redirect(action="admin:main.default", preserve="messages");
+		}
+		
+		rc.edit = true;
+	}
+	
 	public void function update(required struct rc) {
 		param name="rc.process" default="0";
 		param name="rc.branchType" default="standard";
@@ -156,12 +185,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			getFW().redirect(action="admin:main.default", preserve="messages", queryString="#getApplicationValue('applicationReloadKey')#=#getApplicationValue('applicationReloadPassword')#&#getApplicationValue('applicationUpdateKey')#=#getApplicationValue('applicationUpdatePassword')#");
 		}
 		
+		// https://api.github.com/repos/ten24/Slatwall/branches
 		var versions = getUpdateService().getAvailableVersions();
 		rc.availableDevelopVersion = versions.develop;
 		rc.availableMasterVersion = versions.master;
 
 		rc.currentVersion = getApplicationValue('version');
-		if(listLen(rc.currentVersion, '.') > 2) {
+		if(listLen(rc.currentVersion, '.') > 3) {
 			rc.currentBranch = "develop";
 		} else {
 			rc.currentBranch = "master";
@@ -177,6 +207,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public void function login(required struct rc) {
 		getFW().setView("admin:main.login");
 		rc.pageTitle = rc.$.slatwall.rbKey('define.login');
+		
+		if(!structKeyExists(rc, "sRedirectURL")) {
+			arguments.rc.sRedirectURL = getApplicationValue('baseURL') & '/'; 
+		}
+		
 		rc.accountAuthenticationExists = getAccountService().getAccountAuthenticationExists();
 		rc.integrationLoginHTMLArray = getIntegrationService().getAdminLoginHTMLArray();
 	}
@@ -216,7 +251,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		if(!account.hasErrors()) {
 			account.clearProcessObject('forgotPassword');
-			rc.$.slatwall.showMessageKey('entity.account.process.forgotPassword_success');	
+			rc.$.slatwall.showMessageKey('entity.account.process.forgotPassword_success');
 		}
 		
 		login( rc );
@@ -238,5 +273,56 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		login( rc );
 	}
+	
+	public void function updatePassword(required struct rc){
+		getAccountService().processAccount(rc.$.slatwall.getAccount(), rc, "updatePassword");
+		
+		if(!rc.$.slatwall.getAccount().hasErrors()) {
+			rc.$.slatwall.showMessageKey("admin.main.encryption.updatePassword_success");
+			getFW().redirect(action="admin:main.default", preserve="messages");
+		}
+	
+		login(rc);
+	}
+	
+	public void function changeLanguage( required struct rc ){
+		param name="arguments.rc.rbLocale" default="";
+		param name="arguments.rc.redirectURL" default="";
+		
+		arguments.rc.$.slatwall.getSession().setRBLocale(arguments.rc.rbLocale);
+		arguments.rc.$.slatwall.setPersistSessionFlag( true );
+		
+		getFW().redirectExact( rc.redirectURL );
+		
+	}
+	
+	public void function removeMeta() {
+		getUpdateService().removeMeta();
+		
+		rc.$.slatwall.showMessageKey( 'admin.metaremoved_info' );
+		
+		getFW().redirect(action="admin:main.default", preserve="messages");
+	}
+	
+	public void function dismissMeta() {
+		getUpdateService().dismissMeta();
+		
+		rc.$.slatwall.showMessageKey( 'admin.metadismissed_info' );
+		
+		getFW().redirect(action="admin:main.default", preserve="messages");
+	}
+
+	public void function unlockAccount(){
+		
+		var account = getService("HibachiService").getAccountByAccountID(url.accountid);
+		
+		account = getAccountService().processAccount(account, "unlock");
+		
+		rc.$.slatwall.showMessageKey( 'admin.main.unlockAccount_info' );
+		
+		getFW().redirect(action="?slatAction=entity.detailaccount&accountID=" & url.accountid, preserve="messages");
+
+	}
+
 }
 

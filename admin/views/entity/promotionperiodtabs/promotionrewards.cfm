@@ -46,33 +46,35 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.promotionperiod" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.promotionperiod.getPromotionRewardsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.promotionperiod.getPromotionRewardsSmartList()#"
 							   recordEditAction="admin:entity.editpromotionreward"
 							   recordEditQueryString="promotionperiodID=#rc.promotionperiod.getPromotionPeriodID()#"
 							   recorddetailaction="admin:entity.detailpromotionreward">
 							      
-		<cf_HibachiListingColumn propertyIdentifier="rewardType" tdclass="primary" />
-		<cf_HibachiListingColumn propertyIdentifier="amountType" />
-		<cf_HibachiListingColumn propertyIdentifier="amount" />
-		<cf_HibachiListingColumn propertyIdentifier="maximumUsePerOrder" />
-		<cf_HibachiListingColumn propertyIdentifier="maximumUsePerItem" />
-		<cf_HibachiListingColumn propertyIdentifier="maximumUsePerQualification" />
+		<hb:HibachiListingColumn propertyIdentifier="rewardType" tdclass="primary" />
+		<hb:HibachiListingColumn propertyIdentifier="amountType" />
+		<hb:HibachiListingColumn propertyIdentifier="amount" />
+		<hb:HibachiListingColumn propertyIdentifier="maximumUsePerOrder" />
+		<hb:HibachiListingColumn propertyIdentifier="maximumUsePerItem" />
+		<hb:HibachiListingColumn propertyIdentifier="maximumUsePerQualification" />
 		
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 	
 	<cfif !rc.promotionperiod.isExpired()>
-		<cf_HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" buttonClass="btn-inverse">
-			<cf_HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionrewardmerchandise')#" action="admin:entity.createpromotionreward" querystring="promotionPeriodID=#rc.promotionperiod.getPromotionperiodID()#&rewardType=merchandise" modal="true" type="list" />
-			<cf_HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionrewardsubscription')#" action="admin:entity.createpromotionreward" querystring="promotionPeriodID=#rc.promotionperiod.getPromotionperiodID()#&rewardType=subscription" modal="true" type="list" />
-			<cf_HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionrewardcontentaccess')#" action="admin:entity.createpromotionreward" querystring="promotionPeriodID=#rc.promotionperiod.getPromotionperiodID()#&rewardType=contentAccess" modal="true" type="list" />
-			<cf_HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionrewardfulfillment')#" action="admin:entity.createpromotionreward" querystring="promotionPeriodID=#rc.promotionperiod.getPromotionperiodID()#&rewardType=fulfillment" modal="true" type="list" />
-			<cf_HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionrewardorder')#" action="admin:entity.createpromotionreward" querystring="promotionPeriodID=#rc.promotionperiod.getPromotionperiodID()#&rewardType=order" modal="true" type="list" />
-		</cf_HibachiActionCallerDropdown>
+		<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" buttonClass="btn-inverse" dropdownClass="pull-right">
+			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionrewardmerchandise')#" action="admin:entity.createpromotionreward" querystring="promotionPeriodID=#rc.promotionperiod.getPromotionperiodID()#&rewardType=merchandise" modal="true" type="list" />
+			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionrewardsubscription')#" action="admin:entity.createpromotionreward" querystring="promotionPeriodID=#rc.promotionperiod.getPromotionperiodID()#&rewardType=subscription" modal="true" type="list" />
+			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionrewardcontentaccess')#" action="admin:entity.createpromotionreward" querystring="promotionPeriodID=#rc.promotionperiod.getPromotionperiodID()#&rewardType=contentAccess" modal="true" type="list" />
+			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionrewardfulfillment')#" action="admin:entity.createpromotionreward" querystring="promotionPeriodID=#rc.promotionperiod.getPromotionperiodID()#&rewardType=fulfillment" modal="true" type="list" />
+			<hb:HibachiActionCaller text="#$.slatwall.rbKey('admin.pricing.createpromotionrewardorder')#" action="admin:entity.createpromotionreward" querystring="promotionPeriodID=#rc.promotionperiod.getPromotionperiodID()#&rewardType=order" modal="true" type="list" />
+		</hb:HibachiActionCallerDropdown>
 	</cfif>
 
 </cfoutput>

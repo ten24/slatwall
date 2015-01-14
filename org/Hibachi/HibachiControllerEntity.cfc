@@ -121,7 +121,8 @@ component output="false" accessors="true" extends="HibachiController" {
 		if(right(arguments.rc.pageTitle, 8) eq "_missing") {
 			var replaceData = {
 				entityName=getHibachiScope().rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#'),
-				itemEntityName=getHibachiScope().rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#')
+				itemEntityName=getHibachiScope().rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#'),
+				itemEntityNamePlural=getHibachiScope().rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#_plural')
 			};
 			
 			if(left(listLast(arguments.rc.entityActionDetails.thisAction, "."), 4) eq "list") {
@@ -432,7 +433,11 @@ component output="false" accessors="true" extends="HibachiController" {
 			rc.processObject = entity.getProcessObject( arguments.rc.processContext );
 			
 			// Populate the processObject
-			rc.processObject.populate(arguments.rc);
+			rc.processObject.populate( arguments.rc );
+			if(structKeyExists(arguments.rc, arguments.entityName) && isStruct(arguments.data[arguments.entityName])) {
+				entity.populate( arguments.rc[arguments.entityName] );
+				rc.processObject.addPopulatedSubProperty( arguments.entityName, entity );
+			}
 			
 			// hibachiValidationService
 			var errorBean = getService("hibachiValidationService").validate(arguments.rc.processObject, arguments.rc.processContext, false);
@@ -696,7 +701,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	private string function buildRedirectQueryString( required string queryString, required boolean maintainQueryString ) {
 		if(arguments.maintainQueryString) {
 			for(var key in url) {
-				if(key != getFW().getAction()) {
+				if(key != getFW().getAction() && !listFindNoCase("redirectAction,sRedirectAction,fRedirectAction,redirectURL,sRedirectURL,fRedirectURL", key)) {
 					arguments.queryString = listAppend(arguments.queryString, "#key#=#url[key]#", "&");
 				}
 			}

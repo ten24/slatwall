@@ -46,15 +46,18 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.orderReturn" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.orderReturn.getOrderReturnItemsSmartList()#">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.title" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="orderItemStatusType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="quantity" />
-		<cf_HibachiListingColumn propertyIdentifier="quantityReceived" />
-		<cf_HibachiListingColumn propertyIdentifier="quantityUnreceived" />
-	</cf_HibachiListingDisplay>
+	<hb:HibachiListingDisplay smartList="#rc.orderReturn.getOrderReturnItemsSmartList()#">
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.title" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />
+		<hb:HibachiListingColumn propertyIdentifier="orderItemStatusType.typeName" />
+		<hb:HibachiListingColumn propertyIdentifier="quantity" />
+		<hb:HibachiListingColumn propertyIdentifier="quantityReceived" />
+		<hb:HibachiListingColumn propertyIdentifier="quantityUnreceived" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

@@ -46,21 +46,25 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.account" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.account.getAccountPaymentsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.account.getAccountPaymentsSmartList()#"
 							   recordDetailAction="admin:entity.detailaccountpayment"
 							   recordEditAction="admin:entity.editaccountpayment">
 
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="paymentMethod.paymentMethodName" />
-		<cf_HibachiListingColumn propertyIdentifier="accountPaymentType.type" />
-		<cf_HibachiListingColumn propertyIdentifier="amount" />
-		<cf_HibachiListingColumn propertyIdentifier="amountReceived" />
-		<cf_HibachiListingColumn propertyIdentifier="amountCredited" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="paymentMethod.paymentMethodName" />
+		<hb:HibachiListingColumn propertyIdentifier="accountPaymentType.typeName" />
+		<hb:HibachiListingColumn propertyIdentifier="amount" />
+		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
+		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
 
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 
 
-	<cf_HibachiProcessCaller action="admin:entity.preprocessaccount" entity="#rc.account#" processContext="addAccountPayment" class="btn" icon="plus" modal="true" />
+	<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="#rc.account#" processContext="addAccountPayment" class="btn btn-default" icon="plus" />
 </cfoutput>

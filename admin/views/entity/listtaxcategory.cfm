@@ -46,18 +46,29 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.taxCategorySmartList" type="any" />
 
 <cfoutput>
 	
-<cf_HibachiEntityActionBar type="listing" object="#rc.taxCategorySmartList#" rc="#rc#" />
-
-<cf_HibachiListingDisplay smartList="#rc.taxCategorySmartList#" rc="#rc#"
-						   recordEditAction="admin:entity.editTaxCategory"
-						   recordDetailAction="admin:entity.detailTaxCategory">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="taxCategoryName" />
-	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiEntityActionBar type="listing" object="#rc.taxCategorySmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createtaxcategory" entity="taxcategory" class="btn btn-primary" icon="plus icon-white" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiListingDisplay smartList="#rc.taxCategorySmartList#" rc="#rc#"
+							   recordEditAction="admin:entity.editTaxCategory"
+							   recordDetailAction="admin:entity.detailTaxCategory">
+		
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="taxCategoryName" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

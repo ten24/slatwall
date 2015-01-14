@@ -46,15 +46,15 @@
 Notes:
 
 */
-component displayname="Account Payment" entityname="SlatwallAccountPayment" table="SwAccountPayment" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountPayment" hb_processContexts="offlineTransaction,process" {
+component displayname="Account Payment" entityname="SlatwallAccountPayment" table="SwAccountPayment" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountPayment" hb_processContexts="offlineTransaction,process,createTransaction" {
 	
 	// Persistent Properties
 	property name="accountPaymentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="amount" ormtype="big_decimal" notnull="true";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="bankRoutingNumberEncrypted" ormType="string";
 	property name="bankAccountNumberEncrypted" ormType="string";
 	property name="checkNumberEncrypted" ormType="string";
+	property name="companyPaymentMethodFlag" ormType="boolean";
 	property name="creditCardNumberEncrypted" ormType="string";
 	property name="creditCardLastFour" ormType="string";
 	property name="creditCardType" ormType="string";
@@ -74,6 +74,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	// Related Object Properties (one-to-many)
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="accountPaymentID" cascade="all-delete-orphan" inverse="true";
 	property name="paymentTransactions" singularname="paymentTransaction" cfc="PaymentTransaction" type="array" fieldtype="one-to-many" fkcolumn="accountPaymentID" cascade="all" inverse="true";
+	property name="appliedAccountPayments" singularname="appliedAccountPayment" cfc="AccountPaymentApplied" type="array" fieldtype="one-to-many" fkcolumn="accountPaymentID" cascade="all" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -84,11 +85,12 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
+	property name="amount" persistent="false" type="numeric" hb_formatType="currency";
 	property name="amountAuthorized" persistent="false" type="numeric" hb_formatType="currency";
 	property name="amountCredited" persistent="false" type="numeric" hb_formatType="currency";
 	property name="amountReceived" persistent="false" type="numeric" hb_formatType="currency";
@@ -109,6 +111,8 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	property name="originalAuthorizationProviderTransactionID" persistent="false";
 	property name="originalChargeProviderTransactionID" persistent="false";
 	property name="originalProviderTransactionID" persistent="false";
+	property name="paymentMethodOptions" persistent="false";
+	property name="appliedAccountPaymentOptions" persistent="false";
 	property name="paymentMethodType" persistent="false";
 	property name="securityCode" persistent="false";
 	property name="creditCardOrProviderTokenExistsFlag" persistent="false";
@@ -157,6 +161,14 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		if(!structKeyExists(variables, "paymentMethodOptions")) {
 			var sl = getService("paymentService").getPaymentMethodSmartList();
 			
+			var eligiblePaymentMethodIDs = this.setting('accountEligiblePaymentMethods');
+			if (!isNull(this.getAccount())) {
+				eligiblePaymentMethodIDs = this.getAccount().setting('accountEligiblePaymentMethods');
+			}
+			
+			// Prevent 'termPayment' from displaying as account payment method option
+			sl.addInFilter('paymentMethodType', 'cash,check,creditCard,external,giftCard');
+			sl.addInFilter('paymentMethodID', eligiblePaymentMethodIDs);
 			sl.addFilter('activeFlag', 1);
 			sl.addSelect('paymentMethodID', 'value');
 			sl.addSelect('paymentMethodName', 'name');
@@ -175,6 +187,11 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		
 		// Make sure the payment method matches
 		setPaymentMethod( arguments.accountPaymentMethod.getPaymentMethod() );
+		
+		// Company PaymentMethod Flag
+		if(!isNull(arguments.accountPaymentMethod.getCompanyPaymentMethodFlag())) {
+			setCompanyPaymentMethodFlag( arguments.accountPaymentMethod.getCompanyPaymentMethodFlag() );
+		}
 		
 		// Credit Card
 		if(listFindNoCase("creditCard", arguments.accountPaymentMethod.getPaymentMethod().getPaymentMethodType())) {
@@ -205,8 +222,17 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		
 	}	
 	
-	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public numeric function getAmount() {
+		var totalAmt = 0;
+		
+		for(var i=1; i<=arrayLen(getAppliedAccountPayments()); i++) {
+			totalAmt = precisionEvaluate(totalAmt + getAppliedAccountPayments()[i].getAmount());
+		}
+		
+		return totalAmt;
+	}
 	
 	public numeric function getAmountReceived() {
 		var amountReceived = 0;
@@ -294,8 +320,19 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	}
 	
 	public numeric function getAmountUnassigned() {
-		// This is temporary until we get the assignment of accountPayments to orderPayments
-		return getAmountReceived();
+		var amountUnassigned = 0;
+		
+		for(var accountPaymentApplied in getAppliedAccountPayments()) {
+			if(isNull(accountPaymentApplied.getOrderPayment())) {
+				if(accountPaymentApplied.getAccountPaymentType().getSystemCode() == "aptCharge") {
+					amountUnassigned = precisionEvaluate(amountUnassigned + accountPaymentApplied.getAmount());		
+				} else {
+					amountUnassigned = precisionEvaluate(amountUnassigned - accountPaymentApplied.getAmount());
+				}
+			}
+		}
+		
+		return amountUnassigned;
 	}
 	
 	public boolean function getCreditCardOrProviderTokenExistsFlag() {
@@ -334,6 +371,17 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		return variables.originalProviderTransactionID;
 	}
 	
+	public array function getAccountPaymentAppliedOptions( ) {
+		if(!structKeyExists(variables, "appliedAccountPaymentOptions")) {
+			var smartList = getService('typeService').getTypeSmartList();
+			smartList.addInFilter('systemCode','aptCredit,aptCharge');
+			smartList.addSelect('type','name');
+			smartList.addSelect('typeID','value');
+			variables.appliedAccountPaymentOptions = smartList.getRecords();
+		}
+		return variables.appliedAccountPaymentOptions;
+	}
+	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
@@ -352,6 +400,14 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 	}    
 	public void function removeAttributeValue(required any attributeValue) {    
 		arguments.attributeValue.removeAccountPayment( this );    
+	}
+	
+	// Applied Account Payments (one-to-many)    
+	public void function addAppliedAccountPayment(required any appliedAccountPayment) {    
+		arguments.appliedAccountPayment.setAccountPayment( this );    
+	}    
+	public void function removeAppliedAccountPayment(required any appliedAccountPayment) {    
+		arguments.appliedAccountPayment.removeAccountPayment( this );    
 	}
 	
 	// Account (many-to-one)
@@ -391,9 +447,29 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		return variables.billingAddress;
 	}
 	
+	public any function getCurrencyCode() {
+		if( !structKeyExists(variables, "currencyCode") ) {
+			variables.currencyCode = "USD";
+		}
+		return variables.currencyCode;
+	}
+	
 	// ==============  END: Overridden Implicet Getters ====================
 	
 	// ================== START: Overridden Methods ========================
+	
+	public void function setCreditCardNumber(required string creditCardNumber) {
+		if(len(arguments.creditCardNumber)) {
+			variables.creditCardNumber = REReplaceNoCase(arguments.creditCardNumber, '[^0-9]', '', 'ALL');
+			setCreditCardLastFour( right(arguments.creditCardNumber, 4) );
+			setCreditCardType( getService("paymentService").getCreditCardTypeFromNumber(arguments.creditCardNumber) );
+		} else {
+			structDelete(variables, "creditCardNumber");
+			setCreditCardLastFour(javaCast("null", ""));
+			setCreditCardType(javaCast("null", ""));
+			setCreditCardNumberEncrypted(javaCast("null", ""));
+		}
+	}
 	
 	public any function getSimpleRepresentation() {
 		if(isNew()) {

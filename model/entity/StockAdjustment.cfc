@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" hb_permission="this" hb_processContexts="addItems,processAdjustment" {
+component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" hb_permission="this" hb_processContexts="addItems,processAdjustment,addStockAdjustmentItem" {
 
 	// Persistent Properties
 	property name="stockAdjustmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -62,11 +62,11 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	property name="stockAdjustmentItems" singularname="stockAdjustmentItem" cfc="StockAdjustmentItem" fieldtype="one-to-many" fkcolumn="stockAdjustmentID" inverse="true" cascade="all-delete-orphan";
 	property name="stockReceivers" singularname="stockReceiver" cfc="StockReceiver" type="array" fieldtype="one-to-many" fkcolumn="stockAdjustmentID" cascade="all" inverse="true";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="addStockAdjustmentItemSkuOptionsSmartList" persistent="false";
@@ -137,7 +137,7 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 	}
 	
 	public string function getDisplayName(){
-		var displayName = "#getStockAdjustmentType().getType()#:";
+		var displayName = "#getStockAdjustmentType().getTypeName()#:";
 		if(!isNull(getFromLocation())) {
 			displayName = listAppend(displayName, getFromLocation().getLocationName(), " ");
 		}
@@ -210,21 +210,18 @@ component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persist
 
 	public any function getStockAdjustmentType() {
 		if( !structKeyExists(variables, "stockAdjustmentType") ) {
-			variables.stockAdjustmentType = getService("settingService").getTypeBySystemCode("satLocationTransfer");
+			variables.stockAdjustmentType = getService("typeService").getTypeBySystemCode("satLocationTransfer");
 		}
 		return variables.stockAdjustmentType;
 	}
 	
 	public any function getStockAdjustmentStatusType() {
 		if( !structKeyExists(variables, "stockAdjustmentStatusType") ) {
-			variables.stockAdjustmentStatusType = getService("settingService").getTypeBySystemCode("sastNew");
+			variables.stockAdjustmentStatusType = getService("typeService").getTypeBySystemCode("sastNew");
 		}
 		return variables.stockAdjustmentStatusType;
 	}
-	
-	public string function getSimpleRepresentationPropertyName() {
-		return "displayName";
-	}
+
 	
 	// ==============  END: Overridden Implicet Getters ====================
 	

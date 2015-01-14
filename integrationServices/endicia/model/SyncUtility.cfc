@@ -119,7 +119,7 @@
 				<!--- 9 --->	<cfset arrayAppend(lineArray, orderFulfillment.getOrder().getAccount().getPhoneNumber()) />
 				<!--- 10 --->	<cfset arrayAppend(lineArray, nullReplace(orderFulfillment.getAddress().getName(), "")) />
 				<!--- 11 --->	<cfset arrayAppend(lineArray, nullReplace(orderFulfillment.getAddress().getCompany(), "")) />
-				<!--- 12 --->	<cfset arrayAppend(lineArray, nullReplace(orderFulfillment.getAddress().getPhone(), "")) />
+				<!--- 12 --->	<cfset arrayAppend(lineArray, nullReplace(orderFulfillment.getAddress().getPhoneNumber(), "")) />
 				<!--- 13 --->	<cfset arrayAppend(lineArray, nullReplace(orderFulfillment.getAddress().getStreetAddress(), "")) />
 				<!--- 14 --->	<cfset arrayAppend(lineArray, nullReplace(orderFulfillment.getAddress().getStreet2Address(), "")) />
 				<!--- 15 --->	<cfset arrayAppend(lineArray, nullReplace(orderFulfillment.getAddress().getLocality(), "")) />

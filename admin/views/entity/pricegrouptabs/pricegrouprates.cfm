@@ -46,15 +46,18 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.priceGroup" type="any" />
 
-<cf_HibachiListingDisplay smartList="#rc.priceGroup.getPriceGroupRatesSmartList()#"
+<hb:HibachiListingDisplay smartList="#rc.priceGroup.getPriceGroupRatesSmartList()#"
 						   recordDetailAction="admin:entity.detailpricegrouprate"
 						   recordEditAction="admin:entity.editpricegrouprate">
-	<cf_HibachiListingColumn propertyIdentifier="amount" />
-	<cf_HibachiListingColumn propertyIdentifier="amountType" />
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="appliesTo" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn propertyIdentifier="amount" />
+	<hb:HibachiListingColumn propertyIdentifier="amountType" />
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="appliesTo" />
+</hb:HibachiListingDisplay>
 
-<cf_HibachiActionCaller action="admin:entity.createpricegrouprate" class="btn" icon="plus" queryString="pricegroupID=#rc.pricegroup.getpricegroupID()#" modal="true" />
+<hb:HibachiActionCaller action="admin:entity.createpricegrouprate" class="btn btn-default" icon="plus" queryString="pricegroupID=#rc.pricegroup.getpricegroupID()#" modal="true" />
 	

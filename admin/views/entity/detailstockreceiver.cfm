@@ -46,24 +46,22 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 
 <cfparam name="rc.stockReceiver" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.stockReceiver#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.stockReceiver#" edit="#rc.edit#">
-		</cf_HibachiEntityActionBar>
-			
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.stockReceiver#" property="packingSlipNumber" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.stockReceiver#" property="boxCount" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.stockReceiver#">
-			<cf_HibachiTab view="admin:entity/stockreceivertabs/stockreceiveritems" />
-		</cf_HibachiTabGroup>
-	</cf_HibachiEntityDetailForm>
+	<hb:HibachiEntityDetailForm object="#rc.stockReceiver#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.stockReceiver#" edit="#rc.edit#">
+		</hb:HibachiEntityActionBar>
+
+		<hb:HibachiEntityDetailGroup object="#rc.stockReceiver#">
+			<hb:HibachiEntityDetailItem view="admin:entity/stockreceivertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/stockreceivertabs/stockreceiveritems" />
+		</hb:HibachiEntityDetailGroup>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

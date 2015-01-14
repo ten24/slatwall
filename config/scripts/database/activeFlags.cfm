@@ -47,9 +47,14 @@ Notes:
 
 --->
 
-<!--- ProductType --->
+<!--- Content --->
 <cfquery name="local.activeFlag">
-	UPDATE SwProductType SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
+	UPDATE SwContent SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
+</cfquery>
+
+<!--- Location --->
+<cfquery name="local.activeFlag">
+	UPDATE SwLocation SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
 </cfquery>
 
 <!--- Product --->
@@ -57,12 +62,28 @@ Notes:
 	UPDATE SwProduct SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
 </cfquery>
 
+<!--- ProductType --->
+<cfquery name="local.activeFlag">
+	UPDATE SwProductType SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
+</cfquery>
+
+<!--- Integration --->
+<cfquery name="local.activeFlag">
+	UPDATE SwIntegration SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="0"> WHERE activeFlag is NULL
+</cfquery>
+
+<!--- Shipping Rate --->
+<cfquery name="local.activeFlag">
+	UPDATE SwShippingMethodRate SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
+</cfquery>
+
 <!--- Sku --->
 <cfquery name="local.activeFlag">
 	UPDATE SwSku SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
 </cfquery>
 
-<!--- Content --->
+<!--- Account Authentication --->
 <cfquery name="local.activeFlag">
-	UPDATE SwContent SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
+	UPDATE SwAccountAuthentication SET activeFlag = <cfqueryparam cfsqltype="cf_sql_bit" value="1"> WHERE activeFlag is NULL
 </cfquery>
+

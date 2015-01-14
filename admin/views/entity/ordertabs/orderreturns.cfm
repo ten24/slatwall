@@ -46,17 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" /> 
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.order.getOrderReturnsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.order.getOrderReturnsSmartList()#"
 							  recordDetailAction="admin:entity.detailorderreturn">
-		<cf_HibachiListingColumn tdClass="primary" propertyIdentifier="returnLocation.locationName" />
+		<hb:HibachiListingColumn tdClass="primary" propertyIdentifier="returnLocation.locationName" />
+		<hb:HibachiListingColumn propertyIdentifier="fulfillmentRefundAmount" />
 		<!---
-		<cf_HibachiListingColumn propertyIdentifier="fulfillmentCharge" />
-		<cf_HibachiListingColumn propertyIdentifier="discountAmount" />
-		<cf_HibachiListingColumn propertyIdentifier="chargeAfterDiscount" />
+		<hb:HibachiListingColumn propertyIdentifier="fulfillmentCharge" />
+		<hb:HibachiListingColumn propertyIdentifier="discountAmount" />
+		<hb:HibachiListingColumn propertyIdentifier="chargeAfterDiscount" />
 		--->
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 </cfoutput>

@@ -65,15 +65,23 @@ component displayname="Promotion Period" entityname="SlatwallPromotionPeriod" ta
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
  	// Non-persistent properties
 	property name="currentFlag" type="boolean" persistent="false"; 
- 
+ 	
+ 	
+ 	public boolean function hasMaximumAccountUseCount(){
+ 		return !isNull(this.getMaximumAccountUseCount()) && this.getMaximumAccountUseCount() gt 0;
+ 	}
+ 	
+ 	public boolean function hasMaximumUseCount(){
+ 		return !isNull(this.getMaximumUseCount()) && this.getMaximumUseCount() gt 0;
+ 	}
  
  	public boolean function isCurrent() {
 		var currentDateTime = now();
@@ -114,19 +122,19 @@ component displayname="Promotion Period" entityname="SlatwallPromotionPeriod" ta
 	
 	// Promotion Rewards (one-to-many)
 	public void function addPromotionReward(required any promotionReward) {
-	   arguments.promotionReward.setPromotion(this);
+	   arguments.promotionReward.setPromotionPeriod(this);
 	}
 	
 	public void function removePromotionReward(required any promotionReward) {
-		arguments.promotionReward.removePromotion(this);
+		arguments.promotionReward.removePromotionPeriod(this);
 	}
 	
 	// Promotion Qualifiers (one-to-many)    
 	public void function addPromotionQualifier(required any promotionQualifier) {    
-		arguments.promotionQualifier.setPromotion( this );    
+		arguments.promotionQualifier.setPromotionPeriod( this );    
 	}    
 	public void function removePromotionQualifier(required any promotionQualifier) {    
-		arguments.PromotionQualifier.removePromotion( this );    
+		arguments.PromotionQualifier.removePromotionPeriod( this );    
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

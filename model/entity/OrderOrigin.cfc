@@ -57,6 +57,7 @@ component entityname="SlatwallOrderOrigin" table="SwOrderOrigin" persistent="tru
 	// Related Object Properties (many-to-one)
 	
 	// Related Object Properties (one-to-many)
+	property name="orders" singularname="order" cfc="Order" fieldtype="one-to-many" fkcolumn="orderOriginID" inverse="true" lazy="extra";						// Set to lazy, just used for delete validation
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -67,9 +68,9 @@ component entityname="SlatwallOrderOrigin" table="SwOrderOrigin" persistent="tru
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 

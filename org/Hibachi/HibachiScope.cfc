@@ -6,20 +6,36 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	property name="loggedInFlag" type="boolean";
 	property name="loggedInAsAdminFlag" type="boolean";
 	property name="publicPopulateFlag" type="boolean";
-	property name="calledActions" type="array";
-	property name="failureActions" type="array";
-	property name="sucessfulActions" type="array";
+	property name="persistSessionFlag" type="boolean";
+	property name="sessionFoundNPSIDCookieFlag" type="boolean";
+	property name="sessionFoundPSIDCookieFlag" type="boolean";
+	
 	property name="ormHasErrors" type="boolean" default="false";
 	property name="rbLocale";
 	property name="url" type="string";
 	
+	property name="calledActions" type="array";
+	property name="failureActions" type="array";
+	property name="successfulActions" type="array";
+	
+	property name="auditsToCommitStruct" type="struct";
+	property name="modifiedEntities" type="array";
+	
 	public any function init() {
-		setCalledActions( [] );
-		setSucessfulActions( [] );
-		setFailureActions( [] );
 		setORMHasErrors( false );
 		setRBLocale( "en_us" );
 		setPublicPopulateFlag( false );
+		setPersistSessionFlag( true );
+		setSessionFoundNPSIDCookieFlag( false );
+		setSessionFoundPSIDCookieFlag( false );
+		
+		setCalledActions( [] );
+		setSuccessfulActions( [] );
+		setFailureActions( [] );
+		
+		setAuditsToCommitStruct( {} );
+		setModifiedEntities( [] );
+		
 		
 		return super.init();
 	}
@@ -30,6 +46,9 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		config[ 'action' ] = getApplicationValue('action');
 		config[ 'dateFormat' ] = 'mmm dd, yyyy';
 		config[ 'timeFormat' ] = 'hh:mm tt';
+		config[ 'rbLocale' ] = '#getRBLocale()#';
+		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
+		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
 		
 		var returnHTML = '';
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';
@@ -37,8 +56,20 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return returnHTML;
 	}
 	
+	public void function addModifiedEntity( required any entity ) {
+		arrayAppend(getModifiedEntities(), arguments.entity);
+	}
+	
+	public void function clearModifiedEntities() {
+		setModifiedEntities([]);
+	}
+	
+	public void function clearAuditsToCommitStruct() {
+		setAuditsToCommitStruct({});
+	}
+	
 	public boolean function getLoggedInFlag() {
-		if(!getSession().getAccount().isNew()) {
+		if(!getSession().getAccount().getNewFlag()) {
 			return true;
 		}
 		return false;
@@ -55,7 +86,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		if(!structKeyExists(variables, "url")) {
 			variables.url = getPageContext().getRequest().GetRequestUrl().toString();
 			if( len( CGI.QUERY_STRING ) ) {
-				variables.url &= "?#QUERY_STRING#";
+				variables.url &= "?#CGI.QUERY_STRING#";
 			}
 		}
 		return variables.url;
@@ -70,7 +101,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public boolean function hasSuccessfulAction( required string action ) {
-		return arrayFindNoCase(getSucessfulActions(), arguments.action) > 0;
+		return arrayFindNoCase(getSuccessfulActions(), arguments.action) > 0;
 	}
 	
 	public boolean function hasFailureAction( required string action ) {
@@ -81,7 +112,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		if(arguments.failure) {
 			arrayAppend(getFailureActions(), arguments.action);
 		} else {
-			arrayAppend(getSucessfulActions(), arguments.action);
+			arrayAppend(getSuccessfulActions(), arguments.action);
 		}
 	}
 	
@@ -92,7 +123,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return entityService.invokeMethod("new#arguments.entityName#");
 	}
 	
-	public any function getEntity(required string entityName, string entityID="", boolean isReturnNewOnNotFound=false) {
+	public any function getEntity(required string entityName, any entityID="", boolean isReturnNewOnNotFound=false) {
 		var entityService = getService( "hibachiService" ).getServiceByEntityName( arguments.entityName );
 		
 		return entityService.invokeMethod("get#arguments.entityName#", {1=arguments.entityID, 2=arguments.isReturnNewOnNotFound});
@@ -175,14 +206,16 @@ component output="false" accessors="true" extends="HibachiTransient" {
 				message = replace(message, "${itemEntityName}", rbKey("entity.#entityName#") );
 			}
 		}
-		
 		showMessage(message=message, messageType=messageType);
 	}
 	
 	public void function showMessage(string message="", string messageType="info") {
-		param name="request.context.messages" default="#arrayNew(1)#";
-		
-		arrayAppend(request.context.messages, arguments);
+		param name="request.context['messages']" default="#arrayNew(1)#";
+		arguments.message=getService('HibachiUtilityService').replaceStringTemplate(arguments.message,request.context);
+		var messageStruct = {};
+		messageStruct['message'] = arguments.message;
+		messageStruct['messageType'] = arguments.messageType;
+		arrayAppend(request.context['messages'], messageStruct);
 	}
 	
 	// ========================== HELPER DELIGATION METHODS ===============================
@@ -196,6 +229,10 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		return keyValue;
 	}
 	
+	public string function getRBKey(required string key, struct replaceStringData) {
+		return rbKey(argumentcollection=arguments);
+	}
+	
 	public boolean function authenticateAction( required string action ) {
 		return getService("hibachiAuthenticationService").authenticateActionByAccount( action=arguments.action, account=getAccount() );
 	}
@@ -207,5 +244,4 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	public boolean function authenticateEntityProperty( required string crudType, required string entityName, required string propertyName ) {
 		return getService("hibachiAuthenticationService").authenticateEntityPropertyCrudByAccount( crudType=arguments.crudType, entityName=arguments.entityName, propertyName=arguments.propertyName, account=getAccount() );
 	}
-	
 }

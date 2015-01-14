@@ -1,0 +1,5 @@
+{
+	"properties":{
+		"verificationCode":		[{"required":true, "eqProperty":"accountEmailAddress.verificationCode"}]
+	}
+}

@@ -46,28 +46,33 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderReturn" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.orderReturn#" edit="#rc.edit#">
+	<hb:HibachiEntityDetailForm object="#rc.orderReturn#" edit="#rc.edit#" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 		
-		<cf_HibachiEntityActionBar type="detail" object="#rc.orderReturn#" edit="#rc.edit#"
+		<hb:HibachiEntityActionBar type="detail" object="#rc.orderReturn#" edit="#rc.edit#"
 								   backaction="admin:entity.detailorder"
 								   backquerystring="orderID=#rc.orderReturn.getOrder().getOrderID()#">
 			
-			<cf_HibachiProcessCaller action="admin:entity.preProcessOrderReturn" entity="#rc.orderReturn#" processContext="receive" type="list" />
-		</cf_HibachiEntityActionBar>
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrderReturn" entity="#rc.orderReturn#" processContext="receive" type="list" />
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.orderReturn#" property="returnLocation" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.orderReturn#" property="returnLocation" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.orderReturn#" property="fulfillmentRefundAmount" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.orderReturn#">
-			<cf_HibachiTab view="admin:entity/orderreturntabs/orderreturnitems">
-		</cf_HibachiTabGroup>
+		<hb:HibachiTabGroup object="#rc.orderReturn#">
+			<hb:HibachiTab view="admin:entity/orderreturntabs/orderreturnitems">
+		</hb:HibachiTabGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

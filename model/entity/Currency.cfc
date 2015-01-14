@@ -50,6 +50,7 @@ component displayname="Currency" entityname="SlatwallCurrency" table="SwCurrency
 	
 	// Persistent Properties
 	property name="currencyCode" ormtype="string" fieldtype="id" unique="true" generated="never";
+	property name="currencyISONumber" ormtype="integer";
 	property name="activeFlag" ormtype="boolean";
 	property name="currencyName" ormtype="string";
 	property name="currencySymbol" ormtype="string";
@@ -57,6 +58,7 @@ component displayname="Currency" entityname="SlatwallCurrency" table="SwCurrency
 	// Related Object Properties (many-to-one)
 	
 	// Related Object Properties (one-to-many)
+	property name="currencyRates" singularname="currencyRate" cfc="CurrencyRate" type="array" fieldtype="one-to-many" fkcolumn="currencyCode" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -67,9 +69,9 @@ component displayname="Currency" entityname="SlatwallCurrency" table="SwCurrency
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="currencyLocalOptions" persistent="false";
@@ -88,6 +90,14 @@ component displayname="Currency" entityname="SlatwallCurrency" table="SwCurrency
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// Currency Rates (one-to-many)    
+	public void function addCurrencyRate(required any currencyRate) {    
+		arguments.currencyRate.setCurrency( this );    
+	}    
+	public void function removeCurrencyRate(required any currencyRate) {    
+		arguments.currencyRate.removeCurrency( this );    
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 

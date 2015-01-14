@@ -46,15 +46,19 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.content" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.content.getListingProductsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.content.getListingProductsSmartList()#"
 							   recordeditaction="admin:entity.editproduct"
 							   recorddetailaction="admin:entity.detailproduct">
-		<cf_HibachiListingColumn propertyIdentifier="brand.brandName" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="productName" />
-		<cf_HibachiListingColumn propertyIdentifier="productCode" />
-		<cf_HibachiListingColumn propertyIdentifier="productType.productTypeName" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="brand.brandName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="productName" />
+		<hb:HibachiListingColumn propertyIdentifier="productCode" />
+		<hb:HibachiListingColumn propertyIdentifier="productType.productTypeName" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

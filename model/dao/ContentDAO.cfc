@@ -75,9 +75,20 @@ Notes:
 		<cfargument name="siteID" type="string" />
 		
 		<cfif structKeyExists(arguments, "siteID")>
-			<cfreturn ormExecuteQuery(" FROM SlatwallContent WHERE contentTemplateType.systemCode = ? AND site.siteID = ?", ["ctt#arguments.templateType#", arguments.siteID]) />
+			<cfreturn ormExecuteQuery(" FROM SlatwallContent WHERE contentTemplateType.systemCode = ? AND site.siteID = ?", ["ctt#arguments.templateType#", arguments.siteID], false, {ignoreCase=true}) />
 		</cfif>
 		
-		<cfreturn ormExecuteQuery(" FROM SlatwallContent WHERE contentTemplateType.systemCode = ?", ["ctt#arguments.templateType#"]) />
+		<cfreturn ormExecuteQuery(" FROM SlatwallContent WHERE contentTemplateType.systemCode = ?", ["ctt#arguments.templateType#"], false, {ignoreCase=true}) />
 	</cffunction>
+	
+	<cffunction name="removeCategoryFromContentAssociation" access="public">
+		<cfargument name="categoryID" type="string" required="true" >
+		
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			DELETE FROM SwContentCategory WHERE categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.categoryID#" /> 
+		</cfquery>
+	</cffunction>
+	
 </cfcomponent>

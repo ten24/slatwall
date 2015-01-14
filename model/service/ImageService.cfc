@@ -180,7 +180,6 @@ component persistent="false" extends="HibachiService" output="false" accessors="
 					
 					// If the method is scale
 					if(listFindNoCase("scale", arguments.resizeMethod)) {
-						logHibachi('3');
 						if(structKeyExists(arguments, "width") && structKeyExists(arguments,"height")) {
 							img = scaleImage(image=img, width=arguments.width, height=arguments.height, canvasColor=arguments.canvasColor);
 						} else if (structKeyExists(arguments, "width")) {

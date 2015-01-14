@@ -46,16 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.ordersPlacedSmartList" type="any" />
 
-<cf_HibachiListingDisplay smartList="#rc.ordersPlacedSmartList#"
+<hb:HibachiListingDisplay smartList="#rc.ordersPlacedSmartList#"
 						  recordDetailAction="admin:entity.detailorder"
 						  recordEditAction="admin:entity.editorder">
 
-	<cf_HibachiListingColumn propertyIdentifier="orderNumber" />
-	<cf_HibachiListingColumn propertyIdentifier="orderOpenDateTime" />
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="account.fullName" />
-	<cf_HibachiListingColumn propertyIdentifier="orderStatusType.type" />
-	<cf_HibachiListingColumn propertyIdentifier="calculatedTotal" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn propertyIdentifier="orderNumber" />
+	<hb:HibachiListingColumn propertyIdentifier="orderOpenDateTime" />
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.fullName" />
+	<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" />
+	<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />
+</hb:HibachiListingDisplay>
+<hb:HibachiActionCaller action="admin:entity.preprocessorder" entity="order" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=create&newAccountFlag=false" modal=true />

@@ -60,13 +60,24 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 		throw("The processCreditCard() Method was not setup for this integration service");	
 	}
 	
+	public string function getExternalPaymentHTML() {
+		return "";
+	}
+	
+	public string function getSupportedChargeTransactionTypes() {
+		return "receive";
+	}
+	
+	public string function getSupportedCreditTransactionTypes() {
+		return "credit";
+	}
 	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 		if(structKeyExists(getIntegration().getSettings(), arguments.settingName)) {
 			return getService("settingService").getSettingValue(settingName="integration#getPackageName()##arguments.settingName#", object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);	
 		}
-		return super.setting(argumentcollection=arguments);
+		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
 	}
 	
 	// @hint helper function to return the integration entity that this belongs to
@@ -77,10 +88,6 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 	// @hint helper function to return the packagename of this integration
 	public any function getPackageName() {
 		return lcase(listGetAt(getClassFullname(), listLen(getClassFullname(), '.') - 1, '.'));
-	}
-	
-	public string function getExternalPaymentHTML() {
-		return "";
 	}
 	
 	// DEPRECATED

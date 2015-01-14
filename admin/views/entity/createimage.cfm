@@ -46,24 +46,28 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.image" type="any">
 <cfparam name="objectName" type="string" />
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.image#" edit="#rc.edit#" enctype="multipart/form-data" saveActionQueryString="#objectName#ID=#rc[ '#objectName#ID' ]#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.image#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.image#" edit="#rc.edit#" enctype="multipart/form-data" saveActionQueryString="#objectName#ID=#rc[ '#objectName#ID' ]#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.image#" edit="#rc.edit#" />
 		
 		<input type="hidden" name="#objectName#.#objectName#ID" value="#rc[ '#objectName#ID' ]#" />
 		<input type="hidden" name="directory" value="#lcase(objectName)#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageFile" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageType" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.image#" property="imageFile" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.image#" property="imageName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.image#" property="imageType" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

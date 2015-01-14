@@ -46,6 +46,9 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.task" type="any"/>
 
 <cfif !arrayLen(rc.task.getTaskHistoriesSmartList().getOrders())>
@@ -53,11 +56,11 @@ Notes:
 </cfif>	
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartlist="#rc.task.getTaskHistoriesSmartList()#">
-		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="response" />
-		<cf_HibachiListingColumn propertyidentifier="startTime" />
-		<cf_HibachiListingColumn propertyidentifier="endTime" />
-		<cf_HibachiListingColumn propertyidentifier="duration" />
-		<cf_HibachiListingColumn propertyidentifier="successFlag" />
-	</cf_HibachiListingDisplay>
+	<hb:HibachiListingDisplay smartlist="#rc.task.getTaskHistoriesSmartList()#">
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="response" />
+		<hb:HibachiListingColumn propertyidentifier="startTime" />
+		<hb:HibachiListingColumn propertyidentifier="endTime" />
+		<hb:HibachiListingColumn propertyidentifier="duration" />
+		<hb:HibachiListingColumn propertyidentifier="successFlag" />
+	</hb:HibachiListingDisplay>
 </cfoutput>

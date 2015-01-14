@@ -46,19 +46,22 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.stockReceiverSmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.stockReceiverSmartList#" showCreate="false" />
+<hb:HibachiEntityActionBar type="listing" object="#rc.stockReceiverSmartList#" showCreate="false" />
 
-<cf_HibachiListingDisplay smartList="#rc.stockReceiverSmartList#"
+<hb:HibachiListingDisplay smartList="#rc.stockReceiverSmartList#"
 						   recordDetailAction="admin:entity.detailstockreceiver"
 						   recordEditAction="admin:entity.editstockreceiver">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="packingSlipNumber" />
-	<cf_HibachiListingColumn propertyIdentifier="boxCount" />
-	<cf_HibachiListingColumn propertyIdentifier="receiverType" />
-	<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="packingSlipNumber" />
+	<hb:HibachiListingColumn propertyIdentifier="boxCount" />
+	<hb:HibachiListingColumn propertyIdentifier="receiverType" />
+	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+</hb:HibachiListingDisplay>
 
 </cfoutput>

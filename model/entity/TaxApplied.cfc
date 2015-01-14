@@ -54,9 +54,25 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	// Persistent Properties
 	property name="taxAppliedID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="taxAmount" ormtype="big_decimal";
-	property name="taxRate" ormtype="big_decimal";
+	property name="taxLiabilityAmount" ormtype="big_decimal";
+	property name="taxRate" ormtype="big_decimal" hb_formatType="percentage";
 	property name="appliedType" ormtype="string";
 	property name="currencyCode" ormtype="string" length="3";
+	property name="taxStreetAddress" hb_populateEnabled="public" ormtype="string";
+	property name="taxStreet2Address" hb_populateEnabled="public" ormtype="string";
+	property name="taxLocality" hb_populateEnabled="public" ormtype="string";
+	property name="taxCity" hb_populateEnabled="public" ormtype="string";
+	property name="taxStateCode" hb_populateEnabled="public" ormtype="string";
+	property name="taxPostalCode" hb_populateEnabled="public" ormtype="string";
+	property name="taxCountryCode" hb_populateEnabled="public" ormtype="string";
+	
+	//Persitent Integration Properties
+	property name="taxImpositionID" ormtype="string";
+	property name="taxImpositionName" ormtype="string";
+	property name="taxImpositionType" ormtype="string";
+	property name="taxJurisdictionID" ormtype="string";
+	property name="taxJurisdictionName" ormtype="string";
+	property name="taxJurisdictionType" ormtype="string";
 	
 	// Related Properties (many-to-one)
 	property name="taxCategoryRate" cfc="TaxCategoryRate" fieldtype="many-to-one" fkcolumn="taxCategoryRateID";
@@ -71,11 +87,11 @@ component entityname="SlatwallTaxApplied" table="SwTaxApplied" persistent="true"
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	

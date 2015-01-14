@@ -46,20 +46,24 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.settingSmartList" type="any" />
 
 <cfoutput>
+	<hb:HibachiEntityActionBar type="listing" object="#rc.settingSmartList#" showCreate="false" />
+
 	
-	<cf_HibachiEntityActionBar type="listing" object="#rc.settingSmartList#" showCreate="false" />
-	
-	<cf_HibachiListingDisplay smartList="#rc.settingSmartList#"
+	<hb:HibachiListingDisplay smartList="#rc.settingSmartList#"
 							   recordDeleteAction="admin:entity.deleteSetting">
-		<cf_HibachiListingColumn propertyIdentifier="settingName" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="settingValue" />
-		<cf_HibachiListingColumn propertyIdentifier="sku.skuCode" />
-		<cf_HibachiListingColumn propertyIdentifier="product.productName" />
-		<cf_HibachiListingColumn propertyIdentifier="productType.productTypeName" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="settingName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="settingValue" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />
+		<hb:HibachiListingColumn propertyIdentifier="product.productName" />
+		<hb:HibachiListingColumn propertyIdentifier="productType.productTypeName" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

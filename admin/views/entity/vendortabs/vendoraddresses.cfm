@@ -46,10 +46,12 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.vendor" type="any" />
 
-<cf_HibachiListingDisplay smartList="#rc.vendor.getVendorAddressesSmartList()#"
+<hb:HibachiListingDisplay smartList="#rc.vendor.getVendorAddressesSmartList()#"
 		recordEditAction="admin:entity.editvendoraddress"
 		recordEditQueryString="vendorID=#rc.vendor.getVendorID()#"
 		recordEditModal=true
@@ -57,13 +59,13 @@ Notes:
 		recordDeleteQueryString="vendorID=#rc.vendor.getVendorID()#&redirectAction=admin:entity.detailvendor"
 		edit="#rc.edit#">
 			
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="address.streetAddress" />
-	<cf_HibachiListingColumn propertyIdentifier="address.street2Address" />
-	<cf_HibachiListingColumn propertyIdentifier="address.city" />
-	<cf_HibachiListingColumn propertyIdentifier="address.stateCode" />
-	<cf_HibachiListingColumn propertyIdentifier="address.postalCode" />
-	<cf_HibachiListingColumn propertyIdentifier="address.countryCode" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="address.streetAddress" />
+	<hb:HibachiListingColumn propertyIdentifier="address.street2Address" />
+	<hb:HibachiListingColumn propertyIdentifier="address.city" />
+	<hb:HibachiListingColumn propertyIdentifier="address.stateCode" />
+	<hb:HibachiListingColumn propertyIdentifier="address.postalCode" />
+	<hb:HibachiListingColumn propertyIdentifier="address.countryCode" />
+</hb:HibachiListingDisplay>
 
-<cf_HibachiActionCaller action="admin:entity.createvendoraddress" class="btn" icon="plus" queryString="vendorID=#rc.vendor.getVendorID()#" modal=true />
+<hb:HibachiActionCaller action="admin:entity.createvendoraddress" class="btn btn-default" icon="plus" queryString="vendorID=#rc.vendor.getVendorID()#" modal=true />
 

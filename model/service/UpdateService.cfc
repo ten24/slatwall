@@ -59,11 +59,33 @@ Notes:
 			<cfset var downloadURL = "https://github.com/ten24/Slatwall/zipball/#arguments.branch#" />	
 			<cfset var slatwallRootPath = expandPath("/Slatwall") />
 			<cfset var downloadFileName = "slatwall#createUUID()#.zip" />
-			<cfset var deleteDestinationContentExclusionList = "/integrationServices,/config/custom" />
+			<cfset var deleteDestinationContentExclusionList = "/integrationServices,/custom,/WEB-INF,.project,setting.xml" />
 			<cfset var copyContentExclusionList = "" />
+			<cfset var slatwallDirectoryList = "" />
+			
+			<!--- If the meta directory exists, and it hasn't been dismissed then we want to delete without user action --->
+			<cfif getMetaFolderExistsWithoutDismissalFlag()>
+				<cfset removeMeta() />
+			</cfif>
+			
+			<!--- if the meta directory doesn't exist, add it tothe exclusion list--->
+			<cfif !getMetaFolderExistsFlag()>
+				<cfset copyContentExclusionList = "meta" />
+			</cfif>
 			
 			<!--- before we do anything, make a backup --->
-			<cfzip action="zip" file="#getTempDirectory()#slatwall_bak.zip" source="#slatwallRootPath#" recurse="yes" overwrite="yes" />
+			<cfdirectory action="list" directory="#slatwallRootPath#" name="slatwallDirectoryList">
+			<cfzip action="zip" file="#getTempDirectory()#slatwall_bak.zip" recurse="yes" overwrite="yes" source="#slatwallRootPath#">
+				<cfloop query="slatwallDirectoryList">
+					<cfif not listFindNoCase("WEB-INF,.project,setting.xml", slatwallDirectoryList.name)>
+						<cfif slatwallDirectoryList.type eq "File">
+							<cfzipparam source="#slatwallDirectoryList.name#" />
+						<cfelse>
+							<cfzipparam source="#slatwallDirectoryList.name#" prefix="#slatwallDirectoryList.name#" />
+						</cfif>
+					</cfif>
+				</cfloop>
+			</cfzip>
 			
 			<!--- start download --->
 			<cfhttp url="#downloadURL#" method="get" path="#getTempDirectory()#" file="#downloadFileName#" throwonerror="true" />
@@ -78,6 +100,10 @@ Notes:
 			</cfif>
 			<cfset updateCopyStarted = true /> 
 			<cfset getHibachiUtilityService().duplicateDirectory(source=sourcePath, destination=slatwallRootPath, overwrite=true, recurse=true, copyContentExclusionList=copyContentExclusionList, deleteDestinationContent=true, deleteDestinationContentExclusionList=deleteDestinationContentExclusionList ) />
+			
+			<!--- Delete .zip file and unzipped folder --->
+			<cffile action="delete" file="#getTempDirectory()##downloadFileName#" >
+			<cfdirectory action="delete" directory="#sourcePath#" recurse="true">
 			
 			<!--- if there is any error during update, restore the old files and throw the error --->
 			<cfcatch type="any">
@@ -141,5 +167,22 @@ Notes:
 		
 		<cfreturn versions />
 	</cffunction>
+	
+	<cffunction name='getMetaFolderExistsWithoutDismissalFlag'>
+		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) && !fileExists( expandPath('/Slatwall/custom/config/metaDismiss.txt.cfm') ) />
+	</cffunction>
+	
+	<cffunction name='removeMeta'>
+		<cfset directoryDelete( expandPath('/Slatwall/meta'), true ) />
+	</cffunction>
+	
+	<cffunction name='dismissMeta'>
+		<cfset fileWrite( expandPath('/Slatwall/custom/config') & '/metaDismiss.txt.cfm', now() ) />
+	</cffunction>
+	
+	<cffunction name="getMetaFolderExistsFlag">
+		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) >
+	</cffunction>
+	
 </cfcomponent>
 

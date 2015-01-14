@@ -51,11 +51,15 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	// Persistent Properties
 	property name="accountAuthenticationID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="password" ormtype="string";
+	property name="authToken" ormtype="string";
 	property name="expirationDateTime" ormtype="timestamp";
 	property name="integrationAccountID" ormtype="string";
 	property name="integrationAccessToken" ormtype="string";
 	property name="integrationAccessTokenExpiration" ormtype="string" column="integrationAccessTokenExp";
 	property name="integrationRefreshToken" ormtype="string";
+	property name="activeFlag" ormtype="boolean";
+	property name="updatePasswordOnNextLoginFlag" ormtype="boolean";
+	property name="authenticationDescription" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" hb_optionsNullRBKey="define.select";
@@ -72,9 +76,9 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="forceLogoutFlag" persistent="false";
@@ -136,7 +140,16 @@ component displayname="Account Authentication" entityname="SlatwallAccountAuthen
 	
 	public string function getSimpleRepresentation() {
 		var rep = "";
-		if(isNull(getIntegration())) {
+		if(!isNull(getAuthToken())){
+				rep &= "API Token";
+				if(!isNull(getAuthenticationDescription())){
+					rep &=" - #getAuthenticationDescription()#";
+				}
+				if(getHibachiScope().getAccount().getAccountID() == getAccount().getAccountID()){
+					rep &=" - #getAuthToken()#";
+				}
+		}
+		else if(isNull(getIntegration())) {
 			rep &= "Slatwall";
 			if(isNull(getPassword())) {
 				rep &= " - #rbKey('define.temporary')# #rbKey('define.reset')#";	

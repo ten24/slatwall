@@ -50,6 +50,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	property name="paymentDAO" type="any";
 	
+	property name="currencyService" type="any";
 	property name="integrationService" type="any";
 	property name="settingService" type="any";
 	
@@ -163,7 +164,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if(!structKeyExists(paymentMethodMaxAmount, thisPaymentMethodID)) {
 						paymentMethodMaxAmount[thisPaymentMethodID] = arguments.order.getFulfillmentChargeAfterDiscountTotal();
 					}
-					paymentMethodMaxAmount[thisPaymentMethodID] = precisionEvaluate(paymentMethodMaxAmount[thisPaymentMethodID] + precisionEvaluate(arguments.order.getOrderItems()[i].getExtendedPriceAfterDiscount() + arguments.order.getOrderItems()[i].getTaxAmount()));
+					paymentMethodMaxAmount[thisPaymentMethodID] = precisionEvaluate(paymentMethodMaxAmount[thisPaymentMethodID] + (arguments.order.getOrderItems()[i].getExtendedPriceAfterDiscount() + arguments.order.getOrderItems()[i].getTaxAmount()));
 				}
 			}
 			
@@ -223,7 +224,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				return 'JCB';
 			} else if ( l == 15 && (left(n,4) == 2014 || left(n,4) == 2149) ) {
 				return 'EnRoute';
-			} else if ( l == 16 && left(n,4) == 6011) {
+			} else if ( l == 16 && (left(n,4) == 6011 || left(n,2) == 65)) {
 				return 'Discover';
 			} else if ( l == 14 && left(n,3) >= 300 && left(n,3) <= 305) {
 				return 'CarteBlanche';
@@ -319,8 +320,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 					// ======== CORE PROCESSING ==========
 					
-					// INTEGRATION EXISTS
-					if(listFindNoCase("creditCard,giftCard,external", arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentMethodType()) && !isNull(arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentIntegration())) {
+					
+					
+					// If this isn't a creditOffline or receiveOffline, and an INTEGRATION EXISTS
+					if(!listFindNoCase("creditOffline,receiveOffline", arguments.data.transactionType) && listFindNoCase("creditCard,giftCard,external", arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentMethodType()) && !isNull(arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentIntegration())) {
 						
 						// Get the PaymentCFC
 						var integration = arguments.paymentTransaction.getPayment().getPaymentMethod().getPaymentIntegration();
@@ -340,7 +343,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							requestBean.setPreAuthorizationProviderTransactionID( arguments.data.preAuthorizationProviderTransactionID );
 						}
 						if(listFindNoCase("OrderPayment,AccountPayment", arguments.paymentTransaction.getPayment().getClassName())) {
-							requestBean.setTransactionCurrencyCode( arguments.paymentTransaction.getPayment().getCurrencyCode() );	
+							requestBean.setTransactionCurrencyCode( arguments.paymentTransaction.getPayment().getCurrencyCode() );
+							var currency = getCurrencyService().getCurrency( arguments.paymentTransaction.getPayment().getCurrencyCode() );
+							if(!isNull(currency) && !isNull(currency.getCurrencyISONumber())) {
+								requestBean.setTransactionCurrencyISONumber( currency.getCurrencyISONumber() );
+							}
 						}
 						
 						// Move all of the info into the new request bean
@@ -462,12 +469,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						// TODO [issue #36]: Add Gift Card Logic Here
 						
 						// Setup amountReceived
-						if( listFindNoCase("receive", arguments.data.transactionType) ) {
+						if( listFindNoCase("receive,receiveOffline", arguments.data.transactionType) ) {
 							arguments.paymentTransaction.setAmountReceived( arguments.data.amount );	
 						}
 						
 						// Setup amountCredited
-						if( listFindNoCase("credit", arguments.data.transactionType) ) {
+						if( listFindNoCase("credit,creditOffline", arguments.data.transactionType) ) {
 							arguments.paymentTransaction.setAmountCredited( arguments.data.amount );
 						}
 						

@@ -47,9 +47,20 @@ Notes:
 
 --->
 <cfcomponent extends="HibachiDAO">
+	
+	<cffunction name="updateStockLocation" hint="Moves all stock from one location to another">
+		<cfargument name="fromLocationID" type="string" required="true" >
+		<cfargument name="toLocationID" type="string" required="true" >
+		<cfquery name="updatestock" >
+			UPDATE swStock 
+			SET locationID = <cfqueryparam value="#arguments.toLocationID#" cfsqltype="cf_sql_varchar" >
+			WHERE locationID = <cfqueryparam value="#arguments.fromLocationID#" cfsqltype="cf_sql_varchar" >
+		</cfquery>
+	</cffunction>
+		
 
 	<cfscript>
-	
+		
 		public any function getStockBySkuAndLocation(required any sku, required any location) {
 			return entityLoad("SlatwallStock", {location=arguments.location, sku=arguments.sku}, true);
 		}
@@ -108,7 +119,7 @@ Notes:
 						  INNER JOIN
 						  	sku.product product
 						WHERE
-							vendorOrder.vendorOrderStatusType.systemCode != 'ostClosed'
+							vendorOrder.vendorOrderStatusType.systemCode != 'vostClosed'
 						  AND
 						  	vendorOrder.vendorOrderType.systemCode = 'votPurchaseOrder'
 						  AND

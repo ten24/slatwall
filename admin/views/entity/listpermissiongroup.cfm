@@ -46,14 +46,27 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.permissionGroupSmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.permissionGroupSmartList#" />
 
-<cf_HibachiListingDisplay smartList="#rc.permissionGroupSmartList#" recordDetailAction="admin:entity.detailpermissiongroup" recordEditAction="admin:entity.editpermissiongroup">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="permissionGroupName" search="true" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiEntityActionBar type="listing" object="#rc.permissionGroupSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createpermissiongroup" entity="permissiongroup" class="btn btn-primary" icon="plus icon-white" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+
+	<hb:HibachiListingDisplay smartList="#rc.permissionGroupSmartList#" 
+							  recordDetailAction="admin:entity.detailpermissiongroup" 
+							  recordEditAction="admin:entity.editpermissiongroup">
+		
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="permissionGroupName" search="true" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

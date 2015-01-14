@@ -46,32 +46,26 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.content" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.content#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.content#" edit="#rc.edit#" />
-		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.content#" property="title">
-				<cf_HibachiPropertyDisplay object="#rc.content#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.content#" property="contentTemplateType" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.content#" property="productListingPageFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.content#" property="allowPurchaseFlag" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+	<hb:HibachiEntityDetailForm object="#rc.content#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.content#" edit="#rc.edit#" />
 
-		<cf_HibachiTabGroup object="#rc.content#">
-			
+		<hb:HibachiEntityDetailGroup object="#rc.content#">
+			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<cfif rc.content.getProductListingPageFlag()>
-				<cf_HibachiTab view="admin:entity/contenttabs/products">
+				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/products">
 			</cfif>
 			
-			<cf_HibachiTab view="admin:entity/contenttabs/settings">
-		</cf_HibachiTabGroup>
+			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/settings">
+		</hb:HibachiEntityDetailGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderFulfillmentSmartList" type="any" />
 
 <cfsilent>
@@ -53,13 +57,14 @@ Notes:
 	<cfset rc.orderFulfillmentSmartList.addOrder('order.orderOpenDateTime|desc') />
 </cfsilent>
 
-<cf_HibachiEntityActionBar type="listing" object="#rc.orderFulfillmentSmartList#" showCreate="false" />
+<hb:HibachiEntityActionBar type="listing" object="#rc.orderFulfillmentSmartList#" showCreate="false" />
 
-<cf_HibachiListingDisplay smartList="#rc.orderFulfillmentSmartList#"
+
+<hb:HibachiListingDisplay smartList="#rc.orderFulfillmentSmartList#"
 		recorddetailaction="admin:entity.detailorderfulfillment"
 		recordeditaction="admin:entity.editorderfulfillment">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="order.account.fullName" />
-	<cf_HibachiListingColumn propertyIdentifier="fulfillmentMethod.fulfillmentMethodType" />
-	<cf_HibachiListingColumn propertyIdentifier="order.orderNumber" />
-	<cf_HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="order.account.fullName" />
+	<hb:HibachiListingColumn propertyIdentifier="fulfillmentMethod.fulfillmentMethodType" />
+	<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
+	<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
+</hb:HibachiListingDisplay>

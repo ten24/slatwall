@@ -56,7 +56,7 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	property name="estimatedReceivalDateTime" ormtype="timestamp";
 	
 	// Related Object Properties (Many-to-One)
-	property name="vendorOrderItemType" cfc="Type" fieldtype="many-to-one" fkcolumn="vendorOrderItemTypeID" hb_optionsSmartListData="f:parentType.systemCode=venderOrderItemType";
+	property name="vendorOrderItemType" cfc="Type" fieldtype="many-to-one" fkcolumn="vendorOrderItemTypeID" hb_optionsSmartListData="f:parentType.systemCode=vendorOrderItemType";
 	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
 	property name="vendorOrder" cfc="VendorOrder" fieldtype="many-to-one" fkcolumn="vendorOrderID";
 	
@@ -66,11 +66,11 @@ component entityname="SlatwallVendorOrderItem" table="SwVendorOrderItem" persist
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	
 	// Non-persistant properties

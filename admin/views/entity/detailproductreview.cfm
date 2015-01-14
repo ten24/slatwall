@@ -46,24 +46,33 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.productReview" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.productReview#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.productReview#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.productReview#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.productReview#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.productReview#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.productReview#" property="reviewTitle" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.productReview#" property="review" edit="#rc.edit#" fieldType="textarea">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="activeFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="reviewTitle" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.productReview#" property="review" edit="#rc.edit#" fieldType="textarea">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 
-		<cf_HibachiTabGroup object="#rc.productReview#">
-			<!--- <cf_HibachiTab view="admin:section/tabsfolder/view" /> --->
-		</cf_HibachiTabGroup>
+		<hb:HibachiTabGroup object="#rc.productReview#">
+				
+		<!--- Custom Attributes --->
+		<cfloop array="#rc.productReview.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+			<swa:SlatwallAdminTabCustomAttributes object="#rc.productReview#" attributeSet="#attributeSet#" />
+		</cfloop>
+		
+		</hb:HibachiTabGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

@@ -297,4 +297,6 @@ if (APPLICATION.CFVersion gte 8) {
 	include("plugins/imageresize/plugin.cfm");
 	// include("plugins/watermark/plugin.cfm");
 }
+
+try{include "../../../custom/org/Hibachi/ckfinder/config.cfm";}catch(any e){}
 </cfscript>

@@ -46,27 +46,58 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.paymentTransaction" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.paymentTransaction#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.paymentTransaction#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.paymentTransaction#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.paymentTransaction#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="transactionType">
-				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="providerTransactionID">
-				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="authorizationCode">
-				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="amountAuthorized">
-				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="amountReceived">
-				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="amountCredited">
-				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="securityCodeMatchFlag">
-				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="avsCode">
-				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="statusCode">
-				<cf_HibachiPropertyDisplay object="#rc.paymentTransaction#" property="message">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.paymentTransaction#" property="transactionSuccessFlag">
+				<hb:HibachiPropertyDisplay object="#rc.paymentTransaction#" property="transactionType">
+				<hb:HibachiPropertyDisplay object="#rc.paymentTransaction#" property="providerTransactionID">
+				<hb:HibachiPropertyDisplay object="#rc.paymentTransaction#" property="authorizationCode">
+				<hb:HibachiPropertyDisplay object="#rc.paymentTransaction#" property="authorizationCodeUsed">
+				<hb:HibachiPropertyDisplay object="#rc.paymentTransaction#" property="amountAuthorized">
+				<hb:HibachiPropertyDisplay object="#rc.paymentTransaction#" property="amountReceived">
+				<hb:HibachiPropertyDisplay object="#rc.paymentTransaction#" property="amountCredited">
+				<hb:HibachiPropertyDisplay object="#rc.paymentTransaction#" property="securityCodeMatchFlag">
+				<hb:HibachiPropertyDisplay object="#rc.paymentTransaction#" property="avsCode">
+				<hb:HibachiPropertyDisplay object="#rc.paymentTransaction#" property="avsDescription">
+				<hb:HibachiPropertyDisplay object="#rc.paymentTransaction#" property="statusCode">
+				<cfif not isnull(rc.paymentTransaction.getMessage())>
+					<cfset messagesStruct = deserializeJSON(rc.paymentTransaction.getMessage()) />
+					<cfif isStruct(messagesStruct)>
+					<dt>#$.slatwall.rbKey('entity.paymentTransaction.message')#</dt>
+						<dl>
+						<table class="table table-striped table-bordered table-condensed">
+							<tbody>
+								<cfloop collection="#messagesStruct#" item="messageKey">
+									<cfset messages = messagesStruct[messageKey] />
+									<cfloop from="1" to="#arraylen(messages)#" index="m">
+									<tr>
+										<cfif m eq 1>
+											<td class="title" rowspan="#arraylen(messages)#"><label>#messageKey#</label></td>
+										</cfif>
+										<td class="value">#messages[m]#</td>
+									</tr>
+									</cfloop>
+								</cfloop>
+							</tbody>
+						</table>
+						</dl>
+					<cfelse>
+						<hb:HibachiPropertyDisplay object="#rc.paymentTransaction#" property="message">
+					</cfif>
+				</cfif>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

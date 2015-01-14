@@ -1,1 +1,4 @@
-<!--- Intentionally Blank --->
+<cfoutput>
+#body#
+
+</cfoutput>

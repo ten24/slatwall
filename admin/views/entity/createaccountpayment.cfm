@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 
 <cfparam name="rc.accountPayment" type="any" />
 <cfparam name="rc.account" type="any" />
@@ -58,7 +62,7 @@ Notes:
 </cfsilent>
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.accountPayment#" edit="#rc.edit#">
+	<hb:HibachiEntityDetailForm object="#rc.accountPayment#" edit="#rc.edit#" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 		
 		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
 		<input type="hidden" name="paymentMethod.paymentMethodID" value="#rc.paymentMethod.getPaymentMethodID()#" />
@@ -74,40 +78,40 @@ Notes:
 			
 			<input type="hidden" name="process" value="1" />
 			
-			<cf_HibachiPropertyRow>
-				<cf_HibachiPropertyList>
+			<hb:HibachiPropertyRow>
+				<hb:HibachiPropertyList>
 					<cfif rc.accountPaymentTypeSystemCode eq "aptCharge">
-						<cf_HibachiFieldDisplay fieldname="processContext" title="#$.slatwall.rbKey('admin.order.createorderpayment.transactionType')#" fieldtype="select" valueOptions="#[{value='authorizeAndCharge', name=$.slatwall.rbKey('define.authorizeAndCharge')}, {value='authorize', name=$.slatwall.rbKey('define.authorize')}]#" edit="true">
+						<hb:HibachiFieldDisplay fieldname="processContext" title="#$.slatwall.rbKey('admin.order.createorderpayment.transactionType')#" fieldtype="select" valueOptions="#[{value='authorizeAndCharge', name=$.slatwall.rbKey('define.authorizeAndCharge')}, {value='authorize', name=$.slatwall.rbKey('define.authorize')}]#" edit="true">
 					<cfelse>
-						<cf_HibachiFieldDisplay fieldname="processContext" title="#$.slatwall.rbKey('admin.order.createorderpayment.transactionType')#" fieldtype="select" valueOptions="#[{value='credit', name=$.slatwall.rbKey('define.credit')}]#" edit="true">
+						<hb:HibachiFieldDisplay fieldname="processContext" title="#$.slatwall.rbKey('admin.order.createorderpayment.transactionType')#" fieldtype="select" valueOptions="#[{value='credit', name=$.slatwall.rbKey('define.credit')}]#" edit="true">
 					</cfif>
-					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="amount" edit="#rc.edit#" value="#local.amount#" />
-				</cf_HibachiPropertyList>
-			</cf_HibachiPropertyRow>
+					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="amount" edit="#rc.edit#" value="#local.amount#" />
+				</hb:HibachiPropertyList>
+			</hb:HibachiPropertyRow>
 			
-			<cf_HibachiPropertyRow>
-				<cf_HibachiPropertyList divClass="span6">
-					<cf_SlatwallAddressDisplay address="#$.slatwall.getService("addressService").newAddress()#" fieldnameprefix="billingAddress." edit="#rc.edit#" />
-				</cf_HibachiPropertyList>
-				<cf_HibachiPropertyList divClass="span6">
-					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="nameOnCreditCard" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="creditCardNumber" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationMonth" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationYear" edit="#rc.edit#" />
-					<cf_HibachiPropertyDisplay object="#rc.accountPayment#" property="securityCode" edit="#rc.edit#" />
-				</cf_HibachiPropertyList>
-			</cf_HibachiPropertyRow>
+			<hb:HibachiPropertyRow>
+				<hb:HibachiPropertyList divClass="col-md-6">
+					<swa:SlatwallAddressDisplay address="#$.slatwall.getService("addressService").newAddress()#" fieldnameprefix="billingAddress." edit="#rc.edit#" />
+				</hb:HibachiPropertyList>
+				<hb:HibachiPropertyList divClass="col-md-6">
+					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="nameOnCreditCard" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="creditCardNumber" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationMonth" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationYear" edit="#rc.edit#" />
+					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="securityCode" edit="#rc.edit#" />
+				</hb:HibachiPropertyList>
+			</hb:HibachiPropertyRow>
 			
 		<!--- Check --->
 		<cfelseif rc.paymentMethod.getPaymentMethodType() eq "check">
-			<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="amount" edit="#rc.edit#" value="#local.amount#" />
+			<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="amount" edit="#rc.edit#" value="#local.amount#" />
 		<!--- Cash --->
 		<cfelseif rc.paymentMethod.getPaymentMethodType() eq "cash">	
-			<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="amount" edit="#rc.edit#" value="#local.amount#" />
+			<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="amount" edit="#rc.edit#" value="#local.amount#" />
 		<!--- ??? --->
 		<cfelse>
-			<cf_HibachiPropertyDisplay object="#rc.orderPayment#" property="amount" edit="#rc.edit#" value="#local.amount#" />	
+			<hb:HibachiPropertyDisplay object="#rc.orderPayment#" property="amount" edit="#rc.edit#" value="#local.amount#" />	
 		</cfif>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

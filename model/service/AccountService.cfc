@@ -51,13 +51,17 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="accountDAO" type="any";
 	
 	property name="emailService" type="any";
+	property name="eventRegistrationService" type="any";
+	property name="hibachiAuditService" type="any";
+	property name="loyaltyService" type="any";
+	property name="orderService" type="any";
 	property name="paymentService" type="any";
 	property name="permissionService" type="any";
 	property name="priceGroupService" type="any";
 	property name="settingService" type="any";
 	property name="siteService" type="any";
+	property name="typeService" type="any";
 	property name="validationService" type="any";
-	
 	
 	public string function getHashedAndSaltedPassword(required string password, required string salt) {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
@@ -100,6 +104,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		return getAccountDAO().getAccountWithAuthenticationByEmailAddress( argumentcollection=arguments );
 	}
 	
+	public any function getNewAccountLoyaltyNumber( required string loyaltyID ) {
+		return getAccountDAO().getNewAccountLoyaltyNumber( argumentcollection=arguments );
+	}
+	
 	// =====================  END: DAO Passthrough ============================
 	
 	// ===================== START: Process Methods ===========================
@@ -138,13 +146,36 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(arguments.processObject.getSaveAccountPaymentMethodFlag()) {
 				var newAccountPaymentMethod = this.newAccountPaymentMethod();
 				newAccountPaymentMethod.copyFromAccountPayment( newAccountPayment );
+				newAccountPaymentMethod.setAccountPaymentMethodName(arguments.processObject.getSaveAccountPaymentMethodName());
 				newAccountPaymentMethod.setAccount( arguments.account );
 				
-				newAccountPaymentMethod = this.saveAccountPaymentMethod();
+				newAccountPaymentMethod = this.saveAccountPaymentMethod(newAccountPaymentMethod);
 			}
 
 		}
 		
+		// Loop over all account payments and link them to the AccountPaymentApplied object
+		for (var appliedOrderPayment in processObject.getAppliedOrderPayments()) {
+			
+			if(IsNumeric(appliedOrderPayment.amount) && appliedOrderPayment.amount > 0) {
+				var orderPayment = getOrderService().getOrderPayment( appliedOrderPayment.orderPaymentID );
+				
+				var newAccountPaymentApplied = this.newAccountPaymentApplied();
+				newAccountPaymentApplied.setAccountPayment( newAccountPayment );
+				
+				newAccountPaymentApplied.setAmount( appliedOrderPayment.amount );
+
+				// Link to the order payment if the payment is assigned to a term order. Also set the payment type
+				if(!isNull(orderPayment)) {
+					newAccountPaymentApplied.setOrderPayment( orderPayment );
+					newAccountPaymentApplied.setAccountPaymentType( getTypeService().getType( appliedOrderPayment.paymentTypeID  ) );
+				}
+				
+				// Save the account payment applied
+				newAccountPaymentApplied = this.saveAccountPaymentApplied( newAccountPaymentApplied ); 
+			}
+		}
+
 		// Save the newAccountPayment
 		newAccountPayment = this.saveAccountPayment( newAccountPayment );
 		
@@ -154,7 +185,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			
 		// If no errors, then we can process a transaction
 		} else {
-			
 			var transactionData = {
 				amount = newAccountPayment.getAmount()
 			};
@@ -170,28 +200,37 @@ component extends="HibachiService" accessors="true" output="false" {
 			}
 			
 			newAccountPayment = this.processAccountPayment(newAccountPayment, transactionData, 'createTransaction');
-				
-		}
-		
-		return arguments.account;
-	}
-	
-	public any function processAccount_changePassword(required any account, required any processObject) {
-		
-		var authArray = arguments.account.getAccountAuthentications();
-		for(var i=1; i<=arrayLen(authArray); i++) {
 			
-			// Find the non-integration authentication
-			if(isNull(authArray[i].getIntegration()) && !isNull(authArray[i].getPassword())) {
-				// Set the password
-				authArray[i].setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), authArray[i].getAccountAuthenticationID()) );		
+			//Loop over the newaccountpayment.getAppliedPayments
+			for (var appliedAccountPayment in newAccountPayment.getAppliedAccountPayments()) {
+				if(!IsNull(appliedAccountPayment.getOrderPayment())) {
+					transactionData = {
+						amount = appliedAccountPayment.getAmount()
+					};
+					
+					if(newAccountPayment.getAccountPaymentType().getSystemCode() eq "aptCharge") {
+						transactionData.transactionType = 'receive';
+					} else {
+						transactionData.transactionType = 'credit';
+					}
+					
+					getOrderService().processOrderPayment(appliedAccountPayment.getOrderPayment(), transactionData, 'createTransaction');
+				}
 			}
 		}
 		
 		return arguments.account;
 	}
 	
-	public any function processAccount_create(required any account, required any processObject) {
+	public any function processAccount_changePassword(required any account, required any processObject) {
+		//change password and create password functions should be combined at some point. Work needed to do this still needs to be scoped out.
+		//For now they are just calling this function that handles the actual work. 
+		arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_create(required any account, required any processObject, struct data={}) {
 		
 		// Populate the account with the correct values that have been previously validated
 		arguments.account.setFirstName( processObject.getFirstName() );
@@ -214,10 +253,15 @@ component extends="HibachiService" accessors="true" output="false" {
 			var accountEmailAddress = this.newAccountEmailAddress();
 			accountEmailAddress.setAccount( arguments.account );
 			accountEmailAddress.setEmailAddress( processObject.getEmailAddress() );
+			
+			arguments.account.setPrimaryEmailAddress( accountEmailAddress );
 		}
 		
+		// Save & Populate the account so that custom attributes get set
+		arguments.account = this.saveAccount(arguments.account, arguments.data);
+		
 		// If the createAuthenticationFlag was set to true, the add the authentication
-		if(processObject.getCreateAuthenticationFlag()) {
+		if(!arguments.account.hasErrors() && processObject.getCreateAuthenticationFlag()) {
 			var accountAuthentication = this.newAccountAuthentication();
 			accountAuthentication.setAccount( arguments.account );
 		
@@ -230,40 +274,106 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		// Call save on the account now that it is all setup
 		arguments.account = this.saveAccount(arguments.account);
+
+		// Look for eventRegistrationID in the data and attach this account to that eventRegistrationID 
+		var eventRegistration = getEventRegistrationService().getEventRegistration( arguments.account.geteventRegistrationID() );
+	 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
+	 		eventRegistration().setFirstName( javaCast("null", "") );
+	 		eventRegistration().setLastName( javaCast("null", "") );
+	 		eventRegistration().setEmailAddress( javaCast("null", "") );
+	 		eventRegistration().setPhoneNumber( javaCast("null", "") );
+	 		eventRegistration().setAccount( arguments.account );
+	 	}
 		
 		return arguments.account;
 	}
 
 	public any function processAccount_createPassword(required any account, required any processObject) {
-		var accountAuthentication = this.newAccountAuthentication();
-		accountAuthentication.setAccount( arguments.account );
-	
-		// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
-		getHibachiDAO().save(accountAuthentication);
-	
-		// Set the password
-		accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
+		//change password and create password functions should be combined at some point. Work needed to do this still needs to be scoped out.
+		//For now they are just calling this function that handles the actual work. 
+		arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
 		
 		return account;	
 	}
 	
+	public any function processAccount_generateAuthToken(required any account, required any processObject){
+		var accountAuthentication = this.newAccountAuthentication();
+		accountAuthentication.setAccount( arguments.account );
+	
+		// Set the authToken
+		accountAuthentication.setAuthToken(createUUID());
+		accountAuthentication.setAuthenticationDescription(arguments.processObject.getAuthenticationDescription());
+		
+		return arguments.account;
+		
+	}
+	
 	public any function processAccount_login(required any account, required any processObject) {
-		
 		// Take the email address and get all of the user accounts by primary e-mail address
-		var accountAuthentications = getInternalAccountAuthenticationsByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
+		var accountAuthentication =getAccountDAO().getActivePasswordByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
+		var invalidLoginData = {emailAddress=arguments.processObject.getEmailAddress()};
 		
-		if(arrayLen(accountAuthentications)) {
-			for(var i=1; i<=arrayLen(accountAuthentications); i++) {
+		if(!isNull(accountAuthentication)) {
+			//Make sure that the account is not locked 
+			if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
 				// If the password matches what it should be, then set the account in the session and 
-				if(!isNull(accountAuthentications[i].getPassword()) && len(accountAuthentications[i].getPassword()) && accountAuthentications[i].getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentications[i].getAccountAuthenticationID())) {
-					getHibachiSessionService().loginAccount( accountAuthentications[i].getAccount(), accountAuthentications[i] );
+				if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {							
+					
+					//Check to see if a password reset is required
+					if(checkPasswordResetRequired(accountAuthentication, arguments.processObject)){
+						arguments.processObject.addError('passwordUpdateRequired',  rbKey('validate.newPassword.duplicatePassword'));	
+					}else{
+						getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
+					}
+					
+					/*
+					// Look for eventRegistrationID in the data and attach this account to that eventRegistrationID 
+					var eventRegistration = getEventRegistrationService().getEventRegistration( arguments.account.geteventRegistrationID() );
+				 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
+				 		eventRegistration().setFirstName( javaCast("null", "") );
+				 		eventRegistration().setLastName( javaCast("null", "") );
+				 		eventRegistration().setEmailAddress( javaCast("null", "") );
+				 		eventRegistration().setPhoneNumber( javaCast("null", "") );
+				 		eventRegistartion().setAccount( accountAuthentications[i].getAccount() );
+				 	}
+					*/
+					
+					accountAuthentication.getAccount().setFailedLoginAttemptCount(0); 
+					accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
+					
 					return arguments.account;
 				}
+				
+				arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.password.incorrect'));
+				invalidLoginData.account = accountAuthentication.getAccount();
+				
+				
+				//Log the failed attempt to account.failedLoginAttemptCount
+				var failedLogins = nullReplace(invalidLoginData.account.getFailedLoginAttemptCount(), 0) + 1;
+				invalidLoginData.account.setFailedLoginAttemptCount(failedLogins); 
+				
+				//Get the max number of failed attempts before the account is locked based on account type 
+				if(accountAuthentication.getAccount().getAdminAccountFlag()){
+					var maxLoginAttempts = arguments.account.setting('accountFailedAdminLoginAttemptCount');
+				}else{
+					var maxLoginAttempts = arguments.account.setting('accountFailedPublicLoginAttemptCount');
+				}	
+						
+				//If the log attempt is greater than the failedLoginSetting, call function to lockAccount
+				if (!isNull(maxLoginAttempts) && maxLoginAttempts > 0 && failedLogins >= maxLoginAttempts){
+					this.processAccount(invalidLoginData.account, 'lock');
+				}
+				
+			} 
+			else{
+				arguments.processObject.addError('password',rbKey('validate.account.loginblocked'));
 			}
-			arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.password.incorrect'));
 		} else {
 			arguments.processObject.addError('emailAddress', rbKey('validate.account_authorizeAccount.emailAddress.notfound'));
 		}
+		
+		// Login was invalid
+		getHibachiAuditService().logAccountActivity('loginInvalid', invalidLoginData);
 		
 		return arguments.account;
 	}
@@ -312,7 +422,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			password = arguments.processObject.getPassword(),
 			passwordConfirm = arguments.processObject.getPasswordConfirm()
 		};
-		
 		arguments.account = this.processAccount(arguments.account, changeProcessData, 'changePassword');
 		
 		// If there are no errors
@@ -321,12 +430,54 @@ component extends="HibachiService" accessors="true" output="false" {
 			var tempAA = getAccountDAO().getPasswordResetAccountAuthentication(accountID=arguments.account.getAccountID());
 			
 			// Delete the temporary auth
-			tempAA.removeAccount();
 			this.deleteAccountAuthentication( tempAA );
 			
 			// Then flush the ORM session so that an account can be logged in right away
 			getHibachiDAO().flushORMSession();
 		}
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_updatePassword(required any account, required any processObject){
+		//This function needs to check and make sure that the old password equals is valid
+		
+		var accountAuthentication =getAccountDAO().getActivePasswordByEmailAddress( emailAddress= arguments.processObject.getEmailAddress() );
+		
+		if(!isNull(accountAuthentication)) {
+			if(!isNull(accountAuthentication.getPassword()) && len(accountAuthentication.getPassword()) && accountAuthentication.getPassword() == getHashedAndSaltedPassword(password=arguments.processObject.getExistingPassword(), salt=accountAuthentication.getAccountAuthenticationID())) {	
+				//create the new pasword the updated password 
+				arguments.account = createNewAccountPassword(accountAuthentication.getAccount(), arguments.processObject);	
+				if(!arguments.processObject.hasErrors()){
+					if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
+						getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
+					}else{
+						arguments.processObject.addError('password',rbKey('validate.account.loginblocked'));
+					}
+					
+				
+				}
+				
+			}else{
+				arguments.processObject.addError('existingPassword', rbKey('validate.account_authorizeAccount.password.incorrect'));
+			}
+		}else{
+			arguments.processObject.addError('emailAddress', rbKey('validate.account_authorizeAccount.emailAddress.notfound'));
+		}
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_lock(required any account){
+		var expirationDateTime= dateAdd('n', arguments.account.setting('accountLockMinutes'), Now());
+		arguments.account.setLoginLockExpiresDateTime(expirationDateTime);
+		arguments.account.setFailedLoginAttemptCount(0);
+		
+		return arguments.account;
+	}
+	
+	public any function processAccount_unlock(required any account){
+		arguments.account.setLoginLockExpiresDateTime(javacast("null",""));
 		
 		return arguments.account;
 	}
@@ -372,7 +523,426 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		return arguments.account;
 	}
+
+	public any function processAccount_addAccountLoyalty(required any account, required any processObject) {
+		
+		// Get the populated AccountLoyalty out of the processObject
+		var newAccountLoyalty = this.newAccountLoyalty();
+
+		newAccountLoyalty.setAccount( arguments.account );
+		newAccountLoyalty.setLoyalty( arguments.processObject.getLoyalty() );
+		newAccountLoyalty.setAccountLoyaltyNumber( getNewAccountLoyaltyNumber( arguments.processObject.getLoyaltyID() ));
+
+		newAccountLoyalty = this.saveAccountLoyalty( newAccountLoyalty );
+		
+		if(!newAccountLoyalty.hasErrors()) {
+			newAccountLoyalty = this.processAccountLoyalty(newAccountLoyalty, {}, 'enrollment');
+		}
+		
+		return arguments.account;
+	}	
 	
+	// Account Email Address
+	public any function processAccountEmailAddress_sendVerificationEmail(required any accountEmailAddress, required any processObject) {
+		
+		// Get the site (this will return as a new site if no siteID)
+		var site = getSiteService().getSite(arguments.processObject.getSiteID(), true);
+		
+		if(len(site.setting('siteVerifyAccountEmailAddressEmailTemplate'))) {
+			
+			var email = getEmailService().newEmail();
+			var emailData = {
+				accountEmailAddressID = arguments.accountEmailAddress.getAccountEmailAddressID(),
+				emailTemplateID = site.setting('siteVerifyAccountEmailAddressEmailTemplate')
+			};
+			
+			email = getEmailService().processEmail(email, emailData, 'createFromTemplate');
+			
+			email.setEmailTo( arguments.accountEmailAddress.getEmailAddress() );
+			
+			email = getEmailService().processEmail(email, {}, 'addToQueue');
+			
+		} else {
+			throw("No email template could be found.  Please update the site settings to define a 'Verify Account Email Address Email Template'.");
+		}
+		
+		return arguments.accountEmailAddress;
+	}
+	
+	public any function processAccountEmailAddress_verify(required any accountEmailAddress) {
+		arguments.accountEmailAddress.setVerifiedFlag( 1 );
+		
+		return arguments.accountEmailAddress;
+	}
+	
+	// Account Loyalty
+	public any function processAccountLoyalty_itemFulfilled(required any accountLoyalty, required struct data) {
+		
+		// Loop over arguments.accountLoyalty.getLoyaltyAccruements() as 'loyaltyAccruement'
+		for(var loyaltyAccruement in arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements()) {	
+			
+			// If loyaltyAccruement eq 'fulfillItem' as the type, then based on the amount create a new transaction and apply that amount
+			if (loyaltyAccruement.getAccruementType() eq 'itemFulfilled') {
+				
+				// Loop over the orderDeliveryItems in arguments.data.orderDelivery
+				for(var orderDeliveryItem in arguments.data.orderDelivery.getOrderDeliveryItems()) {
+
+					// START: Check Exclusions
+					var itemExcluded = false;
+					
+					// Check all of the exclusions for an excluded product type
+					if(arrayLen(loyaltyAccruement.getExcludedProductTypes())) {
+						var excludedProductTypeIDList = "";
+						for(var i=1; i<=arrayLen(loyaltyAccruement.getExcludedProductTypes()); i++) {
+							excludedProductTypeIDList = listAppend(excludedProductTypeIDList, loyaltyAccruement.getExcludedProductTypes()[i].getProductTypeID());
+						}
+					
+						for(var ptid=1; ptid<=listLen(orderDeliveryItem.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
+							if(listFindNoCase(excludedProductTypeIDList, listGetAt(orderDeliveryItem.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
+								itemExcluded = true;
+								break;
+							}	
+						}
+					}
+					
+					// If anything is excluded then we return false
+					if(	itemExcluded
+						||
+						loyaltyAccruement.hasExcludedProduct( orderDeliveryItem.getOrderItem().getSku().getProduct() )
+						||
+						loyaltyAccruement.hasExcludedSku( orderDeliveryItem.getOrderItem().getSku() )
+						||
+						( arrayLen( loyaltyAccruement.getExcludedBrands() ) && ( isNull( orderDeliveryItem.getOrderItem().getSku().getProduct().getBrand() ) || loyaltyAccruement.hasExcludedBrand( orderDeliveryItem.getOrderItem().getSku().getProduct().getBrand() ) ) )
+						) {
+						itemExcluded = true;
+					}
+					
+					
+					// START: Check Inclusions
+					var itemIncluded = false;
+					
+					if(arrayLen(loyaltyAccruement.getProductTypes())) {
+						var includedPropertyTypeIDList = "";
+						
+						for(var i=1; i<=arrayLen(loyaltyAccruement.getProductTypes()); i++) {
+							includedPropertyTypeIDList = listAppend(includedPropertyTypeIDList, loyaltyAccruement.getProductTypes()[i].getProductTypeID());
+						}
+						
+						for(var ptid=1; ptid<=listLen(orderDeliveryItem.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
+							if(listFindNoCase(includedPropertyTypeIDList, listGetAt(orderDeliveryItem.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
+								itemIncluded = true;
+								break;
+							}	
+						}
+					}
+						
+					// Verify that this orderDeliveryItem product is in the products, or skus for the accruement
+					if ( itemIncluded 
+						|| loyaltyAccruement.hasProduct(orderDeliveryItem.getOrderItem().getSku().getProduct()) 
+						|| loyaltyAccruement.hasSku(orderDeliveryItem.getOrderItem().getSku()) 
+						|| (!isNull(orderDeliveryItem.getOrderItem().getSku().getProduct().getBrand()) && loyaltyAccruement.hasBrand(orderDeliveryItem.getOrderItem().getSku().getProduct().getBrand())) 
+						){
+						 
+						// Create a new transaction
+						var accountLoyaltyTransaction = this.newAccountLoyaltyTransaction();
+						
+						// Setup the transaction data
+						var transactionData = {
+							accruementType = "itemFulfilled",
+							accountLoyalty = arguments.accountLoyalty,
+							loyaltyAccruement = loyaltyAccruement,
+							orderDeliveryItem = orderDeliveryItem,
+							order = orderDeliveryItem.getOrderItem().getOrder(),
+							orderItem = orderDeliveryItem.getOrderItem(),
+							pointAdjustmentType = "pointsIn"
+						};
+
+						// Process the transaction
+						accountLoyaltyTransaction = this.processAccountLoyaltyTransaction(accountLoyaltyTransaction, transactionData,'create');
+						
+					}
+				}
+			}
+		}
+		
+		return arguments.accountLoyalty;	
+	}
+	
+	public any function processAccountLoyalty_orderClosed(required any accountLoyalty, required struct data) {
+		
+		// Loop over account loyalty accruements
+		for(var loyaltyAccruement in arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements()) {	
+			
+			// If loyaltyAccruement eq 'orderClosed' as the type
+			if (loyaltyAccruement.getAccruementType() eq 'orderClosed') {
+
+				// If order satus is closed
+				if ( listFindNoCase("ostClosed",arguments.data.order.getorderStatusType().getSystemCode()) ){
+					
+					// Create a new transaction
+					var accountLoyaltyTransaction = this.newAccountLoyaltyTransaction();
+					
+					// Setup the transaction data
+					var transactionData = {
+						accruementType = "orderClosed",
+						accountLoyalty = arguments.accountLoyalty,
+						loyaltyAccruement = loyaltyAccruement,
+						order = arguments.data.order,
+						pointAdjustmentType = "pointsIn"
+					};
+					
+					// Process the transaction
+					accountLoyaltyTransaction = this.processAccountLoyaltyTransaction(accountLoyaltyTransaction, transactionData,'create');
+					
+				}	
+			}
+		}
+		
+		
+		
+		return arguments.accountLoyalty;	
+	}
+	
+	public any function processAccountLoyalty_fulfillmentMethodUsed(required any accountLoyalty, required struct data) {
+		
+		// Loop over loyalty Accruements
+		for(var loyaltyAccruement in arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements()) {	
+			
+			// If loyaltyAccruement eq 'fulfillmentMetodUsed' as the type
+			if (loyaltyAccruement.getAccruementType() eq 'fulfillmentMethodUsed') {
+					
+				// Create and setup a new transaction 
+				var accountLoyaltyTransaction = this.newAccountLoyaltyTransaction();
+				
+				// Setup the transaction data
+				var transactionData = {
+					accruementType = "fulfillmentMethodUsed",
+					accountLoyalty = arguments.accountLoyalty,
+					loyaltyAccruement = loyaltyAccruement,
+					orderFulfillment = arguments.data.orderFulfillment,
+					pointAdjustmentType = "pointsIn"
+				};
+				
+				// Process the transaction
+				accountLoyaltyTransaction = this.processAccountLoyaltyTransaction(accountLoyaltyTransaction, transactionData,'create');
+				
+			}
+		}
+		
+		return arguments.accountLoyalty;	
+	}
+	
+	public any function processAccountLoyalty_enrollment(required any accountLoyalty) {
+
+	
+		// Loop over arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements() as 'loyaltyAccruement'
+		for(var loyaltyAccruement in arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements()) {
+		
+			// If loyaltyAccruement eq 'enrollment' as the type
+			if (loyaltyAccruement.getAccruementType() eq 'enrollment') {
+				
+				var accountLoyaltyTransaction = this.newAccountLoyaltyTransaction();
+				
+				// Setup the transaction data
+				var transactionData = {
+					accruementType = "enrollment",
+					accountLoyalty = arguments.accountLoyalty,
+					loyaltyAccruement = loyaltyAccruement,
+					pointAdjustmentType = "pointsIn"
+				};
+				
+				// Process the transaction
+				accountLoyaltyTransaction = this.processAccountLoyaltyTransaction(accountLoyaltyTransaction, transactionData,'create');
+				
+			}
+		}
+		
+		return arguments.accountLoyalty;	
+	}
+	
+	public any function processAccountLoyalty_orderItemReceived(required any accountLoyalty, required struct data) {
+		
+		// Loop over the account loyalty Accruements
+		for(var loyaltyAccruement in arguments.accountLoyalty.getLoyalty().getLoyaltyAccruements()) {	
+			
+			// If loyaltyAccruement is of type 'itemFulfilled'
+			if (loyaltyAccruement.getAccruementType() eq 'itemFulfilled') {
+				
+				// Loop over the items in the stockReceiver
+				for(var orderItemReceived in arguments.data.stockReceiver.getStockReceiverItems()) {
+					
+					// START: Check Exclusions
+					var itemExcluded = false;
+					
+					// Check all of the exclusions for an excluded product type
+					if(arrayLen(loyaltyAccruement.getExcludedProductTypes())) {
+						var excludedProductTypeIDList = "";
+						for(var i=1; i<=arrayLen(loyaltyAccruement.getExcludedProductTypes()); i++) {
+							excludedProductTypeIDList = listAppend(excludedProductTypeIDList, loyaltyAccruement.getExcludedProductTypes()[i].getProductTypeID());
+						}
+					
+						for(var ptid=1; ptid<=listLen(orderItemReceived.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
+							if(listFindNoCase(excludedProductTypeIDList, listGetAt(orderItemReceived.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
+								itemExcluded = true;
+								break;
+							}	
+						}
+					}
+					
+					// If anything is excluded then we return false
+					if(	itemExcluded
+						||
+						loyaltyAccruement.hasExcludedProduct( orderItemReceived.getOrderItem().getSku().getProduct() )
+						||
+						loyaltyAccruement.hasExcludedSku( orderItemReceived.getOrderItem().getSku() )
+						||
+						( arrayLen( loyaltyAccruement.getExcludedBrands() ) && ( isNull( orderItemReceived.getOrderItem().getSku().getProduct().getBrand() ) || loyaltyAccruement.hasExcludedBrand( orderItemReceived.getOrderItem().getSku().getProduct().getBrand() ) ) )
+						) {
+						itemExcluded = true;
+					}
+					
+					
+					// START: Check Inclusions
+					var itemIncluded = false;
+					
+					if(arrayLen(loyaltyAccruement.getProductTypes())) {
+						var includedPropertyTypeIDList = "";
+						
+						for(var i=1; i<=arrayLen(loyaltyAccruement.getProductTypes()); i++) {
+							includedPropertyTypeIDList = listAppend(includedPropertyTypeIDList, loyaltyAccruement.getProductTypes()[i].getProductTypeID());
+						}
+						
+						for(var ptid=1; ptid<=listLen(orderItemReceived.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath()); ptid++) {
+							if(listFindNoCase(includedPropertyTypeIDList, listGetAt(orderItemReceived.getOrderItem().getSku().getProduct().getProductType().getProductTypeIDPath(), ptid))) {
+								itemIncluded = true;
+								break;
+							}	
+						}
+					}
+						
+					// Verify that this orderItemReceived product is in the products, or skus for the accruement
+					if ( itemIncluded 
+						|| loyaltyAccruement.hasProduct(orderItemReceived.getOrderItem().getSku().getProduct()) 
+						|| loyaltyAccruement.hasSku(orderItemReceived.getOrderItem().getSku()) 
+						|| (!isNull(orderItemReceived.getOrderItem().getSku().getProduct().getBrand()) && loyaltyAccruement.hasBrand(orderItemReceived.getOrderItem().getSku().getProduct().getBrand())) 
+						){
+					
+						// Create a new accountLoyalty transaction	
+						var accountLoyaltyTransaction = this.newAccountLoyaltyTransaction();
+						
+						// Setup the transaction data
+						var transactionData = {
+							accruementType = "itemFulfilled",
+							accountLoyalty = arguments.accountLoyalty,
+							loyaltyAccruement = loyaltyAccruement,
+							orderItemReceived = orderItemReceived,
+							order = orderItemReceived.getOrderItem().getOrder(),
+							orderItem = orderItemReceived.getOrderItem(),
+							pointAdjustmentType = "pointsOut"
+						};
+						
+						// Process the transaction
+						accountLoyaltyTransaction = this.processAccountLoyaltyTransaction(accountLoyaltyTransaction, transactionData,'create');
+						
+					}
+				}
+			}
+		}
+		
+		return arguments.accountLoyalty;	
+	}
+	
+	public any function processAccountLoyalty_manualTransaction(required any accountLoyalty, required any processObject) {
+		
+		// Create a new transaction
+		var accountLoyaltyTransaction = this.newAccountLoyaltyTransaction();
+		
+		accountLoyaltyTransaction.setAccountLoyalty( arguments.accountLoyalty );
+		accountLoyaltyTransaction.setAccruementType( processObject.getManualAdjustmentType() );
+		
+		if (processObject.getManualAdjustmentType() eq "manualIn"){
+			accountLoyaltyTransaction.setPointsIn( processObject.getPoints() );
+			if (!isNull(processObject.getExpirationDateTime())) { accountLoyaltyTransaction.setExpirationDateTime( processObject.getExpirationDateTime() ); }
+		} else {
+			accountLoyaltyTransaction.setPointsOut( processObject.getPoints() );
+		}
+
+		return arguments.accountLoyalty;	
+	}
+	
+	// Account Loyalty Transaction
+	public any function processAccountLoyaltyTransaction_create(required any accountLoyaltyTransaction, required struct data) {
+		
+		// Process only the 'active' loyalty programs
+		if ( arguments.data.accountLoyalty.getLoyalty().getActiveFlag() ) {
+			
+			// Setup the transaction
+			arguments.accountLoyaltyTransaction.setAccruementType( arguments.data.accruementType );
+			arguments.accountLoyaltyTransaction.setAccountLoyalty( arguments.data.accountLoyalty );
+			arguments.accountLoyaltyTransaction.setLoyaltyAccruement( arguments.data.loyaltyAccruement );
+			
+			// Set the order, orderItem and orderFulfillment if they exist 
+			if(structKeyExists(arguments.data, "order")) {
+				arguments.accountLoyaltyTransaction.setOrder( arguments.data.order );
+			}
+			
+			if(structKeyExists(arguments.data, "orderItem")) {
+				arguments.accountLoyaltyTransaction.setOrderItem( arguments.data.orderItem );
+			}
+			
+			if(structKeyExists(arguments.data, "orderFulfillment")) {
+				arguments.accountLoyaltyTransaction.setOrderFulfillment( arguments.data.orderFulfillment );
+			}
+			
+			// Set up loyalty program expiration date / time based upon the expiration term
+			if( !isNull(arguments.data.loyaltyAccruement.getExpirationTerm()) ){
+			    arguments.accountLoyaltyTransaction.setExpirationDateTime( arguments.data.loyaltyAccruement.getExpirationTerm().getEndDate() );
+			}
+			
+			
+			if ( arguments.data.pointAdjustmentType eq "pointsIn" ) {
+				
+				if ( arguments.data.loyaltyAccruement.getPointType() eq 'fixed' ){
+					arguments.accountLoyaltyTransaction.setPointsIn( arguments.data.loyaltyAccruement.getPointQuantity() );
+				} 
+				else if ( arguments.data.loyaltyAccruement.getPointType() eq 'pointPerDollar' ) {
+					
+					if (arguments.data.accruementType eq 'itemFulfilled') {
+						arguments.accountLoyaltyTransaction.setPointsIn( arguments.data.loyaltyAccruement.getPointQuantity() * (arguments.data.orderDeliveryItem.getQuantity() * arguments.data.orderDeliveryItem.getOrderItem().getPrice()) );
+					} else if (arguments.data.accruementType eq 'orderClosed') {
+						arguments.accountLoyaltyTransaction.setPointsIn( arguments.data.loyaltyAccruement.getPointQuantity() * arguments.data.order.getTotal() );
+					} else if (arguments.data.accruementType eq 'fulfillmentMethodUsed') {
+						arguments.accountLoyaltyTransaction.setPointsIn( arguments.data.loyaltyAccruement.getPointQuantity() * arguments.data.orderFulfillment.getFulFillmentCharge() );
+					}	
+				}
+				
+			} else {			
+				if ( arguments.data.loyaltyAccruement.getPointType() eq 'fixed' ){
+					arguments.accountLoyaltyTransaction.setPointsOut( arguments.data.loyaltyAccruement.getPointQuantity() );
+				} 
+				else if ( arguments.data.loyaltyAccruement.getPointType() eq 'pointPerDollar' ) {
+					arguments.accountLoyaltyTransaction.setPointsOut( arguments.data.loyaltyAccruement.getPointQuantity() * (arguments.data.orderItemReceived.getQuantity() * arguments.data.orderItemReceived.getOrderItem().getPrice()) );
+				}
+			}
+				
+			// Loop over account loyalty redemptions
+			for(var loyaltyRedemption in arguments.data.accountLoyalty.getLoyalty().getLoyaltyRedemptions()) {	
+				
+				// If loyalty auto redemption eq 'pointsAdjusted' as the type
+				if (loyaltyRedemption.getAutoRedemptionType() eq 'pointsAdjusted') {
+	
+					redemptionData = { 
+						account = arguments.data.accountLoyalty.getAccount(), 
+						accountLoyalty = arguments.data.accountLoyalty
+					};
+				
+					loyaltyRedemption = getLoyaltyService().processLoyaltyRedemption( loyaltyRedemption, redemptionData, 'redeem' );	
+				}
+			}
+		
+		}
+		return arguments.accountLoyaltyTransaction;
+	}
 	
 	// Account Payment
 	public any function processAccountPayment_createTransaction(required any accountPayment, required any processObject) {
@@ -549,7 +1119,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getAccountSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallAccount";
 		
-		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		var smartList = this.getSmartList(argumentCollection=arguments);
 		
 		smartList.joinRelatedProperty("SlatwallAccount", "primaryEmailAddress", "left");
 		smartList.joinRelatedProperty("SlatwallAccount", "primaryPhoneNumber", "left");
@@ -565,10 +1135,26 @@ component extends="HibachiService" accessors="true" output="false" {
 		return smartList;
 	}
 	
+	public any function getAccountAuthenticationSmartList(struct data={}){
+		arguments.entityName = "SlatwallAccountAuthentication";
+		
+		var smartList = this.getSmartList(argumentCollection=arguments);
+		
+		smartList.joinRelatedProperty("SlatwallAccountAuthentication", "account", "left" );
+		
+		smartList.joinRelatedProperty("SlatwallAccountAuthentication", "integration", "left");
+		
+		smartList.addKeywordProperty(propertyIdentifier="account.accountID", weight=1 );
+		
+		smartList.addKeywordProperty(propertyIdentifier="integration.integrationID", weight=1 );
+		
+		return smartList;
+	}
+	
 	public any function getAccountEmailAddressSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallAccountEmailAddress";
 		
-		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		var smartList = this.getSmartList(argumentCollection=arguments);
 		
 		smartList.joinRelatedProperty("SlatwallAccountEmailAddress", "accountEmailType", "left");
 		
@@ -578,7 +1164,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	public any function getAccountPhoneNumberSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallAccountPhoneNumber";
 		
-		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		var smartList = this.getSmartList(argumentCollection=arguments);
 		
 		smartList.joinRelatedProperty("SlatwallAccountPhoneNumber", "accountPhoneType", "left");
 		
@@ -607,10 +1193,22 @@ component extends="HibachiService" accessors="true" output="false" {
 			getAccountDAO().removeAccountFromAllSessions( arguments.account.getAccountID() );
 			getAccountDAO().removeAccountFromAuditProperties( arguments.account.getAccountID() );
 			
-			return delete( arguments.account );
 		}
 		
 		return delete( arguments.account );
+	}
+	
+	public boolean function deleteAccountAuthentication(required any accountAuthentication) {
+		// Check delete validation
+		if(arguments.accountAuthentication.isDeletable()) {
+			// Remove the primary fields so that we can delete this entity
+			getAccountDAO().removeAccountAuthenticationFromSessions( arguments.accountAuthentication.getAccountAuthenticationID() );
+			if(!isNull(arguments.accountAuthentication.getAccount())) {
+				arguments.accountAuthentication.removeAccount();	
+			}
+		}
+		
+		return delete( arguments.accountAuthentication );
 	}
 	
 	public boolean function deleteAccountEmailAddress(required any accountEmailAddress) {
@@ -623,10 +1221,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.accountEmailAddress.getAccount().setPrimaryEmailAddress(javaCast("null",""));
 			}
 			
-			return delete(arguments.accountEmailAddress);
 		}
 		
-		return false;
+		return delete(arguments.accountEmailAddress);
 	}
 	
 	public boolean function deleteAccountPhoneNumber(required any accountPhoneNumber) {
@@ -634,15 +1231,14 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Check delete validation
 		if(arguments.accountPhoneNumber.isDeletable()) {
 			
-			// If the primary email address is this e-mail address then set the primary to null
+			// If the primary phone number is this phone number then set the primary to null
 			if(arguments.accountPhoneNumber.getAccount().getPrimaryPhoneNumber().getAccountPhoneNumberID() eq arguments.accountPhoneNumber.getAccountPhoneNumberID()) {
 				arguments.accountPhoneNumber.getAccount().setPrimaryPhoneNumber(javaCast("null",""));
 			}
 			
-			return delete(arguments.accountPhoneNumber);
 		}
 		
-		return false;
+		return delete(arguments.accountPhoneNumber);
 	}
 	
 	public boolean function deleteAccountAddress(required any accountAddress) {
@@ -650,21 +1246,152 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Check delete validation
 		if(arguments.accountAddress.isDeletable()) {
 
-			// If the primary email address is this e-mail address then set the primary to null
+			// If the primary address is this address then set the primary to null
 			if(arguments.accountAddress.getAccount().getPrimaryAddress().getAccountAddressID() eq arguments.accountAddress.getAccountAddressID()) {
 				arguments.accountAddress.getAccount().setPrimaryAddress(javaCast("null",""));
 			}
 			
-			// Remove from all orderFulfillments
+			// Remove from any order objects
 			getAccountDAO().removeAccountAddressFromOrderFulfillments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
+			getAccountDAO().removeAccountAddressFromOrderPayments( accountAddressID = arguments.accountAddress.getAccountAddressID() );
+			getAccountDAO().removeAccountAddressFromOrders( accountAddressID = arguments.accountAddress.getAccountAddressID() );
 			
-			return delete(arguments.accountAddress);
 		}
 		
-		return false;
+		return delete(arguments.accountAddress);
 	}
+	
+	public boolean function deleteAccountPaymentMethod(required any accountPaymentMethod) {
+
+		// Check delete validation
+		if(arguments.accountPaymentMethod.isDeletable()) {
+			
+			var account = arguments.accountPaymentMethod.getAccount();
+
+			arguments.accountPaymentMethod.removeAccount();
+			
+			// If the primary payment method is this payment method then set the primary to null
+			if(account.getPrimaryPaymentMethod().getAccountPaymentMethodID() eq arguments.accountPaymentMethod.getAccountPaymentMethodID()) {
+				account.setPrimaryPaymentMethod(javaCast("null",""));
+			}
+			
+			getAccountDAO().removeAccountPaymentMethodFromOrderPayments( accountPaymentMethodID = arguments.accountPaymentMethod.getAccountPaymentMethodID() );
+		}
+
+		return delete(arguments.accountPaymentMethod);
+	}
+	
 	
 	// =====================  END: Delete Overrides ===========================
 	
-}
+	// ===================== START: Private Helper Functions ==================
 
+	private any function createNewAccountPassword (required any account, required any processObject ){
+	
+		var existingPasswords = getInternalAccountAuthenticationsByEmailAddress(arguments.account.getPrimaryEmailAddress().getEmailAddress());
+		
+		if(arguments.account.getAdminAccountFlag() == true){
+			
+			//Check to see if the password is a duplicate
+			var duplicatePasswordCount = checkForDuplicatePasswords(arguments.processObject.getPassword(), existingPasswords);
+			
+			if(duplicatePasswordCount > 0){
+				arguments.processObject.addError('password', rbKey('validate.newPassword.duplicatePassword'));
+				
+				return arguments.account;
+			}
+		}
+		
+		//Because we only want to store 5 passwords, this gets old passwords that put the lenth of the limit.
+		if (arrayLen(existingPasswords) >= 4){
+			deleteAccountPasswords(arguments, 4);
+		}
+		
+		//Before creating the new password, make sure that all other passwords have an activeFlag of false
+		markOldPasswordsInactive(existingPasswords);
+		
+		//Save the new password
+		var accountAuthentication = this.newAccountAuthentication();
+		accountAuthentication.setAccount( arguments.account );
+		
+		// Put the accountAuthentication into the hibernate scope so that it has an id which will allow the hash / salting below to work
+		getHibachiDAO().save(accountAuthentication);
+	
+		// Set the password
+		accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );
+		
+		return arguments.account;
+	}
+	
+	private any function checkForDuplicatePasswords(required any newPassword, required array authArray){
+		
+		//Initilize variable to store the number of duplicate passwords
+		var duplicatePasswordCount = 0;
+		
+		//Loop over the existing authentications for this account
+		for(authentication in arguments.authArray){
+			if(isNull(authentication.getIntegration()) && !isNull(authentication.getPassword())) {
+				//Check to see if the password for this authentication is the same as the one being created
+				if(authentication.getPassword() == getHashedAndSaltedPassword(arguments.newPassword, authentication.getAccountAuthenticationID())){
+					//Because they are the same add 1 to the duplicatePasswordCount
+					duplicatePasswordCount++;
+					
+				}
+			}
+		}
+		
+		return duplicatePasswordCount;
+	}
+	
+	private void function markOldPasswordsInactive(required array authArray){
+		for(authentication in arguments.authArray){
+			if(isNull(authentication.getIntegration()) && !isNull(authentication.getPassword()) && authentication.getActiveFlag() == true) {
+				authentication.setActiveFlag(false);
+			}
+		}
+	}
+
+	private void function deleteAccountPasswords(required struct data, required any maxAuthenticationsCount ){
+		
+		//First need to get an array of all the accountAuthentications for this account ordered by creationDateTime ASC
+		var accountAuthentications = getAccountAuthenticationSmartList(data=data);
+		accountAuthentications.addFilter("account.accountID", arguments.data.Account.getAccountID());
+		accountAuthentications.addWhereCondition("aslatwallaccountauthentication.password IS NOT NULL AND aslatwallintegration.integrationID IS NULL");
+		accountAuthentications.addOrder("createdDateTime|ASC");
+		
+		//Get the actual records from the SmartList and store in an array
+		accountAuthenticationsArray = accountAuthentications.getPageRecords();
+		
+		//Create a variable to hold the length of the new array
+		var numberOfRecordsToBeDeleted = arrayLen(accountAuthenticationsArray) - arguments.maxAuthenticationsCount + 1;
+		
+		//Loop through the length of the array until you are under the maxAuthenticationsCount for that Account.	
+		for(var i=1; i <= numberOfRecordsToBeDeleted; i++){
+			//if the password that is going to be deleted is how the user logged in, updated the session to the new active password
+			if( !isNull(getHibachiScope().getSession().getAccountAuthentication()) && accountAuthenticationsArray[i].getAccountAuthenticationID() == getHibachiScope().getSession().getAccountAuthentication().getAccountAuthenticationID()){
+				var activePassword = getAccountDAO().getActivePasswordByAccountID(arguments.data.Account.getAccountID());
+				getHibachiScope().getSession().setAccountAuthentication(activePassword);
+			}
+			this.deleteAccountAuthentication( accountAuthenticationsArray[i] );
+		}
+		
+	}
+
+	private boolean function checkPasswordResetRequired(required any accountAuthentication, required any processObject){
+		if (accountAuthentication.getUpdatePasswordOnNextLoginFlag() == true 
+			|| ( accountAuthentication.getAccount().getAdminAccountFlag() && 
+					( dateCompare(Now(), dateAdd('d', arguments.accountAuthentication.getAccount().setting('accountAdminForcePasswordResetAfterDays'), accountAuthentication.getCreatedDateTime()))  == 1 
+					|| !REFind("^.*(?=.{7,})(?=.*[0-9])(?=.*[a-zA-Z]).*$" , arguments.processObject.getPassword()) 
+					|| ( !isNull(accountAuthentication.getCreatedByAccount()) && accountAuthentication.getCreatedByAccount().getAccountID() != accountAuthentication.getAccount().getAccountId())
+					)
+				)
+			)
+		{ 
+			return true;
+		}
+				
+		return false;	
+	}
+	// =====================  END:  Private Helper Functions ==================
+	
+}

@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="createPassword,changePassword,create,setupInitialAdmin" {
+component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="addAccountLoyalty,addAccountPayment,createPassword,changePassword,create,forgotPassword,lock,login,logout,resetPassword,setupInitialAdmin,unlock,updatePassword,generateAuthToken" {
 	
 	// Persistent Properties
 	property name="accountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -54,6 +54,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="firstName" hb_populateEnabled="public" ormtype="string";
 	property name="lastName" hb_populateEnabled="public" ormtype="string";
 	property name="company" hb_populateEnabled="public" ormtype="string";
+	property name="loginLockExpiresDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="failedLoginAttemptCount" hb_populateEnabled="false" ormtype="integer" hb_auditable="false"; 
 	
 	// CMS Properties
 	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";
@@ -69,11 +71,13 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="accountAuthentications" singularname="accountAuthentication" cfc="AccountAuthentication" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
 	property name="accountContentAccesses" hb_populateEnabled="false" singularname="accountContentAccess" cfc="AccountContentAccess" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
 	property name="accountEmailAddresses" hb_populateEnabled="public" singularname="accountEmailAddress" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountEmailAddress" cascade="all-delete-orphan" inverse="true";
+	property name="accountLoyalties" singularname="accountLoyalty" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountLoyalty" cascade="all-delete-orphan" inverse="true";
 	property name="accountPaymentMethods" hb_populateEnabled="public" singularname="accountPaymentMethod" cfc="AccountPaymentMethod" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
 	property name="accountPayments" singularname="accountPayment" cfc="AccountPayment" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all" inverse="true";
 	property name="accountPhoneNumbers" hb_populateEnabled="public" singularname="accountPhoneNumber" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountPhoneNumber" cascade="all-delete-orphan" inverse="true";
-	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
-	property name="orders" hb_populateEnabled="false" singularname="order" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="Order" inverse="true" orderby="orderOpenDateTime desc";
+ 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" type="array" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
+  	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="accountID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan";	
+  	property name="orders" hb_populateEnabled="false" singularname="order" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="Order" inverse="true" orderby="orderOpenDateTime desc";
 	property name="productReviews" hb_populateEnabled="false" singularname="productReview" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="ProductReview" inverse="true";
 	property name="subscriptionUsageBenefitAccounts" singularname="subscriptionUsageBenefitAccount" cfc="SubscriptionUsageBenefitAccount" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
 	property name="subscriptionUsages" singularname="subscriptionUsage" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
@@ -92,11 +96,11 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="remoteCustomerID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
 	property name="remoteContactID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non Persistent
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
@@ -113,10 +117,13 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="passwordResetID" persistent="false";
 	property name="phoneNumber" persistent="false";
 	property name="saveablePaymentMethodsSmartList" persistent="false";
+	property name="eligibleAccountPaymentMethodsSmartList" persistent="false";
 	property name="slatwallAuthenticationExistsFlag" persistent="false";
 	property name="termAccountAvailableCredit" persistent="false" hb_formatType="currency";
 	property name="termAccountBalance" persistent="false" hb_formatType="currency";
-	
+	property name="unenrolledAccountLoyaltyOptions" persistent="false";
+	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
+
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);	
 	}
@@ -150,6 +157,21 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 			}
 		}
 		return variables.saveablePaymentMethodsSmartList;
+	}
+	
+	public any function getEligibleAccountPaymentMethodsSmartList() {
+		// These are the payment methods that are allowed only when adding an account payment
+		if(!structKeyExists(variables, "eligibleAccountPaymentMethodsSmartList")) {
+			var sl = getService("paymentService").getPaymentMethodSmartList();
+			
+			// Prevent 'termPayment' from displaying as account payment method option
+			sl.addInFilter('paymentMethodType', 'cash,check,creditCard,external,giftCard');
+			sl.addInFilter('paymentMethodID', setting('accountEligiblePaymentMethods'));
+			sl.addFilter('activeFlag', 1);
+				
+			variables.eligibleAccountPaymentMethodsSmartList = sl;
+		}
+		return variables.eligibleAccountPaymentMethodsSmartList;
 	}
 	
 	public any function getActiveSubscriptionUsageBenefitsSmartList() {
@@ -236,8 +258,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		if(!structKeyExists(variables, "slatwallAuthenticationExistsFlag")) {
 			variables.slatwallAuthenticationExistsFlag = false;
 			var authArray = getAccountAuthentications();
-			for(var a=1; a<=arrayLen(authArray); a++) {
-				if(isNull(authArray[a].getIntegration())) {
+			for(auth in authArray) {
+				if(isNull(auth.getIntegration()) && !isNull(auth.getPassword()) && auth.getActiveFlag() ) {
 					variables.slatwallAuthenticationExistsFlag = true;
 					break;
 				}
@@ -268,18 +290,61 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		var termAccountBalance = 0;
 		
 		// First look at all the unreceived open order payment
-		for(var i=1; i<=arrayLen(getTermAccountOrderPayments()); i++) {
-			termAccountBalance = precisionEvaluate(termAccountBalance + getTermAccountOrderPayments()[i].getAmountUnreceived());
+		for(var termAccountOrderPayment in getTermAccountOrderPayments()) {
+			termAccountBalance = precisionEvaluate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived());
 		}
 		
 		// Now look for the unasigned payment amount 
-		for(var i=1; i<=arrayLen(getAccountPayments()); i++) {
-			termAccountBalance = precisionEvaluate(termAccountBalance - getAccountPayments()[i].getAmountUnassigned());
+		for(var accountPayment in getAccountPayments()) {
+			termAccountBalance = precisionEvaluate(termAccountBalance - accountPayment.getAmountUnassigned());
 		}
 		
 		return termAccountBalance;
 	}
 	
+	public any function getTermOrderPaymentsByDueDateSmartList() {
+		if(!structKeyExists(variables, "termOrderPaymentsByDueDateSmartList")) {
+			variables.termOrderPaymentsByDueDateSmartList = getService('orderService').getOrderPaymentSmartList();
+			variables.termOrderPaymentsByDueDateSmartList.addFilter('order.account.accountId', this.getAccountID());
+			variables.termOrderPaymentsByDueDateSmartList.addInFilter("order.orderStatusType.systemCode", "ostProcessing,ostNew,ostOnHold");
+			variables.termOrderPaymentsByDueDateSmartList.addFilter('paymentMethod.paymentMethodType', 'termPayment');
+			variables.termOrderPaymentsByDueDateSmartList.addOrder('paymentDueDate|ASC');
+		}
+		return variables.termOrderPaymentsByDueDateSmartList;
+	}
+	
+	public any function getUnenrolledAccountLoyaltyOptions() {
+		if(!structKeyExists(variables, "unenrolledAccountLoyaltyOptions")) {
+			variables.unenrolledAccountLoyaltyOptions = [];
+			
+			var smartList = getService("loyaltyService").getLoyaltySmartList();
+			smartList.addFilter('activeFlag', 1);
+			smartList.addWhereCondition(" NOT EXISTS( FROM SlatwallAccountLoyalty al WHERE al.loyalty.loyaltyID = aslatwallloyalty.loyaltyID and al.account.accountID = '#getAccountID()#')");
+			
+			for(var loyaltyPrograms in smartList.getRecords()) {
+				arrayAppend(variables.unenrolledAccountLoyaltyOptions,{name=loyaltyPrograms.getLoyaltyName(),value=loyaltyPrograms.getLoyaltyID()});
+			}
+		}
+
+		return variables.unenrolledAccountLoyaltyOptions;
+	}
+	
+	public any function getActiveAccountAuthentications(){
+		var authentications = getAccountAuthentications();
+	
+		var activeAuthentications = [];
+		
+		for (i = ArrayLen(authentications); i >= 1; i--){
+			var authentication = authentications[i];
+			
+			if( !(isNull(authentication.getIntegration()) && !isNull(authentication.getPassword()) && authentication.getActiveFlag() == false)){
+				arrayAppend(activeAuthentications, authentication);
+			}
+		}
+
+		return activeAuthentications;
+	}
+
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================
@@ -304,7 +369,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		}   
 	}
 	
-	// Primary Email Address (many-to-one | circular)
+	// Primary Address (many-to-one | circular)
 	public void function setPrimaryAddress( any primaryAddress) {    
 		if(structKeyExists(arguments, "primaryAddress")) {
 			variables.primaryAddress = arguments.primaryAddress;
@@ -314,7 +379,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		}
 	}
 	
-	// Primary Email Address (many-to-one | circular)
+	// Primary AccountPayment Method (many-to-one | circular)
 	public void function setPrimaryAccountPaymentMethod(required any primaryPaymentMethod) {
 		if(structKeyExists(arguments, "primaryPaymentMethod")) {
 			variables.primaryPaymentMethod = arguments.primaryPaymentMethod;
@@ -388,6 +453,14 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		arguments.AccountPromotion.removeAccount( this );
 	}
 	
+ 	// Event Registrations (one-to-many)    
+  	public void function addEventRegistration(required any eventRegistration) {    
+  		arguments.eventRegistration.setAccount( this );    
+  	}    
+  	public void function removeEventRegistration(required any eventRegistration) {    
+  		arguments.eventRegistration.removeAccount( this );    
+  	}
+	
 	// Attribute Values (one-to-many)    
 	public void function addAttributeValue(required any attributeValue) {    
 		arguments.attributeValue.setAccount( this );    
@@ -434,6 +507,14 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 	public void function removeTermAccountOrderPayment(required any termAccountOrderPayment) {
 		arguments.termAccountOrderPayment.removeTermPaymentAccount( this );
+	}
+	
+	// Account Loyalty Programs (one-to-many)
+	public void function addAccountLoyalty(required any accountLoyalty) {    
+		arguments.accountLoyalty.setAccount( this );    
+	}    
+	public void function removeAccountLoyalty(required any accountLoyalty) {    
+		arguments.accountLoyalty.removeAccount( this );    
 	}
 	
 	// Price Groups (many-to-many - owner)
@@ -503,10 +584,6 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	// ================== START: Overridden Methods ========================
 	
-	public string function getSimpleRepresentationPropertyName() {
-		return "fullName";
-	}
-	
 	public any function getPrimaryEmailAddress() {
 		if(!isNull(variables.primaryEmailAddress)) {
 			return variables.primaryEmailAddress;
@@ -562,7 +639,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		return variables.superUserFlag;
 	}
 	
-	
+	public string function getSimpleRepresentation() {
+		return getFullName();
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	
@@ -572,7 +651,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	
 	// ================== START: Deprecated Methods ========================
 	
-	public array function getAttributeSets(array attributeSetTypeCode){
+	public array function getAttributeSets(){
 		return getAssignedAttributeSetSmartList().getRecords();
 	}
 	

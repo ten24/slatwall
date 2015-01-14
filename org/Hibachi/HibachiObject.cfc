@@ -88,7 +88,7 @@ component accessors="true" output="false" persistent="false" {
 		var urlRootPath = replace(expandPath('/'), '\','/','all');
 		
 		// Remove the URLRootPath from the rest of the path
-		return replace(arguments.path, urlRootPath, '/');
+		return replaceNoCase(arguments.path, urlRootPath, '/');
 	}
 	
 	// ==========================  END: FRAMEWORK ACCESS ============================================
@@ -216,6 +216,13 @@ component accessors="true" output="false" persistent="false" {
 		return false;
 	}
 	
+	// @hint facade method to check the application scope for a value
+	public void function clearApplicationValue(required any key) {
+		if( structKeyExists(application, getHibachiInstanceApplicationScopeKey()) && structKeyExists(application[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
+			structDelete(application[ getHibachiInstanceApplicationScopeKey() ], arguments.key);
+		}
+	}
+	
 	// @hint facade method to get values from the application scope
 	public any function getApplicationValue(required any key) {
 		if( structKeyExists(application, getHibachiInstanceApplicationScopeKey()) && structKeyExists(application[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
@@ -233,7 +240,7 @@ component accessors="true" output="false" persistent="false" {
 				application[ getHibachiInstanceApplicationScopeKey() ].initialized = false;
 			}
 			application[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ] = arguments.value;
-			if(isSimpleValue(arguments.value) && hasApplicationValue("applicationKey") && !findNoCase("password", arguments.key) && !findNoCase("username", arguments.key)) {
+			if(isSimpleValue(arguments.value) && hasApplicationValue("applicationKey") && !findNoCase("password", arguments.key) && !findNoCase("username", arguments.key) && len(arguments.value) < 100) {
 				writeLog(file="#getApplicationValue('applicationKey')#", text="General Log - Application Value '#arguments.key#' set as: #arguments.value#");
 			}
 		}

@@ -55,8 +55,8 @@ Notes:
 		<cfreturn ormExecuteQuery("SELECT av FROM SlatwallAttributeValue av INNER JOIN FETCH av.attribute att INNER JOIN FETCH att.attributeSet ats WHERE av.#primaryIDPropertyIdentifier# = ?", [arguments.primaryIDValue], false, {ignoreCase="true"}) />
 	</cffunction>
 	
-	<cffunction name="getAttributeCodesQueryByAttributeSetType" returntype="query" access="public">
-		<cfargument name="attributeSetType" required="true" type="string" />
+	<cffunction name="getAttributeCodesQueryByAttributeSetObject" returntype="query" access="public">
+		<cfargument name="attributeSetObject" required="true" type="string" />
 		
 		<cfset var rs = "" />
 		<cfquery name="rs">
@@ -66,12 +66,25 @@ Notes:
 				SwAttribute
 			  INNER JOIN
 			  	SwAttributeSet on SwAttribute.attributeSetID = SwAttributeSet.attributeSetID
-			  INNER JOIN
-			  	SwType on SwAttributeSet.attributeSetTypeID = SwType.typeID
 			WHERE
-				SwType.systemCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeSetType#"/>
+				SwAttributeSet.attributeSetObject = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeSetObject#"/>
 		</cfquery>
 		<cfreturn rs />
-	</cffunction> 
+	</cffunction>
+	
+	<cffunction name="removeAttributeOptionFromAllAttributeValues">
+		<cfargument name="attributeOptionID" type="string" required="true" >
+		
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			UPDATE
+				SwAttributeValue
+			SET
+				attributeValueOptionID = null
+			WHERE
+				attributeValueOptionID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.attributeOptionID#" /> 
+		</cfquery>
+	</cffunction>
 	
 </cfcomponent>

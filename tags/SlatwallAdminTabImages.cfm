@@ -46,9 +46,13 @@
 	Notes:
 	
 --->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.object" type="any" />
+	<cfparam name="attributes.open" type="boolean" default="false" />
+	<cfparam name="attributes.showOnCreateFlag" type="boolean" default="false" />
 	
 	<cfset attributes.tabid = "images" />
 	<cfset attributes.text = attributes.hibachiScope.rbKey("entity.image_plural") />
@@ -58,9 +62,9 @@
 	
 	<cfsavecontent variable="attributes.tabcontent" >
 		<div class="tab-pane" id="tabImages">
-			<cf_SlatwallAdminImagesDisplay object="#attributes.object#" />
+			<swa:SlatwallAdminImagesDisplay object="#attributes.object#" />
 		</div>
 	</cfsavecontent>
 	
-	<cfassociate basetag="cf_HibachiTabGroup" datacollection="tabs">
+	<cfassociate basetag="cf_HibachiEntityDetailGroup" datacollection="tabs">
 </cfif>

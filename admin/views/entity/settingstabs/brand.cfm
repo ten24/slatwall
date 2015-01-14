@@ -46,18 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.sitesArray" />
 
 <cfoutput>
-	<cf_SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#" showInheritance="false">
-		<cf_SlatwallSetting settingName="brandHTMLTitleString" />
-		<cf_SlatwallSetting settingName="brandMetaDescriptionString" />
-		<cf_SlatwallSetting settingName="brandMetaKeywordsString" />
+	<swa:SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#" showInheritance="false">
+		<swa:SlatwallSetting settingName="brandHTMLTitleString" />
+		<swa:SlatwallSetting settingName="brandMetaDescriptionString" />
+		<swa:SlatwallSetting settingName="brandMetaKeywordsString" />
 		
 		<!--- Site Specific Settings --->
 		<cfloop array="#rc.sitesArray#" index="site">
-			<cf_SlatwallSetting settingName="brandDisplayTemplate" settingFilterEntities="#[site]#" />
+			<swa:SlatwallSetting settingName="brandDisplayTemplate" settingFilterEntities="#[site]#" />
 		</cfloop>
-	</cf_SlatwallSettingTable>
+	</swa:SlatwallSettingTable>
 </cfoutput>
 

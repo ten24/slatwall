@@ -46,35 +46,29 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.brand" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.brand#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.brand#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.brand#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.brand#" edit="#rc.edit#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.Brand#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.Brand#" property="brandName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.Brand#" property="brandWebsite" edit="#rc.edit#">
-				<cfif not rc.brand.isNew()>
-					<cf_HibachiPropertyDisplay object="#rc.Brand#" property="urlTitle" edit="#rc.edit#">
-				</cfif>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.brand#">
-			<cf_HibachiTab property="products" text="#$.slatwall.rbkey('entity.brand.products')#" />
-			<cf_HibachiTab property="vendors" />
-			<cf_HibachiTab view="admin:entity/brandtabs/brandsettings" />
+		<hb:HibachiEntityDetailGroup object="#rc.brand#">
+			<hb:HibachiEntityDetailItem view="admin:entity/brandtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem property="products" text="#$.slatwall.rbkey('entity.brand.products')#" />
+			<hb:HibachiEntityDetailItem property="vendors" />
+			<hb:HibachiEntityDetailItem view="admin:entity/brandtabs/brandsettings" />
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.brand.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.brand#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.brand#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

@@ -46,17 +46,22 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.sessionSmartList" type="any" />
 
 <cfset rc.sessionSmartList.addOrder('lastRequestDateTime|DESC') />
 
-<cf_HibachiEntityActionBar type="listing" object="#rc.sessionSmartList#" showCreate="false" />
+<hb:HibachiEntityActionBar type="listing" object="#rc.sessionSmartList#" showCreate="false" />
 
-<cf_HibachiListingDisplay smartList="#rc.sessionSmartList#">
-	<cf_HibachiListingColumn propertyIdentifier="lastRequestDateTime" />
-	<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="lastRequestIPAddress" />
-	<cf_HibachiListingColumn propertyIdentifier="account.firstName" />
-	<cf_HibachiListingColumn propertyIdentifier="account.lastName" />
-</cf_HibachiListingDisplay>
+
+<hb:HibachiListingDisplay smartList="#rc.sessionSmartList#">
+	<hb:HibachiListingColumn propertyIdentifier="lastRequestDateTime" />
+	<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="lastRequestIPAddress" />
+	<hb:HibachiListingColumn propertyIdentifier="account.firstName" />
+	<hb:HibachiListingColumn propertyIdentifier="account.lastName" />
+</hb:HibachiListingDisplay>
 

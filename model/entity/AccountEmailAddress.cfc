@@ -46,12 +46,15 @@
 Notes:
 
 */
-component displayname="Account Email Address" entityname="SlatwallAccountEmailAddress" table="SwAccountEmailAddress" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountEmailAddresses" {
+component displayname="Account Email Address" entityname="SlatwallAccountEmailAddress" table="SwAccountEmailAddress" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="account.accountEmailAddresses" hb_processContext="sendVerificationEmail,verify" {
 	
 	// Persistent Properties
 	property name="accountEmailAddressID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string" hb_formatType="email";
-	property name="verifiedFlag" ormtype="boolean";
+	property name="verifiedFlag" hb_populateEnabled="false" ormtype="boolean";
+	property name="verificationCode" hb_populateEnabled="false" ormtype="string";
+	
+	// Calculated Properties
 	
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
@@ -68,13 +71,20 @@ component displayname="Account Email Address" entityname="SlatwallAccountEmailAd
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non Persistent
 	property name="primaryEmailAddressNotInUseFlag" persistent="false";
 	property name="primaryFlag" persistent="false";
+	
+	// Deprecated Properties
+	
+	
+	// ==================== START: Logical Methods =========================
+	
+	// ====================  END: Logical Methods ==========================
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -104,9 +114,11 @@ component displayname="Account Email Address" entityname="SlatwallAccountEmailAd
 		return variables.primaryFlag;
 	}
 	
-	// ============  END:  Non-Persistent Property Methods =================
 	
+	// ============  END:  Non-Persistent Property Methods =================
+		
 	// ============= START: Bidirectional Helper Methods ===================
+	
 	
 	// Account (many-to-one)
 	public void function setAccount(required any account) {
@@ -126,9 +138,18 @@ component displayname="Account Email Address" entityname="SlatwallAccountEmailAd
 		structDelete(variables, "account");
 	}
 	
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
-	// ================== START: Overridden Methods ========================
+	// =============== START: Custom Validation Methods ====================
+	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicit Getters ===================
 	
 	public any function getVerifiedFlag() {
 		if(!structKeyExists(variables, "verifiedFlag")) {
@@ -136,6 +157,21 @@ component displayname="Account Email Address" entityname="SlatwallAccountEmailAd
 		}
 		return variables.verifiedFlag;
 	}
+	
+	public string function getVerificationCode() {
+		if(!structKeyExists(variables, "verificationCode")) {
+			variables.verificationCode = createHibachiUUID();
+		}
+		return variables.verificationCode;
+	}
+	
+	// ==============  END: Overridden Implicit Getters ====================
+	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	// =============  END: Overridden Smart List Getters ===================
+
+	// ================== START: Overridden Methods ========================
 	
 	public string function getSimpleRepresentationPropertyName() {
 		return "emailAddress";
@@ -146,5 +182,11 @@ component displayname="Account Email Address" entityname="SlatwallAccountEmailAd
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
+	
+	
 }
 

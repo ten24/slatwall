@@ -80,12 +80,26 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		config[ 'action' ] = getApplicationValue('action');
 		config[ 'dateFormat' ] = setting('globalDateFormat');
 		config[ 'timeFormat' ] = setting('globalTimeFormat');
+		config[ 'rbLocale' ] = '#getRBLocale()#';
+		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
+		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
 		
 		var returnHTML = '';
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';
 		returnHTML &= '<script type="text/javascript">(function( $ ){$.#lcase(getApplicationValue('applicationKey'))# = new Hibachi(#serializeJSON(config)#);})( jQuery );</script>';
+		
+		returnHTML &= getService("integrationService").getJSObjectAdditions();
+		
 		return returnHTML;
 	}
+	
+	public boolean function getLoggedInFlag() {
+		if(!getSession().getAccount().getNewFlag() && !getSession().getAccount().getGuestAccountFlag()) {
+			return true;
+		}
+		return false;
+	}
+	
 	
 	// ================= Entity Helper Methods =====================
 	
@@ -181,6 +195,79 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		setSessionValue('printQueue', []);
 	}
 	
+	// =================== JS helper methods  ===========================
+
+	public any function getAccountData(string propertyList) {
+		
+		var availablePropertyList = "accountID,firstName,lastName,company,remoteID,primaryPhoneNumber.accountPhoneNumberID,primaryPhoneNumber.phoneNumber,primaryEmailAddress.accountEmailAddressID,primaryEmailAddress.emailAddress,
+							primaryAddress.accountAddressID,
+							accountAddresses.accountAddressName,accountAddresses.accountAddressID,
+							accountAddresses.address.addressID,accountAddresses.address.streetAddress,accountAddresses.address.street2Address,accountAddresses.address.city,accountAddresses.address.statecode,accountAddresses.address.postalcode,accountAddresses.address.countrycode";
+
+		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
+
+		if(!structKeyExists(arguments,"propertyList") || trim(arguments.propertyList) == "") {
+			arguments.propertyList = availablePropertyList;
+		}
+		
+		var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getAccount(), arguments.propertyList, availablePropertyList);
+		
+		// add error messages
+		data["hasErrors"] = getAccount().hasErrors();
+		data["errors"] = getAccount().getErrors();
+		
+		// add process object error messages
+		data[ 'processObjects' ] = {};
+		for(var key in getAccount().getProcessObjects()) {
+			data[ 'processObjects' ][ key ] = {};
+			data[ 'processObjects' ][ key ][ 'hasErrors' ] = getAccount().getProcessObjects()[ key ].hasErrors();
+			data[ 'processObjects' ][ key ][ 'errors' ] = getAccount().getProcessObjects()[ key ].getErrors();
+		}
+		
+		return data;
+	}
+
+	public any function getCartData(string propertyList) {
+		
+		var availablePropertyList = "orderID,orderOpenDateTime,calculatedTotal,subtotal,taxTotal,fulfillmentTotal,fulfillmentChargeAfterDiscountTotal,promotionCodeList,discountTotal,
+							orderitems.orderItemID,orderitems.price,orderitems.skuPrice,orderitems.currencyCode,orderitems.quantity,orderitems.extendedPrice,orderitems.extendedPriceAfterDiscount,orderitems.taxAmount,orderItems.taxLiabilityAmount,orderItems.parentOrderItemID,orderItems.productBundleGroupID,
+							orderitems.orderFulfillment.orderFulfillmentID,
+							orderitems.sku.skuID,orderitems.sku.skuCode,orderItems.sku.imagePath,orderItems.sku.imageFile,
+							orderitems.sku.product.productID,orderitems.sku.product.productName,orderitems.sku.product.productCode,orderitems.sku.product.urltitle,orderitems.sku.product.baseProductType,
+							orderFulfillments.orderFulfillmentID,orderFulfillments.fulfillmentCharge,orderFulfillments.currencyCode,
+							orderFulfillments.fulfillmentMethod.fulfillmentMethodID,orderFulfillments.fulfillmentMethod.fulfillmentMethodName,
+							orderFulfillments.shippingMethod.shippingMethodID,orderFulfillments.shippingMethod.shippingMethodName,
+							orderFulfillments.shippingAddress.addressID,orderFulfillments.shippingAddress.streetAddress,orderFulfillments.shippingAddress.street2Address,orderFulfillments.shippingAddress.city,orderFulfillments.shippingAddress.statecode,orderFulfillments.shippingAddress.postalcode,orderFulfillments.shippingAddress.countrycode,
+							orderFulfillments.shippingMethodOptions,orderFulfillments.shippingMethodRate.shippingMethodRateID,
+							orderFulfillments.totalShippingWeight,orderFulfillments.taxAmount,
+							orderPayments.orderPaymentID,orderPayments.amount,orderPayments.currencyCode,orderPayments.creditCardType,orderPayments.expirationMonth,orderPayments.expirationYear,orderPayments.nameOnCreditCard,
+							orderPayments.billingAddress.addressID,orderPayments.billingAddress.streetAddress,orderPayments.billingAddress.street2Address,orderPayments.billingAddress.city,orderPayments.billingAddress.statecode,orderPayments.billingAddress.postalcode,orderPayments.billingAddress.countrycode,
+							orderPayments.paymentMethod.paymentMethodID,orderPayments.paymentMethod.paymentMethodName,
+							promotionCodes.promotionCode";
+		
+		availablePropertyList = ReReplace(availablePropertyList,"[[:space:]]","","all");
+		
+		if(!structKeyExists(arguments,"propertyList") || trim(arguments.propertyList) == "") {
+			arguments.propertyList = availablePropertyList;
+		}
+		
+		var data = getService('hibachiUtilityService').buildPropertyIdentifierListDataStruct(getCart(), arguments.propertyList, availablePropertyList);
+		
+		// add error messages
+		data["hasErrors"] = getCart().hasErrors();
+		data["errors"] = getCart().getErrors();
+		
+		// add process object error messages
+		data[ 'processObjects' ] = {};
+		for(var key in getAccount().getProcessObjects()) {
+			data[ 'processObjects' ][ key ] = {};
+			data[ 'processObjects' ][ key ][ 'hasErrors' ] = getAccount().getProcessObjects()[ key ].hasErrors();
+			data[ 'processObjects' ][ key ][ 'errors' ] = getAccount().getProcessObjects()[ key ].getErrors();
+		}
+		
+		return data;
+	}
+
 	// =================== Image Access ===========================
 	
 	public string function getBaseImageURL() {

@@ -46,9 +46,12 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.subscriptionBenefit" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiPropertyDisplay object="#rc.subscriptionBenefit#" property="promotions" edit="#rc.edit#" displaytype="plain" />
+	<hb:HibachiPropertyDisplay object="#rc.subscriptionBenefit#" property="promotions" edit="#rc.edit#" displaytype="plain" />
 </cfoutput>

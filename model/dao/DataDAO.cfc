@@ -48,8 +48,27 @@ Notes:
 --->
 <cfcomponent extends="HibachiDAO">
 	
-	<cffunction name="eval" >
-		<cfargument name="recordIDCol" >
+	<cffunction name="getShortReferenceID" returntype="any" access="public" output="false">
+		<cfargument name="referenceObjectID" type="string" required="true" />
+		<cfargument name="referenceObject" type="string" required="true" />
+		<cfargument name="createNewFlag" type="boolean" default="false" />
+		
+		<cfset var shortReferenceID = "" />
+		
+		<!--- If we can't use cftransaction, then use a lock (this will breakdown on multi-server setup with high load) --->
+		<cfif getHibachiScope().getOrmHasErrors()>
+			<cflock timeout="30" name="#arguments.referenceObject##arguments.referenceObjectID##arguments.createNewFlag#">
+				<cfset var shortReferenceID = selectOrGenerateShortReferenceID(argumentcollection=arguments) />	
+			</cflock>
+			
+		<!--- We call the function in a serializable transaction so that a new one can be created one at a time if needed --->
+		<cfelse>
+			<cftransaction isolation="read_committed">
+				<cfset var shortReferenceID = selectOrGenerateShortReferenceID(argumentcollection=arguments) />
+			</cftransaction>
+		</cfif>
+		
+		<cfreturn shortReferenceID />
 	</cffunction>
 	
 	<cffunction name="recordUpdate" returntype="void">
@@ -57,6 +76,7 @@ Notes:
 		<cfargument name="idColumns" required="true" type="string" />
 		<cfargument name="updateData" required="true" type="struct" />
 		<cfargument name="insertData" required="true" type="struct" />
+		<cfargument name="updateOnlyFlag" required="true" type="boolean" />
 		
 		<cfset var keyList = structKeyList(arguments.updateData) />
 		<cfset var rs = "" />
@@ -81,7 +101,7 @@ Notes:
 					<cfif listLen(arguments.idColumns) gt i>AND </cfif>
 				</cfloop>
 		</cfquery>
-		<cfif !sqlResult.recordCount>
+		<cfif !sqlResult.recordCount and !arguments.updateOnlyFlag>
 			<cfset recordInsert(tableName=arguments.tableName, insertData=arguments.insertData) />
 		</cfif>
 	</cffunction>
@@ -150,6 +170,79 @@ Notes:
 		<cfset var filePath = expandPath('/Slatwall/custom/config/') & 'insertedData.txt.cfm' />
 		
 		<cffile action="append" file="#filePath#" output=",#arguments.idKey#" addnewline="false" />
+	</cffunction>
+	
+	
+	<!--- PRIVATE HELPER FUNCTIONS --->
+	
+	<cffunction name="selectOrGenerateShortReferenceID" returntype="any" access="private">
+		<cfargument name="referenceObjectID" type="string" required="true" />
+		<cfargument name="referenceObject" type="string" required="true" />
+		<cfargument name="createNewFlag" type="boolean" default="false" />
+		
+		<cfset var rs = "" />
+		<cfset var rsResult = "" />
+		
+		<cfquery name="rs">
+			SELECT
+				shortReferenceID
+			FROM
+				SwShortReference
+			WHERE
+				referenceObjectID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObjectID#" />
+			  AND
+				referenceObject = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObject#" />
+		</cfquery>
+		
+		<!--- If the ID Was found --->
+		<cfif rs.recordCount>
+			<cfreturn rs.shortReferenceID />
+			
+		<!--- If no record found but create new is set to yes --->
+		<cfelseif arguments.createNewFlag>
+			
+			<cfset var newShortReferenceID = 1 />
+			
+			<!--- If we can't use cftransaction, then use a lock (this will breakdown on multi-server setup with high load) --->
+			<cfif getHibachiScope().getOrmHasErrors()>
+				
+				<cflock timeout="30" name="SlatwallShortReferenceAdd">
+					<cfset newShortReferenceID = generateShortReferenceID(argumentcollection=arguments) />	
+				</cflock>
+				
+			<!--- No Need for aditional transaction because we are already in one --->
+			<cfelse>
+			
+				<cfset newShortReferenceID = generateShortReferenceID(argumentcollection=arguments) />
+				
+			</cfif>
+			
+			<cfreturn newShortReferenceID />
+		</cfif>
+		
+		<cfreturn "" />
+	</cffunction>
+	
+	<cffunction name="generateShortReferenceID" returntype="any" access="private">
+		<cfargument name="referenceObjectID" type="string" required="true" />
+		<cfargument name="referenceObject" type="string" required="true" />
+		
+		<cfset var rs = "" />
+		<cfset var newShortReferenceID = 1 />
+			
+		<cfquery name="rs">
+			SELECT MAX(shortReferenceID) as shortReferenceID FROM SwShortReference
+		</cfquery>
+		
+		<cfif rs.shortReferenceID neq "" and isNumeric(rs.shortReferenceID)>
+			<cfset newShortReferenceID = rs.shortReferenceID + 1 />
+		</cfif>
+		
+		<cfquery name="rs">
+			INSERT INTO SwShortReference (shortReferenceID, referenceObjectID, referenceObject) VALUES (<cfqueryparam cfsqltype="cf_sql_integer" value="#newShortReferenceID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObjectID#" />, <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referenceObject#" />)
+		</cfquery>
+		
+		<cfreturn newShortReferenceID />
 	</cffunction>
 	
 </cfcomponent>

@@ -46,20 +46,23 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.promotion" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.promotion.getPromotionPeriodsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.promotion.getPromotionPeriodsSmartList()#"
 							   recordEditAction="admin:entity.editPromotionPeriod"
 							   recorddetailaction="admin:entity.detailpromotionperiod">
-		<cf_HibachiListingColumn propertyIdentifier="startDateTime" tdclass="primary" />
-		<cf_HibachiListingColumn propertyIdentifier="endDateTime" />
-		<cf_HibachiListingColumn propertyIdentifier="maximumUseCount" />
-		<cf_HibachiListingColumn propertyIdentifier="maximumAccountUseCount" />
-		<cf_HibachiListingColumn propertyIdentifier="currentFlag" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn propertyIdentifier="startDateTime" tdclass="primary" />
+		<hb:HibachiListingColumn propertyIdentifier="endDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="maximumUseCount" />
+		<hb:HibachiListingColumn propertyIdentifier="maximumAccountUseCount" />
+		<hb:HibachiListingColumn propertyIdentifier="currentFlag" />
+	</hb:HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createpromotionperiod" class="btn" icon="plus" queryString="redirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()#" modal="true"  />
+	<hb:HibachiActionCaller action="admin:entity.createpromotionperiod" class="btn btn-default" icon="plus" queryString="redirectAction=admin:entity.detailpromotion&promotionID=#rc.promotion.getPromotionID()#" modal="true"  />
 </cfoutput>
 

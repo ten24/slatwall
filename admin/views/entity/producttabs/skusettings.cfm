@@ -46,27 +46,31 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.product" type="any" />
 
-<cf_SlatwallSettingTable>
-	<cf_SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuCurrency" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuEligibleOrderOrigins" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuEligiblePaymentMethods" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuHoldBackQuantity" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuOrderMinimumQuantity" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuOrderMaximumQuantity" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuShippingWeight" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuShippingWeightUnitCode" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuTrackInventoryFlag" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuQATSIncludesQNROROFlag" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.product#" />
-	<cf_SlatwallSetting settingName="skuTaxCategory" settingObject="#rc.product#" />
+<swa:SlatwallSettingTable>
+	<swa:SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuCurrency" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuEligibleOrderOrigins" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuEligiblePaymentMethods" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuHoldBackQuantity" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuOrderMinimumQuantity" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuOrderMaximumQuantity" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuShippingWeight" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuShippingWeightUnitCode" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuTrackInventoryFlag" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuQATSIncludesQNROROFlag" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuQATSIncludesQNROVOFlag" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuQATSIncludesQNROSAFlag" settingObject="#rc.product#" />
+	<swa:SlatwallSetting settingName="skuTaxCategory" settingObject="#rc.product#" />
 	<cfif rc.product.getProductType().getBaseProductType() eq "merchandise">
 		<!--- Wrap this arround settings if you want to disable them for certain product types --->
 	</cfif>
-</cf_SlatwallSettingTable>
+</swa:SlatwallSettingTable>

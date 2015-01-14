@@ -1,8 +1,13 @@
 {
 	"conditions":{
-	    "creditCardWithoutToken": {
+		"creditCardWithoutToken": {
 		    "paymentMethodType":{"eq":"creditCard"},
 		    "providerToken":{"null":true}
+		},
+		"paymentTypeCreditCardNoTokenAndNew": {
+			"paymentMethodType":{"eq":"creditCard"},
+			"newFlag":{"eq":true},
+			"providerToken":{"null":true}
 		},
 	    "paymentTypeCreditCard":{
 	        "paymentMethodType":{"eq":"creditCard"}
@@ -22,7 +27,7 @@
 		"expirationYear":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
 		"nameOnCreditCard":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
 		"creditCardNumber":		[{"contexts":"save","conditions":"creditCardWithoutToken","required":true,"dataType":"creditCard"}],
-		"securityCode":			[{"contexts":"save","conditions":"creditCardWithoutToken","required":true}],
+		"securityCode":			[{"contexts":"save","conditions":"paymentTypeCreditCardNoTokenAndNew","required":true}],
 		"orderStatusCode":		[
 		    {"contexts":"createTransaction","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
 			{"contexts":"edit","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}

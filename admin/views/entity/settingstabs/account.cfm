@@ -46,12 +46,19 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="accountEligiblePaymentMethods" />
-		<cf_SlatwallSetting settingName="accountEligiblePaymentTerms" />
-		<cf_SlatwallSetting settingName="accountPaymentTerm" />
-		<cf_SlatwallSetting settingName="accountTermCreditLimit" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="accountEligiblePaymentMethods" />
+		<swa:SlatwallSetting settingName="accountEligiblePaymentTerms" />
+		<swa:SlatwallSetting settingName="accountPaymentTerm" />
+		<swa:SlatwallSetting settingName="accountTermCreditLimit" />
+		<swa:SlatwallSetting settingName="accountFailedAdminLoginAttemptCount" />
+		<swa:SlatwallSetting settingName="accountFailedPublicLoginAttemptCount" />
+		<swa:SlatwallSetting settingName="accountAdminForcePasswordResetAfterDays" />
+		<swa:SlatwallSetting settingName="accountLockMinutes" />
+	</swa:SlatwallSettingTable>
 </cfoutput>
 

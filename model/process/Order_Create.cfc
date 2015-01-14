@@ -66,13 +66,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="password";
 	property name="passwordConfirm";
 	property name="orderOriginID" hb_rbKey="entity.orderOrigin" hb_formFieldType="select";
+	property name="defaultStockLocationID" hb_rbKey="entity.order.defaultStockLocation" hb_formFieldType="select";
 	
 	// Cached Properties
 	property name="fulfillmentMethodIDOptions";
 	
 	public string function getOrderTypeID() {
 		if(!structKeyExists(variables, "orderTypeID")) {
-			variables.orderTypeID = getService("settingService").getTypeBySystemCode("otSalesOrder").getTypeID();
+			variables.orderTypeID = getService("typeService").getTypeBySystemCode("otSalesOrder").getTypeID();
 		}
 		return variables.orderTypeID;
 	}
@@ -89,6 +90,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return getOrder().getOrderOriginOptions();
 	}
 	
+	public array function getDefaultStockLocationIDOptions() {
+		return getOrder().getDefaultStockLocationOptions();
+	}
+
 	public boolean function getNewAccountFlag() {
 		if(!structKeyExists(variables, "newAccountFlag")) {
 			variables.newAccountFlag = 1;

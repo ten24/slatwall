@@ -62,10 +62,11 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 	
 	public struct function getSettings() {
 		var settings = {
-			loginID = {fieldType="text", displayName="Login ID"},
-			transKey = {fieldType="text", displayName="Transaction Key"},
-			testModeFlag = {fieldType="yesno", displayName="Test Mode", defaultValue="1"},
-			testServerFlag = {fieldType="yesno", displayName="Use Test Server", hint="This should be set to YES if your authorize.net account is a test account at http://sandbox.authorize.net", defaultValue="0"}
+			duplicateWindow = {fieldType="text", defaultValue=600, validate={dataType="numeric", minValue=0, required=true}},
+			loginID = {fieldType="text"},
+			transKey = {fieldType="text"},
+			testModeFlag = {fieldType="yesno", defaultValue="1"},
+			testServerFlag = {fieldType="yesno", defaultValue="0"}
 		};
 		
 		return settings;

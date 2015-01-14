@@ -46,6 +46,9 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.sku" type="any" />
 <cfparam name="rc.edit" type="any" />
 
@@ -56,5 +59,5 @@ Notes:
 	<cfset det = rc.$.slatwall.getService('priceGroupService').getBestPriceGroupDetailsBasedOnSkuAndAccount(rc.sku, rc.$.slatwall.getAccount()) />
 	<cfdump var="#det#" top="3" />
 
-	<cf_HibachiPropertyDisplay object="#rc.sku#" property="priceGroupRates" edit="#rc.edit#" displayType="plain" />
+	<hb:HibachiPropertyDisplay object="#rc.sku#" property="priceGroupRates" edit="#rc.edit#" displayType="plain" />
 --->

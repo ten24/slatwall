@@ -67,11 +67,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties (Related Entity Populate)
 	
 	// Data Properties (Object / Array Populate)
-	
+	property name="attributeValuesByCodeStruct";
 	// Option Properties
 	property name="accountPaymentMethodIDOptions";
 	property name="paymentMethodIDOptions";
 	property name="accountAddressIDOptions";
+	property name="paymentTermIDOptions";
 	
 	// Helper Properties
 	
@@ -153,6 +154,37 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			}
 		}
 		return variables.paymentMethodIDOptions;
+	}
+	
+	public array function getPaymentTermIDOptions() {
+		if(!structKeyExists(variables, "paymentTermIDOptions")) {
+			variables.paymentTermIDOptions = [];
+		
+			var paymentTermSmartList = getService("PaymentService").getPaymentTermSmartList();
+			paymentTermSmartList.addFilter("activeFlag", 1);
+			
+			if(!isNull(getOrder().getAccount()) && len(getOrder().getAccount().setting('accountEligiblePaymentTerms'))) {
+				paymentTermSmartList.addInFilter("paymentTermID", getOrder().getAccount().setting('accountEligiblePaymentTerms'));
+			} 
+			if(!isNull(getOrder().getAccount()) && !len(getOrder().getAccount().setting('accountEligiblePaymentTerms'))) {
+				var paymentTermsArray = [];
+			} else {
+				var paymentTermsArray = paymentTermSmartList.getRecords();
+			}
+			
+			arrayAppend(variables.paymentTermIDOptions, {
+				name = rbKey('define.select'),
+				value = ''
+			});
+				
+			for (var paymentTerm in paymentTermsArray) {
+				arrayAppend(variables.paymentTermIDOptions, {
+					name = paymentTerm.getPaymentTermName(),
+					value = paymentTerm.getPaymentTermID()
+				});
+			}
+		}
+		return variables.paymentTermIDOptions;
 	}
 	
 	// ======================  END: Data Options ===========================

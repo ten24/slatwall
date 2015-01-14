@@ -1,6 +1,7 @@
 <cfcomponent output="false" accessors="true" extends="HibachiObject">
 	
 	<cfproperty name="applicationKey" type="string" />
+	<cfproperty name="hibachiAuditService" type="any" />
 	
 	<cfscript>
 		public any function get( required string entityName, required any idOrFilter, boolean isReturnNewOnNotFound = false ) {
@@ -16,7 +17,6 @@
 			}
 			
 			if ( !isNull( entity ) ) {
-				entity.updateCalculatedProperties();
 				return entity;
 			}
 	
@@ -72,6 +72,10 @@
 					delete(object);
 				}
 			} else {
+				// Log audit only if admin user
+				if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+					getHibachiAuditService().logEntityDelete(target);
+				}
 				entityDelete(target);	
 			}
 		}
@@ -90,7 +94,14 @@
 	    }
 	    
 	    public void function flushORMSession() {
+	    	// Initate the first flush
 	    	ormFlush();
+	    	
+	    	// Loop over the modifiedEntities to call updateCalculatedProperties
+	    	for(var entity in getHibachiScope().getModifiedEntities()){
+	    		entity.updateCalculatedProperties();
+	    	}
+	    	
 	    	// flush again to persist any changes done during ORM Event handler
 			ormFlush();
 	    }
@@ -118,7 +129,16 @@
 			return exportQry;
 		}
 		
-		
+		public void function reencryptData(numeric batchSizeLimit=0) {
+		}
+
+		public any function getAccountByAuthToken(required string authToken) {
+			var account = ormExecuteQuery("SELECT acc FROM SlatwallAccountAuthentication accauth INNER JOIN accauth.account acc WHERE (accauth.expirationDateTime is null or accauth.expirationDateTime > :now) and accauth.authToken is not null and accauth.authToken = :authToken", {now=now(), authToken=arguments.authToken}, true);
+			if(isNull(account)) {
+				return entityNew("SlatwallAccount");
+			}
+			return account;
+		}
 		
 		// ===================== START: Private Helper Methods ===========================
 		

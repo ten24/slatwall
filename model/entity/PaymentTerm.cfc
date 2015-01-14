@@ -55,9 +55,11 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="SwP
 	property name="sortOrder" ormtype="integer";
 	
 	// Related Object Properties (many-to-one)
-	property name="term" cfc="Term" fieldtype="many-to-one" fkcolumn="termID";
+	property name="term" cfc="Term" fieldtype="many-to-one" fkcolumn="termID";	
 	
 	// Related Object Properties (one-to-many)
+	property name="orderPayments" hb_populateEnabled="false" singularname="orderPayment" fieldType="one-to-many" type="array" fkColumn="paymentTermID" cfc="OrderPayment" inverse="true" orderby="createdDateTime desc";
+	property name="accountPaymentMethods" hb_populateEnabled="false" singularname="accountPaymentMethod" fieldType="one-to-many" type="array" fkColumn="paymentTermID" cfc="AccountPaymentMethod" inverse="true" orderby="createdDateTime desc";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -68,9 +70,9 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="SwP
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	
@@ -79,7 +81,22 @@ component displayname="Payment Term" entityname="SlatwallPaymentTerm" table="SwP
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
-
+	
+	// Order Payment (one-to-many)    
+	public void function addOrderPayment(required any orderPayment) {    
+		arguments.orderPayment.setPaymentTerm( this );    
+	}    
+	public void function removeOrderPayment(required any orderPayment) {    
+		arguments.orderPayment.removePaymentTerm( this );    
+	}
+	
+	public void function addAccountPaymentMethod(required any accountPaymentMethod) {    
+		arguments.accountPaymentMethod.setPaymentTerm( this );
+	}    
+	public void function removeAccountPaymentMethod(required any accountPaymentMethod) {    
+		arguments.accountPaymentMethod.removePaymentTerm( this );
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================

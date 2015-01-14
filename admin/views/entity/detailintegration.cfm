@@ -46,36 +46,22 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.integration" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.integration#" edit="#rc.edit#">
+	<hb:HibachiEntityDetailForm object="#rc.integration#" edit="#rc.edit#">
 		
-		<cf_HibachiEntityActionBar type="detail" object="#rc.integration#" showDelete="false" />
+		<hb:HibachiEntityActionBar type="detail" object="#rc.integration#" showDelete="false" />
+
+		<hb:HibachiEntityDetailGroup object="#rc.integration#">
+			<hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/settings" />
+		</hb:HibachiEntityDetailGroup>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.integration#" property="integrationPackage" edit="false">
-				<cfif rc.integration.getAuthenticationReadyFlag()>
-					<cf_HibachiPropertyDisplay object="#rc.integration#" property="authenticationActiveFlag" edit="#rc.edit#" />
-				</cfif>
-				<cfif rc.integration.getFW1ReadyFlag()>
-					<cf_HibachiPropertyDisplay object="#rc.integration#" property="fw1ActiveFlag" edit="#rc.edit#" />
-				</cfif>
-				<cfif rc.integration.getShippingReadyFlag()>
-					<cf_HibachiPropertyDisplay object="#rc.integration#" property="shippingActiveFlag" edit="#rc.edit#" />
-				</cfif>
-				<cfif rc.integration.getPaymentReadyFlag()>
-					<cf_HibachiPropertyDisplay object="#rc.integration#" property="paymentActiveFlag" edit="#rc.edit#" />
-				</cfif>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.integration#">
-			<cf_HibachiTab view="admin:entity/integrationtabs/settings" />
-			<!--- <cf_HibachiTab view="admin:entity/integrationtabs/paymenttest" /> --->
-		</cf_HibachiTabGroup>
-		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

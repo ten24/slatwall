@@ -46,22 +46,26 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.contentSmartList" type="any" />
 
 <cfoutput>
-	
-<cf_HibachiEntityActionBar type="listing" object="#rc.contentSmartList#" showCreate="false" />
 
-<cf_HibachiListingDisplay smartList="#rc.contentSmartList#"
+<hb:HibachiEntityActionBar type="listing" object="#rc.contentSmartList#" showCreate="false" />
+
+<hb:HibachiListingDisplay smartList="#rc.contentSmartList#"
 						   recordDetailAction="admin:entity.detailcontent"
 						   recordEditAction="admin:entity.editcontent">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="title" />
-	<cf_HibachiListingColumn propertyIdentifier="site.siteName" />
-	<cf_HibachiListingColumn propertyIdentifier="contentTemplateType.type" />
-	<cf_HibachiListingColumn propertyIdentifier="allowPurchaseFlag" />
-	<cf_HibachiListingColumn propertyIdentifier="productListingPageFlag" />
-	<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="title" />
+	<hb:HibachiListingColumn propertyIdentifier="site.siteName" />
+	<hb:HibachiListingColumn propertyIdentifier="contentTemplateType.typeName" />
+	<hb:HibachiListingColumn propertyIdentifier="allowPurchaseFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="productListingPageFlag" />
+	<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+</hb:HibachiListingDisplay>
 
 </cfoutput>
 

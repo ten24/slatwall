@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Task" entityname="SlatwallTask" table="SwTask" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="taskService" hb_permission="this" {
+component displayname="Task" entityname="SlatwallTask" table="SwTask" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="taskService" hb_permission="this" hb_processContext="customURL,subscriptionUsageRenew,subscriptionUsageRenewalReminder,updateCalculatedProperties" {
 	
 	// Persistent Properties
 	property name="taskID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -56,7 +56,7 @@ component displayname="Task" entityname="SlatwallTask" table="SwTask" persistent
 	property name="taskUrl" ormtype="string";
 	property name="taskConfig" ormtype="string" length="4000";
 	property name="runningFlag" ormtype="boolean" hb_formatType="yesno";
-	property name="timeout" ormtype="int" ;
+	property name="timeout" ormtype="integer" ;
 
 	// Related Object Properties (many-to-one)
 	
@@ -71,9 +71,9 @@ component displayname="Task" entityname="SlatwallTask" table="SwTask" persistent
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="taskMethodOptions" persistent="false";
@@ -83,10 +83,12 @@ component displayname="Task" entityname="SlatwallTask" table="SwTask" persistent
 	
 	public array function getTaskMethodOptions() {
 		return [
+			{name=rbKey('define.select'), value=""},
 			{name="#rbKey('entity.task.taskMethod.customURL')#", value="customURL"},
 			{name="#rbKey('entity.task.taskMethod.subscriptionUsageRenew')#", value="subscriptionUsageRenew"},
 			{name="#rbKey('entity.task.taskMethod.subscriptionUsageRenewalReminder')#", value="subscriptionUsageRenewalReminder"},
-			{name="#rbKey('entity.task.taskMethod.updateCalculatedProperties')#", value="updateCalculatedProperties"}
+			{name="#rbKey('entity.task.taskMethod.updateCalculatedProperties')#", value="updateCalculatedProperties"},
+			{name="#rbKey('entity.task.taskMethod.updateEventWaitlists')#", value="updateEventWaitlists"}
 		];
 	}
 	

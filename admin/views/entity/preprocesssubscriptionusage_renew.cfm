@@ -46,53 +46,57 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.subscriptionUsage" type="any" />
 <cfparam name="rc.processObject" type="any" />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.subscriptionUsage#" edit="#rc.edit#" sRedirectAction="admin:entity.detailSubscriptionUsage">
+	<hb:HibachiEntityProcessForm entity="#rc.subscriptionUsage#" edit="#rc.edit#" sRedirectAction="admin:entity.detailSubscriptionUsage" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.subscriptionUsage#">
-		</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.subscriptionUsage#">
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 				<!--- Extend or Prorate --->
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="renewalStartType" edit="true" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalStartType" edit="true" />
 				
 				<!--- Extend Details --->
-				<cf_HibachiDisplayToggle selector="select[name='renewalStartType']" showValues="extend" loadVisable="#rc.processObject.getRenewalStartType() eq 'extend'#">
-					<cf_HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="renewalPrice" edit="false" />
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="extendExpirationDate" edit="false" />
-				</cf_HibachiDisplayToggle>
+				<hb:HibachiDisplayToggle selector="select[name='renewalStartType']" showValues="extend" loadVisable="#rc.processObject.getRenewalStartType() eq 'extend'#">
+					<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage#" property="renewalPrice" edit="false" />
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="extendExpirationDate" edit="false" />
+				</hb:HibachiDisplayToggle>
 				
 				<!--- Prorate Details --->
-				<cf_HibachiDisplayToggle selector="select[name='renewalStartType']" showValues="prorate" loadVisable="#rc.processObject.getRenewalStartType() eq 'prorate'#">
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="proratedPrice" edit="false" />
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="prorateExpirationDate" edit="false" />
-				</cf_HibachiDisplayToggle>
+				<hb:HibachiDisplayToggle selector="select[name='renewalStartType']" showValues="prorate" loadVisable="#rc.processObject.getRenewalStartType() eq 'prorate'#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="proratedPrice" edit="false" />
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="prorateExpirationDate" edit="false" />
+				</hb:HibachiDisplayToggle>
 				
 				<hr />
 				
-				<cf_HibachiPropertyDisplay object="#rc.processObject#" property="renewalPaymentType" edit="true" />
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="renewalPaymentType" edit="true" />
 				
 				<!--- Copy Account Payment Method --->
-				<cf_HibachiDisplayToggle selector="select[name='renewalPaymentType']" showValues="accountPaymentMethod" loadVisable="#rc.processObject.getRenewalPaymentType() eq 'accountPaymentMethod'#">
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="accountPaymentMethod" edit="true" />	
-				</cf_HibachiDisplayToggle>
+				<hb:HibachiDisplayToggle selector="select[name='renewalPaymentType']" showValues="accountPaymentMethod" loadVisable="#rc.processObject.getRenewalPaymentType() eq 'accountPaymentMethod'#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountPaymentMethod" edit="true" />	
+				</hb:HibachiDisplayToggle>
 				
 				<!--- Copy Order Payment --->
-				<cf_HibachiDisplayToggle selector="select[name='renewalPaymentType']" showValues="orderPayment" loadVisable="#rc.processObject.getRenewalPaymentType() eq 'orderPayment'#">
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="orderPayment" edit="true" />
-				</cf_HibachiDisplayToggle>
+				<hb:HibachiDisplayToggle selector="select[name='renewalPaymentType']" showValues="orderPayment" loadVisable="#rc.processObject.getRenewalPaymentType() eq 'orderPayment'#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderPayment" edit="true" />
+				</hb:HibachiDisplayToggle>
 				
 				<!--- New Order Payment --->
-				<cf_HibachiDisplayToggle selector="select[name='renewalPaymentType']" showValues="new" loadVisable="#rc.processObject.getRenewalPaymentType() eq 'new'#">
+				<hb:HibachiDisplayToggle selector="select[name='renewalPaymentType']" showValues="new" loadVisable="#rc.processObject.getRenewalPaymentType() eq 'new'#">
 					
 					<input type="hidden" name="newOrderPayment.orderPaymentID" value="" />
 		
 					<!--- New Payment Type --->
-					<cf_HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" property="paymentMethod" fieldName="newOrderPayment.paymentMethod.paymentMethodID" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" property="paymentMethod" fieldName="newOrderPayment.paymentMethod.paymentMethodID" edit="#rc.edit#">
 					
 					<cfset loadPaymentMethodType = rc.processObject.getNewOrderPayment().getPaymentMethodOptions()[1]['paymentmethodtype'] />
 					<cfif !isNull(rc.processObject.getNewOrderPayment().getPaymentMethod())>
@@ -100,64 +104,64 @@ Notes:
 					</cfif>
 					
 					<!--- Credit Card Payment Details --->
-					<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard" loadVisable="#loadPaymentMethodType eq 'creditCard'#">
+					<hb:HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard" loadVisable="#loadPaymentMethodType eq 'creditCard'#">
 						<h5>#$.slatwall.rbKey('admin.define.creditCardDetails')#</h5>
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.creditCardNumber" property="creditCardNumber" edit="#rc.edit#">
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.nameOnCreditCard" property="nameOnCreditCard" edit="#rc.edit#">
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.expirationMonth" property="expirationMonth" edit="#rc.edit#">
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.expirationYear" property="expirationYear" edit="#rc.edit#">
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.securityCode" property="securityCode" edit="#rc.edit#">
-					</cf_HibachiDisplayToggle>
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.creditCardNumber" property="creditCardNumber" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.nameOnCreditCard" property="nameOnCreditCard" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.expirationMonth" property="expirationMonth" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.expirationYear" property="expirationYear" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.securityCode" property="securityCode" edit="#rc.edit#">
+					</hb:HibachiDisplayToggle>
 					
 					<!--- Term Payment Details --->
-					<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="termPayment" loadVisable="#loadPaymentMethodType eq 'termPayment'#">
+					<hb:HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="termPayment" loadVisable="#loadPaymentMethodType eq 'termPayment'#">
 						<h5>#$.slatwall.rbKey('admin.define.termPaymentDetails')#</h5>
-						<cf_HibachiPropertyDisplay object="#rc.subscriptionUsage.getAccount()#" property="termAccountBalance" edit="false">
-						<cf_HibachiPropertyDisplay object="#rc.subscriptionUsage.getAccount()#" property="termAccountAvailableCredit" edit="false">
-					</cf_HibachiDisplayToggle>
+						<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage.getAccount()#" property="termAccountBalance" edit="false">
+						<hb:HibachiPropertyDisplay object="#rc.subscriptionUsage.getAccount()#" property="termAccountAvailableCredit" edit="false">
+					</hb:HibachiDisplayToggle>
 					
 					<!--- Gift Card Details --->
-					<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="giftCard" loadVisable="#loadPaymentMethodType eq 'giftCard'#">
+					<hb:HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="giftCard" loadVisable="#loadPaymentMethodType eq 'giftCard'#">
 						<h5>#$.slatwall.rbKey('admin.define.giftCardDetails')#</h5>
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.giftCardNumber" property="giftCardNumber" edit="#rc.edit#">
-					</cf_HibachiDisplayToggle>
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.giftCardNumber" property="giftCardNumber" edit="#rc.edit#">
+					</hb:HibachiDisplayToggle>
 					
 					<!--- Check Details --->
-					<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="check" loadVisable="#loadPaymentMethodType eq 'check'#">
+					<hb:HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="check" loadVisable="#loadPaymentMethodType eq 'check'#">
 						<h5>#$.slatwall.rbKey('admin.define.checkDetails')#</h5>
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.checkNumber" property="checkNumber" edit="#rc.edit#">
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.bankRoutingNumber" property="bankRoutingNumber" edit="#rc.edit#">
-						<cf_HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.bankAccountNumber" property="bankAccountNumber" edit="#rc.edit#">
-					</cf_HibachiDisplayToggle>
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.checkNumber" property="checkNumber" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.bankRoutingNumber" property="bankRoutingNumber" edit="#rc.edit#">
+						<hb:HibachiPropertyDisplay object="#rc.processObject.getNewOrderPayment()#" fieldName="newOrderPayment.bankAccountNumber" property="bankAccountNumber" edit="#rc.edit#">
+					</hb:HibachiDisplayToggle>
 					
 					<!--- Billing Address --->
-					<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,check,termPayment" loadVisable="#listFindNoCase('creditCard,check,termPayment', loadPaymentMethodType)#">
+					<hb:HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,check,termPayment" loadVisable="#listFindNoCase('creditCard,check,termPayment', loadPaymentMethodType)#">
 						<h5>#$.slatwall.rbKey('entity.orderPayment.billingAddress')#</h5>
-						<cf_SlatwallAdminAddressDisplay address="#rc.processObject.getNewOrderPayment().getBillingAddress()#" filedNamePrefix="newOrderPayment.billingAddresss." edit="#rc.edit#" />
-					</cf_HibachiDisplayToggle>
+						<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getNewOrderPayment().getBillingAddress()#" filedNamePrefix="newOrderPayment.billingAddresss." edit="#rc.edit#" />
+					</hb:HibachiDisplayToggle>
 					
 					<!--- Save Order Payment as Account Payment Method --->
 					<cfset loadVisable = rc.processObject.getNewOrderPayment().getPaymentMethodOptions()[1]['allowsave'] />
 					<cfif !isNull(rc.processObject.getNewOrderPayment().getPaymentMethod())>
 						<cfset loadVisable = rc.processObject.getNewOrderPayment().getPaymentMethod().getAllowSaveFlag() />
 					</cfif>
-					<cf_HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="allowsave" showValues="YES" loadVisable="#loadVisable#">
+					<hb:HibachiDisplayToggle selector="select[name='newOrderPayment.paymentMethod.paymentMethodID']" valueAttribute="allowsave" showValues="YES" loadVisable="#loadVisable#">
 						
 						<hr />
 						
 						<!--- Save New Payment Method --->
-						<cf_HibachiPropertyDisplay object="#rc.processObject#" property="saveAccountPaymentMethodFlag" edit="#rc.edit#" />
+						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveAccountPaymentMethodFlag" edit="#rc.edit#" />
 						
 						<!--- Save New Address Name --->
-						<cf_HibachiDisplayToggle selector="input[name='saveAccountPaymentMethodFlag']" loadVisable="#rc.processObject.getValueByPropertyIdentifier('saveAccountPaymentMethodFlag')#">
-							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="saveAccountPaymentMethodName" edit="#rc.edit#" />
-							<cf_HibachiPropertyDisplay object="#rc.processObject#" property="updateSubscriptionUsageAccountPaymentMethodFlag" edit="#rc.edit#" />
-						</cf_HibachiDisplayToggle>
-					</cf_HibachiDisplayToggle>
-				</cf_HibachiDisplayToggle>
+						<hb:HibachiDisplayToggle selector="input[name='saveAccountPaymentMethodFlag']" loadVisable="#rc.processObject.getValueByPropertyIdentifier('saveAccountPaymentMethodFlag')#">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveAccountPaymentMethodName" edit="#rc.edit#" />
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="updateSubscriptionUsageAccountPaymentMethodFlag" edit="#rc.edit#" />
+						</hb:HibachiDisplayToggle>
+					</hb:HibachiDisplayToggle>
+				</hb:HibachiDisplayToggle>
 						
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

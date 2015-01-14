@@ -1,8 +1,9 @@
-<cfcomponent accessors="true" extends="HibachiObject">
+<cfcomponent accessors="true" output="false" extends="HibachiObject">
 	
 	<!--- Import all of the Hibachi services and DAO's --->
 	<cfproperty name="hibachiDAO" type="any">
 	<cfproperty name="hibachiAuthenticationService" type="any">
+	<cfproperty name="hibachiCacheService" type="any">
 	<cfproperty name="hibachiEventService" type="any">
 	<cfproperty name="hibachiRBService" type="any">
 	<cfproperty name="hibachiSessionService" type="any">
@@ -28,7 +29,15 @@
 			
 			if(structKeyExists(arguments.data, "keyword") || structKeyExists(arguments.data, "keywords")) {
 				var example = this.new(arguments.entityName);
-				smartList.addKeywordProperty(propertyIdentifier=example.getSimpleRepresentationPropertyName(), weight=1);
+				var simpleRepresentationPropertyName = example.getSimpleRepresentationPropertyName();
+				var primaryIDPropertyName = example.getPrimaryIDPropertyName();
+				var pmd = example.getPropertyMetaData( primaryIDPropertyName );
+				if(!structKeyExists(pmd, "ormtype") || pmd.ormtype != 'integer') {
+					smartList.addKeywordProperty(propertyIdentifier=primaryIDPropertyName, weight=1);	
+				}
+				if(simpleRepresentationPropertyName != primaryIDPropertyName) {
+					smartList.addKeywordProperty(propertyIdentifier=simpleRepresentationPropertyName, weight=1);	
+				}
 			}
 			
 			return smartList;
@@ -47,6 +56,9 @@
 		}
 		
 		public boolean function delete(required any entity){
+			
+			// Add the entity by it's name to the arguments for calling events
+	    	arguments[ lcase(arguments.entity.getClassName()) ] = arguments.entity;
 			
 			// Announce Before Event
 			getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Delete", arguments);
@@ -103,6 +115,10 @@
 				if(!invokeArguments[ "processObject" ].getPopulatedFlag()) {
 					invokeArguments[ "processObject" ].populate( arguments.data );
 					invokeArguments[ "processObject" ].setPopulatedFlag( true );
+					if(structKeyExists(arguments.data, arguments.entity.getClassName()) && isStruct(arguments.data[arguments.entity.getClassName()])) {
+						arguments.entity.populate(arguments.data[arguments.entity.getClassName()]);
+						invokeArguments[ "processObject" ].addPopulatedSubProperty( arguments.entity.getClassName(), arguments.entity );
+					}
 				}
 				
 				invokeArguments[ "processObject" ].validate( context=arguments.processContext );
@@ -125,7 +141,7 @@
 			} else {
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_#arguments.processContext#Success", invokeArguments);
 			}
-
+			
 			return arguments.entity;
 		}
 		
@@ -135,6 +151,9 @@
 	    	if(!isObject(arguments.entity) || !arguments.entity.isPersistent()) {
 	    		throw("The entity being passed to this service is not a persistent entity. READ THIS!!!! -> Make sure that you aren't calling the oMM method with named arguments. Also, make sure to check the spelling of your 'fieldname' attributes.");
 	    	}
+	    	
+	    	// Add the entity by it's name to the arguments for calling events
+	    	arguments[ lcase(arguments.entity.getClassName()) ] = arguments.entity;
 	    	
 	    	// Announce Before Event
 	    	getHibachiEventService().announceEvent("before#arguments.entity.getClassName()#Save", arguments);
@@ -153,13 +172,13 @@
 	        // If the object passed validation then call save in the DAO, otherwise set the errors flag
 	        if(!arguments.entity.hasErrors()) {
 	            arguments.entity = getHibachiDAO().save(target=arguments.entity);
-	            
-	            // Announce After Events for Success
+        
+                // Announce After Events for Success
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveSuccess", arguments);
-	        } else {
-	            
-	            // Announce After Events for Failure
+		    } else {
+            
+                // Announce After Events for Failure
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Save", arguments);
 				getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#SaveFailure", arguments);
 	        }
@@ -277,7 +296,7 @@
 				return onMissingProcessMethod( missingMethodName, missingMethodArguments );
 			}
 
-			throw('You have called a method #arguments.missingMethodName#() which does not exists in the #getClassName()# entity.');
+			throw('You have called a method #arguments.missingMethodName#() which does not exists in the #getClassName()# service.');
 		}
 		
 	
@@ -623,7 +642,7 @@
 				return "";
 			}
 			
-			throw("The entity name that you have requested: #arguments.entityname# is not in the ORM Library of entity names that is setup in coldsrping.  Please add #arguments.entityname# to the list of entity mappings in coldspring.");
+			throw("The entity name that you have requested: '#arguments.entityname#' is not configured in ORM.");
 		}
 		
 		public string function getProperlyCasedFullEntityName( required string entityName ) {
@@ -640,17 +659,19 @@
 		
 		public any function getEntitiesMetaData() {
 			if(!structCount(variables.entitiesMetaData)) {
-				var entityDirectoryArray = directoryList(expandPath('/#getApplicationValue('applicationKey')#/model/entity'));
-				for(var e=1; e<=arrayLen(entityDirectoryArray); e++) {
-					if(listLast(entityDirectoryArray[e], '.') eq 'cfc') {
-						var entityShortName = listFirst(listLast(replace(entityDirectoryArray[e], '\', '/', 'all'), '/'), '.');
-						var entityMetaData = createObject('component', '#getApplicationValue('applicationKey')#.model.entity.#entityShortName#').getThisMetaData();
-						
-						if(structKeyExists(entityMetaData, "persistent") && entityMetaData.persistent) {
-							 variables.entitiesMetaData[ entityShortName ] = entityMetaData;
+				var entityNamesArr = listToArray(structKeyList(ORMGetSessionFactory().getAllClassMetadata()));
+				var allMD = {};
+				for(var entityName in entityNamesArr) {
+					var entity = entityNew(entityName);
+					if(structKeyExists(entity, "getThisMetaData")) {
+						var entityMetaData = entityNew(entityName).getThisMetaData();
+						if(isStruct(entityMetaData) && structKeyExists(entityMetaData, "fullname")) {
+							var entityShortName = listLast(entityMetaData.fullname, '.');
+							allMD[ entityShortName ] = entityMetaData;
 						}
 					}
 				}
+				variables.entitiesMetaData = allMD;
 			}
 			
 			return variables.entitiesMetaData;
@@ -662,9 +683,7 @@
 		
 		// @hint returns the entity meta data object that is used by a lot of the helper methods below
 		public any function getEntityORMMetaDataObject( required string entityName ) {
-			
 			arguments.entityName = getProperlyCasedFullEntityName( arguments.entityName );
-			
 			if(!structKeyExists(variables.entityORMMetaDataObjects, arguments.entityName)) {
 				variables.entityORMMetaDataObjects[ arguments.entityName ] = ormGetSessionFactory().getClassMetadata( arguments.entityName );
 			}
@@ -754,7 +773,7 @@
 		// @hint leverages the getEntityHasPropertyByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 		public boolean function getHasPropertyByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
 			try {
-				return getEntityHasPropertyByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), propertyName=listLast(arguments.propertyIdentifier, "._") );	
+				return getEntityHasPropertyByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), propertyName=listLast(arguments.propertyIdentifier, ".") );	
 			} catch(any e) {
 				return false;	
 			}
@@ -762,12 +781,12 @@
 		
 		// @hint traverses a propertyIdentifier to find the last entityName in the list... this is then used by the hasProperty and hasAttribute methods()
 		public string function getLastEntityNameInPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
-			if(listLen(arguments.propertyIdentifier, "._") gt 1) {
+			if(listLen(arguments.propertyIdentifier, ".") gt 1) {
 				var propertiesSruct = getPropertiesStructByEntityName( arguments.entityName );
-				if( !structKeyExists(propertiesSruct, listFirst(arguments.propertyIdentifier, "._")) || !structKeyExists(propertiesSruct[listFirst(arguments.propertyIdentifier, "._")], "cfc") ) {
+				if( !structKeyExists(propertiesSruct, listFirst(arguments.propertyIdentifier, ".")) || !structKeyExists(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")], "cfc") ) {
 					throw("The Property Identifier #arguments.propertyIdentifier# is invalid for the entity #arguments.entityName#");
 				}
-				return getLastEntityNameInPropertyIdentifier( entityName=listLast(propertiesSruct[listFirst(arguments.propertyIdentifier, "._")].cfc, "."), propertyIdentifier=right(arguments.propertyIdentifier, len(arguments.propertyIdentifier)-(len(listFirst(arguments.propertyIdentifier, "._"))+1)));	
+				return getLastEntityNameInPropertyIdentifier( entityName=listLast(propertiesSruct[listFirst(arguments.propertyIdentifier, ".")].cfc, "."), propertyIdentifier=right(arguments.propertyIdentifier, len(arguments.propertyIdentifier)-(len(listFirst(arguments.propertyIdentifier, "._"))+1)));	
 			}
 			
 			return arguments.entityName;
@@ -783,6 +802,21 @@
 			arguments.tableName = entityMetaData.table;
 			getHibachiDAO().updateRecordSortOrder(argumentcollection=arguments);
 		}
+		
+		// @hint leverages the getEntityHasAttributeByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
+		public boolean function getHasAttributeByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
+			return getEntityHasAttributeByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), attributeCode=listLast(arguments.propertyIdentifier, "._") );
+		}
+		
+		// @hint returns true or false based on an entityName, and checks if that entity has an extended attribute with that attributeCode
+		public boolean function getEntityHasAttributeByEntityName( required string entityName, required string attributeCode ) {
+			var attributeCodesList = getHibachiCacheService().getOrCacheFunctionValue("attributeService_getAttributeCodesListByAttributeSetType_ast#getProperlyCasedShortEntityName(arguments.entityName)#", "attributeService", "getAttributeCodesListByAttributeSetType", {1="ast#getProperlyCasedShortEntityName(arguments.entityName)#"});
+			if(listFindNoCase(attributeCodesList, arguments.attributeCode)) {
+				return true;
+			}
+			
+			return false; 
+		}		
 		
 	</cfscript>
 </cfcomponent>

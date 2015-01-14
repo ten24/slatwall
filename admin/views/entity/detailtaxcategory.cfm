@@ -46,23 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.taxCategory" type="any">
 <cfparam name="rc.edit" type="boolean">
 
-<cf_HibachiEntityDetailForm object="#rc.taxCategory#" edit="#rc.edit#">
-	<cf_HibachiEntityActionBar type="detail" object="#rc.taxCategory#" edit="#rc.edit#">
-		<cf_HibachiActionCaller action="admin:entity.createtaxcategoryrate" queryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#" type="list" modal=true />
-	</cf_HibachiEntityActionBar>
+<hb:HibachiEntityDetailForm object="#rc.taxCategory#" edit="#rc.edit#">
+	<hb:HibachiEntityActionBar type="detail" object="#rc.taxCategory#" edit="#rc.edit#">
+		<hb:HibachiActionCaller action="admin:entity.createtaxcategoryrate" queryString="taxCategoryID=#rc.taxCategory.getTaxCategoryID()#" type="list" modal=true />
+	</hb:HibachiEntityActionBar>
+
+	<hb:HibachiEntityDetailGroup object="#rc.taxCategory#">
+		<hb:HibachiEntityDetailItem view="admin:entity/taxcategorytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		<hb:HibachiEntityDetailItem view="admin:entity/taxcategorytabs/rates" />
+	</hb:HibachiEntityDetailGroup>
 	
-	<cf_HibachiPropertyRow>
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.taxCategory#" property="activeFlag" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.taxCategory#" property="taxCategoryName" edit="#rc.edit#">
-		</cf_HibachiPropertyList>
-	</cf_HibachiPropertyRow>
-	
-	<cf_HibachiTabGroup object="#rc.taxCategory#">
-		<cf_HibachiTab view="admin:entity/taxcategorytabs/rates" />
-	</cf_HibachiTabGroup>
-	
-</cf_HibachiEntityDetailForm>
+</hb:HibachiEntityDetailForm>

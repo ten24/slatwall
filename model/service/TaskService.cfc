@@ -50,6 +50,9 @@ component extends="HibachiService" output="false" accessors="true"{
 
 	property name="emailService" type="any";
 	property name="subscriptionService" type="any";
+	property name="skuService" type="any";
+	
+	property name="taskDAO" type="any";
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -123,7 +126,7 @@ component extends="HibachiService" output="false" accessors="true"{
 			threadData.taskData = deserializeJSON(arguments.task.getTaskConfig());
 		}
 		
-		thread action="run" name="taskThread" threadData="#threadData#" {
+		thread action="run" name="taskThread-#createUUID()#" threadData="#threadData#" {
 			
 			// Create a new taskHistory to be logged
 			var taskHistory = this.newTaskHistory();
@@ -131,8 +134,10 @@ component extends="HibachiService" output="false" accessors="true"{
 			// Get the task from the DB
 			var task = this.getTask(attributes.threadData.taskID);
 			
-			// Setup the task as running, and initial the taskHistory data
-			task.setRunningFlag( true );
+			// Setup the task as running
+			getTaskDAO().updateTaskRunning( taskID=attributes.threadData.taskID, runningFlag=true );
+			
+			// Initiate the taskHistory data
 			taskHistory.setTask( task );
 			taskHistory.setStartTime( now() );
 			
@@ -163,8 +168,10 @@ component extends="HibachiService" output="false" accessors="true"{
 				taskHistory.setResponse( e.Message );
 			}
 			
-			// Update the task, and set the end for history
-			task.setRunningFlag( false );
+			// Set the task as no longer running
+			getTaskDAO().updateTaskRunning( taskID=attributes.threadData.taskID, runningFlag=false );
+			
+			// Set the end for history
 			taskHistory.setEndTime( now() );
 			
 			// Persist the info to the DB
@@ -242,6 +249,18 @@ component extends="HibachiService" output="false" accessors="true"{
 			setupData["f:sku.activeFlag"] = 1;
 			setupData["f:sku.product.activeFlag"] = 1;
 			updateEntityCalculatedProperties("Stock", setupData);
+		}
+		
+		return arguments.task;
+	}
+	
+	// @hint Moves expired waitlisted registrants to end of waitlist and changes status of next in line to 'pending confirmation'
+	public any function processTask_updateEventWaitlists(required any task) {
+		var smartlist = getService("SkuService").getFutureWaitlistEventsSmartlist();
+		if(arraylen(smartlist.getRecords())) {
+			for(var event in smartlist.getRecords()) {
+				getService("SkuService").processSku(event, {}, 'notifyWaitlistOpenings');
+			}
 		}
 		
 		return arguments.task;

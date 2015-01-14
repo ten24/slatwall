@@ -46,39 +46,57 @@
 Notes:
 
 */
-component entityname="SlatwallType" table="SwType" persistent="true" accessors="true" output="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="settingService" hb_permission="this" hb_parentPropertyName="parentType" {
+component entityname="SlatwallType" table="SwType" persistent="true" accessors="true" output="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="typeService" hb_permission="this" hb_parentPropertyName="parentType" {
 	
 	// Persistent Properties
 	property name="typeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="typeIDPath" ormtype="string";
-	property name="type" ormtype="string";
-	property name="systemCode" ormtype="string";
+	property name="typeIDPath" ormtype="string" length="4000";
+	property name="typeName" ormtype="string";
+	property name="typeCode" ormtype="string";
+	property name="typeDescription" ormtype="string" length="4000";
+	property name="sortOrder" ormtype="integer" sortContext="parentType";
+	property name="systemCode" ormtype="string" index="PI_SYSTEMCODE";
+	property name="childRequiresSystemCodeFlag" ormtype="boolean";
 	
-	// Related Object Properties
+	// Calculated Properties
+
+	// Related Object Properties (many-to-one)
 	property name="parentType" cfc="Type" fieldtype="many-to-one" fkcolumn="parentTypeID";
+	
+	// Related Object Properties (one-to-many)
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="typeID" cascade="all-delete-orphan" inverse="true";
 	property name="childTypes" singularname="childType" type="array" cfc="Type" fieldtype="one-to-many" fkcolumn="parentTypeID" cascade="all" inverse="true";
 	
-	public any function getChildTypes() {
-		if(!isDefined('variables.childTypes')) {
-			variables.childTypes = arraynew(1);
+	// Related Object Properties (many-to-many - owner)
+
+	// Related Object Properties (many-to-many - inverse)
+	
+	// Remote Properties
+	property name="remoteID" hb_populateEnabled="false" ormtype="string";
+	
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+	
+	// Non-Persistent Properties
+	
+	// Deprecated Properties
+	property name="type" type="string" persistent="false";
+
+
+	// ==================== START: Logical Methods =========================
+	
+	public boolean function hasPeerTypeWithMatchingSystemCode() {
+		if(isNull(getSystemCode())) {
+			return true;
+		} else {
+			return getService('typeService').getSystemCodeTypeCount( getSystemCode() ) > 1;
 		}
-		return variables.childTypes;
 	}
 	
-	public any function getType() {
-		if(!structKeyExists(variables, "type")) {
-			variables.type = "";
-		}
-		return variables.type;
-	}
-	
-	// This overrides the build in system code getter to look up to the parent if a system code doesn't exist for this type.
-	public string function getSystemCode() {
-		if(isNull(variables.systemCode)) {
-			return getParentType().getSystemCode();
-		}
-		return variables.systemCode;
-	}
+	// ====================  END: Logical Methods ==========================
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -86,9 +104,25 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// =============  END:  Bidirectional Helper Methods ===================
+	// Attribute Values (one-to-many)    
+	public void function addAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.setType( this );    
+	}    
+	public void function removeAttributeValue(required any attributeValue) {    
+		arguments.attributeValue.removeType( this );    
+	}
 	
-	// ============== START: Overridden Implicet Getters ===================
+	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
+	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicit Getters ===================
 	
 	public string function getTypeIDPath() {
 		if(isNull(variables.typeIDPath)) {
@@ -97,14 +131,37 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 		return variables.typeIDPath;
 	}
 	
-	// ==============  END: Overridden Implicet Getters ====================
-		
-	// ================== START: Overridden Methods ========================
-
-	public string function getSimpleRepresentationPropertyName() {
-    	return "type";
-    }
+	// ==============  END: Overridden Implicit Getters ====================
 	
+	// ============= START: Overridden Smart List Getters ==================
+	
+	// =============  END: Overridden Smart List Getters ===================
+
+	// ================== START: Overridden Methods ========================
+	
+	public any function getAssignedAttributeSetSmartList(){
+		if(!structKeyExists(variables, "assignedAttributeSetSmartList")) {
+			
+			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
+			
+			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
+			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', 'Type');
+			
+			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "types", "left");
+			
+			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
+			
+			var wc = "(";
+			wc &= " aslatwallattributeset.globalFlag = 1";
+			wc &= " OR aslatwalltype.typeID IN ('#replace(getTypeIDPath(),",","','","all")#')";	
+			wc &= ")";
+			
+			variables.assignedAttributeSetSmartList.addWhereCondition( wc );
+		}
+		
+		return variables.assignedAttributeSetSmartList;
+	}
+
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
@@ -120,5 +177,14 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	}
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	public string function getType() {
+		return getTypeName();
+	}
+	
+	// ==================  END:  Deprecated Methods ========================
+
 }
 

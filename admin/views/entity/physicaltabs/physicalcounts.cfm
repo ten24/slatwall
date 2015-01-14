@@ -46,18 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.physical" type="any" />
 <cfset physicalStatus = rc.physical.getPhysicalStatusType().getSystemCode() />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.physical.getPhysicalCountsSmartList()#" 
+	<hb:HibachiListingDisplay smartList="#rc.physical.getPhysicalCountsSmartList()#" 
 								recordDetailAction="admin:entity.detailphysicalcount"
 							  	recordEditAction="admin:entity.editphysicalcount">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="location.locationName" />
-		<cf_HibachiListingColumn propertyIdentifier="countPostDateTime" />
-	</cf_HibachiListingDisplay>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="location.locationName" />
+		<hb:HibachiListingColumn propertyIdentifier="countPostDateTime" />
+	</hb:HibachiListingDisplay>
 	
 	<cfif physicalStatus neq "pstClosed">
-		<cf_HibachiProcessCaller action="admin:entity.preprocessphysical" entity="#rc.physical#" processContext="addPhysicalCount" class="btn" icon="plus" modal="true" />
+		<hb:HibachiProcessCaller action="admin:entity.preprocessphysical" entity="#rc.physical#" processContext="addPhysicalCount" class="btn btn-default" icon="plus" modal="true" />
 	</cfif>
 </cfoutput>

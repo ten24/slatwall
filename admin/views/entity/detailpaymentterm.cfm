@@ -46,24 +46,28 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.paymentTerm" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.paymentTerm#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.paymentTerm#" edit="#rc.edit#"></cf_HibachiEntityActionBar>
+	<hb:HibachiEntityDetailForm object="#rc.paymentTerm#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.paymentTerm#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.paymentTerm#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.paymentTerm#" property="paymentTermName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.paymentTerm#" property="term" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.paymentTerm#" property="activeFlag" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.paymentTerm#" property="paymentTermName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.paymentTerm#" property="term" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.paymentTerm#">
-			<!--- <cf_HibachiTab view="admin:section/tabsfolder/view" /> --->
-		</cf_HibachiTabGroup>
+		<hb:HibachiTabGroup object="#rc.paymentTerm#">
+			<!--- <hb:HibachiTab view="admin:section/tabsfolder/view" /> --->
+		</hb:HibachiTabGroup>
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>

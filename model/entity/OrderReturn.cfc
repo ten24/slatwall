@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Order Return" entityname="SlatwallOrderReturn" table="SwOrderReturn" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderReturns" hb_processContexts="receiveReturn" {
+component displayname="Order Return" entityname="SlatwallOrderReturn" table="SwOrderReturn" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderReturns" hb_processContexts="receiveReturn,receive" {
 	
 	// Persistent Properties
 	property name="orderReturnID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -63,11 +63,11 @@ component displayname="Order Return" entityname="SlatwallOrderReturn" table="SwO
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	
 	// ============ START: Non-Persistent Property Methods =================

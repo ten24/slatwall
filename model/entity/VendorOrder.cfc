@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="vendorOrderService" hb_permission="this" hb_processContexts="addOrderItems,receiveStock" {
+component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="vendorOrderService" hb_permission="this" hb_processContexts="addOrderItems,receiveStock,addVendorOrderItem,receive" {
 	
 	// Persistent Properties
 	property name="vendorOrderID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -68,11 +68,11 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	// Remote Properties
 	property name="remoteID" ormtype="string";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non persistent properties
 	property name="addVendorOrderItemSkuOptionsSmartList" persistent="false";
@@ -183,10 +183,10 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 	
 	// Attribute Values (one-to-many)    
 	public void function addAttributeValue(required any attributeValue) {    
-		arguments.attributeValue.setAttributeValues( this );    
+		arguments.attributeValue.setVendorOrder( this );    
 	}    
 	public void function removeAttributeValue(required any attributeValue) {    
-		arguments.attributeValue.removeAttributeValues( this );    
+		arguments.attributeValue.removeVendorOrder( this );    
 	}
 	
 	// Stock Receivers (one-to-many)
@@ -210,14 +210,14 @@ component entityname="SlatwallVendorOrder" table="SwVendorOrder" persistent="tru
 
 	public any function getVendorOrderType() {
 		if( !structKeyExists(variables, "vendorOrderType") ) {
-			variables.vendorOrderType = getService("settingService").getTypeBySystemCode("votPurchaseOrder");
+			variables.vendorOrderType = getService("typeService").getTypeBySystemCode("votPurchaseOrder");
 		}
 		return variables.vendorOrderType;
 	}
 	
 	public any function getVendorOrderStatusType() {
 		if( !structKeyExists(variables, "vendorOrderStatusType") ) {
-			variables.vendorOrderStatusType = getService("settingService").getTypeBySystemCode("vostNew");
+			variables.vendorOrderStatusType = getService("typeService").getTypeBySystemCode("vostNew");
 		}
 		return variables.vendorOrderStatusType;
 	}

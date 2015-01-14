@@ -3,10 +3,14 @@
 	<cffunction name="cfcookie">
 		<cfargument name="name" type="string" required="true" />
 		<cfargument name="value" type="any" required="true" />
-		<cfargument name="expires" type="string" default="session only" />
+		<cfargument name="expires" type="string" />
 		<cfargument name="secure" type="boolean" default="false" />
 		
-		<cfcookie name="#arguments.name#" value="#arguments.value#" expires="#arguments.expires#" secure="#arguments.secure#">
+		<cfif structKeyExists(arguments, "expires")>
+			<cfcookie name="#arguments.name#" value="#arguments.value#" expires="#arguments.expires#" secure="#arguments.secure#">
+		<cfelse>
+			<cfcookie name="#arguments.name#" value="#arguments.value#" secure="#arguments.secure#">
+		</cfif>
 	</cffunction>
 	
 	<cffunction name="cfhtmlhead">
@@ -113,14 +117,21 @@
 	</cffunction>
 	
 	<cffunction name="cfmodule">
-		<cfargument name="name" type="string" required="true" />
+		<cfargument name="name" type="string" />
+		<cfargument name="template" type="string" />
 		<cfargument name="attributeCollection" type="struct" required="true" />
 		
 		<cfset var returnContent = "" /> 
-		<cfsavecontent variable="returnContent">
-			<cfmodule name="#arguments.name#" attributecollection="#arguments.attributeCollection#" />
-		</cfsavecontent>
+		<cfif structKeyExists(arguments, "name")>
+			<cfsavecontent variable="returnContent">
+				<cfmodule name="#arguments.name#" attributecollection="#arguments.attributeCollection#" />
+			</cfsavecontent>
+		<cfelseif structKeyExists(arguments, "template")>
+			<cfsavecontent variable="returnContent">
+				<cfmodule template="#arguments.template#" attributecollection="#arguments.attributeCollection#" />
+			</cfsavecontent>
+		</cfif>
+		
 		<cfreturn returnContent />
 	</cffunction>
-	
 </cfcomponent>

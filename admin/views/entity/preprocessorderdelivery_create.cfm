@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderDelivery" type="any" />
 <cfparam name="rc.orderFulfillment" type="any" />
 <cfparam name="rc.processObject" type="any" />
@@ -53,13 +57,13 @@ Notes:
 <cfset rc.processObject.setOrderFulfillment( rc.orderFulfillment ) />
 
 <cfoutput>
-	<cf_HibachiEntityProcessForm entity="#rc.orderDelivery#" edit="#rc.edit#" processActionQueryString="orderFulfillmentID=#rc.processObject.getOrderFulfillment().getOrderFulfillmentID()#" sRedirectAction="admin:entity.detailorderfulfillment" fRenderItem="preprocessorderdelivery">
+	<hb:HibachiEntityProcessForm entity="#rc.orderDelivery#" edit="#rc.edit#" processActionQueryString="orderFulfillmentID=#rc.processObject.getOrderFulfillment().getOrderFulfillmentID()#" sRedirectAction="admin:entity.detailorderfulfillment" fRenderItem="preprocessorderdelivery">
 		
-		<cf_HibachiEntityActionBar type="preprocess" object="#rc.orderDelivery#">
-		</cf_HibachiEntityActionBar>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderDelivery#">
+		</hb:HibachiEntityActionBar>
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
 				
 				<input type="hidden" name="order.orderID" value="#rc.processObject.getOrder().getOrderID()#" />
 				<input type="hidden" name="orderFulfillment.orderFulfillmentID" value="#rc.processObject.getOrderFulfillment().getOrderFulfillmentID()#" />
@@ -73,12 +77,22 @@ Notes:
 				
 				<!--- Shipping - Inputs --->
 				<cfif rc.processObject.getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="trackingNumber" edit="true" />
 				</cfif>
 				
-				<cfif rc.processObject.getCapturableAmount() gt 0>
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="captureAuthorizedPaymentsFlag" edit="true" />
-					<cf_HibachiPropertyDisplay object="#rc.processObject#" property="capturableAmount" edit="false" />
+				<!---Loop through order payments to see if we paid with a credit card--->
+				<cfset orderPayments = #rc.processObject.getOrder().getOrderPayments()# />
+				<cfset foundCredit = false />
+				<cfloop array='#orderPayments#' index="payment">
+					<cfif payment.getPaymentMethodType() eq 'creditCard'>
+						<cfset foundCredit = true />
+						<cfbreak>
+					</cfif>
+				</cfloop>
+				
+				<cfif rc.processObject.getCapturableAmount() gt 0 AND foundCredit>
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="captureAuthorizedPaymentsFlag" edit="true" />
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="capturableAmount" edit="false" />
 				</cfif>
 				
 				<hr />
@@ -93,6 +107,7 @@ Notes:
 					</tr>
 					<cfset orderItemIndex = 0 />
 					<cfloop array="#rc.processObject.getOrderDeliveryItems()#" index="recordData">
+						<cfif IsNumeric(recordData.quantity) AND recordData.quantity gt 0 >
 						<tr>
 							
 							<cfset orderItemIndex++ />
@@ -114,10 +129,11 @@ Notes:
 							<input type="hidden" name="orderDeliveryItems[#orderItemIndex#].orderItem.orderItemID" value="#recordData.orderItem.orderItemID#" />
 							<input type="hidden" name="orderDeliveryItems[#orderItemIndex#].quantity" value="#thisQuantity#" />
 						</tr>
+						</cfif>
 					</cfloop>
 				</table>
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-	</cf_HibachiEntityProcessForm>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

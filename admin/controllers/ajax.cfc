@@ -51,12 +51,15 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 	property name="accountService" type="any";
 	property name="brandService" type="any";
 	property name="dataService" type="any";
+	property name="locationService" type="any";
 	property name="orderService" type="any";
 	property name="productService" type="any";
 	property name="promotionService" type="any";
+	property name="skuService" type="any";
 	property name="vendorService" type="any";
 	property name="vendorOrderService" type="any";
 	property name="hibachiService" type="any";
+	property name="hibachiRBService" type="any";
 	property name="hibachiTagService" type="any";
 	
 	this.publicMethods='';
@@ -132,7 +135,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 						edit=true,
 						displayType='plain'
 					};
-					thisRecord[ popArray[p] ] = getHibachiTagService().cfmodule(name="HibachiPropertyDisplay", attributeCollection=attributes);
+					thisRecord[ popArray[p] ] = getHibachiTagService().cfmodule(template="./HibachiTags/HibachiPropertyDisplay.cfm", attributeCollection=attributes);
 				}
 			}
 			
@@ -144,38 +147,38 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 					var attributes = {
 						action=admin.detailAction,
 						queryString="#listPrepend(admin.detailQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
-						class="btn btn-mini",
+						class="btn btn-default btn-xs",
 						icon="eye-open",
 						iconOnly="true",
 						modal=admin.detailModal
 					};
-					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(name="HibachiActionCaller", attributeCollection=attributes);
+					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(template="./HibachiTags/HibachiActionCaller.cfm", attributeCollection=attributes);
 				}
 				if(structKeyExists(admin, "editAction")) {
 					var attributes = {
 						action=admin.editAction,
 						queryString="#listPrepend(admin.editQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
-						class="btn btn-mini",
+						class="btn btn-default btn-xs",
 						icon="pencil",
 						iconOnly="true",
 						modal=admin.editModal,
 						disabled=record.isNotEditable()
 					};
-					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(name="HibachiActionCaller", attributeCollection=attributes);
+					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(template="./HibachiTags/HibachiActionCaller.cfm", attributeCollection=attributes);
 				}
 				if(structKeyExists(admin, "deleteAction")) {
 					var deleteErrors = record.validate(context="delete");
 					var attributes = {
 						action=admin.deleteAction,
 						queryString="#listPrepend(admin.deleteQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
-						class="btn btn-mini",
+						class="btn btn-default btn-xs",
 						icon="trash",
 						iconOnly="true",
 						disabled=deleteErrors.hasErrors(),
 						disabledText=deleteErrors.getAllErrorsHTML(),
 						confirm=true
 					};
-					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(name="HibachiActionCaller", attributeCollection=attributes);
+					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(template="./HibachiTags/HibachiActionCaller.cfm", attributeCollection=attributes);
 				}
 				if(structKeyExists(admin, "processAction")) {
 					var attributes = {
@@ -183,9 +186,9 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 						entity=processEntity,
 						processContext=admin.processContext,
 						queryString="#listPrepend(admin.processQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#",
-						class="btn hibachi-ajax-submit"
+						class="btn btn-default hibachi-ajax-submit"
 					};
-					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(name="HibachiProcessCaller", attributeCollection=attributes);
+					thisRecord[ "admin" ] &= getHibachiTagService().cfmodule(template="./HibachiTags/HibachiProcessCaller.cfm", attributeCollection=attributes);
 				}
 			}
 			
@@ -238,8 +241,94 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 		}
 	}
 	
-	public function updateSortOrder(required struct rc) {
+	public void function updateSortOrder(required struct rc) {
 		getHibachiService().updateRecordSortOrder(argumentCollection=rc);
+	}
+	
+	public void function swCollectionDisplay(required struct rc) {
+		param name="rc.collectionID" type="string" default="";
+		param name="rc.propertyIdentifiers" type="string" default="";
+		
+		var collection = rc.$.slatwall.getEntity('Collection', rc.collectionID);
+		var smartList = rc.$.slatwall.getSmartList( collection.getCollectionObject(), arguments.rc );
+		var piArray = ['skuCode', 'product.productName', 'price'];
+		
+		
+		var smartListPageRecords = smartList.getPageRecords();
+		
+		rc.ajaxResponse[ "recordsCount" ] = smartList.getRecordsCount();
+		rc.ajaxResponse[ "pageRecords" ] = [];
+		rc.ajaxResponse[ "pageRecordsCount" ] = arrayLen( smartListPageRecords );
+		rc.ajaxResponse[ "pageRecordsShow"] = smartList.getPageRecordsShow();
+		rc.ajaxResponse[ "pageRecordsStart" ] = smartList.getPageRecordsStart();
+		rc.ajaxResponse[ "pageRecordsEnd" ] = smartList.getPageRecordsEnd();
+		rc.ajaxResponse[ "currentPage" ] = smartList.getCurrentPage();
+		rc.ajaxResponse[ "totalPages" ] = smartList.getTotalPages();
+		rc.ajaxResponse[ "savedStateID" ] = smartList.getSavedStateID();
+		rc.ajaxResponse[ "propertyIdentifiers" ] = piArray;
+		
+		for(var i=1; i<=arrayLen(smartListPageRecords); i++) {
+			
+			var record = smartListPageRecords[i];
+			
+			// Create a record JSON container
+			var thisRecord = {};
+			
+			// Add the simple values from property identifiers
+			for(var p=1; p<=arrayLen(piArray); p++) {
+				var value = record.getValueByPropertyIdentifier( propertyIdentifier=piArray[p] );
+				if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
+					thisRecord[ piArray[p] ] = value & " ";
+				} else {
+					thisRecord[ piArray[p] ] = value;
+				}
+			}
+			
+			arrayAppend(rc.ajaxResponse[ "pageRecords" ], thisRecord);
+		}
+		
+	}
+	
+	// Called from Sku Inventory to assist in building hierarchical location inventory table  
+	public function updateInventoryTable(required struct rc) {
+		param name="arguments.rc.locationID" default="";
+		param name="arguments.rc.skuID" default="";
+		
+		// Get all locations where parentID is rc.locationID, if rc.locationID is null then return null parents
+		var sku = getSkuService().getSku({skuID=arguments.rc.skuID});
+		var smartList = getLocationService().getLocationSmartList();
+		if(len(arguments.rc.locationID)) {
+			smartList.addFilter('parentLocation.locationID', arguments.rc.locationID);	
+		} else {
+			smartList.addWhereCondition('aslatwalllocation.parentLocation is null');
+		}
+		var thisDataArr = [];
+		for(var location in smartList.getRecords()) {
+			var thisData = {};
+			thisData["skuID"] = arguments.rc.skuID;
+			thisData["locationID"] = location.getLocationID();
+			thisData["locationName"] = location.getLocationName();
+			thisData["QOH"] = sku.getQuantity('QOH',location.getLocationID());
+			thisData["QOSH"] = sku.getQuantity('QOSH',location.getLocationID());
+			thisData["QNDOO"] = sku.getQuantity('QNDOO',location.getLocationID());
+			thisData["QNDORVO"] = sku.getQuantity('QNDORVO',location.getLocationID());
+			thisData["QNDOSA"] = sku.getQuantity('QNDOSA',location.getLocationID());
+			thisData["QNRORO"] = sku.getQuantity('QNRORO',location.getLocationID());
+			thisData["QNROVO"] = sku.getQuantity('QNROVO',location.getLocationID());
+			thisData["QNROSA"] = sku.getQuantity('QNROSA',location.getLocationID());
+			thisData["QC"] = sku.getQuantity('QC',location.getLocationID());
+			thisData["QE"] = sku.getQuantity('QE',location.getLocationID());
+			thisData["QNC"] = sku.getQuantity('QNC',location.getLocationID());
+			thisData["QATS"] = sku.getQuantity('QATS',location.getLocationID());
+			thisData["QIATS"] = sku.getQuantity('QIATS',location.getLocationID());
+			ArrayAppend(thisDataArr,thisData);
+		}
+		arguments.rc.ajaxResponse["inventoryData"] = thisDataArr;
+		
+	}
+
+	public void function rbData( required struct rc ) {
+		arguments.rc.ajaxResponse['rbData'] = getHibachiRBService().getAggregateResourceBundle(getHibachiScope().getRBLocale());
 	}
 	
 }

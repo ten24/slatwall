@@ -46,19 +46,30 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.currencySmartList" type="any" />
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="listing" object="#rc.currencySmartList#" />
 	
-	<cf_HibachiListingDisplay smartList="#rc.currencySmartList#"
+	<hb:HibachiEntityActionBar type="listing" object="#rc.currencySmartList#" showCreate="false">
+		
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createcurrency" entity="currency" class="btn btn-primary" icon="plus icon-white" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiListingDisplay smartList="#rc.currencySmartList#"
 							   recordDetailAction="admin:entity.detailcurrency"
-							   recordDetailModal="true"
-							   recordEditAction="admin:entity.editcurrency"
-							   recordEditModal="true">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="currencyName" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-		<cf_HibachiListingColumn propertyIdentifier="currencyCode" />
-		<cf_HibachiListingColumn propertyIdentifier="formattedExample" />
-	</cf_HibachiListingDisplay>
+							   recordEditAction="admin:entity.editcurrency">
+		
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="currencyName" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="currencyCode" />
+		<hb:HibachiListingColumn propertyIdentifier="formattedExample" />
+	</hb:HibachiListingDisplay>
+	
 </cfoutput>

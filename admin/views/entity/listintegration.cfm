@@ -46,17 +46,20 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.integrationSmartList" type="any" />
 <cfset rc.integrationSmartList.addFilter('installedFlag', 1) />
 
 <cfoutput>
-	<cf_HibachiEntityActionBar type="listing" object="#rc.integrationSmartList#" showCreate="false" />
 	
-	<cf_HibachiListingDisplay smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="integrationName" />
-		<cf_HibachiListingColumn propertyIdentifier="fw1ActiveFlag" />
-		<cf_HibachiListingColumn propertyIdentifier="paymentActiveFlag" />
-		<cf_HibachiListingColumn propertyIdentifier="shippingActiveFlag" />
-	</cf_HibachiListingDisplay>
+	<hb:HibachiEntityActionBar type="listing" object="#rc.integrationSmartList#" showCreate="false" />
+	
+	<hb:HibachiListingDisplay smartList="#rc.integrationSmartList#" recordDetailAction="admin:entity.detailintegration" recordEditAction="admin:entity.editintegration">
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="integrationName" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

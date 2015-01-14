@@ -54,15 +54,16 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	property name="transactionType" type="string" ;
 	property name="transactionAmount" type="numeric";
 	property name="transactionCurrencyCode" type="string";
-	property name="isDuplicateFlag" type="boolean";
+	property name="transactionCurrencyISONumber" type="string";
 	
 	// Credit Card Info
-	property name="nameOnCreditCard" ormType="string";
-	property name="creditCardNumber" type="string"; 
+	property name="nameOnCreditCard" type="string";
+	property name="creditCardLastFour" type="string";
+	property name="creditCardNumber" type="string";
 	property name="creditCardType" type="string"; 
 	property name="expirationMonth" type="numeric";   
 	property name="expirationYear" type="numeric";
-	property name="securityCode" type="numeric";
+	property name="securityCode" type="string";
 	property name="providerToken" type="string";
 	
 	// Account Info
@@ -95,6 +96,13 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	// Pertinent Reference Information (used for all above)
 	property name="accountID" type="string";
 	
+	// Reference Objects
+	property name="account" type="any";
+	property name="accountPayment" type="any";
+	property name="accountPaymentMethod" type="any";
+	property name="order" type="any";
+	property name="orderPayment" type="any";
+	
 	// Always there if this Account Payment or Order Payment has previously had an authorization done
 	property name="originalAuthorizationCode" type="string";
 	property name="originalAuthorizationProviderTransactionID" type="string";
@@ -107,6 +115,7 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	
 	// Deprecated
 	property name="transactionCurrency" ormtype="string";
+	property name="isDuplicateFlag" type="boolean";
 	
 	/*
 	Process Types
@@ -123,6 +132,9 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 	public void function populatePaymentInfoWithAccountPayment(required any accountPayment) {
 		
 		// Populate Credit Card Info
+		if(!isNull(arguments.accountPayment.getCreditCardLastFour())) {
+			setCreditCardLastFour(arguments.accountPayment.getCreditCardLastFour());	
+		}
 		if(!isNull(arguments.accountPayment.getCreditCardNumber())) {
 			setCreditCardNumber(arguments.accountPayment.getCreditCardNumber());	
 		}
@@ -202,11 +214,17 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		setAccountPaymentID( arguments.accountPayment.getAccountPaymentID() );
 		setAccountID( arguments.accountPayment.getAccount().getAccountID() );
 		
+		setAccountPayment( arguments.accountPayment );
+		setAccount( arguments.accountPayment.getAccount() );
+		
 	}
 	
 	public void function populatePaymentInfoWithOrderPayment(required any orderPayment) {
 		
 		// Populate Credit Card Info
+		if(!isNull(arguments.orderPayment.getCreditCardLastFour())) {
+			setCreditCardLastFour(arguments.orderPayment.getCreditCardLastFour());
+		}
 		if(!isNull(arguments.orderPayment.getCreditCardNumber())) {
 			setCreditCardNumber(arguments.orderPayment.getCreditCardNumber());
 		}
@@ -285,15 +303,22 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		}
 		
 		// Populate relavent Misc Info
-		setOrderPaymentID(arguments.orderPayment.getOrderPaymentID());
-		setOrderID(arguments.orderPayment.getOrder().getOrderID());
-		setAccountID(arguments.orderPayment.getOrder().getAccount().getAccountID());
+		setOrderPaymentID( arguments.orderPayment.getOrderPaymentID() );
+		setOrderID( arguments.orderPayment.getOrder().getOrderID() );
+		setAccountID( arguments.orderPayment.getOrder().getAccount().getAccountID() );
+		
+		setOrderPayment( arguments.orderPayment );
+		setOrder( arguments.orderPayment.getOrder() );
+		setAccount( arguments.orderPayment.getOrder().getAccount() );
 		
 	}
 	
 	public void function populatePaymentInfoWithAccountPaymentMethod(required any accountPaymentMethod) {
 		
 		// Populate Credit Card Info
+		if(!isNull(arguments.accountPaymentMethod.getCreditCardLastFour())) {
+			setCreditCardLastFour(arguments.accountPaymentMethod.getCreditCardLastFour());
+		}
 		if(!isNull(arguments.accountPaymentMethod.getCreditCardNumber())) {
 			setCreditCardNumber(arguments.accountPaymentMethod.getCreditCardNumber());
 		}
@@ -351,6 +376,10 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 		// Populate relavent Misc Info
 		setAccountPaymentMethodID( arguments.accountPaymentMethod.getAccountPaymentMethodID() );
 		setAccountID( arguments.accountPaymentMethod.getAccount().getAccountID() );
+		
+		setAccountPaymentMethod( arguments.accountPaymentMethod );
+		setAccount( arguments.accountPaymentMethod.getAccount() );
+		
 	}
 	
 	// Deprecated

@@ -46,30 +46,33 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.accountSmartList" type="any" />
 
 <cfoutput>
 	
-<cf_HibachiEntityActionBar type="listing" object="#rc.accountSmartList#" showCreate="false">
+	<hb:HibachiEntityActionBar type="listing" object="#rc.accountSmartList#" showCreate="false">
 	
-	<!--- Create --->
-	<cf_HibachiEntityActionBarButtonGroup>
-		<cf_HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />
-	</cf_HibachiEntityActionBarButtonGroup>
-	
-</cf_HibachiEntityActionBar>
+	<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>			
+			<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />			
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 
-<cf_HibachiListingDisplay smartList="#rc.accountSmartList#"
-						   recordEditAction="admin:entity.editaccount"
-						   recordDetailAction="admin:entity.detailaccount">
-						      
-	<cf_HibachiListingColumn propertyIdentifier="firstName" />
-	<cf_HibachiListingColumn propertyIdentifier="lastName" />
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
-	<cf_HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
-	<cf_HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
-	<cf_HibachiListingColumn propertyIdentifier="guestAccountFlag" />
-	
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingDisplay smartList="#rc.accountSmartList#"
+							   recordEditAction="admin:entity.editaccount"
+							   recordDetailAction="admin:entity.detailaccount">
+							      	      
+		<hb:HibachiListingColumn propertyIdentifier="firstName" />
+		<hb:HibachiListingColumn propertyIdentifier="lastName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />
+		<hb:HibachiListingColumn propertyIdentifier="primaryPhoneNumber.phoneNumber" />
+		<hb:HibachiListingColumn propertyIdentifier="primaryEmailAddress.emailAddress" />
+		<hb:HibachiListingColumn propertyIdentifier="guestAccountFlag" />
+		
+	</hb:HibachiListingDisplay>
 
 </cfoutput>

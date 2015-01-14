@@ -74,7 +74,8 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 			legacyOrderConfirmation = {fieldType="text", defaultValue="order-confirmation"},
 			legacyMyAccount = {fieldType="text", defaultValue="my-account"},
 			legacyCreateAccount = {fieldType="text", defaultValue="create-account"},
-			legacyCheckout = {fieldType="text", defaultValue="checkout"}
+			legacyCheckout = {fieldType="text", defaultValue="checkout"},
+			lookupListingContentObjects = {fieldType="yesno", defaultValue=0}
 		};
 	}
 	
@@ -84,7 +85,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	
 	public string function getAdminNavbarHTML() {
 		if(!structKeyExists(variables, "adminNavbarHTML")) {
-			variables.adminNavbarHTML = '<a href="#replace(request.slatwallScope.getSlatwallRootURL(), '/Slatwall', '')#/admin" class="brand"><img src="#request.slatwallScope.getSlatwallRootPath()#/assets/images/mura.logo.png" style="width:25px;heigh:26px;" title="Mura" /></a>'; 
+			variables.adminNavbarHTML = '<a href="#replace(request.slatwallScope.getSlatwallRootURL(), '/Slatwall', '')#/admin" class="brand" target="_self"><img src="#request.slatwallScope.getSlatwallRootPath()#/assets/images/mura.logo.png" style="width:25px;heigh:26px;" title="Mura" /></a>'; 
 		}
 		return variables.adminNavbarHTML;
 	}

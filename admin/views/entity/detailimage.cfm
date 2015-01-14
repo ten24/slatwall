@@ -46,6 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.image" type="any">
 <cfparam name="rc.edit" type="boolean">
 
@@ -65,24 +69,30 @@ Notes:
 </cfif>
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.image#" edit="#rc.edit#" enctype="multipart/form-data">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.image#" edit="#rc.edit#" 
+	<hb:HibachiEntityDetailForm object="#rc.image#" edit="#rc.edit#" enctype="multipart/form-data">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.image#" edit="#rc.edit#" 
 								   backAction="#backAction#" 
 								   backQueryString="#backQueryString#"
 								   deleteQueryString="redirectAction=#backAction#&#backQueryString#"  />
 
-		<cf_HibachiPropertyRow>
+		<hb:HibachiPropertyRow>
 			
-			<cf_HibachiPropertyList divclass="span12">
-				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.image#" property="imageType" edit="#rc.edit#">
-				<hr />
-				#rc.image.getImage()#
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+			<hb:HibachiPropertyList divclass="col-md-12">
+				<hb:HibachiPropertyDisplay object="#rc.image#" property="imageName" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.image#" property="imageType" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
 		
-		<cf_HibachiTabGroup object="#rc.image#">
-		</cf_HibachiTabGroup>
-	</cf_HibachiEntityDetailForm>
+		<hb:HibachiTabGroup object="#rc.image#">
+			<hb:HibachiTab view="admin:entity/imagetabs/image" />
+			<cfif not isNull(rc.image.getProduct())>
+				<hb:HibachiTab view="admin:entity/imagetabs/options" />
+			</cfif>
+			<!--- Custom Attributes --->
+			<cfloop array="#rc.image.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.image#" attributeSet="#attributeSet#" />
+			</cfloop>
+		</hb:HibachiTabGroup>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

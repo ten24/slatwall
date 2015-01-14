@@ -50,10 +50,10 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 	
 	// Persistent Properties
 	property name="priceGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="priceGroupIDPath" ormtype="string";
+	property name="priceGroupIDPath" ormtype="string" length="4000";
 	property name="activeFlag" ormtype="boolean";
 	property name="priceGroupName" ormtype="string";
-	property name="priceGroupCode" ormtype="string";
+	property name="priceGroupCode" ormtype="string" index="PI_PRICEGROUPCODE";
 	
 	// Related Object Properties (Many-To-One)
 	property name="parentPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="parentPriceGroupID" hb_optionsNullRBKey="define.none";
@@ -61,7 +61,8 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 	// Related Object Properties (One-To-Many)
 	property name="appliedOrderItems" singularname="appliedOrderItem" cfc="OrderItem" type="array" fieldtype="one-to-many" fkcolumn="appliedPriceGroupID" inverse="true";
 	property name="childPriceGroups" singularname="ChildPriceGroup" cfc="PriceGroup" fieldtype="one-to-many" fkcolumn="parentPriceGroupID" inverse="true";
-	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="one-to-many" fkcolumn="priceGroupID" cascade="all-delete-orphan" inverse="true";    
+	property name="priceGroupRates" singularname="priceGroupRate" cfc="PriceGroupRate" fieldtype="one-to-many" fkcolumn="priceGroupID" cascade="all-delete-orphan" inverse="true";
+	property name="loyaltyRedemptions" singularname="loyaltyRedemption" cfc="LoyaltyRedemption" type="array" fieldtype="one-to-many" fkcolumn="priceGroupID" cascade="all-delete-orphan" inverse="true";    
 	
 	// Related Object Properties (many-to-many - invers)
 	property name="accounts" singularname="account" cfc="Account" fieldtype="many-to-many" linktable="SwAccountPriceGroup" fkcolumn="priceGroupID" inversejoincolumn="accountID" inverse="true";
@@ -69,11 +70,11 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 	property name="subscriptionUsageBenefits" singularname="subscriptionUsageBenefit" cfc="SubscriptionUsageBenefit" type="array" fieldtype="many-to-many" linktable="SwSubsUsageBenefitPriceGroup" fkcolumn="priceGroupID" inversejoincolumn="subscriptionUsageBenefitID" inverse="true";
 	property name="promotionRewards" singularname="promotionReward" cfc="PromotionReward" type="array" fieldtype="many-to-many" linktable="SwPromoRewardEligiblePriceGrp" fkcolumn="priceGroupID" inversejoincolumn="promotionRewardID" inverse="true";
 
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="parentPriceGroupOptions" persistent="false";
@@ -147,6 +148,14 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 	public void function removePriceGroupRate(required any priceGroupRate) {
 		arguments.priceGroupRate.removePriceGroup( this );
 	}
+	
+	// Loyalty Redemptions (one-to-many)
+	public void function addLoyaltyRedemption(required any loyaltyRedemption) {
+		arguments.loyaltyRedemption.setPriceGroup( this );
+	}
+	public void function removeLoyaltyRedemption(required any loyaltyRedemption) {
+		arguments.loyaltyRedemption.removePriceGroup( this );
+	}	
 	
 	// Accounts (many-to-many - inverse)
 	public void function addAccount(required any account) {

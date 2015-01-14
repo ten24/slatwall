@@ -50,6 +50,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	property name="fw" type="any";
 	property name="accountService" type="any";
+	property name="orderService" type="any";
 	property name="subscriptionService" type="any";
 	
 	public void function init( required any fw ) {
@@ -60,12 +61,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getFW().setView("public:main.blank");
 	}
 	
+	public void function after( required struct rc ) {
+		if(structKeyExists(arguments.rc, "fRedirectURL") && arrayLen(arguments.rc.$.slatwall.getFailureActions())) {
+			getFW().redirectExact( url=arguments.rc.fRedirectURL );
+		} else if (structKeyExists(arguments.rc, "sRedirectURL") && !arrayLen(arguments.rc.$.slatwall.getFailureActions())) {
+			getFW().redirectExact( url=arguments.rc.sRedirectURL );
+		} else if (structKeyExists(arguments.rc, "redirectURL")) {
+			getFW().redirectExact( url=arguments.rc.redirectURL );
+		}
+	}
+	
 	// Account - Login
 	public void function login( required struct rc ) {
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'login' );
 		
 		arguments.rc.$.slatwall.addActionResult( "public:account.login", account.hasErrors() );
-		getFW().redirect('public:main.account');
 	}
 	
 	// Account - Logout
@@ -73,7 +83,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'logout' );
 		
 		arguments.rc.$.slatwall.addActionResult( "public:account.logout", false );
-		getFW().redirect('public:main');
 	}
 	
 	// Account - Forgot Password
@@ -115,6 +124,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	// Account - Create
 	public void function create( required struct rc ) {
+		param name="arguments.rc.createAuthenticationFlag" default="1";
+		
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'create');
 		
 		arguments.rc.$.slatwall.addActionResult( "public:account.create", account.hasErrors() );
@@ -138,6 +149,34 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountEmailAddress", !deleteOK );
 		} else {
 			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountEmailAddress", true );	
+		}
+	}
+	
+	// Account Email Address - Send Verification Email
+	public void function sendAccountEmailAddressVerificationEmail() {
+		param name="rc.accountEmailAddressID" default="";
+		
+		var accountEmailAddress = getAccountService().getAccountEmailAddress( rc.accountEmailAddressID );
+		
+		if(!isNull(accountEmailAddress)) {
+			accountEmailAddress = getAccountService().processAccountEmailAddress( accountEmailAddress, rc, 'sendVerificationEmail' );
+			arguments.rc.$.slatwall.addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", accountEmailAddress.hasErrors() );
+		} else {
+			arguments.rc.$.slatwall.addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", true );
+		}
+	}
+	
+	// Account Email Address - Verify
+	public void function verifyAccountEmailAddress() {
+		param name="rc.accountEmailAddressID" default="";
+		
+		var accountEmailAddress = getAccountService().getAccountEmailAddress( rc.accountEmailAddressID );
+		
+		if(!isNull(accountEmailAddress)) {
+			accountEmailAddress = getAccountService().processAccountEmailAddress( accountEmailAddress, rc, 'verify' );
+			arguments.rc.$.slatwall.addActionResult( "public:account.verifyAccountEmailAddress", accountEmailAddress.hasErrors() );
+		} else {
+			arguments.rc.$.slatwall.addActionResult( "public:account.verifyAccountEmailAddress", true );
 		}
 	}
 	
@@ -171,9 +210,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	// Account Payment Method - Delete
 	public void function deleteAccountPaymentMethod() {
-		param name="rc.accountAddressID" default="";
+		param name="rc.accountPaymentMethodID" default="";
 		
-		var accountPaymentMethod = getAccountService().getAccountPhoneNumber( rc.accountAddressID );
+		var accountPaymentMethod = getAccountService().getAccountPaymentMethod( rc.accountPaymentMethodID );
 		
 		if(!isNull(accountPaymentMethod) && accountPaymentMethod.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID() ) {
 			var deleteOk = getAccountService().deleteAccountPaymentMethod( accountPaymentMethod );
@@ -181,6 +220,30 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		} else {
 			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountPaymentMethod", true );	
 		}
+	}
+	
+	// Account Payment Method - Add
+	public void function addAccountPaymentMethod() {
+		
+		if(arguments.rc.$.slatwall.getLoggedInFlag()) {
+			
+			// Force the payment method to be added to the current account
+			var accountPaymentMethod = arguments.rc.$.slatwall.getAccount().getNewPropertyEntity( 'accountPaymentMethods' );
+			
+			accountPaymentMethod.setAccount( arguments.rc.$.slatwall.getAccount() );
+			
+			accountPaymentMethod = getAccountService().saveAccountPaymentMethod( accountPaymentMethod, arguments.rc );
+			
+			arguments.rc.$.slatwall.addActionResult( "public:account.addAccountPaymentMethod", accountPaymentMethod.hasErrors() );
+			
+			// If there were no errors then we can clear out the
+			
+		} else {
+			
+			arguments.rc.$.slatwall.addActionResult( "public:account.addAccountPaymentMethod", true );
+				
+		}
+		
 	}
 	
 	// Subscription Usage - Update
@@ -210,6 +273,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 		} else {
 			arguments.rc.$.slatwall.addActionResult( "public:account.updateSubscriptionUsage", true );
+		}
+	}
+	
+	public void function duplicateOrder() {
+		param name="arguments.rc.orderID" default="";
+		param name="arguments.rc.setAsCartFlag" default="0";
+		
+		var order = getOrderService().getOrder( arguments.rc.orderID );
+		if(!isNull(order) && order.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID()) {
+			var duplicateOrder = getOrderService().duplicateOrder(order=order, saveNewFlag=true, copyPersonalDataFlag=true);
+			if(isBoolean(arguments.rc.setAsCartFlag) && arguments.rc.setAsCartFlag) {
+				arguments.rc.$.slatwall.getSession().setOrder( duplicateOrder );
+			}
+			arguments.rc.$.slatwall.addActionResult( "public:account.duplicateOrder", false );
+		} else {
+			arguments.rc.$.slatwall.addActionResult( "public:account.duplicateOrder", true );
 		}
 	}
 	

@@ -46,19 +46,25 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.accountPaymentMethod" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.accountPaymentMethod.getPaymentTransactionsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#rc.accountPaymentMethod.getPaymentTransactionsSmartList()#"
 			recordDetailAction="admin:entity.detailpaymenttransaction"
 			recordDetailModal="true">
 		
-		<cf_HibachiListingColumn propertyIdentifier="createdDateTime" />		
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="transactionType" />
-		<cf_HibachiListingColumn propertyIdentifier="amountAuthorized" />
-		<cf_HibachiListingColumn propertyIdentifier="amountReceived" />
-		<cf_HibachiListingColumn propertyIdentifier="amountCredited" />
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />		
+		<hb:HibachiListingColumn propertyIdentifier="transactionType" />
+		<hb:HibachiListingColumn propertyIdentifier="transactionSuccessFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="authorizationCode" />
+		<hb:HibachiListingColumn propertyIdentifier="authorizationCodeUsed" />
+		<hb:HibachiListingColumn propertyIdentifier="amountAuthorized" />
+		<hb:HibachiListingColumn propertyIdentifier="amountReceived" />
+		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
 		
-		
-	</cf_HibachiListingDisplay>
+	</hb:HibachiListingDisplay>
 </cfoutput>

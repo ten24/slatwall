@@ -46,4 +46,18 @@
 	Notes:
 	
 --->
-<cfoutput>#body#</cfoutput>
+<html>
+<head>
+    <title>Slatwall 3.0 Public UI</title>
+    <meta name="author" value="J Harvey">
+</head>
+<body>
+<cfoutput>
+#view('templates/_slatwall-header')#
+#body#
+#view('templates/_slatwall-footer')#
+</cfoutput>
+</body>
+</html>
+
+

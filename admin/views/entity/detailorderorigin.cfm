@@ -46,21 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderOrigin" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.orderOrigin#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.orderOrigin#" />
+	<hb:HibachiEntityDetailForm object="#rc.orderOrigin#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.orderOrigin#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.orderOrigin#" property="orderOriginName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.orderOrigin#" property="activeFlag" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.orderOrigin#" property="orderOriginType" edit="#rc.orderOrigin.isNew()#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
+		<hb:HibachiEntityDetailGroup object="#rc.orderOrigin#">
+			<hb:HibachiEntityDetailItem view="admin:entity/orderorigintabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+		</hb:HibachiEntityDetailGroup>
 
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

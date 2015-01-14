@@ -46,7 +46,10 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
+	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.attributeSet" type="any" />
 	<cfparam name="attributes.edit" type="boolean" default="false" />
 	<cfparam name="attributes.fieldNamePrefix" type="string" default="" />
@@ -57,23 +60,51 @@ Notes:
 	<cfset thisTag.attributeSmartList.addOrder("sortOrder|ASC") />
 	
 	<cfloop array="#thisTag.attributeSmartList.getRecords()#" index="attribute">
-		<cfset thisAttributeValue = "" />
-		<cfif isObject(attributes.entity)>
-			<cfset thisAttributeValue = attributes.entity.getAttributeValue(attribute.getAttributeID()) />
-		<cfelseif !isNull(attribute.getDefaultValue())>
-			<cfset thisAttributeValue = attribute.getDefaultValue() />  
-		</cfif>
+		<cfset fdAttributes = structNew() />
+		<cfset fdAttributes.title = attribute.getAttributeName()  />
+		<cfset fdAttributes.hint = attribute.getAttributeHint() />
+		<cfset fdAttributes.edit = attributes.edit />
+		<cfset fdAttributes.fieldname = "#attributes.fieldNamePrefix##attribute.getAttributeCode()#" />
+		<cfset fdAttributes.fieldType = attribute.getFormFieldType() />
 		
-		<cfset thisValueOptions = [] />
-		<cfloop array="#attribute.getAttributeOptions()#" index="option">
-			<cfset arrayAppend(thisValueOptions, {name=option.getAttributeOptionLabel(), value=option.getAttributeOptionValue()}) />
-		</cfloop>
-		
-		<cfset thisTag.fieldClass = "" />
+		<!--- Setup fieldClass --->
+		<cfset fdAttributes.fieldClass = "" />
 		<cfif !isNull(attribute.getRequiredFlag()) && isBoolean(attribute.getRequiredFlag()) && attribute.getRequiredFlag()>
-			<cfset thisTag.fieldClass = listAppend(thisTag.fieldClass, "required", " ") />
+			<cfset fdAttributes.fieldClass = listAppend(fdAttributes.fieldClass, "required", " ") />
 		</cfif>
 		
-		<cf_HibachiFieldDisplay title="#attribute.getAttributeName()#" hint="#attribute.getAttributeHint()#" edit="#attributes.edit#" fieldname="#attributes.fieldNamePrefix##attribute.getAttributeCode()#" fieldType="#right(attribute.getAttributeType().getSystemCode(), len(attribute.getAttributeType().getSystemCode())-2)#" fieldClass="#thisTag.fieldClass#" value="#thisAttributeValue#" valueOptions="#thisValueOptions#" />
+		<!--- Setup Value --->
+		<cfset fdAttributes.value = "" />
+		<cfif isObject(attributes.entity)>
+			<cfset thisAttributeValueObject = attributes.entity.getAttributeValue(attribute.getAttributeID(), true) />
+			<cfif attributes.edit>
+				<cfset fdAttributes.value = thisAttributeValueObject.getAttributeValue() />
+			<cfelse>
+				<cfset fdAttributes.value = thisAttributeValueObject.getAttributeValueFormatted() />
+			</cfif>
+		<cfelseif !isNull(attribute.getDefaultValue())>
+			<cfset fdAttributes.value = attribute.getDefaultValue() />  
+		</cfif>
+		
+		<!---Setup Value Options --->
+		<cfif attributes.edit>
+			<cfset fdAttributes.valueOptions = attribute.getAttributeOptionsOptions() />
+		</cfif>
+		
+		<cfif listFindNoCase('relatedObjectSelect,relatedObjectMultiselect', attribute.getAttributeInputType())>
+			
+			<cfset fdAttributes.valueOptionsSmartList = attributes.hibachiScope.getService('hibachiService').getServiceByEntityName( attribute.getRelatedObject() ).invokeMethod( "get#attribute.getRelatedObject()#SmartList" ) />
+			
+			<cfif attribute.getAttributeInputType() eq 'relatedObjectMultiselect'>
+				<cfset fdAttributes.multiselectPropertyIdentifier = attributes.hibachiScope.getService('hibachiService').getPrimaryIDPropertyNameByEntityName( attribute.getRelatedObject() ) />
+			</cfif>
+		</cfif>
+		
+		<!--- Setup file link --->
+		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'file' and len(fdAttributes.value)>
+			<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
+		</cfif>
+		
+		<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
 	</cfloop>
 </cfif>

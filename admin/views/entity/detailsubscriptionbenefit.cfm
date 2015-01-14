@@ -46,34 +46,31 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.subscriptionBenefit" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiEntityDetailForm object="#rc.subscriptionBenefit#" edit="#rc.edit#">
-		<cf_HibachiEntityActionBar type="detail" object="#rc.subscriptionBenefit#" edit="#rc.edit#" />
+	<hb:HibachiEntityDetailForm object="#rc.subscriptionBenefit#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.subscriptionBenefit#" edit="#rc.edit#" />
 		
-		<cf_HibachiPropertyRow>
-			<cf_HibachiPropertyList>
-				<cf_HibachiPropertyDisplay object="#rc.subscriptionBenefit#" property="subscriptionBenefitName" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.subscriptionBenefit#" property="accessType" edit="#rc.edit#">
-				<cf_HibachiPropertyDisplay object="#rc.subscriptionBenefit#" property="maxUseCount" edit="#rc.edit#">
-			</cf_HibachiPropertyList>
-		</cf_HibachiPropertyRow>
-		
-		<cf_HibachiTabGroup object="#rc.subscriptionBenefit#">
-			<cf_HibachiTab view="admin:entity/subscriptionbenefittabs/categories" />
-			<cf_HibachiTab view="admin:entity/subscriptionbenefittabs/contents" />
-			<cf_HibachiTab view="admin:entity/subscriptionbenefittabs/pricegroups" />
+		<hb:HibachiEntityDetailGroup object="#rc.subscriptionBenefit#">
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionbenefittabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionbenefittabs/categories" />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionbenefittabs/contents" />
+			<hb:HibachiEntityDetailItem view="admin:entity/subscriptionbenefittabs/pricegroups" />
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.subscriptionBenefit.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<cf_SlatwallAdminTabCustomAttributes object="#rc.subscriptionBenefit#" attributeSet="#attributeSet#" />
+				<swa:SlatwallAdminTabCustomAttributes object="#rc.subscriptionBenefit#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</cf_HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 
 		
-	</cf_HibachiEntityDetailForm>
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
 
 

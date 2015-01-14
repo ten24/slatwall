@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallPrint" table="SwPrint" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="printService" hb_permission="this" {
+component entityname="SlatwallPrint" table="SwPrint" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="printService" hb_permission="this" hb_processContext="addToQueue" {
 	
 	// Persistent Properties
 	property name="printID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -63,7 +63,7 @@ component entityname="SlatwallPrint" table="SwPrint" persistent="true" accessors
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="logPrintFlag" persistent="false"; 

@@ -1,35 +1,35 @@
 /* Slatwall Orange: f78f1e */
 
+
+
 body {
 	padding-bottom:40px;
 	height:100%;
     min-height:100%;
     font-size:13px;
 }
+
 label, input, button, select, textarea {
 	font-size:13px;
 }
+
 .btn-group>.btn, .btn-group>.dropdown-menu, .btn-group>.popover {
 	font-size:13px;
+	text-align:left;
 }
-.navbar {
-	height: 40px;
-	line-height:18px;
-	font-size:13px;
+@-moz-document url-prefix() {
+	.groups {
+		position:relative;
+		top:-3.5px;
+	}
 }
-.navbar .brand {
-	padding:8px 0px 6px 10px;
-}
-
-.navbar .brand-two {
-	margin:0px 0px 0px 0px;
-	padding: 8px 0px 12px 0px;
-}
-.navbar .nav {
-	width:auto;
-}
-.navbar li.dropdown > a {
-	padding: 10px 8px 11px 8px;
+.groups {
+	text-align: right;
+	font-size:0px;
+	.dropdown-menu {
+		position:absolute;
+		top: 30px;
+	}
 }
 .navbar .open a.dropdown-toggle {
 	color:#ffffff !important;
@@ -47,6 +47,7 @@ label, input, button, select, textarea {
 .navbar .dropdown-menu li.active > a {
 	background-color:#ffffff; color:#333333;
 }
+/*
 .tabbable.tabs-left {
 	padding-top: 10px;
 	border-top:1px solid #DDD;
@@ -164,7 +165,9 @@ td .span3 {
 .cke_skin_kama {
 	width:685px;
 }
-
+.modal-body .cke_skin_kama{
+	width:100%;
+}
 .search-filter {
 	padding:5px 15px 0px 15px;
 }
@@ -179,7 +182,7 @@ td .span3 {
 		font-size:11px;
 	}
 }
-
+*/
 #search-results {
 	position:relative;
 	width:100%;
@@ -203,7 +206,7 @@ td .span3 {
 	}
 }
 
-
+/*
 
 .table {
 	th, td {
@@ -260,6 +263,15 @@ td .span3 {
 	.depth10 {
 		margin-left:200px;
 	}
+}
+
+.general-listing-search{
+	margin-bottom:0 !important;
+}
+
+.listing-display-header{
+	background-color:#efefef; 
+	border-bottom:1px solid #cccccc;
 }
 
 .table-section {
@@ -568,3 +580,26 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 }
 
 a.hint {float:right;margin-right:5px;}
+*/
+
+
+/*
+.navbar {
+	height: 40px;
+	line-height:18px;
+	font-size:13px;
+}
+.navbar .brand {
+	padding:8px 0px 6px 10px;
+}
+.navbar .brand-two {
+	margin:0px 0px 0px 0px;
+	padding: 8px 0px 12px 0px;
+}
+.navbar .nav {
+	width:auto;
+}
+.navbar li.dropdown > a {
+	padding: 10px 8px 11px 8px;
+}
+*/

@@ -72,10 +72,10 @@ component entityname="SlatwallPhysical" table="SwPhysical" output="false" persis
 	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
-	property name="createdDateTime" ormtype="timestamp";
-	property name="createdByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
-	property name="modifiedDateTime" ormtype="timestamp";
-	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	property name="physicalStatusTypeSystemCode" persistent="false";
@@ -229,7 +229,7 @@ component entityname="SlatwallPhysical" table="SwPhysical" output="false" persis
 	
 	public any function getPhysicalStatusType() {
 		if(isNull(variables.physicalStatusType)) {
-			variables.physicalStatusType = getService("settingService").getTypeBySystemCode('pstOpen');
+			variables.physicalStatusType = getService("typeService").getTypeBySystemCode('pstOpen');
 		}
 		return variables.physicalStatusType;
 	}

@@ -70,6 +70,23 @@ Notes:
 									AND SwSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
 									ORDER BY changeDateTime DESC LIMIT 1)
 				</cfquery>
+		<cfelseif getApplicationValue("databaseType") eq "Oracle10g">
+				<cfquery name="getpg">
+					SELECT DISTINCT subpg.priceGroupID
+					FROM SwSubsUsageBenefitAccount suba
+					INNER JOIN SwSubsUsageBenefit sub ON suba.subscriptionUsageBenefitID = sub.subscriptionUsageBenefitID
+					INNER JOIN SwSubsUsageBenefitPriceGroup subpg ON sub.subscriptionUsageBenefitID = subpg.subscriptionUsageBenefitID
+					INNER JOIN SwSubsUsage su ON sub.subscriptionUsageID = su.subscriptionUsageID
+					WHERE (suba.endDateTime IS NULL
+							OR suba.endDateTime > <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />)
+						AND suba.accountID = <cfqueryparam value="#arguments.accountID#" cfsqltype="cf_sql_varchar" />
+						AND 'sstActive' = (SELECT systemcode FROM (SELECT systemCode,subscriptionUsageID FROM SwSubscriptionStatus 
+				                    INNER JOIN SwType ON SwSubscriptionStatus.subscriptionStatusTypeID = SwType.typeID 
+				                    WHERE SwSubscriptionStatus.effectiveDateTime <= <cfqueryparam value="#now()#" cfsqltype="cf_sql_timestamp" />
+				                    ORDER BY changeDateTime DESC) 
+									WHERE subscriptionUsageID = su.subscriptionUsageID 
+				                    AND rownum <= 1)
+				</cfquery>
 		<cfelse>
 				<cfquery name="getpg">
 					SELECT DISTINCT subpg.priceGroupID

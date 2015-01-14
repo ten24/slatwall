@@ -46,35 +46,38 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.attribute" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<cfif rc.attribute.getAttributeType().getSystemCode() eq "atText">
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.attribute#" property="validationMessage" edit="#rc.edit#">
-			<cf_HibachiPropertyDisplay object="#rc.attribute#" property="validationRegex" edit="#rc.edit#">	
-		</cf_HibachiPropertyList>
-	<cfelseif rc.attribute.getAttributeType().getSystemCode() eq "atPassword">
-		<cf_HibachiPropertyList>
-			<cf_HibachiPropertyDisplay object="#rc.attribute#" property="decryptValueInAdminFlag" edit="#rc.edit#">
-		</cf_HibachiPropertyList>
-	<cfelseif listFindNoCase( "atCheckBoxGroup,atMultiSelect,atRadioGroup,atSelect",rc.attribute.getAttributeType().getSystemCode() )>
+	<cfif rc.attribute.getAttributeInputType() eq "text">
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="validationMessage" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="validationRegex" edit="#rc.edit#">	
+		</hb:HibachiPropertyList>
+	<cfelseif rc.attribute.getAttributeInputType() eq "password">
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="decryptValueInAdminFlag" edit="#rc.edit#">
+		</hb:HibachiPropertyList>
+	<cfelseif listFindNoCase( "checkboxGroup,multiselect,radioGroup,select",rc.attribute.getAttributeInputType() )>
 		
-		<cf_HibachiListingDisplay smartList="#rc.attribute.getAttributeOptionsSmartList()#"
+		<hb:HibachiListingDisplay smartList="#rc.attribute.getAttributeOptionsSmartList()#"
 								   recordEditAction="admin:entity.editattributeoption" 
 								   recordEditQueryString="redirectAction=admin:entity.detailAttribute&attributeID=#rc.attribute.getAttributeID()#"
-								   recordEditModal="true"
 								   recordDeleteAction="admin:entity.deleteattributeoption"
 								   recordDeleteQueryString="attributeID=#rc.attribute.getAttributeID()#&redirectAction=admin:entity.detailAttribute"
 								   sortProperty="sortOrder"
 								   sortContextIDColumn="attributeID"
 								   sortContextIDValue="#rc.attribute.getAttributeID()#">
-			<cf_HibachiListingColumn propertyIdentifier="attributeOptionValue" /> 
-			<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="attributeOptionLabel" /> 
-		</cf_HibachiListingDisplay>
+			<hb:HibachiListingColumn propertyIdentifier="attributeOptionValue" /> 
+			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="attributeOptionLabel" /> 
+		</hb:HibachiListingDisplay>
 		
-		<cf_HibachiActionCaller action="admin:entity.createattributeoption" class="btn" icon="plus" queryString="redirectAction=admin:entity.detailAttribute&attributeid=#rc.attribute.getAttributeID()#" modal=true />
+		<hb:HibachiActionCaller action="admin:entity.createattributeoption" class="btn btn-default" icon="plus" queryString="redirectAction=admin:entity.detailAttribute&attributeid=#rc.attribute.getAttributeID()#" />
 	</cfif>
 	
 </cfoutput>

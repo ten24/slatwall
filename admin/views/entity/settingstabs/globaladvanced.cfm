@@ -46,15 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfoutput>
-	<cf_SlatwallSettingTable showInheritance="false">
-		<cf_SlatwallSetting settingName="globalEncryptionAlgorithm" />
-		<cf_SlatwallSetting settingName="globalEncryptionEncoding" />
-		<cf_SlatwallSetting settingName="globalEncryptionKeySize" />
-		<cf_SlatwallSetting settingName="globalEncryptionKeyLocation" />
-		<cf_SlatwallSetting settingName="globalEncryptionService" />
-		<cf_SlatwallSetting settingName="globalRemoteIDShowFlag" />
-		<cf_SlatwallSetting settingName="globalRemoteIDEditFlag" />
-	</cf_SlatwallSettingTable>
+	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="globalEncryptionAlgorithm" />
+		<swa:SlatwallSetting settingName="globalEncryptionEncoding" />
+		<swa:SlatwallSetting settingName="globalEncryptionKeySize" />
+		<swa:SlatwallSetting settingName="globalEncryptionKeyLocation" />
+		<swa:SlatwallSetting settingName="globalEncryptionService" />
+		<swa:SlatwallSetting settingName="globalForceCreditCardOverSSL" />
+		<swa:SlatwallSetting settingName="globalNoSessionIPRegex" />
+		<swa:SlatwallSetting settingName="globalNoSessionPersistDefault" />
+		<swa:SlatwallSetting settingName="globalRemoteIDShowFlag" />
+		<swa:SlatwallSetting settingName="globalRemoteIDEditFlag" />
+	</swa:SlatwallSettingTable>
 </cfoutput>
 

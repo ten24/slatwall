@@ -2,6 +2,15 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 
 	public void function onEvent( required any eventName, required struct eventData={} ) {
 		
+		
+		// =============== WORKFLOW ==================
+		
+		// Make sure that there is an entity for this event
+		if(structKeyExists(arguments, "entity") && isObject(arguments.entity)) {
+			getService("workflowService").runAllWorkflowsByEventTrigger(argumentCollection=arguments);	
+		}
+		
+		// ============== DEPRECATED EVENT TRIGGERS ====================
 		// Get the event triggers
 		var eventTriggerEvents = getService("eventTriggerService").getEventTriggerEvents();
 		
@@ -12,12 +21,12 @@ component extends="Slatwall.org.Hibachi.HibachiObject" {
 			for(eventTriggerDetails in eventTriggerEvents[ arguments.eventName ]) {
 				
 				// Event Trigger - Email
-				if(eventTriggerDetails.eventTriggerType eq 'email') {
+				if(eventTriggerDetails.eventTriggerType eq 'email' && structKeyExists(eventTriggerDetails,'emailTemplateID')) {
 					
 					getService("emailService").generateAndSendFromEntityAndEmailTemplateID(entity=arguments.entity, emailTemplateID=eventTriggerDetails.emailTemplateID);
 					
 				// Event Trigger - Print
-				} else if(eventTriggerDetails.eventTriggerType eq 'print') {
+				} else if(eventTriggerDetails.eventTriggerType eq 'print' && structKeyExists(eventTriggerDetails,'printTemplateID')) {
 					
 					getService("printService").generateAndPrintFromEntityAndPrintTemplateID(entity=arguments.entity, printTemplateID=eventTriggerDetails.printTemplateID);
 					

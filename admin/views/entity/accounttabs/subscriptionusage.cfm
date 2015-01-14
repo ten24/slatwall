@@ -46,17 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.account" type="any" />
 
-<cf_HibachiListingDisplay smartList="#rc.account.getSubscriptionUsagesSmartList()#"
+<hb:HibachiListingDisplay smartList="#rc.account.getSubscriptionUsagesSmartList()#"
 						  recordDetailAction="admin:entity.detailsubscriptionusage"
 						  recordEditAction="admin:entity.editsubscriptionusage">
 
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionOrderItemName" />
-	<cf_HibachiListingColumn propertyIdentifier="currentStatusType" />
-	<cf_HibachiListingColumn propertyIdentifier="nextBillDate" />
-	<cf_HibachiListingColumn propertyIdentifier="expirationDate" />
-	<cf_HibachiListingColumn propertyIdentifier="renewalPrice" />
-	<cf_HibachiListingColumn propertyIdentifier="autoPayFlag" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionOrderItemName" />
+	<hb:HibachiListingColumn propertyIdentifier="currentStatusType" />
+	<hb:HibachiListingColumn propertyIdentifier="nextBillDate" />
+	<hb:HibachiListingColumn propertyIdentifier="expirationDate" />
+	<hb:HibachiListingColumn propertyIdentifier="renewalPrice" />
+	<hb:HibachiListingColumn propertyIdentifier="autoPayFlag" />
+</hb:HibachiListingDisplay>
 

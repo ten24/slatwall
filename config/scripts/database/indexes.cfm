@@ -73,7 +73,7 @@ Notes:
 				</cfquery>
 				<cfif not qrs.recordCount>
 					<cfquery name="createIndex">
-						CREATE INDEX "FK_#UCASE(right(hash(infoTables.table_name & infoColumns.column_name), 27))#" ON #infoTables.table_name# ( #infoColumns.column_name# )
+						CREATE INDEX FK_#UCASE(right(hash(infoTables.table_name & infoColumns.column_name), 27))# ON #infoTables.table_name# ( #infoColumns.column_name# )
 					</cfquery>
 				</cfif>
 			</cfif>

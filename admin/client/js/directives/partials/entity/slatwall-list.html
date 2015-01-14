@@ -1,0 +1,106 @@
+<section class="content s-body-margin" id="j-main-content" ng-controller="slatwall-list-controller">
+
+	<div class="col-md-12">
+		
+
+	<div class="row s-body-nav">
+	    <nav class="navbar navbar-default" role="navigation">
+	      <div class="col-md-6 s-header-info">
+			
+				
+				<ul class="list-unstyled list-inline">
+					
+					
+				</ul>
+				
+				<h1 class="actionbar-title">{{entityDisplayName}}</h1>
+			</div>
+
+			<div class="col-md-6">
+				<div class="btn-toolbar">
+
+					
+					
+						<div class="btn-group btn-group-sm">
+							 <a title="Add {{entityDisplayName}}" class="adminentitycreatecollection btn btn-primary"  sw-href="/entity/Workflow/null"><i class="glyphicon glyphicon-plus icon-white"></i> Add {{entityDisplayName}}</a>  
+						</div>
+					
+					
+				</div>
+			</div>
+		</nav>
+	</div>
+
+
+<div class="s-table-header-nav s-listing-head-margin">
+	<div class="col-xs-6 s-no-padding-left">
+		<ul class="list-inline list-unstyled">
+			<li>
+				<h4>
+					
+				</h4>
+			</li>
+		</ul>
+	</div>
+
+	<div class="col-xs-6 s-table-view-options s-no-padding-right">
+		<ul class="list-inline list-unstyled">
+			<li>
+				<form class="s-table-header-search ng-pristine ng-valid" novalidate="novalidate">
+					
+						<input type="text" name="search" class="form-control input-sm general-listing-search" placeholder="Search" value="" tableid="LD45E2A51ABB8FAA1277509A46B2857887">
+					
+				</form>
+			</li>
+			<li>
+				<div class="btn-group navbar-left dropdown">
+
+					<button type="button" class="btn btn-sm s-btn-dgrey dropdown-toggle" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i></button>
+
+						<ul class="dropdown-menu pull-right" role="menu">
+							<li><a title="Export List" class="adminentityexportSlatwallCollection " target="_self" href="?slatAction=entity.exportSlatwallCollection">Export List</a></li> 
+						</ul>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>
+
+<div class="table-responsive">
+	<!---list view begin --->
+     <div class="table-responsive s-filter-table-box">
+	    <table class="table table-bordered table-striped" >
+	        <thead>
+	            <tr>
+	                <th style="display:none">Row</span></th>
+	                <th ng-repeat="(key,column) in collectionConfig.columns" class="s-sortable" ng-bind="column.title" ng-show="column.isVisible"></th>
+	                <th></th>
+	            </tr>
+	        </thead>
+	        <tbody sw-scroll-trigger
+    		infinite-scroll="appendToCollection()"
+    		infinite-scroll-disabled="autoScrollDisabled"
+    		infinite-scroll-distance="1">
+				<tr ng-repeat="pageRecord in collection.pageRecords">
+		            <td style="display:none"> <div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
+		            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[column.propertyIdentifier.split('.').pop()]" ng-show="column.isVisible"></td>
+		            <td class="s-edit-elements">
+		              <ul>
+		                <li><a sw-href="{{'/entity/'+entityName+'/'+pageRecord[entityName.toLowerCase()+'ID']}}" ><i class="fa fa-eye"></i></a></li>
+		                <li><a sw-href="{{'/entity/'+entityName+'/'+pageRecord[entityName.toLowerCase()+'ID']}}"><i class="fa fa-pencil"></i></a></li>
+		              </ul>
+		            </td>
+	          	</tr>
+	        </tbody>
+	    </table>
+	 </div>
+	<!---list view end --->
+
+	</div>
+
+
+
+
+	</div>
+
+</section>

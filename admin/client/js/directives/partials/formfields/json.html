@@ -1,0 +1,9 @@
+<input  type="text" 
+		class="form-control" 
+  		 ng-model="propertyDisplay.object.data[propertyDisplay.property]"
+  		 ng-disabled="!propertyDisplay.editable"
+  		 ng-show="propertyDisplay.editing"
+  		 on-change="propertyDisplay.onChange"
+  		 style="display:none"
+  		 name="{{propertyDisplay.property}}"
+/>

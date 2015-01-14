@@ -47,10 +47,7 @@ Notes:
 	
 */
 component extends="org.Hibachi.Hibachi" output="false" {
- 	// ==================================== Added Application Mapping to iself for /Slatwall Mapping
- 	this.applicationroot = getDirectoryFromPath( getCurrentTemplatePath() );
-    	this.mappings[ "/Slatwall" ] = this.applicationroot;
-	
+
 	// ===================================== HIBACHI HOOKS
 	
 	// @hint this method always fires one time, even if the request is coming from an outside application.
@@ -96,8 +93,8 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		writeLog(file="Slatwall", text="General Log - Default Data Has Been Confirmed");
 		
 		// Clear the setting cache so that it can be reloaded
-		getBeanFactory().getBean("settingService").clearAllSettingsCache();
-		writeLog(file="Slatwall", text="General Log - Setting Cache has been cleared");
+		getBeanFactory().getBean("hibachiCacheService").resetCachedKeyByPrefix('setting_');
+		writeLog(file="Slatwall", text="General Log - Setting Cache has been cleared because of updated request");
 		
 		// Run Scripts
 		getBeanFactory().getBean("updateService").runScripts();
@@ -105,9 +102,13 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	}
 	
 	public void function onFirstRequestPostUpdate() {
-		// Reload All Integrations
-		getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory();
-		writeLog(file="Slatwall", text="General Log - Integrations have been updated");
+		
+		// Reload All Integrations, we pass in the beanFactory and it is returned so that it can be updated it with any integration beans prefixed 
+		var beanFactory = getBeanFactory().getBean("integrationService").updateIntegrationsFromDirectory( getBeanFactory() );
+		
+		setBeanFactory( beanFactory );
+		
+		writeLog(file="Slatwall", text="General Log - Integrations have been updated & custom beans have been added to bean factory");
 	}
 	
 	// ===================================== END: HIBACHI HOOKS
@@ -133,7 +134,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 		if ( arguments.subsystem eq '' ) {
 			return '';
 		}
-		if ( !listFindNoCase('admin,frontend,public', arguments.subsystem) ) {
+		if ( !listFindNoCase('admin,api,frontend,public', arguments.subsystem) ) {
 			return 'integrationServices/' & arguments.subsystem & '/';
 		}
 		return arguments.subsystem & '/';

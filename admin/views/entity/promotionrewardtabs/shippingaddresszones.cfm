@@ -46,11 +46,13 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 <cfparam name="rc.promotionreward" type="any">
 <cfparam name="rc.promotionperiod" type="any" default="#rc.promotionreward.getPromotionPeriod()#" />
 <cfparam name="rc.rewardType" type="string" default="#rc.promotionReward.getRewardType()#">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	<cf_HibachiPropertyDisplay object="#rc.promotionReward#" property="shippingAddressZones" edit="#rc.edit#" displaytype="plain" />
+	<hb:HibachiPropertyDisplay object="#rc.promotionReward#" property="shippingAddressZones" edit="#rc.edit#" displaytype="plain" />
 </cfoutput>

@@ -52,6 +52,55 @@
 		return variables.validationStructs[ arguments.object.getClassName() ];
 	}
 	
+	public struct function getValidationStructByName(required string objectName) {
+		if(!structKeyExists(variables.validationStructs, objectName)) {
+			
+			// Get CORE Validations
+			var coreValidationFile = expandPath('/#getApplicationValue('applicationKey')#/model/validation/#objectName#.json'); 
+			var validation = {};
+			if(fileExists( coreValidationFile )) {
+				var rawCoreJSON = fileRead( coreValidationFile );
+				if(isJSON( rawCoreJSON )) {
+					validation = deserializeJSON( rawCoreJSON );
+				} else {
+					throw("The Validation File: #coreValidationFile# is not a valid JSON object");
+				}
+			}
+			
+			// Get Custom Validations
+			var customValidationFile = expandPath('/#getApplicationValue('applicationKey')#/custom/model/validation/#objectName#.json');
+			var customValidation = {};
+			if(fileExists( customValidationFile )) {
+				var rawCustomJSON = fileRead( customValidationFile );
+				if(isJSON( rawCustomJSON )) {
+					customValidation = deserializeJSON( rawCustomJSON );
+				} else {
+					logHibachi("The Validation File: #customValidationFile# is not a valid JSON object");
+				}
+			}
+			
+			// Make sure that the validation struct has contexts & properties
+			param name="validation.properties" default="#structNew()#";
+			
+			// Add any additional rules
+			if(structKeyExists(customValidation, "properties")) {
+				for(var key in customValidation.properties) {
+					if(!structKeyExists(validation.properties, key)) {
+						validation.properties[ key ] = customValidation.properties[ key ];
+					} else {
+						for(var r=1; r<=arrayLen(customValidation.properties[ key ]); r++) {
+							arrayAppend(validation.properties[ key ],customValidation.properties[ key ][r]);	
+						}
+					}
+				}
+			}
+			
+			variables.validationStructs[ objectName ] = validation;
+		}
+		
+		return variables.validationStructs[ objectName ];
+	}
+	
 	public struct function getValidationsByContext(required any object, string context="") {
 		
 		if(!structKeyExists(variables.validationByContextStructs, "#arguments.object.getClassName()#-#arguments.context#")) {
@@ -76,12 +125,11 @@
 						
 						for(var constraint in rule) {
 							if(constraint != "contexts" && constraint != "conditions") {
-								var constraintDetails = {
-									constraintType=constraint,
-									constraintValue=rule[ constraint ]
-								};
+								var constraintDetails = {};
+								constraintDetails['constraintType'] = constraint;
+								constraintDetails['constraintValue'] = rule[ constraint ];
 								if(structKeyExists(rule, "conditions")) {
-									constraintDetails.conditions = rule.conditions;
+									constraintDetails['conditions'] = rule.conditions;
 								}
 								arrayAppend(contextValidations[ property ], constraintDetails);
 							}
@@ -151,13 +199,13 @@
 	}
 	
 	public any function validate(required any object, string context="", boolean setErrors=true) {
+		
 		// Setup an error bean
 		if(setErrors) {
 			var errorBean = arguments.object.getHibachiErrors();
 		} else {
 			var errorBean = getTransient("hibachiErrors");
 		}
-		
 		// If the context was 'false' then we don't do any validation
 		if(!isBoolean(arguments.context) || arguments.context) {
 			
@@ -181,7 +229,7 @@
 						
 						// Now if a condition was meet we can actually test the individual validation rule
 						if(conditionMeet) {
-							validateConstraint(object=arguments.object, propertyIdentifier=propertyIdentifier, constraintDetails=contextValidations[ propertyIdentifier ][c], errorBean=errorBean, context=arguments.context);	
+							validateConstraint(object=arguments.object, propertyIdentifier=propertyIdentifier, constraintDetails=contextValidations[ propertyIdentifier ][c], errorBean=errorBean, context=arguments.context);
 						}
 					}	
 				}
@@ -197,16 +245,16 @@
 	}
 	
 	
-	public any function validateConstraint(required any object, required string propertyIdentifier, required struct constraintDetails, required any errorBean, required string context) {
+	public void function validateConstraint(required any object, required string propertyIdentifier, required struct constraintDetails, required any errorBean, required string context) {
 		if(!structKeyExists(variables, "validate_#arguments.constraintDetails.constraintType#")) {
 			throw("You have an error in the #arguments.object.getClassName()#.json validation file.  You have a constraint defined for '#arguments.propertyIdentifier#' that is called '#arguments.constraintDetails.constraintType#' which is not a valid constraint type");
 		}
 		
 		var isValid = invokeMethod("validate_#arguments.constraintDetails.constraintType#", {object=arguments.object, propertyIdentifier=arguments.propertyIdentifier, constraintValue=arguments.constraintDetails.constraintValue});	
-					
+	
 		if(!isValid) {
-			var thisPropertyName = listLast(arguments.propertyIdentifier, '._');
-			
+			var thisPropertyName = listLast(arguments.propertyIdentifier, '.');
+				
 			var replaceTemplateStruct = {};
 			replaceTemplateStruct.propertyName = arguments.object.getPropertyTitle(thisPropertyName);
 			if(arguments.object.isPersistent()) {
@@ -234,11 +282,10 @@
 		}
 	}
 	
-	
 	// ================================== VALIDATION CONSTRAINT LOGIC ===========================================
 	
 	public boolean function validate_required(required any object, required string propertyIdentifier, boolean constraintValue=true) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");
 		if(!isNull(propertyValue) && (isObject(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue)) || (isStruct(propertyValue) && structCount(propertyValue)) || (isSimpleValue(propertyValue) && len(trim(propertyValue))))) {
 			return true;
 		}
@@ -246,7 +293,10 @@
 	}
 	
 	public boolean function validate_null(required any object, required string propertyIdentifier, boolean constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(isNull(propertyValue) && arguments.constraintValue) {
 			return true;
 		}
@@ -254,11 +304,43 @@
 	}
 	
 	public boolean function validate_dataType(required any object, required string propertyIdentifier, required any constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
-		if(listFindNoCase("any,array,binary,boolean,component,creditCard,date,time,email,eurodate,float,numeric,guid,integer,query,range,regex,regular_expression,ssn,social_security_number,string,telephone,url,uuid,usdate,zipcode",arguments.constraintValue)) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
+		
+		// Standard Validation DataTypes
+		if(listFindNoCase("any,array,binary,boolean,component,date,time,email,eurodate,float,numeric,guid,integer,query,range,regex,regular_expression,ssn,social_security_number,string,telephone,url,uuid,usdate,zipcode",arguments.constraintValue)) {
 			if(isNull(propertyValue) || isValid(arguments.constraintValue, propertyValue)) {
 				return true;
 			}
+			
+		// Custom CreditCardNumber DataTypes
+		} else if(listFindNoCase("creditCard,creditCardNumber",arguments.constraintValue)) {
+			if(isNull(propertyValue)) {
+				return true;
+			}
+			if(len(propertyValue) && isNumeric(propertyValue)) {
+				var nDigits = len(propertyValue);
+				var parity = nDigits MOD 2;
+				var digit = "";
+				var sum = 0;
+				
+				for(var i=0; i <= nDigits - 1; i=i+1) {
+					digit = mid(propertyValue, i+1, 1);
+					if ((i MOD 2) == parity) {
+						digit = digit * 2;
+						if (digit > 9) {
+							digit = digit - 9;
+						}
+					}
+					sum = sum + digit;
+				}
+				if (Not sum MOD 10){
+					return true;
+				}
+			}
+			return false;
 		} else {
 			throw("The validation file: #arguments.object.getClassName()#.json has an incorrect dataType constraint value of '#arguments.constraintValue#' for one of it's properties.  Valid values are: any,array,binary,boolean,component,creditCard,date,time,email,eurodate,float,numeric,guid,integer,query,range,regex,regular_expression,ssn,social_security_number,string,telephone,url,uuid,usdate,zipcode");
 		}
@@ -267,7 +349,10 @@
 	}
 	
 	public boolean function validate_minValue(required any object, required string propertyIdentifier, required numeric constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(isNull(propertyValue) || (isNumeric(propertyValue) && propertyValue >= arguments.constraintValue) ) {
 			return true;
 		}
@@ -275,7 +360,10 @@
 	}
 	
 	public boolean function validate_maxValue(required any object, required string propertyIdentifier, required numeric constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(isNull(propertyValue) || (isNumeric(propertyValue) && propertyValue <= arguments.constraintValue) ) {
 			return true;
 		}
@@ -283,7 +371,10 @@
 	}
 	
 	public boolean function validate_minLength(required any object, required string propertyIdentifier, required numeric constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(isNull(propertyValue) || (isSimpleValue(propertyValue) && len(trim(propertyValue)) >= arguments.constraintValue) ) {
 			return true;
 		}
@@ -291,7 +382,10 @@
 	}
 	
 	public boolean function validate_maxLength(required any object, required string propertyIdentifier, required numeric constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(isNull(propertyValue) || (isSimpleValue(propertyValue) && len(trim(propertyValue)) <= arguments.constraintValue) ) {
 			return true;
 		}
@@ -299,7 +393,10 @@
 	}
 	
 	public boolean function validate_minCollection(required any object, required string propertyIdentifier, required numeric constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(isNull(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue) >= arguments.constraintValue) || (isStruct(propertyValue) && structCount(propertyValue) >= arguments.constraintValue)) {
 			return true;
 		}
@@ -307,7 +404,10 @@
 	}
 	
 	public boolean function validate_maxCollection(required any object, required string propertyIdentifier, required numeric constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(isNull(propertyValue) || (isArray(propertyValue) && arrayLen(propertyValue) <= arguments.constraintValue) || (isStruct(propertyValue) && structCount(propertyValue) <= arguments.constraintValue)) {
 			return true;
 		}
@@ -315,7 +415,10 @@
 	}
 	
 	public boolean function validate_minList(required any object, required string propertyIdentifier, required numeric constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if((!isNull(propertyValue) && isSimpleValue(propertyValue) && listLen(propertyValue) >= arguments.constraintValue) || (isNull(propertyValue) && arguments.constraintValue == 0)) {
 			return true;
 		}
@@ -323,7 +426,10 @@
 	}
 	
 	public boolean function validate_maxList(required any object, required string propertyIdentifier, required numeric constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if((!isNull(propertyValue) && isSimpleValue(propertyValue) && listLen(propertyValue) <= arguments.constraintValue) || (isNull(propertyValue) && arguments.constraintValue == 0)) {
 			return true;
 		}
@@ -335,7 +441,10 @@
 	}
 	
 	public boolean function validate_lte(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(!isNull(propertyValue) && propertyValue <= arguments.constraintValue) {
 			return true;
 		}
@@ -343,7 +452,10 @@
 	}
 	
 	public boolean function validate_lt(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(!isNull(propertyValue) && propertyValue < arguments.constraintValue) {
 			return true;
 		}
@@ -351,7 +463,10 @@
 	}
 	
 	public boolean function validate_gte(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(!isNull(propertyValue) && propertyValue >= arguments.constraintValue) {
 			return true;
 		}
@@ -359,7 +474,10 @@
 	}
 	
 	public boolean function validate_gt(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(!isNull(propertyValue) && propertyValue > arguments.constraintValue) {
 			return true;
 		}
@@ -367,27 +485,32 @@
 	}
 	
 	public boolean function validate_gtNow(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
-		if(!isNull(propertyValue) && dateCompare(propertyValue, now())) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
+		if(isNull(propertyValue) || dateCompare(propertyValue, now()) eq 1) {
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean function validate_ltNow(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
-		if(!isNull(propertyValue) && dateCompare(propertyValue, now()) eq -1) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
+		if(isNull(propertyValue) || dateCompare(propertyValue, now()) eq -1) {
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean function validate_eq(required any object, required string propertyIdentifier, required string constraintValue) {
-		var lastObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		var propertyValue = javaCast("null", "");
-		if(!isNull(lastObject)) {
-			propertyValue = lastObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
-		} 
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(!isNull(propertyValue) && !isNull(propertyValue) && propertyValue == arguments.constraintValue) {
 			return true;
 		}
@@ -395,7 +518,10 @@
 	}
 	
 	public boolean function validate_neq(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(!isNull(propertyValue) && propertyValue != arguments.constraintValue) {
 			return true;
 		}
@@ -403,61 +529,130 @@
 	}
 	
 	public boolean function validate_lteProperty(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
-		var compairPropertyValue =  arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue ).invokeMethod("get#listLast(arguments.constraintValue,'._')#");
-		if(!isNull(propertyValue) && !isNull(compairPropertyValue) && propertyValue <= compairPropertyValue) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
+		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
+		if(!isNull(comparePropertyObject)) {
+			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");	
+		}
+		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue <= comparePropertyValue) {
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean function validate_ltProperty(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
-		var compairPropertyValue =  arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue ).invokeMethod("get#listLast(arguments.constraintValue,'._')#");
-		if(!isNull(propertyValue) && !isNull(compairPropertyValue) && propertyValue < compairPropertyValue) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
+		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
+		if(!isNull(comparePropertyObject)) {
+			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");	
+		}
+		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue < comparePropertyValue) {
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean function validate_gteProperty(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
-		var compairPropertyValue =  arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue ).invokeMethod("get#listLast(arguments.constraintValue,'._')#");
-		if(!isNull(propertyValue) && !isNull(compairPropertyValue) && propertyValue >= compairPropertyValue) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
+		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
+		if(!isNull(comparePropertyObject)) {
+			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");	
+		}
+		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue >= comparePropertyValue) {
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean function validate_gtProperty(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
-		var compairPropertyValue =  arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue ).invokeMethod("get#listLast(arguments.constraintValue,'._')#");
-		if(!isNull(propertyValue) && !isNull(compairPropertyValue) && propertyValue > compairPropertyValue) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
+		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
+		if(!isNull(comparePropertyObject)) {
+			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");	
+		}
+		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue > comparePropertyValue) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean function validate_gtDateTimeProperty(required any object, required string propertyIdentifier, required string constraintValue) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
+		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
+		if(!isNull(comparePropertyObject)) {
+			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");	
+		}
+		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && (dateCompare(propertyValue, comparePropertyValue,"n")==1)) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean function validate_ltDateTimeProperty(required any object, required string propertyIdentifier, required string constraintValue) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
+		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
+		if(!isNull(comparePropertyObject)) {
+			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");	
+		}
+		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && (dateCompare(propertyValue, comparePropertyValue)==-1)) {
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean function validate_eqProperty(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
-		var compairPropertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue ).invokeMethod("get#listLast(arguments.constraintValue,'._')#");
-		if((isNull(propertyValue) && isNull(compairPropertyValue)) || (!isNull(propertyValue) && !isNull(compairPropertyValue) && propertyValue == compairPropertyValue)) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
+		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
+		if(!isNull(comparePropertyObject)) {
+			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");	
+		}
+		if((isNull(propertyValue) && isNull(comparePropertyValue)) || (!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue == comparePropertyValue)) {
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean function validate_neqProperty(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
-		var compairPropertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue ).invokeMethod("get#listLast(arguments.constraintValue,'._')#");
-		if(!isNull(propertyValue) && !isNull(compairPropertyValue) && propertyValue != compairPropertyValue) {
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
+		var comparePropertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.constraintValue );
+		if(!isNull(comparePropertyObject)) {
+			var comparePropertyValue = comparePropertyObject.invokeMethod("get#listLast(arguments.constraintValue,'.')#");	
+		}
+		if(!isNull(propertyValue) && !isNull(comparePropertyValue) && propertyValue != comparePropertyValue) {
 			return true;
 		}
 		return false;
 	}
 	
 	public boolean function validate_inList(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(!isNull(propertyValue) && listFindNoCase(arguments.constraintValue, propertyValue)) {
 			return true;
 		}
@@ -465,21 +660,26 @@
 	}
 	
 	public boolean function validate_unique(required any object, required string propertyIdentifier, boolean constraintValue=true) {
-		var uniqueObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		return getHibachiDAO().isUniqueProperty(propertyName=listLast(arguments.propertyIdentifier,'._'), entity=uniqueObject);
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		return getHibachiDAO().isUniqueProperty(propertyName=listLast(arguments.propertyIdentifier,'.'), entity=propertyObject);
 	}
 	
 	public boolean function validate_uniqueOrNull(required any object, required string propertyIdentifier, boolean constraintValue=true) {
-		var uniqueObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
-		var propertyValue = object.invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(isNull(propertyValue)) {
 			return true;
 		}
-		return getHibachiDAO().isUniqueProperty(propertyName=listLast(arguments.propertyIdentifier,'._'), entity=uniqueObject);
+		return getHibachiDAO().isUniqueProperty(propertyName=listLast(arguments.propertyIdentifier,'.'), entity=propertyObject);
 	}
 	
 	public boolean function validate_regex(required any object, required string propertyIdentifier, required string constraintValue) {
-		var propertyValue = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier ).invokeMethod("get#listLast(arguments.propertyIdentifier,'._')#");
+		var propertyObject = arguments.object.getLastObjectByPropertyIdentifier( arguments.propertyIdentifier );
+		if(!isNull(propertyObject)) {
+			var propertyValue = propertyObject.invokeMethod("get#listLast(arguments.propertyIdentifier,'.')#");	
+		}
 		if(isNull(propertyValue) || isValid("regex", propertyValue, arguments.constraintValue)) {
 			return true;
 		}

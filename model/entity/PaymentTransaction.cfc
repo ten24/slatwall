@@ -66,7 +66,7 @@ component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" p
 	property name="securityCodeMatchFlag" ormtype="boolean";
 	property name="avsCode" ormtype="string";				// @hint this is whatever the avs code was that got returned
 	property name="statusCode" ormtype="string";			// @hint this is the status code that was passed back in the response bean
-	property name="message" ormtype="string";  				// @hint this is a pipe and tilda delimited list of any messages that came back in the response.
+	property name="message" ormtype="string" length="4000"; // @hint this is a pipe and tilda delimited list of any messages that came back in the response.
 	
 	// Related Object Properties (many-to-one)
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID";
@@ -84,14 +84,17 @@ component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" p
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Deperecated Properties
 	property name="amountCharged" notnull="true" dbdefault="0" ormtype="big_decimal";
 	
 	// Non-Persistent Properties
+
+	property name="avsDescription" persistent="false";
+
 
 	public any function init() {
 		setAmountAuthorized(0);
@@ -109,6 +112,14 @@ component entityname="SlatwallPaymentTransaction" table="SwPaymentTransaction" p
 			return getAccountPayment();
 		} else if (!isNull(getAccountPaymentMethod())) {
 			return getAccountPaymentMethod();
+		}
+	}
+
+	public string function getAVSDescription(){
+		if(!isNull(getAvsCode()) && getAvsCode() !=''){
+			return rbKey('entity.PaymentTransaction.AVSDescription.' & getAvsCode());	
+		}else{
+			return '';
 		}
 	}
 	

@@ -46,18 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.productType" type="any" />
 <cfparam name="rc.sitesArray" />
 
 <cfoutput>
-	<cf_SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#">
-		<cf_SlatwallSetting settingName="productTypeHTMLTitleString" settingObject="#rc.productType#" />
-		<cf_SlatwallSetting settingName="productTypeMetaDescriptionString" settingObject="#rc.productType#" />
-		<cf_SlatwallSetting settingName="productTypeMetaKeywordsString" settingObject="#rc.productType#" />
+	<swa:SlatwallSettingTable showFilterEntities="#arrayLen(rc.sitesArray)#">
+		<swa:SlatwallSetting settingName="productTypeHTMLTitleString" settingObject="#rc.productType#" />
+		<swa:SlatwallSetting settingName="productTypeMetaDescriptionString" settingObject="#rc.productType#" />
+		<swa:SlatwallSetting settingName="productTypeMetaKeywordsString" settingObject="#rc.productType#" />
 		
 		<!--- Site Specific Settings --->
 		<cfloop array="#rc.sitesArray#" index="site">
-			<cf_SlatwallSetting settingName="productTypeDisplayTemplate" settingObject="#rc.productType#" settingFilterEntities="#[site]#" />
+			<swa:SlatwallSetting settingName="productTypeDisplayTemplate" settingObject="#rc.productType#" settingFilterEntities="#[site]#" />
 		</cfloop>
-	</cf_SlatwallSettingTable>
+	</swa:SlatwallSettingTable>
 </cfoutput>

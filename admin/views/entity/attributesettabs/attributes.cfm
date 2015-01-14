@@ -46,11 +46,15 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.attributeSet" type="any" />
 
 <cfoutput>
 
-	<cf_HibachiListingDisplay smartList="#rc.attributeSet.getAttributesSmartList()#" 
+	<hb:HibachiListingDisplay smartList="#rc.attributeSet.getAttributesSmartList()#" 
 							   recordEditAction="admin:entity.editattribute" 
 							   recordEditQueryString="redirectAction=admin:entity.detailattributeset&attributeSetID=#rc.attributeSet.getAttributeSetID()#"
 							   recordDetailAction="admin:entity.detailattribute"
@@ -58,14 +62,16 @@ Notes:
 							   sortProperty="sortOrder"
 							   sortContextIDColumn="attributeSetID"
 							   sortContextIDValue="#rc.attributeSet.getAttributeSetID()#">
-							      
-		<cf_HibachiListingColumn propertyIdentifier="attributeCode" />
-		<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="attributeName" />
-		<cf_HibachiListingColumn propertyIdentifier="activeFlag" />
-		<cf_HibachiListingColumn propertyIdentifier="attributeType.type" />
-	</cf_HibachiListingDisplay>
+		
+		
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="attributeName" />					      
+		<hb:HibachiListingColumn propertyIdentifier="attributeCode" />
+		<hb:HibachiListingColumn propertyIdentifier="attributeInputType" />
+		<hb:HibachiListingColumn propertyIdentifier="relatedObject" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
 	
-	<cf_HibachiActionCaller action="admin:entity.createattribute" class="btn" icon="plus" queryString="sRedirectAction=admin:entity.detailattributeset&attributesetid=#rc.attributeset.getAttributeSetID()#" modal=true />
+	<hb:HibachiActionCaller action="admin:entity.createattribute" class="btn btn-default" icon="plus" queryString="sRedirectAction=admin:entity.detailattributeset&attributesetid=#rc.attributeset.getAttributeSetID()#" modal=true />
 	
 </cfoutput>
 

@@ -75,18 +75,18 @@ component entityname="SlatwallSubscriptionBenefit" table="SwSubsBenefit" persist
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
 	
     public array function getAccessTypeOptions() {
 		if(!structKeyExists(variables, "accessTypeOptions")) {
-			var smartList = getService("settingService").getTypeSmartList();
-			smartList.addSelect(propertyIdentifier="type", alias="name");
+			var smartList = getService("typeService").getTypeSmartList();
+			smartList.addSelect(propertyIdentifier="typeName", alias="name");
 			smartList.addSelect(propertyIdentifier="typeID", alias="value");
-			smartList.addFilter(propertyIdentifier="parentType_systemCode", value="subscriptionAccessType");
+			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="subscriptionAccessType");
 			smartList.addOrder("type|ASC");
 			variables.accessTypeOptions = smartList.getRecords();
 			arrayPrepend(variables.accessTypeOptions,{name=rbKey("define.select"),value=""});

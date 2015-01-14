@@ -1,3 +1,5 @@
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfparam name="attributes.hibachiScope" type="struct" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.permissionGroup" type="any" />
@@ -67,7 +69,7 @@
 									<td>
 										<cfif attributes.edit>
 											<cfset request.context.permissionFormIndex++ />
-											<cfset thisPermission = attributes.permissionGroup.getPermissionByDetails(accessType='action', subsystem=subsystemName, section=sectionName) />
+											<cfset thisPermission = attributes.permissionGroup.getPermissionByDetails(accessType='action', subsystem=subsystemName, section=sectionName, item=itemName) />
 										
 											<input type="hidden" name="permissions[#request.context.permissionFormIndex#].permissionID" value="#thisPermission.getPermissionID()#" />
 											<input type="hidden" name="permissions[#request.context.permissionFormIndex#].accessType" value="action" />

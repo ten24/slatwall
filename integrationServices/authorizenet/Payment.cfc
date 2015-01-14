@@ -87,7 +87,7 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 		requestData["x_login"] = setting('loginID'); 
 		requestData["x_tran_key"] = setting('transKey'); 
 		requestData["x_test_request"] = setting('testModeFlag'); 
-		requestData["x_duplicate_window"] = "600";
+		requestData["x_duplicate_window"] = setting('duplicateWindow');
 		requestData["x_method"] = "CC";
 		requestData["x_type"] = variables.transactionCodes[requestBean.getTransactionType()];
 
@@ -95,14 +95,16 @@ component accessors="true" output="false" displayname="Authorize.net" implements
 		
 		if(!isNull(requestBean.getCreditCardNumber())) {
 			requestData["x_card_num"] = requestBean.getCreditCardNumber();	
-		}
+		} else {
+ 			requestData["x_card_num"] = requestBean.getCreditCardLastFour();
+  		}
 		if(!isNull(requestBean.getSecurityCode())) {
 			requestData["x_card_code"] = requestBean.getSecurityCode();	
 		}
 		if(!isNull(requestBean.getExpirationMonth()) && !isNull(requestBean.getExpirationYear())) {
 			requestData["x_exp_date"] = left(requestBean.getExpirationMonth(),2) & "" & right(requestBean.getExpirationYear(),2);	
 		}
-		requestData["x_invoice_num"] = requestBean.getOrderID(); 
+		requestData["x_invoice_num"] = requestBean.getOrder().getShortReferenceID( true ); 
 		requestData["x_description"] = ""; 
 		
 		requestData["x_cust_id"] = requestBean.getAccountID(); 

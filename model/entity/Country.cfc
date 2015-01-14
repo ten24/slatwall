@@ -50,6 +50,8 @@ component displayname="Country" entityname="SlatwallCountry" table="SwCountry" p
 	
 	// Persistent Properties
 	property name="countryCode" length="2" ormtype="string" fieldtype="id";
+	property name="countryCode3Digit" ormtype="string";
+	property name="countryISONumber" ormtype="string";
 	property name="countryName" ormtype="string";
 	property name="activeFlag" ormtype="boolean";
 	
@@ -77,12 +79,23 @@ component displayname="Country" entityname="SlatwallCountry" table="SwCountry" p
 	property name="postalCodeShowFlag" ormtype="boolean";
 	property name="postalCodeRequiredFlag" ormtype="boolean";
 	
+	// Related Object Properties (many-to-one)
+	property name="defaultCurrency" cfc="Currency" fieldtype="many-to-one" fkcolumn="defaultCurrencyCode";
+	
 	// Non-Persistent Properties
+	property name="defaultCurrencyOptions" persistent="false" type="array";
 	property name="states" persistent="false" type="array" hb_rbKey="entity.state_plural";
 	property name="stateCodeOptions" persistent="false" type="array";
+	
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
 
 	// ============ START: Non-Persistent Property Methods =================
+	
 	public array function getStates() {
 		if(!structKeyExists(variables, "states")) {
 			var smartList = getStatesSmartList();
@@ -109,6 +122,19 @@ component displayname="Country" entityname="SlatwallCountry" table="SwCountry" p
 			variables.stateCodeOptions = smartList.getRecords();
 		}
 		return variables.stateCodeOptions;
+	}
+	
+	public array function getDefaultCurrencyOptions() {
+		if(!structKeyExists(variables, "defaultCurrencyOptions")) {
+			var smartList = getService("currencyService").getCurrencySmartList();
+			smartList.addSelect(propertyIdentifier="currencyName", alias="name");
+			smartList.addSelect(propertyIdentifier="currencyCode", alias="value");
+			smartList.addOrder("currencyName|ASC");
+			
+			variables.defaultCurrencyOptions = smartList.getRecords();
+			arrayPrepend(variables.defaultCurrencyOptions, {value='',name=rbKey('define.none')});
+		}
+		return variables.defaultCurrencyOptions;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

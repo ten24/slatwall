@@ -62,7 +62,7 @@ Notes:
 <cfinclude template="_slatwall-header.cfm" />
 
 <!--- This import allows for the custom tags required by this page to work --->
-<cfimport prefix="sw" taglib="/Slatwall/public/tags" />
+<cfimport prefix="sw" taglib="../../tags" />
 
 <!---[DEVELOPER NOTES]															
 																				
@@ -110,11 +110,24 @@ Notes:
 	</cfif>
 </cfif>
 
+<!--- IMPORTANT: This is here so that the checkout layout is never cached by the browser --->
+<cfheader name="cache-control" value="no-cache, no-store, must-revalidate" /> 
+<cfheader name="cache-control" value="post-check=0, pre-check=0" /> 
+<cfheader name="last-modified" value="#now()#" />
+<cfheader name="pragma"  value="no-cache" />
+
 <!--- We are paraming this variable so that we can use it later to see if a specific step was clicked on.  Using the url.step is just a templating thing and it has nothing to do really with the core of Slatwall.  This could be changed to anything --->
 <cfparam name="url.step" default="" />
 
+<cfset paymentFormAction="?s=1">
+
+<!--- If using HTTP, override the form to send over http if the setting Force Credit Card Over SSL is true --->
+<cfif $.slatwall.setting('globalForceCreditCardOverSSL') EQ true AND (findNoCase("off", CGI.HTTPS) OR NOT CGI.SERVER_PORT_SECURE)>
+	<cfset paymentFormAction = replace($.slatwall.getURL(), 'http://', 'https://') />	 
+</cfif>
+
 <cfoutput>
-	
+	<div class="container">
 		
 		<!--- START CEHECKOUT EXAMPLE 1 --->
 		<div class="row">
@@ -203,7 +216,7 @@ Notes:
 									
 									<!--- Email Address --->
 									<div class="control-group">
-				    					<label class="control-label" for="rating">Email Address</label>
+				    					<label class="control-label" for="emailAddress">Email Address</label>
 				    					<div class="controls">
 				    						
 											<sw:FormField type="text" valueObject="#accountLoginObj#" valueObjectProperty="emailAddress" class="span4" />
@@ -242,7 +255,7 @@ Notes:
 										<!--- First Name --->
 										<div class="span2">
 											<div class="control-group">
-						    					<label class="control-label" for="rating">First Name</label>
+						    					<label class="control-label" for="firstName">First Name</label>
 						    					<div class="controls">
 						    						
 													<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="firstName" class="span2" />
@@ -255,7 +268,7 @@ Notes:
 										<!--- Last Name --->
 										<div class="span2">
 											<div class="control-group">
-						    					<label class="control-label" for="rating">Last Name</label>
+						    					<label class="control-label" for="lastName">Last Name</label>
 						    					<div class="controls">
 						    						
 													<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="lastName" class="span2" />
@@ -269,7 +282,7 @@ Notes:
 									
 									<!--- Phone Number --->
 									<div class="control-group">
-				    					<label class="control-label" for="rating">Phone Number</label>
+				    					<label class="control-label" for="phoneNumber">Phone Number</label>
 				    					<div class="controls">
 				    						
 											<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="phoneNumber" class="span4" />
@@ -280,7 +293,7 @@ Notes:
 									
 									<!--- Email Address --->
 									<div class="control-group">
-				    					<label class="control-label" for="rating">Email Address</label>
+				    					<label class="control-label" for="emailAddress">Email Address</label>
 				    					<div class="controls">
 				    						
 											<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="emailAddress" class="span4" />
@@ -291,7 +304,7 @@ Notes:
 									
 									<!--- Email Address Confirm --->
 									<div class="control-group">
-				    					<label class="control-label" for="rating">Confirm Email Address</label>
+				    					<label class="control-label" for="emailAddressConfirm">Confirm Email Address</label>
 				    					<div class="controls">
 				    						
 											<sw:FormField type="text" valueObject="#createAccountObj#" valueObjectProperty="emailAddressConfirm" class="span4" />
@@ -302,7 +315,7 @@ Notes:
 									
 									<!--- Guest Checkout --->
 									<div class="control-group">
-				    					<label class="control-label" for="rating">Save Account ( No for Guest Checkout )</label>
+				    					<label class="control-label" for="createAuthenticationFlag">Save Account ( No for Guest Checkout )</label>
 				    					<div class="controls">
 				    						
 											<sw:FormField type="yesno" valueObject="#createAccountObj#" valueObjectProperty="createAuthenticationFlag" />
@@ -332,7 +345,7 @@ Notes:
 									<!--- Password --->
 									<div id="password-details" >
 										<div class="control-group">
-					    					<label class="control-label" for="rating">Password</label>
+					    					<label class="control-label" for="password">Password</label>
 					    					<div class="controls">
 					    						
 												<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="password" class="span4" />
@@ -343,7 +356,7 @@ Notes:
 										
 										<!--- Password Confirm --->
 										<div class="control-group">
-					    					<label class="control-label" for="rating">Confirm Password</label>
+					    					<label class="control-label" for="passwordConfirm">Confirm Password</label>
 					    					<div class="controls">
 					    						
 												<sw:FormField type="password" valueObject="#createAccountObj#" valueObjectProperty="passwordConfirm" class="span4" />
@@ -410,7 +423,7 @@ Notes:
 											<div class="span8">
 												<!--- Email Address --->
 												<div class="control-group">
-							    					<label class="control-label" for="rating">Email Address</label>
+							    					<label class="control-label" for="emailAddress">Email Address</label>
 							    					<div class="controls">
 							    						
 														<sw:FormField type="text" name="orderFulfillments[#orderFulfillmentIndex#].emailAddress" valueObject="#orderFulfillment#" valueObjectProperty="emailAddress" class="span4" />
@@ -426,7 +439,7 @@ Notes:
 											<div class="span8">
 												<!--- Pickup Location --->
 												<div class="control-group">
-							    					<label class="control-label" for="rating">Pickup Location</label>
+							    					<label class="control-label" for="pickupLocation">Pickup Location</label>
 							    					<div class="controls">
 							    						
 														<sw:FormField type="select" name="orderFulfillments[#orderFulfillmentIndex#].pickupLocation.locationID" valueObject="#orderFulfillment#" valueObjectProperty="pickupLocation" valueOptions="#orderFulfillment.getPickupLocationOptions()#" class="span4" />
@@ -453,7 +466,7 @@ Notes:
 												
 												<cfif !isNull(orderFulfillment.getAccountAddress())>
 													<cfset accountAddressID = orderFulfillment.getAccountAddress().getAccountAddressID() />
-												<cfelseif isNull(orderFulfillment.getShippingAddress())>
+												<cfelseif orderFulfillment.getShippingAddress().getNewFlag() && not orderFulfillment.getShippingAddress().hasErrors()>
 													<cfset accountAddressID = $.slatwall.cart().getAccount().getPrimaryAddress().getAccountAddressID() />
 												</cfif>							
 
@@ -462,7 +475,7 @@ Notes:
 													
 													<!--- Account Address --->
 													<div class="control-group">
-								    					<label class="control-label" for="rating">Select Address</label>
+								    					<label class="control-label" for="accountAddress">Select Address</label>
 								    					<div class="controls">
 								    						
 															<sw:FormField type="select" name="orderFulfillments[#orderFulfillmentIndex#].accountAddress.accountAddressID" valueObject="#orderFulfillment#" valueObjectProperty="accountAddress" valueOptions="#accountAddressOptions#" value="#accountAddressID#" class="span4" />
@@ -487,7 +500,7 @@ Notes:
 														
 														<!--- Save As Account Address --->
 														<div class="control-group">
-									    					<label class="control-label" for="rating">Save In Address Book</label>
+									    					<label class="control-label" for="saveAccountAddressFlag">Save In Address Book</label>
 									    					<div class="controls">
 									    						
 																<sw:FormField type="yesno" name="orderFulfillments[#orderFulfillmentIndex#].saveAccountAddressFlag" valueObject="#orderFulfillment#" valueObjectProperty="saveAccountAddressFlag" />
@@ -498,7 +511,7 @@ Notes:
 														<!--- Save Account Address Name --->
 														<div id="save-account-address-name#orderFulfillmentIndex#"<cfif not orderFulfillment.getSaveAccountAddressFlag()> class="hide"</cfif>>
 															<div class="control-group">
-										    					<label class="control-label" for="rating">Address Nickname (optional)</label>
+										    					<label class="control-label" for="saveAccountAddressName">Address Nickname (optional)</label>
 										    					<div class="controls">
 										    						
 																	<sw:FormField type="text" name="orderFulfillments[#orderFulfillmentIndex#].saveAccountAddressName" valueObject="#orderFulfillment#" valueObjectProperty="saveAccountAddressName" class="span4" />
@@ -547,7 +560,7 @@ Notes:
 													
 													<!--- Start: Shipping Method Example 1 --->
 													<div class="control-group">
-								    					<label class="control-label" for="rating">Shipping Method Example</label>
+								    					<label class="control-label" for="shippingMethod">Shipping Method Example</label>
 								    					<div class="controls">
 								    						
 															<!--- OPTIONAL: You can use this formField display to show options as a select box
@@ -741,14 +754,13 @@ Notes:
 										
 									<!--- CASH, CHECK, CREDIT CARD, GIFT CARD, TERM PAYMENT --->
 									<cfelse>
-										<form action="?s=1" method="post">
+										<form action="#paymentFormAction#" method="post">
 											
 											<!--- Hidden value to setup the slatAction --->
 											<input id="slatActionAddOrderPayment" type="hidden" name="slatAction" value="public:cart.addOrderPayment" />
 											
 											<!--- Hidden value to identify the type of payment method this is --->
 											<input type="hidden" name="newOrderPayment.orderPaymentID" value="#addOrderPaymentObj.getNewOrderPayment().getOrderPaymentID()#" />
-											<input type="hidden" name="newOrderPayment.order.orderID" value="#$.slatwall.cart().getOrderID()#" />
 											<input type="hidden" name="newOrderPayment.paymentMethod.paymentMethodID" value="#paymentDetails.paymentMethod.getPaymentMethodID()#" />
 											
 											<sw:ErrorDisplay object="#$.slatwall.cart()#" errorName="addOrderPayment" />
@@ -772,7 +784,7 @@ Notes:
 														
 														<!--- Credit Card Number --->
 														<div class="control-group">
-									    					<label class="control-label" for="rating">Credit Card Number</label>
+									    					<label class="control-label" for="creditCardNumber">Credit Card Number</label>
 									    					<div class="controls">
 									    						
 																<sw:FormField type="text" name="newOrderPayment.creditCardNumber" valueObject="#addOrderPaymentObj.getNewOrderPayment()#" valueObjectProperty="creditCardNumber" class="span4" />
@@ -783,7 +795,7 @@ Notes:
 														
 														<!--- Name on Credit Card --->
 														<div class="control-group">
-									    					<label class="control-label" for="rating">Name on Card</label>
+									    					<label class="control-label" for="nameOnCreditCard">Name on Card</label>
 									    					<div class="controls">
 									    						
 																<sw:FormField type="text" name="newOrderPayment.nameOnCreditCard" valueObject="#addOrderPaymentObj.getNewOrderPayment()#" valueObjectProperty="nameOnCreditCard" class="span4" />
@@ -799,7 +811,7 @@ Notes:
 																
 																<!--- Security Code --->
 																<div class="control-group">
-											    					<label class="control-label" for="rating">Security Code</label>
+											    					<label class="control-label" for="securityCode">Security Code</label>
 											    					<div class="controls">
 											    						
 																		<sw:FormField type="text" name="newOrderPayment.securityCode" valueObject="#addOrderPaymentObj.getNewOrderPayment()#" valueObjectProperty="securityCode" class="span2" />
@@ -815,7 +827,7 @@ Notes:
 																
 																<!--- Expiration --->	
 																<div class="control-group">
-											    					<label class="control-label pull-right" for="rating">Expiration ( MM / YYYY )</label>
+											    					<label class="control-label pull-right" for="expirationMonth">Expiration ( MM / YYYY )</label>
 											    					<div class="controls pull-right">
 											    						
 																		<sw:FormField type="select" name="newOrderPayment.expirationMonth" valueObject="#addOrderPaymentObj.getNewOrderPayment()#" valueObjectProperty="expirationMonth" valueOptions="#addOrderPaymentObj.getNewOrderPayment().getExpirationMonthOptions()#" class="span1" />
@@ -832,7 +844,7 @@ Notes:
 														<!--- SPLIT PAYMENTS (OPTIONAL) - Just delete this section if you don't want to allow for split payments --->
 														<cfset splitPaymentID = "sp" & lcase(createUUID()) />
 														<div class="control-group">
-									    					<label class="control-label" for="rating">Amount</label>
+									    					<label class="control-label" for="newOrderPayment.amount">Amount</label>
 									    					<div class="controls">
 									    						
 									    						#$.slatwall.formatValue(paymentDetails.maximumAmount, 'currency')#
@@ -887,7 +899,6 @@ Notes:
 <!--- ============= CONFIRMATION ============================================== --->
 <!--- ============= ORDER REVIEW ============================================== --->
 					<cfelseif not len(orderRequirementsList) or url.step eq 'review'>
-						
 						
 						<h4>Step 4 - Order Review</h4>
 
@@ -1015,13 +1026,13 @@ Notes:
 													Name on Card: #orderPayment.getNameOnCreditCard()#<br />
 													Card: #orderPayment.getCreditCardType()# ***#orderPayment.getCreditCardLastFour()#<br />
 													Expiration: #orderPayment.getExpirationMonth()# / #orderPayment.getExpirationYear()#<br />
-													Payment Amount: #dollarformat(orderPayment.getAmount())#<br />
+													Payment Amount: #orderPayment.getFormattedValue('amount')#<br />
 													
 													<cfif isNull(orderPayment.getProviderToken()) && !isNull(orderPayment.getSecurityCode())>
 														<input type="hidden" name="orderPayments[#orderPaymentReviewIndex#].securityCode" value="#orderPayment.getSecurityCode()#" />
 													<cfelseif isNull(orderPayment.getProviderToken())>
 														<div class="control-group">
-									    					<label class="control-label" for="rating">Re-Enter Security Code</label>
+									    					<label class="control-label" for="securityCode">Re-Enter Security Code</label>
 									    					<div class="controls">
 									    						<input type="text" name="orderPayments[#orderPaymentReviewIndex#].securityCode" value="" class="required" />		
 									    					</div>
@@ -1031,7 +1042,7 @@ Notes:
 												<cfelse>
 													
 													#orderPayment.getSimpleRepresentation()#<br />
-													Payment Amount: #dollarformat(orderPayment.getAmount())#
+													Payment Amount: #orderPayment.getFormattedValue('amount')#
 													
 												</cfif>
 											</div>
@@ -1040,11 +1051,14 @@ Notes:
 												<div class="span6">
 													<h6>Billing Address:</h6>
 													#orderPayment.getBillingAddress().getName()#<br />
-													<cfif orderPayment.getBillingAddress().getCompany() NEQ "">#orderPayment.getBillingAddress().getCompany()#<br /></cfif>
-													<cfif orderPayment.getBillingAddress().getPhone() NEQ "">#orderPayment.getBillingAddress().getPhone()#<br /></cfif>
+													<cfif isNull(orderPayment.getBillingAddress().getCompany()) && len(orderPayment.getBillingAddress().getCompany())>
+														#orderPayment.getBillingAddress().getCompany()#<br />
+													</cfif>
+													<cfif !isNull(orderPayment.getBillingAddress().getPhoneNumber()) && len(orderPayment.getBillingAddress().getCompany())>
+														#orderPayment.getBillingAddress().getPhoneNumber()#<br />
+													</cfif>
 													#orderPayment.getBillingAddress().getStreetAddress()#<br />
-													
-													<cfif not isNull(orderPayment.getBillingAddress().getStreet2Address())>#orderPayment.getBillingAddress().getStreet2Address()#<br /></cfif>
+													<cfif not isNull(orderPayment.getBillingAddress().getStreet2Address()) && len(orderPayment.getBillingAddress().getStreet2Address())>#orderPayment.getBillingAddress().getStreet2Address()#<br /></cfif>
 													#orderPayment.getBillingAddress().getCity()#, #orderPayment.getBillingAddress().getStateCode()# #orderPayment.getBillingAddress().getPostalCode()#<br />
 													#orderPayment.getBillingAddress().getCountryCode()#
 												</div>
@@ -1165,20 +1179,86 @@ Notes:
 			</div>
 			
 <!--- ======================= ORDER PLACED & CONFIRMATION ============================= --->
-		<cfelseif $.slatwall.hasSessionValue('confirmationOrderID')>
+		<cfelseif not isNull($.slatwall.getSession().getLastPlacedOrderID())>
 			
 			<!--- setup the order that just got placed in a local variable to be used by the following display --->
-			<cfset order = $.slatwall.getService('orderService').getOrder( $.slatwall.getSessionValue('confirmationOrderID') ) />
+			<cfset order = $.slatwall.getService('orderService').getOrder( $.slatwall.getSession().getLastPlacedOrderID() ) />
 			
 			<!--- Overview & Status --->
-			<h5>Your Order Has Been Placed!</h5>
+			<h4>Your Order Has Been Placed!</h4>
+			
+			<!--- START: SAVE GUEST ACCOUNT --->
+				
+			<!---[DEVELOPER NOTES]																		
+																										
+				The below code allows for users to checkout as a guest, and then later once their		
+				order has been placed they can create just the password so that the my-account section	
+				just works.  Some website opt to never give the option to create a password up front	
+				and to only create the password once the order is placed.  It is totally fine to		
+				remove this functionality all together from the confirmation page						
+																										
+			--->
+			
+			<!--- If the createPassword form has been submitted sucessfully display message --->
+			<cfif $.slatwall.hasSuccessfulAction( "public:cart.guestAccountCreatePassword" )>
+				<div class="alert alert-success">
+					Account saved successfully.
+				</div>
+				
+			<!--- If the form has not been submitted and the account on the order is a guest account, then display the form to create a password --->
+			<cfelseif order.getAccount().getGuestAccountFlag()>
+				<div class="well">
+					<h5>Your order was placed as a guest account.
+					Enter a password now so that you can access your order history at a later time from my account.</h5>
+					
+					<!--- Setup the createPassword object to be used by form for errors --->
+					<cfset createPasswordObj = order.getAccount().getProcessObject("createPassword") />
+					
+					<form action="?s=1" method="post">
+						<input type="hidden" name="slatAction" value="public:cart.guestAccountCreatePassword" />
+						<input type="hidden" name="orderID" value="#order.getOrderID()#" />
+						<input type="hidden" name="accountID" value="#order.getAccount().getAccountID()#" />
+						
+						<!--- Password --->
+						<div class="control-group">
+							<label class="control-label" for="rating">Password</label>
+							<div class="controls">
+								<sw:FormField type="password" valueObject="#createPasswordObj#" valueObjectProperty="password" class="span4" />
+								<sw:ErrorDisplay object="#createPasswordObj#" errorName="password" />
+							</div>
+						</div>
+						
+						<!--- Password Confirm --->
+						<div class="control-group">
+							<label class="control-label" for="rating">Confirm Password</label>
+							<div class="controls">
+								<sw:FormField type="password" valueObject="#createPasswordObj#" valueObjectProperty="passwordConfirm" class="span4" />
+								<sw:ErrorDisplay object="#createPasswordObj#" errorName="passwordConfirm" />
+							</div>
+						</div>
+						
+						<!--- Save Account Password --->
+						<div class="control-group pull-left">
+							<div class="controls">
+									<button type="submit" class="btn btn-primary">Save Account Password</button>
+							</div>
+						</div>
+						
+					</form>
+					
+					<br />
+				</div>
+
+			</cfif>
+			<!--- END: SAVE GUEST ACCOUNT --->
+				
 			<div class="row">
 				
 				<div class="span4">
 					<table class="table table-bordered table-condensed">
 						<tr>
 							<td>Order Status</td>
-							<td>#order.getOrderStatusType().getType()#</td>
+							<td>#order.getOrderStatusType().getTypeName()#</td>
 						</tr>
 						<tr>
 							<td>Order ##</td>
@@ -1285,7 +1365,7 @@ Notes:
 							</td>
 							
 							<!--- Status --->
-							<td>#orderItem.getOrderItemStatusType().getType()#</td>
+							<td>#orderItem.getOrderItemStatusType().getTypeName()#</td>
 						</tr>
 					</cfloop>
 					
@@ -1300,12 +1380,16 @@ Notes:
 			<h5>Order Payments</h5>
 			<table class="table table-bordered table-condensed table-striped">
 				<tr>
+					<th>Billing</td>
 					<th>Payment Details</td>
 					<th>Amount</td>
 				</tr>
 				<cfloop array="#order.getOrderPayments()#" index="orderPayment">
 					<cfif orderPayment.getOrderPaymentStatusType().getSystemCode() EQ "opstActive">
 						<tr>
+							<td class="well span3">
+								<sw:AddressDisplay address="#orderPayment.getBillingAddress()#" />
+							</td>
 							<td>#orderPayment.getSimpleRepresentation()#</td>
 							<td>#orderPayment.getFormattedValue('amount')#</td>
 						</tr>
@@ -1326,7 +1410,7 @@ Notes:
 		
 		<!--- END CHECKOUT EXAMPLE 1 --->
 		
-	
+	</div>
 </cfoutput>
 <cfinclude template="_slatwall-footer.cfm" />
 

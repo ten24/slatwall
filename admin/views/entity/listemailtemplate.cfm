@@ -46,17 +46,29 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.emailTemplateSmartList" type="any" />
 
 <cfoutput>
 	
-<cf_HibachiEntityActionBar type="listing" object="#rc.emailTemplateSmartList#" createModal="true" />
+	<hb:HibachiEntityActionBar type="listing" object="#rc.emailTemplateSmartList#" showCreate="false">
+		
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createemailtemplate" entity="emailtemplate" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 
-<cf_HibachiListingDisplay smartList="#rc.emailTemplateSmartList#"
-						   recordDetailAction="admin:entity.detailemailTemplate"
-						   recordEditAction="admin:entity.editemailTemplate">
-	<cf_HibachiListingColumn tdclass="primary" propertyIdentifier="emailTemplateName" />
-</cf_HibachiListingDisplay>
+	<hb:HibachiListingDisplay smartList="#rc.emailTemplateSmartList#"
+							   recordDetailAction="admin:entity.detailemailTemplate"
+							   recordEditAction="admin:entity.editemailTemplate">
+		
+		<hb:HibachiListingColumn propertyIdentifier="emailTemplateName" />
+		<hb:HibachiListingColumn propertyIdentifier="emailTemplateObject" />
+	</hb:HibachiListingDisplay>
 
 </cfoutput>
 

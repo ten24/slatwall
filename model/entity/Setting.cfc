@@ -52,6 +52,8 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="settingID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="settingName" ormtype="string";
 	property name="settingValue" ormtype="string" length="4000";
+	property name="settingValueEncryptedDateTime" ormType="timestamp" hb_auditable="false" column="settingValueEncryptDT";
+	property name="settingValueEncryptedGenerator" ormType="string" hb_auditable="false" column="settingValueEncryptGen";
 
 	// Non-Constrained related entity
 	property name="cmsContentID" ormtype="string";
@@ -63,6 +65,8 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="email" cfc="Email" fieldtype="many-to-one" fkcolumn="emailID";
 	property name="emailTemplate" cfc="EmailTemplate" fieldtype="many-to-one" fkcolumn="emailTemplateID";
 	property name="fulfillmentMethod" cfc="FulfillmentMethod" fieldtype="many-to-one" fkcolumn="fulfillmentMethodID";
+	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="locationConfiguration" cfc="LocationConfiguration" fieldtype="many-to-one" fkcolumn="locationConfigurationID";
 	property name="paymentMethod" cfc="PaymentMethod" fieldtype="many-to-one" fkcolumn="paymentMethodID"; 
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID" hb_cascadeCalculate="true";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID";
@@ -74,17 +78,42 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	property name="subscriptionUsage" cfc="SubscriptionUsage" fieldtype="many-to-one" fkcolumn="subscriptionUsageID";
 	property name="task" cfc="Task" fieldtype="many-to-one" fkcolumn="taskID";
 	
-	// Audit properties
+	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="createdByAccountID";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccount" hb_populateEnabled="false" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
+	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+	
+	// Non-Persistent Properties
+	property name="settingValueEncryptionProcessedFlag" type="boolean" persistent="false";
 
 	public struct function getSettingMetaData() {
 		return getService("settingService").getSettingMetaData(settingName=getSettingName());
 	}
+	
+	public void function setupEncryptedProperties() {
+		var settingMetaData = getSettingMetaData();
+		
+		// Determine if we need to encrypt value
+		if(structKeyExists(settingMetaData, "encryptValue") && settingMetaData.encryptValue == true && !getSettingValueEncryptionProcessedFlag() && !isNull(getSettingID())) {
+			encryptProperty('settingValue');
+		}
+	}
 
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public void function setSettingValue(required string settingValue) {
+		variables.settingValue = arguments.settingValue;
+		setupEncryptedProperties();
+		setSettingValueEncryptionProcessedFlag(true);
+	}
+	
+	public boolean function getSettingValueEncryptionProcessedFlag() {
+		if(isNull(variables.settingValueEncryptionProcessedFlag) || !isBoolean(variables.settingValueEncryptionProcessedFlag)) {
+			variables.settingValueEncryptionProcessedFlag = false;
+		}
+		return variables.settingValueEncryptionProcessedFlag;
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
@@ -93,6 +122,29 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
+	
+	public array function getAuditableProperties() {
+		var auditableProperties = super.getAuditableProperties();
+		var settingMetaData = getSettingMetaData();
+		
+		if (structKeyExists(settingMetaData, "encryptValue") && settingMetaData.encryptValue) {
+			for (var i = 1; i <= arraylen(auditableProperties); i++) {
+				var auditableProperty = auditableProperties[i];
+				if (auditableProperty.name == "settingValue") {
+					arrayDeleteAt(auditableProperties, i);
+					break;
+				}
+			}
+		}
+		
+		return auditableProperties;
+	}
+	
+	public struct function getAuditablePropertiesStruct() {
+		// Clears cached auditablePropertiesStruct because 'settingValue' inclusion/exclusion changes based on instance
+		clearApplicationValue('classAuditablePropertyStructCache_#getClassFullname()#');
+		return super.getAuditablePropertiesStruct();
+	}
 	
 	public string function getSimpleRepresentation() {
 		return getHibachiScope().rbKey('setting.#getSettingName()#');
@@ -122,7 +174,6 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 	
 	// This overrides the base validation method to dynamically add rules based on setting specific requirements
 	public any function validate( string context="" ) {
-		
 		// Call the base method validate with any additional arguments passed in
 		super.validate(argumentCollection=arguments);
 		
@@ -137,6 +188,10 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 				getService("hibachiValidationService").validateConstraint(object=this, propertyIdentifier="settingValue", constraintDetails=constraintDetail, errorBean=getHibachiErrors(), context=arguments.context);
 				
 			}
+		}
+		
+		if(this.hasErrors()) {
+			getHibachiScope().setORMHasErrors( true );
 		}
 		
 		return getHibachiErrors();

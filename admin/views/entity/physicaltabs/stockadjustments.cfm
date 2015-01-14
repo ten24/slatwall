@@ -46,18 +46,21 @@
 Notes:
 
 --->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.physical" type="any" />
 
 <cfoutput>
-	<cf_HibachiListingDisplay smartList="#rc.physical.getStockAdjustmentsSmartList()#" recordDetailAction="admin:entity.detailstockadjustment">
-		<cf_HibachiListingColumn tdclass="primary" propertyidentifier="stockAdjustmentType.type" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentType')#" />
-		<cf_HibachiListingColumn propertyidentifier="stockAdjustmentStatusType.type" filter=true title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentStatusType')#" />
-		<cf_HibachiListingColumn propertyidentifier="fromLocation.locationName" filter=true title="#$.slatwall.rbKey('entity.stockAdjustment.fromLocation')#" />
-		<cf_HibachiListingColumn propertyidentifier="toLocation.locationName" filter=true title="#$.slatwall.rbKey('entity.stockAdjustment.toLocation')#" />
-		<cf_HibachiListingColumn propertyidentifier="createdDateTime" />
-	</cf_HibachiListingDisplay>
+	<hb:HibachiListingDisplay smartList="#rc.physical.getStockAdjustmentsSmartList()#" recordDetailAction="admin:entity.detailstockadjustment">
+		<hb:HibachiListingColumn tdclass="primary" propertyidentifier="stockAdjustmentType.typeName" title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentType')#" />
+		<hb:HibachiListingColumn propertyidentifier="stockAdjustmentStatusType.typeName" filter=true title="#$.slatwall.rbKey('entity.stockAdjustment.stockAdjustmentStatusType')#" />
+		<hb:HibachiListingColumn propertyidentifier="fromLocation.locationName" filter=true title="#$.slatwall.rbKey('entity.stockAdjustment.fromLocation')#" />
+		<hb:HibachiListingColumn propertyidentifier="toLocation.locationName" filter=true title="#$.slatwall.rbKey('entity.stockAdjustment.toLocation')#" />
+		<hb:HibachiListingColumn propertyidentifier="createdDateTime" />
+	</hb:HibachiListingDisplay>
 	
 	<cfif physicalStatus neq "pstClosed">
-		<cf_HibachiProcessCaller action="admin:entity.preprocessphysical" entity="#rc.physical#" processContext="addPhysicalCount" class="btn" icon="plus" modal="true" />
+		<hb:HibachiProcessCaller action="admin:entity.preprocessphysical" entity="#rc.physical#" processContext="addPhysicalCount" class="btn btn-default" icon="plus" modal="true" />
 	</cfif>
 </cfoutput>

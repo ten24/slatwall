@@ -85,11 +85,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="saveShippingAccountAddressName";
 	property name="fulfillmentRefundAmount" hb_rbKey="entity.orderReturn.fulfillmentRefundAmount";
 	property name="emailAddress" hb_rbKey="entity.orderFulfillment.emailAddress";
+	property name="registrants" type="array" hb_populateArray="true"; 
+	property name="childOrderItems" type="array" hb_populateArray="true";
+	property name="publicRemoteID";
 	
 	// Data Properties (Related Entity Populate)
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";
-	
 	// Data Properties (Object / Array Populate)
+	property name="attributeValuesByCodeStruct";
 	
 	// Option Properties
 	property name="fulfillmentMethodIDOptions";
@@ -104,8 +107,21 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="assignedOrderItemAttributeSets";
 	property name="fulfillmentMethodType";
 	
+	variables.childOrderItems = [];
 	
 	// ======================== START: Defaults ============================
+	
+	public any function getRegistrantAccounts() {
+		if(structKeyExists(variables, "registrantAccounts")) {
+			return variables.registrantAccounts;
+		}
+		variables.registrantAccounts = [];
+		for(i=1;i<=quantity;i++) {
+			var account = getService("accountService").newAccount();
+			arrayAppend(variables.registrantAccounts,account);
+		}
+		return variables.registrantAccounts;
+	}
 	
 	public any function getOrderFulfillmentID() {
 		if(structKeyExists(variables, "orderFulfillmentID")) {
@@ -448,6 +464,62 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return "";
 	}
 	
+	// funciton to compare two orderItems based on certain properties.
+	public boolean function matchesOrderItem(required any orderItem){
+		
+		//check if the sku is a bundle
+		if(this.getSku().getBaseProductType() == 'productBundle') {
+			return false;
+		}
+		
+		//check if skus match
+		if(arguments.orderItem.getSku().getSkuID() != this.getSku().getSkuID()){
+			return false;
+		}
+		//check if the price is the same
+		if(arguments.orderItem.getPrice() != this.getPrice()){
+			return false;
+		}
+		//check if the instock value is the same
+		if(!isNull(arguments.orderItem.getStock()) && !isNull(this.getStock()) && arguments.orderItem.getStock().getStockID() != this.getStock().getStockID()){
+			return false;
+		}
+		
+		//check whether the attribute values are the same
+		//verify that the item has the same amount of attributes related to it
+		
+		var attributeValueStruct = this.getAttributeValuesByCodeStruct();
+		if(!isnull(attributeValueStruct)){
+			for(key in attributeValueStruct){
+				if(structKeyExists(attributeValueStruct,key) && attributeValueStruct[key] != arguments.orderItem.getAttributeValuesByAttributeCodeStruct()[key].getAttributeValue()){
+					return false;
+				}
+			}
+		}
+		
+		
+		return true;
+	}
+	
 	// =====================  END: Helper Methods ==========================
+	
+	public any function populate( required struct data={} ) {
+		// Call the super populate to do all the standard logic
+		super.populate(argumentcollection=arguments);
+		
+		//loop through possible attributes and check if it exists in the submitted data, if so then populate the processObject
+		for(attributeSet in getAssignedOrderItemAttributeSets()){
+			for(attribute in attributeSet.getAttributes()){
+				if(structKeyExists(arguments.data,attribute.getAttributeCode())){
+					attributeValuesByCodeStruct[ attribute.getAttributeCode() ] = data[ attribute.getAttributeCode() ];
+				}
+			} 
+		}
+		
+		// Return this object
+		return this;
+	}
+	
+	
 	
 }

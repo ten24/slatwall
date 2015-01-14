@@ -1,11 +1,18 @@
 component output="false" accessors="true" persistent="false" extends="HibachiTransient" {
 
 	property name="newFlag" type="boolean" persistent="false";
+	property name="rollbackProcessedFlag" type="boolean" persistent="false";
+	property name="encryptedPropertiesExistFlag" type="boolean" persistent="false";
 	property name="printTemplates" type="struct" persistent="false";
 	property name="emailTemplates" type="struct" persistent="false";
 	property name="simpleRepresentation" type="string" persistent="false";
 	property name="persistableErrors" type="array" persistent="false";
 	property name="processObjects" type="struct" persistent="false";
+	property name="auditSmartList" type="any" persistent="false";
+	
+	// Audit Properties
+	property name="createdByAccount" persistent="false";
+	property name="modifiedByAccount" persistent="false";
 	
 	// @hint global constructor arguments.  All Extended entities should call super.init() so that this gets called
 	public any function init() {
@@ -28,28 +35,26 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return super.init();
 	}
 	
-	public any function updateCalculatedProperties() {
-		if(!structKeyExists(variables, "calculated")) {
+	public void function updateCalculatedProperties() {
+		if(!structKeyExists(variables, "calculatedUpdateRunFlag")) {
 			// Set calculated to true so that this only runs 1 time per request
-			variables.calculated = true;
+			variables.calculatedUpdateRunFlag = true;
 			
 			// Loop over all properties
-			for(var i=1; i<=arrayLen(getProperties()); i++) {
+			for(var property in getProperties()) {
 			
 				// Look for any that start with the calculatedXXX naming convention
-				if(left(getProperties()[i].name, 10) == "calculated") {
+				if(left(property.name, 10) == "calculated") {
 					
-					var value = this.invokeMethod("get#right(getProperties()[i].name, len(getProperties()[i].name)-10)#");
+					var value = this.invokeMethod("get#right(property.name, len(property.name)-10)#");
 					if(!isNull(value)) {
-						variables[ getProperties()[i].name ] = value;	
+						variables[ property.name ] = value;	
 					}
 
-				// Then also look for any that have the cascadeCalculate set to true and call updateCalculatedProperties() on that object
-				} else if (structKeyExists(getProperties()[i], "hb_cascadeCalculate") && getProperties()[i].hb_cascadeCalculate) {
-				
-					if( structKeyExists(variables, getProperties()[i].name) && isObject( variables[ getProperties()[i].name ] ) ) {
-						variables[ getProperties()[i].name ].updateCalculatedProperties();
-					}
+				} else if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
+					
+					variables[ property.name ].updateCalculatedProperties();
+					
 				}
 			}
 		}
@@ -73,18 +78,15 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// @hint returns the propety who's value is a simple representation of this entity.  This can be overridden when necessary
 	public string function getSimpleRepresentationPropertyName() {
 		
-		// Get the meta data for all of the porperties
-		var properties = getProperties();
-		
 		// Look for a property that's last 4 is "name"
-		for(var i=1; i<=arrayLen(properties); i++) {
-			if(properties[i].name == getClassName() & "name") {
-				return properties[i].name;
+		for(var thisProperty in getProperties()) {
+			if((!structKeyExists(thisProperty, "persistent") || thisProperty.persistent) && thisProperty.name == "#getClassName()#name") {
+				return thisProperty.name;
 			}
 		}
 		
 		// If no properties could be identified as a simpleRepresentaition 
-		throw("There is no Simple Representation Property Name for #getClassName()#.  You can either override getSimpleRepresentation() or override getSimpleRepresentationPropertyName() in the entity, but be sure to do it at the bottom iside of commented sectin for overrides.");
+		return getPrimaryIDPropertyName();
 	}
 	
 	// @hint checks a one-to-many property for the first entity with errors, if one isn't found then it returns a new one
@@ -238,6 +240,33 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			}
 		}
 		return true;
+	}
+	
+	public boolean function getAuditRollbackValidFlag() {
+		return !validateAuditRollback().hasErrors();
+	}
+	
+	public any function validateAuditRollback(boolean setErrors=false) {
+		return getService("hibachiValidationService").validate(object=this, context="auditRollback", setErrors=arguments.setErrors);
+	}
+	
+	// @hint public method to determine if this entity is audited
+	public any function getAuditableFlag() {
+		var metaData = getThisMetaData();
+		if(isPersistent() && (setting('globalAuditAutoArchiveVersionLimit') > 0) && (!structKeyExists(metaData, "hb_auditable") || (structKeyExists(metaData, "hb_auditable") && metaData.hb_auditable))) {
+			return true;
+		}
+		return false;
+	}
+	
+	// @hint Returns a smart list of audits related to this entity
+	public any function getAuditSmartList() {
+		if(!structKeyExists(variables, "auditSmartList")) {
+			variables.auditSmartList = getService("hibachiAuditService").getAuditSmartListForEntity(entity=this);
+			variables.auditSmartList.addOrder("auditDateTime|DESC");
+		}
+		
+		return variables.auditSmartList;
 	}
 	
 	// @hint public method that returns the value from the primary ID of this entity
@@ -406,7 +435,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			
 			// If this is a many-to-one related property, then add a 'select' to the top of the list
 			if(getPropertyMetaData( propertyName ).fieldType == "many-to-one" && structKeyExists(getPropertyMetaData( propertyName ), "hb_optionsNullRBKey")) {
-				arrayPrepend(variables[ cacheKey ], {value="", name=rbKey(getPropertyMetaData( propertyName ).hb_optionsNullRBKey)});
+				var recordsStruct = {};
+				recordsStruct['value'] = "";
+				recordsStruct['name'] = rbKey(getPropertyMetaData( propertyName ).hb_optionsNullRBKey);
+				arrayPrepend(variables[ cacheKey ], recordsStruct);
 			}
 		}
 		
@@ -501,6 +533,97 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return variables[ cacheKey ];
 	}
 	
+	// @hint handles encrypting a property based on conventions
+	public void function encryptProperty(required string propertyName) {
+		var generatorValue = createHibachiUUID();
+		var encryptedPropertyValue = encryptValue(this.invokeMethod('get#arguments.propertyName#'), generatorValue);
+		
+		// Set encrypted generator
+		if(this.hasProperty('#arguments.propertyName#EncryptedGenerator')) {
+			this.invokeMethod("set#arguments.propertyName#EncryptedGenerator", {'1'=generatorValue});
+		// Enforce that every encrypted property has a corresponding generator when the encryption takes place
+		} else {
+			throw("Entity '#getClassName()#' is missing the '#arguments.propertyName#EncryptedGenerator' property. Encrypting '#arguments.propertyName#' property value without a corresponding '#arguments.propertyName#EncryptedGenerator' property is not allowed.");	
+		}
+		
+		// Set encrypted datetime stamp
+		if(this.hasProperty('#arguments.propertyName#EncryptedDateTime')) {
+			this.invokeMethod("set#arguments.propertyName#EncryptedDateTime", {'1'=now()});
+		// Enforce that every encrypted property has the timestamp when the encryption takes place
+		} else {
+			throw("Entity '#getClassName()#' is missing the '#arguments.propertyName#EncryptedDateTime' property. Encrypting '#arguments.propertyName#' property value without a corresponding '#arguments.propertyName#EncryptedDateTime' property is not allowed.");	
+		}
+		
+		// Determine the appropiate property of the entity where to set the encrypted value
+		if(this.hasProperty('#arguments.propertyName#Encrypted')) {
+			// Set corresponding property that should store the newly encrypted value and remove the unencrypted value from the corresponding unencrypted property (necessary if persistent)
+			this.invokeMethod("set#arguments.propertyName#Encrypted", {'1'=encryptedPropertyValue});
+			
+			var unencryptedProperty = this.getPropertiesStruct()['#arguments.propertyName#'];
+			
+			// Unencrypted property is persistent, remove the value from variables scope so it is not persisted as plaintext
+			if (!structKeyExists(unencryptedProperty, "persistent") || (structKeyExists(unencryptedProperty, "persistent") && unencryptedProperty.persistent)) {
+				structDelete(variables, arguments.propertyName);
+			}
+		} else {
+			// Overwrite property's unencrypted value directly with the newly encrypted value, bypass the setter because could trigger a recursive loop on this method
+			variables['#arguments.propertyName#'] = encryptedPropertyValue;
+		}
+	}
+	
+	// @hint handles decrypting a property based on conventions
+	public string function decryptProperty(required string propertyName) {
+		var encryptedPropertyValue = "";
+		var generatorValue = this.invokeMethod("get#arguments.propertyName#EncryptedGenerator");
+		param name="generatorValue" default=""; 
+		
+		// Determine the appropriate property to retrieve the encrytped value from
+		if (this.hasProperty("#arguments.propertyName#Encrypted")) {
+			encryptedPropertyValue = this.invokeMethod("get#arguments.propertyName#Encrypted");
+		} else {
+			encryptedPropertyValue = variables['#arguments.propertyName#'];
+		}
+		
+		return decryptValue(encryptedPropertyValue, generatorValue);
+	}
+	
+	public string function getAuditablePropertyExclusionList() {
+		return "createdByAccount,createdByAccountID,createdDateTime,modifiedByAccount,modifiedByAccountID,modifiedDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID";
+	}
+	
+	public array function getAuditableProperties() {
+		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyCache_#getClassFullname()#") ) {
+			var properties = getProperties();
+			var auditableProperties = [];
+			for (var property in properties) {
+				var propertyExclusionList = getAuditablePropertyExclusionList();
+				
+				// The property must be persistent, auditable, not in property exclusion list, not a calculated property, must be a column or one-to-many, and field not inverse
+				if ((!structKeyExists(property, "persistent") || (structKeyExists(property, "persistent") && property.persistent)) && (!structKeyExists(property, "hb_auditable") || (structKeyExists(property, "hb_auditable") && property.hb_auditable)) && !listFindNoCase(propertyExclusionList, property.name) && (left(property.name, 10) != "calculated") && (!structKeyExists(property, "fieldType") || property.fieldType == "column" || property.fieldType == "many-to-one") && (!structKeyExists(property, "inverse") || (structKeyExists(property, "inverse") && !property.inverse))) {
+					arrayAppend(auditableProperties, property);
+				}
+			}
+
+			setApplicationValue("classAuditablePropertyCache_#getClassFullname()#", auditableProperties);
+		}
+
+		return getApplicationValue("classAuditablePropertyCache_#getClassFullname()#");
+	}
+	
+	public struct function getAuditablePropertiesStruct() {
+		if( !getHibachiScope().hasApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#") ) {
+			var auditablePropertiesStruct = {};
+			var auditableProperties = getAuditableProperties();
+
+			for(var i=1; i<=arrayLen(auditableProperties); i++) {
+				auditablePropertiesStruct[ auditableProperties[i].name ] = auditableProperties[ i ];
+			}
+			setApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#", auditablePropertiesStruct);
+		}
+
+		return getApplicationValue("classAuditablePropertyStructCache_#getClassFullname()#");
+	}
+	
 	
 	
 	// @hint Generic abstract dynamic ORM methods by convention via onMissingMethod.
@@ -575,12 +698,52 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		return false;
 	}
 	
+	public boolean function getEncryptedPropertiesExistFlag() {
+		return structCount(getEncryptedPropertiesStruct()) > 0;
+	}
+	
+	public struct function getEncryptedPropertiesStruct() {
+		var encryptedProperties = {};
+		for(var propertyName in getPropertiesStruct()) {
+			if ((right(propertyName, 9) == "encrypted") && structKeyExists(getPropertiesStruct(), '#propertyName#DateTime') && structKeyExists(getPropertiesStruct(), '#propertyName#Generator')) {
+				encryptedProperties['#propertyName#'] = getPropertiesStruct()[propertyName];
+			}
+		}
+		
+		return encryptedProperties;
+	}
+	
+	public boolean function getRollbackProcessedFlag() {
+		if(isNull(variables.rollbackProcessedFlag) || !isBoolean(variables.rollbackProcessedFlag)) {
+			variables.rollbackProcessedFlag = false;
+		}
+		return variables.rollbackProcessedFlag;
+	}
+	
 	public array function getPrintTemplates() {
 		return [];
 	}
 	
 	public array function getEmailTemplates() {
 		return [];
+	}
+	
+	public any function getCreatedByAccount() {
+		if(structKeyExists(this, "getCreatedByAccountID")) {
+			var accountID = this.getCreatedByAccountID();
+			if(!isNull(accountID)) {
+				return getService('accountService').getAccount( accountID );	
+			}
+		}
+	}
+	
+	public any function getModifiedByAccount() {
+		if(structKeyExists(this, "getModifiedByAccountID")) {
+			var accountID = this.getModifiedByAccountID();
+			if(!isNull(accountID)) {
+				return getService('accountService').getAccount( accountID );	
+			}
+		}
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
@@ -590,6 +753,13 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================
+	
+	public void function afterPopulate() {
+		// Handle encrypted properties
+		if (structKeyExists(this, 'setupEncryptedProperties')) {
+			this.invokeMethod('setupEncryptedProperties');
+		}
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 		
@@ -602,8 +772,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 					logHibachi("an ormFlush() failed for an Entity Insert of #getEntityName()# with an errorName: #errorName# and errorMessage: #getErrors()[errorName][i]#", true);	
 				}
 			}
-			writeDump(getErrors());
-			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors");
+			throw("An ormFlush has been called on the hibernate session, however there is a #getEntityName()# entity in the hibernate session with errors.  The specific errors will be shown in the Slatwall log.");
 		}
 		
 		var timestamp = now();
@@ -621,19 +790,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		// These are more complicated options that should not be called during application setup
 		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
 			
-			// Call the calculatedProperties update
-			updateCalculatedProperties();
-			
-			// Set createdByAccount
-			if(structKeyExists(this,"setCreatedByAccount") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setCreatedByAccount( getHibachiScope().getAccount() );	
-			}
-			
-			// Set modifiedByAccount
-			if(structKeyExists(this,"setModifiedByAccount") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setModifiedByAccount(getHibachiScope().getAccount());
-			}
-			
 			// Setup the first sortOrder
 			if(structKeyExists(this,"setSortOrder")) {
 				var metaData = getPropertyMetaData("sortOrder");
@@ -645,7 +801,26 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				}
 				setSortOrder( topSortOrder + 1 );
 			}
+			
+			// Set createdByAccount
+			if(structKeyExists(this,"setCreatedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+				setCreatedByAccountID( getHibachiScope().getAccount().getAccountID() );	
+			}
+			
+			// Set modifiedByAccount
+			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+				setModifiedByAccount( getHibachiScope().getAccount().getAccountID() );
+			}
+			
+			// Log audit only if admin user
+			if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+				getService("hibachiAuditService").logEntityModify(entity=this);
+			}
+			
+			// Add to the modifiedEntities
+			getHibachiScope().addModifiedEntity( this );
 		}
+		
 	}
 	
 	public void function preUpdate(struct oldData){
@@ -669,15 +844,24 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		// These are more complicated options that should not be called during application setup
 		if(getHibachiScope().hasApplicationValue("initialized") && getHibachiScope().getApplicationValue("initialized")) {
 		
-			// Call the calculatedProperties update
-			updateCalculatedProperties();
-		
 			// Set modifiedByAccount
-			if(structKeyExists(this,"setModifiedByAccount") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
-				setModifiedByAccount(getHibachiScope().getAccount());
+			if(structKeyExists(this,"setModifiedByAccountID") && !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ){
+				setModifiedByAccount(getHibachiScope().getAccount().getAccountID());
 			}
+			
+			// Log audit only if admin user
+			if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+			
+				getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
+			}
+			
+			// Add to the modifiedEntities
+			getHibachiScope().addModifiedEntity( this );
 		}
+		
 	}
+	
+	
 	
 	/*
 	public void function preDelete(any entity){
