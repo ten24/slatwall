@@ -49,7 +49,7 @@ Notes:
 <cfcomponent extends="HibachiService" persistent="false" accessors="true" output="false">
 	
 	<cfproperty name="templateService" />
-	
+	<cfproperty name="hibachiUtilityService" />
 		
 	<!--- ===================== START: Logical Methods =========================== --->
 		
