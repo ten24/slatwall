@@ -214,17 +214,7 @@ angular.module('slatwalladmin')
 							}else{
 								//if has a pattern then we need to evaluate where to add % for like statement
 								if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)){
-									switch(selectedFilterProperty.selectedCriteriaType.pattern){
-										case "%w%":
-											filterItem.value = '%'+filterItem.value+'%';
-											break;
-										case "%w":
-											filterItem.value = '%'+filterItem.value;
-											break;
-										case "w%":
-											filterItem.value = filterItem.value+'%';
-											break;
-									}
+									filterItem.pattern = selectedFilterProperty.selectedCriteriaType.pattern;
 									
 									filterItem.displayValue = filterItem.value;
 								}else{
