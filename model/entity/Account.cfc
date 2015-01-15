@@ -354,7 +354,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public void function setPrimaryBillingAddress( any accountAddress ) {
 		if(structKeyExists(arguments, "accountAddress")) {
 			variables.primaryBillingAddress = arguments.accountAddress;
-			arguments.primaryBillingAddress.setAccount( this );	
+			arguments.accountAddress.setAccount( this );	
 		} else {
 			structDelete(variables, "primaryBillingAddress");
 		}
@@ -364,7 +364,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public void function setPrimaryEmailAddress( any accountEmailAddress ) {
 		if(structKeyExists(arguments, "accountEmailAddress")) {
 			variables.primaryEmailAddress = arguments.accountEmailAddress;
-			arguments.primaryEmailAddress.setAccount( this );
+			arguments.accountEmailAddress.setAccount( this );
 		} else {
 			structDelete(variables, "primaryEmailAddress");
 		}
@@ -374,7 +374,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public void function setPrimaryPhoneNumber( any accountPhoneNumber ) {
 		if(structKeyExists(arguments, "accountPhoneNumber")) {
 			variables.primaryPhoneNumber = arguments.accountPhoneNumber;
-			arguments.primaryPhoneNumber.setAccount( this );
+			arguments.accountPhoneNumber.setAccount( this );
 		} else {
 			structDelete(variables, "primaryPhoneNumber");
 		}   
@@ -384,7 +384,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public void function setPrimaryAddress( any accountAddress ) {    
 		if(structKeyExists(arguments, "accountAddress")) {
 			variables.primaryAddress = arguments.accountAddress;
-			arguments.primaryAddress.setAccount( this );	
+			arguments.accountAddress.setAccount( this );	
 		} else {
 			structDelete(variables, "primaryAddress");
 		}
@@ -394,7 +394,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public void function setPrimaryAccountPaymentMethod( any accountPaymentMethod ) {
 		if(structKeyExists(arguments, "accountPaymentMethod")) {
 			variables.primaryPaymentMethod = arguments.accountPaymentMethod;
-			arguments.primaryPaymentMethod.setAccount( this );	
+			arguments.accountPaymentMethod.setAccount( this );	
 		} else {
 			structDelete(variables, "primaryPaymentMethod");
 		}
@@ -404,7 +404,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public void function setPrimaryShippingAddress( any accountAddress ) {
 		if(structKeyExists(arguments, "accountAddress")) {
 			variables.primaryShippingAddress = arguments.accountAddress;
-			arguments.primaryShippingAddress.setAccount( this );	
+			arguments.accountAddress.setAccount( this );	
 		} else {
 			structDelete(variables, "primaryShippingAddress");
 		}
