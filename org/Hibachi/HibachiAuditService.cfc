@@ -247,6 +247,7 @@ component extends="HibachiService" accessors="true" {
 		// Struct holds the actual property values that will be serialized as JSON when persisted to the database
 		var propertyChangeData = {};
 		propertyChangeData['newPropertyData'] = {};
+		propertyChangeData['oldPropertyData'] = {};
 		
 		// STEP 1. Convert old and new values into a standardized and simplified format that can be easily compared and serialized to JSON
 		
