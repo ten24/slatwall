@@ -57,8 +57,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="newOrderPayment" cfc="OrderPayment" fieldType="many-to-one" persistent="false" fkcolumn="orderPaymentID";
 	
 	// Data Properties (ID's)
+	property name="paymentMethodType" ormtype="string" hb_rbKey="entity.paymentMethodType" hb_formFieldType="select";
 	property name="accountPaymentMethodID" hb_rbKey="entity.accountPaymentMethod" hb_formFieldType="select";
 	property name="accountAddressID" hb_rbKey="entity.accountAddress" hb_formFieldType="select";
+	property name="orderPaymentMethodID" hb_rbKey="entity.orderPaymentMethod" hb_formFieldType="select";
 	
 	// Data Properties (Inputs)
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno";
@@ -70,9 +72,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="attributeValuesByCodeStruct";
 	// Option Properties
 	property name="accountPaymentMethodIDOptions";
+	property name="orderPaymentMethodIDOptions";
 	property name="paymentMethodIDOptions";
 	property name="accountAddressIDOptions";
 	property name="paymentTermIDOptions";
+	property name="paymentMethodTypeOptions";
 	
 	// Helper Properties
 	
@@ -81,7 +85,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public any function setupDefaults() {
 		variables.accountAddressID = getAccountAddressIDOptions()[1]['value'];
-		variables.accountPaymentMethodID = getAccountPaymentMethodIDOptions()[1]['value'];
+		variables.paymentMethodType = '';
+		if(arrayLen(getAccountPaymentMethodIDOptions())){
+			variables.accountPaymentMethodID = getAccountPaymentMethodIDOptions()[1]['value'];
+			variables.paymentMethodType = 'accountPaymentMethod';
+		}
+		if(arrayLen(getOrderPaymentMethodIDOptions())){
+			variables.orderPaymentMethodID = getOrderPaymentMethodIDOptions()[1]['value'];
+		}
 	}
 	
 	public string function getAccountPaymentMethodID() {
@@ -89,6 +100,20 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.accountPaymentMethodID = "";
 		}
 		return variables.accountPaymentMethodID;
+	}
+	
+	public string function getOrderPaymentMethodID() {
+		if(!structKeyExists(variables, "orderPaymentMethodID")) {
+			variables.orderPaymentMethodID = "";
+		}
+		return variables.orderPaymentMethodID;
+	}
+	
+	public any function getPaymentMethodType(){
+		if(!structKeyExists(variables, 'paymentMethodType')){
+			variables.paymentMethodType = '';	
+		}	
+		return variables.paymentMethodType;
 	}
 	
 	public string function getAccountAddressID() {
@@ -121,9 +146,46 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					}
 				}
 			}
-			arrayAppend(variables.accountPaymentMethodIDOptions, {name=rbKey('define.new'), value=""});
 		}
 		return variables.accountPaymentMethodIDOptions;
+	}
+	
+	public array function getPaymentMethodTypeOptions(){
+		
+		if(!structKeyExists(variables,'paymentMethodTypeOptions')){
+			variables.paymentMethodTypeOptions = [
+				{
+					name=rbKey('define.new'), 
+					value=""
+				}
+			];
+			if(arrayLen(getAccountPaymentMethodIDOptions())){
+				var accountPaymentMethodOption = {
+					name=rbKey('entity.accountPaymentMethod'),
+					value="accountPaymentMethod"
+				};
+				arrayAppend(variables.paymentMethodTypeOptions,accountPaymentMethodOption);
+			}
+			if(arrayLen(getAccountPaymentMethodIDOptions())){
+				var orderPaymentMethodOption = {
+					name=rbKey('entity.orderPaymentMethod'),
+					value="orderPaymentMethod"
+				};
+				arrayAppend(variables.paymentMethodTypeOptions,orderPaymentMethodOption);
+			}
+		}
+		return variables.paymentMethodTypeOptions;	
+	}
+	
+	public array function getOrderPaymentMethodIDOptions() {
+		if(!structKeyExists(variables, "orderPaymentMethodIDOptions")) {
+			variables.orderPaymentMethodIDOptions = [];
+			var pmArr = getOrder().getOrderPaymentsSmartList().getRecords();
+			for(var i=1; i<=arrayLen(pmArr); i++) {
+				arrayAppend(orderPaymentMethodIDOptions, {name= pmArr[i].getCreditCardType() & ' - *' & pmArr[i].getCreditCardLastFour(), value=pmArr[i].getOrderPaymentMethodID()});	
+			}
+		}
+		return variables.orderPaymentMethodIDOptions;
 	}
 	
 	public array function getAccountAddressIDOptions() {
