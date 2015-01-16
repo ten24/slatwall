@@ -182,7 +182,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			variables.orderPaymentMethodIDOptions = [];
 			var pmArr = getOrder().getOrderPaymentsSmartList().getRecords();
 			for(var i=1; i<=arrayLen(pmArr); i++) {
-				arrayAppend(orderPaymentMethodIDOptions, {name= pmArr[i].getCreditCardType() & ' - *' & pmArr[i].getCreditCardLastFour(), value=pmArr[i].getOrderPaymentMethodID()});	
+				arrayAppend(orderPaymentMethodIDOptions, {name= pmArr[i].getCreditCardType() & ' - *' & pmArr[i].getCreditCardLastFour(), value=pmArr[i].getOrderPaymentID()});	
 			}
 		}
 		return variables.orderPaymentMethodIDOptions;
