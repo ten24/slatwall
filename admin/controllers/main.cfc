@@ -154,6 +154,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.edit = true;
 	}
 	
+	public void function encryptionReencryptData(required struct rc) {
+		param name="rc.process" default="0";
+		param name="rc.batchSizeLimit" default="0"; 
+		
+		if (rc.process) {
+			getHibachiUtilityService().reencryptData(val(rc.batchSizeLimit));
+			rc.$.slatwall.showMessageKey("admin.main.encryption.reencryptdata_success");
+			getFW().redirect(action="admin:main.default", preserve="messages");
+		}
+		
+		rc.edit = true;
+	}
+	
 	public void function update(required struct rc) {
 		param name="rc.process" default="0";
 		param name="rc.branchType" default="standard";
