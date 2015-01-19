@@ -216,9 +216,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.productImages;
 	}
 	
-	public struct function getSkuSalePriceDetails( required any skuID ) {
-		if(structKeyExists(getSalePriceDetailsForSkus(), arguments.skuID)) {
-			return getSalePriceDetailsForSkus()[ arguments.skuID ];
+	public struct function getSkuSalePriceDetails( required any skuID, string currencyCode='') {
+		if(structKeyExists(getSalePriceDetailsForSkus(currencyCode=arguments.currencyCode), arguments.skuID)) {
+			return getSalePriceDetailsForSkus(currencyCode=arguments.currencyCode)[ arguments.skuID ];
 		}
 		return {};
 	}
@@ -655,9 +655,9 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.defaultProductImageFiles;
 	}
 	
-	public struct function getSalePriceDetailsForSkus() {
+	public struct function getSalePriceDetailsForSkus(string currencyCode='') {
 		if(!structKeyExists(variables, "salePriceDetailsForSkus")) {
-			variables.salePriceDetailsForSkus = getService("promotionService").getSalePriceDetailsForProductSkus(productID=getProductID());
+			variables.salePriceDetailsForSkus = getService("promotionService").getSalePriceDetailsForProductSkus(productID=getProductID(),currencyCode=arguments.currencyCode);
 		}
 		return variables.salePriceDetailsForSkus;
 	}

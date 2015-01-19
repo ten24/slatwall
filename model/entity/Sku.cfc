@@ -697,13 +697,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return "";
 	}
 	
-	public any function getLivePrice() {
+	public any function getLivePrice(string currencyCode='') {
 		if(!structKeyExists(variables, "livePrice")) {
 			// Create a prices array, and add the 
-			var prices = [getPrice()];
-			
+			if(arguments.currencyCode neq ''){
+				var prices = [getPriceByCurrencyCode(arguments.currencyCode)];
+			}else{
+				var prices = [getPrice()];
+			}
 			// Add the current account price, and sale price
-			arrayAppend(prices, getSalePrice());
+			arrayAppend(prices, getSalePrice(currencyCode=arguments.currencyCode));
 			arrayAppend(prices, getCurrentAccountPrice());
 			
 			// Sort by best price
@@ -777,16 +780,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getQuantity("QATS");
 	}
 	
-	public any function getSalePriceDetails() {
+	public any function getSalePriceDetails(string currencyCode='') {
 		if(!structKeyExists(variables, "salePriceDetails")) {
-			variables.salePriceDetails = getProduct().getSkuSalePriceDetails( getSkuID() );
+			variables.salePriceDetails = getProduct().getSkuSalePriceDetails(skuID=getSkuID(),currencyCode=arguments.currencyCode);
 		}
 		return variables.salePriceDetails;
 	}
 	
-	public any function getSalePrice() {
-		if(structKeyExists(getSalePriceDetails(), "salePrice")) {
-			return getSalePriceDetails()[ "salePrice"];
+	public any function getSalePrice(string currencyCode='') {
+		if(structKeyExists(getSalePriceDetails(currencyCode=arguments.currencyCode), "salePrice")) {
+			return getSalePriceDetails(currencyCode=arguments.currencyCode)[ "salePrice"];
 		}
 		return getPrice();
 	}
