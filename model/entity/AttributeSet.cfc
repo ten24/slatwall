@@ -98,6 +98,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	public array function getAttributeSetObjectOptions() {
 		return [
 			{value="Account", name=rbKey("entity.Account")},
+			{value="AccountAddress", name=rbKey("entity.AccountAddress")},
 			{value="AccountPayment", name=rbKey("entity.AccountPayment")},
 			{value="AttributeOption", name=rbKey("entity.AttributeOption")},
 			{value="Brand", name=rbKey("entity.Brand")},
