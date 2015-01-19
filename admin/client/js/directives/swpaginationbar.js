@@ -109,7 +109,6 @@ angular.module('slatwalladmin')
 	        	
 	        	scope.previousJump = function(){
 	        		paginationService.setCurrentPage(scope.currentPage - 3);
-	        		
 	        		scope.currentPage -= 3;
 	        	};
 	        	
