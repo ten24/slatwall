@@ -59,6 +59,14 @@ Notes:
 	</cffunction>
 	
 	<cfscript>
+		public any function getMostRecentNotPlacedOrderByAccountID( required string accountID ) {
+			var results = ormExecuteQuery(" FROM SlatwallOrder o WHERE o.account.accountID = ? AND o.orderStatusType.systemCode = ?", [arguments.accountID, 'ostNotPlaced'], false, {maxResults=1});
+			
+			if(arrayLen(results)) {
+				return results[1];
+			}
+		}
+		
 		public struct function getQuantityPriceSkuAlreadyReturned(required any orderID, required any skuID) {
 			var params = [arguments.orderID, arguments.skuID];	
 	
