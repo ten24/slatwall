@@ -1,0 +1,20 @@
+<div class="input-group" ng-if="propertyDisplay.object">
+	<input  type="text"
+			ng-model="property.object.data[propertyDisplay.property+'Name']"
+			placeholder="Search"
+			class="form-control input-sm"
+			typeahead="object[propertyDisplay.property+'Name'] for object in selectionOptions.getOptionsByKeyword($viewValue) | filter:$viewValue"
+			typeahead-on-select="selectItem($item, $model, $label)"
+	>
+	<div class="input-group-btn">
+		<button type="button" class="btn btn-sm btn-default"><span class="caret"></span></button>
+	</div>
+</div>
+<!-- Error Messages -->
+    
+<span style="color:red"
+	ng-repeat="(key,value) in propertyDisplay.errors"
+	ng-show="(propertyDisplay.form.$submitted && propertyDisplay.form[propertyDisplay.property].$invalid) || (propertyDisplay.form[propertyDisplay.property].$invalid && propertyDisplay.form[propertyDisplay.property].$dirty)"
+>
+  <span  ng-show="key === 'required'">{{propertyDisplay.title}} is a required field<br></span>
+</span>

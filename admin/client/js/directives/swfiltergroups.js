@@ -24,7 +24,6 @@ angular.module('slatwalladmin')
 			},
 			templateUrl:collectionPartialsPath+"filtergroups.html",
 			controller: function($scope, $element,$attrs){
-				
 				$scope.itemInUse = false;
 				
 				this.getFilterGroup = function(){

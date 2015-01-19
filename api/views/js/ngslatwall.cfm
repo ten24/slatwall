@@ -474,6 +474,8 @@ Notes:
 										&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
 										&& entityInstance.metaData[key].hb_formfieldtype === 'json'
 									){
+										console.log('here');
+										console.log(data[key]);
 										entityInstance.data[key] = angular.fromJson(data[key]);
 			    					}else{
 			    						entityInstance.data[key] = data[key];	
