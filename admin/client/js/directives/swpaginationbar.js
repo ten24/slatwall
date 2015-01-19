@@ -80,9 +80,7 @@ angular.module('slatwalladmin')
 	            			}
 	            			
 	            		}
-	            		$log.debug('here dave');
-	            		$log.debug(scope.currentPage);
-	            		$log.debug(scope.totalPagesArray);
+	            		
 	            		scope.pageStart();
 	            		scope.pageEnd();
 	            		scope.recordsCount();
