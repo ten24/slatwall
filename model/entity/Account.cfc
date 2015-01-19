@@ -291,7 +291,7 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		
 		// First look at all the unreceived open order payment
 		for(var termAccountOrderPayment in getTermAccountOrderPayments()) {
-			if(!termAccountOrderPayment.isNew()){
+			if(!termAccountOrderPayment.getNewFlag()){
 				termAccountBalance = precisionEvaluate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived());
 			}
 		}
