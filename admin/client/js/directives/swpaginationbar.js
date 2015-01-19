@@ -71,8 +71,18 @@ angular.module('slatwalladmin')
 	            		//scope.totalPages()
 	            		scope.totalPagesArray = [];
 	            		for(var i = 0; i < scope.totalPages(); i++){
-	            			scope.totalPagesArray.push(i+1);
+	            			if(scope.currentPage < 7 && scope.currentPage > 3 ){
+	            				if(i !== 0){
+	            					scope.totalPagesArray.push(i+1);
+	            				}
+	            			} else {
+	            				scope.totalPagesArray.push(i+1);
+	            			}
+	            			
 	            		}
+	            		$log.debug('here dave');
+	            		$log.debug(scope.currentPage);
+	            		$log.debug(scope.totalPagesArray);
 	            		scope.pageStart();
 	            		scope.pageEnd();
 	            		scope.recordsCount();
