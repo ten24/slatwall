@@ -7,21 +7,72 @@ component output="false" accessors="true" extends="HibachiService"  {
 	property name="hibachiUtilityService" type="any";
 
 	// ===================== START: Logical Methods ===========================
-	
 	public void function setPropperSession() {
+		
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
 		if(!hasSessionValue("sessionID")) {
 			setSessionValue('sessionID', '');
+		}
+		//Check if the NPSID and PSID have default empty values.
+		if (!hasSessionValue("NPSID")){
+			setSessionValue('NPSID', '');
+		}
+		if (!hasSessionValue("PSID")){
+			setSessionValue('PSID', '');
 		}
 		
 		var foundWithNPSID = false;
 		var foundWithPSID = false;
 		
+		
+		 //New logic starts here ---------
+		 //The logic here needs to be something like this to check and compare a non-persistent cookie:
+		 if( len(getSessionValue('sessionID')) ) {
+			
+			var sessionEntity = this.getSession( getSessionValue('sessionID'), true);
+			
+		 } 
+		 else if (structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID") && len(getSessionValue("NPSID"))){
+		 	//A cookie is set. Make sure it matches the NPSID we already have, and if it does
+		 	//then we foundWithNPSID
+		 	if(cookie["#getApplicationValue('applicationKey')#-NPSID"] == getSessionValue('NPSID'))
+		 	{
+		 		setSessionValue('sessionID', getSessionValue('NPSID'));
+		 		var sessionEntity = this.getSession( getSessionValue('sessionID'), true );
+		 		//we have a npsid match so we found it.
+		 		if(sessionEntity.getNewFlag()) {
+					getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value='', expires="now");
+					
+				} else {
+					foundWithNPSID = true;
+				}
+		 	}
+		 }
+		 //Check for a persistent cookie.
+		  else if (structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID")){
+		 	//A cookie is set. Make sure it matches the PSID we already have, and if it does
+		 	//then we foundWithPSID
+		 	if(cookie["#getApplicationValue('applicationKey')#-PSID"] == getSessionValue('PSID'))
+		 	{
+		 		setSessionValue('sessionID', getSessionValue('PSID'));
+		 		var sessionEntity = this.getSession( getSessionValue('sessionID'), true );
+		 		
+		 		//we have a psid match so we found it.
+		 		if(sessionEntity.getNewFlag()) {
+					getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value='', expires="now");
+				} else {
+					foundWithPSID = true;
+				}
+		 	}
+		 } else {
+			var sessionEntity = this.newSession();
+		}
+		//New logic ends here --------
+		//Old code here ---------------
+		/*
 		// Load Session for server session scope first if one exists
 		if( len(getSessionValue('sessionID')) ) {
 			var sessionEntity = this.getSession( getSessionValue('sessionID'), true);
-			
-		// Next look for a Non-Persistent Session Cookie which will allow for maintained login
 		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID")) {
 			setSessionValue('sessionID', getSessionIDFromEncryptedCookie(cookie["#getApplicationValue('applicationKey')#-NPSID"], 'non-persistent'));
 			var sessionEntity = this.getSession( getSessionValue('sessionID'), true);
@@ -31,7 +82,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 				foundWithNPSID = true;
 			}
 			
-		// Next look for a Persistent Session Cookie that can identify the user, but not allow for their login to remain
+		//Check for a persistent cookie.
 		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID")) {
 			setSessionValue('sessionID', getSessionIDFromEncryptedCookie(cookie["#getApplicationValue('applicationKey')#-PSID"], 'persistent'));
 			var sessionEntity = this.getSession( getSessionValue('sessionID'), true);
@@ -45,11 +96,13 @@ component output="false" accessors="true" extends="HibachiService"  {
 		} else {
 			var sessionEntity = this.newSession();
 		}
+		*/
+		//End old code -------------------------------
 		
 		// Populate the hibachi scope with the session
 		getHibachiScope().setSession( sessionEntity );
 		
-		// Let the hibachiScope know how we found the propper sessionID
+		// Let the hibachiScope know how we found the proper sessionID
 		getHibachiScope().setSessionFoundNPSIDCookieFlag( foundWithNPSID );
 		getHibachiScope().setSessionFoundPSIDCookieFlag( foundWithPSID );
 		
@@ -88,13 +141,30 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// Save session ID in the session Scope & cookie scope for next request
 		setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
+		setSessionValue('NPSID',  Hash(getHibachiScope().getSession().getSessionID() & "-NPSID", "SHA-1") );
+		setSessionValue('PSID',  Hash(getHibachiScope().getSession().getSessionID() & "-PSID", "SHA-1") );
 		
+		//Start testing here ------------------
+			//If the cookie doesn't exist or it doesn't match the SWSession record value for persistent or non-persistent,
+			//then create a new cookie.
+			if (!structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID") ){//
+				//Create the non-persistent cookie.
+				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value=Hash(getSessionValue('sessionID') & '-NPSID', 'SHA-1'));
+				
+			}
+			if (!structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID") || getSessionValue('PSID') != cookie["#getApplicationValue('applicationKey')#-PSID"]){
+				//Create the persistent cookie.
+				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value=Hash(getSessionValue('sessionID') & '-PSID', 'SHA-1'), expires="never");
+			}
+		//End testing here ------------------
+		/*
 		if(!structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID") || getSessionIDFromEncryptedCookie(cookie[ "#getApplicationValue('applicationKey')#-NPSID" ], 'non-persistent') != getHibachiScope().getSession().getSessionID()) {
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value=getSessionIDEncryptedCookie(getHibachiScope().getSession().getSessionID(), 'non-persistent'));
 		}
 		if(!structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID") || getSessionIDFromEncryptedCookie(cookie[ "#getApplicationValue('applicationKey')#-PSID" ], 'persistent') != getHibachiScope().getSession().getSessionID()) {
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value=getSessionIDEncryptedCookie(getHibachiScope().getSession().getSessionID(), 'persistent'), expires="never");
 		}
+		*/
 	}
 	
 	public string function loginAccount(required any account, required any accountAuthentication) {
@@ -188,11 +258,15 @@ component output="false" accessors="true" extends="HibachiService"  {
 	// ================== START: Private Helper Functions =====================
 	
 	private any function getSessionIDEncryptedCookie( required any sessionID, required string cookieType ) {
+
 		return getHibachiUtilityService().encryptValue(value=arguments.sessionID, salt="valid-#arguments.cookieType#-SlatwallSessionIDCookie");
+
 	}
-	
+
 	private any function getSessionIDFromEncryptedCookie( required any cookieData, required string cookieType ) {
+
 		return getHibachiUtilityService().decryptValue(value=arguments.cookieData, salt="valid-#arguments.cookieType#-SlatwallSessionIDCookie");
+
 	}
 	
 	// ==================  END:  Private Helper Functions =====================
