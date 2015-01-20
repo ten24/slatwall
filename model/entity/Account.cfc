@@ -61,10 +61,12 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="cmsAccountID" ormtype="string" hb_populateEnabled="false" index="RI_CMSACCOUNTID";
 	
 	// Related Object Properties (many-to-one)
+	property name="primaryBillingAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="primaryBillingAddressID";
 	property name="primaryEmailAddress" hb_populateEnabled="public" cfc="AccountEmailAddress" fieldtype="many-to-one" fkcolumn="primaryEmailAddressID";
 	property name="primaryPhoneNumber" hb_populateEnabled="public" cfc="AccountPhoneNumber" fieldtype="many-to-one" fkcolumn="primaryPhoneNumberID";
 	property name="primaryAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="primaryAddressID";
 	property name="primaryPaymentMethod" hb_populateEnabled="public" cfc="AccountPaymentMethod" fieldtype="many-to-one" fkcolumn="primaryPaymentMethodID";
+	property name="primaryShippingAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="primaryShippingAddressID";
 	 
 	// Related Object Properties (one-to-many)
 	property name="accountAddresses" hb_populateEnabled="public" singularname="accountAddress" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="AccountAddress" inverse="true" cascade="all-delete-orphan";
@@ -291,7 +293,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		
 		// First look at all the unreceived open order payment
 		for(var termAccountOrderPayment in getTermAccountOrderPayments()) {
-			termAccountBalance = precisionEvaluate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived());
+			if(!termAccountOrderPayment.getNewFlag()){
+				termAccountBalance = precisionEvaluate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived());
+			}
 		}
 		
 		// Now look for the unasigned payment amount 
@@ -349,43 +353,63 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	
 	// ============= START: Bidirectional Helper Methods ===================
 	
+	// Primary Shipping Address (many-to-one | circular)
+	public void function setPrimaryBillingAddress( any accountAddress ) {
+		if(structKeyExists(arguments, "accountAddress")) {
+			variables.primaryBillingAddress = arguments.accountAddress;
+			arguments.accountAddress.setAccount( this );	
+		} else {
+			structDelete(variables, "primaryBillingAddress");
+		}
+	}
+	
 	// Primary Email Address (many-to-one | circular)
-	public void function setPrimaryEmailAddress( any primaryEmailAddress) {
-		if(structKeyExists(arguments, "primaryEmailAddress")) {
-			variables.primaryEmailAddress = arguments.primaryEmailAddress;
-			arguments.primaryEmailAddress.setAccount( this );
+	public void function setPrimaryEmailAddress( any accountEmailAddress ) {
+		if(structKeyExists(arguments, "accountEmailAddress")) {
+			variables.primaryEmailAddress = arguments.accountEmailAddress;
+			arguments.accountEmailAddress.setAccount( this );
 		} else {
 			structDelete(variables, "primaryEmailAddress");
 		}
 	}
 	
-	// Primary Email Address (many-to-one | circular)
-	public void function setPrimaryPhoneNumber( any primaryPhoneNumber) {
-		if(structKeyExists(arguments, "primaryPhoneNumber")) {
-			variables.primaryPhoneNumber = arguments.primaryPhoneNumber;
-			arguments.primaryPhoneNumber.setAccount( this );
+	// Primary Phone Number (many-to-one | circular)
+	public void function setPrimaryPhoneNumber( any accountPhoneNumber ) {
+		if(structKeyExists(arguments, "accountPhoneNumber")) {
+			variables.primaryPhoneNumber = arguments.accountPhoneNumber;
+			arguments.accountPhoneNumber.setAccount( this );
 		} else {
 			structDelete(variables, "primaryPhoneNumber");
 		}   
 	}
 	
 	// Primary Address (many-to-one | circular)
-	public void function setPrimaryAddress( any primaryAddress) {    
-		if(structKeyExists(arguments, "primaryAddress")) {
-			variables.primaryAddress = arguments.primaryAddress;
-			arguments.primaryAddress.setAccount( this );	
+	public void function setPrimaryAddress( any accountAddress ) {    
+		if(structKeyExists(arguments, "accountAddress")) {
+			variables.primaryAddress = arguments.accountAddress;
+			arguments.accountAddress.setAccount( this );	
 		} else {
 			structDelete(variables, "primaryAddress");
 		}
 	}
 	
-	// Primary AccountPayment Method (many-to-one | circular)
-	public void function setPrimaryAccountPaymentMethod(required any primaryPaymentMethod) {
-		if(structKeyExists(arguments, "primaryPaymentMethod")) {
-			variables.primaryPaymentMethod = arguments.primaryPaymentMethod;
-			arguments.primaryPaymentMethod.setAccount( this );	
+	// Primary Account Payment Method (many-to-one | circular)
+	public void function setPrimaryAccountPaymentMethod( any accountPaymentMethod ) {
+		if(structKeyExists(arguments, "accountPaymentMethod")) {
+			variables.primaryPaymentMethod = arguments.accountPaymentMethod;
+			arguments.accountPaymentMethod.setAccount( this );	
 		} else {
 			structDelete(variables, "primaryPaymentMethod");
+		}
+	}
+	
+	// Primary Shipping Address (many-to-one | circular)
+	public void function setPrimaryShippingAddress( any accountAddress ) {
+		if(structKeyExists(arguments, "accountAddress")) {
+			variables.primaryShippingAddress = arguments.accountAddress;
+			arguments.accountAddress.setAccount( this );	
+		} else {
+			structDelete(variables, "primaryShippingAddress");
 		}
 	}
 	

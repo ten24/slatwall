@@ -67,7 +67,7 @@ Notes:
 		<cfset assert( isNumeric(result) ) />
 		<cfset assert( result gt 0 ) />
 		
-		<cfquery name="rs">
+		<cfquery name="local.rs">
 			DELETE FROM SwShortReference WHERE referenceObjectID = 'fake-test-reference-id' AND referenceObject = 'fake-test-object'
 		</cfquery>
 	</cffunction>

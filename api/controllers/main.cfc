@@ -197,6 +197,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 		data = getService('HibachiUtilityService').arrayOfStructsSort(data,'name');
 		
+		//if it contains an empty value make it the first item
+		var emptyValue = javacast('null','');
+		var dataCount = arrayLen(data);
+		var emptyValueIndex = 0;
+		for(var i = 1; i <= dataCount; i++){
+			writeDump(data[i]);
+			if(structKeyExists(data[i],'VALUE') && data[i].VALUE == ''){
+				emptyValue = data[i];	
+				emptyValueIndex = i; 
+			}
+		}
+		if(!isNull(emptyValue) && emptyValueIndex > 0){
+			ArrayPrepend(data,emptyValue);
+			ArrayDeleteAt(data,emptyValueIndex+1);
+		}
+		
 		arguments.rc.apiResponse.content['data'] = data;
 	}
 	/* pass in an entity name and recieve validation*/

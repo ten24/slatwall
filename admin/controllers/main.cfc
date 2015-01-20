@@ -320,7 +320,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		rc.$.slatwall.showMessageKey( 'admin.main.unlockAccount_info' );
 		
-		getFW().redirect(action="?slatAction=entity.detailaccount&accountID=" & url.accountid, preserve="messages");
+		getFW().redirect(action="entity.detailaccount", queryString="accountID=#arguments.rc.accountid#", preserve="messages");
 
 	}
 

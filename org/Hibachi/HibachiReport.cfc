@@ -80,7 +80,7 @@
 			<cfset variables[ "aliasFormatType#arguments.alias#" ] = "" />
 			
 			<!--- Check Dimensions --->
-			<cfloop array="#getDimensionDefinitions()#" index="dimensionDefinition">
+			<cfloop array="#getDimensionDefinitions()#" index="local.dimensionDefinition">
 				<cfif dimensionDefinition.alias eq arguments.alias and structKeyExists(dimensionDefinition, 'formatType')>
 					<cfset variables[ "aliasFormatType#arguments.alias#" ] = dimensionDefinition.formatType />
 					<cfreturn variables[ "aliasFormatType#arguments.alias#" ] />
@@ -90,7 +90,7 @@
 			</cfloop>
 			
 			<!--- Check Metrics --->
-			<cfloop array="#getMetricDefinitions()#" index="metricDefinition">
+			<cfloop array="#getMetricDefinitions()#" index="local.metricDefinition">
 				<cfif metricDefinition.alias eq arguments.alias and structKeyExists(metricDefinition, 'formatType')>
 					<cfset variables[ "aliasFormatType#arguments.alias#" ] = metricDefinition.formatType />
 					<cfreturn variables[ "aliasFormatType#arguments.alias#" ] />

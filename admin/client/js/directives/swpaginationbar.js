@@ -83,6 +83,16 @@ angular.module('slatwalladmin')
 	        	
 	        	scope.showPreviousJump = function(){
 	        		if(angular.isDefined(scope.currentPage) && scope.currentPage > 3){
+	        			scope.totalPagesArray = [];
+	            		for(var i = 0; i < scope.totalPages(); i++){
+	            			if(scope.currentPage < 7 && scope.currentPage > 3 ){
+	            				if(i !== 0){
+	            					scope.totalPagesArray.push(i+1);
+	            				}
+	            			} else {
+	            				scope.totalPagesArray.push(i+1);
+	            			}
+	            		}
 	        			return true;
 	        		}else{
 	        			return false;
@@ -114,7 +124,7 @@ angular.module('slatwalladmin')
 	        			}
 	        		}*/
 	        		
-	        		if(scope.currentPage >=scope.totalPages() - 3){
+	        		if(scope.currentPage >= scope.totalPages() - 3){
 	        			if(number > scope.totalPages() - 6){
 	        				return true;
 	        			}

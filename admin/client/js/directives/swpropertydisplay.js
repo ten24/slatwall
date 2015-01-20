@@ -2,11 +2,9 @@ angular.module('slatwalladmin')
 .directive('swPropertyDisplay', [
 '$log',
 'partialsPath',
-'propertyDisplayService',
 	function(
 	$log,
-	partialsPath,
-	propertyDisplayService
+	partialsPath
 	){
 		return {
 			require:'^form',
@@ -14,9 +12,11 @@ angular.module('slatwalladmin')
 			scope:{
 				object:"=",
 				property:"@",
-				isEditable:"=",
+				editable:"=",
 				editing:"=",
 				isHidden:"=",
+				title:"=",
+				hint:"=",
 				optionsArguments:"=",
 				eagerLoadOptions:"=",
 				isDirty:"=",
@@ -25,25 +25,40 @@ angular.module('slatwalladmin')
 			templateUrl:partialsPath+"propertydisplay.html",
 			link: function(scope, element,attrs,formController){
 				//if the item is new, then all fields at the object level are dirty
-
-				var propertyDisplay = {
+				$log.debug('editingproper');
+				$log.debug(scope.property);
+				$log.debug(scope.editable);
+				
+				scope.propertyDisplay = {
 					object:scope.object,
 					property:scope.property,
 					errors:{},
 					editing:scope.editing,
-					isEditable:scope.isEditable,
+					editable:scope.editable,
 					isHidden:scope.isHidden,
-					optionsArguments:scope.optionsArguments,
-					eagerLoadOptions:scope.eagerLoadOptions,
+					fieldType:scope.fieldType || scope.object.metaData.$$getPropertyFieldType(scope.property),
+					title: scope.title || scope.object.metaData.$$getPropertyTitle(scope.property),
+					hint:scope.hint || scope.object.metaData.$$getPropertyHint(scope.property),
+					optionsArguments:scope.optionsArguments || {},
+					eagerLoadOptions:scope.eagerLoadOptions || true,
 					isDirty:scope.isDirty,
 					onChange:scope.onChange
 				};
 				
+				if(angular.isUndefined(scope.editable)){
+					scope.propertyDisplay.editable = true;
+				};
+				
+				if(angular.isUndefined(scope.editing)){
+					scope.propertyDisplay.editing = false;
+				};
+				
+				if(angular.isUndefined(scope.isHidden)){
+					scope.propertyDisplay.isHidden = false;
+				}
+				
+				
 				scope.$id = 'propertyDisplay:'+scope.property;
-				
-
-				
-				scope.propertyDisplay = propertyDisplayService.newPropertyDisplay(propertyDisplay);
 				
 				/* register form that the propertyDisplay belongs to*/
 				scope.propertyDisplay.form = formController;
