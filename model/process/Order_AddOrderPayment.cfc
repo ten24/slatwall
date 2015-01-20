@@ -57,10 +57,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="newOrderPayment" cfc="OrderPayment" fieldType="many-to-one" persistent="false" fkcolumn="orderPaymentID";
 	
 	// Data Properties (ID's)
-	property name="paymentMethodType" ormtype="string" hb_rbKey="entity.paymentMethodType" hb_formFieldType="select";
+	property name="copyFromType" ormtype="string" hb_rbKey="entity.copyFromType" hb_formFieldType="select";
 	property name="accountPaymentMethodID" hb_rbKey="entity.accountPaymentMethod" hb_formFieldType="select";
 	property name="accountAddressID" hb_rbKey="entity.accountAddress" hb_formFieldType="select";
-	property name="orderPaymentMethodID" hb_rbKey="entity.orderPaymentMethod" hb_formFieldType="select";
+	property name="previousOrderPaymentID" hb_rbKey="entity.previousOrderPayment" hb_formFieldType="select";
 	
 	// Data Properties (Inputs)
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno";
@@ -72,11 +72,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="attributeValuesByCodeStruct";
 	// Option Properties
 	property name="accountPaymentMethodIDOptions";
-	property name="orderPaymentMethodIDOptions";
+	property name="previousOrderPaymentIDOptions";
 	property name="paymentMethodIDOptions";
 	property name="accountAddressIDOptions";
 	property name="paymentTermIDOptions";
-	property name="paymentMethodTypeOptions";
+	property name="copyFromTypeOptions";
 	
 	// Helper Properties
 	
@@ -85,13 +85,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public any function setupDefaults() {
 		variables.accountAddressID = getAccountAddressIDOptions()[1]['value'];
-		variables.paymentMethodType = '';
+		variables.copyFromType = '';
 		if(arrayLen(getAccountPaymentMethodIDOptions())){
 			variables.accountPaymentMethodID = getAccountPaymentMethodIDOptions()[1]['value'];
-			variables.paymentMethodType = 'accountPaymentMethod';
+			variables.copyFromType = 'accountPaymentMethod';
 		}
-		if(arrayLen(getOrderPaymentMethodIDOptions())){
-			variables.orderPaymentMethodID = getOrderPaymentMethodIDOptions()[1]['value'];
+		if(arrayLen(getPreviousOrderPaymentIDOptions())){
+			variables.previousOrderPaymentID = getPreviousOrderPaymentIDOptions()[1]['value'];
 		}
 	}
 	
@@ -102,18 +102,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.accountPaymentMethodID;
 	}
 	
-	public string function getOrderPaymentMethodID() {
-		if(!structKeyExists(variables, "orderPaymentMethodID")) {
-			variables.orderPaymentMethodID = "";
+	public string function getPreviousOrderPaymentID() {
+		if(!structKeyExists(variables, "previousOrderPaymentID")) {
+			variables.previousOrderPaymentID = "";
 		}
-		return variables.orderPaymentMethodID;
+		return variables.previousOrderPaymentID;
 	}
 	
-	public any function getPaymentMethodType(){
-		if(!structKeyExists(variables, 'paymentMethodType')){
-			variables.paymentMethodType = '';	
+	public any function getCopyFromType(){
+		if(!structKeyExists(variables, 'copyFromType')){
+			variables.copyFromType = '';	
 		}	
-		return variables.paymentMethodType;
+		return variables.copyFromType;
 	}
 	
 	public string function getAccountAddressID() {
@@ -150,10 +150,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return variables.accountPaymentMethodIDOptions;
 	}
 	
-	public array function getPaymentMethodTypeOptions(){
+	public array function getCopyFromTypeOptions(){
 		
-		if(!structKeyExists(variables,'paymentMethodTypeOptions')){
-			variables.paymentMethodTypeOptions = [
+		if(!structKeyExists(variables,'copyFromTypeOptions')){
+			variables.copyFromTypeOptions = [
 				{
 					name=rbKey('define.new'), 
 					value=""
@@ -164,28 +164,31 @@ component output="false" accessors="true" extends="HibachiProcess" {
 					name=rbKey('entity.accountPaymentMethod'),
 					value="accountPaymentMethod"
 				};
-				arrayAppend(variables.paymentMethodTypeOptions,accountPaymentMethodOption);
+				arrayAppend(variables.copyFromTypeOptions,accountPaymentMethodOption);
 			}
-			if(arrayLen(getAccountPaymentMethodIDOptions())){
-				var orderPaymentMethodOption = {
-					name=rbKey('entity.orderPaymentMethod'),
-					value="orderPaymentMethod"
+			if(arrayLen(getPreviousOrderPaymentIDOptions())){
+				var previousOrderPaymentOption = {
+					name=rbKey('entity.previousOrderPayment'),
+					value="previousOrderPayment"
 				};
-				arrayAppend(variables.paymentMethodTypeOptions,orderPaymentMethodOption);
+				arrayAppend(variables.copyFromTypeOptions,previousOrderPaymentOption);
 			}
 		}
-		return variables.paymentMethodTypeOptions;	
+		return variables.copyFromTypeOptions;	
 	}
 	
-	public array function getOrderPaymentMethodIDOptions() {
-		if(!structKeyExists(variables, "orderPaymentMethodIDOptions")) {
-			variables.orderPaymentMethodIDOptions = [];
-			var pmArr = getOrder().getOrderPaymentsSmartList().getRecords();
-			for(var i=1; i<=arrayLen(pmArr); i++) {
-				arrayAppend(orderPaymentMethodIDOptions, {name= pmArr[i].getCreditCardType() & ' - *' & pmArr[i].getCreditCardLastFour(), value=pmArr[i].getOrderPaymentID()});	
+	public array function getPreviousOrderPaymentIDOptions() {
+		if(!structKeyExists(variables, "previousOrderPaymentIDOptions")) {
+			variables.previousOrderPaymentIDOptions = [];
+			var orderPaymentsSmartList = getOrder().getOrderPaymentsSmartList();
+			orderPaymentsSmartList.addFilter('paymentMethod.activeFlag', 1);
+ 			orderPaymentsSmartList.addOrder('sortOrder|ASC');
+			var orderPaymentsArray = orderPaymentsSmartList.getRecords();
+			for(var i=1; i<=arrayLen(orderPaymentsArray); i++) {
+				arrayAppend(previousOrderPaymentIDOptions, {name= orderPaymentsArray[i].getCreditCardType() & ' - *' & orderPaymentsArray[i].getCreditCardLastFour(), value=orderPaymentsArray[i].getOrderPaymentID()});	
 			}
 		}
-		return variables.orderPaymentMethodIDOptions;
+		return variables.previousOrderPaymentIDOptions;
 	}
 	
 	public array function getAccountAddressIDOptions() {

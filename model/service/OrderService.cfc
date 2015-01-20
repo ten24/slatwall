@@ -656,16 +656,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Get the populated newOrderPayment out of the processObject
 		var newOrderPayment = processObject.getNewOrderPayment();
 		// If this is an existing account payment method, then we can pull the data from there
-		if( arguments.processObject.getPaymentMethodType() == 'accountPaymentMethod' && len(arguments.processObject.getAccountPaymentMethodID())) {
+		if( arguments.processObject.getCopyFromType() == 'accountPaymentMethod' && len(arguments.processObject.getAccountPaymentMethodID())) {
 			
 			// Setup the newOrderPayment from the existing payment method
 			var accountPaymentMethod = getAccountService().getAccountPaymentMethod( arguments.processObject.getAccountPaymentMethodID() );
 			newOrderPayment.copyFromAccountPaymentMethod( accountPaymentMethod );
 			
 		// If they just used an exiting account address then we can try that by itself
-		}else if(arguments.processObject.getPaymentMethodType() == 'orderPaymentMethod' && len(arguments.processObject.getOrderPaymentMethodID())){ 
+		}else if(arguments.processObject.getCopyFromType() == 'previousOrderPayment' && len(arguments.processObject.getPreviousOrderPaymentID())){ 
 			// Setup the newOrderPayment from the existing payment method
-			var orderPayment = getService('OrderService').getOrderPayment(arguments.processObject.getOrderPaymentMethodID());
+			var orderPayment = getService('OrderService').getOrderPayment(arguments.processObject.getPreviousOrderPaymentID());
 			newOrderPayment.copyFromOrderPayment(orderPayment);
 		}else if(!isNull(arguments.processObject.getAccountAddressID()) && len(arguments.processObject.getAccountAddressID())) {
 			var accountAddress = getAccountService().getAccountAddress( arguments.processObject.getAccountAddressID() );

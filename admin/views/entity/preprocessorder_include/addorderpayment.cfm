@@ -54,7 +54,7 @@ Notes:
 
 <cfoutput>
 	<!--- Account Payment Method --->
-	<hb:hibachipropertydisplay object="#rc.addOrderPaymentProcessObject#" property="paymentMethodType" 
+	<hb:hibachipropertydisplay object="#rc.addOrderPaymentProcessObject#" property="copyFromType" 
 	                           edit="#rc.edit#">
 	
 	
@@ -62,16 +62,16 @@ Notes:
 	<!---<hb:hibachidisplaytoggle selector="select[name='paymentMethodType']" showvalues="" 
 	                         loadvisable="#!len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#" 
 	                         forcesslflag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">--->
-	<hb:hibachidisplaytoggle selector="select[name='paymentMethodType']" showvalues="orderPaymentMethod" 
+	<hb:hibachidisplaytoggle selector="select[name='copyFromType']" showvalues="previousOrderPayment" 
 	                         forcesslflag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
-		<cfif arrayLen(rc.addOrderPaymentProcessObject.getOrderPaymentMethodIDOptions())>
+		<cfif arrayLen(rc.addOrderPaymentProcessObject.getPreviousOrderPaymentIDOptions())>
 			<hb:hibachipropertydisplay object="#rc.addOrderPaymentProcessObject#" 
-			                           property="orderPaymentMethodID" edit="#rc.edit#">
+			                           property="previousOrderPaymentID" edit="#rc.edit#">
 		</cfif>
 		
 	</hb:hibachidisplaytoggle>
 	
-	<hb:hibachidisplaytoggle selector="select[name='paymentMethodType']" showvalues="accountPaymentMethod" 
+	<hb:hibachidisplaytoggle selector="select[name='copyFromType']" showvalues="accountPaymentMethod" 
 							 loadvisable="#len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#"
 	                         forcesslflag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 		<cfif arrayLen(rc.addOrderPaymentProcessObject.getAccountPaymentMethodIDOptions())>
@@ -80,7 +80,7 @@ Notes:
 		</cfif>
 	</hb:hibachidisplaytoggle>
 	
-	<hb:hibachidisplaytoggle selector="select[name='paymentMethodType']" showvalues="" 
+	<hb:hibachidisplaytoggle selector="select[name='copyFromType']" showvalues="" 
 	                         loadvisable="#!len(rc.addOrderPaymentProcessObject.getAccountPaymentMethodID())#" 
 	                         forcesslflag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 	
