@@ -1381,6 +1381,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 		}
+		
 		return arguments.order;
 	}
 	
@@ -1495,6 +1496,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 				}
 			}
+			
 		}
 		
 		// As long as the amount to be captured is eq 0 then we can continue making the order delivery
@@ -1617,6 +1619,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
+		saveOrderFulfillment( orderFulfillment );
 		return arguments.orderDelivery;
 	}
 	
@@ -2098,6 +2101,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Recalculate the order amounts for tax and promotions
 		if(!arguments.orderFulfillment.hasErrors()) {
 			this.processOrder( arguments.orderFulfillment.getOrder(), {}, 'updateOrderAmounts' );
+		}
+		var fulfilledFlag = true;
+		var partiallyFulfilledFlag = false;
+		
+		for(var fulfillmentItem in arguments.orderFulfillment.getOrderFulfillmentItems()) {
+			if(fulfillmentItem.getQuantityUndelivered() > 0) {
+				fulfilledFlag = false;
+			}
+			if(fulfillmentItem.getQuantityDelivered() > 0) {
+				partiallyFulfilledFlag = true;
+			}
+		}
+		// Change the status depending on what value the partiallyReceivedFlag or closedFlag
+		if(fulfilledFlag){
+			arguments.orderFulfillment.setOrderFulfillmentStatusType( getTypeService().getTypeBySystemCode("ofstFulfilled") );
+		} else if(partiallyFulfilledFlag && !fulfilledFlag ) {
+			arguments.orderFulfillment.setOrderFulfillmentStatusType( getTypeService().getTypeBySystemCode("ofstPartiallyFulfilled") );
+
 		}
 		
 		return arguments.orderFulfillment;
