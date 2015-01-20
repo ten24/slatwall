@@ -30,7 +30,7 @@
       
       	<p class="input-group" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaStart">
           <input 	type="text" class="form-control" 
-          			datepicker-popup 
+          			datepicker-popup="{{format}}" 
           			ng-model="selectedFilterProperty.criteriaRangeStart" 
           			is-open="openedCalendarStart"  
           			ng-required="true" 
@@ -47,7 +47,7 @@
       
         <p class="input-group" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd">
           <input 	type="text" class="form-control" 
-          			datepicker-popup  
+          			datepicker-popup="{{format}}"  
           			ng-model="selectedFilterProperty.criteriaRangeEnd" 
           			is-open="openedCalendarEnd" 
           			ng-required="true" 
