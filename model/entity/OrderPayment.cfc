@@ -132,6 +132,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="orderAmountNeeded" persistent="false";
 	property name="creditCardOrProviderTokenExistsFlag" persistent="false";
 	property name="dynamicAmountFlag" persistent="false" hb_formatType="yesno";
+	property name="maximumPaymentMethodPaymentAmount" persistent="false";
 	
 	public string function getMostRecentChargeProviderTransactionID() {
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
@@ -511,6 +512,15 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			return false;
 		}
 		return true;
+	}
+
+	public any function getMaximumPaymentMethodPaymentAmount(){
+		if(!isNull(getPaymentMethod())) {
+			var maxPercent=getPaymentMethod().setting('paymentMethodMaximumOrderTotalPercentageAmount');
+			var maxPayment=precisionEvaluate((getOrder().getTotal()*(maxPercent/100))-getOrder().getPaymentAmountTotalByPaymentMethod(getPaymentMethod()));
+			return maxPayment;
+		}
+		return null;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
