@@ -9,6 +9,18 @@
 	<div class="input-group-btn">
 		<button type="button" class="btn btn-sm btn-default"><span class="caret"></span></button>
 	</div>
+	<input style="display:none"	type="text" 
+		name="{{propertyDisplay.property+'ID'}}"
+		ng-model="propertyDisplay.object.data[propertyDisplay.property][propertyDisplay.object.data[propertyDisplay.property].$$getIDName()]"
+	/>
+	<!-- <sw-property-display
+			style="display:none"
+			data-object="property.object.data[propertyDisplay.property]"
+			data-property="property.object.data[propertyDisplay.property].$$getIDName()"
+			data-editing="true"
+			data-editable="true"
+			data-is-dirty="true"
+	></sw-property-display> -->
 </div>
 <!-- Error Messages -->
     

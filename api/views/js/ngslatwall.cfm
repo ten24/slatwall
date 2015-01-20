@@ -759,7 +759,7 @@ Notes:
 				    	
 	
 				    	var _save = function(entityInstance){
-				    		$timeout(function(){
+				    		 var timeoutPromise = $timeout(function(){
 					    		
 					    		var entityID = entityInstance.$$getID();
 					    		
@@ -779,8 +779,9 @@ Notes:
 									//--->
 									_addReturnedIDs(returnedIDs,modifiedData.objectLevel);
 								});
-								return savePromise;
+								
 							});
+							return timeoutPromise;
 				    		/*
 				    		
 				    		<!---validate based on context --->
