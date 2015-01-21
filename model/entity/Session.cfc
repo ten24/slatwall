@@ -56,7 +56,7 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="lastPlacedOrderID" ormtype="string";
 	property name="rbLocale" ormtype="string";
 	property name="sessionCookiePSID" ormtype="string" length="64";
-	property name="sessionCookieNPSID" ormtype="string" length="64";
+	property name="sessionCookieNPSID" ormtype="string" length="64"; 
 	
 	// Related Entities
 	property name="account" type="any" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" fetch="join";
