@@ -101,7 +101,6 @@ Notes:
 					      	newEntity:function(entityName){
 					      		return new _jsEntities[entityName];
 					      	},
-					      	
 					      	/*basic entity getter where id is optional, returns a promise*/
 					  		getEntity:function(entityName, options){
 					  			/*
@@ -1272,7 +1271,7 @@ Notes:
 														<!--- check if property is self referencing --->
 														var thisEntityInstance = this;
 														var metaData = this.metaData;
-														var manyToManyName = '';
+														var manyToManyName;
 														if('#local.property.name#' === 'parent#local.entity.getClassName()#'){
 															var childName = 'child#local.entity.getClassName()#';
 															manyToManyName = entityInstance.metaData.$$getManyToManyName(childName);

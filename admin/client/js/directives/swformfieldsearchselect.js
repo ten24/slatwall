@@ -69,21 +69,13 @@ angular.module('slatwalladmin')
 				    console.log('item');
 				    console.log($item);
 				    console.log(scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
-				    if(angular.isUndefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])){
-				    	scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $slatwall['new'+scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
-				    }
-				    
-				    scope.propertyDisplay.object.$$setEmailTemplate($item);
-//					angular.extend(scope.productBundleGroup.data.productBundleGroupType.data,$item);
-//					var parentType = $slatwall.newType();
-//					parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
-//					scope.productBundleGroup.data.productBundleGroupType.$$setParentType(parentType);
-//				    
-//				    scope.showAddProductBundleGroupTypeBtn = false;
+				    console.log(scope.propertyDisplay.object);
+				    var propertyCFC = scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc;
+				    var inflatedObject = $slatwall.newEntity(propertyCFC);
+				    angular.extend(inflatedObject.data,$item);
+				    scope.propertyDisplay.object['$$set'+propertyCFC](inflatedObject);
 				};
 				
-				//scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = scope.propertyDisplay.isDirty;
-				//formService.setPristinePropertyValue(scope.propertyDisplay.property,scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
 	        }
 		};
 	}
