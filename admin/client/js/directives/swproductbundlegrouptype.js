@@ -112,6 +112,18 @@ angular.module('slatwalladmin')
 				    
 				    $scope.showAddProductBundleGroupTypeBtn = false;
 				};
+				
+				$scope.closeAddScreen = function(){
+					$scope.productBundleGroupTypes.$$adding = false;
+					$scope.showAddProductBundleGroupTypeBtn = false;
+					$scope.productBundleGroup.data.productBundleGroupType.data.typeName = '';
+				}
+				
+				$scope.saveProductBundleGroupType = function(){
+					
+					$scope.productBundleGroup.data.productBundleGroupType.$$save();
+					$scope.closeAddScreen();
+				}
 			}
 		};
 	}

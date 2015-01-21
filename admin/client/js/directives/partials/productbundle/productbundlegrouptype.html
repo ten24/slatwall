@@ -13,7 +13,10 @@
 							typeahead-on-select="selectProductBundleGroupType($item, $model, $label)"
 					>
 					<div class="input-group-btn">
-						<button type="button" class="btn btn-sm btn-default"><span class="caret"></span></button>
+						<button type="button" class="btn btn-sm btn-default" ng-click="closeAddScreen()">
+							<span ng-show="showAddProductBundleGroupTypeBtn" class="fa fa-caret-up"></span>
+							<span ng-show="!showAddProductBundleGroupTypeBtn" class="fa fa-caret-down"></span>
+						</button>
 					</div>
 				</div>
 
@@ -79,7 +82,7 @@
 								<div class="form-group">
 									<button type="button"
 											class="btn btn-xs s-btn-ten24"
-											ng-click="productBundleGroup.data.productBundleGroupType.$$save()"
+											ng-click="saveProductBundleGroupType()"
 									>
 										<i class="fa fa-plus"></i> Add Group Type
 									</button>
