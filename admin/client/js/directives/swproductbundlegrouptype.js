@@ -29,6 +29,16 @@ angular.module('slatwalladmin')
 				$scope.productBundleGroupTypes.value = [];
 				$scope.productBundleGroupTypes.$$adding = false;
 				$scope.productBundleGroupType = {};
+				
+				//Sets up clickOutside Directive call back arguments
+				$scope.swClickOutsideArgs = {
+						callBackCondition : !$scope.productBundleGroupTypes.$$adding ? true : false,
+						callBackActions : [
+						           function(){$scope.productBundleGroupTypes.$$adding = false;},
+						           function(){$scope.showAddProductBundleGroupTypeBtn = false;}
+						           ]
+				};
+				
 				if(angular.isUndefined($scope.productBundleGroup.data.productBundleGroupType)){
 					var productBundleGroupType = $slatwall.newType();
 					var parentType = $slatwall.newType();
