@@ -1,8 +1,8 @@
 
 	<div class="row form-group" >
-		<div class="col-md-6">
+		<div class="col-md-6" ng-controller="slatwallClickOutsideController">
 			<label class="col-md-3 control-label" for="">Bundle Group Type:</label>
-			<div class="col-md-9 s-search-filter" >
+			<div class="col-md-9 s-search-filter" id="j-inside" sw-click-outside="closeThis(swClickOutsideArgs)" outside-if-not="j-inside" >
 			
 				<div class="input-group" >
 					<input  type="text"
@@ -17,7 +17,7 @@
 					</div>
 				</div>
 
-				<div ng-show="showAddProductBundleGroupTypeBtn">
+				<div ng-show="showAddProductBundleGroupTypeBtn" >
 					<button type="button"
 							class="btn s-btn-dgrey"
 							ng-show="showAddProductBundleGroupTypeBtn"
@@ -25,7 +25,7 @@
 					>
 						<i class="fa fa-plus"></i> Add "{{productBundleGroup.data.productBundleGroupType.data.typeName}}"
 					</button>
-					<div class="s-add-content" ng-show="productBundleGroupTypes.$$adding">
+					<div class="s-add-content" ng-show="productBundleGroupTypes.$$adding" >
 						
 
 							<span ng-show="productBundleGroupTypes.$$adding && productBundleGroup.data.productBundleGroupType" >
