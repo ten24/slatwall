@@ -614,7 +614,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		
 		for(var orderPayment in getOrderPayments()) {
 			if(orderPayment.getPaymentMethod().getPaymentMethodId() eq arguments.paymentMethod.getPaymentMethodId()){
-				if(orderPayment.getStatusCode() eq "opstActive" && !orderPayment.hasErrors()) {
+				if(orderPayment.getStatusCode() eq "opstActive" && !orderPayment.hasErrors() && !orderPayment.getNewFlag()) {
 					if(orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge') {
 						totalPayments = precisionEvaluate(totalPayments + orderPayment.getAmount());	
 					} else {
