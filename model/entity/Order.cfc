@@ -580,6 +580,25 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return totalPaymentsReceived;
 	}
 	
+	public numeric function getPaymentAmountTotalByPaymentMethod(required any paymentMethod) {
+		var totalPayments = 0;
+		
+		for(var orderPayment in getOrderPayments()) {
+			if(orderPayment.getPaymentMethod().getPaymentMethodId() eq arguments.paymentMethod.getPaymentMethodId()){
+				if(orderPayment.getStatusCode() eq "opstActive" && !orderPayment.hasErrors() && !orderPayment.getNewFlag()) {
+					if(orderPayment.getOrderPaymentType().getSystemCode() eq 'optCharge') {
+						totalPayments = precisionEvaluate(totalPayments + orderPayment.getAmount());	
+					} else {
+						totalPayments = precisionEvaluate(totalPayments - orderPayment.getAmount());
+					}
+				}
+			}
+		}
+		
+		return totalPayments;
+	}
+
+
 	public numeric function getTotalDiscountableAmount(){
 		return getSubtotalAfterItemDiscounts() + getFulfillmentChargeAfterDiscountTotal();
 	}

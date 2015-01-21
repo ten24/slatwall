@@ -62,8 +62,18 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			getHibachiScope().getSession().setOrder( newOrder );
 			
 		// If the current order doesn't have an account, and the current order is not new, then set this account in the current order
-		} else if ( isNull(getHibachiScope().getSession().getOrder().getAccount()) && !getHibachiScope().getSession().getOrder().isNew() ) {
+		} else if ( isNull(getHibachiScope().getSession().getOrder().getAccount()) && !getHibachiScope().getSession().getOrder().getNewFlag() ) {
+			
 			getHibachiScope().getSession().getOrder().setAccount( getHibachiScope().getAccount() );
+			
+		// If there is not current order, and the account has existing cart or carts attach the most recently modified
+		} else if ( getHibachiScope().getSession().getOrder().getNewFlag() ) {
+			
+			var mostRecentCart = getOrderService().getMostRecentNotPlacedOrderByAccountID( getHibachiScope().getAccount().getAccountID() );
+			if(!isNull(mostRecentCart)) {
+				getHibachiScope().getSession().setOrder( mostRecentCart );
+			}
+			
 		}
 		
 		// Force persistance

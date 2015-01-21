@@ -49,7 +49,7 @@ Notes:
 <cfcomponent extends="HibachiService" persistent="false" accessors="true" output="false">
 	
 	<cfproperty name="templateService" />
-	
+	<cfproperty name="hibachiUtilityService" />
 		
 	<!--- ===================== START: Logical Methods =========================== --->
 		
@@ -234,12 +234,18 @@ Notes:
 				}
 				
 				arguments.email.populate( local.emailData );
-			}
 				
-			// Take all the Settings & String Replace on them (to, from, cc, bcc, subject, bodyHTML, bodyText)
+				// Do a second string replace for any additional keys added to emailData
+				arguments.email.setEmailTo( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailTo(), object=emailData) );
+				arguments.email.setEmailFrom( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailFrom(), object=emailData) );
+				arguments.email.setEmailCC( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailCC(), object=emailData) );
+				arguments.email.setEmailBCC( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBCC(), object=emailData) );
+				arguments.email.setEmailSubject( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailSubject(), object=emailData) );
+				arguments.email.setEmailBodyHTML( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyHTML(), object=emailData) );
+				arguments.email.setEmailBodyText( getHibachiUtilityService().replaceStringTemplate(template=arguments.email.getEmailBodyText(), object=emailData) );
+			}
 			
 		}
-		
 		
 		return arguments.email;
 	}

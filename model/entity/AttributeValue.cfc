@@ -63,6 +63,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="attributeValueOption" cfc="AttributeOption" fieldtype="many-to-one" fkcolumn="attributeValueOptionID";
 	
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+	property name="accountAddress" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="accountAddressID";
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID";
 	property name="attributeOption" cfc="AttributeOption" fieldtype="many-to-one" fkcolumn="attributeOptionID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
@@ -194,6 +195,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		structDelete(variables, "account");
 	}
 	
+	// Account Address (many-to-one)
+	public void function setAccountAddress(required any accountAddress) {
+		variables.account = arguments.account;
+		if(isNew() or !arguments.accountAddress.hasAttributeValue( this )) {
+			arrayAppend(arguments.accountAddress.getAttributeValues(), this);
+		}
+	}
+	public void function removeAccountAddress(any accountAddress) {
+		if(!structKeyExists(arguments, "accountAddress")) {
+			arguments.accountAddress = variables.accountAddress;
+		}
+		var index = arrayFind(arguments.accountAddress.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.accountAddress.getAttributeValues(), index);
+		}
+		structDelete(variables, "accountAddress");
+	}
+
 	// Attribute Option (many-to-one)    
 	public void function setAttributeOption(required any attributeOption) {    
 		variables.attributeOption = arguments.attributeOption;    

@@ -395,7 +395,6 @@
 										</ul>
 									</div>
 								<cfelse>
-									#thisTag.expandable#|#attributes.multiselectPropertyIdentifier#
 									&nbsp;
 								</cfif>
 							</th>

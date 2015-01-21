@@ -66,8 +66,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	
 	// Non-Persistent Properties
-	property name="requestAccount" type="any" persistent="false"; 
-	
+	property name="requestAccount" type="any" persistent="false";
+	 
 	public any function getAccount() {
 		if(structKeyExists(variables, "account")) {
 			return variables.account;

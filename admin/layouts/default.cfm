@@ -366,9 +366,11 @@ Notes:
 		<script type="text/javascript" >
 			angular.module('slatwalladmin', ['ngSlatwall','ui.bootstrap','ngAnimate','ngRoute']).
 			config(
-				["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$locationProvider',
-				function ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$locationProvider
+				["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$locationProvider','datepickerConfig', 'datepickerPopupConfig',
+				function ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$locationProvider,datepickerConfig, datepickerPopupConfig
 			) {
+				datepickerConfig.showWeeks = false;
+      			datepickerPopupConfig.toggleWeeksText = null;
 				
 				$locationProvider.html5Mode( false ).hashPrefix('!');
 				$provide.constant("baseURL", $.slatwall.getConfig().baseURL);
