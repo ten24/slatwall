@@ -15,9 +15,6 @@ function(
 	
 	var setupMetaData = function(){
 		$scope[$scope.entityName.toLowerCase()] = $scope.entity;
-		$scope.entityDisplay = {
-			plural:$slatwall.getRBKey('entity.'+$scope.entityName.toLowerCase()+'_plural')
-		};
 		$scope.detailTabs = $scope.entity.metaData.$$getDetailTabs();
 	}
 	

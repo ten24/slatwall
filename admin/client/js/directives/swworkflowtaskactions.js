@@ -31,9 +31,8 @@ angular.module('slatwalladmin')
 				};
 
 				scope.saveWorkflowTaskAction = function(){
-					var savePromise = scope.workflowTasks.selectedTaskAction.$$save();
+					var savePromise = scope.workflowTaskActions.selectedTaskAction.$$save();
 					savePromise.then(function(){
-						scope.getWorkflowTaskActions();
 					});
 				}
 				

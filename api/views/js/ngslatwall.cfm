@@ -474,6 +474,8 @@ Notes:
 										&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
 										&& entityInstance.metaData[key].hb_formfieldtype === 'json'
 									){
+										console.log('here');
+										console.log(data[key]);
 										entityInstance.data[key] = angular.fromJson(data[key]);
 			    					}else{
 			    						entityInstance.data[key] = data[key];	
@@ -757,7 +759,7 @@ Notes:
 				    	
 	
 				    	var _save = function(entityInstance){
-				    		$timeout(function(){
+				    		 var timeoutPromise = $timeout(function(){
 					    		
 					    		var entityID = entityInstance.$$getID();
 					    		
@@ -777,8 +779,9 @@ Notes:
 									//--->
 									_addReturnedIDs(returnedIDs,modifiedData.objectLevel);
 								});
-								return savePromise;
+								
 							});
+							return timeoutPromise;
 				    		/*
 				    		
 				    		<!---validate based on context --->

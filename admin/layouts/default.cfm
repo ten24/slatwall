@@ -383,7 +383,6 @@ Notes:
 				$provide.constant("workflowPartialsPath", _partialsPath+'workflow/');
 				
 				$logProvider.debugEnabled( $.slatwall.getConfig().debugFlag );
-				
 				$filterProvider.register('likeFilter',function(){
 					return function(text){
 						if(angular.isDefined(text) && angular.isString(text)){

@@ -54,6 +54,7 @@
 									<div class="radio">
 										<input  type="radio" name="triggerType" id="radioEvent{{$index}}"
 												ng-model="workflowTriggers.selectedTrigger.data.triggerType"
+												ng-change="setAsEvent(workflowTriggers.selectedTrigger)"
 												value="Event"
 										>
 										<label for="radioEvent{{$index}}">
@@ -62,7 +63,7 @@
 									</div>
 									<div class="radio">
 										<input  type="radio" name="triggerType" id="radioScheduled{{$index}}"
-												
+												ng-change="setAsSchedule(workflowTriggers.selectedTrigger)"
 												ng-model="workflowTriggers.selectedTrigger.data.triggerType"
 												value="Schedule" 
 										>
@@ -93,6 +94,20 @@
 									data-editing="true"
 									data-is-dirty="true"
 							></sw-property-display> 
+							<span ng-if="workflowTriggers.selectedTrigger.data.triggerType ==='Schedule'">
+								<sw-property-display
+									style="display:none"
+									data-object="workflowTriggers.selectedTrigger"
+									data-property="scheduleCollection"
+									data-is-dirty="true"
+								></sw-property-display>
+								<sw-property-display
+									style="display:none"
+									data-object="workflowTriggers.selectedTrigger"
+									data-property="schedule"
+									data-is-dirty="true"
+								></sw-property-display>
+							</span>
 									
 						</div>
 						<div class="col-xs-6 s-criteria">
@@ -209,7 +224,7 @@
 									<div class="s-filter-group-item">
 		
 										<div class="form-group form-group-sm">
-											<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.data.workflow.workflowObject}} Collection:</label>
+											<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.data.workflow.data.workflowObject}} Collection:</label>
 											<div class="col-sm-12 s-no-paddings">
 		
 												<!--- search --->
