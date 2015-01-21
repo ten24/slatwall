@@ -415,8 +415,12 @@ a {color:@black-60;}
 .table-responsive {overflow:visable !important;width:100%;}
 a:hover, a:focus {color: @black; }
 button::-moz-focus-inner {border: 0;}
+
 input::-moz-focus-inner { border: 0; }
 input[type="text"], input[type="password"], .ui-autocomplete-input, textarea, .uneditable-input {.border-radius();}
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 0;}
+input[type=number] {-moz-appearance:textfield;}
 
 a, a:active, a:focus {outline: none;}
 label {font-weight:600;}
@@ -633,7 +637,7 @@ input:focus, textarea:focus, select:focus {-webkit-box-shadow: none !important;b
 .nav-tabs>li>a:hover {background:none;border:none;color:#555;}
 .s-properties label {font-weight:600;}
 .s-properties .tooltip {width:200px !important;}
-.form-control {color: #767676;height: 30px;box-shadow:none;box-shadow:none;font-weight:normal;font-size:12px;.border-radius();padding: 3px 10px !important;}
+.form-control {color: #767676;height: 30px;box-shadow:none;box-shadow:none;font-weight:normal;font-size:12px;.border-radius();}
 
 /*Custom CSS*/
 .s-pannel-group .panel {border:none;.border-radius();}
