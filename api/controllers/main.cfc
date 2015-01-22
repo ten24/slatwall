@@ -202,7 +202,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var dataCount = arrayLen(data);
 		var emptyValueIndex = 0;
 		for(var i = 1; i <= dataCount; i++){
-			writeDump(data[i]);
 			if(structKeyExists(data[i],'VALUE') && data[i].VALUE == ''){
 				emptyValue = data[i];	
 				emptyValueIndex = i; 
