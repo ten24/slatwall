@@ -48,6 +48,7 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.order" type="any" />
 
 <cfoutput>
@@ -70,11 +71,11 @@ Notes:
 			<cfloop array="#rc.order.getPromotionCodes()#" index="appliedPromotionCode">
 				<tr>
 					<td class="primary">#appliedPromotionCode.getPromotionCode()#</td>
-					<td><hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="removePromotionCode" queryString="promotionCodeID=#appliedPromotionCode.getPromotionCodeID()#" class="btn btn-mini" iconOnly="true" icon="trash"></td>
+					<td><hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="removePromotionCode" queryString="promotionCodeID=#appliedPromotionCode.getPromotionCodeID()#" class="btn btn-default btn-xs" iconOnly="true" icon="trash"></td>
 				</tr>
 			</cfloop>
 		</table>
 	</cfif>
 	
-	<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addPromotionCode" class="btn" icon="plus" modal="true" />
+	<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addPromotionCode" class="btn btn-default" icon="plus" modal="true" />
 </cfoutput>

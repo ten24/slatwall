@@ -124,12 +124,15 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="originalAuthorizationProviderTransactionID" persistent="false";
 	property name="originalChargeProviderTransactionID" persistent="false";
 	property name="originalProviderTransactionID" persistent="false";
-	property name="statusCode" persistent="false";
+	property name="saveBillingAccountAddressFlag" persistent="false";
+	property name="saveBillingAccountAddressName" persistent="false";
 	property name="securityCode" persistent="false" hb_populateEnabled="public";
+	property name="statusCode" persistent="false";
 	property name="sucessfulPaymentTransactionExistsFlag" persistent="false";
 	property name="orderAmountNeeded" persistent="false";
 	property name="creditCardOrProviderTokenExistsFlag" persistent="false";
 	property name="dynamicAmountFlag" persistent="false" hb_formatType="yesno";
+	property name="maximumPaymentMethodPaymentAmount" persistent="false";
 	
 	public string function getMostRecentChargeProviderTransactionID() {
 		for(var i=1; i<=arrayLen(getPaymentTransactions()); i++) {
@@ -199,6 +202,9 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	
 	public void function copyFromOrderPayment(required any orderPayment) {
 		
+		// Connect this to the original order payment that we are copying from
+		setReferencedOrderPayment( arguments.orderPayment );
+		
 		// Make sure the payment method matches
 		setPaymentMethod( arguments.orderPayment.getPaymentMethod() );
 		
@@ -258,6 +264,24 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		}
 	}
 	
+	public void function checkNewBillingAccountAddressSave() {
+		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
+    	if(!isNull(getSaveBillingAccountAddressFlag()) && getSaveBillingAccountAddressFlag() && !isNull(getOrder().getAccount()) && !getOrder().getAccount().getGuestAccountFlag() && isNull(getBillingAccountAddress()) && !isNull(getBillingAddress()) && !getBillingAddress().hasErrors()) {
+    		
+    		// Create a New Account Address, Copy over Shipping Address, and save
+    		var accountAddress = getService('accountService').newAccountAddress();
+    		if(!isNull(getSaveBillingAccountAddressName())) {
+				accountAddress.setAccountAddressName( getSaveBillingAccountAddressName() );
+			}
+			accountAddress.setAddress( getBillingAddress().copyAddress( true ) );
+			accountAddress.setAccount( getOrder().getAccount() );
+			accountAddress = getService('accountService').saveAccountAddress( accountAddress );
+			
+			// Set the accountAddress
+			setBillingAccountAddress( accountAddress );
+		}
+	}
+    
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public boolean function getDynamicAmountFlag() {
@@ -308,7 +332,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var unauthroized = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unauthroized = precisionEvaluate(getAmount() - getAmountReceived() - getAmountAuthorized());
+			unauthroized = precisionEvaluate(getAmount() - getAmountAuthorized());
 		}
 		
 		return unauthroized;
@@ -492,6 +516,16 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		}
 		return true;
 	}
+
+	public any function getMaximumPaymentMethodPaymentAmount(){
+		if(!isNull(getPaymentMethod())) {
+			var maxPercent=getPaymentMethod().setting('paymentMethodMaximumOrderTotalPercentageAmount');
+			var maxPayment=precisionEvaluate((getOrder().getTotal()*(maxPercent/100))-getOrder().getPaymentAmountTotalByPaymentMethod(getPaymentMethod(), this));
+			
+			return maxPayment;
+		}
+		return null;
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
@@ -632,19 +666,24 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	
 	public any function getBillingAddress() {
-		if( !structKeyExists(variables, "billingAddress") ) {
-
-			if(!isNull(getBillingAccountAddress())) {
-				// Get the account address, copy it, and save as the shipping address
-    			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
-    			return variables.billingAddress;
-			} else if(!isNull(getOrder()) && !isNull(getOrder().getBillingAddress())) {
-				return getOrder().getBillingAddress();
-			}
-
-			return getService("addressService").newAddress();
+		// Check Here
+		if(structKeyExists(variables, "billingAddress")) {
+			return variables.billingAddress;
+			
+		// Check Billing Account Address
+		} else if(!isNull(getBillingAccountAddress())) {
+			
+			// Get the account address, copy it, and save as the shipping address
+			setBillingAddress( getBillingAccountAddress().getAddress().copyAddress( true ) );
+			return variables.billingAddress;
+			
+		// Check Order
+		} else if (!isNull(getOrder())) {
+			return getOrder().getBillingAddress();
 		}
-		return variables.billingAddress;
+		
+		// Return New
+		return getService("addressService").newAddress();
 	}
 	
 	public any function getCurrencyCode() {
@@ -660,14 +699,14 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	
 	public any function getOrderPaymentType() {
 		if( !structKeyExists(variables, "orderPaymentType") ) {
-			variables.orderPaymentType = getService("settingService").getTypeBySystemCode("optCharge");
+			variables.orderPaymentType = getService("typeService").getTypeBySystemCode("optCharge");
 		}
 		return variables.orderPaymentType;
 	}
 	
 	public any function getOrderPaymentStatusType() {
 		if( !structKeyExists(variables, "orderPaymentStatusType") ) {
-			variables.orderPaymentStatusType = getService("settingService").getTypeBySystemCode("opstActive");
+			variables.orderPaymentStatusType = getService("typeService").getTypeBySystemCode("opstActive");
 		}
 		return variables.orderPaymentStatusType;
 	}

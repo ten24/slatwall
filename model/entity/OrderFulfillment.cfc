@@ -243,12 +243,15 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     		var sortType = getFulfillmentMethod().setting('fulfillmentMethodShippingOptionSortType');
     		
     		for(var shippingMethodOption in getFulfillmentShippingMethodOptions()) {
-    			var thisOption = {
-    				name = shippingMethodOption.getSimpleRepresentation(),
-    				value = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID(),
-    				totalCharge = shippingMethodOption.getTotalCharge(),
-    				shippingMethodSortOrder = shippingMethodOption.getShippingMethodRate().getShippingMethod().getSortOrder()
-    			};
+    			
+    			var thisOption = {};
+    			thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
+    			thisOption['value'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID();
+    			thisOption['totalCharge'] = shippingMethodOption.getTotalCharge();
+    			thisOption['shippingMethodSortOrder'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getSortOrder();
+    			if( !isNull(shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode()) ){
+    				thisOption['shippingMethodCode'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode();
+    			}
     			
     			var inserted = false;
     			
@@ -423,20 +426,24 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 	
 	public any function getShippingAddress() {
-		if(!structKeyExists(variables, "shippingAddress")) {
+		// Check Here
+		if(structKeyExists(variables, "shippingAddress")) {
+			return variables.shippingAddress;
 			
-			if(!isNull(getAccountAddress())) {
-				// Get the account address, copy it, and save as the shipping address
-				setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
-				return variables.shippingAddress;
-			} else if (!isNull(getOrder()) && !isNull(getOrder().getShippingAddress()) ) {
-				return getOrder().getShippingAddress();
-			}
+		// Check Account Address
+		} else if(!isNull(getAccountAddress())) {
 			
-			return getService("addressService").newAddress();
+			// Get the account address, copy it, and save as the shipping address
+			setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
+			return variables.shippingAddress;
+			
+		// Check Order
+		} else if (!isNull(getOrder())) {
+			return getOrder().getShippingAddress();
 		}
 		
-		return variables.shippingAddress;
+		// Return New
+		return getService("addressService").newAddress();
 	}
 	
 	// sets it up so that the charge for the shipping method is pulled out of the shippingMethodOptions
@@ -472,7 +479,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 		if(!isNull(getFulfillmentMethod())) {
 			rep &= "#rbKey('enity.orderFulfillment.orderFulfillmentType.#getFulfillmentMethodType()#')#";
-			if(getFulfillmentMethodType() eq "shipping" && !isNull(getAddress()) && !getAddress().isNew() && !isNull(getAddress().getStreetAddress())) {
+			if(getFulfillmentMethodType() eq "shipping" && !isNull(getShippingAddress().getStreetAddress())) {
 				rep &= " - #getAddress().getStreetAddress()#";
 			}
 			if(getFulfillmentMethodType() eq "email" && !isNull(getEmailAddress())) {

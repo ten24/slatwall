@@ -1258,7 +1258,7 @@ Notes:
 					<table class="table table-bordered table-condensed">
 						<tr>
 							<td>Order Status</td>
-							<td>#order.getOrderStatusType().getType()#</td>
+							<td>#order.getOrderStatusType().getTypeName()#</td>
 						</tr>
 						<tr>
 							<td>Order ##</td>
@@ -1365,7 +1365,7 @@ Notes:
 							</td>
 							
 							<!--- Status --->
-							<td>#orderItem.getOrderItemStatusType().getType()#</td>
+							<td>#orderItem.getOrderItemStatusType().getTypeName()#</td>
 						</tr>
 					</cfloop>
 					

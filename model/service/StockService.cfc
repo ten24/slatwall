@@ -374,8 +374,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		
-		// Physical (Maybe Incoming, Maybe Outgoing)
-		if( listFindNoCase("satPhysicalCount", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) ) {
+		// Physical / Makeup / Breakup (Maybe Incoming, Maybe Outgoing)
+		if( listFindNoCase("satPhysicalCount,satMakeupBundledSkus,satBreakupBundledSkus", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) ) {
 			
 			var headObjects = {};
 			
@@ -424,7 +424,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		// Set the status to closed
-		arguments.stockAdjustment.setStockAdjustmentStatusType( getSettingService().getTypeBySystemCode("sastClosed") );	
+		arguments.stockAdjustment.setStockAdjustmentStatusType( getTypeService().getTypeBySystemCode("sastClosed") );	
 
 	return arguments.stockAdjustment;
 

@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
@@ -64,6 +66,7 @@ Notes:
 		<hb:HibachiEntityActionBar type="detail" object="#rc.account#" edit="#rc.edit#">
 			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="createPassword" type="list" modal="true" hideDisabled="false" />
 			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="changePassword" type="list" modal="true" />
+			<hb:HibachiProcessCaller entity="#rc.account#" action="admin:entity.preprocessaccount" processContext="generateAuthToken" type="list" modal="true" />
 			<li class="divider"></li>
 			<hb:HibachiActionCaller action="admin:entity.createaccountaddress" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
 			<hb:HibachiActionCaller action="admin:entity.createaccountemailaddress" queryString="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" type="list" modal=true />
@@ -73,48 +76,19 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="accountID=#rc.account.getAccountID()#&sRedirectAction=admin:entity.detailAccount" modal="true" type="list" />
 		</hb:HibachiEntityActionBar>
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList divclass="span6">
-				<hb:HibachiPropertyDisplay object="#rc.account#" property="firstName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.account#" property="lastName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.account#" property="company" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.account#" property="superUserFlag" edit="#rc.edit and $.slatwall.getAccount().getSuperUserFlag()#">
-			</hb:HibachiPropertyList>
-			
-			<!--- Overview --->
-			<hb:HibachiPropertyList divclass="span6">
-				<hb:HibachiPropertyTable>
-					
-					<!--- Term Payment Details --->
-					<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailaccount.termPaymentDetails')#" />
-					<hb:HibachiPropertyDisplay object="#rc.account#" property="termAccountBalance" edit="false" displayType="table">
-					<hb:HibachiPropertyDisplay object="#rc.account#" property="termAccountAvailableCredit" edit="false" displayType="table">
-					
-					<!--- Authentication Details --->
-					<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailaccount.authenticationDetails')#" hint="#$.slatwall.rbKey("admin.entity.detailaccount.authenticationDetails_hint")#" />
-					<hb:HibachiPropertyDisplay object="#rc.account#" property="guestAccountFlag" edit="false" displayType="table">
-					<cfloop array="#rc.account.getActiveAccountAuthentications()#" index="accountAuthentication">
-						<cfsavecontent variable="thisValue">
-							<hb:HibachiActionCaller text="#$.slatwall.rbKey('define.remove')#" action="admin:entity.deleteAccountAuthentication" queryString="accountAuthenticationID=#accountAuthentication.getAccountAuthenticationID()#&redirectAction=admin:entity.detailAccount&accountID=#rc.account.getAccountID()#" />
-						</cfsavecontent>
-						<hb:HibachiFieldDisplay title="#accountAuthentication.getSimpleRepresentation()#" value="#thisValue#" edit="false" displayType="table">	
-					</cfloop>
-				</hb:HibachiPropertyTable>
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.account#">
-			<hb:HibachiTab view="admin:entity/accounttabs/contactdetails" />
-			<hb:HibachiTab property="accountPaymentMethods" count="#rc.account.getAccountPaymentMethodsSmartList().getRecordsCount()#" />
-			<hb:HibachiTab property="priceGroups" />
-			<hb:HibachiTab property="orders" count="#rc.ordersPlacedSmartList.getRecordsCount()#" />
-			<hb:HibachiTab view="admin:entity/accounttabs/cartsandquotes" count="#rc.ordersNotPlacedSmartList.getRecordsCount()#" />
-			<hb:HibachiTab property="accountPayments" />
-			<hb:HibachiTab property="accountLoyalties" count="#rc.account.getAccountLoyaltiesSmartList().getRecordsCount()#" />
-			<hb:HibachiTab property="productReviews" />
-			<hb:HibachiTab view="admin:entity/accounttabs/subscriptionusage" count="#rc.account.getSubscriptionUsagesSmartList().getRecordsCount()#" />
-			<hb:HibachiTab property="permissionGroups" />
-			<hb:HibachiTab view="admin:entity/accounttabs/accountsettings" />
+		<hb:HibachiEntityDetailGroup object="#rc.account#">
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/contactdetails" />
+			<hb:HibachiEntityDetailItem property="accountPaymentMethods" count="#rc.account.getAccountPaymentMethodsSmartList().getRecordsCount()#" />
+			<hb:HibachiEntityDetailItem property="priceGroups" />
+			<hb:HibachiEntityDetailItem property="orders" count="#rc.ordersPlacedSmartList.getRecordsCount()#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/cartsandquotes" count="#rc.ordersNotPlacedSmartList.getRecordsCount()#" />
+			<hb:HibachiEntityDetailItem property="accountPayments" />
+			<hb:HibachiEntityDetailItem property="accountLoyalties" count="#rc.account.getAccountLoyaltiesSmartList().getRecordsCount()#" />
+			<hb:HibachiEntityDetailItem property="productReviews" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/subscriptionusage" count="#rc.account.getSubscriptionUsagesSmartList().getRecordsCount()#" />
+			<hb:HibachiEntityDetailItem property="permissionGroups" />
+			<hb:HibachiEntityDetailItem view="admin:entity/accounttabs/accountsettings" />
 			
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.account.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
@@ -123,7 +97,7 @@ Notes:
 			
 			<!--- Comments --->
 			<swa:SlatwallAdminTabComments object="#rc.account#" />
-		</hb:HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

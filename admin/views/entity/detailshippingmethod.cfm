@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.shippingMethod" type="any" />
 <cfparam name="rc.fulfillmentMethod" type="any" default="#rc.shippingMethod.getFulfillmentMethod()#">
 <cfparam name="rc.edit" type="boolean" />
@@ -73,19 +75,13 @@ Notes:
 		<cfif rc.edit>
 			<input type="hidden" name="fulfillmentMethod.fulfillmentMethodID" value="#rc.fulfillmentMethod.getFulfillmentMethodID()#" />
 		</cfif>
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.shippingMethod#" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.shippingMethod#" property="shippingMethodName" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.shippingMethod#">
-			<hb:HibachiTab view="admin:entity/shippingmethodtabs/shippingmethodrates" />
-			<hb:HibachiTab view="admin:entity/shippingmethodtabs/shippingmethodsettings" />
-			<hb:HibachiTab view="admin:entity/shippingmethodtabs/shippingmethodratesettings" />
-		</hb:HibachiTabGroup>
+
+		<hb:HibachiEntityDetailGroup object="#rc.shippingMethod#">
+			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodtabs/shippingmethodrates" />
+			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodtabs/shippingmethodsettings" />
+			<hb:HibachiEntityDetailItem view="admin:entity/shippingmethodtabs/shippingmethodratesettings" />
+		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

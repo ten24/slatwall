@@ -54,9 +54,7 @@ Notes:
 		<cfargument name="paymentType" type="string" required="true" />
 		<cfargument name="transactionType" type="string" required="true" />
 		<cfargument name="transactionAmount" type="numeric" required="true" />
-		
 		<cfset var rs = "" />
-		
 		<!--- check for any transaction for this payment in last 60 sec with same type and amount --->
 		<cfquery name="rs">
 			SELECT
@@ -68,7 +66,7 @@ Notes:
 			  AND
 				transactionType = <cfqueryparam value="#arguments.transactionType#" cfsqltype="cf_sql_varchar" />
 			  AND
-				modifiedDateTime > <cfqueryparam value="#DateAdd("n",-60,now())#" cfsqltype="cf_sql_date" />
+				modifiedDateTime > <cfqueryparam value="#DateAdd("s",-60,now())#" cfsqltype="cf_sql_timestamp" />
 			  AND 
 				(
 					amountAuthorized = <cfqueryparam value="#arguments.transactionAmount#" cfsqltype="cf_sql_numeric" />
@@ -78,7 +76,6 @@ Notes:
 					amountCredited = <cfqueryparam value="#arguments.transactionAmount#" cfsqltype="cf_sql_numeric" />
 				)
 		</cfquery>
-		
 		<cfreturn rs.recordcount />
 	</cffunction>
 

@@ -51,15 +51,17 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="accountDAO" type="any";
 	
 	property name="emailService" type="any";
+	property name="eventRegistrationService" type="any";
 	property name="hibachiAuditService" type="any";
+	property name="loyaltyService" type="any";
+	property name="orderService" type="any";
 	property name="paymentService" type="any";
 	property name="permissionService" type="any";
 	property name="priceGroupService" type="any";
 	property name="settingService" type="any";
 	property name="siteService" type="any";
-	property name="loyaltyService" type="any";
+	property name="typeService" type="any";
 	property name="validationService" type="any";
-	property name="orderService" type="any";
 	
 	public string function getHashedAndSaltedPassword(required string password, required string salt) {
 		return hash(arguments.password & arguments.salt, 'SHA-512');
@@ -166,7 +168,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				// Link to the order payment if the payment is assigned to a term order. Also set the payment type
 				if(!isNull(orderPayment)) {
 					newAccountPaymentApplied.setOrderPayment( orderPayment );
-					newAccountPaymentApplied.setAccountPaymentType( getSettingService().getType( appliedOrderPayment.paymentTypeID  ) );
+					newAccountPaymentApplied.setAccountPaymentType( getTypeService().getType( appliedOrderPayment.paymentTypeID  ) );
 				}
 				
 				// Save the account payment applied
@@ -270,6 +272,19 @@ component extends="HibachiService" accessors="true" output="false" {
 			accountAuthentication.setPassword( getHashedAndSaltedPassword(arguments.processObject.getPassword(), accountAuthentication.getAccountAuthenticationID()) );	
 		}
 		
+		// Call save on the account now that it is all setup
+		arguments.account = this.saveAccount(arguments.account);
+
+		// Look for eventRegistrationID in the data and attach this account to that eventRegistrationID 
+		var eventRegistration = getEventRegistrationService().getEventRegistration( arguments.account.geteventRegistrationID() );
+	 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
+	 		eventRegistration().setFirstName( javaCast("null", "") );
+	 		eventRegistration().setLastName( javaCast("null", "") );
+	 		eventRegistration().setEmailAddress( javaCast("null", "") );
+	 		eventRegistration().setPhoneNumber( javaCast("null", "") );
+	 		eventRegistration().setAccount( arguments.account );
+	 	}
+		
 		return arguments.account;
 	}
 
@@ -279,6 +294,18 @@ component extends="HibachiService" accessors="true" output="false" {
 		arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
 		
 		return account;	
+	}
+	
+	public any function processAccount_generateAuthToken(required any account, required any processObject){
+		var accountAuthentication = this.newAccountAuthentication();
+		accountAuthentication.setAccount( arguments.account );
+	
+		// Set the authToken
+		accountAuthentication.setAuthToken(createUUID());
+		accountAuthentication.setAuthenticationDescription(arguments.processObject.getAuthenticationDescription());
+		
+		return arguments.account;
+		
 	}
 	
 	public any function processAccount_login(required any account, required any processObject) {
@@ -298,6 +325,18 @@ component extends="HibachiService" accessors="true" output="false" {
 					}else{
 						getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
 					}
+					
+					/*
+					// Look for eventRegistrationID in the data and attach this account to that eventRegistrationID 
+					var eventRegistration = getEventRegistrationService().getEventRegistration( arguments.account.geteventRegistrationID() );
+				 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
+				 		eventRegistration().setFirstName( javaCast("null", "") );
+				 		eventRegistration().setLastName( javaCast("null", "") );
+				 		eventRegistration().setEmailAddress( javaCast("null", "") );
+				 		eventRegistration().setPhoneNumber( javaCast("null", "") );
+				 		eventRegistartion().setAccount( accountAuthentications[i].getAccount() );
+				 	}
+					*/
 					
 					accountAuthentication.getAccount().setFailedLoginAttemptCount(0); 
 					accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
@@ -391,7 +430,6 @@ component extends="HibachiService" accessors="true" output="false" {
 			var tempAA = getAccountDAO().getPasswordResetAccountAuthentication(accountID=arguments.account.getAccountID());
 			
 			// Delete the temporary auth
-			tempAA.removeAccount();
 			this.deleteAccountAuthentication( tempAA );
 			
 			// Then flush the ORM session so that an account can be logged in right away
@@ -1163,10 +1201,11 @@ component extends="HibachiService" accessors="true" output="false" {
 	public boolean function deleteAccountAuthentication(required any accountAuthentication) {
 		// Check delete validation
 		if(arguments.accountAuthentication.isDeletable()) {
-			
 			// Remove the primary fields so that we can delete this entity
 			getAccountDAO().removeAccountAuthenticationFromSessions( arguments.accountAuthentication.getAccountAuthenticationID() );
-			
+			if(!isNull(arguments.accountAuthentication.getAccount())) {
+				arguments.accountAuthentication.removeAccount();	
+			}
 		}
 		
 		return delete( arguments.accountAuthentication );
@@ -1333,7 +1372,6 @@ component extends="HibachiService" accessors="true" output="false" {
 				var activePassword = getAccountDAO().getActivePasswordByAccountID(arguments.data.Account.getAccountID());
 				getHibachiScope().getSession().setAccountAuthentication(activePassword);
 			}
-			accountAuthenticationsArray[i].removeAccount();
 			this.deleteAccountAuthentication( accountAuthenticationsArray[i] );
 		}
 		

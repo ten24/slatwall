@@ -48,18 +48,25 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.subscriptionBenefitSmartList" type="any" />
 
 <cfoutput>
 
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.subscriptionBenefitSmartList#"
+	<hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionBenefitSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createsubscriptionbenefit" entity="subscriptionbenefit" class="btn btn-primary" icon="plus icon-white" modal="true" />			
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+
+	<hb:HibachiListingDisplay smartList="#rc.subscriptionBenefitSmartList#"
 							   recordDetailAction="admin:entity.detailsubscriptionbenefit"
 							   recordEditAction="admin:entity.editsubscriptionbenefit">
 		
-		<!--- Create ---> 
-		<hb:HibachiListingDisplayButtonGroup >
-			<hb:HibachiActionCaller action="admin:entity.createsubscriptionbenefit" entity="subscriptionbenefit" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</hb:HibachiListingDisplayButtonGroup>
+	
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionBenefitName" />
 	
 	</hb:HibachiListingDisplay>

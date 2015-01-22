@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.accountPaymentMethod" type="any">
 <cfparam name="rc.account" type="any" default="#rc.accountPaymentMethod.getAccount()#">
 <cfparam name="rc.edit" type="boolean">
@@ -68,7 +70,7 @@ Notes:
 		<input type="hidden" name="account.accountID" value="#rc.account.getAccountID()#" />
 		
 		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList divClass="span6">
+			<hb:HibachiPropertyList divClass="col-md-6">
 				<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="activeFlag" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="accountPaymentMethodName" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.accountPaymentMethod#" property="paymentMethod" edit="#rc.edit#">
@@ -104,7 +106,7 @@ Notes:
 				</hb:HibachiDisplayToggle>
 				<!--- Just uses Billing Address --->
 			</hb:HibachiPropertyList>
-			<hb:HibachiPropertyList divClass="span6">
+			<hb:HibachiPropertyList divClass="col-md-6">
 				<!--- Billing Address Details --->
 				<hb:HibachiDisplayToggle selector="select[name='paymentMethod.paymentMethodID']" valueAttribute="paymentmethodtype" showValues="creditCard,termPayment" loadVisable="#listFindNoCase('creditCard,termPayment', loadPaymentMethodType)#">
 					<h5>#$.slatwall.rbKey('entity.accountpaymentmethod.billingaddress')#</h5>

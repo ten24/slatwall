@@ -168,11 +168,11 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	}
 	
 	// Child Product Types (one-to-many)
-	public void function addchildProductType(required any ChildProductType) {
-		arguments.ChildProductType.setParentProductType( this );
+	public void function addchildProductType(required any childProductType) {
+		arguments.childProductType.setParentProductType( this );
 	}
-	public void function removechildProductType(required any ChildProductType) {
-		arguments.ChildProductType.removeParentProductType( this );
+	public void function removechildProductType(required any childProductType) {
+		arguments.childProductType.removeParentProductType( this );
 	}
 	
 	// Promotion Rewards (many-to-many - inverse)
@@ -308,7 +308,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 	
 	public string function getSimpleRepresentation() {
 		if(!isNull(getParentProductType())) {
-			return getParentProductType().getSimpleRepresentation() & " &raquo; " & getProductTypeName();
+			return getParentProductType().getSimpleRepresentation() & " » " & getProductTypeName();
 		}
 		return getProductTypeName();
 	}

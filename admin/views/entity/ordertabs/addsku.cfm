@@ -48,10 +48,10 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.addSkuAddStockType" type="string" />
-
 <cfoutput>
 	<hb:HibachiListingDisplay smartList="#rc.order.getAddOrderItemSkuOptionsSmartList()#"
 							  recordProcessAction="admin:entity.processOrder"
@@ -60,6 +60,7 @@ Notes:
 							  recordProcessEntity="#rc.order#"
 							  recordProcessUpdateTableID="LD#replace(rc.order.getSaleItemSmartList().getSavedStateID(),'-','','all')#">
 							    
+		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
 		<hb:HibachiListingColumn propertyIdentifier="skuCode" />
 		<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
 		<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />

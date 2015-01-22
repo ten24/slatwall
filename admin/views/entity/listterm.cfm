@@ -48,21 +48,26 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.termSmartList" type="any" />
 
 <cfoutput>
 
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.termSmartList#"
+	<hb:HibachiEntityActionBar type="listing" object="#rc.termSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createterm" entity="term" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+
+	<hb:HibachiListingDisplay smartList="#rc.termSmartList#"
 							   recordEditAction="admin:entity.editterm"
 							   recordEditQueryString="redirectAction=admin:entity.listterm"
 							   recordEditModal="true"
 							   recordDeleteAction="admin:entity.deleteterm"
 							   sortProperty="sortOrder">
-							      
-		<!--- Create ---> 
-		<hb:HibachiListingDisplayButtonGroup >
-			<hb:HibachiActionCaller action="admin:entity.createterm" entity="term" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</hb:HibachiListingDisplayButtonGroup>
 							      
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="termName" />
 		

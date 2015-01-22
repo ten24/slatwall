@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderItem" type="any" />
 <cfparam name="rc.order" type="any" default="#rc.orderItem.getOrder()#" />
 <cfparam name="rc.sku" type="any" default="#rc.orderItem.getSku()#" />
@@ -69,66 +71,17 @@ Notes:
 			<!--- Hidden field to attach this to the order --->
 			<input type="hidden" name="order.orderID" value="#rc.order.getOrderID()#" />
 		</cfif>
-		
-		<hb:HibachiPropertyRow>
-			
-			<hb:HibachiPropertyList divclass="span6">
-				<div class="well">
-					#rc.sku.getImage(width=100, height=100)#
-				</div>
-				<hr />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="price" edit="#rc.edit#" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantity" edit="#rc.edit#" />
-			</hb:HibachiPropertyList>
-			
-			<hb:HibachiPropertyList divclass="span6">
-				
-				<!--- Totals --->
-				<hb:HibachiPropertyTable>
-					<hb:HibachiPropertyTableBreak header="Sku Details" />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="skuPrice" edit="false" displayType="table" title="#$.slatwall.rbKey('admin.entity.detailorderitem.skuPriceWhenOrdered')#" />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem.getSku()#" property="price" edit="false" displayType="table" title="#$.slatwall.rbKey('admin.entity.detailorderitem.currentSkuPrice')#" />
-					<cfif rc.orderItem.getSku().getProduct().getBaseProductType() eq "subscription">
-						<hb:HibachiPropertyDisplay object="#rc.orderItem.getSku()#" property="renewalPrice" edit="#rc.edit#" displayType="table" title="#$.slatwall.rbKey('admin.entity.detailorderitem.currentSkuRenewalPrice')#" />
-					</cfif>
-					<hb:HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="false" displayType="table">
-					<cfloop array="#rc.sku.getAlternateSkuCodes()#" index="asc">
-						<hb:HibachiPropertyDisplay object="#asc#" title="#asc.getAlternateSkuCodeType().getType()#" property="alternateSkuCode" edit="false" displayType="table">	
-					</cfloop>
-					<cfloop array="#rc.sku.getOptions()#" index="option">
-						<hb:HibachiPropertyDisplay object="#option#" title="#option.getOptionGroup().getOptionGroupName()#" property="optionName" edit="false" displayType="table">
-					</cfloop>
-					<hb:HibachiPropertyTableBreak header="Status" />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="orderItemStatusType" edit="false" displayType="table" />
-					<cfif rc.orderItem.getOrderItemType().getSystemCode() eq "oitSale">
-						<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantityDelivered" edit="false" displayType="table" />
-						<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantityUndelivered" edit="false" displayType="table" />
-					<cfelse>
-						<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantityReceived" edit="false" displayType="table" />
-						<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantityUnreceived" edit="false" displayType="table" />
-					</cfif>
-					<hb:HibachiPropertyTableBreak header="Price Totals" />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPrice" edit="false" displayType="table" />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="discountAmount" edit="false" displayType="table" />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="extendedPriceAfterDiscount" edit="false" displayType="table" />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="taxAmount" edit="false" displayType="table" />
-					<hb:HibachiPropertyTableBreak />
-					<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="itemTotal" edit="false" displayType="table" titleClass="table-total" valueClass="table-total" />	
-					
-				</hb:HibachiPropertyTable>
-				
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
+
 		<!--- Tabs --->
-		<hb:HibachiTabGroup object="#rc.orderItem#">
-			<hb:HibachiTab view="admin:entity/orderitemtabs/taxes" />
-			<hb:HibachiTab view="admin:entity/orderitemtabs/promotions" />
+		<hb:HibachiEntityDetailGroup object="#rc.orderItem#">
+			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/taxes" />
+			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/promotions" />
 			
 			<cfif rc.orderItem.getOrderItemType().getSystemCode() eq "oitSale">
-				<hb:HibachiTab view="admin:entity/orderitemtabs/deliveryitems" />
+				<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/deliveryitems" />
 			<cfelse>
-				<hb:HibachiTab view="admin:entity/orderitemtabs/stockReceiverItems" />
+				<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/stockReceiverItems" />
 			</cfif>
 			
 			<!--- Custom Attributes --->
@@ -138,7 +91,7 @@ Notes:
 			
 			<!--- Comments --->
 			<swa:SlatwallAdminTabComments object="#rc.orderItem#" />
-		</hb:HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

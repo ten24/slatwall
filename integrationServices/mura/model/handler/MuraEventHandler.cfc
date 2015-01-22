@@ -377,20 +377,6 @@
 			}
 		}
 		
-		public void function onRenderEnd( required any $ ) {
-			if($.slatwall.getLoggedInAsAdminFlag()) {
-				// Set up frontend tools
-				var fetools = "";
-				/*
-				savecontent variable="fetools" {
-					include "/Slatwall/assets/fetools/fetools.cfm";
-				};
-				*/
-				
-				$.event('__muraresponse__', replace($.event('__muraresponse__'), '</body>', '#fetools#</body>'));
-			}
-		}
-		
 		public void function onSiteRequestEnd( required any $ ) {
 			endSlatwallRequest();
 		}
@@ -554,7 +540,7 @@
 				
 				// Populate Template Type if it Exists
 				if(structKeyExists(contentData, "contentTemplateType") && structKeyExists(contentData.contentTemplateType, "typeID") && len(contentData.contentTemplateType.typeID)) {
-					var type = $.slatwall.getService("settingService").getType( contentData.contentTemplateType.typeID );
+					var type = $.slatwall.getService("typeService").getType( contentData.contentTemplateType.typeID );
 					slatwallContent.setContentTemplateType( type );
 				} else {
 					slatwallContent.setContentTemplateType( javaCast("null","") );
@@ -804,13 +790,13 @@
 					productListing.setProductListingPageFlag( true );
 					
 					var productTemplate = $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( productTemplateCMSID, cmsSiteID );
-					productTemplate.setContentTemplateType( $.slatwall.getService("settingService").getTypeBySystemCode("cttProduct") );
+					productTemplate.setContentTemplateType( $.slatwall.getService("typeService").getTypeBySystemCode("cttProduct") );
 					
 					var productTypeTemplate = $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( productTypeTemplateCMSID, cmsSiteID );
-					productTypeTemplate.setContentTemplateType( $.slatwall.getService("settingService").getTypeBySystemCode("cttProductType") );
+					productTypeTemplate.setContentTemplateType( $.slatwall.getService("typeService").getTypeBySystemCode("cttProductType") );
 					
 					var brandTemplate = $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( brandTemplateCMSID, cmsSiteID );
-					brandTemplate.setContentTemplateType( $.slatwall.getService("settingService").getTypeBySystemCode("cttBrand") );
+					brandTemplate.setContentTemplateType( $.slatwall.getService("typeService").getTypeBySystemCode("cttBrand") );
 					
 					// If the site was new, then we can added default template settings for the site
 					if(slatwallSiteWasNew) {

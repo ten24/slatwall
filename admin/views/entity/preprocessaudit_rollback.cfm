@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.audit" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.disableProcess" default="#!rc.audit.getAuditRollbackValidFlag()#" />
@@ -111,7 +113,7 @@ Notes:
 	
 	<hb:HibachiEntityProcessForm entity="#rc.audit#" edit="#rc.edit#" processActionQueryString="#rc.audit.getBaseObject()#ID=#rc.audit.getBaseID()#" disableProcess="#rc.disableProcess#" disableProcessText="#rc.disableProcessText#">		
 		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList divclass="span12">
+			<hb:HibachiPropertyList divclass="col-md-12">
 				<hb:HibachiPropertyDisplay object="#rc.audit#" property="auditID">
 				<hb:HibachiPropertyDisplay object="#rc.audit#" property="auditType">
 				<hb:HibachiPropertyDisplay object="#rc.audit#" property="sessionAccountFullName">

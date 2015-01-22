@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.attributeOption" type="any">
 <cfparam name="rc.attribute" type="any" default="#rc.attributeOption.getAttribute()#">
 <cfparam name="rc.edit" type="boolean">
@@ -61,18 +63,15 @@ Notes:
 								    cancelAction="admin:entity.detailAttribute"
 									cancelQueryString="attributeID=#rc.attribute.getAttributeID()#" />
 		
-		<!--- Hidden field to attach this to the attribute --->
-		<input type="hidden" name="attribute.attributeID" value="#rc.attribute.getAttributeID()#" />
-
-		<hb:HibachiPropertyDisplay object="#rc.attributeOption#" property="attributeOptionLabel" edit="#rc.edit#">
-		<hb:HibachiPropertyDisplay object="#rc.attributeOption#" property="attributeOptionValue" edit="#rc.edit#">
 		
-		<hb:HibachiTabGroup object="#rc.attributeOption#">
+		
+		<hb:HibachiEntityDetailGroup object="#rc.attributeOption#">
+			<hb:HibachiEntityDetailItem view="admin:entity/attributeoptiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.attributeOption.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.attributeOption#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</hb:HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 	
 	
