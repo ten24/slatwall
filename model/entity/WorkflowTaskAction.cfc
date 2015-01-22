@@ -67,6 +67,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 	
 	// Non-Persistent Properties
 	property name="actionTypeOptions" persistent="false"; 
+	property name="updateDataStruct" type="struct" persistent="false";
 	// Deprecated Properties
 	
 	// ============ START: Non-Persistent Property Methods =================
@@ -90,6 +91,36 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 		}
     	return actionTypeOptions;
     }
+    
+    public any function getUpdateDataStruct(){
+		if(isNull(variables.updateDataStruct)){
+			variables.updateDataStruct = deserializeUpdateDataConfig();
+		}
+		return variables.updateDataStruct;
+	}
+	
+//	variables.taskConditionsConfig = '';
+//			var defaultTaskConditionsConfig = {};
+//			defaultTaskConditionsConfig["filterGroups"] = ArrayNew(1);
+//			var workflowConditionGroupStuct = {};
+//			workflowConditionGroupStuct["filterGroup"] = ArrayNew(1);
+//			ArrayAppend(defaultTaskConditionsConfig["filterGroups"],workflowConditionGroupStuct);
+//			variables.taskConditionsConfig = serializeJson(defaultTaskConditionsConfig);
+	
+	public any function getUpdateData(){
+		if(isNull(variables.updateData)){
+			variables.updateData = '';
+			
+			var defaultUpdateData['staticData'] = {};
+			defaultUpdateData['dynamicData'] = {};
+			variables.updateData = serializeJson(defaultUpdateData);
+		}
+		return variables.updateData;
+	}
+	
+	public any function deserializeUpdateData(){
+		return deserializeJSON(getUpdateData());
+	}
     
     // Workflow (many-to-one)
 	public void function setWorkflowTask(required any WorkflowTask) {
