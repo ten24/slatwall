@@ -517,7 +517,8 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	public any function getMaximumPaymentMethodPaymentAmount(){
 		if(!isNull(getPaymentMethod())) {
 			var maxPercent=getPaymentMethod().setting('paymentMethodMaximumOrderTotalPercentageAmount');
-			var maxPayment=precisionEvaluate((getOrder().getTotal()*(maxPercent/100))-getOrder().getPaymentAmountTotalByPaymentMethod(getPaymentMethod()));
+			var maxPayment=precisionEvaluate((getOrder().getTotal()*(maxPercent/100))-getOrder().getPaymentAmountTotalByPaymentMethod(getPaymentMethod(), this));
+			
 			return maxPayment;
 		}
 		return null;
