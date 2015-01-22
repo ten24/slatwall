@@ -95,6 +95,11 @@ Notes:
 			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addOrderPayment" type="list" modal="true" />
 			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addPromotionCode" type="list" modal="true" />
 			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="orderID=#rc.order.getOrderID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+		
+			<li class="divider"></li>
+			
+			<!--- Duplicate --->
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="duplicateOrder" type="list" modal="true" />
 		</hb:HibachiEntityActionBar>
 		
 		<!--- Tabs --->

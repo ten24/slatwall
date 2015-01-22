@@ -138,7 +138,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var attributeValue in arguments.order.getOrderItems()[i].getAttributeValues()) {
 				newOrderItem.setAttributeValue( attributeValue.getAttribute().getAttributeCode(), attributeValue.getAttributeValue() );
 			}
-			
+
 			var orderFulfillmentFound = false;
 			
 			// check if there is a fulfillment method of this type in the order
@@ -204,7 +204,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arguments.saveNewFlag) {
 			this.saveOrder( newOrder );
 		}
-		
 		return newOrder;
 	}
 	
@@ -1013,6 +1012,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Return the new order so that the redirect takes users to this new order
 		return returnOrder;
 	}
+	
+	public any function processOrder_duplicateOrder (required any order, struct data={}) {
+		
+		var newOrder = duplicateOrder(order=arguments.order,saveNewFlag=true);
+		
+		return newOrder;
+	}
+	
 	
 	public any function processOrder_forceItemQuantityUpdate(required any order) {
 		
