@@ -10,10 +10,12 @@
 		<button type="button" class="btn btn-sm btn-default"><span class="caret"></span></button>
 	</div>
 	<input 	type="text" 
+		style="display:none"
 		name="{{propertyDisplay.property+'ID'}}"
 		ng-model="propertyDisplay.object.data[propertyDisplay.property][propertyDisplay.object.data[propertyDisplay.property].$$getIDName()]"
 	/>
 	<input 	type="text" 
+			style="display:none"
 			name="{{propertyDisplay.property}}"
 			ng-model="propertyDisplay.object.data[propertyDisplay.property]"
 	/>
