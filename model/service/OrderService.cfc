@@ -671,6 +671,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Setup the newOrderPayment from the existing payment method
 			var orderPayment = getService('OrderService').getOrderPayment(arguments.processObject.getPreviousOrderPaymentID());
 			newOrderPayment.copyFromOrderPayment(orderPayment);
+			
 		}else if(!isNull(arguments.processObject.getAccountAddressID()) && len(arguments.processObject.getAccountAddressID())) {
 			var accountAddress = getAccountService().getAccountAddress( arguments.processObject.getAccountAddressID() );
 			
@@ -2157,7 +2158,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// If the order payment does not have errors, then we can check the payment method for a saveTransaction
-		if(!arguments.orderPayment.getSucessfulPaymentTransactionExistsFlag() && !arguments.orderPayment.hasErrors() && isNull(arguments.orderPayment.getAccountPaymentMethod()) && !isNull(arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType()) && len(arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType()) && arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType() neq "none") {
+		if(
+			!arguments.orderPayment.getSucessfulPaymentTransactionExistsFlag()
+			&& !arguments.orderPayment.hasErrors()
+			&& isNull(arguments.orderPayment.getAccountPaymentMethod())
+			&& isNull(arguments.orderPayment.getReferencedOrderPayment())
+			&& !isNull(arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType())
+			&& len(arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType())
+			&& arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType() neq "none") {
 			
 			// Setup the transaction data
 			var transactionData = {
