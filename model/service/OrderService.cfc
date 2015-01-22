@@ -224,6 +224,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ===================== START: DAO Passthrough ===========================
 	
+	public any function getMostRecentNotPlacedOrderByAccountID(required any accountID) {
+		return getOrderDAO().getMostRecentNotPlacedOrderByAccountID(argumentcollection=arguments);
+	}
+	
 	public struct function getQuantityPriceSkuAlreadyReturned(required any orderID, required any skuID) {
 		return getOrderDAO().getQuantityPriceSkuAlreadyReturned(arguments.orderId, arguments.skuID);
 	}
