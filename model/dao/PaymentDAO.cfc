@@ -68,7 +68,7 @@ Notes:
 			  AND
 				transactionType = <cfqueryparam value="#arguments.transactionType#" cfsqltype="cf_sql_varchar" />
 			  AND
-				modifiedDateTime > <cfqueryparam value="#DateAdd("n",-60,now())#" cfsqltype="cf_sql_date" />
+				modifiedDateTime > <cfqueryparam value="#DateAdd("s",-60,now())#" cfsqltype="cf_sql_timestamp" />
 			  AND 
 				(
 					amountAuthorized = <cfqueryparam value="#arguments.transactionAmount#" cfsqltype="cf_sql_numeric" />
