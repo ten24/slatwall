@@ -113,12 +113,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function duplicateOrder(required any order, boolean saveNewFlag=false, boolean copyPersonalDataFlag=false) {
-		 var newOrder = this.newOrder(); 
+		var newOrder = this.newOrder(); 
 		
-		 newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
+		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
 		
-		 // Copy Order Items
-		  for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
+		// Copy Order Items
+		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
 			var newOrderItem = this.newOrderItem();
 			
 			newOrderItem.setPrice( arguments.order.getOrderItems()[i].getPrice() );
