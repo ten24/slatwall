@@ -23,8 +23,8 @@ angular.module('slatwalladmin')
 				scope.selectionOptions.$$adding = false;
 				scope.selectedOption = {};
 				
-				var propertyCFC = scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc;
-				var propertyName = 
+				var propertyMetaData = scope.propertyDisplay.object.metaData[scope.propertyDisplay.property];
+				var propertyCFC = propertyMetaData.cfc;
 				scope.selectionOptions.getOptionsByKeyword=function(keyword){
 					var filterGroupsConfig = '['+  
 					  ' {  '+
@@ -61,7 +61,11 @@ angular.module('slatwalladmin')
 						return scope.selectionOptions.value;
 					});
 				};
-				
+				var propertyPromise = scope.propertyDisplay.object['$$get'+propertyCFC]();
+				propertyPromise.then(function(data){
+					
+				});
+				console.log(scope.propertyDisplay.object);
 				scope.selectItem = function ($item, $model, $label) {
 				    scope.$item = $item;
 				    scope.$model = $model;

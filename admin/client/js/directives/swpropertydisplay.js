@@ -46,15 +46,14 @@ angular.module('slatwalladmin')
 					isDirty:scope.isDirty,
 					onChange:scope.onChange
 				};
-				if(angular.isUndefined(scope.editable)){
+				if(angular.isUndefined(scope.propertyDisplay.editable)){
 					scope.propertyDisplay.editable = true;
 				};
-				
 				if(angular.isUndefined(scope.editing)){
 					scope.propertyDisplay.editing = false;
 				};
 				
-				if(angular.isUndefined(scope.isHidden)){
+				if(angular.isUndefined(scope.propertyDisplay.isHidden)){
 					scope.propertyDisplay.isHidden = false;
 				}
 				
