@@ -469,16 +469,7 @@ Notes:
 				    	var _init = function(entityInstance,data){
 							for(var key in data) {
 								if(key.charAt(0) !== '$'){
-									if(angular.isDefined(entityInstance.metaData[key]) 
-										&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
-										&& entityInstance.metaData[key].hb_formfieldtype === 'json'
-									){
-										console.log('here');
-										console.log(data[key]);
-										entityInstance.data[key] = angular.fromJson(data[key]);
-			    					}else{
-			    						entityInstance.data[key] = data[key];	
-			    					}
+		    						entityInstance.data[key] = data[key];	
 								}
 							}
 						}
