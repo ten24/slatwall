@@ -202,6 +202,9 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	
 	public void function copyFromOrderPayment(required any orderPayment) {
 		
+		// Connect this to the original order payment that we are copying from
+		setReferencedOrderPayment( arguments.orderPayment );
+		
 		// Make sure the payment method matches
 		setPaymentMethod( arguments.orderPayment.getPaymentMethod() );
 		
@@ -517,7 +520,8 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	public any function getMaximumPaymentMethodPaymentAmount(){
 		if(!isNull(getPaymentMethod())) {
 			var maxPercent=getPaymentMethod().setting('paymentMethodMaximumOrderTotalPercentageAmount');
-			var maxPayment=precisionEvaluate((getOrder().getTotal()*(maxPercent/100))-getOrder().getPaymentAmountTotalByPaymentMethod(getPaymentMethod()));
+			var maxPayment=precisionEvaluate((getOrder().getTotal()*(maxPercent/100))-getOrder().getPaymentAmountTotalByPaymentMethod(getPaymentMethod(), this));
+			
 			return maxPayment;
 		}
 		return null;

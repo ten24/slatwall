@@ -61,7 +61,7 @@ Notes:
 								   deleteQueryString="redirectAction=admin:entity.detailOrder&orderID=#rc.orderPayment.getOrder().getOrderID()#">
 			<hb:HibachiProcessCaller entity="#rc.orderPayment#" action="admin:entity.preprocessorderpayment" processContext="createTransaction" type="list" modal="true">
 		</hb:HibachiEntityActionBar>
-
+		
 		<hb:HibachiEntityDetailGroup object="#rc.orderPayment#">
 			<hb:HibachiEntityDetailItem view="admin:entity/orderpaymenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<cfif rc.orderPayment.getPaymentMethodType() eq "termPayment">
