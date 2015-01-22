@@ -216,13 +216,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.productImages;
 	}
 	
-	public struct function getSkuSalePriceDetails( required any skuID, string currencyCode='') {
-		if(structKeyExists(getSalePriceDetailsForSkus(currencyCode=arguments.currencyCode), arguments.skuID)) {
-			return getSalePriceDetailsForSkus(currencyCode=arguments.currencyCode)[ arguments.skuID ];
+	public struct function getSkuSalePriceDetails( required any skuID) {
+		if(structKeyExists(getSalePriceDetailsForSkus(), arguments.skuID)) {
+			return getSalePriceDetailsForSkus()[ arguments.skuID ];
 		}
 		return {};
 	}
-	
+	public struct function getSkuSalePriceDetailsByCurrencyCode( required any skuID, string currencyCode='') {
+		if(structKeyExists(getSalePriceDetailsForSkusByCurrencyCode(currencyCode=arguments.currencyCode), arguments.skuID)) {
+			return getSalePriceDetailsForSkusByCurrencyCode(currencyCode=arguments.currencyCode)[ arguments.skuID ];
+		}
+		return {};
+	}
 	// Non-Persistent Helpers
 	
 	public boolean function getAllowAddOptionGroupFlag() {
@@ -655,11 +660,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.defaultProductImageFiles;
 	}
 	
-	public struct function getSalePriceDetailsForSkus(string currencyCode='') {
+	public struct function getSalePriceDetailsForSkus() {
 		if(!structKeyExists(variables, "salePriceDetailsForSkus")) {
-			variables.salePriceDetailsForSkus = getService("promotionService").getSalePriceDetailsForProductSkus(productID=getProductID(),currencyCode=arguments.currencyCode);
+			variables.salePriceDetailsForSkus = getService("promotionService").getSalePriceDetailsForProductSkus(productID=getProductID());
 		}
 		return variables.salePriceDetailsForSkus;
+	}
+
+	public struct function getSalePriceDetailsForSkusByCurrencyCode(required string currencyCode) {
+		if(!structKeyExists(variables, "getSalePriceDetailsForSkusByCurrencyCode_#arguments.currencyCode#")) {
+			variables["getSalePriceDetailsForSkusByCurrencyCode_#arguments.currencyCode#"] = getService("promotionService").getSalePriceDetailsForProductSkus(productID=getProductID(),currencyCode=arguments.currencyCode);
+		}
+		return variables["getSalePriceDetailsForSkusByCurrencyCode_#arguments.currencyCode#"];
 	}
 	
 	public string function getBrandName() {

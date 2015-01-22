@@ -80,7 +80,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="productSchedule" cfc="ProductSchedule" fieldtype="many-to-one" fkcolumn="productScheduleID";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
 	property name="waitlistQueueTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID" hint="Term that a waitlisted registrant has to claim offer.";
-	
+	property name="currency" cfc="Currency" fieldtype="many-to-one" fkcolumn="currencyCode";
+
 	// Related Object Properties (one-to-many)
 	property name="alternateSkuCodes" singularname="alternateSkuCode" fieldtype="one-to-many" fkcolumn="skuID" cfc="AlternateSkuCode" inverse="true" cascade="all-delete-orphan";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
@@ -503,7 +504,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	public string function getCurrencyCode() {
 		if(!structKeyExists(variables, "currencyCode")) {
-			variables.currencyCode = this.setting('skuCurrency');
+			if(not isnull(this.getCurrency())){
+				variables.currencyCode = this.getCurrency().getCurrencyCode(); 
+			}else{
+				var currency=getService("CurrencyService").getCurrency(this.setting('skuCurrency'));
+				this.setCurrency(currency);
+				variables.currencyCode=this.setting('skuCurrency');
+			}
+			
 		}
 		return variables.currencyCode;
 	}
@@ -697,26 +705,39 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return "";
 	}
 	
-	public any function getLivePrice(string currencyCode='') {
+	public any function getLivePrice() {
 		if(!structKeyExists(variables, "livePrice")) {
 			// Create a prices array, and add the 
-			if(arguments.currencyCode neq ''){
-				var prices = [getPriceByCurrencyCode(arguments.currencyCode)];
-			}else{
-				var prices = [getPrice()];
-			}
+			var prices = [getPrice()];
 			// Add the current account price, and sale price
-			arrayAppend(prices, getSalePrice(currencyCode=arguments.currencyCode));
+			arrayAppend(prices, getSalePrice());
+			arrayAppend(prices, getCurrentAccountPrice());
+			// Sort by best price
+			arraySort(prices, "numeric", "asc");
+			// set that in the variables scope
+			variables.livePrice = prices[1];
+		}
+		return variables.livePrice;
+	}
+
+	public any function getLivePriceByCurrencyCode(required string currencyCode) {
+		if(!structKeyExists(variables, "livePrice_#arguments.currencyCode#")) {
+			// Create a prices array, and add the 
+			var prices = [getPriceByCurrencyCode(arguments.currencyCode)];
+		
+			// Add the current account price, and sale price
+			arrayAppend(prices, getSalePriceByCurrencyCode(currencyCode=arguments.currencyCode));
 			arrayAppend(prices, getCurrentAccountPrice());
 			
 			// Sort by best price
 			arraySort(prices, "numeric", "asc");
 			
 			// set that in the variables scope
-			variables.livePrice = prices[1];
+			variables["livePrice_#arguments.currencyCode#"]= prices[1];
 		}
-		return variables.livePrice;
+		return variables["livePrice_#arguments.currencyCode#"];
 	}
+
 	
 	// @hint Returns an array of locations associated with this sku.
 	public any function getLocations() {
@@ -780,16 +801,30 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		return getQuantity("QATS");
 	}
 	
-	public any function getSalePriceDetails(string currencyCode='') {
+	public any function getSalePriceDetails() {
 		if(!structKeyExists(variables, "salePriceDetails")) {
-			variables.salePriceDetails = getProduct().getSkuSalePriceDetails(skuID=getSkuID(),currencyCode=arguments.currencyCode);
+			variables.salePriceDetails = getProduct().getSkuSalePriceDetails(skuID=getSkuID());
 		}
 		return variables.salePriceDetails;
 	}
+
+	public any function getSalePriceDetailsByCurrencyCode(required string currencyCode) {
+		if(!structKeyExists(variables, "salePriceDetailsByCurrencyCode_#currencyCode#")) {
+			variables["salePriceDetails_#currencyCode#"] = getProduct().getSkuSalePriceDetailsByCurrencyCode(skuID=getSkuID(),currencyCode=arguments.currencyCode);
+		}
+		return variables["salePriceDetails_#currencyCode#"] ;
+	}
 	
-	public any function getSalePrice(string currencyCode='') {
-		if(structKeyExists(getSalePriceDetails(currencyCode=arguments.currencyCode), "salePrice")) {
-			return getSalePriceDetails(currencyCode=arguments.currencyCode)[ "salePrice"];
+	public any function getSalePrice() {
+		if(structKeyExists(getSalePriceDetails(), "salePrice")) {
+			return getSalePriceDetails()[ "salePrice"];
+		}
+		return getPrice();
+	}
+
+	public any function getSalePriceByCurrencyCode(required string currencyCode) {
+		if(structKeyExists(getSalePriceDetailsByCurrencyCode(arguments.currencyCode), "salePrice")) {
+			return getSalePriceDetailsByCurrencyCode(arguments.currencyCode)[ "salePrice"];
 		}
 		return getPrice();
 	}

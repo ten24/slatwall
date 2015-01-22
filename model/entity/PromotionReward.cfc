@@ -69,7 +69,11 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	// Related Object Properties (many-to-one)
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
 	property name="roundingRule" cfc="RoundingRule" fieldtype="many-to-one" fkcolumn="roundingRuleID" hb_optionsNullRBKey="define.none";
-	
+	property name="currency" cfc="Currency" fieldtype="many-to-one" fkcolumn="currencyCode";
+
+	// Related Object Properties (one-to-many)
+	property name="promotionRewardCurrencies" singularname="promotionRewardCurrency" cfc="PromotionRewardCurrency" type="array" fieldtype="one-to-many" fkcolumn="promotionRewardID" cascade="all-delete-orphan" inverse="true";
+
 	// Related Object Properties (many-to-many - owner)
 	property name="eligiblePriceGroups" singularname="eligiblePriceGroup" cfc="PriceGroup" type="array" fieldtype="many-to-many" linktable="SwPromoRewardEligiblePriceGrp" fkcolumn="promotionRewardID" inversejoincolumn="priceGroupID";
 	
@@ -132,6 +136,17 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		}
 	}
 	
+	public string function getCurrencyCode(){
+		if(!structKeyExists(variables, "currencyCode")) {
+			if(!isnull(this.getCurrency())){
+				variables.currencyCode=this.getCurrency().getCurrencyCode();
+			}else{
+				variables.currencyCode=this.setting('skuCurrency');
+			}
+		}
+		return variables.currencyCode;
+	}
+
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================

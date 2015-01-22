@@ -354,31 +354,49 @@ Notes:
 			promotionID
 			FROM (
 				SELECT
-					SwSku.skuID as skuID,
+					SwSku.skuID AS skuID,
 					CASE 
-						WHEN SwSkuCurrency.price IS NOT NULL THEN SwSkuCurrency.price
-						WHEN  SwCurrencyRate.conversionRate IS NOT NULL THEN SwCurrencyRate.conversionRate*SwSku.price 
+						WHEN skuCurrency.price IS NOT NULL THEN skuCurrency.price
+						WHEN  skuCurrencyRate.conversionRate IS NOT NULL THEN CAST(skuCurrencyRate.conversionRate*SwSku.priceAS DECIMAL(19,2)) /*Cast required as conversionRate is currently a float*/ 
 						ELSE SwSku.price
-					END AS	originalPrice,
-					'sku' as discountLevel,
-					prSku.amountType as salePriceDiscountType,
-					prSku.amount AS discountAmount,
-					prSku.roundingRuleID as roundingRuleID,
-					ppSku.endDateTime as salePriceExpirationDateTime,
-					ppSku.promotionPeriodID as promotionPeriodID,
-					ppSku.promotionID as promotionID
+					END AS originalPrice,
+					'sku' AS discountLevel,
+					prSku.amountType AS salePriceDiscountType,
+					CASE prSku.amountType 
+						WHEN 'percentageOff' THEN prSku.amount
+						ELSE
+							CASE 
+								WHEN prCurrency.amount IS NOT NULL THEN prCurrency.amount
+								WHEN  prCurrencyRate.conversionRate IS NOT NULL THEN CAST(prCurrencyRate.conversionRate*prSku.amount AS DECIMAL(19,2))  /*Cast required as conversionRate is currently a float*/ 
+								ELSE prSku.amount
+							END
+					END  AS discountAmount,
+					prSku.roundingRuleID AS roundingRuleID,
+					ppSku.endDateTime AS salePriceExpirationDateTime,
+					ppSku.promotionPeriodID AS promotionPeriodID,
+					ppSku.promotionID AS promotionID
 				FROM
 					SwSku
 				  INNER JOIN
-				  	SwPromoRewardSku on SwPromoRewardSku.skuID = SwSku.skuID
+				  	SwPromoRewardSku ON SwPromoRewardSku.skuID = SwSku.skuID
 				  INNER JOIN
-				  	SwPromoReward prSku on prSku.promotionRewardID = SwPromoRewardSku.promotionRewardID
+				  	SwPromoReward prSku ON prSku.promotionRewardID = SwPromoRewardSku.promotionRewardID
 				  INNER JOIN
-				    SwPromotionPeriod ppSku on ppSku.promotionPeriodID = prSku.promotionPeriodID
+				    SwPromotionPeriod ppSku ON ppSku.promotionPeriodID = prSku.promotionPeriodID
 				  LEFT JOIN
-					SwSkuCurrency ON SwSku.skuID=SwSkuCurrency.skuID AND SwSkuCurrency.currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#">
+					SwSkuCurrency skuCurrency ON SwSku.skuID=skuCurrency.skuID 
+						AND skuCurrency.currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#">	
+				LEFT JOIN
+					SwCurrencyRate skuCurrencyRate ON skuCurrencyRate.conversionCurrencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#">
+						AND skuCurrencyRate.currencyCode = SwSku.currencyCode
+						/* TODO: need to add temporal component to this join to pick up only the currently active rate */
 				  LEFT JOIN
-					SwCurrencyRate ON SwCurrencyRate.currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#"> 
+				  	SwPromotionRewardCurrency prCurrency ON prSku.promotionRewardID=prCurrency.promotionRewardID
+				  		AND prCurrency.currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#">
+				  LEFT JOIN
+					SwCurrencyRate prCurrencyRate ON prCurrencyRate.conversionCurrencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#">
+						AND prCurrencyRate.currencyCode = prSku.currencyCode
+						/* TODO: need to add temporal component to this join to pick up only the currently active rate */
 				WHERE
 					(ppSku.startDateTime is null or ppSku.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
 				  AND
@@ -387,6 +405,8 @@ Notes:
 				  AND
 					SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">	
 				</cfif>
+
+			/*For demo purposes - ignore all the unions below
 			  UNION
 				SELECT
 					SwSku.skuID as skuID,
@@ -413,7 +433,8 @@ Notes:
 				  LEFT JOIN
 					SwSkuCurrency ON SwSku.skuID=SwSkuCurrency.skuID AND SwSkuCurrency.currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#">
 				  LEFT JOIN
-					SwCurrencyRate ON SwCurrencyRate.currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#"> 
+					SwCurrencyRate ON SwCurrencyRate.conversionCurrencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#"> 
+						and SwCurrencyRate.currencyCode = SwSku.currencyCode 
 				WHERE
 					(ppProduct.startDateTime is null or ppProduct.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
 				  AND
@@ -450,7 +471,8 @@ Notes:
 				  LEFT JOIN
 					SwSkuCurrency ON SwSku.skuID=SwSkuCurrency.skuID AND SwSkuCurrency.currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#">
 				  LEFT JOIN
-					SwCurrencyRate ON SwCurrencyRate.currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#"> 
+					SwCurrencyRate ON SwCurrencyRate.conversionCurrencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#"> 
+						and SwCurrencyRate.currencyCode = SwSku.currencyCode
 				WHERE
 					(ppBrand.startDateTime is null or ppBrand.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
 				  AND
@@ -487,7 +509,8 @@ Notes:
 				  LEFT JOIN
 					SwSkuCurrency ON SwSku.skuID=SwSkuCurrency.skuID AND SwSkuCurrency.currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#">
 				  LEFT JOIN
-					SwCurrencyRate ON SwCurrencyRate.currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#"> 
+					SwCurrencyRate ON SwCurrencyRate.conversionCurrencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#"> 
+						and SwCurrencyRate.currencyCode = SwSku.currencyCode 
 				WHERE
 					(ppOption.startDateTime is null or ppOption.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
 				  AND
@@ -532,7 +555,8 @@ Notes:
 				  LEFT JOIN
 					SwSkuCurrency ON SwSku.skuID=SwSkuCurrency.skuID AND SwSkuCurrency.currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#">
 				  LEFT JOIN
-					SwCurrencyRate ON SwCurrencyRate.currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#"> 
+					SwCurrencyRate ON SwCurrencyRate.conversionCurrencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#"> 
+						and SwCurrencyRate.currencyCode = SwSku.currencyCode
 				WHERE
 					(ppProductType.startDateTime is null or ppProductType.startDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">)
 				  AND
@@ -567,7 +591,8 @@ Notes:
 				  LEFT JOIN
 					SwSkuCurrency ON SwSku.skuID=SwSkuCurrency.skuID AND SwSkuCurrency.currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#">
 				  LEFT JOIN
-					SwCurrencyRate ON SwCurrencyRate.currencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#"> 
+					SwCurrencyRate ON SwCurrencyRate.conversionCurrencyCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.currencyCode#"> 
+						and SwCurrencyRate.currencyCode = SwSku.currencyCode
 				WHERE
 				  	prGlobal.rewardType IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="merchandise,subscription,contentAccess" list="true">)
 				  AND
@@ -585,7 +610,7 @@ Notes:
 				<cfif structKeyExists(arguments, "productID")>
 				  AND
 					SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">	
-				</cfif>
+				</cfif>*/
 			) as combinedPromotionLevels
 		</cfquery>
 		

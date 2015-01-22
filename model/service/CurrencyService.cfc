@@ -68,6 +68,13 @@ component  extends="HibachiService" accessors="true" {
 		return returnList;
 	}
 	
+	public string function getCurrencyRatesByCurrencyCodeSmartlist(required string currencyCode){
+		var rates=this.getCurrencySmartList();
+		rates.addFilter('activeFlag',1);
+		rates.addFilter('currencyCode',arguments.currencyCode);
+		return rates;
+	}
+
 	public array function getCurrencyOptions() {
 		var csl = this.getCurrencySmartList();
 		

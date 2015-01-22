@@ -53,6 +53,7 @@ Notes:
 <cfparam name="rc.promotionReward" type="any">
 <cfparam name="rc.promotionPeriod" type="any" default="#rc.promotionReward.getPromotionPeriod()#">
 <cfparam name="rc.rewardType" type="string" default="#rc.promotionReward.getRewardType()#">
+<cfparam name="rc.amountType" type="string" default="percentage">
 <cfparam name="rc.edit" type="boolean">
 
 <!--- prevent editing promotion reward if its promotion period has expired --->
@@ -62,6 +63,10 @@ Notes:
 </cfif>
 <cfif rc.edit>
 	<cfset rc.promotionReward.setRewardType(rc.rewardType) />
+</cfif>
+
+<cfif not isnull(rc.promotionReward.getAmountType())>
+	<cfset rc.amountType=rc.promotionReward.getAmountType()>
 </cfif>
 
 <cfoutput>
@@ -75,6 +80,9 @@ Notes:
 		
 		<hb:HibachiEntityDetailGroup object="#rc.promotionreward#">
 			<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cfif rc.amountType neq 'percentage'>
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/currencies"/>
+			</cfif>
 			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.rewardType)>
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/producttypes" />
 				<hb:HibachiEntityDetailItem view="admin:entity/promotionrewardtabs/products" />
