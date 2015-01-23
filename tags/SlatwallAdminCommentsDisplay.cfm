@@ -52,7 +52,9 @@
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.object" type="any" />
 	<cfparam name="attributes.edit" type="boolean" default="#request.context.edit#" />
-	<cfparam name="attributes.adminComments" type="boolean" default="true" /> 
+	<cfparam name="attributes.adminComments" type="boolean" default="true" />
+	<cfparam name="attributes.parentObject" type="any" />
+	<cfparam name="attributes.childObjects" type="any" /> 
 	
 	<cfif attributes.edit>
 		<cfset attributes.redirectAction = "admin:entity.edit#attributes.object.getClassName()#" />
@@ -101,6 +103,11 @@
 			<cfif attributes.adminComments>
 				<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" modal="true" class="btn btn-default" icon="plus" />
 			</cfif>
+			
+			======= Comments from Parent ======
+			
+			======= Comments on all Children ======
+			
 		</cfoutput>
 	</div>
 </cfif>

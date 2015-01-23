@@ -53,6 +53,8 @@
 	<cfparam name="attributes.object" type="any" />
 	<cfparam name="attributes.open" type="boolean" default="false" />
 	<cfparam name="attributes.showOnCreateFlag" type="boolean" default="false" />
+	<cfparam name="attributes.parentObject" type="any" />
+	<cfparam name="attributes.childObjects" type="any" />
 	
 	<cfset attributes.tabid = "comments" />
 	<cfset attributes.text = attributes.hibachiScope.rbKey("entity.comment_plural") />
