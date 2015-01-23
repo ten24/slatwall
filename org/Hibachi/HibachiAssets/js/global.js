@@ -1025,7 +1025,7 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 		data[ hibachiConfig.action ] = 'admin:ajax.updateListingDisplay';
 		data[ 'propertyIdentifiers' ] = jQuery('#' + tableID).data('propertyidentifiers');
 		data[ 'processObjectProperties' ] = jQuery('#' + tableID).data('processobjectproperties');
-		if(data[ 'processObjectProperties' ].length) {
+		if(data.processObjectProperties.length) {
 			data[ 'processContext' ] = jQuery('#' + tableID).data('processcontext');
 			data[ 'processEntity' ] = jQuery('#' + tableID).data('processentity');
 			data[ 'processEntityID' ] = jQuery('#' + tableID).data('processentityid');
