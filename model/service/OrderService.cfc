@@ -115,7 +115,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function duplicateOrder(required any order, boolean saveNewFlag=false, boolean copyPersonalDataFlag=false) {
-		var newOrder = this.newOrder();
+		var newOrder = this.newOrder(); 
 		
 		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
 		
@@ -670,6 +670,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Setup the newOrderPayment from the existing payment method
 			var orderPayment = getService('OrderService').getOrderPayment(arguments.processObject.getPreviousOrderPaymentID());
 			newOrderPayment.copyFromOrderPayment(orderPayment);
+			
 		}else if(!isNull(arguments.processObject.getAccountAddressID()) && len(arguments.processObject.getAccountAddressID())) {
 			var accountAddress = getAccountService().getAccountAddress( arguments.processObject.getAccountAddressID() );
 			
@@ -921,8 +922,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Look for that orderItem in the data records
 		for(var orderItemStruct in arguments.processObject.getOrderItems()) {
 			
-			// Verify that there was a quantity and that it was GT 0
-			if(isNumeric(orderItemStruct.quantity) && orderItemStruct.quantity gt 0) {
+			// Verify that there was a quantity
+			if(isNumeric(orderItemStruct.quantity)) {
 				
 				var originalOrderItem = this.getOrderItem( orderItemStruct.referencedOrderItem.orderItemID );
 				
@@ -2164,7 +2165,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		// If the order payment does not have errors, then we can check the payment method for a saveTransaction
-		if(!arguments.orderPayment.getSucessfulPaymentTransactionExistsFlag() && !arguments.orderPayment.hasErrors() && isNull(arguments.orderPayment.getAccountPaymentMethod()) && !isNull(arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType()) && len(arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType()) && arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType() neq "none") {
+		if(
+			!arguments.orderPayment.getSucessfulPaymentTransactionExistsFlag()
+			&& !arguments.orderPayment.hasErrors()
+			&& isNull(arguments.orderPayment.getAccountPaymentMethod())
+			&& isNull(arguments.orderPayment.getReferencedOrderPayment())
+			&& !isNull(arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType())
+			&& len(arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType())
+			&& arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType() neq "none") {
 			
 			// Setup the transaction data
 			var transactionData = {
