@@ -109,6 +109,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="dynamicCreditOrderPayment" persistent="false";
 	property name="dynamicChargeOrderPaymentAmount" persistent="false" hb_formatType="currency";
 	property name="dynamicCreditOrderPaymentAmount" persistent="false" hb_formatType="currency";
+	property name="estimatedFulfillmentDateTime" persistent="false";
 	property name="eligiblePaymentMethodDetails" persistent="false";
 	property name="itemDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentDiscountAmountTotal" persistent="false" hb_formatType="currency";
@@ -534,6 +535,34 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 		
 		return 0;
+	}
+	
+	public any function getEstimatedFulfillmentDateTime(){
+		var estimatedFulfillmentDateTime = "";
+		var earliestDate = "";
+		var latestDate = "";
+		
+		// Loop over the estimated fulfillment date of each order item
+		for (var orderItems in getOrderItems()){
+			if (len(orderItems.getEstimatedFulfillmentDateTime())){
+				estimatedFulfillmentDateTime = orderItems.getEstimatedFulfillmentDateTime();
+			}
+			//check to see if it is the earliest dateTime, if so set it 
+			if (earliestDate EQ '' OR estimatedFulfillmentDateTime GTE earliestDate){
+				earliestDate = estimatedFulfillmentDateTime;
+			}
+			//check to see if it is the latest dateTime, if so set it 
+			if (estimatedFulfillmentDateTime GTE latestDate){
+				latestDate = estimatedFulfillmentDateTime;
+			}
+		}
+		//If earliestDate EQ latestDate return the earliestDate else return the range
+		if (earliestDate EQ latestDate){
+			return '#DateTimeFormat(earliestDate)#';
+		}else{
+			return '#DateTimeFormat(earliestDate)# - #DateFormat(latestDate)#';
+		}
+		
 	}
 	
 	public numeric function getPaymentAmountTotal() {
