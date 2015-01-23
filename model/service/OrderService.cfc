@@ -115,7 +115,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function duplicateOrder(required any order, boolean saveNewFlag=false, boolean copyPersonalDataFlag=false) {
-		var newOrder = this.newOrder();
+		var newOrder = this.newOrder(); 
 		
 		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
 		
@@ -923,8 +923,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Look for that orderItem in the data records
 		for(var orderItemStruct in arguments.processObject.getOrderItems()) {
 			
-			// Verify that there was a quantity and that it was GT 0
-			if(isNumeric(orderItemStruct.quantity) && orderItemStruct.quantity gt 0) {
+			// Verify that there was a quantity
+			if(isNumeric(orderItemStruct.quantity)) {
 				
 				var originalOrderItem = this.getOrderItem( orderItemStruct.referencedOrderItem.orderItemID );
 				

@@ -105,7 +105,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	public boolean function hasPositiveOrderItemQuantity() {
 		for(var orderItemStruct in getOrderItems()) {
-			if(structKeyExists(orderItemStruct, "quantity") && isNumeric(orderItemStruct.quantity) && orderItemStruct.quantity >= 1) {
+			if(structKeyExists(orderItemStruct, "quantity") && isNumeric(orderItemStruct.quantity) && orderItemStruct.quantity >= 0) {
 				return true;
 			}
 		}
