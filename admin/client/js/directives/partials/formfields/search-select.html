@@ -1,12 +1,12 @@
 <div class="input-group" ng-if="propertyDisplay.object">
 	<input  type="text"
-			ng-model="property.object.data[propertyDisplay.property].data[propertyDisplay.property+'Name']"
+			ng-model="propertyDisplay.object.data[propertyDisplay.property].data[propertyDisplay.property+'Name']"
 			placeholder="Search"
 			class="form-control input-sm"
 			typeahead="object[propertyDisplay.property+'Name'] for object in selectionOptions.getOptionsByKeyword($viewValue) | filter:$viewValue"
 			typeahead-on-select="selectItem($item, $model, $label)"
 	>
-	<p ng-bind="property.object.data[propertyDisplay.property].data[propertyDisplay.property+'Name']"></p>
+	<!-- <p ng-bind="propertyDisplay.object.data[propertyDisplay.property].data[propertyDisplay.property+'Name']"></p> -->
 	<div class="input-group-btn">
 		<button type="button" class="btn btn-sm btn-default"><span class="caret"></span></button>
 	</div>
