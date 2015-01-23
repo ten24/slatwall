@@ -20,7 +20,7 @@
 		<hb:HibachiPropertyList divClass="col-md-6">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="brand" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.product#" property="productType" edit="#rc.edit#">
-			<cfif rc.product.getBaseProductType() eq "productBundle">
+			<cfif rc.product.getBaseProductType() eq "productBundle" && !isNull(rc.product.getDefaultSku())>
 				<hb:HibachiPropertyDisplay object="#rc.product.getDefaultSku()#" fieldname="defaultSku.price" property="price" edit="#rc.edit#">
 				<input type="hidden" name="defaultSku.skuID" value="#rc.product.getDefaultSku().getSkuID()#" />            
 			</cfif>
