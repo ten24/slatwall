@@ -104,11 +104,13 @@
 				<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" modal="true" class="btn btn-default" icon="plus" />
 			</cfif>
 
+			<br><br>
+			
 			<!---- ======= Comments from Parent ====== --->
 			<cfif !structIsEmpty(attributes.parentObject)>
 				<table class="table table-striped table-bordered table-condensed">
 					<tr>
-						<th class="primary">#attributes.hibachiScope.rbKey("entity.comment.comment")#</th>
+						<th class="primary">#attributes.hibachiScope.rbKey("entity.comment.parentComment")#</th>
 						<th>#attributes.hibachiScope.rbKey("entity.comment.publicFlag")#</th>
 						<th>#attributes.hibachiScope.rbKey("entity.define.createdByAccount")#</th>
 						<th>#attributes.hibachiScope.rbKey("entity.define.createdDateTime")#</th>
@@ -150,7 +152,7 @@
 			<cfif arrayLen(attributes.childObjects)>
 				<table class="table table-striped table-bordered table-condensed">
 					<tr>
-						<th class="primary">#attributes.hibachiScope.rbKey("entity.comment.comment")#</th>
+						<th class="primary">#attributes.hibachiScope.rbKey("entity.comment.childComment")#</th>
 						<th>#attributes.hibachiScope.rbKey("entity.comment.publicFlag")#</th>
 						<th>#attributes.hibachiScope.rbKey("entity.define.createdByAccount")#</th>
 						<th>#attributes.hibachiScope.rbKey("entity.define.createdDateTime")#</th>
