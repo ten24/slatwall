@@ -60,6 +60,12 @@ Notes:
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
+				<input type="hidden" name="saveNewFlag" value="true" />       
+				<label class="control-label">
+					Duplicate account, billing, and shipping data? 
+					<input type="checkbox" name="copyPersonalDataFlag" value="true">
+				</label>
+				<br>
 				Upon completion you will be redirected to the new order. Do you wish to duplicate this order?			
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
