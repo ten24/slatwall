@@ -55,6 +55,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="lastRequestIPAddress" ormtype="string";
 	property name="lastPlacedOrderID" ormtype="string";
 	property name="rbLocale" ormtype="string";
+	property name="sessionCookiePSID" ormtype="string" length="64";
+	property name="sessionCookieNPSID" ormtype="string" length="64"; 
 	
 	// Related Entities
 	property name="account" type="any" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" fetch="join";
@@ -66,7 +68,7 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	
 	// Non-Persistent Properties
-	property name="requestAccount" type="any" persistent="false";
+	property name="requestAccount" type="any" persistent="false"; 
 	 
 	public any function getAccount() {
 		if(structKeyExists(variables, "account")) {
