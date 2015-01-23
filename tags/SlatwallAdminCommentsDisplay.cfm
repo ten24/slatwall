@@ -52,7 +52,9 @@
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.object" type="any" />
 	<cfparam name="attributes.edit" type="boolean" default="#request.context.edit#" />
-	<cfparam name="attributes.adminComments" type="boolean" default="true" /> 
+	<cfparam name="attributes.adminComments" type="boolean" default="true" />
+	<cfparam name="attributes.parentObject" type="any" default="#structNew()#" />
+	<cfparam name="attributes.childObjects" type="any" default="#arrayNew(1)#" /> 
 	
 	<cfif attributes.edit>
 		<cfset attributes.redirectAction = "admin:entity.edit#attributes.object.getClassName()#" />
@@ -100,6 +102,92 @@
 			</table>
 			<cfif attributes.adminComments>
 				<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" modal="true" class="btn btn-default" icon="plus" />
+			</cfif>
+
+			<br><br>
+			
+			<!---- ======= Comments from Parent ====== --->
+			<cfif !structIsEmpty(attributes.parentObject)>
+				<table class="table table-striped table-bordered table-condensed">
+					<tr>
+						<th class="primary">#attributes.hibachiScope.rbKey("entity.comment.parentComment")#</th>
+						<th>#attributes.hibachiScope.rbKey("entity.comment.publicFlag")#</th>
+						<th>#attributes.hibachiScope.rbKey("entity.define.createdByAccount")#</th>
+						<th>#attributes.hibachiScope.rbKey("entity.define.createdDateTime")#</th>
+						<cfif attributes.adminComments><th class="admin1">&nbsp;</th></cfif>
+					</tr>
+					
+					<cfloop array="#attributes.parentObject.getComments()#" index="commentRelationship">
+						<tr>
+							<cfif commentRelationship['referencedRelationshipFlag']>
+								<cfset originalEntity = commentRelationship['comment'].getPrimaryRelationship().getRelationshipEntity() />
+								<cfswitch expression="#originalEntity.getClassName()#">
+									<cfcase value="Order">
+										<td class="primary highlight-ltblue" colspan="2">This #attributes.object.getClassName()# was referenced in a comment on <a href="?slatAction=order.detailorder&orderID=#originalEntity.getOrderID()###tabComments">Order Number #originalEntity.getOrderNumber()#</a></td>
+										<td class="highlight-ltblue">#commentRelationship['comment'].getCreatedByAccount().getFullName()#</td>
+										<td class="highlight-ltblue">#attributes.hibachiScope.formatValue(commentRelationship['comment'].getCreatedDateTime(), "datetime")#</td>
+										<cfif attributes.adminComments><td class="admin1 highlight-ltblue">&nbsp;</td></cfif>
+									</cfcase>
+									<cfdefaultcase>
+										<td class="primary" colspan="<cfif attributes.adminComments>5<cfelse>4</cfif>">??? Programming Issue for #originalEntity.getClassName()# entity comments</td>
+									</cfdefaultcase>
+								</cfswitch>
+							<cfelse>
+								<td class="primary" style="white-space:normal;">#commentRelationship['comment'].getCommentWithLinks()#</td>
+								<td>#attributes.hibachiScope.formatValue(commentRelationship['comment'].getPublicFlag(), "yesno")#</td>
+								<td><cfif !isNull(commentRelationship['comment'].getCreatedByAccount())>#commentRelationship['comment'].getCreatedByAccount().getFullName()#</cfif></td>
+								<td>#attributes.hibachiScope.formatValue(commentRelationship['comment'].getCreatedDateTime(), "datetime")#</td>
+								<cfif attributes.adminComments><td class="admin1"><hb:HibachiActionCaller action="admin:entity.editcomment" queryString="commentID=#commentRelationship['comment'].getCommentID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&sRenderItem=detail#attributes.object.getClassName()#&fRenderItem=detail#attributes.object.getClassName()#" modal="true" class="btn btn-default btn-xs" icon="pencil" iconOnly="true" /></td></cfif>
+							</cfif>
+						</tr>
+					</cfloop>
+					
+					<cfif arrayLen(attributes.object.getComments()) eq 0>
+						<tr><td colspan="<cfif attributes.adminComments>5<cfelse>4</cfif>" style="text-align:center;"><em>#attributes.hibachiScope.rbKey("entity.comment.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.comment_plural')})#</em></td></tr>
+					</cfif>
+				</table>
+			</cfif>
+			
+			<!--- ======= Comments on all Children ====== --->
+			<cfif arrayLen(attributes.childObjects)>
+				<table class="table table-striped table-bordered table-condensed">
+					<tr>
+						<th class="primary">#attributes.hibachiScope.rbKey("entity.comment.childComment")#</th>
+						<th>#attributes.hibachiScope.rbKey("entity.comment.publicFlag")#</th>
+						<th>#attributes.hibachiScope.rbKey("entity.define.createdByAccount")#</th>
+						<th>#attributes.hibachiScope.rbKey("entity.define.createdDateTime")#</th>
+						<cfif attributes.adminComments><th class="admin1">&nbsp;</th></cfif>
+					</tr>
+					<cfloop array="#attributes.childObjects#" index="childObject">
+						<cfloop array="#childObject.getComments()#" index="commentRelationship">
+							<tr>
+								<cfif commentRelationship['referencedRelationshipFlag']>
+									<cfset originalEntity = commentRelationship['comment'].getPrimaryRelationship().getRelationshipEntity() />
+									<cfswitch expression="#originalEntity.getClassName()#">
+										<cfcase value="Order">
+											<td class="primary highlight-ltblue" colspan="2">This #attributes.object.getClassName()# was referenced in a comment on <a href="?slatAction=order.detailorder&orderID=#originalEntity.getOrderID()###tabComments">Order Number #originalEntity.getOrderNumber()#</a></td>
+											<td class="highlight-ltblue">#commentRelationship['comment'].getCreatedByAccount().getFullName()#</td>
+											<td class="highlight-ltblue">#attributes.hibachiScope.formatValue(commentRelationship['comment'].getCreatedDateTime(), "datetime")#</td>
+											<cfif attributes.adminComments><td class="admin1 highlight-ltblue">&nbsp;</td></cfif>
+										</cfcase>
+										<cfdefaultcase>
+											<td class="primary" colspan="<cfif attributes.adminComments>5<cfelse>4</cfif>">??? Programming Issue for #originalEntity.getClassName()# entity comments</td>
+										</cfdefaultcase>
+									</cfswitch>
+								<cfelse>
+									<td class="primary" style="white-space:normal;">#commentRelationship['comment'].getCommentWithLinks()#</td>
+									<td>#attributes.hibachiScope.formatValue(commentRelationship['comment'].getPublicFlag(), "yesno")#</td>
+									<td><cfif !isNull(commentRelationship['comment'].getCreatedByAccount())>#commentRelationship['comment'].getCreatedByAccount().getFullName()#</cfif></td>
+									<td>#attributes.hibachiScope.formatValue(commentRelationship['comment'].getCreatedDateTime(), "datetime")#</td>
+									<cfif attributes.adminComments><td class="admin1"><hb:HibachiActionCaller action="admin:entity.editcomment" queryString="commentID=#commentRelationship['comment'].getCommentID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&sRenderItem=detail#attributes.object.getClassName()#&fRenderItem=detail#attributes.object.getClassName()#" modal="true" class="btn btn-default btn-xs" icon="pencil" iconOnly="true" /></td></cfif>
+								</cfif>
+							</tr>
+						</cfloop>
+					</cfloop>
+					<cfif arrayLen(attributes.object.getComments()) eq 0>
+						<tr><td colspan="<cfif attributes.adminComments>5<cfelse>4</cfif>" style="text-align:center;"><em>#attributes.hibachiScope.rbKey("entity.comment.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.comment_plural')})#</em></td></tr>
+					</cfif>
+				</table>
 			</cfif>
 		</cfoutput>
 	</div>

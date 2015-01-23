@@ -53,7 +53,9 @@
 	<cfparam name="attributes.object" type="any" />
 	<cfparam name="attributes.open" type="boolean" default="false" />
 	<cfparam name="attributes.showOnCreateFlag" type="boolean" default="false" />
-	
+	<cfparam name="attributes.parentObject" type="any" default="#structNew()#" />
+	<cfparam name="attributes.childObjects" type="any" default="#arrayNew(1)#" />
+
 	<cfset attributes.tabid = "comments" />
 	<cfset attributes.text = attributes.hibachiScope.rbKey("entity.comment_plural") />
 	<cfset attributes.view = "" />
@@ -62,7 +64,7 @@
 	
 	<cfsavecontent variable="attributes.tabcontent" >
 		<div class="tab-pane" id="tabComments">
-			<swa:SlatwallAdminCommentsDisplay object="#attributes.object#" />
+			<swa:SlatwallAdminCommentsDisplay object="#attributes.object#" parentObject="#attributes.parentObject#" childObjects="#attributes.childObjects#" />
 		</div>
 	</cfsavecontent>
 	
