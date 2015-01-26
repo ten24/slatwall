@@ -1,8 +1,11 @@
 <div class="col-md-9 s-search-filter" id="j-inside-product-bundle-group-type" sw-click-outside="closeThis(clickOutsideArgs)">
-			
+	{{templatePath}}
+	
+	<span ng-if="propertyDisplay.template" ng-include src="propertyDisplay.template"></span>
+	
 	<div class="input-group" ng-if="propertyDisplay.object">
 		<input  type="text"
-				ng-model="propertyDisplay.object.data[propertyDisplay.property].data[propertyCFCCamelCase+'Name']"
+				ng-model="propertyDisplay.object.data[propertyDisplay.property].data[cfcProperCase+'Name']"
 				placeholder="Search"
 				class="form-control input-sm"
 				typeahead="object[cfcProperCase+'Name'] for object in selectionOptions.getOptionsByKeyword($viewValue) | filter:$viewValue"
@@ -32,6 +35,7 @@
 		>
 			<i class="fa fa-plus"></i> Add "{{propertyDisplay.object.data[propertyDisplay.property].data[cfcProperCase+'Name']}}"
 		</button>
+		<div class="s-add-content" ng-show="productBundleGroupTypes.$$adding">
 		<!-- <div class="s-add-content" ng-show="productBundleGroupTypes.$$adding">
 			
 
