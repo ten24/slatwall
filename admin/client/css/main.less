@@ -56,7 +56,7 @@
 @text-color:              @black-50;
 
 // Links
-@link-color:              @brand-ten24;
+@link-color:              @brand-primary;
 @link-color-hover:        darken(@link-color, 15%);
 
 // Typography
@@ -410,10 +410,10 @@ body { background-color: @black-5; font-family: 'Open Sans', sans-serif;color:@b
 hr {border-color:@black-20;}
 hr.s-dotted {border:none;border-bottom:3px dotted @black-5;margin-top:20px;margin-bottom:20px;}
 th {font-weight:600;}
-a {color:@black-60;}
+a {color:@brand-primary;}
+a:hover {color: @link-color-hover;text-decoration:none;}
 .btn,.dropdown-menu {font-size:12px;}
 .table-responsive {overflow:visable !important;width:100%;}
-a:hover, a:focus {color: @black; }
 button::-moz-focus-inner {border: 0;}
 
 input::-moz-focus-inner { border: 0; }
