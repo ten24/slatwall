@@ -7,7 +7,7 @@ angular.module('slatwalladmin').controller('ngtest', [
 	){
 		$scope.sku = $slatwall.newSku();
 		$scope.saveSku = function(){
-			$scope.sku.$$save();
+		$scope.sku.$$save();
 		}
 	}
 ]);

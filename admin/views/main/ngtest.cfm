@@ -4,8 +4,7 @@
 		<sw-form name="form.createSku" 
 		     		data-object="sku"	
 					data-context="save"
-		     	>
-			<sw-property-display
+			><sw-property-display
 				data-object="sku"
 				data-property="skuName"
 				data-editing="true"

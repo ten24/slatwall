@@ -22,7 +22,6 @@ angular.module('slatwalladmin')
 				isDirty:"=",
 				onChange:"=",
 				fieldType:"@"
-				
 			},
 			templateUrl:partialsPath+"propertydisplay.html",
 			link: function(scope, element,attrs,formController){
@@ -44,7 +43,8 @@ angular.module('slatwalladmin')
 					optionsArguments:scope.optionsArguments || {},
 					eagerLoadOptions:scope.eagerLoadOptions || true,
 					isDirty:scope.isDirty,
-					onChange:scope.onChange
+					onChange:scope.onChange,
+					swValidate:scope.object.validations
 				};
 				if(angular.isUndefined(scope.editable)){
 					scope.propertyDisplay.editable = true;
