@@ -1057,7 +1057,6 @@ Notes:
 									this.metaData = #serializeJSON(local.entity.getPropertiesStruct())#;
 									
 									this.metaData.className = '#local.entity.getClassName()#';
-									 
 									
 									this.metaData.$$getRBKey = function(rbKey,replaceStringData){
 										return slatwallService.rbKey(rbKey,replaceStringData);
@@ -1127,6 +1126,7 @@ Notes:
 									
 									<!--- Loop over properties --->
 									<cfloop array="#local.entity.getProperties()#" index="local.property">
+										
 										<!--- Make sure that this property is a persistent one --->
 										<cfif !structKeyExists(local.property, "persistent") && ( !structKeyExists(local.property,"fieldtype") || listFindNoCase("column,id", local.property.fieldtype) )>
 											<!--- Find the default value for this property --->
@@ -1195,8 +1195,15 @@ Notes:
 									,$$getMetaData:function( propertyName ) {
 										if(propertyName === undefined) {
 											return this.metaData
+										}else{
+											if(angular.isDefined(this.metaData[propertyName].name) && angular.isUndefined(this.metaData[propertyName].nameCapitalCase)){
+												this.metaData[propertyName].nameCapitalCase = this.metaData[propertyName].name.charAt(0).toUpperCase() + this.metaData[propertyName].name.slice(1);
+											}
+											if(angular.isDefined(this.metaData[propertyName].cfc) && angular.isUndefined(this.metaData[propertyName].cfcProperCase)){
+												this.metaData[propertyName].cfcProperCase = this.metaData[propertyName].cfc.charAt(0).toLowerCase()+this.metaData[propertyName].cfc.slice(1);
+											}
+											return this.metaData[ propertyName ];
 										}
-										return this.metaData[ propertyName ];
 									}
 									
 									<cfloop array="#local.entity.getProperties()#" index="local.property">
