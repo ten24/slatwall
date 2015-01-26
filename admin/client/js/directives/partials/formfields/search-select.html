@@ -1,9 +1,9 @@
 <div class="input-group" ng-if="propertyDisplay.object">
 	<input  type="text"
-			ng-model="propertyDisplay.object.data[propertyDisplay.property].data[propertyDisplay.property+'Name']"
+			ng-model="propertyDisplay.object.data[propertyDisplay.property].data[propertyCFCCamelCase+'Name']"
 			placeholder="Search"
 			class="form-control input-sm"
-			typeahead="object[propertyDisplay.property+'Name'] for object in selectionOptions.getOptionsByKeyword($viewValue) | filter:$viewValue"
+			typeahead="object[propertyCFCCamelCase+'Name'] for object in selectionOptions.getOptionsByKeyword($viewValue) | filter:$viewValue"
 			typeahead-on-select="selectItem($item, $model, $label)"
 	>
 	<!-- <p ng-bind="propertyDisplay.object.data[propertyDisplay.property].data[propertyDisplay.property+'Name']"></p> -->

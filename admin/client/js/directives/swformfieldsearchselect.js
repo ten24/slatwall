@@ -24,13 +24,16 @@ angular.module('slatwalladmin')
 				scope.selectedOption = {};
 				
 				var propertyMetaData = scope.propertyDisplay.object.metaData[scope.propertyDisplay.property];
+				var propertyName = propertyMetaData.name;
+				var propertyNameCapitalCase = propertyName.charAt(0).toUpperCase() + propertyName.slice(1);
 				var propertyCFC = propertyMetaData.cfc;
+				scope.propertyCFCCamelCase = propertyCFC.charAt(0).toLowerCase() + propertyCFC.slice(1);
 				scope.selectionOptions.getOptionsByKeyword=function(keyword){
 					var filterGroupsConfig = '['+  
 					  ' {  '+
 					      '"filterGroup":[  '+
 					         '{'+
-					        	' "propertyIdentifier":"_'+propertyCFC.toLowerCase()+'.'+scope.propertyDisplay.property+'Name",'+
+					        	' "propertyIdentifier":"_'+scope.propertyCFCCamelCase.toLowerCase()+'.'+scope.propertyCFCCamelCase+'Name",'+
 					        	' "comparisonOperator":"like",'+
 					        	 ' "ormtype":"string",'+
 					        	' "value":"%'+keyword+'%"'+
@@ -61,7 +64,7 @@ angular.module('slatwalladmin')
 						return scope.selectionOptions.value;
 					});
 				};
-				var propertyPromise = scope.propertyDisplay.object['$$get'+propertyCFC]();
+				var propertyPromise = scope.propertyDisplay.object['$$get'+propertyNameCapitalCase]();
 				propertyPromise.then(function(data){
 					
 				});
@@ -77,7 +80,7 @@ angular.module('slatwalladmin')
 				    var propertyCFC = scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc;
 				    var inflatedObject = $slatwall.newEntity(propertyCFC);
 				    angular.extend(inflatedObject.data,$item);
-				    scope.propertyDisplay.object['$$set'+propertyCFC](inflatedObject);
+				    scope.propertyDisplay.object['$$set'+propertyNameCapitalCase](inflatedObject);
 				};
 				
 	        }
