@@ -55,6 +55,7 @@ Notes:
 <cfoutput>
 
 	<cfset rc.promotionSmartList.addOrder("promotionName|ASC") />
+	<cfset rc.promotionSmartList.addKeywordProperty('promotionCodes.promotionCode', 1) />
 	
 	<hb:HibachiEntityActionBar type="listing" object="#rc.promotionSmartList#" showCreate="false">
 			
