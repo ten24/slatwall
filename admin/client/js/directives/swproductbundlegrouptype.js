@@ -46,7 +46,7 @@ angular.module('slatwalladmin')
 					productBundleGroupType.$$setParentType(parentType);
 					productBundleGroupType.data.typeName=$scope.productBundleGroup.data.productBundleGroupType.data.typeName;
 
-					productBundleGroupType.data.description = '';
+					productBundleGroupType.data.typeDescription = '';
 					productBundleGroupType.data.typeNameCode='';
 					angular.extend($scope.productBundleGroup.data.productBundleGroupType,productBundleGroupType);
 
