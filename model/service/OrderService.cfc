@@ -924,7 +924,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for(var orderItemStruct in arguments.processObject.getOrderItems()) {
 			
 			// Verify that there was a quantity
-			if(isNumeric(orderItemStruct.quantity)) {
+			if(isNumeric(orderItemStruct.quantity) && orderItemStruct.quantity gt 0) {
 				
 				var originalOrderItem = this.getOrderItem( orderItemStruct.referencedOrderItem.orderItemID );
 				
