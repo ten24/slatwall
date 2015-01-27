@@ -56,7 +56,7 @@
 @text-color:              @black-50;
 
 // Links
-@link-color:              @brand-ten24;
+@link-color:              @brand-primary;
 @link-color-hover:        darken(@link-color, 15%);
 
 // Typography
@@ -410,10 +410,10 @@ body { background-color: @black-5; font-family: 'Open Sans', sans-serif;color:@b
 hr {border-color:@black-20;}
 hr.s-dotted {border:none;border-bottom:3px dotted @black-5;margin-top:20px;margin-bottom:20px;}
 th {font-weight:600;}
-a {color:@black-60;}
+a {color:@brand-primary;}
+a:hover {color: @link-color-hover;text-decoration:none;}
 .btn,.dropdown-menu {font-size:12px;}
 .table-responsive {overflow:visable !important;width:100%;}
-a:hover, a:focus {color: @black; }
 button::-moz-focus-inner {border: 0;}
 
 input::-moz-focus-inner { border: 0; }
@@ -782,7 +782,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-and-or-box .btn-group {z-index: 10;padding: 0px 10px;}
 .s-add-filter > .row > h4 {margin-top: 0px;padding: 8px 15px;background-color: #606060;color: @white;font-size:14px;border-top-left-radius: 2px;border-top-right-radius: 2px;}
 .s-add-filter > .row {padding-top:0px !important;}
-.s-add-filter .s-criteria {border: 3px dotted @black-10;border-bottom: none;border-top: none;padding-right: 40px;padding-left: 40px;margin-bottom: 15px;min-height:140px;}
+.s-add-filter .s-criteria {border: 3px dotted @black-10;border-bottom: none;border-top: none;margin-bottom: 15px;min-height:140px;}
 .s-add-filter .s-criteria .selectboxit-container .selectboxit {width:100% !important;}
 .s-add-filter .s-criteria .selectboxit-container {width:100% !important;}
 .s-add-filter .s-criteria .selectboxit-container .selectboxit-options {width:100% !important;}
