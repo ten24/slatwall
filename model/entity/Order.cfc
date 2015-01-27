@@ -55,6 +55,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderOpenDateTime" ormtype="timestamp";
 	property name="orderOpenIPAddress" ormtype="string";
 	property name="orderCloseDateTime" ormtype="timestamp";
+	property name="estimatedDeliveryDateTime" ormtype="timestamp";
+	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	
 	// Calculated Properties
 	property name="calculatedTotal" ormtype="big_decimal";
@@ -109,7 +111,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="dynamicCreditOrderPayment" persistent="false";
 	property name="dynamicChargeOrderPaymentAmount" persistent="false" hb_formatType="currency";
 	property name="dynamicCreditOrderPaymentAmount" persistent="false" hb_formatType="currency";
-	property name="estimatedFulfillmentDateTime" persistent="false";
 	property name="eligiblePaymentMethodDetails" persistent="false";
 	property name="itemDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentDiscountAmountTotal" persistent="false" hb_formatType="currency";
@@ -117,6 +118,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="fulfillmentChargeTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentRefundTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentChargeAfterDiscountTotal" persistent="false" hb_formatType="currency";
+	property name="nextDeliveryDateTime" type="timestamp" persistent="false";
+	property name="nextFulfillmentDateTime" type="timestamp" persistent="false";
 	property name="orderDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="orderPaymentAmountNeeded" persistent="false" hb_formatType="currency";
 	property name="orderPaymentChargeAmountNeeded" persistent="false" hb_formatType="currency";
@@ -442,6 +445,50 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return fulfillmentChargeAfterDiscountTotal;
 	}
 	
+	public any function getNextFulfillmentDateTime(){
+    	if(arrayLen(getOrderFulfillments())) {
+    		var nextFulfillmentDateTime = '';
+    		
+    		//Loop over orderFulfillments to get the nextFulfillmentDateTime
+			for(var i=1; i<=arrayLen(getOrderFulfillments()); i++){
+				var orderFulfillment = getOrderFulfillments()[i];
+				
+				//Condtional to check for the nextFulfillmentDateTime, also checks to make sure that the nextFulfillmentyDateTime is not the current estimatedFullfillmentDateTime
+				if(nextFulfillmentDateTime == '' && orderFulfillment.getNextFulfillmentDateTime() != ''){
+					nextFulfillmentDateTime = orderFulfillment.getNextFulfillmentDateTime();
+				}else if(nextFulfillmentDateTime > orderFulfillment.getNextFulfillmentDateTime() && orderFulfillment.getEstimatedFulfillmentDateTime() != orderFulfillment.getNextFulfillmentDateTime() ){
+					nextFulfillmentDateTime = orderFulfillment.getNextFulfillmentDateTime();
+				}
+			}
+			
+			return nextFulfillmentDateTime;
+		}else{
+			return '';
+		}
+    }
+    
+    public any function getNextDeliveryDateTime(){
+    	if(arrayLen(getOrderFulfillments())) {
+    		var nextDeliveryDateTime = '';
+    		
+    		//Loop over orderFulfillments to get the nextDeliveryDateTime
+			for(var i=1; i<=arrayLen(getOrderFulfillments()); i++){
+				var orderFulfillment = getOrderFulfillments()[i];
+				
+				//Condtional to check for the nextDeliveryDateTime, also checks to make sure that the nextDeliveryDateTime is not the current estimatedDeliveryDateTime
+				if(nextDeliveryDateTime == '' && orderFulfillment.getNextDeliveryDateTime() != '' ){
+					nextDeliveryDateTime = orderFulfillment.getNextDeliveryDateTime();
+				}else if(nextDeliveryDateTime > orderFulfillment.getNextDeliveryDateTime() && orderFulfillment.getEstimatedDeliveryDateTime() != orderFulfillment.getNextDeliveryDateTime()){
+					nextDeliveryDateTime = orderFulfillment.getNextDeliveryDateTime();
+				}
+			}
+			
+			return nextDeliveryDateTime;
+		}else{
+			return '';
+		}
+    }
+	
 	public numeric function getOrderDiscountAmountTotal() {
 		var discountAmount = 0;
 
@@ -535,34 +582,6 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		}
 		
 		return 0;
-	}
-	
-	public any function getEstimatedFulfillmentDateTime(){
-		var estimatedFulfillmentDateTime = "";
-		var earliestDate = "";
-		var latestDate = "";
-		
-		// Loop over the estimated fulfillment date of each order item
-		for (var orderItems in getOrderItems()){
-			if (len(orderItems.getEstimatedFulfillmentDateTime())){
-				estimatedFulfillmentDateTime = orderItems.getEstimatedFulfillmentDateTime();
-			}
-			//check to see if it is the earliest dateTime, if so set it 
-			if (earliestDate EQ '' OR estimatedFulfillmentDateTime GTE earliestDate){
-				earliestDate = estimatedFulfillmentDateTime;
-			}
-			//check to see if it is the latest dateTime, if so set it 
-			if (estimatedFulfillmentDateTime GTE latestDate){
-				latestDate = estimatedFulfillmentDateTime;
-			}
-		}
-		//If earliestDate EQ latestDate return the earliestDate else return the range
-		if (earliestDate EQ latestDate){
-			return '#DateTimeFormat(earliestDate)#';
-		}else{
-			return '#DateTimeFormat(earliestDate)# - #DateFormat(latestDate)#';
-		}
-		
 	}
 	
 	public numeric function getPaymentAmountTotal() {
