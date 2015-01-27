@@ -33,6 +33,7 @@ angular.module('slatwalladmin').directive('swValidate',
 					DATA_TYPE: {name: "dataType", value: 10}
 			}
 			
+			
 			scope.validationPropertiesEnum = ValidationPropertiesEnum;
 			scope.contextsEnum = ContextsEnum;
 			
@@ -43,11 +44,14 @@ angular.module('slatwalladmin').directive('swValidate',
 			var errors = scope.propertyDisplay.errors;
 			var errorMessages = [];
 			var failFlag = 0;
+			var validationResults = {};
+			validationResults.error = "none";
+			validationResults.errorkey = "none";
 			/**
 			 * Iterates over the validation object looking for the current elements validations, maps that to a validation function list
 			 * and calls those validate functions. When a validation fails, an error is set, the elements border turns red.
 			 */
-			function validate(name, currentContext, elementValue) {
+			function validate(name, context, elementValue) {
 				
 								for ( var key in validationObject) {
 									// Look for the current attribute in the
@@ -61,21 +65,34 @@ angular.module('slatwalladmin').directive('swValidate',
 										// the current page context (save,
 										// delete, etc.)
 										for ( var inner in validationObject[key]) {
-											var required = validationObject[key][inner].required; // Get
+											var required = validationObject[key][inner].required || "false"; // Get
 																									// the
 																									// required
 																									// value
 											
-											var context = validationObject[key][inner].contexts; // Get
+											var context = validationObject[key][inner].contexts || "none"; // Get
 																									// the
 																									// element
 																									// context
+											
+											//Setup the validation results object to pass back to caller.
+											validationResults = {"name": key, "context": context, "required": required};
 											
 											var elementValidationArr = map(
 													checkHasValidationType,
 													validationPropertiesArray,
 													validationObject[key][inner]);
 
+											//Check if this is empty and required.
+											if (elementValue === "" && required === true){
+												//Get the regex string to match and send to validation function.
+													validationResults.error = "required";
+													validationResults.errorkey = "required";
+													validationResults.fail = true;
+												
+													return validationResults;
+											}
+											
 											
 											//Iterate over the array and call the validate function if it has that property.
 											for (var i = 0; i < elementValidationArr.length; i++) {
@@ -85,68 +102,133 @@ angular.module('slatwalladmin').directive('swValidate',
 													if (validationPropertiesArray[i] === "regex"){
 														//Get the regex string to match and send to validation function.
 														var re = validationObject[key][inner].regex;
-														console.log(re);
 														var result = validate_RegExp(re, elementValue);
-														if (!result) {errorMessages.push("Invalid input");}
-														return result;
+														if (!result) {
+															errorMessages
+																	.push("Invalid input");
+															validationResults.error = errorMessages[errorMessages.length - 1];
+															validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["REGEX"].name;
+															validationResults.fail = true;
+														}
+														return validationResults;
 													}
 													if(validationPropertiesArray[i] === "minValue"){
+														console.log(validationPropertiesArray[i]);
 														var validationMinValue = validationObject[key][inner].minValue;
+														console.log(validationMinValue);
 														var result = validate_MinValue(elementValue, validationMinValue);
-														if (!result){errorMessages.push("Minimum value is: " + validationMinValue);}
-														return result;
+														console.log("e>v" + result + " :" + elementValue, ":" + validationMinValue )
+														if (result === false) {
+															errorMessages
+																	.push("Minimum value is: "
+																			+ validationMinValue);
+															validationResults.error = errorMessages[errorMessages.length - 1];
+															validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MIN_VALUE"].name;
+															validationResults.fail = true;
+
+															}
+														return validationResults;
 													}
 													if(validationPropertiesArray[i] === "maxValue"){
 														var validationMaxValue = validationObject[key][inner].maxValue;
 														var result = validate_MaxValue(elementValue, validationMaxValue);
 														console.log("Max Value result is: " + result);
-														if (!result){errorMessages.push("Maximum value is: " + validationMaxValue);}
-														return result;
+														if (result === false) {
+															errorMessages
+																	.push("Maximum value is: "
+																			+ validationMaxValue);
+															validationResults.error = errorMessages[errorMessages.length - 1];
+															validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MAX_VALUE"].name;
+															validationResults.fail = true;
+														}
+														return validationResults;
 													}
 													if(validationPropertiesArray[i] === "minLength"){
 														var validationMinLength = validationObject[key][inner].minLength;
 														var result = validate_MinLength(elementValue, validationMinLength);
 														console.log("Min Length result is: " + result);
-														if (!result){errorMessages.push("Minimum length must be: " + validationMinLength);}
-														return result;
+														if (result === false) {
+															errorMessages
+																	.push("Minimum length must be: "
+																			+ validationMinLength);
+															validationResults.error = errorMessages[errorMessages.length - 1];
+															validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MIN_LENGTH"].name;
+															validationResults.fail = true;
+														}
+														return validationResults;
 													}
 													if(validationPropertiesArray[i] === "maxLength"){
 														var validationMaxLength = validationObject[key][inner].maxLength;
 														var result = validate_MaxLength(elementValue, validationMaxLength);
 														console.log("Max Length result is: " + result);
-														if (!result){errorMessages.push("Maximum length is: " + validationMaxLength);}
-														return result;
+														if (result === false) {
+															errorMessages
+																	.push("Maximum length is: "
+																			+ validationMaxLength);
+															validationResults.error = errorMessages[errorMessages.length - 1];
+															validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["MAX_LENGTH"].name;
+															validationResults.fail = true;
+														}
+														return validationResults;
 													}
 													if(validationPropertiesArray[i] === "eq"){
 														var validationEq = validationObject[key][inner].eq;
 														var result = validate_Eq(elementValue, validationEq);
-														if (!result){errorMessages.push("Must equal " + validationEq);}
-														return result;
+														if (result === false) {
+															errorMessages
+																	.push("Must equal "
+																			+ validationEq);
+															validationResults.error = errorMessages[errorMessages.length - 1];
+															validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["EQ"].name;
+															validationResults.fail = true;
+														}
+														return validationResults;
 													}
 													if(validationPropertiesArray[i] === "neq"){
 														var validationNeq = validationObject[key][inner].neq;
 														var result = validate_Neq(elementValue, validationNeq);
-														if (!result){errorMessages.push("Must not equal: " + validationNeq);}
-														return result;
+														if (result === false) {
+															errorMessages
+																	.push("Must not equal: "
+																			+ validationNeq);
+															validationResults.error = errorMessages[errorMessages.length - 1];
+															validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["NEQ"].name;
+															validationResults.fail = true;
+														}
+														return validationResults;
 													}
 													if(validationPropertiesArray[i] === "lte"){
 														var validationLte = validationObject[key][inner].lte;
 														var result = validate_Lte(elementValue, validationLte);
-														if (!result){errorMessages.push("Must be less than " + validationLte);}
-														return result;
+														if (result === false) {
+															errorMessages
+																	.push("Must be less than "
+																			+ validationLte);
+															validationResults.error = errorMessages[errorMessages.length - 1];
+															validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["LTE"].name;
+															validationResults.fail = true;
+														}
+														return validationResults;
 													}
 													if(validationPropertiesArray[i] === "gte"){
 														var validationGte = validationObject[key][inner].gte;
 														var result = validate_Gte(elementValue, validationGte);
-														if (!result){errorMessages.push("Must be greater than: " + validationGte);}
-														return result;
+														if (!result) {
+															errorMessages
+																	.push("Must be greater than: "
+																			+ validationGte);
+															validationResults.error = errorMessages[errorMessages.length - 1];
+															validationResults.errorkey = "invalid-" + ValidationPropertiesEnum["GTE"].name;
+															validationResults.fail = true;
+														}
+														return validationResults;
 													}
-
 												}
 											}
 										}
 									} 
-								}//<---end validate.			
+									validationResults.error = "none";
+									validationResults.errorkey = "none";}//<---end validate.			
 }
 			/**
 			 * Function to map if we need a validation on this element.
@@ -205,7 +287,7 @@ angular.module('slatwalladmin').directive('swValidate',
 			 * Validates true if userValue >= minValue (inclusive)
 			 */
 			function validate_MinValue(userValue, minValue){
-				return (userValue >= minValue) ? true : false;
+				return (userValue >= minValue);
 			}
 			
 			/**
@@ -275,26 +357,37 @@ angular.module('slatwalladmin').directive('swValidate',
 			 * Handles the 'eager' validation on every key press.
 			 */
 			ngModel.$parsers.unshift(function(value) {
-				console.log(value);
+				
 				var name = elem.context.name;//Get the element name for the validate function.
 				var currentValue = elem.val(); //Get the current element value to check validations against.
 				var val = validate(name, myCurrentContext, currentValue);
-					//Set the validity based on the validation.
-					ngModel.$setValidity('Invalid', val);
+				
+					//Then we received a complete validation object.
+					//Check the val object for errors and fails.
+				    //----------------------
+				   //We are backlogging this. To get this working, the invalid-regex, invalid-min-value, etc
+				   //would need to be done up as ngshow spans in the fields.
+				
+					console.log(val);
+					console.log(val.errorkey);
+					console.log(val.fail);
+					
+					ngModel.$setValidity(val.errorkey, val.fail);
 					return true;
+					
+					
+					
+					
 				
 			});
 			
 			/**
 			 * This handles 'lazy' validation on blur.
 			 */
-			elem.bind('blur', function(e){
-				/*
-				var name = elem.context.name;//Get the element name for the validate function.
-				var currentValue = elem.val(); //Get the current element value to check validations against.
-				console.log("Name: " + name + " Value: " + currentValue);
-				validate(name, myCurrentContext, currentValue);
-				*/
+			elem.bind('blur', function(e){		
+				//var name = elem.context.name;//Get the element name for the validate function.
+				//var currentValue = elem.val(); //Get the current element value to check validations against.
+
 			});
 			
 
