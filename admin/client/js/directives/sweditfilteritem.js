@@ -323,6 +323,7 @@ angular.module('slatwalladmin')
 					$log.debug(selectedFilterProperty);
 					$log.debug(filterItem);
 					callback();
+					collectionService.incrementFilterCount(1);
 					$log.debug('saveFilter end');
 				}
 			};

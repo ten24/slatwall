@@ -35,8 +35,6 @@ angular.module('slatwalladmin')
 					element.replaceWith($compile(element.html())(scope));
 				});
 				
-				collectionService.incrementFilterCount(1);
-				
 				//for(item in filterGroupItem){}
 				scope.filterGroupItem.setItemInUse = filterGroupsController.setItemInUse;
 				scope.filterGroupItem.$$index = scope.filterGroupItemIndex;
