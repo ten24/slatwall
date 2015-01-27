@@ -33,6 +33,7 @@ function ($document) {
                 }
 
                 $scope.$eval($scope.swClickOutside);
+                $scope.$apply();
             });
         }
     };

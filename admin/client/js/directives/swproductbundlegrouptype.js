@@ -131,19 +131,19 @@ angular.module('slatwalladmin')
 						//Calls close function
 						$scope.closeAddScreen();
 					});
+					
 
 				};
 				
 				//Sets up clickOutside Directive call back arguments
 				$scope.clickOutsideArgs = {
-					callBackCondition : !$scope.productBundleGroupTypes.$$adding ? true : false,
 					callBackActions : [$scope.closeAddScreen,$scope.clearTypeName]
 				};
 				
 				//Works with swclickoutside directive to close dialog
 				$scope.closeThis = function (clickOutsideArgs) {
-					//Check against the condition
-					if(clickOutsideArgs.callBackCondition){
+					//Check against object state
+					if(!$scope.productBundleGroup.data.productBundleGroupType.$$isPersisted()){
 						//Perform all callback actions
 				        for(var callBackAction in clickOutsideArgs.callBackActions){
 				        	clickOutsideArgs.callBackActions[callBackAction]();
