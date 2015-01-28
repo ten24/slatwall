@@ -215,7 +215,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 				//Condtional to check for the nextFulfillmentDateTime, also checks to make sure that the nextFulfillmentyDateTime is not the current estimatedFullfillmentDateTime
 				if(nextFulfillmentDateTime == '' && orderFulfillmentItem.getQuantityUndelivered() > 0 && orderFulfillmentItem.getEstimatedFulfillmentDateTime() != ''){
 					nextFulfillmentDateTime = orderFulfillmentItem.getEstimatedFulfillmentDateTime();
-				}else if(nextFulfillmentDateTime > orderFulfillmentItem.getEstimatedFulfillmentDateTime() && orderFulfillmentItem.getQuantityUndelivered() > 0 && orderFulfillmentItem.getEstimatedFulfillmentDateTime() != orderFulfillmentItem.getNextFulfillmentDateTime()){
+				}else if(nextFulfillmentDateTime > orderFulfillmentItem.getEstimatedFulfillmentDateTime() && orderFulfillmentItem.getQuantityUndelivered() > 0 && orderFulfillmentItem.getEstimatedFulfillmentDateTime() != getEstimatedFulfillmentDateTime()){
 					nextFulfillmentDateTime = orderFulfillmentItem.getEstimatedFulfillmentDateTime();
 				}
 			}
@@ -237,7 +237,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 				//Condtional to check for the nextDeliveryDateTime, also checks to make sure that the nextDeliveryDateTime is not the current estimatedDeliveryDateTime
 				if(nextDeliveryDateTime == '' && orderFulfillmentItem.getQuantityUndelivered() > 0 && orderFulfillmentItem.getEstimatedDeliveryDateTime() != ''){
 					nextDeliveryDateTime = orderFulfillmentItem.getEstimatedDeliveryDateTime();
-				}else if(nextDeliveryDateTime > orderFulfillmentItem.getEstimatedDeliveryDateTime() && orderFulfillmentItem.getQuantityUndelivered() > 0 && orderFulfillmentItem.getEstimatedDeliveryDateTime() != orderFulfillmentItem.getNextDeliveryDateTime()){
+				}else if(nextDeliveryDateTime > orderFulfillmentItem.getEstimatedDeliveryDateTime() && orderFulfillmentItem.getQuantityUndelivered() > 0 && orderFulfillmentItem.getEstimatedDeliveryDateTime() != getEstimatedDeliveryDateTime()){
 					nextDeliveryDateTime = orderFulfillmentItem.getEstimatedDeliveryDateTime();
 				}
 			}
