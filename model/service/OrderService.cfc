@@ -943,6 +943,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var newOrder = this.newOrder(); 
 		
 		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
+		newOrder.setReferencedOrder(arguments.order);
+		newOrder.setReferenceOrderType('Duplicate');
+		
+		//Copy Order Attribtes
+		for(var attributeValue in arguments.order.getAttributeValues()) {
+			newOrder.setAttributeValue( attributeValue.getAttribute().getAttributeCode(), attributeValue.getAttributeValue() );
+		}
 		
 		// Copy Order Items
 		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
