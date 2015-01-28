@@ -4,10 +4,12 @@
 		    "paymentMethodType":{"eq":"creditCard"},
 		    "providerToken":{"null":true}
 		},
-		"paymentTypeCreditCardNoTokenAndNew": {
+		"paymentTypeCreditCardNoTokenAndNewAndNotCopied": {
 			"paymentMethodType":{"eq":"creditCard"},
 			"newFlag":{"eq":true},
-			"providerToken":{"null":true}
+			"providerToken":{"null":true},
+			"accountPaymentMethod":{"null":true},
+			"referencedOrderPayment":{"null":true}
 		},
 	    "paymentTypeCreditCard":{
 	        "paymentMethodType":{"eq":"creditCard"}
@@ -32,7 +34,7 @@
 		"expirationYear":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
 		"nameOnCreditCard":		[{"contexts":"save","conditions":"paymentTypeCreditCard","required":true}],
 		"creditCardNumber":		[{"contexts":"save","conditions":"creditCardWithoutToken","required":true,"dataType":"creditCard"}],
-		"securityCode":			[{"contexts":"save","conditions":"paymentTypeCreditCardNoTokenAndNew","required":true}],
+		"securityCode":			[{"contexts":"save","conditions":"paymentTypeCreditCardNoTokenAndNewAndNotCopied","required":true}],
 		"orderStatusCode":		[
 		    {"contexts":"createTransaction","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"},
 			{"contexts":"edit","inList":"ostNotPlaced,ostNew,ostProcessing,ostOnHold"}

@@ -1,32 +1,108 @@
-<div class="input-group" ng-if="propertyDisplay.object">
-	<input  type="text"
-			ng-model="property.object.data[propertyDisplay.property+'Name']"
-			placeholder="Search"
-			class="form-control input-sm"
-			typeahead="object[propertyDisplay.property+'Name'] for object in selectionOptions.getOptionsByKeyword($viewValue) | filter:$viewValue"
-			typeahead-on-select="selectItem($item, $model, $label)"
-	>
-	<div class="input-group-btn">
-		<button type="button" class="btn btn-sm btn-default"><span class="caret"></span></button>
-	</div>
-	<input style="display:none"	type="text" 
-		name="{{propertyDisplay.property+'ID'}}"
-		ng-model="propertyDisplay.object.data[propertyDisplay.property][propertyDisplay.object.data[propertyDisplay.property].$$getIDName()]"
-	/>
-	<!-- <sw-property-display
+<div class="col-md-9 s-search-filter" id="j-inside-product-bundle-group-type" sw-click-outside="closeThis(clickOutsideArgs)">
+	
+	<div class="input-group" ng-if="propertyDisplay.object">
+		<input  type="text"
+				ng-model="propertyDisplay.object.data[propertyDisplay.property].data[cfcProperCase+'Name']"
+				placeholder="Search"
+				class="form-control input-sm"
+				typeahead="object[cfcProperCase+'Name'] for object in selectionOptions.getOptionsByKeyword($viewValue) | filter:$viewValue"
+				typeahead-on-select="selectItem($item, $model, $label)"
+		>
+		<div class="input-group-btn">
+			<button type="button" class="btn btn-sm btn-default" ng-click="closeAddScreen();clearTypeName();">
+				<span ng-show="showAddBtn" class="fa fa-caret-up"></span>
+				<span ng-show="!showAddBtn" class="fa fa-caret-down"></span>
+			</button>
+		</div>
+		<input 	type="text" 
 			style="display:none"
-			data-object="property.object.data[propertyDisplay.property]"
-			data-property="property.object.data[propertyDisplay.property].$$getIDName()"
-			data-editing="true"
-			data-editable="true"
-			data-is-dirty="true"
-	></sw-property-display> -->
+			name="{{propertyDisplay.property+'ID'}}"
+			ng-model="propertyDisplay.object.data[propertyDisplay.property][propertyDisplay.object.data[propertyDisplay.property].$$getIDName()]"
+		/>
+		<input 	type="text" 
+				style="display:none"
+				name="{{propertyDisplay.property}}"
+				ng-model="propertyDisplay.object.data[propertyDisplay.property]"
+		/>
+	</div>
+	<div ng-show="showAddBtn">
+		<button type="button"
+				class="btn s-btn-dgrey"
+				ng-click="propertyDisplay.object['$$isAdding'+property]"
+		>
+			<i class="fa fa-plus"></i> Add "{{propertyDisplay.object.data[propertyDisplay.property].data[cfcProperCase+'Name']}}"
+		</button>
+		<div class="s-add-content" ng-show="productBundleGroupTypes.$$adding">
+		<!-- <div class="s-add-content" ng-show="productBundleGroupTypes.$$adding">
+			
+
+				<span ng-show="productBundleGroupTypes.$$adding && productBundleGroup.data.productBundleGroupType" >
+					<sw-form name="form.addProductBundleGroupType"
+						data-object="productBundleGroup.data.productBundleGroupType"
+						data-context="save"
+						ng-if="productBundleGroup.data.productBundleGroupType"
+					>
+						<sw-property-display
+								style="display:none"
+								data-object="productBundleGroup.data.productBundleGroupType"
+								data-property="typeID"
+								data-editing="true"
+								data-editable="true"
+								data-is-dirty="true"
+						></sw-property-display> 
+						<sw-property-display
+								data-object="productBundleGroup.data.productBundleGroupType"
+								data-property="typeName"
+								data-editing="true"
+								data-editable="true"
+								data-is-dirty="true"
+						></sw-property-display> 
+						<sw-property-display
+								data-object="productBundleGroup.data.productBundleGroupType"
+								data-property="typeCode"
+								data-editing="true"
+								data-editable="true"
+						></sw-property-display>
+						<sw-property-display
+								data-object="productBundleGroup.data.productBundleGroupType"
+								data-property="typeDescription"
+								data-editing="true"
+								data-editable="true"
+						></sw-property-display> 
+					</sw-form>
+					<sw-form name="form.addProductBundleGroupTypeParentType"
+						data-object="productBundleGroup.data.productBundleGroupType.data.parentType"
+						data-context="save"
+						ng-if="productBundleGroup.data.productBundleGroupType.data.parentType"
+					>
+							<sw-property-display
+								style="display:none"
+								data-object="productBundleGroup.data.productBundleGroupType.data.parentType"
+								data-property="typeID"
+								data-editing="true"
+								data-editable="true"
+								data-is-dirty="true"
+							></sw-property-display> 
+			        </sw-form>
+					<div class="form-group">
+						<button type="button"
+								class="btn btn-xs s-btn-ten24"
+								ng-click="saveProductBundleGroupType()"
+						>
+							<i class="fa fa-plus"></i> Add Group Type
+						</button>
+					</div>
+				</span>
+			</form>
+		</div>
+	</div> -->
+	
+	<!-- Error Messages -->
+	    
+	<span style="color:red"
+		ng-repeat="(key,value) in propertyDisplay.errors"
+		ng-show="(propertyDisplay.form.$submitted && propertyDisplay.form[propertyDisplay.property].$invalid) || (propertyDisplay.form[propertyDisplay.property].$invalid && propertyDisplay.form[propertyDisplay.property].$dirty)"
+	>
+	  <span  ng-show="key === 'required'">{{propertyDisplay.title}} is a required field<br></span>
+	</span>
 </div>
-<!-- Error Messages -->
-    
-<span style="color:red"
-	ng-repeat="(key,value) in propertyDisplay.errors"
-	ng-show="(propertyDisplay.form.$submitted && propertyDisplay.form[propertyDisplay.property].$invalid) || (propertyDisplay.form[propertyDisplay.property].$invalid && propertyDisplay.form[propertyDisplay.property].$dirty)"
->
-  <span  ng-show="key === 'required'">{{propertyDisplay.title}} is a required field<br></span>
-</span>
