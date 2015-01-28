@@ -107,6 +107,8 @@ metadataService,
 			searchPromise = $timeout(function(){
 				$log.debug('search with keywords');
 				$log.debug($scope.keywords);
+				//Set current page here so that the pagination does not break when getting collection
+				paginationService.setCurrentPage(1);
 				$scope.getCollection();
 			}, 500);
 		};
@@ -220,6 +222,8 @@ metadataService,
 					saveCollectionPromise.then(function(value){
 						
 						$scope.errorMessage = {};
+						//Set current page here so that the pagination does not break when getting collection
+						paginationService.setCurrentPage(1);
 						$scope.getCollection();
 						$scope.collectionDetails.isOpen = false;
 					}, function(reason){
