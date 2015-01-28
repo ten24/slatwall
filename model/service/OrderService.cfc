@@ -920,12 +920,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		orderReturn.setFulfillmentRefundAmount( arguments.processObject.getFulfillmentRefundAmount() );
 		orderReturn.setReturnLocation( arguments.processObject.getLocation() );
 	
+		var orderItemFoundFlag = false;
 		// Look for that orderItem in the data records
 		for(var orderItemStruct in arguments.processObject.getOrderItems()) {
 			
 			// Verify that there was a quantity
 			if(isNumeric(orderItemStruct.quantity) && orderItemStruct.quantity gt 0) {
 				
+				orderItemFoundFlag = true; 
 				var originalOrderItem = this.getOrderItem( orderItemStruct.referencedOrderItem.orderItemID );
 				
 				// Create a new return orderItem
@@ -992,24 +994,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!returnOrder.hasErrors()) {
 			getHibachiDAO().flushORMSession();
 			
-			if(arguments.processObject.getOrderTypeCode() eq "otReturnOrder") {
+			if(arguments.processObject.getOrderTypeCode() eq "otReturnOrder" && orderItemFoundFlag) {
 				returnOrder = this.processOrder(returnOrder, {}, 'placeOrder');
+				
+				// If the process object was set to automatically receive these items, then we will do that
+				if(!returnOrder.hasErrors() && processObject.getReceiveItemsFlag()) {
+					var receiveData = {};
+					receiveData.locationID = orderReturn.getReturnLocation().getLocationID();
+					receiveData.orderReturnItems = [];
+					for(var returnItem in orderReturn.getOrderReturnItems()) {
+						var thisData = {};
+						thisData.orderReturnItem.orderItemID = returnItem.getOrderItemID();
+						thisData.quantity = returnItem.getQuantity();
+						arrayAppend(receiveData.orderReturnItems, thisData);
+					}
+					orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');
+				}
 			}
 		}
 		
-		// If the process object was set to automatically receive these items, then we will do that
-		if(!returnOrder.hasErrors() && processObject.getReceiveItemsFlag()) {
-			var receiveData = {};
-			receiveData.locationID = orderReturn.getReturnLocation().getLocationID();
-			receiveData.orderReturnItems = [];
-			for(var returnItem in orderReturn.getOrderReturnItems()) {
-				var thisData = {};
-				thisData.orderReturnItem.orderItemID = returnItem.getOrderItemID();
-				thisData.quantity = returnItem.getQuantity();
-				arrayAppend(receiveData.orderReturnItems, thisData);
-			}
-			orderReturn = this.processOrderReturn(orderReturn, receiveData, 'receive');
-		}
+		
 		
 		// Return the new order so that the redirect takes users to this new order
 		return returnOrder;
@@ -1119,7 +1123,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								
 								// Call the placeOrderTransactionType for the order payment
 								orderPayment = this.processOrderPayment(orderPayment, {}, 'runPlaceOrderTransaction');
-							
 								amountAuthorizeCreditReceive = precisionEvaluate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited());
 							}
 						}
@@ -1834,6 +1837,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var uncapturedAuthorizations = getPaymentService().getUncapturedPreAuthorizations( arguments.orderPayment );
 		
 		// If we are trying to charge multiple pre-authorizations at once we may need to run multiple transacitons
+		
 		if(arguments.processObject.getTransactionType() eq "chargePreAuthorization" && arrayLen(uncapturedAuthorizations) gt 1 && arguments.processObject.getAmount() gt uncapturedAuthorizations[1].chargeableAmount) {
 			var totalAmountCharged = 0;
 			
@@ -1882,7 +1886,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				transactionType = arguments.processObject.getTransactionType(),
 				amount = arguments.processObject.getAmount()
 			};
-			
 			if(arguments.processObject.getTransactionType() eq "chargePreAuthorization" && arrayLen(uncapturedAuthorizations)) {
 				transactionData.preAuthorizationCode = uncapturedAuthorizations[1].authorizationCode;
 				transactionData.preAuthorizationProviderTransactionID = uncapturedAuthorizations[1].providerTransactionID;
@@ -1890,7 +1893,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Run the transaction
 			paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
-			
 			// If the paymentTransaction has errors, then add those errors to the orderPayment itself
 			if(paymentTransaction.hasError('runTransaction')) {
 				arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
