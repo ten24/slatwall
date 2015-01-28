@@ -15,6 +15,9 @@
 		          		ng-change="selectedDisplayOptionChanged(selectedProperty.selectedDisplayOption)" 
 		          		ng-options="property as property.displayPropertyIdentifier
 		          					for property in propertiesList[selectedProperty.propertyIdentifier].data 
+		          					| orderBy:property.name
+			     					| filter:{fieldtype:'!one-to-many'}
+			     					| filter:{fieldtype:'!many-to-many'}
 		          					" 
 		          		class="form-control input-sm">
 		            <option value="">Select From {{selectedProperty.displayPropertyIdentifier}}:</option>
