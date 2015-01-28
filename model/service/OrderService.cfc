@@ -1119,7 +1119,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								
 								// Call the placeOrderTransactionType for the order payment
 								orderPayment = this.processOrderPayment(orderPayment, {}, 'runPlaceOrderTransaction');
-							
 								amountAuthorizeCreditReceive = precisionEvaluate(amountAuthorizeCreditReceive + orderPayment.getAmountAuthorized() + orderPayment.getAmountReceived() + orderPayment.getAmountCredited());
 							}
 						}
@@ -1834,6 +1833,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var uncapturedAuthorizations = getPaymentService().getUncapturedPreAuthorizations( arguments.orderPayment );
 		
 		// If we are trying to charge multiple pre-authorizations at once we may need to run multiple transacitons
+		
 		if(arguments.processObject.getTransactionType() eq "chargePreAuthorization" && arrayLen(uncapturedAuthorizations) gt 1 && arguments.processObject.getAmount() gt uncapturedAuthorizations[1].chargeableAmount) {
 			var totalAmountCharged = 0;
 			
@@ -1882,7 +1882,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				transactionType = arguments.processObject.getTransactionType(),
 				amount = arguments.processObject.getAmount()
 			};
-			
 			if(arguments.processObject.getTransactionType() eq "chargePreAuthorization" && arrayLen(uncapturedAuthorizations)) {
 				transactionData.preAuthorizationCode = uncapturedAuthorizations[1].authorizationCode;
 				transactionData.preAuthorizationProviderTransactionID = uncapturedAuthorizations[1].providerTransactionID;
@@ -1890,7 +1889,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Run the transaction
 			paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
-			
 			// If the paymentTransaction has errors, then add those errors to the orderPayment itself
 			if(paymentTransaction.hasError('runTransaction')) {
 				arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);

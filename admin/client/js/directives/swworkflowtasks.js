@@ -57,7 +57,12 @@ angular.module('slatwalladmin')
 				};
 				
 				scope.$watch('workflowTasks.selectedTask.data.workflow.data.workflowObject',function(newValue,oldValue){
-					if(newValue){
+					
+					if(newValue !== oldValue && angular.isDefined(scope.workflowTasks.selectedTask)){
+						if(angular.isString(scope.workflowTasks.selectedTask.data.taskConditionsConfig)){
+							scope.workflowTasks.selectedTask.data.taskConditionsConfig = angular.fromJson(scope.workflowTasks.selectedTask.data.taskConditionsConfig);
+						}
+						
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
 					}
@@ -76,6 +81,8 @@ angular.module('slatwalladmin')
 						scope.filterPropertiesList[scope.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflow.data.workflowObject);
 						metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflow.data.workflowObject],scope.workflow.data.workflowObject);
 					});
+					console.log('wrokflowtask');
+					console.log(workflowTask);
 				};
 				
 				scope.removeWorkflowTask = function(workflowTask){

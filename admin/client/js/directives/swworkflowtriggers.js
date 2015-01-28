@@ -27,11 +27,21 @@ angular.module('slatwalladmin')
 					var workflowTriggersPromise = scope.workflow.$$getWorkflowTriggers();
 					workflowTriggersPromise.then(function(){
 						scope.workflowTriggers = scope.workflow.data.workflowTriggers;
-						
+						console.log('workflowtriggers');
+						console.log(scope.workflowTriggers);
 						if(angular.isUndefined(scope.workflow.data.workflowTriggers)){
 							scope.workflow.data.workflowTriggers = [];
 							scope.workflowTriggers = scope.workflow.data.workflowTriggers;
 						}
+						
+						angular.forEach(scope.workflowTriggers,function(workflowTrigger,key){
+							console.log('trigger');
+							console.log(workflowTrigger);
+							if(workflowTrigger.data.triggerType === 'Schedule'){
+								workflowTrigger.$$getSchedule();
+								workflowTrigger.$$getScheduleCollection();
+							}
+						});
 					});
 				};
 				
@@ -85,6 +95,13 @@ angular.module('slatwalladmin')
 						});
 					}
 					scope.showEventOptions = !scope.showEventOptions;
+				};
+				
+				scope.saveWorkflowTrigger = function(){
+					var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
+					saveWorkflowTriggerPromise.then(function(){
+						
+					});
 				};
 				
 				scope.selectEvent = function(eventOption){

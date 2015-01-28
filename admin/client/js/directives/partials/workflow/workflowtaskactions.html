@@ -11,16 +11,15 @@
 				<li class="j-tool-tip-item s-bundle-details">Detail: <span>Order Feedback Template</span></li>
 			</ul>
 			<ul class="list-unstyled list-inline s-last">
-				<li class="col-xs-1 j-tool-tip-item s-bundle-details-add">
+				<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" ng-click="selectWorkflowTaskAction(workflowTaskActions[$index])">
 					<a class="btn s-btn-dgrey s-edit" data-target="#s-add-obj-1">
 						<i 	class="fa fa-pencil"
-							ng-click="selectWorkflowTaskAction(workflowTaskActions[$index])"
 						></i>
 					</a>
 				</li>
-				<li class="col-xs-1 j-tool-tip-item s-bundle-details-add">
+				<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" ng-click="removeWorkflowTaskAction(workflowTaskActions[$index])">
 					<a 	class="btn s-btn-dgrey s-remove"
-						ng-click="removeWorkflowTaskAction(workflowTaskActions[$index])"
+						
 					>
 						<i class="fa fa-trash"></i>
 					</a>
@@ -99,6 +98,7 @@
 										data-object="workflowTaskActions.selectedTaskAction"
 										data-property="emailTemplate"
 										data-field-type="search-select"
+										data-editing="true"
 									></sw-property-display>
 									
 									<!-- <div class="input-group">
@@ -183,6 +183,7 @@
 										data-object="workflowTaskActions.selectedTaskAction"
 										data-property="printTemplate"
 										data-field-type="search-select"
+										data-editing="true"
 									></sw-property-display>
 									<!-- <div class="input-group">
 										<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
