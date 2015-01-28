@@ -93,6 +93,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="chargeAfterDiscount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="discountAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="fulfillmentMethodType" type="numeric" persistent="false";
+	property name="nextDeliveryDateTime" type="timestamp" persistent="false";
+	property name="nextfulfillmentDateTime" type="timestamp" persistent="false";
 	property name="orderStatusCode" type="numeric" persistent="false";
 	property name="quantityUndelivered" type="numeric" persistent="false";
 	property name="quantityDelivered" type="numeric" persistent="false";
@@ -201,6 +203,50 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
    		}
 		return variables.itemDiscountAmountTotal;
 	}
+	
+	public any function getNextFulfillmentDateTime(){
+    	if(arrayLen(getOrderFulfillmentItems())) {
+    		var nextFulfillmentDateTime = '';
+    		
+    		//Loop over orderFulfillmentItems to get the nextFulfillmentDateTime
+			for(var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++){
+				var orderFulfillmentItem = getOrderFulfillmentItems()[i];
+				
+				//Condtional to check for the nextFulfillmentDateTime, also checks to make sure that the nextFulfillmentyDateTime is not the current estimatedFullfillmentDateTime
+				if(nextFulfillmentDateTime == '' && orderFulfillmentItem.getQuantityUndelivered() > 0 && orderFulfillmentItem.getEstimatedFulfillmentDateTime() != ''){
+					nextFulfillmentDateTime = orderFulfillmentItem.getEstimatedFulfillmentDateTime();
+				}else if(nextFulfillmentDateTime > orderFulfillmentItem.getEstimatedFulfillmentDateTime() && orderFulfillmentItem.getQuantityUndelivered() > 0 && orderFulfillmentItem.getEstimatedFulfillmentDateTime() != getEstimatedFulfillmentDateTime()){
+					nextFulfillmentDateTime = orderFulfillmentItem.getEstimatedFulfillmentDateTime();
+				}
+			}
+			
+			return nextFulfillmentDateTime;
+		}else{
+			return '';
+		}
+    }
+    
+    public any function getNextDeliveryDateTime(){
+    	if(arrayLen(getOrderFulfillmentItems())) {
+    		var nextDeliveryDateTime = '';
+			
+			//Loop over orderFulfillmentItem to get the nextDeliveryDateTime
+			for(var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++){
+				var orderFulfillmentItem = getOrderFulfillmentItems()[i];
+				
+				//Condtional to check for the nextDeliveryDateTime, also checks to make sure that the nextDeliveryDateTime is not the current estimatedDeliveryDateTime
+				if(nextDeliveryDateTime == '' && orderFulfillmentItem.getQuantityUndelivered() > 0 && orderFulfillmentItem.getEstimatedDeliveryDateTime() != ''){
+					nextDeliveryDateTime = orderFulfillmentItem.getEstimatedDeliveryDateTime();
+				}else if(nextDeliveryDateTime > orderFulfillmentItem.getEstimatedDeliveryDateTime() && orderFulfillmentItem.getQuantityUndelivered() > 0 && orderFulfillmentItem.getEstimatedDeliveryDateTime() != getEstimatedDeliveryDateTime()){
+					nextDeliveryDateTime = orderFulfillmentItem.getEstimatedDeliveryDateTime();
+				}
+			}
+			
+			return nextDeliveryDateTime;
+		}else{
+			return '';
+		}
+    }
     
 	public any function getOrderStatusCode() {
 		return getOrder().getStatusCode();
@@ -523,6 +569,22 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		
 		super.populate(argumentCollection=arguments);
 	}
+	
+	 public any function getEstimatedFulfillmentDateTime(){
+    	if(structKeyExists(variables, "estimatedFulfillmentDateTime")) {
+			return variables.estimatedFulfillmentDateTime;
+		}else if (!isNull(getOrder())){
+			return getOrder().getEstimatedFulfillmentDateTime();
+		}
+    }
+    
+    public any function getEstimatedDeliveryDateTime(){
+    	if(structKeyExists(variables, "estimatedDeliveryDateTime")) {
+			return variables.estimatedDeliveryDateTime;
+		}else if (!isNull(getOrder())){
+			return getOrder().getEstimatedDeliveryDateTime();
+		}
+    }
 	
 	// ==================  END:  Overridden Methods ========================
 	
