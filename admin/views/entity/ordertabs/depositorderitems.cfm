@@ -68,14 +68,4 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="quantityDelivered" />
 	</hb:HibachiListingDisplay>
 	
-	<!--- If in edit and order is of correct status then we can add deposit order items --->
-	<cfif rc.edit and listFindNoCase("ostNotPlaced,ostNew,ostProcessing,ostOnHold", rc.order.getOrderStatusType().getSystemCode())>
-		<cfset rc.addSkuAddStockType = "oitDeposit" />
-		
-		<hb:HibachiTabGroup tabLocation="top">
-			<hb:HibachiTab view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
-			<hb:HibachiTab view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />
-		</hb:HibachiTabGroup>
-	</cfif>
-	
 </cfoutput>

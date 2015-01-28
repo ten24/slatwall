@@ -22,6 +22,8 @@
 			
 			<!--- Totals --->
 			<hb:HibachiPropertyTable>
+				<hb:HibachiPropertyTableBreak header="Order Details" />
+				<hb:HibachiPropertyDisplay object="#rc.orderItem.getOrder()#" property="orderNumber" edit="false" displayType="table" title="#$.slatwall.rbKey('entity.order.orderNumber')#" />
 				<hb:HibachiPropertyTableBreak header="Sku Details" />
 				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="skuPrice" edit="false" displayType="table" title="#$.slatwall.rbKey('admin.entity.detailorderitem.skuPriceWhenOrdered')#" />
 				<hb:HibachiPropertyDisplay object="#rc.orderItem.getSku()#" property="price" edit="false" displayType="table" title="#$.slatwall.rbKey('admin.entity.detailorderitem.currentSkuPrice')#" />

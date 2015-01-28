@@ -90,7 +90,7 @@ Notes:
 			</cfloop>
 			
 			<!--- Comments --->
-			<swa:SlatwallAdminTabComments object="#rc.orderItem#" />
+			<swa:SlatwallAdminTabComments object="#rc.orderItem#" parentObject="#rc.orderItem.getOrder()#" />
 		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
