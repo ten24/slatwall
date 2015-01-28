@@ -1,9 +1,9 @@
 'use strict';
 //Thanks to AdamMettro
 angular.module('slatwalladmin')
-.directive('swClickOutside', ['$document',
+.directive('swClickOutside', ['$document','$timeout',
 
-function ($document) {
+function ($document,$timeout) {
     return {
         restrict: 'A',
         scope: {
@@ -31,9 +31,10 @@ function ($document) {
                         }
                     }
                 }
+               $timeout( function(){
+            	   $scope.swClickOutside();
+               });
 
-                $scope.$eval($scope.swClickOutside);
-                $scope.$apply();
             });
         }
     };
