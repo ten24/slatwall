@@ -10,14 +10,14 @@
 					
 >
 </select>
-<input style="display:none"	type="text" 
-		name="{{propertyDisplay.property+'ID'}}"
-		ng-model="propertyDisplay.object.data[propertyDisplay.property][propertyDisplay.object.data[propertyDisplay.property].$$getIDName()]"
-/>
-<input style="display:none"	type="text" 
-		name="{{propertyDisplay.property}}"
-		ng-model="propertyDisplay.object.data[propertyDisplay.property]"
-/>
+		<input style="display:none"	type="text" 
+				name="{{propertyDisplay.property+'ID'}}"
+				ng-model="propertyDisplay.object.data[propertyDisplay.property][propertyDisplay.object.data[propertyDisplay.property].$$getIDName()]"
+		/>
+		<input style="display:none"	type="text" 
+				name="{{propertyDisplay.property}}"
+				ng-model="propertyDisplay.object.data[propertyDisplay.property]"
+		/>
 <!-- Error Messages -->
     
 <span style="color:red"
