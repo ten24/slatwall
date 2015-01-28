@@ -118,8 +118,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="fulfillmentChargeTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentRefundTotal" persistent="false" hb_formatType="currency";
 	property name="fulfillmentChargeAfterDiscountTotal" persistent="false" hb_formatType="currency";
-	property name="nextDeliveryDateTime" type="timestamp" persistent="false";
-	property name="nextFulfillmentDateTime" type="timestamp" persistent="false";
+	property name="nextEstimatedDeliveryDateTime" type="timestamp" persistent="false";
+	property name="nextEstimatedFulfillmentDateTime" type="timestamp" persistent="false";
 	property name="orderDiscountAmountTotal" persistent="false" hb_formatType="currency";
 	property name="orderPaymentAmountNeeded" persistent="false" hb_formatType="currency";
 	property name="orderPaymentChargeAmountNeeded" persistent="false" hb_formatType="currency";
@@ -445,48 +445,57 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return fulfillmentChargeAfterDiscountTotal;
 	}
 	
-	public any function getNextFulfillmentDateTime(){
-    	if(arrayLen(getOrderFulfillments())) {
-    		var nextFulfillmentDateTime = '';
-    		
-    		//Loop over orderFulfillments to get the nextFulfillmentDateTime
-			for(var i=1; i<=arrayLen(getOrderFulfillments()); i++){
-				var orderFulfillment = getOrderFulfillments()[i];
-				
-				//Condtional to check for the nextFulfillmentDateTime, also checks to make sure that the nextFulfillmentyDateTime is not the current estimatedFullfillmentDateTime
-				if(nextFulfillmentDateTime == '' && orderFulfillment.getNextFulfillmentDateTime() != ''){
-					nextFulfillmentDateTime = orderFulfillment.getNextFulfillmentDateTime();
-				}else if(nextFulfillmentDateTime > orderFulfillment.getNextFulfillmentDateTime() && orderFulfillment.getEstimatedFulfillmentDateTime() != orderFulfillment.getNextFulfillmentDateTime() ){
-					nextFulfillmentDateTime = orderFulfillment.getNextFulfillmentDateTime();
+	/**
+	 * Returns the earliest estimatedFulfillmentyDateTime
+	 *
+	 * @method 	public any function getNextEstimatedFulfillmentDateTime
+	 * @return {datetime} nextEsimatedFulfillmentDateTime
+	 */
+	 
+	public any function getNextEstimatedFulfillmentDateTime(){
+    	var nextEstimatedFulfillmentDateTime = "";
+    	
+    	if(arrayLen(getOrderItems())) {
+    		//Loop over orderFulfillments to get the nextEstimatedFulfillmentDateTime
+			for(var orderItem in getOrderItems()){	
+				//Condtional to check for the nextEstimatedFulfillmentDateTime, also checks to make sure that the nextFulfillmentyDateTime is not the current estimatedFullfillmentDateTime
+				if(nextEstimatedFulfillmentDateTime > orderItem.getEstimatedFulfillmentDateTime() && orderItem.getQuantityUndelivered() > 0 ){
+					nextEstimatedFulfillmentDateTime = orderItem.getEstimatedFulfillmentDateTime();
 				}
 			}
-			
-			return nextFulfillmentDateTime;
-		}else{
-			return '';
 		}
+		
+		if (nextEstimatedFulfillmentDateTime == ''){
+			return javaCast('Null',"");
+		}
+		
+		return nextEstimatedFulfillmentDateTime;
     }
     
-    public any function getNextDeliveryDateTime(){
-    	if(arrayLen(getOrderFulfillments())) {
-    		var nextDeliveryDateTime = '';
-    		
-    		//Loop over orderFulfillments to get the nextDeliveryDateTime
-			for(var i=1; i<=arrayLen(getOrderFulfillments()); i++){
-				var orderFulfillment = getOrderFulfillments()[i];
-				
-				//Condtional to check for the nextDeliveryDateTime, also checks to make sure that the nextDeliveryDateTime is not the current estimatedDeliveryDateTime
-				if(nextDeliveryDateTime == '' && orderFulfillment.getNextDeliveryDateTime() != '' ){
-					nextDeliveryDateTime = orderFulfillment.getNextDeliveryDateTime();
-				}else if(nextDeliveryDateTime > orderFulfillment.getNextDeliveryDateTime() && orderFulfillment.getEstimatedDeliveryDateTime() != orderFulfillment.getNextDeliveryDateTime()){
-					nextDeliveryDateTime = orderFulfillment.getNextDeliveryDateTime();
+    /**
+	 * Returns the earliest estimatedDeliveryDateTime
+	 *
+	 * @method 	public any function getNextEstimatedDeleiverDateTime
+	 * @return {datetime} nextEstimatedDeliveryDateTime
+	 */
+    public any function getNextEstimatedDeliveryDateTime(){
+    	var nextEstimatedDeliveryDateTime = "";
+    	
+    	if(arrayLen(getOrderItems())) {
+	 		//Loop over orderFulfillments to get the nextEstimatedDeliveryDateTime
+			for(var orderItem in getOrderItems()){	
+				//Condtional to check for the nextEstimatedDeliveryDateTime, also checks to make sure that the nextEstimatedDeliveryDateTime is not the current estimatedDeliveryDateTime
+				if( nextEstimatedDeliveryDateTime > orderItem.getEstimatedDeliveryDateTime() && orderItem.getQuantityUndelivered() > 0){
+					nextEstimatedDeliveryDateTime = orderItem.getEstimatedDeliveryDateTime();
 				}
 			}
-			
-			return nextDeliveryDateTime;
-		}else{
-			return '';
 		}
+		
+		if (nextEstimatedDeliveryDateTime == ''){
+			return javaCast('Null',"");
+		}
+		
+		return nextEstimatedDeliveryDateTime;
     }
 	
 	public numeric function getOrderDiscountAmountTotal() {

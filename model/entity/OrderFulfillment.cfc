@@ -54,6 +54,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="currencyCode" ormtype="string" length="3";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
 	property name="manualFulfillmentChargeFlag" ormtype="boolean" hb_populateEnabled="false";
+	property name="estimatedDeliveryDateTime" ormtype="timestamp";
+	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	
 	// Related Object Properties (many-to-one)
 	property name="accountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="accountAddressID";
@@ -93,8 +95,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="chargeAfterDiscount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="discountAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="fulfillmentMethodType" type="numeric" persistent="false";
-	property name="nextDeliveryDateTime" type="timestamp" persistent="false";
-	property name="nextfulfillmentDateTime" type="timestamp" persistent="false";
+	property name="nextEstimatedDeliveryDateTime" type="timestamp" persistent="false";
+	property name="nextEstimatedFulfillmentDateTime" type="timestamp" persistent="false";
 	property name="orderStatusCode" type="numeric" persistent="false";
 	property name="quantityUndelivered" type="numeric" persistent="false";
 	property name="quantityDelivered" type="numeric" persistent="false";
@@ -204,48 +206,51 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return variables.itemDiscountAmountTotal;
 	}
 	
-	public any function getNextFulfillmentDateTime(){
-    	if(arrayLen(getOrderFulfillmentItems())) {
-    		var nextFulfillmentDateTime = '';
-    		
-    		//Loop over orderFulfillmentItems to get the nextFulfillmentDateTime
-			for(var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++){
-				var orderFulfillmentItem = getOrderFulfillmentItems()[i];
-				
-				//Condtional to check for the nextFulfillmentDateTime, also checks to make sure that the nextFulfillmentyDateTime is not the current estimatedFullfillmentDateTime
-				if(nextFulfillmentDateTime == '' && orderFulfillmentItem.getQuantityUndelivered() > 0 && orderFulfillmentItem.getEstimatedFulfillmentDateTime() != ''){
-					nextFulfillmentDateTime = orderFulfillmentItem.getEstimatedFulfillmentDateTime();
-				}else if(nextFulfillmentDateTime > orderFulfillmentItem.getEstimatedFulfillmentDateTime() && orderFulfillmentItem.getQuantityUndelivered() > 0 && orderFulfillmentItem.getEstimatedFulfillmentDateTime() != getEstimatedFulfillmentDateTime()){
-					nextFulfillmentDateTime = orderFulfillmentItem.getEstimatedFulfillmentDateTime();
+	/**
+	 * Returns the earliest estimatedFulfillmentyDateTime
+	 *
+	 * @method 	public any function getNextEstimatedFulfillmentDateTime
+	 * @return {datetime} nextEsimatedFulfillmentDateTime
+	 */
+	public any function getNextEstimatedFulfillmentDateTime(){
+    	var nextEstimatedFulfillmentDateTime = "";
+
+    	if(arrayLen(getOrderItems())) {
+    		//Loop over orderFulfillments to get the nextEstimatedFulfillmentDateTime
+			for(var orderItem in getOrderFulfillmentItems()){	
+				//Condtional to check for the nextEstimatedFulfillmentDateTime, also checks to make sure that the nextFulfillmentyDateTime is not the current estimatedFullfillmentDateTime
+				if(nextEstimatedFulfillmentDateTime > orderItem.getEstimatedFulfillmentDateTime() && orderItem.getQuantityUndelivered() > 0 ){
+					nextEstimatedFulfillmentDateTime = orderItem.getEstimatedFulfillmentDateTime();
 				}
 			}
-			
-			return nextFulfillmentDateTime;
-		}else{
-			return '';
 		}
+		
+		if (nextEstimatedFulfillmentDateTime == ''){
+			return javaCast('Null',"");
+		}
+		
+		return nextEstimatedFulfillmentDateTime;
     }
     
-    public any function getNextDeliveryDateTime(){
-    	if(arrayLen(getOrderFulfillmentItems())) {
-    		var nextDeliveryDateTime = '';
-			
-			//Loop over orderFulfillmentItem to get the nextDeliveryDateTime
-			for(var i=1; i<=arrayLen(getOrderFulfillmentItems()); i++){
-				var orderFulfillmentItem = getOrderFulfillmentItems()[i];
-				
-				//Condtional to check for the nextDeliveryDateTime, also checks to make sure that the nextDeliveryDateTime is not the current estimatedDeliveryDateTime
-				if(nextDeliveryDateTime == '' && orderFulfillmentItem.getQuantityUndelivered() > 0 && orderFulfillmentItem.getEstimatedDeliveryDateTime() != ''){
-					nextDeliveryDateTime = orderFulfillmentItem.getEstimatedDeliveryDateTime();
-				}else if(nextDeliveryDateTime > orderFulfillmentItem.getEstimatedDeliveryDateTime() && orderFulfillmentItem.getQuantityUndelivered() > 0 && orderFulfillmentItem.getEstimatedDeliveryDateTime() != getEstimatedDeliveryDateTime()){
-					nextDeliveryDateTime = orderFulfillmentItem.getEstimatedDeliveryDateTime();
+    //Function that loops over the orderItems and returns the earliest estimatedDeliveryDate
+    public any function getNextEstimatedDeliveryDateTime(){
+    	var nextEstimatedDeliveryDateTime = "";
+    	
+    	if(arrayLen(getOrderItems())) {
+    		//Loop over orderFulfillments to get the nextEstimatedDeliveryDateTime
+			for(var orderItem in getOrderFulfillmentItems()){	
+				//Condtional to check for the nextEstimatedDeliveryDateTime, also checks to make sure that the nextEstimatedDeliveryDateTime is not the current estimatedDeliveryDateTime
+				if( nextEstimatedDeliveryDateTime > orderItem.getEstimatedDeliveryDateTime() && orderItem.getQuantityUndelivered() > 0){
+					nextEstimatedDeliveryDateTime = orderItem.getEstimatedDeliveryDateTime();
 				}
 			}
-			
-			return nextDeliveryDateTime;
-		}else{
-			return '';
 		}
+		
+		if (nextEstimatedDeliveryDateTime == ''){
+			return javaCast('Null',"");
+		}
+		
+		return nextEstimatedDeliveryDateTime;
     }
     
 	public any function getOrderStatusCode() {
