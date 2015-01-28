@@ -131,7 +131,6 @@ angular.module('slatwalladmin')
 						//Calls close function
 						$scope.closeAddScreen();
 					});
-					
 
 				};
 				
@@ -142,7 +141,7 @@ angular.module('slatwalladmin')
 				
 				//Works with swclickoutside directive to close dialog
 				$scope.closeThis = function (clickOutsideArgs) {
-					//Check against object state
+					//Check against the object state
 					if(!$scope.productBundleGroup.data.productBundleGroupType.$$isPersisted()){
 						//Perform all callback actions
 				        for(var callBackAction in clickOutsideArgs.callBackActions){
