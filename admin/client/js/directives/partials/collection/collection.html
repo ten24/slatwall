@@ -17,7 +17,7 @@
 			            />
 			            <div class="input-group-btn">
 			              <button   class="btn btn-default btn-sm"
-			              			type="submit"
+			              			type="button"
 			              			ng-click="searchCollection()"
 			              >
 			              	<i class="fa fa-search"></i>
@@ -101,7 +101,7 @@
 			      </div>
 			    </div><!--- //Tab Pane --->
 			    <div class="tab-pane s-display-options" id="j-display-options">
-					<span  sw-display-options
+					<sw-display-options
 						data-columns="collectionConfig.columns"
 						data-properties-list="filterPropertiesList"
 						data-save-collection="saveCollection()"
@@ -121,7 +121,7 @@
 								data-order-by="collectionConfig.orderBy"
 			
 						></li>
-					</span >
+					</sw-display-options >
 				</div><!--- //Tab Pane --->
 			  </div>
 			
