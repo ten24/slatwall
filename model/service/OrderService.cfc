@@ -944,7 +944,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
 		newOrder.setReferencedOrder(arguments.order);
-		newOrder.setReferenceOrderType('Duplicate');
+		newOrder.setReferencedOrderType('Duplicate');
 		
 		//Copy Order Attribtes
 		for(var attributeValue in arguments.order.getAttributeValues()) {

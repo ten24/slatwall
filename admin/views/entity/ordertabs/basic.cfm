@@ -29,6 +29,7 @@
 			<!--- Referenced Order --->
 			<cfif !isNull(rc.order.getReferencedOrder())>
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="referencedOrder" valuelink="?slatAction=admin:entity.detailorder&orderID=#rc.order.getReferencedOrder().getOrderID()#">
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="referencedOrderType">
 			</cfif>
 			
 			<!--- Assigned Account --->
