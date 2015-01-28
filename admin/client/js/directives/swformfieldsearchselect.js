@@ -28,14 +28,14 @@ angular.module('slatwalladmin')
 				var propertyMetaData = scope.propertyDisplay.object.$$getMetaData(scope.propertyDisplay.property);
 //				check for a template
 //				rules are tiered: check if an override is specified at scope.template, check if the cfc name .html exists, use
-				var templatePath = partialsPath + 'formfields/searchselecttemplates/';
-				if(angular.isUndefined(scope.propertyDisplay.template)){
-					$http.get(templatePath+propertyMetaData.cfcProperCase+'.html',function(data){
-						scope.propertyDisplay.template = templatePath+propertyMetaData.cfcProperCase+'.html';
-					},function(data){
-						scope.propertyDisplay.template = templatePath+'index.html';
-					});
-				}
+//				var templatePath = partialsPath + 'formfields/searchselecttemplates/';
+//				if(angular.isUndefined(scope.propertyDisplay.template)){
+//					$http.get(templatePath+propertyMetaData.cfcProperCase+'.html',function(data){
+//						scope.propertyDisplay.template = templatePath+propertyMetaData.cfcProperCase+'.html';
+//					},function(data){
+//						scope.propertyDisplay.template = templatePath+'index.html';
+//					});
+//				}
 				
 				console.log('metaData');
 				console.log(propertyMetaData);
