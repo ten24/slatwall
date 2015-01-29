@@ -1,10 +1,19 @@
-<input type="{{propertyDisplay.fieldType}}" class="form-control" 
-    ng-model="propertyDisplay.object.data[propertyDisplay.property]"
-    ng-disabled="!propertyDisplay.editable"
-    ng-show="propertyDisplay.editing"
-    name="{{propertyDisplay.property}}"
-    sw-validate="propertyDisplay.object.validations"/>
-
+<!-- 	<input type="{{propertyDisplay.fieldType}}" class="form-control" 
+	    ng-model="propertyDisplay.object.data[propertyDisplay.property]"
+	    ng-disabled="!propertyDisplay.editable"
+	    ng-show="propertyDisplay.editing"
+	    name="{{propertyDisplay.property}}"
+	    sw-validate="propertyDisplay.object.validations"/
+	    ng-if="hasValidation"
+	    sw-validater
+	    > -->
+	    
+	    <sw-input 
+	    	data-property-display="propertyDisplay"
+	    		
+	    ></sw-input>
+	    
+{{propertyDisplay.form[propertyDisplay.property]}}
 <span ng-repeat='(key,value) in propertyDisplay.form[propertyDisplay.property].$error' >
 	<span ng-switch on="key">
 		<label class="error" ng-switch-when="required">This is a required field</label>
