@@ -87,7 +87,7 @@ Notes:
 		UPDATE
 			SwOrder
 		SET
-			referencedOrderType = 'Return'
+			referencedOrderType = 'return'
 		WHERE 
 			referencedOrderType IS NULL
 		AND

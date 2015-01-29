@@ -55,7 +55,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	property name="orderOpenDateTime" ormtype="timestamp";
 	property name="orderOpenIPAddress" ormtype="string";
 	property name="orderCloseDateTime" ormtype="timestamp";
-	property name="referencedOrderType" ormtype="string";
+	property name="referencedOrderType" ormtype="string" hb_formatType="rbKey";
 	// Calculated Properties
 	property name="calculatedTotal" ormtype="big_decimal";
 	

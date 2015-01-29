@@ -826,7 +826,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		returnOrder.setOrderType( getTypeService().getTypeBySystemCode(arguments.processObject.getOrderTypeCode()));
 		returnOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
 		returnOrder.setReferencedOrder( arguments.order );
-		returnOrder.setReferencedOrderType('Return');
+		returnOrder.setReferencedOrderType('return');
 		
 		// Create OrderReturn entity (to save the fulfillment amount)
 		var orderReturn = this.newOrderReturn();
@@ -945,7 +945,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
 		newOrder.setReferencedOrder(arguments.order);
-		newOrder.setReferencedOrderType('Duplicate');
+		newOrder.setReferencedOrderType('duplicate');
 		
 		//Copy Order Attribtes
 		for(var attributeValue in arguments.order.getAttributeValues()) {
