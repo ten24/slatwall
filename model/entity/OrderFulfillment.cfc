@@ -219,13 +219,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     		//Loop over orderFulfillments to get the nextEstimatedFulfillmentDateTime
 			for(var orderItem in getOrderFulfillmentItems()){	
 				//Condtional to check for the nextEstimatedFulfillmentDateTime, also checks to make sure that the nextFulfillmentyDateTime is not the current estimatedFullfillmentDateTime
-				if(nextEstimatedFulfillmentDateTime > orderItem.getEstimatedFulfillmentDateTime() && orderItem.getQuantityUndelivered() > 0 ){
+				if( ( nextEstimatedFulfillmentDateTime == "" || nextEstimatedFulfillmentDateTime > orderItem.getEstimatedFulfillmentDateTime() ) && orderItem.getQuantityUndelivered() > 0 ){
 					nextEstimatedFulfillmentDateTime = orderItem.getEstimatedFulfillmentDateTime();
 				}
 			}
 		}
 		
-		if (nextEstimatedFulfillmentDateTime == ''){
+		if ( !isDefined('nextEstimatedFulfillmentDateTime') || nextEstimatedFulfillmentDateTime == ''){
 			return javaCast('Null',"");
 		}
 		
@@ -240,13 +240,13 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     		//Loop over orderFulfillments to get the nextEstimatedDeliveryDateTime
 			for(var orderItem in getOrderFulfillmentItems()){	
 				//Condtional to check for the nextEstimatedDeliveryDateTime, also checks to make sure that the nextEstimatedDeliveryDateTime is not the current estimatedDeliveryDateTime
-				if( nextEstimatedDeliveryDateTime > orderItem.getEstimatedDeliveryDateTime() && orderItem.getQuantityUndelivered() > 0){
+				if( ( nextEstimatedDeliveryDateTime == "" || nextEstimatedDeliveryDateTime > orderItem.getEstimatedDeliveryDateTime() ) && orderItem.getQuantityUndelivered() > 0){
 					nextEstimatedDeliveryDateTime = orderItem.getEstimatedDeliveryDateTime();
 				}
 			}
 		}
 		
-		if (nextEstimatedDeliveryDateTime == ''){
+		if ( !isdefined('nextEstimatedDeliveryDateTime') || nextEstimatedDeliveryDateTime == ''){
 			return javaCast('Null',"");
 		}
 		
