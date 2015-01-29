@@ -24,6 +24,11 @@
 				data-property="renewalPrice"
 				data-editing="true"
 			></sw-property-display>
+			<sw-property-display
+				data-object="sku"
+				data-property="price"
+				data-editing="true"
+			></sw-property-display>
 		</sw-form>
 		<button type="button" class="btn btn-sm s-btn-ten24 s-save-btn" ng-click="saveSku()">Save Sku</button>
 	</span>

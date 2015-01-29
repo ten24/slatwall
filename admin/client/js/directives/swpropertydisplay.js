@@ -43,8 +43,7 @@ angular.module('slatwalladmin')
 					optionsArguments:scope.optionsArguments || {},
 					eagerLoadOptions:scope.eagerLoadOptions || true,
 					isDirty:scope.isDirty,
-					onChange:scope.onChange,
-					swValidate:scope.object.validations
+					onChange:scope.onChange
 				};
 				if(angular.isUndefined(scope.editable)){
 					scope.propertyDisplay.editable = true;

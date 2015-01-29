@@ -2,15 +2,23 @@
     ng-model="propertyDisplay.object.data[propertyDisplay.property]"
     ng-disabled="!propertyDisplay.editable"
     ng-show="propertyDisplay.editing"
-    on-change="propertyDisplay.onChange"
     name="{{propertyDisplay.property}}"
-    sw-validate="propertyDisplay.swValidate"/>
+    sw-validate="propertyDisplay.object.validations"/>
 
-<span style="color:red" ng-repeat='(key,value) in propertyDisplay.form.$error' 
-	ng-show='(propertyDisplay.form[propertyDisplay.property].$invalid)  ||   (propertyDisplay.form[propertyDisplay.property].$invalid && propertyDisplay.form[propertyDisplay.property].$dirty)'>
-<span  ng-show="key === 'invalid-regex'">Invalid input<br></span>
-<span  ng-show="key === 'required'">This item is required<br></span>
+<span ng-repeat='(key,value) in propertyDisplay.form[propertyDisplay.property].$error' >
+	<span ng-switch on="key">
+		<label class="error" ng-switch-when="required">This is a required field</label>
+		<label class="error" ng-switch-when="invalid-minValue">Invalid minimum value</label>
+		<label class="error" ng-switch-when="invalid-maxValue">Invalid maximum value</label>
+		<label class="error" ng-switch-when="invalid-minLength">Too short</label>
+		<label class="error" ng-switch-when="invalid-maxLength">Too long</label>
+		<label class="error" ng-switch-when="invalid-lte">Invalid input</label>
+		<label class="error" ng-switch-when="invalid-gte">Invalid input</label>
+		<label class="error" ng-switch-when="invalid-eq">Invalid input</label>
+		<label class="error" ng-switch-when="invalid-neq">Invalid input</label>
+		<label class="error" ng-switch-when="invalid-regex"<!-- -->>This is an invalid input</label>
+		<label class="error" ng-switch-default></label>
+	</span>
+</span>
 
-{{ key }}
-</span> 
 
