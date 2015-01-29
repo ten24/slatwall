@@ -58,10 +58,10 @@
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="discountTotal" edit="false" displayType="table">
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="total" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
 				<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailorder.status')#" />
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="estimatedFulfillmentDateTime" edit="false" displayType="table" title="#$.slatwall.rbKey('entity.order.estimatedFulfillmentDateTime')#" />
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="estimatedDeliveryDateTime" edit="false" displayType="table" title="#$.slatwall.rbKey('entity.order.estimatedDeliveryDateTime')#" />
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="nextEstimatedFulfillmentDateTime" edit="false" displayType="table" title="#$.slatwall.rbKey('entity.order.nextFulfillmentDateTime')#" />
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="nextEstimatedDeliveryDateTime" edit="false" displayType="table" title="#$.slatwall.rbKey('entity.order.nextDeliveryDateTime')#" />
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="estimatedFulfillmentDateTime" edit="false" displayType="table" title="#$.slatwall.rbKey('entity.define.estimatedFulfillmentDateTime')#" />
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="estimatedDeliveryDateTime" edit="false" displayType="table" title="#$.slatwall.rbKey('entity.define.estimatedDeliveryDateTime')#" />
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="nextEstimatedFulfillmentDateTime" edit="false" displayType="table" title="#$.slatwall.rbKey('entity.define.nextEstimatedFulfillmentDateTime')#" />
+				<hb:HibachiPropertyDisplay object="#rc.order#" property="nextEstimatedDeliveryDateTime" edit="false" displayType="table" title="#$.slatwall.rbKey('entity.define.nextEstimatedDeliveryDateTime')#" />
 				<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailorder.payments')#" />
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="paymentAmountReceivedTotal" edit="false" displayType="table">
 				<hb:HibachiPropertyDisplay object="#rc.order#" property="paymentAmountCreditedTotal" edit="false" displayType="table">
