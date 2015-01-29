@@ -22,7 +22,7 @@ angular.module('slatwalladmin').directive('swInput',
 	var getTemplate = function(propertyDisplay){
 		var template = '';
 		if(propertyDisplay.fieldType === 'text'){
-			template = '<input '+
+			template = '<input type="text" class="form-control" '+
 			'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
 		    'ng-disabled="!propertyDisplay.editable" '+ 
 		    'ng-show="propertyDisplay.editing" '+
