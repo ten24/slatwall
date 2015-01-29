@@ -213,7 +213,7 @@ metadataService,
 			//Start out loop
 			for(var index in filterGroupArray){
 
-				//Is filter isn't new then increment the count
+				//If filter isn't new then increment the count
 				if(!filterGroupArray[index].$$isNew 
 						&& !angular.isDefined(filterGroupArray[index].filterGroup)){
 					filterItemCount++;	
@@ -231,7 +231,6 @@ metadataService,
 			return filterItemCount;
 		}
 		
-		//collectionService.setFilterCount(filterItemCounter());
 		
 		$scope.saveCollection = function(){
 			$timeout(function(){
