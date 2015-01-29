@@ -15,7 +15,7 @@ angular.module('slatwalladmin')
 		collectionPartialsPath
 	){
 		return {
-			restrict: 'A',
+			restrict: 'E',
 			transclude:true,
 			scope:{
 				orderBy:"=",
