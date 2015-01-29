@@ -11,8 +11,8 @@ angular.module('slatwalladmin').directive('swInput',
 	$log, 
 	$compile
 ) {
-	var getValidationDirectives = funciton(propertyDisplay){
-		var spaceDelemitedList = '';
+	var getValidationDirectives = function(propertyDisplay){
+		var spaceDelimitedList = '';
 		
 		//loop over validations that are required and create the space delimited list
 		
