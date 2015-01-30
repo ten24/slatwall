@@ -85,7 +85,7 @@ Notes:
 				
 				return {
 					
-				    $get:['$q','$http','$timeout','$log','$rootScope', 'formService', function ($q,$http,$timeout,$log,$rootScope,formService)
+				    $get:['$q','$http','$timeout','$log','$rootScope','$anchorScroll','$location', 'formService', function ($q,$http,$timeout,$log,$rootScope,$anchorScroll,$location,formService)
 				    {
 				    	var slatwallService = {
 				    		/*basic entity getter where id is optional, returns a promise*/
@@ -474,8 +474,7 @@ Notes:
 										&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
 										&& entityInstance.metaData[key].hb_formfieldtype === 'json'
 									){
-										console.log('here');
-										console.log(data[key]);
+										
 										entityInstance.data[key] = angular.fromJson(data[key]);
 			    					}else{
 			    						entityInstance.data[key] = data[key];	
@@ -779,6 +778,18 @@ Notes:
 										//--->
 										_addReturnedIDs(returnedIDs,modifiedData.objectLevel);
 									});
+					    		}else{
+						    		
+						    		//select first, visible, and enabled input with a class of ng-invalid
+						    		
+						    		var target = $('input.ng-invalid:first:visible:enabled');
+
+						    		target.focus();
+						    		
+									var targetID = target.attr('id');
+									
+									$location.hash(targetID);
+						    		$anchorScroll();
 					    		}
 							});
 							return timeoutPromise;

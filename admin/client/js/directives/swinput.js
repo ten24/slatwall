@@ -6,10 +6,12 @@
 angular.module('slatwalladmin').directive('swInput',
 
 ['$log',
- '$compile', 
+ '$compile',
+ 'utilityService',
  function(
 	$log, 
-	$compile
+	$compile,
+	utilityService
 ) {
 	var getValidationDirectives = function(propertyDisplay){
 		var spaceDelimitedList = '';
@@ -27,7 +29,9 @@ angular.module('slatwalladmin').directive('swInput',
 		    'ng-disabled="!propertyDisplay.editable" '+ 
 		    'ng-show="propertyDisplay.editing" '+
 		    'name="'+propertyDisplay.property+'" '+
+		    'required="required" '+
 		    getValidationDirectives(propertyDisplay)+
+		    'id="swinput'+utilityService.createID(26)+'"'+
 			' />';
 		}
 		return template; 
