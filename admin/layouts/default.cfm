@@ -427,7 +427,9 @@ Notes:
 					templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
 				});
 				
-			}]).run(['$rootScope','$filter','$slatwall','dialogService', function($rootScope,$filter, $slatwall ,dialogService) {
+			}]).run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService', function($rootScope,$filter,$anchorScroll, $slatwall ,dialogService) {
+			    $anchorScroll.yOffset = 100;
+
 			    $rootScope.openPageDialog = function( partial ) {
 			    	dialogService.addPageDialog( partial );
 			    };
