@@ -164,7 +164,7 @@ metadataService,
 						}
 					];
 				}
-				
+				collectionService.setFilterCount(filterItemCounter());
 			},function(reason){
 			});
 		};
@@ -203,6 +203,35 @@ metadataService,
 				
 		};
 		
+		var filterItemCounter = function(filterGroupArray){
+			var filterItemCount = 0;
+			
+			if(!angular.isDefined(filterGroupArray)){
+				filterGroupArray = $scope.collectionConfig.filterGroups[0].filterGroup;
+			}
+			
+			//Start out loop
+			for(var index in filterGroupArray){
+
+				//If filter isn't new then increment the count
+				if(!filterGroupArray[index].$$isNew 
+						&& !angular.isDefined(filterGroupArray[index].filterGroup)){
+					filterItemCount++;	
+				// If there are nested filter groups run introspectively
+				} else if(angular.isDefined(filterGroupArray[index].filterGroup)){
+					//Call function recursively
+					filterItemCount += filterItemCounter(filterGroupArray[index].filterGroup);
+					
+				//Otherwise make like the foo fighters and "Break Out!"
+				} else {
+					break;
+				}
+				
+			}
+			return filterItemCount;
+		}
+		
+		
 		$scope.saveCollection = function(){
 			$timeout(function(){
 				$log.debug('saving Collection');
@@ -235,6 +264,8 @@ metadataService,
 						//$scope.collection = angular.copy($scope.collectionInitial);
 					});
 				}
+
+				collectionService.setFilterCount(filterItemCounter());
 			});
 		};
 		
