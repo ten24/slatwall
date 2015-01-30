@@ -3,22 +3,21 @@
     ng-disabled="!propertyDisplay.editable"
     ng-show="propertyDisplay.editing"
     name="{{propertyDisplay.property}}"
-    sw-validate="propertyDisplay.object.validations"/>
+    swvalidationrequired />
+    
+<!-- swvalidationisnumeric swvalidationregex="[0-9]" swvalidationgte="5" swvalidationeq="8" -->
 
-<span ng-repeat='(key,value) in propertyDisplay.form[propertyDisplay.property].$error' >
-	<span ng-switch on="key">
-		<label class="error" ng-switch-when="required">This is a required field</label>
-		<label class="error" ng-switch-when="invalid-minValue">Invalid minimum value</label>
-		<label class="error" ng-switch-when="invalid-maxValue">Invalid maximum value</label>
-		<label class="error" ng-switch-when="invalid-minLength">Too short</label>
-		<label class="error" ng-switch-when="invalid-maxLength">Too long</label>
-		<label class="error" ng-switch-when="invalid-lte">Invalid input</label>
-		<label class="error" ng-switch-when="invalid-gte">Invalid input</label>
-		<label class="error" ng-switch-when="invalid-eq">Invalid input</label>
-		<label class="error" ng-switch-when="invalid-neq">Invalid input</label>
-		<label class="error" ng-switch-when="invalid-regex"<!-- -->>This is an invalid input</label>
-		<label class="error" ng-switch-default></label>
+	<span ng-repeat='(key, value) in propertyDisplay.form[propertyDisplay.property].$error' >
+		<span ng-show="key === 'swvalidationrequired'" class="error">This field is required</span>
+		<span ng-show="key === 'swvalidationunique'" class="error">This field must be unique</span>
+		<span ng-show="key === 'swvalidationisnumeric'" class="error">This field must be numeric</span>
+		<span ng-show="key === 'swvalidationregex'" class="error">This field contains invalid characters</span>
+		<span ng-show="key === 'swvalidationgte'" class="error">The value entered is incorrect</span>
+		<span ng-show="key === 'swvalidationlte'" class="error">The value entered is incorrect</span>
+		<span ng-show="key === 'swvalidationeq'" class="error">The value entered is incorrect</span>
 	</span>
-</span>
+
+
+
 
 

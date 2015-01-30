@@ -394,7 +394,6 @@ angular.module('slatwalladmin').directive('swValidate',
 				//Check if field is required.				
 				console.log(scope);
 				console.log(val);
-				
 				ngModel.$setValidity(val.errorkey, !val.fail);
 				return true;
 				

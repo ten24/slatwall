@@ -1,31 +1,23 @@
-describe("myFunction", function() {
-    var myfunc = NS.myFunction;
+describe('Unit Test: Slatwall NgTest Controller', function() {
+  // Load the module with MyMainController
+  beforeEach(module('slatwalladmin'));
 
-    beforeEach(function(){
-    	spyOn(myfunc, 'init').and.callThrough();
-    });
+  var ctrl, scope;
+  // inject the $controller and $rootScope services in the beforeEach block
+  beforeEach(inject(function($controller, $rootScope) {
+    // Create a new scope that's a child of the $rootScope
+	  scope = $rootScope.$new();
+	  // Create the controller
+	  ctrl = $controller('ngtest', {
+		  $scope: scope
+	  });
+  }));
 
-    afterEach(function() {
-        myfunc.reset();
-    });
-
-    it("Should be able to initialize", function() {
-        expect(myfunc.init).toBeDefined();
-        myfunc.init();
-        expect(myfunc.init).toHaveBeenCalled();
-    });
-
-    it("Should populate stuff during initialization", function(){
-        myfunc.init();
-        expect(myfunc.stuff.length).toEqual(1);
-        expect(myfunc.stuff[0]).toEqual('Testing');
-    });
-    describe("Appending strings", function() {
-        it("Should be able to append 2 strings", function() {
-            expect(myfunc.append).toBeDefined();
-        });
-        it("Should append 2 strings", function() {
-            expect(myfunc.append('Hello ','Slatwall')).toEqual('Hello Slatwall');
-        });
-    });
-});
+  //Test.
+  it('should define a copy of  slatwall, and add to scope test', 
+    function() {
+      expect(scope.test).toEqual("Slatwall Test Runner");//Before running function
+      scope.defineTest(); //Modifies it.
+      expect(scope.test).toEqual("Slatwall Test Runner Works");
+  });
+})
