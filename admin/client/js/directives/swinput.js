@@ -15,8 +15,17 @@ angular.module('slatwalladmin').directive('swInput',
 ) {
 	var getValidationDirectives = function(propertyDisplay){
 		var spaceDelimitedList = '';
+		var name = propertyDisplay.property;
 		
-		//loop over validations that are required and create the space delimited list
+		//get the form context and the form name.
+		var formContext = propertyDisplay.form.$$swFormInfo.context;
+		var formName = propertyDisplay.form.$$swFormInfo.name;
+		//get the validations for the current element.
+		var propertyValidations = propertyDisplay.object.validations.properties[name];
+		//check if the contexts match.
+		if (angular.isObject(propertyValidations)){
+		console.log(propertyValidations[0]);
+		}
 		
 		return spaceDelimitedList;
 	}

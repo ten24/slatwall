@@ -1,6 +1,6 @@
 describe('Unit Test: Slatwall NgTest Controller', function() {
   // Load the module with MyMainController
-  beforeEach(module('slatwalladmin'));
+  beforeEach(module("slatwalladmin"));
 
   var ctrl, scope;
   // inject the $controller and $rootScope services in the beforeEach block

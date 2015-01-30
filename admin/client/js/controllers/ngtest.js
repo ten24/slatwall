@@ -10,7 +10,7 @@ angular.module('slatwalladmin').controller('ngtest', [ '$scope', '$slatwall',
 		$scope.sku = $slatwall.newSku();
 		$scope.saveSku = 
 			function(){
-				$scope.sku.$$save();
+				$scope.sku.$$save(); 
 			}
 	}
 ]);
