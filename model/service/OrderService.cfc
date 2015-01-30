@@ -114,102 +114,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return orderRequirementsList;
 	}
 	
-	public any function duplicateOrder(required any order, boolean saveNewFlag=false, boolean copyPersonalDataFlag=false) {
-		var newOrder = this.newOrder(); 
-		
-		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
-		
-		// Copy Order Items
-		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
-			var newOrderItem = this.newOrderItem();
-			
-			newOrderItem.setPrice( arguments.order.getOrderItems()[i].getPrice() );
-			newOrderItem.setSkuPrice( arguments.order.getOrderItems()[i].getSkuPrice() );
-			newOrderItem.setCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() );
-			newOrderItem.setQuantity( arguments.order.getOrderItems()[i].getQuantity() );
-			newOrderItem.setOrderItemType( arguments.order.getOrderItems()[i].getOrderItemType() );
-			newOrderItem.setOrderItemStatusType( arguments.order.getOrderItems()[i].getOrderItemStatusType() );
-			newOrderItem.setSku( arguments.order.getOrderItems()[i].getSku() );
-			if(!isNull(arguments.order.getOrderItems()[i].getStock())) {
-				newOrderItem.setStock( arguments.order.getOrderItems()[i].getStock() );
-			}
-			
-			// copy order item customization
-			for(var attributeValue in arguments.order.getOrderItems()[i].getAttributeValues()) {
-				newOrderItem.setAttributeValue( attributeValue.getAttribute().getAttributeCode(), attributeValue.getAttributeValue() );
-			}
-			
-			var orderFulfillmentFound = false;
-			
-			// check if there is a fulfillment method of this type in the order
-			for(var fulfillment in newOrder.getOrderFulfillments()) {
-				if(arguments.order.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodID() == fulfillment.getFulfillmentMethod().getFulfillmentMethodID()) {
-					var newOrderFulfillment = fulfillment;
-					orderFulfillmentFound = true;
-					break;
-				}
-			}
-			
-			// Duplicate Order Fulfillment
-			if(!orderFulfillmentFound) {
-				var newOrderFulfillment = this.newOrderFulfillment();
-				newOrderFulfillment.setFulfillmentMethod( arguments.order.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod() );
-				newOrderFulfillment.setOrder( newOrder );
-				newOrderFulfillment.setCurrencyCode( arguments.order.getOrderItems()[i].getOrderFulfillment().getCurrencyCode() );
-				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingMethod())) {
-					newOrderFulfillment.setShippingMethod( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingMethod() );	
-				}
-				
-				// Personal Info
-				if(arguments.copyPersonalDataFlag){
-					if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress())) {
-						newOrderFulfillment.setShippingAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress().copyAddress( arguments.saveNewFlag ) );
-					}
-					if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress())) {
-						newOrderFulfillment.setAccountAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress() );
-					}
-					if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getEmailAddress())) {
-						newOrderFulfillment.setEmailAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getEmailAddress() );
-					}
-				}
-				
-			}
-			newOrderItem.setOrder( newOrder );
-			newOrderItem.setOrderFulfillment( newOrderFulfillment );
-
-		}
-		
-		// Duplicate Account if copyPersonalDataFlag and accountExists
-		if(arguments.copyPersonalDataFlag && !isNull(arguments.order.getAccount())) {
-			newOrder.setAccount( arguments.order.getAccount() );
-		}
-		
-		// Personal Info
-		// Dupliace Shipping & Billing Addresses
-		if(arguments.copyPersonalDataFlag){
-			if(!isNull(arguments.order.getShippingAddress())) {
-				newOrder.setShippingAddress( arguments.order.getShippingAddress().copyAddress( arguments.saveNewFlag ) );
-			}
-			if(!isNull(arguments.order.getShippingAccountAddress())) {
-				newOrder.setShippingAccountAddress( arguments.order.getShippingAccountAddress() );
-			}
-			if(!isNull(arguments.order.getBillingAddress())) {
-				newOrder.setBillingAddress( arguments.order.getBillingAddress().copyAddress( arguments.saveNewFlag ) );
-			}
-			if(!isNull(arguments.order.getBillingAccountAddress())) {
-				newOrder.setBillingAccountAddress( arguments.order.getBillingAccountAddress() );
-			}
-		}
-		
-		if(arguments.saveNewFlag) {
-			this.saveOrder( newOrder );
-		}
-		
-		return newOrder;
-	}
 	
 	public any function duplicateOrderWithNewAccount(required any originalOrder, required any newAccount) {
-		var newOrder = duplicateOrder(order=arguments.originalOrder, saveNewFlag=true, copyPersonalDataFlag=false);
+		
+		var data = {
+				saveNewFlag=true,
+				copyPersonalDataFlag=false
+			};
+			
+		var newOrder = processOrder(order,data,"duplicateOrder" );
 		
 		// Update Account
 		newOrder.setAccount( arguments.newAccount );
@@ -913,6 +826,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		returnOrder.setOrderType( getTypeService().getTypeBySystemCode(arguments.processObject.getOrderTypeCode()));
 		returnOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
 		returnOrder.setReferencedOrder( arguments.order );
+		returnOrder.setReferencedOrderType('return');
 		
 		// Create OrderReturn entity (to save the fulfillment amount)
 		var orderReturn = this.newOrderReturn();
@@ -1019,6 +933,116 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return returnOrder;
 	}
 	
+	public any function processOrder_duplicateOrder (required any order, struct data={}) {
+		var saveNewFlag = false;
+		var copyPersonalDataFlag = false;
+		
+		if (structKeyExists(data,'saveNewFlag')){
+			saveNewFlag = data.saveNewFlag ;
+		}
+		
+		if (structKeyExists(data,'copyPersonalDataFlag')){
+			copyPersonalDataFlag = data.copyPersonalDataFlag ;
+		}
+
+		var newOrder = this.newOrder(); 
+		
+		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
+		newOrder.setReferencedOrder(arguments.order);
+		newOrder.setReferencedOrderType('duplicate');
+		
+		//Copy Order Attribtes
+		for(var attributeValue in arguments.order.getAttributeValues()) {
+			newOrder.setAttributeValue( attributeValue.getAttribute().getAttributeCode(), attributeValue.getAttributeValue() );
+		}
+		
+		// Copy Order Items
+		for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
+			var newOrderItem = this.newOrderItem();
+			
+			newOrderItem.setPrice( arguments.order.getOrderItems()[i].getPrice() );
+			newOrderItem.setSkuPrice( arguments.order.getOrderItems()[i].getSkuPrice() );
+			newOrderItem.setCurrencyCode( arguments.order.getOrderItems()[i].getCurrencyCode() );
+			newOrderItem.setQuantity( arguments.order.getOrderItems()[i].getQuantity() );
+			newOrderItem.setOrderItemType( arguments.order.getOrderItems()[i].getOrderItemType() );
+			newOrderItem.setOrderItemStatusType( arguments.order.getOrderItems()[i].getOrderItemStatusType() );
+			newOrderItem.setSku( arguments.order.getOrderItems()[i].getSku() );
+			if(!isNull(arguments.order.getOrderItems()[i].getStock())) {
+				newOrderItem.setStock( arguments.order.getOrderItems()[i].getStock() );
+			}
+			
+			// copy order item customization
+			for(var attributeValue in arguments.order.getOrderItems()[i].getAttributeValues()) {
+				newOrderItem.setAttributeValue( attributeValue.getAttribute().getAttributeCode(), attributeValue.getAttributeValue() );
+			}
+
+			var orderFulfillmentFound = false;
+			
+			// check if there is a fulfillment method of this type in the order
+			for(var fulfillment in newOrder.getOrderFulfillments()) {
+				if(arguments.order.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod().getFulfillmentMethodID() == fulfillment.getFulfillmentMethod().getFulfillmentMethodID()) {
+					var newOrderFulfillment = fulfillment;
+					orderFulfillmentFound = true;
+					break;
+				}
+			}
+			
+			// Duplicate Order Fulfillment
+			if(!orderFulfillmentFound) {
+				var newOrderFulfillment = this.newOrderFulfillment();
+				newOrderFulfillment.setFulfillmentMethod( arguments.order.getOrderItems()[i].getOrderFulfillment().getFulfillmentMethod() );
+				newOrderFulfillment.setOrder( newOrder );
+				newOrderFulfillment.setCurrencyCode( arguments.order.getOrderItems()[i].getOrderFulfillment().getCurrencyCode() );
+				if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingMethod())) {
+					newOrderFulfillment.setShippingMethod( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingMethod() );	
+				}
+				
+				// Personal Info
+				if(copyPersonalDataFlag){
+					if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress())) {
+						newOrderFulfillment.setShippingAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getShippingAddress().copyAddress( saveNewFlag ) );
+					}
+					if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress())) {
+						newOrderFulfillment.setAccountAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getAccountAddress() );
+					}
+					if(!isNull(arguments.order.getOrderItems()[i].getOrderFulfillment().getEmailAddress())) {
+						newOrderFulfillment.setEmailAddress( arguments.order.getOrderItems()[i].getOrderFulfillment().getEmailAddress() );
+					}
+				}
+				
+			}
+			newOrderItem.setOrder( newOrder );
+			newOrderItem.setOrderFulfillment( newOrderFulfillment );
+
+		}
+		
+		// Duplicate Account if copyPersonalDataFlag and accountExists
+		if(copyPersonalDataFlag && !isNull(arguments.order.getAccount())) {
+			newOrder.setAccount( arguments.order.getAccount() );
+		}
+		
+		// Personal Info
+		// Dupliace Shipping & Billing Addresses
+		if(copyPersonalDataFlag){
+			if(!isNull(arguments.order.getShippingAddress())) {
+				newOrder.setShippingAddress( arguments.order.getShippingAddress().copyAddress( saveNewFlag ) );
+			}
+			if(!isNull(arguments.order.getShippingAccountAddress())) {
+				newOrder.setShippingAccountAddress( arguments.order.getShippingAccountAddress() );
+			}
+			if(!isNull(arguments.order.getBillingAddress())) {
+				newOrder.setBillingAddress( arguments.order.getBillingAddress().copyAddress( saveNewFlag ) );
+			}
+			if(!isNull(arguments.order.getBillingAccountAddress())) {
+				newOrder.setBillingAccountAddress( arguments.order.getBillingAccountAddress() );
+			}
+		}
+		
+		this.saveOrder( newOrder );
+		
+		return newOrder;
+	}
+		
 	public any function processOrder_forceItemQuantityUpdate(required any order) {
 		
 		var itemFound = false;
