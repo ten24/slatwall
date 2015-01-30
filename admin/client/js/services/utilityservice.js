@@ -18,6 +18,20 @@ angular.module('slatwalladmin')
 			        text += possible.charAt(Math.floor(Math.random() * possible.length));
 			
 			    return text;
+			},
+			listFind:function(list,value,delimiter){
+				if(angular.isUndefined(delimiter)){
+					delimiter = ',';
+				}
+				var splitString = list.split(delimiter);
+				var stringFound = -1;
+				for (var i = 0; i < splitString.length; i++) {
+				    var stringPart = splitString[i];
+				    if (stringPart != value) continue;
+
+				    stringFound = i;
+				    break;
+				}
 			}
 		};
 		
