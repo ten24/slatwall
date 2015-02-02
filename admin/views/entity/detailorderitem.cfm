@@ -60,7 +60,7 @@ Notes:
 								   backquerystring="orderID=#rc.order.getOrderID()#"
 								   deleteQueryString="redirectAction=admin:entity.detailorder&orderID=#rc.order.getOrderID()#">
 								      
-			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="orderID=#rc.orderItem.getOrderItemID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="orderItemID=#rc.orderItem.getOrderItemID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
 		</hb:HibachiEntityActionBar>
 		<cfif rc.edit>
 			<!--- Hidden field to allow rc.order to be set on invalid submit --->

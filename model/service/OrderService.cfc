@@ -113,7 +113,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function duplicateOrder(required any order, boolean saveNewFlag=false, boolean copyPersonalDataFlag=false) {
-		var newOrder = this.newOrder();
+		var newOrder = this.newOrder(); 
 		
 		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
 		
@@ -1155,7 +1155,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrder_removePersonalInfo(required any order) {
 		
 		// Remove order level info
-		arguments.order.removeAccount();
+		if(!isNull(arguments.order.getAccount())){
+			arguments.order.removeAccount();
+		}
 		arguments.order.setShippingAddress(javaCast('null', ''));
 		arguments.order.setShippingAccountAddress(javaCast('null', ''));
 		arguments.order.setBillingAddress(javaCast('null', ''));

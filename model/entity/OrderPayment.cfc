@@ -308,7 +308,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var unauthroized = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unauthroized = precisionEvaluate(getAmount() - getAmountReceived() - getAmountAuthorized());
+			unauthroized = precisionEvaluate(getAmount() - getAmountAuthorized());
 		}
 		
 		return unauthroized;
