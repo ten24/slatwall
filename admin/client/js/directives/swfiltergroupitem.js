@@ -35,8 +35,6 @@ angular.module('slatwalladmin')
 					element.replaceWith($compile(element.html())(scope));
 				});
 				
-				collectionService.incrementFilterCount(1);
-				
 				//for(item in filterGroupItem){}
 				scope.filterGroupItem.setItemInUse = filterGroupsController.setItemInUse;
 				scope.filterGroupItem.$$index = scope.filterGroupItemIndex;
@@ -63,14 +61,6 @@ angular.module('slatwalladmin')
 					scope.filterGroupItem.logicalOperator = logicalOperatorValue;
 					filterGroupsController.saveCollection();
 				};
-				
-				scope.$on(
-	                "$destroy",
-	                function() {
-	                	$log.debug('destroy filterGroupItem');
-	                	collectionService.incrementFilterCount(-1);
-	                }
-	            );
 			}
 		};
 	}

@@ -81,6 +81,27 @@ Notes:
 	
 </cftry>
 
+<!--- Update SwOrder to set referencedOrder Type to "Return" --->
+<cftry>
+	<cfquery name="local.updateData">
+		UPDATE
+			SwOrder
+		SET
+			referencedOrderType = 'return'
+		WHERE 
+			referencedOrderType IS NULL
+		AND
+			referencedOrderID IS NOT NULL
+	</cfquery>
+	
+	<cfcatch>
+		<cfdump var="#cfcatch#" abort />
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update order to set referencedOrderType to Return">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+	
+</cftry>
+
 
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of Script v4_0 had errors when running">

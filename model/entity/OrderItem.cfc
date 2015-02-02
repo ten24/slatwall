@@ -54,6 +54,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="skuPrice" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="quantity" hb_populateEnabled="public" ormtype="integer";
+	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	
 	// Related Object Properties (many-to-one)
@@ -198,6 +199,22 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
     public struct function getQuantityPriceAlreadyReturned() {
     	return getService("OrderService").getQuantityPriceSkuAlreadyReturned(getOrder().getOrderID(), getSku().getSkuID());
     }
+    
+    public any function getEstimatedFulfillmentDateTime(){
+    	if(structKeyExists(variables, "estimatedFulfillmentDateTime")) {
+			return variables.estimatedFulfillmentDateTime;
+		}else if (!isNull(getOrderFulfillment())){
+			return getOrderFulfillment().getEstimatedFulfillmentDateTime();
+		}
+    }
+    
+    public any function getEstimatedDeliveryDateTime(){
+    	if(structKeyExists(variables, "estimatedDeliveryDateTime")) {
+			return variables.estimatedDeliveryDateTime;
+		}else if (!isNull(getOrderFulfillment())){
+			return getOrderFulfillment().getEstimatedDeliveryDateTime();
+		}
+    } 
     
    
 	// ============ START: Non-Persistent Property Methods =================

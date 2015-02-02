@@ -4,6 +4,7 @@
 		  <div class="col-md-12 s-header-nav">
 			<div class="col-xs-6" style="padding-left:0px;">
 			    <!---TODO: implement keyword searching and bulk actions --->
+<<<<<<< HEAD
 				<ul class="list-inline list-unstyled">
 					<li>
 						<div class="s-select-list-wrapper">
@@ -34,6 +35,33 @@
 				</ul>
 			</div>
 				
+=======
+			  	<ul class="list-inline list-unstyled">
+			      <li>
+			        <form   class="s-table-header-search">
+			          <div class="input-group">
+			            <input  type="text"
+			            		class="form-control input-sm"
+			            		placeholder="Search"
+			            		name="srch-term"
+			            		ng-model="keywords"
+								ng-change="searchCollection()"
+			            />
+			            <div class="input-group-btn">
+			              <button   class="btn btn-default btn-sm"
+			              			type="button"
+			              			ng-click="searchCollection()"
+			              >
+			              	<i class="fa fa-search"></i>
+			              </button>
+			            </div>
+			          </div>
+			        </form>
+			      </li>
+			    </ul>
+				</div>
+			
+>>>>>>> origin/feature
 			<div class="col-xs-6 s-table-view-options">
 				<ul class="list-inline list-unstyled">
 					<li>
@@ -107,7 +135,7 @@
 			      </div>
 			    </div><!--- //Tab Pane --->
 			    <div class="tab-pane s-display-options" id="j-display-options">
-					<span  sw-display-options
+					<sw-display-options
 						data-columns="collectionConfig.columns"
 						data-properties-list="filterPropertiesList"
 						data-save-collection="saveCollection()"
@@ -127,7 +155,7 @@
 								data-order-by="collectionConfig.orderBy"
 			
 						></li>
-					</span >
+					</sw-display-options >
 				</div><!--- //Tab Pane --->
 			  </div>
 			
@@ -195,18 +223,19 @@
 			</div>
 		</div>
 		<!--//delete batch action-->
-		
-		<sw-collection-table
-			data-collection="collection"
-			data-collection-config="collectionConfig"
-		>
-		</sw-collection-table>
-		<!---list view end --->
-		<div class="row">
-		  <div class="col-md-12" span ng-show="pageShow !== 'Auto'">
-		    <div class="dataTables_info" id="example3_info" >Showing <b><span ng-bind="pageStart()"><!--- record start ---></span> to <span ng-bind="pageEnd()"><!---records end ---><span></b> of <span ng-bind="recordsCount()"><!--- records Count ---></span> entries</div>
-		  </div>
-		</div>
+		<span sw-loading="collection">
+			<sw-collection-table
+				data-collection="collection"
+				data-collection-config="collectionConfig"
+			>
+			</sw-collection-table>
+			<!---list view end --->
+			<div class="row">
+			  <div class="col-md-12" span ng-show="pageShow !== 'Auto'">
+			    <div class="dataTables_info" id="example3_info" >Showing <b><span ng-bind="pageStart()"><!--- record start ---></span> to <span ng-bind="pageEnd()"><!---records end ---><span></b> of <span ng-bind="recordsCount()"><!--- records Count ---></span> entries</div>
+			  </div>
+			</div>
+		</span>
 	</div>
 </div>
 		 

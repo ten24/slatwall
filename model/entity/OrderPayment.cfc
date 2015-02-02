@@ -519,12 +519,22 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 	public any function getMaximumPaymentMethodPaymentAmount(){
 		if(!isNull(getPaymentMethod())) {
-			var maxPercent=getPaymentMethod().setting('paymentMethodMaximumOrderTotalPercentageAmount');
-			var maxPayment=precisionEvaluate((getOrder().getTotal()*(maxPercent/100))-getOrder().getPaymentAmountTotalByPaymentMethod(getPaymentMethod(), this));
 			
-			return maxPayment;
+			var maxPercent = getPaymentMethod().setting('paymentMethodMaximumOrderTotalPercentageAmount');
+			var maxAmountOfTotal = precisionEvaluate(getOrder().getTotal() * (maxPercent/100));
+			var previouslyAppliedPaymentAmountByMethod = getOrder().getPaymentAmountTotalByPaymentMethod(getPaymentMethod(), this);
+			
+			if(getOrderPaymentType().getSystemCode() eq 'optCredit') {
+				maxAmountOfTotal = precisionEvaluate(maxAmountOfTotal * -1);
+				if(maxAmountOfTotal lt previouslyAppliedPaymentAmountByMethod) {
+					return previouslyAppliedPaymentAmountByMethod;
+				} else {
+					return precisionEvaluate(maxAmountOfTotal + previouslyAppliedPaymentAmountByMethod);	
+				}
+			} else {
+				return precisionEvaluate(maxAmountOfTotal - previouslyAppliedPaymentAmountByMethod);
+			}
 		}
-		return null;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

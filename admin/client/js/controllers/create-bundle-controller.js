@@ -49,9 +49,11 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 			productPromise.promise.then(function(){
 				productPromise.value.$$getSkus().then(function(){
 					productPromise.value.data.skus[0].$$getProductBundleGroups().then(function(){
+						
 						$scope.product = productPromise.value;
 						angular.forEach($scope.product.data.skus[0].data.productBundleGroups,function(productBundleGroup){
 							productBundleGroup.$$getProductBundleGroupType();
+							
 						});
 					});
 				});
@@ -71,7 +73,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		$scope.saveProductBundle = function(closeDialogIndex){
 			$scope.product.$$save();
 		};
-
+		
 		
 	}
 ]);
