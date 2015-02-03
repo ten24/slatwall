@@ -16,6 +16,9 @@ angular.module('slatwalladmin').directive('swInput',
 	var getValidationDirectives = function(propertyDisplay){
 		var spaceDelimitedList = '';
 		var name = propertyDisplay.property;
+		var form = propertyDisplay.form.$$swFormInfo;
+		var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
+		var validationsForContext = [];
 		
 		//get the form context and the form name.
 		var formContext = propertyDisplay.form.$$swFormInfo.context;
@@ -31,6 +34,22 @@ angular.module('slatwalladmin').directive('swInput',
 		}
 		console.log(spaceDelimitedList);
 		}
+		//loop over validations that are required and create the space delimited list
+		console.log(validations);
+		
+		//get all validations related to the form context;
+		console.log(form);
+		console.log(propertyDisplay);
+		angular.forEach(validations,function(validation,key){
+			if(utilityService.listFind(validation.contexts.toLowerCase(),form.context.toLowerCase()) !== -1){
+				validationsForContext.push(validation);
+			}
+		});
+		
+		//now that we have all related validations for the specific form context that we are working with collection the directives we need
+		//getValidationDirectiveByType();
+		
+		
 		return spaceDelimitedList;
 	}
 	

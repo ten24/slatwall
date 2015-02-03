@@ -37,7 +37,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			arguments.rc.apiResponse.content = {};
 		}
 	}
-	public any function getValidationUniqueProperty(required struct rc){
+		public any function getValidationPropertyStatus(required struct rc){
 		var service = request.slatwallScope.getService("hibachiValidationService");
 		//setup the object to pass to the server-side validation service.
 		
@@ -48,7 +48,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var valObject = getService('hibachiService').invokeMethod('new#obj#',{1=propIdentifier, 2=constraintValue});
 		
 		//Get the response.
-		var response["validationResponse"] = service.validate_unique(valObject, propIdentifier, constraintValue);
+		var response["validationResponse"] = service.invokeMethod('validate_#rc.validationType#');
 		arguments.rc.apiResponse = response;
 		
 	}
