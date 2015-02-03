@@ -45,8 +45,6 @@ angular.module('slatwalladmin').directive('swInput',
 		    getValidationDirectives(propertyDisplay)+
 		    'id="swinput'+utilityService.createID(26)+'"'+
 			' />';
-			
-			
 		}
 		return template; 
 	}

@@ -12,18 +12,16 @@
 	    > -->
 	    
 	    <sw-input 
-	    	data-property-display="propertyDisplay"
-	    >
+	    	data-property-display="propertyDisplay">
 	    </sw-input>
-	    
 	<span ng-repeat='(key, value) in propertyDisplay.form[propertyDisplay.property].$error' >
-		<span ng-show="key === 'swvalidationrequired'" class="error">This field is required</span>
-		<span ng-show="key === 'swvalidationunique'" class="error">This field must be unique</span>
-		<span ng-show="key === 'swvalidationnumeric'" class="error">This field must be numeric</span>
-		<span ng-show="key === 'swvalidationregex'" class="error">This field contains invalid characters</span>
-		<span ng-show="key === 'swvalidationgte'" class="error">The value entered is incorrect</span>
-		<span ng-show="key === 'swvalidationlte'" class="error">The value entered is incorrect</span>
-		<span ng-show="key === 'swvalidationeq'" class="error">The value entered is incorrect</span>
+		<span ng-show="key === 'swvalidationrequired'" class="error" sw-Rbkey="'validate.define.required'"></span>
+		<span ng-show="key === 'swvalidationunique'" class="error" sw-Rbkey="'validate.define.unique'"></span>
+		<span ng-show="key === 'swvalidationnumeric'" class="error" sw-Rbkey="'validate.define.numeric'"></span>
+		<span ng-show="key === 'swvalidationregex'" class="error" sw-Rbkey="'validate.define.regex'"></span>
+		<span ng-show="key === 'swvalidationgte'" class="error" sw-Rbkey="'validate.define.gte'"></span>
+		<span ng-show="key === 'swvalidationlte'" class="error" sw-Rbkey="'validate.define.lte'"></span>
+		<span ng-show="key === 'swvalidationeq'" class="error" sw-Rbkey="'validate.define.neq'"></span>
 		<span ng-show="key === 'swvalidationminvalue'" class="error">The value entered is incorrect</span>
 		<span ng-show="key === 'swvalidatiomaxvalue'" class="error">The value entered is incorrect</span>
 		<span ng-show="key === 'swvalidationminlength'" class="error">The value entered is incorrect</span>
