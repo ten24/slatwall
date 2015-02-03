@@ -467,9 +467,24 @@ Notes:
 				    	var _jsEntities = {};
 				    	
 				    	var _init = function(entityInstance,data){
+				    		
 							for(var key in data) {
 								if(key.charAt(0) !== '$'){
-		    						entityInstance.data[key] = data[key];	
+									var propertyMetaData = entityInstance.metaData[key];
+									
+									if(angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json'){
+										console.log('propemta');
+										console.log(key);
+										console.log(data);
+										console.log(data[key]);
+										console.log(entityInstance.data[key]);
+										if(data[key].trim() !== ''){
+											entityInstance.data[key] = angular.fromJson(data[key]);
+										}
+										
+									}else{
+		    							entityInstance.data[key] = data[key];
+		    						}	
 								}
 							}
 						}
@@ -823,7 +838,7 @@ Notes:
 					    					if(angular.isDefined(entityInstance.metaData[key]) 
 				    						&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
 				    						&& entityInstance.metaData[key].hb_formfieldtype === 'json'){
-					    						modifiedData[key] = angular.toJson(form[key].$modelValue);		
+					    						modifiedData[key] = angular.toJson(form[key].$modelValue);	
 					    					}else{
 					    						modifiedData[key] = form[key].$modelValue;
 					    					}
@@ -1307,9 +1322,15 @@ Notes:
 													}
 												<cfelseif listFindNoCase('one-to-many,many-to-many', local.property.fieldtype)>
 													<!--- add method --->
-													,$$add#ReReplace(local.property.singularname,"\b(\w)","\u\1","ALL")#:function() {
+													,$$add#ReReplace(local.property.singularname,"\b(\w)","\u\1","ALL")#:function(initData) {
 														<!--- create related instance --->
+														
 														var entityInstance = slatwallService.newEntity(this.metaData['#local.property.name#'].cfc);
+														if(angular.isDefined(initData)){
+															console.log('initdata');
+															entityInstance.$$init(initData);
+														}
+														
 														var metaData = this.metaData;
 														<!--- one-to-many --->
 														if(metaData['#local.property.name#'].fieldtype === 'one-to-many'){
@@ -1374,8 +1395,8 @@ Notes:
 																<!---returns array of related objects --->
 																for(var i in response.records){
 																	<!---creates new instance --->
-																	var entityInstance = thisEntityInstance['$$add'+thisEntityInstance.metaData['#local.property.name#'].cfc]();
-																	entityInstance.$$init(response.records[i]);
+																	var entityInstance = thisEntityInstance['$$add'+thisEntityInstance.metaData['#local.property.name#'].singularname.charAt(0).toUpperCase()+thisEntityInstance.metaData['#local.property.name#'].singularname.slice(1)](response.records[i]);
+																	//entityInstance.$$init(response.records[i]);
 																	if(angular.isUndefined(thisEntityInstance['#local.property.name#'])){
 																		thisEntityInstance['#local.property.name#'] = [];
 																	}
