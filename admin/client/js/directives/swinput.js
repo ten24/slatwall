@@ -24,9 +24,13 @@ angular.module('slatwalladmin').directive('swInput',
 		var propertyValidations = propertyDisplay.object.validations.properties[name];
 		//check if the contexts match.
 		if (angular.isObject(propertyValidations)){
-		console.log(propertyValidations[0]);
+			for (var prop in propertyValidations[0]){
+				if (prop != "contexts"){
+					spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
+				}
 		}
-		
+		console.log(spaceDelimitedList);
+		}
 		return spaceDelimitedList;
 	}
 	
@@ -37,11 +41,12 @@ angular.module('slatwalladmin').directive('swInput',
 			'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
 		    'ng-disabled="!propertyDisplay.editable" '+ 
 		    'ng-show="propertyDisplay.editing" '+
-		    'name="'+propertyDisplay.property+'" '+
-		    'required="required" '+
+		    'name="'+propertyDisplay.property+'" ' +
 		    getValidationDirectives(propertyDisplay)+
 		    'id="swinput'+utilityService.createID(26)+'"'+
 			' />';
+			
+			
 		}
 		return template; 
 	}
