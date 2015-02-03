@@ -26,6 +26,7 @@ angular.module('slatwalladmin')
 				scope.selectedOption = {};
 				scope.showAddBtn = false;
 				var propertyMetaData = scope.propertyDisplay.object.$$getMetaData(scope.propertyDisplay.property);
+				
 //				check for a template
 //				rules are tiered: check if an override is specified at scope.template, check if the cfc name .html exists, use
 //				var templatePath = partialsPath + 'formfields/searchselecttemplates/';
@@ -99,6 +100,7 @@ angular.module('slatwalladmin')
 				    angular.extend(inflatedObject.data,$item);
 				    scope.propertyDisplay.object['$$set'+propertyMetaData.nameCapitalCase](inflatedObject);
 				};
+				
 				
 	        }
 		};

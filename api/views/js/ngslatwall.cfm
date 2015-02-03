@@ -969,13 +969,14 @@ Notes:
 								var parentMetaData = entityInstance.parents[c];
 								if(angular.isDefined(parentMetaData)){
 									var parent = entityInstance.data[parentMetaData.name];
-									var parent = entityInstance.data[parentMetaData.name];
 									if(angular.isObject(parent) && entityInstanceParent !== parent && parent.$$getID() !== '') {
 										if(angular.isUndefined(data[parentMetaData.name])){
 											data[parentMetaData.name] = {};
 										}
 										var parentData = processParent(parent);
 										angular.extend(data[parentMetaData.name],parentData);
+									}else{
+										
 									}
 								}
 								
@@ -1308,6 +1309,7 @@ Notes:
 													}
 													,$$set#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function(entityInstance) {
 														<!--- check if property is self referencing --->
+														$log.debug('set #local.property.name#');
 														var thisEntityInstance = this;
 														var metaData = this.metaData;
 														var manyToManyName;
@@ -1342,6 +1344,9 @@ Notes:
 															}
 															entityInstance.data[manyToManyName].push(thisEntityInstance);
 														}
+														
+														$log.debug(thisEntityInstance);
+														$log.debug(entityInstance);
 	
 														thisEntityInstance.data['#local.property.name#'] = entityInstance;
 	
