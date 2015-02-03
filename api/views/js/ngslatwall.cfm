@@ -765,11 +765,12 @@ Notes:
 	
 				    	var _save = function(entityInstance){
 				    		 var timeoutPromise = $timeout(function(){
-					    		
+					    		$log.debug('save begin');
 					    		var entityID = entityInstance.$$getID();
 					    		
 					    		var modifiedData = _getModifiedData(entityInstance);
-					    		
+					    		$log.debug('modifiedData complete');
+					    		$log.debug(modifiedData);
 					    		var params = {};
 								params.serializedJsonData = angular.toJson(modifiedData.value);
 					    		var entityName = modifiedData.objectLevel.metaData.className;
@@ -826,11 +827,12 @@ Notes:
 	
 				    		<!--- after finding the object level we will be saving at perform dirty checking object save level--->
 							var forms = entityInstance.forms;
-							
+							$log.debug('process base level data');
 							for(var f in forms){
 				    			var form = forms[f];
 					    		for(var key in form){
 					    			$log.debug('key:'+key);
+					    			
 					    			if(key.charAt(0) !== '$'){
 					    				var inputField = form[key];
 					    				if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
@@ -847,7 +849,11 @@ Notes:
 					    		}
 				    		}
 				    		modifiedData[entityInstance.$$getIDName()] = entityInstance.$$getID();
+							$log.debug(modifiedData);	
+
+
 							<!--- check if we have a parent with an id that we check, and all children --->
+							$log.debug('process parent data');
 							if(angular.isDefined(entityInstance.parents)){
 								for(var p in entityInstance.parents){
 									var parentObject = entityInstance.parents[p];
@@ -877,10 +883,14 @@ Notes:
 						    		modifiedData[parentObject.name][parentInstance.$$getIDName()] = parentInstance.$$getID();
 								}
 							}
+							$log.debug(modifiedData);
 	
 							<!--- dirty check all children --->
-							var data = validateChildren(entityInstance);
-							angular.extend(modifiedData,data);
+							$log.debug('begin child data');
+							var childrenData = validateChildren(entityInstance);
+							$log.debug('child Data');
+							$log.debug(childrenData);
+							angular.extend(modifiedData,childrenData);
 							return modifiedData;
 				    	}
 	
@@ -894,13 +904,13 @@ Notes:
 							}
 							return data;
 				    	}
-				    	
+				    	<!--- function intended to process through each property of an object --->
 				    	var processChild = function(entityInstance,entityInstanceParent){
 				    		var data = {};
 				    		var forms = entityInstance.forms;
 							for(var f in forms){
 								var form = forms[f];
-								data = processForm(form,entityInstance);
+								angular.extend(data,processForm(form,entityInstance));
 							}
 							
 							if(angular.isDefined(entityInstance.children) && entityInstance.children.length){
@@ -923,16 +933,18 @@ Notes:
 				    		var forms = entityInstance.forms;
 							for(var f in forms){
 								var form = forms[f];
-								data = processForm(form,entityInstance);
+								data = angular.extend(data,processForm(form,entityInstance));
 							}
 							
 							return data;
 			    		}
 	
 			    		var processForm = function(form,entityInstance){
+			    			$log.debug('begin process form');
 			    			var data = {};
 			    			for(var key in form){
 				    			if(key.charAt(0) !== '$'){
+
 				    				var inputField = form[key];
 				    				if(angular.isDefined(inputField) && angular.isDefined(inputField) && inputField.$valid === true && inputField.$dirty === true){	
 				    					if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
@@ -945,6 +957,8 @@ Notes:
 								}
 							}
 							data[entityInstance.$$getIDName()] = entityInstance.$$getID();
+							$log.debug('process form data');
+							$log.debug(data);
 							return data;
 			    		}
 	
@@ -978,13 +992,17 @@ Notes:
 				    		for(var c in entityInstance.children){
 				    			var childMetaData = entityInstance.children[c];
 								var children = entityInstance.data[childMetaData.name];
-								
+								$log.debug(childMetaData);
+								$log.debug(children);
 								if(angular.isArray(entityInstance.data[childMetaData.name])){
 									if(angular.isUndefined(data[childMetaData.name])){
 										data[childMetaData.name] = [];
 									}
 									angular.forEach(entityInstance.data[childMetaData.name],function(child,key){
+										$log.debug('process child array item')
 										var childData = processChild(child,entityInstance);
+										$log.debug('process child return');
+										$log.debug(childData);
 										data[childMetaData.name].push(childData);
 									});
 								}else{
@@ -992,11 +1010,17 @@ Notes:
 										data[childMetaData.name] = {};
 									}
 									var child = entityInstance.data[childMetaData.name];
+									$log.debug('begin process child');
 									var childData = processChild(child,entityInstance);
+									$log.debug('process child return');
+									$log.debug(childData);
 									angular.extend(data,childData);
 								}
 								 
 							}
+							$log.debug('returning child data');
+							$log.debug(data);
+
 							return data;
 				    	}
 				    	
@@ -1008,8 +1032,10 @@ Notes:
 				    		
 				    		<!---find top level and validate all forms on the way --->
 				    		var objectSaveLevel = getObjectSaveLevel(entityInstance);
-							
+							$log.debug('objectSaveLevel : ' + objectSaveLevel );
 							var value = validateObject(objectSaveLevel);
+							$log.debug('validateObject data');
+							$log.debug(value);
 							
 							modifiedData = {
 								objectLevel:objectSaveLevel,
