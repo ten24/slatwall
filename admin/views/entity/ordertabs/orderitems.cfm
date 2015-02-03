@@ -53,6 +53,8 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	
-	
+	<sw-order-items
+		data-order-id="#rc.order.getOrderID()#"		
+	>
+	</sw-order-items>
 </cfoutput>
