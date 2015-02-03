@@ -18,11 +18,20 @@
 								<th></th>
 							</tr>
 						</thead>
-						<tbody>
+						<tbody ng-repeat="orderItem in orderItems">
 							<tr class="s-bundle-product l-1" data-id="B-625TX78">
+								<!-- image -->
 								<td rowspan="1000" class="s-image" data-id="j-B-625TX78"><img src="http://placehold.it/90x90"></td>
-								<td class="s-title">Custom Necklace <a href="" class="s-toggle-detail-link">hide detail</a></td>
-								<td class="s-sku">B-625TX78</td>
+								
+								<!-- sku name -->
+								<td class="s-title" ng-bind="orderItem.data.skuName">
+									Custom Necklace <a href="" class="s-toggle-detail-link">hide detail</a>
+								</td>
+								
+								<!-- sku code -->
+								<td class="s-sku" ng-bind="orderItem.data.skuCode"></td>
+								
+								<!-- sku details -->
 								<td class="s-details"></td>
 								<td class="s-customization"></td>
 								<td class="s-price">
@@ -156,7 +165,7 @@
 								<td class="s-total">+$20.00</td>
 							</tr>
 						</tbody>
-						<tbody>
+						<!-- <tbody>
 							<tr class="s-product l-1">
 								<td rowspan="1000" class="s-image"><img src="http://placehold.it/90x90"></td>
 								<td class="s-title">Nike - Air Jordans</td>
@@ -380,7 +389,7 @@
 								<td class="s-discount">-$0.00</td>
 								<td class="s-total">+$5.00</td>
 							</tr>
-						</tbody>
+						</tbody> -->
 					</table>
 				</div>
 				
