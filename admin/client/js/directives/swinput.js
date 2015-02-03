@@ -27,11 +27,14 @@ angular.module('slatwalladmin').directive('swInput',
 		var propertyValidations = propertyDisplay.object.validations.properties[name];
 		//check if the contexts match.
 		if (angular.isObject(propertyValidations)){
-			for (var prop in propertyValidations[0]){
-				if (prop != "contexts"){
-					spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
+			if (propertyValidations[0].contexts === formContext){
+				console.log("Matched");
+				for (var prop in propertyValidations[0]){
+						if (prop != "contexts"){
+							spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
+						}	
 				}
-		}
+			}
 		console.log(spaceDelimitedList);
 		}
 		//loop over validations that are required and create the space delimited list

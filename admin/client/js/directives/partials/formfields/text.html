@@ -15,8 +15,8 @@
 	    	data-property-display="propertyDisplay">
 	    </sw-input>
 	<span ng-repeat='(key, value) in propertyDisplay.form[propertyDisplay.property].$error' >
-		<span ng-show="key === 'swvalidationrequired'" class="error" sw-Rbkey="'validate.define.required'"></span>
-		<span ng-show="key === 'swvalidationunique'" class="error" sw-Rbkey="'validate.define.unique'"></span>
+		<span ng-show="key === 'swvalidationrequired'" class="error" sw-Rbkey="'validation.define.required'"></span>
+		<span ng-show="key === 'swvalidationunique'" class="error" sw-Rbkey="'validation.define.unique'"></span>
 		<span ng-show="key === 'swvalidationnumeric'" class="error" sw-Rbkey="'validate.define.numeric'"></span>
 		<span ng-show="key === 'swvalidationregex'" class="error" sw-Rbkey="'validate.define.regex'"></span>
 		<span ng-show="key === 'swvalidationgte'" class="error" sw-Rbkey="'validate.define.gte'"></span>
