@@ -960,9 +960,11 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-bundle-add-obj .s-last {float:right;}
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj.s-no-edit .s-item-type {background-color:#aaa;}
 
-.s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-item-type {position: relative;left: 5px;line-height: 33px;text-align: center;background-color: @black-60;color: @black-5;font-size: 11px;}
+.s-bundle-add-items .s-order-item-options {margin-bottom:0px;}
+.s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-item-type {position: relative;left: 5px;line-height: 33px;text-align: center;background-color: @black-60;color: @black-5;font-size: 11px;min-width:100px;}
 .s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-bundle-details span {color:#aaaaaa;margin-left:10px;font-weight:normal;}
 .s-bundle-add-items .s-order-item-options .s-bundle-add-obj {background-color:@white;}
+.s-bundle-add-items .s-order-item-options .s-bundle-add-obj:last-child {margin-bottom:0px;}
 .s-bundle-add-items .s-order-item-options.s-negative-obj > .s-bundle-add-obj {background-color:@black-5;.border-radius();}
 .s-bundle-add-items .s-order-item-options ::-webkit-scrollbar {display:none; }
 
@@ -1116,7 +1118,8 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-search-bar-box > li:first-child {width:10%;}
 .s-search-bar-box > li:last-child {width:30%;}
 .s-search-bar-box > li:last-child {float:right;}
-.s-search-bar-box > li .s-search-input {border:0px !important;.border-radius(0);}
+.s-search-bar-box > li .s-search-input {border:0px !important;.border-radius(0);height: 34px;border: none !important;box-shadow: none;}
+.s-search-bar-box > li i.fa-spin {float: right;position: relative;top: -23px;right: 10px;font-size: 14px;cursor: pointer;color: @black-20;}
 .s-search-bar-box button {border: none;margin-left: 0px !important;height:34px;}
 .s-search-bar-box .search-panel {border:0px;width:100%;display:block;}
 .s-search-bar-box .s-checkbox {margin-top:8px;}

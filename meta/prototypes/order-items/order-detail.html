@@ -882,21 +882,99 @@
 											</tr>
 										</tbody>
 									</table>
-								</div>	
-							</content>
-														
+								</div>
+								
+								<div class="row s-bundle-group-items">
+									<div class="col-xs-12 s-search-bar">
+
+										<ul class="list-unstyled s-search-bar-box">
+											<li>
+												<div class="dropdown input-group-btn search-panel">
+													<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+														<span id="j-search-concept">Any</span>
+														<span class="caret"></span>
+													</button>
+													<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+														<li><a href="#all">Any</a></li>
+														<li><a href="#less_than">Product</a></li>
+														<li><a href="#all">Skus</a></li>
+													</ul>
+												</div>
+											</li>
+											<li>
+												<input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku">
+												<i class="fa fa-refresh fa-spin"></i>
+											</li>
+											<li>
+												<ul class="list-unstyled">
+													<li>
+														<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked"><label for="j-checkbox25"> In stock</label></div>
+													</li>
+													<li>
+														<div class="dropdown input-group-btn search-panel">
+															<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																<span id="j-search-concept">All Locations</span>
+																<span class="caret"></span>
+															</button>
+															<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+																<li><input type="text" class="form-control" name="x" placeholder="Search"></li>
+																<li><a href="#all">All Locations</a></li>
+																<li><a href="#less_than">San Diego</a></li>
+																<li><a href="#all">New York</a></li>
+																<li><a href="#all">France</a></li>
+															</ul>
+														</div>
+													</li>
+												</ul>
+											</li>
+										</ul>
+
+									</div>
+
+									<div class="col-xs-12 s-bundle-add-items">
+										<div class="col-xs-12 s-bundle-add-items-inner">
+
+											<ul class="list-unstyled s-order-item-options">
+												<li class="s-bundle-add-obj">
+													<ul class="list-unstyled list-inline">
+														<li class="s-item-type">Product</li>
+													</ul>
+													<ul class="list-unstyled list-inline s-middle">
+														<li class="j-tool-tip-item s-bundle-details">Skateboard Key Chain <span>J-567DFG</span></li>
+														<li class="j-tool-tip-item s-bundle-details">Qty: <span>1</span></li>
+														<li class="j-tool-tip-item s-bundle-details">Location: <span>Boston</span></li>
+													</ul>
+													<ul class="list-unstyled list-inline s-last">
+														<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+													</ul>
+													<div class="clearfix"></div>
+												</li>
+
+												<li class="s-bundle-add-obj">
+													<ul class="list-unstyled list-inline">
+														<li class="s-item-type">Subscription</li>
+													</ul>
+													<ul class="list-unstyled list-inline s-middle">
+														<li class="j-tool-tip-item s-bundle-details">Skateboard Magazine 1 Year <span>K-3847UGH</span></li>
+														<li class="j-tool-tip-item s-bundle-details">Qty: <span>1</span></li>
+														<li class="j-tool-tip-item s-bundle-details">Location: <span>San Diego</span></li>
+													</ul>
+													<ul class="list-unstyled list-inline s-last">
+														<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-ten24"><i class="fa fa-plus"></i></a></li>
+													</ul>
+													<div class="clearfix"></div>
+												</li>
+
+											</ul>
+										</div>
+									</div>
+								</div>
+									
+							</content>					
 						</div>
 					</div>
 					
-					<!-- JS to toggle data in table bundles -->
-					<script>
-						$('.s-toggle-detail-link').click(function(){
-							var dataId = $(this).closest('tr').attr('data-id');
-							var textValue = $(this).html();
-							$(this).closest('tr').siblings('[data-id="' + dataId + '"]').toggle();
-							$(this).html($(this).text() == 'hide detail' ? 'show detail' : 'hide detail');
-						});
-					</script>
+					
 					
 <!--/////////////////// END BUNDLE LISTING EXAMPLE///////////////////-->
 					
@@ -2838,6 +2916,18 @@
 		
 		
 		<script type="text/javascript" src="/?slatAction=api:js.ngcompressor&jspath=admin/client/js&instantiationKey=2249601B-92D2-0DEF-33980D0AD074ADD8"></script>
+		
+		
+		<!-- JS to toggle data in table bundles -->
+		<script charset="utf-8">
+			$('.s-toggle-detail-link').click(function(){
+				var dataId = $(this).closest('tr').attr('data-id');
+				var textValue = $(this).html();
+				$(this).closest('tr').siblings('[data-id="' + dataId + '"]').toggle();
+				$(this).html($(this).text() == 'hide detail' ? 'show detail' : 'hide detail');
+			});	
+		</script>
+		
 		
 	</body>
 </html>
