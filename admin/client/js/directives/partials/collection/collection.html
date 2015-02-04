@@ -4,7 +4,6 @@
 		  <div class="col-md-12 s-header-nav">
 			<div class="col-xs-6" style="padding-left:0px;">
 			    <!---TODO: implement keyword searching and bulk actions --->
-<<<<<<< HEAD
 				<ul class="list-inline list-unstyled">
 					<li>
 						<div class="s-select-list-wrapper">
@@ -18,7 +17,7 @@
 											ng-model="keywords"
 											ng-change="searchCollection()"
 										/>
-										<i class="fa fa-refresh fa-spin"></i>
+										<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
 									</div>
 									<div class="input-group-btn">
 										<button   class="btn btn-primary btn-sm"
@@ -35,33 +34,6 @@
 				</ul>
 			</div>
 				
-=======
-			  	<ul class="list-inline list-unstyled">
-			      <li>
-			        <form   class="s-table-header-search">
-			          <div class="input-group">
-			            <input  type="text"
-			            		class="form-control input-sm"
-			            		placeholder="Search"
-			            		name="srch-term"
-			            		ng-model="keywords"
-								ng-change="searchCollection()"
-			            />
-			            <div class="input-group-btn">
-			              <button   class="btn btn-default btn-sm"
-			              			type="button"
-			              			ng-click="searchCollection()"
-			              >
-			              	<i class="fa fa-search"></i>
-			              </button>
-			            </div>
-			          </div>
-			        </form>
-			      </li>
-			    </ul>
-				</div>
-			
->>>>>>> origin/feature
 			<div class="col-xs-6 s-table-view-options">
 				<ul class="list-inline list-unstyled">
 					<li>
