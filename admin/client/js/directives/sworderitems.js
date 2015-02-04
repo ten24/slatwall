@@ -37,6 +37,7 @@ angular.module('slatwalladmin')
 	 				        "priority": 0
 	 				      }
 	 				    },
+	 				  
 	 				    {
 	 				      "title": "Sku Name",
 	 				      "propertyIdentifier": "_orderitem.sku.skuName",
@@ -153,27 +154,9 @@ angular.module('slatwalladmin')
 				    {
 				      "filterGroup": [
 				        {
-				          "displayPropertyIdentifier": "Order ID",
 				          "propertyIdentifier": "_orderitem.order.orderID",
 				          "comparisonOperator": "=",
-				          "breadCrumbs": [
-				            {
-				              "rbKey": "Order Item",
-				              "entityAlias": "_orderitem",
-				              "cfc": "_orderitem",
-				              "propertyIdentifier": "_orderitem"
-				            },
-				            {
-				              "entityAlias": "order",
-				              "cfc": "Order",
-				              "propertyIdentifier": "_orderitem.order",
-				              "rbKey": "Order"
-				            }
-				          ],
 				          "value": scope.orderId,
-				          "ormtype": "string",
-				          "fieldtype": "id",
-				          "conditionDisplay": "Equals"
 				        }
 				      ]
 				    }
@@ -188,9 +171,27 @@ angular.module('slatwalladmin')
 				scope.orderItems = [];
 				var orderItemsPromise = $slatwall.getEntity('orderItem',options);
 				orderItemsPromise.then(function(value){
+					$log.debug(value);
+					
+					var order = $slatwall.$$getOrder({id:scope.orderid});
+					
+					order.$$getOrderItems();
+					
+					order.data.orderItems
+					
 					angular.forEach(value.records,function(orderItemData,key){
-						var orderItem = $slatwall.newOrder();
+						var orderItem = $slatwall.newOrderItem();
 						orderItem.$$init(orderItemData);
+						var sku = $slatwall.newSku();
+						sku.$$init(orderItemData);
+						orderItem.$$setSku(sku);
+						var orderFulfillment = $slatwall.newOrderFulfillment();
+						orderFulfillment.$$init(orderItemData);
+						orderItem.$$setOrderFulfillment(orderFulfillment);
+						var shippingAddress = $slatwall.newAddress();
+						shippingAddress.$$init(orderItemData);
+						orderFulfillment.$$setShippingAddress(shippingAddress);
+						
 						scope.orderItems.push(orderItem);
 					});
 					console.log(scope.orderItems);

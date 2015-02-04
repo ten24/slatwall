@@ -468,7 +468,7 @@ Notes:
 				    	
 				    	var _init = function(entityInstance,data){
 							for(var key in data) {
-								if(key.charAt(0) !== '$'){
+								if(key.charAt(0) !== '$' && angular.isDefined(entityInstance.metaData[key])){
 		    						entityInstance.data[key] = data[key];	
 								}
 							}
