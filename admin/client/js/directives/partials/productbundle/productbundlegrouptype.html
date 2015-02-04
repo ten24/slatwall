@@ -1,7 +1,7 @@
 
 	<div class="row form-group" >
 		<div class="col-md-6">
-			<label class="col-md-3 control-label" for="">Bundle Group Type:</label>
+			<label class="col-md-3 control-label" for=""><span sw-rbkey="'admin.productBundle.bundleGroupType'"></span>:</label>
 			<div class="col-md-9 s-search-filter" id="j-inside-product-bundle-group-type" sw-click-outside="closeThis(clickOutsideArgs)">
 			
 				<div class="input-group" >
@@ -26,7 +26,7 @@
 							ng-show="showAddProductBundleGroupTypeBtn"
 							ng-click="productBundleGroupTypes.setAdding(true)"
 					>
-						<i class="fa fa-plus"></i> Add "{{productBundleGroup.data.productBundleGroupType.data.typeName}}"
+						<i class="fa fa-plus"></i> <span sw-rbkey="'define.add'"></span> "{{productBundleGroup.data.productBundleGroupType.data.typeName}}"
 					</button>
 					<div class="s-add-content" ng-show="productBundleGroupTypes.$$adding">
 						

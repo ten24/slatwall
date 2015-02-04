@@ -28,7 +28,7 @@ angular.module('slatwalladmin')
 				//if the item is new, then all fields at the object level are dirty
 				$log.debug('editingproper');
 				$log.debug(scope.property);
-				$log.debug(scope.editable);
+				$log.debug(scope.title);
 				
 				scope.propertyDisplay = {
 					object:scope.object,
@@ -38,22 +38,21 @@ angular.module('slatwalladmin')
 					editable:scope.editable,
 					isHidden:scope.isHidden,
 					fieldType:scope.fieldType || scope.object.metaData.$$getPropertyFieldType(scope.property),
-					title: scope.title || scope.object.metaData.$$getPropertyTitle(scope.property),
+					title: scope.title,
 					hint:scope.hint || scope.object.metaData.$$getPropertyHint(scope.property),
 					optionsArguments:scope.optionsArguments || {},
 					eagerLoadOptions:scope.eagerLoadOptions || true,
 					isDirty:scope.isDirty,
 					onChange:scope.onChange
 				};
-				if(angular.isUndefined(scope.editable)){
+				if(angular.isUndefined(scope.propertyDisplay.editable)){
 					scope.propertyDisplay.editable = true;
 				};
-				
 				if(angular.isUndefined(scope.editing)){
 					scope.propertyDisplay.editing = false;
 				};
 				
-				if(angular.isUndefined(scope.isHidden)){
+				if(angular.isUndefined(scope.propertyDisplay.isHidden)){
 					scope.propertyDisplay.isHidden = false;
 				}
 				

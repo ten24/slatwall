@@ -16,9 +16,9 @@ angular.module('slatwalladmin')
 		var _orderBy = $filter('orderBy');
 		
 		var collectionService = {
-			incrementFilterCount: function(number){
+			setFilterCount: function(number){
 				$log.debug('incrementFilterCount');
-				_filterCount += number;
+				_filterCount = number;
 			},
 			getFilterCount: function(){
 				return _filterCount;

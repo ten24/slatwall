@@ -1228,8 +1228,15 @@ Notes:
 									,$$getMetaData:function( propertyName ) {
 										if(propertyName === undefined) {
 											return this.metaData
+										}else{
+											if(angular.isDefined(this.metaData[propertyName].name) && angular.isUndefined(this.metaData[propertyName].nameCapitalCase)){
+												this.metaData[propertyName].nameCapitalCase = this.metaData[propertyName].name.charAt(0).toUpperCase() + this.metaData[propertyName].name.slice(1);
+											}
+											if(angular.isDefined(this.metaData[propertyName].cfc) && angular.isUndefined(this.metaData[propertyName].cfcProperCase)){
+												this.metaData[propertyName].cfcProperCase = this.metaData[propertyName].cfc.charAt(0).toLowerCase()+this.metaData[propertyName].cfc.slice(1);
 										}
 										return this.metaData[ propertyName ];
+									}
 									}
 									
 									<cfloop array="#local.entity.getProperties()#" index="local.property">

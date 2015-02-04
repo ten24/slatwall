@@ -50,48 +50,25 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.orderItem" type="any" />
-<cfparam name="rc.order" type="any" default="#rc.orderItem.getOrder()#" />
-<cfparam name="rc.sku" type="any" default="#rc.orderItem.getSku()#" />
-<cfparam name="rc.edit" default="false" />
+<cfparam name="rc.order" type="any" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.orderItem#" edit="#rc.edit#" >
-		<hb:HibachiEntityActionBar type="detail" object="#rc.orderItem#" edit="#rc.edit#"
-								   backaction="admin:entity.detailorder"
-								   backquerystring="orderID=#rc.order.getOrderID()#"
-								   deleteQueryString="redirectAction=admin:entity.detailorder&orderID=#rc.order.getOrderID()#">
-								      
-			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="orderItemID=#rc.orderItem.getOrderItemID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
-		</hb:HibachiEntityActionBar>
-		<cfif rc.edit>
-			<!--- Hidden field to allow rc.order to be set on invalid submit --->
-			<input type="hidden" name="orderID" value="#rc.order.getOrderID()#" />
-			
-			<!--- Hidden field to attach this to the order --->
-			<input type="hidden" name="order.orderID" value="#rc.order.getOrderID()#" />
-		</cfif>
-
-		<!--- Tabs --->
-		<hb:HibachiEntityDetailGroup object="#rc.orderItem#">
-			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/taxes" />
-			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/promotions" />
-			
-			<cfif rc.orderItem.getOrderItemType().getSystemCode() eq "oitSale">
-				<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/deliveryitems" />
-			<cfelse>
-				<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/stockReceiverItems" />
-			</cfif>
-			
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.orderItem.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.orderItem#" attributeSet="#attributeSet#" />
-			</cfloop>
-			
-			<!--- Comments --->
-			<swa:SlatwallAdminTabComments object="#rc.orderItem#" parentObject="#rc.orderItem.getOrder()#" />
-		</hb:HibachiEntityDetailGroup>
+	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder">
 		
-	</hb:HibachiEntityDetailForm>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
+		</hb:HibachiEntityActionBar>
+		
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<input type="hidden" name="saveNewFlag" value="true" />       
+				<label class="control-label">
+					Duplicate account, billing, and shipping data? 
+					<input type="checkbox" name="copyPersonalDataFlag" value="true">
+				</label>
+				<br>
+				Upon completion you will be redirected to the new order. Do you wish to duplicate this order?			
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+		
+	</hb:HibachiEntityProcessForm>
 </cfoutput>

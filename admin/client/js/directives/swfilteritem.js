@@ -23,7 +23,6 @@ angular.module('slatwalladmin')
 			templateUrl:collectionPartialsPath+"filteritem.html",
 			link: function(scope, element,attrs,filterGroupsController){
 				scope.baseEntityAlias = scope.collectionConfig.baseEntityAlias;
-				collectionService.incrementFilterCount(1);
 				
 				if(angular.isUndefined(scope.filterItem.$$isClosed)){
 					scope.filterItem.$$isClosed = true;
@@ -52,14 +51,6 @@ angular.module('slatwalladmin')
 					scope.filterItem.logicalOperator = logicalOperatorValue;
 					filterGroupsController.saveCollection();
 				};
-				
-				scope.$on(
-	                "$destroy",
-	                function() {
-	                	$log.debug('destroy filterItem');
-	                	collectionService.incrementFilterCount(-1);
-	                }
-	            );
 				
 			}
 		};
