@@ -17,8 +17,10 @@ angular.module('slatwalladmin').directive("swvalidationminlength", function() {
         				var userValue = viewValue || 0;
         				if (parseInt(viewValue.length) >= parseInt(constraintValue))
         				{
+        					
         					return true;
         				}
+        				$log.debug('invalid min length');
         			return false;
         			
         		}
