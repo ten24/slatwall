@@ -38,6 +38,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 	}
 	
+		public any function getValidationPropertyStatus(required struct rc){
+			
+		var service = request.slatwallScope.getService("hibachiValidationService");
+		var obj = arguments.rc.object;
+		var propIdentifier = arguments.rc.propertyIdentifier;
+		var constraintValue = arguments.rc.constraintValue;
+		var valObject = getService('hibachiService').invokeMethod('new#obj#');
+		var response["uniqueStatus"] = service.validate_unique(valObject, propIdentifier, constraintValue);
+		arguments.rc.apiResponse.content = response;
+		
+	}
 	public any function getObjectOptions(required struct rc){
 		var data = getCollectionService().getObjectOptions();
 		arguments.rc.apiResponse.content = {data=data};
@@ -458,10 +469,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 		/*
 		
-		GET http://www.mysite.com/slatwall/api/product/ -> retuns collection of all products
+		GET http://www.mysite.com/slatwall/api/product/ -> returns a collection of all products
 		GET http://www.mysite.com/slatwall/?slatAction=api:main.get&entityName=product
 		
-		GET http://www.mysite.com/slatwall/api/product/2837401982340918274091987234/ -> retuns just that one product
+		GET http://www.mysite.com/slatwall/api/product/2837401982340918274091987234/ -> returns just that one product
 		
 		POST http://www.mysite.com/slatwall/api/product/ -> Insert a new entity
 		POST http://www.mysite.com/slatwall/api/product/12394871029834701982734/ -> Update Existing Entity

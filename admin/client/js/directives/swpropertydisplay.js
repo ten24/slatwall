@@ -22,7 +22,6 @@ angular.module('slatwalladmin')
 				isDirty:"=",
 				onChange:"=",
 				fieldType:"@"
-				
 			},
 			templateUrl:partialsPath+"propertydisplay.html",
 			link: function(scope, element,attrs,formController){

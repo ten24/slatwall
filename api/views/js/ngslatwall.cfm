@@ -484,7 +484,16 @@ Notes:
 										
 									}else{*/
 		    							entityInstance.data[key] = data[key];
-		    						//}	
+		    						//}	 
+		    						if(angular.isDefined(entityInstance.metaData[key]) 
+										&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
+										&& entityInstance.metaData[key].hb_formfieldtype === 'json'
+									){
+										
+										entityInstance.data[key] = angular.fromJson(data[key]);
+			    					}else{
+			    						entityInstance.data[key] = data[key];	
+			    					}
 								}
 							}
 						}
@@ -771,6 +780,7 @@ Notes:
 					    		var modifiedData = _getModifiedData(entityInstance);
 					    		$log.debug('modifiedData complete');
 					    		$log.debug(modifiedData);
+					    		if(modifiedData.valid){
 					    		var params = {};
 								params.serializedJsonData = angular.toJson(modifiedData.value);
 					    		var entityName = modifiedData.objectLevel.metaData.className;
@@ -785,7 +795,19 @@ Notes:
 									//--->
 									_addReturnedIDs(returnedIDs,modifiedData.objectLevel);
 								});
-								
+								}else{
+						    		
+						    		//select first, visible, and enabled input with a class of ng-invalid
+						    		
+						    		var target = $('input.ng-invalid:first:visible:enabled');
+
+						    		target.focus();
+						    		
+									var targetID = target.attr('id');
+									
+									$location.hash(targetID);
+						    		$anchorScroll();
+					    		}
 							});
 							return timeoutPromise;
 				    		/*
@@ -824,12 +846,13 @@ Notes:
 	
 				    	var validateObject = function(entityInstance){
 				    		var modifiedData = {};
-	
+							var valid = true;
 				    		<!--- after finding the object level we will be saving at perform dirty checking object save level--->
 							var forms = entityInstance.forms;
 							$log.debug('process base level data');
 							for(var f in forms){
 				    			var form = forms[f];
+				    			if(form.$dirty && form.$valid){
 					    		for(var key in form){
 					    			$log.debug('key:'+key);
 					    			
@@ -846,6 +869,9 @@ Notes:
 					    					}
 					    				}
 					    			}
+					    		}
+					    		}else{
+					    			valid = false;
 					    		}
 				    		}
 				    		modifiedData[entityInstance.$$getIDName()] = entityInstance.$$getID();
@@ -864,21 +890,25 @@ Notes:
 									var forms = parentInstance.forms;
 									for(var f in forms){
 						    			var form = forms[f];
-							    		for(var key in form){
-							    			if(key.charAt(0) !== '$'){
-							    				var inputField = form[key];
-							    				if(angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
-							    					<!--- set modifiedData --->
-							    					if(angular.isDefined(parentInstance.metaData[key]) 
-							    					&& angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) 
-							    					&& parentInstance.metaData[key].hb_formfieldtype === 'json'){
-							    						modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);		
-							    					}else{
-							    						modifiedData[parentObject.name][key] = form[key].$modelValue;
-							    					}
-							    				}
-							    			}
-							    		}
+						    			if(form.$dirty && form.$valid){
+								    		for(var key in form){
+								    			if(key.charAt(0) !== '$'){
+								    				var inputField = form[key];
+								    				if(angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
+								    					<!--- set modifiedData --->
+								    					if(angular.isDefined(parentInstance.metaData[key]) 
+								    					&& angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) 
+								    					&& parentInstance.metaData[key].hb_formfieldtype === 'json'){
+								    						modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);		
+								    					}else{
+								    						modifiedData[parentObject.name][key] = form[key].$modelValue;
+								    					}
+								    				}
+								    			}
+								    		}
+								    	}else{
+								    		valid = false;
+								    	}
 						    		}
 						    		modifiedData[parentObject.name][parentInstance.$$getIDName()] = parentInstance.$$getID();
 								}
@@ -891,7 +921,11 @@ Notes:
 							$log.debug('child Data');
 							$log.debug(childrenData);
 							angular.extend(modifiedData,childrenData);
-							return modifiedData;
+							return {
+								valid:valid,
+								value:modifiedData
+							};
+							
 				    	}
 	
 				    	<!--- validate children --->
@@ -1034,13 +1068,14 @@ Notes:
 				    		<!---find top level and validate all forms on the way --->
 				    		var objectSaveLevel = getObjectSaveLevel(entityInstance);
 							$log.debug('objectSaveLevel : ' + objectSaveLevel );
-							var value = validateObject(objectSaveLevel);
+							var valueStruct = validateObject(objectSaveLevel);
 							$log.debug('validateObject data');
 							$log.debug(value);
 							
 							modifiedData = {
 								objectLevel:objectSaveLevel,
-								value:value	
+								value:valueStruct.value,
+								valid:valueStruct.valid
 							}
 				    		return modifiedData;
 				    	}
@@ -1312,7 +1347,7 @@ Notes:
 														$log.debug('set #local.property.name#');
 														var thisEntityInstance = this;
 														var metaData = this.metaData;
-														var manyToManyName;
+														var manyToManyName = '';
 														if('#local.property.name#' === 'parent#local.entity.getClassName()#'){
 															var childName = 'child#local.entity.getClassName()#';
 															manyToManyName = entityInstance.metaData.$$getManyToManyName(childName);

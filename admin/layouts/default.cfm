@@ -427,7 +427,9 @@ Notes:
 					templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
 				});
 				
-			}]).run(['$rootScope','$filter','$slatwall','dialogService', function($rootScope,$filter, $slatwall ,dialogService) {
+			}]).run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService', function($rootScope,$filter,$anchorScroll, $slatwall ,dialogService) {
+			    $anchorScroll.yOffset = 100;
+
 			    $rootScope.openPageDialog = function( partial ) {
 			    	dialogService.addPageDialog( partial );
 			    };
@@ -460,7 +462,7 @@ Notes:
 		</script>
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngslatwall&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
-		
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngcompressor&jspath=client/js&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
 		<!--- Load up the Slatwall Admin --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngcompressor&jspath=admin/client/js&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
 		
