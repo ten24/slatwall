@@ -482,10 +482,10 @@ Notes:
 											entityInstance.data[key] = angular.fromJson(data[key]);
 										}
 										
-									}else{*/
+									}else{
 		    							entityInstance.data[key] = data[key];
-		    						//}	 
-		    						if(angular.isDefined(entityInstance.metaData[key]) 
+		    						}	 
+		    						/*if(angular.isDefined(entityInstance.metaData[key]) 
 										&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
 										&& entityInstance.metaData[key].hb_formfieldtype === 'json'
 									){
@@ -493,7 +493,7 @@ Notes:
 										entityInstance.data[key] = angular.fromJson(data[key]);
 			    					}else{
 			    						entityInstance.data[key] = data[key];	
-			    					}
+			    					}*/
 								}
 							}
 						}
@@ -1070,7 +1070,7 @@ Notes:
 							$log.debug('objectSaveLevel : ' + objectSaveLevel );
 							var valueStruct = validateObject(objectSaveLevel);
 							$log.debug('validateObject data');
-							$log.debug(value);
+							$log.debug(valueStruct.value);
 							
 							modifiedData = {
 								objectLevel:objectSaveLevel,
