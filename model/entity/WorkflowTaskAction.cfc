@@ -76,9 +76,8 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 			Print || Email || Update || Process || Import || Export || Delete
 		*/
 		var actionTypeOptions = [];
-		var valuesList = 'print,email,update,process,import,export,delete';
-		var namesList = 'entity.workflowtaskaction.print,entity.workflowtaskaction.email,entity.workflowtaskaction.update,
-						entity.workflowtaskaction.process,entity.workflowtaskaction.import,entity.workflowtaskaction.export,entity.workflowtaskaction.delete';
+		var valuesList = 'print,email,update';
+		var namesList = 'entity.workflowtaskaction.print,entity.workflowtaskaction.email,entity.workflowtaskaction.update';
 		var valuesArray = ListToArray(valuesList);
 		var namesArray = ListToArray(namesList);
 		var valuesArrayLength = arrayLen(valuesArray);

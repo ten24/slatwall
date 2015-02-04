@@ -20,18 +20,27 @@ angular.module('slatwalladmin')
 				return response;
 			},
 			'requestError':function(rejection){
-				return rejection;
+				$log.debug('requestError');
+				return $q.reject(rejection);
 			},
 			'responseError':function(rejection){
 				$log.debug('responseReject');
-				$log.debug(rejection);
+				//$log.debug(rejection);
+				
+				
 				if(angular.isDefined(rejection.data.messages)){
 					var messages = rejection.data.messages;
 					var alerts = alertService.formatMessagesToAlerts(messages);
 					alertService.addAlerts(alerts);
+				}else{
+					var message = {
+						msg:'there was error retrieving data',
+						type:'error'
+					};
+					alertService.addAlert(message);
 				}
 				
-				return rejection;
+				return $q.reject(rejection);
 			},
 		};
 		return interceptor;
