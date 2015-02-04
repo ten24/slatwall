@@ -85,7 +85,7 @@ Notes:
 				
 				return {
 					
-				    $get:['$q','$http','$timeout','$log','$rootScope', 'formService', function ($q,$http,$timeout,$log,$rootScope,formService)
+				    $get:['$q','$http','$timeout','$log','$rootScope','$location','$anchorScroll', 'formService', function ($q,$http,$timeout,$log,$rootScope,$location,$anchorScroll,formService)
 				    {
 				    	var slatwallService = {
 				    		/*basic entity getter where id is optional, returns a promise*/
