@@ -382,7 +382,7 @@ Notes:
 				$provide.constant("collectionPartialsPath", _partialsPath+'collection/');
 				$provide.constant("workflowPartialsPath", _partialsPath+'workflow/');
 				
-				$logProvider.debugEnabled( $.slatwall.getConfig().debugFlag );
+				$logProvider.debugEnabled( false );
 				$filterProvider.register('likeFilter',function(){
 					return function(text){
 						if(angular.isDefined(text) && angular.isString(text)){

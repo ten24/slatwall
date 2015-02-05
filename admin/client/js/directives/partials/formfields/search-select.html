@@ -14,43 +14,32 @@
 				<span ng-show="!showAddBtn" class="fa fa-caret-down"></span>
 			</button>
 		</div>
-		<input 	type="text" 
-			style="display:none"
-			name="{{propertyDisplay.property+'ID'}}"
-			ng-model="propertyDisplay.object.data[propertyDisplay.property][propertyDisplay.object.data[propertyDisplay.property].$$getIDName()]"
-		/>
-		<input 	type="text" 
-				style="display:none"
-				name="{{propertyDisplay.property}}"
-				ng-model="propertyDisplay.object.data[propertyDisplay.property]"
-		/>
+		
 	</div>
 	<div ng-show="showAddBtn">
 		<button type="button"
 				class="btn s-btn-dgrey"
-				ng-click="propertyDisplay.object['$$isAdding'+property]"
+				ng-click="setAdding(true)"
 		>
 			<i class="fa fa-plus"></i> Add "{{propertyDisplay.object.data[propertyDisplay.property].data[cfcProperCase+'Name']}}"
 		</button>
-		<div class="s-add-content" ng-show="productBundleGroupTypes.$$adding">
-		<!-- <div class="s-add-content" ng-show="productBundleGroupTypes.$$adding">
-			
+		<div class="s-add-content" ng-show="isAdding">
+			isAdding
 
-				<span ng-show="productBundleGroupTypes.$$adding && productBundleGroup.data.productBundleGroupType" >
-					<sw-form name="form.addProductBundleGroupType"
-						data-object="productBundleGroup.data.productBundleGroupType"
+				<span ng-show="isAdding && propertyDisplay.object.data[propertyDisplay.property]" >
+					<sw-form name="form.add{{propertyDisplay.object.data[propertyDisplay.property]}}"
+						data-object="propertyDisplay.object.data[propertyDisplay.property]"
 						data-context="save"
-						ng-if="productBundleGroup.data.productBundleGroupType"
+						ng-if="propertyDisplay.object.data[propertyDisplay.property]"
 					>
 						<sw-property-display
-								style="display:none"
-								data-object="productBundleGroup.data.productBundleGroupType"
-								data-property="typeID"
+								data-object="propertyDisplay.object.data[propertyDisplay.property]"
+								data-property="propertyDisplay.object.data[propertyDisplay.property].data[propertyDisplay.object.data[propertyDisplay.property].$$getIDName()]"
 								data-editing="true"
 								data-editable="true"
 								data-is-dirty="true"
 						></sw-property-display> 
-						<sw-property-display
+						<!-- <sw-property-display
 								data-object="productBundleGroup.data.productBundleGroupType"
 								data-property="typeName"
 								data-editing="true"
@@ -68,9 +57,9 @@
 								data-property="typeDescription"
 								data-editing="true"
 								data-editable="true"
-						></sw-property-display> 
+						></sw-property-display>  -->
 					</sw-form>
-					<sw-form name="form.addProductBundleGroupTypeParentType"
+					<!-- <sw-form name="form.addProductBundleGroupTypeParentType"
 						data-object="productBundleGroup.data.productBundleGroupType.data.parentType"
 						data-context="save"
 						ng-if="productBundleGroup.data.productBundleGroupType.data.parentType"
@@ -83,19 +72,19 @@
 								data-editable="true"
 								data-is-dirty="true"
 							></sw-property-display> 
-			        </sw-form>
-					<div class="form-group">
+			        </sw-form> -->
+					<!-- <div class="form-group">
 						<button type="button"
 								class="btn btn-xs s-btn-ten24"
 								ng-click="saveProductBundleGroupType()"
 						>
 							<i class="fa fa-plus"></i> Add Group Type
 						</button>
-					</div>
+					</div> -->
 				</span>
 			</form>
 		</div>
-	</div> -->
+	</div> 
 	
 	<!-- Error Messages -->
 	    

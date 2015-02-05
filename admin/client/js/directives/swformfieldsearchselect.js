@@ -20,9 +20,18 @@ angular.module('slatwalladmin')
 				propertyDisplay:"="
 			},
 			link:function(scope,element,attr,formController){
-				scope.selectionOptions = {};
-				scope.selectionOptions.value = [];
-				scope.selectionOptions.$$adding = false;
+
+				//set up selectionOptions
+				scope.selectionOptions = {
+						value:[],
+						$$adding:false
+				};
+				
+				//funciton to set state of adding new item 
+				scope.setAdding = function(isAdding){
+					scope.isAdding = isAdding;
+				}
+				
 				scope.selectedOption = {};
 				scope.showAddBtn = false;
 				var propertyMetaData = scope.propertyDisplay.object.$$getMetaData(scope.propertyDisplay.property);
@@ -38,8 +47,8 @@ angular.module('slatwalladmin')
 //					});
 //				}
 				
-				console.log('metaData');
-				console.log(propertyMetaData);
+				//set up query function for finding related object
+				
 				scope.cfcProperCase = propertyMetaData.cfcProperCase;
 				scope.selectionOptions.getOptionsByKeyword=function(keyword){
 					var filterGroupsConfig = '['+  
@@ -82,25 +91,20 @@ angular.module('slatwalladmin')
 						return scope.selectionOptions.value;
 					});
 				};
-				console.log(propertyMetaData.nameCapitalCase);
 				var propertyPromise = scope.propertyDisplay.object['$$get'+propertyMetaData.nameCapitalCase]();
 				propertyPromise.then(function(data){
 					
 				});
-				console.log(scope.propertyDisplay.object);
+				
+				//set up behavior when selecting an item
 				scope.selectItem = function ($item, $model, $label) {
 				    scope.$item = $item;
 				    scope.$model = $model;
 				    scope.$label = $label;
-				    console.log('item');
-				    console.log($item);
-				    console.log(scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
-				    console.log(scope.propertyDisplay.object);
 				    var inflatedObject = $slatwall.newEntity(propertyMetaData.cfc);
 				    angular.extend(inflatedObject.data,$item);
 				    scope.propertyDisplay.object['$$set'+propertyMetaData.nameCapitalCase](inflatedObject);
 				};
-				
 				
 	        }
 		};
