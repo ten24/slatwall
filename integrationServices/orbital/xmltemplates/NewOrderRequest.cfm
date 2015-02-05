@@ -68,7 +68,7 @@ Notes:
 			<AVSzip>#arguments.requestBean.getBillingPostalCode()#</AVSzip>
 			<cfset fullAddress = arguments.requestBean.getBillingStreetAddress() />
 			<cfif !isNull(arguments.requestBean.getBillingStreet2Address())> 
-				<cfset fullAddress = fullAddress & arguments.requestBean.getBillingStreet2Address() />
+				<cfset fullAddress = fullAddress & " " & arguments.requestBean.getBillingStreet2Address() />
 			</cfif>
 			<AVSaddress1>#left(fullAddress, 30)#</AVSaddress1>
 			<AVScity>#arguments.requestBean.getBillingCity()#</AVScity>
