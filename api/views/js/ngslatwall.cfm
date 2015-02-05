@@ -161,19 +161,13 @@ Notes:
 					  			
 					  			return deferred.promise;
 					  		},
-					  		getValidation:function(entityName){
-					  			var deferred = $q.defer();
-					  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getValidation&entityName='+entityName;
-					  			
-					  			$http.get(urlString)
-					  			.success(function(data){
-					  				deferred.resolve(data);
-					  			}).error(function(reason){
-					  				deferred.reject(reason);
-					  			});
-					  			
-					  			return deferred.promise;
-					  		},
+					  		checkUniqueValue:function (object, property, value) {
+					            return $http.get(_config.baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property + 
+					              '&value=' + escape(value)).then(
+					                function (results) {
+					                    return results.data.uniqueStatus;
+					                });
+					        },
 					  		getPropertyDisplayData:function(entityName,options){
 					  			var deferred = $q.defer();
 					  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getPropertyDisplayData&entityName='+entityName;
