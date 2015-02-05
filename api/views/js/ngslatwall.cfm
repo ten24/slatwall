@@ -474,15 +474,7 @@ Notes:
 									}else{
 		    							entityInstance.data[key] = data[key];
 		    						}	 
-		    						/*if(angular.isDefined(entityInstance.metaData[key]) 
-										&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
-										&& entityInstance.metaData[key].hb_formfieldtype === 'json'
-									){
-										
-										entityInstance.data[key] = angular.fromJson(data[key]);
-			    					}else{
-			    						entityInstance.data[key] = data[key];	
-			    					}*/
+		    						
 								}
 							}
 						}

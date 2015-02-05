@@ -59,11 +59,6 @@ angular.module('slatwalladmin')
 				scope.$watch('workflowTasks.selectedTask.data.workflow.data.workflowObject',function(newValue,oldValue){
 					
 					if(newValue !== oldValue && angular.isDefined(scope.workflowTasks.selectedTask)){
-//						if(angular.isString(scope.workflowTasks.selectedTask.data.taskConditionsConfig)){
-//							scope.workflowTasks.selectedTask.data.taskConditionsConfig = angular.fromJson(scope.workflowTasks.selectedTask.data.taskConditionsConfig);
-//						}
-						console.log('testss');
-						console.log(scope.workflowTasks.selectedTask.data.taskConditionsConfig);
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
 					}
