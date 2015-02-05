@@ -470,14 +470,9 @@ Notes:
 				    		
 							for(var key in data) {
 								if(key.charAt(0) !== '$'){
-									/*var propertyMetaData = entityInstance.metaData[key];
+									var propertyMetaData = entityInstance.metaData[key];
 									
 									if(angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json'){
-										console.log('propemta');
-										console.log(key);
-										console.log(data);
-										console.log(data[key]);
-										console.log(entityInstance.data[key]);
 										if(data[key].trim() !== ''){
 											entityInstance.data[key] = angular.fromJson(data[key]);
 										}
