@@ -11,7 +11,7 @@ angular.module('slatwalladmin')
 				/*add form info at the form level*/
 				formController.$$swFormInfo={
 					object:scope.object,
-					context:scope.context,
+					context:scope.context || 'save',
 					name:scope.name
 				};
 				var makeRandomID = function makeid(count)

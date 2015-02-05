@@ -58,13 +58,17 @@ angular.module('slatwalladmin').directive('swInput',
 	
 	var getTemplate = function(propertyDisplay){
 		var template = '';
+		var validations = '';
+		if(!propertyDisplay.noValidate){
+			validations = getValidationDirectives(propertyDisplay)
+		}
 		if(propertyDisplay.fieldType === 'text'){
 			template = '<input type="text" class="form-control" '+
 			'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
 		    'ng-disabled="!propertyDisplay.editable" '+ 
 		    'ng-show="propertyDisplay.editing" '+
 		    'name="'+propertyDisplay.property+'" ' +
-		    getValidationDirectives(propertyDisplay)+
+		    validations+
 		    'id="swinput'+utilityService.createID(26)+'"'+
 			' />';
 		}

@@ -13,7 +13,7 @@ angular.module('slatwalladmin').directive("swvalidationdatatype", function() {
         		ngModel.$validators.swvalidationdatatype = 
             	function(modelValue) {
         			if (angular.isString(modelValue) && attributes.swvalidationdatatype === "string"){return true;}
-        			if (angular.isNumber(modelValue) && attributes.swvalidationdatatype === "numeric"){return true;}
+        			if (angular.isNumber(parseInt(modelValue)) && attributes.swvalidationdatatype === "numeric"){return true;}
         			if (angular.isArray(modelValue && attributes.swvalidationdatatype === "array")){return true;}
         			if (angular.isDate(modelValue && attributes.swvalidationdatatype === "date")){return true;}
         			if (angular.isObject(modelValue && attributes.swvalidationdatatype === "object")){return true;}

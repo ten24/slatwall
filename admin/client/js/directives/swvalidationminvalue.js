@@ -12,7 +12,7 @@ angular.module('slatwalladmin').directive("swvalidationminvalue", function() {
         			//console.log(viewValue + " type:" + typeof(viewValue));
         				var constraintValue = attributes.swvalidationminvalue;
         				var userValue = viewValue || 0;
-        				if (parseInt(viewValue) >= parseInt(constraintValue))
+        				if (parseInt(modelValue) >= parseInt(constraintValue))
         				{
         					return true;
         				}
