@@ -98,6 +98,7 @@ metadataService,
 		};
 		
 		$scope.keywords = "";
+		$scope.loadingCollection = false;
 		var searchPromise;
 		$scope.searchCollection = function($timout){
 			if(searchPromise) {
@@ -109,6 +110,7 @@ metadataService,
 				$log.debug($scope.keywords);
 				//Set current page here so that the pagination does not break when getting collection
 				paginationService.setCurrentPage(1);
+				$scope.loadingCollection = true;
 				$scope.getCollection();
 			}, 500);
 		};
@@ -165,6 +167,7 @@ metadataService,
 					];
 				}
 				collectionService.setFilterCount(filterItemCounter());
+				$scope.loadingCollection = false;
 			},function(reason){
 			});
 		};

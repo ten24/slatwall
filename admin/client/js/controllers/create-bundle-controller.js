@@ -47,6 +47,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 			var productPromise = $slatwall.getProduct({id:productID});
 			
 			productPromise.promise.then(function(){
+				console.log(productPromise.value);
 				productPromise.value.$$getSkus().then(function(){
 					productPromise.value.data.skus[0].$$getProductBundleGroups().then(function(){
 						
