@@ -282,7 +282,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.delete_success" ), "${itemEntityName}", rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#'), "all" ), "success");
 			
 			// Render or Redirect a Success
-			renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails.listAction, maintainQueryString=true, rc=arguments.rc);
+			renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails.listAction, maintainQueryString=false, rc=arguments.rc);
 			
 		// FAILURE
 		} else {
