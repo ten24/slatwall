@@ -211,6 +211,143 @@
 	</script>
 	<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component With Dropdown End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
 	
+	<hr />
+	
+	<h1 id="headings">Create List Component With Dropdown & No Add</h1>
+	
+	<!--//////////////////////////////////Create List Component With Dropdown & No Add/////////////////////////////////-->
+	<!--- Add select component Wrapper --->
+	<div class="s-select-list-wrapper s-search">
+		
+		<div class="form-group"><!--- Option select field wrapper --->
+			<div class="input-group">
+				<div class="s-input-btn">
+					<input id="searchinput" type="search" class="form-control">
+					<span class="glyphicon glyphicon-remove"></span>
+					<!---<i class="fa fa-refresh fa-spin"></i>---><!--- Loading Icon --->
+				</div>
+				<div class="input-group-btn">
+					<button class="btn btn-sm btn-default" type="submit"><i class="fa fa-caret-down"></i></button>
+				</div>
+			</div>
+		</div>
+		
+		<!--- Dropdown wrapper --->
+		<div class="dropdown s-search-results-wrapper">
+			<ul class="dropdown-menu">
+				<li><a href="##">Item One</a></li> 
+				<li><a href="##">Item Two</a></li> 
+				<li><a href="##">Item Three</a></li> 
+				<li><a href="##">Item Four</a></li> 
+				<li><a href="##">Item Five</a></li> 
+			</ul>
+		</div>	
+		
+	</div>
+	
+	<script charset="utf-8">
+		//Not for production use
+		$('.s-select-list-wrapper input').focusin(function() {
+			$('.s-search-results-wrapper').show();
+		}).focusout(function () {
+			$('.s-search-results-wrapper').hide();
+		});
+	</script>
+	
+	<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component With Dropdown @ No Add End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+	
+	<hr />
+	
+	<h1 id="headings">Comments</h1>
+	
+	<!--//////////////////////////////////Create Comment Component/////////////////////////////////-->
+	
+	<!-- Comments Component -->
+	<div class="panel panel-default s-comments-component">
+		<div class="panel-body">
+			<ul class="list-group">
+				
+				<!-- Example Add Comment -->
+				<li class="list-group-item">
+					<div class="row">
+						<div class="col-xs-2 col-md-1">
+							<img src="http://placehold.it/80" class="img-circle img-responsive" alt="" />
+						</div>
+						<div class="col-xs-10 col-md-11">
+							<div class="s-comment-text">
+								<textarea class="form-control" rows="3" placeholder="Type your comment..."></textarea>
+							</div>
+							<div class="action">
+								<button type="button" class="btn btn-success btn-xs" title="Approved">
+									<span class="fa fa-check"></span> Save
+								</button>
+							</div>
+						</div>
+					</div>
+				</li>
+				
+				<!-- Example Comment -->
+				<li class="list-group-item">
+					<div class="row">
+						<div class="col-xs-2 col-md-1">
+							<img src="http://placehold.it/80" class="img-circle img-responsive" alt="" />
+						</div>
+						<div class="col-xs-10 col-md-11">
+							<div>
+								<div class="s-author">Reyjay Solares <span class="s-security">(private)</span></div>
+								<div class="s-info">
+									August 2, 2015 / 3:15pm
+								</div>
+							</div>
+							<div class="s-comment-text">
+								Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id dolor id nibh ultricies vehicula ut id elit. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Donec id elit non mi porta gravida at eget metus. Donec ullamcorper nulla non metus auctor fringilla. Donec ullamcorper nulla non metus auctor fringilla.
+							</div>
+							<div class="action">
+								<button type="button" class="btn btn-default btn-xs" title="Edit">
+									<span class="fa fa-pencil"></span> Edit
+								</button>
+								<button type="button" class="btn btn-default btn-xs s-remove" title="Delete">
+									<span class="fa fa-trash"></span> Delete
+								</button>
+							</div>
+						</div>
+					</div>
+				</li>
+				
+				<!-- Example Comment -->
+				<li class="list-group-item">
+					<div class="row">
+						<div class="col-xs-2 col-md-1">
+							<img src="http://placehold.it/80" class="img-circle img-responsive" alt="" />
+						</div>
+						<div class="col-xs-10 col-md-11">
+							<div>
+								<div class="s-author">Jame Earl <span class="s-security">(public)</span></div>
+								<div class="s-info">
+									July 25, 2015 / 9:30am
+								</div>
+							</div>
+							<div class="comment-text">
+								Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sed odio dui.
+							</div>
+							<div class="action">
+								<button type="button" class="btn btn-default btn-xs" title="Edit">
+									<span class="fa fa-pencil"></span> Edit
+								</button>
+								<button type="button" class="btn btn-default btn-xs s-remove" title="Delete">
+									<span class="fa fa-trash"></span> Delete
+								</button>
+							</div>
+						</div>
+					</div>
+				</li>
+				
+			</ul>
+		</div>
+	</div>
+	
+	<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create Comment Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+	
 <hr />
 
 	<h1 id="text-elements"> Text Elements</h1>
