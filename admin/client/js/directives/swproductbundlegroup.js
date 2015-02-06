@@ -39,11 +39,18 @@ angular.module('slatwalladmin')
 					productBundleGroupsController.removeProductBundleGroup(scope.index);
 					scope.productBundleGroup.$$delete();
 				};
+				console.log('skuCollection22');
+				console.log(scope.productBundleGroup.data.skuCollectionConfig);
 
+//				var collectionConfig = {};
+//				if(angular.isString(scope.productBundleGroup.data.skuCollectionConfig)){
+//					collectionConfig = angular.fromJson(scope.productBundleGroup.data.skuCollectionConfig);
+//				}
+				
 				scope.collection = {
 					baseEntityName:"Sku",
 					baseEntityAlias:"_sku",
-					collectionConfig:angular.fromJson(scope.productBundleGroup.data.skuCollectionConfig)
+					collectionConfig:scope.productBundleGroup.data.skuCollectionConfig
 				};
 				
 				scope.getCollection = function(){

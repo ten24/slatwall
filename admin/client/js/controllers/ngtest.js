@@ -1,25 +1,16 @@
-angular.module('slatwalladmin').controller('ngtest', [ 
-	'$scope',
-	'$slatwall', 
-	function(
-		$scope,
-		$slatwall
-	){
-		$scope.myVal = 'controller value injected';
-		var promise = $slatwall.getEntity('collection','abcd');
-		console.log(promise);
-		promise.then(function(value){
-			console.log(value);
-		},function(reason){
-			
-		});
-		
-		var postData = {
-			collectionName:"postCollectionName",
-			context:"save"
-		};
-		
-		var postPromise = $slatwall.saveEntity('collection','abcd',postData);
-	
+angular.module('slatwalladmin').controller('ngtest', [ '$scope', '$slatwall', 
+	function($scope, $slatwall){
+		//Just used for practice testing.
+		$scope.test = "Slatwall Test Runner";
+		$scope.defineTest = 
+			function(){
+				$scope.test = $scope.test + "Works";
+				$scope.slatwallScope = $slatwall;
+			}
+		$scope.sku = $slatwall.newSku();
+		$scope.saveSku = 
+			function(){
+				$scope.sku.$$save(); 
+			}
 	}
 ]);

@@ -98,6 +98,7 @@ metadataService,
 		};
 		
 		$scope.keywords = "";
+		$scope.loadingCollection = false;
 		var searchPromise;
 		$scope.searchCollection = function($timout){
 			if(searchPromise) {
@@ -109,6 +110,7 @@ metadataService,
 				$log.debug($scope.keywords);
 				//Set current page here so that the pagination does not break when getting collection
 				paginationService.setCurrentPage(1);
+				$scope.loadingCollection = true;
 				$scope.getCollection();
 			}, 500);
 		};
@@ -125,7 +127,7 @@ metadataService,
 			collectionListingPromise.then(function(value){
 				$scope.collection = value;
 	
-				var _collectionObject = $scope.collection['collectionObject'].toLowerCase().replace('slatwall', '');
+				var _collectionObject = $scope.collection['collectionObject'].charAt(0).toLowerCase()+$scope.collection['collectionObject'].slice(1) ;
 				var _recordKeyForObjectID = _collectionObject + 'ID';
 				
 				for(var record in value.pageRecords){
@@ -165,6 +167,7 @@ metadataService,
 					];
 				}
 				collectionService.setFilterCount(filterItemCounter());
+				$scope.loadingCollection = false;
 			},function(reason){
 			});
 		};
