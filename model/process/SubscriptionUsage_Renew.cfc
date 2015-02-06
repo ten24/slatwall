@@ -70,6 +70,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="saveAccountPaymentMethodName" hb_formFieldType="yesno";
 	property name="updateSubscriptionUsageAccountPaymentMethodFlag" hb_formFieldType="yesno";
 	
+	public any function getOrderPayment() {
+		if(structKeyExists(variables,"orderPayment")) {
+			return variables.orderPayment;
+		} else {
+			return getSubscriptionUsage().getSubscriptionOrderItems()[arrayLen(getSubscriptionUsage().getSubscriptionOrderItems())-1].getOrderItem().getOrder().getOrderPayments()[1];
+		}
+	}
+
 	public boolean function getSaveAccountPaymentMethodFlag() {
 		if(!structKeyExists(variables, "saveAccountPaymentMethodFlag")) {
 			variables.saveAccountPaymentMethodFlag = 0;
