@@ -22,6 +22,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		if( len(getSessionValue('sessionID')) ) {
 			var sessionEntity = this.getSession( getSessionValue('sessionID'), true);
+		
 		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID")) {
 			var sessionEntity = this.getSessionBySessionCookieNPSID( cookie["#getApplicationValue('applicationKey')#-NPSID"], true);
 		

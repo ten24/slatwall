@@ -20,23 +20,23 @@
 						</thead>
 						<tbody ng-repeat="orderItem in orderItems">
 							<tr class="s-bundle-product l-1" data-id="B-625TX78">
-								<!-- image -->
+								<!-- image --><!-- Replace with getOrderItemImage directive -->
 								<td rowspan="1000" class="s-image" data-id="j-B-625TX78"><img src="http://placehold.it/90x90"></td>
 								
 								<!-- sku name -->
-								<td class="s-title" ng-bind="orderItem.data.skuName">
+								<td class="s-title" ng-bind="orderItem.data.sku.data.skuName">
 									Custom Necklace <a href="" class="s-toggle-detail-link">hide detail</a>
 								</td>
 								
 								<!-- sku code -->
-								<td class="s-sku" ng-bind="orderItem.data.skuCode"></td>
+								<td class="s-sku" ng-bind="orderItem.data.sku.data.skuCode"></td>
 								
 								<!-- sku details -->
 								<td class="s-details"></td>
 								<td class="s-customization"></td>
 								<td class="s-price">
 									<ul>
-										<li class="s-price-total">$50.00</li>
+										<li class="s-price-total" ng-bind="orderItem.data.sku.data.price"></li>
 										<li class="s-price-list">
 											<ul>
 												<li>+$0.00 (Base Price)</li>
