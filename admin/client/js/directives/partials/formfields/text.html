@@ -1,17 +1,35 @@
-<input type="{{propertyDisplay.fieldType}}" class="form-control" 
-		    		 ng-model="propertyDisplay.object.data[propertyDisplay.property]"
-		    		 ng-disabled="!propertyDisplay.editable"
-		    		 ng-show="propertyDisplay.editing"
-		    		 on-change="propertyDisplay.onChange"
-		    		 name="{{propertyDisplay.property}}"
-		    		 
-/>
-
-<!-- Error Messages -->
     
-<span style="color:red"
-	ng-repeat="(key,value) in propertyDisplay.errors"
-	ng-show="(propertyDisplay.form.$submitted && propertyDisplay.form[propertyDisplay.property].$invalid) || (propertyDisplay.form[propertyDisplay.property].$invalid && propertyDisplay.form[propertyDisplay.property].$dirty)"
->
-  <span  ng-show="key === 'required'">{{propertyDisplay.title}} is a required field<br></span>
+<!-- swvalidationisnumeric swvalidationregex="[0-9]" swvalidationgte="5" swvalidationeq="8" -->
+
+<!-- 	<input type="{{propertyDisplay.fieldType}}" class="form-control" 
+	    ng-model="propertyDisplay.object.data[propertyDisplay.property]"
+	    ng-disabled="!propertyDisplay.editable"
+	    ng-show="propertyDisplay.editing" 
+	    name="{{propertyDisplay.property}}"
+	    sw-validate="propertyDisplay.object.validations"/
+	    ng-if="hasValidation"
+	    sw-validater
+	    > -->
+	    
+	    <sw-input 
+	    	data-property-display="propertyDisplay">
+	    </sw-input>
+<span ng-hide="propertyDisplay.form[propertyDisplay.property].$pristine"
+	<span ng-repeat='(key, value) in propertyDisplay.form[propertyDisplay.property].$error' >
+		<span ng-show="key === 'swvalidationrequired'" class="error" sw-Rbkey="'validation.define.required'"></span>
+		<span ng-show="key === 'swvalidationunique'" class="error" sw-Rbkey="'validation.define.unique'"></span>
+		<span ng-show="key === 'swvalidationnumeric'" class="error" sw-Rbkey="'validation.define.numeric'"></span>
+		<span ng-show="key === 'swvalidationregex'" class="error" sw-Rbkey="'validation.define.regex'"></span>
+		<span ng-show="key === 'swvalidationgte'" class="error" sw-Rbkey="'validation.define.gte'"></span>
+		<span ng-show="key === 'swvalidationlte'" class="error" sw-Rbkey="'validation.define.lte'"></span>
+		<span ng-show="key === 'swvalidationeq'" class="error" sw-Rbkey="'validation.define.neq'"></span>
+		<span ng-show="key === 'swvalidationminvalue'" class="error">The value entered is incorrect</span>
+		<span ng-show="key === 'swvalidatiomaxvalue'" class="error">The value entered is incorrect</span>
+		<span ng-show="key === 'swvalidationminlength'" class="error">The value entered is incorrect</span>
+		<span ng-show="key === 'swvalidationmaxlength'" class="error">The value entered is incorrect</span>
+	</span>
 </span>
+
+
+
+
