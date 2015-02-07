@@ -57,6 +57,12 @@ Notes:
 																				
 --->
 
+<!--- IMPORTANT: This is here so that the account layout is never cached by the browser --->
+<cfheader name="cache-control" value="no-cache, no-store, must-revalidate" /> 
+<cfheader name="cache-control" value="post-check=0, pre-check=0" /> 
+<cfheader name="last-modified" value="#now()#" />
+<cfheader name="pragma"  value="no-cache" />
+
 <!--- This header include should be changed to the header of your site.  Make sure that you review the header to include necessary JS elements for slatwall templates to work --->
 <cfinclude template="_slatwall-header.cfm" />
 

@@ -55,6 +55,9 @@ component displayname="Price Group" entityname="SlatwallPriceGroup" table="SwPri
 	property name="priceGroupName" ormtype="string";
 	property name="priceGroupCode" ormtype="string" index="PI_PRICEGROUPCODE";
 	
+	// Remote properties
+	property name="remoteID" ormtype="string";
+	
 	// Related Object Properties (Many-To-One)
 	property name="parentPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="parentPriceGroupID" hb_optionsNullRBKey="define.none";
 	
