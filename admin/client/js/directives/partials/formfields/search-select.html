@@ -1,4 +1,4 @@
-<div class="col-md-9 s-search-filter" id="j-inside-product-bundle-group-type" sw-click-outside="closeThis(clickOutsideArgs)">
+<div class="col-md-9 s-search-filter" id="j-inside-product-bundle-group-type" sw-click-outside="closeThis(clickOutsideArgs)" >
 	
 	<div class="input-group" ng-if="propertyDisplay.object">
 		<input  type="text"
@@ -8,6 +8,11 @@
 				typeahead="object[cfcProperCase+'Name'] for object in selectionOptions.getOptionsByKeyword($viewValue) | filter:$viewValue"
 				typeahead-on-select="selectItem($item, $model, $label)"
 		>
+		
+		<input 	type="text"  
+			name="{{propertyDisplay.property}}"
+			ng-model="propertyDisplay.object.data[propertyDisplay.property]"
+		/>
 		<div class="input-group-btn">
 			<button type="button" class="btn btn-sm btn-default" ng-click="closeAddScreen();clearTypeName();">
 				<span ng-show="showAddBtn" class="fa fa-caret-up"></span>
@@ -23,67 +28,9 @@
 		>
 			<i class="fa fa-plus"></i> Add "{{propertyDisplay.object.data[propertyDisplay.property].data[cfcProperCase+'Name']}}"
 		</button>
-		<div class="s-add-content" ng-show="isAdding">
-			isAdding
-
-				<span ng-show="isAdding && propertyDisplay.object.data[propertyDisplay.property]" >
-					<sw-form name="form.add{{propertyDisplay.object.data[propertyDisplay.property]}}"
-						data-object="propertyDisplay.object.data[propertyDisplay.property]"
-						data-context="save"
-						ng-if="propertyDisplay.object.data[propertyDisplay.property]"
-					>
-						<sw-property-display
-								data-object="propertyDisplay.object.data[propertyDisplay.property]"
-								data-property="propertyDisplay.object.data[propertyDisplay.property].data[propertyDisplay.object.data[propertyDisplay.property].$$getIDName()]"
-								data-editing="true"
-								data-editable="true"
-								data-is-dirty="true"
-						></sw-property-display> 
-						<!-- <sw-property-display
-								data-object="productBundleGroup.data.productBundleGroupType"
-								data-property="typeName"
-								data-editing="true"
-								data-editable="true"
-								data-is-dirty="true"
-						></sw-property-display> 
-						<sw-property-display
-								data-object="productBundleGroup.data.productBundleGroupType"
-								data-property="typeCode"
-								data-editing="true"
-								data-editable="true"
-						></sw-property-display>
-						<sw-property-display
-								data-object="productBundleGroup.data.productBundleGroupType"
-								data-property="typeDescription"
-								data-editing="true"
-								data-editable="true"
-						></sw-property-display>  -->
-					</sw-form>
-					<!-- <sw-form name="form.addProductBundleGroupTypeParentType"
-						data-object="productBundleGroup.data.productBundleGroupType.data.parentType"
-						data-context="save"
-						ng-if="productBundleGroup.data.productBundleGroupType.data.parentType"
-					>
-							<sw-property-display
-								style="display:none"
-								data-object="productBundleGroup.data.productBundleGroupType.data.parentType"
-								data-property="typeID"
-								data-editing="true"
-								data-editable="true"
-								data-is-dirty="true"
-							></sw-property-display> 
-			        </sw-form> -->
-					<!-- <div class="form-group">
-						<button type="button"
-								class="btn btn-xs s-btn-ten24"
-								ng-click="saveProductBundleGroupType()"
-						>
-							<i class="fa fa-plus"></i> Add Group Type
-						</button>
-					</div> -->
-				</span>
-			</form>
-		</div>
+		
+		<!-- <ng-include ng-if="propertyDisplay.template" src="propertyDisplay.template"></ng-include> -->
+		
 	</div> 
 	
 	<!-- Error Messages -->
