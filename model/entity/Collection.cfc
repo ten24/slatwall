@@ -152,6 +152,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					if(structKeyExists(defaultProperty,"fieldtype") && defaultProperty.fieldtype == 'id'){
 						columnStruct['isDeletable'] = false;
 						columnStruct['isVisible'] = false;
+					}else if(structKeyExists(defaultProperty,"hb_formFieldType") && defaultProperty.hb_formFieldType == 'json'){
+						columnStruct['isDeletable'] = true;
+						columnStruct['isVisible'] = false;
 					}else{
 						columnStruct['isDeletable'] = true;
 						columnStruct['isVisible'] = true;

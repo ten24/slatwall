@@ -127,7 +127,7 @@ metadataService,
 			collectionListingPromise.then(function(value){
 				$scope.collection = value;
 	
-				var _collectionObject = $scope.collection['collectionObject'].toLowerCase().replace('slatwall', '');
+				var _collectionObject = $scope.collection['collectionObject'].charAt(0).toLowerCase()+$scope.collection['collectionObject'].slice(1) ;
 				var _recordKeyForObjectID = _collectionObject + 'ID';
 				
 				for(var record in value.pageRecords){

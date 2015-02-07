@@ -61,7 +61,7 @@ Notes:
 							   recordDetailAction="admin:entity.detailtype"
 							   parentPropertyName="false"
 							   sortProperty="sortOrder">
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="type" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="typeCode" />
 		<hb:HibachiListingColumn propertyIdentifier="systemCode" />
 	</hb:HibachiListingDisplay>

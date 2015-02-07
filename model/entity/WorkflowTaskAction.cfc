@@ -108,9 +108,8 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 	
 	public any function getUpdateData(){
 		if(isNull(variables.updateData)){
-			variables.updateData = '';
-			
-			var defaultUpdateData['staticData'] = {};
+			var defaultUpdateData = {};
+			defaultUpdateData['staticData'] = {};
 			defaultUpdateData['dynamicData'] = {};
 			variables.updateData = serializeJson(defaultUpdateData);
 		}
