@@ -56,7 +56,7 @@
 							<span class="s-title">Add Order Item</span>
 							<span class="s-bread-crumb">
 							<ul class="list-unstyled list-inline">
-								<li><a href="#">Motorola Moto X</a></li>
+								<li><a href="#">Custom Skateboard</a></li>
 							</ul>
 							</span>
 						</div>
@@ -87,7 +87,7 @@
 												
 											<div class="form-group">
 												<label>Price:</label>
-												<input class="form-control" type="text" value="$399.00" disabled>
+												<input class="form-control" type="text" value="$141.00" disabled>
 											</div>
 											<div class="form-group">
 												<div class="s-checkbox">
@@ -119,35 +119,56 @@
 														</tr>
 														<tr>
 															<td class="title">Sku Price When Ordered</td>
-															<td class="value">$399.00</td>
+															<td class="value">$100.00</td>
 														</tr>
 														<tr>
 															<td class="title">Current Sku Price</td>
-															<td class="value">$399.00</td>
+															<td class="value">$100.00</td>
 														</tr>
 														<tr>
 															<td class="title">SKU Code <a href="#" tabindex="-1" rel="tooltip" class="hint" title="" data-original-title="A unique string (alphanumerc, no spaces) to identify the sku."><i class="icon-question-sign"></i></a></td>
-															<td class="value">S-HJU787</td>
+															<td class="value">S-786JRT</td>
 														</tr>
 														<tr class="s-table-header">
 															<td colspan="2" class="table-section" >Price</td>
 														</tr>
-														
-														<tr class="s-row-strong">
-															<td class="title">Price</td>
-															<td class="value">$399.00</td>
+														<tr>
+															<td class="title">Base Price</td>
+															<td class="value">+$100.00</td>
 														</tr>
 														<tr>
-															<td class="title">Qty</td>
-															<td class="value">1</td>
-														</tr>
-														<tr>
-															<td class="title">Tax Amount</td>
-															<td class="value">$0.00</td>
+															<td class="title">Extras</td>
+															<td class="value">+$41.00</td>
 														</tr>
 														<tr class="s-row-strong">
 															<td class="title">Total</td>
-															<td class="value">$399.00</td>
+															<td class="value">$141.00</td>
+														</tr>
+														<tr class="s-table-header">
+															<td colspan="2" class="table-section" >Quantity</td>
+														</tr>
+														<tr>
+															<td class="title">Qty</td>
+															<td class="value">2</td>
+														</tr>
+														<tr class="s-table-header">
+															<td colspan="2" class="table-section" >Total</td>
+														</tr>
+														<tr>
+															<td class="title">Base Price</td>
+															<td class="value">+$200.00</td>
+														</tr>
+														<tr>
+															<td class="title">Extras</td>
+															<td class="value">+$82.00</td>
+														</tr>
+														<tr>
+															<td class="title">Tax Amount</td>
+															<td class="value">+$0.00</td>
+														</tr>
+														<tr class="s-row-strong">
+															<td class="title">Total</td>
+															<td class="value">$282.00</td>
 														</tr>
 													</tbody>
 												</table>
@@ -163,121 +184,389 @@
 						</div>
 					</div>
 					
-					<!-- Product Details -->
+					<!-- Product Bundle Group Items -->
 					<div class="s-content-object">
 						<div class="col-md-2 s-content-header">
-							<h4 class="s-content-title">Details</h4>
-							<p class="s-content-description">Choose what details you would like for this product.</p>
+							<h4 class="s-content-title">Bundle Group Items</h4>
+							<p class="s-content-description">Choose the items you would like to have in the "Custom Skateboard" bundle.</p>
 						</div>
 						<div class="col-md-10 s-content-body">
 							
 							<div class="s-content-well">
 									
-								<div class="col-sm-2 s-content-image">
-									<img src="http://placehold.it/350x350" width="100%">
+								<div class="col-sm-12">
+									
+									
+									<!-- Bundle item selector - Deck -->
+									<content class="s-body-box s-status-active">
+										<h2 class="s-filter-header">
+											<span class="s-title">Deck</span>
+											<ul class="list-unstyled list-inline">
+												<li>Min<span>1</span></li>
+												<li>Max<span>1</span></li>
+											</ul>
+										</h2>
+										<div class="table-responsive s-order-item-box">
+											<p class="s-no-items">You have not selected an item</p>
+										</div>
+										<!-- Search for product -->
+										<div class="row s-bundle-group-items">
+											<div class="col-xs-12 s-search-bar">
+												<ul class="list-unstyled s-search-bar-box">
+													<li>
+														<div class="dropdown input-group-btn search-panel">
+															<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+															<span id="j-search-concept">Any</span>
+															<span class="caret"></span>
+															</button>
+															<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+																<li><a href="#all">Any</a></li>
+																<li><a href="#less_than">Product</a></li>
+																<li><a href="#all">Skus</a></li>
+															</ul>
+														</div>
+													</li>
+													<li><input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku"></li>
+													<li>
+														<ul class="list-unstyled">
+															<li>
+																<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked"><label for="j-checkbox25"> In stock</label></div>
+															</li>
+															<li>
+																<div class="dropdown input-group-btn search-panel">
+																	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																	<span id="j-search-concept">All Locations</span>
+																	<span class="caret"></span>
+																	</button>
+																	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+																		<li><input type="text" class="form-control" name="x" placeholder="Search"></li>
+																		<li><a href="#all">All Locations</a></li>
+																		<li><a href="#less_than">San Diego</a></li>
+																		<li><a href="#all">New York</a></li>
+																		<li><a href="#all">France</a></li>
+																	</ul>
+																</div>
+															</li>
+														</ul>
+													</li>
+												</ul>
+											</div>
+											<div class="col-xs-12 s-bundle-add-items">
+												<div class="col-xs-12 s-bundle-add-items-inner">
+													<ul class="list-unstyled s-order-item-options">
+														<li class="s-bundle-add-obj">
+															<ul class="list-unstyled list-inline">
+																<li class="s-item-type">Product</li>
+															</ul>
+															<ul class="list-unstyled list-inline s-middle">
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Tony Hawk <span>Y-THU7867</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Qty: <span>1</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Location: <span>Boston</span></li>
+															</ul>
+															<ul class="list-unstyled list-inline s-last">
+																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-original-title="" title=""><a class="btn btn-primary"><i class="fa fa-plus"></i></a></li>
+															</ul>
+															<div class="clearfix"></div>
+														</li>
+														<li class="s-bundle-add-obj">
+															<ul class="list-unstyled list-inline">
+																<li class="s-item-type">Product</li>
+															</ul>
+															<ul class="list-unstyled list-inline s-middle">
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Spit Fire <span>Y-SDJ898</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Qty: <span>1</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Location: <span>Boston</span></li>
+															</ul>
+															<ul class="list-unstyled list-inline s-last">
+																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-original-title="" title=""><a class="btn btn-primary"><i class="fa fa-plus"></i></a></li>
+															</ul>
+															<div class="clearfix"></div>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<!-- //Search for product -->
+									</content>
+									
+									<!-- Bundle item selector - Trucks -->
+									<content class="s-body-box">
+										<h2 class="s-filter-header">
+											<span class="s-title">Trucks</span>
+											<ul class="list-unstyled list-inline">
+												<li>Min<span>1</span></li>
+												<li>Max<span>1</span></li>
+											</ul>
+										</h2>
+										<div class="table-responsive s-order-item-box">
+											<p class="s-no-items">You have not selected an item</p>
+										</div>
+										<!-- Search for product -->
+										<div class="row s-bundle-group-items">
+											<div class="col-xs-12 s-search-bar">
+												<ul class="list-unstyled s-search-bar-box">
+													<li>
+														<div class="dropdown input-group-btn search-panel">
+															<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+															<span id="j-search-concept">Any</span>
+															<span class="caret"></span>
+															</button>
+															<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+																<li><a href="#all">Any</a></li>
+																<li><a href="#less_than">Product</a></li>
+																<li><a href="#all">Skus</a></li>
+															</ul>
+														</div>
+													</li>
+													<li><input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku"></li>
+													<li>
+														<ul class="list-unstyled">
+															<li>
+																<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked"><label for="j-checkbox25"> In stock</label></div>
+															</li>
+															<li>
+																<div class="dropdown input-group-btn search-panel">
+																	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																	<span id="j-search-concept">All Locations</span>
+																	<span class="caret"></span>
+																	</button>
+																	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+																		<li><input type="text" class="form-control" name="x" placeholder="Search"></li>
+																		<li><a href="#all">All Locations</a></li>
+																		<li><a href="#less_than">San Diego</a></li>
+																		<li><a href="#all">New York</a></li>
+																		<li><a href="#all">France</a></li>
+																	</ul>
+																</div>
+															</li>
+														</ul>
+													</li>
+												</ul>
+											</div>
+											<div class="col-xs-12 s-bundle-add-items s-hide-trans">
+												<div class="col-xs-12 s-bundle-add-items-inner">
+													<ul class="list-unstyled s-order-item-options">
+														<li class="s-bundle-add-obj">
+															<ul class="list-unstyled list-inline">
+																<li class="s-item-type">Product</li>
+															</ul>
+															<ul class="list-unstyled list-inline s-middle">
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Independent Super Light <span>N-3647HJ</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Qty: <span>1</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Location: <span>Boston</span></li>
+															</ul>
+															<ul class="list-unstyled list-inline s-last">
+																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-original-title="" title=""><a class="btn btn-primary"><i class="fa fa-plus"></i></a></li>
+															</ul>
+															<div class="clearfix"></div>
+														</li>
+														<li class="s-bundle-add-obj">
+															<ul class="list-unstyled list-inline">
+																<li class="s-item-type">Product</li>
+															</ul>
+															<ul class="list-unstyled list-inline s-middle">
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Independent Standard <span>N-3647YU</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Qty: <span>1</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Location: <span>Boston</span></li>
+															</ul>
+															<ul class="list-unstyled list-inline s-last">
+																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-original-title="" title=""><a class="btn btn-primary"><i class="fa fa-plus"></i></a></li>
+															</ul>
+															<div class="clearfix"></div>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<!-- //Search for product -->
+									</content>
+									
+									<!-- Bundle item selector - Wheels -->
+									<content class="s-body-box">
+										<h2 class="s-filter-header">
+											<span class="s-title">Wheels</span>
+											<ul class="list-unstyled list-inline">
+												<li>Min<span>1</span></li>
+												<li>Max<span>1</span></li>
+											</ul>
+										</h2>
+										<div class="table-responsive s-order-item-box">
+											<p class="s-no-items">You have not selected an item</p>
+										</div>
+										<!-- Search for product -->
+										<div class="row s-bundle-group-items">
+											<div class="col-xs-12 s-search-bar">
+												<ul class="list-unstyled s-search-bar-box">
+													<li>
+														<div class="dropdown input-group-btn search-panel">
+															<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+															<span id="j-search-concept">Any</span>
+															<span class="caret"></span>
+															</button>
+															<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+																<li><a href="#all">Any</a></li>
+																<li><a href="#less_than">Product</a></li>
+																<li><a href="#all">Skus</a></li>
+															</ul>
+														</div>
+													</li>
+													<li><input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku"></li>
+													<li>
+														<ul class="list-unstyled">
+															<li>
+																<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked"><label for="j-checkbox25"> In stock</label></div>
+															</li>
+															<li>
+																<div class="dropdown input-group-btn search-panel">
+																	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																	<span id="j-search-concept">All Locations</span>
+																	<span class="caret"></span>
+																	</button>
+																	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+																		<li><input type="text" class="form-control" name="x" placeholder="Search"></li>
+																		<li><a href="#all">All Locations</a></li>
+																		<li><a href="#less_than">San Diego</a></li>
+																		<li><a href="#all">New York</a></li>
+																		<li><a href="#all">France</a></li>
+																	</ul>
+																</div>
+															</li>
+														</ul>
+													</li>
+												</ul>
+											</div>
+											<div class="col-xs-12 s-bundle-add-items s-hide-trans">
+												<div class="col-xs-12 s-bundle-add-items-inner">
+													<ul class="list-unstyled s-order-item-options">
+														<li class="s-bundle-add-obj">
+															<ul class="list-unstyled list-inline">
+																<li class="s-item-type">Product</li>
+															</ul>
+															<ul class="list-unstyled list-inline s-middle">
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Spitfire <span>G-HJH678</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Qty: <span>1</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Location: <span>Boston</span></li>
+															</ul>
+															<ul class="list-unstyled list-inline s-last">
+																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-original-title="" title=""><a class="btn btn-primary"><i class="fa fa-plus"></i></a></li>
+															</ul>
+															<div class="clearfix"></div>
+														</li>
+														<li class="s-bundle-add-obj">
+															<ul class="list-unstyled list-inline">
+																<li class="s-item-type">Product</li>
+															</ul>
+															<ul class="list-unstyled list-inline s-middle">
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Shifters <span>Y-JKU768</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Qty: <span>1</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Location: <span>Boston</span></li>
+															</ul>
+															<ul class="list-unstyled list-inline s-last">
+																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-original-title="" title=""><a class="btn btn-primary"><i class="fa fa-plus"></i></a></li>
+															</ul>
+															<div class="clearfix"></div>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<!-- //Search for product -->
+									</content>
+									
+									<!-- Bundle item selector - Add-Ons -->
+									<content class="s-body-box">
+										<h2 class="s-filter-header">
+											<span class="s-title">Add-Ons</span>
+											<ul class="list-unstyled list-inline">
+												<li>Min<span>1</span></li>
+												<li>Max<span>5</span></li>
+											</ul>
+										</h2>
+										<div class="table-responsive s-order-item-box">
+											<p class="s-no-items">You have not selected an item</p>
+										</div>
+										<!-- Search for product -->
+										<div class="row s-bundle-group-items">
+											<div class="col-xs-12 s-search-bar">
+												<ul class="list-unstyled s-search-bar-box">
+													<li>
+														<div class="dropdown input-group-btn search-panel">
+															<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+															<span id="j-search-concept">Any</span>
+															<span class="caret"></span>
+															</button>
+															<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+																<li><a href="#all">Any</a></li>
+																<li><a href="#less_than">Product</a></li>
+																<li><a href="#all">Skus</a></li>
+															</ul>
+														</div>
+													</li>
+													<li><input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku"></li>
+													<li>
+														<ul class="list-unstyled">
+															<li>
+																<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked"><label for="j-checkbox25"> In stock</label></div>
+															</li>
+															<li>
+																<div class="dropdown input-group-btn search-panel">
+																	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+																	<span id="j-search-concept">All Locations</span>
+																	<span class="caret"></span>
+																	</button>
+																	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+																		<li><input type="text" class="form-control" name="x" placeholder="Search"></li>
+																		<li><a href="#all">All Locations</a></li>
+																		<li><a href="#less_than">San Diego</a></li>
+																		<li><a href="#all">New York</a></li>
+																		<li><a href="#all">France</a></li>
+																	</ul>
+																</div>
+															</li>
+														</ul>
+													</li>
+												</ul>
+											</div>
+											<div class="col-xs-12 s-bundle-add-items s-hide-trans">
+												<div class="col-xs-12 s-bundle-add-items-inner">
+													<ul class="list-unstyled s-order-item-options">
+														<li class="s-bundle-add-obj">
+															<ul class="list-unstyled list-inline">
+																<li class="s-item-type">Product</li>
+															</ul>
+															<ul class="list-unstyled list-inline s-middle">
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Risers <span>Y-GHGR78</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Qty: <span>1</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Location: <span>Boston</span></li>
+															</ul>
+															<ul class="list-unstyled list-inline s-last">
+																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-original-title="" title=""><a class="btn btn-primary"><i class="fa fa-plus"></i></a></li>
+															</ul>
+															<div class="clearfix"></div>
+														</li>
+														<li class="s-bundle-add-obj">
+															<ul class="list-unstyled list-inline">
+																<li class="s-item-type">Product</li>
+															</ul>
+															<ul class="list-unstyled list-inline s-middle">
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Black Magic Griptape <span>DE-3746YU</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Qty: <span>1</span></li>
+																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Location: <span>Boston</span></li>
+															</ul>
+															<ul class="list-unstyled list-inline s-last">
+																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-original-title="" title=""><a class="btn btn-primary"><i class="fa fa-plus"></i></a></li>
+															</ul>
+															<div class="clearfix"></div>
+														</li>
+													</ul>
+												</div>
+											</div>
+										</div>
+										<!-- //Search for product -->
+									</content>
+									
 								</div>
 								
-								<div class="col-sm-10">
-									<div class="row s-content-row">
-										<div class="col-md-6 s-content-item">
-												
-											<!-- Add select component Wrapper -->
-											<div class="s-select-list-wrapper s-search">
-												
-												<div class="form-group"><!-- Option select field wrapper -->
-													<label>Color:</label>
-													<div class="input-group">
-														<div class="s-input-btn">
-															<input id="searchinput" value="Blue" type="search" class="form-control">
-															<span class="glyphicon glyphicon-remove"></span>
-															<!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
-														</div>
-														<div class="input-group-btn">
-															<button class="btn btn-sm btn-default" type="submit"><i class="fa fa-caret-down"></i></button>
-														</div>
-													</div>
-												</div>
-												
-												<!-- Dropdown wrapper -->
-												<div class="dropdown s-search-results-wrapper">
-													<ul class="dropdown-menu">
-														<li><a href="##">Item One</a></li> 
-														<li><a href="##">Item Two</a></li> 
-														<li><a href="##">Item Three</a></li> 
-														<li><a href="##">Item Four</a></li> 
-														<li><a href="##">Item Five</a></li> 
-													</ul>
-												</div>
-												
-											</div><!--/s-select-list-wrapper-->
-											
-											<!-- Add select component Wrapper -->
-											<div class="s-select-list-wrapper s-search">
-												
-												<div class="form-group"><!-- Option select field wrapper -->
-													<label>Size:</label>
-													<div class="input-group">
-														<div class="s-input-btn">
-															<input id="searchinput" value="32GB" type="search" class="form-control">
-															<span class="glyphicon glyphicon-remove"></span>
-															<!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
-														</div>
-														<div class="input-group-btn">
-															<button class="btn btn-sm btn-default" type="submit"><i class="fa fa-caret-down"></i></button>
-														</div>
-													</div>
-												</div>
-												
-												<!-- Dropdown wrapper -->
-												<div class="dropdown s-search-results-wrapper">
-													<ul class="dropdown-menu">
-														<li><a href="##">Item One</a></li> 
-														<li><a href="##">Item Two</a></li> 
-														<li><a href="##">Item Three</a></li> 
-														<li><a href="##">Item Four</a></li> 
-														<li><a href="##">Item Five</a></li> 
-													</ul>
-												</div>
-												
-											</div><!--/s-select-list-wrapper-->	
-										
-										</div><!--/s-content-item-->
-											
-										<div class="col-md-6 s-content-item">
-											
-											<!-- Add select component Wrapper -->
-											<div class="s-select-list-wrapper s-search">
-												
-												<div class="form-group"><!-- Option select field wrapper -->
-													<label>Carrier:</label>
-													<div class="input-group">
-														<div class="s-input-btn">
-															<input id="searchinput" value="Verizon" type="search" class="form-control">
-															<span class="glyphicon glyphicon-remove"></span>
-															<!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
-														</div>
-														<div class="input-group-btn">
-															<button class="btn btn-sm btn-default" type="submit"><i class="fa fa-caret-down"></i></button>
-														</div>
-													</div>
-												</div>
-												
-												<!-- Dropdown wrapper -->
-												<div class="dropdown s-search-results-wrapper">
-													<ul class="dropdown-menu">
-														<li><a href="##">Item One</a></li> 
-														<li><a href="##">Item Two</a></li> 
-														<li><a href="##">Item Three</a></li> 
-														<li><a href="##">Item Four</a></li> 
-														<li><a href="##">Item Five</a></li> 
-													</ul>
-												</div>
-												
-											</div><!--/s-select-list-wrapper-->	
-												
-										</div><!--/s-content-item-->
-									</div>
-								</div>	
 							</div>
 						</div>
 					</div>
