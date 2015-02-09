@@ -41,6 +41,16 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		
 		var productID = getParameterByName('productID');
 		
+		var productBundleConstructor = function(){
+			$scope.product = $slatwall.newProduct();
+			var brand = $slatwall.newBrand();
+			var productType = $slatwall.newProductType();
+			$scope.product.$$setBrand(brand);
+			$scope.product.$$setProductType(productType);
+			$scope.product.$$addSku();
+			$scope.product.data.skus[0].data.productBundleGroups = [];
+		};
+		
 		$scope.productBundleGroup;
 		
 		if(angular.isDefined(productID) && productID !== ''){
@@ -58,23 +68,13 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 						});
 					});
 				});
-			});
-			
-			
-		}else{
-			$scope.product = $slatwall.newProduct();
-			var brand = $slatwall.newBrand();
-			var productType = $slatwall.newProductType();
-			$scope.product.$$setBrand(brand);
-			$scope.product.$$setProductType(productType);
-			$scope.product.$$addSku();
-			$scope.product.data.skus[0].data.productBundleGroups = [];
+			}, productBundleConstructor());
+
 		}
 
 		$scope.saveProductBundle = function(closeDialogIndex){
 			$scope.product.$$save();
 		};
-		
 		
 	}
 ]);
