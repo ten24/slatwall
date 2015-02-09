@@ -74,7 +74,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(structKeyExists(variables,"orderPayment")) {
 			return variables.orderPayment;
 		} else {
-			return getSubscriptionUsage().getSubscriptionOrderItems()[arrayLen(getSubscriptionUsage().getSubscriptionOrderItems())-1].getOrderItem().getOrder().getOrderPayments()[1];
+			// return latest subscription order payment
+			return getSubscriptionUsage().getUniquePreviousSubscriptionOrderPayments()[arrayLen(getSubscriptionUsage().getUniquePreviousSubscriptionOrderPayments())];
 		}
 	}
 
