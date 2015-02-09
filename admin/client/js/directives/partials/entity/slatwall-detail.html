@@ -58,7 +58,7 @@
 		<div class="panel-group s-pannel-group" id="accordion">
 			<div class="j-panel panel panel-default" ng-repeat="detailTab in detailTabs">
 			
-				<a data-toggle="collapse" href="/#collapse{{$index}}" ng-init="openTab=false" ng-click="openTab = true">
+				<a ng-init="openTab=false" ng-click="openTab = true">
 					<div class="panel-heading">
 						<h4 class="panel-title">
 							<span sw-rbkey="'admin.entity.'+entityName.toLowerCase()+'tabs.'+detailTab.toLowerCase().replace('.html','')"></span> <i
@@ -66,7 +66,7 @@
 						</h4>
 					</div>
 				</a>
-				<div id="collapse{{$index}}" class="panel-collapse"
+				<div collapse="!openTab" class="panel-collapse"
 					style="height: 0px;">
 					<content class="s-body-box" ng-if="openTab || allTabsOpen">
 						<ng-include src="tabPartialPath+entityName+'/'+detailTab.toLowerCase()"></ng-include>
