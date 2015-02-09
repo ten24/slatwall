@@ -791,10 +791,10 @@ component extends="HibachiService" accessors="true" {
 				thisSku.setRenewalPrice(arguments.processObject.getPrice());
 				thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.processObject.getSubscriptionTerms(), i)) );
 				thisSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
-				for(var b=1; b <= listLen(arguments.processObject.subscriptionBenefits); b++) {
+				for(var b=1; b <= listLen(arguments.processObject.getSubscriptionBenefits()); b++) {
 					thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.subscriptionBenefits, b) ) );
 				}
-				for(var b=1; b <= listLen(arguments.processObject.renewalSubscriptionBenefits); b++) {
+				for(var b=1; b <= listLen(arguments.processObject.getRenewalSubscriptionBenefits()); b++) {
 					thisSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.renewalSubscriptionBenefits, b) ) );
 				}
 				if(i==1) {
