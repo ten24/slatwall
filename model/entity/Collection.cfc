@@ -654,6 +654,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	private string function getPredicate(required any filter){
 		var predicate = '';
+		if(!structKeyExists(filter,"value")){
+			filter.value = "";
+		}
 		//verify we are handling a range value
 		if(arguments.filter.comparisonOperator eq 'between' || arguments.filter.comparisonOperator eq 'not between'){
 			if(arguments.filter.ormtype eq 'timestamp'){
@@ -696,12 +699,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}else if(arguments.filter.comparisonOperator eq 'is' || arguments.filter.comparisonOperator eq 'is not'){
 			predicate = filter.value;
 		}else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in'){
-			predicate = "(" & ListQualify(filter.value,"'") & ")";
+			if(len(filter.value)){
+				predicate = "(" & ListQualify(filter.value,"'") & ")";
+			}else{
+				predicate = "('')";
+			}
 		}else if(arguments.filter.comparisonOperator eq 'like' || arguments.filter.comparisonOperator eq 'not like'){
 			var paramID = getParamID();
-			if(!structKeyExists(filter,"value")){
-				filter.value = "";
-			}
+			
 			if(structKeyExists(filter,'pattern')){
 				switch(filter.pattern){
 					case '%w%':
@@ -719,9 +724,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			predicate = ":#paramID#";
 		}else{
 			var paramID = getParamID();
-			if(!structKeyExists(filter,"value")){
-				filter.value = "";
-			}
+			
 			addHQLParam(paramID,arguments.filter.value);
 			predicate = ":#paramID#";
 		}
