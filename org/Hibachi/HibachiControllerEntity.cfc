@@ -701,7 +701,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	private string function buildRedirectQueryString( required string queryString, required boolean maintainQueryString, struct rc ) {
 		if(arguments.maintainQueryString) {
 			for(var key in url) {
-				if(structKeyExists(arguments, 'rc')){
+				if(isDefined('arguments.rc.entityActionDetails.itemEntityName')){
 					if(key != getFW().getAction() && !listFindNoCase("redirectAction,sRedirectAction,fRedirectAction,redirectURL,sRedirectURL,fRedirectURL,#arguments.rc.entityActionDetails.itemEntityName#ID", key)) {
 						arguments.queryString = listAppend(arguments.queryString, "#key#=#url[key]#", "&");
 					}
