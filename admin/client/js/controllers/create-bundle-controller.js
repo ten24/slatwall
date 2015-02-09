@@ -70,6 +70,8 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 				});
 			}, productBundleConstructor());
 
+		} else {
+			productBundleConstructor();
 		}
 
 		$scope.saveProductBundle = function(closeDialogIndex){
