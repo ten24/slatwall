@@ -371,8 +371,9 @@ Notes:
 			) {
 				datepickerConfig.showWeeks = false;
       			datepickerPopupConfig.toggleWeeksText = null;
-				
-				$locationProvider.html5Mode( false ).hashPrefix('!');
+				<cfif !isnull(rc.ng)> 
+					$locationProvider.html5Mode( false ).hashPrefix('!');
+				</cfif>
 				$provide.constant("baseURL", $.slatwall.getConfig().baseURL);
 				
 				var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/';
