@@ -328,7 +328,7 @@ Notes:
 			<!--- Page Dialog Controller --->
 			<div ng-controller="pageDialog">
 				<div id="topOfPageDialog" >
-					<div style="z-index:3000" class="s-dialog-container" ng-repeat="pageDialog in pageDialogs" >
+					<div style="z-index:3000" ng-show="pageDialogs.length" class="s-dialog-container" ng-repeat="pageDialog in pageDialogs" >
 						<div  ng-include="pageDialog.path" ></div>
 					</div>
 				</div>
