@@ -58,18 +58,18 @@
 		<div class="panel-group s-pannel-group" id="accordion">
 			<div class="j-panel panel panel-default" ng-repeat="detailTab in detailTabs">
 			
-				<a ng-init="openTab=false" ng-click="openTab = true">
+				<a ng-click="detailTab.openTab = true">
 					<div class="panel-heading">
 						<h4 class="panel-title">
-							<span sw-rbkey="'admin.entity.'+entityName.toLowerCase()+'tabs.'+detailTab.toLowerCase().replace('.html','')"></span> <i
+							<span sw-rbkey="'admin.entity.'+entityName.toLowerCase()+'tabs.'+detailTab.tabName.toLowerCase().replace('.html','')"></span> <i
 								class="s-accordion-toggle-icon fa fa-caret-left"></i>
 						</h4>
 					</div>
 				</a>
-				<div collapse="!openTab" class="panel-collapse"
+				<div  collapse="!detailTab.openTab" class="panel-collapse"
 					style="height: 0px;">
-					<content class="s-body-box" ng-if="openTab || allTabsOpen">
-						<ng-include src="tabPartialPath+entityName+'/'+detailTab.toLowerCase()"></ng-include>
+					<content class="s-body-box" ng-if="detailTab.openTab || allTabsOpen">
+						<ng-include src="tabPartialPath+entityName+'/'+detailTab.tabName.toLowerCase()"></ng-include>
 					</content>
 				</div>
 			</div>
