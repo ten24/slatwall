@@ -23,27 +23,27 @@ angular.module('slatwalladmin')
 			formatPropertiesList: function(propertiesList,propertyIdentifier){
 				var simpleGroup = {
 						$$group:'simple',
-						displayPropertyIdentifier:'-----------------'
+						//displayPropertyIdentifier:'-----------------'
 				};
 				
 				propertiesList.data.push(simpleGroup);
 				var drillDownGroup = {
 						$$group:'drilldown',
-						displayPropertyIdentifier:'-----------------'
+						//displayPropertyIdentifier:'-----------------'
 				};
 				
 				propertiesList.data.push(drillDownGroup);
 				
 				var compareCollections = {
 						$$group:'compareCollections',
-						displayPropertyIdentifier:'-----------------'
+						//displayPropertyIdentifier:'-----------------'
 				};
 				
 				propertiesList.data.push(compareCollections);
 				
 				var attributeCollections = {
 						$$group:'attribute',
-						displayPropertyIdentifier:'-----------------'
+						//displayPropertyIdentifier:'-----------------'
 				};
 				
 				propertiesList.data.push(attributeCollections);
@@ -68,9 +68,30 @@ angular.module('slatwalladmin')
 							propertiesList.data[i].$$group = 'compareCollections';
 						}
 					}
+					
 					propertiesList.data[i].propertyIdentifier = propertyIdentifier + '.' +propertiesList.data[i].name;
 				}
-				propertiesList.data = _orderBy(propertiesList.data,['-$$group','propertyIdentifier'],false);
+				//propertiesList.data = _orderBy(propertiesList.data,['displayPropertyIdentifier'],false);
+				
+				//--------------------------------Removes empty lines from dropdown.
+				var temp = [];
+				for (var i = 0; i <=propertiesList.data.length -1; i++){
+					if (propertiesList.data[i].propertyIdentifier.indexOf(".undefined") != -1){
+						console.log("removing: " + propertiesList.data[i].displayPropertyIdentifier);
+						propertiesList.data[i].displayPropertyIdentifier = "hide";
+						
+					}else{
+						temp.push(propertiesList.data[i]);
+						console.log(propertiesList.data[i]);
+					}
+				}
+				temp.sort;
+				propertiesList.data = temp;
+				console.log("----------------------PropertyList\n\n\n\n\n");
+				propertiesList.data = _orderBy(propertiesList.data,['propertyIdentifier'],false);
+				console.dir(propertiesList.data);
+				
+				//--------------------------------End remove empty lines.
 			},
 			
 			orderBy: function(propertiesList,predicate,reverse){
