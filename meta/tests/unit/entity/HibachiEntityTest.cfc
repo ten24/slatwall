@@ -55,8 +55,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		variables.entity = request.slatwallScope.newEntity('product');
 	}
 	
-	public void function getDefaultPropertiesTest(){
-		var defaultProperties = variables.entity.getDefaultProperties();
+	public void function getDefaultCollectionPropertiesTest(){
+		var defaultProperties = variables.entity.getDefaultCollectionProperties();
 		for(defaultProperty in defaultProperties){
 			assertTrue(!structKeyExists(defaultProperty,'FKCOLUMN'));
 		}

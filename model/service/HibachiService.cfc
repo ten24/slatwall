@@ -111,7 +111,7 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 		}
 		
 		// Pull the meta data from the object (which in turn will cache it in the application for the next time)
-		return getEntityObject( arguments.entityName ).getDefaultProperties();
+		return getEntityObject( arguments.entityName ).getDefaultCollectionProperties();
 	}
 	
 	public string function getAttributeCodeListByEntityName(required string entityName){
