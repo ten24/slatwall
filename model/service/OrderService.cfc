@@ -341,6 +341,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			// Setup child items for a bundle
+			//Need to also check child order items for child order items.
 			if( arguments.processObject.getSku().getBaseProductType() == 'productBundle' ) {
 				
 				for(var childItemData in arguments.processObject.getChildOrderItems()) {

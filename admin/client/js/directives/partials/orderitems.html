@@ -8,8 +8,9 @@
 								<th>Image</th>
 								<th>Title</th>
 								<th>Sku</th>
-								<th>Details</th>
-								<th>Customization</th>
+								<!--<th>Details</th>
+								<th>Customization</th>-->
+								<th ng-repeat="name in customAttributeNames">{{name}}</th>
 								<th>Price</th>
 								<th>Qty</th>
 								<th>Discount</th>
@@ -20,52 +21,29 @@
 						</thead>
 						<tbody ng-repeat="orderItem in orderItems">
 							<tr class="s-bundle-product l-1" data-id="B-625TX78">
-								<!-- image --><!-- Replace with getOrderItemImage directive -->
-								<td rowspan="1000" class="s-image" data-id="j-B-625TX78"><img src="http://placehold.it/90x90"></td>
-								
-								<!-- sku name -->
-								<td class="s-title" ng-bind="orderItem.data.sku.data.skuName">
-									Custom Necklace <a href="" class="s-toggle-detail-link">hide detail</a>
-								</td>
-								
-								<!-- sku code -->
-								<td class="s-sku" ng-bind="orderItem.data.sku.data.skuCode"></td>
-								
-								<!-- sku details -->
-								<td class="s-details"></td>
-								<td class="s-customization"></td>
-								<td class="s-price">
+								<td rowspan="1000" class="s-image" data-id="j-B-625TX78"><swoiimage data-order-Item="orderItem"></swoiimage></td>
+								<td class="s-title">Charms: Heart Charm <a href="#" class="s-edit-link">edit</a></td>
+								<td class="s-sku">F-JH67GH</td>
+								<td class="s-details">
 									<ul>
-										<li class="s-price-total" ng-bind="orderItem.data.sku.data.price"></li>
-										<li class="s-price-list">
-											<ul>
-												<li>+$0.00 (Base Price)</li>
-												<li>+$50.00 (Extras)</li>
-											</ul>
-										</li>
+										<li>Color: Red</li>
 									</ul>
 								</td>
+								<td class="s-customization">
+									<ul>
+										<li>Engraving: Reyjay</li>
+									</ul>
+								</td>
+								
+								<td class="s-price">+$10.00</td>
 								<td class="s-qty">2</td>
-								<td class="s-discount">-$5.00</td>
-								<td class="s-total">
-									<ul>
-										<li class="s-price-total">$95.00</li>
-										<li class="s-price-list">
-											<ul>
-												<li>+$0.00 (Base Price)</li>
-												<li>+$100.00 (Extras)</li>
-											</ul>
-										</li>
-									</ul>
-								</td>
+								<td class="s-discount">-$0.00</td>
+								<td class="s-total">+$50.00</td>
 								<td rowspan="1000" class="s-fullfilment">
 									<ul>
 										<li class="s-header">Ship To: <a href="#" class="s-edit-link">edit</a></li>
 										<li>
-											<ul>
-												<li>123 Demo.</li>
-												<li>New York, NY 01532</li>
-											</ul>
+											<swoishippinglabelstamp data-order-Item="orderItem">Address</swoishippinglabelstamp>
 										</li>
 									</ul>
 								</td>
@@ -89,40 +67,11 @@
 										<li>Engraving: Reyjay</li>
 									</ul>
 								</td>
+								
 								<td class="s-price">+$10.00</td>
 								<td class="s-qty">2</td>
 								<td class="s-discount">-$0.00</td>
 								<td class="s-total">+$20.00</td>
-							</tr>
-							<tr class="s-bundle-product l-2" data-id="B-625TX78">
-								<td class="s-title">Charms: Round Custom Charm <a href="#" class="s-edit-link">edit</a></td>
-								<td class="s-sku">J-688DSF</td>
-								<td class="s-details"></td>
-								<td class="s-customization"></td>
-								<td class="s-price">
-									<ul>
-										<li class="s-price-total">+$30.00</li>
-										<li class="s-price-list">
-											<ul>
-												<li>+$20.00 (Base Price)</li>
-												<li>+$10.00 (Extras)</li>
-											</ul>
-										</li>
-									</ul>
-								</td>
-								<td class="s-qty">2</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">
-									<ul>
-										<li class="s-price-total">+$60.00</li>
-										<li class="s-price-list">
-											<ul>
-												<li>+$40.00 (Base Price)</li>
-												<li>+$20.00 (Extras)</li>
-											</ul>
-										</li>
-									</ul>
-								</td>
 							</tr>
 							<tr class="s-product l-3" data-id="B-625TX78">												
 								<td class="s-title">Engraving: Front Engraving <a href="#" class="s-edit-link">edit</a></td>

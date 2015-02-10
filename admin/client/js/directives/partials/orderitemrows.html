@@ -1,0 +1,199 @@
+<!--/////////////////// START BUNDLE LISTING EXAMPLE///////////////////-->						
+<content class="s-body-box">
+				<div class="table-responsive">
+					<table class="table table-bordered s-order-item-table">
+						<thead>
+							<tr>
+								<th>Image</th>
+								<th>Title</th>
+								<th>Sku</th>
+								<th ng-repeat="name in customAttributeNames">{{name}}</th>
+								<th>Price</th>
+								<th>Qty</th>
+								<th>Discount</th>
+								<th>Total</th>
+								<th>Fullfilment</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody ng-repeat="orderItem in orderItems">
+							<!-- Begin Merchandise Row -->
+							
+							<tr class="s-bundle-product l-1" data-id="B-625TX78">
+								<td rowspan="1000" class="s-image" data-id="j-B-625TX78"><swoiimage data-order-Item="orderItem"></swoiimage></td>
+								<td class="s-title">{{orderItem.product.productName}}<a href="#" class="s-edit-link">edit</a></td>
+								<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
+								<td class="s-details" ng-repeat="val in orderItem.attributeValues track by $index"><span ng-hide="val === 'none'">{{val}}</span></td>
+								<td class="s-price">${{orderItem.data.skuPrice}}</td>
+								<td class="s-qty">{{orderItem.data.quantity}}</td>
+								<td class="s-discount">-$0.00</td>
+								<td class="s-total">${{orderItem.total}}</td>
+								<td rowspan="1000" class="s-fullfilment">
+									<ul>
+										<li class="s-header">Ship To: <a href="#" class="s-edit-link">edit</a></li>
+										<li>
+											<swoishippinglabelstamp data-order-Item="orderItem">Address</swoishippinglabelstamp>
+										</li>
+									</ul>
+								</td>
+								<td rowspan="1000" class="s-actions">
+									<ul>
+										<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
+										<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
+									</ul>
+								</td>
+							</tr>
+							<!-- End -->
+							<!-- Need to handle when the item is a product bundle.-->
+							<tr class="s-product l-2" data-id="B-625TX78">
+								<td class="s-title">Charms: Heart Charm <a href="#" class="s-edit-link">edit</a></td>
+								<td class="s-sku">F-JH67GH</td>
+								<td class="s-details">
+									<ul>
+										<li>Color: Red</li>
+									</ul>
+								</td>
+								<td class="s-customization">
+									<ul>
+										<li>Engraving: Reyjay</li>
+									</ul>
+								</td>
+								
+								<td class="s-price">+$10.00</td>
+								<td class="s-qty">2</td>
+								<td class="s-discount">-$0.00</td>
+								<td class="s-total">+$20.00</td>
+							</tr>
+							<tr class="s-product l-3" data-id="B-625TX78">												
+								<td class="s-title">Engraving: Front Engraving <a href="#" class="s-edit-link">edit</a></td>
+								<td class="s-sku">H-JKHG675D</td>
+								<td class="s-details"></td>
+								<td class="s-customization">
+									<ul>
+										<li>Engraving Text: GJM</li>
+										<li>Engraving Font: Arial</li>
+									</ul>
+								</td>
+								<td class="s-price">+$5.00</td>
+								<td class="s-qty">2</td>
+								<td class="s-discount">-$0.00</td>
+								<td class="s-total">+$10.00</td>
+							</tr>
+							<tr class="s-product l-3" data-id="B-625TX78">
+								<td class="s-title">Engraving: Back Engraving <a href="#" class="s-edit-link">edit</a></td>
+								<td class="s-sku">T-JKU67GT</td>
+								<td class="s-details"></td>
+								<td class="s-customization">
+									<ul>
+										<li>Engraving Text: Yo</li>
+										<li>Engraving Font: Arial</li>
+									</ul>
+								</td>
+								<td class="s-price">+$5.00</td>
+								<td class="s-qty">2</td>
+								<td class="s-discount">-$0.00</td>
+								<td class="s-total">+$10.00</td>
+							</tr>
+							
+						</tbody>
+
+					</table>
+				</div>
+				
+				<div class="row s-bundle-group-items">
+					<div class="col-xs-12 s-search-bar">
+
+						<ul class="list-unstyled s-search-bar-box">
+							<li>
+								<div class="dropdown input-group-btn search-panel">
+									<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										<span id="j-search-concept">Any</span>
+										<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+										<li><a href="#all">Any</a></li>
+										<li><a href="#less_than">Product</a></li>
+										<li><a href="#all">Skus</a></li>
+									</ul>
+								</div>
+							</li>
+							<li>
+								<input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku">
+								<i class="fa fa-refresh fa-spin"></i>
+							</li>
+							<li>
+								<ul class="list-unstyled">
+									<li>
+										<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked"><label for="j-checkbox25"> In stock</label></div>
+									</li>
+									<li>
+										<div class="dropdown input-group-btn search-panel">
+											<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+												<span id="j-search-concept">All Locations</span>
+												<span class="caret"></span>
+											</button>
+											<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+												<li><input type="text" class="form-control" name="x" placeholder="Search"></li>
+												<li><a href="#all">All Locations</a></li>
+												<li><a href="#less_than">San Diego</a></li>
+												<li><a href="#all">New York</a></li>
+												<li><a href="#all">France</a></li>
+											</ul>
+										</div>
+									</li>
+								</ul>
+							</li>
+						</ul>
+
+					</div>
+
+					<div class="col-xs-12 s-bundle-add-items">
+						<div class="col-xs-12 s-bundle-add-items-inner">
+
+							<ul class="list-unstyled s-order-item-options">
+								<li class="s-bundle-add-obj">
+									<ul class="list-unstyled list-inline s-middle">
+										<li class="j-tool-tip-item s-bundle-details">Subscription</li>
+										<li class="j-tool-tip-item s-bundle-details">Skateboard Magazine 1 Year <span>K-3847UGH</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Qty: <span>1</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Location: <span>San Diego</span></li>
+									</ul>
+									<ul class="s-last">
+										<li class="s-bundle-details-add">
+											<a class="btn btn-default"><i class="fa fa-minus-square-o"></i> <span class="s-action-text">Return Item</span></a>
+										</li>
+										<li class="s-bundle-details-add">
+											<a class="btn btn-primary"><i class="fa fa-plus-square-o"></i> <span class="s-action-text">Add Item</span></a>
+										</li>
+									</ul>
+									<div class="clearfix"></div>
+								</li>
+
+								<li class="s-bundle-add-obj">
+									<ul class="list-unstyled list-inline s-middle">
+										<li class="j-tool-tip-item s-bundle-details">Subscription</li>
+										<li class="j-tool-tip-item s-bundle-details">Skateboard Magazine 1 Year <span>K-3847UGH</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Qty: <span>1</span></li>
+										<li class="j-tool-tip-item s-bundle-details">Location: <span>San Diego</span></li>
+									</ul>
+									<ul class="s-last">
+										<li class="s-bundle-details-add">
+											<a class="btn btn-default"><i class="fa fa-minus-square-o"></i> <span class="s-action-text">Return Item</span></a>
+										</li>
+										<li class="s-bundle-details-add">
+											<a class="btn btn-primary"><i class="fa fa-plus-square-o"></i> <span class="s-action-text">Add Item</span></a>
+										</li>
+									</ul>
+									<div class="clearfix"></div>
+								</li>
+
+							</ul>
+						</div>
+					</div>
+				</div>
+					
+			</content>					
+		</div>
+	</div>
+					
+<!--/////////////////// END BUNDLE LISTING EXAMPLE///////////////////-->

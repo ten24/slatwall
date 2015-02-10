@@ -54,7 +54,8 @@ Notes:
 
 <cfoutput>
 	<sw-order-items
-		data-order-id="#rc.order.getOrderID()#"		
+		data-order-id="#rc.order.getOrderID()#"
+		data-base-url="#getHibachiScope().getBaseImageURL()#/product/default/"	
 	>
 	</sw-order-items>
 </cfoutput>
