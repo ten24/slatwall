@@ -3,8 +3,8 @@
 
     <div class="form-group form-group-sm">
       <div class="col-sm-12 s-no-paddings">
-     	<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From Existing Collections:</label>
-		<select id="u52_input" class="j-custom-select" style="-webkit-appearance: menulist-button; border-color: rgb(153, 153, 153);"
+     	<label class="col-sm-2 control-label s-no-paddings" for="formGroupInputSmall">Select From Existing Collections:</label>
+		<select id="u52_input" class="form-control input-sm j-custom-select" style="-webkit-appearance: menulist-button; border-color: rgb(153, 153, 153);"
       			ng-model="selectedFilterProperty.selectedCollection" 
         		ng-options="collection as collection.collectionName 
         					for collection in collectionOptions 
@@ -12,8 +12,8 @@
       	>
       		<option selected="selected" value="">Select Collection</option>
         </select>
-      	<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select Condition:</label>
-      	<select id="u52_input" style="-webkit-appearance: menulist-button; border-color: rgb(153, 153, 153);"
+      	<label class="col-sm-2 control-label s-no-paddings" for="formGroupInputSmall">Select Condition:</label>
+      	<select id="u52_input" class="form-control input-sm j-custom-select"
       			ng-model="selectedFilterProperty.selectedCriteriaType" 
         		ng-options="manyToManyOption as manyToManyOption.display 
         					for manyToManyOption in manyToManyOptions 
