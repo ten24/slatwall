@@ -140,7 +140,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(variables.collectionConfig eq '{}' ){
 			//get default columns
 			var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
-			var defaultProperties = newEntity.getDefaultProperties();
+			var defaultProperties = newEntity.getDefaultCollectionProperties();
 			
 			var columnsArray = []; 
 			if(addDefaultColumns){
@@ -1136,8 +1136,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// ============== START: Overridden Implicit Getters ===================
 	
-	public any function getDefaultProperties(){
-		return super.getDefaultProperties();
+	public any function getDefaultCollectionProperties(){
+		return super.getDefaultCollectionProperties();
 	}
 	
 	// ==============  END: Overridden Implicit Getters ====================
