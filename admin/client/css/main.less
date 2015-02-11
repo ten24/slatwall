@@ -966,7 +966,7 @@ tabel .s-table-header {margin-bottom:10px;}
 
 .s-bundle-add-items .s-order-item-options {margin-bottom:0px;}
 .s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-item-type {position: relative;left: 5px;line-height: 33px;text-align: center;background-color: @black-30;color: @white;font-size: 11px;}
-.s-bundle-selected-items .s-order-item-options .s-bundle-add-obj .s-item-type {background-color: @brand-success;}
+.s-bundle-selected-items .s-order-item-options .s-bundle-add-obj .s-item-type {background-color: @black-60;}
 .s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-bundle-details span {color:@black-30;margin-left:10px;font-weight:normal;}
 .s-bundle-add-items .s-order-item-options .s-bundle-add-obj:last-child {margin-bottom:0px;}
 .s-bundle-add-items .s-order-item-options.s-negative-obj > .s-bundle-add-obj {background-color:@black-5;.border-radius();}
@@ -1193,6 +1193,7 @@ tabel .s-table-header {margin-bottom:10px;}
 
 .navbar-s-navbar-ten24 { background-color: @white;min-height:0px;}
 .navbar-s-navbar-ten24 li {float:left !important;}
+.navbar-s-navbar-ten24 li.s-total {height: 40px;font-size: 16px;background-color: @brand-success;font-weight: 600;color: #FFF;padding: 9px;}
 .navbar-s-navbar-ten24 .navbar-nav { margin:0px;}
 .navbar-s-navbar-ten24 .navbar-brand {height:38px;padding:8px;}
 .navbar-s-navbar-ten24 .navbar-nav>.active>a:hover,.navbar-s-navbar-ten24 .navbar-nav>li>a:hover, .navbar-s-navbar-ten24 .navbar-nav>li>a:focus { }
@@ -1219,7 +1220,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-create-window .s-pannel-group {padding-top:20px;}
 .s-create-window .s-absolute-bottom-nav {display:none;}
 .s-create-window .s-create-bundle-item {margin-top:10px;background-color: @black-5;padding: 0px 15px;-moz-box-shadow: inset 0 0 2px #999999;-webkit-box-shadow: inset 0 0 2px #999;box-shadow: inset 0 0 2px #999;margin-bottom:50px;}
-.s-create-window .navbar .navbar-nav li a {padding: 7px 12px 6px 12px;cursor: pointer;color:@black-60}
+.s-create-window .navbar .navbar-nav li a {padding: 7px 12px 6px 12px;cursor: pointer;}
 .s-create-window .navbar .navbar-nav li a i {font-size:25px;}
 
 /*Add breadcrumbs to the create-window*/
@@ -1389,11 +1390,12 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 .s-dialog-container.ng-leave,
 .s-dialog-container.ng-leave.ng-leave-active {overflow:hidden;}
 
-.s-dialog-header .navbar-nav li a {border: 0px;}
+.s-dialog-header .navbar-nav li a {border: 0px;color:@black-60;}
 .s-dialog-header .navbar-nav li a:hover {background-color: @brand-danger;color:@white;border-radius:0px;}
 
-.s-dialog-footer .navbar-nav li a {padding: 10px 12px !important;font-size: 16px;border: 0px;}
-.s-dialog-footer .navbar-nav li a:hover {background-color: @brand-primary;color:@white;border-radius:0px;}
+.s-dialog-footer .navbar-nav li:first-child {margin-right:1px;}
+.s-dialog-footer .navbar-nav li a {padding: 10px 12px !important;font-size: 16px;border: 0px;border-radius:0px;background: @brand-primary;color:@white;}
+.s-dialog-footer .navbar-nav li a:hover {background-color: lighten(@brand-primary,10%);color:@white;border-radius:0px;}
 
 .autocomplete-options {
 	position: absolute !important;
@@ -1512,7 +1514,7 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 .s-search-results-wrapper .dropdown-menu a:hover {background-color:#fafafa;color:@black-60 !important;}
 .s-select-list-wrapper .s-input-btn span, .s-select-list-wrapper .s-input-btn i {position: absolute;right: 40px;top: 1px;bottom: 0;height: 14px;margin: auto;font-size: 14px;cursor: pointer;color: @black-20;z-index: 10;}
 .s-select-list-wrapper.s-dropdown .s-input-btn span, .s-select-list-wrapper.s-dropdown .s-input-btn i {right: 68px;}
-.s-select-list-wrapper .s-input-btn span:hover {color:@brand-primary;}
+.s-select-list-wrapper .s-input-btn span:hover {color:@brand-danger;}
 .s-select-list-wrapper .input-group-btn button.btn-default {border-top:1px solid @black-20;border-bottom:1px solid @black-20;left: -1px;margin-right: -1px;}
 
 /*-- List Select Component Without Add --*/
