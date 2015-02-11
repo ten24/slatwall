@@ -903,24 +903,36 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				
 				if(structKeyExists(column,'isSearchable') && column.isSearchable){
 					//use keywords to create some post filters
+					
 					if(structKeyExists(column,'ormtype') 
-						&& column.ormtype neq 'boolean' 
-						&& column.ormtype neq 'timestamp'
-						&& column.ormtype neq 'big_decimal'
-						&& column.ormtype neq 'integer'
-						){
-						
+					&& column.ormtype neq 'boolean' 
+					&& column.ormtype neq 'timestamp'
+					
+					){
 						for(keyword in getKeywordArray()){
-							
-							var postFilterGroup = {
-								filterGroup = [
-									{
-										propertyIdentifier = 'LOWER(#column.propertyIdentifier#)',
-										comparisonOperator = "like",
-										value="%#keyword#%"
-									}
-								]
-							};
+							if(column.ormtype eq 'big_decimal'
+							|| column.ormtype eq 'integer'){
+								var postFilterGroup = {
+									filterGroup = [
+										{
+											propertyIdentifier = 'STR(#column.propertyIdentifier#)',
+											comparisonOperator = "like",
+											value="%#keyword#%"
+										}
+									]
+								};
+							}else{
+								
+								var postFilterGroup = {
+									filterGroup = [
+										{
+											propertyIdentifier = 'LOWER(#column.propertyIdentifier#)',
+											comparisonOperator = "like",
+											value="%#keyword#%"
+										}
+									]
+								};
+							}
 							if(keywordCount != 0){
 								postFilterGroup.logicalOperator = "OR";
 							}else{
@@ -967,19 +979,30 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(structKeyExists(propertyItem,'ormtype') 
 					&& propertyItem.ormtype neq 'boolean' 
 					&& propertyItem.ormtype neq 'timestamp' 
-					&& propertyItem.ormtype neq 'big_decimal'
-					&& propertyItem.ormtype neq 'integer'
 					&& !structKeyExists(propertyItem,'attributeID') ){
 					for(keyword in getKeywordArray()){
-						var postFilterGroup = {
-							filterGroup = [
-								{
-									propertyIdentifier = 'LOWER(#arguments.collectionConfig.baseEntityAlias#.#propertyItem.name#)',
-									comparisonOperator = "like",
-									value="%#keyword#%"
-								}
-							]
-						};
+						if(column.ormtype eq 'big_decimal'
+						|| column.ormtype eq 'integer'){
+							var postFilterGroup = {
+								filterGroup = [
+									{
+										propertyIdentifier = 'STR(#column.propertyIdentifier#)',
+										comparisonOperator = "like",
+										value="%#keyword#%"
+									}
+								]
+							};
+						}else{
+							var postFilterGroup = {
+								filterGroup = [
+									{
+										propertyIdentifier = 'LOWER(#arguments.collectionConfig.baseEntityAlias#.#propertyItem.name#)',
+										comparisonOperator = "like",
+										value="%#keyword#%"
+									}
+								]
+							};
+						}
 						if(keywordCount != 0){
 							postFilterGroup.logicalOperator = "OR";
 						}else{
