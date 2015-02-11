@@ -20,11 +20,12 @@ angular.module('slatwalladmin')
 				propertyDisplay:"="
 			},
 			link:function(scope,element,attr,formController){
-
+				
+				
 				//set up selectionOptions
 				scope.selectionOptions = {
-						value:[],
-						$$adding:false
+					value:[],
+					$$adding:false
 				};
 				
 				//funciton to set state of adding new item 
@@ -35,20 +36,23 @@ angular.module('slatwalladmin')
 				scope.selectedOption = {};
 				scope.showAddBtn = false;
 				var propertyMetaData = scope.propertyDisplay.object.$$getMetaData(scope.propertyDisplay.property);
-				scope.propertyDisplay.template = '';
-				//check for a template
-				//rules are tiered: check if an override is specified at scope.template, check if the cfc name .html exists, use
-				var templatePath = partialsPath + 'formfields/searchselecttemplates/';
-				if(angular.isUndefined(scope.propertyDisplay.template)){
-					var templatePromise = $http.get(templatePath+propertyMetaData.cfcProperCase+'.html',function(){
-						console.log('template');
-						scope.propertyDisplay.template = templatePath+propertyMetaData.cfcProperCase+'.html';
-					},function(){
-						scope.propertyDisplay.template = templatePath+'index.html';
-						console.log('template');
-						console.log(scope.propertyDisplay.template);
-					});
-				}
+				//create basic 
+				var object = $slatwall.newEntity(propertyMetaData.cfc);
+				
+//				scope.propertyDisplay.template = '';
+//				//check for a template
+//				//rules are tiered: check if an override is specified at scope.template, check if the cfc name .html exists, use
+//				var templatePath = partialsPath + 'formfields/searchselecttemplates/';
+//				if(angular.isUndefined(scope.propertyDisplay.template)){
+//					var templatePromise = $http.get(templatePath+propertyMetaData.cfcProperCase+'.html',function(){
+//						console.log('template');
+//						scope.propertyDisplay.template = templatePath+propertyMetaData.cfcProperCase+'.html';
+//					},function(){
+//						scope.propertyDisplay.template = templatePath+'index.html';
+//						console.log('template');
+//						console.log(scope.propertyDisplay.template);
+//					});
+//				}
 				
 				//set up query function for finding related object
 				
@@ -104,19 +108,22 @@ angular.module('slatwalladmin')
 				    scope.$item = $item;
 				    scope.$model = $model;
 				    scope.$label = $label;
-				    var inflatedObject = $slatwall.newEntity(propertyMetaData.cfc);
-				    angular.extend(inflatedObject.data,$item);
-				    scope.propertyDisplay.object['$$set'+propertyMetaData.nameCapitalCase](inflatedObject);
+				    
+				    //angular.extend(inflatedObject.data,$item);
+				    object.$$init($item);
+				    console.log('select item');
+				    console.log(object);
+				    scope.propertyDisplay.object['$$set'+propertyMetaData.nameCapitalCase](object);
 				};
 				
-				if(angular.isUndefined(scope.propertyDipslay.object[scope.propertyDisplay.property])){
-					console.log('getmeta');
-					console.log(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property]);
-					
-					//scope.propertyDipslay.object['$$get'+]
-				}
-				
-				scope.propertyDisplay.object.data[scope.propertyDisplay.property].$dirty = true;
+//				if(angular.isUndefined(scope.propertyDipslay.object[scope.propertyDisplay.property])){
+//					console.log('getmeta');
+//					console.log(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property]);
+//					
+//					//scope.propertyDipslay.object['$$get'+]
+//				}
+//				
+//				scope.propertyDisplay.object.data[scope.propertyDisplay.property].$dirty = true;
 	        }
 		};
 	}
