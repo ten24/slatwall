@@ -242,20 +242,36 @@ component extends="HibachiService" accessors="true" output="false" {
 		return formattedObjectRecords;
 	}
 	
-	public any function getFormattedPageRecords(required any collectionEntity, required array propertyIdentifiers){
-		
-		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
-		
-		var formattedPageRecords[ "pageRecords" ] = getFormattedObjectRecords(paginatedCollectionOfEntities,arguments.propertyIdentifiers);
-		
-		formattedPageRecords[ "recordsCount" ] = arguments.collectionEntity.getRecordsCount();
-		formattedPageRecords[ "pageRecordsCount" ] = arrayLen(arguments.collectionEntity.getPageRecords());
+	public any function getBadCollectionInfo(required any collectionEntity){
+		formattedPageRecords[ "pageRecords" ] = [];
+			
+		formattedPageRecords[ "recordsCount" ] = 0;
+		formattedPageRecords[ "pageRecordsCount" ] = 0;
 		formattedPageRecords[ "pageRecordsShow"] = arguments.collectionEntity.getPageRecordsShow();
-		formattedPageRecords[ "pageRecordsStart" ] = arguments.collectionEntity.getPageRecordsStart();
-		formattedPageRecords[ "pageRecordsEnd" ] = arguments.collectionEntity.getPageRecordsEnd();
+		formattedPageRecords[ "pageRecordsStart" ] = 0;
+		formattedPageRecords[ "pageRecordsEnd" ] = 0;
 		formattedPageRecords[ "currentPage" ] = arguments.collectionEntity.getCurrentPage();
 		formattedPageRecords[ "totalPages" ] = arguments.collectionEntity.getTotalPages();
-		
+		formattedPageRecords['failed'] = true;
+	}
+	
+	public any function getFormattedPageRecords(required any collectionEntity, required array propertyIdentifiers){
+		var formattedPageRecords = {};
+		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
+		if(ArrayLen(paginatedCollectionOfEntities) == 1 && structKeyExists(paginatedCollectionOfEntities[1],'failedCollection')){
+			formattedPageRecords = getBadCollectionInfo(arguments.collectionEntity);
+		}else{
+				
+			formattedPageRecords[ "pageRecords" ] = getFormattedObjectRecords(paginatedCollectionOfEntities,arguments.propertyIdentifiers);
+			
+			formattedPageRecords[ "recordsCount" ] = arguments.collectionEntity.getRecordsCount();
+			formattedPageRecords[ "pageRecordsCount" ] = arrayLen(arguments.collectionEntity.getPageRecords());
+			formattedPageRecords[ "pageRecordsShow"] = arguments.collectionEntity.getPageRecordsShow();
+			formattedPageRecords[ "pageRecordsStart" ] = arguments.collectionEntity.getPageRecordsStart();
+			formattedPageRecords[ "pageRecordsEnd" ] = arguments.collectionEntity.getPageRecordsEnd();
+			formattedPageRecords[ "currentPage" ] = arguments.collectionEntity.getCurrentPage();
+			formattedPageRecords[ "totalPages" ] = arguments.collectionEntity.getTotalPages();
+		}
 		return formattedPageRecords;
 	}
 	

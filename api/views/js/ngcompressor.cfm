@@ -69,7 +69,6 @@ Notes:
 		expandPath( '/Slatwall/#rc.jspath#/controllers' ),
 		expandPath( '/Slatwall/#rc.jspath#/directives' )
 	]>
-	
 	<cfloop array="#local.jsDirectoryArray#" index="local.jsDirectory">
 		<cfdirectory
 		    action="list"
@@ -92,11 +91,15 @@ Notes:
 	<cfelse>
 		<cfset getPageContext().getOut().clearBuffer() />
 		<cfset local.oYUICompressor = createObject("component", "Slatwall.org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'Slatwall.org.Hibachi.YUIcompressor.javaloader.JavaLoader', libPath = expandPath('/Slatwall/org/Hibachi/YUIcompressor/lib')) />
-		<cfset local.jsOutputCompressed = oYUICompressor.compress(
-													inputType = 'js'
-													,inputString = local.jsOutput
-													).results />
-													
+		<!---if jsOutput is empty then set local.jsOutputCompressed to empty --->
+		<cfif len(local.jsOutput)>
+			<cfset local.jsOutputCompressed = oYUICompressor.compress(
+														inputType = 'js'
+														,inputString = local.jsOutput
+														).results />
+		<cfelse>
+			<cfset local.jsOutputCompressed = ''>
+		</cfif>													
 		<cfscript>
 			ioOutput = CreateObject("java","java.io.ByteArrayOutputStream");
 			gzOutput = CreateObject("java","java.util.zip.GZIPOutputStream");

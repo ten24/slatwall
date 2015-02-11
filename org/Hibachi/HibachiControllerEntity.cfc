@@ -662,7 +662,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			this.invokeMethod(arguments.defaultAction, {rc=arguments.rc});
 			
 		} else {
-			getFW().redirect( action=arguments.defaultAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString) );
+			getFW().redirect( action=arguments.defaultAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString, arguments.rc) );
 			
 		}
 	}
@@ -698,11 +698,17 @@ component output="false" accessors="true" extends="HibachiController" {
 		}
 	}
 	
-	private string function buildRedirectQueryString( required string queryString, required boolean maintainQueryString ) {
+	private string function buildRedirectQueryString( required string queryString, required boolean maintainQueryString, struct rc ) {
 		if(arguments.maintainQueryString) {
 			for(var key in url) {
-				if(key != getFW().getAction() && !listFindNoCase("redirectAction,sRedirectAction,fRedirectAction,redirectURL,sRedirectURL,fRedirectURL", key)) {
-					arguments.queryString = listAppend(arguments.queryString, "#key#=#url[key]#", "&");
+				if(isDefined('arguments.rc.entityActionDetails.itemEntityName')){
+					if(key != getFW().getAction() && !listFindNoCase("redirectAction,sRedirectAction,fRedirectAction,redirectURL,sRedirectURL,fRedirectURL,#arguments.rc.entityActionDetails.itemEntityName#ID", key)) {
+						arguments.queryString = listAppend(arguments.queryString, "#key#=#url[key]#", "&");
+					}
+				} else {
+					if(key != getFW().getAction() && !listFindNoCase("redirectAction,sRedirectAction,fRedirectAction,redirectURL,sRedirectURL,fRedirectURL", key)) {
+						arguments.queryString = listAppend(arguments.queryString, "#key#=#url[key]#", "&");
+					}
 				}
 			}
 		}
