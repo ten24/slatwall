@@ -951,7 +951,12 @@ Notes:
 	
 			    		var processParent = function(entityInstance){
 			    			var data = {};
+			    			if(entityInstance.$$getID() !== ''){
+								data[entityInstance.$$getIDName()] = entityInstance.$$getID();
+			    			}
 			    			
+			    			$log.debug('processParent');
+			    			$log.debug(entityInstance);
 				    		var forms = entityInstance.forms;
 							for(var f in forms){
 								var form = forms[f];
@@ -996,6 +1001,8 @@ Notes:
 											data[parentMetaData.name] = {};
 										}
 										var parentData = processParent(parent);
+										$log.debug('parentData:'+parentMetaData.name);
+										$log.debug(parentData);
 										angular.extend(data[parentMetaData.name],parentData);
 									}else{
 										
