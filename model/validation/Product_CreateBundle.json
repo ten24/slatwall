@@ -1,7 +1,8 @@
 {
 	"properties":{
 	    "productName": 				[{"required":true}],
-		"productCode": 				[{"required":true}]
+		"productCode": 				[{"required":true}],
+		"price":					[{"required":true}]
 	}
 }
 
