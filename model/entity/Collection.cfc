@@ -589,7 +589,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}
 		catch(any e){
-			variables.pageRecords = [{'failedCollection':'failedCollection'}];
+			variables.pageRecords = [{'failedCollection'='failedCollection'}];
 		}
 		
 		return variables.pageRecords;
