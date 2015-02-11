@@ -88,7 +88,7 @@
 						<label class="control-label" for="rating">#request.slatwallScope.rbKey('entity.address.countryCode')#</label>
 						<div class="controls">
 							
-							<sw:formField type="select" name="#attributes.fieldNamePrefix#countryCode" valueObject="#attributes.address#" valueObjectProperty="countryCode" valueOptions="#attributes.address.getCountryCodeOptions()#" class="#attributes.fieldClass#" />
+							<sw:FormField type="select" name="#attributes.fieldNamePrefix#countryCode" valueObject="#attributes.address#" valueObjectProperty="countryCode" valueOptions="#attributes.address.getCountryCodeOptions()#" class="#attributes.fieldClass#" />
 							<sw:errorDisplay object="#attributes.address#" errorName="countryCode" />
 							
 						</div>
@@ -101,7 +101,7 @@
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.name')#</label>
 						<div class="controls" data-sw-field="true">
 							
-							<sw:formField type="text" name="#attributes.fieldNamePrefix#name" valueObject="#attributes.address#" valueObjectProperty="name" class="#attributes.fieldClass#" />
+							<sw:FormField type="text" name="#attributes.fieldNamePrefix#name" valueObject="#attributes.address#" valueObjectProperty="name" class="#attributes.fieldClass#" />
 							<sw:errorDisplay object="#attributes.address#" errorName="name" />
 							
 						</div>
@@ -114,7 +114,7 @@
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.company')#</label>
 						<div class="controls" data-sw-field="true">
 							
-							<sw:formField type="text" name="#attributes.fieldNamePrefix#company" valueObject="#attributes.address#" valueObjectProperty="company" class="#attributes.fieldClass#" />
+							<sw:FormField type="text" name="#attributes.fieldNamePrefix#company" valueObject="#attributes.address#" valueObjectProperty="company" class="#attributes.fieldClass#" />
 							<sw:errorDisplay object="#attributes.address#" errorName="company" />
 							
 						</div>
@@ -127,7 +127,7 @@
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.streetAddress')#</label>
 						<div class="controls" data-sw-field="true">
 							
-							<sw:formField type="text" name="#attributes.fieldNamePrefix#streetAddress" valueObject="#attributes.address#" valueObjectProperty="streetAddress" class="#attributes.fieldClass#" />
+							<sw:FormField type="text" name="#attributes.fieldNamePrefix#streetAddress" valueObject="#attributes.address#" valueObjectProperty="streetAddress" class="#attributes.fieldClass#" />
 							<sw:errorDisplay object="#attributes.address#" errorName="streetAddress" />
 							
 						</div>
@@ -140,7 +140,7 @@
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.street2Address')#</label>
 						<div class="controls" data-sw-field="true">
 							
-							<sw:formField type="text" name="#attributes.fieldNamePrefix#street2Address" valueObject="#attributes.address#" valueObjectProperty="street2Address" class="#attributes.fieldClass#" />
+							<sw:FormField type="text" name="#attributes.fieldNamePrefix#street2Address" valueObject="#attributes.address#" valueObjectProperty="street2Address" class="#attributes.fieldClass#" />
 							<sw:errorDisplay object="#attributes.address#" errorName="street2Address" />
 							
 						</div>
@@ -153,7 +153,7 @@
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.locality')#</label>
 						<div class="controls" data-sw-field="true">
 							
-							<sw:formField type="text" name="#attributes.fieldNamePrefix#locality" valueObject="#attributes.address#" valueObjectProperty="locality" class="#attributes.fieldClass#" />
+							<sw:FormField type="text" name="#attributes.fieldNamePrefix#locality" valueObject="#attributes.address#" valueObjectProperty="locality" class="#attributes.fieldClass#" />
 							<sw:errorDisplay object="#attributes.address#" errorName="locality" />
 							
 						</div>
@@ -166,7 +166,7 @@
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.city')#</label>
 						<div class="controls" data-sw-field="true">
 							
-							<sw:formField type="text" name="#attributes.fieldNamePrefix#city" valueObject="#attributes.address#" valueObjectProperty="city" class="#attributes.fieldClass#" />
+							<sw:FormField type="text" name="#attributes.fieldNamePrefix#city" valueObject="#attributes.address#" valueObjectProperty="city" class="#attributes.fieldClass#" />
 							<sw:errorDisplay object="#attributes.address#" errorName="city" />
 							
 						</div>
@@ -180,9 +180,9 @@
 						<div class="controls" data-sw-field="true">
 							
 							<cfif arrayLen(attributes.address.getStateCodeOptions())>
-								<sw:formField type="select" name="#attributes.fieldNamePrefix#stateCode" valueObject="#attributes.address#" valueObjectProperty="stateCode" valueOptions="#attributes.address.getCountry().getStateCodeOptions()#" class="#attributes.fieldClass#" />
+								<sw:FormField type="select" name="#attributes.fieldNamePrefix#stateCode" valueObject="#attributes.address#" valueObjectProperty="stateCode" valueOptions="#attributes.address.getCountry().getStateCodeOptions()#" class="#attributes.fieldClass#" />
 							<cfelse>
-								<sw:formField type="text" name="#attributes.fieldNamePrefix#stateCode" valueObject="#attributes.address#" valueObjectProperty="stateCode" class="#attributes.fieldClass#" />
+								<sw:FormField type="text" name="#attributes.fieldNamePrefix#stateCode" valueObject="#attributes.address#" valueObjectProperty="stateCode" class="#attributes.fieldClass#" />
 							</cfif>
 							<sw:errorDisplay object="#attributes.address#" errorName="stateCode" />
 							
@@ -196,7 +196,7 @@
 						<label class="control-label" for="rating" data-sw-label="true">#request.slatwallScope.rbKey('entity.address.postalCode')#</label>
 						<div class="controls" data-sw-field="true">
 							
-							<sw:formField type="text" name="#attributes.fieldNamePrefix#postalCode" valueObject="#attributes.address#" valueObjectProperty="postalCode" class="#attributes.fieldClass#" />
+							<sw:FormField type="text" name="#attributes.fieldNamePrefix#postalCode" valueObject="#attributes.address#" valueObjectProperty="postalCode" class="#attributes.fieldClass#" />
 							<sw:errorDisplay object="#attributes.address#" errorName="postalCode" />
 							
 						</div>
