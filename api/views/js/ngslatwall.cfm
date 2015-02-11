@@ -1167,19 +1167,32 @@ Notes:
 										    name="local.tabsFileList"
 										    filter="*.html"
 									    />
-									    var detailsTab = [
+									    var detailTabs = [
 									    	<cfset tabCount = 0 />
 									    	<cfloop query="local.tabsFileList">
 									    		<cfset tabCount++ />
 									    		
 									    		<cfif tabCount neq local.tabsFileList.recordCount>
-									    			'#name#',
+									    			{
+									    				tabName:'#name#'
+									    			},
 									    		<cfelse>
-									    			'#name#'
+									    			{
+									    				tabName:'#name#'
+									    			}
 									    		</cfif>
 									   		</cfloop>
 									    ];
-										return detailsTab;
+									    
+									   	angular.forEach(detailTabs,function(detailTab){
+									   		if(detailTab.tabName === 'basic.html'){
+												detailTab.openTab = true;
+											}else{
+												detailTab.openTab = false;
+											}
+									   	});
+									    
+										return detailTabs;
 									}
 									
 									this.$$getFormattedValue = function(propertyName,formatType){
