@@ -52,7 +52,7 @@
 				<!-- Header -->
 				<header class="s-create-window-header">
 					<div class="navbar navbar-s-navbar-ten24 s-dialog-header">
-						<div class="navbar-brand" href="##">
+						<div class="navbar-brand">
 							<span class="s-title">Add Order Item</span>
 							<span class="s-bread-crumb">
 							<ul class="list-unstyled list-inline">
@@ -61,7 +61,7 @@
 							</span>
 						</div>
 						<ul class="nav navbar-nav pull-right">
-							<li class="active"><a ng-click="closePageDialog($index)"><i class="fa fa-times"></i></a></li>
+							<li class="active"><a href="#" class="btn"><i class="fa fa-times"></i></a></li>
 						</ul>
 					</div>
 				</header>
@@ -196,7 +196,6 @@
 									
 								<div class="col-sm-12">
 									
-									
 									<!-- Bundle item selector - Deck -->
 									<content class="s-body-box s-status-active">
 										<h2 class="s-filter-header">
@@ -206,8 +205,45 @@
 												<li>Max<span>1</span></li>
 											</ul>
 										</h2>
+										<div class="table-responsive s-bundle-add-items s-bundle-selected-items">
+											<!-- <p class="s-no-items">You have not selected an item</p> -->
+											<div class="col-xs-12 s-bundle-add-items-inner">
+												<ul class="list-unstyled s-order-item-options">
+													<li class="s-bundle-add-obj">
+														<ul class="list-unstyled list-inline">
+															<li class="s-item-type">Product</li>
+														</ul>
+														<ul class="list-unstyled list-inline s-middle">
+															<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Tony Hawk <span>Y-THU7867</span></li>
+															<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Qty: <span>1</span></li>
+															<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Location: <span>Boston</span></li>
+														</ul>
+														<ul class="list-unstyled list-inline s-last">
+															<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-original-title="" title=""><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
+														</ul>
+														<div class="clearfix"></div>
+													</li>
+												</ul>
+											</div>
+										</div>
+										<!-- Search for product -->
+										<div class="row s-bundle-group-items">
+											
+										</div>
+										<!-- //Search for product -->
+									</content>
+									
+									<!-- Bundle item selector - Trucks -->
+									<content class="s-body-box">
+										<h2 class="s-filter-header">
+											<span class="s-title">Trucks</span>
+											<ul class="list-unstyled list-inline">
+												<li>Min<span>1</span></li>
+												<li>Max<span>1</span></li>
+											</ul>
+										</h2>
 										<div class="table-responsive s-order-item-box">
-											<p class="s-no-items">You have not selected an item</p>
+											<p class="s-no-items">You must select (1) item</p>
 										</div>
 										<!-- Search for product -->
 										<div class="row s-bundle-group-items">
@@ -259,98 +295,6 @@
 																<li class="s-item-type">Product</li>
 															</ul>
 															<ul class="list-unstyled list-inline s-middle">
-																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Tony Hawk <span>Y-THU7867</span></li>
-																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Qty: <span>1</span></li>
-																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Location: <span>Boston</span></li>
-															</ul>
-															<ul class="list-unstyled list-inline s-last">
-																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-original-title="" title=""><a class="btn btn-primary"><i class="fa fa-plus"></i></a></li>
-															</ul>
-															<div class="clearfix"></div>
-														</li>
-														<li class="s-bundle-add-obj">
-															<ul class="list-unstyled list-inline">
-																<li class="s-item-type">Product</li>
-															</ul>
-															<ul class="list-unstyled list-inline s-middle">
-																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Spit Fire <span>Y-SDJ898</span></li>
-																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Qty: <span>1</span></li>
-																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Location: <span>Boston</span></li>
-															</ul>
-															<ul class="list-unstyled list-inline s-last">
-																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" data-original-title="" title=""><a class="btn btn-primary"><i class="fa fa-plus"></i></a></li>
-															</ul>
-															<div class="clearfix"></div>
-														</li>
-													</ul>
-												</div>
-											</div>
-										</div>
-										<!-- //Search for product -->
-									</content>
-									
-									<!-- Bundle item selector - Trucks -->
-									<content class="s-body-box">
-										<h2 class="s-filter-header">
-											<span class="s-title">Trucks</span>
-											<ul class="list-unstyled list-inline">
-												<li>Min<span>1</span></li>
-												<li>Max<span>1</span></li>
-											</ul>
-										</h2>
-										<div class="table-responsive s-order-item-box">
-											<p class="s-no-items">You have not selected an item</p>
-										</div>
-										<!-- Search for product -->
-										<div class="row s-bundle-group-items">
-											<div class="col-xs-12 s-search-bar">
-												<ul class="list-unstyled s-search-bar-box">
-													<li>
-														<div class="dropdown input-group-btn search-panel">
-															<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-															<span id="j-search-concept">Any</span>
-															<span class="caret"></span>
-															</button>
-															<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-																<li><a href="#all">Any</a></li>
-																<li><a href="#less_than">Product</a></li>
-																<li><a href="#all">Skus</a></li>
-															</ul>
-														</div>
-													</li>
-													<li><input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku"></li>
-													<li>
-														<ul class="list-unstyled">
-															<li>
-																<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked"><label for="j-checkbox25"> In stock</label></div>
-															</li>
-															<li>
-																<div class="dropdown input-group-btn search-panel">
-																	<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-																	<span id="j-search-concept">All Locations</span>
-																	<span class="caret"></span>
-																	</button>
-																	<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-																		<li><input type="text" class="form-control" name="x" placeholder="Search"></li>
-																		<li><a href="#all">All Locations</a></li>
-																		<li><a href="#less_than">San Diego</a></li>
-																		<li><a href="#all">New York</a></li>
-																		<li><a href="#all">France</a></li>
-																	</ul>
-																</div>
-															</li>
-														</ul>
-													</li>
-												</ul>
-											</div>
-											<div class="col-xs-12 s-bundle-add-items s-hide-trans">
-												<div class="col-xs-12 s-bundle-add-items-inner">
-													<ul class="list-unstyled s-order-item-options">
-														<li class="s-bundle-add-obj">
-															<ul class="list-unstyled list-inline">
-																<li class="s-item-type">Product</li>
-															</ul>
-															<ul class="list-unstyled list-inline s-middle">
 																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Independent Super Light <span>N-3647HJ</span></li>
 																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Qty: <span>1</span></li>
 																<li class="j-tool-tip-item s-bundle-details" data-original-title="" title="">Location: <span>Boston</span></li>
@@ -391,7 +335,7 @@
 											</ul>
 										</h2>
 										<div class="table-responsive s-order-item-box">
-											<p class="s-no-items">You have not selected an item</p>
+											<p class="s-no-items">You must select (1) item</p>
 										</div>
 										<!-- Search for product -->
 										<div class="row s-bundle-group-items">
@@ -483,7 +427,7 @@
 											</ul>
 										</h2>
 										<div class="table-responsive s-order-item-box">
-											<p class="s-no-items">You have not selected an item</p>
+											<p class="s-no-items">You may select up to (5) items</p>
 										</div>
 										<!-- Search for product -->
 										<div class="row s-bundle-group-items">
@@ -862,10 +806,10 @@
 					<div class="navbar navbar-s-navbar-ten24 s-dialog-footer">
 						<ul class="nav navbar-nav pull-right">
 							<li class="active">
-								<a ng-href="#" style="padding: 9px 12px;font-size: 16px;" ng-click="saveProductBundle()" href="#">Save &amp; New</a>
+								<a href="#" class="btn">Save &amp; New</a>
 							</li>
 							<li class="active">
-								<a ng-href="#" style="padding: 9px 12px;font-size: 16px;" ng-click="saveProductBundle($index)" href="#">Save &amp; Finish</a>
+								<a href="#" class="btn">Save &amp; Finish</a>
 							</li>
 						</ul>
 					</div>
