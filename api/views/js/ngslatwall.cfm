@@ -827,13 +827,16 @@ Notes:
 				    	}
 	
 				    	var validateObject = function(entityInstance){
+				    		
 				    		var modifiedData = {};
 							var valid = true;
 				    		<!--- after finding the object level we will be saving at perform dirty checking object save level--->
 							var forms = entityInstance.forms;
 							$log.debug('process base level data');
 							for(var f in forms){
+								
 				    			var form = forms[f];
+				    			form.$setSubmitted();	
 				    			if(form.$dirty && form.$valid){
 						    		for(var key in form){
 						    			$log.debug('key:'+key);
@@ -841,6 +844,7 @@ Notes:
 						    			if(key.charAt(0) !== '$'){
 						    				var inputField = form[key];
 						    				if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
+						    					
 						    					<!--- set modifiedData --->
 						    					if(angular.isDefined(entityInstance.metaData[key]) 
 					    						&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
@@ -875,6 +879,7 @@ Notes:
 									var forms = parentInstance.forms;
 									for(var f in forms){
 						    			var form = forms[f];
+						    			form.$setSubmitted();	
 						    			if(form.$dirty && form.$valid){
 								    		for(var key in form){
 								    			if(key.charAt(0) !== '$'){
@@ -928,10 +933,14 @@ Notes:
 				    	}
 				    	<!--- function intended to process through each property of an object --->
 				    	var processChild = function(entityInstance,entityInstanceParent){
+				 
 				    		var data = {};
 				    		var forms = entityInstance.forms;
+				    		
 							for(var f in forms){
+								
 								var form = forms[f];
+								
 								angular.extend(data,processForm(form,entityInstance));
 							}
 							
@@ -958,8 +967,10 @@ Notes:
 			    			$log.debug('processParent');
 			    			$log.debug(entityInstance);
 				    		var forms = entityInstance.forms;
+				    		form.$setSubmitted();	
 							for(var f in forms){
 								var form = forms[f];
+								
 								data = angular.extend(data,processForm(form,entityInstance));
 							}
 							
@@ -969,11 +980,13 @@ Notes:
 			    		var processForm = function(form,entityInstance){
 			    			$log.debug('begin process form');
 			    			var data = {};
+			    			form.$setSubmitted();	
 			    			for(var key in form){
 				    			if(key.charAt(0) !== '$'){
 
 				    				var inputField = form[key];
 				    				if(angular.isDefined(inputField) && angular.isDefined(inputField) && inputField.$valid === true && inputField.$dirty === true){	
+				    					
 				    					if(angular.isDefined(entityInstance.metaData[key]) && angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) && entityInstance.metaData[key].hb_formfieldtype === 'json'){
 				    						data[key] = angular.toJson(form[key].$modelValue);		
 				    					}else{
