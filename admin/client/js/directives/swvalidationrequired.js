@@ -9,7 +9,7 @@ angular.module('slatwalladmin').directive("swvalidationrequired", function() {
         link: function(scope, element, attributes, ngModel) {
         		ngModel.$validators.swvalidationrequired = 
             	function(modelValue, viewValue) {
-        				if (modelValue)
+        				if (viewValue)
         				{
         					return true; 
         				}

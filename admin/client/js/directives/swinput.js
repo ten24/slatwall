@@ -31,7 +31,9 @@ angular.module('slatwalladmin').directive('swInput',
 				console.log("Matched");
 				for (var prop in propertyValidations[0]){
 						if (prop != "contexts" && prop !== "conditions"){
+							
 							spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
+						
 						}	
 				}
 			}
@@ -85,8 +87,10 @@ angular.module('slatwalladmin').directive('swInput',
 		link : function(scope, element, attr, formController) {
 			//renders the template and compiles it
 			element.html(getTemplate(scope.propertyDisplay));
-
 	        $compile(element.contents())(scope);
+	        
+	        
+	        
 		}
 	}
 } ]);
