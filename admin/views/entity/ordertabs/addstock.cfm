@@ -59,6 +59,7 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiListingDisplay smartList="#rc.order.getAddOrderItemStockOptionsSmartList()#"
+							  tableID="#rc.addSkuAddStockType#"
 							  recordProcessAction="admin:entity.processOrder"
 							  recordProcessQueryString="orderItemTypeSystemCode=#rc.addSkuAddStockType#"
 							  recordProcessContext="addOrderItem"

@@ -70,7 +70,10 @@
 	<cfparam name="attributes.createAction" type="string" default="" />
 	<cfparam name="attributes.createQueryString" type="string" default="" />
 	<cfparam name="attributes.exportAction" type="string" default="" />
-	
+
+	<!--- ID for table ids, to allow multiple occurrences of same entity listing on a page --->
+	<cfparam name="attributes.tableID" type="string" default="" />
+
 <cfelse>
 	<cfsilent>
 		<cfif isSimpleValue(attributes.smartList)>
@@ -301,7 +304,7 @@
 	</cfsilent>
 
 	<cfoutput>
-		<table id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" #attributes.tableattributes#>
+		<table id="LD#attributes.tableID##replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" #attributes.tableattributes#>
 			<thead>
 				<cfif attributes.showheader>
 					<tr>
@@ -309,7 +312,7 @@
 								
 							<div class="span8">
 								<cfif not thistag.expandable>
-									<input type="text" name="search" class="span3 general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
+									<input type="text" name="search" class="span3 general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#attributes.tableID##replace(attributes.smartList.getSavedStateID(),'-','','all')#">
 								</cfif>
 								<cfif not thistag.expandable and len(attributes.title)>
 									<span style="font-size:14px;color:##666666;">&nbsp;|&nbsp;</span>
@@ -567,7 +570,7 @@
 		</cfsilent>
 		
 		<cfif attributes.smartList.getTotalPages() gt 1>
-			<div class="pagination" data-tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
+			<div class="pagination" data-tableid="LD#attributes.tableID##replace(attributes.smartList.getSavedStateID(),'-','','all')#">
 				<ul>
 					<li><a href="##" class="paging-show-toggle">#attributes.hibachiScope.rbKey('define.show')# <span class="details">(#attributes.smartList.getPageRecordsStart()# - #attributes.smartList.getPageRecordsEnd()# #lcase(attributes.hibachiScope.rbKey('define.of'))# #attributes.smartList.getRecordsCount()#)</span></a></li>
 					<li><a href="##" class="show-option" data-show="10">10</a></li>

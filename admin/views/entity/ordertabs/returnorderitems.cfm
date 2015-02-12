@@ -72,8 +72,8 @@ Notes:
 		<cfset rc.addSkuAddStockType = "oitReturn" />
 		
 		<hb:HibachiTabGroup tabLocation="top">
-			<hb:HibachiTab view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
-			<hb:HibachiTab view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />
+			<hb:HibachiTab tabid="roiaddsku" view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
+			<hb:HibachiTab tabid="roiaddstock" view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />
 		</hb:HibachiTabGroup>
 	</cfif>
 </cfoutput>
