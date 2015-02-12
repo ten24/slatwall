@@ -1,4 +1,4 @@
-<!--/////////////////// START BUNDLE LISTING EXAMPLE///////////////////-->						
+<!--/////////////////// START BUNDLE LISTING EXAMPLE///////////////////-->			
 <content class="s-body-box">
 				<div class="table-responsive">
 					<table class="table table-bordered s-order-item-table">
@@ -7,7 +7,7 @@
 								<th>Image</th>
 								<th>Title</th>
 								<th>Sku</th>
-								<th ng-repeat="name in customAttributeNames">{{name}}</th>
+								<th>{{customAttributes.key}}</th>
 								<th>Price</th>
 								<th>Qty</th>
 								<th>Discount</th>
@@ -21,9 +21,9 @@
 							
 							<tr class="s-bundle-product l-1" data-id="B-625TX78">
 								<td rowspan="1000" class="s-image" data-id="j-B-625TX78"><swoiimage data-order-Item="orderItem"></swoiimage></td>
-								<td class="s-title">{{orderItem.product.productName}}<a href="#" class="s-edit-link">edit</a></td>
+								<td class="s-title">{{orderItem.product.productName}}<a href="" class="s-edit-link" ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle'">show detail</a></td>
 								<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
-								<td class="s-details" ng-repeat="val in orderItem.attributeValues track by $index"><span ng-hide="val === 'none'">{{val}}</span></td>
+								<td class="s-details"><span ng-hide="orderItem.customAttributes.val === 'none'">{{orderItem.customAttributes.val}}</span></td>
 								<td class="s-price">${{orderItem.data.skuPrice}}</td>
 								<td class="s-qty">{{orderItem.data.quantity}}</td>
 								<td class="s-discount">-$0.00</td>
@@ -45,55 +45,6 @@
 							</tr>
 							<!-- End -->
 							<!-- Need to handle when the item is a product bundle.-->
-							<tr class="s-product l-2" data-id="B-625TX78">
-								<td class="s-title">Charms: Heart Charm <a href="#" class="s-edit-link">edit</a></td>
-								<td class="s-sku">F-JH67GH</td>
-								<td class="s-details">
-									<ul>
-										<li>Color: Red</li>
-									</ul>
-								</td>
-								<td class="s-customization">
-									<ul>
-										<li>Engraving: Reyjay</li>
-									</ul>
-								</td>
-								
-								<td class="s-price">+$10.00</td>
-								<td class="s-qty">2</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">+$20.00</td>
-							</tr>
-							<tr class="s-product l-3" data-id="B-625TX78">												
-								<td class="s-title">Engraving: Front Engraving <a href="#" class="s-edit-link">edit</a></td>
-								<td class="s-sku">H-JKHG675D</td>
-								<td class="s-details"></td>
-								<td class="s-customization">
-									<ul>
-										<li>Engraving Text: GJM</li>
-										<li>Engraving Font: Arial</li>
-									</ul>
-								</td>
-								<td class="s-price">+$5.00</td>
-								<td class="s-qty">2</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">+$10.00</td>
-							</tr>
-							<tr class="s-product l-3" data-id="B-625TX78">
-								<td class="s-title">Engraving: Back Engraving <a href="#" class="s-edit-link">edit</a></td>
-								<td class="s-sku">T-JKU67GT</td>
-								<td class="s-details"></td>
-								<td class="s-customization">
-									<ul>
-										<li>Engraving Text: Yo</li>
-										<li>Engraving Font: Arial</li>
-									</ul>
-								</td>
-								<td class="s-price">+$5.00</td>
-								<td class="s-qty">2</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">+$10.00</td>
-							</tr>
 							
 						</tbody>
 

@@ -158,6 +158,47 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.price;
 	}
+	/*
+	
+	//Need to also check child order items for child order items.
+			if( arguments.processObject.getSku().getBaseProductType() == 'productBundle' ) {
+				
+				for(var childItemData in arguments.processObject.getChildOrderItems()) {
+					var childOrderItem = this.newOrderItem();
+					
+					// Populate the childOrderItem with the data
+					childOrderItem.populate( childItemData );
+					
+					if(!isNull(childOrderItem.getSku()) && !isNull(childOrderItem.getProductBundleGroup())) {
+						
+						// Set quantity if needed
+						if(isNull(childOrderItem.getQuantity())) {
+							childOrderItem.setQuantity( 1 );
+						}
+						// Set orderFulfillment if needed
+						if(isNull(childOrderItem.getOrderFulfillment())) {
+							childOrderItem.setOrderFulfillment( orderFulfillment );
+						}
+						// Set fulfillmentMethod if needed
+						if(isNull(childOrderItem.getOrderFulfillment().getFulfillmentMethod())) {
+							childOrderItem.getOrderFulfillment().setFulfillmentMethod( listFirst(childOrderItem.getSku().setting('skuEligibleFulfillmentMethods')) );
+						}
+						childOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
+						if(childOrderItem.getSku().getUserDefinedPriceFlag() && structKeyExists(childItemData, 'price') && isNumeric(childItemData.price)) {
+							childOrderItem.setPrice( childItemData.price );
+						} else {
+							// TODO: calculate price base on adjustment type rule of bundle group
+							childOrderItem.setPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+						}
+						childOrderItem.setSkuPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+						childOrderItem.setParentOrderItem( newOrderItem );
+						childOrderItem.setOrder( arguments.order );
+						
+					}
+				}
+				
+			}
+	*/
 	
 	public string function getCurrencyCode() {
 		if(!structKeyExists(variables, "currencyCode")) {

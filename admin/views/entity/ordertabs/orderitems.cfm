@@ -51,7 +51,6 @@ Notes:
 
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" />
-
 <cfoutput>
 	<sw-order-items
 		data-order-id="#rc.order.getOrderID()#"

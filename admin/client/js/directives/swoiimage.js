@@ -9,8 +9,8 @@ angular.module('slatwalladmin')
 [
 	function(){
 		var getImageTemplate = function(orderItem, baseUrl){
-			console.log("Retrieve Order Item Image");
-			console.log(orderItem);
+			//console.log("Retrieve Order Item Image");
+			//console.log(orderItem);
 			var image = "";
 			var imageName = orderItem.data.sku.data.imageFile || "none";
 			if (angular.isString(imageName) && imageName !== " "){

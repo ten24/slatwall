@@ -10,21 +10,21 @@ angular.module('slatwalladmin')
 	function(){
 		var getTemplate = function(orderItem){
 			//Need to include other fulfillment methods.
-			console.log("Setting Fulfillment Method");
+			//console.log("Setting Fulfillment Method");
 			//This will need to check for the type of fulfillment and not just assume a shipping address (IE returns)
-			console.log(orderItem);
+			//console.log(orderItem);
 			var addressStamp = "";
-			console.log("_______Shipping method:");
-			console.log(orderItem.data.orderFulfillment.data.fulfillmentMethodType);
+			//console.log("_______Shipping method:");
+			//console.log(orderItem.data.orderFulfillment.data.fulfillmentMethodType);
 			if (orderItem.data.orderFulfillment.data.fulfillmentMethodType === "shipping"){
-				console.log("_______\n\n\n");
+				//console.log("_______\n\n\n");
 				//Set defaults.
 				var sa1 = orderItem.data.orderFulfillment.data.shippingAddress.data.streetAddress || " ";
 				var sa2 = orderItem.data.orderFulfillment.data.shippingAddress.data.street2Address || " ";
 				var city = orderItem.data.orderFulfillment.data.shippingAddress.data.city || " ";
 				var state = orderItem.data.orderFulfillment.data.shippingAddress.data.stateCode || " ";
 				var postal = orderItem.data.orderFulfillment.data.shippingAddress.data.postalCode || " ";
-				console.log(city);
+				//console.log(city);
 				//Build the stamp.
 				addressStamp = "<ul><li>" + sa1 + "</li>" +
 				"<li>" + sa2 + "</li>" +
