@@ -87,7 +87,7 @@ component entityname="SlatwallSubscriptionBenefit" table="SwSubsBenefit" persist
 			smartList.addSelect(propertyIdentifier="typeName", alias="name");
 			smartList.addSelect(propertyIdentifier="typeID", alias="value");
 			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="subscriptionAccessType");
-			smartList.addOrder("type|ASC");
+			smartList.addOrder("typeName|ASC");
 			variables.accessTypeOptions = smartList.getRecords();
 			arrayPrepend(variables.accessTypeOptions,{name=rbKey("define.select"),value=""});
 		}

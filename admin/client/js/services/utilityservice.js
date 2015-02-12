@@ -11,6 +11,8 @@ angular.module('slatwalladmin')
 		//declare service we are returning
 		var utilityService = {
 			createID:function(count){
+				var count = count || 26;
+				
 			    var text = "";
 			    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 			

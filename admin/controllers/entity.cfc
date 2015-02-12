@@ -368,6 +368,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public void function createStockAdjustment(required struct rc) {
 		param name="rc.stockAdjustmentType" type="string" default="satLocationTransfer";
 		
+		arguments.rc.sRedirectAction = 'admin:entity.editstockadjustment';
+		
 		// Call the generic logic
 		genericCreateMethod(entityName="StockAdjustment", rc=arguments.rc);
 		

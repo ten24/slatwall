@@ -20,26 +20,42 @@ angular.module('slatwalladmin')
 				propertyDisplay:"="
 			},
 			link:function(scope,element,attr,formController){
-				scope.selectionOptions = {};
-				scope.selectionOptions.value = [];
-				scope.selectionOptions.$$adding = false;
+				
+				
+				//set up selectionOptions
+				scope.selectionOptions = {
+					value:[],
+					$$adding:false
+				};
+				
+				//funciton to set state of adding new item 
+				scope.setAdding = function(isAdding){
+					scope.isAdding = isAdding;
+				}
+				
 				scope.selectedOption = {};
 				scope.showAddBtn = false;
 				var propertyMetaData = scope.propertyDisplay.object.$$getMetaData(scope.propertyDisplay.property);
+				//create basic 
+				var object = $slatwall.newEntity(propertyMetaData.cfc);
 				
-//				check for a template
-//				rules are tiered: check if an override is specified at scope.template, check if the cfc name .html exists, use
+//				scope.propertyDisplay.template = '';
+//				//check for a template
+//				//rules are tiered: check if an override is specified at scope.template, check if the cfc name .html exists, use
 //				var templatePath = partialsPath + 'formfields/searchselecttemplates/';
 //				if(angular.isUndefined(scope.propertyDisplay.template)){
-//					$http.get(templatePath+propertyMetaData.cfcProperCase+'.html',function(data){
+//					var templatePromise = $http.get(templatePath+propertyMetaData.cfcProperCase+'.html',function(){
+//						console.log('template');
 //						scope.propertyDisplay.template = templatePath+propertyMetaData.cfcProperCase+'.html';
-//					},function(data){
+//					},function(){
 //						scope.propertyDisplay.template = templatePath+'index.html';
+//						console.log('template');
+//						console.log(scope.propertyDisplay.template);
 //					});
 //				}
 				
-				console.log('metaData');
-				console.log(propertyMetaData);
+				//set up query function for finding related object
+				
 				scope.cfcProperCase = propertyMetaData.cfcProperCase;
 				scope.selectionOptions.getOptionsByKeyword=function(keyword){
 					var filterGroupsConfig = '['+  
@@ -82,26 +98,32 @@ angular.module('slatwalladmin')
 						return scope.selectionOptions.value;
 					});
 				};
-				console.log(propertyMetaData.nameCapitalCase);
 				var propertyPromise = scope.propertyDisplay.object['$$get'+propertyMetaData.nameCapitalCase]();
 				propertyPromise.then(function(data){
 					
 				});
-				console.log(scope.propertyDisplay.object);
+				
+				//set up behavior when selecting an item
 				scope.selectItem = function ($item, $model, $label) {
 				    scope.$item = $item;
 				    scope.$model = $model;
 				    scope.$label = $label;
-				    console.log('item');
-				    console.log($item);
-				    console.log(scope.propertyDisplay.object.data[scope.propertyDisplay.property]);
-				    console.log(scope.propertyDisplay.object);
-				    var inflatedObject = $slatwall.newEntity(propertyMetaData.cfc);
-				    angular.extend(inflatedObject.data,$item);
-				    scope.propertyDisplay.object['$$set'+propertyMetaData.nameCapitalCase](inflatedObject);
+				    
+				    //angular.extend(inflatedObject.data,$item);
+				    object.$$init($item);
+				    console.log('select item');
+				    console.log(object);
+				    scope.propertyDisplay.object['$$set'+propertyMetaData.nameCapitalCase](object);
 				};
 				
-				
+//				if(angular.isUndefined(scope.propertyDipslay.object[scope.propertyDisplay.property])){
+//					console.log('getmeta');
+//					console.log(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property]);
+//					
+//					//scope.propertyDipslay.object['$$get'+]
+//				}
+//				
+//				scope.propertyDisplay.object.data[scope.propertyDisplay.property].$dirty = true;
 	        }
 		};
 	}

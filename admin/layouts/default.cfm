@@ -328,7 +328,7 @@ Notes:
 			<!--- Page Dialog Controller --->
 			<div ng-controller="pageDialog">
 				<div id="topOfPageDialog" >
-					<div style="z-index:3000" class="s-dialog-container" ng-repeat="pageDialog in pageDialogs" >
+					<div style="z-index:3000" ng-show="pageDialogs.length" class="s-dialog-container" ng-repeat="pageDialog in pageDialogs" >
 						<div  ng-include="pageDialog.path" ></div>
 					</div>
 				</div>
@@ -371,8 +371,9 @@ Notes:
 			) {
 				datepickerConfig.showWeeks = false;
       			datepickerPopupConfig.toggleWeeksText = null;
-				
-				$locationProvider.html5Mode( false ).hashPrefix('!');
+				<cfif !isnull(rc.ng)> 
+					$locationProvider.html5Mode( false ).hashPrefix('!');
+				</cfif>
 				$provide.constant("baseURL", $.slatwall.getConfig().baseURL);
 				
 				var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/';

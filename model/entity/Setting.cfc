@@ -95,7 +95,7 @@ component displayname="Setting" entityname="SlatwallSetting" table="SwSetting" p
 		var settingMetaData = getSettingMetaData();
 		
 		// Determine if we need to encrypt value
-		if(structKeyExists(settingMetaData, "encryptValue") && settingMetaData.encryptValue == true && !getSettingValueEncryptionProcessedFlag() && !isNull(getSettingID())) {
+		if(structKeyExists(settingMetaData, "encryptValue") && settingMetaData.encryptValue == true && !getSettingValueEncryptionProcessedFlag() && !isNull(getSettingID()) && !isNull(getSettingValue())) {
 			encryptProperty('settingValue');
 		}
 	}

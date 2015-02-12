@@ -53,6 +53,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="locationService" type="any";
 	property name="skuService" type="any";
 	property name="settingService" type="any";
+	property name="typeService" type="any";
 	
 	// Inject DAO's
 	property name="stockDAO" type="any";

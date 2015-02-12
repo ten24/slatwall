@@ -30,7 +30,7 @@ angular.module('slatwalladmin').directive('swInput',
 			if (propertyValidations[0].contexts === formContext){
 				console.log("Matched");
 				for (var prop in propertyValidations[0]){
-						if (prop != "contexts"){
+						if (prop != "contexts" && prop !== "conditions"){
 							spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
 						}	
 				}
