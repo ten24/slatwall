@@ -41,7 +41,14 @@
 	      </div>
 	      <div class="col-xs-3">
 	        <div class="s-button-select-group">
-	          <button 	type="button" 
+	          <button 	ng-show="isAddingFilterGroupItem"
+			  			type="button" 
+	         			ng-click="saveFilter(selectedFilterProperty,filterItem,addFilterItemToThisFilterGroup)"
+	          			class="btn btn-sm s-btn-ten24" 
+						sw-rbkey="'admin.editfilteritem.saveandaddanotherfilter'">
+	          </button>
+			  <button 	ng-show="!isAddingFilterGroupItem"
+			  			type="button" 
 	         			ng-click="saveFilter(selectedFilterProperty,filterItem,addFilterItem)"
 	          			class="btn btn-sm s-btn-ten24" 
 						sw-rbkey="'admin.editfilteritem.saveandaddanotherfilter'">

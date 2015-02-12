@@ -36,6 +36,8 @@ angular.module('slatwalladmin')
 		templateUrl:collectionPartialsPath+"editfilteritem.html",
 		link: function(scope, element,attrs,filterGroupsController){
 			
+			scope.isAddingFilterGroupItem = filterGroupsController.getIsAddingFilterGroupItem();
+			
 			function daysBetween(first, second) {
 
 			    // Copy date parts of the timestamps, discarding the time parts.
@@ -165,6 +167,14 @@ angular.module('slatwalladmin')
 			scope.addFilterItem = function(){
 				collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse);
 			};
+			
+			//Add into the filter group and keep the filter group isClosed equal to false
+			scope.addFilterItemToThisFilterGroup = function(filterItem){
+				//transplant the filter into filter group
+				collectionService.transplantFilterItemIntoFilterGroup(filterGroupsController.getFilterGroupItem(), filterItem);
+				//set filter group in use
+				//collectionService.selectFilterGroupItem(filterGroupsController.getFilterGroupItem());
+			}
 			
 			scope.cancelFilterItem = function(){
 				$log.debug('cancelFilterItem');
@@ -322,7 +332,13 @@ angular.module('slatwalladmin')
 					
 					$log.debug(selectedFilterProperty);
 					$log.debug(filterItem);
-					callback();
+					
+					if(scope.isAddingFilterGroupItem){
+						callback(filterItem);
+					}else{
+						callback();
+					}
+					
 					$log.debug('saveFilter end');
 				}
 			};

@@ -24,10 +24,13 @@ angular.module('slatwalladmin')
 				scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
 				
 				scope.addFilterItem = function(){
+					filterGroupsController.setIsAddingFilterGroupItem(false);
 					collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse);
+					
 				};
 				
 				scope.addFilterGroupItem = function(){
+					filterGroupsController.setIsAddingFilterGroupItem(true);
 					collectionService.newFilterItem(filterGroupsController.getFilterGroupItem(),filterGroupsController.setItemInUse,true);
 				};
 			}
