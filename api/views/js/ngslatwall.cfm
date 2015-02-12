@@ -762,26 +762,27 @@ Notes:
 					    		$log.debug('modifiedData complete');
 					    		$log.debug(modifiedData);
 					    		if(modifiedData.valid){
-					    		var params = {};
-								params.serializedJsonData = angular.toJson(modifiedData.value);
-					    		var entityName = modifiedData.objectLevel.metaData.className;
-					    		var context = 'save';
-					    		
-					    		
-					    		var savePromise = slatwallService.saveEntity(entityName,entityInstance.$$getID(),params,context);
-					    		savePromise.then(function(response){
-					    			var returnedIDs = response.data;
-					    			<!--- TODO: restet form --->
-									<!---//entityInstance.form.$setPristine();
-									//--->
-									_addReturnedIDs(returnedIDs,modifiedData.objectLevel);
-								});
+						    		var params = {};
+									params.serializedJsonData = angular.toJson(modifiedData.value);
+						    		var entityName = modifiedData.objectLevel.metaData.className;
+						    		var context = 'save';
+						    		
+						    		
+						    		var savePromise = slatwallService.saveEntity(entityName,entityInstance.$$getID(),params,context);
+						    		savePromise.then(function(response){
+						    			var returnedIDs = response.data;
+						    			<!--- TODO: restet form --->
+										<!---//entityInstance.form.$setPristine();
+										//--->
+										_addReturnedIDs(returnedIDs,modifiedData.objectLevel);
+									});
 								}else{
 						    		
 						    		//select first, visible, and enabled input with a class of ng-invalid
 						    		
 						    		var target = $('input.ng-invalid:first:visible:enabled');
-
+						    		$log.debug('input is invalid');
+									$log.debug(target);
 						    		target.focus();
 						    		
 									var targetID = target.attr('id');
@@ -834,25 +835,28 @@ Notes:
 							for(var f in forms){
 				    			var form = forms[f];
 				    			if(form.$dirty && form.$valid){
-					    		for(var key in form){
-					    			$log.debug('key:'+key);
-					    			
-					    			if(key.charAt(0) !== '$'){
-					    				var inputField = form[key];
-					    				if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
-					    					<!--- set modifiedData --->
-					    					if(angular.isDefined(entityInstance.metaData[key]) 
-				    						&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
-				    						&& entityInstance.metaData[key].hb_formfieldtype === 'json'){
-					    						modifiedData[key] = angular.toJson(form[key].$modelValue);	
-					    					}else{
-					    						modifiedData[key] = form[key].$modelValue;
-					    					}
-					    				}
-					    			}
-					    		}
+						    		for(var key in form){
+						    			$log.debug('key:'+key);
+						    			
+						    			if(key.charAt(0) !== '$'){
+						    				var inputField = form[key];
+						    				if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
+						    					<!--- set modifiedData --->
+						    					if(angular.isDefined(entityInstance.metaData[key]) 
+					    						&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
+					    						&& entityInstance.metaData[key].hb_formfieldtype === 'json'){
+						    						modifiedData[key] = angular.toJson(form[key].$modelValue);	
+						    					}else{
+						    						modifiedData[key] = form[key].$modelValue;
+						    					}
+						    				}
+						    			}
+						    		}
 					    		}else{
-					    			valid = false;
+					    			if(!form.$valid){
+					    				valid = false;
+					    			}
+					    			
 					    		}
 				    		}
 				    		modifiedData[entityInstance.$$getIDName()] = entityInstance.$$getID();
@@ -888,7 +892,10 @@ Notes:
 								    			}
 								    		}
 								    	}else{
-								    		valid = false;
+								    		if(!form.$valid){
+								    			valid = false;
+								    		}
+								    		
 								    	}
 						    		}
 						    		modifiedData[parentObject.name][parentInstance.$$getIDName()] = parentInstance.$$getID();
@@ -944,7 +951,12 @@ Notes:
 	
 			    		var processParent = function(entityInstance){
 			    			var data = {};
+			    			if(entityInstance.$$getID() !== ''){
+								data[entityInstance.$$getIDName()] = entityInstance.$$getID();
+			    			}
 			    			
+			    			$log.debug('processParent');
+			    			$log.debug(entityInstance);
 				    		var forms = entityInstance.forms;
 							for(var f in forms){
 								var form = forms[f];
@@ -989,6 +1001,8 @@ Notes:
 											data[parentMetaData.name] = {};
 										}
 										var parentData = processParent(parent);
+										$log.debug('parentData:'+parentMetaData.name);
+										$log.debug(parentData);
 										angular.extend(data[parentMetaData.name],parentData);
 									}else{
 										

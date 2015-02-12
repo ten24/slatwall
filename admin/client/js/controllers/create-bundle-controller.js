@@ -64,7 +64,8 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 						$scope.product = productPromise.value;
 						angular.forEach($scope.product.data.skus[0].data.productBundleGroups,function(productBundleGroup){
 							productBundleGroup.$$getProductBundleGroupType();
-							
+							productBundleService.decorateProductBundleGroup(productBundleGroup);
+							productBundleGroup.data.$$editing = false;
 						});
 					});
 				});
