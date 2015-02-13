@@ -17,14 +17,24 @@ angular.module('slatwalladmin').directive('swInput',
 		var spaceDelimitedList = '';
 		var name = propertyDisplay.property;
 		var form = propertyDisplay.form.$$swFormInfo;
+		console.log("Name is:" + name + " and form is: " + form);
 		var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
+		console.log("Validations: ");
+		console.dir(validations);
 		var validationsForContext = [];
 		
 		//get the form context and the form name.
 		var formContext = propertyDisplay.form.$$swFormInfo.context;
 		var formName = propertyDisplay.form.$$swFormInfo.name;
+		console.log("Form context is: ");
+		console.log(formContext);
+		console.log("Form Name: ");
+		console.log(formName);
 		//get the validations for the current element.
 		var propertyValidations = propertyDisplay.object.validations.properties[name];
+		/*
+		 * Investigating why number inputs are not working.
+		 * */
 		//check if the contexts match.
 		if (angular.isObject(propertyValidations)){
 			if (propertyValidations[0].contexts === formContext){
@@ -47,6 +57,8 @@ angular.module('slatwalladmin').directive('swInput',
 		console.log(propertyDisplay);
 		angular.forEach(validations,function(validation,key){
 			if(utilityService.listFind(validation.contexts.toLowerCase(),form.context.toLowerCase()) !== -1){
+				console.log("Validations for context");
+				console.log(validation);
 				validationsForContext.push(validation);
 			}
 		});
@@ -74,6 +86,20 @@ angular.module('slatwalladmin').directive('swInput',
 		    'id="swinput'+utilityService.createID(26)+'"'+
 			' />';
 		}
+		
+		/*else if(propertyDisplay.fieldType === "number"){
+			console.info("Found Number Input");
+			template = '<input type="number" class="form-control" '+
+			'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
+		    'ng-disabled="!propertyDisplay.editable" '+ 
+		    'ng-show="propertyDisplay.editing" '+
+		    'name="'+propertyDisplay.property+'" ' +
+		    validations+
+		    'id="swinput'+utilityService.createID(26)+'"'+
+			' />';
+			console.log(template);
+			console.log(validations);
+		}*/
 		return template; 
 	}
 	

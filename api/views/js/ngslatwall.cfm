@@ -967,7 +967,7 @@ Notes:
 			    			$log.debug('processParent');
 			    			$log.debug(entityInstance);
 				    		var forms = entityInstance.forms;
-				    		form.$setSubmitted();	
+				    			
 							for(var f in forms){
 								var form = forms[f];
 								
