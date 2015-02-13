@@ -107,7 +107,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="assignedOrderItemAttributeSets";
 	property name="fulfillmentMethodType";
 	
-	variables.childOrderItems = [];
+	//variables.childOrderItems = [];
 	
 	// ======================== START: Defaults ============================
 	

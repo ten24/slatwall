@@ -156,6 +156,7 @@ angular.module('slatwalladmin')
 	 				      "isVisible": true,
 	 				      "isDeletable": true
 	 				    }
+	 				    
  				  ];
 				
 				var filterGroupsConfig =[

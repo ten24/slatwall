@@ -833,27 +833,8 @@ Notes:
 							for(var f in forms){
 				    			var form = forms[f];
 				    			if(form.$dirty && form.$valid){
-<<<<<<< HEAD
-					    		for(var key in form){
-					    			$log.debug('key:'+key);
-					    			if(key.charAt(0) !== '$'){
-					    				var inputField = form[key];
-					    				if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
-					    					<!--- set modifiedData --->
-					    					if(angular.isDefined(entityInstance.metaData[key]) 
-				    						&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
-				    						&& entityInstance.metaData[key].hb_formfieldtype === 'json'){
-					    						modifiedData[key] = angular.toJson(form[key].$modelValue);		
-					    					}else{
-					    						modifiedData[key] = form[key].$modelValue;
-					    					}
-					    				}
-					    			}
-					    		}
-=======
 						    		for(var key in form){
 						    			$log.debug('key:'+key);
-						    			
 						    			if(key.charAt(0) !== '$'){
 						    				var inputField = form[key];
 						    				if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
@@ -861,14 +842,13 @@ Notes:
 						    					if(angular.isDefined(entityInstance.metaData[key]) 
 					    						&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
 					    						&& entityInstance.metaData[key].hb_formfieldtype === 'json'){
-						    						modifiedData[key] = angular.toJson(form[key].$modelValue);	
+						    						modifiedData[key] = angular.toJson(form[key].$modelValue);		
 						    					}else{
 						    						modifiedData[key] = form[key].$modelValue;
 						    					}
 						    				}
 						    			}
 						    		}
->>>>>>> branch 'feature' of https://github.com/ten24/Slatwall
 					    		}else{
 					    			if(!form.$valid){
 					    				valid = false;

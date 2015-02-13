@@ -343,7 +343,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Setup child items for a bundle
 			//Need to also check child order items for child order items.
 			if( arguments.processObject.getSku().getBaseProductType() == 'productBundle' ) {
-				
 				for(var childItemData in arguments.processObject.getChildOrderItems()) {
 					var childOrderItem = this.newOrderItem();
 					
@@ -373,8 +372,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						}
 						childOrderItem.setSkuPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
 						childOrderItem.setParentOrderItem( newOrderItem );
+						newOrderItem.addChildOrderItem(childOrderItem);
 						childOrderItem.setOrder( arguments.order );
-						
+						childOrderItem = this.saveOrderItem( childOrderItem );
+						if(childOrderItem.hasErrors()) {
+							arguments.order.addError('addOrderItem', childOrderItem.getErrors());
+						}
 					}
 				}
 				
@@ -385,7 +388,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
 			newOrderItem.setQuantity( arguments.processObject.getQuantity() );
 			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( newOrderItem.getCurrencyCode() ) );
-			if(newOrderItem.getSku().getUserDefinedPriceFlag() && isNumeric(arguments.processObject.getPrice()) ) {
+			
+			
+			if(len(newOrderItem.getSku().getUserDefinedPriceFlag()) && newOrderItem.getSku().getUserDefinedPriceFlag() && isNumeric(arguments.processObject.getPrice()) ) {
 				newOrderItem.setPrice( arguments.processObject.getPrice() );	
 			} else {
 				newOrderItem.setPrice( newOrderItem.getSkuPrice() );
