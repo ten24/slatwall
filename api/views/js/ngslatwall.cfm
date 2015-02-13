@@ -782,7 +782,7 @@ Notes:
 						    		
 						    		var target = $('input.ng-invalid:first:visible:enabled');
 						    		$log.debug('input is invalid');
-									$log.debug(target);
+								$log.debug(target);
 						    		target.focus();
 						    		
 									var targetID = target.attr('id');
@@ -836,7 +836,7 @@ Notes:
 							for(var f in forms){
 								
 				    			var form = forms[f];
-				    			form.$setSubmitted();	
+				    			form.$setSubmitted();	//Sets the form to submitted for the validation errors to pop up.
 				    			if(form.$dirty && form.$valid){
 						    		for(var key in form){
 						    			$log.debug('key:'+key);
