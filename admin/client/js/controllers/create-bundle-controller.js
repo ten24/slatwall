@@ -41,24 +41,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		
 		var productID = getParameterByName('productID');
 		
-		$scope.productBundleGroup;
-		
-		if(angular.isDefined(productID) && productID !== ''){
-			var productPromise = $slatwall.getProduct({id:productID});
-			
-			productPromise.promise.then(function(){
-				productPromise.value.$$getSkus().then(function(){
-					productPromise.value.data.skus[0].$$getProductBundleGroups().then(function(){
-						$scope.product = productPromise.value;
-						angular.forEach($scope.product.data.skus[0].data.productBundleGroups,function(productBundleGroup){
-							productBundleGroup.$$getProductBundleGroupType();
-						});
-					});
-				});
-			});
-			
-			
-		}else{
+		var productBundleConstructor = function(){
 			$scope.product = $slatwall.newProduct();
 			var brand = $slatwall.newBrand();
 			var productType = $slatwall.newProductType();
@@ -66,12 +49,35 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 			$scope.product.$$setProductType(productType);
 			$scope.product.$$addSku();
 			$scope.product.data.skus[0].data.productBundleGroups = [];
+		};
+		
+		$scope.productBundleGroup;
+		
+		if(angular.isDefined(productID) && productID !== ''){
+			var productPromise = $slatwall.getProduct({id:productID});
+			
+			productPromise.promise.then(function(){
+				console.log(productPromise.value);
+				productPromise.value.$$getSkus().then(function(){
+					productPromise.value.data.skus[0].$$getProductBundleGroups().then(function(){
+						
+						$scope.product = productPromise.value;
+						angular.forEach($scope.product.data.skus[0].data.productBundleGroups,function(productBundleGroup){
+							productBundleGroup.$$getProductBundleGroupType();
+							productBundleService.decorateProductBundleGroup(productBundleGroup);
+							productBundleGroup.data.$$editing = false;
+						});
+					});
+				});
+			}, productBundleConstructor());
+
+		} else {
+			productBundleConstructor();
 		}
 
 		$scope.saveProductBundle = function(closeDialogIndex){
 			$scope.product.$$save();
 		};
-
 		
 	}
 ]);

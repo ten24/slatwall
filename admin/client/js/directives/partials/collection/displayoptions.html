@@ -9,7 +9,8 @@
   <div class="s-none-selected" style="display:none;">There are no fields selected</div>
 
   <!--- Button to show create option --->
-  <button   class="btn btn-xs s-btn-ten24" 
+  <button   type="button"
+  			class="btn btn-xs s-btn-ten24" 
   			data-target="#j-add-display-field"
 			data-toggle="collapse"
   			ng-click="addDisplayDialog.toggleDisplayDialog()"
@@ -40,9 +41,8 @@
                    <div class="col-sm-12 s-no-paddings">
                       <select ng-model="selectedProperty" 
 				     		ng-change="selectedPropertyChanged(selectedProperty)" 
-				     		ng-options="property as property.displayPropertyIdentifier
+				     		ng-options="property as property.displayPropertyIdentifier 
 				     					for property in propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].data 
-				     					| orderBy:property.name
 				     					| filter:{fieldtype:'!one-to-many'}
 				     					| filter:{fieldtype:'!many-to-many'}
 				     					" 

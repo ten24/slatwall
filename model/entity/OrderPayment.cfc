@@ -202,6 +202,9 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	
 	public void function copyFromOrderPayment(required any orderPayment) {
 		
+		// Connect this to the original order payment that we are copying from
+		setReferencedOrderPayment( arguments.orderPayment );
+		
 		// Make sure the payment method matches
 		setPaymentMethod( arguments.orderPayment.getPaymentMethod() );
 		
@@ -329,7 +332,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		var unauthroized = 0;
 		
 		if ( getOrderPaymentType().getSystemCode() == "optCharge" ) {
-			unauthroized = precisionEvaluate(getAmount() - getAmountReceived() - getAmountAuthorized());
+			unauthroized = precisionEvaluate(getAmount() - getAmountAuthorized());
 		}
 		
 		return unauthroized;
@@ -516,11 +519,22 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 
 	public any function getMaximumPaymentMethodPaymentAmount(){
 		if(!isNull(getPaymentMethod())) {
-			var maxPercent=getPaymentMethod().setting('paymentMethodMaximumOrderTotalPercentageAmount');
-			var maxPayment=precisionEvaluate((getOrder().getTotal()*(maxPercent/100))-getOrder().getPaymentAmountTotalByPaymentMethod(getPaymentMethod()));
-			return maxPayment;
+			
+			var maxPercent = getPaymentMethod().setting('paymentMethodMaximumOrderTotalPercentageAmount');
+			var maxAmountOfTotal = precisionEvaluate(getOrder().getTotal() * (maxPercent/100));
+			var previouslyAppliedPaymentAmountByMethod = getOrder().getPaymentAmountTotalByPaymentMethod(getPaymentMethod(), this);
+			
+			if(getOrderPaymentType().getSystemCode() eq 'optCredit') {
+				maxAmountOfTotal = precisionEvaluate(maxAmountOfTotal * -1);
+				if(maxAmountOfTotal lt previouslyAppliedPaymentAmountByMethod) {
+					return previouslyAppliedPaymentAmountByMethod;
+				} else {
+					return precisionEvaluate(maxAmountOfTotal + previouslyAppliedPaymentAmountByMethod);	
+				}
+			} else {
+				return precisionEvaluate(maxAmountOfTotal - previouslyAppliedPaymentAmountByMethod);
+			}
 		}
-		return null;
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

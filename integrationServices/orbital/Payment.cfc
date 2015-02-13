@@ -204,6 +204,7 @@ component accessors="true" output="false" displayname="PayFlowPro" implements="S
 			response.addError(responseData.ProcStatus.xmlText, responseData.StatusMsg.xmlText);
 		} else if(structKeyExists(responseData,"ApprovalStatus") && responseData.ApprovalStatus.xmlText != 1) {
 			// Transaction was not approved
+			response.setStatusCode( responseData.RespCode.xmlText );
 			response.addError(responseData.RespCode.xmlText, responseData.StatusMsg.xmlText);
 		} else {
 			if(requestBean.getTransactionType() == "authorize") {

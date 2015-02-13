@@ -282,7 +282,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		var order = getOrderService().getOrder( arguments.rc.orderID );
 		if(!isNull(order) && order.getAccount().getAccountID() == arguments.rc.$.slatwall.getAccount().getAccountID()) {
-			var duplicateOrder = getOrderService().duplicateOrder(order=order, saveNewFlag=true, copyPersonalDataFlag=true);
+			
+			var data = {
+				saveNewFlag=true,
+				copyPersonalDataFlag=true
+			};
+			
+			var duplicateOrder = getOrderService().processOrder(order,data,"duplicateOrder" );
+			
 			if(isBoolean(arguments.rc.setAsCartFlag) && arguments.rc.setAsCartFlag) {
 				arguments.rc.$.slatwall.getSession().setOrder( duplicateOrder );
 			}

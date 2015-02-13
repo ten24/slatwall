@@ -328,7 +328,7 @@ Notes:
 			<!--- Page Dialog Controller --->
 			<div ng-controller="pageDialog">
 				<div id="topOfPageDialog" >
-					<div style="z-index:3000" class="s-dialog-container" ng-repeat="pageDialog in pageDialogs" >
+					<div style="z-index:3000" ng-show="pageDialogs.length" class="s-dialog-container" ng-repeat="pageDialog in pageDialogs" >
 						<div  ng-include="pageDialog.path" ></div>
 					</div>
 				</div>
@@ -366,11 +366,14 @@ Notes:
 		<script type="text/javascript" >
 			angular.module('slatwalladmin', ['ngSlatwall','ui.bootstrap','ngAnimate','ngRoute']).
 			config(
-				["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$locationProvider',
-				function ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$locationProvider
+				["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$locationProvider','datepickerConfig', 'datepickerPopupConfig',
+				function ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$locationProvider,datepickerConfig, datepickerPopupConfig
 			) {
-				
-				$locationProvider.html5Mode( false ).hashPrefix('!');
+				datepickerConfig.showWeeks = false;
+      			datepickerPopupConfig.toggleWeeksText = null;
+				<cfif !isnull(rc.ng)> 
+					$locationProvider.html5Mode( false ).hashPrefix('!');
+				</cfif>
 				$provide.constant("baseURL", $.slatwall.getConfig().baseURL);
 				
 				var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/';
@@ -381,7 +384,6 @@ Notes:
 				$provide.constant("workflowPartialsPath", _partialsPath+'workflow/');
 				
 				$logProvider.debugEnabled( $.slatwall.getConfig().debugFlag );
-				
 				$filterProvider.register('likeFilter',function(){
 					return function(text){
 						if(angular.isDefined(text) && angular.isString(text)){
@@ -426,7 +428,9 @@ Notes:
 					templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
 				});
 				
-			}]).run(['$rootScope','$filter','$slatwall','dialogService', function($rootScope,$filter, $slatwall ,dialogService) {
+			}]).run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService', function($rootScope,$filter,$anchorScroll, $slatwall ,dialogService) {
+			    $anchorScroll.yOffset = 100;
+
 			    $rootScope.openPageDialog = function( partial ) {
 			    	dialogService.addPageDialog( partial );
 			    };
@@ -459,7 +463,7 @@ Notes:
 		</script>
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngslatwall&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
-		
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngcompressor&jspath=client/js&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
 		<!--- Load up the Slatwall Admin --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngcompressor&jspath=admin/client/js&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
 		

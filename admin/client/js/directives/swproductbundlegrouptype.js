@@ -112,6 +112,43 @@ angular.module('slatwalladmin')
 				    
 				    $scope.showAddProductBundleGroupTypeBtn = false;
 				};
+				
+				//Closes product bundle group type adding dialog
+				$scope.closeAddScreen = function(){
+					$scope.productBundleGroupTypes.$$adding = false;
+					$scope.showAddProductBundleGroupTypeBtn = false;
+				};
+				
+				$scope.clearTypeName = function(){
+					$scope.productBundleGroup.data.productBundleGroupType.data.typeName = '';
+				}
+				
+				//Saves product bundle group type
+				$scope.saveProductBundleGroupType = function(){
+					//Gets the promise from save
+					var promise = $scope.productBundleGroup.data.productBundleGroupType.$$save();
+					promise.then(function(response){
+						//Calls close function
+						$scope.closeAddScreen();
+					});
+
+				};
+				
+				//Sets up clickOutside Directive call back arguments
+				$scope.clickOutsideArgs = {
+					callBackActions : [$scope.closeAddScreen,$scope.clearTypeName]
+				};
+				
+				//Works with swclickoutside directive to close dialog
+				$scope.closeThis = function (clickOutsideArgs) {
+					//Check against the object state
+					if(!$scope.productBundleGroup.data.productBundleGroupType.$$isPersisted()){
+						//Perform all callback actions
+				        for(var callBackAction in clickOutsideArgs.callBackActions){
+				        	clickOutsideArgs.callBackActions[callBackAction]();
+				        }
+					}
+				};
 			}
 		};
 	}

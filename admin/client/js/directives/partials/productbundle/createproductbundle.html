@@ -58,6 +58,8 @@
 								data-options-arguments="{property:'brand'}"
 								data-is-dirty="true"
 						></sw-property-display> 
+						
+						
 					</div>
 				</sw-form>
 			</span>
@@ -74,7 +76,7 @@
 								data-property="skuID"
 								data-editing="true"
 								data-editable="true"
-
+								data-no-validate="true"
 			></sw-property-display>	
 			<sw-property-display
 								style="display:none"
@@ -83,7 +85,9 @@
 								data-editing="true"
 								data-editable="true"
 								data-is-dirty="true"
+								data-no-validate="true"
 			></sw-property-display>		
+			
 	     </sw-form>
 	    <sw-product-bundle-groups
 	    		ng-if="product.data.skus[0].data.productBundleGroups"
@@ -97,12 +101,12 @@
 	    <div class="navbar navbar-s-navbar-ten24 s-dialog-footer">
 	      <ul class="nav navbar-nav pull-right">
 	        <li class="active">
-	        	<a  ng-href="#" style="padding: 9px 12px;font-size: 16px;"
+	        	<a  style="cursor:pointer;padding: 9px 12px;font-size: 16px;"
 	        		ng-click="saveProductBundle()"
 	        	>Save & New</a>
 	        </li>
 	        <li class="active">
-	        	<a  ng-href="#" style="padding: 9px 12px;font-size: 16px;"
+	        	<a  style="cursor:pointer;padding: 9px 12px;font-size: 16px;"
 	        		ng-click="saveProductBundle($index)"
 	        	>Save & Finish</a>
 	        </li>

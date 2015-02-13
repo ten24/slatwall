@@ -74,13 +74,49 @@ Notes:
 	</cfif>
 	
 	<cfcatch>
-		<Cfdump var="#cfcatch#" abort />
 		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update type to move the 'type' column to 'typeName'">
 		<cfset local.scriptHasErrors = true />
 	</cfcatch>
 	
 </cftry>
 
+<!--- Update SwOrder to set referencedOrder Type to "Return" --->
+<cftry>
+	<cfquery name="local.updateData">
+		UPDATE
+			SwOrder
+		SET
+			referencedOrderType = 'return'
+		WHERE 
+			referencedOrderType IS NULL
+		AND
+			referencedOrderID IS NOT NULL
+	</cfquery>
+	
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update order to set referencedOrderType to Return">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+	
+</cftry>
+
+<!--- Update SwSku to set bundleFlag to 0 --->
+<cftry>
+	<cfquery name="local.updateData">
+		UPDATE
+			SwSKU
+		SET
+			bundleFlag = 0
+		WHERE 
+			bundleFlag IS NULL
+	</cfquery>
+	
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Update sku to set bundleFlag to 0">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+	
+</cftry>
 
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of Script v4_0 had errors when running">

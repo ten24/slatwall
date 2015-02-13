@@ -375,7 +375,7 @@ component displayname="Account Payment" entityname="SlatwallAccountPayment" tabl
 		if(!structKeyExists(variables, "appliedAccountPaymentOptions")) {
 			var smartList = getService('typeService').getTypeSmartList();
 			smartList.addInFilter('systemCode','aptCredit,aptCharge');
-			smartList.addSelect('type','name');
+			smartList.addSelect('typeName','name');
 			smartList.addSelect('typeID','value');
 			variables.appliedAccountPaymentOptions = smartList.getRecords();
 		}

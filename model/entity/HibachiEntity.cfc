@@ -300,7 +300,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 	
 	//can be overridden at the entity level in case we need to always return a relationship entity otherwise the default is only non-relationship and non-persistent
-	public any function getDefaultProperties(string includesList = "", string excludesList="modifiedDateTime,createdDateTime,remoteID"){
+	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
 		var properties = getProperties();
 		
 		var defaultProperties = [];
@@ -320,7 +320,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 	
 	public any function getDefaultPropertiesIdentifierList(){
-		var defaultEntityPropertiesList = getDefaultProperties();
+		var defaultEntityPropertiesList = getDefaultCollectionProperties();
 	}
 	
 	public array function getDefaultPropertyIdentifierArray(){
@@ -332,7 +332,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	
 	public string function getDefaultPropertyIdentifiersList(){
 		// Lets figure out the properties that need to be returned
-		var defaultProperties = getDefaultProperties();
+		var defaultProperties = getDefaultCollectionProperties();
 		var defaultPropertyIdentifiersList = "";
 		for(var i=1; i<=arrayLen(defaultProperties); i++) {
 			defaultPropertyIdentifiersList = listAppend(defaultPropertyIdentifiersList, defaultProperties[i]['name']);

@@ -6,7 +6,7 @@
       <button 	class="btn btn-xs btn-default" 
       			type="button"
       			ng-class="{active:filterGroupItem.logicalOperator === 'AND'}"
-      			ng-click="logicalOperatorChanged('OR')"
+      			ng-click="logicalOperatorChanged('AND')"
       			>AND
       </button>
       <button 	class="btn btn-xs btn-default" 
@@ -36,7 +36,6 @@
   <!---Nested Filter Box --->
   <div class="col-xs-12" ng-class="{collapse:filterGroupItem.$$isClosed}">
     <div class="row">
-    	<span ng-if="1===0">
       <span sw-filter-groups 
       		
       		data-collection-config="collectionConfig"
@@ -46,7 +45,6 @@
 		    data-save-collection="saveCollection()"
       >
 
-      </span>
       </span>
     </div>
   </div>

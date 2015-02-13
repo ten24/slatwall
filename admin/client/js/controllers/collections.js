@@ -98,6 +98,7 @@ metadataService,
 		};
 		
 		$scope.keywords = "";
+		$scope.loadingCollection = false;
 		var searchPromise;
 		$scope.searchCollection = function($timout){
 			if(searchPromise) {
@@ -107,6 +108,9 @@ metadataService,
 			searchPromise = $timeout(function(){
 				$log.debug('search with keywords');
 				$log.debug($scope.keywords);
+				//Set current page here so that the pagination does not break when getting collection
+				paginationService.setCurrentPage(1);
+				$scope.loadingCollection = true;
 				$scope.getCollection();
 			}, 500);
 		};
@@ -123,7 +127,7 @@ metadataService,
 			collectionListingPromise.then(function(value){
 				$scope.collection = value;
 	
-				var _collectionObject = $scope.collection['collectionObject'].toLowerCase().replace('slatwall', '');
+				var _collectionObject = $scope.collection['collectionObject'].charAt(0).toLowerCase()+$scope.collection['collectionObject'].slice(1) ;
 				var _recordKeyForObjectID = _collectionObject + 'ID';
 				
 				for(var record in value.pageRecords){
@@ -162,7 +166,8 @@ metadataService,
 						}
 					];
 				}
-				
+				collectionService.setFilterCount(filterItemCounter());
+				$scope.loadingCollection = false;
 			},function(reason){
 			});
 		};
@@ -201,6 +206,35 @@ metadataService,
 				
 		};
 		
+		var filterItemCounter = function(filterGroupArray){
+			var filterItemCount = 0;
+			
+			if(!angular.isDefined(filterGroupArray)){
+				filterGroupArray = $scope.collectionConfig.filterGroups[0].filterGroup;
+			}
+			
+			//Start out loop
+			for(var index in filterGroupArray){
+
+				//If filter isn't new then increment the count
+				if(!filterGroupArray[index].$$isNew 
+						&& !angular.isDefined(filterGroupArray[index].filterGroup)){
+					filterItemCount++;	
+				// If there are nested filter groups run introspectively
+				} else if(angular.isDefined(filterGroupArray[index].filterGroup)){
+					//Call function recursively
+					filterItemCount += filterItemCounter(filterGroupArray[index].filterGroup);
+					
+				//Otherwise make like the foo fighters and "Break Out!"
+				} else {
+					break;
+				}
+				
+			}
+			return filterItemCount;
+		}
+		
+		
 		$scope.saveCollection = function(){
 			$timeout(function(){
 				$log.debug('saving Collection');
@@ -220,6 +254,8 @@ metadataService,
 					saveCollectionPromise.then(function(value){
 						
 						$scope.errorMessage = {};
+						//Set current page here so that the pagination does not break when getting collection
+						paginationService.setCurrentPage(1);
 						$scope.getCollection();
 						$scope.collectionDetails.isOpen = false;
 					}, function(reason){
@@ -231,6 +267,8 @@ metadataService,
 						//$scope.collection = angular.copy($scope.collectionInitial);
 					});
 				}
+
+				collectionService.setFilterCount(filterItemCounter());
 			});
 		};
 		

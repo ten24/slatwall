@@ -27,11 +27,21 @@ angular.module('slatwalladmin')
 					var workflowTriggersPromise = scope.workflow.$$getWorkflowTriggers();
 					workflowTriggersPromise.then(function(){
 						scope.workflowTriggers = scope.workflow.data.workflowTriggers;
-						
+						console.log('workflowtriggers');
+						console.log(scope.workflowTriggers);
 						if(angular.isUndefined(scope.workflow.data.workflowTriggers)){
 							scope.workflow.data.workflowTriggers = [];
 							scope.workflowTriggers = scope.workflow.data.workflowTriggers;
 						}
+						
+						angular.forEach(scope.workflowTriggers,function(workflowTrigger,key){
+							console.log('trigger');
+							console.log(workflowTrigger);
+							if(workflowTrigger.data.triggerType === 'Schedule'){
+								workflowTrigger.$$getSchedule();
+								workflowTrigger.$$getScheduleCollection();
+							}
+						});
 					});
 				};
 				
@@ -47,7 +57,7 @@ angular.module('slatwalladmin')
 					            '{'+
 					               '"propertyIdentifier":"_collection.collectionObject",'+
 					               '"comparisonOperator":"=",'+
-					               '"value":"Slatwall'+ scope.workflow.data.workflowObject +'"'+
+					               '"value":"'+ scope.workflow.data.workflowObject +'"'+
 					           '}'+ 
 					         ']'+
 						'}'+
@@ -85,6 +95,13 @@ angular.module('slatwalladmin')
 						});
 					}
 					scope.showEventOptions = !scope.showEventOptions;
+				};
+				
+				scope.saveWorkflowTrigger = function(){
+					var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
+					saveWorkflowTriggerPromise.then(function(){
+						
+					});
 				};
 				
 				scope.selectEvent = function(eventOption){
@@ -128,6 +145,19 @@ angular.module('slatwalladmin')
 						
 					});
 				};*/
+				
+				scope.setAsEvent = function(workflowTrigger){
+					//add event,  clear schedule
+				};
+				
+				scope.setAsSchedule = function(workflowTrigger){
+					//add schedule object, may need to clear event data if changed
+//					if(angular.isUndefined(workflowTrigger.data.schedule)){
+//						workflowTrigger.addSchedule();
+//					}
+					
+					
+				};
 				
 				scope.addWorkflowTrigger = function(){
 					$log.debug('addWorkflowTrigger');

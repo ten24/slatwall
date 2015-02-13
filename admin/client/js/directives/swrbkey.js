@@ -15,7 +15,7 @@ function(
 		scope:{
 			swRbkey:"="
 		},
-		link: function(scope, element,attrs){
+		link: function(scope, element, attrs){
 			var rbKeyValue = scope.swRbkey;
 			
 			$log.debug('running rbkey');

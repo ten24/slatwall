@@ -67,6 +67,7 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 	
 	// Non-Persistent Properties
 	property name="actionTypeOptions" persistent="false"; 
+	property name="updateDataStruct" type="struct" persistent="false";
 	// Deprecated Properties
 	
 	// ============ START: Non-Persistent Property Methods =================
@@ -75,9 +76,8 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 			Print || Email || Update || Process || Import || Export || Delete
 		*/
 		var actionTypeOptions = [];
-		var valuesList = 'print,email,update,process,import,export,delete';
-		var namesList = 'entity.workflowtaskaction.print,entity.workflowtaskaction.email,entity.workflowtaskaction.update,
-						entity.workflowtaskaction.process,entity.workflowtaskaction.import,entity.workflowtaskaction.export,entity.workflowtaskaction.delete';
+		var valuesList = 'print,email,update';
+		var namesList = 'entity.workflowtaskaction.print,entity.workflowtaskaction.email,entity.workflowtaskaction.update';
 		var valuesArray = ListToArray(valuesList);
 		var namesArray = ListToArray(namesList);
 		var valuesArrayLength = arrayLen(valuesArray);
@@ -90,6 +90,35 @@ component entityname="SlatwallWorkflowTaskAction" table="SwWorkflowTaskAction" p
 		}
     	return actionTypeOptions;
     }
+    
+    public any function getUpdateDataStruct(){
+		if(isNull(variables.updateDataStruct)){
+			variables.updateDataStruct = deserializeUpdateDataConfig();
+		}
+		return variables.updateDataStruct;
+	}
+	
+//	variables.taskConditionsConfig = '';
+//			var defaultTaskConditionsConfig = {};
+//			defaultTaskConditionsConfig["filterGroups"] = ArrayNew(1);
+//			var workflowConditionGroupStuct = {};
+//			workflowConditionGroupStuct["filterGroup"] = ArrayNew(1);
+//			ArrayAppend(defaultTaskConditionsConfig["filterGroups"],workflowConditionGroupStuct);
+//			variables.taskConditionsConfig = serializeJson(defaultTaskConditionsConfig);
+	
+	public any function getUpdateData(){
+		if(isNull(variables.updateData)){
+			var defaultUpdateData = {};
+			defaultUpdateData['staticData'] = {};
+			defaultUpdateData['dynamicData'] = {};
+			variables.updateData = serializeJson(defaultUpdateData);
+		}
+		return variables.updateData;
+	}
+	
+	public any function deserializeUpdateData(){
+		return deserializeJSON(getUpdateData());
+	}
     
     // Workflow (many-to-one)
 	public void function setWorkflowTask(required any WorkflowTask) {

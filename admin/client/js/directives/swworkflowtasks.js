@@ -57,15 +57,16 @@ angular.module('slatwalladmin')
 				};
 				
 				scope.$watch('workflowTasks.selectedTask.data.workflow.data.workflowObject',function(newValue,oldValue){
-					if(newValue){
+					
+					if(newValue !== oldValue && angular.isDefined(scope.workflowTasks.selectedTask)){
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
 					}
 				});
 				
 				scope.selectWorkflowTask = function(workflowTask){
-					scope.workflowTasks.selectedTask = workflowTask;
-
+					scope.workflowTasks.selectedTask = undefined;
+					
 					var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
 					filterPropertiesPromise.then(function(value){
 						scope.filterPropertiesList = {
@@ -75,6 +76,7 @@ angular.module('slatwalladmin')
 						metadataService.setPropertiesList(value,scope.workflow.data.workflowObject);
 						scope.filterPropertiesList[scope.workflow.data.workflowObject] = metadataService.getPropertiesListByBaseEntityAlias(scope.workflow.data.workflowObject);
 						metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflow.data.workflowObject],scope.workflow.data.workflowObject);
+						scope.workflowTasks.selectedTask = workflowTask;
 					});
 				};
 				
@@ -90,10 +92,6 @@ angular.module('slatwalladmin')
 						}
 					});
 				};
-						
-				
-					
-				
 			}
 		};
 	}

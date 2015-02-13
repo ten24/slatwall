@@ -140,7 +140,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(variables.collectionConfig eq '{}' ){
 			//get default columns
 			var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
-			var defaultProperties = newEntity.getDefaultProperties();
+			var defaultProperties = newEntity.getDefaultCollectionProperties();
 			
 			var columnsArray = []; 
 			if(addDefaultColumns){
@@ -151,6 +151,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					
 					if(structKeyExists(defaultProperty,"fieldtype") && defaultProperty.fieldtype == 'id'){
 						columnStruct['isDeletable'] = false;
+						columnStruct['isVisible'] = false;
+					}else if(structKeyExists(defaultProperty,"hb_formFieldType") && defaultProperty.hb_formFieldType == 'json'){
+						columnStruct['isDeletable'] = true;
 						columnStruct['isVisible'] = false;
 					}else{
 						columnStruct['isDeletable'] = true;
@@ -457,12 +460,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return fromHQL;
 	}
 	
-	public string function getHQL(boolean excludeSelect = false){
+	public string function getHQL(boolean excludeSelectAndOrderBy = false){
 		var collectionConfig = getCollectionConfigStruct();
 		variables.HQLParams = {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
-		HQL = createHQLFromCollectionObject(this,arguments.excludeSelect);
+		HQL = createHQLFromCollectionObject(this,arguments.excludeSelectAndOrderBy);
 		return HQL;
 	}
 	
@@ -578,9 +581,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
-		if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
-			saveState();
-			variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+		try{
+			
+			if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
+				saveState();
+				variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+			}
+		}
+		catch(any e){
+			variables.pageRecords = [{'failedCollection'='failedCollection'}];
 		}
 		
 		return variables.pageRecords;
@@ -591,9 +600,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public array function getRecords(boolean refresh=false) {
-		if( !structKeyExists(variables, "records") || arguments.refresh == true) {
-			variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
-			
+		try{
+			if( !structKeyExists(variables, "records") || arguments.refresh == true) {
+				variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+				
+			}
+		}
+		catch(any e){
+			variables.records = [{'failedCollection'='failedCollection'}];
 		}
 		
 		return variables.records;
@@ -651,6 +665,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	private string function getPredicate(required any filter){
 		var predicate = '';
+		if(!structKeyExists(filter,"value")){
+			filter.value = "";
+		}
 		//verify we are handling a range value
 		if(arguments.filter.comparisonOperator eq 'between' || arguments.filter.comparisonOperator eq 'not between'){
 			if(arguments.filter.ormtype eq 'timestamp'){
@@ -693,12 +710,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}else if(arguments.filter.comparisonOperator eq 'is' || arguments.filter.comparisonOperator eq 'is not'){
 			predicate = filter.value;
 		}else if(arguments.filter.comparisonOperator eq 'in' || arguments.filter.comparisonOperator eq 'not in'){
-			predicate = "(" & ListQualify(filter.value,"'") & ")";
+			if(len(filter.value)){
+				predicate = "(" & ListQualify(filter.value,"'") & ")";
+			}else{
+				predicate = "('')";
+			}
 		}else if(arguments.filter.comparisonOperator eq 'like' || arguments.filter.comparisonOperator eq 'not like'){
 			var paramID = getParamID();
-			if(!structKeyExists(filter,"value")){
-				filter.value = "";
-			}
+			
 			if(structKeyExists(filter,'pattern')){
 				switch(filter.pattern){
 					case '%w%':
@@ -716,9 +735,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			predicate = ":#paramID#";
 		}else{
 			var paramID = getParamID();
-			if(!structKeyExists(filter,"value")){
-				filter.value = "";
-			}
+			
 			addHQLParam(paramID,arguments.filter.value);
 			predicate = ":#paramID#";
 		}
@@ -816,7 +833,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return HQL;
 	}
 	
-	public any function createHQLFromCollectionObject(required any collectionObject, boolean excludeSelect=false){
+	public any function createHQLFromCollectionObject(required any collectionObject, boolean excludeSelectAndOrderBy=false){
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
 		
@@ -828,12 +845,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var orderByHQL = "";
 			
 			//build select
-			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns) && arguments.excludeSelect eq false){
+			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns) && arguments.excludeSelectAndOrderBy eq false){
 				var isDistinct = false;
 				if(!isNull(collectionConfig.isDistinct)){
 					isDistinct = collectionConfig.isDistinct;
 				}
 				selectHQL &= getSelectionsHQL(collectionConfig.columns,isDistinct);
+				if(!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())){
+					orderByHQL &= getOrderByHQL(getPostOrderBys());
+				}else{
+					//build Order By
+					if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
+						orderByHQL &= getOrderByHQL(collectionConfig.orderBy);
+					}
+				}
 			}
 			
 			//where clauses are actually the collection of all parent/child where clauses
@@ -855,15 +880,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				
 			}
 			
-			//override defaultconfig if we have postOrderBys
-			if(!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())){
-				orderByHQL &= getOrderByHQL(getPostOrderBys());
-			}else{
-				//build Order By
-				if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
-					orderByHQL &= getOrderByHQL(collectionConfig.orderBy);
-				}
-			}
+			
 			
 			//build FROM last because we have aquired joins implicitly
 			var joins = [];
@@ -880,30 +897,43 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public void function addPostFiltersFromKeywords(required any collectionConfig, numeric hasFilterHQL){
 		var keywordCount = 0;
+		
 		if(structKeyExists(arguments.collectionConfig,'columns') && arrayLen(arguments.collectionConfig.columns)){
 			
 			for(column in arguments.collectionConfig.columns){
 				
 				if(structKeyExists(column,'isSearchable') && column.isSearchable){
 					//use keywords to create some post filters
+					
 					if(structKeyExists(column,'ormtype') 
-						&& column.ormtype neq 'boolean' 
-						&& column.ormtype neq 'timestamp'
-						&& column.ormtype neq 'big_decimal'
-						&& column.ormtype neq 'integer'
-						){
-						
+					&& column.ormtype neq 'boolean' 
+					&& column.ormtype neq 'timestamp'
+					
+					){
 						for(keyword in getKeywordArray()){
-							
-							var postFilterGroup = {
-								filterGroup = [
-									{
-										propertyIdentifier = 'LOWER(#column.propertyIdentifier#)',
-										comparisonOperator = "like",
-										value="%#keyword#%"
-									}
-								]
-							};
+							if(column.ormtype eq 'big_decimal'
+							|| column.ormtype eq 'integer'){
+								var postFilterGroup = {
+									filterGroup = [
+										{
+											propertyIdentifier = 'STR(#column.propertyIdentifier#)',
+											comparisonOperator = "like",
+											value="%#keyword#%"
+										}
+									]
+								};
+							}else{
+								
+								var postFilterGroup = {
+									filterGroup = [
+										{
+											propertyIdentifier = 'LOWER(#column.propertyIdentifier#)',
+											comparisonOperator = "like",
+											value="%#keyword#%"
+										}
+									]
+								};
+							}
 							if(keywordCount != 0){
 								postFilterGroup.logicalOperator = "OR";
 							}else{
@@ -939,9 +969,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							addPostFilterGroup(postFilterGroup);
 							keywordCount++;
 						}
+						keywordCount++;
 					}
+					
 				}
-				keywordCount++;
+				
 			}
 		}else{
 			//if we don't have columns then we need default properties searching
@@ -950,19 +982,30 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(structKeyExists(propertyItem,'ormtype') 
 					&& propertyItem.ormtype neq 'boolean' 
 					&& propertyItem.ormtype neq 'timestamp' 
-					&& propertyItem.ormtype neq 'big_decimal'
-					&& propertyItem.ormtype neq 'integer'
 					&& !structKeyExists(propertyItem,'attributeID') ){
 					for(keyword in getKeywordArray()){
-						var postFilterGroup = {
-							filterGroup = [
-								{
-									propertyIdentifier = 'LOWER(#arguments.collectionConfig.baseEntityAlias#.#propertyItem.name#)',
-									comparisonOperator = "like",
-									value="%#keyword#%"
-								}
-							]
-						};
+						if(column.ormtype eq 'big_decimal'
+						|| column.ormtype eq 'integer'){
+							var postFilterGroup = {
+								filterGroup = [
+									{
+										propertyIdentifier = 'STR(#column.propertyIdentifier#)',
+										comparisonOperator = "like",
+										value="%#keyword#%"
+									}
+								]
+							};
+						}else{
+							var postFilterGroup = {
+								filterGroup = [
+									{
+										propertyIdentifier = 'LOWER(#arguments.collectionConfig.baseEntityAlias#.#propertyItem.name#)',
+										comparisonOperator = "like",
+										value="%#keyword#%"
+									}
+								]
+							};
+						}
 						if(keywordCount != 0){
 							postFilterGroup.logicalOperator = "OR";
 						}else{
@@ -995,8 +1038,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						addPostFilterGroup(postFilterGroup);
 						keywordCount++;
 					}
+					keywordCount++;
 				}
-				keywordCount++;
+				
 			}
 		}
 	}
@@ -1130,8 +1174,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// ============== START: Overridden Implicit Getters ===================
 	
-	public any function getDefaultProperties(){
-		return super.getDefaultProperties();
+	public any function getDefaultCollectionProperties(){
+		return super.getDefaultCollectionProperties();
 	}
 	
 	// ==============  END: Overridden Implicit Getters ====================

@@ -17,13 +17,11 @@ angular.module('slatwalladmin')
 		return {
 			require:"^form",
 			restrict: 'AE',
-			replace:"true",
 			scope:{
 				propertyDisplay:"="
 			},
 			templateUrl:partialsPath+'formfields/formfield.html',
 			link: function(scope, element,attrs,formController){
-				
 				if(scope.propertyDisplay.object.$$getID() === ''){
 					scope.propertyDisplay.isDirty = true;
 				}

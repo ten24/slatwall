@@ -77,7 +77,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods=listAppend(this.secureMethods, 'settings');
 	this.secureMethods=listAppend(this.secureMethods, 'downloadFile');
 	
-	// Address Zone Location
+	// Address Zone Location\
 	public void function createAddressZoneLocation(required struct rc) {
 		editAddressZoneLocation(rc);
 	}
@@ -367,6 +367,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	// Stock Adjustment
 	public void function createStockAdjustment(required struct rc) {
 		param name="rc.stockAdjustmentType" type="string" default="satLocationTransfer";
+		
+		arguments.rc.sRedirectAction = 'admin:entity.editstockadjustment';
 		
 		// Call the generic logic
 		genericCreateMethod(entityName="StockAdjustment", rc=arguments.rc);
