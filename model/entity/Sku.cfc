@@ -59,6 +59,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="listPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="price" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="renewalPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
+	property name="currencyCode" ormtype="string" length="3";
 	property name="imageFile" ormtype="string" length="50";
 	property name="userDefinedPriceFlag" ormtype="boolean" default="0";
 	property name="eventStartDateTime" ormtype="timestamp" hb_formatType="dateTime";
@@ -80,7 +81,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="productSchedule" cfc="ProductSchedule" fieldtype="many-to-one" fkcolumn="productScheduleID";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
 	property name="waitlistQueueTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID" hint="Term that a waitlisted registrant has to claim offer.";
-	property name="currency" cfc="Currency" fieldtype="many-to-one" fkcolumn="currencyCode";
 
 	// Related Object Properties (one-to-many)
 	property name="alternateSkuCodes" singularname="alternateSkuCode" fieldtype="one-to-many" fkcolumn="skuID" cfc="AlternateSkuCode" inverse="true" cascade="all-delete-orphan";
@@ -129,7 +129,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="availableSeatCount" persistent="false";
 	property name="baseProductType" persistent="false";
 	property name="currentAccountPrice" type="numeric" hb_formatType="currency" persistent="false";
-	property name="currencyCode" type="string" persistent="false";
 	property name="currencyDetails" type="struct" persistent="false";
 	property name="defaultFlag" type="boolean" persistent="false";
 	property name="eligibleFulfillmentMethods" type="array" persistent="false";
@@ -504,15 +503,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	public string function getCurrencyCode() {
 		if(!structKeyExists(variables, "currencyCode")) {
-			if(not isnull(this.getCurrency())){
-				variables.currencyCode = this.getCurrency().getCurrencyCode(); 
-			}else{
-				var currency=getService("CurrencyService").getCurrency(this.setting('skuCurrency'));
-				this.setCurrency(currency);
-				variables.currencyCode=this.setting('skuCurrency');
-			}
+				this.setCurrencyCode(this.setting('skuCurrency'));
 			
-		}
+			}
 		return variables.currencyCode;
 	}
 	
@@ -826,7 +819,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		if(structKeyExists(getSalePriceDetailsByCurrencyCode(arguments.currencyCode), "salePrice")) {
 			return getSalePriceDetailsByCurrencyCode(arguments.currencyCode)[ "salePrice"];
 		}
-		return getPrice();
+		return getPriceByCurrencyCode(arguments.currencyCode);
 	}
 	
 	public any function getSalePriceDiscountType() {

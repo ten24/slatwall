@@ -73,6 +73,8 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.promotionRewardCurrency#" property="amount" edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
-		
+			<cfif !rc.promotionRewardCurrency.isNew()>
+			<hb:HibachiActionCaller action="admin:entity.deletepromotionrewardcurrency" queryString="promotionRewardCurrencyID=#rc.promotionRewardCurrency.getPromotionRewardCurrencyID()#&redirectAction=admin:entity.detailpromotionreward&promotionrewardID=#rc.promotionReward.getPromotionRewardID()#" class="btn btn-danger" />
+		</cfif>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

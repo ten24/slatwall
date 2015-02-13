@@ -59,6 +59,7 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	// Persistent Properties
 	property name="promotionRewardID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="amount" ormType="big_decimal" hb_formatType="custom";
+	property name="currencyCode" ormtype="string" length="3";
 	property name="amountType" ormType="string" hb_formatType="rbKey";
 	property name="rewardType" ormType="string" hb_formatType="rbKey";
 	property name="applicableTerm" ormType="string" hb_formatType="rbKey" hb_formFieldType="select";
@@ -69,7 +70,6 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 	// Related Object Properties (many-to-one)
 	property name="promotionPeriod" cfc="PromotionPeriod" fieldtype="many-to-one" fkcolumn="promotionPeriodID";
 	property name="roundingRule" cfc="RoundingRule" fieldtype="many-to-one" fkcolumn="roundingRuleID" hb_optionsNullRBKey="define.none";
-	property name="currency" cfc="Currency" fieldtype="many-to-one" fkcolumn="currencyCode";
 
 	// Related Object Properties (one-to-many)
 	property name="promotionRewardCurrencies" singularname="promotionRewardCurrency" cfc="PromotionRewardCurrency" type="array" fieldtype="one-to-many" fkcolumn="promotionRewardID" cascade="all-delete-orphan" inverse="true";
@@ -136,13 +136,15 @@ component displayname="Promotion Reward" entityname="SlatwallPromotionReward" ta
 		}
 	}
 	
-	public string function getCurrencyCode(){
+	public string function getCurrencyCode() {
 		if(!structKeyExists(variables, "currencyCode")) {
-			if(!isnull(this.getCurrency())){
-				variables.currencyCode=this.getCurrency().getCurrencyCode();
+			if(not isnull(this.getCurrencyCode())){
+				variables.currencyCode = this.getCurrencyCode(); 
 			}else{
+				this.setCurrencyCode(this.setting('skuCurrency'));
 				variables.currencyCode=this.setting('skuCurrency');
 			}
+			
 		}
 		return variables.currencyCode;
 	}

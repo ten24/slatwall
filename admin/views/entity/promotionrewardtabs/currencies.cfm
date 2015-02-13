@@ -50,20 +50,55 @@ Notes:
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.promotionReward" type="any" />
-<!---
+<cfset local.promoRewardCurrencyStruct=structNew()>
+<cfloop collection="#rc.promotionReward.getPromotionRewardCurrenciesStruct()#" item="local.promoRewardCurrency">
+	<cfset local.currentPromoRewardCurrency=rc.promotionReward.getPromotionRewardCurrenciesStruct()[local.promoRewardCurrency]>
+	<cfset local.promoRewardCurrencyStruct[local.currentPromoRewardCurrency.getCurrencyCode()]=local.currentPromoRewardCurrency>
+</cfloop>
+
 <cfoutput>
-	<hb:HibachiListingDisplay smartList="#rc.promotionReward.getPromotionRewardCurrenciesSmartList()#"
-			recordEditAction="admin:entity.editpromotionrewardcurrency"
-			recordEditQueryString="redirectAction=admin:entity.detailpromotionreward&promotionrewardID=#rc.promotionReward.getPromotionRewardID()#"
-			recordEditModal=true
-			recordDeleteAction="admin:entity.deletepromotionrewardcurrency"
-			recordDeleteQueryString="redirectAction=admin:entity.detailpromotionreward&promotionRewardID=#rc.promotionReward.getPromotionRewardID()#">
-			
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="currency.currencyCode" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="amount" />
-		
-	</hb:HibachiListingDisplay>
-	
-	<hb:HibachiActionCaller action="admin:entity.createpromotionrewardcurrency" class="btn btn-default" icon="plus" queryString="redirectAction=admin:entity.detailpromotionreward&promotionRewardID=#rc.promotionReward.getPromotionRewardID()#" modal="true" />
+	<table class="table table-striped table-bordered table-condensed">
+		<tr>
+			<th>#$.slatwall.rbKey('entity.currency')#</th>
+			<th>#$.slatwall.rbKey("define."&rc.promotionReward.getAmountType())#</th>
+			<th>#$.slatwall.rbKey('entity.currency.currencyCode')#</th>
+			<th class="admin admin1"></th>
+		</tr>
+		<cfloop list="#$.slatwall.setting('skuEligibleCurrencies')#" index="local.currencyCode">
+			<cfset local.currency = $.slatwall.getService("currencyService").getCurrency( local.currencyCode ) />
+			<cfif local.currency.getCurrencyCode() eq rc.promotionReward.getCurrencyCode()>
+				<tr class="highlight-yellow">
+			<cfelse>
+				<tr>
+			</cfif>
+				<td class="primary">#local.currency.getCurrencyName()#</td>
+				<cfif structKeyExists( local.promoRewardCurrencyStruct, local.currency.getCurrencyCode())>
+					<td>
+						#$.slatwall.formatValue(local.promoRewardCurrencyStruct[ local.currency.getCurrencyCode() ].getAmount(), 'currency', {currencyCode=local.currency.getCurrencyCode()} )#
+						
+					</td>
+				<cfelseif local.currency.getCurrencyCode() eq rc.promotionReward.getCurrencyCode()>
+					<td>
+						#$.slatwall.formatValue(rc.promotionReward.getAmount(), 'currency', {currencyCode=local.currency.getCurrencyCode()} )#
+					</td>
+				<cfelse>
+					<td>
+						#$.slatwall.formatValue($.slatwall.getService("currencyService").convertCurrency(rc.promotionReward.getAmount(), rc.promotionReward.getCurrencyCode(),local.currency.getCurrencyCode()), 'currency', {currencyCode=local.currency.getCurrencyCode()} )# ( #$.slatwall.rbKey('admin.entity.skutabs.currencies.converted')# )
+					</td>
+				</cfif>
+				
+				<td>#local.currencyCode#</td>
+				<td>
+					<cfif local.currency.getCurrencyCode() eq rc.promotionReward.getCurrencyCode()>
+						<hb:HibachiActionCaller action="entity.editpromotionrewardcurrency" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" disabled="true" />
+					<cfelseif !structKeyExists( local.promoRewardCurrencyStruct, local.currency.getCurrencyCode())>
+						<hb:HibachiActionCaller action="admin:entity.createpromotionrewardcurrency" querystring="currencyCode=#local.currencyCode#&promotionRewardID=#rc.promotionReward.getPromotionRewardID()#&redirectAction=admin:entity.detailpromotionreward" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" />
+					<cfelse>
+						<hb:HibachiActionCaller action="admin:entity.editpromotionrewardcurrency" querystring="promotionRewardCurrencyID=#local.promoRewardCurrencyStruct[ local.currency.getCurrencyCode() ].getPromotionRewardCurrencyID()#&promotionrewardID=#rc.promotionReward.getPromotionRewardID()#&redirectAction=admin:entity.detailpromotionreward" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" />
+					</cfif>
+				</td>
+			</tr>
+		</cfloop>
+	</table>
 </cfoutput>
---->
+
