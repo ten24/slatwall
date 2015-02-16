@@ -151,6 +151,7 @@ angular.module('slatwalladmin')
 											
 											// If the loadingCount drops to 0, then we can update scope
 											if(_loadingCount == 0){
+												//This sorts the array of objects by the objects' "type" property alphabetically
 												scope.productBundleGroupFilters.value.sort(function(a, b){
 													if(a.type < b.type){
 											            return -1;
