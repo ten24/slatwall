@@ -38,8 +38,8 @@
 								</td>
 								<td rowspan="1000" class="s-actions">
 									<ul>
-										<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
-										<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
+										<li class="s-edit-btn"><a ng-href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}"><button type="button"><i class="fa fa-eye"></i></button></a></li>
+										<li class="s-remove-btn"><button type="button"><a ng-href="{{'?slatAction=entity.deleteorderitem&redirectAction=admin:entity.detailorder&amp;orderID='+orderId+'&orderitemid='+orderItem.data.orderItemID}}"<i class="fa fa-trash"></i></a></button></li>
 									</ul>
 								</td>
 							</tr>

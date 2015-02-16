@@ -18,7 +18,8 @@ angular.module('slatwalladmin')
 			restrict: 'A',
 			transclude:false,
 			scope:{
-				orderItem:"="
+				orderItem:"=",
+				orderId:"="
 			},
 			replace:true,
 			link: function(scope, element, attrs){
