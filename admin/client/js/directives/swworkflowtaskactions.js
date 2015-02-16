@@ -18,10 +18,22 @@ angular.module('slatwalladmin')
 				$log.debug('workflow task actions init');	
 				scope.openActions = false;
 				
+				var getObjectByActionType = function(workflowTaskAction){
+					if(workflowTaskAction.data.actionType === 'email'){
+						workflowTaskAction.$$getEmailTemplate();
+					}else if(workflowTaskAction.data.actionType === 'print'){
+						workflowTaskAction.$$getPrintTemplate();
+					}
+				};
+				
 				scope.getWorkflowTaskActions = function(){
 					var workflowTaskPromise = scope.workflowTask.$$getWorkflowTaskActions();
 					workflowTaskPromise.then(function(){
 						scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
+						
+						angular.forEach(scope.workflowTaskActions,function(workflowTaskAction){
+							getObjectByActionType(workflowTaskAction);
+						});
 						$log.debug(scope.workflowTaskActions);
 					});
 					if(angular.isUndefined(scope.workflowTask.data.workflowTaskActions)){
