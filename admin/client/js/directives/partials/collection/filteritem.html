@@ -34,7 +34,10 @@
       	</a>
       </div>
       <div ng-click="selectFilterItem(filterItem)" ng-class="{}"   class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-        <span ng-bind="filterItem.comparisonOperator"></span>&nbsp;<span class="s-filter-value" ng-bind="filterItem.displayValue"></span>
+        <ul class="list-inline">
+            <li class="s-comparison-operator" ng-bind="filterItem.comparisonOperator"></li>
+            <li class="s-filter-value" ng-bind="filterItem.displayValue"></li>
+        </ul>
       </div>
     </div>
     
