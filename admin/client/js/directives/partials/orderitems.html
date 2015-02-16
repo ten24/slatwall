@@ -44,9 +44,9 @@
 										<li class="s-header">Ship To: <a href="#" class="s-edit-link">edit</a></li>
 										<li>
 											<swoishippinglabelstamp 
-												data-order-Item="orderItem"
-												data-order-id="orderId"
-											>Address</swoishippinglabelstamp>
+												ng-if="orderItem.data.orderFulfillment"
+												data-order-fulfillment="orderItem.data.orderFulfillment"
+											></swoishippinglabelstamp>
 										</li>
 									</ul>
 								</td>

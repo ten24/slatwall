@@ -1,0 +1,12 @@
+<ul ng-if="orderFulfillment.data.fulfillmentMethodType === 'shipping'">
+	<li ng-bind="orderFulfillment.data.shippingAddress.data.streetAddress"></li>
+	<li ng-bind="orderFulfillment.data.shippingAddress.data.street2Address"></li>
+	<li>
+		<span ng-bind="orderFulfillment.data.shippingAddress.data.city"> &nbsp</span> 
+		<span ng-bind="orderFulfillment.data.shippingAddress.data.stateCode"> &nbsp</span><br>
+		<span ng-bind="orderFulfillment.data.shippingAddress.data.postalCode"></span>
+	</li>
+</ul>
+<ul ng-if="orderFulfillment.data.fulfillmentMethodType === 'shipping'">
+	<li>N/A</li>
+</ul>
