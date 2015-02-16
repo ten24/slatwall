@@ -142,10 +142,6 @@ angular.module('slatwalladmin')
 												scope.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
 											}
 											
-											
-											
-											
-											
 											// Increment Down The Loading Count
 											_loadingCount--;
 											
@@ -169,9 +165,6 @@ angular.module('slatwalladmin')
 									})(keyword,option);
 								} 
 							}
-							//scope.productBundleGroupFilters.value.sort(function(a, b){return a.type - b.type;});
-							$log.debug("herebra");
-							$log.debug(scope.productBundleGroupFilters.value);
 						}else{
 							
 							$slatwall.getEntity(filterTerm.value, {keywords:keyword,deferKey:'getProductBundleGroupFilterByTerm'+filterTerm.value})
@@ -186,7 +179,6 @@ angular.module('slatwalladmin')
 							});
 						}
 					}, 500);
-					
 				};
 				
 				scope.addFilterToProductBundle = function(filterItem,include){
