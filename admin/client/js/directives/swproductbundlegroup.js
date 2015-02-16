@@ -129,6 +129,7 @@ angular.module('slatwalladmin')
 					timeoutPromise = $timeout(function(){
 						if(filterTerm.value === 'All'){
 							scope.productBundleGroupFilters.value = [];
+							
 							_loadingCount = scope.searchOptions.options.length - 1;
 							for(var i in scope.searchOptions.options){
 								if(i > 0){
@@ -141,17 +142,35 @@ angular.module('slatwalladmin')
 												scope.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
 											}
 											
+											
+											
+											
+											
 											// Increment Down The Loading Count
 											_loadingCount--;
 											
 											// If the loadingCount drops to 0, then we can update scope
 											if(_loadingCount == 0){
-												scope.loading = false;	
+												scope.productBundleGroupFilters.value.sort(function(a, b){
+													if(a.type < b.type){
+											            return -1;
+											        }else if(a.type > b.type){
+											            return 1;
+											        }else{
+											            return 0;   
+											        }
+												});
+												$log.debug(scope.productBundleGroupFilters.value);
+												scope.loading = false;
+												
 											}
 										});
 									})(keyword,option);
 								} 
 							}
+							//scope.productBundleGroupFilters.value.sort(function(a, b){return a.type - b.type;});
+							$log.debug("herebra");
+							$log.debug(scope.productBundleGroupFilters.value);
 						}else{
 							
 							$slatwall.getEntity(filterTerm.value, {keywords:keyword,deferKey:'getProductBundleGroupFilterByTerm'+filterTerm.value})
@@ -166,6 +185,7 @@ angular.module('slatwalladmin')
 							});
 						}
 					}, 500);
+					
 				};
 				
 				scope.addFilterToProductBundle = function(filterItem,include){
