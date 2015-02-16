@@ -25,6 +25,17 @@ angular.module('slatwalladmin')
 			templateUrl:collectionPartialsPath+"filtergroups.html",
 			controller: function($scope, $element,$attrs){
 				$scope.itemInUse = false;
+				
+				$scope.isAddingFilterGroupItem;
+				
+				this.setIsAddingFilterGroupItem = function(boolean){
+					$scope.isAddingFilterGroupItem = boolean;
+				}
+				
+				this.getIsAddingFilterGroupItem = function(){
+					return $scope.isAddingFilterGroupItem;
+				}
+				
 				console.log('collectionConfig');
 				console.log($scope.collectionConfig);
 				this.getFilterGroup = function(){
