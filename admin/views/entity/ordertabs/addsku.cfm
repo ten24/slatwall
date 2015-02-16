@@ -52,8 +52,10 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.addSkuAddStockType" type="string" />
 
+<cfset local.getAddOrderItemSkuOptionsSmartList = rc.order.getAddOrderItemSkuOptionsSmartList() />
+
 <cfoutput>
-	<hb:HibachiListingDisplay smartList="#rc.order.getAddOrderItemSkuOptionsSmartList()#"
+	<hb:HibachiListingDisplay smartList="#local.getAddOrderItemSkuOptionsSmartList#"
 							  recordProcessAction="admin:entity.processOrder"
 							  recordProcessQueryString="orderItemTypeSystemCode=#rc.addSkuAddStockType#"
 							  recordProcessContext="addOrderItem"

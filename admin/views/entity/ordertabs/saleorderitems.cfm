@@ -73,11 +73,11 @@ Notes:
 		
 		<hb:HibachiTabGroup tabLocation="top">
 			<cfif !isnull(rc.order.getDefaultStockLocation())>
-				<hb:HibachiTab view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />	
-				<hb:HibachiTab view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
+				<hb:HibachiTab tabid="soiaddstock" view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />	
+				<hb:HibachiTab tabid="soiaddsku" view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
 			<cfelse>
-				<hb:HibachiTab view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
-				<hb:HibachiTab view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />	
+				<hb:HibachiTab tabid="soiaddsku" view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
+				<hb:HibachiTab tabid="soiaddstock" view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />	
 			</cfif>
 			
 		</hb:HibachiTabGroup>
