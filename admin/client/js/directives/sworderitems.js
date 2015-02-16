@@ -59,7 +59,13 @@ angular.module('slatwalladmin')
 		 				      "propertyIdentifier": "_orderitem.skuPrice",
 		 				      "isVisible": true,
 		 				      "isDeletable": true
-		 				    },
+	 				   },
+		 				   {
+			 				      "title": "Sku ID",
+			 				      "propertyIdentifier": "_orderitem.sku.skuID",
+			 				      "isVisible": true,
+			 				      "isDeletable": true
+			 			},
 	 				      {
 	 				      "title": "SKU Code",
 	 				      "propertyIdentifier": "_orderitem.sku.skuCode",
