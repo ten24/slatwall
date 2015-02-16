@@ -98,7 +98,7 @@
 							<ul class="list-unstyled list-inline s-last">
 								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
 							</ul>
-							<div class="clearfix"></div>
+							
 						</li>
 
 						<li class="s-bundle-add-obj">
@@ -111,7 +111,7 @@
 							<ul class="list-unstyled list-inline s-last">
 								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
 							</ul>
-							<div class="clearfix"></div>
+							
 						</li>
 
 						<li class="s-bundle-add-obj s-no-edit">
@@ -124,7 +124,7 @@
 							<ul class="list-unstyled list-inline s-last">
 								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey"><i class="fa fa-pencil"></i></a></li>
 							</ul>
-							<div class="clearfix"></div>
+							
 						</li>
 
 					</ul>
@@ -215,7 +215,7 @@
 														<!--- // search --->
 
 													</div>
-													<div class="clearfix"></div>
+													
 												</div>
 
 												<div class="form-group form-group-sm" id="j-placeholder-trigger-select" style="display:none;">
@@ -266,7 +266,7 @@
 														<!--- // search --->
 
 													</div>
-													<div class="clearfix"></div>
+													
 												</div>
 
 											</div>
@@ -324,7 +324,7 @@
 														<!--- // search --->
 
 													</div>
-													<div class="clearfix"></div>
+													
 												</div>
 
 												<div class="form-group form-group-sm">
@@ -338,7 +338,7 @@
 																<ul class="dropdown-menu s-search-options">
 																	<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type3"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
 																	<li><a>Every Monday</a></li>
-																	<li><a>Bob's Daily Schedule</a></li>
+																	<li><a>Bobs Daily Schedule</a></li>
 																</ul>
 																<div class="input-group-btn">
 																	<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
@@ -352,7 +352,7 @@
 																		<div class="col-sm-12 s-no-paddings">
 																			<input type="text" class="form-control" id="input">
 																		</div>
-																		<div class="clearfix"></div>
+																		
 																	</div>
 
 																	<div class="form-group">
@@ -371,7 +371,7 @@
 																			<div class="col-sm-12 s-no-paddings">
 																				<input type="text" class="form-control" id="input">
 																			</div>
-																			<div class="clearfix"></div>
+																			
 																		</div>
 
 																		<div class="form-group form-group-sm col-sm-6">
@@ -379,7 +379,7 @@
 																			<div class="col-sm-12 s-no-paddings">
 																				<input type="text" class="form-control" id="input">
 																			</div>
-																			<div class="clearfix"></div>
+																			
 																		</div>
 																	</div>
 
@@ -411,7 +411,7 @@
 														<!--- // search --->
 
 													</div>
-													<div class="clearfix"></div>
+													
 												</div>
 
 											</div>
@@ -503,7 +503,7 @@
 					</div>
 					<!--- //Edit Filter Box --->
 
-					<div class="clearfix"></div>
+					
 
 				</div>
 
@@ -527,1120 +527,238 @@
 					<ul class="list-unstyled s-order-item-options s-negative-obj">
 
 						<li class="s-bundle-add-obj s-no-edit">
-							<ul class="list-unstyled list-inline">
-								<li class="s-item-type s-tooltip">1</li>
-							</ul>
-							<ul class="list-unstyled list-inline s-middle">
-								<li class="j-tool-tip-item s-bundle-details">Update Order Status</li>
-								<li class="j-tool-tip-item s-bundle-details">Active: <span>No</span></li>
-							</ul>
-							<ul class="list-unstyled list-inline s-last">
-								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-edit" data-toggle="collapse" data-target="#s-add-obj-1"><i class="fa fa-pencil"></i></a></li>
-								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove" data-toggle="collapse" data-target="#s-add-obj-1"><i class="fa fa-trash"></i></a></li>
-							</ul>
-							<div class="clearfix"></div>
-						</li>
-						<div class="s-bundle-edit-obj collapse" id="s-add-obj-1">
-
-							<div class="s-body-box">
-
-								<div class="col-xs-12 s-filter-content">
-
-									<!--- Header nav with title starts --->
-									<div class="row s-header-bar">
-										<div class="col-md-12 s-header-nav">
-											<ul class="nav nav-tabs" role="tablist">
-												<li class="active"><a href="##j-basic-2" role="tab" data-toggle="tab">Basic</a></li>
-												<li><a href="##j-conditions-2" role="tab" data-toggle="tab">Conditions</a></li>
-												<li><a href="##j-actions-2" role="tab" data-toggle="tab">Actions</a></li>
-											</ul>
-										</div>
-									</div>
-									<!--- //Header nav with title end --->
-
-									<!--- Tab panes for menu options start--->
-									<div class="row s-options s-task-actions">
-										<div class="tab-content" id="j-property-box">
-
-											<div class="tab-pane active" id="j-basic-2">
-
-												<div class="row">
-													<div class="col-xs-4">
-
-														<div class="s-create-obj-window">
-
-															<div class="form-group">
-																<label>Task Name:</label>
-																<input type="text" class="form-control" placeholder="">
-															</div>
-
-															<div class="form-group">
-																<label>Active:</label>
-
-																<div class="radio">
-																	<input type="radio" name="radio1" id="radio2" value="option2" checked="checked">
-																	<label for="radio2">
-																			Yes
-																	</label>
-																</div>
-																<div class="radio">
-																	<input type="radio" name="radio1" id="radio3" value="option3">
-																	<label for="radio3">
-																			No
-																	</label>
-																</div>
-															</div>
-														</div>
-
-													</div>
-												</div>
-
-											</div>
-
-											<div class="tab-pane" id="j-conditions-2">
-												<div class="s-setting-options">
-													<div class="row s-setting-options-body">
-
-														<!--- Start Filter Group --->
-														<div class="col-xs-12 s-filters-selected">
-															<div class="row">
-																<ul class="col-xs-12 list-unstyled">
-
-																	<li>
-
-																		<!--- Filter display --->
-																		<div class="s-filter-item">
-																			<!--- <div class="btn-group-vertical">
-																				<button class="btn btn-xs btn-default">OR</button>
-																				<button class="btn btn-xs btn-default active">AND</button>
-																			</div> --->
-																			<div class="panel panel-default">
-																				<div class="panel-heading">Filter 1 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-																				<div data-toggle="collapse" data-target="#j-edit-filter-z" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-																					Example 1 <a href="##"><i class="fa fa-pencil-square-o"></i></a>
-																				</div>
-																			</div>
-																		</div>
-																		<!--- //Filter display --->
-
-																		<!--- Edit Filter Box --->
-																		<div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-z">
-																			<div class="row">
-																				<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-z"></i></h4>
-																				<div class="col-xs-12">
-
-																					<div class="row s-flex-col">
-																						<div class="col-xs-3">
-																							<div class="form-group form-group-sm">
-																								<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From Orders</label>
-																								<div class="col-sm-12 s-no-paddings">
-																									<select class="form-control input-sm">
-																										<option disabled="disabled" selected="selected">Select From Orders</option>
-																										<option value="one">One</option>
-																										<option value="two">Two</option>
-																										<option value="three">Three</option>
-																										<option value="four">Four</option>
-																										<option value="five">Five</option>
-																									</select>
-																								</div>
-																								<div class="clearfix"></div>
-																							</div>
-																						</div>
-																						<div class="col-xs-6 s-criteria">
-
-																							<h4>Criteria</h4>
-
-																							<!--- Filter Criteria Start --->
-																							<form action="index.html" method="post">
-																								<div class="s-filter-group-item">
-
-																									<div class="alert alert-warning" role="alert">Select field or dataset to begin</div>
-
-																								</div>
-																							</form>
-																							<!--- //Filter Criteria End --->
-
-																							<br/><br/><br/>
-
-
-																							<h4>Criteria</h4>
-
-																							<!--- Filter Criteria Start --->
-																							<form action="index.html" method="post">
-																								<div class="s-filter-group-item">
-																									<span>
-																										<button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
-																									</span>
-																									<div class="form-group form-group-sm">
-																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
-																										<div class="col-sm-12 s-no-paddings">
-																											<select class="form-control input-sm">
-																												<option>1 week</option>
-																												<option>2 week</option>
-																												<option>3 week</option>
-																												<option>4 week</option>
-																												<option>5 week</option>
-																											</select>
-																										</div>
-																										<div class="clearfix"></div>
-																									</div>
-																									<div class="form-group form-group-sm">
-																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
-																										<div class="col-sm-12 s-no-paddings">
-																											<input type="text" class="form-control" id="input" placeholder="12">
-																										</div>
-																										<div class="clearfix"></div>
-																									</div>
-																								</div>
-																							</form>
-																							<!--- //Filter Criteria End --->
-
-																							<br/><br/><br/>
-
-																							<h4>Options</h4>
-
-																							<!--- Filter Criteria Start --->
-																							<form action="index.html" method="post">
-																								<div class="s-filter-group-item">
-
-																									<div class="s-options-group">
-																										<div class="radio">
-																											<input class="s-account-field-radio" type="radio" name="radio1" id="radio1" value="option1" checked>
-																											<label for="radio1">
-																													Use account field:
-																											</label>
-																											<div class="col-sm-12 s-no-paddings s-account-field-select">
-																												<select class="form-control input-sm">
-																													<option disabled="disabled" selected="selected"> Select From Account </option>
-																													<option>First Name</option>
-																													<option>Last Name</option>
-																													<option>Company</option>
-																													<option disabled="disabled">---</option>
-																													<option>Primary E-Mail Address</option>
-																													<option disabled="disabled">---</option>
-																													<option>Addresses</option>
-																												</select>
-																											</div>
-																											<div class="clearfix"></div>
-																										</div>
-																										<div class="radio">
-																											<input type="radio" name="radio1" id="radio2" value="option2">
-																											<label for="radio2">
-																													Has account
-																											</label>
-																										</div>
-																										<div class="radio">
-																											<input type="radio" name="radio1" id="radio3" value="option3">
-																											<label for="radio3">
-																													Doesn't Has account
-																											</label>
-																										</div>
-																									</div>
-
-																								</div>
-																							</form>
-																							<!--- //Filter Criteria End --->
-
-																							<br/><br/><br/>
-
-
-																							<h4>Criteria</h4>
-
-																							<!--- Filter Criteria Start --->
-																							<form action="index.html" method="post">
-																								<div class="s-filter-group-item">
-																									<span>
-																										<button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
-																									</span>
-																									<div class="form-group form-group-sm">
-																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
-																										<div class="col-sm-12 s-no-paddings">
-																											<input type="text" class="form-control" id="input" placeholder="12">
-																										</div>
-																										<div class="clearfix"></div>
-																									</div>
-																									<div class="form-group form-group-sm">
-																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Condition:</label>
-																										<div class="col-sm-12 s-no-paddings">
-																											<select class="form-control input-sm">
-																												<option value="-- Condition">- Condition --</option>
-																												<option value="Equals">Equals</option>
-																												<option value="Does Not Equal">Does Not Equal</option>
-																												<option selected="selected" value="Contains">Contains</option>
-																												<option value="Does Not Contain">Does Not Contain</option>
-																												<option value="Starts With">Starts With</option>
-																												<option value="Ends With">Ends With</option>
-																												<option value="Like">Like</option>
-																												<option value="Not Lke">Not Lke</option>
-																												<option value="In">In</option>
-																												<option value="Not In">Not In</option>
-																											</select>
-																										</div>
-																										<div class="clearfix"></div>
-																									</div>
-																									<div class="form-group form-group-sm">
-																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Value:</label>
-																										<div class="col-sm-12 s-no-paddings">
-																											<input type="text" class="form-control" id="input" placeholder="12">
-																										</div>
-																										<div class="clearfix"></div>
-																									</div>
-																								</div>
-
-																							</form>
-																							<!--- //Filter Criteria End --->
-
-																						</div>
-																						<div class="col-xs-3">
-																							<div class="s-button-select-group">
-																								<button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another Button</button>
-																								<div class="s-or-box">OR-</div>
-																								<button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
-																							</div>
-																							<div class="form-group">
-																								<div class="s-checkbox"><input type="checkbox" id="j-checkbox21"><label for="j-checkbox21"> Add To New Group</label></div>
-																							</div>
-																						</div>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																		<!--- //Edit Filter Box --->
-
-																	</li>
-
-																	<li class="s-filter-group" >
-
-																		<!--- Filter display --->
-																		<div class="s-filter-item">
-																			<div class="btn-group-vertical">
-																				<button class="btn btn-xs btn-default">OR</button>
-																				<button class="btn btn-xs btn-default active">AND</button>
-																			</div>
-																			<div class="panel panel-default s-filter-group-style">
-																				<div class="panel-heading">Example Group 1 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-																				<div data-toggle="collapse" data-target="#j-nested-filter-f" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-																					(3) Filters <a href="##"><i class="fa fa-inbox"></i></a>
-																				</div>
-																			</div>
-																		</div>
-																		<!--- //Filter display --->
-
-																		<!---Nested Filter Box --->
-																		<div class="col-xs-12 collapse" id="j-nested-filter-f">
-																			<div class="row">
-																				<ul class="col-xs-12 list-unstyled s-no-paddings">
-
-																					<!--- Filter display --->
-																					<li >
-
-																						<!--- Nested Filter Display --->
-																						<div class="s-filter-item">
-																							<!--- <div class="btn-group-vertical btn-toggle">
-																								<button class="btn btn-xs btn-default">AND</button>
-																								<button class="btn btn-xs btn-defualt active">OR</button>adsf
-																							</div> --->
-																							<div class="panel panel-default">
-																								<div class="panel-heading">Gender <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-																								<div data-toggle="collapse" data-target="#j-edit-filter-j" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-																									Male 2 <a href="##"><i class="fa fa-pencil-square-o"></i></a>
-																								</div>
-																							</div>
-																						</div>
-																						<!--- //Nested Filter Display --->
-
-																						<!--- Edit Filter Box --->
-																						<div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-j">
-																							<div class="row">
-																								<div class="col-xs-12">
-																									<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-j"></i></h4>
-																									<div class="row">
-																										<div class="col-xs-3">
-																											Select From Orders
-																											<div class="option-dropdown">
-																												<select class="form-control input-sm">
-																													<option disabled="disabled" selected="selected">Select From Orders </option>
-																													<option value="one">One</option>
-																													<option value="two">Two</option>
-																													<option value="three">Three</option>
-																													<option value="four">Four</option>
-																													<option value="five">Five</option>
-																												</select>
-																											</div>
-																										</div>
-																										<div class="col-xs-6 s-criteria">
-																											<h4>Criteria</h4>
-
-																											<!--- Filter Criteria Start --->
-																											<form action="index.html" method="post">
-																												<div class="s-filter-group-item">
-
-																													<div class="form-group form-group-sm">
-																														<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
-																														<div class="col-sm-12 s-no-paddings">
-																															<select class="form-control input-sm">
-																																<option>1 week</option>
-																																<option>2 week</option>
-																																<option>3 week</option>
-																																<option>4 week</option>
-																																<option>5 week</option>
-																															</select>
-																														</div>
-																														<div class="clearfix"></div>
-																													</div>
-																													<div class="form-group form-group-sm">
-																														<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
-																														<div class="col-sm-12 s-no-paddings">
-																															<input type="text" class="form-control" id="input" placeholder="12">
-																														</div>
-																														<div class="clearfix"></div>
-																													</div>
-																												</div>
-																											</form>
-																											<!--- //Filter Criteria End --->
-
-																										</div>
-																										<div class="col-xs-3">
-																											<div class="s-button-select-group">
-																												<button type="button" class="btn s-btn-ten24">Save & Add Another Button</button>
-																												<div class="s-or-box">OR</div>
-																												<button type="button" class="btn s-btn-ten24">Save & Finish</button>
-																											</div>
-																											<!--- <div class="form-group">
-																												<div class="s-checkbox"><input type="checkbox" id="j-checkbox31"><label for="j-checkbox31"> Add To New Group</label></div>
-																											</div> --->
-																										</div>
-																									</div>
-																								</div>
-																							</div>
-																						</div>
-																						<!--- //Edit Filter Box --->
-
-																					</li>
-																					<!--- //Filter display --->
-
-																					<li class="s-new-filter">
-																						<!--- New Filter Panel Buttons --->
-																						<div class="s-filter-item">
-																							<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter"><i class="fa fa-plus"></i> Save & Add Another</button>
-																							<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter-group"><i class="fa fa-plus"></i> Save & Finish</button>
-																						</div>
-																						<!--- //New Filter Panel Buttons --->
-																					</li>
-
-																				</ul>
-																			</div>
-																		</div>
-																		<!---//Nested Filter Box --->
-
-																	</li>
-
-																	<li class="s-new-filter">
-																		<!--- New Filter Panel Buttons --->
-																		<div class="s-filter-item">
-																			<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-5"><i class="fa fa-plus"></i> Add</button>
-																			<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-another-5"><i class="fa fa-plus"></i> Add a New Group</button>
-																		</div>
-																		<!--- //New Filter Panel Buttons --->
-																	</li>
-
-																</ul>
-															</div>
-
-															<!--- New Filter Panel --->
-															<div class="s-add-filter-box">
-
-																<!--- Edit Filter Box --->
-																<div class="col-xs-12 collapse s-add-filter" id="j-add-5">
-																	<div class="row">
-																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-5"></i></h4>
-																		<div class="col-xs-12">
-
-																			<div class="rown s-flex-col">
-																				<div class="col-xs-3">
-
-																					<div>
-																						<div class="form-group">
-																							<label class="s-width-100">Type:</label>
-
-																							<select class="form-control input-sm">
-																								<option value="Order">Order</option>
-																								<option value="- Order ID">- Order ID</option>
-																								<option value="- Order Date">- Order Date</option>
-																								<option selected="" value="- Order Total">- Order Total</option>
-																								<option value="-------------------">-------------------</option>
-																								<option value="ACCOUNT">ACCOUNT</option>
-																								<option value="SESSION">SESSION</option>
-																								<option value="TRIGGER">TRIGGER</option>
-																							</select>
-
-																						</div>
-																					</div>
-
-																				</div>
-																				<div class="col-xs-6 s-criteria">
-
-																					<h4>Criteria</h4>
-																					<!--- Filter Criteria Start --->
-																					<form action="index.html" method="post">
-
-																						<div class="form-group form-group-sm">
-																							<div class="col-sm-3 s-no-paddings">
-
-																								<select class="form-control input-sm">
-																									<option selected="" value="=">=</option>
-																									<option value=">">&gt;</option>
-																									<option value=">">&gt;</option>
-																									<option value="<">&lt;</option>
-																									<option value=">=">&gt;=</option>
-																									<option value="<=">&lt;=</option>
-																									<option value="<>">&lt;&gt;</option>
-																									<option value="NULL">NULL</option>
-																									<option value="Changed">Changed</option>
-																								</select>
-
-																							</div>
-																							<div class="col-sm-6">
-																								<input class="form-control" type="text" name="some_name" value="">
-																							</div>
-																							<div class="clearfix"></div>
-																						</div>
-																						<div class="controls s-checkbox">
-																							<input type="checkbox" id="j-checkbox7" checked="checked" ><label for="j-checkbox7"> Apply to pre-event data</label>
-																						</div>
-
-																					</form>
-																					<!--- //Filter Criteria End --->
-
-																				</div>
-																				<div class="col-xs-3">
-																					<div class="s-button-select-group">
-																						<button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another</button>
-																						<div class="s-or-box">-OR-</div>
-																						<button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-																<!--- //Edit Filter Box --->
-
-																<!--- Edit Filter Box --->
-																<div class="col-xs-12 collapse s-add-filter" id="j-add-another-5">
-																	<div class="row">
-																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-another-5"></i></h4>
-																		<div class="col-xs-12">
-
-																			<div class="row s-flex-col">
-																				<div class="col-xs-3">
-
-																					<div>
-																						<div class="form-group">
-																							<label class="s-width-100">Type:</label>
-
-																							<select class="form-control input-sm">
-																								<option value="Order">Order</option>
-																								<option value="- Order ID">- Order ID</option>
-																								<option value="- Order Date">- Order Date</option>
-																								<option selected="" value="- Order Total">- Order Total</option>
-																								<option value="-------------------">-------------------</option>
-																								<option value="ACCOUNT">ACCOUNT</option>
-																								<option value="SESSION">SESSION</option>
-																								<option value="TRIGGER">TRIGGER</option>
-																							</select>
-
-																						</div>
-																					</div>
-
-																				</div>
-																				<div class="col-xs-6 s-criteria">
-
-																					<h4>Criteria</h4>
-																					<!--- Filter Criteria Start --->
-																					<form action="index.html" method="post">
-
-																						<div class="form-group form-group-sm">
-																							<div class="col-sm-3 s-no-paddings">
-
-																								<select class="form-control input-sm">
-																									<option selected="" value="=">=</option>
-																									<option value=">">&gt;</option>
-																									<option value=">">&gt;</option>
-																									<option value="<">&lt;</option>
-																									<option value=">=">&gt;=</option>
-																									<option value="<=">&lt;=</option>
-																									<option value="<>">&lt;&gt;</option>
-																									<option value="NULL">NULL</option>
-																									<option value="Changed">Changed</option>
-																								</select>
-
-																							</div>
-																							<div class="col-sm-6">
-																								<input class="form-control" type="text" name="some_name" value="">
-																							</div>
-																							<div class="clearfix"></div>
-																						</div>
-																						<div class="controls s-checkbox">
-																							<input type="checkbox" id="j-checkbox8" checked="checked" ><label for="j-checkbox8"> Apply to pre-event data</label>
-																						</div>
-
-																					</form>
-																					<!--- //Filter Criteria End --->
-
-																				</div>
-																				<div class="col-xs-3">
-																					<div class="s-button-select-group">
-																						<button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another</button>
-																						<div class="s-or-box">-OR-</div>
-																						<button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
-																					</div>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-																<!--- //Edit Filter Box --->
-
-															</div>
-															<!--- //New Filter Panel --->
-														</div>
-														<!--- //End Filter Group --->
-
-													</div>
-												</div>
-											</div>
-
-											<div class="tab-pane" id="j-actions-2">
-												<div class="s-bundle-add-items s-workflow-objs s-sortable">
-													<ul class="list-unstyled s-order-item-options">
-
-														<li class="s-bundle-add-obj">
-															<ul class="list-unstyled list-inline">
-																<li class="s-item-type">1</li>
-																<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>
-															</ul>
-															<ul class="list-unstyled list-inline s-middle">
-																<li class="j-tool-tip-item s-bundle-details">Type: <span>E-Mail</span></li>
-																<li class="j-tool-tip-item s-bundle-details">Object: <span>Order</span></li>
-																<li class="j-tool-tip-item s-bundle-details">Detail: <span>Order Feedback Template</span></li>
-															</ul>
-															<ul class="list-unstyled list-inline s-last">
-																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
-															</ul>
-															<div class="clearfix"></div>
-														</li>
-
-														<li class="s-bundle-add-obj">
-															<ul class="list-unstyled list-inline">
-																<li class="s-item-type">2</li>
-																<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>
-															</ul>
-															<ul class="list-unstyled list-inline s-middle">
-																<li class="j-tool-tip-item s-bundle-details">Type: <span>E-Mail</span></li>
-																<li class="j-tool-tip-item s-bundle-details">Object: <span>Order</span></li>
-																<li class="j-tool-tip-item s-bundle-details">Detail: <span>Order Feedback Template</span></li>
-															</ul>
-															<ul class="list-unstyled list-inline s-last">
-																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
-															</ul>
-															<div class="clearfix"></div>
-														</li>
-
-													</ul>
-												</div>
-
-												<div class="form-group">
-
-													<button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-action-b"><i class="fa fa-plus"></i> Add Action</button>
-
-												</div>
-
-												<!--- Edit Filter Box --->
-												<div class="col-xs-12 collapse s-add-filter" id="j-add-action-b">
-													<div class="row">
-														<h4> Add Action <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-action-b"></i></h4>
-														<div class="col-xs-12">
-
-															<div class="row s-flex-col">
-																<div class="col-xs-3">
-
-																	<div class="form-group form-group-sm">
-																		<label for="" class="s-width-100">Select Action Type:</label>
-																		<select class="form-control input-sm">
-																			<option>Print</option>
-																			<option>Email</option>
-																			<option>Update</option>
-																			<option>Process</option>
-																			<option>Import</option>
-																			<option>Export</option>
-																			<option>Delete</option>
-																		</select>
-																	</div>
-
-																	<div class="form-group form-group-sm">
-																		<label for="" class="s-width-100">Select Object:</label>
-																		<select class="form-control input-sm">
-																			<option>Orders</option>
-																			<option>Related Objects</option>
-																			<option>Account</option>
-																			<option>Order Item</option>
-																		</select>
-																	</div>
-
-																</div>
-																<div class="col-xs-6 s-criteria">
-
-																	<!--- Filter Criteria Start --->
-																	<div class="s-filter-group-item">
-
-																		<h4>Print Template</h4>
-																		<div class="form-group form-group-sm">
-
-																			<!--- search --->
-																			<div class="s-search-filter">
-																				<div class="input-group">
-																					<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
-																					<ul class="dropdown-menu s-search-options">
-																						<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
-																						<li><a>Order Confirmation Template</a></li>
-																						<li><a>Order Gift Thank You</a></li>
-																						<li><a>Order Feedback</a></li>
-																					</ul>
-																					<div class="input-group-btn">
-																						<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
-																					</div>
-																				</div>
-
-																				<div class="s-add-content collapse" id="j-toggle-add-bundle-type">
-																					<form id="form_id" action="index.html" method="post" style="background-color: #FFF;border: 1px solid #DDD;padding:20px;">
-																						<div class="form-group has-error">
-																							<label for="">Group Name <i class="fa fa-asterisk"></i></label>
-																							<input type="text" class="form-control" id="" value="" placeholder="">
-																							<p class="help-block">Example Of Error</p>
-																						</div>
-																						<div class="form-group">
-																							<label for="">Group Code</label>
-																							<input type="text" class="form-control" id="" value="" placeholder="">
-																						</div>
-																						<div class="form-group">
-																							<label for="">Group Description</label>
-																							<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
-																						</div>
-																						<div class="form-group">
-																							<button type="button" class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Add Group Type</button>
-																						</div>
-																					</form>
-																				</div>
-																			</div>
-																			<!--- // search --->
-
-																		</div>
-
-																		<div class="form-group form-group-sm">
-																			<label for="" class="col-sm-12 s-no-paddings">On Success</label>
-																			<select class="form-control input-sm">
-																				<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
-																				<option selected="" value="Select Next Action">Select Next Action</option>
-																				<option value="Select Next Task">Select Next Task</option>
-																				<option value="Skip to Next Task">Skip to Next Task</option>
-																				<option value="Exit Workflow">Exit Workflow</option>
-																			</select>
-																		</div>
-																		<div class="form-group form-group-sm">
-																			<select class="form-control input-sm">
-																				<option value="- Select Action">- Select Action</option>
-																			</select>
-																		</div>
-
-																		<div class="form-group form-group-sm">
-																			<label for="" class="col-sm-12 s-no-paddings">On Failure</label>
-																			<select class="form-control input-sm">
-																				<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
-																				<option value="Select Next Action">Select Next Action</option>
-																				<option value="Select Next Task">Select Next Task</option>
-																				<option value="Skip to Next Task">Skip to Next Task</option>
-																				<option selected="" value="Exit Workflow">Exit Workflow</option>
-																			</select>
-																		</div>
-
-																	</div>
-																	<!--- //Filter Criteria End --->
-
-/===================================================/
-
-
-																	<!--- Filter Criteria Start --->
-																	<div class="s-filter-group-item">
-
-																		<h4>Update Data</h4>
-																		<div class="form-group form-group-sm">
-																			<input type="text" class="form-control" placeholder="Ready To Capture">
-																			<!--- <p class="help-block">Help text here.</p> --->
-																		</div>
-
-																		<div class="form-group form-group-sm">
-																			<label for="" class="col-sm-12 s-no-paddings">On Success</label>
-																			<select class="form-control input-sm">
-																				<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
-																				<option selected="" value="Select Next Action">Select Next Action</option>
-																				<option value="Select Next Task">Select Next Task</option>
-																				<option value="Skip to Next Task">Skip to Next Task</option>
-																				<option value="Exit Workflow">Exit Workflow</option>
-																			</select>
-																		</div>
-
-																		<div class="form-group form-group-sm">
-																			<label for="" class="col-sm-12 s-no-paddings"></label>
-																			<select class="form-control input-sm">
-																				<option value="- Select Action">- Select Action</option>
-																			</select>
-																		</div>
-
-																		<div class="form-group form-group-sm">
-																			<label for="" class="col-sm-12 s-no-paddings">On Failure</label>
-																			<select class="form-control input-sm">
-																				<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
-																				<option value="Select Next Action">Select Next Action</option>
-																				<option value="Select Next Task">Select Next Task</option>
-																				<option value="Skip to Next Task">Skip to Next Task</option>
-																				<option selected="" value="Exit Workflow">Exit Workflow</option>
-																			</select>
-																		</div>
-
-																	</div>
-																	<!--- //Filter Criteria End --->
-
-/===================================================/
-
-																	<!--- Filter Criteria Start --->
-																	<div class="s-filter-group-item">
-
-																		<h4>Dynamic Numeric</h4>
-																		<div class="row">
-																			<div class="col-md-6 form-group form-group-sm">
-																				<select class="form-control input-sm">
-																					<option value="1">Dynamic Numeric Value</option>
-																					<option value="2">Add 'N'</option>
-																					<option value="3">Set value to '0'</option>
-																					<option value="4">Subtract 'N'</option>
-																				</select>
-																			</div>
-																			<div class="col-md-6 form-group form-group-sm">
-																				<input type="number" class="form-control" placeholder="" value="4">
-																				<!--- <p class="help-block">Help text here.</p> --->
-																			</div>
-																		</div>
-
-																	</div>
-																	<!--- //Filter Criteria End --->
-
-/===================================================/
-
-																	<!--- Filter Criteria Start --->
-																	<div class="s-filter-group-item">
-																		<h4>Delete</h4>
-																		<div class="form-group form-group-sm s-checkbox">
-																			<input type="checkbox" id="j-delete-confirm" checked="checked"><label for="j-delete-confirm"> Confirm "Orders" object will be deleted</label>
-																		</div>
-																	</div>
-																	<!--- //Filter Criteria End --->
-
-																</div>
-																<div class="col-xs-3">
-																	<div class="s-button-select-group">
-																		<button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another</button>
-																		<div class="s-or-box">OR-</div>
-																		<button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
-																	</div>
-																</div>
-															</div>
-														</div>
-													</div>
-												</div>
-												<!--- //Edit Filter Box --->
-												<div class="clearfix"></div>
-											</div>
-
-										</div>
-									</div>
-								</div>
-
+							<div class="s-workflow-header">
+								<ul class="list-unstyled list-inline">
+									<li class="s-item-type s-tooltip">1</li>
+								</ul>
+								<ul class="list-unstyled list-inline s-middle">
+									<li class="j-tool-tip-item s-bundle-details">Update Order Status</li>
+									<li class="j-tool-tip-item s-bundle-details">Active: <span>No</span></li>
+								</ul>
+								<ul class="list-unstyled list-inline s-last">
+									<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-edit" data-toggle="collapse" data-target="#s-add-obj-1"><i class="fa fa-pencil"></i></a></li>
+									<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove" data-toggle="collapse" data-target="#s-add-obj-1"><i class="fa fa-trash"></i></a></li>
+								</ul>
 							</div>
+						
+							<div class="s-bundle-edit-obj collapse" id="s-add-obj-1">
 
-						</div>
+								<div class="s-body-box">
 
-						<li class="s-bundle-add-obj">
-							<ul class="list-unstyled list-inline">
-								<li class="s-item-type s-tooltip">2</li>
-							</ul>
-							<ul class="list-unstyled list-inline s-middle">
-								<li class="j-tool-tip-item s-bundle-details">Update Order Status</li>
-								<li class="j-tool-tip-item s-bundle-details">Active: <span>Yes</span></li>
-							</ul>
-							<ul class="list-unstyled list-inline s-last">
-								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-edit" data-toggle="collapse" data-target="#s-add-obj-2"><i class="fa fa-pencil"></i></a></li>
-								<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove" data-toggle="collapse" data-target="#s-add-obj-2"><i class="fa fa-trash"></i></a></li>
-							</ul>
-							<div class="clearfix"></div>
-						</li>
-						<div class="s-bundle-edit-obj collapse" id="s-add-obj-2">
+									<div class="col-xs-12 s-filter-content">
 
-							<div class="s-body-box">
-
-								<div class="col-xs-12 s-filter-content">
-
-									<!--- Header nav with title starts --->
-									<div class="row s-header-bar">
-										<div class="col-md-12 s-header-nav">
-											<ul class="nav nav-tabs" role="tablist">
-												<li class="active"><a href="##j-basic-8" role="tab" data-toggle="tab">Basic</a></li>
-												<li><a href="##j-conditions-8" role="tab" data-toggle="tab">Conditions</a></li>
-												<li><a href="##j-actions-8" role="tab" data-toggle="tab">Actions</a></li>
-											</ul>
+										<!--- Header nav with title starts --->
+										<div class="row s-header-bar">
+											<div class="col-md-12 s-header-nav">
+												<ul class="nav nav-tabs" role="tablist">
+													<li class="active"><a href="##j-basic-2" role="tab" data-toggle="tab">Basic</a></li>
+													<li><a href="##j-conditions-2" role="tab" data-toggle="tab">Conditions</a></li>
+													<li><a href="##j-actions-2" role="tab" data-toggle="tab">Actions</a></li>
+												</ul>
+											</div>
 										</div>
-									</div>
-									<!--- //Header nav with title end --->
+										<!--- //Header nav with title end --->
 
-									<!--- Tab panes for menu options start--->
-									<div class="row s-options s-task-actions">
-										<div class="tab-content" id="j-property-box">
+										<!--- Tab panes for menu options start--->
+										<div class="row s-options s-task-actions">
+											<div class="tab-content" id="j-property-box">
 
-											<div class="tab-pane active" id="j-basic-8">
+												<div class="tab-pane active" id="j-basic-2">
 
-												<div class="row">
-													<div class="col-xs-4">
+													<div class="row">
+														<div class="col-xs-4">
 
-														<div class="s-create-obj-window">
+															<div class="s-create-obj-window">
 
-															<div class="form-group">
-																<label>Task Name:</label>
-																<input type="text" class="form-control" placeholder="">
-															</div>
-
-															<div class="form-group">
-																<label>Active:</label>
-
-																<div class="radio">
-																	<input type="radio" name="radio1" id="radio2" value="option2" checked="checked">
-																	<label for="radio2">
-																			Yes
-																	</label>
+																<div class="form-group">
+																	<label>Task Name:</label>
+																	<input type="text" class="form-control" placeholder="">
 																</div>
-																<div class="radio">
-																	<input type="radio" name="radio1" id="radio3" value="option3">
-																	<label for="radio3">
-																			No
-																	</label>
+
+																<div class="form-group">
+																	<label>Active:</label>
+
+																	<div class="radio">
+																		<input type="radio" name="radio1" id="radio2" value="option2" checked="checked">
+																		<label for="radio2">
+																				Yes
+																		</label>
+																	</div>
+																	<div class="radio">
+																		<input type="radio" name="radio1" id="radio3" value="option3">
+																		<label for="radio3">
+																				No
+																		</label>
+																	</div>
 																</div>
 															</div>
 
 														</div>
-
 													</div>
+
 												</div>
 
-											</div>
+												<div class="tab-pane" id="j-conditions-2">
+													<div class="s-setting-options">
+														<div class="row s-setting-options-body">
 
-											<div class="tab-pane" id="j-conditions-8">
-												<div class="s-setting-options">
-													<div class="row s-setting-options-body">
+															<!--- Start Filter Group --->
+															<div class="col-xs-12 s-filters-selected">
+																<div class="row">
+																	<ul class="col-xs-12 list-unstyled">
 
-														<!--- Start Filter Group --->
-														<div class="col-xs-12 s-filters-selected">
-															<div class="row">
-																<ul class="col-xs-12 list-unstyled">
+																		<li>
 
-																	<li>
-
-																		<!--- Filter display --->
-																		<div class="s-filter-item">
-																			<!--- <div class="btn-group-vertical">
-																				<button class="btn btn-xs btn-default">OR</button>
-																				<button class="btn btn-xs btn-default active">AND</button>
-																			</div> --->
-																			<div class="panel panel-default">
-																				<div class="panel-heading">Filter 1 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-																				<div data-toggle="collapse" data-target="#j-edit-filter-b" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-																					Example 1 <a href="##"><i class="fa fa-pencil-square-o"></i></a>
+																			<!--- Filter display --->
+																			<div class="s-filter-item">
+																				<!--- <div class="btn-group-vertical">
+																					<button class="btn btn-xs btn-default">OR</button>
+																					<button class="btn btn-xs btn-default active">AND</button>
+																				</div> --->
+																				<div class="panel panel-default">
+																					<div class="panel-heading">Filter 1 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
+																					<div data-toggle="collapse" data-target="#j-edit-filter-z" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
+																						Example 1 <a href="##"><i class="fa fa-pencil-square-o"></i></a>
+																					</div>
 																				</div>
 																			</div>
-																		</div>
-																		<!--- //Filter display --->
+																			<!--- //Filter display --->
 
-																		<!--- Edit Filter Box --->
-																		<div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-b">
-																			<div class="row">
-																				<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-b"></i></h4>
-																				<div class="col-xs-12">
+																			<!--- Edit Filter Box --->
+																			<div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-z">
+																				<div class="row">
+																					<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-z"></i></h4>
+																					<div class="col-xs-12">
 
-																					<div class="row s-flex-col">
-																						<div class="col-xs-3">
-																							<div class="form-group form-group-sm">
-																								<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From Orders</label>
-																								<div class="col-sm-12 s-no-paddings">
-																									<select class="form-control input-sm">
-																										<option disabled="disabled" selected="selected">Select From Orders</option>
-																										<option value="one">One</option>
-																										<option value="two">Two</option>
-																										<option value="three">Three</option>
-																										<option value="four">Four</option>
-																										<option value="five">Five</option>
-																									</select>
+																						<div class="row s-flex-col">
+																							<div class="col-xs-3">
+																								<div class="form-group form-group-sm">
+																									<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From Orders</label>
+																									<div class="col-sm-12 s-no-paddings">
+																										<select class="form-control input-sm">
+																											<option disabled="disabled" selected="selected">Select From Orders</option>
+																											<option value="one">One</option>
+																											<option value="two">Two</option>
+																											<option value="three">Three</option>
+																											<option value="four">Four</option>
+																											<option value="five">Five</option>
+																										</select>
+																									</div>
+																									
 																								</div>
-																								<div class="clearfix"></div>
 																							</div>
-																						</div>
-																						<div class="col-xs-6 s-criteria">
+																							<div class="col-xs-6 s-criteria">
 
-																							<h4>Criteria</h4>
+																								<h4>Criteria</h4>
 
-																							<!--- Filter Criteria Start --->
-																							<form action="index.html" method="post">
-																								<div class="s-filter-group-item">
+																								<!--- Filter Criteria Start --->
+																								<form action="index.html" method="post">
+																									<div class="s-filter-group-item">
 
-																									<div class="alert alert-warning" role="alert">Select field or dataset to begin</div>
+																										<div class="alert alert-warning" role="alert">Select field or dataset to begin</div>
 
-																								</div>
-																							</form>
-																							<!--- //Filter Criteria End --->
-
-																							<br/><br/><br/>
-
-
-																							<h4>Criteria</h4>
-
-																							<!--- Filter Criteria Start --->
-																							<form action="index.html" method="post">
-																								<div class="s-filter-group-item">
-																									<span>
-																										<button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
-																									</span>
-																									<div class="form-group form-group-sm">
-																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
-																										<div class="col-sm-12 s-no-paddings">
-																											<select class="form-control input-sm">
-																												<option>1 week</option>
-																												<option>2 week</option>
-																												<option>3 week</option>
-																												<option>4 week</option>
-																												<option>5 week</option>
-																											</select>
-																										</div>
-																										<div class="clearfix"></div>
 																									</div>
-																									<div class="form-group form-group-sm">
-																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
-																										<div class="col-sm-12 s-no-paddings">
-																											<input type="text" class="form-control" id="input" placeholder="12">
-																										</div>
-																										<div class="clearfix"></div>
-																									</div>
-																								</div>
-																							</form>
-																							<!--- //Filter Criteria End --->
+																								</form>
+																								<!--- //Filter Criteria End --->
 
-																							<br/><br/><br/>
+																								<br/><br/><br/>
 
-																							<h4>Options</h4>
 
-																							<!--- Filter Criteria Start --->
-																							<form action="index.html" method="post">
-																								<div class="s-filter-group-item">
+																								<h4>Criteria</h4>
 
-																									<div class="s-options-group">
-																										<div class="radio">
-																											<input class="s-account-field-radio" type="radio" name="radio1" id="radio1" value="option1" checked>
-																											<label for="radio1">
-																													Use account field:
-																											</label>
-																											<div class="col-sm-12 s-no-paddings s-account-field-select">
+																								<!--- Filter Criteria Start --->
+																								<form action="index.html" method="post">
+																									<div class="s-filter-group-item">
+																										<span>
+																											<button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+																										</span>
+																										<div class="form-group form-group-sm">
+																											<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
+																											<div class="col-sm-12 s-no-paddings">
 																												<select class="form-control input-sm">
-																													<option disabled="disabled" selected="selected"> Select From Account </option>
-																													<option>First Name</option>
-																													<option>Last Name</option>
-																													<option>Company</option>
-																													<option disabled="disabled">---</option>
-																													<option>Primary E-Mail Address</option>
-																													<option disabled="disabled">---</option>
-																													<option>Addresses</option>
+																													<option>1 week</option>
+																													<option>2 week</option>
+																													<option>3 week</option>
+																													<option>4 week</option>
+																													<option>5 week</option>
 																												</select>
 																											</div>
-																											<div class="clearfix"></div>
+																											
 																										</div>
-																										<div class="radio">
-																											<input type="radio" name="radio1" id="radio2" value="option2">
-																											<label for="radio2">
-																													Has account
-																											</label>
-																										</div>
-																										<div class="radio">
-																											<input type="radio" name="radio1" id="radio3" value="option3">
-																											<label for="radio3">
-																													Doesn't Has account
-																											</label>
+																										<div class="form-group form-group-sm">
+																											<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
+																											<div class="col-sm-12 s-no-paddings">
+																												<input type="text" class="form-control" id="input" placeholder="12">
+																											</div>
+																											
 																										</div>
 																									</div>
+																								</form>
+																								<!--- //Filter Criteria End --->
 
-																								</div>
-																							</form>
-																							<!--- //Filter Criteria End --->
+																								<br/><br/><br/>
 
-																							<br/><br/><br/>
+																								<h4>Options</h4>
 
-
-																							<h4>Criteria</h4>
-
-																							<!--- Filter Criteria Start --->
-																							<form action="index.html" method="post">
-																								<div class="s-filter-group-item">
-																									<span>
-																										<button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
-																									</span>
-																									<div class="form-group form-group-sm">
-																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
-																										<div class="col-sm-12 s-no-paddings">
-																											<input type="text" class="form-control" id="input" placeholder="12">
-																										</div>
-																										<div class="clearfix"></div>
-																									</div>
-																									<div class="form-group form-group-sm">
-																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Condition:</label>
-																										<div class="col-sm-12 s-no-paddings">
-																											<select class="form-control input-sm">
-																												<option value="-- Condition">- Condition --</option>
-																												<option value="Equals">Equals</option>
-																												<option value="Does Not Equal">Does Not Equal</option>
-																												<option selected="selected" value="Contains">Contains</option>
-																												<option value="Does Not Contain">Does Not Contain</option>
-																												<option value="Starts With">Starts With</option>
-																												<option value="Ends With">Ends With</option>
-																												<option value="Like">Like</option>
-																												<option value="Not Lke">Not Lke</option>
-																												<option value="In">In</option>
-																												<option value="Not In">Not In</option>
-																											</select>
-																										</div>
-																										<div class="clearfix"></div>
-																									</div>
-																									<div class="form-group form-group-sm">
-																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Value:</label>
-																										<div class="col-sm-12 s-no-paddings">
-																											<input type="text" class="form-control" id="input" placeholder="12">
-																										</div>
-																										<div class="clearfix"></div>
-																									</div>
-																								</div>
-
-																								<button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-row-6">Add Display Field</button>
-																								<div class="collapse" id="j-add-row-6">
+																								<!--- Filter Criteria Start --->
+																								<form action="index.html" method="post">
 																									<div class="s-filter-group-item">
+
+																										<div class="s-options-group">
+																											<div class="radio">
+																												<input class="s-account-field-radio" type="radio" name="radio1" id="radio1" value="option1" checked>
+																												<label for="radio1">
+																														Use account field:
+																												</label>
+																												<div class="col-sm-12 s-no-paddings s-account-field-select">
+																													<select class="form-control input-sm">
+																														<option disabled="disabled" selected="selected"> Select From Account </option>
+																														<option>First Name</option>
+																														<option>Last Name</option>
+																														<option>Company</option>
+																														<option disabled="disabled">---</option>
+																														<option>Primary E-Mail Address</option>
+																														<option disabled="disabled">---</option>
+																														<option>Addresses</option>
+																													</select>
+																												</div>
+																												
+																											</div>
+																											<div class="radio">
+																												<input type="radio" name="radio1" id="radio2" value="option2">
+																												<label for="radio2">
+																														Has account
+																												</label>
+																											</div>
+																											<div class="radio">
+																												<input type="radio" name="radio1" id="radio3" value="option3">
+																												<label for="radio3">
+																														Doesn't Has account
+																												</label>
+																											</div>
+																										</div>
+
+																									</div>
+																								</form>
+																								<!--- //Filter Criteria End --->
+
+																								<br/><br/><br/>
+
+
+																								<h4>Criteria</h4>
+
+																								<!--- Filter Criteria Start --->
+																								<form action="index.html" method="post">
+																									<div class="s-filter-group-item">
+																										<span>
+																											<button class="btn btn-xs s-btn-dgrey" id="j-edit-btn"><i class="fa fa-times"></i> Remove</button>
+																										</span>
 																										<div class="form-group form-group-sm">
 																											<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Name:</label>
 																											<div class="col-sm-12 s-no-paddings">
 																												<input type="text" class="form-control" id="input" placeholder="12">
 																											</div>
-																											<div class="clearfix"></div>
+																											
 																										</div>
 																										<div class="form-group form-group-sm">
 																											<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Condition:</label>
@@ -1659,602 +777,618 @@
 																													<option value="Not In">Not In</option>
 																												</select>
 																											</div>
-																											<div class="clearfix"></div>
+																											
 																										</div>
 																										<div class="form-group form-group-sm">
 																											<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Value:</label>
 																											<div class="col-sm-12 s-no-paddings">
 																												<input type="text" class="form-control" id="input" placeholder="12">
 																											</div>
-																											<div class="clearfix"></div>
+																											
 																										</div>
-																										<button name="button" class="btn s-btn-ten24 btn-xs"><i class="fa fa-plus"></i> Column</button>
-																										<button class="btn btn-danger btn-xs"><i class="fa fa-times"></i> Remove</button>
 																									</div>
-																								</div>
 
-																							</form>
-																							<!--- //Filter Criteria End --->
+																								</form>
+																								<!--- //Filter Criteria End --->
 
-																						</div>
-																						<div class="col-xs-3">
-																							<div class="s-button-select-group">
-																								<button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another Button</button>
-																								<div class="s-or-box">OR-</div>
-																								<button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
 																							</div>
-																							<!--- <div class="form-group">
-																								<div class="s-checkbox"><input type="checkbox" id="j-checkbox21"><label for="j-checkbox21"> Add To New Group</label></div>
-																							</div> --->
+																							<div class="col-xs-3">
+																								<div class="s-button-select-group">
+																									<button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another Button</button>
+																									<div class="s-or-box">OR-</div>
+																									<button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
+																								</div>
+																								<div class="form-group">
+																									<div class="s-checkbox"><input type="checkbox" id="j-checkbox21"><label for="j-checkbox21"> Add To New Group</label></div>
+																								</div>
+																							</div>
 																						</div>
 																					</div>
 																				</div>
 																			</div>
-																		</div>
-																		<!--- //Edit Filter Box --->
+																			<!--- //Edit Filter Box --->
 
-																	</li>
+																		</li>
 
-																	<li class="s-filter-group" >
+																		<li class="s-filter-group" >
 
-																		<!--- Filter display --->
-																		<div class="s-filter-item">
-																			<div class="btn-group-vertical">
-																				<button class="btn btn-xs btn-default">OR</button>
-																				<button class="btn btn-xs btn-default active">AND</button>
-																			</div>
-																			<div class="panel panel-default s-filter-group-style">
-																				<div class="panel-heading">Example Group 1 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-																				<div data-toggle="collapse" data-target="#j-nested-filter-b" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-																					(3) Filters <a href="##"><i class="fa fa-inbox"></i></a>
+																			<!--- Filter display --->
+																			<div class="s-filter-item">
+																				<div class="btn-group-vertical">
+																					<button class="btn btn-xs btn-default">OR</button>
+																					<button class="btn btn-xs btn-default active">AND</button>
+																				</div>
+																				<div class="panel panel-default s-filter-group-style">
+																					<div class="panel-heading">Example Group 1 <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
+																					<div data-toggle="collapse" data-target="#j-nested-filter-f" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
+																						(3) Filters <a href="##"><i class="fa fa-inbox"></i></a>
+																					</div>
 																				</div>
 																			</div>
-																		</div>
-																		<!--- //Filter display --->
+																			<!--- //Filter display --->
 
-																		<!---Nested Filter Box --->
-																		<div class="col-xs-12 collapse" id="j-nested-filter-b">
-																			<div class="row">
-																				<ul class="col-xs-12 list-unstyled s-no-paddings">
+																			<!---Nested Filter Box --->
+																			<div class="col-xs-12 collapse" id="j-nested-filter-f">
+																				<div class="row">
+																					<ul class="col-xs-12 list-unstyled s-no-paddings">
 
-																					<!--- Filter display --->
-																					<li >
+																						<!--- Filter display --->
+																						<li >
 
-																						<!--- Nested Filter Display --->
-																						<div class="s-filter-item">
-																							<!--- <div class="btn-group-vertical btn-toggle">
-																								<button class="btn btn-xs btn-default">AND</button>
-																								<button class="btn btn-xs btn-defualt active">OR</button>adsf
-																							</div> --->
-																							<div class="panel panel-default">
-																								<div class="panel-heading">Gender <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
-																								<div data-toggle="collapse" data-target="#j-edit-filter-1-1" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-																									Male 2 <a href="##"><i class="fa fa-pencil-square-o"></i></a>
+																							<!--- Nested Filter Display --->
+																							<div class="s-filter-item">
+																								<!--- <div class="btn-group-vertical btn-toggle">
+																									<button class="btn btn-xs btn-default">AND</button>
+																									<button class="btn btn-xs btn-defualt active">OR</button>adsf
+																								</div> --->
+																								<div class="panel panel-default">
+																									<div class="panel-heading">Gender <a href="##" class="j-tool-tip-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Remove"><i class="fa fa-times"></i></a></div>
+																									<div data-toggle="collapse" data-target="#j-edit-filter-j" class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
+																										Male 2 <a href="##"><i class="fa fa-pencil-square-o"></i></a>
+																									</div>
 																								</div>
 																							</div>
-																						</div>
-																						<!--- //Nested Filter Display --->
+																							<!--- //Nested Filter Display --->
 
-																						<!--- Edit Filter Box --->
-																						<div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-1-1">
-																							<div class="row">
-																								<div class="col-xs-12">
-																									<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-nested-filter-b"></i></h4>
-																									<div class="row s-flex-col">
-																										<div class="col-xs-3">
-																											Select From Orders
-																											<div class="option-dropdown">
-																												<select class="form-control input-sm">
-																													<option disabled="disabled" selected="selected">Select From Orders </option>
-																													<option value="one">One</option>
-																													<option value="two">Two</option>
-																													<option value="three">Three</option>
-																													<option value="four">Four</option>
-																													<option value="five">Five</option>
-																												</select>
-																											</div>
-																										</div>
-																										<div class="col-xs-6 s-criteria">
-																											<h4>Criteria</h4>
-
-																											<!--- Filter Criteria Start --->
-																											<form action="index.html" method="post">
-																												<div class="s-filter-group-item">
-
-																													<div class="form-group form-group-sm">
-																														<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
-																														<div class="col-sm-12 s-no-paddings">
-																															<select class="form-control input-sm">
-																																<option>1 week</option>
-																																<option>2 week</option>
-																																<option>3 week</option>
-																																<option>4 week</option>
-																																<option>5 week</option>
-																															</select>
-																														</div>
-																														<div class="clearfix"></div>
-																													</div>
-																													<div class="form-group form-group-sm">
-																														<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
-																														<div class="col-sm-12 s-no-paddings">
-																															<input type="text" class="form-control" id="input" placeholder="12">
-																														</div>
-																														<div class="clearfix"></div>
-																													</div>
+																							<!--- Edit Filter Box --->
+																							<div class="col-xs-12 collapse s-add-filter" id="j-edit-filter-j">
+																								<div class="row">
+																									<div class="col-xs-12">
+																										<h4> Define Filters: <span>Orders</span><i class="fa fa-times" data-toggle="collapse" data-target="#j-edit-filter-j"></i></h4>
+																										<div class="row">
+																											<div class="col-xs-3">
+																												Select From Orders
+																												<div class="option-dropdown">
+																													<select class="form-control input-sm">
+																														<option disabled="disabled" selected="selected">Select From Orders </option>
+																														<option value="one">One</option>
+																														<option value="two">Two</option>
+																														<option value="three">Three</option>
+																														<option value="four">Four</option>
+																														<option value="five">Five</option>
+																													</select>
 																												</div>
-																											</form>
-																											<!--- //Filter Criteria End --->
-
-																										</div>
-																										<div class="col-xs-3">
-																											<div class="s-button-select-group">
-																												<button type="button" class="btn s-btn-ten24">Save & Add Another Button</button>
-																												<div class="s-or-box">OR</div>
-																												<button type="button" class="btn s-btn-ten24">Save & Finish</button>
 																											</div>
-																											<!--- <div class="form-group">
-																												<div class="s-checkbox"><input type="checkbox" id="j-checkbox31"><label for="j-checkbox31"> Add To New Group</label></div>
-																											</div> --->
+																											<div class="col-xs-6 s-criteria">
+																												<h4>Criteria</h4>
+
+																												<!--- Filter Criteria Start --->
+																												<form action="index.html" method="post">
+																													<div class="s-filter-group-item">
+
+																														<div class="form-group form-group-sm">
+																															<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
+																															<div class="col-sm-12 s-no-paddings">
+																																<select class="form-control input-sm">
+																																	<option>1 week</option>
+																																	<option>2 week</option>
+																																	<option>3 week</option>
+																																	<option>4 week</option>
+																																	<option>5 week</option>
+																																</select>
+																															</div>
+																															
+																														</div>
+																														<div class="form-group form-group-sm">
+																															<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
+																															<div class="col-sm-12 s-no-paddings">
+																																<input type="text" class="form-control" id="input" placeholder="12">
+																															</div>
+																															
+																														</div>
+																													</div>
+																												</form>
+																												<!--- //Filter Criteria End --->
+
+																											</div>
+																											<div class="col-xs-3">
+																												<div class="s-button-select-group">
+																													<button type="button" class="btn s-btn-ten24">Save & Add Another Button</button>
+																													<div class="s-or-box">OR</div>
+																													<button type="button" class="btn s-btn-ten24">Save & Finish</button>
+																												</div>
+																												<!--- <div class="form-group">
+																													<div class="s-checkbox"><input type="checkbox" id="j-checkbox31"><label for="j-checkbox31"> Add To New Group</label></div>
+																												</div> --->
+																											</div>
 																										</div>
 																									</div>
 																								</div>
 																							</div>
-																						</div>
-																						<!--- //Edit Filter Box --->
+																							<!--- //Edit Filter Box --->
 
-																					</li>
-																					<!--- //Filter display --->
+																						</li>
+																						<!--- //Filter display --->
 
-																					<li class="s-new-filter">
-																						<!--- New Filter Panel Buttons --->
-																						<div class="s-filter-item">
-																							<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter"><i class="fa fa-plus"></i> Save & Add Another</button>
-																							<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter-group"><i class="fa fa-plus"></i> Save & Finish</button>
-																						</div>
-																						<!--- //New Filter Panel Buttons --->
-																					</li>
+																						<li class="s-new-filter">
+																							<!--- New Filter Panel Buttons --->
+																							<div class="s-filter-item">
+																								<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter"><i class="fa fa-plus"></i> Save & Add Another</button>
+																								<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-filter-group"><i class="fa fa-plus"></i> Save & Finish</button>
+																							</div>
+																							<!--- //New Filter Panel Buttons --->
+																						</li>
 
-																				</ul>
-																			</div>
-																		</div>
-																		<!---//Nested Filter Box --->
-
-																	</li>
-
-																	<li class="s-new-filter">
-																		<!--- New Filter Panel Buttons --->
-																		<div class="s-filter-item">
-																			<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-2"><i class="fa fa-plus"></i> Add</button>
-																			<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-another-2"><i class="fa fa-plus"></i> Add a New Group</button>
-																		</div>
-																		<!--- //New Filter Panel Buttons --->
-																	</li>
-
-																</ul>
-															</div>
-
-															<!--- New Filter Panel --->
-															<div class="s-add-filter-box">
-
-																<!--- Edit Filter Box --->
-																<div class="col-xs-12 collapse s-add-filter" id="j-add-2">
-																	<div class="row">
-																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-2"></i></h4>
-																		<div class="col-xs-12">
-
-																			<div class="row s-flex-col">
-																				<div class="col-xs-3">
-
-																					<div>
-																						<div class="form-group">
-																							<label class="s-width-100">Type:</label>
-
-																							<select class="form-control input-sm">
-																								<option value="Order">Order</option>
-																								<option value="- Order ID">- Order ID</option>
-																								<option value="- Order Date">- Order Date</option>
-																								<option selected="" value="- Order Total">- Order Total</option>
-																								<option value="-------------------">-------------------</option>
-																								<option value="ACCOUNT">ACCOUNT</option>
-																								<option value="SESSION">SESSION</option>
-																								<option value="TRIGGER">TRIGGER</option>
-																							</select>
-
-																						</div>
-																					</div>
-
+																					</ul>
 																				</div>
-																				<div class="col-xs-6 s-criteria">
+																			</div>
+																			<!---//Nested Filter Box --->
 
-																					<h4>Criteria</h4>
-																					<!--- Filter Criteria Start --->
-																					<form action="index.html" method="post">
+																		</li>
 
-																						<div class="form-group form-group-sm">
-																							<div class="col-sm-3 s-no-paddings">
+																		<li class="s-new-filter">
+																			<!--- New Filter Panel Buttons --->
+																			<div class="s-filter-item">
+																				<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-5"><i class="fa fa-plus"></i> Add</button>
+																				<button type="button" class="btn btn-xs btn-default" data-toggle="collapse" data-target="#j-add-another-5"><i class="fa fa-plus"></i> Add a New Group</button>
+																			</div>
+																			<!--- //New Filter Panel Buttons --->
+																		</li>
+
+																	</ul>
+																</div>
+
+																<!--- New Filter Panel --->
+																<div class="s-add-filter-box">
+
+																	<!--- Edit Filter Box --->
+																	<div class="col-xs-12 collapse s-add-filter" id="j-add-5">
+																		<div class="row">
+																			<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-5"></i></h4>
+																			<div class="col-xs-12">
+
+																				<div class="rown s-flex-col">
+																					<div class="col-xs-3">
+
+																						<div>
+																							<div class="form-group">
+																								<label class="s-width-100">Type:</label>
 
 																								<select class="form-control input-sm">
-																									<option selected="" value="=">=</option>
-																									<option value=">">&gt;</option>
-																									<option value=">">&gt;</option>
-																									<option value="<">&lt;</option>
-																									<option value=">=">&gt;=</option>
-																									<option value="<=">&lt;=</option>
-																									<option value="<>">&lt;&gt;</option>
-																									<option value="NULL">NULL</option>
-																									<option value="Changed">Changed</option>
+																									<option value="Order">Order</option>
+																									<option value="- Order ID">- Order ID</option>
+																									<option value="- Order Date">- Order Date</option>
+																									<option selected="" value="- Order Total">- Order Total</option>
+																									<option value="-------------------">-------------------</option>
+																									<option value="ACCOUNT">ACCOUNT</option>
+																									<option value="SESSION">SESSION</option>
+																									<option value="TRIGGER">TRIGGER</option>
 																								</select>
 
 																							</div>
-																							<div class="col-sm-6">
-																								<input class="form-control" type="text" name="some_name" value="">
+																						</div>
+
+																					</div>
+																					<div class="col-xs-6 s-criteria">
+
+																						<h4>Criteria</h4>
+																						<!--- Filter Criteria Start --->
+																						<form action="index.html" method="post">
+
+																							<div class="form-group form-group-sm">
+																								<div class="col-sm-3 s-no-paddings">
+
+																									<select class="form-control input-sm">
+																										<option selected="" value="=">=</option>
+																										<option value=">">&gt;</option>
+																										<option value=">">&gt;</option>
+																										<option value="<">&lt;</option>
+																										<option value=">=">&gt;=</option>
+																										<option value="<=">&lt;=</option>
+																										<option value="<>">&lt;&gt;</option>
+																										<option value="NULL">NULL</option>
+																										<option value="Changed">Changed</option>
+																									</select>
+
+																								</div>
+																								<div class="col-sm-6">
+																									<input class="form-control" type="text" name="some_name" value="">
+																								</div>
+																								
 																							</div>
-																							<div class="clearfix"></div>
-																						</div>
-																						<div class="controls s-checkbox">
-																							<input type="checkbox" id="j-checkbox7" checked="checked" ><label for="j-checkbox7"> Apply to pre-event data</label>
-																						</div>
+																							<div class="controls s-checkbox">
+																								<input type="checkbox" id="j-checkbox7" checked="checked" ><label for="j-checkbox7"> Apply to pre-event data</label>
+																							</div>
 
-																					</form>
-																					<!--- //Filter Criteria End --->
+																						</form>
+																						<!--- //Filter Criteria End --->
 
-																				</div>
-																				<div class="col-xs-3">
-																					<div class="s-button-select-group">
-																						<button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another</button>
-																						<div class="s-or-box">-OR-</div>
-																						<button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
+																					</div>
+																					<div class="col-xs-3">
+																						<div class="s-button-select-group">
+																							<button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another</button>
+																							<div class="s-or-box">-OR-</div>
+																							<button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
+																						</div>
 																					</div>
 																				</div>
 																			</div>
 																		</div>
 																	</div>
-																</div>
-																<!--- //Edit Filter Box --->
+																	<!--- //Edit Filter Box --->
 
-																<!--- Edit Filter Box --->
-																<div class="col-xs-12 collapse s-add-filter" id="j-add-another-2">
-																	<div class="row">
-																		<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-another-2"></i></h4>
-																		<div class="col-xs-12">
+																	<!--- Edit Filter Box --->
+																	<div class="col-xs-12 collapse s-add-filter" id="j-add-another-5">
+																		<div class="row">
+																			<h4> Define Condition: <span>Orders</span> <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-another-5"></i></h4>
+																			<div class="col-xs-12">
 
-																			<div class="row s-flex-col">
-																				<div class="col-xs-3">
+																				<div class="row s-flex-col">
+																					<div class="col-xs-3">
 
-																					<div>
-																						<div class="form-group">
-																							<label class="s-width-100">Type:</label>
-
-																							<select class="form-control input-sm">
-																								<option value="Order">Order</option>
-																								<option value="- Order ID">- Order ID</option>
-																								<option value="- Order Date">- Order Date</option>
-																								<option selected="" value="- Order Total">- Order Total</option>
-																								<option value="-------------------">-------------------</option>
-																								<option value="ACCOUNT">ACCOUNT</option>
-																								<option value="SESSION">SESSION</option>
-																								<option value="TRIGGER">TRIGGER</option>
-																							</select>
-
-																						</div>
-																					</div>
-
-																				</div>
-																				<div class="col-xs-6 s-criteria">
-
-																					<h4>Criteria</h4>
-																					<!--- Filter Criteria Start --->
-																					<form action="index.html" method="post">
-
-																						<div class="form-group form-group-sm">
-																							<div class="col-sm-3 s-no-paddings">
+																						<div>
+																							<div class="form-group">
+																								<label class="s-width-100">Type:</label>
 
 																								<select class="form-control input-sm">
-																									<option selected="" value="=">=</option>
-																									<option value=">">&gt;</option>
-																									<option value=">">&gt;</option>
-																									<option value="<">&lt;</option>
-																									<option value=">=">&gt;=</option>
-																									<option value="<=">&lt;=</option>
-																									<option value="<>">&lt;&gt;</option>
-																									<option value="NULL">NULL</option>
-																									<option value="Changed">Changed</option>
+																									<option value="Order">Order</option>
+																									<option value="- Order ID">- Order ID</option>
+																									<option value="- Order Date">- Order Date</option>
+																									<option selected="" value="- Order Total">- Order Total</option>
+																									<option value="-------------------">-------------------</option>
+																									<option value="ACCOUNT">ACCOUNT</option>
+																									<option value="SESSION">SESSION</option>
+																									<option value="TRIGGER">TRIGGER</option>
 																								</select>
 
 																							</div>
-																							<div class="col-sm-6">
-																								<input class="form-control" type="text" name="some_name" value="">
+																						</div>
+
+																					</div>
+																					<div class="col-xs-6 s-criteria">
+
+																						<h4>Criteria</h4>
+																						<!--- Filter Criteria Start --->
+																						<form action="index.html" method="post">
+
+																							<div class="form-group form-group-sm">
+																								<div class="col-sm-3 s-no-paddings">
+
+																									<select class="form-control input-sm">
+																										<option selected="" value="=">=</option>
+																										<option value=">">&gt;</option>
+																										<option value=">">&gt;</option>
+																										<option value="<">&lt;</option>
+																										<option value=">=">&gt;=</option>
+																										<option value="<=">&lt;=</option>
+																										<option value="<>">&lt;&gt;</option>
+																										<option value="NULL">NULL</option>
+																										<option value="Changed">Changed</option>
+																									</select>
+
+																								</div>
+																								<div class="col-sm-6">
+																									<input class="form-control" type="text" name="some_name" value="">
+																								</div>
+																								
 																							</div>
-																							<div class="clearfix"></div>
-																						</div>
-																						<div class="controls s-checkbox">
-																							<input type="checkbox" id="j-checkbox8" checked="checked" ><label for="j-checkbox8"> Apply to pre-event data</label>
-																						</div>
+																							<div class="controls s-checkbox">
+																								<input type="checkbox" id="j-checkbox8" checked="checked" ><label for="j-checkbox8"> Apply to pre-event data</label>
+																							</div>
 
-																					</form>
-																					<!--- //Filter Criteria End --->
+																						</form>
+																						<!--- //Filter Criteria End --->
 
-																				</div>
-																				<div class="col-xs-3">
-																					<div class="s-button-select-group">
-																						<button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another</button>
-																						<div class="s-or-box">-OR-</div>
-																						<button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
+																					</div>
+																					<div class="col-xs-3">
+																						<div class="s-button-select-group">
+																							<button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another</button>
+																							<div class="s-or-box">-OR-</div>
+																							<button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
+																						</div>
 																					</div>
 																				</div>
 																			</div>
 																		</div>
 																	</div>
-																</div>
-																<!--- //Edit Filter Box --->
+																	<!--- //Edit Filter Box --->
 
+																</div>
+																<!--- //New Filter Panel --->
 															</div>
-															<!--- //New Filter Panel --->
+															<!--- //End Filter Group --->
+
 														</div>
-														<!--- //End Filter Group --->
-
 													</div>
 												</div>
-											</div>
 
-											<div class="tab-pane" id="j-actions-8">
-												<div class="s-bundle-add-items s-workflow-objs s-sortable">
-													<ul class="list-unstyled s-order-item-options">
+												<div class="tab-pane" id="j-actions-2">
+													<div class="s-bundle-add-items s-workflow-objs s-sortable">
+														<ul class="list-unstyled s-order-item-options">
 
-														<li class="s-bundle-add-obj">
-															<ul class="list-unstyled list-inline">
-																<li class="s-item-type">1</li>
-																<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>
-															</ul>
-															<ul class="list-unstyled list-inline s-middle">
-																<li class="j-tool-tip-item s-bundle-details">Type: <span>E-Mail</span></li>
-																<li class="j-tool-tip-item s-bundle-details">Object: <span>Order</span></li>
-																<li class="j-tool-tip-item s-bundle-details">Detail: <span>Order Feedback Template</span></li>
-															</ul>
-															<ul class="list-unstyled list-inline s-last">
-																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
-															</ul>
-															<div class="clearfix"></div>
-														</li>
+															<li class="s-bundle-add-obj">
+																<ul class="list-unstyled list-inline">
+																	<li class="s-item-type">1</li>
+																	<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>
+																</ul>
+																<ul class="list-unstyled list-inline s-middle">
+																	<li class="j-tool-tip-item s-bundle-details">Type: <span>E-Mail</span></li>
+																	<li class="j-tool-tip-item s-bundle-details">Object: <span>Order</span></li>
+																	<li class="j-tool-tip-item s-bundle-details">Detail: <span>Order Feedback Template</span></li>
+																</ul>
+																<ul class="list-unstyled list-inline s-last">
+																	<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
+																</ul>
+																
+															</li>
 
-														<li class="s-bundle-add-obj">
-															<ul class="list-unstyled list-inline">
-																<li class="s-item-type">2</li>
-																<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>
-															</ul>
-															<ul class="list-unstyled list-inline s-middle">
-																<li class="j-tool-tip-item s-bundle-details">Type: <span>E-Mail</span></li>
-																<li class="j-tool-tip-item s-bundle-details">Object: <span>Order</span></li>
-																<li class="j-tool-tip-item s-bundle-details">Detail: <span>Order Feedback Template</span></li>
-															</ul>
-															<ul class="list-unstyled list-inline s-last">
-																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
-															</ul>
-															<div class="clearfix"></div>
-														</li>
+															<li class="s-bundle-add-obj">
+																<ul class="list-unstyled list-inline">
+																	<li class="s-item-type">2</li>
+																	<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>
+																</ul>
+																<ul class="list-unstyled list-inline s-middle">
+																	<li class="j-tool-tip-item s-bundle-details">Type: <span>E-Mail</span></li>
+																	<li class="j-tool-tip-item s-bundle-details">Object: <span>Order</span></li>
+																	<li class="j-tool-tip-item s-bundle-details">Detail: <span>Order Feedback Template</span></li>
+																</ul>
+																<ul class="list-unstyled list-inline s-last">
+																	<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
+																</ul>
+																
+															</li>
 
-													</ul>
-												</div>
+														</ul>
+													</div>
 
-												<div class="form-group">
+													<div class="form-group">
 
-													<button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-action-b"><i class="fa fa-plus"></i> Add Action</button>
+														<button class="btn btn-xs s-btn-ten24" data-toggle="collapse" data-target="#j-add-action-b"><i class="fa fa-plus"></i> Add Action</button>
 
-												</div>
+													</div>
 
-												<!--- Edit Filter Box --->
-												<div class="col-xs-12 collapse s-add-filter" id="j-add-action-b">
-													<div class="row">
-														<h4> Add Action <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-action-b"></i></h4>
-														<div class="col-xs-12">
+													<!--- Edit Filter Box --->
+													<div class="col-xs-12 collapse s-add-filter" id="j-add-action-b">
+														<div class="row">
+															<h4> Add Action <i class="fa fa-times" data-toggle="collapse" data-target="#j-add-action-b"></i></h4>
+															<div class="col-xs-12">
 
-															<div class="row s-flex-col">
-																<div class="col-xs-3">
+																<div class="row s-flex-col">
+																	<div class="col-xs-3">
 
-																	<div class="form-group form-group-sm">
-																		<label for="" class="s-width-100">Select Action Type:</label>
-																		<select class="form-control input-sm">
-																			<option>Print</option>
-																			<option>Email</option>
-																			<option>Update</option>
-																			<option>Process</option>
-																			<option>Import</option>
-																			<option>Export</option>
-																			<option>Delete</option>
-																		</select>
-																	</div>
-
-																	<div class="form-group form-group-sm">
-																		<label for="" class="s-width-100">Select Object:</label>
-																		<select class="form-control input-sm">
-																			<option>Orders</option>
-																			<option>Related Objects</option>
-																			<option>Account</option>
-																			<option>Order Item</option>
-																		</select>
-																	</div>
-
-																</div>
-																<div class="col-xs-6 s-criteria">
-
-																	<!--- Filter Criteria Start --->
-																	<div class="s-filter-group-item">
-
-																		<h4>Print Template</h4>
 																		<div class="form-group form-group-sm">
+																			<label for="" class="s-width-100">Select Action Type:</label>
+																			<select class="form-control input-sm">
+																				<option>Print</option>
+																				<option>Email</option>
+																				<option>Update</option>
+																				<option>Process</option>
+																				<option>Import</option>
+																				<option>Export</option>
+																				<option>Delete</option>
+																			</select>
+																		</div>
 
-																			<!--- search --->
-																			<div class="s-search-filter">
-																				<div class="input-group">
-																					<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
-																					<ul class="dropdown-menu s-search-options">
-																						<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
-																						<li><a>Order Confirmation Template</a></li>
-																						<li><a>Order Gift Thank You</a></li>
-																						<li><a>Order Feedback</a></li>
-																					</ul>
-																					<div class="input-group-btn">
-																						<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
+																		<div class="form-group form-group-sm">
+																			<label for="" class="s-width-100">Select Object:</label>
+																			<select class="form-control input-sm">
+																				<option>Orders</option>
+																				<option>Related Objects</option>
+																				<option>Account</option>
+																				<option>Order Item</option>
+																			</select>
+																		</div>
+
+																	</div>
+																	<div class="col-xs-6 s-criteria">
+
+																		<!--- Filter Criteria Start --->
+																		<div class="s-filter-group-item">
+
+																			<h4>Print Template</h4>
+																			<div class="form-group form-group-sm">
+
+																				<!--- search --->
+																				<div class="s-search-filter">
+																					<div class="input-group">
+																						<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
+																						<ul class="dropdown-menu s-search-options">
+																							<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
+																							<li><a>Order Confirmation Template</a></li>
+																							<li><a>Order Gift Thank You</a></li>
+																							<li><a>Order Feedback</a></li>
+																						</ul>
+																						<div class="input-group-btn">
+																							<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
+																						</div>
+																					</div>
+
+																					<div class="s-add-content collapse" id="j-toggle-add-bundle-type">
+																						<form id="form_id" action="index.html" method="post" style="background-color: #FFF;border: 1px solid #DDD;padding:20px;">
+																							<div class="form-group has-error">
+																								<label for="">Group Name <i class="fa fa-asterisk"></i></label>
+																								<input type="text" class="form-control" id="" value="" placeholder="">
+																								<p class="help-block">Example Of Error</p>
+																							</div>
+																							<div class="form-group">
+																								<label for="">Group Code</label>
+																								<input type="text" class="form-control" id="" value="" placeholder="">
+																							</div>
+																							<div class="form-group">
+																								<label for="">Group Description</label>
+																								<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
+																							</div>
+																							<div class="form-group">
+																								<button type="button" class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Add Group Type</button>
+																							</div>
+																						</form>
 																					</div>
 																				</div>
+																				<!--- // search --->
 
-																				<div class="s-add-content collapse" id="j-toggle-add-bundle-type">
-																					<form id="form_id" action="index.html" method="post" style="background-color: #FFF;border: 1px solid #DDD;padding:20px;">
-																						<div class="form-group has-error">
-																							<label for="">Group Name <i class="fa fa-asterisk"></i></label>
-																							<input type="text" class="form-control" id="" value="" placeholder="">
-																							<p class="help-block">Example Of Error</p>
-																						</div>
-																						<div class="form-group">
-																							<label for="">Group Code</label>
-																							<input type="text" class="form-control" id="" value="" placeholder="">
-																						</div>
-																						<div class="form-group">
-																							<label for="">Group Description</label>
-																							<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
-																						</div>
-																						<div class="form-group">
-																							<button type="button" class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Add Group Type</button>
-																						</div>
-																					</form>
-																				</div>
 																			</div>
-																			<!--- // search --->
 
-																		</div>
-
-																		<div class="form-group form-group-sm">
-																			<label for="" class="col-sm-12 s-no-paddings">On Success</label>
-																			<select class="form-control input-sm">
-																				<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
-																				<option selected="" value="Select Next Action">Select Next Action</option>
-																				<option value="Select Next Task">Select Next Task</option>
-																				<option value="Skip to Next Task">Skip to Next Task</option>
-																				<option value="Exit Workflow">Exit Workflow</option>
-																			</select>
-																		</div>
-																		<div class="form-group form-group-sm">
-																			<select class="form-control input-sm">
-																				<option value="- Select Action">- Select Action</option>
-																			</select>
-																		</div>
-
-																		<div class="form-group form-group-sm">
-																			<label for="" class="col-sm-12 s-no-paddings">On Failure</label>
-																			<select class="form-control input-sm">
-																				<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
-																				<option value="Select Next Action">Select Next Action</option>
-																				<option value="Select Next Task">Select Next Task</option>
-																				<option value="Skip to Next Task">Skip to Next Task</option>
-																				<option selected="" value="Exit Workflow">Exit Workflow</option>
-																			</select>
-																		</div>
-
-																	</div>
-																	<!--- //Filter Criteria End --->
-
-/===================================================/
-
-
-																	<!--- Filter Criteria Start --->
-																	<div class="s-filter-group-item">
-
-																		<h4>Update Data</h4>
-																		<div class="form-group form-group-sm">
-																			<input type="text" class="form-control" placeholder="Ready To Capture">
-																			<!--- <p class="help-block">Help text here.</p> --->
-																		</div>
-
-																		<div class="form-group form-group-sm">
-																			<label for="" class="col-sm-12 s-no-paddings">On Success</label>
-																			<select class="form-control input-sm">
-																				<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
-																				<option selected="" value="Select Next Action">Select Next Action</option>
-																				<option value="Select Next Task">Select Next Task</option>
-																				<option value="Skip to Next Task">Skip to Next Task</option>
-																				<option value="Exit Workflow">Exit Workflow</option>
-																			</select>
-																		</div>
-
-																		<div class="form-group form-group-sm">
-																			<label for="" class="col-sm-12 s-no-paddings"></label>
-																			<select class="form-control input-sm">
-																				<option value="- Select Action">- Select Action</option>
-																			</select>
-																		</div>
-
-																		<div class="form-group form-group-sm">
-																			<label for="" class="col-sm-12 s-no-paddings">On Failure</label>
-																			<select class="form-control input-sm">
-																				<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
-																				<option value="Select Next Action">Select Next Action</option>
-																				<option value="Select Next Task">Select Next Task</option>
-																				<option value="Skip to Next Task">Skip to Next Task</option>
-																				<option selected="" value="Exit Workflow">Exit Workflow</option>
-																			</select>
-																		</div>
-
-																	</div>
-																	<!--- //Filter Criteria End --->
-
-/===================================================/
-
-																	<!--- Filter Criteria Start --->
-																	<div class="s-filter-group-item">
-
-																		<h4>Dynamic Numeric</h4>
-																		<div class="row">
-																			<div class="col-md-6 form-group form-group-sm">
+																			<div class="form-group form-group-sm">
+																				<label for="" class="col-sm-12 s-no-paddings">On Success</label>
 																				<select class="form-control input-sm">
-																					<option value="1">Dynamic Numeric Value</option>
-																					<option value="2">Add 'N'</option>
-																					<option value="3">Set value to '0'</option>
-																					<option value="4">Subtract 'N'</option>
+																					<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
+																					<option selected="" value="Select Next Action">Select Next Action</option>
+																					<option value="Select Next Task">Select Next Task</option>
+																					<option value="Skip to Next Task">Skip to Next Task</option>
+																					<option value="Exit Workflow">Exit Workflow</option>
 																				</select>
 																			</div>
-																			<div class="col-md-6 form-group form-group-sm">
-																				<input type="number" class="form-control" placeholder="" value="4">
+																			<div class="form-group form-group-sm">
+																				<select class="form-control input-sm">
+																					<option value="- Select Action">- Select Action</option>
+																				</select>
+																			</div>
+
+																			<div class="form-group form-group-sm">
+																				<label for="" class="col-sm-12 s-no-paddings">On Failure</label>
+																				<select class="form-control input-sm">
+																					<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
+																					<option value="Select Next Action">Select Next Action</option>
+																					<option value="Select Next Task">Select Next Task</option>
+																					<option value="Skip to Next Task">Skip to Next Task</option>
+																					<option selected="" value="Exit Workflow">Exit Workflow</option>
+																				</select>
+																			</div>
+
+																		</div>
+																		<!--- //Filter Criteria End --->
+
+	/===================================================/
+
+
+																		<!--- Filter Criteria Start --->
+																		<div class="s-filter-group-item">
+
+																			<h4>Update Data</h4>
+																			<div class="form-group form-group-sm">
+																				<input type="text" class="form-control" placeholder="Ready To Capture">
 																				<!--- <p class="help-block">Help text here.</p> --->
 																			</div>
+
+																			<div class="form-group form-group-sm">
+																				<label for="" class="col-sm-12 s-no-paddings">On Success</label>
+																				<select class="form-control input-sm">
+																					<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
+																					<option selected="" value="Select Next Action">Select Next Action</option>
+																					<option value="Select Next Task">Select Next Task</option>
+																					<option value="Skip to Next Task">Skip to Next Task</option>
+																					<option value="Exit Workflow">Exit Workflow</option>
+																				</select>
+																			</div>
+
+																			<div class="form-group form-group-sm">
+																				<label for="" class="col-sm-12 s-no-paddings"></label>
+																				<select class="form-control input-sm">
+																					<option value="- Select Action">- Select Action</option>
+																				</select>
+																			</div>
+
+																			<div class="form-group form-group-sm">
+																				<label for="" class="col-sm-12 s-no-paddings">On Failure</label>
+																				<select class="form-control input-sm">
+																					<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
+																					<option value="Select Next Action">Select Next Action</option>
+																					<option value="Select Next Task">Select Next Task</option>
+																					<option value="Skip to Next Task">Skip to Next Task</option>
+																					<option selected="" value="Exit Workflow">Exit Workflow</option>
+																				</select>
+																			</div>
+
 																		</div>
+																		<!--- //Filter Criteria End --->
+
+	/===================================================/
+
+																		<!--- Filter Criteria Start --->
+																		<div class="s-filter-group-item">
+
+																			<h4>Dynamic Numeric</h4>
+																			<div class="row">
+																				<div class="col-md-6 form-group form-group-sm">
+																					<select class="form-control input-sm">
+																						<option value="1">Dynamic Numeric Value</option>
+																						<option value="2">Add 'N'</option>
+																						<option value="3">Set value to '0'</option>
+																						<option value="4">Subtract 'N'</option>
+																					</select>
+																				</div>
+																				<div class="col-md-6 form-group form-group-sm">
+																					<input type="number" class="form-control" placeholder="" value="4">
+																					<!--- <p class="help-block">Help text here.</p> --->
+																				</div>
+																			</div>
+
+																		</div>
+																		<!--- //Filter Criteria End --->
+
+	/===================================================/
+
+																		<!--- Filter Criteria Start --->
+																		<div class="s-filter-group-item">
+																			<h4>Delete</h4>
+																			<div class="form-group form-group-sm s-checkbox">
+																				<input type="checkbox" id="j-delete-confirm" checked="checked"><label for="j-delete-confirm"> Confirm "Orders" object will be deleted</label>
+																			</div>
+																		</div>
+																		<!--- //Filter Criteria End --->
 
 																	</div>
-																	<!--- //Filter Criteria End --->
-
-/===================================================/
-
-																	<!--- Filter Criteria Start --->
-																	<div class="s-filter-group-item">
-																		<h4>Delete</h4>
-																		<div class="form-group form-group-sm s-checkbox">
-																			<input type="checkbox" id="j-delete-confirm" checked="checked"><label for="j-delete-confirm"> Confirm "Orders" object will be deleted</label>
+																	<div class="col-xs-3">
+																		<div class="s-button-select-group">
+																			<button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another</button>
+																			<div class="s-or-box">OR-</div>
+																			<button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
 																		</div>
-																	</div>
-																	<!--- //Filter Criteria End --->
-
-																</div>
-																<div class="col-xs-3">
-																	<div class="s-button-select-group">
-																		<button type="button" class="btn btn-sm s-btn-ten24">Save & Add Another</button>
-																		<div class="s-or-box">OR-</div>
-																		<button type="button" class="btn btn-sm s-btn-ten24">Save & Finish</button>
 																	</div>
 																</div>
 															</div>
 														</div>
 													</div>
+													<!--- //Edit Filter Box --->
+													
 												</div>
-												<!--- //Edit Filter Box --->
-												<div class="clearfix"></div>
-											</div>
 
+											</div>
 										</div>
 									</div>
+
 								</div>
 
 							</div>
+						</li>
 
-						</div>
+						<li class="s-bundle-add-obj s-no-edit">
+							<div class="s-workflow-header">
+								<ul class="list-unstyled list-inline">
+									<li class="s-item-type s-tooltip">1</li>
+								</ul>
+								<ul class="list-unstyled list-inline s-middle">
+									<li class="j-tool-tip-item s-bundle-details">Update Order Status</li>
+									<li class="j-tool-tip-item s-bundle-details">Active: <span>No</span></li>
+								</ul>
+								<ul class="list-unstyled list-inline s-last">
+									<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-edit" data-toggle="collapse" data-target="#s-add-obj-1"><i class="fa fa-pencil"></i></a></li>
+									<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove" data-toggle="collapse" data-target="#s-add-obj-1"><i class="fa fa-trash"></i></a></li>
+								</ul>
+							</div>
+						
+							
+						</li>
 
 					</ul>
 				</div>
@@ -2369,7 +1503,7 @@
 																										<option value="five">Five</option>
 																									</select>
 																								</div>
-																								<div class="clearfix"></div>
+																								
 																							</div>
 																						</div>
 																						<div class="col-xs-6 s-criteria">
@@ -2408,14 +1542,14 @@
 																												<option>5 week</option>
 																											</select>
 																										</div>
-																										<div class="clearfix"></div>
+																										
 																									</div>
 																									<div class="form-group form-group-sm">
 																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
 																										<div class="col-sm-12 s-no-paddings">
 																											<input type="text" class="form-control" id="input" placeholder="12">
 																										</div>
-																										<div class="clearfix"></div>
+																										
 																									</div>
 																								</div>
 																							</form>
@@ -2447,7 +1581,7 @@
 																													<option>Addresses</option>
 																												</select>
 																											</div>
-																											<div class="clearfix"></div>
+																											
 																										</div>
 																										<div class="radio">
 																											<input type="radio" name="radio1" id="radio2" value="option2">
@@ -2483,7 +1617,7 @@
 																										<div class="col-sm-12 s-no-paddings">
 																											<input type="text" class="form-control" id="input" placeholder="12">
 																										</div>
-																										<div class="clearfix"></div>
+																										
 																									</div>
 																									<div class="form-group form-group-sm">
 																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Condition:</label>
@@ -2502,14 +1636,14 @@
 																												<option value="Not In">Not In</option>
 																											</select>
 																										</div>
-																										<div class="clearfix"></div>
+																										
 																									</div>
 																									<div class="form-group form-group-sm">
 																										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Criteria Value:</label>
 																										<div class="col-sm-12 s-no-paddings">
 																											<input type="text" class="form-control" id="input" placeholder="12">
 																										</div>
-																										<div class="clearfix"></div>
+																										
 																									</div>
 																								</div>
 
@@ -2612,14 +1746,14 @@
 																																<option>5 week</option>
 																															</select>
 																														</div>
-																														<div class="clearfix"></div>
+																														
 																													</div>
 																													<div class="form-group form-group-sm">
 																														<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Number of Weeks Ago:</label>
 																														<div class="col-sm-12 s-no-paddings">
 																															<input type="text" class="form-control" id="input" placeholder="12">
 																														</div>
-																														<div class="clearfix"></div>
+																														
 																													</div>
 																												</div>
 																											</form>
@@ -2729,7 +1863,7 @@
 																							<div class="col-sm-6">
 																								<input class="form-control" type="text" name="some_name" value="">
 																							</div>
-																							<div class="clearfix"></div>
+																							
 																						</div>
 																						<div class="controls s-checkbox">
 																							<input type="checkbox" id="j-checkbox7" checked="checked" ><label for="j-checkbox7"> Apply to pre-event data</label>
@@ -2805,7 +1939,7 @@
 																							<div class="col-sm-6">
 																								<input class="form-control" type="text" name="some_name" value="">
 																							</div>
-																							<div class="clearfix"></div>
+																							
 																						</div>
 																						<div class="controls s-checkbox">
 																							<input type="checkbox" id="j-checkbox8" checked="checked" ><label for="j-checkbox8"> Apply to pre-event data</label>
@@ -2854,7 +1988,7 @@
 															<ul class="list-unstyled list-inline s-last">
 																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
 															</ul>
-															<div class="clearfix"></div>
+															
 														</li>
 
 														<li class="s-bundle-add-obj">
@@ -2870,7 +2004,7 @@
 															<ul class="list-unstyled list-inline s-last">
 																<li class="col-xs-1 j-tool-tip-item s-bundle-details-add"><a class="btn s-btn-dgrey s-remove"><i class="fa fa-trash"></i></a></li>
 															</ul>
-															<div class="clearfix"></div>
+															
 														</li>
 
 													</ul>
@@ -3085,7 +2219,7 @@
 													</div>
 												</div>
 												<!--- //Edit Filter Box --->
-												<div class="clearfix"></div>
+												
 											</div>
 
 										</div>
@@ -3097,7 +2231,7 @@
 				</div>
 				<!--- //Edit Filter Box --->
 
-				<div class="clearfix"></div>
+				
 
 			</div>
 
