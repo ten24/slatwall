@@ -7,6 +7,6 @@
 		<span ng-bind="orderFulfillment.data.shippingAddress.data.postalCode"></span>
 	</li>
 </ul>
-<ul ng-if="orderFulfillment.data.fulfillmentMethodType === 'shipping'">
+<ul ng-if="!orderFulfillment.data.fulfillmentMethodType === 'shipping'">
 	<li>N/A</li>
 </ul>

@@ -148,6 +148,15 @@ Notes:
 					  			return deferred.promise;
 					  			
 					  		},
+					  		getResizedImageByProfileName:function (profileName, skuIDs) {
+					  			var deferred = $q.defer();
+					            return $http.get(_config.baseURL + '/index.cfm/?slatAction=api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
+					            .success(function(data){
+					  				deferred.resolve(data);
+					  			}).error(function(reason){
+					  				deferred.reject(reason);
+					  			});
+					  		},
 					  		getEventOptions:function(entityName){
 					  			var deferred = $q.defer();
 					  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getEventOptionsByEntityName&entityName='+entityName;
