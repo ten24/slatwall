@@ -106,10 +106,21 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Helper Properties
 	property name="assignedOrderItemAttributeSets";
 	property name="fulfillmentMethodType";
-	
-	variables.childOrderItems = []; //This needs to be here in order to add a product bundle item to the administrator.
+		
+	public any function init(){
+		super.init();
+		variables.childOrderItems = [];
+	}
 	
 	// ======================== START: Defaults ============================
+	
+	public array function getChildOrderItems(){
+		if(structkeyExists(variables,'childOrderItems')){
+			return variables.childOrderItems;
+		}
+		
+		return variables.childOrderItems;
+	}
 	
 	public any function getRegistrantAccounts() {
 		if(structKeyExists(variables, "registrantAccounts")) {
@@ -505,18 +516,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return "";
 	}
 	
-	// function to compare two orderItems based on certain properties.
+	// funciton to compare two orderItems based on certain properties.
 	public boolean function matchesOrderItem(required any orderItem){
 		
-		
-		//This should be removed if we want product bundles to increase in quantity when the same one is added
-		//in the new administrator.
 		//check if the sku is a bundle
-		/*
 		if(this.getSku().getBaseProductType() == 'productBundle') {
 			return false;
 		}
-		*/
+		
 		//check if skus match
 		if(arguments.orderItem.getSku().getSkuID() != this.getSku().getSkuID()){
 			return false;
