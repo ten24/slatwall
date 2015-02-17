@@ -17,19 +17,19 @@ angular.module('slatwalladmin').directive('swInput',
 		var spaceDelimitedList = '';
 		var name = propertyDisplay.property;
 		var form = propertyDisplay.form.$$swFormInfo;
-		console.log("Name is:" + name + " and form is: " + form);
+		$log.debug("Name is:" + name + " and form is: " + form);
 		var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
-		console.log("Validations: ");
+		$log.debug("Validations: ");
 		console.dir(validations);
 		var validationsForContext = [];
 		
 		//get the form context and the form name.
 		var formContext = propertyDisplay.form.$$swFormInfo.context;
 		var formName = propertyDisplay.form.$$swFormInfo.name;
-		console.log("Form context is: ");
-		console.log(formContext);
-		console.log("Form Name: ");
-		console.log(formName);
+		$log.debug("Form context is: ");
+		$log.debug(formContext);
+		$log.debug("Form Name: ");
+		$log.debug(formName);
 		//get the validations for the current element.
 		var propertyValidations = propertyDisplay.object.validations.properties[name];
 		/*
@@ -38,7 +38,7 @@ angular.module('slatwalladmin').directive('swInput',
 		//check if the contexts match.
 		if (angular.isObject(propertyValidations)){
 			if (propertyValidations[0].contexts === formContext){
-				console.log("Matched");
+				$log.debug("Matched");
 				for (var prop in propertyValidations[0]){
 						if (prop != "contexts" && prop !== "conditions"){
 							
@@ -47,18 +47,18 @@ angular.module('slatwalladmin').directive('swInput',
 						}	
 				}
 			}
-		console.log(spaceDelimitedList);
+		$log.debug(spaceDelimitedList);
 		}
 		//loop over validations that are required and create the space delimited list
-		console.log(validations);
+		$log.debug(validations);
 		
 		//get all validations related to the form context;
-		console.log(form);
-		console.log(propertyDisplay);
+		$log.debug(form);
+		$log.debug(propertyDisplay);
 		angular.forEach(validations,function(validation,key){
 			if(utilityService.listFind(validation.contexts.toLowerCase(),form.context.toLowerCase()) !== -1){
-				console.log("Validations for context");
-				console.log(validation);
+				$log.debug("Validations for context");
+				$log.debug(validation);
 				validationsForContext.push(validation);
 			}
 		});
@@ -97,8 +97,8 @@ angular.module('slatwalladmin').directive('swInput',
 		    validations+
 		    'id="swinput'+utilityService.createID(26)+'"'+
 			' />';
-			console.log(template);
-			console.log(validations);
+			$log.debug(template);
+			$log.debug(validations);
 		}*/
 		return template; 
 	}

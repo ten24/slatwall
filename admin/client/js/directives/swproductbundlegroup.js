@@ -39,8 +39,8 @@ angular.module('slatwalladmin')
 					productBundleGroupsController.removeProductBundleGroup(scope.index);
 					scope.productBundleGroup.$$delete();
 				};
-				console.log('skuCollection22');
-				console.log(scope.productBundleGroup.data.skuCollectionConfig);
+				$log.debug('skuCollection22');
+				$log.debug(scope.productBundleGroup.data.skuCollectionConfig);
 
 //				var collectionConfig = {};
 //				if(angular.isString(scope.productBundleGroup.data.skuCollectionConfig)){

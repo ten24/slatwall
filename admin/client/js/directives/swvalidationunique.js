@@ -1,15 +1,13 @@
 /**
  * Validates true if the given object is 'unique' and false otherwise.
  */
-angular.module('slatwalladmin').directive("swvalidationunique", ['$http','$q','$slatwall',  function($http,$q,$slatwall) {
+angular.module('slatwalladmin').directive("swvalidationunique", ['$http','$q','$slatwall','$log',  function($http,$q,$slatwall, $log) {
 	return {
 		restrict : "A",
 		require : "ngModel",
 		link : function(scope, element, attributes, ngModel) {
-			//var value = ngModel.modelValue || ngModel.viewValue;
-			//var valObj = scope.propertyDisplay.object.metaData.$$className; 
 			ngModel.$asyncValidators.swvalidationunique = function (modelValue, viewValue) {
-				console.log('asyc');
+				$log.debug('asyc');
                 var deferred = $q.defer(),
                     currentValue = modelValue || viewValue,
                     key = scope.propertyDisplay.object.metaData.className,
@@ -20,8 +18,8 @@ angular.module('slatwalladmin').directive("swvalidationunique", ['$http','$q','$
                 if (key && property) {
                     $slatwall.checkUniqueValue(key, property, currentValue)
                     .then(function (unique) {
-                    	console.log('uniquetest');
-                    	console.log(unique);
+                    	$log.debug('uniquetest');
+                    	$log.debug(unique);
                     	
                         if (unique) {
                             deferred.resolve(); //It's unique

@@ -26,7 +26,7 @@ angular.module('slatwalladmin')
 				$log.debug(form);
 				for(key in form){
 					if(key.charAt(0) !== '$'){
-						console.log(form[key]);
+						$log.debug(form[key]);
 					}
 				}
 			},
