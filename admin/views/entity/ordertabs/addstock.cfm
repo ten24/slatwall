@@ -52,15 +52,15 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.addSkuAddStockType" type="string" />
 
-<cfset local.getAddOrderItemStockOptionsSmartList = rc.order.getAddOrderItemStockOptionsSmartList() />
+<cfset local.addOrderItemStockOptionsSmartList = rc.order.getAddOrderItemStockOptionsSmartList() />
 
 <!--- Setup default stock location filter--->
 <cfif !isnull(rc.order.getDefaultStockLocation())>
-	<cfset local.getAddOrderItemStockOptionsSmartList.addFilter("location.locationName", "#rc.order.getDefaultStockLocation().getLocationName()#")>
+	<cfset local.addOrderItemStockOptionsSmartList.addFilter("location.locationName", "#rc.order.getDefaultStockLocation().getLocationName()#")>
 </cfif>
 
 <cfoutput>
-	<hb:HibachiListingDisplay smartList="#local.getAddOrderItemStockOptionsSmartList#"
+	<hb:HibachiListingDisplay smartList="#local.addOrderItemStockOptionsSmartList#"
 							  recordProcessAction="admin:entity.processOrder"
 							  recordProcessQueryString="orderItemTypeSystemCode=#rc.addSkuAddStockType#"
 							  recordProcessContext="addOrderItem"
