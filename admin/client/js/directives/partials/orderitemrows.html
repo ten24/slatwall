@@ -1,155 +1,55 @@
 <!--/////////////////// START BUNDLE LISTING EXAMPLE///////////////////-->			
 <content class="s-body-box">
-				<div class="table-responsive">
-					<table class="table table-bordered s-order-item-table">
-						<thead>
-							<tr>
-								<th>Image</th>
-								<th>Title</th>
-								<th>Sku</th>
-								<th>{{customAttributes.key}}</th>
-								<th>Price</th>
-								<th>Qty</th>
-								<th>Discount</th>
-								<th>Total</th>
-								<th>Fullfilment</th>
-								<th></th>
-							</tr>
-						</thead>
-						<tbody ng-repeat="orderItem in orderItems">
-							<!-- Begin Merchandise Row -->
-							
-							<tr class="s-bundle-product l-1" data-id="B-625TX78">
-								<td rowspan="1000" class='s-image' style="width:90px;height:90px;"><swresizedimage profilename="orderItem" data-order-item="orderItem"></swresizedimage></td>
-								<td class="s-title">{{orderItem.data.sku.data.skuName}}<a href="" class="s-edit-link" ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle'">show detail</a></td>
-								<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
-								<td class="s-details"><span ng-hide="orderItem.customAttributes.val === 'none'">{{orderItem.customAttributes.val}}</span></td>
-								<td class="s-price">{{orderItem.data.skuPrice | currency}}</td>
-								<td class="s-qty">{{orderItem.data.quantity}}</td>
-								<td class="s-discount">-{{ orderItem.discount | currency }}</td>
-								<td class="s-total">{{orderItem.total | currency}}</td>
-								<td rowspan="1000" class="s-fullfilment">
-									<ul>
-										<li class="s-header">Ship To: <a ng-href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link">edit</a></li>
-										<li>
-											<swoishippinglabelstamp 
-												data-order-fulfillment="orderItem.data.orderFulfillment">
-											</swoishippinglabelstamp>
-										</li>
-									</ul>
-								</td>
-								<td rowspan="1000" class="s-actions">
-									<ul>
-										<li class="s-edit-btn"><a ng-href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}"><button type="button"><i class="fa fa-eye"></i></button></a></li>
-										<li class="s-remove-btn"><button type="button"><a ng-href="{{'?slatAction=entity.deleteorderitem&redirectAction=admin:entity.detailorder&amp;orderID='+orderId+'&orderitemid='+orderItem.data.orderItemID}}"<i class="fa fa-trash"></i></a></button></li>
-									</ul>
-								</td>
-							</tr>
-							<sw-child-order-items>
-							
-							</sw-child-order-items>
-							<!-- End -->
-							<!-- Need to handle when the item is a product bundle.-->
-							
-						</tbody>
-
-					</table>
-				</div>
+	<div class="table-responsive">
+		<table class="table table-bordered s-order-item-table">
+			<thead>
+				<tr>
+					<th>Image</th>
+					<th>Title</th>
+					<th>Sku</th>
+					<th>{{customAttributes.key}}</th>
+					<th>Price</th>
+					<th>Qty</th>
+					<th>Discount</th>
+					<th>Total</th>
+					<th>Fullfilment</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody ng-repeat="orderItem in orderItems" sw-child-order-items data-order-item="orderItem">
+				<!-- Begin Merchandise Row -->
 				
-				<!-- <div class="row s-bundle-group-items">
-					<div class="col-xs-12 s-search-bar">
-
-						<ul class="list-unstyled s-search-bar-box">
+				<tr class="s-bundle-product l-1" data-id="B-625TX78" >
+					<td rowspan="1000" class='s-image' style="width:90px;height:90px;"><swresizedimage profilename="orderItem" data-order-item="orderItem"></swresizedimage></td>
+					<td class="s-title">{{orderItem.data.sku.data.skuName}}<a href="" class="s-edit-link" ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle'" ng-click="orderItem.$$getChildOrderItems()">show detail</a></td>
+					<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
+					<td class="s-details"><span ng-hide="orderItem.customAttributes.val === 'none'">{{orderItem.customAttributes.val}}</span></td>
+					<td class="s-price">{{orderItem.data.skuPrice | currency}}</td>
+					<td class="s-qty">{{orderItem.data.quantity}}</td>
+					<td class="s-discount">-{{ orderItem.discount | currency }}</td>
+					<td class="s-total">{{orderItem.total | currency}}</td>
+					<td rowspan="1000" class="s-fullfilment">
+						<ul>
+							<li class="s-header">Ship To: <a ng-href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link">edit</a></li>
 							<li>
-								<div class="dropdown input-group-btn search-panel">
-									<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-										<span id="j-search-concept">Any</span>
-										<span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-										<li><a href="#all">Any</a></li>
-										<li><a href="#less_than">Product</a></li>
-										<li><a href="#all">Skus</a></li>
-									</ul>
-								</div>
-							</li>
-							<li>
-								<input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku">
-								<i class="fa fa-refresh fa-spin"></i>
-							</li>
-							<li>
-								<ul class="list-unstyled">
-									<li>
-										<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked"><label for="j-checkbox25"> In stock</label></div>
-									</li>
-									<li>
-										<div class="dropdown input-group-btn search-panel">
-											<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-												<span id="j-search-concept">All Locations</span>
-												<span class="caret"></span>
-											</button>
-											<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-												<li><input type="text" class="form-control" name="x" placeholder="Search"></li>
-												<li><a href="#all">All Locations</a></li>
-												<li><a href="#less_than">San Diego</a></li>
-												<li><a href="#all">New York</a></li>
-												<li><a href="#all">France</a></li>
-											</ul>
-										</div>
-									</li>
-								</ul>
+								<swoishippinglabelstamp 
+									data-order-fulfillment="orderItem.data.orderFulfillment">
+								</swoishippinglabelstamp>
 							</li>
 						</ul>
+					</td>
+					<td rowspan="1000" class="s-actions">
+						<ul>
+							<li class="s-edit-btn"><a ng-href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}"><button type="button"><i class="fa fa-eye"></i></button></a></li>
+							<li class="s-remove-btn"><button type="button"><a ng-href="{{'?slatAction=entity.deleteorderitem&redirectAction=admin:entity.detailorder&amp;orderID='+orderId+'&orderitemid='+orderItem.data.orderItemID}}"<i class="fa fa-trash"></i></a></button></li>
+						</ul>
+					</td>
+				</tr>
+				
+			</tbody>
 
-					</div>
-
-					<div class="col-xs-12 s-bundle-add-items">
-						<div class="col-xs-12 s-bundle-add-items-inner">
-
-							<ul class="list-unstyled s-order-item-options">
-								<li class="s-bundle-add-obj">
-									<ul class="list-unstyled list-inline s-middle">
-										<li class="j-tool-tip-item s-bundle-details">Subscription</li>
-										<li class="j-tool-tip-item s-bundle-details">Skateboard Magazine 1 Year <span>K-3847UGH</span></li>
-										<li class="j-tool-tip-item s-bundle-details">Qty: <span>1</span></li>
-										<li class="j-tool-tip-item s-bundle-details">Location: <span>San Diego</span></li>
-									</ul>
-									<ul class="s-last">
-										<li class="s-bundle-details-add">
-											<a class="btn btn-default"><i class="fa fa-minus-square-o"></i> <span class="s-action-text">Return Item</span></a>
-										</li>
-										<li class="s-bundle-details-add">
-											<a class="btn btn-primary"><i class="fa fa-plus-square-o"></i> <span class="s-action-text">Add Item</span></a>
-										</li>
-									</ul>
-									<div class="clearfix"></div>
-								</li>
-
-								<li class="s-bundle-add-obj">
-									<ul class="list-unstyled list-inline s-middle">
-										<li class="j-tool-tip-item s-bundle-details">Subscription</li>
-										<li class="j-tool-tip-item s-bundle-details">Skateboard Magazine 1 Year <span>K-3847UGH</span></li>
-										<li class="j-tool-tip-item s-bundle-details">Qty: <span>1</span></li>
-										<li class="j-tool-tip-item s-bundle-details">Location: <span>San Diego</span></li>
-									</ul>
-									<ul class="s-last">
-										<li class="s-bundle-details-add">
-											<a class="btn btn-default"><i class="fa fa-minus-square-o"></i> <span class="s-action-text">Return Item</span></a>
-										</li>
-										<li class="s-bundle-details-add">
-											<a class="btn btn-primary"><i class="fa fa-plus-square-o"></i> <span class="s-action-text">Add Item</span></a>
-										</li>
-									</ul>
-									<div class="clearfix"></div>
-								</li>
-
-							</ul>
-						</div>
-					</div>
-				</div> -->
-					
-			</content>					
-		</div>
+		</table>
 	</div>
+</content>					
 					
 <!--/////////////////// END BUNDLE LISTING EXAMPLE///////////////////-->

@@ -1481,7 +1481,7 @@ Notes:
 																<!---returns array of related objects --->
 																for(var i in response.records){
 																	<!---creates new instance --->
-																	var entityInstance = thisEntityInstance['$$add'+thisEntityInstance.metaData['#local.property.name#'].cfc]();
+																	var entityInstance = thisEntityInstance['$$add'+thisEntityInstance.metaData['#local.property.name#'].singularname.charAt(0).toUpperCase()+thisEntityInstance.metaData['#local.property.name#'].singularname.slice(1)]();
 																	entityInstance.$$init(response.records[i]);
 																	if(angular.isUndefined(thisEntityInstance['#local.property.name#'])){
 																		thisEntityInstance['#local.property.name#'] = [];
