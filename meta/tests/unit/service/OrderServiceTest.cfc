@@ -55,7 +55,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
-	public void function processOrder_addOrderItem_addProductBundle(){
+	//public void function processOrder_addOrderItem_addtocart
+	//test is incomplete as it bypasses the currencyconverions,promotion, and tax intergration update amounts code
+	/*public void function processOrder_addOrderItem_addProductBundle(){
 		//set up data
 		
 		//set up productBundle
@@ -63,9 +65,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			productName="productBundleName",
 			productid="",
 			activeflag=1,
+			price=1,
+			currencycode="USD",
 			skus=[
 				{
+					currencycode="USD",
 					skuid="",
+					price=1,
 					activeflag=1,
 					skuCode = 'productBundle-1',
 					productBundleGroups=[
@@ -85,96 +91,113 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var product = createPersistedTestEntity('product',productData);
 		
-		//set up child orderitems
-		var childOrderItem1Data = {
-			orderitemid:"",
-			sku={
-				skuid="",
-				skuCode="child-orderitem-1",
-				product={
-					productName="productchild-1",
-					productid="",
-					activeflag=1
-				},
-				activeflag=1
-			},
-			quantity=2,
-			productBundleGroup=product.getSkus()[1].getProductBundleGroups()[1]
+		var productData2 = {
+			productName="childSku1",
+			productid="",
+			activeflag=1,
+			price=1,
+			currencycode="USD",
+			skus=[
+				{
+					currencycode="USD",
+					skuid="",
+					price=1,
+					activeflag=1,
+					skuCode = 'childsku-1'
+				}
+			],
+			//product Bundle type from SlatwallProductType.xml
+			productType:{
+				productTypeid:"ad9bb5c8f60546e0adb428b7be17673e"
+			}
 		};
-		var childOrderItem1 = createTestEntity('orderitem',childOrderItem1Data);
+		var product2 = createPersistedTestEntity('product',productData2);
 		
-		var childOrderItem2Data = {
-			orderitemid:""	,
-			quantity=3,
-			sku={
-				skuid="",
-				skuCode="child-orderitem-2",
-				product={
-					productName="productchild-2",
-					productid="",
-					activeflag=1
-				},
-				activeflag=1
-			},
-			productBundleGroup=product.getSkus()[1].getProductBundleGroups()[2]
-		};
-		var childOrderItem2 = createTestEntity('orderItem',childOrderItem2Data);
-		
+
 		//set up order
 		var orderData = {
 			orderid="",
 			activeflag=1,
-			currencycode="USD"
-			
-		};
+			currencycode="USD",
+			orderFulfillments=[
+				{
+					orderfulfillmentid="",
+					fulfillmentMethod={
+						fulfillmentMethodid="444df2fb93d5fa960ba2966ba2017953"
+					}
+				}
+			]
+		};	
 		var order = createPersistedTestEntity('Order',orderData);
+		
+		//var orderFulfillmentData = variables.service.getOrderFulfillment();
 		
 		//add orderfulfillment
 		var processObjectData = {
-			quantity=1,
+			quantity=66,
 			price=1,
-			sku=product.getSkus()[1],
+			skuid=product.getSkus()[1].getSkuID(),
 			childOrderItems=[
-				childOrderItem1,
-				childOrderItem2
-			]
-//			orderFulfillment={
-//				orderfulfillmentid:""
-//			}
+				{
+					currencycode="USD",
+					sku={
+						skuid=product2.getSkus()[1].getSkuID()
+					},
+					
+					quantity = 3,
+
+					productBundleGroup={
+						productBundleGroupID = product.getSkus()[1].getProductBundleGroups()[1].getProductBundleGroupID() // bundleGroupID that skuID '111' above belongs to
+					
+					},
+					childOrderItems=[
+						{
+							currencycode="USD",
+							sku={
+								skuid=product2.getSkus()[1].getSkuID()
+							},
+							
+							quantity = 2,
+		
+							productBundleGroup={
+								productBundleGroupID = product.getSkus()[1].getProductBundleGroups()[1].getProductBundleGroupID() // bundleGroupID that skuID '111' above belongs to
+							
+							},
+							childOrderItems=[
+								{
+									currencycode="USD",
+									sku={
+										skuid=product2.getSkus()[1].getSkuID()
+									},
+									
+									quantity = 5,
+				
+									productBundleGroup={
+										productBundleGroupID = product.getSkus()[1].getProductBundleGroups()[1].getProductBundleGroupID() // bundleGroupID that skuID '111' above belongs to
+									
+									}
+								}
+							]
+						}
+					]
+					
+				}
+			],
+			orderfulfillmentid=order.getOrderFulfillments()[1].getOrderfulfillmentid()
 		};
+		
 		var processObject = order.getProcessObject('AddOrderItem',processObjectData);
 		
-		
-		//verify that the process object has two child order items
-		assertTrue(arraylen(processObject.getChildOrderItems()) == 2);
-		//verify that the process object is of productBundle
-		assertTrue(processObject.getSku().getBaseProductType() == 'productBundle');
-		
-		//run the process
 		var orderReturn = variables.service.processOrder_addOrderItem(order,processObject);
-		//verify there are no errors
-		assertFalse(processObject.hasErrors());
-		assertFalse(orderReturn.hasErrors());
-		
-		//verify that the orderitem sku is the same as the product bundle sku
-		assertTrue(orderReturn.getOrderItems()[1].getSku().getSkuid() == product.getSkus()[1].getSkuid());
-		assertEquals(arraylen(orderReturn.getOrderItems()),1);
-		//verify that we have childOrderItems
-		assertTrue(orderReturn.getOrderItems()[1].hasChildOrderItem());
-		assertEquals(arraylen(orderReturn.getOrderItems()[1].getChildOrderItems()),2);
-		
-	} 
+		request.debug(arraylen(orderReturn.getOrderItems()));
+		request.debug(orderReturn.getOrderItems()[1].getQuantity());
+		request.debug(arraylen(orderReturn.getOrderItems()[1].getChildOrderItems()));
+		request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getQuantity());
+		request.debug(orderReturn.getOrderID());
+		request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
+		request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
+	} */
 	
-	public void function test(){
-		//set up order
-		var orderItemData = {
-			orderItemid=""
-		};
-		var orderItem = createPersistedTestEntity('OrderItem',orderItemData);
-		
-		//var processObject = order.getProcessObject('AddOrderItem');
-		//request.debug(processObject); 
-	}
 	
 }
 

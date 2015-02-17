@@ -343,41 +343,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Setup child items for a bundle
 			//Need to also check child order items for child order items.
 			if( arguments.processObject.getSku().getBaseProductType() == 'productBundle' ) {
-				for(var childItemData in arguments.processObject.getChildOrderItems()) {
-					var childOrderItem = this.newOrderItem();
-					
-					// Populate the childOrderItem with the data
-					childOrderItem.populate( childItemData );
-					
-					if(!isNull(childOrderItem.getSku()) && !isNull(childOrderItem.getProductBundleGroup())) {
-						
-						// Set quantity if needed
-						if(isNull(childOrderItem.getQuantity())) {
-							childOrderItem.setQuantity( 1 );
-						}
-						// Set orderFulfillment if needed
-						if(isNull(childOrderItem.getOrderFulfillment())) {
-							childOrderItem.setOrderFulfillment( orderFulfillment );
-						}
-						// Set fulfillmentMethod if needed
-						if(isNull(childOrderItem.getOrderFulfillment().getFulfillmentMethod())) {
-							childOrderItem.getOrderFulfillment().setFulfillmentMethod( listFirst(childOrderItem.getSku().setting('skuEligibleFulfillmentMethods')) );
-						}
-						childOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
-						if(childOrderItem.getSku().getUserDefinedPriceFlag() && structKeyExists(childItemData, 'price') && isNumeric(childItemData.price)) {
-							childOrderItem.setPrice( childItemData.price );
-						} else {
-							// TODO: calculate price base on adjustment type rule of bundle group
-							childOrderItem.setPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
-						}
-						childOrderItem.setSkuPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
-						childOrderItem.setParentOrderItem( newOrderItem );
-						newOrderItem.addChildOrderItem(childOrderItem);
-						childOrderItem.setOrder( arguments.order );
-						childOrderItem = this.saveOrderItem( childOrderItem );
-						if(childOrderItem.hasErrors()) {
-							arguments.order.addError('addOrderItem', childOrderItem.getErrors());
-						}
+				if(arraylen(arguments.processObject.getChildOrderItems())){
+					for(var childOrderItemData in arguments.processObject.getChildOrderItems()) {
+						var childOrderItem = this.newOrderItem();
+						populateChildOrderItems(newOrderItem,childOrderItem,childOrderItemData,arguments.order,orderFulfillment);
 					}
 				}
 				
@@ -1642,6 +1611,48 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		return arguments.orderDelivery;
+	}
+	
+	private any function populateChildOrderItems(required parentOrderItem, required childOrderItem, required childOrderItemData, required order, required orderFulfillment){
+		// Populate the childOrderItem with the data
+		arguments.childOrderItem.populate( arguments.childOrderItemData );
+		if(!isNull(arguments.childOrderItem.getSku())
+			&& !isNull(arguments.childOrderItem.getProductBundleGroup())
+		) {
+			
+			// Set quantity if needed
+			if(isNull(arguments.childOrderItem.getQuantity())) {
+				arguments.childOrderItem.setQuantity( 1 );
+			}
+			// Set orderFulfillment if needed
+			if(isNull(arguments.childOrderItem.getOrderFulfillment())) {
+				arguments.childOrderItem.setOrderFulfillment( arguments.orderFulfillment );
+			}
+			// Set fulfillmentMethod if needed
+			if(isNull(arguments.childOrderItem.getOrderFulfillment().getFulfillmentMethod())) {
+				arguments.childOrderItem.getOrderFulfillment().setFulfillmentMethod( listFirst(arguments.childOrderItem.getSku().setting('skuEligibleFulfillmentMethods')) );
+			}
+			arguments.childOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
+			if(arguments.childOrderItem.getSku().getUserDefinedPriceFlag() && structKeyExists(arguments.childOrderItemData, 'price') && isNumeric(arguments.childOrderItemData.price)) {
+				arguments.childOrderItem.setPrice( arguments.childOrderItemData.price );
+			} else {
+				// TODO: calculate price base on adjustment type rule of bundle group
+				arguments.childOrderItem.setPrice( arguments.childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+			}
+			arguments.childOrderItem.setSkuPrice( arguments.childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+			arguments.childOrderItem.setParentOrderItem( arguments.parentOrderItem );
+			
+			if(structKeyExists(childOrderItemData,'childOrderItems')){
+				for(var childOfChildOrderItemData in arguments.childOrderItemData.childOrderItems) {
+					var childOfChildOrderItem = this.newOrderItem();
+					populateChildOrderItems(arguments.childOrderItem,childOfChildOrderItem,childOfChildOrderItemData,arguments.order,orderFulfillment);
+				}
+			}
+			if(arguments.childOrderItem.hasErrors()) {
+				arguments.order.addError('addOrderItem', arguments.childOrderItem.getErrors());
+			}
+			
+		}
 	}
 	
 	// Process: Order Delivery Item

@@ -107,9 +107,21 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="assignedOrderItemAttributeSets";
 	property name="fulfillmentMethodType";
 	
-	//variables.childOrderItems = [];
+	
+	public any function init(){
+		super.init();
+		variables.childOrderItems = [];
+	}
 	
 	// ======================== START: Defaults ============================
+	
+	public array function getChildOrderItems(){
+		if(structkeyExists(variables,'childOrderItems')){
+			return variables.childOrderItems;
+		}
+		
+		return variables.childOrderItems;
+	}
 	
 	public any function getRegistrantAccounts() {
 		if(structKeyExists(variables, "registrantAccounts")) {
