@@ -12,7 +12,6 @@ angular.module('slatwalladmin').directive("swvalidationminlength", function() {
         		ngModel.$validators.swvalidationminlength = 
             	function(modelValue, viewValue) {
 
-        			//console.log(viewValue + " type:" + typeof(viewValue));
         				var constraintValue = attributes.swvalidationminlength;
         				var userValue = viewValue || 0;
         				if (parseInt(viewValue.length) >= parseInt(constraintValue))

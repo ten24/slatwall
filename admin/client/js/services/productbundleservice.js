@@ -69,6 +69,15 @@ angular.module('slatwalladmin')
 						
 					}
 				}
+				productBundelGroupFilters.sort(function(a, b){
+					if(a.name < b.name){
+			            return -1;
+			        }else if(a.name > b.name){
+			            return 1;
+			        }else{
+			            return 0;   
+			        }
+				});
 				
 				$log.debug(productBundelGroupFilters);
 				return productBundelGroupFilters;

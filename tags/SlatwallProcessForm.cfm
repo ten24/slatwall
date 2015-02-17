@@ -50,7 +50,7 @@ Notes:
 <cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
 	<cfoutput>
-		<form method="post" action="?s=1" class="form-horizontal" enctype="multipart/form-data">
+		<form method="post" action="?s=1" class="" enctype="multipart/form-data">
 			<input type="hidden" name="returnAction" value="#request.context.returnAction#" />
 			<input type="hidden" name="slatAction" value="#request.context.slatAction#" />
 			<input type="hidden" name="process" value="1" />

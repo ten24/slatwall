@@ -19,9 +19,9 @@ angular.module('slatwalladmin')
 				$log.debug('workflow trigger init');
 				
 				scope.selectWorkflowTrigger = function(workflowTrigger){
-					console.log('selectWorkflowTrigger');
+					$log.debug('selectWorkflowTrigger');
 					scope.workflowTriggers.selectedTrigger = workflowTrigger;
-					console.log(scope.workflowTriggers.selectedTrigger);
+					$log.debug(scope.workflowTriggers.selectedTrigger);
 				};
 				
 				scope.deleteTrigger = function(workflowTrigger){

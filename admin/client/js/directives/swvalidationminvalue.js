@@ -8,8 +8,6 @@ angular.module('slatwalladmin').directive("swvalidationminvalue", function() {
         link: function(scope, element, attributes, ngModel) {
         		ngModel.$validators.swvalidationminvalue = 
             	function(modelValue, viewValue) {
-
-        			//console.log(viewValue + " type:" + typeof(viewValue));
         				var constraintValue = attributes.swvalidationminvalue;
         				var userValue = viewValue || 0;
         				if (parseInt(modelValue) >= parseInt(constraintValue))
