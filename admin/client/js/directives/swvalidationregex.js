@@ -9,7 +9,6 @@ angular.module('slatwalladmin').directive("swvalidationregex", function() {
         link: function(scope, element, attributes, ngModel) {
         		ngModel.$validators.swvalidationregex = 
             	function(modelValue) {
-        			console.log(modelValue);
         			//Returns true if this user value (model value) does match the pattern 
         			var pattern = attributes.swvalidationregex;
         			var regex = new RegExp(pattern);
