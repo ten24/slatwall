@@ -36,7 +36,7 @@
 	
 	<cfoutput>
 		<cfif attributes.edit>			
-			<form method="post" action="#formAction#" class="form-horizontal" enctype="#attributes.enctype#" id="#replaceNoCase(replaceNoCase(lcase(attributes.saveaction),':','','all'),'.','','all')#">
+			<form method="post" action="#formAction#" class="" enctype="#attributes.enctype#" id="#replaceNoCase(replaceNoCase(lcase(attributes.saveaction),':','','all'),'.','','all')#">
 			<input type="hidden" name="#request.context.fw.getAction()#" value="#attributes.saveaction#" />
 			<input type="hidden" name="#attributes.object.getPrimaryIDPropertyName()#" value="#attributes.object.getPrimaryIDValue()#" />
 			<cfif len(attributes.sRedirectURL)><input type="hidden" name="sRedirectURL" value="#attributes.sRedirectURL#" /></cfif>
