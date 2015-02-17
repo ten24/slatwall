@@ -121,8 +121,7 @@ component displayname="Shipping Method" entityname="SlatwallShippingMethod" tabl
 	// Fulfillment Method (many-to-one)
 	public void function setFulfillmentMethod(required any fulfillmentMethod) {
 		variables.fulfillmentMethod = arguments.fulfillmentMethod;
-		variables.isUniqueNumber = arrayLen(ORMExecuteQuery("select * from SwShippingMethod where ShippingMethodCode = '#getShippingMethodCode()#'"));
-		if((isNew() or !arguments.fulfillmentMethod.hasShippingMethod( this )) && variables.isUniqueNumber <= 1) {
+		if(isNew() or !arguments.fulfillmentMethod.hasShippingMethod( this )) {
 			arrayAppend(arguments.fulfillmentMethod.getShippingMethods(), this);
 		}
 	}
