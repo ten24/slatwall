@@ -52,16 +52,6 @@ Notes:
 <cfparam name="rc.order" type="any" />
 
 <cfoutput>
-	<!---
-	<hb:HibachiListingDisplay smartList="#rc.order.getPromotionCodesSmartList()#"
-							  recordDeleteAction="admin:entity.processOrder"
-							  recordDeleteQueryString="processContent=removePromotionCode&redirectAction=admin:entity.detailOrder&orderID=#rc.order.getOrderID()#">
-			
-		<hb:HibachiListingColumn propertyIdentifier="promotionCode" />
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="promotion.promotionName" />
-		
-	</hb:HibachiListingDisplay>
-	--->
 	<cfif arrayLen(rc.order.getPromotionCodes())>
 		<table class="table table-striped table-bordered table-condensed">
 			<tr>
@@ -71,7 +61,7 @@ Notes:
 			<cfloop array="#rc.order.getPromotionCodes()#" index="appliedPromotionCode">
 				<tr>
 					<td class="primary">#appliedPromotionCode.getPromotionCode()#</td>
-					<td><hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="removePromotionCode" queryString="promotionCodeID=#appliedPromotionCode.getPromotionCodeID()#" class="btn btn-default btn-xs" iconOnly="true" icon="trash"></td>
+					<td><hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="removePromotionCode" queryString="promotionCodeID=#appliedPromotionCode.getPromotionCodeID()#&redirectAction=admin:entity.detailOrder&orderID=#rc.order.getOrderID()#" class="btn btn-default btn-xs" iconOnly="true" icon="trash"></td>
 				</tr>
 			</cfloop>
 		</table>
