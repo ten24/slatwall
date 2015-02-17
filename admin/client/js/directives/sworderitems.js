@@ -201,13 +201,7 @@ angular.module('slatwalladmin')
 							productID: orderItemData.productID,
 							productName: orderItemData.productName,
 							productType: orderItemData.productType
-						};
-						
-						//---------------------->
-						//Figure out the total.
-						orderItem.total = 0;
-						orderItem.total = parseFloat(orderItemData.price) * parseFloat(orderItemData.quantity);
-						//---------------------->													
+						};												
 						//Order Sku---------->
 						var sku = $slatwall.newSku();
 						sku.$$init(orderItemData);
@@ -222,6 +216,26 @@ angular.module('slatwalladmin')
 						var shippingAddress = $slatwall.newAddress();
 						shippingAddress.$$init(orderItemData);
 						orderFulfillment.$$setShippingAddress(shippingAddress);
+						
+						//---------------------->
+						//Get the applied promotions and iterate through them getting the discount amount on each and adding them up.
+						$log.debug("->PROMOTIONS<-");
+						orderItem.discount = 0;
+						orderItem.total = 0;
+						var discountFromPromotionsPromise = orderItem.$$getAppliedPromotions();
+						discountFromPromotionsPromise.then(function(discount){
+							angular.forEach(discount.records, function(discountData, key){
+								$log.debug(discountData.discountAmount);
+								orderItem.discount += parseFloat(discountData.discountAmount);
+								console.log(orderItem.discount);
+								//---------------------->
+								//Figure out the total. (still need to substract the discount amount)
+								orderItem.total = ((parseFloat(orderItemData.price) * parseFloat(orderItemData.quantity)) - parseFloat(orderItem.discount));
+								//---------------------->	
+							});
+						});
+						
+						
 						
 						//------------------------------------------Custom Attributes
 						orderItem.customAttribute = {
