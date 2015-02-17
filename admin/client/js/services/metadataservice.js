@@ -77,17 +77,17 @@ angular.module('slatwalladmin')
 				var temp = [];
 				for (var i = 0; i <=propertiesList.data.length -1; i++){
 					if (propertiesList.data[i].propertyIdentifier.indexOf(".undefined") != -1){
-						console.log("removing: " + propertiesList.data[i].displayPropertyIdentifier);
+						$log.debug("removing: " + propertiesList.data[i].displayPropertyIdentifier);
 						propertiesList.data[i].displayPropertyIdentifier = "hide";
 						
 					}else{
 						temp.push(propertiesList.data[i]);
-						console.log(propertiesList.data[i]);
+						$log.debug(propertiesList.data[i]);
 					}
 				}
 				temp.sort;
 				propertiesList.data = temp;
-				console.log("----------------------PropertyList\n\n\n\n\n");
+				$log.debug("----------------------PropertyList\n\n\n\n\n");
 				propertiesList.data = _orderBy(propertiesList.data,['propertyIdentifier'],false);
 				console.dir(propertiesList.data);
 				

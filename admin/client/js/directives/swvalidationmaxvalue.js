@@ -9,7 +9,6 @@ angular.module('slatwalladmin').directive("swvalidationmaxvalue", function() {
         		ngModel.$validators.swvalidationmaxvalue = 
             	function(modelValue, viewValue) {
 
-        			//console.log(viewValue + " type:" + typeof(viewValue));
         				var constraintValue = attributes.swvalidationmaxvalue;
         				var userValue = viewValue || 0;
         				if (parseInt(viewValue) <= parseInt(constraintValue))

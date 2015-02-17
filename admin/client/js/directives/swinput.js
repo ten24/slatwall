@@ -17,34 +17,48 @@ angular.module('slatwalladmin').directive('swInput',
 		var spaceDelimitedList = '';
 		var name = propertyDisplay.property;
 		var form = propertyDisplay.form.$$swFormInfo;
+		$log.debug("Name is:" + name + " and form is: " + form);
 		var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
+		$log.debug("Validations: ");
+		console.dir(validations);
 		var validationsForContext = [];
 		
 		//get the form context and the form name.
 		var formContext = propertyDisplay.form.$$swFormInfo.context;
 		var formName = propertyDisplay.form.$$swFormInfo.name;
+		$log.debug("Form context is: ");
+		$log.debug(formContext);
+		$log.debug("Form Name: ");
+		$log.debug(formName);
 		//get the validations for the current element.
 		var propertyValidations = propertyDisplay.object.validations.properties[name];
+		/*
+		 * Investigating why number inputs are not working.
+		 * */
 		//check if the contexts match.
 		if (angular.isObject(propertyValidations)){
 			if (propertyValidations[0].contexts === formContext){
-				console.log("Matched");
+				$log.debug("Matched");
 				for (var prop in propertyValidations[0]){
 						if (prop != "contexts" && prop !== "conditions"){
+							
 							spaceDelimitedList += (" swvalidation" + prop.toLowerCase() + "='" + propertyValidations[0][prop] + "'");
+						
 						}	
 				}
 			}
-		console.log(spaceDelimitedList);
+		$log.debug(spaceDelimitedList);
 		}
 		//loop over validations that are required and create the space delimited list
-		console.log(validations);
+		$log.debug(validations);
 		
 		//get all validations related to the form context;
-		console.log(form);
-		console.log(propertyDisplay);
+		$log.debug(form);
+		$log.debug(propertyDisplay);
 		angular.forEach(validations,function(validation,key){
 			if(utilityService.listFind(validation.contexts.toLowerCase(),form.context.toLowerCase()) !== -1){
+				$log.debug("Validations for context");
+				$log.debug(validation);
 				validationsForContext.push(validation);
 			}
 		});
@@ -72,6 +86,20 @@ angular.module('slatwalladmin').directive('swInput',
 		    'id="swinput'+utilityService.createID(26)+'"'+
 			' />';
 		}
+		
+		/*else if(propertyDisplay.fieldType === "number"){
+			console.info("Found Number Input");
+			template = '<input type="number" class="form-control" '+
+			'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
+		    'ng-disabled="!propertyDisplay.editable" '+ 
+		    'ng-show="propertyDisplay.editing" '+
+		    'name="'+propertyDisplay.property+'" ' +
+		    validations+
+		    'id="swinput'+utilityService.createID(26)+'"'+
+			' />';
+			$log.debug(template);
+			$log.debug(validations);
+		}*/
 		return template; 
 	}
 	
@@ -85,8 +113,10 @@ angular.module('slatwalladmin').directive('swInput',
 		link : function(scope, element, attr, formController) {
 			//renders the template and compiles it
 			element.html(getTemplate(scope.propertyDisplay));
-
 	        $compile(element.contents())(scope);
+	        
+	        
+	        
 		}
 	}
 } ]);
