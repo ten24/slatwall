@@ -24,10 +24,10 @@
 								<td class="s-title">{{orderItem.data.sku.data.skuName}}<a href="" class="s-edit-link" ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle'">show detail</a></td>
 								<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
 								<td class="s-details"><span ng-hide="orderItem.customAttributes.val === 'none'">{{orderItem.customAttributes.val}}</span></td>
-								<td class="s-price">${{orderItem.data.skuPrice}}</td>
+								<td class="s-price">{{orderItem.data.skuPrice | currency}}</td>
 								<td class="s-qty">{{orderItem.data.quantity}}</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">${{orderItem.total}}</td>
+								<td class="s-discount">-{{ orderItem.discount | currency }}</td>
+								<td class="s-total">{{orderItem.total | currency}}</td>
 								<td rowspan="1000" class="s-fullfilment">
 									<ul>
 										<li class="s-header">Ship To: <a ng-href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link">edit</a></li>
