@@ -6,32 +6,39 @@
 'use strict';
 angular.module('slatwalladmin')
 .directive('swoiimage', 
-[
-	function(){
-		var getImageTemplate = function(orderItem, baseUrl){
+["$http",
+	function($http){
+		var getImageTemplate = function(path){
 			//console.log("Retrieve Order Item Image");
 			//console.log(orderItem);
-			var image = "";
-			var imageName = orderItem.data.sku.data.imageFile || "none";
-			if (angular.isString(imageName) && imageName !== " "){
-				//image = "<center><img style='width:90px' src='"+baseUrl+ "/" + imageName + "'/></center>";
-				image = "<img class='s-image' src='/assets/images/missingimage.jpg'/>";
-			}else{
-				//use the missing image file
-				image = "<img class='s-image' style='width:90px' src='/assets/images/missingimage.jpg'/>";
+			var image;
+			
+			if (path !== ""){
+				image = "<img src='"+path+"'/>";
 			}
+			
 			return image; 
 		}
 		return {
 			restrict: 'E',
-			transclude: true,
 			scope:{
 				orderItem:"=",
 			},
-			replace:true,
 			link: function(scope, element, attrs){
 				//Get the template.
-				element.html(getImageTemplate(scope.orderItem, "/custom/assets/images/product/default"));
+				//Call http to get the path from the image.
+				
+				/*
+				 * http should be in slatwall service. return a defered promise from the slatwallservice ($slatwall).
+				 */
+				
+				var skuID = scope.orderItem.data.sku.data.skuID;
+				$http.get("/index.cfm?slatAction=api:main.getResizedImageByProfileName&profileName=orderItem&skuIDs=" + skuID)
+			    .success(
+			    		function(response) {
+			    			console.log(response);
+			    			element.html(getImageTemplate(response.RESIZEDIMAGEPATHS[0]));
+			    			});
 			}
 		};
 	}

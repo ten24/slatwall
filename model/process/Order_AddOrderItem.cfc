@@ -106,8 +106,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Helper Properties
 	property name="assignedOrderItemAttributeSets";
 	property name="fulfillmentMethodType";
-	
-	
+		
 	public any function init(){
 		super.init();
 		variables.childOrderItems = [];

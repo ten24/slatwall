@@ -54,17 +54,68 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	public void function matchesOrderItem(){
+		
+		//Testing adding child order items.
+		var psku = getTestSku('TestSku');
+		var pstock = getTestStock();
+		var pstock2 = getTestStock();
+		var porderItem = request.slatwallScope.newEntity( 'orderItem' );
+		porderItem.setSku(psku);
+		porderItem.setOrderItemID("parentOrderItemasdfasdf99");
+		porderItem.setPrice(11);
+		porderItem.setStock(pstock);
+		porderItem.setProductBundleGroup("PBG1");
+		
 		var sku = getTestSku('TestSku');
 		var stock = getTestStock();
 		var stock2 = getTestStock();
 		var orderItem = request.slatwallScope.newEntity( 'orderItem' );
 		orderItem.setSku(sku);
+		orderItem.setOrderItemID("childOrderItemasdfasdf");
 		orderItem.setPrice(11);
 		orderItem.setStock(stock);
+		orderItem.setParentOrderItem(porderItem);
+		orderItem.setProductBundleGroup(pOrderItem);
+		
+		var sku2 = getTestSku('TestSku');
+		var stock3 = getTestStock();
+		var stock4 = getTestStock();
+		var orderItem2 = request.slatwallScope.newEntity( 'orderItem' );
+		
+		orderItem2.setSku(sku2);
+		orderItem2.setOrderItemID("childOrderItemasdfasdf2");
+		orderItem2.setPrice(11);
+		orderItem2.setStock(stock3);
+		orderItem2.setParentOrderItem(porderItem);
+		orderItem2.setProductBundleGroup("PBG1");
+		
+		//Has child orderItems
+		porderitem.addChildOrderItem(orderItem);
+		porderitem.addChildOrderItem(orderItem2);
+		assertEquals(porderitem.hasChildOrderItem(), true);
+		assertEquals(2, arrayLen(porderItem.getChildOrderItems()));
+		
+		var order = request.slatwallScope.newEntity( 'order' );
+		var processOrderItem = order.getProcessObject( 'AddOrderItem' );
+		processOrderItem.setSku(sku);
+		processOrderItem.setPrice(11);
+		processOrderItem.setStock(stock);
+		processOrderItem.setChildOrderItems(porderItem.getChildOrderItems());
+		var hasMatchingChildren = processOrderItem.getChildOrderItems();
+		assertEquals(porderitem.getChildOrderItems(), hasMatchingChildren);
+		
+		//different becuse of children as orderitem
+		var order = request.slatwallScope.newEntity( 'order' );
+		processOrderItem = order.getProcessObject( 'AddOrderItem' );
+		processOrderItem.setSku(sku);
+		processOrderItem.setPrice(11);
+		processOrderItem.setStock(stock);
+		var foundMatch = processOrderItem.matchesOrderItem(porderItem);
+		assertFalse(foundMatch);
 		
 		//same as orderitem
 		var order = request.slatwallScope.newEntity( 'order' );
-		var processOrderItem = order.getProcessObject( 'AddOrderItem' );
+		processOrderItem = order.getProcessObject( 'AddOrderItem' );
 		processOrderItem.setSku(sku);
 		processOrderItem.setPrice(11);
 		processOrderItem.setStock(stock);
