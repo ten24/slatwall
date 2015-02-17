@@ -107,7 +107,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="assignedOrderItemAttributeSets";
 	property name="fulfillmentMethodType";
 	
-	//variables.childOrderItems = [];
+	variables.childOrderItems = []; //This needs to be here in order to add a product bundle item to the administrator.
 	
 	// ======================== START: Defaults ============================
 	
@@ -505,14 +505,18 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return "";
 	}
 	
-	// funciton to compare two orderItems based on certain properties.
+	// function to compare two orderItems based on certain properties.
 	public boolean function matchesOrderItem(required any orderItem){
 		
+		
+		//This should be removed if we want product bundles to increase in quantity when the same one is added
+		//in the new administrator.
 		//check if the sku is a bundle
+		/*
 		if(this.getSku().getBaseProductType() == 'productBundle') {
 			return false;
 		}
-		
+		*/
 		//check if skus match
 		if(arguments.orderItem.getSku().getSkuID() != this.getSku().getSkuID()){
 			return false;

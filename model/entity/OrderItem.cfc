@@ -412,6 +412,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			arrayAppend(arguments.parentOrderItem.getChildOrderItems(), this);
 		}
 	}
+	
 	public void function removeParentOrderItem(any parentOrderItem) {
 		if(!structKeyExists(arguments, "parentOrderItem")) {
 			arguments.parentOrderItem = variables.parentOrderItem;
