@@ -1,11 +1,13 @@
 'use strict';
 angular.module('slatwalladmin').controller('slatwall-detail-controller', [
 	'$scope',
+	'$location',
 	'$log',
 	'$slatwall',
 	'partialsPath',
 function(
 	$scope,
+	$location,
 	$log,
 	$slatwall,
 	partialsPath
@@ -40,6 +42,12 @@ function(
 	};
 	$scope.getEntity();
 	
+	$scope.deleteEntity = function(){
+		var deletePromise = $scope.entity.$$delete();
+		deletePromise.then(function(){
+			$location.path( '/entity/'+propertyCasedEntityName+'/' );
+		});
+	};
 	
 	
 	$scope.allTabsOpen = false;
