@@ -59,7 +59,8 @@ Notes:
 </cfif>
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.shippingMethod#" edit="#rc.edit#">
+	<hb:HibachiEntityDetailForm object="#rc.shippingMethod#" edit="#rc.edit#"
+								saveActionQueryString="fulfillmentMethodID=#rc.fulfillmentMethod.getFulfillmentMethodID()#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.shippingMethod#" edit="#rc.edit#" 
 					backAction="admin:entity.detailfulfillmentMethod" 
 					backQueryString="fulfillmentMethodID=#rc.fulfillmentMethod.getFulfillmentMethodID()#"

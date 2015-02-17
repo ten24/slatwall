@@ -12,7 +12,6 @@ angular.module('slatwalladmin').directive("swvalidationgte", function() {
         		ngModel.$validators.swvalidationgte = 
             	function(modelValue, viewValue) {
         			var constraintValue = attributes.swvalidationgte || 0;
-        			console.log(viewValue);
         		 	if (parseInt(modelValue) >= parseInt(constraintValue))
         		 	{
         		 		return true; //Passes the validation

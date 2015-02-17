@@ -11,7 +11,6 @@ angular.module('slatwalladmin').directive("swvalidationlte", function() {
         		ngModel.$validators.swvalidationlte = 
             	function(modelValue, viewValue) {
 
-        			//console.log(viewValue + " type:" + typeof(viewValue));
         				var constraintValue = attributes.swvalidationlte;
         				var userValue = viewValue || 0;
         				if (parseInt(viewValue) <= parseInt(constraintValue))

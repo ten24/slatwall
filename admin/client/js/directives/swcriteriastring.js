@@ -104,7 +104,7 @@ angular.module('slatwalladmin')
 		    			};
 		    			
 		    			scope.$watch('filterItem.value',function(criteriaValue){
-		    				console.log(criteriaValue);
+		    				$log.debug(criteriaValue);
 		    				
 				    		if(angular.isDefined(scope.filterItem) && angular.isDefined(scope.filterItem.value)){
 				    			scope.filterItem.value = scope.filterItem.value.replace('%','');

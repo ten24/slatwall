@@ -115,9 +115,9 @@ angular.module('slatwalladmin').directive('swValidate',
 													if(validationPropertiesArray[i] === "minValue"){
 														
 														var validationMinValue = validationObject[key][inner].minValue;
-														console.log(validationMinValue);
+														$log.debug(validationMinValue);
 														var result = validate_MinValue(elementValue, validationMinValue);
-														console.log("e>v" + result + " :" + elementValue, ":" + validationMinValue )
+														$log.debug("e>v" + result + " :" + elementValue, ":" + validationMinValue )
 														if (result != true) {
 															errorMessages
 																	.push("Minimum value is: "
@@ -136,7 +136,7 @@ angular.module('slatwalladmin').directive('swValidate',
 													if(validationPropertiesArray[i] === "maxValue"){
 														var validationMaxValue = validationObject[key][inner].maxValue;
 														var result = validate_MaxValue(elementValue, validationMaxValue);
-														console.log("Max Value result is: " + result);
+														$log.debug("Max Value result is: " + result);
 														if (result != true) {
 															errorMessages
 																	.push("Maximum value is: "
@@ -150,7 +150,7 @@ angular.module('slatwalladmin').directive('swValidate',
 													if(validationPropertiesArray[i] === "minLength"){
 														var validationMinLength = validationObject[key][inner].minLength;
 														var result = validate_MinLength(elementValue, validationMinLength);
-														console.log("Min Length result is: " + result);
+														$log.debug("Min Length result is: " + result);
 														if (result != true) {
 															errorMessages
 																	.push("Minimum length must be: "
@@ -164,7 +164,7 @@ angular.module('slatwalladmin').directive('swValidate',
 													if(validationPropertiesArray[i] === "maxLength"){
 														var validationMaxLength = validationObject[key][inner].maxLength;
 														var result = validate_MaxLength(elementValue, validationMaxLength);
-														console.log("Max Length result is: " + result);
+														$log.debug("Max Length result is: " + result);
 														if (result != true) {
 															errorMessages
 																	.push("Maximum length is: "
@@ -392,8 +392,8 @@ angular.module('slatwalladmin').directive('swValidate',
 				var currentValue = elem.val(); //Get the current element value to check validations against.
 				var val = validate(name, myCurrentContext, currentValue) || {};
 				//Check if field is required.				
-				console.log(scope);
-				console.log(val);
+				$log.debug(scope);
+				$log.debug(val);
 				ngModel.$setValidity(val.errorkey, !val.fail);
 				return true;
 				

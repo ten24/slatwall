@@ -55,7 +55,7 @@ angular.module('slatwalladmin')
 				
 					scope.selectedCriteriaChanged = function(selectedCriteria){
 						$log.debug(selectedCriteria);
-						console.log('changed');
+						$log.debug('changed');
 						//update breadcrumbs as array of filterpropertylist keys
 						$log.debug(scope.selectedFilterProperty);
 						
@@ -65,9 +65,9 @@ angular.module('slatwalladmin')
 								propertyIdentifier:scope.selectedFilterProperty.propertyIdentifier,
 								rbKey:$slatwall.getRBKey('entity.'+scope.selectedFilterProperty.cfc.replace('_',''))
 						};
-						console.log('breadcrumb');
-						console.log(breadCrumb);
-						console.log(scope.filterItem.breadCrumbs);
+						$log.debug('breadcrumb');
+						$log.debug(breadCrumb);
+						$log.debug(scope.filterItem.breadCrumbs);
 						scope.filterItem.breadCrumbs.push(breadCrumb);
 						
 						//populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
