@@ -9,7 +9,6 @@ angular.module('slatwalladmin').directive("swvalidationnumeric", function() {
         link: function(scope, element, attributes, ngModel) {
         		ngModel.$validators.swvalidationnumeric = 
             	function(modelValue, viewValue) {
-        			//console.log(viewValue);
         			//Returns true if this is not a number.
             		if (!isNaN(viewValue)){
             			return true;

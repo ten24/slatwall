@@ -18,8 +18,8 @@ function(
 	var setupMetaData = function(){
 		$scope[$scope.entityName.toLowerCase()] = $scope.entity;
 		$scope.detailTabs = $scope.entity.metaData.$$getDetailTabs();
-		console.log('detailtabs');
-		console.log($scope.detailTabs);
+		$log.debug('detailtabs');
+		$log.debug($scope.detailTabs);
 	}
 	
 	var propertyCasedEntityName = $scope.entityName.charAt(0).toUpperCase() + $scope.entityName.slice(1);
