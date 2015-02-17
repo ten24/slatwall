@@ -7,7 +7,8 @@ angular.module('slatwalladmin')
 .directive('swoishippinglabelstamp', 
 [
 'partialsPath',
-	function(partialsPath){
+'$log',
+	function(partialsPath, $log){
 		return {
 			restrict: 'E',
 			scope:{
@@ -16,7 +17,9 @@ angular.module('slatwalladmin')
 			templateUrl:partialsPath+"orderfulfillment-shippinglabel.html",
 			link: function(scope, element, attrs){
 				//Get the template.
-				
+				$log.debug("\n\n<---ORDER FULFILLMENT STAMP--->\n\n");
+				$log.debug(scope.orderFulfillment);
+				$log.debug(scope.orderFulfillment.data.fulfillmentMethodType);
 			}
 		};
 	}
