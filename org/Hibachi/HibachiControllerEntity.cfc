@@ -282,7 +282,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.delete_success" ), "${itemEntityName}", rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#'), "all" ), "success");
 			
 			// Render or Redirect a Success
-			renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails.listAction, maintainQueryString=true, rc=arguments.rc, itemEntityName=arguments.rc.entityActionDetails.itemEntityName);
+			renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails.listAction, maintainQueryString=true, rc=arguments.rc, keysToRemoveOnRedirect=entityPrimaryID);
 			
 		// FAILURE
 		} else {
@@ -630,7 +630,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		return hasValue;
 	}
 	
-	private void function renderOrRedirectSuccess( required string defaultAction, required boolean maintainQueryString, required struct rc, string itemEntityName ) {
+	private void function renderOrRedirectSuccess( required string defaultAction, required boolean maintainQueryString, required struct rc, string keysToRemoveOnRedirect ) {
 		param name="arguments.rc.sRedirectQS" default="";
 		
 		// First look for a sRedirectURL in the rc, and do a redirectExact on that
@@ -662,8 +662,8 @@ component output="false" accessors="true" extends="HibachiController" {
 			this.invokeMethod(arguments.defaultAction, {rc=arguments.rc});
 			
 		} else {
-			if(structKeyExists(arguments, 'itemEntityName')){
-				getFW().redirect( action=arguments.defaultAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString, arguments.itemEntityName) );
+			if(structKeyExists(arguments, 'keysToRemoveOnRedirect')){
+				getFW().redirect( action=arguments.defaultAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString, arguments.keysToRemoveOnRedirect) );
 			} else {
 				getFW().redirect( action=arguments.defaultAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString) );
 			}
@@ -702,11 +702,11 @@ component output="false" accessors="true" extends="HibachiController" {
 		}
 	}
 	
-	private string function buildRedirectQueryString( required string queryString, required boolean maintainQueryString, string itemEntityName ) {
+	private string function buildRedirectQueryString( required string queryString, required boolean maintainQueryString, string keysToRemoveOnRedirect ) {
 		if(arguments.maintainQueryString) {
 			for(var key in url) {
-				if(isDefined('arguments.itemEntityName')){
-					if(key != getFW().getAction() && !listFindNoCase("redirectAction,sRedirectAction,fRedirectAction,redirectURL,sRedirectURL,fRedirectURL,#arguments.itemEntityName#ID", key)) {
+				if(isDefined('arguments.keysToRemoveOnRedirect')){
+					if(key != getFW().getAction() && !listFindNoCase("redirectAction,sRedirectAction,fRedirectAction,redirectURL,sRedirectURL,fRedirectURL,#arguments.keysToRemoveOnRedirect#", key)) {
 						arguments.queryString = listAppend(arguments.queryString, "#key#=#url[key]#", "&");
 					}
 				} else {
