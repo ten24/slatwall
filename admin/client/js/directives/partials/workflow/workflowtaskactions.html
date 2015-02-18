@@ -7,8 +7,17 @@
 			</ul>
 			<ul class="list-unstyled list-inline s-middle">
 				<li class="j-tool-tip-item s-bundle-details">Type: <span ng-bind="workflowTaskAction.data.actionType"></span></li>
-				<li class="j-tool-tip-item s-bundle-details">Object: <span>Order</span></li>
-				<li class="j-tool-tip-item s-bundle-details">Detail: <span>Order Feedback Template</span></li>
+				<li class="j-tool-tip-item s-bundle-details">
+					Object: 
+					<span ng-bind="workflowTaskAction.data.workflowTask.data.workflow.data.workflowObject"></span>
+				</li>
+				<li class="j-tool-tip-item s-bundle-details">
+					Detail: 
+					<ng-switch on="workflowTaskAction.data.actionType" ng-if="workflowTaskAction.data.actionType">
+						<span ng-switch-when="print" ng-bind="workflowTaskAction.data.printTemplate.data.printTemplateName"></span>
+						<span ng-switch-when="email" ng-bind="workflowTaskAction.data.emailTemplate.data.emailTemplateName"></span>
+					</ng-switch>
+				</li>
 			</ul>
 			<ul class="list-unstyled list-inline s-last">
 				<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" ng-click="selectWorkflowTaskAction(workflowTaskActions[$index])">
@@ -49,7 +58,6 @@
 		ng-if="workflowTaskActions.selectedTaskAction"
 >
 	<sw-form 	name="selectedTaskAction"
-				data-parent-form="selectedTask"
 				data-object="workflowTaskActions.selectedTaskAction"
 				data-context="save"
 	>

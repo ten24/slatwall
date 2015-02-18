@@ -142,16 +142,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var newEntity = getService("hibachiService").getServiceByEntityName(arguments.collectionObject).invokeMethod("new#arguments.collectionObject#");
 			var defaultProperties = newEntity.getDefaultCollectionProperties();
 			
-			var columnsArray = []; 
+			var columnsArray = [];
+			//check to see if we are supposed to add default columns 
 			if(addDefaultColumns){
+				//loop through all defaultProperties
 				for(defaultProperty in defaultProperties){
 					var columnStruct = {};
 					columnStruct['propertyIdentifier'] = '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject)) & '.' & defaultProperty.name;
 					columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
-					
+					//if property is a primary id, hide it and make it so it can't be deleted
 					if(structKeyExists(defaultProperty,"fieldtype") && defaultProperty.fieldtype == 'id'){
 						columnStruct['isDeletable'] = false;
 						columnStruct['isVisible'] = false;
+					//if property is a config of json hide it
 					}else if(structKeyExists(defaultProperty,"hb_formFieldType") && defaultProperty.hb_formFieldType == 'json'){
 						columnStruct['isDeletable'] = true;
 						columnStruct['isVisible'] = false;
@@ -558,10 +561,41 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return 'AND';
 	}
 	
-	private string function getOrderByHQL(required array orderBy){
+	private string function getOrderByHQL(array orderBy=[]){
 		var orderByHQL = ' ORDER BY ';
 				
 		var orderByCount = arraylen(arguments.orderBy);
+		//if order by count is 0, then use the default order by
+		if(orderByCount == 0){
+			var baseEntityObject = getService('hibachiService').getEntityObject( getCollectionObject() );
+			//is default order by based on hb_defaultOrderProperty
+			if(structKeyExists(baseEntityObject.getThisMetaData(), "hb_defaultOrderProperty")) {
+				var orderByStruct={
+					propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getThisMetaData()["hb_defaultOrderProperty"],
+					direction="asc"
+				};	
+				arrayAppend(arguments.orderby,orderByStruct);
+				orderByCount++;
+			//if not then does it have a createdDateTime
+			} else if ( baseEntityObject.hasProperty( "createdDateTime" ) ) {
+				var orderByStruct={
+					propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & "createdDateTime",
+					direction="desc"
+				};	
+				arrayAppend(arguments.orderby,orderByStruct);
+				orderByCount++;
+			//if still not then order by primary id
+			} else {
+				var orderByStruct={
+					propertyIdentifier='_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(getCollectionObject())) & '.' & baseEntityObject.getPrimaryIDPropertyName(),
+					direction="asc"
+				};	
+				arrayAppend(arguments.orderby,orderByStruct);
+				orderByCount++;
+			}
+			
+		}
+		
 		for(var i = 1; i <= orderByCount; i++){
 			var ordering = arguments.orderBy[i];
 			var direction = '';
@@ -589,7 +623,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}
 		catch(any e){
-			variables.pageRecords = [{'failedCollection':'failedCollection'}];
+			variables.pageRecords = [{'failedCollection'='failedCollection'}];
 		}
 		
 		return variables.pageRecords;
@@ -607,7 +641,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}
 		}
 		catch(any e){
-			variables.records = [{'failedCollection':'failedCollection'}];
+			variables.records = [{'failedCollection'='failedCollection'}];
 		}
 		
 		return variables.records;
@@ -761,8 +795,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			isDistinctValue = "DISTINCT";
 		}
 		
-		
-		
 		var HQL = 'SELECT #isDistinctValue#';
 		var columnCount = arraylen(arguments.columns);
 		HQL &= ' new Map(';
@@ -853,11 +885,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				selectHQL &= getSelectionsHQL(collectionConfig.columns,isDistinct);
 				if(!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())){
 					orderByHQL &= getOrderByHQL(getPostOrderBys());
-				}else{
+				}else if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
 					//build Order By
-					if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
-						orderByHQL &= getOrderByHQL(collectionConfig.orderBy);
-					}
+					orderByHQL &= getOrderByHQL(collectionConfig.orderBy);
+				}else{
+					orderByHQL &= getOrderByHQL();
 				}
 			}
 			
@@ -897,6 +929,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public void function addPostFiltersFromKeywords(required any collectionConfig, numeric hasFilterHQL){
 		var keywordCount = 0;
+		
 		if(structKeyExists(arguments.collectionConfig,'columns') && arrayLen(arguments.collectionConfig.columns)){
 			
 			for(column in arguments.collectionConfig.columns){
@@ -968,9 +1001,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							addPostFilterGroup(postFilterGroup);
 							keywordCount++;
 						}
+						keywordCount++;
 					}
+					
 				}
-				keywordCount++;
+				
 			}
 		}else{
 			//if we don't have columns then we need default properties searching
@@ -1035,8 +1070,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						addPostFilterGroup(postFilterGroup);
 						keywordCount++;
 					}
+					keywordCount++;
 				}
-				keywordCount++;
+				
 			}
 		}
 	}

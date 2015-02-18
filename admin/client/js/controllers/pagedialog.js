@@ -23,6 +23,7 @@ angular.module('slatwalladmin').controller('pageDialog', [
 			$location.hash('/#topOfPageDialog');
 			$anchorScroll();
 		};
+		$scope.pageDialogStyle = {"z-index":3000};
 	
 	}
 ]);
