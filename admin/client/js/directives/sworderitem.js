@@ -212,7 +212,7 @@ angular.module('slatwalladmin').directive('swOrderItem',
 					var Partial = partialsPath+"childorderitems.html";
 					var templateLoader = $http.get(Partial,{cache:$templateCache});
 					var promise = templateLoader.success(function(html){
-						element.append($compile(html)(scope));
+						element.append($compile(html)());
 						
 					}).then(function(response){
 						//scope.childOrderItems = newValue

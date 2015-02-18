@@ -1,11 +1,11 @@
-<tr class="s-product l-2" data-id="B-625TX78" ng-repeat="orderItem in childOrderItems">
-	<td class="s-title">{{orderItem.data.orderData}}1<a href="" class="s-edit-link" ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle'" ng-click="orderItem.$$getChildOrderItems()">show detail</a></td>
-	<td class="s-title">{{orderItem.data.sku.data.skuName}}1<a href="" class="s-edit-link" ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle'" ng-click="orderItem.$$getChildOrderItems()">show detail</a></td>
-	<td class="s-sku">{{orderItem.data.sku.data.skuCode}}1</td>
+<tr class="s-product l-2" data-id="B-625TX78" ng-repeat="orderItem in orderItems" sw-child-order-items data-order-item="orderItem" data-order-id="orderId">
+	<td class="s-title">{{orderItem.data.orderData}}<a href="" class="s-edit-link" ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle'" ng-click="orderItem.$$getChildOrderItems()">show detail</a></td>
+	<td class="s-title">{{orderItem.data.sku.data.skuName}}</td>
+	<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
 	<!-- <td class="s-details"><span ng-hide="orderItem.customAttributes.val === 'none'">{{orderItem.customAttributes.val}}1</span></td> -->
-	<td class="s-price">{{orderItem.data.skuPrice | currency}}1</td>
-	<td class="s-qty">{{orderItem.data.quantity}}1</td>
-	<td class="s-discount">-{{ orderItem.discount | currency }}1</td>
-	<td class="s-total">{{orderItem.total | currency}}1</td>
+	<td class="s-price">{{orderItem.data.skuPrice | currency}}</td>
+	<td class="s-qty">{{orderItem.data.quantity}}</td>
+	<td class="s-discount">-{{ orderItem.discount | currency }}</td>
+	<td class="s-total">{{orderItem.total | currency}}</td>
 </tr>
 
