@@ -1,0 +1,26 @@
+<tr class="s-bundle-product l-1" >
+	<td rowspan="1000" class='s-image' style="width:90px;height:90px;"><swresizedimage profilename="orderItem" data-order-item="orderItem"></swresizedimage></td>
+	<td ng-bind="orderItem.data.orderItemID"></td>
+	<td class="s-title">{{orderItem.data.sku.data.skuName}}<a href="" class="s-edit-link" ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle'" ng-click="getChildOrderItems(orderItem)">show detail</a></td>
+	<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
+	<!-- <td class="s-details"><span ng-hide="orderItem.customAttributes.val === 'none'">{{orderItem.customAttributes.val}}</span></td> -->
+	<td class="s-price">{{orderItem.data.skuPrice | currency}}</td>
+	<td class="s-qty">{{orderItem.data.quantity}}</td>
+	<td class="s-discount">-{{ orderItem.discount | currency }}</td>
+	<td class="s-total">{{orderItem.total | currency}}</td>
+	<td rowspan="1000" class="s-fullfilment">
+		<ul>
+			<li>
+				<swoishippinglabelstamp 
+					data-order-fulfillment="orderItem.data.orderFulfillment">
+				</swoishippinglabelstamp>
+			</li>
+		</ul>
+	</td>
+	<td rowspan="1000" class="s-actions">
+		<ul>
+			<li class="s-edit-btn"><a ng-href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}"><button type="button"><i class="fa fa-eye"></i></button></a></li>
+			<li class="s-remove-btn"><button type="button"><a ng-href="{{'?slatAction=entity.deleteorderitem&redirectAction=admin:entity.detailorder&amp;orderID='+orderId+'&orderitemid='+orderItem.data.orderItemID}}"<i class="fa fa-trash"></i></a></button></li>
+		</ul>
+	</td>			
+</tr>

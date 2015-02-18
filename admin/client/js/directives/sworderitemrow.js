@@ -19,7 +19,7 @@ angular.module('slatwalladmin')
 			transclude:false,
 			scope:{
 				orderItem:"=",
-				orderId:"="
+				orderId:"@"
 			},
 			replace:true,
 			link: function(scope, element, attrs){

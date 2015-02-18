@@ -1,13 +1,13 @@
-<!--/////////////////// START BUNDLE LISTING EXAMPLE///////////////////-->			
 <content class="s-body-box">
-	<div class="table-responsive">
+	<div class="table-responsive"  sw-loading="orderItems">
 		<table class="table table-bordered s-order-item-table">
 			<thead>
 				<tr>
 					<th>Image</th>
+					<th>orderItemid</th>
 					<th>Title</th>
 					<th>Sku</th>
-					<th>{{customAttributes.key}}</th>
+					<!-- <th>{{customAttributes.key}}</th> -->
 					<th>Price</th>
 					<th>Qty</th>
 					<th>Discount</th>
@@ -16,42 +16,11 @@
 					<th></th>
 				</tr>
 			</thead>
-			<tbody ng-repeat="orderItem in orderItems" sw-child-order-items data-order-item="orderItem">
+			<tbody ng-repeat="orderItem in orderItems" sw-order-item data-order-item="orderItem" data-order-id="orderId">
 				<!-- Begin Merchandise Row -->
 				
-				<tr class="s-bundle-product l-1" data-id="B-625TX78" >
-					<td rowspan="1000" class='s-image' style="width:90px;height:90px;"><swresizedimage profilename="orderItem" data-order-item="orderItem"></swresizedimage></td>
-					<td class="s-title">{{orderItem.data.sku.data.skuName}}<a href="" class="s-edit-link" ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle'" ng-click="orderItem.$$getChildOrderItems()">show detail</a></td>
-					<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
-					<td class="s-details"><span ng-hide="orderItem.customAttributes.val === 'none'">{{orderItem.customAttributes.val}}</span></td>
-					<td class="s-price">{{orderItem.data.skuPrice | currency}}</td>
-					<td class="s-qty">{{orderItem.data.quantity}}</td>
-					<td class="s-discount">-{{ orderItem.discount | currency }}</td>
-					<td class="s-total">{{orderItem.total | currency}}</td>
-					<td rowspan="1000" class="s-fullfilment">
-						<ul>
-							<li class="s-header">Ship To: <a ng-href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link">edit</a></li>
-							<li>
-								<swoishippinglabelstamp 
-									data-order-fulfillment="orderItem.data.orderFulfillment">
-								</swoishippinglabelstamp>
-							</li>
-						</ul>
-					</td>
-					<td rowspan="1000" class="s-actions">
-						<ul>
-							<li class="s-edit-btn"><a ng-href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}"><button type="button"><i class="fa fa-eye"></i></button></a></li>
-							<li class="s-remove-btn"><button type="button"><a ng-href="{{'?slatAction=entity.deleteorderitem&redirectAction=admin:entity.detailorder&amp;orderID='+orderId+'&orderitemid='+orderItem.data.orderItemID}}"<i class="fa fa-trash"></i></a></button></li>
-						</ul>
-					</td>
-				</tr>
-							<!-- End -->
-							<!-- Need to handle when the item is a product bundle.-->
-				
 			</tbody>
-
 		</table>
 	</div>
 </content>					
 					
-<!--/////////////////// END BUNDLE LISTING EXAMPLE///////////////////-->
