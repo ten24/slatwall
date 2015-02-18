@@ -630,7 +630,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		return hasValue;
 	}
 	
-	private void function renderOrRedirectSuccess( required string defaultAction, required boolean maintainQueryString, required struct rc, string keysToRemoveOnRedirect ) {
+	private void function renderOrRedirectSuccess( required string defaultAction, required boolean maintainQueryString, required struct rc, string keysToRemoveOnRedirect="" ) {
 		param name="arguments.rc.sRedirectQS" default="";
 		
 		// First look for a sRedirectURL in the rc, and do a redirectExact on that
@@ -662,12 +662,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			this.invokeMethod(arguments.defaultAction, {rc=arguments.rc});
 			
 		} else {
-			if(structKeyExists(arguments, 'keysToRemoveOnRedirect')){
-				getFW().redirect( action=arguments.defaultAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString, arguments.keysToRemoveOnRedirect) );
-			} else {
-				getFW().redirect( action=arguments.defaultAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString) );
-			}
-			
+			getFW().redirect( action=arguments.defaultAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString, arguments.keysToRemoveOnRedirect) );
 		}
 	}
 	
@@ -702,17 +697,11 @@ component output="false" accessors="true" extends="HibachiController" {
 		}
 	}
 	
-	private string function buildRedirectQueryString( required string queryString, required boolean maintainQueryString, string keysToRemoveOnRedirect ) {
+	private string function buildRedirectQueryString( required string queryString, required boolean maintainQueryString, string keysToRemoveOnRedirect="" ) {
 		if(arguments.maintainQueryString) {
 			for(var key in url) {
-				if(isDefined('arguments.keysToRemoveOnRedirect')){
-					if(key != getFW().getAction() && !listFindNoCase("redirectAction,sRedirectAction,fRedirectAction,redirectURL,sRedirectURL,fRedirectURL,#arguments.keysToRemoveOnRedirect#", key)) {
-						arguments.queryString = listAppend(arguments.queryString, "#key#=#url[key]#", "&");
-					}
-				} else {
-					if(key != getFW().getAction() && !listFindNoCase("redirectAction,sRedirectAction,fRedirectAction,redirectURL,sRedirectURL,fRedirectURL", key)) {
-						arguments.queryString = listAppend(arguments.queryString, "#key#=#url[key]#", "&");
-					}
+				if(key != getFW().getAction() && !listFindNoCase("redirectAction,sRedirectAction,fRedirectAction,redirectURL,sRedirectURL,fRedirectURL,#arguments.keysToRemoveOnRedirect#", key)) {
+					arguments.queryString = listAppend(arguments.queryString, "#key#=#url[key]#", "&");
 				}
 			}
 		}
