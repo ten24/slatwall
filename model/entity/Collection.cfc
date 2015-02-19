@@ -938,9 +938,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					//use keywords to create some post filters
 					
 					if(structKeyExists(column,'ormtype') 
-					&& column.ormtype neq 'boolean' 
 					&& column.ormtype neq 'timestamp'
-					
 					){
 						for(keyword in getKeywordArray()){
 							if(column.ormtype eq 'big_decimal'
@@ -951,6 +949,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 											propertyIdentifier = 'STR(#column.propertyIdentifier#)',
 											comparisonOperator = "like",
 											value="%#keyword#%"
+										}
+									]
+								};
+							} else if(column.ormtype eq 'boolean'){
+								
+								if(compareNoCase(keyword, "true") == 0 || compareNoCase(keyword, "yes") == 0){
+									var booleanValue = true;	
+								} else {
+									var booleanValue = false;
+								}
+								var postFilterGroup = {
+									filterGroup = [
+										{
+											propertyIdentifier = '#column.propertyIdentifier#',
+											comparisonOperator = "=",
+											value="#booleanValue#"
 										}
 									]
 								};
@@ -1012,7 +1026,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var defaultPropertiesWithAttributes = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
 			for(propertyItem in defaultPropertiesWithAttributes){
 				if(structKeyExists(propertyItem,'ormtype') 
-					&& propertyItem.ormtype neq 'boolean' 
 					&& propertyItem.ormtype neq 'timestamp' 
 					&& !structKeyExists(propertyItem,'attributeID') ){
 					for(keyword in getKeywordArray()){
@@ -1027,6 +1040,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									}
 								]
 							};
+						} else if(column.ormtype eq 'boolean'){
+								
+								if(compareNoCase(keyword, "true") == 0 || compareNoCase(keyword, "yes") == 0){
+									var booleanValue = true;	
+								} else {
+									var booleanValue = false;
+								}
+								var postFilterGroup = {
+									filterGroup = [
+										{
+											propertyIdentifier = '#column.propertyIdentifier#',
+											comparisonOperator = "=",
+											value="#booleanValue#"
+										}
+									]
+								};
 						}else{
 							var postFilterGroup = {
 								filterGroup = [
