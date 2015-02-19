@@ -336,25 +336,21 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	// ============ START: Non-Persistent Property Methods =================
 	
 	public any function getAddOrderItemSkuOptionsSmartList() {
-		if(!structKeyExists(variables, "addOrderItemSkuOptionsSmartList")) {
-			variables.addOrderItemSkuOptionsSmartList = getService("skuService").getSkuSmartList();
-			variables.addOrderItemSkuOptionsSmartList.addFilter('activeFlag', 1);
-			variables.addOrderItemSkuOptionsSmartList.addFilter('product.activeFlag', 1);
-			variables.addOrderItemSkuOptionsSmartList.joinRelatedProperty('SlatwallProduct', 'productType', 'inner');
-			variables.addOrderItemSkuOptionsSmartList.joinRelatedProperty('SlatwallProduct', 'brand', 'left');
-		}
-		return variables.addOrderItemSkuOptionsSmartList;
+		var optionsSmartList = getService("skuService").getSkuSmartList();
+		optionsSmartList.addFilter('activeFlag', 1);
+		optionsSmartList.addFilter('product.activeFlag', 1);
+		optionsSmartList.joinRelatedProperty('SlatwallProduct', 'productType', 'inner');
+		optionsSmartList.joinRelatedProperty('SlatwallProduct', 'brand', 'left');
+		return optionsSmartList;
 	}
 	
 	public any function getAddOrderItemStockOptionsSmartList() {
-		if(!structKeyExists(variables, "addOrderItemStockOptionsSmartList")) {
-			variables.addOrderItemStockOptionsSmartList = getService("stockService").getStockSmartList();
-			variables.addOrderItemStockOptionsSmartList.addFilter('sku.activeFlag', 1);
-			variables.addOrderItemStockOptionsSmartList.addFilter('sku.product.activeFlag', 1);
-			variables.addOrderItemStockOptionsSmartList.joinRelatedProperty('SlatwallProduct', 'productType', 'inner');
-			variables.addOrderItemStockOptionsSmartList.joinRelatedProperty('SlatwallProduct', 'brand', 'left');
-		}
-		return variables.addOrderItemStockOptionsSmartList;
+		var optionsSmartList = getService("stockService").getStockSmartList();
+		optionsSmartList.addFilter('sku.activeFlag', 1);
+		optionsSmartList.addFilter('sku.product.activeFlag', 1);
+		optionsSmartList.joinRelatedProperty('SlatwallProduct', 'productType', 'inner');
+		optionsSmartList.joinRelatedProperty('SlatwallProduct', 'brand', 'left');
+		return optionsSmartList;
 	}
 	
 	public numeric function getDeliveredItemsAmountTotal() {

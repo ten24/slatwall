@@ -39,8 +39,8 @@ angular.module('slatwalladmin')
 					productBundleGroupsController.removeProductBundleGroup(scope.index);
 					scope.productBundleGroup.$$delete();
 				};
-				console.log('skuCollection22');
-				console.log(scope.productBundleGroup.data.skuCollectionConfig);
+				$log.debug('skuCollection22');
+				$log.debug(scope.productBundleGroup.data.skuCollectionConfig);
 
 //				var collectionConfig = {};
 //				if(angular.isString(scope.productBundleGroup.data.skuCollectionConfig)){
@@ -129,6 +129,7 @@ angular.module('slatwalladmin')
 					timeoutPromise = $timeout(function(){
 						if(filterTerm.value === 'All'){
 							scope.productBundleGroupFilters.value = [];
+							
 							_loadingCount = scope.searchOptions.options.length - 1;
 							for(var i in scope.searchOptions.options){
 								if(i > 0){
@@ -146,7 +147,19 @@ angular.module('slatwalladmin')
 											
 											// If the loadingCount drops to 0, then we can update scope
 											if(_loadingCount == 0){
-												scope.loading = false;	
+												//This sorts the array of objects by the objects' "type" property alphabetically
+												scope.productBundleGroupFilters.value.sort(function(a, b){
+													if(a.type < b.type){
+											            return -1;
+											        }else if(a.type > b.type){
+											            return 1;
+											        }else{
+											            return 0;   
+											        }
+												});
+												$log.debug(scope.productBundleGroupFilters.value);
+												scope.loading = false;
+												
 											}
 										});
 									})(keyword,option);

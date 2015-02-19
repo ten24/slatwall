@@ -102,10 +102,10 @@ angular.module('slatwalladmin')
 		    					
 		    				}
 		    			};
-		    			
+		    			scope.inListArray = [];
 		    			scope.$watch('filterItem.value',function(criteriaValue){
-		    				console.log(criteriaValue);
-		    				
+		    				$log.debug(criteriaValue);
+		    				scope.inListArray = criteriaValue.split(",");
 				    		if(angular.isDefined(scope.filterItem) && angular.isDefined(scope.filterItem.value)){
 				    			scope.filterItem.value = scope.filterItem.value.replace('%','');
 				    		}
@@ -124,7 +124,6 @@ angular.module('slatwalladmin')
 							}
 						});
 		    			
-		    			scope.inListArray = [];
 						scope.newListItem = '';
 						
 						scope.addToValueInListFormat = function(inListItem){

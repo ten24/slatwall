@@ -45,12 +45,12 @@ angular.module('slatwalladmin')
 //				var templatePath = partialsPath + 'formfields/searchselecttemplates/';
 //				if(angular.isUndefined(scope.propertyDisplay.template)){
 //					var templatePromise = $http.get(templatePath+propertyMetaData.cfcProperCase+'.html',function(){
-//						console.log('template');
+//						$log.debug('template');
 //						scope.propertyDisplay.template = templatePath+propertyMetaData.cfcProperCase+'.html';
 //					},function(){
 //						scope.propertyDisplay.template = templatePath+'index.html';
-//						console.log('template');
-//						console.log(scope.propertyDisplay.template);
+//						$log.debug('template');
+//						$log.debug(scope.propertyDisplay.template);
 //					});
 //				}
 				
@@ -111,14 +111,14 @@ angular.module('slatwalladmin')
 				    
 				    //angular.extend(inflatedObject.data,$item);
 				    object.$$init($item);
-				    console.log('select item');
-				    console.log(object);
+				    $log.debug('select item');
+				    $log.debug(object);
 				    scope.propertyDisplay.object['$$set'+propertyMetaData.nameCapitalCase](object);
 				};
 				
 //				if(angular.isUndefined(scope.propertyDipslay.object[scope.propertyDisplay.property])){
-//					console.log('getmeta');
-//					console.log(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property]);
+//					$log.debug('getmeta');
+//					$log.debug(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property]);
 //					
 //					//scope.propertyDipslay.object['$$get'+]
 //				}
