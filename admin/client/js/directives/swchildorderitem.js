@@ -28,6 +28,7 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 		templateUrl:partialsPath+"childorderitem.html",
 		link:function(scope, element, attr) {
 			//define how we get child order items
+			
 			var columnsConfig =[
 		         {
 			      "isDeletable": false,
@@ -211,7 +212,7 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 				
 			}
 //			
-			/*scope.$watch('orderItem.data.childOrderItems',function(newValue,oldValue){
+			/*var unbindchildorderitems = scope.$watch('orderItem.data.childOrderItems',function(newValue,oldValue){
 				if(newValue !== oldValue){
 					console.log('found child order items');
 					//when we load the child order items then append the child template
