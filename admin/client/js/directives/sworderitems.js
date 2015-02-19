@@ -182,6 +182,15 @@ angular.module('slatwalladmin')
 				          "value": scope.orderId,
 				        }
 				      ]
+				    },
+				    {
+				      "filterGroup": [
+				        {
+				          "propertyIdentifier": "_orderitem.parentOrderItem",
+				          "comparisonOperator": "is",
+				          "value": "null",
+				        }
+				      ]
 				    }
 				  ];
 				
