@@ -59,7 +59,7 @@
 	            	<urn:Password>#setting('webServicesPassword')#</urn:Password>
 	         	</cfif>
 	      		</urn:Login>
-				<urn:InvoiceRequest documentDate="#dateTimeFormat(Now(), 'yyyy-mm-dd')#" documentNumber="#arguments.requestBean.getOrderID()#" transactionId="#createUUID()#" transactionType="SALE">
+				<urn:InvoiceRequest documentDate="#dateTimeFormat(Now(), 'yyyy-mm-dd')#" documentNumber="#arguments.requestBean.getOrderNumber()#" transactionId="#arguments.requestBean.getOrderNumber()#-#taxAddressID#" transactionType="SALE">
 					<urn:Currency isoCurrencyCodeAlpha="#addressTaxRequestItems[ 1 ].getCurrencyCode()#"/>
 				  	<urn:Seller>
 				    	<urn:Company>#xmlFormat(setting('company'))#</urn:Company>
@@ -101,7 +101,7 @@
 					 <cfset var count = 0 />
 					 <cfloop array="#addressTaxRequestItems#" index="taxRequestItem">
 					 	<cfset count++ />
-					 	 <urn:LineItem lineItemNumber="#count#" materialCode="#taxRequestItem.getOrderItemID()#">
+					 	 <urn:LineItem lineItemNumber="#count#" materialCode="#taxRequestItem.getOrderItem().getSku().getSkuCode()#">
 					    	<urn:ExtendedPrice>#taxRequestItem.getExtendedPriceAfterDiscount()#</urn:ExtendedPrice>
 							<urn:FlexibleFields>
 								<cfif !isNull(arguments.requestBean.getAccount())>
