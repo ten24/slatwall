@@ -369,11 +369,7 @@
 				$.slatwall.setContent( barrierPage );
 				
 				// Update the mura content to use the barrier page or 404
-				if( !$.content('display') ) {
-
-					$.redirect( $.getBean('content').loadBy(urlTitle='404').getURL(complete=true) );
-
-				} else {
+				if( $.content().getIsOnDisplay() ) {
 
 					if(!isNull(barrierPage.getCMSContentID()) && len(barrierPage.getCMSContentID())) {
 						$.event('contentBean', $.getBean("content").loadBy( contentID=barrierPage.getCMSContentID() ) );
