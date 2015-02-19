@@ -134,8 +134,43 @@ Notes:
 					  			if(angular.isDefined(options.id)) {
 					  				urlString += '&entityId='+options.id;	
 					  			}
+
+					  			/*var transformRequest = function(data){	
+					  				console.log(data);
+					  							  			
+					  				return data;
+					  			};
+					  			//check if we are using a service to transform the request
+					  			if(angular.isDefined(options.transformRequest)){
+					  				transformRequest=options.trasformRequest;
+					  			}*/
+					  			var transformResponse = function(data){
+					  					
+					  				var data = JSON.parse(data);
+					  				
+					  				return data;
+					  			};
+					  			//check if we are using a service to transform the response
+					  			if(angular.isDefined(options.transformResponse)){
+					  				transformResponse=function(data){
+					  					
+						  				var data = JSON.parse(data);
+						  				if(angular.isDefined(data.records)){
+						  					data = options.transformResponse(data.records);
+						  				}
+						  				
+						  				return data;
+						  			};;
+					  			}
 					  			
-					  			$http.get(urlString,{params:params,timeout:deferred.promise})
+					  			$http.get(urlString,
+					  				{
+						  				params:params,
+						  				timeout:deferred.promise,
+						  				//transformRequest:transformRequest,
+						  				transformResponse:transformResponse
+					  				}
+					  			)
 					  			.success(function(data){
 					  				deferred.resolve(data);
 					  			}).error(function(reason){

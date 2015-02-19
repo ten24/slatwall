@@ -1,5 +1,5 @@
 'use strict';
-angular.module('slatwalladmin').directive('swChildOrderItems',
+angular.module('slatwalladmin').directive('swChildOrderItem',
 
 [ '$log',
   '$http',
@@ -20,13 +20,13 @@ angular.module('slatwalladmin').directive('swChildOrderItems',
 
 	return {
 		restrict : "A",
-		//templateUrl:partialsPath+'childorderitems.html',
 		scope:{
 			orderItem:"=",
-			orderId:"@"
+			orderId:"@",
+			childOrderItems:"="
 		},
-		templateUrl:partialsPath+"orderitem.html",
-		link : function(scope, element, attr) {
+		templateUrl:partialsPath+"childorderitem.html",
+		link:function(scope, element, attr) {
 			//define how we get child order items
 			var columnsConfig =[
 		         {
@@ -190,32 +190,43 @@ angular.module('slatwalladmin').directive('swChildOrderItems',
 				filterGroupsConfig:angular.toJson(filterGroupsConfig),
 				allRecords:true
 			};
-			//Create a list of order items.
-			scope.childOrderItems = [];
+//			//Create a list of order items.
+//			scope.childOrderItems = [];
+//			
+			scope.getChildOrderItems = function(orderItem){
+				if(!scope.orderItem.childItemsRetrieved){
+					scope.orderItem.childItemsRetrieved = true;
+					var orderItemsPromise = $slatwall.getEntity('orderItem', options);
+					orderItemsPromise.then(function(value){
+						
+						var childOrderItems = orderItemService.decorateOrderItems(value.records);
+						
+						angular.forEach(childOrderItems,function(childOrderItem){
+							childOrderItem.depth = orderItem.depth+1;
+							scope.childOrderItems.push(childOrderItem);
+						});
+						
+					});
+				}
 				
-			scope.getChildOrderItems = function(){
-				var orderItemsPromise = $slatwall.getEntity('orderItem', options);
-				orderItemsPromise.then(function(value){
-					scope.childOrderItems = orderItemService.decorateOrderItems(value.records);
-				});
 			}
-			
-			scope.$watch('childOrderItems',function(newValue,oldValue){
-//				if(newValue !== oldValue){
-//					console.log('found child order items');
-//					//when we load the child order items then append the child template
-//					var Partial = partialsPath+"childorderitems.html";
-//					var templateLoader = $http.get(Partial,{cache:$templateCache});
-//					var promise = templateLoader.success(function(html){
-//						//element.append($compile(html)(scope));
-//						
-//					}).then(function(response){
-//						//scope.childOrderItems = newValue
-//						//element.replaceWith($compile(element.html())(scope));
-//					});
-//					console.log(element);
-//				}
-			});
+//			
+			/*scope.$watch('orderItem.data.childOrderItems',function(newValue,oldValue){
+				if(newValue !== oldValue){
+					console.log('found child order items');
+					//when we load the child order items then append the child template
+					var Partial = partialsPath+"childorderitem.html";
+					var templateLoader = $http.get(Partial,{cache:$templateCache});
+					var promise = templateLoader.success(function(html){
+						element.append($compile(html)(scope));
+						
+					}).then(function(response){
+						//scope.childOrderItems = newValue
+						//element.replaceWith($compile(element.html())(scope));
+					});
+					console.log(element);
+				}
+			});*/
 		}
 	};
 } ]);

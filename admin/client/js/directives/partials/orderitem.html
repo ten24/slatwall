@@ -1,4 +1,4 @@
-<tr class="s-bundle-product l-1" >
+<tr class="s-bundle-product l-1" ng-if="orderItem" >
 	<td rowspan="1000" class='s-image' style="width:90px;height:90px;"><swresizedimage profilename="orderItem" data-order-item="orderItem"></swresizedimage></td>
 	<td ng-bind="orderItem.data.orderItemID"></td>
 	<td class="s-title">{{orderItem.data.sku.data.skuName}}<a href="" class="s-edit-link" ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle'" ng-click="getChildOrderItems(orderItem)">show detail</a></td>
@@ -24,3 +24,4 @@
 		</ul>
 	</td>			
 </tr>
+<tr ng-if="childOrderItems" ng-repeat="childOrderItem in childOrderItems" class="s-bundle-product l-{{childOrderItem.depth}}" sw-child-order-item data-order-item="childOrderItem" data-child-order-items="childOrderItems"></tr>

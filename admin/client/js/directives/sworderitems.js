@@ -189,15 +189,20 @@ angular.module('slatwalladmin')
 					columnsConfig:angular.toJson(columnsConfig),
 					filterGroupsConfig:angular.toJson(filterGroupsConfig),
 	 				allRecords:true
+	 				//,transformResponse:orderItemService.decorateOrderItems
 				};
 				//Create a list of order items.
-				scope.orderItems = [];
+				//scope.orderItems = [];
 				scope.orderAttributes = [];
 				scope.attributeValues = [];
 				var orderItemsPromise = $slatwall.getEntity('orderItem', options);
 				orderItemsPromise.then(function(value){
 					scope.orderItems = orderItemService.decorateOrderItems(value.records);
+					//scope.orderItems = value.records;
+					console.log('order items');
+					console.log(scope.orderItems);
 				});
+				
 				
 			}//<--End link
 		};

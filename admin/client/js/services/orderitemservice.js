@@ -34,6 +34,8 @@ angular.module('slatwalladmin')
 					//Order fulfillment
 					var orderFulfillment = $slatwall.newOrderFulfillment();
 					orderFulfillment.$$init(orderItemData);
+					console.log('orderfulfillment');
+					console.log(orderFulfillment);
 					orderItem.$$setOrderFulfillment(orderFulfillment);
 					
 					//Shipping Address

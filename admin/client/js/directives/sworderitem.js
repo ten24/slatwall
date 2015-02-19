@@ -20,16 +20,15 @@ angular.module('slatwalladmin').directive('swOrderItem',
 
 	return {
 		restrict : "A",
-		//templateUrl:partialsPath+'childorderitems.html',
 		scope:{
 			orderItem:"=",
 			orderId:"@"
 		},
 		templateUrl:partialsPath+"orderitem.html",
 		link : function(scope, element, attr) {
+			$log.debug('order item');
+			$log.debug(scope.orderItem);
 			//define how we get child order items
-			console.log('order item id');
-			console.log(scope.orderItem.$$getID());
 			var columnsConfig =[
 		         {
 			      "isDeletable": false,
@@ -196,31 +195,23 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			scope.childOrderItems = [];
 			//scope.orderAttributes = [];
 			//scope.attributeValues = [];
-			
-				
+			scope.orderItem.depth = 1;
+			//scope.orderItem.childItemsRetrieved = false;
 			scope.getChildOrderItems = function(){
-				var orderItemsPromise = $slatwall.getEntity('orderItem', options);
-				orderItemsPromise.then(function(value){
-					scope.childOrderItems = orderItemService.decorateOrderItems(value.records);
-				});
+				if(!scope.orderItem.childItemsRetrieved){
+					scope.orderItem.childItemsRetrieved = true;
+					var orderItemsPromise = $slatwall.getEntity('orderItem', options);
+					orderItemsPromise.then(function(value){
+						
+						var childOrderItems = orderItemService.decorateOrderItems(value.records);
+						angular.forEach(childOrderItems,function(childOrderItem){
+							childOrderItem.depth = scope.orderItem.depth+1;
+							scope.childOrderItems.push(childOrderItem);
+						});
+					});
+				}
 			}
 			
-			scope.$watch('childOrderItems',function(newValue,oldValue){
-				if(newValue !== oldValue){
-					console.log('found child order items');
-					//when we load the child order items then append the child template
-					var Partial = partialsPath+"childorderitems.html";
-					var templateLoader = $http.get(Partial,{cache:$templateCache});
-					var promise = templateLoader.success(function(html){
-						element.append($compile(html)());
-						
-					}).then(function(response){
-						//scope.childOrderItems = newValue
-						//element.replaceWith($compile(element.html())(scope));
-					});
-					console.log(element);
-				}
-			});
 		}
 	};
 } ]);
