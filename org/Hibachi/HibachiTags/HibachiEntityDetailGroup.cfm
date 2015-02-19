@@ -106,9 +106,8 @@
 												<cfif attributes.object.hasProperty('remoteID')>
 													<hb:HibachiPropertyDisplay object="#attributes.object#" property="remoteID" edit="#iif(request.context.edit && attributes.hibachiScope.setting('globalRemoteIDEditFlag'), true, false)#" />
 												</cfif>
-												<cfif !isNull( attributes.object.getshortReferenceID() )>
-													#attributes.object.getshortReferenceID()#
-													<hb:HibachiPropertyDisplay object="#attributes.object#" property="ShortReferenceID" />
+												<cfif len( attributes.object.getshortReferenceID() )>
+													<hb:HibachiFieldDisplay title="Short Reference ID" value="#attributes.object.getshortReferenceID()#" edit="false" displayType="dl">
 												</cfif>
 												<cfif !attributes.object.getAuditSmartList().getRecordsCount()>
 													<cfif attributes.object.hasProperty('createdDateTime')>
