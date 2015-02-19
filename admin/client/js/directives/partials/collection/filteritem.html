@@ -1,7 +1,7 @@
 
 <li ng-class="{'s\-disabled':filterItem.$$disabled}" >
  
-  <!--- Filter display --->
+  <!-- Filter display -->
   <div class="s-filter-item" ng-show="!filterItem.$$isNew">
   	<div ng-if="filterItem.logicalOperator" class="btn-group-vertical btn-toggle">
       <button class="btn btn-xs " 
@@ -34,7 +34,10 @@
       	</a>
       </div>
       <div ng-click="selectFilterItem(filterItem)" ng-class="{}"   class="panel-body j-tool-tip-item" data-toggle="tooltip" data-placement="bottom" title="Click To Edit">
-        <span ng-bind="filterItem.comparisonOperator"></span>&nbsp;<span class="s-filter-value" ng-bind="filterItem.displayValue"></span>
+        <ul class="list-inline">
+            <li class="s-comparison-operator" ng-bind="filterItem.comparisonOperator"></li>
+            <li class="s-filter-value" ng-bind="filterItem.displayValue"></li>
+        </ul>
       </div>
     </div>
     
