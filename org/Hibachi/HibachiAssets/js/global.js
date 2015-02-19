@@ -945,7 +945,8 @@ function updateTextAutocompleteSuggestions( autocompleteField, data ) {
 		var thisData = {
 			entityName: jQuery( autocompleteField ).data('entityname'),
 			propertyIdentifiers: jQuery( autocompleteField ).data('acpropertyidentifiers'),
-			keywords: jQuery(autocompleteField).val()
+			keywords: jQuery(autocompleteField).val(),
+			fieldName: jQuery(autocompleteField).prop('name')
 		};
 		thisData[ hibachiConfig.action ] = 'admin:ajax.updatelistingdisplay';
 		thisData["f:activeFlag"] = 1;
