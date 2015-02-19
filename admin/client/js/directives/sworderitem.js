@@ -196,8 +196,10 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			//scope.orderAttributes = [];
 			//scope.attributeValues = [];
 			scope.orderItem.depth = 1;
+			
 			//scope.orderItem.childItemsRetrieved = false;
 			scope.getChildOrderItems = function(){
+				scope.orderItem.clicked = true;
 				if(!scope.orderItem.childItemsRetrieved){
 					scope.orderItem.childItemsRetrieved = true;
 					var orderItemsPromise = $slatwall.getEntity('orderItem', options);

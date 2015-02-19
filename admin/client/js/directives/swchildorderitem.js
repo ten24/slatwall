@@ -194,16 +194,16 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 //			scope.childOrderItems = [];
 //			
 			scope.getChildOrderItems = function(orderItem){
+				orderItem.clicked = true;
 				if(!scope.orderItem.childItemsRetrieved){
 					scope.orderItem.childItemsRetrieved = true;
 					var orderItemsPromise = $slatwall.getEntity('orderItem', options);
 					orderItemsPromise.then(function(value){
 						
 						var childOrderItems = orderItemService.decorateOrderItems(value.records);
-						
 						angular.forEach(childOrderItems,function(childOrderItem){
 							childOrderItem.depth = orderItem.depth+1;
-							scope.childOrderItems.push(childOrderItem);
+							scope.childOrderItems.splice(scope.childOrderItems.indexOf(orderItem)+1,0,childOrderItem);
 						});
 						
 					});
