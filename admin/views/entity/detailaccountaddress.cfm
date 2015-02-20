@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.accountAddress" type="any">
 <cfparam name="rc.account" type="any" default="#rc.accountAddress.getAccount()#">
 <cfparam name="rc.edit" type="boolean">
@@ -70,6 +72,13 @@ Notes:
 				<swa:SlatwallAdminAddressDisplay address="#rc.accountAddress.getAddress()#" fieldNamePrefix="address." edit="#rc.edit#">
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
+		<!--- Custom Attributes --->
+		<hb:HibachiEntityDetailGroup object="#rc.accountAddress#">
+		
+			<cfloop array="#rc.accountAddress.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
+				<swa:SlatwallAdminAttributeSetDisplay object="#rc.accountAddress#" attributeSet="#attributeSet#" edit="#rc.edit#" />
+			</cfloop>
+		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

@@ -1,0 +1,34 @@
+<div ng-if="propertyDisplay" class="form-group">
+  <label class="control-label col-md-3" ng-if="propertyDisplay.fieldType !== 'hidden'">
+  	<span sw-rbkey="'entity.'+object.metaData.className+'.'+property" ng-if="!propertyDisplay.title"></span>:
+  	<span ng-if="propertyDisplay.object.validations.properties[propertyDisplay.property][0].required && propertyDisplay.fieldType === 'text'">*</span>
+  	<span ng-if="propertyDisplay.title" ng-bind="propertyDisplay.title"><span id="propertyDisplay.title" style="display:none;"></span>:
+
+  	<span 	class="j-tool-tip-item"
+  			data-toggle="tooltip"
+  			data-placement="top"
+  			tooltip="{{propertyDisplay.hint}}"
+  			ng-show="propertyDisplay.hint"
+  	>
+  		<i class="fa fa-question-circle"></i>
+  	</span>
+  </label>
+  <div class="col-md-9 s-form-input">
+  	<!-- Model-->
+
+  	<span 	sw-form-field
+  			data-property-display="propertyDisplay"
+  	>
+  	</span>
+
+    <!-- Display -->
+
+    <p  class="form-control-static"
+    	ng-if="propertyDisplay.fieldType !== 'hidden'"
+    	ng-bind="propertyDisplay.object.data[propertyDisplay.property]"
+    	ng-show="!propertyDisplay.editing"
+    >
+    	<!---property value --->
+    </p>
+  </div>
+</div>

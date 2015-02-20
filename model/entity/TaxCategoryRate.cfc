@@ -56,7 +56,7 @@ component entityname="SlatwallTaxCategoryRate" table="SwTaxCategoryRate" persist
 	property name="taxLiabilityAppliedToItemFlag" ormtype="boolean" default="true";
 	
 	// Related Object Properties (many-to-one)
-	property name="addressZone" cfc="AddressZone" fieldtype="many-to-one" fkcolumn="addressZoneID" hb_optionsNullRBKey="define.all";
+	property name="addressZone" cfc="AddressZone" fieldtype="many-to-one" fkcolumn="addressZoneID" hb_optionsNullRBKey="define.all" hb_nullRBKey="define.all";
 	property name="taxCategory" cfc="TaxCategory" fieldtype="many-to-one" fkcolumn="taxCategoryID";
 		
 	// Related Object Properties (one-to-many)

@@ -48,11 +48,12 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.subscriptionUsage" type="any" />
 
 <cfoutput>
 	<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionStatusSmartList()#">
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionStatusType.type" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="subscriptionStatusType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="changeDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="effectiveDateTime" />
 	</hb:HibachiListingDisplay>

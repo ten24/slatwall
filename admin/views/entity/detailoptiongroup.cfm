@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.optiongroup" type="any" />
 <cfparam name="rc.edit" default="false" />
 
@@ -57,18 +59,11 @@ Notes:
 			<hb:HibachiActionCaller action="admin:entity.createoption" queryString="optionGroupID=#rc.optionGroup.getOptionGroupID()#&renderItem=detailOptionGroup" type="list" modal=true />
 		</hb:HibachiEntityActionBar>
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.optiongroup#" property="optionGroupName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.optiongroup#" property="optionGroupCode" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.optiongroup#" property="imageGroupFlag" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.optiongroup#">
-			<hb:HibachiTab view="admin:entity/optiongrouptabs/options" />
-			<hb:HibachiTab view="admin:entity/optiongrouptabs/description" />
-		</hb:HibachiTabGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.optiongroup#">
+			<hb:HibachiEntityDetailItem view="admin:entity/optiongrouptabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<hb:HibachiEntityDetailItem view="admin:entity/optiongrouptabs/options" />
+			<hb:HibachiEntityDetailItem view="admin:entity/optiongrouptabs/description" />
+		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

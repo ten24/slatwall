@@ -53,6 +53,8 @@
 	<cfparam name="attributes.object" type="any" />
 	<cfparam name="attributes.attributeSet" type="any" />
 	<cfparam name="attributes.edit" type="boolean" default="#request.context.edit#" />
+	<cfparam name="attributes.open" type="boolean" default="false" />
+	<cfparam name="attributes.showOnCreateFlag" type="boolean" default="false" />
 	
 	<cfset attributes.tabid = "attSet" & attributes.attributeSet.getAttributeSetCode() />
 	<cfset attributes.text = attributes.attributeSet.getAttributeSetName() />
@@ -70,5 +72,5 @@
 		</div>
 	</cfsavecontent>
 	
-	<cfassociate basetag="cf_HibachiTabGroup" datacollection="tabs">
+	<cfassociate basetag="cf_HibachiEntityDetailGroup" datacollection="tabs">
 </cfif>

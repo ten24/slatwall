@@ -48,22 +48,25 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
 
 <cfparam name="rc.brandSmartList" type="any" />
 
 <cfoutput>
 
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.brandSmartList#"
+	<hb:HibachiEntityActionBar type="listing" object="#rc.brandSmartList#" showCreate="false">
+		
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createbrand" entity="brand" class="btn btn-primary" icon="plus icon-white" modal="false" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+
+	<hb:HibachiListingDisplay smartList="#rc.brandSmartList#"
 							recordDetailAction="admin:entity.detailbrand"
 							recordEditAction="admin:entity.editbrand"
 							showCreate="false">
-		
-		<!--- Create ---> 
-		<hb:HibachiListingDisplayButtonGroup >
-			<hb:HibachiActionCaller action="admin:entity.createbrand" entity="brand" class="btn btn-primary" icon="plus icon-white" modal="false" />
-		</hb:HibachiListingDisplayButtonGroup>
+
 		
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="brandName" />
 		<hb:HibachiListingColumn propertyIdentifier="brandWebsite" />

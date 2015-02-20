@@ -64,13 +64,13 @@
 						</div>
 						<hr />
 						<div class="small em image-caption">#image.getImagePath()#</div>
-						<hb:HibachiActionCaller action="admin:entity.detailImage" querystring="imageID=#image.getImageID()#" class="btn" iconOnly="true" icon="eye-open" />
-						<hb:HibachiActionCaller action="admin:entity.editImage" querystring="imageID=#image.getImageID()#" class="btn" iconOnly="true" icon="pencil" />
-						<hb:HibachiActionCaller action="admin:entity.deleteImage" querystring="imageID=#image.getImageID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" class="btn" iconOnly="true" icon="trash" confirm="true" />				
+						<hb:HibachiActionCaller action="admin:entity.detailImage" querystring="imageID=#image.getImageID()#" class="btn s-btn-dgrey" iconOnly="true" icon="eye-open" />
+						<hb:HibachiActionCaller action="admin:entity.editImage" querystring="imageID=#image.getImageID()#" class="btn s-btn-dgrey" iconOnly="true" icon="pencil" />
+						<hb:HibachiActionCaller action="admin:entity.deleteImage" querystring="imageID=#image.getImageID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" class="btn s-btn-dgrey" iconOnly="true" icon="trash" confirm="true" />				
     				</div>
   				</li>
 			</cfloop>
 		</ul>
-		<hb:HibachiActionCaller action="admin:entity.createImage" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&objectName=#attributes.object.getClassName()#&redirectAction=#request.context.slatAction#" modal="true" class="btn" icon="plus" />
+		<hb:HibachiActionCaller action="admin:entity.createImage" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&objectName=#attributes.object.getClassName()#&redirectAction=#request.context.slatAction#" modal="true" class="btn s-btn-dgrey" icon="plus" />
 	</cfoutput>
 </cfif>

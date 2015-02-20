@@ -15,7 +15,7 @@
 		"firstName":			[{"conditions":"newAccountSelected","required":true}],
 		"lastName":				[{"conditions":"newAccountSelected","required":true}],
 		"accountID":			[{"conditions":"existingAccountSelected","required":true}],
-		"emailAddress":			[{"conditions":"savePasswordSelected","required":true},{"dataType":"email","eqProperty":"emailAddressConfirm"}],
+		"emailAddress":			[{"conditions":"savePasswordSelected","required":true},{"dataType":"email"},{"conditions":"newAccountSelected","eqProperty":"emailAddressConfirm"}],
 		"emailAddressConfirm":	[{"conditions":"savePasswordSelected","required":true}],
 		"password":				[{"conditions":"savePasswordSelected","required":true,"minLength":6,"eqProperty":"passwordConfirm"}],
 		"passwordConfirm":		[{"conditions":"savePasswordSelected","required":true}]

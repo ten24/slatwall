@@ -68,6 +68,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	// Calculated Properties
 
 	// Related Object Properties (many-to-one)
+	property name="typeSet" cfc="Type" fieldtype="many-to-one" fkcolumn="typeSetID";
 	property name="attributeSet" cfc="AttributeSet" fieldtype="many-to-one" fkcolumn="attributeSetID" hb_optionsNullRBKey="define.select";
 	property name="validationType" cfc="Type" fieldtype="many-to-one" fkcolumn="validationTypeID" hb_optionsNullRBKey="define.select" hb_optionsSmartListData="f:parentType.systemCode=validationType";
 	
@@ -93,6 +94,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	property name="attributeValueUploadDirectory" persistent="false";
 	property name="formFieldType" persistent="false";
 	property name="relatedObjectOptions" persistent="false";
+	property name="typeSetOptions" persistent="false";
 	property name="validationTypeOptions" persistent="false";
 	
 	// Deprecated Properties
@@ -125,6 +127,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 			{value="relatedObjectSelect", name=rbKey("entity.attribute.attributeInputType.relatedObjectSelect")},
 			{value="relatedObjectMultiselect", name=rbKey("entity.attribute.attributeInputType.relatedObjectMultiselect")},
 			{value="select", name=rbKey("entity.attribute.attributeInputType.select")},
+			{value="typeSelect", name=rbKey("entity.attribute.attributeInputType.typeSelect")},
 			{value="text", name=rbKey("entity.attribute.attributeInputType.text")},
 			{value="textArea", name=rbKey("entity.attribute.attributeInputType.textArea")},
 			{value="time", name=rbKey("entity.attribute.attributeInputType.time")},
@@ -149,7 +152,9 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 			if(!isNull(getAttributeInputType())) {
 				variables.formFieldType = getAttributeInputType();	
 			}
-			if(variables.formFieldType eq 'relatedObjectSelect') {
+			if(variables.formFieldType eq 'typeSelect') {
+				variables.formFieldType = 'select';
+			} else if(variables.formFieldType eq 'relatedObjectSelect') {
 				variables.formFieldType = 'listingSelect';
 			} else if (variables.formFieldType eq 'relatedObjectMultiselect') {
 				variables.formFieldType = 'listingMultiselect';	
@@ -170,11 +175,25 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 		}
 		return variables.relatedObjectOptions;
 	}
+	
+	public array function getTypeSetOptions() {
+		if(!structKeyExists(variables, "typeSetOptions")) {
+			var smartList = getService("typeService").getTypeSmartList();
+			smartList.addSelect(propertyIdentifier="typeName", alias="name");
+			smartList.addSelect(propertyIdentifier="typeID", alias="value");
+			smartList.addFilter(propertyIdentifier="parentType", value="NULL");
+			smartList.addOrder("typeName|ASC");
+			 
+			variables.typeSetOptions = smartList.getRecords();
+			arrayPrepend(variables.typeSetOptions, {value="", name=rbKey('define.select')});
+		}
+		return variables.typeSetOptions;
+    }
    
     public array function getValidationTypeOptions() {
 		if(!structKeyExists(variables, "validationTypeOptions")) {
-			var smartList = getService("settingService").getTypeSmartList();
-			smartList.addSelect(propertyIdentifier="type", alias="name");
+			var smartList = getService("typeService").getTypeSmartList();
+			smartList.addSelect(propertyIdentifier="typeName", alias="name");
 			smartList.addSelect(propertyIdentifier="typeID", alias="value");
 			smartList.addFilter(propertyIdentifier="parentType.systemCode", value="validationType"); 
 			variables.validationTypeOptions = smartList.getRecords();
@@ -186,7 +205,9 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	public array function getAttributeOptionsOptions() {
 		if(!structKeyExists(variables, "attributeOptionsOptions")) {
 			variables.attributeOptionsOptions = [];
+			
 			if(listFindNoCase('checkBoxGroup,multiselect,radioGroup,select', getAttributeInputType())) {
+				
 				var smartList = this.getAttributeOptionsSmartList();
 				smartList.addSelect(propertyIdentifier="attributeOptionLabel", alias="name");
 				smartList.addSelect(propertyIdentifier="attributeOptionValue", alias="value");
@@ -196,7 +217,9 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 				if(getAttributeInputType() == 'select') {
 					arrayPrepend(variables.attributeOptionsOptions, {name=rbKey('define.select'), value=''});
 				}
+				
 			} else if(listFindNoCase('relatedObjectSelect', getAttributeInputType()) && !isNull(getRelatedObject())) {
+			
 				var entityService = getService( "hibachiService" ).getServiceByEntityName( getRelatedObject() );
 				var smartList = entityService.invokeMethod("get#getRelatedObject()#SmartList");
 				var exampleEntity = entityService.invokeMethod("new#getRelatedObject()#");
@@ -204,7 +227,20 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 				smartList.addSelect(propertyIdentifier=exampleEntity.getSimpleRepresentationPropertyName(), alias="name");
 				smartList.addSelect(propertyIdentifier=getService( "hibachiService" ).getPrimaryIDPropertyNameByEntityName( getRelatedObject() ), alias="value");
 				
-				variables.attributeOptionsOptions = smartList.getRecords();	
+				variables.attributeOptionsOptions = smartList.getRecords();
+				
+				arrayPrepend(variables.attributeOptionsOptions, {name=rbKey('define.select'), value=''});
+				
+			} else if(listFindNoCase('typeSelect', getAttributeInputType()) && !isNull(getTypeSet())) {
+			
+				var smartList = getService('typeService').getTypeSmartList();
+				smartList.addSelect(propertyIdentifier='typeName', alias='name');
+				smartList.addSelect(propertyIdentifier='typeID', alias='value');
+				smartList.addFilter(propertyIdentifier='parentType.typeID', value=getTypeSet().getTypeID());
+				
+				variables.attributeOptionsOptions = smartList.getRecords();
+				
+				arrayPrepend(variables.attributeOptionsOptions, {name=rbKey('define.select'), value=''});
 			}
 			
 		}

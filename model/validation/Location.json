@@ -2,6 +2,7 @@
 	"properties":{
 		"locationName":			[{"contexts":"save","required":true}],
 		"primaryAddress":		[{"contexts":"save","required":true}],
+		"stocks":	[{"contexts":"delete","maxCollection":0}],
 		"physicals":			[{"contexts":"delete","maxCollection":0}],
 		"physicalCounts":		[{"contexts":"delete","maxCollection":0}]
 	}

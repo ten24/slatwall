@@ -63,11 +63,14 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="attributeValueOption" cfc="AttributeOption" fieldtype="many-to-one" fkcolumn="attributeValueOptionID";
 	
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+	property name="accountAddress" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="accountAddressID";
 	property name="accountPayment" cfc="AccountPayment" fieldtype="many-to-one" fkcolumn="accountPaymentID";
 	property name="attributeOption" cfc="AttributeOption" fieldtype="many-to-one" fkcolumn="attributeOptionID";
 	property name="brand" cfc="Brand" fieldtype="many-to-one" fkcolumn="brandID";
 	property name="file" cfc="File" fieldtype="many-to-one" fkcolumn="fileID";
 	property name="image" cfc="Image" fieldtype="many-to-one" fkcolumn="imageID";
+	property name="location" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
+	property name="locationConfiguration" cfc="LocationConfiguration" fieldtype="many-to-one" fkcolumn="locationConfigurationID";
 	property name="order" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID";
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
 	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";
@@ -192,6 +195,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		structDelete(variables, "account");
 	}
 	
+	// Account Address (many-to-one)
+	public void function setAccountAddress(required any accountAddress) {
+		variables.account = arguments.account;
+		if(isNew() or !arguments.accountAddress.hasAttributeValue( this )) {
+			arrayAppend(arguments.accountAddress.getAttributeValues(), this);
+		}
+	}
+	public void function removeAccountAddress(any accountAddress) {
+		if(!structKeyExists(arguments, "accountAddress")) {
+			arguments.accountAddress = variables.accountAddress;
+		}
+		var index = arrayFind(arguments.accountAddress.getAttributeValues(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.accountAddress.getAttributeValues(), index);
+		}
+		structDelete(variables, "accountAddress");
+	}
+
 	// Attribute Option (many-to-one)    
 	public void function setAttributeOption(required any attributeOption) {    
 		variables.attributeOption = arguments.attributeOption;    
@@ -280,6 +301,42 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 			arrayDeleteAt(arguments.image.getAttributeValues(), index);    
 		}    
 		structDelete(variables, "image");    
+	}
+	
+	// Location (many-to-one)    
+	public void function setLocation(required any location) {    
+		variables.location = arguments.location;    
+		if(isNew() or !arguments.location.hasAttributeValue( this )) {    
+			arrayAppend(arguments.location.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeLocation(any location) {    
+		if(!structKeyExists(arguments, "location")) {    
+			arguments.location = variables.location;    
+		}    
+		var index = arrayFind(arguments.location.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.location.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "location");    
+	}
+	
+	// Location Configuration (many-to-one)    
+	public void function setLocationConfiguration(required any locationconfiguration) {    
+		variables.locationconfiguration = arguments.locationconfiguration;    
+		if(isNew() or !arguments.locationconfiguration.hasAttributeValue( this )) {    
+			arrayAppend(arguments.locationconfiguration.getAttributeValues(), this);    
+		}    
+	}    
+	public void function removeLocationConfiguration(any locationconfiguration) {    
+		if(!structKeyExists(arguments, "locationconfiguration")) {    
+			arguments.locationconfiguration = variables.locationconfiguration;    
+		}    
+		var index = arrayFind(arguments.locationconfiguration.getAttributeValues(), this);    
+		if(index > 0) {    
+			arrayDeleteAt(arguments.locationconfiguration.getAttributeValues(), index);    
+		}    
+		structDelete(variables, "locationconfiguration");    
 	}
 	
 	// Order (many-to-one)    

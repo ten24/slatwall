@@ -1,0 +1,28 @@
+<li class="s-bundle-add-obj">
+	<ul class="list-unstyled list-inline">
+		<li class="s-item-type s-tooltip" data-toggle="tooltip" data-placement="right" title="{{workflowTrigger.data.triggerType}}">
+			<i class="fa fa-flag" ng-show="workflowTrigger.data.triggerType === 'Event'"></i>
+			<i class="fa fa-calendar" ng-show="workflowTrigger.data.triggerType === 'Schedule'"></i>
+		</li>
+	</ul>
+	<ul class="list-unstyled list-inline s-middle">
+		<li ng-show="workflowTrigger.data.triggerType === 'Event'" class="j-tool-tip-item s-bundle-details" ng-bind="workflowTrigger.data.triggerEvent"></li>
+		<li ng-show="workflowTrigger.data.triggerType === 'Schedule'" class="j-tool-tip-item s-bundle-details" ng-bind="workflowTrigger.data.scheduleCollection.data.collectionName + ' - ' + workflowTrigger.data.schedule.data.scheduleName"></li>
+	</ul>
+	<ul class="list-unstyled list-inline s-last">
+		<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" ng-click="selectWorkflowTrigger(workflowTrigger)">
+			<a class="btn s-btn-dgrey s-edit" data-target="#s-add-obj-1">
+				<i 	class="fa fa-pencil"
+				></i>
+			</a>
+		</li>
+		<li class="col-xs-1 j-tool-tip-item s-bundle-details-add">
+			<a 	class="btn s-btn-dgrey s-remove"
+				ng-click="deleteTrigger(workflowTrigger)"
+			>
+				<i class="fa fa-trash"></i>
+			</a>
+		</li>
+	</ul>
+	<div class="clearfix"></div>
+</li>

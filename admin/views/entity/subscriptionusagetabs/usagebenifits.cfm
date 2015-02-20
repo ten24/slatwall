@@ -48,10 +48,11 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.subscriptionUsage" type="any" />
 
 <cfoutput>
-	<div class="span6">
+	<div class="col-md-6">
 		<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.benefits')#</h4>
 		<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getSubscriptionUsageBenefitsSmartList()#"
 								  recordEditAction="admin:entity.editSubscriptionUsageBenefit"
@@ -62,7 +63,7 @@ Notes:
 		
 		
 	</div>
-	<div class="span6">
+	<div class="col-md-6">
 		<h4>#$.slatwall.rbKey('admin.entity.subscriptionusagetabs.usagebenefits.renewalBenefits')#</h4>
 		<hb:HibachiListingDisplay smartList="#rc.subscriptionUsage.getRenewalSubscriptionUsageBenefitsSmartList()#"
 								  recordEditAction="admin:entity.editSubscriptionUsageBenefit"

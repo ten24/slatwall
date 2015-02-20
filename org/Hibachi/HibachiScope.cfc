@@ -46,6 +46,9 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		config[ 'action' ] = getApplicationValue('action');
 		config[ 'dateFormat' ] = 'mmm dd, yyyy';
 		config[ 'timeFormat' ] = 'hh:mm tt';
+		config[ 'rbLocale' ] = '#getRBLocale()#';
+		config[ 'debugFlag' ] = getApplicationValue('debugFlag');
+		config[ 'instantiationKey' ] = '#getApplicationValue('instantiationKey')#';
 		
 		var returnHTML = '';
 		returnHTML &= '<script type="text/javascript" src="#getApplicationValue('baseURL')#/org/Hibachi/HibachiAssets/js/hibachi-scope.js"></script>';
@@ -207,10 +210,12 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	}
 	
 	public void function showMessage(string message="", string messageType="info") {
-		param name="request.context.messages" default="#arrayNew(1)#";
-		
-		message=getService('HibachiUtilityService').replaceStringTemplate(arguments.message,request.context);
-		arrayAppend(request.context.messages, arguments);
+		param name="request.context['messages']" default="#arrayNew(1)#";
+		arguments.message=getService('HibachiUtilityService').replaceStringTemplate(arguments.message,request.context);
+		var messageStruct = {};
+		messageStruct['message'] = arguments.message;
+		messageStruct['messageType'] = arguments.messageType;
+		arrayAppend(request.context['messages'], messageStruct);
 	}
 	
 	// ========================== HELPER DELIGATION METHODS ===============================
@@ -222,6 +227,10 @@ component output="false" accessors="true" extends="HibachiTransient" {
 			keyValue = getService("hibachiUtilityService").replaceStringTemplate(keyValue, arguments.replaceStringData);
 		}
 		return keyValue;
+	}
+	
+	public string function getRBKey(required string key, struct replaceStringData) {
+		return rbKey(argumentcollection=arguments);
 	}
 	
 	public boolean function authenticateAction( required string action ) {

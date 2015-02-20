@@ -298,5 +298,96 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 		return '';
 	}
+	
+	//can be overridden at the entity level in case we need to always return a relationship entity otherwise the default is only non-relationship and non-persistent
+	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
+		var properties = getProperties();
+		
+		var defaultProperties = [];
+		for(var p=1; p<=arrayLen(properties); p++) {
+			if(len(arguments.excludesList) && ListFind(arguments.excludesList,properties[p].name)){
+				
+			}else{
+				if((len(arguments.includesList) && ListFind(arguments.includesList,properties[p].name)) || 
+				!structKeyExists(properties[p],'FKColumn') && (!structKeyExists(properties[p], "persistent") || 
+				properties[p].persistent)){
+					arrayAppend(defaultProperties,properties[p]);	
+				}
+			}
+			
+		}
+		return defaultProperties;
+	}
+	
+	public any function getDefaultPropertiesIdentifierList(){
+		var defaultEntityPropertiesList = getDefaultCollectionProperties();
+	}
+	
+	public array function getDefaultPropertyIdentifierArray(){
+		
+		var defaultPropertyIdentifiersList = getDefaultPropertyIdentifiersList();
+		// Turn the property identifiers into an array
+		return listToArray( defaultPropertyIdentifiersList );
+	}
+	
+	public string function getDefaultPropertyIdentifiersList(){
+		// Lets figure out the properties that need to be returned
+		var defaultProperties = getDefaultCollectionProperties();
+		var defaultPropertyIdentifiersList = "";
+		for(var i=1; i<=arrayLen(defaultProperties); i++) {
+			defaultPropertyIdentifiersList = listAppend(defaultPropertyIdentifiersList, defaultProperties[i]['name']);
+		}
+		return defaultPropertyIdentifiersList;
+	}
+	
+	public string function getAttributesCodeList(){
+		var attributeCodesList = getService("HibachiCacheService").getOrCacheFunctionValue(
+			"attributeService_getAttributeCodesListByAttributeSetObject_#getService("hibachiService").getProperlyCasedShortEntityName(getClassName())#", 
+			"attributeService", "getAttributeCodesListByAttributeSetObject", 
+			{1=getService("hibachiService").getProperlyCasedShortEntityName(getClassName())}
+			
+		);
+		return attributeCodesList;
+	}
+	
+	public array function getAttributesArray(){
+		var attributes = [];
+		var attributesListArray = listToArray(getAttributesCodeList());
+		for(var attributeCode in attributesListArray){
+			var attribute = getService('attributeService').getAttributeByAttributeCode(attributeCode);
+			
+			ArrayAppend(attributes,attribute);
+		}
+		return attributes;
+	}
+	
+	public any function getAttributesProperties(){
+		var attributesProperties = [];
+		for(var attribute in getAttributesArray()){
+			var attributeProperty = {};
+			attributeProperty['displayPropertyIdentifier'] = attribute.getAttributeName();
+			attributeProperty['name'] = attribute.getAttributeCode();
+			attributeProperty['attributeID'] = attribute.getAttributeID();
+			attributeProperty['attributeSetObject'] = ReReplace(attribute.getAttributeSet().getAttributeSetObject(),"\b(\w)","\L\1","ALL");
+			//TODO: normalize attribute types to separate table
+			attributeProperty['ormtype'] = 'string';
+			ArrayAppend(attributesProperties,attributeProperty);
+		}
+		return attributesProperties;
+	}
+	
+	public any function getFilterProperties(string includesList = "", string excludesList = ""){
+		var properties = getProperties();
+		var defaultProperties = [];
+		for(var p=1; p<=arrayLen(properties); p++) {
+			if((len(includesList) && ListFind(arguments.includesList,properties[p].name) && !ListFind(arguments.excludesList,properties[p].name)) 
+			|| (!structKeyExists(properties[p], "persistent") || properties[p].persistent)){
+				properties[p]['displayPropertyIdentifier'] = getPropertyTitle(properties[p].name);
+				arrayAppend(defaultProperties,properties[p]);	
+			}
+		}
+		return defaultProperties;
+	}
+	
 
 }

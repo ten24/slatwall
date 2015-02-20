@@ -371,6 +371,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public void function updateOrderAmountsWithPromotions(required any order) {
 		
+		// Set up a promotionEffectiveDateTime in case this is an order that has already been placed
+		var promotionEffectiveDateTime = now();
+		if(arguments.order.getOrderStatusType().getSystemCode() != "ostNotPlaced" && !isNull(arguments.order.getOrderOpenDateTime())) {
+			promotionEffectiveDateTime = arguments.order.getOrderOpenDateTime();
+		}
+		
 		// Sale & Exchange Orders
 		if( listFindNoCase("otSalesOrder,otExchangeOrder", arguments.order.getOrderType().getSystemCode()) ) {
 			
@@ -385,7 +391,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// This is a structure of orderItems with all of the potential discounts that apply to them
 			var orderItemQualifiedDiscounts = {};
 			
-			setupOrderItemQualifiedDiscounts(arguments.order,orderItemQualifiedDiscounts);
+			setupOrderItemQualifiedDiscounts(arguments.order, orderItemQualifiedDiscounts);
 			
 			// Loop over all Potential Discounts that require qualifications
 			var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true);

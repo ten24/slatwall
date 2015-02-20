@@ -53,6 +53,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="locationService" type="any";
 	property name="skuService" type="any";
 	property name="settingService" type="any";
+	property name="typeService" type="any";
 	
 	// Inject DAO's
 	property name="stockDAO" type="any";
@@ -374,8 +375,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		
-		// Physical (Maybe Incoming, Maybe Outgoing)
-		if( listFindNoCase("satPhysicalCount", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) ) {
+		// Physical / Makeup / Breakup (Maybe Incoming, Maybe Outgoing)
+		if( listFindNoCase("satPhysicalCount,satMakeupBundledSkus,satBreakupBundledSkus", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) ) {
 			
 			var headObjects = {};
 			
@@ -424,7 +425,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		// Set the status to closed
-		arguments.stockAdjustment.setStockAdjustmentStatusType( getSettingService().getTypeBySystemCode("sastClosed") );	
+		arguments.stockAdjustment.setStockAdjustmentStatusType( getTypeService().getTypeBySystemCode("sastClosed") );	
 
 	return arguments.stockAdjustment;
 

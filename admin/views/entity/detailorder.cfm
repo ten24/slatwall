@@ -58,6 +58,7 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.edit" default="false" />
 <cfparam name="rc.order" type="any" />
 
@@ -94,105 +95,57 @@ Notes:
 			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addOrderPayment" type="list" modal="true" />
 			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addPromotionCode" type="list" modal="true" />
 			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="orderID=#rc.order.getOrderID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
+		
+			<li class="divider"></li>
+			
+			<!--- Duplicate --->
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="duplicateOrder" type="list" modal="true" />
 		</hb:HibachiEntityActionBar>
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList divclass="span6">
-				
-				<!--- Account --->
-				<cfif rc.edit>
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="account" fieldtype="textautocomplete" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" edit="true">
-				<cfelseif !isNull(rc.order.getAccount())>
-					<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="fullName" valuelink="?slatAction=admin:entity.detailaccount&accountID=#rc.order.getAccount().getAccountID()#">
-					<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="emailAddress" valuelink="mailto:#rc.order.getAccount().getEmailAddress()#">
-					<hb:HibachiPropertyDisplay object="#rc.order.getAccount()#" property="phoneNumber">
-				</cfif>
-				
-				<!--- Origin --->
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="orderOrigin" edit="#rc.edit#">
-				
-				<!--- Order Type --->
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="orderType" edit="#rc.edit#">
-
-				<!--- Default Stock Location --->
-				<hb:HibachiPropertyDisplay object="#rc.order#" property="defaultStockLocation" edit="#rc.edit#">
-				
-				<!--- Referenced Order --->
-				<cfif !isNull(rc.order.getReferencedOrder())>
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="referencedOrder" valuelink="?slatAction=admin:entity.detailorder&orderID=#rc.order.getReferencedOrder().getOrderID()#">
-				</cfif>
-				
-			</hb:HibachiPropertyList>
-			<hb:HibachiPropertyList divclass="span6">
-				
-				<!--- Totals --->
-				<hb:HibachiPropertyTable>
-					<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailorder.overview')#" />
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="orderStatusType" edit="false" displayType="table">
-					<cfif !isNull(rc.order.getOrderOpenDateTime())>
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="orderOpenDateTime" edit="false" displayType="table">
-					</cfif>
-					<cfif !isNull(rc.order.getOrderCloseDateTime())>
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="orderCloseDateTime" edit="false" displayType="table">
-					</cfif>
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="currencyCode" edit="false" displayType="table">
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="subTotal" edit="false" displayType="table">
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="taxTotal" edit="false" displayType="table">
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="fulfillmentTotal" edit="false" displayType="table">
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="discountTotal" edit="false" displayType="table">
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="total" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
-					<hb:HibachiPropertyTableBreak header="#$.slatwall.rbKey('admin.entity.detailorder.payments')#" />
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="paymentAmountReceivedTotal" edit="false" displayType="table">
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="paymentAmountCreditedTotal" edit="false" displayType="table">
-					<cfif arrayLen(rc.order.getReferencingOrders())>
-						<hb:HibachiPropertyDisplay object="#rc.order#" property="referencingPaymentAmountCreditedTotal" edit="false" displayType="table">
-					</cfif>
-					<hb:HibachiPropertyDisplay object="#rc.order#" property="paymentAmountDue" edit="false" displayType="table" titleClass="table-total" valueClass="table-total">
-				</hb:HibachiPropertyTable>
-				
-			</hb:HibachiPropertyList>
-			
-		</hb:HibachiPropertyRow>
-		
 		<!--- Tabs --->
-		<hb:HibachiTabGroup object="#rc.order#">
-			
+		<hb:HibachiEntityDetailGroup object="#rc.order#">
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<!--- Sale Items --->
 			<cfif listFindNoCase("otSalesOrder,otExchangeOrder", rc.order.getOrderType().getSystemCode())>
-				<hb:HibachiTab view="admin:entity/ordertabs/saleorderitems" count="#rc.order.getSaleItemSmartList().getRecordsCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/saleorderitems" open="true" count="#rc.order.getSaleItemSmartList().getRecordsCount()#" />
+			</cfif>
+			
+			<!--- Deposit Items --->
+			<cfif listFindNoCase("otSalesOrder,otExchangeOrder", rc.order.getOrderType().getSystemCode())>
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/depositorderitems" count="#rc.order.getDepositItemSmartList().getRecordsCount()#" />
 			</cfif>
 			
 			<!--- Return Items --->
 			<cfif listFindNoCase("otReturnOrder,otExchangeOrder", rc.order.getOrderType().getSystemCode())>
-				<hb:HibachiTab view="admin:entity/ordertabs/returnorderitems" count="#rc.order.getReturnItemSmartList().getRecordsCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/returnorderitems" count="#rc.order.getReturnItemSmartList().getRecordsCount()#" />
 			</cfif>
 			
 			<!--- Payments --->
-			<hb:HibachiTab view="admin:entity/ordertabs/orderpayments" count="#rc.order.getOrderPaymentsCount()#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderpayments" count="#rc.order.getOrderPaymentsCount()#" />
 			
 			<!--- Fulfillment / Delivery --->
 			<cfif rc.order.getOrderType().getSystemCode() eq "otSalesOrder" or rc.order.getOrderType().getSystemCode() eq "otExchangeOrder">
-				<hb:HibachiTab view="admin:entity/ordertabs/orderfulfillments" count="#rc.order.getOrderFulfillmentsCount()#" />
-				<hb:HibachiTab view="admin:entity/ordertabs/orderdeliveries" count="#rc.order.getOrderDeliveriesCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderfulfillments" count="#rc.order.getOrderFulfillmentsCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderdeliveries" count="#rc.order.getOrderDeliveriesCount()#" />
 			</cfif>
 			
 			<!--- Returns / Receivers --->
 			<cfif rc.order.getOrderType().getSystemCode() eq "otReturnOrder" or rc.order.getOrderType().getSystemCode() eq "otExchangeOrder">
-				<hb:HibachiTab view="admin:entity/ordertabs/orderreturns" count="#rc.order.getOrderReturnsCount()#" />
-				<hb:HibachiTab view="admin:entity/ordertabs/stockreceivers" count="#rc.order.getStockReceiversCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderreturns" count="#rc.order.getOrderReturnsCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/stockreceivers" count="#rc.order.getStockReceiversCount()#" />
 			</cfif>
 			
 			<!--- Promotions --->
-			<hb:HibachiTab view="admin:entity/ordertabs/promotions" count="#rc.order.getPromotionCodesCount()#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/promotions" count="#rc.order.getPromotionCodesCount()#" />
 			
 			<!--- Referencing Orders --->
 			<cfif rc.order.getReferencingOrdersCount()>
-				<hb:HibachiTab view="admin:entity/ordertabs/referencingOrders" count="#rc.order.getReferencingOrdersCount()#" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/referencingOrders" count="#rc.order.getReferencingOrdersCount()#" />
 			</cfif>
 			
 			<!--- Account Details --->
 			<cfif not isNull(rc.order.getAccount()) and not rc.order.getAccount().getNewFlag()>
-				<hb:HibachiTab view="admin:entity/ordertabs/accountdetails" />
+				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/accountdetails" />
 			</cfif>
 			
 			<!--- Custom Attributes --->
@@ -201,9 +154,9 @@ Notes:
 			</cfloop>
 			
 			<!--- Comments --->
-			<swa:SlatwallAdminTabComments object="#rc.order#" />
+			<swa:SlatwallAdminTabComments object="#rc.order#" childObjects="#rc.order.getOrderItems()#" />
 			
-		</hb:HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 
 	</hb:HibachiEntityDetailForm>
 
