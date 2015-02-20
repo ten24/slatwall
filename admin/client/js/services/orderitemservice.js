@@ -54,7 +54,6 @@ angular.module('slatwalladmin')
 							$log.debug(discountData.discountAmount);
 							orderItem.discount += parseFloat(discountData.discountAmount);
 							//----------------------Calculates the total for the orderitem>
-							//Figure out the total. (still need to subtract the discount amount)
 							orderItem.total = ((parseFloat(orderItemData.price) * parseFloat(orderItemData.quantity)) - parseFloat(orderItem.discount));
 							//---------------------------------------------------------------->	
 						});
