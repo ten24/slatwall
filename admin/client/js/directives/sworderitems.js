@@ -180,12 +180,9 @@ angular.module('slatwalladmin')
 				          "propertyIdentifier": "_orderitem.order.orderID",
 				          "comparisonOperator": "=",
 				          "value": scope.orderId,
-				        }
-				      ]
-				    },
-				    {
-				      "filterGroup": [
+				        },
 				        {
+				        	"logicalOperator":"AND",
 				          "propertyIdentifier": "_orderitem.parentOrderItem",
 				          "comparisonOperator": "is",
 				          "value": "null",
