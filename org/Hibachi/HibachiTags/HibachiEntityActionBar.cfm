@@ -116,7 +116,7 @@
 											<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="##"><i class="fa fa-envelope"></i></a>
 											<ul class="dropdown-menu pull-right">
 												<cfloop array="#attributes.object.getEmailTemplates()#" index="template">
-													<hb:HibachiProcessCaller action="admin:entity.preprocessemail" entity="Email" processContext="addToQueue" queryString="emailTemplateID=#template.getEmailTemplateID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getEmailTemplateName()#" modal="true" modalfullwidth="true" type="list" />
+													<hb:HibachiProcessCaller action="admin:entity.preprocessemail" entity="Email" processContext="addToQueue" queryString="emailTemplateID=#template.getEmailTemplateID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getEmailTemplateName()#" modal="true" modalfullwidth="true" type="button" />
 												</cfloop>
 											</ul>
 										</cfif>

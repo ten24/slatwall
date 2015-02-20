@@ -283,6 +283,16 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return variables.printTemplates;
 	}
 
+	public array function getListPrintTemplates() {
+		if(!structKeyExists(variables, "listPrintTemplates")) {
+			var sl = getService("templateService").getPrintTemplateSmartList();
+			sl.addFilter('printTemplateObject', getClassName());
+			sl.addFilter('listTemplateFlag',true);
+			variables.listPrintTemplates = sl.getRecords();
+		}
+		return variables.listPrintTemplates;
+	}
+
 	public array function getEmailTemplates() {
 		if(!structKeyExists(variables, "emailTemplates")) {
 			var sl = getService("templateService").getEmailTemplateSmartList();
@@ -292,6 +302,16 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		return variables.emailTemplates;
 	}
 	
+	public array function getListEmailTemplates() {
+		if(!structKeyExists(variables, "listEmailTemplates")) {
+			var sl = getService("templateService").getEmailTemplateSmartList();
+			sl.addFilter('emailTemplateObject', getClassName());
+			sl.addFilter('listTemplateFlag',true);
+			variables.listEmailTemplates = sl.getRecords();
+		}
+		return variables.listEmailTemplates;
+	}
+
 	public string function getShortReferenceID( boolean createNewFlag=false ) {
 		if(len(getPrimaryIDValue())) {
 			return getService("dataService").getShortReferenceID(referenceObjectID=getPrimaryIDValue(), referenceObject=getClassName(), createNewFlag=arguments.createNewFlag);	

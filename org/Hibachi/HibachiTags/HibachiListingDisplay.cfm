@@ -332,6 +332,33 @@
 								<ul class="dropdown-menu pull-right" role="menu">
 									<hb:HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
 								</ul>
+								<cfif thistag.multiselectable>
+									<!--- Listing: Email / Print --->
+									<div class="btn-group btn-group-sm">
+										<cfif arrayLen(thistag.exampleEntity.getListEmailTemplates()) || arrayLen(thistag.exampleEntity.getListPrintTemplates())>
+											<!--- Email --->
+											<cfif arrayLen(thistag.exampleEntity.getListEmailTemplates())>
+												<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="##"><i class="fa fa-envelope"></i></a>
+												<ul class="dropdown-menu pull-right">
+													<cfloop array="#thistag.exampleEntity.getListEmailTemplates()#" index="template">
+														<hb:HibachiProcessCaller action="admin:entity.processemail" entity="Email" processContext="addToQueue" queryString="emailTemplateID=#template.getEmailTemplateID()#&#thistag.exampleEntity.getPrimaryIDPropertyName()#=#thistag.exampleEntity.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getEmailTemplateName()#"  type="button" class="btn-link" submit="true" />
+													</cfloop>
+
+												</ul>
+											</cfif>
+											<!--- Print --->
+											<cfif arrayLen(thistag.exampleEntity.getListPrintTemplates())>
+												<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="##"><i class="fa fa-print"></i></a>
+												<ul class="dropdown-menu pull-right">
+													<cfloop array="#thistag.exampleEntity.getListPrintTemplates()#" index="template">
+														<hb:HibachiProcessCaller action="admin:entity.processprint" entity="Print" processContext="addToQueue" queryString="printTemplateID=#template.getPrintTemplateID()#&printID=&#thistag.exampleEntity.getPrimaryIDPropertyName()#=#thistag.exampleEntity.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getPrintTemplateName()#" type="button" />
+													</cfloop>
+												</ul>
+											</cfif>
+										</cfif>
+									</div>
+									<!--- Listing: Print --->
+									</cfif>
 								<!--- Listing: Button Groups --->
 								<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
 									<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">

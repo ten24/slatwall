@@ -12,6 +12,7 @@
 		</hb:HibachiPropertyList>
 		<hb:HibachiPropertyList divClass="col-md-6">
 			<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="emailTemplateObject" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.emailTemplate#" property="listTemplateFlag" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>
