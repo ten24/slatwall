@@ -26,6 +26,7 @@
 					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="requiredFlag" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="accountSaveFlag" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="additionalCharge" edit="#rc.edit#">
+					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="displayOnOrderDetailFlag" edit="#rc.edit#">
 				</cfif>
 			</hb:HibachiPropertyList>
 		</cfif>

@@ -122,7 +122,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				copyPersonalDataFlag=false
 			};
 			
-		var newOrder = this.processOrder(order,data,"duplicateOrder" );
+		var newOrder = this.processOrder(arguments.originalOrder,data,"duplicateOrder" );
 		
 		// Update Account
 		newOrder.setAccount( arguments.newAccount );
