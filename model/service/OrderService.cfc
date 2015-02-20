@@ -1641,7 +1641,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			arguments.childOrderItem.setSkuPrice( arguments.childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
 			arguments.childOrderItem.setParentOrderItem( arguments.parentOrderItem );
-			
+			arguments.childOrderItem.setOrder( arguments.order );
 			if(structKeyExists(childOrderItemData,'childOrderItems')){
 				for(var childOfChildOrderItemData in arguments.childOrderItemData.childOrderItems) {
 					var childOfChildOrderItem = this.newOrderItem();
