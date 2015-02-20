@@ -305,7 +305,7 @@ function setupEventHandlers() {
 
 		var modalLink = initModal( jQuery(this) );
 
-		jQuery('#adminModal').load( modalLink, function(){
+		jQuery('#adminModal').load( modalLink.url,modalLink.data, function(){
 
 			initUIElements('#adminModal');
 
@@ -325,7 +325,7 @@ function setupEventHandlers() {
 
 		var modalLink = initModal( jQuery(this) );
 
-		jQuery('#adminModal').load( modalLink, function(){
+		jQuery('#adminModal').load( modalLink.url,modalLink.data, function(){
 
 			initUIElements('#adminModal');
 
@@ -358,6 +358,24 @@ function setupEventHandlers() {
 		});
 
 	});
+
+	jQuery('body').on('click','[data-postVariables]',function(e){
+		e.preventDefault();	
+
+		var postVars=jQuery(this).attr('data-postVariables');
+		var f = $('<form method="post" action="' + $(this).attr('href') + '"></form>');
+		if(typeof postVars !='undefined'){
+			var postVarsA=postVars.split(',');
+			for(var i=0; i<postVarsA.length;i++){
+				var hinput=jQuery('<input type="hidden" name="'+postVarsA[i]+'" value="'+jQuery('input[name='+postVarsA[i]+']').val()+'" />');
+				f.append(hinput);
+			}
+		}
+		
+    	f.appendTo($('body')); 
+    	f.submit();
+
+	})
 
 	//kill all ckeditor instances on modal window close
 	jQuery('#adminModal ').on('hidden', function(){
@@ -874,17 +892,27 @@ function initModal( modalWin ){
 	jQuery('#adminModal').html('<img src="' + hibachiConfig.baseURL + '/org/Hibachi/HibachiAssets/images/loading.gif" style="position:absolute;top:50%;left:50%;padding:20px;" />');
 	var modalLink = jQuery( modalWin ).attr( 'href' );
 
-	if( modalLink.indexOf("?") !== -1) {
-		modalLink = modalLink + '&modal=1';
-	} else {
-		modalLink = modalLink + '?modal=1';
-	}
+	var modalRequestObj = new Object();
+	var m=modalLink.split('?');
+	modalRequestObj.url=m[0]+'/?modal=1';
+	modalRequestObj.data=JSON.parse('{"' + decodeURI(m[1].replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}');
+
 
 	if( jQuery( modalWin ).hasClass('modal-fieldupdate-textautocomplete') ) {
-		modalLink = modalLink + '&ajaxsubmit=1';
+		modalRequestObj.ajaxsubmit=1;
 	}
 
-	return modalLink;
+	var postVars=jQuery(modalWin).attr('data-postVariables');
+		if(typeof postVars !='undefined'){
+			//Find and add in the additional variables to pass in
+			var postVarsA=postVars.split(',');
+			for(var i=0; i<postVarsA.length;i++){
+				modalRequestObj.data[postVarsA[i]]=jQuery('input[name='+postVarsA[i]+']').val();	
+			}
+			
+		}
+
+	return modalRequestObj;
 }
 
 function updatePermissionCheckboxDisplay( checkbox ) {
