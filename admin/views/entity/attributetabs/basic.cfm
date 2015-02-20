@@ -8,7 +8,6 @@
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="activeFlag" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="displayOnOrderDetailFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="requiredFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="attributeName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="attributeCode" edit="#rc.edit#">
