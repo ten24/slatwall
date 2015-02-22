@@ -52,6 +52,7 @@ component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttrib
 	// Persistent Properties
 	property name="attributeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean" default=1;
+	property name="displayOnOrderDetailFlag" ormtype="boolean" default=0;
 	property name="attributeName" ormtype="string";
 	property name="attributeCode" ormtype="string" index="PI_ATTRIBUTECODE";
 	property name="attributeDescription" ormtype="string" length="4000" ;
