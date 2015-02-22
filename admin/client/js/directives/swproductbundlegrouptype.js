@@ -21,7 +21,8 @@ angular.module('slatwalladmin')
 			scope:{
 				productBundleGroup:"="
 			},
-			controller: function($scope, $element,$attrs){
+			controller: function($scope, $element, $attrs ){
+				
 				$log.debug('productBundleGrouptype');
 				$log.debug($scope.productBundleGroup);
 				$scope.productBundleGroupTypes = {};
@@ -138,6 +139,7 @@ angular.module('slatwalladmin')
 				$scope.clickOutsideArgs = {
 					callBackActions : [$scope.closeAddScreen,$scope.clearTypeName]
 				};
+				
 				
 				//Works with swclickoutside directive to close dialog
 				$scope.closeThis = function (clickOutsideArgs) {
