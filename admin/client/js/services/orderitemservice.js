@@ -46,7 +46,7 @@ angular.module('slatwalladmin')
 					//---------------------->
 					//Get the applied promotions and iterate through them getting the discount amount on each and adding them up.
 					$log.debug("------>PROMOTIONS DISCOUNTS<------");
-					orderItem.discount = 0;
+					/*orderItem.discount = 0;
 					orderItem.total = 0;
 					var discountFromPromotionsPromise = orderItem.$$getAppliedPromotions();
 					discountFromPromotionsPromise.then(function(discount){
@@ -58,7 +58,7 @@ angular.module('slatwalladmin')
 							orderItem.total = ((parseFloat(orderItemData.price) * parseFloat(orderItemData.quantity)) - parseFloat(orderItem.discount));
 							//---------------------------------------------------------------->	
 						});
-					});
+					});*/
 					
 					//--------------------->Lets get the order fulfillment information.
 					var orderFulfillmentInformation = orderItem;

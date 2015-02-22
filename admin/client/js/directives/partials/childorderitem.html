@@ -4,6 +4,6 @@
 	<!-- <td class="s-details"><span ng-hide="orderItem.customAttributes.val === 'none'">{{orderItem.customAttributes.val}}1</span></td> -->
 	<td class="s-price">{{orderItem.data.skuPrice | currency}}</td>
 	<td class="s-qty">{{orderItem.data.quantity}}</td>
-	<td class="s-discount">-{{ orderItem.discount | currency }}</td>
-	<td class="s-total">{{orderItem.total | currency}}</td>
+	<td class="s-discount">-{{ orderItem.data.discountAmount | currency }}</td>
+	<td class="s-total">{{orderItem.data.itemTotal | currency}}</td>
 

@@ -169,7 +169,17 @@ angular.module('slatwalladmin')
 	 				      "propertyIdentifier": "_orderitem.sku.imageFile",
 	 				      "isVisible": true,
 	 				      "isDeletable": true
-	 				    }
+	 				    },
+	 				    {
+ 					      "title": "Total",
+ 					      "propertyIdentifier": "_orderitem.itemTotal",
+ 					      "persistent":false
+ 					    },
+ 					    {
+ 					      "title": "Discount Amount",
+ 					      "propertyIdentifier": "_orderitem.discountAmount",
+ 					      "persistent":false
+ 					    }
 	 				    
  				  ];
 				
