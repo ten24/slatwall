@@ -61,7 +61,7 @@ Notes:
 		<!--- Create ---> 
 		<hb:HibachiEntityActionBarButtonGroup>
 			<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('define.create')#" icon="plus" dropdownClass="pull-right">
-			<!--- <hb:HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.bundle')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=bundle" type="list" /> --->
+				<hb:HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.bundle')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=productBundle" type="list" /> 
 				<hb:HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.contentAccess')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=contentAccess" type="list" />
 				<hb:HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=event" type="list" />
 				<hb:HibachiActionCaller action="admin:entity.createproducttype" text="#rc.$.slatwall.rbKey('define.merchandise')# #rc.$.slatwall.rbKey('entity.producttype')#" querystring="baseProductType=merchandise" type="list" />
