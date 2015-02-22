@@ -44,6 +44,7 @@
 								data-page-start="pageStart"
 								data-page-end="pageEnd"
 								data-records-count="recordsCount"
+								data-get-collection="getCollection()"
 						>
 						</span>
 					</li>
@@ -198,7 +199,12 @@
 		<span sw-loading="collection">
 			<sw-collection-table
 				data-collection="collection"
-				data-collection-config="collectionConfig">
+				data-collection-config="collectionConfig"
+				
+				 sw-scroll-trigger
+				infinite-scroll="appendToCollection()"
+				infinite-scroll-disabled="autoScrollDisabled"
+				infinite-scroll-distance="1">
 			</sw-collection-table>  
 					
 			<div class="row">
