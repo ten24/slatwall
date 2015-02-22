@@ -12,15 +12,17 @@
 							typeahead="type.typeName for type in productBundleGroupTypes.getTypesByKeyword($viewValue) | filter:$viewValue"
 							typeahead-on-select="selectProductBundleGroupType($item, $model, $label)"
 					>
+					
 					<div class="input-group-btn">
 						<button type="button" class="btn btn-sm btn-default" ng-click="closeAddScreen();clearTypeName();">
 							<span ng-show="showAddProductBundleGroupTypeBtn" class="fa fa-caret-up"></span>
 							<span ng-show="!showAddProductBundleGroupTypeBtn" class="fa fa-caret-down"></span>
 						</button>
 					</div>
+					
 				</div>
 
-				<div ng-show="showAddProductBundleGroupTypeBtn">
+				<div ng-if="showAddProductBundleGroupTypeBtn && productBundleGroup.data.productBundleGroupType.data.typeName.length">
 					<button type="button"
 							class="btn s-btn-dgrey"
 							ng-show="showAddProductBundleGroupTypeBtn"
