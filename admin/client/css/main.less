@@ -7,6 +7,7 @@
 // --------------------------------------------------
 
 // Grayscale
+@black-2:                  darken(#fff, 2%);
 @black-5:                  darken(#fff, 5%);
 @black-10:                 darken(#fff, 10%);
 @black-20:                 darken(#fff, 20%);
@@ -521,8 +522,13 @@ input[type="file"] {display: block;width: auto;height: auto;padding: 0px;backgro
 .s-centered-logo {position: absolute;margin-left: -110px !important;}
 
 /* Detail Views */
-.s-property-info table {border:1px solid @black-10;}
-.s-property-info .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {border: 1px solid @black-10;}
+.s-property-info table {border:1px dotted @black-10;}
+.s-property-info .table>thead>tr>th, 
+.table>tbody>tr>th, .table>tfoot>tr>th, 
+.table>thead>tr>td, .table>tbody>tr>td, 
+.table>tfoot>tr>td {border-color:@black-10;}
+.s-order-item-table tbody tr td {border-bottom: 1px solid @black-2;}
+.s-order-item-table tbody .s-total td {border-bottom: 1px solid @black-10;}
 .s-property-info dt, .s-property-info dd {text-align:left;padding: 7px 0px 11px 0px; }
 .s-property-info dd {padding-left:10px;}
 .s-property-info dt {font-weight:600;}
@@ -1008,10 +1014,7 @@ tabel .s-table-header {margin-bottom:10px;}
 	list-style:none;
 }
 .s-order-item-table .s-fullfilment, .s-order-item-table .s-image, .s-order-item-table .s-actions {
-	background-color:#ffffff !important;
 	font-weight: normal !important;
-	border-bottom: 1px solid @black-10 !important;
-	border-right: 1px solid @black-10 !important;
 }
 .s-order-item-table .s-fullfilment .s-header {
 	font-weight: 600;
@@ -1028,14 +1031,11 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-order-item-table thead th {
 	font-weight: 600;
 }
-.s-order-item-table .s-main-product tr:first-child {
+/* .s-order-item-table .s-main-product tr:first-child {
 	font-weight: 600;
-} 
+}  */
 .s-order-item-table .s-bundle-product:first-child .s-title {
 	border-left: 1px solid #eee;
-}
-.s-order-item-table .s-bundle-product:first-child .s-total {
-	border-right: 1px solid @black-10;
 }
 .s-order-item-table .s-actions button {
 	height: 100%;
@@ -1049,6 +1049,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-order-item-table .s-actions {
 	padding: 0;
 	width: 40px;
+	border-bottom: 0px;
 }
 .s-order-item-table .s-actions .s-edit-btn:hover {
 	background-color: @black-5;
@@ -1095,26 +1096,23 @@ tabel .s-table-header {margin-bottom:10px;}
 }
 .s-order-item-table .s-content-access .s-title:before {
 	font-family: 'fontAwesome';
-	content: "\f13e";
+	content: "\f023";
 	margin-right:5px;
 	font-weight:normal;
 	color: @black-30;
 }
-.s-order-item-table .s-deposit .s-title:before, .s-order-item-table .s-deposit .s-title .s-status, .s-order-item-table .s-deposit .s-price, .s-order-item-table .s-deposit .s-price .s-price-list {
-	color: @brand-warning !important;
+.s-order-item-table .s-deposit {
+	background: lighten(@brand-warning, 35%) !important;
 }
-.s-order-item-table .s-pending-payment .s-title:before, .s-order-item-table .s-pending-payment .s-title .s-status, .s-order-item-table .s-pending-payment .s-price, .s-order-item-table .s-pending-payment .s-price .s-price-list {
-	color: @brand-success !important;
+.s-order-item-table .s-pending-payment {
+	background: lighten(@brand-success, 40%) !important;
 }
-.s-order-item-table .s-pending-payment .s-button-group {
+.s-order-item-table .s-button-group {
 	margin-top:5px;
 	margin-bottom:5px;
 }
-.s-order-item-table .s-bundle-product.s-return .s-title:before {
-	content: "\f112";
-}
-.s-order-item-table .s-product.s-return .s-title:before {
-	content: "\f112";
+.s-order-item-table .s-return {
+	background: #FEE;
 }
 .s-order-item-table .s-price-list {
 	font-size: 9px;
@@ -1133,11 +1131,32 @@ tabel .s-table-header {margin-bottom:10px;}
 	margin-bottom: 4px;
 	padding-bottom: 2px;
 }
-.s-order-item-table .s-details .s-detail-title, .s-order-item-table .s-customization .s-detail-title {
+.s-order-item-table .s-detail-title {
 	font-weight: 600;
 }
-.s-order-item-table .s-details .s-detail-content, .s-order-item-table .s-customization .s-detail-content {
+.s-order-item-table .s-details .s-detail-content, 
+.s-order-item-table .s-customization .s-detail-content {
 	margin-bottom: 5px;
+}
+.s-order-item-table .s-title button {
+	font-size:10px;
+}
+.s-order-item-table .s-title .s-status {
+	border-top: 1px dotted @black-5;
+	padding-top: 4px;
+	margin-top: 9px;
+	margin-bottom: 4px;
+}
+.s-order-item-table tbody > .s-total td {
+	background-color: @black-2;
+	text-align: right;
+	font-size: 13px;
+	padding-top: 4px;
+	font-weight: 600;
+}
+.s-order-item-table.table > tbody {
+	border:0px;
+	border-bottom: 2px solid #ddd;
 }
 .l-2 > .s-title {padding-left:20px;}
 .l-3 > .s-title {padding-left:40px;}
