@@ -2955,8 +2955,9 @@ tabel .s-table-header {
   padding-top: 4px;
   font-weight: 600;
 }
-.s-order-item-table.table > tbody + tbody {
+.s-order-item-table.table > tbody {
   border: 0px;
+  border-bottom: 2px solid #ddd;
 }
 .l-2 > .s-title {
   padding-left: 20px;
