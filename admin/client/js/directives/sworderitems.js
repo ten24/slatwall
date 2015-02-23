@@ -80,13 +80,17 @@ angular.module('slatwalladmin')
 			 				      "title": "Order Item Price",
 			 				      "propertyIdentifier": "_orderitem.price",
 			 				      "isVisible": true,
-			 				      "isDeletable": true
+			 				      "isDeletable": true,
+			 				     "isSearchable":true,
+			 				      "ormtype":"big_decimal"
 			 				},
 		 				    {
 		 				      "title": "Sku Name",
 		 				      "propertyIdentifier": "_orderitem.sku.skuName",
 		 				      "isVisible": true,
-		 				      "isDeletable": true
+		 				      "isDeletable": true,
+		 				     "isSearchable":true,
+		 				      "ormtype":"string"
 		 				    },
 		 				   {
 			 				      "title": "Sku Price",
@@ -104,6 +108,7 @@ angular.module('slatwalladmin')
 		 				      "title": "SKU Code",
 		 				      "propertyIdentifier": "_orderitem.sku.skuCode",
 		 				      "isSearchable":true,
+		 				      "ormtype":"string",
 		 				      "isVisible": true,
 		 				      "isDeletable": true
 		 				      },
@@ -141,7 +146,9 @@ angular.module('slatwalladmin')
 		 				      "title": "Qty.",
 		 				      "propertyIdentifier": "_orderitem.quantity",
 		 				      "isVisible": true,
-		 				      "isDeletable": true
+		 				      "isDeletable": true,
+		 				     "isSearchable":true,
+		 				      "ormtype":"integer"
 		 				      },
 		 				      	{
 			 				      "title": "Fulfillment Method Name",
@@ -165,37 +172,49 @@ angular.module('slatwalladmin')
 		 				      "title": "Street Address",
 		 				      "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",
 		 				      "isVisible": true,
-		 				      "isDeletable": true
+		 				      "isDeletable": true,
+		 				     "isSearchable":true,
+		 				      "ormtype":"string"
 		 				    },
 		 				    {
 		 				      "title": "Street Address 2",
 		 				      "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.street2Address",
 		 				      "isVisible": true,
-		 				      "isDeletable": true
+		 				      "isDeletable": true,
+			 				     "isSearchable":true,
+			 				      "ormtype":"string"
 		 				    },
 		 				    {
 		 				      "title": "Postal Code",
 		 				      "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.postalCode",
 		 				      "isVisible": true,
-		 				      "isDeletable": true
+		 				      "isDeletable": true,
+			 				     "isSearchable":true,
+			 				      "ormtype":"string"
 		 				    },
 		 				    {
 		 				      "title": "City",
 		 				      "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.city",
 		 				      "isVisible": true,
-		 				      "isDeletable": true
+		 				      "isDeletable": true,
+			 				     "isSearchable":true,
+			 				      "ormtype":"string"
 		 				    },
 		 				    {
 		 				      "title": "State",
 		 				      "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.stateCode",
 		 				      "isVisible": true,
-		 				      "isDeletable": true
+		 				      "isDeletable": true,
+			 				     "isSearchable":true,
+			 				      "ormtype":"string"
 		 				    },
 		 				    {
 		 				      "title": "Country",
 		 				      "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.countryCode",
 		 				      "isVisible": true,
-		 				      "isDeletable": true
+		 				      "isDeletable": true,
+			 				     "isSearchable":true,
+			 				      "ormtype":"string"
 		 				    },
 		 				    {
 		 				      "title": "Image File Name",
