@@ -241,7 +241,7 @@ angular.module('slatwalladmin')
 					//add attributes to the column config
 					angular.forEach(scope.attributes,function(attribute){
 						var attributeColumn = {
-							propertyIdentifier:"_orderItem."+attribute.attributeCode,
+							propertyIdentifier:"_orderitem."+attribute.attributeCode,
 							attributeID:attribute.attributeID,
 					         attributeSetObject:"orderItem"
 						};
@@ -287,7 +287,7 @@ angular.module('slatwalladmin')
 						var collectionConfig = {};
 						collectionConfig.columns = columnsConfig;
 						collectionConfig.baseEntityName = 'SlatwallOrderItem';
-						collectionConfig.baseEntityAlias = '_orderItem';
+						collectionConfig.baseEntityAlias = '_orderitem';
 						scope.test = $slatwall.populateCollection(value.pageRecords,collectionConfig);
 						console.log('transformtest');
 						console.log(scope.test);

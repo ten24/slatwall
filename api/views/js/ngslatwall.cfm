@@ -113,17 +113,26 @@ Notes:
 				    			var entities = [];
 				    			//loop over all collection data to create objects
 				    			angular.forEach(collectionData, function(collectionItemData, key){
-				    				console.log(collectionItemData);
 				    				//create Entity
 				    				var entity = slatwallService['new'+collectionConfig.baseEntityName.replace('Slatwall','')]();
 				    				//populate entity with data based on the collectionConfig
 				    				angular.forEach(collectionConfig.columns, function(column, key){
 				    					//get objects base properties
+				    					var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias+'.','');
 				    					if(column.propertyIdentifier.split('.').length == 2){
-				    						var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias+'.','');
-				    						console.log(collectionConfig.baseEntityAlias);
-				    						console.log(column);
-				    						entity.data[propertyIdentifier] = collectionItemData[propertyIdentifier];
+				    						
+				    						if(angular.isObject(collectionItemData[propertyIdentifier]) && entity.metaData[propertyIdentifier].fieldtype === 'many-to-one'){
+				    							var relatedEntity = slatwallService['new'+entity.metaData[propertyIdentifier].cfc]();
+				    							relatedEntity.$$init(collectionItemData[propertyIdentifier][0]);
+				    							entity['$$set'+entity.metaData[propertyIdentifier].name.charAt(0).toUpperCase()+entity.metaData[propertyIdentifier].name.slice(1)](relatedEntity);
+				    						}else{
+				    							entity.data[propertyIdentifier] = collectionItemData[propertyIdentifier];
+				    						}
+				    					}else{
+				    						//for each object
+				    						angular.forEach(propertyIdentifier.split('.'),function(){
+				    							
+				    						});
 				    					}
 				    				});
 				    				entities.push(entity);
