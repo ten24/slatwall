@@ -78,6 +78,22 @@
 						<!-- Begin Merchandise Row -->
 					</tbody>
 				</table>
+				<div class="row">
+					<div class="col-md-12" span ng-show="pageShow !== 'Auto'">
+						<div class="dataTables_info" id="example3_info" ng-show="recordsCount()">
+							Showing 
+							<b>
+								<span ng-bind="pageStart()">
+									<!--- record start --->
+								</span>
+								to <span ng-bind="pageEnd()"><!---records end --->
+								<span>
+							</b>
+							of <span ng-bind="recordsCount()"><!--- records Count ---></span> entries
+						</div>
+						<div ng-hide="recordsCount()" sw-rbkey="'admin.define.norecordsfound'"></div>
+					</div>
+				</div>
 			</span>
 		</div>
 	</div>
