@@ -470,6 +470,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 		HQL = createHQLFromCollectionObject(this,arguments.excludeSelectAndOrderBy);
+		//writedump(var=HQL,top=2);abort;
+		
 		return HQL;
 	}
 	

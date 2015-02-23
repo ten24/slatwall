@@ -1,6 +1,7 @@
 angular.module('slatwalladmin')
 .directive('swOrderItems', [
 '$log',
+'$timeout',
 '$location',
 '$slatwall',
 'formService',
@@ -10,6 +11,7 @@ angular.module('slatwalladmin')
 
 	function(
 	$log,
+	$timeout,
 	$location,
 	$slatwall,
 	formService,
@@ -33,6 +35,24 @@ angular.module('slatwalladmin')
 				scope.recordsCount = paginationService.getRecordsCount;
 				scope.autoScrollPage = 1;
 				scope.autoScrollDisabled = false;
+				
+				scope.keywords = "";
+				scope.loadingCollection = false;
+				var searchPromise;
+				scope.searchCollection = function($timout){
+					if(searchPromise) {
+						$timeout.cancel(searchPromise);
+					}
+					
+					searchPromise = $timeout(function(){
+						$log.debug('search with keywords');
+						$log.debug(scope.keywords);
+						//Set current page here so that the pagination does not break when getting collection
+						paginationService.setCurrentPage(1);
+						scope.loadingCollection = true;
+						scope.getCollection();
+					}, 500);
+				};
 				
 				$log.debug('Init Order Item');
 				$log.debug(scope.orderId);	
@@ -83,6 +103,7 @@ angular.module('slatwalladmin')
 		 				      {
 		 				      "title": "SKU Code",
 		 				      "propertyIdentifier": "_orderitem.sku.skuCode",
+		 				      "isSearchable":true,
 		 				      "isVisible": true,
 		 				      "isDeletable": true
 		 				      },
@@ -217,7 +238,8 @@ angular.module('slatwalladmin')
 						columnsConfig:angular.toJson(columnsConfig),
 						filterGroupsConfig:angular.toJson(filterGroupsConfig),
 						currentPage:scope.currentPage,
-						pageShow:scope.pageShow
+						pageShow:scope.pageShow,
+						keywords:scope.keywords
 					};
 					//Create a list of order items.
 					//scope.orderItems = [];
@@ -229,6 +251,7 @@ angular.module('slatwalladmin')
 					orderItemsPromise.then(function(value){
 						scope.collection = value;
 						scope.orderItems = orderItemService.decorateOrderItems(value.pageRecords);
+						scope.loadingCollection = false;
 						//scope.orderItems = value.records;
 						console.log('order items');
 						console.log(scope.orderItems);
