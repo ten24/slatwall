@@ -71,10 +71,12 @@
 							<th>Discount</th>
 							<th>Total</th>
 							<th>Fullfilment</th>
+							<!-- place all attributes here -->
+							<th ng-repeat="attribute in attributes" ng-bind="attribute.attributeName"></th>
 							<th></th>
 						</tr>
 					</thead>
-					<tbody  ng-repeat="orderItem in orderItems" sw-order-item data-order-item="orderItem" data-order-id="orderId">
+					<tbody  ng-repeat="orderItem in orderItems" sw-order-item data-order-item="orderItem" data-attributes="attributes" data-order-id="orderId">
 						<!-- Begin Merchandise Row -->
 					</tbody>
 				</table>

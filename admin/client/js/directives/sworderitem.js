@@ -22,11 +22,12 @@ angular.module('slatwalladmin').directive('swOrderItem',
 		restrict : "A",
 		scope:{
 			orderItem:"=",
-			orderId:"@"
+			orderId:"@",
+			attributes:"="
 		},
 		templateUrl:partialsPath+"orderitem.html",
 		link : function(scope, element, attr) {
-			$log.debug('order item');
+			$log.debug('order item init');
 			$log.debug(scope.orderItem);
 			//define how we get child order items
 			var columnsConfig =[
@@ -184,6 +185,16 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			    
 			    
 			];
+			
+			//add attributes to the column config
+			angular.forEach(scope.attributes,function(attribute){
+				var attributeColumn = {
+					propertyIdentifier:"_orderItem."+attribute.attributeCode,
+					attributeID:attribute.attributeID,
+			         attributeSetObject:"orderItem"
+				};
+				columnsConfig.push(attributeColumn);
+			});
 		
 			var filterGroupsConfig =[
 			    {
@@ -204,8 +215,6 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			};
 			//Create a list of order items.
 			scope.childOrderItems = [];
-			//scope.orderAttributes = [];
-			//scope.attributeValues = [];
 			scope.orderItem.depth = 1;
 			
 			//scope.orderItem.childItemsRetrieved = false;

@@ -36,7 +36,6 @@ angular.module('slatwalladmin')
 				scope.autoScrollPage = 1;
 				scope.autoScrollDisabled = false;
 				
-				
 				scope.keywords = "";
 				scope.loadingCollection = false;
 				var searchPromise;
@@ -57,13 +56,13 @@ angular.module('slatwalladmin')
 				
 				$log.debug('Init Order Item');
 				$log.debug(scope.orderId);	
-				scope.customAttributeNames = [];
 				
 				//Setup the data needed for each order item object.
 				scope.getCollection = function(){
 					if(scope.pageShow === 'Auto'){
 						scope.pageShow = 50;
 					}
+					
 					var columnsConfig =[
 					         {
 		 				      "isDeletable": false,
@@ -239,6 +238,16 @@ angular.module('slatwalladmin')
 		 				    
 	 				  ];
 					
+					//add attributes to the column config
+					angular.forEach(scope.attributes,function(attribute){
+						var attributeColumn = {
+							propertyIdentifier:"_orderItem."+attribute.attributeCode,
+							attributeID:attribute.attributeID,
+					         attributeSetObject:"orderItem"
+						};
+						columnsConfig.push(attributeColumn);
+					});
+					
 					var filterGroupsConfig =[
 					    {
 					      "filterGroup": [
@@ -274,13 +283,74 @@ angular.module('slatwalladmin')
 					orderItemsPromise.then(function(value){
 						scope.collection = value;
 						scope.orderItems = orderItemService.decorateOrderItems(value.pageRecords);
+						
+						var collectionConfig = {};
+						collectionConfig.columns = columnsConfig;
+						collectionConfig.baseEntityName = 'SlatwallOrderItem';
+						collectionConfig.baseEntityAlias = '_orderItem';
+						scope.test = $slatwall.populateCollection(value.pageRecords,collectionConfig);
+						console.log('transformtest');
+						console.log(scope.test);
+						
 						scope.loadingCollection = false;
 						//scope.orderItems = value.records;
 						console.log('order items');
 						console.log(scope.orderItems);
 					});
 				}
-				scope.getCollection();
+				//get all possible attributes
+				var attributesConfig = [  
+                    {  
+                        "propertyIdentifier":"_attribute.attributeID",
+                        "ormtype":"id",
+                        "title":"attributeID",
+                     },
+                     {  
+                        "propertyIdentifier":"_attribute.attributeCode",
+                        "ormtype":"string",
+                        "title":"Attribute Code",
+                     },
+                     {  
+                         "propertyIdentifier":"_attribute.attributeName",
+                         "ormtype":"string",
+                         "title":"Attribute Name",
+                      }
+                  ];	
+				
+				var attributesFilters =[
+				    {
+					    "filterGroup": [
+	     			        {
+	     			          "propertyIdentifier": "_attribute.displayOnOrderDetailFlag",
+	     			          "comparisonOperator": "=",
+	     			          "value": "true"
+	     			        },
+	     			       {
+	     			        	"logicalOperator":"AND",
+	     			          "propertyIdentifier": "_attribute.activeFlag",
+	     			          "comparisonOperator": "=",
+	     			          "value": "true"
+	     			        }
+     			      ]
+     			    }
+     			];
+				var attributeOptions = {
+						columnsConfig:angular.toJson(attributesConfig),
+						filterGroupsConfig:angular.toJson(attributesFilters),
+						allRecords:true
+					};
+				var attItemsPromise = $slatwall.getEntity('attribute', attributeOptions);
+				attItemsPromise.then(function(value){
+					scope.attributes = [];
+					angular.forEach(value.records, function(attributeItemData){
+						//Use that custom attribute name to get the value.
+						scope.attributes.push(attributeItemData);
+						
+					});
+					scope.getCollection();
+				});
+				
+				
 				
 				scope.appendToCollection = function(){
 					if(scope.pageShow === 'Auto'){

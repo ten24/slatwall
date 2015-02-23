@@ -37,11 +37,12 @@ angular.module('slatwalladmin')
 				}
 			},
 			listLen:function(list,delimiter){
+				console.log('listlen');
 				if(angular.isUndefined(delimiter)){
 					delimiter = ',';
 				}
 				var splitString = list.split(delimiter);
-				return splitString.size();
+				return splitString.length;
 			}
 		};
 		

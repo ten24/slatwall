@@ -16,6 +16,9 @@ angular.module('slatwalladmin')
 					
 					//---Create the orderItem object.---------------------->
 					var orderItem = $slatwall.newOrderItem();
+					console.log('newOrderItem');
+					console.log(orderItem);
+					console.log(orderItemData);
 					orderItem.$$init(orderItemData);
 					orderItems.push(orderItem);
 					//---------------------------------------------------------->
@@ -46,19 +49,7 @@ angular.module('slatwalladmin')
 					//---------------------->
 					//Get the applied promotions and iterate through them getting the discount amount on each and adding them up.
 					$log.debug("------>PROMOTIONS DISCOUNTS<------");
-					/*orderItem.discount = 0;
-					orderItem.total = 0;
-					var discountFromPromotionsPromise = orderItem.$$getAppliedPromotions();
-					discountFromPromotionsPromise.then(function(discount){
-						angular.forEach(discount.records, function(discountData, key){
-							$log.debug(discountData.discountAmount);
-							orderItem.discount += parseFloat(discountData.discountAmount);
-							//----------------------Calculates the total for the orderitem>
-							//Figure out the total. (still need to subtract the discount amount)
-							orderItem.total = ((parseFloat(orderItemData.price) * parseFloat(orderItemData.quantity)) - parseFloat(orderItem.discount));
-							//---------------------------------------------------------------->	
-						});
-					});*/
+					
 					
 					//--------------------->Lets get the order fulfillment information.
 					var orderFulfillmentInformation = orderItem;

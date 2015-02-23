@@ -6,4 +6,5 @@
 	<td class="s-qty">{{orderItem.data.quantity}}</td>
 	<td class="s-discount">-{{ orderItem.data.discountAmount | currency }}</td>
 	<td class="s-total">{{orderItem.data.itemTotal | currency}}</td>
+	<td class="s-sku" ng-repeat="attribute in attributes" ng-bind="orderItem.data[attribute.attributeCode]"></td>
 
