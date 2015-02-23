@@ -1,6 +1,8 @@
 {
 	"properties":{
-		"countryCode":			[{"contexts":"save","required":true}],
-		"countryName":			[{"contexts":"save","required":true}]
+		"countryCode":			[{"contexts":"save","required":true,"minLength":2}],
+		"countryName":			[{"contexts":"save","required":true}],
+		"countryCode3Digit":	[{"contexts":"save","required":true,"minLength":3,"maxLength":3}],
+		"countryISONumber":		[{"contexts":"save","required":true,"dataType":"numeric"}]
 	}
 }
