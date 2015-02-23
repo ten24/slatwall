@@ -23,10 +23,7 @@
 				<cfset local.canEditGlobal = listFindNoCase( "OrderItem,Product", rc.attributeSet.getAttributeSetObject() ) && rc.edit />
 				<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#local.canEditGlobal#">
 				<cfif listFind( "OrderItem", rc.attributeSet.getAttributeSetObject() )>
-					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="requiredFlag" edit="#rc.edit#">
 					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="accountSaveFlag" edit="#rc.edit#">
-					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="additionalCharge" edit="#rc.edit#">
-					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="displayOnOrderDetailFlag" edit="#rc.edit#">
 				</cfif>
 			</hb:HibachiPropertyList>
 		</cfif>
