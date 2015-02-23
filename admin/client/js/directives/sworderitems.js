@@ -36,6 +36,7 @@ angular.module('slatwalladmin')
 				scope.autoScrollPage = 1;
 				scope.autoScrollDisabled = false;
 				
+				
 				scope.keywords = "";
 				scope.loadingCollection = false;
 				var searchPromise;
@@ -60,6 +61,9 @@ angular.module('slatwalladmin')
 				
 				//Setup the data needed for each order item object.
 				scope.getCollection = function(){
+					if(scope.pageShow === 'Auto'){
+						scope.pageShow = 50;
+					}
 					var columnsConfig =[
 					         {
 		 				      "isDeletable": false,
@@ -277,6 +281,28 @@ angular.module('slatwalladmin')
 					});
 				}
 				scope.getCollection();
+				
+				scope.appendToCollection = function(){
+					if(scope.pageShow === 'Auto'){
+						$log.debug('AppendToCollection');
+						if(scope.autoScrollPage < scope.collection.totalPages){
+							scope.autoScrollDisabled = true;
+							scope.autoScrollPage++;
+							
+							var appendOptions = {};
+							angular.extend(appendOptions,options);
+							appendOptions.pageShow = 50;
+							appendOptions.currentPage = scope.autoScrollPage;
+							
+							var collectionListingPromise = $slatwall.getEntity('orderItem', appendOptions);
+							collectionListingPromise.then(function(value){
+								scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
+								scope.autoScrollDisabled = false;
+							},function(reason){
+							});
+						}
+					}
+				};
 				
 			}//<--End link
 		};
