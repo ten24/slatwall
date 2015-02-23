@@ -298,6 +298,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     			thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
     			thisOption['value'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID();
     			thisOption['totalCharge'] = shippingMethodOption.getTotalCharge();
+    			thisOption['totalChargeAfterDiscount'] = shippingMethodOption.getTotalChargeAfterDiscount();
     			thisOption['shippingMethodSortOrder'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getSortOrder();
     			if( !isNull(shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode()) ){
     				thisOption['shippingMethodCode'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode();
