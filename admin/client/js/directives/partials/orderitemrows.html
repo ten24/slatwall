@@ -1,25 +1,38 @@
+
 <content class="s-body-box">
-	<div class="table-responsive"  sw-loading="orderItems">
-		<table class="table table-bordered s-order-item-table">
-			<thead>
-				<tr>
-					<th>Image</th>
-					<th>orderItemid</th>
-					<th>Title</th>
-					<th>Sku</th>
-					<!-- <th>{{customAttributes.key}}</th> -->
-					<th>Price</th>
-					<th>Qty</th>
-					<th>Discount</th>
-					<th>Total</th>
-					<th>Fullfilment</th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody ng-repeat="orderItem in orderItems" sw-order-item data-order-item="orderItem" data-order-id="orderId">
-				<!-- Begin Merchandise Row -->
-			</tbody>
-		</table>
+	<div class="table-responsive"  >
+		<span   sw-pagination-bar
+			data-collection="collection"
+			data-current-page="currentPage"
+			data-page-show="pageShow"
+			data-page-start="pageStart"
+			data-page-end="pageEnd"
+			data-records-count="recordsCount"
+			data-get-collection="getCollection()"
+		>
+		</span>
+		<span sw-loading="orderItems" >
+			<table class="table table-bordered s-order-item-table">
+				<thead>
+					<tr>
+						<th>Image</th>
+						<th>orderItemid</th>
+						<th>Title</th>
+						<th>Sku</th>
+						<!-- <th>{{customAttributes.key}}</th> -->
+						<th>Price</th>
+						<th>Qty</th>
+						<th>Discount</th>
+						<th>Total</th>
+						<th>Fullfilment</th>
+						<th></th>
+					</tr>
+				</thead>
+				<tbody  ng-repeat="orderItem in orderItems" sw-order-item data-order-item="orderItem" data-order-id="orderId">
+					<!-- Begin Merchandise Row -->
+				</tbody>
+			</table>
+		</span>
 	</div>
 </content>					
 					

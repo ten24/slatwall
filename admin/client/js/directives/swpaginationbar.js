@@ -51,7 +51,7 @@ angular.module('slatwalladmin')
 	        		$log.debug('setCurrentPage');
 	        		paginationService.setCurrentPage(number);
 	        		scope.currentPage = number;
-	        		
+	        		console.log(scope.currentPage);
 	        		
 	        		$timeout(function(){
 	        			console.log('pageshow');
