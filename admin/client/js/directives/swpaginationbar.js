@@ -1,10 +1,12 @@
 angular.module('slatwalladmin')
 .directive('swPaginationBar', [
 	'$log',
+	'$timeout',
 	'partialsPath', 
 	'paginationService',
 	function(
 		$log,
+		$timeout,
 		partialsPath,
 		paginationService
 	){
@@ -18,7 +20,8 @@ angular.module('slatwalladmin')
 				pageEnd:"&",
 				recordsCount:"&",
 				collection:"=",
-				autoScroll:"="
+				autoScroll:"=",
+				getCollection:"&"
 			},
 			link:function(scope,element,attrs){
 				$log.debug('pagination init');
@@ -35,6 +38,8 @@ angular.module('slatwalladmin')
 	          		$log.debug(pageShowOption);
 	      			paginationService.setPageShow(pageShowOption.value);
 	        		scope.pageShow = paginationService.getPageShow();
+	        		scope.currentPage = 1;
+					scope.setCurrentPage(1);
 	        	};
 	        	
 	        	/*var unbindPageOptionsWatchListener = scope.$watch('pageOptions',function(newValue,oldValue){
@@ -46,8 +51,17 @@ angular.module('slatwalladmin')
 	        		$log.debug('setCurrentPage');
 	        		paginationService.setCurrentPage(number);
 	        		scope.currentPage = number;
+	        		console.log(scope.currentPage);
+	        		
+	        		$timeout(function(){
+	        			console.log('pageshow');
+	        			console.log(scope.pageShow);
+	        			console.log(scope.pageShow !== 'Auto');
+	        			
+	        			scope.getCollection();
+	        		});
+	        		
 	        	};
-	        	
 	        	
 	        	var setPageRecordsInfo = function(recordsCount,pageStart,pageEnd,totalPages){
 	    			paginationService.setRecordsCount(recordsCount);

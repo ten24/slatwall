@@ -59,26 +59,6 @@ metadataService,
 		$scope.autoScrollPage = 1;
 		$scope.autoScrollDisabled = false;
 		
-		$scope.$watch('pageShow',function(newValue,oldValue){
-			if(newValue !== oldValue){
-				$log.debug('pageShowChanged');
-				$scope.currentPage = 1;
-				paginationService.setCurrentPage(1);
-				$scope.getCollection();
-			}
-		});
-		
-		$scope.$watch('currentPage',function(newValue,oldValue){
-			if(newValue !== oldValue){
-				$log.debug('currentPageChanged');
-				if($scope.pageShow === 'Auto'){
-					$scope.autoScrollPage = 1;
-					$scope.appendToCollection();
-				}else{
-					$scope.getCollection();
-				}
-			}
-		});
 		
 		$scope.appendToCollection = function(){
 			if($scope.pageShow === 'Auto'){
@@ -315,8 +295,6 @@ metadataService,
 			$scope.selectedFilterProperty = selectedFilterProperty;
 			
 		};
-		
-		
 		
 		$scope.filterCount = collectionService.getFilterCount;
 		

@@ -85,6 +85,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="currentURL" persistent="false" type="string";
 	property name="currentPageDeclaration" persistent="false" type="string";
 	
+	property name="nonPersistentColumn" type="boolean" persistent="false";
 	property name="cacheable" type="boolean" persistent="false";
 	property name="cacheName" type="string" persistent="false";
 	property name="savedStateID" type="string" persistent="false";
@@ -469,6 +470,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 		HQL = createHQLFromCollectionObject(this,arguments.excludeSelectAndOrderBy);
+		//writedump(var=HQL,top=2);abort;
+		
 		return HQL;
 	}
 	
@@ -613,13 +616,43 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return orderByHQL;
 	}
 	
+	public any function getNonPersistentColumn(){
+		
+		if( !structKeyExists(variables,'nonPersistentColumn') && isNull(variables.nonPersistentColumn)) {
+			variables.nonPersistentColumn = false;
+			if(structKeyExists(this.getCollectionConfigStruct(),'columns')){
+				for(var column in this.getCollectionConfigStruct().columns){
+					if(structKeyExists(column,'persistent') && column.persistent == false){
+						variables.nonPersistentColumn = true;
+						break; 
+					}
+				}
+			}
+		}
+		return variables.nonPersistentColumn;
+	}
+	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
 		try{
 			
 			if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
 				saveState();
-				variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+				if(this.getNonPersistentColumn()){
+					variables.pageRecords = [];
+					var entities = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+					var columns = getCollectionConfigStruct().columns;
+					for(var entity in entities){
+						var pageRecord = {};
+						
+						for(var column in columns){
+							pageRecord[listLast(column.propertyIdentifier,'.')] = entity.getValueByPropertyIdentifier(ListRest(column.propertyIdentifier,'.'));
+						}
+						arrayAppend(variables.pageRecords,pageRecord);
+					} 
+				}else{
+					variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+				}
 			}
 		}
 		catch(any e){
@@ -636,8 +669,21 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public array function getRecords(boolean refresh=false) {
 		try{
 			if( !structKeyExists(variables, "records") || arguments.refresh == true) {
-				variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
-				
+				if(this.getNonPersistentColumn()){
+					variables.records = [];
+					var entities = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+					var columns = getCollectionConfigStruct().columns;
+					for(var entity in entities){
+						var record = {};
+						
+						for(var column in columns){
+							record[listLast(column.propertyIdentifier,'.')] = entity.getValueByPropertyIdentifier(ListRest(column.propertyIdentifier,'.'));
+						}
+						arrayAppend(variables.records,record);
+					} 
+				}else{
+					variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+				}
 			}
 		}
 		catch(any e){
@@ -882,7 +928,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(!isNull(collectionConfig.isDistinct)){
 					isDistinct = collectionConfig.isDistinct;
 				}
-				selectHQL &= getSelectionsHQL(collectionConfig.columns,isDistinct);
+				if(!this.getNonPersistentColumn()){
+					selectHQL &= getSelectionsHQL(collectionConfig.columns,isDistinct);
+				}
+				
 				if(!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())){
 					orderByHQL &= getOrderByHQL(getPostOrderBys());
 				}else if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
@@ -909,10 +958,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}else{
 					postFilterHQL &= ' AND ' & '(' & getFilterGroupsHQL(postFilterGroups) & ')';
 				}	
-				
 			}
-			
-			
 			
 			//build FROM last because we have aquired joins implicitly
 			var joins = [];
@@ -938,7 +984,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					//use keywords to create some post filters
 					
 					if(structKeyExists(column,'ormtype') 
+					&& column.ormtype neq 'boolean' 
 					&& column.ormtype neq 'timestamp'
+					
 					){
 						for(keyword in getKeywordArray()){
 							if(column.ormtype eq 'big_decimal'
@@ -949,22 +997,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 											propertyIdentifier = 'STR(#column.propertyIdentifier#)',
 											comparisonOperator = "like",
 											value="%#keyword#%"
-										}
-									]
-								};
-							} else if(column.ormtype eq 'boolean'){
-								
-								if(compareNoCase(keyword, "true") == 0 || compareNoCase(keyword, "yes") == 0){
-									var booleanValue = true;	
-								} else {
-									var booleanValue = false;
-								}
-								var postFilterGroup = {
-									filterGroup = [
-										{
-											propertyIdentifier = '#column.propertyIdentifier#',
-											comparisonOperator = "=",
-											value="#booleanValue#"
 										}
 									]
 								};
@@ -1026,6 +1058,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var defaultPropertiesWithAttributes = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
 			for(propertyItem in defaultPropertiesWithAttributes){
 				if(structKeyExists(propertyItem,'ormtype') 
+					&& propertyItem.ormtype neq 'boolean' 
 					&& propertyItem.ormtype neq 'timestamp' 
 					&& !structKeyExists(propertyItem,'attributeID') ){
 					for(keyword in getKeywordArray()){
@@ -1040,22 +1073,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									}
 								]
 							};
-						} else if(column.ormtype eq 'boolean'){
-								
-								if(compareNoCase(keyword, "true") == 0 || compareNoCase(keyword, "yes") == 0){
-									var booleanValue = true;	
-								} else {
-									var booleanValue = false;
-								}
-								var postFilterGroup = {
-									filterGroup = [
-										{
-											propertyIdentifier = '#column.propertyIdentifier#',
-											comparisonOperator = "=",
-											value="#booleanValue#"
-										}
-									]
-								};
 						}else{
 							var postFilterGroup = {
 								filterGroup = [

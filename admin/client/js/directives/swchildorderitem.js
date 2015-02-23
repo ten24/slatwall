@@ -23,7 +23,8 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 		scope:{
 			orderItem:"=",
 			orderId:"@",
-			childOrderItems:"="
+			childOrderItems:"=",
+			attributes:"="
 		},
 		templateUrl:partialsPath+"childorderitem.html",
 		link:function(scope, element, attr) {
@@ -170,9 +171,29 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 			      "propertyIdentifier": "_orderitem.sku.imageFile",
 			      "isVisible": true,
 			      "isDeletable": true
+			    },
+			    {
+			      "title": "Total",
+			      "propertyIdentifier": "_orderitem.itemTotal",
+			      "persistent":false
+			    },
+			    {
+			      "title": "Discount Amount",
+			      "propertyIdentifier": "_orderitem.discountAmount",
+			      "persistent":false
 			    }
 			    
 			];
+			
+			//add attributes to the column config
+			angular.forEach(scope.attributes,function(attribute){
+				var attributeColumn = {
+					propertyIdentifier:"_orderItem."+attribute.attributeCode,
+					attributeID:attribute.attributeID,
+			         attributeSetObject:"orderItem"
+				};
+				columnsConfig.push(attributeColumn);
+			});
 		
 			var filterGroupsConfig =[
 			    {

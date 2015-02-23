@@ -85,9 +85,60 @@ Notes:
 				
 				return {
 					
-				    $get:['$q','$http','$timeout','$log','$rootScope','$location','$anchorScroll', 'formService', function ($q,$http,$timeout,$log,$rootScope,$location,$anchorScroll,formService)
+				    $get:['$q',
+				    	'$http',
+				    	'$timeout',
+				    	'$log',
+				    	'$rootScope',
+				    	'$location',
+				    	'$anchorScroll',
+				    	'utilityService', 
+				    	'formService', 
+				    	function (
+				    		$q,
+				    		$http,
+				    		$timeout,
+				    		$log,
+				    		$rootScope,
+				    		$location,
+				    		$anchorScroll,
+				    		utilityService,
+				    		formService
+				    	)
 				    {
 				    	var slatwallService = {
+				    		//service method used to transform collection data to collection objects based on a collectionconfig
+				    		populateCollection:function(collectionData,collectionConfig){
+				    			//create array to hold objects
+				    			var entities = [];
+				    			//loop over all collection data to create objects
+				    			angular.forEach(collectionData, function(collectionItemData, key){
+				    				//create Entity
+				    				var entity = slatwallService['new'+collectionConfig.baseEntityName.replace('Slatwall','')]();
+				    				//populate entity with data based on the collectionConfig
+				    				angular.forEach(collectionConfig.columns, function(column, key){
+				    					//get objects base properties
+				    					var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias+'.','');
+				    					if(column.propertyIdentifier.split('.').length == 2){
+				    						
+				    						if(angular.isObject(collectionItemData[propertyIdentifier]) && entity.metaData[propertyIdentifier].fieldtype === 'many-to-one'){
+				    							var relatedEntity = slatwallService['new'+entity.metaData[propertyIdentifier].cfc]();
+				    							relatedEntity.$$init(collectionItemData[propertyIdentifier][0]);
+				    							entity['$$set'+entity.metaData[propertyIdentifier].name.charAt(0).toUpperCase()+entity.metaData[propertyIdentifier].name.slice(1)](relatedEntity);
+				    						}else{
+				    							entity.data[propertyIdentifier] = collectionItemData[propertyIdentifier];
+				    						}
+				    					}else{
+				    						//for each object
+				    						angular.forEach(propertyIdentifier.split('.'),function(){
+				    							
+				    						});
+				    					}
+				    				});
+				    				entities.push(entity);
+				    			});
+				    			return entities;
+				    		},
 				    		/*basic entity getter where id is optional, returns a promise*/
 					  		getDefer:function(deferKey){
 					  			return _deferred[deferKey];
@@ -1261,6 +1312,16 @@ Notes:
 									
 									this.data = {};
 									this.modifiedData = {};
+									<!---loop over possible attributes --->
+									<cfif len($.slatwall.getService('attributeService').getAttributeCodesListByAttributeSetObject(local.entity.getClassName()))>
+										<cfloop list="#$.slatwall.getService('attributeService').getAttributeCodesListByAttributeSetObject(local.entity.getClassName())#" index="local.attributeCode">
+											this.data.#local.attributeCode# = null;
+											this.metaData.#local.attributeCode# = {
+												name:'#local.attributeCode#'
+											};
+										</cfloop>
+									</cfif>
+									
 									
 									<!--- Loop over properties --->
 									<cfloop array="#local.entity.getProperties()#" index="local.property">

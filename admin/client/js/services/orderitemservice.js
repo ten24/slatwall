@@ -16,6 +16,9 @@ angular.module('slatwalladmin')
 					
 					//---Create the orderItem object.---------------------->
 					var orderItem = $slatwall.newOrderItem();
+					console.log('newOrderItem');
+					console.log(orderItem);
+					console.log(orderItemData);
 					orderItem.$$init(orderItemData);
 					orderItems.push(orderItem);
 					//---------------------------------------------------------->
@@ -46,6 +49,7 @@ angular.module('slatwalladmin')
 					//---------------------->
 					//Get the applied promotions and iterate through them getting the discount amount on each and adding them up.
 					$log.debug("------>PROMOTIONS DISCOUNTS<------");
+
 					orderItem.discount = 0;
 					orderItem.total = 0;
 					var discountFromPromotionsPromise = orderItem.$$getAppliedPromotions();

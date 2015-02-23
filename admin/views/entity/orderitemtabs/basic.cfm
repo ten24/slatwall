@@ -23,20 +23,21 @@
 			<!--- Totals --->
 			<hb:HibachiPropertyTable>
 				<hb:HibachiPropertyTableBreak header="Order Details" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem.getOrder()#" property="orderNumber" edit="false" displayType="table" title="#$.slatwall.rbKey('entity.order.orderNumber')#" />
-				<hb:HibachiPropertyTableBreak header="Sku Details" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="skuPrice" edit="false" displayType="table" title="#$.slatwall.rbKey('admin.entity.detailorderitem.skuPriceWhenOrdered')#" />
-				<hb:HibachiPropertyDisplay object="#rc.orderItem.getSku()#" property="price" edit="false" displayType="table" title="#$.slatwall.rbKey('admin.entity.detailorderitem.currentSkuPrice')#" />
-				<cfif rc.orderItem.getSku().getProduct().getBaseProductType() eq "subscription">
-					<hb:HibachiPropertyDisplay object="#rc.orderItem.getSku()#" property="renewalPrice" edit="#rc.edit#" displayType="table" title="#$.slatwall.rbKey('admin.entity.detailorderitem.currentSkuRenewalPrice')#" />
-				</cfif>
-				<hb:HibachiPropertyDisplay object="#rc.sku#" property="skuCode" edit="false" displayType="table">
+				<hb:HibachiPropertyDisplay object="#rc.orderItem.getOrder()#" property="orderNumber" edit="false" displayType="table" />
+				<hb:HibachiPropertyTableBreak header="Product Details" />
+				<hb:HibachiPropertyDisplay object="#rc.orderItem.getSku().getProduct()#" property="productName" valuelink="?slatAction=admin:entity.detailproduct&productID=#rc.orderItem.getSku().getProduct().getProductID()#" edit="false" displayType="table" />
+				<hb:HibachiPropertyDisplay object="#rc.sku#" property="skuCode" valuelink="?slatAction=admin:entity.detailsku&skuID=#rc.orderItem.getSku().getSkuID()#" edit="false" displayType="table">
 				<cfloop array="#rc.sku.getAlternateSkuCodes()#" index="asc">
 					<hb:HibachiPropertyDisplay object="#asc#" title="#asc.getAlternateSkuCodeType().getTypeName()#" property="alternateSkuCode" edit="false" displayType="table">	
 				</cfloop>
 				<cfloop array="#rc.sku.getOptions()#" index="option">
 					<hb:HibachiPropertyDisplay object="#option#" title="#option.getOptionGroup().getOptionGroupName()#" property="optionName" edit="false" displayType="table">
 				</cfloop>
+				<cfif rc.orderItem.getSku().getProduct().getBaseProductType() eq "subscription">
+					<hb:HibachiPropertyDisplay object="#rc.orderItem.getSku()#" property="renewalPrice" edit="#rc.edit#" displayType="table" />
+				</cfif>
+				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="skuPrice" edit="false" displayType="table" />
+				<hb:HibachiPropertyDisplay object="#rc.orderItem.getSku()#" property="price" edit="false" displayType="table" />
 				<hb:HibachiPropertyTableBreak header="Status" />
 				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="orderItemStatusType" edit="false" displayType="table" />
 				<cfif rc.orderItem.getOrderItemType().getSystemCode() eq "oitSale">
