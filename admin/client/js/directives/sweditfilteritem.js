@@ -210,16 +210,16 @@ angular.module('slatwalladmin')
 							//retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
 							if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.value)){
 								filterItem.value = selectedFilterProperty.selectedCriteriaType.value;
-								filterItem.displayValue = filterItem.value;
+								filterItem.displayValue = filterItem.value.replace(/,/g,', ')
 							}else{
 								//if has a pattern then we need to evaluate where to add % for like statement
 								if(angular.isDefined(selectedFilterProperty.selectedCriteriaType.pattern)){
 									filterItem.pattern = selectedFilterProperty.selectedCriteriaType.pattern;
 									
-									filterItem.displayValue = filterItem.value;
+									filterItem.displayValue = filterItem.value.replace(/,/g,', ')
 								}else{
 									filterItem.value = filterItem.value;
-									filterItem.displayValue = filterItem.value;
+									filterItem.displayValue = filterItem.value.replace(/,/g,', ')
 								}
 							}
 							
