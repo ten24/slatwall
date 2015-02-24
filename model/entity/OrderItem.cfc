@@ -239,7 +239,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		var productBundlePrice = getPrice();
 		//then get the price of it's componenets
 		for(var childOrderItem in this.getChildOrderItems()){
-			productBundlePrice = productBundlePrice + getProductBundleGroupPrice(childOrderItem);
+			productBundlePrice += getProductBundleGroupPrice(childOrderItem);
 		}
 		
 		return productBundlePrice;
