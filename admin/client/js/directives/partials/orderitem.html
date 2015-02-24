@@ -1,4 +1,10 @@
-<tr class="s-bundle-product l-1" ng-if="orderItem && attributes" >
+<tr class="s-bundle-product l-1" ng-if="orderItem && attributes" 
+	ng-class="{
+		's-return':orderItem.data.orderItemType.data.systemCode === 'oitReturn',
+		's-deposit':orderItem.data.orderItemType.data.systemCode === 'oitDeposit' && orderItem.onWaitlist === true,
+		's-pending':orderItem.data.orderItemType.data.systemCode === 'oitDeposit' && orderItem.onWaitlist === true && orderItem.eligible
+	}"
+>
 	<td rowspan="1000" class='s-image' style="width:90px;height:90px;"><swresizedimage profilename="orderItem" data-order-item="orderItem"></swresizedimage></td>
 	<td ng-bind="orderItem.data.orderItemID"></td>
 	<td class="s-title">{{orderItem.data.sku.data.skuName}}
@@ -11,7 +17,7 @@
 			</a>
 	</td>
 	<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
-	<td class="s-price">{{orderItem.data.skuPrice | currency}}</td>
+	<td class="s-price">{{orderItem.data.skuPrice | currency}} <span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span>></td>
 	<td class="s-qty">{{orderItem.data.quantity}}</td>
 	<td class="s-discount">-{{ orderItem.data.discountAmount | currency }}</td>
 	<td class="s-total">{{orderItem.data.itemTotal | currency}}</td>

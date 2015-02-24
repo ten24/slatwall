@@ -28,6 +28,25 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			$log.debug('order item init');
 			$log.debug(scope.orderItem);
 			scope.orderItem.clicked = false;
+			console.log(scope.orderItem.data.sku.data.product.data.productType.data.systemCode);
+			if(scope.orderItem.data.sku.data.product.data.productType.data.systemCode === 'event'){
+				var eventRegistrationPromise = scope.orderItem.$$getEventRegistrations();
+				
+				eventRegistrationPromise.then(function(){
+					console.log('event registrations');
+					console.log(scope.orderItem.data.eventRegistrations);
+					angular.forEach(scope.orderItem.data.eventRegistrations,function(eventRegistration){
+						var eventRegistrationPromise = eventRegistration.$$getEventRegistrationStatusType();
+						eventRegistrationPromise.then(function(){
+							console.log(eventRegistration);
+							console.log(eventRegistration.data.eventRegistrationStatusType.data.systemCode);
+							if(eventRegistration.data.eventRegistrationStatusType.data.systemCode === 'erstWaitlisted'){
+								scope.orderItem.onWaitlist = true;
+							}
+						});
+					});
+				});
+			}
 			//define how we get child order items
 			var columnsConfig =[
 		         {

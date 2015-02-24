@@ -72,8 +72,7 @@ angular.module('slatwalladmin')
 		 				      "title": "Order Item ID"
 		 				    },
 			 				 {
-			 				      "title": "Order Item Type",
-			 				      "propertyIdentifier": "_orderitem.orderItemType",
+			 				      "propertyIdentifier": "_orderitem.orderItemType.systemCode",
 			 				      "isVisible": true,
 			 				      "isDeletable": true
 			 				},
@@ -86,7 +85,6 @@ angular.module('slatwalladmin')
 			 				      "ormtype":"big_decimal"
 			 				},
 		 				    {
-		 				      "title": "Sku Name",
 		 				      "propertyIdentifier": "_orderitem.sku.skuName",
 		 				      "isVisible": true,
 		 				      "isDeletable": true,
@@ -94,19 +92,16 @@ angular.module('slatwalladmin')
 		 				      "ormtype":"string"
 		 				    },
 		 				   {
-			 				      "title": "Sku Price",
 			 				      "propertyIdentifier": "_orderitem.skuPrice",
 			 				      "isVisible": true,
 			 				      "isDeletable": true
 		 				   },
 			 				   {
-				 				      "title": "Sku ID",
 				 				      "propertyIdentifier": "_orderitem.sku.skuID",
 				 				      "isVisible": true,
 				 				      "isDeletable": true
 				 			},
-		 				      {
-		 				      "title": "SKU Code",
+	 				      {
 		 				      "propertyIdentifier": "_orderitem.sku.skuCode",
 		 				      "isSearchable":true,
 		 				      "ormtype":"string",
@@ -133,7 +128,7 @@ angular.module('slatwalladmin')
 			 				},
 			 				{
 			 				      "title": "Product Type",
-			 				      "propertyIdentifier": "_orderitem.sku.product.productType",
+			 				      "propertyIdentifier": "_orderitem.sku.product.productType.systemCode",
 			 				      "isVisible": true,
 			 				      "isDeletable": true
 			 				},
