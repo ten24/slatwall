@@ -639,7 +639,7 @@
 									<div class="form-group">
 										<label for="name" class="col-md-3">Example Input Error</label>
 										<div class="col-md-9 s-form-input">
-											<input type="text" class="form-control ng-invalid">
+											<input type="text" class="form-control ng-invalid ng-touched">
 											<p class="help-block">You must provide a valid first name.</p>
 										</div>
 									</div>
@@ -648,7 +648,7 @@
 									<div class="form-group">
 										<label for="name" class="col-md-3">Example Select Error</label>
 										<div class="col-md-9 s-form-input">
-											<select class="form-control ng-invalid">
+											<select class="form-control ng-invalid ng-touched">
 												<option disabled selected>-Select State-</option>
 												<option value="">California</option>
 												<option value="">Florida</option>

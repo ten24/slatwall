@@ -421,16 +421,13 @@ input[type="file"] {
   vertacal-align: middle;
 }
 /* Form Validation */
-input.ng-invalid,
-select.ng-invalid,
+input.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched,
 input.error,
 select.error {
   border-color: #da5757 !important;
 }
-input.ng-invalid + .help-block,
-select.ng-invalid + .help-block,
-input.error + .help-block,
-select.error + .help-block {
+.error.help-block {
   color: #da5757 !important;
 }
 /* Navigation Sidebar */

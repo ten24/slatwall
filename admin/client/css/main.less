@@ -466,8 +466,8 @@ input[type="file"] {display: block;width: auto;height: auto;padding: 0px;backgro
 .agenda .agenda-time {width: 140px;vertacal-align:middle;}
 
 /* Form Validation */
-input.ng-invalid, select.ng-invalid, input.error, select.error {border-color: @brand-danger !important;}
-input.ng-invalid + .help-block, select.ng-invalid + .help-block, input.error + .help-block, select.error + .help-block  {color: @brand-danger !important;}
+input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, input.error, select.error {border-color: @brand-danger !important;}
+.error.help-block  {color: @brand-danger !important;}
 
 /* Navigation Sidebar */
 #menu a > .fa.arrow {-webkit-transition: all .5s ease-out;-moz-transition: all .2s ease-out;-ms-transition: all .2s ease-out;-o-transition: all .2s ease-out;transition: all .2s ease-out;}
