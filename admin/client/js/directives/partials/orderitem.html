@@ -1,4 +1,12 @@
-<tr class="s-bundle-product l-1" ng-if="orderItem && attributes" >
+
+<tr class="s-bundle-product l-1" ng-if="orderItem && attributes" 
+		ng-class="{
+		   's-event l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'event', 
+		   's-bundle-product l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'productBundle',
+		   's-subscription l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'subscription',
+		   's-content-access l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'content',
+		   's-product l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'merchandise'
+		   }">
 	<td rowspan="1000" class='s-image' style="width:90px;height:90px;"><swresizedimage profilename="orderItem" data-order-item="orderItem"></swresizedimage></td>
 	<td class="s-title">
 		<span ng-if="orderItem.data.sku.data.skuName">{{orderItem.data.sku.data.skuName}} 			<a href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link" 
@@ -34,4 +42,11 @@
 		</ul>
 	</td>			
 </tr>
-<tr class="s-bundle-product l-2" ng-if="childOrderItems" ng-repeat="childOrderItem in childOrderItems" class="s-bundle-product l-{{childOrderItem.depth}}" sw-child-order-item data-order-item="childOrderItem" data-child-order-items="childOrderItems" data-attributes="attributes"></tr>
+<tr ng-if="childOrderItems" ng-repeat="childOrderItem in childOrderItems" class="s-bundle-product l-{{childOrderItem.depth}}" sw-child-order-item data-order-item="childOrderItem" data-child-order-items="childOrderItems" data-attributes="attributes" 
+   ng-class="{
+		   's-event l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'event', 
+		   's-bundle-product l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'productBundle',
+		   's-subscription l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'subscription',
+		   's-content-access l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'content',
+		   's-product l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'merchandise'
+		   }"></tr>

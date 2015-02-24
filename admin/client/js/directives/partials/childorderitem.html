@@ -1,4 +1,4 @@
-	<td class="s-title" ng-hide="orderItem.hide">
+	<td class="s-title" ng-hide="orderItem.hide" >
 		<span ng-if="orderItem.data.sku.data.skuName">{{orderItem.data.sku.data.skuName}} 			
 		<a href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link" 
 				ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode !== 'productBundle'">edit</a><br>
