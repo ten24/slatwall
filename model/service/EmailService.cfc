@@ -171,7 +171,23 @@ Notes:
 		email = this.processEmail(email, emailData, 'createFromTemplate');
 		email = this.processEmail(email, {}, 'addToQueue');
 	}
-	
+
+	public void function generateAndSendFromEntityIDListAndEmailTemplateID( required any data, required any emailTemplateID ) {
+		var emailTemplateObjectPropertyIDName= getPrimaryIDPropertyNameByEntityName(getTemplateService().getEmailTemplate( arguments.emailTemplateID ).getEmailTemplateObject());
+		if(structKeyExists(arguments.data, emailTemplateObjectPropertyIDName)){
+		var entityIDList=arguments.data[emailTemplateObjectPropertyIDName];
+			for(var i=1;i lte listlen(entityIDList);i++){
+				var email = this.newEmail();
+				var emailData = {
+					emailTemplateID = arguments.emailTemplateID
+				};
+				emailData[ emailTemplateObjectPropertyIDName ] = listgetat(entityIDList,i);
+				email = this.processEmail(email, emailData, 'createFromTemplate');
+				email = this.processEmail(email, {}, 'addToQueue');
+			}
+		}
+	}
+		
 	</cfscript>
 	
 	<!--- =====================  END: Logical Methods ============================ --->

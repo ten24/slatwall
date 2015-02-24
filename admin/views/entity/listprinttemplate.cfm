@@ -68,6 +68,7 @@ Notes:
 							   recordEditAction="admin:entity.editPrintTemplate">
 
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="printTemplateName" />
+		<hb:HibachiListingColumn propertyIdentifier="printTemplateObject" />
 	</hb:HibachiListingDisplay>
 
 </cfoutput>

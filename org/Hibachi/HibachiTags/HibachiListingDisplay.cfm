@@ -342,7 +342,7 @@
 												<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="##"><i class="fa fa-envelope"></i></a>
 												<ul class="dropdown-menu pull-right" role="menu">
 													<cfloop array="#thistag.exampleEntity.getListEmailTemplates()#" index="template">
-														<hb:HibachiProcessCaller action="admin:entity.processemail" entity="Email" processContext="addToQueue" queryString="emailTemplateID=#template.getEmailTemplateID()#&redirectAction=#request.context.slatAction#" text="#template.getEmailTemplateName()#" postVariables="#thistag.exampleEntity.getPrimaryIDPropertyName()#" type="list" />
+														<hb:HibachiActionCaller action="admin:entity.sendEmails"  queryString="emailTemplateID=#template.getEmailTemplateID()#&redirectAction=#request.context.slatAction#" text="#template.getEmailTemplateName()#" postVariables="#thistag.exampleEntity.getPrimaryIDPropertyName()#" type="list" />
 													</cfloop>
 												</ul>
 											</cfif>
