@@ -445,8 +445,6 @@
 		
 		<h1 id="form_elements">Media and Form Elements</h1>
 		
-		<p>This last section contains elements that don't render well in markdown. Please consult the final section in <a href="https://github.com/bryanbraun/poor-mans-styleguide/blob/gh-pages/index.html">index.html</a>, to see the rest of the styleguide.</p>
-		
 		<h2>Media</h2>
 		
 		<p>The Audio Element:</p>
@@ -621,6 +619,48 @@
 									<input class="button" type="reset" value="Clear" /> <input class="button" type="submit" value="Submit" />
 								</div>
 							</form>
+							
+							<hr>
+							
+							<h3 id="tables">Form Validation</h3>
+							<br/>
+							<h4>Validation Angular classes:</h4>
+							
+							<strong>ng-pristine:</strong> The filed has never had text inputed in it.<br/>
+							<strong>ng-dirty:</strong> The form field has been entered at some point.<br/>
+							<strong>ng-invalid:</strong> The field requires validaiton that has not been met.<br/>
+							<strong>ng-valid:</strong> The fields is valid and ready to submit.<br/>
+							<br/>
+							<h4>Validation Error Examples:</h4>
+							<div class="row s-bundle-header">
+								<div class="col-md-6">
+									
+									<!-- Error: Example of input error -->
+									<div class="form-group">
+										<label for="name" class="col-md-3">Example Input Error<i class="fa fa-asterisk"></i></label>
+										<div class="col-md-9 s-form-input">
+											<input type="text" class="form-control ng-invalid ng-touched">
+											<p class="error help-block">You must provide a valid first name.</p>
+										</div>
+									</div>
+									
+									<!-- Error: Example of select error -->
+									<div class="form-group">
+										<label for="name" class="col-md-3">Example Select Error<i class="fa fa-asterisk"></i></label>
+										<div class="col-md-9 s-form-input">
+											<select class="form-control ng-invalid ng-touched">
+												<option disabled selected>-Select State-</option>
+												<option value="">California</option>
+												<option value="">Florida</option>
+												<option value="">Boston</option>
+											</select>
+											<p class="error help-block">You must provide a valid first name.</p>
+										</div>
+									</div>
+									
+								</div>
+								
+							</div>
 												
 						</fieldset>
 											
