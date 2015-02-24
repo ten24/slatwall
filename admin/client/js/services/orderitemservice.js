@@ -75,43 +75,6 @@ angular.module('slatwalladmin')
 					};	
 					orderItem.customAttributes = [];
 					orderItem.customAttributeTypes = []
-					//------------------------->
-//					var attPropertiesPromise = orderItem.$$getPropertyByName("attributeValues");
-//					attPropertiesPromise.then(function(value){
-//						//console.info("Attribute Values\n\n\n");
-//						//console.info(value);
-//						for (var i = 0; i <= value.records.length-1; i++) {
-//						    var obj = value.records[i];
-//						    orderItem.customAttributes.push(obj);
-//						}
-//						
-//						//Now get the names for those values.
-//	//					for (var i = 0; i<=orderItem.customAttributes.length  -1; i++){
-//	//						var cKey = orderItem.customAttributes[i].attributeID; 
-//	//						var cVal = orderItem.customAttributes[i].attributeValue;
-//	//						var attContainer = {};
-//	//						var namePromise = $slatwall.getEntity("attribute", {id: cKey});
-//	//							  namePromise.then(function(v){
-//	//							
-//	//							orderItem.customAttributeTypes.push(v.attributeID);
-//	//							orderItem.customAttributeTypes.push(v.attributeName);
-//	//							//console.log(orderItem.customAttributeTypes);
-//	//							for (var n = 0; n<= orderItem.customAttributeTypes.length -1; n++){
-//	//							if (v.attributeID == cKey){
-//	//								//console.log("Found: " + v.attributeID + " ckey: " + v.attributeName + " val: " + cVal);
-//	//								attContainer.id = v.attributeID;
-//	//								attContainer.key = v.attributeName;
-//	//								attContainer.val = cVal;
-//	//								}
-//	//							}
-//	//							
-//	//						});
-//	//						scope.customAttributes = attContainer;
-//	//						orderItem.customAttributes = attContainer;
-//	//						
-//	//					}//<--end for
-//					
-//					});
 					
 				});
 				return orderItems;

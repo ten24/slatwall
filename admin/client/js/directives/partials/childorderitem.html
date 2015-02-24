@@ -1,10 +1,17 @@
-	<td class="s-title" >{{orderItem.data.orderItemID}}-{{orderItem.position}}</td>
-	<td class="s-title">{{orderItem.data.sku.data.skuName}}<a href="" class="s-edit-link" ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle' && !orderItem.clicked" ng-click="getChildOrderItems(orderItem)">show detail</a></td>
-	<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
-	<!-- <td class="s-details"><span ng-hide="orderItem.customAttributes.val === 'none'">{{orderItem.customAttributes.val}}1</span></td> -->
-	<td class="s-price">{{orderItem.data.skuPrice | currency}}</td>
-	<td class="s-qty">{{orderItem.data.quantity}}</td>
-	<td class="s-discount">-{{ orderItem.data.discountAmount | currency }}</td>
-	<td class="s-total">{{orderItem.data.itemTotal | currency}}</td>
-	<td class="s-sku" ng-repeat="attribute in attributes" ng-bind="orderItem.data[attribute.attributeCode]"></td>
-
+<td class="s-title" ng-hide="orderItem.hide">{{orderItem.data.orderItemID}}-{{orderItem.position}}</td>
+	<td class="s-title" ng-hide="orderItem.hide">{{orderItem.data.sku.data.skuName}}
+		<a href="" class="s-edit-link" 
+		ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle' && !orderItem.clicked" 
+		ng-click="getChildOrderItems(orderItem)">show detail
+		</a>
+		<a href="" 
+			ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle' && orderItem.clicked" 
+			ng-click="hideChildren(orderItem)">hide
+		</a>
+	</td>
+	<td class="s-sku" ng-hide="orderItem.hide">{{orderItem.data.sku.data.skuCode}}</td>
+	<td class="s-price" ng-hide="orderItem.hide">{{orderItem.data.skuPrice | currency}}</td>
+	<td class="s-qty" ng-hide="orderItem.hide">{{orderItem.data.quantity}}</td>
+	<td class="s-discount" ng-hide="orderItem.hide">-{{ orderItem.data.discountAmount | currency }}</td>
+	<td class="s-total" ng-hide="orderItem.hide">{{orderItem.data.itemTotal | currency}}</td>
+<td class="s-sku" ng-repeat="attribute in attributes" ng-bind="orderItem.data[attribute.attributeCode]" ng-hide="orderItem.hide"></td>

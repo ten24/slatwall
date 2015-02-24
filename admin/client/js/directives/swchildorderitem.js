@@ -28,8 +28,7 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 		},
 		templateUrl:partialsPath+"childorderitem.html",
 		link:function(scope, element, attr) {
-			//define how we get child order items
-			
+
 			var columnsConfig =[
 		         {
 			      "isDeletable": false,
@@ -212,9 +211,17 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 				filterGroupsConfig:angular.toJson(filterGroupsConfig),
 				allRecords:true
 			};
-//			//Create a list of order items.
-//			scope.childOrderItems = [];
-//			
+			//hide the children on click
+			scope.hideChildren = function(orderItem){
+				
+				//Set all child order items to clicked = false.
+				angular.forEach(scope.childOrderItems, function(child){
+					console.log("hideing");
+					console.dir(child);
+					child.hide = !child.hide;
+					scope.orderItem.clicked = !scope.orderItem.clicked;
+				});
+			}
 			scope.getChildOrderItems = function(orderItem){
 				orderItem.clicked = true;
 				if(!scope.orderItem.childItemsRetrieved){
@@ -224,6 +231,7 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 						
 						var childOrderItems = orderItemService.decorateOrderItems(value.records);
 						angular.forEach(childOrderItems,function(childOrderItem){
+							childOrderItem.hide = false;
 							childOrderItem.depth = orderItem.depth+1;
 							scope.childOrderItems.splice(scope.childOrderItems.indexOf(orderItem)+1,0,childOrderItem);
 						});
@@ -232,8 +240,10 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 				}
 				
 			}
-//			
-			/*var unbindchildorderitems = scope.$watch('orderItem.data.childOrderItems',function(newValue,oldValue){
+
+					
+					
+					/*var unbindchildorderitems = scope.$watch('orderItem.data.childOrderItems',function(newValue,oldValue){
 				if(newValue !== oldValue){
 					console.log('found child order items');
 					//when we load the child order items then append the child template
