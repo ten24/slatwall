@@ -637,7 +637,7 @@
 									
 									<!-- Error: Example of input error -->
 									<div class="form-group">
-										<label for="name" class="col-md-3">Example Input Error</label>
+										<label for="name" class="col-md-3">Example Input Error<i class="fa fa-asterisk"></i></label>
 										<div class="col-md-9 s-form-input">
 											<input type="text" class="form-control ng-invalid ng-touched">
 											<p class="help-block">You must provide a valid first name.</p>
@@ -646,7 +646,7 @@
 									
 									<!-- Error: Example of select error -->
 									<div class="form-group">
-										<label for="name" class="col-md-3">Example Select Error</label>
+										<label for="name" class="col-md-3">Example Select Error<i class="fa fa-asterisk"></i></label>
 										<div class="col-md-9 s-form-input">
 											<select class="form-control ng-invalid ng-touched">
 												<option disabled selected>-Select State-</option>
