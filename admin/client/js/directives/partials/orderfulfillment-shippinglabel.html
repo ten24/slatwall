@@ -1,4 +1,4 @@
-<ul ng-switch="orderFulfillment.data.fulfillmentMethodType">
+<ul ng-switch="orderFulfillment.data.fulfillmentMethod.data.fulfillmentMethodType">
 	<span ng-switch-when="shipping">
 		<li class="s-header">Ship To: <a ng-href="{{'?slatAction=entity.editorderfulfillment&orderFulfillmentID='+orderFulfillment.data.orderFulfillmentID}}" class="s-edit-link">edit</a></li>
 		<li ng-bind="orderFulfillment.data.shippingAddress.data.streetAddress"></li>

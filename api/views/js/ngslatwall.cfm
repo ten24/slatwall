@@ -120,14 +120,10 @@ Notes:
 				    					//get objects base properties
 				    					var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias+'.','');
 				    					var propertyIdentifierArray = propertyIdentifier.split('.');
-				    					console.log('propertyIdentifierArray');
-				    					console.log(propertyIdentifierArray);
 				    					var currentEntity = entity;
 			    						angular.forEach(propertyIdentifierArray,function(property,key){
 			    							if(key === propertyIdentifierArray.length-1){
 			    								//if we are on the last item in the array
-			    								console.log(currentEntity);
-			    								console.log(currentEntity.metaData[property]);
 					    						if(angular.isObject(collectionItemData[property]) && currentEntity.metaData[property].fieldtype === 'many-to-one'){
 					    							var relatedEntity = slatwallService['new'+currentEntity.metaData[property].cfc]();
 					    							relatedEntity.$$init(collectionItemData[property][0]);
@@ -136,7 +132,6 @@ Notes:
 					    							angular.forEach(collectionItemData[property],function(arrayItem,key){
 					    								var relatedEntity = slatwallService['new'+currentEntity.metaData[property].cfc]();
 						    							relatedEntity.$$init(arrayItem);
-						    							console.log('$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1));
 						    							currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
 					    							});
 					    						}else{

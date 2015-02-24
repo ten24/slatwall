@@ -282,20 +282,12 @@ angular.module('slatwalladmin')
 					var orderItemsPromise = $slatwall.getEntity('orderItem', options);
 					orderItemsPromise.then(function(value){
 						scope.collection = value;
-						scope.orderItems = orderItemService.decorateOrderItems(value.pageRecords);
-						
 						var collectionConfig = {};
 						collectionConfig.columns = columnsConfig;
 						collectionConfig.baseEntityName = 'SlatwallOrderItem';
 						collectionConfig.baseEntityAlias = '_orderitem';
-						scope.test = $slatwall.populateCollection(value.pageRecords,collectionConfig);
-						console.log('transformtest');
-						console.log(scope.test);
-						
+						scope.orderItems = $slatwall.populateCollection(value.pageRecords,collectionConfig);
 						scope.loadingCollection = false;
-						//scope.orderItems = value.records;
-						console.log('order items');
-						console.log(scope.orderItems);
 					});
 				}
 				//get all possible attributes
