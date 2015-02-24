@@ -105,6 +105,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="taxAmount" persistent="false" hb_formatType="currency";
 	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
+	property name="productBundlePrice" persistent="false" hb_formatType="currency";
 
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
@@ -232,6 +233,40 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	public numeric function getExtendedPrice() {
 		return precisionEvaluate(getPrice() * val(getQuantity()));
 	}
+	
+	public numeric function getProductBundlePrice(){
+		//first get the base price of the product bundle itself
+		var productBundlePrice = getPrice();
+		//then get the price of it's componenets
+		for(var childOrderItem in this.getChildOrderItems()){
+			productBundlePrice = productBundlePrice + getProductBundleGroupPrice(childOrderItem);
+		}
+		
+		return productBundlePrice;
+	}
+	
+	private numeric function getProductBundleGroupPrice(required any orderItem){
+		var amountType = arguments.orderItem.getProductBundleGroup().getAmountType();
+		
+		//fixed
+		if(amountType == 'fixed'){
+			return arguments.orderItem.getProductBundleGroup().getAmount();
+		//none
+		}else if(amountType == 'none'){
+			return 0;
+		//skuPrice
+		}else if(amountType == 'skuPrice'){
+			return arguments.orderItem.getSkuPrice();
+		//skuPricePercentageIncrease
+		}else if(amountType == 'skuPricePercentageIncrease'){
+			return arguments.orderItem.getSkuPrice() + (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+		//skuPricePercentageDecrease
+		}else if(amountType == 'skuPricePercentageDecrease'){
+			return arguments.orderItem.getSkuPrice() - (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+		}
+		
+	}
+	
 	
 	public numeric function getExtendedSkuPrice() {
 		return precisionEvaluate(getSkuPrice() * getQuantity());
