@@ -640,7 +640,7 @@
 										<label for="name" class="col-md-3">Example Input Error<i class="fa fa-asterisk"></i></label>
 										<div class="col-md-9 s-form-input">
 											<input type="text" class="form-control ng-invalid ng-touched">
-											<p class="help-block">You must provide a valid first name.</p>
+											<p class="error help-block">You must provide a valid first name.</p>
 										</div>
 									</div>
 									
@@ -654,7 +654,7 @@
 												<option value="">Florida</option>
 												<option value="">Boston</option>
 											</select>
-											<p class="help-block">You must provide a valid first name.</p>
+											<p class="error help-block">You must provide a valid first name.</p>
 										</div>
 									</div>
 									
