@@ -385,9 +385,7 @@
 											<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
 										</cfif>
 									</div>
-								</cfif>
-
-						</div>
+								</cfif>	
 					</li>
 				</ul>
 
