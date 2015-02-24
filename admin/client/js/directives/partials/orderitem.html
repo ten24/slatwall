@@ -1,16 +1,27 @@
-<tr class="s-bundle-product l-1" ng-if="orderItem && attributes" >
+
+<tr class="s-bundle-product l-1" ng-if="orderItem && attributes" 
+		ng-class="{
+		   's-event l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'event', 
+		   's-bundle-product l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'productBundle',
+		   's-subscription l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'subscription',
+		   's-content-access l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'content',
+		   's-product l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'merchandise'
+		   }">
 	<td rowspan="1000" class='s-image' style="width:90px;height:90px;"><swresizedimage profilename="orderItem" data-order-item="orderItem"></swresizedimage></td>
-	<td ng-bind="orderItem.data.orderItemID"></td>
-	<td class="s-title">{{orderItem.data.sku.data.skuName}}
+	<td class="s-title">
+		<span ng-if="orderItem.data.sku.data.skuName">{{orderItem.data.sku.data.skuName}} 			<a href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link" 
+				ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode !== 'productBundle'">edit</a><br></span>
+		<span>{{orderItem.data.sku.data.product.data.productName}}</span>
 			<a href="" class="s-edit-link" 
 				ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle' && !orderItem.clicked" 
-				ng-click="getChildOrderItems(orderItem)">show detail</a>
+				ng-click="getChildOrderItems(orderItem)">detail</a>
 			<a href="" class="s-edit-link" 
 				ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle' && orderItem.clicked" 
-				ng-click="hideChildren(orderItem)">hide
-			</a>
+				ng-click="hideChildren(orderItem)">detail</a>
 	</td>
 	<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
+	<td class="s-detail">Details</td>
+	<td class="s-customization" ng-show="attributes"><span ng-repeat="attribute in attributes"><span class="s-detail-title" ng-if="orderItem.data[attribute.attributeCode]">{{attribute.attributeName}}:</span><br><span class="s-detail-content">{{orderItem.data[attribute.attributeCode]}}</span><br></span></td>
 	<td class="s-price">{{orderItem.data.skuPrice | currency}}</td>
 	<td class="s-qty">{{orderItem.data.quantity}}</td>
 	<td class="s-discount">-{{ orderItem.data.discountAmount | currency }}</td>
@@ -24,7 +35,6 @@
 			</li>
 		</ul>
 	</td>
-	<td class="s-sku" ng-repeat="attribute in attributes" ng-bind="orderItem.data[attribute.attributeCode]"></td>
 	<td rowspan="1000" class="s-actions">
 		<ul>
 			<li class="s-edit-btn"><a ng-href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}"><button type="button"><i class="fa fa-eye"></i></button></a></li>
@@ -32,4 +42,11 @@
 		</ul>
 	</td>			
 </tr>
-<tr ng-if="childOrderItems" ng-repeat="childOrderItem in childOrderItems" class="s-bundle-product l-{{childOrderItem.depth}}" sw-child-order-item data-order-item="childOrderItem" data-child-order-items="childOrderItems" data-attributes="attributes"></tr>
+<tr ng-if="childOrderItems" ng-repeat="childOrderItem in childOrderItems" class="s-bundle-product l-{{childOrderItem.depth}}" sw-child-order-item data-order-item="childOrderItem" data-child-order-items="childOrderItems" data-attributes="attributes" 
+   ng-class="{
+		   's-event l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'event', 
+		   's-bundle-product l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'productBundle',
+		   's-subscription l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'subscription',
+		   's-content-access l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'content',
+		   's-product l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'merchandise'
+		   }"></tr>
