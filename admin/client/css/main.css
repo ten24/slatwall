@@ -216,8 +216,11 @@ a:hover {
   font-size: 12px;
 }
 .table-responsive {
-  overflow: visable !important;
   width: 100%;
+  overflow: auto;
+}
+.table-responsive::-webkit-scrollbar {
+  display: none;
 }
 button::-moz-focus-inner {
   border: 0;
@@ -416,6 +419,19 @@ input[type="file"] {
 .agenda .agenda-time {
   width: 140px;
   vertacal-align: middle;
+}
+/* Form Validation */
+input.ng-invalid,
+select.ng-invalid,
+input.error,
+select.error {
+  border-color: #da5757 !important;
+}
+input.ng-invalid + .help-block,
+select.ng-invalid + .help-block,
+input.error + .help-block,
+select.error + .help-block {
+  color: #da5757 !important;
 }
 /* Navigation Sidebar */
 #menu a > .fa.arrow {
@@ -879,19 +895,6 @@ select:focus {
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
 }
-.form-group.s-required label:after {
-  font-family: fontAwesome;
-  content: "\f069";
-  font-size: 5px;
-  top: -6px;
-  position: relative;
-  padding-left: 2px;
-}
-.form-group.s-required input:focus {
-  border-color: #da5757;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}
 .modal-header {
   padding: 15px;
 }
@@ -1046,6 +1049,7 @@ select:focus {
 .table-bordered > thead > tr > th,
 .table-bordered > thead > tr > td {
   border-bottom-width: 1px;
+  white-space: nowrap;
 }
 .table-striped {
   background-color: #ffffff;
