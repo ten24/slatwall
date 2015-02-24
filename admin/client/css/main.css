@@ -454,7 +454,6 @@ select.error {
 }
 .container-fluid > .navbar-header a {
   padding-left: 38px;
-  width: 225px;
 }
 .navbar .container-fluid {
   padding-left: 0px;
@@ -2459,7 +2458,7 @@ tabel .s-table-header {
   height: 60px;
 }
 .navbar-inverse .navbar-nav > li > a:hover {
-  background-color: #222 !important;
+  background-color: #222;
 }
 /*END Temp search result css - remove for left hand nav*/
 .s-bundle-group-items {
@@ -3338,6 +3337,14 @@ tabel .s-table-header {
 .navbar-fixed-top {
   border: none;
 }
+.navbar-fixed-top .navbar-toggle {
+  position: absolute;
+  right: 0px;
+  top: 5px;
+}
+.navbar-fixed-top .navbar-toggle .icon-bar {
+  background-color: #aaa !important;
+}
 .navbar-fixed-bottom {
   border: none;
 }
@@ -4057,6 +4064,14 @@ a.disabled > i.hibachi-ui-radio-checked {
   font-weight: 600;
 }
 @media only screen and (max-width: 767px) {
+  #slatwall-navbar .nav .dropdown-menu {
+    margin: 0px;
+  }
+  #slatwall-navbar .nav .dropdown-menu a {
+    color: #ffffff;
+    margin-left: 30px;
+  }
+  /* #slatwall-navbar .nav .dropdown-menu :hover {background-color:#1B1E24;} */
   .s-bundle-add-obj .s-action-text {
     display: none;
   }
