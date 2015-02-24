@@ -209,7 +209,18 @@ component extends="HibachiService" accessors="true" output="false" {
 					var nestedPropertyIdentifiers = arguments.pageRecord[arguments.propertyIdentifier].getDefaultPropertyIdentifierArray();
 					pageRecordStruct[arguments.propertyIdentifier] = getFormattedObjectRecords([arguments.pageRecord[arguments.propertyIdentifier]],nestedPropertyIdentifiers);
 				}else if(isArray(arguments.pageRecord[arguments.propertyIdentifier])){
-					pageRecordStruct[ arguments.propertyIdentifier ] = value;
+					
+					//pageRecordStruct[ arguments.propertyIdentifier ] = value;
+					//retrieve one-to-many using default properties
+					pageRecordStruct[arguments.propertyIdentifier] = [];
+					for(var arrayItem in arguments.pageRecord[arguments.propertyIdentifier]){
+						var defaultCollectionProperties = arrayItem.getDefaultCollectionProperties();
+						var value = {};
+						for(var property in defaultCollectionProperties){
+							value[property.name] = arrayItem.getValueByPropertyIdentifier(propertyIdentifier=property.name,format=true);
+						}
+						arrayAppend(pageRecordStruct[arguments.propertyIdentifier],value);
+					}
 				}else{
 					var value = arguments.pageRecord[arguments.propertyIdentifier];
 					if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {

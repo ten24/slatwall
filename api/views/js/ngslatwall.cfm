@@ -119,21 +119,40 @@ Notes:
 				    				angular.forEach(collectionConfig.columns, function(column, key){
 				    					//get objects base properties
 				    					var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias+'.','');
-				    					if(column.propertyIdentifier.split('.').length == 2){
-				    						
-				    						if(angular.isObject(collectionItemData[propertyIdentifier]) && entity.metaData[propertyIdentifier].fieldtype === 'many-to-one'){
-				    							var relatedEntity = slatwallService['new'+entity.metaData[propertyIdentifier].cfc]();
-				    							relatedEntity.$$init(collectionItemData[propertyIdentifier][0]);
-				    							entity['$$set'+entity.metaData[propertyIdentifier].name.charAt(0).toUpperCase()+entity.metaData[propertyIdentifier].name.slice(1)](relatedEntity);
-				    						}else{
-				    							entity.data[propertyIdentifier] = collectionItemData[propertyIdentifier];
-				    						}
-				    					}else{
-				    						//for each object
-				    						angular.forEach(propertyIdentifier.split('.'),function(){
-				    							
-				    						});
-				    					}
+				    					var propertyIdentifierArray = propertyIdentifier.split('.');
+				    					console.log('propertyIdentifierArray');
+				    					console.log(propertyIdentifierArray);
+				    					var currentEntity = entity;
+			    						angular.forEach(propertyIdentifierArray,function(property,key){
+			    							if(key === propertyIdentifierArray.length-1){
+			    								//if we are on the last item in the array
+			    								console.log(currentEntity);
+			    								console.log(currentEntity.metaData[property]);
+					    						if(angular.isObject(collectionItemData[property]) && currentEntity.metaData[property].fieldtype === 'many-to-one'){
+					    							var relatedEntity = slatwallService['new'+currentEntity.metaData[property].cfc]();
+					    							relatedEntity.$$init(collectionItemData[property][0]);
+					    							currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
+					    						}else if(angular.isArray(collectionItemData[property]) && currentEntity.metaData[property].fieldtype === 'one-to-many'){
+					    							angular.forEach(collectionItemData[property],function(arrayItem,key){
+					    								var relatedEntity = slatwallService['new'+currentEntity.metaData[property].cfc]();
+						    							relatedEntity.$$init(arrayItem);
+						    							console.log('$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1));
+						    							currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
+					    							});
+					    						}else{
+					    							currentEntity.data[property] = collectionItemData[property];
+					    						}
+			    							}else{
+			    								var propertyMetaData = currentEntity.metaData[property];
+						    					if(angular.isUndefined(currentEntity.data[property])){
+			    									relatedEntity = slatwallService['new'+propertyMetaData.cfc]();
+			    								}else{
+			    									relatedEntity = currentEntity.data[property];
+			    								}
+			    								currentEntity['$$set'+propertyMetaData.name.charAt(0).toUpperCase()+propertyMetaData.name.slice(1)](relatedEntity);
+		    									currentEntity = relatedEntity;
+						    				}
+						    			});
 				    				});
 				    				entities.push(entity);
 				    			});
