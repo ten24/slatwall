@@ -51,15 +51,12 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	// Persistent Properties
 	property name="attributeSetID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="activeFlag" ormtype="boolean";
-	property name="displayOnOrderDetailFlag" ormtype="boolean" default=0;
 	property name="attributeSetName" ormtype="string";
 	property name="attributeSetCode" ormtype="string" index="PI_ATTRIBUTESETCODE";
 	property name="attributeSetDescription" ormtype="string" length="2000";
 	property name="attributeSetObject" ormtype="string" hb_formFieldType="select";
 	property name="globalFlag" ormtype="boolean" default="1";
-	property name="requiredFlag" ormtype="boolean";
 	property name="accountSaveFlag" ormtype="boolean";
-	property name="additionalCharge" ormtype="big_decimal";
 	property name="sortOrder" ormtype="integer";
 	
 	// Related Object Properties (many-to-one)
