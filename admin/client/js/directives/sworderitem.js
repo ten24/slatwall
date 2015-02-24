@@ -129,6 +129,11 @@ angular.module('slatwalladmin').directive('swOrderItem',
 	 				    "isVisible": true,
 	 				    "isDeletable": true
  				   },
+ 				  {
+	 				    "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
+	 				    "isVisible": true,
+	 				    "isDeletable": true
+				   },
 			    {
 			      "title": "Street Address",
 			      "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",

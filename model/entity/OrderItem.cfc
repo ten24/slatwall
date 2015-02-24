@@ -231,13 +231,20 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	
 	public numeric function getExtendedPrice() {
-		return precisionEvaluate(getPrice() * val(getQuantity()));
+		var price = 0;
+		if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			price = getProductBundlePrice();
+		}else{
+			price = getPrice();
+		}
+		return precisionEvaluate(price * val(getQuantity()));
 	}
+	
 	
 	public numeric function getProductBundlePrice(){
 		//first get the base price of the product bundle itself
 		var productBundlePrice = getPrice();
-		//then get the price of it's componenets
+		//then get the price of it's componenets and add them
 		for(var childOrderItem in this.getChildOrderItems()){
 			productBundlePrice += getProductBundleGroupPrice(childOrderItem);
 		}
