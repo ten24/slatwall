@@ -118,7 +118,7 @@ Notes:
 				    				//populate entity with data based on the collectionConfig
 				    				angular.forEach(collectionConfig.columns, function(column, key){
 				    					//get objects base properties
-				    					var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias+'.','');
+				    					var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias.toLowerCase()+'.','');
 				    					var propertyIdentifierArray = propertyIdentifier.split('.');
 				    					var currentEntity = entity;
 			    						angular.forEach(propertyIdentifierArray,function(property,key){
@@ -139,8 +139,15 @@ Notes:
 					    						}
 			    							}else{
 			    								var propertyMetaData = currentEntity.metaData[property];
+			    								console.log(currentEntity);
+			    								console.log(property);
+			    								console.log(propertyMetaData);
 						    					if(angular.isUndefined(currentEntity.data[property])){
-			    									relatedEntity = slatwallService['new'+propertyMetaData.cfc]();
+						    						if(propertyMetaData.fieldtype === 'one-to-many'){
+						    							relatedEntity = [];
+						    						}else{
+						    							relatedEntity = slatwallService['new'+propertyMetaData.cfc]();
+						    						}
 			    								}else{
 			    									relatedEntity = currentEntity.data[property];
 			    								}

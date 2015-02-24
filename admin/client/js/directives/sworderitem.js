@@ -6,7 +6,6 @@ angular.module('slatwalladmin').directive('swOrderItem',
   '$http',
   '$templateCache',
   '$slatwall',
-  'orderItemService',
   'partialsPath', 
   function(
 	  $log,
@@ -14,7 +13,6 @@ angular.module('slatwalladmin').directive('swOrderItem',
 	  $http,
 	  $templateCache,
 	  $slatwall,
-	  orderItemService,
 	  partialsPath
   ) {
 
@@ -190,7 +188,7 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			//add attributes to the column config
 			angular.forEach(scope.attributes,function(attribute){
 				var attributeColumn = {
-					propertyIdentifier:"_orderItem."+attribute.attributeCode,
+					propertyIdentifier:"_orderitem."+attribute.attributeCode,
 					attributeID:attribute.attributeID,
 			         attributeSetObject:"orderItem"
 				};
@@ -238,8 +236,11 @@ angular.module('slatwalladmin').directive('swOrderItem',
 					scope.orderItem.childItemsRetrieved = true;
 					var orderItemsPromise = $slatwall.getEntity('orderItem', options);
 					orderItemsPromise.then(function(value){
-						
-						var childOrderItems = orderItemService.decorateOrderItems(value.records);
+						var collectionConfig = {};
+						collectionConfig.columns = columnsConfig;
+						collectionConfig.baseEntityName = 'SlatwallOrderItem';
+						collectionConfig.baseEntityAlias = '_orderitem';
+						var childOrderItems = $slatwall.populateCollection(value.records,collectionConfig);
 						angular.forEach(childOrderItems,function(childOrderItem){
 							//childOrderItem.hide = false;
 							childOrderItem.depth = scope.orderItem.depth+1;

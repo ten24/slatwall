@@ -6,7 +6,6 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
   '$compile',
   '$templateCache',
   '$slatwall',
-  'orderItemService',
   'partialsPath', 
   function(
 	  $log,
@@ -14,7 +13,6 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 	  $compile,
 	  $templateCache,
 	  $slatwall,
-	  orderItemService,
 	  partialsPath
   ) {
 
@@ -82,23 +80,23 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
  				      "isDeletable": true
  				},
  				{
- 				      "title": "Product ID",
- 				      "propertyIdentifier": "_orderitem.sku.product.productID",
- 				      "isVisible": true,
- 				      "isDeletable": true
- 				},
- 				{
- 				      "title": "Product Name",
- 				      "propertyIdentifier": "_orderitem.sku.product.productName",
- 				      "isVisible": true,
- 				      "isDeletable": true
- 				},
- 				{
- 				      "title": "Product Type",
- 				      "propertyIdentifier": "_orderitem.sku.product.productType",
- 				      "isVisible": true,
- 				      "isDeletable": true
- 				},
+				      "title": "Product ID",
+				      "propertyIdentifier": "_orderitem.sku.product.productID",
+				      "isVisible": true,
+				      "isDeletable": true
+				},
+				{
+				      "title": "Product Name",
+				      "propertyIdentifier": "_orderitem.sku.product.productName",
+				      "isVisible": true,
+				      "isDeletable": true
+				},
+				{
+				      "title": "Product Type",
+				      "propertyIdentifier": "_orderitem.sku.product.productType",
+				      "isVisible": true,
+				      "isDeletable": true
+				},
  				{
  				      "title": "Product Description",
  				      "propertyIdentifier": "_orderitem.sku.product.productDescription",
@@ -187,7 +185,7 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 			//add attributes to the column config
 			angular.forEach(scope.attributes,function(attribute){
 				var attributeColumn = {
-					propertyIdentifier:"_orderItem."+attribute.attributeCode,
+					propertyIdentifier:"_orderitem."+attribute.attributeCode,
 					attributeID:attribute.attributeID,
 			         attributeSetObject:"orderItem"
 				};
@@ -228,8 +226,11 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 					scope.orderItem.childItemsRetrieved = true;
 					var orderItemsPromise = $slatwall.getEntity('orderItem', options);
 					orderItemsPromise.then(function(value){
-						
-						var childOrderItems = orderItemService.decorateOrderItems(value.records);
+						var collectionConfig = {};
+						collectionConfig.columns = columnsConfig;
+						collectionConfig.baseEntityName = 'SlatwallOrderItem';
+						collectionConfig.baseEntityAlias = '_orderitem';
+						var childOrderItems = $slatwall.populateCollection(value.records,collectionConfig);
 						angular.forEach(childOrderItems,function(childOrderItem){
 							childOrderItem.hide = false;
 							childOrderItem.depth = orderItem.depth+1;
@@ -238,27 +239,7 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 						
 					});
 				}
-				
 			}
-
-					
-					
-					/*var unbindchildorderitems = scope.$watch('orderItem.data.childOrderItems',function(newValue,oldValue){
-				if(newValue !== oldValue){
-					console.log('found child order items');
-					//when we load the child order items then append the child template
-					var Partial = partialsPath+"childorderitem.html";
-					var templateLoader = $http.get(Partial,{cache:$templateCache});
-					var promise = templateLoader.success(function(html){
-						element.append($compile(html)(scope));
-						
-					}).then(function(response){
-						//scope.childOrderItems = newValue
-						//element.replaceWith($compile(element.html())(scope));
-					});
-					console.log(element);
-				}
-			});*/
 		}
 	};
 } ]);

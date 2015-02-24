@@ -1,11 +1,11 @@
 <td class="s-title" ng-hide="orderItem.hide">{{orderItem.data.orderItemID}}-{{orderItem.position}}</td>
 	<td class="s-title" ng-hide="orderItem.hide">{{orderItem.data.sku.data.skuName}}
 		<a href="" class="s-edit-link" 
-		ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle' && !orderItem.clicked" 
-		ng-click="getChildOrderItems(orderItem)">show detail
+			ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle' && !orderItem.clicked" 
+			ng-click="getChildOrderItems(orderItem)">show detail
 		</a>
 		<a href="" 
-			ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle' && orderItem.clicked" 
+			ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle' && orderItem.clicked" 
 			ng-click="hideChildren(orderItem)">hide
 		</a>
 	</td>

@@ -5,7 +5,6 @@ angular.module('slatwalladmin')
 '$location',
 '$slatwall',
 'formService',
-'orderItemService',
 'partialsPath',
 'paginationService',
 
@@ -15,7 +14,6 @@ angular.module('slatwalladmin')
 	$location,
 	$slatwall,
 	formService,
-	orderItemService,
 	partialsPath,
 	paginationService
 	){

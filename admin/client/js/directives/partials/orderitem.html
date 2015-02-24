@@ -1,12 +1,12 @@
 <tr class="s-bundle-product l-1" ng-if="orderItem && attributes" >
 	<td rowspan="1000" class='s-image' style="width:90px;height:90px;"><swresizedimage profilename="orderItem" data-order-item="orderItem"></swresizedimage></td>
 	<td ng-bind="orderItem.data.orderItemID"></td>
-	<td class="s-title">{{orderItem.product.productName}}
+	<td class="s-title">{{orderItem.data.sku.data.skuName}}
 			<a href="" class="s-edit-link" 
-				ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle' && !orderItem.clicked" 
+				ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle' && !orderItem.clicked" 
 				ng-click="getChildOrderItems(orderItem)">show detail</a>
 			<a href="" class="s-edit-link" 
-				ng-show="orderItem.product.productType[0].productTypeName === 'Product Bundle' && orderItem.clicked" 
+				ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle' && orderItem.clicked" 
 				ng-click="hideChildren(orderItem)">hide
 			</a>
 	</td>
