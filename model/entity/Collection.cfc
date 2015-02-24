@@ -239,7 +239,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public array function getKeywordArray(){
 		if(!arraylen(variables.keywordArray)){
-			variables.keywordArray = ListToArray(getKeywords(),' ');
+			variables.keywordArray = ListToArray(getKeywords());
 		}
 		return variables.keywordArray;
 	}
