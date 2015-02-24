@@ -29,6 +29,7 @@ angular.module('slatwalladmin').directive('swOrderItem',
 		link : function(scope, element, attr) {
 			$log.debug('order item init');
 			$log.debug(scope.orderItem);
+			scope.orderItem.clicked = false;
 			//define how we get child order items
 			var columnsConfig =[
 		         {
@@ -217,20 +218,42 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			scope.childOrderItems = [];
 			scope.orderItem.depth = 1;
 			
+			//hide the children on click
+			scope.hideChildren = function(orderItem){
+				
+				//Set all child order items to clicked = false.
+				angular.forEach(scope.childOrderItems, function(child){
+					console.log("hideing");
+					console.dir(child);
+					child.hide = !child.hide;
+					scope.orderItem.clicked = !scope.orderItem.clicked;
+				});
+			}
+			
 			//scope.orderItem.childItemsRetrieved = false;
 			scope.getChildOrderItems = function(){
-				scope.orderItem.clicked = true;
 				if(!scope.orderItem.childItemsRetrieved){
+					scope.orderItem.clicked = !scope.orderItem.clicked;
+					scope.orderItem.hide = !scope.orderItem.hide;
 					scope.orderItem.childItemsRetrieved = true;
 					var orderItemsPromise = $slatwall.getEntity('orderItem', options);
 					orderItemsPromise.then(function(value){
 						
 						var childOrderItems = orderItemService.decorateOrderItems(value.records);
 						angular.forEach(childOrderItems,function(childOrderItem){
+							//childOrderItem.hide = false;
 							childOrderItem.depth = scope.orderItem.depth+1;
 							scope.childOrderItems.push(childOrderItem);
 						});
 					});
+				}else{
+					//We already have the items so we just need to show them.
+					angular.forEach(scope.childOrderItems, function(child){
+						console.dir(child);
+						child.hide = !child.hide;
+						scope.orderItem.clicked = !scope.orderItem.clicked;
+					});
+					
 				}
 			}
 			

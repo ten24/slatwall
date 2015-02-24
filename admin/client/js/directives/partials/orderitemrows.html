@@ -65,7 +65,6 @@
 							<th>orderItemid</th>
 							<th>Title</th>
 							<th>Sku</th>
-							<!-- <th>{{customAttributes.key}}</th> -->
 							<th>Price</th>
 							<th>Qty</th>
 							<th>Discount</th>
@@ -76,7 +75,7 @@
 							<th></th>
 						</tr>
 					</thead>
-					<tbody  ng-repeat="orderItem in orderItems" sw-order-item data-order-item="orderItem" data-attributes="attributes" data-order-id="orderId">
+					<tbody ng-repeat="orderItem in orderItems" sw-order-item data-order-item="orderItem" data-attributes="attributes" data-order-id="orderId">
 						<!-- Begin Merchandise Row -->
 					</tbody>
 				</table>
