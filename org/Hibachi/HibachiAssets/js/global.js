@@ -894,7 +894,7 @@ function initModal( modalWin ){
 
 	var modalRequestObj = new Object();
 	var m=modalLink.split('?');
-	modalRequestObj.url=m[0]+'/?modal=1';
+	modalRequestObj.url=m[0]+ (m[0].substring(m[0].length-1)=='/'?'':'/') + '?modal=1';
 	modalRequestObj.data=JSON.parse('{"' + decodeURI(m[1].replace(/&/g, "\",\"").replace(/=/g,"\":\"")) + '"}');
 
 
