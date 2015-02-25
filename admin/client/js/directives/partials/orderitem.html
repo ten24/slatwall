@@ -4,13 +4,12 @@
 		   's-bundle-product l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'productBundle',
 		   's-subscription l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'subscription',
 		   's-content-access l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'content',
-		   's-product l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'merchandise'
-		  
-		's-return':orderItem.data.orderItemType.data.systemCode === 'oitReturn',
-		's-deposit':orderItem.data.orderItemType.data.systemCode === 'oitDeposit' && orderItem.onWaitlist === true,
-		's-pending':orderItem.data.orderItemType.data.systemCode === 'oitDeposit' && orderItem.onWaitlist === true && orderItem.eligible
+		   's-product l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'merchandise',
+			's-return':orderItem.data.orderItemType.data.systemCode == 'oitReturn',
+			's-deposit':orderItem.onWaitlist === true,
+			's-pending':orderItem.data.orderItemType.data.systemCode == 'oitDeposit' && orderItem.onWaitlist === true && orderItem.eligible
 	}"
->
+><!-- Return Deposit Sale etc are actually order types, not orderitem types. --><!-- orderItem.data.orderItemType.data.systemCode == 'oitDeposit' && orderItem.onWaitlist === true && orderItem.eligible  -->
 	<td rowspan="1000" class='s-image' style="width:90px;height:90px;"><swresizedimage profilename="orderItem" data-order-item="orderItem"></swresizedimage></td>
 	<td class="s-title">
 		<span ng-if="orderItem.data.sku.data.skuName">{{orderItem.data.sku.data.skuName}} 			<a href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link" 
@@ -22,11 +21,12 @@
 			<a href="" class="s-edit-link" 
 				ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle' && orderItem.clicked" 
 				ng-click="hideChildren(orderItem)">detail</a>
+		<!-- If this is an event, and the customer is waitlisted, need to display information -->
 	</td>
 	<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
 	<td class="s-detail">Details</td>
 	<td class="s-customization" ng-show="attributes"><span ng-repeat="attribute in attributes"><span class="s-detail-title" ng-if="orderItem.data[attribute.attributeCode]">{{attribute.attributeName}}:</span><br><span class="s-detail-content">{{orderItem.data[attribute.attributeCode]}}</span><br></span></td>
-	<td class="s-price">{{orderItem.data.skuPrice | currency}} <span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span>></td>
+	<td class="s-price">{{orderItem.data.skuPrice | currency}} <span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span></td>
 	<td class="s-qty">{{orderItem.data.quantity}}</td>
 	<td class="s-discount">-{{ orderItem.data.discountAmount | currency }}</td>
 	<td class="s-total">{{orderItem.data.itemTotal | currency}}</td>
