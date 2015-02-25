@@ -4,7 +4,7 @@
 		   's-bundle-product l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'productBundle',
 		   's-subscription l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'subscription',
 		   's-content-access l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'content',
-		   's-product l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'merchandise'
+		   's-product l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'merchandise',
 		  
 		's-return':orderItem.data.orderItemType.data.systemCode === 'oitReturn',
 		's-deposit':orderItem.data.orderItemType.data.systemCode === 'oitDeposit' && orderItem.onWaitlist === true,

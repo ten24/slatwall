@@ -113,29 +113,33 @@ Notes:
 				    			var entities = [];
 				    			//loop over all collection data to create objects
 				    			angular.forEach(collectionData, function(collectionItemData, key){
-				    				//create Entity
+				    				//create base Entity
 				    				var entity = slatwallService['new'+collectionConfig.baseEntityName.replace('Slatwall','')]();
 				    				//populate entity with data based on the collectionConfig
 				    				angular.forEach(collectionConfig.columns, function(column, key){
 				    					//get objects base properties
 				    					var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias.toLowerCase()+'.','');
 				    					var propertyIdentifierArray = propertyIdentifier.split('.');
+				    					var propertyIdentifierKey = propertyIdentifier.replace(/\./g,'_');
+				    					console.log('propertyIdentifierKey');
+				    					console.log(propertyIdentifierKey);
+				    					console.log(collectionItemData[propertyIdentifierKey]);
 				    					var currentEntity = entity;
 			    						angular.forEach(propertyIdentifierArray,function(property,key){
 			    							if(key === propertyIdentifierArray.length-1){
 			    								//if we are on the last item in the array
-					    						if(angular.isObject(collectionItemData[property]) && currentEntity.metaData[property].fieldtype === 'many-to-one'){
+					    						if(angular.isObject(collectionItemData[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype === 'many-to-one'){
 					    							var relatedEntity = slatwallService['new'+currentEntity.metaData[property].cfc]();
-					    							relatedEntity.$$init(collectionItemData[property][0]);
+					    							relatedEntity.$$init(collectionItemData[propertyIdentifierKey][0]);
 					    							currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
-					    						}else if(angular.isArray(collectionItemData[property]) && currentEntity.metaData[property].fieldtype === 'one-to-many'){
-					    							angular.forEach(collectionItemData[property],function(arrayItem,key){
+					    						}else if(angular.isArray(collectionItemData[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype === 'one-to-many'){
+					    							angular.forEach(collectionItemData[propertyIdentifierKey],function(arrayItem,key){
 					    								var relatedEntity = slatwallService['new'+currentEntity.metaData[property].cfc]();
 						    							relatedEntity.$$init(arrayItem);
 						    							currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
 					    							});
 					    						}else{
-					    							currentEntity.data[property] = collectionItemData[property];
+					    							currentEntity.data[property] = collectionItemData[propertyIdentifierKey];
 					    						}
 			    							}else{
 			    								var propertyMetaData = currentEntity.metaData[property];
