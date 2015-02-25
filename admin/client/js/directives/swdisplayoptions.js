@@ -4,6 +4,7 @@ angular.module('slatwalladmin')
 	'$compile',
 	'$templateCache',
 	'$log',
+	'$slatwall',
 	'collectionService',
 	'collectionPartialsPath',
 	function(
@@ -11,6 +12,7 @@ angular.module('slatwalladmin')
 		$compile,
 		$templateCache,
 		$log,
+		$slatwall,
 		collectionService,
 		collectionPartialsPath
 	){
@@ -22,12 +24,12 @@ angular.module('slatwalladmin')
 				columns:'=',
 				propertiesList:"=",
 				saveCollection:"&",
-				baseEntityAlias:"="
+				baseEntityAlias:"=",
+				baseEntityName:"@"
 			},
 			templateUrl:collectionPartialsPath+"displayoptions.html",
 			controller: function($scope,$element,$attrs){
 				$log.debug('display options initialize');
-				
 				
 				this.removeColumn = function(columnIndex){
 					$log.debug('parent remove column');
@@ -49,6 +51,31 @@ angular.module('slatwalladmin')
 					}
 				};
 				
+				
+				//var baseEntityCfcName = $scope.baseEntityName.replace('Slatwall','').charAt(0).toLowerCase()+$scope.baseEntityName.replace('Slatwall','').slice(1); 
+				var getTitleFromPropertyIdentifier = function(propertyIdentifier){
+					var title = '';
+					var propertyIdentifierArray = propertyIdentifier.split('.');
+					
+					angular.forEach(propertyIdentifierArray,function(propertyIdentifierItem,key){
+						//pass over the initial item
+						if(key !== 0 && key !== propertyIdentifierArray.length-1){
+							var prefix = 'entity.';
+							if(key === 1){
+								title += $slatwall.getRBKey(prefix+baseEntityCfcName+'.'+propertyIdentifierItem);
+							}else{
+								title += $slatwall.getRBKey(prefix+propertyIdentifierArray[key-1]+'.'+propertyIdentifierItem);
+							}
+							if(key < propertyIdentifierArray.length-2){
+								title += ' | ';
+							}
+						}
+					});
+					
+					
+					return title;
+				}
+				
 				$scope.addColumn = function(selectedProperty, closeDialog){
 					$log.debug('add Column');
 					$log.debug(selectedProperty);
@@ -56,6 +83,10 @@ angular.module('slatwalladmin')
 						$log.debug($scope.columns);
 						if(angular.isDefined(selectedProperty)){
 							var column = {};
+							console.log('selectedProperty');
+							console.log(selectedProperty);
+							//"_orderitem.order.orderType.typeName"
+							//console.log(getTitleFromPropertyIdentifier(selectedProperty.propertyIdentifier));
 							column.title = selectedProperty.displayPropertyIdentifier;
 							column.propertyIdentifier = selectedProperty.propertyIdentifier;
 							column.isVisible = true;

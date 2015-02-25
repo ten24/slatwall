@@ -634,7 +634,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
-		try{
+		//try{
 			
 			if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
 				saveState();
@@ -654,10 +654,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
 			}
-		}
-		catch(any e){
-			variables.pageRecords = [{'failedCollection'='failedCollection'}];
-		}
+//		}
+//		catch(any e){
+//			variables.pageRecords = [{'failedCollection'='failedCollection'}];
+//		}
 		
 		return variables.pageRecords;
 	}
@@ -892,7 +892,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
 					
 				}else{
-					var columnAlias = listLast(column.propertyIdentifier,'.');
+					var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(getCollectionObject())&'_','');
 					
 					HQL &= ' #column.propertyIdentifier# as #columnAlias#';
 				}
