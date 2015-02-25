@@ -192,7 +192,6 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function getFormattedPageRecord(required any pageRecord, required any propertyIdentifier){
 		//populate pageRecordStruct with pageRecord info based on the passed in property identifier
-		//writeDump(var=arguments.pageRecord,top=2);writeDump(arguments.propertyIdentifier);
 		var pageRecordStruct = {};
 		
 		if(isObject(arguments.pageRecord)) {
@@ -510,8 +509,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		if(structKeyExists(collectionEntity.getCollectionConfigStruct(),'columns')){
 			for (var column in collectionEntity.getCollectionConfigStruct().columns){
-				var piAlias = ListLast(column.propertyIdentifier,'.');
-				
+				var piAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),collectionEntity.getCollectionConfigStruct().baseEntityAlias&'_','');
 				if(!ArrayFind(collectionPropertyIdentifiers,piAlias)){
 					ArrayAppend(collectionPropertyIdentifiers,piAlias);
 				}
