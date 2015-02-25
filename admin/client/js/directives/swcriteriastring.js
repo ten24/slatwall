@@ -85,8 +85,7 @@ angular.module('slatwalladmin')
 			    
 			    scope.$watch('selectedFilterProperty', function(selectedFilterProperty) {
 					if(angular.isDefined(selectedFilterProperty)){
-						$log.debug('selectedFilterProperty');
-						$log.debug(selectedFilterProperty);
+			    
 					    scope.conditionOptions = getStringOptions();
 		    			
 		    			scope.selectedConditionChanged = function(selectedFilterProperty){
@@ -106,13 +105,9 @@ angular.module('slatwalladmin')
 		    			scope.inListArray = [];
 		    			scope.$watch('filterItem.value',function(criteriaValue){
 		    				$log.debug(criteriaValue);
-		    				//Prevents console error for when criteriaValue is undefined at first
-		    				if(angular.isDefined(criteriaValue)){
-		    					scope.inListArray = criteriaValue.split(",");
-		    				}
-		    				
+		    				scope.inListArray = criteriaValue.split(",");
 				    		if(angular.isDefined(scope.filterItem) && angular.isDefined(scope.filterItem.value)){
-				    			scope.filterItem.value = scope.filterItem.value.replace('%','');				    			
+				    			scope.filterItem.value = scope.filterItem.value.replace('%','');
 				    		}
 				    	});
 		    			
@@ -137,8 +132,6 @@ angular.module('slatwalladmin')
 						
 							//set value field to the user generated list
 							scope.filterItem.value = scope.inListArray.toString();
-							//Sets a displayValue for filterItem
-							scope.filterItem.displayValue = scope.filterItem.value.replace(/,/g, ', ');
 							scope.newListItem = '';
 		
 						};
