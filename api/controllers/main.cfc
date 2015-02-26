@@ -36,6 +36,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
 		}
+		if(!isNull(arguments.rc.context) && arguments.rc.context == 'GET' && structKEyExists(arguments.rc, 'serializedJSONData') && isSimpleValue(arguments.rc.serializedJSONData) && isJSON(arguments.rc.serializedJSONData)) {
+			StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
+		}
 	}
 	
 	public any function getValidationPropertyStatus(required struct rc){
