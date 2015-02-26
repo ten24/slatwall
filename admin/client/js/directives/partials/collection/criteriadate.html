@@ -35,7 +35,7 @@
           			close-text="Close" 
           			ng-change="criteriaRangeChanged(selectedFilterProperty)"
           			ng-disabled="selectedFilterProperty.selectedCriteriaType.disableCriteriaStart"
-          			read-only
+          			readonly
           			/>
           			
                   
@@ -53,7 +53,7 @@
           			close-text="Close" 
           			ng-change="criteriaRangeChanged(selectedFilterProperty)"
           			ng-disabled="selectedFilterProperty.selectedCriteriaType.disableCriteriaEnd"
-          			read-only
+          			readonly
           			/>
           <span class="input-group-btn"  ng-show="!selectedFilterProperty.selectedCriteriaType.disableCriteriaEnd">
             <button type="button" class="btn btn-default" ng-click="openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
