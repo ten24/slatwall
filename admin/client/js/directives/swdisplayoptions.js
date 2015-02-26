@@ -4,6 +4,7 @@ angular.module('slatwalladmin')
 	'$compile',
 	'$templateCache',
 	'$log',
+	'$slatwall',
 	'collectionService',
 	'collectionPartialsPath',
 	function(
@@ -11,6 +12,7 @@ angular.module('slatwalladmin')
 		$compile,
 		$templateCache,
 		$log,
+		$slatwall,
 		collectionService,
 		collectionPartialsPath
 	){
@@ -22,12 +24,12 @@ angular.module('slatwalladmin')
 				columns:'=',
 				propertiesList:"=",
 				saveCollection:"&",
-				baseEntityAlias:"="
+				baseEntityAlias:"=",
+				baseEntityName:"="
 			},
 			templateUrl:collectionPartialsPath+"displayoptions.html",
 			controller: function($scope,$element,$attrs){
 				$log.debug('display options initialize');
-				
 				
 				this.removeColumn = function(columnIndex){
 					$log.debug('parent remove column');
@@ -49,6 +51,37 @@ angular.module('slatwalladmin')
 					}
 				};
 				
+				
+				var getTitleFromPropertyIdentifier = function(propertyIdentifier){
+					var baseEntityCfcName = $scope.baseEntityName.replace('Slatwall','').charAt(0).toLowerCase()+$scope.baseEntityName.replace('Slatwall','').slice(1); 
+					
+					var title = '';
+					var propertyIdentifierArray = propertyIdentifier.split('.');
+					var currentEntity;
+					var currentEntityInstance;
+					var prefix = 'entity.';
+					angular.forEach(propertyIdentifierArray,function(propertyIdentifierItem,key){
+						//pass over the initial item
+						if(key !== 0 ){
+							if(key === 1){
+								currentEntityInstance = $slatwall['new'+$scope.baseEntityName.replace('Slatwall','')]();
+								currentEntity = currentEntityInstance.metaData[propertyIdentifierArray[key]]
+								title += $slatwall.getRBKey(prefix+baseEntityCfcName+'.'+propertyIdentifierItem);
+							}else{
+								var currentEntityInstance = $slatwall['new'+currentEntity.cfc.charAt(0).toUpperCase()+currentEntity.cfc.slice(1)]();
+								currentEntity = currentEntityInstance.metaData[propertyIdentifierArray[key]];
+								title += $slatwall.getRBKey(prefix+currentEntityInstance.metaData.className+'.'+currentEntity.name);
+							}
+							if(key < propertyIdentifierArray.length-1){
+								title += ' | ';
+							}
+						}
+					});
+					
+					
+					return title;
+				}
+				
 				$scope.addColumn = function(selectedProperty, closeDialog){
 					$log.debug('add Column');
 					$log.debug(selectedProperty);
@@ -56,7 +89,8 @@ angular.module('slatwalladmin')
 						$log.debug($scope.columns);
 						if(angular.isDefined(selectedProperty)){
 							var column = {};
-							column.title = selectedProperty.displayPropertyIdentifier;
+							//"_orderitem.order.orderType.typeName"
+							column.title = getTitleFromPropertyIdentifier(selectedProperty.propertyIdentifier);
 							column.propertyIdentifier = selectedProperty.propertyIdentifier;
 							column.isVisible = true;
 							column.isDeletable = true;
