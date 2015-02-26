@@ -145,7 +145,6 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 						arrayAppend(variables.attributeValueOptions, {name=attributeOption.getAttributeOptionLabel(), value=attributeOption.getAttributeOptionValue()});	
 					}
 				}
-				arrayPrepend(variables.attributeValueOptions, {value='',name=getAttribute().getAttributeInputType()});
 				if(!isNull(getAttribute().getAttributeInputType()) && getAttribute().getAttributeInputType() == 'select'){
 					arrayPrepend(variables.attributeValueOptions, {value='',name=rbKey('define.select')});
 				} 

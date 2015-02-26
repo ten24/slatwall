@@ -1,4 +1,4 @@
-<form action="index.html" method="post" ng-if="selectedFilterProperty">
+<form action="index.html" method="post" >
   <div class="s-filter-group-item">
 
     <div class="form-group form-group-sm">
@@ -29,15 +29,16 @@
       
       	<p class="input-group" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaStart">
           <input 	type="text" class="form-control" 
-          			datepicker-popup="{{format}}" 
+          			datepicker-popup="MMM dd, yyyy hh:mm a" 
           			ng-model="selectedFilterProperty.criteriaRangeStart" 
           			is-open="openedCalendarStart"  
-          			ng-required="true" 
           			close-text="Close" 
           			ng-change="criteriaRangeChanged(selectedFilterProperty)"
           			ng-disabled="selectedFilterProperty.selectedCriteriaType.disableCriteriaStart"
           			readonly
           			/>
+          			
+                  
           <span class="input-group-btn" ng-show="!selectedFilterProperty.selectedCriteriaType.disableCriteriaStart">
             <button type="button" class="btn btn-default" ng-click="openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
@@ -46,10 +47,9 @@
       
         <p class="input-group" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd">
           <input 	type="text" class="form-control" 
-          			datepicker-popup="{{format}}"  
+          			datepicker-popup="MMM dd, yyyy hh:mm a"  
           			ng-model="selectedFilterProperty.criteriaRangeEnd" 
           			is-open="openedCalendarEnd" 
-          			ng-required="true" 
           			close-text="Close" 
           			ng-change="criteriaRangeChanged(selectedFilterProperty)"
           			ng-disabled="selectedFilterProperty.selectedCriteriaType.disableCriteriaEnd"
