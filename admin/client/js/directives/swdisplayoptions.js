@@ -25,7 +25,7 @@ angular.module('slatwalladmin')
 				propertiesList:"=",
 				saveCollection:"&",
 				baseEntityAlias:"=",
-				baseEntityName:"@"
+				baseEntityName:"="
 			},
 			templateUrl:collectionPartialsPath+"displayoptions.html",
 			controller: function($scope,$element,$attrs){
@@ -52,21 +52,27 @@ angular.module('slatwalladmin')
 				};
 				
 				
-				//var baseEntityCfcName = $scope.baseEntityName.replace('Slatwall','').charAt(0).toLowerCase()+$scope.baseEntityName.replace('Slatwall','').slice(1); 
 				var getTitleFromPropertyIdentifier = function(propertyIdentifier){
+					var baseEntityCfcName = $scope.baseEntityName.replace('Slatwall','').charAt(0).toLowerCase()+$scope.baseEntityName.replace('Slatwall','').slice(1); 
+					
 					var title = '';
 					var propertyIdentifierArray = propertyIdentifier.split('.');
-					
+					var currentEntity;
+					var currentEntityInstance;
+					var prefix = 'entity.';
 					angular.forEach(propertyIdentifierArray,function(propertyIdentifierItem,key){
 						//pass over the initial item
-						if(key !== 0 && key !== propertyIdentifierArray.length-1){
-							var prefix = 'entity.';
+						if(key !== 0 ){
 							if(key === 1){
+								currentEntityInstance = $slatwall['new'+$scope.baseEntityName.replace('Slatwall','')]();
+								currentEntity = currentEntityInstance.metaData[propertyIdentifierArray[key]]
 								title += $slatwall.getRBKey(prefix+baseEntityCfcName+'.'+propertyIdentifierItem);
 							}else{
-								title += $slatwall.getRBKey(prefix+propertyIdentifierArray[key-1]+'.'+propertyIdentifierItem);
+								var currentEntityInstance = $slatwall['new'+currentEntity.cfc.charAt(0).toUpperCase()+currentEntity.cfc.slice(1)]();
+								currentEntity = currentEntityInstance.metaData[propertyIdentifierArray[key]];
+								title += $slatwall.getRBKey(prefix+currentEntityInstance.metaData.className+'.'+currentEntity.name);
 							}
-							if(key < propertyIdentifierArray.length-2){
+							if(key < propertyIdentifierArray.length-1){
 								title += ' | ';
 							}
 						}
@@ -86,8 +92,9 @@ angular.module('slatwalladmin')
 							console.log('selectedProperty');
 							console.log(selectedProperty);
 							//"_orderitem.order.orderType.typeName"
-							//console.log(getTitleFromPropertyIdentifier(selectedProperty.propertyIdentifier));
-							column.title = selectedProperty.displayPropertyIdentifier;
+							console.log(getTitleFromPropertyIdentifier(selectedProperty.propertyIdentifier));
+							column.title = getTitleFromPropertyIdentifier(selectedProperty.propertyIdentifier);
+							console.log(column.title);
 							column.propertyIdentifier = selectedProperty.propertyIdentifier;
 							column.isVisible = true;
 							column.isDeletable = true;
