@@ -72,7 +72,7 @@ angular.module('slatwalladmin')
 		 				      "title": "Order Item ID"
 		 				    },
 			 				 {
-			 				      "propertyIdentifier": "_orderitem.orderItemType.systemCode",
+			 				      "propertyIdentifier": "_orderitem.orderItemType",
 			 				      "isVisible": true,
 			 				      "isDeletable": true
 			 				},
@@ -101,19 +101,44 @@ angular.module('slatwalladmin')
 				 				      "isVisible": true,
 				 				      "isDeletable": true
 				 			},
-	 				      {
+	 				        {
 		 				      "propertyIdentifier": "_orderitem.sku.skuCode",
 		 				      "isSearchable":true,
 		 				      "ormtype":"string",
 		 				      "isVisible": true,
 		 				      "isDeletable": true
-		 				      },
+		 				    },
 		 				   {
-			 				      "title": "Product Bundle Group",
-			 				      "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
+			 				      "propertyIdentifier": "_orderitem.sku.options",
+			 				      "isSearchable":true,
+			 				      "ormtype":"string",
 			 				      "isVisible": true,
 			 				      "isDeletable": true
-			 				},
+		 				   },
+		 				  {
+		 				      "title": "Subscription Term",
+		 				      "propertyIdentifier": "_orderitem.sku.subscriptionTerm.subscriptionTermName",
+		 				      "isVisible": true,
+		 				      "isDeletable": true
+		 				   },
+		 				  {
+			 				      "title": "Subscription Term",
+			 				      "propertyIdentifier": "_orderitem.sku.waitlistQueueTerm",
+			 				      "isVisible": true,
+			 				      "isDeletable": true
+		 				  },
+		 				  	{
+						      "title": "Event Start Date Time",
+						      "propertyIdentifier": "_orderitem.sku.eventStartDateTime",
+						      "isVisible": true,
+						      "isDeletable": true
+		 				  	},
+						  	{
+						      "title": "Subscription Benefits",
+						      "propertyIdentifier": "_orderitem.sku.subscriptionBenefits",
+						      "isVisible": true,
+						      "isDeletable": true
+						  	},
 			 				{
 			 				      "title": "Product ID",
 			 				      "propertyIdentifier": "_orderitem.sku.product.productID",
@@ -223,6 +248,12 @@ angular.module('slatwalladmin')
 		 				      "isVisible": true,
 		 				      "isDeletable": true
 		 				    },
+		 				   {
+			 				      "title": "Locations",
+			 				      "propertyIdentifier": "_orderitem.sku.locations",
+			 				      "isVisible": true,
+			 				      "isDeletable": true
+			 				},
 		 				    {
 	 					      "title": "Total",
 	 					      "propertyIdentifier": "_orderitem.itemTotal",
@@ -232,8 +263,12 @@ angular.module('slatwalladmin')
 	 					      "title": "Discount Amount",
 	 					      "propertyIdentifier": "_orderitem.discountAmount",
 	 					      "persistent":false
+	 					    },
+	 					    {
+	 					      "title": "Tax Amount",
+	 					      "propertyIdentifier": "_orderitem.taxAmount",
+	 					      "persistent":false
 	 					    }
-		 				    
 	 				  ];
 					
 					//add attributes to the column config
@@ -340,6 +375,7 @@ angular.module('slatwalladmin')
 					scope.getCollection();
 				});
 				
+				//Add claim function and cancel function
 				
 				
 				scope.appendToCollection = function(){

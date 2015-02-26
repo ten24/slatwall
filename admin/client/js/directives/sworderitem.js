@@ -27,11 +27,16 @@ angular.module('slatwalladmin').directive('swOrderItem',
 		link : function(scope, element, attr) {
 			$log.debug('order item init');
 			$log.debug(scope.orderItem);
-			scope.orderItem.clicked = false;
-			console.log(scope.orderItem.data.sku.data.product.data.productType.data.systemCode);
+			scope.orderItem.clicked = false; //Never been clicked
+			scope.orderItem.details = [];
+			
+			/*
+			 * 
+			 * This needs to be changed to use a config/filter of eventreg on orderitemid
+			 * 
+			 * */
 			if(scope.orderItem.data.sku.data.product.data.productType.data.systemCode === 'event'){
 				var eventRegistrationPromise = scope.orderItem.$$getEventRegistrations();
-				
 				eventRegistrationPromise.then(function(){
 					console.log('event registrations');
 					console.log(scope.orderItem.data.eventRegistrations);
@@ -42,6 +47,7 @@ angular.module('slatwalladmin').directive('swOrderItem',
 							console.log(eventRegistration.data.eventRegistrationStatusType.data.systemCode);
 							if(eventRegistration.data.eventRegistrationStatusType.data.systemCode === 'erstWaitlisted'){
 								scope.orderItem.onWaitlist = true;
+								//If on the waiting list...check the position in the queue using 
 							}
 						});
 					});
@@ -58,12 +64,6 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			      "isSearchable": true,
 			      "title": "Order Item ID"
 			    },
- 				 {
- 				      "title": "Order Item Type",
- 				      "propertyIdentifier": "_orderitem.orderItemType",
- 				      "isVisible": true,
- 				      "isDeletable": true
- 				},
  				 {
  				      "title": "Order Item Price",
  				      "propertyIdentifier": "_orderitem.price",
@@ -124,6 +124,24 @@ angular.module('slatwalladmin').directive('swOrderItem',
  				      "isVisible": true,
  				      "isDeletable": true
  				},
+ 				 {
+				      "title": "Subscription Term",
+				      "propertyIdentifier": "_orderitem.sku.eventStartDateTime",
+				      "isVisible": true,
+				      "isDeletable": true
+				 },
+ 				{
+				      "title": "Product Description",
+				      "propertyIdentifier": "_orderitem.sku.options",
+				      "isVisible": true,
+				      "isDeletable": true
+				},
+				{
+				      "title": "Product Description",
+				      "propertyIdentifier": "_orderitem.sku.options.optionGroup",
+				      "isVisible": true,
+				      "isDeletable": true
+				},
 			    {
 			      "title": "Qty.",
 			      "propertyIdentifier": "_orderitem.quantity",
@@ -240,7 +258,9 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			scope.childOrderItems = [];
 			scope.orderItem.depth = 1;
 			
-			//hide the children on click
+			/**
+			 * Hide orderitem children on clicking the details link.
+			 */
 			scope.hideChildren = function(orderItem){
 				
 				//Set all child order items to clicked = false.
@@ -253,6 +273,9 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			}
 			
 			//scope.orderItem.childItemsRetrieved = false;
+			/**
+			 * Gets a list of child order items if they exist.
+			 */
 			scope.getChildOrderItems = function(){
 				if(!scope.orderItem.childItemsRetrieved){
 					scope.orderItem.clicked = !scope.orderItem.clicked;
@@ -281,7 +304,6 @@ angular.module('slatwalladmin').directive('swOrderItem',
 					
 				}
 			}
-			
 		}
 	};
 } ]);
