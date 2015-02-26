@@ -18,9 +18,9 @@ angular.module('slatwalladmin')
 					if(angular.isDefined(config.params)){
 						data = config.params;
 					}
-					data.context = 'GET';
 					var params = {};
 					params.serializedJsonData = angular.toJson(data);
+					params.context="GET";
 					config.data = $.param(params);
 					delete config.params;
 					config.headers['Content-Type']= 'application/x-www-form-urlencoded';
