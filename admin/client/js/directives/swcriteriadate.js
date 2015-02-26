@@ -205,6 +205,7 @@ angular.module('slatwalladmin')
 				
 				scope.selectedConditionChanged = function(selectedFilterProperty){
 					$log.debug('selectedConditionChanged Begin');
+					
 				  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
 				  	//check whether condition is checking for null values in date
 				  	if(angular.isDefined(selectedCondition.dateInfo)){
@@ -291,6 +292,7 @@ angular.module('slatwalladmin')
 				  };
 				  
 				  scope.criteriaRangeChanged = function(selectedFilterProperty){
+					  $log.debug('criteriaRangeChanged');
 					  $log.debug(selectedFilterProperty);
 				  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
 				  	if(selectedCondition.dateInfo.type === 'calculation'){
@@ -364,27 +366,34 @@ angular.module('slatwalladmin')
 			  		$log.debug(selectedCondition); 
 			  		$log.debug(selectedFilterProperty);
 				  };
-
+				  console.log('filterItemhere');
+				  console.log(scope.filterItem);
+				  if(angular.isUndefined(scope.filterItem.$$isNew) || scope.filterItem.$$isNew === false){
+					  angular.forEach(scope.conditionOptions, function(conditionOption){
+							if(conditionOption.display == scope.filterItem.conditionDisplay ){
+								scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
+								scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
+								
+								if(angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType.dateInfo)
+								&& angular.isDefined(scope.filterItem.value)
+								&& scope.filterItem.value.length
+								){
+									var dateRangeArray = scope.filterItem.value.split("-");
+									scope.selectedFilterProperty.criteriaRangeStart = new Date(parseInt(dateRangeArray[0]));
+									scope.selectedFilterProperty.criteriaRangeEnd = new Date(parseInt(dateRangeArray[1]));
+								}
+								
+								if(angular.isDefined(scope.selectedConditionChanged)){
+									scope.selectedConditionChanged(scope.selectedFilterProperty);
+								}
+							}
+					  });
+				  }else{
+					  scope.selectedFilterProperty.criteriaValue = '';
+					  scope.selectedFilterProperty.criteriaRangeStart = '';
+					  scope.selectedFilterProperty.criteriaRangeEnd = '';
+				  }
 				  
-				  angular.forEach(scope.conditionOptions, function(conditionOption){
-						if(conditionOption.display == scope.filterItem.conditionDisplay ){
-							scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
-							scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
-							
-							if(angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType.dateInfo)
-							&& angular.isDefined(scope.filterItem.value)
-							&& scope.filterItem.value.length
-							){
-								var dateRangeArray = scope.filterItem.value.split("-");
-								scope.selectedFilterProperty.criteriaRangeStart = new Date(parseInt(dateRangeArray[0]));
-								scope.selectedFilterProperty.criteriaRangeEnd = new Date(parseInt(dateRangeArray[1]));
-							}
-							
-							if(angular.isDefined(scope.selectedConditionChanged)){
-								scope.selectedConditionChanged(scope.selectedFilterProperty);
-							}
-						}
-				  });
 			}
 		};
 	}
