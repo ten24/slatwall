@@ -89,12 +89,8 @@ angular.module('slatwalladmin')
 						$log.debug($scope.columns);
 						if(angular.isDefined(selectedProperty)){
 							var column = {};
-							console.log('selectedProperty');
-							console.log(selectedProperty);
 							//"_orderitem.order.orderType.typeName"
-							console.log(getTitleFromPropertyIdentifier(selectedProperty.propertyIdentifier));
 							column.title = getTitleFromPropertyIdentifier(selectedProperty.propertyIdentifier);
-							console.log(column.title);
 							column.propertyIdentifier = selectedProperty.propertyIdentifier;
 							column.isVisible = true;
 							column.isDeletable = true;
