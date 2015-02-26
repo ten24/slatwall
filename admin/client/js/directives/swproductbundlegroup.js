@@ -85,10 +85,10 @@ angular.module('slatwalladmin')
 				        	name:"Product Type",
 				        	value:"productType"
 				         },
-				         {
-				        	name:"Collections",
-				        	value:"collection"
-				         },
+//				         {
+//				        	name:"Collections",
+//				        	value:"collection"
+//				         },
 				         {
 				        	name:"Brand",
 				        	value:"brand"
