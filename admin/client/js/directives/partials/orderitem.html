@@ -1,8 +1,7 @@
-<tr 
-	class="s-bundle-product l-1" 
-	ng-if="orderItem && attributes" 
-	ng-class="{
-	 	's-event l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'event', 
+<!-- Handle Parent OrderItems -->
+<tr class="s-bundle-product l-1" ng-if="orderItem && attributes" ng-class="
+			{
+	 	   's-event l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'event', 
 		   's-bundle-product l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'productBundle',
 		   's-subscription l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'subscription',
 		   's-content-access l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'content',
@@ -11,12 +10,15 @@
 		   's-deposit':orderItem.onWaitlist === true,
 		   's-pending':orderItem.onWaitlist === true && orderItem.eligible 
 			}">
+	
+	<!-- Image 90x90 -->
 	<td rowspan="1000" class='s-image' style="width:90px;height:90px;">
 		<swresizedimage profilename="orderItem" data-order-item="orderItem"></swresizedimage>
 	</td>
-	
+	<!-- Handle the title field. Displays skuName if it exists and productName otherwise -->
 	<td class="s-title">
-		<span ng-if="orderItem.data.sku.data.skuName">{{orderItem.data.sku.data.skuName}}&nbsp<span ng-if="orderItem.data.sku.data.skuName === ''">{{orderItem.data.sku.data.product.data.productName}}</span><a href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link" 
+			<span ng-if="orderItem.data.sku.data.skuName === ''" ng-bind="orderItem.data.sku.data.product.data.productName"></span>&nbsp
+			<span ng-if="orderItem.data.sku.data.skuName">{{orderItem.data.sku.data.skuName}}&nbsp<a href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link" 
 				ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode !== 'productBundle'">edit</a></span>
 			<a href="" class="s-edit-link" 
 				ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle' && !orderItem.clicked" 
@@ -57,7 +59,6 @@
 	
 	<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
 	
-	
 	<!-- Handle all custom details situations -->
 	<td sw-order-item-detail-stamp 
 				data-system-code="orderItem.data.sku.data.product.data.productType.data.systemCode" 
@@ -65,6 +66,7 @@
 				sku-Id="orderItem.data.sku.data.skuID"
 				order-item="orderItem"></td>
 	
+	<!-- Handle Custom Attributes Values -->
 	<td class="s-customization" ng-show="attributes.length"><span ng-repeat="attribute in attributes"><span class="s-detail-title" ng-if="orderItem.data[attribute.attributeCode]">{{attribute.attributeName}}:</span><br><span class="s-detail-content">{{orderItem.data[attribute.attributeCode]}}</span><br></span></td>
 	
 	<!-- Handle both cases of this 'price' being a Return Item -->

@@ -29,12 +29,77 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			$log.debug(scope.orderItem);
 			scope.orderItem.clicked = false; //Never been clicked
 			scope.orderItem.details = [];
-			
+			scope.orderItem.events = [];
+			console.log("MY ID: " + scope.orderItem.data.orderItemID);
+			var erColumnsConfig =[
+			   		         {
+			   		        	 	  "isDeletable": false,
+			   			      	  "isExportable": true,
+			   			      	  "propertyIdentifier": "_eventregistration.eventRegistrationID",
+			   			      	  "ormtype": "id",
+			   			      	  "isVisible": true,
+			   			          "isSearchable": true,
+			   			      	  "title": "Event Registration ID"
+			   			    },
+			   			    {
+		   		        	 	  "isDeletable": false,
+		   			      	  "isExportable": true,
+		   			      	  "propertyIdentifier": "_eventregistration.pendingClaimDateTime",
+		   			      	  "ormtype": "id",
+		   			      	  "isVisible": true,
+		   			          "isSearchable": true,
+		   			      	  "title": "Event Registration ID"
+			   			    },
+			   			    {
+			   			    	"isDeletable": false,
+			   			    	"isExportable": true,
+			   			    	"propertyIdentifier": "_eventregistration.waitlistQueueDateTime",
+			   			    	"ormtype": "id",
+			   			    	"isVisible": true,
+			   			    	"isSearchable": true,
+			   			    	"title": "Event Registration ID"
+			   			    }
+			   			    ];
+			//Not working
 			/*
-			 * 
-			 * This needs to be changed to use a config/filter of eventreg on orderitemid
-			 * 
-			 * */
+			 * ,
+			   			    {
+		   		        	 	  "isDeletable": false,
+			   			      	  "isExportable": true,
+			   			      	  "propertyIdentifier": "_eventregistration.waitlistQueuePositionStruct",
+			   			      	  "ormtype": "id",
+			   			      	  "isVisible": true,
+			   			          "isSearchable": true,
+			   			      	  "title": "Waitlist Queue Position Struct"
+					   		}*/
+			var erFilterGroupsConfig =[
+			         			    {
+			         			      "filterGroup": [
+			         			        {
+			         			          "propertyIdentifier": "_eventregistration.orderItem.orderItemID",
+			         			          "comparisonOperator": "=",
+			         			          "value": scope.orderItem.data.orderItemID,
+			         			        }
+			         			      ]
+			         			    }
+			         			  ];
+			         			
+			  var erOptions = {
+			         			columnsConfig:angular.toJson(erColumnsConfig),
+			         			filterGroupsConfig:angular.toJson(erFilterGroupsConfig),
+			         			allRecords:true
+			  };
+			  var eventPromise = $slatwall.getEntity('EventRegistration', erOptions);
+			 
+			  		eventPromise.then(function(value){
+			  			
+					angular.forEach(value.records,function(event){
+						scope.orderItem.events.push(event);
+						$log.debug(event);
+					});
+									
+				});
+			//-------------------------------------->Using until above works with queue position
 			if(scope.orderItem.data.sku.data.product.data.productType.data.systemCode === 'event'){
 				var eventRegistrationPromise = scope.orderItem.$$getEventRegistrations();
 				eventRegistrationPromise.then(function(){
@@ -46,13 +111,15 @@ angular.module('slatwalladmin').directive('swOrderItem',
 							console.log(eventRegistration);
 							console.log(eventRegistration.data.eventRegistrationStatusType.data.systemCode);
 							if(eventRegistration.data.eventRegistrationStatusType.data.systemCode === 'erstWaitlisted'){
-								scope.orderItem.onWaitlist = true;
-								//If on the waiting list...check the position in the queue using 
+								scope.orderItem.onWaitlist = true; 
 							}
 						});
 					});
 				});
 			}
+			//--------------------------------------->
+			
+			
 			//define how we get child order items
 			var columnsConfig =[
 		         {
@@ -254,12 +321,13 @@ angular.module('slatwalladmin').directive('swOrderItem',
 				filterGroupsConfig:angular.toJson(filterGroupsConfig),
 				allRecords:true
 			};
+			
 			//Create a list of order items.
 			scope.childOrderItems = [];
 			scope.orderItem.depth = 1;
 			
 			/**
-			 * Hide orderitem children on clicking the details link.
+			 * Hide orderItem children on clicking the details link.
 			 */
 			scope.hideChildren = function(orderItem){
 				
