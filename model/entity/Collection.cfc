@@ -892,7 +892,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
 					
 				}else{
-					var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(getCollectionObject())&'_','');
+					var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'Slatwall',''))&'_','');
 					
 					HQL &= ' #column.propertyIdentifier# as #columnAlias#';
 				}
