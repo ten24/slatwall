@@ -11,6 +11,21 @@ angular.module('slatwalladmin')
 	){
 		var interceptor = {
 			'request':function(config){
+				if(config.method == 'GET' && config.url.indexOf('.html') == -1){
+					config.method = 'POST';
+					config.data = {};
+					var data = {};
+					if(angular.isDefined(config.params)){
+						data = config.params;
+					}
+					var params = {};
+					params.serializedJsonData = angular.toJson(data);
+					params.context="GET";
+					config.data = $.param(params);
+					delete config.params;
+					config.headers['Content-Type']= 'application/x-www-form-urlencoded';
+				}
+				
 				return config;
 			},
 			'response':function(response){
@@ -41,7 +56,7 @@ angular.module('slatwalladmin')
 				}
 				
 				return $q.reject(rejection);
-			},
+			}
 		};
 		return interceptor;
 	}

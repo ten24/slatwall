@@ -416,9 +416,8 @@ a {color:@brand-primary;}
 a:hover {color: @link-color-hover;text-decoration:none;}
 .btn,.dropdown-menu {font-size:12px;}
 .table-responsive {width:100%;overflow:auto;}
-.table-responsive::-webkit-scrollbar {
-	display:none;
-}
+
+.table-responsive::-webkit-scrollbar {display:none;}
 button::-moz-focus-inner {border: 0;}
 
 input::-moz-focus-inner { border: 0; }
@@ -466,6 +465,10 @@ input[type="file"] {display: block;width: auto;height: auto;padding: 0px;backgro
 .agenda .agenda-date .dayofmonth {width: 40px;font-size: 30px;line-height: 30px;float: left;text-align: right;margin-right: 10px;}
 .agenda .agenda-date .dayofweek {font-size: 0.75em;}
 .agenda .agenda-time {width: 140px;vertacal-align:middle;}
+
+/* Form Validation */
+input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, input.error, select.error {border-color: @brand-danger !important;}
+.error.help-block  {color: @brand-danger !important;}
 
 /* Navigation Sidebar */
 #menu a > .fa.arrow {-webkit-transition: all .5s ease-out;-moz-transition: all .2s ease-out;-ms-transition: all .2s ease-out;-o-transition: all .2s ease-out;transition: all .2s ease-out;}
@@ -592,8 +595,6 @@ table tr th .glyphicon {vertical-align:text-top;}
 .form-group {margin-bottom:10px;display: inline-block;width: 100%;}
 .form-group .s-optional {color: @black-30;font-size: 10px;position: relative;top: -1px;}
 input:focus, textarea:focus, select:focus {-webkit-box-shadow: none !important;box-shadow: none !important;}
-.form-group.s-required label:after {font-family: fontAwesome;content: "\f069";font-size: 5px;top: -6px;position: relative;padding-left: 2px;}
-.form-group.s-required input:focus {border-color: @brand-danger;-webkit-box-shadow: none;box-shadow: none;}
 
 .modal-header {padding: 15px;}
 .modal-footer {padding: 8px  15px;}

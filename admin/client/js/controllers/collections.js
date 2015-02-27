@@ -136,6 +136,9 @@ metadataService,
 				if(angular.isUndefined($scope.collectionConfig)){
 					$scope.collectionConfig = angular.fromJson($scope.collection.collectionConfig);
 				}
+				angular.forEach($scope.collectionConfig.columns,function(column){
+					column.key = column.propertyIdentifier.replace(/\./g, '_').replace($scope.collectionConfig.baseEntityAlias+'_','');
+				});
 				//check if we have any filter Groups
 				if(angular.isUndefined($scope.collectionConfig.filterGroups)){
 					$scope.collectionConfig.filterGroups = [

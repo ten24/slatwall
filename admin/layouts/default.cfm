@@ -371,6 +371,7 @@ Notes:
 				function ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$locationProvider,datepickerConfig, datepickerPopupConfig
 			) {
 				datepickerConfig.showWeeks = false;
+				datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
       			datepickerPopupConfig.toggleWeeksText = null;
 				<cfif !isnull(rc.ng)> 
 					$locationProvider.html5Mode( false ).hashPrefix('!');

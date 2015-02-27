@@ -155,7 +155,9 @@ angular.module('slatwalladmin')
 			 				      "title": "Product Type",
 			 				      "propertyIdentifier": "_orderitem.sku.product.productType.systemCode",
 			 				      "isVisible": true,
-			 				      "isDeletable": true
+			 				      "isDeletable": true,
+			 				      "ormtype":"string"
+			 				      
 			 				},
 			 				{
 			 				      "title": "Product Description",

@@ -420,6 +420,16 @@ input[type="file"] {
   width: 140px;
   vertacal-align: middle;
 }
+/* Form Validation */
+input.ng-invalid.ng-touched,
+select.ng-invalid.ng-touched,
+input.error,
+select.error {
+  border-color: #da5757 !important;
+}
+.error.help-block {
+  color: #da5757 !important;
+}
 /* Navigation Sidebar */
 #menu a > .fa.arrow {
   -webkit-transition: all 0.5s ease-out;
@@ -880,19 +890,6 @@ textarea:focus,
 select:focus {
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
-}
-.form-group.s-required label:after {
-  font-family: fontAwesome;
-  content: "\f069";
-  font-size: 5px;
-  top: -6px;
-  position: relative;
-  padding-left: 2px;
-}
-.form-group.s-required input:focus {
-  border-color: #da5757;
-  -webkit-box-shadow: none;
-  box-shadow: none;
 }
 .modal-header {
   padding: 15px;

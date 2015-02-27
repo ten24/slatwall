@@ -73,7 +73,7 @@ component extends="HibachiService" accessors="true" output="false" {
 						processData.entity = arguments.entity;
 					
 					} else {
-						processData.entity = arguments.entity.getValueByPropertyIdentifier(arguments.entity, workflowTrigger.getObjectPropertyIdentifier());
+						processData.entity = arguments.entity.getValueByPropertyIdentifier(workflowTrigger.getObjectPropertyIdentifier());
 						
 					}
 					

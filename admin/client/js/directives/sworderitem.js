@@ -103,9 +103,8 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			if(scope.orderItem.data.sku.data.product.data.productType.data.systemCode === 'event'){
 				var eventRegistrationPromise = scope.orderItem.$$getEventRegistrations();
 				eventRegistrationPromise.then(function(){
-					console.log('event registrations');
-					console.log(scope.orderItem.data.eventRegistrations);
 					angular.forEach(scope.orderItem.data.eventRegistrations,function(eventRegistration){
+						console.log(eventRegistration);
 						var eventRegistrationPromise = eventRegistration.$$getEventRegistrationStatusType();
 						eventRegistrationPromise.then(function(){
 							console.log(eventRegistration);

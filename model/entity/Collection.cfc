@@ -470,7 +470,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 		HQL = createHQLFromCollectionObject(this,arguments.excludeSelectAndOrderBy);
-		//writedump(var=HQL,top=2);abort;
+		
 		
 		return HQL;
 	}
@@ -646,7 +646,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var pageRecord = {};
 						
 						for(var column in columns){
-							pageRecord[listLast(column.propertyIdentifier,'.')] = entity.getValueByPropertyIdentifier(ListRest(column.propertyIdentifier,'.'));
+							pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(ListRest(column.propertyIdentifier,'.'));
 						}
 						arrayAppend(variables.pageRecords,pageRecord);
 					} 
@@ -677,7 +677,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var record = {};
 						
 						for(var column in columns){
-							record[listLast(column.propertyIdentifier,'.')] = entity.getValueByPropertyIdentifier(ListRest(column.propertyIdentifier,'.'));
+							record[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(ListRest(column.propertyIdentifier,'.'));
 						}
 						arrayAppend(variables.records,record);
 					} 
@@ -892,13 +892,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
 					
 				}else{
-					var columnAlias = listLast(column.propertyIdentifier,'.');
+					var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(getCollectionObject())&'_','');
 					
 					HQL &= ' #column.propertyIdentifier# as #columnAlias#';
 				}
 			}
-			
-			
 			
 			//check whether a comma is needed
 			if(i != columnCount){

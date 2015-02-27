@@ -115,6 +115,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return smartList.getRecords();
 	}
 	
+	
+	
 	// @hint Changes next waitlisted registrant to pending claim for specified sku 
 	/*public any function notifyNextWaitlistedRegistrants(required any sku, integer quantity=1) {
 		var notifiedCount = 0;
