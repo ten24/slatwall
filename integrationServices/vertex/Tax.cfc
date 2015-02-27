@@ -185,7 +185,7 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			// Strip out items that shouldn't be sent based on their tax category if needed
 			if(!setting('sendInvoiceFlag')) {
 				for(var i=arrayLen(addressTaxRequestItems); i>=1; i--) {
-					if(listFindNoCase(setting('taxCategoriesToInvoice'), addressTaxRequestItems[i].getTaxCategoryRate().getTaxCategory().getTaxCategoryID())) {
+					if(!listFindNoCase(setting('taxCategoriesToInvoice'), addressTaxRequestItems[i].getTaxCategoryRate().getTaxCategory().getTaxCategoryID())) {
 						arrayDeleteAt(addressTaxRequestItems, i);
 					}
 				}
