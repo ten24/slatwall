@@ -27,8 +27,79 @@ angular.module('slatwalladmin').directive('swOrderItem',
 		link : function(scope, element, attr) {
 			$log.debug('order item init');
 			$log.debug(scope.orderItem);
-			scope.orderItem.clicked = false;
-			console.log(scope.orderItem.data.sku.data.product.data.productType.data.systemCode);
+			scope.orderItem.clicked = false; //Never been clicked
+			scope.orderItem.details = [];
+			scope.orderItem.events = [];
+			console.log("MY ID: " + scope.orderItem.data.orderItemID);
+			var erColumnsConfig =[
+			   		         {
+			   		        	 	  "isDeletable": false,
+			   			      	  "isExportable": true,
+			   			      	  "propertyIdentifier": "_eventregistration.eventRegistrationID",
+			   			      	  "ormtype": "id",
+			   			      	  "isVisible": true,
+			   			          "isSearchable": true,
+			   			      	  "title": "Event Registration ID"
+			   			    },
+			   			    {
+		   		        	 	  "isDeletable": false,
+		   			      	  "isExportable": true,
+		   			      	  "propertyIdentifier": "_eventregistration.pendingClaimDateTime",
+		   			      	  "ormtype": "id",
+		   			      	  "isVisible": true,
+		   			          "isSearchable": true,
+		   			      	  "title": "Event Registration ID"
+			   			    },
+			   			    {
+			   			    	"isDeletable": false,
+			   			    	"isExportable": true,
+			   			    	"propertyIdentifier": "_eventregistration.waitlistQueueDateTime",
+			   			    	"ormtype": "id",
+			   			    	"isVisible": true,
+			   			    	"isSearchable": true,
+			   			    	"title": "Event Registration ID"
+			   			    }
+			   			    ];
+			//Not working
+			/*
+			 * ,
+			   			    {
+		   		        	 	  "isDeletable": false,
+			   			      	  "isExportable": true,
+			   			      	  "propertyIdentifier": "_eventregistration.waitlistQueuePositionStruct",
+			   			      	  "ormtype": "id",
+			   			      	  "isVisible": true,
+			   			          "isSearchable": true,
+			   			      	  "title": "Waitlist Queue Position Struct"
+					   		}*/
+			var erFilterGroupsConfig =[
+			         			    {
+			         			      "filterGroup": [
+			         			        {
+			         			          "propertyIdentifier": "_eventregistration.orderItem.orderItemID",
+			         			          "comparisonOperator": "=",
+			         			          "value": scope.orderItem.data.orderItemID,
+			         			        }
+			         			      ]
+			         			    }
+			         			  ];
+			         			
+			  var erOptions = {
+			         			columnsConfig:angular.toJson(erColumnsConfig),
+			         			filterGroupsConfig:angular.toJson(erFilterGroupsConfig),
+			         			allRecords:true
+			  };
+			  var eventPromise = $slatwall.getEntity('EventRegistration', erOptions);
+			 
+			  		eventPromise.then(function(value){
+			  			
+					angular.forEach(value.records,function(event){
+						scope.orderItem.events.push(event);
+						$log.debug(event);
+					});
+									
+				});
+			//-------------------------------------->Using until above works with queue position
 			if(scope.orderItem.data.sku.data.product.data.productType.data.systemCode === 'event'){
 				var eventRegistrationPromise = scope.orderItem.$$getEventRegistrations();
 				eventRegistrationPromise.then(function(){
@@ -36,7 +107,9 @@ angular.module('slatwalladmin').directive('swOrderItem',
 						console.log(eventRegistration);
 						var eventRegistrationPromise = eventRegistration.$$getEventRegistrationStatusType();
 						eventRegistrationPromise.then(function(){
-							if(angular.isDefined(eventRegistration.data.eventRegistrationStatusType) && eventRegistration.data.eventRegistrationStatusType.data.systemCode === 'erstWaitlisted'){
+							console.log(eventRegistration);
+							console.log(eventRegistration.data.eventRegistrationStatusType.data.systemCode);
+							if(eventRegistration.data.eventRegistrationStatusType.data.systemCode === 'erstWaitlisted'){
 								scope.orderItem.onWaitlist = true;
 							}
 						});
@@ -120,6 +193,24 @@ angular.module('slatwalladmin').directive('swOrderItem',
  				      "isVisible": true,
  				      "isDeletable": true
  				},
+			    {
+				      "title": "Subscription Term",
+				      "propertyIdentifier": "_orderitem.sku.eventStartDateTime",
+				      "isVisible": true,
+				      "isDeletable": true
+				 },
+ 				{
+				      "title": "Product Description",
+				      "propertyIdentifier": "_orderitem.sku.options",
+				      "isVisible": true,
+				      "isDeletable": true
+				},
+				{
+				      "title": "Product Description",
+				      "propertyIdentifier": "_orderitem.sku.options.optionGroup",
+				      "isVisible": true,
+				      "isDeletable": true
+				},
 			    {
 			      "title": "Qty.",
 			      "propertyIdentifier": "_orderitem.quantity",
@@ -236,7 +327,9 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			scope.childOrderItems = [];
 			scope.orderItem.depth = 1;
 			
-			//hide the children on click
+			/**
+			 * Hide orderItem children on clicking the details link.
+			 */
 			scope.hideChildren = function(orderItem){
 				
 				//Set all child order items to clicked = false.
@@ -249,6 +342,9 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			}
 			
 			//scope.orderItem.childItemsRetrieved = false;
+			/**
+			 * Gets a list of child order items if they exist.
+			 */
 			scope.getChildOrderItems = function(){
 				if(!scope.orderItem.childItemsRetrieved){
 					scope.orderItem.clicked = !scope.orderItem.clicked;

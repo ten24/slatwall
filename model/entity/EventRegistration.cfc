@@ -100,7 +100,7 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 		
 		var waitlistStruct = {};
 		//loop over all orderitem registrants
-		for(var eventRegistration in this.getOrderItem().getEventRegistrations()[1].getEventRegistrationid()){
+		for(var eventRegistration in this.getOrderItem().getEventRegistrations()[1].getEventRegistrationID()){
 			var position = 0;
 			for(var waitlistedRegistrant in waitlistedRegistrants){
 				if(waitlistedRegistrant.getEventRegistrationID() == eventRegistration.getEventRegistrationID()){
