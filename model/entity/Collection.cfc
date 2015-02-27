@@ -1292,9 +1292,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 }
 
 
-
-
-
 /*
 	SELECT accountID
 	FROM SlatwallAccount

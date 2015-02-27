@@ -107,9 +107,7 @@ angular.module('slatwalladmin').directive('swOrderItem',
 						console.log(eventRegistration);
 						var eventRegistrationPromise = eventRegistration.$$getEventRegistrationStatusType();
 						eventRegistrationPromise.then(function(){
-							console.log(eventRegistration);
-							console.log(eventRegistration.data.eventRegistrationStatusType.data.systemCode);
-							if(eventRegistration.data.eventRegistrationStatusType.data.systemCode === 'erstWaitlisted'){
+							if(angular.isDefined(eventRegistration.data.eventRegistrationStatusType) && eventRegistration.data.eventRegistrationStatusType.data.systemCode === 'erstWaitlisted'){
 								scope.orderItem.onWaitlist = true;
 							}
 						});
