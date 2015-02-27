@@ -369,10 +369,14 @@
 				$.slatwall.setContent( barrierPage );
 				
 				// Update the mura content to use the barrier page or 404
-				if(!isNull(barrierPage.getCMSContentID()) && len(barrierPage.getCMSContentID())) {
-					$.event('contentBean', $.getBean("content").loadBy( contentID=barrierPage.getCMSContentID() ) );
-				} else {
-					$.event('contentBean', $.getBean("content") );
+				if( $.content().getIsOnDisplay() ) {
+
+					if(!isNull(barrierPage.getCMSContentID()) && len(barrierPage.getCMSContentID())) {
+						$.event('contentBean', $.getBean("content").loadBy( contentID=barrierPage.getCMSContentID() ) );
+					} else {
+						$.event('contentBean', $.getBean("content") );
+					}
+
 				}
 			}
 		}
@@ -779,7 +783,7 @@
 				if(getMuraPluginConfig().getSetting("createDefaultPages") && !listFindNoCase(populatedSiteIDs, cmsSiteID)) {
 					
 					// Copy views over to the template directory
-					var slatwallTemplatePath = getDirectoryFromPath(expandPath("/Slatwall/public/views/templates")); 
+					var slatwallTemplatePath = getDirectoryFromPath(expandPath("/Slatwall/public/views/templates/")); 
 					var muraTemplatesPath = getDirectoryFromPath(expandPath("/muraWRM/#cmsSiteID#/includes/themes/#cmsThemeName#/templates/"));
 					$.slatwall.getService("hibachiUtilityService").duplicateDirectory(source=slatwallTemplatePath, destination=muraTemplatesPath, overwrite=false, recurse=true, copyContentExclusionList=".svn,.git");
 					
