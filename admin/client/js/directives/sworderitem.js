@@ -33,45 +33,21 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			console.log("MY ID: " + scope.orderItem.data.orderItemID);
 			var erColumnsConfig =[
 			   		         {
-			   		        	 	  "isDeletable": false,
-			   			      	  "isExportable": true,
 			   			      	  "propertyIdentifier": "_eventregistration.eventRegistrationID",
-			   			      	  "ormtype": "id",
-			   			      	  "isVisible": true,
-			   			          "isSearchable": true,
-			   			      	  "title": "Event Registration ID"
 			   			    },
 			   			    {
-		   		        	 	  "isDeletable": false,
-		   			      	  "isExportable": true,
 		   			      	  "propertyIdentifier": "_eventregistration.pendingClaimDateTime",
-		   			      	  "ormtype": "id",
-		   			      	  "isVisible": true,
-		   			          "isSearchable": true,
-		   			      	  "title": "Event Registration ID"
 			   			    },
 			   			    {
-			   			    	"isDeletable": false,
-			   			    	"isExportable": true,
 			   			    	"propertyIdentifier": "_eventregistration.waitlistQueueDateTime",
-			   			    	"ormtype": "id",
-			   			    	"isVisible": true,
-			   			    	"isSearchable": true,
-			   			    	"title": "Event Registration ID"
-			   			    }
-			   			    ];
-			//Not working
-			/*
-			 * ,
+			   			    },
 			   			    {
-		   		        	 	  "isDeletable": false,
-			   			      	  "isExportable": true,
 			   			      	  "propertyIdentifier": "_eventregistration.waitlistQueuePositionStruct",
-			   			      	  "ormtype": "id",
-			   			      	  "isVisible": true,
-			   			          "isSearchable": true,
-			   			      	  "title": "Waitlist Queue Position Struct"
-					   		}*/
+			   			      	  "persistant":false
+					   		}
+			   			];
+			
+			   			   
 			var erFilterGroupsConfig =[
 			         			    {
 			         			      "filterGroup": [
@@ -100,20 +76,20 @@ angular.module('slatwalladmin').directive('swOrderItem',
 									
 				});
 			//-------------------------------------->Using until above works with queue position
-			if(scope.orderItem.data.sku.data.product.data.productType.data.systemCode === 'event'){
-				var eventRegistrationPromise = scope.orderItem.$$getEventRegistrations();
-				eventRegistrationPromise.then(function(){
-					angular.forEach(scope.orderItem.data.eventRegistrations,function(eventRegistration){
-						console.log(eventRegistration);
-						var eventRegistrationPromise = eventRegistration.$$getEventRegistrationStatusType();
-						eventRegistrationPromise.then(function(){
-							if(angular.isDefined(eventRegistration.data.eventRegistrationStatusType) && eventRegistration.data.eventRegistrationStatusType.data.systemCode === 'erstWaitlisted'){
-								scope.orderItem.onWaitlist = true;
-							}
-						});
-					});
-				});
-			}
+//			if(scope.orderItem.data.sku.data.product.data.productType.data.systemCode === 'event'){
+//				var eventRegistrationPromise = scope.orderItem.$$getEventRegistrations();
+//				eventRegistrationPromise.then(function(){
+//					angular.forEach(scope.orderItem.data.eventRegistrations,function(eventRegistration){
+//						console.log(eventRegistration);
+//						var eventRegistrationPromise = eventRegistration.$$getEventRegistrationStatusType();
+//						eventRegistrationPromise.then(function(){
+//							if(angular.isDefined(eventRegistration.data.eventRegistrationStatusType) && eventRegistration.data.eventRegistrationStatusType.data.systemCode === 'erstWaitlisted'){
+//								scope.orderItem.onWaitlist = true;
+//							}
+//						});
+//					});
+//				});
+//			}
 			//define how we get child order items
 			var columnsConfig =[
 		         {

@@ -238,6 +238,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public array function getFormattedObjectRecords(required array objectRecords, required array propertyIdentifiers){
+		
 		//validate columns against entities default property identifiers
 		var formattedObjectRecords = [];
 		for(var i=1; i<=arrayLen(arguments.objectRecords); i++) {
@@ -268,6 +269,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function getFormattedPageRecords(required any collectionEntity, required array propertyIdentifiers){
+		
 		var formattedPageRecords = {};
 		var paginatedCollectionOfEntities = collectionEntity.getPageRecords();
 		if(ArrayLen(paginatedCollectionOfEntities) == 1 && structKeyExists(paginatedCollectionOfEntities[1],'failedCollection')){
@@ -432,6 +434,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function getAPIResponseForEntityName(required string entityName, required struct collectionOptions){
+		
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,arguments.collectionOptions);
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
@@ -443,13 +446,13 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(!structKeyExists(collectionConfigStruct,'isDistinct')){
 			collectionConfigStruct.isDistinct = false;
 		}
-		
 		return getAPIResponseForCollection(collectionEntity,arguments.collectionOptions);
 	}
 	
 	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, required struct collectionOptions){
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,arguments.collectionOptions);
-		//set up search by id				
+		//set up search by id			
+		
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
 		if(!structKeyExists(collectionConfigStruct,'filterGroups')){
 			collectionConfigStruct.filterGroups = [];
@@ -506,9 +509,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		//get default property identifiers for the records that the collection refers to
-		
+			
+
 		if(structKeyExists(collectionEntity.getCollectionConfigStruct(),'columns')){
 			for (var column in collectionEntity.getCollectionConfigStruct().columns){
+				
 				var piAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),collectionEntity.getCollectionConfigStruct().baseEntityAlias&'_','');
 				if(!ArrayFind(collectionPropertyIdentifiers,piAlias)){
 					ArrayAppend(collectionPropertyIdentifiers,piAlias);
