@@ -26,7 +26,19 @@
 	<td class="s-sku">{{orderItem.data.sku.data.skuCode}}</td>
 	<td class="s-detail">Details</td>
 	<td class="s-customization" ng-show="attributes"><span ng-repeat="attribute in attributes"><span class="s-detail-title" ng-if="orderItem.data[attribute.attributeCode]">{{attribute.attributeName}}:</span><br><span class="s-detail-content">{{orderItem.data[attribute.attributeCode]}}</span><br></span></td>
-	<td class="s-price">{{orderItem.data.skuPrice | currency}} <span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span>></td>
+	<td class="s-price">
+		<ul>
+			<li class="s-price-total">{{orderItem.data.skuPrice | currency}} 
+				<span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span>
+			</li>
+			<li ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode == 'productBundle'" class="s-price-list">
+				<ul>
+					<li>+<span ng-bind="orderItem.data.skuPrice | currency"></span> (Base Price)</li>
+					<li>+<span ng-bind="orderItem.data.skuPrice | currency"></span> (Extras)</li>
+				</ul>
+			</li>
+		</ul>			
+	</td>
 	<td class="s-qty">{{orderItem.data.quantity}}</td>
 	<td class="s-discount">-{{ orderItem.data.discountAmount | currency }}</td>
 	<td class="s-total">{{orderItem.data.itemTotal | currency}}</td>

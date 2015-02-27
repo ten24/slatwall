@@ -232,11 +232,19 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	
 	public numeric function getExtendedPrice() {
 		var price = 0;
-		if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
-			price = getProductBundlePrice();
+		//if has a is child order item and has product bundle group
+		if(!isnull(getParentOrderItem()) && !isnull(getProductBundleGroup())){
+			price = getProductBundleGroupPrice(childOrderItem);
 		}else{
-			price = getPrice();
+			//get bundle price
+			if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+				price = getProductBundlePrice();
+			//get normal price
+			}else{
+				price = getPrice();
+			}
 		}
+		
 		return precisionEvaluate(price * val(getQuantity()));
 	}
 	
@@ -263,13 +271,26 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			return 0;
 		//skuPrice
 		}else if(amountType == 'skuPrice'){
-			return arguments.orderItem.getSkuPrice();
+			if(arguments.orderItem.getSku().getProduct().getProductType().getSystemCode == 'productBundle'){
+				return arguments.orderItem.getExtendedPrice();
+			}else{
+				return arguments.orderItem.getSkuPrice();
+			}
+			
 		//skuPricePercentageIncrease
 		}else if(amountType == 'skuPricePercentageIncrease'){
-			return arguments.orderItem.getSkuPrice() + (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			if(arguments.orderItem.getSku().getProduct().getProductType().getSystemCode == 'productBundle'){
+				return arguments.orderItem.getExtendedPrice() + (arguments.orderItem.getExtendedPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}else{
+				return arguments.orderItem.getSkuPrice() + (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}
 		//skuPricePercentageDecrease
 		}else if(amountType == 'skuPricePercentageDecrease'){
-			return arguments.orderItem.getSkuPrice() - (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			if(arguments.orderItem.getSku().getProduct().getProductType().getSystemCode == 'productBundle'){
+				return arguments.orderItem.getExtendedPrice() - (arguments.orderItem.getExtendedPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}else{
+				return arguments.orderItem.getSkuPrice() - (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}
 		}
 		
 	}
