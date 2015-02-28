@@ -173,18 +173,12 @@ angular.module('slatwalladmin').directive('swOrderItem',
 				      "isVisible": true,
 				      "isDeletable": true
 				 },
- 				{
-				      "title": "Product Description",
-				      "propertyIdentifier": "_orderitem.sku.options",
-				      "isVisible": true,
-				      "isDeletable": true
-				},
-				{
-				      "title": "Product Description",
-				      "propertyIdentifier": "_orderitem.sku.options.optionGroup",
-				      "isVisible": true,
-				      "isDeletable": true
-				},
+// 				{
+//				      "title": "Product Description",
+//				      "propertyIdentifier": "_orderitem.sku.options",
+//				      "isVisible": true,
+//				      "isDeletable": true
+//				},
 			    {
 			      "title": "Qty.",
 			      "propertyIdentifier": "_orderitem.quantity",
@@ -209,11 +203,6 @@ angular.module('slatwalladmin').directive('swOrderItem',
 	 				    "isVisible": true,
 	 				    "isDeletable": true
  				   },
- 				  {
-	 				    "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
-	 				    "isVisible": true,
-	 				    "isDeletable": true
-				   },
 			    {
 			      "title": "Street Address",
 			      "propertyIdentifier": "_orderitem.orderFulfillment.shippingAddress.streetAddress",
@@ -256,6 +245,11 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			      "isVisible": true,
 			      "isDeletable": true
 			    },
+			    {
+ 				    "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
+ 				    "isVisible": true,
+ 				    "isDeletable": true
+			   },
 			    {
 			      "title": "Total",
 			      "propertyIdentifier": "_orderitem.itemTotal",
@@ -324,6 +318,8 @@ angular.module('slatwalladmin').directive('swOrderItem',
 					scope.orderItem.clicked = !scope.orderItem.clicked;
 					scope.orderItem.hide = !scope.orderItem.hide;
 					scope.orderItem.childItemsRetrieved = true;
+					console.log('options');
+					console.log(options);
 					var orderItemsPromise = $slatwall.getEntity('orderItem', options);
 					orderItemsPromise.then(function(value){
 						var collectionConfig = {};

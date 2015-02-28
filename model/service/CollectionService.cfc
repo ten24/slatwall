@@ -162,8 +162,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function getTransientCollectionByEntityName(required string entityName,struct collectionOptions){
 		var collectionEntity = this.newCollection();
-		var properlyCasedFullEntityName = getProperlyCasedFullEntityName(arguments.entityName);
-		collectionEntity.setCollectionObject(properlyCasedFullEntityName,arguments.collectionOptions.defaultColumns);
+		var properlyCasedShortEntityName = getProperlyCasedShortEntityName(arguments.entityName);
+		collectionEntity.setCollectionObject(properlyCasedShortEntityName,arguments.collectionOptions.defaultColumns);
 		return collectionEntity;
 	}
 	

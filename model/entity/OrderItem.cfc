@@ -229,7 +229,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		
 		return discountAmount;
 	}
-	
+	/*
 	public numeric function getExtendedPrice() {
 		var price = 0;
 		//if has a is child order item and has product bundle group
@@ -247,7 +247,16 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		
 		return precisionEvaluate(price * val(getQuantity()));
 	}
-	
+	*/
+	public numeric function getExtendedPrice() {
+		var price = 0;
+		if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			price = getProductBundlePrice();
+		}else{
+			price = getPrice();
+		}
+		return precisionEvaluate(price * val(getQuantity()));
+	}
 	
 	public numeric function getProductBundlePrice(){
 		//first get the base price of the product bundle itself
