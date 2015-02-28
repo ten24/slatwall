@@ -22,7 +22,8 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 			orderItem:"=",
 			orderId:"@",
 			childOrderItems:"=",
-			attributes:"="
+			attributes:"=",
+			parentOrderItem:"="
 		},
 		templateUrl:partialsPath+"childorderitem.html",
 		link:function(scope, element, attr) {
@@ -182,6 +183,11 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 			    {
 			      "title": "Discount Amount",
 			      "propertyIdentifier": "_orderitem.discountAmount",
+			      "persistent":false
+			    },
+			    {
+			      "title": "Discount Amount",
+			      "propertyIdentifier": "_orderitem.extendedPrice",
 			      "persistent":false
 			    }
 			    

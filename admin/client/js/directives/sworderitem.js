@@ -259,6 +259,16 @@ angular.module('slatwalladmin').directive('swOrderItem',
 			      "title": "Discount Amount",
 			      "propertyIdentifier": "_orderitem.discountAmount",
 			      "persistent":false
+			    },
+			    {
+			      "title": "Discount Amount",
+			      "propertyIdentifier": "_orderitem.extendedPrice",
+			      "persistent":false
+			    },
+			    {
+			    	"title": "Discount Amount",
+				      "propertyIdentifier": "_orderitem.productBundlePrice",
+				      "persistent":false
 			    }
 			    
 			    
