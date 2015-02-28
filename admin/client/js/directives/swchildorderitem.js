@@ -22,8 +22,7 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 			orderItem:"=",
 			orderId:"@",
 			childOrderItems:"=",
-			attributes:"=",
-			parentOrderItem:"="
+			attributes:"="
 		},
 		templateUrl:partialsPath+"childorderitem.html",
 		link:function(scope, element, attr) {
@@ -245,6 +244,7 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 						angular.forEach(childOrderItems,function(childOrderItem){
 							childOrderItem.hide = false;
 							childOrderItem.depth = orderItem.depth+1;
+							childOrderItem.data.parentOrderItem = orderItem;
 							scope.childOrderItems.splice(scope.childOrderItems.indexOf(orderItem)+1,0,childOrderItem);
 						});
 						

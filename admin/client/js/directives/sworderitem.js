@@ -340,6 +340,7 @@ angular.module('slatwalladmin').directive('swOrderItem',
 						angular.forEach(childOrderItems,function(childOrderItem){
 							//childOrderItem.hide = false;
 							childOrderItem.depth = scope.orderItem.depth+1;
+							childOrderItem.data.parentOrderItem = scope.orderItem;
 							scope.childOrderItems.push(childOrderItem);
 						});
 					});

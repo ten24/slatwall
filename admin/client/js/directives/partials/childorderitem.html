@@ -17,7 +17,7 @@
 	<td class="s-price" ng-hide="orderItem.hide">{{orderItem.data.extendedPrice / orderItem.data.quantity | currency}}</td>
 	<td class="s-qty" ng-hide="orderItem.hide">{{orderItem.data.quantity}}</td>
 	<td class="s-discount" ng-hide="orderItem.hide">-{{ orderItem.data.discountAmount | currency }}</td>
-	<td class="s-total" ng-hide="orderItem.hide">{{orderItem.data.itemTotal * parentOrderItem.data.quantity | currency}}</td>
+	<td class="s-total" ng-hide="orderItem.hide">{{orderItem.data.itemTotal * orderItem.data.parentOrderItem.data.quantity | currency}}</td>
 	
 	<!-- Handle Tax information -->
 	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">{{orderItem.data.taxAmount | currency}}</td>
