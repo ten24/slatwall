@@ -245,6 +245,7 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 							childOrderItem.hide = false;
 							childOrderItem.depth = orderItem.depth+1;
 							childOrderItem.data.parentOrderItem = orderItem;
+							childOrderItem.data.parentOrderItemQuantity = scope.orderItem.data.quantity / scope.orderItem.data.parentOrderItemQuantity;
 							scope.childOrderItems.splice(scope.childOrderItems.indexOf(orderItem)+1,0,childOrderItem);
 						});
 						
