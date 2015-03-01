@@ -132,7 +132,7 @@ Notes:
 					    							var relatedEntity = slatwallService['new'+currentEntity.metaData[property].cfc]();
 					    							relatedEntity.$$init(collectionItemData[propertyIdentifierKey][0]);
 					    							currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
-					    						}else if(angular.isArray(collectionItemData[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype === 'one-to-many'){
+					    						}else if(angular.isArray(collectionItemData[propertyIdentifierKey]) && (currentEntity.metaData[property].fieldtype === 'one-to-many')){
 					    							angular.forEach(collectionItemData[propertyIdentifierKey],function(arrayItem,key){
 					    								var relatedEntity = slatwallService['new'+currentEntity.metaData[property].cfc]();
 						    							relatedEntity.$$init(arrayItem);
@@ -1479,7 +1479,8 @@ Notes:
 															collectionPromise.then(function(response){
 																for(var i in response.records){
 																	var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
-																	entityInstance.$$init(response.records[i]._#lcase(local.entity.getClassName())#_#local.property.name#[0]);
+																	//Removed the array index here at the end of local.property.name.
+																	entityInstance.$$init(response.records[i]._#lcase(local.entity.getClassName())#_#local.property.name#);//Shouldn't have the array index'
 																	thisEntityInstance.$$set#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#(entityInstance);
 																}
 															});

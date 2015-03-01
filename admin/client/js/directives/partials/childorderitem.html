@@ -20,6 +20,6 @@
 	<td class="s-total" ng-hide="orderItem.hide">{{orderItem.data.itemTotal | currency}}</td>
 	
 	<!-- Handle Tax information -->
-	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">{{orderItem.data.taxAmount | currency}}</td>
-	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">({{orderItem.data.taxAmount | currency}})</td>
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'" ng-hide="orderItem.hide">{{orderItem.data.taxAmount | currency}}</td>
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'" ng-hide="orderItem.hide">({{orderItem.data.taxAmount | currency}})</td>
 	
