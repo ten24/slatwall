@@ -255,6 +255,7 @@ angular.module('slatwalladmin')
 					   "propertyIdentifier":"_orderitem.taxAmount",
 					   "persistent":false
 					}
+
 		 				    
 	 				  ];
 					
@@ -335,13 +336,13 @@ angular.module('slatwalladmin')
 	     			        {
 	     			          "propertyIdentifier": "_attribute.displayOnOrderDetailFlag",
 	     			          "comparisonOperator": "=",
-	     			          "value": "true"
+	     			          "value": true
 	     			        },
 	     			       {
 	     			        	"logicalOperator":"AND",
 	     			          "propertyIdentifier": "_attribute.activeFlag",
 	     			          "comparisonOperator": "=",
-	     			          "value": "true"
+	     			          "value": true
 	     			        }
      			      ]
      			    }

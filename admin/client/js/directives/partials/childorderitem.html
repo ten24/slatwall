@@ -14,10 +14,34 @@
 	<td class="s-sku" ng-hide="orderItem.hide">{{orderItem.data.sku.data.skuCode}}</td>
 	<td class="s-detail" ng-hide="orderItem.hide">Details</td>
 	<td class="s-customization" ng-hide="orderItem.hide" ng-show="attributes"><span ng-repeat="attribute in attributes"  ng-if="orderItem.data[attribute.attributeCode] !== ''"><span class="s-detail-title">{{attribute.attributeName}}:</span><br><span class="s-detail-content">{{orderItem.data[attribute.attributeCode]}}</span><br></span></td>
-	<td class="s-price" ng-hide="orderItem.hide">{{orderItem.data.skuPrice | currency}}</td>
+	<td class="s-price" ng-hide="orderItem.hide">
+		
+		<ul>
+			<li class="s-price-total">+{{orderItem.data.extendedPrice / orderItem.data.quantity | currency}}
+				<span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span>
+			</li>
+			<li ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode == 'productBundle'" class="s-price-list">
+				<ul>
+					<li>+<span ng-bind="orderItem.data.skuPrice | currency"></span> (Base Price)</li>
+					<li>+<span ng-bind="orderItem.data.skuPrice - orderItem.data.extendedPrice / orderItem.data.quantity | currency"></span> (Extras)</li>
+				</ul>
+			</li>
+		</ul>	
+	</td>
 	<td class="s-qty" ng-hide="orderItem.hide">{{orderItem.data.quantity}}</td>
 	<td class="s-discount" ng-hide="orderItem.hide">-{{ orderItem.data.discountAmount | currency }}</td>
-	<td class="s-total" ng-hide="orderItem.hide">{{orderItem.data.itemTotal | currency}}</td>
+	<td class="s-total" ng-hide="orderItem.hide">
+		+{{orderItem.data.itemTotal| currency}}
+		<ul>
+			<li class="s-price-total">{{orderItem.data.itemTotal | currency}}</li>
+			<li ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode == 'productBundle'" class="s-price-list">
+				<ul>
+					<li>+<span ng-bind="orderItem.data.skuPrice * orderItem.data.quantity | currency"></span> (Base Price)</li>
+					<li>+<span ng-bind="orderItem.data.skuPrice * orderItem.data.quantity - orderItem.data.extendedPrice | currency"></span> (Extras)</li>
+				</ul>
+			</li>
+		</ul>
+	</td>
 	
 	<!-- Handle Tax information -->
 	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'" ng-hide="orderItem.hide">{{orderItem.data.taxAmount | currency}}</td>

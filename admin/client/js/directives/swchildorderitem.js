@@ -183,6 +183,11 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 			      "title": "Discount Amount",
 			      "propertyIdentifier": "_orderitem.discountAmount",
 			      "persistent":false
+			    },
+			    {
+			      "title": "Discount Amount",
+			      "propertyIdentifier": "_orderitem.extendedPrice",
+			      "persistent":false
 			    }
 			    
 			];
@@ -239,6 +244,8 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 						angular.forEach(childOrderItems,function(childOrderItem){
 							childOrderItem.hide = false;
 							childOrderItem.depth = orderItem.depth+1;
+							childOrderItem.data.parentOrderItem = orderItem;
+							childOrderItem.data.parentOrderItemQuantity = scope.orderItem.data.quantity / scope.orderItem.data.parentOrderItemQuantity;
 							scope.childOrderItems.splice(scope.childOrderItems.indexOf(orderItem)+1,0,childOrderItem);
 						});
 						

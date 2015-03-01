@@ -18,8 +18,11 @@
 	<!-- Handle the title field. Displays skuName if it exists and productName otherwise -->
 	<td class="s-title">
 		<span ng-if="orderItem.data.sku.data.skuName === ''" ng-bind="orderItem.data.sku.data.product.data.productName"></span>&nbsp
-		<span ng-if="orderItem.data.sku.data.skuName">{{orderItem.data.sku.data.skuName}}&nbsp<a href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link"
-			ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode !== 'productBundle'">edit</a></span>
+		<span ng-if="orderItem.data.sku.data.skuName">
+			{{orderItem.data.sku.data.skuName}}&nbsp
+			<a href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link"
+			ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode !== 'productBundle'">edit</a>
+		</span>
 		<a href="" class="s-edit-link" 
 			ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle' && !orderItem.clicked" 
 			ng-click="getChildOrderItems(orderItem)">detail</a>
@@ -75,13 +78,13 @@
 		<!-- Handle if this is a event pricing scheme-->
 		<span ng-if="orderItem.onWaitlist !== true" class="s-price">
 			<ul>
-				<li class="s-price-total">{{orderItem.data.skuPrice | currency}} 
+				<li class="s-price-total">{{orderItem.data.extendedPrice / orderItem.data.quantity | currency}} 
 					<span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span>
 				</li>
 				<li ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode == 'productBundle'" class="s-price-list">
 					<ul>
 						<li>+<span ng-bind="orderItem.data.skuPrice | currency"></span> (Base Price)</li>
-						<li>+<span ng-bind="orderItem.data.skuPrice | currency"></span> (Extras)</li>
+						<li>+<span ng-bind="orderItem.data.skuPrice - orderItem.data.extendedPrice / orderItem.data.quantity | currency"></span> (Extras)</li>
 					</ul>
 				</li>
 			</ul>
@@ -99,7 +102,17 @@
 	<td class="s-discount" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">({{ orderItem.data.discountAmount | currency }})</td>
 	
 	<!-- Handle both cases of this 'total' being a Return Item -->
-	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">{{orderItem.data.itemTotal | currency}}</td>
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">
+		<ul>
+			<li class="s-price-total">{{orderItem.data.itemTotal | currency}}</li>
+			<li ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode == 'productBundle'" class="s-price-list">
+				<ul>
+					<li>+<span ng-bind="orderItem.data.skuPrice * orderItem.data.quantity | currency"></span> (Base Price)</li>
+					<li>+<span ng-bind="orderItem.data.skuPrice * orderItem.data.quantity - orderItem.data.extendedPrice | currency"></span> (Extras)</li>
+				</ul>
+			</li>
+		</ul>
+	</td>
 	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-{{orderItem.data.itemTotal | currency}})</td>
 	
 	<!-- Handle Tax Information -->

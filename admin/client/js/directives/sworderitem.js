@@ -221,8 +221,7 @@ angular.module('slatwalladmin').directive('swOrderItem',
 					   "isVisible":true,
 					   "isDeletable":true
 					},
-					{
-					   "title":"address",	
+					{	
 					   "propertyIdentifier":"_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
 					   "isVisible":true,
 					   "isDeletable":true
@@ -270,6 +269,11 @@ angular.module('slatwalladmin').directive('swOrderItem',
 					   "isDeletable":true
 					},
 					{
+ 				    "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
+ 				    "isVisible": true,
+ 				    "isDeletable": true
+			   },
+			    {
 					   "title":"Total",
 					   "propertyIdentifier":"_orderitem.itemTotal",
 					   "persistent":false
