@@ -254,6 +254,10 @@ angular.module('slatwalladmin')
 					   "title":"Tax Amount",
 					   "propertyIdentifier":"_orderitem.taxAmount",
 					   "persistent":false
+					},
+					{
+					   "propertyIdentifier":"_orderitem.extendedPrice",
+					   "persistent":false
 					}
 
 		 				    
