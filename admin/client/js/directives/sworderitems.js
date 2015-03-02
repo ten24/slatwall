@@ -258,6 +258,10 @@ angular.module('slatwalladmin')
 					{
 					   "propertyIdentifier":"_orderitem.extendedPrice",
 					   "persistent":false
+					},
+					{
+					   "propertyIdentifier":"_orderitem.productBundlePrice",
+					   "persistent":false
 					}
 
 		 				    

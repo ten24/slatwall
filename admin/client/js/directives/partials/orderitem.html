@@ -74,7 +74,7 @@
 		<!-- Handle if this is a event pricing scheme-->
 		<span ng-if="orderItem.onWaitlist !== true" class="s-price">
 			<ul>
-				<li ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle'" class="s-price-total">{{orderItem.data.extendedPrice / orderItem.data.quantity | currency}} 
+				<li ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle'" class="s-price-total">{{orderItem.data.productBundlePrice | currency}} 
 				</li>
 				<li ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode !== 'productBundle'" class="s-price-total">{{orderItem.data.skuPrice | currency}} 
 				</li>

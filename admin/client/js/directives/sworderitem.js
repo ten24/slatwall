@@ -287,7 +287,32 @@ angular.module('slatwalladmin').directive('swOrderItem',
 					   "title":"Tax Amount",
 					   "propertyIdentifier":"_orderitem.taxAmount",
 					   "persistent":false
-					}];
+					},
+					{
+					   "propertyIdentifier":"_orderitem.extendedPrice",
+					   "persistent":false
+					},
+					{
+						"propertyIdentifier":"_orderitem.productBundleGroup.amount",
+						"ormtype":"big_decimal"
+					},
+					{
+						"propertyIdentifier":"_orderitem.productBundleGroup.amountType",
+						"ormtype":"string"
+					},
+					{
+						"propertyIdentifier":"_orderitem.sku.skuPrice",
+						"ormtype":"string"
+					},
+					{
+						"propertyIdentifier":"_orderitem.productBundleGroupPrice",
+						"persistent":false
+					},
+					{
+						"propertyIdentifier":"_orderitem.productBundlePrice",
+						"persistent":false
+					}
+				];
 			//Add attributes to the column configuration
 			angular.forEach(scope.attributes,function(attribute){
 				var attributeColumn = {
@@ -353,6 +378,12 @@ angular.module('slatwalladmin').directive('swOrderItem',
 							//childOrderItem.hide = false;
 							childOrderItem.depth = scope.orderItem.depth+1;
 							scope.childOrderItems.push(childOrderItem);
+							childOrderItem.data.productBundleGroupPercentage = 1;
+							if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease'){
+								childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount/100;
+							}else if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease'){
+								childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100
+							}
 						});
 					});
 				}else{

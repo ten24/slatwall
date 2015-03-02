@@ -185,10 +185,27 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 			      "persistent":false
 			    },
 			    {
-			      "title": "Discount Amount",
 			      "propertyIdentifier": "_orderitem.extendedPrice",
 			      "persistent":false
-			    }
+			    },
+			    {
+			    	"propertyIdentifier":"_orderitem.productBundleGroup.amount"
+			    },
+			    {
+			    	"propertyIdentifier":"_orderitem.productBundleGroup.amountType"
+			    },
+			    {
+					"propertyIdentifier":"_orderitem.sku.skuPrice",
+					"ormtype":"string"
+				},
+				{
+					"propertyIdentifier":"_orderitem.productBundleGroupPrice",
+					"persistent":false
+				},
+				{
+					"propertyIdentifier":"_orderitem.productBundlePrice",
+					"persistent":false
+				}
 			    
 			];
 			
@@ -247,6 +264,14 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 							childOrderItem.data.parentOrderItem = orderItem;
 							childOrderItem.data.parentOrderItemQuantity = scope.orderItem.data.quantity / scope.orderItem.data.parentOrderItemQuantity;
 							scope.childOrderItems.splice(scope.childOrderItems.indexOf(orderItem)+1,0,childOrderItem);
+
+							childOrderItem.data.productBundleGroupPercentage = 1;
+							if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease'){
+								childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount/100;
+							}else if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease'){
+								childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100
+							}
+							
 						});
 						
 					});

@@ -101,6 +101,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
 	property name="productBundlePrice" persistent="false" hb_formatType="currency";
+	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
@@ -227,16 +228,11 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	
 	public numeric function getExtendedPrice() {
 		var price = 0;
-		//if has a is child order item and has product bundle group
-		if(!isnull(getProductBundleGroup()) && getSku().getProduct().getProductType().getSystemCode() != 'productBundle'){
-			price = getProductBundleGroupPrice(this);
+		//get bundle price
+		if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			price = getProductBundlePrice();
 		}else{
-			//get bundle price
-			if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
-				price = getProductBundlePrice();
-			}else{
-				price = getPrice();
-			}
+			price = getPrice();
 		}
 		
 		return precisionEvaluate(price * val(getQuantity()));
@@ -245,7 +241,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	
 	public numeric function getProductBundlePrice(){
 		//first get the base price of the product bundle itself
-		var productBundlePrice = getPrice();
+		var productBundlePrice = this.getSkuPrice();
 		//then get the price of it's componenets and add them
 		for(var childOrderItem in this.getChildOrderItems()){
 			productBundlePrice += precisionEvaluate(getProductBundleGroupPrice(childOrderItem) * childOrderItem.getQuantity());
@@ -254,12 +250,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return productBundlePrice;
 	}
 	
-	private numeric function getProductBundleGroupPrice(required any orderItem){
-		try {
-		var amountType = arguments.orderItem.getProductBundleGroup().getAmountType();
-		} catch (any error){
-			return 0;
+	public numeric function getProductBundleGroupPrice(any orderItem){
+		if(isNull(arguments.orderItem)){
+			arguments.orderItem = this;
 		}
+		
+		var amountType = arguments.orderItem.getProductBundleGroup().getAmountType();
 		//fixed
 		if(amountType == 'fixed'){
 			return arguments.orderItem.getProductBundleGroup().getAmount();
@@ -268,13 +264,26 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			return 0;
 		//skuPrice
 		}else if(amountType == 'skuPrice'){
-			return arguments.orderItem.getSkuPrice();
+			if(arguments.orderItem.getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+				return arguments.orderItem.getProductBundlePrice();
+			}else{
+				return arguments.orderItem.getSkuPrice();
+			}
 		//skuPricePercentageIncrease
 		}else if(amountType == 'skuPricePercentageIncrease'){
-			return arguments.orderItem.getSkuPrice() + (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			if(arguments.orderItem.getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+				return arguments.orderItem.getProductBundlePrice() + (arguments.orderItem.getProductBundlePrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}else{
+				return arguments.orderItem.getSkuPrice() + (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}
+			
 		//skuPricePercentageDecrease
 		}else if(amountType == 'skuPricePercentageDecrease'){
-			return arguments.orderItem.getSkuPrice() - (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			if(arguments.orderItem.getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+				return arguments.orderItem.getProductBundlePrice() - (arguments.orderItem.getProductBundlePrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}else{
+				return arguments.orderItem.getSkuPrice() - (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}
 		}
 		
 	}
