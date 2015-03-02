@@ -11,5 +11,6 @@ CKEDITOR.editorConfig = function( config ) {
 	config.filebrowserImageBrowseUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?Type=Images';
 	config.filebrowserUploadUrl      = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Files';
 	config.filebrowserImageUploadUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Images';
-	
+	config.extraAllowedContent = 'span;ul;li;table;td;style;*[id];*(*);*{*}';
 };
+
