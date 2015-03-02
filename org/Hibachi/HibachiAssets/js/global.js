@@ -91,7 +91,10 @@ function initUIElements( scopeSelector ) {
 
 	// Wysiwyg
 	jQuery.each(jQuery( scopeSelector ).find(jQuery( '.wysiwyg' )), function(i, v){
-		var editor = CKEDITOR.replace( v );
+		// Wysiwyg custom config file located in: custom/assets/ckeditor_config.js
+		var editor = CKEDITOR.replace( v, {
+		    customConfig: '../../../custom/assets/ckeditor_config.js'
+		});
 		CKFinder.setupCKEditor( editor, 'org/Hibachi/ckfinder/' );
 	});
 
