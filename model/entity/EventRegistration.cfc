@@ -96,21 +96,21 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	
 	public any function getWaitlistQueuePositionStruct(){
 		//get the waitlist
-		var waitlistedRegistrants = getService('eventRegistrationService').getWaitListedRegistrants(this.getOrderItem().getSku());
-		
-		var waitlistStruct = {};
-		//loop over all orderitem registrants
-		for(var eventRegistration in this.getOrderItem().getEventRegistrations()[1].getEventRegistrationID()){
-			var position = 0;
+		try {
+			var waitlistedRegistrants = getService('eventRegistrationService').getWaitlistedRegistrants(this.getOrderItem().getSku());
+			var position = 1; 
+			//loop over all waitlistedRegistrants registrants
 			for(var waitlistedRegistrant in waitlistedRegistrants){
-				if(waitlistedRegistrant.getEventRegistrationID() == eventRegistration.getEventRegistrationID()){
-					waitlistStruct[waitlistedRegistrant.getEventRegistrationID()] = position;
+			//base case: if we find this id in the list, return the position.
+				if(waitlistedRegistrant.getEventRegistrationID() == this.getEventRegistrationID()){
+					return position;
 				}
-				position += 1;
+				position++;
 			}
+			return -1; //not found in the list
+		} catch (any error){
+			return -1; //error occured.
 		}
-		
-		return waitlistStruct;
 	}
 	
 	public string function getRegistrationStatusTitle() {

@@ -1479,7 +1479,13 @@ Notes:
 															collectionPromise.then(function(response){
 																for(var i in response.records){
 																	var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
-																	entityInstance.$$init(response.records[i]._#lcase(local.entity.getClassName())#_#local.property.name#[0]);
+																	//Removed the array index here at the end of local.property.name.
+																	if(angular.isArray(response.records[i]._#lcase(local.entity.getClassName())#_#local.property.name#)){
+																		entityInstance.$$init(response.records[i]._#lcase(local.entity.getClassName())#_#local.property.name#[0]);
+																	}else{
+																		entityInstance.$$init(response.records[i]._#lcase(local.entity.getClassName())#_#local.property.name#);//Shouldn't have the array index'
+																	}
+																	
 																	thisEntityInstance.$$set#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#(entityInstance);
 																}
 															});
