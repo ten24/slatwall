@@ -103,8 +103,16 @@ Notes:
 		<!--- Setup file link --->
 		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'file' and len(fdAttributes.value)>
 			<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
+		<cfelse>
+			<cfset fdAttributes.removeLinks = []/> 
+			<cfloop collection="#attribute.getAttributeValuesByAttributeIDStruct()#" item="attributeValueKey">
+				<cfset attributeValue = StructFind(attribute.getAttributeValuesByAttributeIDStruct(),attributeValueKey)/>
+				<cfset removeLink = "?slatAction=admin:entity.deleteattributeValue&attributeValueid=#attributeValue.getAttributeValueID()#&redirectAction=admin:entity.detail#attribute.getAttributeSet().getAttributeSetObject()#&#attribute.getAttributeSet().getAttributeSetObject()#ID=#attributes.entity.invokeMethod('get'&attribute.getAttributeSet().getAttributeSetObject()&'ID')#"/>
+				<cfset ArrayAppend(fdAttributes.removeLinks,removeLink)/> 
+			</cfloop>
 		</cfif>
-		
-		<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
+		<div class="col-sm-8">
+			<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
+		</div>
 	</cfloop>
 </cfif>

@@ -26,12 +26,12 @@
 	<cfparam name="attributes.toggle" type="string" default="no" />						<!--- hint: This attribute indicates whether the field can be toggled to show/hide the value. Possible values are "no" (no toggling), "Show" (shows field by default but can be toggled), or "Hide" (hide field by default but can be toggled) --->
 	<cfparam name="attributes.displayType" default="dl" />								<!--- hint: This attribute is used to specify if the information comes back as a definition list (dl) item or table row (table) or with no formatting or label (plain) --->
 
+	<cfparam name="attributes.removeLinks" type="array" default="#arrayNew(1)#" />
 	<cfparam name="attributes.errors" type="array" default="#arrayNew(1)#" />			<!--- hint: This holds any errors for the current field if needed --->
 
 	<cfparam name="attributes.modalCreateAction" type="string" default="" />			<!--- hint: This allows for a special admin action to be passed in where the saving of that action will automatically return the results to this field --->
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
-
 	<cfswitch expression="#attributes.displaytype#">
 		<!--- DL Case --->
 		<cfcase value="dl">
