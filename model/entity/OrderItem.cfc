@@ -1,5 +1,4 @@
 /*
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,9 +39,7 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 */
 component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderItems" hb_processContext="updateStatus" {
 	
@@ -105,6 +100,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="taxAmount" persistent="false" hb_formatType="currency";
 	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
+	property name="productBundlePrice" persistent="false" hb_formatType="currency";
+	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
@@ -230,8 +227,67 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	
 	public numeric function getExtendedPrice() {
-		return precisionEvaluate(getPrice() * val(getQuantity()));
+		var price = 0;
+		//get bundle price
+		if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			price = getProductBundlePrice();
+		}else{
+			price = getPrice();
+		}
+		
+		return precisionEvaluate(price * val(getQuantity()));
 	}
+	
+	
+	public numeric function getProductBundlePrice(){
+		//first get the base price of the product bundle itself
+		var productBundlePrice = this.getSkuPrice();
+		//then get the price of it's componenets and add them
+		for(var childOrderItem in this.getChildOrderItems()){
+			productBundlePrice += precisionEvaluate(getProductBundleGroupPrice(childOrderItem) * childOrderItem.getQuantity());
+		}
+		
+		return productBundlePrice;
+	}
+	
+	public numeric function getProductBundleGroupPrice(any orderItem){
+		if(isNull(arguments.orderItem)){
+			arguments.orderItem = this;
+		}
+		
+		var amountType = arguments.orderItem.getProductBundleGroup().getAmountType();
+		//fixed
+		if(amountType == 'fixed'){
+			return arguments.orderItem.getProductBundleGroup().getAmount();
+		//none
+		}else if(amountType == 'none'){
+			return 0;
+		//skuPrice
+		}else if(amountType == 'skuPrice'){
+			if(arguments.orderItem.getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+				return arguments.orderItem.getProductBundlePrice();
+			}else{
+				return arguments.orderItem.getSkuPrice();
+			}
+		//skuPricePercentageIncrease
+		}else if(amountType == 'skuPricePercentageIncrease'){
+			if(arguments.orderItem.getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+				return arguments.orderItem.getProductBundlePrice() + (arguments.orderItem.getProductBundlePrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}else{
+				return arguments.orderItem.getSkuPrice() + (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}
+			
+		//skuPricePercentageDecrease
+		}else if(amountType == 'skuPricePercentageDecrease'){
+			if(arguments.orderItem.getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+				return arguments.orderItem.getProductBundlePrice() - (arguments.orderItem.getProductBundlePrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}else{
+				return arguments.orderItem.getSkuPrice() - (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}
+		}
+		
+	}
+	
 	
 	public numeric function getExtendedSkuPrice() {
 		return precisionEvaluate(getSkuPrice() * getQuantity());
@@ -243,7 +299,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	
 	public any function getActiveEventRegistrations() {
 		if(!structKeyExists(variables, "activeRegistrationsSmartList")) {
-			variables.activeRegistrationsSmartList = getEventRegistrationService().getEventRegistrationSmartList();
+			variables.activeRegistrationsSmartList = getService('EventRegistrationService').getEventRegistrationSmartList();
 			variables.activeRegistrationsSmartList.addFilter('orderItemID', getOrderItemID());
 			variables.activeRegistrationsSmartList.addInFilter('eventRegistrationStatusType.systemCode', 'erstRegistered,erstWaitListed,erstPendingApproval,erstAttended,erstNotPlaced');
 		}
@@ -412,6 +468,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			arrayAppend(arguments.parentOrderItem.getChildOrderItems(), this);
 		}
 	}
+	
 	public void function removeParentOrderItem(any parentOrderItem) {
 		if(!structKeyExists(arguments, "parentOrderItem")) {
 			arguments.parentOrderItem = variables.parentOrderItem;
@@ -598,4 +655,3 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	
 	// ===================  END:  ORM Event Hooks  =========================
 }
-

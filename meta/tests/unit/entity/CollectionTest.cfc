@@ -932,6 +932,117 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
+	public void function getHQLTest_notpersistent(){
+	
+		var collectionEntityData = {
+			collectionid = '12',
+			collectionCode = 'BestAccounts',
+			collectionObject = 'orderItem',
+			
+			collectionConfig = '
+				{
+				  "baseEntityName": "SlatwallOrderItem",
+				  "baseEntityAlias": "_orderitem",
+				  "columns": [
+				    {
+				      "isDeletable": false,
+				      "isExportable": true,
+				      "propertyIdentifier": "_orderitem.orderItemID",
+				      "ormtype": "id",
+				      "isVisible": false,
+				      "isSearchable": true,
+				      "title": "Order Item ID"
+				    },
+				    {
+				      "isDeletable": false,
+				      "isExportable": true,
+				      "propertyIdentifier": "_orderitem.price"
+				    },
+				    {
+				      "isDeletable": false,
+				      "isExportable": true,
+				      "propertyIdentifier": "_orderitem.quantity",
+				      "isVisible": false,
+				      "isSearchable": true
+				    },
+				    {
+				      "isDeletable": false,
+				      "isExportable": true,
+				      "propertyIdentifier": "_orderitem.itemTotal",
+				      "isVisible": false,
+				      "isSearchable": true,
+				      "persistent":false
+				    }
+				  ]
+				}
+			'
+		};
+		var orderItem = request.slatwallScope.getService( 'hibachiService' ).newOrderItem();
+		
+		var sku = request.slatwallScope.getService( 'skuService' ).newSku();
+		sku.setPrice(9.50);
+		orderItem.setQuantity(5);
+		orderItem.setSku(sku);
+		var test = '';
+		test = orderItem.getitemTotalTest();
+		request.debug(test);
+		
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		request.debug(collectionEntity.getPageRecords());
+	}
+	
+	public void function hasNonPersistentColumn(){
+	
+		var collectionEntityData = {
+			collectionid = '12',
+			collectionCode = 'BestAccounts',
+			collectionObject = 'orderItem',
+			
+			collectionConfig = '
+				{
+				  "baseEntityName": "SlatwallOrderItem",
+				  "baseEntityAlias": "_orderitem",
+				  "columns": [
+				    {
+				      "isDeletable": false,
+				      "isExportable": true,
+				      "propertyIdentifier": "_orderitem.orderItemID",
+				      "ormtype": "id",
+				      "isVisible": false,
+				      "isSearchable": true,
+				      "title": "Order Item ID"
+				    },
+				    {
+				      "isDeletable": false,
+				      "isExportable": true,
+				      "propertyIdentifier": "_orderitem.price"
+				    },
+				    {
+				      "isDeletable": false,
+				      "isExportable": true,
+				      "propertyIdentifier": "_orderitem.quantity",
+				      "isVisible": false,
+				      "isSearchable": true
+				    },
+				    {
+				      "isDeletable": false,
+				      "isExportable": true,
+				      "propertyIdentifier": "_orderitem.itemTotal",
+				      "persistent":false,
+				      "isVisible": false,
+				      "isSearchable": true
+				    }
+				  ]
+				}
+			'
+		};
+		
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		//MakePublic(collectionEntity,'hasNonPersistentColumn');
+		
+		request.debug(collectionEntity.getNonPersistentColumn());
+	}
+	
 	public void function getHQLTest_emptyFilterGroup(){
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',

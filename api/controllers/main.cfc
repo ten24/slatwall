@@ -40,6 +40,41 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
 		}
 	}
+	/**
+	 * This will return the path to an image based on the skuIDs (sent as a comma seperated list)
+	 * and a 'profile name' that determines the size of that image.
+	 * http://slatwall/index.cfm?slatAction=api:main.getResizedImageByProfileName&profileName=orderItem&skuIDs=8a8080834721af1a0147220714810083,4028818d4b31a783014b5653ad5d00d2,4028818d4b05b871014b102acb0700d5
+	 * ...should return three paths.
+	 */
+	public any function getResizedImageByProfileName(required struct rc){
+ 		
+ 			var skuIDs = arguments.rc.skuIDs.split(",");
+ 			var imageHeight = 60;
+ 			var imageWidth  = 60;
+			
+			if(arguments.rc.profileName == "orderItem"){
+   				imageHeight = 90;
+				imageWidth  = 90;
+			}else if (arguments.rc.profileName == "skuDetail"){
+    				imageHeight = 150;
+    				imageWidth  = 150;
+ 			}
+			arguments.rc.apiResponse.content = {};
+			arguments.rc.apiResponse.content.resizedImagePaths = [];
+			var skus = [];
+			//load up skus
+			for (var id in skuIDs){
+				arrayAppend(skus, request.slatwallScope.getEntity("sku", {skuID=id}));
+			}
+			for  (var sku in skus){
+				if (!isNull(sku)){	
+        				ArrayAppend(arguments.rc.apiResponse.content.resizedImagePaths, sku.getResizedImagePath(width=imageWidth, height=imageHeight));         
+ 				}
+ 			}
+ 		
+ 		
+ 	}
+
 	
 	public any function getValidationPropertyStatus(required struct rc){
 			

@@ -59,26 +59,6 @@ metadataService,
 		$scope.autoScrollPage = 1;
 		$scope.autoScrollDisabled = false;
 		
-		$scope.$watch('pageShow',function(newValue,oldValue){
-			if(newValue !== oldValue){
-				$log.debug('pageShowChanged');
-				$scope.currentPage = 1;
-				paginationService.setCurrentPage(1);
-				$scope.getCollection();
-			}
-		});
-		
-		$scope.$watch('currentPage',function(newValue,oldValue){
-			if(newValue !== oldValue){
-				$log.debug('currentPageChanged');
-				if($scope.pageShow === 'Auto'){
-					$scope.autoScrollPage = 1;
-					$scope.appendToCollection();
-				}else{
-					$scope.getCollection();
-				}
-			}
-		});
 		
 		$scope.appendToCollection = function(){
 			if($scope.pageShow === 'Auto'){
@@ -156,6 +136,9 @@ metadataService,
 				if(angular.isUndefined($scope.collectionConfig)){
 					$scope.collectionConfig = angular.fromJson($scope.collection.collectionConfig);
 				}
+				angular.forEach($scope.collectionConfig.columns,function(column){
+					column.key = column.propertyIdentifier.replace(/\./g, '_').replace($scope.collectionConfig.baseEntityAlias+'_','');
+				});
 				//check if we have any filter Groups
 				if(angular.isUndefined($scope.collectionConfig.filterGroups)){
 					$scope.collectionConfig.filterGroups = [
@@ -315,8 +298,6 @@ metadataService,
 			$scope.selectedFilterProperty = selectedFilterProperty;
 			
 		};
-		
-		
 		
 		$scope.filterCount = collectionService.getFilterCount;
 		

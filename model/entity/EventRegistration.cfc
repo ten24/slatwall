@@ -82,6 +82,7 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 	property name="productName"  persistent="false";
 	property name="attendedFlag"  persistent="false";
 	property name="registrationStatusTitle"  persistent="false";
+	property name="waitlistQueuePositionStruct" persistent="false";
 	
 	
 	// ==================== START: Logical Methods =========================
@@ -92,6 +93,25 @@ component entityname="SlatwallEventRegistration" table="SwEventRegistration" per
 		} 
 		return false;
 	} 
+	
+	public any function getWaitlistQueuePositionStruct(){
+		//get the waitlist
+		try {
+			var waitlistedRegistrants = getService('eventRegistrationService').getWaitlistedRegistrants(this.getOrderItem().getSku());
+			var position = 1; 
+			//loop over all waitlistedRegistrants registrants
+			for(var waitlistedRegistrant in waitlistedRegistrants){
+			//base case: if we find this id in the list, return the position.
+				if(waitlistedRegistrant.getEventRegistrationID() == this.getEventRegistrationID()){
+					return position;
+				}
+				position++;
+			}
+			return -1; //not found in the list
+		} catch (any error){
+			return -1; //error occured.
+		}
+	}
 	
 	public string function getRegistrationStatusTitle() {
 		if(!structKeyExists(variables,"registrationStatusTitle")) {

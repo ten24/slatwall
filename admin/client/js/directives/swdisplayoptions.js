@@ -89,7 +89,6 @@ angular.module('slatwalladmin')
 						$log.debug($scope.columns);
 						if(angular.isDefined(selectedProperty)){
 							var column = {};
-							//"_orderitem.order.orderType.typeName"
 							column.title = getTitleFromPropertyIdentifier(selectedProperty.propertyIdentifier);
 							column.propertyIdentifier = selectedProperty.propertyIdentifier;
 							column.isVisible = true;

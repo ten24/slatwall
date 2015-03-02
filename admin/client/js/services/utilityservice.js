@@ -21,6 +21,7 @@ angular.module('slatwalladmin')
 			
 			    return text;
 			},
+			//list functions
 			listFind:function(list,value,delimiter){
 				if(angular.isUndefined(delimiter)){
 					delimiter = ',';
@@ -34,6 +35,14 @@ angular.module('slatwalladmin')
 				    stringFound = i;
 				    break;
 				}
+			},
+			listLen:function(list,delimiter){
+				console.log('listlen');
+				if(angular.isUndefined(delimiter)){
+					delimiter = ',';
+				}
+				var splitString = list.split(delimiter);
+				return splitString.length;
 			}
 		};
 		

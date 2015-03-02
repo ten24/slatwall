@@ -85,9 +85,85 @@ Notes:
 				
 				return {
 					
-				    $get:['$q','$http','$timeout','$log','$rootScope','$location','$anchorScroll', 'formService', function ($q,$http,$timeout,$log,$rootScope,$location,$anchorScroll,formService)
+				    $get:['$q',
+				    	'$http',
+				    	'$timeout',
+				    	'$log',
+				    	'$rootScope',
+				    	'$location',
+				    	'$anchorScroll',
+				    	'utilityService', 
+				    	'formService', 
+				    	function (
+				    		$q,
+				    		$http,
+				    		$timeout,
+				    		$log,
+				    		$rootScope,
+				    		$location,
+				    		$anchorScroll,
+				    		utilityService,
+				    		formService
+				    	)
 				    {
 				    	var slatwallService = {
+				    		//service method used to transform collection data to collection objects based on a collectionconfig
+				    		populateCollection:function(collectionData,collectionConfig){
+				    			//create array to hold objects
+				    			var entities = [];
+				    			//loop over all collection data to create objects
+				    			angular.forEach(collectionData, function(collectionItemData, key){
+				    				//create base Entity
+				    				var entity = slatwallService['new'+collectionConfig.baseEntityName.replace('Slatwall','')]();
+				    				//populate entity with data based on the collectionConfig
+				    				angular.forEach(collectionConfig.columns, function(column, key){
+				    					//get objects base properties
+				    					var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias.toLowerCase()+'.','');
+				    					var propertyIdentifierArray = propertyIdentifier.split('.');
+				    					var propertyIdentifierKey = propertyIdentifier.replace(/\./g,'_');
+				    					console.log('propertyIdentifierKey');
+				    					console.log(propertyIdentifierKey);
+				    					console.log(collectionItemData[propertyIdentifierKey]);
+				    					var currentEntity = entity;
+			    						angular.forEach(propertyIdentifierArray,function(property,key){
+			    							if(key === propertyIdentifierArray.length-1){
+			    								//if we are on the last item in the array
+					    						if(angular.isObject(collectionItemData[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype === 'many-to-one'){
+					    							var relatedEntity = slatwallService['new'+currentEntity.metaData[property].cfc]();
+					    							relatedEntity.$$init(collectionItemData[propertyIdentifierKey][0]);
+					    							currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
+					    						}else if(angular.isArray(collectionItemData[propertyIdentifierKey]) && (currentEntity.metaData[property].fieldtype === 'one-to-many')){
+					    							angular.forEach(collectionItemData[propertyIdentifierKey],function(arrayItem,key){
+					    								var relatedEntity = slatwallService['new'+currentEntity.metaData[property].cfc]();
+						    							relatedEntity.$$init(arrayItem);
+						    							currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
+					    							});
+					    						}else{
+					    							currentEntity.data[property] = collectionItemData[propertyIdentifierKey];
+					    						}
+			    							}else{
+			    								var propertyMetaData = currentEntity.metaData[property];
+			    								console.log(currentEntity);
+			    								console.log(property);
+			    								console.log(propertyMetaData);
+						    					if(angular.isUndefined(currentEntity.data[property])){
+						    						if(propertyMetaData.fieldtype === 'one-to-many'){
+						    							relatedEntity = [];
+						    						}else{
+						    							relatedEntity = slatwallService['new'+propertyMetaData.cfc]();
+						    						}
+			    								}else{
+			    									relatedEntity = currentEntity.data[property];
+			    								}
+			    								currentEntity['$$set'+propertyMetaData.name.charAt(0).toUpperCase()+propertyMetaData.name.slice(1)](relatedEntity);
+		    									currentEntity = relatedEntity;
+						    				}
+						    			});
+				    				});
+				    				entities.push(entity);
+				    			});
+				    			return entities;
+				    		},
 				    		/*basic entity getter where id is optional, returns a promise*/
 					  		getDefer:function(deferKey){
 					  			return _deferred[deferKey];
@@ -134,8 +210,43 @@ Notes:
 					  			if(angular.isDefined(options.id)) {
 					  				urlString += '&entityId='+options.id;	
 					  			}
+
+					  			/*var transformRequest = function(data){	
+					  				console.log(data);
+					  							  			
+					  				return data;
+					  			};
+					  			//check if we are using a service to transform the request
+					  			if(angular.isDefined(options.transformRequest)){
+					  				transformRequest=options.trasformRequest;
+					  			}*/
+					  			var transformResponse = function(data){
+					  					
+					  				var data = JSON.parse(data);
+					  				
+					  				return data;
+					  			};
+					  			//check if we are using a service to transform the response
+					  			if(angular.isDefined(options.transformResponse)){
+					  				transformResponse=function(data){
+					  					
+						  				var data = JSON.parse(data);
+						  				if(angular.isDefined(data.records)){
+						  					data = options.transformResponse(data.records);
+						  				}
+						  				
+						  				return data;
+						  			};;
+					  			}
 					  			
-					  			$http.get(urlString,{params:params,timeout:deferred.promise})
+					  			$http.get(urlString,
+					  				{
+						  				params:params,
+						  				timeout:deferred.promise,
+						  				//transformRequest:transformRequest,
+						  				transformResponse:transformResponse
+					  				}
+					  			)
 					  			.success(function(data){
 					  				deferred.resolve(data);
 					  			}).error(function(reason){
@@ -147,6 +258,15 @@ Notes:
 					  			}
 					  			return deferred.promise;
 					  			
+					  		},
+					  		getResizedImageByProfileName:function (profileName, skuIDs) {
+					  			var deferred = $q.defer();
+					            return $http.get(_config.baseURL + '/index.cfm/?slatAction=api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
+					            .success(function(data){
+					  				deferred.resolve(data);
+					  			}).error(function(reason){
+					  				deferred.reject(reason);
+					  			});
 					  		},
 					  		getEventOptions:function(entityName){
 					  			var deferred = $q.defer();
@@ -166,8 +286,8 @@ Notes:
 					              '&value=' + escape(value)).then(
 					                function (results) {
 					                    return results.data.uniqueStatus;
-					                });
-					        },
+					  			});
+					  		},
 					  		getPropertyDisplayData:function(entityName,options){
 					  			var deferred = $q.defer();
 					  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getPropertyDisplayData&entityName='+entityName;
@@ -461,9 +581,8 @@ Notes:
 				    	var _jsEntities = {};
 				    	
 				    	var _init = function(entityInstance,data){
-				    		
 							for(var key in data) {
-								if(key.charAt(0) !== '$'){
+								if(key.charAt(0) !== '$' && angular.isDefined(entityInstance.metaData[key])){
 									var propertyMetaData = entityInstance.metaData[key];
 									
 									if(angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json'){
@@ -472,11 +591,10 @@ Notes:
 										}
 										
 									}else{
-		    							entityInstance.data[key] = data[key];
-		    						}	 
-		    						
+		    						entityInstance.data[key] = data[key];	
 								}
 							}
+						}
 						}
 				    	
 				    	var _getPropertyTitle = function(propertyName,metaData){
@@ -779,7 +897,7 @@ Notes:
 								}else{
 						    		
 						    		//select first, visible, and enabled input with a class of ng-invalid
-						    		
+								
 						    		var target = $('input.ng-invalid:first:visible:enabled');
 						    		$log.debug('input is invalid');
 								$log.debug(target);
@@ -840,7 +958,6 @@ Notes:
 				    			if(form.$dirty && form.$valid){
 						    		for(var key in form){
 						    			$log.debug('key:'+key);
-						    			
 						    			if(key.charAt(0) !== '$'){
 						    				var inputField = form[key];
 						    				if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
@@ -849,7 +966,7 @@ Notes:
 						    					if(angular.isDefined(entityInstance.metaData[key]) 
 					    						&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
 					    						&& entityInstance.metaData[key].hb_formfieldtype === 'json'){
-						    						modifiedData[key] = angular.toJson(form[key].$modelValue);	
+						    						modifiedData[key] = angular.toJson(form[key].$modelValue);		
 						    					}else{
 						    						modifiedData[key] = form[key].$modelValue;
 						    					}
@@ -881,21 +998,21 @@ Notes:
 						    			var form = forms[f];
 						    			form.$setSubmitted();	
 						    			if(form.$dirty && form.$valid){
-								    		for(var key in form){
-								    			if(key.charAt(0) !== '$'){
-								    				var inputField = form[key];
-								    				if(angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
-								    					<!--- set modifiedData --->
-								    					if(angular.isDefined(parentInstance.metaData[key]) 
-								    					&& angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) 
-								    					&& parentInstance.metaData[key].hb_formfieldtype === 'json'){
-								    						modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);		
-								    					}else{
-								    						modifiedData[parentObject.name][key] = form[key].$modelValue;
-								    					}
-								    				}
-								    			}
-								    		}
+							    		for(var key in form){
+							    			if(key.charAt(0) !== '$'){
+							    				var inputField = form[key];
+							    				if(angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
+							    					<!--- set modifiedData --->
+							    					if(angular.isDefined(parentInstance.metaData[key]) 
+							    					&& angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) 
+							    					&& parentInstance.metaData[key].hb_formfieldtype === 'json'){
+							    						modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);		
+							    					}else{
+							    						modifiedData[parentObject.name][key] = form[key].$modelValue;
+							    					}
+							    				}
+							    			}
+							    		}
 								    	}else{
 								    		if(!form.$valid){
 								    			valid = false;
@@ -983,7 +1100,6 @@ Notes:
 			    			form.$setSubmitted();	
 			    			for(var key in form){
 				    			if(key.charAt(0) !== '$'){
-
 				    				var inputField = form[key];
 				    				if(angular.isDefined(inputField) && angular.isDefined(inputField) && inputField.$valid === true && inputField.$dirty === true){	
 				    					
@@ -1221,6 +1337,16 @@ Notes:
 									
 									this.data = {};
 									this.modifiedData = {};
+									<!---loop over possible attributes --->
+									<cfif len($.slatwall.getService('attributeService').getAttributeCodesListByAttributeSetObject(local.entity.getClassName()))>
+										<cfloop list="#$.slatwall.getService('attributeService').getAttributeCodesListByAttributeSetObject(local.entity.getClassName())#" index="local.attributeCode">
+											this.data.#local.attributeCode# = null;
+											this.metaData.#local.attributeCode# = {
+												name:'#local.attributeCode#'
+											};
+										</cfloop>
+									</cfif>
+									
 									
 									<!--- Loop over properties --->
 									<cfloop array="#local.entity.getProperties()#" index="local.property">
@@ -1353,7 +1479,13 @@ Notes:
 															collectionPromise.then(function(response){
 																for(var i in response.records){
 																	var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
-																	entityInstance.$$init(response.records[i]._#lcase(local.entity.getClassName())#_#local.property.name#[0]);
+																	//Removed the array index here at the end of local.property.name.
+																	if(angular.isArray(response.records[i]._#lcase(local.entity.getClassName())#_#local.property.name#)){
+																		entityInstance.$$init(response.records[i]._#lcase(local.entity.getClassName())#_#local.property.name#[0]);
+																	}else{
+																		entityInstance.$$init(response.records[i]._#lcase(local.entity.getClassName())#_#local.property.name#);//Shouldn't have the array index'
+																	}
+																	
 																	thisEntityInstance.$$set#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#(entityInstance);
 																}
 															});
@@ -1400,7 +1532,7 @@ Notes:
 															}
 															entityInstance.data[manyToManyName].push(thisEntityInstance);
 														}
-														
+	
 														$log.debug(thisEntityInstance);
 														$log.debug(entityInstance);
 	
@@ -1411,7 +1543,6 @@ Notes:
 													<!--- add method --->
 													,$$add#ReReplace(local.property.singularname,"\b(\w)","\u\1","ALL")#:function() {
 														<!--- create related instance --->
-														
 														var entityInstance = slatwallService.newEntity(this.metaData['#local.property.name#'].cfc);
 														var metaData = this.metaData;
 														<!--- one-to-many --->
@@ -1477,7 +1608,7 @@ Notes:
 																<!---returns array of related objects --->
 																for(var i in response.records){
 																	<!---creates new instance --->
-																	var entityInstance = thisEntityInstance['$$add'+thisEntityInstance.metaData['#local.property.name#'].cfc]();
+																	var entityInstance = thisEntityInstance['$$add'+thisEntityInstance.metaData['#local.property.name#'].singularname.charAt(0).toUpperCase()+thisEntityInstance.metaData['#local.property.name#'].singularname.slice(1)]();
 																	entityInstance.$$init(response.records[i]);
 																	if(angular.isUndefined(thisEntityInstance['#local.property.name#'])){
 																		thisEntityInstance['#local.property.name#'] = [];

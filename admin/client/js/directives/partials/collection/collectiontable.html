@@ -8,13 +8,10 @@
 	            <th></th>
 	        </tr>
 	    </thead>
-	    <tbody sw-scroll-trigger
-		infinite-scroll="appendToCollection()"
-		infinite-scroll-disabled="autoScrollDisabled"
-		infinite-scroll-distance="1">
+	    <tbody>
 			<tr ng-repeat="pageRecord in collection.pageRecords">
 	            <td style="display:none"> <div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
-	            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[column.propertyIdentifier.split('.').pop()]" ng-show="column.isVisible"></td>
+	            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[column.key]" ng-show="column.isVisible"></td>
 	            <td class="s-edit-elements">
 	                <a class="btn btn-default btn-xs" href="{{pageRecord.detailLink}}" target="_self"><i class="glyphicon glyphicon-eye-open"></i></a>
 	                <a class="btn btn-default btn-xs" href="{{pageRecord.editLink}}" target="_self"><i class="glyphicon glyphicon-pencil"></i></a>

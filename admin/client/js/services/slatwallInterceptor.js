@@ -43,7 +43,7 @@ angular.module('slatwalladmin')
 				//$log.debug(rejection);
 				
 				
-				if(angular.isDefined(rejection.data.messages)){
+				if(angular.isDefined(rejection.data) && angular.isDefined(rejection.data.messages)){
 					var messages = rejection.data.messages;
 					var alerts = alertService.formatMessagesToAlerts(messages);
 					alertService.addAlerts(alerts);

@@ -174,10 +174,10 @@
 		</cfcase>
 		<cfcase value="textautocomplete">
 			<cfoutput>
-				<cfset suggestionsID = reReplace(lcase(attributes.fieldName), '[^a-z]', '', 'all') & "suggestions" />
+				<cfset suggestionsID = reReplace(attributes.fieldName, '[^0-9A-Za-z]','','all') & "-suggestions" />
 				<div class="autoselect-container">
 					<input type="hidden" name="#attributes.fieldName#" value="#htmlEditFormat(attributes.value)#" />
-					<input type="text" name="#replace(attributes.fieldName, '.','_','all')#-autocompletesearch" autocomplete="off" class="textautocomplete #attributes.fieldClass# form-control" data-acfieldname="#attributes.fieldName#" data-sugessionsid="#suggestionsID#" #attributes.fieldAttributes# <cfif len(attributes.value)>disabled="disabled"</cfif> />
+					<input type="text" name="#reReplace(attributes.fieldName, '[^0-9A-Za-z]','','all')#-autocompletesearch" autocomplete="off" class="textautocomplete #attributes.fieldClass# form-control" data-acfieldname="#attributes.fieldName#" data-sugessionsid="#suggestionsID#" #attributes.fieldAttributes# <cfif len(attributes.value)>disabled="disabled"</cfif> />
 					<div class="autocomplete-selected" <cfif not len(attributes.value)>style="display:none;"</cfif>><a href="##" class="textautocompleteremove"><i class="glyphicon glyphicon-remove"></i></a> <span class="value" id="selected-#suggestionsID#"><cfif len(attributes.value)>#attributes.autocompleteSelectedValueDetails[ attributes.autocompleteNameProperty ]#</cfif></span></div>
 					<div class="autocomplete-options" style="display:none;">
 						<ul class="#listLast(lcase(attributes.fieldName),".")#" id="#suggestionsID#">
