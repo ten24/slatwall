@@ -66,10 +66,7 @@ Notes:
 
 <!--- Show a message if the user has not yet selected a product type, sku, etc...when reward type is merchandise --->
 <cfif not rc.promotionperiod.isExpired() and not rc.edit and rc.promotionReward.getRewardType() eq "merchandise">
-	<cfset numberOfDefinedSkus = "#arrayLen(rc.promotionReward.getSkus())#">
-	<cfset numberOfDefinedProducts ="#arrayLen(rc.promotionReward.getProducts())#">
-	<cfset numberOfDefinedProductTypes ="#arrayLen(rc.promotionReward.getProductTypes())#">
-	<cfif not numberOfDefinedSkus and not numberOfDefinedProducts and not numberOfDefinedProductTypes>
+	<cfif not arrayLen(rc.promotionReward.getSkus()) and not arrayLen(rc.promotionReward.getProducts()) and not arrayLen(rc.promotionReward.getProductTypes())>
 		<cfset rc.$.slatwall.showMessageKey('admin.pricing.promotionperiod.productortypeorskunotdefined_info') />
 	</cfif>
 </cfif>
