@@ -470,8 +470,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 		HQL = createHQLFromCollectionObject(this,arguments.excludeSelectAndOrderBy);
-		
-		
 		return HQL;
 	}
 	
@@ -973,11 +971,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public void function addPostFiltersFromKeywords(required any collectionConfig, numeric hasFilterHQL){
 		var keywordCount = 0;
-		
+		//if our collection config has columns then check if any of them are searchable
 		if(structKeyExists(arguments.collectionConfig,'columns') && arrayLen(arguments.collectionConfig.columns)){
 			
 			for(column in arguments.collectionConfig.columns){
-				
+				//which ones have been flagged as searchable
 				if(structKeyExists(column,'isSearchable') && column.isSearchable){
 					//use keywords to create some post filters
 					
