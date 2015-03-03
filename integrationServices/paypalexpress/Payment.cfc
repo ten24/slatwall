@@ -175,7 +175,7 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		//httpRequest.addParam(type="formfield", name="noShipping", value="0");
 		httpRequest.addParam(type="formfield", name="allowNote", value="0");
 		httpRequest.addParam(type="formfield", name="hdrImg", value=arguments.paymentMethod.getIntegration().setting('paypalHeaderImage'));
-		httpRequest.addParam(type="formfield", name="email", value=arguments.paymentMethod.getIntegration().setting('paypalAccountEmail'));
+		httpRequest.addParam(type="formfield", name="email", value=arguments.order.getAccount().getEmailAddress());
 		httpRequest.addParam(type="formfield", name="returnURL", value="#returnURL#");
 		httpRequest.addParam(type="formfield", name="cancelURL", value=paymentMethod.getIntegration().setting('cancelURL'));
 

@@ -769,7 +769,7 @@
 				if(getMuraPluginConfig().getSetting("createDefaultPages") && !listFindNoCase(populatedSiteIDs, cmsSiteID)) {
 					
 					// Copy views over to the template directory
-					var slatwallTemplatePath = getDirectoryFromPath(expandPath("/Slatwall/public/views/templates")); 
+					var slatwallTemplatePath = getDirectoryFromPath(expandPath("/Slatwall/public/views/templates/")); 
 					var muraTemplatesPath = getDirectoryFromPath(expandPath("/muraWRM/#cmsSiteID#/includes/themes/#cmsThemeName#/templates/"));
 					$.slatwall.getService("hibachiUtilityService").duplicateDirectory(source=slatwallTemplatePath, destination=muraTemplatesPath, overwrite=false, recurse=true, copyContentExclusionList=".svn,.git");
 					
