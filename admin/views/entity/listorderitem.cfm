@@ -74,7 +74,7 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="order.account.firstName" />
 		<hb:HibachiListingColumn propertyIdentifier="order.account.lastName" />
 		<hb:HibachiListingColumn propertyIdentifier="order.orderNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="order.orderStatusType.typeName" />
+		<hb:HibachiListingColumn propertyIdentifier="order.orderStatusType.typeName" title="#$.slatwall.getRBKey('entity.order.orderStatusType')#" />
 		<hb:HibachiListingColumn propertyIdentifier="order.orderOpenDateTime" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.calculatedTitle" />
 		<hb:HibachiListingColumn propertyIdentifier="price" />
