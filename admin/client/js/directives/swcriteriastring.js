@@ -99,13 +99,15 @@ angular.module('slatwalladmin')
 					scope.inListArray.push(inListItem);
 				
 					//set value field to the user generated list
-					scope.filterItem.value = scope.inListArray.toString().replace(/,/g, ', ');
+					scope.filterItem.value = scope.inListArray.toString();
+					scope.filterItem.displayValue = scope.inListArray.toString().replace(/,/g, ', ');
 					scope.newListItem = '';
 				};
 				
 				scope.removelistItem = function(argListIndex){
 					scope.inListArray.splice(argListIndex,1);
-					scope.filterItem.value = scope.inListArray.toString().replace(/,/g, ', ');
+					scope.filterItem.value = scope.inListArray.toString();
+					scope.filterItem.displayValue = scope.inListArray.toString().replace(/,/g, ', ');
 				};
 				
 				
