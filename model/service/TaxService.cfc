@@ -138,13 +138,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 											newAppliedTax.setTaxRate( taxRateItemResponse.getTaxRate() );
 											newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 											newAppliedTax.setOrderItem( orderItem );
+											newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
 											newAppliedTax.setTaxLiabilityAmount( taxRateItemResponse.getTaxAmount() );
+											
 											newAppliedTax.setTaxImpositionID( taxRateItemResponse.getTaxImpositionID() );
 											newAppliedTax.setTaxImpositionName( taxRateItemResponse.getTaxImpositionName() );
 											newAppliedTax.setTaxImpositionType( taxRateItemResponse.getTaxImpositionType() );
 											newAppliedTax.setTaxJurisdictionID( taxRateItemResponse.getTaxJurisdictionID() );
 											newAppliedTax.setTaxJurisdictionName( taxRateItemResponse.getTaxJurisdictionName() );
 											newAppliedTax.setTaxJurisdictionType( taxRateItemResponse.getTaxJurisdictionType() );
+											
 											newAppliedTax.setTaxStreetAddress( taxRateItemResponse.getTaxStreetAddress() );  
 											newAppliedTax.setTaxStreet2Address( taxRateItemResponse.getTaxStreet2Address() );
 											newAppliedTax.setTaxLocality( taxRateItemResponse.getTaxLocality() );
@@ -174,7 +177,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								newAppliedTax.setTaxRate( taxCategoryRate.getTaxRate() );
 								newAppliedTax.setTaxCategoryRate( taxCategoryRate );
 								newAppliedTax.setOrderItem( orderItem );
+								newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
 								newAppliedTax.setTaxLiabilityAmount( round(orderItem.getExtendedPriceAfterDiscount() * taxCategoryRate.getTaxRate()) / 100 );
+								
 								newAppliedTax.setTaxStreetAddress( taxAddress.getStreetAddress() );  
 								newAppliedTax.setTaxStreet2Address( taxAddress.getStreet2Address() );
 								newAppliedTax.setTaxLocality( taxAddress.getLocality() );
@@ -213,7 +218,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						newAppliedTax.setTaxRate( originalAppliedTax.getTaxRate() );
 						newAppliedTax.setTaxCategoryRate( originalAppliedTax.getTaxCategoryRate() );
 						newAppliedTax.setOrderItem( orderItem );
+						newAppliedTax.setCurrencyCode( orderItem.getCurrencyCode() );
 						newAppliedTax.setTaxLiabilityAmount( round(orderItem.getExtendedPriceAfterDiscount() * originalAppliedTax.getTaxRate()) / 100 );
+						
+						newAppliedTax.setTaxImpositionID( originalAppliedTax.getTaxImpositionID() );
+						newAppliedTax.setTaxImpositionName( originalAppliedTax.getTaxImpositionName() );
+						newAppliedTax.setTaxImpositionType( originalAppliedTax.getTaxImpositionType() );
+						newAppliedTax.setTaxJurisdictionID( originalAppliedTax.getTaxJurisdictionID() );
+						newAppliedTax.setTaxJurisdictionName( originalAppliedTax.getTaxJurisdictionName() );
+						newAppliedTax.setTaxJurisdictionType( originalAppliedTax.getTaxJurisdictionType() );
+						
 						newAppliedTax.setTaxStreetAddress( originalAppliedTax.getTaxStreetAddress() );  
 						newAppliedTax.setTaxStreet2Address( originalAppliedTax.getTaxStreet2Address() );
 						newAppliedTax.setTaxLocality( originalAppliedTax.getTaxLocality() );

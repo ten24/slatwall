@@ -113,8 +113,9 @@ component accessors="true" output="false" extends="Slatwall.model.transient.Requ
 			taxRateItemRequestBean.setTaxCategoryRateCode( arguments.taxCategoryRate.getTaxCategoryRateCode() );
 		}
 		
-		// Set the reference object for orderItem
+		// Set the reference object for orderItem & taxCategoryRate
 		taxRateItemRequestBean.setOrderItem( arguments.orderItem );
+		taxRateItemRequestBean.setTaxCategoryRate( arguments.taxCategoryRate );
 		
 		// Populate with orderItem quantities, price, and orderItemID fields
 		taxRateItemRequestBean.setOrderItemID(arguments.orderItem.getOrderItemID());
