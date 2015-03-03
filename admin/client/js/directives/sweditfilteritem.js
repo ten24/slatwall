@@ -219,7 +219,7 @@ angular.module('slatwalladmin')
 									filterItem.displayValue = filterItem.value;
 								}else{
 									filterItem.value = filterItem.value;
-									if(!angular.isDefined(filterItem.displayValue)){
+									if(angular.isUndefined(filterItem.displayValue)){
 										filterItem.displayValue = filterItem.value;
 									}
 								}
