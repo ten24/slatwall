@@ -85,7 +85,6 @@ Notes:
 		<cfelseif !isNull(attribute.getDefaultValue())>
 			<cfset fdAttributes.value = attribute.getDefaultValue() />  
 		</cfif>
-		
 		<!---Setup Value Options --->
 		<cfif attributes.edit>
 			<cfset fdAttributes.valueOptions = attribute.getAttributeOptionsOptions() />
@@ -103,8 +102,12 @@ Notes:
 		<!--- Setup file link --->
 		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'file' and len(fdAttributes.value)>
 			<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
+		<cfelse>
+			<cfset removeLink = "?slatAction=admin:entity.deleteattributeValue&attributeValueid=#thisAttributeValueObject.getAttributeValueID()#&redirectAction=admin:entity.detail#attribute.getAttributeSet().getAttributeSetObject()#&#attribute.getAttributeSet().getAttributeSetObject()#ID=#attributes.entity.invokeMethod('get'&attribute.getAttributeSet().getAttributeSetObject()&'ID')#"/>
+			<cfset fdAttributes.removeLink = removeLink/> 
 		</cfif>
-		
-		<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
+		<div class="col-sm-8">
+			<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
+		</div>
 	</cfloop>
 </cfif>
