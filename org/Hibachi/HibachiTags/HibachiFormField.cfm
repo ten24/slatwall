@@ -14,7 +14,7 @@
 	<cfparam name="attributes.autocompleteNameProperty" type="string" default="" />
 	<cfparam name="attributes.autocompleteValueProperty" type="string" default="" />
 	<cfparam name="attributes.autocompleteSelectedValueDetails" type="struct" default="#structNew()#" />
-	<cfparam name="attributes.removeLinks" type="array" default="arrayNew(1)"/>
+	<cfparam name="attributes.removeLink" type="string" default=""/>
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
 	<!---
@@ -80,11 +80,11 @@
 			<cfoutput>
 				<div class="col-sm-8">
 					<input type="file" name="#attributes.fieldName#" class="#attributes.fieldClass# form-control" #attributes.fieldAttributes# />
-					<cfloop array="#attributes.removeLinks#" index="removeLink">
-						<a href="#removeLink#">
+					<cfif attributes.value neq ''>
+						<a href="#attributes.removeLink#">
 							<button class="btn btn-xs s-btn-dgrey s-remove" style="padding: 0px 7px;margin-top:5px;font-size: 10px;" type="button">Remove #attributes.value#</button>
 						</a>
-					</cfloop>
+					</cfif>
 				</div>
 			</cfoutput>
 		</cfcase>
