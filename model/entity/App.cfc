@@ -46,28 +46,25 @@
 Notes:
 
 */
-component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="siteService" hb_permission="this" {
+component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="appService" hb_permission="this" hb_processContexts="" {
 	
 	// Persistent Properties
-	property name="siteID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="siteName" ormtype="string";
-	property name="siteCode" ormtype="string" unique="true" index="PI_SITECODE";
-	property name="domainNames" ormtype="string";
-	// CMS Properties
-	property name="cmsSiteID" ormtype="string" index="RI_CMSSITEID";
+	property name="appID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="appName" ormtype="string";
+	property name="appCode" ormtype="string" unique="true" index="PI_APPCODE";
+	property name="appRootPath" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
-	property name="app" hb_populateEnabled="public" cfc="App" fieldtype="many-to-one" fkcolumn="appID";
-	
+	property name="integration" hb_populateEnabled="public" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
+	 
 	// Related Object Properties (one-to-many)
-	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="one-to-many" fkcolumn="siteID" cascade="all" inverse="true" lazy="extra";
 	
 	// Related Object Properties (many-to-many - owner)
 
 	// Related Object Properties (many-to-many - inverse)
 	
-	// Remote Properties
-	property name="remoteID" ormtype="string";
+	// Remote properties
+	property name="remoteID" hb_populateEnabled="false" ormtype="string" hint="Only used when integrated with a remote system";
 	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
@@ -75,24 +72,19 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
-	// Non-Persistent Properties
+	// Non Persistent
 
-	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
-		
+	
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// =============  END:  Bidirectional Helper Methods ===================
-
-	// =============== START: Custom Validation Methods ====================
 	
-	// ===============  END: Custom Validation Methods =====================
+	// ============= START: Overridden Smart List Getters ==================
 	
-	// =============== START: Custom Formatting Methods ====================
-	
-	// ===============  END: Custom Formatting Methods =====================
+	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
 	
@@ -105,4 +97,6 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	// ================== START: Deprecated Methods ========================
 	
 	// ==================  END:  Deprecated Methods ========================
+
 }
+
