@@ -76,7 +76,15 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		}
 
 		$scope.saveProductBundle = function(closeDialogIndex){
+			//console.log("saving create bundle");
 			$scope.product.$$save();
+			
+			if(angular.isDefined(closeDialogIndex)){
+				//console.log("trying to close window...");
+				$rootScope.closePageDialog(closeDialogIndex);
+			}
+			
+			
 		};
 		
 	}

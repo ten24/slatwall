@@ -127,7 +127,9 @@ function(
 	$scope.setForm = function(form){
 		formService.setForm(form);
 	};
-	
+	/**
+	 * Adds a product bundle group using the product bundle service.
+	 */
 	$scope.addProductBundleGroup = function(){
 		$log.debug('add bundle group');
 		var productBundleGroup = productBundleService.newProductBundle();
@@ -189,13 +191,16 @@ function(
 			$scope.product.defaultSku.productBundleGroups[i].skuCollectionConfig.filterGroups = filterGroup;
 		}
 	};
-	
+	/**
+	 * Saves a product bundle. When this function is called with a closeDialogIndex, it also closes the window
+	 * that the form is on. 
+	 */
 	$scope.saveProductBundle = function(closeDialogIndex){
 		var createProductBundleForm = formService.getForm('form.createProductBundle');
-		//only save the form if it passes validation
+		//Only save the form if it passes validation
 		createProductBundleForm.$submitted = true;
 		if(createProductBundleForm.$valid === true){
-			//custom validation for product BundleGroups
+			//Custom validation for productBundleGroups
 			if(isProductBundleGroupsValid()){
 				$scope.transformProductBundleGroupFilters();
 				var params = {
@@ -216,7 +221,6 @@ function(
 					context = "Save";
 				}
 				
-				//"product.defaultSku.productBundleGroups":angular.toJson()
 				for(var i=0; i < $scope.product.defaultSku.productBundleGroups.length; i++){
 					var productBundleGroup = $scope.product.defaultSku.productBundleGroups[i];
 					var productBundleString = 'product.Skus[1].productBundleGroups['+(i+1)+']';
@@ -224,19 +228,20 @@ function(
 						if(!angular.isArray(productBundleGroup[key]) && key.charAt(0) !== '$' && !angular.isObject(productBundleGroup[key])){
 							params[productBundleString+'.'+key] = productBundleGroup[key];
 						}
-					}
+					}//pageDialog in pageDialogs
 					params[productBundleString+'.productBundleGroupID'] = productBundleGroup.productBundleGroupID;
 					params[productBundleString+'.skuCollectionConfig'] = angular.toJson(productBundleGroup.skuCollectionConfig);
 					params[productBundleString+'.productBundleGroupType.typeID'] = productBundleGroup.productBundleGroupType.typeID;
 				}
 				$log.debug(params);
+				//Handles the actual saving.
 				var saveProductBundlePromise = $slatwall.saveEntity('Product', null, params,context);
+				//Check if this is a 'save and finish' and close if needed. If not, reset the form for another use.
 				saveProductBundlePromise.then(function(value){
-					$log.debug('saving Product Bundle');
+					$log.debug('Saving Product Bundle');
 					if(angular.isDefined(closeDialogIndex)){
 						$rootScope.closePageDialog(closeDialogIndex);
 					}
-					
 					formService.resetForm(createProductBundleForm);
 					
 				});
