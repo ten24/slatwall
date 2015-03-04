@@ -1610,6 +1610,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
+		saveOrderFulfillment( orderFulfillment );
 		return arguments.orderDelivery;
 	}
 	
@@ -2132,6 +2133,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Recalculate the order amounts for tax and promotions
 		if(!arguments.orderFulfillment.hasErrors()) {
 			this.processOrder( arguments.orderFulfillment.getOrder(), {}, 'updateOrderAmounts' );
+		}
+		
+		// if there are orderFulfillments
+		if (arrayLen(arguments.orderFulfillment.getOrderFulfillmentItems())) {
+			var fulfilledFlag = true;
+			var partiallyFulfilledFlag = false;
+			
+			for(var fulfillmentItem in arguments.orderFulfillment.getOrderFulfillmentItems()) {
+				if(fulfillmentItem.getQuantityUndelivered() > 0) {
+					fulfilledFlag = false;
+				}
+				if(fulfillmentItem.getQuantityDelivered() > 0) {
+					partiallyFulfilledFlag = true;
+				}
+			}
+			// Change the status depending on value of fulfilledFlag or partiallyFulfilledFlag, status defaults to "ofstUnfulfilled"
+			if(fulfilledFlag){
+				arguments.orderFulfillment.setOrderFulfillmentStatusType( getTypeService().getTypeBySystemCode("ofstFulfilled") );
+			} else if(partiallyFulfilledFlag) {
+				arguments.orderFulfillment.setOrderFulfillmentStatusType( getTypeService().getTypeBySystemCode("ofstPartiallyFulfilled") );
+			}
 		}
 		
 		return arguments.orderFulfillment;
