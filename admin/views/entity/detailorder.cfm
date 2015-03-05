@@ -108,6 +108,10 @@ Notes:
 			<!--- Order Items --->
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderitems" open="true" />
 			
+			<!--- Sale Items --->		
+   			<cfif listFindNoCase("otSalesOrder,otExchangeOrder", rc.order.getOrderType().getSystemCode())>		
+    				<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/saleorderitems" open="true"count="#rc.order.getSaleItemSmartList().getRecordsCount()#" />		
+   			</cfif>	
 			
 			<!--- Payments --->
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderpayments" count="#rc.order.getOrderPaymentsCount()#" />
