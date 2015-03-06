@@ -645,9 +645,6 @@ select.error {
 .table > tfoot > tr > td {
   border-color: #e6e6e6;
 }
-.s-order-item-table tbody tr td {
-  border-bottom: 1px solid #fafafa;
-}
 .s-order-item-table tbody .s-total td {
   border-bottom: 1px solid #e6e6e6;
 }
@@ -2815,11 +2812,15 @@ tabel .s-table-header {
 .s-order-item-table .s-actions {
   font-weight: normal !important;
 }
+.s-order-item-table .s-fullfilment {
+  background: #ffffff;
+}
 .s-order-item-table .s-fullfilment .s-header {
   font-weight: 600;
 }
 .s-order-item-table .s-image {
   max-width: 80px;
+  background: #ffffff;
 }
 .s-order-item-table .s-image img {
   width: 100%;
@@ -2849,6 +2850,7 @@ tabel .s-table-header {
   padding: 0;
   width: 40px;
   border-bottom: 0px;
+  background: #ffffff;
 }
 .s-order-item-table .s-actions .s-edit-btn:hover {
   background-color: #f2f2f2;

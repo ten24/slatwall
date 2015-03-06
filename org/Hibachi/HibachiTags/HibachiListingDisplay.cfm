@@ -438,8 +438,8 @@
 														</cfif>
 													</cfsilent>
 													<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.range')#</li>
-													<li class="range-filter"><label for="">From</label><input type="text" class="#local.rangeClass# form-control range-filter-lower" name="R:#column.propertyIdentifier#" value="" /></li>
-													<li class="range-filter"><label for="">To</label><input type="text" class="#local.rangeClass# form-control range-filter-upper" name="R:#column.propertyIdentifier#" value="" /></li>
+													<li class="range-filter"><label for="From Date" class="col-md-12 s-zero-left">From</label><input type="text" class="#local.rangeClass# form-control range-filter-lower col-md-12" name="R:#column.propertyIdentifier#" value="" /></li>
+													<li class="range-filter"><label for="To Date" class="col-md-12 s-zero-left">To</label><input type="text" class="#local.rangeClass# form-control range-filter-upper col-md-12" name="R:#column.propertyIdentifier#" value="" /></li>
 													<li class="divider"></li>
 												</cfif>
 												<cfif column.filter and not thistag.expandable>
