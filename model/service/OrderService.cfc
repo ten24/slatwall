@@ -1767,28 +1767,41 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderItem;
 	}
 
-	
 	public any function processOrderItem_updateStatus(required any orderItem) {
+
 		// First we make sure that this order item is not already fully fulfilled, or onHold because we cannont automatically update those statuses
-		if(!listFindNoCase("oistFulfilled,oistOnHold",arguments.orderItem.getOrderItemStatusType().getSystemCode())) {
+		if(!listFindNoCase("oistFulfilled,oistOnHold,oistReturned",arguments.orderItem.getOrderItemStatusType().getSystemCode())) {
 			
-			// If the quantityUndelivered is set to 0 then we can mark this as fulfilled
-			if(arguments.orderItem.getQuantityUndelivered() == 0) {
-				arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistFulfilled") );
+			//Dealing with a return item.
+			if(arguments.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn'){
 				
-			// If the sku is setup to track inventory and the qoh is 0 then we can set the status to 'backordered'
-			} else if(arguments.orderItem.getSku().setting('skuTrackInventoryFlag') && arguments.orderItem.getSku().getQuantity('qoh') == 0) {
-				arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistBackordered") );
-					
-			// Otherwise we just set this to 'processing' to show that the item is in limbo
+				if(arguments.orderItem.getQuantityUnreceived() == 0){
+					arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistReturned") );
+				} else{
+					arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistProcessing") );
+				}
+
+			//Dealing with a Sale or Depost item
 			} else {
-				arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistProcessing") );
 				
+				// If the quantityUndelivered is set to 0 then we can mark this as fulfilled
+				if(arguments.orderItem.getQuantityUndelivered() == 0) {
+					arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistFulfilled") );
+					
+				// If the sku is setup to track inventory and the qoh is 0 then we can set the status to 'backordered'
+				} else if(arguments.orderItem.getSku().setting('skuTrackInventoryFlag') && arguments.orderItem.getSku().getQuantity('qoh') == 0) {
+					arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistBackordered") );
+						
+				// Otherwise we just set this to 'processing' to show that the item is in limbo
+				} else {
+					arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistProcessing") );				
+				}
 			}
 		}
 		
 		return arguments.orderItem;
 	}
+	
 		
 	// Process: Order Return
 	public any function processOrderReturn_receive(required any orderReturn, required any processObject) {
