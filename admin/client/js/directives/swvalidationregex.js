@@ -2,7 +2,7 @@
  * Validates true if the model value matches a regex string.
  */
 
-angular.module('slatwalladmin').directive("swvalidationregex", function() {
+angular.module('slatwalladmin').directive("swvalidationregex", [function() {
     return {
         restrict: "A",
         require: "^ngModel",
@@ -17,7 +17,7 @@ angular.module('slatwalladmin').directive("swvalidationregex", function() {
     				}else {  
     					return false;
     				}
-            }
+            };
         }
     };
-});
+}]);

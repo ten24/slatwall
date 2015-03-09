@@ -5,7 +5,7 @@
 'use strict';
 angular.module('slatwalladmin').directive('swValidate',
 
-[ function($log, $slatwall) {
+[ '$log','$slatwall', function($log, $slatwall) {
 
 	return {
 		
