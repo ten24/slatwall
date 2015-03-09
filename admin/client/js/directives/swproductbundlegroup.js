@@ -214,7 +214,7 @@ angular.module('slatwalladmin')
 				}
 				
 				scope.removeProductBundleGroupFilter = function(index){
-					
+					scope.productBundleGroupFilters.getFiltersByTerm(scope.productBundleGroupFilters.keyword,scope.searchOptions.selected);
 					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index,1);
 				};
 				
