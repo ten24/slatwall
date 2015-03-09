@@ -25,12 +25,12 @@ angular.module('slatwalladmin')
 					element.replaceWith($compile(element.html())(scope));
 				});
 			},
-			controller: function ($scope, $element, $attrs) {
+			controller: ['$scope','$element','$attrs',function ($scope, $element, $attrs) {
 				//public functions
 				$scope.selectedTabChanged = function(selectedTab){
 					
 				};
-	        } 
+	        }]
 		};
 	}
 ]);

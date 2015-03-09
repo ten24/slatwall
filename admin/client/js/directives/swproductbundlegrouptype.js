@@ -21,7 +21,7 @@ angular.module('slatwalladmin')
 			scope:{
 				productBundleGroup:"="
 			},
-			controller: function($scope, $element, $attrs ){
+			controller: ['$scope','$element','$attrs',function($scope, $element, $attrs ){
 				
 				$log.debug('productBundleGrouptype');
 				$log.debug($scope.productBundleGroup);
@@ -122,7 +122,7 @@ angular.module('slatwalladmin')
 				
 				$scope.clearTypeName = function(){
 					$scope.productBundleGroup.data.productBundleGroupType.data.typeName = '';
-				}
+				};
 				
 				//Saves product bundle group type
 				$scope.saveProductBundleGroupType = function(){
@@ -151,7 +151,7 @@ angular.module('slatwalladmin')
 				        }
 					}
 				};
-			}
+			}]
 		};
 	}
 ]);

@@ -6,11 +6,11 @@ angular.module('slatwalladmin').controller('ngtest', [ '$scope', '$slatwall',
 			function(){
 				$scope.test = $scope.test + "Works";
 				$scope.slatwallScope = $slatwall;
-			}
+			};
 		$scope.sku = $slatwall.newSku();
 		$scope.saveSku = 
 			function(){
 				$scope.sku.$$save(); 
-			}
+			};
 	}
 ]);

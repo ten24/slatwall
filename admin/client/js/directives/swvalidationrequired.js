@@ -2,7 +2,7 @@
  * Returns true if the uservalue is empty and false otherwise
  */
 
-angular.module('slatwalladmin').directive("swvalidationrequired", function() {
+angular.module('slatwalladmin').directive("swvalidationrequired", [function() {
     return {
         restrict: "A",
         require: "^ngModel",
@@ -14,7 +14,7 @@ angular.module('slatwalladmin').directive("swvalidationrequired", function() {
         					return true; 
         				}
         			return false;
-        		}
+        		};
         }
     };
-});
+}]);

@@ -246,7 +246,7 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 					child.hide = !child.hide;
 					scope.orderItem.clicked = !scope.orderItem.clicked;
 				});
-			}
+			};
 			scope.getChildOrderItems = function(orderItem){
 				orderItem.clicked = true;
 				if(!scope.orderItem.childItemsRetrieved){
@@ -269,14 +269,14 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 							if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease'){
 								childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount/100;
 							}else if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease'){
-								childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100
+								childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100;
 							}
 							
 						});
 						
 					});
 				}
-			}
+			};
 		}
 	};
 } ]);

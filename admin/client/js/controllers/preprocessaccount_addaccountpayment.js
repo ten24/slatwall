@@ -1,6 +1,6 @@
 'use strict';
 angular.module('slatwalladmin')
-.controller('preprocessaccount_addaccountpayment', function($scope, $compile) {
+.controller('preprocessaccount_addaccountpayment', ['$scope','$compile',function($scope, $compile) {
 	//Define the different payment types used here
 	var paymentType = {aptCharge:"444df32dd2b0583d59a19f1b77869025",aptCredit:"444df32e9b448ea196c18c66e1454c46", aptAdjustment:"68e3fb57d8102b47acc0003906d16ddd"};
 	
@@ -31,7 +31,7 @@ angular.module('slatwalladmin')
 		
 		//Update the subtotal now that we changed the payment type
 		$scope.updateSubTotal();
-	}
+	};
 
 	$scope.updateSubTotal = function() {
 		$scope.totalAmountToApply = 0; //Reset the subtotal before we loop
@@ -66,5 +66,5 @@ angular.module('slatwalladmin')
 			$scope.accountBalanceChange = parseFloat($scope.accountBalanceChange * -1); //If charge, change to neg since we are lowering account balance
 		else if($scope.paymentType==paymentType.aptAdjustment)
 			$scope.accountBalanceChange += parseFloat($scope.amountUnapplied); //If adjustment, use the amount unapplied to determine the balance change
-	}
-});
+	};
+}]);

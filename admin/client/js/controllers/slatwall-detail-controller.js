@@ -20,7 +20,7 @@ function(
 		$scope.detailTabs = $scope.entity.metaData.$$getDetailTabs();
 		$log.debug('detailtabs');
 		$log.debug($scope.detailTabs);
-	}
+	};
 	
 	var propertyCasedEntityName = $scope.entityName.charAt(0).toUpperCase() + $scope.entityName.slice(1);
 	

@@ -4,7 +4,7 @@
  * value other than 5.
  */
 
-angular.module('slatwalladmin').directive("swvalidationeq", function() {
+angular.module('slatwalladmin').directive("swvalidationeq", [function() {
     return {
         restrict: "A",
         require: "^ngModel",
@@ -18,7 +18,7 @@ angular.module('slatwalladmin').directive("swvalidationeq", function() {
         		 	}else {
     					return false;
     				}
-            }//<--end function
+            };//<--end function
         }//<--end link
     };
-});
+}]);
