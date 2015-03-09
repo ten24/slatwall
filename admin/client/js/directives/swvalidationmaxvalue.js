@@ -1,7 +1,7 @@
 /**
  * Returns true if the user value is greater than the min value.
  */
-angular.module('slatwalladmin').directive("swvalidationmaxvalue", function() {
+angular.module('slatwalladmin').directive("swvalidationmaxvalue", [function() {
     return {
         restrict: "A",
         require: "^ngModel",
@@ -17,7 +17,7 @@ angular.module('slatwalladmin').directive("swvalidationmaxvalue", function() {
         				}
         			return false;
         			
-        		}
+        		};
         }
     };
-});
+}]);

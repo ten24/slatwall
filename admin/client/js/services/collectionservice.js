@@ -120,7 +120,7 @@ angular.module('slatwalladmin')
 				};
 				if(filterItemGroup.length !== 0){
 					filterGroupItem.logicalOperator = "AND";
-				};
+				}
 				filterItemGroup.push(filterGroupItem);
 				collectionService.selectFilterGroupItem(filterGroupItem);
 				

@@ -1,7 +1,7 @@
 /**
  * Returns true if the user value is greater than the max length.
  */
-angular.module('slatwalladmin').directive("swvalidationmaxlength", function() {
+angular.module('slatwalladmin').directive("swvalidationmaxlength", [function() {
     return {
         restrict: "A",
         require: "^ngModel",
@@ -18,7 +18,7 @@ angular.module('slatwalladmin').directive("swvalidationmaxlength", function() {
         				}
         			return false;
         			
-        		}
+        		};
         }
     };
-});
+}]);

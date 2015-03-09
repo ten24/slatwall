@@ -2,7 +2,7 @@
  * Validates true if the model value (user value) is a numeric value.
  * @event This event fires on every change to an input.
  */
-angular.module('slatwalladmin').directive("swvalidationnumeric", function() {
+angular.module('slatwalladmin').directive("swvalidationnumeric", [function() {
     return {
         restrict: "A",
         require: "^ngModel",
@@ -15,7 +15,7 @@ angular.module('slatwalladmin').directive("swvalidationnumeric", function() {
             		}else{
             			return false;
             		}
-            }
+            };
         }
     };
-});
+}]);

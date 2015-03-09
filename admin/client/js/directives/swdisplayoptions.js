@@ -28,7 +28,7 @@ angular.module('slatwalladmin')
 				baseEntityName:"="
 			},
 			templateUrl:collectionPartialsPath+"displayoptions.html",
-			controller: function($scope,$element,$attrs){
+			controller: ['$scope','$element','$attrs',function($scope,$element,$attrs){
 				$log.debug('display options initialize');
 				
 				this.removeColumn = function(columnIndex){
@@ -65,7 +65,7 @@ angular.module('slatwalladmin')
 						if(key !== 0 ){
 							if(key === 1){
 								currentEntityInstance = $slatwall['new'+$scope.baseEntityName.replace('Slatwall','')]();
-								currentEntity = currentEntityInstance.metaData[propertyIdentifierArray[key]]
+								currentEntity = currentEntityInstance.metaData[propertyIdentifierArray[key]];
 								title += $slatwall.getRBKey(prefix+baseEntityCfcName+'.'+propertyIdentifierItem);
 							}else{
 								var currentEntityInstance = $slatwall['new'+currentEntity.cfc.charAt(0).toUpperCase()+currentEntity.cfc.slice(1)]();
@@ -80,7 +80,7 @@ angular.module('slatwalladmin')
 					
 					
 					return title;
-				}
+				};
 				
 				$scope.addColumn = function(selectedProperty, closeDialog){
 					$log.debug('add Column');
@@ -161,7 +161,7 @@ angular.module('slatwalladmin')
 		       		 $("select").selectBoxIt();
 		       		 unbindBaseEntityAlaisWatchListener();
 		       	});*/
-			}
+			}]
 		};
 	}
 ]);

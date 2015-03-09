@@ -50,7 +50,7 @@ angular.module('slatwalladmin')
 			    };
 			    
 			    $log.debug('onetomany');
-			    $log.debug(scope.selectedFilterProperty)
+			    $log.debug(scope.selectedFilterProperty);
 				
 				scope.oneToManyOptions = getOneToManyOptions();
 				var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(scope.selectedFilterProperty.cfc);
@@ -84,7 +84,7 @@ angular.module('slatwalladmin')
 					};
 					scope.filterItem.breadCrumbs.push(breadCrumb);
 					$log.debug('criteriaChanged');
-					$log.debug(selectedFilterPropertyChanged);
+					//$log.debug(selectedFilterPropertyChanged);
 					$log.debug(scope.selectedFilterProperty);
 					//populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
 					scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});

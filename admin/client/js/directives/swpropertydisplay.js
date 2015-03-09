@@ -56,10 +56,10 @@ angular.module('slatwalladmin')
 				}
 				if(angular.isUndefined(scope.propertyDisplay.editable)){
 					scope.propertyDisplay.editable = true;
-				};
+				}
 				if(angular.isUndefined(scope.editing)){
 					scope.propertyDisplay.editing = false;
-				};
+				}
 				
 				if(angular.isUndefined(scope.propertyDisplay.isHidden)){
 					scope.propertyDisplay.isHidden = false;

@@ -1,7 +1,7 @@
 /**
  *  Validates true if the user value != the property value.
  */
-angular.module('slatwalladmin').directive("swvalidationneq", function() {
+angular.module('slatwalladmin').directive("swvalidationneq", [function() {
     return {
         restrict: "A",
         require: "^ngModel",
@@ -10,7 +10,7 @@ angular.module('slatwalladmin').directive("swvalidationneq", function() {
             	function(modelValue) {
         		 	if (modelValue != attributes.swvalidationneq){return true;}
         			return false;
-            }
+            };
         }
     };
-});
+}]);

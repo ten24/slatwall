@@ -28,6 +28,7 @@ angular.module('slatwalladmin')
 				$log.debug(scope.orderItemId);
 				$log.debug(scope.skuId);
 				$log.debug(scope.orderItem);
+				
 				/**
 				 * For each type of orderItem, get the appropriate detail information.
 				 * 
@@ -42,7 +43,7 @@ angular.module('slatwalladmin')
 						orderItem.details.push(orderItem.data.sku.data.options[i].optionName);
 					}
 					
-				}
+				};
 				
 				var getSubscriptionDetails = function(orderItem){
 					
@@ -58,7 +59,7 @@ angular.module('slatwalladmin')
 						orderItem.details.push(benefitName);
 					}
 					
-				}
+				};
 				
 				var getEventDetails = function(orderItem){
 					//get event date, and event location
@@ -70,7 +71,7 @@ angular.module('slatwalladmin')
 						orderItem.details.push(orderItem.data.sku.data.locations[i].locationName);
 					}
 				
-				}
+				};
 				if (angular.isDefined(scope.orderItem.details)){
 					switch (scope.systemCode){
 						case "merchandise":

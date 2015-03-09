@@ -5,7 +5,7 @@
 'use strict';
 angular.module('slatwalladmin').directive('swValidate',
 
-[ function($log, $slatwall) {
+[ '$log','$slatwall', function($log, $slatwall) {
 
 	return {
 		
@@ -18,7 +18,7 @@ angular.module('slatwalladmin').directive('swValidate',
 						SAVE: {name: "save", value: 0},
 						DELETE: {name: "delete", value: 1},
 						EDIT: {name: "edit", value: 2}
-			}
+			};
 			var ValidationPropertiesEnum = {
 					REGEX: {name: "regex", value: 0},
 					MIN_VALUE: {name: "minValue", value: 1},
@@ -32,7 +32,7 @@ angular.module('slatwalladmin').directive('swValidate',
 					MAX_LENGTH: {name: "maxLength", value: 9},
 					DATA_TYPE: {name: "dataType", value: 10},
 					REQUIRED: {name: "required", value: 11}
-			}
+			};
 			
 			
 			scope.validationPropertiesEnum = ValidationPropertiesEnum;
@@ -117,7 +117,7 @@ angular.module('slatwalladmin').directive('swValidate',
 														var validationMinValue = validationObject[key][inner].minValue;
 														$log.debug(validationMinValue);
 														var result = validate_MinValue(elementValue, validationMinValue);
-														$log.debug("e>v" + result + " :" + elementValue, ":" + validationMinValue )
+														$log.debug("e>v" + result + " :" + elementValue, ":" + validationMinValue );
 														if (result != true) {
 															errorMessages
 																	.push("Minimum value is: "
@@ -258,7 +258,7 @@ angular.module('slatwalladmin').directive('swValidate',
 			 */
 			function checkHasValidationType(validationProp, validationType){
 				if (validationProp[validationType] != undefined) {
-					return true
+					return true;
 					}else{
 						return false;
 					}
