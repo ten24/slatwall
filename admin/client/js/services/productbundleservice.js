@@ -42,7 +42,7 @@ angular.module('slatwalladmin')
 							this.$$editing = false;
 						}
 					}
-				}
+				};
 				
 				angular.extend(productBundleGroup.data,prototype);
 			},
