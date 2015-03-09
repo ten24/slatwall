@@ -533,7 +533,6 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, input.error, select.e
 .table>tbody>tr>th, .table>tfoot>tr>th, 
 .table>thead>tr>td, .table>tbody>tr>td, 
 .table>tfoot>tr>td {border-color:@black-10;}
-.s-order-item-table tbody tr td {border-bottom: 1px solid @black-2;}
 .s-order-item-table tbody .s-total td {border-bottom: 1px solid @black-10;}
 .s-property-info dt, .s-property-info dd {text-align:left;padding: 7px 0px 11px 0px; }
 .s-property-info dd {padding-left:10px;}
@@ -1020,11 +1019,15 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-order-item-table .s-fullfilment, .s-order-item-table .s-image, .s-order-item-table .s-actions {
 	font-weight: normal !important;
 }
+.s-order-item-table .s-fullfilment {
+	background: @white;
+}
 .s-order-item-table .s-fullfilment .s-header {
 	font-weight: 600;
 }
 .s-order-item-table .s-image {
 	max-width: 80px;
+	background: @white;
 }
 .s-order-item-table .s-image img {
 	width:100%;
@@ -1054,6 +1057,7 @@ tabel .s-table-header {margin-bottom:10px;}
 	padding: 0;
 	width: 40px;
 	border-bottom: 0px;
+	background: @white;
 }
 .s-order-item-table .s-actions .s-edit-btn:hover {
 	background-color: @black-5;
@@ -1136,7 +1140,10 @@ tabel .s-table-header {margin-bottom:10px;}
 	padding-bottom: 2px;
 }
 .s-order-item-table .s-detail-title {
-	font-weight: 600;
+	font-weight: 600;	
+}
+.s-order-item-table .s-title .s-detail-content,.s-order-item-table .s-title .s-detail-title {
+	display: inline-block;
 }
 .s-order-item-table .s-details .s-detail-content, 
 .s-order-item-table .s-customization .s-detail-content {
@@ -1146,10 +1153,9 @@ tabel .s-table-header {margin-bottom:10px;}
 	font-size:10px;
 }
 .s-order-item-table .s-title .s-status {
-	border-top: 1px dotted @black-5;
-	padding-top: 4px;
-	margin-top: 9px;
-	margin-bottom: 4px;
+	border-top: 1px dotted @black-10;
+	padding-top: 2px;
+	margin-top: 2px;
 }
 .s-order-item-table tbody > .s-total td {
 	background-color: @black-2;

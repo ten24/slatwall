@@ -645,9 +645,6 @@ select.error {
 .table > tfoot > tr > td {
   border-color: #e6e6e6;
 }
-.s-order-item-table tbody tr td {
-  border-bottom: 1px solid #fafafa;
-}
 .s-order-item-table tbody .s-total td {
   border-bottom: 1px solid #e6e6e6;
 }
@@ -2815,11 +2812,15 @@ tabel .s-table-header {
 .s-order-item-table .s-actions {
   font-weight: normal !important;
 }
+.s-order-item-table .s-fullfilment {
+  background: #ffffff;
+}
 .s-order-item-table .s-fullfilment .s-header {
   font-weight: 600;
 }
 .s-order-item-table .s-image {
   max-width: 80px;
+  background: #ffffff;
 }
 .s-order-item-table .s-image img {
   width: 100%;
@@ -2849,6 +2850,7 @@ tabel .s-table-header {
   padding: 0;
   width: 40px;
   border-bottom: 0px;
+  background: #ffffff;
 }
 .s-order-item-table .s-actions .s-edit-btn:hover {
   background-color: #f2f2f2;
@@ -2935,6 +2937,10 @@ tabel .s-table-header {
 .s-order-item-table .s-detail-title {
   font-weight: 600;
 }
+.s-order-item-table .s-title .s-detail-content,
+.s-order-item-table .s-title .s-detail-title {
+  display: inline-block;
+}
 .s-order-item-table .s-details .s-detail-content,
 .s-order-item-table .s-customization .s-detail-content {
   margin-bottom: 5px;
@@ -2943,10 +2949,9 @@ tabel .s-table-header {
   font-size: 10px;
 }
 .s-order-item-table .s-title .s-status {
-  border-top: 1px dotted #f2f2f2;
-  padding-top: 4px;
-  margin-top: 9px;
-  margin-bottom: 4px;
+  border-top: 1px dotted #e6e6e6;
+  padding-top: 2px;
+  margin-top: 2px;
 }
 .s-order-item-table tbody > .s-total td {
   background-color: #fafafa;
