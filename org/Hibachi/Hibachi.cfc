@@ -73,6 +73,7 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.noaccessDefaultSection = 'main';
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
 	
+	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
 	// Allow For Instance Config
@@ -199,6 +200,8 @@ component extends="FW1.framework" {
 			onEveryRequest();
 		}
 	}
+	
+	
 	
 	public void function setupRequest() {
 		setupGlobalRequest();
