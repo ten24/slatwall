@@ -8,7 +8,8 @@
     </div>
   </header>
   <span ng-controller="create-bundle-controller">
-	  <section class="col-xs-12" >
+	  <section class="col-xs-12 s-bundle-content">
+        
 	    <div class="row s-bundle-header" >
 	     	
 			<span ng-if="product">
@@ -116,7 +117,8 @@
 	        		ng-click="saveProductBundle()"
 	        	>Save & New</a>
 	        </li>
-	        <li class="active">
+            <!-- REMOVE: Note that s-loading is used below to add a loading icon -->
+	        <li class="active s-loading">
 	        	<a  style="cursor:pointer;padding: 9px 12px;font-size: 16px;"
 	        		ng-click="saveProductBundle($index);"
 	        	>Save & Finish</a>
