@@ -64,7 +64,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	
 	public void function onFirstRequest() {
 		// Version
-		var versionFile = getDirectoryFromPath(getCurrentTemplatePath()) & "version.txt";
+		var versionFile = getDirectoryFromPath(getCurrentTemplatePath()) & "version.txt.cfm";
 		if( fileExists( versionFile ) ) {
 			request.slatwallScope.setApplicationValue("version", trim(fileRead(versionFile)));
 		} else {

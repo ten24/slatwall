@@ -32,6 +32,9 @@ angular.module('slatwalladmin')
 				$log.debug(scope.property);
 				$log.debug(scope.title);
 				
+				/**
+				 * Configuration for property display object.
+				 */
 				scope.propertyDisplay = {
 					object:scope.object,
 					property:scope.property,

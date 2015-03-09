@@ -798,7 +798,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTotalSaleQuantity() {
 		var saleQuantity = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[1].getOrderItemType().getSystemCode()) ) {
+			if( listFindNoCase("oitSale,oitDeposit",getOrderItems()[i].getOrderItemType().getSystemCode()) ) {
 				saleQuantity += getOrderItems()[i].getQuantity();	
 			}
 		}
@@ -808,7 +808,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTotalReturnQuantity() {
 		var returnQuantity = 0;
 		for(var i=1; i<=arrayLen(getOrderItems()); i++) {
-			if(getOrderItems()[1].getOrderItemType().getSystemCode() eq "oitReturn") {
+			if(getOrderItems()[i].getOrderItemType().getSystemCode() eq "oitReturn") {
 				returnQuantity += getOrderItems()[i].getQuantity();	
 			}
 		}
