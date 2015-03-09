@@ -117,7 +117,7 @@ angular.module('slatwalladmin').directive('swValidate',
 														var validationMinValue = validationObject[key][inner].minValue;
 														$log.debug(validationMinValue);
 														var result = validate_MinValue(elementValue, validationMinValue);
-														$log.debug("e>v" + result + " :" + elementValue, ":" + validationMinValue )
+														$log.debug("e>v" + result + " :" + elementValue, ":" + validationMinValue );
 														if (result != true) {
 															errorMessages
 																	.push("Minimum value is: "

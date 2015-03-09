@@ -9,8 +9,6 @@ angular.module('slatwalladmin')
 [
 	function(){
 		var getRow = function(orderItem){
-			console.log("TEST ROW");
-			console.log(orderItem);
 			var row = "<td>TEST ROW</td>";
 			return  row; 
 		};
