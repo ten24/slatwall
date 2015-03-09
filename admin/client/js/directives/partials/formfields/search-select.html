@@ -16,22 +16,17 @@
 		/>
 		<div class="input-group-btn">
 			<button type="button" class="btn btn-sm btn-default" ng-click="closeAddScreen();clearTypeName();">
-				<span ng-show="showAddBtn" class="fa fa-caret-up"></span>
-				<span ng-show="!showAddBtn" class="fa fa-caret-down"></span>
+				<span ng-if="showAddBtn" class="fa fa-caret-up"></span>
+				<span ng-if="!showAddBtn" class="fa fa-caret-down"></span>
 			</button>
 		</div>
 		
 	</div>
-	<div ng-show="showAddBtn">
-		<button type="button"
-				class="btn s-btn-dgrey"
-				ng-click="setAdding(true)"
-		>
+	<div ng-if="showAddBtn && propertyDisplay.object.data[propertyDisplay.property].data[cfcProperCase+'Name'] "><!-- Only show if there is text -->
+		<button type="button" class="btn s-btn-dgrey" ng-click="setAdding(true)">
 			<i class="fa fa-plus"></i> Add "{{propertyDisplay.object.data[propertyDisplay.property].data[cfcProperCase+'Name']}}"
 		</button>
-		
-		<!-- <ng-include ng-if="propertyDisplay.template" src="propertyDisplay.template"></ng-include> -->
-		
+		<!-- <ng-include ng-if="propertyDisplay.template" src="propertyDisplay.template"></ng-include> -->	
 	</div> 
 	
 	<!-- Error Messages -->

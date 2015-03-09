@@ -23,7 +23,7 @@ angular.module('slatwalladmin')
 				filterGroup:"="
 			},
 			templateUrl:collectionPartialsPath+"filtergroups.html",
-			controller: function($scope, $element,$attrs){
+			controller: ['$scope','$element','$attrs',function($scope, $element,$attrs){
 				$scope.itemInUse = false;
 				$log.debug('collectionConfig');
 				$log.debug($scope.collectionConfig);
@@ -91,7 +91,7 @@ angular.module('slatwalladmin')
 				};
 				
 				
-			}
+			}]
 		};
 	}
 ]);

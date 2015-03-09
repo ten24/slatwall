@@ -51,7 +51,6 @@ angular.module('slatwalladmin').directive('swOrderItem',
 											scope.orderItem.onWaitlist = true;  $log.debug("Found + " + statusType.systemCode);
 											//Because the customer is waitlisted, we need to get the number of customers ahead of them in the queue.
 											var position = getPositionInQueueFor(scope.orderItem);
-											console.log("Found: " + position);
 											scope.orderItem.queuePosition = position;
 									}else if ((angular.isDefined(statusType.systemCode) && statusType.systemCode !== null) && statusType.systemCode === "erstRegistered"){
 											scope.orderItem.isRegistered = true; $log.debug("Found + " + statusType.systemCode);
@@ -107,7 +106,7 @@ angular.module('slatwalladmin').directive('swOrderItem',
 							});
 						});	
 				
-			}
+			};
 			//define how we get child order items
 			var columnsConfig =[
 					{
@@ -352,11 +351,10 @@ angular.module('slatwalladmin').directive('swOrderItem',
 				//Set all child order items to clicked = false.
 				angular.forEach(scope.childOrderItems, function(child){
 					$log.debug("hideing");
-					console.dir(child);
 					child.hide = !child.hide;
 					scope.orderItem.clicked = !scope.orderItem.clicked;
 				});
-			}
+			};
 			
 			//scope.orderItem.childItemsRetrieved = false;
 			/**
@@ -382,20 +380,19 @@ angular.module('slatwalladmin').directive('swOrderItem',
 							if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease'){
 								childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount/100;
 							}else if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease'){
-								childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100
+								childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100;
 							}
 						});
 					});
 				}else{
 					//We already have the items so we just need to show them.
 					angular.forEach(scope.childOrderItems, function(child){
-						console.dir(child);
 						child.hide = !child.hide;
 						scope.orderItem.clicked = !scope.orderItem.clicked;
 					});
 					
 				}
-			}
+			};
 			
 		}
 	};

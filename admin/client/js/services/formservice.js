@@ -24,7 +24,7 @@ angular.module('slatwalladmin')
 			clearForm:function(form){
 				$log.debug('clear form');
 				$log.debug(form);
-				for(key in form){
+				for(var key in form){
 					if(key.charAt(0) !== '$'){
 						$log.debug(form[key]);
 					}

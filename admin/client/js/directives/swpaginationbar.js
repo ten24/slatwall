@@ -147,13 +147,13 @@ angular.module('slatwalladmin')
 	        		if(scope.currentPage <= 3){
 	        			if(number < 6){
 	        				return true;
-	        			};
+	        			}
 	        		}else{
 	        			var bottomRange = scope.currentPage - 2;
 	        			var topRange = scope.currentPage + 2;
 	        			if(number > bottomRange && number < topRange ){
 	        				return true;
-	        			};
+	        			}
 	        		}
 	        		return false;
 	        	};

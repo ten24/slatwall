@@ -3,7 +3,7 @@
  * @usage <input type='number' swvalidationlte='5000' /> will validate false if the user enters
  * value greater than OR equal to 5,000.
  */
-angular.module('slatwalladmin').directive("swvalidationlte", function() {
+angular.module('slatwalladmin').directive("swvalidationlte", [function() {
     return {
         restrict: "A",
         require: "^ngModel",
@@ -19,7 +19,7 @@ angular.module('slatwalladmin').directive("swvalidationlte", function() {
         				}
         			return false;
         			
-        		}
+        		};
         }
     };
-});
+}]);

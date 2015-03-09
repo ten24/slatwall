@@ -318,7 +318,7 @@ angular.module('slatwalladmin')
 						scope.orderItems = $slatwall.populateCollection(value.pageRecords,collectionConfig);
 						scope.loadingCollection = false;
 					});
-				}
+				};
 				//get all possible attributes
 				var attributesConfig = [  
                     {  

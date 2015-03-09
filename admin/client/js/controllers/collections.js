@@ -215,7 +215,7 @@ metadataService,
 				
 			}
 			return filterItemCount;
-		}
+		};
 		
 		
 		$scope.saveCollection = function(){
