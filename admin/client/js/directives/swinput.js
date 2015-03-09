@@ -68,13 +68,13 @@ angular.module('slatwalladmin').directive('swInput',
 		
 		
 		return spaceDelimitedList;
-	}
+	};
 	
 	var getTemplate = function(propertyDisplay){
 		var template = '';
 		var validations = '';
 		if(!propertyDisplay.noValidate){
-			validations = getValidationDirectives(propertyDisplay)
+			validations = getValidationDirectives(propertyDisplay);
 		}
 		if(propertyDisplay.fieldType === 'text'){
 			template = '<input type="text" class="form-control" '+
@@ -101,7 +101,7 @@ angular.module('slatwalladmin').directive('swInput',
 			$log.debug(validations);
 		}*/
 		return template; 
-	}
+	};
 	
 	return {
 		require:'^form',
@@ -118,5 +118,5 @@ angular.module('slatwalladmin').directive('swInput',
 	        
 	        
 		}
-	}
+	};
 } ]);

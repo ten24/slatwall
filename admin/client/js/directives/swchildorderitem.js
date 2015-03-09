@@ -269,14 +269,14 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 							if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease'){
 								childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount/100;
 							}else if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease'){
-								childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100
+								childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100;
 							}
 							
 						});
 						
 					});
 				}
-			}
+			};
 		}
 	};
 } ]);

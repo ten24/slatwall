@@ -13,7 +13,7 @@ angular.module('slatwalladmin')
 			console.log(orderItem);
 			var row = "<td>TEST ROW</td>";
 			return  row; 
-		}
+		};
 		return {
 			restrict: 'A',
 			transclude:false,

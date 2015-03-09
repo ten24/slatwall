@@ -31,7 +31,7 @@ angular.module('slatwalladmin')
 				//funciton to set state of adding new item 
 				scope.setAdding = function(isAdding){
 					scope.isAdding = isAdding;
-				}
+				};
 				
 				scope.selectedOption = {};
 				scope.showAddBtn = false;

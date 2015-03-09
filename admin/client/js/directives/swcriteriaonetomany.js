@@ -50,7 +50,7 @@ angular.module('slatwalladmin')
 			    };
 			    
 			    $log.debug('onetomany');
-			    $log.debug(scope.selectedFilterProperty)
+			    $log.debug(scope.selectedFilterProperty);
 				
 				scope.oneToManyOptions = getOneToManyOptions();
 				var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(scope.selectedFilterProperty.cfc);

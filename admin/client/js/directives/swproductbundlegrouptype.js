@@ -122,7 +122,7 @@ angular.module('slatwalladmin')
 				
 				$scope.clearTypeName = function(){
 					$scope.productBundleGroup.data.productBundleGroupType.data.typeName = '';
-				}
+				};
 				
 				//Saves product bundle group type
 				$scope.saveProductBundleGroupType = function(){
