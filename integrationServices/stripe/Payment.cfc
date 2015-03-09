@@ -119,7 +119,7 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 				responseBean.addMessage(messageName="stripe.livemode", message="#responseData.result.livemode#");
 				if (responseData.result.object == "customer")
 				{
-					responseBean.addMessage(messageName="stripe.defaultcard", message="#responseData.result.default_card#");
+					responseBean.addMessage(messageName="stripe.defaultcard", message="#responseData.result.default_source#");
 				}
 			}
 			else
@@ -202,9 +202,9 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 				// add messages to response
 				responseBean.addMessage(messageName="stripe.id", message="#responseData.result.id#");
 				responseBean.addMessage(messageName="stripe.captured", message="#responseData.result.captured#");
-				responseBean.addMessage(messageName="stripe.card", message="#responseData.result.card.id#");
-				responseBean.addMessage(messageName="stripe.last4", message="#responseData.result.card.last4#");
-				responseBean.addMessage(messageName="stripe.expiration", message="#responseData.result.card.exp_month#-#responseData.result.card.exp_year#");
+				responseBean.addMessage(messageName="stripe.card", message="#responseData.result.source.id#");
+				responseBean.addMessage(messageName="stripe.last4", message="#responseData.result.source.last4#");
+				responseBean.addMessage(messageName="stripe.expiration", message="#responseData.result.source.exp_month#-#responseData.result.source.exp_year#");
 				responseBean.addMessage(messageName="stripe.amount", message="#responseData.result.amount/100#");
 				if (!isNull(responseData.result.customer))
 				{
