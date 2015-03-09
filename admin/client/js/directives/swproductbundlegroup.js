@@ -137,7 +137,6 @@ angular.module('slatwalladmin')
 									(function(keyword,option) {
 										$slatwall.getEntity(scope.searchOptions.options[i].value, {keywords:keyword,deferKey:'getProductBundleGroupFilterByTerm'+option.value}).then(function(value){
 											var formattedProductBundleGroupFilters = productBundleService.formatProductBundleGroupFilters(value.pageRecords,option);
-											
 											for(var j in formattedProductBundleGroupFilters){
 												scope.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
 											}
@@ -181,7 +180,7 @@ angular.module('slatwalladmin')
 					}, 500);
 				};
 				
-				scope.addFilterToProductBundle = function(filterItem,include){
+				scope.addFilterToProductBundle = function(filterItem,include,index){
 					$log.debug('addFilterToProductBundle');
 					$log.debug(filterItem);
 					
@@ -200,6 +199,7 @@ angular.module('slatwalladmin')
 						filterItem.logicalOperator = 'OR';
 					}
 					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(filterItem);
+					scope.productBundleGroupFilters.value.splice(index,1);
 				};
 				
 				if(angular.isUndefined(scope.filterPropertiesList)){
@@ -214,6 +214,7 @@ angular.module('slatwalladmin')
 				}
 				
 				scope.removeProductBundleGroupFilter = function(index){
+					
 					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index,1);
 				};
 				
