@@ -19,7 +19,7 @@ angular.module('slatwalladmin').directive("swvalidationdatatype", function() {
         			if (angular.isObject(modelValue && attributes.swvalidationdatatype === "object")){return true;}
                	if	(angular.isUndefined(modelValue && attributes.swvalidationdatatype === "undefined")){return true;}
             		return false;
-            }
+            };
         }
     };
 });

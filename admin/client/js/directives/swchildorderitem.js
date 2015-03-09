@@ -246,7 +246,7 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 					child.hide = !child.hide;
 					scope.orderItem.clicked = !scope.orderItem.clicked;
 				});
-			}
+			};
 			scope.getChildOrderItems = function(orderItem){
 				orderItem.clicked = true;
 				if(!scope.orderItem.childItemsRetrieved){

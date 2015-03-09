@@ -107,7 +107,7 @@ angular.module('slatwalladmin').directive('swOrderItem',
 							});
 						});	
 				
-			}
+			};
 			//define how we get child order items
 			var columnsConfig =[
 					{
@@ -382,7 +382,7 @@ angular.module('slatwalladmin').directive('swOrderItem',
 							if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageIncrease'){
 								childOrderItem.data.productBundleGroupPercentage = 1 + childOrderItem.data.productBundleGroup.data.amount/100;
 							}else if(childOrderItem.data.productBundleGroup.data.amountType === 'skuPricePercentageDecrease'){
-								childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100
+								childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100;
 							}
 						});
 					});
@@ -395,7 +395,7 @@ angular.module('slatwalladmin').directive('swOrderItem',
 					});
 					
 				}
-			}
+			};
 			
 		}
 	};
