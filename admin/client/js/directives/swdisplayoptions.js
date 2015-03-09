@@ -28,7 +28,7 @@ angular.module('slatwalladmin')
 				baseEntityName:"="
 			},
 			templateUrl:collectionPartialsPath+"displayoptions.html",
-			controller: function($scope,$element,$attrs){
+			controller: ['$scope','$element','$attrs',function($scope,$element,$attrs){
 				$log.debug('display options initialize');
 				
 				this.removeColumn = function(columnIndex){
@@ -161,7 +161,7 @@ angular.module('slatwalladmin')
 		       		 $("select").selectBoxIt();
 		       		 unbindBaseEntityAlaisWatchListener();
 		       	});*/
-			}
+			}]
 		};
 	}
 ]);

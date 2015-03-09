@@ -21,7 +21,7 @@ angular.module('slatwalladmin')
 			scope:{
 				productBundleGroup:"="
 			},
-			controller: function($scope, $element, $attrs ){
+			controller: ['$scope','$element','$attrs',function($scope, $element, $attrs ){
 				
 				$log.debug('productBundleGrouptype');
 				$log.debug($scope.productBundleGroup);
@@ -151,7 +151,7 @@ angular.module('slatwalladmin')
 				        }
 					}
 				};
-			}
+			}]
 		};
 	}
 ]);
