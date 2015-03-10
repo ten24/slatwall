@@ -2876,6 +2876,11 @@ tabel .s-table-header {
   font-weight: normal !important;
   color: #b3b3b3;
 }
+.s-order-item-table .s-sku-product .s-title:before {
+  margin-right: 5px;
+  font-weight: normal !important;
+  color: #b3b3b3;
+}
 .s-order-item-table .s-event .s-title:before {
   font-family: 'fontAwesome';
   content: "\f073";
