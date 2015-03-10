@@ -231,6 +231,17 @@ angular.module('slatwalladmin')
 				scope.removeProductBundleGroupFilter = function(index){
 					//Pushes item back into array
 					scope.productBundleGroupFilters.value.push(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup[index]);
+					//Sorts Array
+					scope.productBundleGroupFilters.value.sort(function(a, b){
+						if(a.type < b.type){
+				            return -1;
+				        }else if(a.type > b.type){
+				            return 1;
+				        }else{
+				            return 0;   
+				        }
+					});
+					
 					//Removes the filter item from the filtergroup
 					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index,1);
 				};
