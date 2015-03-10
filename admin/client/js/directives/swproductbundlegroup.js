@@ -119,6 +119,17 @@ angular.module('slatwalladmin')
 					scope.productBundleGroup.productBundleGroupFilters = [];
 				}
 				
+				//Checks if a value has a match in an array
+				function arrayContains(array, item){
+					var iterator = array.length;
+				    while (iterator--) {
+				       if (array[iterator].name === item.name){
+				           return true;
+				       }
+				    }
+				    return false;
+				}
+				
 				scope.productBundleGroupFilters.getFiltersByTerm = function(keyword,filterTerm){
 					scope.loading = true;
 					var _loadingCount;
@@ -138,7 +149,9 @@ angular.module('slatwalladmin')
 										$slatwall.getEntity(scope.searchOptions.options[i].value, {keywords:keyword,deferKey:'getProductBundleGroupFilterByTerm'+option.value}).then(function(value){
 											var formattedProductBundleGroupFilters = productBundleService.formatProductBundleGroupFilters(value.pageRecords,option);
 											for(var j in formattedProductBundleGroupFilters){
-												scope.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
+												if(!arrayContains(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup, formattedProductBundleGroupFilters[j])){
+													scope.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
+												}
 											}
 											
 											// Increment Down The Loading Count
@@ -198,7 +211,9 @@ angular.module('slatwalladmin')
 					if(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length > 0){
 						filterItem.logicalOperator = 'OR';
 					}
+					//Adds filter item to designated filtergroup
 					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(filterItem);
+					//Removes the filter item from the left hand search result
 					scope.productBundleGroupFilters.value.splice(index,1);
 				};
 				
@@ -214,7 +229,9 @@ angular.module('slatwalladmin')
 				}
 				
 				scope.removeProductBundleGroupFilter = function(index){
+					//Reruns search to refresh filters
 					scope.productBundleGroupFilters.getFiltersByTerm(scope.productBundleGroupFilters.keyword,scope.searchOptions.selected);
+					//Removes the filter item from the filtergroup
 					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index,1);
 				};
 				
