@@ -66,6 +66,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="stockService";
 	property name="subscriptionService";
 	property name="taxService";
+	property name="typeService";
 	
 	// ===================== START: Logical Methods ===========================
 	
