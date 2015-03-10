@@ -121,7 +121,7 @@ Notes:
 									
 									<!--- Allows for quantity to be updated.  Note if this gets set to 0 the quantity will automatically be removed --->
 									<td>
-										<input type="text" class="span1" name="orderItems[#loopIndex#].quantity" value="#orderItem.getQuantity()#" />
+										<input type="text" class="span1" name="orderItems[#loopIndex#].quantity" value="#htmlEditFormat( orderItem.getQuantity() )#" />
 										<sw:ErrorDisplay object="#orderItem#" errorName="quantity" />
 									</td>
 									
