@@ -1,3 +1,6 @@
+/**
+ * Handles user selections of Product Group Types.
+ */
 'use strict';
 angular.module('slatwalladmin')
 .directive('swProductBundleGroupType', [
@@ -37,6 +40,9 @@ angular.module('slatwalladmin')
 					$scope.productBundleGroup.$$setProductBundleGroupType(productBundleGroupType);
 				}
 
+				/**
+				 * Sets the state to adding and sets the initial data.
+				 */
 				$scope.productBundleGroupTypes.setAdding = function(isAdding){
 					$scope.productBundleGroupTypes.$$adding = isAdding;
 					var productBundleGroupType = $slatwall.newType();
@@ -50,6 +56,9 @@ angular.module('slatwalladmin')
 				};
 				
 				$scope.showAddProductBundleGroupTypeBtn = false;
+				/**
+				 * Handles looking up the keyword and populating the dropdown as a user types.
+				 */
 				$scope.productBundleGroupTypes.getTypesByKeyword=function(keyword){
 					$log.debug('getTypesByKeyword');
 					var filterGroupsConfig = '['+  
@@ -89,6 +98,9 @@ angular.module('slatwalladmin')
 					});
 				};
 				
+				/**
+				 * Handles user selection of the dropdown.
+				 */
 				$scope.selectProductBundleGroupType = function ($item, $model, $label) {
 					console.log("Selecting");
 				    $scope.$item = $item;
@@ -102,19 +114,26 @@ angular.module('slatwalladmin')
 				    $scope.showAddProductBundleGroupTypeBtn = false;
 				    	};
 				
-				//Closes product bundle group type adding dialog
+				/**
+				 * Closes the add screen
+				 */
 				$scope.closeAddScreen = function(){
 					$scope.productBundleGroupTypes.$$adding = false;
 					$scope.showAddProductBundleGroupTypeBtn = false;
 				};
 				
+				/**
+				 * Clears the type name
+				 */
 				$scope.clearTypeName = function(){
 					if (angular.isDefined($scope.productBundleGroup.data.productBundleGroupType)){
 					$scope.productBundleGroup.data.productBundleGroupType.data.typeName = '';
 					}
 				};
 				
-				//Saves product bundle group type
+				/**
+				 * Saves product bundle group type
+				 */
 				$scope.saveProductBundleGroupType = function(){
 						//Gets the promise from save
 						var promise = $scope.productBundleGroup.data.productBundleGroupType.$$save();
@@ -129,7 +148,9 @@ angular.module('slatwalladmin')
 				$scope.clickOutsideArgs = {
 					callBackActions : [$scope.closeAddScreen,$scope.clearTypeName]
 				};
-				//Works with swclickoutside directive to close dialog
+				/**
+				 * Works with swclickoutside directive to close dialog
+				 */
 				$scope.closeThis = function (clickOutsideArgs) {
 					//Check against the object state
 					if(!$scope.productBundleGroup.data.productBundleGroupType.$$isPersisted()){
