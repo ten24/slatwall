@@ -51,7 +51,6 @@ angular.module('slatwalladmin')
 				
 				$scope.showAddProductBundleGroupTypeBtn = false;
 				$scope.productBundleGroupTypes.getTypesByKeyword=function(keyword){
-					$scope.showAddProductBundleGroupTypeBtn = true;//This ensures the add button functions correctly.
 					$log.debug('getTypesByKeyword');
 					var filterGroupsConfig = '['+  
 					  ' {  '+
