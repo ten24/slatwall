@@ -64,11 +64,12 @@
 		<div class="panel-group s-pannel-group" id="accordion">
 			<div class="j-panel panel panel-default" ng-repeat="detailTab in detailTabs">
 			
-				<a style="cursor:pointer" ng-click="detailTab.openTab = true">
+				<a style="cursor:pointer" ng-click="detailTab.openTab = !detailTab.openTab">
 					<div class="panel-heading">
 						<h4 class="panel-title">
-							<span sw-rbkey="'admin.entity.'+entityName.toLowerCase()+'tabs.'+detailTab.tabName.toLowerCase().replace('.html','')"></span> <i
-								class="s-accordion-toggle-icon fa fa-caret-left"></i>
+							<span sw-rbkey="'admin.entity.'+entityName.toLowerCase()+'tabs.'+detailTab.tabName.toLowerCase().replace('.html','')"></span> 
+							<i ng-show="detailTab.openTab" class="s-accordion-toggle-icon fa fa-caret-down"></i>
+							<i ng-show="!detailTab.openTab" class="s-accordion-toggle-icon fa fa-caret-left"></i>
 						</h4>
 					</div>
 				</a>
