@@ -1353,7 +1353,7 @@ Notes:
 							<td>#orderItem.getSku().getProduct().getTitle()#</td>
 							
 							<!--- Quantity --->
-							<td>#orderItem.getQuantity()#</td>
+							<td>#htmlEditFormat( orderItem.getQuantity() )#</td>
 							
 							<!--- Price --->
 							<td>
