@@ -22,7 +22,6 @@ angular.module('slatwalladmin')
 				productBundleGroup:"="
 			},
 			controller: ['$scope','$element','$attrs',function($scope, $element, $attrs ){
-				
 				$log.debug('productBundleGrouptype');
 				$log.debug($scope.productBundleGroup);
 				$scope.productBundleGroupTypes = {};
@@ -40,22 +39,19 @@ angular.module('slatwalladmin')
 
 				$scope.productBundleGroupTypes.setAdding = function(isAdding){
 					$scope.productBundleGroupTypes.$$adding = isAdding;
-
 					var productBundleGroupType = $slatwall.newType();
 					var parentType = $slatwall.newType();
 					parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
 					productBundleGroupType.$$setParentType(parentType);
 					productBundleGroupType.data.typeName=$scope.productBundleGroup.data.productBundleGroupType.data.typeName;
-
 					productBundleGroupType.data.typeDescription = '';
 					productBundleGroupType.data.typeNameCode='';
 					angular.extend($scope.productBundleGroup.data.productBundleGroupType,productBundleGroupType);
-
 				};
 				
 				$scope.showAddProductBundleGroupTypeBtn = false;
-				
 				$scope.productBundleGroupTypes.getTypesByKeyword=function(keyword){
+					$scope.showAddProductBundleGroupTypeBtn = true;//This ensures the add button functions correctly.
 					$log.debug('getTypesByKeyword');
 					var filterGroupsConfig = '['+  
 					  ' {  '+
@@ -86,33 +82,26 @@ angular.module('slatwalladmin')
 						
 						if (myLength > 0) {
 							$scope.showAddProductBundleGroupTypeBtn = true;
-							//$('.s-add-bundle-type').show();
 						}else{
 							$scope.showAddProductBundleGroupTypeBtn = false;
-							//$('.s-add-bundle-type').hide();
 						}
 						
-						for(var i in $scope.productBundleGroupTypes.value){
-							if($scope.productBundleGroupTypes.value[i].typeCode === $scope.productBundleGroup.data.productBundleGroupType.data.typeCode){
-								$scope.showAddProductBundleGroupTypeBtn = false;
-							}
-						}
 						return $scope.productBundleGroupTypes.value;
 					});
 				};
 				
 				$scope.selectProductBundleGroupType = function ($item, $model, $label) {
+					console.log("Selecting");
 				    $scope.$item = $item;
 				    $scope.$model = $model;
 				    $scope.$label = $label;
-				 
+				    
 					angular.extend($scope.productBundleGroup.data.productBundleGroupType.data,$item);
 					var parentType = $slatwall.newType();
 					parentType.data.typeID = '154dcdd2f3fd4b5ab5498e93470957b8';
 					$scope.productBundleGroup.data.productBundleGroupType.$$setParentType(parentType);
-				    
 				    $scope.showAddProductBundleGroupTypeBtn = false;
-				};
+				    	};
 				
 				//Closes product bundle group type adding dialog
 				$scope.closeAddScreen = function(){
@@ -121,26 +110,26 @@ angular.module('slatwalladmin')
 				};
 				
 				$scope.clearTypeName = function(){
+					if (angular.isDefined($scope.productBundleGroup.data.productBundleGroupType)){
 					$scope.productBundleGroup.data.productBundleGroupType.data.typeName = '';
+					}
 				};
 				
 				//Saves product bundle group type
 				$scope.saveProductBundleGroupType = function(){
-					//Gets the promise from save
-					var promise = $scope.productBundleGroup.data.productBundleGroupType.$$save();
-					promise.then(function(response){
-						//Calls close function
-						$scope.closeAddScreen();
-					});
-
+						//Gets the promise from save
+						var promise = $scope.productBundleGroup.data.productBundleGroupType.$$save();
+						promise.then(function(response){
+							//Calls close function
+							$scope.closeAddScreen();
+						});
+					
 				};
 				
 				//Sets up clickOutside Directive call back arguments
 				$scope.clickOutsideArgs = {
 					callBackActions : [$scope.closeAddScreen,$scope.clearTypeName]
 				};
-				
-				
 				//Works with swclickoutside directive to close dialog
 				$scope.closeThis = function (clickOutsideArgs) {
 					//Check against the object state
