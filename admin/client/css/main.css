@@ -427,6 +427,9 @@ input.error,
 select.error {
   border-color: #da5757 !important;
 }
+input.ng-invalid.ng-touched.ng-invalid-date {
+  border-color: #ccc !important;
+}
 .error.help-block {
   color: #da5757 !important;
 }
