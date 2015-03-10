@@ -305,7 +305,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					return arguments.account;
 				}
 				
-				arguments.processObject.addError('password', rbKey('validate.account_authorizeAccount.password.incorrect'));
+				arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
 				invalidLoginData.account = accountAuthentication.getAccount();
 				
 				
@@ -330,7 +330,7 @@ component extends="HibachiService" accessors="true" output="false" {
 				arguments.processObject.addError('password',rbKey('validate.account.loginblocked'));
 			}
 		} else {
-			arguments.processObject.addError('emailAddress', rbKey('validate.account_authorizeAccount.emailAddress.notfound'));
+			arguments.processObject.addError('emailAddress', rbKey('validation.account_authorizeAccount.failure'));
 		}
 		
 		// Login was invalid
