@@ -229,8 +229,8 @@ angular.module('slatwalladmin')
 				}
 				
 				scope.removeProductBundleGroupFilter = function(index){
-					//Reruns search to refresh filters
-					scope.productBundleGroupFilters.getFiltersByTerm(scope.productBundleGroupFilters.keyword,scope.searchOptions.selected);
+					//Pushes item back into array
+					scope.productBundleGroupFilters.value.push(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup[index]);
 					//Removes the filter item from the filtergroup
 					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index,1);
 				};
