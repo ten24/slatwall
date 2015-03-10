@@ -3,6 +3,30 @@
 	<cfproperty name="hibachiTagService" type="any" />
 	
 	<cfscript>
+		
+		//antisamy setup
+		variables.antisamyConfig = {
+			policyFile = ExpandPath("org/Hibachi/antisamy/antisamy-slashdot-1.4.1.xml"),
+			jarArray = [
+				ExpandPath("org/Hibachi/antisamy/lib/antisamy-bin.1.4.1.jar"), 
+				ExpandPath("org/Hibachi/antisamy/lib/antisamy-required-libs/batik-css.jar"),
+				ExpandPath("org/Hibachi/antisamy/lib/antisamy-required-libs/batik-util.jar"),
+				ExpandPath("org/Hibachi/antisamy/lib/antisamy-required-libs/nekohtml.jar"),
+				ExpandPath("org/Hibachi/antisamy/lib/antisamy-required-libs/xercesImpl.jar")
+			]
+		};
+		variables.antisamyConfig.classLoader = CreateObject("component", "org.Hibachi.antisamy.lib.javaloader.JavaLoader").init(variables.antisamyConfig.jarArray);
+		variables.antiSamy = variables.antisamyConfig.classLoader.create("org.owasp.validator.html.AntiSamy").init();
+		
+		// @hint this method will sanitize a struct of data
+		public void function sanitizeData(required any data){
+			for(var key in data){
+			  if( isSimpleValue(data[key]) && key != 'serializedJsonData'){
+			    data[key] = variables.antisamy.scan(data[key],variables.antiSamyConfig.policyFile).getCleanHTML();
+			  }
+			}
+		}
+		
 		// @hint this method allows you to properly format a value against a formatType
 		public any function formatValue( required string value, required string formatType, struct formatDetails={} ) {
 			if(listFindNoCase("currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno", arguments.formatType)) {

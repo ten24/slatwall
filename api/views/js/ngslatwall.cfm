@@ -1340,8 +1340,8 @@ Notes:
 									<!---loop over possible attributes --->
 									<cfif len($.slatwall.getService('attributeService').getAttributeCodesListByAttributeSetObject(local.entity.getClassName()))>
 										<cfloop list="#$.slatwall.getService('attributeService').getAttributeCodesListByAttributeSetObject(local.entity.getClassName())#" index="local.attributeCode">
-											this.data.#local.attributeCode# = null;
-											this.metaData.#local.attributeCode# = {
+											this.data['#local.attributeCode#'] = null;
+											this.metaData['#local.attributeCode#'] = {
 												name:'#local.attributeCode#'
 											};
 										</cfloop>
