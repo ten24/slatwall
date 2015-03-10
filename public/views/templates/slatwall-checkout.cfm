@@ -949,44 +949,44 @@ Notes:
 													<h6>Shipping To:</h6>
 													<!--- EMAIL --->
 													<cfif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "email">
-														Email Address: #orderFulfillment.getEmailAddress()#<br />
+														Email Address: #htmlEditFormat( orderFulfillment.getEmailAddress() )#<br />
 														
 													<!--- PICKUP --->
 													<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "pickup">
-														Pickup Location: #orderFulfillment.getPickupLocation().getLocationName()#
+														Pickup Location: #htmlEditFormat( orderFulfillment.getPickupLocation().getLocationName() )#
 														
 													<!--- SHIPPING --->
 													<cfelseif orderFulfillment.getFulfillmentMethod().getFulfillmentMethodType() eq "shipping">
 														<cfif not isNull(orderFulfillment.getAddress().getName())>
-															#orderFulfillment.getAddress().getName()#<br />
+															#htmlEditFormat( orderFulfillment.getAddress().getName() )#<br />
 														</cfif>
 														<cfif not isNull(orderFulfillment.getAddress().getCompany())>
-															#orderFulfillment.getAddress().getCompany()#<br />
+															#htmlEditFormat( orderFulfillment.getAddress().getCompany() )#<br />
 														</cfif>
 														<cfif not isNull(orderFulfillment.getAddress().getStreetAddress())>
-															#orderFulfillment.getAddress().getStreetAddress()#<br />
+															#htmlEditFormat( orderFulfillment.getAddress().getStreetAddress() )#<br />
 														</cfif>
 														<cfif not isNull(orderFulfillment.getAddress().getStreet2Address())>
-															#orderFulfillment.getAddress().getStreet2Address()#<br />
+															#htmlEditFormat( orderFulfillment.getAddress().getStreet2Address() )#<br />
 														</cfif>
 														<cfif not isNull(orderFulfillment.getAddress().getLocality())>
-															#orderFulfillment.getAddress().getLocality()#<br />
+															#htmlEditFormat( orderFulfillment.getAddress().getLocality() )#<br />
 														</cfif>
 														<cfif not isNull(orderFulfillment.getAddress().getCity()) and not isNull(orderFulfillment.getAddress().getStateCode()) and not isNull(orderFulfillment.getAddress().getPostalCode())>
-															#orderFulfillment.getAddress().getCity()#, #orderFulfillment.getAddress().getStateCode()# #orderFulfillment.getAddress().getPostalCode()#<br />
+															#htmlEditFormat( orderFulfillment.getAddress().getCity() )#, #htmlEditFormat( orderFulfillment.getAddress().getStateCode() )# #htmlEditFormat( orderFulfillment.getAddress().getPostalCode() )#<br />
 														<cfelse>
 															<cfif not isNull(orderFulfillment.getAddress().getCity())>
-																#orderFulfillment.getAddress().getCity()#<br />
+																#htmlEditFormat( orderFulfillment.getAddress().getCity() )#<br />
 															</cfif>
 															<cfif not isNull(orderFulfillment.getAddress().getStateCode())>
-																#orderFulfillment.getAddress().getStateCode()#<br />
+																#htmlEditFormat( orderFulfillment.getAddress().getStateCode() )#<br />
 															</cfif>
 															<cfif not isNull(orderFulfillment.getAddress().getPostalCode())>
-																#orderFulfillment.getAddress().getPostalCode()#<br />
+																#htmlEditFormat( orderFulfillment.getAddress().getPostalCode() )#<br />
 															</cfif>
 														</cfif>
 														<cfif not isNull(orderFulfillment.getAddress().getCountryCode())>
-															#orderFulfillment.getAddress().getCountryCode()#<br />
+															#htmlEditFormat( orderFulfillment.getAddress().getCountryCode() )#<br />
 														</cfif>
 													</cfif>
 												</div>
@@ -1023,9 +1023,9 @@ Notes:
 													
 												<cfif orderPayment.getPaymentMethodType() EQ "creditcard">
 													
-													Name on Card: #orderPayment.getNameOnCreditCard()#<br />
+													Name on Card: #htmlEditFormat( orderPayment.getNameOnCreditCard() )#<br />
 													Card: #orderPayment.getCreditCardType()# ***#orderPayment.getCreditCardLastFour()#<br />
-													Expiration: #orderPayment.getExpirationMonth()# / #orderPayment.getExpirationYear()#<br />
+													Expiration: #htmlEditFormat( orderPayment.getExpirationMonth() )# / #htmlEditFormat( orderPayment.getExpirationYear() )#<br />
 													Payment Amount: #orderPayment.getFormattedValue('amount')#<br />
 													
 													<cfif isNull(orderPayment.getProviderToken()) && !isNull(orderPayment.getSecurityCode())>
@@ -1050,17 +1050,17 @@ Notes:
 											<cfif not isNull(orderPayment.getBillingAddress())>
 												<div class="span6">
 													<h6>Billing Address:</h6>
-													#orderPayment.getBillingAddress().getName()#<br />
+													#htmlEditFormat( orderPayment.getBillingAddress().getName() )#<br />
 													<cfif isNull(orderPayment.getBillingAddress().getCompany()) && len(orderPayment.getBillingAddress().getCompany())>
-														#orderPayment.getBillingAddress().getCompany()#<br />
+														#htmlEditFormat( orderPayment.getBillingAddress().getCompany() )#<br />
 													</cfif>
 													<cfif !isNull(orderPayment.getBillingAddress().getPhoneNumber()) && len(orderPayment.getBillingAddress().getCompany())>
-														#orderPayment.getBillingAddress().getPhoneNumber()#<br />
+														#htmlEditFormat( orderPayment.getBillingAddress().getPhoneNumber() )#<br />
 													</cfif>
-													#orderPayment.getBillingAddress().getStreetAddress()#<br />
-													<cfif not isNull(orderPayment.getBillingAddress().getStreet2Address()) && len(orderPayment.getBillingAddress().getStreet2Address())>#orderPayment.getBillingAddress().getStreet2Address()#<br /></cfif>
-													#orderPayment.getBillingAddress().getCity()#, #orderPayment.getBillingAddress().getStateCode()# #orderPayment.getBillingAddress().getPostalCode()#<br />
-													#orderPayment.getBillingAddress().getCountryCode()#
+													#htmlEditFormat( orderPayment.getBillingAddress().getStreetAddress() )#<br />
+													<cfif not isNull(orderPayment.getBillingAddress().getStreet2Address()) && len(orderPayment.getBillingAddress().getStreet2Address())>#htmlEditFormat( orderPayment.getBillingAddress().getStreet2Address() )#<br /></cfif>
+													#htmlEditFormat( orderPayment.getBillingAddress().getCity() )#, #htmlEditFormat( orderPayment.getBillingAddress().getStateCode() )# #htmlEditFormat( orderPayment.getBillingAddress().getPostalCode() )#<br />
+													#htmlEditFormat( orderPayment.getBillingAddress().getCountryCode() )#
 												</div>
 											</cfif>
 										</div>
@@ -1094,7 +1094,7 @@ Notes:
 						
 						<p>
 							<!--- Name --->
-							<strong>#$.slatwall.cart().getAccount().getFullName()#</strong><br />
+							<strong>#htmlEditFormat( $.slatwall.cart().getAccount().getFullName() )#</strong><br />
 							
 							<!--- Email Address --->
 							<cfif len($.slatwall.cart().getAccount().getEmailAddress())>#$.slatwall.cart().getAccount().getEmailAddress()#<br /></cfif>
@@ -1353,7 +1353,7 @@ Notes:
 							<td>#orderItem.getSku().getProduct().getTitle()#</td>
 							
 							<!--- Quantity --->
-							<td>#orderItem.getQuantity()#</td>
+							<td>#htmlEditFormat( orderItem.getQuantity())#</td>
 							
 							<!--- Price --->
 							<td>
