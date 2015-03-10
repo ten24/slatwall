@@ -99,7 +99,7 @@ Notes:
 			<div class="row">
 				<div class="span12">
 					
-					<h2>#$.slatwall.getAccount().getFullName()# - My Account <span class="pull-right" style="font-size:14px;"><a href="?slatAction=public:account.logout">logout</a></span></h2>
+					<h2>#htmlEditFormat( $.slatwall.getAccount().getFullName() )# - My Account <span class="pull-right" style="font-size:14px;"><a href="?slatAction=public:account.logout">logout</a></span></h2>
 					
 					<!--- PRIMARY TAB NAV --->
 					<div class="tabable">
@@ -498,7 +498,7 @@ Notes:
 															
 															<!--- Address Nickname if it exists --->
 															<cfif not isNull(accountAddress.getAccountAddressName())>
-																<strong>#accountAddress.getAccountAddressName()#</strong>
+																<strong>#htmlEditFormat( accountAddress.getAccountAddressName() )#</strong>
 															</cfif>
 															
 															<!--- Actual Address Details --->
@@ -659,8 +659,8 @@ Notes:
 															<!--- Credit Card Display --->
 															<cfif accountPaymentMethod.getPaymentMethod().getPaymentMethodType() eq "creditCard">
 																#accountPaymentMethod.getCreditCardType()# - #accountPaymentMethod.getCreditCardLastFour()#<br />
-																#accountPaymentMethod.getNameOnCreditCard()#<br />
-																#accountPaymentMethod.getExpirationMonth()# / #accountPaymentMethod.getExpirationYear()#<br />
+																#htmlEditFormat( accountPaymentMethod.getNameOnCreditCard() )#<br />
+																#htmlEditFormat( accountPaymentMethod.getExpirationMonth() )# / #htmlEditFormat( accountPaymentMethod.getExpirationYear() )#<br />
 																#accountPaymentMethod.getBillingAddress().getSimpleRepresentation()#
 															
 															<!--- External Display --->
@@ -1109,7 +1109,7 @@ Notes:
 																	<td>#orderItem.getSku().getProduct().getTitle()#</td>
 																	
 																	<!--- Quantity --->
-																	<td>#orderItem.getQuantity()#</td>
+																	<td>#htmlEditFormat( orderItem.getQuantity() )#</td>
 																	
 																	<!--- Price --->
 																	<td>
@@ -1349,7 +1349,7 @@ Notes:
 																	<td>#orderItem.getSku().getProduct().getTitle()#</td>
 																	
 																	<!--- Quantity --->
-																	<td>#orderItem.getQuantity()#</td>
+																	<td>#htmlEditFormat( orderItem.getQuantity() )#</td>
 																	
 																	<!--- Price --->
 																	<td>
