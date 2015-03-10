@@ -15,7 +15,7 @@
 				ExpandPath("org/Hibachi/antisamy/lib/antisamy-required-libs/xercesImpl.jar")
 			]
 		};
-		variables.antisamyConfig.classLoader = CreateObject("component", "org.Hibachi.antisamy.lib.javaloader.JavaLoader").init(variables.antisamyConfig.jarArray);
+		variables.antisamyConfig.classLoader = CreateObject("component", "Slatwall.org.Hibachi.antisamy.lib.javaloader.JavaLoader").init(variables.antisamyConfig.jarArray);
 		variables.antiSamy = variables.antisamyConfig.classLoader.create("org.owasp.validator.html.AntiSamy").init();
 		
 		// @hint this method will sanitize a struct of data
