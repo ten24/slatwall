@@ -133,7 +133,7 @@ Notes:
 				<cfelseif rc.processObject.getBaseProductType() eq "subscription">
 
 					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionTerms" />
-					<hb:HibachiListingDisplay smartList="SubscriptionTerm" multiselectFieldName="subscriptionTerms" edit="true">
+					<hb:HibachiListingDisplay smartList="SubscriptionTerm" multiselectFieldName="subscriptionTerms" title="#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#" edit="true">
 						<hb:HibachiListingColumn propertyIdentifier="subscriptionTermName" />
 					</hb:HibachiListingDisplay>
 
@@ -211,26 +211,17 @@ Notes:
 			<hb:HibachiPropertyRow>
 
 				<hb:HibachiPropertyList divClass="col-md-6">
-
-					<h5>#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#</h5>
-					<br />
 					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionBenefits" />
-					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" edit="true">
+					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#" edit="true">
 						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
 					</hb:HibachiListingDisplay>
-
-
 				</hb:HibachiPropertyList>
 
 				<hb:HibachiPropertyList divClass="col-md-6">
-
-					<h5>#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits')#</h5>
-					<br />
 					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalsubscriptionBenefits" />
-					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" edit="true">
+					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits')#" edit="true">
 						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
 					</hb:HibachiListingDisplay>
-
 				</hb:HibachiPropertyList>
 
 			</hb:HibachiPropertyRow>
