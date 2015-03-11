@@ -129,8 +129,10 @@ angular.module('slatwalladmin')
 					//Gets the promise from save
 					var promise = $scope.productBundleGroup.data.productBundleGroupType.$$save();
 					promise.then(function(response){
-						//Calls close function
-						$scope.closeAddScreen();
+						//Calls close function if the promise is valid
+						if(promise.valid){
+							$scope.closeAddScreen();
+						}
 					});
 
 				};
