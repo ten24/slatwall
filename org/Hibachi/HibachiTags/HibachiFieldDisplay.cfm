@@ -132,5 +132,26 @@
 				</cfoutput>
 			</cfif>
 		</cfcase>
+		<!--- Plain Display (value with title) --->
+		<cfcase value="plainTitle">
+			<cfif attributes.edit>
+				<cfoutput>
+					<hb:HibachiFormField attributecollection="#attributes#" fieldName="#attributes.title#" />
+					<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
+				</cfoutput>
+			<cfelse>
+				<cfoutput>
+					<cfif attributes.valueLink neq "">
+						<a href="#attributes.valueLink#" class="#attributes.valueLinkClass#">#attributes.value#</a>
+					<cfelse>
+						<cfif attributes.fieldType eq "listingMultiselect">
+							<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectFieldClass="#attributes.fieldClass#" multiselectvalues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" title="#attributes.title#" edit="false"></hb:HibachiListingDisplay>
+						<cfelse>
+							#attributes.value#
+						</cfif>
+					</cfif>
+				</cfoutput>
+			</cfif>
+		</cfcase>
 	</cfswitch>
 </cfif>
