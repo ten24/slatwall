@@ -8,7 +8,7 @@
     </div>
   </header>
   <span ng-controller="create-bundle-controller">
-	  <section class="col-xs-12" >
+	  <section class="col-xs-12 s-bundle-content" >
 	    <div class="row s-bundle-header" >
 	     	
 			<span ng-if="product">
@@ -111,12 +111,12 @@
 	  <footer>
 	    <div class="navbar navbar-s-navbar-ten24 s-dialog-footer">
 	      <ul class="nav navbar-nav pull-right">
-	        <li class="active">
+	        <li ng-class="{'active s-loading': newSaving === true, 'active': newSaving === false}">
 	        	<a  style="cursor:pointer;padding: 9px 12px;font-size: 16px;"
-	        		ng-click="saveProductBundle()"
+	        		ng-click="saveProductBundle();"
 	        	>Save & New</a>
 	        </li>
-	        <li class="active">
+	        <li ng-class="{'active s-loading': closeSaving === true, 'active': closeSaving === false}">
 	        	<a  style="cursor:pointer;padding: 9px 12px;font-size: 16px;"
 	        		ng-click="saveProductBundle($index);"
 	        	>Save & Finish</a>
