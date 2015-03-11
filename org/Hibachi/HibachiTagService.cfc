@@ -7,9 +7,9 @@
 		<cfargument name="secure" type="boolean" default="false" />
 		
 		<cfif structKeyExists(arguments, "expires")>
-			<cfcookie name="#arguments.name#" value="#arguments.value#" expires="#arguments.expires#" secure="#arguments.secure#">
+			<cfcookie name="#arguments.name#" value="#arguments.value#" expires="#arguments.expires#" secure="#arguments.secure#" httponly="true">
 		<cfelse>
-			<cfcookie name="#arguments.name#" value="#arguments.value#" secure="#arguments.secure#">
+			<cfcookie name="#arguments.name#" value="#arguments.value#" secure="#arguments.secure#" httponly="true">
 		</cfif>
 	</cffunction>
 	
