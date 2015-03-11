@@ -419,14 +419,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					} else if (orderRewards and reward.getRewardType() eq "order" ) {
 						processOrderRewards(arguments.order, reward);
 					} // ============= END ALL REWARD TYPES
-					// This forces the loop to repeat looking for "order" discounts
-					if(!orderRewards and pr == arrayLen(promotionRewards)) {
-						pr = 0;
-						orderRewards = true;
-					}
-					
 				
 				} // END Promotion Period OK IF
+				
+				// This forces the loop to repeat looking for "order" discounts
+				if(!orderRewards and pr == arrayLen(promotionRewards)) {
+					pr = 0;
+					orderRewards = true;
+				}
 			
 			} // END of PromotionReward Loop
 
