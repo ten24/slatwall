@@ -907,6 +907,7 @@ Notes:
 									
 									$location.hash(targetID);
 						    		$anchorScroll();
+						    		
 					    		}
 							});
 							return timeoutPromise;
@@ -996,7 +997,7 @@ Notes:
 									var forms = parentInstance.forms;
 									for(var f in forms){
 						    			var form = forms[f];
-						    			form.$setSubmitted();	
+						    		    form.$setSubmitted();
 						    			if(form.$dirty && form.$valid){
 							    		for(var key in form){
 							    			if(key.charAt(0) !== '$'){
