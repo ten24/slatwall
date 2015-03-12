@@ -1,6 +1,6 @@
 <div class="s-bundle-add-items s-workflow-objs s-sortable">
-	<ul class="list-unstyled s-order-item-options" ng-repeat="workflowTaskAction in workflowTaskActions">
-		<li class="s-bundle-add-obj" ng-if="workflowTaskAction.$$isPersisted()">
+	<span class="list-unstyled s-order-item-options" ng-repeat="workflowTaskAction in workflowTaskActions">
+		<span class="s-bundle-add-obj" ng-if="workflowTaskAction.$$isPersisted()">
 			<ul class="list-unstyled list-inline">
 				<li class="s-item-type" ng-bind="$index+1" ng-init="workflowTaskAction.$$index=$index"></li>
 				<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>
@@ -35,8 +35,8 @@
 				</li>
 			</ul>
 			<div class="clearfix"></div>
-		</li>
-	</ul>
+		</span>
+	</span>
 </div>
 
 <div class="form-group">

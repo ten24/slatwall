@@ -91,12 +91,12 @@ angular.module('slatwalladmin')
 							$scope.showAddProductBundleGroupTypeBtn = false;
 							//$('.s-add-bundle-type').hide();
 						}
-						
+						/*
 						for(var i in $scope.productBundleGroupTypes.value){
 							if($scope.productBundleGroupTypes.value[i].typeCode === $scope.productBundleGroup.data.productBundleGroupType.data.typeCode){
 								$scope.showAddProductBundleGroupTypeBtn = false;
 							}
-						}
+						}*/
 						return $scope.productBundleGroupTypes.value;
 					});
 				};

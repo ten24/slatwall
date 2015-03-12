@@ -36,6 +36,7 @@ angular.module('slatwalladmin')
 						});
 						$log.debug(scope.workflowTaskActions);
 					});
+					
 					if(angular.isUndefined(scope.workflowTask.data.workflowTaskActions)){
 						scope.workflowTask.data.workflowTaskActions = [];
 						scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
@@ -45,6 +46,8 @@ angular.module('slatwalladmin')
 				scope.saveWorkflowTaskAction = function(){
 					var savePromise = scope.workflowTaskActions.selectedTaskAction.$$save();
 					savePromise.then(function(){
+						$log.debug("Save promise is:");
+						$log.debug(savePromise);
 					});
 				};
 				
@@ -52,30 +55,39 @@ angular.module('slatwalladmin')
 				
 				scope.addWorkflowTaskAction = function(){
 					var workflowTaskAction = scope.workflowTask.$$addWorkflowTaskAction();
+					$log.debug("WFT");
+					$log.debug(scope.workflowTask);
 					scope.selectWorkflowTaskAction(workflowTaskAction);
-					$log.debug(scope.workflow);
+					//$log.debug(scope.workflow);
 				};
 				
 				scope.selectWorkflowTaskAction = function(workflowTaskAction){
+					$log.debug("The wfta is (in selectedWFTA): ");
+					$log.debug(workflowTaskAction);
 					scope.workflowTaskActions.selectedTaskAction = workflowTaskAction;
 				};
 				
+				/**
+				 * Removes a task action.
+				 */
 				scope.removeWorkflowTaskAction = function(workflowTaskAction){
 					var deletePromise = workflowTaskAction.$$delete();
-		    		deletePromise.then(function(){
-						if(workflowTaskAction === scope.workflowTaskActions.selectedTaskAction){
+		    				deletePromise.then(function(){
+						if(workflowTaskAction == scope.workflowTaskActions.selectedTaskAction){
 							delete scope.workflowTaskActions.selectedTaskAction;
 						}
 						scope.workflowTaskActions.splice(workflowTaskAction.$$index,1);
 						for(var i in scope.workflowTaskActions){
 							scope.workflowTaskActions[i].$$index = i;
 						}
-					});
+				});
+					if (angular.isDefined(workflowTaskAction.$$index)){
+					scope.workflowTask.workflowTaskActions.splice(workflowTaskAction.$$index,1);
 					
-					scope.workflowTask.workflowTaskActions.splice(index,1);
 					for(var i in scope.workflowTaskActions){
 						scope.workflowTasks.selectedTask.workflowTaskActions[i].$$index = i;
 					}
+					}//<--end re-indexing list
 				};
 			}
 		};

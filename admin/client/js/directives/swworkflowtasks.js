@@ -24,32 +24,25 @@ angular.module('slatwalladmin')
 				
 				$log.debug('workflow tasks init');	
 				scope.workflowPartialsPath = workflowPartialsPath;
-				
 				scope.propertiesList = {};
-					
 				scope.getWorkflowTasks = function(){
-					var workflowTasksPromise = scope.workflow.$$getWorkflowTasks();
+				var workflowTasksPromise = scope.workflow.$$getWorkflowTasks();
 					workflowTasksPromise.then(function(){
 						scope.workflowTasks = scope.workflow.data.workflowTasks;
 						
 					});
 					
-					if(angular.isUndefined(scope.workflow.data.workflowTasks)){
+				if(angular.isUndefined(scope.workflow.data.workflowTasks)){
 						scope.workflow.data.workflowTasks = [];
 						scope.workflowTasks = scope.workflow.data.workflowTasks;
 					}
 					
 				};
 				scope.getWorkflowTasks();
-				/*scope.saveWorkflowTask = function(){
-					var savePromise = scope.workflow.workflowTasks.selectedTask.$$save();
-					savePromise.then(function(){
-						scope.getWorkflowTasks();			
-					});
-				};*/
-
 				
-				
+				/**
+				 * Handles adding the new workflow object
+				 */
 				scope.addWorkflowTask = function(){
 					$log.debug('addWorkflowTasks');
 					var newWorkflowTask = scope.workflow.$$addWorkflowTask();
@@ -58,12 +51,15 @@ angular.module('slatwalladmin')
 				
 				scope.$watch('workflowTasks.selectedTask.data.workflow.data.workflowObject',function(newValue,oldValue){
 					
-					if(newValue !== oldValue && angular.isDefined(scope.workflowTasks.selectedTask)){
+				if(newValue !== oldValue && angular.isDefined(scope.workflowTasks.selectedTask)){
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
 					}
 				});
 				
+				/**
+				 * Handles selecting a workflow object
+				 */
 				scope.selectWorkflowTask = function(workflowTask){
 					scope.workflowTasks.selectedTask = undefined;
 					
@@ -79,17 +75,29 @@ angular.module('slatwalladmin')
 						scope.workflowTasks.selectedTask = workflowTask;
 					});
 				};
-				
+				scope.saveWorkflowTask = function(){
+					var savePromise = scope.workflowTask.selectedTaskAction.$$save();
+					savePromise.then(function(){
+						//delete scope.workflowTask.data.workflowTaskActions;
+					});
+				};
+				/**
+				 * Removes a workflow object and resets the index of each task in the list.
+				 */
 				scope.removeWorkflowTask = function(workflowTask){
+					$log.debug("Removing Task: ");
+					$log.debug(workflowTask);
 					var deletePromise = workflowTask.$$delete();
-		    		deletePromise.then(function(){
-						if(workflowTask === scope.workflowTasks.selectedTask){
+					deletePromise.then(function(){
+		    				
+		    			if(workflowTask == scope.workflowTasks.selectedTask){
 							delete scope.workflowTasks.selectedTask;
-						}
-						scope.workflowTasks.splice(workflowTask.$$index,1);
-						for(var i in scope.workflowTasks){
-							scope.workflowTasks[i].$$index = i;
-						}
+					}
+		    			
+					scope.workflowTasks.splice(workflowTask.$$index,1);
+					for(var i in scope.workflowTasks){	
+						scope.workflowTasks[i].$$index = i;
+					}
 					});
 				};
 			}
