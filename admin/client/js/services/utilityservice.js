@@ -46,18 +46,10 @@ angular.module('slatwalladmin')
 			},
 			arraySorter:function(array, keyToSortBy){
 				array.sort(function(a, b){
-					if(angular.isDefined(keyToSortBy) && keyToSortBy === "type"){
-						if(a.type < b.type){
+					if(angular.isDefined(keyToSortBy)){
+						if(a[keyToSortBy]< b[keyToSortBy]){
 				            return -1;
-				        }else if(a.type > b.type){
-				            return 1;
-				        }else{
-				            return 0;   
-				        }
-					}else if(angular.isDefined(keyToSortBy) && keyToSortBy === "name"){
-						if(a.name < b.name){
-				            return -1;
-				        }else if(a.name > b.name){
+				        }else if(a[keyToSortBy] > b[keyToSortBy]){
 				            return 1;
 				        }else{
 				            return 0;   
