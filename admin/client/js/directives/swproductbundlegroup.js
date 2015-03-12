@@ -9,6 +9,7 @@ angular.module('slatwalladmin')
 	'productBundleService',
 	'collectionService',
 	'metadataService',
+	'utilityService',
 	function(
 		$http,
 		$log,
@@ -17,7 +18,8 @@ angular.module('slatwalladmin')
 		productBundlePartialsPath,
 		productBundleService,
 		collectionService,
-		metadataService
+		metadataService,
+		utilityService
 	){
 		return {
 			require:"^swProductBundleGroups",
@@ -160,15 +162,7 @@ angular.module('slatwalladmin')
 											// If the loadingCount drops to 0, then we can update scope
 											if(_loadingCount == 0){
 												//This sorts the array of objects by the objects' "type" property alphabetically
-												scope.productBundleGroupFilters.value.sort(function(a, b){
-													if(a.type < b.type){
-											            return -1;
-											        }else if(a.type > b.type){
-											            return 1;
-											        }else{
-											            return 0;   
-											        }
-												});
+												scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "type");
 												$log.debug(scope.productBundleGroupFilters.value);
 												scope.loading = false;
 												
@@ -232,15 +226,7 @@ angular.module('slatwalladmin')
 					//Pushes item back into array
 					scope.productBundleGroupFilters.value.push(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup[index]);
 					//Sorts Array
-					scope.productBundleGroupFilters.value.sort(function(a, b){
-						if(a.type < b.type){
-				            return -1;
-				        }else if(a.type > b.type){
-				            return 1;
-				        }else{
-				            return 0;   
-				        }
-					});
+					scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "type");
 					
 					//Removes the filter item from the filtergroup
 					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index,1);
