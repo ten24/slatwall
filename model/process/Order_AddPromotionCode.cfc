@@ -55,7 +55,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="promotionCode" hb_rbKey="entity.promotionCode.promotionCode";
     
     public boolean function promotionCodeNotAlreadyApplied() {
-        return !variables.order.hasPromotionCode(getService("promotionService").getPromotionCodeByPromotionCode(variables.promotionCode));
+        if(structKeyExists(variables,promotionCode)) {
+            return !variables.order.hasPromotionCode(getService("promotionService").getPromotionCodeByPromotionCode(variables.promotionCode));
+        } else {
+            return true;
+        }
     }
 
 }
