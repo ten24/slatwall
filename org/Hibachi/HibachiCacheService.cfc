@@ -87,9 +87,12 @@ component accessors="true" output="false" extends="HibachiService" {
 			var tuple = {
 				reset = true
 			};
-			if(arrayFindNoCase(cacheGetAllIDs(), arguments.key)) {
+			
+			// Done in a try catch in case the value doesn't exist
+			try{
 				tuple.value = cacheGet( arguments.key ).value;
-			}
+			} catch(any e){};
+			
 			cachePut( arguments.key, tuple );
 		}
 	}
