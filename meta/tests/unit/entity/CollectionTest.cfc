@@ -932,6 +932,85 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 	}
 	
+	public void function getHQLTest_keywords_with_filterGroup(){
+		
+		//acount data
+	
+		var collectionEntityData = {
+			collectionid = '12',
+			collectionCode = 'keywordAccount',
+			collectionObject = 'account',
+			
+			collectionConfig = '
+				{
+				  "baseEntityName": "SlatwallAccount",
+				  "baseEntityAlias": "_account",
+				  "columns": [
+				  	{
+				  		"propertyIdentifier":"_account.firstName",
+				  		"isSearchable":true,
+				  		"ormtype":"string"
+				  	},
+				  	{
+				  		"propertyIdentifier":"_account.lastName",
+				  		"isSearchable":true,
+				  		"ormtype":"string"
+				  	}
+				  ],
+				  "filterGroups":[
+				  	{
+				  		"filterGroup":[
+				  			{
+								"propertyIdentifier":"_account.firstName",
+								"comparisonOperator":"=",
+								"value":"Ryan"				  				
+				  			}
+				  		]
+				  	}
+				  ]
+				}
+			'
+		};
+		
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		collectionEntity.setKeywords('Ryan Marchand');
+		request.debug(collectionEntity.getHQL());
+	}
+	
+	public void function getHQLTest_keywords_without_filterGroup(){
+		
+		//acount data
+	
+		var collectionEntityData = {
+			collectionid = '12',
+			collectionCode = 'keywordAccount',
+			collectionObject = 'account',
+			
+			collectionConfig = '
+				{
+				  "baseEntityName": "SlatwallAccount",
+				  "baseEntityAlias": "_account",
+				  "columns": [
+				  	{
+				  		"propertyIdentifier":"_account.firstName",
+				  		"isSearchable":true,
+				  		"ormtype":"string"
+				  	},
+				  	{
+				  		"propertyIdentifier":"_account.lastName",
+				  		"isSearchable":true,
+				  		"ormtype":"string"
+				  	}
+				  ]
+				}
+			'
+		};
+		
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		collectionEntity.setKeywords('Ryan Marchand');
+		request.debug(collectionEntity.getHQL());
+	}
+	
 	public void function getHQLTest_notpersistent(){
 	
 		var collectionEntityData = {
