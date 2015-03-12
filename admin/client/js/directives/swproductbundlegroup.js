@@ -42,11 +42,6 @@ angular.module('slatwalladmin')
 				$log.debug('skuCollection22');
 				$log.debug(scope.productBundleGroup.data.skuCollectionConfig);
 
-//				var collectionConfig = {};
-//				if(angular.isString(scope.productBundleGroup.data.skuCollectionConfig)){
-//					collectionConfig = angular.fromJson(scope.productBundleGroup.data.skuCollectionConfig);
-//				}
-				
 				scope.collection = {
 					baseEntityName:"Sku",
 					baseEntityAlias:"_sku",
@@ -85,10 +80,6 @@ angular.module('slatwalladmin')
 				        	name:"Product Type",
 				        	value:"productType"
 				         },
-//				         {
-//				        	name:"Collections",
-//				        	value:"collection"
-//				         },
 				         {
 				        	name:"Brand",
 				        	value:"brand"
