@@ -78,13 +78,13 @@ component  extends="HibachiService" accessors="true" {
 		return csl.getRecords(); 
 	}
 	
-	public numeric function convertCurrency(required numeric amount, required originalCurrencyCode, required convertToCurrencyCode) {
-		return precisionEvaluate(arguments.amount * getCurrencyConversionRate(originalCurrencyCode=originalCurrencyCode, convertToCurrencyCode=convertToCurrencyCode));
+	public numeric function convertCurrency(required numeric amount, required originalCurrencyCode, required convertToCurrencyCode, conversionDateTime=now()) {
+		return precisionEvaluate(arguments.amount * getCurrencyConversionRate(originalCurrencyCode=originalCurrencyCode, convertToCurrencyCode=convertToCurrencyCode, conversionDateTime=arguments.conversionDateTime));
 	}
 	
-	public numeric function getCurrencyConversionRate(required originalCurrencyCode, required convertToCurrencyCode) {
+	public numeric function getCurrencyConversionRate(required originalCurrencyCode, required convertToCurrencyCode, conversionDateTime=now()) {
 		// First, check to see if there is a conversion record stored locally.
-		var currencyRate = getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=arguments.originalCurrencyCode, convertToCurrencyCode=arguments.convertToCurrencyCode);
+		var currencyRate = getCurrencyDAO().getCurrentCurrencyRateByCurrencyCodes(originalCurrencyCode=arguments.originalCurrencyCode, convertToCurrencyCode=arguments.convertToCurrencyCode, conversionDateTime=arguments.conversionDateTime);
 		if(!isNull(currencyRate)) {
 			if(currencyRate.getConversionCurrencyCode() == arguments.convertToCurrencyCode) {
 				return currencyRate.getConversionRate();
