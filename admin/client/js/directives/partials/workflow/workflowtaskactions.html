@@ -20,7 +20,7 @@
 				</li>
 			</ul>
 			<ul class="list-unstyled list-inline s-last">
-				<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" ng-click="selectWorkflowTaskAction(workflowTaskActions[$index])">{{$index}}
+				<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" ng-click="selectWorkflowTaskAction(workflowTaskActions[$index])">
 					<a class="btn s-btn-dgrey s-edit" data-target="#s-add-obj-1">
 						<i 	class="fa fa-pencil"
 						></i>
@@ -52,7 +52,7 @@
 <!--- Edit Filter Box --->
 <div 	class="col-xs-12  s-add-filter" 
 		id="j-add-action-b"
-		ng-if="workflowTaskActions.selectedTaskAction">
+		ng-if="workflowTaskActions.selectedTaskAction && !finished">
 	<sw-form name="selectedTaskAction"
 				data-object="workflowTaskActions.selectedTaskAction"
 				data-context="save">
@@ -211,9 +211,9 @@
 					</div>
 					<div class="col-xs-3">
 						<div class="s-button-select-group">
-							<button type="button" class="btn btn-sm s-btn-ten24" ng-click="saveWorkflowTaskAction(workflowTaskActions.selectedTaskAction)">Save & Add Another</button>
+							<button type="button" class="btn btn-sm s-btn-ten24" ng-click="saveWorkflowTaskAction(workflowTaskActions.selectedTaskAction, 'add')">Save & Add Another</button>
 							<div class="s-or-box">OR-</div>
-							<button type="button" class="btn btn-sm s-btn-ten24" ng-click="saveWorkflowTaskAction(workflowTaskActions.selectedTaskAction)">Save & Finish</button>
+							<button type="button" class="btn btn-sm s-btn-ten24" ng-click="saveWorkflowTaskAction(workflowTaskActions.selectedTaskAction, 'finish')">Save & Finish</button>
 						</div>
 					</div>
 				</div>

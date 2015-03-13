@@ -58,16 +58,25 @@ angular.module('slatwalladmin')
                      * @param taskAction
                      * --------------------------------------------------------------------------------------------------------
                      */
-                    scope.saveWorkflowTaskAction = function (taskAction) {
+                    scope.saveWorkflowTaskAction = function (taskAction, context) {
+                    		$log.debug("Context: " + context);
                         $log.debug("saving task action and parent task");
                         $log.debug(taskAction);
                         var savePromise = scope.workflowTaskActions.selectedTaskAction.$$save();
                         savePromise.then(function () {
                             var taSavePromise = taskAction.$$save;
+                            //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
+                            if (context == 'add'){
+                        			$log.debug("Save and New");
+                        			scope.addWorkflowTaskAction(taskAction);
+                        			scope.finished = false;
+                            }else if (context == "finish"){
+                            		scope.finished = true;
+                            }
                         });
-                        scope.selectWorkflowTaskAction(taskAction); //Was selecting after save trying to get it to work!!! Not working.
-
-                    }
+                        //scope.selectWorkflowTaskAction(taskAction);
+                        
+                    }//<--end save
 
                     scope.getWorkflowTaskActions();//Call get
                     
@@ -90,8 +99,9 @@ angular.module('slatwalladmin')
                      * --------------------------------------------------------------------------------------------------------
                      */
                     scope.selectWorkflowTaskAction = function (workflowTaskAction) {
-                        $log.debug("Selecting new task action: ");
+                        $log.debug("Selecting new task action for editing: ");
                         $log.debug(workflowTaskAction);
+                        scope.finished = false;
                         scope.workflowTaskActions.selectedTaskAction = undefined;
                         var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflowTask.data.workflow.data.workflowObject);
                         filterPropertiesPromise.then(function (value) {

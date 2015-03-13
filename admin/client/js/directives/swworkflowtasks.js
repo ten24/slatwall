@@ -91,7 +91,9 @@ angular.module('slatwalladmin')
 						scope.workflowTasks.selectedTask = workflowTask;
 					});
 				};
-				
+				/**
+				 * Removes a workflow task from the list and reindexes.
+				 */
 				scope.removeWorkflowTask = function(workflowTask){
 					var deletePromise = workflowTask.$$delete();
 		    				deletePromise.then(function(){
