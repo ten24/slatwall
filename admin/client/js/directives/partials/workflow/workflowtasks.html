@@ -1,10 +1,10 @@
 
 <div class="s-body-box">
 	<div class="s-bundle-add-items s-workflow-objs">
-			<ul ng-repeat="workflowTask in workflowTasks" ng-init="workflowTask.index = $index" class="list-unstyled s-order-item-options s-negative-obj"><!-- problem one -->
+			<ul ng-repeat="workflowTask in workflowTasks" ng-init="workflowTask.$$index = $index" class="list-unstyled s-order-item-options s-negative-obj"><!-- problem one -->
 				<li class="s-bundle-add-obj s-no-edit" ng-show="workflowTask.$$isPersisted()">
 					<ul class="list-unstyled list-inline">
-						<li class="s-item-type s-tooltip">{{$index+1}}</li>
+						<li class="s-item-type s-tooltip" ng-bind="$index+1"></li>
 					</ul>
 					<ul class="list-unstyled list-inline s-middle">
 						<li class="j-tool-tip-item s-bundle-details" ng-bind="workflowTask.data.taskName"></li>
@@ -31,7 +31,7 @@
 					</ul>
 					<div class="clearfix"></div>
 				</li>
-			</ul><!--problem one -->
+			</ul>
 	</div>
 
 	<button class="btn btn-xs s-btn-ten24" 
@@ -42,7 +42,6 @@
 		<i class="fa fa-plus"></i> Create New Task
 	</button>
 
-	<!--- Edit Filter Box --->
 	<div class="col-xs-12 s-add-filter s-tab-layout" id="j-create-new-task" ng-if="workflowTasks.selectedTask">
 		<div class="row">
 			<h4>
@@ -57,7 +56,6 @@
 			</span>
 		</div>
 	</div>
-	<!--- //Edit Filter Box --->
 
 	<div class="clearfix"></div>
 

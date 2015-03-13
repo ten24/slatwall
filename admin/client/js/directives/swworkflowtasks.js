@@ -1,3 +1,6 @@
+/**
+ * Handles adding, editing, and deleting Workflows Tasks.
+ */
 angular.module('slatwalladmin')
 .directive('swWorkflowTasks', [
 '$log',
@@ -21,18 +24,24 @@ angular.module('slatwalladmin')
 			},
 			templateUrl:workflowPartialsPath+"workflowtasks.html",
 			link: function(scope, element,attrs){
-				
-				$log.debug('workflow tasks init');	
 				scope.workflowPartialsPath = workflowPartialsPath;
 				scope.propertiesList = {};
+				function logger(context, message){
+					$log.debug("SwWorkflowTasks :" + context + " : " + message);
+				}
+				/**
+				 * Sets workflowTasks on the scope by populating with $$getWorkflowTasks()
+				 */
 				scope.getWorkflowTasks = function(){
-				var workflowTasksPromise = scope.workflow.$$getWorkflowTasks();
+					logger("getWorkflowTasks", "Retrieving items");
+					var workflowTasksPromise = scope.workflow.$$getWorkflowTasks();
 					workflowTasksPromise.then(function(){
 						scope.workflowTasks = scope.workflow.data.workflowTasks;
-						
 					});
 					
-				if(angular.isUndefined(scope.workflow.data.workflowTasks)){
+					if(angular.isUndefined(scope.workflow.data.workflowTasks)){
+						//Reset the workflowTasks.
+						logger("getWorkflowTasks","workflowTasks is undefined.");
 						scope.workflow.data.workflowTasks = [];
 						scope.workflowTasks = scope.workflow.data.workflowTasks;
 					}
@@ -41,26 +50,33 @@ angular.module('slatwalladmin')
 				scope.getWorkflowTasks();
 				
 				/**
-				 * Handles adding the new workflow object
+				 * Add a workflow task.
 				 */
 				scope.addWorkflowTask = function(){
-					$log.debug('addWorkflowTasks');
+					logger('addWorkflowTasks', "Calling $$addWorkflowTask");
 					var newWorkflowTask = scope.workflow.$$addWorkflowTask();
+					logger("var newWorkflowTask", newWorkflowTask);
 					scope.selectWorkflowTask(newWorkflowTask);
 				};
-				
+				/**
+				 * Watches the select for changes.
+				 */
 				scope.$watch('workflowTasks.selectedTask.data.workflow.data.workflowObject',function(newValue,oldValue){
-					
-				if(newValue !== oldValue && angular.isDefined(scope.workflowTasks.selectedTask)){
+					logger("scope.$watch", "Change Detected " + newValue + " from " + oldValue)
+					if((newValue !== oldValue && angular.isDefined(scope.workflowTasks.selectedTask)) ){
+						logger("scope.$watch", "Change to " + newValue)
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
 					}
+					
 				});
 				
 				/**
-				 * Handles selecting a workflow object
+				 * Select a workflow task.
 				 */
 				scope.selectWorkflowTask = function(workflowTask){
+					logger("selectWorkflowTask", "selecting a workflow task");
+					$log.debug(workflowTask);
 					scope.workflowTasks.selectedTask = undefined;
 					
 					var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
@@ -75,29 +91,18 @@ angular.module('slatwalladmin')
 						scope.workflowTasks.selectedTask = workflowTask;
 					});
 				};
-				scope.saveWorkflowTask = function(){
-					var savePromise = scope.workflowTask.selectedTaskAction.$$save();
-					savePromise.then(function(){
-						//delete scope.workflowTask.data.workflowTaskActions;
-					});
-				};
-				/**
-				 * Removes a workflow object and resets the index of each task in the list.
-				 */
+				
 				scope.removeWorkflowTask = function(workflowTask){
-					$log.debug("Removing Task: ");
-					$log.debug(workflowTask);
 					var deletePromise = workflowTask.$$delete();
-					deletePromise.then(function(){
-		    				
-		    			if(workflowTask == scope.workflowTasks.selectedTask){
+		    				deletePromise.then(function(){
+						if(workflowTask === scope.workflowTasks.selectedTask){
 							delete scope.workflowTasks.selectedTask;
-					}
-		    			
-					scope.workflowTasks.splice(workflowTask.$$index,1);
-					for(var i in scope.workflowTasks){	
-						scope.workflowTasks[i].$$index = i;
-					}
+						}
+						scope.workflowTasks.splice(workflowTask.$$index,1);
+						for(var i in scope.workflowTasks){
+							logger("deletePromise", i);
+							scope.workflowTasks[i].$$index = i;
+						}
 					});
 				};
 			}
