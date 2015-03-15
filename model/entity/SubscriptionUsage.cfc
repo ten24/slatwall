@@ -119,7 +119,8 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	
 	public void function copyOrderItemInfo(required any orderItem) {
 		var currencyCode = arguments.orderItem.getCurrencyCode();
-		setRenewalPrice( arguments.orderItem.getSku().getRenewalPriceByCurrencyCode( currencyCode ) );
+		var renewalPrice = arguments.orderItem.getSku().getRenewalPriceByCurrencyCode( currencyCode );
+		setRenewalPrice( renewalPrice );
 		setCurrencyCode( arguments.orderItem.getCurrencyCode() );
 		
 		// Copy all the info from subscription term

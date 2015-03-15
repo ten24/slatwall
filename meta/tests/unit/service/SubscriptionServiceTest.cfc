@@ -56,7 +56,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function processSubscriptionUsage_renew_test(){
 		//args subsciptionUsage, processObject,data
 		var subscriptionUsageData = {
-			renewalPrice = 0,
+			renewalPrice = {
+				USD=0
+			},
+			currencyCode='USD',
 			subscriptionOrderItems = [
 				{
 					subscriptionOrderItemID="",
@@ -64,49 +67,78 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 						//soitRenewal
 						typeid="444df312935fa6b9866a813b3f4793a2"
 					},
-					orderItem={
-						orderItemID="",
-						quantity=1,
-						sku={
-							skuid = '',
-							price = 10,
-							subscriptionTerm={
-								subscriptionTermID="",
-								renewalTerm={
-									termID=""
-								}
-							}
-						},
-						order={
-							orderID="",
-							orderStatusType={
-								//ostClosed
-								typeid="444df2b8b98441f8e8fc6b5b4266548c"
-							}
-						},
-						currencyCode='USD'
-					}
+					
+					currencyCode='USD'
 					
 				}
 			],
+			
 			expirationDate="12/12/2014"
 		};
 		var subscriptionUsage = createPersistedTestEntity('subscriptionUsage',subscriptionUsageData);
 		
-//		var subscriptionTermData={
-//			subscriptionTermID="",
-//			
-//		};
-//		var subsciptionTerm = createPersistedTestEntity('subscriptionTerm',subscriptionTermData); 
-//		var termData = {
-//			termID="",
-//			termHours=0,
-//			termDays=5,
-//			termMonths=0,
-//			termYears=0
-//		};
-//		var term = createPersistedTestEntity('term',termData);
+		var orderData={
+			orderID="",
+			orderStatusType={
+				//ostClosed
+				typeid="444df2b8b98441f8e8fc6b5b4266548c"
+			},
+			orderItems=[
+				{
+					orderItemID="test",
+					quantity=1,
+					
+					currencyCode='USD'
+				}
+			]
+		};
+		var order = createPersistedTestEntity('order',orderData);
 		
+		var productData ={
+			productid="",
+			productCode="productCode212",
+			productName="productName",
+			skus=[
+				{
+					skuid="",
+					price = 10,
+					skuCode='testsku122',
+					skuName="testsku"
+					
+				}
+			]
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var subscriptionTermData={
+			subscriptionTermID="",
+			subscriptionTermName="subTermName"
+		};
+		var subscriptionTerm = createPersistedTestEntity('subscriptionTerm',subscriptionTermData); 
+		var termData = {
+			termID="",
+			termHours=0,
+			termDays=5,
+			termMonths=0,
+			termYears=0
+		};
+		var term = createPersistedTestEntity('term',termData);
+		
+		var orderItem = order.getOrderItems()[1];
+		var sku = product.getSkus()[1];
+		
+		subscriptionTerm.setRenewalTerm(term);
+		
+		orderItem.setSku(sku);
+		sku.setSubscriptionTerm(subscriptionTerm);
+		
+		subscriptionUsage.getSubscriptionOrderItems()[1].setOrderItem(order.getOrderItems()[1]);
+		
+
+//		request.debug(subscriptionTerm);
+		//subscriptionUsage.setSubscriptionTerm(subscriptionTerm);
+		
+		//subscriptionUsage.setRenewalTerm()
 		//subscriptionUsage.getSubscriptionOrderItems()[1].setOrderItem(orderItem);
 		
 		//subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().setCurrencyCode('USD');
@@ -115,7 +147,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var data = {};
 		
-		//var subscriptionUsage = variables.service.processSubscriptionUsage_renew(subscriptionUsage,processObject,data);
+		var subscriptionUsage = variables.service.processSubscriptionUsage_renew(subscriptionUsage,processObject,data);
 	}
 	
 	
