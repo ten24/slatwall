@@ -63,6 +63,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var account = createPersistedTestEntity('account',accountData);
 		
 		var subscriptionUsageData = {
+			subscriptionUsageID="",
 			renewalPrice = {
 				USD=0
 			},
@@ -105,13 +106,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var productData ={
 			productid="",
-			productCode="productCode2s212",
 			productName="productName",
 			skus=[
 				{
 					skuid="",
 					price = 10,
-					skuCode='testsku11s22',
 					skuName="testsku"
 					
 				}
@@ -155,7 +154,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		//subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().setCurrencyCode('USD');
 		
-		var data = {};
+		var data = {
+			subscriptionUsageID=subscriptionUsage.getSubscriptionUsageID()
+		};
 		
 		var subscriptionUsage = variables.service.processSubscriptionUsage( subscriptionUsage, data, 'renew' );
 		//account.renewSubscriptionUsage();

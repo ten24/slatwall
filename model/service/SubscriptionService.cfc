@@ -443,11 +443,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					
 				} else if (arguments.processObject.getRenewalPaymentType() eq 'orderPayment') {
 					var orderPayment = getOrderService().newOrderPayment();
-					
-					orderPayment.copyFromOrderPayment( arguments.processObject.getOrderPayment() );
+					if(!isnull(arguments.processObject.getOrderPayment())){
+						orderPayment.copyFromOrderPayment( arguments.processObject.getOrderPayment() );
+					}
 					orderPayment.setCurrencyCode( order.getCurrencyCode() );
 					orderPayment.setOrder( order );
-					
 				} else if (arguments.processObject.getRenewalPaymentType() eq 'new') {
 					order = getOrderService().processOrder(order, arguments.data, 'addOrderPayment');
 					
@@ -462,13 +462,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// Place the Order
 				order = getOrderService().processOrder(order, {}, 'placeOrder');
 				
-				// set the subscription usage nextBillDate
-				arguments.subscriptionUsage.setNextBillDate( nextBillDate );
-				arguments.subscriptionUsage.setFirstReminderEmailDateBasedOnNextBillDate();
-				
 				// As long as the order was placed, then we can update the nextBillDateTime & nextReminderDateTime
 				if(order.getStatusCode() == "ostNotPlaced") {
 					arguments.subscriptionUsage.addMessage("notPlaced", rbKey('validate.processSubscriptionUsage_renew.order.notPlaced') & ' <a href="?slatAction=admin:entity.detailOrder&orderID=#order.getOrderID()#">#getHibachiScope().rbKey('define.notPlaced')#</a>');
+				}else if(order.getStatusCode() == 'ostClosed'){
+					// set the subscription usage nextBillDate
+					arguments.subscriptionUsage.setNextBillDate( nextBillDate );
+					arguments.subscriptionUsage.setFirstReminderEmailDateBasedOnNextBillDate();
 				}
 			}
 		// Existing Renewal Order to be re-submitted
