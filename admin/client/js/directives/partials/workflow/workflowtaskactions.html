@@ -1,8 +1,8 @@
 <div class="s-bundle-add-items s-workflow-objs s-sortable">
-	<ul class="list-unstyled s-order-item-options" ng-repeat="workflowTaskAction in workflowTaskActions">
-		<li class="s-bundle-add-obj" ng-if="workflowTaskAction.$$isPersisted()">
+	<span class="list-unstyled s-order-item-options" ng-repeat="workflowTaskAction in workflowTaskActions" ng-init="workflowTaskAction.$$actionIndex = $index">
+		<span class="s-bundle-add-obj" ng-if="workflowTaskAction.$$isPersisted()">
 			<ul class="list-unstyled list-inline">
-				<li class="s-item-type" ng-bind="$index+1" ng-init="workflowTaskAction.$$index=$index"></li>
+				<li class="s-item-type" ng-bind="$index+1"></li>
 				<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>
 			</ul>
 			<ul class="list-unstyled list-inline s-middle">
@@ -27,16 +27,14 @@
 					</a>
 				</li>
 				<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" ng-click="removeWorkflowTaskAction(workflowTaskActions[$index])">
-					<a 	class="btn s-btn-dgrey s-remove"
-						
-					>
+					<a class="btn s-btn-dgrey s-remove">
 						<i class="fa fa-trash"></i>
 					</a>
 				</li>
 			</ul>
 			<div class="clearfix"></div>
-		</li>
-	</ul>
+		</span>
+	</span>
 </div>
 
 <div class="form-group">
@@ -44,8 +42,7 @@
 	<button class="btn btn-xs s-btn-ten24" 
 			data-target="#j-add-action-b"
 			ng-click="addWorkflowTaskAction()"
-			ng-show="!workflowTaskActions.selectedTaskAction || workflowTaskActions.selectedTaskAction.$$isPersisted()"
-	>
+			ng-show="!workflowTaskActions.selectedTaskAction || workflowTaskActions.selectedTaskAction.$$isPersisted()">
 		<i class="fa fa-plus"></i>
 		 Add Action
 	</button>
@@ -55,14 +52,12 @@
 <!--- Edit Filter Box --->
 <div 	class="col-xs-12  s-add-filter" 
 		id="j-add-action-b"
-		ng-if="workflowTaskActions.selectedTaskAction"
->
-	<sw-form 	name="selectedTaskAction"
+		ng-if="workflowTaskActions.selectedTaskAction && !finished">
+	<sw-form name="selectedTaskAction"
 				data-object="workflowTaskActions.selectedTaskAction"
-				data-context="save"
-	>
+				data-context="save">
 		<div class="row">
-			<h4> Add Action {{workflowTaskActions.selectedTaskAction.data.actionType}}
+			<h4>Add Action {{workflowTaskActions.selectedTaskAction.data.actionType}}
 				<i 	class="fa fa-times" 
 					data-target="#j-add-action-b"
 					ng-click="removeWorkflowTaskAction(workflowTaskActions.selectedTaskAction)"
@@ -81,17 +76,6 @@
 							>
 							</sw-property-display>
 						</div>
-	
-						<!-- <div class="form-group form-group-sm">
-							<label for="" class="s-width-100">Select Object:</label>
-							<select class="form-control input-sm">
-								<option>Orders</option>
-								<option>Related Objects</option>
-								<option>Account</option>
-								<option>Order Item</option>
-							</select>
-						</div> -->
-	
 					</div>
 					<div class="col-xs-6 s-criteria">
 						<!--- Filter Criteria Start --->
@@ -108,20 +92,6 @@
 										data-field-type="search-select"
 										data-editing="true"
 									></sw-property-display>
-									
-									<!-- <div class="input-group">
-										<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
-										<ul class="dropdown-menu s-search-options">
-											<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
-											<li><a>Order Confirmation Template</a></li>
-											<li><a>Order Gift Thank You</a></li>
-											<li><a>Order Feedback</a></li>
-										</ul>
-										<div class="input-group-btn">
-											<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
-										</div>
-									</div> -->
-	
 									<div class="s-add-content collapse" id="j-toggle-add-bundle-type">
 										<form id="form_id" action="index.html" method="post" style="background-color: #FFF;border: 1px solid #DDD;padding:20px;">
 											<div class="form-group has-error">
@@ -147,40 +117,12 @@
 	
 							</div>
 	
-							<!-- <div class="form-group form-group-sm">
-								<label for="" class="col-sm-12 s-no-paddings">On Success</label>
-								<select class="form-control input-sm">
-									<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
-									<option selected="" value="Select Next Action">Select Next Action</option>
-									<option value="Select Next Task">Select Next Task</option>
-									<option value="Skip to Next Task">Skip to Next Task</option>
-									<option value="Exit Workflow">Exit Workflow</option>
-								</select>
-							</div>
-							<div class="form-group form-group-sm">
-								<select class="form-control input-sm">
-									<option value="- Select Action">- Select Action</option>
-								</select>
-							</div>
-	
-							<div class="form-group form-group-sm">
-								<label for="" class="col-sm-12 s-no-paddings">On Failure</label>
-								<select class="form-control input-sm">
-									<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
-									<option value="Select Next Action">Select Next Action</option>
-									<option value="Select Next Task">Select Next Task</option>
-									<option value="Skip to Next Task">Skip to Next Task</option>
-									<option selected="" value="Exit Workflow">Exit Workflow</option>
-								</select>
-							</div> -->
-	
 						</div>
 						<!--- //Filter Criteria End --->
 						
 						<!--- Filter Criteria Start --->
 						<div 	class="s-filter-group-item"
-								ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'print'"
-						>
+								ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'print'">
 	
 							<h4>Print Template</h4>
 							<div class="form-group form-group-sm">
@@ -193,19 +135,6 @@
 										data-field-type="search-select"
 										data-editing="true"
 									></sw-property-display>
-									<!-- <div class="input-group">
-										<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
-										<ul class="dropdown-menu s-search-options">
-											<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
-											<li><a>Order Confirmation Template</a></li>
-											<li><a>Order Gift Thank You</a></li>
-											<li><a>Order Feedback</a></li>
-										</ul>
-										<div class="input-group-btn">
-											<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
-										</div>
-									</div> -->
-	
 									<div class="s-add-content collapse" id="j-toggle-add-bundle-type">
 										<form id="form_id" action="index.html" method="post" style="background-color: #FFF;border: 1px solid #DDD;padding:20px;">
 											<div class="form-group has-error">
@@ -230,33 +159,6 @@
 								<!--- // search --->
 	
 							</div>
-	
-							<!-- <div class="form-group form-group-sm">
-								<label for="" class="col-sm-12 s-no-paddings">On Success</label>
-								<select class="form-control input-sm">
-									<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
-									<option selected="" value="Select Next Action">Select Next Action</option>
-									<option value="Select Next Task">Select Next Task</option>
-									<option value="Skip to Next Task">Skip to Next Task</option>
-									<option value="Exit Workflow">Exit Workflow</option>
-								</select>
-							</div>
-							<div class="form-group form-group-sm">
-								<select class="form-control input-sm">
-									<option value="- Select Action">- Select Action</option>
-								</select>
-							</div>
-	
-							<div class="form-group form-group-sm">
-								<label for="" class="col-sm-12 s-no-paddings">On Failure</label>
-								<select class="form-control input-sm">
-									<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
-									<option value="Select Next Action">Select Next Action</option>
-									<option value="Select Next Task">Select Next Task</option>
-									<option value="Skip to Next Task">Skip to Next Task</option>
-									<option selected="" value="Exit Workflow">Exit Workflow</option>
-								</select>
-							</div> -->
 	
 						</div>
 						<!--- //Filter Criteria End --->
@@ -271,46 +173,12 @@
 								<input type="text" class="form-control" placeholder="Ready To Capture">
 								<!--- <p class="help-block">Help text here.</p> --->
 							</div>
-	
-							<!-- 
-							<div class="form-group form-group-sm">
-								<label for="" class="col-sm-12 s-no-paddings">On Success</label>
-								<select class="form-control input-sm">
-									<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
-									<option selected="" value="Select Next Action">Select Next Action</option>
-									<option value="Select Next Task">Select Next Task</option>
-									<option value="Skip to Next Task">Skip to Next Task</option>
-									<option value="Exit Workflow">Exit Workflow</option>
-								</select>
-							</div>
-	
-							<div class="form-group form-group-sm">
-								<label for="" class="col-sm-12 s-no-paddings"></label>
-								<select class="form-control input-sm">
-									<option value="- Select Action">- Select Action</option>
-								</select>
-							</div>
-	
-							<div class="form-group form-group-sm">
-								<label for="" class="col-sm-12 s-no-paddings">On Failure</label>
-								<select class="form-control input-sm">
-									<option value="Proceed to Next Action / Task">Proceed to Next Action / Task</option>
-									<option value="Select Next Action">Select Next Action</option>
-									<option value="Select Next Task">Select Next Task</option>
-									<option value="Skip to Next Task">Skip to Next Task</option>
-									<option selected="" value="Exit Workflow">Exit Workflow</option>
-								</select>
-							</div>
-							 -->
 						</div>
 						<!--- //Filter Criteria End --->
-	
-	
 						<!--- Filter Criteria Start --->
 						<div 	class="s-filter-group-item"
 								ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'process'"
 						>
-	
 							<h4>Dynamic Numeric</h4>
 							<div class="row">
 								<div class="col-md-6 form-group form-group-sm">
@@ -329,8 +197,6 @@
 	
 						</div>
 						<!--- //Filter Criteria End --->
-	
-	
 						<!--- Filter Criteria Start --->
 						<div 	class="s-filter-group-item"
 								ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'delete'"
@@ -345,9 +211,9 @@
 					</div>
 					<div class="col-xs-3">
 						<div class="s-button-select-group">
-							<button type="button" class="btn btn-sm s-btn-ten24" ng-click="saveWorkflowTaskAction()">Save & Add Another</button>
+							<button type="button" class="btn btn-sm s-btn-ten24" ng-click="saveWorkflowTaskAction(workflowTaskActions.selectedTaskAction, 'add')">Save & Add Another</button>
 							<div class="s-or-box">OR-</div>
-							<button type="button" class="btn btn-sm s-btn-ten24" ng-click="saveWorkflowTaskAction()">Save & Finish</button>
+							<button type="button" class="btn btn-sm s-btn-ten24" ng-click="saveWorkflowTaskAction(workflowTaskActions.selectedTaskAction, 'finish')">Save & Finish</button>
 						</div>
 					</div>
 				</div>
