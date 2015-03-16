@@ -52,7 +52,7 @@ component entityname="SlatwallType" table="SwType" persistent="true" accessors="
 	property name="typeID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="typeIDPath" ormtype="string" length="4000";
 	property name="typeName" ormtype="string";
-	property name="typeCode" ormtype="string"  unique="true" index="PI_TYPECODE";
+	property name="typeCode" ormtype="string";
 	property name="typeDescription" ormtype="string" length="4000";
 	property name="sortOrder" ormtype="integer" sortContext="parentType";
 	property name="systemCode" ormtype="string" index="PI_SYSTEMCODE";
