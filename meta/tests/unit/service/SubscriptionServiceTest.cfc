@@ -55,6 +55,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function processSubscriptionUsage_renew_test(){
 		//args subsciptionUsage, processObject,data
+		var accountData = {
+			accountID = 'ryansAccountID',
+			firstName = 'Ryan',
+			lastName = 'Marchand'
+		};
+		var account = createPersistedTestEntity('account',accountData);
+		
 		var subscriptionUsageData = {
 			renewalPrice = {
 				USD=0
@@ -77,6 +84,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var subscriptionUsage = createPersistedTestEntity('subscriptionUsage',subscriptionUsageData);
 		
+		subscriptionUsage.setAccount(account);
+		
 		var orderData={
 			orderID="",
 			orderStatusType={
@@ -96,17 +105,20 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var productData ={
 			productid="",
-			productCode="productCode212",
+			productCode="productCode2s212",
 			productName="productName",
 			skus=[
 				{
 					skuid="",
 					price = 10,
-					skuCode='testsku122',
+					skuCode='testsku11s22',
 					skuName="testsku"
 					
 				}
-			]
+			],
+			productType={
+				productTypeID="444df2f9c7deaa1582e021e894c0e299"
+			}
 		};
 		var product = createPersistedTestEntity('product',productData);
 		
@@ -143,11 +155,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		//subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().setCurrencyCode('USD');
 		
-		var processObject = subscriptionUsage.getProcessObject('renew');
-		
 		var data = {};
 		
-		var subscriptionUsage = variables.service.processSubscriptionUsage_renew(subscriptionUsage,processObject,data);
+		var subscriptionUsage = variables.service.processSubscriptionUsage( subscriptionUsage, data, 'renew' );
+		//account.renewSubscriptionUsage();
+		
 	}
 	
 	

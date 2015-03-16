@@ -157,7 +157,13 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	
 	public any function getSubscriptionOrderItemName() {
 		if(arrayLen(getSubscriptionOrderItems())) {
-			return getSubscriptionOrderItems()[1].getOrderItem().getSku().getProduct().getProductName();
+			var subscriptionOrderItem = getSubscriptionOrderItems()[1];
+			if(	!isnull(subscriptionOrderItem.getOrderItem())
+				&& !isnull(subscriptionOrderItem.getOrderItem().getSku()) 
+				&& !isnull(subscriptionOrderItem.getOrderItem().getSku().getProduct()) 
+			){
+				return subscriptionOrderItem.getOrderItem().getSku().getProduct().getProductName();
+			}
 		}
 		return "";
 	}
