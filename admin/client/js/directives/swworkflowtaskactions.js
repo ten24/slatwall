@@ -22,7 +22,7 @@ angular.module('slatwalladmin')
                     $log.debug('Workflow Task Actions Init');
                     $log.debug(scope.workflowTask);
                     scope.openActions = false;
-
+                    scope.hidden = true;
                     var getObjectByActionType = function (workflowTaskAction) {
                         if (workflowTaskAction.data.actionType === 'email') {
                             workflowTaskAction.$$getEmailTemplate();
@@ -36,15 +36,25 @@ angular.module('slatwalladmin')
                      * --------------------------------------------------------------------------------------------------------
                      */
                     scope.getWorkflowTaskActions = function () {
-                        var workflowTaskPromise = scope.workflowTask.$$getWorkflowTaskActions();
-                        workflowTaskPromise.then(function () {
-                            scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
-
-                            angular.forEach(scope.workflowTaskActions, function (workflowTaskAction) {
-                                getObjectByActionType(workflowTaskAction);
-                            });
-                            $log.debug(scope.workflowTaskActions);
-                        });
+                    	/***
+ 					   Note:
+ 					   This conditional is checking whether or not we need to be retrieving to
+ 					   items all over again. If we already have them, we won't make another
+ 					   trip to the database. 
+ 					   
+ 					***/
+                    		if(angular.isUndefined(scope.workflowTask.data.workflowTaskActions)){   
+                    			var workflowTaskPromise = scope.workflowTask.$$getWorkflowTaskActions();
+                    				workflowTaskPromise.then(function () {
+                    					scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
+                    					angular.forEach(scope.workflowTaskActions, function (workflowTaskAction) {
+                            			getObjectByActionType(workflowTaskAction);
+                    					});
+                            		$log.debug(scope.workflowTaskActions);
+                    			});
+                    		}else{
+                    			scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
+                    		}
                         if (angular.isUndefined(scope.workflowTask.data.workflowTaskActions)) {
                             scope.workflowTask.data.workflowTaskActions = [];
                             scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
@@ -59,7 +69,7 @@ angular.module('slatwalladmin')
                      * --------------------------------------------------------------------------------------------------------
                      */
                     scope.saveWorkflowTaskAction = function (taskAction, context) {
-                    		$log.debug("Context: " + context);
+                    	    $log.debug("Context: " + context);
                         $log.debug("saving task action and parent task");
                         $log.debug(taskAction);
                         var savePromise = scope.workflowTaskActions.selectedTaskAction.$$save();
@@ -79,7 +89,6 @@ angular.module('slatwalladmin')
                     }//<--end save
 
                     scope.getWorkflowTaskActions();//Call get
-                    
                     /**
                      * --------------------------------------------------------------------------------------------------------
                      * Adds workflow action items by calling the workflowTask objects $$addWorkflowTaskAction() method
