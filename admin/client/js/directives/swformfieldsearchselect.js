@@ -96,7 +96,7 @@ angular.module('slatwalladmin')
 				    scope.$item = $item;
 				    scope.$model = $model;
 				    scope.$label = $label;
-				    
+				    scope.showAddBtn = false; //turns off the add btn on select
 				    //angular.extend(inflatedObject.data,$item);
 				    object.$$init($item);
 				    $log.debug('select item');
