@@ -11,7 +11,7 @@ function(
 	$log
 ){
 	return {
-		restrict: 'A',
+		restrict: 'AE',
 		scope:{
 			swRbkey:"="
 		},
