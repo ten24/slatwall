@@ -1,5 +1,5 @@
 <div class="s-bundle-add-items s-workflow-objs">
-	<ul class="list-unstyled s-order-item-options s-negative-obj">
+	<div class="list-unstyled s-order-item-options s-negative-obj">
 		<!---TODO: convert to trigger directive --->
 		<span ng-repeat="workflowTrigger in workflowTriggers"> 
 			<span 	sw-workflow-trigger
@@ -10,7 +10,7 @@
 			>
 			</span>
 		</span>
-	</ul>
+	</div>
 
 	<button ng-show="!workflowTriggers.selectedTrigger || workflowTriggers.selectedTrigger.$$isPersisted()" class="btn btn-xs s-btn-ten24" 
 			ng-click="addWorkflowTrigger()" 

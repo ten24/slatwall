@@ -24,7 +24,7 @@ angular.module('slatwalladmin')
 				productBundleGroups:"=",
 				addProductBundleGroup:"&"
 			},
-			controller: function($scope, $element,$attrs){
+			controller: ['$scope','$element','$attrs',function($scope, $element,$attrs){
 				$scope.$id = 'productBundleGroups';
 				$log.debug('productBundleGroups');
 				$log.debug($scope.productBundleGroups);
@@ -46,7 +46,7 @@ angular.module('slatwalladmin')
 				
 				
 				
-			}
+			}]
 		};
 	}
 ]);

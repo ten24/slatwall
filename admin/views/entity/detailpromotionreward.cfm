@@ -64,6 +64,13 @@ Notes:
 	<cfset rc.promotionReward.setRewardType(rc.rewardType) />
 </cfif>
 
+<!--- Show a message if the user has not yet selected a product type, sku, etc...when reward type is merchandise --->
+<cfif not rc.promotionperiod.isExpired() and not rc.edit and rc.promotionReward.getRewardType() eq "merchandise">
+	<cfif not arrayLen(rc.promotionReward.getSkus()) and not arrayLen(rc.promotionReward.getProducts()) and not arrayLen(rc.promotionReward.getProductTypes())>
+		<cfset rc.$.slatwall.showMessageKey('admin.pricing.promotionperiod.productortypeorskunotdefined_info') />
+	</cfif>
+</cfif>
+
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.promotionreward#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.promotionreward#" edit="#rc.edit#" 

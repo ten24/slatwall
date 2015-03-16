@@ -337,8 +337,7 @@ Notes:
 					  			if(angular.isDefined(context)){
 					  				params.context = context;
 					  			}
-					  			
-					  			
+					 			
 					  			$http({
 					  				url:urlString,
 					  				method:'POST',
@@ -874,11 +873,18 @@ Notes:
 				    	var _save = function(entityInstance){
 				    		 var timeoutPromise = $timeout(function(){
 					    		$log.debug('save begin');
+					    		$log.debug(entityInstance);
+					    		if (angular.isUndefined(entityInstance.$$getID()))
+					    		{
+					    			return timeoutPromise;
+					    		}
 					    		var entityID = entityInstance.$$getID();
 					    		
 					    		var modifiedData = _getModifiedData(entityInstance);
+					   
 					    		$log.debug('modifiedData complete');
 					    		$log.debug(modifiedData);
+					    		timeoutPromise.valid = modifiedData.valid;
 					    		if(modifiedData.valid){
 						    		var params = {};
 									params.serializedJsonData = angular.toJson(modifiedData.value);
@@ -907,6 +913,7 @@ Notes:
 									
 									$location.hash(targetID);
 						    		$anchorScroll();
+						    		
 					    		}
 							});
 							return timeoutPromise;
@@ -996,7 +1003,7 @@ Notes:
 									var forms = parentInstance.forms;
 									for(var f in forms){
 						    			var form = forms[f];
-						    			form.$setSubmitted();	
+						    		    form.$setSubmitted();
 						    			if(form.$dirty && form.$valid){
 							    		for(var key in form){
 							    			if(key.charAt(0) !== '$'){
@@ -1340,8 +1347,8 @@ Notes:
 									<!---loop over possible attributes --->
 									<cfif len($.slatwall.getService('attributeService').getAttributeCodesListByAttributeSetObject(local.entity.getClassName()))>
 										<cfloop list="#$.slatwall.getService('attributeService').getAttributeCodesListByAttributeSetObject(local.entity.getClassName())#" index="local.attributeCode">
-											this.data.#local.attributeCode# = null;
-											this.metaData.#local.attributeCode# = {
+											this.data['#local.attributeCode#'] = null;
+											this.metaData['#local.attributeCode#'] = {
 												name:'#local.attributeCode#'
 											};
 										</cfloop>

@@ -1,6 +1,6 @@
 'use strict';
 angular.module('slatwalladmin')
-.directive("sw:sortable", [function(expression, compiledElement){
+.directive("sw:sortable", ['expression','compiledElement',function(expression, compiledElement){
     // add my:sortable-index to children so we know the index in the model
     compiledElement.children().attr("sw:sortable-index","{{$index}}");
     

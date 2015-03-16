@@ -32,6 +32,9 @@ angular.module('slatwalladmin')
 				$log.debug(scope.property);
 				$log.debug(scope.title);
 				
+				/**
+				 * Configuration for property display object.
+				 */
 				scope.propertyDisplay = {
 					object:scope.object,
 					property:scope.property,
@@ -53,10 +56,10 @@ angular.module('slatwalladmin')
 				}
 				if(angular.isUndefined(scope.propertyDisplay.editable)){
 					scope.propertyDisplay.editable = true;
-				};
+				}
 				if(angular.isUndefined(scope.editing)){
 					scope.propertyDisplay.editing = false;
-				};
+				}
 				
 				if(angular.isUndefined(scope.propertyDisplay.isHidden)){
 					scope.propertyDisplay.isHidden = false;

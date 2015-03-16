@@ -27,11 +27,12 @@ angular.module('slatwalladmin')
 					value:[],
 					$$adding:false
 				};
-				
-				//funciton to set state of adding new item 
+				//match in matches track by
+				//function to set state of adding new item 
 				scope.setAdding = function(isAdding){
 					scope.isAdding = isAdding;
-				}
+					scope.showAddBtn = false;
+				};
 				
 				scope.selectedOption = {};
 				scope.showAddBtn = false;
@@ -55,7 +56,6 @@ angular.module('slatwalladmin')
 //				}
 				
 				//set up query function for finding related object
-				
 				scope.cfcProperCase = propertyMetaData.cfcProperCase;
 				scope.selectionOptions.getOptionsByKeyword=function(keyword){
 					var filterGroupsConfig = '['+  
@@ -83,18 +83,6 @@ angular.module('slatwalladmin')
 						}else{
 							scope.showAddBtn = false;
 						}
-//						
-//						for(var i in scope.productBundleGroupTypes.value){
-//							if(scope.productBundleGroupTypes.value[i].typeCode === scope.productBundleGroup.data.productBundleGroupType.data.typeCode){
-//								scope.showAddProductBundleGroupTypeBtn = false;
-//							}
-//						}
-//						angular.forEach(scope.selectionOptions.value,function(selectionOption,key){
-//							
-//						});
-							
-						
-						
 						return scope.selectionOptions.value;
 					});
 				};
@@ -108,7 +96,7 @@ angular.module('slatwalladmin')
 				    scope.$item = $item;
 				    scope.$model = $model;
 				    scope.$label = $label;
-				    
+				    scope.showAddBtn = false; //turns off the add btn on select
 				    //angular.extend(inflatedObject.data,$item);
 				    object.$$init($item);
 				    $log.debug('select item');

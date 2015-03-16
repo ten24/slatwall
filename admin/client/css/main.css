@@ -645,9 +645,6 @@ select.error {
 .table > tfoot > tr > td {
   border-color: #e6e6e6;
 }
-.s-order-item-table tbody tr td {
-  border-bottom: 1px solid #fafafa;
-}
 .s-order-item-table tbody .s-total td {
   border-bottom: 1px solid #e6e6e6;
 }
@@ -2815,11 +2812,15 @@ tabel .s-table-header {
 .s-order-item-table .s-actions {
   font-weight: normal !important;
 }
+.s-order-item-table .s-fullfilment {
+  background: #ffffff;
+}
 .s-order-item-table .s-fullfilment .s-header {
   font-weight: 600;
 }
 .s-order-item-table .s-image {
   max-width: 80px;
+  background: #ffffff;
 }
 .s-order-item-table .s-image img {
   width: 100%;
@@ -2849,6 +2850,7 @@ tabel .s-table-header {
   padding: 0;
   width: 40px;
   border-bottom: 0px;
+  background: #ffffff;
 }
 .s-order-item-table .s-actions .s-edit-btn:hover {
   background-color: #f2f2f2;
@@ -2870,6 +2872,11 @@ tabel .s-table-header {
 .s-order-item-table .s-bundle-product .s-title:before {
   font-family: 'fontAwesome';
   content: "\f187";
+  margin-right: 5px;
+  font-weight: normal !important;
+  color: #b3b3b3;
+}
+.s-order-item-table .s-sku-product .s-title:before {
   margin-right: 5px;
   font-weight: normal !important;
   color: #b3b3b3;
@@ -2935,6 +2942,10 @@ tabel .s-table-header {
 .s-order-item-table .s-detail-title {
   font-weight: 600;
 }
+.s-order-item-table .s-title .s-detail-content,
+.s-order-item-table .s-title .s-detail-title {
+  display: inline-block;
+}
 .s-order-item-table .s-details .s-detail-content,
 .s-order-item-table .s-customization .s-detail-content {
   margin-bottom: 5px;
@@ -2943,10 +2954,9 @@ tabel .s-table-header {
   font-size: 10px;
 }
 .s-order-item-table .s-title .s-status {
-  border-top: 1px dotted #f2f2f2;
-  padding-top: 4px;
-  margin-top: 9px;
-  margin-bottom: 4px;
+  border-top: 1px dotted #e6e6e6;
+  padding-top: 2px;
+  margin-top: 2px;
 }
 .s-order-item-table tbody > .s-total td {
   background-color: #fafafa;
@@ -3277,6 +3287,26 @@ tabel .s-table-header {
 .s-create-window .navbar-brand span {
   display: inline-block;
   vertical-align: middle;
+}
+.s-create-window .s-dialog-footer .s-loading a {		
+  opacity: .4;		
+  pointer-events: none;		
+  cursor: default;		
+}		
+.s-create-window .s-dialog-footer .s-loading:after {		
+  display: inline-block;		
+  font: normal normal normal 14px/1 FontAwesome;		
+  font-size: inherit;		
+  text-rendering: auto;		
+  -webkit-font-smoothing: antialiased;		
+  -moz-osx-font-smoothing: grayscale;		
+  -webkit-animation: fa-spin 2s infinite linear;		
+  animation: fa-spin 2s infinite linear;		
+  content: "\f021";		
+  position: absolute;		
+  top: 31%;		
+  right: 42%;		
+  font-size: 20px;		
 }
 .s-close-icon-search {
   right: 20px !important;

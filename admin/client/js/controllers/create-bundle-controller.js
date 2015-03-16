@@ -37,6 +37,7 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		//if this view is part of the dialog section, call the inherited function
 		if(angular.isDefined($scope.scrollToTopOfDialog)){
 			$scope.scrollToTopOfDialog();
+			
 		}
 		
 		var productID = getParameterByName('productID');
@@ -76,7 +77,18 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		}
 
 		$scope.saveProductBundle = function(closeDialogIndex){
-			$scope.product.$$save();
+			$scope.newSaving = true;
+			$log.debug($scope.newSaving);
+			$scope.product.$$save().then(function(){
+				$log.debug("Turn off the loader after saving.");
+				$scope.newSaving = false;
+			});
+			
+			if(angular.isDefined(closeDialogIndex)){
+				$scope.closeSaving = true;
+				$rootScope.closePageDialog(closeDialogIndex);
+			}
+			
 		};
 		
 	}

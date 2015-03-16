@@ -4,7 +4,7 @@
  * value less than OR equal to 5.
  */
 
-angular.module('slatwalladmin').directive("swvalidationgte", function() {
+angular.module('slatwalladmin').directive("swvalidationgte", [function() {
     return {
         restrict: "A",
         require: "^ngModel",
@@ -18,7 +18,7 @@ angular.module('slatwalladmin').directive("swvalidationgte", function() {
         		 	}
     				return false;
     				
-            }//<--end function
+            };//<--end function
         }//<--end link
     };
-});
+}]);
