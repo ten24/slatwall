@@ -51,30 +51,27 @@ Notes:
 
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" />
+<cfparam name="rc.addSkuAddStockType" type="string" default="oitReturn"/> 
+<cfset local.addOrderItemSkuOptionsSmartList = rc.order.getAddOrderItemSkuOptionsSmartList() />
 
 <cfoutput>
-	<hb:HibachiListingDisplay smartList="#rc.order.getReturnItemSmartList()#"
-							   recordDetailAction="admin:entity.detailorderitem"
-							   recordEditAction="admin:entity.editorderitem">
-		
-		<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />					      
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.product.title" />
-		<hb:HibachiListingColumn propertyIdentifier="sku.skuDefinition" />
-		<hb:HibachiListingColumn propertyIdentifier="orderItemStatusType.typeName" />
-		<hb:HibachiListingColumn propertyIdentifier="quantity" />
-		<hb:HibachiListingColumn propertyIdentifier="price" />
-		<hb:HibachiListingColumn propertyIdentifier="discountAmount" />
-		<hb:HibachiListingColumn propertyIdentifier="extendedPriceAfterDiscount" />
-		<hb:HibachiListingColumn propertyIdentifier="quantityReceived" />
+	<hb:HibachiListingDisplay smartList="#local.addOrderItemSkuOptionsSmartList#"
+							  recordProcessAction="admin:entity.processOrder"
+							  recordProcessQueryString="orderItemTypeSystemCode=#rc.addSkuAddStockType#"
+							  recordProcessContext="addOrderItem"
+							  recordProcessEntity="#rc.order#"
+							  recordProcessUpdateTableID="LD#replace(rc.order.getSaleItemSmartList().getSavedStateID(),'-','','all')#">
+							    
+		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="skuCode" />
+		<hb:HibachiListingColumn propertyIdentifier="product.productCode" />
+		<hb:HibachiListingColumn propertyIdentifier="product.brand.brandName" />
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="product.productName" />
+		<hb:HibachiListingColumn propertyIdentifier="product.productType.productTypeName" />
+		<hb:HibachiListingColumn propertyIdentifier="skuDefinition" />
+		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
+		<hb:HibachiListingColumn processObjectProperty="orderReturnID" title="#$.slatwall.rbKey('entity.orderReturn')#" fieldClass="span2" />
+		<hb:HibachiListingColumn processObjectProperty="price" title="#$.slatwall.rbKey('define.price')#" fieldClass="span1" />
+		<hb:HibachiListingColumn processObjectProperty="quantity" title="#$.slatwall.rbKey('define.quantity')#" fieldClass="span1" />
 	</hb:HibachiListingDisplay>
-	
-	<!--- If in edit and order is of correct status then we can add return order items --->
-	<cfif rc.edit and listFindNoCase("ostNotPlaced,ostNew,ostProcessing,ostOnHold", rc.order.getOrderStatusType().getSystemCode())>
-		<cfset rc.addSkuAddStockType = "oitReturn" />
-		
-		<hb:HibachiTabGroup tabLocation="top">
-			<hb:HibachiTab tabid="roiaddsku" view="admin:entity/ordertabs/addsku" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.sku')#" />
-			<hb:HibachiTab tabid="roiaddstock" view="admin:entity/ordertabs/addstock" text="#$.slatwall.rbKey('define.add')# #$.slatwall.rbKey('entity.stock')#" />
-		</hb:HibachiTabGroup>
-	</cfif>
 </cfoutput>

@@ -176,7 +176,9 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 	}
 	
 	public any function postInvoiceRequestToVertex(required any requestBean){
-
+		
+		var documentDate = arguments.requestBean.getOrder().getOrderOpenDateTime();
+		
 		// Loop over each unique tax address
 		for(var taxAddressID in arguments.requestBean.getTaxRateItemRequestBeansByAddressID()) {
 			
@@ -192,6 +194,16 @@ component accessors="true" output="false" displayname="Vertex" implements="Slatw
 			}
 
 			if(arrayLen(addressTaxRequestItems) > 0) {
+				
+				// If these are return items, update the documentDate to be the original order date
+				if (addressTaxRequestItems[1].getOrderItem().getOrderItemType().getSystemCode() == 'oitReturn'
+					 && !isNull(addressTaxRequestItems[1].getOrderItem().getReferencedOrderItem())
+					 && !isNull(addressTaxRequestItems[1].getOrderItem().getReferencedOrderItem().getOrder().getOrderOpenDateTime())
+					 ) {
+					
+					documentDate = addressTaxRequestItems[1].getOrderItem().getReferencedOrderItem().getOrder().getOrderOpenDateTime();
+				}
+					
 				// Build Request XML
 				var xmlPacket = "";
 					

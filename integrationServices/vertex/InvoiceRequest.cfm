@@ -59,7 +59,7 @@
 	            	<urn:Password>#setting('webServicesPassword')#</urn:Password>
 	         	</cfif>
 	      		</urn:Login>
-				<urn:InvoiceRequest documentDate="#dateTimeFormat(Now(), 'yyyy-mm-dd')#" documentNumber="#arguments.requestBean.getOrder().getOrderNumber()#" transactionId="#arguments.requestBean.getOrder().getOrderNumber()#-#taxAddressID#" transactionType="SALE">
+				<urn:InvoiceRequest documentDate="#dateTimeFormat(documentDate, 'yyyy-mm-dd')#" documentNumber="#arguments.requestBean.getOrder().getOrderNumber()#" transactionId="#arguments.requestBean.getOrder().getOrderNumber()#-#taxAddressID#" transactionType="SALE">
 					<urn:Currency isoCurrencyCodeAlpha="#addressTaxRequestItems[ 1 ].getCurrencyCode()#"/>
 				  	<urn:Seller>
 				    	<urn:Company>#xmlFormat(setting('company'))#</urn:Company>
@@ -71,7 +71,7 @@
 				      		<urn:PostalCode>#xmlFormat(setting('originPostalCode'))#</urn:PostalCode>
 				     		<urn:Country>#xmlFormat(setting('originCountry'))#</urn:Country>
 				     		<cfif addressTaxRequestItems[ 1 ].getCurrencyCode() neq setting('originCurrencyCode')>
-			     				<urn:CurrencyConversion isoCurrencyCodeAlpha="#xmlFormat(setting('originCurrencyCode'))#">#getService('currencyCode').getCurrencyConversionRate(originalCurrencyCode=addressTaxRequestItems[ 1 ].getCurrencyCode(), convertToCurrencyCode=setting('originCurrencyCode'))#</urn:CurrencyConversion>
+			     				<urn:CurrencyConversion isoCurrencyCodeAlpha="#xmlFormat(setting('originCurrencyCode'))#">#getService('currencyCode').getCurrencyConversionRate(originalCurrencyCode=addressTaxRequestItems[ 1 ].getCurrencyCode(), convertToCurrencyCode=setting('originCurrencyCode'), conversionDateTime=documentDate)#</urn:CurrencyConversion>
 			     			<cfelse>
 			     				<urn:CurrencyConversion isoCurrencyCodeAlpha="#xmlFormat(setting('originCurrencyCode'))#">1</urn:CurrencyConversion>
 			     			</cfif>
@@ -92,7 +92,7 @@
 				     			<cfset local.destinationCurrencyCode = local.destinationCountry.getDefaultCurrency().getCurrencyCode() />
 				     		</cfif>
 				     		<cfif addressTaxRequestItems[ 1 ].getCurrencyCode() neq local.destinationCurrencyCode>
-			     				<urn:CurrencyConversion isoCurrencyCodeAlpha="#xmlFormat(local.destinationCurrencyCode)#">#getService('currencyService').getCurrencyConversionRate(originalCurrencyCode=addressTaxRequestItems[ 1 ].getCurrencyCode(), convertToCurrencyCode=local.destinationCurrencyCode)#</urn:CurrencyConversion>
+			     				<urn:CurrencyConversion isoCurrencyCodeAlpha="#xmlFormat(local.destinationCurrencyCode)#">#getService('currencyService').getCurrencyConversionRate(originalCurrencyCode=addressTaxRequestItems[ 1 ].getCurrencyCode(), convertToCurrencyCode=local.destinationCurrencyCode, conversionDateTime=documentDate)#</urn:CurrencyConversion>
 			     			<cfelse>
 			     				<urn:CurrencyConversion isoCurrencyCodeAlpha="#xmlFormat(local.destinationCurrencyCode)#">1</urn:CurrencyConversion>
 			     			</cfif>
