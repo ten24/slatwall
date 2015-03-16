@@ -51,11 +51,12 @@ Notes:
 	<cffunction name="getCurrentCurrencyRateByCurrencyCodes" output="false" access="public" returntype="any">
 		<cfargument name="originalCurrencyCode" type="string" required="true" />
 		<cfargument name="convertToCurrencyCode" type="string" required="true" />
+		<cfargument name="conversionDateTime" type="date" default="#now()#" />
 		
 		<!--- Setup HQL --->
 		<cfset var hql="SELECT currencyrate FROM SlatwallCurrencyRate currencyrate
 			WHERE
-			  	currencyrate.effectiveStartDateTime < :now
+			  	currencyrate.effectiveStartDateTime < :conversionDateTime
 			  AND
 			  	(
 					(currencyrate.currencyCode = :originalCurrencyCode AND currencyrate.conversionCurrencyCode = :convertToCurrencyCode)
@@ -67,7 +68,7 @@ Notes:
 		
 		<!--- Setup HQL Params --->
 		<cfset var hqlParams = {} />
-		<cfset hqlParams['now'] = now() />
+		<cfset hqlParams['conversionDateTime'] = arguments.conversionDateTime />
 		<cfset hqlParams['originalCurrencyCode'] = arguments.originalCurrencyCode />
 		<cfset hqlParams['convertToCurrencyCode'] = arguments.convertToCurrencyCode />
 		

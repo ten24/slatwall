@@ -4,9 +4,11 @@ angular.module('slatwalladmin')
 [
 	'$log',
 	'$slatwall',
+	'utilityService',
 	function(
 		$log,
-		$slatwall
+		$slatwall,
+		utilityService
 	){
 		
 		var productBundleService = {
@@ -69,15 +71,7 @@ angular.module('slatwalladmin')
 						
 					}
 				}
-				productBundelGroupFilters.sort(function(a, b){
-					if(a.name < b.name){
-			            return -1;
-			        }else if(a.name > b.name){
-			            return 1;
-			        }else{
-			            return 0;   
-			        }
-				});
+				productBundelGroupFilters = utilityService.arraySorter(productBundelGroupFilters, "name");
 				
 				$log.debug(productBundelGroupFilters);
 				return productBundelGroupFilters;
