@@ -28,6 +28,7 @@
 								href="?slatAction=entity.detailworkflow&amp;workflowID=40288188498aeea401498b80b99e002a"><i
 								class="glyphicon glyphicon-remove icon-white"></i> Cancel</a>-->
 							<button class="adminentitydeleteproduct btn btn-default s-remove "
+								ng-if="entity.$$getID() !== ''"
 								title="Delete" type="button"
 								ng-click="deleteEntity()"	
 							>

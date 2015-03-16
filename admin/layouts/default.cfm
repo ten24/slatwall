@@ -185,6 +185,9 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listattributeset" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listintegration" type="list">
 									<li class="divider"></li>
+									<cfif $.slatwall.authenticateAction(action='admin:entity.listapp')>
+										<hb:HibachiActionCaller queryString="ng##!/entity/App" text="#$.slatwall.rbKey('admin.entity.listapp')#" type="list">
+									</cfif>
 									<hb:HibachiActionCaller action="admin:entity.listaddresszone" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcollection" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcountry" type="list">
@@ -199,6 +202,9 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listprinttemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listroundingrule" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsite" type="list">
+									<!---<cfif $.slatwall.authenticateAction(action='admin:entity.listsite')>
+										<hb:HibachiActionCaller queryString="ng##!/entity/Site" text="#$.slatwall.rbKey('admin.entity.listsite')#" type="list">
+									</cfif>--->
 									<hb:HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listtype" type="list">

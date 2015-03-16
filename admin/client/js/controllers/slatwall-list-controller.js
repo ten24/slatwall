@@ -11,7 +11,7 @@ function(
 	/*$scope.entityName is inherited from routeController*/
 	$scope.$id="slatwallListController";
 	$log.debug('slatwallListController');
-	$scope.entityDisplayName = $slatwall.getRBKey('entity.'+$scope.entityName.toLowerCase());
+	//$scope.entityDisplayName = $slatwall.getRBKey('entity.'+$scope.entityName.toLowerCase());
 	
 	$scope.getCollection = function(){
 		
