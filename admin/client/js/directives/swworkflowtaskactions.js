@@ -22,7 +22,6 @@ angular.module('slatwalladmin')
                     $log.debug('Workflow Task Actions Init');
                     $log.debug(scope.workflowTask);
                     scope.openActions = false;
-                    scope.hidden = true;
                     var getObjectByActionType = function (workflowTaskAction) {
                         if (workflowTaskAction.data.actionType === 'email') {
                             workflowTaskAction.$$getEmailTemplate();
