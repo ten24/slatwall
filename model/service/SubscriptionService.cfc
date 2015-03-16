@@ -376,6 +376,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var order = arguments.processObject.getOrder();
 		
+		//set as new
+		order.setOrderStatus(getService('SettingService').getTypeBySystemCode("ostNew"));
+		//create orderid and close
+		order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
+		// Look for 'auto' order fulfillments
+		getOrderService().createOrderDeliveryForAutoFulfillmentMethod(arguments.order);
+		
 		// New Renewal Order
 		if(order.getNewFlag()) {
 			
@@ -433,6 +440,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				subscriptionOrderItem.setSubscriptionUsage( arguments.subscriptionUsage );
 				this.saveSubscriptionOrderItem( subscriptionOrderItem );
 				
+				
+				// save order for processing
+				getOrderService().getHibachiDAO().save( order );
+				
+				// Persist the order to the DB
+				getHibachiDAO().flushORMSession();
+				
 				// Setup the Order Payment
 				if(
 					!isNull(arguments.processObject.getSubscriptionUsage().getAutoPayFlag()) 
@@ -457,17 +471,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						order = getOrderService().processOrder(order, arguments.data, 'addOrderPayment');
 						
 					}
+					orderPayment = this.processOrderPayment(orderPayment, {}, 'runSubscriptionRenewalTransaction');
 				}
-				
-				
-				// save order for processing
-				getOrderService().getHibachiDAO().save( order );
-				
-				// Persist the order to the DB
-				getHibachiDAO().flushORMSession();
-				
-				// Place the Order
-				order = getOrderService().processOrder(order, {}, 'placeOrder');
 				
 				// set the subscription usage nextBillDate
 				arguments.subscriptionUsage.setNextBillDate( nextBillDate );
@@ -476,7 +481,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				// As long as the order was placed, then we can update the nextBillDateTime & nextReminderDateTime
 				if(order.getStatusCode() == "ostNotPlaced") {
 					arguments.subscriptionUsage.addMessage("notPlaced", rbKey('validate.processSubscriptionUsage_renew.order.notPlaced') & ' <a href="?slatAction=admin:entity.detailOrder&orderID=#order.getOrderID()#">#getHibachiScope().rbKey('define.notPlaced')#</a>');
+					
 				}
+				
+				if(order.hasErrors()){
+					arguments.subscriptionUsage.addError('renew',rbKey('validate.processSubscriptionUsage_renew.order.'));
+				}
+				
 			}
 		// Existing Renewal Order to be re-submitted
 		} else {

@@ -958,17 +958,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								
 								// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
 								if(arguments.order.getOrderFulfillments()[i].getFulfillmentMethodType() == "auto" && (order.getTotal() == 0 || order.getOrderFulfillments()[i].getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage') <= precisionEvaluate( order.getPaymentAmountReceivedTotal() * 100 / order.getTotal() ) ) ) {
-									
-									var newOrderDelivery = this.newOrderDelivery();
-									
-									// Setup the processData
-									var processData = {};
-									processData.order = {};
-									processData.order.orderID = arguments.order.getOrderID();
-									processData.location.locationID = arguments.order.getOrderFulfillments()[i].getFulfillmentMethod().setting('fulfillmentMethodAutoLocation');
-									processData.orderFulfillment.orderFulfillmentID = arguments.order.getOrderFulfillments()[i].getOrderFulfillmentID();
-									
-									newOrderDelivery = this.processOrderDelivery(newOrderDelivery, processData, 'create');
+									createOrderDeliveryForAutoFulfillmentMethod(arguments.order);
 								}
 							}
 						}
@@ -983,6 +973,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}	// END OF LOCK
 		
 		return arguments.order;
+	}
+	
+	public any function createOrderDeliveryForAutoFulfillmentMethod(required any order){
+		var newOrderDelivery = this.newOrderDelivery();
+									
+		// Setup the processData
+		var processData = {};
+		processData.order = {};
+		processData.order.orderID = arguments.order.getOrderID();
+		processData.location.locationID = arguments.order.getOrderFulfillments()[i].getFulfillmentMethod().setting('fulfillmentMethodAutoLocation');
+		processData.orderFulfillment.orderFulfillmentID = arguments.order.getOrderFulfillments()[i].getOrderFulfillmentID();
+		
+		newOrderDelivery = this.processOrderDelivery(newOrderDelivery, processData, 'create');
+		return newOrderDelivery;
 	}
 	
 	public any function processOrder_placeOnHold(required any order, struct data={}) {
@@ -1618,6 +1622,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderPayment;
 		
 	}
+	
+	public any function processOrder_runSubscriptionRenewalTransaction(required any order,required struct data){
+		var transactionType = "";
+		
+		if(!isNull(arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType())) {
+			var transactionType = arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType();
+		}
+		
+	}
 		
 	public any function processOrderPayment_runPlaceOrderTransaction(required any orderPayment) {
 						
@@ -1629,6 +1642,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.orderPayment.getPaymentMethod().getPlaceOrderCreditTransactionType()) && orderPayment.getOrderPaymentType().getSystemCode() eq "optCredit") {
 			var transactionType = arguments.orderPayment.getPaymentMethod().getPlaceOrderCreditTransactionType();
 		}
+		//need subscription transactiontype
 		
 		if(transactionType != '' && transactionType != 'none' && arguments.orderPayment.getAmount() > 0) {
 			

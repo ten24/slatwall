@@ -76,6 +76,7 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 	property name="saveOrderPaymentEncryptFlag" ormtype="boolean";
 	property name="placeOrderChargeTransactionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey" column="placeOrderChargeTxType";
 	property name="placeOrderCreditTransactionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey" column="placeOrderCreditTxType";
+	property name="subscriptionRenewalTransactionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey" column="subscriptionRenewalTxType";
 	
 	// Related Object Properties (many-to-one)
 	property name="paymentIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="paymentIntegrationID";
