@@ -9,6 +9,7 @@ angular.module('slatwalladmin')
 	'productBundleService',
 	'collectionService',
 	'metadataService',
+	'utilityService',
 	function(
 		$http,
 		$log,
@@ -17,7 +18,8 @@ angular.module('slatwalladmin')
 		productBundlePartialsPath,
 		productBundleService,
 		collectionService,
-		metadataService
+		metadataService,
+		utilityService
 	){
 		return {
 			require:"^swProductBundleGroups",
@@ -42,11 +44,6 @@ angular.module('slatwalladmin')
 				$log.debug('skuCollection22');
 				$log.debug(scope.productBundleGroup.data.skuCollectionConfig);
 
-//				var collectionConfig = {};
-//				if(angular.isString(scope.productBundleGroup.data.skuCollectionConfig)){
-//					collectionConfig = angular.fromJson(scope.productBundleGroup.data.skuCollectionConfig);
-//				}
-				
 				scope.collection = {
 					baseEntityName:"Sku",
 					baseEntityAlias:"_sku",
@@ -85,10 +82,6 @@ angular.module('slatwalladmin')
 				        	name:"Product Type",
 				        	value:"productType"
 				         },
-//				         {
-//				        	name:"Collections",
-//				        	value:"collection"
-//				         },
 				         {
 				        	name:"Brand",
 				        	value:"brand"
@@ -119,6 +112,17 @@ angular.module('slatwalladmin')
 					scope.productBundleGroup.productBundleGroupFilters = [];
 				}
 				
+				//Checks if a value has a match in an array
+				function arrayContains(array, item){
+					var iterator = array.length;
+				    while (iterator--) {
+				       if (array[iterator].name === item.name){
+				           return true;
+				       }
+				    }
+				    return false;
+				}
+				
 				scope.productBundleGroupFilters.getFiltersByTerm = function(keyword,filterTerm){
 					scope.loading = true;
 					var _loadingCount;
@@ -137,9 +141,10 @@ angular.module('slatwalladmin')
 									(function(keyword,option) {
 										$slatwall.getEntity(scope.searchOptions.options[i].value, {keywords:keyword,deferKey:'getProductBundleGroupFilterByTerm'+option.value}).then(function(value){
 											var formattedProductBundleGroupFilters = productBundleService.formatProductBundleGroupFilters(value.pageRecords,option);
-											
 											for(var j in formattedProductBundleGroupFilters){
-												scope.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
+												if(!arrayContains(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup, formattedProductBundleGroupFilters[j])){
+													scope.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
+												}
 											}
 											
 											// Increment Down The Loading Count
@@ -148,15 +153,7 @@ angular.module('slatwalladmin')
 											// If the loadingCount drops to 0, then we can update scope
 											if(_loadingCount == 0){
 												//This sorts the array of objects by the objects' "type" property alphabetically
-												scope.productBundleGroupFilters.value.sort(function(a, b){
-													if(a.type < b.type){
-											            return -1;
-											        }else if(a.type > b.type){
-											            return 1;
-											        }else{
-											            return 0;   
-											        }
-												});
+												scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "type");
 												$log.debug(scope.productBundleGroupFilters.value);
 												scope.loading = false;
 												
@@ -181,7 +178,7 @@ angular.module('slatwalladmin')
 					}, 500);
 				};
 				
-				scope.addFilterToProductBundle = function(filterItem,include){
+				scope.addFilterToProductBundle = function(filterItem,include,index){
 					$log.debug('addFilterToProductBundle');
 					$log.debug(filterItem);
 					
@@ -199,7 +196,10 @@ angular.module('slatwalladmin')
 					if(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length > 0){
 						filterItem.logicalOperator = 'OR';
 					}
+					//Adds filter item to designated filtergroup
 					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(filterItem);
+					//Removes the filter item from the left hand search result
+					scope.productBundleGroupFilters.value.splice(index,1);
 				};
 				
 				if(angular.isUndefined(scope.filterPropertiesList)){
@@ -214,6 +214,12 @@ angular.module('slatwalladmin')
 				}
 				
 				scope.removeProductBundleGroupFilter = function(index){
+					//Pushes item back into array
+					scope.productBundleGroupFilters.value.push(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup[index]);
+					//Sorts Array
+					scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "type");
+					
+					//Removes the filter item from the filtergroup
 					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index,1);
 				};
 				

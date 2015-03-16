@@ -436,7 +436,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			//constuct HQL to be used in filterGroup
 			var filterGroupHQL = getFilterGroupHQL(filterGroup.filterGroup);
 			if(len(filterGroupHQL)){
-				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
+				if(logicalOperator == "AND"){
+					filterGroupsHQL &= ") #logicalOperator# ((#filterGroupHQL#)";
+				} else {
+					filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
+				}
+				
+				
 			}
 		}
 		return filterGroupsHQL;
@@ -470,8 +476,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 		HQL = createHQLFromCollectionObject(this,arguments.excludeSelectAndOrderBy);
-		
-		
 		return HQL;
 	}
 	
@@ -974,19 +978,23 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function addPostFiltersFromKeywords(required any collectionConfig, numeric hasFilterHQL){
 		var keywordCount = 0;
 		
+		//if our collection config has columns then check if any of them are searchable
 		if(structKeyExists(arguments.collectionConfig,'columns') && arrayLen(arguments.collectionConfig.columns)){
 			
-			for(column in arguments.collectionConfig.columns){
-				
-				if(structKeyExists(column,'isSearchable') && column.isSearchable){
-					//use keywords to create some post filters
+			for(keyword in getKeywordArray()){
+				var columnCount = 0;
+				for(column in arguments.collectionConfig.columns){
 					
-					if(structKeyExists(column,'ormtype') 
-					&& column.ormtype neq 'boolean' 
-					&& column.ormtype neq 'timestamp'
-					
-					){
-						for(keyword in getKeywordArray()){
+					//which ones have been flagged as searchable
+					if(structKeyExists(column,'isSearchable') && column.isSearchable){
+						//use keywords to create some post filters
+						
+						if(structKeyExists(column,'ormtype') 
+						&& column.ormtype neq 'boolean' 
+						&& column.ormtype neq 'timestamp'
+						
+						){
+						
 							if(column.ormtype eq 'big_decimal'
 							|| column.ormtype eq 'integer'){
 								var postFilterGroup = {
@@ -1010,15 +1018,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									]
 								};
 							}
-							if(keywordCount != 0){
+							
+							if (columnCount != 0 && columnCount < arrayLen(arguments.collectionConfig.columns)+1){
 								postFilterGroup.logicalOperator = "OR";
+							}else if(keywordCount != 0 && keywordCount < arrayLen(getKeywordArray())){
+								postFilterGroup.logicalOperator = "AND";
 							}else{
 								arguments.hasFilterHQL = 1;
 							}
 							//add post filter per column that is searchable
 							addPostFilterGroup(postFilterGroup);
-							keywordCount++;
+							
 						}
+						columnCount++;
 					}
 					if(structKeyExists(column,'attributeID')){
 						for(keyword in getKeywordArray()){
@@ -1049,7 +1061,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}
 					
 				}
-				
+				keywordCount++;
 			}
 		}else{
 			//if we don't have columns then we need default properties searching
