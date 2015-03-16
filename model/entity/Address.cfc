@@ -127,7 +127,10 @@ component displayname="Address" entityname="SlatwallAddress" table="SwAddress" p
 		address = listChangeDelims(address,arguments.delimiter,",","no");
 		return address;
 	}
-	
+	//This one is needed for on missing method.
+	public string function getAddress() {
+		return this.getFullAddress(",");
+	}
 	public any function populateFromAddressValueCopy(required any sourceAddress) {
 		this.setName( arguments.sourceAddress.getName() );
 		this.setCompany( arguments.sourceAddress.getCompany() );
