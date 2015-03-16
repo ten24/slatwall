@@ -148,6 +148,9 @@ fieldset[disabled] .s-btn-disabled.active {
   border-color: #f2f2f2;
   color: #e6e6e6 !important;
 }
+.s-pointer {
+  cursor: pointer;
+}
 [ng\:cloak],
 [ng-cloak],
 [data-ng-cloak],
@@ -3288,25 +3291,25 @@ tabel .s-table-header {
   display: inline-block;
   vertical-align: middle;
 }
-.s-create-window .s-dialog-footer .s-loading a {		
-  opacity: .4;		
-  pointer-events: none;		
-  cursor: default;		
-}		
-.s-create-window .s-dialog-footer .s-loading:after {		
-  display: inline-block;		
-  font: normal normal normal 14px/1 FontAwesome;		
-  font-size: inherit;		
-  text-rendering: auto;		
-  -webkit-font-smoothing: antialiased;		
-  -moz-osx-font-smoothing: grayscale;		
-  -webkit-animation: fa-spin 2s infinite linear;		
-  animation: fa-spin 2s infinite linear;		
-  content: "\f021";		
-  position: absolute;		
-  top: 31%;		
-  right: 42%;		
-  font-size: 20px;		
+.s-create-window .s-dialog-footer .s-loading a {
+  opacity: .4;
+  pointer-events: none;
+  cursor: default;
+}
+.s-create-window .s-dialog-footer .s-loading:after {
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-animation: fa-spin 2s infinite linear;
+  animation: fa-spin 2s infinite linear;
+  content: "\f021";
+  position: absolute;
+  top: 31%;
+  right: 42%;
+  font-size: 20px;
 }
 .s-close-icon-search {
   right: 20px !important;
