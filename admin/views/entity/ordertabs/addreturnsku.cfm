@@ -52,7 +52,6 @@ Notes:
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.addSkuAddStockType" type="string" default="oitReturn"/>
-<cfparam name="rc.addSkuAddStockType" type="string" default="oitReturn"/>
 <cfset local.addOrderItemSkuOptionsSmartList = rc.order.getAddOrderItemSkuOptionsSmartList() />
 
 <cfoutput>
