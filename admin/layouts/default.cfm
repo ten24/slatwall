@@ -431,7 +431,7 @@ Notes:
 					controller: 'routerController'
 				}).when('/entity/:entityName/:entityID', {
 					templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/router.html',
-					controller: 'routerController'
+					controller: 'routerController',
 				}).otherwise({
 					templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
 				});
