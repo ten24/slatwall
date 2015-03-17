@@ -148,6 +148,9 @@ fieldset[disabled] .s-btn-disabled.active {
   border-color: #f2f2f2;
   color: #e6e6e6 !important;
 }
+.s-pointer {
+  cursor: pointer;
+}
 [ng\:cloak],
 [ng-cloak],
 [data-ng-cloak],
