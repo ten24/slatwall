@@ -420,7 +420,9 @@ component extends="HibachiService" accessors="true" {
 		}
 		
 		if (len(auditType)) {
+			if (!isNull(audit.getBaseID()) && !isNull(auditType) && !isNull(arguments.audit.getBaseID())){
 			structInsert(auditStruct[audit.getBaseID()], auditType, arguments.audit);
+			}
 		}
 	}
 	

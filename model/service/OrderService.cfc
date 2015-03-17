@@ -1609,8 +1609,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					getAccountService().processAccountLoyalty(accountLoyalty, fulfillmentMethodUsedData, 'fulfillmentMethodUsed'); 
 				}
 			}
+			
+			saveOrderFulfillment( orderFulfillment );
 		}
-		saveOrderFulfillment( orderFulfillment );
+		
 		return arguments.orderDelivery;
 	}
 	
