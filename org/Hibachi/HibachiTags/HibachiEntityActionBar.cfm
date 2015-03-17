@@ -189,7 +189,9 @@
 									<cfif !len(attributes.processAction) and structKeyExists(request.context.entityActionDetails, "processAction")>
 										<cfset attributes.processAction = request.context.entityActionDetails.processAction />
 									</cfif>
-	
+									<div class="btn-group btn-group-sm">
+										<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
+									</div>
 									<div class="btn-group btn-group-sm">
 										<button type="submit" class="btn btn-primary">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
 									</div>
