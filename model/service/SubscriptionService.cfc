@@ -479,11 +479,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 					
 					//set up subscription renewal data
-					var data = {
+					var subscriptionData = {
 						isSubscriptionRenewal=true
 					};
 					
-					orderPayment = this.processOrderPayment(orderPayment, data, 'runPlaceOrderTransaction');
+					orderPayment = this.processOrderPayment(orderPayment, subscriptionData, 'runPlaceOrderTransaction');
 					
 					//create deliveries if there are no errors else propagate errors
 					if(!orderPayment.hasErrors()){
