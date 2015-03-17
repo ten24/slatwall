@@ -109,9 +109,10 @@ angular.module('slatwalladmin')
 						var eventOptionsPromise = $slatwall.getEventOptions(objectName);
 						
 						eventOptionsPromise.then(function(value){
-							$log.debug('geteventOptions');
+							$log.debug('getEventOptions');
 							scope.eventOptions = value.data;
-							$log.debug(scope.eventOptions);
+							$log.debug(scope.eventOptions.name);
+							
 							
 						});
 					}
@@ -130,9 +131,11 @@ angular.module('slatwalladmin')
 				 * Changes the selected trigger value.
 				 */
 				scope.selectEvent = function(eventOption){
-					$log.debug('selectEvent');
+					$log.debug("SelectEvent");
+					$log.debug(eventOption);
 					scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
 					scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
+					
 					scope.searchEvent.name = eventOption.name;
 					$log.debug(eventOption);
 					$log.debug(scope.workflowTriggers);
@@ -153,37 +156,12 @@ angular.module('slatwalladmin')
 					scope.workflowTriggers.splice(workflowTrigger.$$index,1);
 				};
 				
-				/*scope.saveTrigger = function(){
-					var params = {
-						'objectPropertyIdentifier':scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier,
-						'triggerEvent':scope.workflowTriggers.selectedTrigger.data.triggerEvent,
-						'triggerType':scope.workflowTriggers.selectedTrigger.data.triggerType,
-						'workflow.workflowID':scope.workflowTriggers.selectedTrigger.data.workflow.workflowID,
-						'workflowTriggerID':'',
-						'propertyIdentifiersList':'workflowTriggerID'
-					};
-					var saveTriggerPromise = $slatwall.saveEntity('WorkflowTrigger',null,params,'Save');
-					
-					saveTriggerPromise.then(function(value){
-						$log.debug('saveTrigger');
-						scope.workflowTriggers.selectedTrigger.data.workflowTriggerID = value.data.workflowTriggerID;
-						delete scope.workflowTriggers.selectedTrigger;
-					},function(reason){
-						
-					});
-				};*/
-				
 				scope.setAsEvent = function(workflowTrigger){
 					//add event,  clear schedule
 				};
 				
 				scope.setAsSchedule = function(workflowTrigger){
-					//add schedule object, may need to clear event data if changed
-//					if(angular.isUndefined(workflowTrigger.data.schedule)){
-//						workflowTrigger.addSchedule();
-//					}
-					
-					
+				
 				};
 				/**
 				 * Adds a workflow trigger.
