@@ -73,7 +73,7 @@
 			</tr>
 		</cfloop>
 		<cfloop array="#entityProperties#" index="propertyName">
-			<tr class="#rowClass#" onClick="$('.permission#lcase(subPropertyInheriting[ propertyName ])#').toggle();">
+			<tr class="#rowClass#" onClick="$('.permission#lcase(subPropertyInheriting[ propertyName ])#').toggleClass('hide');">
 				<cfif attributes.edit>
 					<cfset request.context.permissionFormIndex++ />
 					

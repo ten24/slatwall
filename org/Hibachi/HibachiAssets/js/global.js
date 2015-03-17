@@ -893,12 +893,12 @@ function initModal( modalWin ){
 function updatePermissionCheckboxDisplay( checkbox ) {
 	jQuery.each( jQuery('.hibachi-permission-checkbox[data-hibachi-parentcheckbox="' + jQuery( checkbox ).attr('name') + '"]'), function(i, v) {
 
-		if(jQuery( checkbox ).attr('checked') || jQuery( checkbox ).attr('disabled') === 'disabled') {
-			jQuery( v ).attr('checked', 'checked');
-			jQuery( v ).attr('disabled', 'disabled');
+		if(jQuery( checkbox ).is(':checked') || jQuery( checkbox ).attr('disabled') === 'disabled') {
+			jQuery( v ).prop('checked', true);
+			jQuery( v ).prop('disabled', true);
 		} else {
-			jQuery( v ).removeAttr('disabled');
-			jQuery( v ).removeAttr('checked');
+			jQuery( v ).prop('checked', false);
+			jQuery( v ).prop('disabled', false);
 		}
 
 		updatePermissionCheckboxDisplay( v );
