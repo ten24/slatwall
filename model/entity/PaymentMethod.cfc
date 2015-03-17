@@ -181,6 +181,16 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 		return variables.placeOrderCreditTransactionTypeOptions;
 	}
 
+	public array function getSubscriptionRenewalTransactionTypeOptions(){
+		if(!structKeyExists(variables,'subscriptionRenewalTransactionTypeOptions')){
+			variables.subscriptionRenewalTransactionTypeOptions = [{name=rbKey('define.none'), value=""}];
+			if(!isNull(getPaymentMethodType()) && getPaymentMethodType() eq "creditCard") {
+				arrayAppend(variables.subscriptionRenewalTransactionTypeOptions, {name=rbKey('define.authorize'), value="authorize"});
+				arrayAppend(variables.subscriptionRenewalTransactionTypeOptions, {name=rbKey('define.authorizeAndCharge'), value="authorizeAndCharge"});
+			}
+		}
+		return variables.subscriptionRenewalTransactionTypeOptions;
+	}
 
 	public array function getPaymentIntegrationOptions() {
 		if(!structKeyExists(variables, "paymentIntegrationOptions")) {

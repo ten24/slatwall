@@ -376,12 +376,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var order = arguments.processObject.getOrder();
 		
-		//set as new
-		order.setOrderStatus(getService('SettingService').getTypeBySystemCode("ostNew"));
-		//create orderid and close
-		order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
-		// Look for 'auto' order fulfillments
-		getOrderService().createOrderDeliveryForAutoFulfillmentMethod(arguments.order);
+		
 		
 		// New Renewal Order
 		if(order.getNewFlag()) {
@@ -440,6 +435,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				subscriptionOrderItem.setSubscriptionUsage( arguments.subscriptionUsage );
 				this.saveSubscriptionOrderItem( subscriptionOrderItem );
 				
+				// set the subscription usage nextBillDate
+				arguments.subscriptionUsage.setNextBillDate( nextBillDate );
+				arguments.subscriptionUsage.setFirstReminderEmailDateBasedOnNextBillDate();
+				
+				//set as new
+				order.setOrderStatus(getService('SettingService').getTypeBySystemCode("ostNew"));
+				
+				//create orderid and close
+				order.confirmOrderNumberOpenDateCloseDatePaymentAmount();
 				
 				// save order for processing
 				getOrderService().getHibachiDAO().save( order );
@@ -452,7 +456,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					!isNull(arguments.processObject.getSubscriptionUsage().getAutoPayFlag()) 
 					&& arguments.processObject.getSubscriptionUsage().getAutoPayFlag()
 				){
-					if(arguments.processObject.getRenewalPaymentType() eq 'accountPaymentMethod') {
+					if(
+						arguments.processObject.getRenewalPaymentType() eq 'accountPaymentMethod' 
+						&& !isNull(arguments.processObject.getAccountPaymentMethod())
+					) {
 						var orderPayment = getOrderService().newOrderPayment();
 						
 						orderPayment.copyFromAccountPaymentMethod( arguments.processObject.getAccountPaymentMethod() );
@@ -469,14 +476,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						orderPayment.setOrder( order );
 					} else if (arguments.processObject.getRenewalPaymentType() eq 'new') {
 						order = getOrderService().processOrder(order, arguments.data, 'addOrderPayment');
-						
 					}
-					orderPayment = this.processOrderPayment(orderPayment, {}, 'runSubscriptionRenewalTransaction');
+					
+					//set up subscription renewal data
+					var data = {
+						isSubscriptionRenewal=true
+					};
+					
+					orderPayment = this.processOrderPayment(orderPayment, data, 'runPlaceOrderTransaction');
+					
+					//create deliveries if there are no errors else propagate errors
+					if(!orderPayment.hasErrors()){
+						// Look for 'auto' order fulfillments
+						getOrderService().createOrderDeliveryForAutoFulfillmentMethod(order.getOrderFulfillments()[1]);
+					}else{
+						arguments.subscriptionUsage.addError('runPlaceOrderTransaction', orderPayment.getErrors().runPlaceOrderTransaction);
+					}
+						
 				}
-				
-				// set the subscription usage nextBillDate
-				arguments.subscriptionUsage.setNextBillDate( nextBillDate );
-				arguments.subscriptionUsage.setFirstReminderEmailDateBasedOnNextBillDate();
 				
 				// As long as the order was placed, then we can update the nextBillDateTime & nextReminderDateTime
 				if(order.getStatusCode() == "ostNotPlaced") {
@@ -485,7 +502,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 				
 				if(order.hasErrors()){
-					arguments.subscriptionUsage.addError('renew',rbKey('validate.processSubscriptionUsage_renew.order.'));
+					var errors = order.getErrors();
+					for(var error in errors){
+						arguments.subscriptionUsage.addError(error,errors[error]);
+					}
 				}
 				
 			}

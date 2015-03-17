@@ -956,10 +956,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// Look for 'auto' order fulfillments
 							for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
 								
-								// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
-								if(arguments.order.getOrderFulfillments()[i].getFulfillmentMethodType() == "auto" && (order.getTotal() == 0 || order.getOrderFulfillments()[i].getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage') <= precisionEvaluate( order.getPaymentAmountReceivedTotal() * 100 / order.getTotal() ) ) ) {
-									createOrderDeliveryForAutoFulfillmentMethod(arguments.order);
-								}
+								
+								createOrderDeliveryForAutoFulfillmentMethod(arguments.order.getOrderFulfillments()[i]);
 							}
 						}
 					}
@@ -975,17 +973,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 	
-	public any function createOrderDeliveryForAutoFulfillmentMethod(required any order){
-		var newOrderDelivery = this.newOrderDelivery();
-									
-		// Setup the processData
-		var processData = {};
-		processData.order = {};
-		processData.order.orderID = arguments.order.getOrderID();
-		processData.location.locationID = arguments.order.getOrderFulfillments()[i].getFulfillmentMethod().setting('fulfillmentMethodAutoLocation');
-		processData.orderFulfillment.orderFulfillmentID = arguments.order.getOrderFulfillments()[i].getOrderFulfillmentID();
+	public any function createOrderDeliveryForAutoFulfillmentMethod(required any orderFulfillment){
 		
-		newOrderDelivery = this.processOrderDelivery(newOrderDelivery, processData, 'create');
+		var order = arguments.orderFulfillment.getOrder();
+		
+		var newOrderDelivery = this.newOrderDelivery();
+		
+		// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
+		if(
+			arguments.orderFulfillment.getFulfillmentMethodType() == "auto" 
+			&& (
+				order.getTotal() == 0 
+				|| orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage') <= precisionEvaluate( order.getPaymentAmountReceivedTotal() * 100 / order.getTotal() ) 
+			) 
+		){
+												
+			// Setup the processData
+			var processData = {};
+			processData.order = {};
+			processData.order.orderID = order.getOrderID();
+			processData.location.locationID = arguments.orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodAutoLocation');
+			processData.orderFulfillment.orderFulfillmentID = arguments.orderFulfillment.getOrderFulfillmentID();
+			
+			newOrderDelivery = this.processOrderDelivery(newOrderDelivery, processData, 'create');
+		}
 		return newOrderDelivery;
 	}
 	
@@ -1623,16 +1634,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 	
-	public any function processOrder_runSubscriptionRenewalTransaction(required any order,required struct data){
-		var transactionType = "";
+//	public any function processOrder_runSubscriptionRenewalTransaction(required any order,required struct data){
+//		var transactionType = "";
+//		
+//		if(!isNull(arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType())) {
+//			var transactionType = arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType();
+//		}
+//		
+//	}
 		
-		if(!isNull(arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType())) {
-			var transactionType = arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType();
-		}
-		
-	}
-		
-	public any function processOrderPayment_runPlaceOrderTransaction(required any orderPayment) {
+	public any function processOrderPayment_runPlaceOrderTransaction(required any orderPayment, struct data) {
 						
 		var transactionType = "";
 		
@@ -1642,6 +1653,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.orderPayment.getPaymentMethod().getPlaceOrderCreditTransactionType()) && orderPayment.getOrderPaymentType().getSystemCode() eq "optCredit") {
 			var transactionType = arguments.orderPayment.getPaymentMethod().getPlaceOrderCreditTransactionType();
 		}
+		if(
+			!isNull(arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType()) 
+			&& structKeyExists(arguments.data,'isSubscriptionRenewal') 
+			&& arguments.data.isSubscriptionRenewal == true
+		){
+			var transactionType = arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType();
+		}
+		
 		//need subscription transactiontype
 		
 		if(transactionType != '' && transactionType != 'none' && arguments.orderPayment.getAmount() > 0) {
