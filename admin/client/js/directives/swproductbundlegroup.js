@@ -47,7 +47,8 @@ angular.module('slatwalladmin')
 				scope.collection = {
 					baseEntityName:"Sku",
 					baseEntityAlias:"_sku",
-					collectionConfig:scope.productBundleGroup.data.skuCollectionConfig
+					collectionConfig:scope.productBundleGroup.data.skuCollectionConfig,
+					collectionObject:'Sku'
 				};
 				
 				scope.getCollection = function(){
