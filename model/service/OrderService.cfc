@@ -1989,6 +1989,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return false;
 	}
 	
+	public any function deleteOrderPayment( required any orderPayment ) {
+		
+		// Check delete validation
+		if(arguments.orderPayment.isDeletable()) {
+			
+			// Remove the primary fields so that we can delete this entity
+			var order = arguments.orderPayment.getOrder();
+			
+			order.removeOrderPayment( arguments.orderPayment );
+			
+			// Actually delete the entity
+			getHibachiDAO().delete( arguments.orderPayment );
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
 	// =====================  END: Delete Overrides ===========================
 	
 	// =================== START: Deprecated Functions ========================
