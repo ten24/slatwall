@@ -1633,15 +1633,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderPayment;
 		
 	}
-	
-//	public any function processOrder_runSubscriptionRenewalTransaction(required any order,required struct data){
-//		var transactionType = "";
-//		
-//		if(!isNull(arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType())) {
-//			var transactionType = arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType();
-//		}
-//		
-//	}
 		
 	public any function processOrderPayment_runPlaceOrderTransaction(required any orderPayment, struct data) {
 						
