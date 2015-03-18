@@ -113,21 +113,25 @@
 									<cfif arrayLen(attributes.object.getEmailTemplates()) || arrayLen(attributes.object.getPrintTemplates())>
 										<!--- Email --->
 										<cfif arrayLen(attributes.object.getEmailTemplates())>
-											<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="##"><i class="fa fa-envelope"></i></a>
-											<ul class="dropdown-menu pull-right">
-												<cfloop array="#attributes.object.getEmailTemplates()#" index="template">
-													<hb:HibachiProcessCaller action="admin:entity.preprocessemail" entity="Email" processContext="addToQueue" queryString="emailTemplateID=#template.getEmailTemplateID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getEmailTemplateName()#" modal="true" modalfullwidth="true" type="list" />
-												</cfloop>
-											</ul>
+											<div class="btn-group btn-group-sm">
+												<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="##"><i class="fa fa-envelope"></i></a>
+												<ul class="dropdown-menu pull-right">
+													<cfloop array="#attributes.object.getEmailTemplates()#" index="template">
+														<hb:HibachiProcessCaller action="admin:entity.preprocessemail" entity="Email" processContext="addToQueue" queryString="emailTemplateID=#template.getEmailTemplateID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getEmailTemplateName()#" modal="true" modalfullwidth="true" type="list" />
+													</cfloop>
+												</ul>
+											</div>
 										</cfif>
 										<!--- Print --->
 										<cfif arrayLen(attributes.object.getPrintTemplates())>
-											<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="##"><i class="fa fa-print"></i></a>
-											<ul class="dropdown-menu pull-right">
-												<cfloop array="#attributes.object.getPrintTemplates()#" index="template">
-													<hb:HibachiProcessCaller action="admin:entity.processprint" entity="Print" processContext="addToQueue" queryString="printTemplateID=#template.getPrintTemplateID()#&printID=&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getPrintTemplateName()#" type="list" />
-												</cfloop>
-											</ul>
+											<div class="btn-group btn-group-sm">
+												<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="##"><i class="fa fa-print"></i></a>
+												<ul class="dropdown-menu pull-right">
+													<cfloop array="#attributes.object.getPrintTemplates()#" index="template">
+														<hb:HibachiProcessCaller action="admin:entity.processprint" entity="Print" processContext="addToQueue" queryString="printTemplateID=#template.getPrintTemplateID()#&printID=&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" text="#template.getPrintTemplateName()#" type="list" />
+													</cfloop>
+												</ul>
+											</div>
 										</cfif>
 									</cfif>
 								</div>
