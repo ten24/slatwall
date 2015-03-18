@@ -133,7 +133,7 @@ Notes:
 				<cfelseif rc.processObject.getBaseProductType() eq "subscription">
 
 					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionTerms" />
-					<hb:HibachiListingDisplay smartList="SubscriptionTerm" multiselectFieldName="subscriptionTerms" title="#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#" edit="true">
+					<hb:HibachiListingDisplay smartList="SubscriptionTerm" multiselectFieldName="subscriptionTerms" title="#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionterms')#" edit="true">
 						<hb:HibachiListingColumn propertyIdentifier="subscriptionTermName" />
 					</hb:HibachiListingDisplay>
 
