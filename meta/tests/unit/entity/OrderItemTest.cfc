@@ -94,15 +94,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var orderItemData = {
 			orderitemid='',
-			price=5,
+			skuPrice=5,
 			sku=product.getSkus()[1],
+			quantity=1,
 			childOrderItems=[
 				{
-					orderItemid=''
+					orderItemid='',
+					skuPrice=4.25,
+					quantity=1
 					
 				},
 				{
-					orderItemid=''
+					orderItemid='',
+					skuPrice=2.12,
+					quantity=1
 				}
 			]
 		};
@@ -157,18 +162,23 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var orderItemData = {
 			orderitemid='',
 			price=5,
+			skuPrice=5,
 			sku=product.getSkus()[1],
+			quantity=1,
 			childOrderItems=[
 				{
 					orderItemid='',
+					quantity=1,
 					skuPrice=100
 				},
 				{
 					orderItemid='',
+					quantity=1,
 					skuPrice=200
 				},
 				{
 					orderItemid='',
+					quantity=1,
 					skuPrice=30
 				}
 			]
@@ -181,5 +191,11 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(orderItem.getProductBundlePrice(),295);
 		request.debug(orderItem.getProductBundlePrice());
 		
+	}
+	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
+	}
+	
+	
+	public void function getSimpleRepresentation_exists_and_is_simple() {
 	}
 }
