@@ -456,11 +456,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						!isNull(arguments.processObject.getSubscriptionUsage().getAutoPayFlag()) 
 						&& arguments.processObject.getSubscriptionUsage().getAutoPayFlag()
 					)
-					|| !isNull(arguments.processObject.getOrderPayment())
-					|| (
-						!isNull(arguments.processObject.getRenewalPaymentType()) 
-						&& arguments.processObject.getRenewalPaymentType() == 'new'
-					)
+					|| !arguments.processObject.getAutoUpdateFlag()
 				){
 					if(
 						arguments.processObject.getRenewalPaymentType() eq 'accountPaymentMethod' 
