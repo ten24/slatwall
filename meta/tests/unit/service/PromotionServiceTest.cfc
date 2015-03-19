@@ -95,7 +95,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			promotionCodes = [
 				{
 					promotionCodeid = '',
-					promotionCode = 'TestPromotionCode'
+					promotionCode = generateRandomString(20,20)
 				}
 			]
 		};
@@ -120,7 +120,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			promotionCodes = [
 				{
 					promotionCodeid = '',
-					promotionCode = 'TestPromotionCode2'
+					promotionCode = generateRandomString(20,20)
 				}
 			]
 		};
@@ -156,7 +156,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			promotionCodes = [
 				{
 					promotionCodeid = '',
-					promotionCode = 'TestPromotionCode'
+					promotionCode = generateRandomString(20,20)
 				}
 			]
 		};
@@ -365,9 +365,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var productData = {
 			productid = '',
 			productName = 'TestProductName',
+			productCode = generateRandomString(20,20),
 			skus = [
 				{
 					skuid = '',
+					skuCode=generateRandomString(20,20),
 					price = 10
 				}
 			]
@@ -745,9 +747,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var productData = {
 			productName = 'TestProductName',
+			productCode=generateRandomString(20,20),
 			skus = [
 				{
-					skuid = ''
+					skuid = '',
+					skuCode=generateRandomString(20,20)
 				}
 			],
 			productType = {
@@ -799,10 +803,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);	
 		
 		var productData = {
+			productID = '',
 			productName = 'TestProductName',
+			productCode = generateRandomString(20,20),
 			skus = [
 				{
-					skuid = ''
+					skuid = '',
+					skuCode=generateRandomString(20,20)
 				}
 			],
 			productType = {
@@ -836,10 +843,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);	
 		
 		var productData = {
+			productID = '',
 			productName = 'TestProductName',
+			productCode = generateRandomString(20,20),
 			skus = [
 				{
-					skuid = ''
+					skuid = '',
+					skuCode = generateRandomString(20,20)
 				}
 			],
 			productType = {
@@ -876,9 +886,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var productData = {
 			productName = 'TestProductName',
+			productCode = generateRandomString(20,20),
 			skus = [
 				{
-					skuid = ''
+					skuid = '',
+					skuCode=generateRandomString(20,20)
 				}
 			],
 			productType = {
@@ -914,10 +926,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var promotionQualifier = createPersistedTestEntity('promotionQualifier',promotionQualifierData);	
 		
 		var productData = {
+			productID = '',
 			productName = 'TestProductName',
+			productCode = generateRandomString(20,20),
 			skus = [
 				{
-					skuid = ''
+					skuid = '',
+					skuCode = generateRandomString(20,20)
 				}
 			],
 			productType = {
@@ -961,10 +976,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var productType = createPersistedTestEntity('productType',productTypeData);
 		
-		var skuData = {};
+		var skuData = {
+			skuid='',
+			skuCOde=generateRandomString(20,20)
+		};
 		var sku = createPersistedTestEntity('sku',skuData);
 		
 		var productData = {
+			productid='',
+			productCode=generateRandomString(20,20),
 			productName = 'TestProductName'
 		};
 		var product = createPersistedTestEntity('product',productData);
@@ -1006,10 +1026,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var productType = createPersistedTestEntity('productType',productTypeData);
 		
-		var skuData = {};
+		var skuData = {
+			skuid='',
+			skuCode=generateRandomString(20,20)
+			
+		};
 		var sku = createPersistedTestEntity('sku',skuData);
 		
 		var productData = {
+			productid = '',
+			productCode=generateRandomString(20,20),
 			productName = 'TestProductName'
 		};
 		var product = createPersistedTestEntity('product',productData);
@@ -1040,11 +1066,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var productType = createPersistedTestEntity('productType',productTypeData);
 		
-		var skuData = {};
+		var skuData = {
+			skuid='',
+			skuCode=generateRandomString(20,20)
+		};
 		var sku = createPersistedTestEntity('sku',skuData);
 		
 		var productData = {
-			productName = 'TestProductName'
+			productid='',
+			productName = 'TestProductName',
+			productCode=generateRandomString(20,20)
 		};
 		var product = createPersistedTestEntity('product',productData);
 		
@@ -1074,10 +1105,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var productType = createPersistedTestEntity('productType',productTypeData);
 		
-		var skuData = {};
+		var skuData = {
+			skuid='',
+			skuCOde=generateRandomString(20,20)
+		};
 		var sku = createPersistedTestEntity('sku',skuData);
 		
 		var productData = {
+			productid='',
+			productCode=generateRandomString(20,20),
 			productName = 'TestProductName'
 		};
 		var product = createPersistedTestEntity('product',productData);
@@ -1112,10 +1148,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var productType = createPersistedTestEntity('productType',productTypeData);
 		
-		var skuData = {};
+		var skuData = {
+			skuid='',
+			skuCode=generateRandomString(20,20)
+		};
 		var sku = createPersistedTestEntity('sku',skuData);
 		
 		var productData = {
+			productId = '',
+			productCode = generateRandomString(20,20),
 			productName = 'TestProductName'
 		};
 		var product = createPersistedTestEntity('product',productData);
@@ -1155,10 +1196,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var productType = createPersistedTestEntity('productType',productTypeData);
 		
-		var skuData = {};
+		var skuData = {
+			skuid='',
+			skuCode=generateRandomString(20,20)
+		};
 		var sku = createPersistedTestEntity('sku',skuData);
 		
 		var productData = {
+			productid='',
+			productCode=generateRandomString(20,20),
 			productName = 'TestProductName'
 		};
 		var product = createPersistedTestEntity('product',productData);
@@ -1200,10 +1246,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var productType = createPersistedTestEntity('productType',productTypeData);
 		
-		var skuData = {};
+		var skuData = {
+			skuid='',
+			skuCode=generateRandomString(20,20)
+		};
 		var sku = createPersistedTestEntity('sku',skuData);
 		
 		var productData = {
+			productid='',
+			productCode=generateRandomString(20,20),
 			productName = 'TestProductName'
 		};
 		var product = createPersistedTestEntity('product',productData);
@@ -1243,10 +1294,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var productType = createPersistedTestEntity('productType',productTypeData);
 		
-		var skuData = {};
+		var skuData = {
+			skuid='',
+			skuCode=generateRandomString(20,20)
+		};
 		var sku = createPersistedTestEntity('sku',skuData);
 		
 		var productData = {
+			productid='',
+			productCode=generateRandomString(20,20),
 			productName = 'TestProductName'
 		};
 		var product = createPersistedTestEntity('product',productData);
@@ -1286,11 +1342,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var productType = createPersistedTestEntity('productType',productTypeData);
 		
-		var skuData = {};
+		var skuData = {
+			skuid='',
+			skuCode=generateRandomString(20,20)
+		};
 		var sku = createPersistedTestEntity('sku',skuData);
 		
 		var productData = {
-			productName = 'TestProductName'
+			productID = '',
+			productName = 'TestProductName',
+			productCode = generateRandomString(20,20)
 		};
 		var product = createPersistedTestEntity('product',productData);
 		
@@ -1331,10 +1392,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var productType = createPersistedTestEntity('productType',productTypeData);
 		
-		var skuData = {};
+		var skuData = {
+			skuid='',
+			skuCode=generateRandomString(20,20)
+		};
 		var sku = createPersistedTestEntity('sku',skuData);
 		
 		var productData = {
+			productid='',
+			productCode=generateRandomString(20,20),
 			productName = 'TestProductName'
 		};
 		var product = createPersistedTestEntity('product',productData);
@@ -1380,11 +1446,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var productType = createPersistedTestEntity('productType',productTypeData);
 		
-		var skuData = {};
+		var skuData = {
+			skuid='',
+			skuCode=generateRandomString(20,20)
+		};
 		var sku = createPersistedTestEntity('sku',skuData);
 		
 		var productData = {
-			productName = 'TestProductName'
+			productName = 'TestProductName',
+			productid='',
+			productCode=generateRandomString(20,20)
 		};
 		var product = createPersistedTestEntity('product',productData);
 		
@@ -1425,11 +1496,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var productType = createPersistedTestEntity('productType',productTypeData);
 		
-		var skuData = {};
+		var skuData = {
+			skuid='',
+			skuCode=generateRandomString(20,20)
+		};
 		var sku = createPersistedTestEntity('sku',skuData);
 		
 		var productData = {
-			productName = 'TestProductName'
+			productName = 'TestProductName',
+			productid='',
+			productCode=generateRandomString(20,20)
 		};
 		var product = createPersistedTestEntity('product',productData);
 		
@@ -1463,10 +1539,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var productType = createPersistedTestEntity('productType',productTypeData);
 		
-		var skuData = {};
+		var skuData = {
+			skuid='',
+			skuCode=generateRandomString(20,20)
+		};
 		var sku = createPersistedTestEntity('sku',skuData);
 		
 		var productData = {
+			productid='',
+			productCode=generateRandomString(20,20),
 			productName = 'TestProductName'
 		};
 		var product = createPersistedTestEntity('product',productData);
@@ -1506,10 +1587,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var productType = createPersistedTestEntity('productType',productTypeData);
 		
-		var skuData = {};
+		var skuData = {
+			skuid='',
+			skuCode=generateRandomString(20,20)
+		};
 		var sku = createPersistedTestEntity('sku',skuData);
 		
 		var productData = {
+			productid='',
+			productCode=generateRandomString(20,20),
 			productName = 'TestProductName'
 		};
 		var product = createPersistedTestEntity('product',productData);
@@ -1616,9 +1702,11 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var productData = {
 			productName = 'TestProductName',
+			productCode = generateRandomString(20,20),
 			skus = [
 				{
-					skuid = ''
+					skuid = '',
+					skuCode=generateRandomString(20,20)
 				}
 			],
 			productType = {
