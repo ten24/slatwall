@@ -109,12 +109,12 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		//If the session cookie doesn't exist  on the record, or if the cookie doesn't exist, or if the cookie doesn't match the stored value
 		//then create a new one.
-	
+		
 		if( isNull(getHibachiScope().getSession().getSessionCookieNPSID())
 			|| !structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID")
 			|| getHibachiScope().getSession().getSessionCookieNPSID() != cookie[ "#getApplicationValue('applicationKey')#-NPSID" ]) {
-	
-			getHibachiScope().getSession().setSessionCookieNPSID( hash(getHibachiScope().getSession().getSessionID() & "-NPSID", "SHA-1") );
+			var cookieValue = getValueForNonPersistantCookie();
+			getHibachiScope().getSession().setSessionCookieNPSID(cookieValue);
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value=getHibachiScope().getSession().getSessionCookieNPSID());
 	
 		}
@@ -154,6 +154,10 @@ component output="false" accessors="true" extends="HibachiService"  {
 	}
 	
 	public void function logoutAccount() {
+		var cookieValue = getValueForNonPersistantCookie();
+			getHibachiScope().getSession().setSessionCookieNPSID(cookieValue);
+			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value=getHibachiScope().getSession().getSessionCookieNPSID());
+	
 		var currentSession = getHibachiScope().getSession();
 		var auditLogData = {};
 	
@@ -245,6 +249,17 @@ component output="false" accessors="true" extends="HibachiService"  {
 		return getHibachiUtilityService().decryptValue(value=arguments.cookieData, salt="valid-#arguments.cookieType#-SlatwallSessionIDCookie");
 	}
 	
+	/**
+	 * Generate new non ersistant cookie
+	 */
+	private any function getValueForNonPersistantCookie(){
+		var id = getHibachiScope().getSession().getSessionID() & "#DateTimeFormat(Now())#";
+		var hashedID = hash(id, "sha-1");
+		//writeDump(var=hashedID, top=2);abort;
+		getHibachiScope().getSession().setSessionCookieNPSID( hashedID );
+		var newCookieValue = getHibachiScope().getSession().getSessionCookieNPSID();
+		return newCookieValue;
+	}
 	// ==================  END:  Private Helper Functions =====================
 	
 	// =================== START: Deprecated Functions ========================
