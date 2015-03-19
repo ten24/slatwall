@@ -150,13 +150,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Get the smartList for all the eligible payment methods for this account
 			var paymentMethodSmartList = this.getPaymentMethodSmartList();
+			
 			paymentMethodSmartList.addFilter('activeFlag', 1);
 			paymentMethodSmartList.addOrder('sortOrder|ASC');
 			if(!isNull(arguments.order.getAccount())) {
 				paymentMethodSmartList.addInFilter('paymentMethodID', arguments.order.getAccount().setting('accountEligiblePaymentMethods'));	
 			}
 			var activePaymentMethods = paymentMethodSmartList.getRecords();
-			
 			for(var i=1; i<=arrayLen(arguments.order.getOrderItems()); i++) {
 				var epmList = arguments.order.getOrderItems()[i].getSku().setting("skuEligiblePaymentMethods");
 				for(var x=1; x<=listLen( epmList ); x++) {

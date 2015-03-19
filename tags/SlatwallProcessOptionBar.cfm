@@ -83,18 +83,18 @@ Notes:
 			<cfset sections++ />
 		</cfif>
 		<cfif sections eq 1>
-			<cfset divclass="span12" />
+			<cfset divclass="col-md-12" />
 		<cfelseif sections eq 2>
-			<cfset divclass="span6" />
+			<cfset divclass="col-md-6" />
 		<cfelseif sections eq 3>
-			<cfset divclass="span4" />
+			<cfset divclass="col-md-4" />
 		<cfelseif sections eq 4>
 			<cfset divclass="span3" />
 		</cfif>
 	</cfsilent>
 	
 	<cfoutput>
-		<div class="row-fluid">
+		<div class="row">
 			<cfif arrayLen(dataOptions)>
 				<swa:SlatwallPropertyList divclass="#divclass#">
 					<cfif sections gt 1>
@@ -133,7 +133,7 @@ Notes:
 						<br />
 					</cfif>
 					<swa:SlatwallFieldDisplay edit="true" fieldname="dataCollector" fieldtype="text" title="Scan" fieldclass="firstfocus">
-					<button class="btn">Upload Data File</button>
+					<button class="btn btn-default">Upload Data File</button>
 				</swa:SlatwallPropertyList>
 			</cfif>
 			<cfif attributes.allowComment>

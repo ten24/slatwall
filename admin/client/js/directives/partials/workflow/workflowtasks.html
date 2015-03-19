@@ -1,0 +1,59 @@
+<!-- Workflow Tasks Forms and line items -->
+<div class="s-body-box">
+	<div class="s-bundle-add-items s-workflow-objs">
+			<ul ng-repeat="workflowTask in workflowTasks" ng-init="workflowTask.$$index = $index" class="list-unstyled s-order-item-options s-negative-obj"><!-- problem one -->
+				<li class="s-bundle-add-obj s-no-edit" ng-show="workflowTask.$$isPersisted()">
+					<ul class="list-unstyled list-inline">
+						<li class="s-item-type s-tooltip" ng-bind="$index+1"></li>
+					</ul>
+					<ul class="list-unstyled list-inline s-middle">
+						<li class="j-tool-tip-item s-bundle-details" ng-bind="workflowTask.data.taskName"></li>
+						<li class="j-tool-tip-item s-bundle-details">
+							Active: <span ng-show="!workflowTask.data.activeFlag">No</span><span ng-show="workflowTask.data.activeFlag">Yes</span>
+						</li>
+					</ul>
+					<ul class="list-unstyled list-inline s-last">
+						<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" ng-click="selectWorkflowTask(workflowTasks[$index]); setHidden(workflowTasks[$index]);">
+							<a class="btn s-btn-dgrey s-edit" data-target="#s-add-obj-1">
+								<i 	class="fa fa-pencil"></i>
+							</a>
+						</li>
+						<li class="col-xs-1 j-tool-tip-item s-bundle-details-add">
+							<a class="btn s-btn-dgrey s-remove" 
+								data-toggle="collapse" 
+								data-target="#s-add-obj-1"
+								ng-click="removeWorkflowTask(workflowTasks[$index])"
+							>
+								<i class="fa fa-trash"></i>
+							</a>
+						</li>
+					</ul>
+					<div class="clearfix"></div>
+				</li>
+			</ul>
+	</div>
+	<button class="btn btn-xs s-btn-ten24" 
+			data-target="#j-create-new-task"
+			ng-click="addWorkflowTask();" 
+			ng-show="!workflowTasks.selectedTask || workflowTasks.selectedTask.$$isPersisted()">
+		<i class="fa fa-plus"></i> Create New Task
+	</button>
+
+	<div class="col-xs-12 s-add-filter s-tab-layout" id="j-create-new-task" ng-if="workflowTasks.selectedTask && !workflowTasks.selectedTask.hidden">
+		<div class="row">
+			<h4>
+				 <span ng-show="!workflowTasks.selectedTask.$$isPersisted()">Create New</span><span ng-show="workflowTasks.selectedTask.$$isPersisted()">Edit</span> Task 
+				 <i class="fa fa-times" 
+				 	data-target="#j-create-new-task"
+				 	ng-click="removeWorkflowTask(workflowTasks.selectedTask)"
+				 ></i>
+			</h4>
+			<span ng-if="workflowTasks.selectedTask">
+				<span ng-include="workflowPartialsPath+'addeditworkflowtask.html'"></span>
+			</span>
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+</div>

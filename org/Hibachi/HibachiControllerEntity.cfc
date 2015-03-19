@@ -282,7 +282,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "#arguments.rc.entityActionDetails.subsystemName#.#arguments.rc.entityActionDetails.sectionName#.delete_success" ), "${itemEntityName}", rbKey('entity.#arguments.rc.entityActionDetails.itemEntityName#'), "all" ), "success");
 			
 			// Render or Redirect a Success
-			renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails.listAction, maintainQueryString=true, rc=arguments.rc);
+			renderOrRedirectSuccess( defaultAction=arguments.rc.entityActionDetails.listAction, maintainQueryString=true, rc=arguments.rc, keysToRemoveOnRedirect=entityPrimaryID);
 			
 		// FAILURE
 		} else {
@@ -433,7 +433,11 @@ component output="false" accessors="true" extends="HibachiController" {
 			rc.processObject = entity.getProcessObject( arguments.rc.processContext );
 			
 			// Populate the processObject
-			rc.processObject.populate(arguments.rc);
+			rc.processObject.populate( arguments.rc );
+			if(structKeyExists(arguments.rc, arguments.entityName) && isStruct(arguments.data[arguments.entityName])) {
+				entity.populate( arguments.rc[arguments.entityName] );
+				rc.processObject.addPopulatedSubProperty( arguments.entityName, entity );
+			}
 			
 			// hibachiValidationService
 			var errorBean = getService("hibachiValidationService").validate(arguments.rc.processObject, arguments.rc.processContext, false);
@@ -626,7 +630,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		return hasValue;
 	}
 	
-	private void function renderOrRedirectSuccess( required string defaultAction, required boolean maintainQueryString, required struct rc ) {
+	private void function renderOrRedirectSuccess( required string defaultAction, required boolean maintainQueryString, required struct rc, string keysToRemoveOnRedirect="" ) {
 		param name="arguments.rc.sRedirectQS" default="";
 		
 		// First look for a sRedirectURL in the rc, and do a redirectExact on that
@@ -658,8 +662,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			this.invokeMethod(arguments.defaultAction, {rc=arguments.rc});
 			
 		} else {
-			getFW().redirect( action=arguments.defaultAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString) );
-			
+			getFW().redirect( action=arguments.defaultAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString, arguments.keysToRemoveOnRedirect) );
 		}
 	}
 	
@@ -694,10 +697,10 @@ component output="false" accessors="true" extends="HibachiController" {
 		}
 	}
 	
-	private string function buildRedirectQueryString( required string queryString, required boolean maintainQueryString ) {
+	private string function buildRedirectQueryString( required string queryString, required boolean maintainQueryString, string keysToRemoveOnRedirect="" ) {
 		if(arguments.maintainQueryString) {
 			for(var key in url) {
-				if(key != getFW().getAction() && !listFindNoCase("redirectAction,sRedirectAction,fRedirectAction,redirectURL,sRedirectURL,fRedirectURL", key)) {
+				if(key != getFW().getAction() && !listFindNoCase("redirectAction,sRedirectAction,fRedirectAction,redirectURL,sRedirectURL,fRedirectURL,#arguments.keysToRemoveOnRedirect#", key)) {
 					arguments.queryString = listAppend(arguments.queryString, "#key#=#url[key]#", "&");
 				}
 			}

@@ -8,9 +8,9 @@
 			dateFormat : 'MM/DD/YYYY',
 			timeFormat : 'HH:MM',
 			baseURL : '/',
-			applicationKey : 'Hibachi'
+			applicationKey : 'Hibachi',
+			rbLocale:'en'
 		}
-		
 		$.extend(config, cfg);
 		//rb key data
 		var rbData = undefined;

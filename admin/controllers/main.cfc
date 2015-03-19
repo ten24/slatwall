@@ -185,6 +185,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			getFW().redirect(action="admin:main.default", preserve="messages", queryString="#getApplicationValue('applicationReloadKey')#=#getApplicationValue('applicationReloadPassword')#&#getApplicationValue('applicationUpdateKey')#=#getApplicationValue('applicationUpdatePassword')#");
 		}
 		
+		// https://api.github.com/repos/ten24/Slatwall/branches
 		var versions = getUpdateService().getAvailableVersions();
 		rc.availableDevelopVersion = versions.develop;
 		rc.availableMasterVersion = versions.master;
@@ -310,7 +311,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		getFW().redirect(action="admin:main.default", preserve="messages");
 	}
-	
+
 	public void function unlockAccount(){
 		
 		var account = getService("HibachiService").getAccountByAccountID(url.accountid);
@@ -322,5 +323,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getFW().redirect(action="entity.detailaccount", queryString="accountID=#arguments.rc.accountid#", preserve="messages");
 
 	}
+
 }
 

@@ -48,11 +48,14 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.subscriptionUsageSmartList" type="any" />
 
 <cfoutput>
+<hb:HibachiEntityActionBar type="listing" object="#rc.subscriptionUsageSmartList#" showCreate="false" />
 
-<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.subscriptionUsageSmartList#"
+<hb:HibachiListingDisplay smartList="#rc.subscriptionUsageSmartList#"
 						   recordDetailAction="admin:entity.detailsubscriptionUsage"
 						   recordEditAction="admin:entity.editsubscriptionUsage">
 

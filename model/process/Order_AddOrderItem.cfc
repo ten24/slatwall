@@ -85,8 +85,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="saveShippingAccountAddressName";
 	property name="fulfillmentRefundAmount" hb_rbKey="entity.orderReturn.fulfillmentRefundAmount";
 	property name="emailAddress" hb_rbKey="entity.orderFulfillment.emailAddress";
-	
-	
+	property name="registrants" type="array" hb_populateArray="true"; 
+	property name="childOrderItems" type="array" hb_populateArray="true";
+	property name="publicRemoteID";
 	
 	// Data Properties (Related Entity Populate)
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";
@@ -105,9 +106,33 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Helper Properties
 	property name="assignedOrderItemAttributeSets";
 	property name="fulfillmentMethodType";
-	
+		
+	public any function init(){
+		super.init();
+		variables.childOrderItems = [];
+	}
 	
 	// ======================== START: Defaults ============================
+	
+	public array function getChildOrderItems(){
+		if(structkeyExists(variables,'childOrderItems')){
+			return variables.childOrderItems;
+		}
+		
+		return variables.childOrderItems;
+	}
+	
+	public any function getRegistrantAccounts() {
+		if(structKeyExists(variables, "registrantAccounts")) {
+			return variables.registrantAccounts;
+		}
+		variables.registrantAccounts = [];
+		for(i=1;i<=quantity;i++) {
+			var account = getService("accountService").newAccount();
+			arrayAppend(variables.registrantAccounts,account);
+		}
+		return variables.registrantAccounts;
+	}
 	
 	public any function getOrderFulfillmentID() {
 		if(structKeyExists(variables, "orderFulfillmentID")) {
@@ -144,6 +169,47 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.price;
 	}
+	/*
+	
+	//Need to also check child order items for child order items.
+			if( arguments.processObject.getSku().getBaseProductType() == 'productBundle' ) {
+				
+				for(var childItemData in arguments.processObject.getChildOrderItems()) {
+					var childOrderItem = this.newOrderItem();
+					
+					// Populate the childOrderItem with the data
+					childOrderItem.populate( childItemData );
+					
+					if(!isNull(childOrderItem.getSku()) && !isNull(childOrderItem.getProductBundleGroup())) {
+						
+						// Set quantity if needed
+						if(isNull(childOrderItem.getQuantity())) {
+							childOrderItem.setQuantity( 1 );
+						}
+						// Set orderFulfillment if needed
+						if(isNull(childOrderItem.getOrderFulfillment())) {
+							childOrderItem.setOrderFulfillment( orderFulfillment );
+						}
+						// Set fulfillmentMethod if needed
+						if(isNull(childOrderItem.getOrderFulfillment().getFulfillmentMethod())) {
+							childOrderItem.getOrderFulfillment().setFulfillmentMethod( listFirst(childOrderItem.getSku().setting('skuEligibleFulfillmentMethods')) );
+						}
+						childOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
+						if(childOrderItem.getSku().getUserDefinedPriceFlag() && structKeyExists(childItemData, 'price') && isNumeric(childItemData.price)) {
+							childOrderItem.setPrice( childItemData.price );
+						} else {
+							// TODO: calculate price base on adjustment type rule of bundle group
+							childOrderItem.setPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+						}
+						childOrderItem.setSkuPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+						childOrderItem.setParentOrderItem( newOrderItem );
+						childOrderItem.setOrder( arguments.order );
+						
+					}
+				}
+				
+			}
+	*/
 	
 	public string function getCurrencyCode() {
 		if(!structKeyExists(variables, "currencyCode")) {
@@ -452,6 +518,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// funciton to compare two orderItems based on certain properties.
 	public boolean function matchesOrderItem(required any orderItem){
+		
+		//check if the sku is a bundle
+		if(this.getSku().getBaseProductType() == 'productBundle') {
+			return false;
+		}
 		
 		//check if skus match
 		if(arguments.orderItem.getSku().getSkuID() != this.getSku().getSkuID()){

@@ -48,20 +48,25 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderOriginSmartList" type="any" />
 
 <cfoutput>
 
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.orderOriginSmartList#"
+	<hb:HibachiEntityActionBar type="listing" object="#rc.orderOriginSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createorderorigin" entity="orderorigin" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+
+	<hb:HibachiListingDisplay smartList="#rc.orderOriginSmartList#"
 			recordEditAction="admin:entity.editorderorigin"
 			recordEditQueryString="redirectAction=admin:entity.listorderorigin"
 			recordDeleteAction="admin:entity.deleteorderorigin"
 			recordEditModal="true">
-			
-		<!--- Create ---> 
-		<hb:HibachiListingDisplayButtonGroup >
-			<hb:HibachiActionCaller action="admin:entity.createorderorigin" entity="orderorigin" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</hb:HibachiListingDisplayButtonGroup>
 		
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="orderOriginName" />
 		<hb:HibachiListingColumn propertyIdentifier="orderOriginType" />

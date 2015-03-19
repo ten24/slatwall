@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.integration" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
@@ -55,20 +57,11 @@ Notes:
 	<hb:HibachiEntityDetailForm object="#rc.integration#" edit="#rc.edit#">
 		
 		<hb:HibachiEntityActionBar type="detail" object="#rc.integration#" showDelete="false" />
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.integration#" property="integrationPackage" edit="false">
-				<hb:HibachiPropertyDisplay object="#rc.integration#" property="activeFlag" edit="#rc.edit#" />
-				
-			</hb:HibachiPropertyList>
-			
-			
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.integration#">
-			<hb:HibachiTab view="admin:entity/integrationtabs/settings" />
-		</hb:HibachiTabGroup>
+
+		<hb:HibachiEntityDetailGroup object="#rc.integration#">
+			<hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/integrationtabs/settings" />
+		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

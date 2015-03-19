@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.vendorOrderSmartList" type="any" />
 
 <cfsilent>
@@ -55,20 +57,23 @@ Notes:
 </cfsilent>
 
 <cfoutput>
-	
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.vendorOrderSmartList#"
+	<hb:HibachiEntityActionBar type="listing" object="#rc.vendorOrderSmartList#" showCreate="false">
+		
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createvendororder" entity="brand" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+		
+	<hb:HibachiListingDisplay smartList="#rc.vendorOrderSmartList#"
 							   recordDetailAction="admin:entity.detailvendororder"
 							   recordEditAction="admin:entity.editvendororder">
-							      
-		<!--- Create ---> 
-		<hb:HibachiListingDisplayButtonGroup >
-			<hb:HibachiActionCaller action="admin:entity.createvendororder" entity="brand" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</hb:HibachiListingDisplayButtonGroup>
 		
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="vendor.vendorName" />
 		<hb:HibachiListingColumn propertyIdentifier="vendorOrderNumber" />
-		<hb:HibachiListingColumn propertyIdentifier="vendorOrderType.type" />
+		<hb:HibachiListingColumn propertyIdentifier="vendorOrderType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="estimatedReceivalDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="vendorOrderStatusType.typeName" />
 		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="total" />
 	</hb:HibachiListingDisplay>

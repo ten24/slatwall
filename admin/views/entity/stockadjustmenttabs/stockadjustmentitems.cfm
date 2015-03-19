@@ -48,6 +48,7 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.stockAdjustment" type="any" />
 
 <hb:HibachiListingDisplay smartList="#rc.stockAdjustment.getstockAdjustmentItemsSmartList()#"
@@ -62,7 +63,6 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="fromstock.sku.product.brand.brandName" />
 		<hb:HibachiListingColumn propertyIdentifier="fromstock.sku.product.productName" />
 		<hb:HibachiListingColumn propertyIdentifier="fromstock.sku.skuDefinition" sort="false" />
-		
 		<hb:HibachiListingColumn propertyIdentifier="fromstock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.fromlocationname')#" />
 		<cfif rc.stockAdjustment.getStockAdjustmentType().getSystemCode() eq "satLocationTransfer">
 			<hb:HibachiListingColumn propertyIdentifier="tostock.location.locationName" title="#$.slatwall.rbKey('admin.warehouse.detailstockadjustment.tolocationname')#" />

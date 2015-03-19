@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderDelivery" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
@@ -55,28 +57,15 @@ Notes:
 	<hb:HibachiEntityDetailForm object="#rc.orderDelivery#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.orderDelivery#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="createdDateTime">
-				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="fulfillmentMethod">
-				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="trackingNumber" edit="#rc.edit#">
-				<cfif !isNull(rc.orderDelivery.getShippingMethod())>	
-					<hb:HibachiPropertyDisplay object="#rc.orderDelivery.getShippingMethod()#" property="shippingMethodName">
-				</cfif>
-				<cfif !isNull(rc.orderDelivery.getLocation())>
-					<hb:HibachiPropertyDisplay object="#rc.orderDelivery.getLocation()#" property="locationName">
-				</cfif>
-				<hb:HibachiPropertyDisplay object="#rc.orderDelivery.getOrder()#" property="orderNumber"  valuelink="?slatAction=admin:entity.detailorder&orderID=#rc.orderDelivery.getOrder().getOrderID()#">			
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.orderDelivery#">
-			<hb:HibachiTab view="admin:entity/orderdeliverytabs/orderdeliveryitems">
+		<hb:HibachiEntityDetailGroup object="#rc.orderDelivery#">
+			<hb:HibachiEntityDetailItem view="admin:entity/orderdeliverytabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/orderdeliverytabs/orderdeliveryitems">
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.orderDelivery.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.orderDelivery#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</hb:HibachiTabGroup>
-
+		</hb:HibachiEntityDetailGroup >
+		
+		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

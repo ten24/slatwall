@@ -1,0 +1,207 @@
+<div ng-controller="collections" style="margin-top:12px;">
+	<div class="col-xs-12 s-filter-content s-filter-content-table-view">
+		<div class="s-table-header-nav">
+			<div class="col-md-12 s-header-nav">
+				<div class="col-xs-6" style="padding-left:0px;">
+					<!---TODO: implement keyword searching and bulk actions --->
+					<ul class="list-inline list-unstyled">
+						<li>
+							<div class="s-select-list-wrapper">
+								<div class="form-group">
+									<div class="input-group">
+										<div class="s-input-btn">
+											<input  type="text"
+												class="form-control input-sm"
+												placeholder="Search"
+												name="srch-term"
+												ng-model="keywords"
+												ng-change="searchCollection()"
+												/>
+											<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
+										</div>
+										<div class="input-group-btn">
+											<button   class="btn btn-primary btn-sm"
+												type="submit"
+												ng-click="searchCollection()"
+												>
+											<i class="fa fa-search"></i>
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--- s-select-list-wrapper --->
+						</li>
+					</ul>
+				</div>
+				<div class="col-xs-6 s-table-view-options">
+					<ul class="list-inline list-unstyled">
+						<li>
+							<span   sw-pagination-bar
+								data-collection="collection"
+								data-current-page="currentPage"
+								data-page-show="pageShow"
+								data-page-start="pageStart"
+								data-page-end="pageEnd"
+								data-records-count="recordsCount"
+								data-get-collection="getCollection()"
+								>
+							</span>
+						</li>
+						<li>
+							<button class="btn btn-default btn-sm" target="_self" ng-click="toggleFiltersAndOptions()">
+							<i class="fa fa-cog"></i>
+							</button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<span 	sw-export-action
+			>
+		</span>
+		<!--- Filters and Display Options --->
+		<div ng-model="toggleCogOpen" ng-show="toggleCogOpen">
+			<!--- Tab panes for menu options start--->
+			<div class="s-options">
+				<div class="tab-content" id="j-property-box">
+					<div class="row s-header-bar">
+						<div class="col-md-5 s-header-nav">
+							<ul class="nav nav-tabs s-collection-options" role="tablist">
+								<li class="active"><a href="##j-filters" role="tab" data-toggle="tab">FILTERS <span>(<span ng-bind="filterCount()"></span>)</span></a></li>
+								<li><a href="##j-display-options" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>
+							</ul>
+						</div>
+					</div>
+					<div class="tab-pane active" id="j-filters">
+						<div class="s-setting-options">
+							<div class="row s-setting-options-body">
+								<!--- Start Filter Group --->
+								<div class="col-xs-12 s-filters-selected">
+									<div class="row">
+										<!---filterGroups gets taken apart here --->
+										<ul class="col-xs-12 s-filter-list list-unstyled"
+											sw-filter-groups
+											data-collection-config="collectionConfig"
+											data-filter-group="collectionConfig.filterGroups[0]"
+											data-filter-group-item="collectionConfig.filterGroups[0].filterGroup"
+											data-filter-properties-list="filterPropertiesList"
+											data-save-collection="saveCollection()"
+											>
+										</ul>
+									</div>
+									<!--- //New Filter Panel --->
+								</div>
+								<!--- //End Filter Group --->
+							</div>
+						</div>
+					</div>
+					<!--- //Tab Pane --->
+					<div class="tab-pane s-display-options" id="j-display-options">
+						<sw-display-options
+							data-columns="collectionConfig.columns"
+							data-properties-list="filterPropertiesList"
+							data-save-collection="saveCollection()"
+							data-callbacks="callbacks"
+							data-base-entity-alias="collectionConfig.baseEntityAlias"
+							data-base-entity-name="collectionConfig.baseEntityName"
+							>
+							<li class="list-group-item"
+								ng-repeat="column in collectionConfig.columns"
+								sw-column-item
+								data-column="column"
+								data-columns="collectionConfig.columns"
+								data-column-index="$index"
+								data-save-collection="saveCollection()"
+								data-properties-list="filterPropertiesList"
+								data-callbacks="callbacks"
+								data-order-by="collectionConfig.orderBy"
+								></li>
+						</sw-display-options >
+					</div>
+					<!--- //Tab Pane --->
+				</div>
+			</div>
+			<!--- //Row --->
+		</div>
+		<!--- toggleCogOpen --->
+		<!--delete batch action-->
+		<div id="j-delete-link" class="row collapse s-batch-options">
+			<div class="col-md-12 s-add-filter">
+				<!--- Edit Filter Box --->
+				<h4> Delete:<i class="fa fa-times" data-toggle="collapse" data-target="#j-delete-link"></i></h4>
+				<div class="col-xs-12">
+					<div class="row">
+						<div class="col-xs-2">
+							<div class="form-group form-group-sm">
+								<label class="col-sm-12 control-label s-no-padding" for="formGroupInputSmall">Items To Delete:</label>
+								<div class="col-sm-12 s-no-paddings">
+									<div class="radio">
+										<input type="radio" name="radio1" id="radio7" value="option2" checked="checked">
+										<label for="radio7">
+										All
+										</label>
+									</div>
+									<div class="radio">
+										<input type="radio" name="radio1" id="radio7" value="option2">
+										<label for="radio7">
+										Visable
+										</label>
+									</div>
+									<div class="radio">
+										<input type="radio" name="radio1" id="radio7" value="option2">
+										<label for="radio7">
+										Selected
+										</label>
+									</div>
+								</div>
+								<div class="clearfix"></div>
+							</div>
+						</div>
+						<div class="col-xs-7 s-criteria">
+							<div class="alert alert-danger" role="alert">
+								<div class="input-group">
+									<label>Confirm action by typing "DELETE" below.</label>
+									<input type="text" class="form-control j-delete-text" placeholder="">
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-2">
+							<div class="s-button-select-group">
+								<button type="button" class="btn btn-sm s-btn-ten24 j-delete-btn" disabled="disabled" style="width:100%;">Delete</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- //Edit Filter Box -->
+			</div>
+		</div>
+		<!--//delete batch action-->
+		<span sw-loading="collection">
+		<sw-collection-table
+			data-collection="collection"
+			data-collection-config="collectionConfig"
+			sw-scroll-trigger
+			infinite-scroll="appendToCollection()"
+			infinite-scroll-disabled="autoScrollDisabled"
+			infinite-scroll-distance="1">
+		</sw-collection-table> 
+		<div class="row">
+			<div class="col-md-12" span ng-show="pageShow !== 'Auto'">
+				<div class="dataTables_info" id="example3_info" ng-show="recordsCount()">
+					Showing 
+					<b>
+						<span ng-bind="pageStart()">
+							<!--- record start --->
+						</span>
+						to <span ng-bind="pageEnd()"><!---records end --->
+						<span>
+					</b>
+					of <span ng-bind="recordsCount()"><!--- records Count ---></span> entries
+				</div>
+				<div ng-hide="recordsCount()" sw-rbkey="'admin.define.norecordsfound'"></div>
+			</div>
+		</div>
+		</span>
+	</div>
+</div>

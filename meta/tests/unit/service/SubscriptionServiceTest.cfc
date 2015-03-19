@@ -161,6 +161,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var subscriptionUsage = variables.service.processSubscriptionUsage( subscriptionUsage, data, 'renew' );
 		//account.renewSubscriptionUsage();
 		
+
 	}*/
 	
 	

@@ -60,9 +60,9 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiC
 	this.secureMethods='';
 	
     public void function link(required struct rc) {
-    	param name="rc.entity";
-    	param name="rc.property";
-    	param name="rc.value";
+    	param name="rc.entity" default="";
+    	param name="rc.property" default="";
+    	param name="rc.value" default="";
     	
     	switch(rc.entity) {
     		case "order": {
