@@ -65,6 +65,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var renewalPrice = variables.entity.getRenewalPriceByCurrencyCode(currencyCode);
 		assertEquals(renewalPrice,0);
 	}
+	
+	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
+	}
 }
 
 
