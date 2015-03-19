@@ -95,10 +95,9 @@ angular.module('slatwalladmin')
 				 */
 				scope.showEventOptions = false;
 				scope.eventOptions = [];
-				var unBindSearchEventWatch = scope.$watch('searchEvent.name',function(newValue,oldValue){
+				scope.$watch('searchEvent.name',function(newValue,oldValue){
 					if(newValue !== oldValue){
 						scope.getEventOptions(scope.workflow.data.workflowObject);
-						unBindSearchEventWatch();
 					}
 				});
 				/**
@@ -134,7 +133,12 @@ angular.module('slatwalladmin')
 					$log.debug("SelectEvent");
 					$log.debug(eventOption);
 					scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
-					scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
+					if(eventOption.entityName == scope.workflow.data.workflowObject){
+						scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = '';
+					}else{
+						scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = eventOption.entityName;
+					}
+					
 					
 					scope.searchEvent.name = eventOption.name;
 					$log.debug(eventOption);
