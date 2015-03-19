@@ -53,6 +53,67 @@
 .s-btn-disabled:hover,.s-btn-disabled:focus,.s-btn-disabled:active,.s-btn-disabled.active {background-color: @black-5 !important;border-color: @black-5 !important;color:@black-20 !important;}
 .s-btn-disabled.disabled:hover,.s-btn-disabled.disabled:focus,.s-btn-disabled.disabled:active,.s-btn-disabled.disabled.active,.s-btn-disabled[disabled]:hover,.s-btn-disabled[disabled]:focus,.s-btn-disabled[disabled]:active,.s-btn-disabled[disabled].active,fieldset[disabled] .s-btn-disabled:hover,fieldset[disabled] .s-btn-disabled:focus,fieldset[disabled] .s-btn-disabled:active,fieldset[disabled] .s-btn-disabled.active {background-color: @black-5 !important;border-color: @black-5;color:@black-10 !important;}
 
+.s-button-no-style { 
+  color: #000000; 
+  background: none;
+  background-color: none; 
+  border-color: none; 
+  border: none;
+  font-size:12px;
+} 
+ 
+.s-button-no-style:hover, 
+.s-button-no-style:focus, 
+.s-button-no-style:active, 
+.s-button-no-style.active, 
+.open .dropdown-toggle.s-button-no-style { 
+  color: #000000; 
+  background: none;
+  background-color: none; 
+  border-color: none; 
+  border: none;
+  font-size:12px;
+} 
+ 
+.s-button-no-style:active, 
+.s-button-no-style.active, 
+.open .dropdown-toggle.s-button-no-style { 
+  background: none;
+  background-image: none; 
+  border: none;
+  font-size:12px;
+} 
+ 
+.s-button-no-style.disabled, 
+.s-button-no-style[disabled], 
+fieldset[disabled] .s-button-no-style, 
+.s-button-no-style.disabled:hover, 
+.s-button-no-style[disabled]:hover, 
+fieldset[disabled] .s-button-no-style:hover, 
+.s-button-no-style.disabled:focus, 
+.s-button-no-style[disabled]:focus, 
+fieldset[disabled] .s-button-no-style:focus, 
+.s-button-no-style.disabled:active, 
+.s-button-no-style[disabled]:active, 
+fieldset[disabled] .s-button-no-style:active, 
+.s-button-no-style.disabled.active, 
+.s-button-no-style[disabled].active, 
+fieldset[disabled] .s-button-no-style.active { 
+  background: none;
+  background-color: none; 
+  border-color: none; 
+  border: none;
+  font-size:12px;
+} 
+ 
+.s-button-no-style .badge { 
+  background: none;
+  color: none; 
+  background-color: none;
+  border: none;
+  font-size:12px; 
+}
+
 // Scaffolding
 @body-background:         @white;
 @text-color:              @black-50;
@@ -787,6 +848,8 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-add-filter h4 {border-bottom: 1px solid @black-10;margin-bottom:15px;font-size:16px;text-align:left;padding-bottom: 3px;}
 .s-setting-options-body .s-add-filter label {font-weight:600;padding-left:0px;}
 .s-filter-group-item h4 {font-size:16px;font-wieght:normal;}
+.s-filter-group-item .select.input-sm {display: inline-block;width: 100%;}
+.s-filter-group-item input, .s-filter-group-item select {display: inline-block;width: 100%;}
 .s-add-filter-box .s-and-or-box {margin-top: 20px;margin-bottom: 8px;}
 .s-and-or-box {text-align:center;height:40px;}
 .s-and-or-box hr {border: 0;border-top: 3px dotted @black-10;position: relative;top: -36px;z-index: 0;}

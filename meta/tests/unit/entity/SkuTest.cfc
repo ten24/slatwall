@@ -49,12 +49,22 @@ Notes:
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	// @hint put things in here that you want to run befor EACH test
-	public void function setUp() {
+	public void function SetUp() {
 		super.setup();
 		
-		variables.entity = request.slatwallScope.newEntity('Sku');
+		variables.entity = request.slatwallScope.getService("skuService").newSku();
 	}
 	
+	public void function getRenewalPriceByCurrencyCode_test(){
+		var skuData = {
+			skuID=""		
+		};
+		var sku = createPersistedTestEntity('sku',skuData);
+		var currencyCode = 'USD';
+		
+		var renewalPrice = variables.entity.getRenewalPriceByCurrencyCode(currencyCode);
+		assertEquals(renewalPrice,0);
+	}
 }
 
 

@@ -69,6 +69,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="saveAccountPaymentMethodFlag" hb_formFieldType="yesno";
 	property name="saveAccountPaymentMethodName" hb_formFieldType="yesno";
 	property name="updateSubscriptionUsageAccountPaymentMethodFlag" hb_formFieldType="yesno";
+	property name="autoUpdateFlag" default=0;
 	
 	public any function getOrderPayment() {
 		if(structKeyExists(variables,"orderPayment")) {

@@ -883,6 +883,7 @@ Notes:
 					    		var modifiedData = _getModifiedData(entityInstance);
 					    		$log.debug('modifiedData complete');
 					    		$log.debug(modifiedData);
+					    		timeoutPromise.valid = modifiedData.valid;
 					    		if(modifiedData.valid){
 						    		var params = {};
 									params.serializedJsonData = angular.toJson(modifiedData.value);
