@@ -15,8 +15,7 @@ angular.module('slatwalladmin')
 	$slatwall,
 	metadataService,
 	collectionService,
-	workflowPartialsPath
-	){
+	workflowPartialsPath){
 		return {
 			restrict: 'A',
 			scope:{
@@ -70,8 +69,12 @@ angular.module('slatwalladmin')
 				 * Sets the state of the pencil to show/hide the edit screen.
 				 */
 				scope.setHidden = function(task){
-					logger("setHidden()", "Setting Hide Value To " + !task.hidden);
-					if(angular.isUndefined(task.hidden)){task.hidden=true;}//Needed to instantiation case.
+					$log.debug(task);
+					if(angular.isUndefined(task.hidden)){
+						task.hidden=true;
+						}else{
+							logger("setHidden()", "Setting Hide Value To " + !task.hidden);
+						}
 					task.hidden = !task.hidden;
 				};
 				/**
@@ -95,7 +98,28 @@ angular.module('slatwalladmin')
 					}
 					
 				});
-				
+				  /**
+                 * --------------------------------------------------------------------------------------------------------
+                 * Saves the workflow task by calling the objects $$save method.
+                 * @param task
+                 * --------------------------------------------------------------------------------------------------------
+                 */
+                scope.saveWorkflowTask = function (task, context) {
+                	    $log.debug("Context: " + context);
+                    $log.debug("saving task");
+                    $log.debug(task);
+                    var savePromise = scope.workflowTasks.selectedTask.$$save();
+                    savePromise.then(function () {
+                        //Clear the form by adding a new task if 'save and add another' otherwise, set save and set finished
+                        if (context === 'add'){
+                    			$log.debug("Save and New");
+                    			scope.addWorkflowTask(task);
+                    			scope.setHidden(task);
+                        }else if (context == "finish"){
+                        		scope.setHidden(task);
+                        }
+                    });
+                }//<--end save
 				/**
 				 * Select a workflow task.
 				 */
@@ -121,8 +145,19 @@ angular.module('slatwalladmin')
 				 * Removes a workflow task from the list and reindexes.
 				 */
 				scope.removeWorkflowTask = function(workflowTask){
-					var deletePromise = workflowTask.$$delete();
-		    				deletePromise.then(function(){
+					if(workflowTask.$$isPersisted()){
+						var deletePromise = workflowTask.$$delete();
+			    			deletePromise.then(function(){
+			    				if(workflowTask === scope.workflowTasks.selectedTask){
+								delete scope.workflowTasks.selectedTask;
+							}
+							scope.workflowTasks.splice(workflowTask.$$index,1);
+							for(var i in scope.workflowTasks){
+								logger("deletePromise", i);
+								scope.workflowTasks[i].$$index = i;
+							}
+						});
+					}else{
 						if(workflowTask === scope.workflowTasks.selectedTask){
 							delete scope.workflowTasks.selectedTask;
 						}
@@ -131,7 +166,7 @@ angular.module('slatwalladmin')
 							logger("deletePromise", i);
 							scope.workflowTasks[i].$$index = i;
 						}
-					});
+					}
 				};
 			}
 		};

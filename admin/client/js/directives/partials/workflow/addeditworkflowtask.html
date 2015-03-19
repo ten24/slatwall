@@ -55,8 +55,16 @@
 										</div>
 									</div>
 								</div>
+								
+								<div class="s-button-select-group">
+									<button type="button" class="btn btn-sm s-btn-ten24" ng-click="saveWorkflowTask(workflowTask.selectedTask, 'add')">Save & Add Another</button>
+									<div class="s-or-box">OR-</div>
+									<button type="button" class="btn btn-sm s-btn-ten24" ng-click="saveWorkflowTask(workflowTask.selectedTask, 'finish')">Save & Finish</button>
+								</div>
+							
 							</div>
 						</sw-form>
+						
 					</div>
 					<div class="tab-pane" id="j-conditions-2">
 						<sw-form name="selectedTaskConditions" 
