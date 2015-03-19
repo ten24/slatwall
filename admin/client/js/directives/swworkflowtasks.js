@@ -69,14 +69,15 @@ angular.module('slatwalladmin')
 				 * Sets the state of the pencil to show/hide the edit screen.
 				 */
 				scope.setHidden = function(task){
-					$log.debug(task);
-					if(angular.isUndefined(task.hidden)){
+					
+					if(!angular.isObject(task) || angular.isUndefined(task.hidden)){
 						task.hidden=true;
 						}else{
 							logger("setHidden()", "Setting Hide Value To " + !task.hidden);
 						}
 					task.hidden = !task.hidden;
 				};
+				
 				/**
 				 * Add a workflow task.
 				 */
@@ -86,6 +87,7 @@ angular.module('slatwalladmin')
 					logger("var newWorkflowTask", newWorkflowTask);
 					scope.selectWorkflowTask(newWorkflowTask);
 				};
+				
 				/**
 				 * Watches the select for changes.
 				 */
@@ -95,8 +97,7 @@ angular.module('slatwalladmin')
 						logger("scope.$watch", "Change to " + newValue)
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
-					}
-					
+					}	
 				});
 				  /**
                  * --------------------------------------------------------------------------------------------------------
@@ -116,6 +117,7 @@ angular.module('slatwalladmin')
                     			scope.addWorkflowTask(task);
                     			scope.setHidden(task);
                         }else if (context == "finish"){
+                        		scope.addWorkflowTask(task);
                         		scope.setHidden(task);
                         }
                     });
