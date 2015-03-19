@@ -1740,9 +1740,9 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var result = ORMExecuteQuery(collectionEntity.getHQL(),collectionEntity.getHQLParams());
 		request.debug(result);
-	}
+	}*/
 	
-}*/
+}
 
 /*
 collectionConfig = '

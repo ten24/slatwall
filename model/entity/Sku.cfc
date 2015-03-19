@@ -500,7 +500,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	public any function getBaseProductType() {
-		return getProduct().getBaseProductType();
+		if(!isnull(getProduct()) && !isnull(getProduct().getBaseProductType())){
+			return getProduct().getBaseProductType();
+		}
 	}
 	
 	public string function getCurrencyCode() {
