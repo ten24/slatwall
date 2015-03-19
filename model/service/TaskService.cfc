@@ -142,7 +142,7 @@ component extends="HibachiService" output="false" accessors="true"{
 			
 			// Persist the info to the DB
 			getHibachiDAO().flushORMSession();
-
+			
 			// Run the task inside of a try/catch so that errors are logged
 			try{
 				
@@ -213,8 +213,12 @@ component extends="HibachiService" output="false" accessors="true"{
 	public any function processTask_subscriptionUsageRenew(required any task) {
 		var subscriptionUsages = getSubscriptionService().getSubscriptionUsageForRenewal();
 		
+		var data = {
+			autoUpdateFlag = true
+		};
+		
 		for(var subscriptionUsage in subscriptionUsages) {
-			subscriptionUsage = getService("subscriptionService").processSubscriptionUsage(subscriptionUsage, {}, 'renew');
+			subscriptionUsage = getService("subscriptionService").processSubscriptionUsage(subscriptionUsage, data, 'renew');
 		}
 		
 		return arguments.task;

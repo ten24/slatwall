@@ -376,8 +376,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var order = arguments.processObject.getOrder();
 		
-		
-		
 		// New Renewal Order
 		if(order.getNewFlag()) {
 			
@@ -452,9 +450,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				getHibachiDAO().flushORMSession();
 				
 				// Setup the Order Payment
+				
 				if(
-					!isNull(arguments.processObject.getSubscriptionUsage().getAutoPayFlag()) 
-					&& arguments.processObject.getSubscriptionUsage().getAutoPayFlag()
+					(
+						!isNull(arguments.processObject.getSubscriptionUsage().getAutoPayFlag()) 
+						&& arguments.processObject.getSubscriptionUsage().getAutoPayFlag()
+					)
+					|| !arguments.processObject.getAutoUpdateFlag()
 				){
 					if(
 						arguments.processObject.getRenewalPaymentType() eq 'accountPaymentMethod' 
@@ -478,21 +480,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						order = getOrderService().processOrder(order, arguments.data, 'addOrderPayment');
 					}
 					
-					//set up subscription renewal data
-					var subscriptionData = {
-						isSubscriptionRenewal=true
-					};
 					
-					orderPayment = this.processOrderPayment(orderPayment, subscriptionData, 'runPlaceOrderTransaction');
-					
-					//create deliveries if there are no errors else propagate errors
-					if(!orderPayment.hasErrors()){
-						// Look for 'auto' order fulfillments
-						getOrderService().createOrderDeliveryForAutoFulfillmentMethod(order.getOrderFulfillments()[1]);
-					}else{
-						arguments.subscriptionUsage.addError('runPlaceOrderTransaction', orderPayment.getErrors().runPlaceOrderTransaction);
-					}
+					if(!isNull(orderPayment)){
+						//set up subscription renewal data
+						var subscriptionData = {
+							isSubscriptionRenewal=true
+						};
+						orderPayment = getOrderService().processOrderPayment(orderPayment, subscriptionData, 'runPlaceOrderTransaction');
 						
+						//create deliveries if there are no errors else propagate errors
+						if(!orderPayment.hasErrors()){
+							// Look for 'auto' order fulfillments
+							getOrderService().createOrderDeliveryForAutoFulfillmentMethod(order.getOrderFulfillments()[1]);
+						}else{
+							arguments.subscriptionUsage.addError('runPlaceOrderTransaction', orderPayment.getErrors().runPlaceOrderTransaction);
+						}
+					}
 				}
 				
 				// As long as the order was placed, then we can update the nextBillDateTime & nextReminderDateTime
