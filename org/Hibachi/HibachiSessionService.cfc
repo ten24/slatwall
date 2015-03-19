@@ -109,12 +109,12 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		//If the session cookie doesn't exist  on the record, or if the cookie doesn't exist, or if the cookie doesn't match the stored value
 		//then create a new one.
-		
 		if( isNull(getHibachiScope().getSession().getSessionCookieNPSID())
 			|| !structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID")
 			|| getHibachiScope().getSession().getSessionCookieNPSID() != cookie[ "#getApplicationValue('applicationKey')#-NPSID" ]) {
-			var cookieValue = getValueForNonPersistantCookie();
-			getHibachiScope().getSession().setSessionCookieNPSID(cookieValue);
+			
+			var npCookieValue = getValueForCookie();
+			getHibachiScope().getSession().setSessionCookieNPSID(npCookieValue);
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value=getHibachiScope().getSession().getSessionCookieNPSID());
 	
 		}
@@ -123,7 +123,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 			|| !structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID")
 			|| getHibachiScope().getSession().getSessionCookiePSID() != cookie[ "#getApplicationValue('applicationKey')#-PSID" ]) {
 			
-			getHibachiScope().getSession().setSessionCookiePSID( hash(getHibachiScope().getSession().getSessionID() & "-PSID", "SHA-1") );
+			var cookieValue = getValueForCookie();
+			getHibachiScope().getSession().setSessionCookiePSID(cookieValue);
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value=getHibachiScope().getSession().getSessionCookiePSID(), expires="never");
 		
 		}
@@ -154,10 +155,13 @@ component output="false" accessors="true" extends="HibachiService"  {
 	}
 	
 	public void function logoutAccount() {
-		var cookieValue = getValueForNonPersistantCookie();
-			getHibachiScope().getSession().setSessionCookieNPSID(cookieValue);
+		var npCookieValue = getValueForCookie();
+			getHibachiScope().getSession().setSessionCookieNPSID(npCookieValue);
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value=getHibachiScope().getSession().getSessionCookieNPSID());
-	
+		var pCookieValue = getValueForCookie();
+			getHibachiScope().getSession().setSessionCookiePSID(pCookieValue);
+			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value=getHibachiScope().getSession().getSessionCookiePSID());
+		
 		var currentSession = getHibachiScope().getSession();
 		var auditLogData = {};
 	
@@ -250,15 +254,12 @@ component output="false" accessors="true" extends="HibachiService"  {
 	}
 	
 	/**
-	 * Generate new non ersistant cookie
+	 * Generate new cookie value
 	 */
-	private any function getValueForNonPersistantCookie(){
-		var id = getHibachiScope().getSession().getSessionID() & "#DateTimeFormat(Now())#";
+	private any function getValueForCookie(){
+		var id = getHibachiScope().getSession().getSessionID() & "#DateTimeFormat(Now())#" & RandRange(1, 100);
 		var hashedID = hash(id, "sha-1");
-		//writeDump(var=hashedID, top=2);abort;
-		getHibachiScope().getSession().setSessionCookieNPSID( hashedID );
-		var newCookieValue = getHibachiScope().getSession().getSessionCookieNPSID();
-		return newCookieValue;
+		return hashedID;
 	}
 	// ==================  END:  Private Helper Functions =====================
 	
