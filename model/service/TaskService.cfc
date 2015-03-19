@@ -220,6 +220,8 @@ component extends="HibachiService" output="false" accessors="true"{
 		for(var subscriptionUsage in subscriptionUsages) {
 			if(!isnull(subscriptionUsage.getAutoRenewFlag()) && subscriptionUsage.getAutoRenewFlag()){
 				subscriptionUsage = getService("subscriptionService").processSubscriptionUsage(subscriptionUsage, data, 'renew');
+			}else{
+				subscriptionUsage = getService("subscriptionService").processSubscriptionUsage(subscriptionUsage, {}, 'updateStatus');
 			}
 			
 		}
