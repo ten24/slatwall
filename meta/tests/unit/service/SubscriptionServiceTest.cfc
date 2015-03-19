@@ -52,7 +52,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		super.setup();
 		variables.service = request.slatwallScope.getService("subscriptionService");
 	}
-	
+	/* test to be completed
 	public void function processSubscriptionUsage_renew_test(){
 		//args subsciptionUsage, processObject,data
 		var accountData = {
@@ -161,7 +161,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var subscriptionUsage = variables.service.processSubscriptionUsage( subscriptionUsage, data, 'renew' );
 		//account.renewSubscriptionUsage();
 		
-	}
+	}*/
 	
 	
 	
