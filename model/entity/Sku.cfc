@@ -355,6 +355,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
     }
     
     public any function getRenewalPriceByCurrencyCode( required string currencyCode ) {
+    	
     	if(structKeyExists(getCurrencyDetails(), arguments.currencyCode) && structKeyExists(getCurrencyDetails()[ arguments.currencyCode ], "renewalPrice")) {
     		return getCurrencyDetails()[ arguments.currencyCode ].renewalPrice;
     	}
