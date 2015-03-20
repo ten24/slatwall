@@ -16,7 +16,7 @@
 	    							{"contexts":"save","conditions":"requiresSystemCode","required":true},
 	    							{"contexts":"delete","method":"hasPeerTypeWithMatchingSystemCode"}
 		],
-		"typeCode":			[{"contexts":"save","uniqueOrNull":true,"regex":"^[a-zA-Z0-9-_.|:~^]+$"}],
+		"typeCode":			[{"contexts":"save","uniqueOrNull":true}],
 	    "childTypes":		[{"contexts":"delete","maxCollection":0}]
 	}
 }
