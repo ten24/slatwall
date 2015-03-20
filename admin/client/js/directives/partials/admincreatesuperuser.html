@@ -1,0 +1,29 @@
+<h2>Welcome</h2>
+<sw-form name="" 
+	data-object=""	
+	data-context="save"
+>
+	<span  	sw-property-display
+			data-object="workflow"
+			data-property="workflowName"
+			data-editing="true"
+			data-editable="true"
+	> 
+	</span>
+	<span  	sw-property-display
+			data-object="workflow"
+			data-options-arguments="{property:'workflowObject'}"
+			data-eager-load-options="true"
+			data-property="workflowObject"
+			data-editing="true"
+			data-editable="!workflow.$$isPersisted()"
+	>
+	</span>
+	<span  	sw-property-display
+			data-object="workflow"
+			data-property="activeFlag"
+			data-editing="true"
+			data-editable="true"
+	>
+	</span>
+</sw-form>
