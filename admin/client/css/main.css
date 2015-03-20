@@ -1838,6 +1838,11 @@ tabel .s-table-header {
   display: inline-block;
   width: 100%;
 }
+.s-filter-group-item input,
+.s-filter-group-item select {
+  display: inline-block;
+  width: 100%;
+}
 .s-add-filter-box .s-and-or-box {
   margin-top: 20px;
   margin-bottom: 8px;

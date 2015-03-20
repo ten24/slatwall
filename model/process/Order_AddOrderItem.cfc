@@ -520,7 +520,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public boolean function matchesOrderItem(required any orderItem){
 		
 		//check if the sku is a bundle
-		if(this.getSku().getBaseProductType() == 'productBundle') {
+		if(!isnull(this.getSku()) && !isnull(this.getSku().getBaseProductType()) && this.getSku().getBaseProductType() == 'productBundle') {
 			return false;
 		}
 		

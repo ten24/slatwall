@@ -27,6 +27,7 @@
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.paymentMethod#" property="placeOrderChargeTransactionType" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.paymentMethod#" property="placeOrderCreditTransactionType" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.paymentMethod#" property="subscriptionRenewalTransactionType" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>
