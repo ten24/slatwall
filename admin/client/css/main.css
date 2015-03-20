@@ -1803,7 +1803,7 @@ tabel .s-table-header {
   font-size: 16px;
   font-wieght: normal;
 }
-.s-filter-group-item select.input-sm {
+.s-filter-group-item .select.input-sm {
   display: inline-block;
   width: 100%;
 }
