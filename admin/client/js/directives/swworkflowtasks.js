@@ -144,7 +144,7 @@ angular.module('slatwalladmin')
 					});
 				};
 				/**
-				 * Removes a workflow task from the list and reindexes.
+				 * Removes a Workflow task from the list and re-indexes.
 				 */
 				scope.removeWorkflowTask = function(workflowTask){
 					if(workflowTask.$$isPersisted()){
@@ -169,7 +169,45 @@ angular.module('slatwalladmin')
 							scope.workflowTasks[i].$$index = i;
 						}
 					}
+				};//<--end remove function
+				
+				/* Does a delete of the property using delete */
+				scope.softRemoveTask = function(workflowTask){
+					logger("SoftRemoveTask", "calling delete");
+					if(workflowTask === scope.workflowTasks.selectedTask){
+						delete scope.workflowTasks.selectedTask;
+					}
+					scope.removeIndexFromTasks(workflowTask.$$index);
+					scope.reindexTaskList();
 				};
+				
+				/* Does an API call delete using $$delete */
+				scope.hardRemoveTask = function(workflowTask){
+					logger("HardRemoveTask", "$$delete");
+					var deletePromise = workflowTask.$$delete();
+    					deletePromise.then(function(){
+    						if(workflowTask === scope.workflowTasks.selectedTask){
+    							delete scope.workflowTasks.selectedTask;
+    						}
+    						scope.removeIndexFromTasks(workflowTask.$$index);
+    						scope.reindexTaskList();
+    					});
+				};
+				
+				/* Re-indexes the task list */
+				scope.reindexTaskList = function(){
+					for(var i in scope.workflowTasks){
+						logger("ReIndexing the list", i);
+						scope.workflowTasks[i].$$index = i;
+					}
+				};
+				
+				/* Removes the tasks index from the tasks array */
+				scope.removeIndexFromTasks = function(index){
+					logger("RemoveIndexFromTasks", index);
+					scope.workflowTasks.splice(index, 1);
+				};
+				
 			}
 		};
 	}
