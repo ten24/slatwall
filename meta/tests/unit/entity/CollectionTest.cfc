@@ -1407,7 +1407,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(Compare(" left join Account.primaryEmailAddress as Account_primaryEmailAddress  left join Account_primaryEmailAddress.accountEmailType as Account_primaryEmailAddress_AccountEmailType ",joinHQL));
 	}
 	
-	public void function HQLTestWithExistingCollection(){
+	/*public void function HQLTestWithExistingCollection(){
 			
 		var CollectionEntityData = {
 			collectionid = '',
@@ -1445,13 +1445,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 						{
 							"filterGroup":[
 								{
-									"propertyIdentifier":"Account.superUserFlag",
+									"propertyIdentifier":"_Account.superUserFlag",
 									"comparisonOperator":"=",
 									"value":"true"
 								},
 								{
 									"logicalOperator":"OR",
-									"propertyIdentifier":"Account.superUserFlag",
+									"propertyIdentifier":"_Account.superUserFlag",
 									"comparisonOperator":"=",
 									"value":"false"
 								}
@@ -1476,7 +1476,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
 		request.debug(collectionEntity.getHQL());
-	}
+	}*/
 	
 	public void function HQLTestJoins(){
 			
@@ -1554,7 +1554,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.debug(HQL);
 	}
 	
-	public void function getCollectionObjectParentChildTest(){
+	/*public void function getCollectionObjectParentChildTest(){
 		//first a list of collection options is presented to the user
 		var collectionEntityData = {
 			collectionid = '',
@@ -1740,7 +1740,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var result = ORMExecuteQuery(collectionEntity.getHQL(),collectionEntity.getHQLParams());
 		request.debug(result);
-	}
+	}*/
 	
 }
 

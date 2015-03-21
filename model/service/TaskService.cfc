@@ -219,7 +219,12 @@ component extends="HibachiService" output="false" accessors="true"{
 		};
 		
 		for(var subscriptionUsage in subscriptionUsages) {
-			subscriptionUsage = getService("subscriptionService").processSubscriptionUsage(subscriptionUsage, data, 'renew');
+			if(!isnull(subscriptionUsage.getAutoRenewFlag()) && subscriptionUsage.getAutoRenewFlag()){
+				subscriptionUsage = getService("subscriptionService").processSubscriptionUsage(subscriptionUsage, data, 'renew');
+			}else{
+				subscriptionUsage = getService("subscriptionService").processSubscriptionUsage(subscriptionUsage, {}, 'updateStatus');
+			}
+			
 		}
 		
 		return arguments.task;
