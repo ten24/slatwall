@@ -121,9 +121,6 @@ Notes:
 				    					var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias.toLowerCase()+'.','');
 				    					var propertyIdentifierArray = propertyIdentifier.split('.');
 				    					var propertyIdentifierKey = propertyIdentifier.replace(/\./g,'_');
-				    					console.log('propertyIdentifierKey');
-				    					console.log(propertyIdentifierKey);
-				    					console.log(collectionItemData[propertyIdentifierKey]);
 				    					var currentEntity = entity;
 			    						angular.forEach(propertyIdentifierArray,function(property,key){
 			    							if(key === propertyIdentifierArray.length-1){
@@ -143,9 +140,6 @@ Notes:
 					    						}
 			    							}else{
 			    								var propertyMetaData = currentEntity.metaData[property];
-			    								console.log(currentEntity);
-			    								console.log(property);
-			    								console.log(propertyMetaData);
 						    					if(angular.isUndefined(currentEntity.data[property])){
 						    						if(propertyMetaData.fieldtype === 'one-to-many'){
 						    							relatedEntity = [];
@@ -203,6 +197,7 @@ Notes:
 					  				params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 					  				params.allRecords = options.allRecords || '';
 					  				params.defaultColumns = options.defaultColumns || true;
+					  				params.processContext = options.processContext || '';
 					  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName;
 					  			}
 					  			
@@ -869,15 +864,15 @@ Notes:
 				    		}
 				    	}
 				    	
+				    	<!---var _getProcessObject = function(entityInstance){
+				    			
+				    	}--->
 	
 				    	var _save = function(entityInstance){
 				    		 var timeoutPromise = $timeout(function(){
 					    		$log.debug('save begin');
 					    		$log.debug(entityInstance);
-					    		if (angular.isUndefined(entityInstance.$$getID()))
-					    		{
-					    			return timeoutPromise;
-					    		}
+					    		
 					    		var entityID = entityInstance.$$getID();
 					    		
 					    		var modifiedData = _getModifiedData(entityInstance);
@@ -1246,7 +1241,14 @@ Notes:
 									var entityDataPromise = slatwallService.getEntity('#lcase(local.entity.getClassName())#',options);
 									entityDataPromise.then(function(response){
 										<!--- Set the values to the values in the data passed in, or API promisses, excluding methods because they are prefaced with $ --->
-										entityInstance.$$init(response);
+										if(angular.isDefined(response.processData)){
+											entityInstance.$$init(response.data);
+											var processObjectInstance = slatwallService['new#local.entity.getClassName()#_'+options.processContext.charAt(0).toUpperCase()+options.processContext.slice(1)]();
+											processObjectInstance.$$init(response.processData);
+											entityInstance.processObject = processObjectInstance;
+										}else{
+											entityInstance.$$init(response);
+										}
 									});
 									return {
 										promise:entityDataPromise,
@@ -1386,22 +1388,16 @@ Notes:
 												<cftry>
 													<cfset local.defaultValue = local.entity.invokeMethod('get#local.property.name#') />
 													<cfif !isNull(local.defaultValue)>
-														
 														<cfif !isObject(local.defaultValue)>
 															<cfset local.defaultValue = serializeJson(local.defaultValue)/>
 															this.data.#local.property.name# = #local.defaultValue#;
 														<cfelse>
 															this.data.#local.property.name# = null; 
 														</cfif>
-														
 													</cfif>
 													<cfcatch></cfcatch>
 												</cftry>
-											
 											</cfif>
-											
-								
-											
 										<cfelse>
 										</cfif>
 									</cfloop>
@@ -1428,6 +1424,9 @@ Notes:
 										var deletePromise =_delete(this)
 										return deletePromise;
 									},
+									<!---$$getProcessObject(){
+										return _getProcessObject(this);
+									}--->
 									$$getValidationsByProperty:function(property){
 										return _getValidationsByProperty(this,property);
 									},
@@ -1454,9 +1453,6 @@ Notes:
 											<cfif structKeyExists(local.property, "fieldtype")>
 												
 												<cfif listFindNoCase('many-to-one', local.property.fieldtype)>
-													<!--- <cfcontent type="text/html">
-													<cfdump var="#local.entity.getClassName()#">
-													<cfdump var="#local.property#"><cfabort> --->
 													<!---get many-to-one options --->
 													<!---,$$get#local.property.name#Options:function(args) {
 														var options = {
@@ -1642,7 +1638,7 @@ Notes:
 													<cfif listFindNoCase('id', local.property.fieldtype)>
 														,$$getID:function(){
 															//this should retreive id from the metadata
-															return this.$$get#local.property.name#();
+															return this.data[this.$$getIDName()];
 														}
 														,$$getIDName:function(){
 															var IDNameString = '#local.property.name#';
@@ -1702,7 +1698,7 @@ Notes:
 			});
 		</cfoutput>
 	</cfsavecontent>
-	
+	<cfset ORMClearSession()>
 	<cfif request.slatwallScope.getApplicationValue('debugFlag')>
 		<cfset getPageContext().getOut().clearBuffer() />
 		<cfset request.slatwallScope.setApplicationValue('ngSlatwall',local.jsOutput)>
