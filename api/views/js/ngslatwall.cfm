@@ -276,6 +276,13 @@ Notes:
 					  			
 					  			return deferred.promise;
 					  		},
+					  		checkUniqueOrNullValue:function (object, property, value) {
+            					return $http.get(_config.baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property + 
+             				 '&value=' + escape(value)).then(
+              			  	function (results) {
+                 			   return results.data.uniqueStatus;
+ 							 })
+  							},
 					  		checkUniqueValue:function (object, property, value) {
 					            return $http.get(_config.baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property + 
 					              '&value=' + escape(value)).then(
