@@ -86,6 +86,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="currentPageDeclaration" persistent="false" type="string";
 	
 	property name="nonPersistentColumn" type="boolean" persistent="false";
+	property name="processContext" type="string" persistent="false";
+	property name="processObjects" type="array" persistent="false";
 	property name="cacheable" type="boolean" persistent="false";
 	property name="cacheName" type="string" persistent="false";
 	property name="savedStateID" type="string" persistent="false";
@@ -127,6 +129,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 		variables.collectionConfig = '{}';
+		variables.processObjects = [];
 	}
 	
 	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
@@ -642,17 +645,25 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
 				saveState();
-				if(this.getNonPersistentColumn()){
+				if(this.getNonPersistentColumn() || (!isNull(this.getProcessContext()) && len(this.getProcessContext()))){
+					//prepare page records and possible process objects
 					variables.pageRecords = [];
+					variables.processObjects = [];
 					var entities = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 					var columns = getCollectionConfigStruct().columns;
+					
 					for(var entity in entities){
 						var pageRecord = {};
-						
 						for(var column in columns){
 							pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(ListRest(column.propertyIdentifier,'.'));
 						}
 						arrayAppend(variables.pageRecords,pageRecord);
+						
+						if(len(this.getProcessContext()) && entity.hasProcessObject(this.getProcessContext())){
+							var processObject = entity.getProcessObject(this.getProcessContext());
+							arrayAppend(variables.processObjects,processObject);
+						}
+						
 					} 
 				}else{
 					variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
@@ -930,7 +941,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(!isNull(collectionConfig.isDistinct)){
 					isDistinct = collectionConfig.isDistinct;
 				}
-				if(!this.getNonPersistentColumn()){
+				//get select columns if we don't have a non-persistent column and a processContext was not supplied
+				if(!this.getNonPersistentColumn() && !len(this.getProcessContext())){
 					selectHQL &= getSelectionsHQL(collectionConfig.columns,isDistinct);
 				}
 				
