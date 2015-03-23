@@ -164,6 +164,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		var collectionEntity = this.newCollection();
 		var properlyCasedShortEntityName = getProperlyCasedShortEntityName(arguments.entityName);
 		collectionEntity.setCollectionObject(properlyCasedShortEntityName,arguments.collectionOptions.defaultColumns);
+		
 		return collectionEntity;
 	}
 	
@@ -195,11 +196,15 @@ component extends="HibachiService" accessors="true" output="false" {
 		var pageRecordStruct = {};
 		
 		if(isObject(arguments.pageRecord)) {
-			var value = arguments.pageRecord.getValueByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier, formatValue=true );
-			if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
-				pageRecordStruct[ arguments.propertyIdentifier ] = value & " ";
-			} else {
-				pageRecordStruct[ arguments.propertyIdentifier ] = value;
+			try{
+				var value = arguments.pageRecord.getValueByPropertyIdentifier( propertyIdentifier=arguments.propertyIdentifier, formatValue=true );
+				if((len(value) == 3 and value eq "YES") or (len(value) == 2 and value eq "NO")) {
+					pageRecordStruct[ arguments.propertyIdentifier ] = value & " ";
+				} else {
+					pageRecordStruct[ arguments.propertyIdentifier ] = value;
+				}
+			}catch(any e){
+				var value = '';
 			}
 		
 		}else{
@@ -277,7 +282,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		}else{
 				
 			formattedPageRecords[ "pageRecords" ] = getFormattedObjectRecords(paginatedCollectionOfEntities,arguments.propertyIdentifiers);
-			
 			formattedPageRecords[ "recordsCount" ] = arguments.collectionEntity.getRecordsCount();
 			formattedPageRecords[ "pageRecordsCount" ] = arrayLen(arguments.collectionEntity.getPageRecords());
 			formattedPageRecords[ "pageRecordsShow"] = arguments.collectionEntity.getPageRecordsShow();
@@ -285,8 +289,24 @@ component extends="HibachiService" accessors="true" output="false" {
 			formattedPageRecords[ "pageRecordsEnd" ] = arguments.collectionEntity.getPageRecordsEnd();
 			formattedPageRecords[ "currentPage" ] = arguments.collectionEntity.getCurrentPage();
 			formattedPageRecords[ "totalPages" ] = arguments.collectionEntity.getTotalPages();
+			if(arrayLen(arguments.collectionEntity.getProcessObjects())){
+				var processObject = arguments.collectionEntity.getProcessObjects()[1];
+				formattedPageRecords[ "processObjects" ] = getFormattedObjectRecords(arguments.collectionEntity.getProcessObjects(),this.getProcessObjectProperties(processObject,arguments.collectionEntity));
+			}
+			
 		}
 		return formattedPageRecords;
+	}
+	
+	public array function getProcessObjectProperties(required any processObject, required any collectionEntity){
+		var properties = arguments.processObject.getProperties();
+		var processObjectProperties = [];
+		for(var property in properties){
+			if(!structKeyExists(property,'persistent') && lcase(property.name) != lcase(arguments.collectionEntity.getCollectionObject())){
+				arrayAppend(processObjectProperties,property.name);
+			}
+		}
+		return processObjectProperties;
 	}
 	
 	public any function getFormattedRecords(required any collectionEntity, required array propertyIdentifiers){
@@ -451,6 +471,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function getAPIResponseForBasicEntityWithID(required string entityName, required string entityID, required struct collectionOptions){
 		var collectionEntity = getTransientCollectionByEntityName(arguments.entityName,arguments.collectionOptions);
+		
 		//set up search by id			
 		
 		var collectionConfigStruct = collectionEntity.getCollectionConfigStruct();
@@ -471,8 +492,18 @@ component extends="HibachiService" accessors="true" output="false" {
 		arrayappend(filterGroupStruct.filterGroup,filterStruct);
 		
 		arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);
+		
 		var collectionResponse = getAPIResponseForCollection(collectionEntity,arguments.collectionOptions);
-		var response = collectionResponse.pageRecords[1];
+		var response = {};
+		
+		if(arrayLen(collectionEntity.getProcessObjects())){
+			response = {};
+			response['data'] = collectionResponse.pageRecords[1];
+			response['processData'] = collectionResponse.processObjects[1];
+		}else{
+			response = collectionResponse.pageRecords[1];
+		}
+		
 		
 		return response;
 	}
@@ -499,6 +530,10 @@ component extends="HibachiService" accessors="true" output="false" {
 			collectionEntity.getCollectionConfigStruct().joins = deserializeJson(arguments.collectionOptions.joinsConfig);
 		}
 		
+		if(len(arguments.collectionOptions.processContext)){
+			collectionEntity.setProcessContext(arguments.collectionOptions.processContext);
+		}
+		
 		collectionEntity.getCollectionConfigStruct().isDistinct = arguments.collectionOptions.isDistinct;
 		
 		
@@ -509,7 +544,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		//get default property identifiers for the records that the collection refers to
-			
 
 		if(structKeyExists(collectionEntity.getCollectionConfigStruct(),'columns')){
 			for (var column in collectionEntity.getCollectionConfigStruct().columns){

@@ -339,6 +339,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				defaultColumns = arguments.rc['defaultColumns'];
 			}
 			
+			var processContext = '';
+			if(structKeyExists(arguments.rc,'processContext')){
+				processContext = arguments.rc['processContext'];
+			}
+			
 			var collectionOptions = {
 				currentPage=currentPage,
 				pageShow=pageShow,
@@ -349,7 +354,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				isDistinct=isDistinct,
 				columnsConfig=columnsConfig,
 				allRecords=allRecords,
-				defaultColumns=defaultColumns
+				defaultColumns=defaultColumns,
+				processContext=processContext
 			};
 			
 			//considering using all url variables to create a transient collectionConfig for api response
