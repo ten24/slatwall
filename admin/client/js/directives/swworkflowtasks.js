@@ -36,18 +36,18 @@ angular.module('slatwalladmin')
 					logger("getWorkflowTasks", "Retrieving items");
 					logger("getWorkflowTasks", "Workflow Tasks");
 					$log.debug(scope.workflowTasks);
+					
 					/***
 					   Note:
 					   This conditional is checking whether or not we need to be retrieving to
 					   items all over again. If we already have them, we won't make another
 					   trip to the database. 
 					   
-					***/
+					 ***/
 					if(angular.isUndefined(scope.workflow.data.workflowTasks)){
 						var workflowTasksPromise = scope.workflow.$$getWorkflowTasks();
 						workflowTasksPromise.then(function(){
 							scope.workflowTasks = scope.workflow.data.workflowTasks;
-							
 						});
 					}else{
 						logger("getWorkflowTasks", "Retrieving cached Items");
@@ -66,16 +66,16 @@ angular.module('slatwalladmin')
 				scope.getWorkflowTasks();//call tasks
 				
 				/**
-				 * Sets the state of the pencil to show/hide the edit screen.
+				 * Sets the editing state to show/hide the edit screen.
 				 */
 				scope.setHidden = function(task){
-					
 					if(!angular.isObject(task) || angular.isUndefined(task.hidden)){
-						task.hidden=true;
-						}else{
-							logger("setHidden()", "Setting Hide Value To " + !task.hidden);
-						}
-					task.hidden = !task.hidden;
+						console.log(task);
+						task.hidden=false;
+					}else{
+						logger("setHidden()", "Setting Hide Value To " + !task.hidden);
+						task.hidden = !task.hidden;
+					}
 				};
 				
 				/**
@@ -88,46 +88,51 @@ angular.module('slatwalladmin')
 					scope.selectWorkflowTask(newWorkflowTask);
 				};
 				
-				/**
+			   /**
 				 * Watches the select for changes.
 				 */
-				scope.$watch('workflowTasks.selectedTask.data.workflow.data.workflowObject',function(newValue,oldValue){
+				scope.$watch('workflowTasks.selectedTask.data.workflow.data.workflowObject',function(newValue, oldValue){
 					logger("scope.$watch", "Change Detected " + newValue + " from " + oldValue)
 					if((newValue !== oldValue && angular.isDefined(scope.workflowTasks.selectedTask)) ){
 						logger("scope.$watch", "Change to " + newValue)
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
 					}	
-				});
-				  /**
+				}, false);
+			  
+			  /**
                  * --------------------------------------------------------------------------------------------------------
                  * Saves the workflow task by calling the objects $$save method.
                  * @param task
                  * --------------------------------------------------------------------------------------------------------
                  */
                 scope.saveWorkflowTask = function (task, context) {
+                		scope.done = true;
                 	    $log.debug("Context: " + context);
                     $log.debug("saving task");
-                    $log.debug(task);
+                    $log.debug(scope.workflowTasks.selectedTask);
                     var savePromise = scope.workflowTasks.selectedTask.$$save();
-                    savePromise.then(function () {
-                        //Clear the form by adding a new task if 'save and add another' otherwise, set save and set finished
-                        if (context === 'add'){
-                    			$log.debug("Save and New");
-                    			scope.addWorkflowTask(task);
-                    			scope.setHidden(task);
-                        }else if (context == "finish"){
-                        		scope.addWorkflowTask(task);
-                        		scope.setHidden(task);
-                        }
+                    savePromise.then(function(){
+                    	if (context === 'add'){
+            				logger("SaveWorkflowTask", "Save and New");
+            				scope.addWorkflowTask();
+            				//scope.setHidden(scope.workflowTasks.selectedTask);
+            				scope.finished = true;
+                    }else if (context == "finish"){
+                			scope.finished = false;
+                		}
                     });
-                }//<--end save
-				/**
+                    scope.setHidden(scope.workflowTasks.selectedTask);
+                }//<--end save*/
+				 
+                /**
 				 * Select a workflow task.
 				 */
 				scope.selectWorkflowTask = function(workflowTask){
+					scope.done = false;
 					logger("selectWorkflowTask", "selecting a workflow task");
 					$log.debug(workflowTask);
+					scope.finished = false;
 					scope.workflowTasks.selectedTask = undefined;
 					
 					var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
@@ -143,33 +148,6 @@ angular.module('slatwalladmin')
 						
 					});
 				};
-				/**
-				 * Removes a Workflow task from the list and re-indexes.
-				 */
-				scope.removeWorkflowTask = function(workflowTask){
-					if(workflowTask.$$isPersisted()){
-						var deletePromise = workflowTask.$$delete();
-			    			deletePromise.then(function(){
-			    				if(workflowTask === scope.workflowTasks.selectedTask){
-								delete scope.workflowTasks.selectedTask;
-							}
-							scope.workflowTasks.splice(workflowTask.$$index,1);
-							for(var i in scope.workflowTasks){
-								logger("deletePromise", i);
-								scope.workflowTasks[i].$$index = i;
-							}
-						});
-					}else{
-						if(workflowTask === scope.workflowTasks.selectedTask){
-							delete scope.workflowTasks.selectedTask;
-						}
-						scope.workflowTasks.splice(workflowTask.$$index,1);
-						for(var i in scope.workflowTasks){
-							logger("deletePromise", i);
-							scope.workflowTasks[i].$$index = i;
-						}
-					}
-				};//<--end remove function
 				
 				/* Does a delete of the property using delete */
 				scope.softRemoveTask = function(workflowTask){
