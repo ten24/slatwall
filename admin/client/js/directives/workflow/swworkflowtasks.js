@@ -187,7 +187,7 @@ angular.module('slatwalladmin')
 				};
 				
 			}
-		};
+		}; 
 	}
 ]);
 	
