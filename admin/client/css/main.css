@@ -1103,6 +1103,27 @@ select:focus {
 .table-striped {
   background-color: #ffffff;
 }
+table .s-edit-elements {
+  width: 72px;
+  text-align: center;
+}
+table .s-edit-elements ul {
+  margin: 0px;
+}
+table .s-edit-elements li {
+  display: inline;
+  padding: 0px;
+}
+table .s-edit-elements a {
+  background-color: rgba(0, 0, 0, 0);
+  color: #5E5E5E;
+  border: none;
+}
+table .s-edit-elements a:hover {
+  background-color: #E6E6E6;
+  border-color: #D1D1D1;
+  color: #5E5E5E;
+}
 .btn-default {
   color: #767676;
 }
