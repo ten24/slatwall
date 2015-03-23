@@ -2448,6 +2448,19 @@ tabel .s-table-header {
 .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-items .s-title a:hover {
   color: #666;
 }
+.s-bundle-add-items .s-load-more {
+  text-align: center;
+}
+.s-bundle-add-items .s-load-more button {
+  font-weight: 600;
+  min-width: 30%;
+  margin-top: 10px;
+}
+.s-bundle-add-items .s-load-more button span {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+}
 .s-search-results {
   color: #ffffff;
   background: #555;
