@@ -244,7 +244,9 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		var productBundlePrice = this.getSkuPrice();
 		//then get the price of it's componenets and add them
 		for(var childOrderItem in this.getChildOrderItems()){
-			productBundlePrice += precisionEvaluate(getProductBundleGroupPrice(childOrderItem) * childOrderItem.getQuantity());
+			var childProductBundleGroupPrice = getProductBundleGroupPrice(childOrderItem);
+			var childQuantity = childOrderItem.getQuantity();
+			productBundlePrice += precisionEvaluate(childProductBundleGroupPrice * childQuantity);
 		}
 		
 		return productBundlePrice;
@@ -264,14 +266,24 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			return 0;
 		//skuPrice
 		}else if(amountType == 'skuPrice'){
-			if(arguments.orderItem.getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			if(
+				!isnull(arguments.orderItem.getSku())
+				&& !isnull(arguments.orderItem.getSku().getProduct())
+				&& !isnull(arguments.orderItem.getSku().getProduct().getProductType()) 
+				&& arguments.orderItem.getSku().getProduct().getProductType().getSystemCode() == 'productBundle'
+			){
 				return arguments.orderItem.getProductBundlePrice();
 			}else{
 				return arguments.orderItem.getSkuPrice();
 			}
 		//skuPricePercentageIncrease
 		}else if(amountType == 'skuPricePercentageIncrease'){
-			if(arguments.orderItem.getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			if(
+				!isnull(arguments.orderItem.getSku())
+				&& !isnull(arguments.orderItem.getSku().getProduct())
+				&& !isnull(arguments.orderItem.getSku().getProduct().getProductType()) 
+				&& arguments.orderItem.getSku().getProduct().getProductType().getSystemCode() == 'productBundle'
+			){
 				return arguments.orderItem.getProductBundlePrice() + (arguments.orderItem.getProductBundlePrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
 			}else{
 				return arguments.orderItem.getSkuPrice() + (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
@@ -279,7 +291,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			
 		//skuPricePercentageDecrease
 		}else if(amountType == 'skuPricePercentageDecrease'){
-			if(arguments.orderItem.getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			if(
+				!isnull(arguments.orderItem.getSku())
+				&& !isnull(arguments.orderItem.getSku().getProduct())
+				&& !isnull(arguments.orderItem.getSku().getProduct().getProductType()) 
+				&& arguments.orderItem.getSku().getProduct().getProductType().getSystemCode() == 'productBundle'
+			){
 				return arguments.orderItem.getProductBundlePrice() - (arguments.orderItem.getProductBundlePrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
 			}else{
 				return arguments.orderItem.getSkuPrice() - (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));

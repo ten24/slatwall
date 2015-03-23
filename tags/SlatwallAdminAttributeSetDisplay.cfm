@@ -106,8 +106,8 @@ Notes:
 			<cfset removeLink = "?slatAction=admin:entity.deleteattributeValue&attributeValueid=#thisAttributeValueObject.getAttributeValueID()#&redirectAction=admin:entity.detail#attribute.getAttributeSet().getAttributeSetObject()#&#attribute.getAttributeSet().getAttributeSetObject()#ID=#attributes.entity.invokeMethod('get'&attribute.getAttributeSet().getAttributeSetObject()&'ID')#"/>
 			<cfset fdAttributes.removeLink = removeLink/> 
 		</cfif>
-		<div class="col-sm-8">
+		
 			<hb:HibachiFieldDisplay attributeCollection="#fdAttributes#" />
-		</div>
+		
 	</cfloop>
 </cfif>

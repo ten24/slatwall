@@ -108,27 +108,14 @@ component output="false" accessors="true" extends="HibachiService"  {
 		// Save session ID in the session Scope & cookie scope for next request
 		setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
-		//If the session cookie doesn't exist  on the record, or if the cookie doesn't exist, or if the cookie doesn't match the stored value
-		//then create a new one.
-	
-		if( isNull(getHibachiScope().getSession().getSessionCookieNPSID())
-			|| !structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID")
-			|| getHibachiScope().getSession().getSessionCookieNPSID() != cookie[ "#getApplicationValue('applicationKey')#-NPSID" ]) {
-	
-			getHibachiScope().getSession().setSessionCookieNPSID( hash(getHibachiScope().getSession().getSessionID() & "-NPSID", "SHA-1") );
+		//Generate new session cookies for every time the session is persisted (on every login)
+		var npCookieValue = getValueForCookie();
+			getHibachiScope().getSession().setSessionCookieNPSID(npCookieValue);
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-NPSID", value=getHibachiScope().getSession().getSessionCookieNPSID());
-	
-		}
-		
-		if(isNull(getHibachiScope().getSession().getSessionCookiePSID())
-			|| !structKeyExists(cookie, "#getApplicationValue('applicationKey')#-PSID")
-			|| getHibachiScope().getSession().getSessionCookiePSID() != cookie[ "#getApplicationValue('applicationKey')#-PSID" ]) {
-			
-			getHibachiScope().getSession().setSessionCookiePSID( hash(getHibachiScope().getSession().getSessionID() & "-PSID", "SHA-1") );
+	    var cookieValue = getValueForCookie();
+			getHibachiScope().getSession().setSessionCookiePSID(cookieValue);
 			getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value=getHibachiScope().getSession().getSessionCookiePSID(), expires="never");
 		
-		}
-	
 	}
 	
 	public string function loginAccount(required any account, required any accountAuthentication) {
@@ -136,7 +123,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		var currentSession = getHibachiScope().getSession();
 		currentSession.setAccount( arguments.account );
 		currentSession.setAccountAuthentication( arguments.accountAuthentication );
-	
+	    
 		// Make sure that we persist the session
 		persistSession();
 	
@@ -246,6 +233,14 @@ component output="false" accessors="true" extends="HibachiService"  {
 		return getHibachiUtilityService().decryptValue(value=arguments.cookieData, salt="valid-#arguments.cookieType#-SlatwallSessionIDCookie");
 	}
 	
+	/**
+	 * Generate new cookie value
+	 */
+	private any function getValueForCookie(){
+		var id = getHibachiScope().getSession().getSessionID() & "#DateTimeFormat(Now())#" & RandRange(1, 100);
+		var hashedID = hash(id, "sha-1");
+		return hashedID;
+	}
 	// ==================  END:  Private Helper Functions =====================
 	
 	// =================== START: Deprecated Functions ========================

@@ -22,6 +22,10 @@ angular.module('slatwalladmin')
                     $log.debug('Workflow Task Actions Init');
                     $log.debug(scope.workflowTask);
                     scope.openActions = false;
+                    
+                    /**
+                     * Returns the correct object based on the selected object type.
+                     */
                     var getObjectByActionType = function (workflowTaskAction) {
                         if (workflowTaskAction.data.actionType === 'email') {
                             workflowTaskAction.$$getEmailTemplate();
@@ -59,6 +63,7 @@ angular.module('slatwalladmin')
                             scope.workflowTaskActions = scope.workflowTask.data.workflowTaskActions;
                         }
                     };
+                    scope.getWorkflowTaskActions();//Call get
                     
 
                     /**
@@ -68,9 +73,9 @@ angular.module('slatwalladmin')
                      * --------------------------------------------------------------------------------------------------------
                      */
                     scope.saveWorkflowTaskAction = function (taskAction, context) {
-                    	    $log.debug("Context: " + context);
-                        $log.debug("saving task action and parent task");
-                        $log.debug(taskAction);
+                    	     $log.debug("Context: " + context);
+                         $log.debug("saving task action and parent task");
+                         $log.debug(taskAction);
                         var savePromise = scope.workflowTaskActions.selectedTaskAction.$$save();
                         savePromise.then(function () {
                             var taSavePromise = taskAction.$$save;
@@ -82,12 +87,24 @@ angular.module('slatwalladmin')
                             }else if (context == "finish"){
                             		scope.finished = true;
                             }
-                        });
-                        //scope.selectWorkflowTaskAction(taskAction);
-                        
+                        }); 
                     }//<--end save
 
-                    scope.getWorkflowTaskActions();//Call get
+                    /**
+    				 	* Sets the editing state to show/hide the edit screen.
+    				 	*/
+    					scope.setHidden = function(task){
+    						if(!angular.isObject(task)){ task = {};}
+    						
+    						if(angular.isUndefined(task.hidden)){
+    							console.log(task);
+    							task.hidden=false;
+    						}else{
+    							$log.debug("setHidden()", "Setting Hide Value To " + !task.hidden);
+    							task.hidden = !task.hidden;
+    						}
+    					};
+                    
                     /**
                      * --------------------------------------------------------------------------------------------------------
                      * Adds workflow action items by calling the workflowTask objects $$addWorkflowTaskAction() method
@@ -122,8 +139,7 @@ angular.module('slatwalladmin')
                             metadataService.formatPropertiesList(scope.filterPropertiesList[scope.workflowTask.data.workflow.data.workflowObject], scope.workflowTask.data.workflow.data.workflowObject);
                             scope.workflowTaskActions.selectedTaskAction = workflowTaskAction;
                         });
-                        //scope.workflowTaskActions.selectedTaskAction = workflowTaskAction;
-                    };
+                    }; 
 
                     /**
                      * --------------------------------------------------------------------------------------------------------

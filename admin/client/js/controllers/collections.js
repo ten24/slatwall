@@ -107,38 +107,11 @@ metadataService,
 			collectionListingPromise.then(function(value){
 				$scope.collection = value;
 	
-				var _collectionObject = $scope.collection['collectionObject'].charAt(0).toLowerCase()+$scope.collection['collectionObject'].slice(1) ;
-				var _recordKeyForObjectID = _collectionObject + 'ID';
-				
-				for(var record in value.pageRecords){
-					var _detailLink;
-					var _editLink;
-					
-					var _pageRecord = $scope.collection.pageRecords[ record ];
-					var _objectID = _pageRecord[ _recordKeyForObjectID ];
-					
-					if(_objectID && _collectionObject !== 'country'){
-						_detailLink = "?slatAction=entity.detail" + _collectionObject + "&" + _collectionObject + "ID=" + _objectID;
-						_editLink = "?slatAction=entity.edit" + _collectionObject + "&" + _collectionObject + "ID=" + _objectID;
-						
-					} else if (_collectionObject === 'country' ){
-						
-						_detailLink = "?slatAction=entity.detail" + _collectionObject + "&countryCode=" + _pageRecord["countryCode"];
-						_detailLink = "?slatAction=entity.edit" + _collectionObject + "&countryCode=" + _pageRecord["countryCode"];
-						
-					}
-					
-					_pageRecord["detailLink"] = _detailLink;
-					_pageRecord["editLink"] = _editLink;
-				}
-	
 				$scope.collectionInitial = angular.copy($scope.collection);
 				if(angular.isUndefined($scope.collectionConfig)){
 					$scope.collectionConfig = angular.fromJson($scope.collection.collectionConfig);
 				}
-				angular.forEach($scope.collectionConfig.columns,function(column){
-					column.key = column.propertyIdentifier.replace(/\./g, '_').replace($scope.collectionConfig.baseEntityAlias+'_','');
-				});
+				
 				//check if we have any filter Groups
 				if(angular.isUndefined($scope.collectionConfig.filterGroups)){
 					$scope.collectionConfig.filterGroups = [

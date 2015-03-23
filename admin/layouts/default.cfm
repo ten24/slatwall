@@ -120,7 +120,7 @@ Notes:
 						</cfif>
 						<a href="#homeLink#" target="_self" class="brand"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" title="Slatwall" /></a>
 					</div>
-					<div class="pull-right" id="j-mobile-nav">
+					<div class="pull-right s-right-nav-content" id="j-mobile-nav">
 						<ul class="nav navbar-nav">
 							<li class="divider-vertical"></li>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="nav">
@@ -382,8 +382,10 @@ Notes:
 				
 				$provide.constant("partialsPath", _partialsPath);
 				$provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');
-				$provide.constant("collectionPartialsPath", _partialsPath+'collection/');
-				$provide.constant("workflowPartialsPath", _partialsPath+'workflow/');
+				<cfloop collection="#rc.$.slatwall.getService('hibachiService').getEntitiesMetaData()#" item="local.entityName">
+					$provide.constant("#ReReplace(local.entityName,"\b(\w)","\l\1","ALL")#PartialsPath", _partialsPath+'#local.entityName#/');
+				</cfloop>
+				
 				
 				$logProvider.debugEnabled( $.slatwall.getConfig().debugFlag );
 				$filterProvider.register('likeFilter',function(){
