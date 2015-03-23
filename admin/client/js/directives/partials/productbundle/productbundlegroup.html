@@ -26,13 +26,14 @@
             >
             	<i class="fa fa-pencil"></i>
             </a>
+            <!-- This button should close on click rather than delete -->
             <a  class="btn btn-default s-remove j-tool-tip-item"
             	data-toggle="tooltip"
             	data-placement="bottom"
             	data-original-title="Remove"
-            	ng-click="removeProductBundleGroup()"
-            >
-            	<i class="fa fa-times"></i>
+            	ng-click="getCloseOrDelete(productBundleGroup.data.$$editing);"
+            ><!--NOTE If $$editting, then simply close the group, if it is already closed, then delete it. -->
+            	<i ng-class="productBundleGroup.data.$$editing ? 'fa fa-times' : 'fa fa-trash'"></i>
             </a>
           </div>
         </div>
