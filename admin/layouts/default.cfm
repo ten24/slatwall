@@ -382,8 +382,10 @@ Notes:
 				
 				$provide.constant("partialsPath", _partialsPath);
 				$provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');
-				$provide.constant("collectionPartialsPath", _partialsPath+'collection/');
-				$provide.constant("workflowPartialsPath", _partialsPath+'workflow/');
+				<cfloop collection="#rc.$.slatwall.getService('hibachiService').getEntitiesMetaData()#" item="local.entityName">
+					$provide.constant("#ReReplace(local.entityName,"\b(\w)","\l\1","ALL")#PartialsPath", _partialsPath+'#local.entityName#/');
+				</cfloop>
+				
 				
 				$logProvider.debugEnabled( $.slatwall.getConfig().debugFlag );
 				$filterProvider.register('likeFilter',function(){
