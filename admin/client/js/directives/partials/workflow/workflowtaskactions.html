@@ -41,7 +41,7 @@
 <button class="btn btn-xs s-btn-ten24" 
 			data-target="#j-add-action-b"
 			ng-click="addWorkflowTaskAction();"
-			ng-show="!workflowTaskActions.selectedTaskAction || workflowTaskActions.selectedTaskAction.$$isPersisted()"><!-- This button should only show when we are not editing. -->
+			ng-show="!workflowTaskActions.selectedTaskAction || workflowTaskActions.selectedTaskAction.hidden"><!-- This button should only show when we are not editing. -->
 		<i class="fa fa-plus"></i>
 		 Add Action
 </button>
