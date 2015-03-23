@@ -222,6 +222,7 @@
 		                                        >
 		                                            There are no items selected
 		                                        </h4>
+                                                
 		
 		                                        <!-- Selected filters -->
 		                                        <div class="s-bundle-add-items s-workflow-objs">
@@ -248,7 +249,27 @@
 		                                            </ul>
 		                                        </div>
 		                                        <!-- //Selected filters -->
-		
+                                                
+                                                <!-- Load more button NOTE: the disabled class should be added when the button is loading and removed when it's not-->
+                                                <div class="s-load-more">
+                                                    <button class="btn s-btn-dgrey btn-sm disabled">Load More <i class="fa fa-refresh fa-spin"></i><span>(Showing 10 of 178)</span></button>
+                                                </div>
+                                                <!-- //Load more button -->
+		<style>
+		    .s-bundle-add-items .s-load-more {
+                text-align: center;
+            }
+            .s-bundle-add-items .s-load-more button {
+                font-weight: 600;
+                min-width: 30%;
+                margin-top:10px;
+            }
+            .s-bundle-add-items .s-load-more button span {
+                display: block;
+                font-size: 10px;
+                font-weight: 500;
+            }
+		</style>
 		                                    </div>
 		                                </div>
 		                                <!-- //Options items -->
