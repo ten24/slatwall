@@ -36,7 +36,6 @@
 		</span>
 	</span>
 </div>
-
 <div class="form-group">
 	<!-- This is the add button -->
 <button class="btn btn-xs s-btn-ten24" 
@@ -46,9 +45,8 @@
 		<i class="fa fa-plus"></i>
 		 Add Action
 </button>
-
 </div>
-<div ng-if="!workflowTaskActions.selectedTaskAction.hidden">
+<div ng-if="!workflowTaskActions.selectedTaskAction.hidden"><!-- Handles making sure the form hides on save and finish -->
 <!--- Edit Filter Box --->
 <div 	class="col-xs-12  s-add-filter" 
 		id="j-add-action-b"

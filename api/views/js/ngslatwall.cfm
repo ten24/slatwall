@@ -1252,6 +1252,7 @@ Notes:
 											entityInstance.$$init(response.data);
 											var processObjectInstance = slatwallService['new#local.entity.getClassName()#_'+options.processContext.charAt(0).toUpperCase()+options.processContext.slice(1)]();
 											processObjectInstance.$$init(response.processData);
+											processObjectInstance.data['#local.entity.getClassName()#'.charAt(0).toLowerCase()+'#local.entity.getClassName()#'.slice(1)] = entityInstance;
 											entityInstance.processObject = processObjectInstance;
 										}else{
 											entityInstance.$$init(response);
