@@ -3669,6 +3669,18 @@ tabel .s-table-header {
 .s-filter-table-box {
   margin-top: 10px;
 }
+.s-filter-table-box .s-collection-description {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dotted #ddd;
+}
+.s-filter-table-box .s-collection-description .s-collection-loader {
+  width: 100%;
+  text-align: center;
+}
+.s-filter-table-box .s-collection-description .s-collection-loader i {
+  font-size: 24px;
+}
 .s-header-bar .s-filter-close {
   font-size: 18px;
   color: #e6e6e6;
