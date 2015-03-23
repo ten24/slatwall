@@ -64,25 +64,39 @@ Notes:
 <cfif !request.slatwallScope.hasApplicationValue('ngCompressor_#hash(rc.jspath)#')>
 	<!---the order these are loaded matters --->
 	<cfset local.jsDirectoryArray = [
-		expandPath( '/Slatwall/#rc.jspath#' ),
-		expandPath( '/Slatwall/#rc.jspath#/services' ),
-		expandPath( '/Slatwall/#rc.jspath#/controllers' ),
-		expandPath( '/Slatwall/#rc.jspath#/directives' )
+		{
+			directory=expandPath( '/Slatwall/#rc.jspath#' ),
+			recurse=false
+		},
+		{
+			directory=expandPath( '/Slatwall/#rc.jspath#/services' ),
+			recurse=false
+		},
+		{
+			directory=expandPath( '/Slatwall/#rc.jspath#/controllers' ),
+			recurse=false
+		},
+		{
+			directory=expandPath( '/Slatwall/#rc.jspath#/directives' ),
+			recurse=true
+		}
 	]>
 	<cfloop array="#local.jsDirectoryArray#" index="local.jsDirectory">
 		<cfdirectory
 		    action="list"
-		    directory="#local.jsDirectory#"
+		    directory="#local.jsDirectory.directory#"
 		    listinfo="name"
 		    name="local.jsFileList"
 		    filter="*.js"
+		    recurse="#local.jsDirectory.recurse#"
 	    />
-	    
-	    <cfloop query="local.jsFileList">
-		    <cfset local.jsFilePath = local.jsDirectory & '/' & name>
-		    <cfset local.fileContent = fileRead(local.jsFilePath, 'utf-8')>
-			<cfset local.jsOutput &= local.fileContent />
-	    </cfloop>
+	    <cfif local.jsFileList.recordCount>
+		    <cfloop query="local.jsFileList">
+			    <cfset local.jsFilePath = local.jsDirectory.directory & '/' & name>
+			    <cfset local.fileContent = fileRead(local.jsFilePath, 'utf-8')>
+				<cfset local.jsOutput &= local.fileContent />
+		    </cfloop>
+	    </cfif>
 	</cfloop>
 	
 	<cfif request.slatwallScope.getApplicationValue('debugFlag')>
