@@ -1,4 +1,4 @@
-<section class="content s-body-margin" id="j-main-content" ng-controller="slatwall-detail-controller" >
+<section class="content s-body-margin" id="j-main-content" >
 	<div class="col-md-12" ng-if="entity">
 		<div class="row s-body-nav">
 			<nav class="navbar navbar-default" role="navigation">
@@ -28,6 +28,7 @@
 								href="?slatAction=entity.detailworkflow&amp;workflowID=40288188498aeea401498b80b99e002a"><i
 								class="glyphicon glyphicon-remove icon-white"></i> Cancel</a>-->
 							<button class="adminentitydeleteproduct btn btn-default s-remove "
+								ng-if="entity.$$getID() !== ''"
 								title="Delete" type="button"
 								ng-click="deleteEntity()"	
 							>

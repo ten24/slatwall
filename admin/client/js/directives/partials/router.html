@@ -1,2 +1,3 @@
-<ng-include src="partialRoute">
-</ng-include>
+<sw-detail ng-if="entityName && entityID"></sw-detail>
+
+<sw-list ng-if="entityName && !entityID"></sw-list>

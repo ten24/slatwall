@@ -54,7 +54,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getBean("workflowService");
 	}
 	
-	public void function processWorkflow_execute_Test(){
+	/*public void function processWorkflow_execute_Test(){
 		var orderData = {
 			orderID = ''
 			
@@ -67,6 +67,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			workflowid = '',
 			workflowName = 'testWorkflow',
 			workflowObject = 'Product',
+			activeFlag=true,
 			workflowTriggers = [
 				{
 					workflowTriggerID = '',
@@ -118,7 +119,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service.processWorkflow_execute(workflowEntity,data);
 		
 		//request.debug(workflowEntity.getWorkflowID());
-	}
+	}*/
 	
 	public void function entityPassesAllWorkflowTaskConditions(){
 		var productData = {

@@ -440,11 +440,17 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			if(!isNull(getSku())) {
 				for(var i=1; i<=arrayLen(ofArr); i++) {
 					if(listFindNoCase(getSku().setting('skuEligibleFulfillmentMethods'), ofArr[i].getFulfillmentMethod().getFulfillmentMethodID())) {
-						arrayAppend(variables.orderFulfillmentIDOptions, {name=ofArr[i].getSimpleRepresentation(), value=ofArr[i].getOrderFulfillmentID()});	
+						var orderFulfillmentIDOption = {};
+						orderFulfillmentIDOption['name'] = ofArr[i].getSimpleRepresentation();
+						orderFulfillmentIDOption['value'] = ofArr[i].getOrderFulfillmentID();
+						arrayAppend(variables.orderFulfillmentIDOptions, orderFulfillmentIDOption);	
 					}
 				}	
 			}
-			arrayAppend(variables.orderFulfillmentIDOptions, {name=getHibachiScope().rbKey('define.new'), value="new"});
+			var orderFulfillmentIDOptionNew = {};
+			orderFulfillmentIDOptionNew['name'] = getHibachiScope().rbKey('define.new');
+			orderFulfillmentIDOptionNew['value'] = "new";
+			arrayAppend(variables.orderFulfillmentIDOptions, orderFulfillmentIDOptionNew);
 		}
 		return variables.orderFulfillmentIDOptions;
 	}
@@ -454,9 +460,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			var arr = getOrder().getOrderReturns();
 			variables.orderReturnIDOptions = [];
 			for(var i=1; i<=arrayLen(arr); i++) {
-				arrayAppend(variables.orderReturnIDOptions, {name=arr[i].getSimpleRepresentation(), value=arr[i].getOrderReturnID()});	
+				var orderReturnIDOption = {};
+				orderReturnIDOption['name'] = arr[i].getSimpleRepresentation();
+				orderReturnIDOption['value'] = arr[i].getOrderReturnID();
+				arrayAppend(variables.orderReturnIDOptions, orderReturnIDOption);	
 			}
-			arrayAppend(variables.orderReturnIDOptions, {name=getHibachiScope().rbKey('define.new'), value="new"});
+			var orderReturnIDOptionNew = {};
+			orderReturnIDOptionNew['name'] = getHibachiScope().rbKey('define.new');
+			orderReturnIDOptionNew['value'] = "new";
+			arrayAppend(variables.orderReturnIDOptions, orderReturnIDOptionNew);
 		}
 		return variables.orderReturnIDOptions;
 	}
@@ -486,9 +498,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			s.addOrder("accountAddressName|ASC");
 			var r = s.getRecords();
 			for(var i=1; i<=arrayLen(r); i++) {
-				arrayAppend(variables.shippingAccountAddressIDOptions, {name=r[i].getSimpleRepresentation(), value=r[i].getAccountAddressID()});	
+				var shippingAccountAddressIDOption = {};
+				shippingAccountAddressIDOption['name'] = r[i].getSimpleRepresentation();
+				shippingAccountAddressIDOption['value'] = r[i].getAccountAddressID();
+				arrayAppend(variables.shippingAccountAddressIDOptions, shippingAccountAddressIDOption);	
 			}
-			arrayAppend(variables.shippingAccountAddressIDOptions, {name=getHibachiScope().rbKey('define.new'), value=""});
+			var shippingAccountAddressIDOptionNew = {};
+			shippingAccountAddressIDOptionNew['name'] = getHibachiScope().rbKey('define.new');
+			shippingAccountAddressIDOptionNew['value'] = '';
+			arrayAppend(variables.shippingAccountAddressIDOptions, shippingAccountAddressIDOptionNew);	
 		}
 		return variables.shippingAccountAddressIDOptions;
 	}
@@ -520,7 +538,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public boolean function matchesOrderItem(required any orderItem){
 		
 		//check if the sku is a bundle
-		if(this.getSku().getBaseProductType() == 'productBundle') {
+		if(!isnull(this.getSku()) && !isnull(this.getSku().getBaseProductType()) && this.getSku().getBaseProductType() == 'productBundle') {
 			return false;
 		}
 		

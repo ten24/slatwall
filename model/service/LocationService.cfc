@@ -72,7 +72,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var locations = smartList.getRecords();
 		
 		for(var i=1;i<=arrayLen(locations);i++) {
-			arrayAppend(locationOptions, {name=locations[i].getSimpleRepresentation(), value=locations[i].getLocationID()});
+			var locationOption = {};
+			locationOption['name'] = locations[i].getSimpleRepresentation();
+			locationOption['value'] = locations[i].getLocationID();
+			arrayAppend(locationOptions, locationOption);
 		}
 		
 		return locationOptions;
