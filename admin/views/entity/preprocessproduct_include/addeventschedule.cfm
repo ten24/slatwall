@@ -109,9 +109,18 @@ Notes:
 			var scheduleStartDate = new Date($("input[name='eventStartDateTime']").val());
 			
 			if($("select[name='monthlyRepeatByType']").val() == 'dayOfMonth') {
-				$("##monthlyRepeatBySummary").html("#$.slatwall.rbKey('define.occurs')# #$.slatwall.rbKey('define.onThe')# " + monthDay[scheduleStartDate.getDate()-1] + " #$.slatwall.rbKey('define.ofTheMonth')#");	
+				if(monthDay[scheduleStartDate.getDate()-1] !== undefined){
+					$("##monthlyRepeatBySummary").html("#$.slatwall.rbKey('define.occurs')# #$.slatwall.rbKey('define.onThe')# " + monthDay[scheduleStartDate.getDate()-1] + " #$.slatwall.rbKey('define.ofTheMonth')#");	
+				} else {
+					$("##monthlyRepeatBySummary").html("#$.slatwall.rbKey('admin.define.startandendevent')#");
+				}
 			} else {
-				$("##monthlyRepeatBySummary").html("#$.slatwall.rbKey('define.occurs')# #$.slatwall.rbKey('define.every')# " + weeks[Math.ceil(scheduleStartDate.getDate()/7)-1] + " " + dayNames[scheduleStartDate.getDay()]);
+				if(weeks[Math.ceil(scheduleStartDate.getDate()/7)-1] !== undefined && dayNames[scheduleStartDate.getDay()] !== undefined){
+					$("##monthlyRepeatBySummary").html("#$.slatwall.rbKey('define.occurs')# #$.slatwall.rbKey('define.every')# " + weeks[Math.ceil(scheduleStartDate.getDate()/7)-1] + " " + dayNames[scheduleStartDate.getDay()]);
+				} else {
+					$("##monthlyRepeatBySummary").html("#$.slatwall.rbKey('admin.define.startandendevent')#");
+				}
+				
 			}
 		}
 	
