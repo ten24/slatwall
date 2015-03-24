@@ -97,7 +97,7 @@
 			<hr />
 			<h1 id="headings">Toggle Content Component</h1>
 			<!--////////////////////////////////Toggle Content Component///////////////////////////////////-->
-			<!--- I had to set the ng-click so that angular could load before.  You can use a controller or whatever you want --->
+			<!-- I had to set the ng-click so that angular could load before.  You can use a controller or whatever you want -->
 			<div ng-click="alertFn()">
 			    <button style="margin-bottom:10px;" class="btn btn-primary" ng-click="isCollapsed = !isCollapsed">Toggle collapse</button>
 			    <div collapse="isCollapsed">
@@ -136,41 +136,9 @@
 			    "This is a blockquote. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl."
 			</blockquote>
 			<hr/>
-			<h1 id="headings">Create List Component</h1>
-			<!--////////////////////////////////Create List Component///////////////////////////////////-->
-			<div class="s-select-list-wrapper">
-			    <!--- Add select component Wrapper --->
-			    <div class="form-group">
-			        <!--- Option select field wrapper --->
-			        <div class="input-group">
-			            <div class="s-input-btn">
-			                <input id="searchinput" type="search" class="form-control">
-			                <span class="glyphicon glyphicon-remove"></span>
-			                <!---<i class="fa fa-refresh fa-spin"></i>---><!--- Loading Icon --->
-			            </div>
-			            <div class="input-group-btn">
-			                <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-plus"></i></button>
-			            </div>
-			        </div>
-			    </div>
-			    <div class="s-selected-list">
-			        <!--- Selected options wrapper --->
-			        <div class="alert s-selected-item">
-			            <!--- Example Item 2 --->
-			            <button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-			            <strong>Search Result Title 1</strong>
-			        </div>
-			        <div class="alert s-selected-item">
-			            <!--- Example Item 2 --->
-			            <button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-			            <strong>Search Result Title 2</strong>
-			        </div>
-			    </div>
-			</div>
-			<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
-			<hr/>
+			
 			<h1 id="headings">Table Example</h1>
-			<!--////////////////////////////////Create List Component///////////////////////////////////-->
+			<!--////////////////////////////////Table Component///////////////////////////////////-->
 			<div class="table-responsive s-filter-table-box">
 			    <table class="table table-bordered table-striped">
 			        <thead>
@@ -228,19 +196,101 @@
 			        </tbody>
 			    </table>
 			</div>
-			<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
-			<hr />
-			<h1 id="headings">Create List Component With Dropdown</h1>
-			<!--//////////////////////////////////Create List Component With Dropdown/////////////////////////////////-->
-			<div class="s-select-list-wrapper s-dropdown">
-			    <!--- Add select component Wrapper --->
+			<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Table Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+			
+			<hr/>
+			<h1 id="headings">Confirmation Modals</h1>
+			<!--////////////////////////////////Modal Component///////////////////////////////////-->
+
+			Modal Details:
+			<ul>
+				<li>Modal location: admin/layouts/default.cfm (line 305)</li>
+				<li>JS location: org/Hibachi/HibachiAssets/js/global.js (line 287)</li>
+			</ul>
+			
+			<!-- Button trigger modal - Disabled example -->
+			<a title="Delete" class="adminentitydeleteaccount btn btn-primary s-remove s-btn-disabled" target="_self" href="##" data-disabled="<p class='error'>This Account can not be deleted because it has Orders assigned to it.</p>"><i class="glyphicon glyphicon-trash icon-white"></i> Delete</a>
+			
+			<!-- Disabled Modal -->
+			<div id="adminDisabled" class="modal in" aria-hidden="false" style="display: none;">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header"><a class="close" data-dismiss="modal">×</a><h3>Disabled</h3></div>
+						<div class="modal-body"><p class="error">This Account can not be deleted because it has Orders assigned to it.</p></div>
+						<div class="modal-footer">
+							<a href="#" class="btn btn-sm btn-default btn-inverse" data-dismiss="modal" id="disabledOkLink"><i class="icon-ok icon-white"></i> Ok</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			
+			<!-- Button trigger modal - Confirmation example -->
+			<a title="Delete" class="adminentitydeleteproduct btn btn-default s-remove alert-confirm" target="_self" href="##" data-confirm="Are you sure you would like to delete this Product?"><i class="glyphicon glyphicon-trash icon-white"></i> Delete</a>
+			
+			<!-- Confirmation Modal -->
+			<div id="adminConfirm" class="modal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header"><a class="close" data-dismiss="modal">×</a><h3>Confirm</h3></div>
+						<div class="modal-body"></div>
+						<div class="modal-footer">
+							<a href="#" target="_self" class="btn btn-sm btn-default btn-inverse" data-dismiss="modal" id="confirmNoLink"><i class="icon-remove icon-white"></i> No</a>
+							<a href="#" target="_self" class="btn btn-sm btn-default btn-primary" id="confirmYesLink"><i class="icon-ok icon-white"></i> Yes</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Modal Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+			
+			<hr/>
+			
+			<h1 id="headings">Create List Component</h1>
+			<!--////////////////////////////////Create List Component///////////////////////////////////-->
+			<div class="s-select-list-wrapper">
+			    <!-- Add select component Wrapper -->
 			    <div class="form-group">
-			        <!--- Option select field wrapper --->
+			        <!-- Option select field wrapper -->
 			        <div class="input-group">
 			            <div class="s-input-btn">
 			                <input id="searchinput" type="search" class="form-control">
 			                <span class="glyphicon glyphicon-remove"></span>
-			                <!---<i class="fa fa-refresh fa-spin"></i>---><!--- Loading Icon --->
+			                <!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
+			            </div>
+			            <div class="input-group-btn">
+			                <button class="btn btn-sm btn-primary" type="submit"><i class="fa fa-plus"></i></button>
+			            </div>
+			        </div>
+			    </div>
+			    <div class="s-selected-list">
+			        <!-- Selected options wrapper -->
+			        <div class="alert s-selected-item">
+			            <!-- Example Item 2 -->
+			            <button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			            <strong>Search Result Title 1</strong>
+			        </div>
+			        <div class="alert s-selected-item">
+			            <!-- Example Item 2 -->
+			            <button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+			            <strong>Search Result Title 2</strong>
+			        </div>
+			    </div>
+			</div>
+			<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+			
+			<hr />
+			<h1 id="headings">Create List Component With Dropdown</h1>
+			<!--//////////////////////////////////Create List Component With Dropdown/////////////////////////////////-->
+			<div class="s-select-list-wrapper s-dropdown">
+			    <!-- Add select component Wrapper -->
+			    <div class="form-group">
+			        <!-- Option select field wrapper -->
+			        <div class="input-group">
+			            <div class="s-input-btn">
+			                <input id="searchinput" type="search" class="form-control">
+			                <span class="glyphicon glyphicon-remove"></span>
+			                <!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
 			            </div>
 			            <div class="input-group-btn">
 			                <button class="btn btn-sm btn-default" type="submit"><i class="fa fa-caret-down"></i></button>
@@ -249,7 +299,7 @@
 			        </div>
 			    </div>
 			    <div class="dropdown s-search-results-wrapper">
-			        <!--- Dropdown wrapper --->
+			        <!-- Dropdown wrapper -->
 			        <ul class="dropdown-menu">
 			            <li><a href="##">Item One</a></li>
 			            <li><a href="##">Item Two</a></li>
@@ -259,14 +309,14 @@
 			        </ul>
 			    </div>
 			    <div class="s-selected-list">
-			        <!--- Selected options wrapper --->
+			        <!-- Selected options wrapper -->
 			        <div class="alert s-selected-item">
-			            <!--- Example Item 2 --->
+			            <!-- Example Item 2 -->
 			            <button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 			            <strong>Search Result Title 1</strong>
 			        </div>
 			        <div class="alert s-selected-item">
-			            <!--- Example Item 2 --->
+			            <!-- Example Item 2 -->
 			            <button type="button" class="close"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 			            <strong>Search Result Title 2</strong>
 			        </div>
@@ -285,22 +335,22 @@
 			<hr />
 			<h1 id="headings">Create List Component With Dropdown & No Add</h1>
 			<!--//////////////////////////////////Create List Component With Dropdown & No Add/////////////////////////////////-->
-			<!--- Add select component Wrapper --->
+			<!-- Add select component Wrapper -->
 			<div class="s-select-list-wrapper s-search">
 			    <div class="form-group">
-			        <!--- Option select field wrapper --->
+			        <!-- Option select field wrapper -->
 			        <div class="input-group">
 			            <div class="s-input-btn">
 			                <input id="searchinput" type="search" class="form-control">
 			                <span class="glyphicon glyphicon-remove"></span>
-			                <!---<i class="fa fa-refresh fa-spin"></i>---><!--- Loading Icon --->
+			                <!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
 			            </div>
 			            <div class="input-group-btn">
 			                <button class="btn btn-sm btn-default" type="submit"><i class="fa fa-caret-down"></i></button>
 			            </div>
 			        </div>
 			    </div>
-			    <!--- Dropdown wrapper --->
+			    <!-- Dropdown wrapper -->
 			    <div class="dropdown s-search-results-wrapper">
 			        <ul class="dropdown-menu">
 			            <li><a href="##">Item One</a></li>
