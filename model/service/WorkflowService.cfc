@@ -69,7 +69,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					var processData = {};
 					
 					// If the triggerObject is the same as this event, then we just use it
-					if(isNull(workflowTrigger.getObjectPropertyIdentifier()) || !len(workflowTrigger.getObjectPropertyIdentifier()) || workflowTrigger.getObjectPropertyIdentifier() == processData.entity.getClassName()) {
+					if(isNull(workflowTrigger.getObjectPropertyIdentifier()) || !len(workflowTrigger.getObjectPropertyIdentifier()) || workflowTrigger.getObjectPropertyIdentifier() == arguments.entity.getClassName()) {
 						processData.entity = arguments.entity;
 					
 					} else {
