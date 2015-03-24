@@ -37,7 +37,7 @@ angular.module('slatwalladmin')
 				}
 			},
 			listLen:function(list,delimiter){
-				console.log('listlen');
+				
 				if(angular.isUndefined(delimiter)){
 					delimiter = ',';
 				}

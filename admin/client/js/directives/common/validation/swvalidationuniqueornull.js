@@ -21,9 +21,9 @@ angular.module('slatwalladmin').directive("swvalidationuniqueornull", ['$http','
                     	$log.debug('uniquetest');
                     	$log.debug(unique);
                     	
-                        if (unique) {
+                        if (unique) { 
                             deferred.resolve(); //It's unique
-                        }
+                        } 
                         else {
                             deferred.reject(); //Add unique to $errors
                         }
