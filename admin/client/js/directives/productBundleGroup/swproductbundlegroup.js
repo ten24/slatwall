@@ -44,6 +44,20 @@ angular.module('slatwalladmin')
 				$log.debug('skuCollection22');
 				$log.debug(scope.productBundleGroup.data.skuCollectionConfig);
 
+<<<<<<< HEAD
+=======
+				scope.getCloseOrDelete = function(bool){
+					$log.debug("Are we editting already? " + bool);
+					
+					if (bool){
+						scope.productBundleGroup.data.$$toggleEdit();
+					}else{
+						productBundleGroupsController.removeProductBundleGroup(scope.index);
+						//scope.productBundleGroup.$$delete();
+						//scope.removeProductBundleGroup();
+					}
+				};
+>>>>>>> branch 'feature' of https://github.com/ten24/Slatwall
 				scope.collection = {
 					baseEntityName:"Sku",
 					baseEntityAlias:"_sku",

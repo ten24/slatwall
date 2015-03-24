@@ -469,7 +469,10 @@ input[type="file"] {display: block;width: auto;height: auto;padding: 0px;backgro
 .spinner {display: inline-block; font-size: 40px; opacity: .6; margin-bottom: 20px !important; width: 100%; text-align: center; font-size: 40px;opacity: .6;}
 
 /*Global*/
-body { background-color: @background; font-family: 'Open Sans', sans-serif;color:@black-60; padding-top: 60px; font-size:12px; }
+body { background-color: @background; font-family: 'Open Sans', sans-serif;color:@black-60; padding-top: 60px; font-size:12px;min-width: 992px /*Remove for responsive*/;}
+@media only screen and (max-width: 992px) {
+    body {padding:0px /*Remove for responsive*/;}
+}
 hr {border-color:@black-20;}
 hr.s-dotted {border:none;border-bottom:3px dotted @black-5;margin-top:20px;margin-bottom:20px;}
 th {font-weight:600;}
@@ -537,6 +540,7 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, input.error, select.e
 .navbar-inverse { border-color:#222; background-color: @black; }
 .container-fluid>.navbar-header a {padding-left: 38px;}
 .navbar .container-fluid {padding-left:0px;text-align:center;}
+.navbar .container-fluid .s-right-nav-content {height: 60px /*Remove for responsive*/;}
 
 .sidebar {width: 190px;background: #222;height:100vh;display: block;position: fixed;z-index: 3000;top: 50px;overflow-x: hidden;overflow-y: auto;padding-bottom: 50px;border-right:1px solid @white;}
 .sidebar::-webkit-scrollbar {display: none;}
@@ -664,13 +668,16 @@ input:focus, textarea:focus, select:focus {-webkit-box-shadow: none !important;b
 .navbar-inverse .navbar-nav>li>a { color: @white; padding: 20px 13px; font-size: 12px; }
 .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus {background-color: #1B1E24}
 
-#slatwall-navbar { min-height: 60px; font-size: 14px; line-height: 14px; }
+#slatwall-navbar { min-height: 60px; font-size: 14px; line-height: 14px; min-width: 992px /*Remove for responsive*/;}
+@media only screen and (max-width: 992px) {
+    #slatwall-navbar {position: relative /*Remove for responsive*/;margin:0px /*Remove for responsive*/;}
+}
 
-#slatwall-navbar .navbar-header { padding: 18px; }
+#slatwall-navbar .navbar-header { padding: 18px;margin-left: 15px /*Remove for responsive*/;margin-right: 15px /*Remove for responsive*/; }
 #slatwall-navbar .navbar-header a.brand { margin: 3px 0px 2px 0px; padding: 0px; display: block; }
 #slatwall-navbar .navbar-header a.brand img { height: 18px; }
 
-#slatwall-navbar .nav { color: @white; }
+#slatwall-navbar .nav { color: @white; float:left /*Remove for responsive*/;}
 #slatwall-navbar .nav a { color: @white; font-size: 13px;  }
 #slatwall-navbar .nav a i { width: 14px; font-size: 12px;}
 
@@ -696,6 +703,11 @@ input:focus, textarea:focus, select:focus {-webkit-box-shadow: none !important;b
 .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {padding: 8px 8px 5px 8px;}
 .table-bordered>thead>tr>th, .table-bordered>thead>tr>td {border-bottom-width:1px;white-space: nowrap;}
 .table-striped {background-color:@white;}
+table .s-edit-elements {width: 72px;text-align: center;}
+table .s-edit-elements ul {margin:0px;}
+table .s-edit-elements li {display:inline;padding: 0px;}
+table .s-edit-elements a {background-color: rgba(0, 0, 0, 0);color: #5E5E5E;border: none;}
+table .s-edit-elements a:hover {  background-color: #E6E6E6;border-color: #D1D1D1;color: #5E5E5E;}
 .btn-default {color:#767676;}
 .s-table-content-nav .dropdown-menu {left:auto;right:0;top:88%;.border-radius(0);}
 .s-table-content-nav .dropdown-menu {background-color:#F9F9F9;}
@@ -981,6 +993,10 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-items {margin-bottom:10px;margin-top:50px;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-items .s-title a {font-size: 11px;text-decoration: underline;color:#999;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-items .s-title a:hover {color:#666;}
+
+.s-bundle-add-items .s-load-more {text-align: center;}
+.s-bundle-add-items .s-load-more button {font-weight: 600;min-width: 30%;margin-top:10px;}
+.s-bundle-add-items .s-load-more button span {display: block;font-size: 10px;font-weight: 500;}
 
 .s-search-results {color: @white;background: #555;padding-bottom:15px;padding-top: 15px;margin-top: 10px;}
 .s-search-results > ul > li {margin-bottom:20px;display:inline-block;width:100%;}
@@ -1653,8 +1669,6 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 @media only screen and (max-width: 767px) {
 	
 	#slatwall-navbar .nav .dropdown-menu {margin:0px;}
-	#slatwall-navbar .nav .dropdown-menu a {color:@white;margin-left:30px;}
-	/* #slatwall-navbar .nav .dropdown-menu :hover {background-color:#1B1E24;} */
 	
 	//Bundle create
 	.s-bundle-add-obj .s-action-text {display:none;}
@@ -1664,6 +1678,9 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 	aside.sidebar {display:block !important;position:absolute;width:80%;left:-800px;}
 	aside.sidebar.s-sidebarHide {left:0px;}
 	.navbar-inverse .navbar-nav .open .dropdown-menu .divider {background-color:#E5E5E5;}
+    .navbar-nav .open .dropdown-menu {position: absolute;min-width: 160px;background-color: #FFF;-webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);background-clip: padding-box;}
+    .navbar-nav .open .dropdown-menu a {padding-left: 10px !important;}/*Remove for responsive*/
+    .navbar-nav .open .dropdown-menu a:hover {background-color: #F58620 !important;}/*Remove for responsive*/
 	#slatwall-primary-nav .dropdown-menu {position: absolute !important;z-index: 1000 !important;background-color: @white !important;border: 1px solid @black-20 !important;border: 1px solid rgba(0, 0, 0, 0.15) !important;.border-radius() !important;-webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175) !important;box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175) !important;background-clip: padding-box !important;}
 	#slatwall-primary-nav .dropdown-menu a {color:@black;}
 	#slatwall-primary-nav .dropdown-menu a:hover {background-color: @brand-ten24;color:@white;}
@@ -1671,8 +1688,7 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 @media only screen and (max-width: 979px) {
 	.s-bundle-group-items .s-select-item:after {font: normal normal normal 14px/1 FontAwesome;content: "\f0d8";position: absolute;right: 47%;font-size: 47px;top: -30px;color: @black-20;}
 }
-	
-	
+		
 	/* Hierarchical Depth */
 	
 	.depth1 {

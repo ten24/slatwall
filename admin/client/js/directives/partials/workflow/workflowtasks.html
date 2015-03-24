@@ -1,7 +1,6 @@
 <!-- Workflow Tasks Forms and line items -->
-<div class="s-body-box">
 	<div class="s-bundle-add-items s-workflow-objs">
-			<ul ng-repeat="workflowTask in workflowTasks" ng-init="workflowTask.$$index = $index" class="list-unstyled s-order-item-options s-negative-obj"><!-- problem one -->
+			<ul ng-repeat="workflowTask in workflowTasks" ng-init="workflowTask.$$index = $index" class="list-unstyled s-order-item-options s-negative-obj">
 				<li class="s-bundle-add-obj s-no-edit" ng-show="workflowTask.$$isPersisted()">
 					<ul class="list-unstyled list-inline">
 						<li class="s-item-type s-tooltip" ng-bind="$index+1"></li>
@@ -22,7 +21,7 @@
 							<a class="btn s-btn-dgrey s-remove" 
 								data-toggle="collapse" 
 								data-target="#s-add-obj-1"
-								ng-click="removeWorkflowTask(workflowTasks[$index])"
+								ng-click="hardRemoveTask(workflowTasks[$index])"
 							>
 								<i class="fa fa-trash"></i>
 							</a>
@@ -32,21 +31,21 @@
 				</li>
 			</ul>
 	</div>
-
+<!-- Only show the button when we don't have a selected task. Or when the task is finished and hidden.'-->
 	<button class="btn btn-xs s-btn-ten24" 
 			data-target="#j-create-new-task"
 			ng-click="addWorkflowTask();" 
-			ng-show="!workflowTasks.selectedTask || workflowTasks.selectedTask.$$isPersisted()">
+			ng-show="!workflowTasks.selectedTask || workflowTasks.selectedTask.hidden "><!-- This makes sure the add button only shows when needed -->
 		<i class="fa fa-plus"></i> Create New Task
 	</button>
-
-	<div class="col-xs-12 s-add-filter s-tab-layout" id="j-create-new-task" ng-if="workflowTasks.selectedTask && !workflowTasks.selectedTask.hidden">
-		<div class="row">
+<div ng-hide="done"><!-- state for closing on finish -->
+	<div class="col-xs-12 s-add-filter s-tab-layout" id="j-create-new-task" ng-if="workflowTasks.selectedTask && !workflowTasks.selectedTask.hidden"><!-- This hidden is for the X button closing -->
+		<div class="row" ng-show="!finished && !workflowTasks.selectedTask.hidden || !workflowTasks.selectedTask.$$isPersisted()">
 			<h4>
 				 <span ng-show="!workflowTasks.selectedTask.$$isPersisted()">Create New</span><span ng-show="workflowTasks.selectedTask.$$isPersisted()">Edit</span> Task 
 				 <i class="fa fa-times" 
 				 	data-target="#j-create-new-task"
-				 	ng-click="removeWorkflowTask(workflowTasks.selectedTask)"
+				 	ng-click="workflowTasks.selectedTask.hidden = true"
 				 ></i>
 			</h4>
 			<span ng-if="workflowTasks.selectedTask">
@@ -54,7 +53,6 @@
 			</span>
 		</div>
 	</div>
-
 	<div class="clearfix"></div>
-
 </div>
+

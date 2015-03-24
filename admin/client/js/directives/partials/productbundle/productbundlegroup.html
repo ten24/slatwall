@@ -26,13 +26,14 @@
             >
             	<i class="fa fa-pencil"></i>
             </a>
+            <!-- This button should close on click rather than delete -->
             <a  class="btn btn-default s-remove j-tool-tip-item"
             	data-toggle="tooltip"
             	data-placement="bottom"
             	data-original-title="Remove"
-            	ng-click="removeProductBundleGroup()"
-            >
-            	<i class="fa fa-times"></i>
+            	ng-click="getCloseOrDelete(productBundleGroup.data.$$editing);"
+            ><!--NOTE If $$editting, then simply close the group, if it is already closed, then delete it. -->
+            	<i ng-class="productBundleGroup.data.$$editing ? 'fa fa-times' : 'fa fa-trash'"></i>
             </a>
           </div>
         </div>
@@ -222,6 +223,7 @@
 		                                        >
 		                                            There are no items selected
 		                                        </h4>
+                                                
 		
 		                                        <!-- Selected filters -->
 		                                        <div class="s-bundle-add-items s-workflow-objs">
@@ -248,6 +250,12 @@
 		                                            </ul>
 		                                        </div>
 		                                        <!-- //Selected filters -->
+                                                
+                                                <!-- Load more button NOTE: the disabled class should be added when the button is loading and removed when it's not-->
+                                                <div class="s-load-more">
+                                                    <button class="btn s-btn-dgrey btn-sm disabled">Load More <i class="fa fa-refresh fa-spin"></i><span>(Showing 10 of 178)</span></button>
+                                                </div>
+                                                <!-- //Load more button -->
 		
 		                                    </div>
 		                                </div>
