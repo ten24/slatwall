@@ -891,6 +891,9 @@ table tr th .glyphicon {
   float: right;
   margin-top: 3px;
 }
+.panel-heading .fa:hover {
+  color: #fff;
+}
 .s-header-nav .navbar-collapse {
   padding: 0px;
 }
@@ -1121,6 +1124,9 @@ select:focus {
   padding-right: 0px;
   padding-left: 0px;
 }
+.s-filter-content .s-options {
+  margin-top: -15px;
+}
 .panel,
 .panel-group .panel {
   -webkit-border-radius: 0;
@@ -1274,12 +1280,6 @@ table .s-edit-elements a:hover {
   top: -6px;
   left: 3px;
 }
-.btn-group-vertical .btn-default.active {
-  -webkit-box-shadow: inset 0px 0px 1px 1px #db771f;
-  -moz-box-shadow: inset 0px 0px 1px 1px #db771f;
-  box-shadow: inset 0px 0px 1px 1px #db771f;
-  border-color: #db771f;
-}
 .btn-group-vertical .btn-default:hover {
   background-color: #f58620;
   color: #ffffff;
@@ -1358,7 +1358,6 @@ table .s-edit-elements a:hover {
 }
 .s-setting-options li {
   display: inline;
-  margin-left: 10px;
 }
 .s-filters-selected .s-filter-item .panel .panel-body {
   cursor: pointer;
@@ -1379,9 +1378,22 @@ table .s-edit-elements a:hover {
 }
 .s-filters-selected .s-filter-item .btn-group-vertical .btn {
   font-size: 10px;
+  opacity: .6;
+}
+.s-filters-selected .s-filter-item .btn-group-vertical .btn:first-child {
+  border-top-left-radius: 4px;
+}
+.s-filters-selected .s-filter-item .btn-group-vertical .btn:last-child {
+  border-bottom-right-radius: 4px;
+}
+.s-filters-selected .s-filter-item .btn-group-vertical .btn:hover {
+  opacity: 1;
 }
 .s-filters-selected .s-filter-item .btn-group-vertical .btn.active {
   box-shadow: none;
+  opacity: 1;
+  pointer-events: none;
+  border-color: #E6E6E6 !important;
 }
 .s-setting-options-body .panel-heading {
   background-color: #666666 !important;
@@ -1406,6 +1418,9 @@ table .s-edit-elements a:hover {
   margin-top: 19px;
   margin-bottom: 19px;
   display: inline-block !important;
+}
+.s-new-filter.s-add-btn {
+  margin-left: 15px;
 }
 span.j-tool-tip-item i {
   color: #cccccc;
@@ -1551,6 +1566,9 @@ tabel .s-table-header {
 }
 .s-focus .panel-heading {
   background-color: #428bca !important;
+}
+.s-focus .panel-heading a i {
+  color: #fff;
 }
 .s-filter-group-style {
   background-color: white;
@@ -1852,12 +1870,20 @@ tabel .s-table-header {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
+  margin-top: 8px;
 }
 .s-add-filter h4 i {
   float: right;
   cursor: pointer;
   font-size: 18px;
   color: #e6e6e6;
+}
+.s-add-filter h4 i:after {
+  content: " close";
+  font-size: 14px;
+  position: relative;
+  top: -2px;
+  font-weight: 600;
 }
 .s-add-filter h4 {
   border-bottom: 1px solid #e6e6e6;
@@ -1869,6 +1895,7 @@ tabel .s-table-header {
 .s-setting-options-body .s-add-filter label {
   font-weight: 600;
   padding-left: 0px;
+  width: 100%;
 }
 .s-filter-group-item h4 {
   font-size: 16px;
@@ -1947,6 +1974,19 @@ tabel .s-table-header {
 .s-add-filter .s-criteria .s-account-field-select {
   margin-bottom: 10px;
 }
+.s-add-filter .s-add-filter-breadcrumb a {
+  color: #fff;
+  text-decoration: underline !important;
+  font-size: 12px;
+}
+.s-add-filter .s-add-filter-breadcrumb a:hover {
+  color: #eee;
+}
+.s-add-filter-box {
+  display: inline-block;
+  width: 100%;
+  margin-top: -30px;
+}
 .s-tab-layout.s-tab-layout > .row > h4 {
   margin-bottom: 0px;
 }
@@ -1957,6 +1997,7 @@ tabel .s-table-header {
 .s-table-header-nav {
   display: inline-block;
   width: 100%;
+  margin-top: 20px;
 }
 .s-table-header-nav ul {
   vertical-align: bottom;
@@ -3761,6 +3802,9 @@ tabel .s-table-header {
 .s-filter-content-table-view .tab-pane {
   margin-top: 15px;
 }
+.s-filter-content-table-view .s-filter-table-box {
+  margin-top: 0px !important;
+}
 .s-panel-header-info .dl-horizontal {
   margin-bottom: 0px;
 }
@@ -4065,9 +4109,6 @@ a.disabled > i.hibachi-ui-radio-checked {
   padding-left: 15px !important;
 }
 /*-- List Select Component --*/
-.s-select-list-wrapper {
-  margin-bottom: 10px;
-}
 .s-select-list-wrapper button.btn {
   margin-left: 0px !important;
 }
