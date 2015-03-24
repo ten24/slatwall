@@ -133,7 +133,6 @@ component extends="HibachiService" output="false" accessors="true"{
 			
 			// Get the task from the DB
 			var task = this.getTask(attributes.threadData.taskID);
-			
 			// Setup the task as running
 			getTaskDAO().updateTaskRunning( taskID=attributes.threadData.taskID, runningFlag=true );
 			

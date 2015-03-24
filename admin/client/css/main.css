@@ -1122,6 +1122,27 @@ select:focus {
 .table-striped {
   background-color: #ffffff;
 }
+table .s-edit-elements {
+  width: 72px;
+  text-align: center;
+}
+table .s-edit-elements ul {
+  margin: 0px;
+}
+table .s-edit-elements li {
+  display: inline;
+  padding: 0px;
+}
+table .s-edit-elements a {
+  background-color: rgba(0, 0, 0, 0);
+  color: #5E5E5E;
+  border: none;
+}
+table .s-edit-elements a:hover {
+  background-color: #E6E6E6;
+  border-color: #D1D1D1;
+  color: #5E5E5E;
+}
 .btn-default {
   color: #767676;
 }
@@ -2447,6 +2468,19 @@ tabel .s-table-header {
 }
 .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-items .s-title a:hover {
   color: #666;
+}
+.s-bundle-add-items .s-load-more {
+  text-align: center;
+}
+.s-bundle-add-items .s-load-more button {
+  font-weight: 600;
+  min-width: 30%;
+  margin-top: 10px;
+}
+.s-bundle-add-items .s-load-more button span {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
 }
 .s-search-results {
   color: #ffffff;
