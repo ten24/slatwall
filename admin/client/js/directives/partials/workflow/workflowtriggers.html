@@ -1,16 +1,13 @@
 <div class="s-bundle-add-items s-workflow-objs">
-	<div class="list-unstyled s-order-item-options s-negative-obj">
-		<!---TODO: convert to trigger directive --->
-		<span ng-repeat="workflowTrigger in workflowTriggers"> 
-			<span 	sw-workflow-trigger
+	<span class="list-unstyled s-order-item-options" ng-repeat="workflowTrigger in workflowTriggers"> 
+		<span 	sw-workflow-trigger
 					ng-if="workflowTrigger.$$isPersisted()"
 					data-workflow-trigger="workflowTrigger"
 					data-workflow-triggers="workflowTriggers"
 					ng-init="workflowTrigger.$$index = $index"
 			>
-			</span>
 		</span>
-	</div>
+	</span>
 
 	<button ng-show="!workflowTriggers.selectedTrigger || workflowTriggers.selectedTrigger.$$isPersisted()" class="btn btn-xs s-btn-ten24" 
 			ng-click="addWorkflowTrigger()" 

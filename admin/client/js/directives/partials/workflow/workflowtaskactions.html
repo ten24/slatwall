@@ -1,9 +1,9 @@
-<div class="s-bundle-add-items s-workflow-objs s-sortable">
+<div class="s-bundle-add-items s-workflow-objs">
 	<span class="list-unstyled s-order-item-options" ng-repeat="workflowTaskAction in workflowTaskActions" ng-init="workflowTaskAction.$$actionIndex = $index">
 		<span class="s-bundle-add-obj" ng-if="workflowTaskAction.$$isPersisted()">
 			<ul class="list-unstyled list-inline">
-				<li class="s-item-type" ng-bind="$index+1"></li>
-				<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>
+				<li class="s-item-type s-tooltip ng-binding" ng-bind="$index+1"></li>
+				<!--<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>-->
 			</ul>
 			<ul class="list-unstyled list-inline s-middle">
 				<li class="j-tool-tip-item s-bundle-details">Type: <span ng-bind="workflowTaskAction.data.actionType"></span></li>
@@ -20,7 +20,7 @@
 				</li>
 			</ul>
 			<ul class="list-unstyled list-inline s-last">
-				<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" ng-click="selectWorkflowTaskAction(workflowTaskActions[$index])">
+				<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" ng-click="selectWorkflowTaskAction(workflowTaskActions[$index]); setHidden(workflowTaskActions[$index]);">
 					<a class="btn s-btn-dgrey s-edit" data-target="#s-add-obj-1">
 						<i 	class="fa fa-pencil"
 						></i>
@@ -36,19 +36,17 @@
 		</span>
 	</span>
 </div>
-
 <div class="form-group">
-
-	<button class="btn btn-xs s-btn-ten24" 
+	<!-- This is the add button -->
+<button class="btn btn-xs s-btn-ten24" 
 			data-target="#j-add-action-b"
-			ng-click="addWorkflowTaskAction()"
-			ng-show="!workflowTaskActions.selectedTaskAction || workflowTaskActions.selectedTaskAction.$$isPersisted()">
+			ng-click="addWorkflowTaskAction();"
+			ng-show="!workflowTaskActions.selectedTaskAction || workflowTaskActions.selectedTaskAction.hidden"><!-- This button should only show when we are not editing. -->
 		<i class="fa fa-plus"></i>
 		 Add Action
-	</button>
-
+</button>
 </div>
-
+<div ng-if="!workflowTaskActions.selectedTaskAction.hidden"><!-- Handles making sure the form hides on save and finish -->
 <!--- Edit Filter Box --->
 <div 	class="col-xs-12  s-add-filter" 
 		id="j-add-action-b"
@@ -60,7 +58,7 @@
 			<h4>Add Action {{workflowTaskActions.selectedTaskAction.data.actionType}}
 				<i 	class="fa fa-times" 
 					data-target="#j-add-action-b"
-					ng-click="removeWorkflowTaskAction(workflowTaskActions.selectedTaskAction)"
+					ng-click="workflowTaskActions.selectedTaskAction.hidden = true"
 				></i>
 			</h4>
 			<div class="col-xs-12">
@@ -206,8 +204,7 @@
 								<input type="checkbox" id="j-delete-confirm" checked="checked"><label for="j-delete-confirm"> Confirm "Orders" object will be deleted</label>
 							</div>
 						</div>
-						<!--- //Filter Criteria End --->
-	
+					  <!--- //Filter Criteria End --->
 					</div>
 					<div class="col-xs-3">
 						<div class="s-button-select-group">
@@ -223,3 +220,4 @@
 </div>
 <!--- //Edit Filter Box --->
 <div class="clearfix"></div>
+<div>

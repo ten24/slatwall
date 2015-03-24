@@ -125,7 +125,7 @@ angular.module('slatwalladmin')
 		    				deletePromise.then(function(){
 						if(workflowTask === scope.workflowTasks.selectedTask){
 							delete scope.workflowTasks.selectedTask;
-						}
+						} 
 						scope.workflowTasks.splice(workflowTask.$$index,1);
 						for(var i in scope.workflowTasks){
 							logger("deletePromise", i);
