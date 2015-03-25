@@ -1,23 +1,23 @@
 angular.module('slatwalladmin')
-.directive('swSiteBasic', [
+.directive('swContentBasic', [
 '$log',
 '$location',
 '$slatwall',
 'formService',
-'sitePartialsPath',
+'contentPartialsPath',
 	function(
 	$log,
 	$location,
 	$slatwall,
 	formService,
-	sitePartialsPath
+	contentPartialsPath
 	){
 		return {
-			restrict: 'AE',
+			restrict: 'EA',
 			scope:{
-				site:"="
+				content:"="
 			},
-			templateUrl:sitePartialsPath+"sitebasic.html",
+			templateUrl:contentPartialsPath+"contentbasic.html",
 			link: function(scope, element,attrs){
 			}
 		};
