@@ -1295,7 +1295,7 @@ function buildPagingNav(currentPage, totalPages, pageRecordStart, pageRecordEnd,
 			if (currentPage > 3 && currentPage < totalPages - 3) {
 				pageStart = currentPage - 1;
 				pageCount = 3;
-			} else if (currentPage >= totalPages - 4) {
+			} else if (currentPage >= totalPages - 3) {
 				pageStart = totalPages - 4;
 			}
 		} else {
