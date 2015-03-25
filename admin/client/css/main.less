@@ -641,10 +641,18 @@ table tr th .glyphicon {vertical-align:text-top;}
 .panel-heading h4.panel-title span > span {background-color: @black-20;.border-radius();margin: 0px 10px;padding: 0px 5px;height: 10px;color: @white;font-size:11px;}
 .openall {border-right:1px solid ##999;padding-right:4px;}
 .panel-heading .fa {float:right;margin-top: 3px;}
+.panel-heading .fa:hover {color:#fff;}
 .s-header-nav .navbar-collapse {padding:0px;}
 .s-header-nav .navbar-collapse .nav-tabs li a {padding-top:0px;}
 
 .panel-group .panel-heading {background-color:#606060;color:@white;border-color:#888;border-top-right-radius: 2px;border-top-left-radius: 2px;}
+
+/*File attr*/
+.s-file-upload .s-btn-file {position: relative;overflow: hidden;margin: 0px !important;}
+.s-file-upload .s-btn-file input[type=file] {position: absolute;top: 0;right: 0;min-width: 100%;min-height: 100%;font-size: 100px;text-align: right;filter: alpha(opacity=0);opacity: 0;background: red;cursor: inherit;display: block;}
+.s-file-upload input[readonly] {background-color: white !important;cursor: text !important;font-size: 12px;margin-left: -2px;}
+.s-file-upload .s-remove-btn {border-bottom: 1px solid #CCC;border-top: 1px solid #CCC;margin: 0px !important;}
+
 
 /*Bootstrap overwrite*/
 .table>tbody>tr>td {border-top:0px !important;}
@@ -697,6 +705,7 @@ input:focus, textarea:focus, select:focus {-webkit-box-shadow: none !important;b
 .btn:focus {outline: none;}
 .dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus {background-color:@brand-ten24;}
 .s-filter-content {padding-right:0px;padding-left:0px;}
+.s-filter-content .s-options {margin-top: -15px;}
 .panel, .panel-group .panel {.border-radius(0);}
 .panel-default>.panel-heading {background-color:#606060;color:@white;}
 .panel-group .panel-heading+.panel-collapse>.panel-body {border-top: none;}
@@ -726,7 +735,7 @@ table .s-edit-elements a:hover {  background-color: #E6E6E6;border-color: #D1D1D
 .s-pannel-group .s-body-box {padding: 15px 15px;display: inline-block;width: 100%;}
 .form-group label i.fa-asterisk {color: @black-60;font-size: 5px;position: relative;top: -6px;left: 3px;}
 
-.btn-group-vertical .btn-default.active {-webkit-box-shadow: inset 0px 0px 1px 1px rgba(219,119,31,1);-moz-box-shadow: inset 0px 0px 1px 1px rgba(219,119,31,1);box-shadow: inset 0px 0px 1px 1px rgba(219,119,31,1);border-color:#db771f;}
+.btn-group-vertical .btn-default.active {}
 .btn-group-vertical .btn-default:hover {background-color: @brand-ten24;color: @white;border-color: #DB771F;}
 
 .s-btn-toggle .btn {padding:6px 6px 4px 6px;}
@@ -745,18 +754,22 @@ table .s-edit-elements a:hover {  background-color: #E6E6E6;border-color: #D1D1D
 .s-options .tab-pane .dl-horizontal{text-align:left;}
 .s-filters-selected .s-filter-item .panel .panel-header a i{float:right;color:@black-30;margin-top:3px;}
 .s-setting-options-body .panel-heading a{color:@black-30;float:right;border-bottom-right-radius:0px;border-bottom-left-radius:0px;}
-.s-setting-options li {display:inline;margin-left:10px;}
+.s-setting-options li {display:inline;}
 .s-filters-selected .s-filter-item .panel .panel-body{cursor:pointer;border:1px solid @black-10;}
 .s-filters-selected .s-filter-item .panel .panel-body a{float:right;color:@black-20;}
 .s-filters-selected .s-filter-item .panel .panel-body .s-comparison-operator {font-weight: 600;}
 .s-filters-selected .s-filter-item .btn-group-vertical{float: left;margin-top: 15px;margin-right: 21px;margin-left:17px;}
-.s-filters-selected .s-filter-item .btn-group-vertical .btn {font-size:10px;}
-.s-filters-selected .s-filter-item .btn-group-vertical .btn.active {box-shadow:none;}
+.s-filters-selected .s-filter-item .btn-group-vertical .btn {font-size:10px;opacity: .6;}
+.s-filters-selected .s-filter-item .btn-group-vertical .btn:first-child {border-top-left-radius: 4px;}
+.s-filters-selected .s-filter-item .btn-group-vertical .btn:last-child {border-bottom-right-radius: 4px;}
+.s-filters-selected .s-filter-item .btn-group-vertical .btn:hover {opacity: 1;}
+.s-filters-selected .s-filter-item .btn-group-vertical .btn.active {box-shadow:none;opacity: 1;pointer-events: none;border-color: #E6E6E6 !important;}
 .s-setting-options-body .panel-heading {background-color:@black-60 !important;color:@white !important;border-bottom:none !Important;}
 .s-filters-selected .s-and-or-box .btn-group{background-color:@black-5;position:relative;top:-4px;}
 .s-filters-selected .s-define-box {text-align: center;border-top: 3px dotted @black-10;margin-top: 23px;padding-top: 20px;}
 .s-filters-selected .s-filter-list {margin-bottom:0px;}
 .s-new-filter {margin-top: 19px;margin-bottom: 19px;display:inline-block !important;}
+.s-new-filter.s-add-btn {margin-left:15px;}
 span.j-tool-tip-item i {color:@black-20;cursor:pointer;}
 
 .s-add-display-field {background: #F8F8F8;-moz-box-shadow: inset 0 0 2px @black-20;-webkit-box-shadow: inset 0 0 2px @black-20;box-shadow: inset 0 0 2px @black-20;margin-top: 15px;margin-right:0px;margin-left:0px;}
@@ -789,6 +802,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-focus {box-shadow: 0px 0px 10px 0px @black-30;}
 .s-filter-group-style.s-focus {background-color: white;-webkit-box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),4px 7px 7px   0 @black-30;-moz-box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),4px 7px 7px   0 @black-30;box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),4px 7px 7px   0 @black-30;}
 .s-focus .panel-heading {background-color:@brand-primary !important;}
+.s-focus .panel-heading a i {color: #fff;}
 .s-filter-group-style {background-color: white;-webkit-box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),7px 7px   0 rgba(0,   0,   0,   0.1);-moz-box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),7px 7px   0 rgba(0,   0,   0,   0.1);box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),7px 7px   0 rgba(0,   0,   0,   0.1);margin-right:6px;}
 .s-filter-group-style + .btn-group-vertical {margin-right:19px !important;}
 
@@ -855,10 +869,11 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-setting-options-body .s-setting-and-or {width: 100%;padding: 10px 0px 16px 0px;display: block;font-weight: 700;}
 .s-setting-options-body .s-setting-and-or .btn {min-width:52px;text-align:center;}
 
-.s-add-filter {background:@white;-moz-box-shadow: inset 0 0 2px @black-20;-webkit-box-shadow: inset 0 0 2px @black-20;box-shadow: inset 0 0 2px @black-20;.border-radius();}
+.s-add-filter {background:@white;-moz-box-shadow: inset 0 0 2px @black-20;-webkit-box-shadow: inset 0 0 2px @black-20;box-shadow: inset 0 0 2px @black-20;.border-radius();  margin-top: 8px;}
 .s-add-filter h4 i {float:right;cursor:pointer;font-size:18px;color:@black-10;}
+.s-add-filter h4 i:after {content: " close";font-size: 14px;position: relative;top: -2px;font-weight: 600;}
 .s-add-filter h4 {border-bottom: 1px solid @black-10;margin-bottom:15px;font-size:16px;text-align:left;padding-bottom: 3px;}
-.s-setting-options-body .s-add-filter label {font-weight:600;padding-left:0px;}
+.s-setting-options-body .s-add-filter label {font-weight:600;padding-left:0px;width: 100%;}
 .s-filter-group-item h4 {font-size:16px;font-wieght:normal;}
 .s-filter-group-item .select.input-sm {display: inline-block;width: 100%;}
 .s-filter-group-item input, .s-filter-group-item select {display: inline-block;width: 100%;}
@@ -879,11 +894,16 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-add-filter .s-criteria .btn-group {float:none;}
 .s-add-filter .s-criteria .s-account-field-select {margin-bottom:10px;}
 
+.s-add-filter .s-add-filter-breadcrumb a {color: #fff;text-decoration: underline !important;font-size:12px;}
+.s-add-filter .s-add-filter-breadcrumb a:hover {color: #eee;}
+
+.s-add-filter-box {display: inline-block;width:100%;margin-top: -30px;}
+
 .s-tab-layout.s-tab-layout > .row > h4 {margin-bottom:0px;}
 .s-tab-layout.s-tab-layout  > .row > .s-body-box {padding-top:0px;}
 
 /* Custom Slatwall Styles */
-.s-table-header-nav {display:inline-block;width:100%;}
+.s-table-header-nav {display:inline-block;width:100%;margin-top:20px;}
 .s-table-header-nav ul {vertical-align:bottom;margin-bottom:0px;margin-top:0px;}
 .s-table-header-nav ul > li {vertical-align:top;}
 .s-table-header-nav ul > li {padding-right:0px;}
@@ -1432,12 +1452,17 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-table-header-nav .s-table-header-right form {width: 170px;}
 .s-table-header-nav .s-header-nav {padding:0px;}
 .s-filter-table-box {margin-top:10px;}
+.s-filter-table-box .s-collection-description {margin-top: 10px;padding-top:10px;border-top: 1px dotted #ddd;}
+.s-filter-table-box .s-collection-description .s-collection-loader {width: 100%;text-align: center;}
+.s-filter-table-box .s-collection-description .s-collection-loader i {font-size: 24px;}
+
 
 .s-header-bar .s-filter-close {font-size: 18px;color: @black-10;margin-top:7px;}
 .s-header-bar .s-filter-close:hover {color: @black-30;}
 
 .s-filter-content-table-view .s-header-bar {margin-top:-15px;border-bottom: 1px solid #ddd;}
 .s-filter-content-table-view .tab-pane {margin-top:15px;}
+.s-filter-content-table-view .s-filter-table-box {margin-top:0px !important;}
 
 .s-panel-header-info .dl-horizontal {margin-bottom:0px;}
 .s-panel-header-info .dl-horizontal dt {font-weight:600;}
@@ -1612,7 +1637,6 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 // --------------------------------------------------
 
 /*-- List Select Component --*/
-.s-select-list-wrapper {margin-bottom:10px;}
 .s-select-list-wrapper button.btn {margin-left: 0px !important;}
 .s-select-list-wrapper .form-group {margin:0px;}
 .s-select-list-wrapper .input-group-btn .btn {border-bottom-left-radius: 0px;border-top-left-radius: 0px;}

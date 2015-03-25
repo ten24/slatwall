@@ -89,7 +89,7 @@ angular.module('slatwalladmin')
 				propertiesList.data = temp;
 				$log.debug("----------------------PropertyList\n\n\n\n\n");
 				propertiesList.data = _orderBy(propertiesList.data,['propertyIdentifier'],false);
-				console.dir(propertiesList.data);
+				
 				
 				//--------------------------------End remove empty lines.
 			},

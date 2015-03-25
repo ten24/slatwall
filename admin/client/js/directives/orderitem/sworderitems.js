@@ -372,8 +372,7 @@ angular.module('slatwalladmin')
 				});
 				
 				//Add claim function and cancel function
-				
-				
+
 				scope.appendToCollection = function(){
 					if(scope.pageShow === 'Auto'){
 						$log.debug('AppendToCollection');

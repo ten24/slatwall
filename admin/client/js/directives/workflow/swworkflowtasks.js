@@ -98,7 +98,7 @@ angular.module('slatwalladmin')
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityAlias = newValue;
 						scope.workflowTasks.selectedTask.data.taskConditionsConfig.baseEntityName = newValue;
 					}	
-				}, false);
+				});
 			  
 			  /**
                  * --------------------------------------------------------------------------------------------------------
@@ -171,7 +171,9 @@ angular.module('slatwalladmin')
     						scope.reindexTaskList();
     					});
 				};
-				
+				scope.deleteEntity = function(entity){
+					scope.hardRemoveTask(entity);
+				}
 				/* Re-indexes the task list */
 				scope.reindexTaskList = function(){
 					for(var i in scope.workflowTasks){

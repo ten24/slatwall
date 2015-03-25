@@ -54,11 +54,9 @@ Notes:
 
 <cfoutput>
 	<div class="col-md-6">
-		<h5>#$.slatwall.rbKey('entity.promotionqualifier.brands')#</h5>
-		<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="brands" edit="#rc.edit#" displaytype="plain" />
+		<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="brands" edit="#rc.edit#" displaytype="plainTitle" />
 	</div>
 	<div class="col-md-6">
-		<h5>#$.slatwall.rbKey('entity.promotionqualifier.excludedbrands')#</h5>
-		<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="excludedBrands" edit="#rc.edit#" displaytype="plain" />
+		<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="excludedBrands" edit="#rc.edit#" displaytype="plainTitle" />
 	</div>
 </cfoutput>

@@ -3,23 +3,23 @@
  *   This directive can be used to prompt the user with a confirmation dialog.
  *   
  *   Example Usage 1: 
- *   <div swconfirm 
+ *   <a swconfirm 
  *   						use-rb-key=true 
  * 							yes-text="define.yes" 
  * 							no-text="define.no" 
  * 							confirm-text="define.confirm" 
  * 							message-text="define.delete.message" 
  * 							callback="someFunction()">
- *   </div>
+ *   </a>
  *   Alternate Version (No Rbkeys):
- *   <div swconfirm 
+ *   <a swconfirm 
  *   						use-rb-key=false 
  * 							yes-text="Sure" 
  * 							no-text="Not Sure!" 
  * 							confirm-text="Sure" 
  * 							message-text="Are you sure?" 
  * 							callback="sure()">
- *   </div>
+ *   </a>
  * 
  *   Note: Because the template is dynamic, the following keywords can not be used anywhere in the text for this modal.
  *   
@@ -85,8 +85,9 @@ angular.module('slatwalladmin').directive('swConfirm',
                         "<div>" +
                         	"<div class='modal-header'><a class='close' data-dismiss='modal' ng-click='cancel()'>×</a><h3 [confirm]><confirm></h3></div>" +
                         "<div class='modal-body' [message]>" + "<message>" + "</div>" +
-                        	"<div class='modal-footer'><button class='btn btn-sm btn-default btn-primary' ng-click='[callback]' [yes]><yes></button>" +
-                        	"<button class='btn btn-sm btn-default btn-inverse' ng-click='cancel()' [no]><no></button></div></div></div>";
+                        	"<div class='modal-footer'>" +
+                        	"<button class='btn btn-sm btn-default btn-inverse' ng-click='cancel()' [no]><no></button>" +
+                        	"<button class='btn btn-sm btn-default btn-primary' ng-click='[callback]' [yes]><yes></button></div></div></div>";
     				
     			$log.debug(templateString);
     			
@@ -130,7 +131,8 @@ angular.module('slatwalladmin').directive('swConfirm',
         return {
         		restrict: 'EA',
         		scope: {
-        	          callback:"&"
+        	          callback:"&",
+        	          entity:"="
         	        },
             link: function (scope, element, attr) {
             	/* Grab the template and build the modal on click */
@@ -157,9 +159,11 @@ angular.module('slatwalladmin').directive('swConfirm',
                     /**
                      * Handles the result - callback or dismissed
                      */
-                    modalInstance.result.then(function() {
+                    modalInstance.result.then(function(test) {
                     		$log.debug("Callback Called");	
+                    		$log.debug(test);
                     		scope.callback();
+                    		$log.debug(scope.callback);
                     		return true;
                     }, function() {
                     	$log.debug("Dismissed");
