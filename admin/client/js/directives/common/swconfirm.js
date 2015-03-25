@@ -1,5 +1,5 @@
 /**
- * <RBKey Version Needs Testing--------------------------------------------------------------------------------------------------->
+ * <------------------------------------------------------------------------------------------------------------------------------------>
  *   This directive can be used to prompt the user with a confirmation dialog.
  *   
  *   Example Usage 1: 
@@ -35,7 +35,7 @@ angular.module('slatwalladmin').directive('swConfirm',
 	 /**
 	  * Handles opening and closing of the modal. 
 	  */
-	 var confirmationModalController = function($scope, $modalInstance) {
+	    var confirmationModalController = function($scope, $modalInstance) {
 	        
 		 	$scope.deleteEntity = function(entity) {
 	        		$log.debug("Deleting an entity.");
@@ -49,8 +49,8 @@ angular.module('slatwalladmin').directive('swConfirm',
 
 	        $scope.cancel = function() {
 	          $modalInstance.dismiss('cancel');
-	        };
-	      };
+	         };
+	    };
     		var buildConfirmationModal = function( simple, useRbKey, confirmText, messageText, noText, yesText, callback){
     			
     			/* Keys */
@@ -153,12 +153,12 @@ angular.module('slatwalladmin').directive('swConfirm',
                       template: templateString,
                       controller: confirmationModalController
                     });
+                    
                     /**
                      * Handles the result - callback or dismissed
                      */
-                    
                     modalInstance.result.then(function() {
-                    		$log.debug("Called Callback");	
+                    		$log.debug("Callback Called");	
                     		scope.callback();
                     		return true;
                     }, function() {
