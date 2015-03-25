@@ -306,8 +306,7 @@ angular.module('slatwalladmin')
 					//scope.orderItems = [];
 					scope.orderAttributes = [];
 					scope.attributeValues = [];
-					console.log('getorderitem');
-					console.log(scope.currentPage);
+					
 					var orderItemsPromise = $slatwall.getEntity('orderItem', options);
 					orderItemsPromise.then(function(value){
 						scope.collection = value;

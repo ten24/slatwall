@@ -241,7 +241,7 @@ angular.module('slatwalladmin').directive('swChildOrderItem',
 				
 				//Set all child order items to clicked = false.
 				angular.forEach(scope.childOrderItems, function(child){
-					console.log("hideing");
+					
 					console.dir(child);
 					child.hide = !child.hide;
 					scope.orderItem.clicked = !scope.orderItem.clicked;

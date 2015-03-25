@@ -97,7 +97,7 @@ angular.module('slatwalladmin')
     						if(!angular.isObject(task)){ task = {};}
     						
     						if(angular.isUndefined(task.hidden)){
-    							console.log(task);
+
     							task.hidden=false;
     						}else{
     							$log.debug("setHidden()", "Setting Hide Value To " + !task.hidden);

@@ -25,7 +25,7 @@ angular.module('slatwalladmin')
 			},
 			templateUrl:workflowPartialsPath+"workflowtask.html",
 			link: function(scope, element,attrs){
-				console.log(scope.workflowTask);
+
 				scope.removeWorkflowTask = function(workflowTask){
 					var deletePromise = workflowTask.$$delete();
 		    		deletePromise.then(function(){
