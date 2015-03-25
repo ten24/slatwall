@@ -21,8 +21,7 @@
 							<a class="btn s-btn-dgrey s-remove" 
 								data-toggle="collapse" 
 								data-target="#s-add-obj-1"
-								ng-click="hardRemoveTask(workflowTasks[$index])"
-							>
+								ng-click="hardRemoveTask(workflowTasks[$index])">
 								<i class="fa fa-trash"></i>
 							</a>
 						</li>
@@ -35,7 +34,7 @@
 	<button class="btn btn-xs s-btn-ten24" 
 			data-target="#j-create-new-task"
 			ng-click="addWorkflowTask();" 
-			ng-show="!workflowTasks.selectedTask || workflowTasks.selectedTask.hidden "><!-- This makes sure the add button only shows when needed -->
+			ng-if="(!workflowTasks.selectedTask) || workflowTasks.selectedTask.hidden"><!-- This makes sure the add button only shows when needed -->
 		<i class="fa fa-plus"></i> Create New Task
 	</button>
 <div ng-hide="done"><!-- state for closing on finish -->

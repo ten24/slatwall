@@ -15,25 +15,30 @@
 								sw-href="{{'/entity/'+entityName}}"><i
 								class="glyphicon glyphicon-arrow-left"></i> <span sw-rbkey="'entity.'+entityName.toLowerCase()+'_plural'"></span></a>
 						</div>
-						<div class="btn-group btn-group-sm"></div>
+						<div class="btn-group btn-group-sm">
+							
+						</div>
+						 
 						 <div class="btn-group btn-group-sm">
-							<!--<a title="Delete"
-								class="adminentitydeleteworkflow btn btn-default s-remove alert-confirm"
-								target="_self"
-								href="?slatAction=entity.deleteworkflow&amp;workflowID=40288188498aeea401498b80b99e002a"
-								data-confirm="Are you sure you would like to delete this Workflow?"><i
-								class="glyphicon glyphicon-trash icon-white"></i> Delete</a> <a
+								<!-- Custom confirmation dialog -->
+								<a 
+							    sw-confirm 
+							    class="btn btn-default s-remove"
+							    data-confirm-text="Confirm"
+								data-message-text="Are you sure you want to delete this Workflow?" 
+								data-callback="deleteEntity(entity)"
+								data-use-rb-key="false"
+								data-simple=false
+								data-yes-text="Yes"
+								data-no-text="No"
+								><i class="glyphicon glyphicon-trash icon-white"></i> Delete
+								</a>
+								<a
 								title="Cancel" class="adminentitydetailworkflow btn btn-default"
 								target="_self"
 								href="?slatAction=entity.detailworkflow&amp;workflowID=40288188498aeea401498b80b99e002a"><i
-								class="glyphicon glyphicon-remove icon-white"></i> Cancel</a>-->
-							<button class="adminentitydeleteproduct btn btn-default s-remove "
-								ng-if="entity.$$getID() !== ''"
-								title="Delete" type="button"
-								ng-click="deleteEntity()"	
-							>
-								<i class="glyphicon glyphicon-trash icon-white"></i> Delete
-							</button>
+								class="glyphicon glyphicon-remove icon-white"></i> Cancel</a>
+							
 							<button class="btn adminentitysaveworkflow btn btn-success"
 								title="Save" type="button"
 								ng-click="entity.$$save()"	
