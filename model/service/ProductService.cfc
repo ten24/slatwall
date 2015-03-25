@@ -920,7 +920,13 @@ component extends="HibachiService" accessors="true" {
 		if(isNull(arguments.product.getDefaultSku()) && arrayLen(arguments.product.getSkus())){
 			arguments.product.setDefaultSku(arguments.product.getSkus()[1]);
 		}
-		
+		if(isNull(arguments.product.getURLTitle())){
+			arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
+		}
+		// Generate Image Files
+		if(isNull(arguments.product.getDefaultSku().getImageFile())){
+			arguments.product.getDefaultSku().setImageFile( arguments.product.getDefaultSku().generateImageFileName() );
+		}
 		return arguments.product;
 	}
 	
