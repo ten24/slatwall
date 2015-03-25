@@ -35,7 +35,7 @@ angular.module('slatwalladmin').directive('swConfirm',
 	 /**
 	  * Handles opening and closing of the modal. 
 	  */
-	 var confirmationModalController = function($scope, $confirmation) {
+	 var confirmationModalController = function($scope, $modalInstance) {
 	        
 		 	$scope.deleteEntity = function(entity) {
 	        		$log.debug("Deleting an entity.");
@@ -44,11 +44,11 @@ angular.module('slatwalladmin').directive('swConfirm',
 	        };
 		 	
 		 	$scope.close = function() {
-	          $confirmation.close();
+	          $modalInstance.close();
 	        };
 
 	        $scope.cancel = function() {
-	          $confirmation.dismiss('cancel');
+	          $modalInstance.dismiss('cancel');
 	        };
 	      };
     		var buildConfirmationModal = function( simple, useRbKey, confirmText, messageText, noText, yesText, callback){
@@ -111,8 +111,7 @@ angular.module('slatwalladmin').directive('swConfirm',
     																	  .replace(yesVal, empty);
     				$log.debug(finishedString);
     				return finishedString;
-        		
-    			}else{
+        		}else{
         			/* Then decorate the template without the keys. */
         			$log.debug("Using RbKey? " + useRbKey);
         			parsedKeyString  = templateString.replace(confirmVal, confirmText)
@@ -150,15 +149,15 @@ angular.module('slatwalladmin').directive('swConfirm',
                     /**
                      * Handles configuring the modal
                      */
-                    var confirmation = $modal.open({
+                    var modalInstance = $modal.open({
                       template: templateString,
                       controller: confirmationModalController
                     });
-                    
                     /**
                      * Handles the result - callback or dismissed
                      */
-                    confirmation.result.then(function() {
+                    
+                    modalInstance.result.then(function() {
                     		$log.debug("Called Callback");	
                     		scope.callback();
                     		return true;
