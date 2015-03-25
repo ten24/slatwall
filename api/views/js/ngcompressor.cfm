@@ -113,32 +113,34 @@ Notes:
 														).results />
 		<cfelse>
 			<cfset local.jsOutputCompressed = ''>
-		</cfif>													
-		<cfscript>
-			ioOutput = CreateObject("java","java.io.ByteArrayOutputStream");
-			gzOutput = CreateObject("java","java.util.zip.GZIPOutputStream");
-			
-			ioOutput.init();
-			gzOutput.init(ioOutput);
-			
-			gzOutput.write(local.jsOutputCompressed.getBytes(), 0, Len(local.jsOutputCompressed.getBytes()));
-			
-			gzOutput.finish();
-			gzOutput.close();
-			ioOutput.flush();
-			ioOutput.close();
-			
-			toOutput=ioOutput.toByteArray();
-		</cfscript>
-		
-		<cfset request.slatwallScope.setApplicationValue('ngCompressor_#hash(rc.jspath)#',toOutput)>
-		<cfset local.jsOutput = toOutput>
+		</cfif>			
+		<cfif request.slatwallScope.getApplicationValue('gzipJavascript')>										
+			<cfscript>
+				ioOutput = CreateObject("java","java.io.ByteArrayOutputStream");
+				gzOutput = CreateObject("java","java.util.zip.GZIPOutputStream");
+				
+				ioOutput.init();
+				gzOutput.init(ioOutput);
+				
+				gzOutput.write(local.jsOutputCompressed.getBytes(), 0, Len(local.jsOutputCompressed.getBytes()));
+				
+				gzOutput.finish();
+				gzOutput.close();
+				ioOutput.flush();
+				ioOutput.close();
+				
+				toOutput=ioOutput.toByteArray();
+			</cfscript>
+			<cfset request.slatwallScope.setApplicationValue('ngCompressor_#hash(rc.jspath)#',toOutput)>
+			<cfset local.jsOutput = toOutput>
+		<cfelse>
+			<cfset local.jsOutput = local.jsOutputCompressed />
+		</cfif>
 	</cfif>
 <cfelse>
 	<cfset local.jsOutput = request.slatwallScope.getApplicationValue('ngCompressor_#hash(rc.jspath)#')>
 </cfif>
-
-<cfif request.slatwallScope.getApplicationValue('debugFlag')>
+<cfif request.slatwallScope.getApplicationValue('debugFlag') || !request.slatwallScope.getApplicationValue('gzipJavascript')>
 	<cfoutput>#local.jsOutput#</cfoutput>
 <cfelse>
 	<cfheader name="Content-Encoding" value="gzip">
