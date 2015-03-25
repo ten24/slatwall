@@ -44,17 +44,17 @@ angular.module('slatwalladmin')
 				$log.debug('skuCollection22');
 				$log.debug(scope.productBundleGroup.data.skuCollectionConfig);
 
-				scope.getCloseOrDelete = function(bool){
-					$log.debug("Are we editting already? " + bool);
-					
-					if (bool){
-						scope.productBundleGroup.data.$$toggleEdit();
+				scope.deleteEntity = function(type){
+					if (angular.isNumber(type)){
+						$log.debug("Deleting filter");
+						this.removeProductBundleGroupFilter(type);
 					}else{
-						productBundleGroupsController.removeProductBundleGroup(scope.index);
-						//scope.productBundleGroup.$$delete();
-						//scope.removeProductBundleGroup();
+						$log.debug("Removing bundle group");
+						this.removeProductBundleGroup();
+						
 					}
 				};
+				
 				scope.collection = {
 					baseEntityName:"Sku",
 					baseEntityAlias:"_sku",
@@ -221,7 +221,6 @@ angular.module('slatwalladmin')
 						metadataService.setPropertiesList(value,'_sku');
 						scope.filterPropertiesList['_sku'] = metadataService.getPropertiesListByBaseEntityAlias('_sku');
 						metadataService.formatPropertiesList(scope.filterPropertiesList['_sku'],'_sku');
-						
 					});
 				}
 				
@@ -230,7 +229,6 @@ angular.module('slatwalladmin')
 					scope.productBundleGroupFilters.value.push(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup[index]);
 					//Sorts Array
 					scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "type");
-					
 					//Removes the filter item from the filtergroup
 					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index,1);
 				};

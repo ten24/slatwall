@@ -306,8 +306,7 @@ angular.module('slatwalladmin')
 					//scope.orderItems = [];
 					scope.orderAttributes = [];
 					scope.attributeValues = [];
-					console.log('getorderitem');
-					console.log(scope.currentPage);
+					
 					var orderItemsPromise = $slatwall.getEntity('orderItem', options);
 					orderItemsPromise.then(function(value){
 						scope.collection = value;
@@ -372,8 +371,7 @@ angular.module('slatwalladmin')
 				});
 				
 				//Add claim function and cancel function
-				
-				
+
 				scope.appendToCollection = function(){
 					if(scope.pageShow === 'Auto'){
 						$log.debug('AppendToCollection');

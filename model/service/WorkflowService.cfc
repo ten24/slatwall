@@ -70,6 +70,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					
 					// If the triggerObject is the same as this event, then we just use it
 					if(isNull(workflowTrigger.getObjectPropertyIdentifier()) || !len(workflowTrigger.getObjectPropertyIdentifier()) || workflowTrigger.getObjectPropertyIdentifier() == arguments.entity.getClassName()) {
+
 						processData.entity = arguments.entity;
 					
 					} else {
@@ -83,10 +84,7 @@ component extends="HibachiService" accessors="true" output="false" {
 						
 						this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
 					}
-					
-				}
-				
-			//}
+					}
 				
 		}
 		
