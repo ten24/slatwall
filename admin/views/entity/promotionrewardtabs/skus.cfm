@@ -56,9 +56,9 @@ Notes:
 
 <cfoutput>
 	<div class="col-md-6">
-		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" title="#$.slatwall.rbKey('entity.promotionreward.skus')#" property="skus" edit="#rc.edit#" displayType="plainTitle" />
+		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="skus" edit="#rc.edit#" displayType="plainTitle" />
 	</div>
 	<div class="col-md-6">
-		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" title="#$.slatwall.rbKey('entity.promotionreward.excludedskus')#" property="excludedSkus" edit="#rc.edit#" displayType="plainTitle" />
+		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="excludedSkus" edit="#rc.edit#" displayType="plainTitle" />
 	</div>
 </cfoutput>
