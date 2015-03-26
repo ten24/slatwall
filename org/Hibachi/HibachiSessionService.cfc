@@ -238,7 +238,8 @@ component output="false" accessors="true" extends="HibachiService"  {
 	private any function getValueForCookie(){
 		var id = getHibachiScope().getSession().getSessionID();
 		var hashedID = hash(id, "sha-1");
-		var newID = hashedID & createUUID();
+		var mid = Mid(createUUID(),1,32);
+		var newID = Mid(hashedID, 1, 32) & mid;
 		return newID;
 	}
 	// ==================  END:  Private Helper Functions =====================
