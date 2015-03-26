@@ -1124,7 +1124,7 @@ select:focus {
   padding-right: 0px;
   padding-left: 0px;
 }
-.s-filter-content .s-options {
+.s-filter-content .s-collections-options.s-options {
   margin-top: -15px;
 }
 .panel,
