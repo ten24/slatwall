@@ -54,11 +54,9 @@ Notes:
 
 <cfoutput>
 	<div class="col-md-6">
-		<h5>#$.slatwall.rbKey('entity.loyaltyAccruement.skus')#</h5>
-		<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="skus" edit="#rc.edit#" displayType="plain" />
+		<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="skus" edit="#rc.edit#" displayType="plainTitle" />
 	</div>
 	<div class="col-md-6">
-		<h5>#$.slatwall.rbKey('entity.loyaltyAccruement.excludedskus')#</h5>
-		<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="excludedSkus" edit="#rc.edit#" displayType="plain" />
+		<hb:HibachiPropertyDisplay object="#rc.loyaltyAccruement#" property="excludedSkus" edit="#rc.edit#" displayType="plainTitle" />
 	</div>
 </cfoutput>
