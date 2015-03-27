@@ -46,12 +46,12 @@
 Notes:
 
 */
-component displayname="Country" entityname="SlatwallCountry" table="SwCountry" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="addressService" hb_permission="this" {
+component displayname="Country" entityname="SlatwallCountry" table="SwCountry" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="addressService" hb_permission="this" hb_defaultOrderProperty="countryName" {
 	
 	// Persistent Properties
 	property name="countryCode" length="2" ormtype="string" fieldtype="id";
-	property name="countryCode3Digit" ormtype="string";
-	property name="countryISONumber" ormtype="string";
+	property name="countryCode3Digit" ormtype="string" length="3";
+	property name="countryISONumber" ormtype="integer";
 	property name="countryName" ormtype="string";
 	property name="activeFlag" ormtype="boolean";
 	

@@ -48,19 +48,24 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.accountSmartList" type="any" />
 
 <cfoutput>
+	
+	<hb:HibachiEntityActionBar type="listing" object="#rc.accountSmartList#" showCreate="false">
+	
+	<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>			
+			<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />			
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
 
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.accountSmartList#"
+	<hb:HibachiListingDisplay smartList="#rc.accountSmartList#"
 							   recordEditAction="admin:entity.editaccount"
 							   recordDetailAction="admin:entity.detailaccount">
-							      
-		<!--- Create ---> 
-		<hb:HibachiListingDisplayButtonGroup >
-			<hb:HibachiProcessCaller action="admin:entity.preprocessaccount" entity="account" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.account')#" modal="true" />
-		</hb:HibachiListingDisplayButtonGroup>
-							      
+							      	      
 		<hb:HibachiListingColumn propertyIdentifier="firstName" />
 		<hb:HibachiListingColumn propertyIdentifier="lastName" />
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="company" />

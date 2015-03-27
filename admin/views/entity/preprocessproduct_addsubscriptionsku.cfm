@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.product" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
@@ -66,8 +68,8 @@ Notes:
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		
-		<div class="row-fluid">
-			<div class="span6">
+		<div class="row">
+			<div class="col-md-6">
 				<h5>#$.slatwall.rbKey('admin.entity.sku.subscriptionBenefits')#</h5>
 				<br />
 				<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionBenefits" />
@@ -75,7 +77,7 @@ Notes:
 					<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
 				</hb:HibachiListingDisplay>
 			</div>
-			<div class="span6">
+			<div class="col-md-6">
 				<h5>#$.slatwall.rbKey('admin.entity.sku.renewalSubscriptionBenefits')#</h5>
 				<br />
 				<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalsubscriptionBenefits" />

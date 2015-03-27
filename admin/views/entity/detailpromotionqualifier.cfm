@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.promotionQualifier" type="any">
 <cfparam name="rc.promotionPeriod" type="any" default="#rc.promotionQualifier.getPromotionPeriod()#" />
 <cfparam name="rc.qualifierType" type="string" default="#rc.promotionQualifier.getQualifierType()#" />
@@ -75,41 +77,22 @@ Notes:
 		<input type="hidden" name="promotionPeriod.promotionPeriodID" value="#rc.promotionperiod.getPromotionperiodID()#" />
 		<input type="hidden" name="promotionPeriodID" value="#rc.promotionperiod.getPromotionperiodID()#" />
 		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.qualifierType)>
-					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumItemQuantity" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumItemQuantity" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumItemPrice" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumItemPrice" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="rewardMatchingType" edit="#rc.edit#" />
-				<cfelseif rc.qualifierType eq "fulfillment">
-					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumFulfillmentWeight" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumFulfillmentWeight" edit="#rc.edit#" />
-				<cfelseif rc.qualifierType eq "order">
-					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumOrderQuantity" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumOrderQuantity" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="minimumOrderSubtotal" edit="#rc.edit#" />
-					<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="maximumOrderSubtotal" edit="#rc.edit#" />
-				</cfif>
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.promotionQualifier#">
+		<hb:HibachiEntityDetailGroup object="#rc.promotionQualifier#">
+			<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
 			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.qualifierType)>
-				<hb:HibachiTab view="admin:entity/promotionqualifiertabs/producttypes" />
-				<hb:HibachiTab view="admin:entity/promotionqualifiertabs/products" />
-				<hb:HibachiTab view="admin:entity/promotionqualifiertabs/skus" />
-				<hb:HibachiTab view="admin:entity/promotionqualifiertabs/brands" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/producttypes" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/products" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/skus" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/brands" />
 				<cfif rc.qualifierType eq "merchandise">
-					<hb:HibachiTab view="admin:entity/promotionqualifiertabs/options" />
+					<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/options" />
 				</cfif>
 			<cfelseif rc.qualifierType eq "fulfillment">
-				<hb:HibachiTab view="admin:entity/promotionqualifiertabs/fulfillmentMethods" />
-				<hb:HibachiTab view="admin:entity/promotionqualifiertabs/shippingMethods" />
-				<hb:HibachiTab view="admin:entity/promotionqualifiertabs/shippingAddressZones" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/fulfillmentMethods" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/shippingMethods" />
+				<hb:HibachiEntityDetailItem view="admin:entity/promotionqualifiertabs/shippingAddressZones" />
 			</cfif>
-		</hb:HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

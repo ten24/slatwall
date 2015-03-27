@@ -63,7 +63,7 @@ Notes:
 	   </nav>
 	 </div>
 	<hb:HibachiPropertyList divClass="span12">
-		<form method="post" action="?s=1" class="form-horizontal">
+		<form method="post" action="?s=1" class="">
 			<input type="hidden" name="slatAction" value="admin:main.encryptionReencryptData" />
 			<input type="hidden" name="process" value="1" />
 			<cfset batchSizeLimitAttributes = '' />

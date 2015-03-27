@@ -202,6 +202,7 @@
 			for (var hqlStatement in updateStatements) {
 				ormExecuteQuery(hqlStatement, {nowDateTime=nowDateTime});
 			}
+
 		</cfscript>
 	</cffunction>
 	

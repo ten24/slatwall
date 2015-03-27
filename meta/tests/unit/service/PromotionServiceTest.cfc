@@ -64,6 +64,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderFulfillment = createPersistedTestEntity('orderFulfillment',orderFulfillmentData);
 		
 		
+		
 		var promotionRewardData = {
 			promotionRewardid = ''
 		};
@@ -134,6 +135,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		// different then the one on the promotion reward, remove the appliedPromo and return true
 		assertTrue(shouldAddNewPromotion3);
 		assertEquals(0,arraylen(orderFulfillment.getAppliedPromotions()));
+		
 	}
 	
 	public void function setupPromotionRewardUsageDetailsTest(){

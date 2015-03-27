@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.ordersPlacedSmartList" type="any" />
 
@@ -58,7 +60,7 @@ Notes:
 	<hb:HibachiListingColumn propertyIdentifier="orderNumber" />
 	<hb:HibachiListingColumn propertyIdentifier="orderOpenDateTime" />
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="account.fullName" />
-	<hb:HibachiListingColumn propertyIdentifier="orderStatusType.type" />
+	<hb:HibachiListingColumn propertyIdentifier="orderStatusType.typeName" />
 	<hb:HibachiListingColumn propertyIdentifier="calculatedTotal" />
 </hb:HibachiListingDisplay>
-<hb:HibachiActionCaller action="admin:entity.preprocessorder" entity="order" class="btn" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=create&newAccountFlag=false" modal=true />
+<hb:HibachiActionCaller action="admin:entity.preprocessorder" entity="order" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=create&newAccountFlag=false" modal=true />

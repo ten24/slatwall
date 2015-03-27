@@ -1,0 +1,96 @@
+<div>
+	  <ul class="list-inline list-unstyled">
+          <li>
+			  <form class="form-horizontal">
+				
+				<div class="form-group s-page-show">
+			      <label for="inputPassword" class="control-label col-xs-4">View</label>
+			      <div class="col-xs-8">
+						<select size="1"
+								class="form-control j-custom-select" 
+								name="pageShowOptions" 
+								aria-controls="" 
+								class="form-control"
+								ng-model="pageShowOptions.selectedPageShowOption" 
+								ng-options="pageShowOption as pageShowOption.display for pageShowOption in pageShowOptions" 
+								ng-change="pageShowOptionChanged(pageShowOptions.selectedPageShowOption)"	
+								>
+						</select>
+			      </div>
+			    </div>
+			  </form>
+		  </li>
+		  <li>
+			  <ul 	class="pagination pagination-sm"
+			  		ng-show="pageShowOptions.selectedPageShowOption.value !== 'Auto'"
+			  >
+			    <li
+			    	ng-click="previousPage()"
+			    	ng-class="{disabled:hasPrevious()}"
+			    >
+			    	<a 	
+			    		
+			    	>
+			    		&laquo;
+			    	</a>
+			    </li>
+			    <li ng-show="showPreviousJump()">
+			    	<a 	
+			    		ng-click="setCurrentPage(1)"
+			    	>
+			    		1
+			    	</a>
+			    </li>
+			    <li ng-show="showPreviousJump()"
+			    	ng-click="previousJump()"
+			    >
+			    	<a 	 
+			    		
+			    	>
+			    		...
+			    	</a>
+			    </li>
+			    <li ng-repeat="i in totalPagesArray"
+			    	ng-class="{active:currentPage === i}"
+			    	ng-click="setCurrentPage(i)"
+			    	ng-show="showPageNumber(i)"
+			    >
+			    	<a  ng-bind="i"></a>
+			    </li>
+			    <li ng-show="showNextJump()"
+			    	ng-click="nextJump()"
+			    >
+			    	<a 	 
+			    		>
+			    		...
+			    	</a>
+			    </li>
+			    <li ng-show="showNextJump()">
+			    	<a 	 
+			    		ng-click="setCurrentPage(totalPages())"
+			    		ng-bind="totalPages()"
+			    	>
+			    		
+			    	</a>
+			    </li>
+			    <li 
+			    	ng-class="{disabled:hasNext()}"
+			    	ng-click="nextPage()"
+			    	>
+			    	<a >
+			    		&raquo;
+			    	</a>
+			    </li>
+			    
+			  </ul>
+		  </li>
+		  
+		  <!-- TODO: decide whether to implement this button or not at a later date
+		  <li>
+			<div class="btn-group" class="navbar-left">
+			  <button type="button" class="btn btn-sm btn-default"><i class="fa fa-plus"></i></button>
+			</div>
+		  </li> 
+		  -->
+  	</ul>
+</div>

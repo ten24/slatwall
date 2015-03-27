@@ -62,35 +62,54 @@ Notes:
 </cfif>
 
 <cfoutput>
-	<hb:HibachiPropertyList divClass="span12">
-		<h3>#$.slatwall.rbKey('admin.main.update.backup')#</h3>
-		<hr />
-		<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentVersion')#" value="#rc.currentVersion#" />
-		<cfif rc.currentBranch eq 'master'>
-			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentReleaseType')#" value="#$.slatwall.rbKey('admin.main.update.stable')#" />
-		<cfelse>
-			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentReleaseType')#" value="#$.slatwall.rbKey('admin.main.update.bleedingEdge')#" />
-		</cfif>
-		<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableStableVersion')#" value="#rc.availableMasterVersion#" />
-		<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableBleedingEdgeVersion')#" value="#rc.availableDevelopVersion#" />
-		<hr />
-		<form method="post" action="?s=1">
-			<input type="hidden" name="slatAction" value="admin:main.update" />
-			<input type="hidden" name="process" value="1" />
-			
-			<!--- Custom Branch --->
-			<input type="radio" name="branchType" value="custom" />
-			<input type="text" name="customBranch" value="" placeholder="Custom Branch (ex: feature-newadmin)" /><br />
-			
-			<!--- Standard --->
-			<input type="radio" name="branchType" value="standard" checked="checked" />
-			<select name="updateBranch">
-				<cfloop array="#local.updateOptions#" index="local.updateOption">
-					<option value="#local.updateOption.value#" <cfif rc.currentBranch eq local.updateOption.value>selected="selected"</cfif>>#local.updateOption.name#</option>
-				</cfloop>
-			</select><br />
-			
-			<button class="btn adminmainupdate btn-primary" title="#$.slatwall.rbKey('admin.main.update_title')#" type="submit">#$.slatwall.rbKey('admin.main.update_title')#</button>
-		</form>
+	<div class="row s-body-nav">
+	    <nav class="navbar navbar-default" role="navigation">
+	      <div class="col-md-4 s-header-info">
+				<!--- Page Title --->
+				<ul class="list-unstyled list-inline">
+				</ul>
+				<h1 class="actionbar-title">#$.slatwall.rbKey('admin.main.update')#</h1>
+			</div>
+		 </div>
+	   </nav>
+	</div>
+	<hb:HibachiPropertyList divClass="col-md-12">
+		<div class="s-no-tab-wrapper">
+			<h3>#$.slatwall.rbKey('admin.main.update.backup')#</h3>
+			<hr />
+			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentVersion')#" value="#rc.currentVersion#" />
+			<cfif rc.currentBranch eq 'master'>
+				<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentReleaseType')#" value="#$.slatwall.rbKey('admin.main.update.stable')#" />
+			<cfelse>
+				<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.currentReleaseType')#" value="#$.slatwall.rbKey('admin.main.update.bleedingEdge')#" />
+			</cfif>
+			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableStableVersion')#" value="#rc.availableMasterVersion#" />
+			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableBleedingEdgeVersion')#" value="#rc.availableDevelopVersion#" />
+			<hr />
+			<form method="post" action="?s=1" class="s-update-branch">
+				<input type="hidden" name="slatAction" value="admin:main.update" />
+				<input type="hidden" name="process" value="1" />
+				
+				<!--- Custom Branch --->
+				<div class="form-group">
+					<label class="col-xs-2 control-label"><input type="radio" name="branchType" value="custom" /></label>
+					<input type="text" class="col-xs-10" name="customBranch" value="" placeholder="Custom Branch (ex: feature-newadmin)" /><br />
+				</div>
+				
+				<!--- Standard --->
+				<div class="form-group">
+					<label class="col-xs-2 control-label"><input type="radio" name="branchType" value="standard" checked="checked" /></label>
+					<div class="col-xs-10" style="padding:0px;">
+						<select name="updateBranch" class="form-control j-custom-select">
+							<cfloop array="#local.updateOptions#" index="local.updateOption">
+								<option value="#local.updateOption.value#" <cfif rc.currentBranch eq local.updateOption.value>selected="selected"</cfif>>#local.updateOption.name#</option>
+							</cfloop>
+						</select>
+					</div>
+				</div>
+				
+				<button class="btn adminmainupdate btn-primary" title="#$.slatwall.rbKey('admin.main.update_title')#" type="submit">#$.slatwall.rbKey('admin.main.update_title')#</button>
+			</form>
+		</div>
 	</hb:HibachiPropertyList>
 </cfoutput>

@@ -49,6 +49,8 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+
+
 <cfparam name="rc.stockReceiver" type="any">
 <cfparam name="rc.edit" type="boolean">
 
@@ -56,16 +58,10 @@ Notes:
 	<hb:HibachiEntityDetailForm object="#rc.stockReceiver#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.stockReceiver#" edit="#rc.edit#">
 		</hb:HibachiEntityActionBar>
-			
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.stockReceiver#" property="packingSlipNumber" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.stockReceiver#" property="boxCount" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.stockReceiver#">
-			<hb:HibachiTab view="admin:entity/stockreceivertabs/stockreceiveritems" />
-		</hb:HibachiTabGroup>
+
+		<hb:HibachiEntityDetailGroup object="#rc.stockReceiver#">
+			<hb:HibachiEntityDetailItem view="admin:entity/stockreceivertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/stockreceivertabs/stockreceiveritems" />
+		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

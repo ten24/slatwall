@@ -1,5 +1,4 @@
 /*
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,9 +39,7 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 */
 component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="orderService" hb_permission="order.orderItems" hb_processContext="updateStatus" {
 	
@@ -54,29 +49,35 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="skuPrice" ormtype="big_decimal";
 	property name="currencyCode" ormtype="string" length="3";
 	property name="quantity" hb_populateEnabled="public" ormtype="integer";
+	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	
 	// Related Object Properties (many-to-one)
 	property name="appliedPriceGroup" cfc="PriceGroup" fieldtype="many-to-one" fkcolumn="appliedPriceGroupID";
 	property name="orderItemType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderItemTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderItemType" fetch="join";
 	property name="orderItemStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderItemStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderItemStatusType" fetch="join";
-	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID" hb_cascadeCalculate="true" fetch="join";
-	property name="stock" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
+	property name="sku" hb_populateEnabled="public" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID" hb_cascadeCalculate="true" fetch="join";
+	property name="stock" hb_populateEnabled="public" cfc="Stock" fieldtype="many-to-one" fkcolumn="stockID";
 	property name="order" hb_populateEnabled="false" cfc="Order" fieldtype="many-to-one" fkcolumn="orderID" hb_cascadeCalculate="true" fetch="join";
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 	property name="orderReturn" cfc="OrderReturn" fieldtype="many-to-one" fkcolumn="orderReturnID";
+	property name="parentOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="parentOrderItemID";
+	property name="productBundleGroup" hb_populateEnabled="public" cfc="ProductBundleGroup" fieldtype="many-to-one" fkcolumn="productBundleGroupID";
 	property name="referencedOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="referencedOrderItemID"; // Used For Returns. This is set when this order is a return.
 	
 	// Related Object Properties (one-to-many)
 	property name="appliedPromotions" singularname="appliedPromotion" cfc="PromotionApplied" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
 	property name="appliedTaxes" singularname="appliedTax" cfc="TaxApplied" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="all-delete-orphan";
+	property name="childOrderItems" hb_populateEnabled="public" singularname="childOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="parentOrderItemID" inverse="true" cascade="all-delete-orphan";
+	property name="eventRegistrations" singularname="eventRegistration" hb_populateEnabled="public" fieldtype="one-to-many" fkcolumn="orderItemID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra" ;
 	property name="orderDeliveryItems" singularname="orderDeliveryItem" cfc="OrderDeliveryItem" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true" cascade="delete-orphan";
 	property name="stockReceiverItems" singularname="stockReceiverItem" cfc="StockReceiverItem" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true";
 	property name="referencingOrderItems" singularname="referencingOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="referencedOrderItemID" inverse="true" cascade="all"; // Used For Returns
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	
 	// Remote properties
+	property name="publicRemoteID" ormtype="string" hb_populateEnabled="public";
 	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
@@ -86,6 +87,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non persistent properties
+	property name="activeEventRegistrations" persistent="false"; 
 	property name="discountAmount" persistent="false" hb_formatType="currency" hint="This is the discount amount after quantity (talk to Greg if you don't understand)" ;
 	property name="extendedPrice" persistent="false" hb_formatType="currency";
 	property name="extendedPriceAfterDiscount" persistent="false" hb_formatType="currency";
@@ -94,9 +96,12 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="quantityUndelivered" persistent="false";
 	property name="quantityReceived" persistent="false";
 	property name="quantityUnreceived" persistent="false";
+	property name="registrants" persistent="false";
 	property name="taxAmount" persistent="false" hb_formatType="currency";
 	property name="taxLiabilityAmount" persistent="false" hb_formatType="currency";
 	property name="itemTotal" persistent="false" hb_formatType="currency";
+	property name="productBundlePrice" persistent="false" hb_formatType="currency";
+	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
@@ -123,14 +128,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	
 	public boolean function hasQuantityWithinMaxOrderQuantity() {
-		if(getOrderItemType().getSystemCode() == 'oitSale') {
+		if( listFindNoCase("oitSale,oitDeposit",getOrderItemType().getSystemCode()) ) {
 			return getQuantity() <= getMaximumOrderQuantity();	
 		}
 		return true;
 	}
 	
 	public boolean function hasQuantityWithinMinOrderQuantity() {
-		if(getOrderItemType().getSystemCode() == 'oitSale') {
+		if( listFindNoCase("oitSale,oitDeposit",getOrderItemType().getSystemCode()) ) {
 			return getQuantity() >= getSku().setting('skuOrderMinimumQuantity');
 		}
 		return true;
@@ -141,7 +146,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	
 	public string function getStatus(){
-		return getOrderItemStatusType().getType();
+		return getOrderItemStatusType().getTypeName();
 	}
 	
 	public string function getStatusCode() {
@@ -149,7 +154,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	
 	public string function getType(){
-		return getOrderItemType().getType();
+		return getOrderItemType().getTypeName();
 	}
 	
 	public string function getTypeCode(){
@@ -192,6 +197,22 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
     	return getService("OrderService").getQuantityPriceSkuAlreadyReturned(getOrder().getOrderID(), getSku().getSkuID());
     }
     
+    public any function getEstimatedFulfillmentDateTime(){
+    	if(structKeyExists(variables, "estimatedFulfillmentDateTime")) {
+			return variables.estimatedFulfillmentDateTime;
+		}else if (!isNull(getOrderFulfillment())){
+			return getOrderFulfillment().getEstimatedFulfillmentDateTime();
+		}
+    }
+    
+    public any function getEstimatedDeliveryDateTime(){
+    	if(structKeyExists(variables, "estimatedDeliveryDateTime")) {
+			return variables.estimatedDeliveryDateTime;
+		}else if (!isNull(getOrderFulfillment())){
+			return getOrderFulfillment().getEstimatedDeliveryDateTime();
+		}
+    } 
+    
    
 	// ============ START: Non-Persistent Property Methods =================
 	
@@ -206,8 +227,84 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	
 	public numeric function getExtendedPrice() {
-		return precisionEvaluate(getPrice() * val(getQuantity()));
+		var price = 0;
+		//get bundle price
+		if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
+			price = getProductBundlePrice();
+		}else{
+			price = getPrice();
+		}
+		
+		return precisionEvaluate(price * val(getQuantity()));
 	}
+	
+	
+	public numeric function getProductBundlePrice(){
+		//first get the base price of the product bundle itself
+		var productBundlePrice = this.getSkuPrice();
+		//then get the price of it's componenets and add them
+		for(var childOrderItem in this.getChildOrderItems()){
+			var childProductBundleGroupPrice = getProductBundleGroupPrice(childOrderItem);
+			var childQuantity = childOrderItem.getQuantity();
+			productBundlePrice += precisionEvaluate(childProductBundleGroupPrice * childQuantity);
+		}
+		
+		return productBundlePrice;
+	}
+	
+	public numeric function getProductBundleGroupPrice(any orderItem){
+		if(isNull(arguments.orderItem)){
+			arguments.orderItem = this;
+		}
+		
+		var amountType = arguments.orderItem.getProductBundleGroup().getAmountType();
+		//fixed
+		if(amountType == 'fixed'){
+			return arguments.orderItem.getProductBundleGroup().getAmount();
+		//none
+		}else if(amountType == 'none'){
+			return 0;
+		//skuPrice
+		}else if(amountType == 'skuPrice'){
+			if(
+				!isnull(arguments.orderItem.getSku())
+				&& !isnull(arguments.orderItem.getSku().getProduct())
+				&& !isnull(arguments.orderItem.getSku().getProduct().getProductType()) 
+				&& arguments.orderItem.getSku().getProduct().getProductType().getSystemCode() == 'productBundle'
+			){
+				return arguments.orderItem.getProductBundlePrice();
+			}else{
+				return arguments.orderItem.getSkuPrice();
+			}
+		//skuPricePercentageIncrease
+		}else if(amountType == 'skuPricePercentageIncrease'){
+			if(
+				!isnull(arguments.orderItem.getSku())
+				&& !isnull(arguments.orderItem.getSku().getProduct())
+				&& !isnull(arguments.orderItem.getSku().getProduct().getProductType()) 
+				&& arguments.orderItem.getSku().getProduct().getProductType().getSystemCode() == 'productBundle'
+			){
+				return arguments.orderItem.getProductBundlePrice() + (arguments.orderItem.getProductBundlePrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}else{
+				return arguments.orderItem.getSkuPrice() + (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}
+			
+		//skuPricePercentageDecrease
+		}else if(amountType == 'skuPricePercentageDecrease'){
+			if(
+				!isnull(arguments.orderItem.getSku())
+				&& !isnull(arguments.orderItem.getSku().getProduct())
+				&& !isnull(arguments.orderItem.getSku().getProduct().getProductType()) 
+				&& arguments.orderItem.getSku().getProduct().getProductType().getSystemCode() == 'productBundle'
+			){
+				return arguments.orderItem.getProductBundlePrice() - (arguments.orderItem.getProductBundlePrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}else{
+				return arguments.orderItem.getSkuPrice() - (arguments.orderItem.getSkuPrice() * (arguments.orderItem.getProductBundleGroup().getAmount()/100));
+			}
+		}
+		
+	}
+	
 	
 	public numeric function getExtendedSkuPrice() {
 		return precisionEvaluate(getSkuPrice() * getQuantity());
@@ -215,6 +312,16 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	
 	public numeric function getExtendedPriceAfterDiscount() {
 		return precisionEvaluate(getExtendedPrice() - getDiscountAmount());
+	}
+	
+	public any function getActiveEventRegistrations() {
+		if(!structKeyExists(variables, "activeRegistrationsSmartList")) {
+			variables.activeRegistrationsSmartList = getService('EventRegistrationService').getEventRegistrationSmartList();
+			variables.activeRegistrationsSmartList.addFilter('orderItemID', getOrderItemID());
+			variables.activeRegistrationsSmartList.addInFilter('eventRegistrationStatusType.systemCode', 'erstRegistered,erstWaitListed,erstPendingApproval,erstAttended,erstNotPlaced');
+		}
+
+		return variables.activeRegistrationsSmartList;
 	}
 	
 	public numeric function getTaxAmount() {
@@ -371,6 +478,25 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		structDelete(variables, "orderReturn");
 	}
 	
+	// Parent Order Item (many-to-one)
+	public void function setParentOrderItem(required any parentOrderItem) {
+		variables.parentOrderItem = arguments.parentOrderItem;
+		if(isNew() or !arguments.parentOrderItem.hasChildOrderItem( this )) {
+			arrayAppend(arguments.parentOrderItem.getChildOrderItems(), this);
+		}
+	}
+	
+	public void function removeParentOrderItem(any parentOrderItem) {
+		if(!structKeyExists(arguments, "parentOrderItem")) {
+			arguments.parentOrderItem = variables.parentOrderItem;
+		}
+		var index = arrayFind(arguments.parentOrderItem.getChildOrderItems(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.parentOrderItem.getChildOrderItems(), index);
+		}
+		structDelete(variables, "parentOrderItem");
+	}
+	
 	// Referenced Order Item (many-to-one)
 	public void function setReferencedOrderItem(required any referencedOrderItem) {
 		variables.referencedOrderItem = arguments.referencedOrderItem;
@@ -413,6 +539,22 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		arguments.attributeValue.removeOrderItem( this );
 	}
 	
+	// Child Order Items (one-to-many)
+	public void function addChildOrderItem(required any childOrderItem) {
+		arguments.childOrderItem.setParentOrderItem( this );
+	}
+	public void function removeChildOrderItem(required any childOrderItem) {
+		arguments.childOrderItem.removeParentOrderItem( this );
+	}
+	
+	// Event Registrations (one-to-many)
+ 	public void function addEventRegistration(required any eventRegistration) {
+		arguments.eventRegistration.setOrderItem( this );
+	}
+ 	public void function removeEventRegistration(required any eventRegistration) {
+		arguments.eventRegistration.removeOrderItem( this );
+	}
+ 
 	// Order Delivery Items (one-to-many)
 	public void function addOrderDeliveryItem(required any orderDeliveryItem) {
 		arguments.orderDeliveryItem.setOrderItem( this );
@@ -443,14 +585,14 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	
 	public any function getOrderItemType() {
 		if( !structKeyExists(variables, "orderItemType") ) {
-			variables.orderItemType = getService("settingService").getTypeBySystemCode("oitSale");
+			variables.orderItemType = getService("typeService").getTypeBySystemCode("oitSale");
 		}
 		return variables.orderItemType;
 	}
 	
 	public any function getOrderItemStatusType() {
 		if( !structKeyExists(variables, "orderItemStatusType") ) {
-			variables.orderItemStatusType = getService("settingService").getTypeBySystemCode("oistNew");
+			variables.orderItemStatusType = getService("typeService").getTypeBySystemCode("oistNew");
 		}
 		return variables.orderItemStatusType;
 	}
@@ -530,4 +672,3 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	
 	// ===================  END:  ORM Event Hooks  =========================
 }
-

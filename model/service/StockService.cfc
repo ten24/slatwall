@@ -53,6 +53,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	property name="locationService" type="any";
 	property name="skuService" type="any";
 	property name="settingService" type="any";
+	property name="typeService" type="any";
 	
 	// Inject DAO's
 	property name="stockDAO" type="any";
@@ -374,8 +375,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		
-		// Physical (Maybe Incoming, Maybe Outgoing)
-		if( listFindNoCase("satPhysicalCount", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) ) {
+		// Physical / Makeup / Breakup (Maybe Incoming, Maybe Outgoing)
+		if( listFindNoCase("satPhysicalCount,satMakeupBundledSkus,satBreakupBundledSkus", arguments.stockAdjustment.getStockAdjustmentType().getSystemCode()) ) {
 			
 			var headObjects = {};
 			
@@ -424,7 +425,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		}
 		
 		// Set the status to closed
-		arguments.stockAdjustment.setStockAdjustmentStatusType( getSettingService().getTypeBySystemCode("sastClosed") );	
+		arguments.stockAdjustment.setStockAdjustmentStatusType( getTypeService().getTypeBySystemCode("sastClosed") );	
 
 	return arguments.stockAdjustment;
 
@@ -442,6 +443,29 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	// ==================== START: Smart List Overrides =======================
 	
+	public any function getStockSmartList(struct data={}, currentURL="") {
+		arguments.entityName = "SlatwallStock";
+		
+		var smartList = getStockDAO().getSmartList(argumentCollection=arguments);
+		
+		smartList.joinRelatedProperty("SlatwallStock", "sku");
+		smartList.joinRelatedProperty("SlatwallSku", "product");
+		smartList.joinRelatedProperty("SlatwallProduct", "productType");
+		smartList.joinRelatedProperty("SlatwallSku", "alternateSkuCodes", "left");
+		
+		smartList.addKeywordProperty(propertyIdentifier="sku.skuCode", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="sku.skuID", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="sku.publishedFlag", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="sku.product.productName", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="sku.product.productType.productTypeName", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="sku.alternateSkuCodes.alternateSkuCode", weight=1);
+		
+		// Must be set to distinct so that we can search alternate sku codes
+		smartList.setSelectDistinctFlag( true );
+				
+		return smartList;
+	}
+
 	public any function getStockAdjustmentSmartList(struct data={}, currentURL="") {
 		arguments.entityName = "SlatwallStockAdjustment";
 		

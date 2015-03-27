@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.attribute" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
@@ -75,7 +77,7 @@ Notes:
 			<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="attributeOptionLabel" /> 
 		</hb:HibachiListingDisplay>
 		
-		<hb:HibachiActionCaller action="admin:entity.createattributeoption" class="btn" icon="plus" queryString="redirectAction=admin:entity.detailAttribute&attributeid=#rc.attribute.getAttributeID()#" />
+		<hb:HibachiActionCaller action="admin:entity.createattributeoption" class="btn btn-default" icon="plus" queryString="redirectAction=admin:entity.detailAttribute&attributeid=#rc.attribute.getAttributeID()#" />
 	</cfif>
 	
 </cfoutput>

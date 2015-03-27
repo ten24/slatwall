@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.productImage" type="any" />
 <cfparam name="rc.product" type="any" default="#rc.productImage.getProduct()#"/>
 <cfparam name="rc.edit" type="boolean" default="false" />

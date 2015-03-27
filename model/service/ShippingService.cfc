@@ -63,6 +63,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Look up shippingMethods to use based on the fulfillment method
 		var smsl = arguments.orderFulfillment.getFulfillmentMethod().getShippingMethodsSmartList();
 		smsl.addFilter('activeFlag', '1');
+		smsl.addOrder("sortOrder|ASC");
 		var shippingMethods = smsl.getRecords();
 		
 		// Loop over all of the shipping methods & their rates for 

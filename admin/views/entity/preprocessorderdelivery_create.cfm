@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.orderDelivery" type="any" />
 <cfparam name="rc.orderFulfillment" type="any" />
 <cfparam name="rc.processObject" type="any" />
@@ -94,6 +96,8 @@ Notes:
 				</cfif>
 				
 				<hr />
+				
+				<hb:HibachiErrorDisplay object="#rc.processObject#" errorName="orderDeliveryItems" />
 				
 				<table class="table table-striped table-bordered table-condensed">
 					<tr>

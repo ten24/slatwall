@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.accountLoyalty" type="any" />
 
 <cfoutput>
@@ -60,5 +62,5 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="pointsOut" />
 	</hb:HibachiListingDisplay>
 	
-	<hb:HibachiProcessCaller action="admin:entity.preprocessaccountloyalty" entity="#rc.accountLoyalty#" processContext="manualTransaction" class="btn" icon="plus" modal="true" />
+	<hb:HibachiProcessCaller action="admin:entity.preprocessaccountloyalty" entity="#rc.accountLoyalty#" processContext="manualTransaction" class="btn btn-default" icon="plus" modal="true" />
 </cfoutput>

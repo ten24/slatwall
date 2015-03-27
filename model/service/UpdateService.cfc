@@ -159,8 +159,8 @@ Notes:
 		<cfset var developVersion = "" />
 		<cfset var versions = {} />
 		
-		<cfhttp method="get" url="https://raw.github.com/ten24/Slatwall/master/version.txt" result="masterVersion">
-		<cfhttp method="get" url="https://raw.github.com/ten24/Slatwall/develop/version.txt" result="developVersion">
+		<cfhttp method="get" url="https://raw.github.com/ten24/Slatwall/master/version.txt.cfm" result="masterVersion">
+		<cfhttp method="get" url="https://raw.github.com/ten24/Slatwall/develop/version.txt.cfm" result="developVersion">
 		
 		<cfset versions.master = trim(masterVersion.filecontent) />
 		<cfset versions.develop = trim(developVersion.filecontent) />

@@ -229,7 +229,7 @@ component entityname="SlatwallPhysical" table="SwPhysical" output="false" persis
 	
 	public any function getPhysicalStatusType() {
 		if(isNull(variables.physicalStatusType)) {
-			variables.physicalStatusType = getService("settingService").getTypeBySystemCode('pstOpen');
+			variables.physicalStatusType = getService("typeService").getTypeBySystemCode('pstOpen');
 		}
 		return variables.physicalStatusType;
 	}
