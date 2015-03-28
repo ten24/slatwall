@@ -139,6 +139,7 @@ angular.module('slatwalladmin')
 				scope.selectEvent = function(eventOption){
 					$log.debug("SelectEvent");
 					$log.debug(eventOption);
+					//Needs to clear old and set new.
 					scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
 					if(eventOption.entityName == scope.workflow.data.workflowObject){
 						scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = '';
@@ -151,6 +152,9 @@ angular.module('slatwalladmin')
 					$log.debug(scope.workflowTriggers);
 				};
 				
+				/**
+				 * Selects a new collection.
+				 */
 				scope.selectCollection = function(collection){
 					$log.debug('selectCollection');
 					scope.workflowTriggers.selectedTrigger.data.scheduleCollection = collection;

@@ -101,8 +101,9 @@
 											<!--- search --->
 											<div class="s-search-filter">
 												<div class="input-group">
-													
+													<!-- Need to display the workflow event name if it exists -->
 													<input type="text" class="form-control input-sm" placeholder="Search&hellip;" ng-model="searchEvent.name" ng-focus="searchEvent.name = ''">
+													<!--<input type="text" class="form-control input-sm" placeholder="{{workflowTriggers.selectedTrigger.data.triggerEvent}}" ng-model="searchEvent.name" ng-focus="searchEvent.name = ''">-->
 													<ul class="dropdown-menu " ng-show="showEventOptions">
 														<span ng-repeat="eventOption in eventOptions | filter:searchEvent.name">
 															<li><a ng-click="selectEvent(eventOption)">{{eventOption.name}}</a></li>
