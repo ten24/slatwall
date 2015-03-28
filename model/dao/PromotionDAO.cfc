@@ -422,11 +422,11 @@ Notes:
 		
 		<cfloop query="orderItemDiscountsQuery">
 			<cfif orderItemDiscountsQuery.salePriceDiscountType EQ "amount">
-				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", orderItemDiscountsQuery.amount )  >
+				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", orderItemDiscountsQuery.amount, orderItemDiscountsQuery.currentRow )  >
 			<cfelseif orderItemDiscountsQuery.salePriceDiscountType EQ "amountOff">
-				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", orderItemDiscountsQuery.originalPrice - orderItemDiscountsQuery.amount )>
+				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", orderItemDiscountsQuery.originalPrice - orderItemDiscountsQuery.amount, orderItemDiscountsQuery.currentRow )>
 			<cfelseif orderItemDiscountsQuery.salePriceDiscountType EQ "percentageOff" >
-				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", orderItemDiscountsQuery.originalPrice - ( orderItemDiscountsQuery.originalPrice * (orderItemDiscountsQuery.amount / 100) ) )>
+				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", orderItemDiscountsQuery.originalPrice - ( orderItemDiscountsQuery.originalPrice * (orderItemDiscountsQuery.amount / 100) ), orderItemDiscountsQuery.currentRow )>
 			</cfif>
 		</cfloop>
 		
