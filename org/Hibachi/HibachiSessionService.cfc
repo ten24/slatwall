@@ -236,9 +236,11 @@ component output="false" accessors="true" extends="HibachiService"  {
 	 * Generate new cookie value
 	 */
 	private any function getValueForCookie(){
-		var id = getHibachiScope().getSession().getSessionID() & "#DateTimeFormat(Now())#" & RandRange(1, 100);
-		var hashedID = hash(id, "sha-1");
-		return hashedID;
+		var id = getHibachiScope().getSession().getSessionID();
+		var hashedID = hash(id, "md5");
+		var uuid = replace(createUUID(),'-','','all');
+		var final = hashedID & uuid;
+		return final;
 	}
 	// ==================  END:  Private Helper Functions =====================
 	
