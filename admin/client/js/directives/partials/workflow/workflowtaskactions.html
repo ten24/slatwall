@@ -3,7 +3,6 @@
 		<span class="s-bundle-add-obj" ng-if="workflowTaskAction.$$isPersisted()">
 			<ul class="list-unstyled list-inline">
 				<li class="s-item-type s-tooltip ng-binding" ng-bind="$index+1"></li>
-				<!--<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>-->
 			</ul>
 			<ul class="list-unstyled list-inline s-middle">
 				<li class="j-tool-tip-item s-bundle-details">Type: <span ng-bind="workflowTaskAction.data.actionType"></span></li>
@@ -163,9 +162,7 @@
 									</div>
 								</div>
 								<!--- // search --->
-	
 							</div>
-	
 						</div>
 						<!--- //Filter Criteria End --->
 	
@@ -200,13 +197,11 @@
 									<!--- <p class="help-block">Help text here.</p> --->
 								</div>
 							</div>
-	
 						</div>
 						<!--- //Filter Criteria End --->
 						<!--- Filter Criteria Start --->
 						<div 	class="s-filter-group-item"
-								ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'delete'"
-						>
+								ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'delete'">
 							<h4>Delete</h4>
 							<div class="form-group form-group-sm s-checkbox">
 								<input type="checkbox" id="j-delete-confirm" checked="checked"><label for="j-delete-confirm"> Confirm "Orders" object will be deleted</label>
@@ -227,5 +222,5 @@
 	</sw-form>
 </div>
 <!--- //Edit Filter Box --->
-<div class="clearfix"></div>
+<!--<div class="clearfix"></div>-->
 <div>
