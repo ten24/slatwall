@@ -27,7 +27,7 @@
         </p>
       	<label ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaStart" class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Start Date:</label>
       
-      	<p class="input-group" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaStart">
+      	<p class="input-group s-datepicker" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaStart">
           <input 	type="text" class="form-control" 
           			datepicker-popup="MMM dd, yyyy hh:mm a" 
           			ng-model="selectedFilterProperty.criteriaRangeStart" 
@@ -40,12 +40,12 @@
           			
                   
           <span class="input-group-btn" ng-show="!selectedFilterProperty.selectedCriteriaType.disableCriteriaStart">
-            <button type="button" class="btn btn-default" ng-click="openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+            <button type="button" class="btn btn-primary btn-sm" ng-click="openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </p>
         <label ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd" class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">End Date:</label>
       
-        <p class="input-group" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd">
+        <p class="input-group s-datepicker" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd">
           <input 	type="text" class="form-control" 
           			datepicker-popup="MMM dd, yyyy hh:mm a"  
           			ng-model="selectedFilterProperty.criteriaRangeEnd" 
@@ -56,7 +56,7 @@
           			readonly
           			/>
           <span class="input-group-btn"  ng-show="!selectedFilterProperty.selectedCriteriaType.disableCriteriaEnd">
-            <button type="button" class="btn btn-default" ng-click="openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+            <button type="button" class="btn btn-primary btn-sm" ng-click="openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
           </span>
         </p>
       </div>
