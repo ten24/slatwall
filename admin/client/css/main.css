@@ -987,6 +987,12 @@ select:focus {
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
 }
+.modal {
+  z-index: 3003 !important;
+}
+.modal-backdrop.in {
+  z-index: 3002 !important;
+}
 .modal-header {
   padding: 15px;
 }
@@ -3904,7 +3910,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   top: 0px;
   height: 100%;
   width: 100%;
-  z-index: 10001;
+  z-index: 3001;
   background-color: #f2f2f2 !important;
 }
 .s-dialog-container .s-dialog-content {
