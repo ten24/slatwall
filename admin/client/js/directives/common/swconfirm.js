@@ -36,8 +36,10 @@ angular.module('slatwalladmin').directive('swConfirm',
 	  * Handles opening and closing of the modal. 
 	  */
 	    var confirmationModalController = function($scope, $modalInstance) {
-	        
-		 	$scope.deleteEntity = function(entity) {
+		 	/**
+		 	 * This method, delete, gets overridden in each directive that uses this modal.
+		 	 */
+	    		$scope.deleteEntity = function(entity) {
 	        		$log.debug("Deleting an entity.");
 	        		$log.debug($scope.entity);
 	        		this.close();
@@ -161,7 +163,6 @@ angular.module('slatwalladmin').directive('swConfirm',
                      */
                     modalInstance.result.then(function(test) {
                     		$log.debug("Callback Called");	
-                    		$log.debug(test);
                     		scope.callback();
                     		$log.debug(scope.callback);
                     		return true;

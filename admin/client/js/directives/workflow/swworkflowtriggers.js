@@ -19,7 +19,7 @@ angular.module('slatwalladmin')
 			},
 			templateUrl:workflowPartialsPath+"workflowtriggers.html",
 			link: function(scope, element,attrs,formController){
-				$log.debug('workflow triggers init');	
+				$log.debug('Workflow triggers init');	
 				scope.$id = 'swWorkflowTriggers';
 				/**
 				 * Retrieves the workflow triggers.
@@ -46,7 +46,7 @@ angular.module('slatwalladmin')
 										scope.workflowTriggers = scope.workflow.data.workflowTriggers;
 									}
 								
-								angular.forEach(scope.workflowTriggers,function(workflowTrigger,key){
+								angular.forEach(scope.workflowTriggers, function(workflowTrigger,key){
 									$log.debug('trigger');
 									$log.debug(workflowTrigger);
 									if(workflowTrigger.data.triggerType === 'Schedule'){
@@ -94,7 +94,7 @@ angular.module('slatwalladmin')
 				 */
 				scope.showEventOptions = false;
 				scope.eventOptions = [];
-				scope.$watch('searchEvent.name',function(newValue,oldValue){
+				scope.$watch('searchEvent.name', function(newValue, oldValue){
 					if(newValue !== oldValue){
 						scope.getEventOptions(scope.workflow.data.workflowObject);
 					}
@@ -111,7 +111,6 @@ angular.module('slatwalladmin')
 							scope.eventOptions = value.data;
 							$log.debug(scope.eventOptions.name);
 							
-							
 						});
 					}
 					scope.showEventOptions = !scope.showEventOptions;
@@ -120,10 +119,17 @@ angular.module('slatwalladmin')
 				/**
 				 * Saves the workflow triggers.
 				 */
-				scope.saveWorkflowTrigger = function(){
+				scope.saveWorkflowTrigger = function(context){
 					var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
 					saveWorkflowTriggerPromise.then(function(){
-						
+                        //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
+                        if (context == 'add'){
+                    			$log.debug("Save and New");
+                    			scope.addWorkflowTrigger();
+                    			scope.finished = false;
+                        }else if (context == "finish"){
+                        		scope.finished = true;
+                        }
 					});
 				};
 				
@@ -133,6 +139,7 @@ angular.module('slatwalladmin')
 				scope.selectEvent = function(eventOption){
 					$log.debug("SelectEvent");
 					$log.debug(eventOption);
+					//Needs to clear old and set new.
 					scope.workflowTriggers.selectedTrigger.data.triggerEvent = eventOption.value;
 					if(eventOption.entityName == scope.workflow.data.workflowObject){
 						scope.workflowTriggers.selectedTrigger.data.objectPropertyIdentifier = '';
@@ -145,11 +152,15 @@ angular.module('slatwalladmin')
 					$log.debug(scope.workflowTriggers);
 				};
 				
+				/**
+				 * Selects a new collection.
+				 */
 				scope.selectCollection = function(collection){
 					$log.debug('selectCollection');
 					scope.workflowTriggers.selectedTrigger.data.scheduleCollection = collection;
 					scope.showCollections = false;
 				};
+				
 				/**
 				 * Removes a workflow trigger
 				 */

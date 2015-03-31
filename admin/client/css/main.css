@@ -987,6 +987,12 @@ select:focus {
   -webkit-box-shadow: none !important;
   box-shadow: none !important;
 }
+.modal {
+  z-index: 3003 !important;
+}
+.modal-backdrop.in {
+  z-index: 3002 !important;
+}
 .modal-header {
   padding: 15px;
 }
@@ -1124,7 +1130,7 @@ select:focus {
   padding-right: 0px;
   padding-left: 0px;
 }
-.s-filter-content .s-options {
+.s-filter-content .s-collections-options.s-options {
   margin-top: -15px;
 }
 .panel,
@@ -3904,7 +3910,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   top: 0px;
   height: 100%;
   width: 100%;
-  z-index: 10001;
+  z-index: 3001;
   background-color: #f2f2f2 !important;
 }
 .s-dialog-container .s-dialog-content {
@@ -4294,6 +4300,55 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 .s-info-table .s-row-strong td {
   font-weight: 600;
+}
+/*-- Date Picker Component --*/
+.s-datepicker .input-group .input-group-btn button {
+  margin: 0px;
+  border: 1px solid #cccccc;
+}
+.s-datepicker table {
+  outline: none;
+}
+.s-datepicker .dropdown-menu {
+  margin: 0px;
+  padding: 0px;
+}
+.s-datepicker .dropdown-menu li:first-child > div {
+  padding: 5px;
+}
+.s-datepicker .dropdown-menu li:last-child {
+  border-top: 1px solid #DDD;
+  margin-top: 5px;
+  display: inline-block;
+  width: 100%;
+  padding: 5px;
+}
+.s-datepicker table thead tr:first-child {
+  background: #eee;
+}
+.s-datepicker table thead tr:first-child th button:hover {
+  border-color: #eee ;
+  border-radius: none;
+}
+.s-datepicker table tbody button {
+  background: none;
+  border-radius: 2px;
+  min-height: 35px;
+  min-width: 35px !important;
+  padding: 5px 5px 5px 5px;
+  border: none;
+}
+.s-datepicker table tbody button:hover,
+.s-datepicker table tbody button.active {
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+.s-datepicker table tbody button.active {
+  font-weight: 600;
+  color: #666666;
+}
+.s-datepicker table tbody button .text-info {
+  color: #666666;
 }
 @media only screen and (max-width: 767px) {
   #slatwall-navbar .nav .dropdown-menu {
