@@ -278,8 +278,9 @@ a:hover {
   font-size: 12px;
 }
 .table-responsive {
-  width: 100%;
   overflow: auto;
+  display: inline-block;
+  width: 100%;
 }
 .table-responsive::-webkit-scrollbar {
   display: none;
