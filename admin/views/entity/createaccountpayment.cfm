@@ -49,6 +49,8 @@ Notes:
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
+
+
 <cfparam name="rc.accountPayment" type="any" />
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.paymentMethod" type="any" />
@@ -88,10 +90,10 @@ Notes:
 			</hb:HibachiPropertyRow>
 			
 			<hb:HibachiPropertyRow>
-				<hb:HibachiPropertyList divClass="span6">
+				<hb:HibachiPropertyList divClass="col-md-6">
 					<swa:SlatwallAddressDisplay address="#$.slatwall.getService("addressService").newAddress()#" fieldnameprefix="billingAddress." edit="#rc.edit#" />
 				</hb:HibachiPropertyList>
-				<hb:HibachiPropertyList divClass="span6">
+				<hb:HibachiPropertyList divClass="col-md-6">
 					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="nameOnCreditCard" edit="#rc.edit#" />
 					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="creditCardNumber" edit="#rc.edit#" />
 					<hb:HibachiPropertyDisplay object="#rc.accountPayment#" property="expirationMonth" edit="#rc.edit#" />

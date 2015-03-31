@@ -2,6 +2,6 @@
 <snippet filetemplate="false" extension="">
 <name>Property Column - Weight</name>
 <help></help>
-<starttext><![CDATA[property name="$${propertyName}" ormtype="big_decimal" formatType="weight";]]></starttext>
+<starttext><![CDATA[property name="$${propertyName}" ormtype="big_decimal" hb_formatType="weight";]]></starttext>
 <endtext><![CDATA[]]></endtext>
 </snippet>

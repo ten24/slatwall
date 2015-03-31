@@ -1,0 +1,7 @@
+{
+    "conditions":{},
+	"properties":{
+	    "orderDeliveryItems":					[{"method":"hasQuantityOnOneOrderDeliveryItem"}]
+	},
+	"populatedPropertyValidation":{}
+}

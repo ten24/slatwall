@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="addAccountLoyalty,addAccountPayment,createPassword,changePassword,create,forgotPassword,lock,login,logout,resetPassword,setupInitialAdmin,unlock,updatePassword" {
+component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="addAccountLoyalty,addAccountPayment,createPassword,changePassword,create,forgotPassword,lock,login,logout,resetPassword,setupInitialAdmin,unlock,updatePassword,generateAuthToken" {
 	
 	// Persistent Properties
 	property name="accountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -77,8 +77,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="accountPaymentMethods" hb_populateEnabled="public" singularname="accountPaymentMethod" cfc="AccountPaymentMethod" type="array" fieldtype="one-to-many" fkcolumn="accountID" inverse="true" cascade="all-delete-orphan";
 	property name="accountPayments" singularname="accountPayment" cfc="AccountPayment" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all" inverse="true";
 	property name="accountPhoneNumbers" hb_populateEnabled="public" singularname="accountPhoneNumber" type="array" fieldtype="one-to-many" fkcolumn="accountID" cfc="AccountPhoneNumber" cascade="all-delete-orphan" inverse="true";
-	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
-	property name="orders" hb_populateEnabled="false" singularname="order" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="Order" inverse="true" orderby="orderOpenDateTime desc";
+ 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" type="array" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
+  	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="accountID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan";	
+  	property name="orders" hb_populateEnabled="false" singularname="order" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="Order" inverse="true" orderby="orderOpenDateTime desc";
 	property name="productReviews" hb_populateEnabled="false" singularname="productReview" fieldType="one-to-many" type="array" fkColumn="accountID" cfc="ProductReview" inverse="true";
 	property name="subscriptionUsageBenefitAccounts" singularname="subscriptionUsageBenefitAccount" cfc="SubscriptionUsageBenefitAccount" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
 	property name="subscriptionUsages" singularname="subscriptionUsage" cfc="SubscriptionUsage" type="array" fieldtype="one-to-many" fkcolumn="accountID" cascade="all-delete-orphan" inverse="true";
@@ -259,8 +260,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		if(!structKeyExists(variables, "slatwallAuthenticationExistsFlag")) {
 			variables.slatwallAuthenticationExistsFlag = false;
 			var authArray = getAccountAuthentications();
-			for(var a=1; a<=arrayLen(authArray); a++) {
-				if(isNull(authArray[a].getIntegration())) {
+			for(auth in authArray) {
+				if(isNull(auth.getIntegration()) && !isNull(auth.getPassword()) && auth.getActiveFlag() ) {
 					variables.slatwallAuthenticationExistsFlag = true;
 					break;
 				}
@@ -292,7 +293,9 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 		
 		// First look at all the unreceived open order payment
 		for(var termAccountOrderPayment in getTermAccountOrderPayments()) {
-			termAccountBalance = precisionEvaluate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived());
+			if(!termAccountOrderPayment.getNewFlag()){
+				termAccountBalance = precisionEvaluate(termAccountBalance + termAccountOrderPayment.getAmountUnreceived());
+			}
 		}
 		
 		// Now look for the unasigned payment amount 
@@ -473,6 +476,14 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	public void function removeAccountPromotion(required any AccountPromotion) {
 		arguments.AccountPromotion.removeAccount( this );
 	}
+	
+ 	// Event Registrations (one-to-many)    
+  	public void function addEventRegistration(required any eventRegistration) {    
+  		arguments.eventRegistration.setAccount( this );    
+  	}    
+  	public void function removeEventRegistration(required any eventRegistration) {    
+  		arguments.eventRegistration.removeAccount( this );    
+  	}
 	
 	// Attribute Values (one-to-many)    
 	public void function addAttributeValue(required any attributeValue) {    

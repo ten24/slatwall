@@ -1,1 +1,1 @@
-The assets directory is where images & files for you Slatwall instance is stored by default.  This can be changed as a global setting.
+The assets directory is where images & files for you Slatwall instance is stored by default. This can be changed as a global setting.

@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.account" type="any" />
 
 <cfoutput>
@@ -76,6 +78,6 @@ Notes:
 		<cfset disabled = true />
 		<cfset disabledText = $.slatwall.rbKey('admin.entity.accounttabs.accountpaymentmethods.adddisabled') />	
 	</cfif>
-	<hb:HibachiActionCaller action="admin:entity.createaccountpaymentmethod" class="btn" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true disabled="#disabled#" disabledText="#disabledText#" />
+	<hb:HibachiActionCaller action="admin:entity.createaccountpaymentmethod" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#" modal=true disabled="#disabled#" disabledText="#disabledText#" />
 </cfoutput>
 

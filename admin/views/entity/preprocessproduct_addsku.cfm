@@ -48,6 +48,12 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.product" type="any">
 <cfparam name="rc.processObject" type="any">
 <cfparam name="rc.edit" type="boolean">

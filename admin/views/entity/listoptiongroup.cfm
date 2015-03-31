@@ -48,19 +48,25 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.optionGroupSmartList" type="any" />
 
 <cfoutput>
 	
-	<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.optionGroupSmartList#" 
+	<hb:HibachiEntityActionBar type="listing" object="#rc.optionGroupSmartList#" showCreate="false">
+			
+		<!--- Create ---> 
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.createoptiongroup" entity="optiongroup" class="btn btn-primary" icon="plus icon-white" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiListingDisplay smartList="#rc.optionGroupSmartList#" 
 							   recordDetailAction="admin:entity.detailoptiongroup"
 							   recordEditAction="admin:entity.editoptiongroup"
 							   sortProperty="sortOrder">
-		<!--- Create ---> 
-		<hb:HibachiListingDisplayButtonGroup >
-			<hb:HibachiActionCaller action="admin:entity.createoptiongroup" entity="optiongroup" class="btn btn-primary" icon="plus icon-white" />
-		</hb:HibachiListingDisplayButtonGroup>
-		
+
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="optionGroupName" />
 		<hb:HibachiListingColumn propertyIdentifier="optionGroupCode" />
 	</hb:HibachiListingDisplay>

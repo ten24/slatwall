@@ -3,6 +3,30 @@
 	<cfproperty name="hibachiTagService" type="any" />
 	
 	<cfscript>
+		
+		//antisamy setup
+		variables.antisamyConfig = {
+			policyFile = ExpandPath("org/Hibachi/antisamy/antisamy-slashdot-1.4.1.xml"),
+			jarArray = [
+				ExpandPath("/Slatwall/org/Hibachi/antisamy/lib/antisamy-bin.1.4.1.jar"), 
+				ExpandPath("/Slatwall/org/Hibachi/antisamy/lib/antisamy-required-libs/batik-css.jar"),
+				ExpandPath("/Slatwall/org/Hibachi/antisamy/lib/antisamy-required-libs/batik-util.jar"),
+				ExpandPath("/Slatwall/org/Hibachi/antisamy/lib/antisamy-required-libs/nekohtml.jar"),
+				ExpandPath("/Slatwall/org/Hibachi/antisamy/lib/antisamy-required-libs/xercesImpl.jar")
+			]
+		};
+		variables.antisamyConfig.classLoader = CreateObject("component", "Slatwall.org.Hibachi.antisamy.lib.javaloader.JavaLoader").init(variables.antisamyConfig.jarArray);
+		variables.antiSamy = variables.antisamyConfig.classLoader.create("org.owasp.validator.html.AntiSamy").init();
+		
+		// @hint this method will sanitize a struct of data
+		public void function sanitizeData(required any data){
+			for(var key in data){
+			  if( isSimpleValue(data[key]) && key != 'serializedJsonData'){
+			    data[key] = variables.antisamy.scan(data[key],variables.antiSamyConfig.policyFile).getCleanHTML();
+			  }
+			}
+		}
+		
 		// @hint this method allows you to properly format a value against a formatType
 		public any function formatValue( required string value, required string formatType, struct formatDetails={} ) {
 			if(listFindNoCase("currency,date,datetime,pixels,percentage,second,time,truefalse,url,weight,yesno", arguments.formatType)) {
@@ -149,6 +173,8 @@
 					replaceDetails.value = arguments.object[ valueKey ];
 				} else if (isObject(arguments.object) && (
 					(arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
+						||
+					(arguments.object.isPersistent() && getHasAttributeByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
 						||
 					(!arguments.object.isPersistent() && arguments.object.hasProperty(valueKey))	
 					)) {
@@ -534,6 +560,15 @@
 			var hardCodedFileEncryptionKey = generatePasswordBasedEncryptionKey('0ae8fc11293444779bd4358177931793', 1024);
 			
 			return deserializeJSON(decrypt(fileRead(getEncryptionPasswordFilePath()), hardCodedFileEncryptionKey, "AES/CBC/PKCS5Padding"));
+		}
+		
+		public any function updateCF9SerializeJSONOutput( required any data ) {
+			var reMatchArray = reMatch(':0[0-9][0-9]*\.?[0-9]*,', arguments.data);
+			for(var i=1; i<=arrayLen(reMatchArray); i++) {
+				arguments.data = reReplace(arguments.data, ':0[0-9][0-9]*\.?[0-9]*,', ':"#right(reMatchArray[i], len(reMatchArray[i])-1)#",');
+			}
+			
+			return arguments.data;
 		}
 	</cfscript>
 	

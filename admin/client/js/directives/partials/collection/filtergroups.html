@@ -1,0 +1,37 @@
+<ul class="col-xs-12 list-unstyled s-no-paddings s-filter-groups" ng-if="filterGroup">
+	<span ng-repeat="filterGroup in filterGroupItem">
+		<!-- figure out if item is filterItem or filterGroup-->
+		<span ng-switch on="filterGroup.hasOwnProperty('filterGroup')" >
+			
+			<!-- filter Item -->
+			<span 	ng-switch-when="false" 
+					sw-filter-item 
+					data-collection-config="collectionConfig"
+					data-filter-item="filterGroup" 
+					data-filter-properties-list="filterPropertiesList"
+					data-sibling-items="filterGroupItem"
+					data-filter-item-index="$index"
+					data-save-collection="saveCollection()"
+					>
+			</span>
+			
+			<!-- filter Group Item -->
+			<span 	ng-switch-when="true" 
+					sw-filter-group-item 
+					data-collection-config="collectionConfig"
+					data-filter-group-item="filterGroup",
+					data-sibling-items="filterGroupItem"
+					data-filter-properties-list="filterPropertiesList"
+					data-filter-group-item-index="$index"
+               		data-save-collection="saveCollection()"
+					>
+			</span>
+			
+		</span>
+	</span>
+	<!-- buttons for adding filters -->
+	<sw-add-filter-buttons
+			data-item-in-use="itemInUse"
+	>
+	</sw-add-filter-buttons>
+</ul>

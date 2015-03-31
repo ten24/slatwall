@@ -48,12 +48,16 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.sku" type="any" />
 
 <cfoutput>
 	<swa:SlatwallSettingTable>
 		<swa:SlatwallSetting settingName="skuAllowBackorderFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuAllowPreorderFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuAllowWaitlistingFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuBundleAutoMakeupInventoryOnSaleFlag" settingObject="#rc.sku#" />
+		<swa:SlatwallSetting settingName="skuBundleAutoBreakupInventoryOnReturnFlag" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuCurrency" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuEligibleCurrencies" settingObject="#rc.sku#" />
 		<swa:SlatwallSetting settingName="skuEligibleFulfillmentMethods" settingObject="#rc.sku#" />

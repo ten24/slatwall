@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.file" type="any">
 <cfparam name="rc.edit" type="boolean">
 <cfparam name="rc.baseObject" type="string">
@@ -72,7 +74,7 @@ Notes:
 		</cfif>
 		
 		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList divclass="span12">
+			<hb:HibachiPropertyList divclass="col-md-12">
 				<hb:HibachiPropertyDisplay object="#rc.file#" property="fileUpload" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.file#" property="fileName" edit="#rc.edit#">
 				<hb:HibachiPropertyDisplay object="#rc.file#" property="activeFlag" edit="#rc.edit#">

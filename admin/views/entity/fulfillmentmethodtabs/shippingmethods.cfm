@@ -48,6 +48,7 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+
 <cfparam name="rc.fulfillmentMethod" type="any" />
 
 <cfoutput>
@@ -63,5 +64,5 @@ Notes:
 		
 	</hb:HibachiListingDisplay>
 	
-	<hb:HibachiActionCaller action="admin:entity.createshippingmethod" class="btn" icon="plus" queryString="fulfillmentMethodID=#rc.fulfillmentMethod.getFulfillmentMethodID()#" />
+	<hb:HibachiActionCaller action="admin:entity.createshippingmethod" class="btn btn-default" icon="plus" queryString="fulfillmentMethodID=#rc.fulfillmentMethod.getFulfillmentMethodID()#" />
 </cfoutput>

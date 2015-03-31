@@ -57,6 +57,8 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="productDescription" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 	property name="publishedFlag" ormtype="boolean" default="false";
 	property name="sortOrder" ormtype="integer";
+	property name="purchaseStartDateTime" ormtype="timestamp";
+	property name="purchaseEndDateTime" ormtype="timestamp";
 	
 	// Calculated Properties
 	property name="calculatedSalePrice" ormtype="big_decimal";
@@ -70,10 +72,11 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="defaultSku" cfc="Sku" fieldtype="many-to-one" fkcolumn="defaultSkuID" cascade="delete" fetch="join";
 	
 	// Related Object Properties (one-to-many)
-	property name="skus" type="array" cfc="Sku" singularname="Sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="skus" type="array" cfc="Sku" singularname="sku" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="productImages" type="array" cfc="Image" singularname="productImage" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
-	property name="productReviews" singlularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="productReviews" singularname="productReview" cfc="ProductReview" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
+	property name="productSchedules" singularName="productSchedule" cfc="ProductSchedule" fieldtype="one-to-many" fkcolumn="productID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 	property name="listingPages" singularname="listingPage" cfc="Content" fieldtype="many-to-many" linktable="SwProductListingPage" fkcolumn="productID" inversejoincolumn="contentID";
@@ -104,12 +107,18 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	// Non-Persistent Properties
 	property name="allowBackorderFlag" type="boolean" persistent="false";
+	property name="availableForPurchaseFlag" type="boolean" persistent="false";
 	property name="allowAddOptionGroupFlag" type="boolean" persistent="false";
 	property name="baseProductType" type="string" persistent="false";
 	property name="brandName" type="string" persistent="false";
 	property name="brandOptions" type="array" persistent="false";
+	property name="bundleSkusSmartList" persistent="false";
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
+	property name="eventConflictExistsFlag" type="boolean" persistent="false";
+	property name="eventRegistrations" type="array" persistent="false";
+	property name="nextSkuCodeCount" persistent="false";
 	property name="optionGroupCount" type="numeric" persistent="false";
+	property name="placedOrderItemsSmartList" type="any" persistent="false";
 	property name="qats" type="numeric" persistent="false";
 	property name="salePriceDetailsForSkus" type="struct" persistent="false";
 	property name="title" type="string" persistent="false";
@@ -119,6 +128,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="unusedProductSubscriptionTerms" type="array" persistent="false";
 	
 	// Non-Persistent Properties - Delegated to default sku
+	property name="currentAccountPrice" hb_formatType="currency" persistent="false";
 	property name="currencyCode" persistent="false";
 	property name="defaultProductImageFiles" persistent="false";
 	property name="price" hb_formatType="currency" persistent="false";
@@ -126,7 +136,22 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="listPrice" hb_formatType="currency" persistent="false";
 	property name="livePrice" hb_formatType="currency" persistent="false";
 	property name="salePrice" hb_formatType="currency" persistent="false";
-	property name="currentAccountPrice" hb_formatType="currency" persistent="false";
+	property name="schedulingOptions" hb_formatType="array" persistent="false";
+	
+	
+	public any function getAvailableForPurchaseFlag() {
+		if(!structKeyExists(variables, "availableToPurchaseFlag")) {
+			// If purchase dates are null OR now() is between purchase start and end dates then this product is available for purchase
+			if(	( isNull(this.getPurchaseStartDateTime()) && isNull(this.getPurchaseStartDateTime()) ) 
+				|| ( !isNull(this.getPurchaseStartDateTime()) && !isNull(this.getPurchaseStartDateTime()) && dateCompare(now(),this.getPurchaseStartDateTime(),"s") == 1 && dateCompare(now(),this.getPurchaseEndDateTime(),"s") == -1 ) ) 
+			{
+				variables.availableToPurchaseFlag = true;
+			} else {
+				variables.availableToPurchaseFlag = false;
+			}
+		}
+		return variables.availableToPurchaseFlag;
+	}
 	
 	public any function getProductTypeOptions( string baseProductType ) {
 		if(!structKeyExists(variables, "productTypeOptions")) {
@@ -143,11 +168,16 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			variables.productTypeOptions = [];
 			
 			for(var i=1; i<=arrayLen(records); i++) {
-				arrayAppend(variables.productTypeOptions, {name=records[i].getSimpleRepresentation(), value=records[i].getProductTypeID()});
+				var recordStruct = {};
+				recordStruct['name'] = records[i].getSimpleRepresentation();
+				recordStruct['value']=records[i].getProductTypeID();
+				arrayAppend(variables.productTypeOptions, recordStruct);
 			}
 		}
+		
 		return variables.productTypeOptions;
 	}
+	
     
     public any function getListingPagesOptionsSmartList() {
 		if(!structKeyExists(variables, "listingPagesOptionsSmartList")) {
@@ -596,6 +626,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return getProductType().getBaseProductType();
 	}
 	
+	public any function getBundleSkusSmartList() {
+		if(!structKeyExists(variables,"bundleSkusSmartList")) {
+			variables.bundleSkusSmartList = getService("skuService").getSkuSmartList();
+			variables.bundleSkusSmartList.addFilter('product.productID', getProductID());
+			variables.bundleSkusSmartList.addFilter('bundleFlag', 1);
+		}
+		return variables.bundleSkusSmartList;
+	}
+	
 	public array function getDefaultProductImageFiles() {
 		if(!structKeyExists(variables, "defaultProductImageFiles")) {
 			variables.defaultProductImageFiles = [];
@@ -635,13 +674,28 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	public array function getBrandOptions() {
 		var options = getPropertyOptions( "brand" );
-		options[1].name = rbKey('define.none');
+		options[1]['name'] = rbKey('define.none');
 		return options;
+	}
+	
+	public string function getNextSkuCodeCount() {
+		var highestResult = 0;
+		
+		for(var sku in getSkus()) {
+			if(!isNull(sku.getSkuCode())) {
+				var thisCount = listLast(sku.getSkuCode(),"-");
+				if(isNumeric(thisCount) && thisCount > highestResult) {
+					highestResult = thisCount;
+				}
+			}
+		}
+		
+		return highestResult+1;
 	}
 	
 	public string function getTitle() {
 		if(!structKeyExists(variables, "title")) {
-			variables.title = getService("hibachiUtilityService").replaceStringTemplate(template=setting('productTitleString'), object=this);
+			variables.title = trim(getService("hibachiUtilityService").replaceStringTemplate(template=setting('productTitleString'), object=this));
 		}
 		return variables.title;
 	}
@@ -660,13 +714,30 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 	}
 	
+	public any function getEventConflictExistsFlag() {
+		if( structKeyExists(variables, "eventConflictExistsFlag") ) {
+			return variables.eventConflictExistsFlag;
+		} else {
+			variables.eventConflictExistsFlag = false;
+			for(sku in getSkus()) {
+				if(sku.getEventConflictExistsFlag()) {
+					variables.eventConflictExistsFlag = true;
+					break;
+				}
+			}
+		}
+		return variables.eventConflictExistsFlag;
+	}
+	
 	public any function getPrice() {
 		if( structKeyExists(variables, "price") ) {
 			return variables.price;
-		}
-		if( structKeyExists(variables, "defaultSku") ) {
+		} else if( structKeyExists(variables, "defaultSku") ) {
 			return getDefaultSku().getPrice();
-		}
+		} 
+		
+		// Product without a sku 
+		return 0;
 	}
 	
 	public any function getRenewalPrice() {
@@ -755,6 +826,25 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return variables.unusedProductSubscriptionTerms;
 	}
 	
+	public any function getPlacedOrderItemsSmartList() {
+		if(!structKeyExists(variables, "placedOrderItemsSmartList")) {
+			variables.placedOrderItemsSmartList = getService("OrderService").getOrderItemSmartList();
+			variables.placedOrderItemsSmartList.addFilter('sku.product.productID', getProductID());
+			variables.placedOrderItemsSmartList.addInFilter('order.orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled');
+		}
+
+		return variables.placedOrderItemsSmartList;
+	}
+	
+	public any function getEventRegistrationsSmartList() {
+		if(!structKeyExists(variables, "eventRegistrationsSmartList")) {
+			variables.eventRegistrationsSmartList = getService("EventRegistrationService").getEventRegistrationSmartList();
+			variables.eventRegistrationsSmartList.addFilter('sku.product.productID', getProductID());
+			//variables.eventRegistrationsSmartList.addInFilter('order.orderStatusType.systemCode', 'ostNew,ostProcessing,ostOnHold,ostClosed,ostCanceled');
+		}
+
+		return variables.eventRegistrationsSmartList;
+	}
 
 	// ============  END:  Non-Persistent Property Methods =================
 		

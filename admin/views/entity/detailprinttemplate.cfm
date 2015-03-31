@@ -48,26 +48,19 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.printTemplate" type="any">
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.printTemplate#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.printTemplate#" />
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList divClass="span6">
-				<hb:HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateFile" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-			<hb:HibachiPropertyList divClass="span6">
-				<hb:HibachiPropertyDisplay object="#rc.printTemplate#" property="printTemplateObject" edit="false">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
 
-		<hb:HibachiTabGroup object="#rc.printTemplate#">
-			<hb:HibachiTab property="printContent" />
-		</hb:HibachiTabGroup>
+		<hb:HibachiEntityDetailGroup object="#rc.printTemplate#">
+			<hb:HibachiEntityDetailItem view="admin:entity/printtemplatetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem property="printContent" />
+		</hb:HibachiEntityDetailGroup>
 
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

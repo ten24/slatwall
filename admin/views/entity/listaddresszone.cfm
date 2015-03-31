@@ -48,16 +48,23 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
-<cfparam name="rc.addresszoneSmartList" type="any" />
 
-<hb:HibachiListingDisplay title="#rc.pageTitle#" smartList="#rc.addresszoneSmartList#"
+
+<cfparam name="rc.addressZoneSmartList" type="any" />
+
+<hb:HibachiEntityActionBar type="listing" object="#rc.addressZoneSmartList#" showCreate="false">
+	
+	<!--- Create ---> 
+	<hb:HibachiEntityActionBarButtonGroup>
+		<hb:HibachiActionCaller action="admin:entity.createaddresszone" entity="addresszone" class="btn btn-primary" icon="plus icon-white" />
+	</hb:HibachiEntityActionBarButtonGroup>
+</hb:HibachiEntityActionBar>
+
+
+<hb:HibachiListingDisplay smartList="#rc.addresszoneSmartList#"
 						   recordDetailAction="admin:entity.detailaddresszone"
 						   recordEditAction="admin:entity.editaddresszone"
 						   recordDeleteAction="admin:entity.deleteaddresszone">
-						      
-	<!--- Create ---> 
-	<hb:HibachiListingDisplayButtonGroup >
-		<hb:HibachiActionCaller action="admin:entity.createaddresszone" entity="addresszone" class="btn btn-primary" icon="plus icon-white" />
-	</hb:HibachiListingDisplayButtonGroup>
+
 	<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="addresszoneName" search="true" />
 </hb:HibachiListingDisplay>

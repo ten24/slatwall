@@ -54,6 +54,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="currencyCode" ormtype="string" length="3";
 	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
 	property name="manualFulfillmentChargeFlag" ormtype="boolean" hb_populateEnabled="false";
+	property name="estimatedDeliveryDateTime" ormtype="timestamp";
+	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
 	
 	// Related Object Properties (many-to-one)
 	property name="accountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="accountAddressID";
@@ -63,6 +65,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="pickupLocation" hb_populateEnabled="public" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="shippingMethod" hb_populateEnabled="public" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
+	property name="orderFulfillmentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentStatusType";
 	
 	// Related Object Properties (one-to-many)
 	property name="orderFulfillmentItems" hb_populateEnabled="public" singularname="orderFulfillmentItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all" inverse="true";
@@ -93,6 +96,8 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="chargeAfterDiscount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="discountAmount" type="numeric" persistent="false" hb_formatType="currency";
 	property name="fulfillmentMethodType" type="numeric" persistent="false";
+	property name="nextEstimatedDeliveryDateTime" type="timestamp" persistent="false";
+	property name="nextEstimatedFulfillmentDateTime" type="timestamp" persistent="false";
 	property name="orderStatusCode" type="numeric" persistent="false";
 	property name="quantityUndelivered" type="numeric" persistent="false";
 	property name="quantityDelivered" type="numeric" persistent="false";
@@ -201,6 +206,53 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
    		}
 		return variables.itemDiscountAmountTotal;
 	}
+	
+	/**
+	 * Returns the earliest estimatedFulfillmentyDateTime
+	 *
+	 * @method 	public any function getNextEstimatedFulfillmentDateTime
+	 * @return {datetime} nextEsimatedFulfillmentDateTime
+	 */
+	public any function getNextEstimatedFulfillmentDateTime(){
+    	var nextEstimatedFulfillmentDateTime = "";
+
+    	if(arrayLen(getOrderItems())) {
+    		//Loop over orderFulfillments to get the nextEstimatedFulfillmentDateTime
+			for(var orderItem in getOrderFulfillmentItems()){	
+				//Condtional to check for the nextEstimatedFulfillmentDateTime, also checks to make sure that the nextFulfillmentyDateTime is not the current estimatedFullfillmentDateTime
+				if( ( nextEstimatedFulfillmentDateTime == "" || nextEstimatedFulfillmentDateTime > orderItem.getEstimatedFulfillmentDateTime() ) && orderItem.getQuantityUndelivered() > 0 ){
+					nextEstimatedFulfillmentDateTime = orderItem.getEstimatedFulfillmentDateTime();
+				}
+			}
+		}
+		
+		if ( !isDefined('nextEstimatedFulfillmentDateTime') || nextEstimatedFulfillmentDateTime == ''){
+			return javaCast('Null',"");
+		}
+		
+		return nextEstimatedFulfillmentDateTime;
+    }
+    
+    //Function that loops over the orderItems and returns the earliest estimatedDeliveryDate
+    public any function getNextEstimatedDeliveryDateTime(){
+    	var nextEstimatedDeliveryDateTime = "";
+    	
+    	if(arrayLen(getOrderItems())) {
+    		//Loop over orderFulfillments to get the nextEstimatedDeliveryDateTime
+			for(var orderItem in getOrderFulfillmentItems()){	
+				//Condtional to check for the nextEstimatedDeliveryDateTime, also checks to make sure that the nextEstimatedDeliveryDateTime is not the current estimatedDeliveryDateTime
+				if( ( nextEstimatedDeliveryDateTime == "" || nextEstimatedDeliveryDateTime > orderItem.getEstimatedDeliveryDateTime() ) && orderItem.getQuantityUndelivered() > 0){
+					nextEstimatedDeliveryDateTime = orderItem.getEstimatedDeliveryDateTime();
+				}
+			}
+		}
+		
+		if ( !isdefined('nextEstimatedDeliveryDateTime') || nextEstimatedDeliveryDateTime == ''){
+			return javaCast('Null',"");
+		}
+		
+		return nextEstimatedDeliveryDateTime;
+    }
     
 	public any function getOrderStatusCode() {
 		return getOrder().getStatusCode();
@@ -241,14 +293,17 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
     		// At this point they have either been populated just before, or there were already options
     		var optionsArray = [];
     		var sortType = getFulfillmentMethod().setting('fulfillmentMethodShippingOptionSortType');
-    		
     		for(var shippingMethodOption in getFulfillmentShippingMethodOptions()) {
-    			var thisOption = {
-    				name = shippingMethodOption.getSimpleRepresentation(),
-    				value = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID(),
-    				totalCharge = shippingMethodOption.getTotalCharge(),
-    				shippingMethodSortOrder = shippingMethodOption.getShippingMethodRate().getShippingMethod().getSortOrder()
-    			};
+    			
+    			var thisOption = {};
+    			thisOption['name'] = shippingMethodOption.getSimpleRepresentation();
+    			thisOption['value'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodID();
+    			thisOption['totalCharge'] = shippingMethodOption.getTotalCharge();
+    			thisOption['totalChargeAfterDiscount'] = shippingMethodOption.getTotalChargeAfterDiscount();
+    			thisOption['shippingMethodSortOrder'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getSortOrder();
+    			if( !isNull(shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode()) ){
+    				thisOption['shippingMethodCode'] = shippingMethodOption.getShippingMethodRate().getShippingMethod().getShippingMethodCode();
+    			}
     			
     			var inserted = false;
     			
@@ -423,20 +478,24 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	}
 	
 	public any function getShippingAddress() {
-		if(!structKeyExists(variables, "shippingAddress")) {
+		// Check Here
+		if(structKeyExists(variables, "shippingAddress")) {
+			return variables.shippingAddress;
 			
-			if(!isNull(getAccountAddress())) {
-				// Get the account address, copy it, and save as the shipping address
-				setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
-				return variables.shippingAddress;
-			} else if (!isNull(getOrder()) && !isNull(getOrder().getShippingAddress()) ) {
-				return getOrder().getShippingAddress();
-			}
+		// Check Account Address
+		} else if(!isNull(getAccountAddress())) {
 			
-			return getService("addressService").newAddress();
+			// Get the account address, copy it, and save as the shipping address
+			setShippingAddress( getAccountAddress().getAddress().copyAddress( true ) );
+			return variables.shippingAddress;
+			
+		// Check Order
+		} else if (!isNull(getOrder())) {
+			return getOrder().getShippingAddress();
 		}
 		
-		return variables.shippingAddress;
+		// Return New
+		return getService("addressService").newAddress();
 	}
 	
 	// sets it up so that the charge for the shipping method is pulled out of the shippingMethodOptions
@@ -472,7 +531,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 		if(!isNull(getFulfillmentMethod())) {
 			rep &= "#rbKey('enity.orderFulfillment.orderFulfillmentType.#getFulfillmentMethodType()#')#";
-			if(getFulfillmentMethodType() eq "shipping" && !isNull(getAddress()) && !getAddress().isNew() && !isNull(getAddress().getStreetAddress())) {
+			if(getFulfillmentMethodType() eq "shipping" && !isNull(getShippingAddress().getStreetAddress())) {
 				rep &= " - #getAddress().getStreetAddress()#";
 			}
 			if(getFulfillmentMethodType() eq "email" && !isNull(getEmailAddress())) {
@@ -517,6 +576,30 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		
 		super.populate(argumentCollection=arguments);
 	}
+	
+	 public any function getEstimatedFulfillmentDateTime(){
+    	if(structKeyExists(variables, "estimatedFulfillmentDateTime")) {
+			return variables.estimatedFulfillmentDateTime;
+		}else if (!isNull(getOrder())){
+			return getOrder().getEstimatedFulfillmentDateTime();
+		}
+    }
+    
+    public any function getEstimatedDeliveryDateTime(){
+    	if(structKeyExists(variables, "estimatedDeliveryDateTime")) {
+			return variables.estimatedDeliveryDateTime;
+		}else if (!isNull(getOrder())){
+			return getOrder().getEstimatedDeliveryDateTime();
+		}
+    }
+
+   	public any function getOrderFulfillmentStatusType() {
+		if(!structKeyExists(variables, "orderFulfillmentStatusType")) {
+			variables.orderFulfillmentStatusType = getService("typeService").getTypeBySystemCode('ofstUnfulfilled');
+		}
+		return variables.orderFulfillmentStatusType;
+	}
+
 	
 	// ==================  END:  Overridden Methods ========================
 	

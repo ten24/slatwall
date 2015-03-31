@@ -85,8 +85,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="saveShippingAccountAddressName";
 	property name="fulfillmentRefundAmount" hb_rbKey="entity.orderReturn.fulfillmentRefundAmount";
 	property name="emailAddress" hb_rbKey="entity.orderFulfillment.emailAddress";
-	
-	
+	property name="registrants" type="array" hb_populateArray="true"; 
+	property name="childOrderItems" type="array" hb_populateArray="true";
+	property name="publicRemoteID";
 	
 	// Data Properties (Related Entity Populate)
 	property name="shippingAddress" cfc="Address" fieldType="many-to-one" persistent="false" fkcolumn="addressID";
@@ -105,9 +106,33 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Helper Properties
 	property name="assignedOrderItemAttributeSets";
 	property name="fulfillmentMethodType";
-	
+		
+	public any function init(){
+		super.init();
+		variables.childOrderItems = [];
+	}
 	
 	// ======================== START: Defaults ============================
+	
+	public array function getChildOrderItems(){
+		if(structkeyExists(variables,'childOrderItems')){
+			return variables.childOrderItems;
+		}
+		
+		return variables.childOrderItems;
+	}
+	
+	public any function getRegistrantAccounts() {
+		if(structKeyExists(variables, "registrantAccounts")) {
+			return variables.registrantAccounts;
+		}
+		variables.registrantAccounts = [];
+		for(i=1;i<=quantity;i++) {
+			var account = getService("accountService").newAccount();
+			arrayAppend(variables.registrantAccounts,account);
+		}
+		return variables.registrantAccounts;
+	}
 	
 	public any function getOrderFulfillmentID() {
 		if(structKeyExists(variables, "orderFulfillmentID")) {
@@ -144,6 +169,47 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 		return variables.price;
 	}
+	/*
+	
+	//Need to also check child order items for child order items.
+			if( arguments.processObject.getSku().getBaseProductType() == 'productBundle' ) {
+				
+				for(var childItemData in arguments.processObject.getChildOrderItems()) {
+					var childOrderItem = this.newOrderItem();
+					
+					// Populate the childOrderItem with the data
+					childOrderItem.populate( childItemData );
+					
+					if(!isNull(childOrderItem.getSku()) && !isNull(childOrderItem.getProductBundleGroup())) {
+						
+						// Set quantity if needed
+						if(isNull(childOrderItem.getQuantity())) {
+							childOrderItem.setQuantity( 1 );
+						}
+						// Set orderFulfillment if needed
+						if(isNull(childOrderItem.getOrderFulfillment())) {
+							childOrderItem.setOrderFulfillment( orderFulfillment );
+						}
+						// Set fulfillmentMethod if needed
+						if(isNull(childOrderItem.getOrderFulfillment().getFulfillmentMethod())) {
+							childOrderItem.getOrderFulfillment().setFulfillmentMethod( listFirst(childOrderItem.getSku().setting('skuEligibleFulfillmentMethods')) );
+						}
+						childOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
+						if(childOrderItem.getSku().getUserDefinedPriceFlag() && structKeyExists(childItemData, 'price') && isNumeric(childItemData.price)) {
+							childOrderItem.setPrice( childItemData.price );
+						} else {
+							// TODO: calculate price base on adjustment type rule of bundle group
+							childOrderItem.setPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+						}
+						childOrderItem.setSkuPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+						childOrderItem.setParentOrderItem( newOrderItem );
+						childOrderItem.setOrder( arguments.order );
+						
+					}
+				}
+				
+			}
+	*/
 	
 	public string function getCurrencyCode() {
 		if(!structKeyExists(variables, "currencyCode")) {
@@ -374,11 +440,17 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			if(!isNull(getSku())) {
 				for(var i=1; i<=arrayLen(ofArr); i++) {
 					if(listFindNoCase(getSku().setting('skuEligibleFulfillmentMethods'), ofArr[i].getFulfillmentMethod().getFulfillmentMethodID())) {
-						arrayAppend(variables.orderFulfillmentIDOptions, {name=ofArr[i].getSimpleRepresentation(), value=ofArr[i].getOrderFulfillmentID()});	
+						var orderFulfillmentIDOption = {};
+						orderFulfillmentIDOption['name'] = ofArr[i].getSimpleRepresentation();
+						orderFulfillmentIDOption['value'] = ofArr[i].getOrderFulfillmentID();
+						arrayAppend(variables.orderFulfillmentIDOptions, orderFulfillmentIDOption);	
 					}
 				}	
 			}
-			arrayAppend(variables.orderFulfillmentIDOptions, {name=getHibachiScope().rbKey('define.new'), value="new"});
+			var orderFulfillmentIDOptionNew = {};
+			orderFulfillmentIDOptionNew['name'] = getHibachiScope().rbKey('define.new');
+			orderFulfillmentIDOptionNew['value'] = "new";
+			arrayAppend(variables.orderFulfillmentIDOptions, orderFulfillmentIDOptionNew);
 		}
 		return variables.orderFulfillmentIDOptions;
 	}
@@ -388,9 +460,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			var arr = getOrder().getOrderReturns();
 			variables.orderReturnIDOptions = [];
 			for(var i=1; i<=arrayLen(arr); i++) {
-				arrayAppend(variables.orderReturnIDOptions, {name=arr[i].getSimpleRepresentation(), value=arr[i].getOrderReturnID()});	
+				var orderReturnIDOption = {};
+				orderReturnIDOption['name'] = arr[i].getSimpleRepresentation();
+				orderReturnIDOption['value'] = arr[i].getOrderReturnID();
+				arrayAppend(variables.orderReturnIDOptions, orderReturnIDOption);	
 			}
-			arrayAppend(variables.orderReturnIDOptions, {name=getHibachiScope().rbKey('define.new'), value="new"});
+			var orderReturnIDOptionNew = {};
+			orderReturnIDOptionNew['name'] = getHibachiScope().rbKey('define.new');
+			orderReturnIDOptionNew['value'] = "new";
+			arrayAppend(variables.orderReturnIDOptions, orderReturnIDOptionNew);
 		}
 		return variables.orderReturnIDOptions;
 	}
@@ -420,9 +498,15 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			s.addOrder("accountAddressName|ASC");
 			var r = s.getRecords();
 			for(var i=1; i<=arrayLen(r); i++) {
-				arrayAppend(variables.shippingAccountAddressIDOptions, {name=r[i].getSimpleRepresentation(), value=r[i].getAccountAddressID()});	
+				var shippingAccountAddressIDOption = {};
+				shippingAccountAddressIDOption['name'] = r[i].getSimpleRepresentation();
+				shippingAccountAddressIDOption['value'] = r[i].getAccountAddressID();
+				arrayAppend(variables.shippingAccountAddressIDOptions, shippingAccountAddressIDOption);	
 			}
-			arrayAppend(variables.shippingAccountAddressIDOptions, {name=getHibachiScope().rbKey('define.new'), value=""});
+			var shippingAccountAddressIDOptionNew = {};
+			shippingAccountAddressIDOptionNew['name'] = getHibachiScope().rbKey('define.new');
+			shippingAccountAddressIDOptionNew['value'] = '';
+			arrayAppend(variables.shippingAccountAddressIDOptions, shippingAccountAddressIDOptionNew);	
 		}
 		return variables.shippingAccountAddressIDOptions;
 	}
@@ -452,6 +536,11 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	
 	// funciton to compare two orderItems based on certain properties.
 	public boolean function matchesOrderItem(required any orderItem){
+		
+		//check if the sku is a bundle
+		if(!isnull(this.getSku()) && !isnull(this.getSku().getBaseProductType()) && this.getSku().getBaseProductType() == 'productBundle') {
+			return false;
+		}
 		
 		//check if skus match
 		if(arguments.orderItem.getSku().getSkuID() != this.getSku().getSkuID()){

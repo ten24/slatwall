@@ -48,6 +48,8 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.task" type="any">
 <cfparam name="rc.edit" type="boolean">
 
@@ -60,39 +62,13 @@ Notes:
 				<hb:HibachiProcessCaller action="admin:entity.processtask" processContext="runTask" entity="#rc.task#" type="list">
 			</cfif>
         </hb:HibachiEntityActionBar>    
-		
-		<hb:HibachiPropertyRow>
-			
-			<!--- Left Side Top --->
-			<hb:HibachiPropertyList divClass="span6">
-				<hb:HibachiPropertyDisplay object="#rc.task#" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.task#" property="runningFlag" edit="false">
-				<hb:HibachiPropertyDisplay object="#rc.task#" property="taskName" edit="#rc.edit#">
-			</hb:HibachiPropertyList>
-			
-			<!--- Right Side Top --->
-			<hb:HibachiPropertyList divClass="span6">
-				
-				<hb:HibachiPropertyDisplay object="#rc.task#" property="taskMethod" edit="false">
-				
-				<!--- Show the config for this task's process method --->
-				<cfif rc.task.hasProcessObject( rc.task.getTaskMethod() )>
-					<cfset processObject = rc.task.getProcessObject( rc.task.getTaskMethod() ) />
-					<cfloop array="#processObject.getProperties()#" index="property">
-						<cfif structKeyExists(property, "sw_taskConfig") and property.sw_taskConfig>
-							<hb:HibachiPropertyDisplay object="#processObject#" fieldName="taskConfig.#property.name#" property="#property.name#" edit="#rc.edit#">
-						</cfif>
-					</cfloop>
-				</cfif>
-				
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		<hb:HibachiTabGroup object="#rc.task#">
-			<hb:HibachiTab property="taskschedules" />
-			<hb:HibachiTab property="taskhistories" />
-			<hb:HibachiTab view="admin:entity/tasktabs/tasksettings" />
-		</hb:HibachiTabGroup>
+
+		<hb:HibachiEntityDetailGroup object="#rc.task#">
+			<hb:HibachiEntityDetailItem view="admin:entity/tasktabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem property="taskschedules" />
+			<hb:HibachiEntityDetailItem property="taskhistories" />
+			<hb:HibachiEntityDetailItem view="admin:entity/tasktabs/tasksettings" />
+		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

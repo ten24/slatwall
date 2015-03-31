@@ -48,12 +48,14 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../tags" />
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+
 <cfparam name="rc.account" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <!--- Set AngularJS controller --->
-<div ng-controller="admin-entity-preprocessaccount_addaccountpayment">
+<div ng-controller="preprocessaccount_addaccountpayment">
 <cfoutput>
 	<hb:HibachiEntityProcessForm entity="#rc.account#" edit="#rc.edit#" sRedirectAction="admin:entity.detailaccount" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
 		
@@ -62,7 +64,7 @@ Notes:
 		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyList divClass="span6">
+				<hb:HibachiPropertyList divClass="col-md-6">
 				<!--- Add a hidden field for the accountID --->
 				<input type="hidden" name="newAccountPayment.account.accountID" value="#rc.account.getAccountID()#" />
 				
@@ -71,7 +73,7 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.processObject.getNewAccountPayment()#" property="accountPaymentType" fieldName="newAccountPayment.accountPaymentType.typeID" edit="#rc.edit#" fieldAttributes="ng-model='paymentType' ng-change='updatePaymentType()' ng-init='paymentType = ""444df32dd2b0583d59a19f1b77869025""'">
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountPaymentMethodID" edit="#rc.edit#">
 				</hb:HibachiPropertyList>
-				<hb:HibachiPropertyList divClass="span6">
+				<hb:HibachiPropertyList divClass="col-md-6">
 				<!--- New Payment Method --->
 				<hb:HibachiDisplayToggle selector="select[name='accountPaymentMethodID']" showValues="" loadVisable="#!len(rc.processObject.getAccountPaymentMethodID())#">
 					
