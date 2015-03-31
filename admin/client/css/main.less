@@ -501,7 +501,7 @@ label {font-weight:600;}
 .s-dotted-border-bottom {border-bottom: 3px dotted @black-5;padding-bottom: 20px !important;margin-bottom: 20px !important;}
 .s-hide-trans {display:none;-webkit-transition: all .5s ease-in-out;-moz-transition: all .5s ease-in-out;-ms-transition: all .5s ease-in-out;-o-transition: all .5s ease-in-out;transition: all .5s ease-in-out;}
 .modal-body {max-height:400px;overflow-y: auto;overflow-x:auto;}
-.ui-datepicker {padding:10px;z-index:3000 !important;}
+.ui-datepicker {padding:10px;z-index:3005 !important;}
 label.error {font-weight:normal;color:@brand-danger;}
 
 input[type="file"] {display: block;width: auto;height: auto;padding: 0px;background-color: none;background-image: none;border: none; .border-radius(0);-webkit-box-shadow: none;box-shadow: none;-webkit-transition: none;transition: none; } 
@@ -1609,12 +1609,17 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 }
 
 .autocomplete-selected {
-	position:absolute;
-	float:left;
-	top:2px;
-	left:15px;
-	width:206px;
-	padding:4px 5px 4px 5px;
+    position: absolute;
+    float: left;
+    top: 2px;
+    left: 15px;
+    max-width: 88%;
+    padding: 4px 5px 4px 5px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.autocomplete-selected::-webkit-scrollbar {
+    display:none;
 }
 
 .s-product-image .s-info h2 {

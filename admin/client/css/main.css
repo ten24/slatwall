@@ -368,7 +368,7 @@ label {
 }
 .ui-datepicker {
   padding: 10px;
-  z-index: 3000 !important;
+  z-index: 3005 !important;
 }
 label.error {
   font-weight: normal;
@@ -4090,8 +4090,13 @@ a.disabled > i.hibachi-ui-radio-checked {
   float: left;
   top: 2px;
   left: 15px;
-  width: 206px;
+  max-width: 88%;
   padding: 4px 5px 4px 5px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.autocomplete-selected::-webkit-scrollbar {
+  display: none;
 }
 .s-product-image .s-info h2 {
   font-size: 16px;
