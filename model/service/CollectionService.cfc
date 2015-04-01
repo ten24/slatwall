@@ -512,25 +512,25 @@ component extends="HibachiService" accessors="true" output="false" {
 		collectionEntity.setCurrentPageDeclaration(arguments.collectionOptions.currentPage);
 		collectionEntity.setPageRecordsShow(arguments.collectionOptions.pageShow);
 		collectionEntity.setKeywords(arguments.collectionOptions.keywords);
-		if(len(arguments.collectionOptions.propertyIdentifiersList)){
+		if(structKeyExists(arguments.collectionOptions,'propertyIdentifiersList') && len(arguments.collectionOptions.propertyIdentifiersList)){
 			addColumnsToCollectionConfigStructByPropertyIdentifierList(arguments.collectionEntity,arguments.collectionOptions.propertyIdentifiersList);
 			var collectionPropertyIdentifiers = [];
 		}else{
 			var collectionPropertyIdentifiers = getPropertyIdentifierArray(collectionEntity.getCollectionObject());
 		}
-		if(len(arguments.collectionOptions.filterGroupsConfig)){
+		if(structKeyExists(arguments.collectionOptions,'filterGroupsConfig') && len(arguments.collectionOptions.filterGroupsConfig)){
 			collectionEntity.getCollectionConfigStruct().filterGroups = deserializeJson(arguments.collectionOptions.filterGroupsConfig);
 		}
 		
-		if(len(arguments.collectionOptions.columnsConfig)){
+		if(structKeyExists(arguments.collectionOptions,'columnsConfig') && len(arguments.collectionOptions.columnsConfig)){
 			collectionEntity.getCollectionConfigStruct().columns = deserializeJson(arguments.collectionOptions.columnsConfig);
 		}
 		
-		if(len(arguments.collectionOptions.joinsConfig)){
+		if(structKeyExists(arguments.collectionOptions,'joinsConfig') && len(arguments.collectionOptions.joinsConfig)){
 			collectionEntity.getCollectionConfigStruct().joins = deserializeJson(arguments.collectionOptions.joinsConfig);
 		}
 		
-		if(len(arguments.collectionOptions.processContext)){
+		if(structKeyExists(arguments.collectionOptions,'processContext') && len(arguments.collectionOptions.processContext)){
 			collectionEntity.setProcessContext(arguments.collectionOptions.processContext);
 		}
 		
