@@ -670,7 +670,7 @@ component extends="HibachiService" accessors="true" {
 		if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "contentAccess") {
 			
 			// Bundle Content Into A Single Sku
-			if( arguments.processObject.getBundleContentAccessFlag() ) {
+			if( !isNull(arguments.processObject.getBundleContentAccessFlag()) && arguments.processObject.getBundleContentAccessFlag() ) {
 				
 				var newSku = this.newSku();
 				newSku.setPrice(arguments.processObject.getPrice());
