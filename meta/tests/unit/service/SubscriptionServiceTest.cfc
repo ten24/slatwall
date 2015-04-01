@@ -146,7 +146,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		subscriptionUsage.getSubscriptionOrderItems()[1].setOrderItem(order.getOrderItems()[1]);
 		
 
-//		request.debug(subscriptionTerm);
+//		//request.debug(subscriptionTerm);
 		//subscriptionUsage.setSubscriptionTerm(subscriptionTerm);
 		
 		//subscriptionUsage.setRenewalTerm()
