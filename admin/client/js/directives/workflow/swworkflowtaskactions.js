@@ -97,7 +97,7 @@ angular.module('slatwalladmin')
     						if(!angular.isObject(task)){ task = {};}
     						
     						if(angular.isUndefined(task.hidden)){
-    							console.log(task);
+
     							task.hidden=false;
     						}else{
     							$log.debug("setHidden()", "Setting Hide Value To " + !task.hidden);
@@ -140,7 +140,12 @@ angular.module('slatwalladmin')
                             scope.workflowTaskActions.selectedTaskAction = workflowTaskAction;
                         });
                     }; 
-
+                    /**
+                     * Overrides the confirm directive method deleteEntity. This is needed for the modal popup.
+                     */
+                    scope.deleteEntity = function(entity){
+                    		scope.removeWorkflowTaskAction(entity);
+                    };
                     /**
                      * --------------------------------------------------------------------------------------------------------
                      * Removes a workflow task action by calling the selected tasks $$delete method

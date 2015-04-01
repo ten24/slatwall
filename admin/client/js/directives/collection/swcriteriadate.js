@@ -366,9 +366,7 @@ angular.module('slatwalladmin')
 			  		$log.debug(selectedCondition); 
 			  		$log.debug(selectedFilterProperty);
 				  };
-				  console.log('filterItemhere');
-				  console.log(scope.filterItem);
-				  if(angular.isUndefined(scope.filterItem.$$isNew) || scope.filterItem.$$isNew === false){
+				   if(angular.isUndefined(scope.filterItem.$$isNew) || scope.filterItem.$$isNew === false){
 					  angular.forEach(scope.conditionOptions, function(conditionOption){
 							if(conditionOption.display == scope.filterItem.conditionDisplay ){
 								scope.selectedFilterProperty.selectedCriteriaType = conditionOption;

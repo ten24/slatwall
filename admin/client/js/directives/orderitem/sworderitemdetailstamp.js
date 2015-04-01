@@ -84,7 +84,7 @@ angular.module('slatwalladmin')
 							results = getEventDetails(scope.orderItem);
 							break;	
 				}
-					console.log(results);
+
 					scope.orderItem.details.push(results);
 				}
 			}

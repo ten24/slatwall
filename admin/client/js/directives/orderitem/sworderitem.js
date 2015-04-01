@@ -271,8 +271,8 @@ angular.module('slatwalladmin').directive('swOrderItem',
  				    "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
  				    "isVisible": true,
  				    "isDeletable": true
-			   },
-			    {
+					},
+			    		{
 					   "title":"Total",
 					   "propertyIdentifier":"_orderitem.itemTotal",
 					   "persistent":false
@@ -356,7 +356,17 @@ angular.module('slatwalladmin').directive('swOrderItem',
 				});
 			};
 			
-			//scope.orderItem.childItemsRetrieved = false;
+			//Delete orderItem
+			scope.deleteEntity = function(){
+				$log.debug("Deleting");
+				$log.debug(scope.orderItem);
+				var deletePromise = scope.orderItem.$$delete();
+				deletePromise.then(function(){
+					delete scope.orderItem; 
+				});
+				
+			};
+			
 			/**
 			 * Gets a list of child order items if they exist.
 			 */
@@ -373,7 +383,6 @@ angular.module('slatwalladmin').directive('swOrderItem',
 						collectionConfig.baseEntityAlias = '_orderitem';
 						var childOrderItems = $slatwall.populateCollection(value.records,collectionConfig);
 						angular.forEach(childOrderItems,function(childOrderItem){
-							//childOrderItem.hide = false;
 							childOrderItem.depth = scope.orderItem.depth+1;
 							scope.childOrderItems.push(childOrderItem);
 							childOrderItem.data.productBundleGroupPercentage = 1;

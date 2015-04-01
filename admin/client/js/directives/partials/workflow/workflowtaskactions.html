@@ -3,7 +3,6 @@
 		<span class="s-bundle-add-obj" ng-if="workflowTaskAction.$$isPersisted()">
 			<ul class="list-unstyled list-inline">
 				<li class="s-item-type s-tooltip ng-binding" ng-bind="$index+1"></li>
-				<!--<li class="s-item-type"><i class="fa fa-arrows-v"></i></li>-->
 			</ul>
 			<ul class="list-unstyled list-inline s-middle">
 				<li class="j-tool-tip-item s-bundle-details">Type: <span ng-bind="workflowTaskAction.data.actionType"></span></li>
@@ -26,10 +25,19 @@
 						></i>
 					</a>
 				</li>
-				<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" ng-click="removeWorkflowTaskAction(workflowTaskActions[$index])">
-					<a class="btn s-btn-dgrey s-remove">
-						<i class="fa fa-trash"></i>
-					</a>
+				<li class="col-xs-1 j-tool-tip-item s-bundle-details-add">
+					<a class="btn s-btn-dgrey s-remove" 
+		                            sw-confirm 
+    									data-confirm-text="Confirm"
+									data-message-text="Are you sure you want to delete this task action?" 
+									data-callback="deleteEntity(workflowTaskActions[$index])"
+									data-use-rb-key="false"
+									data-simple=false
+									data-yes-text="Yes"
+									data-no-text="No"			
+		             >
+		                 <i class="fa fa-trash"></i>
+                    </a>
 				</li>
 			</ul>
 			<div class="clearfix"></div>
@@ -41,7 +49,6 @@
 <button class="btn btn-xs s-btn-ten24" 
 			data-target="#j-add-action-b"
 			ng-click="addWorkflowTaskAction();"
-			ng-show="!workflowTaskActions.selectedTaskAction || workflowTaskActions.selectedTaskAction.hidden"><!-- This button should only show when we are not editing. -->
 		<i class="fa fa-plus"></i>
 		 Add Action
 </button>
@@ -155,9 +162,7 @@
 									</div>
 								</div>
 								<!--- // search --->
-	
 							</div>
-	
 						</div>
 						<!--- //Filter Criteria End --->
 	
@@ -192,13 +197,11 @@
 									<!--- <p class="help-block">Help text here.</p> --->
 								</div>
 							</div>
-	
 						</div>
 						<!--- //Filter Criteria End --->
 						<!--- Filter Criteria Start --->
 						<div 	class="s-filter-group-item"
-								ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'delete'"
-						>
+								ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'delete'">
 							<h4>Delete</h4>
 							<div class="form-group form-group-sm s-checkbox">
 								<input type="checkbox" id="j-delete-confirm" checked="checked"><label for="j-delete-confirm"> Confirm "Orders" object will be deleted</label>
@@ -219,5 +222,5 @@
 	</sw-form>
 </div>
 <!--- //Edit Filter Box --->
-<div class="clearfix"></div>
+<!--<div class="clearfix"></div>-->
 <div>

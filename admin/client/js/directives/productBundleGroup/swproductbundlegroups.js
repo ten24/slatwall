@@ -36,6 +36,10 @@ angular.module('slatwalladmin')
 				
 				this.removeProductBundleGroup = function(index){
 					$scope.productBundleGroups.splice(index,1);
+					$log.debug("Deleting PBG #" + index);
+					$log.debug($scope.productBundleGroups);
+					
+					
 				};
 				$scope.addProductBundleGroup = function(){
 					var productBundleGroup = $scope.sku.$$addProductBundleGroup();

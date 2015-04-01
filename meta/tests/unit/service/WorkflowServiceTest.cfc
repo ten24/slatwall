@@ -118,7 +118,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		variables.service.processWorkflow_execute(workflowEntity,data);
 		
-		//request.debug(workflowEntity.getWorkflowID());
+		////request.debug(workflowEntity.getWorkflowID());
 	}*/
 	
 	public void function entityPassesAllWorkflowTaskConditions(){
@@ -174,7 +174,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		MakePublic(variables.service,'entityPassesAllWorkflowTaskConditions');
 		var passed = variables.service.entityPassesAllWorkflowTaskConditions(product,workflowTasksConditionsConfigStruct);
-		request.debug(passed);
+		//request.debug(passed);
 	}
 	
 	public void function getWorkflowConditionGroupsString(){
@@ -229,7 +229,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var workflowTasksConditionsConfigStruct = deserializeJson(workflowTasksConditionsConfig);
 		MakePublic(variables.service,'getWorkflowConditionGroupsString');
 		var conditionsGroupString = variables.service.getWorkflowConditionGroupsString(product,workflowTasksConditionsConfigStruct);	
-		request.debug(conditionsGroupString);
+		//request.debug(conditionsGroupString);
 	}
 	
 	

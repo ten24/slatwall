@@ -97,6 +97,8 @@ Notes:
 				
 				<hr />
 				
+				<hb:HibachiErrorDisplay object="#rc.processObject#" errorName="orderDeliveryItems" />
+				
 				<table class="table table-striped table-bordered table-condensed">
 					<tr>
 						<th>Sku Code</th>
