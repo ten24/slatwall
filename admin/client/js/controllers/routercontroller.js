@@ -34,22 +34,4 @@ function(
 		}
 	}
 
-	var directiveToRender;
-	if($scope.entityName){
-		if($scope.entityID){
-			$scope.directiveToRender = 'sw-detail';
-		}else{
-			$scope.directiveToRender = 'sw-list';
-		}
-	}
-
-// 	<sw-detail ng-if="entityName && entityID"></sw-detail>
-
-// <sw-list ng-if="entityName && !entityID"></sw-list>
-
-	compiled = $compile('<' + $scope.directiveToRender + '></'+ $scope.directiveToRender +'>')($scope);
-
-    //append this to customElements
-   // $element.append(compiled);
-
 }]);
