@@ -79,8 +79,8 @@ Notes:
 					instantiationKey : '#request.slatwallScope.getApplicationValue('instantiationKey')#'
 				};
 				
-				if(slatwallConfig){
-					angular.extend(_config, slatwallConfig);
+				if(slatwallAngular.slatwallConfig){
+					angular.extend(_config, slatwallAngular.slatwallConfig);
 				}
 				
 				return {
