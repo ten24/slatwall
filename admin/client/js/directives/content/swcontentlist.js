@@ -1,5 +1,5 @@
 'use strict';
-//Thanks to AdamMettro
+
 angular.module('slatwalladmin')
 .directive('swContentList', [
 	'$log',
@@ -14,7 +14,8 @@ angular.module('slatwalladmin')
 	        restrict: 'E',
 	        templateUrl:partialsPath+'content/contentlist.html',
 	        link: function (scope, element, attr) {
-	        	$log.debug('slatwallList init');
+	        	$log.debug('slatwallcontentList init');
+	        	
 	        	
 	        	scope.getCollection = function(){
 	        		

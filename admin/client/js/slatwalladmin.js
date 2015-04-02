@@ -61,7 +61,7 @@ config(
 	<!--- route provider configuration --->
 	$routeProvider.when('/entity/:entityName/', {
 		template: function(params){
-			var entityDirectiveExists = $injector.has('sw'+params.entityName+'List');
+			var entityDirectiveExists = $injector.has('sw'+params.entityName+'ListDirective');
 			if(entityDirectiveExists){
 				return '<sw-'+params.entityName.toLowerCase()+'-list>';
 			}else{
@@ -71,7 +71,7 @@ config(
 		controller: 'routerController'
 	}).when('/entity/:entityName/:entityID', {
 		template: function(params){
-			var entityDirectiveExists = $injector.has('sw'+params.entityName+'Detail');
+			var entityDirectiveExists = $injector.has('sw'+params.entityName+'DetailDirective');
 			if(entityDirectiveExists){
 				return '<sw-'+params.entityName.toLowerCase()+'-detail>';
 			}else{
