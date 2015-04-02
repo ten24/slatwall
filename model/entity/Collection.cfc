@@ -404,12 +404,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				
 					var predicate = getPredicate(filter);
 					
-					if(isnull(filter.attributeID)){
-						filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# #predicate# ";
-					}else{
+					if(!isnull(filter.attributeID)){
 						var attributeHQL = getFilterAttributeHQL(filter);
 						filterGroupHQL &= " #logicalOperator# #attributeHQL# #comparisonOperator# #predicate# ";
+					}else if(!isnull(filter.settingID)){
+						var settingHQL = getFilterSettingHQL(filter);
+						filterGroupHQL &= " #logicalOperator# #settingHQL# #comparisonOperator# #predicate# ";
+					}else{
+						filterGroupHQL &= " #logicalOperator# #filter.propertyIdentifier# #comparisonOperator# #predicate# ";
 					}
+
+					
 				}
 				
 			}
@@ -425,6 +430,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					FROM SlatwallAttributeValue 
 					WHERE attributeID = '#filter.attributeID#' 
 					AND #filter.attributeSetObject#.#filter.attributeSetObject#ID = #attributeIdentifier#.#filter.attributeSetObject#ID)";
+		return HQL;
+	}
+
+	private string function getFilterSettingHQL(required any filter){
+		var settingIdentifier = listDeleteAt(filter.propertyIdentifier,ListLen(filter.propertyIdentifier,'.'),'.');
+		var HQL = "(SELECT settingValue 
+					FROM SlatwallSetting 
+					WHERE settingID = '#filter.settingID#')";
+		
 		return HQL;
 	}
 	
@@ -682,7 +696,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public array function getRecords(boolean refresh=false) {
-		try{
+		//try{
 			if( !structKeyExists(variables, "records") || arguments.refresh == true) {
 				if(this.getNonPersistentColumn()){
 					variables.records = [];
@@ -700,10 +714,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 				}
 			}
-		}
-		catch(any e){
-			variables.records = [{'failedCollection'='failedCollection'}];
-		}
+//		}
+//		catch(any e){
+//			variables.records = [{'failedCollection'='failedCollection'}];
+//		}
 		
 		return variables.records;
 	}
@@ -850,6 +864,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return HQL;	
 	}
 	
+	private any function getColumnSettingHQL(required struct column){
+		
+		var settingService = getService('settingService');
+		var settingLookupOrder = settingService.getSettingLookupOrder();
+		//alias of the property identifier chain
+		var settingIdentifier = listDeleteAt(column.propertyIdentifier,ListLen(column.propertyIdentifier,'.'),'.');
+		request.debug(settingIdentifier);
+		
+		//we have an entity to start
+		var HQL = '(SELECT settingValue = (CASE WHEN product.productID) FROM SwSetting)'
+		return HQL;	
+	}
+	
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false){
 		var isDistinctValue = '';
 		if(arguments.isDistinct){
@@ -899,6 +926,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(structKeyExists(column,'attributeID')){
 				HQL &= getColumnAttributeHQL(column);
 				
+			}else if(structKeyExists(column,'settingObject')){
+				HQL &= getColumnSettingHQL(column);
 			}else{
 				//check if we have an aggregate
 				if(!isnull(column.aggregate))

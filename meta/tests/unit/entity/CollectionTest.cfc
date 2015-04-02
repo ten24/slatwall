@@ -228,6 +228,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertTrue(isStruct(deserializedCollectionConfig));
 	}
 	
+	
 	public void function getHQLFilteringWithOtherCollectionTest(){
 		var collectionEntityData = {
 			collectionid = '',
@@ -1512,6 +1513,34 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
 		//request.debug(collectionEntity.getPageRecords());
 	}
+	
+	public void function getHQLWithSettingTest(){
+		var CollectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansTen24Product',
+			collectionName = 'RyansTen24Product',
+			collectionObject = 'Sku',
+			collectionConfig = '{
+				"baseEntityName":"SlatwallSku",
+				"baseEntityAlias":"_sku",
+				"columns":[
+					{
+						"propertyIdentifier":"_sku.skuID"
+					},
+					{
+						"propertyIdentifier":"_product.brand.skuHoldBackQuantity",
+						"settingObject":"Product"
+						
+					}
+				]
+				
+			}'
+		};
+		
+		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
+		request.debug(collectionEntity.getRecords());
+	}
+	
 	
 	public void function getHQLForCollectionFilterTest(){
 		var collectionBestAcountEmailAddressesData = {
