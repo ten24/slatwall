@@ -7,32 +7,23 @@
 <cfoutput>
 	<hb:HibachiPropertyRow>
 		<cfif rc.slatAction neq "admin:entity.createattributeset">
-			<hb:HibachiPropertyList divclass="col-md-6">
-	
-				<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetObject" edit="#rc.attributeSet.isNew()#">
-				<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetCode" edit="#rc.edit#">
-				<cfif rc.attributeSet.isNew()>
-					<hb:HibachiDisplayToggle selector="select[name='attributeSetObject']" showValues="OrderItem,Product,ProductType,Sku,Type" loadVisable="#listFindNoCase('OrderItem,Product,ProductType,Sku', rc.attributeSet.getAttributeSetObject())#">
-						<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#rc.edit#">
-					</hb:HibachiDisplayToggle>
-				</cfif>
-			</hb:HibachiPropertyList>
+			<cfset detailPageDivClass = "col-md-6" />
 		<cfelse>
-			<hb:HibachiPropertyList>
-	
-				<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetObject" edit="#rc.attributeSet.isNew()#">
-				<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetName" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetCode" edit="#rc.edit#">
-				<cfif rc.attributeSet.isNew()>
-					<hb:HibachiDisplayToggle selector="select[name='attributeSetObject']" showValues="OrderItem,Product,ProductType,Sku,Type" loadVisable="#listFindNoCase('OrderItem,Product,ProductType,Sku', rc.attributeSet.getAttributeSetObject())#">
-						<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#rc.edit#">
-					</hb:HibachiDisplayToggle>
-				</cfif>
-			</hb:HibachiPropertyList>
+			<cfset detailPageDivClass = "" />
 		</cfif>
+		
+		<hb:HibachiPropertyList divclass="#detailPageDivClass#">
+			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetObject" edit="#rc.attributeSet.isNew()#">
+			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="activeFlag" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetName" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetCode" edit="#rc.edit#">
+			<cfif rc.attributeSet.isNew()>
+				<hb:HibachiDisplayToggle selector="select[name='attributeSetObject']" showValues="OrderItem,Product,ProductType,Sku,Type" loadVisable="#listFindNoCase('OrderItem,Product,ProductType,Sku', rc.attributeSet.getAttributeSetObject())#">
+					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#rc.edit#">
+				</hb:HibachiDisplayToggle>
+			</cfif>
+		</hb:HibachiPropertyList>
+
 		<cfif !rc.attributeSet.isNew()>
 			<hb:HibachiPropertyList divclass="col-md-6">
 				<cfset local.canEditGlobal = listFindNoCase( "OrderItem,Product", rc.attributeSet.getAttributeSetObject() ) && rc.edit />
