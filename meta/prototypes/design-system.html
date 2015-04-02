@@ -404,6 +404,16 @@
 									</div>
 									<!-- /End -->
 									
+									<script charset="utf-8">
+									    //Not for production use
+									    $('.s-select-list-wrapper input').focusin(function() {
+									    	$(this).closest('.s-select-list-wrapper').find('.s-search-results-wrapper').show();
+									    }).focusout(function () {
+											$(this).closest('.s-select-list-wrapper').find('.s-search-results-wrapper').hide();
+									    });
+									    $('.s-search-results-wrapper').hide();
+									</script>
+									
 								</div>
 								
 								
