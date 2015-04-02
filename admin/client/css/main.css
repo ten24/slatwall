@@ -282,6 +282,30 @@ a:hover {
   display: inline-block;
   width: 100%;
 }
+.table-responsive .s-table-checkbox {
+  width: 40px;
+  text-align: center;
+}
+.table-responsive .multiselect {
+  text-align: center;
+  width: 40px;
+}
+.table-responsive .s-table-checkbox a i {
+  margin: 0px;
+}
+.table-responsive .select {
+  width: 65px;
+}
+.table-responsive .s-table-select {
+  text-align: center;
+}
+.table-responsive .s-table-select a i {
+  margin: 0px;
+}
+.table-responsive .s-table-sort {
+  width: 30px;
+  text-align: center;
+}
 .table-responsive::-webkit-scrollbar {
   display: none;
 }
