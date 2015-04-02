@@ -189,13 +189,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var processObject = order.getProcessObject('AddOrderItem',processObjectData);
 		
 		var orderReturn = variables.service.processOrder_addOrderItem(order,processObject);
-		request.debug(arraylen(orderReturn.getOrderItems()));
-		request.debug(orderReturn.getOrderItems()[1].getQuantity());
-		request.debug(arraylen(orderReturn.getOrderItems()[1].getChildOrderItems()));
-		request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getQuantity());
-		request.debug(orderReturn.getOrderID());
-		request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
-		request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
+		//request.debug(arraylen(orderReturn.getOrderItems()));
+		//request.debug(orderReturn.getOrderItems()[1].getQuantity());
+		//request.debug(arraylen(orderReturn.getOrderItems()[1].getChildOrderItems()));
+		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getQuantity());
+		//request.debug(orderReturn.getOrderID());
+		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
+		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
 	} */
 	
 	

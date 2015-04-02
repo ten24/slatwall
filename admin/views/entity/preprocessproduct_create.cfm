@@ -146,7 +146,7 @@ Notes:
 				<hb:HibachiPropertyList>
 
 					<cfset contentSmartList = $.slatwall.getSmartList("Content") />
-					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="bundleContentAccessFlag" />
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="bundleContentAccessFlag" edit="true" />
 
 					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="contents" />
 					<hb:HibachiListingDisplay smartList="#contentSmartList#" multiselectFieldName="contents" edit="true">

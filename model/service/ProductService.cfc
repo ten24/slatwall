@@ -670,26 +670,26 @@ component extends="HibachiService" accessors="true" {
 		if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "contentAccess") {
 			
 			// Bundle Content Into A Single Sku
-			if( arguments.processObject.getBundleContentAccessFlag() ) {
+			if( !isNull(arguments.processObject.getBundleContentAccessFlag()) && arguments.processObject.getBundleContentAccessFlag() ) {
 				
 				var newSku = this.newSku();
 				newSku.setPrice(arguments.processObject.getPrice());
 				newSku.setSkuCode(arguments.product.getProductCode() & "-1");
 				newSku.setProduct(arguments.product);
-				for(var c=1; c<=listLen(arguments.processObject.accessContents); c++) {
-					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.accessContents, c) ) );
+				for(var c=1; c<=listLen(arguments.processObject.getContents()); c++) {
+					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.getContents(), c) ) );
 				}
 				product.setDefaultSku(newSku);
 				
 			// Create Sku for each piece of Content
 			} else {
 				
-				for(var c=1; c<=listLen(arguments.processObject.accessContents); c++) {
+				for(var c=1; c<=listLen(arguments.processObject.getContents()); c++) {
 					var newSku = this.newSku();
 					newSku.setPrice(arguments.product.getPrice());
 					newSku.setSkuCode(arguments.product.getProductCode() & "-#c#");
 					newSku.setProduct(arguments.product);
-					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.accessContents, c) ) );
+					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.getContents(), c) ) );
 					if(c==1) {
 						arguments.product.setDefaultSku(newSku);	
 					}

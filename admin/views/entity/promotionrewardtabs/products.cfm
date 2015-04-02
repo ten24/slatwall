@@ -56,11 +56,9 @@ Notes:
 
 <cfoutput>
 	<div class="col-md-6">
-		<h5>#$.slatwall.rbKey('entity.promotionreward.products')#</h5>
-		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="products" edit="#rc.edit#" displaytype="plain" />
+		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="products" edit="#rc.edit#" displaytype="plainTitle" />
 	</div>
 	<div class="col-md-6">
-		<h5>#$.slatwall.rbKey('entity.promotionreward.excludedproducts')#</h5>
-		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="excludedProducts" edit="#rc.edit#" displaytype="plain" />	
+		<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="excludedProducts" edit="#rc.edit#" displaytype="plainTitle" />	
 	</div>
 </cfoutput>

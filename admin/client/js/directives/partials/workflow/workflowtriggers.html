@@ -1,25 +1,25 @@
-<div class="s-bundle-add-items s-workflow-objs">
-	<span class="list-unstyled s-order-item-options" ng-repeat="workflowTrigger in workflowTriggers"> 
-		<span 	sw-workflow-trigger
+<div>
+<div class="s-bundle-add-items s-workflow-objs" ng-repeat="workflowTrigger in workflowTriggers">
+	<div class="list-unstyled s-order-item-options" > 
+		<span  		
+					sw-workflow-trigger
 					ng-if="workflowTrigger.$$isPersisted()"
 					data-workflow-trigger="workflowTrigger"
 					data-workflow-triggers="workflowTriggers"
-					ng-init="workflowTrigger.$$index = $index"
-			>
+					ng-init="workflowTrigger.$$index = $index">
 		</span>
-	</span>
-
-	<button ng-show="!workflowTriggers.selectedTrigger || workflowTriggers.selectedTrigger.$$isPersisted()" class="btn btn-xs s-btn-ten24" 
-			ng-click="addWorkflowTrigger()" 
-			data-toggle="collapse" 
+		<div class="clearfix"></div>
+	</div>
+</div>
+	<button  
+			class="btn btn-xs s-btn-ten24" 
 			data-target="#j-create-new-trigger"
-	>
-		<i class="fa fa-plus"></i>
-		 Add Trigger
+			data-toggle="collapse" 
+			ng-click="addWorkflowTrigger()">
+			<i class="fa fa-plus"></i> Add Trigger
 	</button>
-	
-		<!--- Edit Filter Box --->
-	<div ng-if="workflowTriggers.selectedTrigger" class="col-xs-12  s-add-filter" id="j-create-new-trigger">
+<!--- Edit Filter Box --->
+<div ng-if="workflowTriggers.selectedTrigger" class="col-xs-12  s-add-filter" id="j-create-new-trigger" ng-show="!workflowTriggers.selectedTrigger.hidden">
 		<sw-form name="selectedTrigger" 
 			data-object="workflowTriggers.selectedTrigger"	
 			data-context="save"
@@ -101,8 +101,9 @@
 											<!--- search --->
 											<div class="s-search-filter">
 												<div class="input-group">
-													
+													<!-- Need to display the workflow event name if it exists -->
 													<input type="text" class="form-control input-sm" placeholder="Search&hellip;" ng-model="searchEvent.name" ng-focus="searchEvent.name = ''">
+													<!--<input type="text" class="form-control input-sm" placeholder="{{workflowTriggers.selectedTrigger.data.triggerEvent}}" ng-model="searchEvent.name" ng-focus="searchEvent.name = ''">-->
 													<ul class="dropdown-menu " ng-show="showEventOptions">
 														<span ng-repeat="eventOption in eventOptions | filter:searchEvent.name">
 															<li><a ng-click="selectEvent(eventOption)">{{eventOption.name}}</a></li>
@@ -138,7 +139,6 @@
 										</div>
 										<div class="clearfix"></div>
 									</div>
-	
 									<div class="form-group form-group-sm" id="j-placeholder-trigger-select" style="display:none;">
 										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">On Order Item Event:</label>
 										<div class="col-sm-12 s-no-paddings">
@@ -349,7 +349,6 @@
 								</div>
 							</span>
 							<!--- //Filter Criteria End --->
-	
 						</div>
 						<div class="col-xs-3">
 							<div class="s-default-list" ng-show="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
@@ -413,7 +412,6 @@
 													</td>
 												</tr>
                                                          <!-- //Single events -->
-
 							                </tbody>
 							            </table>
 							            <button class="btn btn-xs btn-default">Show More <i class="fa fa-refresh fa-spin"></i></button>
@@ -426,10 +424,10 @@
 								<button 
 										type="button" 
 										class="btn btn-sm s-btn-ten24 s-width-100"
-										ng-click="saveWorkflowTrigger()"
-								>
+										ng-click="saveWorkflowTrigger('add')">
 									Save Trigger
 								</button>
+								
 							</div>
 						</div>
 					</div>
@@ -437,9 +435,7 @@
 			</div>
 		</sw-form>
 	</div>
-	
 	<!--- //Edit Filter Box --->
 
-	<div class="clearfix"></div>
-
 </div>
+
