@@ -48,8 +48,13 @@ angular.module('slatwalladmin')
 					isOpen:false,
 					toggleDisplayDialog:function(){
 						$scope.addDisplayDialog.isOpen = !$scope.addDisplayDialog.isOpen; 
+						if(angular.isUndefined($scope.entityNameForDisplayOptionAdd)){
+							$scope.entityNameForDisplayOptionAdd = $scope.baseEntityName.replace('Slatwall','').charAt(0)+$scope.baseEntityName.replace('Slatwall','').slice(1);
+						}
 					}
+				
 				};
+				
 				
 				
 				var getTitleFromPropertyIdentifier = function(propertyIdentifier){
@@ -133,7 +138,6 @@ angular.module('slatwalladmin')
 					$log.debug(selectedProperty);
 					$scope.selectedProperty = selectedProperty;
 				};
-				
 				
 				jQuery(function($) {
 					
