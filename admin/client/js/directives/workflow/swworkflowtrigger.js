@@ -27,10 +27,9 @@ angular.module('slatwalladmin')
 				scope.selectWorkflowTrigger = function(workflowTrigger){
 					$log.debug('SelectWorkflowTriggers');
 					scope.done = false;
-					$log.debug(workflowTrigger);
 					scope.finished = false;
+					$log.debug(workflowTrigger);
 					scope.workflowTriggers.selectedTrigger = undefined;
-					
 					var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflowTrigger.data.workflow.data.workflowObject);
 					filterPropertiesPromise.then(function(value){
 						scope.filterPropertiesList = {
@@ -59,11 +58,23 @@ angular.module('slatwalladmin')
 				scope.deleteTrigger = function(workflowTrigger){
 					var deleteTriggerPromise = $slatwall.saveEntity('WorkflowTrigger',workflowTrigger.data.workflowTriggerID,{},'Delete');
 					deleteTriggerPromise.then(function(value){
-						$log.debug('deleteTrigger');
-						scope.workflowTriggers.splice(workflowTrigger.$$index,1);
+						$log.debug('deleteTrigger complete - reindexing...');
+						scope.removeIndexFromTriggers(workflowTrigger.$$index);
+						scope.reindexTriggerList();
 					});
 				};
-				
+				/** Re-indexes the trigger list */
+				scope.reindexTriggerList = function(){
+					for(var i in scope.workflowTriggers){
+						$log.debug("ReIndexing the trigger list: " + i);
+						scope.workflowTriggers[i].$$index = i;
+					}
+				};
+				/** Removes the trigger index from the triggers array */
+				scope.removeIndexFromTriggers = function(index){
+					$log.debug("RemoveIndexFromTasks", index);
+					scope.workflowTriggers.splice(index, 1);
+				};
 				/**
 				 * Sets the editing state to show/hide the edit screen.
 				 */
