@@ -1513,7 +1513,32 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
 		//request.debug(collectionEntity.getPageRecords());
 	}
-	
+	public void function getHQLWithSettingTest(){
+		var CollectionEntityData = {
+			collectionid = '',
+			collectionCode = 'RyansTen24Product',
+			collectionName = 'RyansTen24Product',
+			collectionObject = 'Account',
+			collectionConfig = '{
+				"baseEntityName":"SlatwallAccount",
+				"baseEntityAlias":"_account",
+				"columns":[
+					{
+						"propertyIdentifier":"_account.accountID"
+					},
+					{
+						"propertyIdentifier":"_account.accountEligiblePaymentTerms",
+						"persistent":false,
+						"setting":true
+					}
+				]
+				
+			}'
+		};
+		
+		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
+		request.debug(collectionEntity.getRecords());
+	}
 	
 	public void function getHQLForCollectionFilterTest(){
 		var collectionBestAcountEmailAddressesData = {
