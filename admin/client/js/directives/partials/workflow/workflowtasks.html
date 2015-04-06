@@ -1,5 +1,5 @@
 <!-- Workflow Tasks Forms and line items -->
-	<div class="s-bundle-add-items s-workflow-objs">
+<div class="s-bundle-add-items s-workflow-objs">
 			<ul ng-repeat="workflowTask in workflowTasks" ng-init="workflowTask.$$index = $index" class="list-unstyled s-order-item-options s-negative-obj">
 				<li class="s-bundle-add-obj s-no-edit" ng-show="workflowTask.$$isPersisted()">
 					<ul class="list-unstyled list-inline">
@@ -39,10 +39,10 @@
 <!-- Only show the button when we don't have a selected task. Or when the task is finished and hidden.'-->
 	<button class="btn btn-xs s-btn-ten24" 
 			data-target="#j-create-new-task"
-			ng-click="addWorkflowTask();" 
-			
+			ng-click="addWorkflowTask();" 		
 		<i class="fa fa-plus"></i> Create New Task
 	</button>
+
 <div ng-hide="done"><!-- state for closing on finish -->
 	<div class="col-xs-12 s-add-filter s-tab-layout" id="j-create-new-task" ng-if="workflowTasks.selectedTask && !workflowTasks.selectedTask.hidden"><!-- This hidden is for the X button closing -->
 		<div class="row" ng-show="!finished && !workflowTasks.selectedTask.hidden || !workflowTasks.selectedTask.$$isPersisted()">
@@ -60,4 +60,3 @@
 	</div>
 	<div class="clearfix"></div>
 </div>
-

@@ -136,7 +136,7 @@
 		<cfcase value="plainTitle">
 			<cfif attributes.edit>
 				<cfoutput>
-					<hb:HibachiFormField attributecollection="#attributes#" fieldName="#attributes.title#" />
+					<hb:HibachiFormField attributecollection="#attributes#" />
 					<hb:HibachiErrorDisplay errors="#attributes.errors#" displayType="label" for="#attributes.fieldName#" />
 				</cfoutput>
 			<cfelse>
