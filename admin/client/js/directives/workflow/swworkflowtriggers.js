@@ -37,11 +37,12 @@ angular.module('slatwalladmin')
 						var workflowTriggersPromise = scope.workflow.$$getWorkflowTriggers();
 						workflowTriggersPromise.then(function(){
 									scope.workflowTriggers = scope.workflow.data.workflowTriggers;
-									$log.debug('workflowtriggers');
+									$log.debug('workflowtrigger$');
 									$log.debug(scope.workflowTriggers);
 								
 									/* resets the workflow trigger */
 									if(angular.isUndefined(scope.workflow.data.workflowTriggers)){
+										$log.debug("Resetting WF Trigger");
 										scope.workflow.data.workflowTriggers = [];
 										scope.workflowTriggers = scope.workflow.data.workflowTriggers;
 									}
@@ -99,6 +100,7 @@ angular.module('slatwalladmin')
 						scope.getEventOptions(scope.workflow.data.workflowObject);
 					}
 				});
+				
 				/**
 				 * Retrieves the event options for a workflow trigger item.
 				 */
@@ -120,9 +122,11 @@ angular.module('slatwalladmin')
 				 * Saves the workflow triggers.
 				 */
 				scope.saveWorkflowTrigger = function(context){
+					$log.debug("Saving WF Trigger.");
+					$log.debug(scope.workflowTriggers.selectedTrigger);
 					var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
 					saveWorkflowTriggerPromise.then(function(){
-                        //Clear the form by adding a new task action if 'save and add another' otherwise, set save and set finished
+                        //Clear the form by adding a new task trigger if 'save and add another' otherwise, set save and set finished
                         if (context == 'add'){
                     			$log.debug("Save and New");
                     			scope.addWorkflowTrigger();
@@ -130,6 +134,7 @@ angular.module('slatwalladmin')
                         }else if (context == "finish"){
                         		scope.finished = true;
                         }
+                        
 					});
 				};
 				
@@ -178,14 +183,15 @@ angular.module('slatwalladmin')
 				scope.setAsSchedule = function(workflowTrigger){
 				
 				};
+				
 				/**
-				 * Adds a workflow trigger.
+				 * Adds a workflow trigger and set it to selected.
 				 */
 				scope.addWorkflowTrigger = function(){
 					$log.debug('addWorkflowTrigger');
 					var newWorkflowTrigger = scope.workflow.$$addWorkflowTrigger();
 					scope.workflowTriggers.selectedTrigger = newWorkflowTrigger;
-					$log.debug(scope.workflowTriggers);
+										
 				};
 			}
 		};
