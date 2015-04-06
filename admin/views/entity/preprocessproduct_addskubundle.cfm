@@ -67,6 +67,7 @@ Notes:
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		
+		<input type="hidden" name="skus" />
 		<!--- Skus --->
 		<hb:HibachiListingDisplay smartList="#rc.processObject.getSkusSmartList()#"
 								  multiselectFieldName="skus"
