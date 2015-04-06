@@ -102,6 +102,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="itemTotal" persistent="false" hb_formatType="currency";
 	property name="productBundlePrice" persistent="false" hb_formatType="currency";
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
+	property name="salePrice" type="struct" persistent="false";
 
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
@@ -380,6 +381,13 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return precisionEvaluate(getTaxAmount() + getExtendedPriceAfterDiscount());
 	}
 	
+	public any function getSalePrice() {
+		if(!structKeyExists(variables, "OrderItemSalePrice")) {
+			variables.OrderItemSalePrice = getService("promotionService").getSalePriceDetailsForOrderItem(orderItem=this);
+		}
+		
+		return variables.OrderItemSalePrice;
+	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
