@@ -111,7 +111,7 @@ angular.module('slatwalladmin')
 	        	};
 	        	
 	        	scope.showNextJump = function(){
-	        		if(paginationService.getTotalPages() - scope.currentPage > 3){
+	        		if(scope.currentPage < paginationService.getTotalPages() - 3 && paginationService.getTotalPages() > 6){
 	        			return true;
 	        		}else{
 	        			return false;

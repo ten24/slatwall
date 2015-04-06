@@ -484,15 +484,15 @@
 						<tr id="#record.getPrimaryIDValue()#" <cfif thistag.expandable>idPath="#record.getValueByPropertyIdentifier( propertyIdentifier="#thistag.exampleEntity.getPrimaryIDPropertyName()#Path" )#"</cfif>>
 							<!--- Selectable --->
 							<cfif thistag.selectable>
-								<td><a href="##" class="table-action-select#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-radio"></i></a></td>
+								<td class="s-table-select"><a href="##" class="table-action-select#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-radio"></i></a></td>
 							</cfif>
 							<!--- Multiselectable --->
 							<cfif thistag.multiselectable>
-								<td><a href="##" class="table-action-multiselect#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-checkbox"></i></a></td>
+								<td class="s-table-checkbox"><a href="##" class="table-action-multiselect#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-checkbox"></i></a></td>
 							</cfif>
 							<!--- Sortable --->
 							<cfif thistag.sortable>
-								<td><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="fa fa-arrows"></i></a></td>
+								<td class="s-table-sort"><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="fa fa-arrows"></i></a></td>
 							</cfif>
 							<cfloop array="#thistag.columns#" index="column">
 								<!--- Expandable Check --->
