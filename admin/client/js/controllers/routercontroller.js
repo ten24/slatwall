@@ -4,6 +4,8 @@ angular.module('slatwalladmin').controller('routerController', [
 	'$routeParams',
 	'$location',
 	'$log',
+	'$injector',
+	'$compile',
 	'partialsPath',
 	'baseURL',
 function(
@@ -11,6 +13,8 @@ function(
 	$routeParams,
 	$location,
 	$log,
+	$injector,
+	$compile,
 	partialsPath,
 	baseURL
 ){
@@ -28,7 +32,6 @@ function(
 		if(angular.isDefined($routeParams.entityID)){
 			$scope.entityID = $routeParams.entityID || '';
 		}
-		
 	}
-	
+
 }]);

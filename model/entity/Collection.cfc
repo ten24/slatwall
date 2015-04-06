@@ -655,7 +655,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					for(var entity in entities){
 						var pageRecord = {};
 						for(var column in columns){
-							pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(ListRest(column.propertyIdentifier,'.'));
+							var listRest = ListRest(column.propertyIdentifier,'.');
+							if(structKeyExists(column,'setting') && column.setting == true){
+								var listRest = ListRest(column.propertyIdentifier,'.');
+								pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
+							}else{
+								pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(listRest);
+							}
 						}
 						arrayAppend(variables.pageRecords,pageRecord);
 						
