@@ -231,7 +231,7 @@ Notes:
 						  				}
 						  				
 						  				return data;
-						  			};;
+						  			};
 					  			}
 					  			
 					  			$http.get(urlString,
