@@ -1464,8 +1464,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  					if(listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode){
  						if(!orderItem.getSku().getUserDefinedPriceFlag()) {
  							orderItem.setPrice(SkuPriceByCurrencyCode);	
+ 							orderItem.setSkuPrice(SkuPriceByCurrencyCode);
  						}
-						orderItem.setSkuPrice(SkuPriceByCurrencyCode);
 					}
 				}
 			}

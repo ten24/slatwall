@@ -49,7 +49,9 @@ angular.module('slatwalladmin')
 					toggleDisplayDialog:function(){
 						$scope.addDisplayDialog.isOpen = !$scope.addDisplayDialog.isOpen; 
 					}
+				
 				};
+				
 				
 				
 				var getTitleFromPropertyIdentifier = function(propertyIdentifier){
@@ -133,7 +135,6 @@ angular.module('slatwalladmin')
 					$log.debug(selectedProperty);
 					$scope.selectedProperty = selectedProperty;
 				};
-				
 				
 				jQuery(function($) {
 					
