@@ -48,9 +48,6 @@ angular.module('slatwalladmin')
 					isOpen:false,
 					toggleDisplayDialog:function(){
 						$scope.addDisplayDialog.isOpen = !$scope.addDisplayDialog.isOpen; 
-						if(angular.isUndefined($scope.entityNameForDisplayOptionAdd)){
-							$scope.entityNameForDisplayOptionAdd = $scope.baseEntityName.replace('Slatwall','').charAt(0)+$scope.baseEntityName.replace('Slatwall','').slice(1);
-						}
 					}
 				
 				};

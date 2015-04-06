@@ -24,7 +24,7 @@
         <div class="row">
             <h4> Define Display Option: 
                 <span ng-repeat="breadCrumb in breadCrumbs" class="s-add-filter-breadcrumb"> 
-                    <span ng-show="breadCrumbs.length - 1 !== $index" ng-click="selectBreadCrumb($index)"><a href="">{{breadCrumb.entityAlias}}</a><span ng-if="$index !== breadCrumbs.length - 2"> > </span></span>
+                    <span ng-show="breadCrumbs.length - 1 !== $index" ng-click="selectBreadCrumb($index)"><a href="">{{breadCrumb.entityAlias | entityRBKey}}</a><span ng-if="$index !== breadCrumbs.length - 2"> > </span></span>
                 </span>
                 <i  class="fa fa-times" ng-click="addDisplayDialog.toggleDisplayDialog()"></i>
             </h4>
@@ -32,7 +32,7 @@
                 <div class="row">
                     <div class="col-xs-3">
                         <div class="form-group form-group-sm">
-                            <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From <span ng-bind="entityNameForDisplayOptionAdd"></span></label>
+                            <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Select From <span ng-bind="propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey"></span></label>
                             <div class="col-sm-12 s-no-paddings">
                                 <select ng-model="selectedProperty" 
                                     ng-change="selectedPropertyChanged(selectedProperty)" 
@@ -42,7 +42,7 @@
                                     | filter:{fieldtype:'!many-to-many'}
                                     " 
                                     class="form-control input-sm">
-                                    <option value="">Select From <span ng-bind="entityNameForDisplayOptionAdd"></span>{{entityNameForDisplayOptionAdd}}:</option>
+                                    <option value="">Select From <span ng-bind="propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey"></span>{{propertiesList[breadCrumbs[breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey}}:</option>
                                 </select>
                             </div>
                             <div class="clearfix"></div>
