@@ -542,6 +542,12 @@ component extends="HibachiService" output="false" accessors="true" {
 		// Otherwise just return the details
 		return settingDetails.settingValue;
 	}
+	
+	public any function getSettingValueFormatted(required string settingName, any object, array filterEntities=[]) {
+		var settingDetails = getSettingDetails( argumentcollection=arguments );
+		
+		return settingDetails.settingValueFormatted;	
+	}
 		
 	public any function getSettingDetails(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
 		// Build out the cached key
@@ -571,6 +577,10 @@ component extends="HibachiService" output="false" accessors="true" {
 		return settingPrefix;
 	}
 	
+	public boolean function isGlobalSetting(required string settingName){
+		return left(arguments.settingName, 6) == "global" || left(arguments.settingName, 11) == "integration";
+	}
+	
 	public any function getSettingDetailsFromDatabase(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
 		
 		// Create some placeholder Var's
@@ -585,15 +595,17 @@ component extends="HibachiService" output="false" accessors="true" {
 		};
 		var settingMetaData = getSettingMetaData(arguments.settingName);
 		
+		//if we have a default value initialize it
 		if(structKeyExists(settingMetaData, "defaultValue")) {
 			settingDetails.settingValue = settingMetaData.defaultValue;
+			
 			if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
 				settingDetails.settingInherited = true;
 			}
 		}
 		
 		// If this is a global setting there isn't much we need to do because we already know there aren't any relationships
-		if(left(arguments.settingName, 6) == "global" || left(arguments.settingName, 11) == "integration") {
+		if(isGlobalSetting(arguments.settingName)) {
 			settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName);
 			for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {
 				settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();

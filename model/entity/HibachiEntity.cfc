@@ -92,10 +92,22 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
 	}
+	
+	
 
 	// @hint helper function to return the details of a setting
 	public struct function getSettingDetails(required any settingName, array filterEntities=[]) {
 		return getService("settingService").getSettingDetails(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
+	}
+	
+	// @hint helper function to return the details of a setting
+	public any function getSettingValue(required any settingName, array filterEntities=[]) {
+		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
+	}
+	
+	// @hint helper function to return the details of a setting
+	public any function getSettingValueFormatted(required any settingName, array filterEntities=[]) {
+		return getService("settingService").getSettingValueFormatted(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
 	}
 
 	// Attribute Value
