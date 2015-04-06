@@ -559,6 +559,18 @@ component extends="HibachiService" output="false" accessors="true" {
 		return getHibachiCacheService().getOrCacheFunctionValue(cacheKey, this, "getSettingDetailsFromDatabase", arguments);
 	}
 	
+	public string function getSettingPrefix(required string settingName){
+		var settingPrefix = "";
+			
+		for(var i=1; i<=arrayLen(getSettingPrefixInOrder()); i++) {
+			if(left(arguments.settingName, len(getSettingPrefixInOrder()[i])) == getSettingPrefixInOrder()[i]) {
+				settingPrefix = getSettingPrefixInOrder()[i];
+				break;
+			}
+		}
+		return settingPrefix;
+	}
+	
 	public any function getSettingDetailsFromDatabase(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
 		
 		// Create some placeholder Var's
@@ -595,14 +607,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 		// If this is not a global setting, but one with a prefix, then we need to check the relationships
 		} else {
-			var settingPrefix = "";
-			
-			for(var i=1; i<=arrayLen(getSettingPrefixInOrder()); i++) {
-				if(left(arguments.settingName, len(getSettingPrefixInOrder()[i])) == getSettingPrefixInOrder()[i]) {
-					settingPrefix = getSettingPrefixInOrder()[i];
-					break;
-				}
-			}
+			var settingPrefix = getSettingPrefix(arguments.settingName);
 			
 			if(!len(settingPrefix)) {
 				throw("You have asked for a setting with an invalid prefix.  The setting that was asked for was #arguments.settingName#");	
