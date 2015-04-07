@@ -129,9 +129,16 @@ Notes:
 					</hb:HibachiDisplayToggle>
 					--->
 
-				
+				<cfelseif rc.baseProductType eq "subscription">
+
+						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionTerms" />
+						<hb:HibachiListingDisplay smartList="SubscriptionTerm" multiselectFieldName="subscriptionTerms" title="#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionterms')#" edit="true">
+							<hb:HibachiListingColumn propertyIdentifier="subscriptionTermName" tdclass="primary" />
+						</hb:HibachiListingDisplay>
+	
 
 				</cfif>
+				
 
 			</hb:HibachiPropertyList>
 
@@ -177,7 +184,7 @@ Notes:
 
 				</hb:HibachiPropertyList>
 			</hb:HibachiPropertyRow>
-
+		
 		<!--- Merchandise --->
 		<cfelseif rc.processObject.getBaseProductType() eq "merchandise">
 
@@ -202,25 +209,21 @@ Notes:
 		<!--- Subscription --->
 			
 		<cfelseif rc.baseProductType eq "subscription">
+
 			<div class="row">
 				<div class="col-md-6">
 					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionBenefits" />
 					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#" edit="true">
 						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
 					</hb:HibachiListingDisplay>
-	
+				</div>
+				<div class="col-md-6">
 					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalsubscriptionBenefits" />
 					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits')#" edit="true">
 						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
 					</hb:HibachiListingDisplay>
 				</div>
-				<div class="col-md-6">
-	
-					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionTerms" />
-					<hb:HibachiListingDisplay smartList="SubscriptionTerm" multiselectFieldName="subscriptionTerms" title="#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionterms')#" edit="true">
-						<hb:HibachiListingColumn propertyIdentifier="subscriptionTermName" tdclass="primary" />
-					</hb:HibachiListingDisplay>
-				</div>
+				
 			</div>
 
 		</cfif>
