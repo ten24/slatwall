@@ -119,7 +119,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var data = {
 				saveNewFlag=true,
-				copyPersonalDataFlag=false
+				copyPersonalDataFlag=false,
+				referencedOrderFlag=false
 			};
 			
 		var newOrder = this.processOrder(arguments.originalOrder,data,"duplicateOrder" );
@@ -906,6 +907,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrder_duplicateOrder (required any order, struct data={}) {
 		var saveNewFlag = false;
 		var copyPersonalDataFlag = false;
+		var referencedOrderFlag = true;
 		
 		if (structKeyExists(data,'saveNewFlag')){
 			saveNewFlag = data.saveNewFlag ;
@@ -914,12 +916,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if (structKeyExists(data,'copyPersonalDataFlag')){
 			copyPersonalDataFlag = data.copyPersonalDataFlag ;
 		}
+		
+		if (structKeyExists(data,'referencedOrderFlag')){
+			referencedOrderFlag = data.referencedOrderFlag ;
+		}
 
 		var newOrder = this.newOrder(); 
 		
 		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
-		newOrder.setReferencedOrder(arguments.order);
-		newOrder.setReferencedOrderType('duplicate');
+		
+		if (referencedOrderFlag == true){
+			newOrder.setReferencedOrder(arguments.order);
+			newOrder.setReferencedOrderType('duplicate');
+		}
 		
 		//Copy Order Attribtes
 		for(var attributeValue in arguments.order.getAttributeValues()) {
@@ -1455,8 +1464,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  					if(listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode){
  						if(!orderItem.getSku().getUserDefinedPriceFlag()) {
  							orderItem.setPrice(SkuPriceByCurrencyCode);	
+ 							orderItem.setSkuPrice(SkuPriceByCurrencyCode);
  						}
-						orderItem.setSkuPrice(SkuPriceByCurrencyCode);
 					}
 				}
 			}
