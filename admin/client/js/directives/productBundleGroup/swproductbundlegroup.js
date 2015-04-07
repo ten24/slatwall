@@ -204,24 +204,29 @@ angular.module('slatwalladmin')
 					$log.debug('addFilterToProductBundle');
 					$log.debug(filterItem);
 					
-					filterItem.displayPropertyIdentifier = filterItem.type; 
-					filterItem.propertyIdentifier = filterItem.propertyIdentifier; 
-					filterItem.displayValue = filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']; 
-					filterItem.value = filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']; 
+					var collectionFilterItem = {};
+					
+					collectionFilterItem.displayPropertyIdentifier = filterItem.type; 
+					collectionFilterItem.propertyIdentifier = filterItem.propertyIdentifier; 
+					collectionFilterItem.displayValue = filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']; 
+					collectionFilterItem.value = filterItem.name;//filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']; 
+					
 					
 					if(include === false){
-						filterItem.comparisonOperator = '!=';
+						collectionFilterItem.comparisonOperator = '!=';
 					}else{
-						filterItem.comparisonOperator = '=';
+						collectionFilterItem.comparisonOperator = '=';
 					}
 					
 					if(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length > 0){
-						filterItem.logicalOperator = 'OR';
+						collectionFilterItem.logicalOperator = 'OR';
 					}
 					//Adds filter item to designated filtergroup
-					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(filterItem);
+					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(collectionFilterItem);
 					//Removes the filter item from the left hand search result
 					scope.productBundleGroupFilters.value.splice(index,1);
+					
+					scope.productBundleGroup.forms[scope.formName].skuCollectionConfig.$setDirty()
 				};
 				
 				if(angular.isUndefined(scope.filterPropertiesList)){
@@ -241,6 +246,8 @@ angular.module('slatwalladmin')
 					scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "type");
 					//Removes the filter item from the filtergroup
 					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index,1);
+					
+					scope.productBundleGroup.forms[scope.formName].skuCollectionConfig.$setDirty()
 				};
 				
 				
