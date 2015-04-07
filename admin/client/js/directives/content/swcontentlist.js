@@ -26,27 +26,44 @@ angular.module('slatwalladmin')
 	        		
 	        		var columnsConfig = [
 	        			{
-	        				propertyIdentifier:'_content.title'
+	        				propertyIdentifier:'_content.title',
+	        				isVisible:true,
+	        				isSearchable:true
 	        			},
 	        			{
-	        				propertyIdentifier:'_content.site.siteName'
+	        				propertyIdentifier:'_content.site.siteName',
+	        				isVisible:true,
+	        				isSearchable:true
+	        			},
+	        			{
+	        				propertyIdentifier:'_content.contentTemplateFile',
+							persistent:false,
+							setting:true,
+	        				isVisible:true
 	        			},
 	        			//need to get template via settings
 	        			{
-	        				propertyIdentifier:'_content.allowPurchaseFlag'
+	        				propertyIdentifier:'_content.allowPurchaseFlag',
+	        				isVisible:true,
+	        				isSearchable:true
 	        			},
 	        			{
-	        				propertyIdentifier:'productListingPageFlag'
+	        				propertyIdentifier:'_content.productListingPageFlag',
+	        				isVisible:true,
+	        				isSearchable:true
 	        			},
 	        			{
-	        				propertyIdentifier:'activeFlag'
+	        				propertyIdentifier:'_content.activeFlag',
+	        				isVisible:true,
+	        				isSearchable:true
 	        			}
 	        		]
 
-	        		var collectionListingPromise = $slatwall.getEntity(scope.entityName, {currentPage:scope.currentPage, pageShow:pageShow, keywords:scope.keywords});
+	        		var collectionListingPromise = $slatwall.getEntity(scope.entityName, {currentPage:scope.currentPage, pageShow:pageShow, keywords:scope.keywords, columnsConfig:angular.toJson(columnsConfig)});
 	        		collectionListingPromise.then(function(value){
 	        			scope.collection = value;
 	        			scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
+	        			scope.collectionConfig.columns = columnsConfig;
 	        		});
 	        	};
 	        	scope.getCollection();

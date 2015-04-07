@@ -139,6 +139,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentHTMLTitleString = {fieldType="text"},
 			contentMetaDescriptionString = {fieldType="textarea"},
 			contentMetaKeywordsString = {fieldType="textarea"},
+			contentTemplateFile = {fieldType="select"},
 			
 			// Email
 			emailFromAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
@@ -297,6 +298,9 @@ component extends="HibachiService" output="false" accessors="true" {
 	
 	public array function getSettingOptions(required string settingName, any settingObject) {
 		switch(arguments.settingName) {
+			case "contentTemplateFile":
+				var optionSL = ['test.cfm'];
+				return optionSL;
 			case "accountPaymentTerm" :
 				var optionSL = getPaymentService().getPaymentTermSmartList();
 				optionSL.addFilter('activeFlag', 1);
