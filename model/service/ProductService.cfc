@@ -924,7 +924,7 @@ component extends="HibachiService" accessors="true" {
 			arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
 		}
 		// Generate Image Files
-		if(isNull(arguments.product.getDefaultSku().getImageFile())){
+		if(!isNull(arguments.product.getDefaultSku()) && isNull(arguments.product.getDefaultSku().getImageFile())){
 			arguments.product.getDefaultSku().setImageFile( arguments.product.getDefaultSku().generateImageFileName() );
 		}
 		return arguments.product;
