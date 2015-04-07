@@ -120,7 +120,7 @@ Notes:
 						</cfif>
 						<a href="#homeLink#" target="_self" class="brand"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" title="Slatwall" /></a>
 					</div>
-					<div class="collapse navbar-collapse pull-right" id="bs-example-navbar-collapse-1">
+					<div class="pull-right" id="j-mobile-nav">
 						<ul class="nav navbar-nav">
 							<li class="divider-vertical"></li>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="nav">
@@ -226,6 +226,7 @@ Notes:
 									</cfif>
 								</hb:HibachiDividerHider>
 							</hb:HibachiActionCallerDropdown>
+							
 						</ul>
 						<div class="pull-right s-temp-nav">
 							<ul class="nav navbar-nav">
@@ -263,7 +264,7 @@ Notes:
 	
 									</cfif>
 								</li>
-								<hb:HibachiActionCallerDropdown title="" icon="cogs icon-white" dropdownclass="pull-right" type="nav">
+								<hb:HibachiActionCallerDropdown title="" icon="cogs icon-white" dropdownclass="pull-right s-settings-dropdown" dropdownId="j-mobile-nav" type="nav">
 									<cfif $.slatwall.getLoggedInAsAdminFlag()>
 										<hb:HibachiActionCaller action="admin:entity.detailaccount" querystring="accountID=#$.slatwall.account('accountID')#" type="list">
 										<hb:HibachiActionCaller action="admin:main.logout" type="list">
@@ -328,7 +329,7 @@ Notes:
 			<!--- Page Dialog Controller --->
 			<div ng-controller="pageDialog">
 				<div id="topOfPageDialog" >
-					<div style="z-index:3000" ng-show="pageDialogs.length" class="s-dialog-container" ng-repeat="pageDialog in pageDialogs" >
+					<div ng-style="{pageDialogStyle:pageDialogs.length}" ng-hide="!pageDialogs.length" ng-class="{'s-dialog-container':pageDialogs.length}" ng-repeat="pageDialog in pageDialogs" >
 						<div  ng-include="pageDialog.path" ></div>
 					</div>
 				</div>

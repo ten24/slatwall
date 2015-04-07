@@ -86,7 +86,7 @@ Notes:
 			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableStableVersion')#" value="#rc.availableMasterVersion#" />
 			<hb:HibachiFieldDisplay title="#$.slatwall.rbKey('admin.main.update.availableBleedingEdgeVersion')#" value="#rc.availableDevelopVersion#" />
 			<hr />
-			<form method="post" action="?s=1" class="form-horizontal s-update-branch">
+			<form method="post" action="?s=1" class="s-update-branch">
 				<input type="hidden" name="slatAction" value="admin:main.update" />
 				<input type="hidden" name="process" value="1" />
 				

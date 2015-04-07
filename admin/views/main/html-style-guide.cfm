@@ -1,126 +1,130 @@
-<br/>
-<h2 style="font-weight:bold;">Slatwall Admin Style Guide</h2>
+	<br/>
+	<h2 style="font-weight:bold;">Slatwall Admin Style Guide</h2>
 
-<hr />
+	<hr />
 
-<h1 id="headings">Buttons</h1>
+	<h1 id="headings">Buttons</h1>
 
-<div class="row">
-	<div class="col-xs-3">
-		<button href="#fakelink" class="btn btn-block btn-lg btn-primary">Primary Button</button>
+	<div class="row">
+		<div class="col-xs-3">
+			<button href="#fakelink" class="btn btn-block btn-lg btn-primary">Primary Button</button>
+		</div>
+		<div class="col-xs-3">
+			<button href="#fakelink" class="btn btn-block btn-lg btn-warning">Warning Button</button>
+		</div>
+		<div class="col-xs-3">
+			<button href="#fakelink" class="btn btn-block btn-lg btn-default">Default Button</button>
+		</div>
+		<div class="col-xs-3">
+			<button href="#fakelink" class="btn btn-block btn-lg btn-danger">Danger Button</button>
+		</div>
 	</div>
-	<div class="col-xs-3">
-		<button href="#fakelink" class="btn btn-block btn-lg btn-warning">Warning Button</button>
+	<br/>
+	<div class="row">
+		<div class="col-xs-3">
+			<button href="#fakelink" class="btn btn-block btn-lg btn-success">Success Button</button>
+		</div>
+		<div class="col-xs-3">
+			<button href="#fakelink" class="btn btn-block btn-lg btn-inverse">Inverse Button</button>
+		</div>
+		<div class="col-xs-3">
+			<button href="#fakelink" class="btn btn-block btn-lg btn-info">Info Button</button>
+		</div>
+		<div class="col-xs-3">
+			<button href="#fakelink" class="btn btn-block btn-lg btn-default disabled">Disabled Button</button>
+		</div>
 	</div>
-	<div class="col-xs-3">
-		<button href="#fakelink" class="btn btn-block btn-lg btn-default">Default Button</button>
+	<br/>
+	<div class="row">
+		<div class="col-xs-3">
+			<button href="#fakelink" class="btn btn-block btn-lg s-btn-ten24">Call To Action Button</button>
+		</div>
+		<div class="col-xs-3">
+			<button href="#fakelink" class="btn btn-block btn-lg s-btn-dgrey">Dark Grey</button>
+		</div>
 	</div>
-	<div class="col-xs-3">
-		<button href="#fakelink" class="btn btn-block btn-lg btn-danger">Danger Button</button>
-	</div>
-</div>
-<br/>
-<div class="row">
-	<div class="col-xs-3">
-		<button href="#fakelink" class="btn btn-block btn-lg btn-success">Success Button</button>
-	</div>
-	<div class="col-xs-3">
-		<button href="#fakelink" class="btn btn-block btn-lg btn-inverse">Inverse Button</button>
-	</div>
-	<div class="col-xs-3">
-		<button href="#fakelink" class="btn btn-block btn-lg btn-info">Info Button</button>
-	</div>
-	<div class="col-xs-3">
-		<button href="#fakelink" class="btn btn-block btn-lg btn-default disabled">Disabled Button</button>
-	</div>
-</div>
-<br/>
-<div class="row">
-	<div class="col-xs-3">
-		<button href="#fakelink" class="btn btn-block btn-lg s-btn-ten24">Call To Action Button</button>
-	</div>
-	<div class="col-xs-3">
-		<button href="#fakelink" class="btn btn-block btn-lg s-btn-dgrey">Dark Grey</button>
-	</div>
-</div>
 
-<hr />
+	<hr />
 
-<h1 id="headings">Alerts</h1>
-<div class="alert alert-warning">
-	<strong>Warning Message!</strong> Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
-</div>
-<div class="alert alert-error">
-	<strong>Error Message!</strong> Numquam quos fuga quam suscipit sapiente perferendis magnam. 
-</div>
-<div class="alert alert-success">
-	<strong>Success Message!</strong> Totam officiis dolorum voluptatibus maxime molestiae iste.
-</div>
-<div class="alert alert-info">
-	<strong>Info Message!</strong> Consequatur facere deleniti cumque ducimus maiores nemo.
-</div>
+	<h1 id="headings">Alerts</h1>
+	<div class="alert alert-warning">
+		<strong>Warning Message!</strong> Lorem ipsum dolor sit amet, consectetur adipisicing elit. 
+	</div>
+	<div class="alert alert-error">
+		<strong>Error Message!</strong> Numquam quos fuga quam suscipit sapiente perferendis magnam. 
+	</div>
+	<div class="alert alert-success">
+		<strong>Success Message!</strong> Totam officiis dolorum voluptatibus maxime molestiae iste.
+	</div>
+	<div class="alert alert-info">
+		<strong>Info Message!</strong> Consequatur facere deleniti cumque ducimus maiores nemo.
+	</div>
 
-<hr />
+	<hr />
 
-<h1 id="headings">Toggle Content Component</h1>
+	<h1 id="headings">Toggle Content Component</h1>
 
 
 <!--////////////////////////////////Toggle Content Component///////////////////////////////////-->
-	<div ng-controller="CollapseDemoCtrl">
-		<button class="btn btn-primary" ng-click="isCollapsed = !isCollapsed">Toggle collapse</button>
-		
+	
+	<!--- I had to set the ng-click so that angular could load before.  You can use a controller or whatever you want --->
+	<div ng-click="alertFn()">
+		<button style="margin-bottom:10px;" class="btn btn-primary" ng-click="isCollapsed = !isCollapsed">Toggle collapse</button>
 		<div collapse="isCollapsed">
-			<div>Some content...</div> 
+			<div class="well well-lg" style="margin-bottom:0px;">Some content...</div>
 		</div>
 	</div>
-	
+
 	<script>
-		angular.module('slatwalladmin').controller('CollapseDemoCtrl', function ($scope) {
-			$scope.isCollapsed = false;
+		$(window).bind("load", function() {
+			angular.module('slatwalladmin').controller('CollapseDemoCtrl', function ($scope) {
+				$scope.isCollapsed = false;
+			});
 		});
 	</script>
+
 <!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Toggle Content Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
 
 
-<hr/>
+	<hr/>
 
-<h1 id="headings">Headings with Text</h1>
+	<h1 id="headings">Headings with Text</h1>
 
-<h1>Heading 1</h1>
-<p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
-<h2>Heading 2</h2>
-<p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
-<h3>Heading 3</h3>
-<p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
-<h4>Heading 4</h4>
-<p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
-<h5>Heading 5</h5>
-<p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
-<h6>Heading 6</h6>
-<p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
+	<h1>Heading 1</h1>
+	<p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
+	<h2>Heading 2</h2>
+	<p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
+	<h3>Heading 3</h3>
+	<p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
+	<h4>Heading 4</h4>
+	<p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
+	<h5>Heading 5</h5>
+	<p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
+	<h6>Heading 6</h6>
+	<p>Lorem ipsum dolor sit amet, adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl.</p>
 
-<hr />
+	<hr />
 
-<h1 id="paragraph">Paragraph</h1>
+	<h1 id="paragraph">Paragraph</h1>
 
-<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem.</p>
-<p>Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl. Praesent mattis, massa quis luctus fermentum, turpis mi volutpat justo, eu volutpat enim diam eget metus. Maecenas ornare tortor.</p>
+	<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem.</p>
+	<p>Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl. Praesent mattis, massa quis luctus fermentum, turpis mi volutpat justo, eu volutpat enim diam eget metus. Maecenas ornare tortor.</p>
 
-<p><img alt="Placeholder Image and Some Alt Text" src="http://placehold.it/350x150" title="A title element for this placeholder image."></p>
+	<p><img alt="Placeholder Image and Some Alt Text" src="http://placehold.it/350x150" title="A title element for this placeholder image."></p>
 
-<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem.</p>
+	<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem.</p>
 
-<blockquote>
-	"This is a blockquote. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl."
-</blockquote>
+	<blockquote>
+		"This is a blockquote. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Nullam dignissim convallis est. Quisque aliquam. Donec faucibus. Nunc iaculis suscipit dui. Nam sit amet sem. Aliquam libero nisi, imperdiet at, tincidunt nec, gravida vehicula, nisl."
+	</blockquote>
 
-<hr/>
-
-
-<h1 id="headings">Create List Component</h1>
+	<hr/>
 
 
-	<!--////////////////////////////////Create List Component///////////////////////////////////-->
+	<h1 id="headings">Create List Component</h1>
+
+
+<!--////////////////////////////////Create List Component///////////////////////////////////-->
 	<div class="s-select-list-wrapper"><!--- Add select component Wrapper --->
 		
 		<div class="form-group"><!--- Option select field wrapper --->
@@ -151,13 +155,13 @@
 		</div>
 		
 	</div>
-	<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
 	
 	<hr />
 	
 	<h1 id="headings">Create List Component With Dropdown</h1>
 	
-	<!--//////////////////////////////////Create List Component With Dropdown/////////////////////////////////-->
+<!--//////////////////////////////////Create List Component With Dropdown/////////////////////////////////-->
 	<div class="s-select-list-wrapper s-dropdown"><!--- Add select component Wrapper --->
 		
 		<div class="form-group"><!--- Option select field wrapper --->
@@ -209,13 +213,13 @@
 		});
 		$('.s-search-results-wrapper').hide();
 	</script>
-	<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component With Dropdown End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component With Dropdown End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
 	
 	<hr />
 	
 	<h1 id="headings">Create List Component With Dropdown & No Add</h1>
 	
-	<!--//////////////////////////////////Create List Component With Dropdown & No Add/////////////////////////////////-->
+<!--//////////////////////////////////Create List Component With Dropdown & No Add/////////////////////////////////-->
 	<!--- Add select component Wrapper --->
 	<div class="s-select-list-wrapper s-search">
 		
@@ -254,13 +258,13 @@
 		});
 	</script>
 	
-	<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component With Dropdown @ No Add End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create List Component With Dropdown @ No Add End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
 	
 	<hr />
 	
 	<h1 id="headings">Comments</h1>
 	
-	<!--//////////////////////////////////Create Comment Component/////////////////////////////////-->
+<!--//////////////////////////////////Create Comment Component/////////////////////////////////-->
 	
 	<!-- Comments Component -->
 	<div class="panel panel-default s-comments-component">
@@ -346,9 +350,9 @@
 		</div>
 	</div>
 	
-	<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create Comment Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
+<!--\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\Create Comment Component End\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\-->
 	
-<hr />
+	<hr />
 
 	<h1 id="text-elements"> Text Elements</h1>
 
@@ -440,8 +444,6 @@
 		<hr />
 		
 		<h1 id="form_elements">Media and Form Elements</h1>
-		
-		<p>This last section contains elements that don't render well in markdown. Please consult the final section in <a href="https://github.com/bryanbraun/poor-mans-styleguide/blob/gh-pages/index.html">index.html</a>, to see the rest of the styleguide.</p>
 		
 		<h2>Media</h2>
 		
@@ -617,6 +619,48 @@
 									<input class="button" type="reset" value="Clear" /> <input class="button" type="submit" value="Submit" />
 								</div>
 							</form>
+							
+							<hr>
+							
+							<h3 id="tables">Form Validation</h3>
+							<br/>
+							<h4>Validation Angular classes:</h4>
+							
+							<strong>ng-pristine:</strong> The filed has never had text inputed in it.<br/>
+							<strong>ng-dirty:</strong> The form field has been entered at some point.<br/>
+							<strong>ng-invalid:</strong> The field requires validaiton that has not been met.<br/>
+							<strong>ng-valid:</strong> The fields is valid and ready to submit.<br/>
+							<br/>
+							<h4>Validation Error Examples:</h4>
+							<div class="row s-bundle-header">
+								<div class="col-md-6">
+									
+									<!-- Error: Example of input error -->
+									<div class="form-group">
+										<label for="name" class="col-md-3">Example Input Error<i class="fa fa-asterisk"></i></label>
+										<div class="col-md-9 s-form-input">
+											<input type="text" class="form-control ng-invalid ng-touched">
+											<p class="error help-block">You must provide a valid first name.</p>
+										</div>
+									</div>
+									
+									<!-- Error: Example of select error -->
+									<div class="form-group">
+										<label for="name" class="col-md-3">Example Select Error<i class="fa fa-asterisk"></i></label>
+										<div class="col-md-9 s-form-input">
+											<select class="form-control ng-invalid ng-touched">
+												<option disabled selected>-Select State-</option>
+												<option value="">California</option>
+												<option value="">Florida</option>
+												<option value="">Boston</option>
+											</select>
+											<p class="error help-block">You must provide a valid first name.</p>
+										</div>
+									</div>
+									
+								</div>
+								
+							</div>
 												
 						</fieldset>
 											

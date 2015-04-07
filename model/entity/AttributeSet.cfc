@@ -56,9 +56,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	property name="attributeSetDescription" ormtype="string" length="2000";
 	property name="attributeSetObject" ormtype="string" hb_formFieldType="select";
 	property name="globalFlag" ormtype="boolean" default="1";
-	property name="requiredFlag" ormtype="boolean";
 	property name="accountSaveFlag" ormtype="boolean";
-	property name="additionalCharge" ormtype="big_decimal";
 	property name="sortOrder" ormtype="integer";
 	
 	// Related Object Properties (many-to-one)

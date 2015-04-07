@@ -106,19 +106,20 @@
 												<cfif attributes.object.hasProperty('remoteID')>
 													<hb:HibachiPropertyDisplay object="#attributes.object#" property="remoteID" edit="#iif(request.context.edit && attributes.hibachiScope.setting('globalRemoteIDEditFlag'), true, false)#" />
 												</cfif>
-												<cfif !attributes.object.getAuditSmartList().getRecordsCount()>
-													<cfif attributes.object.hasProperty('createdDateTime')>
-														<hb:HibachiPropertyDisplay object="#attributes.object#" property="createdDateTime" />
-													</cfif>
-													<cfif attributes.object.hasProperty('createdByAccount')>
-														<hb:HibachiPropertyDisplay object="#attributes.object#" property="createdByAccount" />
-													</cfif>
-													<cfif attributes.object.hasProperty('modifiedDateTime')>
-														<hb:HibachiPropertyDisplay object="#attributes.object#" property="modifiedDateTime" />
-													</cfif>
-													<cfif attributes.object.hasProperty('modifiedByAccount')>
-														<hb:HibachiPropertyDisplay object="#attributes.object#" property="modifiedByAccount" />
-													</cfif>
+												<cfif len( attributes.object.getShortReferenceID() )>
+													<hb:HibachiFieldDisplay title="#attributes.hibachiScope.rbkey('entity.define.shortreferenceid')#" value="#attributes.object.getshortReferenceID()#" edit="false" displayType="dl">
+												</cfif>
+												<cfif attributes.object.hasProperty('createdDateTime')>
+													<hb:HibachiPropertyDisplay object="#attributes.object#" property="createdDateTime" />
+												</cfif>
+												<cfif attributes.object.hasProperty('createdByAccount')>
+													<hb:HibachiPropertyDisplay object="#attributes.object#" property="createdByAccount" />
+												</cfif>
+												<cfif attributes.object.hasProperty('modifiedDateTime')>
+													<hb:HibachiPropertyDisplay object="#attributes.object#" property="modifiedDateTime" />
+												</cfif>
+												<cfif attributes.object.hasProperty('modifiedByAccount')>
+													<hb:HibachiPropertyDisplay object="#attributes.object#" property="modifiedByAccount" />
 												</cfif>
 											</hb:HibachiPropertyList>
 											
