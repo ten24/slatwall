@@ -655,7 +655,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					for(var entity in entities){
 						var pageRecord = {};
 						for(var column in columns){
-							pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(ListRest(column.propertyIdentifier,'.'));
+							var listRest = ListRest(column.propertyIdentifier,'.');
+							if(structKeyExists(column,'setting') && column.setting == true){
+								var listRest = ListRest(column.propertyIdentifier,'.');
+								pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
+							}else{
+								pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(listRest);
+							}
 						}
 						arrayAppend(variables.pageRecords,pageRecord);
 						
@@ -681,8 +687,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		structDelete(variables, "recordsCount");
 	}
 	
+	public any function getSettingValueFormattedByPropertyIdentifier(required string propertyIdentifier, required any entity){
+		if(listLen(arguments.propertyIdentifier) == 1){
+			return entity.getSettingValueFormatted(arguments.propertyIdentifier);
+		}else{
+			var settingName = listLast(arguments.propertyIdentifier);
+			var arguments.propertyIdentifier = listDeleteAt(arguments.propertyIdentifier,listLen(arguments.propertyIdentifier));
+			var relatedObject = entity.getValueByPropertyIdentifier(arguments.propertyIdentifier);
+			return relatedObject.getSettingValueFormatted(settingName);
+		}
+	}
+	
 	public array function getRecords(boolean refresh=false) {
-		try{
+		//try{
 			if( !structKeyExists(variables, "records") || arguments.refresh == true) {
 				if(this.getNonPersistentColumn()){
 					variables.records = [];
@@ -692,7 +709,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var record = {};
 						
 						for(var column in columns){
-							record[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(ListRest(column.propertyIdentifier,'.'));
+							var listRest = ListRest(column.propertyIdentifier,'.');
+							if(structKeyExists(column,'setting') && column.setting == true){
+								var listRest = ListRest(column.propertyIdentifier,'.');
+								record[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
+							}else{
+								record[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(listRest);
+							}
 						}
 						arrayAppend(variables.records,record);
 					} 
@@ -700,10 +723,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 				}
 			}
-		}
-		catch(any e){
-			variables.records = [{'failedCollection'='failedCollection'}];
-		}
+//		}
+//		catch(any e){
+//			variables.records = [{'failedCollection'='failedCollection'}];
+//		}
 		
 		return variables.records;
 	}

@@ -231,7 +231,7 @@ Notes:
 						  				}
 						  				
 						  				return data;
-						  			};;
+						  			};
 					  			}
 					  			
 					  			$http.get(urlString,
@@ -1372,26 +1372,29 @@ Notes:
 										<cfif !structKeyExists(local.property, "persistent") && ( !structKeyExists(local.property,"fieldtype") || listFindNoCase("column,id", local.property.fieldtype) )>
 											<!--- Find the default value for this property --->
 											<cfif !local.isProcessObject>
-												<cfset local.defaultValue = local.entity.invokeMethod('get#local.property.name#') />
-												<cfif isNull(local.defaultValue)>
-													this.data.#local.property.name# = null;
-												<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,big_decimal', local.property.ormType)>
-													this.data.#local.property.name# = #local.entity.invokeMethod('get#local.property.name#')#;
-												<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('string', local.property.ormType)>
-													<cfif structKeyExists(local.property, "hb_formFieldType") and local.property.hb_formFieldType eq "json">
-														this.data.#local.property.name# = angular.fromJson('#local.entity.invokeMethod('get#local.property.name#')#');
+												<cftry>
+													<cfset local.defaultValue = local.entity.invokeMethod('get#local.property.name#') />
+													<cfif isNull(local.defaultValue)>
+														this.data.#local.property.name# = null;
+													<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,big_decimal', local.property.ormType)>
+														this.data.#local.property.name# = #local.entity.invokeMethod('get#local.property.name#')#;
+													<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('string', local.property.ormType)>
+														<cfif structKeyExists(local.property, "hb_formFieldType") and local.property.hb_formFieldType eq "json">
+															this.data.#local.property.name# = angular.fromJson('#local.entity.invokeMethod('get#local.property.name#')#');
+														<cfelse>
+															this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
+														</cfif>
+													<cfelseif structKeyExists(local.property, "ormType") and local.property.ormType eq 'timestamp'>
+														<cfif local.entity.invokeMethod('get#local.property.name#') eq ''>
+															this.data.#local.property.name# = '';
+														<cfelse>
+															this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#').getTime()#';
+														</cfif>
 													<cfelse>
 														this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
 													</cfif>
-												<cfelseif structKeyExists(local.property, "ormType") and local.property.ormType eq 'timestamp'>
-													<cfif local.entity.invokeMethod('get#local.property.name#') eq ''>
-														this.data.#local.property.name# = '';
-													<cfelse>
-														this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#').getTime()#';
-													</cfif>
-												<cfelse>
-													this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
-												</cfif>
+													<cfcatch></cfcatch>
+												</cftry>
 											<cfelse>
 												<cftry>
 													<cfset local.defaultValue = local.entity.invokeMethod('get#local.property.name#') />

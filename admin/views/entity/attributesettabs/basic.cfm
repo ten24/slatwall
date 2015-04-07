@@ -6,7 +6,13 @@
 
 <cfoutput>
 	<hb:HibachiPropertyRow>
-		<hb:HibachiPropertyList divclass="col-md-6">
+		<cfif rc.slatAction neq "admin:entity.createattributeset">
+			<cfset detailPageDivClass = "col-md-6" />
+		<cfelse>
+			<cfset detailPageDivClass = "" />
+		</cfif>
+		
+		<hb:HibachiPropertyList divclass="#detailPageDivClass#">
 			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetObject" edit="#rc.attributeSet.isNew()#">
 			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="activeFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetName" edit="#rc.edit#">
@@ -17,7 +23,7 @@
 				</hb:HibachiDisplayToggle>
 			</cfif>
 		</hb:HibachiPropertyList>
-		
+
 		<cfif !rc.attributeSet.isNew()>
 			<hb:HibachiPropertyList divclass="col-md-6">
 				<cfset local.canEditGlobal = listFindNoCase( "OrderItem,Product", rc.attributeSet.getAttributeSetObject() ) && rc.edit />
