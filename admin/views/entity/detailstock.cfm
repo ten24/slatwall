@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,46 +45,27 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="HibachiProcess" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	// Injected Entity
-	property name="stockAdjustment";
+
+<cfparam name="rc.stock" type="any">
+
+
+
+<cfoutput>
+	<hb:HibachiEntityDetailForm object="#rc.stock#" edit="false">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.stock#" edit="false">
+		</hb:HibachiEntityActionBar>
+		
 	
-	// Injected, or lazily loaded by ID
-	property name="sku";
-	property name="stock";
+		
+		<hb:HibachiEntityDetailGroup object="#rc.stock#">
+			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/inventory" />
+			<hb:HibachiEntityDetailItem view="admin:entity/stocktabs/inventoryhistory" />
+		</hb:HibachiEntityDetailGroup>
 
-	// Data Properties (IDs)
-	property name="skuID";
-	
-	property name="stockID";
-
-	// Data Properties (Inputs)
-	property name="quantity";
-	
-	public numeric function getQuantity() {
-		if(!structKeyExists(variables, "quantity")) {
-			variables.quantity = 1;
-		}
-		return variables.quantity;
-	}
-	
-	public any function getSku() {
-		if(!structKeyExists(variables, "sku") && !isNull(getSkuID())) {
-			variables.sku = getService("skuService").getSku(getSkuID());
-		} 
-
-		if(!structKeyExists(variables,"sku") && isNull(getSkuID())){
-			if(structKeyExists(variables, "stock")){
-				variables.sku=variables.stock.getSku()
-			} else if (!isNull(getStockID())){
-				variables.sku = getService("stockService").getStock(getStockID()).getSku();
-			}
-		}
-
-		if(structKeyExists(variables, "sku")) {
-			return variables.sku;
-		}
-	}
-}
+	</hb:HibachiEntityDetailForm>
+</cfoutput>

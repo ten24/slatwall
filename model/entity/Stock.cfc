@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Stock" entityname="SlatwallStock" table="SwStock" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" {
+component displayname="Stock" entityname="SlatwallStock" table="swStock" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" {
 	
 	// Persistent Properties
 	property name="stockID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -57,7 +57,8 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	
 	// Related Object Properties (one-to-many). Including this property to allow HQL to do  stock -> vendorOrderItem lookups
 	property name="vendorOrderItems" singularname="vendorOrderItem" cfc="VendorOrderItem" fieldtype="one-to-many" fkcolumn="stockID" inverse="true";
-	
+	property name="inventory" singularname="inventory" cfc="Inventory" fieldtype="one-to-many" fkcolumn="stockID" inverse="true" lazy="extra";
+
 	// Remote properties
 	property name="remoteID" ormtype="string";
 	
@@ -69,7 +70,12 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	
 	// Non-Persistent Properties
 	property name="calculatedQATS" ormtype="integer";
+	property name="calculatedQOH" ormtype="integer";
+	property name="calculatedQNC" ormtype="integer";
 	
+	//Derived Properties
+	//property name="derivedQOH" formula="select COALESCE( SUM(inventory.quantityIn), 0 ) - COALESCE( SUM(inventory.quantityOut), 0 ) from swInventory as inventory where inventory.stockID= stockID";
+
 	// Quantity
 	public numeric function getQuantity(required string quantityType) {
 		if( !structKeyExists(variables, arguments.quantityType) ) {
@@ -89,6 +95,14 @@ component displayname="Stock" entityname="SlatwallStock" table="SwStock" persist
 	
 	public any function getQATS() {
 		return getQuantity("QATS");
+	}
+
+	public any function getQOH() {
+		return getQuantity("QOH");
+	}
+
+	public any function getQNC() {
+		return getQuantity("QNC");
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

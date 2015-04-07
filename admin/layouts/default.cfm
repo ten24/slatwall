@@ -169,6 +169,7 @@ Notes:
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.warehouse_nav')#" icon="barcode icon-white" type="nav">
 								<hb:HibachiActionCaller action="admin:entity.liststockreceiver" type="list">
 								<hb:HibachiActionCaller action="admin:entity.liststockadjustment" type="list">
+								<hb:HibachiActionCaller action="admin:entity.liststockadjustmentitem" type="list">
 								<hb:HibachiActionCaller action="admin:entity.listphysical" type="list">
 							</hb:HibachiActionCallerDropdown>
 							<cfset local.integrationSubsystems = $.slatwall.getService('integrationService').getActiveFW1Subsystems() />

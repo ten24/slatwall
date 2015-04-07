@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,46 +45,30 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="HibachiProcess" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	// Injected Entity
-	property name="stockAdjustment";
+
+<cfparam name="rc.stockSmartList" type="any" />
+
+<cfoutput>
 	
-	// Injected, or lazily loaded by ID
-	property name="sku";
-	property name="stock";
 
-	// Data Properties (IDs)
-	property name="skuID";
 	
-	property name="stockID";
+	<hb:HibachiListingDisplay smartList="#rc.stockSmartList#"
+			recordEditAction="admin:entity.editsku"
+			recorddetailaction="admin:entity.detailstock">
+			
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.skuCode" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.product.productName" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.product.productCode" />		
+		<hb:HibachiListingColumn propertyIdentifier="sku.product.productType.productTypeName" />
+		<hb:HibachiListingColumn propertyIdentifier="sku.product.brand.brandName" />
+		<hb:HibachiListingColumn propertyIdentifier="location.locationName" />
+		<hb:HibachiListingColumn propertyIdentifier="calculatedQOH" />
+		<hb:HibachiListingColumn propertyIdentifier="calculatedQNC" />	
+		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />
+	</hb:HibachiListingDisplay>
 
-	// Data Properties (Inputs)
-	property name="quantity";
-	
-	public numeric function getQuantity() {
-		if(!structKeyExists(variables, "quantity")) {
-			variables.quantity = 1;
-		}
-		return variables.quantity;
-	}
-	
-	public any function getSku() {
-		if(!structKeyExists(variables, "sku") && !isNull(getSkuID())) {
-			variables.sku = getService("skuService").getSku(getSkuID());
-		} 
-
-		if(!structKeyExists(variables,"sku") && isNull(getSkuID())){
-			if(structKeyExists(variables, "stock")){
-				variables.sku=variables.stock.getSku()
-			} else if (!isNull(getStockID())){
-				variables.sku = getService("stockService").getStock(getStockID()).getSku();
-			}
-		}
-
-		if(structKeyExists(variables, "sku")) {
-			return variables.sku;
-		}
-	}
-}
+</cfoutput>
