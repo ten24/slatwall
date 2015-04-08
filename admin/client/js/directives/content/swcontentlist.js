@@ -25,6 +25,11 @@ angular.module('slatwalladmin')
 	        		}
 	        		
 	        		var columnsConfig = [
+						{
+							propertyIdentifier:'_content.contentID',
+							isVisible:false,
+							isSearchable:false
+						},
 	        			{
 	        				propertyIdentifier:'_content.title',
 	        				isVisible:true,
