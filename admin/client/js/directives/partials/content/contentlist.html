@@ -43,7 +43,25 @@
 			</ul>
 		</div>
 	</div>
-	<span sw-loading="collection">
+	<content class="s-body-box">
+	<div class="table-responsive">
+		<table class="table table-bordered s-order-item-table">
+			<thead>
+				<tr>
+					<th ng-repeat-start="column in collectionConfig.columns" sw-rbkey="column.propertyIdentifier.replace('_','entity.')" ng-repeat-end=""></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody ng-repeat="orderItem in orderItems">
+				<tr class="s-bundle-product l-1" data-id="B-625TX78">
+					
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+</content>	
+	<!--<span sw-loading="collection">
 		<sw-collection-table
 			data-collection="collection"
 			data-collection-config="collectionConfig"
@@ -68,5 +86,5 @@
 				<div ng-hide="recordsCount()" sw-rbkey="'admin.define.norecordsfound'"></div>
 			</div>
 		</div>
-	</span>
+	</span>-->
 </section>

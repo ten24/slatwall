@@ -64,6 +64,8 @@ angular.module('slatwalladmin')
 	        			scope.collection = value;
 	        			scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
 	        			scope.collectionConfig.columns = columnsConfig;
+	        			scope.collection.collectionConfig = scope.collectionConfig;
+	        			scope.contents = $slatwall.populateCollection(value.pageRecords,collectionConfig);
 	        		});
 	        	};
 	        	scope.getCollection();
