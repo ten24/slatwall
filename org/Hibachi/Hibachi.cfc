@@ -53,7 +53,7 @@ component extends="FW1.framework" {
 	variables.framework.routes = [
 		{ "$GET/api/:entityName/:entityID" = "/api:main.get/entityName/:entityName/entityID/:entityID"}
 		,{ "$GET/api/:entityName/" = "/api:main.get/entityName/:entityName/"}
-		,{ "$GET/apps/:appid/:siteid/:templateName/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid/contentURL/:contentURL" }
+		,{ "$GET/apps/:appid/:siteid/:contentURL/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid/contentURL/:contentURL" }
 		,{ "$GET/apps/:appid/:siteid/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid" }
 		,{ "$GET/apps/:appid/$" = "/slatwallcms:main/default/appid/:appid" }
 	]; 
@@ -203,6 +203,7 @@ component extends="FW1.framework" {
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
+		writeDump(var=rc,top=2);abort;
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="setupGlobalRequestComplete");
 	}
 	

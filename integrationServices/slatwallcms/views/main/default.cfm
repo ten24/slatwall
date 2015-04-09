@@ -46,5 +46,4 @@
 	Notes:
 	
 --->
-<cfdump var="#rc#" top=2><cfabort>
 The Slatwall CMS Integration has been enabled for this Slatwall Instance.
