@@ -399,6 +399,10 @@ label.error {
   font-weight: normal;
   color: #da5757;
 }
+.s-clear-fix {
+  display: inline-block;
+  width: 100%;
+}
 input[type="file"] {
   display: block;
   width: auto;
@@ -1906,14 +1910,15 @@ tabel .s-table-header {
 .s-add-filter h4 i {
   float: right;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 14px;
   color: #e6e6e6;
 }
 .s-add-filter h4 i:after {
+  font-family: 'Open Sans', sans-serif;
   content: " close";
-  font-size: 14px;
+  font-size: 12px;
   position: relative;
-  top: -2px;
+  top: -1px;
   font-weight: 600;
 }
 .s-add-filter h4 {
@@ -1960,7 +1965,8 @@ tabel .s-table-header {
   z-index: 10;
   padding: 0px 10px;
 }
-.s-add-filter > .row > h4 {
+.s-add-filter > .row > h4,
+.s-add-filter .s-add-filter-wrapper > h4 {
   margin-top: 0px;
   padding: 8px 15px;
   background-color: #606060;
@@ -2012,6 +2018,11 @@ tabel .s-table-header {
 }
 .s-add-filter .s-add-filter-breadcrumb a:hover {
   color: #eee;
+}
+.s-add-filter .s-add-filter-wrapper input,
+.s-add-filter .s-add-filter-wrapper select,
+.s-add-filter .s-add-filter-wrapper label {
+  width: 100%;
 }
 .s-add-filter-box {
   display: inline-block;
@@ -2777,6 +2788,9 @@ tabel .s-table-header {
   -webkit-background-clip: padding-box !important;
   background-clip: padding-box !important;
 }
+.s-bundle-add-items-inner .s-bundle-add-obj .s-last li:last-child a {
+  color: #fff;
+}
 .s-bundle-add-items .s-bundle-add-obj {
   background: #f2f2f2;
   margin-bottom: 4px;
@@ -2784,6 +2798,8 @@ tabel .s-table-header {
   border: 1px solid #e6e6e6;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 3px;
+  display: inline-block;
+  width: 100%;
 }
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details {
   font-size: 12px;
@@ -2802,7 +2818,7 @@ tabel .s-table-header {
 }
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add {
   display: inline-block;
-  width: auto;
+  width: 34px;
   float: left;
   font-size: 12px;
   height: 33px;
@@ -2831,6 +2847,7 @@ tabel .s-table-header {
   height: 35px;
   padding-top: 8px;
   float: right;
+  color: #666;
 }
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a.s-edit {
   background-color: #f2f2f2;
@@ -2843,6 +2860,8 @@ tabel .s-table-header {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
+  color: #666;
+  right: -5px;
 }
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a.s-edit:hover {
   background-color: #E7E5E5;
@@ -2865,9 +2884,10 @@ tabel .s-table-header {
 }
 .s-bundle-add-obj .s-last {
   float: right;
+  border-left: 1px solid #DDD;
 }
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj.s-no-edit .s-item-type {
-  background-color: #b3b3b3;
+  background-color: #666666;
 }
 .s-bundle-add-items .s-order-item-options {
   margin-bottom: 0px;
@@ -2878,7 +2898,7 @@ tabel .s-table-header {
   left: 5px;
   line-height: 33px;
   text-align: center;
-  background-color: #b3b3b3;
+  background-color: #666666;
   color: #ffffff;
   font-size: 11px;
 }
@@ -3862,6 +3882,9 @@ tabel .s-table-header {
   font-size: 14px;
   background-color: #f2f2f2;
   padding: 6px 15px;
+}
+.s-panel-header-info .s-header-detail dd {
+  margin-bottom: 18px;
 }
 .s-panel-header-info .s-header-detail .s-total {
   border-top: 2px solid #f2f2f2;
