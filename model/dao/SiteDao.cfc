@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,46 +45,22 @@
 
 Notes:
 
-*/
+--->
+<cfcomponent extends="HibachiDAO">
+	
+	<cffunction name="getSiteByDomainName" output="false">
+		<cfargument name="siteName" type="string" required="true" />
+		<cfset var HQL = "	FROM SlatwallSite site 
+							WHERE site.domainNames like '#siteName#%'
+							OR site.domainNames like '%,#siteName#,%'
+							site.domainNames like '%,#siteName#'
+							"
+		/>
+		<cfset var site = ORMExecuteQuery(HQL,{},true)/>
+		
+		
+		<cfreturn site />
+	</cffunction>
 
-component  extends="HibachiService" accessors="true" {
-	
-	// ===================== START: Logical Methods ===========================
-	
-	public any function getCurrentRequestSite() {
-		var domain = cgi.HTTP_HOST;
-		var site = getHibachiDAO('siteDAO').getSiteByDomainName();
-		return site;
-	}
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Status Methods ===========================
-	
-	// ======================  END: Status Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
-	
-	// ===================== START: Delete Overrides ==========================
-	
-	// =====================  END: Delete Overrides ===========================
-	
-}
+</cfcomponent>
+

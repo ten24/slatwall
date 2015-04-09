@@ -7,6 +7,7 @@
 // onApplicationSetup
 // onApplicationFullUpdate
 // onApplicationBootstrapRequestStart
+// onGlobalRequestSetupComplete
 // onApplicationRequestStart
 // onApplicationRequestEnd
 
@@ -154,6 +155,7 @@ component output="false" update="true" extends="HibachiService" {
 				}
 			}
 		}
+		//writeDump(var=variables.registeredEventHandlers);abort;
 	}
 	
 	public any function getEventNameOptions() {
