@@ -1910,15 +1910,15 @@ tabel .s-table-header {
 .s-add-filter h4 i {
   float: right;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 14px;
   color: #e6e6e6;
 }
 .s-add-filter h4 i:after {
   font-family: 'Open Sans', sans-serif;
   content: " close";
-  font-size: 14px;
+  font-size: 12px;
   position: relative;
-  top: -2px;
+  top: -1px;
   font-weight: 600;
 }
 .s-add-filter h4 {
