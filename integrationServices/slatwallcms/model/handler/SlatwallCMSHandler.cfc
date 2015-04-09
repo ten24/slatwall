@@ -18,7 +18,7 @@ component {
 			
 			if(!isnull(domainNamesite)){
 				
-				var app = getService('appService').getAppByAppID(arguments.eventData.appID);
+				var app = arguments.slatwallScope.getService('appService').getAppByAppID(arguments.eventData.appID);
 				
 				//if siteid is not specified then try to get the first site from the app
 				if(isNull(arguments.eventData.siteID)){
@@ -26,7 +26,7 @@ component {
 						var site = app.getSites()[1];
 					}
 				}else{
-					var site = getService('siteService').getSiteBySiteID(arguments.eventData.siteID);
+					var site = arguments.slatwallScope.getService('siteService').getSiteBySiteID(arguments.eventData.siteID);
 				}
 				//if we obtained a site and it is allowed by the domain name then prepare to render content
 				if(!isNull(site) && domanNameSite.getSiteID() == site.getSiteID()){

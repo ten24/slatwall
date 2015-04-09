@@ -203,7 +203,6 @@ component extends="FW1.framework" {
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
-		writeDump(var=rc,top=2);abort;
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="setupGlobalRequestComplete");
 	}
 	
