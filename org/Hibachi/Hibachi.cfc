@@ -51,9 +51,12 @@ component extends="FW1.framework" {
 	variables.framework.trace = false;
 	/* TODO: add solution to api routing for Rest api*/
 	variables.framework.routes = [
-		{ "$GET/api/:entityName/:entityID" = "/api:main.get/entityName/:entityName/entityID/:entityID"},
-		{ "$GET/api/:entityName/" = "/api:main.get/entityName/:entityName/"}
-	];
+		{ "$GET/api/:entityName/:entityID" = "/api:main.get/entityName/:entityName/entityID/:entityID"}
+		,{ "$GET/api/:entityName/" = "/api:main.get/entityName/:entityName/"}
+		,{ "$GET/apps/:appid/:siteid/:templateName/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid/contentURL/:contentURL" }
+		,{ "$GET/apps/:appid/:siteid/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid" }
+		,{ "$GET/apps/:appid/$" = "/slatwallcms:main/default/appid/:appid" }
+	]; 
 	
 	// Hibachi Setup
 	variables.framework.hibachi = {};

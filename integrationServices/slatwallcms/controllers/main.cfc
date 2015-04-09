@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -43,20 +43,16 @@
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
 
-	Notes:
-	
---->
-The Mura CMS Integration has been enabled for this Slatwall Instance.
+Notes:
 
-<!---
-<form action="?s=1">
-	<input type="hidden" name="slatAction" value="mura:main.updateviews" />
-	<cfset assignedSites = application.pluginManager.getConfig("Slatwall").getAssignedSites() />
-	<select name="siteid">
-		<cfloop query="assignedSites">
-			<cfoutput><option value="#assignedSites.siteID#">#assignedSites.siteID#</option></cfoutput>
-		</cfloop>
-	</select>
-	<button type="submit">Update Frontend Views</button>
-</form>
---->
+*/
+component extends="Slatwall.org.Hibachi.HibachiController" output="false" accessors="true"  {
+
+	property name="hibachiUtilityService" type="any";
+
+	//this.secureMethods="default,updateviews";
+	this.secureMethods='';
+	this.secureMethods=listAppend(this.secureMethods, 'default');
+	this.secureMethods=listAppend(this.secureMethods, 'updateviews');
+	
+}
