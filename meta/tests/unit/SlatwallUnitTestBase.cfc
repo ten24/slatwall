@@ -46,6 +46,8 @@
 Notes:
 
 */
+
+//all unit tests should be DAMP (Descriptive And Meaningful Phrases)
 component extends="mxunit.framework.TestCase" output="false" {
 	
 	variables.debugArray = [];
