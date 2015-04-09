@@ -53,7 +53,7 @@ component  extends="HibachiService" accessors="true" {
 	
 	public any function getCurrentRequestSite() {
 		var domain = cgi.HTTP_HOST;
-		var site = getHibachiDAO('siteDAO').getSiteByDomainName();
+		var site = getDAO('siteDAO').getSiteByDomainName(domain);
 		return site;
 	}
 	
