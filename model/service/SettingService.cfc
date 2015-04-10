@@ -139,7 +139,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentHTMLTitleString = {fieldType="text"},
 			contentMetaDescriptionString = {fieldType="textarea"},
 			contentMetaKeywordsString = {fieldType="textarea"},
-			contentTemplateFile = {fieldType="select"},
+			contentTemplateFile = {fieldType="select",defaultValue="default.cfm"},
 			
 			// Email
 			emailFromAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
@@ -312,6 +312,8 @@ component extends="HibachiService" output="false" accessors="true" {
 					return getContentService().getDisplayTemplateOptions( "Brand", arguments.settingObject.getSite().getSiteID() );	
 				}
 				return getContentService().getDisplayTemplateOptions( "brand" );
+			case "contentFileTemplate":
+				return getContentService().getDisplayTemplateOptions( "brand" );
 			case "productDisplayTemplate":
 				if(structKeyExists(arguments, "settingObject")) {
 					return getContentService().getDisplayTemplateOptions( "Product", arguments.settingObject.getSite().getSiteID() );	
@@ -388,6 +390,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getEmailService().getEmailTemplateOptions( "Task" );
 			case "taskSuccessEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "Task" );
+			
 		}
 		
 		if(structKeyExists(getSettingMetaData(arguments.settingName), "valueOptions")) {

@@ -13,6 +13,8 @@ component {
 	//announced event should send eventdata of appid,siteid,contentURL
 	public void function onEvent( required any slatwallScope, required any eventName) {
 		if(arguments.eventName == 'setupGlobalRequestComplete' && !isnull(arguments.appID)){
+			
+			
 			//try to get a site form the domain name
 			
 			var domainNameSite = arguments.slatwallScope.getService('siteService').getCurrentRequestSite();
@@ -37,8 +39,9 @@ component {
 						if(isNull(content)){
 							throw('content does not exists for #arguments.contentURL#');
 						}
-						var contentTemplateFile = 
-						writeDump();
+						var contentTemplateFile = content.Setting('contentTemplateFile');
+						
+						writeDump(var=contentTemplateFile,top=2);
 						writeDump(var=content,top=2);abort;
 					}else{
 						throw('site directory does not exist for ' & site.getSiteName());
