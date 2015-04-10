@@ -97,6 +97,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getContentDAO().getContentByCMSContentIDAndCMSSiteID( argumentCollection=arguments );
 	}
 	
+	public any function getContentBySiteIDAndUrlTitle(required string siteID, required string urlTitle){
+		return getContentDao().getContentBySiteIDAndUrlTitle(argumentCollection=arguments);
+	}
 	
 	// ===================== START: DAO Passthrough ===========================
 	
