@@ -68,14 +68,16 @@ Notes:
 		<input type="hidden" name="loyalty.loyaltyID" value="#rc.loyalty.getLoyaltyID()#" />
 		
 		
-		<cfif not listFindNoCase("orderClosed,enrollment", rc.loyaltyAccruement.getAccruementType())>
+		
 			<hb:HibachiEntityDetailGroup object="#rc.loyaltyAccruement#">
 				<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-				<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/producttypes" />
-				<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/products" />
-				<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/skus" />
-				<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/brands" />
+				<cfif not listFindNoCase("orderClosed,enrollment", rc.loyaltyAccruement.getAccruementType())>
+					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/producttypes" />
+					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/products" />
+					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/skus" />
+					<hb:HibachiEntityDetailItem view="admin:entity/loyaltyAccruementtabs/brands" />
+				</cfif>
 			</hb:HibachiEntityDetailGroup>
-		</cfif>
+		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
