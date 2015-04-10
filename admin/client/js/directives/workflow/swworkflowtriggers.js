@@ -122,16 +122,7 @@ angular.module('slatwalladmin')
 				 * Saves the workflow triggers.
 				 */
 				scope.saveWorkflowTrigger = function(context){
-					//remove stale triggers before save (if any exist).
-					for (var trigger in scope.workflow.workflowTriggers){
-						$log.debug("Removing stale triggers");
-						$log.debug(trigger);
-						$log.debug(scope.workflow.workflowTriggers);
-						if (scope.workflow.workflowTriggers[trigger].data.triggerType == null){
-							delete scope.workflowTriggers[trigger];
-							$log.debug("Removed index: " + trigger);
-						}
-					}
+					
 					$log.debug("Saving WF Trigger.");
 					$log.debug(scope.workflowTriggers.selectedTrigger);
 					if (scope.workflowTriggers.selectedTrigger.data.triggerType !== null){
