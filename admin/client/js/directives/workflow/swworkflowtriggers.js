@@ -125,7 +125,7 @@ angular.module('slatwalladmin')
 					
 					$log.debug("Saving WF Trigger.");
 					$log.debug(scope.workflowTriggers.selectedTrigger);
-					if (scope.workflowTriggers.selectedTrigger.data.triggerType !== null){
+					
 					var saveWorkflowTriggerPromise = scope.workflowTriggers.selectedTrigger.$$save();
 					saveWorkflowTriggerPromise.then(function(){
                         //Clear the form by adding a new task trigger if 'save and add another' otherwise, set save and set finished
@@ -138,7 +138,7 @@ angular.module('slatwalladmin')
                         }
                         
 					});
-					}//end conditional
+					
 				};
 				
 				/**
