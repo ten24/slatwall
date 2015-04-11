@@ -9,7 +9,10 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     sourcemaps = require('gulp-sourcemaps'),
     concat = require('gulp-concat'),
-    gzip = require('gulp-gzip');
+    gzip = require('gulp-gzip'),
+    properties = require ("properties"),
+    propertiesPath = 'config/resourceBundles/*.properties',
+    fs = require('fs');
 
 gulp.task('traceur', function () {
   gulp.src([typeScriptPath])
@@ -77,8 +80,30 @@ gulp.task('compress', ['traceur', '6to5'],function(){
     },1000);
 });
 
-gulp.task('watch', function() {
-    gulp.watch([typeScriptPath], ['compress']);
+gulp.task('properties2json',function(){
+	//get all files in a directory
+	var dir = 'config/resourceBundles';
+    var results = [];
+    fs.readdirSync(dir).forEach(function(file) {
+
+        file = dir+'/'+file;
+        properties.parse(file,{path:true}, function (error, obj){
+        	if (error) return console.error (error);
+        	fs.writeFile(file.replace('.properties','.json'), JSON.stringify(obj), function(){
+        		if (err) throw err;
+        		console.log('It\'s saved!');
+        	});
+	  	});
+    });
+
+	
+	
+
 });
 
-gulp.task('default', ['compress', 'watch']);
+gulp.task('watch', function() {
+    gulp.watch([typeScriptPath], ['compress']);
+    gulp.watch([propertiesPath],['properties2json']);
+});
+
+gulp.task('default', ['compress', 'properties2json', 'watch']);
