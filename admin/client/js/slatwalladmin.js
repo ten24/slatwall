@@ -12,7 +12,9 @@ config(
 	
 	$provide.constant("baseURL", $.slatwall.getConfig().baseURL);
 	
-	var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/';
+
+	var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/partials/';
+
 	
 	$provide.constant("partialsPath", _partialsPath);
 	$provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');

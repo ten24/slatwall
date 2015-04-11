@@ -1312,7 +1312,7 @@ Notes:
 									}
 									
 									this.metaData.$$getDetailTabs = function(){
-										<cfset local.tabsDirectory = expandPath( '/Slatwall/admin/client/js/directives/partials/entity/#local.entity.getClassName()#/' )>
+										<cfset local.tabsDirectory = expandPath( '/Slatwall/admin/client/partials/entity/#local.entity.getClassName()#/' )>
 										<cfdirectory
 										    action="list"
 										    directory="#local.tabsDirectory#"
