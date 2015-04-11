@@ -79,8 +79,8 @@ Notes:
 					instantiationKey : '#request.slatwallScope.getApplicationValue('instantiationKey')#'
 				};
 				
-				if(slatwallConfig){
-					angular.extend(_config, slatwallConfig);
+				if(slatwallAngular.slatwallConfig){
+					angular.extend(_config, slatwallAngular.slatwallConfig);
 				}
 				
 				return {
@@ -231,7 +231,7 @@ Notes:
 						  				}
 						  				
 						  				return data;
-						  			};;
+						  			};
 					  			}
 					  			
 					  			$http.get(urlString,
@@ -1312,7 +1312,7 @@ Notes:
 									}
 									
 									this.metaData.$$getDetailTabs = function(){
-										<cfset local.tabsDirectory = expandPath( '/Slatwall/admin/client/js/directives/partials/entity/#local.entity.getClassName()#/' )>
+										<cfset local.tabsDirectory = expandPath( '/Slatwall/admin/client/partials/entity/#local.entity.getClassName()#/' )>
 										<cfdirectory
 										    action="list"
 										    directory="#local.tabsDirectory#"
