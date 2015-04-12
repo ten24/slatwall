@@ -94,7 +94,7 @@ config(
     $rootScope.closePageDialog = function( index ) {
 		dialogService.removePageDialog( index );
     };
-    /*
+    
     $rootScope.loadedResourceBundle = false;
     $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
     
@@ -103,7 +103,7 @@ config(
     		$rootScope.$broadcast('hasResourceBundle');
     		rbListener();
     	}
-    });*/
+    });
 
 }]).filter('entityRBKey',['$slatwall', function($slatwall) {
 	

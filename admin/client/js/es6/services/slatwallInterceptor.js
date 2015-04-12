@@ -3,7 +3,8 @@
 angular.module('slatwalladmin').factory('slatwallInterceptor', ['$q', '$log', 'alertService', function($q, $log, alertService) {
   var interceptor = {
     'request': function(config) {
-      if (config.method == 'GET' && config.url.indexOf('.html') == -1) {
+      $log.debug('request');
+      if (config.method == 'GET' && (config.url.indexOf('.html') == -1) && config.url.indexOf('.json') == -1) {
         config.method = 'POST';
         config.data = {};
         var data = {};
@@ -20,6 +21,7 @@ angular.module('slatwalladmin').factory('slatwallInterceptor', ['$q', '$log', 'a
       return config;
     },
     'response': function(response) {
+      $log.debug('response');
       var messages = response.data.messages;
       var alerts = alertService.formatMessagesToAlerts(messages);
       alertService.addAlerts(alerts);
@@ -31,7 +33,7 @@ angular.module('slatwalladmin').factory('slatwallInterceptor', ['$q', '$log', 'a
     },
     'responseError': function(rejection) {
       $log.debug('responseReject');
-      if (rejection.status !== 404) {
+      if (angular.isDefined(rejection.status) && rejection.status !== 404) {
         if (angular.isDefined(rejection.data) && angular.isDefined(rejection.data.messages)) {
           var messages = rejection.data.messages;
           var alerts = alertService.formatMessagesToAlerts(messages);

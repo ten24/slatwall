@@ -379,17 +379,6 @@ Notes:
 					  			});
 					  			return deferred.promise;
 					  		},
-					  		/*loadResourceBundle:function(locale){
-					  			var deferred = $q.defer();
-					  			$http.get(urlString,{params:params}).success(function(response){
-				  					_resourceBundle[locale] = response.data;
-					  				deferred.resolve(response);
-					  				
-					  			}).error(function(reason){
-					  				deferred.reject(reason);
-					  			});
-					  			return deferred.promise;
-					  		},
 					  		getRBLoaded:function(){
 					  			return _loadedResourceBundle;
 					  		},
@@ -414,23 +403,20 @@ Notes:
 										slatwallService.getResourceBundle('en_us');
 										slatwallService.getResourceBundle('en');
 									}	
-									$log.debug(rbPromises);
 									$q.all(rbPromises).then(function(data){
-										$log.debug('hasRB');
-										$log.debug(data);
 										$rootScope.loadedResourceBundle = true;
 										_loadingResourceBundle = false;
 										_loadedResourceBundle = true;
-									},function(){
+										
+									},function(error){
 										$rootScope.loadedResourceBundle = true;
 										_loadingResourceBundle = false;
-										_loadedResourceBundle = true;
+										_loadedResourceBundle = true
 									});
 					  			}
-				  				
 				  				return _loadedResourceBundle;
 					  			
-					  		},*/
+					  		},
 					  		getResourceBundle:function(locale){
 					  			var deferred = $q.defer();
 					  			var locale = locale || _config.rbLocale;
@@ -439,20 +425,18 @@ Notes:
 				  					return _resourceBundle[locale];
 				  				}
 				  				
-				  				//var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+_config.instantiationKey;
-				  				var urlString = _config.baseURL+'/config/resourceBundles/'+locale+'.json?instantiationKey='+_config.instantiationKey;
+				  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+_config.instantiationKey;
+				  				//var urlString = _config.baseURL+'/config/resourceBundles/'+locale+'.json?instantiationKey='+_config.instantiationKey;
 					  			var params = {
 					  				locale:locale
 					  			};
-				  				$http.get(urlString,{params:params}).success(function(response){
-			  						_resourceBundle[locale] = response;
-			  						$rootScope.$broadcast('hasResourceBundle');
-				  					deferred.resolve(response);
+				  				return $http.get(urlString,{params:params}).success(function(response){
+			  						_resourceBundle[locale] = response.data;
+				  					//deferred.resolve(response);
 				  				}).error(function(response){
 				  					_resourceBundle[locale] = {};
-				  					$rootScope.$broadcast('hasResourceBundle');
+				  					//deferred.reject(response);
 				  				});
-				  				return deferred.promise;
 					  		},
 							
 					  		<!---replaceStringTemplate:function(template,object,formatValues,removeMissingKeys){
@@ -483,7 +467,7 @@ Notes:
 					  			$log.debug('getRBKey');
 					  			$log.debug('loading:'+_loadingResourceBundle);
 					  			$log.debug('loaded'+_loadedResourceBundle);
-					  			//if(!_loadingResourceBundle && _loadedResourceBundle){
+					  			if(!_loadingResourceBundle && _loadedResourceBundle){
 					  				key = key.toLowerCase();
 						  			checkedKeys = checkedKeys || "";
 						  			locale = locale || 'en_us';
@@ -566,7 +550,7 @@ Notes:
 										}
 							  			return checkedKeys;
 							  		}
-						  		//}
+						  		}
 						  		return 'empty';
 					  		},
 					  		 getConfig:function(){

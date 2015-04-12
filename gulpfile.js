@@ -80,6 +80,7 @@ gulp.task('compress', ['traceur', '6to5'],function(){
     },1000);
 });
 
+/*
 gulp.task('properties2json',function(){
 	//get all files in a directory
 	var dir = 'config/resourceBundles';
@@ -92,17 +93,29 @@ gulp.task('properties2json',function(){
         	for(key in obj){
         		newobj[key.toLowerCase()] = obj[key];
         	}
+        	var newfile = file.replace('.properties','.json');
         	
-        	fs.writeFile(file.replace('.properties','.json'), JSON.stringify(newobj), function(){
-        		console.log('It\'s saved!');
-        	});
+        	if(fs.existsSync(newfile)){
+        		fs.unlink(newfile, function (err) {
+    				console.log(err);
+        		  if (err) throw err;
+        		  console.log('successfully deleted '+newfile);
+        		  	fs.writeFile(newfile, JSON.stringify(newobj), function(){
+              			console.log('It\'s saved!');
+              		});
+        		});
+        	}else{
+        		fs.writeFile(newfile, JSON.stringify(newobj), function(){
+            		console.log('It\'s saved!');
+            	});
+        	}
 	  	});
     });
-});
+});*/
 
 gulp.task('watch', function() {
     gulp.watch([typeScriptPath], ['compress']);
-    gulp.watch([propertiesPath],['properties2json']);
+    //gulp.watch([propertiesPath],['properties2json']);
 });
 
 gulp.task('default', ['compress', 'properties2json', 'watch']);
