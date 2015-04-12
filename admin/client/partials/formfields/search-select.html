@@ -1,4 +1,4 @@
-<div class="col-md-9 s-search-filter" id="j-inside-product-bundle-group-type" sw-click-outside="closeThis(clickOutsideArgs)" >
+<div class="s-search-filter" id="j-inside-product-bundle-group-type" sw-click-outside="closeThis(clickOutsideArgs)" >
 	
 	<div class="input-group" ng-if="propertyDisplay.object">
 		<input  type="text"
@@ -6,14 +6,12 @@
 				placeholder="Search"
 				class="form-control input-sm"
 				typeahead="object[cfcProperCase+'Name'] for object in selectionOptions.getOptionsByKeyword($viewValue) | filter:$viewValue"
-				typeahead-on-select="selectItem($item, $model, $label)"
-		>
+				typeahead-on-select="selectItem($item, $model, $label)">
 		
 		<input 	type="text"  
-			style="display:none"
-			name="{{propertyDisplay.property}}"
-			ng-model="propertyDisplay.object.data[propertyDisplay.property]"
-		/>
+				style="display:none"
+				name="{{propertyDisplay.property}}"
+				ng-model="propertyDisplay.object.data[propertyDisplay.property]"/>
 		<div class="input-group-btn">
 			<button type="button" class="btn btn-sm btn-default" ng-click="closeAddScreen();clearTypeName();">
 				<span ng-if="showAddBtn" class="fa fa-caret-up"></span>
@@ -33,8 +31,7 @@
 	    
 	<span style="color:red"
 		ng-repeat="(key,value) in propertyDisplay.errors"
-		ng-show="(propertyDisplay.form.$submitted && propertyDisplay.form[propertyDisplay.property].$invalid) || (propertyDisplay.form[propertyDisplay.property].$invalid && propertyDisplay.form[propertyDisplay.property].$dirty)"
-	>
+		ng-show="(propertyDisplay.form.$submitted && propertyDisplay.form[propertyDisplay.property].$invalid) || (propertyDisplay.form[propertyDisplay.property].$invalid && propertyDisplay.form[propertyDisplay.property].$dirty)">
 	  <span  ng-show="key === 'required'">{{propertyDisplay.title}} is a required field<br></span>
 	</span>
 </div>
