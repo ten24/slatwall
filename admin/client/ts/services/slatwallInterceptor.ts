@@ -40,19 +40,18 @@ angular.module('slatwalladmin')
 			},
 			'responseError':function(rejection){
 				$log.debug('responseReject');
-				//$log.debug(rejection);
-				
-				
-				if(angular.isDefined(rejection.data) && angular.isDefined(rejection.data.messages)){
-					var messages = rejection.data.messages;
-					var alerts = alertService.formatMessagesToAlerts(messages);
-					alertService.addAlerts(alerts);
-				}else{
-					var message = {
-						msg:'there was error retrieving data',
-						type:'error'
-					};
-					alertService.addAlert(message);
+				if(rejection.status !== 404){
+					if(angular.isDefined(rejection.data) && angular.isDefined(rejection.data.messages)){
+						var messages = rejection.data.messages;
+						var alerts = alertService.formatMessagesToAlerts(messages);
+						alertService.addAlerts(alerts);
+					}else{
+						var message = {
+							msg:'there was error retrieving data',
+							type:'error'
+						};
+						alertService.addAlert(message);
+					}
 				}
 				
 				return $q.reject(rejection);

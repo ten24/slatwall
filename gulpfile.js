@@ -85,20 +85,19 @@ gulp.task('properties2json',function(){
 	var dir = 'config/resourceBundles';
     var results = [];
     fs.readdirSync(dir).forEach(function(file) {
-
         file = dir+'/'+file;
         properties.parse(file,{path:true}, function (error, obj){
         	if (error) return console.error (error);
-        	fs.writeFile(file.replace('.properties','.json'), JSON.stringify(obj), function(){
-        		if (err) throw err;
+        	var newobj = {};
+        	for(key in obj){
+        		newobj[key.toLowerCase()] = obj[key];
+        	}
+        	
+        	fs.writeFile(file.replace('.properties','.json'), JSON.stringify(newobj), function(){
         		console.log('It\'s saved!');
         	});
 	  	});
     });
-
-	
-	
-
 });
 
 gulp.task('watch', function() {

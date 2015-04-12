@@ -31,6 +31,7 @@
  *   Note: Your callback function on-confirm should return true;
  *<------------------------------------------------------------------------------------------------------------------------------------->
  */
+
 angular.module("slatwalladmin").directive("swConfirm", ["$slatwall", "$log", "$compile", "$modal", function ($slatwall, $log, $compile, $modal) {
   /**
    * Handles opening and closing of the modal. 

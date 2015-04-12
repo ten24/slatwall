@@ -20,11 +20,13 @@ function(
 			
 			$log.debug('running rbkey');
 			$log.debug(rbKeyValue);
-			
-			if(!$slatwall.getRBLoaded()){
+			$rootScope.$on('hasResourceBundle',function(event,data){
+				element.text($slatwall.getRBKey(rbKeyValue));
+			});
+			/*if(!$slatwall.getRBLoaded()){
 				var hasResourceBundleListener = $rootScope.$on('hasResourceBundle',function(event,data){
-					//$log.debug('received event');
-					//$log.debug(rbKeyValue);
+					$log.debug('received event');
+					$log.debug(rbKeyValue);
 					if(angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)){
 						$log.debug($slatwall.getRBKey(rbKeyValue));
 						element.text($slatwall.getRBKey(rbKeyValue));
@@ -33,10 +35,10 @@ function(
 				});
 			}else{
 				if(angular.isDefined(rbKeyValue) && angular.isString(rbKeyValue)){
-					//$log.debug($slatwall.getRBKey(rbKeyValue));
+					$log.debug($slatwall.getRBKey(rbKeyValue));
 					element.text($slatwall.getRBKey(rbKeyValue));
 				}
-			}
+			}*/
 		}
 	};
 }]);

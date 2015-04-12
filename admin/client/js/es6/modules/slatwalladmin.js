@@ -76,14 +76,6 @@ angular.module('slatwalladmin', ['ngSlatwall', 'ui.bootstrap', 'ngAnimate', 'ngR
   $rootScope.closePageDialog = function(index) {
     dialogService.removePageDialog(index);
   };
-  $rootScope.loadedResourceBundle = false;
-  $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
-  var rbListener = $rootScope.$watch('loadedResourceBundle', function(newValue, oldValue) {
-    if (newValue !== oldValue) {
-      $rootScope.$broadcast('hasResourceBundle');
-      rbListener();
-    }
-  });
 }]).filter('entityRBKey', ['$slatwall', function($slatwall) {
   return function(text) {
     if (angular.isDefined(text) && angular.isString(text)) {
