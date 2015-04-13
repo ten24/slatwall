@@ -597,24 +597,28 @@ component extends="FW1.framework" {
 	public void function redirectExact(required string redirectLocation, boolean addToken=false) {
 		endHibachiLifecycle();
 		
-		//Check to see if redirect link has a domain that is in the approved settings attribute
-		var redirectDomainApprovedFlag = false;
-		if (listLen( getHibachiScope().setting('globalAllowedOutsideRedirectSites') )){
-			allowedDomainArray = listToArray( getHibachiScope().setting('globalAllowedOutsideRedirectSites') );
-			
-			for (var allowedDomain in allowedDomainArray){
-				if ( LEFT(arguments.redirectLocation, len(allowedDomain)) == allowedDomain){
-					redirectDomainApprovedFlag = true;
-					break;
+		if(!redirectLocation.startsWith('http')) {
+			location(arguments.redirectLocation, arguments.addToken);
+		} else {
+			//Check to see if redirect link has a domain that is in the approved settings attribute
+			var redirectDomainApprovedFlag = false;
+			if (listLen( getHibachiScope().setting('globalAllowedOutsideRedirectSites') )){
+				allowedDomainArray = listToArray( getHibachiScope().setting('globalAllowedOutsideRedirectSites') );
+				
+				for (var allowedDomain in allowedDomainArray){
+					if ( LEFT(arguments.redirectLocation, len(allowedDomain)) == allowedDomain){
+						redirectDomainApprovedFlag = true;
+						break;
+					}
 				}
 			}
-		}
-		
-		// Check to make sure that the redirect stays on the Slatwall site, redirect back to the Slatwall landing page. 
-		if ( getPageContext().getRequest().GetRequestUrl().toString() == LEFT(arguments.redirectLocation, len(getPageContext().getRequest().GetRequestUrl().toString())) || redirectDomainApprovedFlag == true ){
-			location(arguments.redirectLocation, arguments.addToken);
-		}else{
-			location(getPageContext().getRequest().GetRequestUrl().toString(), arguments.addToken)
+			
+			// Check to make sure that the redirect stays on the Slatwall site, redirect back to the Slatwall landing page. 
+			if ( getPageContext().getRequest().GetRequestUrl().toString() == LEFT(arguments.redirectLocation, len(getPageContext().getRequest().GetRequestUrl().toString())) || redirectDomainApprovedFlag == true ){
+				location(arguments.redirectLocation, arguments.addToken);
+			}else{
+				location(getPageContext().getRequest().GetRequestUrl().toString(), arguments.addToken)
+			}
 		}
 	}
 	

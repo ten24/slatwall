@@ -79,8 +79,8 @@ Notes:
 					instantiationKey : '#request.slatwallScope.getApplicationValue('instantiationKey')#'
 				};
 				
-				if(slatwallConfig){
-					angular.extend(_config, slatwallConfig);
+				if(slatwallAngular.slatwallConfig){
+					angular.extend(_config, slatwallAngular.slatwallConfig);
 				}
 				
 				return {
@@ -231,7 +231,7 @@ Notes:
 						  				}
 						  				
 						  				return data;
-						  			};;
+						  			};
 					  			}
 					  			
 					  			$http.get(urlString,
@@ -379,17 +379,6 @@ Notes:
 					  			});
 					  			return deferred.promise;
 					  		},
-					  		loadResourceBundle:function(locale){
-					  			var deferred = $q.defer();
-					  			$http.get(urlString,{params:params}).success(function(response){
-				  					_resourceBundle[locale] = response.data;
-					  				deferred.resolve(response);
-					  				
-					  			}).error(function(reason){
-					  				deferred.reject(reason);
-					  			});
-					  			return deferred.promise;
-					  		},
 					  		getRBLoaded:function(){
 					  			return _loadedResourceBundle;
 					  		},
@@ -414,17 +403,17 @@ Notes:
 										slatwallService.getResourceBundle('en_us');
 										slatwallService.getResourceBundle('en');
 									}	
-									$log.debug(rbPromises);
 									$q.all(rbPromises).then(function(data){
-										$log.debug('hasRB');
-										$log.debug(data);
 										$rootScope.loadedResourceBundle = true;
 										_loadingResourceBundle = false;
 										_loadedResourceBundle = true;
 										
+									},function(error){
+										$rootScope.loadedResourceBundle = true;
+										_loadingResourceBundle = false;
+										_loadedResourceBundle = true
 									});
 					  			}
-				  				
 				  				return _loadedResourceBundle;
 					  			
 					  		},
@@ -437,15 +426,17 @@ Notes:
 				  				}
 				  				
 				  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+_config.instantiationKey;
+				  				//var urlString = _config.baseURL+'/config/resourceBundles/'+locale+'.json?instantiationKey='+_config.instantiationKey;
 					  			var params = {
 					  				locale:locale
 					  			};
-				  				$http.get(urlString,{params:params}).success(function(response){
-				  					_resourceBundle[locale] = response.data;
-				  					deferred.resolve(response);
+				  				return $http.get(urlString,{params:params}).success(function(response){
+			  						_resourceBundle[locale] = response.data;
+				  					//deferred.resolve(response);
+				  				}).error(function(response){
+				  					_resourceBundle[locale] = {};
+				  					//deferred.reject(response);
 				  				});
-				  				return deferred.promise;
-				  				
 					  		},
 							
 					  		<!---replaceStringTemplate:function(template,object,formatValues,removeMissingKeys){
@@ -1312,7 +1303,7 @@ Notes:
 									}
 									
 									this.metaData.$$getDetailTabs = function(){
-										<cfset local.tabsDirectory = expandPath( '/Slatwall/admin/client/js/directives/partials/entity/#local.entity.getClassName()#/' )>
+										<cfset local.tabsDirectory = expandPath( '/Slatwall/admin/client/partials/entity/#local.entity.getClassName()#/' )>
 										<cfdirectory
 										    action="list"
 										    directory="#local.tabsDirectory#"
