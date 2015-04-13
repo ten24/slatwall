@@ -89,7 +89,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		//Assert Promotion has been added
 		order = variables.orderService.process(order,order_addPromotionCode,'addPromotionCode');
-		request.debug(order.hasPromotionCode());
 		assertEquals(arrayLen(order.getPromotionCodes()),1);
 		
 	}
