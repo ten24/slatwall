@@ -1,18 +1,5 @@
 "use strict";
 angular.module('slatwalladmin').directive('swConfirm', ['$slatwall', '$log', '$compile', '$modal', function($slatwall, $log, $compile, $modal) {
-  var confirmationModalController = function($scope, $modalInstance) {
-    $scope.deleteEntity = function(entity) {
-      $log.debug("Deleting an entity.");
-      $log.debug($scope.entity);
-      this.close();
-    };
-    $scope.close = function() {
-      $modalInstance.close();
-    };
-    $scope.cancel = function() {
-      $modalInstance.dismiss('cancel');
-    };
-  };
   var buildConfirmationModal = function(simple, useRbKey, confirmText, messageText, noText, yesText, callback) {
     var confirmKey = "[confirm]";
     var messageKey = "[message]";
@@ -60,6 +47,8 @@ angular.module('slatwalladmin').directive('swConfirm', ['$slatwall', '$log', '$c
       entity: "="
     },
     link: function(scope, element, attr) {
+      $log.debug("Modal is: ");
+      $log.debug($modal);
       element.bind('click', function() {
         var useRbKey = attr.useRbKey || "false";
         var simple = attr.simple || false;
@@ -71,7 +60,7 @@ angular.module('slatwalladmin').directive('swConfirm', ['$slatwall', '$log', '$c
         var templateString = buildConfirmationModal(simple, useRbKey, confirmText, messageText, noText, yesText, callback);
         var modalInstance = $modal.open({
           template: templateString,
-          controller: confirmationModalController
+          controller: 'confirmationModalController'
         });
         modalInstance.result.then(function(test) {
           $log.debug("Callback Called");
@@ -83,5 +72,17 @@ angular.module('slatwalladmin').directive('swConfirm', ['$slatwall', '$log', '$c
         });
       });
     }
+  };
+}]).controller('confirmationModalController', ['$scope', '$log', '$modalInstance', function($scope, $log, $modalInstance) {
+  $scope.deleteEntity = function(entity) {
+    $log.debug("Deleting an entity.");
+    $log.debug($scope.entity);
+    this.close();
+  };
+  $scope.close = function() {
+    $modalInstance.close();
+  };
+  $scope.cancel = function() {
+    $modalInstance.dismiss('cancel');
   };
 }]);
