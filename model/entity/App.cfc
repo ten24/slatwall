@@ -58,6 +58,7 @@ component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="t
 	property name="integration" hb_populateEnabled="public" cfc="Integration" fieldtype="many-to-one" fkcolumn="integrationID";
 	 
 	// Related Object Properties (one-to-many)
+	property name="sites" type="array" cfc="Site" singularname="site" fieldtype="one-to-many" fkcolumn="appID" cascade="all-delete-orphan" inverse="true";
 	
 	// Related Object Properties (many-to-many - owner)
 

@@ -13,8 +13,6 @@ component {
 	//announced event should send eventdata of appid,siteid,contentURL
 	public void function onEvent( required any slatwallScope, required any eventName) {
 		if(arguments.eventName == 'setupGlobalRequestComplete' && !isnull(arguments.appID)){
-			
-			
 			//try to get a site form the domain name
 			
 			var domainNameSite = arguments.slatwallScope.getService('siteService').getCurrentRequestSite();
@@ -32,23 +30,24 @@ component {
 				//if we obtained a site and it is allowed by the domain name then prepare to render content
 				if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID()){
 					//if a site does exist then check that site directory for the template
-					if(directoryExists(arguments.slatwallScope.getApplicationValue('applicationRootMappingPath') & '/apps/' & domainNamesite.getApp().getAppID() & '/' & domainNamesite.getSiteID())) {
-						var siteDirectory = arguments.slatwallScope.getApplicationValue('applicationRootMappingPath') & '/apps/' & domainNamesite.getApp().getAppID() & '/' & domainNamesite.getSiteID();
-						//now that we have the site directory, we should see if we can retrieve the content via the urltitle and site
-						var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitle(site.getSiteID(),arguments.contentURL);
-						if(isNull(content)){
-							throw('content does not exists for #arguments.contentURL#');
-						}
-						var contentTemplateFile = content.Setting('contentTemplateFile');
+					if(isNull(arguments.conentURL)){
 						
-						writeDump(var=contentTemplateFile,top=2);
-						writeDump(var=content,top=2);abort;
 					}else{
-						throw('site directory does not exist for ' & site.getSiteName());
+						if(directoryExists(arguments.slatwallScope.getApplicationValue('applicationRootMappingPath') & '/apps/' & domainNamesite.getApp().getAppID() & '/' & domainNamesite.getSiteID())) {
+							var siteDirectory = arguments.slatwallScope.getApplicationValue('applicationRootMappingPath') & '/apps/' & domainNamesite.getApp().getAppID() & '/' & domainNamesite.getSiteID();
+							//now that we have the site directory, we should see if we can retrieve the content via the urltitle and site
+							var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitle(site.getSiteID(),arguments.contentURL);
+							if(isNull(content)){
+								throw('content does not exists for #arguments.contentURL#');
+							}
+							var contentTemplateFile = content.Setting('contentTemplateFile');
+							
+						}else{
+							throw('site directory does not exist for ' & site.getSiteName());
+						}
 					}
 				}
 			}
 		}
-		
 	}
 }

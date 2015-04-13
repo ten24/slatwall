@@ -299,8 +299,10 @@ component extends="HibachiService" output="false" accessors="true" {
 	public array function getSettingOptions(required string settingName, any settingObject) {
 		switch(arguments.settingName) {
 			case "contentTemplateFile":
-				var optionSL = ['test.cfm'];
-				return optionSL;
+				if(structKeyExists(arguments, "settingObject")) {
+					return getService('contentService').getCMSTemplateOptions(arguments.settingObject.getContent());
+				}
+				return [];
 			case "accountPaymentTerm" :
 				var optionSL = getPaymentService().getPaymentTermSmartList();
 				optionSL.addFilter('activeFlag', 1);
