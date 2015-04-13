@@ -81,7 +81,16 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(arraylen(order.getOrderItems()),1);
 		assertEquals(order.getOrderItems()[1].getSku().getSkuID(),'8a8080834721af1a0147220714810083');
 		
+		//Add Promotion to Order
+		var order_addPromotionCode = {
+			promotionCodeID = '8a804483472135b6014721625eee0123',
+			orderID = order.getOrderID()
+		};
 		
+		//Assert Promotion has been added
+		order = variables.orderService.process(order,order_addPromotionCode,'addPromotionCode');
+		request.debug(order.hasPromotionCode());
+		assertEquals(arrayLen(order.getPromotionCodes()),1);
 		
 	}
 
