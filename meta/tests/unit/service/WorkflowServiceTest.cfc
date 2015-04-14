@@ -138,7 +138,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var workflowTasksConditionsConfig = '[
 				{
-					"filterGroups":[
+					"workflowConditionGroup":[
 						{
 							"propertyIdentifier":"defaultSku.price",
 							"constraintType":"minValue",
@@ -155,7 +155,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				},
 				{
 					"logicalOperator":"AND",
-					"filterGroups":[
+					"workflowConditionGroup":[
 						{
 							"propertyIdentifier":"defaultSku.price",
 							"constraintType":"maxValue",
@@ -194,7 +194,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var workflowTasksConditionsConfig = '[
 				{
-					"filterGroups":[
+					"workflowConditionGroup":[
 						{
 							"propertyIdentifier":"defaultSku.price",
 							"constraintType":"minValue",
@@ -211,7 +211,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				},
 				{
 					"logicalOperator":"AND",
-					"filterGroups":[
+					"workflowConditionGroup":[
 						{
 							"propertyIdentifier":"defaultSku.price",
 							"constraintType":"maxValue",

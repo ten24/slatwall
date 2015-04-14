@@ -110,80 +110,84 @@ component extends="HibachiService" accessors="true" output="false" {
 					if(!isnull(workflowTaskAction.getUpdateData())){
 						// Setup an action success variable
 						var actionSuccess = true;
-						arguments.data.entity.setAnnounceEvent(false);
-						switch (workflowTaskAction.getActionType()) {
-							
-							// EMAIL
-							case 'email' :
-							
-								var email = getEmailService().generateAndSendFromEntityAndEmailTemplate(entity=arguments.data.entity, emailTemplate=workflowTaskAction.getEmailTemplate());
-								if(email.hasErrors()) {
-									actionSuccess = false;
-								}
+						
+						if(!isnull(workflowTaskAction.getActionType())){
+							arguments.data.entity.setAnnounceEvent(false);
+							switch (workflowTaskAction.getActionType()) {
 								
-								break;
+								// EMAIL
+								case 'email' :
 								
-							// PRINT
-							case 'print' :
-							
-								var print = getPrintService().generateAndPrintFromEntityAndPrintTemplate(entity=arguments.data.entity, emailTemplate=workflowTaskAction.getPrintTemplate());
-								if(print.hasErrors()) {
-									actionSuccess = false;
-								}
+									var email = getService('emailService').generateAndSendFromEntityAndEmailTemplate(entity=arguments.data.entity, emailTemplate=workflowTaskAction.getEmailTemplate());
+									if(email.hasErrors()) {
+										actionSuccess = false;
+									}
+									
+									break;
+									
+								// PRINT
+								case 'print' :
 								
-								break;
-							
-							// UPDATE
-	        				case 'update' :
-	        				
-	        					// Setup the updateData object that will be used during the save functions 'populate'
-	        					var updateData = {};
-	        					// Attempt to pull the update data out of the object
-	        					if(isJSON(workflowTaskAction.getUpdateData())) {
-	        						var allUpdateData = deserializeJSON(workflowTaskAction.getUpdateData());
-	        						
-	        						// If there is static data, set that as the updateData by default
-	        						if(structKeyExists(allUpdateData, "staticData")) {
-	        							updateData = allUpdateData.staticData;
-	        						}
-	        						
-	        						// Then look for dynamic data that needs to be updated
-	        						if(structKeyExists(allUpdateData, "dynamicData")) {
-	        							structAppend(updateData, setupDynamicUpdateData(arguments.data.entity, allupdateData.dynamicData));
-	        						}
-	        						
-	        						getHibachiScope().saveEntity(arguments.data.entity,updateData);
-	        					};
-	        					
-	        					
-	        					if(arguments.data.entity.hasErrors()) {
-	        						actionSuccess = false;
-	        					}
-	        					
-	        					break;
-	        					
-	        				case 'process' :
-	        				
-	        					// TODO: Impliment This
-	        					break;
-	        					
-	        				case 'import' :
-	        				
-	        					// TODO: Impliment This
-	        					break;
-	        					
-	        				case 'export' :
-	        				
-	        					// TODO: Impliment This
-	        					break;
-	        					
-	        				case 'delete' :
-	        				
-	        					actionSuccess = getHibachiScope().deleteEntity(arguments.data.entity);
-	        					
-	        					break;
-	        			}
-	        			arguments.data.entity.setAnnounceEvent(true);
+									var print = getService('printService').generateAndPrintFromEntityAndPrintTemplate(entity=arguments.data.entity, emailTemplate=workflowTaskAction.getPrintTemplate());
+									if(print.hasErrors()) {
+										actionSuccess = false;
+									}
+									
+									break;
+								
+								// UPDATE
+		        				case 'update' :
+		        				
+		        					// Setup the updateData object that will be used during the save functions 'populate'
+		        					var updateData = {};
+		        					// Attempt to pull the update data out of the object
+		        					if(isJSON(workflowTaskAction.getUpdateData())) {
+		        						var allUpdateData = deserializeJSON(workflowTaskAction.getUpdateData());
+		        						
+		        						// If there is static data, set that as the updateData by default
+		        						if(structKeyExists(allUpdateData, "staticData")) {
+		        							updateData = allUpdateData.staticData;
+		        						}
+		        						
+		        						// Then look for dynamic data that needs to be updated
+		        						if(structKeyExists(allUpdateData, "dynamicData")) {
+		        							structAppend(updateData, setupDynamicUpdateData(arguments.data.entity, allupdateData.dynamicData));
+		        						}
+		        						
+		        						getHibachiScope().saveEntity(arguments.data.entity,updateData);
+		        					};
+		        					
+		        					
+		        					if(arguments.data.entity.hasErrors()) {
+		        						actionSuccess = false;
+		        					}
+		        					
+		        					break;
+		        					
+		        				case 'process' :
+		        				
+		        					// TODO: Impliment This
+		        					break;
+		        					
+		        				case 'import' :
+		        				
+		        					// TODO: Impliment This
+		        					break;
+		        					
+		        				case 'export' :
+		        				
+		        					// TODO: Impliment This
+		        					break;
+		        					
+		        				case 'delete' :
+		        				
+		        					actionSuccess = getHibachiScope().deleteEntity(arguments.data.entity);
+		        					
+		        					break;
+		        			}
+		        			arguments.data.entity.setAnnounceEvent(true);
+						}
+						
         			}
         			
 				}
@@ -260,7 +264,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return 'AND';
 	}
 	
-	private string function getWorkflowConditionGroupsString(required any entity, required any workflowConditionGroups){
+	private string function getWorkflowConditionGroupsString(required any entity, required array workflowConditionGroups){
 		var workflowConditionGroupsString = '';
 		for(var workflowConditionGroup in arguments.workflowConditionGroups){
 			
@@ -269,7 +273,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			if(structKeyExists(workflowConditionGroup,'logicalOperator')){
 				logicalOperator = getLogicalOperator(workflowConditionGroup.logicalOperator);
 			}
-			var workflowConditionGroupString = getWorkflowConditionGroupString(arguments.entity,workflowConditionGroup.filterGroups);
+			var workflowConditionGroupString = getWorkflowConditionGroupString(arguments.entity,workflowConditionGroup);
 			if(len(workflowConditionGroupString)){
 				workflowConditionGroupsString &= " #logicalOperator# (#workflowConditionGroupString#)";
 			}
@@ -277,26 +281,64 @@ component extends="HibachiService" accessors="true" output="false" {
 		return workflowConditionGroupsString;
 	}
 	
-	private string function getWorkflowConditionGroupString(required any entity,required array workflowConditionGroup){
+	private string function getWorkflowConditionGroupString(required any entity,required struct workflowConditionGroup){
 		var workflowConditionGroupString = '';
 		
-		for(workflowCondition in arguments.workflowConditionGroup){
-			var logicalOperator = '';
-			if(structKeyExists(workflowCondition,"logicalOperator")){
-				logicalOperator = workflowCondition.logicalOperator;
-			}
-			
-			if(structKeyExists(workflowCondition,'workflowConditionGroup')){
-				workflowConditionGroupString &= getWorkflowConditionGroupsString([workflowCondition]);
+		var logicalOperator = '';
+		if(structKeyExists(workflowConditionGroup,"logicalOperator")){
+			logicalOperator = workflowConditionGroup.logicalOperator;
+		}
+		
+		if(structKeyExists(workflowConditionGroup,'filterGroups')){
+			workflowConditionGroupString &= getWorkflowConditionGroupsString(arguments.workflowConditionGroup.filterGroups);
+		}else{
+			if(structKeyExists(arguments.workflowConditionGroup,'propertyIdentifier') && len(arguments.workflowConditionGroup.propertyIdentifier)){
+				var constraintType = getConstraintType(arguments.workflowConditionGroup.comparisonOperator);
+				var conditionResult = getHibachiValidationService().invokeMethod('validate_#constraintType#',{1=arguments.entity, 2=arguments.workflowConditionGroup.propertyIdentifier, 3=arguments.workflowConditionGroup.value});
+				
 			}else{
-				var conditionResult = getHibachiValidationService().invokeMethod('validate_#workflowCondition.constraintType#',{1=arguments.entity, 2=workflowCondition.propertyIdentifier, 3=workflowCondition.constraintValue});
-				workflowConditionGroupString &= " #logicalOperator# #conditionResult# " ;
+				var conditionResult = 'true';
+				
 			}
+			workflowConditionGroupString &= " #logicalOperator# #conditionResult# " ;
 		}
 		
 		return workflowConditionGroupString;
 	}
 	
+	private string function getConstraintType(required string comparisonOperator)
+	{
+		switch(arguments.comparisonOperator){
+			case "=":
+				return "eq";
+			break;
+			case "!=":
+				return "neq";
+			break;
+			case "<>":
+				return "neq";
+			break;
+			case ">":
+				return "gt";
+			break;
+			case "<":
+				return "lt";
+			break;
+			case "<=":
+				return "gte";
+			break;
+			case ">=":
+				return "lte";
+			break;
+			case "in":
+				return "inList";
+			break;
+			case "not in":
+				return "notInList";
+			break;
+		}
+		return '';
+	}	
 	private boolean function entityPassesAllWorkflowTaskConditions( required any entity, required any taskConditions ) {
 		/*
 		
