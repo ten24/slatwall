@@ -20,7 +20,7 @@ angular.module('slatwalladmin')
 			restrict: 'E',
 			templateUrl:collectionPartialsPath+'criteriastring.html',
 			link: function(scope, element, attrs){
-				var getStringOptions = function(){
+				var getStringOptions = function(type){
 			    	var stringOptions = [
 						
 						{
@@ -84,7 +84,7 @@ angular.module('slatwalladmin')
 			    };
 			    //initialize values
 			    
-			    scope.conditionOptions = getStringOptions();
+			    scope.conditionOptions = getStringOptions(scope.comparisonType);
 			    
 			    scope.inListArray = [];
     			if(angular.isDefined(scope.filterItem.value)){

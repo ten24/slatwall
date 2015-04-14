@@ -20,7 +20,7 @@ angular.module('slatwalladmin')
 			restrict: 'E',
 			templateUrl:collectionPartialsPath+'criteriadate.html',
 			link: function(scope, element, attrs){
-				var getDateOptions = function(){
+				var getDateOptions = function(type){
 			    	var dateOptions = [
 			    		{
 			    			display:"Date",
@@ -169,7 +169,7 @@ angular.module('slatwalladmin')
 			    	return dateOptions;
 			    };
 			    
-			    scope.conditionOptions = getDateOptions();
+			    scope.conditionOptions = getDateOptions(scope.comparisonType);
 				scope.today = function() {
 					if (angular.isDefined(scope.selectedFilterProperty)) {
 						scope.selectedFilterProperty.criteriaRangeStart = new Date();

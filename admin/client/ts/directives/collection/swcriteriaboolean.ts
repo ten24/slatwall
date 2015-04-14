@@ -20,7 +20,7 @@ angular.module('slatwalladmin')
 			restrict: 'E',
 			templateUrl:collectionPartialsPath+'criteriaboolean.html',
 			link: function(scope, element, attrs){
-				 var getBooleanOptions = function(){
+				 var getBooleanOptions = function(type){
 			    	var booleanOptions = [
 			    		{
 			    			display:"True",
@@ -46,7 +46,7 @@ angular.module('slatwalladmin')
 			    	return booleanOptions;
 			    };
 			    
-			    scope.conditionOptions = getBooleanOptions();
+			    scope.conditionOptions = getBooleanOptions(scope.comparisonType);
 			    
 			    angular.forEach(scope.conditionOptions, function(conditionOption){
 					

@@ -20,10 +20,16 @@ angular.module('slatwalladmin')
 				filterGroupItem: "=",
 				filterPropertiesList:"=",
 				saveCollection:"&",
-				filterGroup:"="
+				filterGroup:"=",
+				comparisonType:"="
 			},
 			templateUrl:collectionPartialsPath+"filtergroups.html",
 			controller: ['$scope','$element','$attrs',function($scope, $element,$attrs){
+				//if the filter group comparisontype is not specified, then assume we are doing filters
+				if(angular.isUndefined(scope.comparisonType)){
+					scope.comparisonType = 'filter';
+				}
+				
 				$scope.itemInUse = false;
 				$log.debug('collectionConfig');
 				$log.debug($scope.collectionConfig);

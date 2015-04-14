@@ -140,6 +140,29 @@ angular.module('slatwalladmin')
 						value:"null"
 					}
 				];
+				if(type === 'condition'){
+					stringOptions = [
+					
+					{
+						display:"Equals",
+						comparisonOperator:"="
+					},
+					{
+						display:"In List",
+						comparisonOperator:"in"
+					},
+					{
+						display:"Defined",
+						comparisonOperator:"is not",
+						value:"null"
+					},
+					{
+						display:"Not Defined",
+						comparisonOperator:"is",
+						value:"null"
+					}
+				];
+				}
 	    	}
 	    	
 			return stringOptions;
@@ -150,7 +173,7 @@ angular.module('slatwalladmin')
 	    	if(angular.isUndefined(type)){
 	    		type = 'filter';
 	    	}
-	    	if(type == 'filter'){
+	    	if(type === 'filter' || type === 'condition'){
 	    	
 		    	booleanOptions = [
 		    		{
@@ -183,7 +206,7 @@ angular.module('slatwalladmin')
 	    	if(angular.isUndefined(type)){
 	    		type = 'filter';
 	    	}
-	    	if(type == 'filter'){
+	    	if(type === 'filter'){
 	    		
 		    	dateOptions = [
 		    		{
@@ -330,6 +353,22 @@ angular.module('slatwalladmin')
 					}
 		    	];
 		    }
+		    
+		    if(type === 'condition'){
+	    		
+		    	dateOptions = [
+					{
+						display:"Defined",
+						comparisonOperator:"is not",
+						value:"null"
+					},
+					{
+						display:"Not Defined",
+						comparisonOperator:"is",
+						value:"null"
+					}
+		    	];
+		    }
 	    	
 	    	return dateOptions;
 	    };
@@ -395,6 +434,48 @@ angular.module('slatwalladmin')
 					}
 		    	];
 		    }
+		    if(type === 'condition'){
+		    	numberOptions = [
+		    		{
+						display:"Equals",
+						comparisonOperator:"="
+					},
+					{
+						display:"Doesn't Equal",
+						comparisonOperator:"<>"
+					},
+		    		{
+		    			display:"Greater Than",
+		    			comparisonOperator:">"
+		    		},
+		    		{
+		    			display:"Greater Than Or Equal",
+		    			comparisonOperator:">="
+		    		},
+		    		{
+		    			display:"Less Than",
+		    			comparisonOperator:"<"
+		    		},
+		    		{
+		    			display:"Less Than Or Equal",
+		    			comparisonOperator:"<="
+		    		},
+					{
+						display:"In List",
+						comparisonOperator:"in"
+					},
+					{
+						display:"Defined",
+						comparisonOperator:"is not",
+						value:"null"
+					},
+					{
+						display:"Not Defined",
+						comparisonOperator:"is",
+						value:"null"
+					}
+		    	];
+		    }
 	    	return numberOptions;
 	    };
 	    	
@@ -431,6 +512,9 @@ angular.module('slatwalladmin')
 		        	}*/
 		        ];
 		    }
+		    if(type === 'condition'){
+		    	oneToManyOptions = [];
+		    }
 	    	return oneToManyOptions;
 	    };
 	    
@@ -464,6 +548,18 @@ angular.module('slatwalladmin')
 		        		value:"null"
 		        	}
 		        ];
+		    }
+		    if(type === 'condition'){
+		    	{
+	        		display:"Empty",
+	        		comparisonOperator:"is",
+	        		value:"null"
+	        	},
+	        	{
+	        		display:"Not Empty",
+	        		comparisonOperator:"is not",
+	        		value:"null"
+	        	}
 		    }
 	    	return manyToManyOptions;
 	    };

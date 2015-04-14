@@ -19,7 +19,7 @@ angular.module('slatwalladmin')
 			restrict: 'E',
 			templateUrl:collectionPartialsPath+'criterianumber.html',
 			link: function(scope, element, attrs){
-				var getNumberOptions = function(){
+				var getNumberOptions = function(type){
 			    	var numberOptions = [
 			    		{
 							display:"Equals",
@@ -84,7 +84,7 @@ angular.module('slatwalladmin')
  		    		}
  		    	});
     			 
-    				scope.conditionOptions = getNumberOptions();
+    				scope.conditionOptions = getNumberOptions(scope.comparisonType);
 	    			scope.criteriaRangeChanged = function(selectedFilterProperty){
 					  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
 	    			};
