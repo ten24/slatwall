@@ -16,12 +16,20 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', ['$http', '$lo
       scope.$id = 'productBundleGroup';
       $log.debug('productBundleGroup');
       $log.debug(scope.productBundleGroup);
+      scope.showAdvanced = false;
+      scope.openCloseAndRefresh = function() {
+        scope.showAdvanced = !scope.showAdvanced;
+        $log.debug("OpenAndCloseAndRefresh");
+        $log.debug(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup);
+        $log.debug("Length:" + scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length);
+        if (scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length) {
+          scope.getCollection();
+        }
+      };
       scope.removeProductBundleGroup = function() {
         productBundleGroupsController.removeProductBundleGroup(scope.index);
         scope.productBundleGroup.$$delete();
       };
-      $log.debug('skuCollection22');
-      $log.debug(scope.productBundleGroup.data.skuCollectionConfig);
       scope.deleteEntity = function(type) {
         if (angular.isNumber(type)) {
           $log.debug("Deleting filter");
@@ -47,6 +55,8 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', ['$http', '$lo
         var collectionPromise = $slatwall.getEntity('Sku', options);
         collectionPromise.then(function(response) {
           scope.collection = response;
+          $log.debug("Collection Response");
+          $log.debug(scope.collection);
         });
       };
       scope.getCollection();
@@ -163,6 +173,7 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', ['$http', '$lo
         }
         scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(filterItem);
         scope.productBundleGroupFilters.value.splice(index, 1);
+        scope.productBundleGroup.forms[scope.formName].skuCollectionConfig.$setDirty();
       };
       if (angular.isUndefined(scope.filterPropertiesList)) {
         scope.filterPropertiesList = {};
@@ -177,6 +188,7 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', ['$http', '$lo
         scope.productBundleGroupFilters.value.push(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup[index]);
         scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "type");
         scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index, 1);
+        scope.productBundleGroup.forms[scope.formName].skuCollectionConfig.$setDirty();
       };
     }
   };
