@@ -869,29 +869,6 @@ function setupEventHandlers() {
 		}
 		$(this).find('.btn').toggleClass('btn-default');
 	});
-	
-	
-	// //File upload - change file when button triggered
-	// jQuery('body').on('click', '.s-btn-file :file', function(){
-	// 	console.log('this is in');
-	// 	var input = $(this), numFiles = input.get(0).files ? input.get(0).files.length : 1,label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-	// 	input.trigger('fileselect', [numFiles, label]);
-	// });
-	// 
-	// jQuery('body').on('click', '.s-btn-file', function(){
-	// 	$(this).find(':file').click();
-	// });
-	// 
-	// //File upload - add text when file changed
-	// jQuery('body').on('fileselect', '.s-btn-file :file', function(event, numFiles, label){
-	// 	console.log('in');
-	// 	var input = $(this).parents('.input-group').find(':text'), log = numFiles > 1 ? numFiles + ' files selected' : label;
-	// 	if(input.length) {
-	// 		input.val(log);
-	// 	}else{
-	// 		if(log) alert(log);
-	// 	};	
-	// });
 
 }
 
