@@ -15,5 +15,6 @@
 	</Columns>
 	<Records>
 		<Record promotionID="8a808083472135b6014721625eee0123" promotionName="testLove"  activeFlag="1"  />
+		<Record promotionID="37f57cd2eeaba8aa4f515f4c9a2a2f6d" promotionName="testRunnerNoCodePromo"  activeFlag="1" />
 	</Records>
 </Table>
