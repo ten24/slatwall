@@ -78,8 +78,21 @@
 		</cfcase>
 		<cfcase value="file">
 			<cfoutput>
+				<div class="s-file-upload">
+					<ul class="list-unstyled list-inline">
+						<li><input type="file" name="#attributes.fieldName#" #attributes.fieldAttributes#></li>
+						<cfif attributes.value neq ''>
+							<li><a href="#attributes.removeLink#" class="btn btn-xs btn-primary s-remove-btn s-remove">Remove <span>"#attributes.value#"</span></a></li>
+						</cfif>
+					</ul>
+				</div>
 				
-				<div class="input-group s-file-upload">
+				
+				
+				
+				
+				
+				<!--- <div class="input-group s-file-upload">
 					<span class="input-group-btn">
 						<button class="btn btn-sm btn-primary s-btn-file"><i class="fa fa-folder-open-o"></i> Browse&hellip; <input type="file" name="#attributes.fieldName#" #attributes.fieldAttributes#></button>
 						<cfif attributes.value neq ''>
@@ -87,7 +100,7 @@
 						</cfif>
 					</span>
 	                <input type="text" value="#attributes.value#" class=" #attributes.fieldClass# form-control" readonly>
-	            </div>
+	            </div> --->
 				
 			</cfoutput>
 		</cfcase>
