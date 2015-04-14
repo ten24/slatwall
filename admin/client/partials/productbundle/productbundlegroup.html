@@ -141,15 +141,14 @@
 						</sw-form>
 						<!-- Search for product -->
 						<div class="row s-bundle-group-items">
-							<div class="col-xs-12 s-title" ng-init="showAdvanced = false">
+							<div class="col-xs-12 s-title">
 								<h4>
-									Selections 
-									<button type="button" ng-click="showAdvanced = !showAdvanced" class="pull-right s-button-no-style">
+									<button type="button" ng-click="openCloseAndRefresh() " class="pull-right s-button-no-style">
 										Selections 
 										<span ng-show="!showAdvanced">
 											(Advanced)<!--Advanced should change to "Basic" when the basic seciton is displayed-->
-										</span>
-									</button>
+										</span> 
+									</button>  
 								</h4>
 							</div>
 							<span ng-show="!showAdvanced">
