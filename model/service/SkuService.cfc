@@ -544,17 +544,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		smartList.joinRelatedProperty("SlatwallSku", "product");
 		smartList.joinRelatedProperty("SlatwallProduct", "productType");
-		smartList.joinRelatedProperty("SlatwallSku", "alternateSkuCodes", "left");
 		
 		smartList.addKeywordProperty(propertyIdentifier="skuCode", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="skuID", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="publishedFlag", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="product.productName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="product.productType.productTypeName", weight=1);
-		smartList.addKeywordProperty(propertyIdentifier="alternateSkuCodes.alternateSkuCode", weight=1);
-		
-		// Must be set to distinct so that we can search alternate sku codes
-		smartList.setSelectDistinctFlag( true );
 				
 		return smartList;
 	}
