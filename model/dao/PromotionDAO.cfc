@@ -388,18 +388,13 @@ Notes:
 		
 		<!--- join allDiscounts with noQualifierCurrentActivePromotionPeriods to get  only the active prices ---> 
 		<cfset noQualifierDiscounts = getNoQualifierDiscounts(noQualifierCurrentActivePromotionPeriods, allDiscounts)>
-
-		<!--- Query to get the order Item information for a query of query --->
-		<cfquery name="orderItemDataQuery">
-			SELECT 
-				orderItemID,
-				skuPrice,
-				skuID
-			FROM 
-				SwOrderItem
-			WHERE
-				orderItemID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderItem.getOrderItemID()#">
-		</cfquery>
+	
+		<!--- Build a query to get the order Item information for a query of query --->
+		<cfset orderItemDataQuery = queryNew("orderItemID, skuPrice, skuID", "varchar, decimal, varchar")>
+		<cfset queryAddRow(orderItemDataQuery, 1)> 
+		<cfset querySetCell(orderItemDataQuery, "orderItemID", #arguments.orderItem.getOrderItemID()#, 1 )>
+		<cfset querySetCell(orderItemDataQuery, "skuPrice", #arguments.orderItem.getSkuPrice()#, 1 )>
+		<cfset querySetCell(orderItemDataQuery, "skuID", #arguments.orderItem.getSku().getSkuID()#, 1 )>
 	
 		<!--- Query of Query to join noQualifierDiscounts with the orderItemDataQuery. It also recalculates salePrice based on the OrderItem Price --->
 		<cfquery name="orderItemDiscountsQuery" dbtype="query">
