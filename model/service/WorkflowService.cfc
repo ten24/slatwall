@@ -84,7 +84,7 @@ component extends="HibachiService" accessors="true" output="false" {
 						
 						this.processWorkflow(workflowTrigger.getWorkflow(), processData, 'execute');
 					}
-					}
+				}
 				
 		}
 		
@@ -260,16 +260,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		return 'AND';
 	}
 	
-	private string function getWorkflowConditionGroupsString(required any entity,required array workflowConditionGroups){
+	private string function getWorkflowConditionGroupsString(required any entity, required any workflowConditionGroups){
 		var workflowConditionGroupsString = '';
 		for(var workflowConditionGroup in arguments.workflowConditionGroups){
-			var logicalOperator = '';
 			
+			var logicalOperator = '';
+		
 			if(structKeyExists(workflowConditionGroup,'logicalOperator')){
 				logicalOperator = getLogicalOperator(workflowConditionGroup.logicalOperator);
 			}
-			//constuct HQL to be used in filterGroup
-			var workflowConditionGroupString = getWorkflowConditionGroupString(arguments.entity,workflowConditionGroup.workflowConditionGroup);
+			var workflowConditionGroupString = getWorkflowConditionGroupString(arguments.entity,workflowConditionGroup.filterGroups);
 			if(len(workflowConditionGroupString)){
 				workflowConditionGroupsString &= " #logicalOperator# (#workflowConditionGroupString#)";
 			}
@@ -297,7 +297,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		return workflowConditionGroupString;
 	}
 	
-	private boolean function entityPassesAllWorkflowTaskConditions( required any entity, required array taskConditions ) {
+	private boolean function entityPassesAllWorkflowTaskConditions( required any entity, required any taskConditions ) {
 		/*
 		
 		You are going to want to use:
@@ -317,8 +317,12 @@ component extends="HibachiService" accessors="true" output="false" {
 		constraintValue = 'passwordConfirm'
 		
 		*/
-		return evaluate(getWorkflowConditionGroupsString(arguments.entity,arguments.taskConditions));
-		
+		//if we have a any workflow conditions then evaluate them otherwise evaluate as true
+		if(arraylen(arguments.taskConditions.filterGroups)){
+			return evaluate(getWorkflowConditionGroupsString(arguments.entity,arguments.taskConditions.filterGroups));
+		}else{
+			return true;
+		}
 	}
 	
 	private boolean function setupDynamicUpdateData(required any entity, required struct dynamicData) {
