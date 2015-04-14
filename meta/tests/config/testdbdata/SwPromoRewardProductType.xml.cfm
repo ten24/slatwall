@@ -6,5 +6,6 @@
 	</Columns>
 	<Records>
 		<Record promotionRewardID="fec7005d99f0b1fca7b98c2fe8823359" productTypeID="444df2f7ea9c87e60051f3cd87b435a1" />
+		<Record promotionRewardID="388f65aabc6a863d6b09808110eecece" productTypeID="444df2f7ea9c87e60051f3cd87b435a1" />
 	</Records>
 </Table>
