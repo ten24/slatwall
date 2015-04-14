@@ -61,7 +61,9 @@ angular.module('slatwalladmin')
 					collectionConfig:scope.productBundleGroup.data.skuCollectionConfig,
 					collectionObject:'Sku'
 				};
-				
+				/**
+				 * Adds a collection to scope
+				 */
 				scope.getCollection = function(){
 					var options = {
 							filterGroupsConfig:angular.toJson(scope.productBundleGroup.data.skuCollectionConfig.filterGroups),
