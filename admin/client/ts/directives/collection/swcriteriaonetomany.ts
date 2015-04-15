@@ -20,39 +20,51 @@ angular.module('slatwalladmin')
 			restrict: 'E',
 			templateUrl:collectionPartialsPath+'criteriaonetomany.html',
 			link: function(scope, element, attrs){
-				var getOneToManyOptions = function(){
-			    	var oneToManyOptions = [
-			        	{
-			        		display:"All Exist In Collection",
-			        		comparisonOperator:"All"
-			        	},
-			        	{
-			        		display:"None Exist In Collection",
-			        		comparisonOperator:"None"
-			        	},
-			        	{
-			        		display:"Some Exist In Collection",
-			        		comparisonOperator:"One"
-			        	}
-			        	/*,
-			        	{
-			        		display:"Empty",
-			        		comparisonOperator:"is",
-			        		value:"null"
-			        	},
-			        	{
-			        		display:"Not Empty",
-			        		comparisonOperator:"is not",
-			        		value:"null"
-			        	}*/
-			        ];
+				var getOneToManyOptions = function(type){
+					if(angular.isUndefined(type)){
+				 		type = 'filter'
+				 	}
+				 	var oneToManyOptions = [];
+				 	if(type === 'filter'){
+				 		oneToManyOptions = [
+				        	{
+				        		display:"All Exist In Collection",
+				        		comparisonOperator:"All"
+				        	},
+				        	{
+				        		display:"None Exist In Collection",
+				        		comparisonOperator:"None"
+				        	},
+				        	{
+				        		display:"Some Exist In Collection",
+				        		comparisonOperator:"One"
+				        	}
+				        	/*,
+				        	{
+				        		display:"Empty",
+				        		comparisonOperator:"is",
+				        		value:"null"
+				        	},
+				        	{
+				        		display:"Not Empty",
+				        		comparisonOperator:"is not",
+				        		value:"null"
+				        	}*/
+				        ];
+				 	}else if(type === 'condition'){
+				 		oneToManyOptions = [
+				 		
+				 		];
+				 	}
+				 	
+			    	
 			    	return oneToManyOptions;
 			    };
 			    
 			    $log.debug('onetomany');
 			    $log.debug(scope.selectedFilterProperty);
 				
-				scope.oneToManyOptions = getOneToManyOptions();
+				scope.oneToManyOptions = getOneToManyOptions(scope.comparisonType);
 				var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(scope.selectedFilterProperty.cfc);
 				existingCollectionsPromise.then(function(value){
 					scope.collectionOptions = value.data;

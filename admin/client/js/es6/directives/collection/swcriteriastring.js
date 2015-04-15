@@ -5,55 +5,63 @@ angular.module('slatwalladmin').directive('swCriteriaString', ['$log', '$slatwal
     restrict: 'E',
     templateUrl: collectionPartialsPath + 'criteriastring.html',
     link: function(scope, element, attrs) {
-      var getStringOptions = function() {
-        var stringOptions = [{
-          display: "Equals",
-          comparisonOperator: "="
-        }, {
-          display: "Doesn't Equal",
-          comparisonOperator: "<>"
-        }, {
-          display: "Contains",
-          comparisonOperator: "like",
-          pattern: "%w%"
-        }, {
-          display: "Doesn't Contain",
-          comparisonOperator: "not like",
-          pattern: "%w%"
-        }, {
-          display: "Starts With",
-          comparisonOperator: "like",
-          pattern: "w%"
-        }, {
-          display: "Doesn't Start With",
-          comparisonOperator: "not like",
-          pattern: "w%"
-        }, {
-          display: "Ends With",
-          comparisonOperator: "like",
-          pattern: "%w"
-        }, {
-          display: "Doesn't End With",
-          comparisonOperator: "not like",
-          pattern: "%w"
-        }, {
-          display: "In List",
-          comparisonOperator: "in"
-        }, {
-          display: "Not In List",
-          comparisonOperator: "not in"
-        }, {
-          display: "Defined",
-          comparisonOperator: "is not",
-          value: "null"
-        }, {
-          display: "Not Defined",
-          comparisonOperator: "is",
-          value: "null"
-        }];
+      var getStringOptions = function(type) {
+        if (angular.isUndefined(type)) {
+          type = 'filter';
+        }
+        var stringOptions = [];
+        if (type === 'filter') {
+          stringOptions = [{
+            display: "Equals",
+            comparisonOperator: "="
+          }, {
+            display: "Doesn't Equal",
+            comparisonOperator: "<>"
+          }, {
+            display: "Contains",
+            comparisonOperator: "like",
+            pattern: "%w%"
+          }, {
+            display: "Doesn't Contain",
+            comparisonOperator: "not like",
+            pattern: "%w%"
+          }, {
+            display: "Starts With",
+            comparisonOperator: "like",
+            pattern: "w%"
+          }, {
+            display: "Doesn't Start With",
+            comparisonOperator: "not like",
+            pattern: "w%"
+          }, {
+            display: "Ends With",
+            comparisonOperator: "like",
+            pattern: "%w"
+          }, {
+            display: "Doesn't End With",
+            comparisonOperator: "not like",
+            pattern: "%w"
+          }, {
+            display: "In List",
+            comparisonOperator: "in"
+          }, {
+            display: "Not In List",
+            comparisonOperator: "not in"
+          }, {
+            display: "Defined",
+            comparisonOperator: "is not",
+            value: "null"
+          }, {
+            display: "Not Defined",
+            comparisonOperator: "is",
+            value: "null"
+          }];
+        } else if (type === 'condition') {
+          stringOptions = [];
+        }
         return stringOptions;
       };
-      scope.conditionOptions = getStringOptions();
+      scope.conditionOptions = getStringOptions(scope.comparisonType);
       scope.inListArray = [];
       if (angular.isDefined(scope.filterItem.value)) {
         scope.inListArray = scope.filterItem.value.split(',');

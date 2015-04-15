@@ -4,137 +4,145 @@ angular.module("slatwalladmin").directive("swCriteriaDate", ["$log", "$slatwall"
 		restrict: "E",
 		templateUrl: collectionPartialsPath + "criteriadate.html",
 		link: function (scope, element, attrs) {
-			var getDateOptions = function () {
-				var dateOptions = [{
-					display: "Date",
-					comparisonOperator: "between",
-					dateInfo: {
-						type: "exactDate" }
-				}, {
-					display: "In Range",
-					comparisonOperator: "between",
-					dateInfo: {
-						type: "range"
-					}
-				}, {
-					display: "Not In Range",
-					comparisonOperator: "not between",
-					dateInfo: {
-						type: "range"
-					}
-				}, {
-					display: "Today",
-					comparisonOperator: "between",
-					dateInfo: {
-						type: "calculation",
-						measureType: "d",
-						measureCount: 0,
-						behavior: "toDate"
-					}
-				}, {
-					display: "Yesterday",
-					comparisonOperator: "between",
-					dateInfo: {
-						type: "calculation",
-						measureType: "d",
-						measureCount: -1,
-						behavior: "toDate"
-					}
-				}, {
-					display: "This Week",
-					comparisonOperator: "between",
-					dateInfo: {
-						type: "calculation",
-						measureType: "w",
-						behavior: "toDate"
-					}
-				}, {
-					display: "This Month",
-					comparisonOperator: "between",
-					dateInfo: {
-						type: "calculation",
-						measureType: "m",
-						behavior: "toDate"
-					}
-				}, {
-					display: "This Quarter",
-					comparisonOperator: "between",
-					dateInfo: {
-						type: "calculation",
-						measureType: "q",
-						behavior: "toDate"
-					}
-				}, {
-					display: "This Year",
-					comparisonOperator: "between",
-					dateInfo: {
-						type: "calculation",
-						measureType: "y",
-						behavior: "toDate"
-					}
-				}, {
-					display: "Last N Hour(s)",
-					comparisonOperator: "between",
-					dateInfo: {
-						type: "calculation",
-						measureType: "h",
-						measureTypeDisplay: "Hours"
-					}
-				}, {
-					display: "Last N Day(s)",
-					comparisonOperator: "between",
-					dateInfo: {
-						type: "calculation",
-						measureType: "d",
-						measureTypeDisplay: "Days"
-					}
-				}, {
-					display: "Last N Week(s)",
-					comparisonOperator: "between",
-					dateInfo: {
-						type: "calculation",
-						measureType: "w",
-						measureTypeDisplay: "Weeks"
+			var getDateOptions = function (type) {
+				if (angular.isUndefined(type)) {
+					type = "filter";
+				}
+				var dateOptions = [];
+				if (type === "filter") {
+					dateOptions = [{
+						display: "Date",
+						comparisonOperator: "between",
+						dateInfo: {
+							type: "exactDate" }
+					}, {
+						display: "In Range",
+						comparisonOperator: "between",
+						dateInfo: {
+							type: "range"
+						}
+					}, {
+						display: "Not In Range",
+						comparisonOperator: "not between",
+						dateInfo: {
+							type: "range"
+						}
+					}, {
+						display: "Today",
+						comparisonOperator: "between",
+						dateInfo: {
+							type: "calculation",
+							measureType: "d",
+							measureCount: 0,
+							behavior: "toDate"
+						}
+					}, {
+						display: "Yesterday",
+						comparisonOperator: "between",
+						dateInfo: {
+							type: "calculation",
+							measureType: "d",
+							measureCount: -1,
+							behavior: "toDate"
+						}
+					}, {
+						display: "This Week",
+						comparisonOperator: "between",
+						dateInfo: {
+							type: "calculation",
+							measureType: "w",
+							behavior: "toDate"
+						}
+					}, {
+						display: "This Month",
+						comparisonOperator: "between",
+						dateInfo: {
+							type: "calculation",
+							measureType: "m",
+							behavior: "toDate"
+						}
+					}, {
+						display: "This Quarter",
+						comparisonOperator: "between",
+						dateInfo: {
+							type: "calculation",
+							measureType: "q",
+							behavior: "toDate"
+						}
+					}, {
+						display: "This Year",
+						comparisonOperator: "between",
+						dateInfo: {
+							type: "calculation",
+							measureType: "y",
+							behavior: "toDate"
+						}
+					}, {
+						display: "Last N Hour(s)",
+						comparisonOperator: "between",
+						dateInfo: {
+							type: "calculation",
+							measureType: "h",
+							measureTypeDisplay: "Hours"
+						}
+					}, {
+						display: "Last N Day(s)",
+						comparisonOperator: "between",
+						dateInfo: {
+							type: "calculation",
+							measureType: "d",
+							measureTypeDisplay: "Days"
+						}
+					}, {
+						display: "Last N Week(s)",
+						comparisonOperator: "between",
+						dateInfo: {
+							type: "calculation",
+							measureType: "w",
+							measureTypeDisplay: "Weeks"
 
-					}
-				}, {
-					display: "Last N Month(s)",
-					comparisonOperator: "between",
-					dateInfo: {
-						type: "calculation",
-						measureType: "m",
-						measureTypeDisplay: "Months"
-					}
-				}, {
-					display: "Last N Quarter(s)",
-					comparisonOperator: "between",
-					dateInfo: {
-						type: "calculation",
-						measureType: "q",
-						measureTypeDisplay: "Quarters"
-					}
-				}, {
-					display: "Last N Year(s)",
-					comparisonOperator: "between",
-					dateInfo: {
-						type: "calculation",
-						measureType: "y",
-						measureTypeDisplay: "Years"
-					}
-				}, {
-					display: "Defined",
-					comparisonOperator: "is not",
-					value: "null"
-				}, {
-					display: "Not Defined",
-					comparisonOperator: "is",
-					value: "null"
-				}];
+						}
+					}, {
+						display: "Last N Month(s)",
+						comparisonOperator: "between",
+						dateInfo: {
+							type: "calculation",
+							measureType: "m",
+							measureTypeDisplay: "Months"
+						}
+					}, {
+						display: "Last N Quarter(s)",
+						comparisonOperator: "between",
+						dateInfo: {
+							type: "calculation",
+							measureType: "q",
+							measureTypeDisplay: "Quarters"
+						}
+					}, {
+						display: "Last N Year(s)",
+						comparisonOperator: "between",
+						dateInfo: {
+							type: "calculation",
+							measureType: "y",
+							measureTypeDisplay: "Years"
+						}
+					}, {
+						display: "Defined",
+						comparisonOperator: "is not",
+						value: "null"
+					}, {
+						display: "Not Defined",
+						comparisonOperator: "is",
+						value: "null"
+					}];
+				} else if (type === "condition") {
+					dateOptions = [];
+				}
 
 				return dateOptions;
 			};
 
-			scope.conditionOptions = getDateOptions();
+			scope.conditionOptions = getDateOptions(scope.comparisonType);
 			scope.today = function () {
 				if (angular.isDefined(scope.selectedFilterProperty)) {
 					scope.selectedFilterProperty.criteriaRangeStart = new Date();

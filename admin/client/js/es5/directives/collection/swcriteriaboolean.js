@@ -4,28 +4,36 @@ angular.module("slatwalladmin").directive("swCriteriaBoolean", ["$log", "$slatwa
 		restrict: "E",
 		templateUrl: collectionPartialsPath + "criteriaboolean.html",
 		link: function (scope, element, attrs) {
-			var getBooleanOptions = function () {
-				var booleanOptions = [{
-					display: "True",
-					comparisonOperator: "=",
-					value: "True"
-				}, {
-					display: "False",
-					comparisonOperator: "=",
-					value: "False"
-				}, {
-					display: "Defined",
-					comparisonOperator: "is not",
-					value: "null"
-				}, {
-					display: "Not Defined",
-					comparisonOperator: "is",
-					value: "null"
-				}];
+			var getBooleanOptions = function (type) {
+				if (angular.isUndefined(type)) {
+					type = "filter";
+				}
+				var booleanOptions = [];
+				if (type === "filter") {
+					booleanOptions = [{
+						display: "True",
+						comparisonOperator: "=",
+						value: "True"
+					}, {
+						display: "False",
+						comparisonOperator: "=",
+						value: "False"
+					}, {
+						display: "Defined",
+						comparisonOperator: "is not",
+						value: "null"
+					}, {
+						display: "Not Defined",
+						comparisonOperator: "is",
+						value: "null"
+					}];
+				} else if (type === "condition") {
+					booleanOptions = [];
+				}
 				return booleanOptions;
 			};
 
-			scope.conditionOptions = getBooleanOptions();
+			scope.conditionOptions = getBooleanOptions(scope.comparisonType);
 
 			angular.forEach(scope.conditionOptions, function (conditionOption) {
 				if (conditionOption.display == scope.filterItem.conditionDisplay) {

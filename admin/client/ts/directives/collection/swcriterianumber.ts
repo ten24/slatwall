@@ -20,60 +20,68 @@ angular.module('slatwalladmin')
 			templateUrl:collectionPartialsPath+'criterianumber.html',
 			link: function(scope, element, attrs){
 				var getNumberOptions = function(type){
-			    	var numberOptions = [
-			    		{
-							display:"Equals",
-							comparisonOperator:"="
-						},
-						{
-							display:"Doesn't Equal",
-							comparisonOperator:"<>"
-						},
-						{
-			    			display:"In Range",
-			    			comparisonOperator:	"between",
-			    			type:"range"
-			    		},
-			    		{
-			    			display:"Not In Range",
-			    			comparisonOperator:	"not between",
-			    			type:"range"
-			    		},
-			    		{
-			    			display:"Greater Than",
-			    			comparisonOperator:">"
-			    		},
-			    		{
-			    			display:"Greater Than Or Equal",
-			    			comparisonOperator:">="
-			    		},
-			    		{
-			    			display:"Less Than",
-			    			comparisonOperator:"<"
-			    		},
-			    		{
-			    			display:"Less Than Or Equal",
-			    			comparisonOperator:"<="
-			    		},
-						{
-							display:"In List",
-							comparisonOperator:"in"
-						},
-						{
-							display:"Not In List",
-							comparisonOperator:"not in"
-						},
-						{
-							display:"Defined",
-							comparisonOperator:"is not",
-							value:"null"
-						},
-						{
-							display:"Not Defined",
-							comparisonOperator:"is",
-							value:"null"
-						}
-			    	];
+					if(angular.isUndefined(type)){
+				 		type = 'filter'
+				 	}
+				 	var numberOptions = [];
+				 	if(type === 'filter'){
+				    	numberOptions = [
+				    		{
+								display:"Equals",
+								comparisonOperator:"="
+							},
+							{
+								display:"Doesn't Equal",
+								comparisonOperator:"<>"
+							},
+							{
+				    			display:"In Range",
+				    			comparisonOperator:	"between",
+				    			type:"range"
+				    		},
+				    		{
+				    			display:"Not In Range",
+				    			comparisonOperator:	"not between",
+				    			type:"range"
+				    		},
+				    		{
+				    			display:"Greater Than",
+				    			comparisonOperator:">"
+				    		},
+				    		{
+				    			display:"Greater Than Or Equal",
+				    			comparisonOperator:">="
+				    		},
+				    		{
+				    			display:"Less Than",
+				    			comparisonOperator:"<"
+				    		},
+				    		{
+				    			display:"Less Than Or Equal",
+				    			comparisonOperator:"<="
+				    		},
+							{
+								display:"In List",
+								comparisonOperator:"in"
+							},
+							{
+								display:"Not In List",
+								comparisonOperator:"not in"
+							},
+							{
+								display:"Defined",
+								comparisonOperator:"is not",
+								value:"null"
+							},
+							{
+								display:"Not Defined",
+								comparisonOperator:"is",
+								value:"null"
+							}
+				    	];
+				    }else if(type === 'condition'){
+				 		numberOptions = [];
+				 	}
 			    	return numberOptions;
 			    };
 			    

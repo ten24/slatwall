@@ -7,9 +7,13 @@ angular.module('slatwalladmin').directive('swCriteria', ['$log', '$slatwall', '$
       filterItem: "=",
       selectedFilterProperty: "=",
       filterPropertiesList: "=",
-      selectedFilterPropertyChanged: "&"
+      selectedFilterPropertyChanged: "&",
+      comparisonType: "="
     },
     templateUrl: collectionPartialsPath + 'criteria.html',
-    link: function(scope, element, attrs) {}
+    link: function(scope, element, attrs) {
+      console.log('comptype');
+      console.log(scope.comparisonType);
+    }
   };
 }]);

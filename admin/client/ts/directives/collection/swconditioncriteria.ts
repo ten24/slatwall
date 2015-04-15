@@ -499,17 +499,7 @@ angular.module('slatwalladmin')
 		        		display:"Some Exist In Collection",
 		        		comparisonOperator:"One"
 		        	}
-		        	/*,
-		        	{
-		        		display:"Empty",
-		        		comparisonOperator:"is",
-		        		value:"null"
-		        	},
-		        	{
-		        		display:"Not Empty",
-		        		comparisonOperator:"is not",
-		        		value:"null"
-		        	}*/
+		        	
 		        ];
 		    }
 		    if(type === 'condition'){
@@ -549,17 +539,19 @@ angular.module('slatwalladmin')
 		        	}
 		        ];
 		    }
-		    if(type === 'condition'){
-		    	{
-	        		display:"Empty",
-	        		comparisonOperator:"is",
-	        		value:"null"
-	        	},
-	        	{
-	        		display:"Not Empty",
-	        		comparisonOperator:"is not",
-	        		value:"null"
-	        	}
+		    if(type === 'condition'){ 
+		    	manyToManyOptions = [
+			    	{
+		        		display:"Empty",
+		        		comparisonOperator:"is",
+		        		value:"null"
+		        	},
+		        	{
+		        		display:"Not Empty",
+		        		comparisonOperator:"is not",
+		        		value:"null"
+		        	}
+	        	];
 		    }
 	    	return manyToManyOptions;
 	    };
@@ -844,7 +836,7 @@ angular.module('slatwalladmin')
 					if(angular.isDefined(scope.selectedFilterProperty.fieldtype)){
 						switch(scope.selectedFilterProperty.fieldtype){
 							case "many-to-one":
-								scope.conditionOptions = getManyToOneOptions();
+								scope.conditionOptions = getManyToOneOptions(scope.comparisonType);
 								$log.debug('many-to-one');
 								$log.debug(scope.selectedFilterProperty);
 								$log.debug(scope.filterPropertiesList);

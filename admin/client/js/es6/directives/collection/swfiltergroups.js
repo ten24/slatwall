@@ -8,10 +8,16 @@ angular.module('slatwalladmin').directive('swFilterGroups', ['$http', '$compile'
       filterGroupItem: "=",
       filterPropertiesList: "=",
       saveCollection: "&",
-      filterGroup: "="
+      filterGroup: "=",
+      comparisonType: "@"
     },
     templateUrl: collectionPartialsPath + "filtergroups.html",
     controller: ['$scope', '$element', '$attrs', function($scope, $element, $attrs) {
+      if (!angular.isDefined($scope.comparisonType)) {
+        $scope.comparisonType = 'filter';
+      }
+      console.log('comparisonType');
+      console.log($scope.comparisonType);
       $scope.itemInUse = false;
       $log.debug('collectionConfig');
       $log.debug($scope.collectionConfig);

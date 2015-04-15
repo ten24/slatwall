@@ -21,28 +21,36 @@ angular.module('slatwalladmin')
 			templateUrl:collectionPartialsPath+'criteriaboolean.html',
 			link: function(scope, element, attrs){
 				 var getBooleanOptions = function(type){
-			    	var booleanOptions = [
-			    		{
-			    			display:"True",
-			    			comparisonOperator:"=",
-			    			value:"True"
-			    		},
-			    		{
-			    			display:"False",
-			    			comparisonOperator:"=",
-			    			value:"False"
-			    		},
-						{
-							display:"Defined",
-							comparisonOperator:"is not",
-							value:"null"
-						},
-						{
-							display:"Not Defined",
-							comparisonOperator:"is",
-							value:"null"
-						}
-			    	];
+				 	if(angular.isUndefined(type)){
+				 		type = 'filter'
+				 	}
+				 	var booleanOptions = [];
+				 	if(type==='filter'){
+				    	booleanOptions = [
+				    		{
+				    			display:"True",
+				    			comparisonOperator:"=",
+				    			value:"True"
+				    		},
+				    		{
+				    			display:"False",
+				    			comparisonOperator:"=",
+				    			value:"False"
+				    		},
+							{
+								display:"Defined",
+								comparisonOperator:"is not",
+								value:"null"
+							},
+							{
+								display:"Not Defined",
+								comparisonOperator:"is",
+								value:"null"
+							}
+				    	];
+				    }else if(type === 'condition'){
+				 		booleanOptions = [];
+				 	}
 			    	return booleanOptions;
 			    };
 			    
