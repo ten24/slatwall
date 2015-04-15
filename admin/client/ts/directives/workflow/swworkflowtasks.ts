@@ -78,13 +78,9 @@ angular.module('slatwalladmin')
 				};
 				
 				/**
-				 * Add a workflow task.
+				 * Add a workflow task and logs the result.
 				 */
-				scope.addWorkflowTask = function(){
-				    logger('addWorkflowTasks', 'Calling $$addWorkflowTask');
-                    logger('addWorkflowTasks', 'Setting the form submitted for validation');
-                    $log.debug(scope.workflow);
-                    scope.forms['workflow.'].$setSubmitted();
+				scope.addWorkflowTask = function(){ 
 					var newWorkflowTask = scope.workflow.$$addWorkflowTask();
 					logger("var newWorkflowTask", newWorkflowTask);
 					scope.selectWorkflowTask(newWorkflowTask);
