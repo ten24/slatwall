@@ -686,7 +686,7 @@ component extends="HibachiService" accessors="true" {
 				
 				for(var c=1; c<=listLen(arguments.processObject.getContents()); c++) {
 					var newSku = this.newSku();
-					newSku.setPrice(arguments.product.getPrice());
+					newSku.setPrice(arguments.processObject.getPrice());
 					newSku.setSkuCode(arguments.product.getProductCode() & "-#c#");
 					newSku.setProduct(arguments.product);
 					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.getContents(), c) ) );

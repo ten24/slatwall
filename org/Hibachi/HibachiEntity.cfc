@@ -852,8 +852,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 				setModifiedByAccount(getHibachiScope().getAccount().getAccountID());
 			}
 			
-			// Log audit only if admin user
-			if(!getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
+			// Log audit only if admin user or there are prevous audit recods
+			if(getService("hibachiAuditService").getAuditSmartListForEntity(entity=this).getRecordsCount() != 0 || !getHibachiScope().getAccount().isNew() && getHibachiScope().getAccount().getAdminAccountFlag() ) {
 			
 				getService("hibachiAuditService").logEntityModify(entity=this, oldData=arguments.oldData);
 			}
