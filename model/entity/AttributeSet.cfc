@@ -109,6 +109,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 			{value="OrderPayment", name=rbKey("entity.OrderPayment")},
 			{value="OrderFulfillment", name=rbKey("entity.OrderFulfillment")},
 			{value="OrderDelivery", name=rbKey("entity.OrderDelivery")},
+			{value="OptionGroup", name=rbKey("entity.OptionGroup")},
 			{value="Product", name=rbKey("entity.Product")},
 			{value="ProductBundleGroup", name=rbKey("entity.ProductBundleGroup")},
 			{value="ProductType", name=rbKey("entity.ProductType")},

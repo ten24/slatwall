@@ -726,12 +726,10 @@
 			return getPropertiesStructByEntityName( entityName=arguments.entityName )[ arguments.propertyName ]; 
 		}
 		
-		/*
 		public any function getEntitiesProcessContexts() {
-			if(!structKeyExists(variables, "entitiesProcessContexts")) {
+			if(!structCount(variables.entitiesProcessContexts)) {
 				var processContexts = {};
 				var emd = getEntitiesMetaData();
-				
 				for(var entityName in emd) {
 					if(structKeyExists(emd[ entityName ], "hb_processContexts")) {
 						processContexts[ entityName ] = listToArray(emd[ entityName ].hb_processContexts);
@@ -742,7 +740,6 @@
 			}
 			return variables.entitiesProcessContexts;
 		}
-		*/
 		
 		// =====================  END: Cached Entity Meta Data Methods ============================
 		

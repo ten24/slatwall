@@ -129,15 +129,16 @@ Notes:
 					</hb:HibachiDisplayToggle>
 					--->
 
-				<!--- SUBSCRIPTION --->
-				<cfelseif rc.processObject.getBaseProductType() eq "subscription">
+				<cfelseif rc.baseProductType eq "subscription">
 
-					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionTerms" />
-					<hb:HibachiListingDisplay smartList="SubscriptionTerm" multiselectFieldName="subscriptionTerms" edit="true">
-						<hb:HibachiListingColumn propertyIdentifier="subscriptionTermName" />
-					</hb:HibachiListingDisplay>
+						<swa:SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionTerms" />
+						<hb:HibachiListingDisplay smartList="SubscriptionTerm" multiselectFieldName="subscriptionTerms" title="#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionterms')#" edit="true">
+							<hb:HibachiListingColumn propertyIdentifier="subscriptionTermName" tdclass="primary" />
+						</hb:HibachiListingDisplay>
+	
 
 				</cfif>
+				
 
 			</hb:HibachiPropertyList>
 
@@ -152,11 +153,11 @@ Notes:
 				<hb:HibachiPropertyList>
 
 					<cfset contentSmartList = $.slatwall.getSmartList("Content") />
-					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="bundleContentAccessFlag" />
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="bundleContentAccessFlag" edit="true" />
 
 					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="contents" />
 					<hb:HibachiListingDisplay smartList="#contentSmartList#" multiselectFieldName="contents" edit="true">
-						<hb:HibachiListingColumn propertyIdentifier="title" />
+						<hb:HibachiListingColumn propertyIdentifier="title"  tdClass="primary" />
 					</hb:HibachiListingDisplay>
 
 				</hb:HibachiPropertyList>
@@ -183,7 +184,7 @@ Notes:
 
 				</hb:HibachiPropertyList>
 			</hb:HibachiPropertyRow>
-
+		
 		<!--- Merchandise --->
 		<cfelseif rc.processObject.getBaseProductType() eq "merchandise">
 
@@ -206,34 +207,24 @@ Notes:
 			</cfif>
 
 		<!--- Subscription --->
-		<cfelseif rc.processObject.getBaseProductType() eq "subscription">
+			
+		<cfelseif rc.baseProductType eq "subscription">
 
-			<hb:HibachiPropertyRow>
-
-				<hb:HibachiPropertyList divClass="col-md-6">
-
-					<h5>#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#</h5>
-					<br />
-					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionBenefits" />
-					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" edit="true">
-						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
+			<div class="row">
+				<div class="col-md-6">
+					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="subscriptionBenefits" />
+					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createproduct.selectsubscriptionbenefits')#" edit="true">
+						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
 					</hb:HibachiListingDisplay>
-
-
-				</hb:HibachiPropertyList>
-
-				<hb:HibachiPropertyList divClass="col-md-6">
-
-					<h5>#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits')#</h5>
-					<br />
-					<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalsubscriptionBenefits" />
-					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" edit="true">
-						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
+				</div>
+				<div class="col-md-6">
+					<swa:SlatwallErrorDisplay object="#rc.product#" errorName="renewalsubscriptionBenefits" />
+					<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" title="#$.slatwall.rbKey('admin.entity.createProduct.selectRenewalSubscriptionBenefits')#" edit="true">
+						<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" tdclass="primary" />
 					</hb:HibachiListingDisplay>
-
-				</hb:HibachiPropertyList>
-
-			</hb:HibachiPropertyRow>
+				</div>
+				
+			</div>
 
 		</cfif>
 

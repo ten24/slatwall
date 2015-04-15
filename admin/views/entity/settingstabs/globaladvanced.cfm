@@ -51,6 +51,7 @@ Notes:
 
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="globalAllowedOutsideRedirectSites" />
 		<swa:SlatwallSetting settingName="globalEncryptionAlgorithm" />
 		<swa:SlatwallSetting settingName="globalEncryptionEncoding" />
 		<swa:SlatwallSetting settingName="globalEncryptionKeySize" />

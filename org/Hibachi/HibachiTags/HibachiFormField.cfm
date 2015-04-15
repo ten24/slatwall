@@ -14,6 +14,7 @@
 	<cfparam name="attributes.autocompleteNameProperty" type="string" default="" />
 	<cfparam name="attributes.autocompleteValueProperty" type="string" default="" />
 	<cfparam name="attributes.autocompleteSelectedValueDetails" type="struct" default="#structNew()#" />
+	<cfparam name="attributes.removeLink" type="string" default=""/>
 
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
 	<!---
@@ -77,11 +78,21 @@
 		</cfcase>
 		<cfcase value="file">
 			<cfoutput>
-				<input type="file" name="#attributes.fieldName#" class="#attributes.fieldClass# form-control" #attributes.fieldAttributes# />
+				
+				<div class="input-group s-file-upload">
+					<span class="input-group-btn">
+						<button class="btn btn-sm btn-primary s-btn-file"><i class="fa fa-folder-open-o"></i> Browse&hellip; <input type="file" name="#attributes.fieldName#" #attributes.fieldAttributes#></button>
+						<cfif attributes.value neq ''>
+							<a href="#attributes.removeLink#" class="btn btn-sm btn-default s-remove-btn s-remove"><i class="fa fa-times"></i> Remove</a>
+						</cfif>
+					</span>
+	                <input type="text" value="#attributes.value#" class=" #attributes.fieldClass# form-control" readonly>
+	            </div>
+				
 			</cfoutput>
 		</cfcase>
 		<cfcase value="listingMultiselect">
-			<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectValues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" edit="true"></hb:HibachiListingDisplay>
+			<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" multiselectFieldName="#attributes.fieldName#" multiselectValues="#attributes.value#" multiselectPropertyIdentifier="#attributes.multiselectPropertyIdentifier#" title="#attributes.title#" edit="true"></hb:HibachiListingDisplay>
 		</cfcase>
 		<cfcase value="listingSelect">
 			<hb:HibachiListingDisplay smartList="#attributes.valueOptionsSmartList#" selectFieldName="#attributes.fieldName#" selectvalue="#attributes.value#" edit="true"></hb:HibachiListingDisplay>
@@ -174,10 +185,10 @@
 		</cfcase>
 		<cfcase value="textautocomplete">
 			<cfoutput>
-				<cfset suggestionsID = reReplace(lcase(attributes.fieldName), '[^a-z]', '', 'all') & "suggestions" />
+				<cfset suggestionsID = reReplace(attributes.fieldName, '[^0-9A-Za-z]','','all') & "-suggestions" />
 				<div class="autoselect-container">
 					<input type="hidden" name="#attributes.fieldName#" value="#htmlEditFormat(attributes.value)#" />
-					<input type="text" name="#replace(attributes.fieldName, '.','_','all')#-autocompletesearch" autocomplete="off" class="textautocomplete #attributes.fieldClass# form-control" data-acfieldname="#attributes.fieldName#" data-sugessionsid="#suggestionsID#" #attributes.fieldAttributes# <cfif len(attributes.value)>disabled="disabled"</cfif> />
+					<input type="text" name="#reReplace(attributes.fieldName, '[^0-9A-Za-z]','','all')#-autocompletesearch" autocomplete="off" class="textautocomplete #attributes.fieldClass# form-control" data-acfieldname="#attributes.fieldName#" data-sugessionsid="#suggestionsID#" #attributes.fieldAttributes# <cfif len(attributes.value)>disabled="disabled"</cfif> />
 					<div class="autocomplete-selected" <cfif not len(attributes.value)>style="display:none;"</cfif>><a href="##" class="textautocompleteremove"><i class="glyphicon glyphicon-remove"></i></a> <span class="value" id="selected-#suggestionsID#"><cfif len(attributes.value)>#attributes.autocompleteSelectedValueDetails[ attributes.autocompleteNameProperty ]#</cfif></span></div>
 					<div class="autocomplete-options" style="display:none;">
 						<ul class="#listLast(lcase(attributes.fieldName),".")#" id="#suggestionsID#">

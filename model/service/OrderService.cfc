@@ -119,7 +119,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var data = {
 				saveNewFlag=true,
-				copyPersonalDataFlag=false
+				copyPersonalDataFlag=false,
+				referencedOrderFlag=false
 			};
 			
 		var newOrder = this.processOrder(arguments.originalOrder,data,"duplicateOrder" );
@@ -341,39 +342,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			
 			// Setup child items for a bundle
+			//Need to also check child order items for child order items.
 			if( arguments.processObject.getSku().getBaseProductType() == 'productBundle' ) {
-				
-				for(var childItemData in arguments.processObject.getChildOrderItems()) {
-					var childOrderItem = this.newOrderItem();
-					
-					// Populate the childOrderItem with the data
-					childOrderItem.populate( childItemData );
-					
-					if(!isNull(childOrderItem.getSku()) && !isNull(childOrderItem.getProductBundleGroup())) {
-						
-						// Set quantity if needed
-						if(isNull(childOrderItem.getQuantity())) {
-							childOrderItem.setQuantity( 1 );
-						}
-						// Set orderFulfillment if needed
-						if(isNull(childOrderItem.getOrderFulfillment())) {
-							childOrderItem.setOrderFulfillment( orderFulfillment );
-						}
-						// Set fulfillmentMethod if needed
-						if(isNull(childOrderItem.getOrderFulfillment().getFulfillmentMethod())) {
-							childOrderItem.getOrderFulfillment().setFulfillmentMethod( listFirst(childOrderItem.getSku().setting('skuEligibleFulfillmentMethods')) );
-						}
-						childOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
-						if(childOrderItem.getSku().getUserDefinedPriceFlag() && structKeyExists(childItemData, 'price') && isNumeric(childItemData.price)) {
-							childOrderItem.setPrice( childItemData.price );
-						} else {
-							// TODO: calculate price base on adjustment type rule of bundle group
-							childOrderItem.setPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
-						}
-						childOrderItem.setSkuPrice( childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
-						childOrderItem.setParentOrderItem( newOrderItem );
-						childOrderItem.setOrder( arguments.order );
-						
+				if(arraylen(arguments.processObject.getChildOrderItems())){
+					for(var childOrderItemData in arguments.processObject.getChildOrderItems()) {
+						var childOrderItem = this.newOrderItem();
+						populateChildOrderItems(newOrderItem,childOrderItem,childOrderItemData,arguments.order,orderFulfillment);
 					}
 				}
 				
@@ -384,7 +358,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
 			newOrderItem.setQuantity( arguments.processObject.getQuantity() );
 			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( newOrderItem.getCurrencyCode() ) );
-			if(newOrderItem.getSku().getUserDefinedPriceFlag() && isNumeric(arguments.processObject.getPrice()) ) {
+			
+			
+			if(len(newOrderItem.getSku().getUserDefinedPriceFlag()) && newOrderItem.getSku().getUserDefinedPriceFlag() && isNumeric(arguments.processObject.getPrice()) ) {
 				newOrderItem.setPrice( arguments.processObject.getPrice() );	
 			} else {
 				newOrderItem.setPrice( newOrderItem.getSkuPrice() );
@@ -931,6 +907,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrder_duplicateOrder (required any order, struct data={}) {
 		var saveNewFlag = false;
 		var copyPersonalDataFlag = false;
+		var referencedOrderFlag = true;
 		
 		if (structKeyExists(data,'saveNewFlag')){
 			saveNewFlag = data.saveNewFlag ;
@@ -939,12 +916,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if (structKeyExists(data,'copyPersonalDataFlag')){
 			copyPersonalDataFlag = data.copyPersonalDataFlag ;
 		}
+		
+		if (structKeyExists(data,'referencedOrderFlag')){
+			referencedOrderFlag = data.referencedOrderFlag ;
+		}
 
 		var newOrder = this.newOrder(); 
 		
 		newOrder.setCurrencyCode( arguments.order.getCurrencyCode() );
-		newOrder.setReferencedOrder(arguments.order);
-		newOrder.setReferencedOrderType('duplicate');
+		
+		if (referencedOrderFlag == true){
+			newOrder.setReferencedOrder(arguments.order);
+			newOrder.setReferencedOrderType('duplicate');
+		}
 		
 		//Copy Order Attribtes
 		for(var attributeValue in arguments.order.getAttributeValues()) {
@@ -1198,20 +1182,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// Look for 'auto' order fulfillments
 							for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
 								
-								// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
-								if(arguments.order.getOrderFulfillments()[i].getFulfillmentMethodType() == "auto" && (order.getTotal() == 0 || order.getOrderFulfillments()[i].getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage') <= precisionEvaluate( order.getPaymentAmountReceivedTotal() * 100 / order.getTotal() ) ) ) {
-									
-									var newOrderDelivery = this.newOrderDelivery();
-									
-									// Setup the processData
-									var processData = {};
-									processData.order = {};
-									processData.order.orderID = arguments.order.getOrderID();
-									processData.location.locationID = arguments.order.getOrderFulfillments()[i].getFulfillmentMethod().setting('fulfillmentMethodAutoLocation');
-									processData.orderFulfillment.orderFulfillmentID = arguments.order.getOrderFulfillments()[i].getOrderFulfillmentID();
-									
-									newOrderDelivery = this.processOrderDelivery(newOrderDelivery, processData, 'create');
-								}
+								
+								createOrderDeliveryForAutoFulfillmentMethod(arguments.order.getOrderFulfillments()[i]);
 							}
 						}
 					}
@@ -1227,6 +1199,33 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		
 		return arguments.order;
+	}
+	
+	public any function createOrderDeliveryForAutoFulfillmentMethod(required any orderFulfillment){
+		
+		var order = arguments.orderFulfillment.getOrder();
+		
+		var newOrderDelivery = this.newOrderDelivery();
+		
+		// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
+		if(
+			arguments.orderFulfillment.getFulfillmentMethodType() == "auto" 
+			&& (
+				order.getTotal() == 0 
+				|| orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage') <= precisionEvaluate( order.getPaymentAmountReceivedTotal() * 100 / order.getTotal() ) 
+			) 
+		){
+												
+			// Setup the processData
+			var processData = {};
+			processData.order = {};
+			processData.order.orderID = order.getOrderID();
+			processData.location.locationID = arguments.orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodAutoLocation');
+			processData.orderFulfillment.orderFulfillmentID = arguments.orderFulfillment.getOrderFulfillmentID();
+			
+			newOrderDelivery = this.processOrderDelivery(newOrderDelivery, processData, 'create');
+		}
+		return newOrderDelivery;
 	}
 	
 	public any function processOrder_placeOnHold(required any order, struct data={}) {
@@ -1465,8 +1464,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
  					if(listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode){
  						if(!orderItem.getSku().getUserDefinedPriceFlag()) {
  							orderItem.setPrice(SkuPriceByCurrencyCode);	
+ 							orderItem.setSkuPrice(SkuPriceByCurrencyCode);
  						}
-						orderItem.setSkuPrice(SkuPriceByCurrencyCode);
 					}
 				}
 			}
@@ -1634,8 +1633,53 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					getAccountService().processAccountLoyalty(accountLoyalty, fulfillmentMethodUsedData, 'fulfillmentMethodUsed'); 
 				}
 			}
+			
+			saveOrderFulfillment( orderFulfillment );
 		}
+		
 		return arguments.orderDelivery;
+	}
+	
+	private any function populateChildOrderItems(required parentOrderItem, required childOrderItem, required childOrderItemData, required order, required orderFulfillment){
+		// Populate the childOrderItem with the data
+		arguments.childOrderItem.populate( arguments.childOrderItemData );
+		if(!isNull(arguments.childOrderItem.getSku())
+			&& !isNull(arguments.childOrderItem.getProductBundleGroup())
+		) {
+			
+			// Set quantity if needed
+			if(isNull(arguments.childOrderItem.getQuantity())) {
+				arguments.childOrderItem.setQuantity( 1 );
+			}
+			// Set orderFulfillment if needed
+			if(isNull(arguments.childOrderItem.getOrderFulfillment())) {
+				arguments.childOrderItem.setOrderFulfillment( arguments.orderFulfillment );
+			}
+			// Set fulfillmentMethod if needed
+			if(isNull(arguments.childOrderItem.getOrderFulfillment().getFulfillmentMethod())) {
+				arguments.childOrderItem.getOrderFulfillment().setFulfillmentMethod( listFirst(arguments.childOrderItem.getSku().setting('skuEligibleFulfillmentMethods')) );
+			}
+			arguments.childOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
+			if(arguments.childOrderItem.getSku().getUserDefinedPriceFlag() && structKeyExists(arguments.childOrderItemData, 'price') && isNumeric(arguments.childOrderItemData.price)) {
+				arguments.childOrderItem.setPrice( arguments.childOrderItemData.price );
+			} else {
+				// TODO: calculate price base on adjustment type rule of bundle group
+				arguments.childOrderItem.setPrice( arguments.childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+			}
+			arguments.childOrderItem.setSkuPrice( arguments.childOrderItem.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
+			arguments.childOrderItem.setParentOrderItem( arguments.parentOrderItem );
+			arguments.childOrderItem.setOrder( arguments.order );
+			if(structKeyExists(childOrderItemData,'childOrderItems')){
+				for(var childOfChildOrderItemData in arguments.childOrderItemData.childOrderItems) {
+					var childOfChildOrderItem = this.newOrderItem();
+					populateChildOrderItems(arguments.childOrderItem,childOfChildOrderItem,childOfChildOrderItemData,arguments.order,orderFulfillment);
+				}
+			}
+			if(arguments.childOrderItem.hasErrors()) {
+				arguments.order.addError('addOrderItem', arguments.childOrderItem.getErrors());
+			}
+			
+		}
 	}
 	
 	// Process: Order Delivery Item
@@ -1749,28 +1793,41 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderItem;
 	}
 
-	
 	public any function processOrderItem_updateStatus(required any orderItem) {
+
 		// First we make sure that this order item is not already fully fulfilled, or onHold because we cannont automatically update those statuses
-		if(!listFindNoCase("oistFulfilled,oistOnHold",arguments.orderItem.getOrderItemStatusType().getSystemCode())) {
+		if(!listFindNoCase("oistFulfilled,oistOnHold,oistReturned",arguments.orderItem.getOrderItemStatusType().getSystemCode())) {
 			
-			// If the quantityUndelivered is set to 0 then we can mark this as fulfilled
-			if(arguments.orderItem.getQuantityUndelivered() == 0) {
-				arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistFulfilled") );
+			//Dealing with a return item.
+			if(arguments.orderItem.getOrderItemType().getSystemCode() eq 'oitReturn'){
 				
-			// If the sku is setup to track inventory and the qoh is 0 then we can set the status to 'backordered'
-			} else if(arguments.orderItem.getSku().setting('skuTrackInventoryFlag') && arguments.orderItem.getSku().getQuantity('qoh') == 0) {
-				arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistBackordered") );
-					
-			// Otherwise we just set this to 'processing' to show that the item is in limbo
+				if(arguments.orderItem.getQuantityUnreceived() == 0){
+					arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistReturned") );
+				} else{
+					arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistProcessing") );
+				}
+
+			//Dealing with a Sale or Depost item
 			} else {
-				arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistProcessing") );
 				
+				// If the quantityUndelivered is set to 0 then we can mark this as fulfilled
+				if(arguments.orderItem.getQuantityUndelivered() == 0) {
+					arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistFulfilled") );
+					
+				// If the sku is setup to track inventory and the qoh is 0 then we can set the status to 'backordered'
+				} else if(arguments.orderItem.getSku().setting('skuTrackInventoryFlag') && arguments.orderItem.getSku().getQuantity('qoh') == 0) {
+					arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistBackordered") );
+						
+				// Otherwise we just set this to 'processing' to show that the item is in limbo
+				} else {
+					arguments.orderItem.setOrderItemStatusType(  getTypeService().getTypeBySystemCode("oistProcessing") );				
+				}
 			}
 		}
 		
 		return arguments.orderItem;
 	}
+	
 		
 	// Process: Order Return
 	public any function processOrderReturn_receive(required any orderReturn, required any processObject) {
@@ -1932,7 +1989,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 		
-	public any function processOrderPayment_runPlaceOrderTransaction(required any orderPayment) {
+	public any function processOrderPayment_runPlaceOrderTransaction(required any orderPayment, struct data) {
 						
 		var transactionType = "";
 		
@@ -1942,6 +1999,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.orderPayment.getPaymentMethod().getPlaceOrderCreditTransactionType()) && orderPayment.getOrderPaymentType().getSystemCode() eq "optCredit") {
 			var transactionType = arguments.orderPayment.getPaymentMethod().getPlaceOrderCreditTransactionType();
 		}
+		if(
+			!isNull(arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType()) 
+			&& structKeyExists(arguments.data,'isSubscriptionRenewal') 
+			&& arguments.data.isSubscriptionRenewal == true
+		){
+			var transactionType = arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType();
+		}
+		
+		//need subscription transactiontype
 		
 		if(transactionType != '' && transactionType != 'none' && arguments.orderPayment.getAmount() > 0) {
 			
@@ -2115,6 +2181,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Recalculate the order amounts for tax and promotions
 		if(!arguments.orderFulfillment.hasErrors()) {
 			this.processOrder( arguments.orderFulfillment.getOrder(), {}, 'updateOrderAmounts' );
+		}
+		
+		// if there are orderFulfillments
+		if (arrayLen(arguments.orderFulfillment.getOrderFulfillmentItems())) {
+			var fulfilledFlag = true;
+			var partiallyFulfilledFlag = false;
+			
+			for(var fulfillmentItem in arguments.orderFulfillment.getOrderFulfillmentItems()) {
+				if(fulfillmentItem.getQuantityUndelivered() > 0) {
+					fulfilledFlag = false;
+				}
+				if(fulfillmentItem.getQuantityDelivered() > 0) {
+					partiallyFulfilledFlag = true;
+				}
+			}
+			// Change the status depending on value of fulfilledFlag or partiallyFulfilledFlag, status defaults to "ofstUnfulfilled"
+			if(fulfilledFlag){
+				arguments.orderFulfillment.setOrderFulfillmentStatusType( getTypeService().getTypeBySystemCode("ofstFulfilled") );
+			} else if(partiallyFulfilledFlag) {
+				arguments.orderFulfillment.setOrderFulfillmentStatusType( getTypeService().getTypeBySystemCode("ofstPartiallyFulfilled") );
+			}
 		}
 		
 		return arguments.orderFulfillment;
@@ -2307,6 +2394,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		return false;
 	}
+	
+	public any function deleteOrderPayment( required any orderPayment ) {
+		
+		// Check delete validation
+		if(arguments.orderPayment.isDeletable()) {
+			
+			// Remove the primary fields so that we can delete this entity
+			var order = arguments.orderPayment.getOrder();
+			
+			order.removeOrderPayment( arguments.orderPayment );
+			
+			// Actually delete the entity
+			getHibachiDAO().delete( arguments.orderPayment );
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
 	
 	// =====================  END: Delete Overrides ===========================
 	

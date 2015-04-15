@@ -97,6 +97,8 @@ Notes:
 				
 				<hr />
 				
+				<hb:HibachiErrorDisplay object="#rc.processObject#" errorName="orderDeliveryItems" />
+				
 				<table class="table table-striped table-bordered table-condensed">
 					<tr>
 						<th>Sku Code</th>
@@ -107,9 +109,7 @@ Notes:
 					</tr>
 					<cfset orderItemIndex = 0 />
 					<cfloop array="#rc.processObject.getOrderDeliveryItems()#" index="recordData">
-						<cfif IsNumeric(recordData.quantity) AND recordData.quantity gt 0 >
 						<tr>
-							
 							<cfset orderItemIndex++ />
 							
 							<cfset orderItem = $.slatwall.getService("orderService").getOrderItem( recordData.orderItem.orderItemID ) />
@@ -124,12 +124,16 @@ Notes:
 							<cfelse>
 								<td></td>
 							</cfif>
-							<td>#thisQuantity#</td>
+							
+							<cfif IsNumeric(recordData.quantity) && thisQuantity gt 0>
+								<td>#thisQuantity#</td>
+							<cfelse>
+								<td style="color:##cc0000;">#$.slatwall.rbKey('define.quantitymustbegreaterthanzero')#</td>	
+							</cfif>
 							
 							<input type="hidden" name="orderDeliveryItems[#orderItemIndex#].orderItem.orderItemID" value="#recordData.orderItem.orderItemID#" />
 							<input type="hidden" name="orderDeliveryItems[#orderItemIndex#].quantity" value="#thisQuantity#" />
 						</tr>
-						</cfif>
 					</cfloop>
 				</table>
 			</hb:HibachiPropertyList>

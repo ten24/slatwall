@@ -64,25 +64,39 @@ Notes:
 <cfif !request.slatwallScope.hasApplicationValue('ngCompressor_#hash(rc.jspath)#')>
 	<!---the order these are loaded matters --->
 	<cfset local.jsDirectoryArray = [
-		expandPath( '/Slatwall/#rc.jspath#' ),
-		expandPath( '/Slatwall/#rc.jspath#/services' ),
-		expandPath( '/Slatwall/#rc.jspath#/controllers' ),
-		expandPath( '/Slatwall/#rc.jspath#/directives' )
+		{
+			directory=expandPath( '/Slatwall/#rc.jspath#' ),
+			recurse=false
+		},
+		{
+			directory=expandPath( '/Slatwall/#rc.jspath#/services' ),
+			recurse=false
+		},
+		{
+			directory=expandPath( '/Slatwall/#rc.jspath#/controllers' ),
+			recurse=false
+		},
+		{
+			directory=expandPath( '/Slatwall/#rc.jspath#/directives' ),
+			recurse=true
+		}
 	]>
 	<cfloop array="#local.jsDirectoryArray#" index="local.jsDirectory">
 		<cfdirectory
 		    action="list"
-		    directory="#local.jsDirectory#"
+		    directory="#local.jsDirectory.directory#"
 		    listinfo="name"
 		    name="local.jsFileList"
 		    filter="*.js"
+		    recurse="#local.jsDirectory.recurse#"
 	    />
-	    
-	    <cfloop query="local.jsFileList">
-		    <cfset local.jsFilePath = local.jsDirectory & '/' & name>
-		    <cfset local.fileContent = fileRead(local.jsFilePath, 'utf-8')>
-			<cfset local.jsOutput &= local.fileContent />
-	    </cfloop>
+	    <cfif local.jsFileList.recordCount>
+		    <cfloop query="local.jsFileList">
+			    <cfset local.jsFilePath = local.jsDirectory.directory & '/' & name>
+			    <cfset local.fileContent = fileRead(local.jsFilePath, 'utf-8')>
+				<cfset local.jsOutput &= local.fileContent />
+		    </cfloop>
+	    </cfif>
 	</cfloop>
 	
 	<cfif request.slatwallScope.getApplicationValue('debugFlag')>
@@ -99,32 +113,34 @@ Notes:
 														).results />
 		<cfelse>
 			<cfset local.jsOutputCompressed = ''>
-		</cfif>													
-		<cfscript>
-			ioOutput = CreateObject("java","java.io.ByteArrayOutputStream");
-			gzOutput = CreateObject("java","java.util.zip.GZIPOutputStream");
-			
-			ioOutput.init();
-			gzOutput.init(ioOutput);
-			
-			gzOutput.write(local.jsOutputCompressed.getBytes(), 0, Len(local.jsOutputCompressed.getBytes()));
-			
-			gzOutput.finish();
-			gzOutput.close();
-			ioOutput.flush();
-			ioOutput.close();
-			
-			toOutput=ioOutput.toByteArray();
-		</cfscript>
-		
-		<cfset request.slatwallScope.setApplicationValue('ngCompressor_#hash(rc.jspath)#',toOutput)>
-		<cfset local.jsOutput = toOutput>
+		</cfif>			
+		<cfif request.slatwallScope.getApplicationValue('gzipJavascript')>										
+			<cfscript>
+				ioOutput = CreateObject("java","java.io.ByteArrayOutputStream");
+				gzOutput = CreateObject("java","java.util.zip.GZIPOutputStream");
+				
+				ioOutput.init();
+				gzOutput.init(ioOutput);
+				
+				gzOutput.write(local.jsOutputCompressed.getBytes(), 0, Len(local.jsOutputCompressed.getBytes()));
+				
+				gzOutput.finish();
+				gzOutput.close();
+				ioOutput.flush();
+				ioOutput.close();
+				
+				toOutput=ioOutput.toByteArray();
+			</cfscript>
+			<cfset request.slatwallScope.setApplicationValue('ngCompressor_#hash(rc.jspath)#',toOutput)>
+			<cfset local.jsOutput = toOutput>
+		<cfelse>
+			<cfset local.jsOutput = local.jsOutputCompressed />
+		</cfif>
 	</cfif>
 <cfelse>
 	<cfset local.jsOutput = request.slatwallScope.getApplicationValue('ngCompressor_#hash(rc.jspath)#')>
 </cfif>
-
-<cfif request.slatwallScope.getApplicationValue('debugFlag')>
+<cfif request.slatwallScope.getApplicationValue('debugFlag') || !request.slatwallScope.getApplicationValue('gzipJavascript')>
 	<cfoutput>#local.jsOutput#</cfoutput>
 <cfelse>
 	<cfheader name="Content-Encoding" value="gzip">

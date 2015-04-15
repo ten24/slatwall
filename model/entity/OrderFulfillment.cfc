@@ -65,6 +65,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="pickupLocation" hb_populateEnabled="public" cfc="Location" fieldtype="many-to-one" fkcolumn="locationID";
 	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
 	property name="shippingMethod" hb_populateEnabled="public" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
+	property name="orderFulfillmentStatusType" cfc="Type" fieldtype="many-to-one" fkcolumn="orderFulfillmentStatusTypeID" hb_optionsSmartListData="f:parentType.systemCode=orderFulfillmentStatusType";
 	
 	// Related Object Properties (one-to-many)
 	property name="orderFulfillmentItems" hb_populateEnabled="public" singularname="orderFulfillmentItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="orderFulfillmentID" cascade="all" inverse="true";
@@ -591,6 +592,14 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 			return getOrder().getEstimatedDeliveryDateTime();
 		}
     }
+
+   	public any function getOrderFulfillmentStatusType() {
+		if(!structKeyExists(variables, "orderFulfillmentStatusType")) {
+			variables.orderFulfillmentStatusType = getService("typeService").getTypeBySystemCode('ofstUnfulfilled');
+		}
+		return variables.orderFulfillmentStatusType;
+	}
+
 	
 	// ==================  END:  Overridden Methods ========================
 	

@@ -76,6 +76,7 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 	property name="saveOrderPaymentEncryptFlag" ormtype="boolean";
 	property name="placeOrderChargeTransactionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey" column="placeOrderChargeTxType";
 	property name="placeOrderCreditTransactionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey" column="placeOrderCreditTxType";
+	property name="subscriptionRenewalTransactionType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey" column="subscriptionRenewalTxType";
 	
 	// Related Object Properties (many-to-one)
 	property name="paymentIntegration" cfc="Integration" fieldtype="many-to-one" fkcolumn="paymentIntegrationID";
@@ -180,6 +181,16 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 		return variables.placeOrderCreditTransactionTypeOptions;
 	}
 
+	public array function getSubscriptionRenewalTransactionTypeOptions(){
+		if(!structKeyExists(variables,'subscriptionRenewalTransactionTypeOptions')){
+			variables.subscriptionRenewalTransactionTypeOptions = [{name=rbKey('define.none'), value=""}];
+			if(!isNull(getPaymentMethodType()) && getPaymentMethodType() eq "creditCard") {
+				arrayAppend(variables.subscriptionRenewalTransactionTypeOptions, {name=rbKey('define.authorize'), value="authorize"});
+				arrayAppend(variables.subscriptionRenewalTransactionTypeOptions, {name=rbKey('define.authorizeAndCharge'), value="authorizeAndCharge"});
+			}
+		}
+		return variables.subscriptionRenewalTransactionTypeOptions;
+	}
 
 	public array function getPaymentIntegrationOptions() {
 		if(!structKeyExists(variables, "paymentIntegrationOptions")) {

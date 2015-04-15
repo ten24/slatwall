@@ -120,7 +120,7 @@ Notes:
 						</cfif>
 						<a href="#homeLink#" target="_self" class="brand"><img src="#request.slatwallScope.getBaseURL()#/assets/images/admin.logo.png" title="Slatwall" /></a>
 					</div>
-					<div class="pull-right" id="j-mobile-nav">
+					<div class="pull-right s-right-nav-content" id="j-mobile-nav">
 						<ul class="nav navbar-nav">
 							<li class="divider-vertical"></li>
 							<hb:HibachiActionCallerDropdown title="#$.slatwall.rbKey('admin.default.products_nav')#" icon="tags icon-white" type="nav">
@@ -338,7 +338,7 @@ Notes:
 			<!---displays alerts to the user --->
 			<span ng-controller="alertController" >
 				<span ng-repeat="alert in alerts">
-					<div style="z-index:5000" ng-class="{fade:alert.fade,'alert\-success':alert.type==='success','alert\-danger':alert.type==='error'}" class="alert s-alert-footer fade in" role="alert" >
+					<div style="z-index:11000" ng-class="{fade:alert.fade,'alert\-success':alert.type==='success','alert\-danger':alert.type==='error'}" class="alert s-alert-footer fade in" role="alert" >
 						<!---only show a dismissable button if we are showing info or a warning --->
 						<button style="display:none;" ng-show="alert.dismissable" type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 						<!---show check mark only if success, always display message --->
@@ -351,7 +351,7 @@ Notes:
 		<!---lib BEGIN --->
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/date/date.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular.min.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular-ui-bootstrap/ui.bootstrap.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular-ui-bootstrap/ui.bootstrap.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-resource.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-cookies.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-animate.min.js"></script>
@@ -360,113 +360,23 @@ Notes:
 		
 		<!---lib END --->
 		<script type="text/javascript">
-			var slatwallConfig = $.slatwall.getConfig();
+			var slatwallAngular = {};
+			slatwallAngular.slatwallConfig = $.slatwall.getConfig();
+			<cfif !isnull(rc.ng)> 
+				slatwallAngular.hashbang = true;
+			</cfif>
+			slatwallAngular.constantPaths = [];
+			<cfloop collection="#rc.$.slatwall.getService('hibachiService').getEntitiesMetaData()#" item="local.entityName">
+				slatwallAngular.constantPaths.push('#local.entityName#');
+			</cfloop>
+
 		</script>
 		
 		<!--- Load up the Slatwall Angular Provider --->
-		<script type="text/javascript" >
-			angular.module('slatwalladmin', ['ngSlatwall','ui.bootstrap','ngAnimate','ngRoute']).
-			config(
-				["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$locationProvider','datepickerConfig', 'datepickerPopupConfig',
-				function ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$locationProvider,datepickerConfig, datepickerPopupConfig
-			) {
-				datepickerConfig.showWeeks = false;
-      			datepickerPopupConfig.toggleWeeksText = null;
-				<cfif !isnull(rc.ng)> 
-					$locationProvider.html5Mode( false ).hashPrefix('!');
-				</cfif>
-				$provide.constant("baseURL", $.slatwall.getConfig().baseURL);
-				
-				var _partialsPath = $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/';
-				
-				$provide.constant("partialsPath", _partialsPath);
-				$provide.constant("productBundlePartialsPath", _partialsPath+'productbundle/');
-				$provide.constant("collectionPartialsPath", _partialsPath+'collection/');
-				$provide.constant("workflowPartialsPath", _partialsPath+'workflow/');
-				
-				$logProvider.debugEnabled( $.slatwall.getConfig().debugFlag );
-				$filterProvider.register('likeFilter',function(){
-					return function(text){
-						if(angular.isDefined(text) && angular.isString(text)){
-							return text.replace(new RegExp('%', 'g'), '');
-						}
-					};
-				});
-				
-				$filterProvider.register('truncate',function(){
-					return function (input, chars, breakOnWord) {
-			            if (isNaN(chars)) return input;
-			            if (chars <= 0) return '';
-			            if (input && input.length > chars) {
-			                input = input.substring(0, chars);
-			                if (!breakOnWord) {
-			                    var lastspace = input.lastIndexOf(' ');
-			                    //get last space
-			                    if (lastspace !== -1) {
-			                        input = input.substr(0, lastspace);
-			                    }
-			                }else{
-			                    while(input.charAt(input.length-1) === ' '){
-			                        input = input.substr(0, input.length -1);
-			                    }
-			                }
-			                return input + '...';
-			            }
-			            return input;
-			        };
-				});
-				
-				$httpProvider.interceptors.push('slatwallInterceptor');
-				
-				<!--- route provider configuration --->
-				$routeProvider.when('/entity/:entityName/', {
-					templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/router.html',
-					controller: 'routerController'
-				}).when('/entity/:entityName/:entityID', {
-					templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/directives/partials/router.html',
-					controller: 'routerController'
-				}).otherwise({
-					templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
-				});
-				
-			}]).run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService', function($rootScope,$filter,$anchorScroll, $slatwall ,dialogService) {
-			    $anchorScroll.yOffset = 100;
-
-			    $rootScope.openPageDialog = function( partial ) {
-			    	dialogService.addPageDialog( partial );
-			    };
-			    
-			    $rootScope.closePageDialog = function( index ) {
-					dialogService.removePageDialog( index );
-			    };
-			    
-			    $rootScope.loadedResourceBundle = false;
-			    $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
-			    
-			    var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
-			   		if(newValue !== oldValue){
-			    		$rootScope.$broadcast('hasResourceBundle');
-			    		rbListener();
-			    	}
-			    });
-
-			}]).filter('entityRBKey',['$slatwall', function($slatwall) {
-				
-			  	return function(text){
-					if(angular.isDefined(text) && angular.isString(text)){
-						text = text.replace('_', '').toLowerCase();
-						text = $slatwall.getRBKey('entity.'+text);
-						return text;
-					}
-				};
-			}]);
-			
-		</script>
+		
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngslatwall&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngcompressor&jspath=client/js&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
-		<!--- Load up the Slatwall Admin --->
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngcompressor&jspath=admin/client/js&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/es5/all.min.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
 		
 	</body>
 </html>

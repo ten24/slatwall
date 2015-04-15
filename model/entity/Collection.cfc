@@ -85,6 +85,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="currentURL" persistent="false" type="string";
 	property name="currentPageDeclaration" persistent="false" type="string";
 	
+	property name="nonPersistentColumn" type="boolean" persistent="false";
+	property name="processContext" type="string" persistent="false";
+	property name="processObjects" type="array" persistent="false";
 	property name="cacheable" type="boolean" persistent="false";
 	property name="cacheName" type="string" persistent="false";
 	property name="savedStateID" type="string" persistent="false";
@@ -126,6 +129,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
 		variables.collectionConfig = '{}';
+		variables.processObjects = [];
 	}
 	
 	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
@@ -435,7 +439,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			//constuct HQL to be used in filterGroup
 			var filterGroupHQL = getFilterGroupHQL(filterGroup.filterGroup);
 			if(len(filterGroupHQL)){
-				filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
+				if(logicalOperator == "AND"){
+					filterGroupsHQL &= ") #logicalOperator# ((#filterGroupHQL#)";
+				} else {
+					filterGroupsHQL &= " #logicalOperator# (#filterGroupHQL#)";
+				}
+				
+				
 			}
 		}
 		return filterGroupsHQL;
@@ -613,13 +623,57 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return orderByHQL;
 	}
 	
+	public any function getNonPersistentColumn(){
+		
+		if( !structKeyExists(variables,'nonPersistentColumn') && isNull(variables.nonPersistentColumn)) {
+			variables.nonPersistentColumn = false;
+			if(structKeyExists(this.getCollectionConfigStruct(),'columns')){
+				for(var column in this.getCollectionConfigStruct().columns){
+					if(structKeyExists(column,'persistent') && column.persistent == false){
+						variables.nonPersistentColumn = true;
+						break; 
+					}
+				}
+			}
+		}
+		return variables.nonPersistentColumn;
+	}
+	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
 		try{
 			
 			if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
 				saveState();
-				variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+				if(this.getNonPersistentColumn() || (!isNull(this.getProcessContext()) && len(this.getProcessContext()))){
+					//prepare page records and possible process objects
+					variables.pageRecords = [];
+					variables.processObjects = [];
+					var entities = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+					var columns = getCollectionConfigStruct().columns;
+					
+					for(var entity in entities){
+						var pageRecord = {};
+						for(var column in columns){
+							var listRest = ListRest(column.propertyIdentifier,'.');
+							if(structKeyExists(column,'setting') && column.setting == true){
+								var listRest = ListRest(column.propertyIdentifier,'.');
+								pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
+							}else{
+								pageRecord[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(listRest);
+							}
+						}
+						arrayAppend(variables.pageRecords,pageRecord);
+						
+						if(len(this.getProcessContext()) && entity.hasProcessObject(this.getProcessContext())){
+							var processObject = entity.getProcessObject(this.getProcessContext());
+							arrayAppend(variables.processObjects,processObject);
+						}
+						
+					} 
+				}else{
+					variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+				}
 			}
 		}
 		catch(any e){
@@ -633,16 +687,46 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		structDelete(variables, "recordsCount");
 	}
 	
+	public any function getSettingValueFormattedByPropertyIdentifier(required string propertyIdentifier, required any entity){
+		if(listLen(arguments.propertyIdentifier) == 1){
+			return entity.getSettingValueFormatted(arguments.propertyIdentifier);
+		}else{
+			var settingName = listLast(arguments.propertyIdentifier);
+			var arguments.propertyIdentifier = listDeleteAt(arguments.propertyIdentifier,listLen(arguments.propertyIdentifier));
+			var relatedObject = entity.getValueByPropertyIdentifier(arguments.propertyIdentifier);
+			return relatedObject.getSettingValueFormatted(settingName);
+		}
+	}
+	
 	public array function getRecords(boolean refresh=false) {
-		try{
+		//try{
 			if( !structKeyExists(variables, "records") || arguments.refresh == true) {
-				variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
-				
+				if(this.getNonPersistentColumn()){
+					variables.records = [];
+					var entities = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+					var columns = getCollectionConfigStruct().columns;
+					for(var entity in entities){
+						var record = {};
+						
+						for(var column in columns){
+							var listRest = ListRest(column.propertyIdentifier,'.');
+							if(structKeyExists(column,'setting') && column.setting == true){
+								var listRest = ListRest(column.propertyIdentifier,'.');
+								record[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
+							}else{
+								record[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(listRest);
+							}
+						}
+						arrayAppend(variables.records,record);
+					} 
+				}else{
+					variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+				}
 			}
-		}
-		catch(any e){
-			variables.records = [{'failedCollection'='failedCollection'}];
-		}
+//		}
+//		catch(any e){
+//			variables.records = [{'failedCollection'='failedCollection'}];
+//		}
 		
 		return variables.records;
 	}
@@ -846,13 +930,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
 					
 				}else{
-					var columnAlias = listLast(column.propertyIdentifier,'.');
+					var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'Slatwall',''))&'_','');
 					
 					HQL &= ' #column.propertyIdentifier# as #columnAlias#';
 				}
 			}
-			
-			
 			
 			//check whether a comma is needed
 			if(i != columnCount){
@@ -882,7 +964,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				if(!isNull(collectionConfig.isDistinct)){
 					isDistinct = collectionConfig.isDistinct;
 				}
-				selectHQL &= getSelectionsHQL(collectionConfig.columns,isDistinct);
+				//get select columns if we don't have a non-persistent column and a processContext was not supplied
+				if(!this.getNonPersistentColumn() && !len(this.getProcessContext())){
+					selectHQL &= getSelectionsHQL(collectionConfig.columns,isDistinct);
+				}
+				
 				if(!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())){
 					orderByHQL &= getOrderByHQL(getPostOrderBys());
 				}else if(!isNull(collectionConfig.orderBy) && arrayLen(collectionConfig.orderBy)){
@@ -909,10 +995,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}else{
 					postFilterHQL &= ' AND ' & '(' & getFilterGroupsHQL(postFilterGroups) & ')';
 				}	
-				
 			}
-			
-			
 			
 			//build FROM last because we have aquired joins implicitly
 			var joins = [];
@@ -930,19 +1013,23 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function addPostFiltersFromKeywords(required any collectionConfig, numeric hasFilterHQL){
 		var keywordCount = 0;
 		
+		//if our collection config has columns then check if any of them are searchable
 		if(structKeyExists(arguments.collectionConfig,'columns') && arrayLen(arguments.collectionConfig.columns)){
 			
-			for(column in arguments.collectionConfig.columns){
-				
-				if(structKeyExists(column,'isSearchable') && column.isSearchable){
-					//use keywords to create some post filters
+			for(keyword in getKeywordArray()){
+				var columnCount = 0;
+				for(column in arguments.collectionConfig.columns){
 					
-					if(structKeyExists(column,'ormtype') 
-					&& column.ormtype neq 'boolean' 
-					&& column.ormtype neq 'timestamp'
-					
-					){
-						for(keyword in getKeywordArray()){
+					//which ones have been flagged as searchable
+					if(structKeyExists(column,'isSearchable') && column.isSearchable){
+						//use keywords to create some post filters
+						
+						if(structKeyExists(column,'ormtype') 
+						&& column.ormtype neq 'boolean' 
+						&& column.ormtype neq 'timestamp'
+						
+						){
+						
 							if(column.ormtype eq 'big_decimal'
 							|| column.ormtype eq 'integer'){
 								var postFilterGroup = {
@@ -966,15 +1053,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 									]
 								};
 							}
-							if(keywordCount != 0){
+							
+							if (columnCount != 0 && columnCount < arrayLen(arguments.collectionConfig.columns)+1){
 								postFilterGroup.logicalOperator = "OR";
+							}else if(keywordCount != 0 && keywordCount < arrayLen(getKeywordArray())){
+								postFilterGroup.logicalOperator = "AND";
 							}else{
 								arguments.hasFilterHQL = 1;
 							}
 							//add post filter per column that is searchable
 							addPostFilterGroup(postFilterGroup);
-							keywordCount++;
+							
 						}
+						columnCount++;
 					}
 					if(structKeyExists(column,'attributeID')){
 						for(keyword in getKeywordArray()){
@@ -1005,7 +1096,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					}
 					
 				}
-				
+				keywordCount++;
 			}
 		}else{
 			//if we don't have columns then we need default properties searching
@@ -1246,9 +1337,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 }
-
-
-
 
 
 /*

@@ -55,7 +55,7 @@ Notes:
 <cfparam name="rc.editEntityName" type="string" default="" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.permissionGroup#" edit="#rc.edit#">
+	<hb:HibachiEntityDetailForm enctype="application/x-www-form-urlencoded" object="#rc.permissionGroup#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.permissionGroup#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
 
 		<hb:HibachiEntityDetailGroup object="#rc.permissionGroup#">

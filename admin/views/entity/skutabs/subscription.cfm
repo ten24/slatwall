@@ -55,7 +55,7 @@ Notes:
 	<hb:HibachiPropertyList>
 		<hb:HibachiPropertyDisplay object="#rc.sku#" property="subscriptionTerm" edit="false">
 		<hb:HibachiPropertyDisplay object="#rc.sku#" property="subscriptionBenefits" edit="#rc.edit#" displayType="plain">
-		<hb:HibachiPropertyDisplay object="#rc.sku#" property="renewalSubscriptionBenefits" title="#$.slatwall.rbKey('define.renewalSubscriptionBenefits')#" edit="#rc.edit#" displayType="plain">
+		<hb:HibachiPropertyDisplay object="#rc.sku#" property="renewalSubscriptionBenefits" edit="#rc.edit#" displayType="plain">
 	</hb:HibachiPropertyList>
 </hb:HibachiPropertyRow>
 			

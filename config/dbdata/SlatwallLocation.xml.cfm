@@ -2,7 +2,7 @@
 <Table tableName="SwLocation">
 	<Columns>
 		<column name="locationID" fieldtype="id" />
-		<column name="locationIDPath" fieldtype="id" />
+		<column name="locationIDPath" fieldtype="string" />
 		<column name="locationName" update="false" />
 	</Columns>
 	<Records>

@@ -118,8 +118,9 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 	
 	public void function copyOrderItemInfo(required any orderItem) {
-		
-		setRenewalPrice( arguments.orderItem.getSku().getRenewalPriceByCurrencyCode( arguments.orderItem.getCurrencyCode() ) );
+		var currencyCode = arguments.orderItem.getCurrencyCode();
+		var renewalPrice = arguments.orderItem.getSku().getRenewalPriceByCurrencyCode( currencyCode );
+		setRenewalPrice( renewalPrice );
 		setCurrencyCode( arguments.orderItem.getCurrencyCode() );
 		
 		// Copy all the info from subscription term
@@ -156,7 +157,13 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	
 	public any function getSubscriptionOrderItemName() {
 		if(arrayLen(getSubscriptionOrderItems())) {
-			return getSubscriptionOrderItems()[1].getOrderItem().getSku().getProduct().getProductName();
+			var subscriptionOrderItem = getSubscriptionOrderItems()[1];
+			if(	!isnull(subscriptionOrderItem.getOrderItem())
+				&& !isnull(subscriptionOrderItem.getOrderItem().getSku()) 
+				&& !isnull(subscriptionOrderItem.getOrderItem().getSku().getProduct()) 
+			){
+				return subscriptionOrderItem.getOrderItem().getSku().getProduct().getProductName();
+			}
 		}
 		return "";
 	}

@@ -317,12 +317,10 @@
 
 			<div class="col-xs-6 s-table-view-options s-no-padding-right">
 				<ul class="list-inline list-unstyled">
-					<li>
-						<form class="s-table-header-search">
-							<cfif not thistag.expandable>
-								<input type="text" name="search" class="form-control input-sm general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
-							</cfif>
-						</form>
+					<li class="s-table-header-search">
+						<cfif not thistag.expandable>
+							<input type="text" name="search" class="form-control input-sm general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
+						</cfif>
 					</li>
 					<li>
 						<div class="btn-group navbar-left dropdown">
@@ -438,8 +436,8 @@
 														</cfif>
 													</cfsilent>
 													<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.range')#</li>
-													<li class="range-filter"><label for="">From</label><input type="text" class="#local.rangeClass# form-control range-filter-lower" name="R:#column.propertyIdentifier#" value="" /></li>
-													<li class="range-filter"><label for="">To</label><input type="text" class="#local.rangeClass# form-control range-filter-upper" name="R:#column.propertyIdentifier#" value="" /></li>
+													<li class="range-filter"><label for="From Date" class="col-md-12 s-zero-left">From</label><input type="text" class="#local.rangeClass# form-control range-filter-lower col-md-12" name="R:#column.propertyIdentifier#" value="" /></li>
+													<li class="range-filter"><label for="To Date" class="col-md-12 s-zero-left">To</label><input type="text" class="#local.rangeClass# form-control range-filter-upper col-md-12" name="R:#column.propertyIdentifier#" value="" /></li>
 													<li class="divider"></li>
 												</cfif>
 												<cfif column.filter and not thistag.expandable>
@@ -484,15 +482,15 @@
 						<tr id="#record.getPrimaryIDValue()#" <cfif thistag.expandable>idPath="#record.getValueByPropertyIdentifier( propertyIdentifier="#thistag.exampleEntity.getPrimaryIDPropertyName()#Path" )#"</cfif>>
 							<!--- Selectable --->
 							<cfif thistag.selectable>
-								<td><a href="##" class="table-action-select#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-radio"></i></a></td>
+								<td class="s-table-select"><a href="##" class="table-action-select#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-radio"></i></a></td>
 							</cfif>
 							<!--- Multiselectable --->
 							<cfif thistag.multiselectable>
-								<td><a href="##" class="table-action-multiselect#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-checkbox"></i></a></td>
+								<td class="s-table-checkbox"><a href="##" class="table-action-multiselect#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-checkbox"></i></a></td>
 							</cfif>
 							<!--- Sortable --->
 							<cfif thistag.sortable>
-								<td><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="fa fa-arrows"></i></a></td>
+								<td class="s-table-sort"><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="fa fa-arrows"></i></a></td>
 							</cfif>
 							<cfloop array="#thistag.columns#" index="column">
 								<!--- Expandable Check --->

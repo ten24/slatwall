@@ -302,10 +302,12 @@ Notes:
 		<cfreturn ormExecuteQuery("SELECT pc FROM SlatwallPromotionCode pc WHERE LOWER(pc.promotionCode) = ?", [lcase(arguments.promotionCode)], true) />
 	</cffunction>
 	
+	<!--- function to return the calculated sales price based off of the price of the sku --->
 	<cffunction name="getSalePricePromotionRewardsQuery">
 		<cfargument name="productID" type="string">
 		<cfargument name="currencyCode" type="string">
 
+		<cfset var noQualifierCurrentActivePromotionPeriods = "" />
 		<cfset var allDiscounts = "" />
 		<cfset var noQualifierDiscounts = "" />
 		<cfset var noQualifierPromotionPeriods = "" />
@@ -315,7 +317,157 @@ Notes:
 		<cfset var salePromotionPeriodIDs = "" />
 		<cfset var defaultSkuCurrency=getHibachiScope().setting('skuCurrency') />
 		
-		<cfquery name="local.noQualifierCurrentActivePromotionPeriods">
+		<!--- get all of the Active Promotion Periods that don't have a qualifier --->
+		<cfset noQualifierCurrentActivePromotionPeriods= getNoQualifierCurrentActivePromotionPeriods(timeNow) >
+		
+		<cfloop query="noQualifierCurrentActivePromotionPeriods">
+			<cfset salePromotionPeriodIDs = listAppend(salePromotionPeriodIDs, noQualifierCurrentActivePromotionPeriods.promotionPeriodID) />
+		</cfloop>
+		
+		<!--- get allDiscounts at the sku level --->
+		<cfset allDiscounts = getAllDiscounts(arguments.productID, timenow)>
+		
+		<!--- join allDiscounts with noQualifierCurrentActivePromotionPeriods to get  only the active prices ---> 
+		<cfset noQualifierDiscounts = getNoQualifierDiscounts(noQualifierCurrentActivePromotionPeriods, allDiscounts)>
+		
+		<!--- query to find the lowest salesPrice --->
+		<cfquery name="skuPrice" dbtype="query">
+			SELECT
+				skuID,
+				MIN(salePrice) as salePrice
+			FROM
+				noQualifierDiscounts
+			GROUP BY
+				skuID
+		</cfquery>
+		
+		<!--- query to get all the data for the lowest Sales Price --->
+		<cfquery name="skuResults" dbtype="query">
+			SELECT
+				noQualifierDiscounts.skuID,
+				noQualifierDiscounts.originalPrice,
+				noQualifierDiscounts.discountLevel,
+				noQualifierDiscounts.salePriceDiscountType,
+				noQualifierDiscounts.salePrice,
+				noQualifierDiscounts.roundingRuleID,
+				noQualifierDiscounts.salePriceExpirationDateTime,
+				noQualifierDiscounts.promotionID
+			FROM
+				noQualifierDiscounts,
+				skuPrice
+			WHERE
+				noQualifierDiscounts.skuID = skuPrice.skuID
+			  and
+			    noQualifierDiscounts.salePrice = skuPrice.salePrice
+		</cfquery>
+		
+		<cfreturn skuResults /> 
+	</cffunction>
+	
+	<!--- function to return the calculated sales price based off of the price of the order items sku price--->
+	<cffunction name = "getOrderItemSalePricePromotionRewardsQuery">
+		<cfargument name="orderItem" type="any">
+		
+		<cfset var noQualifierCurrentActivePromotionPeriods = "" />
+		<cfset var allDiscounts = "" />
+		<cfset var noQualifierDiscounts = "" />
+		<cfset var noQualifierPromotionPeriods = "" />
+		<cfset var timeNow = now() />
+		<cfset var salePromotionPeriodIDs = "" />
+		<cfset var orderItemDiscountsQuery = "" />
+		<cfset var orderItemPrice = "" />
+		<cfset var orderItemResults = "" />
+		
+		<!--- get all of the Active Promotion Periods that don't have a qualifier --->
+		<cfset noQualifierCurrentActivePromotionPeriods = getNoQualifierCurrentActivePromotionPeriods(timeNow) >
+		
+		<cfloop query="noQualifierCurrentActivePromotionPeriods">
+			<cfset salePromotionPeriodIDs = listAppend(salePromotionPeriodIDs, noQualifierCurrentActivePromotionPeriods.promotionPeriodID) />
+		</cfloop>
+
+		<!--- get allDiscounts at the sku level --->
+		<cfset allDiscounts = getAllDiscounts(arguments.orderItem.getSku().getProduct().getProductID(), timenow)>
+		
+		<!--- join allDiscounts with noQualifierCurrentActivePromotionPeriods to get  only the active prices ---> 
+		<cfset noQualifierDiscounts = getNoQualifierDiscounts(noQualifierCurrentActivePromotionPeriods, allDiscounts)>
+	
+		<!--- Build a query to get the order Item information for a query of query --->
+		<cfset var orderItemDataQuery = queryNew("orderItemID, skuPrice, skuID", "varchar, decimal, varchar")>
+		<cfset queryAddRow(orderItemDataQuery, 1)> 
+		<cfset querySetCell(orderItemDataQuery, "orderItemID", #arguments.orderItem.getOrderItemID()#, 1 )>
+		<cfset querySetCell(orderItemDataQuery, "skuPrice", #arguments.orderItem.getSkuPrice()#, 1 )>
+		<cfset querySetCell(orderItemDataQuery, "skuID", #arguments.orderItem.getSku().getSkuID()#, 1 )>
+	
+		<!--- Query of Query to join noQualifierDiscounts with the orderItemDataQuery. It also recalculates salePrice based on the OrderItem Price --->
+		<cfquery name="orderItemDiscountsQuery" dbtype="query">
+			SELECT DISTINCT
+				orderItemDataQuery.orderItemID,
+				orderItemDataQuery.skuPrice as originalPrice,
+				noQualifierDiscounts.discountLevel,
+				noQualifierDiscounts.amount,
+				noQualifierDiscounts.salePriceDiscountType,
+				noQualifierDiscounts.salePrice,
+				noQualifierDiscounts.roundingRuleID,
+				noQualifierDiscounts.salePriceExpirationDateTime,
+				noQualifierDiscounts.promotionPeriodID,
+				noQualifierDiscounts.promotionID
+			FROM
+				noQualifierDiscounts, orderItemDataQuery 
+			WHERE
+				orderItemDataQuery.skuID = noQualifierDiscounts.skuID
+		</cfquery>
+		
+		<cfloop query="orderItemDiscountsQuery">
+			<cfif orderItemDiscountsQuery.salePriceDiscountType EQ "amount">
+				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", orderItemDiscountsQuery.amount, orderItemDiscountsQuery.currentRow )  >
+			<cfelseif orderItemDiscountsQuery.salePriceDiscountType EQ "amountOff">
+				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", orderItemDiscountsQuery.originalPrice - orderItemDiscountsQuery.amount, orderItemDiscountsQuery.currentRow )>
+			<cfelseif orderItemDiscountsQuery.salePriceDiscountType EQ "percentageOff" >
+				<cfset querySetCell(orderItemDiscountsQuery, "salePrice", orderItemDiscountsQuery.originalPrice - ( orderItemDiscountsQuery.originalPrice * (orderItemDiscountsQuery.amount / 100) ), orderItemDiscountsQuery.currentRow )>
+			</cfif>
+		</cfloop>
+		
+		<!--- query to find the lowest salesPrice --->
+		<cfquery name="orderItemPrice" dbtype="query">
+			SELECT
+				orderItemID,
+				MIN(salePrice) as salePrice
+			FROM
+				orderItemDiscountsQuery
+			GROUP BY
+				orderItemID
+		</cfquery>
+		
+		<!--- query to get all the data for the lowest Sales Price --->
+		<cfquery name="orderItemResults" dbtype="query">
+			SELECT
+				orderItemDiscountsQuery.orderItemID,
+				orderItemDiscountsQuery.originalPrice,
+				orderItemDiscountsQuery.discountLevel,
+				orderItemDiscountsQuery.salePriceDiscountType,
+				orderItemDiscountsQuery.salePrice,
+				orderItemDiscountsQuery.roundingRuleID,
+				orderItemDiscountsQuery.salePriceExpirationDateTime,
+				orderItemDiscountsQuery.promotionID
+			FROM
+				orderItemDiscountsQuery, orderItemPrice
+			WHERE
+				orderItemDiscountsQuery.orderItemID = orderItemPrice.orderItemID
+			AND
+			    orderItemDiscountsQuery.salePrice = orderItemPrice.salePrice
+		</cfquery>
+		
+		<cfreturn orderItemResults >
+	</cffunction>
+	
+	
+	<!--- Function to get all Active Promotion Periods without qualifiers --->
+	<cffunction name="getNoQualifierCurrentActivePromotionPeriods" returntype="any" access="public">
+		<cfargument name="timeNow" type="date">
+		
+		<cfset var noQualifierCurrentActivePromotionPeriodQuery= "" />
+		
+		<cfquery name="noQualifierCurrentActivePromotionPeriodQuery">
 			SELECT
 				promotionPeriodID
 			FROM
@@ -334,11 +486,16 @@ Notes:
 			  	NOT EXISTS(SELECT promotionID FROM SwPromotionCode WHERE SwPromotionCode.promotionID = SwPromotion.promotionID)
 		</cfquery>
 		
-		<cfloop query="noQualifierCurrentActivePromotionPeriods">
-			<cfset salePromotionPeriodIDs = listAppend(salePromotionPeriodIDs, noQualifierCurrentActivePromotionPeriods.promotionPeriodID) />
-		</cfloop>
+		<cfreturn noQualifierCurrentActivePromotionPeriodQuery>
+	</cffunction>
+	
+	<!--- function to get all discount amount at the sku level --->
+	<cffunction name="getAllDiscounts" returntype="any" access="public">
+		<cfargument name="productID" type="string">
+		<cfargument name="timeNow" type="date">
 		
-		<cfquery name="allDiscounts">
+		<cfset var allDiscountsQuery = "" />
+		<cfquery name="allDiscountsQuery">
 			<cfif structKeyExists(arguments, "currencyCode") && len(arguments.currencyCode)>
 			SELECT 
 			skuID,
@@ -379,6 +536,7 @@ Notes:
 				SwSku.skuID as skuID,
 				SwSku.price as originalPrice,
 				'sku' as discountLevel,
+				prSku.amount,
 				prSku.amountType as salePriceDiscountType,
 				CASE prSku.amountType
 					WHEN 'amount' THEN prSku.amount
@@ -414,6 +572,7 @@ Notes:
 				SwSku.skuID as skuID,
 				SwSku.price as originalPrice,
 				'product' as discountLevel,
+				prProduct.amount,
 				prProduct.amountType as salePriceDiscountType,
 				CASE prProduct.amountType
 					WHEN 'amount' THEN prProduct.amount
@@ -449,6 +608,7 @@ Notes:
 				SwSku.skuID as skuID,
 				SwSku.price as originalPrice,
 				'brand' as discountLevel,
+				prBrand.amount,
 				prBrand.amountType as salePriceDiscountType,
 				CASE prBrand.amountType
 					WHEN 'amount' THEN prBrand.amount
@@ -486,6 +646,7 @@ Notes:
 		  		SwSku.skuID as skuID,
 				SwSku.price as originalPrice,
 				'option' as discountLevel,
+				prOption.amount,
 				prOption.amountType as salePriceDiscountType,
 				CASE prOption.amountType
 					WHEN 'amount' THEN prOption.amount
@@ -523,6 +684,7 @@ Notes:
 		  		SwSku.skuID as skuID,
 				SwSku.price as originalPrice,
 				'productType' as discountLevel,
+				prProductType.amount,
 				prProductType.amountType as salePriceDiscountType,
 				CASE prProductType.amountType
 					WHEN 'amount' THEN prProductType.amount
@@ -568,6 +730,7 @@ Notes:
 				SwSku.skuID as skuID,
 				SwSku.price as originalPrice,
 				'global' as discountLevel,
+				prGlobal.amount,
 				prGlobal.amountType as salePriceDiscountType,
 				CASE prGlobal.amountType
 					WHEN 'amount' THEN prGlobal.amount
@@ -656,54 +819,35 @@ Notes:
 			</cfif>
 		</cfquery>
 		
-		<cfquery name="noQualifierDiscounts" dbtype="query">
+		<cfreturn allDiscountsQuery />
+	</cffunction>
+	
+	<!--- function to only return price of the active noQualifer Discount Prices --->
+	<cffunction name="getNoQualifierDiscounts" returntype="any" access="public">
+		<cfargument name="noQualifierCurrentActivePromotionPeriodsQuery" type="any">
+		<cfargument name="allDiscountsQuery" type="any">
+		
+		<cfset var noQualifierDiscountsQuery = "" >
+
+		<cfquery name="noQualifierDiscountsQuery" dbtype="query">
 			SELECT DISTINCT
-				allDiscounts.skuID,
-				allDiscounts.originalPrice,
-				allDiscounts.discountLevel,
-				allDiscounts.salePriceDiscountType,
-				allDiscounts.salePrice,
-				allDiscounts.roundingRuleID,
-				allDiscounts.salePriceExpirationDateTime,
-				allDiscounts.promotionPeriodID,
-				allDiscounts.promotionID
+				allDiscountsQuery.skuID,
+				allDiscountsQuery.originalPrice,
+				allDiscountsQuery.discountLevel,
+				allDiscountsQuery.amount,
+				allDiscountsQuery.salePriceDiscountType,
+				allDiscountsQuery.salePrice,
+				allDiscountsQuery.roundingRuleID,
+				allDiscountsQuery.salePriceExpirationDateTime,
+				allDiscountsQuery.promotionPeriodID,
+				allDiscountsQuery.promotionID
 			FROM
-				allDiscounts, noQualifierCurrentActivePromotionPeriods
+				noQualifierCurrentActivePromotionPeriodsQuery, allDiscountsQuery
 			WHERE
-				allDiscounts.promotionPeriodID = noQualifierCurrentActivePromotionPeriods.promotionPeriodID
+				allDiscountsQuery.promotionPeriodID = noQualifierCurrentActivePromotionPeriodsQuery.promotionPeriodID
 		</cfquery>
 		
-		
-		<cfquery name="skuPrice" dbtype="query">
-			SELECT
-				skuID,
-				MIN(salePrice) as salePrice
-			FROM
-				noQualifierDiscounts
-			GROUP BY
-				skuID
-		</cfquery>
-		
-		<cfquery name="skuResults" dbtype="query">
-			SELECT
-				noQualifierDiscounts.skuID,
-				noQualifierDiscounts.originalPrice,
-				noQualifierDiscounts.discountLevel,
-				noQualifierDiscounts.salePriceDiscountType,
-				noQualifierDiscounts.salePrice,
-				noQualifierDiscounts.roundingRuleID,
-				noQualifierDiscounts.salePriceExpirationDateTime,
-				noQualifierDiscounts.promotionID
-			FROM
-				noQualifierDiscounts,
-				skuPrice
-			WHERE
-				noQualifierDiscounts.skuID = skuPrice.skuID
-			  and
-			    noQualifierDiscounts.salePrice = skuPrice.salePrice
-		</cfquery>
-		
-		<cfreturn skuResults /> 
+		<cfreturn noQualifierDiscountsQuery >
 	</cffunction>
 		
 </cfcomponent>

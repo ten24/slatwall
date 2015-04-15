@@ -91,7 +91,10 @@ function initUIElements( scopeSelector ) {
 
 	// Wysiwyg
 	jQuery.each(jQuery( scopeSelector ).find(jQuery( '.wysiwyg' )), function(i, v){
-		var editor = CKEDITOR.replace( v );
+		// Wysiwyg custom config file located in: custom/assets/ckeditor_config.js
+		var editor = CKEDITOR.replace( v, {
+		    customConfig: '../../../custom/assets/ckeditor_config.js'
+		});
 		CKFinder.setupCKEditor( editor, 'org/Hibachi/ckfinder/' );
 	});
 
@@ -866,6 +869,23 @@ function setupEventHandlers() {
 		}
 		$(this).find('.btn').toggleClass('btn-default');
 	});
+	
+	
+	//File upload - change file when button triggered
+	jQuery('body').on('change', '.s-btn-file :file', function(){
+		var input = $(this), numFiles = input.get(0).files ? input.get(0).files.length : 1,label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+		input.trigger('fileselect', [numFiles, label]);
+	});
+
+	//File upload - add text when file changed
+	jQuery('body').on('fileselect', '.s-btn-file :file', function(event, numFiles, label){
+		var input = $(this).parents('.input-group').find(':text'), log = numFiles > 1 ? numFiles + ' files selected' : label;
+		if(input.length) {
+			input.val(log);
+		}else{
+			if(log) alert(log);
+		};	
+	});
 
 }
 
@@ -890,12 +910,12 @@ function initModal( modalWin ){
 function updatePermissionCheckboxDisplay( checkbox ) {
 	jQuery.each( jQuery('.hibachi-permission-checkbox[data-hibachi-parentcheckbox="' + jQuery( checkbox ).attr('name') + '"]'), function(i, v) {
 
-		if(jQuery( checkbox ).attr('checked') || jQuery( checkbox ).attr('disabled') === 'disabled') {
-			jQuery( v ).attr('checked', 'checked');
-			jQuery( v ).attr('disabled', 'disabled');
+		if(jQuery( checkbox ).is(':checked') || jQuery( checkbox ).attr('disabled') === 'disabled') {
+			jQuery( v ).prop('checked', true);
+			jQuery( v ).prop('disabled', true);
 		} else {
-			jQuery( v ).removeAttr('disabled');
-			jQuery( v ).removeAttr('checked');
+			jQuery( v ).prop('checked', false);
+			jQuery( v ).prop('disabled', false);
 		}
 
 		updatePermissionCheckboxDisplay( v );
@@ -1158,11 +1178,11 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 
 						} else if( jQuery(cv).hasClass('sort') ) {
 
-							newtd += '<td><a href="#" class="table-action-sort" data-idvalue="' + jQuery.trim(rv[ idProperty ]) + '" data-sortpropertyvalue="' + rv.sortOrder + '"><i class="fa fa-arrows"></i></a></td>';
+							newtd += '<td class="s-table-sort"><a href="#" class="table-action-sort" data-idvalue="' + jQuery.trim(rv[ idProperty ]) + '" data-sortpropertyvalue="' + rv.sortOrder + '"><i class="fa fa-arrows"></i></a></td>';
 
 						} else if( jQuery(cv).hasClass('multiselect') ) {
 
-							newtd += '<td><a href="#" class="table-action-multiselect';
+							newtd += '<td class="s-table-checkbox"><a href="#" class="table-action-multiselect';
 							if(jQuery(cv).hasClass('disabled')) {
 								newtd += ' disabled';
 							}
@@ -1170,7 +1190,7 @@ function listingDisplayUpdate( tableID, data, afterRowID ) {
 
 						} else if( jQuery(cv).hasClass('select') ) {
 
-							newtd += '<td><a href="#" class="table-action-select';
+							newtd += '<td class="s-table-select"><a href="#" class="table-action-select';
 							if(jQuery(cv).hasClass('disabled')) {
 								newtd += ' disabled';
 							}
@@ -1275,7 +1295,7 @@ function buildPagingNav(currentPage, totalPages, pageRecordStart, pageRecordEnd,
 			if (currentPage > 3 && currentPage < totalPages - 3) {
 				pageStart = currentPage - 1;
 				pageCount = 3;
-			} else if (currentPage >= totalPages - 4) {
+			} else if (currentPage >= totalPages - 3) {
 				pageStart = totalPages - 4;
 			}
 		} else {

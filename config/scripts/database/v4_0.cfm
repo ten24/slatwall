@@ -118,6 +118,31 @@ Notes:
 	
 </cftry>
 
+<!--- Set SwOrderFulfillment orderFulfillmentStatusTypeID --->
+<cftry>
+	<cfquery name="local.updateData">
+		UPDATE
+			SwOrderFulfillment 
+		SET
+			orderFulfillmentStatusTypeID = (
+				SELECT CASE
+					WHEN min(oi.quantity) - sum(odi.quantity) = 0 THEN '159118d67de3418d9951fc629688e194'
+					WHEN min(oi.quantity) - sum(odi.quantity) > 0 THEN 'fefc92c1d8184017aa65cdc882bdf636'
+					ELSE 'b718b6fadf084bdaa01e47f5cc1a8265'
+				END
+				FROM SwOrderItem oi
+					LEFT JOIN SwOrderDeliveryItem odi ON odi.orderItemID = oi.orderItemID
+				WHERE oi.orderFulfillmentID = SwOrderFulfillment.orderFulfillmentID
+       		)
+	</cfquery>
+
+	<cfcatch>
+		<cflog file="Slatwall" text="ERROR UPDATE SCRIPT - Set orderFulfillment orderFulfillmentStatusType">
+		<cfset local.scriptHasErrors = true />
+	</cfcatch>
+	
+</cftry>
+
 <cfif local.scriptHasErrors>
 	<cflog file="Slatwall" text="General Log - Part of Script v4_0 had errors when running">
 	<cfthrow detail="Part of Script v4_0 had errors when running">
