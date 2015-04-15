@@ -670,26 +670,26 @@ component extends="HibachiService" accessors="true" {
 		if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "contentAccess") {
 			
 			// Bundle Content Into A Single Sku
-			if( arguments.processObject.getBundleContentAccessFlag() ) {
+			if( !isNull(arguments.processObject.getBundleContentAccessFlag()) && arguments.processObject.getBundleContentAccessFlag() ) {
 				
 				var newSku = this.newSku();
 				newSku.setPrice(arguments.processObject.getPrice());
 				newSku.setSkuCode(arguments.product.getProductCode() & "-1");
 				newSku.setProduct(arguments.product);
-				for(var c=1; c<=listLen(arguments.processObject.accessContents); c++) {
-					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.accessContents, c) ) );
+				for(var c=1; c<=listLen(arguments.processObject.getContents()); c++) {
+					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.getContents(), c) ) );
 				}
 				product.setDefaultSku(newSku);
 				
 			// Create Sku for each piece of Content
 			} else {
 				
-				for(var c=1; c<=listLen(arguments.processObject.accessContents); c++) {
+				for(var c=1; c<=listLen(arguments.processObject.getContents()); c++) {
 					var newSku = this.newSku();
-					newSku.setPrice(arguments.product.getPrice());
+					newSku.setPrice(arguments.processObject.getPrice());
 					newSku.setSkuCode(arguments.product.getProductCode() & "-#c#");
 					newSku.setProduct(arguments.product);
-					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.accessContents, c) ) );
+					newSku.addAccessContent( getContentService().getContent( listGetAt(arguments.processObject.getContents(), c) ) );
 					if(c==1) {
 						arguments.product.setDefaultSku(newSku);	
 					}
@@ -792,10 +792,10 @@ component extends="HibachiService" accessors="true" {
 				thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.processObject.getSubscriptionTerms(), i)) );
 				thisSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
 				for(var b=1; b <= listLen(arguments.processObject.getSubscriptionBenefits()); b++) {
-					thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.subscriptionBenefits, b) ) );
+					thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getSubscriptionBenefits(), b) ) );
 				}
 				for(var b=1; b <= listLen(arguments.processObject.getRenewalSubscriptionBenefits()); b++) {
-					thisSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.renewalSubscriptionBenefits, b) ) );
+					thisSku.addRenewalSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getRenewalSubscriptionBenefits(), b) ) );
 				}
 				if(i==1) {
 					product.setDefaultSku( thisSku );	
@@ -920,7 +920,13 @@ component extends="HibachiService" accessors="true" {
 		if(isNull(arguments.product.getDefaultSku()) && arrayLen(arguments.product.getSkus())){
 			arguments.product.setDefaultSku(arguments.product.getSkus()[1]);
 		}
-		
+		if(isNull(arguments.product.getURLTitle())){
+			arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
+		}
+		// Generate Image Files
+		if(!isNull(arguments.product.getDefaultSku()) && isNull(arguments.product.getDefaultSku().getImageFile())){
+			arguments.product.getDefaultSku().setImageFile( arguments.product.getDefaultSku().generateImageFileName() );
+		}
 		return arguments.product;
 	}
 	

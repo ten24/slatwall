@@ -1,5 +1,4 @@
 /*
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,15 +39,14 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 */
 component output="false" accessors="true" persistent="false" extends="Slatwall.org.Hibachi.HibachiEntity" {
 
 	property name="assignedAttributeSetSmartList" type="any" persistent="false";
 	property name="attributeValuesByAttributeIDStruct" type="struct" persistent="false";
 	property name="attributeValuesByAttributeCodeStruct" type="struct" persistent="false";
+	property name="settingValueFormatted" type="any" persistent="false";
 
 	// @hint Override the populate method to look for custom attributes
 	public any function populate( required struct data={} ) {
@@ -97,10 +93,25 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
 	}
+	
+	
 
 	// @hint helper function to return the details of a setting
 	public struct function getSettingDetails(required any settingName, array filterEntities=[]) {
 		return getService("settingService").getSettingDetails(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
+	}
+	
+	// @hint helper function to return the details of a setting
+	public any function getSettingValue(required any settingName, array filterEntities=[]) {
+		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
+	}
+	
+	// @hint helper function to return the details of a setting
+	public any function getSettingValueFormatted(any settingName, array filterEntities=[]) {
+		if(!structKeyExists(variables,'settingValueFormatted')){
+			variables.settingValueFormatted = getService("settingService").getSettingValueFormatted(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
+		}
+		return variables.settingValueFormatted;
 	}
 
 	// Attribute Value
@@ -300,7 +311,7 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 	
 	//can be overridden at the entity level in case we need to always return a relationship entity otherwise the default is only non-relationship and non-persistent
-	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID"){
+	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID,cmsAccountID,cmsContentID,cmsSiteID"){
 		var properties = getProperties();
 		
 		var defaultProperties = [];

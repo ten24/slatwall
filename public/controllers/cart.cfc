@@ -143,6 +143,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 			// Make sure that the session is persisted
 			getHibachiSessionService().persistSession();
+			
 		}
 	}
 	

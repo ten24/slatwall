@@ -79,15 +79,85 @@ Notes:
 					instantiationKey : '#request.slatwallScope.getApplicationValue('instantiationKey')#'
 				};
 				
-				if(slatwallConfig){
-					angular.extend(_config, slatwallConfig);
+				if(slatwallAngular.slatwallConfig){
+					angular.extend(_config, slatwallAngular.slatwallConfig);
 				}
 				
 				return {
 					
-				    $get:['$q','$http','$timeout','$log','$rootScope','$location','$anchorScroll', 'formService', function ($q,$http,$timeout,$log,$rootScope,$location,$anchorScroll,formService)
+				    $get:['$q',
+				    	'$http',
+				    	'$timeout',
+				    	'$log',
+				    	'$rootScope',
+				    	'$location',
+				    	'$anchorScroll',
+				    	'utilityService', 
+				    	'formService', 
+				    	function (
+				    		$q,
+				    		$http,
+				    		$timeout,
+				    		$log,
+				    		$rootScope,
+				    		$location,
+				    		$anchorScroll,
+				    		utilityService,
+				    		formService
+				    	)
 				    {
 				    	var slatwallService = {
+				    		//service method used to transform collection data to collection objects based on a collectionconfig
+				    		populateCollection:function(collectionData,collectionConfig){
+				    			//create array to hold objects
+				    			var entities = [];
+				    			//loop over all collection data to create objects
+				    			angular.forEach(collectionData, function(collectionItemData, key){
+				    				//create base Entity
+				    				var entity = slatwallService['new'+collectionConfig.baseEntityName.replace('Slatwall','')]();
+				    				//populate entity with data based on the collectionConfig
+				    				angular.forEach(collectionConfig.columns, function(column, key){
+				    					//get objects base properties
+				    					var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias.toLowerCase()+'.','');
+				    					var propertyIdentifierArray = propertyIdentifier.split('.');
+				    					var propertyIdentifierKey = propertyIdentifier.replace(/\./g,'_');
+				    					var currentEntity = entity;
+			    						angular.forEach(propertyIdentifierArray,function(property,key){
+			    							if(key === propertyIdentifierArray.length-1){
+			    								//if we are on the last item in the array
+					    						if(angular.isObject(collectionItemData[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype === 'many-to-one'){
+					    							var relatedEntity = slatwallService['new'+currentEntity.metaData[property].cfc]();
+					    							relatedEntity.$$init(collectionItemData[propertyIdentifierKey][0]);
+					    							currentEntity['$$set'+currentEntity.metaData[property].name.charAt(0).toUpperCase()+currentEntity.metaData[property].name.slice(1)](relatedEntity);
+					    						}else if(angular.isArray(collectionItemData[propertyIdentifierKey]) && (currentEntity.metaData[property].fieldtype === 'one-to-many')){
+					    							angular.forEach(collectionItemData[propertyIdentifierKey],function(arrayItem,key){
+					    								var relatedEntity = slatwallService['new'+currentEntity.metaData[property].cfc]();
+						    							relatedEntity.$$init(arrayItem);
+						    							currentEntity['$$add'+currentEntity.metaData[property].singularname.charAt(0).toUpperCase()+currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
+					    							});
+					    						}else{
+					    							currentEntity.data[property] = collectionItemData[propertyIdentifierKey];
+					    						}
+			    							}else{
+			    								var propertyMetaData = currentEntity.metaData[property];
+						    					if(angular.isUndefined(currentEntity.data[property])){
+						    						if(propertyMetaData.fieldtype === 'one-to-many'){
+						    							relatedEntity = [];
+						    						}else{
+						    							relatedEntity = slatwallService['new'+propertyMetaData.cfc]();
+						    						}
+			    								}else{
+			    									relatedEntity = currentEntity.data[property];
+			    								}
+			    								currentEntity['$$set'+propertyMetaData.name.charAt(0).toUpperCase()+propertyMetaData.name.slice(1)](relatedEntity);
+		    									currentEntity = relatedEntity;
+						    				}
+						    			});
+				    				});
+				    				entities.push(entity);
+				    			});
+				    			return entities;
+				    		},
 				    		/*basic entity getter where id is optional, returns a promise*/
 					  		getDefer:function(deferKey){
 					  			return _deferred[deferKey];
@@ -127,6 +197,7 @@ Notes:
 					  				params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 					  				params.allRecords = options.allRecords || '';
 					  				params.defaultColumns = options.defaultColumns || true;
+					  				params.processContext = options.processContext || '';
 					  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName;
 					  			}
 					  			
@@ -134,8 +205,43 @@ Notes:
 					  			if(angular.isDefined(options.id)) {
 					  				urlString += '&entityId='+options.id;	
 					  			}
+
+					  			/*var transformRequest = function(data){	
+					  				console.log(data);
+					  							  			
+					  				return data;
+					  			};
+					  			//check if we are using a service to transform the request
+					  			if(angular.isDefined(options.transformRequest)){
+					  				transformRequest=options.trasformRequest;
+					  			}*/
+					  			var transformResponse = function(data){
+					  					
+					  				var data = JSON.parse(data);
+					  				
+					  				return data;
+					  			};
+					  			//check if we are using a service to transform the response
+					  			if(angular.isDefined(options.transformResponse)){
+					  				transformResponse=function(data){
+					  					
+						  				var data = JSON.parse(data);
+						  				if(angular.isDefined(data.records)){
+						  					data = options.transformResponse(data.records);
+						  				}
+						  				
+						  				return data;
+						  			};
+					  			}
 					  			
-					  			$http.get(urlString,{params:params,timeout:deferred.promise})
+					  			$http.get(urlString,
+					  				{
+						  				params:params,
+						  				timeout:deferred.promise,
+						  				//transformRequest:transformRequest,
+						  				transformResponse:transformResponse
+					  				}
+					  			)
 					  			.success(function(data){
 					  				deferred.resolve(data);
 					  			}).error(function(reason){
@@ -147,6 +253,15 @@ Notes:
 					  			}
 					  			return deferred.promise;
 					  			
+					  		},
+					  		getResizedImageByProfileName:function (profileName, skuIDs) {
+					  			var deferred = $q.defer();
+					            return $http.get(_config.baseURL + '/index.cfm/?slatAction=api:main.getResizedImageByProfileName&profileName=' + profileName + '&skuIDs=' + skuIDs)
+					            .success(function(data){
+					  				deferred.resolve(data);
+					  			}).error(function(reason){
+					  				deferred.reject(reason);
+					  			});
 					  		},
 					  		getEventOptions:function(entityName){
 					  			var deferred = $q.defer();
@@ -161,13 +276,20 @@ Notes:
 					  			
 					  			return deferred.promise;
 					  		},
+					  		checkUniqueOrNullValue:function (object, property, value) {
+            					return $http.get(_config.baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property + 
+             				 '&value=' + escape(value)).then(
+              			  	function (results) {
+                 			   return results.data.uniqueStatus;
+ 							 })
+  							},
 					  		checkUniqueValue:function (object, property, value) {
 					            return $http.get(_config.baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property + 
 					              '&value=' + escape(value)).then(
 					                function (results) {
 					                    return results.data.uniqueStatus;
-					                });
-					        },
+					  			});
+					  		},
 					  		getPropertyDisplayData:function(entityName,options){
 					  			var deferred = $q.defer();
 					  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getPropertyDisplayData&entityName='+entityName;
@@ -217,8 +339,7 @@ Notes:
 					  			if(angular.isDefined(context)){
 					  				params.context = context;
 					  			}
-					  			
-					  			
+					 			
 					  			$http({
 					  				url:urlString,
 					  				method:'POST',
@@ -258,17 +379,6 @@ Notes:
 					  			});
 					  			return deferred.promise;
 					  		},
-					  		loadResourceBundle:function(locale){
-					  			var deferred = $q.defer();
-					  			$http.get(urlString,{params:params}).success(function(response){
-				  					_resourceBundle[locale] = response.data;
-					  				deferred.resolve(response);
-					  				
-					  			}).error(function(reason){
-					  				deferred.reject(reason);
-					  			});
-					  			return deferred.promise;
-					  		},
 					  		getRBLoaded:function(){
 					  			return _loadedResourceBundle;
 					  		},
@@ -293,17 +403,17 @@ Notes:
 										slatwallService.getResourceBundle('en_us');
 										slatwallService.getResourceBundle('en');
 									}	
-									$log.debug(rbPromises);
 									$q.all(rbPromises).then(function(data){
-										$log.debug('hasRB');
-										$log.debug(data);
 										$rootScope.loadedResourceBundle = true;
 										_loadingResourceBundle = false;
 										_loadedResourceBundle = true;
 										
+									},function(error){
+										$rootScope.loadedResourceBundle = true;
+										_loadingResourceBundle = false;
+										_loadedResourceBundle = true
 									});
 					  			}
-				  				
 				  				return _loadedResourceBundle;
 					  			
 					  		},
@@ -316,15 +426,17 @@ Notes:
 				  				}
 				  				
 				  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+_config.instantiationKey;
+				  				//var urlString = _config.baseURL+'/config/resourceBundles/'+locale+'.json?instantiationKey='+_config.instantiationKey;
 					  			var params = {
 					  				locale:locale
 					  			};
-				  				$http.get(urlString,{params:params}).success(function(response){
-				  					_resourceBundle[locale] = response.data;
-				  					deferred.resolve(response);
+				  				return $http.get(urlString,{params:params}).success(function(response){
+			  						_resourceBundle[locale] = response.data;
+				  					//deferred.resolve(response);
+				  				}).error(function(response){
+				  					_resourceBundle[locale] = {};
+				  					//deferred.reject(response);
 				  				});
-				  				return deferred.promise;
-				  				
 					  		},
 							
 					  		<!---replaceStringTemplate:function(template,object,formatValues,removeMissingKeys){
@@ -461,9 +573,8 @@ Notes:
 				    	var _jsEntities = {};
 				    	
 				    	var _init = function(entityInstance,data){
-				    		
 							for(var key in data) {
-								if(key.charAt(0) !== '$'){
+								if(key.charAt(0) !== '$' && angular.isDefined(entityInstance.metaData[key])){
 									var propertyMetaData = entityInstance.metaData[key];
 									
 									if(angular.isDefined(propertyMetaData) && angular.isDefined(propertyMetaData.hb_formfieldtype) && propertyMetaData.hb_formfieldtype === 'json'){
@@ -472,11 +583,10 @@ Notes:
 										}
 										
 									}else{
-		    							entityInstance.data[key] = data[key];
-		    						}	 
-		    						
+		    						entityInstance.data[key] = data[key];	
 								}
 							}
+						}
 						}
 				    	
 				    	var _getPropertyTitle = function(propertyName,metaData){
@@ -752,15 +862,21 @@ Notes:
 				    		}
 				    	}
 				    	
+				    	<!---var _getProcessObject = function(entityInstance){
+				    			
+				    	}--->
 	
 				    	var _save = function(entityInstance){
 				    		 var timeoutPromise = $timeout(function(){
 					    		$log.debug('save begin');
+					    		$log.debug(entityInstance);
+					    		
 					    		var entityID = entityInstance.$$getID();
 					    		
 					    		var modifiedData = _getModifiedData(entityInstance);
 					    		$log.debug('modifiedData complete');
 					    		$log.debug(modifiedData);
+					    		timeoutPromise.valid = modifiedData.valid;
 					    		if(modifiedData.valid){
 						    		var params = {};
 									params.serializedJsonData = angular.toJson(modifiedData.value);
@@ -779,7 +895,7 @@ Notes:
 								}else{
 						    		
 						    		//select first, visible, and enabled input with a class of ng-invalid
-						    		
+								
 						    		var target = $('input.ng-invalid:first:visible:enabled');
 						    		$log.debug('input is invalid');
 								$log.debug(target);
@@ -789,6 +905,7 @@ Notes:
 									
 									$location.hash(targetID);
 						    		$anchorScroll();
+						    		
 					    		}
 							});
 							return timeoutPromise;
@@ -840,7 +957,6 @@ Notes:
 				    			if(form.$dirty && form.$valid){
 						    		for(var key in form){
 						    			$log.debug('key:'+key);
-						    			
 						    			if(key.charAt(0) !== '$'){
 						    				var inputField = form[key];
 						    				if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
@@ -849,7 +965,7 @@ Notes:
 						    					if(angular.isDefined(entityInstance.metaData[key]) 
 					    						&& angular.isDefined(entityInstance.metaData[key].hb_formfieldtype) 
 					    						&& entityInstance.metaData[key].hb_formfieldtype === 'json'){
-						    						modifiedData[key] = angular.toJson(form[key].$modelValue);	
+						    						modifiedData[key] = angular.toJson(form[key].$modelValue);		
 						    					}else{
 						    						modifiedData[key] = form[key].$modelValue;
 						    					}
@@ -879,23 +995,23 @@ Notes:
 									var forms = parentInstance.forms;
 									for(var f in forms){
 						    			var form = forms[f];
-						    			form.$setSubmitted();	
+						    		    form.$setSubmitted();
 						    			if(form.$dirty && form.$valid){
-								    		for(var key in form){
-								    			if(key.charAt(0) !== '$'){
-								    				var inputField = form[key];
-								    				if(angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
-								    					<!--- set modifiedData --->
-								    					if(angular.isDefined(parentInstance.metaData[key]) 
-								    					&& angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) 
-								    					&& parentInstance.metaData[key].hb_formfieldtype === 'json'){
-								    						modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);		
-								    					}else{
-								    						modifiedData[parentObject.name][key] = form[key].$modelValue;
-								    					}
-								    				}
-								    			}
-								    		}
+							    		for(var key in form){
+							    			if(key.charAt(0) !== '$'){
+							    				var inputField = form[key];
+							    				if(angular.isDefined(inputField) && angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
+							    					<!--- set modifiedData --->
+							    					if(angular.isDefined(parentInstance.metaData[key]) 
+							    					&& angular.isDefined(parentInstance.metaData[key].hb_formfieldtype) 
+							    					&& parentInstance.metaData[key].hb_formfieldtype === 'json'){
+							    						modifiedData[parentObject.name][key] = angular.toJson(form[key].$modelValue);		
+							    					}else{
+							    						modifiedData[parentObject.name][key] = form[key].$modelValue;
+							    					}
+							    				}
+							    			}
+							    		}
 								    	}else{
 								    		if(!form.$valid){
 								    			valid = false;
@@ -983,7 +1099,6 @@ Notes:
 			    			form.$setSubmitted();	
 			    			for(var key in form){
 				    			if(key.charAt(0) !== '$'){
-
 				    				var inputField = form[key];
 				    				if(angular.isDefined(inputField) && angular.isDefined(inputField) && inputField.$valid === true && inputField.$dirty === true){	
 				    					
@@ -1107,6 +1222,7 @@ Notes:
 				    	}
 				    	<!--- js entity specific code here --->
 						<cfloop array="#rc.entities#" index="local.entity">
+							<cfset local.isProcessObject = Find('_',local.entity.getClassName())>
 							<cftry>
 								
 								<!---
@@ -1123,7 +1239,15 @@ Notes:
 									var entityDataPromise = slatwallService.getEntity('#lcase(local.entity.getClassName())#',options);
 									entityDataPromise.then(function(response){
 										<!--- Set the values to the values in the data passed in, or API promisses, excluding methods because they are prefaced with $ --->
-										entityInstance.$$init(response);
+										if(angular.isDefined(response.processData)){
+											entityInstance.$$init(response.data);
+											var processObjectInstance = slatwallService['new#local.entity.getClassName()#_'+options.processContext.charAt(0).toUpperCase()+options.processContext.slice(1)]();
+											processObjectInstance.$$init(response.processData);
+											processObjectInstance.data['#local.entity.getClassName()#'.charAt(0).toLowerCase()+'#local.entity.getClassName()#'.slice(1)] = entityInstance;
+											entityInstance.processObject = processObjectInstance;
+										}else{
+											entityInstance.$$init(response);
+										}
 									});
 									return {
 										promise:entityDataPromise,
@@ -1179,7 +1303,7 @@ Notes:
 									}
 									
 									this.metaData.$$getDetailTabs = function(){
-										<cfset local.tabsDirectory = expandPath( '/Slatwall/admin/client/js/directives/partials/entity/#local.entity.getClassName()#/' )>
+										<cfset local.tabsDirectory = expandPath( '/Slatwall/admin/client/partials/entity/#local.entity.getClassName()#/' )>
 										<cfdirectory
 										    action="list"
 										    directory="#local.tabsDirectory#"
@@ -1221,6 +1345,16 @@ Notes:
 									
 									this.data = {};
 									this.modifiedData = {};
+									<!---loop over possible attributes --->
+									<cfif len($.slatwall.getService('attributeService').getAttributeCodesListByAttributeSetObject(local.entity.getClassName()))>
+										<cfloop list="#$.slatwall.getService('attributeService').getAttributeCodesListByAttributeSetObject(local.entity.getClassName())#" index="local.attributeCode">
+											this.data['#local.attributeCode#'] = null;
+											this.metaData['#local.attributeCode#'] = {
+												name:'#local.attributeCode#'
+											};
+										</cfloop>
+									</cfif>
+									
 									
 									<!--- Loop over properties --->
 									<cfloop array="#local.entity.getProperties()#" index="local.property">
@@ -1228,26 +1362,43 @@ Notes:
 										<!--- Make sure that this property is a persistent one --->
 										<cfif !structKeyExists(local.property, "persistent") && ( !structKeyExists(local.property,"fieldtype") || listFindNoCase("column,id", local.property.fieldtype) )>
 											<!--- Find the default value for this property --->
-											<cfset local.defaultValue = local.entity.invokeMethod('get#local.property.name#') />
-								
-											<cfif isNull(local.defaultValue)>
-												this.data.#local.property.name# = null;
-											<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,big_decimal', local.property.ormType)>
-												this.data.#local.property.name# = #local.entity.invokeMethod('get#local.property.name#')#;
-											<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('string', local.property.ormType)>
-												<cfif structKeyExists(local.property, "hb_formFieldType") and local.property.hb_formFieldType eq "json">
-													this.data.#local.property.name# = angular.fromJson('#local.entity.invokeMethod('get#local.property.name#')#');
-												<cfelse>
-													this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
-												</cfif>
-											<cfelseif structKeyExists(local.property, "ormType") and local.property.ormType eq 'timestamp'>
-												<cfif local.entity.invokeMethod('get#local.property.name#') eq ''>
-													this.data.#local.property.name# = '';
-												<cfelse>
-													this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#').getTime()#';
-												</cfif>
+											<cfif !local.isProcessObject>
+												<cftry>
+													<cfset local.defaultValue = local.entity.invokeMethod('get#local.property.name#') />
+													<cfif isNull(local.defaultValue)>
+														this.data.#local.property.name# = null;
+													<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,big_decimal', local.property.ormType)>
+														this.data.#local.property.name# = #local.entity.invokeMethod('get#local.property.name#')#;
+													<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('string', local.property.ormType)>
+														<cfif structKeyExists(local.property, "hb_formFieldType") and local.property.hb_formFieldType eq "json">
+															this.data.#local.property.name# = angular.fromJson('#local.entity.invokeMethod('get#local.property.name#')#');
+														<cfelse>
+															this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
+														</cfif>
+													<cfelseif structKeyExists(local.property, "ormType") and local.property.ormType eq 'timestamp'>
+														<cfif local.entity.invokeMethod('get#local.property.name#') eq ''>
+															this.data.#local.property.name# = '';
+														<cfelse>
+															this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#').getTime()#';
+														</cfif>
+													<cfelse>
+														this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
+													</cfif>
+													<cfcatch></cfcatch>
+												</cftry>
 											<cfelse>
-												this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
+												<cftry>
+													<cfset local.defaultValue = local.entity.invokeMethod('get#local.property.name#') />
+													<cfif !isNull(local.defaultValue)>
+														<cfif !isObject(local.defaultValue)>
+															<cfset local.defaultValue = serializeJson(local.defaultValue)/>
+															this.data.#local.property.name# = #local.defaultValue#;
+														<cfelse>
+															this.data.#local.property.name# = null; 
+														</cfif>
+													</cfif>
+													<cfcatch></cfcatch>
+												</cftry>
 											</cfif>
 										<cfelse>
 										</cfif>
@@ -1255,14 +1406,6 @@ Notes:
 									
 								};
 								_jsEntities[ '#local.entity.getClassName()#' ].prototype = {
-									$$getID:function(){
-										return this['$$get'+this.metaData.className+'ID']();
-									},
-									$$getIDName:function(){
-										var IDNameString = this.metaData.className+'ID';
-										IDNameString = IDNameString.charAt(0).toLowerCase() + IDNameString.slice(1);
-										return IDNameString;
-									},
 									$$getPropertyByName:function(propertyName){
 										return this['$$get'+propertyName.charAt(0).toUpperCase() + propertyName.slice(1)]();
 									},
@@ -1283,6 +1426,9 @@ Notes:
 										var deletePromise =_delete(this)
 										return deletePromise;
 									},
+									<!---$$getProcessObject(){
+										return _getProcessObject(this);
+									}--->
 									$$getValidationsByProperty:function(property){
 										return _getValidationsByProperty(this,property);
 									},
@@ -1309,9 +1455,6 @@ Notes:
 											<cfif structKeyExists(local.property, "fieldtype")>
 												
 												<cfif listFindNoCase('many-to-one', local.property.fieldtype)>
-													<!--- <cfcontent type="text/html">
-													<cfdump var="#local.entity.getClassName()#">
-													<cfdump var="#local.property#"><cfabort> --->
 													<!---get many-to-one options --->
 													<!---,$$get#local.property.name#Options:function(args) {
 														var options = {
@@ -1353,7 +1496,13 @@ Notes:
 															collectionPromise.then(function(response){
 																for(var i in response.records){
 																	var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
-																	entityInstance.$$init(response.records[i]._#lcase(local.entity.getClassName())#_#local.property.name#[0]);
+																	//Removed the array index here at the end of local.property.name.
+																	if(angular.isArray(response.records[i].#local.property.name#)){
+																		entityInstance.$$init(response.records[i].#local.property.name#[0]);
+																	}else{
+																		entityInstance.$$init(response.records[i].#local.property.name#);//Shouldn't have the array index'
+																	}
+																	
 																	thisEntityInstance.$$set#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#(entityInstance);
 																}
 															});
@@ -1400,7 +1549,7 @@ Notes:
 															}
 															entityInstance.data[manyToManyName].push(thisEntityInstance);
 														}
-														
+	
 														$log.debug(thisEntityInstance);
 														$log.debug(entityInstance);
 	
@@ -1411,7 +1560,6 @@ Notes:
 													<!--- add method --->
 													,$$add#ReReplace(local.property.singularname,"\b(\w)","\u\1","ALL")#:function() {
 														<!--- create related instance --->
-														
 														var entityInstance = slatwallService.newEntity(this.metaData['#local.property.name#'].cfc);
 														var metaData = this.metaData;
 														<!--- one-to-many --->
@@ -1477,7 +1625,7 @@ Notes:
 																<!---returns array of related objects --->
 																for(var i in response.records){
 																	<!---creates new instance --->
-																	var entityInstance = thisEntityInstance['$$add'+thisEntityInstance.metaData['#local.property.name#'].cfc]();
+																	var entityInstance = thisEntityInstance['$$add'+thisEntityInstance.metaData['#local.property.name#'].singularname.charAt(0).toUpperCase()+thisEntityInstance.metaData['#local.property.name#'].singularname.slice(1)]();
 																	entityInstance.$$init(response.records[i]);
 																	if(angular.isUndefined(thisEntityInstance['#local.property.name#'])){
 																		thisEntityInstance['#local.property.name#'] = [];
@@ -1489,6 +1637,16 @@ Notes:
 														}
 													}
 												<cfelse>
+													<cfif listFindNoCase('id', local.property.fieldtype)>
+														,$$getID:function(){
+															//this should retreive id from the metadata
+															return this.data[this.$$getIDName()];
+														}
+														,$$getIDName:function(){
+															var IDNameString = '#local.property.name#';
+															return IDNameString;
+														}
+													</cfif>
 													,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
 														return this.data.#local.property.name#;
 													}
@@ -1542,7 +1700,7 @@ Notes:
 			});
 		</cfoutput>
 	</cfsavecontent>
-	
+	<cfset ORMClearSession()>
 	<cfif request.slatwallScope.getApplicationValue('debugFlag')>
 		<cfset getPageContext().getOut().clearBuffer() />
 		<cfset request.slatwallScope.setApplicationValue('ngSlatwall',local.jsOutput)>
@@ -1554,35 +1712,37 @@ Notes:
 													inputType = 'js'
 													,inputString = local.jsOutput
 													).results />
-		
-		<!---perform GZip Compression --->
-		<cfscript>
-			ioOutput = CreateObject("java","java.io.ByteArrayOutputStream");
-			gzOutput = CreateObject("java","java.util.zip.GZIPOutputStream");
-			
-			ioOutput.init();
-			gzOutput.init(ioOutput);
-			
-			gzOutput.write(local.jsOutputCompressed.getBytes(), 0, Len(local.jsOutputCompressed.getBytes()));
-			
-			gzOutput.finish();
-			gzOutput.close();
-			ioOutput.flush();
-			ioOutput.close();
-			
-			toOutput=ioOutput.toByteArray();
-			
-		</cfscript>
-		
-		<cfset request.slatwallScope.setApplicationValue('ngSlatwall',toOutput)>
-		<cfset local.jsOutput = toOutput>
+		<cfif request.slatwallScope.getApplicationValue('gzipJavascript')>
+			<!---perform GZip Compression --->
+			<cfscript>
+				ioOutput = CreateObject("java","java.io.ByteArrayOutputStream");
+				gzOutput = CreateObject("java","java.util.zip.GZIPOutputStream");
+				
+				ioOutput.init();
+				gzOutput.init(ioOutput);
+				
+				gzOutput.write(local.jsOutputCompressed.getBytes(), 0, Len(local.jsOutputCompressed.getBytes()));
+				
+				gzOutput.finish();
+				gzOutput.close();
+				ioOutput.flush();
+				ioOutput.close();
+				
+				toOutput=ioOutput.toByteArray();
+				
+			</cfscript>
+			<cfset request.slatwallScope.setApplicationValue('ngSlatwall',toOutput)>
+			<cfset local.jsOutput = toOutput>
+		<cfelse>
+			<cfset local.jsOutput = local.jsOutputCompressed />
+		</cfif>
 	</cfif>
 	
 <cfelse>
 	<cfset local.jsOutput = request.slatwallScope.getApplicationValue('ngSlatwall')>
 </cfif>
 
-<cfif request.slatwallScope.getApplicationValue('debugFlag')>
+<cfif request.slatwallScope.getApplicationValue('debugFlag')  || !request.slatwallScope.getApplicationValue('gzipJavascript')>
 	<cfoutput>#local.jsOutput#</cfoutput>
 <cfelse>
 	<cfheader name="Content-Encoding" value="gzip">

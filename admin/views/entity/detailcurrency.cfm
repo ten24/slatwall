@@ -56,21 +56,11 @@ Notes:
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.currency#" edit="#rc.edit#" sRedirectAction="admin:entity.listcurrency">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.currency#" edit="#rc.edit#"></hb:HibachiEntityActionBar>
-		
-		<hb:HibachiPropertyRow>
-			<hb:HibachiPropertyList>
-				<hb:HibachiPropertyDisplay object="#rc.currency#" property="activeFlag" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.currency#" property="currencyCode">
-				<hb:HibachiPropertyDisplay object="#rc.currency#" property="currencyName">
-				<hb:HibachiPropertyDisplay object="#rc.currency#" property="currencySymbol" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.currency#" property="formattedExample">
-			</hb:HibachiPropertyList>
-		</hb:HibachiPropertyRow>
-		
-		
-		<hb:HibachiTabGroup object="#rc.currency#">
-			<hb:HibachiTab property="currencyrates" />
-		</hb:HibachiTabGroup>
+
+		<hb:HibachiEntityDetailGroup object="#rc.currency#">
+			<hb:HibachiEntityDetailItem view="admin:entity/currencytabs/basic" open="true" text="#$.slatwall.rbKey('admin.entity.producttabs.basic')#" />
+			<hb:HibachiEntityDetailItem property="currencyrates" />
+		</hb:HibachiEntityDetailGroup>
 		
 	</hb:HibachiEntityDetailForm>
 </cfoutput>

@@ -1,0 +1,66 @@
+<form action="index.html" method="post" >
+  <div class="s-filter-group-item">
+
+    <div class="form-group form-group-sm">
+      <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Date Conditions:</label>
+      <div class="s-no-paddings">
+        <select class="form-control input-sm j-custom-select"
+        		ng-model="selectedFilterProperty.selectedCriteriaType" 
+        		ng-change="selectedConditionChanged(selectedFilterProperty)"
+        		ng-options="conditionOption as conditionOption.display 
+        					for conditionOption in conditionOptions 
+        					" 	
+        >
+        	<option selected="selected" value="">Select Condition</option>
+        </select>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+    <div class="form-group form-group-sm">
+      <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall" ng-bind="selectedFilterProperty.selectedCriteriaType.conditionDisplay"></label>
+      <div class="col-sm-12 s-no-paddings">
+      	<p class="input-group" ng-show="selectedFilterProperty.selectedCriteriaType.showNumberOf">
+          <input 	type="text" class="form-control" 
+          			ng-model="selectedFilterProperty.criteriaNumberOf" 
+          			ng-change="criteriaRangeChanged(selectedFilterProperty)"
+          			/>
+        </p>
+      	<label ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaStart" class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Start Date:</label>
+      
+      	<p class="input-group s-datepicker" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaStart">
+          <input 	type="text" class="form-control" 
+          			datepicker-popup="MMM dd, yyyy hh:mm a" 
+          			ng-model="selectedFilterProperty.criteriaRangeStart" 
+          			is-open="openedCalendarStart"  
+          			close-text="Close" 
+          			ng-change="criteriaRangeChanged(selectedFilterProperty)"
+          			ng-disabled="selectedFilterProperty.selectedCriteriaType.disableCriteriaStart"
+          			readonly
+          			/>
+          			
+                  
+          <span class="input-group-btn" ng-show="!selectedFilterProperty.selectedCriteriaType.disableCriteriaStart">
+            <button type="button" class="btn btn-primary btn-sm" ng-click="openCalendarStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </p>
+        <label ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd" class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">End Date:</label>
+      
+        <p class="input-group s-datepicker" ng-show="selectedFilterProperty.selectedCriteriaType.showCriteriaEnd">
+          <input 	type="text" class="form-control" 
+          			datepicker-popup="MMM dd, yyyy hh:mm a"  
+          			ng-model="selectedFilterProperty.criteriaRangeEnd" 
+          			is-open="openedCalendarEnd" 
+          			close-text="Close" 
+          			ng-change="criteriaRangeChanged(selectedFilterProperty)"
+          			ng-disabled="selectedFilterProperty.selectedCriteriaType.disableCriteriaEnd"
+          			readonly
+          			/>
+          <span class="input-group-btn"  ng-show="!selectedFilterProperty.selectedCriteriaType.disableCriteriaEnd">
+            <button type="button" class="btn btn-primary btn-sm" ng-click="openCalendarEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </p>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</form>

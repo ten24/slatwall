@@ -59,6 +59,7 @@ component extends="FW1.framework" {
 	variables.framework.hibachi = {};
 	variables.framework.hibachi.authenticationSubsystems = "admin,public";
 	variables.framework.hibachi.debugFlag = false;
+	variables.framework.hibachi.gzipJavascript = true;
 	variables.framework.hibachi.errorDisplayFlag = false;
 	variables.framework.hibachi.errorNotifyEmailAddresses = '';
 	variables.framework.hibachi.fullUpdateKey = "update";
@@ -72,6 +73,7 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.noaccessDefaultSubsystem = 'admin';
 	variables.framework.hibachi.noaccessDefaultSection = 'main';
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
+	
 	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
@@ -200,6 +202,8 @@ component extends="FW1.framework" {
 		}
 	}
 	
+	
+	
 	public void function setupRequest() {
 		setupGlobalRequest();
 		
@@ -304,6 +308,7 @@ component extends="FW1.framework" {
 					applicationInitData["applicationUpdateKey"] = 		variables.framework.hibachi.fullUpdateKey;
 					applicationInitData["applicationUpdatePassword"] =	variables.framework.hibachi.fullUpdatePassword;
 					applicationInitData["debugFlag"] =					variables.framework.hibachi.debugFlag;
+					applicationInitData["gzipJavascript"] = 			variables.framework.hibachi.gzipJavascript;
 					applicationInitData["errorDisplayFlag"] =			variables.framework.hibachi.errorDisplayFlag;
 					applicationInitData["errorNotifyEmailAddresses"] =	variables.framework.hibachi.errorNotifyEmailAddresses;
 					applicationInitData["baseURL"] = 					variables.framework.baseURL;
@@ -589,9 +594,32 @@ component extends="FW1.framework" {
 	}
 	
 	// Additional redirect function to redirect to an exact URL and flush the ORM Session when needed
-	public void function redirectExact(required string location, boolean addToken=false) {
+	public void function redirectExact(required string redirectLocation, boolean addToken=false) {
 		endHibachiLifecycle();
-		location(arguments.location, arguments.addToken);
+		
+		if(!redirectLocation.startsWith('http')) {
+			location(arguments.redirectLocation, arguments.addToken);
+		} else {
+			//Check to see if redirect link has a domain that is in the approved settings attribute
+			var redirectDomainApprovedFlag = false;
+			if (listLen( getHibachiScope().setting('globalAllowedOutsideRedirectSites') )){
+				allowedDomainArray = listToArray( getHibachiScope().setting('globalAllowedOutsideRedirectSites') );
+				
+				for (var allowedDomain in allowedDomainArray){
+					if ( LEFT(arguments.redirectLocation, len(allowedDomain)) == allowedDomain){
+						redirectDomainApprovedFlag = true;
+						break;
+					}
+				}
+			}
+			
+			// Check to make sure that the redirect stays on the Slatwall site, redirect back to the Slatwall landing page. 
+			if ( getPageContext().getRequest().GetRequestUrl().toString() == LEFT(arguments.redirectLocation, len(getPageContext().getRequest().GetRequestUrl().toString())) || redirectDomainApprovedFlag == true ){
+				location(arguments.redirectLocation, arguments.addToken);
+			}else{
+				location(getPageContext().getRequest().GetRequestUrl().toString(), arguments.addToken)
+			}
+		}
 	}
 	
 	// This method will execute an actions controller, render the view for that action and return it without going through an entire lifecycle

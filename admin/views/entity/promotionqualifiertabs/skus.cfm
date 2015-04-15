@@ -54,11 +54,9 @@ Notes:
 
 <cfoutput>
 	<div class="col-md-6">
-		<h5>#$.slatwall.rbKey('entity.promotionQualifier.skus')#</h5>
-		<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="skus" edit="#rc.edit#" displayType="plain" />
+		<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="skus" edit="#rc.edit#" displayType="plainTitle" />
 	</div>
 	<div class="col-md-6">
-		<h5>#$.slatwall.rbKey('entity.promotionQualifier.excludedskus')#</h5>
-		<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="excludedSkus" edit="#rc.edit#" displayType="plain" />
+		<hb:HibachiPropertyDisplay object="#rc.promotionQualifier#" property="excludedSkus" edit="#rc.edit#" displayType="plainTitle" />
 	</div>
 </cfoutput>

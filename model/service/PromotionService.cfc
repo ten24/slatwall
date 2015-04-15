@@ -109,24 +109,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Loop over orderItems and add Sale Prices to the qualified discounts
 			
 		for(var orderItem in arguments.order.getOrderItems()) {
-			var salePriceDetails = orderItem.getSku().getSalePriceDetails();
-
-			if(structKeyExists(salePriceDetails, "salePrice") && salePriceDetails.salePrice < orderItem.getSku().getPrice()) {
-				
-				var discountAmount = precisionEvaluate((orderItem.getSku().getPrice() * orderItem.getQuantity()) - (salePriceDetails.salePrice * orderItem.getQuantity()));
-				
-				arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
-				
-				// Insert this value into the potential discounts array
-				arrayAppend(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], {
-					promotionRewardID = "",
-					promotion = this.getPromotion(salePriceDetails.promotionID),
-					discountAmount = discountAmount
-				});
+			var salePriceDetails = orderItem.getSalePrice();
+			
+			for(var key in salePriceDetails) {
+				if(structKeyExists(salePriceDetails[key], "salePrice") && salePriceDetails[key].salePrice < orderItem.getSkuPrice()) {
+					
+					var discountAmount = precisionEvaluate((orderItem.getSkuPrice() * orderItem.getQuantity()) - (salePriceDetails[key].salePrice * orderItem.getQuantity()));
+	
+					arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ] = [];
+					
+					// Insert this value into the potential discounts array
+					arrayAppend(arguments.orderItemQualifiedDiscounts[ orderItem.getOrderItemID() ], {
+						promotionRewardID = "",
+						promotion = this.getPromotion(salePriceDetails[key].promotionID),
+						discountAmount = discountAmount
+					});
+				}
 			}
 		}
-		
-		
 	}
 	
 	private boolean function shouldAddNewPromotion(numeric discountAmount, any orderFulfillment, any promotionReward){
@@ -419,14 +419,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					} else if (orderRewards and reward.getRewardType() eq "order" ) {
 						processOrderRewards(arguments.order, reward);
 					} // ============= END ALL REWARD TYPES
-					// This forces the loop to repeat looking for "order" discounts
-					if(!orderRewards and pr == arrayLen(promotionRewards)) {
-						pr = 0;
-						orderRewards = true;
-					}
-					
 				
 				} // END Promotion Period OK IF
+				
+				// This forces the loop to repeat looking for "order" discounts
+				if(!orderRewards and pr == arrayLen(promotionRewards)) {
+					pr = 0;
+					orderRewards = true;
+				}
 			
 			} // END of PromotionReward Loop
 
@@ -1038,6 +1038,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				priceDetails[key].salePrice = getRoundingRuleService().roundValueByRoundingRuleID(value=priceDetails[key].salePrice, roundingRuleID=priceDetails[key].roundingRuleID);
 			}
 		}
+		return priceDetails;
+	}
+	
+	public struct function getSalePriceDetailsForOrderItem(required any orderItem) {
+		var priceDetails = getHibachiUtilityService().queryToStructOfStructures(getPromotionDAO().getOrderItemSalePricePromotionRewardsQuery(orderItem = arguments.orderItem), "orderItemID");
+		for(var key in priceDetails) {
+			if(priceDetails[key].roundingRuleID != "") {
+				priceDetails[key].salePrice = getRoundingRuleService().roundValueByRoundingRuleID(value=priceDetails[key].salePrice, roundingRuleID=priceDetails[key].roundingRuleID);
+			}
+		}
+
 		return priceDetails;
 	}
 	

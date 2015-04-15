@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Task" entityname="SlatwallTask" table="SwTask" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="taskService" hb_permission="this" hb_processContext="customURL,subscriptionUsageRenew,subscriptionUsageRenewalReminder,updateCalculatedProperties" {
+component displayname="Task" hb_auditable="false" entityname="SlatwallTask" table="SwTask" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="taskService" hb_permission="this" hb_processContext="customURL,subscriptionUsageRenew,subscriptionUsageRenewalReminder,updateCalculatedProperties" {
 	
 	// Persistent Properties
 	property name="taskID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

@@ -83,7 +83,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 	
 		var smartList = getHibachiService().getServiceByEntityName( entityName=rc.entityName ).invokeMethod( "get#getHibachiService().getProperlyCasedShortEntityName( rc.entityName )#SmartList", {1=rc} );
 		
-		if( arguments.rc.fieldName == "assignedAccount_accountID-autocompletesearch" ){
+		if( arguments.rc.fieldName == "assignedAccountAccountID-autocompletesearch" ){
 			smartList.addWhereCondition('( EXISTS (SELECT p.permissionGroupID FROM SlatwallPermissionGroup p INNER JOIN p.accounts pa WHERE pa.accountID = aslatwallaccount.accountID) OR aslatwallaccount.superUserFlag = 1 )');
 		}
 		
