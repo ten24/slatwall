@@ -69,6 +69,9 @@ angular.module("slatwalladmin").directive("swWorkflowTasks", ["$log", "$location
     */
 			scope.addWorkflowTask = function () {
 				logger("addWorkflowTasks", "Calling $$addWorkflowTask");
+				logger("addWorkflowTasks", "Setting the form submitted for validation");
+				$log.debug(scope.workflow);
+				scope.forms["workflow."].$setSubmitted();
 				var newWorkflowTask = scope.workflow.$$addWorkflowTask();
 				logger("var newWorkflowTask", newWorkflowTask);
 				scope.selectWorkflowTask(newWorkflowTask);
@@ -156,6 +159,7 @@ angular.module("slatwalladmin").directive("swWorkflowTasks", ["$log", "$location
 					scope.reindexTaskList();
 				});
 			};
+			/*Override the delete entity in the confirmation controller*/
 			scope.deleteEntity = function (entity) {
 				scope.hardRemoveTask(entity);
 			};

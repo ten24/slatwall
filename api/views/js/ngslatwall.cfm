@@ -900,10 +900,7 @@ Notes:
 						    		$log.debug('input is invalid');
 								$log.debug(target);
 						    		target.focus();
-						    		
-									var targetID = target.attr('id');
-									
-									$location.hash(targetID);
+								var targetID = target.attr('id');
 						    		$anchorScroll();
 						    		
 					    		}
