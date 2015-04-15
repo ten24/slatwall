@@ -52,7 +52,21 @@ angular.module("slatwalladmin").directive("swCriteriaNumber", ["$log", "$slatwal
 						value: "null"
 					}];
 				} else if (type === "condition") {
-					numberOptions = [];
+					numberOptions = [{
+						display: "Equals",
+						comparisonOperator: "eq"
+					}, {
+						display: "Doesn't Equal",
+						comparisonOperator: "neq"
+					}, {
+						display: "Defined",
+						comparisonOperator: "null",
+						value: "False"
+					}, {
+						display: "Not Defined",
+						comparisonOperator: "null",
+						value: "True"
+					}];
 				}
 				return numberOptions;
 			};

@@ -28,7 +28,23 @@ angular.module("slatwalladmin").directive("swCriteriaBoolean", ["$log", "$slatwa
 						value: "null"
 					}];
 				} else if (type === "condition") {
-					booleanOptions = [];
+					booleanOptions = [{
+						display: "True",
+						comparisonOperator: "eq",
+						value: "True"
+					}, {
+						display: "False",
+						comparisonOperator: "eq",
+						value: "False"
+					}, {
+						display: "Defined",
+						comparisonOperator: "null",
+						value: "False"
+					}, {
+						display: "Not Defined",
+						comparisonOperator: "null",
+						value: "True"
+					}];
 				}
 				return booleanOptions;
 			};

@@ -171,7 +171,26 @@ angular.module('slatwalladmin')
 							}
 				    	];
 				    }else if(type === 'condition'){
-				 		dateOptions = [];
+				 		dateOptions = [
+				 			{
+								display:"Equals",
+								comparisonOperator:"eq"
+							},
+							{
+								display:"Doesn't Equal",
+								comparisonOperator:"neq"
+							},
+							{
+								display:"Defined",
+								comparisonOperator:"null",
+								value:"False"
+							},
+							{
+								display:"Not Defined",
+								comparisonOperator:"null",
+								value:"True"
+							}
+				 		];
 				 	}
 			    	
 			    	return dateOptions;
