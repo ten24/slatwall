@@ -901,7 +901,6 @@ Notes:
 								$log.debug(target);
 						    		target.focus();
 								var targetID = target.attr('id');
-								$location.hash(targetID);
 						    		$anchorScroll();
 						    		
 					    		}
