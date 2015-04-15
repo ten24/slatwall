@@ -79,15 +79,18 @@ angular.module('slatwalladmin').controller('create-bundle-controller', [
 		$scope.saveProductBundle = function(closeDialogIndex){
 			$scope.newSaving = true;
 			$log.debug($scope.newSaving);
+            $scope.dIndex = closeDialogIndex;
 			$scope.product.$$save().then(function(){
 				$log.debug("Turn off the loader after saving.");
 				$scope.newSaving = false;
+                 if(angular.isDefined($scope.dIndex)){
+                    $scope.closeSaving = true;
+                    $rootScope.closePageDialog($scope.dIndex);
+                 }  
 			});
+             
 			
-			if(angular.isDefined(closeDialogIndex)){
-				$scope.closeSaving = true;
-				$rootScope.closePageDialog(closeDialogIndex);
-			}
+		
 			
 		};
 		

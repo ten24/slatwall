@@ -215,21 +215,6 @@ component extends="HibachiService" accessors="true" {
 					addAuditToCommit(audit);
 				}
 				
-				// If no previous audit create data available, manually add a 'create' audit for legacy data and make necessary adjustments to the data
-				if(!arguments.entity.getClassName() == "AttributeValue") {
-					var auditSmartList = getAuditSmartListForEntity(entity=arguments.entity, auditTypeList='create');
-					if (!isNull(arguments.oldData) && auditSmartList.getRecordsCount()  == 0) {
-						var auditLegacyCreate = logEntityModify(arguments.entity);
-						
-						// Remove oldData from arguments if it was provided because it is not applicable for property change data
-						var propertyChangeDataForLegacyCreate = generatePropertyChangeDataForEntity(entity=arguments.entity);
-						
-						// Revert new values back to the old values to capture an initial state
-						structAppend(propertyChangeDataForLegacyCreate.newPropertyData, propertyChangeData.oldPropertyData);
-						auditLegacyCreate.setData(serializeJSON(propertyChangeDataForLegacyCreate));
-					}
-				}
-				
 				return audit;
 			}
 		}

@@ -390,7 +390,7 @@ Notes:
 		<cfset noQualifierDiscounts = getNoQualifierDiscounts(noQualifierCurrentActivePromotionPeriods, allDiscounts)>
 	
 		<!--- Build a query to get the order Item information for a query of query --->
-		<cfset orderItemDataQuery = queryNew("orderItemID, skuPrice, skuID", "varchar, decimal, varchar")>
+		<cfset var orderItemDataQuery = queryNew("orderItemID, skuPrice, skuID", "varchar, decimal, varchar")>
 		<cfset queryAddRow(orderItemDataQuery, 1)> 
 		<cfset querySetCell(orderItemDataQuery, "orderItemID", #arguments.orderItem.getOrderItemID()#, 1 )>
 		<cfset querySetCell(orderItemDataQuery, "skuPrice", #arguments.orderItem.getSkuPrice()#, 1 )>

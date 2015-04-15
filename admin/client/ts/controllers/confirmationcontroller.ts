@@ -6,11 +6,15 @@ angular.module('slatwalladmin').controller("confirmationController", ["$scope", 
     $log.debug($scope.entity);
     this.close();
   };
- 
+  /**
+   * Closes the modal window
+   */
   $scope.close = function () { 
     $modalInstance.close();
   };
-
+  /**
+   * Cancels the modal window
+   */
   $scope.cancel = function () {
     $modalInstance.dismiss("cancel");  
   };
