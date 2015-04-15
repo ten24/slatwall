@@ -264,24 +264,27 @@ component extends="HibachiService" accessors="true" output="false" {
 		return 'AND';
 	}
 	
-	private string function getWorkflowConditionGroupsString(required any entity, required array workflowConditionGroups){
+	private string function getWorkflowConditionGroupsString(required any entity, required struct workflowConditionGroups){
 		var workflowConditionGroupsString = '';
-		for(var workflowConditionGroup in arguments.workflowConditionGroups){
-			
-			var logicalOperator = '';
+		var logicalOperator = '';
 		
-			if(structKeyExists(workflowConditionGroup,'logicalOperator')){
-				logicalOperator = getLogicalOperator(workflowConditionGroup.logicalOperator);
-			}
+		if(structKeyExists(arguments.workflowConditionGroups,'logicalOperator')){
+			logicalOperator = getLogicalOperator(arguments.workflowConditionGroups.logicalOperator);
+		}
+		workflowConditionGroupsString &= '(';
+		for(var workflowConditionGroup in arguments.workflowConditionGroups.filterGroups){
+			
+			
 			var workflowConditionGroupString = getWorkflowConditionGroupString(arguments.entity,workflowConditionGroup);
 			if(len(workflowConditionGroupString)){
-				workflowConditionGroupsString &= " #logicalOperator# (#workflowConditionGroupString#)";
+				workflowConditionGroupsString &= " #workflowConditionGroupString#";
 			}
 		}
+		workflowConditionGroupsString &= ') ';
 		return workflowConditionGroupsString;
 	}
 	
-	private string function getWorkflowConditionGroupString(required any entity,required struct workflowConditionGroup){
+	private string function getWorkflowConditionGroupString(required any entity, required struct workflowConditionGroup){
 		var workflowConditionGroupString = '';
 		
 		var logicalOperator = '';
@@ -289,11 +292,11 @@ component extends="HibachiService" accessors="true" output="false" {
 			logicalOperator = workflowConditionGroup.logicalOperator;
 		}
 		
-		if(structKeyExists(workflowConditionGroup,'filterGroups')){
-			workflowConditionGroupString &= getWorkflowConditionGroupsString(arguments.workflowConditionGroup.filterGroups);
+		if(structKeyExists(arguments.workflowConditionGroup,'filterGroups')){
+			workflowConditionGroupString &= ' #logicalOperator# ' & getWorkflowConditionGroupsString(arguments.entity, arguments.workflowConditionGroup);
 		}else{
 			if(structKeyExists(arguments.workflowConditionGroup,'propertyIdentifier') && len(arguments.workflowConditionGroup.propertyIdentifier)){
-				var constraintType = getConstraintType(arguments.workflowConditionGroup.comparisonOperator);
+				var constraintType = arguments.workflowConditionGroup.comparisonOperator;
 				var conditionResult = getHibachiValidationService().invokeMethod('validate_#constraintType#',{1=arguments.entity, 2=arguments.workflowConditionGroup.propertyIdentifier, 3=arguments.workflowConditionGroup.value});
 				
 			}else{
@@ -361,7 +364,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		*/
 		//if we have a any workflow conditions then evaluate them otherwise evaluate as true
 		if(arraylen(arguments.taskConditions.filterGroups)){
-			return evaluate(getWorkflowConditionGroupsString(arguments.entity,arguments.taskConditions.filterGroups));
+			var evaluationString = getWorkflowConditionGroupsString(arguments.entity, arguments.taskConditions.filterGroups);
+			return evaluate(evaluationString);
 		}else{
 			return true;
 		}

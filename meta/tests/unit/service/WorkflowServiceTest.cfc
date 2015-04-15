@@ -85,8 +85,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 							"workflowConditionGroup":[
 								{
 									"propertyIdentifier":"order.orderID",
-									"constraintType":"required",
-									"constraintValue":"true"
+									"comparisonOperator":"required",
+									"value":"true"
 								}
 							]
 									
@@ -136,45 +136,51 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var product = createPersistedTestEntity('product',productData);
 		Product.setDefaultSku(Product.getSkus()[1]);
 		
-		var workflowTasksConditionsConfig = '[
+		var workflowTasksConditionsConfig = '{"filterGroups":[
 				{
-					"workflowConditionGroup":[
+					"filterGroups":[
 						{
 							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"minValue",
-							"constraintValue":"5"
+							"comparisonOperator":"minValue",
+							"value":"5"
 						},
 						{
 							"logicalOperator":"AND",
 							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"minValue",
-							"constraintValue":"1"
-						}
-					]
-					
-				},
-				{
-					"logicalOperator":"AND",
-					"workflowConditionGroup":[
-						{
-							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"maxValue",
-							"constraintValue":"5"
+							"comparisonOperator":"minValue",
+							"value":"1",
+							"filterGroups":[
+								{
+									"propertyIdentifier":"defaultSku.price",
+									"comparisonOperator":"minValue",
+									"value":"1"
+								}
+							]
+							 
 						},
 						{
-							"logicalOperator":"OR",
+							"logicalOperator":"AND",
 							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"maxValue",
-							"constraintValue":"5"
+							"comparisonOperator":"minValue",
+							"value":"1",
+							"filterGroups":[
+								{
+									"propertyIdentifier":"defaultSku.price",
+									"comparisonOperator":"minValue",
+									"value":"1"
+								}
+							]
+							
 						}
 					]
 				}
-		]';
+		]}';
 		var workflowTasksConditionsConfigStruct = deserializeJson(workflowTasksConditionsConfig);
-		
-		MakePublic(variables.service,'entityPassesAllWorkflowTaskConditions');
-		var passed = variables.service.entityPassesAllWorkflowTaskConditions(product,workflowTasksConditionsConfigStruct);
-		//request.debug(passed);
+		MakePublic(variables.service,'getWorkflowConditionGroupsString');
+		var evalstring = variables.service.getWorkflowConditionGroupsString(product, workflowTasksConditionsConfigStruct);
+		request.debug(evalString);
+//		MakePublic(variables.service,'entityPassesAllWorkflowTaskConditions');
+		//var passed = variables.service.entityPassesAllWorkflowTaskConditions(product,workflowTasksConditionsConfigStruct);
 	}
 	
 	public void function getWorkflowConditionGroupsString(){
@@ -197,14 +203,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					"workflowConditionGroup":[
 						{
 							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"minValue",
-							"constraintValue":"5"
+							"comparisonOperator":"minValue",
+							"value":"5"
 						},
 						{
 							"logicalOperator":"AND",
 							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"minValue",
-							"constraintValue":"1"
+							"comparisonOperator":"minValue",
+							"value":"1"
 						}
 					]
 					
@@ -214,14 +220,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					"workflowConditionGroup":[
 						{
 							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"maxValue",
-							"constraintValue":"5"
+							"comparisonOperator":"maxValue",
+							"value":"5"
 						},
 						{
 							"logicalOperator":"OR",
 							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"maxValue",
-							"constraintValue":"5"
+							"comparisonOperator":"maxValue",
+							"value":"5"
 						}
 					]
 				}
