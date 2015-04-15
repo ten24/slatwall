@@ -11,7 +11,7 @@ angular.module('slatwalladmin').controller("confirmationController", ["$scope", 
    */
   $scope.close = function () { 
     $modalInstance.close();
-  };
+  }; 
   /**
    * Cancels the modal window
    */
