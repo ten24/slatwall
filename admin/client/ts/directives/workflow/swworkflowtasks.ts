@@ -170,6 +170,7 @@ angular.module('slatwalladmin')
     						scope.reindexTaskList();
     					});
 				};
+                /*Override the delete entity in the confirmation controller*/
 				scope.deleteEntity = function(entity){
 					scope.hardRemoveTask(entity);
 				}
