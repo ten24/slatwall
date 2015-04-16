@@ -36,6 +36,7 @@ angular.module('slatwalladmin')
 			    	};
 			    	return manyToOneOptions;
 			    };
+			    scope.manyToOneOptions = getManyToOneOptions();
 			    scope.conditionOptions = getManyToOneOptions();
 				$log.debug('many-to-one');
 				$log.debug(scope.selectedFilterProperty);

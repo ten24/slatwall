@@ -30,8 +30,8 @@ angular.module('slatwalladmin')
 			filterPropertiesList:"=",
 			saveCollection:"&",
 			removeFilterItem:"&",
-			filterItemIndex:"="
-		
+			filterItemIndex:"=",
+			comparisonType:"="
 		},
 		templateUrl:collectionPartialsPath+"editfilteritem.html",
 		link: function(scope, element,attrs,filterGroupsController){
