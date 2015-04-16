@@ -23,11 +23,11 @@ angular.module('slatwalladmin')
 				filterItem:"=",
 		        selectedFilterProperty:"=",
 		        filterPropertiesList:"=",
-		        selectedFilterPropertyChanged:"&"
+		        selectedFilterPropertyChanged:"&",
+		        comparisonType:"="
 			},
 			templateUrl:collectionPartialsPath+'criteria.html',
 			link: function(scope, element, attrs){
-	
 			}
 		};
 	}

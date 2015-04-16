@@ -1372,6 +1372,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				var activePassword = getAccountDAO().getActivePasswordByAccountID(arguments.data.Account.getAccountID());
 				getHibachiScope().getSession().setAccountAuthentication(activePassword);
 			}
+			accountAuthenticationsArray[i].removeAccount();
+			// remove this authentication from old session
+			getAccountDAO().removeAccountAuthenticationFromAllSessions( accountAuthenticationsArray[i].getAccountAuthenticationID() );
 			this.deleteAccountAuthentication( accountAuthenticationsArray[i] );
 		}
 		

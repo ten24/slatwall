@@ -144,6 +144,19 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name="removeAccountAuthenticationFromAllSessions" returntype="void" access="public">
+		<cfargument name="accountAuthenticationID" required="true"  />
+		
+		<cfset var rs = "" />
+		
+		<cfquery name="rs">
+			UPDATE SwSession 
+			SET accountAuthenticationID = null 
+			WHERE accountAuthenticationID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountAuthenticationID#" />
+		</cfquery>
+	
+	</cffunction>
+	
 	<cffunction name="getInternalAccountAuthenticationsByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		

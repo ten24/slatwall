@@ -18,7 +18,8 @@ angular.module('slatwalladmin')
 				siblingItems: "=",
 				filterPropertiesList:"=",
 				filterItemIndex:"=",
-				saveCollection:"&"
+				saveCollection:"&",
+				comparisonType:"="
 			},
 			templateUrl:collectionPartialsPath+"filteritem.html",
 			link: function(scope, element,attrs,filterGroupsController){

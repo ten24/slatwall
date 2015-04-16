@@ -14,7 +14,7 @@ angular.module('slatwalladmin')
 			},
 			templateUrl:partialsPath+"admincreatesuperuser.html",
 			link: function(scope, element,attrs){
-			}
+			} 
 		};
 	}
 ]);

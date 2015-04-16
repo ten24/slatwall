@@ -52,314 +52,420 @@ angular.module("slatwalladmin").directive("swConditionCriteria", ["$http", "$com
 
 	/* Options info begin */
 
-	var getStringOptions = function () {
-		var stringOptions = [{
-			display: "Equals",
-			comparisonOperator: "="
-		}, {
-			display: "Doesn't Equal",
-			comparisonOperator: "<>"
-		}, {
-			display: "Contains",
-			comparisonOperator: "like",
-			pattern: "%w%"
-		}, {
-			display: "Doesn't Contain",
-			comparisonOperator: "not like",
-			pattern: "%w%"
-		}, {
-			display: "Starts With",
-			comparisonOperator: "like",
-			pattern: "w%"
-		}, {
-			display: "Doesn't Start With",
-			comparisonOperator: "not like",
-			pattern: "w%"
-		}, {
-			display: "Ends With",
-			comparisonOperator: "like",
-			pattern: "%w"
-		}, {
-			display: "Doesn't End With",
-			comparisonOperator: "not like",
-			pattern: "%w"
-		}, {
-			display: "In List",
-			comparisonOperator: "in"
-		}, {
-			display: "Not In List",
-			comparisonOperator: "not in"
-		}, {
-			display: "Defined",
-			comparisonOperator: "is not",
-			value: "null"
-		}, {
-			display: "Not Defined",
-			comparisonOperator: "is",
-			value: "null"
-		}];
+	var getStringOptions = function (type) {
+		var stringOptions = [];
+		if (angular.isUndefined(type)) {
+			type = "filter";
+		}
+		if (type == "filter") {
+			stringOptions = [{
+				display: "Equals",
+				comparisonOperator: "="
+			}, {
+				display: "Doesn't Equal",
+				comparisonOperator: "<>"
+			}, {
+				display: "Contains",
+				comparisonOperator: "like",
+				pattern: "%w%"
+			}, {
+				display: "Doesn't Contain",
+				comparisonOperator: "not like",
+				pattern: "%w%"
+			}, {
+				display: "Starts With",
+				comparisonOperator: "like",
+				pattern: "w%"
+			}, {
+				display: "Doesn't Start With",
+				comparisonOperator: "not like",
+				pattern: "w%"
+			}, {
+				display: "Ends With",
+				comparisonOperator: "like",
+				pattern: "%w"
+			}, {
+				display: "Doesn't End With",
+				comparisonOperator: "not like",
+				pattern: "%w"
+			}, {
+				display: "In List",
+				comparisonOperator: "in"
+			}, {
+				display: "Not In List",
+				comparisonOperator: "not in"
+			}, {
+				display: "Defined",
+				comparisonOperator: "is not",
+				value: "null"
+			}, {
+				display: "Not Defined",
+				comparisonOperator: "is",
+				value: "null"
+			}];
+			if (type === "condition") {
+				stringOptions = [{
+					display: "Equals",
+					comparisonOperator: "="
+				}, {
+					display: "In List",
+					comparisonOperator: "in"
+				}, {
+					display: "Defined",
+					comparisonOperator: "is not",
+					value: "null"
+				}, {
+					display: "Not Defined",
+					comparisonOperator: "is",
+					value: "null"
+				}];
+			}
+		}
+
 		return stringOptions;
 	};
 
-	var getBooleanOptions = function () {
-		var booleanOptions = [{
-			display: "True",
-			comparisonOperator: "=",
-			value: "True"
-		}, {
-			display: "False",
-			comparisonOperator: "=",
-			value: "False"
-		}, {
-			display: "Defined",
-			comparisonOperator: "is not",
-			value: "null"
-		}, {
-			display: "Not Defined",
-			comparisonOperator: "is",
-			value: "null"
-		}];
+	var getBooleanOptions = function (type) {
+		var booleanOptions = [];
+		if (angular.isUndefined(type)) {
+			type = "filter";
+		}
+		if (type === "filter" || type === "condition") {
+			booleanOptions = [{
+				display: "True",
+				comparisonOperator: "=",
+				value: "True"
+			}, {
+				display: "False",
+				comparisonOperator: "=",
+				value: "False"
+			}, {
+				display: "Defined",
+				comparisonOperator: "is not",
+				value: "null"
+			}, {
+				display: "Not Defined",
+				comparisonOperator: "is",
+				value: "null"
+			}];
+		}
 		return booleanOptions;
 	};
 
-	var getDateOptions = function () {
-		var dateOptions = [{
-			display: "Date",
-			comparisonOperator: "between",
-			dateInfo: {
-				type: "exactDate" }
-		}, {
-			display: "In Range",
-			comparisonOperator: "between",
-			dateInfo: {
-				type: "range"
-			}
-		}, {
-			display: "Not In Range",
-			comparisonOperator: "not between",
-			dateInfo: {
-				type: "range"
-			}
-		}, {
-			display: "Today",
-			comparisonOperator: "between",
-			dateInfo: {
-				type: "calculation",
-				measureType: "d",
-				measureCount: 0,
-				behavior: "toDate"
-			}
-		}, {
-			display: "Yesterday",
-			comparisonOperator: "between",
-			dateInfo: {
-				type: "calculation",
-				measureType: "d",
-				measureCount: -1,
-				behavior: "toDate"
-			}
-		}, {
-			display: "This Week",
-			comparisonOperator: "between",
-			dateInfo: {
-				type: "calculation",
-				measureType: "w",
-				behavior: "toDate"
-			}
-		}, {
-			display: "This Month",
-			comparisonOperator: "between",
-			dateInfo: {
-				type: "calculation",
-				measureType: "m",
-				behavior: "toDate"
-			}
-		}, {
-			display: "This Quarter",
-			comparisonOperator: "between",
-			dateInfo: {
-				type: "calculation",
-				measureType: "q",
-				behavior: "toDate"
-			}
-		}, {
-			display: "This Year",
-			comparisonOperator: "between",
-			dateInfo: {
-				type: "calculation",
-				measureType: "y",
-				behavior: "toDate"
-			}
-		}, {
-			display: "Last N Hour(s)",
-			comparisonOperator: "between",
-			dateInfo: {
-				type: "calculation",
-				measureType: "h",
-				measureTypeDisplay: "Hours"
-			}
-		}, {
-			display: "Last N Day(s)",
-			comparisonOperator: "between",
-			dateInfo: {
-				type: "calculation",
-				measureType: "d",
-				measureTypeDisplay: "Days"
-			}
-		}, {
-			display: "Last N Week(s)",
-			comparisonOperator: "between",
-			dateInfo: {
-				type: "calculation",
-				measureType: "w",
-				measureTypeDisplay: "Weeks"
+	var getDateOptions = function (type) {
+		var dateOptions = [];
+		if (angular.isUndefined(type)) {
+			type = "filter";
+		}
+		if (type === "filter") {
+			dateOptions = [{
+				display: "Date",
+				comparisonOperator: "between",
+				dateInfo: {
+					type: "exactDate" }
+			}, {
+				display: "In Range",
+				comparisonOperator: "between",
+				dateInfo: {
+					type: "range"
+				}
+			}, {
+				display: "Not In Range",
+				comparisonOperator: "not between",
+				dateInfo: {
+					type: "range"
+				}
+			}, {
+				display: "Today",
+				comparisonOperator: "between",
+				dateInfo: {
+					type: "calculation",
+					measureType: "d",
+					measureCount: 0,
+					behavior: "toDate"
+				}
+			}, {
+				display: "Yesterday",
+				comparisonOperator: "between",
+				dateInfo: {
+					type: "calculation",
+					measureType: "d",
+					measureCount: -1,
+					behavior: "toDate"
+				}
+			}, {
+				display: "This Week",
+				comparisonOperator: "between",
+				dateInfo: {
+					type: "calculation",
+					measureType: "w",
+					behavior: "toDate"
+				}
+			}, {
+				display: "This Month",
+				comparisonOperator: "between",
+				dateInfo: {
+					type: "calculation",
+					measureType: "m",
+					behavior: "toDate"
+				}
+			}, {
+				display: "This Quarter",
+				comparisonOperator: "between",
+				dateInfo: {
+					type: "calculation",
+					measureType: "q",
+					behavior: "toDate"
+				}
+			}, {
+				display: "This Year",
+				comparisonOperator: "between",
+				dateInfo: {
+					type: "calculation",
+					measureType: "y",
+					behavior: "toDate"
+				}
+			}, {
+				display: "Last N Hour(s)",
+				comparisonOperator: "between",
+				dateInfo: {
+					type: "calculation",
+					measureType: "h",
+					measureTypeDisplay: "Hours"
+				}
+			}, {
+				display: "Last N Day(s)",
+				comparisonOperator: "between",
+				dateInfo: {
+					type: "calculation",
+					measureType: "d",
+					measureTypeDisplay: "Days"
+				}
+			}, {
+				display: "Last N Week(s)",
+				comparisonOperator: "between",
+				dateInfo: {
+					type: "calculation",
+					measureType: "w",
+					measureTypeDisplay: "Weeks"
 
-			}
-		}, {
-			display: "Last N Month(s)",
-			comparisonOperator: "between",
-			dateInfo: {
-				type: "calculation",
-				measureType: "m",
-				measureTypeDisplay: "Months"
-			}
-		}, {
-			display: "Last N Quarter(s)",
-			comparisonOperator: "between",
-			dateInfo: {
-				type: "calculation",
-				measureType: "q",
-				measureTypeDisplay: "Quarters"
-			}
-		}, {
-			display: "Last N Year(s)",
-			comparisonOperator: "between",
-			dateInfo: {
-				type: "calculation",
-				measureType: "y",
-				measureTypeDisplay: "Years"
-			}
-		}, {
-			display: "Defined",
-			comparisonOperator: "is not",
-			value: "null"
-		}, {
-			display: "Not Defined",
-			comparisonOperator: "is",
-			value: "null"
-		}];
+				}
+			}, {
+				display: "Last N Month(s)",
+				comparisonOperator: "between",
+				dateInfo: {
+					type: "calculation",
+					measureType: "m",
+					measureTypeDisplay: "Months"
+				}
+			}, {
+				display: "Last N Quarter(s)",
+				comparisonOperator: "between",
+				dateInfo: {
+					type: "calculation",
+					measureType: "q",
+					measureTypeDisplay: "Quarters"
+				}
+			}, {
+				display: "Last N Year(s)",
+				comparisonOperator: "between",
+				dateInfo: {
+					type: "calculation",
+					measureType: "y",
+					measureTypeDisplay: "Years"
+				}
+			}, {
+				display: "Defined",
+				comparisonOperator: "is not",
+				value: "null"
+			}, {
+				display: "Not Defined",
+				comparisonOperator: "is",
+				value: "null"
+			}];
+		}
+
+		if (type === "condition") {
+			dateOptions = [{
+				display: "Defined",
+				comparisonOperator: "is not",
+				value: "null"
+			}, {
+				display: "Not Defined",
+				comparisonOperator: "is",
+				value: "null"
+			}];
+		}
 
 		return dateOptions;
 	};
 
-	var getNumberOptions = function () {
-		var numberOptions = [{
-			display: "Equals",
-			comparisonOperator: "="
-		}, {
-			display: "Doesn't Equal",
-			comparisonOperator: "<>"
-		}, {
-			display: "In Range",
-			comparisonOperator: "between",
-			type: "range"
-		}, {
-			display: "Not In Range",
-			comparisonOperator: "not between",
-			type: "range"
-		}, {
-			display: "Greater Than",
-			comparisonOperator: ">"
-		}, {
-			display: "Greater Than Or Equal",
-			comparisonOperator: ">="
-		}, {
-			display: "Less Than",
-			comparisonOperator: "<"
-		}, {
-			display: "Less Than Or Equal",
-			comparisonOperator: "<="
-		}, {
-			display: "In List",
-			comparisonOperator: "in"
-		}, {
-			display: "Not In List",
-			comparisonOperator: "not in"
-		}, {
-			display: "Defined",
-			comparisonOperator: "is not",
-			value: "null"
-		}, {
-			display: "Not Defined",
-			comparisonOperator: "is",
-			value: "null"
-		}];
+	var getNumberOptions = function (type) {
+		var numberOptions = [];
+		if (angular.isUndefined(type)) {
+			type = "filter";
+		}
+		if (type == "filter") {
+			numberOptions = [{
+				display: "Equals",
+				comparisonOperator: "="
+			}, {
+				display: "Doesn't Equal",
+				comparisonOperator: "<>"
+			}, {
+				display: "In Range",
+				comparisonOperator: "between",
+				type: "range"
+			}, {
+				display: "Not In Range",
+				comparisonOperator: "not between",
+				type: "range"
+			}, {
+				display: "Greater Than",
+				comparisonOperator: ">"
+			}, {
+				display: "Greater Than Or Equal",
+				comparisonOperator: ">="
+			}, {
+				display: "Less Than",
+				comparisonOperator: "<"
+			}, {
+				display: "Less Than Or Equal",
+				comparisonOperator: "<="
+			}, {
+				display: "In List",
+				comparisonOperator: "in"
+			}, {
+				display: "Not In List",
+				comparisonOperator: "not in"
+			}, {
+				display: "Defined",
+				comparisonOperator: "is not",
+				value: "null"
+			}, {
+				display: "Not Defined",
+				comparisonOperator: "is",
+				value: "null"
+			}];
+		}
+		if (type === "condition") {
+			numberOptions = [{
+				display: "Equals",
+				comparisonOperator: "="
+			}, {
+				display: "Doesn't Equal",
+				comparisonOperator: "<>"
+			}, {
+				display: "Greater Than",
+				comparisonOperator: ">"
+			}, {
+				display: "Greater Than Or Equal",
+				comparisonOperator: ">="
+			}, {
+				display: "Less Than",
+				comparisonOperator: "<"
+			}, {
+				display: "Less Than Or Equal",
+				comparisonOperator: "<="
+			}, {
+				display: "In List",
+				comparisonOperator: "in"
+			}, {
+				display: "Defined",
+				comparisonOperator: "is not",
+				value: "null"
+			}, {
+				display: "Not Defined",
+				comparisonOperator: "is",
+				value: "null"
+			}];
+		}
 		return numberOptions;
 	};
 
 
-	var getOneToManyOptions = function () {
-		var oneToManyOptions = [{
-			display: "All Exist In Collection",
-			comparisonOperator: "All"
-		}, {
-			display: "None Exist In Collection",
-			comparisonOperator: "None"
-		}, {
-			display: "Some Exist In Collection",
-			comparisonOperator: "One"
+	var getOneToManyOptions = function (type) {
+		var oneToManyOptions = [];
+		if (angular.isUndefined(type)) {
+			type = "filter";
 		}
-		/*,
-  {
-  	display:"Empty",
-  	comparisonOperator:"is",
-  	value:"null"
-  },
-  {
-  	display:"Not Empty",
-  	comparisonOperator:"is not",
-  	value:"null"
-  }*/
-		];
+		if (type == "filter") {
+			oneToManyOptions = [{
+				display: "All Exist In Collection",
+				comparisonOperator: "All"
+			}, {
+				display: "None Exist In Collection",
+				comparisonOperator: "None"
+			}, {
+				display: "Some Exist In Collection",
+				comparisonOperator: "One"
+			}];
+		}
+		if (type === "condition") {
+			oneToManyOptions = [];
+		}
 		return oneToManyOptions;
 	};
 
-	var getManyToManyOptions = function () {
-		var manyToManyOptions = [{
-			display: "All Exist In Collection",
-			comparisonOperator: "All"
-		}, {
-			display: "None Exist In Collection",
-			comparisonOperator: "None"
-		}, {
-			display: "Some Exist In Collection",
-			comparisonOperator: "One"
-		}, {
-			display: "Empty",
-			comparisonOperator: "is",
-			value: "null"
-		}, {
-			display: "Not Empty",
-			comparisonOperator: "is not",
-			value: "null"
-		}];
+	var getManyToManyOptions = function (type) {
+		var manyToManyOptions = [];
+		if (angular.isUndefined(type)) {
+			type = "filter";
+		}
+		if (type == "filter") {
+			manyToManyOptions = [{
+				display: "All Exist In Collection",
+				comparisonOperator: "All"
+			}, {
+				display: "None Exist In Collection",
+				comparisonOperator: "None"
+			}, {
+				display: "Some Exist In Collection",
+				comparisonOperator: "One"
+			}, {
+				display: "Empty",
+				comparisonOperator: "is",
+				value: "null"
+			}, {
+				display: "Not Empty",
+				comparisonOperator: "is not",
+				value: "null"
+			}];
+		}
+		if (type === "condition") {
+			manyToManyOptions = [{
+				display: "Empty",
+				comparisonOperator: "is",
+				value: "null"
+			}, {
+				display: "Not Empty",
+				comparisonOperator: "is not",
+				value: "null"
+			}];
+		}
 		return manyToManyOptions;
 	};
 
-	var getManyToOneOptions = function () {
-		var manyToOneOptions = {
-			drillEntity: {},
-			hasEntity: {
-				display: "Defined",
-				comparisonOperator: "is not",
-				value: "null"
-			},
-			notHasEntity: {
-				display: "Not Defined",
-				comparisonOperator: "is",
-				value: "null"
-			}
-		};
+	var getManyToOneOptions = function (type) {
+		var manyToOneOptions = [];
+		if (angular.isUndefined(type)) {
+			type = "filter";
+		}
+		if (type == "filter") {
+			manyToOneOptions = {
+				drillEntity: {},
+				hasEntity: {
+					display: "Defined",
+					comparisonOperator: "is not",
+					value: "null"
+				},
+				notHasEntity: {
+					display: "Not Defined",
+					comparisonOperator: "is",
+					value: "null"
+				}
+			};
+		}
 		return manyToOneOptions;
 	};
 
@@ -614,7 +720,7 @@ angular.module("slatwalladmin").directive("swConditionCriteria", ["$http", "$com
 				if (angular.isDefined(scope.selectedFilterProperty.fieldtype)) {
 					switch (scope.selectedFilterProperty.fieldtype) {
 						case "many-to-one":
-							scope.conditionOptions = getManyToOneOptions();
+							scope.conditionOptions = getManyToOneOptions(scope.comparisonType);
 							$log.debug("many-to-one");
 							$log.debug(scope.selectedFilterProperty);
 							$log.debug(scope.filterPropertiesList);
