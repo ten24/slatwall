@@ -68,177 +68,197 @@ angular.module('slatwalladmin')
 					   "propertyIdentifier":"_orderitem.orderItemID",
 					   "ormtype":"id",
 					   "isVisible":true,
-					   "isSearchable":true,
-					   "title":"Order Item ID"
+					  
+					   "title":"Order Item ID",
+					    "isSearchable":true
 					},
 					{
 					   "title":"Order Item Type",
 					   "propertyIdentifier":"_orderitem.orderItemType",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
+					   
 					},
 					{
 					   "title":"Order Item Price",
 					   "propertyIdentifier":"_orderitem.price",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
 					},
 					{
 					   "title":"Sku Name",
 					   "propertyIdentifier":"_orderitem.sku.skuName",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
+					   "ormtype":"string",
+					    "isSearchable":true
 					},
 					{
 					   "title":"Sku Price",
 					   "propertyIdentifier":"_orderitem.skuPrice",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
 					},
 					{
 					   "title":"Sku ID",
 					   "propertyIdentifier":"_orderitem.sku.skuID",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
 					},
 					{
 					   "title":"SKU Code",
 					   "propertyIdentifier":"_orderitem.sku.skuCode",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
+					   "ormtype":"string",
+					    "isSearchable":true
 					},
 					{
 					   "title":"Product Bundle Group",
 					   "propertyIdentifier":"_orderitem.productBundleGroup.productBundleGroupID",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
 					},
 					{
 					   "title":"Product ID",
 					   "propertyIdentifier":"_orderitem.sku.product.productID",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
 					},
 					{
 					   "title":"Product Name",
 					   "propertyIdentifier":"_orderitem.sku.product.productName",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
 					},
 					{
 					   "title":"Product Type",
 					   "propertyIdentifier":"_orderitem.sku.product.productType",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
 					},
 					{
 					   "title":"Product Description",
 					   "propertyIdentifier":"_orderitem.sku.product.productDescription",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
 					},
 					{
 					   "title":"Event Start Date Time",
 					   "propertyIdentifier":"_orderitem.sku.eventStartDateTime",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
 					},
 					{
 					   "title":"Product Description",
 					   "propertyIdentifier":"_orderitem.sku.options",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
 					},
 					{
 						   "title":"Sku Location",
 						   "propertyIdentifier":"_orderitem.sku.locations",
 						   "isVisible":true,
-						   "isDeletable":true,
+						   
 						   "persistent":false
 					},
 					{
 						   "title":"Subscription Term",
 						   "propertyIdentifier":"_orderitem.sku.subscriptionTerm.subscriptionTermName",
 						   "isVisible":true,
-						   "isDeletable":true
+						   
 					},
 					{
 						   "title":"Subscription Benefits",
 						   "propertyIdentifier":"_orderitem.sku.subscriptionBenefits",
 						   "isVisible":true,
-						   "isDeletable":true
+						   
 					},
 					{
 					   "title":"Qty.",
 					   "propertyIdentifier":"_orderitem.quantity",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
 					},
 					{
 					   "title":"Fulfillment Method Name",
 					   "propertyIdentifier":"_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodName",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
 					},
 					{
 					   "title":"Fulfillment ID",
 					   "propertyIdentifier":"_orderitem.orderFulfillment.orderFulfillmentID",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
 					},
 					{
 					   "title":"Fulfillment Method Type",
 					   "propertyIdentifier":"_orderitem.orderFulfillment.fulfillmentMethod.fulfillmentMethodType",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
 					},
 					{
 					   "title":"Street Address",
 					   "propertyIdentifier":"_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
+					   "ormtype":"string",
+					    "isSearchable":true
 					},
 					{
 					   "title":"Street Address",
 					   "propertyIdentifier":"_orderitem.orderFulfillment.shippingAddress.streetAddress",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
+					   "ormtype":"string",
+					    "isSearchable":true
 					},
 					{
 					   "title":"Street Address 2",
 					   "propertyIdentifier":"_orderitem.orderFulfillment.shippingAddress.street2Address",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
+					   "ormtype":"string",
+					    "isSearchable":true
 					},
 					{
 					   "title":"Postal Code",
 					   "propertyIdentifier":"_orderitem.orderFulfillment.shippingAddress.postalCode",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
+					   "ormtype":"string",
+					    "isSearchable":true
 					},
 					{
 					   "title":"City",
 					   "propertyIdentifier":"_orderitem.orderFulfillment.shippingAddress.city",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
+					   "ormtype":"string",
+					    "isSearchable":true
 					},
 					{
 					   "title":"State",
 					   "propertyIdentifier":"_orderitem.orderFulfillment.shippingAddress.stateCode",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
+					   "ormtype":"string",
+					    "isSearchable":true
 					},
 					{
 					   "title":"Country",
 					   "propertyIdentifier":"_orderitem.orderFulfillment.shippingAddress.countryCode",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
+					   "ormtype":"string",
+					    "isSearchable":true
 					},
 					{
 					   "title":"Image File Name",
 					   "propertyIdentifier":"_orderitem.sku.imageFile",
 					   "isVisible":true,
-					   "isDeletable":true
+					   
 					},
 					{
 					   "title":"Total",
@@ -265,7 +285,7 @@ angular.module('slatwalladmin')
 					}
 
 		 				    
-	 				  ];
+ 				  ];
 					
 					//add attributes to the column config
 					angular.forEach(scope.attributes,function(attribute){
