@@ -54,6 +54,7 @@ component extends="FW1.framework" {
 		{ "$GET/api/:entityName/:entityID" = "/api:main.get/entityName/:entityName/entityID/:entityID"}
 		,{ "$GET/api/:entityName/" = "/api:main.get/entityName/:entityName/"}
 		,{ "$GET/apps/:appid/:siteid/:contentURL/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid/contentURL/:contentURL" }
+		,{ "$GET/apps/:appid/:siteid/:entityURL/:contentURL/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid/entityURL/:entityURL/urlTitle/:urlTitle" }
 		,{ "$GET/apps/:appid/:siteid/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid" }
 		,{ "$GET/apps/:appid/$" = "/slatwallcms:main/default/appid/:appid" }
 	]; 

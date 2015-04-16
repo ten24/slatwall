@@ -46,4 +46,4 @@
 	Notes:
 	
 --->
-The Slatwall CMS Integration has been enabled for this Slatwall Instance.
+<cfinclude template="#rc.contentPath#" />

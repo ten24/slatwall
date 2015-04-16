@@ -49,10 +49,17 @@ Notes:
 component extends="Slatwall.org.Hibachi.HibachiController" output="false" accessors="true"  {
 
 	property name="hibachiUtilityService" type="any";
+	property name="fw" type="any";
 
 	//this.secureMethods="default,updateviews";
 	this.secureMethods='';
 	this.secureMethods=listAppend(this.secureMethods, 'default');
 	this.secureMethods=listAppend(this.secureMethods, 'updateviews');
 	
+	public void function init( required any fw ) {
+		setFW( arguments.fw );
+	}
+	
+	public any function default(){
+	}	
 }

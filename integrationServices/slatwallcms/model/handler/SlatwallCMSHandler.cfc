@@ -30,18 +30,22 @@ component {
 				//if we obtained a site and it is allowed by the domain name then prepare to render content
 				if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID()){
 					//if a site does exist then check that site directory for the template
-					if(isNull(arguments.conentURL)){
+					if(isNull(arguments.contentURL)){
 						
 					}else{
-						if(directoryExists(arguments.slatwallScope.getApplicationValue('applicationRootMappingPath') & '/apps/' & domainNamesite.getApp().getAppID() & '/' & domainNamesite.getSiteID())) {
-							var siteDirectory = arguments.slatwallScope.getApplicationValue('applicationRootMappingPath') & '/apps/' & domainNamesite.getApp().getAppID() & '/' & domainNamesite.getSiteID();
+						var sitePath = '/apps/' & domainNamesite.getApp().getAppID() & '/' & domainNamesite.getSiteID();
+						if(directoryExists(arguments.slatwallScope.getApplicationValue('applicationRootMappingPath') & sitePath)) {
 							//now that we have the site directory, we should see if we can retrieve the content via the urltitle and site
 							var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitle(site.getSiteID(),arguments.contentURL);
 							if(isNull(content)){
 								throw('content does not exists for #arguments.contentURL#');
 							}
+							//now that we have the content, get the file name so that we can retrieve it form the site's template directory
 							var contentTemplateFile = content.Setting('contentTemplateFile');
-							
+							//templatePath relative to the slatwallCMS
+							var templatePath = '../../../..' & sitePath & '/templates/';
+							request.context['contentPath'] = templatePath & contentTemplateFile;
+							arguments.slatwallScope.setContent(content);
 						}else{
 							throw('site directory does not exist for ' & site.getSiteName());
 						}
