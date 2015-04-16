@@ -29,31 +29,10 @@
  *   Note: Your callback function on-confirm should return true;
  *<------------------------------------------------------------------------------------------------------------------------------------->
  */
- 
 angular.module('slatwalladmin').directive('swConfirm', 
- ['$slatwall', '$log','$compile','$modal',
-    function($slatwall, $log, $compile, $modal){
-	 /**
-	  * Handles opening and closing of the modal. 
-	  */
-	    var confirmationModalController = function($scope, $modalInstance) {
-		 	/**
-		 	 * This method, delete, gets overridden in each directive that uses this modal.
-		 	 */
-	    		$scope.deleteEntity = function(entity) {
-	        		$log.debug("Deleting an entity.");
-	        		$log.debug($scope.entity);
-	        		this.close();
-	        };
-		 	
-		 	$scope.close = function() {
-	          $modalInstance.close();
-	        };
-
-	        $scope.cancel = function() {
-	          $modalInstance.dismiss('cancel');
-	         };
-	    };
+ ['$slatwall', '$log','$compile','$modal','partialsPath',   
+    function($slatwall, $log, $compile, $modal, partialsPath){
+        
     		var buildConfirmationModal = function( simple, useRbKey, confirmText, messageText, noText, yesText, callback){
     			
     			/* Keys */
@@ -92,7 +71,7 @@ angular.module('slatwalladmin').directive('swConfirm',
                         	"<button class='btn btn-sm btn-default btn-inverse' ng-click='cancel()' [no]><no></button>" +
                         	"<button class='btn btn-sm btn-default btn-primary' ng-click='[callback]' [yes]><yes></button></div></div></div>";
     				
-    			$log.debug(templateString);
+    			
     			
     			/* Use RbKeys or Not? */
     			if (useRbKey === "true"){
@@ -139,9 +118,10 @@ angular.module('slatwalladmin').directive('swConfirm',
         	        },
             link: function (scope, element, attr) {
             	/* Grab the template and build the modal on click */
+            $log.debug("Modal is: ");
+            $log.debug($modal);
             	element.bind('click', function() {
             			/* Default Values */
-                    	
                 	   	var useRbKey = attr.useRbKey   						|| "false";
                 	   	var simple = attr.simple									||  false;
                 	   	var yesText = attr.yesText									|| "define.yes";
@@ -150,29 +130,24 @@ angular.module('slatwalladmin').directive('swConfirm',
                     var messageText = attr.messageText				|| "define.delete_message";
                     var callback = attr.callback    							|| "onSuccess()";
                     var templateString = buildConfirmationModal(simple, useRbKey, confirmText, messageText, noText, yesText, callback);
-                    
-                    /**
-                     * Handles configuring the modal
-                     */
+                      
                     var modalInstance = $modal.open({
                       template: templateString,
-                      controller: confirmationModalController
+                      controller: 'confirmationController'
                     });
                     
                     /**
                      * Handles the result - callback or dismissed
                      */
-                    modalInstance.result.then(function(test) {
-                    		$log.debug("Callback Called");	
+                    modalInstance.result.then(function(result) {
+                        $log.debug("Result:" + result);
                     		scope.callback();
-                    		$log.debug(scope.callback);
                     		return true;
                     }, function() {
-                    	$log.debug("Dismissed");
-                    });
-                    
+                        //There was an error
+                 }); 
              });//<--end bind 	
-           }
+           }  
         };
 }]);
 

@@ -18,7 +18,11 @@ angular.module('slatwalladmin')
 	        link: function (scope, element, attr) {
 	        	scope.$id="slatwallDetailController";
 	        	$log.debug('slatwallDetailController');
-	        	
+	        
+            /*Sets the view dirty on save*/
+            scope.setDirty = function(entity){      
+                entity.forms['Workflow.'].$setSubmitted();  
+            };  
 	        	var setupMetaData = function(){
 	        		scope[scope.entityName.toLowerCase()] = scope.entity;
 	        		scope.detailTabs = scope.entity.metaData.$$getDetailTabs();
@@ -27,8 +31,7 @@ angular.module('slatwalladmin')
 	        	};
 	        	
 	        	var propertyCasedEntityName = scope.entityName.charAt(0).toUpperCase() + scope.entityName.slice(1);
-	        	
-	        	
+	        		
 	        	scope.tabPartialPath = partialsPath+'entity/';
 	        	
 	        	scope.getEntity = function(){
@@ -45,15 +48,12 @@ angular.module('slatwalladmin')
 	        		
 	        	};
 	        	scope.getEntity();
-	        	
 	        	scope.deleteEntity = function(){
 	        		var deletePromise = scope.entity.$$delete();
 	        		deletePromise.then(function(){
 	        			$location.path( '/entity/'+propertyCasedEntityName+'/' );
 	        		});
 	        	};
-	        	
-	        	
 	        	scope.allTabsOpen = false;
 	        }
 	    };

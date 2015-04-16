@@ -1,6 +1,7 @@
 "use strict";
 angular.module("slatwalladmin").directive("swAddFilterButtons", ["$http", "$compile", "$templateCache", "collectionService", "collectionPartialsPath", function ($http, $compile, $templateCache, collectionService, collectionPartialsPath) {
 	return {
+
 		require: "^swFilterGroups",
 		restrict: "E",
 		templateUrl: collectionPartialsPath + "addfilterbuttons.html",

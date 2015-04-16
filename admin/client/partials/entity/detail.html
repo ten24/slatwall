@@ -41,7 +41,7 @@
 							
 							<button class="btn adminentitysaveworkflow btn btn-success"
 								title="Save" type="button"
-								ng-click="entity.$$save()"	
+								ng-click="setDirty(entity);entity.$$save();"	
 							>
 								<i class="glyphicon glyphicon-ok icon-white"></i> Save
 							</button>
