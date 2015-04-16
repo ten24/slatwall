@@ -12,9 +12,6 @@ angular.module("slatwalladmin").directive("swCriteria", ["$log", "$slatwall", "$
 			comparisonType: "="
 		},
 		templateUrl: collectionPartialsPath + "criteria.html",
-		link: function (scope, element, attrs) {
-			console.log("comptype");
-			console.log(scope.comparisonType);
-		}
+		link: function (scope, element, attrs) {}
 	};
 }]);

@@ -28,8 +28,6 @@ angular.module('slatwalladmin')
 			},
 			templateUrl:collectionPartialsPath+'criteria.html',
 			link: function(scope, element, attrs){
-				console.log('comptype');
-				console.log(scope.comparisonType);
 			}
 		};
 	}

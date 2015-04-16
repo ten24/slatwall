@@ -29,8 +29,6 @@ angular.module('slatwalladmin')
 				if(!angular.isDefined($scope.comparisonType)){
 					$scope.comparisonType = 'filter';
 				}
-				console.log('comparisonType');
-				console.log($scope.comparisonType);
 				$scope.itemInUse = false;
 				$log.debug('collectionConfig');
 				$log.debug($scope.collectionConfig);
