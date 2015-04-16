@@ -1002,8 +1002,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						//use keywords to create some post filters
 						
 						if(structKeyExists(column,'ormtype') 
-						&& column.ormtype neq 'boolean' 
-						&& column.ormtype neq 'timestamp'
+							&& column.ormtype neq 'boolean' 
+							&& column.ormtype neq 'timestamp'
 						
 						){
 						
