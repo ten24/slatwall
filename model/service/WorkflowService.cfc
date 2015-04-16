@@ -104,7 +104,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		for(var workflowTask in arguments.workflow.getWorkflowTasks()) {
 			
 			// Check to see if the task is active and the entity object passes the conditions validation
-			if(workflowTask.getActiveFlag() && entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())) {
+			if(workflowTask.getActiveFlag() && workflowTask.getWorkflow().getActiveFlag() && entityPassesAllWorkflowTaskConditions(arguments.data.entity, workflowTask.getTaskConditionsConfigStruct())) {
 				// Now loop over all of the actions that can now be run that the workflow task condition has passes
 				for(var workflowTaskAction in workflowTask.getWorkflowTaskActions()) {
 					if(!isnull(workflowTaskAction.getUpdateData())){
