@@ -19,61 +19,88 @@ angular.module('slatwalladmin')
 			restrict: 'E',
 			templateUrl:collectionPartialsPath+'criterianumber.html',
 			link: function(scope, element, attrs){
-				var getNumberOptions = function(){
-			    	var numberOptions = [
-			    		{
-							display:"Equals",
-							comparisonOperator:"="
-						},
-						{
-							display:"Doesn't Equal",
-							comparisonOperator:"<>"
-						},
-						{
-			    			display:"In Range",
-			    			comparisonOperator:	"between",
-			    			type:"range"
-			    		},
-			    		{
-			    			display:"Not In Range",
-			    			comparisonOperator:	"not between",
-			    			type:"range"
-			    		},
-			    		{
-			    			display:"Greater Than",
-			    			comparisonOperator:">"
-			    		},
-			    		{
-			    			display:"Greater Than Or Equal",
-			    			comparisonOperator:">="
-			    		},
-			    		{
-			    			display:"Less Than",
-			    			comparisonOperator:"<"
-			    		},
-			    		{
-			    			display:"Less Than Or Equal",
-			    			comparisonOperator:"<="
-			    		},
-						{
-							display:"In List",
-							comparisonOperator:"in"
-						},
-						{
-							display:"Not In List",
-							comparisonOperator:"not in"
-						},
-						{
-							display:"Defined",
-							comparisonOperator:"is not",
-							value:"null"
-						},
-						{
-							display:"Not Defined",
-							comparisonOperator:"is",
-							value:"null"
-						}
-			    	];
+				var getNumberOptions = function(type){
+					if(angular.isUndefined(type)){
+				 		type = 'filter'
+				 	}
+				 	var numberOptions = [];
+				 	if(type === 'filter'){
+				    	numberOptions = [
+				    		{
+								display:"Equals",
+								comparisonOperator:"="
+							},
+							{
+								display:"Doesn't Equal",
+								comparisonOperator:"<>"
+							},
+							{
+				    			display:"In Range",
+				    			comparisonOperator:	"between",
+				    			type:"range"
+				    		},
+				    		{
+				    			display:"Not In Range",
+				    			comparisonOperator:	"not between",
+				    			type:"range"
+				    		},
+				    		{
+				    			display:"Greater Than",
+				    			comparisonOperator:">"
+				    		},
+				    		{
+				    			display:"Greater Than Or Equal",
+				    			comparisonOperator:">="
+				    		},
+				    		{
+				    			display:"Less Than",
+				    			comparisonOperator:"<"
+				    		},
+				    		{
+				    			display:"Less Than Or Equal",
+				    			comparisonOperator:"<="
+				    		},
+							{
+								display:"In List",
+								comparisonOperator:"in"
+							},
+							{
+								display:"Not In List",
+								comparisonOperator:"not in"
+							},
+							{
+								display:"Defined",
+								comparisonOperator:"is not",
+								value:"null"
+							},
+							{
+								display:"Not Defined",
+								comparisonOperator:"is",
+								value:"null"
+							}
+				    	];
+				    }else if(type === 'condition'){
+				 		numberOptions = [
+				 			{
+								display:"Equals",
+								comparisonOperator:"eq"
+							},
+							{
+								display:"Doesn't Equal",
+								comparisonOperator:"neq"
+							},
+							{
+								display:"Defined",
+								comparisonOperator:"null",
+								value:"False"
+							},
+							{
+								display:"Not Defined",
+								comparisonOperator:"null",
+								value:"True"
+							}
+				 		];
+				 	}
 			    	return numberOptions;
 			    };
 			    
@@ -84,7 +111,7 @@ angular.module('slatwalladmin')
  		    		}
  		    	});
     			 
-    				scope.conditionOptions = getNumberOptions();
+    				scope.conditionOptions = getNumberOptions(scope.comparisonType);
 	    			scope.criteriaRangeChanged = function(selectedFilterProperty){
 					  	var selectedCondition = selectedFilterProperty.selectedCriteriaType;
 	    			};

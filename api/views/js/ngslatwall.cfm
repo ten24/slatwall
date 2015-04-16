@@ -898,12 +898,9 @@ Notes:
 								
 						    		var target = $('input.ng-invalid:first:visible:enabled');
 						    		$log.debug('input is invalid');
-								$log.debug(target);
+									$log.debug(target);
 						    		target.focus();
-						    		
-									var targetID = target.attr('id');
-									
-									$location.hash(targetID);
+								var targetID = target.attr('id');
 						    		$anchorScroll();
 						    		
 					    		}

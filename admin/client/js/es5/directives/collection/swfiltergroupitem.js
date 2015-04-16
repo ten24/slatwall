@@ -9,7 +9,8 @@ angular.module("slatwalladmin").directive("swFilterGroupItem", ["$http", "$compi
 			siblingItems: "=",
 			filterPropertiesList: "=",
 			filterGroupItemIndex: "=",
-			saveCollection: "&"
+			saveCollection: "&",
+			comparisonType: "="
 		},
 		link: function (scope, element, attrs, filterGroupsController) {
 			var Partial = collectionPartialsPath + "filtergroupitem.html";

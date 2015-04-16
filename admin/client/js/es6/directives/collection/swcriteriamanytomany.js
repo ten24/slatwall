@@ -5,28 +5,36 @@ angular.module('slatwalladmin').directive('swCriteriaManyToMany', ['$log', '$sla
     restrict: 'E',
     templateUrl: collectionPartialsPath + 'criteriamanytomany.html',
     link: function(scope, element, attrs) {
-      var getManyToManyOptions = function() {
-        var manyToManyOptions = [{
-          display: "All Exist In Collection",
-          comparisonOperator: "All"
-        }, {
-          display: "None Exist In Collection",
-          comparisonOperator: "None"
-        }, {
-          display: "Some Exist In Collection",
-          comparisonOperator: "One"
-        }, {
-          display: "Empty",
-          comparisonOperator: "is",
-          value: "null"
-        }, {
-          display: "Not Empty",
-          comparisonOperator: "is not",
-          value: "null"
-        }];
+      var getManyToManyOptions = function(type) {
+        if (angular.isUndefined(type)) {
+          type = 'filter';
+        }
+        var manyToManyOptions = [];
+        if (type === 'filter') {
+          manyToManyOptions = [{
+            display: "All Exist In Collection",
+            comparisonOperator: "All"
+          }, {
+            display: "None Exist In Collection",
+            comparisonOperator: "None"
+          }, {
+            display: "Some Exist In Collection",
+            comparisonOperator: "One"
+          }, {
+            display: "Empty",
+            comparisonOperator: "is",
+            value: "null"
+          }, {
+            display: "Not Empty",
+            comparisonOperator: "is not",
+            value: "null"
+          }];
+        } else if (type === 'condition') {
+          manyToManyOptions = [];
+        }
         return manyToManyOptions;
       };
-      scope.manyToManyOptions = getManyToManyOptions();
+      scope.manyToManyOptions = getManyToManyOptions(scope.comparisonType);
       var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(scope.selectedFilterProperty.cfc);
       existingCollectionsPromise.then(function(value) {
         scope.collectionOptions = value.data;

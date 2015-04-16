@@ -384,7 +384,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	private string function getFilterGroupHQL(required array filterGroup){
 		var filterGroupHQL = '';
-		for(filter in arguments.filterGroup){
+		for(var filter in arguments.filterGroup){
 			//add property and value to HQLParams
 			//if using a like parameter we need to add % to the value using angular
 			var logicalOperator = '';
@@ -430,7 +430,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	private string function getFilterGroupsHQL(required array filterGroups){
 		var filterGroupsHQL = '';
-		for(filterGroup in arguments.FilterGroups){
+		for(var filterGroup in arguments.FilterGroups){
 			var logicalOperator = '';
 			
 			if(structKeyExists(filterGroup,'logicalOperator')){
@@ -1025,8 +1025,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						//use keywords to create some post filters
 						
 						if(structKeyExists(column,'ormtype') 
-						&& column.ormtype neq 'boolean' 
-						&& column.ormtype neq 'timestamp'
+							&& column.ormtype neq 'boolean' 
+							&& column.ormtype neq 'timestamp'
 						
 						){
 						
