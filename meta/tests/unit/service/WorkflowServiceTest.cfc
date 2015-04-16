@@ -85,8 +85,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 							"workflowConditionGroup":[
 								{
 									"propertyIdentifier":"order.orderID",
-									"constraintType":"required",
-									"constraintValue":"true"
+									"comparisonOperator":"required",
+									"value":"true"
 								}
 							]
 									
@@ -121,7 +121,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		////request.debug(workflowEntity.getWorkflowID());
 	}*/
 	
-	public void function entityPassesAllWorkflowTaskConditions(){
+	public void function entityPassesAllWorkflowTaskConditionsTest(){
 		var productData = {
 			productid = '',
 			productName = 'testproduct1',
@@ -136,48 +136,137 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var product = createPersistedTestEntity('product',productData);
 		Product.setDefaultSku(Product.getSkus()[1]);
 		
-		var workflowTasksConditionsConfig = '[
-				{
-					"workflowConditionGroup":[
-						{
-							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"minValue",
-							"constraintValue":"5"
-						},
-						{
-							"logicalOperator":"AND",
-							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"minValue",
-							"constraintValue":"1"
-						}
-					]
-					
-				},
-				{
-					"logicalOperator":"AND",
-					"workflowConditionGroup":[
-						{
-							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"maxValue",
-							"constraintValue":"5"
-						},
-						{
-							"logicalOperator":"OR",
-							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"maxValue",
-							"constraintValue":"5"
-						}
-					]
-				}
-		]';
+		var workflowTasksConditionsConfig = '{  
+		   "filterGroups":[  
+		      {  
+		         "filterGroup":[  
+		            {  
+		               "displayPropertyIdentifier":"Active",
+		               "propertyIdentifier":"Product.activeFlag",
+		               "comparisonOperator":"eq",
+		               "breadCrumbs":[  
+		                  {  
+		                     "rbKey":"Product",
+		                     "entityAlias":"Product",
+		                     "cfc":"Product",
+		                     "propertyIdentifier":"Product"
+		                  }
+		               ],
+		               "value":"True",
+		               "displayValue":"True",
+		               "ormtype":"boolean",
+		               "conditionDisplay":"True"
+		            },
+		            {  
+		            	"logicalOperator":"AND",
+		               "displayPropertyIdentifier":"Active",
+		               "propertyIdentifier":"Product.activeFlag",
+		               "comparisonOperator":"eq",
+		               "breadCrumbs":[  
+		                  {  
+		                     "rbKey":"Product",
+		                     "entityAlias":"Product",
+		                     "cfc":"Product",
+		                     "propertyIdentifier":"Product"
+		                  }
+		               ],
+		               "value":"True",
+		               "displayValue":"True",
+		               "ormtype":"boolean",
+		               "conditionDisplay":"True"
+		            },
+		            {  
+		            	"logicalOperator":"OR",
+		               "displayPropertyIdentifier":"Active",
+		               "propertyIdentifier":"Product.activeFlag",
+		               "comparisonOperator":"eq",
+		               "breadCrumbs":[  
+		                  {  
+		                     "rbKey":"Product",
+		                     "entityAlias":"Product",
+		                     "cfc":"Product",
+		                     "propertyIdentifier":"Product"
+		                  }
+		               ],
+		               "value":"false",
+		               "displayValue":"True",
+		               "ormtype":"boolean",
+		               "conditionDisplay":"True"
+		            },
+		            {
+		            	"logicalOperator":"AND",
+		            	"filterGroup":[
+			            	 {  
+				               "displayPropertyIdentifier":"Active",
+				               "propertyIdentifier":"Product.activeFlag",
+				               "comparisonOperator":"eq",
+				               "breadCrumbs":[  
+				                  {  
+				                     "rbKey":"Product",
+				                     "entityAlias":"Product",
+				                     "cfc":"Product",
+				                     "propertyIdentifier":"Product"
+				                  }
+				               ],
+				               "value":"True",
+				               "displayValue":"True",
+				               "ormtype":"boolean",
+				               "conditionDisplay":"True"
+				            },
+				            {  
+				            	"logicalOperator":"AND",
+				               "displayPropertyIdentifier":"Active",
+				               "propertyIdentifier":"Product.activeFlag",
+				               "comparisonOperator":"eq",
+				               "breadCrumbs":[  
+				                  {  
+				                     "rbKey":"Product",
+				                     "entityAlias":"Product",
+				                     "cfc":"Product",
+				                     "propertyIdentifier":"Product"
+				                  }
+				               ],
+				               "value":"True",
+				               "displayValue":"True",
+				               "ormtype":"boolean",
+				               "conditionDisplay":"True"
+				            },
+				            {  
+				            	"logicalOperator":"OR",
+				               "displayPropertyIdentifier":"Active",
+				               "propertyIdentifier":"Product.activeFlag",
+				               "comparisonOperator":"eq",
+				               "breadCrumbs":[  
+				                  {  
+				                     "rbKey":"Product",
+				                     "entityAlias":"Product",
+				                     "cfc":"Product",
+				                     "propertyIdentifier":"Product"
+				                  }
+				               ],
+				               "value":"false",
+				               "displayValue":"True",
+				               "ormtype":"boolean",
+				               "conditionDisplay":"True"
+				            }
+		            	]
+		            }
+		         ]
+		      }
+		   ],
+		   "baseEntityAlias":"Product",
+		   "baseEntityName":"Product"
+		}';
 		var workflowTasksConditionsConfigStruct = deserializeJson(workflowTasksConditionsConfig);
-		
 		MakePublic(variables.service,'entityPassesAllWorkflowTaskConditions');
-		var passed = variables.service.entityPassesAllWorkflowTaskConditions(product,workflowTasksConditionsConfigStruct);
-		//request.debug(passed);
+			MakePublic(variables.service,'getWorkflowConditionGroupsString');
+		var conditionsGroupString = variables.service.getWorkflowConditionGroupsString(product,workflowTasksConditionsConfigStruct.filterGroups);	
+		request.debug(conditionsGroupString);
+		var evalString = variables.service.entityPassesAllWorkflowTaskConditions(product, workflowTasksConditionsConfigStruct);
+		request.debug(evalString);
 	}
 	
-	public void function getWorkflowConditionGroupsString(){
+	public void function getWOrkflowConditionGroupStringTest(){
 		var productData = {
 			productid = '',
 			productName = 'testproduct1',
@@ -192,44 +281,285 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var product = createPersistedTestEntity('product',productData);
 		Product.setDefaultSku(Product.getSkus()[1]);
 		
-		var workflowTasksConditionsConfig = '[
+		var workflowTasksConditionsConfig = '[  
+		      {  
+		         "filterGroup":[  
+		            {  
+		               "displayPropertyIdentifier":"Active",
+		               "propertyIdentifier":"Product.activeFlag",
+		               "comparisonOperator":"eq",
+		               "breadCrumbs":[  
+		                  {  
+		                     "rbKey":"Product",
+		                     "entityAlias":"Product",
+		                     "cfc":"Product",
+		                     "propertyIdentifier":"Product"
+		                  }
+		               ],
+		               "value":"True",
+		               "displayValue":"True",
+		               "ormtype":"boolean",
+		               "conditionDisplay":"True"
+		            },
+		            {  
+		            	"logicalOperator":"AND",
+		               "displayPropertyIdentifier":"Active",
+		               "propertyIdentifier":"Product.activeFlag",
+		               "comparisonOperator":"eq",
+		               "breadCrumbs":[  
+		                  {  
+		                     "rbKey":"Product",
+		                     "entityAlias":"Product",
+		                     "cfc":"Product",
+		                     "propertyIdentifier":"Product"
+		                  }
+		               ],
+		               "value":"True",
+		               "displayValue":"True",
+		               "ormtype":"boolean",
+		               "conditionDisplay":"True"
+		            },
+		            {  
+		            	"logicalOperator":"OR",
+		               "displayPropertyIdentifier":"Active",
+		               "propertyIdentifier":"Product.activeFlag",
+		               "comparisonOperator":"eq",
+		               "breadCrumbs":[  
+		                  {  
+		                     "rbKey":"Product",
+		                     "entityAlias":"Product",
+		                     "cfc":"Product",
+		                     "propertyIdentifier":"Product"
+		                  }
+		               ],
+		               "value":"false",
+		               "displayValue":"True",
+		               "ormtype":"boolean",
+		               "conditionDisplay":"True"
+		            },
+		            {
+		            	"logicalOperator":"AND",
+		            	"filterGroup":[
+			            	 {  
+				               "displayPropertyIdentifier":"Active",
+				               "propertyIdentifier":"Product.activeFlag",
+				               "comparisonOperator":"eq",
+				               "breadCrumbs":[  
+				                  {  
+				                     "rbKey":"Product",
+				                     "entityAlias":"Product",
+				                     "cfc":"Product",
+				                     "propertyIdentifier":"Product"
+				                  }
+				               ],
+				               "value":"True",
+				               "displayValue":"True",
+				               "ormtype":"boolean",
+				               "conditionDisplay":"True"
+				            },
+				            {  
+				            	"logicalOperator":"AND",
+				               "displayPropertyIdentifier":"Active",
+				               "propertyIdentifier":"Product.activeFlag",
+				               "comparisonOperator":"eq",
+				               "breadCrumbs":[  
+				                  {  
+				                     "rbKey":"Product",
+				                     "entityAlias":"Product",
+				                     "cfc":"Product",
+				                     "propertyIdentifier":"Product"
+				                  }
+				               ],
+				               "value":"True",
+				               "displayValue":"True",
+				               "ormtype":"boolean",
+				               "conditionDisplay":"True"
+				            },
+				            {  
+				            	"logicalOperator":"OR",
+				               "displayPropertyIdentifier":"Active",
+				               "propertyIdentifier":"Product.activeFlag",
+				               "comparisonOperator":"eq",
+				               "breadCrumbs":[  
+				                  {  
+				                     "rbKey":"Product",
+				                     "entityAlias":"Product",
+				                     "cfc":"Product",
+				                     "propertyIdentifier":"Product"
+				                  }
+				               ],
+				               "value":"false",
+				               "displayValue":"True",
+				               "ormtype":"boolean",
+				               "conditionDisplay":"True"
+				            }
+		            	]
+		            }
+		         ]
+		      }
+		   ]';
+		var workflowTasksConditionsConfigStruct = deserializeJson(workflowTasksConditionsConfig);
+		MakePublic(variables.service,'getWorkflowConditionGroupString');
+		var conditionsGroupString = variables.service.getWorkflowConditionGroupString(product,workflowTasksConditionsConfigStruct);	
+		request.debug(conditionsGroupString);
+	}
+	
+	public void function getValidationValue(){
+		var productData = {
+			productid = '',
+			productName = 'testproduct1',
+			skus = [
 				{
-					"workflowConditionGroup":[
-						{
-							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"minValue",
-							"constraintValue":"5"
-						},
-						{
-							"logicalOperator":"AND",
-							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"minValue",
-							"constraintValue":"1"
-						}
-					]
-					
-				},
-				{
-					"logicalOperator":"AND",
-					"workflowConditionGroup":[
-						{
-							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"maxValue",
-							"constraintValue":"5"
-						},
-						{
-							"logicalOperator":"OR",
-							"propertyIdentifier":"defaultSku.price",
-							"constraintType":"maxValue",
-							"constraintValue":"5"
-						}
-					]
+					skuID = "",
+					price = 3
 				}
-		]';
+			],
+			activeFlag=true
+			
+		};
+		var product = createPersistedTestEntity('product',productData);
+		Product.setDefaultSku(Product.getSkus()[1]);
+		var test = request.slatwallScope.getBean("HibachiValidationService").invokeMethod('validate_eq',{1=product, 2='activeFlag', 3='true'});
+		request.debug(test);
+	}
+	
+	public void function getWorkflowConditionGroupsStringTest(){
+		var productData = {
+			productid = '',
+			productName = 'testproduct1',
+			skus = [
+				{
+					skuID = "",
+					price = 3
+				}
+			]
+			
+		};
+		var product = createPersistedTestEntity('product',productData);
+		Product.setDefaultSku(Product.getSkus()[1]);
+		
+		var workflowTasksConditionsConfig = '[  
+		      {  
+		         "filterGroup":[  
+		            {  
+		               "displayPropertyIdentifier":"Active",
+		               "propertyIdentifier":"Product.activeFlag",
+		               "comparisonOperator":"eq",
+		               "breadCrumbs":[  
+		                  {  
+		                     "rbKey":"Product",
+		                     "entityAlias":"Product",
+		                     "cfc":"Product",
+		                     "propertyIdentifier":"Product"
+		                  }
+		               ],
+		               "value":"True",
+		               "displayValue":"True",
+		               "ormtype":"boolean",
+		               "conditionDisplay":"True"
+		            },
+		            {  
+		            	"logicalOperator":"AND",
+		               "displayPropertyIdentifier":"Active",
+		               "propertyIdentifier":"Product.activeFlag",
+		               "comparisonOperator":"eq",
+		               "breadCrumbs":[  
+		                  {  
+		                     "rbKey":"Product",
+		                     "entityAlias":"Product",
+		                     "cfc":"Product",
+		                     "propertyIdentifier":"Product"
+		                  }
+		               ],
+		               "value":"True",
+		               "displayValue":"True",
+		               "ormtype":"boolean",
+		               "conditionDisplay":"True"
+		            },
+		            {  
+		            	"logicalOperator":"OR",
+		               "displayPropertyIdentifier":"Active",
+		               "propertyIdentifier":"Product.activeFlag",
+		               "comparisonOperator":"eq",
+		               "breadCrumbs":[  
+		                  {  
+		                     "rbKey":"Product",
+		                     "entityAlias":"Product",
+		                     "cfc":"Product",
+		                     "propertyIdentifier":"Product"
+		                  }
+		               ],
+		               "value":"false",
+		               "displayValue":"True",
+		               "ormtype":"boolean",
+		               "conditionDisplay":"True"
+		            },
+		            {
+		            	"logicalOperator":"AND",
+		            	"filterGroup":[
+			            	 {  
+				               "displayPropertyIdentifier":"Active",
+				               "propertyIdentifier":"Product.activeFlag",
+				               "comparisonOperator":"eq",
+				               "breadCrumbs":[  
+				                  {  
+				                     "rbKey":"Product",
+				                     "entityAlias":"Product",
+				                     "cfc":"Product",
+				                     "propertyIdentifier":"Product"
+				                  }
+				               ],
+				               "value":"True",
+				               "displayValue":"True",
+				               "ormtype":"boolean",
+				               "conditionDisplay":"True"
+				            },
+				            {  
+				            	"logicalOperator":"AND",
+				               "displayPropertyIdentifier":"Active",
+				               "propertyIdentifier":"Product.activeFlag",
+				               "comparisonOperator":"eq",
+				               "breadCrumbs":[  
+				                  {  
+				                     "rbKey":"Product",
+				                     "entityAlias":"Product",
+				                     "cfc":"Product",
+				                     "propertyIdentifier":"Product"
+				                  }
+				               ],
+				               "value":"True",
+				               "displayValue":"True",
+				               "ormtype":"boolean",
+				               "conditionDisplay":"True"
+				            },
+				            {  
+				            	"logicalOperator":"OR",
+				               "displayPropertyIdentifier":"Active",
+				               "propertyIdentifier":"Product.activeFlag",
+				               "comparisonOperator":"eq",
+				               "breadCrumbs":[  
+				                  {  
+				                     "rbKey":"Product",
+				                     "entityAlias":"Product",
+				                     "cfc":"Product",
+				                     "propertyIdentifier":"Product"
+				                  }
+				               ],
+				               "value":"false",
+				               "displayValue":"True",
+				               "ormtype":"boolean",
+				               "conditionDisplay":"True"
+				            }
+		            	]
+		            }
+		         ]
+		      }
+		   ]
+		   ';
 		var workflowTasksConditionsConfigStruct = deserializeJson(workflowTasksConditionsConfig);
 		MakePublic(variables.service,'getWorkflowConditionGroupsString');
 		var conditionsGroupString = variables.service.getWorkflowConditionGroupsString(product,workflowTasksConditionsConfigStruct);	
-		//request.debug(conditionsGroupString);
+		request.debug(conditionsGroupString);
 	}
 	
 	

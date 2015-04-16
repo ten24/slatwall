@@ -14,6 +14,7 @@ angular.module('slatwalladmin')
 		collectionPartialsPath
 	){
 		return {
+			
 			require:'^swFilterGroups',
 			restrict: 'E',
 			templateUrl:collectionPartialsPath+"addfilterbuttons.html",
