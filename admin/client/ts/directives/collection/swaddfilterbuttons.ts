@@ -19,8 +19,8 @@ angular.module('slatwalladmin')
 			restrict: 'E',
 			templateUrl:collectionPartialsPath+"addfilterbuttons.html",
 			scope:{
-				itemInUse:"="
-			},
+				itemInUse:"=" 
+			},   
 			link: function(scope, element,attrs,filterGroupsController){
 				scope.filterGroupItem = filterGroupsController.getFilterGroupItem();
 				
