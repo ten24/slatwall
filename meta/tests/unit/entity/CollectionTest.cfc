@@ -1316,7 +1316,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var filterGroupHQL = variables.entity.getFilterGroupHQL(filterGroup);
 		
-		//request.debug(filterGroupHQL);
+		request.debug(filterGroupHQL);
 	}
 	
 	public void function getFilterGroupsHQLTest(){
@@ -1337,29 +1337,13 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 								}
 							]
 							
-						},
-						{
-							"logicalOperator":"OR",
-							"filterGroup":[
-								{
-								"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"true"
-								},
-								{
-									"logicalOperator":"OR",
-									"propertyIdentifier":"Account.superUserFlag",
-									"comparisonOperator":"=",
-									"value":"false"
-								}
-							]
 						}
 					]';
 		var filterGroups = deserializeJSON(filterGroupsJSON);
 		
 		var filterGroupsHQL = variables.entity.getFilterGroupsHQL(filterGroups);
 		
-		//request.debug(filterGroupsHQL);
+		request.debug(filterGroupsHQL);
 	}
 	
 	public void function getOrderByHQLTest(){
