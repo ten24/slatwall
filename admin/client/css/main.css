@@ -933,35 +933,12 @@ table tr th .glyphicon {
   border-top-left-radius: 2px;
 }
 /*File attr*/
-.s-file-upload .s-btn-file {
-  position: relative;
-  overflow: hidden;
-  margin: 0px !important;
+.s-file-upload a span {
+  font-weight: normal;
+  font-style: italic;
 }
-.s-file-upload .s-btn-file input[type=file] {
-  position: absolute;
-  top: 0;
-  right: 0;
-  min-width: 100%;
-  min-height: 100%;
-  font-size: 100px;
-  text-align: right;
-  filter: alpha(opacity=0);
-  opacity: 0;
-  background: red;
-  cursor: inherit;
-  display: block;
-}
-.s-file-upload input[readonly] {
-  background-color: white !important;
-  cursor: text !important;
-  font-size: 12px;
-  margin-left: -2px;
-}
-.s-file-upload .s-remove-btn {
-  border-bottom: 1px solid #CCC;
-  border-top: 1px solid #CCC;
-  margin: 0px !important;
+.s-file-upload a {
+  font-weight: bold;
 }
 /*Bootstrap overwrite*/
 .table > tbody > tr > td {
