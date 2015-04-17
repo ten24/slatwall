@@ -65,7 +65,7 @@ angular.module("slatwalladmin").directive("swWorkflowTasks", ["$log", "$location
 			};
 
 			/**
-    * Add a workflow task.
+    * Add a workflow task and logs the result.
     */
 			scope.addWorkflowTask = function () {
 				var newWorkflowTask = scope.workflow.$$addWorkflowTask();
@@ -101,7 +101,6 @@ angular.module("slatwalladmin").directive("swWorkflowTasks", ["$log", "$location
 					if (context === "add") {
 						logger("SaveWorkflowTask", "Save and New");
 						scope.addWorkflowTask();
-						//scope.setHidden(scope.workflowTasks.selectedTask);
 						scope.finished = true;
 					} else if (context == "finish") {
 						scope.finished = false;
