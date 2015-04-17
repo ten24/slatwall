@@ -1373,6 +1373,9 @@ table .s-edit-elements a:hover {
   text-align: left;
   padding-bottom: 3px;
 }
+.s-options .tab-content h4 button.s-button-no-style:hover {
+  text-decoration: underline;
+}
 .s-options .tab-pane .dl-horizontal {
   text-align: left;
 }
@@ -2571,6 +2574,9 @@ tabel .s-table-header {
 }
 .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-items .s-title a:hover {
   color: #666;
+}
+.s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-items .s-title button:focus {
+  outline: none;
 }
 .s-bundle-add-items .s-load-more {
   text-align: center;
