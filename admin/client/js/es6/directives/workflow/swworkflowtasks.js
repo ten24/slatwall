@@ -53,13 +53,9 @@ angular.module('slatwalladmin').directive('swWorkflowTasks', ['$log', '$location
       });
       scope.saveWorkflowTask = function(task, context) {
         scope.done = true;
-        $log.debug("Context: " + context);
-        $log.debug("saving task");
-        $log.debug(scope.workflowTasks.selectedTask);
         var savePromise = scope.workflowTasks.selectedTask.$$save();
         savePromise.then(function() {
           if (context === 'add') {
-            logger("SaveWorkflowTask", "Save and New");
             scope.addWorkflowTask();
             scope.finished = true;
           } else if (context == "finish") {
@@ -70,8 +66,6 @@ angular.module('slatwalladmin').directive('swWorkflowTasks', ['$log', '$location
       };
       scope.selectWorkflowTask = function(workflowTask) {
         scope.done = false;
-        logger("selectWorkflowTask", "selecting a workflow task");
-        $log.debug(workflowTask);
         scope.finished = false;
         scope.workflowTasks.selectedTask = undefined;
         var filterPropertiesPromise = $slatwall.getFilterPropertiesByBaseEntityName(scope.workflow.data.workflowObject);
