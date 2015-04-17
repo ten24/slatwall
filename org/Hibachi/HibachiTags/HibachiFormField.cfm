@@ -78,17 +78,14 @@
 		</cfcase>
 		<cfcase value="file">
 			<cfoutput>
-				
-				<div class="input-group s-file-upload">
-					<span class="input-group-btn">
-						<button class="btn btn-sm btn-primary s-btn-file"><i class="fa fa-folder-open-o"></i> Browse&hellip; <input type="file" name="#attributes.fieldName#" #attributes.fieldAttributes#></button>
+				<div class="s-file-upload">
+					<ul class="list-unstyled list-inline">
+						<li><input type="file" name="#attributes.fieldName#" #attributes.fieldAttributes#></li>
 						<cfif attributes.value neq ''>
-							<a href="#attributes.removeLink#" class="btn btn-sm btn-default s-remove-btn s-remove"><i class="fa fa-times"></i> Remove</a>
+							<li><a href="#attributes.removeLink#" class="btn btn-xs btn-primary s-remove-btn s-remove">Remove <span>"#attributes.value#"</span></a></li>
 						</cfif>
-					</span>
-	                <input type="text" value="#attributes.value#" class=" #attributes.fieldClass# form-control" readonly>
-	            </div>
-				
+					</ul>
+				</div>
 			</cfoutput>
 		</cfcase>
 		<cfcase value="listingMultiselect">
