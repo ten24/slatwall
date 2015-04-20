@@ -51,9 +51,14 @@ component extends="FW1.framework" {
 	variables.framework.trace = false;
 	/* TODO: add solution to api routing for Rest api*/
 	variables.framework.routes = [
-		{ "$GET/api/:entityName/:entityID" = "/api:main.get/entityName/:entityName/entityID/:entityID"},
-		{ "$GET/api/:entityName/" = "/api:main.get/entityName/:entityName/"}
-	];
+		{ "$GET/api/:entityName/:entityID" = "/api:main.get/entityName/:entityName/entityID/:entityID"}
+		,{ "$GET/api/:entityName/" = "/api:main.get/entityName/:entityName/"}
+		//application/ site/ content routes for CMS
+		,{ "$GET/apps/:appid/$" = "/slatwallcms:main/default/appid/:appid" }
+		,{ "$GET/apps/:appid/:siteid/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid" }
+		,{ "$GET/apps/:appid/:siteid/:contentURL/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid/contentURL/:contentURL" }
+		,{ "$GET/apps/:appid/:siteid/:entityURL/:urlTitle/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid/entityURL/:entityURL/urlTitle/:urlTitle" }
+	]; 
 	
 	// Hibachi Setup
 	variables.framework.hibachi = {};
@@ -200,9 +205,8 @@ component extends="FW1.framework" {
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
+		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="setupGlobalRequestComplete",eventData=request.context);
 	}
-	
-	
 	
 	public void function setupRequest() {
 		setupGlobalRequest();

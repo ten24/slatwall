@@ -1521,7 +1521,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		
 		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
-		request.debug(collectionEntity.getRecords());
+		request.debug(collectionEntity.getPageRecords());
 	}
 	
 	public void function getHQLForCollectionFilterTest(){

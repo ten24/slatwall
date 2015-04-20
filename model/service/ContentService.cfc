@@ -59,6 +59,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getSettingService().getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag", settingValue=1);
 	}
 	
+	public any function getCMSTemplateOptions(required any content){
+		var contentSite = arguments.content.getSite();
+		if(directoryExists(getApplicationValue('applicationRootMappingPath') & '/apps/' & contentSIte.getApp().getAppID() & '/' & contentSIte.getSiteID() & '/templates' )) {
+			var siteDirectory = getApplicationValue('applicationRootMappingPath') & '/apps/' & contentSIte.getApp().getAppID() & '/' & contentSIte.getSiteID();
+			var templateDirectory = siteDirectory & '/templates';
+			var directoryList = directoryList(templateDirectory);
+			
+			var templates = [];
+			for(var directory in directoryList){
+				var template ={};
+				var templateName = listLast(directory,'/');
+				template['name'] = templateName;
+				template['value'] = templateName;
+				arrayAppend(templates,template);
+			}
+			return templates;
+		}else{
+			throw('site directory does not exist for ' & site.getSiteName());
+		}	
+	}
+	
 	public any function getRestrictedContentByCMSContentIDAndCMSSiteID(required any cmsContentID, required any cmsSiteID) {
 		var content = getContentByCMSContentIDAndCMSSiteID(arguments.cmsContentID, arguments.cmsSiteID);
 		if(content.isNew()) {
@@ -97,6 +118,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getContentDAO().getContentByCMSContentIDAndCMSSiteID( argumentCollection=arguments );
 	}
 	
+	public any function getContentBySiteIDAndUrlTitle(required string siteID, required string urlTitle){
+		return getContentDao().getContentBySiteIDAndUrlTitle(argumentCollection=arguments);
+	}
 	
 	// ===================== START: DAO Passthrough ===========================
 	
