@@ -67,12 +67,18 @@ Notes:
 				c as comment
 			)
 			FROM
-				SlatwallCommentRelationship scr INNER JOIN scr.comment c WHERE scr.#left(arguments.primaryIDPropertyName,len(arguments.primaryIDPropertyName)-2)#.#arguments.primaryIDPropertyName# = ?">
+				SlatwallCommentRelationship scr 
+			INNER JOIN 
+				scr.comment c
+			WHERE 
+				scr.#left(arguments.primaryIDPropertyName,len(arguments.primaryIDPropertyName)-2)#.#arguments.primaryIDPropertyName# = ?">
 
 			<cfif structKeyExists(arguments, "publicFlag")>
 				<cfset hql =hql & " and c.publicFlag=?">
 				<cfset arrayAppend(hqlParams, arguments.publicFlag) />
 			</cfif>
+			
+			<cfset hql=hql & " ORDER BY c.createdDateTime ASC" >
 
 			<cfset var results = ormExecuteQuery(hql, hqlParams) />
 			<cfcatch>
