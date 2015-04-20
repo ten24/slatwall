@@ -52,13 +52,16 @@ component extends="FW1.framework" {
 	/* TODO: add solution to api routing for Rest api*/
 	variables.framework.routes = [
 		//api routes
-		{ "$GET/api/" = "/api:main/get/" }
-		,{ "$GET/api/:entityName/" = "/api:main/get/entityName/:entityName/"}
-		,{ "$GET/api/:entityName/:entityID" = "/api:main/get/entityName/:entityName/entityID/:entityID"}
+		{ "$GET/api/$" = "/api:main/get/" }
+		,{ "$GET/api/:entityName/$" = "/api:main/get/entityName/:entityName"}
+		,{ "$GET/api/:entityName/:entityID/$" = "/api:main/get/entityName/:entityName/entityID/:entityID"}
+		
 		,{ "$POST/api/" = "/api:main/post/" }
 		,{ "$POST/api/:entityName/" = "/api:main/post/entityName/:entityName/"}
 		,{ "$POST/api/:entityName/:entityID" = "/api:main/post/entityName/:entityName/entityID/:entityID"}
+		
 		//application/ site/ content routes for CMS
+		
 		,{ "$GET/apps/:appid/$" = "/slatwallcms:main/default/appid/:appid" }
 		,{ "$GET/apps/:appid/:siteid/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid" }
 		,{ "$GET/apps/:appid/:siteid/:contentURL/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid/contentURL/:contentURL" }
