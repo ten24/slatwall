@@ -149,9 +149,6 @@ angular.module('slatwalladmin').directive('swOrderItem', ['$log', '$compile', '$
         "propertyIdentifier": "_orderitem.sku.baseProductType",
         "persistent": false
       }, {
-        "propertyIdentifier": "_orderitem.sku.product.productType.parentProductType.productTypeName",
-        "persistent": false
-      }, {
         "title": "Event Start Date",
         "propertyIdentifier": "_orderitem.sku.eventStartDateTime",
         "isVisible": true,
@@ -303,7 +300,6 @@ angular.module('slatwalladmin').directive('swOrderItem', ['$log', '$compile', '$
             collectionConfig.baseEntityAlias = '_orderitem';
             var childOrderItems = $slatwall.populateCollection(value.records, collectionConfig);
             angular.forEach(childOrderItems, function(childOrderItem) {
-              childOrderItem.productType = childOrderItem.data.sku.data.product.data.productType.$$getParentProductType();
               childOrderItem.depth = scope.orderItem.depth + 1;
               scope.childOrderItems.push(childOrderItem);
               childOrderItem.data.productBundleGroupPercentage = 1;

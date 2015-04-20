@@ -80,9 +80,6 @@ angular.module("slatwalladmin").directive("swChildOrderItem", ["$log", "$http", 
             propertyIdentifier: "_orderitem.sku.baseProductType",
             persistent: false
          }, {
-            propertyIdentifier: "_orderitem.sku.product.productType.parentProductType.productTypeName",
-            persistent: false
-         }, {
             title: "Qty.",
             propertyIdentifier: "_orderitem.quantity",
             isVisible: true,

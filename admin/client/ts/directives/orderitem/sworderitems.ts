@@ -137,10 +137,6 @@ angular.module('slatwalladmin')
 					   "isVisible":true
 					},
                      {
-                        "propertyIdentifier":"_orderitem.sku.product.productType.parentProductType.productTypeName",
-                        "persistent":false
-                     },
-                     {
                         "propertyIdentifier":"_orderitem.sku.baseProductType",
                         "persistent":false
                      }, 

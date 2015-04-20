@@ -93,9 +93,6 @@ angular.module("slatwalladmin").directive("swOrderItems", ["$log", "$timeout", "
 					propertyIdentifier: "_orderitem.sku.product.productType",
 					isVisible: true
 				}, {
-					propertyIdentifier: "_orderitem.sku.product.productType.parentProductType.productTypeName",
-					persistent: false
-				}, {
 					propertyIdentifier: "_orderitem.sku.baseProductType",
 					persistent: false
 				}, {
