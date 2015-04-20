@@ -16,8 +16,7 @@
 	</td>
 	
 	<!-- Handle the title field. Displays skuName if it exists and productName otherwise -->
-	<td class="s-title">
-		<span ng-bind="productType">:</span>   
+	<td class="s-title"> 
 		<span ng-if="orderItem.data.sku.data.skuName === ''" ng-bind="orderItem.data.sku.data.product.data.productName"></span>&nbsp
 		<span ng-if="orderItem.data.sku.data.skuName">
 			{{orderItem.data.sku.data.skuName}}&nbsp
