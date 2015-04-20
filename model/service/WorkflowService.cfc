@@ -293,7 +293,9 @@ component extends="HibachiService" accessors="true" output="false" {
 				workflowConditionGroupString &= getWorkflowConditionGroupsString(arguments.entity,[workflowCondition]);
 			}else{
 				var comparisonOperator = getComparisonOperator(workflowCondition.comparisonOperator);
-				workflowConditionGroupString &= " #logicalOperator# #getHibachiValidationService().invokeMethod('validate_#workflowCondition.comparisonOperator#',{1=arguments.entity, 2=listRest(workflowCondition.propertyIdentifier,'.'), 3=workflowCondition.value})# " ;
+				if(len(comparisonOperator)){
+					workflowConditionGroupString &= " #logicalOperator# #getHibachiValidationService().invokeMethod('validate_#workflowCondition.comparisonOperator#',{1=arguments.entity, 2=listRest(workflowCondition.propertyIdentifier,'.'), 3=workflowCondition.value})# " ;	
+				}
 			}
 				
 		}
@@ -357,7 +359,8 @@ component extends="HibachiService" accessors="true" output="false" {
 		*/
 		//if we have a any workflow conditions then evaluate them otherwise evaluate as true
 		if(arraylen(arguments.taskConditions.filterGroups)){
-			return evaluate(getWorkflowConditionGroupsString(arguments.entity,arguments.taskConditions.filterGroups));
+			var booleanExpressionString = getWorkflowConditionGroupsString(arguments.entity,arguments.taskConditions.filterGroups);
+			return evaluate(booleanExpressionString);
 		
 		}else{
 			return true;
