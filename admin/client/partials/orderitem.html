@@ -1,10 +1,10 @@
 <tr class="s-bundle-product l-1" ng-if="orderItem && attributes" 
 	ng-class="{
-		's-event l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'event', 
-		's-bundle-product l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'productBundle',
-		's-subscription l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'subscription',
-		's-content-access l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'content',
-		's-product l-1': orderItem.data.sku.data.product.data.productType.data.systemCode == 'merchandise',
+		's-event l-1': orderItem.data.sku.data.baseProductType == 'event', 
+		's-bundle-product l-1': orderItem.data.sku.data.baseProductType == 'productBundle',
+		's-subscription l-1': orderItem.data.sku.data.baseProductType == 'subscription',
+		's-content-access l-1': orderItem.data.sku.data.baseProductType == 'content',
+		's-product l-1': orderItem.data.sku.data.baseProductType == 'merchandise',
 		's-return':orderItem.data.orderItemType.data.systemCode == 'oitReturn',
 		's-deposit':orderItem.onWaitlist === true,
 		's-pending-payment':orderItem.isPending === true
@@ -17,17 +17,18 @@
 	
 	<!-- Handle the title field. Displays skuName if it exists and productName otherwise -->
 	<td class="s-title">
+		<span ng-bind="productType">:</span>   
 		<span ng-if="orderItem.data.sku.data.skuName === ''" ng-bind="orderItem.data.sku.data.product.data.productName"></span>&nbsp
 		<span ng-if="orderItem.data.sku.data.skuName">
 			{{orderItem.data.sku.data.skuName}}&nbsp
 			<a href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link"
-			ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode !== 'productBundle'">edit</a>
+			ng-show="orderItem.data.sku.data.baseProductType !== 'productBundle'">edit</a>
 		</span>
 		<a href="" class="s-edit-link" 
-			ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle' && !orderItem.clicked" 
+			ng-show="orderItem.data.sku.data.baseProductType === 'productBundle' && !orderItem.clicked" 
 			ng-click="getChildOrderItems(orderItem)">detail</a>
 		<a href="" class="s-edit-link" 
-			ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle' && orderItem.clicked" 
+			ng-show="orderItem.data.sku.data.baseProductType === 'productBundle' && orderItem.clicked" 
 			ng-click="hideChildren(orderItem)">detail</a>
 		<!-- Handle button "Cancel Deposit"-->
 		<span ng-if="orderItem.onWaitlist === true">
@@ -60,7 +61,7 @@
 	
 	<!-- Handle all custom details situations -->
 	<td sw-order-item-detail-stamp
-		data-system-code="orderItem.data.sku.data.product.data.productType.data.systemCode"
+		data-system-code="orderItem.data.sku.data.baseProductType"
 		order-item-id="orderItem.data.orderItemID"
 		sku-Id="orderItem.data.sku.data.skuID"
 		order-item="orderItem">
@@ -74,11 +75,11 @@
 		<!-- Handle if this is a event pricing scheme-->
 		<span ng-if="orderItem.onWaitlist !== true" class="s-price">
 			<ul>
-				<li ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle'" class="s-price-total">{{orderItem.data.productBundlePrice | currency}} 
+				<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-total">{{orderItem.data.productBundlePrice | currency}} 
 				</li>
-				<li ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode !== 'productBundle'" class="s-price-total">{{orderItem.data.skuPrice | currency}} 
+				<li ng-show="orderItem.data.sku.data.baseProductType !== 'productBundle'" class="s-price-total">{{orderItem.data.skuPrice | currency}} 
 				</li>
-				<li ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle'" class="s-price-list">
+				<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-list">
 					<ul>
 						<li>+<span ng-bind="orderItem.data.skuPrice | currency"></span> (Base Price)</li>
 						<li>+<span ng-bind="orderItem.data.skuPrice - orderItem.data.extendedPrice / orderItem.data.quantity | currency"></span> (Extras)</li>
@@ -104,7 +105,7 @@
 	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">
 		<ul>
 			<li class="s-price-total">{{orderItem.data.itemTotal | currency}}</li>
-			<li ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode == 'productBundle'" class="s-price-list">
+			<li ng-show="orderItem.data.sku.data.baseProductType == 'productBundle'" class="s-price-list">
 				<ul>
 					<li>+<span ng-bind="orderItem.data.skuPrice * orderItem.data.quantity | currency"></span> (Base Price)</li>
 					<li>+<span ng-bind="orderItem.data.skuPrice * orderItem.data.quantity - orderItem.data.extendedPrice | currency"></span> (Extras)</li>
@@ -150,9 +151,9 @@
 <!-- Handle Child OrderItems -->
 <tr ng-if="childOrderItems" ng-repeat="childOrderItem in childOrderItems" class="s-bundle-product l-{{childOrderItem.depth}}" sw-child-order-item data-order-item="childOrderItem" data-child-order-items="childOrderItems" data-attributes="attributes" 
 	ng-class="{
-	's-event l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'event', 
-	's-bundle-product l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'productBundle',
+	's-event l-1': childOrderItem.data.sku.data.baseProductType == 'event', 
+	's-bundle-product l-1': childOrderItem.data.sku.data.baseProductType == 'productBundle',
 	's-subscription l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'subscription',
-	's-content-access l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'content',
-	's-product l-1': childOrderItem.data.sku.data.product.data.productType.data.systemCode == 'merchandise'
+	's-content-access l-1': childOrderItem.data.sku.data.baseProductType == 'content',
+	's-product l-1': childOrderItem.data.sku.data.baseProductType == 'merchandise'
 	}"></tr>

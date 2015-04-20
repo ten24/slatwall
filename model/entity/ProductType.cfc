@@ -110,7 +110,7 @@ component displayname="Product Type" entityname="SlatwallProductType" table="SwP
 		}
 	}
 	
-	//get merchandisetype 
+	//get merchandise type 
 	public any function getBaseProductType() {
 		if(isNull(getSystemCode()) || getSystemCode() == ""){
 			return getService("ProductService").getProductType(listFirst(getProductTypeIDPath())).getSystemCode();

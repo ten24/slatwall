@@ -184,6 +184,14 @@ angular.module('slatwalladmin').directive('swOrderItem',
 					   "isVisible":true,
 					   "isDeletable":true
 					},
+                     {
+                        "propertyIdentifier":"_orderitem.sku.baseProductType",
+                        "persistent":false
+                     }, 
+                     {
+                        "propertyIdentifier":"_orderitem.sku.product.productType.parentProductType.productTypeName",
+                        "persistent":false
+                     },
 					{
 					   "title":"Event Start Date",
 					   "propertyIdentifier":"_orderitem.sku.eventStartDateTime",
@@ -196,6 +204,16 @@ angular.module('slatwalladmin').directive('swOrderItem',
 					   "isVisible":true,
 					   "isDeletable":true
 					},
+                    {
+                        "propertyIdentifier":"_orderitem.sku.skuPrice",
+                        "ormtype":"string"
+                    },
+                    {
+                       "title":"Image File Name",
+                       "propertyIdentifier":"_orderitem.sku.imageFile",
+                       "isVisible":true,
+                       "isDeletable":true
+                    },
 					{
 					   "title":"Qty.",
 					   "propertyIdentifier":"_orderitem.quantity",
@@ -262,13 +280,7 @@ angular.module('slatwalladmin').directive('swOrderItem',
 					   "isDeletable":true
 					},
 					{
-					   "title":"Image File Name",
-					   "propertyIdentifier":"_orderitem.sku.imageFile",
-					   "isVisible":true,
-					   "isDeletable":true
-					},
-					{
- 				    "propertyIdentifier": "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
+ 				    "propertyIdentifier" : "_orderitem.orderFulfillment.pickupLocation.primaryAddress.address",
  				    "isVisible": true,
  				    "isDeletable": true
 					},
@@ -300,10 +312,6 @@ angular.module('slatwalladmin').directive('swOrderItem',
 						"ormtype":"string"
 					},
 					{
-						"propertyIdentifier":"_orderitem.sku.skuPrice",
-						"ormtype":"string"
-					},
-					{
 						"propertyIdentifier":"_orderitem.productBundleGroupPrice",
 						"persistent":false
 					},
@@ -317,8 +325,8 @@ angular.module('slatwalladmin').directive('swOrderItem',
 				var attributeColumn = {
 					propertyIdentifier:"_orderitem."+attribute.attributeCode,
 					attributeID:attribute.attributeID,
-			         attributeSetObject:"orderItem"
-				};
+			        attributeSetObject:"orderItem"
+				}; 
 				columnsConfig.push(attributeColumn);
 			});
 		
@@ -383,6 +391,7 @@ angular.module('slatwalladmin').directive('swOrderItem',
 						collectionConfig.baseEntityAlias = '_orderitem';
 						var childOrderItems = $slatwall.populateCollection(value.records,collectionConfig);
 						angular.forEach(childOrderItems,function(childOrderItem){
+                             childOrderItem.productType = childOrderItem.data.sku.data.product.data.productType.$$getParentProductType();
 							childOrderItem.depth = scope.orderItem.depth+1;
 							scope.childOrderItems.push(childOrderItem);
 							childOrderItem.data.productBundleGroupPercentage = 1;
@@ -392,7 +401,7 @@ angular.module('slatwalladmin').directive('swOrderItem',
 								childOrderItem.data.productBundleGroupPercentage = 1 - childOrderItem.data.productBundleGroup.data.amount/100;
 							}
 						});
-					});
+					}); 
 				}else{
 					//We already have the items so we just need to show them.
 					angular.forEach(scope.childOrderItems, function(child){

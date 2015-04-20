@@ -86,6 +86,12 @@ angular.module('slatwalladmin').directive('swOrderItems', ['$log', '$timeout', '
           "propertyIdentifier": "_orderitem.sku.product.productType",
           "isVisible": true
         }, {
+          "propertyIdentifier": "_orderitem.sku.product.productType.parentProductType.productTypeName",
+          "persistent": false
+        }, {
+          "propertyIdentifier": "_orderitem.sku.baseProductType",
+          "persistent": false
+        }, {
           "title": "Product Description",
           "propertyIdentifier": "_orderitem.sku.product.productDescription",
           "isVisible": true
@@ -226,6 +232,10 @@ angular.module('slatwalladmin').directive('swOrderItems', ['$log', '$timeout', '
           collectionConfig.baseEntityName = 'SlatwallOrderItem';
           collectionConfig.baseEntityAlias = '_orderitem';
           scope.orderItems = $slatwall.populateCollection(value.pageRecords, collectionConfig);
+          for (var orderItem in scope.orderItems) {
+            $log.debug("OrderItem Product Type");
+            $log.debug(scope.orderItems);
+          }
           scope.loadingCollection = false;
         });
       };

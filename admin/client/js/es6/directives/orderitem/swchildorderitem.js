@@ -50,11 +50,6 @@ angular.module('slatwalladmin').directive('swChildOrderItem', ['$log', '$http', 
         "isVisible": true,
         "isDeletable": true
       }, {
-        "title": "Product Bundle Group",
-        "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
-        "isVisible": true,
-        "isDeletable": true
-      }, {
         "title": "Product ID",
         "propertyIdentifier": "_orderitem.sku.product.productID",
         "isVisible": true,
@@ -65,15 +60,29 @@ angular.module('slatwalladmin').directive('swChildOrderItem', ['$log', '$http', 
         "isVisible": true,
         "isDeletable": true
       }, {
+        "title": "Product Description",
+        "propertyIdentifier": "_orderitem.sku.product.productDescription",
+        "isVisible": true,
+        "isDeletable": true
+      }, {
+        "title": "Image File Name",
+        "propertyIdentifier": "_orderitem.sku.imageFile",
+        "isVisible": true,
+        "isDeletable": true
+      }, {
+        "propertyIdentifier": "_orderitem.sku.skuPrice",
+        "ormtype": "string"
+      }, {
         "title": "Product Type",
         "propertyIdentifier": "_orderitem.sku.product.productType",
         "isVisible": true,
         "isDeletable": true
       }, {
-        "title": "Product Description",
-        "propertyIdentifier": "_orderitem.sku.product.productDescription",
-        "isVisible": true,
-        "isDeletable": true
+        "propertyIdentifier": "_orderitem.sku.baseProductType",
+        "persistent": false
+      }, {
+        "propertyIdentifier": "_orderitem.sku.product.productType.parentProductType.productTypeName",
+        "persistent": false
       }, {
         "title": "Qty.",
         "propertyIdentifier": "_orderitem.quantity",
@@ -129,11 +138,6 @@ angular.module('slatwalladmin').directive('swChildOrderItem', ['$log', '$http', 
         "isVisible": true,
         "isDeletable": true
       }, {
-        "title": "Image File Name",
-        "propertyIdentifier": "_orderitem.sku.imageFile",
-        "isVisible": true,
-        "isDeletable": true
-      }, {
         "title": "Total",
         "propertyIdentifier": "_orderitem.itemTotal",
         "persistent": false
@@ -144,10 +148,12 @@ angular.module('slatwalladmin').directive('swChildOrderItem', ['$log', '$http', 
       }, {
         "propertyIdentifier": "_orderitem.extendedPrice",
         "persistent": false
-      }, {"propertyIdentifier": "_orderitem.productBundleGroup.amount"}, {"propertyIdentifier": "_orderitem.productBundleGroup.amountType"}, {
-        "propertyIdentifier": "_orderitem.sku.skuPrice",
-        "ormtype": "string"
-      }, {
+      }, {"propertyIdentifier": "_orderitem.productBundleGroup.amount"}, {
+        "title": "Product Bundle Group",
+        "propertyIdentifier": "_orderitem.productBundleGroup.productBundleGroupID",
+        "isVisible": true,
+        "isDeletable": true
+      }, {"propertyIdentifier": "_orderitem.productBundleGroup.amountType"}, {
         "propertyIdentifier": "_orderitem.productBundleGroupPrice",
         "persistent": false
       }, {
