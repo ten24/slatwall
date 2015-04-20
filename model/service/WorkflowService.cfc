@@ -294,7 +294,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			}else{
 				var comparisonOperator = getComparisonOperator(workflowCondition.comparisonOperator);
 				if(len(comparisonOperator)){
-					workflowConditionGroupString &= " #logicalOperator# #getHibachiValidationService().invokeMethod('validate_#workflowCondition.comparisonOperator#',{1=arguments.entity, 2=listRest(workflowCondition.propertyIdentifier,'.'), 3=workflowCondition.value})# " ;	
+					workflowConditionGroupString &= " #logicalOperator# #getHibachiValidationService().invokeMethod('validate_#comparisonOperator#',{1=arguments.entity, 2=listRest(workflowCondition.propertyIdentifier,'.'), 3=workflowCondition.value})# " ;	
 				}
 			}
 				
@@ -360,8 +360,11 @@ component extends="HibachiService" accessors="true" output="false" {
 		//if we have a any workflow conditions then evaluate them otherwise evaluate as true
 		if(arraylen(arguments.taskConditions.filterGroups)){
 			var booleanExpressionString = getWorkflowConditionGroupsString(arguments.entity,arguments.taskConditions.filterGroups);
-			return evaluate(booleanExpressionString);
-		
+			if(len(booleanExpressionString)){
+				return evaluate(booleanExpressionString);
+			}else{
+				return true;
+			}
 		}else{
 			return true;
 		}
