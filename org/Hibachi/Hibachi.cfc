@@ -55,6 +55,9 @@ component extends="FW1.framework" {
 		{ "$GET/api/" = "/api:main/get/" }
 		,{ "$GET/api/:entityName/" = "/api:main/get/entityName/:entityName/"}
 		,{ "$GET/api/:entityName/:entityID" = "/api:main/get/entityName/:entityName/entityID/:entityID"}
+		,{ "$POST/api/" = "/api:main/post/" }
+		,{ "$POST/api/:entityName/" = "/api:main/post/entityName/:entityName/"}
+		,{ "$POST/api/:entityName/:entityID" = "/api:main/post/entityName/:entityName/entityID/:entityID"}
 		//application/ site/ content routes for CMS
 		,{ "$GET/apps/:appid/$" = "/slatwallcms:main/default/appid/:appid" }
 		,{ "$GET/apps/:appid/:siteid/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid" }

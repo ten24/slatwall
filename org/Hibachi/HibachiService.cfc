@@ -109,7 +109,6 @@
 			
 			// If we pass preProcess validation then we can try to setup the processObject if the entity has one, and validate that
 			if(!arguments.entity.hasErrors() && arguments.entity.hasProcessObject(arguments.processContext)) {
-				
 				invokeArguments[ "processObject" ] = arguments.entity.getProcessObject(arguments.processContext);
 				
 				if(!invokeArguments[ "processObject" ].getPopulatedFlag()) {
@@ -133,7 +132,6 @@
 					throw("You have created a process method: #methodName# that does not return an entity.  All process methods should return an entity.");
 				}
 			}	
-
 			// Announce the after events
 			getHibachiEventService().announceEvent("after#arguments.entity.getClassName()#Process_#arguments.processContext#", invokeArguments);
 			if(arguments.entity.hasErrors()) {
