@@ -606,7 +606,13 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	public numeric function getPaymentAmountDue(){
-		return precisionEvaluate(getTotal() - getPaymentAmountReceivedTotal() + getPaymentAmountCreditedTotal());
+		var amountDue = precisionEvaluate(getTotal() - getPaymentAmountReceivedTotal() + getPaymentAmountCreditedTotal());
+		
+		if (amountDue < 0.01 && amountDue > -0.01){
+			amountDue = 0.00;
+		}
+		
+		return amountDue;
 	}
 	
 	public numeric function getPaymentAmountAuthorizedTotal() {
