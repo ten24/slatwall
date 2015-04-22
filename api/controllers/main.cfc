@@ -47,8 +47,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	 * ...should return three paths.
 	 */
 	public any function getResizedImageByProfileName(required struct rc){
- 		
- 			var skuIDs = arguments.rc.skuIDs.split(",");
  			var imageHeight = 60;
  			var imageWidth  = 60;
 			
@@ -62,17 +60,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			arguments.rc.apiResponse.content = {};
 			arguments.rc.apiResponse.content.resizedImagePaths = [];
 			var skus = [];
-			//load up skus
-			for (var id in skuIDs){
-				arrayAppend(skus, request.slatwallScope.getEntity("sku", {skuID=id}));
+			
+			//smart list to load up sku array
+			var skuSmartList = request.slatwallScope.getService('skuService').getSkuSmartList();
+			skuSmartList.addInFilter('skuID',rc.skuIDs);
+			
+			if( skuSmartList.getRecordsCount() > 0){
+				var skus = skuSmartList.getRecords();
+				
+				for  (var sku in skus){
+		    		ArrayAppend(arguments.rc.apiResponse.content.resizedImagePaths, sku.getResizedImagePath(width=imageWidth, height=imageHeight));         
+				}
 			}
-			for  (var sku in skus){
-				if (!isNull(sku)){	
-        				ArrayAppend(arguments.rc.apiResponse.content.resizedImagePaths, sku.getResizedImagePath(width=imageWidth, height=imageHeight));         
- 				}
- 			}
- 		
- 		
  	}
 
 	
