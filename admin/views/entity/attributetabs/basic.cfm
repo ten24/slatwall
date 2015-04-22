@@ -13,7 +13,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="attributeCode" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="attributeHint" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="defaultValue" edit="#rc.edit#">
-			<cfif rc.attributeSet.getAttributeSetObject() EQ "OrderItem">
+			<cfif !isNull(rc.attributeSet.getAttributeSetObject()) and rc.attributeSet.getAttributeSetObject() EQ "OrderItem">
 				<hb:HibachiPropertyDisplay object="#rc.attribute#" property="displayOnOrderDetailFlag" edit="#rc.edit#">
 			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.attribute#" property="attributeInputType" valueDefault="text" edit="#rc.edit and rc.attribute.isNew()#">
