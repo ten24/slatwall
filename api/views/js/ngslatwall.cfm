@@ -551,7 +551,7 @@ Notes:
 							  			return checkedKeys;
 							  		}
 						  		}
-						  		return 'empty';
+						  		return '';
 					  		},
 					  		 getConfig:function(){
 						    	return _config;
@@ -593,7 +593,7 @@ Notes:
 				    		var propertyMetaData = metaData[propertyName];
 							if(angular.isDefined(propertyMetaData['hb_rbkey'])){
 								return metaData.$$getRBKey(propertyMetaData['hb_rbkey']);
-							}else if (angular.isUndefined(propertyMetaData['persistent']) || (angular.isDefined(propertyMetaData['persistent']) && propertyMetaData['persistent'] === true)){
+							}else if (angular.isDefined(propertyMetaData['persistent']) && propertyMetaData['persistent'] === true){
 								if(angular.isDefined(propertyMetaData['fieldtype']) 
 								&& angular.isDefined(propertyMetaData['cfc'])
 								&& ["one-to-many","many-to-many"].indexOf(propertyMetaData.fieldtype) > -1){
@@ -606,6 +606,18 @@ Notes:
 								}
 								return metaData.$$getRBKey('entity.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
 							}else if(metaData.isProcessObject){
+								console.log('is porceses boject');
+								if(angular.isDefined(propertyMetaData.fieldtype) 
+									&& angular.isDefined(propertyMetaData.cfc) 
+									&& ["one-to-many","many-to-many"].indexOf(propertyMetaData.fieldtype) > -1
+								){
+									return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc.toLowerCase()+'_plural');
+								}else if(angular.isDefined(propertyMetaData.fieldtype) 
+									&& angular.isDefined(propertyMetaData.cfc) 
+								){
+									return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc.toLowerCase());
+								}
+								return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
 								
 							}
 							return metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
@@ -658,10 +670,10 @@ Notes:
 									return "select";
 								}else if ("struct" === dataType){
 									return "checkboxgroup";
-								}
-								if(propertyName === 'password'){
+								}else if(propertyName.indexOf('password') > -1){
 									return "password";
 								}
+								
 							}else if(angular.isDefined(propertyMetaData.fieldtype) && propertyMetaData.fieldtype === 'many-to-one'){
 								return 'select';
 							}else if(angular.isDefined(propertyMetaData.fieldtype) && propertyMetaData.fieldtype === 'one-to-many'){

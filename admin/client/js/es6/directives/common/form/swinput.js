@@ -50,6 +50,8 @@ angular.module('slatwalladmin').directive('swInput', ['$log', '$compile', 'utili
     }
     if (propertyDisplay.fieldType === 'text') {
       template = '<input type="text" class="form-control" ' + 'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' + 'ng-disabled="!propertyDisplay.editable" ' + 'ng-show="propertyDisplay.editing" ' + 'name="' + propertyDisplay.property + '" ' + validations + 'id="swinput' + utilityService.createID(26) + '"' + ' />';
+    } else if (propertyDisplay.fieldType === 'password') {
+      template = '<input type="password" class="form-control" ' + 'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' + 'ng-disabled="!propertyDisplay.editable" ' + 'ng-show="propertyDisplay.editing" ' + 'name="' + propertyDisplay.property + '" ' + validations + 'id="swinput' + utilityService.createID(26) + '"' + ' />';
     }
     return template;
   };

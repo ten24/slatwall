@@ -52,9 +52,9 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="account";
 
 	// Data Properties
-	property name="firstName";
-	property name="lastName";
-	property name="company";
+	property name="firstName" hb_rbkey="entity.account.firstName";
+	property name="lastName" hb_rbkey="entity.account.lastName";
+	property name="company" hb_rbkey="entity.account.company";
 	property name="emailAddress";
 	property name="emailAddressConfirm";
 	property name="password";

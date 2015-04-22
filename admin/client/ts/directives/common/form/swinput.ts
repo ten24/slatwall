@@ -86,10 +86,19 @@ angular.module('slatwalladmin').directive('swInput',
 		    'ng-disabled="!propertyDisplay.editable" '+ 
 		    'ng-show="propertyDisplay.editing" '+
 		    'name="'+propertyDisplay.property+'" ' +
-		    validations+
+		    validations+ 
 		    'id="swinput'+utilityService.createID(26)+'"'+
 			' />';
-		}
+		}else if(propertyDisplay.fieldType === 'password'){
+            template = '<input type="password" class="form-control" '+
+            'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
+            'ng-disabled="!propertyDisplay.editable" '+ 
+            'ng-show="propertyDisplay.editing" '+
+            'name="'+propertyDisplay.property+'" ' +
+            validations+
+            'id="swinput'+utilityService.createID(26)+'"'+
+            ' />';
+        }
 		
 		/*else if(propertyDisplay.fieldType === "number"){
 			console.info("Found Number Input");
