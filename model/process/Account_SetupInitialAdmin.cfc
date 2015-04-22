@@ -50,6 +50,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
 	property name="account";
+	property name="site";
 
 	// Data Properties
 	property name="firstName" hb_rbkey="entity.account.firstName";
@@ -59,5 +60,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="emailAddressConfirm";
 	property name="password";
 	property name="passwordConfirm";
+	property name="slatwallAsCMSFlag" hb_formFieldType="yesno" default=0;
+	
+	property name="siteTitle";
+	property name="siteDomains";
+	property name="adminAccessFlag" hb_formFieldType="yesno" default=0;
 	
 }
