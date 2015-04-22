@@ -8,7 +8,6 @@ angular.module('slatwalladmin').directive('swInput', ['$log', '$compile', 'utili
     $log.debug("Name is:" + name + " and form is: " + form);
     var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
     $log.debug("Validations: ");
-    console.dir(validations);
     var validationsForContext = [];
     var formContext = propertyDisplay.form.$$swFormInfo.context;
     var formName = propertyDisplay.form.$$swFormInfo.name;
@@ -18,6 +17,9 @@ angular.module('slatwalladmin').directive('swInput', ['$log', '$compile', 'utili
     $log.debug(formName);
     var propertyValidations = propertyDisplay.object.validations.properties[name];
     if (angular.isObject(propertyValidations)) {
+      if (angular.isUndefined(propertyValidations[0].contexts) && propertyDisplay.object.metaData.isProcessObject) {
+        propertyValidations[0].contexts = propertyDisplay.object.metaData.className.split('_')[1];
+      }
       if (propertyValidations[0].contexts === formContext) {
         $log.debug("Matched");
         for (var prop in propertyValidations[0]) {

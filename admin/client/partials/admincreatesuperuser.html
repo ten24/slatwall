@@ -1,29 +1,16 @@
-<h2>Welcome</h2>
-<sw-form name="" 
-	data-object=""	
-	data-context="save"
->
-	<span  	sw-property-display
-			data-object="workflow"
-			data-property="workflowName"
+<!-- need to rbkey this-->
+<h2>Welcome To Slatwall</h2>
+<span ng-if="Account_SetupInitialAdmin">
+	<sw-form name="form.accountSuperUser" 
+		data-object="Account_SetupInitialAdmin"
+		data-context="SetupInitialAdmin"	
+	>
+		<span  	sw-property-display
+			data-object="Account_SetupInitialAdmin"
+			data-property="firstName"
 			data-editing="true"
 			data-editable="true"
-	> 
-	</span>
-	<span  	sw-property-display
-			data-object="workflow"
-			data-options-arguments="{property:'workflowObject'}"
-			data-eager-load-options="true"
-			data-property="workflowObject"
-			data-editing="true"
-			data-editable="!workflow.$$isPersisted()"
-	>
-	</span>
-	<span  	sw-property-display
-			data-object="workflow"
-			data-property="activeFlag"
-			data-editing="true"
-			data-editable="true"
-	>
-	</span>
-</sw-form>
+		> 
+		</span>
+	</sw-form>
+</span>

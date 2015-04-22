@@ -605,6 +605,8 @@ Notes:
 									return metaData.$$getRBKey("entity."+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc);
 								}
 								return metaData.$$getRBKey('entity.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
+							}else if(metaData.isProcessObject){
+								
 							}
 							return metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
 				    	}
@@ -1219,7 +1221,7 @@ Notes:
 				    	}
 				    	<!--- js entity specific code here --->
 						<cfloop array="#rc.entities#" index="local.entity">
-							<cfset local.isProcessObject = Find('_',local.entity.getClassName())>
+							<cfset local.isProcessObject = Int(Find('_',local.entity.getClassName()) gt 0)>
 							<cftry>
 								
 								<!---
@@ -1263,6 +1265,8 @@ Notes:
 									this.metaData = #serializeJSON(local.entity.getPropertiesStruct())#;
 									
 									this.metaData.className = '#local.entity.getClassName()#';
+									
+									this.metaData.isProcessObject = #isProcessObject#;
 									
 									this.metaData.$$getRBKey = function(rbKey,replaceStringData){
 										return slatwallService.rbKey(rbKey,replaceStringData);
@@ -1391,8 +1395,10 @@ Notes:
 															<cfset local.defaultValue = serializeJson(local.defaultValue)/>
 															this.data.#local.property.name# = #local.defaultValue#;
 														<cfelse>
-															this.data.#local.property.name# = null; 
+															this.data.#local.property.name# = ''; 
 														</cfif>
+													<cfelse>
+														this.data.#local.property.name# = ''; 
 													</cfif>
 													<cfcatch></cfcatch>
 												</cftry>

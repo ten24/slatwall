@@ -11,7 +11,6 @@ angular.module("slatwalladmin").directive("swInput", ["$log", "$compile", "utili
 		$log.debug("Name is:" + name + " and form is: " + form);
 		var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
 		$log.debug("Validations: ");
-		console.dir(validations);
 		var validationsForContext = [];
 
 		//get the form context and the form name.
@@ -28,6 +27,11 @@ angular.module("slatwalladmin").directive("swInput", ["$log", "$compile", "utili
    * */
 		//check if the contexts match.
 		if (angular.isObject(propertyValidations)) {
+			//if this is a procesobject validation then the context is implied
+			if (angular.isUndefined(propertyValidations[0].contexts) && propertyDisplay.object.metaData.isProcessObject) {
+				propertyValidations[0].contexts = propertyDisplay.object.metaData.className.split("_")[1];
+			}
+
 			if (propertyValidations[0].contexts === formContext) {
 				$log.debug("Matched");
 				for (var prop in propertyValidations[0]) {
@@ -96,8 +100,6 @@ angular.module("slatwalladmin").directive("swInput", ["$log", "$compile", "utili
 			//renders the template and compiles it
 			element.html(getTemplate(scope.propertyDisplay));
 			$compile(element.contents())(scope);
-
-
 		}
 	};
 }]);
