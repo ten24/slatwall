@@ -57,7 +57,7 @@ component extends="FW1.framework" {
 		,{ "$GET/api/:entityName/:entityID/$" = "/api:main/get/entityName/:entityName/entityID/:entityID"}
 		
 		,{ "$POST/api/" = "/api:main/post/" }
-		,{ "$POST/api/:entityName/" = "/api:main/post/entityName/:entityName/"}
+		//,{ "$POST/api/:entityName/" = "/api:main/post/entityName/:entityName/"}
 		,{ "$POST/api/:entityName/:entityID" = "/api:main/post/entityName/:entityName/entityID/:entityID"}
 		
 		//application/ site/ content routes for CMS
