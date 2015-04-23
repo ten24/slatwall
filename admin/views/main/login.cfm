@@ -55,7 +55,7 @@ Notes:
 <cfoutput>
 	<div class="s-login">
 		<hb:HibachiMessageDisplay />
-		<cfset rc.accountAuthenticationExists = false>
+		<!---<cfset rc.accountAuthenticationExists = false>--->
 		<div class="well tabable s-login-box">
 
 			<!--- RESET PASSWORD FROM FORGOT PASSWORD EMAIL --->
