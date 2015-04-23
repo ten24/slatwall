@@ -42,7 +42,7 @@ component {
 					//are we rendering a basic content node or have we been provided with an entityURL type?
 					if(directoryExists(arguments.slatwallScope.getApplicationValue('applicationRootMappingPath') & sitePath)) {
 						//declareTemplatePath
-						var templatePath = '../../../..' & sitePath & '/templates/';
+						var templatePath = '../../..' & sitePath & '/templates/';
 						
 						if(!isNull(arguments.contentURL)){
 							//now that we have the site directory, we should see if we can retrieve the content via the urltitle and site
@@ -88,7 +88,9 @@ component {
 								arguments.slatwallScope.setContent( entityTemplateContent );
 								var contentTemplateFile = entityTemplateContent.Setting('contentTemplateFile');
 								if(!isNull(contentTemplateFile)){
+									
 									request.context['contentPath'] = templatePath & contentTemplateFile;
+															
 									
 									arguments.slatwallScope.setContent(entityTemplateContent);
 								}else{

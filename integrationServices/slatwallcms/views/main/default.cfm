@@ -46,4 +46,5 @@
 	Notes:
 	
 --->
-<cfinclude template="#rc.contentPath#" />
+
+<cfoutput >#rc.templateBody#</cfoutput>

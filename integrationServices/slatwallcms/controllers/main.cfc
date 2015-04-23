@@ -61,5 +61,9 @@ component extends="Slatwall.org.Hibachi.HibachiController" output="false" access
 	}
 	
 	public any function default(){
+		savecontent variable="templateData"{
+			include "#rc.contentPath#";
+		}
+		rc.templateBody = hibachiUtilityService.replaceStringTemplate(hibachiUtilityService.replaceStringEvaluateTemplate(templateData),getHibachiScope().getContent());
 	}	
 }

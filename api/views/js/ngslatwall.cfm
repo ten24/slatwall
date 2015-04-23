@@ -894,9 +894,16 @@ Notes:
 					    		if(modifiedData.valid){
 						    		var params = {};
 									params.serializedJsonData = angular.toJson(modifiedData.value);
-						    		var entityName = modifiedData.objectLevel.metaData.className;
-						    		var context = 'save';
-						    		
+									//if we have a process object then the context is different from the standard save
+									var entityName = '';
+									var context = 'save';
+									if(entityInstance.metaData.isProcessObject === 1){
+										var processStruct = modifiedData.objectLevel.metaData.className.split('_');
+										entityName = processStruct[0];
+										context = processStruct[1];
+									}else{
+										entityName = modifiedData.objectLevel.metaData.className;
+									}
 						    		
 						    		var savePromise = slatwallService.saveEntity(entityName,entityInstance.$$getID(),params,context);
 						    		savePromise.then(function(response){
@@ -1278,7 +1285,7 @@ Notes:
 									
 									this.metaData.className = '#local.entity.getClassName()#';
 									
-									this.metaData.isProcessObject = #isProcessObject#;
+									this.metaData.isProcessObject = #local.isProcessObject#;
 									
 									this.metaData.$$getRBKey = function(rbKey,replaceStringData){
 										return slatwallService.rbKey(rbKey,replaceStringData);
@@ -1661,6 +1668,7 @@ Notes:
 															var IDNameString = '#local.property.name#';
 															return IDNameString;
 														}
+													
 													</cfif>
 													,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
 														return this.data.#local.property.name#;
@@ -1671,8 +1679,19 @@ Notes:
 													return this.data.#local.property.name#;
 												}
 											</cfif>
+
 										</cfif>
 									</cfloop>
+									<cfif isProcessObject>
+										,$$getID:function(){
+											
+											return '';
+										}
+										,$$getIDName:function(){
+											var IDNameString = '';
+											return IDNameString;
+										}
+									</cfif>
 								};
 								
 								
