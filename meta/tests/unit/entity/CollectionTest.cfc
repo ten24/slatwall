@@ -1502,16 +1502,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionid = '',
 			collectionCode = 'RyansTen24Product',
 			collectionName = 'RyansTen24Product',
-			collectionObject = 'Account',
+			collectionObject = 'Content',
 			collectionConfig = '{
-				"baseEntityName":"SlatwallAccount",
-				"baseEntityAlias":"_account",
+				"baseEntityName":"SlatwallContent",
+				"baseEntityAlias":"_content",
 				"columns":[
 					{
-						"propertyIdentifier":"_account.accountID"
+						"propertyIdentifier":"_content.contentID"
 					},
 					{
-						"propertyIdentifier":"_account.accountEligiblePaymentTerms",
+						"propertyIdentifier":"_content.contentTemplateFile",
 						"persistent":false,
 						"setting":true
 					}
