@@ -132,28 +132,42 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		//add orderfulfillment
 		var processObjectData = {
-			quantity=2,
+			quantity=1,
 			price=1,
 			skuid=product.getSkus()[1].getSkuID(),
 			orderfulfillmentid=order.getOrderFulfillments()[1].getOrderfulfillmentid()
 		};
+		//Second orderitem
+		//add orderfulfillment
+		var processObjectDataTwo = {
+			quantity=1,
+			price=1,
+			skuid=product2.getSkus()[1].getSkuID(),
+			orderfulfillmentid=order.getOrderFulfillments()[1].getOrderfulfillmentid()
+		};
 		
 		var processObject = order.getProcessObject('AddOrderItem',processObjectData);
-		
+		var processObjectTwo = order.getProcessObject('AddOrderItem',processObjectDataTwo);
 		//Check that the items were added.
 		var orderReturn = variables.service.processOrder_addOrderItem(order, processObject);
-		
+		orderReturn = variables.service.processOrder_addOrderItem(order, processObjectTwo);
 		var orderItemsAdded = orderReturn.getOrderItems();
 		//assertEquals("This will fail", orderItemsAdded[1].getOrderItemID());
-		assertEquals(1, arraylen(orderItemsAdded));
+		assertEquals(2, arraylen(orderItemsAdded));//This works because we have two order items.
+		
+		
 		//Get the orderItem ID of the added item and use it to remove an item.
 		var orderItemsToRemove = {
 			orderItemID = "#orderItemsAdded[1].getOrderItemID()#"
 		};
 		var id = orderItemsAdded[1].getOrderItemID();
-		variables.service.processOrder_removeOrderItem(order, {orderItemID="#id#"});
-		//variables.service.processOrder_removeOrderItem(order, {orderItemIDList="#id#"});//Removes multiple
-		//request.debug(orderReturn.getOrderItems()[1].getQuantity());
+		var id2 = orderItemsAdded[2].getOrderItemID();
+		request.debug(ArrayLen(order.getOrderItems()));
+		//assertEquals("123", id2);//This should fail and it does.
+		//variables.service.processOrder_removeOrderItem(order, {orderItemID="#id#"});
+		
+		variables.service.processOrder_removeOrderItem(order, {orderItemIDList="#id#,#id2#"});//Removes multiple
+		request.debug(ArrayLen(order.getOrderItems()));
 		//request.debug(arraylen(orderReturn.getOrderItems()[1].getChildOrderItems()));
 		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getQuantity());
 		//request.debug(orderReturn.getOrderID());

@@ -1243,6 +1243,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	/**
 	 * The process method allows passing in 1 or more orderitems to remove as a batch.
+	 *  Example: processOrder_removeOrderItem(order, {orderItemIDList="#id#,#id2#"})
 	 */
 	public any function processOrder_removeOrderItem(required any order, required struct data) {
 		
