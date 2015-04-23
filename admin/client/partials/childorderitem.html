@@ -5,10 +5,10 @@
 				ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode !== 'productBundle'">edit</a><br>
 		<span>{{orderItem.data.sku.data.product.data.productName}}</span>
 			<a href="" class="s-edit-link" 
-				ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle' && !orderItem.clicked" 
+				ng-show="orderItem.data.sku.data.baseProductType === 'productBundle' && !orderItem.clicked" 
 				ng-click="getChildOrderItems(orderItem)">detail</a>
 			<a href="" class="s-edit-link" 
-				ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle' && orderItem.clicked" 
+				ng-show="orderItem.data.sku.data.baseProductType === 'productBundle' && orderItem.clicked" 
 				ng-click="hideChildren(orderItem)">detail</a>
 	</td>
 	<td class="s-sku" ng-hide="orderItem.hide">{{orderItem.data.sku.data.skuCode}}</td>
@@ -20,7 +20,7 @@
 			<li  class="s-price-total">
 				+{{orderItem.data.productBundleGroupPrice | currency}} 
 			</li>
-			<li ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle'" class="s-price-list">
+			<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-list">
 				<ul>
 					<li>+<span ng-bind="orderItem.data.skuPrice * orderItem.data.productBundleGroupPercentage | currency"></span> (Base Price)</li>
 					<li>+<span ng-bind="(orderItem.data.productBundlePrice - orderItem.data.skuPrice) * orderItem.data.productBundleGroupPercentage | currency"></span> (Extras)</li>
@@ -32,7 +32,7 @@
 	<td class="s-discount" ng-hide="orderItem.hide">-{{ orderItem.data.discountAmount | currency }}</td>
 	<td class="s-total" ng-hide="orderItem.hide">
 		<ul>
-			<li ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode === 'productBundle'" class="s-price-total">
+			<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-total">
 				+{{orderItem.data.productBundleGroupPrice * orderItem.data.quantity | currency}}
 			</li>
 			<li ng-show="orderItem.data.sku.data.product.data.productType.data.systemCode !== 'productBundle'" class="s-price-total">
