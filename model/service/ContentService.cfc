@@ -61,7 +61,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getCMSTemplateOptions(required any content){
 		var contentSite = arguments.content.getSite();
-		if(directoryExists(getApplicationValue('applicationRootMappingPath') & '/apps/' & contentSIte.getApp().getAppID() & '/' & contentSIte.getSiteID() & '/templates' )) {
+		if(directoryExists(getApplicationValue('applicationRootMappingPath') & '/apps/' & contentSIte.getApp().getAppID() & '/' & contentSite.getSiteID() & '/templates' )) {
 			var siteDirectory = getApplicationValue('applicationRootMappingPath') & '/apps/' & contentSIte.getApp().getAppID() & '/' & contentSIte.getSiteID();
 			var templateDirectory = siteDirectory & '/templates';
 			var directoryList = directoryList(templateDirectory);
