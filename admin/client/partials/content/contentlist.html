@@ -55,18 +55,13 @@
 				<tbody sw-scroll-trigger
 				infinite-scroll="appendToCollection()"
 				infinite-scroll-disabled="autoScrollDisabled"
-				infinite-scroll-distance="1">
+				infinite-scroll-distance="1"
+				ng-repeat="pageRecord in collection.pageRecords"
+				>
 					
-					<tr ng-repeat="pageRecord in collection.pageRecords">
-			            <td style="display:none"> <div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
-			            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[column.propertyIdentifier.substring(column.propertyIdentifier.indexOf('.')+1,column.propertyIdentifier.length).replace('.','_')]" ng-show="column.isVisible"></td>
-			            <td class="s-edit-elements">
-			              <ul class="list-unstyled list-inline">
-			                <li><a sw-href="{{'/entity/'+entityName+'/'+pageRecord[entityName.toLowerCase()+'ID']}}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-eye-open"></i></a></li>
-			                <li><a sw-href="{{'/entity/'+entityName+'/'+pageRecord[entityName.toLowerCase()+'ID']}}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-pencil"></i></a></li>
-			              </ul>
-			            </td>
-			      	</tr>
+					<tr sw-content-node
+						data-content-data="pageRecord"
+					></tr>
 			    </tbody>
 			</table>
 		</div>

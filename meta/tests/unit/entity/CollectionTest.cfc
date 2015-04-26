@@ -504,6 +504,56 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//var query = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
 		
 	}
+	/*
+	public any function getProductSmartList(struct data={}, currentURL="") {
+		arguments.entityName = "SlatwallProduct";
+		
+		var smartList = getHibachiDAO().getSmartList(argumentCollection=arguments);
+		
+		smartList.joinRelatedProperty("SlatwallProduct", "productType");
+		smartList.joinRelatedProperty("SlatwallProduct", "defaultSku");
+		smartList.joinRelatedProperty("SlatwallProduct", "brand", "left");
+		
+		smartList.addKeywordProperty(propertyIdentifier="calculatedTitle", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="brand.brandName", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="productName", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="productCode", weight=1);
+		smartList.addKeywordProperty(propertyIdentifier="productType.productTypeName", weight=1);
+		
+		return smartList;
+	}*/
+	public void function productSmartList_test(){
+		var productCollection = variables.entity;
+		productCollection.setCollectionObject('Product');
+		var collectionConfig = {
+			baseEntityName='SlatwallProduct',
+			baseEntityAlias="_product",
+			columns=[
+				{
+					propertyIdentifier="_product.productID"
+				},
+				{
+					propertyIdentifier="_product.productName"
+				}
+			],
+			"filterGroups":[  
+			      {  
+			         "filterGroup":[  
+						{
+							propertyIdentifier="_product.productID",
+							comparisonOperator="=",
+							value="4028288d4cb859ba014cbebd46470210"
+						}
+					]
+				}
+			]
+		};
+		productCollection.setCollectionConfig(serializeJson(collectionConfig));
+		
+		//var pageRecords = productCollection.getPageRecords();
+		request.debug(productCollection.getPageRecords());
+		
+	}
 	
 	public void function getHQLTest_date_in_range(){
 		var collectionData = {
