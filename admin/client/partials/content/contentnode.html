@@ -1,5 +1,5 @@
 <td ng-click="getChildContent(contentData)">
-	<i style="margin-left:{{depth*15||0}}px" class="fa fa-caret-{{contentData.loadedChild ? 'down' : 'right' }}" ng-bind="contentData.title"></i>
+	<i style="margin-left:{{depth*15||0}}px" class="fa fa-caret-{{child ? 'down' : 'right' }}" ng-bind="contentData.title"></i>
 </td>
 <td ng-bind="contentData.site_siteName"></td>
 <td ng-bind="contentData.contentTemplateFile"></td>
