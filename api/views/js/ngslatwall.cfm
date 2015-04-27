@@ -593,7 +593,7 @@ Notes:
 				    		var propertyMetaData = metaData[propertyName];
 							if(angular.isDefined(propertyMetaData['hb_rbkey'])){
 								return metaData.$$getRBKey(propertyMetaData['hb_rbkey']);
-							}else if (angular.isDefined(propertyMetaData['persistent']) && propertyMetaData['persistent'] === true){
+							}else if (angular.isUndefined(propertyMetaData['persistent'])){
 								if(angular.isDefined(propertyMetaData['fieldtype']) 
 								&& angular.isDefined(propertyMetaData['cfc'])
 								&& ["one-to-many","many-to-many"].indexOf(propertyMetaData.fieldtype) > -1){
