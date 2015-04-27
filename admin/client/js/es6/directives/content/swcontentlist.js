@@ -21,6 +21,10 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
         ormtype: 'string',
         isSearchable: true
       }, {
+        propertyIdentifier: '_content.fullTitle',
+        isVisible: true,
+        persistent: false
+      }, {
         propertyIdentifier: '_content.site.siteName',
         isVisible: true,
         ormtype: 'string',
@@ -49,14 +53,17 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           "comparisonOperator": "is",
           "value": 'null'
         }]}];
-      scope.getCollection = function() {
-        var collectionListingPromise = $slatwall.getEntity(scope.entityName, {
+      scope.getCollection = function(isSearching) {
+        var options = {
           currentPage: scope.currentPage,
           pageShow: pageShow,
           keywords: scope.keywords,
-          columnsConfig: angular.toJson(columnsConfig),
-          filterGroupsConfig: angular.toJson(filterGroupsConfig)
-        });
+          columnsConfig: angular.toJson(columnsConfig)
+        };
+        if (!isSearching || scope.keywords === '') {
+          options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
+        }
+        var collectionListingPromise = $slatwall.getEntity(scope.entityName, options);
         collectionListingPromise.then(function(value) {
           scope.collection = value;
           scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
@@ -64,7 +71,7 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           scope.collection.collectionConfig = scope.collectionConfig;
         });
       };
-      scope.getCollection();
+      scope.getCollection(false);
       scope.keywords = "";
       scope.loadingCollection = false;
       var searchPromise;
@@ -77,7 +84,7 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           $log.debug(scope.keywords);
           paginationService.setCurrentPage(1);
           scope.loadingCollection = true;
-          scope.getCollection();
+          scope.getCollection(true);
         }, 500);
       };
     }

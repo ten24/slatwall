@@ -29,6 +29,10 @@ angular.module("slatwalladmin").directive("swContentNode", ["$log", "$compile", 
                 isVisible: true,
                 isSearchable: true
             }, {
+                propertyIdentifier: "_content.fullTitle",
+                isVisible: true,
+                persistent: false
+            }, {
                 propertyIdentifier: "_content.site.siteName",
                 isVisible: true,
                 isSearchable: true

@@ -86,6 +86,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	// Non Persistent
 	property name="categoryIDList" persistent="false";
+	property name="fullTitle" persistent="false";
 	
 	// Deprecated Properties
 	property name="disableProductAssignmentFlag" ormtype="boolean";			// no longer needed because the listingPageFlag is defined for all objects
@@ -96,6 +97,29 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
+	public string function getFullTitle(){
+		var titleArray = [getTitle()];
+		if(!isNull(getParentContent())){
+			titleArray = getParentTitle(getParentContent(),titleArray);
+		}
+		var fullTitle = '';
+		for(var i = arraylen(titleArray); i > 0; i--){
+			fullTitle &= titleArray[i];
+			if(i != 1){
+				fullTitle &= ' > ';
+			}
+		}
+		return fullTitle;
+	}
+	
+	private array function getParentTitle(required any content, required array titleArray){
+		ArrayAppend(arguments.titleArray,arguments.content.getTitle());
+		if(!isNull(arguments.content.getParentContent())){
+			arguments.titleArray = getParentTitle(arguments.content.getParentContent(),arguments.titleArray);
+		}
+		return arguments.titleArray;
+	}
+		
 	public string function getCategoryIDList() {
 		if(!structKeyExists(variables, "categoryIDList")) {
 			variables.categoryIDList = "";

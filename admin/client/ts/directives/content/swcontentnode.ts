@@ -40,7 +40,13 @@ angular.module('slatwalladmin')
                                 propertyIdentifier: '_content.title',
                                 isVisible: true,
                                 isSearchable: true
-                            }, {
+                            },
+                            {
+                                propertyIdentifier:'_content.fullTitle',
+                                isVisible:true,
+                                persistent:false
+                            },
+                            {
                                 propertyIdentifier: '_content.site.siteName',
                                 isVisible: true,
                                 isSearchable: true
