@@ -229,6 +229,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	
 	public numeric function getExtendedPrice() {
 		var price = 0;
+		
 		//get bundle price
 		if(!isnull(getSku()) && getSku().getProduct().getProductType().getSystemCode() == 'productBundle'){
 			price = getProductBundlePrice();
@@ -236,7 +237,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			price = getPrice();
 		}
 		
-		return precisionEvaluate(price * val(getQuantity()));
+		return precisionEvaluate(round(price * val(getQuantity()) * 100) / 100);
 	}
 	
 	
