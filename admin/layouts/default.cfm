@@ -185,9 +185,9 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listattributeset" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listintegration" type="list">
 									<li class="divider"></li>
-									<cfif $.slatwall.authenticateAction(action='admin:entity.listapp')>
+									<!---<cfif $.slatwall.authenticateAction(action='admin:entity.listapp')>
 										<hb:HibachiActionCaller queryString="ng##!/entity/App" text="#$.slatwall.rbKey('admin.entity.listapp')#" type="list">
-									</cfif>
+									</cfif>--->
 									<hb:HibachiActionCaller action="admin:entity.listaddresszone" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcollection" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcountry" type="list">
