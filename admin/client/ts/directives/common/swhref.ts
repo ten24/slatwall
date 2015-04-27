@@ -11,9 +11,12 @@ function(){
 		},
 		link: function(scope, element,attrs){
 			/*convert link to use hashbang*/
-			var hrefValue = attrs.swHref;
-			hrefValue = '?ng#!'+hrefValue;
-			element.attr('href',hrefValue);
+            scope.$watch('swHref',function(newValue){
+                if(newValue){
+                    var hrefValue = '?ng#!'+newValue;
+                    element.attr('href',hrefValue);
+                }
+            })
 		}
 	};
 }]);

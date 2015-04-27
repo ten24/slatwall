@@ -19,6 +19,19 @@ angular.module('slatwalladmin')
                     },
                     templateUrl: partialsPath + 'content/contentnode.html',
                     link: function(scope, element, attr) {
+                        if(angular.isDefined(scope.$parent)){
+                            if(angular.isDefined(scope.$parent.child)){
+                                scope.contentData = scope.$parent.child; 
+                                if(angular.isUndefined(scope.depth) && angular.isUndefined(scope.$parent.depth)){
+                                    scope.depth = 1;
+                                }else{
+                                    scope.depth = scope.$parent.depth + 1;
+                                }
+                            }
+                            
+                              
+                        }
+                        
                         var childContentColumnsConfig = [{
                                 propertyIdentifier: '_content.contentID',
                                 isVisible: false,
@@ -69,12 +82,10 @@ angular.module('slatwalladmin')
                                 allRecords: true
                             });
                             collectionListingPromise.then(function(value) {
-                                parentContentRecord.children = value;
+                                parentContentRecord.children = value.records;
                                 angular.forEach(parentContentRecord.children,function(child){
-                                    var newScope = {
-                                        pageRecord:child  
-                                    };
-                                    //element.append($compile('<tr sw-content-node data-content-data="pageRecord"></tr>')(newScope));
+                                    scope.child = child;
+                                    element.parent().append($compile('<tr style="margin-left:15px" sw-content-node ></tr>')(scope));
                                 });
                                 //element.replaceWith($compile(element.html())(scope));
                                 

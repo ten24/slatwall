@@ -5,9 +5,12 @@ angular.module('slatwalladmin').directive('swHref', [function() {
     restrict: 'A',
     scope: {swHref: "@"},
     link: function(scope, element, attrs) {
-      var hrefValue = attrs.swHref;
-      hrefValue = '?ng#!' + hrefValue;
-      element.attr('href', hrefValue);
+      scope.$watch('swHref', function(newValue) {
+        if (newValue) {
+          var hrefValue = '?ng#!' + newValue;
+          element.attr('href', hrefValue);
+        }
+      });
     }
   };
 }]);
