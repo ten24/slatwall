@@ -74,7 +74,7 @@ angular.module('slatwalladmin')
                                     var newScope = {
                                         pageRecord:child  
                                     };
-                                    element.append($compile('<tr sw-content-node data-content-data="pageRecord"></tr>')(newScope));
+                                    //element.append($compile('<tr sw-content-node data-content-data="pageRecord"></tr>')(newScope));
                                 });
                                 //element.replaceWith($compile(element.html())(scope));
                                 

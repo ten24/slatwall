@@ -77,6 +77,7 @@ angular.module("slatwalladmin", ["ngSlatwall", "ui.bootstrap", "ngAnimate", "ngR
 			}
 		},
 		controller: "routerController" }).otherwise({
+		//controller:'otherwiseController'       
 		templateUrl: $.slatwall.getConfig().baseURL + "/admin/client/js/partials/otherwise.html" });
 }]).run(["$rootScope", "$filter", "$anchorScroll", "$slatwall", "dialogService", function ($rootScope, $filter, $anchorScroll, $slatwall, dialogService) {
 	$anchorScroll.yOffset = 100;

@@ -81,6 +81,7 @@ config(
 		},
 		controller: 'routerController',
 	}).otherwise({
+        //controller:'otherwiseController'        
 		templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
 	});  
 
