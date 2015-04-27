@@ -7,12 +7,9 @@ angular.module("slatwalladmin").directive("swHref", [function () {
 		},
 		link: function (scope, element, attrs) {
 			/*convert link to use hashbang*/
-			scope.$watch("swHref", function (newValue) {
-				if (newValue) {
-					var hrefValue = "?ng#!" + newValue;
-					element.attr("href", hrefValue);
-				}
-			});
+			var hrefValue = attrs.swHref;
+			hrefValue = "?ng#!" + hrefValue;
+			element.attr("href", hrefValue);
 		}
 	};
 }]);
