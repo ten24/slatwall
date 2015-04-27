@@ -56,10 +56,11 @@
 				infinite-scroll="appendToCollection()"
 				infinite-scroll-disabled="autoScrollDisabled"
 				infinite-scroll-distance="1"
-				ng-repeat="pageRecord in collection.pageRecords"
+				
 				>
 					
 					<tr sw-content-node
+						ng-repeat="pageRecord in collection.pageRecords"
 						data-content-data="pageRecord"
 					></tr>
 			    </tbody>
