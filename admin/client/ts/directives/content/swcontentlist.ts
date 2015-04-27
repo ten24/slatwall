@@ -3,12 +3,16 @@
 angular.module('slatwalladmin')
 .directive('swContentList', [
 	'$log',
+    '$timeout',
 	'$slatwall',
 	'partialsPath',
+    'paginationService',
 	function (
 			$log,
+            $timeout,
 			$slatwall,
-			partialsPath
+			partialsPath,
+            paginationService
 	) {
 	    return {
 	        restrict: 'E',
@@ -24,39 +28,43 @@ angular.module('slatwalladmin')
                     {
                         propertyIdentifier:'_content.contentID',
                         isVisible:false,
+                        ormtype:'id',
                         isSearchable:false
                     },
                     {
                         propertyIdentifier:'_content.title',
                         isVisible:true,
+                        ormtype:'string',
                         isSearchable:true
                     },
                     {
                         propertyIdentifier:'_content.site.siteName',
                         isVisible:true,
+                        ormtype:'string',
                         isSearchable:true
                     },
                     {
                         propertyIdentifier:'_content.contentTemplateFile',
                         persistent:false,
                         setting:true,
-                        isVisible:true
+                        isVisible:true,
+                        isSearchable:false
                     },
                     //need to get template via settings
                     {
                         propertyIdentifier:'_content.allowPurchaseFlag',
                         isVisible:true,
-                        isSearchable:true
+                        isSearchable:false
                     },
                     {
                         propertyIdentifier:'_content.productListingPageFlag',
                         isVisible:true,
-                        isSearchable:true
+                        isSearchable:false
                     },
                     {
                         propertyIdentifier:'_content.activeFlag',
                         isVisible:true,
-                        isSearchable:true
+                        isSearchable:false
                     }
                 ];
                 
@@ -93,6 +101,23 @@ angular.module('slatwalladmin')
 	        	};
 	        	scope.getCollection();
                 
+                scope.keywords = "";
+                scope.loadingCollection = false;
+                var searchPromise;
+                scope.searchCollection = function(){
+                    if(searchPromise) {
+                        $timeout.cancel(searchPromise);
+                    }
+                    
+                    searchPromise = $timeout(function(){
+                        $log.debug('search with keywords');
+                        $log.debug(scope.keywords);
+                        //Set current page here so that the pagination does not break when getting collection
+                        paginationService.setCurrentPage(1);
+                        scope.loadingCollection = true;
+                        scope.getCollection();
+                    }, 500);
+                };
                 
 	    }
 	}

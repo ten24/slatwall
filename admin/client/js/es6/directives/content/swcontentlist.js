@@ -1,6 +1,6 @@
 "use strict";
 'use strict';
-angular.module('slatwalladmin').directive('swContentList', ['$log', '$slatwall', 'partialsPath', function($log, $slatwall, partialsPath) {
+angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', '$slatwall', 'partialsPath', 'paginationService', function($log, $timeout, $slatwall, partialsPath, paginationService) {
   return {
     restrict: 'E',
     templateUrl: partialsPath + 'content/contentlist.html',
@@ -13,32 +13,36 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$slatwall',
       var columnsConfig = [{
         propertyIdentifier: '_content.contentID',
         isVisible: false,
+        ormtype: 'id',
         isSearchable: false
       }, {
         propertyIdentifier: '_content.title',
         isVisible: true,
+        ormtype: 'string',
         isSearchable: true
       }, {
         propertyIdentifier: '_content.site.siteName',
         isVisible: true,
+        ormtype: 'string',
         isSearchable: true
       }, {
         propertyIdentifier: '_content.contentTemplateFile',
         persistent: false,
         setting: true,
-        isVisible: true
+        isVisible: true,
+        isSearchable: false
       }, {
         propertyIdentifier: '_content.allowPurchaseFlag',
         isVisible: true,
-        isSearchable: true
+        isSearchable: false
       }, {
         propertyIdentifier: '_content.productListingPageFlag',
         isVisible: true,
-        isSearchable: true
+        isSearchable: false
       }, {
         propertyIdentifier: '_content.activeFlag',
         isVisible: true,
-        isSearchable: true
+        isSearchable: false
       }];
       var filterGroupsConfig = [{"filterGroup": [{
           "propertyIdentifier": "_content.parentContent",
@@ -61,6 +65,21 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$slatwall',
         });
       };
       scope.getCollection();
+      scope.keywords = "";
+      scope.loadingCollection = false;
+      var searchPromise;
+      scope.searchCollection = function() {
+        if (searchPromise) {
+          $timeout.cancel(searchPromise);
+        }
+        searchPromise = $timeout(function() {
+          $log.debug('search with keywords');
+          $log.debug(scope.keywords);
+          paginationService.setCurrentPage(1);
+          scope.loadingCollection = true;
+          scope.getCollection();
+        }, 500);
+      };
     }
   };
 }]);

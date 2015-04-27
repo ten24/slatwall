@@ -28,12 +28,35 @@
 		<div class="col-xs-6 s-table-view-options s-no-padding-right">
 			<ul class="list-inline list-unstyled">
 				
-				<!-- to implement searching
+				<!-- to implement searching-->
 				<li>
-					<form class="s-table-header-search ng-pristine ng-valid" novalidate="novalidate">
-						<input type="text" name="search" class="form-control input-sm general-listing-search" placeholder="Search" value="" tableid="LD45E2A51ABB8FAA1277509A46B2857887">
-					</form>
+					<div class="s-select-list-wrapper">
+						<div class="form-group">
+							<div class="input-group">
+								<div class="s-input-btn">
+									<input  type="text"
+										class="form-control input-sm"
+										placeholder="Search"
+										name="srch-term"
+										ng-model="keywords"
+										ng-change="searchCollection()"
+										/>
+									<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
+								</div>
+								<div class="input-group-btn">
+									<button   class="btn btn-primary btn-sm"
+										type="button"
+										ng-click="searchCollection()"
+										>
+									<i class="fa fa-search"></i>
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- s-select-list-wrapper -->
 				</li>
+				<!--
 				<li>
 					<div class="btn-group navbar-left dropdown">
 						<button type="button" class="btn btn-sm s-btn-dgrey dropdown-toggle" aria-haspopup="true" aria-expanded="false"><i class="fa fa-cog"></i></button>

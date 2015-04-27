@@ -37,7 +37,7 @@ angular.module('slatwalladmin')
 				scope.keywords = "";
 				scope.loadingCollection = false;
 				var searchPromise;
-				scope.searchCollection = function($timout){
+				scope.searchCollection = function(){
 					if(searchPromise) {
 						$timeout.cancel(searchPromise);
 					}
