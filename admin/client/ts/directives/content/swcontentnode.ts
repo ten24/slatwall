@@ -36,15 +36,11 @@ angular.module('slatwalladmin')
                                 propertyIdentifier: '_content.contentID',
                                 isVisible: false,
                                 isSearchable: false
-                            }, {
+                            }, 
+                            {
                                 propertyIdentifier: '_content.title',
                                 isVisible: true,
                                 isSearchable: true
-                            },
-                            {
-                                propertyIdentifier:'_content.fullTitle',
-                                isVisible:true,
-                                persistent:false
                             },
                             {
                                 propertyIdentifier: '_content.site.siteName',
@@ -91,10 +87,8 @@ angular.module('slatwalladmin')
                                 parentContentRecord.children = value.records;
                                 angular.forEach(parentContentRecord.children,function(child){
                                     scope.child = child;
-                                    element.parent().append($compile('<tr style="margin-left:15px" sw-content-node ></tr>')(scope));
+                                    element.parent().append($compile('<tr class="childNode" style="margin-left:15px" sw-content-node ></tr>')(scope));
                                 });
-                                //element.replaceWith($compile(element.html())(scope));
-                                
                             });
                         }
 

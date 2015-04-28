@@ -10,6 +10,7 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
       if (scope.pageShow !== 'Auto') {
         pageShow = scope.pageShow;
       }
+      scope.loadingCollection = false;
       scope.getCollection = function(isSearching) {
         var columnsConfig = [{
           propertyIdentifier: '_content.contentID',
@@ -74,6 +75,7 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
           scope.collectionConfig.columns = columnsConfig;
           scope.collection.collectionConfig = scope.collectionConfig;
+          scope.loadingCollection = false;
         });
       };
       scope.getCollection(false);
@@ -87,6 +89,7 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
         searchPromise = $timeout(function() {
           $log.debug('search with keywords');
           $log.debug(scope.keywords);
+          $('.childNode').remove();
           paginationService.setCurrentPage(1);
           scope.loadingCollection = true;
           scope.getCollection(true);

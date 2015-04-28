@@ -29,10 +29,6 @@ angular.module("slatwalladmin").directive("swContentNode", ["$log", "$compile", 
                 isVisible: true,
                 isSearchable: true
             }, {
-                propertyIdentifier: "_content.fullTitle",
-                isVisible: true,
-                persistent: false
-            }, {
                 propertyIdentifier: "_content.site.siteName",
                 isVisible: true,
                 isSearchable: true
@@ -76,9 +72,8 @@ angular.module("slatwalladmin").directive("swContentNode", ["$log", "$compile", 
                     parentContentRecord.children = value.records;
                     angular.forEach(parentContentRecord.children, function (child) {
                         scope.child = child;
-                        element.parent().append($compile("<tr style=\"margin-left:15px\" sw-content-node ></tr>")(scope));
+                        element.parent().append($compile("<tr class=\"childNode\" style=\"margin-left:15px\" sw-content-node ></tr>")(scope));
                     });
-                    //element.replaceWith($compile(element.html())(scope));
                 });
             };
         }

@@ -24,9 +24,7 @@ angular.module('slatwalladmin')
                     pageShow = scope.pageShow;
                 }
                 
-                
-                
-                
+                scope.loadingCollection = false;
 	        	
 	        	scope.getCollection = function(isSearching){
                     var columnsConfig = [
@@ -113,6 +111,7 @@ angular.module('slatwalladmin')
 	        			scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
 	        			scope.collectionConfig.columns = columnsConfig;
 	        			scope.collection.collectionConfig = scope.collectionConfig;
+                        scope.loadingCollection = false;
 	        			//scope.contents = $slatwall.populateCollection(value.pageRecords,scope.collectionConfig);
 	        		});
 	        	};
@@ -122,6 +121,7 @@ angular.module('slatwalladmin')
                 scope.loadingCollection = false;
                 var searchPromise;
                 scope.searchCollection = function(){
+                    
                     if(searchPromise) {
                         $timeout.cancel(searchPromise);
                     }
@@ -129,6 +129,7 @@ angular.module('slatwalladmin')
                     searchPromise = $timeout(function(){
                         $log.debug('search with keywords');
                         $log.debug(scope.keywords);
+                        $('.childNode').remove();
                         //Set current page here so that the pagination does not break when getting collection
                         paginationService.setCurrentPage(1);
                         scope.loadingCollection = true;
