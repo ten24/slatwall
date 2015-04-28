@@ -1,4 +1,4 @@
-angular.module('slatwalladmin', ['ngSlatwall','ui.bootstrap','ngAnimate','ngRoute']).
+angular.module('slatwalladmin', ['ngSlatwall','ui.bootstrap','ngAnimate','ngRoute','ngCkeditor']).
 config(
 	["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig',
 	function ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$injector,$locationProvider,datepickerConfig, datepickerPopupConfig

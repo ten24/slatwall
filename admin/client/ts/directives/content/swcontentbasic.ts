@@ -14,9 +14,6 @@ angular.module('slatwalladmin')
 	){
 		return {
 			restrict: 'EA',
-			scope:{
-				content:"="
-			},
 			templateUrl:contentPartialsPath+"contentbasic.html",
 			link: function(scope, element,attrs){
 			}
