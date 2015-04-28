@@ -56,6 +56,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="allowPurchaseFlag" ormtype="boolean";
 	property name="productListingPageFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string";
+	property name="contentBody" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 
 	// CMS Properties
 	property name="cmsContentID" ormtype="string" index="RI_CMSCONTENTID";
