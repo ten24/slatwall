@@ -65,6 +65,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
 	property name="parentContent" cfc="Content" fieldtype="many-to-one" fkcolumn="parentContentID";
 	property name="contentTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="contentTemplateTypeID" hb_optionsNullRBKey="define.none" hb_optionsSmartListData="f:parentType.systemCode=contentTemplateType" fetch="join";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="contentID" inverse="true" cascade="all-delete-orphan";
 	
 	// Related Object Properties (one-to-many)
 	property name="childContents" singularname="childContent" cfc="Content" type="array" fieldtype="one-to-many" fkcolumn="parentContentID" cascade="all-delete-orphan" inverse="true";

@@ -24,10 +24,10 @@ angular.module('slatwalladmin')
                 scope.editorOptions = CKEDITOR.editorConfig;
                 
                 scope.saveContent = function(){
-                   var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.post
+                   var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.post';
                    var params = {
                         entityID:scope.content.contentID,
-                        templateHTML:scope.content.templateHTML
+                        templateHTML:scope.content.templateHTML,
                         context:'saveTemplateHTML',
                         entityName:'content'   
                    }
