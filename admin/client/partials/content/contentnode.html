@@ -13,6 +13,6 @@
    
     <td class="s-edit-elements">
   <ul class="list-unstyled list-inline">
-    <li ng-if="contentData.contentID"><a sw-href="{{'/entity/Content/'+contentData.contentID}}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-eye-open"></i></a></li>
+    <li ng-if="contentData.contentID"><a href="?slatAction=entity.detailContent&contentID={{contentData.contentID}}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-eye-open"></i></a></li>
   </ul>
 </td>
