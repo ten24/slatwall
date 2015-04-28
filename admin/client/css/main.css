@@ -4470,6 +4470,6 @@ a.disabled > i.hibachi-ui-radio-checked {
   margin-left: 200px;
 }
 
-.paginationpages1 {
+.paginationpages0, .paginationpages1 {
   display:none;
 }
