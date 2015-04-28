@@ -11,65 +11,75 @@ angular.module("slatwalladmin").directive("swContentList", ["$log", "$timeout", 
                 pageShow = scope.pageShow;
             }
 
-            var columnsConfig = [{
-                propertyIdentifier: "_content.contentID",
-                isVisible: false,
-                ormtype: "id",
-                isSearchable: false
-            }, {
-                propertyIdentifier: "_content.title",
-                isVisible: true,
-                ormtype: "string",
-                isSearchable: true
-            }, {
-                propertyIdentifier: "_content.fullTitle",
-                isVisible: true,
-                persistent: false
-            }, {
-                propertyIdentifier: "_content.site.siteName",
-                isVisible: true,
-                ormtype: "string",
-                isSearchable: true
-            }, {
-                propertyIdentifier: "_content.contentTemplateFile",
-                persistent: false,
-                setting: true,
-                isVisible: true,
-                isSearchable: false
-            },
-            //need to get template via settings
-            {
-                propertyIdentifier: "_content.allowPurchaseFlag",
-                isVisible: true,
-                isSearchable: false
-            }, {
-                propertyIdentifier: "_content.productListingPageFlag",
-                isVisible: true,
-                isSearchable: false
-            }, {
-                propertyIdentifier: "_content.activeFlag",
-                isVisible: true,
-                isSearchable: false
-            }];
 
-            var filterGroupsConfig = [{
-                filterGroup: [{
-                    propertyIdentifier: "_content.parentContent",
-                    comparisonOperator: "is",
-                    value: "null"
-                }]
-            }];
+
+
 
             scope.getCollection = function (isSearching) {
+                var columnsConfig = [{
+                    propertyIdentifier: "_content.contentID",
+                    isVisible: false,
+                    ormtype: "id",
+                    isSearchable: false
+                }, {
+                    propertyIdentifier: "_content.site.siteName",
+                    isVisible: true,
+                    ormtype: "string",
+                    isSearchable: true
+                }, {
+                    propertyIdentifier: "_content.contentTemplateFile",
+                    persistent: false,
+                    setting: true,
+                    isVisible: true,
+                    isSearchable: false
+                },
+                //need to get template via settings
+                {
+                    propertyIdentifier: "_content.allowPurchaseFlag",
+                    isVisible: true,
+                    isSearchable: false
+                }, {
+                    propertyIdentifier: "_content.productListingPageFlag",
+                    isVisible: true,
+                    isSearchable: false
+                }, {
+                    propertyIdentifier: "_content.activeFlag",
+                    isVisible: true,
+                    isSearchable: false
+                }];
+
+                var filterGroupsConfig = [{
+                    filterGroup: [{
+                        propertyIdentifier: "_content.parentContent",
+                        comparisonOperator: "is",
+                        value: "null"
+                    }]
+                }];
+
                 var options = {
                     currentPage: scope.currentPage,
                     pageShow: pageShow,
-                    keywords: scope.keywords,
-                    columnsConfig: angular.toJson(columnsConfig)
+                    keywords: scope.keywords
                 };
+                var column = {};
                 if (!isSearching || scope.keywords === "") {
                     options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
+                    column = {
+                        propertyIdentifier: "_content.title",
+                        isVisible: true,
+                        ormtype: "string",
+                        isSearchable: true
+                    };
+                } else {
+                    column = {
+                        propertyIdentifier: "_content.fullTitle",
+                        isVisible: true,
+                        persistent: false
+                    };
                 }
+                columnsConfig.unshift(column);
+                options.columnsConfig = angular.toJson(columnsConfig);
+
                 var collectionListingPromise = $slatwall.getEntity(scope.entityName, options);
                 collectionListingPromise.then(function (value) {
                     scope.collection = value;
