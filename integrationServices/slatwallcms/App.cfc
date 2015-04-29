@@ -21,4 +21,6 @@ component {
 			
 		// Update the site specific settings for product/brand/productType display template to be the corrisponding content nodes
 	}
+	
+	
 }

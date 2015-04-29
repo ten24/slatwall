@@ -46,5 +46,4 @@
 	Notes:
 	
 --->
-
 <cfoutput >#rc.templateBody#</cfoutput>
