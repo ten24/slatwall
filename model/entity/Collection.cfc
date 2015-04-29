@@ -641,7 +641,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
-		//try{
+		try{
 			
 			if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
 				saveState();
@@ -675,10 +675,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
 			}
-		/*}
+		}
 		catch(any e){
 			variables.pageRecords = [{'failedCollection'='failedCollection'}];
-		}*/
+		}
 		
 		return variables.pageRecords;
 	}
@@ -699,7 +699,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public array function getRecords(boolean refresh=false) {
-		//try{
+		try{
 			if( !structKeyExists(variables, "records") || arguments.refresh == true) {
 				if(this.getNonPersistentColumn()){
 					variables.records = [];
@@ -723,10 +723,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 				}
 			}
-//		}
-//		catch(any e){
-//			variables.records = [{'failedCollection'='failedCollection'}];
-//		}
+		}
+		catch(any e){
+			variables.records = [{'failedCollection'='failedCollection'}];
+		}
 		
 		return variables.records;
 	}
