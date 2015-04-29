@@ -145,11 +145,11 @@ Notes:
 
 			<!--- CREATE SUPER USER --->
 			<cfelse>
-				<sw-admin-create-super-user
+				<!---<sw-admin-create-super-user
 				>
-				</sw-admin-create-super-user>
+				</sw-admin-create-super-user>--->
 				<!---begin angular login form --->
-				<!---<h2>Create Super Administrator Account</h2>
+				<h2>Create Super Administrator Account</h2>
 				<br />
 				<form id="adminCreateSuperUserForm" action="?s=1" class="form-horizontal" method="post" style="display:inline-block;width:100%;">
 					<input type="hidden" name="slatAction" value="admin:main.setupinitialadmin" />
@@ -165,7 +165,7 @@ Notes:
 					<hb:HibachiPropertyDisplay object="#processObject#" property="passwordConfirm" edit="true" />
 					<button type="submit" class="btn btn-sm s-btn-ten24 pull-right">Create & Login</button>
 
-				</form>--->
+				</form>
 				
 			</cfif>
 		</div>
