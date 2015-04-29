@@ -102,7 +102,10 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 	
 	// @hint helper function to return the details of a setting
-	public any function getSettingValue(required any settingName, array filterEntities=[]) {
+	public any function getSettingValue(any settingName, array filterEntities=[]) {
+		if(isNull(arguments.settingName)){
+			arguments.settingName = this.getSettingName();
+		}
 		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
 	}
 	

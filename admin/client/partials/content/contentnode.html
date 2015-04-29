@@ -1,0 +1,18 @@
+<td ng-click="getChildContent(contentData)">
+	<i style="margin-left:{{depth*15||0}}px" class="fa fa-caret-{{child ? 'down' : 'right' }}" ng-bind="contentData.fullTitle || contentData.title"></i>
+</td>
+<td ng-bind="contentData.site_siteName"></td>
+<td ng-bind="contentData.contentTemplateFile"></td>
+<td ng-bind="contentData.allowPurchaseFlag"></td>
+<td ng-bind="contentData.productListingPageFlag"></td>
+<td ng-bind="contentData.activeFlag"></td>
+
+<!--<td><i class="fa fa-caret-right"></i></td>-->
+
+<!--<td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="contentData[column.propertyIdentifier.substring(column.propertyIdentifier.indexOf('.')+1,column.propertyIdentifier.length).replace('.','_')]" ng-show="column.isVisible"></td>-->
+   
+    <td class="s-edit-elements">
+  <ul class="list-unstyled list-inline">
+    <li ng-if="contentData.contentID"><a href="?slatAction=entity.detailContent&contentID={{contentData.contentID}}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-eye-open"></i></a></li>
+  </ul>
+</td>

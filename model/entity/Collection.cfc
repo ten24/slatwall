@@ -689,17 +689,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public any function getSettingValueFormattedByPropertyIdentifier(required string propertyIdentifier, required any entity){
 		if(listLen(arguments.propertyIdentifier) == 1){
-			return entity.getSettingValueFormatted(arguments.propertyIdentifier);
+			return entity.getSettingValue(arguments.propertyIdentifier);
 		}else{
 			var settingName = listLast(arguments.propertyIdentifier);
 			var arguments.propertyIdentifier = listDeleteAt(arguments.propertyIdentifier,listLen(arguments.propertyIdentifier));
 			var relatedObject = entity.getValueByPropertyIdentifier(arguments.propertyIdentifier);
-			return relatedObject.getSettingValueFormatted(settingName);
+			return relatedObject.getSettingValue(settingName);
 		}
 	}
 	
 	public array function getRecords(boolean refresh=false) {
-		//try{
+		try{
 			if( !structKeyExists(variables, "records") || arguments.refresh == true) {
 				if(this.getNonPersistentColumn()){
 					variables.records = [];
@@ -723,10 +723,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 				}
 			}
-//		}
-//		catch(any e){
-//			variables.records = [{'failedCollection'='failedCollection'}];
-//		}
+		}
+		catch(any e){
+			variables.records = [{'failedCollection'='failedCollection'}];
+		}
 		
 		return variables.records;
 	}

@@ -157,7 +157,28 @@
 			
 			return arguments.data;
 		}
-		
+		//evaluate double brackets ${{}}
+		public string function replaceStringEvaluateTemplate(required string template){
+			var templateKeys = reMatchNoCase("\${{[^}]+}}",arguments.template);
+			var replacementArray = [];
+			var returnString = arguments.template;
+			
+			for(var i=1; i<=arrayLen(templateKeys); i++) {
+				var replaceDetails = {};
+				replaceDetails.key = templateKeys[i];
+				replaceDetails.value = templateKeys[i];
+				
+				var valueKey = replace(replace(templateKeys[i], "${{", ""),"}}","");
+				replaceDetails.value = evaluate(valueKey);
+				arrayAppend(replacementArray, replaceDetails);
+			}
+			
+			for(var i=1; i<=arrayLen(replacementArray); i++) {
+				returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
+			}
+			return returnString;
+		}
+		//replace single brackets ${}
 		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
 			var templateKeys = reMatchNoCase("\${[^}]+}",arguments.template);
 			var replacementArray = [];
