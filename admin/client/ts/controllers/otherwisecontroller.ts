@@ -5,7 +5,5 @@ angular.module('slatwalladmin').controller('otherwiseController', [
 		$scope
 	){
 		$scope.$id="otherwiseController";
-        console.log('otherwise');
-        console.log($scope);
 	}
 ]);
