@@ -72,10 +72,10 @@ component {
 	}
 	
 	function runRequestActions() {
-		if (!structKeyExists(application, "slatwallFW1Application")) {
-			application.slatwallFW1Application = createObject("component", "Slatwall.Application");
-		}
-		application.slatwallFW1Application.bootstrap();
+//		if (!structKeyExists(application, "slatwallFW1Application")) {
+//			application.slatwallFW1Application = createObject("component", "Slatwall.Application");
+//		}
+//		application.slatwallFW1Application.bootstrap();
 		
 		if(structKeyExists(form, "slatAction")) {
 			for(var action in listToArray(form.slatAction)) {

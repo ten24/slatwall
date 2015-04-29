@@ -63,7 +63,7 @@ component {
 					if(directoryExists(sitePath)) {
 						
 						var slatwallCMSApplication = getSlatwallCMSApplication(site);
-						//declareTemplatePath
+						slatwallCMSApplication.runRequestActions();
 						slatwallCMSApplication.generateRenderedContent(argumentCollection=arguments);
 					}else{
 						throw('site directory does not exist for ' & site.getSiteName());
