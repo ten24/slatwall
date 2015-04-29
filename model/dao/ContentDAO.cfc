@@ -98,4 +98,9 @@ Notes:
 		</cfquery>
 	</cffunction>
 	
+	<cffunction name="getDefaultContentBySite" access="public">
+		<cfargument name="site" type="any" required="true">
+		<cfreturn ORMExecuteQuery('FROM SlatwallContent Where site = :site AND parentContent IS NULL',{site=arguments.site},true)>
+	</cffunction>
+	
 </cfcomponent>

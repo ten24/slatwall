@@ -97,21 +97,7 @@ component {
 	function generateRenderedContent() {
 		var site = arguments.slatwallScope.getSite();
 		var templatePath = site.getApp().getAppRootPath() & '/' & site.getSiteID() & '/templates/';
-		if(!isNull(arguments.contentURL)){
-			
-			//now that we have the site directory, we should see if we can retrieve the content via the urltitle and site
-			var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitle(site.getSiteID(),arguments.contentURL);
-			if(isNull(content)){
-				throw('content does not exists for #arguments.contentURL#');
-			}
-			//now that we have the content, get the file name so that we can retrieve it form the site's template directory
-			var contentTemplateFile = content.Setting('contentTemplateFile');
-			
-			//templatePath relative to the slatwallCMS
-			request.context['contentPath'] = templatePath & contentTemplateFile;
-			arguments.slatwallScope.setContent(content);
-			
-		}else if(!isNull(arguments.entityURL)){
+		if(!isNull(arguments.entityURL)){
 			var isBrandURLKey = arguments.slatwallScope.setting('globalURLKeyBrand') == arguments.entityURL;
 			var isProductURLKey = arguments.slatwallScope.setting('globalURLKeyProduct') == arguments.entityURL;
 			var isProductTypeURLKey = arguments.slatwallScope.setting('globalURLKeyProductType') == arguments.entityURL;
@@ -154,6 +140,24 @@ component {
 			}else{
 				throw('no content for entity');
 			}
+		}else{
+			if(!isNull(arguments.contentURL)){
+			
+				//now that we have the site directory, we should see if we can retrieve the content via the urltitle and site
+				var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitle(site.getSiteID(),arguments.contentURL);
+			}else{
+				var content = arguments.slatwallScope.getService('contentService').getDefaultContentBySite(site);
+			}
+			
+			if(isNull(content)){
+				throw('content does not exists for #arguments.contentURL#');
+			}
+			//now that we have the content, get the file name so that we can retrieve it form the site's template directory
+			var contentTemplateFile = content.Setting('contentTemplateFile');
+			
+			//templatePath relative to the slatwallCMS
+			request.context['contentPath'] = templatePath & contentTemplateFile;
+			arguments.slatwallScope.setContent(content);
 		}
 	}
 }

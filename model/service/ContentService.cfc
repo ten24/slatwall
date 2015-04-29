@@ -95,6 +95,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 	
+	public any function getDefaultContentBySIte(required any site){
+		return getContentDAO().getDefaultContentBySIte(arguments.site);
+	}
+	
 	public any function getCategoriesByCmsCategoryIDs(required any cmsCategoryIDs) {
 		return getContentDAO().getCategoriesByCmsCategoryIDs(arguments.cmsCategoryIDs);
 	}
