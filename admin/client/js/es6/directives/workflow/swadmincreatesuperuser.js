@@ -4,6 +4,10 @@ angular.module('slatwalladmin').directive('swAdminCreateSuperUser', ['$log', '$s
     restrict: 'E',
     scope: {},
     templateUrl: partialsPath + "admincreatesuperuser.html",
-    link: function(scope, element, attrs) {}
+    link: function(scope, element, attrs) {
+      scope.Account_SetupInitialAdmin = $slatwall.newAccount_SetupInitialAdmin();
+      console.log('account added');
+      console.log(scope.Account_SetupInitialAdmin);
+    }
   };
 }]);

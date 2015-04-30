@@ -8,6 +8,12 @@ angular.module("slatwalladmin").directive("swDetail", ["$location", "$log", "$sl
 			scope.$id = "slatwallDetailController";
 			$log.debug("slatwallDetailController");
 
+			/*Sets the view dirty on save*/
+			scope.setDirty = function (entity) {
+				angular.forEach(entity.forms, function (form) {
+					form.$setSubmitted();
+				});
+			};
 			var setupMetaData = function () {
 				scope[scope.entityName.toLowerCase()] = scope.entity;
 				scope.detailTabs = scope.entity.metaData.$$getDetailTabs();
@@ -16,7 +22,6 @@ angular.module("slatwalladmin").directive("swDetail", ["$location", "$log", "$sl
 			};
 
 			var propertyCasedEntityName = scope.entityName.charAt(0).toUpperCase() + scope.entityName.slice(1);
-
 
 			scope.tabPartialPath = partialsPath + "entity/";
 
@@ -33,15 +38,12 @@ angular.module("slatwalladmin").directive("swDetail", ["$location", "$log", "$sl
 				}
 			};
 			scope.getEntity();
-
 			scope.deleteEntity = function () {
 				var deletePromise = scope.entity.$$delete();
 				deletePromise.then(function () {
 					$location.path("/entity/" + propertyCasedEntityName + "/");
 				});
 			};
-
-
 			scope.allTabsOpen = false;
 		}
 	};

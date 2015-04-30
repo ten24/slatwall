@@ -55,7 +55,9 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="title" ormtype="string";
 	property name="allowPurchaseFlag" ormtype="boolean";
 	property name="productListingPageFlag" ormtype="boolean";
-	
+	property name="urlTitle" ormtype="string";
+	property name="contentBody" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
+
 	// CMS Properties
 	property name="cmsContentID" ormtype="string" index="RI_CMSCONTENTID";
 	
@@ -63,6 +65,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
 	property name="parentContent" cfc="Content" fieldtype="many-to-one" fkcolumn="parentContentID";
 	property name="contentTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="contentTemplateTypeID" hb_optionsNullRBKey="define.none" hb_optionsSmartListData="f:parentType.systemCode=contentTemplateType" fetch="join";
+	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="contentID" inverse="true" cascade="all-delete-orphan";
 	
 	// Related Object Properties (one-to-many)
 	property name="childContents" singularname="childContent" cfc="Content" type="array" fieldtype="one-to-many" fkcolumn="parentContentID" cascade="all-delete-orphan" inverse="true";
@@ -85,6 +88,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	// Non Persistent
 	property name="categoryIDList" persistent="false";
+	property name="fullTitle" persistent="false";
 	
 	// Deprecated Properties
 	property name="disableProductAssignmentFlag" ormtype="boolean";			// no longer needed because the listingPageFlag is defined for all objects
@@ -95,6 +99,29 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
+	public string function getFullTitle(){
+		var titleArray = [getTitle()];
+		if(!isNull(getParentContent())){
+			titleArray = getParentTitle(getParentContent(),titleArray);
+		}
+		var fullTitle = '';
+		for(var i = arraylen(titleArray); i > 0; i--){
+			fullTitle &= titleArray[i];
+			if(i != 1){
+				fullTitle &= ' > ';
+			}
+		}
+		return fullTitle;
+	}
+	
+	private array function getParentTitle(required any content, required array titleArray){
+		ArrayAppend(arguments.titleArray,arguments.content.getTitle());
+		if(!isNull(arguments.content.getParentContent())){
+			arguments.titleArray = getParentTitle(arguments.content.getParentContent(),arguments.titleArray);
+		}
+		return arguments.titleArray;
+	}
+		
 	public string function getCategoryIDList() {
 		if(!structKeyExists(variables, "categoryIDList")) {
 			variables.categoryIDList = "";

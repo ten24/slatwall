@@ -51,11 +51,13 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	// Persistent Properties
 	property name="siteID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="siteName" ormtype="string";
-	
+	property name="siteCode" ormtype="string" unique="true" index="PI_SITECODE";
+	property name="domainNames" ormtype="string";
 	// CMS Properties
 	property name="cmsSiteID" ormtype="string" index="RI_CMSSITEID";
 	
 	// Related Object Properties (many-to-one)
+	property name="app" hb_populateEnabled="public" cfc="App" fieldtype="many-to-one" fkcolumn="appID";
 	
 	// Related Object Properties (one-to-many)
 	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="one-to-many" fkcolumn="siteID" cascade="all" inverse="true" lazy="extra";

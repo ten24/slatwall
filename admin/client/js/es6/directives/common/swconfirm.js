@@ -1,18 +1,5 @@
 "use strict";
-angular.module('slatwalladmin').directive('swConfirm', ['$slatwall', '$log', '$compile', '$modal', function($slatwall, $log, $compile, $modal) {
-  var confirmationModalController = function($scope, $modalInstance) {
-    $scope.deleteEntity = function(entity) {
-      $log.debug("Deleting an entity.");
-      $log.debug($scope.entity);
-      this.close();
-    };
-    $scope.close = function() {
-      $modalInstance.close();
-    };
-    $scope.cancel = function() {
-      $modalInstance.dismiss('cancel');
-    };
-  };
+angular.module('slatwalladmin').directive('swConfirm', ['$slatwall', '$log', '$compile', '$modal', 'partialsPath', function($slatwall, $log, $compile, $modal, partialsPath) {
   var buildConfirmationModal = function(simple, useRbKey, confirmText, messageText, noText, yesText, callback) {
     var confirmKey = "[confirm]";
     var messageKey = "[message]";
@@ -33,7 +20,6 @@ angular.module('slatwalladmin').directive('swConfirm', ['$slatwall', '$log', '$c
     var parsedKeyString = "";
     var finishedString = "";
     var templateString = "<div>" + "<div class='modal-header'><a class='close' data-dismiss='modal' ng-click='cancel()'>×</a><h3 [confirm]><confirm></h3></div>" + "<div class='modal-body' [message]>" + "<message>" + "</div>" + "<div class='modal-footer'>" + "<button class='btn btn-sm btn-default btn-inverse' ng-click='cancel()' [no]><no></button>" + "<button class='btn btn-sm btn-default btn-primary' ng-click='[callback]' [yes]><yes></button></div></div></div>";
-    $log.debug(templateString);
     if (useRbKey === "true") {
       $log.debug("Using RbKey? " + useRbKey);
       confirmText = swRbKey + startTag + confirmText + endTag;
@@ -60,6 +46,8 @@ angular.module('slatwalladmin').directive('swConfirm', ['$slatwall', '$log', '$c
       entity: "="
     },
     link: function(scope, element, attr) {
+      $log.debug("Modal is: ");
+      $log.debug($modal);
       element.bind('click', function() {
         var useRbKey = attr.useRbKey || "false";
         var simple = attr.simple || false;
@@ -71,16 +59,13 @@ angular.module('slatwalladmin').directive('swConfirm', ['$slatwall', '$log', '$c
         var templateString = buildConfirmationModal(simple, useRbKey, confirmText, messageText, noText, yesText, callback);
         var modalInstance = $modal.open({
           template: templateString,
-          controller: confirmationModalController
+          controller: 'confirmationController'
         });
-        modalInstance.result.then(function(test) {
-          $log.debug("Callback Called");
+        modalInstance.result.then(function(result) {
+          $log.debug("Result:" + result);
           scope.callback();
-          $log.debug(scope.callback);
           return true;
-        }, function() {
-          $log.debug("Dismissed");
-        });
+        }, function() {});
       });
     }
   };
