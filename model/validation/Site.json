@@ -1,5 +1,7 @@
 {
 	"properties":{
-		"contents":				[{"contexts":"delete","maxCollection":0}]
+		"siteID":				[{"contexts":"save","required":true}],
+		"contents":				[{"contexts":"delete","maxCollection":0}],
+		"app":				[{"contexts":"save","required":true}]
 	}
 }

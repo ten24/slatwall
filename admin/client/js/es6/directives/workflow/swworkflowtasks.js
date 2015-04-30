@@ -39,7 +39,6 @@ angular.module('slatwalladmin').directive('swWorkflowTasks', ['$log', '$location
         }
       };
       scope.addWorkflowTask = function() {
-        logger('addWorkflowTasks', "Calling $$addWorkflowTask");
         var newWorkflowTask = scope.workflow.$$addWorkflowTask();
         logger("var newWorkflowTask", newWorkflowTask);
         scope.selectWorkflowTask(newWorkflowTask);

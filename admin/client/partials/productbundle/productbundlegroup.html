@@ -142,16 +142,16 @@
 						<!-- Search for product -->
 						<div class="row s-bundle-group-items">
 							<div class="col-xs-12 s-title">
-								<h4>
-									<button type="button" ng-click="openCloseAndRefresh() " class="pull-right s-button-no-style">
-										Selections 
-										<span ng-show="!showAdvanced">
-											(Advanced)<!--Advanced should change to "Basic" when the basic seciton is displayed-->
-										</span> 
+								<h4 class="s-clear-fix">
+									Bundle Items
+									<button type="button" ng-click="openCloseAndRefresh() " class="pull-right s-button-no-style"> 
+										<span ng-show="!showAdvanced">Advanced</span> 
+										<span ng-show="showAdvanced">Basic</span> 
+										View
 									</button>  
 								</h4>
 							</div>
-							<span ng-show="!showAdvanced">
+							<div ng-show="!showAdvanced">
 								<div class="col-xs-12 col-md-6 s-selected-items">
 									<!-- Selected filters -->
 									<div class="s-bundle-add-items s-workflow-objs">
@@ -273,14 +273,14 @@
 									<!-- //Options items -->
 									<div class="clearfix"></div>
 								</div>
-							</span>
-							<span ng-show="showAdvanced">
+							</div>
+							<div ng-show="showAdvanced" class="col-md-12">
 								<div class="s-setting-options">
 									<div class="row s-setting-options-body">
-										<!--- Start Filter Group --->
+										<!-- Start Filter Group -->
 										<div class="col-xs-12 s-filters-selected">
 											<div class="row">
-												<!---filterGroups gets taken apart here --->
+												<!--filterGroups gets taken apart here -->
 												<ul class="col-xs-12 list-unstyled"
 													ng-if="productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup"
 													sw-filter-groups
@@ -292,9 +292,9 @@
 													>
 												</ul>
 											</div>
-											<!--- //New Filter Panel --->
+											<!-- //New Filter Panel -->
 										</div>
-										<!--- //End Filter Group --->
+										<!-- //End Filter Group -->
 									</div>
 								</div>
 								<sw-collection-table
@@ -303,7 +303,7 @@
 									ng-if="collection"
 									>
 								</sw-collection-table>
-							</span>
+							</div>
 						</div>
 						<!-- //Search for product -->
 						<br/>

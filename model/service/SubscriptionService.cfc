@@ -494,7 +494,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							// Look for 'auto' order fulfillments
 							getOrderService().createOrderDeliveryForAutoFulfillmentMethod(order.getOrderFulfillments()[1]);
 						}else{
-							arguments.subscriptionUsage.addError('runPlaceOrderTransaction', orderPayment.getErrors().runPlaceOrderTransaction);
+							if(structKeyExists(orderPayment.getErrors(),'runPlaceOrderTransaction')){
+								arguments.subscriptionUsage.addError('runPlaceOrderTransaction', orderPayment.getErrors().runPlaceOrderTransaction);
+							}
 						}
 					}
 				}

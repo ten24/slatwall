@@ -394,7 +394,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			setupOrderItemQualifiedDiscounts(arguments.order, orderItemQualifiedDiscounts);
 			
 			// Loop over all Potential Discounts that require qualifications
-			var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true);
+			var promotionRewards = getPromotionDAO().getActivePromotionRewards(rewardTypeList="merchandise,subscription,contentAccess,order,fulfillment", promotionCodeList=arguments.order.getPromotionCodeList(), qualificationRequired=true, promotionEffectiveDateTime=promotionEffectiveDateTime);
 			var orderRewards = false;
 			for(var pr=1; pr<=arrayLen(promotionRewards); pr++) {
 				var reward = promotionRewards[pr];

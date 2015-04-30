@@ -118,4 +118,4 @@ gulp.task('watch', function() {
     //gulp.watch([propertiesPath],['properties2json']);
 });
 
-gulp.task('default', ['compress', 'properties2json', 'watch']);
+gulp.task('default', ['compress', 'watch']);

@@ -1,0 +1,23 @@
+
+<div class="col-md-6 s-header-left" >
+	<div class="s-header-detail">
+		<dl class="dl-horizontal" ng-if="site">
+			<sw-property-display
+					data-object="site"
+					data-property="siteName"
+					data-editing="true"
+					data-editable="true"
+			> 
+			</sw-property-display>
+			<sw-property-display
+					data-object="site"
+					data-eager-load-options="true"
+					data-property="siteCode"
+					data-editing="true"
+					data-editable="!site.$$isPersisted()"
+			>
+			</sw-property-display>
+		</dl>
+	</div>
+</div>
+

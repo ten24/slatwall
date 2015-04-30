@@ -384,7 +384,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	private string function getFilterGroupHQL(required array filterGroup){
 		var filterGroupHQL = '';
-		for(filter in arguments.filterGroup){
+		for(var filter in arguments.filterGroup){
 			//add property and value to HQLParams
 			//if using a like parameter we need to add % to the value using angular
 			var logicalOperator = '';
@@ -430,7 +430,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	private string function getFilterGroupsHQL(required array filterGroups){
 		var filterGroupsHQL = '';
-		for(filterGroup in arguments.FilterGroups){
+		for(var filterGroup in arguments.FilterGroups){
 			var logicalOperator = '';
 			
 			if(structKeyExists(filterGroup,'logicalOperator')){
@@ -689,17 +689,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public any function getSettingValueFormattedByPropertyIdentifier(required string propertyIdentifier, required any entity){
 		if(listLen(arguments.propertyIdentifier) == 1){
-			return entity.getSettingValueFormatted(arguments.propertyIdentifier);
+			return entity.getSettingValue(arguments.propertyIdentifier);
 		}else{
 			var settingName = listLast(arguments.propertyIdentifier);
 			var arguments.propertyIdentifier = listDeleteAt(arguments.propertyIdentifier,listLen(arguments.propertyIdentifier));
 			var relatedObject = entity.getValueByPropertyIdentifier(arguments.propertyIdentifier);
-			return relatedObject.getSettingValueFormatted(settingName);
+			return relatedObject.getSettingValue(settingName);
 		}
 	}
 	
 	public array function getRecords(boolean refresh=false) {
-		//try{
+		try{
 			if( !structKeyExists(variables, "records") || arguments.refresh == true) {
 				if(this.getNonPersistentColumn()){
 					variables.records = [];
@@ -723,10 +723,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 				}
 			}
-//		}
-//		catch(any e){
-//			variables.records = [{'failedCollection'='failedCollection'}];
-//		}
+		}
+		catch(any e){
+			variables.records = [{'failedCollection'='failedCollection'}];
+		}
 		
 		return variables.records;
 	}
@@ -1025,8 +1025,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						//use keywords to create some post filters
 						
 						if(structKeyExists(column,'ormtype') 
-						&& column.ormtype neq 'boolean' 
-						&& column.ormtype neq 'timestamp'
+							&& column.ormtype neq 'boolean' 
+							&& column.ormtype neq 'timestamp'
 						
 						){
 						

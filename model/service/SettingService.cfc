@@ -139,6 +139,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentHTMLTitleString = {fieldType="text"},
 			contentMetaDescriptionString = {fieldType="textarea"},
 			contentMetaKeywordsString = {fieldType="textarea"},
+			contentTemplateFile = {fieldType="select",defaultValue="default.cfm"},
 			
 			// Email
 			emailFromAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
@@ -297,6 +298,11 @@ component extends="HibachiService" output="false" accessors="true" {
 	
 	public array function getSettingOptions(required string settingName, any settingObject) {
 		switch(arguments.settingName) {
+			case "contentTemplateFile":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getService('contentService').getCMSTemplateOptions(arguments.settingObject.getContent());
+				}
+				return [];
 			case "accountPaymentTerm" :
 				var optionSL = getPaymentService().getPaymentTermSmartList();
 				optionSL.addFilter('activeFlag', 1);
@@ -307,6 +313,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				if(structKeyExists(arguments, "settingObject")) {
 					return getContentService().getDisplayTemplateOptions( "Brand", arguments.settingObject.getSite().getSiteID() );	
 				}
+				return getContentService().getDisplayTemplateOptions( "brand" );
+			case "contentFileTemplate":
 				return getContentService().getDisplayTemplateOptions( "brand" );
 			case "productDisplayTemplate":
 				if(structKeyExists(arguments, "settingObject")) {
@@ -384,6 +392,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getEmailService().getEmailTemplateOptions( "Task" );
 			case "taskSuccessEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "Task" );
+			
 		}
 		
 		if(structKeyExists(getSettingMetaData(arguments.settingName), "valueOptions")) {

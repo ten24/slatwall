@@ -50,14 +50,13 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function setUp() {
 		super.setup();
-		
-		variables.service = request.slatwallScope.getBean("orderService");
+		variables.service = request.slatwallScope.getService("orderService");
 		
 	}
 	
-	//public void function processOrder_addOrderItem_addtocart
+	
 	//test is incomplete as it bypasses the currencyconverions,promotion, and tax intergration update amounts code
-	/*public void function processOrder_addOrderItem_addProductBundle(){
+	public void function processOrder_addAndRemoveOrderItem_addOrderItems(){
 		//set up data
 		
 		//set up productBundle
@@ -73,7 +72,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					skuid="",
 					price=1,
 					activeflag=1,
-					skuCode = 'productBundle-1',
+					skuCode = 'productBundle-1ABCDDdd' & RandRange(1, 1000),
 					productBundleGroups=[
 						{
 							productBundleGroupid:""
@@ -92,7 +91,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var product = createPersistedTestEntity('product',productData);
 		
 		var productData2 = {
-			productName="childSku1",
+			productName="childSku111",
 			productid="",
 			activeflag=1,
 			price=1,
@@ -103,7 +102,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					skuid="",
 					price=1,
 					activeflag=1,
-					skuCode = 'childsku-1'
+					skuCode = 'childsku-11' & RandRange(1, 1000)
 				}
 			],
 			//product Bundle type from SlatwallProductType.xml
@@ -129,74 +128,52 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			]
 		};	
 		var order = createPersistedTestEntity('Order',orderData);
-		
 		//var orderFulfillmentData = variables.service.getOrderFulfillment();
 		
 		//add orderfulfillment
 		var processObjectData = {
-			quantity=66,
+			quantity=1,
 			price=1,
 			skuid=product.getSkus()[1].getSkuID(),
-			childOrderItems=[
-				{
-					currencycode="USD",
-					sku={
-						skuid=product2.getSkus()[1].getSkuID()
-					},
-					
-					quantity = 3,
-
-					productBundleGroup={
-						productBundleGroupID = product.getSkus()[1].getProductBundleGroups()[1].getProductBundleGroupID() // bundleGroupID that skuID '111' above belongs to
-					
-					},
-					childOrderItems=[
-						{
-							currencycode="USD",
-							sku={
-								skuid=product2.getSkus()[1].getSkuID()
-							},
-							
-							quantity = 2,
-		
-							productBundleGroup={
-								productBundleGroupID = product.getSkus()[1].getProductBundleGroups()[1].getProductBundleGroupID() // bundleGroupID that skuID '111' above belongs to
-							
-							},
-							childOrderItems=[
-								{
-									currencycode="USD",
-									sku={
-										skuid=product2.getSkus()[1].getSkuID()
-									},
-									
-									quantity = 5,
-				
-									productBundleGroup={
-										productBundleGroupID = product.getSkus()[1].getProductBundleGroups()[1].getProductBundleGroupID() // bundleGroupID that skuID '111' above belongs to
-									
-									}
-								}
-							]
-						}
-					]
-					
-				}
-			],
+			orderfulfillmentid=order.getOrderFulfillments()[1].getOrderfulfillmentid()
+		};
+		//Second orderitem
+		//add orderfulfillment
+		var processObjectDataTwo = {
+			quantity=1,
+			price=1,
+			skuid=product2.getSkus()[1].getSkuID(),
 			orderfulfillmentid=order.getOrderFulfillments()[1].getOrderfulfillmentid()
 		};
 		
 		var processObject = order.getProcessObject('AddOrderItem',processObjectData);
+		var processObjectTwo = order.getProcessObject('AddOrderItem',processObjectDataTwo);
+		//Check that the items were added.
+		var orderReturn = variables.service.processOrder_addOrderItem(order, processObject);
+		orderReturn = variables.service.processOrder_addOrderItem(order, processObjectTwo);
+		var orderItemsAdded = orderReturn.getOrderItems();
+		//assertEquals("This will fail", orderItemsAdded[1].getOrderItemID());
+		assertEquals(2, arraylen(orderItemsAdded));//This works because we have two order items.
 		
-		var orderReturn = variables.service.processOrder_addOrderItem(order,processObject);
-		//request.debug(arraylen(orderReturn.getOrderItems()));
-		//request.debug(orderReturn.getOrderItems()[1].getQuantity());
+		
+		//Get the orderItem ID of the added item and use it to remove an item.
+		var orderItemsToRemove = {
+			orderItemID = "#orderItemsAdded[1].getOrderItemID()#"
+		};
+		var id = orderItemsAdded[1].getOrderItemID();
+		var id2 = orderItemsAdded[2].getOrderItemID();
+		request.debug(ArrayLen(order.getOrderItems()));
+		//assertEquals("123", id2);//This should fail and it does.
+		//variables.service.processOrder_removeOrderItem(order, {orderItemID="#id#"});
+		
+		variables.service.processOrder_removeOrderItem(order, {orderItemIDList="#id#,#id2#"});//Removes multiple
+		request.debug(ArrayLen(order.getOrderItems()));
 		//request.debug(arraylen(orderReturn.getOrderItems()[1].getChildOrderItems()));
 		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getQuantity());
 		//request.debug(orderReturn.getOrderID());
 		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
 		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
-	} */
+	} 
 	
 	
 }

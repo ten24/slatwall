@@ -16,6 +16,6 @@ angular.module('slatwalladmin').directive(
 								+ "workflowbasic.html",
 						link : function(scope, element, attrs) {
 						}
-					};
+					}; 
 } ]);
 	

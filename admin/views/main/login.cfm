@@ -55,7 +55,7 @@ Notes:
 <cfoutput>
 	<div class="s-login">
 		<hb:HibachiMessageDisplay />
-
+		<!---<cfset rc.accountAuthenticationExists = false>--->
 		<div class="well tabable s-login-box">
 
 			<!--- RESET PASSWORD FROM FORGOT PASSWORD EMAIL --->
@@ -145,6 +145,10 @@ Notes:
 
 			<!--- CREATE SUPER USER --->
 			<cfelse>
+				<!---<sw-admin-create-super-user
+				>
+				</sw-admin-create-super-user>--->
+				<!---begin angular login form --->
 				<h2>Create Super Administrator Account</h2>
 				<br />
 				<form id="adminCreateSuperUserForm" action="?s=1" class="form-horizontal" method="post" style="display:inline-block;width:100%;">
@@ -162,6 +166,7 @@ Notes:
 					<button type="submit" class="btn btn-sm s-btn-ten24 pull-right">Create & Login</button>
 
 				</form>
+				
 			</cfif>
 		</div>
 	</div>
