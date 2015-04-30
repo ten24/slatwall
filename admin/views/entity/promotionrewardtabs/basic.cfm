@@ -17,7 +17,7 @@
 				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="roundingRule" edit="#rc.edit#" />
 			</hb:HibachiDisplayToggle>
 			<hb:HibachiDisplayToggle selector="select[name=amountType]" showValues="amountOff,amount" loadVisable="#listfind('amountOff,amount',rc.promotionReward.getValueByPropertyIdentifier('amountType')) neq 0#">
-				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="currency" fieldType="select" edit="#rc.edit#" />
+				<hb:HibachiPropertyDisplay object="#rc.promotionreward#" property="currencyCode" fieldType="select" edit="#rc.edit#" />
 			</hb:HibachiDisplayToggle>
 			<cfif listFindNoCase("merchandise,subscription,contentaccess", rc.rewardType)>
 				<cfif rc.rewardType eq "subscription">
