@@ -677,8 +677,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		catch(any e){
 			variables.pageRecords = [{'failedCollection'='failedCollection'}];
-			writelog(file="collection.log",text="Error:#e.message#");
-			writelog(file="collection.log",text="HQL:#HQL#");
+			writelog(file="collection",text="Error:#e.message#");
+			writelog(file="collection",text="HQL:#HQL#");
 		}
 		
 		return variables.pageRecords;
@@ -716,8 +716,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		catch(any e){
 			variables.records = [{'failedCollection'='failedCollection'}];
-			writelog(file="collection.log",text="Error:#e.message#");
-			writelog(file="collection.log",text="HQL:#HQL#");
+			writelog(file="collection",text="Error:#e.message#");
+			writelog(file="collection",text="HQL:#HQL#");
 		}
 		
 		return variables.records;
