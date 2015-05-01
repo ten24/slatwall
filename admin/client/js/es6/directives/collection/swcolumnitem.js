@@ -14,6 +14,25 @@ angular.module('slatwalladmin').directive('swColumnItem', ['$http', '$compile', 
     },
     templateUrl: collectionPartialsPath + "columnitem.html",
     link: function(scope, element, attrs, displayOptionsController) {
+      scope.editingDisplayTitle = false;
+      scope.editDisplayTitle = function() {
+        if (angular.isUndefined(scope.column.displayTitle)) {
+          scope.column.displayTitle = scope.column.title;
+        }
+        if (!scope.column.displayTitle.length) {
+          scope.column.displayTitle = scope.column.title;
+        }
+        scope.previousDisplayTitle = scope.column.displayTitle;
+        scope.editingDisplayTitle = true;
+      };
+      scope.saveDisplayTitle = function() {
+        var savePromise = scope.saveCollection();
+        scope.editingDisplayTitle = false;
+      };
+      scope.cancelDisplayTitle = function() {
+        scope.column.displayTitle = scope.previousDisplayTitle;
+        scope.editingDisplayTitle = false;
+      };
       $log.debug('displayOptionsController');
       if (angular.isUndefined(scope.column.sorting)) {
         scope.column.sorting = {
