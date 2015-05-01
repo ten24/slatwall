@@ -1,5 +1,5 @@
 "use strict";
-angular.module("slatwalladmin").directive("swCollectionTable", ["$http", "$compile", "$log", "collectionPartialsPath", "paginationService", function ($http, $compile, $log, collectionPartialsPath, paginationService) {
+angular.module("slatwalladmin").directive("swCollectionTable", ["$http", "$compile", "$log", "collectionPartialsPath", "paginationService", "$slatwall", function ($http, $compile, $log, collectionPartialsPath, paginationService, $slatwall) {
 	return {
 		restrict: "E",
 		templateUrl: collectionPartialsPath + "collectiontable.html",
@@ -30,6 +30,18 @@ angular.module("slatwalladmin").directive("swCollectionTable", ["$http", "$compi
 				_pageRecord.editLink = _editLink;
 			}
 
+			/*
+   Saves a table as a CSV file by passing the collection ID
+   */
+			scope.saveCSV = function () {
+				//pass the collection to the API
+				console.log(scope.collectionConfig);
+				var responsePromise = $slatwall.exportCollectionAsCSV(scope.collection.collectionID);
+				responsePromise.then(function (data) {
+					//Check the data:
+					console.log(data);
+				});
+			};
 			/* 
     * Handles setting the key on the data.
     * */

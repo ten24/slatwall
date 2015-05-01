@@ -94,6 +94,25 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		arguments.rc.apiResponse.content = {data=data};
 	}
 	
+	public any function exportCollectionAsCSV(required struct rc){
+			//Get the collection ID from the rc.
+			if (StructKeyExists(arguments.rc, "collectionID")){
+				//Have a collectionID
+				//now that we have a collectionID, we need to grab the collection config.
+				
+				//var response["collection"] = "This is a collection id:" & rc.collectionID;
+				//var response["config"] = rc;
+				//arguments.rc.apiResponse.content = response;	
+				
+			}
+			//Get that collection with all records.
+			//Format that collection as a regular query.
+			//Send that query to HibachiUtilityService.
+			//var qCollectionReport = getHibachiService().getVertexTaxQuery(startDatetime, endDatetime);
+			//getHibachiService().export(qTaxReport);
+			 
+	}
+	
 	public any function getExistingCollectionsByBaseEntity(required struct rc){
 		var currentPage = 1;
 			if(structKeyExists(arguments.rc,'P:Current')){
@@ -103,8 +122,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			if(structKeyExists(arguments.rc,'P:Show')){
 				pageShow = arguments.rc['P:Show'];
 			}
-			
-			
+	
 			var collectionOptions = {
 				allRecords=true,
 				defaultColumns=false
@@ -287,8 +305,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		//first check if we have an entityName value
 		if(!structKeyExists(arguments.rc, "entityName")) {
 			arguments.rc.apiResponse.content['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
-			arguments.rc.apiResponse.content['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");
-				
+			arguments.rc.apiResponse.content['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");	
 		} else {
 			//get entity service by entity name
 			var currentPage = 1;
