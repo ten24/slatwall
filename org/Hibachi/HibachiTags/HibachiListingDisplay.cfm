@@ -579,40 +579,38 @@
 			<cfset local.pageEnd = local.pageStart + local.pageCount />
 		</cfsilent>
 
-		<cfif attributes.smartList.getTotalPages() gt 1>
-			<div class="j-pagination" data-tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
-				<ul class="pagination">
-					<li><a href="##" class="paging-show-toggle">#attributes.hibachiScope.rbKey('define.show')# <span class="details">(#attributes.smartList.getPageRecordsStart()# - #attributes.smartList.getPageRecordsEnd()# #lcase(attributes.hibachiScope.rbKey('define.of'))# #attributes.smartList.getRecordsCount()#)</span></a></li>
-					<li><a href="##" class="show-option" data-show="10">10</a></li>
-					<li><a href="##" class="show-option" data-show="25">25</a></li>
-					<li><a href="##" class="show-option" data-show="50">50</a></li>
-					<li><a href="##" class="show-option" data-show="100">100</a></li>
-					<li><a href="##" class="show-option" data-show="500">500</a></li>
-					<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>
-				
-					<cfif attributes.smartList.getCurrentPage() gt 1>
-						<li><a href="##" class="listing-pager page-option prev" data-page="#attributes.smartList.getCurrentPage() - 1#">&laquo;</a></li>
-					<cfelse>
-						<li class="disabled"><a href="##" class="page-option prev">&laquo;</a></li>
-					</cfif>
-					<cfif attributes.smartList.getTotalPages() gt 6 and attributes.smartList.getCurrentPage() gt 3>
-						<li><a href="##" class="listing-pager page-option" data-page="1">1</a></li>
-						<li><a href="##" class="listing-pager page-option" data-page="#attributes.smartList.getCurrentPage()-3#">...</a></li>
-					</cfif>
-					<cfloop from="#local.pageStart#" to="#local.pageEnd#" index="i" step="1">
-						<li <cfif attributes.smartList.getCurrentPage() eq i>class="active"</cfif>><a href="##" class="listing-pager page-option" data-page="#i#">#i#</a></li>
-					</cfloop>
-					<cfif attributes.smartList.getTotalPages() gt 6 and attributes.smartList.getCurrentPage() lt attributes.smartList.getTotalPages() - 3>
-						<li><a href="##" class="listing-pager page-option" data-page="#attributes.smartList.getCurrentPage()+3#">...</a></li>
-						<li><a href="##" class="listing-pager page-option" data-page="#attributes.smartList.getTotalPages()#">#attributes.smartList.getTotalPages()#</a></li>
-					</cfif>
-					<cfif attributes.smartList.getCurrentPage() lt attributes.smartList.getTotalPages()>
-						<li><a href="##" class="listing-pager page-option next" data-page="#attributes.smartList.getCurrentPage() + 1#">&raquo;</a></li>
-					<cfelse>
-						<li class="disabled"><a href="##" class="page-option next">&raquo;</a></li>
-					</cfif>
-				</ul>
-			</div>
-		</cfif>
+		<div class="j-pagination" data-tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
+			<ul class="pagination paginationpages#attributes.smartList.getTotalPages()#">
+				<li><a href="##" class="paging-show-toggle">#attributes.hibachiScope.rbKey('define.show')# <span class="details">(#attributes.smartList.getPageRecordsStart()# - #attributes.smartList.getPageRecordsEnd()# #lcase(attributes.hibachiScope.rbKey('define.of'))# #attributes.smartList.getRecordsCount()#)</span></a></li>
+				<li><a href="##" class="show-option" data-show="10">10</a></li>
+				<li><a href="##" class="show-option" data-show="25">25</a></li>
+				<li><a href="##" class="show-option" data-show="50">50</a></li>
+				<li><a href="##" class="show-option" data-show="100">100</a></li>
+				<li><a href="##" class="show-option" data-show="500">500</a></li>
+				<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>
+			
+				<cfif attributes.smartList.getCurrentPage() gt 1>
+					<li><a href="##" class="listing-pager page-option prev" data-page="#attributes.smartList.getCurrentPage() - 1#">&laquo;</a></li>
+				<cfelse>
+					<li class="disabled"><a href="##" class="page-option prev">&laquo;</a></li>
+				</cfif>
+				<cfif attributes.smartList.getTotalPages() gt 6 and attributes.smartList.getCurrentPage() gt 3>
+					<li><a href="##" class="listing-pager page-option" data-page="1">1</a></li>
+					<li><a href="##" class="listing-pager page-option" data-page="#attributes.smartList.getCurrentPage()-3#">...</a></li>
+				</cfif>
+				<cfloop from="#local.pageStart#" to="#local.pageEnd#" index="i" step="1">
+					<li <cfif attributes.smartList.getCurrentPage() eq i>class="active"</cfif>><a href="##" class="listing-pager page-option" data-page="#i#">#i#</a></li>
+				</cfloop>
+				<cfif attributes.smartList.getTotalPages() gt 6 and attributes.smartList.getCurrentPage() lt attributes.smartList.getTotalPages() - 3>
+					<li><a href="##" class="listing-pager page-option" data-page="#attributes.smartList.getCurrentPage()+3#">...</a></li>
+					<li><a href="##" class="listing-pager page-option" data-page="#attributes.smartList.getTotalPages()#">#attributes.smartList.getTotalPages()#</a></li>
+				</cfif>
+				<cfif attributes.smartList.getCurrentPage() lt attributes.smartList.getTotalPages()>
+					<li><a href="##" class="listing-pager page-option next" data-page="#attributes.smartList.getCurrentPage() + 1#">&raquo;</a></li>
+				<cfelse>
+					<li class="disabled"><a href="##" class="page-option next">&raquo;</a></li>
+				</cfif>
+			</ul>
+		</div>
 	</cfoutput>
 </cfif>
