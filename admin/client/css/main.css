@@ -2185,7 +2185,6 @@ tabel .s-table-header {
   margin-right: 5px;
 }
 .s-j-draggablePanelList .s-pannel-name .s-pannel-title {
-  cursor: pointer;
   color: #666666;
   background: none;
 }
@@ -2242,12 +2241,19 @@ tabel .s-table-header {
   position: absolute;
   left: 53px;
   top: 0px;
-  width: 230px;
-  z-index: 3000;
+  width: 276px;
+  z-index: 1000;
   background-color: #f2f2f2;
   height: 40px;
   padding-left: 10px;
-  display: none;
+}
+.s-pannel-name .s-pannel-title-edit {
+  color: #428bca;
+  background: none !important;
+}
+.s-pannel-name .s-pannel-title-edit:hover {
+  color: #245682;
+  background: none !important;
 }
 .s-title-edit-menu .selectboxit-arrow-container {
   width: 20px;
@@ -4468,8 +4474,4 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 .depth10 {
   margin-left: 200px;
-}
-
-.paginationpages0, .paginationpages1 {
-  display:none;
 }
