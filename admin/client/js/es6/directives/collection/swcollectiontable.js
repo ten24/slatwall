@@ -26,13 +26,6 @@ angular.module('slatwalladmin').directive('swCollectionTable', ['$http', '$compi
         _pageRecord["detailLink"] = _detailLink;
         _pageRecord["editLink"] = _editLink;
       }
-      scope.saveCSV = function() {
-        console.log(scope.collectionConfig);
-        var responsePromise = $slatwall.exportCollectionAsCSV(scope.collection.collectionID);
-        responsePromise.then(function(data) {
-          console.log(data);
-        });
-      };
       angular.forEach(scope.collectionConfig.columns, function(column) {
         $log.debug("Config Key : " + column);
         column.key = column.propertyIdentifier.replace(/\./g, '_').replace(scope.collectionConfig.baseEntityAlias + '_', '');

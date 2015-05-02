@@ -263,15 +263,6 @@ Notes:
 					  				deferred.reject(reason);
 					  			});
 					  		},
-					  		exportCollectionAsCSV:function (collectionID) {
-					  			var deferred = $q.defer();
-					            return $http.get(_config.baseURL + '/index.cfm/?slatAction=api:main.exportCollectionAsCSV&collectionID=' + collectionID )
-					            .success(function(data){
-					  				deferred.resolve(data);
-					  			}).error(function(reason){
-					  				deferred.reject(reason);
-					  			});
-					  		},
 					  		getEventOptions:function(entityName){
 					  			var deferred = $q.defer();
 					  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getEventOptionsByEntityName&entityName='+entityName;
