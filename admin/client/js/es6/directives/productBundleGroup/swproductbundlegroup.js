@@ -16,7 +16,14 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', ['$http', '$lo
       scope.$id = 'productBundleGroup';
       $log.debug('productBundleGroup');
       $log.debug(scope.productBundleGroup);
+      scope.maxRecords = 10;
+      scope.recordsCount = 0;
+      scope.pageRecordsStart = 0;
+      scope.pageRecordsEnd = 0;
+      scope.showAll = false;
       scope.showAdvanced = false;
+      scope.currentPage = 1;
+      scope.pageShow = 10;
       scope.openCloseAndRefresh = function() {
         scope.showAdvanced = !scope.showAdvanced;
         $log.debug("OpenAndCloseAndRefresh");
@@ -107,8 +114,15 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', ['$http', '$lo
         }
         return false;
       }
+      scope.increaseCurrentCount = function() {
+        scope.currentPage++;
+      };
+      scope.resetCurrentCount = function() {
+        scope.currentPage = 1;
+      };
       scope.productBundleGroupFilters.getFiltersByTerm = function(keyword, filterTerm) {
         scope.loading = true;
+        scope.showAll = true;
         var _loadingCount;
         if (timeoutPromise) {
           $timeout.cancel(timeoutPromise);
@@ -123,11 +137,18 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', ['$http', '$lo
                 (function(keyword, option) {
                   $slatwall.getEntity(scope.searchOptions.options[i].value, {
                     keywords: keyword,
-                    deferKey: 'getProductBundleGroupFilterByTerm' + option.value
+                    deferKey: 'getProductBundleGroupFilterByTerm' + option.value,
+                    currentPage: scope.currentPage,
+                    pageShow: scope.pageShow
                   }).then(function(value) {
+                    $log.debug(value);
+                    $log.debug("Total: " + value.recordsCount);
+                    $log.debug("Records Start: " + value.pageRecordsStart);
+                    $log.debug("Records End: " + value.pageRecordsEnd);
                     var formattedProductBundleGroupFilters = productBundleService.formatProductBundleGroupFilters(value.pageRecords, option);
                     for (var j in formattedProductBundleGroupFilters) {
                       if (!arrayContains(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup, formattedProductBundleGroupFilters[j])) {
+                        $log.debug(scope.productBundleGroupFilters.value.length);
                         scope.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
                       }
                     }
@@ -135,23 +156,30 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', ['$http', '$lo
                     if (_loadingCount == 0) {
                       scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "type");
                       $log.debug(scope.productBundleGroupFilters.value);
-                      scope.loading = false;
                     }
+                    scope.loading = false;
                   });
                 })(keyword, option);
               }
             }
           } else {
+            scope.showAll = false;
             $slatwall.getEntity(filterTerm.value, {
               keywords: keyword,
-              deferKey: 'getProductBundleGroupFilterByTerm' + filterTerm.value
+              deferKey: 'getProductBundleGroupFilterByTerm' + filterTerm.value,
+              currentPage: scope.currentPage,
+              pageShow: scope.pageShow
             }).then(function(value) {
+              scope.recordsCount = value.recordsCount;
+              scope.pageRecordsStart = value.pageRecordsStart;
+              scope.pageRecordsEnd = value.pageRecordsEnd;
               $log.debug('getFiltersByTerm');
               $log.debug(value);
               scope.productBundleGroupFilters.value = productBundleService.formatProductBundleGroupFilters(value.pageRecords, filterTerm) || [];
               scope.loading = false;
               $log.debug('productBundleGroupFilters');
               $log.debug(scope.productBundleGroupFilters);
+              scope.loading = false;
             });
           }
         }, 500);
