@@ -80,7 +80,7 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/producttabs/basic" open="true" text="#$.slatwall.rbKey('admin.entity.producttabs.basic')#" />
 
 			<!--- TODO: We need to show "Bundle Groups" if this is a bundle product, and "Skus" if this is any other type of product --->
-			
+
 			<cfif rc.product.getBaseProductType() eq "productBundle">
 				<!--- Bundle Groups --->
 				<hb:HibachiEntityDetailItem view="admin:entity/producttabs/bundlegroups" text="#$.slatwall.rbKey('entity.productBundleGroup_plural')#" />
