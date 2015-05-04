@@ -1,6 +1,7 @@
 {
 	"properties":{
 		"locationConfigurationName":		[{"contexts":"save","required":true}],
-		"location":		[{"contexts":"save","required":true}]
+		"location":		[{"contexts":"save","required":true}],
+		"locationConfigurationCapacity": [{"contexts":"save","required":true,"minValue":1}]
 	}
 }
