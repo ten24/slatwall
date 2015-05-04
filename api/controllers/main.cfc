@@ -4,6 +4,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="collectionService" type="any";
 	property name="hibachiService" type="any";
 	property name="hibachiUtilityService" type="any";
+	property name="cryptoService" type="any";
 	
 	this.publicMethods='';
 	
@@ -30,15 +31,79 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public any function before( required struct rc ) {
 		arguments.rc.apiRequest = true;
 		getFW().setView("public:main.blank");
+		
+		var baseURL = "#CGI.query_string#";
+		//If someone is hitting the public API (scope), use API authentication to authenticate them.
+		if (findNoCase("scope", baseURL)){
+			//Make sure we are using HTTPS
+			//var isHttpsInUse = cgi.https;
+			//if (isHttpsInUse == "on"){
+			//}
+			var crypto = getService('cryptoService');
+			//Check if this request has a token. If not, throw a 215 error
+			if (StructKeyExists(arguments.rc, "serializedJsonData")){
+				var authData = deserializeJson(arguments.rc.serializedJsonData);
+			}else{
+				setAPIError("400", arguments.rc);
+			}
+			If (isNull(authData) 
+				|| !StructKeyExists(authData, "userid") 
+				|| !StructKeyExists(authData, "timestamp") 
+				|| !StructKeyExists(authData, "authentication_token") 
+				|| !StructKeyExists(authData, "signature")){
+				
+				setAPIError("215", arguments.rc);
+				//Should stop the request here.
+			}else{
+				//Means they sent the auth data, now lets check it.
+				var key = authData["authentication_token"];
+				var userid = authData["userid"];
+				var timestamp = authData["timestamp"];
+				var signature = authData["signature"];
+				if(Len(signature) && Len(timestamp) && Len(userid) && Len(key)){
+					var result = crypto.IsValidSignature(key, userid, timestamp, signature);
+					if (result == "215"){
+						setAPIError("215", arguments.rc);
+						}else{
+							arguments.rc.apiResponse.content.success = true;
+							arguments.rc.apiResponse.content["message"] = "Authenticated";
+							//Call the Public Service from here.
+					}
+				} else{
+					setAPIError("215", arguments.rc);
+				}
+			}
+		}//<---Otherwise, we are not hitting the public API
+		
 		//could possibly check whether we want a different contentType other than json in the future
 		param name="rc.headers.contentType" default="application/json"; 
 		arguments.rc.headers.contentType = rc.headers.contentType;
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
 		}
-		if(!isNull(arguments.rc.context) && arguments.rc.context == 'GET' && structKEyExists(arguments.rc, 'serializedJSONData') && isSimpleValue(arguments.rc.serializedJSONData) && isJSON(arguments.rc.serializedJSONData)) {
+		arguments.rc.apiResponse.content["message"] = "Private Request: No auth Needed";
+		if(!isNull(arguments.rc.context) && arguments.rc.context == 'GET' && structKeyExists(arguments.rc, 'serializedJSONData') && isSimpleValue(arguments.rc.serializedJSONData) && isJSON(arguments.rc.serializedJSONData)) {
 			StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
 		}
+	}
+	private any function setAPIError(string error, required struct rc){
+		if (error == "215"){
+				arguments.rc.apiResponse.content.success = false;
+				var context = getPageContext();
+	    			context.getOut().clearBuffer();
+	    			var response = context.getResponse();
+				response.setStatus(215);
+				arguments.rc.apiResponse.content["message"] = "Bad Authentication Data";
+		}else if(error == "400"){
+				arguments.rc.apiResponse.content.success = false;
+				var context = getPageContext();
+	    			context.getOut().clearBuffer();
+	    			var response = context.getResponse();
+				response.setStatus(400);
+				arguments.rc.apiResponse.content["message"] = "Bad Input";
+		}
+		//Other errors here.
+		getFW().abortController();
 	}
 	/**
 	 * This will return the path to an image based on the skuIDs (sent as a comma seperated list)
@@ -285,8 +350,15 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		param name="arguments.rc.propertyIdentifiers" default="";
 		//first check if we have an entityName value
 		if(!structKeyExists(arguments.rc, "entityName")) {
-			arguments.rc.apiResponse.content['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
-			arguments.rc.apiResponse.content['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");	
+			//show hibachi scope stuff
+			if(!structKeyExists(arguments.rc,'context') || (structKeyExists(arguments.rc,'context') && arguments.rc.context == 'GET')){
+				arguments.rc.apiResponse.content['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
+				arguments.rc.apiResponse.content['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");	
+			}else{
+				//if we have a context other than GET then perform work on public service
+				getService('publicService').invokeMethod(arguments.rc.context,{});
+			}
+			
 		} else {
 			//get entity service by entity name
 			var currentPage = 1;

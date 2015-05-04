@@ -93,7 +93,8 @@ Notes:
 				    	'$location',
 				    	'$anchorScroll',
 				    	'utilityService', 
-				    	'formService', 
+				    	'formService',
+				    	'cryptoService', 
 				    	function (
 				    		$q,
 				    		$http,
@@ -103,7 +104,8 @@ Notes:
 				    		$location,
 				    		$anchorScroll,
 				    		utilityService,
-				    		formService
+				    		formService,
+				    		cryptoService
 				    	)
 				    {
 				    	var slatwallService = {
