@@ -4,7 +4,7 @@
 	    <thead >
 	        <tr >
 	            <th style="display:none">Row</span></th>
-	            <th ng-repeat="(key,column) in collectionConfig.columns" class="s-sortable" ng-bind="column.title" ng-show="column.isVisible"></th>
+	            <th ng-repeat="(key,column) in collectionConfig.columns" class="s-sortable" ng-bind="column.displayTitle || column.title" title="{{column.title}}" ng-show="column.isVisible"></th>
 	            <th></th>
 	        </tr>
 	    </thead>
