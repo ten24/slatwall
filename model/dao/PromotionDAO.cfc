@@ -378,7 +378,7 @@ Notes:
 		
 		<!--- get all of the Active Promotion Periods that don't have a qualifier --->
 		<cfset noQualifierCurrentActivePromotionPeriods = getNoQualifierCurrentActivePromotionPeriods(timeNow) >
-		
+
 		<cfloop query="noQualifierCurrentActivePromotionPeriods">
 			<cfset salePromotionPeriodIDs = listAppend(salePromotionPeriodIDs, noQualifierCurrentActivePromotionPeriods.promotionPeriodID) />
 		</cfloop>
@@ -388,7 +388,7 @@ Notes:
 		
 		<!--- join allDiscounts with noQualifierCurrentActivePromotionPeriods to get  only the active prices ---> 
 		<cfset noQualifierDiscounts = getNoQualifierDiscounts(noQualifierCurrentActivePromotionPeriods, allDiscounts)>
-	
+		
 		<!--- Build a query to get the order Item information for a query of query --->
 		<cfset var orderItemDataQuery = queryNew("orderItemID, skuPrice, skuID", "varchar, decimal, varchar")>
 		<cfset queryAddRow(orderItemDataQuery, 1)> 
@@ -694,6 +694,8 @@ Notes:
 			  	SwPromotionPeriod ppGlobal on prGlobal.promotionPeriodID = ppGlobal.promotionPeriodID
 			WHERE
 			  	prGlobal.rewardType IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="merchandise,subscription,contentAccess" list="true">)
+			  AND
+			  	NOT EXISTS(SELECT promotionRewardID FROM SwPromoRewardSku WHERE SwPromoRewardSku.promotionRewardID = prGlobal.promotionRewardID)
 			  AND
 			  	NOT EXISTS(SELECT promotionRewardID FROM SwPromoRewardProduct WHERE SwPromoRewardProduct.promotionRewardID = prGlobal.promotionRewardID)
 			  AND
