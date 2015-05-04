@@ -36,8 +36,14 @@ angular.module('slatwalladmin')
 				scope.$id = 'productBundleGroup';
 				$log.debug('productBundleGroup');
 				$log.debug(scope.productBundleGroup);
-				
+				scope.maxRecords = 10;
+                scope.recordsCount = 0;  
+                scope.pageRecordsStart = 0;
+                scope.pageRecordsEnd = 0;
+                scope.showAll = false;
                 scope.showAdvanced = false;
+                scope.currentPage = 1;
+                scope.pageShow = 10;
                 /**
                  * Opens or closes the advanced dialog.
                  */
@@ -67,12 +73,13 @@ angular.module('slatwalladmin')
 					}
 				};
 				
-				scope.collection = {
+				scope.collection = { 
 					baseEntityName:"Sku",
 					baseEntityAlias:"_sku",
 					collectionConfig:scope.productBundleGroup.data.skuCollectionConfig,
 					collectionObject:'Sku'
 				};
+                
 				/**
 				 * Adds a collection to scope
 				 */
@@ -151,9 +158,18 @@ angular.module('slatwalladmin')
 				    }
 				    return false;
 				}
-				
+				 /** Increases the current page count by one */
+                scope.increaseCurrentCount = function(){
+                      scope.currentPage++;
+                };
+                /** resets the current page to zero when the searchbox is changed */
+                scope.resetCurrentCount = function(){
+                      scope.currentPage = 1;
+                };
+                
 				scope.productBundleGroupFilters.getFiltersByTerm = function(keyword,filterTerm){
 					scope.loading = true;
+                    scope.showAll = true;
 					var _loadingCount;
 					if(timeoutPromise) {
 						$timeout.cancel(timeoutPromise);
@@ -162,71 +178,88 @@ angular.module('slatwalladmin')
 					timeoutPromise = $timeout(function(){
 						if(filterTerm.value === 'All'){
 							scope.productBundleGroupFilters.value = [];
-							
 							_loadingCount = scope.searchOptions.options.length - 1;
 							for(var i in scope.searchOptions.options){
 								if(i > 0){
 									var option = scope.searchOptions.options[i];
 									(function(keyword,option) {
-										$slatwall.getEntity(scope.searchOptions.options[i].value, {keywords:keyword,deferKey:'getProductBundleGroupFilterByTerm'+option.value}).then(function(value){
-											var formattedProductBundleGroupFilters = productBundleService.formatProductBundleGroupFilters(value.pageRecords,option);
-											for(var j in formattedProductBundleGroupFilters){
-												if(!arrayContains(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup, formattedProductBundleGroupFilters[j])){
-													scope.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
-												}
-											}
+                                        
+										$slatwall.getEntity(scope.searchOptions.options[i].value, {keywords:keyword,deferKey:'getProductBundleGroupFilterByTerm'+option.value, currentPage:scope.currentPage, pageShow:scope.pageShow})
+                                            .then(function(value){
+                                            $log.debug(value);    
+                                            $log.debug("Total: " + value.recordsCount);
+                                            $log.debug("Records Start: " + value.pageRecordsStart);
+                                            $log.debug("Records End: " + value.pageRecordsEnd);
+                                            
+											 var formattedProductBundleGroupFilters = productBundleService.formatProductBundleGroupFilters(value.pageRecords,option);
+											     for(var j in formattedProductBundleGroupFilters){
+												    if(!arrayContains(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup, formattedProductBundleGroupFilters[j])){
+													   //Only get the correct amount for each iteration
+                                                        
+                                                        $log.debug(scope.productBundleGroupFilters.value.length);
+                                                        scope.productBundleGroupFilters.value.push(formattedProductBundleGroupFilters[j]);
+												       
+                                                    
+                                                    }   
+											     }
 											
 											// Increment Down The Loading Count
 											_loadingCount--;
-											
 											// If the loadingCount drops to 0, then we can update scope
 											if(_loadingCount == 0){
 												//This sorts the array of objects by the objects' "type" property alphabetically
 												scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "type");
 												$log.debug(scope.productBundleGroupFilters.value);
-												scope.loading = false;
 												
 											}
+                                            scope.loading = false;
 										});
 									})(keyword,option);
 								} 
 							}
 						}else{
-							
-							$slatwall.getEntity(filterTerm.value, {keywords:keyword,deferKey:'getProductBundleGroupFilterByTerm'+filterTerm.value})
+                            
+                             scope.showAll = false; //We want to display a count when using specific filter type so, set to false.
+							$slatwall.getEntity(filterTerm.value, { keywords: keyword, deferKey:'getProductBundleGroupFilterByTerm' + filterTerm.value, currentPage:scope.currentPage, pageShow:scope.pageShow})
 							.then(function(value){
+                                
+                                scope.recordsCount = value.recordsCount;
+                                scope.pageRecordsStart = value.pageRecordsStart;
+                                scope.pageRecordsEnd = value.pageRecordsEnd;
 								$log.debug('getFiltersByTerm');
 								$log.debug(value);
 								scope.productBundleGroupFilters.value = productBundleService.formatProductBundleGroupFilters(value.pageRecords,filterTerm) || [];
 								scope.loading = false;
 								$log.debug('productBundleGroupFilters');
 								$log.debug(scope.productBundleGroupFilters);
-								
+								scope.loading = false;
 							});
 						}
 					}, 500);
 				};
-				
+ 
 				scope.addFilterToProductBundle = function(filterItem,include,index){
 					$log.debug('addFilterToProductBundle');
 					$log.debug(filterItem);
-					
-					filterItem.displayPropertyIdentifier = filterItem.type; 
-					filterItem.propertyIdentifier = filterItem.propertyIdentifier; 
-					filterItem.displayValue = filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']; 
-					filterItem.value = filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']; 
+					var collectionFilterItem = {};
+                    collectionFilterItem.name = filterItem.name;
+                    collectionFilterItem.type = filterItem.type;
+					collectionFilterItem.displayPropertyIdentifier = filterItem.type; 
+					collectionFilterItem.propertyIdentifier = filterItem.propertyIdentifier; 
+					collectionFilterItem.displayValue = filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']; 
+					collectionFilterItem.value = filterItem[filterItem.entityType.charAt(0).toLowerCase() + filterItem.entityType.slice(1)+'ID']; 
 					
 					if(include === false){
-						filterItem.comparisonOperator = '!=';
+						collectionFilterItem.comparisonOperator = '!=';
 					}else{
-						filterItem.comparisonOperator = '=';
+						collectionFilterItem.comparisonOperator = '=';
 					}
 					
 					if(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.length > 0){
-						filterItem.logicalOperator = 'OR';
+						collectionFilterItem.logicalOperator = 'OR';
 					}
 					//Adds filter item to designated filtergroup
-					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(filterItem);
+					scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.push(collectionFilterItem);
 					//Removes the filter item from the left hand search result
 					scope.productBundleGroupFilters.value.splice(index,1);
                     scope.productBundleGroup.forms[scope.formName].skuCollectionConfig.$setDirty();
