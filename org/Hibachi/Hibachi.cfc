@@ -62,10 +62,6 @@ component extends="FW1.framework" {
 		
 		//application/ site/ content routes for CMS
 		
-		,{ "$GET/apps/:appid/$" = "/slatwallcms:main/default/appid/:appid" }
-		,{ "$GET/apps/:appid/:siteid/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid" }
-		,{ "$GET/apps/:appid/:siteid/:contentURL/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid/contentURL/:contentURL" }
-		,{ "$GET/apps/:appid/:siteid/:entityURL/:urlTitle/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid/entityURL/:entityURL/urlTitle/:urlTitle" }
 	]; 
 	
 	// Hibachi Setup
@@ -213,6 +209,7 @@ component extends="FW1.framework" {
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
+		
 		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="setupGlobalRequestComplete",eventData=request.context);
 	}
 	
