@@ -306,9 +306,6 @@ a:hover {
   width: 30px;
   text-align: center;
 }
-.table-responsive::-webkit-scrollbar {
-  display: none;
-}
 button::-moz-focus-inner {
   border: 0;
 }
@@ -4468,8 +4465,4 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 .depth10 {
   margin-left: 200px;
-}
-
-.paginationpages0, .paginationpages1 {
-  display:none;
 }
