@@ -52,19 +52,16 @@ component extends="FW1.framework" {
 	/* TODO: add solution to api routing for Rest api*/
 	variables.framework.routes = [
 		//api routes
-		 { "$GET/api/$" = "/api:main/get/" }
+		 { "$GET/api/scope/$" = "/api:main/get/" }
+		,{ "$GET/api/scope/:context/$" = "/api:main/get/context/:context"}
+		,{ "$POST/api/scope/:context/$" = "/api:main/get/context/:context"}
+		
+		,{ "$GET/api/$" = "/api:main/get/" }
 		,{ "$GET/api/:entityName/$" = "/api:main/get/entityName/:entityName"}
 		,{ "$GET/api/:entityName/:entityID/$" = "/api:main/get/entityName/:entityName/entityID/:entityID"}
 		
 		,{ "$POST/api/" = "/api:main/post/" }
 		,{ "$POST/api/:entityName/:entityID" = "/api:main/post/entityName/:entityName/entityID/:entityID"}
-		
-		,{ "$GET/api/scope/$" = "/api:main/get/" }
-		,{ "$GET/api/scope/:context/$" = "/api:main/get/context/:context"}
-		,{ "$POST/api/scope/:context/$" = "/api:main/get/context/:context"}
-		
-		,{ "$POST/api/scope/" = "/api:main/post/" }
-		,{ "$POST/api/scope/:entityName/:entityID" = "/api:main/post/entityName/:entityName/entityID/:entityID"}
 		
 	];
 	
