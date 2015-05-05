@@ -1885,13 +1885,6 @@ tabel .s-table-header {
   font-size: 18px;
   color: #e6e6e6;
 }
-.s-add-filter h4 i:after {
-  content: " close";
-  font-size: 14px;
-  position: relative;
-  top: -2px;
-  font-weight: 600;
-}
 .s-add-filter h4 {
   border-bottom: 1px solid #e6e6e6;
   margin-bottom: 15px;
