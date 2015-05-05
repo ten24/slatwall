@@ -778,14 +778,15 @@
 					updateExampleTemlatesToBeMuraSpecific(muraTemplatesPath=muraTemplatesPath);
 					
 					// Create the necessary pages
-					var templatePortalCMSID = createMuraPage( 		$=$, muraSiteID=cmsSiteID, pageName="Slatwall Templates", 		filename="slatwall-templates", 							template="", 							isNav="0", type="Folder", 	parentID="00000000000000000000000000000000001" );
-					var brandTemplateCMSID = createMuraPage( 		$=$, muraSiteID=cmsSiteID, pageName="Brand Template", 			filename="slatwall-templates/brand-template", 			template="slatwall-brand.cfm", 			isNav="0", type="Page", 	parentID=templatePortalCMSID );
-					var productTypeTemplateCMSID = createMuraPage( 	$=$, muraSiteID=cmsSiteID, pageName="Product Type Template", 	filename="slatwall-templates/product-type-template", 	template="slatwall-producttype.cfm", 	isNav="0", type="Page", 	parentID=templatePortalCMSID );
-					var productTemplateCMSID = createMuraPage( 		$=$, muraSiteID=cmsSiteID, pageName="Product Template", 		filename="slatwall-templates/product-template", 		template="slatwall-product.cfm", 		isNav="0", type="Page", 	parentID=templatePortalCMSID );
-					var accountCMSID = createMuraPage( 				$=$, muraSiteID=cmsSiteID, pageName="My Account", 				filename="my-account", 									template="slatwall-account.cfm", 		isNav="1", type="Page", 	parentID="00000000000000000000000000000000001" );
-					var checkoutCMSID = createMuraPage( 			$=$, muraSiteID=cmsSiteID, pageName="Checkout", 				filename="checkout", 									template="slatwall-checkout.cfm", 		isNav="1", type="Page", 	parentID="00000000000000000000000000000000001" );
-					var shoppingCartCMSID = createMuraPage( 		$=$, muraSiteID=cmsSiteID, pageName="Shopping Cart", 			filename="shopping-cart", 								template="slatwall-shoppingcart.cfm", 	isNav="1", type="Page", 	parentID="00000000000000000000000000000000001" );
-					var productListingCMSID = createMuraPage(		$=$, muraSiteID=cmsSiteID, pageName="Product Listing", 			filename="product-listing", 							template="slatwall-productlisting.cfm", isNav="1", type="Page", 	parentID="00000000000000000000000000000000001" );
+					var templatePortalCMSID = createMuraPage( 		$=$, muraSiteID=cmsSiteID, pageName="Slatwall Templates", 			filename="slatwall-templates", 							template="", 							isNav="0", type="Folder", 	parentID="00000000000000000000000000000000001" );
+					var barrierPageTemplateCMSID = createMuraPage( 	$=$, muraSiteID=cmsSiteID, pageName="Barrier Page Template", 		filename="slatwall-templates/barrier-page-template", 	template="slatwall-barrier-page.cfm", 	isNav="0", type="Page", 	parentID=templatePortalCMSID );
+					var brandTemplateCMSID = createMuraPage( 		$=$, muraSiteID=cmsSiteID, pageName="Brand Template", 				filename="slatwall-templates/brand-template", 			template="slatwall-brand.cfm", 			isNav="0", type="Page", 	parentID=templatePortalCMSID );
+					var productTypeTemplateCMSID = createMuraPage( 	$=$, muraSiteID=cmsSiteID, pageName="Product Type Template", 		filename="slatwall-templates/product-type-template", 	template="slatwall-producttype.cfm", 	isNav="0", type="Page", 	parentID=templatePortalCMSID );
+					var productTemplateCMSID = createMuraPage( 		$=$, muraSiteID=cmsSiteID, pageName="Product Template", 			filename="slatwall-templates/product-template", 		template="slatwall-product.cfm", 		isNav="0", type="Page", 	parentID=templatePortalCMSID );
+					var accountCMSID = createMuraPage( 				$=$, muraSiteID=cmsSiteID, pageName="My Account", 					filename="my-account", 									template="slatwall-account.cfm", 		isNav="1", type="Page", 	parentID="00000000000000000000000000000000001" );
+					var checkoutCMSID = createMuraPage( 			$=$, muraSiteID=cmsSiteID, pageName="Checkout", 					filename="checkout", 									template="slatwall-checkout.cfm", 		isNav="1", type="Page", 	parentID="00000000000000000000000000000000001" );
+					var shoppingCartCMSID = createMuraPage( 		$=$, muraSiteID=cmsSiteID, pageName="Shopping Cart", 				filename="shopping-cart", 								template="slatwall-shoppingcart.cfm", 	isNav="1", type="Page", 	parentID="00000000000000000000000000000000001" );
+					var productListingCMSID = createMuraPage(		$=$, muraSiteID=cmsSiteID, pageName="Product Listing", 				filename="product-listing", 							template="slatwall-productlisting.cfm", isNav="1", type="Page", 	parentID="00000000000000000000000000000000001" );
 					
 					// Sync all missing content for the siteID
 					syncMuraContent( $=$, slatwallSiteID=slatwallSite.getSiteID(), muraSiteID=cmsSiteID );
@@ -802,6 +803,9 @@
 					
 					var brandTemplate = $.slatwall.getService("contentService").getContentByCMSContentIDAndCMSSiteID( brandTemplateCMSID, cmsSiteID );
 					brandTemplate.setContentTemplateType( $.slatwall.getService("typeService").getTypeBySystemCode("cttBrand") );
+					
+					var barrierPageTemplate = $.slatwall.getService('contentService').getContentByCMSContentIDAndCMSSiteID( barrierPageTemplateCMSID, cmsSiteID );
+					barrierPageTemplate.setContentTemplateType( $.slatwall.getService("typeService").getTypeBySystemCode("cttBarrierPage"));
 					
 					// If the site was new, then we can added default template settings for the site
 					if(slatwallSiteWasNew) {
@@ -822,6 +826,12 @@
 						brandTemplateSetting.setSettingValue( brandTemplate.getContentID() );
 						brandTemplateSetting.setSite( slatwallSite );
 						$.slatwall.getService("settingService").saveSetting( brandTemplateSetting );
+						
+						var barrierPageTemplateSetting = $.slatwall.getService("settingService").newSetting();
+						barrierPageTemplateSetting.setSettingName( 'contentRestrictedContentDisplayTemplate' );
+						barrierPageTemplateSetting.setSettingValue( barrierPageTemplate.getContentID() );
+						barrierPageTemplateSetting.setSite( slatwallSite );
+						$.slatwall.getService("settingService").saveSetting( slatwallSite );
 					}
 					
 					// Flush these changes to the content
