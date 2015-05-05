@@ -769,7 +769,6 @@ select.error {
 .table > tbody > tr > td.admin.admin2,
 .table > thead > tr > td.admin.admin1,
 .table > tbody > tr > td.admin.admin1 {
-  text-align: center;
   width: 75px;
 }
 .table > thead > tr > td.admin.admin3,
@@ -4471,4 +4470,8 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 .depth10 {
   margin-left: 200px;
+}
+.paginationpages0,
+.paginationpages1 {
+  display: none;
 }
