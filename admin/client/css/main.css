@@ -306,9 +306,6 @@ a:hover {
   width: 30px;
   text-align: center;
 }
-.table-responsive::-webkit-scrollbar {
-  display: none;
-}
 button::-moz-focus-inner {
   border: 0;
 }
