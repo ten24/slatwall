@@ -38,6 +38,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		
 		//First check for statefull methods using deviceID, and PSID
 		//Need to change back to scope.
+		
 		if (findNoCase("scopes", baseURL, 1) != 0){
 			//This is for the authenticated api methods
 			//Now check for authenticated 'stateless' api methods.

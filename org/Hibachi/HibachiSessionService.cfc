@@ -14,7 +14,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		if(!hasSessionValue("sessionID")) {
 			setSessionValue('sessionID', '');
 		}
-		
 		var foundWithNPSID = false;
 		var foundWithPSID = false;
 		
