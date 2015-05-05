@@ -83,6 +83,7 @@ angular.module('slatwalladmin').controller('collections', ['$scope', '$location'
       collectionService.setFilterCount(filterItemCounter());
       $scope.loadingCollection = false;
     }, function(reason) {});
+    return collectionListingPromise;
   };
   $scope.getCollection();
   var unbindCollectionObserver = $scope.$watch('collection', function(newValue, oldValue) {

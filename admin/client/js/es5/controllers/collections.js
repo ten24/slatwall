@@ -101,6 +101,7 @@ angular.module("slatwalladmin")
 			collectionService.setFilterCount(filterItemCounter());
 			$scope.loadingCollection = false;
 		}, function (reason) {});
+		return collectionListingPromise;
 	};
 
 	$scope.getCollection();
