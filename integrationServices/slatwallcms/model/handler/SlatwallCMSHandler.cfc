@@ -60,20 +60,15 @@ component {
         		}else{
         			urlTitlePathStartPosition = 4;
         		}
-        		arguments.contentUrlTitle = '';
+        		arguments.contentUrlTitlePath = '';
         		for(var i = urlTitlePathStartPosition;i <= arraylen(pathArray);i++){
         			if(i == arrayLen(pathArray)){
-        				arguments.contentUrlTitle &= pathArray[i];
+        				arguments.contentUrlTitlePath &= pathArray[i];
         			}else{
-        				arguments.contentUrlTitle &= pathArray[i] & '/';
+        				arguments.contentUrlTitlePath &= pathArray[i] & '/';
         			}
         		}
         	}
-			// If the domain matches a slatwallCMS application site, then render that site. UNLESS the path has "/admin", then do nothing
-			// myApp = create an object of /custom/apps/slatwallcms/sitex/Application.cfc
-			// myApp.runRequestActions();
-			// writeOutput(myApp.generateRenderedContent());
-			// abort;
 			if(!isnull(arguments.appID)){
 				//try to get a site form the domain name
 				
