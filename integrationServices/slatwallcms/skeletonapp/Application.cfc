@@ -97,6 +97,9 @@ component {
 	function generateRenderedContent() {
 		var site = arguments.slatwallScope.getSite();
 		var templatePath = site.getApp().getAppRootPath() & '/' & site.getSiteID() & '/templates/';
+		var contentPath = '';
+		var templateBody = '';
+		
 		if(!isNull(arguments.entityURL)){
 			var isBrandURLKey = arguments.slatwallScope.setting('globalURLKeyBrand') == arguments.entityURL;
 			var isProductURLKey = arguments.slatwallScope.setting('globalURLKeyProduct') == arguments.entityURL;
@@ -130,7 +133,7 @@ component {
 				var contentTemplateFile = entityTemplateContent.Setting('contentTemplateFile');
 				if(!isNull(contentTemplateFile)){
 					
-					request.context['contentPath'] = templatePath & contentTemplateFile;
+					contentPath = templatePath & contentTemplateFile;
 											
 					
 					arguments.slatwallScope.setContent(entityTemplateContent);
@@ -141,23 +144,34 @@ component {
 				throw('no content for entity');
 			}
 		}else{
-			if(!isNull(arguments.contentURL)){
+			if(!isNull(arguments.contentUrlTitlePath)){
 			
 				//now that we have the site directory, we should see if we can retrieve the content via the urltitle and site
-				var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitle(site.getSiteID(),arguments.contentURL);
+				var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitle(site.getSiteID(),arguments.contentUrlTitlePath);
 			}else{
 				var content = arguments.slatwallScope.getService('contentService').getDefaultContentBySite(site);
 			}
 			
 			if(isNull(content)){
-				throw('content does not exists for #arguments.contentURL#');
+				throw('content does not exists for #arguments.contentUrlTitlePath#');
 			}
 			//now that we have the content, get the file name so that we can retrieve it form the site's template directory
 			var contentTemplateFile = content.Setting('contentTemplateFile');
 			
 			//templatePath relative to the slatwallCMS
-			request.context['contentPath'] = templatePath & contentTemplateFile;
+			contentPath = templatePath & contentTemplateFile;
 			arguments.slatwallScope.setContent(content);
 		}
+		var $ = {
+			slatwall=arguments.slatwallScope
+		};
+		savecontent variable="templateData"{
+			include "#contentPath#";
+		}
+		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(arguments.slatwallScope.getService('hibachiUtilityService').replaceStringEvaluateTemplate(templateData),arguments.slatwallScope.getContent());
+		
+		writeOutput(templateBody);
+		abort;
 	}
+	
 }
