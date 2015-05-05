@@ -110,11 +110,6 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	}
 	
 	// @hint helper function to return the details of a setting
-	public any function getSettingValue(required any settingName, array filterEntities=[]) {
-		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
-	}
-	
-	// @hint helper function to return the details of a setting
 	public any function getSettingValueFormatted(any settingName, array filterEntities=[]) {
 		if(!structKeyExists(variables,'settingValueFormatted')){
 			variables.settingValueFormatted = getService("settingService").getSettingValueFormatted(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
