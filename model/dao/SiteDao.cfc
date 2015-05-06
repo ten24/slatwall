@@ -71,32 +71,5 @@ Notes:
 		<cfreturn site />
 	</cffunction>
 	
-	<cffunction name="createDefaultPages" output="false">
-		<cfargument name="site" type="any" required="true">
-		<cfquery name="rs">
-			INSERT INTO SwContent (
-				contentID,
-				contentIDPath,
-				parentContentID,
-				activeFlag,
-				siteID,
-				cmsContentID,
-				title,
-				allowPurchaseFlag,
-				productListingPageFlag
-			) VALUES (
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#newContentID#" />,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#parentMappingCache[ missingContentQuery.parentID ].contentIDPath#,#newContentID#" />,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#parentMappingCache[ missingContentQuery.parentID ].contentID#" />,
-				<cfqueryparam cfsqltype="cf_sql_bit" value="1" />,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.slatwallSiteID#" />,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingContentQuery.contentID#" />,
-				<cfqueryparam cfsqltype="cf_sql_varchar" value="#missingContentQuery.menuTitle#" />,
-				<cfqueryparam cfsqltype="cf_sql_bit" value="0" />,
-				<cfqueryparam cfsqltype="cf_sql_bit" value="0" />
-			)
-		</cfquery>
-	</cffunction>
-
 </cfcomponent>
 

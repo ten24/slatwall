@@ -73,7 +73,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var site = createPersistedTestEntity(entityName="site",data=siteData,saveWithService=true);
-		request.debug(site);
+		//here we should assert the default content was created as well as the directories
+		request.debug(arraylen(site.getContents()));
+		//probably should also remove directories as the unit tests do not already do that
 	}
 }
 

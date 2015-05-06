@@ -69,23 +69,22 @@ component  extends="HibachiService" accessors="true" {
 			activeFlag=true,
 			title='Home',
 			allowPurchaseFlag=false,
-			productListingPageFlag=false,
-			site=arguments.site
+			productListingPageFlag=false
 		};
 		var homePageContent = getService('contentService').newContent();
+		homePageContent.setSite(arguments.site);
 		homePageContent = getService('contentService').saveContent(homePageContent,homePageContentData);
-		
 		var slatwallTemplatesContentData = {
 			contentID='',
 			contentPathID='',
 			activeFlag=true,
 			title='Slatwall Templates',
 			allowPurchaseFlag=false,
-			productListingPageFlag=false,
-			site=arguments.site,
-			parentContent=homePageContent
+			productListingPageFlag=false
 		};
 		var slatwallTemplatesContent = getService('contentService').newContent();
+		slatwallTemplatesContent.setSite(arguments.site);
+		slatwallTemplatesContent.setParentContent(homePageContent);
 		slatwallTemplatesContent = getService('contentService').saveContent(slatwallTemplatesContent,slatwallTemplatesContentData);
 		
 		var homePageChildNames = [
@@ -102,11 +101,11 @@ component  extends="HibachiService" accessors="true" {
 				activeFlag=true,
 				title=name,
 				allowPurchaseFlag=false,
-				productListingPageFlag=false,
-				site=arguments.site,
-				parentContent=homePageContent
+				productListingPageFlag=false
 			};
 			var homePageChildContent = getService('contentService').newContent();
+			homePageChildContent.setSite(arguments.site);
+			homePageChildContent.setParentContent(homePageContent);
 			homePageChildContent = getService('contentService').saveContent(homePageChildContent,homePageChildContentData);
 		}
 		
@@ -133,6 +132,8 @@ component  extends="HibachiService" accessors="true" {
 				parentContent=slatwallTemplatesContent
 			};
 			var slatwallTemplateChildContent = getService('contentService').newContent();
+			slatwallTemplateChildContent.setSite(arguments.site);
+			slatwallTemplateChildContent.setParentContent(slatwallTemplatesContent);
 			slatwallTemplateChildContent = getService('contentService').saveContent(slatwallTemplateChildContent,slatwallTemplateChildContentData);
 		}
 	}
@@ -196,7 +197,6 @@ component  extends="HibachiService" accessors="true" {
 			)
 		){
 			//create directory for site
-			request.debug(arguments.site.getSitePath());
 			if(!directoryExists(arguments.site.getSitePath())){
 				directoryCreate(arguments.site.getSitePath());
 			}
