@@ -306,9 +306,6 @@ a:hover {
   width: 30px;
   text-align: center;
 }
-.table-responsive::-webkit-scrollbar {
-  display: none;
-}
 button::-moz-focus-inner {
   border: 0;
 }
@@ -772,7 +769,6 @@ select.error {
 .table > tbody > tr > td.admin.admin2,
 .table > thead > tr > td.admin.admin1,
 .table > tbody > tr > td.admin.admin1 {
-  text-align: center;
   width: 75px;
 }
 .table > thead > tr > td.admin.admin3,
@@ -1888,13 +1884,6 @@ tabel .s-table-header {
   cursor: pointer;
   font-size: 18px;
   color: #e6e6e6;
-}
-.s-add-filter h4 i:after {
-  content: " close";
-  font-size: 14px;
-  position: relative;
-  top: -2px;
-  font-weight: 600;
 }
 .s-add-filter h4 {
   border-bottom: 1px solid #e6e6e6;
@@ -4474,4 +4463,8 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 .depth10 {
   margin-left: 200px;
+}
+.paginationpages0,
+.paginationpages1 {
+  display: none;
 }
