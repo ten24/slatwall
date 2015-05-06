@@ -242,6 +242,7 @@ angular.module("slatwalladmin").directive("swProductBundleGroup", ["$http", "$lo
 				//Pushes item back into array
 				scope.productBundleGroupFilters.value.push(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup[index]);
 				//Sorts Array
+				scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "name");
 				scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "type");
 				//Removes the filter item from the filtergroup
 				scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index, 1);
