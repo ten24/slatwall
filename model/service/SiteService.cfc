@@ -87,26 +87,49 @@ component  extends="HibachiService" accessors="true" {
 		slatwallTemplatesContent.setParentContent(homePageContent);
 		slatwallTemplatesContent = getService('contentService').saveContent(slatwallTemplatesContent,slatwallTemplatesContentData);
 		
-		var homePageChildNames = [
-			'Barrier Template Page',
-			'Product Type Template',
-			'Product Template',
-			'Brand Template'
+		var homePageChildren = [
+			{
+				name='Barrier Template Page',
+				templateType=getService("typeService").getTypeBySystemCode("cttBarrierPage"),
+				settingName='contentRestrictedContent'
+			},
+			{
+				name='Product Type Template',
+				templateType=getService("typeService").getTypeBySystemCode("cttProductType"),
+				settingName='productType'
+			},
+			{
+				name='Product Template',
+				templateType=getService("typeService").getTypeBySystemCode("cttProduct"),
+				settingName='product'
+			},
+			{
+				name='Brand Template',
+				templateType=getService("typeService").getTypeBySystemCode("cttBrand"),
+				settingName='brand'
+			}
 		];
 		
-		for(var name in homePageChildNames){
+		for(var homePageChild in homePageChildren){
 			var homePageChildContentData = {
 				contentID='',
 				contentPathID='',
 				activeFlag=true,
-				title=name,
+				title=homePageChild.name,
 				allowPurchaseFlag=false,
 				productListingPageFlag=false
 			};
 			var homePageChildContent = getService('contentService').newContent();
 			homePageChildContent.setSite(arguments.site);
 			homePageChildContent.setParentContent(homePageContent);
+			homePageChildContent.setContentTemplateType(homePageChild.templateType);
 			homePageChildContent = getService('contentService').saveContent(homePageChildContent,homePageChildContentData);
+			
+			var templateSetting = getService("settingService").newSetting();
+			templateSetting.setSettingName( homePageChild.settingName );
+			templateSetting.setSettingValue( homePageChildContent.getContentID() );
+			templateSetting.setSite( arguments.site );
+			getService("settingService").saveSetting( templateSetting );
 		}
 		
 		var slatwallTemplateChildNames = [
