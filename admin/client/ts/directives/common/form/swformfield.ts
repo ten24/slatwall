@@ -22,10 +22,10 @@ angular.module('slatwalladmin')
 			},
 			templateUrl:partialsPath+'formfields/formfield.html',
 			link: function(scope, element,attrs,formController){
-				if(scope.propertyDisplay.object.$$getID() === ''){
+				if(angular.isUndefined(scope.propertyDisplay.object.$$getID) || scope.propertyDisplay.object.$$getID() === ''){
 					scope.propertyDisplay.isDirty = true;
-				}
-				
+				} 
+				 
 				if(angular.isDefined(formController[scope.propertyDisplay.property])){
 					scope.propertyDisplay.errors = formController[scope.propertyDisplay.property].$error;
 					formController[scope.propertyDisplay.property].formType = scope.propertyDisplay.fieldType;

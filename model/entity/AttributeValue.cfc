@@ -77,6 +77,7 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 	property name="orderFulfillment" cfc="OrderFulfillment" fieldtype="many-to-one" fkcolumn="orderFulfillmentID";
 	property name="orderDelivery" cfc="OrderDelivery" fieldtype="many-to-one" fkcolumn="orderDeliveryID";
 	property name="optionGroup" cfc="OptionGroup" fieldtype="many-to-one" fkcolumn="optionGroupID";
+	property name="content" cfc="Content" fieldtype="many-to-one" fkcolumn="contentID";
 	property name="product" cfc="Product" fieldtype="many-to-one" fkcolumn="productID";
 	property name="productBundleGroup" cfc="ProductBundleGroup" fieldtype="many-to-one" fkcolumn="productBundleGroupID";
 	property name="productType" cfc="ProductType" fieldtype="many-to-one" fkcolumn="productTypeID";
@@ -428,6 +429,24 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 		}
 		structDelete(variables, "orderDelivery");
 	}
+	
+	// Content (many-to-one)
+	public void function setContent(required any content){
+		variables.content = arguments.content;
+		if(isNew() || arguments.content.hasAttributeValue(this)){
+			arrayAppend(arguments.content.getAttributeValues(),this);
+		}
+	}
+	public void function removeContent(required any content){
+		if(!structKeyExists(arguments,'content')){
+				arguments.content = variables.content;
+		}
+		var index = arrayFind(arguments.content.getAttributeValues(),this);
+		if(index > 0){
+			arrayDeleteAt(arguments.content.getAttributeValues(),index);
+		}
+		structDelete(variables,'content');
+	}	
 
 	// Option Group (many-to-one)
 	public void function setOptionGroup(required any optionGroup) {

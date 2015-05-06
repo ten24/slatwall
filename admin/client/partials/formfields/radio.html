@@ -9,6 +9,7 @@
 		<span ng-bind="propertyDisplayOption.name"></span>
 	</label>
 </div>
+
 <input style="display:none"	type="text" ng-if="selectedRadioFormName && propertyDisplay.property"
 		ng-model="propertyDisplay.object.data[propertyDisplay.property]"
 		name="{{propertyDisplay.property}}"

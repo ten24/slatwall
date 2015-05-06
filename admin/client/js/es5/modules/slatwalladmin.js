@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("slatwalladmin", ["ngSlatwall", "ui.bootstrap", "ngAnimate", "ngRoute"]).config(["$provide", "$logProvider", "$filterProvider", "$httpProvider", "$routeProvider", "$injector", "$locationProvider", "datepickerConfig", "datepickerPopupConfig", function ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig) {
+angular.module("slatwalladmin", ["ngSlatwall", "ui.bootstrap", "ngAnimate", "ngRoute", "ngCkeditor"]).config(["$provide", "$logProvider", "$filterProvider", "$httpProvider", "$routeProvider", "$injector", "$locationProvider", "datepickerConfig", "datepickerPopupConfig", function ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig) {
 	datepickerConfig.showWeeks = false;
 	datepickerConfig.format = "MMM dd, yyyy hh:mm a";
 	datepickerPopupConfig.toggleWeeksText = null;
@@ -77,6 +77,7 @@ angular.module("slatwalladmin", ["ngSlatwall", "ui.bootstrap", "ngAnimate", "ngR
 			}
 		},
 		controller: "routerController" }).otherwise({
+		//controller:'otherwiseController'       
 		templateUrl: $.slatwall.getConfig().baseURL + "/admin/client/js/partials/otherwise.html" });
 }]).run(["$rootScope", "$filter", "$anchorScroll", "$slatwall", "dialogService", function ($rootScope, $filter, $anchorScroll, $slatwall, dialogService) {
 	$anchorScroll.yOffset = 100;

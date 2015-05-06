@@ -36,7 +36,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
 		}
-		if(!isNull(arguments.rc.context) && arguments.rc.context == 'GET' && structKEyExists(arguments.rc, 'serializedJSONData') && isSimpleValue(arguments.rc.serializedJSONData) && isJSON(arguments.rc.serializedJSONData)) {
+		if(!isNull(arguments.rc.context) && arguments.rc.context == 'GET' 
+			&& structKEyExists(arguments.rc, 'serializedJSONData') 
+			&& isSimpleValue(arguments.rc.serializedJSONData) 
+			&& isJSON(arguments.rc.serializedJSONData)
+		) {
 			StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
 		}
 	}
@@ -288,7 +292,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(!structKeyExists(arguments.rc, "entityName")) {
 			arguments.rc.apiResponse.content['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
 			arguments.rc.apiResponse.content['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");
-				
 		} else {
 			//get entity service by entity name
 			var currentPage = 1;
@@ -398,8 +401,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			var structuredData = arguments.rc;
 		}
 		
-		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
-		var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
+		if(structKeyExists(arguments.rc,'swProcess')){
+			arguments.rc.context = arguments.rc.swProcess;
+			structDelete(arguments.rc,'swProcess');
+		}
+		
+		//if entityname is not specified then we are using the public api and it should act upon the current users session
+		if(!structKeyExists(arguments.rc, "entityName")) {
+			arguments.rc.entityName = 'Session';
+			var entityService = getService('SessionService');
+			var entity = getHibachiScope().getSession();
+		}else{
+			var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
+			var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
+		}
 		
 		// SAVE
 		if(arguments.rc.context eq 'save') {
@@ -409,7 +424,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			var deleteOK = entityService.invokeMethod("delete#arguments.rc.entityName#", {1=entity});
 		// PROCESS
 		} else {
-			entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=arguments.rc, 3=arguments.rc.context});
+			entity = entityService.invokeMethod("process#arguments.rc.entityName#", {1=entity, 2=structuredData, 3=arguments.rc.context});
 		}
 		
 		// respond with data
@@ -454,18 +469,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			
 			// Setup success response message
 			var replaceValues = {
-				entityName = rbKey('entity.#arguments.rc.entityName#')
+				entityName = rbKey('entity.#entity.getClassName()#')
 			};
 			
-			var successMessage = getHibachiUtilityService().replaceStringTemplate( getHibachiScope().rbKey( "api.main.#entityName#.#rc.context#_success" ), replaceValues);
+			var successMessage = getHibachiUtilityService().replaceStringTemplate( getHibachiScope().rbKey( "api.main.#entity.getClassName()#.#rc.context#_success" ), replaceValues);
 			getHibachiScope().showMessage( successMessage, "success" );
 			
-			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_success" ), "${EntityName}", rbKey('entity.#arguments.rc.entityName#'), "all" ) , "success");
+			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_success" ), "${EntityName}", replaceValues.entityName, "all" ) , "success");
 		}
 		
 		if(!isnull(entity.getHibachiErrors()) && structCount(entity.getHibachiErrors().getErrors())){
 			arguments.rc.apiResponse.content.errors = entity.getHibachiErrors().getErrors();
-			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", rbKey('entity.#arguments.rc.entityName#'), "all" ) , "error");
+			getHibachiScope().showMessage( replace(getHibachiScope().rbKey( "api.main.#rc.context#_error" ), "${EntityName}", entity.getClassName(), "all" ) , "error");
 		}
 	}
 	

@@ -1,5 +1,8 @@
 {
 	"properties":{
-		"site":			[{"contexts":"save","required":true}]
+		"contentID":			[{"contexts":"save","required":true}],
+		"urlTitle":				[{"contexts":"save","required":true}],
+		"contentTemplateFile":	[{"contexts":"save","required":true}],
+		"site":					[{"contexts":"save","required":true}]
 	}
 }
