@@ -88,7 +88,7 @@ component {
 					if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID()){
 						
 						// Setup the correct local in the request object for the current site
-							arguments.slatwallScope.setRBLocale( arguments.slatwallScope.getRBLocale() );
+						arguments.slatwallScope.setRBLocale( arguments.slatwallScope.getRBLocale() );
 						
 						// Setup the correct app in the request object
 						arguments.slatwallScope.setApp( app );
@@ -104,6 +104,7 @@ component {
 						if(directoryExists(sitePath)) {
 							
 							var slatwallCMSApplication = getSlatwallCMSApplication(site);
+							
 							slatwallCMSApplication.runRequestActions();
 							slatwallCMSApplication.generateRenderedContent(argumentCollection=arguments);
 						}else{
@@ -114,6 +115,8 @@ component {
 			}
 		}
 	}
+	
+	
 		/*
 		
         

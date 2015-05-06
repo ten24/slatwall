@@ -76,7 +76,22 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-
+	property name="sitePath" persistent="false";
+	property name="templatesPath" persistent="false";
+	
+	public string function getSitePath(){
+		if(!structKeyExists(variables,'sitePath')){
+			variables.sitePath = getApp().getAppPath() & '/' & getSiteCode();
+		}
+		return variables.sitePath;
+	}
+	
+	public string function getTemplatesPath(){
+		if(!structKeyExists(variables,'templatesPath')){
+			variables.templatesPath = getSitePath() & '/' & 'templates';
+		}
+		return variables.templatesPath;
+	}
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

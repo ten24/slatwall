@@ -46,63 +46,35 @@
 Notes:
 
 */
-component extends="HibachiService" accessors="true" output="false" {
-	variables.appsPath = expandPath('/Slatwall/apps');
-	variables.skeletonAppPath = expandPath('/integrationServices/slatwallcms/skeletonapp');
-	
-	// ===================== START: Logical Methods ===========================
-	
-	public void function deployApplication(required any app) {
-		// copy skeletonapp to /apps/{applicationCodeOrID} 
-		if(!directoryExists(arguments.app.getAppPath())){
-			directoryCreate(arguments.app.getAppPath());
-		}
-		directoryCopy(getSkeletonAppPath(),arguments.app.getAppPath());
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+
+	public void function setUp() {
+		super.setup();
+		
+		variables.service = request.slatwallScope.getBean("siteService");
+		variables.integrationService = request.slatwallScope.getBean("integrationService");
 	}
 	
-	public string function getSkeletonAppPath(){
-		return variables.skeletonAppPath;
-	} 
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	public any function saveApp(required any app, struct data={}){
-		arguments.app = super.save(arguments.app, arguments.data);	
-		//deploy the app if the application is new	
-		if(arguments.app.isNew()){
-			//create directory for app
-			if(!directoryExists(variables.appsPath)){
-				directoryCreate(variables.appsPath);
+	public void function deploy_SiteTest(){
+		var appData = {
+			appID ='',
+			appCode="testAPP2",
+			integration={
+				integrationID='402881864c42f280014c4c9851f9016b'
 			}
-			
-			if(!directoryExists(arguments.app.getAppPath())){
-				directoryCreate(arguments.app.getAppPath());
+		};
+		var app = createPersistedTestEntity(entityName='app',data=appData);
+		
+		var siteData = {
+			siteid='',
+			siteCode="testSite2",
+			app={
+				appID=app.getAppID()
 			}
-			
-			//deploy skeletonApp
-			deployApplication(arguments.app);
-		}
-		return arguments.app;
+		};
+		var site = createPersistedTestEntity(entityName="site",data=siteData,saveWithService=true);
+		request.debug(site);
 	}
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
-	
 }
+
+

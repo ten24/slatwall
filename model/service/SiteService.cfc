@@ -48,6 +48,7 @@ Notes:
 */
 
 component  extends="HibachiService" accessors="true" {
+	variables.skeletonSitePath = expandPath('/integrationServices/slatwallcms/skeletonsite');
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -57,6 +58,41 @@ component  extends="HibachiService" accessors="true" {
 		return site;
 	}
 	
+	public string function getSkeletonSitePath(){
+		return variables.skeletonSitePath;
+	}
+	
+	public void function deploySite(required any site) {
+		// copy skeletonsite to /apps/{applicationCodeOrID}/{siteCodeOrID}/
+		if(!directoryExists(arguments.site.getSitePath())){
+			createDirectory(arguments.site.getSitePath());
+		}
+		directoryCopy(getSkeletonSitePath(),arguments.site.getSitePath(),true);
+		
+		//for all templates we need to create content		
+		var templateFilePaths = directoryList(arguments.site.getTemplatesPath());
+		
+		request.debug(templateFilePaths);
+		for(var templateFilePath in templateFilePaths){
+			var templateFileName = listLast(templateFilePath,'/');
+		}
+		/*for(){
+			
+		}*/
+		// create 6 content nodes for this site, and map to the appropriate templates
+			// home (urlTitle == '') -> /custom/apps/slatwallcms/site1/templates/home.cfm
+				// product listing -> /custom/apps/slatwallcms/site1/templates/product-listing.cfm
+				// shopping cart -> /custom/apps/slatwallcms/site1/templates/shopping-cart.cfm
+				// my account -> /custom/apps/slatwallcms/site1/templates/my-account.cfm
+				// checkout
+				// order confirmation
+				// templates
+					// default product template
+					// default product type template
+					// default brand template
+			
+		// Update the site specific settings for product/brand/productType display template to be the corrisponding content nodes
+	}
 	
 	// =====================  END: Logical Methods ============================
 	
@@ -73,6 +109,30 @@ component  extends="HibachiService" accessors="true" {
 	// ======================  END: Status Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
+	
+	public any function saveSite(required any site, struct data={}){
+		arguments.site = super.save(arguments.site, arguments.data);
+		
+		if(	
+			arguments.site.isNew() 
+			&& (
+				!isnull(arguments.site.getApp())
+				&& !isnull(arguments.site.getApp().getIntegration()) 
+				&& arguments.site.getApp().getIntegration().getIntegrationPackage() == 'slatwallcms'
+			)
+		){
+			//create directory for site
+			request.debug(arguments.site.getSitePath());
+			if(!directoryExists(arguments.site.getSitePath())){
+				directoryCreate(arguments.site.getSitePath());
+			}
+			
+			//deploy skeletonSite
+			deploySite(arguments.site);
+		}
+		
+		return arguments.site;
+	}
 	
 	// ======================  END: Save Overrides ============================
 	

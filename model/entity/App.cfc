@@ -74,7 +74,16 @@ component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="t
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non Persistent
-
+	property name="appPath" persistent="false";
+	
+	public string function getAppPath(){
+		if(!structKeyExists(variables,'appPath')){
+			var appsPath = expandPath('/Slatwall/apps');
+			variables.appPath = appsPath & '/' & getAppCode();
+		}
+		return variables.appPath;
+	}
+	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================

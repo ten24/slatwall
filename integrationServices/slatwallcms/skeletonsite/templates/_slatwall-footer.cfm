@@ -1,5 +1,5 @@
-/*
-
+<!---
+	
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -42,67 +42,9 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
-Notes:
-
-*/
-component extends="HibachiService" accessors="true" output="false" {
-	variables.appsPath = expandPath('/Slatwall/apps');
-	variables.skeletonAppPath = expandPath('/integrationServices/slatwallcms/skeletonapp');
 	
-	// ===================== START: Logical Methods ===========================
+Notes: 
 	
-	public void function deployApplication(required any app) {
-		// copy skeletonapp to /apps/{applicationCodeOrID} 
-		if(!directoryExists(arguments.app.getAppPath())){
-			directoryCreate(arguments.app.getAppPath());
-		}
-		directoryCopy(getSkeletonAppPath(),arguments.app.getAppPath());
-	}
-	
-	public string function getSkeletonAppPath(){
-		return variables.skeletonAppPath;
-	} 
-	
-	// =====================  END: Logical Methods ============================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: DAO Passthrough ===========================
-	
-	// ===================== START: Process Methods ===========================
-	
-	// =====================  END: Process Methods ============================
-	
-	// ====================== START: Save Overrides ===========================
-	
-	public any function saveApp(required any app, struct data={}){
-		arguments.app = super.save(arguments.app, arguments.data);	
-		//deploy the app if the application is new	
-		if(arguments.app.isNew()){
-			//create directory for app
-			if(!directoryExists(variables.appsPath)){
-				directoryCreate(variables.appsPath);
-			}
-			
-			if(!directoryExists(arguments.app.getAppPath())){
-				directoryCreate(arguments.app.getAppPath());
-			}
-			
-			//deploy skeletonApp
-			deployApplication(arguments.app);
-		}
-		return arguments.app;
-	}
-	
-	// ======================  END: Save Overrides ============================
-	
-	// ==================== START: Smart List Overrides =======================
-	
-	// ====================  END: Smart List Overrides ========================
-	
-	// ====================== START: Get Overrides ============================
-	
-	// ======================  END: Get Overrides =============================
-	
-}
+--->
+	</body>
+</html>
