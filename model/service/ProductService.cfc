@@ -951,7 +951,8 @@ component extends="HibachiService" accessors="true" {
 
 		// if this type has a parent, inherit all products that were assigned to that parent
 		if(!arguments.productType.hasErrors() && !isNull(arguments.productType.getParentProductType()) and arrayLen(arguments.productType.getParentProductType().getProducts())) {
-			arguments.productType.setProducts(arguments.productType.getParentProductType().getProducts());
+			ormFlush();
+			getProductDAO().updateProductProductType( arguments.productType.getParentProductType().getProductTypeID(), arguments.productType.getProductTypeID() );
 		}
 
 		return arguments.productType;
