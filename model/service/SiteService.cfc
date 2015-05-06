@@ -67,15 +67,27 @@ component  extends="HibachiService" accessors="true" {
 		if(!directoryExists(arguments.site.getSitePath())){
 			createDirectory(arguments.site.getSitePath());
 		}
-		directoryCopy(getSkeletonSitePath(),arguments.site.getSitePath(),true);
+		getService("hibachiUtilityService").duplicateDirectory(
+			source=getSkeletonSitePath(), 
+			destination=arguments.site.getSitePath(), 
+			overwrite=false, 
+			recurse=true, 
+			copyContentExclusionList=".svn,.git"
+		);
 		
 		//for all templates we need to create content		
-		var templateFilePaths = directoryList(arguments.site.getTemplatesPath());
-		
-		request.debug(templateFilePaths);
-		for(var templateFilePath in templateFilePaths){
-			var templateFileName = listLast(templateFilePath,'/');
-		}
+//		var templateFilePaths = directoryList(arguments.site.getTemplatesPath());
+//		
+//		request.debug(templateFilePaths);
+//		for(var templateFilePath in templateFilePaths){
+			//var templateFileName = listLast(templateFilePath,'/');
+			var content = getService('contentService').newContent();
+			content.setSite(arguments.site);
+			//parentContent
+			//urltitle
+			//urltitlePath
+			//contentTemplateType
+		//}
 		/*for(){
 			
 		}*/

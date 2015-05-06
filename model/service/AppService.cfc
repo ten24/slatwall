@@ -57,7 +57,13 @@ component extends="HibachiService" accessors="true" output="false" {
 		if(!directoryExists(arguments.app.getAppPath())){
 			directoryCreate(arguments.app.getAppPath());
 		}
-		directoryCopy(getSkeletonAppPath(),arguments.app.getAppPath());
+		getService("hibachiUtilityService").duplicateDirectory(
+			source=getSkeletonAppPath(), 
+			destination=arguments.app.getAppPath(), 
+			overwrite=false, 
+			recurse=false, 
+			copyContentExclusionList=".svn,.git"
+		);
 	}
 	
 	public string function getSkeletonAppPath(){
