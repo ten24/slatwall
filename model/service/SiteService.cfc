@@ -62,6 +62,81 @@ component  extends="HibachiService" accessors="true" {
 		return variables.skeletonSitePath;
 	}
 	
+	public void function createDefaultContentPages(required any site){
+		var homePageContentData = {
+			contentID='',
+			contentPathID='',
+			activeFlag=true,
+			title='Home',
+			allowPurchaseFlag=false,
+			productListingPageFlag=false,
+			site=arguments.site
+		};
+		var homePageContent = getService('contentService').newContent();
+		homePageContent = getService('contentService').saveContent(homePageContent,homePageContentData);
+		
+		var slatwallTemplatesContentData = {
+			contentID='',
+			contentPathID='',
+			activeFlag=true,
+			title='Slatwall Templates',
+			allowPurchaseFlag=false,
+			productListingPageFlag=false,
+			site=arguments.site,
+			parentContent=homePageContent
+		};
+		var slatwallTemplatesContent = getService('contentService').newContent();
+		slatwallTemplatesContent = getService('contentService').saveContent(slatwallTemplatesContent,slatwallTemplatesContentData);
+		
+		var homePageChildNames = [
+			'Barrier Template Page',
+			'Product Type Template',
+			'Product Template',
+			'Brand Template'
+		];
+		
+		for(var name in homePageChildNames){
+			var homePageChildContentData = {
+				contentID='',
+				contentPathID='',
+				activeFlag=true,
+				title=name,
+				allowPurchaseFlag=false,
+				productListingPageFlag=false,
+				site=arguments.site,
+				parentContent=homePageContent
+			};
+			var homePageChildContent = getService('contentService').newContent();
+			homePageChildContent = getService('contentService').saveContent(homePageChildContent,homePageChildContentData);
+		}
+		
+		var slatwallTemplateChildNames = [
+			'My Account',
+			'Shopping Cart',
+			'Product Listing',
+			'Checkout'
+		];
+		
+		for(var name in slatwallTemplateChildNames){
+			productListingPageValue = false;
+			if(name == 'Product Listing'){
+				productListingPageValue = true;
+			}
+			var slatwallTemplateChildContentData = {
+				contentID='',
+				contentPathID='',
+				activeFlag=true,
+				title=name,
+				allowPurchaseFlag=false,
+				productListingPageFlag=productListingPageValue,
+				site=arguments.site,
+				parentContent=slatwallTemplatesContent
+			};
+			var slatwallTemplateChildContent = getService('contentService').newContent();
+			slatwallTemplateChildContent = getService('contentService').saveContent(slatwallTemplateChildContent,slatwallTemplateChildContentData);
+		}
+	}
+	
 	public void function deploySite(required any site) {
 		// copy skeletonsite to /apps/{applicationCodeOrID}/{siteCodeOrID}/
 		if(!directoryExists(arguments.site.getSitePath())){
@@ -75,22 +150,9 @@ component  extends="HibachiService" accessors="true" {
 			copyContentExclusionList=".svn,.git"
 		);
 		
-		//for all templates we need to create content		
-//		var templateFilePaths = directoryList(arguments.site.getTemplatesPath());
-//		
-//		request.debug(templateFilePaths);
-//		for(var templateFilePath in templateFilePaths){
-			//var templateFileName = listLast(templateFilePath,'/');
-			var content = getService('contentService').newContent();
-			content.setSite(arguments.site);
-			//parentContent
-			//urltitle
-			//urltitlePath
-			//contentTemplateType
-		//}
-		/*for(){
-			
-		}*/
+		createDefaultContentPages(arguments.site);
+		
+		
 		// create 6 content nodes for this site, and map to the appropriate templates
 			// home (urlTitle == '') -> /custom/apps/slatwallcms/site1/templates/home.cfm
 				// product listing -> /custom/apps/slatwallcms/site1/templates/product-listing.cfm

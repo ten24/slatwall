@@ -144,16 +144,16 @@ component {
 				throw('no content for entity');
 			}
 		}else{
-			if(!isNull(arguments.contentUrlTitlePath)){
+			if(!isNull(arguments.contenturlTitle)){
 			
 				//now that we have the site directory, we should see if we can retrieve the content via the urltitle and site
-				var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitle(site.getSiteID(),arguments.contentUrlTitlePath);
+				var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitle(site.getSiteID(),arguments.contenturlTitle);
 			}else{
 				var content = arguments.slatwallScope.getService('contentService').getDefaultContentBySite(site);
 			}
 			
 			if(isNull(content)){
-				throw('content does not exists for #arguments.contentUrlTitlePath#');
+				throw('content does not exists for #arguments.contenturlTitle#');
 			}
 			//now that we have the content, get the file name so that we can retrieve it form the site's template directory
 			var contentTemplateFile = content.Setting('contentTemplateFile');

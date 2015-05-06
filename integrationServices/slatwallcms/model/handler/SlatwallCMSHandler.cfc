@@ -49,23 +49,23 @@ component {
         	}
         	if(pathArrayLen > 3){
         		//need to figure out if we are working with a detail page type
-        		var urlTitlePathStartPosition = 4;
+        		var urlTitleStartPosition = 4;
         		if(
         			arguments.slatwallScope.setting('globalURLKeyBrand') == pathArray[4]
         			|| arguments.slatwallScope.setting('globalURLKeyProduct') == pathArray[4]
         			|| arguments.slatwallScope.setting('globalURLKeyProductType') == pathArray[4]
         		){
         			arguments.entityUrl = pathArray[4];
-        			urlTitlePathStartPosition = 5;
+        			urlTitleStartPosition = 5;
         		}else{
-        			urlTitlePathStartPosition = 4;
+        			urlTitleStartPosition = 4;
         		}
-        		arguments.contentUrlTitlePath = '';
-        		for(var i = urlTitlePathStartPosition;i <= arraylen(pathArray);i++){
+        		arguments.contenturlTitle = '';
+        		for(var i = urlTitleStartPosition;i <= arraylen(pathArray);i++){
         			if(i == arrayLen(pathArray)){
-        				arguments.contentUrlTitlePath &= pathArray[i];
+        				arguments.contenturlTitle &= pathArray[i];
         			}else{
-        				arguments.contentUrlTitlePath &= pathArray[i] & '/';
+        				arguments.contenturlTitle &= pathArray[i] & '/';
         			}
         		}
         	}
