@@ -7,7 +7,7 @@ var listingUpdateCache = {
 var textAutocompleteCache = {
 	onHold: false,
 	autocompleteField: undefined,
-	data: {},
+	data: {}
 };
 var globalSearchCache = {
 	onHold: false
