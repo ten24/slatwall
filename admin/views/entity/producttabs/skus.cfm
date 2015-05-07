@@ -51,6 +51,7 @@ Notes:
 
 <cfoutput>
 	<cfset local.skusSmartList = rc.product.getSkusSmartList() />
+	<cfset local.skusSmartList.setSelectDistinctFlag(1) />
 	<cfset local.skusSmartList.joinRelatedProperty("SlatwallSku", "options", "left", false) />
 
 	<cfset local.bundleSkusSmartList = rc.product.getBundleSkusSmartList() />
@@ -86,11 +87,11 @@ Notes:
 	</cfif>
 
 	<cfset local.skusSmartList = rc.product.getSkusSmartList() />
+	<cfset local.skusSmartList.setSelectDistinctFlag(1) />
 	<cfif local.skusSmartList.getRecordsCount() gt 0>
 		<cfset local.skusSmartList.joinRelatedProperty("SlatwallSku", "options", "left", true) />
 		<cfset local.skusSmartList.addKeywordProperty(propertyIdentifier="hasEventConflict", weight=1)>
 		<cfset local.skusSmartList.addFilter("bundleFlag", "false")>
-
 
 		<hb:HibachiListingDisplay smartList="#local.skusSmartList#"
 								   edit="#rc.edit#"
