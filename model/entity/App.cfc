@@ -90,6 +90,24 @@ component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="t
 	
 	// ============= START: Bidirectional Helper Methods ===================
 	
+	// integration (many-to-one)
+	public void function setIntegration(required any Integration) {
+		variables.Integration = arguments.Integration;
+		if(isNew() or !arguments.Integration.hasApp( this )) {
+			arrayAppend(arguments.Integration.getApps(), this);
+		}
+	}
+	public void function removeIntegration(any Integration) {
+		if(!structKeyExists(arguments, "Integration")) {
+			arguments.Integration = variables.Integration;
+		}
+		var index = arrayFind(arguments.Integration.getApps(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.Integration.getApps(), index);
+		}
+		structDelete(variables, "Integration");
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ============= START: Overridden Smart List Getters ==================

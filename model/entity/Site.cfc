@@ -99,6 +99,14 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
+	// Contents (one-to-many)
+	public void function addContent(required any content) {
+		arguments.content.setSite( this );
+	}
+	public void function removeContent(required any content) {
+		arguments.content.removeSite( this );
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================

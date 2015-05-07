@@ -56,32 +56,44 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function deploy_SiteTest(){
-		var appData = {
-			appID ='',
-			appCode="testAPP23",
-			integration={
-				integrationID='402881864c42f280014c4c9851f9016b'
-			}
-		};
-		var app = createPersistedTestEntity(entityName='app',data=appData);
-		
+//		var appData = {
+//			appID ='',
+//			appName='testAPP23w2',
+//			appCode="testAPP23w2"
+//		};
+//		var app = createPersistedTestEntity(entityName='app',data=appData);
+//		var integration = variables.integrationService.getIntegrationbyIntegrationID('402881864c42f280014c4c9851f9016b');
+//		app.setIntegration(integration);
 		var siteData = {
 			siteid='',
-			siteCode="testSite23",
+			siteName="testSitew232asaazzs1zaszsq",
+			siteCode="testSitew232asaazzs1zaszsq",
 			app={
-				appID=app.getAppID()
+				appID ='test',
+				appName='testAPP23w22asaazz1szaszsq',
+				appCode="testAPP23w22asaazz1szaszsq",
+				integration={
+					integrationID='402881864c42f280014c4c9851f9016b'
+				}
 			}
 		};
-		var site = createPersistedTestEntity(entityName="site",data=siteData,saveWithService=true);
+		var site = createTestEntity(entityName="site",data=siteData);
+		//directoryDelete(site.getSitePath(),true);
+		request.slatwallScope.saveEntity( site, {} );
+		
+		//var site = createPersistedTestEntity(entityName="site",data=siteData,saveWithService=true);
 		//here we should assert the default content was created as well as the directories
 		request.debug(arraylen(site.getContents()));
-		for(var content in site.getContents()){
-			//if(!isnull(content.getcontentTemplateType())){
-				request.debug(content.setting('productDisplayTemplate'));
-			//}
-			
-		}
+		//request.debug(site);
+//		for(var content in site.getContents()){
+//			//if(!isnull(content.getcontentTemplateType())){
+//				request.debug(content.setting('productDisplayTemplate'));
+//			//}
+//			
+//		}
+
 		//probably should also remove directories as the unit tests do not already do that
+		//request.slatwallScope.getBean('siteService').deleteSite( site);
 	}
 }
 

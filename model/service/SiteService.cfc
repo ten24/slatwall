@@ -62,32 +62,8 @@ component  extends="HibachiService" accessors="true" {
 		return variables.skeletonSitePath;
 	}
 	
-	public void function createDefaultContentPages(required any site){
-		var homePageContentData = {
-			contentID='',
-			contentPathID='',
-			activeFlag=true,
-			title='Home',
-			allowPurchaseFlag=false,
-			productListingPageFlag=false
-		};
-		var homePageContent = getService('contentService').newContent();
-		homePageContent.setSite(arguments.site);
-		homePageContent = getService('contentService').saveContent(homePageContent,homePageContentData);
-		var slatwallTemplatesContentData = {
-			contentID='',
-			contentPathID='',
-			activeFlag=true,
-			title='Slatwall Templates',
-			allowPurchaseFlag=false,
-			productListingPageFlag=false
-		};
-		var slatwallTemplatesContent = getService('contentService').newContent();
-		slatwallTemplatesContent.setSite(arguments.site);
-		slatwallTemplatesContent.setParentContent(homePageContent);
-		slatwallTemplatesContent = getService('contentService').saveContent(slatwallTemplatesContent,slatwallTemplatesContentData);
-		
-		var homePageChildren = [
+	public void function createSlatwallTemplatesChildren(required any slatwallTemplatesContent, required any site){
+		var slatwallTemplatesChildren = [
 			{
 				name='Barrier Template Page',
 				templateType=getService("typeService").getTypeBySystemCode("cttBarrierPage"),
@@ -110,40 +86,43 @@ component  extends="HibachiService" accessors="true" {
 			}
 		];
 		
-		for(var homePageChild in homePageChildren){
-			var homePageChildContentData = {
+		for(var slatwallTemplatesChild in slatwallTemplatesChildren){
+			var slatwallTemplatesChildContentData = {
 				contentID='',
 				contentPathID='',
 				activeFlag=true,
-				title=homePageChild.name,
+				title=slatwallTemplatesChild.name,
 				allowPurchaseFlag=false,
 				productListingPageFlag=false
 			};
-			var homePageChildContent = getService('contentService').newContent();
-			homePageChildContent.setSite(arguments.site);
-			homePageChildContent.setParentContent(homePageContent);
-			homePageChildContent.setContentTemplateType(homePageChild.templateType);
-			homePageChildContent = getService('contentService').saveContent(homePageChildContent,homePageChildContentData);
+			var slatwallTemplatesChildContent = getService('contentService').newContent();
+			slatwallTemplatesChildContent.setSite(arguments.site);
+			slatwallTemplatesChildContent.setParentContent(arguments.slatwallTemplatesContent);
+			slatwallTemplatesChildContent.setContentTemplateType(slatwallTemplatesChild.templateType);
+			slatwallTemplatesChildContent = getService('contentService').saveContent(slatwallTemplatesChildContent,slatwallTemplatesChildContentData);
+			
 			var templateSetting = getService("settingService").newSetting();
-			templateSetting.setSettingName( homePageChild.settingName & 'DisplayTemplate' );
-			templateSetting.setSettingValue( homePageChildContent.getContentID() );
+			templateSetting.setSettingName( slatwallTemplatesChild.settingName & 'DisplayTemplate' );
+			templateSetting.setSettingValue( slatwallTemplatesChildContent.getContentID() );
 			templateSetting.setSite( arguments.site );
 			getService("settingService").saveSetting( templateSetting );
 		}
-		
-		var slatwallTemplateChildNames = [
+	}
+	
+	public void function createHomePageChildrenContent(required any homePageContent, required any site){
+		var homePageChildNames = [
 			'My Account',
 			'Shopping Cart',
 			'Product Listing',
 			'Checkout'
 		];
 		
-		for(var name in slatwallTemplateChildNames){
+		for(var name in homePageChildNames){
 			productListingPageValue = false;
 			if(name == 'Product Listing'){
 				productListingPageValue = true;
 			}
-			var slatwallTemplateChildContentData = {
+			var homePageChildContentData = {
 				contentID='',
 				contentPathID='',
 				activeFlag=true,
@@ -151,11 +130,39 @@ component  extends="HibachiService" accessors="true" {
 				allowPurchaseFlag=false,
 				productListingPageFlag=productListingPageValue
 			};
-			var slatwallTemplateChildContent = getService('contentService').newContent();
-			slatwallTemplateChildContent.setSite(arguments.site);
-			slatwallTemplateChildContent.setParentContent(slatwallTemplatesContent);
-			slatwallTemplateChildContent = getService('contentService').saveContent(slatwallTemplateChildContent,slatwallTemplateChildContentData);
+			var homePageChildContent = getService('contentService').newContent();
+			homePageChildContent.setSite(arguments.site);
+			homePageChildContent.setParentContent(arguments.homePageContent);
+			homePageChildContent = getService('contentService').saveContent(homePageChildContent,homePageChildContentData);
 		}
+	}
+	
+	public void function createDefaultContentPages(required any site){
+		var homePageContentData = {
+			contentID='',
+			contentPathID='',
+			activeFlag=true,
+			title='Home',
+			allowPurchaseFlag=false,
+			productListingPageFlag=false
+		};
+		var homePageContent = getService('contentService').newContent();
+		homePageContent.setSite(arguments.site);
+		createHomePageChildrenContent(homePageContent,arguments.site);
+		homePageContent = getService('contentService').saveContent(homePageContent,homePageContentData);
+		var slatwallTemplatesContentData = {
+			contentID='',
+			contentPathID='',
+			activeFlag=true,
+			title='Slatwall Templates',
+			allowPurchaseFlag=false,
+			productListingPageFlag=false
+		};
+		var slatwallTemplatesContent = getService('contentService').newContent();
+		slatwallTemplatesContent.setSite(arguments.site);
+		slatwallTemplatesContent.setParentContent(homePageContent);
+		slatwallTemplatesContent = getService('contentService').saveContent(slatwallTemplatesContent,slatwallTemplatesContentData);
+		createSlatwallTemplatesChildren(slatwallTemplatesContent,arguments.site);
 	}
 	
 	public void function deploySite(required any site) {
@@ -170,7 +177,6 @@ component  extends="HibachiService" accessors="true" {
 			recurse=true, 
 			copyContentExclusionList=".svn,.git"
 		);
-		
 		createDefaultContentPages(arguments.site);
 		
 		
@@ -206,27 +212,25 @@ component  extends="HibachiService" accessors="true" {
 	// ====================== START: Save Overrides ===========================
 	
 	public any function saveSite(required any site, struct data={}){
-		arguments.site = super.save(arguments.site, arguments.data);
 		
 		if(	
-			arguments.site.isNew() 
+			arguments.site.getNewFlag() 
 			&& (
 				!isnull(arguments.site.getApp())
 				&& !isnull(arguments.site.getApp().getIntegration()) 
 				&& arguments.site.getApp().getIntegration().getIntegrationPackage() == 'slatwallcms'
 			)
 		){
+			
 			//create directory for site
 			if(!directoryExists(arguments.site.getSitePath())){
 				directoryCreate(arguments.site.getSitePath());
 			}
+			arguments.site = super.save(arguments.site, arguments.data);
 			//deploy skeletonSite
 			deploySite(arguments.site);
 		}
-		if(arguments.site.hasErrors()){
-			request.debug(arguments.site.getErrors());
-		}
-		
+		arguments.site = super.save(arguments.site, arguments.data);
 		return arguments.site;
 	}
 	

@@ -161,10 +161,10 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	}
 	
 	// Site (many-to-one)
-	public void function setSite(required any Site) {
-		variables.Site = arguments.Site;
-		if(isNew() or !arguments.Site.hasContent( this )) {
-			arrayAppend(arguments.Site.getContents(), this);
+	public void function setSite(required any site) {
+		variables.site = arguments.site;
+		if(isNew() or !arguments.site.hasContent( this )) {
+			arrayAppend(arguments.site.getContents(), this);
 		}
 	}
 	public void function removeSite(any Site) {
