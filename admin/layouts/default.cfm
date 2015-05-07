@@ -384,8 +384,53 @@ Notes:
 		
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngslatwall&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/es5/all.min.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
-		
+		<cfif request.slatwallScope.getApplicationValue('debugFlag')>
+			<cfset es5scriptPath = expandPath('/admin/client/js/es5/')>
+			<cfdirectory name="es5Javascript" 
+						action="list" 
+						directory="#es5scriptPath#"
+						filter="*.js"
+						recurse="true"
+			>
+			<!---modules --->
+			<cfquery name="modules" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#modules%'
+			</cfquery>
+			<!---controllers --->
+			<cfquery name="controllers" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#controllers%'
+			</cfquery>
+			<!---modules --->
+			<cfquery name="directives" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#directives%'
+			</cfquery>
+			<!---modules --->
+			<cfquery name="services" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#services%'
+			</cfquery>
+			
+			<cfloop query="modules">
+				<cfset scriptRelativePath = replace(modules.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & modules.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			</cfloop>
+			
+			<cfloop query="services">
+				<cfset scriptRelativePath = replace(services.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & services.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			</cfloop>
+			
+			<cfloop query="controllers">
+				<cfset scriptRelativePath = replace(controllers.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & controllers.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			</cfloop>
+			
+			<cfloop query="directives">
+				<cfset scriptRelativePath = replace(directives.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & directives.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			</cfloop>
+		<cfelse>
+			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/es5/all.min.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+		</cfif>
 	</body>
 </html>
 </cfoutput>
