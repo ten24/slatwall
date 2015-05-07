@@ -57,10 +57,10 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="cmsSiteID" ormtype="string" index="RI_CMSSITEID";
 	
 	// Related Object Properties (many-to-one)
-	property name="app" hb_populateEnabled="public" cfc="App" fieldtype="many-to-one" fkcolumn="appID";
+	property name="app" hb_populateEnabled="public" cfc="App" fieldtype="many-to-one" fkcolumn="appID"  hb_cascadeCalculate="true";
 	
 	// Related Object Properties (one-to-many)
-	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="one-to-many" fkcolumn="siteID" cascade="all" inverse="true" lazy="extra";
+	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="one-to-many" cascade="all-delete-orphan" fkcolumn="siteID" inverse="true" lazy="extra";
 	
 	// Related Object Properties (many-to-many - owner)
 
