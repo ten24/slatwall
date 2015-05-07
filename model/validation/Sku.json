@@ -1,4 +1,5 @@
 {
+	
 	"properties":{
 		"defaultFlag":				[{"contexts":"delete","eq":false}],
 		"listPrice":				[{"contexts":"save","dataType":"numeric","minValue":0}],

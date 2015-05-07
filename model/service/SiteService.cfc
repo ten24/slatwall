@@ -124,9 +124,8 @@ component  extends="HibachiService" accessors="true" {
 			homePageChildContent.setParentContent(homePageContent);
 			homePageChildContent.setContentTemplateType(homePageChild.templateType);
 			homePageChildContent = getService('contentService').saveContent(homePageChildContent,homePageChildContentData);
-			
 			var templateSetting = getService("settingService").newSetting();
-			templateSetting.setSettingName( homePageChild.settingName );
+			templateSetting.setSettingName( homePageChild.settingName & 'DisplayTemplate' );
 			templateSetting.setSettingValue( homePageChildContent.getContentID() );
 			templateSetting.setSite( arguments.site );
 			getService("settingService").saveSetting( templateSetting );
@@ -150,9 +149,7 @@ component  extends="HibachiService" accessors="true" {
 				activeFlag=true,
 				title=name,
 				allowPurchaseFlag=false,
-				productListingPageFlag=productListingPageValue,
-				site=arguments.site,
-				parentContent=slatwallTemplatesContent
+				productListingPageFlag=productListingPageValue
 			};
 			var slatwallTemplateChildContent = getService('contentService').newContent();
 			slatwallTemplateChildContent.setSite(arguments.site);
@@ -223,9 +220,11 @@ component  extends="HibachiService" accessors="true" {
 			if(!directoryExists(arguments.site.getSitePath())){
 				directoryCreate(arguments.site.getSitePath());
 			}
-			
 			//deploy skeletonSite
 			deploySite(arguments.site);
+		}
+		if(arguments.site.hasErrors()){
+			request.debug(arguments.site.getErrors());
 		}
 		
 		return arguments.site;

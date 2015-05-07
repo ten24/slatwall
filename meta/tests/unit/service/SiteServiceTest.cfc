@@ -58,7 +58,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function deploy_SiteTest(){
 		var appData = {
 			appID ='',
-			appCode="testAPP2",
+			appCode="testAPP23",
 			integration={
 				integrationID='402881864c42f280014c4c9851f9016b'
 			}
@@ -67,7 +67,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		var siteData = {
 			siteid='',
-			siteCode="testSite2",
+			siteCode="testSite23",
 			app={
 				appID=app.getAppID()
 			}
@@ -75,6 +75,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var site = createPersistedTestEntity(entityName="site",data=siteData,saveWithService=true);
 		//here we should assert the default content was created as well as the directories
 		request.debug(arraylen(site.getContents()));
+		for(var content in site.getContents()){
+			//if(!isnull(content.getcontentTemplateType())){
+				request.debug(content.setting('productDisplayTemplate'));
+			//}
+			
+		}
 		//probably should also remove directories as the unit tests do not already do that
 	}
 }
