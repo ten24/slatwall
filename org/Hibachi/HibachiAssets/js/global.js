@@ -716,7 +716,8 @@ function setupEventHandlers() {
 			success: function( r ) {
 				removeLoadingDiv( updateTableID );
 				if(r.success) {
-					listingDisplayUpdate(updateTableID, {});
+					location.reload();
+					listingDisplayUpdate(updateTableID, {});	
 				} else {
 
 					if(("preProcessView" in r)) {
