@@ -66,12 +66,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 //		app.setIntegration(integration);
 		var siteData = {
 			siteid='',
-			siteName="testSitew232asaazzs1zaszsq",
-			siteCode="testSitew232asaazzs1zaszsq",
+			siteName="ddddeads",
+			siteCode="ddddeads",
 			app={
 				appID ='test',
-				appName='testAPP23w22asaazz1szaszsq',
-				appCode="testAPP23w22asaazz1szaszsq",
+				appName='ddddeads',
+				appCode="ddddeads",
 				integration={
 					integrationID='402881864c42f280014c4c9851f9016b'
 				}
@@ -84,6 +84,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		//var site = createPersistedTestEntity(entityName="site",data=siteData,saveWithService=true);
 		//here we should assert the default content was created as well as the directories
 		request.debug(arraylen(site.getContents()));
+		request.debug(site.getContents()[8].gettitle());
+		request.debug(site.getContents()[8].getContentTemplateType().getTypeID());
+		request.debug(site.getContents()[8].setting('productTypeDisplayTemplate'));
 		//request.debug(site);
 //		for(var content in site.getContents()){
 //			//if(!isnull(content.getcontentTemplateType())){
