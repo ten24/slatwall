@@ -58,12 +58,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function deploy_SiteTest(){
 		var siteData = {
 			siteid='',
-			siteName="xsf",
-			siteCode="xsf",
+			siteName="xsfd2232ssaz",
+			siteCode="xsfd2232ssaz",
 			app={
 				appID ='test',
-				appName='xsf',
-				appCode="xsf",
+				appName='xsfd2232ssaz',
+				appCode="xsfd2232ssaz",
 				integration={
 					integrationID='402881864c42f280014c4c9851f9016b'
 				}
@@ -73,17 +73,22 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		request.slatwallScope.saveEntity( site, {} );
 		
-		//var site = createPersistedTestEntity(entityName="site",data=siteData,saveWithService=true);
 		//here we should assert the default content was created as well as the directories
 		request.debug(arraylen(site.getContents()));
 		request.debug(site.getContents()[8].gettitle());
 		request.debug(site.getContents()[8].getContentTemplateType().getTypeID());
 		request.debug(site.getContents()[8].setting('productTypeDisplayTemplate'));
 
-		//probably should also remove directories as the unit tests do not already do that
+		//remove directories as the unit tests do not already do that. Delete outside of validation
 		
 		directoryDelete(site.getApp().getAppPath(),true);
-		request.slatwallScope.deleteEntity( site,{});
+		request.slatwallScope.getService("settingService").removeAllEntityRelatedSettings( entity=site );
+		// Remove any Many-to-Many relationships
+		site.removeAllManyToManyRelationships();
+		
+		// Call delete in the DAO
+		request.slatwallScope.getBean('HibachiDAO').delete(target=site);
+		request.slatwallScope.getBean('HibachiDAO').delete(target=site.getapp());
 		ormflush();
 	}
 }
