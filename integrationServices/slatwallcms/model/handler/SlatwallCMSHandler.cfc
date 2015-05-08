@@ -13,7 +13,7 @@ component {
 	
 	public any function getFullSitePath(required any site){
 		if(!structKeyExists(variables.fullSitePaths,arguments.site.getSiteID())){
-			variables.fullSitePaths[site.getSiteID()] = getSlatwallCMSApplication(arguments.site).Mappings['/Slatwall'] & site.getSiteID();
+			variables.fullSitePaths[site.getSiteID()] = getSlatwallCMSApplication(arguments.site).Mappings['/Slatwall'] & site.getSiteCode();
 		}
 		return variables.fullSitePaths[site.getSiteID()];
 	}
@@ -42,10 +42,10 @@ component {
         var pathArrayLen = arrayLen(pathArray);
         if(pathArrayLen && pathArray[1] == 'apps'){
         	if(pathArrayLen > 1){
-        		arguments.appID = pathArray[2];
+        		arguments.appCode = pathArray[2];
         	}
         	if(pathArrayLen > 2){
-        		arguments.siteID = pathArray[3];
+        		arguments.siteCode = pathArray[3];
         	}
         	if(pathArrayLen > 3){
         		//need to figure out if we are working with a detail page type
@@ -74,7 +74,7 @@ component {
 				
 				var domainNameSite = arguments.slatwallScope.getService('siteService').getCurrentRequestSite();
 				if(!isnull(domainNameSite)){
-					var app = arguments.slatwallScope.getService('appService').getAppByAppID(arguments.appID);
+					var app = arguments.slatwallScope.getService('appService').getAppByAppCode(arguments.appCode);
 					
 					//if siteid is not specified then try to get the first site from the app
 					if(isNull(arguments.siteID)){
@@ -82,7 +82,7 @@ component {
 							var site = app.getSites()[1];
 						}
 					}else{
-						var site = arguments.slatwallScope.getService('siteService').getSiteBySiteID(arguments.siteID);
+						var site = arguments.slatwallScope.getService('siteService').getSiteBySiteCode(arguments.siteCode);
 					}
 					//if we obtained a site and it is allowed by the domain name then prepare to render content
 					if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID()){
