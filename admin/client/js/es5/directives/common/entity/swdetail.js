@@ -8,7 +8,9 @@ angular.module('slatwalladmin').directive('swDetail', ['$location', '$log', '$sl
       scope.$id = "slatwallDetailController";
       $log.debug('slatwallDetailController');
       scope.setDirty = function(entity) {
-        entity.forms['Workflow.'].$setSubmitted();
+        angular.forEach(entity.forms, function(form) {
+          form.$setSubmitted();
+        });
       };
       var setupMetaData = function() {
         scope[scope.entityName.toLowerCase()] = scope.entity;

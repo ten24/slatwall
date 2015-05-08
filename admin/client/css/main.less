@@ -1,7 +1,6 @@
 /*Import plugins*/
 @import url("../../../client/lib/selectBoxIt/selectBoxIt.css");
 
-
 //
 // Variables
 // --------------------------------------------------
@@ -21,6 +20,7 @@
 
 // Brand colors
 @brand-primary:           #428bca; //Blue
+@brand-primary-hover:     darken(@brand-primary, 20%); //Blue
 @brand-ten24:             #F58620; //Orange
 @brand-success:           #5CB85C; //Green
 @brand-warning:           #F0AD4E; //Yellow
@@ -488,7 +488,6 @@ a:hover {color: @link-color-hover;text-decoration:none;}
 .table-responsive .s-table-select a i {margin:0px;}
 .table-responsive .s-table-sort {width: 30px;text-align: center;}
 
-.table-responsive::-webkit-scrollbar {display:none;}
 button::-moz-focus-inner {border: 0;}
 
 input::-moz-focus-inner { border: 0; }
@@ -510,7 +509,6 @@ label {font-weight:600;}
 .modal-body {max-height:400px;overflow-y: auto;overflow-x:auto;}
 .ui-datepicker {padding:10px;z-index:3005 !important;}
 label.error {font-weight:normal;color:@brand-danger;}
-.s-clear-fix {display:inline-block;width:100%;}
 
 input[type="file"] {display: block;width: auto;height: auto;padding: 0px;background-color: none;background-image: none;border: none; .border-radius(0);-webkit-box-shadow: none;box-shadow: none;-webkit-transition: none;transition: none; } 
 
@@ -617,7 +615,7 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, input.error, select.e
 .listing-display-header {background-color:@white;}
 .listing-display-header .s-content-left {padding-left:0px;}
 .listing-display-header .s-content-right {padding-right:0px;}
-.table>thead>tr>td.admin.admin2, .table>tbody>tr>td.admin.admin2, .table>thead>tr>td.admin.admin1, .table>tbody>tr>td.admin.admin1 {text-align:center;width:75px;}
+.table>thead>tr>td.admin.admin2, .table>tbody>tr>td.admin.admin2, .table>thead>tr>td.admin.admin1, .table>tbody>tr>td.admin.admin1 {width:75px;}
 .table>thead>tr>td.admin.admin3, .table>tbody>tr>td.admin.admin3 {text-align:center;width:100px;}
 table a.btn {background-color: transparent;color:#5E5E5E;border: none;}
 table a.btn i {vertical-align:middle;padding-bottom:3px;}
@@ -889,7 +887,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-and-or-box {text-align:center;height:40px;}
 .s-and-or-box hr {border: 0;border-top: 3px dotted @black-10;position: relative;top: -36px;z-index: 0;}
 .s-and-or-box .btn-group {z-index: 10;padding: 0px 10px;}
-.s-add-filter > .row > h4, .s-add-filter .s-add-filter-wrapper > h4 {margin-top: 0px;padding: 8px 15px;background-color: #606060;color: @white;font-size:14px;border-top-left-radius: 2px;border-top-right-radius: 2px;}
+.s-add-filter > .row > h4 {margin-top: 0px;padding: 8px 15px;background-color: #606060;color: @white;font-size:14px;border-top-left-radius: 2px;border-top-right-radius: 2px;}
 .s-add-filter > .row {padding-top:0px !important;}
 .s-add-filter .s-criteria {border: 3px dotted @black-10;border-bottom: none;border-top: none;margin-bottom: 15px;min-height:140px;}
 .s-add-filter .s-criteria .selectboxit-container .selectboxit {width:100% !important;}
@@ -905,10 +903,6 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-add-filter .s-add-filter-breadcrumb a {color: #fff;text-decoration: underline !important;font-size:12px;}
 .s-add-filter .s-add-filter-breadcrumb a:hover {color: #eee;}
 
-.s-add-filter .s-add-filter-wrapper input,
-.s-add-filter .s-add-filter-wrapper select,
-.s-add-filter .s-add-filter-wrapper label {width: 100%;}
-    
 .s-add-filter-box {display: inline-block;width:100%;margin-top: -30px;}
 
 .s-tab-layout.s-tab-layout > .row > h4 {margin-bottom:0px;}
@@ -954,7 +948,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-j-draggablePanelList .s-sort:hover {background-color:@black-5 !important;color:#767676 !important;box-shadow:none;}
 .s-j-draggablePanelList .s-pannel-name {cursor: move;height:40px;}
 .s-j-draggablePanelList .s-pannel-name input {width: 164px;display:inline-block;margin-top:5px;margin-right:5px;}
-.s-j-draggablePanelList .s-pannel-name .s-pannel-title {cursor: pointer;color:@black-60;background:none;}
+.s-j-draggablePanelList .s-pannel-name .s-pannel-title {color:@black-60;background:none;}
 .s-j-draggablePanelList .s-pannel-name .s-pannel-title:hover {text-decoration:none;}
 .s-j-draggablePanelList .s-pannel-name .s-pannel-title:active {box-shadow:none !important;background:none !important;}
 .s-j-draggablePanelList .s-pannel-name i {color:@black-20;}
@@ -963,7 +957,9 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-j-draggablePanelList .s-pannel-name > span:first-child {position:absolute;top:0px;left:0px;display:inline-block;width: 34px;text-align: center;height: 40px;background-color: @black-60;display: inline-block;padding-top: 11px;font-size: 12px;color: @black-10;}
 .s-j-draggablePanelList .s-pannel-name > i {margin-left: 30px;margin-top:14px;}
 .s-j-draggablePanelList .s-pannel-body .btn-group {float:right;}
-.s-pannel-name .s-title-edit-menu {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;left: 53px;top:0px;width: 230px;z-index: 3000;background-color: @black-5;height: 40px;padding-left: 10px;display:none;}
+.s-pannel-name .s-title-edit-menu {-moz-box-shadow: inset 0 0 1px #999999;-webkit-box-shadow: inset 0 0 1px #999;box-shadow: inset 0 0 1px #999;position: absolute;left: 53px;top:0px;width: 276px;z-index: 1000;background-color: @black-5;height: 40px;padding-left: 10px;}
+.s-pannel-name .s-pannel-title-edit {color: @brand-primary;background: none !important;}
+.s-pannel-name .s-pannel-title-edit:hover {color: @brand-primary-hover;background: none !important;}
 .s-title-edit-menu .selectboxit-arrow-container {width:20px;}526375
 .s-pannel-body .disabled {color:#bbbbbb;opacity:1;}
 
@@ -1071,23 +1067,22 @@ tabel .s-table-header {margin-bottom:10px;}
 
 /* .s-bundle-add-items h4 {width:100%;text-align:center;display:none;} */
 .s-bundle-add-obj .s-last li:last-child a {.border-radiuses (@topright: 2px, @bottomright: 2px, @bottomleft: 0, @topleft: 0) !important;}
-.s-bundle-add-items-inner .s-bundle-add-obj .s-last li:last-child a {color: #fff;}
-.s-bundle-add-items .s-bundle-add-obj {background: @black-5;margin-bottom:4px;height: 35px;border: 1px solid @black-10;border-top-left-radius: 2px;border-bottom-left-radius: 3px;display:inline-block;width:100%;}
+.s-bundle-add-items .s-bundle-add-obj {background: @black-5;margin-bottom:4px;height: 35px;border: 1px solid @black-10;border-top-left-radius: 2px;border-bottom-left-radius: 3px;}
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details {font-size: 12px;border-right: 1px solid @black-10;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;}
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details:first-child {font-weight:600;min-width:110px;}
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details:last-child {border:0px;}
-.s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add {display:inline-block;width:34px;float:left;font-size: 12px;height: 33px;border-top-right-radius: 2px;border-bottom-right-radius: 2px;}
-.s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a {.border-radiuses (@topright: 2px, @bottomright: 2px, @bottomleft: 0, @topleft: 0);position: relative;right: -6px;top: -1px;height: 35px;padding-top: 8px;float: right;color: #666;}
-.s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a.s-edit {background-color: @black-5;border: 0px;border-top: 1px solid @black-10;border-bottom: 1px solid @black-10;.border-radius(0);color: #666;right: -5px;}
+.s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add {display:inline-block;width:auto;float:left;font-size: 12px;height: 33px;border-top-right-radius: 2px;border-bottom-right-radius: 2px;}
+.s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a {.border-radiuses (@topright: 2px, @bottomright: 2px, @bottomleft: 0, @topleft: 0);position: relative;right: -6px;top: -1px;height: 35px;padding-top: 8px;float: right;}
+.s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a.s-edit {background-color: @black-5;border: 0px;border-top: 1px solid @black-10;border-bottom: 1px solid @black-10;.border-radius(0);}
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a.s-edit:hover {background-color:#E7E5E5;}
 .s-bundle-details-add .btn-default {border-top: 1px solid @black-10;border-bottom: 1px solid @black-10;}
 .s-bundle-add-obj ul {float:left;}
 .s-bundle-add-obj .s-middle {white-space: nowrap;overflow: scroll;float:left;width:60%;margin-left:4px;-ms-overflow-style: none;overflow: -moz-scrollbars-none; }
-.s-bundle-add-obj .s-last {float:right;border-left: 1px solid #DDD;}
-.s-workflow-objs .s-order-item-options .s-bundle-add-obj.s-no-edit .s-item-type {background-color:@black-60;}
+.s-bundle-add-obj .s-last {float:right;}
+.s-workflow-objs .s-order-item-options .s-bundle-add-obj.s-no-edit .s-item-type {background-color:@black-30;}
 
 .s-bundle-add-items .s-order-item-options {margin-bottom:0px;width:100%;}
-.s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-item-type {position: relative;left: 5px;line-height: 33px;text-align: center;background-color: @black-60;color: @white;font-size: 11px;}
+.s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-item-type {position: relative;left: 5px;line-height: 33px;text-align: center;background-color: @black-30;color: @white;font-size: 11px;}
 .s-bundle-selected-items .s-order-item-options .s-bundle-add-obj .s-item-type {background-color: @black-60;}
 .s-bundle-add-items .s-order-item-options .s-bundle-add-obj .s-bundle-details span {color:@black-30;margin-left:10px;font-weight:normal;}
 .s-bundle-add-items .s-order-item-options .s-bundle-add-obj:last-child {margin-bottom:0px;}
@@ -1484,7 +1479,6 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-panel-header-info .dl-horizontal dt i {color:@black-20;cursor:pointer;}
 .s-panel-header-info .s-header-detail img {padding:4px;background-color:@black-5;.border-radius();max-width:300px;margin-bottom:10px;}
 .s-panel-header-info .s-header-detail h2 {font-size: 14px;background-color: @black-5;padding: 6px 15px;}
-.s-panel-header-info .s-header-detail dd {margin-bottom: 18px;}
 .s-panel-header-info .s-header-detail .s-total {border-top:2px solid @black-5;font-weight:bold;padding-top:5px;margin-right:15px;}
 .s-panel-header-info .s-header-right .s-header-detail:first-child h2 {margin-top:0px;}
 
@@ -1814,4 +1808,8 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 	}
 	.depth10 {
 		margin-left:200px;
-	}	
+	}
+    
+    .paginationpages0, .paginationpages1 {
+        display:none;
+    }	

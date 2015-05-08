@@ -642,14 +642,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
 		try{
-			
+			var HQL = '';
+			var HQLParams = {};
 			if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
 				saveState();
 				if(this.getNonPersistentColumn() || (!isNull(this.getProcessContext()) && len(this.getProcessContext()))){
 					//prepare page records and possible process objects
 					variables.pageRecords = [];
 					variables.processObjects = [];
-					var entities = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+					HQL = getHQL();
+					HQLParams = getHQLParams();
+					var entities = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 					var columns = getCollectionConfigStruct().columns;
 					
 					for(var entity in entities){
@@ -672,12 +675,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						
 					} 
 				}else{
-					variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+					HQL = getHQL();
+					HQLParams = getHQLParams();
+					variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
 			}
 		}
 		catch(any e){
 			variables.pageRecords = [{'failedCollection'='failedCollection'}];
+			writelog(file="collection",text="Error:#e.message#");
+			writelog(file="collection",text="HQL:#HQL#");
 		}
 		
 		return variables.pageRecords;
@@ -689,21 +696,25 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public any function getSettingValueFormattedByPropertyIdentifier(required string propertyIdentifier, required any entity){
 		if(listLen(arguments.propertyIdentifier) == 1){
-			return entity.getSettingValueFormatted(arguments.propertyIdentifier);
+			return entity.getSettingValue(arguments.propertyIdentifier);
 		}else{
 			var settingName = listLast(arguments.propertyIdentifier);
 			var arguments.propertyIdentifier = listDeleteAt(arguments.propertyIdentifier,listLen(arguments.propertyIdentifier));
 			var relatedObject = entity.getValueByPropertyIdentifier(arguments.propertyIdentifier);
-			return relatedObject.getSettingValueFormatted(settingName);
+			return relatedObject.getSettingValue(settingName);
 		}
 	}
 	
 	public array function getRecords(boolean refresh=false) {
-		//try{
+		try{
+			var HQL = '';
+			var HQLParams = {};
 			if( !structKeyExists(variables, "records") || arguments.refresh == true) {
 				if(this.getNonPersistentColumn()){
 					variables.records = [];
-					var entities = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+					HQL = getHQL();
+					HQLParams = getHQLParams();
+					var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 					var columns = getCollectionConfigStruct().columns;
 					for(var entity in entities){
 						var record = {};
@@ -720,13 +731,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						arrayAppend(variables.records,record);
 					} 
 				}else{
-					variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+					HQL = getHQL();
+					HQLParams = getHQLParams();
+					variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 				}
 			}
-//		}
-//		catch(any e){
-//			variables.records = [{'failedCollection'='failedCollection'}];
-//		}
+		}
+		catch(any e){
+			variables.records = [{'failedCollection'='failedCollection'}];
+			writelog(file="collection",text="Error:#e.message#");
+			writelog(file="collection",text="HQL:#HQL#");
+		}
 		
 		return variables.records;
 	}

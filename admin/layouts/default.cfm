@@ -78,6 +78,7 @@ Notes:
 		<link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
 		<link href="#request.slatwallScope.getBaseURL()#/client/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type='text/css'>
 		<link href="#request.slatwallScope.getBaseURL()#/client/lib/metismenu/metismenu.css" rel="stylesheet">
+		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/ng-ckeditor/ng-ckeditor.css" rel="stylesheet" type='text/css'>
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-ui-1.9.2.custom.min.js"></script>
@@ -97,7 +98,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/ckeditor.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>
-
+		
 
 		<!--- Trigger Print Window --->
 		<cfif arrayLen($.slatwall.getPrintQueue()) and request.context.slatAction neq "admin:print.default">
@@ -185,6 +186,9 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listattributeset" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listintegration" type="list">
 									<li class="divider"></li>
+									<!---<cfif $.slatwall.authenticateAction(action='admin:entity.listapp')>
+										<hb:HibachiActionCaller queryString="ng##!/entity/App" text="#$.slatwall.rbKey('admin.entity.listapp')#" type="list">
+									</cfif>--->
 									<hb:HibachiActionCaller action="admin:entity.listaddresszone" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcollection" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcountry" type="list">
@@ -199,6 +203,9 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listprinttemplate" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listroundingrule" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsite" type="list">
+									<!---<cfif $.slatwall.authenticateAction(action='admin:entity.listsite')>
+										<hb:HibachiActionCaller queryString="ng##!/entity/Site" text="#$.slatwall.rbKey('admin.entity.listsite')#" type="list">
+									</cfif>--->
 									<hb:HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listtype" type="list">
@@ -357,6 +364,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-animate.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-route.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/metismenu/metismenu.js"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ng-ckeditor/ng-ckeditor.min.js"></script>
 		
 		<!---lib END --->
 		<script type="text/javascript">
@@ -376,8 +384,53 @@ Notes:
 		
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngslatwall&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/es5/all.min.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
-		
+		<cfif request.slatwallScope.getApplicationValue('debugFlag')>
+			<cfset es5scriptPath = expandPath('/admin/client/js/es5/')>
+			<cfdirectory name="es5Javascript" 
+						action="list" 
+						directory="#es5scriptPath#"
+						filter="*.js"
+						recurse="true"
+			>
+			<!---modules --->
+			<cfquery name="modules" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#modules%'
+			</cfquery>
+			<!---controllers --->
+			<cfquery name="controllers" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#controllers%'
+			</cfquery>
+			<!---modules --->
+			<cfquery name="directives" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#directives%'
+			</cfquery>
+			<!---modules --->
+			<cfquery name="services" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#services%'
+			</cfquery>
+			
+			<cfloop query="modules">
+				<cfset scriptRelativePath = replace(modules.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & modules.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			</cfloop>
+			
+			<cfloop query="services">
+				<cfset scriptRelativePath = replace(services.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & services.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			</cfloop>
+			
+			<cfloop query="controllers">
+				<cfset scriptRelativePath = replace(controllers.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & controllers.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			</cfloop>
+			
+			<cfloop query="directives">
+				<cfset scriptRelativePath = replace(directives.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & directives.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			</cfloop>
+		<cfelse>
+			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/es5/all.min.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+		</cfif>
 	</body>
 </html>
 </cfoutput>

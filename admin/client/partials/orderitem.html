@@ -20,9 +20,9 @@
 		<span ng-if="orderItem.data.sku.data.skuName === ''" ng-bind="orderItem.data.sku.data.product.data.productName"></span>&nbsp
 		<span ng-if="orderItem.data.sku.data.skuName">
 			{{orderItem.data.sku.data.skuName}}&nbsp
-			<a href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link"
-			ng-show="orderItem.data.sku.data.baseProductType !== 'productBundle'">edit</a>
 		</span>
+		<a href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}" class="s-edit-link"
+			ng-show="orderItem.data.sku.data.baseProductType !== 'productBundle'">edit</a>
 		<a href="" class="s-edit-link" 
 			ng-show="orderItem.data.sku.data.baseProductType === 'productBundle' && !orderItem.clicked" 
 			ng-click="getChildOrderItems(orderItem)">detail</a>

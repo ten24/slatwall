@@ -312,6 +312,7 @@ component persistent="false" accessors="true" output="false" extends="Slatwall.o
 			var thisData = {};
 			thisData["skuID"] = arguments.rc.skuID;
 			thisData["locationID"] = location.getLocationID();
+			thisData["locationIDPath"] = location.getLocationIDPath();
 			thisData["locationName"] = location.getLocationName();
 			thisData["QOH"] = sku.getQuantity('QOH',location.getLocationID());
 			thisData["QOSH"] = sku.getQuantity('QOSH',location.getLocationID());

@@ -553,7 +553,7 @@ Notes:
 							  			return checkedKeys;
 							  		}
 						  		}
-						  		return 'empty';
+						  		return '';
 					  		},
 					  		 getConfig:function(){
 						    	return _config;
@@ -595,7 +595,7 @@ Notes:
 				    		var propertyMetaData = metaData[propertyName];
 							if(angular.isDefined(propertyMetaData['hb_rbkey'])){
 								return metaData.$$getRBKey(propertyMetaData['hb_rbkey']);
-							}else if (angular.isUndefined(propertyMetaData['persistent']) || (angular.isDefined(propertyMetaData['persistent']) && propertyMetaData['persistent'] === true)){
+							}else if (angular.isUndefined(propertyMetaData['persistent'])){
 								if(angular.isDefined(propertyMetaData['fieldtype']) 
 								&& angular.isDefined(propertyMetaData['cfc'])
 								&& ["one-to-many","many-to-many"].indexOf(propertyMetaData.fieldtype) > -1){
@@ -607,6 +607,20 @@ Notes:
 									return metaData.$$getRBKey("entity."+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc);
 								}
 								return metaData.$$getRBKey('entity.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
+							}else if(metaData.isProcessObject){
+								console.log('is porceses boject');
+								if(angular.isDefined(propertyMetaData.fieldtype) 
+									&& angular.isDefined(propertyMetaData.cfc) 
+									&& ["one-to-many","many-to-many"].indexOf(propertyMetaData.fieldtype) > -1
+								){
+									return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc.toLowerCase()+'_plural');
+								}else if(angular.isDefined(propertyMetaData.fieldtype) 
+									&& angular.isDefined(propertyMetaData.cfc) 
+								){
+									return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase()+',entity.'+propertyMetaData.cfc.toLowerCase());
+								}
+								return metaData.$$getRBKey('processObject.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
+								
 							}
 							return metaData.$$getRBKey('object.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
 				    	}
@@ -658,10 +672,10 @@ Notes:
 									return "select";
 								}else if ("struct" === dataType){
 									return "checkboxgroup";
-								}
-								if(propertyName === 'password'){
+								}else if(propertyName.indexOf('password') > -1){
 									return "password";
 								}
+								
 							}else if(angular.isDefined(propertyMetaData.fieldtype) && propertyMetaData.fieldtype === 'many-to-one'){
 								return 'select';
 							}else if(angular.isDefined(propertyMetaData.fieldtype) && propertyMetaData.fieldtype === 'one-to-many'){
@@ -882,9 +896,16 @@ Notes:
 					    		if(modifiedData.valid){
 						    		var params = {};
 									params.serializedJsonData = angular.toJson(modifiedData.value);
-						    		var entityName = modifiedData.objectLevel.metaData.className;
-						    		var context = 'save';
-						    		
+									//if we have a process object then the context is different from the standard save
+									var entityName = '';
+									var context = 'save';
+									if(entityInstance.metaData.isProcessObject === 1){
+										var processStruct = modifiedData.objectLevel.metaData.className.split('_');
+										entityName = processStruct[0];
+										context = processStruct[1];
+									}else{
+										entityName = modifiedData.objectLevel.metaData.className;
+									}
 						    		
 						    		var savePromise = slatwallService.saveEntity(entityName,entityInstance.$$getID(),params,context);
 						    		savePromise.then(function(response){
@@ -1221,7 +1242,7 @@ Notes:
 				    	}
 				    	<!--- js entity specific code here --->
 						<cfloop array="#rc.entities#" index="local.entity">
-							<cfset local.isProcessObject = Find('_',local.entity.getClassName())>
+							<cfset local.isProcessObject = Int(Find('_',local.entity.getClassName()) gt 0)>
 							<cftry>
 								
 								<!---
@@ -1265,6 +1286,8 @@ Notes:
 									this.metaData = #serializeJSON(local.entity.getPropertiesStruct())#;
 									
 									this.metaData.className = '#local.entity.getClassName()#';
+									
+									this.metaData.isProcessObject = #local.isProcessObject#;
 									
 									this.metaData.$$getRBKey = function(rbKey,replaceStringData){
 										return slatwallService.rbKey(rbKey,replaceStringData);
@@ -1393,8 +1416,10 @@ Notes:
 															<cfset local.defaultValue = serializeJson(local.defaultValue)/>
 															this.data.#local.property.name# = #local.defaultValue#;
 														<cfelse>
-															this.data.#local.property.name# = null; 
+															this.data.#local.property.name# = ''; 
 														</cfif>
+													<cfelse>
+														this.data.#local.property.name# = ''; 
 													</cfif>
 													<cfcatch></cfcatch>
 												</cftry>
@@ -1645,6 +1670,7 @@ Notes:
 															var IDNameString = '#local.property.name#';
 															return IDNameString;
 														}
+													
 													</cfif>
 													,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
 														return this.data.#local.property.name#;
@@ -1655,8 +1681,19 @@ Notes:
 													return this.data.#local.property.name#;
 												}
 											</cfif>
+
 										</cfif>
 									</cfloop>
+									<cfif isProcessObject>
+										,$$getID:function(){
+											
+											return '';
+										}
+										,$$getIDName:function(){
+											var IDNameString = '';
+											return IDNameString;
+										}
+									</cfif>
 								};
 								
 								

@@ -17,22 +17,24 @@ angular.module('slatwalladmin').directive('swCollectionTable', [
             link: function (scope, element, attrs) {
                 var _collectionObject = scope.collection.collectionObject.charAt(0).toLowerCase() + scope.collection.collectionObject.slice(1);
                 var _recordKeyForObjectID = _collectionObject + 'ID';
-                for (var record in scope.collection.pageRecords) {
-                    var _detailLink;
-                    var _editLink;
-                    var _pageRecord = scope.collection.pageRecords[record];
-                    var _objectID = _pageRecord[_recordKeyForObjectID];
-                    if (_objectID && _collectionObject !== 'country') {
-                        _detailLink = "?slatAction=entity.detail" + _collectionObject + "&" + _collectionObject + "ID=" + _objectID;
-                        _editLink = "?slatAction=entity.edit" + _collectionObject + "&" + _collectionObject + "ID=" + _objectID;
+                scope.$watch('collection.pageRecords', function () {
+                    for (var record in scope.collection.pageRecords) {
+                        var _detailLink;
+                        var _editLink;
+                        var _pageRecord = scope.collection.pageRecords[record];
+                        var _objectID = _pageRecord[_recordKeyForObjectID];
+                        if (_objectID && _collectionObject !== 'country') {
+                            _detailLink = "?slatAction=entity.detail" + _collectionObject + "&" + _collectionObject + "ID=" + _objectID;
+                            _editLink = "?slatAction=entity.edit" + _collectionObject + "&" + _collectionObject + "ID=" + _objectID;
+                        }
+                        else if (_collectionObject === 'country') {
+                            _detailLink = "?slatAction=entity.detail" + _collectionObject + "&countryCode=" + _pageRecord["countryCode"];
+                            _detailLink = "?slatAction=entity.edit" + _collectionObject + "&countryCode=" + _pageRecord["countryCode"];
+                        }
+                        _pageRecord["detailLink"] = _detailLink;
+                        _pageRecord["editLink"] = _editLink;
                     }
-                    else if (_collectionObject === 'country') {
-                        _detailLink = "?slatAction=entity.detail" + _collectionObject + "&countryCode=" + _pageRecord["countryCode"];
-                        _detailLink = "?slatAction=entity.edit" + _collectionObject + "&countryCode=" + _pageRecord["countryCode"];
-                    }
-                    _pageRecord["detailLink"] = _detailLink;
-                    _pageRecord["editLink"] = _editLink;
-                }
+                });
                 /*
                  * Handles setting the key on the data.
                  * */

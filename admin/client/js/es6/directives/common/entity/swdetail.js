@@ -14,7 +14,9 @@ angular.module('slatwalladmin').directive('swDetail', [
                 $log.debug('slatwallDetailController');
                 /*Sets the view dirty on save*/
                 scope.setDirty = function (entity) {
-                    entity.forms['Workflow.'].$setSubmitted();
+                    angular.forEach(entity.forms, function (form) {
+                        form.$setSubmitted();
+                    });
                 };
                 var setupMetaData = function () {
                     scope[scope.entityName.toLowerCase()] = scope.entity;

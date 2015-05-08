@@ -1,10 +1,15 @@
 
-  <div class="row" >
+  <div class="row" ng-if="column">
     <div class="col-xs-5 s-pannel-name" j-column-index="{{columnIndex}}" data-test="$index">
       <span ng-bind="columnIndex + 1"></span>
       <i class="fa fa-arrows-v"></i>
-      <a class="s-pannel-title j-tool-tip-item" data-toggle="tooltip" data-placement="right" data-original-title="Edit" ng-bind="column.title"></a>
-      <span class="s-title-edit-menu"><input type="text" class="form-control" value="ID"><button class="btn btn-xs s-btn-ten24 s-save-btn">Save</button></span>
+      <span class="s-pannel-title" title="{{column.title}}" ng-bind="column.displayTitle || column.title"></span>
+      <a class="s-pannel-title-edit" ng-click="editDisplayTitle()">edit</a>
+      <span class="s-title-edit-menu" ng-show="editingDisplayTitle">
+          <input type="text" class="form-control" ng-model="column.displayTitle">
+          <button ng-click="saveDisplayTitle()" type="button" class="btn btn-xs btn-primary s-save-btn">Save</button>
+          <button ng-click="cancelDisplayTitle()" type="button" class="btn btn-xs btn-default s-cancel-btn">Cancel</button>
+      </span>
     </div>
     <div class="col-xs-7 s-pannel-body">
 

@@ -52,6 +52,7 @@ component extends="FW1.framework" {
 	/* TODO: add solution to api routing for Rest api*/
 	variables.framework.routes = [
 		//api routes
+
 		 { "$GET/api/scope/$" = "/api:main/get/" }
 		,{ "$GET/api/scope/:context/$" = "/api:main/get/context/:context"}
 		,{ "$POST/api/scope/:context/$" = "/api:main/get/context/:context"}
@@ -210,9 +211,11 @@ component extends="FW1.framework" {
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
+			
+		if(structKeyExists(request,'context')){
+			getHibachiScope().getService("hibachiEventService").announceEvent(eventName="setupGlobalRequestComplete",eventData=request.context);
+		}
 	}
-	
-	
 	
 	public void function setupRequest() {
 		setupGlobalRequest();

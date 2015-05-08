@@ -61,6 +61,13 @@ Notes:
 		<cfreturn entityNew("SlatwallContent") />
 	</cffunction>
 	
+	<cffunction name="getContentBySiteIDAndUrlTitle" access="public">
+		<cfargument name="siteID" type="string" required="true">
+		<cfargument name="urlTitlePath" type="string" required="true">
+		
+		<cfreturn ormExecuteQuery(" FROM SlatwallContent c Where c.site.siteID = ? AND LOWER(c.urlTitlePath) = ?",[ arguments.siteID,arguments.urlTitlePath],true)>
+	</cffunction>
+	
 	<cffunction name="getCategoriesByCmsCategoryIDs" access="public">
 		<cfargument name="CmsCategoryIDs" type="string" />
 			
@@ -89,6 +96,11 @@ Notes:
 		<cfquery name="rs">
 			DELETE FROM SwContentCategory WHERE categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.categoryID#" /> 
 		</cfquery>
+	</cffunction>
+	
+	<cffunction name="getDefaultContentBySite" access="public">
+		<cfargument name="site" type="any" required="true">
+		<cfreturn ORMExecuteQuery('FROM SlatwallContent Where site = :site AND parentContent IS NULL',{site=arguments.site},true)>
 	</cffunction>
 	
 </cfcomponent>

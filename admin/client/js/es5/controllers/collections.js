@@ -48,7 +48,7 @@ angular.module('slatwalladmin').controller('collections', ['$scope', '$location'
   $scope.keywords = "";
   $scope.loadingCollection = false;
   var searchPromise;
-  $scope.searchCollection = function($timout) {
+  $scope.searchCollection = function() {
     if (searchPromise) {
       $timeout.cancel(searchPromise);
     }
@@ -83,6 +83,7 @@ angular.module('slatwalladmin').controller('collections', ['$scope', '$location'
       collectionService.setFilterCount(filterItemCounter());
       $scope.loadingCollection = false;
     }, function(reason) {});
+    return collectionListingPromise;
   };
   $scope.getCollection();
   var unbindCollectionObserver = $scope.$watch('collection', function(newValue, oldValue) {
