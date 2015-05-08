@@ -46,17 +46,16 @@ component output="false" accessors="true" extends="HibachiService"  {
 			}
 		
 		
-		} else if(Len("request.context.header.PSID")){
+		} else if(Len("#request.context.header.request_token#") && Len("#request.context.header.deviceID#")){
 			
-			//If the PSID and deviceID were passed directly to the API, we can use that for setting the session.
-			var PSID = "#request.context.header.PSID#";
+			//If the API 'cookie' and deviceID were passed directly to the API, we can use that for setting the session.
+			var NPSID = "#request.context.header.request_token#";
 			var deviceID = "#request.context.header.deviceID#";
-			var sessionEntity = this.getSessionBySessionCookiePSID( PSID, true);
-			foundWithPSID = true;
+			var sessionEntity = this.getSessionBySessionCookieNPSID( NPSID, true );
+			foundWithNPSID = true;
 			setSessionValue('sessionID', sessionEntity.getSessionID());
-			
-		// Last option is to just create a new session record
-		} else {
+			// Last option is to just create a new session record	
+		}else {
 			
 			var sessionEntity = this.newSession();
 		

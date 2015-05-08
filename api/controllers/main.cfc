@@ -32,14 +32,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		getFW().setView("public:main.blank");
 
 		//If someone is hitting the public API (scope), use API authentication to authenticate them.
-		var baseURL = "#arguments.rc.$.slatwall.getUrl#";
-		
-		//Need to add a check for key and device. If the key and or device exist, set the session based on it.
-		
-		//First check for statefull methods using deviceID, and PSID
-		//Need to change back to scope.
-		
-		if (findNoCase("scopes", baseURL, 1) != 0){
+		//var baseURL = "#arguments.rc.$.slatwall.getUrl#";
+		/*
+		if (findNoCase("scope", baseURL, 1) != 0){
 			//This is for the authenticated api methods
 			//Now check for authenticated 'stateless' api methods.
 			//Grab the crypto service so we can validate against a signature.
@@ -78,14 +73,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				}
 			}
 		}//<---Otherwise, we are not hitting the public API so no auth needed.
-		
+		*/
 		//could possibly check whether we want a different contentType other than json in the future
 		param name="rc.headers.contentType" default="application/json"; 
 		arguments.rc.headers.contentType = rc.headers.contentType;
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
 		}
-		arguments.rc.apiResponse.content["message"] = "Private Request: No Authentication Needed";
 		
 		if(!isNull(arguments.rc.context) && arguments.rc.context == 'GET' && structKeyExists(arguments.rc, 'serializedJSONData') && isSimpleValue(arguments.rc.serializedJSONData) && isJSON(arguments.rc.serializedJSONData)) {
 			StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
@@ -365,23 +359,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			if(!structKeyExists(arguments.rc,'context') || (structKeyExists(arguments.rc,'context') && arguments.rc.context == 'GET')){
 				arguments.rc.apiResponse.content['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
 				arguments.rc.apiResponse.content['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");	
-			}else if(structKeyExists(arguments.rc, "context") && (findNoCase("scope", arguments.rc.$.slatwall.getUrl(), 1) != 0)){
-				//If we have a context other than GET then perform work on public service
+			
+			//Is this a get request for the public API?
+			}else if(structKeyExists(arguments.rc, "context")){
+				//If we have a context other than GET then perform work on public service using that context.
+				var publicService = getService('PublicService');
 				try {
-					var publicService = getService('PublicService');
-					var result = publicService.invokeMethod("get#arguments.rc.context#", {rc=arguments.rc});
+					var result = publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
+					//Stop processing the controller methods now that we have set the response.
+					publicService.setResponse(true, 200, result, arguments.rc);
+					getFW().abortController();
 					return;
 				}catch (any e){
-					setAPIError("404", arguments.rc);
-				}
-			}else if(!structKeyExists(arguments.rc, "context") && findNoCase("scope", arguments.rc.$.slatwall.getUrl()) != 0){
-				//Return a list of methods available for public authenticated consumption.
-				try {
-					var publicService = getService('PublicService');
-					var result = publicService.getPublicGetContexts({rc=arguments.rc});
+					publicService.setResponse(false, 404, e, arguments.rc);//Catch any errors and 404 them
+					//Stop processing the controller methods now that we have set the response.
+					getFW().abortController();
 					return;
-				}catch (any e){
-					setAPIError("404", arguments.rc);
 				}
 			}
 			
@@ -487,33 +480,30 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(isNull(arguments.rc.apiResponse.content.messages)){
 			arguments.rc.apiResponse.content['messages'] = [];
 		}
+		
 		//------->Check if this is a public method request and if so, handle it.
-		if(structKeyExists(arguments.rc, "context") && (findNoCase("scope", arguments.rc.$.slatwall.getUrl(), 1) != 0)){
-				//If we have a context other than GET then perform work on public service
+		if(structKeyExists(arguments.rc, "context") && arguments.rc.context != "save" && arguments.rc.context != "delete" && !StructKeyExists(arguments.rc, "entityName")){
+				//If we have a context other than GET then perform work on public service using that context.
+				var publicService = getService('PublicService');
 				try {
-					var publicService = getService('PublicService');
-					var result = publicService.invokeMethod("set#arguments.rc.context#", {rc=arguments.rc});
+					var result = publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
+					publicService.setResponse(true, 200, result, arguments.rc); 
+					//Stop processing the controller methods now that we have set the response.
 					return;
 				}catch (any e){
-					setAPIError("404", arguments.rc);
-				}
-			}else if(!structKeyExists(arguments.rc, "context") && findNoCase("scope", arguments.rc.$.slatwall.getUrl() != 0)){
-				//Return a list of methods available for public authenticated consumption.
-				try {
-					var publicService = getService('PublicService');
-					var result = publicService.getPublicPostContexts({rc=arguments.rc});
+					publicService.setResponse(false, 404, e, arguments.rc); //Catch any errors and 404 them
+					//Stop processing the controller methods now that we have set the response.
 					return;
-				}catch (any e){
-					setAPIError("404", arguments.rc);
 				}
-		}
-		//------->
-		if(structKeyExists(arguments.rc, 'serializedJSONData') && isSimpleValue(arguments.rc.serializedJSONData) && isJSON(arguments.rc.serializedJSONData)) {
+		} else if(structKeyExists(arguments.rc, 'serializedJSONData') && isSimpleValue(arguments.rc.serializedJSONData) && isJSON(arguments.rc.serializedJSONData)) {
 			var structuredData = deserializeJSON(arguments.rc.serializedJSONData);
+		
 		} else {
 			var structuredData = arguments.rc;
 		}
-		
+		if (isNull(arguments.rc.entityName)){
+			setAPIError(400, arguments.rc);
+		}
 		var entityService = getHibachiService().getServiceByEntityName( entityName=arguments.rc.entityName );
 		var entity = entityService.invokeMethod("get#arguments.rc.entityName#", {1=arguments.rc.entityID, 2=true});
 		
@@ -561,8 +551,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(entity.hasErrors()){
 			arguments.rc.apiResponse.content.success = false;
 			var context = getPageContext();
-    		context.getOut().clearBuffer();
-    		var response = context.getResponse();
+    			context.getOut().clearBuffer();
+    			var response = context.getResponse();
 			response.setStatus(500);
 			
 		}else{
