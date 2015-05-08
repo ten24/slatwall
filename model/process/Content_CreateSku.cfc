@@ -88,9 +88,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	public string function getSkuCode() {
 		if(!structKeyExists(variables, "skuCode")) {
 			variables.skuCode = getProduct().getProductCode() & "-#arrayLen(getProduct().getSkus()) + 1#";
-			if(len(variables.skuCode) > 50){
-				variables.skuCode = getProduct().getProductName() & "-#arrayLen(getProduct().getSkus()) + 1#"
-			}
 		}
 		return variables.skuCode;
 	}
