@@ -56,29 +56,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function deploy_SiteTest(){
-//		var appData = {
-//			appID ='',
-//			appName='testAPP23w2',
-//			appCode="testAPP23w2"
-//		};
-//		var app = createPersistedTestEntity(entityName='app',data=appData);
-//		var integration = variables.integrationService.getIntegrationbyIntegrationID('402881864c42f280014c4c9851f9016b');
-//		app.setIntegration(integration);
 		var siteData = {
 			siteid='',
-			siteName="ddddeads",
-			siteCode="ddddeads",
+			siteName="xsf",
+			siteCode="xsf",
 			app={
 				appID ='test',
-				appName='ddddeads',
-				appCode="ddddeads",
+				appName='xsf',
+				appCode="xsf",
 				integration={
 					integrationID='402881864c42f280014c4c9851f9016b'
 				}
 			}
 		};
 		var site = createTestEntity(entityName="site",data=siteData);
-		//directoryDelete(site.getSitePath(),true);
+		
 		request.slatwallScope.saveEntity( site, {} );
 		
 		//var site = createPersistedTestEntity(entityName="site",data=siteData,saveWithService=true);
@@ -87,16 +79,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		request.debug(site.getContents()[8].gettitle());
 		request.debug(site.getContents()[8].getContentTemplateType().getTypeID());
 		request.debug(site.getContents()[8].setting('productTypeDisplayTemplate'));
-		//request.debug(site);
-//		for(var content in site.getContents()){
-//			//if(!isnull(content.getcontentTemplateType())){
-//				request.debug(content.setting('productDisplayTemplate'));
-//			//}
-//			
-//		}
 
 		//probably should also remove directories as the unit tests do not already do that
-		//request.slatwallScope.getBean('siteService').deleteSite( site);
+		
+		directoryDelete(site.getApp().getAppPath(),true);
+		request.slatwallScope.deleteEntity( site,{});
+		ormflush();
 	}
 }
 
