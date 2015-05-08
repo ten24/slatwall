@@ -74,11 +74,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		request.slatwallScope.saveEntity( site, {} );
 		
 		//here we should assert the default content was created as well as the directories
-		request.debug(arraylen(site.getContents()));
-		request.debug(site.getContents()[8].gettitle());
-		request.debug(site.getContents()[8].getContentTemplateType().getTypeID());
-		request.debug(site.getContents()[8].setting('productTypeDisplayTemplate'));
-
+		assertTrue(arraylen(site.getContents()));
 		//remove directories as the unit tests do not already do that. Delete outside of validation
 		
 		directoryDelete(site.getApp().getAppPath(),true);
