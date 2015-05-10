@@ -89,32 +89,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
 		}
 	}
-	private any function setAPIError(string error, required struct rc){
-		if (error == "215"){
-				arguments.rc.apiResponse.content.success = false;
-				var context = getPageContext();
-	    			context.getOut().clearBuffer();
-	    			var response = context.getResponse();
-				response.setStatus(215);
-				arguments.rc.apiResponse.content["message"] = "Bad Authentication Data";
-		}else if(error == "400"){
-				arguments.rc.apiResponse.content.success = false;
-				var context = getPageContext();
-	    			context.getOut().clearBuffer();
-	    			var response = context.getResponse();
-				response.setStatus(400);
-				arguments.rc.apiResponse.content["message"] = "Bad Input";
-		}else if(error == "404"){
-				arguments.rc.apiResponse.content.success = false;
-				var context = getPageContext();
-	    			context.getOut().clearBuffer();
-	    			var response = context.getResponse();
-				response.setStatus(404);
-				arguments.rc.apiResponse.content["message"] = "Resource Not Found";
-		}
-		//Other errors here.
-		getFW().abortController();
-	}
+	
 	/**
 	 * This will return the path to an image based on the skuIDs (sent as a comma seperated list)
 	 * and a 'profile name' that determines the size of that image.
@@ -361,30 +336,22 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(!structKeyExists(arguments.rc, "entityName")) {
 			//show hibachi scope stuff
 			if(!structKeyExists(arguments.rc,'context') || (structKeyExists(arguments.rc,'context') && arguments.rc.context == 'GET')){
+				//Return the cart and account (if there is an account).
 				arguments.rc.apiResponse.content['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
 				arguments.rc.apiResponse.content['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");	
 			
-			//Is this a get request for the public API?
-			}else if(structKeyExists(arguments.rc, "context")){
-				//If we have a context other than GET then perform work on public service using that context.
+			//Is this request for the public API?
+			}else if(structKeyExists(arguments.rc, "context")){//If we have a context other than GET then perform work on public service using that context.
 				var publicService = getService('PublicService');
-				try {
+				//Set the flag so Public service knowns this is an API request.
+				publicService.setIsAPIRequest(true);
 					var result = publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
-					//Stop processing the controller methods now that we have set the response.
-					publicService.setResponse(true, 200, result, arguments.rc);
-					getFW().abortController();
-					return;
-				}catch (any e){
-					publicService.setResponse(false, 404, e, arguments.rc);//Catch any errors and 404 them
-					//Stop processing the controller methods now that we have set the response.
-					getFW().abortController();
-					return;
-				}
+					if (isNull(result)){
+						publicService.setResponse(false, 500, '', arguments.rc, true);
+					}
+				getFW().abortController();
 			}
-			
-			arguments.rc.apiResponse.content['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
-			arguments.rc.apiResponse.content['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");
-
+	
 		} else {
 			//get entity service by entity name
 			var currentPage = 1;
@@ -492,16 +459,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(structKeyExists(arguments.rc, "context") && arguments.rc.context != "save" && arguments.rc.context != "delete" && !StructKeyExists(arguments.rc, "entityName")){
 				//If we have a context other than GET then perform work on public service using that context.
 				var publicService = getService('PublicService');
-				try {
-					var result = publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
-					publicService.setResponse(true, 200, result, arguments.rc); 
-					//Stop processing the controller methods now that we have set the response.
-					return;
-				}catch (any e){
-					publicService.setResponse(false, 404, e, arguments.rc); //Catch any errors and 404 them
-					//Stop processing the controller methods now that we have set the response.
-					return;
+				publicService.setIsAPIRequest(true); //Set this so the Public service knows its handling an API request.
+				var result = publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
+				if (isNull(result)){
+					publicService.setResponse(false, 500, '', arguments.rc, true);
 				}
+				getFW().abortController();
+		//------->End handling public API			
+				
 		} else if(structKeyExists(arguments.rc, 'serializedJSONData') && isSimpleValue(arguments.rc.serializedJSONData) && isJSON(arguments.rc.serializedJSONData)) {
 			var structuredData = deserializeJSON(arguments.rc.serializedJSONData);
 		

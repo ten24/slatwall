@@ -15,7 +15,7 @@ angular.module('slatwalladmin')
 		$log,
 		$timeout,
 		$slatwall,
-		productBundlePartialsPath,
+		productBundlePartialsPath,  
 		productBundleService,
 		collectionService,
 		metadataService,

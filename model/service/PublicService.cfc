@@ -57,7 +57,10 @@ component extends="HibachiService" accessors="true" output="false" hint="Contain
 	property name="productService" type="any";
 	property name="hibachiAuditService" type="any";
 	property name="validationService" type="any";
+	variables.isAPIRequest = false; // hint="Stores if this is an API request";
 	variables.publicContexts = [];
+	variables.responseType = "json";
+	//variables.isAPIRequest = false;
 	
 	/** A description of each method in this public service */
 	ArrayAppend(variables.publicContexts, {Name="Account", Description="Returns the account associated with the authentication token"});
@@ -66,38 +69,123 @@ component extends="HibachiService" accessors="true" output="false" hint="Contain
 	ArrayAppend(variables.publicContexts, {Name="Login", Description="Login a user account."});
 	ArrayAppend(variables.publicContexts, {Name="Logout", Description="Logout a user account."});
 	
-	/** Returns a JSON list of all public methods available to this request. */
-	any function getPublicContexts( required struct rc ) {
-		arguments.rc.apiResponse.content["Response"] = serializeJson(variables.publicContexts);
-		this.setStatusMsg(arguments.rc);
-		return arguments.rc;
+	/* Gets if this is an API request */
+	public any function getIsAPIRequest() {
+		return variables.isAPIRequest;
 	}
 	
+	/* Sets if this is an aPI request */
+	public any function setIsAPIRequest(truthValue) {
+		variables.isAPIRequest = arguments.truthValue;
+	}
 	
+	/** Returns a JSON list of all public methods available to this request. */
+	any function getPublicContexts( required struct rc ) {
+		//setResponse(true, 200, variables.publicContexts, arguments.rc, true);
+		return variables.publicContexts;
+	}
+	
+	/** 
+	 * @module API
+	 * @method login <b>Log a user account into Slatwall given the users emailAddress and password</b>
+	 * @http-context <b>Login</b> Use this context in conjunction with the listed http-verb to use this resource.
+	 * @http-verb POST
+	 * @http-return <b>(200)</b> Request Successful, <b>(400)</b> Bad or Missing Input Data
+	 * @description <p>Logs a user into a Slatwall account</p>
+	 * @param Required Header: emailAddress
+	 * @param Required Header: password
+	 */
 	any function login( required struct rc ){
 		
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'login' );
 		arguments.rc.$.slatwall.addActionResult( "public:account.login", account.hasErrors() );
 		
-		if (account.hasErrors()){
-			setResponse(false, 500, account.getErrors(), arguments.rc);
-			return;
+		//If this is a request from the api, setup the response header and populate it with data.
+		if (getIsAPIRequest()){
+			if (account.hasErrors()){
+				setResponse(false, 400, account.getErrors(), arguments.rc, true);
+				return "";
+			}
+			setResponse(true, 200, arguments.rc.$.slatwall.invokeMethod("getAccountData"), arguments.rc, true);	
 		}
-		setResponse(true, 200, account, arguments.rc);	
 		return account;
 	}	
 	
-	/** Logout -  Account  */
+	/** 
+	 * @module API
+	 * @method logout <b>Log a user account outof Slatwall given the users request_token and deviceID</b>
+	 * @http-context <b>Logout</b> Use this context in conjunction with the listed http-verb to use this resource.
+	 * @http-verb POST
+	 * @http-return <b>(200)</b> Request Successful <b>(400)</b> Bad or Missing Input Data
+	 * @description <p>Logs a user out of the given device</p>
+	 * @param Required Header: request_token
+	 * @param Required Header: deviceID
+	 */
 	any function logout( required struct rc ){
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'logout' );
 		arguments.rc.$.slatwall.addActionResult( "public:account.logout", false );
-		if (account.hasErrors()){
-			setResponse(false, 500, account.getErrors(), arguments.rc);
+		
+		if (getIsAPIRequest()){
+			if (account.hasErrors()){
+				setResponse(false, 500, account.getErrors(), arguments.rc, true);
+			}
+			setResponse(true, 200, account, arguments.rc, true);		
 		}
-		setResponse(true, 200, account, arguments.rc);		
 		return account;
 	}	
 	
+	/** 
+	 * @module Slatwall Public API
+	 * @method CreateAccount
+	 * @rest-context <b>CreateAccount</b> Use this context in conjunction with the listed http-verb to use this resource.
+	 * @http-verb POST
+	 * @description <p>CreateAccount Creates a new user account.</p>
+	 * @return <b>(201)</b> Created Successfully or <b>(400)</b> Bad or Missing Input Data
+	 * @param Header: firstName
+	 * @param Header: lastName
+	 * @param Header: company
+	 * @param Header: phone
+	 * @param Header: emailAddress
+	 * @param Header: emailAddressConfirm
+	 * @param Header: createAuthenticationFlag
+	 * @param Header: password
+	 * @param Header: passwordConfirm
+	 */
+	public any function createAccount( required struct rc ) {
+		param name="arguments.rc.createAuthenticationFlag" default="1";
+		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'create');
+		arguments.rc.$.slatwall.addActionResult( "public:account.create", account.hasErrors() );
+		
+		//If this is a request from the api, setup the response header and populate it with data.
+		if (getIsAPIRequest()){
+			if (account.hasErrors()){
+				setResponse(false, 400, account.getErrors(), arguments.rc, true);
+				return account.getErrors();
+			}
+			setResponse(true, 201, arguments.rc.$.slatwall.invokeMethod("getAccountData"), arguments.rc, true);	
+		}
+		return account;
+	}
+	
+	/** Set the deviceID for a given request_token */
+	public any function createDeviceID( required struct rc ){
+		param name="arguments.rc.deviceID" default="";
+		param name="arguments.rc.header.request_token" default="";
+
+		var sessionEntity = getService("HibachiSessionService").getSessionBySessionCookieNPSID( arguments.rc.header.request_token, true );
+		sessionEntity.setDeviceID(arguments.rc.header.deviceID);
+		
+		//If this is a request from the api, setup the response header and populate it with data.
+		if (getIsAPIRequest()){
+			if (sessionEntity.hasErrors()){
+				setResponse(false, 400, sessionEntity.getErrors(), arguments.rc, true);
+				return sessionEntity.getErrors();
+			}
+			setResponse(true, 201, arguments.rc.$.slatwall.invokeMethod("getAccountData"), arguments.rc, true);	
+		}
+		return "";
+		
+	}
 	/** Account - Forgot Password */
 	public void function forgotPassword( required struct rc ) {
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'forgotPassword');
@@ -123,7 +211,7 @@ component extends="HibachiService" accessors="true" output="false" hint="Contain
 			arguments.rc.$.slatwall.addActionResult( "public:account.resetPassword", true );
 		}
 		
-		// Populate the current account with this processObject so that any errors, ect are there.
+		// Populate the current account with this processObject so that any errors are there.
 		arguments.rc.$.slatwall.account().setProcessObject( account.getProcessObject( "resetPassword" ) );
 	}
 	
@@ -132,15 +220,6 @@ component extends="HibachiService" accessors="true" output="false" hint="Contain
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'changePassword');
 		
 		arguments.rc.$.slatwall.addActionResult( "public:account.changePassword", account.hasErrors() );
-	}
-	
-	/** Account - Create */
-	public void function createAccount( required struct rc ) {
-		param name="arguments.rc.createAuthenticationFlag" default="1";
-		
-		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'create');
-		
-		arguments.rc.$.slatwall.addActionResult( "public:account.create", account.hasErrors() );
 	}
 	
 	/** Account - Update */
@@ -546,7 +625,6 @@ component extends="HibachiService" accessors="true" output="false" hint="Contain
 		}
 	}
 	
-	// ------------------------ Helper Methods ---------------------------- //
 	/* sets the status message, header and response */
 	any function setStatusMsg(struct rc){
 		arguments.rc.headers.contentType = "application/json";
@@ -557,6 +635,12 @@ component extends="HibachiService" accessors="true" output="false" hint="Contain
 		response.setStatus(200);
 	}
 	
+	/* Sets the API response 
+	 * @param success @type Boolean
+	 * @param statusCode @type Integer
+	 * @param data @type Struct
+	 * @param returnJson @type Boolean
+	 */
 	any function setResponse(any success=false, any statusCode=400, any data, required struct rc, any returnJson=true){
 		//Grab the passed in arguments.
 		if (isNull(arguments.rc.apiResponse.content.data)){
@@ -565,9 +649,20 @@ component extends="HibachiService" accessors="true" output="false" hint="Contain
 		if (isNull(arguments.rc.apiResponse.content.response_message)){
 				arguments.rc.apiResponse.content.response_message = "";
 		}
+		if (isNull(arguments.rc.apiResponse.content.messages)){
+				arguments.rc.apiResponse.content.messages = [];
+		}
+		if (isNull(arguments.rc.apiResponse.content.errors)){
+				arguments.rc.apiResponse.content.errors = [];
+		}
 		arguments.rc.headers.contentType = "application/json";
 		arguments.rc.apiResponse.content.success = arguments.success;
-		arguments.rc.apiResponse.content["response_message"] = getHTTPMsgByStatus(arguments.statusCode);
+		//Add the status code message to our messages if success and to errors otherwise.
+		if (arguments.success){
+			ArrayAppend(arguments.rc.apiResponse.content["messages"], getHTTPMsgByStatus(arguments.statusCode));
+		}else{
+			arguments.rc.apiResponse.content["errors"] = getHTTPMsgByStatus(arguments.statusCode);
+		}
 		if (!isNull(arguments.data) && arguments.returnJson){
 			try {	
 			arguments.rc.apiResponse.content["data"] = serializeJson(arguments.data, true);
@@ -575,8 +670,8 @@ component extends="HibachiService" accessors="true" output="false" hint="Contain
 				//can't serialize the data so just return it.
 				setResponse(true, arguments.statusCode, arguments.data, arguments.rc, false);
 			}
-		}else{
-			arguments.rc.apiResponse.content["data"] = arguments.data;
+		}else if ( isNull(arguments.data) || isNull(arguments.returnJson) || arguments.returnJson ){
+			arguments.rc.apiResponse.content["data"] = "";
 		}
 		//Set the page context.
 		var context = getPageContext();
@@ -596,11 +691,14 @@ component extends="HibachiService" accessors="true" output="false" hint="Contain
 			case 200:
 				msg = "Request is valid.";
 				break;
+			case 201:
+				msg = "Created Successfully";
+				break;
 			case 215:
 				msg = "Bad or Missing Authentication Data";
 				break;
 			case 400:
-				msg = "Bad Input Data";
+				msg = "Bad or Missing Input Data";
 				break;
 			case 401:
 				msg = "Invalid Protocol In Use";
@@ -612,7 +710,7 @@ component extends="HibachiService" accessors="true" output="false" hint="Contain
 				msg = "Resource Not Found";
 				break;
 			case 500:
-				msg = "Invalid Endpoint, Internal Server Error, or Operation Timeout";
+				msg = "Internal Server Error, Invalid Endpoint, or Operation Timeout";
 				break;
 			case 503:
 				msg = "Server Busy";

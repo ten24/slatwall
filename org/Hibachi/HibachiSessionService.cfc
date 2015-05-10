@@ -47,11 +47,12 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		
 		} else if(Len("#request.context.header.request_token#") && Len("#request.context.header.deviceID#")){
-			
 			//If the API 'cookie' and deviceID were passed directly to the API, we can use that for setting the session.
 			var NPSID = "#request.context.header.request_token#";
 			var deviceID = "#request.context.header.deviceID#";
 			var sessionEntity = this.getSessionBySessionCookieNPSID( NPSID, true );
+			//Only allow a session to be set for the deviceID that matches that session id.
+			
 			foundWithNPSID = true;
 			setSessionValue('sessionID', sessionEntity.getSessionID());
 			// Last option is to just create a new session record	
