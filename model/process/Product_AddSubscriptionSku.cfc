@@ -91,7 +91,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	}
 
 	public any function getRenewalPrice() {
-		if(!structKeyExists(variables, "renewalPrice") && isDefined(getProduct().getRenewalPrice())) {
+		if(!structKeyExists(variables, "renewalPrice") && !isNull(getProduct().getRenewalPrice())) {
 			variables.renewalPrice = getProduct().getRenewalPrice();
 		} else {
 			variables.renewalPrice = getProduct().getPrice();
