@@ -22,6 +22,7 @@ component {
 	
 	// This event handler will always get called
 	public void function setupGlobalRequestComplete() {
+		
 		if ( len( getContextRoot() ) ) {
 			variables.cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
 			variables.cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
@@ -41,6 +42,7 @@ component {
         var pathArray = listToArray(pathInfo,'/');
         var pathArrayLen = arrayLen(pathArray);
         if(pathArrayLen && pathArray[1] == 'apps'){
+        	
         	if(pathArrayLen > 1){
         		arguments.appCode = pathArray[2];
         	}
@@ -69,11 +71,13 @@ component {
         			}
         		}
         	}
-			if(!isnull(arguments.appID)){
+			if(!isnull(arguments.appCode)){
 				//try to get a site form the domain name
 				
 				var domainNameSite = arguments.slatwallScope.getService('siteService').getCurrentRequestSite();
+				
 				if(!isnull(domainNameSite)){
+					
 					var app = arguments.slatwallScope.getService('appService').getAppByAppCode(arguments.appCode);
 					
 					//if siteid is not specified then try to get the first site from the app
@@ -105,7 +109,7 @@ component {
 							
 							var slatwallCMSApplication = getSlatwallCMSApplication(site);
 							
-							slatwallCMSApplication.runRequestActions();
+							//slatwallCMSApplication.runRequestActions();
 							slatwallCMSApplication.generateRenderedContent(argumentCollection=arguments);
 						}else{
 							throw('site directory does not exist for ' & site.getSiteName());
