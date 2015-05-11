@@ -54,7 +54,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// Data Properties
 	property name="updatePriceFlag";
 	property name="price" hb_rbKey="entity.sku.price";
+	// Data Properties (Object / Array Populate)
 	property name="updateListPriceFlag";
 	property name="listPrice" hb_rbKey="entity.sku.listPrice";
+
+	property name="skuCurrencies" type="array" hb_populateArray="true";
 	
 }
