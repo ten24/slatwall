@@ -62,7 +62,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="cmsContentID" ormtype="string" index="RI_CMSCONTENTID";
 	
 	// Related Object Properties (many-to-one)
-	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID"  hb_cascadeCalculate="true";
+	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID"  hb_cascadeCalculate="true" hb_formfieldType="select";
 	property name="parentContent" cfc="Content" fieldtype="many-to-one" fkcolumn="parentContentID";
 	property name="contentTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="contentTemplateTypeID" hb_optionsNullRBKey="define.none" hb_optionsSmartListData="f:parentType.systemCode=contentTemplateType" fetch="join";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="contentID" inverse="true" cascade="all-delete-orphan";
@@ -89,6 +89,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	// Non Persistent
 	property name="categoryIDList" persistent="false";
 	property name="fullTitle" persistent="false";
+	property name="siteOptions" persistent="false";
 	
 	// Deprecated Properties
 	property name="disableProductAssignmentFlag" ormtype="boolean";			// no longer needed because the listingPageFlag is defined for all objects
@@ -98,6 +99,34 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
     
 	
 	// ============ START: Non-Persistent Property Methods =================
+	public array function getSiteOptions(){
+		if(!structKeyExists(variables,'siteOptions')){
+			var siteCollection = getService('hibachiService').getSiteCollection();
+			siteCollection.getCollectionConfigStruct().columns = [
+				{
+					propertyIdentifier='siteName'
+				},
+				{
+					propertyIdentifier="siteID"
+				}
+			];
+			var sites = siteCollection.getRecords();
+			variables.siteOptions = [];
+			
+			for(var site in sites){
+				var siteOption = {};
+				if(!structKeyExists(site,'siteName')){
+					site["siteName"] = '';
+				}
+				siteOption['name'] = site["siteName"];
+				siteOption['value'] = site["siteID"];
+				arrayAppend(variables.siteOptions,siteOption);
+			}
+		}
+		
+		
+		return variables.siteOptions;
+	}
 	
 	public string function getFullTitle(){
 		var titleArray = [getTitle()];
