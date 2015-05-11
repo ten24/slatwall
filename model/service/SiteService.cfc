@@ -48,6 +48,7 @@ Notes:
 */
 
 component  extends="HibachiService" accessors="true" {
+	variables.skeletonSitePath = expandPath('/integrationServices/slatwallcms/skeletonsite');
 	
 	// ===================== START: Logical Methods ===========================
 	
@@ -57,6 +58,142 @@ component  extends="HibachiService" accessors="true" {
 		return site;
 	}
 	
+	public string function getSkeletonSitePath(){
+		return variables.skeletonSitePath;
+	}
+	
+	public void function createSlatwallTemplatesChildren(required any slatwallTemplatesContent, required any site){
+		var slatwallTemplatesChildren = [
+			{
+				name='Barrier Template Page',
+				templateType=getService("typeService").getTypeBySystemCode("cttBarrierPage"),
+				settingName='contentRestrictedContent'
+			},
+			{
+				name='Product Type Template',
+				templateType=getService("typeService").getTypeBySystemCode("cttProductType"),
+				settingName='productType'
+			},
+			{
+				name='Product Template',
+				templateType=getService("typeService").getTypeBySystemCode("cttProduct"),
+				settingName='product'
+			},
+			{
+				name='Brand Template',
+				templateType=getService("typeService").getTypeBySystemCode("cttBrand"),
+				settingName='brand'
+			}
+		];
+		
+		for(var slatwallTemplatesChild in slatwallTemplatesChildren){
+			var slatwallTemplatesChildContentData = {
+				contentID='',
+				contentPathID='',
+				activeFlag=true,
+				title=slatwallTemplatesChild.name,
+				allowPurchaseFlag=false,
+				productListingPageFlag=false
+			};
+			var slatwallTemplatesChildContent = getService('contentService').newContent();
+			slatwallTemplatesChildContent.setSite(arguments.site);
+			slatwallTemplatesChildContent.setParentContent(arguments.slatwallTemplatesContent);
+			slatwallTemplatesChildContent.setContentTemplateType(slatwallTemplatesChild.templateType);
+			slatwallTemplatesChildContent = getService('contentService').saveContent(slatwallTemplatesChildContent,slatwallTemplatesChildContentData);
+			
+			var templateSetting = getService("settingService").newSetting();
+			templateSetting.setSettingName( slatwallTemplatesChild.settingName & 'DisplayTemplate' );
+			templateSetting.setSettingValue( slatwallTemplatesChildContent.getContentID() );
+			templateSetting.setSite( arguments.site );
+			getService("settingService").saveSetting( templateSetting );
+		}
+	}
+	
+	public void function createHomePageChildrenContent(required any homePageContent, required any site){
+		var homePageChildNames = [
+			'My Account',
+			'Shopping Cart',
+			'Product Listing',
+			'Checkout'
+		];
+		
+		for(var name in homePageChildNames){
+			productListingPageValue = false;
+			if(name == 'Product Listing'){
+				productListingPageValue = true;
+			}
+			var homePageChildContentData = {
+				contentID='',
+				contentPathID='',
+				activeFlag=true,
+				title=name,
+				allowPurchaseFlag=false,
+				productListingPageFlag=productListingPageValue
+			};
+			var homePageChildContent = getService('contentService').newContent();
+			homePageChildContent.setSite(arguments.site);
+			homePageChildContent.setParentContent(arguments.homePageContent);
+			homePageChildContent = getService('contentService').saveContent(homePageChildContent,homePageChildContentData);
+		}
+	}
+	
+	public void function createDefaultContentPages(required any site){
+		var homePageContentData = {
+			contentID='',
+			contentPathID='',
+			activeFlag=true,
+			title='Home',
+			allowPurchaseFlag=false,
+			productListingPageFlag=false
+		};
+		var homePageContent = getService('contentService').newContent();
+		homePageContent.setSite(arguments.site);
+		createHomePageChildrenContent(homePageContent,arguments.site);
+		homePageContent = getService('contentService').saveContent(homePageContent,homePageContentData);
+		var slatwallTemplatesContentData = {
+			contentID='',
+			contentPathID='',
+			activeFlag=true,
+			title='Slatwall Templates',
+			allowPurchaseFlag=false,
+			productListingPageFlag=false
+		};
+		var slatwallTemplatesContent = getService('contentService').newContent();
+		slatwallTemplatesContent.setSite(arguments.site);
+		slatwallTemplatesContent.setParentContent(homePageContent);
+		slatwallTemplatesContent = getService('contentService').saveContent(slatwallTemplatesContent,slatwallTemplatesContentData);
+		createSlatwallTemplatesChildren(slatwallTemplatesContent,arguments.site);
+	}
+	
+	public void function deploySite(required any site) {
+		// copy skeletonsite to /apps/{applicationCodeOrID}/{siteCodeOrID}/
+		if(!directoryExists(arguments.site.getSitePath())){
+			createDirectory(arguments.site.getSitePath());
+		}
+		getService("hibachiUtilityService").duplicateDirectory(
+			source=getSkeletonSitePath(), 
+			destination=arguments.site.getSitePath(), 
+			overwrite=false, 
+			recurse=true, 
+			copyContentExclusionList=".svn,.git"
+		);
+		createDefaultContentPages(arguments.site);
+		
+		
+		// create 6 content nodes for this site, and map to the appropriate templates
+			// home (urlTitle == '') -> /custom/apps/slatwallcms/site1/templates/home.cfm
+				// product listing -> /custom/apps/slatwallcms/site1/templates/product-listing.cfm
+				// shopping cart -> /custom/apps/slatwallcms/site1/templates/shopping-cart.cfm
+				// my account -> /custom/apps/slatwallcms/site1/templates/my-account.cfm
+				// checkout
+				// order confirmation
+				// templates
+					// default product template
+					// default product type template
+					// default brand template
+			
+		// Update the site specific settings for product/brand/productType display template to be the corrisponding content nodes
+	}
 	
 	// =====================  END: Logical Methods ============================
 	
@@ -73,6 +210,29 @@ component  extends="HibachiService" accessors="true" {
 	// ======================  END: Status Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
+	
+	public any function saveSite(required any site, struct data={}){
+		
+		if(	
+			arguments.site.getNewFlag() 
+			&& (
+				!isnull(arguments.site.getApp())
+				&& !isnull(arguments.site.getApp().getIntegration()) 
+				&& arguments.site.getApp().getIntegration().getIntegrationPackage() == 'slatwallcms'
+			)
+		){
+			
+			//create directory for site
+			if(!directoryExists(arguments.site.getSitePath())){
+				directoryCreate(arguments.site.getSitePath());
+			}
+			arguments.site = super.save(arguments.site, arguments.data);
+			//deploy skeletonSite
+			deploySite(arguments.site);
+		}
+		arguments.site = super.save(arguments.site, arguments.data);
+		return arguments.site;
+	}
 	
 	// ======================  END: Save Overrides ============================
 	

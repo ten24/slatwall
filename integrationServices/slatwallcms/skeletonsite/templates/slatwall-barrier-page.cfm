@@ -1,5 +1,5 @@
 <!---
-
+	
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -42,34 +42,35 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
-Notes:
-
+	
+Notes: 
+	
 --->
-<cfcomponent extends="HibachiDAO">
-	
-	<cffunction name="getSiteByDomainName" output="false">
-		<cfargument name="siteName" type="string" required="true" />
-		<cfset var HQL = "	FROM SlatwallSite as site 
-							WHERE site.domainNames like :siteNameStart
-							OR site.domainNames like :siteNameMiddle
-							OR site.domainNames like :siteNameLast
-							
-							"
-		/>
-		<cfset var site = ORMExecuteQuery(
-			HQL,
-			{
-				siteNameStart=arguments.siteName & '%', 
-				siteNameMiddle='%, ' & arguments.siteName & ',%', 
-				siteNameLast='%,' & arguments.siteName
-			}
-			,true
-		)/>
-		
-		
-		<cfreturn site />
-	</cffunction>
-	
-</cfcomponent>
 
+<!--- This header include should be changed to the header of your site.  Make sure that you review the header to include necessary JS elements for slatwall templates to work ---> 
+<cfinclude template="_slatwall-header.cfm" />
+
+<!--- This import allows for the custom tags required by this page to work --->
+<cfimport prefix="sw" taglib="../../tags" />
+
+<!---[DEVELOPER NOTES]															
+																				
+	If you would like to customize any of the public tags used by this			
+	template, the recommended method is to uncomment the below import,			
+	copy the tag you'd like to customize into the directory defined by			
+	this import, and then reference with swc:tagname instead of sw:tagname.		
+	Technically you can define the prefix as whatever you would like and use	
+	whatever directory you would like but we recommend using this for			
+	the sake of convention.														
+																				
+	<cfimport prefix="swc" taglib="/Slatwall/custom/public/tags" />				
+																				
+--->
+
+<cfoutput>
+	<div class="container">
+		this content is restricted		
+	</div>
+</cfoutput>
+
+<cfinclude template="_slatwall-footer.cfm" />

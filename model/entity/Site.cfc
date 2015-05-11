@@ -57,10 +57,10 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="cmsSiteID" ormtype="string" index="RI_CMSSITEID";
 	
 	// Related Object Properties (many-to-one)
-	property name="app" hb_populateEnabled="public" cfc="App" fieldtype="many-to-one" fkcolumn="appID";
+	property name="app" hb_populateEnabled="public" cfc="App" fieldtype="many-to-one" fkcolumn="appID"  hb_cascadeCalculate="true";
 	
 	// Related Object Properties (one-to-many)
-	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="one-to-many" fkcolumn="siteID" cascade="all" inverse="true" lazy="extra";
+	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="one-to-many" cascade="all-delete-orphan" fkcolumn="siteID" inverse="true" lazy="extra";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -76,13 +76,36 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-
+	property name="sitePath" persistent="false";
+	property name="templatesPath" persistent="false";
+	
+	public string function getSitePath(){
+		if(!structKeyExists(variables,'sitePath')){
+			variables.sitePath = getApp().getAppPath() & '/' & getSiteCode();
+		}
+		return variables.sitePath;
+	}
+	
+	public string function getTemplatesPath(){
+		if(!structKeyExists(variables,'templatesPath')){
+			variables.templatesPath = getSitePath() & '/' & 'templates';
+		}
+		return variables.templatesPath;
+	}
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// Contents (one-to-many)
+	public void function addContent(required any content) {
+		arguments.content.setSite( this );
+	}
+	public void function removeContent(required any content) {
+		arguments.content.removeSite( this );
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 

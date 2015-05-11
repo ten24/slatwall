@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,31 +45,23 @@
 
 Notes:
 
---->
-<cfcomponent extends="HibachiDAO">
-	
-	<cffunction name="getSiteByDomainName" output="false">
-		<cfargument name="siteName" type="string" required="true" />
-		<cfset var HQL = "	FROM SlatwallSite as site 
-							WHERE site.domainNames like :siteNameStart
-							OR site.domainNames like :siteNameMiddle
-							OR site.domainNames like :siteNameLast
-							
-							"
-		/>
-		<cfset var site = ORMExecuteQuery(
-			HQL,
-			{
-				siteNameStart=arguments.siteName & '%', 
-				siteNameMiddle='%, ' & arguments.siteName & ',%', 
-				siteNameLast='%,' & arguments.siteName
-			}
-			,true
-		)/>
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+
+	public void function setUp() {
+		super.setup();
 		
-		
-		<cfreturn site />
-	</cffunction>
+		variables.service = request.slatwallScope.getBean("appService");
+	}
 	
-</cfcomponent>
+	public void function deploy_AppTest(){
+		var appData = {
+			appID ='',
+			appCode="testAPP2"
+		};
+		var app = createPersistedTestEntity(entityName='app',data=appData,saveWithService=true);
+		
+	}
+}
+
 

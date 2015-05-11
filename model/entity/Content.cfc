@@ -55,15 +55,14 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="title" ormtype="string";
 	property name="allowPurchaseFlag" ormtype="boolean";
 	property name="productListingPageFlag" ormtype="boolean";
-	property name="urlTitle" ormtype="string";
-	property name="urlTitlePath" ormtype="string" length="4000";
+	property name="urlTitle" ormtype="string" length="4000";
 	property name="contentBody" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
 
 	// CMS Properties
 	property name="cmsContentID" ormtype="string" index="RI_CMSCONTENTID";
 	
 	// Related Object Properties (many-to-one)
-	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID";
+	property name="site" cfc="Site" fieldtype="many-to-one" fkcolumn="siteID"  hb_cascadeCalculate="true";
 	property name="parentContent" cfc="Content" fieldtype="many-to-one" fkcolumn="parentContentID";
 	property name="contentTemplateType" cfc="Type" fieldtype="many-to-one" fkcolumn="contentTemplateTypeID" hb_optionsNullRBKey="define.none" hb_optionsSmartListData="f:parentType.systemCode=contentTemplateType" fetch="join";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="contentID" inverse="true" cascade="all-delete-orphan";
@@ -159,6 +158,24 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			arrayDeleteAt(arguments.parentContent.getChildContents(), index);
 		}
 		structDelete(variables, "parentContent");
+	}
+	
+	// Site (many-to-one)
+	public void function setSite(required any site) {
+		variables.site = arguments.site;
+		if(isNew() or !arguments.site.hasContent( this )) {
+			arrayAppend(arguments.site.getContents(), this);
+		}
+	}
+	public void function removeSite(any Site) {
+		if(!structKeyExists(arguments, "Site")) {
+			arguments.Site = variables.Site;
+		}
+		var index = arrayFind(arguments.Site.getContents(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.Site.getContents(), index);
+		}
+		structDelete(variables, "Site");
 	}
 	
 	// Child Contents (one-to-many)    

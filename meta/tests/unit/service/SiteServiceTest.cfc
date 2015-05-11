@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,31 +45,48 @@
 
 Notes:
 
---->
-<cfcomponent extends="HibachiDAO">
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+
+	public void function setUp() {
+		super.setup();
+		
+		variables.service = request.slatwallScope.getBean("siteService");
+		variables.integrationService = request.slatwallScope.getBean("integrationService");
+	}
 	
-	<cffunction name="getSiteByDomainName" output="false">
-		<cfargument name="siteName" type="string" required="true" />
-		<cfset var HQL = "	FROM SlatwallSite as site 
-							WHERE site.domainNames like :siteNameStart
-							OR site.domainNames like :siteNameMiddle
-							OR site.domainNames like :siteNameLast
-							
-							"
-		/>
-		<cfset var site = ORMExecuteQuery(
-			HQL,
-			{
-				siteNameStart=arguments.siteName & '%', 
-				siteNameMiddle='%, ' & arguments.siteName & ',%', 
-				siteNameLast='%,' & arguments.siteName
+	public void function deploy_SiteTest(){
+		var siteData = {
+			siteid='',
+			siteName="xsfd2232ssaz",
+			siteCode="xsfd2232ssaz",
+			app={
+				appID ='test',
+				appName='xsfd2232ssaz',
+				appCode="xsfd2232ssaz",
+				integration={
+					integrationID='402881864c42f280014c4c9851f9016b'
+				}
 			}
-			,true
-		)/>
+		};
+		var site = createTestEntity(entityName="site",data=siteData);
 		
+		request.slatwallScope.saveEntity( site, {} );
 		
-		<cfreturn site />
-	</cffunction>
-	
-</cfcomponent>
+		//here we should assert the default content was created as well as the directories
+		assertTrue(arraylen(site.getContents()));
+		//remove directories as the unit tests do not already do that. Delete outside of validation
+		
+		directoryDelete(site.getApp().getAppPath(),true);
+		request.slatwallScope.getService("settingService").removeAllEntityRelatedSettings( entity=site );
+		// Remove any Many-to-Many relationships
+		site.removeAllManyToManyRelationships();
+		
+		// Call delete in the DAO
+		request.slatwallScope.getBean('HibachiDAO').delete(target=site);
+		request.slatwallScope.getBean('HibachiDAO').delete(target=site.getapp());
+		ormflush();
+	}
+}
+
 

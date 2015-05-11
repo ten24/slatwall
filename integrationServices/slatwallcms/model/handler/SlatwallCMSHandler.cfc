@@ -13,7 +13,7 @@ component {
 	
 	public any function getFullSitePath(required any site){
 		if(!structKeyExists(variables.fullSitePaths,arguments.site.getSiteID())){
-			variables.fullSitePaths[site.getSiteID()] = getSlatwallCMSApplication(arguments.site).Mappings['/Slatwall'] & site.getSiteID();
+			variables.fullSitePaths[site.getSiteID()] = getSlatwallCMSApplication(arguments.site).Mappings['/Slatwall'] & site.getSiteCode();
 		}
 		return variables.fullSitePaths[site.getSiteID()];
 	}
@@ -22,6 +22,7 @@ component {
 	
 	// This event handler will always get called
 	public void function setupGlobalRequestComplete() {
+		
 		if ( len( getContextRoot() ) ) {
 			variables.cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
 			variables.cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
@@ -41,40 +42,43 @@ component {
         var pathArray = listToArray(pathInfo,'/');
         var pathArrayLen = arrayLen(pathArray);
         if(pathArrayLen && pathArray[1] == 'apps'){
+        	
         	if(pathArrayLen > 1){
-        		arguments.appID = pathArray[2];
+        		arguments.appCode = pathArray[2];
         	}
         	if(pathArrayLen > 2){
-        		arguments.siteID = pathArray[3];
+        		arguments.siteCode = pathArray[3];
         	}
         	if(pathArrayLen > 3){
         		//need to figure out if we are working with a detail page type
-        		var urlTitlePathStartPosition = 4;
+        		var urlTitleStartPosition = 4;
         		if(
         			arguments.slatwallScope.setting('globalURLKeyBrand') == pathArray[4]
         			|| arguments.slatwallScope.setting('globalURLKeyProduct') == pathArray[4]
         			|| arguments.slatwallScope.setting('globalURLKeyProductType') == pathArray[4]
         		){
         			arguments.entityUrl = pathArray[4];
-        			urlTitlePathStartPosition = 5;
+        			urlTitleStartPosition = 5;
         		}else{
-        			urlTitlePathStartPosition = 4;
+        			urlTitleStartPosition = 4;
         		}
-        		arguments.contentUrlTitlePath = '';
-        		for(var i = urlTitlePathStartPosition;i <= arraylen(pathArray);i++){
+        		arguments.contenturlTitle = '';
+        		for(var i = urlTitleStartPosition;i <= arraylen(pathArray);i++){
         			if(i == arrayLen(pathArray)){
-        				arguments.contentUrlTitlePath &= pathArray[i];
+        				arguments.contenturlTitle &= pathArray[i];
         			}else{
-        				arguments.contentUrlTitlePath &= pathArray[i] & '/';
+        				arguments.contenturlTitle &= pathArray[i] & '/';
         			}
         		}
         	}
-			if(!isnull(arguments.appID)){
+			if(!isnull(arguments.appCode)){
 				//try to get a site form the domain name
 				
 				var domainNameSite = arguments.slatwallScope.getService('siteService').getCurrentRequestSite();
+				
 				if(!isnull(domainNameSite)){
-					var app = arguments.slatwallScope.getService('appService').getAppByAppID(arguments.appID);
+					
+					var app = arguments.slatwallScope.getService('appService').getAppByAppCode(arguments.appCode);
 					
 					//if siteid is not specified then try to get the first site from the app
 					if(isNull(arguments.siteID)){
@@ -82,13 +86,13 @@ component {
 							var site = app.getSites()[1];
 						}
 					}else{
-						var site = arguments.slatwallScope.getService('siteService').getSiteBySiteID(arguments.siteID);
+						var site = arguments.slatwallScope.getService('siteService').getSiteBySiteCode(arguments.siteCode);
 					}
 					//if we obtained a site and it is allowed by the domain name then prepare to render content
 					if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID()){
 						
 						// Setup the correct local in the request object for the current site
-							arguments.slatwallScope.setRBLocale( arguments.slatwallScope.getRBLocale() );
+						arguments.slatwallScope.setRBLocale( arguments.slatwallScope.getRBLocale() );
 						
 						// Setup the correct app in the request object
 						arguments.slatwallScope.setApp( app );
@@ -104,7 +108,8 @@ component {
 						if(directoryExists(sitePath)) {
 							
 							var slatwallCMSApplication = getSlatwallCMSApplication(site);
-							slatwallCMSApplication.runRequestActions();
+							
+							//slatwallCMSApplication.runRequestActions();
 							slatwallCMSApplication.generateRenderedContent(argumentCollection=arguments);
 						}else{
 							throw('site directory does not exist for ' & site.getSiteName());
@@ -114,6 +119,8 @@ component {
 			}
 		}
 	}
+	
+	
 		/*
 		
         

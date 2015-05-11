@@ -96,7 +96,7 @@ component {
 	
 	function generateRenderedContent() {
 		var site = arguments.slatwallScope.getSite();
-		var templatePath = site.getApp().getAppRootPath() & '/' & site.getSiteID() & '/templates/';
+		var templatePath = site.getApp().getAppRootPath() & '/' & site.getSiteCode() & '/templates/';
 		var contentPath = '';
 		var templateBody = '';
 		
@@ -130,7 +130,7 @@ component {
 			var entityTemplateContent = arguments.slatwallScope.getService("contentService").getContent( entityDisplayTemplateSetting );;
 			if(!isnull(entityTemplateContent)){
 				arguments.slatwallScope.setContent( entityTemplateContent );
-				var contentTemplateFile = entityTemplateContent.Setting('contentTemplateFile');
+				var contentTemplateFile = entityTemplateContent.setting('contentTemplateFile',[site]);
 				if(!isNull(contentTemplateFile)){
 					
 					contentPath = templatePath & contentTemplateFile;
@@ -144,19 +144,19 @@ component {
 				throw('no content for entity');
 			}
 		}else{
-			if(!isNull(arguments.contentUrlTitlePath)){
+			if(!isNull(arguments.contenturlTitle)){
 			
 				//now that we have the site directory, we should see if we can retrieve the content via the urltitle and site
-				var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitle(site.getSiteID(),arguments.contentUrlTitlePath);
+				var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitle(site.getSiteID(),arguments.contenturlTitle);
 			}else{
 				var content = arguments.slatwallScope.getService('contentService').getDefaultContentBySite(site);
 			}
 			
 			if(isNull(content)){
-				throw('content does not exists for #arguments.contentUrlTitlePath#');
+				throw('content does not exists for #arguments.contenturlTitle#');
 			}
 			//now that we have the content, get the file name so that we can retrieve it form the site's template directory
-			var contentTemplateFile = content.Setting('contentTemplateFile');
+			var contentTemplateFile = content.Setting('contentTemplateFile',[site]);
 			
 			//templatePath relative to the slatwallCMS
 			contentPath = templatePath & contentTemplateFile;
