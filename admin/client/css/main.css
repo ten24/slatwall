@@ -306,9 +306,6 @@ a:hover {
   width: 30px;
   text-align: center;
 }
-.table-responsive::-webkit-scrollbar {
-  display: none;
-}
 button::-moz-focus-inner {
   border: 0;
 }
@@ -398,10 +395,6 @@ label {
 label.error {
   font-weight: normal;
   color: #da5757;
-}
-.s-clear-fix {
-  display: inline-block;
-  width: 100%;
 }
 input[type="file"] {
   display: block;
@@ -776,7 +769,6 @@ select.error {
 .table > tbody > tr > td.admin.admin2,
 .table > thead > tr > td.admin.admin1,
 .table > tbody > tr > td.admin.admin1 {
-  text-align: center;
   width: 75px;
 }
 .table > thead > tr > td.admin.admin3,
@@ -1890,7 +1882,7 @@ tabel .s-table-header {
 .s-add-filter h4 i {
   float: right;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 18px;
   color: #e6e6e6;
 }
 .s-add-filter h4 i:after {
@@ -1945,8 +1937,7 @@ tabel .s-table-header {
   z-index: 10;
   padding: 0px 10px;
 }
-.s-add-filter > .row > h4,
-.s-add-filter .s-add-filter-wrapper > h4 {
+.s-add-filter > .row > h4 {
   margin-top: 0px;
   padding: 8px 15px;
   background-color: #606060;
@@ -2196,7 +2187,6 @@ tabel .s-table-header {
   margin-right: 5px;
 }
 .s-j-draggablePanelList .s-pannel-name .s-pannel-title {
-  cursor: pointer;
   color: #666666;
   background: none;
 }
@@ -2253,12 +2243,19 @@ tabel .s-table-header {
   position: absolute;
   left: 53px;
   top: 0px;
-  width: 230px;
-  z-index: 3000;
+  width: 276px;
+  z-index: 1000;
   background-color: #f2f2f2;
   height: 40px;
   padding-left: 10px;
-  display: none;
+}
+.s-pannel-name .s-pannel-title-edit {
+  color: #428bca;
+  background: none !important;
+}
+.s-pannel-name .s-pannel-title-edit:hover {
+  color: #245682;
+  background: none !important;
 }
 .s-title-edit-menu .selectboxit-arrow-container {
   width: 20px;
@@ -2771,9 +2768,6 @@ tabel .s-table-header {
   -webkit-background-clip: padding-box !important;
   background-clip: padding-box !important;
 }
-.s-bundle-add-items-inner .s-bundle-add-obj .s-last li:last-child a {
-  color: #fff;
-}
 .s-bundle-add-items .s-bundle-add-obj {
   background: #f2f2f2;
   margin-bottom: 4px;
@@ -2781,8 +2775,6 @@ tabel .s-table-header {
   border: 1px solid #e6e6e6;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 3px;
-  display: inline-block;
-  width: 100%;
 }
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details {
   font-size: 12px;
@@ -2801,7 +2793,7 @@ tabel .s-table-header {
 }
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add {
   display: inline-block;
-  width: 34px;
+  width: auto;
   float: left;
   font-size: 12px;
   height: 33px;
@@ -2830,7 +2822,6 @@ tabel .s-table-header {
   height: 35px;
   padding-top: 8px;
   float: right;
-  color: #666;
 }
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a.s-edit {
   background-color: #f2f2f2;
@@ -2843,8 +2834,6 @@ tabel .s-table-header {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  color: #666;
-  right: -5px;
 }
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details-add a.s-edit:hover {
   background-color: #E7E5E5;
@@ -2867,10 +2856,9 @@ tabel .s-table-header {
 }
 .s-bundle-add-obj .s-last {
   float: right;
-  border-left: 1px solid #DDD;
 }
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj.s-no-edit .s-item-type {
-  background-color: #666666;
+  background-color: #b3b3b3;
 }
 .s-bundle-add-items .s-order-item-options {
   margin-bottom: 0px;
@@ -2881,7 +2869,7 @@ tabel .s-table-header {
   left: 5px;
   line-height: 33px;
   text-align: center;
-  background-color: #666666;
+  background-color: #b3b3b3;
   color: #ffffff;
   font-size: 11px;
 }
@@ -3866,9 +3854,6 @@ tabel .s-table-header {
   background-color: #f2f2f2;
   padding: 6px 15px;
 }
-.s-panel-header-info .s-header-detail dd {
-  margin-bottom: 18px;
-}
 .s-panel-header-info .s-header-detail .s-total {
   border-top: 2px solid #f2f2f2;
   font-weight: bold;
@@ -4496,3 +4481,4 @@ a.disabled > i.hibachi-ui-radio-checked {
 .paginationpages0, .paginationpages1 {
   display:none;
 }
+

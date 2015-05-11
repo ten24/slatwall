@@ -7,7 +7,7 @@ var listingUpdateCache = {
 var textAutocompleteCache = {
 	onHold: false,
 	autocompleteField: undefined,
-	data: {},
+	data: {}
 };
 var globalSearchCache = {
 	onHold: false
@@ -716,7 +716,8 @@ function setupEventHandlers() {
 			success: function( r ) {
 				removeLoadingDiv( updateTableID );
 				if(r.success) {
-					listingDisplayUpdate(updateTableID, {});
+					location.reload();
+					listingDisplayUpdate(updateTableID, {});	
 				} else {
 
 					if(("preProcessView" in r)) {

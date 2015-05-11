@@ -122,7 +122,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getContentDAO().getContentByCMSContentIDAndCMSSiteID( argumentCollection=arguments );
 	}
 	
-	public any function getContentBySiteIDAndUrlTitle(required string siteID, required string urlTitle){
+	public any function getContentBySiteIDAndUrlTitle(required string siteID, required string urlTitlePath){
 		return getContentDao().getContentBySiteIDAndUrlTitle(argumentCollection=arguments);
 	}
 	

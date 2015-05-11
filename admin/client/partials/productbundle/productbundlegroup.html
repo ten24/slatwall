@@ -220,7 +220,7 @@
 												<li ng-repeat="searchOption in searchOptions.options">
 													<a 	
 														ng-bind="searchOption.name"
-														ng-click="searchOptions.setSelected(searchOption)"
+														ng-click="searchOptions.setSelected(searchOption); resetCurrentCount()"
 														></a>
 												</li>
 											</ul>
@@ -229,7 +229,7 @@
 											placeholder="Search {{searchOptions.selected.name}} ..."
 											type="text"
 											ng-model="productBundleGroupFilters.keyword"
-											ng-change="productBundleGroupFilters.getFiltersByTerm(productBundleGroupFilters.keyword,searchOptions.selected)"
+											ng-change="productBundleGroupFilters.getFiltersByTerm(productBundleGroupFilters.keyword,searchOptions.selected); resetCurrentCount();"
 											>
 									</div>
 									<!-- Options items -->
@@ -264,8 +264,8 @@
 											</div>
 											<!-- //Selected filters -->
 											<!-- Load more button NOTE: the disabled class should be added when the button is loading and removed when it's not-->
-											<div class="s-load-more">
-												<button class="btn s-btn-dgrey btn-sm disabled">Load More <i class="fa fa-refresh fa-spin"></i><span>(Showing 10 of 178)</span></button>
+											<div class="s-load-more" ng-click="increaseCurrentCount(); productBundleGroupFilters.getFiltersByTerm(productBundleGroupFilters.keyword,searchOptions.selected);">
+												<button class="{'btn s-btn-dgrey btn-sm disabled' : loading === true, 'btn s-btn-dgrey btn-sm' : loading}">Load More <i class="fa fa-refresh fa-spin" ng-show="loading"></i><span ng-if="!showAll">(Showing {{pageRecordsStart}} to {{pageRecordsEnd}} of {{recordsCount}})</span></button>
 											</div>
 											<!-- //Load more button -->
 										</div>
