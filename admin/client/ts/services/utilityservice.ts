@@ -44,29 +44,34 @@ angular.module('slatwalladmin')
 				var splitString = list.split(delimiter);
 				return splitString.length;
 			},
-			arraySorter:function(array, keyToSortBy){
-				array.sort(function(a, b){
-					if(angular.isDefined(keyToSortBy)){
-						if(a[keyToSortBy]< b[keyToSortBy]){
-				            return -1;
-				        }else if(a[keyToSortBy] > b[keyToSortBy]){
-				            return 1;
-				        }else{
-				            return 0;   
-				        }
-					}else{
-						if(a < b){
-				            return -1;
-				        }else if(a > b){
-				            return 1;
-				        }else{
-				            return 0;   
-				        }
-					}
-				});
-				return array;
-			}
-		};
+			arraySorter:function(array, keysToSortBy){
+                console.log("here again and again");
+                console.log(keysToSortBy);
+                var key1 = keysToSortBy[0];
+                console.log(key1);
+               // var key2 = keysToSortBy[1];
+             
+                array.sort(function(a, b) {
+                    if (a.key1 > b.key1) {
+                        return 1;
+                    }
+                    if (a.key1 < b.key1) {
+                        return -1;
+                    }
+                    /*if (a.key1 === b.key1) {
+                        if (a.key2 > b.key2) {
+                            return 1;
+                        }
+                        if (a.key2 < b.key2) {
+                            return -1;
+                        }
+                    }*/
+                    // a must be equal to b
+                    return 0;
+                });
+                return array;
+            }
+        };
 		
 		return utilityService;
 	}

@@ -154,7 +154,8 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', ['$http', '$lo
                     }
                     _loadingCount--;
                     if (_loadingCount == 0) {
-                      scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "type");
+                      $log.debug("superduper and again?");
+                      scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, ["type"]);
                       $log.debug(scope.productBundleGroupFilters.value);
                     }
                     scope.loading = false;
