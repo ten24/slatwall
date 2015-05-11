@@ -14,8 +14,13 @@
 				#rc.sku.getImage(width=100, height=100)#
 			</div>
 			<hr />
+			<cfif !isnull(rc.orderItem.getAppliedPriceGroup())>
+				<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="appliedPriceGroup" edit="false" />	
+			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="price" edit="#rc.edit#" />
 			<hb:HibachiPropertyDisplay object="#rc.orderItem#" property="quantity" edit="#rc.edit#" />
+			
+			
 		</hb:HibachiPropertyList>
 		
 		<hb:HibachiPropertyList divclass="col-md-6">

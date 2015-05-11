@@ -75,6 +75,10 @@ component  extends="HibachiService" accessors="true" {
 		return rates;
 	}
 
+	public any function getCurrencyByCurrencyCode(required string currencyCode){
+		return getCurrencyDAO().getCurrencyByCurrencyCode(arguments.currencyCode);
+	}
+	
 	public array function getCurrencyOptions() {
 		var csl = this.getCurrencySmartList();
 		

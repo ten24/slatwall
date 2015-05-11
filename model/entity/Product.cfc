@@ -752,9 +752,23 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return 0;
 	}
 	
+	public any function getPriceByCurrencyCode(required string currencyCode) {
+		if( structKeyExists(variables, "defaultSku") ) {
+			return getDefaultSku().getPriceByCurrencyCode(arguments.currencyCode);
+		} 
+		// Product without a sku 
+		return 0;
+	}
+
 	public any function getRenewalPrice() {
 		if( structKeyExists(variables, "defaultSku") ) {
 			return getDefaultSku().getRenewalPrice();
+		}
+	}
+
+	public any function getRenewalPriceByCurrencyCode(required string currencyCode) {
+		if( structKeyExists(variables, "defaultSku") ) {
+			return getDefaultSku().getRenewalPriceByCurrencyCode(arguments.currencyCode);
 		}
 	}
 	
@@ -763,11 +777,22 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 			return getDefaultSku().getListPrice();
 		}
 	}
+
+	public any function getListPriceByCurrencyCode(required string currencyCode) {
+		if( structKeyExists(variables,"defaultSku") ) {
+			return getDefaultSku().getListPriceByCurrencyCode(arguments.currencyCode);
+		}
+	}
 	
 	public any function getLivePrice() {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getLivePrice();
 		}
+	}
+	public any function getLivePriceByCurrencyCode(required string currencyCode){
+		if( structKeyExists(variables,"defaultSku") ) {
+			return getDefaultSku().getLivePriceByCurrencyCode(arguments.currencyCode);
+	 	}
 	}
 	
 	public any function getCurrentAccountPrice() {
@@ -776,6 +801,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		}
 	}
 	
+	public any function getCurrentAccountPriceByCurrencyCode(required string currencyCode) {
+		if( structKeyExists(variables,"defaultSku") ) {
+			return getDefaultSku().getCurrentAccountPriceByCurrencyCode(arguments.currencyCode);
+		}
+	}
+
 	public any function getSalePrice() {
 		if( structKeyExists(variables,"defaultSku") ) {
 			return getDefaultSku().getSalePrice();
@@ -785,6 +816,15 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 		return 0;
 	}
 	
+
+	public any function getSalePriceByCurrencyCode() {
+		if( structKeyExists(variables,"defaultSku") ) {
+			return getDefaultSku().getSalePriceByCurrencyCode(arguments.currencyCode);
+		} else if (arrayLen(getSkus())) {
+			getSkus()[1].getSalePriceByCurrencyCode(arguments.currencyCode);
+		}
+		return 0;
+	}
 	
 	public any function getSalePriceDiscountType() {
 		if(!structKeyExists(variables, "salePriceDiscountType")) {
