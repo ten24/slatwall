@@ -9,7 +9,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 	// ===================== START: Logical Methods ===========================
 
 	public void function setPropperSession() {
-	
+		var requestHeaders = getHTTPRequestData();
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
 		if(!hasSessionValue("sessionID")) {
 			setSessionValue('sessionID', '');
@@ -46,15 +46,20 @@ component output="false" accessors="true" extends="HibachiService"  {
 			}
 		
 		
-		} else if(Len("#request.context.header.request_token#") && Len("#request.context.header.deviceID#")){
+		} else if( StructKeyExists(requestHeaders.headers, "request_token") ){
 			//If the API 'cookie' and deviceID were passed directly to the API, we can use that for setting the session.
-			var NPSID = "#request.context.header.request_token#";
-			var deviceID = "#request.context.header.deviceID#";
+			if ( StructKeyExists(equestHeaders.headers, "request_token") && StructKeyExists(equestHeaders.headers, "deviceID") ){
+			var NPSID = "#requestHeaders.headers.request_token#";
+			var deviceID = "#requestHeaders.headers.deviceID#";
 			var sessionEntity = this.getSessionBySessionCookieNPSID( NPSID, true );
 			//Only allow a session to be set for the deviceID that matches that session id.
 			
 			foundWithNPSID = true;
 			setSessionValue('sessionID', sessionEntity.getSessionID());
+			
+			}
+			
+			
 			// Last option is to just create a new session record	
 		}else {
 			

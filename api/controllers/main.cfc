@@ -30,7 +30,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public any function before( required struct rc ) {
 		arguments.rc.apiRequest = true;
 		getFW().setView("public:main.blank");
-
+		arguments.rc.requestHeaderData = getHTTPRequestData();
+		
 		//If someone is hitting the public API (scope), use API authentication to authenticate them.
 		//var baseURL = "#arguments.rc.$.slatwall.getUrl#";
 		/*
@@ -332,6 +333,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			handle accessing collections by id
 		*/
 		param name="arguments.rc.propertyIdentifiers" default="";
+		
 		//first check if we have an entityName value
 		if(!structKeyExists(arguments.rc, "entityName")) {
 			//show hibachi scope stuff
@@ -345,6 +347,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				var publicService = getService('PublicService');
 				//Set the flag so Public service knowns this is an API request.
 				publicService.setIsAPIRequest(true);
+				//writeDump(var="#getHTTPRequestData()#", top=2);abort;
 					var result = publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
 					if (isNull(result)){
 						publicService.setResponse(false, 500, '', arguments.rc, true);
