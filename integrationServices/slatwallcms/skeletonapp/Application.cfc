@@ -96,7 +96,7 @@ component {
 	
 	function generateRenderedContent() {
 		var site = arguments.slatwallScope.getSite();
-		var templatePath = site.getApp().getAppRootPath() & '/' & site.getSiteID() & '/templates/';
+		var templatePath = site.getApp().getAppRootPath() & '/' & site.getSiteCode() & '/templates/';
 		var contentPath = '';
 		var templateBody = '';
 		
