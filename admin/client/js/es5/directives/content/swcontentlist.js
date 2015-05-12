@@ -48,7 +48,7 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           }]}];
         var options = {
           currentPage: scope.currentPage,
-          pageShow: pageShow,
+          pageShow: paginationService.getPageShow(),
           keywords: scope.keywords
         };
         var column = {};

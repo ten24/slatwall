@@ -56,7 +56,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="allowPurchaseFlag" ormtype="boolean";
 	property name="productListingPageFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" length="4000";
-	property name="contentBody" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
+	property name="contentBody" ormtype="string" length="4000" ;
 
 	// CMS Properties
 	property name="cmsContentID" ormtype="string" index="RI_CMSCONTENTID";
@@ -101,8 +101,8 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	// ============ START: Non-Persistent Property Methods =================
 	public array function getSiteOptions(){
 		if(!structKeyExists(variables,'siteOptions')){
-			var siteCollection = getService('hibachiService').getSiteCollection();
-			siteCollection.getCollectionConfigStruct().columns = [
+			var siteCollectionList = getService('hibachiService').getSiteCollectionList();
+			siteCollectionList.getCollectionConfigStruct().columns = [
 				{
 					propertyIdentifier='siteName'
 				},
@@ -110,7 +110,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 					propertyIdentifier="siteID"
 				}
 			];
-			var sites = siteCollection.getRecords();
+			var sites = siteCollectionList.getRecords();
 			variables.siteOptions = [];
 			
 			for(var site in sites){
@@ -124,8 +124,27 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			}
 		}
 		
-		
 		return variables.siteOptions;
+	}
+	
+	public array function getParentContentOptions(any siteID){
+		
+		if(isNull(arguments.siteID)){
+			var site = this.getSite();
+		}else{
+			var site = getService('siteService').getSite(arguments.siteID);
+		}
+		var contents = site.getContents();
+		var contentOptions = [];
+		for(var content in contents){
+			var contentOption = {};
+			contentOption['name'] = content.getTitle();
+			contentOption['value'] = content.getContentID();
+			contentOption['parentID'] = content.getParentContentID();
+			arrayAppend(contentOptions,contentOption);
+		}
+		
+		return contentOptions;
 	}
 	
 	public string function getFullTitle(){

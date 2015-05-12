@@ -79,7 +79,7 @@ angular.module('slatwalladmin')
                     
 	        		var options = {
                         currentPage:scope.currentPage, 
-                        pageShow:pageShow, 
+                        pageShow:paginationService.getPageShow(), 
                         keywords:scope.keywords
                     };
                     var column = {};

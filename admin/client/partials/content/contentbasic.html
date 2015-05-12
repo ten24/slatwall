@@ -41,12 +41,29 @@
 			</span>
 			<span  	sw-property-display
 					data-object="content"
+					data-options-arguments="{property:'contentTemplateType'}"
+					data-eager-load-options="true"
+					data-property="contentTemplateType"
+					data-editing="true"
+			></span>
+			<span  	sw-property-display
+					ng-if="content.data.site"
+					data-object="content"
 					data-options-arguments="{property:'site'}"
 					data-eager-load-options="true"
 					data-property="site"
 					data-editing="true"
 					data-editable="!content.$$isPersisted()"
-			>
+			></span>
+			<span  	sw-property-display
+			
+					ng-if="content.data.parentContent && content.data.site.data.siteID && content.$$isPersisted()"
+					data-object="content"
+					data-options-arguments="{property:'parentContent',argument1:content.data.site.data.siteID}"
+					data-eager-load-options="true"
+					data-property="parentContent"
+					data-editing="true"
+			></span>
 		</dl>
 	</div>
 </div>

@@ -16,6 +16,17 @@ angular.module('slatwalladmin')
 			restrict: 'EA',
 			templateUrl:contentPartialsPath+"contentbasic.html",
 			link: function(scope, element,attrs){
+                if(!scope.content.$$isPersisted()){
+                    var site = $slatwall.newSite();
+                    scope.content.$$setSite(site);
+                    var parentContent = $slatwall.newContent();
+                    scope.content.$$setParentContent(parentContent);
+                    var contentTemplateType = $slatwall.newType();
+                    scope.content.$$setContentTemplateType(contentTemplateType);
+                }else{
+                    scope.content.$$getSite();
+                    scope.content.$$getParentContent();
+                }
 			}
 		};
 	}

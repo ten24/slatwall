@@ -43,7 +43,7 @@
 			return smartList;
 		}
 		
-		public any function getCollection(string entityName, struct data={}){
+		public any function getCollectionList(string entityName, struct data={}){
 			var collection = getService('collectionService').newCollection(argumentcollection=arguments);
 			collection.setCollectionObject(arguments.entityName);
 			return collection;
@@ -281,8 +281,8 @@
 			if ( lCaseMissingMethodName.startsWith( 'get' ) ) {
 				if(right(lCaseMissingMethodName,9) == "smartlist") {
 					return onMissingGetSmartListMethod( missingMethodName, missingMethodArguments );
-				} else if(right(lCaseMissingMethodName,10) == "collection"){
-					return onMissingGetCollectionMethod( missingMethodName, missingMethodArguments );
+				} else if(right(lCaseMissingMethodName,14) == "collectionlist"){
+					return onMissingGetCollectionListMethod( missingMethodName, missingMethodArguments );
 				} else {
 					return onMissingGetMethod( missingMethodName, missingMethodArguments );
 				}
@@ -385,9 +385,9 @@
 		 * NOTE: Ordered arguments only--named arguments not supported.
 		 */
 		 
-		private function onMissingGetCollectionMethod( required string missingMethodName, required struct missingMethodArguments ){
+		private function onMissingGetCollectionListMethod( required string missingMethodName, required struct missingMethodArguments ){
 			var collectionArgs = {};
-			var entityNameLength = len(arguments.missingMethodName) - 13;
+			var entityNameLength = len(arguments.missingMethodName) - 17;
 			
 			var entityName = missingMethodName.substring( 3,entityNameLength + 3 );
 			var data = {};
@@ -395,7 +395,7 @@
 				data = missingMethodArguments[ 1 ];
 			}
 			
-			return getCollection(entityName=entityName, data=data);
+			return getCollectionList(entityName=entityName, data=data);
 		} 
 		 
 	

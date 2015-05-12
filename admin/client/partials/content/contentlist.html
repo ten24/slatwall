@@ -20,11 +20,20 @@
 		<div class="col-xs-6 s-no-padding-left">
 			<ul class="list-inline list-unstyled">
 				<li>
-					<h4></h4>
+					<span sw-pagination-bar
+						data-collection="collection"
+						data-current-page="currentPage"
+						data-page-show="pageShow"
+						data-page-start="pageStart"
+						data-page-end="pageEnd"
+						data-records-count="recordsCount"
+						data-get-collection="getCollection()"
+						>
+					</span>
 				</li>
 			</ul>
 		</div>
-
+		
 		<div class="col-xs-6 s-table-view-options s-no-padding-right">
 			<ul class="list-inline list-unstyled">
 				
@@ -56,6 +65,7 @@
 					</div>
 					<!-- s-select-list-wrapper -->
 				</li>
+				
 				<!--
 				<li>
 					<div class="btn-group navbar-left dropdown">
@@ -92,4 +102,5 @@
 			</table>
 		</div>
 	</content>	
+	
 </section>
