@@ -345,8 +345,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			//Is this request for the public API?
 			}else if(structKeyExists(arguments.rc, "context")){//If we have a context other than GET then perform work on public service using that context.
 				var publicService = getService('PublicService');
-				//Set the flag so Public service knowns this is an API request.
-				publicService.setIsAPIRequest(true);
+
 				//writeDump(var="#getHTTPRequestData()#", top=2);abort;
 					var result = publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
 					if (isNull(result)){
@@ -462,7 +461,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(structKeyExists(arguments.rc, "context") && arguments.rc.context != "save" && arguments.rc.context != "delete" && !StructKeyExists(arguments.rc, "entityName")){
 				//If we have a context other than GET then perform work on public service using that context.
 				var publicService = getService('PublicService');
-				publicService.setIsAPIRequest(true); //Set this so the Public service knows its handling an API request.
 				var result = publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
 				if (isNull(result)){
 					publicService.setResponse(false, 500, '', arguments.rc, true);
