@@ -178,8 +178,7 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', [
                                             // If the loadingCount drops to 0, then we can update scope
                                             if (_loadingCount == 0) {
                                                 //This sorts the array of objects by the objects' "type" then "name"
-                                                $log.debug("superduper and again?");
-                                                scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, ["type"]);
+                                                scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, ["type", ["name", "asc"]]);
                                                 $log.debug(scope.productBundleGroupFilters.value);
                                             }
                                             scope.loading = false;

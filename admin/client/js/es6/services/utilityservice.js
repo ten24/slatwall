@@ -36,31 +36,44 @@ angular.module('slatwalladmin').factory('utilityService', [
                 var splitString = list.split(delimiter);
                 return splitString.length;
             },
-            arraySorter: function (array, keysToSortBy) {
-                console.log("here again and again");
-                console.log(keysToSortBy);
-                var key1 = keysToSortBy[0];
-                console.log(key1);
-                // var key2 = keysToSortBy[1];
-                array.sort(function (a, b) {
-                    if (a.key1 > b.key1) {
-                        return 1;
+            //To use this sorter pass in arguments first by object to sort
+            //Then an array where the first index is the first string to sort by
+            //And the second index is another array containing the second string to sort by as well as ascending vs descending
+            //Example: arraySorter(array, ["type",["name","asc"]])
+            arraySorter: function (objArray, properties /*, primers*/) {
+                var primers = arguments[2] || {};
+                properties = properties.map(function (prop) {
+                    if (!(prop instanceof Array)) {
+                        prop = [prop, 'asc'];
                     }
-                    if (a.key1 < b.key1) {
-                        return -1;
+                    if (prop[1].toLowerCase() == 'desc') {
+                        prop[1] = -1;
                     }
-                    /*if (a.key1 === b.key1) {
-                        if (a.key2 > b.key2) {
-                            return 1;
-                        }
-                        if (a.key2 < b.key2) {
-                            return -1;
-                        }
-                    }*/
-                    // a must be equal to b
-                    return 0;
+                    else {
+                        prop[1] = 1;
+                    }
+                    return prop;
                 });
-                return array;
+                function valueCmp(x, y) {
+                    return x > y ? 1 : x < y ? -1 : 0;
+                }
+                function arrayCmp(a, b) {
+                    var arr1 = [], arr2 = [];
+                    properties.forEach(function (prop) {
+                        var aValue = a[prop[0]], bValue = b[prop[0]];
+                        if (typeof primers[prop[0]] != 'undefined') {
+                            aValue = primers[prop[0]](aValue);
+                            bValue = primers[prop[0]](bValue);
+                        }
+                        arr1.push(prop[1] * valueCmp(aValue, bValue));
+                        arr2.push(prop[1] * valueCmp(bValue, aValue));
+                    });
+                    return arr1 < arr2 ? -1 : 1;
+                }
+                objArray.sort(function (a, b) {
+                    return arrayCmp(a, b);
+                });
+                return objArray;
             }
         };
         return utilityService;
