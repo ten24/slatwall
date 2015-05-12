@@ -56,7 +56,6 @@ angular.module('slatwalladmin').factory('productBundleService', ['$log', '$slatw
           }
         }
       }
-      productBundelGroupFilters = utilityService.arraySorter(productBundelGroupFilters, "name");
       $log.debug(productBundelGroupFilters);
       return productBundelGroupFilters;
     }
