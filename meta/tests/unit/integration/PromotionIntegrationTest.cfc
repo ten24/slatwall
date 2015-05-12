@@ -264,6 +264,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertEquals(order.getOrderItems()[1].getSku().getSkuID(),'8a8080834721af1a0147220714810083');
 
 		//Assert that there is a globally added promotional discount due to the promo with no code that was created added
+		assert(order.getDiscountTotal() > 0);
 	}
 
 }
