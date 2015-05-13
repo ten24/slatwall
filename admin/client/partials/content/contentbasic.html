@@ -46,6 +46,7 @@
 					data-property="contentTemplateType"
 					data-editing="true"
 			></span>
+			
 			<span  	sw-property-display
 					ng-if="content.data.site"
 					data-object="content"
@@ -53,16 +54,17 @@
 					data-eager-load-options="true"
 					data-property="site"
 					data-editing="true"
-					data-editable="!content.$$isPersisted()"
+					data-editable="false"
 			></span>
 			<span  	sw-property-display
 			
-					ng-if="content.data.parentContent && content.data.site.data.siteID && content.$$isPersisted()"
+					ng-if="content.data.parentContent && content.data.site.data.siteID"
 					data-object="content"
 					data-options-arguments="{property:'parentContent',argument1:content.data.site.data.siteID}"
 					data-eager-load-options="true"
 					data-property="parentContent"
 					data-editing="true"
+					data-editable="true"
 			></span>
 		</dl>
 	</div>

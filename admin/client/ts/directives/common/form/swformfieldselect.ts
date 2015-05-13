@@ -58,9 +58,7 @@ angular.module('slatwalladmin')
 							scope.propertyDisplay.options = value.data;
                             
                             //sort array by name
-                            var optionSortArray = utilityService.arraySorter(scope.propertyDisplay.options,'name','asc');
-                            console.log('optionSortArray');
-                            console.log(optionSortArray);
+                           // var optionSortArray = utilityService.arraySorter(scope.propertyDisplay.options,'name','asc');
                             
                             //sort by parrent
                            /* for(var i = 0; i < optionSortArray.length - 1; i++){
@@ -77,7 +75,7 @@ angular.module('slatwalladmin')
                             }*/
                             
 							
-                            scope.propertyDisplay.options = optionSortArray;
+                            //scope.propertyDisplay.options = optionSortArray;
                             
 							if(selectType === 'object'
 							){
@@ -86,11 +84,11 @@ angular.module('slatwalladmin')
                                 }
                                 
 								if(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID() === ''){
-									scope.propertyDisplay.object.data['selected'+scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
+									//scope.propertyDisplay.object.data['selected'+scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
 									scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $slatwall['new'+scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
 									scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[0].value;
 								}else{
-                                    scope.propertyDisplay.object.data['selected'+scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
+                                   // scope.propertyDisplay.object.data['selected'+scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
 									for(var i in scope.propertyDisplay.options){
                                         if(angular.isObject(scope.propertyDisplay.options[i].value)){
                                             if(scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]){

@@ -25,6 +25,12 @@ angular.module('slatwalladmin').directive('swContentList', [
                             isSearchable: false
                         },
                         {
+                            propertyIdentifier: '_content.site.siteID',
+                            isVisible: false,
+                            ormtype: 'id',
+                            isSearchable: true
+                        },
+                        {
                             propertyIdentifier: '_content.site.siteName',
                             isVisible: true,
                             ormtype: 'string',

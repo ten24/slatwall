@@ -30,20 +30,14 @@ angular.module('slatwalladmin').directive('swFormFieldSelect', ['$log', '$slatwa
           var optionsPromise = $slatwall.getPropertyDisplayOptions(scope.propertyDisplay.object.metaData.className, scope.propertyDisplay.optionsArguments);
           optionsPromise.then(function(value) {
             scope.propertyDisplay.options = value.data;
-            var optionSortArray = utilityService.arraySorter(scope.propertyDisplay.options, 'name', 'asc');
-            console.log('optionSortArray');
-            console.log(optionSortArray);
-            scope.propertyDisplay.options = optionSortArray;
             if (selectType === 'object') {
               if (angular.isUndefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])) {
                 scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $slatwall['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
               }
               if (scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID() === '') {
-                scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
                 scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $slatwall['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
                 scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[0].value;
               } else {
-                scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
                 for (var i in scope.propertyDisplay.options) {
                   if (angular.isObject(scope.propertyDisplay.options[i].value)) {
                     if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {

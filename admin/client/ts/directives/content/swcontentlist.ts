@@ -34,6 +34,12 @@ angular.module('slatwalladmin')
                             ormtype:'id',
                             isSearchable:false
                         },
+                         {
+                            propertyIdentifier:'_content.site.siteID',
+                            isVisible:false,
+                            ormtype:'id',
+                            isSearchable:true
+                        },
                         {
                             propertyIdentifier:'_content.site.siteName',
                             isVisible:true,

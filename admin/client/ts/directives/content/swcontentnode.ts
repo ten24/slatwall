@@ -28,8 +28,6 @@ angular.module('slatwalladmin')
                                     scope.depth = scope.$parent.depth + 1;
                                 }
                             }
-                            
-                              
                         }
                         
                         var childContentColumnsConfig = [{
