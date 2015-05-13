@@ -14,6 +14,12 @@ angular.module('slatwalladmin').directive('swContentEditor', [
             templateUrl: contentPartialsPath + "contenteditor.html",
             link: function (scope, element, attrs) {
                 scope.editorOptions = CKEDITOR.editorConfig;
+                scope.onContentChange = function () {
+                    console.log('content Change');
+                    var form = formService.getForm('contentEditor');
+                    console.log(form);
+                    form.contentBody.$setDirty();
+                };
                 //                scope.saveContent = function(){
                 //                   var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.post';
                 //                   var params = {
