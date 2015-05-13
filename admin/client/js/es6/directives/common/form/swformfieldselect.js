@@ -25,7 +25,9 @@ angular.module('slatwalladmin').directive('swFormFieldSelect', [
                     $log.debug(option);
                     if (selectType === 'object') {
                         scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = option.value;
-                        scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()].$dirty = true;
+                        if (angular.isDefined(scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()])) {
+                            scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()].$dirty = true;
+                        }
                     }
                     else if (selectType === 'string') {
                         scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
