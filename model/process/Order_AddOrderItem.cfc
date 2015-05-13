@@ -546,8 +546,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(arguments.orderItem.getSku().getSkuID() != this.getSku().getSkuID()){
 			return false;
 		}
-		//check if the price is the same
-		if(arguments.orderItem.getPrice() != this.getPrice()){
+		//check if the sku price is the same (Before pricegroups and promotions are applied)
+		if(arguments.orderItem.getSkuPrice() != this.getPrice()){
 			return false;
 		}
 		//check if the instock value is the same
