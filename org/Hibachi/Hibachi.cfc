@@ -68,7 +68,7 @@ component extends="FW1.framework" {
 	
 	// Hibachi Setup
 	variables.framework.hibachi = {};
-	variables.framework.hibachi.authenticationSubsystems = "admin,public";
+	variables.framework.hibachi.authenticationSubsystems = "admin,public,api";
 	variables.framework.hibachi.debugFlag = false;
 	variables.framework.hibachi.gzipJavascript = true;
 	variables.framework.hibachi.errorDisplayFlag = false;
@@ -223,7 +223,7 @@ component extends="FW1.framework" {
 		application[ "#variables.framework.applicationKey#Bootstrap" ] = this.bootstrap;
 		
 		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount());	
-		
+		//writeDump(var=authorizationDetails, top=2);abort;
 		// Verify Authentication before anything happens
 		if(!authorizationDetails.authorizedFlag) {
 			

@@ -6,7 +6,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="hibachiUtilityService" type="any";
 	property name="cryptoService" type="any";
 	
-	this.publicMethods='';
+	
+	this.secureMethods="noSecureMethods";
 	this.anyAdminMethods='';
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getObjectOptions');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getExistingCollectionsByBaseEntity');
@@ -16,12 +17,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getResourceBundle');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayOptions');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
-	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getEventOptionsByEntityName');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'get');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'post');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'put');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
+	
+	
+	
 	
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
@@ -31,6 +34,19 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		arguments.rc.apiRequest = true;
 		getFW().setView("public:main.blank");
 		arguments.rc.requestHeaderData = getHTTPRequestData();
+		if (!StructKeyExists(arguments.rc, "data")){
+			arguments.rc["jsonData"] = {};	
+		}
+		
+			/* If this request header content type is json, serialize to json */
+			//This should move to hibachi.
+			if (StructKeyExists(arguments.rc.requestHeaderData, "content") && StructKeyExists(arguments.rc, "context") && lcase(arguments.rc.context) != "get" &&  lcase(arguments.rc.context) != "save" &&  lcase(arguments.rc.context) != "delete"){
+				//If we were sent JSON data, then deserialize it here.
+				arguments.rc.jsonData = deserializeJson(arguments.rc.requestHeaderData.content);
+				for (data in arguments.rc.jsonData){
+					arguments.rc["#data#"] = arguments.rc.jsonData["#data#"];
+				}
+			}
 		
 		//If someone is hitting the public API (scope), use API authentication to authenticate them.
 		//var baseURL = "#arguments.rc.$.slatwall.getUrl#";
@@ -347,11 +363,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				var publicService = getService('PublicService');
 
 				//writeDump(var="#getHTTPRequestData()#", top=2);abort;
-					var result = publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
-					if (isNull(result)){
-						publicService.setResponse(false, 500, '', arguments.rc, true);
-					}
-				getFW().abortController();
+					publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
+					getFW().abortController();
 			}
 	
 		} else {
@@ -461,10 +474,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(structKeyExists(arguments.rc, "context") && arguments.rc.context != "save" && arguments.rc.context != "delete" && !StructKeyExists(arguments.rc, "entityName")){
 				//If we have a context other than GET then perform work on public service using that context.
 				var publicService = getService('PublicService');
-				var result = publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
-				if (isNull(result)){
-					publicService.setResponse(false, 500, '', arguments.rc, true);
-				}
+				publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
 				getFW().abortController();
 		//------->End handling public API			
 				

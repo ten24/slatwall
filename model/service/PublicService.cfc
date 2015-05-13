@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="HibachiService" accessors="true" output="false" hint="Contains all public API scope contexts"
+component extends="HibachiService"  accessors="true" output="false" 
 {
 	property name="accountService" type="any";
 	property name="orderService" type="any";
@@ -70,7 +70,7 @@ component extends="HibachiService" accessors="true" output="false" hint="Contain
 	ArrayAppend(variables.publicContexts, {Name="Logout", Description="Logout a user account."});
 	
 	/* Gets API request data */
-	public any function geAPIRequestData() {
+	 public any function getAPIRequestData() { 
 		var headers = getHTTPRequestData();
 		return headers.headers;
 	}
@@ -754,17 +754,15 @@ component extends="HibachiService" accessors="true" output="false" hint="Contain
 	*/
 	private any function handlePublicAPICall(any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc){
 		if (arguments.rc.APIRequest){
-			if (!isNull(genericObject) && genericObject.hasErrors()){
+			var errors = genericObject.hasErrors();
+			if (!isNull(genericObject) && errors){
 				setResponse(false, onErrorCode, genericObject.getErrors(), arguments.rc, true);
-				return "_error";
-			}else {
-				setResponse(false, onErrorCode, "", arguments.rc, true);
-				return "_error";
+				return;
 			}
 			//Add the account data to the response
 			setResponse(true, onSuccessCode, arguments.responseData, arguments.rc, true);	
 			if (Len(extraData)){
-				addDataToResponse("request_token", arguments.extraData, arguments.rc);	
+				addDataToResponse("status_code_message", arguments.extraData, arguments.rc);	
 			}
 		}
 	}

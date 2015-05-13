@@ -7,7 +7,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 	property name="hibachiUtilityService" type="any";
 
 	// ===================== START: Logical Methods ===========================
-
 	public void function setPropperSession() {
 		var requestHeaders = getHTTPRequestData();
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
@@ -31,7 +30,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 				var sessionEntity = this.getSessionBySessionCookieNPSID( NPSID, true );
 				
 				//Only allow a session to be set for the deviceID that matches that session id.
-				
 				foundWithNPSID = true;
 				setSessionValue('sessionID', sessionEntity.getSessionID());
 				if ( StructKeyExists(requestHeaders.headers, "deviceID") && !Len(sessionEntity.getDeviceID())){
