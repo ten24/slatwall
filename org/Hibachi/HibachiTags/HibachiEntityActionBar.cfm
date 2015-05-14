@@ -109,9 +109,10 @@
 								</div>
 
 								<!--- Detail: Email / Print --->
-								<div class="btn-group btn-group-sm">
+								
 									<cfif arrayLen(attributes.object.getEmailTemplates()) || arrayLen(attributes.object.getPrintTemplates())>
 										<!--- Email --->
+
 										<cfif arrayLen(attributes.object.getEmailTemplates())>
 											<div class="btn-group btn-group-sm">
 												<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="##"><i class="fa fa-envelope"></i></a>
@@ -134,7 +135,7 @@
 											</div>
 										</cfif>
 									</cfif>
-								</div>
+						
 								<!--- Detail: Print --->
 
 								<!--- Detail: Additional Button Groups --->

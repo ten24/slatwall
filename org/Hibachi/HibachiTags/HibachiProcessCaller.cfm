@@ -7,9 +7,9 @@
 	<cfparam name="attributes.entity" type="any" />
 	<cfparam name="attributes.processContext" type="string" />
 	<cfparam name="attributes.hideDisabled" type="boolean" default="true" />
-	
 	<cfparam name="attributes.type" type="string" default="link">
 	<cfparam name="attributes.querystring" type="string" default="" />
+	<cfparam name="attributes.postVariables" type="string" default="" />
 	<cfparam name="attributes.text" type="string" default="">
 	<cfparam name="attributes.title" type="string" default="">
 	<cfparam name="attributes.class" type="string" default="">

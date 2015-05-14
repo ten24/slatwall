@@ -330,6 +330,35 @@
 								<ul class="dropdown-menu pull-right" role="menu">
 									<hb:HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
 								</ul>
+						</div>
+								<cfif thistag.multiselectable>
+									<!--- Listing: Email / Print --->
+									<div class="btn-group navbar-left dropdown">
+										<cfif arrayLen(thistag.exampleEntity.getListEmailTemplates()) || arrayLen(thistag.exampleEntity.getListPrintTemplates())>
+											<!--- Email --->
+											<cfif arrayLen(thistag.exampleEntity.getListEmailTemplates())>
+												<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="##"><i class="fa fa-envelope"></i></a>
+												<ul class="dropdown-menu pull-right" role="menu">
+													<cfloop array="#thistag.exampleEntity.getListEmailTemplates()#" index="template">
+														<hb:HibachiActionCaller action="admin:entity.sendEmails"  queryString="emailTemplateID=#template.getEmailTemplateID()#&redirectAction=#request.context.slatAction#" text="#template.getEmailTemplateName()#" postVariables="#thistag.exampleEntity.getPrimaryIDPropertyName()#" type="list" />
+													</cfloop>
+												</ul>
+											</cfif>
+									</div>
+									<div class="btn-group navbar-left dropdown">
+											<!--- Print --->
+											<cfif arrayLen(thistag.exampleEntity.getListPrintTemplates())>
+												<a class="btn dropdown-toggle btn-default" data-toggle="dropdown" href="##"><i class="fa fa-print"></i></a>
+												<ul class="dropdown-menu pull-right" role="menu">
+													<cfloop array="#thistag.exampleEntity.getListPrintTemplates()#" index="template">
+														<hb:HibachiProcessCaller action="admin:entity.processprint" entity="Print" processContext="addToQueue" queryString="printTemplateID=#template.getPrintTemplateID()#&printID=&redirectAction=#request.context.slatAction#" text="#template.getPrintTemplateName()#" postVariables="#thistag.exampleEntity.getPrimaryIDPropertyName()#" type="list"/>
+													</cfloop>
+												</ul>
+											</cfif>
+										</cfif>
+									</div>
+									<!--- Listing: Print --->
+								</cfif>
 								<!--- Listing: Button Groups --->
 								<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
 									<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
@@ -354,9 +383,7 @@
 											<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
 										</cfif>
 									</div>
-								</cfif>
-
-						</div>
+								</cfif>	
 					</li>
 				</ul>
 

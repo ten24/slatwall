@@ -143,6 +143,14 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.email = getEmailService().processEmail(rc.email, rc, "createFromTemplate");
 	}
 	
+	public void function sendEmails(required struct rc) {
+		getEmailService().generateAndSendFromEntityIDListAndEmailTemplateID(rc,rc.emailTemplateID);
+		renderOrRedirectFailure( defaultAction=arguments.rc.redirectAction, maintainQueryString=true, rc=arguments.rc);
+	}
+	
+	
+
+
 	// Measurement Unit
 	public void function editMeasurementUnit(required struct rc) {
 		rc.measurementUnit = getMeasurementService().getMeasurementUnit(rc.unitCode);

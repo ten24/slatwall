@@ -54,6 +54,7 @@ component entityname="SlatwallPrintTemplate" table="SwPrintTemplate" persistent=
 	property name="printTemplateObject" ormtype="string" hb_formFieldType="select";
 	property name="printTemplateFile" ormtype="string" hb_formFieldType="select";
 	property name="printContent" ormtype="string" length="4000" hb_formFieldType="wysiwyg";
+	property name="listTemplateFlag" ormtype="boolean";
 	
 	// Related Object Properties (many-to-one)
 	
