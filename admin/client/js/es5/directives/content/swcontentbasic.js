@@ -4,8 +4,6 @@ angular.module('slatwalladmin').directive('swContentBasic', ['$log', '$routePara
     restrict: 'EA',
     templateUrl: contentPartialsPath + "contentbasic.html",
     link: function(scope, element, attrs) {
-      console.log('routeParams');
-      console.log($routeParams);
       if (!scope.content.$$isPersisted()) {
         if (angular.isDefined($routeParams.siteID)) {
           var sitePromise;
@@ -21,17 +19,25 @@ angular.module('slatwalladmin').directive('swContentBasic', ['$log', '$routePara
         }
         var parentContent;
         if (angular.isDefined($routeParams.parentContentID)) {
+          var parentContentPromise;
           var options = {id: $routeParams.parentContentID};
-          parentContent = $slatwall.getContent(options);
+          parentContentPromise = $slatwall.getContent(options);
+          parentContentPromise.promise.then(function() {
+            var parentContent = parentContentPromise.value;
+            scope.content.$$setParentContent(parentContent);
+            $log.debug('contenttest');
+            $log.debug(scope.content);
+          });
         } else {
-          parentContent = $slatwall.newContent();
+          var parentContent = $slatwall.newContent();
+          scope.content.$$setParentContent(parentContent);
         }
-        scope.content.$$setParentContent(parentContent);
         var contentTemplateType = $slatwall.newType();
         scope.content.$$setContentTemplateType(contentTemplateType);
       } else {
         scope.content.$$getSite();
         scope.content.$$getParentContent();
+        scope.content.$$getContentTemplateType();
       }
     }
   };

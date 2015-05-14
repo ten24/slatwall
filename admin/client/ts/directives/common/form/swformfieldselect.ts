@@ -25,8 +25,10 @@ angular.module('slatwalladmin')
 				
 				if(angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].fieldtype)){
 					selectType = 'object';
+                    $log.debug('selectType:object');
 				}else{
 					selectType = 'string';
+                    $log.debug('selectType:string');
 				}
 				
 				
@@ -84,30 +86,40 @@ angular.module('slatwalladmin')
                                 }
                                 
 								if(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID() === ''){
-									//scope.propertyDisplay.object.data['selected'+scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
+                                    $log.debug('no ID');
+                                    $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
+									scope.propertyDisplay.object.data['selected'+scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
 									scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $slatwall['new'+scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
 									scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[0].value;
 								}else{
-                                   // scope.propertyDisplay.object.data['selected'+scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
+                                    var found = false;
 									for(var i in scope.propertyDisplay.options){
                                         if(angular.isObject(scope.propertyDisplay.options[i].value)){
+                                            $log.debug('isObject');
+                                            $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
                                             if(scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]){
                                                 scope.propertyDisplay.object.data['selected'+scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
                                                 scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
+                                                found = true;
                                                 break;
                                             }
                                         }else{
+                                            $log.debug('notisObject');
+                                            $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
                                             if(scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID()){
                                                 scope.propertyDisplay.object.data['selected'+scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
                                                 scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[i].value;
+                                                found = true;
                                                 break;
                                             }
+                                        }
+                                        if(!found){
+                                            scope.propertyDisplay.object.data['selected'+scope.propertyDisplay.property] = scope.propertyDisplay.options[0];    
                                         }
 									}
                                     
 								}
 							}else if(selectType === 'string'){
-                                console.log('is String');
 								if(scope.propertyDisplay.object.data[scope.propertyDisplay.property] !== null){
 									for(var i in scope.propertyDisplay.options){
 										if(scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]){

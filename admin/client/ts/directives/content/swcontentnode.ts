@@ -83,9 +83,12 @@ angular.module('slatwalladmin')
                             });
                             collectionListingPromise.then(function(value) {
                                 parentContentRecord.children = value.records;
+                                var table = document.getElementById("contentTable");
                                 angular.forEach(parentContentRecord.children,function(child){
                                     scope.child = child;
-                                    element.parent().append($compile('<tr class="childNode" style="margin-left:15px" sw-content-node ></tr>')(scope));
+                                    element.after($compile('<tr class="childNode" style="margin-left:15px" sw-content-node data-content-data="child"></tr>')(scope));
+                                    //element.parent().children().splice(element.index,0,)(scope));
+                                    //element.parent().append($compile('<tr class="childNode" style="margin-left:15px" sw-content-node data-content-data="child"></tr>')(scope));
                                 });
                             });
                         }
