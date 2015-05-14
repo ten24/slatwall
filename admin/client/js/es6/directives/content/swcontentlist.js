@@ -89,7 +89,8 @@ angular.module('slatwalladmin').directive('swContentList', [
                         column = {
                             propertyIdentifier: '_content.fullTitle',
                             isVisible: true,
-                            persistent: false
+                            persistent: false,
+                            isSearchable: true
                         };
                     }
                     columnsConfig.unshift(column);
@@ -101,7 +102,6 @@ angular.module('slatwalladmin').directive('swContentList', [
                         scope.collectionConfig.columns = columnsConfig;
                         scope.collection.collectionConfig = scope.collectionConfig;
                         scope.loadingCollection = false;
-                        //scope.contents = $slatwall.populateCollection(value.pageRecords,scope.collectionConfig);
                     });
                 };
                 scope.getCollection(false);

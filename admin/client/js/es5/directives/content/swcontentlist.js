@@ -69,7 +69,8 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           column = {
             propertyIdentifier: '_content.fullTitle',
             isVisible: true,
-            persistent: false
+            persistent: false,
+            isSearchable: true
           };
         }
         columnsConfig.unshift(column);
