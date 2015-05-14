@@ -95,6 +95,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 	}
 	
+	public any function saveContent(required any content, struct data={}){
+		
+		arguments.content = super.save(arguments.content, arguments.data);
+		arguments.content.createUrlTitlePath();
+		return arguments.content;	
+	}
+	
 	public any function getDefaultContentBySIte(required any site){
 		return getContentDAO().getDefaultContentBySIte(arguments.site);
 	}

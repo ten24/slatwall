@@ -18,6 +18,17 @@
 					data-editable="true"
 			>
 			</span>
+			<div class="form-group">
+				<label class="control-label col-md-3" ng-if="propertyDisplay.fieldType !== 'hidden'">
+    				<span>Full URL Path:</span>
+			    </label>
+			    <div class="col-md-9 s-form-input">
+					<p  class="form-control-static"
+			            ng-bind="content.data.urlTitlePath"
+			        </p>
+				</div>
+			</div>
+			
 			<span  	sw-property-display
 					data-object="content"
 					data-property="activeFlag"

@@ -56,6 +56,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="allowPurchaseFlag" ormtype="boolean";
 	property name="productListingPageFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" length="4000";
+	property name="urlTitlePath" ormtype="string" length="9000";
 	property name="contentBody" ormtype="string" length="4000" ;
 
 	// CMS Properties
@@ -147,6 +148,27 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		return contentOptions;
 	}
 	
+	public string function createURLTitlePath(){
+		var urlTitle = '';
+		if(!isNull(getURLtitle())){
+			urlTitle = getURLtitle();
+		}
+		var urlTitleArray = [];
+		arrayAppend(urlTitleArray,urlTitle);
+		if(!isNull(getParentContent())){
+			urlTitleArray = getParentUrlTitle(getParentContent(),urlTitleArray);
+		}
+		var urlTitlePathString = '';
+		for(var i = arraylen(urlTitleArray); i > 0; i--){
+			urlTitlePathString &= urlTitleArray[i];
+			if(i != 1){
+				urlTitlePathString &= '/';
+			}
+		}
+		setUrlTitlePath(urlTitlePathString);
+		return urlTitlePathString;
+	}
+	
 	public string function getFullTitle(){
 		var titleArray = [getTitle()];
 		if(!isNull(getParentContent())){
@@ -168,6 +190,18 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			arguments.titleArray = getParentTitle(arguments.content.getParentContent(),arguments.titleArray);
 		}
 		return arguments.titleArray;
+	}
+	
+	private array function getParentURLTitle(required any content, required array urlTitleArray){
+		var value = '';
+		if(!isNull(arguments.content.getURLTitle())){
+			value = arguments.content.getURLTitle();
+		}
+		ArrayAppend(arguments.urlTitleArray,value);
+		if(!isNull(arguments.content.getParentContent())){
+			arguments.urlTitleArray = getParentUrlTitle(arguments.content.getParentContent(),arguments.urlTitleArray);
+		}
+		return arguments.urlTitleArray;
 	}
 		
 	public string function getCategoryIDList() {
