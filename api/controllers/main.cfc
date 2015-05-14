@@ -6,8 +6,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="hibachiUtilityService" type="any";
 	property name="cryptoService" type="any";
 	
-	
-	this.secureMethods="noSecureMethods";
 	this.anyAdminMethods='';
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getObjectOptions');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getExistingCollectionsByBaseEntity');
@@ -24,8 +22,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
 	
 	
-	
-	
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
 	}
@@ -34,19 +30,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		arguments.rc.apiRequest = true;
 		getFW().setView("public:main.blank");
 		arguments.rc.requestHeaderData = getHTTPRequestData();
-		if (!StructKeyExists(arguments.rc, "data")){
-			arguments.rc["jsonData"] = {};	
-		}
-		
-			/* If this request header content type is json, serialize to json */
-			//This should move to hibachi.
-			if (StructKeyExists(arguments.rc.requestHeaderData, "content") && StructKeyExists(arguments.rc, "context") && lcase(arguments.rc.context) != "get" &&  lcase(arguments.rc.context) != "save" &&  lcase(arguments.rc.context) != "delete"){
-				//If we were sent JSON data, then deserialize it here.
-				arguments.rc.jsonData = deserializeJson(arguments.rc.requestHeaderData.content);
-				for (data in arguments.rc.jsonData){
-					arguments.rc["#data#"] = arguments.rc.jsonData["#data#"];
-				}
-			}
+		//writeDump(var=arguments.rc, top=3);abort;
 		
 		//If someone is hitting the public API (scope), use API authentication to authenticate them.
 		//var baseURL = "#arguments.rc.$.slatwall.getUrl#";
@@ -465,6 +449,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		param name="arguments.rc.context" default="save";
 		param name="arguments.rc.entityID" default="";
 		param name="arguments.rc.apiResponse.content.errors" default="";
+		var structuredData = {};
 		
 		if(isNull(arguments.rc.apiResponse.content.messages)){
 			arguments.rc.apiResponse.content['messages'] = [];
@@ -477,12 +462,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
 				getFW().abortController();
 		//------->End handling public API			
-				
-		} else if(structKeyExists(arguments.rc, 'serializedJSONData') && isSimpleValue(arguments.rc.serializedJSONData) && isJSON(arguments.rc.serializedJSONData)) {
-			var structuredData = deserializeJSON(arguments.rc.serializedJSONData);
-		
+		//Handle Developer API		
+		} else if( arguments.rc.jsonRequest ) {
+			structuredData = arguments.rc.deserializedJSONData;
 		} else {
-			var structuredData = arguments.rc;
+			structuredData = arguments.rc;
 		}
 		
 		if(structKeyExists(arguments.rc,'swProcess')){

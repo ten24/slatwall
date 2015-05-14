@@ -219,11 +219,50 @@ component extends="FW1.framework" {
 	
 	public void function setupRequest() {
 		setupGlobalRequest();
+		var httpRequestData = getHTTPRequestData();
+
+		//Set an account before checking auth in case the user is trying to login via the REST API
+		/* Handle JSON requests */
+		var hasJsonData = false;
+		if(structKeyExists(httpRequestData.headers, "content-type") && httpRequestData.headers["content-type"] == "application/json") {
+			//Automagically deserialize the JSON data if we can
+			if ( StructKeyExists(httpRequestData, "content") ){
+				//Decode from binary.
+				try {
+					var jsonString = "";
+					if (isBinary(httpRequestData.content)){
+						jsonString = charsetEncode( httpRequestData.content, "utf-8" );
+					}else{	
+						jsonString = httpRequestData.content;
+					}
+					if (isJSON(jsonString)){
+						var deserializedJson = deserializeJson(jsonString);
+						request.context["deserializedJSONData"] = deserializedJson;
+						hasJsonData = true;
+						request.context["jsonRequest"] = true;
+					}
+					}catch(any e){
+						//Could't deserialize the JSON data, should throw an error
+					}
+			}
+		}else if(structKeyExists(request.context, 'serializedJSONData') && isSimpleValue(request.context.serializedJSONData) && isJSON(request.context.serializedJSONData)) {
+			request.context["deserializedJsonData"] = deserializeJSON(request.context.serializedJSONData);
+			hasJsonData = true;
+		} 
 		
+		//<---Now that we deserialized that, check for an auth token, and if found, attach that account before checking permissions --->
+		if (hasJsonData){
+			if (StructKeyExists(request.context.deserializedJSONData, "authToken") && len(request.context.deserializedJSONData.authToken)){
+				var authTokenAccount = getHibachiScope().getDAO('hibachiDAO').getAccountByAuthToken(authToken=request.context.deserializedJSONData.authToken);
+				if(!isNull(authTokenAccount)) {
+					getHibachiScope().getSession().setAccount( authTokenAccount );
+					request.context["authorizedByToken"] = true;
+				}
+			}
+		}
 		application[ "#variables.framework.applicationKey#Bootstrap" ] = this.bootstrap;
-		
 		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount());	
-		//writeDump(var=authorizationDetails, top=2);abort;
+		
 		// Verify Authentication before anything happens
 		if(!authorizationDetails.authorizedFlag) {
 			
@@ -274,9 +313,7 @@ component extends="FW1.framework" {
 		param name="request.context.messages" default="#arrayNew(1)#";
 		
 		request.context.ajaxResponse = {};
-		
-		
-		var httpRequestData = getHTTPRequestData();
+
 		if(structKeyExists(httpRequestData.headers, "X-Hibachi-AJAX") && isBoolean(httpRequestData.headers["X-Hibachi-AJAX"]) && httpRequestData.headers["X-Hibachi-AJAX"]) {
 			request.context.ajaxRequest = true;
 		}
