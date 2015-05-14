@@ -88,7 +88,15 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 		return variables.files;
 	}
-
+	
+	public any function getFilesSmartList(){
+		if(!structKeyExists(variables, "filesSmartList")) {
+			arguments.baseID = getPrimaryIDValue();
+			variables.filesSmartList = getService("fileService").getRelatedFilesSmartListForEntity(argumentCollection=arguments);
+		}
+		return variables.filesSmartList;
+	}
+	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
@@ -99,14 +107,6 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 	// @hint helper function to return the details of a setting
 	public struct function getSettingDetails(required any settingName, array filterEntities=[]) {
 		return getService("settingService").getSettingDetails(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
-	}
-	
-	// @hint helper function to return the details of a setting
-	public any function getSettingValue(any settingName, array filterEntities=[]) {
-		if(isNull(arguments.settingName)){
-			arguments.settingName = this.getSettingName();
-		}
-		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities);
 	}
 	
 	// @hint helper function to return the details of a setting

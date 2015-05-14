@@ -13,7 +13,7 @@ component {
 	
 	public any function getFullSitePath(required any site){
 		if(!structKeyExists(variables.fullSitePaths,arguments.site.getSiteID())){
-			variables.fullSitePaths[site.getSiteID()] = getSlatwallCMSApplication(arguments.site).Mappings['/Slatwall'] & site.getSiteID();
+			variables.fullSitePaths[site.getSiteID()] = getSlatwallCMSApplication(arguments.site).Mappings['/Slatwall'] & site.getSiteCode();
 		}
 		return variables.fullSitePaths[site.getSiteID()];
 	}
@@ -22,51 +22,98 @@ component {
 	
 	// This event handler will always get called
 	public void function setupGlobalRequestComplete() {
-		// If the domain matches a slatwallCMS application site, then render that site. UNLESS the path has "/admin", then do nothing
-		// myApp = create an object of /custom/apps/slatwallcms/sitex/Application.cfc
-		// myApp.runRequestActions();
-		// writeOutput(myApp.generateRenderedContent());
-		// abort;
-		if(!isnull(arguments.appID)){
-			//try to get a site form the domain name
-			
-			var domainNameSite = arguments.slatwallScope.getService('siteService').getCurrentRequestSite();
-			if(!isnull(domainNameSite)){
-				var app = arguments.slatwallScope.getService('appService').getAppByAppID(arguments.appID);
+		
+		if ( len( getContextRoot() ) ) {
+			variables.cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
+			variables.cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
+		} else {
+			variables.cgiScriptName = CGI.SCRIPT_NAME;
+			variables.cgiPathInfo = CGI.PATH_INFO;
+		}
+		var pathInfo = variables.cgiPathInfo;
+		 if ( len( pathInfo ) > len( variables.cgiScriptName ) && left( pathInfo, len( variables.cgiScriptName ) ) == variables.cgiScriptName ) {
+            // canonicalize for IIS:
+            pathInfo = right( pathInfo, len( pathInfo ) - len( variables.cgiScriptName ) );
+        } else if ( len( pathInfo ) > 0 && pathInfo == left( variables.cgiScriptName, len( pathInfo ) ) ) {
+            // pathInfo is bogus so ignore it:
+            pathInfo = '';
+        }
+        //take path and  parse it
+        var pathArray = listToArray(pathInfo,'/');
+        var pathArrayLen = arrayLen(pathArray);
+        if(pathArrayLen && pathArray[1] == 'apps'){
+        	
+        	if(pathArrayLen > 1){
+        		arguments.appCode = pathArray[2];
+        	}
+        	if(pathArrayLen > 2){
+        		arguments.siteCode = pathArray[3];
+        	}
+        	if(pathArrayLen > 3){
+        		//need to figure out if we are working with a detail page type
+        		var urlTitleStartPosition = 4;
+        		if(
+        			arguments.slatwallScope.setting('globalURLKeyBrand') == pathArray[4]
+        			|| arguments.slatwallScope.setting('globalURLKeyProduct') == pathArray[4]
+        			|| arguments.slatwallScope.setting('globalURLKeyProductType') == pathArray[4]
+        		){
+        			arguments.entityUrl = pathArray[4];
+        			urlTitleStartPosition = 5;
+        		}else{
+        			urlTitleStartPosition = 4;
+        		}
+        		arguments.contenturlTitle = '';
+        		for(var i = urlTitleStartPosition;i <= arraylen(pathArray);i++){
+        			if(i == arrayLen(pathArray)){
+        				arguments.contenturlTitle &= pathArray[i];
+        			}else{
+        				arguments.contenturlTitle &= pathArray[i] & '/';
+        			}
+        		}
+        	}
+			if(!isnull(arguments.appCode)){
+				//try to get a site form the domain name
 				
-				//if siteid is not specified then try to get the first site from the app
-				if(isNull(arguments.siteID)){
-					if(arraylen(app.getSites())){
-						var site = app.getSites()[1];
-					}
-				}else{
-					var site = arguments.slatwallScope.getService('siteService').getSiteBySiteID(arguments.siteID);
-				}
-				//if we obtained a site and it is allowed by the domain name then prepare to render content
-				if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID()){
+				var domainNameSite = arguments.slatwallScope.getService('siteService').getCurrentRequestSite();
+				
+				if(!isnull(domainNameSite)){
 					
-					// Setup the correct local in the request object for the current site
-					arguments.slatwallScope.setRBLocale( arguments.slatwallScope.siteConfig('javaLocale') );
+					var app = arguments.slatwallScope.getService('appService').getAppByAppCode(arguments.appCode);
 					
-					// Setup the correct app in the request object
-					arguments.slatwallScope.setApp( app );
-					
-					// Setup the correct site in the request object
-					arguments.slatwallScope.setSite( site );
-					
-					//declare sitePath
-					//variables.fullSitePaths[domainNamesite.getSiteID()] = app.getAppRootPath() & '/' & domainNamesite.getSiteID();
-					var sitePath = getFullSitePath(site);
-					
-					//if a site does exist then check that site directory for the template
-					//are we rendering a basic content node or have we been provided with an entityURL type?
-					if(directoryExists(sitePath)) {
-						
-						var slatwallCMSApplication = getSlatwallCMSApplication(site);
-						slatwallCMSApplication.runRequestActions();
-						slatwallCMSApplication.generateRenderedContent(argumentCollection=arguments);
+					//if siteid is not specified then try to get the first site from the app
+					if(isNull(arguments.siteID)){
+						if(arraylen(app.getSites())){
+							var site = app.getSites()[1];
+						}
 					}else{
-						throw('site directory does not exist for ' & site.getSiteName());
+						var site = arguments.slatwallScope.getService('siteService').getSiteBySiteCode(arguments.siteCode);
+					}
+					//if we obtained a site and it is allowed by the domain name then prepare to render content
+					if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID()){
+						
+						// Setup the correct local in the request object for the current site
+						arguments.slatwallScope.setRBLocale( arguments.slatwallScope.getRBLocale() );
+						
+						// Setup the correct app in the request object
+						arguments.slatwallScope.setApp( app );
+						
+						// Setup the correct site in the request object
+						arguments.slatwallScope.setSite( site );
+						
+						//declare sitePath
+						var sitePath = getFullSitePath(site);
+						
+						//if a site does exist then check that site directory for the template
+						//are we rendering a basic content node or have we been provided with an entityURL type?
+						if(directoryExists(sitePath)) {
+							
+							var slatwallCMSApplication = getSlatwallCMSApplication(site);
+							
+							//slatwallCMSApplication.runRequestActions();
+							slatwallCMSApplication.generateRenderedContent(argumentCollection=arguments);
+						}else{
+							throw('site directory does not exist for ' & site.getSiteName());
+						}
 					}
 				}
 			}
@@ -74,8 +121,19 @@ component {
 	}
 	
 	
+		/*
+		
+        
+	}
+	
+	
+		
+	
+	
+	
 	// Special Function to relay all events called in Slatwall over to mura
 	//announced event should send eventdata of appid,siteid,contentURL
 	public void function onEvent( required any slatwallScope, required any eventName) {
-	}
+		
+	}*/
 }

@@ -62,15 +62,11 @@ component extends="FW1.framework" {
 		
 		//application/ site/ content routes for CMS
 		
-		,{ "$GET/apps/:appid/$" = "/slatwallcms:main/default/appid/:appid" }
-		,{ "$GET/apps/:appid/:siteid/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid" }
-		,{ "$GET/apps/:appid/:siteid/:contentURL/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid/contentURL/:contentURL" }
-		,{ "$GET/apps/:appid/:siteid/:entityURL/:urlTitle/$" = "/slatwallcms:main/default/appid/:appid/siteid/:siteid/entityURL/:entityURL/urlTitle/:urlTitle" }
 	]; 
 	
 	// Hibachi Setup
 	variables.framework.hibachi = {};
-	variables.framework.hibachi.authenticationSubsystems = "admin,public";
+	variables.framework.hibachi.authenticationSubsystems = "admin,public,api";
 	variables.framework.hibachi.debugFlag = false;
 	variables.framework.hibachi.gzipJavascript = true;
 	variables.framework.hibachi.errorDisplayFlag = false;
@@ -213,7 +209,9 @@ component extends="FW1.framework" {
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
-		getHibachiScope().getService("hibachiEventService").announceEvent(eventName="setupGlobalRequestComplete",eventData=request.context);
+		if(structKeyExists(request,'context')){
+			getHibachiScope().getService("hibachiEventService").announceEvent(eventName="setupGlobalRequestComplete",eventData=request.context);
+		}
 	}
 	
 	public void function setupRequest() {

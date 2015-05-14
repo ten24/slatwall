@@ -70,6 +70,6 @@ Notes:
 		
 		<cfreturn site />
 	</cffunction>
-
+	
 </cfcomponent>
 

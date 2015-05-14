@@ -74,12 +74,39 @@ component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="t
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non Persistent
-
+	property name="appPath" persistent="false";
+	
+	public string function getAppPath(){
+		if(!structKeyExists(variables,'appPath')){
+			var appsPath = expandPath('/Slatwall/apps');
+			variables.appPath = appsPath & '/' & getAppCode();
+		}
+		return variables.appPath;
+	}
+	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// integration (many-to-one)
+	public void function setIntegration(required any Integration) {
+		variables.Integration = arguments.Integration;
+		if(isNew() or !arguments.Integration.hasApp( this )) {
+			arrayAppend(arguments.Integration.getApps(), this);
+		}
+	}
+	public void function removeIntegration(any Integration) {
+		if(!structKeyExists(arguments, "Integration")) {
+			arguments.Integration = variables.Integration;
+		}
+		var index = arrayFind(arguments.Integration.getApps(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.Integration.getApps(), index);
+		}
+		structDelete(variables, "Integration");
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 	

@@ -1,6 +1,6 @@
 /**
- * @license AngularJS v1.4.0-beta.5
- * (c) 2010-2015 Google, Inc. http://angularjs.org
+ * @license AngularJS v1.3.15
+ * (c) 2010-2014 Google, Inc. http://angularjs.org
  * License: MIT
  */
 
@@ -39,33 +39,28 @@
 function minErr(module, ErrorConstructor) {
   ErrorConstructor = ErrorConstructor || Error;
   return function() {
-    var SKIP_INDEXES = 2;
+    var code = arguments[0],
+      prefix = '[' + (module ? module + ':' : '') + code + '] ',
+      template = arguments[1],
+      templateArgs = arguments,
 
-    var templateArgs = arguments,
-      code = templateArgs[0],
-      message = '[' + (module ? module + ':' : '') + code + '] ',
-      template = templateArgs[1],
-      paramPrefix, i;
+      message, i;
 
-    message += template.replace(/\{\d+\}/g, function(match) {
-      var index = +match.slice(1, -1),
-        shiftedIndex = index + SKIP_INDEXES;
+    message = prefix + template.replace(/\{\d+\}/g, function(match) {
+      var index = +match.slice(1, -1), arg;
 
-      if (shiftedIndex < templateArgs.length) {
-        return toDebugString(templateArgs[shiftedIndex]);
+      if (index + 2 < templateArgs.length) {
+        return toDebugString(templateArgs[index + 2]);
       }
-
       return match;
     });
 
-    message += '\nhttp://errors.angularjs.org/1.4.0-beta.5/' +
+    message = message + '\nhttp://errors.angularjs.org/1.3.15/' +
       (module ? module + '/' : '') + code;
-
-    for (i = SKIP_INDEXES, paramPrefix = '?'; i < templateArgs.length; i++, paramPrefix = '&') {
-      message += paramPrefix + 'p' + (i - SKIP_INDEXES) + '=' +
-        encodeURIComponent(toDebugString(templateArgs[i]));
+    for (i = 2; i < arguments.length; i++) {
+      message = message + (i == 2 ? '?' : '&') + 'p' + (i - 2) + '=' +
+        encodeURIComponent(toDebugString(arguments[i]));
     }
-
     return new ErrorConstructor(message);
   };
 }
