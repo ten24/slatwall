@@ -333,6 +333,18 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			handle accessing collections by id
 		*/
 		param name="arguments.rc.propertyIdentifiers" default="";
+		/* Check if this is a pubic API call if so call the public service to handle it */
+		if (StructKeyExists(arguments.rc, "jsonRequest")){
+			//If the data for public request was sent as json data, then add that data to arguments.rc as key value pairs.
+			for (data in arguments.rc.deserializedJSONData){
+				arguments.rc["#data#"] = arguments.rc.deserializedJSONData["#data#"];
+			}
+		}
+		if(arguments.rc.usePublicAPI){
+				var publicService = getService('PublicService');
+					publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
+						getFW().abortController();
+		}
 		
 		//first check if we have an entityName value
 		if(!structKeyExists(arguments.rc, "entityName")) {
@@ -341,14 +353,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				//Return the cart and account (if there is an account).
 				arguments.rc.apiResponse.content['account'] = arguments.rc.$.slatwall.invokeMethod("getAccountData");
 				arguments.rc.apiResponse.content['cart'] = arguments.rc.$.slatwall.invokeMethod("getCartData");	
-			
-			//Is this request for the public API?
-			}else if(structKeyExists(arguments.rc, "context")){//If we have a context other than GET then perform work on public service using that context.
-				var publicService = getService('PublicService');
-
-				//writeDump(var="#getHTTPRequestData()#", top=2);abort;
-					publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
-					getFW().abortController();
 			}
 	
 		} else {
@@ -454,15 +458,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		if(isNull(arguments.rc.apiResponse.content.messages)){
 			arguments.rc.apiResponse.content['messages'] = [];
 		}
-		
+		if (StructKeyExists(arguments.rc, "jsonRequest")){
+			//If the data for public request was sent as json data, then add that data to arguments.rc as key value pairs.
+			for (data in arguments.rc.deserializedJSONData){
+				arguments.rc["#data#"] = arguments.rc.deserializedJSONData["#data#"];
+			}
+		}
 		//------->Check if this is a public method request and if so, handle it.
-		if(structKeyExists(arguments.rc, "context") && arguments.rc.context != "save" && arguments.rc.context != "delete" && !StructKeyExists(arguments.rc, "entityName")){
-				//If we have a context other than GET then perform work on public service using that context.
+		if(arguments.rc.usePublicAPI){
+				//Call the public service to do work.
 				var publicService = getService('PublicService');
 				publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
 				getFW().abortController();
-		//------->End handling public API			
-		//Handle Developer API		
+		
+		//Handle Developer Collections		
 		} else if( arguments.rc.jsonRequest ) {
 			structuredData = arguments.rc.deserializedJSONData;
 		} else {

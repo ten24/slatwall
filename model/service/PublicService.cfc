@@ -62,49 +62,42 @@ component extends="HibachiService"  accessors="true" output="false"
 	variables.publicContexts = [];
 	variables.responseType = "json";
 	
-	/** A description of each method in this public service */
-	ArrayAppend(variables.publicContexts, {Name="Account", Description="Returns the account associated with the authentication token"});
-	ArrayAppend(variables.publicContexts, {Name="SubscriptionUsage", Description="Returns the subscription usage associated with the authentication token."});
-	ArrayAppend(variables.publicContexts, {Name="Order", Description="Returns the order usage associated with the authentication token."});
-	ArrayAppend(variables.publicContexts, {Name="Login", Description="Login a user account."});
-	ArrayAppend(variables.publicContexts, {Name="Logout", Description="Logout a user account."});
-	
-	/* Gets API request data */
-	 public any function getAPIRequestData() { 
-		var headers = getHTTPRequestData();
-		return headers.headers;
-	}
-	
-	/* Sets if this is an API request */
-	public any function setIsAPIRequest(truthValue) {
-		variables.isAPIRequest = arguments.truthValue;
-	}
-	
 	/** Returns a JSON list of all public contexts available to this request. */
-	any function getPublicContexts( required struct rc ) {
-		setResponse(true, 200, variables.publicContexts, arguments.rc, true);
-		return "";
+	public void function getPublicContexts( required struct rc ) {
+		//var publicMetaData = serializeJson(getComponentMetaData("PublicService"));
+		var data = {};
+		var publicMetaData = getComponentMetaData("PublicService");
+		var publicContexts = publicMetaData.functions;
+		if (!isNull(publicContexts)){
+			for (context in publicContexts){
+				if (StructKeyExists(context, "name") && StructKeyExists(context, "description") && StructKeyExists(context, "http-context")){
+					var info["#context.name#"] = {name=context.name, description=context.description, context=context["http-context"]};
+   					StructAppend(data, info);
+				}
+			}
+		}
+		
+		setResponse(true, 200, data, arguments.rc, true);
 	}
+	
 	
 	/** 
 	 @method Login <b>Log a user account into Slatwall given the users emailAddress and password</b>
 	 @http-context <b>Login</b> Use this context in conjunction with the listed http-verb to use this resource.
 	 @http-verb POST
 	 @http-return <b>(200)</b> Request Successful, <b>(400)</b> Bad or Missing Input Data
-	 @description <p>Logs a user into a Slatwall account</p>
+	 @description  Logs a user into a Slatwall account  
 	 @param Required Header: emailAddress
 	 @param Required Header: password
-	 @description 
-	 					<p>
-	 						   Use this context to log a user into Slatwall. The required email address should be sent
+	 @description Use this context to log a user into Slatwall. The required email address should be sent
 							   bundled in a Basic Authorization header with the emailAddress and password 
 							   appended together using an colon and then converted to base64.
-						</p>
-		<p>Example:</p>
+						  
+		 Example:  
 		testuser@slatwalltest.com:Vah7cIxXe would become dGVzdHVzZXJAc2xhdHdhbGx0ZXN0LmNvbTpWYWg3Y0l4WGU=
 						
 	 */
-	any function login( required struct rc ){
+	public any function login( required struct rc ){
 		//If this is an api request, decode the basic auth heading and put the email and password back into request context.
 		if (arguments.rc.APIRequest){
 			//Check for the basic auth heading
@@ -115,6 +108,7 @@ component extends="HibachiService"  accessors="true" output="false"
 					var password = plaintextArray[2];
 					arguments.rc["emailAddress"] = email;
 					arguments.rc["password"] = password;
+					
 				}
 			} catch (any e){
 				addDataToResponse("errors", "Unable to decode Basic Authorization Header to usable data", arguments.rc);		
@@ -123,7 +117,6 @@ component extends="HibachiService"  accessors="true" output="false"
 		//Login the user
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'login' );
 		arguments.rc.$.slatwall.addActionResult( "public:account.login", account.hasErrors() );
-		
 		//If this is a request from the api, setup the response header and populate it with data.
 		//any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc
 		handlePublicAPICall(200, 400, account, arguments.rc.$.slatwall.invokeMethod("getAccountData"), getHibachiScope().getSession().getSessionCookieNPSID(),  arguments.rc);
@@ -132,14 +125,14 @@ component extends="HibachiService"  accessors="true" output="false"
 
 	/** 
 	 * @method Logout <b>Log a user account outof Slatwall given the users request_token and deviceID</b>
-	 * @http-context <b>Logout</b> Use this context in conjunction with the listed http-verb to use this resource.
+	 * @http-context Logout Use this context in conjunction with the listed http-verb to use this resource.
 	 * @http-verb POST
 	 * @http-return <b>(200)</b> Request Successful <b>(400)</b> Bad or Missing Input Data
-	 * @description <p>Logs a user out of the given device</p>
+	 * @description  Logs a user out of the given device  
 	 * @param Required Header: request_token
 	 * @param Required Header: deviceID
 	 */
-	any function logout( required struct rc ){ 
+	public any function logout( required struct rc ){ 
 		
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'logout' );
 		arguments.rc.$.slatwall.addActionResult( "public:account.logout", false );
@@ -151,9 +144,9 @@ component extends="HibachiService"  accessors="true" output="false"
 	
 	/** 
 	 *	@method CreateAccount
-	 *	@rest-context <b>CreateAccount</b> Use this context in conjunction with the listed http-verb to use this resource.
+	 *	@http-context createAccount
 	 *	@http-verb POST
-	 *	@description <p>CreateAccount Creates a new user account.</p>
+	 *	@description  CreateAccount Creates a new user account.  
 	 *	@return <b>(201)</b> Created Successfully or <b>(400)</b> Bad or Missing Input Data
 	 *	@param firstName {string}
 	 *	@param Header: firstName {string}
@@ -166,55 +159,38 @@ component extends="HibachiService"  accessors="true" output="false"
 	 *	@param Header: password {string}
 	 *	@param Header: passwordConfirm {string}
 	 */
-	public any function createAccount( required struct rc ) {
+	public void function createAccount( required struct rc ) {
 		param name="arguments.rc.createAuthenticationFlag" default="1";
-		
-		//If sending through headers, use those headers.
-		if (arguments.rc.APIRequest && StructKeyExists(arguments.rc.requestHeaderData.headers, "emailAddress")){
-			try {
-			arguments.rc["firstName"] = arguments.rc.requestHeaderData.headers.lastName;
-			arguments.rc["lastName"] = arguments.rc.requestHeaderData.headers.lastName;
-			arguments.rc["company"] = arguments.rc.requestHeaderData.headers.company;
-			arguments.rc["phone"] = arguments.rc.requestHeaderData.headers.phone;
-			arguments.rc["emailAddress"] = arguments.rc.requestHeaderData.headers.emailAddress;
-			arguments.rc["emailAddressConfirm"] = arguments.rc.requestHeaderData.headers.emailAddressConfirm;
-			arguments.rc["password"] = arguments.rc.requestHeaderData.headers.password;
-			arguments.rc["passwordConfirm"] = arguments.rc.requestHeaderData.headers.passwordConfirm;
-			arguments.rc["createAuthenticationFlag"] = arguments.rc.requestHeaderData.headers.createAuthenticationFlag;
-			} catch (any e){
-				
-			}
-		}
-		
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'create');
 		arguments.rc.$.slatwall.addActionResult( "public:account.create", account.hasErrors() );
 		
 		//If this is a request from the api, setup the response header and populate it with data.
 		//any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc
 		handlePublicAPICall(201, 400, account, arguments.rc.$.slatwall.invokeMethod("getAccountData"), "",  arguments.rc);
-		return account;
 	}
 	
-	public any function createDeviceID( required struct rc ){
+	/**
+	 * @http-context updateDeviceID
+	 * @description  Updates the device ID for a user account 
+	 */
+	public void function updateDeviceID( required struct rc ){
 		param name="arguments.rc.deviceID" default="";
-		param name="arguments.rc.header.request_token" default="";
+		param name="arguments.rc.request_token" default="";
 
-		var sessionEntity = getService("HibachiSessionService").getSessionBySessionCookieNPSID( arguments.rc.header.request_token, true );
-		sessionEntity.setDeviceID(arguments.rc.header.deviceID);
+		var sessionEntity = getService("HibachiSessionService").getSessionBySessionCookieNPSID( arguments.rc.request_token, true );
+		sessionEntity.setDeviceID(arguments.rc.deviceID);
 		
 		//If this is a request from the api, setup the response header and populate it with data.
 		//any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc
-		handlePublicAPICall(201, 400, account, arguments.rc.$.slatwall.invokeMethod("getAccountData"), "",  arguments.rc);
-		return "_createDevice";
-		
+		handlePublicAPICall(201, 400, sessionEntity, "Device ID Added", "#arguments.rc.deviceID#",  arguments.rc);	
 	}
 	
 	
 	/**
 	  *	@method forgotPassword
-	  *	@rest-context <b>ForgotPassword</b> Use this context in conjunction with the listed http-verb to use this resource.
+	  *	@http-context ForgotPassword
 	  *	@http-verb POST
-	  *	@description <p>Sends an email to a user to reset a password.</p>
+	  *	@description  Sends an email to a user to reset a password.  
 	  *	@return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
 	  *	@param emailAddress {string}
 	  **/
@@ -226,19 +202,18 @@ component extends="HibachiService"  accessors="true" output="false"
 		//any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc
 		handlePublicAPICall(200, 400, account, "Forgotten Password Email Sent", "",  arguments.rc);
 		return true;
-		
 	}
 	
 	/**
 	  *	@method resetPassword
-	  *	@rest-context <b>resetPassword</b> Use this context in conjunction with the listed http-verb to use this resource.
+	  *	@http-context resetPassword
 	  *	@http-verb POST
-	  *	@description <p>Sends an email to a user to reset a password.</p>
+	  *	@description  Sends an email to a user to reset a password.  
 	  *	@return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
 	  *	@param accountID {string}
 	  * @param emailAddress {string}
 	  **/
-	public any function resetPassword( required struct rc ) {
+	public void function resetPassword( required struct rc ) {
 		param name="rc.accountID" default="";
 		var account = getAccountService().getAccount( rc.accountID );
 		if(!isNull(account)) {
@@ -253,13 +228,14 @@ component extends="HibachiService"  accessors="true" output="false"
 		}
 		// Populate the current account with this processObject so that any errors are there.
 		arguments.rc.$.slatwall.account().setProcessObject( account.getProcessObject( "resetPassword" ) );
+		handlePublicAPICall(200, 400, account, "Reset Password Sucessful", "",  arguments.rc);
 	}
 	
 	/**
 	  *	@method changePassword
-	  *	@rest-context <b>changePassword</b> Use this context in conjunction with the listed http-verb to use this resource.
+	  *	@http-context changePassword
 	  *	@http-verb POST
-	  *	@description <p>Change a users password.</p>
+	  *	@description  Change a users password.  
 	  *	@return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
 	  *	@param emailAddress {string}
 	  **/
@@ -267,16 +243,17 @@ component extends="HibachiService"  accessors="true" output="false"
 		
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'changePassword');
 		arguments.rc.$.slatwall.addActionResult( "public:account.changePassword", account.hasErrors() );
-	
+		handlePublicAPICall(200, 400, account, "Change Password Sucessful", "",  arguments.rc);
 	}
 	
 	/**
 	  *	@method updateAccount
-	  *	@rest-context <b>updateAccount</b> Use this context in conjunction with the listed http-verb to use this resource.
+	  *	@http-context updateAccount
 	  *	@http-verb POST
-	  *	@description <p>Update a users account data.</p>
+	  *	@description  Update a users account data.  
 	  *	@return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
-	  *	@param emailAddress {string}
+	  *	@param fieldToUpdate {json key}
+	  * @param authToken {json key}
 	  **/
 	public any function updateAccount( required struct rc ) {
 		
@@ -284,15 +261,14 @@ component extends="HibachiService"  accessors="true" output="false"
 		arguments.rc.$.slatwall.addActionResult( "public:account.update", account.hasErrors() );
 		
 		handlePublicAPICall(200, 400, account, arguments.rc.$.slatwall.invokeMethod("getAccountData"), "",  arguments.rc);
-		return true;
 		
 	}
 	
 	/**
 	  *	@method deleteAccountEmailAddress
-	  *	@rest-context <b>deleteAccountEmailAddress</b> Use this context in conjunction with the listed http-verb to use this resource.
+	  *	@http-context deleteAccountEmailAddress
 	  *	@http-verb POST
-	  *	@description <p>delete a users account email address </p>
+	  *	@description delete a users account email address
 	  *	@return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	  *	@param emailAddress {string}
 	  **/
@@ -307,9 +283,15 @@ component extends="HibachiService"  accessors="true" output="false"
 		} else {
 			arguments.rc.$.slatwall.addActionResult( "public:account.deleteAccountEmailAddress", true );	
 		}
+		handlePublicAPICall(200, 400, accountEmailAddress, "Email address deleted", "",  arguments.rc);
 	}
 	
-	/** Account Email Address - Send Verification Email */
+	/** 
+	  * @method sendAccountEmailAddressVerificationEmail
+	  * @http-context send AccountEmailAddressVerificationEmail
+	  * @description Account Email Address - Send Verification Email 
+	  * @param accountEmailAddressID The ID of the email address
+	  */
 	public void function sendAccountEmailAddressVerificationEmail() {
 		param name="rc.accountEmailAddressID" default="";
 		
@@ -321,9 +303,16 @@ component extends="HibachiService"  accessors="true" output="false"
 		} else {
 			arguments.rc.$.slatwall.addActionResult( "public:account.sendAccountEmailAddressVerificationEmail", true );
 		}
+		
+		handlePublicAPICall(200, 400, accountEmailAddress, "Email address verification email sent", "",  arguments.rc);
 	}
 	
-	/** Account Email Address - Verify */
+	/** 
+	 * @method verifyAccountEmailAddress
+	 * @http-context verifyAccountEmailAddress
+	 * @http-resource /api/scope/verifyAccountEmailAddress
+	 * @description Account Email Address - Verify 
+	 */
 	public void function verifyAccountEmailAddress() {
 		param name="rc.accountEmailAddressID" default="";
 		
@@ -335,9 +324,13 @@ component extends="HibachiService"  accessors="true" output="false"
 		} else {
 			arguments.rc.$.slatwall.addActionResult( "public:account.verifyAccountEmailAddress", true );
 		}
+		handlePublicAPICall(200, 400, accountEmailAddress, "Email Address Verified", "",  arguments.rc);
 	}
 	
-	/** Account Phone Number - Delete */
+	/** 
+	 * @http-context deleteAccountPhoneNumber
+	 * @description Account Phone Number - Delete 
+	 */
 	public void function deleteAccountPhoneNumber() {
 		param name="rc.accountPhoneNumberID" default="";
 		
@@ -351,7 +344,10 @@ component extends="HibachiService"  accessors="true" output="false"
 		}
 	}
 	
-	/** Account Address - Delete */
+	/** 
+	 * @http-context deleteAccountAddress
+	 * @description Account Address - Delete 
+	 */
 	public void function deleteAccountAddress() {
 		param name="rc.accountAddressID" default="";
 		
@@ -365,7 +361,10 @@ component extends="HibachiService"  accessors="true" output="false"
 		}
 	}
 	
-	/** Account Payment Method - Delete */
+	/** 
+	 * @http-context deleteAccountAddress
+	 * @description Account Payment Method - Delete 
+	 */
 	public void function deleteAccountPaymentMethod() {
 		param name="rc.accountPaymentMethodID" default="";
 		
@@ -379,7 +378,10 @@ component extends="HibachiService"  accessors="true" output="false"
 		}
 	}
 	
-	/** Account Payment Method - Add */
+	/** 
+	 * @http-context addAccountPaymentMethod
+	 * @description Account Payment Method - Add 
+	 */
 	public void function addAccountPaymentMethod() {
 		
 		if(arguments.rc.$.slatwall.getLoggedInFlag()) {
@@ -403,7 +405,10 @@ component extends="HibachiService"  accessors="true" output="false"
 		
 	}
 	
-	/** Guest Account */
+	/** 
+	 * @http-context guestAccount
+	 * @description Guest Account 
+	 */
 	public void function guestAccount(required any rc) {
 		param name="arguments.rc.createAuthenticationFlag" default="0";
 		
@@ -423,7 +428,10 @@ component extends="HibachiService"  accessors="true" output="false"
 		
 	}
 	
-	/** Save Guest Account */
+	/** 
+	 * @http-context guestAccountCreatePassword
+	 * @description Save Guest Account
+	 */
 	public void function guestAccountCreatePassword( required struct rc ) {
 		param name="arguments.rc.orderID" default="";
 		param name="arguments.rc.accountID" default="";
@@ -442,8 +450,10 @@ component extends="HibachiService"  accessors="true" output="false"
 		}
 		
 	}
-	
-	/** Subscription Usage - Update */
+	/** 
+	 * @http-context updateSubscriptionUsage
+	 * @description Subscription Usage - Update
+	 */
 	public void function updateSubscriptionUsage() {
 		param name="rc.subscriptionUsageID" default="";
 		
@@ -458,7 +468,10 @@ component extends="HibachiService"  accessors="true" output="false"
 		}
 	}
 	
-	/** Subscription Usage - Renew */
+	/** 
+	 * @http-context renewSubscriptionUsage
+	 * @description Subscription Usage - Renew
+	 */
 	public void function renewSubscriptionUsage() {
 		param name="rc.subscriptionUsageID" default="";
 		
@@ -473,7 +486,10 @@ component extends="HibachiService"  accessors="true" output="false"
 		}
 	}
 	
-	/** Duplicate - Order */
+	/** 
+	 * @http-context duplicateOrder
+	 * @description Duplicate - Order
+	 */
 	public void function duplicateOrder() {
 		param name="arguments.rc.orderID" default="";
 		param name="arguments.rc.setAsCartFlag" default="0";
@@ -497,7 +513,10 @@ component extends="HibachiService"  accessors="true" output="false"
 		}
 	}
 	
-	/** Update Cart */
+	/** 
+	 * @http-context updateOrder
+	 * @description  Update Order Data
+	 */
 	public void function updateOrder( required struct rc ) {
 		var cart = getOrderService().saveOrder( rc.$.slatwall.cart(), arguments.rc );
 		
@@ -509,14 +528,20 @@ component extends="HibachiService"  accessors="true" output="false"
 		arguments.rc.$.slatwall.addActionResult( "public:cart.update", cart.hasErrors() );
 	}
 	
-	/** Clear */
+	/** 
+	 * @http-context clearOrder
+	 * @description  Clear the order data
+	 */
 	public void function clearOrder( required struct rc ) {
 		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'clear');
 		
 		arguments.rc.$.slatwall.addActionResult( "public:cart.clear", cart.hasErrors() );
 	}
 	
-	/** Change */
+	/** 
+	 * @http-context changeOrder
+	 * @description Change Order
+	 */
 	public void function changeOrder( required struct rc ){
 		param name="arguments.rc.orderID" default="";
 		
@@ -529,7 +554,10 @@ component extends="HibachiService"  accessors="true" output="false"
 		}
 	}
 	
-	/** Delete */
+	/** 
+	 * @http-context deleteOrder
+	 * @description Delete an Order
+	 */
 	public void function deleteOrder( required struct rc ) {
 		param name="arguments.rc.orderID" default="";
 		
@@ -542,7 +570,10 @@ component extends="HibachiService"  accessors="true" output="false"
 		}
 	}
 	
-	/** Add Order Item */
+	/** 
+	 * @http-context addOrderItem
+	 * @description Add Order Item to an Order
+	 */
 	public void function addOrderItem(required any rc) {
 		// Setup the frontend defaults
 		param name="rc.preProcessDisplayedFlag" default="true";
@@ -572,21 +603,30 @@ component extends="HibachiService"  accessors="true" output="false"
 		}
 	}
 	
-	/** Remove Order Item */
+	/** 
+	 * @http-context removeOrderItem
+	 * @description Remove Order Item from an Order
+	 */
 	public void function removeOrderItem(required any rc) {
 		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'removeOrderItem');
 		
 		arguments.rc.$.slatwall.addActionResult( "public:cart.removeOrderItem", cart.hasErrors() );
 	}
 	
-	/** Update Order Fulfillment */
+	/** 
+	 * @http-context updateOrderFulfillment
+	 * @description Update Order Fulfillment 
+	 */
 	public void function updateOrderFulfillment(required any rc) {
 		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'updateOrderFulfillment');
 		
 		arguments.rc.$.slatwall.addActionResult( "public:cart.updateOrderFulfillment", cart.hasErrors() );
 	}
 	
-	/** Add Promotion Code */
+	/** 
+	 * @http-context addPromotionCode
+	 * @description Add Promotion Code
+	 */
 	public void function addPromotionCode(required any rc) {
 		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'addPromotionCode');
 		
@@ -597,14 +637,20 @@ component extends="HibachiService"  accessors="true" output="false"
 		}
 	}
 	
-	/** Remove Promotion Code */
+	/** 
+	 * @http-context removePromotionCode
+	 * @description Remove Promotion Code
+	 */
 	public void function removePromotionCode(required any rc) {
 		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'removePromotionCode');
 		
 		arguments.rc.$.slatwall.addActionResult( "public:cart.removePromotionCode", cart.hasErrors() );
 	}
 	
-	/** Add Order Payment */
+	/** 
+	 * @http-context addOrderPayment
+	 * @description Add Order Payment
+	 */
 	public void function addOrderPayment(required any rc) {
 		param name="rc.newOrderPayment" default="#structNew()#";
 		param name="rc.newOrderPayment.orderPaymentID" default="";
@@ -627,14 +673,20 @@ component extends="HibachiService"  accessors="true" output="false"
 		arguments.rc.$.slatwall.addActionResult( "public:cart.addOrderPayment", cart.hasErrors() );
 	}
 	
-	/** Remove Order Payment */
+	/** 
+	 * @http-context removeOrderPayment
+	 * @description Remove Order Payment 
+	 */
 	public void function removeOrderPayment(required any rc) {
 		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'removeOrderPayment');
 		
 		arguments.rc.$.slatwall.addActionResult( "public:cart.removeOrderPayment", cart.hasErrors() );
 	}
 	
-	/** Place Order */
+	/** 
+	 * @http-context placeOrder
+	 * @description Place Order
+	 */
 	public void function placeOrder(required any rc) {
 		
 		// Insure that all items in the cart are within their max constraint
@@ -672,7 +724,11 @@ component extends="HibachiService"  accessors="true" output="false"
 		}
 	
 	}
-	/** Add Product Review */
+	
+	/** 
+	 * @http-context addProductReview
+	 *  @description Add Product Review
+	 */
 	public void function addProductReview(required any rc) {
 		param name="rc.newProductReview.product.productID" default="";
 		
@@ -718,9 +774,7 @@ component extends="HibachiService"  accessors="true" output="false"
 		if (!StructKeyExists(arguments.rc, "errors") || isNull(arguments.rc.apiResponse.content.errors)){
 				arguments.rc.apiResponse.content["errors"] = "";
 		}
-		if (!StructKeyExists(arguments.rc, "request_token") || isNull(arguments.rc.apiResponse.content.request_token)){
-				arguments.rc.apiResponse.content["request_token"] = "";
-		}
+		
 		arguments.rc.headers.contentType = "application/json";
 		arguments.rc.apiResponse.content["success"] = arguments.success;
 		//Add the status code message to our messages if success and to errors otherwise.

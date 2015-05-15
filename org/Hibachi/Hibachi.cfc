@@ -260,6 +260,16 @@ component extends="FW1.framework" {
 				}
 			}
 		}
+		
+		/* Figure out if this is a public request */
+		request.context["url"] = getHibachiScope().getURL();
+		if (FindNoCase("/api/scope", request.context["url"]) ){
+			//this is a request to the public controller
+			request.context["usePublicAPI"] = true;
+		}else{
+			request.context["usePublicAPI"] = false;
+		}
+		
 		application[ "#variables.framework.applicationKey#Bootstrap" ] = this.bootstrap;
 		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount());	
 		

@@ -31,9 +31,9 @@ component output="false" accessors="true" extends="HibachiService"  {
 				foundWithNPSID = true;
 				setSessionValue('sessionID', sessionEntity.getSessionID());
 				request.context["authorizedForAPI"] = true;
-				if ( StructKeyExists(requestHeaders.headers, "deviceID") && !Len(sessionEntity.getDeviceID())){
+				if ( StructKeyExists(request.context, "deviceID") && !Len(sessionEntity.getDeviceID())){
 					//If the device doesn't yet exist, add it.'
-					sessionEntity.setDeviceID("#requestHeaders.headers.deviceID#");
+					sessionEntity.setDeviceID("#request.context.deviceID#");
 					foundWithNPSID = true;
 					setSessionValue('sessionID', sessionEntity.getSessionID());
 				}else if (( StructKeyExists(requestHeaders.headers, "deviceID") && Len(sessionEntity.getDeviceID()) )){
