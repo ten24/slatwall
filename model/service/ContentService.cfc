@@ -61,8 +61,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function getCMSTemplateOptions(required any content){
 		var contentSite = arguments.content.getSite();
-		if(directoryExists(getApplicationValue('applicationRootMappingPath') & '/apps/' & contentSIte.getApp().getAppID() & '/' & contentSite.getSiteID() & '/templates' )) {
-			var siteDirectory = getApplicationValue('applicationRootMappingPath') & '/apps/' & contentSIte.getApp().getAppID() & '/' & contentSIte.getSiteID();
+		if(directoryExists(getApplicationValue('applicationRootMappingPath') & '/apps/' & contentSite.getApp().getAppCode() & '/' & contentSite.getSiteCode() & '/templates' )) {
+			var siteDirectory = getApplicationValue('applicationRootMappingPath') & '/apps/' & contentSIte.getApp().getAppCode() & '/' & contentSIte.getSiteCode();
 			var templateDirectory = siteDirectory & '/templates';
 			var directoryList = directoryList(templateDirectory);
 			
@@ -76,7 +76,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 			return templates;
 		}else{
-			throw('site directory does not exist for ' & site.getSiteName());
+			throw('site directory does not exist for ' & contentSite.getSiteName());
 		}	
 	}
 	
@@ -93,6 +93,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				return this.getContentByCmsContentID(settingDetails.settingRelationships.cmsContentID);
 			}
 		}
+	}
+	
+	public any function saveContent(required any content, struct data={}){
+		
+		arguments.content = super.save(arguments.content, arguments.data);
+		arguments.content.createUrlTitlePath();
+		return arguments.content;	
 	}
 	
 	public any function getDefaultContentBySIte(required any site){
@@ -122,8 +129,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getContentDAO().getContentByCMSContentIDAndCMSSiteID( argumentCollection=arguments );
 	}
 	
-	public any function getContentBySiteIDAndUrlTitle(required string siteID, required string urlTitle){
-		return getContentDao().getContentBySiteIDAndUrlTitle(argumentCollection=arguments);
+	public any function getContentBySiteIDAndUrlTitlePath(required string siteID, required string urlTitlePath){
+		return getContentDao().getContentBySiteIDAndUrlTitlePath(argumentCollection=arguments);
 	}
 	
 	// ===================== START: DAO Passthrough ===========================

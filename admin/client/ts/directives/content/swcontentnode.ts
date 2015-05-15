@@ -19,17 +19,12 @@ angular.module('slatwalladmin')
                     },
                     templateUrl: partialsPath + 'content/contentnode.html',
                     link: function(scope, element, attr) {
-                        if(angular.isDefined(scope.$parent)){
-                            if(angular.isDefined(scope.$parent.child)){
-                                scope.contentData = scope.$parent.child; 
-                                if(angular.isUndefined(scope.depth) && angular.isUndefined(scope.$parent.depth)){
-                                    scope.depth = 1;
-                                }else{
-                                    scope.depth = scope.$parent.depth + 1;
-                                }
-                            }
-                            
-                              
+                        if(angular.isUndefined(scope.depth)){
+                            scope.depth = 0;
+                        }
+                        
+                        if(angular.isDefined(scope.$parent.depth)){
+                            scope.depth = scope.$parent.depth+1;
                         }
                         
                         var childContentColumnsConfig = [{
@@ -41,6 +36,11 @@ angular.module('slatwalladmin')
                                 propertyIdentifier: '_content.title',
                                 isVisible: true,
                                 isSearchable: true
+                            },
+                            {
+                                propertyIdentifier: '_content.site.siteID',
+                                isVisible: false,
+                                isSearchable: false
                             },
                             {
                                 propertyIdentifier: '_content.site.siteName',
@@ -70,6 +70,7 @@ angular.module('slatwalladmin')
                        
 
                         scope.getChildContent = function(parentContentRecord) {
+                            scope.childOpen = true;
                              var childContentfilterGroupsConfig = [{
                                 "filterGroup": [{
                                     "propertyIdentifier": "_content.parentContent.contentID",
@@ -85,9 +86,11 @@ angular.module('slatwalladmin')
                             });
                             collectionListingPromise.then(function(value) {
                                 parentContentRecord.children = value.records;
+                                var index = 0;
                                 angular.forEach(parentContentRecord.children,function(child){
-                                    scope.child = child;
-                                    element.parent().append($compile('<tr class="childNode" style="margin-left:15px" sw-content-node ></tr>')(scope));
+                                    scope['child'+index] = child;
+                                    element.after($compile('<tr class="childNode" style="margin-left:{{depth*15||0}}px"  sw-content-node data-content-data="child'+index+'"></tr>')(scope));
+                                    index++;
                                 });
                             });
                         }

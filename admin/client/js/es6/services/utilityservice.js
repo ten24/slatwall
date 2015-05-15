@@ -36,32 +36,66 @@ angular.module('slatwalladmin').factory('utilityService', [
                 var splitString = list.split(delimiter);
                 return splitString.length;
             },
-            arraySorter: function (array, keyToSortBy) {
-                array.sort(function (a, b) {
-                    if (angular.isDefined(keyToSortBy)) {
-                        if (a[keyToSortBy] < b[keyToSortBy]) {
-                            return -1;
-                        }
-                        else if (a[keyToSortBy] > b[keyToSortBy]) {
-                            return 1;
-                        }
-                        else {
-                            return 0;
-                        }
-                    }
-                    else {
-                        if (a < b) {
-                            return -1;
-                        }
-                        else if (a > b) {
-                            return 1;
+            arraySorter: function (array, keyToSortBy, direction) {
+                if (angular.isUndefined(direction) || (angular.isDefined(direction) && direction === 'asc')) {
+                    array.sort(function (a, b) {
+                        if (angular.isDefined(keyToSortBy)) {
+                            if (a[keyToSortBy] < b[keyToSortBy]) {
+                                return -1;
+                            }
+                            else if (a[keyToSortBy] > b[keyToSortBy]) {
+                                return 1;
+                            }
+                            else {
+                                return 0;
+                            }
                         }
                         else {
-                            return 0;
+                            if (a < b) {
+                                return -1;
+                            }
+                            else if (a > b) {
+                                return 1;
+                            }
+                            else {
+                                return 0;
+                            }
                         }
-                    }
-                });
+                    });
+                }
+                else {
+                    array.sort(function (a, b) {
+                        if (angular.isDefined(keyToSortBy)) {
+                            if (a[keyToSortBy] > b[keyToSortBy]) {
+                                return -1;
+                            }
+                            else if (a[keyToSortBy] < b[keyToSortBy]) {
+                                return 1;
+                            }
+                            else {
+                                return 0;
+                            }
+                        }
+                        else {
+                            if (a > b) {
+                                return -1;
+                            }
+                            else if (a < b) {
+                                return 1;
+                            }
+                            else {
+                                return 0;
+                            }
+                        }
+                    });
+                }
                 return array;
+            },
+            arrayMove: function (arr, fromIndex, toIndex) {
+                var element = arr[fromIndex];
+                arr.splice(fromIndex, 1);
+                arr.splice(toIndex, 0, element);
+                return arr;
             }
         };
         return utilityService;

@@ -18,6 +18,11 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           ormtype: 'id',
           isSearchable: false
         }, {
+          propertyIdentifier: '_content.site.siteID',
+          isVisible: false,
+          ormtype: 'id',
+          isSearchable: true
+        }, {
           propertyIdentifier: '_content.site.siteName',
           isVisible: true,
           ormtype: 'string',
@@ -48,7 +53,7 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           }]}];
         var options = {
           currentPage: scope.currentPage,
-          pageShow: pageShow,
+          pageShow: paginationService.getPageShow(),
           keywords: scope.keywords
         };
         var column = {};
@@ -64,7 +69,8 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           column = {
             propertyIdentifier: '_content.fullTitle',
             isVisible: true,
-            persistent: false
+            persistent: false,
+            isSearchable: true
           };
         }
         columnsConfig.unshift(column);

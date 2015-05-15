@@ -27,8 +27,15 @@
         </span>
         <!-- Display -->
         <p  class="form-control-static"
-            ng-if="propertyDisplay.fieldType !== 'hidden'"
+            ng-if="propertyDisplay.fieldType !== 'hidden' && propertyDisplay.fieldType !== 'select'"
             ng-bind="propertyDisplay.object.data[propertyDisplay.property]"
+            ng-show="!propertyDisplay.editing"
+            >
+            <!-- property value -->
+        </p>
+        <p  class="form-control-static"
+            ng-if="propertyDisplay.fieldType === 'select'"
+            ng-bind="propertyDisplay.object.data[propertyDisplay.property].data[propertyDisplay.property+'Name']"
             ng-show="!propertyDisplay.editing"
             >
             <!-- property value -->

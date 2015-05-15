@@ -1,5 +1,5 @@
 <!---
-	
+
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -42,35 +42,44 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-	
-Notes: 
+
+	Notes:
 	
 --->
+<cfparam name="attributes.address" type="any" />
+<cfparam name="attributes.domType" type="string" default="p" />
 
-<!--- This header include should be changed to the header of your site.  Make sure that you review the header to include necessary JS elements for slatwall templates to work ---> 
-<cfinclude template="_slatwall-header.cfm" />
-
-<!--- This import allows for the custom tags required by this page to work --->
-<cfimport prefix="sw" taglib="../tags" />
-
-<!---[DEVELOPER NOTES]															
-																				
-	If you would like to customize any of the public tags used by this			
-	template, the recommended method is to uncomment the below import,			
-	copy the tag you'd like to customize into the directory defined by			
-	this import, and then reference with swc:tagname instead of sw:tagname.		
-	Technically you can define the prefix as whatever you would like and use	
-	whatever directory you would like but we recommend using this for			
-	the sake of convention.														
-																				
-	<cfimport prefix="swc" taglib="/Slatwall/custom/public/tags" />				
-																				
---->
-
-<cfoutput>
-	<div class="container">
-		this content is restricted		
-	</div>
-</cfoutput>
-
-<cfinclude template="_slatwall-footer.cfm" />
+<cfif thisTag.executionMode is "start">
+	<cfoutput>
+		<#attributes.domType# class="sw-address-display">
+			<cfif !isNull(attributes.address.getName()) and len(attributes.address.getName())>
+				#attributes.address.getName()#<br />
+			</cfif>
+			<cfif !isNull(attributes.address.getCompany()) and len(attributes.address.getCompany())>
+				#attributes.address.getCompany()#<br />
+			</cfif>
+			<cfif !isNull(attributes.address.getStreetAddress()) and len(attributes.address.getStreetAddress())>
+				#attributes.address.getStreetAddress()#<br />
+			</cfif>
+			<cfif !isNull(attributes.address.getStreet2Address()) and len(attributes.address.getStreet2Address())>
+				#attributes.address.getStreet2Address()#<br />
+			</cfif>
+			<cfif !isNull(attributes.address.getLocality()) and len(attributes.address.getLocality())>
+				#attributes.address.getLocality()#<br />
+			</cfif>
+			<cfif !isNull(attributes.address.getCity()) and len(attributes.address.getCity())>
+				#attributes.address.getCity()#,
+			</cfif>
+			<cfif !isNull(attributes.address.getStateCode()) and len(attributes.address.getStateCode())>
+				#attributes.address.getStateCode()# 
+			</cfif>
+			<cfif !isNull(attributes.address.getPostalCode()) and len(attributes.address.getPostalCode())>
+				#attributes.address.getPostalCode()#
+			</cfif>
+			<br />
+			<cfif !isNull(attributes.address.getCountryCode()) and len(attributes.address.getCountryCode())>
+				#attributes.address.getCountryCode()#<br />
+			</cfif>
+		</#attributes.domType#>
+	</cfoutput>
+</cfif>
