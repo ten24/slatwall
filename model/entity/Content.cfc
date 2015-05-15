@@ -56,7 +56,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="allowPurchaseFlag" ormtype="boolean";
 	property name="productListingPageFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" length="4000";
-	property name="urlTitlePath" ormtype="string" length="9000";
+	property name="urlTitlePath" ormtype="string" length="8000";
 	property name="contentBody" ormtype="string" length="4000" ;
 
 	// CMS Properties

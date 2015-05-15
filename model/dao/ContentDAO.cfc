@@ -61,11 +61,11 @@ Notes:
 		<cfreturn entityNew("SlatwallContent") />
 	</cffunction>
 	
-	<cffunction name="getContentBySiteIDAndUrlTitle" access="public">
+	<cffunction name="getContentBySiteIDAndUrlTitlePath" access="public">
 		<cfargument name="siteID" type="string" required="true">
-		<cfargument name="urlTitle" type="string" required="true">
+		<cfargument name="urlTitlePath" type="string" required="true">
 		
-		<cfreturn ormExecuteQuery(" FROM SlatwallContent c Where c.site.siteID = ? AND LOWER(c.urlTitle) = ?",[ arguments.siteID,arguments.urlTitle],true)>
+		<cfreturn ormExecuteQuery(" FROM SlatwallContent c Where c.site.siteID = ? AND LOWER(c.urlTitlePath) = ?",[ arguments.siteID,arguments.urlTitlePath],true)>
 	</cffunction>
 	
 	<cffunction name="getCategoriesByCmsCategoryIDs" access="public">

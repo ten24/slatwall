@@ -67,22 +67,26 @@ component  extends="HibachiService" accessors="true" {
 			{
 				name='Barrier Template Page',
 				templateType=getService("typeService").getTypeBySystemCode("cttBarrierPage"),
-				settingName='contentRestrictedContent'
+				settingName='contentRestrictedContent',
+				contentTemplateFile='slatwall-barrier-page.cfm'
 			},
 			{
 				name='Product Type Template',
 				templateType=getService("typeService").getTypeBySystemCode("cttProductType"),
-				settingName='productType'
+				settingName='productType',
+				contentTemplateFile='slatwall-producttype.cfm'
 			},
 			{
 				name='Product Template',
 				templateType=getService("typeService").getTypeBySystemCode("cttProduct"),
-				settingName='product'
+				settingName='product',
+				contentTemplateFile='slatwall-product.cfm'
 			},
 			{
 				name='Brand Template',
 				templateType=getService("typeService").getTypeBySystemCode("cttBrand"),
-				settingName='brand'
+				settingName='brand',
+				contentTemplateFile='slatwall-brand.cfm'
 			}
 		];
 		
@@ -96,6 +100,7 @@ component  extends="HibachiService" accessors="true" {
 				productListingPageFlag=false
 			};
 			var slatwallTemplatesChildContent = getService('contentService').newContent();
+			slatwallTemplatesChildContent.setURLTitle(ReReplace(slatwallTemplatesChild.name, "[[:space:]]","","ALL"));
 			slatwallTemplatesChildContent.setSite(arguments.site);
 			slatwallTemplatesChildContent.setParentContent(arguments.slatwallTemplatesContent);
 			slatwallTemplatesChildContent.setContentTemplateType(slatwallTemplatesChild.templateType);
@@ -106,34 +111,59 @@ component  extends="HibachiService" accessors="true" {
 			templateSetting.setSettingValue( slatwallTemplatesChildContent.getContentID() );
 			templateSetting.setSite( arguments.site );
 			getService("settingService").saveSetting( templateSetting );
+			
+			var contentTemplateSetting = getService("settingService").newSetting();
+			contentTemplateSetting.setSettingName( 'contentTemplateFile' );
+			contentTemplateSetting.setSettingValue( slatwallTemplatesChild.contentTemplateFile );
+			contentTemplateSetting.setContent( slatwallTemplatesChildContent );
+			getService("settingService").saveSetting( contentTemplateSetting );
 		}
 	}
 	
 	public void function createHomePageChildrenContent(required any homePageContent, required any site){
-		var homePageChildNames = [
-			'My Account',
-			'Shopping Cart',
-			'Product Listing',
-			'Checkout'
+		var homePageChildren = [
+			{
+				name='My Account',
+				contentTemplateFile='slatwall-account.cfm'	
+			},
+			{
+				name='Shopping Cart',
+				contentTemplateFile="slatwall-shoppingcart.cfm"	
+			},
+			{
+				name='Product Listing',
+				contentTemplateFile="slatwall-productlisting.cfm"
+			},
+			{
+				name='Checkout',
+				contentTemplateFile="slatwall-checkout.cfm"
+			}
 		];
 		
-		for(var name in homePageChildNames){
+		for(var homePageChild in homePageChildren){
 			productListingPageValue = false;
-			if(name == 'Product Listing'){
+			if(homePageChild.name == 'Product Listing'){
 				productListingPageValue = true;
 			}
 			var homePageChildContentData = {
 				contentID='',
 				contentPathID='',
 				activeFlag=true,
-				title=name,
+				title=homePageChild.name,
 				allowPurchaseFlag=false,
 				productListingPageFlag=productListingPageValue
 			};
 			var homePageChildContent = getService('contentService').newContent();
 			homePageChildContent.setSite(arguments.site);
+			homePageChildContent.setURLTitle(ReReplace(homePageChild.name, "[[:space:]]","","ALL"));
 			homePageChildContent.setParentContent(arguments.homePageContent);
 			homePageChildContent = getService('contentService').saveContent(homePageChildContent,homePageChildContentData);
+			
+			var contentTemplateSetting = getService("settingService").newSetting();
+			contentTemplateSetting.setSettingName( 'contentTemplateFile' );
+			contentTemplateSetting.setSettingValue( homePageChild.contentTemplateFile );
+			contentTemplateSetting.setContent( homePageChildContent );
+			getService("settingService").saveSetting( contentTemplateSetting );
 		}
 	}
 	
@@ -148,8 +178,16 @@ component  extends="HibachiService" accessors="true" {
 		};
 		var homePageContent = getService('contentService').newContent();
 		homePageContent.setSite(arguments.site);
+		homePageContent.setURLTitle("Home");
 		createHomePageChildrenContent(homePageContent,arguments.site);
 		homePageContent = getService('contentService').saveContent(homePageContent,homePageContentData);
+		
+		var contentTemplateSetting = getService("settingService").newSetting();
+		contentTemplateSetting.setSettingName( 'contentTemplateFile' );
+		contentTemplateSetting.setSettingValue( 'default.cfm' );
+		contentTemplateSetting.setContent( homePageContent );
+		getService("settingService").saveSetting( contentTemplateSetting );
+		
 		var slatwallTemplatesContentData = {
 			contentID='',
 			contentPathID='',
@@ -159,6 +197,7 @@ component  extends="HibachiService" accessors="true" {
 			productListingPageFlag=false
 		};
 		var slatwallTemplatesContent = getService('contentService').newContent();
+		slatwallTemplatesContent.setURLTitle('SlatwallTemplates');
 		slatwallTemplatesContent.setSite(arguments.site);
 		slatwallTemplatesContent.setParentContent(homePageContent);
 		slatwallTemplatesContent = getService('contentService').saveContent(slatwallTemplatesContent,slatwallTemplatesContentData);

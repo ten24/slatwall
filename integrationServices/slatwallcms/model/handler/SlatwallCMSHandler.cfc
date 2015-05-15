@@ -13,7 +13,7 @@ component {
 	
 	public any function getFullSitePath(required any site){
 		if(!structKeyExists(variables.fullSitePaths,arguments.site.getSiteID())){
-			variables.fullSitePaths[site.getSiteID()] = getSlatwallCMSApplication(arguments.site).Mappings['/Slatwall'] & site.getSiteCode();
+			variables.fullSitePaths[site.getSiteID()] = site.getSitePath();
 		}
 		return variables.fullSitePaths[site.getSiteID()];
 	}
@@ -51,27 +51,29 @@ component {
         	}
         	if(pathArrayLen > 3){
         		//need to figure out if we are working with a detail page type
-        		var urlTitleStartPosition = 4;
+        		var urlTitlePathStartPosition = 4;
         		if(
         			arguments.slatwallScope.setting('globalURLKeyBrand') == pathArray[4]
         			|| arguments.slatwallScope.setting('globalURLKeyProduct') == pathArray[4]
         			|| arguments.slatwallScope.setting('globalURLKeyProductType') == pathArray[4]
         		){
         			arguments.entityUrl = pathArray[4];
-        			urlTitleStartPosition = 5;
+        			urlTitlePathStartPosition = 5;
         		}else{
-        			urlTitleStartPosition = 4;
+        			urlTitlePathStartPosition = 4;
         		}
-        		arguments.contenturlTitle = '';
-        		for(var i = urlTitleStartPosition;i <= arraylen(pathArray);i++){
+        		arguments.contenturlTitlePath = '';
+        		for(var i = urlTitlePathStartPosition;i <= arraylen(pathArray);i++){
         			if(i == arrayLen(pathArray)){
-        				arguments.contenturlTitle &= pathArray[i];
+        				arguments.contenturlTitlePath &= pathArray[i];
         			}else{
-        				arguments.contenturlTitle &= pathArray[i] & '/';
+        				arguments.contenturlTitlePath &= pathArray[i] & '/';
         			}
         		}
         	}
+        	
 			if(!isnull(arguments.appCode)){
+				
 				//try to get a site form the domain name
 				
 				var domainNameSite = arguments.slatwallScope.getService('siteService').getCurrentRequestSite();
@@ -105,12 +107,13 @@ component {
 						
 						//if a site does exist then check that site directory for the template
 						//are we rendering a basic content node or have we been provided with an entityURL type?
+						
 						if(directoryExists(sitePath)) {
-							
 							var slatwallCMSApplication = getSlatwallCMSApplication(site);
 							
 							//slatwallCMSApplication.runRequestActions();
 							slatwallCMSApplication.generateRenderedContent(argumentCollection=arguments);
+							
 						}else{
 							throw('site directory does not exist for ' & site.getSiteName());
 						}
@@ -119,8 +122,6 @@ component {
 			}
 		}
 	}
-	
-	
 		/*
 		
         
