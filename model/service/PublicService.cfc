@@ -81,8 +81,9 @@ component extends="HibachiService"  accessors="true" output="false"
 	}
 	
 	
-	/** 
-	 @method Login <b>Log a user account into Slatwall given the users emailAddress and password</b>
+	/**
+	 
+	 **@method Login** <b>Log a user account into Slatwall given the users emailAddress and password</b>
 	 @http-context <b>Login</b> Use this context in conjunction with the listed http-verb to use this resource.
 	 @http-verb POST
 	 @http-return <b>(200)</b> Request Successful, <b>(400)</b> Bad or Missing Input Data
@@ -149,15 +150,15 @@ component extends="HibachiService"  accessors="true" output="false"
 	 *	@description  CreateAccount Creates a new user account.  
 	 *	@return <b>(201)</b> Created Successfully or <b>(400)</b> Bad or Missing Input Data
 	 *	@param firstName {string}
-	 *	@param Header: firstName {string}
-	 *	@param Header: lastName {string}
-	 *	@param Header: company {string}
-	 *	@param Header: phone {string}
-	 *	@param Header: emailAddress {string}
-	 *	@param Header: emailAddressConfirm {string}
-	 *	@param Header: createAuthenticationFlag {string}
-	 *	@param Header: password {string}
-	 *	@param Header: passwordConfirm {string}
+	 *	@param firstName {string}
+	 *	@param lastName {string}
+	 *	@param company {string}
+	 *	@param phone {string}
+	 *	@param emailAddress {string}
+	 *	@param emailAddressConfirm {string}
+	 *	@param createAuthenticationFlag {string}
+	 *	@param password {string}
+	 *	@param passwordConfirm {string}
 	 */
 	public void function createAccount( required struct rc ) {
 		param name="arguments.rc.createAuthenticationFlag" default="1";
