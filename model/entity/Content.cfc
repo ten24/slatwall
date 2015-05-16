@@ -197,8 +197,8 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		if(!isNull(arguments.content.getURLTitle())){
 			value = arguments.content.getURLTitle();
 		}
-		ArrayAppend(arguments.urlTitleArray,value);
 		if(!isNull(arguments.content.getParentContent())){
+			ArrayAppend(arguments.urlTitleArray,value);
 			arguments.urlTitleArray = getParentUrlTitle(arguments.content.getParentContent(),arguments.urlTitleArray);
 		}
 		return arguments.urlTitleArray;
