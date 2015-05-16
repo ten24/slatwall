@@ -50,26 +50,27 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.content" type="any">
-<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.content" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.content#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.content#" edit="#rc.edit#" backQueryString="?ng##!/entity/Content/" />
-
-		<hb:HibachiEntityDetailGroup object="#rc.content#">
-			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cfif rc.content.getProductListingPageFlag()>
-				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/products">
-			</cfif>
-			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/content">
-			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/settings">
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.content.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.content#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
-
-	</hb:HibachiEntityDetailForm>
-</cfoutput>
+<hb:HibachiEntityProcessForm entity="#rc.content#" edit="#rc.edit#" sRedirectAction="admin:entity.editcontent">
+	
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.processObject#">
+	</hb:HibachiEntityActionBar>
+	
+	<hb:HibachiPropertyRow>
+		<hb:HibachiPropertyList>
+			<hb:HibachiPropertyDisplay object="#rc.content#" property="title" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.content#" property="urlTitle" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.content#" property="activeFlag" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.content#" property="contentTemplateType" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.content#" property="productListingPageFlag" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.content#" property="allowPurchaseFlag" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="siteID" displayType="plain" fieldtype="hidden" edit="#rc.edit#" value="#rc.siteID#" toggle="Hide">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="parentContentID" displayType="plain" fieldtype="hidden"  edit="#rc.edit#" value="#rc.parentContentID#" toggle="Hide">
+		</hb:HibachiPropertyList>
+	</hb:HibachiPropertyRow>
+	
+</hb:HibachiEntityProcessForm>
 

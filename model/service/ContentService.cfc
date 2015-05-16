@@ -59,6 +59,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getSettingService().getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag", settingValue=1);
 	}
 	
+	public any function processContent_create(required any content, required any processObject){
+		// Call save on the content
+		arguments.content.setSite(arguments.processObject.getSite());
+		arguments.content.setParentContent(arguments.processObject.getParentContent());
+		arguments.content = this.saveProduct(arguments.content,arguments.data);
+		
+		return arguments.content;
+	}
+	
 	public any function getCMSTemplateOptions(required any content){
 		var contentSite = arguments.content.getSite();
 		if(directoryExists(getApplicationValue('applicationRootMappingPath') & '/apps/' & contentSite.getApp().getAppCode() & '/' & contentSite.getSiteCode() & '/templates' )) {
