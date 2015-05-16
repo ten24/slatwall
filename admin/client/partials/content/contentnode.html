@@ -14,12 +14,15 @@
 <td class="s-edit-elements">
   <ul class="list-unstyled list-inline">
     <li ng-if="contentData.contentID">
-    	<a sw-href="{{'/entity/Content/'+contentData.contentID}}" class="btn btn-default btn-xs">
+    	<!--<a sw-href="{{'/entity/Content/'+contentData.contentID}}" class="btn btn-default btn-xs">
     		<i class="glyphicon glyphicon-eye-open"></i>
-    	</a>
+    	</a>-->
     	<!--<a sw-href="{{'/entity/Content/null?parentContentID='+contentData.contentID+'&siteID='+contentData.site_siteID}}" class="btn btn-default btn-xs">
     		<i class="glyphicon glyphicon-plus-sign"></i>
     	</a>-->
+    	<a href="?slatAction=entity.detailContent&contentID={{contentData.contentID}}" class="btn btn-default btn-xs">
+    		<i class="glyphicon glyphicon-eye-open"></i>
+    	</a>
     	<a 	title="Create Content" 
     		class="adminentitypreprocessorder btn btn-primary modalload" 
     		target="_self" href="/?slatAction=entity.preprocesscontent&amp;processContext=create&amp;parentContentID={{contentData.contentID}}&amp;siteID={{contentData.site_siteID}}" 

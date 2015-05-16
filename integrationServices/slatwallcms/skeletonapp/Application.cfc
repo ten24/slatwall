@@ -131,7 +131,7 @@ component {
 			var entityTemplateContent = arguments.slatwallScope.getService("contentService").getContent( entityDisplayTemplateSetting );;
 			if(!isnull(entityTemplateContent)){
 				arguments.slatwallScope.setContent( entityTemplateContent );
-				var contentTemplateFile = entityTemplateContent.setting('contentTemplateFile',[site]);
+				var contentTemplateFile = entityTemplateContent.setting('contentTemplateFile',[content]);
 				if(!isNull(contentTemplateFile)){
 					
 					contentPath = templatePath & contentTemplateFile;
@@ -149,7 +149,6 @@ component {
 			
 				//now that we have the site directory, we should see if we can retrieve the content via the urltitle and site
 				var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitlePath(site.getSiteID(),arguments.contenturlTitlePath);
-				
 			}else{
 				var content = arguments.slatwallScope.getService('contentService').getDefaultContentBySite(site);
 			}
@@ -158,8 +157,7 @@ component {
 				throw('content does not exists for #arguments.contenturlTitlePath#');
 			}
 			//now that we have the content, get the file name so that we can retrieve it form the site's template directory
-			var contentTemplateFile = content.Setting('contentTemplateFile',[site]);
-			
+			var contentTemplateFile = content.Setting('contentTemplateFile',[content]);
 			//templatePath relative to the slatwallCMS
 			contentPath = templatePath & contentTemplateFile;
 			arguments.slatwallScope.setContent(content);

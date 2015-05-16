@@ -178,7 +178,6 @@ component  extends="HibachiService" accessors="true" {
 		};
 		var homePageContent = getService('contentService').newContent();
 		homePageContent.setSite(arguments.site);
-		homePageContent.setURLTitle("Home");
 		createHomePageChildrenContent(homePageContent,arguments.site);
 		homePageContent = getService('contentService').saveContent(homePageContent,homePageContentData);
 		
