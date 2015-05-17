@@ -388,6 +388,10 @@ Notes:
 			<cfquery name="modules" dbtype="query">
 				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#modules%'
 			</cfquery>
+			<!---model --->
+			<cfquery name="model" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#model%'
+			</cfquery>
 			<!---controllers --->
 			<cfquery name="controllers" dbtype="query">
 				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#controllers%'
@@ -400,6 +404,11 @@ Notes:
 			<cfquery name="services" dbtype="query">
 				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#services%'
 			</cfquery>
+			
+			<cfloop query="model">
+				<cfset scriptRelativePath = replace(model.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & model.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			</cfloop>
 			
 			<cfloop query="modules">
 				<cfset scriptRelativePath = replace(modules.directory,es5scriptPath,'')>
