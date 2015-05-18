@@ -62,41 +62,54 @@ component extends="HibachiService"  accessors="true" output="false"
 	variables.publicContexts = [];
 	variables.responseType = "json";
 	
-	/** Returns a JSON list of all public contexts available to this request. */
+	/**
+	 * @method getPublicContexts
+	 * @http-context getPublicContexts 
+	 * @description Returns a JSON list of all public contexts available to this request. 
+	 * @example ...GET request to /api/scope/GetPublicContext
+	 * @http-return <b>(200)</b> Request Successful, <b>(400)</b> Bad or Missing Input Data
+	 **/
 	public void function getPublicContexts( required struct rc ) {
-		//var publicMetaData = serializeJson(getComponentMetaData("PublicService"));
 		var data = {};
 		var publicMetaData = getComponentMetaData("PublicService");
 		var publicContexts = publicMetaData.functions;
 		if (!isNull(publicContexts)){
+			
 			for (context in publicContexts){
-				if (StructKeyExists(context, "name") && StructKeyExists(context, "description") && StructKeyExists(context, "http-context")){
-					var info["#context.name#"] = {name=context.name, description=context.description, context=context["http-context"]};
+				if (StructKeyExists(context, "name") && StructKeyExists(context, "description") && StructKeyExists(context, "http-context") && StructKeyExists(context, "http-return")){
+					var info["#context.name#"] = formatMetaData({name=context.name, description=context.description, context=context["http-context"], httpReturn=context["http-return"]});
    					StructAppend(data, info);
 				}
 			}
+			
 		}
 		
 		setResponse(true, 200, data, arguments.rc, true);
 	}
 	
+	private string function formatMetaData(struct contextData){
+		var stringBuilder = "<br><p><ul style='background:##ffffd5;color:black;'><li>Context-Name: #arguments.contextData.name#</li>" 
+								   & "<li>Description: <br><p>#arguments.contextData.description#</p></li>" 
+								   & "<li>Resource: <br><p>.../api/scope/#arguments.contextData.context#</p></li>" 
+								   & "<li>Http Return: <ul>"
+								   & "<li>#arguments.contextData.httpReturn#</li>"
+								   &"</ul></li>"
+								   &"</ul></p><br>";
+		return stringBuilder;
+	}
 	
 	/**
-	 
-	 **@method Login** <b>Log a user account into Slatwall given the users emailAddress and password</b>
+	 @method Login <b>Log a user account into Slatwall given the users emailAddress and password</b>
 	 @http-context <b>Login</b> Use this context in conjunction with the listed http-verb to use this resource.
 	 @http-verb POST
 	 @http-return <b>(200)</b> Request Successful, <b>(400)</b> Bad or Missing Input Data
-	 @description  Logs a user into a Slatwall account  
 	 @param Required Header: emailAddress
 	 @param Required Header: password
-	 @description Use this context to log a user into Slatwall. The required email address should be sent
+	 @description Use this context to log a user into Slatwall. The required email address/password should be sent
 							   bundled in a Basic Authorization header with the emailAddress and password 
 							   appended together using an colon and then converted to base64.
-						  
-		 Example:  
-		testuser@slatwalltest.com:Vah7cIxXe would become dGVzdHVzZXJAc2xhdHdhbGx0ZXN0LmNvbTpWYWg3Y0l4WGU=
-						
+							   					  
+	  @example  testuser@slatwalltest.com:Vah7cIxXe would become dGVzdHVzZXJAc2xhdHdhbGx0ZXN0LmNvbTpWYWg3Y0l4WGU=				
 	 */
 	public any function login( required struct rc ){
 		//If this is an api request, decode the basic auth heading and put the email and password back into request context.
@@ -109,7 +122,6 @@ component extends="HibachiService"  accessors="true" output="false"
 					var password = plaintextArray[2];
 					arguments.rc["emailAddress"] = email;
 					arguments.rc["password"] = password;
-					
 				}
 			} catch (any e){
 				addDataToResponse("errors", "Unable to decode Basic Authorization Header to usable data", arguments.rc);		
@@ -130,14 +142,15 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @http-verb POST
 	 * @http-return <b>(200)</b> Request Successful <b>(400)</b> Bad or Missing Input Data
 	 * @description  Logs a user out of the given device  
-	 * @param Required Header: request_token
-	 * @param Required Header: deviceID
+	 * @param Required request_token
+	 * @param Required deviceID
+	 * @example POST to /api/scope/logout with request_token and deviceID in headers
 	 */
 	public any function logout( required struct rc ){ 
 		
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'logout' );
 		arguments.rc.$.slatwall.addActionResult( "public:account.logout", false );
-
+		
 		//any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc
 		handlePublicAPICall(200, 500, account, arguments.rc.$.slatwall.invokeMethod("getAccountData"), "Logout Successful",  arguments.rc);
 		return account;
@@ -148,7 +161,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	 *	@http-context createAccount
 	 *	@http-verb POST
 	 *	@description  CreateAccount Creates a new user account.  
-	 *	@return <b>(201)</b> Created Successfully or <b>(400)</b> Bad or Missing Input Data
+	 *	@http-return <b>(201)</b> Created Successfully or <b>(400)</b> Bad or Missing Input Data
 	 *	@param firstName {string}
 	 *	@param firstName {string}
 	 *	@param lastName {string}
@@ -164,7 +177,6 @@ component extends="HibachiService"  accessors="true" output="false"
 		param name="arguments.rc.createAuthenticationFlag" default="1";
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'create');
 		arguments.rc.$.slatwall.addActionResult( "public:account.create", account.hasErrors() );
-		
 		//If this is a request from the api, setup the response header and populate it with data.
 		//any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc
 		handlePublicAPICall(201, 400, account, arguments.rc.$.slatwall.invokeMethod("getAccountData"), "",  arguments.rc);
@@ -173,6 +185,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/**
 	 * @http-context updateDeviceID
 	 * @description  Updates the device ID for a user account 
+	 * @http-return <b>(201)</b> Created Successfully or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function updateDeviceID( required struct rc ){
 		param name="arguments.rc.deviceID" default="";
@@ -192,7 +205,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	  *	@http-context ForgotPassword
 	  *	@http-verb POST
 	  *	@description  Sends an email to a user to reset a password.  
-	  *	@return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
+	  *	@htt-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
 	  *	@param emailAddress {string}
 	  **/
     public any function forgotPassword( required struct rc ) {
@@ -210,7 +223,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	  *	@http-context resetPassword
 	  *	@http-verb POST
 	  *	@description  Sends an email to a user to reset a password.  
-	  *	@return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
+	  *	@http-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
 	  *	@param accountID {string}
 	  * @param emailAddress {string}
 	  **/
@@ -237,7 +250,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	  *	@http-context changePassword
 	  *	@http-verb POST
 	  *	@description  Change a users password.  
-	  *	@return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
+	  *	@http-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
 	  *	@param emailAddress {string}
 	  **/
 	public any function changePassword( required struct rc ) {
@@ -252,8 +265,8 @@ component extends="HibachiService"  accessors="true" output="false"
 	  *	@http-context updateAccount
 	  *	@http-verb POST
 	  *	@description  Update a users account data.  
-	  *	@return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
-	  *	@param fieldToUpdate {json key}
+	  *	@http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
+	  *	@param aFieldToUpdate {json key}
 	  * @param authToken {json key}
 	  **/
 	public any function updateAccount( required struct rc ) {
@@ -262,7 +275,6 @@ component extends="HibachiService"  accessors="true" output="false"
 		arguments.rc.$.slatwall.addActionResult( "public:account.update", account.hasErrors() );
 		
 		handlePublicAPICall(200, 400, account, arguments.rc.$.slatwall.invokeMethod("getAccountData"), "",  arguments.rc);
-		
 	}
 	
 	/**
@@ -270,7 +282,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	  *	@http-context deleteAccountEmailAddress
 	  *	@http-verb POST
 	  *	@description delete a users account email address
-	  *	@return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
+	  *	@http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	  *	@param emailAddress {string}
 	  **/
 	public void function deleteAccountEmailAddress() {
@@ -292,6 +304,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	  * @http-context send AccountEmailAddressVerificationEmail
 	  * @description Account Email Address - Send Verification Email 
 	  * @param accountEmailAddressID The ID of the email address
+	  * @http-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
 	  */
 	public void function sendAccountEmailAddressVerificationEmail() {
 		param name="rc.accountEmailAddressID" default="";
@@ -313,6 +326,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @http-context verifyAccountEmailAddress
 	 * @http-resource /api/scope/verifyAccountEmailAddress
 	 * @description Account Email Address - Verify 
+	 * @http-return <b>(200)</b> Successfully Sent or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function verifyAccountEmailAddress() {
 		param name="rc.accountEmailAddressID" default="";
@@ -330,7 +344,9 @@ component extends="HibachiService"  accessors="true" output="false"
 	
 	/** 
 	 * @http-context deleteAccountPhoneNumber
-	 * @description Account Phone Number - Delete 
+	 * @http-verb Delete
+	 * @description Deletes an Account Phone Number by an accountID 
+	 * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function deleteAccountPhoneNumber() {
 		param name="rc.accountPhoneNumberID" default="";
@@ -348,6 +364,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/** 
 	 * @http-context deleteAccountAddress
 	 * @description Account Address - Delete 
+	 * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function deleteAccountAddress() {
 		param name="rc.accountAddressID" default="";
@@ -365,6 +382,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/** 
 	 * @http-context deleteAccountAddress
 	 * @description Account Payment Method - Delete 
+	 * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function deleteAccountPaymentMethod() {
 		param name="rc.accountPaymentMethodID" default="";
@@ -382,6 +400,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/** 
 	 * @http-context addAccountPaymentMethod
 	 * @description Account Payment Method - Add 
+	 * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function addAccountPaymentMethod() {
 		
@@ -408,7 +427,8 @@ component extends="HibachiService"  accessors="true" output="false"
 	
 	/** 
 	 * @http-context guestAccount
-	 * @description Guest Account 
+	 * @description Logs in a user with a guest account 
+	 * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function guestAccount(required any rc) {
 		param name="arguments.rc.createAuthenticationFlag" default="0";
@@ -432,6 +452,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/** 
 	 * @http-context guestAccountCreatePassword
 	 * @description Save Guest Account
+	 * @http-return <b>(200)</b> Successfully Created Password or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function guestAccountCreatePassword( required struct rc ) {
 		param name="arguments.rc.orderID" default="";
@@ -454,6 +475,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/** 
 	 * @http-context updateSubscriptionUsage
 	 * @description Subscription Usage - Update
+	 * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function updateSubscriptionUsage() {
 		param name="rc.subscriptionUsageID" default="";
@@ -472,6 +494,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/** 
 	 * @http-context renewSubscriptionUsage
 	 * @description Subscription Usage - Renew
+	 * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function renewSubscriptionUsage() {
 		param name="rc.subscriptionUsageID" default="";
@@ -490,6 +513,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/** 
 	 * @http-context duplicateOrder
 	 * @description Duplicate - Order
+	 * @http-return <b>(200)</b> Successfully Created Duplicate Order or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function duplicateOrder() {
 		param name="arguments.rc.orderID" default="";
@@ -517,6 +541,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/** 
 	 * @http-context updateOrder
 	 * @description  Update Order Data
+	 * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function updateOrder( required struct rc ) {
 		var cart = getOrderService().saveOrder( rc.$.slatwall.cart(), arguments.rc );
@@ -532,6 +557,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/** 
 	 * @http-context clearOrder
 	 * @description  Clear the order data
+	 * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function clearOrder( required struct rc ) {
 		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'clear');
@@ -542,6 +568,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/** 
 	 * @http-context changeOrder
 	 * @description Change Order
+	 * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function changeOrder( required struct rc ){
 		param name="arguments.rc.orderID" default="";
@@ -558,6 +585,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/** 
 	 * @http-context deleteOrder
 	 * @description Delete an Order
+	 * @http-return <b>(200)</b> Successfully Deleted or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function deleteOrder( required struct rc ) {
 		param name="arguments.rc.orderID" default="";
@@ -574,6 +602,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/** 
 	 * @http-context addOrderItem
 	 * @description Add Order Item to an Order
+	 * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function addOrderItem(required any rc) {
 		// Setup the frontend defaults
@@ -607,6 +636,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/** 
 	 * @http-context removeOrderItem
 	 * @description Remove Order Item from an Order
+	 * @http-return <b>(200)</b> Successfully Removed or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function removeOrderItem(required any rc) {
 		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'removeOrderItem');
@@ -617,6 +647,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/** 
 	 * @http-context updateOrderFulfillment
 	 * @description Update Order Fulfillment 
+	  * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function updateOrderFulfillment(required any rc) {
 		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'updateOrderFulfillment');
@@ -627,6 +658,7 @@ component extends="HibachiService"  accessors="true" output="false"
 	/** 
 	 * @http-context addPromotionCode
 	 * @description Add Promotion Code
+	 * @http-return <b>(200)</b> Successfully Updated or <b>(400)</b> Bad or Missing Input Data
 	 */
 	public void function addPromotionCode(required any rc) {
 		var cart = getOrderService().processOrder( rc.$.slatwall.cart(), arguments.rc, 'addPromotionCode');
@@ -805,7 +837,12 @@ component extends="HibachiService"  accessors="true" output="false"
 	
 	/*
 		Handles calling the set response if this was an api call.
-		
+		@param onSuccessCode
+		@param onErrorCode
+		@param genericObject
+		@param responseData
+		@param extraData
+		@param rc (Request Context)
 	*/
 	private any function handlePublicAPICall(any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc){
 		if (arguments.rc.APIRequest){

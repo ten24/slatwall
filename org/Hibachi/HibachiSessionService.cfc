@@ -9,6 +9,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 	// ===================== START: Logical Methods ===========================
 	public void function setPropperSession() {
 		var requestHeaders = getHTTPRequestData();
+		
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
 		if(!hasSessionValue("sessionID")) {
 			setSessionValue('sessionID', '');
@@ -20,17 +21,27 @@ component output="false" accessors="true" extends="HibachiService"  {
 		if( len(getSessionValue('sessionID')) ) {
 			var sessionEntity = this.getSession( getSessionValue('sessionID'), true);
 		
-		} else if( StructKeyExists(requestHeaders.headers, "request_token") || (StructKeyExists(requestHeaders, "deserializedJson") && StructKeyExists(requestHeaders.deserializedJson, "request_token"))){
-			//If the API 'cookie' and deviceID were passed directly to the API, we can use that for setting the session if the request token matches
-			//the token we already have.
-				var rt = (StructKeyExists(requestHeaders.headers, "request_token")) ? requestHeaders.headers["request_token"] : requestHeaders.deserializedJson["request_token"];				
+		} else if( (StructKeyExists(request.context, "jsonRequest") && request.context.jsonRequest && StructKeyExists(request.context.deserializedJsonData, "request_token") ) || StructKeyExists(requestHeaders.headers, "request_token") ){
+				//If the API 'cookie' and deviceID were passed directly to the API, we can use that for setting the session if the request token matches
+				//the token we already have.
+				
+				//Find the request token in the json or in the headers if it exists.
+				var rt = "";
+				if (StructKeyExists(request.context, "jsonRequest") && request.context.jsonRequest){
+					rt = request.context.deserializedJsonData["request_token"];
+				}
+				if (StructKeyExists(requestHeaders.headers, "request_token")){
+					rt = requestHeaders.headers["request_token"];
+				}
+								
+				//set the session
 				var NPSID = rt;
 				var sessionEntity = this.getSessionBySessionCookieNPSID( NPSID, true );
-				
-				//Only allow a session to be set for the deviceID that matches that session id.
 				foundWithNPSID = true;
 				setSessionValue('sessionID', sessionEntity.getSessionID());
-				request.context["authorizedForAPI"] = true;
+				request.context["foundWithRequestToken"] = true;
+				
+				/*
 				if ( StructKeyExists(request.context, "deviceID") && !Len(sessionEntity.getDeviceID())){
 					//If the device doesn't yet exist, add it.'
 					sessionEntity.setDeviceID("#request.context.deviceID#");
@@ -46,7 +57,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 						foundWithNPSID = false;
 					}
 				}
-				
+				*/
 			
 		}else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID")) {
 			var sessionEntity = this.getSessionBySessionCookieNPSID( cookie["#getApplicationValue('applicationKey')#-NPSID"], true);

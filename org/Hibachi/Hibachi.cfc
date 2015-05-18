@@ -53,9 +53,9 @@ component extends="FW1.framework" {
 	variables.framework.routes = [
 		//api routes
 
-		 { "$GET/api/scope/$" = "/api:main/get/" }
-		,{ "$GET/api/scope/:context/$" = "/api:main/get/context/:context"}
-		,{ "$POST/api/scope/:context/$" = "/api:main/get/context/:context"}
+		 { "$GET/api/scope/$" = "/api:public/get/" }
+		,{ "$GET/api/scope/:context/$" = "/api:pubic/get/context/:context"}
+		,{ "$POST/api/scope/:context/$" = "/api:public/get/context/:context"}
 		
 		,{ "$GET/api/$" = "/api:main/get/" }
 		,{ "$GET/api/:entityName/$" = "/api:main/get/entityName/:entityName"}
@@ -224,6 +224,7 @@ component extends="FW1.framework" {
 		//Set an account before checking auth in case the user is trying to login via the REST API
 		/* Handle JSON requests */
 		var hasJsonData = false;
+		request.context["jsonRequest"] = false;
 		if(structKeyExists(httpRequestData.headers, "content-type") && httpRequestData.headers["content-type"] == "application/json") {
 			//Automagically deserialize the JSON data if we can
 			if ( StructKeyExists(httpRequestData, "content") ){
@@ -251,7 +252,7 @@ component extends="FW1.framework" {
 		} 
 		
 		//<---Now that we deserialized that, check for an auth token, and if found, attach that account before checking permissions --->
-		if (hasJsonData){
+		/*if (hasJsonData){
 			if (StructKeyExists(request.context.deserializedJSONData, "authToken") && len(request.context.deserializedJSONData.authToken)){
 				var authTokenAccount = getHibachiScope().getDAO('hibachiDAO').getAccountByAuthToken(authToken=request.context.deserializedJSONData.authToken);
 				if(!isNull(authTokenAccount)) {
@@ -260,7 +261,7 @@ component extends="FW1.framework" {
 				}
 			}
 		}
-		
+		*/
 		/* Figure out if this is a public request */
 		request.context["url"] = getHibachiScope().getURL();
 		if (FindNoCase("/api/scope", request.context["url"]) ){
