@@ -136,7 +136,10 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionbenefit" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcategory" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listcontent" type="list">
+									<cfif $.slatwall.authenticateAction(action='admin:entity.listcontent')>
+										<hb:HibachiActionCaller queryString="ng##!/entity/Content" text="#$.slatwall.rbKey('admin.entity.listcontent')#" type="list">
+									</cfif>
+									<!---<hb:HibachiActionCaller action="admin:entity.listcontent" type="list">--->
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listpromotion" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listpricegroup" type="list">
