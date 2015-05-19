@@ -136,6 +136,10 @@ component  extends="HibachiService" accessors="true" {
 			{
 				name='Checkout',
 				contentTemplateFile="slatwall-checkout.cfm"
+			},
+			{
+				name='Order Confirmation',
+				contentTemplateFile="slatwall-orderconfirmation.cfm"
 			}
 		];
 		
