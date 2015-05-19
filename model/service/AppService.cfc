@@ -101,6 +101,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		return arguments.app;
 	}
 	
+	public any function processApp_create(required any app, required any processObject){
+		//load slatwallCMS Integration
+		var slatwallCMSIntegration = getService('integrationService').getIntegration('402881864c42f280014c4c9851f9016b');
+		var appRootPath = '/apps/' & arguments.processObject.getAppCode();
+		arguments.app.setAppRootPath(appRootPath);
+		arguments.app.setIntegration(slatwallCMSIntegration);
+		arguments.app = saveApp(arguments.app, arguments.data);	
+		return arguments.app;
+	}
+	
 	// ======================  END: Save Overrides ============================
 	
 	// ==================== START: Smart List Overrides =======================
