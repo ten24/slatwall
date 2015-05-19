@@ -53,7 +53,7 @@ component {
 		var domainNameSite = arguments.slatwallScope.getService('siteService').getCurrentRequestSite();
        
        	if(!isNull(domainNameSite)){
-	        //render site via apps route
+   			//render site via apps route
 	        if(pathArrayLen && pathArray[1] == 'apps'){
 	        	
 	        	if(pathArrayLen > 1){
@@ -86,9 +86,6 @@ component {
 	        	}
 	        	
 				if(!isnull(arguments.appCode)){
-					
-					
-					
 					if(!isnull(domainNameSite)){
 						
 						var app = arguments.slatwallScope.getService('appService').getAppByAppCode(arguments.appCode);
@@ -101,40 +98,42 @@ component {
 						}else{
 							var site = arguments.slatwallScope.getService('siteService').getSiteBySiteCode(arguments.siteCode);
 						}
-						//if we obtained a site and it is allowed by the domain name then prepare to render content
-						if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID()){
-							
-							// Setup the correct local in the request object for the current site
-							arguments.slatwallScope.setRBLocale( arguments.slatwallScope.getRBLocale() );
-							
-							// Setup the correct app in the request object
-							arguments.slatwallScope.setApp( app );
-							
-							// Setup the correct site in the request object
-							arguments.slatwallScope.setSite( site );
-							
-							//declare sitePath
-							var sitePath = getFullSitePath(site);
-							
-							//if a site does exist then check that site directory for the template
-							//are we rendering a basic content node or have we been provided with an entityURL type?
-							
-							if(directoryExists(sitePath)) {
-								var slatwallCMSApplication = getSlatwallCMSApplication(site);
-								
-								slatwallCMSApplication.generateRenderedContent(argumentCollection=arguments);
-								
-							}else{
-								throw('site directory does not exist for ' & site.getSiteName());
-							}
-						}
 					}
 				}
-			}
-			
-			//render slatwall admin if we have access
+			//if we are not using apps path
+			}else if(pathArrayLen && pathArray[1] != 'apps'){
+					
+				var urlTitlePathStartPosition = 1;
+        		if(
+        			arguments.slatwallScope.setting('globalURLKeyBrand') == pathArray[1]
+        			|| arguments.slatwallScope.setting('globalURLKeyProduct') == pathArray[1]
+        			|| arguments.slatwallScope.setting('globalURLKeyProductType') == pathArray[1]
+        		){
+        			arguments.entityUrl = pathArray[1];
+        			urlTitlePathStartPosition = 2;
+        		}else{
+        			urlTitlePathStartPosition = 1;
+        		}
+        		arguments.contenturlTitlePath = '';
+        		for(var i = urlTitlePathStartPosition;i <= arraylen(pathArray);i++){
+        			if(i == arrayLen(pathArray)){
+        				arguments.contenturlTitlePath &= pathArray[i];
+        			}else{
+        				arguments.contenturlTitlePath &= pathArray[i] & '/';
+        			}
+        		}
+				var app = domainNameSite.getApp();
+				var site = domainNameSite;
+       		}else{
+       			arguments.contentTitlePath = '/';
+				var app = domainNameSite.getApp();
+				var site = domainNameSite;
+       		}
+       		
+       		var renderingAdmin = false;
+       		//render slatwall admin if we have access
 	        if(pathArrayLen && pathArray[1] == 'admin' && domainNameSite.getAllowAdminAccessFlag()){
-	        	
+	        	renderingAdmin = true;
 	        	if(!arraylen(arguments.slatwallScope.getCalledActions())){
 	        		if(isNull(rc.slatAction)){
 	        			writeOutput('#arguments.slatwallScope.doAction('admin:main.default')#');
@@ -144,7 +143,40 @@ component {
 	        		abort;
 	        	}
 	        }
+	        //if we obtained a site and it is allowed by the domain name then prepare to render content
+			if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID() && !renderingAdmin){
+				prepareSlatwallScope(arguments.slatwallScope,app,site);
+				prepareSiteForRendering(site=site, argumentsCollection=arguments);
+			}
        	}
+	}
+	
+	public void function prepareSlatwallScope(required any slatwallScope, required any app, required any site){
+		// Setup the correct local in the request object for the current site
+		arguments.slatwallScope.setRBLocale( arguments.slatwallScope.getRBLocale() );
+		
+		// Setup the correct app in the request object
+		arguments.slatwallScope.setApp( app );
+		
+		// Setup the correct site in the request object
+		arguments.slatwallScope.setSite( site );
+	}
+	
+	public void function prepareSiteForRendering(required any site, required struct argumentsCollection){
+		//declare sitePath
+		var sitePath = getFullSitePath(site);
+		
+		//if a site does exist then check that site directory for the template
+		//are we rendering a basic content node or have we been provided with an entityURL type?
+		
+		if(directoryExists(sitePath)) {
+			var slatwallCMSApplication = getSlatwallCMSApplication(site);
+			
+			slatwallCMSApplication.generateRenderedContent(argumentCollection=arguments.argumentsCollection);
+			
+		}else{
+			throw('site directory does not exist for ' & site.getSiteName());
+		}
 	}
 		/*
 		
