@@ -54,8 +54,7 @@ component  extends="HibachiService" accessors="true" {
 	
 	public any function getCurrentRequestSite() {
 		var domain = cgi.HTTP_HOST;
-		var site = getDAO('siteDAO').getSiteByDomainName(domain);
-		return site;
+		return getDAO('siteDAO').getSiteByDomainName(domain);
 	}
 	
 	public string function getSkeletonSitePath(){
@@ -137,6 +136,10 @@ component  extends="HibachiService" accessors="true" {
 			{
 				name='Checkout',
 				contentTemplateFile="slatwall-checkout.cfm"
+			},
+			{
+				name='Order Confirmation',
+				contentTemplateFile="slatwall-orderconfirmation.cfm"
 			}
 		];
 		
