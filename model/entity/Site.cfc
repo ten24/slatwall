@@ -53,6 +53,7 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="siteName" ormtype="string";
 	property name="siteCode" ormtype="string" unique="true" index="PI_SITECODE";
 	property name="domainNames" ormtype="string";
+	property name="allowAdminAccessFlag" ormtype="boolean";
 	// CMS Properties
 	property name="cmsSiteID" ormtype="string" index="RI_CMSSITEID";
 	
@@ -78,6 +79,13 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	// Non-Persistent Properties
 	property name="sitePath" persistent="false";
 	property name="templatesPath" persistent="false";
+	
+	public boolean function getAllowAdminAccessFlag() {
+		if(isNull(variables.allowAdminAccessFlag)) {
+			variables.allowAdminAccessFlag = 0;
+		}
+		return variables.allowAdminAccessFlag;
+	}
 	
 	public string function getSitePath(){
 		if(!structKeyExists(variables,'sitePath')){

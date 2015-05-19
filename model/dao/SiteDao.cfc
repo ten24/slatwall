@@ -57,7 +57,7 @@ Notes:
 							
 							"
 		/>
-		<cfset var site = ORMExecuteQuery(
+		<cfreturn ORMExecuteQuery(
 			HQL,
 			{
 				siteNameStart=arguments.siteName & '%', 
@@ -67,8 +67,6 @@ Notes:
 			,true
 		)/>
 		
-		
-		<cfreturn site />
 	</cffunction>
 	
 </cfcomponent>
