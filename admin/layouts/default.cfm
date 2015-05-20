@@ -189,6 +189,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listattributeset" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listintegration" type="list">
 									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listapp" type="list">
 									<!---<cfif $.slatwall.authenticateAction(action='admin:entity.listapp')>
 										<hb:HibachiActionCaller queryString="ng##!/entity/App" text="#$.slatwall.rbKey('admin.entity.listapp')#" type="list">
 									</cfif>--->

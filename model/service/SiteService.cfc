@@ -251,6 +251,11 @@ component  extends="HibachiService" accessors="true" {
 	// ======================  END: Status Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
+	public any function processSite_create(required any site, required any processObject){
+		arguments.site.setApp(arguments.processObject.getApp());
+		saveSite(arguments.site,arguments.data);
+		return arguments.site;
+	}
 	
 	public any function saveSite(required any site, struct data={}){
 		

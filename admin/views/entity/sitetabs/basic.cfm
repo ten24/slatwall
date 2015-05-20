@@ -8,6 +8,9 @@
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.site#" property="siteName" edit="#rc.edit#">
+			<cfif !isNull(rc.site.getApp())>
+				<hb:HibachiPropertyDisplay object="#rc.site#" property="app" edit="false">
+			</cfif>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>
