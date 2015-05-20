@@ -71,7 +71,8 @@ Notes:
 	<hb:HibachiListingDisplay smartList="#rc.stockadjustmentItemSmartList#"
 							   recorddetailaction="admin:entity.detailstockadjustment"
 							   recordeditaction="admin:entity.editstockadjustment"
-							   recorddetailactionproperty="stockAdjustment.stockAdjustmentID">
+							   recorddetailactionproperty="stockAdjustment.stockAdjustmentID"
+							   recordeditactionproperty="stockAdjustment.stockAdjustmentID">
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.skucode" />
 		<hb:HibachiListingColumn propertyIdentifier="sku.product.brand.brandName" />
 		<hb:HibachiListingColumn propertyIdentifier="sku.product.productName" />
