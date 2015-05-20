@@ -46,45 +46,13 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.edit" default="false" />
-<cfparam name="rc.attributeSet" type="any" />
+<cfparam name="rc.attributeSet" type="any">
+<cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-	
-<hb:HibachiEntityDetailForm object="#rc.attributeSet#" edit="#rc.edit#">
-	<hb:HibachiEntityActionBar type="detail" object="#rc.attributeSet#" edit="#rc.edit#">
-		<hb:HibachiActionCaller action="admin:entity.createattribute" queryString="attributesetid=#rc.attributeset.getAttributeSetID()#" type="list" modal=true />
-	</hb:HibachiEntityActionBar>
-	
-	<hb:HibachiEntityDetailGroup object="#rc.attributeSet#">
-		<hb:HibachiEntityDetailItem view="admin:entity/attributesettabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-		<hb:HibachiEntityDetailItem view="admin:entity/attributesettabs/attributes" />
-		<hb:HibachiEntityDetailItem view="admin:entity/attributesettabs/description" />
-		<cfif not rc.attributeSet.getGlobalFlag()>
-			<cfif listFindNoCase("OrderItem,ProductType,Product,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
-				<hb:HibachiEntityDetailItem property="producttypes" />
-			</cfif>
-			<cfif listFindNoCase("OrderItem,Product,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
-				<hb:HibachiEntityDetailItem property="products" />
-				<hb:HibachiEntityDetailItem property="brands" />
-			</cfif>
-			<cfif listFindNoCase("OrderItem,Sku", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
-				<hb:HibachiEntityDetailItem property="skus" />
-			</cfif>
-			<cfif listFindNoCase("Type", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
-				<hb:HibachiEntityDetailItem property="types" />
-			</cfif>
-			<cfif listFindNoCase("Content", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
-				<hb:HibachiEntityDetailItem property="contents" />
-			</cfif>
-		</cfif>
-	</hb:HibachiEntityDetailGroup>
-	
-</hb:HibachiEntityDetailForm>
-
+	<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="contents" edit="#rc.edit#" displaytype="plain" />
 </cfoutput>
-
