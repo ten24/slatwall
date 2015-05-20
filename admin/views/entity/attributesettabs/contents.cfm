@@ -52,7 +52,6 @@ Notes:
 
 <cfparam name="rc.attributeSet" type="any">
 <cfparam name="rc.edit" type="boolean">
-
 <cfoutput>
 	<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="contents" edit="#rc.edit#" displaytype="plain" />
 </cfoutput>

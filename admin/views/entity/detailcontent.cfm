@@ -65,6 +65,7 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/content">
 			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/settings">
 			<!--- Custom Attributes --->
+			
 			<cfloop array="#rc.content.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.content#" attributeSet="#attributeSet#" />
 			</cfloop>
