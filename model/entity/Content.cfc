@@ -77,6 +77,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	// Related Object Properties (many-to-many - inverse)
 	property name="skus" singularname="sku" cfc="Sku" type="array" fieldtype="many-to-many" linktable="SwSkuAccessContent" fkcolumn="contentID" inversejoincolumn="skuID" inverse="true";
 	property name="listingProducts" singularname="listingProduct" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwProductListingPage" fkcolumn="contentID" inversejoincolumn="productID" inverse="true";
+	property name="attributeSets" singularname="attributeSet" cfc="AttributeSet" type="array" fieldtype="many-to-many" linktable="SwAttributeSetContent" fkcolumn="contentID" inversejoincolumn="attributeSetID" inverse="true";
 	
 	// Remote properties
 	property name="remoteID" ormtype="string" hint="Only used when integrated with a remote system";
@@ -100,6 +101,15 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
     
 	
 	// ============ START: Non-Persistent Property Methods =================
+	public array function getInheritedAttributeSetAssignments(){
+		// Todo get by all the parent contentIDs
+		var attributeSetAssignments = getService("AttributeService").getAttributeSetAssignmentSmartList().getRecords();
+		if(!arrayLen(attributeSetAssignments)){
+			attributeSetAssignments = [];
+		}
+		return attributeSetAssignments;
+	}
+	
 	public array function getSiteOptions(){
 		if(!structKeyExists(variables,'siteOptions')){
 			var siteCollectionList = getService('hibachiService').getSiteCollectionList();
@@ -284,9 +294,49 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		arguments.listingProduct.removeListingPage( this );    
 	}
 	
+	// Attribute Sets (many-to-many - inverse)
+	public void function addAttributeSet(required any attributeSet) {
+		arguments.attributeSet.addProductType( this );
+	}
+	public void function removeAttributeSet(required any attributeSet) {
+		arguments.attributeSet.removeProductType( this );
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
+	
+	// ============== START: Overridden Implicet Getters ===================
+	
+	public string function getContentIDPath() {
+		if(isNull(variables.contentIDPath)) {
+			variables.contentIDPath = buildIDPathList( "parentContent" );
+		}
+		return variables.contentIDPath;
+	}
+	
+	// ==============  END: Overridden Implicet Getters ====================
 
 	// ================== START: Overridden Methods ========================
+	
+	public any function getAssignedAttributeSetSmartList(){
+		if(!structKeyExists(variables, "assignedAttributeSetSmartList")) {
+			
+			variables.assignedAttributeSetSmartList = getService("attributeService").getAttributeSetSmartList();
+			
+			variables.assignedAttributeSetSmartList.addFilter('activeFlag', 1);
+			variables.assignedAttributeSetSmartList.addFilter('attributeSetObject', 'Content');
+			variables.assignedAttributeSetSmartList.setSelectDistinctFlag(true);
+			variables.assignedAttributeSetSmartList.joinRelatedProperty("SlatwallAttributeSet", "contents", "left");
+			
+			var wc = "(";
+			wc &= " aslatwallattributeset.globalFlag = 1";
+			wc &= " OR aslatwallcontent.contentID IN ('#replace(getContentIDPath(),",","','","all")#')";
+			wc &= ")";
+			
+			variables.assignedAttributeSetSmartList.addWhereCondition( wc );
+		}
+		
+		return variables.assignedAttributeSetSmartList;
+	}
 	
 	public boolean function getAllowPurchaseFlag() {
 		if(isNull(variables.allowPurchaseFlag)) {

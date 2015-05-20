@@ -18,7 +18,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetName" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="attributeSetCode" edit="#rc.edit#">
 			<cfif rc.attributeSet.isNew()>
-				<hb:HibachiDisplayToggle selector="select[name='attributeSetObject']" showValues="OrderItem,Product,ProductType,Sku,Type" loadVisable="#listFindNoCase('OrderItem,Product,ProductType,Sku', rc.attributeSet.getAttributeSetObject())#">
+				<hb:HibachiDisplayToggle selector="select[name='attributeSetObject']" showValues="Content,OrderItem,Product,ProductType,Sku,Type" loadVisable="#listFindNoCase('OrderItem,Product,ProductType,Sku', rc.attributeSet.getAttributeSetObject())#">
 					<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="globalFlag" edit="#rc.edit#">
 				</hb:HibachiDisplayToggle>
 			</cfif>

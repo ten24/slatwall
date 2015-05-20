@@ -46,31 +46,12 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.content" type="any">
+<cfparam name="rc.attributeSet" type="any">
 <cfparam name="rc.edit" type="boolean">
-
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.content#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.content#" edit="#rc.edit#" backQueryString="?ng##!/entity/Content/" />
-
-		<hb:HibachiEntityDetailGroup object="#rc.content#">
-			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
-			<cfif rc.content.getProductListingPageFlag()>
-				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/products">
-			</cfif>
-			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/content">
-			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/settings">
-			<!--- Custom Attributes --->
-			
-			<cfloop array="#rc.content.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.content#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
-
-	</hb:HibachiEntityDetailForm>
+	<hb:HibachiPropertyDisplay object="#rc.attributeSet#" property="contents" edit="#rc.edit#" displaytype="plain" />
 </cfoutput>
-
