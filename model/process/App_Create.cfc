@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,32 +45,14 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+*/
+component output="false" accessors="true" extends="HibachiProcess" {
 
+	// Injected Entity
+	property name="app";
 
-<cfparam name="rc.siteSmartList" type="any" />
-
-<cfoutput>
+	// Data Properties
+	property name="appName" hb_rbKey="entity.app.appName";
+	property name="appCode" hb_rbKey="entity.app.appCode";
 	
-	<hb:HibachiEntityActionBar type="listing" object="#rc.siteSmartList#" showCreate="false">
-			
-		<!--- Create ---> 
-		<hb:HibachiEntityActionBarButtonGroup>			
-			<hb:HibachiProcessCaller action="admin:entity.preprocesssite" entity="site" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.site')#" modal="true" />			
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
-	
-	<hb:HibachiListingDisplay smartList="#rc.siteSmartList#"
-							   recordEditAction="admin:entity.editSite"
-							   recordDetailAction="admin:entity.detailSite">
-		
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="siteName" />
-		<hb:HibachiListingColumn propertyIdentifier="siteCode" />
-		<hb:HibachiListingColumn propertyIdentifier="domainNames" />
-		<hb:HibachiListingColumn propertyIdentifier="app.appName" />
-		<hb:HibachiListingColumn propertyIdentifier="allowAdminAccessFlag" />
-	</hb:HibachiListingDisplay>
-	
-</cfoutput>
+}

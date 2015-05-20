@@ -50,27 +50,17 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.siteSmartList" type="any" />
+<cfparam name="rc.app" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	
-	<hb:HibachiEntityActionBar type="listing" object="#rc.siteSmartList#" showCreate="false">
-			
-		<!--- Create ---> 
-		<hb:HibachiEntityActionBarButtonGroup>			
-			<hb:HibachiProcessCaller action="admin:entity.preprocesssite" entity="site" processContext="create" class="btn btn-primary" icon="plus icon-white" text="#$.slatwall.rbKey('define.create')# #$.slatwall.rbKey('entity.site')#" modal="true" />			
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
-	
-	<hb:HibachiListingDisplay smartList="#rc.siteSmartList#"
-							   recordEditAction="admin:entity.editSite"
-							   recordDetailAction="admin:entity.detailSite">
+	<hb:HibachiEntityDetailForm object="#rc.app#" edit="#rc.edit#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.app#" edit="#rc.edit#">
+		</hb:HibachiEntityActionBar>
 		
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="siteName" />
-		<hb:HibachiListingColumn propertyIdentifier="siteCode" />
-		<hb:HibachiListingColumn propertyIdentifier="domainNames" />
-		<hb:HibachiListingColumn propertyIdentifier="app.appName" />
-		<hb:HibachiListingColumn propertyIdentifier="allowAdminAccessFlag" />
-	</hb:HibachiListingDisplay>
-	
+		<hb:HibachiEntityDetailGroup object="#rc.app#">
+			<hb:HibachiEntityDetailItem view="admin:entity/appTabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
+		</hb:HibachiEntityDetailGroup>
+		
+	</hb:HibachiEntityDetailForm>
 </cfoutput>
