@@ -363,7 +363,7 @@
 				$.event("restrictedContent", $.content());
 				
 				// get the barrier page template
-				var barrierPage = $.slatwall.getService("contentService").getContent( $.slatwall.getContent().setting('contentRestrictedContentDisplayTemplate'), true );
+				var barrierPage = $.slatwall.getService("contentService").getContent( $.slatwall.getContent().setting('contentRestrictedContentDisplayTemplate', [$.slatwall.getSite()]), true );
 				
 				// Update the slatwall content to use the barrier page
 				$.slatwall.setContent( barrierPage );
