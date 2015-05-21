@@ -67,7 +67,7 @@
 	<cfset local.contentRestrictAccessFlagDetails.parentValueFormatted = $.slatwall.formatValue(local.contentRestrictAccessFlagDetails.parentValue, "yesno") />
 	
 	<!--- contentRestrictedContentDisplayTemplate --->
-	<cfset local.contentRestrictedContentDisplayTemplateDetails = $.slatwall.getContent().getSettingDetails('contentRestrictedContentDisplayTemplate') />
+	<cfset local.contentRestrictedContentDisplayTemplateDetails = $.slatwall.getContent().getSettingDetails('contentRestrictedContentDisplayTemplate', [$.slatwall.getSite()]) />
 	<cfset local.contentRestrictedContentDisplayTemplateDetails.parentValue = $.slatwall.setting('contentRestrictedContentDisplayTemplate') />
 	<cfif !isNull($.slatwall.getContent().getParentContent())>
 		<cfset local.contentRestrictedContentDisplayTemplateDetails.parentValue = $.slatwall.getContent().getParentContent().setting('contentRestrictedContentDisplayTemplate') />	

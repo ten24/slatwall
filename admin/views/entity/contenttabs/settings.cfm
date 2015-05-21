@@ -52,15 +52,23 @@ Notes:
 
 <cfparam name="rc.content" type="any" />
 
+<cfset sites = $.slatwall.getService('siteService').getSiteSmartList() />
+<cfset sites.addFilter('activeFlag', 1) /> 
+<cfset rc.sitesArray = sites.getRecords() />
+
 <cfoutput>
 	<swa:SlatwallSettingTable>
 		<swa:SlatwallSetting settingName="contentRestrictAccessFlag" settingObject="#rc.content#" />
 		<swa:SlatwallSetting settingName="contentRequirePurchaseFlag" settingObject="#rc.content#" />
 		<swa:SlatwallSetting settingName="contentRequireSubscriptionFlag" settingObject="#rc.content#" />
 		<swa:SlatwallSetting settingName="contentIncludeChildContentProductsFlag" settingObject="#rc.content#" />
-		<swa:SlatwallSetting settingName="contentRestrictedContentDisplayTemplate" settingObject="#rc.content#" />
 		<swa:SlatwallSetting settingName="contentHTMLTitleString" settingObject="#rc.content#" />
 		<swa:SlatwallSetting settingName="contentMetaDescriptionString" settingObject="#rc.content#" />
 		<swa:SlatwallSetting settingName="contentMetaKeywordsString" settingObject="#rc.content#" />
+		
+		<!--- Site Specific Settings --->
+		<cfloop array="#rc.sitesArray#" index="site">
+			<swa:SlatwallSetting settingName="contentRestrictedContentDisplayTemplate" settingObject="#rc.content#" settingFilterEntities="#[site]#" />
+		</cfloop>
 	</swa:SlatwallSettingTable>
 </cfoutput>
