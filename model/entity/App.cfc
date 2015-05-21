@@ -90,6 +90,14 @@ component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="t
 	
 	// ============= START: Bidirectional Helper Methods ===================
 	
+	// Sites (one-to-many)
+	public void function addSite(required any site) {
+		arguments.site.setApp( this );
+	}
+	public void function removeSite(required any site) {
+		arguments.site.removeApp( this );
+	}
+	
 	// integration (many-to-one)
 	public void function setIntegration(required any Integration) {
 		variables.Integration = arguments.Integration;
@@ -115,6 +123,13 @@ component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="t
 	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
+	
+	public string function getAppRootPath(){
+		if(!structKeyExists(variables,'appRootPath') && !isNull(getAppCode())){
+			variables.appRootPath = '/apps/' & getAppCode();
+		}
+		return variables.appRootPath;
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	
