@@ -107,6 +107,24 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
+	// App (many-to-one)
+	public void function setApp(required any app) {
+		variables.app = arguments.app;
+		if(isNew() or !arguments.app.hasSite( this )) {
+			arrayAppend(arguments.app.getSites(), this);
+		}
+	}
+	public void function removeApp(any app) {
+		if(!structKeyExists(arguments, "app")) {
+			arguments.app = variables.app;
+		}
+		var index = arrayFind(arguments.app.getSites(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.app.getSites(), index);
+		}
+		structDelete(variables, "app");
+	}
+	
 	// Contents (one-to-many)
 	public void function addContent(required any content) {
 		arguments.content.setSite( this );

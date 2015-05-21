@@ -220,6 +220,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			// Site
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
+			siteOrderOrigin = {fieldType="select"},
 			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
@@ -374,6 +375,11 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getEmailService().getEmailTemplateOptions( "Account" );
 			case "siteVerifyAccountEmailAddressEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "AccountEmailAddress" );
+			case "siteOrderOrigin":
+				var optionSL = getService('HibachiService').getOrderOriginSmartList();
+				optionSL.addSelect('orderOriginName', 'name');
+				optionSL.addSelect('orderOriginID', 'value');
+				return optionSL.getRecords();
 			case "shippingMethodQualifiedRateSelection" :
 				return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
 			case "shippingMethodRateAdjustmentType" :

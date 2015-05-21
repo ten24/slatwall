@@ -267,7 +267,8 @@ component  extends="HibachiService" accessors="true" {
 				&& arguments.site.getApp().getIntegration().getIntegrationPackage() == 'slatwallcms'
 			)
 		){
-			
+			//need to set sitecode before accessing path
+			arguments.site.setSiteCode(arguments.data.siteCode);
 			//create directory for site
 			if(!directoryExists(arguments.site.getSitePath())){
 				directoryCreate(arguments.site.getSitePath());

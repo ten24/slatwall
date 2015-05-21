@@ -304,6 +304,8 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
+	
+	
 	// ============== START: Overridden Implicet Getters ===================
 	
 	public string function getContentIDPath() {
