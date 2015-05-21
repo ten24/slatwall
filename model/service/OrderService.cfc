@@ -2082,9 +2082,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(
 				!isNull(site) 
 				&& isNull(arguments.order.getOrderOrigin())
-				
+				&& !isNull(site.setting('siteOrderOrigin'))
+				&& len(site.setting('siteOrderOrigin'))
 			){
-				writedump(var=site.setting('siteOrderOrigin'),top=2);abort;
+				var siteOrderOrigin = getService('HibachiService').getOrderOrigin(site.setting('siteOrderOrigin'));
+				arguments.order.setOrderOrigin(siteOrderOrigin);
 			}
 			
 			// Save Billing & Shipping Account Addresses if needed
