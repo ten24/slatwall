@@ -86,14 +86,16 @@ Notes:
 			var hql = "SELECT NEW MAP(coalesce( sum(orderItem.quantity), 0 ) - coalesce( sum(orderDeliveryItem.quantity), 0 ) as QNDOO, 
 							orderItem.sku.skuID as skuID, 
 							stock.stockID as stockID, 
-							stock.location.locationID as locationID, 
-							stock.location.locationIDPath as locationIDPath)
+							location.locationID as locationID, 
+							location.locationIDPath as locationIDPath)
 						FROM
 							SlatwallOrderItem orderItem
 						  LEFT JOIN
 					  		orderItem.orderDeliveryItems orderDeliveryItem
 					  	  LEFT JOIN
 					  	  	orderItem.stock stock
+					  	  LEFT JOIN
+					  	  stock.location location
 						WHERE
 							orderItem.order.orderStatusType.systemCode != 'ostNotPlaced'
 						  AND
@@ -107,8 +109,8 @@ Notes:
 						GROUP BY
 							orderItem.sku.skuID,
 							stock.stockID,
-							stock.location.locationID,
-							stock.location.locationIDPath";
+							location.locationID,
+							location.locationIDPath";
 			
 			return ormExecuteQuery(hql, params);
 			
@@ -152,14 +154,16 @@ Notes:
 			var params = [ arguments.productID ];
 			var hql = "SELECT NEW MAP(coalesce( sum(orderItem.quantity), 0 ) - coalesce( sum(stockReceiverItem.quantity), 0 ) as QNRORO, 
 							orderItem.sku.skuID as skuID, stock.stockID as stockID, 
-							stock.location.locationID as locationID, 
-							stock.location.locationIDPath)
+							location.locationID as locationID, 
+							location.locationIDPath)
 						FROM
 							SlatwallOrderItem orderItem
 						  LEFT JOIN
 					  		orderItem.stockReceiverItems stockReceiverItem
 					  	  LEFT JOIN
 					  	  	orderItem.stock stock
+					  	  LEFT JOIN
+					  	  	stock.location location
 						WHERE
 							orderItem.order.orderStatusType.systemCode != 'ostNotPlaced'
 						  AND
@@ -173,8 +177,8 @@ Notes:
 						GROUP BY
 							orderItem.sku.skuID,
 							stock.stockID,
-							stock.location.locationID,
-							stock.location.locationIDPath";
+							location.locationID,
+							location.locationIDPath";
 				
 			return ormExecuteQuery(hql, params);
 		}
