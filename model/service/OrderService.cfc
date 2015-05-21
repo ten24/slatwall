@@ -2077,18 +2077,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If the order has no errors & it has not been placed yet, then we can make necessary implicit updates
 		if(!arguments.order.hasErrors() && arguments.order.getStatusCode() == "ostNotPlaced") {
 			
-			//check if we are running on a CMS site by domain
-			var site = getService('SiteService').getCurrentRequestSite();
-			if(
-				!isNull(site) 
-				&& isNull(arguments.order.getOrderOrigin())
-				&& !isNull(site.setting('siteOrderOrigin'))
-				&& len(site.setting('siteOrderOrigin'))
-			){
-				var siteOrderOrigin = getService('HibachiService').getOrderOrigin(site.setting('siteOrderOrigin'));
-				arguments.order.setOrderOrigin(siteOrderOrigin);
-			}
-			
 			// Save Billing & Shipping Account Addresses if needed
 			arguments.order.checkNewBillingAccountAddressSave();
 			arguments.order.checkNewShippingAccountAddressSave();
