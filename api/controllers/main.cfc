@@ -29,6 +29,11 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public any function before( required struct rc ) {
 		arguments.rc.apiRequest = true;
 		getFW().setView("public:main.blank");
+		
+		//Set the header content type
+		param name="rc.headers.contentType" default="application/json"; 
+		arguments.rc.headers["Content-Type"] = rc.headers.contentType;
+		
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
 		}

@@ -19,7 +19,7 @@ angular.module('slatwalladmin')
 		productBundleService,
 		collectionService,
 		metadataService,
-		utilityService
+		utilityService 
 	){
 		return {  
 			require:"^swProductBundleGroups",

@@ -54,8 +54,8 @@ component extends="FW1.framework" {
 		//api routes
 
 		 { "$GET/api/scope/$" = "/api:public/get/" }
-		,{ "$GET/api/scope/:context/$" = "/api:pubic/get/context/:context"}
-		,{ "$POST/api/scope/:context/$" = "/api:public/get/context/:context"}
+		,{ "$GET/api/scope/:context/$" = "/api:public/get/context/:context"}
+		,{ "$POST/api/scope/:context/$" = "/api:public/post/context/:context"}
 		
 		,{ "$GET/api/$" = "/api:main/get/" }
 		,{ "$GET/api/:entityName/$" = "/api:main/get/entityName/:entityName"}
