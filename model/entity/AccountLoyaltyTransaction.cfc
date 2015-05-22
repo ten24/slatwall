@@ -186,7 +186,7 @@ component displayname="AccountLoyaltyTransaction" entityname="SlatwallAccountLoy
 			arrayAppend(arguments.orderFulfillment.getAccountLoyaltyTransactions(), this);
 		}
 	}
-	public void function removeOrderFulfillment(any order) {
+	public void function removeOrderFulfillment(any orderFulfillment) {
 		if(!structKeyExists(arguments, "orderFulfillment")) {
 			arguments.orderFulfillment = variables.orderFulfillment;
 		}

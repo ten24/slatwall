@@ -205,7 +205,7 @@ gulp.task('6to5', function () {
 
 gulp.task('compress',function(){
     gulp.src([
-      config.compilePath + 'es5/modules/ngslatwall.js',
+	  config.compilePath + 'es5/model/**/*.js',
       config.compilePath + 'es5/modules/slatwalladmin.js',
       config.compilePath + 'es5/services/*.js',
       config.compilePath + 'es5/controllers/**/*.js',
