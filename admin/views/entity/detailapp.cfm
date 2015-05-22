@@ -55,7 +55,7 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.app#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.app#" edit="#rc.edit#" showdelete="#arraylen(rc.app.getSites()) eq 0#">
+		<hb:HibachiEntityActionBar type="detail" object="#rc.app#" edit="#rc.edit#" showdelete="#!rc.app.hasSite()#">
 		</hb:HibachiEntityActionBar>
 		
 		<hb:HibachiEntityDetailGroup object="#rc.app#">

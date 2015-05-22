@@ -55,7 +55,13 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.content#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.content#" edit="#rc.edit#" backQueryString="?ng##!/entity/Content/" />
+		<hb:HibachiEntityActionBar 
+			type="detail" 
+			object="#rc.content#" 
+			edit="#rc.edit#" 
+			backQueryString="?ng##!/entity/Content/" 
+			showDelete="#!rc.content.hasChildContent()#"
+		/>
 
 		<hb:HibachiEntityDetailGroup object="#rc.content#">
 			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
