@@ -391,17 +391,15 @@ Notes:
 					  				var localeListArray = slatwallService.getConfigValue('rbLocale').split('_');
 					  				var rbPromise;
 					  				var rbPromises = [];
-									rbPromise = slatwallService.getResourceBundle(slatwallService.getConfigValue('rbLocale'));
-									rbPromises.push(rbPromise);
 									if(localeListArray.length === 2){
 										$log.debug('has two');
-										rbPromise = slatwallService.getResourceBundle(localeListArray[0]);
+										rbPromise = slatwallService.getResourceBundle(slatwallService.getConfigValue('rbLocale'));
 										rbPromises.push(rbPromise);
 									}
-									if(localeListArray[0] !== 'en'){
+									if(localeListArray[0] === 'en'){
 										$log.debug('get english');
-										slatwallService.getResourceBundle('en_us');
-										slatwallService.getResourceBundle('en');
+										var enPromise = slatwallService.getResourceBundle('en');
+										rbPromises.push(enPromise);
 									}	
 									$q.all(rbPromises).then(function(data){
 										$rootScope.loadedResourceBundle = true;
@@ -425,18 +423,16 @@ Notes:
 				  					return _resourceBundle[locale];
 				  				}
 				  				
-				  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+_config.instantiationKey;
+				  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+_config.instantiationKey+'&locale='+locale;
 				  				//var urlString = _config.baseURL+'/config/resourceBundles/'+locale+'.json?instantiationKey='+_config.instantiationKey;
-					  			var params = {
-					  				locale:locale
-					  			};
-				  				return $http.get(urlString,{params:params}).success(function(response){
+				  				$http.get(urlString).success(function(response){
 			  						_resourceBundle[locale] = response.data;
-				  					//deferred.resolve(response);
+				  					deferred.resolve(response);
 				  				}).error(function(response){
 				  					_resourceBundle[locale] = {};
-				  					//deferred.reject(response);
+				  					deferred.reject(response);
 				  				});
+				  				return deferred.promise;
 					  		},
 							
 					  		<!---replaceStringTemplate:function(template,object,formatValues,removeMissingKeys){
@@ -498,7 +494,8 @@ Notes:
 									}
 									
 									<!---// Check the exact bundle file--->
-									var bundle = slatwallService.getResourceBundle(locale);
+									//var bundle = slatwallService.getResourceBundle(locale);
+									var bundle = _resourceBundle[locale];
 									$log.debug('bundle');
 									$log.debug(bundle);
 									if(!angular.isFunction(bundle.then)){

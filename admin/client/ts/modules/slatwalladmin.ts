@@ -103,7 +103,7 @@ module slatwallAdmin{
 	    $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
 	    
 	    var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
-	   		if(newValue !== oldValue){
+	   		if(newValue !== oldValue && newValue === true){
 	    		$rootScope.$broadcast('hasResourceBundle');
 	    		rbListener();
 	    	}

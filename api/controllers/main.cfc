@@ -231,6 +231,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 		
 		arguments.rc.apiResponse.content['data'] = data;
+		arguments.rc.apiResponse.content['locale'] = arguments.rc.locale;
 	}
 	
 	public any function getPropertyDisplayOptions(required struct rc){
