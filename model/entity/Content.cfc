@@ -302,6 +302,14 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		arguments.attributeSet.removeProductType( this );
 	}
 	
+	// Attribute Values (one-to-many)
+	public void function addAttributeValue(required any attributeValue) {
+		arguments.attributeValue.setContent( this );
+	}
+	public void function removeAttributeValue(required any attributeValue) {
+		arguments.attributeValue.removeContent( this );
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	
