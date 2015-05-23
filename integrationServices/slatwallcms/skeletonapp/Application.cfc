@@ -67,7 +67,7 @@ component {
 	function onRequestStart() {
 		runRequestActions();
 		
-		writeOutput( generateRenderedContent() );
+		writeOutput( generateRenderedContent(argumentCollection=arguments) );
 		abort;
 	}
 	
