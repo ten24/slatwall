@@ -67,7 +67,7 @@ component {
 	function onRequestStart() {
 		runRequestActions();
 		
-		writeOutput( generateRenderedContent() );
+		writeOutput( generateRenderedContent(argumentCollection=arguments) );
 		abort;
 	}
 	
@@ -95,7 +95,6 @@ component {
 	}
 	
 	function generateRenderedContent() {
-		
 		var site = arguments.slatwallScope.getSite();
 		var templatePath = site.getApp().getAppRootPath() & '/' & site.getSiteCode() & '/templates/';
 		var contentPath = '';
