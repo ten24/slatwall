@@ -61,6 +61,7 @@ Notes:
 			edit="#rc.edit#" 
 			backQueryString="?ng##!/entity/Content/" 
 			showDelete="#!rc.content.hasChildContent()#"
+			deleteQueryString="?ngRedirectQS=/entity/Content/"
 		/>
 
 		<hb:HibachiEntityDetailGroup object="#rc.content#">
