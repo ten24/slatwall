@@ -219,7 +219,20 @@ component extends="FW1.framework" {
 		
 		application[ "#variables.framework.applicationKey#Bootstrap" ] = this.bootstrap;
 		
-		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount());	
+		var restInfo = {};
+		//prepare restinfo
+		if(listFirst( request.context[ getAction() ], ":" ) == 'api'){
+			var method = listLast( request.context[ getAction() ], "." );
+			restInfo.method = method;
+			if(structKeyExists(request,'context') && structKeyExists(request.context,'entityName')){
+				restInfo.entityName = request.context.entityName;
+			}
+			if(structKeyExists(request,'context') && structKeyExists(request.context,'context')){
+				restInfo.context = request.context.context;
+			}
+		}
+		
+		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount(), restInfo=restInfo);	
 		
 		// Verify Authentication before anything happens
 		if(!authorizationDetails.authorizedFlag) {

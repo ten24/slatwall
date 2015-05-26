@@ -10,7 +10,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return authDetails.authorizedFlag;
 	}
 	
-	public struct function getActionAuthenticationDetailsByAccount(required string action, required any account) {
+	public struct function getActionAuthenticationDetailsByAccount(required string action, required any account, struct restInfo) {
 		
 		var authDetails = {
 			authorizedFlag = false,
@@ -72,19 +72,22 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			// Check to see if this is a defined secure method, and if so we can test it against the account
 			if(listFindNocase(actionPermissions[ subsystemName ].sections[ sectionName ].secureMethods, itemName)) {
+				
 				var pgOK = false;
 				for(var p=1; p<=arrayLen(arguments.account.getPermissionGroups()); p++){
 					pgOK = authenticateSubsystemSectionItemActionByPermissionGroup(subsystem=subsystemName, section=sectionName, item=itemName, permissionGroup=arguments.account.getPermissionGroups()[p]); 
 				}
+				
 				if(pgOk) {
 					authDetails.authorizedFlag = true;
 					authDetails.actionPermissionAccessFlag = true;
 				}
+			
 				return authDetails;
 			}
 			
-			// Check to see if the controller is an entity or rest controller, and then verify against the entity itself
-			if(getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].entityController || getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].restController) {
+			// Check to see if the controller is an entity, and then verify against the entity itself
+			if(getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].entityController) {
 				if ( left(itemName, 6) == "create" ) {
 					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=right(itemName, len(itemName)-6), account=arguments.account);
 				} else if ( left(itemName, 6) == "detail" ) {
@@ -110,6 +113,30 @@ component output="false" accessors="true" extends="HibachiService" {
 					}
 				}
 				
+				if(authDetails.authorizedFlag) {
+					authDetails.entityPermissionAccessFlag = true;
+				}
+			}
+			// Check to see if the controller is for rest, and then verify against the entity itself
+			
+			if(getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].restController){
+				var hasProcess = invokeMethod('new'&arguments.restInfo.entityName).hasProcessObject(arguments.restInfo.context);
+				if(hasProcess){
+					authDetails.authorizedFlag = true;
+				}else if(itemName == 'get'){
+					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read",entityName=arguments.restInfo.entityName,account=arguments.account);
+				}else if(itemName == 'post'){
+					if(arguments.restInfo.context == 'get'){
+						authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read",entityName=arguments.restInfo.entityName,account=arguments.account);
+					}else if(arguments.restInfo.context == 'save'){
+						authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=arguments.restInfo.entityName, account=arguments.account);
+						if(!authDetails.authorizedFlag) {
+							authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="update", entityName=arguments.restInfo.entityName, account=arguments.account); 	
+						}
+					}else{
+						authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType=arguments.restInfo.context,entityName=arguments.restInfo.entityName,account=arguments.account);
+					}
+				}
 				if(authDetails.authorizedFlag) {
 					authDetails.entityPermissionAccessFlag = true;
 				}
