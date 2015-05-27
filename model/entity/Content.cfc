@@ -164,6 +164,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			urlTitle = getURLtitle();
 		}
 		var urlTitleArray = [];
+		
 		arrayAppend(urlTitleArray,urlTitle);
 		if(!isNull(getParentContent())){
 			urlTitleArray = getParentUrlTitle(getParentContent(),urlTitleArray);
@@ -177,6 +178,11 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		}
 		setUrlTitlePath(urlTitlePathString);
 		return urlTitlePathString;
+	}
+	
+	public string function setUrlTitle(required string urlTitle){
+		variables.UrlTitle = arguments.urlTitle;
+		this.createUrlTitlePath();
 	}
 	
 	public string function getFullTitle(){
