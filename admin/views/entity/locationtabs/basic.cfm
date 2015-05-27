@@ -9,7 +9,7 @@
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.location#" property="activeFlag" edit="#rc.edit#" >
 			<hb:HibachiPropertyDisplay object="#rc.location#" property="locationName" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.location#" property="parentLocation" edit="#rc.edit#" valueOptions="#$.slatwall.getService('locationService').getLocationParentOptions()#">
+			<hb:HibachiPropertyDisplay object="#rc.location#" property="parentLocation" edit="#rc.location.getNewFlag()#" valueOptions="#$.slatwall.getService('locationService').getLocationParentOptions()#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>	
 </cfoutput>
