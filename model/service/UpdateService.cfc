@@ -59,7 +59,7 @@ Notes:
 			<cfset var downloadURL = "https://github.com/ten24/Slatwall/zipball/#arguments.branch#" />	
 			<cfset var slatwallRootPath = expandPath("/Slatwall") />
 			<cfset var downloadFileName = "slatwall#createUUID()#.zip" />
-			<cfset var deleteDestinationContentExclusionList = "/apps,/integrationServices,/custom,/WEB-INF,.project,setting.xml" />
+			<cfset var deleteDestinationContentExclusionList = "/.git,/apps,/integrationServices,/custom,/WEB-INF,.project,setting.xml" />
 			<cfset var copyContentExclusionList = "" />
 			<cfset var slatwallDirectoryList = "" />
 			
