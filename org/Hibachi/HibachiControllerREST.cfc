@@ -36,7 +36,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		getFW().setView("public:main.blank");
 		//could possibly check whether we want a different contentType other than json in the future
 		param name="rc.headers.contentType" default="application/json"; 
-		arguments.rc.headers.contentType = rc.headers.contentType;
+		arguments.rc.headers["Content-Type"] = rc.headers.contentType;
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
 		}

@@ -23,6 +23,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		};
 		
 		// Check if the user is a super admin, if true no need to worry about security
+		//Here superuser when not logged in is still false
 		if( arguments.account.getSuperUserFlag() ) {
 			authDetails.authorizedFlag = true;
 			authDetails.superUserAccessFlag = true;
@@ -38,7 +39,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		
 		var actionPermissions = getActionPermissionDetails();
-		
 		// Check if the subsystem & section are defined, if not then return true because that means authentication was not turned on
 		if(!structKeyExists(actionPermissions, subsystemName) || !actionPermissions[ subsystemName ].hasSecureMethods || !structKeyExists(actionPermissions[ subsystemName ].sections, sectionName)) {
 			authDetails.authorizedFlag = true;
@@ -58,6 +58,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			
 			// Check if the action is anyLogin, if so and the user is logged in, then we can return true
 			if(listFindNocase(actionPermissions[ subsystemName ].sections[ sectionName ].anyLoginMethods, itemName) && getHibachiScope().getLoggedInFlag()) {
+				
 				authDetails.authorizedFlag = true;
 				authDetails.anyLoginAccessFlag = true;
 				return authDetails;

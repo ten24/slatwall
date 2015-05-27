@@ -5,7 +5,8 @@ angular.module('slatwalladmin').directive('swCollectionTable', [
     '$log',
     'collectionPartialsPath',
     'paginationService',
-    function ($http, $compile, $log, collectionPartialsPath, paginationService) {
+    '$slatwall',
+    function ($http, $compile, $log, collectionPartialsPath, paginationService, $slatwall) {
         return {
             restrict: 'E',
             templateUrl: collectionPartialsPath + "collectiontable.html",

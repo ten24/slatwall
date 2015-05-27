@@ -1,6 +1,6 @@
 "use strict";
 'use strict';
-angular.module('slatwalladmin').directive('swCollectionTable', ['$http', '$compile', '$log', 'collectionPartialsPath', 'paginationService', function($http, $compile, $log, collectionPartialsPath, paginationService) {
+angular.module('slatwalladmin').directive('swCollectionTable', ['$http', '$compile', '$log', 'collectionPartialsPath', 'paginationService', '$slatwall', function($http, $compile, $log, collectionPartialsPath, paginationService, $slatwall) {
   return {
     restrict: 'E',
     templateUrl: collectionPartialsPath + "collectiontable.html",

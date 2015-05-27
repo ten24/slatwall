@@ -49,6 +49,10 @@ component {
         var pathArray = listToArray(pathInfo,'/');
         var pathArrayLen = arrayLen(pathArray);
         
+        //Make sure this isn't a call to the api, if it is, return without using CMS logic
+		if(pathArrayLen && pathArray[1] == 'api'){
+        		return;
+        }
         //try to get a site form the domain name
 		var domainNameSite = arguments.slatwallScope.getService('siteService').getCurrentRequestSite();
        
