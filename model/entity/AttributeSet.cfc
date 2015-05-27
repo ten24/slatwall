@@ -65,6 +65,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 	property name="attributes" singularname="attribute" cfc="Attribute" fieldtype="one-to-many" fkcolumn="attributeSetID" inverse="true" cascade="all-delete-orphan" orderby="sortOrder";
 	
 	// Related Object Properties (many-to-many - owner)
+	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="many-to-many" linktable="SwAttributeSetContent" fkcolumn="attributeSetID" inversejoincolumn="contentID";
 	property name="productTypes" singularname="productType" cfc="ProductType" type="array" fieldtype="many-to-many" linktable="SwAttributeSetProductType" fkcolumn="attributeSetID" inversejoincolumn="productTypeID";
 	property name="products" singularname="product" cfc="Product" type="array" fieldtype="many-to-many" linktable="SwAttributeSetProduct" fkcolumn="attributeSetID" inversejoincolumn="productID";
 	property name="brands" singularname="brand" cfc="Brand" type="array" fieldtype="many-to-many" linktable="SwAttributeSetBrand" fkcolumn="attributeSetID" inversejoincolumn="brandID";
@@ -155,6 +156,26 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 		}
 	}
 	
+	// Contents (many-to-many - owner)
+	public void function addContent(required any content) {    
+		if(arguments.content.isNew() or !hasContent(arguments.content)) {    
+			arrayAppend(variables.contents, arguments.content);    
+		}
+		if(isNew() or !arguments.content.hasAttributeSet( this )) {    
+			arrayAppend(arguments.content.getAttributeSets(), this);    
+		}    
+	}
+	public void function removeContent(required any content) {    
+		var thisIndex = arrayFind(variables.contents, arguments.content);    
+		if(thisIndex > 0) {    
+			arrayDeleteAt(variables.contents, thisIndex);    
+		}    
+		var thatIndex = arrayFind(arguments.content.getAttributeSets(), this);    
+		if(thatIndex > 0) {    
+			arrayDeleteAt(arguments.content.getAttributeSets(), thatIndex);    
+		}
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
 	// ================== START: Overridden Methods ========================
@@ -163,7 +184,7 @@ component displayname="AttributeSet" entityname="SlatwallAttributeSet" table="Sw
 		if(!structKeyExists(variables, "globalFlag")) {
 			variables.globalFlag = 1;
 		}
-		if(!isNull(getAttributeSetObject()) && !listFindNoCase("OrderItem,ProductType,Product,Sku,Type", getAttributeSetObject())) {
+		if(!isNull(getAttributeSetObject()) && !listFindNoCase("Content,OrderItem,ProductType,Product,Sku,Type", getAttributeSetObject())) {
 			variables.globalFlag = 1;
 		}
 		return variables.globalFlag;

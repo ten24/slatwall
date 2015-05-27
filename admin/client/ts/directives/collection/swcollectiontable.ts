@@ -13,8 +13,7 @@ angular.module('slatwalladmin')
 		$log,
 		collectionPartialsPath,
 		paginationService,
-        $slatwall
-	){
+        $slatwall){
 		return {
 			restrict: 'E',
 			templateUrl:collectionPartialsPath+"collectiontable.html",
@@ -23,7 +22,7 @@ angular.module('slatwalladmin')
 				collectionConfig:"="
 			},
 			link: function(scope,element,attrs){
-				
+				 
 				var _collectionObject = scope.collection.collectionObject.charAt(0).toLowerCase()+scope.collection.collectionObject.slice(1) ;
 				var _recordKeyForObjectID = _collectionObject + 'ID';
 				scope.$watch('collection.pageRecords',function(){

@@ -61,7 +61,7 @@ Notes:
 		<cfreturn entityNew("SlatwallContent") />
 	</cffunction>
 	
-	<cffunction name="getContentBySiteIDAndUrlTitle" access="public">
+	<cffunction name="getContentBySiteIDAndUrlTitlePath" access="public">
 		<cfargument name="siteID" type="string" required="true">
 		<cfargument name="urlTitlePath" type="string" required="true">
 		

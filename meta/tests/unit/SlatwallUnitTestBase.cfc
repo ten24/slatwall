@@ -119,7 +119,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 			// Save with Service
 			if(arguments.saveWithService) {
 				
-				request.slatwallScope.saveEntity( arguments.entity, arguments.data );
+				request.slatwallScope.saveEntity( newEntity, arguments.data );
 			
 			// Save manually
 			} else {

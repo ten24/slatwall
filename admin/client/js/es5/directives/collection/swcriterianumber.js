@@ -96,7 +96,7 @@ angular.module('slatwalladmin').directive('swCriteriaNumber', ['$log', '$slatwal
         $log.debug('populate');
         if (conditionOption.display == scope.filterItem.conditionDisplay) {
           scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
-          $log.debuge.log(scope.filterItem);
+          $log.debug(scope.filterItem);
           if (scope.filterItem.comparisonOperator === 'between' || scope.filterItem.comparisonOperator === 'not between') {
             var criteriaRangeArray = scope.filterItem.value.split('-');
             $log.debug(criteriaRangeArray);

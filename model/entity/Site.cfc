@@ -53,14 +53,15 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="siteName" ormtype="string";
 	property name="siteCode" ormtype="string" unique="true" index="PI_SITECODE";
 	property name="domainNames" ormtype="string";
+	property name="allowAdminAccessFlag" ormtype="boolean";
 	// CMS Properties
 	property name="cmsSiteID" ormtype="string" index="RI_CMSSITEID";
 	
 	// Related Object Properties (many-to-one)
-	property name="app" hb_populateEnabled="public" cfc="App" fieldtype="many-to-one" fkcolumn="appID";
+	property name="app" hb_populateEnabled="public" cfc="App" fieldtype="many-to-one" fkcolumn="appID"  hb_cascadeCalculate="true";
 	
 	// Related Object Properties (one-to-many)
-	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="one-to-many" fkcolumn="siteID" cascade="all" inverse="true" lazy="extra";
+	property name="contents" singularname="content" cfc="Content" type="array" fieldtype="one-to-many" cascade="all-delete-orphan" fkcolumn="siteID" inverse="true" lazy="extra";
 	
 	// Related Object Properties (many-to-many - owner)
 
@@ -76,13 +77,61 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-
+	property name="sitePath" persistent="false";
+	property name="templatesPath" persistent="false";
+	
+	public boolean function getAllowAdminAccessFlag() {
+		if(isNull(variables.allowAdminAccessFlag)) {
+			variables.allowAdminAccessFlag = 0;
+		}
+		return variables.allowAdminAccessFlag;
+	}
+	
+	public string function getSitePath(){
+		if(!structKeyExists(variables,'sitePath')){
+			variables.sitePath = getApp().getAppPath() & '/' & getSiteCode();
+		}
+		return variables.sitePath;
+	}
+	
+	public string function getTemplatesPath(){
+		if(!structKeyExists(variables,'templatesPath')){
+			variables.templatesPath = getSitePath() & '/' & 'templates';
+		}
+		return variables.templatesPath;
+	}
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// App (many-to-one)
+	public void function setApp(required any app) {
+		variables.app = arguments.app;
+		if(isNew() or !arguments.app.hasSite( this )) {
+			arrayAppend(arguments.app.getSites(), this);
+		}
+	}
+	public void function removeApp(any app) {
+		if(!structKeyExists(arguments, "app")) {
+			arguments.app = variables.app;
+		}
+		var index = arrayFind(arguments.app.getSites(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.app.getSites(), index);
+		}
+		structDelete(variables, "app");
+	}
+	
+	// Contents (one-to-many)
+	public void function addContent(required any content) {
+		arguments.content.setSite( this );
+	}
+	public void function removeContent(required any content) {
+		arguments.content.removeSite( this );
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 

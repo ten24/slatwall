@@ -211,7 +211,6 @@ component extends="FW1.framework" {
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
-			
 		if(structKeyExists(request,'context')){
 			getHibachiScope().getService("hibachiEventService").announceEvent(eventName="setupGlobalRequestComplete",eventData=request.context);
 		}
@@ -251,17 +250,6 @@ component extends="FW1.framework" {
 			hasJsonData = true;
 		} 
 		
-		//<---Now that we deserialized that, check for an auth token, and if found, attach that account before checking permissions --->
-		/*if (hasJsonData){
-			if (StructKeyExists(request.context.deserializedJSONData, "authToken") && len(request.context.deserializedJSONData.authToken)){
-				var authTokenAccount = getHibachiScope().getDAO('hibachiDAO').getAccountByAuthToken(authToken=request.context.deserializedJSONData.authToken);
-				if(!isNull(authTokenAccount)) {
-					getHibachiScope().getSession().setAccount( authTokenAccount );
-					request.context["authorizedByToken"] = true;
-				}
-			}
-		}
-		*/
 		/* Figure out if this is a public request */
 		request.context["url"] = getHibachiScope().getURL();
 		if (FindNoCase("/api/scope", request.context["url"]) ){
@@ -272,7 +260,22 @@ component extends="FW1.framework" {
 		}
 		
 		application[ "#variables.framework.applicationKey#Bootstrap" ] = this.bootstrap;
-		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount());	
+		
+		var restInfo = {};
+		//prepare restinfo
+		if(listFirst( request.context[ getAction() ], ":" ) == 'api'){
+			var method = listLast( request.context[ getAction() ], "." );
+			restInfo.method = method;
+			if(structKeyExists(request,'context') && structKeyExists(request.context,'entityName')){
+				restInfo.entityName = request.context.entityName;
+			}
+			if(structKeyExists(request,'context') && structKeyExists(request.context,'context')){
+				restInfo.context = request.context.context;
+			}
+		}
+		
+		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount(), restInfo=restInfo);	
+
 		
 		// Verify Authentication before anything happens
 		if(!authorizationDetails.authorizedFlag) {

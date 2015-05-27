@@ -371,7 +371,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		}
 	}
 	
-	public any function slatProcess(string required slatProcess){
+	public any function slatProcess(required string slatProcess){
 		return getService('sessionService').processSession(getSession(), arguments.slatProcess);
 	}
 	

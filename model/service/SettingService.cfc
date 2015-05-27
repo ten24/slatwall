@@ -100,7 +100,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			sku = ["product.productID", "product.productType.productTypeIDPath&product.brand.brandID", "product.productType.productTypeIDPath"],
 			product = ["productType.productTypeIDPath&brand.brandID", "productType.productTypeIDPath"],
 			productType = ["productTypeIDPath"],
-			content = ["contentIDPath"],
+			content = ["contentIDPath","contentID","site.siteID"],
 			email = ["emailTemplate.emailTemplateID"],
 			shippingMethodRate = ["shippingMethod.shippingMethodID"],
 			accountAuthentication = [ "integration.integrationID" ],
@@ -220,6 +220,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			// Site
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
+			siteOrderOrigin = {fieldType="select"},
 			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
@@ -374,6 +375,11 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getEmailService().getEmailTemplateOptions( "Account" );
 			case "siteVerifyAccountEmailAddressEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "AccountEmailAddress" );
+			case "siteOrderOrigin":
+				var optionSL = getService('HibachiService').getOrderOriginSmartList();
+				optionSL.addSelect('orderOriginName', 'name');
+				optionSL.addSelect('orderOriginID', 'value');
+				return optionSL.getRecords();
 			case "shippingMethodQualifiedRateSelection" :
 				return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
 			case "shippingMethodRateAdjustmentType" :
@@ -437,7 +443,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		
 		var settingsRemoved = 0;
 		
-		if( listFindNoCase("brandID,contentID,emailID,emailTemplateID,productTypeID,skuID,shippingMethodRateID,paymentMethodID", arguments.entity.getPrimaryIDPropertyName()) ){
+		if( listFindNoCase("brandID,contentID,emailID,emailTemplateID,productTypeID,skuID,shippingMethodRateID,paymentMethodID,siteID", arguments.entity.getPrimaryIDPropertyName()) ){
 			
 			settingsRemoved = getSettingDAO().removeAllRelatedSettings(columnName=arguments.entity.getPrimaryIDPropertyName(), columnID=arguments.entity.getPrimaryIDValue());
 			
@@ -636,11 +642,13 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 			// If an object was passed in, then first we can look for relationships based on that persistent object
 			if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
+				
 				// First Check to see if there is a setting the is explicitly defined to this object
 				settingDetails.settingRelationships[ arguments.object.getPrimaryIDPropertyName() ] = arguments.object.getPrimaryIDValue();
 				for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {
 					settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 				}
+				
 				settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 				if(settingRecord.recordCount) {
 					foundValue = true;
@@ -650,7 +658,6 @@ component extends="HibachiService" output="false" accessors="true" {
 				} else {
 					structClear(settingDetails.settingRelationships);
 				}
-				
 				// If we haven't found a value yet, check to see if there is a lookup order
 				if(!foundValue && structKeyExists(getSettingLookupOrder(), arguments.object.getClassName()) && structKeyExists(getSettingLookupOrder(), settingPrefix)) {
 					
@@ -661,7 +668,6 @@ component extends="HibachiService" output="false" accessors="true" {
 					var nextLookupOrderIndex = 1;
 					var nextPathListIndex = 0;
 					var settingLookupArray = getSettingLookupOrder()[ arguments.object.getClassName() ];
-					
 					do {
 						// If there was an & in the lookupKey then we should split into multiple relationships
 						var allRelationships = listToArray(settingLookupArray[nextLookupOrderIndex], "&");
@@ -689,6 +695,7 @@ component extends="HibachiService" output="false" accessors="true" {
 						for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {
 							settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 						}
+						
 						settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 						if(settingRecord.recordCount) {
 							foundValue = true;

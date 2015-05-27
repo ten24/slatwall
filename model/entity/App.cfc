@@ -74,12 +74,47 @@ component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="t
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non Persistent
-
+	property name="appPath" persistent="false";
+	
+	public string function getAppPath(){
+		if(!structKeyExists(variables,'appPath')){
+			var appsPath = expandPath('/Slatwall/apps');
+			variables.appPath = appsPath & '/' & getAppCode();
+		}
+		return variables.appPath;
+	}
+	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// Sites (one-to-many)
+	public void function addSite(required any site) {
+		arguments.site.setApp( this );
+	}
+	public void function removeSite(required any site) {
+		arguments.site.removeApp( this );
+	}
+	
+	// integration (many-to-one)
+	public void function setIntegration(required any Integration) {
+		variables.Integration = arguments.Integration;
+		if(isNew() or !arguments.Integration.hasApp( this )) {
+			arrayAppend(arguments.Integration.getApps(), this);
+		}
+	}
+	public void function removeIntegration(any Integration) {
+		if(!structKeyExists(arguments, "Integration")) {
+			arguments.Integration = variables.Integration;
+		}
+		var index = arrayFind(arguments.Integration.getApps(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.Integration.getApps(), index);
+		}
+		structDelete(variables, "Integration");
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 	
@@ -88,6 +123,13 @@ component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="t
 	// =============  END: Overridden Smart List Getters ===================
 
 	// ================== START: Overridden Methods ========================
+	
+	public string function getAppRootPath(){
+		if(!structKeyExists(variables,'appRootPath') && !isNull(getAppCode())){
+			variables.appRootPath = '/apps/' & getAppCode();
+		}
+		return variables.appRootPath;
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	
