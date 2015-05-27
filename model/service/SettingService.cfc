@@ -759,7 +759,10 @@ component extends="HibachiService" output="false" accessors="true" {
 				// Select
 				} else if (settingMetaData.fieldType == "select") {
 					var options = getSettingOptions(arguments.settingName);	
-					
+							
+					if(!arrayLen(options)){
+						settingDetails.settingValueFormatted = settingDetails.settingValue;
+					}		
 					for(var i=1; i<=arrayLen(options); i++) {
 						if(isStruct(options[i])) {
 							if(options[i]['value'] == settingDetails.settingValue) {
@@ -767,6 +770,7 @@ component extends="HibachiService" output="false" accessors="true" {
 								break;
 							}
 						} else {
+							
 							settingDetails.settingValueFormatted = settingDetails.settingValue;
 							break;
 						}
