@@ -92,6 +92,7 @@ component extends="mxunit.framework.TestCase" output="false" {
 		
 		if(flushRequired) {
 			ormFlush();
+
 		}
 		
 		variables.persistentEntities = [];

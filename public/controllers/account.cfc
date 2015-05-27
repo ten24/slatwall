@@ -52,7 +52,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="accountService" type="any";
 	property name="orderService" type="any";
 	property name="subscriptionService" type="any";
-	property name="publicService" type="any"; 
 	
 	public void function init( required any fw ) {
 		setFW( arguments.fw );

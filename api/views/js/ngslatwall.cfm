@@ -93,7 +93,7 @@ Notes:
 				    	'$location',
 				    	'$anchorScroll',
 				    	'utilityService', 
-				    	'formService',
+				    	'formService', 
 				    	function (
 				    		$q,
 				    		$http,

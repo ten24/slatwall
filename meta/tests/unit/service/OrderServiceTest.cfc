@@ -59,9 +59,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function processOrder_addAndRemoveOrderItem_addOrderItems(){
 		//set up data
 		
-		//set up product
+		//set up productBundle
 		var productData = {
-			productName="testProduct" & "#RandRange(1, 500)#",
+			productName="productBundleName",
 			productid="",
 			activeflag=1,
 			price=1,
@@ -70,11 +70,20 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 				{
 					currencycode="USD",
 					skuid="",
-					price=111,
+					price=1,
 					activeflag=1,
-					skuCode = 'testSkuCode' & "#RandRange(1, 500)#" & "-a"
+					skuCode = 'productBundle-1ABCDDdd' & RandRange(1, 1000),
+					productBundleGroups=[
+						{
+							productBundleGroupid:""
+						},
+						{
+							productBundleGroupid:""
+						}
+					]
 				}
 			],
+			//product Bundle type from SlatwallProductType.xml
 			productType:{
 				productTypeid:"ad9bb5c8f60546e0adb428b7be17673e"
 			}
@@ -82,10 +91,10 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var product = createPersistedTestEntity('product',productData);
 		
 		var productData2 = {
-			productName="testProduct" & "#RandRange(1, 500)#",
+			productName="childSku111",
 			productid="",
 			activeflag=1,
-			price=111,
+			price=1,
 			currencycode="USD",
 			skus=[
 				{
@@ -93,15 +102,17 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					skuid="",
 					price=1,
 					activeflag=1,
-					skuCode = 'testSkuCode' & "#RandRange(1, 500)#" & "-b"
+					skuCode = 'childsku-11' & RandRange(1, 1000)
 				}
 			],
+			//product Bundle type from SlatwallProductType.xml
 			productType:{
-				productTypeID:"ad9bb5c8f60546e0adb428b7be17673e"
+				productTypeid:"ad9bb5c8f60546e0adb428b7be17673e"
 			}
 		};
 		var product2 = createPersistedTestEntity('product',productData2);
 		
+
 		//set up order
 		var orderData = {
 			orderid="",
@@ -123,15 +134,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var processObjectData = {
 			quantity=1,
 			price=1,
-			skuID=product.getSkus()[1].getSkuID(),
-			orderfulfillmentid=order.getOrderFulfillments()[1].getOrderfulfillmentID()
+			skuid=product.getSkus()[1].getSkuID(),
+			orderfulfillmentid=order.getOrderFulfillments()[1].getOrderfulfillmentid()
 		};
 		//Second orderitem
 		//add orderfulfillment
 		var processObjectDataTwo = {
 			quantity=1,
 			price=1,
-			skuID=product2.getSkus()[1].getSkuID(),
+			skuid=product2.getSkus()[1].getSkuID(),
 			orderfulfillmentid=order.getOrderFulfillments()[1].getOrderfulfillmentid()
 		};
 		
@@ -154,13 +165,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		request.debug(ArrayLen(order.getOrderItems()));
 		//assertEquals("123", id2);//This should fail and it does.
 		//variables.service.processOrder_removeOrderItem(order, {orderItemID="#id#"});
+		
 		variables.service.processOrder_removeOrderItem(order, {orderItemIDList="#id#,#id2#"});//Removes multiple
 		request.debug(ArrayLen(order.getOrderItems()));
-		
-		
-		
-		
-		}
+		//request.debug(arraylen(orderReturn.getOrderItems()[1].getChildOrderItems()));
+		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getQuantity());
+		//request.debug(orderReturn.getOrderID());
+		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
+		//request.debug(orderReturn.getOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getChildOrderItems()[1].getQuantity());
+	} 
 	
 	
 }

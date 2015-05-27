@@ -56,7 +56,7 @@ angular.module('slatwalladmin')
 						active:false,
 						sortOrder:'asc',
 						priority:0
-					}; 
+					};
 				}
 				
 				scope.toggleVisible = function(column){

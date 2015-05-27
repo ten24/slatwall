@@ -15,24 +15,24 @@ angular.module('slatwalladmin')
 		$log,
 		$timeout,
 		$slatwall,
-		productBundlePartialsPath,   
+		productBundlePartialsPath,
 		productBundleService,
 		collectionService,
 		metadataService,
-		utilityService 
+		utilityService
 	){
-		return {  
+		return {
 			require:"^swProductBundleGroups",
 			restrict: 'E',
 			templateUrl:productBundlePartialsPath+"productbundlegroup.html",
 			scope:{
 				productBundleGroup:"=",
 				index:"=",
-				addProductBundleGroup:"&", 
+				addProductBundleGroup:"&",
 				formName:"@"
 			},
 			link: function(scope, element,attrs,productBundleGroupsController){
-				var timeoutPromise; 
+				var timeoutPromise;
 				scope.$id = 'productBundleGroup';
 				$log.debug('productBundleGroup');
 				$log.debug(scope.productBundleGroup);
@@ -43,7 +43,7 @@ angular.module('slatwalladmin')
                 scope.showAll = false;
                 scope.showAdvanced = false;
                 scope.currentPage = 1;
-                scope.pageShow = 10;  
+                scope.pageShow = 10;
                 /**
                  * Opens or closes the advanced dialog.
                  */
