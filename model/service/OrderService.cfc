@@ -1181,8 +1181,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							
 							// Look for 'auto' order fulfillments
 							for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
-								
-								
 								createOrderDeliveryForAutoFulfillmentMethod(arguments.order.getOrderFulfillments()[i]);
 							}
 						}
