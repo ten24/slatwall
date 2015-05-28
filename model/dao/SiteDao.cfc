@@ -50,9 +50,9 @@ Notes:
 	
 	<cffunction name="getSiteByDomainName" output="false">
 		<cfargument name="siteName" type="string" required="true" />
-		<cfset var HQL = "	FROM SlatwallSite as site where CONCAT(CONCAT(',',domainNames),',') like '%,#arguments.siteName#,%'
-							
-							
+		<cfset var HQL = "	FROM SlatwallSite as site 
+							where CONCAT(CONCAT(',',domainNames),',') 
+							like '%,#arguments.siteName#,%'
 							"
 		/>
 		
