@@ -73,14 +73,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(directoryExists(getApplicationValue('applicationRootMappingPath') & '/apps/' & contentSite.getApp().getAppCode() & '/' & contentSite.getSiteCode() & '/templates' )) {
 			var siteDirectory = getApplicationValue('applicationRootMappingPath') & '/apps/' & contentSIte.getApp().getAppCode() & '/' & contentSIte.getSiteCode();
 			var templateDirectory = siteDirectory & '/templates';
-			var directoryList = directoryList(templateDirectory);
-			
+			var directoryList = directoryList(templateDirectory,false,"query");
 			var templates = [];
 			for(var directory in directoryList){
 				var template ={};
-				var templateName = listLast(directory,'/');
-				template['name'] = templateName;
-				template['value'] = templateName;
+				template['name'] = directory.name;
+				template['value'] = directory.name;
 				arrayAppend(templates,template);
 			}
 			return templates;
