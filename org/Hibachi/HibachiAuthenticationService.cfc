@@ -24,6 +24,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		// Check if the user is a super admin, if true no need to worry about security
 		//Here superuser when not logged in is still false
+		writeDump("#arguments.account.getSuperUserFlag()#");abort;
 		if( arguments.account.getSuperUserFlag() ) {
 			authDetails.authorizedFlag = true;
 			authDetails.superUserAccessFlag = true;
@@ -121,7 +122,11 @@ component output="false" accessors="true" extends="HibachiService" {
 			// Check to see if the controller is for rest, and then verify against the entity itself
 			
 			if(getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].restController){
-				var hasProcess = invokeMethod('new'&arguments.restInfo.entityName).hasProcessObject(arguments.restInfo.context);
+				if (StructKeyExists(arguments.restInfo, "context")){
+					var hasProcess = invokeMethod('new'&arguments.restInfo.entityName).hasProcessObject(arguments.restInfo.context);
+				}else{
+					var hasProcess = false;
+				}
 				if(hasProcess){
 					authDetails.authorizedFlag = true;
 				}else if(itemName == 'get'){
