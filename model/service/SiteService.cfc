@@ -140,6 +140,10 @@ component  extends="HibachiService" accessors="true" {
 			{
 				name='Order Confirmation',
 				contentTemplateFile="slatwall-orderconfirmation.cfm"
+			},
+			{
+				name='404',
+				contentTemplateFile="default.cfm"
 			}
 		];
 		

@@ -136,11 +136,11 @@ component {
 					
 					arguments.slatwallScope.setContent(entityTemplateContent);
 				}else{
-					render404();
+					render404(arguments.slatwallScope,site);
 					//throw('no contentTemplateFile for the entity');
 				}
 			}else{
-				render404();
+				render404(arguments.slatwallScope,site);
 				//throw('no content for entity');
 			}
 		}else{
@@ -153,7 +153,7 @@ component {
 			}
 			
 			if(isNull(content)){
-				render404();
+				content = render404(arguments.slatwallScope,site);
 				//throw('content does not exists for #arguments.contenturlTitlePath#');
 			}
 			//now that we have the content, get the file name so that we can retrieve it form the site's template directory
@@ -174,11 +174,15 @@ component {
 		abort;
 	}
 	
-	function render404(){
+	function render404(required any slatwallScope, required any site){
 		var context = getPageContext();
 		context.getOut().clearBuffer();
 		var response = context.getResponse();
 		response.setstatus(404);
+		var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitlePath(site.getSiteID(),'404');
+		if(!isNull(content)){
+			return content;
+		}
 		abort;
 	}
 	
