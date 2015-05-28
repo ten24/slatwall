@@ -50,21 +50,16 @@ Notes:
 	
 	<cffunction name="getSiteByDomainName" output="false">
 		<cfargument name="siteName" type="string" required="true" />
-		<cfset var HQL = "	FROM SlatwallSite as site 
-							WHERE site.domainNames like :siteNameStart
-							OR site.domainNames like :siteNameMiddle
-							OR site.domainNames like :siteNameLast
+		<cfset var HQL = "	FROM SlatwallSite as site where CONCAT(CONCAT(',',domainNames),',') like '%,#arguments.siteName#,%'
+							
 							
 							"
 		/>
+		
 		<cfreturn ORMExecuteQuery(
 			HQL,
-			{
-				siteNameStart=arguments.siteName & '%', 
-				siteNameMiddle='%, ' & arguments.siteName & ',%', 
-				siteNameLast='%,' & arguments.siteName
-			}
-			,true
+			{},
+			true
 		)/>
 		
 	</cffunction>
