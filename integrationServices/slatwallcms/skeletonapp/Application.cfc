@@ -179,6 +179,7 @@ component {
 		context.getOut().clearBuffer();
 		var response = context.getResponse();
 		response.setstatus(404);
+		arguments.slatwallScope.getService("hibachiEventService").announceEvent(eventName="404");
 		var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitlePath(site.getSiteID(),'404');
 		if(!isNull(content)){
 			return content;
