@@ -78,7 +78,7 @@ component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="t
 	
 	public string function getAppPath(){
 		if(!structKeyExists(variables,'appPath')){
-			var appsPath = expandPath('/Slatwall/apps');
+			var appsPath = expandPath('/Slatwall/custom/apps');
 			variables.appPath = appsPath & '/' & getAppCode();
 		}
 		return variables.appPath;
@@ -126,7 +126,7 @@ component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="t
 	
 	public string function getAppRootPath(){
 		if(!structKeyExists(variables,'appRootPath') && !isNull(getAppCode())){
-			variables.appRootPath = '/apps/' & getAppCode();
+			variables.appRootPath = '/custom/apps/' & getAppCode();
 		}
 		return variables.appRootPath;
 	}
