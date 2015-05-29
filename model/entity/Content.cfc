@@ -159,30 +159,55 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	}
 	
 	public string function createURLTitlePath(){
+		
 		var urlTitle = '';
 		if(!isNull(getURLtitle())){
 			urlTitle = getURLtitle();
 		}
-		var urlTitleArray = [];
 		
-		arrayAppend(urlTitleArray,urlTitle);
+		var urlTitlePath = '';
 		if(!isNull(getParentContent())){
-			urlTitleArray = getParentUrlTitle(getParentContent(),urlTitleArray);
+			urlTitlePath = getParentContent().getURLTitlePath();
 		}
+		
 		var urlTitlePathString = '';
-		for(var i = arraylen(urlTitleArray); i > 0; i--){
-			urlTitlePathString &= urlTitleArray[i];
-			if(i != 1){
-				urlTitlePathString &= '/';
-			}
+		if(len(urlTitlePath)){
+			urlTitlePathString = urlTitlePath & '/' & urlTitle;
+		}else{
+			urlTitlePathString = urlTitle;
 		}
+		
 		setUrlTitlePath(urlTitlePathString);
 		return urlTitlePathString;
 	}
 	
+	public array function getAllDescendants(){
+		return getDao('contentDao').getContentDescendants(this);
+	}
+	
 	public string function setUrlTitle(required string urlTitle){
+		//look up all children via lineage
+		var previousURLTitlePath = '';
+		if(!isNull(this.getURLTitlePath())){
+			previousURLTitlePath = this.getURLTitlePath();
+		}
+		 
+		var allDescendants = getAllDescendants();
+		//set url title
 		variables.UrlTitle = arguments.urlTitle;
-		this.createUrlTitlePath();
+		//update url titlePath
+		var newURLTitlePath = this.createUrlTitlePath();
+		
+		for(var descendant in allDescendants){
+			var newTitlePath = '';
+			if(len(previousURLTitlePath) > 0){
+				newTitlePath = replace(descendant.getURLTitlePath(),previousURLTitlePath,newURLTitlePath);
+			}else{
+				newTitlePath = newURLTitlePath & '/' & descendant.getURLTitlePath();
+			}
+			
+			descendant.setURLTitlePath(newTitlePath);
+		}
 	}
 	
 	public string function getFullTitle(){
