@@ -66,6 +66,14 @@ component extends="HibachiService" accessors="true" output="false" {
 		);
 	}
 	
+	public void function updateCMSApp(required app){
+		getService("hibachiUtilityService").copyFile(
+			source=getSkeletonAppPath() & '/Application.cfc', 
+			destination=arguments.app.getAppPath() & '/Application.cfc', 
+			overwrite=true
+		);
+	}
+	
 	public string function getSkeletonAppPath(){
 		return variables.skeletonAppPath;
 	} 
