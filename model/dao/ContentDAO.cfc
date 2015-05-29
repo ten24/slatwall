@@ -61,6 +61,21 @@ Notes:
 		<cfreturn entityNew("SlatwallContent") />
 	</cffunction>
 	
+	<cffunction name="getContentDescendants" access="public" >
+		<cfargument name="content" type="any" required="true">
+		<cfreturn ORMExecuteQuery(
+			'From #getApplicationKey()#Content 
+			where site=:site 
+			and urlTitlePath <> :urlTitlePath 
+			and urlTitlePath like :urlTitlePathLike',
+			{
+				site=arguments.content.getSite(),
+				urlTitlePath=arguments.content.getURLTitlePath(),
+				urlTitlePathLike=arguments.content.getUrlTitlePath() & '%'
+			}
+		)>
+	</cffunction>
+	
 	<cffunction name="getContentBySiteIDAndUrlTitlePath" access="public">
 		<cfargument name="siteID" type="string" required="true">
 		<cfargument name="urlTitlePath" type="string" required="true">
