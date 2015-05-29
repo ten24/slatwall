@@ -175,7 +175,6 @@ component {
 		
 		if(directoryExists(sitePath)) {
 			var slatwallCMSApplication = getSlatwallCMSApplication(site);
-			
 			slatwallCMSApplication.generateRenderedContent(argumentCollection=arguments.argumentsCollection);
 			
 		}else{
