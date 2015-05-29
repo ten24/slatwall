@@ -105,6 +105,12 @@ Notes:
 			<cffile action="delete" file="#getTempDirectory()##downloadFileName#" >
 			<cfdirectory action="delete" directory="#sourcePath#" recurse="true">
 			
+			<!--- Overwrite all CMS Application.cfc's with the latest from the skeletonApp --->
+			<cfset var apps = this.getAppSmartList().getRecords()>
+			<cfloop array="#apps#" index="app">
+				<cfset getService('appService').updateCMSApp(app)>
+			</cfloop>
+			
 			<!--- if there is any error during update, restore the old files and throw the error --->
 			<cfcatch type="any">
 				<cfif updateCopyStarted>
