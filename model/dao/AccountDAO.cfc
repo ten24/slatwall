@@ -53,9 +53,9 @@ Notes:
 		<cfargument name="accountID" type="string" />
 		
 		<cfif structKeyExists(arguments, "accountID")>
-			<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress AND a.accountID <> :accountID", {emailAddress=lcase(arguments.emailAddress), accountID=arguments.accountID})) />
+			<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress AND a.accountID <> :accountID", {emailAddress=lcase(arguments.emailAddress), accountID=arguments.accountID})) />
 		</cfif>
-		<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress", {emailAddress=lcase(arguments.emailAddress)})) />
+		<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress", {emailAddress=lcase(arguments.emailAddress)})) />
 	</cffunction>
 	
 	<cffunction name="removeAccountAuthenticationFromSessions">
@@ -160,30 +160,30 @@ Notes:
 	<cffunction name="getInternalAccountAuthenticationsByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		
-		<cfreturn ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND lower(pea.emailAddress)=:emailAddress", {emailAddress=lcase(arguments.emailAddress)}) />
+		<cfreturn ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND lower(pea.emailAddress)=:emailAddress", {emailAddress=lcase(arguments.emailAddress)}) />
 	</cffunction>
 	
 	<cffunction name="getActivePasswordByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		
-		<cfreturn ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND lower(pea.emailAddress)=:emailAddress AND aa.activeFlag = true", {emailAddress=lcase(arguments.emailAddress)}, true) />
+		<cfreturn ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE aa.password is not null AND aa.integration.integrationID is null AND lower(pea.emailAddress)=:emailAddress AND aa.activeFlag = true", {emailAddress=lcase(arguments.emailAddress)}, true) />
 	</cffunction>
 	
 	<cffunction name="getActivePasswordByAccountID" returntype="any" access="public">
 		<cfargument name="accountID" required="true" type="string" />
 		
-		<cfreturn ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa INNER JOIN FETCH aa.account a WHERE aa.password is not null AND aa.integration.integrationID is null AND a.accountID=:accountid AND aa.activeFlag = true", {accountid=arguments.accountID}, true) />
+		<cfreturn ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a WHERE aa.password is not null AND aa.integration.integrationID is null AND a.accountID=:accountid AND aa.activeFlag = true", {accountid=arguments.accountID}, true) />
 	</cffunction>
 	
 	<cffunction name="getAccountAuthenticationExists" returntype="any" access="public">
-		<cfset var aaCount = ormExecuteQuery("SELECT count(aa.accountAuthenticationID) FROM SlatwallAccountAuthentication aa") />
+		<cfset var aaCount = ormExecuteQuery("SELECT count(aa.accountAuthenticationID) FROM #getApplicationKey()#AccountAuthentication aa") />
 		<cfreturn aaCount[1] gt 0 />
 	</cffunction>
 	
 	<cffunction name="getAccountWithAuthenticationByEmailAddress" returntype="any" access="public">
 		<cfargument name="emailAddress" required="true" type="string" />
 		
-		<cfset var accounts = ormExecuteQuery("SELECT a FROM SlatwallAccount a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress) = :emailAddress AND EXISTS(SELECT aa.accountAuthenticationID FROM SlatwallAccountAuthentication aa WHERE aa.account.accountID = a.accountID)", {emailAddress=lcase(arguments.emailAddress)}) />
+		<cfset var accounts = ormExecuteQuery("SELECT a FROM #getApplicationKey()#Account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress) = :emailAddress AND EXISTS(SELECT aa.accountAuthenticationID FROM #getApplicationKey()#AccountAuthentication aa WHERE aa.account.accountID = a.accountID)", {emailAddress=lcase(arguments.emailAddress)}) />
 		<cfif arrayLen(accounts)>
 			<cfreturn accounts[1] />
 		</cfif>
@@ -192,7 +192,7 @@ Notes:
 	<cffunction name="getPasswordResetAccountAuthentication">
 		<cfargument name="accountID" type="string" required="true" />
 		
-		<cfset var aaArray = ormExecuteQuery("SELECT aa FROM SlatwallAccountAuthentication aa LEFT JOIN aa.integration i WHERE aa.account.accountID = :accountID and aa.expirationDateTime >= :now and aa.password is null and i.integrationID is null", {accountID=arguments.accountID, now=now()}) />
+		<cfset var aaArray = ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa LEFT JOIN aa.integration i WHERE aa.account.accountID = :accountID and aa.expirationDateTime >= :now and aa.password is null and i.integrationID is null", {accountID=arguments.accountID, now=now()}) />
 		
 		<cfif arrayLen(aaArray)>
 			<cfreturn aaArray[1] />
@@ -244,7 +244,7 @@ Notes:
 		<cfloop query="#tableInfo#">
 			<cfset var tableName = tableInfo.tableName />
 			
-			<cfif tableName neq "SlatwallAccount">
+			<cfif tableName neq "#getApplicationKey()#Account">
 				<cfset var columnInfo = "" />
 				<cfdbinfo type="Columns" table="#tableName#" name="columnInfo">
 				
