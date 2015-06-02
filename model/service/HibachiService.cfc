@@ -68,10 +68,14 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public boolean function delete(required any entity){
 		
-		var deleteOK = super.delete(argumentcollection=arguments);
+		// Setup delete variable
+		var deleteOK = false;
+		
+		// Do delete validation
+		arguments.entity.validate(context="delete");
 			
 		// If the entity Passes validation
-		if(deleteOK) {
+		if(!arguments.entity.hasErrors()) {
 			
 			// Remove all of the entity settings
 			getService("settingService").removeAllEntityRelatedSettings( entity=arguments.entity );
@@ -81,6 +85,8 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 			
 			// Remove all of the entity files
 			getService("fileService").removeAllEntityRelatedFiles( entity=arguments.entity );
+			
+			deleteOK = super.delete(argumentcollection=arguments);
 		}
 
 		return deleteOK;

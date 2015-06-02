@@ -265,7 +265,7 @@ hr.s-dotted {
   margin-bottom: 20px;
 }
 th {
-  font-weight: 600;
+  font-family: "open_sansregular", Helvetica, Arial, sans-serif;
 }
 a {
   color: #428bca;
@@ -307,9 +307,6 @@ a:hover {
   width: 30px;
   text-align: center;
 }
-.table-responsive::-webkit-scrollbar {
-  display: none;
-}
 button::-moz-focus-inner {
   border: 0;
 }
@@ -342,7 +339,7 @@ a:focus {
   outline: none;
 }
 label {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 .s-width-100 {
   width: 100%;
@@ -397,7 +394,7 @@ label {
   z-index: 3005 !important;
 }
 label.error {
-  font-weight: normal;
+  font-family: "open_sansregular", Helvetica, Arial, sans-serif;
   color: #da5757;
 }
 input[type="file"] {
@@ -443,7 +440,7 @@ input[type="file"] {
   font-size: 10px;
 }
 .s-helper-text span {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 .s-remove-bottom-radius {
   border-bottom-right-radius: 0px;
@@ -461,7 +458,7 @@ input[type="file"] {
   margin-top: 0px;
 }
 .s-default-list .dl-horizontal dt {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 .agenda table {
   margin-bottom: 0px;
@@ -700,7 +697,7 @@ select.error {
 .s-login-box h2 {
   margin-top: 0px;
   font-size: 18px;
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 .s-access-denied a {
   color: #F9AC68;
@@ -748,7 +745,7 @@ select.error {
   padding-left: 10px;
 }
 .s-property-info dt {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 .form-horizontal .control-label {
   margin-bottom: 4px;
@@ -773,7 +770,6 @@ select.error {
 .table > tbody > tr > td.admin.admin2,
 .table > thead > tr > td.admin.admin1,
 .table > tbody > tr > td.admin.admin1 {
-  text-align: center;
   width: 75px;
 }
 .table > thead > tr > td.admin.admin3,
@@ -821,7 +817,7 @@ table tr th .glyphicon {
   padding: 0px;
   margin: 0px;
   font-size: 16px;
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
   vertical-align: middle;
   margin-top: 18px;
 }
@@ -1249,7 +1245,7 @@ table .s-edit-elements a:hover {
   color: #555;
 }
 .s-properties label {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 .s-properties .tooltip {
   width: 200px !important;
@@ -1321,7 +1317,7 @@ table .s-edit-elements a:hover {
   font-size: 16px;
   margin-bottom: 0;
   margin-top: 9px;
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 .s-header-bar .s-collection-options {
   padding-left: 0px;
@@ -1380,7 +1376,7 @@ table .s-edit-elements a:hover {
   color: #cccccc;
 }
 .s-filters-selected .s-filter-item .panel .panel-body .s-comparison-operator {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 .s-filters-selected .s-filter-item .btn-group-vertical {
   float: left;
@@ -1507,7 +1503,7 @@ content.s-body-box .s-filter-header ul li span {
   color: #ffffff;
   margin-left: 4px;
   font-size: 12px;
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 content.s-body-box .s-no-items {
   border: 1px solid #cccccc;
@@ -1517,7 +1513,7 @@ content.s-body-box .s-no-items {
   text-align: center;
   font-size: 15px;
   background: #f2f2f2;
-  font-weight: 700;
+  font-family: "open_sansbold", Helvetica, Arial, sans-serif;
 }
 tabel .s-table-header {
   margin-bottom: 10px;
@@ -1865,7 +1861,7 @@ tabel .s-table-header {
   width: 100%;
   padding: 10px 0px 16px 0px;
   display: block;
-  font-weight: 700;
+  font-family: "open_sansbold", Helvetica, Arial, sans-serif;
 }
 .s-setting-options-body .s-setting-and-or .btn {
   min-width: 52px;
@@ -1890,13 +1886,6 @@ tabel .s-table-header {
   font-size: 18px;
   color: #e6e6e6;
 }
-.s-add-filter h4 i:after {
-  content: " close";
-  font-size: 14px;
-  position: relative;
-  top: -2px;
-  font-weight: 600;
-}
 .s-add-filter h4 {
   border-bottom: 1px solid #e6e6e6;
   margin-bottom: 15px;
@@ -1905,7 +1894,7 @@ tabel .s-table-header {
   padding-bottom: 3px;
 }
 .s-setting-options-body .s-add-filter label {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
   padding-left: 0px;
   width: 100%;
 }
@@ -2186,7 +2175,6 @@ tabel .s-table-header {
   margin-right: 5px;
 }
 .s-j-draggablePanelList .s-pannel-name .s-pannel-title {
-  cursor: pointer;
   color: #666666;
   background: none;
 }
@@ -2243,12 +2231,19 @@ tabel .s-table-header {
   position: absolute;
   left: 53px;
   top: 0px;
-  width: 230px;
-  z-index: 3000;
+  width: 276px;
+  z-index: 1000;
   background-color: #f2f2f2;
   height: 40px;
   padding-left: 10px;
-  display: none;
+}
+.s-pannel-name .s-pannel-title-edit {
+  color: #428bca;
+  background: none !important;
+}
+.s-pannel-name .s-pannel-title-edit:hover {
+  color: #245682;
+  background: none !important;
 }
 .s-title-edit-menu .selectboxit-arrow-container {
   width: 20px;
@@ -2479,7 +2474,7 @@ tabel .s-table-header {
 }
 /* .s-bundle-group .s-bundle-group-item .s-bundle-group-range .s-bundle-group-min {display: inline-block;width: 38px;margin-right:-2px;background-color: #606060;text-align: center;color: @black-10;height:40px;vertical-align:top;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-range ul li:first-child {background: #757575;font-size: 10px;}
-.s-bundle-group .s-bundle-group-item .s-bundle-group-range ul li:last-child {padding: 3px;font-weight: 600;}
+.s-bundle-group .s-bundle-group-item .s-bundle-group-range ul li:last-child {padding: 3px;font-family: @font-family-semibold;}
 .s-bundle-group .s-bundle-group-item .s-bundle-group-range .s-bundle-group-max {display: inline-block;width: 38px;background-color: #606060;text-align: center;color: @black-10;height:40px;vertical-align:top;} */
 .s-bundle-group .s-bundle-group-item .s-bundle-group-options a {
   height: 32px;
@@ -2560,14 +2555,14 @@ tabel .s-table-header {
   text-align: center;
 }
 .s-bundle-add-items .s-load-more button {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
   min-width: 30%;
   margin-top: 10px;
 }
 .s-bundle-add-items .s-load-more button span {
   display: block;
   font-size: 10px;
-  font-weight: 500;
+  font-family: "open_sansregular", Helvetica, Arial, sans-serif;
 }
 .s-search-results {
   color: #ffffff;
@@ -2586,7 +2581,7 @@ tabel .s-table-header {
 }
 .s-search-results > ul > li > .s-title h2 {
   font-size: 12px;
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
   display: inline;
   vertical-align: top;
 }
@@ -2778,7 +2773,7 @@ tabel .s-table-header {
   overflow: hidden;
 }
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details:first-child {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
   min-width: 110px;
 }
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details:last-child {
@@ -2955,7 +2950,7 @@ tabel .s-table-header {
   margin: 0px;
 }
 .s-bundle-group-items .s-workflow-objs .well ul li:first-child {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
   font-size: 16px;
 }
 .s-bundle-group-items .s-select-item .s-workflow-objs .s-bundle-add-obj .s-last .s-bundle-details-add a.btn {
@@ -3021,7 +3016,7 @@ tabel .s-table-header {
   background: #ffffff;
 }
 .s-order-item-table .s-fullfilment .s-header {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 .s-order-item-table .s-image {
   max-width: 80px;
@@ -3034,10 +3029,10 @@ tabel .s-table-header {
   background-color: #f2f2f2;
 }
 .s-order-item-table thead th {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 /* .s-order-item-table .s-main-product tr:first-child {
-	font-weight: 600;
+	font-family: @font-family-semibold;
 }  */
 .s-order-item-table .s-bundle-product:first-child .s-title {
   border-left: 1px solid #eee;
@@ -3145,7 +3140,7 @@ tabel .s-table-header {
   padding-bottom: 2px;
 }
 .s-order-item-table .s-detail-title {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 .s-order-item-table .s-title .s-detail-content,
 .s-order-item-table .s-title .s-detail-title {
@@ -3168,7 +3163,7 @@ tabel .s-table-header {
   text-align: right;
   font-size: 13px;
   padding-top: 4px;
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 .s-order-item-table.table > tbody {
   border: 0px;
@@ -3311,7 +3306,7 @@ tabel .s-table-header {
   margin-bottom: 3px;
 }
 .s-bundle-group-items-list .s-bundle-add-obj .s-bundle-details:first-child {
-  font-weight: 700;
+  font-family: "open_sansbold", Helvetica, Arial, sans-serif;
 }
 .s-bundle-group-items-list .s-bundle-add-obj .s-bundle-details {
   font-size: 12px;
@@ -3378,7 +3373,7 @@ tabel .s-table-header {
   height: 40px;
   font-size: 16px;
   background-color: #5cb85c;
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
   color: #FFF;
   padding: 9px;
 }
@@ -3824,7 +3819,7 @@ tabel .s-table-header {
   margin-bottom: 0px;
 }
 .s-panel-header-info .dl-horizontal dt {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 .s-panel-header-info .dl-horizontal dt i {
   color: #cccccc;
@@ -4272,7 +4267,7 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-comments-component .s-author {
   color: #666666;
   font-size: 12px;
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 .s-comments-component .s-author .s-security {
   color: #aaa;
@@ -4313,7 +4308,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   padding: 3px 10px;
 }
 .s-info-table .s-row-strong td {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
 /*-- Date Picker Component --*/
 .s-datepicker .input-group .input-group-btn button {
@@ -4358,7 +4353,7 @@ a.disabled > i.hibachi-ui-radio-checked {
   -webkit-box-shadow: none;
 }
 .s-datepicker table tbody button.active {
-  font-weight: 600;
+  font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
   color: #666666;
 }
 .s-datepicker table tbody button .text-info {
@@ -4470,3 +4465,10 @@ a.disabled > i.hibachi-ui-radio-checked {
 .depth10 {
   margin-left: 200px;
 }
+<<<<<<< HEAD
+=======
+.paginationpages0,
+.paginationpages1 {
+  display: none;
+}
+>>>>>>> origin/hotfix

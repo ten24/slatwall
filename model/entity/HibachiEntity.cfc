@@ -87,7 +87,15 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		}
 		return variables.files;
 	}
-
+	
+	public any function getFilesSmartList(){
+		if(!structKeyExists(variables, "filesSmartList")) {
+			arguments.baseID = getPrimaryIDValue();
+			variables.filesSmartList = getService("fileService").getRelatedFilesSmartListForEntity(argumentCollection=arguments);
+		}
+		return variables.filesSmartList;
+	}
+	
 	// @hint helper function to return a Setting
 	public any function setting(required string settingName, array filterEntities=[], formatValue=false) {
 		return getService("settingService").getSettingValue(settingName=arguments.settingName, object=this, filterEntities=arguments.filterEntities, formatValue=arguments.formatValue);
@@ -292,26 +300,6 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 			return getService("dataService").getShortReferenceID(referenceObjectID=getPrimaryIDValue(), referenceObject=getClassName(), createNewFlag=arguments.createNewFlag);	
 		}
 		return '';
-	}
-	
-	//can be overridden at the entity level in case we need to always return a relationship entity otherwise the default is only non-relationship and non-persistent
-	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID,cmsAccountID,cmsContentID,cmsSiteID"){
-		var properties = getProperties();
-		
-		var defaultProperties = [];
-		for(var p=1; p<=arrayLen(properties); p++) {
-			if(len(arguments.excludesList) && ListFind(arguments.excludesList,properties[p].name)){
-				
-			}else{
-				if((len(arguments.includesList) && ListFind(arguments.includesList,properties[p].name)) || 
-				!structKeyExists(properties[p],'FKColumn') && (!structKeyExists(properties[p], "persistent") || 
-				properties[p].persistent)){
-					arrayAppend(defaultProperties,properties[p]);	
-				}
-			}
-			
-		}
-		return defaultProperties;
 	}
 	
 	public any function getDefaultPropertiesIdentifierList(){

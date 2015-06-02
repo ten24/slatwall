@@ -70,12 +70,11 @@ Notes:
 			
 			<base href="#baseHREF#" />
 		</cfif>
-
-		<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/fonts/opensans/opensans.css" rel="stylesheet">
+		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/main.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
-		<link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
 		<link href="#request.slatwallScope.getBaseURL()#/client/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type='text/css'>
 		<link href="#request.slatwallScope.getBaseURL()#/client/lib/metismenu/metismenu.css" rel="stylesheet">
 
@@ -93,7 +92,6 @@ Notes:
 		</script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js"></script>
-
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/ckeditor.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>
@@ -376,8 +374,62 @@ Notes:
 		
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngslatwall&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/es5/all.min.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
-		
+		<cfif request.slatwallScope.getApplicationValue('debugFlag')>
+			<cfset es5scriptPath = expandPath('/admin/client/js/es5/')>
+			<cfdirectory name="es5Javascript" 
+						action="list" 
+						directory="#es5scriptPath#"
+						filter="*.js"
+						recurse="true"
+			>
+			<!---modules --->
+			<cfquery name="modules" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#modules%'
+			</cfquery>
+			<!---model --->
+			<cfquery name="model" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#model%'
+			</cfquery>
+			<!---controllers --->
+			<cfquery name="controllers" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#controllers%'
+			</cfquery>
+			<!---modules --->
+			<cfquery name="directives" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#directives%'
+			</cfquery>
+			<!---modules --->
+			<cfquery name="services" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#services%'
+			</cfquery>
+			
+			<cfloop query="model">
+				<cfset scriptRelativePath = replace(model.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & model.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			</cfloop>
+			
+			<cfloop query="modules">
+				<cfset scriptRelativePath = replace(modules.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & modules.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			</cfloop>
+			
+			<cfloop query="services">
+				<cfset scriptRelativePath = replace(services.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & services.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			</cfloop>
+			
+			<cfloop query="controllers">
+				<cfset scriptRelativePath = replace(controllers.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & controllers.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			</cfloop>
+			
+			<cfloop query="directives">
+				<cfset scriptRelativePath = replace(directives.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & directives.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			</cfloop>
+		<cfelse>
+			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/es5/all.min.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+		</cfif>
 	</body>
 </html>
 </cfoutput>

@@ -57,7 +57,7 @@ component extends="FW1.framework" {
 	
 	// Hibachi Setup
 	variables.framework.hibachi = {};
-	variables.framework.hibachi.authenticationSubsystems = "admin,public";
+	variables.framework.hibachi.authenticationSubsystems = "admin,public,api";
 	variables.framework.hibachi.debugFlag = false;
 	variables.framework.hibachi.gzipJavascript = true;
 	variables.framework.hibachi.errorDisplayFlag = false;

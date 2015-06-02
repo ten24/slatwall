@@ -80,6 +80,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return this.listFileRelationship(arguments);
 	}
 	
+	public any function getRelatedFilesSmartListForEntity( required string baseID) {
+		// Find file relationships for base object entity
+		var smartlist = this.getFileRelationshipSmartList();
+		smartlist.addFilter('baseID',arguments.baseID);
+		return smartlist;
+	}
+	
 	public boolean function removeAllEntityRelatedFiles(required any entity)
 	{
 		for (var fileRelationshipEntity in arguments.entity.getFiles()) {

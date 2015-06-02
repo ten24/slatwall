@@ -1117,13 +1117,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 
 	public any function getAccountSmartList(struct data={}, currentURL="") {
-		arguments.entityName = "SlatwallAccount";
+		arguments.entityName = "#getDao('hibachiDao').getApplicationKey()#Account";
 		
 		var smartList = this.getSmartList(argumentCollection=arguments);
 		
-		smartList.joinRelatedProperty("SlatwallAccount", "primaryEmailAddress", "left");
-		smartList.joinRelatedProperty("SlatwallAccount", "primaryPhoneNumber", "left");
-		smartList.joinRelatedProperty("SlatwallAccount", "primaryAddress", "left");
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryEmailAddress", "left");
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryPhoneNumber", "left");
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryAddress", "left");
 		
 		smartList.addKeywordProperty(propertyIdentifier="firstName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="lastName", weight=1);
@@ -1136,13 +1136,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function getAccountAuthenticationSmartList(struct data={}){
-		arguments.entityName = "SlatwallAccountAuthentication";
+		arguments.entityName = "#getDao('hibachiDao').getApplicationKey()#AccountAuthentication";
 		
 		var smartList = this.getSmartList(argumentCollection=arguments);
 		
-		smartList.joinRelatedProperty("SlatwallAccountAuthentication", "account", "left" );
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#AccountAuthentication", "account", "left" );
 		
-		smartList.joinRelatedProperty("SlatwallAccountAuthentication", "integration", "left");
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#AccountAuthentication", "integration", "left");
 		
 		smartList.addKeywordProperty(propertyIdentifier="account.accountID", weight=1 );
 		
@@ -1152,21 +1152,21 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function getAccountEmailAddressSmartList(struct data={}, currentURL="") {
-		arguments.entityName = "SlatwallAccountEmailAddress";
+		arguments.entityName = "#getDao('hibachiDao').getApplicationKey()#AccountEmailAddress";
 		
 		var smartList = this.getSmartList(argumentCollection=arguments);
 		
-		smartList.joinRelatedProperty("SlatwallAccountEmailAddress", "accountEmailType", "left");
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#AccountEmailAddress", "accountEmailType", "left");
 		
 		return smartList;
 	}
 	
 	public any function getAccountPhoneNumberSmartList(struct data={}, currentURL="") {
-		arguments.entityName = "SlatwallAccountPhoneNumber";
+		arguments.entityName = "#getDao('hibachiDao').getApplicationKey()#AccountPhoneNumber";
 		
 		var smartList = this.getSmartList(argumentCollection=arguments);
 		
-		smartList.joinRelatedProperty("SlatwallAccountPhoneNumber", "accountPhoneType", "left");
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#AccountPhoneNumber", "accountPhoneType", "left");
 		
 		return smartList;
 	}
@@ -1356,7 +1356,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		//First need to get an array of all the accountAuthentications for this account ordered by creationDateTime ASC
 		var accountAuthentications = getAccountAuthenticationSmartList(data=data);
 		accountAuthentications.addFilter("account.accountID", arguments.data.Account.getAccountID());
-		accountAuthentications.addWhereCondition("aslatwallaccountauthentication.password IS NOT NULL AND aslatwallintegration.integrationID IS NULL");
+		accountAuthentications.addWhereCondition("a#lcase(getDao('hibachiDao').getApplicationKey())#accountauthentication.password IS NOT NULL AND a#lcase(getDao('hibachiDao').getApplicationKey())#integration.integrationID IS NULL");
 		accountAuthentications.addOrder("createdDateTime|ASC");
 		
 		//Get the actual records from the SmartList and store in an array

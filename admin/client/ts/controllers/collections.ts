@@ -126,6 +126,7 @@ metadataService,
 				$scope.loadingCollection = false;
 			},function(reason){
 			});
+            return collectionListingPromise;
 		};
 		
 		$scope.getCollection();

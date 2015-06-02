@@ -392,7 +392,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		//propertyIdentifers
 		collectionConfigStruct = {};
 		collectionConfigStruct = {
-			baseEntityName = 'Slatwall#arguments.rc.entityName#',
+			baseEntityName = '#getDao('HibachiDao').getApplicationKey()##arguments.rc.entityName#',
 			baseEntityAlias = '_' & lcase(rc.entityName)
 		};
 		
