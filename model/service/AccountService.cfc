@@ -1117,13 +1117,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 
 	public any function getAccountSmartList(struct data={}, currentURL="") {
-		arguments.entityName = "##getDao('hibachiDao').getApplicationKey()##Account";
+		arguments.entityName = "#getDao('hibachiDao').getApplicationKey()#Account";
 		
 		var smartList = this.getSmartList(argumentCollection=arguments);
 		
-		smartList.joinRelatedProperty("##getDao('hibachiDao').getApplicationKey()##Account", "primaryEmailAddress", "left");
-		smartList.joinRelatedProperty("##getDao('hibachiDao').getApplicationKey()##Account", "primaryPhoneNumber", "left");
-		smartList.joinRelatedProperty("##getDao('hibachiDao').getApplicationKey()##Account", "primaryAddress", "left");
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryEmailAddress", "left");
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryPhoneNumber", "left");
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#Account", "primaryAddress", "left");
 		
 		smartList.addKeywordProperty(propertyIdentifier="firstName", weight=1);
 		smartList.addKeywordProperty(propertyIdentifier="lastName", weight=1);
@@ -1136,13 +1136,13 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function getAccountAuthenticationSmartList(struct data={}){
-		arguments.entityName = "##getDao('hibachiDao').getApplicationKey()##AccountAuthentication";
+		arguments.entityName = "#getDao('hibachiDao').getApplicationKey()#AccountAuthentication";
 		
 		var smartList = this.getSmartList(argumentCollection=arguments);
 		
-		smartList.joinRelatedProperty("##getDao('hibachiDao').getApplicationKey()##AccountAuthentication", "account", "left" );
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#AccountAuthentication", "account", "left" );
 		
-		smartList.joinRelatedProperty("##getDao('hibachiDao').getApplicationKey()##AccountAuthentication", "integration", "left");
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#AccountAuthentication", "integration", "left");
 		
 		smartList.addKeywordProperty(propertyIdentifier="account.accountID", weight=1 );
 		
@@ -1152,21 +1152,21 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function getAccountEmailAddressSmartList(struct data={}, currentURL="") {
-		arguments.entityName = "##getDao('hibachiDao').getApplicationKey()##AccountEmailAddress";
+		arguments.entityName = "#getDao('hibachiDao').getApplicationKey()#AccountEmailAddress";
 		
 		var smartList = this.getSmartList(argumentCollection=arguments);
 		
-		smartList.joinRelatedProperty("##getDao('hibachiDao').getApplicationKey()##AccountEmailAddress", "accountEmailType", "left");
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#AccountEmailAddress", "accountEmailType", "left");
 		
 		return smartList;
 	}
 	
 	public any function getAccountPhoneNumberSmartList(struct data={}, currentURL="") {
-		arguments.entityName = "##getDao('hibachiDao').getApplicationKey()##AccountPhoneNumber";
+		arguments.entityName = "#getDao('hibachiDao').getApplicationKey()#AccountPhoneNumber";
 		
 		var smartList = this.getSmartList(argumentCollection=arguments);
 		
-		smartList.joinRelatedProperty("##getDao('hibachiDao').getApplicationKey()##AccountPhoneNumber", "accountPhoneType", "left");
+		smartList.joinRelatedProperty("#getDao('hibachiDao').getApplicationKey()#AccountPhoneNumber", "accountPhoneType", "left");
 		
 		return smartList;
 	}
