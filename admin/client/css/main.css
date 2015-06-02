@@ -2977,6 +2977,7 @@ tabel .s-table-header {
 .s-bundle-group-dropdown-content .s-options .radio {
   display: inline-block;
   margin-right: 10px;
+  padding-left: 22px;
 }
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj .s-item-type {
   width: 32px;
@@ -4465,10 +4466,7 @@ a.disabled > i.hibachi-ui-radio-checked {
 .depth10 {
   margin-left: 200px;
 }
-<<<<<<< HEAD
-=======
 .paginationpages0,
 .paginationpages1 {
   display: none;
 }
->>>>>>> origin/hotfix
