@@ -883,7 +883,19 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		}
 		return defaultProperties;
 	}
-
+	
+	public any function getFilterProperties(string includesList = "", string excludesList = ""){
+		var properties = getProperties();
+		var defaultProperties = [];
+		for(var p=1; p<=arrayLen(properties); p++) {
+			if((len(includesList) && ListFind(arguments.includesList,properties[p].name) && !ListFind(arguments.excludesList,properties[p].name)) 
+			|| (!structKeyExists(properties[p], "persistent") || properties[p].persistent)){
+				properties[p]['displayPropertyIdentifier'] = getPropertyTitle(properties[p].name);
+				arrayAppend(defaultProperties,properties[p]);	
+			}
+		}
+		return defaultProperties;
+	}
 	
 	
 	/*

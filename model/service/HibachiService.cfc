@@ -146,7 +146,12 @@ component accessors="true" output="false" extends="Slatwall.org.Hibachi.HibachiS
 	
 	public any function getPropertiesWithAttributesByEntityName(required string entityName){
 		var entityObject = getEntityObject( arguments.entityName );
-		var properties = getService('hibachiUtilityService').arrayConcat( entityObject.getFilterProperties(), entityObject.getAttributesProperties() );
+		var properties = [];
+		if(structKeyExists(entityObject,'getAttributesProperties')){
+			properties = getService('hibachiUtilityService').arrayConcat( entityObject.getFilterProperties(), entityObject.getAttributesProperties() );
+		}else{
+			properties = entityObject.getFilterProperties();
+		}
 		
 		return properties;
 	}
