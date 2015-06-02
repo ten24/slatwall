@@ -186,6 +186,9 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	}
 	
 	public string function setUrlTitle(required string urlTitle){
+		arguments.urlTitle = reReplace(lcase(trim(arguments.urlTitle)), "[^a-z0-9 \-]", "", "all");
+		arguments.urlTitle = reReplace(arguments.urlTitle, "[-\s]+", "-", "all");
+		
 		//look up all children via lineage
 		var previousURLTitlePath = '';
 		if(!isNull(this.getURLTitlePath())){
