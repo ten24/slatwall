@@ -214,7 +214,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	}
 	
 	public string function isUniqueUrlTitlePathBySite(){
-		var content = getDao('contentDAO').getContentByUrlTitlePathBySite(this.getURLTitlePath(), this.getSite());
+		var content = getDao('contentDAO').getContentByUrlTitlePathBySite( this.getSite(), this.getURLTitlePath() );
 		//if no content with the url title exists then the content is unique
 		if(isNull(content)){
 			return true;

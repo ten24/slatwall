@@ -2,11 +2,17 @@
 	"conditions":{
 	    "notSlatwallCMS":{
 	        "site.app.integration.integrationPackage":{"neq":"slatwallcms"}
+	    },
+	    "topLevelContent":{
+	    	"parentContent":{"null":true}
+	    },
+	    "requireUrlTitle":{
+	    	"parentContent":{"required":true}
 	    }
 	},
 	"properties":{
 		"contentID":			[{"contexts":"save","required":true,"conditions":"notSlatwallCMS"}],
-		"urlTitle":				[{"contexts":"save","required":true,"conditions":"notSlatwallCMS"}],
+		"urlTitle":				[{"contexts":"save""conditions":"requireUrlTitle","required":true}],
 		"urlTitlePath":			[{"contexts":"save","method":"isUniqueUrlTitlePathBySite"}],
 		"contentTemplateFile":	[{"contexts":"save","required":true}],
 		"site":					[{"contexts":"save","required":true}]
