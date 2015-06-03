@@ -7,6 +7,7 @@
 	"properties":{
 		"contentID":			[{"contexts":"save","required":true,"conditions":"notSlatwallCMS"}],
 		"urlTitle":				[{"contexts":"save","required":true,"conditions":"notSlatwallCMS"}],
+		"urlTitlePath":			[{"contexts":"save","method":"isUniqueUrlTitlePathBySite"}],
 		"contentTemplateFile":	[{"contexts":"save","required":true}],
 		"site":					[{"contexts":"save","required":true}]
 	}

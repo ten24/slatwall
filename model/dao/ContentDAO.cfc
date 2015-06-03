@@ -118,4 +118,10 @@ Notes:
 		<cfreturn ORMExecuteQuery('FROM SlatwallContent Where site = :site AND parentContent IS NULL',{site=arguments.site},true)>
 	</cffunction>
 	
+	<cffunction name="getContentByUrlTitlePathBySite" access="public">
+		<cfargument name="urlTitlePath" type="any" required="true"/>
+		<cfargument name="site" type="any" required="true" />
+		<cfreturn ORMExecuteQuery("FROM SlatwallContent WHERE site = :site AND urlTitlePath = :urlTitlePath",{site=arguments.site,urlTitlePath=arguments.urlTitlePath}, true) />
+	</cffunction>
+	
 </cfcomponent>
