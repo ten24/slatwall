@@ -413,6 +413,11 @@ fieldset[disabled] .s-button-no-style.active {
 	}
 }
 
+.clearFixInline {
+	display:inline-block;
+	width: 100%;
+}
+
 // Center-align a block level element
 .center-block() {
 	display: block;
@@ -711,6 +716,7 @@ input:focus, textarea:focus, select:focus {-webkit-box-shadow: none !important;b
 .btn:focus {outline: none;}
 .dropdown-menu>.active>a, .dropdown-menu>.active>a:hover, .dropdown-menu>.active>a:focus {background-color:@brand-ten24;}
 .s-filter-content {padding-right:0px;padding-left:0px;}
+.s-filter-content .s-header-bar {margin-top: -10px;}
 .s-filter-content .s-collections-options.s-options {margin-top: -15px;}
 .panel, .panel-group .panel {.border-radius(0);}
 .panel-default>.panel-heading {background-color:#606060;color:@white;}
@@ -876,7 +882,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-setting-options-body .s-setting-and-or {width: 100%;padding: 10px 0px 16px 0px;display: block;font-family: @font-family-bold;}
 .s-setting-options-body .s-setting-and-or .btn {min-width:52px;text-align:center;}
 
-.s-add-filter {background:@white;-moz-box-shadow: inset 0 0 2px @black-20;-webkit-box-shadow: inset 0 0 2px @black-20;box-shadow: inset 0 0 2px @black-20;.border-radius();  margin-top: 8px;}
+.s-add-filter {background:@white;-moz-box-shadow: inset 0 0 2px @black-20;-webkit-box-shadow: inset 0 0 2px @black-20;box-shadow: inset 0 0 2px @black-20;.border-radius();  margin-top: 8px;margin-bottom: 10px;}
 .s-add-filter h4 i {float:right;cursor:pointer;font-size:18px;color:@black-10;}
 .s-add-filter h4 {border-bottom: 1px solid @black-10;margin-bottom:15px;font-size:16px;text-align:left;padding-bottom: 3px;}
 .s-setting-options-body .s-add-filter label {font-family: @font-family-semibold;padding-left:0px;width: 100%;}
@@ -888,6 +894,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-and-or-box hr {border: 0;border-top: 3px dotted @black-10;position: relative;top: -36px;z-index: 0;}
 .s-and-or-box .btn-group {z-index: 10;padding: 0px 10px;}
 .s-add-filter > .row > h4 {margin-top: 0px;padding: 8px 15px;background-color: #606060;color: @white;font-size:14px;border-top-left-radius: 2px;border-top-right-radius: 2px;}
+.s-add-filter .row h4.s-heading {margin-top: 0px;padding: 8px 15px;background-color: #606060;color: @white;font-size:14px;border-top-left-radius: 2px;border-top-right-radius: 2px;}
 .s-add-filter > .row {padding-top:0px !important;}
 .s-add-filter .s-criteria {border: 3px dotted @black-10;border-bottom: none;border-top: none;margin-bottom: 15px;min-height:140px;}
 .s-add-filter .s-criteria .selectboxit-container .selectboxit {width:100% !important;}
@@ -1067,7 +1074,7 @@ tabel .s-table-header {margin-bottom:10px;}
 
 /* .s-bundle-add-items h4 {width:100%;text-align:center;display:none;} */
 .s-bundle-add-obj .s-last li:last-child a {.border-radiuses (@topright: 2px, @bottomright: 2px, @bottomleft: 0, @topleft: 0) !important;}
-.s-bundle-add-items .s-bundle-add-obj {background: @black-5;margin-bottom:4px;height: 35px;border: 1px solid @black-10;border-top-left-radius: 2px;border-bottom-left-radius: 3px;}
+.s-bundle-add-items .s-bundle-add-obj {background: @black-5;margin-bottom:4px;height: 35px;border: 1px solid @black-10;border-top-left-radius: 2px;border-bottom-left-radius: 3px;display: inline-block;width: 100%;}
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details {font-size: 12px;border-right: 1px solid @black-10;height: 33px;padding: 9px 15px 10px 15px;white-space: nowrap;overflow:hidden;}
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details:first-child {font-family: @font-family-semibold;min-width:110px;}
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details:last-child {border:0px;}
@@ -1111,6 +1118,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj .s-item-type {width:32px;border-top-left-radius: 2px;border-bottom-left-radius: 2px;}
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj .s-item-type:nth-child(2) {background-color:@black-5;width:10px;color:@black-20;}
 .s-workflow-objs.s-sortable .s-order-item-options .s-bundle-add-obj ul:first-child {cursor: move;}
+.s-workflow-objs .s-filter-content {margin-top: -15px;}
 
 .s-task-actions .s-add-filter .s-create-obj-window {border-right:3px dotted @black-10;padding-right:15px;margin-bottom:15px;}
 

@@ -205,6 +205,10 @@ fieldset[disabled] .s-button-no-style.active {
   border: none;
   font-size: 12px;
 }
+.clearFixInline {
+  display: inline-block;
+  width: 100%;
+}
 [ng\:cloak],
 [ng-cloak],
 [data-ng-cloak],
@@ -1132,6 +1136,9 @@ select:focus {
   padding-right: 0px;
   padding-left: 0px;
 }
+.s-filter-content .s-header-bar {
+  margin-top: -10px;
+}
 .s-filter-content .s-collections-options.s-options {
   margin-top: -15px;
 }
@@ -1882,6 +1889,7 @@ tabel .s-table-header {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   margin-top: 8px;
+  margin-bottom: 10px;
 }
 .s-add-filter h4 i {
   float: right;
@@ -1934,6 +1942,15 @@ tabel .s-table-header {
   padding: 0px 10px;
 }
 .s-add-filter > .row > h4 {
+  margin-top: 0px;
+  padding: 8px 15px;
+  background-color: #606060;
+  color: #ffffff;
+  font-size: 14px;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+.s-add-filter .row h4.s-heading {
   margin-top: 0px;
   padding: 8px 15px;
   background-color: #606060;
@@ -2766,6 +2783,8 @@ tabel .s-table-header {
   border: 1px solid #e6e6e6;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 3px;
+  display: inline-block;
+  width: 100%;
 }
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details {
   font-size: 12px;
@@ -2994,6 +3013,9 @@ tabel .s-table-header {
 }
 .s-workflow-objs.s-sortable .s-order-item-options .s-bundle-add-obj ul:first-child {
   cursor: move;
+}
+.s-workflow-objs .s-filter-content {
+  margin-top: -15px;
 }
 .s-task-actions .s-add-filter .s-create-obj-window {
   border-right: 3px dotted #e6e6e6;
