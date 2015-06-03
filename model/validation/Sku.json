@@ -1,9 +1,14 @@
 {
+	"conditions":{
+	    "notSkuBundle":{
+	        "bundleFlag":{"eq":0}
+	    }
+	},
 	"properties":{
 		"defaultFlag":				[{"contexts":"delete","eq":false}],
 		"listPrice":				[{"contexts":"save","dataType":"numeric","minValue":0}],
 		"options":					[
-			{"contexts":"save","method":"hasUniqueOptions"},
+			{"contexts":"save","method":"hasUniqueOptions","conditions":"notSkuBundle"},
 			{"contexts":"save","method":"hasOneOptionPerOptionGroup"}
 		],
 		"price":			   		[{"contexts":"save","required":true,"dataType":"numeric","minValue":0}],

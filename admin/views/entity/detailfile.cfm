@@ -85,12 +85,12 @@ Notes:
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 		
-		<hb:HibachiTabGroup object="#rc.file#">
+		<hb:HibachiEntityDetailGroup object="#rc.file#">
 			<!--- Custom Attributes --->
 			<cfloop array="#rc.file.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.file#" attributeSet="#attributeSet#" />
 			</cfloop>
-		</hb:HibachiTabGroup>
+		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 </cfoutput>
 

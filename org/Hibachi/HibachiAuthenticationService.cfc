@@ -316,7 +316,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 				
 				// Setup the 'hasSecureMethods' value
-				if(len(subsystemPermissions.sections[ section ].secureMethods)) {
+				if(len(subsystemPermissions.sections[ section ].secureMethods & subsystemPermissions.sections[ section ].anyAdminMethods & subsystemPermissions.sections[ section ].anyLoginMethods)) {
 					subsystemPermissions.hasSecureMethods = true;
 				}
 				

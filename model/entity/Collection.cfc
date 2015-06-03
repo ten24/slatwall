@@ -133,11 +133,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
-		var slatwallBaseEntity = "";
-		if(find('Slatwall',arguments.collectionObject)){
-			slatwallBaseEntity = arguments.collectionObject;
+		var HibachiBaseEntity = "";
+		if(find(getDao('HibachiDao').getApplicationKey(),arguments.collectionObject)){
+			HibachiBaseEntity = arguments.collectionObject;
 		}else{
-			slatwallBaseEntity = getService('hibachiService').getProperlyCasedFullEntityName(arguments.collectionObject);
+			HibachiBaseEntity = getService('hibachiService').getProperlyCasedFullEntityName(arguments.collectionObject);
 		}
 		
 		variables.collectionObject = arguments.collectionObject;
@@ -181,7 +181,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			var columnsJson = serializeJson(columnsArray);
 			variables.collectionConfig = '{
-				"baseEntityName":"#slatwallBaseEntity#",
+				"baseEntityName":"#HibachiBaseEntity#",
 				"baseEntityAlias":"_#lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject))#",
 				"columns":#columnsJson#
 			}';
@@ -422,7 +422,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var attributeIdentifier = listDeleteAt(filter.propertyIdentifier,ListLen(filter.propertyIdentifier,'.'),'.');
 		
 		var HQL = "(SELECT attributeValue 
-					FROM SlatwallAttributeValue 
+					FROM #getDao('hibachiDAO').getApplicationKey()#AttributeValue 
 					WHERE attributeID = '#filter.attributeID#' 
 					AND #filter.attributeSetObject#.#filter.attributeSetObject#ID = #attributeIdentifier#.#filter.attributeSetObject#ID)";
 		return HQL;
@@ -642,14 +642,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
 		try{
-			
+			var HQL = '';
+			var HQLParams = {};
 			if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
 				saveState();
 				if(this.getNonPersistentColumn() || (!isNull(this.getProcessContext()) && len(this.getProcessContext()))){
 					//prepare page records and possible process objects
 					variables.pageRecords = [];
 					variables.processObjects = [];
-					var entities = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+					HQL = getHQL();
+					HQLParams = getHQLParams();
+					var entities = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 					var columns = getCollectionConfigStruct().columns;
 					
 					for(var entity in entities){
@@ -666,12 +669,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						
 					} 
 				}else{
-					variables.pageRecords = ormExecuteQuery(getHQL(), getHQLParams(), false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
+					HQL = getHQL();
+					HQLParams = getHQLParams();
+					variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
 			}
 		}
 		catch(any e){
 			variables.pageRecords = [{'failedCollection'='failedCollection'}];
+			writelog(file="collection",text="Error:#e.message#");
+			writelog(file="collection",text="HQL:#HQL#");
 		}
 		
 		return variables.pageRecords;
@@ -683,10 +690,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public array function getRecords(boolean refresh=false) {
 		try{
+			var HQL = '';
+			var HQLParams = {};
 			if( !structKeyExists(variables, "records") || arguments.refresh == true) {
 				if(this.getNonPersistentColumn()){
 					variables.records = [];
-					var entities = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+					HQL = getHQL();
+					HQLParams = getHQLParams();
+					var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 					var columns = getCollectionConfigStruct().columns;
 					for(var entity in entities){
 						var record = {};
@@ -697,12 +708,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						arrayAppend(variables.records,record);
 					} 
 				}else{
-					variables.records = ormExecuteQuery(getHQL(), getHQLParams(), false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
+					HQL = getHQL();
+					HQLParams = getHQLParams();
+					variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 				}
 			}
 		}
 		catch(any e){
 			variables.records = [{'failedCollection'='failedCollection'}];
+			writelog(file="collection",text="Error:#e.message#");
+			writelog(file="collection",text="HQL:#HQL#");
 		}
 		
 		return variables.records;
@@ -842,7 +857,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var attributeIdentifier = listDeleteAt(column.propertyIdentifier,ListLen(column.propertyIdentifier,'.'),'.');
 		
 		var HQL	=  "(SELECT attributeValue 
-					FROM SlatwallAttributeValue
+					FROM #getDao('hibachiDAO').getApplicationKey()#AttributeValue
 					WHERE attribute.attributeID = '"
 					& column.attributeID & 
 					"' AND #column.attributeSetObject#.#column.attributeSetObject#ID = #attributeIdentifier#.#column.attributeSetObject#ID) as #listLast(column.propertyIdentifier,'.')#";
@@ -907,7 +922,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
 					
 				}else{
-					var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'Slatwall',''))&'_','');
+					var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
 					
 					HQL &= ' #column.propertyIdentifier# as #columnAlias#';
 				}
