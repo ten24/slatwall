@@ -521,6 +521,7 @@ input[type="file"] {display: block;width: auto;height: auto;padding: 0px;backgro
 .s-zero-bottom {padding-bottom:0px!important;margin-bottom:0px !important;}
 .s-zero-right {padding-right:0px!important;margin-right:0px !important;}
 .s-zero-left {padding-left:0px!important;margin-left:0px !important;}
+.deafult-margin {margin-right: 15px !important;margin-left: 15px !important;}
 
 .s-top-spacer {margin-top:25px;}
 
@@ -1710,53 +1711,32 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 .s-info-table .s-row-strong td {font-family: @font-family-semibold;}
 
 /*-- Date Picker Component --*/
-.s-datepicker .input-group .input-group-btn button {
-	margin:0px;
-	border: 1px solid @black-20;
-}
-.s-datepicker table {
-	outline:none;
-}
-.s-datepicker .dropdown-menu {
-	margin: 0px;
-	padding: 0px;
-}
-.s-datepicker .dropdown-menu li:first-child > div {
-	padding: 5px;
-}
-.s-datepicker .dropdown-menu li:last-child {
-	border-top: 1px solid #DDD;
-	margin-top: 5px;
-	display: inline-block;
-	width: 100%;
-	padding: 5px;
-}
-.s-datepicker table thead tr:first-child {
-	background: #eee;
-}
-.s-datepicker table thead tr:first-child th button:hover {
-	border-color: #eee ;
-	border-radius: none;
-}
-.s-datepicker table tbody button {
-	background: none;
-	border-radius: 2px;
-	min-height: 35px;
-	min-width: 35px !important;
-	padding: 5px 5px 5px 5px;
-	border: none;
-}
-.s-datepicker table tbody button:hover,.s-datepicker table tbody button.active {
-	box-shadow: none;
-	-webkit-box-shadow: none;
-}
-.s-datepicker table tbody button.active {
-	font-family: @font-family-semibold;
-	color: @black-60;
-}
-.s-datepicker table tbody button .text-info {
-	color: @black-60;
-}
+.s-datepicker .input-group .input-group-btn button {margin:0px;border: 1px solid @black-20;}
+.s-datepicker table {outline:none;}
+.s-datepicker .dropdown-menu {margin: 0px;padding: 0px;}
+.s-datepicker .dropdown-menu li:first-child > div {padding: 5px;}
+.s-datepicker .dropdown-menu li:last-child {border-top: 1px solid #DDD;margin-top: 5px;display: inline-block;width: 100%;padding: 5px;}
+.s-datepicker table thead tr:first-child {background: #eee;}
+.s-datepicker table thead tr:first-child th button:hover {border-color: #eee ;border-radius: none;}
+.s-datepicker table tbody button {background: none;border-radius: 2px;min-height: 35px;min-width: 35px !important;padding: 5px 5px 5px 5px;border: none;}
+.s-datepicker table tbody button:hover,.s-datepicker table tbody button.active {box-shadow: none;-webkit-box-shadow: none;}
+.s-datepicker table tbody button.active {font-family: @font-family-semibold;color: @black-60;}
+.s-datepicker table tbody button .text-info {color: @black-60;}
+
+/*-- Image uploader --*/
+.s-image-uploader .thumbnail {padding:0px;border-radius: 2px;}
+.s-image-uploader .thumbnail .s-image {position: relative;}
+.s-image-uploader h4::-webkit-scrollbar {display: none;}
+.s-image-uploader h4 {font-size: 12px;margin-right: 10px;margin-left: 10px;overflow: auto;height: 20px;overflow: -moz-scrollbars-none;}
+.s-image-uploader .s-zoom {display: inline-block;background-color: #fff;opacity:.0;position: absolute;width: 100%;height: 100%;top: 0px;text-align: center;padding-top: 20%;font-size: 45px;}	
+.s-image-uploader .s-zoom:hover {opacity: .8}
+.s-image-uploader .s-caption {margin-top: 10px;}
+.s-image-uploader .s-controlls {display: inline-block;width: 100%;margin-bottom: -4px;}
+.s-image-uploader .s-controlls > .btn-group {display:inline-block;width: 100%;text-align:center;backgrou: #E6E6E6;}
+.s-image-uploader .s-controlls .btn-group {border-right: 1px solid #fff;background-color:#F2F2F2;}
+.s-image-uploader .s-controlls .btn-group:last-child {border-right: none;}
+.s-image-uploader .s-controlls .btn-group .btn {border-top-right-radius:0px;border-top-left-radius:0px;border:none !important;}
+.s-image-uploader .s-controlls .btn-group .btn:hover {border:none !important;}
 
 //
 // Media Queries Start
