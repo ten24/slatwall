@@ -451,7 +451,7 @@ angular.module('slatwalladmin').directive('swConditionCriteria', ['$http', '$com
         $log.debug('watchSelectedFilterProperty');
         $log.debug(scope.selectedFilterProperty);
         if (selectedFilterProperty === null) {
-          return ;
+          return;
         }
         if (angular.isDefined(selectedFilterProperty.ormtype)) {
           switch (scope.selectedFilterProperty.ormtype) {
