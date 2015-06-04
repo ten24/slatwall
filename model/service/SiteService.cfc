@@ -49,8 +49,12 @@ Notes:
 
 component  extends="HibachiService" accessors="true" {
 	variables.skeletonSitePath = expandPath('/integrationServices/slatwallcms/skeletonsite');
+	variables.sharedAssetsPath = '/custom/assets';
 	
 	// ===================== START: Logical Methods ===========================
+	public string function getSharedAssetsPath(){
+		return variables.sharedAssetsPath;
+	}
 	
 	public any function getCurrentRequestSite() {
 		var domain = cgi.HTTP_HOST;
