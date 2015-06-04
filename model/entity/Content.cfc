@@ -92,6 +92,8 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="categoryIDList" persistent="false";
 	property name="fullTitle" persistent="false";
 	property name="siteOptions" persistent="false";
+	property name="assetsPath" persistent="false";
+	property name="sharedAssetsPath" persistent="false";
 	
 	// Deprecated Properties
 	property name="disableProductAssignmentFlag" ormtype="boolean";			// no longer needed because the listingPageFlag is defined for all objects
@@ -101,6 +103,20 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
     
 	
 	// ============ START: Non-Persistent Property Methods =================
+	public string function getAssetsPath(){
+		if(!structKeyExists(variables,'assetsPath')){
+			variables.assetsPath = getSite().getAssetsPath();;
+		}
+		return variables.assetsPath;
+	}
+	
+	public string function getSharedAssetsPath(){
+		if(!structKeyExists(variables,'sharedAssetsPath')){
+			variables.sharedAssetsPath = getService('siteService').getSharedAssetsPath();
+		}
+		return variables.sharedAssetsPath;
+	}
+	
 	public array function getInheritedAttributeSetAssignments(){
 		// Todo get by all the parent contentIDs
 		var attributeSetAssignments = getService("AttributeService").getAttributeSetAssignmentSmartList().getRecords();
