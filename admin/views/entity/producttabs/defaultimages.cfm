@@ -52,33 +52,6 @@ Notes:
 <cfparam name="rc.product" type="any" />
 
 <cfoutput>
-<!---
-	<ul class="thumbnails list-unstyled s-product-image" >
-		<cfloop array="#rc.product.getDefaultProductImageFiles()#" index="imageFile">
-			<li class="col-md-4 s-image">
-				<div class="thumbnail<cfif not isNull(rc.product.getDefaultSku()) and imageFile eq rc.product.getDefaultSku().getImageFile()> s-default-image</cfif>">
-					<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#imageFile#" />
-					<div class="img-container">
-						<a href="#$.slatwall.getResizedImagePath(imagePath=thisImagePath, width=210, height=210)#" target="_blank">
-							#$.slatwall.getResizedImage(imagePath=thisImagePath, width=210, height=210)#
-						</a>
-					</div>
-					<hr />
-					<div class="small em image-caption s-info">
-						<h2>#imageFile#</h2>
-						<ul class="list-unstyled">
-							<li><hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="upload" modal="true" /></li>
-							<cfif fileExists(expandPath(thisImagePath))>
-								<hb:HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="trash" />
-							</cfif>
-						</ul>
-					</div>
-				</div>
-			</li>
-		</cfloop>
-	</ul>
-	
---->
 	
 	<div class="row s-image-uploader">
 		
