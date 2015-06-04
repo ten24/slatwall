@@ -1,0 +1,8 @@
+<select class="form-control" 
+	 ng-model="filterOptions.model"
+	 ng-options="option[objectName.toLowerCase()+'Name']
+					 for option in options
+					 track by options[object.$$getIDName()]"
+	 ng-change=""
+>
+</select>
