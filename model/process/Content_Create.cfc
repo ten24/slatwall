@@ -50,7 +50,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
 	property name="content";
-	
+	property name="urlTitle";
 	// Lazy / Injected Objects
 	property name="site";
 	property name="parentContent";

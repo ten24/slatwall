@@ -121,6 +121,7 @@ Notes:
 	<cffunction name="getContentByUrlTitlePathBySite" access="public">
 		<cfargument name="site" type="any" required="true" />
 		<cfargument name="urlTitlePath" type="any" />
+		
 		<cfif isNull(arguments.urlTitlePath)>
 			<cfreturn ORMExecuteQuery("FROM SlatwallContent WHERE site = :site AND urlTitlePath IS Null",{site=arguments.site}, true) />
 		<cfelse>

@@ -8,11 +8,21 @@
 	    },
 	    "requireUrlTitle":{
 	    	"parentContent":{"required":true}
+	    },
+	    "notNewContent":{
+	    	"newFlag":{"eq":false}
 	    }
 	},
 	"properties":{
 		"contentID":			[{"contexts":"save","required":true,"conditions":"notSlatwallCMS"}],
-		"urlTitle":				[{"contexts":"save""conditions":"requireUrlTitle","required":true}],
+		"urlTitle":				[
+			{
+				"contexts":"save,create","conditions":"requireUrlTitle","required":true
+			},
+			{
+				"contexts":"save","conditions":"notNewContent","regex":"^[a-z0-9-]+$"
+			}
+		],
 		"urlTitlePath":			[{"contexts":"save","method":"isUniqueUrlTitlePathBySite"}],
 		"contentTemplateFile":	[{"contexts":"save","required":true}],
 		"site":					[{"contexts":"save","required":true}]

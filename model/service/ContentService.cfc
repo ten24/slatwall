@@ -63,8 +63,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Call save on the content
 		arguments.content.setSite(arguments.processObject.getSite());
 		arguments.content.setParentContent(arguments.processObject.getParentContent());
-		arguments.content = this.saveProduct(arguments.content,arguments.data);
-		
+		arguments.data.urlTitle = reReplace(lcase(trim(arguments.data.urlTitle)), "[^a-z0-9 \-]", "", "all");
+		arguments.data.urlTitle = reReplace(arguments.data.urlTitle, "[-\s]+", "-", "all");
+		arguments.content = this.saveContent(arguments.content,arguments.data);
 		return arguments.content;
 	}
 	
