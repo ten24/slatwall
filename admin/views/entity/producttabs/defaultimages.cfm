@@ -68,7 +68,7 @@ Notes:
 						<ul class="list-unstyled">
 							<li><hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="upload" modal="true" /></li>
 							<cfif fileExists(expandPath(thisImagePath))>
-								<li><hb:HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="trash" /></li>
+								<li><hb:HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn btn-default s-remove" iconOnly="true" icon="trash" /></li>
 							</cfif>
 						</ul>
 					</div>
