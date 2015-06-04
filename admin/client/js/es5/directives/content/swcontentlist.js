@@ -16,17 +16,12 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           propertyIdentifier: '_content.contentID',
           isVisible: false,
           ormtype: 'id',
-          isSearchable: false
+          isSearchable: true
         }, {
           propertyIdentifier: '_content.site.siteID',
           isVisible: false,
           ormtype: 'id',
-          isSearchable: true
-        }, {
-          propertyIdentifier: '_content.site.siteName',
-          isVisible: true,
-          ormtype: 'string',
-          isSearchable: true
+          isSearchable: false
         }, {
           propertyIdentifier: '_content.contentTemplateFile',
           persistent: false,
@@ -46,11 +41,6 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           isVisible: true,
           isSearchable: false
         }];
-        var filterGroupsConfig = [{"filterGroup": [{
-            "propertyIdentifier": "_content.parentContent",
-            "comparisonOperator": "is",
-            "value": 'null'
-          }]}];
         var options = {
           currentPage: scope.currentPage,
           pageShow: paginationService.getPageShow(),
@@ -58,6 +48,11 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
         };
         var column = {};
         if (!isSearching || scope.keywords === '') {
+          var filterGroupsConfig = [{"filterGroup": [{
+              "propertyIdentifier": "_content.parentContent",
+              "comparisonOperator": "is",
+              "value": 'null'
+            }]}];
           options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
           column = {
             propertyIdentifier: '_content.title',
@@ -65,15 +60,34 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
             ormtype: 'string',
             isSearchable: true
           };
+          columnsConfig.unshift(column);
         } else {
+          var filterGroupsConfig = [{"filterGroup": [{
+              "propertyIdentifier": "_content.excludeFromSearch",
+              "comparisonOperator": "=",
+              "value": false
+            }, {
+              "logicalOperator": "OR",
+              "propertyIdentifier": "_content.excludeFromSearch",
+              "comparisonOperator": "is",
+              "value": "null"
+            }]}];
+          options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
           column = {
-            propertyIdentifier: '_content.fullTitle',
-            isVisible: true,
-            persistent: false,
+            propertyIdentifier: '_content.title',
+            isVisible: false,
+            ormtype: 'string',
             isSearchable: true
           };
+          columnsConfig.unshift(column);
+          var titlePathColumn = {
+            propertyIdentifier: '_content.titlePath',
+            isVisible: true,
+            ormtype: 'string',
+            isSearchable: false
+          };
+          columnsConfig.unshift(titlePathColumn);
         }
-        columnsConfig.unshift(column);
         options.columnsConfig = angular.toJson(columnsConfig);
         var collectionListingPromise = $slatwall.getEntity(scope.entityName, options);
         collectionListingPromise.then(function(value) {

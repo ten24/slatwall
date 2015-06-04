@@ -26,11 +26,11 @@ angular.module('slatwalladmin').directive('swDisplayItem', ['$http', '$compile',
         if (angular.isDefined(selectedProperty)) {
           if (selectedProperty === null) {
             scope.showDisplayItem = false;
-            return ;
+            return;
           }
           if (selectedProperty.$$group !== 'drilldown') {
             scope.showDisplayItem = false;
-            return ;
+            return;
           }
           if (selectedProperty.$$group === 'drilldown') {
             if (angular.isUndefined(scope.propertiesList[selectedProperty.propertyIdentifier])) {
