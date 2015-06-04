@@ -186,6 +186,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	}
 	
 	public string function setUrlTitle(required string urlTitle){
+		
 		//look up all children via lineage
 		var previousURLTitlePath = '';
 		if(!isNull(this.getURLTitlePath())){
@@ -207,6 +208,17 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			}
 			
 			descendant.setURLTitlePath(newTitlePath);
+		}
+	}
+	
+	public string function isUniqueUrlTitlePathBySite(){
+		var content = getDao('contentDAO').getContentByUrlTitlePathBySite( this.getSite(), this.getURLTitlePath() );
+		//if no content with the url title exists then the content is unique
+		if(isNull(content)){
+			return true;
+		//if on already does exist, check to see if it is the content that we are currently working with
+		}else{
+			return content.getContentID() == this.getContentID();
 		}
 	}
 	
