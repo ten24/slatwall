@@ -754,9 +754,6 @@ select.error {
 .form-horizontal .control-label {
   margin-bottom: 4px;
 }
-.form-horizontal .radio {
-  padding-left: 22px;
-}
 .btn-group {
   float: right;
 }
@@ -1669,8 +1666,10 @@ tabel .s-table-header {
   cursor: not-allowed;
 }
 .radio {
-  margin-top: 0px;
+  margin-top: 0px !important;
   margin-bottom: 5px;
+  margin-right: 20px;
+  display: inline-block;
 }
 .radio label {
   display: inline-block;
@@ -1685,7 +1684,6 @@ tabel .s-table-header {
   width: 17px;
   height: 17px;
   left: 0;
-  margin-left: -20px;
   border: 1px solid #cccccc;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
@@ -1697,16 +1695,17 @@ tabel .s-table-header {
   -webkit-transition: border 0.15s ease-in-out;
   -o-transition: border 0.15s ease-in-out;
   transition: border 0.15s ease-in-out;
+  position: relative;
+  left: -3px;
+  top: 3px;
 }
 .radio label:after {
   display: inline-block;
-  position: absolute;
   content: " ";
   width: 11px;
   height: 11px;
   left: 3px;
   top: 3px;
-  margin-left: -20px;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
@@ -1722,6 +1721,9 @@ tabel .s-table-header {
   -moz-transition: -moz-transform 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);
   -o-transition: -o-transform 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);
   transition: transform 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);
+  position: absolute;
+  top: 6px;
+  left: 5px;
 }
 .radio input[type=radio] {
   display: none;
@@ -2999,7 +3001,6 @@ tabel .s-table-header {
 .s-bundle-group-dropdown-content .s-options .radio {
   display: inline-block;
   margin-right: 10px;
-  padding-left: 22px;
 }
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj .s-item-type {
   width: 32px;
