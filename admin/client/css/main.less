@@ -1667,11 +1667,11 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 .s-select-list-wrapper input {border-right:0px;outline: none;}
 .s-select-list-wrapper input:focus {outline: none;-webkit-box-shadow: none;-moz-box-shadow: none;box-shadow: none;border-color:@black-20;}
 .s-select-list-wrapper .s-selected-item {border:1px solid @black-20;background-color:@black-10;padding: 5px 10px 5px 15px;margin-bottom:5px;.border-radius();}
-.s-select-list-wrapper .dropdown.s-search-results-wrapper {display:none;}
+//.s-select-list-wrapper .dropdown.s-search-results-wrapper {display:none;}
 
 /*-- List Select Component With Dropdown --*/
-.s-search-results-wrapper {display: inline-block;width: 100%;.border-radius(0);top:-4px;}
-.s-search-results-wrapper .dropdown-menu {width:100%;border-color:@black-20;.border-radius(0);display:block;margin:0px;padding:0px;}
+.s-search-results-wrapper {width: 100%;.border-radius(0);top:-4px;}
+.s-search-results-wrapper .dropdown-menu {width:100%;border-color:@black-20;.border-radius(0);display:block;margin:0px;padding:0px;overflow:auto;max-height: 120px;}
 .s-search-results-wrapper .dropdown-menu a {color:@black-60;border-bottom: 1px solid @black-5;padding:8px 15px;}
 .s-search-results-wrapper .dropdown-menu li:last-child a {border-bottom:0px;}
 .s-search-results-wrapper .dropdown-menu a:hover {background-color:#fafafa;color:@black-60 !important;}

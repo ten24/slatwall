@@ -90,47 +90,39 @@
 								<!--- Filter Criteria Start --->
 		
 								<div class="s-filter-group-item">
-	
 									<div class="form-group form-group-sm">
 										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflow.data.workflowObject}}:</label>
 										<div class="col-sm-12 s-no-paddings">
 	
 											<!--- search --->
-											<div class="s-search-filter">
-												<div class="input-group">
-													<!-- Need to display the workflow event name if it exists -->
-													<input type="text" class="form-control input-sm" placeholder="Search&hellip;" ng-model="searchEvent.name" ng-focus="searchEvent.name = ''">
-													<!--<input type="text" class="form-control input-sm" placeholder="{{workflowTriggers.selectedTrigger.data.triggerEvent}}" ng-model="searchEvent.name" ng-focus="searchEvent.name = ''">-->
-													<ul class="dropdown-menu " ng-show="showEventOptions">
-														<span ng-repeat="eventOption in eventOptions | filter:searchEvent.name">
-															<li><a ng-click="selectEvent(eventOption)">{{eventOption.name}}</a></li>
-														</span>
-													</ul>
-													<div class="input-group-btn" ng-if="workflow.data.workflowObject">
-														<button type="button" class="btn btn-sm btn-default" ng-click="getEventOptions(workflow.data.workflowObject);"><span class="caret"></span></button>
+											<div class="s-select-list-wrapper s-search">
+												<div class="form-group">
+													<!-- Option select field wrapper -->
+													<div class="input-group">
+														<div class="s-input-btn">
+															<!-- Need to display the workflow event name if it exists -->
+															<input type="search" class="form-control input-sm" placeholder="Search&hellip;" ng-model="searchEvent.name" ng-focus="searchEvent.name = ''">
+<!--														<!--<span class="glyphicon glyphicon-remove"></span>-->
+															<!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
+															
+														</div>
+														<div class="input-group-btn" ng-if="workflow.data.workflowObject">
+															<button class="btn btn-sm btn-default" ng-click="getEventOptions(workflow.data.workflowObject);"><i class="fa fa-caret-down"></i></button>
+														</div>
 													</div>
 												</div>
-	
-												<div class="s-add-content collapse" id="j-toggle-add-bundle-type">
-														<div class="form-group has-error">
-															<label for="">Group Name <i class="fa fa-asterisk"></i></label>
-															<input type="text" class="form-control" id="" value="" placeholder="">
-															<p class="help-block">Example Of Error</p>
-														</div>
-														<div class="form-group">
-															<label for="">Group Code</label>
-															<input type="text" class="form-control" id="" value="" placeholder="">
-														</div>
-														<div class="form-group">
-															<label for="">Group Description</label>
-															<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
-														</div>
-														<div class="form-group">
-															<button type="button" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Group Type</button>
-															<button type="button" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Group Type</button>
-														</div>
+												<!-- Dropdown wrapper --> 
+												<div class="dropdown s-search-results-wrapper" ng-show="showEventOptions">
+													<ul class="dropdown-menu">
+														<li ng-repeat="eventOption in eventOptions | filter:searchEvent.name">
+															<a ng-click="selectEvent(eventOption)">{{eventOption.name}}</a>
+														</li>
+														<li ng-show="(eventOptions | filter:searchEvent.name).length == 0">
+															<a sw-rbkey="'admin.entity.workflowtabs.triggers.norecordsfound'"><!-- Message created by rb key --></a>		
+														</li>
+													</ul>
 												</div>
-	
+												
 											</div>
 											<!--- // search --->
 	
@@ -159,26 +151,24 @@
 														<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
 													</div>
 												</div>
-	
 												<div class="s-add-content collapse" id="j-toggle-add-bundle-type">
-														<div class="form-group has-error">
-															<label for="">Group Name <i class="fa fa-asterisk"></i></label>
-															<input type="text" class="form-control" id="" value="" placeholder="">
-															<p class="help-block">Example Of Error</p>
-														</div>
-														<div class="form-group">
-															<label for="">Group Code</label>
-															<input type="text" class="form-control" id="" value="" placeholder="">
-														</div>
-														<div class="form-group">
-															<label for="">Group Description</label>
-															<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
-														</div>
-														<div class="form-group">
-															<button type="button" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Group Type</button>
-														</div>
+													<div class="form-group has-error">
+														<label for="">Group Name <i class="fa fa-asterisk"></i></label>
+														<input type="text" class="form-control" id="" value="" placeholder="">
+														<p class="help-block">Example Of Error</p>
+													</div>
+													<div class="form-group">
+														<label for="">Group Code</label>
+														<input type="text" class="form-control" id="" value="" placeholder="">
+													</div>
+													<div class="form-group">
+														<label for="">Group Description</label>
+														<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
+													</div>
+													<div class="form-group">
+														<button type="button" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Group Type</button>
+													</div>
 												</div>
-	
 											</div>
 											<!--- // search --->
 	
@@ -199,46 +189,6 @@
 	
 											<!--- search --->
 											<div class="s-search-filter">
-												<!-- <div class="input-group">
-													<input type="text" class="form-control input-sm" placeholder="Search&hellip;">
-													<ul class="dropdown-menu s-search-options" ng-show="showCollections" ng-repeat="collection in collections">
-														<li >
-															<a  ng-bind="collection.collectionName"
-																ng-click="selectCollection(collection)"
-															></a>
-														</li>
-														<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
-														<li><a>Unassigned Orders</a></li>
-														<li><a>Todays Orders</a></li>
-													</ul>
-													<div class="input-group-btn">
-														<button type="button" 
-																class="btn btn-sm btn-default j-dropdown-options"
-																ng-click="getCollectionByWorkflowObject();showCollections=!showCollections"
-														>
-															<span class="caret"></span>
-														</button>
-													</div>
-												</div>
-	
-												<div class="s-add-content collapse" id="j-toggle-add-bundle-type">
-														<div class="form-group has-error">
-															<label for="">Group Name <i class="fa fa-asterisk"></i></label>
-															<input type="text" class="form-control" id="" value="" placeholder="">
-															<p class="help-block">Example Of Error</p>
-														</div>
-														<div class="form-group">
-															<label for="">Group Code</label>
-															<input type="text" class="form-control" id="" value="" placeholder="">
-														</div>
-														<div class="form-group">
-															<label for="">Group Description</label>
-															<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
-														</div>
-														<div class="form-group">
-															<button type="button" class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Add Group Type</button>
-														</div>
-												</div> -->
 												<sw-property-display
 													data-object="workflowTriggers.selectedTrigger"
 													data-property="scheduleCollection"
@@ -256,7 +206,6 @@
 									</div>
 	
 									<div class="form-group form-group-sm">
-										<!-- <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Schedule Frequency:</label> -->
 										<div class="col-sm-12 s-no-paddings">
 	
 											<!--- search --->
@@ -269,18 +218,7 @@
 													data-is-dirty="true"
 													data-title="'Schedule Frequency'"
 												></sw-property-display>
-												<!-- <div class="input-group">
-													<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
-													<ul class="dropdown-menu s-search-options">
-														<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type3"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
-														<li><a>Every Monday</a></li>
-														<li><a>Bob's Daily Schedule</a></li>
-													</ul>
-													<div class="input-group-btn">
-														<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
-													</div>
-												</div> -->
-	
+
 												<div class="s-add-content collapse" id="j-toggle-add-bundle-type3">
 													<div class="form-group form-group-sm">
 														<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Schedule Name:</label>
@@ -354,12 +292,6 @@
 								<div class="agenda">
 							        <div class="table-responsive">
 							            <table class="table table-condensed table-bordered">
-							                <!--- <thead>
-							                    <tr>
-							                        <th>Date</th>
-							                        <th>Time</th>
-							                    </tr>
-							                </thead> --->
 							                <tbody>
 
 							                    <!-- Multiple events in a single day (note the rowspan) -->
@@ -398,7 +330,7 @@
 							                    </tr>
 							                    <!-- //Multiple events in a single day -->
 
-                                                         <!-- Single events (note the rowspan) -->
+                                                <!-- Single events (note the rowspan) -->
 												<tr>
 													<td class="agenda-date active" rowspan="1">
 														<div class="dayofmonth">28</div>
@@ -409,7 +341,7 @@
 														9:00 AM
 													</td>
 												</tr>
-                                                         <!-- //Single events -->
+                                                <!-- //Single events -->
 							                </tbody>
 							            </table>
 							            <button class="btn btn-xs btn-default">Show More <i class="fa fa-refresh fa-spin"></i></button>
@@ -443,4 +375,3 @@
 	</button>
 
 </div>
-
