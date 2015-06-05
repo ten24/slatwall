@@ -1,3 +1,4 @@
+
 <section class="content s-body-margin" id="j-main-content">
 	<div class="row s-body-nav">
 	    <nav class="navbar navbar-default" role="navigation">
@@ -17,9 +18,15 @@
 
 	<div class="s-table-header-nav s-listing-head-margin">
 		<div class="col-xs-6 s-no-padding-left">
-			<sw-options
-				data-object-name="Site"
-			></sw-options>
+			{{siteOptions}}
+			{{options}}
+			<ul class="list-inline list-unstyled">
+				<li>
+					<sw-options
+						data-object-name="Site"
+					></sw-options>
+				</li>
+			</ul>
 			<ul class="list-inline list-unstyled">
 				<li>
 					<span sw-pagination-bar

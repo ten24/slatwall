@@ -2,10 +2,12 @@ angular.module('slatwalladmin')
 .directive('swOptions', [
 '$log',
 '$slatwall',
+'optionsService',
 'partialsPath',
 	function(
 	$log,
     $slatwall,
+    optionsService,
 	partialsPath
 	){
 		return {
@@ -14,27 +16,33 @@ angular.module('slatwalladmin')
 				objectName:'@'
 			},
 			templateUrl:partialsPath+"options.html",
-			link: function(scope, element,attrs,formController){
+			link: function(scope, element,attrs){
+                scope.swOptions = {};
+                scope.swOptions.objectName=scope.objectName;
+                //sets up drop down options via collections
                 scope.getOptions = function(){
-                    scope.object = $slatwall.newEntity(scope.objectName);
+                    scope.swOptions.object = $slatwall['new'+scope.swOptions.objectName]();
                     var columnsConfig = [
                         {
-                            "propertyIdentifier":scope.objectName.charAt(0).toLowerCase()+scope.objectName.slice(1)+'Name'    
+                            "propertyIdentifier":scope.swOptions.objectName.charAt(0).toLowerCase()+scope.swOptions.objectName.slice(1)+'Name'    
                         },
                         {
-                            "propertyIdentifier":scope.object.$$getIDName()   
+                            "propertyIdentifier":scope.swOptions.object.$$getIDName()   
                         }
                     ]
-                   $slatwall.getEntity(scope.objectName,{allRecords:true, columnsConfig:angular.toJson(columnsConfig)})
+                   $slatwall.getEntity(scope.swOptions.objectName,{allRecords:true, columnsConfig:angular.toJson(columnsConfig)})
                    .then(function(value){
-                        scope.options = value.records;
-                        console.log('optionsPromise');
-                        console.log(scope.object);
-                        console.log(scope.options);
+                        scope.swOptions.options = value.records;
                     });
                 }
                 
                 scope.getOptions();
+                
+                //use by ng-change to record changes
+                scope.swOptions.selectOption = function(selectedOption){
+                    scope.swOptions.selectedOption = selectedOption;
+                    optionsService.setOptionsByObjectName( scope.swOptions );
+                }
 			}
 		};
 	}

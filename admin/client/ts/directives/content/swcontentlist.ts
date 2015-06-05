@@ -7,17 +7,27 @@ angular.module('slatwalladmin')
 	'$slatwall',
 	'partialsPath',
     'paginationService',
+    'optionsService',
 	function (
 			$log,
             $timeout,
 			$slatwall,
 			partialsPath,
-            paginationService
+            paginationService,
+            optionsService
 	) {
 	    return {
 	        restrict: 'E',
 	        templateUrl:partialsPath+'content/contentlist.html',
 	        link: function (scope, element, attr) {
+//                scope.test = optionsService.optionsObjects;
+//                console.log('optionsobjects');
+//                console.log(optionsService.optionsObjects);
+//                scope.$watch('optionsService._optionsObjects', function() {
+//                    console.log('watch occured'); 
+//                    
+//                });
+                scope.options = optionsService.optionsObject;
 	        	$log.debug('slatwallcontentList init');
 	        	var pageShow = 50;
                 if(scope.pageShow !== 'Auto'){
@@ -70,8 +80,6 @@ angular.module('slatwalladmin')
                             isSearchable:false
                         }
                     ];
-                    
-                   
                     
 	        		var options = {
                         currentPage:scope.currentPage, 

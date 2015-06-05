@@ -1,10 +1,11 @@
 "use strict";
 'use strict';
-angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', '$slatwall', 'partialsPath', 'paginationService', function($log, $timeout, $slatwall, partialsPath, paginationService) {
+angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', '$slatwall', 'partialsPath', 'paginationService', 'optionsService', function($log, $timeout, $slatwall, partialsPath, paginationService, optionsService) {
   return {
     restrict: 'E',
     templateUrl: partialsPath + 'content/contentlist.html',
     link: function(scope, element, attr) {
+      scope.options = optionsService.optionsObject;
       $log.debug('slatwallcontentList init');
       var pageShow = 50;
       if (scope.pageShow !== 'Auto') {
