@@ -4197,12 +4197,8 @@ a.disabled > i.hibachi-ui-radio-checked {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
-.s-select-list-wrapper .dropdown.s-search-results-wrapper {
-  display: none;
-}
 /*-- List Select Component With Dropdown --*/
 .s-search-results-wrapper {
-  display: inline-block;
   width: 100%;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -4224,6 +4220,8 @@ a.disabled > i.hibachi-ui-radio-checked {
   display: block;
   margin: 0px;
   padding: 0px;
+  overflow: auto;
+  max-height: 120px;
 }
 .s-search-results-wrapper .dropdown-menu a {
   color: #666666;
