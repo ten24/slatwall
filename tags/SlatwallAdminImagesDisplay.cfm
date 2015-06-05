@@ -53,24 +53,41 @@
 	<cfparam name="attributes.object" type="any" />
 	
 	<cfoutput>
-		<ul class="thumbnails">
+	
+		<div class="row s-image-uploader">
+			<cfif arrayLen(attributes.object.getImages())>
 				<cfloop array="#attributes.object.getImages()#" index="image">
-				<li class="span3">
-    				<div class="thumbnail">
-    					<div class="img-container">
-	    					<a href="#image.getResizedImagePath(width=210, height=210)#" target="_blank">
-								#image.getResizedImage(width=210, height=210)#
-							</a>
+					<div class="col-xs-3">
+						<div class="thumbnail">
+							<div class="s-image">
+								<a href="#image.getResizedImagePath()#" target="_blank">
+									#image.getResizedImage(width=210, height=210)#
+									<span class="s-zoom"><i class="fa fa-search"></i></span>
+								</a>
+							</div>
+							<div class="s-caption">
+								<h4 title="#image.getImageFile()#">#image.getImageFile()#</h4>
+							</div>
+							<div class="s-controlls">
+								<div class="btn-group btn-group-justified" role="group">
+									<div class="btn-group" role="group">
+										<hb:HibachiActionCaller action="admin:entity.editImage" querystring="imageID=#image.getImageID()#" class="btn btn-default" aria-label="Edit Image" iconOnly="true" icon="pencil" />
+									</div>
+									<div class="btn-group" role="group">
+										<hb:HibachiActionCaller action="admin:entity.deleteImage" querystring="imageID=#image.getImageID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" class="btn btn-default s-remove" iconOnly="true" icon="trash" confirm="true" aria-label="Remove Image" />				
+									</div>
+								</div>
+							</div>
 						</div>
-						<hr />
-						<div class="small em image-caption">#image.getImagePath()#</div>
-						<hb:HibachiActionCaller action="admin:entity.detailImage" querystring="imageID=#image.getImageID()#" class="btn s-btn-dgrey" iconOnly="true" icon="eye-open" />
-						<hb:HibachiActionCaller action="admin:entity.editImage" querystring="imageID=#image.getImageID()#" class="btn s-btn-dgrey" iconOnly="true" icon="pencil" />
-						<hb:HibachiActionCaller action="admin:entity.deleteImage" querystring="imageID=#image.getImageID()#&#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&redirectAction=#request.context.slatAction#" class="btn s-btn-dgrey" iconOnly="true" icon="trash" confirm="true" />				
-    				</div>
-  				</li>
-			</cfloop>
-		</ul>
-		<hb:HibachiActionCaller action="admin:entity.createImage" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&objectName=#attributes.object.getClassName()#&redirectAction=#request.context.slatAction#" modal="true" class="btn s-btn-dgrey" icon="plus" />
+					</div>
+				</cfloop>
+			<cfelse>
+				<div class="alert alert-info deafult-margin" role="alert" sw-rbkey="'entity.Product.process.image.norecordsfound'"><!-- Message created by rb key --></div>
+			</cfif>
+			<div class="col-xs-3">
+				<hb:HibachiActionCaller action="admin:entity.createImage" querystring="#attributes.object.getPrimaryIDPropertyName()#=#attributes.object.getPrimaryIDValue()#&objectName=#attributes.object.getClassName()#&redirectAction=#request.context.slatAction#" modal="true" class="btn btn-primary" icon="plus" />
+			</div>
+		</div>
+	
 	</cfoutput>
 </cfif>
