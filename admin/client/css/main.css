@@ -436,6 +436,10 @@ input[type="file"] {
   padding-left: 0px!important;
   margin-left: 0px !important;
 }
+.deafult-margin {
+  margin-right: 15px !important;
+  margin-left: 15px !important;
+}
 .s-top-spacer {
   margin-top: 25px;
 }
@@ -4385,6 +4389,69 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 .s-datepicker table tbody button .text-info {
   color: #666666;
+}
+/*-- Image uploader --*/
+.s-image-uploader .thumbnail {
+  padding: 0px;
+  border-radius: 2px;
+}
+.s-image-uploader .thumbnail .s-image {
+  position: relative;
+}
+.s-image-uploader h4::-webkit-scrollbar {
+  display: none;
+}
+.s-image-uploader h4 {
+  font-size: 12px;
+  margin-right: 10px;
+  margin-left: 10px;
+  overflow: auto;
+  height: 20px;
+  overflow: -moz-scrollbars-none;
+}
+.s-image-uploader .s-zoom {
+  display: inline-block;
+  background-color: #fff;
+  opacity: .0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  text-align: center;
+  padding-top: 20%;
+  font-size: 45px;
+}
+.s-image-uploader .s-zoom:hover {
+  opacity: 0.8;
+}
+.s-image-uploader .s-caption {
+  margin-top: 10px;
+}
+.s-image-uploader .s-controlls {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: -4px;
+}
+.s-image-uploader .s-controlls > .btn-group {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  backgrou: #E6E6E6;
+}
+.s-image-uploader .s-controlls .btn-group {
+  border-right: 1px solid #fff;
+  background-color: #F2F2F2;
+}
+.s-image-uploader .s-controlls .btn-group:last-child {
+  border-right: none;
+}
+.s-image-uploader .s-controlls .btn-group .btn {
+  border-top-right-radius: 0px;
+  border-top-left-radius: 0px;
+  border: none !important;
+}
+.s-image-uploader .s-controlls .btn-group .btn:hover {
+  border: none !important;
 }
 @media only screen and (max-width: 767px) {
   #slatwall-navbar .nav .dropdown-menu {
