@@ -3422,6 +3422,12 @@ tabel .s-table-header {
 .dropdown-menu > li > a:focus {
   background-color: #f58620;
 }
+.dropdown-menu li a.s-btn-disabled {
+  background: none !important;
+}
+.dropdown-menu li a.s-btn-disabled:hover {
+  color: #cccccc !important;
+}
 .navbar-s-navbar-ten24 {
   background-image: none;
 }
