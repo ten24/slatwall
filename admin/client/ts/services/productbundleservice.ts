@@ -71,7 +71,6 @@ angular.module('slatwalladmin')
 						
 					}
 				}
-				productBundelGroupFilters = utilityService.arraySorter(productBundelGroupFilters, "name");
 				
 				$log.debug(productBundelGroupFilters);
 				return productBundelGroupFilters;

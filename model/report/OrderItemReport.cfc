@@ -78,7 +78,7 @@ Notes:
 			{alias='brandName', title=rbKey('entity.brand.brandName')},
 			{alias='currencyCode', title=rbKey('entity.currency.currencyCode')},
 			{alias='price', formatType="currency", title=rbKey('entity.orderItem.price')},
-			{alias='type', title=rbKey('entity.orderItem.orderItemType')},
+			{alias='typeName', title=rbKey('entity.orderItem.orderItemType')},
 			{alias='orderNumber', title=rbKey('entity.order.orderNumber')},
 			{alias='orderOpenDateTime', title=rbKey('entity.order.orderOpenDateTime')},
 			{alias='orderCloseDateTime', title=rbKey('entity.order.orderCloseDateTime')},

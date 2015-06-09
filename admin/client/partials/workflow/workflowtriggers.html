@@ -1,408 +1,377 @@
-<div>
-    <div class="s-bundle-add-items s-workflow-objs" ng-repeat="workflowTrigger in workflowTriggers">
-        <div class="list-unstyled s-order-item-options" >
-            <span  		
-                sw-workflow-trigger
-                ng-if="workflowTrigger.$$isPersisted()"
-                data-workflow-trigger="workflowTrigger"
-                data-workflow-triggers="workflowTriggers"
-                ng-init="workflowTrigger.$$index = $index">
-            </span>
-            <div class="clearfix"></div>
-        </div>
-    </div>
-    <button  
-        class="btn btn-xs btn-primary" 
-        data-target="#j-create-new-trigger"
-        data-toggle="collapse" 
-        ng-click="addWorkflowTrigger()">
-    	<i class="fa fa-plus"></i> Add Trigger
-    </button>
-    <!-- Edit Filter Box -->
-    <div ng-if="workflowTriggers.selectedTrigger" class="col-xs-12  s-add-filter" id="j-create-new-trigger" ng-show="!workflowTriggers.selectedTrigger.hidden">
-        <sw-form name="selectedTrigger" 
-            data-object="workflowTriggers.selectedTrigger"	
-            data-context="save"
-            >
-            <div class="row s-add-filter-wrapper">
-                <h4> 
-                    <span ng-show="workflowTriggers.selectedTrigger.$$isPersisted()">Edit</span>
-                    <span ng-show="!workflowTriggers.selectedTrigger.$$isPersisted()">New</span>
-                    Trigger 
-                    <i class="fa fa-times" 
-                        data-toggle="collapse" 
-                        data-target="#j-create-new-trigger"
-                        ng-click="workflowTriggers.selectedTrigger.hidden = true;"
-                        ></i>
-                </h4>
-                <div class="col-xs-12">
-                    <div class="row">
-                        <div class="col-xs-3">
-                            <div class="s-create-obj-window">
-                                <h4>Trigger Type:</h4>
-                                <div class="form-group">
-                                    <div class="radio">
-                                        <input  type="radio" name="triggerType" id="radioEvent{{$index}}"
-                                            ng-model="workflowTriggers.selectedTrigger.data.triggerType"
-                                            ng-change="setAsEvent(workflowTriggers.selectedTrigger)"
-                                            value="Event"
-                                            >
-                                        <label for="radioEvent{{$index}}">
-                                        Event
-                                        </label>
-                                    </div>
-                                    <div class="radio" ng-show="false">
-                                        <input  type="radio" name="triggerType" id="radioScheduled{{$index}}"
-                                            ng-change="setAsSchedule(workflowTriggers.selectedTrigger)"
-                                            ng-model="workflowTriggers.selectedTrigger.data.triggerType"
-                                            value="Schedule" 
-                                            >
-                                        <label for="radioScheduled{{$index}}">
-                                        Schedule
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <sw-property-display
-                                style="display:none"
-                                data-object="workflowTriggers.selectedTrigger"
-                                data-property="triggerType"
-                                data-editing="true"
-                                data-is-dirty="true"
-                                ></sw-property-display>
-                            <sw-property-display
-                                style="display:none"
-                                data-object="workflowTriggers.selectedTrigger"
-                                data-property="triggerEvent"
-                                data-editing="true"
-                                data-is-dirty="true"
-                                ></sw-property-display>
-                            <sw-property-display
-                                style="display:none"
-                                data-object="workflowTriggers.selectedTrigger"
-                                data-property="objectPropertyIdentifier"
-                                data-editing="true"
-                                data-is-dirty="true"
-                                ></sw-property-display>
-                        </div>
-                        <div class="col-xs-6 s-criteria">
-                            <span ng-if="workflowTriggers.selectedTrigger.data.triggerType === 'Event'">
-                                <h4>Select Trigger Event:</h4>
-                                <!-- Filter Criteria Start -->
-                                <div class="s-filter-group-item">
-                                    <div class="form-group form-group-sm">
-                                        <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflow.data.workflowObject}}:</label>
-                                        <div class="col-sm-12 s-no-paddings">
-                                            <!-- search -->
-                                            <div class="s-search-filter">
-                                                <div class="input-group">
-                                                    <!-- Need to display the workflow event name if it exists -->
-                                                    <input type="text" class="form-control input-sm" placeholder="Search&hellip;" ng-model="searchEvent.name" ng-focus="searchEvent.name = ''">
-                                                    <!--<input type="text" class="form-control input-sm" placeholder="{{workflowTriggers.selectedTrigger.data.triggerEvent}}" ng-model="searchEvent.name" ng-focus="searchEvent.name = ''">-->
-                                                    <ul class="dropdown-menu " ng-show="showEventOptions">
-                                                        <span ng-repeat="eventOption in eventOptions | filter:searchEvent.name">
-                                                            <li><a ng-click="selectEvent(eventOption)">{{eventOption.name}}</a></li>
-                                                        </span>
-                                                    </ul>
-                                                    <div class="input-group-btn" ng-if="workflow.data.workflowObject">
-                                                        <button type="button" class="btn btn-sm btn-default" ng-click="getEventOptions(workflow.data.workflowObject);"><span class="caret"></span></button>
-                                                    </div>
-                                                </div>
-                                                <div class="s-add-content collapse" id="j-toggle-add-bundle-type">
-                                                    <div class="form-group has-error">
-                                                        <label for="">Group Name <i class="fa fa-asterisk"></i></label>
-                                                        <input type="text" class="form-control" id="" value="" placeholder="">
-                                                        <p class="help-block">Example Of Error</p>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="">Group Code</label>
-                                                        <input type="text" class="form-control" id="" value="" placeholder="">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="">Group Description</label>
-                                                        <textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <button type="button" class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Add Group Type</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- // search -->
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <div class="form-group form-group-sm" id="j-placeholder-trigger-select" style="display:none;">
-                                        <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">On Order Item Event:</label>
-                                        <div class="col-sm-12 s-no-paddings">
-                                            <!-- search -->
-                                            <div class="s-search-filter">
-                                                <div class="input-group">
-                                                    <input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
-                                                    <ul class="dropdown-menu s-search-options">
-                                                        <li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
-                                                        <li><a>On Order Item Save</a></li>
-                                                        <li><a>On Order Item Update</a></li>
-                                                        <li><a>On Order Item Cancel</a></li>
-                                                        <li><a>On Order Item Delete</a></li>
-                                                        <li>
-                                                            <hr/>
-                                                        </li>
-                                                        <li id="j-placeholder-trigger"><a>On Order Item Event</a></li>
-                                                        <li><a>On Order Fulfillment Event</a></li>
-                                                    </ul>
-                                                    <div class="input-group-btn">
-                                                        <button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
-                                                    </div>
-                                                </div>
-                                                <div class="s-add-content collapse" id="j-toggle-add-bundle-type">
-                                                    <div class="form-group has-error">
-                                                        <label for="">Group Name <i class="fa fa-asterisk"></i></label>
-                                                        <input type="text" class="form-control" id="" value="" placeholder="">
-                                                        <p class="help-block">Example Of Error</p>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="">Group Code</label>
-                                                        <input type="text" class="form-control" id="" value="" placeholder="">
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label for="">Group Description</label>
-                                                        <textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <button type="button" class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Add Group Type</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- // search -->
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
-                            </span>
-                            <!-- //Filter Criteria End -->
-                            <span ng-if="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
-                                <h4>Select Trigger Schedule:</h4>
-                                <!-- Filter Criteria Start -->
-                                <div class="s-filter-group-item">
-                                    <div class="form-group form-group-sm">
-                                        <!-- <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.data.workflow.data.workflowObject}} Collection:</label> -->
-                                        <div class="col-sm-12 s-no-paddings">
-                                            <!-- search -->
-                                            <div class="s-search-filter">
-                                                <!-- <div class="input-group">
-                                                    <input type="text" class="form-control input-sm" placeholder="Search&hellip;">
-                                                    <ul class="dropdown-menu s-search-options" ng-show="showCollections" ng-repeat="collection in collections">
-                                                    	<li >
-                                                    		<a  ng-bind="collection.collectionName"
-                                                    			ng-click="selectCollection(collection)"
-                                                    		></a>
-                                                    	</li>
-                                                    	<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
-                                                    	<li><a>Unassigned Orders</a></li>
-                                                    	<li><a>Todays Orders</a></li>
-                                                    </ul>
-                                                    <div class="input-group-btn">
-                                                    	<button type="button" 
-                                                    			class="btn btn-sm btn-default j-dropdown-options"
-                                                    			ng-click="getCollectionByWorkflowObject();showCollections=!showCollections"
-                                                    	>
-                                                    		<span class="caret"></span>
-                                                    	</button>
-                                                    </div>
-                                                    </div>
-                                                    
-                                                    <div class="s-add-content collapse" id="j-toggle-add-bundle-type">
-                                                    	<div class="form-group has-error">
-                                                    		<label for="">Group Name <i class="fa fa-asterisk"></i></label>
-                                                    		<input type="text" class="form-control" id="" value="" placeholder="">
-                                                    		<p class="help-block">Example Of Error</p>
-                                                    	</div>
-                                                    	<div class="form-group">
-                                                    		<label for="">Group Code</label>
-                                                    		<input type="text" class="form-control" id="" value="" placeholder="">
-                                                    	</div>
-                                                    	<div class="form-group">
-                                                    		<label for="">Group Description</label>
-                                                    		<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
-                                                    	</div>
-                                                    	<div class="form-group">
-                                                    		<button type="button" class="btn btn-sm s-btn-ten24"><i class="fa fa-plus"></i> Add Group Type</button>
-                                                    	</div>
-                                                    </div> -->
-                                                <sw-property-display
-                                                    data-object="workflowTriggers.selectedTrigger"
-                                                    data-property="scheduleCollection"
-                                                    data-field-type="search-select"
-                                                    data-editing="true"
-                                                    data-is-dirty="true"
-                                                    data-title="workflowTriggers.selectedTrigger.data.workflow.data.workflowObject+' Collection'"
-                                                    ></sw-property-display>
-                                            </div>
-                                            <!-- // search -->
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <div class="form-group form-group-sm">
-                                        <!-- <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Schedule Frequency:</label> -->
-                                        <div class="col-sm-12 s-no-paddings">
-                                            <!-- search -->
-                                            <div class="s-search-filter">
-                                                <sw-property-display
-                                                    data-object="workflowTriggers.selectedTrigger"
-                                                    data-property="schedule"
-                                                    data-field-type="search-select"
-                                                    data-editing="true"
-                                                    data-is-dirty="true"
-                                                    data-title="'Schedule Frequency'"
-                                                    ></sw-property-display>
-                                                <!-- <div class="input-group">
-                                                    <input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
-                                                    <ul class="dropdown-menu s-search-options">
-                                                    	<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type3"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
-                                                    	<li><a>Every Monday</a></li>
-                                                    	<li><a>Bob's Daily Schedule</a></li>
-                                                    </ul>
-                                                    <div class="input-group-btn">
-                                                    	<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
-                                                    </div>
-                                                    </div> -->
-                                                <div class="s-add-content collapse" id="j-toggle-add-bundle-type3">
-                                                    <div class="form-group form-group-sm">
-                                                        <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Schedule Name:</label>
-                                                        <div class="col-sm-12 s-no-paddings">
-                                                            <input type="text" class="form-control" id="input">
-                                                        </div>
-                                                        <div class="clearfix"></div>
-                                                    </div>
-                                                    <div class="form-group">
-                                                        <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Schedule Type:</label>
-                                                        <select class="form-control input-sm">
-                                                            <option value="-- Select">--Select--</option>
-                                                            <option selected="" value="Daily">Daily</option>
-                                                            <option value="Days of the Week">Days of the Week</option>
-                                                            <option value="Days of the Month">Days of the Month</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div class="form-group form-group-sm col-sm-6">
-                                                            <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Start Time:</label>
-                                                            <div class="col-sm-12 s-no-paddings">
-                                                                <input type="text" class="form-control" id="input">
-                                                            </div>
-                                                            <div class="clearfix"></div>
-                                                        </div>
-                                                        <div class="form-group form-group-sm col-sm-6">
-                                                            <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">End Time:</label>
-                                                            <div class="col-sm-12 s-no-paddings">
-                                                                <input type="text" class="form-control" id="input">
-                                                            </div>
-                                                            <div class="clearfix"></div>
-                                                        </div>
-                                                    </div>
-                                                    <hr/>
-                                                    <div class="form-group s-workflow-checkbox">
-                                                        <label class="col-sm-12 s-no-paddings" for="formGroupInputSmall">End Time:</label>
-                                                        <div class="controls col-sm-6 s-checkbox">
-                                                            <input type="checkbox" id="j-checkbox1" checked="checked" ><label for="j-checkbox1"> Sunday</label>
-                                                            <input type="checkbox" id="j-checkbox2" checked="checked" ><label for="j-checkbox2"> Monday</label>
-                                                            <input type="checkbox" id="j-checkbox3" checked="checked" ><label for="j-checkbox3"> Tuesday</label>
-                                                            <input type="checkbox" id="j-checkbox4" checked="checked" ><label for="j-checkbox4"> Wednesday</label>
-                                                        </div>
-                                                        <div class="controls col-sm-6 s-checkbox">
-                                                            <input type="checkbox" id="j-checkbox4" checked="checked" ><label for="j-checkbox4"> Thursday</label>
-                                                            <input type="checkbox" id="j-checkbox4" checked="checked" ><label for="j-checkbox5"> Friday</label>
-                                                            <input type="checkbox" id="j-checkbox6" checked="checked" ><label for="j-checkbox6"> Saturday</label>
-                                                        </div>
-                                                    </div>
-                                                    <button name="button" class="btn s-btn-ten24 btn-xs s-width-100"> Save Schedule</button>
-                                                </div>
-                                            </div>
-                                            <!-- // search -->
-                                        </div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                </div>
-                            </span>
-                            <!-- //Filter Criteria End -->
-                        </div>
-                        <div class="col-xs-3">
-                            <div class="s-default-list" ng-show="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
-                                <h4>Schedule:</h4>
-                                <div class="agenda">
-                                    <div class="table-responsive">
-                                        <table class="table table-condensed table-bordered">
-                                            <!-- <thead>
-                                                <tr>
-                                                    <th>Date</th>
-                                                    <th>Time</th>
-                                                </tr>
-                                                </thead> -->
-                                            <tbody>
-                                                <!-- Multiple events in a single day (note the rowspan) -->
-                                                <tr>
-                                                    <td class="agenda-date active" rowspan="2">
-                                                        <div class="dayofmonth">26</div>
-                                                        <div class="shortdate">July, 2014</div>
-                                                        <div class="dayofweek text-muted">Monday</div>
-                                                    </td>
-                                                    <td class="agenda-time">
-                                                        9:00 AM
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="agenda-time">
-                                                        5:00 PM
-                                                    </td>
-                                                </tr>
-                                                <!-- //Multiple events in a single day -->
-                                                <!-- Multiple events in a single day (note the rowspan) -->
-                                                <tr>
-                                                    <td class="agenda-date active" rowspan="2">
-                                                        <div class="dayofmonth">27</div>
-                                                        <div class="shortdate">July, 2014</div>
-                                                        <div class="dayofweek text-muted">Tuesday</div>
-                                                    </td>
-                                                    <td class="agenda-time">
-                                                        9:00 AM
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="agenda-time">
-                                                        5:00 PM
-                                                    </td>
-                                                </tr>
-                                                <!-- //Multiple events in a single day -->
+<div ng-show="!workflowTriggers.length" class="alert alert-info" role="alert" sw-rbkey="'entity.WorkflowTrigger.norecordsfound'"><!-- Message created by rb key --></div>
+
+<div class="s-bundle-add-items s-workflow-objs" ng-repeat="workflowTrigger in workflowTriggers">
+	
+
+	<div class="list-unstyled s-order-item-options" > 
+		<span  		
+			sw-workflow-trigger
+			ng-if="workflowTrigger.$$isPersisted()"
+			data-workflow-trigger="workflowTrigger"
+			data-workflow-triggers="workflowTriggers"
+			ng-init="workflowTrigger.$$index = $index">
+		</span>
+		<div class="clearfix"></div>
+	</div>
+</div>
+
+<!--- Edit Filter Box --->
+<div ng-if="workflowTriggers.selectedTrigger" class="col-xs-12  s-add-filter" id="j-create-new-trigger" ng-show="!workflowTriggers.selectedTrigger.hidden">
+		<sw-form name="selectedTrigger" 
+			data-object="workflowTriggers.selectedTrigger"	
+			data-context="save"
+		>
+			<div class="row">
+				<h4 class="s-heading"> 
+					<span ng-show="workflowTriggers.selectedTrigger.$$isPersisted()">Edit</span>
+					<span ng-show="!workflowTriggers.selectedTrigger.$$isPersisted()">New</span>
+					 Trigger 
+					 <i class="fa fa-times" 
+					 	data-toggle="collapse" 
+					 	data-target="#j-create-new-trigger"
+					 	ng-click="workflowTriggers.selectedTrigger.hidden = true;"
+					 ></i>
+				</h4>
+				<div class="col-xs-12">
+	
+					<div class="row">
+						<div class="col-xs-3">
+							
+							<div class="s-create-obj-window">
+								<h4>Trigger Type:</h4>
+								<div class="form-group">
+									<div class="radio">
+										<input  type="radio" name="triggerType" id="radioEvent{{$index}}"
+												ng-model="workflowTriggers.selectedTrigger.data.triggerType"
+												ng-change="setAsEvent(workflowTriggers.selectedTrigger)"
+												value="Event"
+										>
+										<label for="radioEvent{{$index}}">
+											Event
+										</label>
+									</div>
+									<div class="radio" ng-show="false">
+										<input  type="radio" name="triggerType" id="radioScheduled{{$index}}"
+												ng-change="setAsSchedule(workflowTriggers.selectedTrigger)"
+												ng-model="workflowTriggers.selectedTrigger.data.triggerType"
+												value="Schedule" 
+										>
+										<label for="radioScheduled{{$index}}">
+											Schedule
+										</label>
+									</div>
+								</div>
+							</div>
+							<sw-property-display
+									style="display:none"
+									data-object="workflowTriggers.selectedTrigger"
+									data-property="triggerType"
+									data-editing="true"
+									data-is-dirty="true"
+							></sw-property-display> 
+							<sw-property-display
+									style="display:none"
+									data-object="workflowTriggers.selectedTrigger"
+									data-property="triggerEvent"
+									data-editing="true"
+									data-is-dirty="true"
+							></sw-property-display> 
+							<sw-property-display
+									style="display:none"
+									data-object="workflowTriggers.selectedTrigger"
+									data-property="objectPropertyIdentifier"
+									data-editing="true"
+									data-is-dirty="true"
+							></sw-property-display> 
+						</div>
+						<div class="col-xs-6 s-criteria">
+							<span ng-if="workflowTriggers.selectedTrigger.data.triggerType === 'Event'">
+								<h4>Select Trigger Event:</h4>
+								<!--- Filter Criteria Start --->
+		
+								<div class="s-filter-group-item">
+									<div class="form-group form-group-sm">
+										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflow.data.workflowObject}}:</label>
+										<div class="col-sm-12 s-no-paddings">
+	
+											<!--- search --->
+											<div class="s-select-list-wrapper s-search">
+												<div class="form-group">
+													<!-- Option select field wrapper -->
+													<div class="input-group">
+														<div class="s-input-btn">
+															<!-- Need to display the workflow event name if it exists -->
+															<input type="search" class="form-control input-sm" placeholder="Search&hellip;" ng-model="searchEvent.name" ng-focus="searchEvent.name = ''">
+<!--														<!--<span class="glyphicon glyphicon-remove"></span>-->
+															<!--<i class="fa fa-refresh fa-spin"></i>--><!-- Loading Icon -->
+															
+														</div>
+														<div class="input-group-btn" ng-if="workflow.data.workflowObject">
+															<button class="btn btn-sm btn-default" ng-click="getEventOptions(workflow.data.workflowObject);"><i class="fa fa-caret-down"></i></button>
+														</div>
+													</div>
+												</div>
+												<!-- Dropdown wrapper --> 
+												<div class="dropdown s-search-results-wrapper" ng-show="showEventOptions">
+													<ul class="dropdown-menu">
+														<li ng-repeat="eventOption in eventOptions | filter:searchEvent.name">
+															<a ng-click="selectEvent(eventOption)">{{eventOption.name}}</a>
+														</li>
+														<li ng-show="(eventOptions | filter:searchEvent.name).length == 0">
+															<a sw-rbkey="'admin.entity.workflowtabs.triggers.norecordsfound'"><!-- Message created by rb key --></a>		
+														</li>
+													</ul>
+												</div>
+												
+											</div>
+											<!--- // search --->
+	
+										</div>
+										<div class="clearfix"></div>
+									</div>
+									<div class="form-group form-group-sm" id="j-placeholder-trigger-select" style="display:none;">
+										<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">On Order Item Event:</label>
+										<div class="col-sm-12 s-no-paddings">
+	
+											<!--- search --->
+											<div class="s-search-filter">
+												<div class="input-group">
+													<input type="text" class="form-control input-sm j-search-input" placeholder="Search&hellip;">
+													<ul class="dropdown-menu s-search-options">
+														<li><button type="button" class="btn s-btn-dgrey" data-toggle="collapse" data-target="#j-toggle-add-bundle-type"><i class="fa fa-plus"></i> Add "This should be the name"</button></li>
+														<li><a>On Order Item Save</a></li>
+														<li><a>On Order Item Update</a></li>
+														<li><a>On Order Item Cancel</a></li>
+														<li><a>On Order Item Delete</a></li>
+														<li><hr/></li>
+														<li id="j-placeholder-trigger"><a>On Order Item Event</a></li>
+														<li><a>On Order Fulfillment Event</a></li>
+													</ul>
+													<div class="input-group-btn">
+														<button type="button" class="btn btn-sm btn-default j-dropdown-options"><span class="caret"></span></button>
+													</div>
+												</div>
+												<div class="s-add-content collapse" id="j-toggle-add-bundle-type">
+													<div class="form-group has-error">
+														<label for="">Group Name <i class="fa fa-asterisk"></i></label>
+														<input type="text" class="form-control" id="" value="" placeholder="">
+														<p class="help-block">Example Of Error</p>
+													</div>
+													<div class="form-group">
+														<label for="">Group Code</label>
+														<input type="text" class="form-control" id="" value="" placeholder="">
+													</div>
+													<div class="form-group">
+														<label for="">Group Description</label>
+														<textarea class="field form-control" id="textarea" rows="4" placeholder=""></textarea>
+													</div>
+													<div class="form-group">
+														<button type="button" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Group Type</button>
+													</div>
+												</div>
+											</div>
+											<!--- // search --->
+	
+										</div>
+										<div class="clearfix"></div>
+									</div>
+								</div>
+							</span>
+							<!--- //Filter Criteria End --->
+							<span ng-if="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
+								<h4>Select Trigger Schedule:</h4>
+								<!--- Filter Criteria Start --->
+								<div class="s-filter-group-item">
+	
+									<div class="form-group form-group-sm">
+										<!-- <label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">{{workflowTriggers.selectedTrigger.data.workflow.data.workflowObject}} Collection:</label> -->
+										<div class="col-sm-12 s-no-paddings">
+	
+											<!--- search --->
+											<div class="s-search-filter">
+												<sw-property-display
+													data-object="workflowTriggers.selectedTrigger"
+													data-property="scheduleCollection"
+													data-field-type="search-select"
+													data-editing="true"
+													data-is-dirty="true"
+													data-title="workflowTriggers.selectedTrigger.data.workflow.data.workflowObject+' Collection'"
+												></sw-property-display>
+	
+											</div>
+											<!--- // search --->
+	
+										</div>
+										<div class="clearfix"></div>
+									</div>
+	
+									<div class="form-group form-group-sm">
+										<div class="col-sm-12 s-no-paddings">
+	
+											<!--- search --->
+											<div class="s-search-filter">
+												<sw-property-display
+													data-object="workflowTriggers.selectedTrigger"
+													data-property="schedule"
+													data-field-type="search-select"
+													data-editing="true"
+													data-is-dirty="true"
+													data-title="'Schedule Frequency'"
+												></sw-property-display>
+
+												<div class="s-add-content collapse" id="j-toggle-add-bundle-type3">
+													<div class="form-group form-group-sm">
+														<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Schedule Name:</label>
+														<div class="col-sm-12 s-no-paddings">
+															<input type="text" class="form-control" id="input">
+														</div>
+														<div class="clearfix"></div>
+													</div>
+
+													<div class="form-group">
+														<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Schedule Type:</label>
+														<select class="form-control input-sm">
+															<option value="-- Select">--Select--</option>
+															<option selected="" value="Daily">Daily</option>
+															<option value="Days of the Week">Days of the Week</option>
+															<option value="Days of the Month">Days of the Month</option>
+														</select>
+													</div>
+
+													<div class="row">
+														<div class="form-group form-group-sm col-sm-6">
+															<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">Start Time:</label>
+															<div class="col-sm-12 s-no-paddings">
+																<input type="text" class="form-control" id="input">
+															</div>
+															<div class="clearfix"></div>
+														</div>
+
+														<div class="form-group form-group-sm col-sm-6">
+															<label class="col-sm-12 control-label s-no-paddings" for="formGroupInputSmall">End Time:</label>
+															<div class="col-sm-12 s-no-paddings">
+																<input type="text" class="form-control" id="input">
+															</div>
+															<div class="clearfix"></div>
+														</div>
+													</div>
+
+													<hr/>
+
+													<div class="form-group s-workflow-checkbox">
+
+														<label class="col-sm-12 s-no-paddings" for="formGroupInputSmall">End Time:</label>
+														<div class="controls col-sm-6 s-checkbox">
+															<input type="checkbox" id="j-checkbox1" checked="checked" ><label for="j-checkbox1"> Sunday</label>
+															<input type="checkbox" id="j-checkbox2" checked="checked" ><label for="j-checkbox2"> Monday</label>
+															<input type="checkbox" id="j-checkbox3" checked="checked" ><label for="j-checkbox3"> Tuesday</label>
+															<input type="checkbox" id="j-checkbox4" checked="checked" ><label for="j-checkbox4"> Wednesday</label>
+														</div>
+
+														<div class="controls col-sm-6 s-checkbox">
+															<input type="checkbox" id="j-checkbox4" checked="checked" ><label for="j-checkbox4"> Thursday</label>
+															<input type="checkbox" id="j-checkbox4" checked="checked" ><label for="j-checkbox5"> Friday</label>
+															<input type="checkbox" id="j-checkbox6" checked="checked" ><label for="j-checkbox6"> Saturday</label>
+														</div>
+
+													</div>
+													<button name="button" class="btn btn-primary btn-xs s-width-100"> Save Schedule</button>
+												</div>
+											</div>
+											<!--- // search --->
+										</div>
+										<div class="clearfix"></div>
+									</div>
+								</div>
+							</span>
+							<!--- //Filter Criteria End --->
+						</div>
+						<div class="col-xs-3">
+							<div class="s-default-list" ng-show="workflowTriggers.selectedTrigger.data.triggerType === 'Schedule'">
+								<h4>Schedule:</h4>
+								<div class="agenda">
+							        <div class="table-responsive">
+							            <table class="table table-condensed table-bordered">
+							                <tbody>
+
+							                    <!-- Multiple events in a single day (note the rowspan) -->
+							                    <tr>
+							                        <td class="agenda-date active" rowspan="2">
+							                            <div class="dayofmonth">26</div>
+							                            <div class="shortdate">July, 2014</div>
+							                            <div class="dayofweek text-muted">Monday</div>
+							                        </td>
+							                        <td class="agenda-time">
+							                            9:00 AM
+							                        </td>
+							                    </tr>
+							                    <tr>
+							                        <td class="agenda-time">
+							                            5:00 PM
+							                        </td>
+							                    </tr>
+							                    <!-- //Multiple events in a single day -->
+
+							                    <!-- Multiple events in a single day (note the rowspan) -->
+							                    <tr>
+							                        <td class="agenda-date active" rowspan="2">
+							                            <div class="dayofmonth">27</div>
+							                            <div class="shortdate">July, 2014</div>
+							                            <div class="dayofweek text-muted">Tuesday</div>
+							                        </td>
+							                        <td class="agenda-time">
+							                            9:00 AM
+							                        </td>
+							                    </tr>
+							                    <tr>
+							                        <td class="agenda-time">
+							                            5:00 PM
+							                        </td>
+							                    </tr>
+							                    <!-- //Multiple events in a single day -->
+
                                                 <!-- Single events (note the rowspan) -->
-                                                <tr>
-                                                    <td class="agenda-date active" rowspan="1">
-                                                        <div class="dayofmonth">28</div>
-                                                        <div class="shortdate">July, 2014</div>
-                                                        <div class="dayofweek text-muted">Wednesday</div>
-                                                    </td>
-                                                    <td class="agenda-time">
-                                                        9:00 AM
-                                                    </td>
-                                                </tr>
+												<tr>
+													<td class="agenda-date active" rowspan="1">
+														<div class="dayofmonth">28</div>
+														<div class="shortdate">July, 2014</div>
+														<div class="dayofweek text-muted">Wednesday</div>
+													</td>
+													<td class="agenda-time">
+														9:00 AM
+													</td>
+												</tr>
                                                 <!-- //Single events -->
-                                            </tbody>
-                                        </table>
-                                        <button class="btn btn-xs btn-default">Show More <i class="fa fa-refresh fa-spin"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="s-button-select-group">
-                                <button 
-                                    type="button" 
-                                    class="btn btn-sm btn-primary s-width-100"
-                                    ng-click="saveWorkflowTrigger('add')">
-                                	Save Trigger
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </sw-form>
-    </div>
-    <!-- //Edit Filter Box -->
+							                </tbody>
+							            </table>
+							            <button class="btn btn-xs btn-default">Show More <i class="fa fa-refresh fa-spin"></i></button>
+							        </div>
+							    </div>
+
+							</div>
+	
+							<div class="s-button-select-group">
+								<button 
+										type="button" 
+										class="btn btn-sm s-btn-ten24 s-width-100"
+										ng-click="saveWorkflowTrigger('add')">
+									Save Trigger
+								</button>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</sw-form>
+	</div>
+	<!--- //Edit Filter Box --->
+	
+	<button  class="btn btn-xs btn-primary" 
+		data-target="#j-create-new-trigger"
+		data-toggle="collapse" 
+		ng-click="addWorkflowTrigger()">
+		<i class="fa fa-plus"></i> Add Trigger
+	</button>
+
 </div>

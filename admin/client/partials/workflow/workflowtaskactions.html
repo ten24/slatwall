@@ -1,4 +1,5 @@
 <div class="s-bundle-add-items s-workflow-objs">
+    <div ng-show="!workflowTaskActions.length" class="alert alert-info" role="alert" sw-rbkey="'entity.workflowtaskaction.norecordsfound'"><!-- Message created by rb key --></div>
     <span class="list-unstyled s-order-item-options" ng-repeat="workflowTaskAction in workflowTaskActions" ng-init="workflowTaskAction.$$actionIndex = $index">
         <span class="s-bundle-add-obj" ng-if="workflowTaskAction.$$isPersisted()">
             <ul class="list-unstyled list-inline">
@@ -26,7 +27,7 @@
                     </a>
                 </li>
                 <li class="col-xs-1 j-tool-tip-item s-bundle-details-add">
-                    <a class="btn s-btn-lgrey s-remove" 
+						<a class="btn s-btn-dgrey s-remove" 
                         sw-confirm 
                         data-confirm-text="Confirm"
                         data-message-text="Are you sure you want to delete this task action?" 
@@ -34,7 +35,8 @@
                         data-use-rb-key="false"
                         data-simple=false
                         data-yes-text="Yes"
-                        data-no-text="No">
+							data-no-text="No"			
+							>
                     <i class="fa fa-trash"></i>
                     </a>
                 </li>
@@ -43,26 +45,16 @@
         </span>
     </span>
 </div>
-<div class="form-group">
-    <!-- This is the add button -->
-    <button class="btn btn-xs btn-primary" 
-        data-target="#j-add-action-b"
-        ng-click="addWorkflowTaskAction();">
-    <i class="fa fa-plus"></i>
-    Add Action
-    </button>
-</div>
-<div class="s-clear-fix" ng-if="!workflowTaskActions.selectedTaskAction.hidden">
-	<!-- Handles making sure the form hides on save and finish -->
-	<!-- Edit Filter Box -->
+<div class="clearFixInline" ng-if="!workflowTaskActions.selectedTaskAction.hidden">
+
 	<div class="col-xs-12 s-add-filter" 
 	    id="j-add-action-b"
 	    ng-if="workflowTaskActions.selectedTaskAction && !finished">
 	    <sw-form name="selectedTaskAction"
 	        data-object="workflowTaskActions.selectedTaskAction"
 	        data-context="save">
-	        <div class="row s-add-filter-wrapper">
-	            <h4>Add Action {{workflowTaskActions.selectedTaskAction.data.actionType}}
+				<div class="row">
+					<h4 class="s-heading">Add Action {{workflowTaskActions.selectedTaskAction.data.actionType}}
 	                <i 	class="fa fa-times" 
 	                    data-target="#j-add-action-b"
 	                    ng-click="workflowTaskActions.selectedTaskAction.hidden = true"
@@ -70,7 +62,7 @@
 	            </h4>
 	            <div class="col-xs-12">
 	                <div class="row">
-	                    <div class="col-xs-3 s-left-box">
+							<div class="col-xs-3">
 	                        <div class="form-group form-group-sm">
 	                            <sw-property-display
 	                                data-object="workflowTaskActions.selectedTaskAction"
@@ -83,13 +75,13 @@
 	                        </div>
 	                    </div>
 	                    <div class="col-xs-6 s-criteria">
-	                        <!-- Filter Criteria Start -->
+								<!--- Filter Criteria Start --->
 	                        <div 	class="s-filter-group-item"
 	                            ng-show="workflowTaskActions.selectedTaskAction.data.actionType === 'email'"
 	                            >
 	                            <h4>Email Template</h4>
 	                            <div class="form-group form-group-sm">
-	                                <!-- search -->
+										<!--- search --->
 	                                <div class="s-search-filter">
 	                                    <sw-property-display
 	                                        data-object="workflowTaskActions.selectedTaskAction"
@@ -119,6 +111,7 @@
 	                                    </div>
 	                                </div>
 	                                <!-- // search -->
+										
 	                            </div>
 	                        </div>
 	                        <!-- //Filter Criteria End -->
@@ -173,8 +166,7 @@
 	                        <!-- //Filter Criteria End -->
 	                        <!-- Filter Criteria Start -->
 	                        <div 	class="s-filter-group-item"
-	                            ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'process'"
-	                            >
+									ng-if="workflowTaskActions.selectedTaskAction.data.actionType === 'process'">
 	                            <h4>Dynamic Numeric</h4>
 	                            <div class="row">
 	                                <div class="col-md-6 form-group form-group-sm">
@@ -204,9 +196,9 @@
 	                    </div>
 	                    <div class="col-xs-3">
 	                        <div class="s-button-select-group">
-	                            <button type="button" class="btn btn-sm btn-primary" ng-click="saveWorkflowTaskAction(workflowTaskActions.selectedTaskAction, 'add')">Save & Add Another</button>
+									<button type="button" class="btn btn-sm s-btn-ten24" ng-click="saveWorkflowTaskAction(workflowTaskActions.selectedTaskAction, 'add')">Save & Add Another</button>
 	                            <div class="s-or-box">OR-</div>
-	                            <button type="button" class="btn btn-sm btn-primary" ng-click="saveWorkflowTaskAction(workflowTaskActions.selectedTaskAction, 'finish')">Save & Finish</button>
+									<button type="button" class="btn btn-sm s-btn-ten24" ng-click="saveWorkflowTaskAction(workflowTaskActions.selectedTaskAction, 'finish')">Save & Finish</button>
 	                        </div>
 	                    </div>
 	                </div>
@@ -216,4 +208,13 @@
 	</div>
 	<!-- //Edit Filter Box -->
 	<!--<div class="clearfix"></div>-->
-<div>
+		<div class="form-group">
+			<!-- This is the add button -->
+			<button class="btn btn-xs btn-primary" 
+					data-target="#j-add-action-b"
+					ng-click="addWorkflowTaskAction();"
+				<i class="fa fa-plus"></i>
+				Add Action
+			</button>
+		</div>
+</div><!-- /s-bundle-add-items -->
