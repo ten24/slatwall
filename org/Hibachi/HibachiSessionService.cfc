@@ -261,14 +261,14 @@ component output="false" accessors="true" extends="HibachiService"  {
 	* @deprecated getSessionIDEncryptedCookie
 	*/
 	private any function getSessionIDEncryptedCookie( required any sessionID, required string cookieType ) {
-		return getHibachiUtilityService().encryptValue(value=arguments.sessionID, salt="valid-#arguments.cookieType#-SlatwallSessionIDCookie");
+		return getHibachiUtilityService().encryptValue(value=arguments.sessionID, salt="valid-#arguments.cookieType#-#getApplicationKey()#SessionIDCookie");
 	} 
 	
 	/*
 	* @deprecated getSessionIDFromEncryptedCookie
 	*/
 	private any function getSessionIDFromEncryptedCookie( required any cookieData, required string cookieType ) {
-		return getHibachiUtilityService().decryptValue(value=arguments.cookieData, salt="valid-#arguments.cookieType#-SlatwallSessionIDCookie");
+		return getHibachiUtilityService().decryptValue(value=arguments.cookieData, salt="valid-#arguments.cookieType#-#getApplicationKey()#SessionIDCookie");
 	}
 	
 	/**

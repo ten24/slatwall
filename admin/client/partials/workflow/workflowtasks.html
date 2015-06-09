@@ -1,5 +1,6 @@
 <!-- Workflow Tasks Forms and line items -->
 <div class="s-bundle-add-items s-workflow-objs">
+	<div ng-show="!workflowTasks.length" class="alert alert-info" role="alert" sw-rbkey="'entity.WorkflowTask.norecordsfound'"><!-- Message created by rb key --></div>	
 	<ul ng-repeat="workflowTask in workflowTasks" ng-init="workflowTask.$$index = $index" class="list-unstyled s-order-item-options s-negative-obj">
 		<li class="s-bundle-add-obj s-no-edit" ng-show="workflowTask.$$isPersisted()">
 			<ul class="list-unstyled list-inline">
@@ -13,12 +14,12 @@
 			</ul>
 			<ul class="list-unstyled list-inline s-last">
 				<li class="col-xs-1 j-tool-tip-item s-bundle-details-add" ng-click="selectWorkflowTask(workflowTasks[$index]); setHidden(workflowTasks[$index]);">
-					<a class="btn s-btn-lgrey s-edit" data-target="#s-add-obj-1">
+					<a class="btn s-btn-dgrey s-edit" data-target="#s-add-obj-1">
 						<i 	class="fa fa-pencil"></i>
 					</a>
 				</li>
 				<li class="col-xs-1 j-tool-tip-item s-bundle-details-add">
-					<a class="btn s-btn-lgrey s-remove" 
+					<a class="btn s-btn-dgrey s-remove" 
                     	sw-confirm 
 						data-confirm-text="Confirm"
 						data-message-text="Are you sure you want to delete this task?" 
@@ -35,13 +36,6 @@
 		</li>
 	</ul>
 </div>
-	
-<!-- Only show the button when we don't have a selected task. Or when the task is finished and hidden.'-->
-<button class="btn btn-xs btn-primary" 
-		data-target="#j-create-new-task"
-		ng-click="addWorkflowTask();" 		
-	<i class="fa fa-plus"></i> Create New Task
-</button>
 
 <div ng-hide="done"><!-- state for closing on finish -->
 	<div class="col-xs-12 s-add-filter s-tab-layout" id="j-create-new-task" ng-if="workflowTasks.selectedTask && !workflowTasks.selectedTask.hidden"><!-- This hidden is for the X button closing -->
@@ -60,3 +54,8 @@
 	</div>
 	<div class="clearfix"></div>
 </div>
+<button class="btn btn-xs btn-primary" 
+		data-target="#j-create-new-task"
+		ng-click="addWorkflowTask();" 		
+	<i class="fa fa-plus"></i> Create New Task
+</button>

@@ -1,4 +1,4 @@
-<div class="radio"  ng-repeat="propertyDisplayOption in propertyDisplay.options track by propertyDisplayOption.value" ng-if="selectedRadioFormName">
+<div class="radio" display:inline-block; ng-repeat="propertyDisplayOption in propertyDisplay.options track by propertyDisplayOption.value" ng-if="selectedRadioFormName">
 	<input type="radio" name="{{'selected'+propertyDisplay.object.metaData.className+propertyDisplay.property+selectedRadioFormName}}" id="{{propertyDisplay.object.metaData.className+'.'+propertyDisplay.property+selectedRadioFormName+$index}}"
     		ng-model="$parent.selected"
     		ng-show="propertyDisplay.editing"
