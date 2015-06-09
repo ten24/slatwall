@@ -97,6 +97,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="assetsPath" persistent="false";
 	property name="sharedAssetsPath" persistent="false";
 	property name="allDescendants" persistent="false";
+	property name="navigationHTML" persistent="false";
 	
 	// Deprecated Properties
 	property name="disableProductAssignmentFlag" ormtype="boolean";			// no longer needed because the listingPageFlag is defined for all objects
@@ -111,6 +112,10 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			variables.assetsPath = getSite().getAssetsPath();;
 		}
 		return variables.assetsPath;
+	}
+	
+	public string function getNavigationHTML(){
+		return getService('siteService').getNavigationHTML(this.getSite());
 	}
 	
 	public string function getSharedAssetsPath(){
