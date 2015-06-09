@@ -44,27 +44,58 @@ angular.module('slatwalladmin')
 				var splitString = list.split(delimiter);
 				return splitString.length;
 			},
-			arraySorter:function(array, keyToSortBy){
-				array.sort(function(a, b){
-					if(angular.isDefined(keyToSortBy)){
-						if(a[keyToSortBy]< b[keyToSortBy]){
-				            return -1;
-				        }else if(a[keyToSortBy] > b[keyToSortBy]){
-				            return 1;
-				        }else{
-				            return 0;   
-				        }
-					}else{
-						if(a < b){
-				            return -1;
-				        }else if(a > b){
-				            return 1;
-				        }else{
-				            return 0;   
-				        }
-					}
-				});
-				return array;
+            //This will enable you to sort by two separate keys in the order they are passed in
+			arraySorter:function(array, keysToSortBy){
+			    var arrayOfTypes = [],
+                    returnArray = [],
+                    firstKey = keysToSortBy[0];
+                
+                if(angular.isDefined(keysToSortBy[1])){
+                    var secondKey = keysToSortBy[1];
+                }
+
+                for(var itemIndex in array){         
+                    if(!(arrayOfTypes.indexOf(array[itemIndex][firstKey]) > -1)){
+                        arrayOfTypes.push(array[itemIndex][firstKey]);  
+                    }  
+                }
+                arrayOfTypes.sort(function(a, b){
+                    if(a < b){
+                        return -1;
+                    }else if(a > b){
+                        return 1;
+                    }else{
+                        return 0;   
+                    }
+                });
+                for(var typeIndex in arrayOfTypes){
+                    var tempArray = [];
+                    for(var itemIndex in array){
+                        if(array[itemIndex][firstKey] == arrayOfTypes[typeIndex]){
+                            tempArray.push(array[itemIndex]);  
+                        }
+                    }
+                    if(keysToSortBy[1].length){
+                        tempArray.sort(function(a, b){
+                            if(a[secondKey]< b[secondKey]){
+                                return -1;
+                            }else if(a[secondKey] > b[secondKey]){
+                                return 1;
+                            }else{
+                                return 0;   
+                            } 
+                        }); 
+                    }
+
+                    for(var finalIndex in tempArray){
+                        returnArray.push(tempArray[finalIndex]);    
+                    }
+                    
+                }
+
+                return returnArray;
+
+				
 			}
 		};
 		

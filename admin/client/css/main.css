@@ -205,6 +205,10 @@ fieldset[disabled] .s-button-no-style.active {
   border: none;
   font-size: 12px;
 }
+.clearFixInline {
+  display: inline-block;
+  width: 100%;
+}
 [ng\:cloak],
 [ng-cloak],
 [data-ng-cloak],
@@ -431,6 +435,10 @@ input[type="file"] {
 .s-zero-left {
   padding-left: 0px!important;
   margin-left: 0px !important;
+}
+.deafult-margin {
+  margin-right: 15px !important;
+  margin-left: 15px !important;
 }
 .s-top-spacer {
   margin-top: 25px;
@@ -749,6 +757,9 @@ select.error {
 }
 .form-horizontal .control-label {
   margin-bottom: 4px;
+}
+.form-horizontal .radio {
+  padding-left: 22px;
 }
 .btn-group {
   float: right;
@@ -1128,6 +1139,9 @@ select:focus {
 .s-filter-content {
   padding-right: 0px;
   padding-left: 0px;
+}
+.s-filter-content .s-header-bar {
+  margin-top: -10px;
 }
 .s-filter-content .s-collections-options.s-options {
   margin-top: -15px;
@@ -1659,8 +1673,10 @@ tabel .s-table-header {
   cursor: not-allowed;
 }
 .radio {
-  margin-top: 0px;
+  margin-top: 0px !important;
   margin-bottom: 5px;
+  margin-right: 20px;
+  display: inline-block;
 }
 .radio label {
   display: inline-block;
@@ -1675,7 +1691,6 @@ tabel .s-table-header {
   width: 17px;
   height: 17px;
   left: 0;
-  margin-left: -20px;
   border: 1px solid #cccccc;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
@@ -1687,16 +1702,17 @@ tabel .s-table-header {
   -webkit-transition: border 0.15s ease-in-out;
   -o-transition: border 0.15s ease-in-out;
   transition: border 0.15s ease-in-out;
+  position: relative;
+  left: -3px;
+  top: 3px;
 }
 .radio label:after {
   display: inline-block;
-  position: absolute;
   content: " ";
   width: 11px;
   height: 11px;
   left: 3px;
   top: 3px;
-  margin-left: -20px;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
@@ -1712,6 +1728,9 @@ tabel .s-table-header {
   -moz-transition: -moz-transform 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);
   -o-transition: -o-transform 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);
   transition: transform 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);
+  position: absolute;
+  top: 6px;
+  left: 5px;
 }
 .radio input[type=radio] {
   display: none;
@@ -1879,6 +1898,7 @@ tabel .s-table-header {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   margin-top: 8px;
+  margin-bottom: 10px;
 }
 .s-add-filter h4 i {
   float: right;
@@ -1939,6 +1959,15 @@ tabel .s-table-header {
   padding: 0px 10px;
 }
 .s-add-filter > .row > h4 {
+  margin-top: 0px;
+  padding: 8px 15px;
+  background-color: #606060;
+  color: #ffffff;
+  font-size: 14px;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
+.s-add-filter .row h4.s-heading {
   margin-top: 0px;
   padding: 8px 15px;
   background-color: #606060;
@@ -2776,6 +2805,8 @@ tabel .s-table-header {
   border: 1px solid #e6e6e6;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 3px;
+  display: inline-block;
+  width: 100%;
 }
 .s-bundle-add-items .s-bundle-add-obj .s-bundle-details {
   font-size: 12px;
@@ -2990,6 +3021,7 @@ tabel .s-table-header {
 .s-bundle-group-dropdown-content .s-options .radio {
   display: inline-block;
   margin-right: 10px;
+  padding-left: 22px;
 }
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj .s-item-type {
   width: 32px;
@@ -3003,6 +3035,9 @@ tabel .s-table-header {
 }
 .s-workflow-objs.s-sortable .s-order-item-options .s-bundle-add-obj ul:first-child {
   cursor: move;
+}
+.s-workflow-objs .s-filter-content {
+  margin-top: -15px;
 }
 .s-task-actions .s-add-filter .s-create-obj-window {
   border-right: 3px dotted #e6e6e6;
@@ -3408,6 +3443,12 @@ tabel .s-table-header {
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
   background-color: #f58620;
+}
+.dropdown-menu li a.s-btn-disabled {
+  background: none !important;
+}
+.dropdown-menu li a.s-btn-disabled:hover {
+  color: #cccccc !important;
 }
 .navbar-s-navbar-ten24 {
   background-image: none;
@@ -4173,12 +4214,8 @@ a.disabled > i.hibachi-ui-radio-checked {
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
 }
-.s-select-list-wrapper .dropdown.s-search-results-wrapper {
-  display: none;
-}
 /*-- List Select Component With Dropdown --*/
 .s-search-results-wrapper {
-  display: inline-block;
   width: 100%;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
@@ -4200,6 +4237,8 @@ a.disabled > i.hibachi-ui-radio-checked {
   display: block;
   margin: 0px;
   padding: 0px;
+  overflow: auto;
+  max-height: 120px;
 }
 .s-search-results-wrapper .dropdown-menu a {
   color: #666666;
@@ -4371,6 +4410,69 @@ a.disabled > i.hibachi-ui-radio-checked {
 }
 .s-datepicker table tbody button .text-info {
   color: #666666;
+}
+/*-- Image uploader --*/
+.s-image-uploader .thumbnail {
+  padding: 0px;
+  border-radius: 2px;
+}
+.s-image-uploader .thumbnail .s-image {
+  position: relative;
+}
+.s-image-uploader h4::-webkit-scrollbar {
+  display: none;
+}
+.s-image-uploader h4 {
+  font-size: 12px;
+  margin-right: 10px;
+  margin-left: 10px;
+  overflow: auto;
+  height: 20px;
+  overflow: -moz-scrollbars-none;
+}
+.s-image-uploader .s-zoom {
+  display: inline-block;
+  background-color: #fff;
+  opacity: .0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  text-align: center;
+  padding-top: 20%;
+  font-size: 45px;
+}
+.s-image-uploader .s-zoom:hover {
+  opacity: 0.8;
+}
+.s-image-uploader .s-caption {
+  margin-top: 10px;
+}
+.s-image-uploader .s-controlls {
+  display: inline-block;
+  width: 100%;
+  margin-bottom: -4px;
+}
+.s-image-uploader .s-controlls > .btn-group {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+  backgrou: #E6E6E6;
+}
+.s-image-uploader .s-controlls .btn-group {
+  border-right: 1px solid #fff;
+  background-color: #F2F2F2;
+}
+.s-image-uploader .s-controlls .btn-group:last-child {
+  border-right: none;
+}
+.s-image-uploader .s-controlls .btn-group .btn {
+  border-top-right-radius: 0px;
+  border-top-left-radius: 0px;
+  border: none !important;
+}
+.s-image-uploader .s-controlls .btn-group .btn:hover {
+  border: none !important;
 }
 @media only screen and (max-width: 767px) {
   #slatwall-navbar .nav .dropdown-menu {
