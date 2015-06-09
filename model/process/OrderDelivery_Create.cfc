@@ -66,9 +66,13 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	variables.orderDeliveryItems = [];
 	
 	public boolean function hasQuantityOnOneOrderDeliveryItem() {
-		for(var orderDeliveryItem in getOrderDeliveryItems()) {
-			if(structKeyExists(orderDeliveryItem, "quantity") && !isNull(orderDeliveryItem.quantity) && isNumeric(orderDeliveryItem.quantity) && orderDeliveryItem.quantity > 0) {
-				return true;
+		if (getOrderFulfillment().getFulfillmentMethodType() == "auto" ){
+			return true;
+		}else{
+			for(var orderDeliveryItem in getOrderDeliveryItems()) {
+				if(structKeyExists(orderDeliveryItem, "quantity") && !isNull(orderDeliveryItem.quantity) && isNumeric(orderDeliveryItem.quantity) && orderDeliveryItem.quantity > 0) {
+					return true;
+				}
 			}
 		}
 		return false;
