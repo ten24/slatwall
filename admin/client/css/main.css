@@ -758,6 +758,9 @@ select.error {
 .form-horizontal .control-label {
   margin-bottom: 4px;
 }
+.form-horizontal .radio {
+  padding-left: 22px;
+}
 .btn-group {
   float: right;
 }
@@ -3005,6 +3008,7 @@ tabel .s-table-header {
 .s-bundle-group-dropdown-content .s-options .radio {
   display: inline-block;
   margin-right: 10px;
+  padding-left: 22px;
 }
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj .s-item-type {
   width: 32px;
