@@ -76,7 +76,7 @@
 			<ul>
 				<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-total">{{orderItem.data.productBundlePrice | currency}} 
 				</li>
-				<li ng-show="orderItem.data.sku.data.baseProductType !== 'productBundle'" class="s-price-total">{{orderItem.data.skuPrice | currency}} 
+				<li ng-show="orderItem.data.sku.data.baseProductType !== 'productBundle'" class="s-price-total">{{orderItem.data.price | currency}} 
 				</li>
 				<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-list">
 					<ul>

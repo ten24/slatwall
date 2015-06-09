@@ -43,6 +43,12 @@
 			return smartList;
 		}
 		
+		public any function getCollectionList(string entityName, struct data={}){
+			var collection = getService('collectionService').newCollection(argumentcollection=arguments);
+			collection.setCollectionObject(arguments.entityName);
+			return collection;
+		}
+		
 		public any function list(required string entityName, struct filterCriteria = {}, string sortOrder = '', struct options = {} ) {
 			return getHibachiDAO().list(argumentcollection=arguments);
 		}
@@ -275,6 +281,8 @@
 			if ( lCaseMissingMethodName.startsWith( 'get' ) ) {
 				if(right(lCaseMissingMethodName,9) == "smartlist") {
 					return onMissingGetSmartListMethod( missingMethodName, missingMethodArguments );
+				} else if(right(lCaseMissingMethodName,14) == "collectionlist"){
+					return onMissingGetCollectionListMethod( missingMethodName, missingMethodArguments );
 				} else {
 					return onMissingGetMethod( missingMethodName, missingMethodArguments );
 				}
@@ -365,6 +373,29 @@
 			}
 			
 			return getSmartList(entityName=entityName, data=data);
+		} 
+		
+		/**
+		 * Provides dynamic getCollection method, by convention, on missing method:
+		 *
+		 *   getXXXCollection( struct data )
+		 *
+		 * ...in which XXX is an ORM entity name
+		 *
+		 * NOTE: Ordered arguments only--named arguments not supported.
+		 */
+		 
+		private function onMissingGetCollectionListMethod( required string missingMethodName, required struct missingMethodArguments ){
+			var collectionArgs = {};
+			var entityNameLength = len(arguments.missingMethodName) - 17;
+			
+			var entityName = missingMethodName.substring( 3,entityNameLength + 3 );
+			var data = {};
+			if( structCount(missingMethodArguments) && !isNull(missingMethodArguments[ 1 ]) && isStruct(missingMethodArguments[ 1 ]) ) {
+				data = missingMethodArguments[ 1 ];
+			}
+			
+			return getCollectionList(entityName=entityName, data=data);
 		} 
 		 
 	

@@ -56,36 +56,43 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function deploy_SiteTest(){
+		
+		var integration = request.slatwallScope.getService('integrationService').getIntegrationByIntegrationPackage('slatwallcms');
+		
+		var appData = {
+			appID ='test',
+			appName='#createUuid()#',
+			appCode="#createUuid()#",
+			integration={
+				integrationID=integration.getIntegrationID()
+			}
+		};
+		var app = createTestEntity(entityName="app",data=appData);
+		request.slatwallScope.saveEntity( app, appData );
 		var siteData = {
 			siteid='',
-			siteName="xsfd2232ssaz",
-			siteCode="xsfd2232ssaz",
+			siteName="#createUuid()#",
+			siteCode="#createUuid()#",
 			app={
-				appID ='test',
-				appName='xsfd2232ssaz',
-				appCode="xsfd2232ssaz",
-				integration={
-					integrationID='402881864c42f280014c4c9851f9016b'
-				}
+				appID=app.getAppID()
 			}
 		};
 		var site = createTestEntity(entityName="site",data=siteData);
-		
-		request.slatwallScope.saveEntity( site, {} );
-		
+		request.slatwallScope.saveEntity( site, siteData );
 		//here we should assert the default content was created as well as the directories
 		assertTrue(arraylen(site.getContents()));
 		//remove directories as the unit tests do not already do that. Delete outside of validation
-		
 		directoryDelete(site.getApp().getAppPath(),true);
+		request.slatwallScope.getService("settingService").removeAllEntityRelatedSettings( entity=app );
 		request.slatwallScope.getService("settingService").removeAllEntityRelatedSettings( entity=site );
+		ormflush();
 		// Remove any Many-to-Many relationships
 		site.removeAllManyToManyRelationships();
-		
+		app.removeAllManyToManyRelationships();
+		app.removeSite(site);
+		//site.removeApp(javacast('null',''));
 		// Call delete in the DAO
-		request.slatwallScope.getBean('HibachiDAO').delete(target=site);
-		request.slatwallScope.getBean('HibachiDAO').delete(target=site.getapp());
-		ormflush();
+		request.slatwallScope.getBean('HibachiDAO').delete(target=app);
 	}
 }
 

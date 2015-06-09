@@ -67,8 +67,6 @@ component {
 	function onRequestStart() {
 		runRequestActions();
 		
-		writeOutput( generateRenderedContent() );
-		abort;
 	}
 	
 	function runRequestActions() {
@@ -108,21 +106,21 @@ component {
 			
 			// First look for the Brand URL Key
 			if (isBrandURLKey) {
-				var brand = arguments.slatwallScope.getService("brandService").getBrandByURLTitle(arguments.urlTitle, true);
+				var brand = arguments.slatwallScope.getService("brandService").getBrandByURLTitle(arguments.contenturlTitlePath, true);
 				arguments.slatwallScope.setBrand( brand );
 				entityName = 'brand';
 			}
 			
 			// Look for the Product URL Key
 			if(isProductURLKey) {
-				var product = arguments.slatwallScope.getService("productService").getProductByURLTitle(arguments.urlTitle, true);
+				var product = arguments.slatwallScope.getService("productService").getProductByURLTitle(arguments.contenturlTitlePath, true);
 				arguments.slatwallScope.setProduct( product );	
 				entityName = 'product';
 			}
 			
 			// Look for the Product Type URL Key
 			if (isProductTypeURLKey) {
-				var productType = arguments.slatwallScope.getService("productService").getProductTypeByURLTitle(arguments.entityURL, true);
+				var productType = arguments.slatwallScope.getService("productService").getProductTypeByURLTitle(arguments.contenturlTitle, true);
 				arguments.slatwallScope.setProductType( productType );
 				entityName = 'productType';
 			}
@@ -130,7 +128,7 @@ component {
 			var entityTemplateContent = arguments.slatwallScope.getService("contentService").getContent( entityDisplayTemplateSetting );;
 			if(!isnull(entityTemplateContent)){
 				arguments.slatwallScope.setContent( entityTemplateContent );
-				var contentTemplateFile = entityTemplateContent.setting('contentTemplateFile',[site]);
+				var contentTemplateFile = entityTemplateContent.setting('contentTemplateFile',[content]);
 				if(!isNull(contentTemplateFile)){
 					
 					contentPath = templatePath & contentTemplateFile;
@@ -138,26 +136,28 @@ component {
 					
 					arguments.slatwallScope.setContent(entityTemplateContent);
 				}else{
-					throw('no contentTemplateFile for the entity');
+					render404(arguments.slatwallScope,site);
+					//throw('no contentTemplateFile for the entity');
 				}
 			}else{
-				throw('no content for entity');
+				render404(arguments.slatwallScope,site);
+				//throw('no content for entity');
 			}
 		}else{
-			if(!isNull(arguments.contenturlTitle)){
+			if(!isNull(arguments.contenturlTitlePath)){
 			
 				//now that we have the site directory, we should see if we can retrieve the content via the urltitle and site
-				var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitle(site.getSiteID(),arguments.contenturlTitle);
+				var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitlePath(site.getSiteID(),arguments.contenturlTitlePath);
 			}else{
 				var content = arguments.slatwallScope.getService('contentService').getDefaultContentBySite(site);
 			}
 			
 			if(isNull(content)){
-				throw('content does not exists for #arguments.contenturlTitle#');
+				content = render404(arguments.slatwallScope,site);
+				//throw('content does not exists for #arguments.contenturlTitlePath#');
 			}
 			//now that we have the content, get the file name so that we can retrieve it form the site's template directory
-			var contentTemplateFile = content.Setting('contentTemplateFile',[site]);
-			
+			var contentTemplateFile = content.Setting('contentTemplateFile',[content]);
 			//templatePath relative to the slatwallCMS
 			contentPath = templatePath & contentTemplateFile;
 			arguments.slatwallScope.setContent(content);
@@ -171,6 +171,19 @@ component {
 		templateBody = arguments.slatwallScope.getService('hibachiUtilityService').replaceStringTemplate(arguments.slatwallScope.getService('hibachiUtilityService').replaceStringEvaluateTemplate(templateData),arguments.slatwallScope.getContent());
 		
 		writeOutput(templateBody);
+		abort;
+	}
+	
+	function render404(required any slatwallScope, required any site){
+		var context = getPageContext();
+		context.getOut().clearBuffer();
+		var response = context.getResponse();
+		response.setstatus(404);
+		arguments.slatwallScope.getService("hibachiEventService").announceEvent(eventName="404");
+		var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitlePath(site.getSiteID(),'404');
+		if(!isNull(content)){
+			return content;
+		}
 		abort;
 	}
 	

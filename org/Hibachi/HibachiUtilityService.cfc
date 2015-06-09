@@ -318,7 +318,7 @@
 			}
 		}
 		
-		private void function copyFile(required string source, required string destination, boolean overwrite=false){
+		public void function copyFile(required string source, required string destination, boolean overwrite=false){
 			var destinationDir = getdirectoryFromPath(arguments.destination);
 			//create directory
 			if(!directoryExists(destinationDir)){

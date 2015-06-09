@@ -78,6 +78,9 @@ Notes:
 			<cfif listFindNoCase("Type", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
 				<hb:HibachiEntityDetailItem property="types" />
 			</cfif>
+			<cfif listFindNoCase("Content", rc.attributeSet.getAttributeSetObject()) and not rc.attributeSet.getGlobalFlag()>
+				<hb:HibachiEntityDetailItem property="contents" />
+			</cfif>
 		</cfif>
 	</hb:HibachiEntityDetailGroup>
 	

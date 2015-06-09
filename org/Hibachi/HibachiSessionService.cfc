@@ -7,23 +7,59 @@ component output="false" accessors="true" extends="HibachiService"  {
 	property name="hibachiUtilityService" type="any";
 
 	// ===================== START: Logical Methods ===========================
-
 	public void function setPropperSession() {
-	
+		var requestHeaders = getHTTPRequestData();
+		
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
 		if(!hasSessionValue("sessionID")) {
 			setSessionValue('sessionID', '');
 		}
-		
 		var foundWithNPSID = false;
 		var foundWithPSID = false;
 		
 		// Check for non-persistent cookie.
-		
 		if( len(getSessionValue('sessionID')) ) {
 			var sessionEntity = this.getSession( getSessionValue('sessionID'), true);
 		
-		} else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID")) {
+		} else if( (StructKeyExists(request.context, "jsonRequest") && request.context.jsonRequest && StructKeyExists(request.context.deserializedJsonData, "request_token") ) || StructKeyExists(requestHeaders.headers, "request_token") ){
+				//If the API 'cookie' and deviceID were passed directly to the API, we can use that for setting the session if the request token matches
+				//the token we already have.
+				
+				//Find the request token in the json or in the headers if it exists.
+				var rt = "";
+				if (StructKeyExists(request.context, "jsonRequest") && request.context.jsonRequest){
+					rt = request.context.deserializedJsonData["request_token"];
+				}
+				if (StructKeyExists(requestHeaders.headers, "request_token")){
+					rt = requestHeaders.headers["request_token"];
+				}
+								
+				//set the session
+				var NPSID = rt;
+				var sessionEntity = this.getSessionBySessionCookieNPSID( NPSID, true );
+				foundWithNPSID = true;
+				setSessionValue('sessionID', sessionEntity.getSessionID());
+				request.context["foundWithRequestToken"] = true;
+				
+				/*
+				if ( StructKeyExists(request.context, "deviceID") && !Len(sessionEntity.getDeviceID())){
+					//If the device doesn't yet exist, add it.'
+					sessionEntity.setDeviceID("#request.context.deviceID#");
+					foundWithNPSID = true;
+					setSessionValue('sessionID', sessionEntity.getSessionID());
+				}else if (( StructKeyExists(requestHeaders.headers, "deviceID") && Len(sessionEntity.getDeviceID()) )){
+					//If the device already exists, check against that device to the new device id.
+					if (requestHeaders.headers.deviceID == sessionEntity.getDeviceID()){
+						foundWithNPSID = true;
+						setSessionValue('sessionID', sessionEntity.getSessionID()); //We have the correct device for this session.
+					}else{
+						//we don't have the correct device for this session so dont set the session
+						foundWithNPSID = false;
+					}
+				}
+				*/
+			
+		}else if(structKeyExists(cookie, "#getApplicationValue('applicationKey')#-NPSID")) {
 			var sessionEntity = this.getSessionBySessionCookieNPSID( cookie["#getApplicationValue('applicationKey')#-NPSID"], true);
 		
 			if(sessionEntity.getNewFlag()) {
@@ -47,9 +83,11 @@ component output="false" accessors="true" extends="HibachiService"  {
 				setSessionValue('sessionID', sessionEntity.getSessionID());
 			}
 		
-		// Last option is to just create a new session record
+		
 		} else {
+			
 			var sessionEntity = this.newSession();
+		
 		}
 		
 		// Populate the hibachi scope with the session

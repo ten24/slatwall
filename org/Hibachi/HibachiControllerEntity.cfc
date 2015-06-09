@@ -700,12 +700,14 @@ component output="false" accessors="true" extends="HibachiController" {
 	private string function buildRedirectQueryString( required string queryString, required boolean maintainQueryString, string keysToRemoveOnRedirect="" ) {
 		if(arguments.maintainQueryString) {
 			for(var key in url) {
-				if(key != getFW().getAction() && !listFindNoCase("redirectAction,sRedirectAction,fRedirectAction,redirectURL,sRedirectURL,fRedirectURL,#arguments.keysToRemoveOnRedirect#", key)) {
+				if(key != getFW().getAction() && !listFindNoCase("ngRedirectQS,redirectAction,sRedirectAction,fRedirectAction,redirectURL,sRedirectURL,fRedirectURL,#arguments.keysToRemoveOnRedirect#", key)) {
 					arguments.queryString = listAppend(arguments.queryString, "#key#=#url[key]#", "&");
+				}
+				if(key != getFW().getAction() && listFindNoCase("ngRedirectQS", key)){
+					arguments.queryString = listAppend(arguments.queryString, "ng##!#url[key]#", "&");
 				}
 			}
 		}
-		
 		return arguments.queryString;
 	}
 	
