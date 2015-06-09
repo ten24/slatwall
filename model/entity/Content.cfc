@@ -115,7 +115,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	}
 	
 	public string function getNavigationHTML(){
-		return getService('siteService').getNavigationHTML(this.getSite());
+		return getService('contentService').getNavigationHTML(this);
 	}
 	
 	public string function getSharedAssetsPath(){
@@ -488,7 +488,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	public boolean function getDisplayInNavigation() {
 		if(isNull(variables.displayInNavigation)) {
-			variables.displayInNavigation = 0;
+			variables.displayInNavigation = 1;
 		}
 		return variables.displayInNavigation;
 	}

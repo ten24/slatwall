@@ -59,6 +59,31 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getSettingService().getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag", settingValue=1);
 	}
 	
+	public string function getNavigationHTML(required any currentContent){
+		var rootContent = getDAO('contentDAO').getDefaultContentBySite(arguments.currentContent.getSite());
+		var firstLevelItems = rootContent.getChildContents();
+		var navigationHTML = '';
+		var currentContentIDPath = arguments.currentContent.getContentIDPath();
+		for(firstLevelItem in firstLevelItems){
+			//only add item if it passes the flag
+			if(firstLevelItem.getDisplayInNavigation()){
+				//get classes
+				var classList = '';
+				navigationHTML &= 
+				'<li class=" dropdown">
+					<a href="#firstLevelItem.getURLTitlePath()#" class="current">#firstLevelItem.getTitle()#</a>
+					<!---<ul>
+						<li><a href="level2link">Link 2 Name A</a></li>
+						<li><a href="level2link">Link 2 Name A</a></li>
+						<li><a href="level2link">Link 2 Name A</a></li>
+						<li><a href="level2link">Link 2 Name A</a></li>
+					</ul>--->
+				</li>';
+			}
+		}
+		return navigationHTML;
+	}
+	
 	public any function processContent_create(required any content, required any processObject){
 		// Call save on the content
 		arguments.content.setSite(arguments.processObject.getSite());

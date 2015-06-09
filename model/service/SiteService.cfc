@@ -65,24 +65,6 @@ component  extends="HibachiService" accessors="true" {
 		return variables.skeletonSitePath;
 	}
 	
-	public string function getNavigationHTML(required any site){
-		var rootContent = getDAO('contentDAO').getRootContentBySite(arguments.site);
-		var firstLevelItems = rootContent.getChildContents();
-		var navigationHTML = '';
-		for(firstLevelItem in firstLevelItems){
-			navigationHTML &= '<li class="current dropdown">
-				<a href="level1link" class="current">LEVEL 1 - #firstLevelItem.getTitle()#</a>
-				<ul>
-					<li><a href="level2link">Link 2 Name A</a></li>
-					<li><a href="level2link">Link 2 Name A</a></li>
-					<li><a href="level2link">Link 2 Name A</a></li>
-					<li><a href="level2link">Link 2 Name A</a></li>
-				</ul>
-			</li>';
-		}
-		return navigationHTML;
-	}
-	
 	public void function createSlatwallTemplatesChildren(required any slatwallTemplatesContent, required any site){
 		var slatwallTemplatesChildren = [
 			{
