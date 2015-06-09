@@ -12,14 +12,14 @@ angular.module('slatwalladmin').directive('swClickOutside', ['$document', '$time
         var i = 0,
             element;
         if (!e.target)
-          return ;
+          return;
         for (element = e.target; element; element = element.parentNode) {
           var id = element.id;
           var classNames = element.className;
           if (id !== undefined) {
             for (i = 0; i < classList.length; i++) {
               if (id.indexOf(classList[i]) > -1 || classNames.indexOf(classList[i]) > -1) {
-                return ;
+                return;
               }
             }
           }

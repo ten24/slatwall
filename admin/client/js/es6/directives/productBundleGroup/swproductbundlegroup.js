@@ -178,7 +178,7 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', [
                                             // If the loadingCount drops to 0, then we can update scope
                                             if (_loadingCount == 0) {
                                                 //This sorts the array of objects by the objects' "type" property alphabetically
-                                                scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "type");
+                                                scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, ["type", "name"]);
                                                 $log.debug(scope.productBundleGroupFilters.value);
                                             }
                                             scope.loading = false;
@@ -242,7 +242,7 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', [
                     //Pushes item back into array
                     scope.productBundleGroupFilters.value.push(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup[index]);
                     //Sorts Array
-                    scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "type");
+                    scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, ["type", "name"]);
                     //Removes the filter item from the filtergroup
                     scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index, 1);
                     scope.productBundleGroup.forms[scope.formName].skuCollectionConfig.$setDirty();

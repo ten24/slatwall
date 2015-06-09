@@ -128,7 +128,7 @@ angular.module('slatwalladmin').directive('swEditFilterItem', ['$http', '$compil
       scope.saveFilter = function(selectedFilterProperty, filterItem, callback) {
         $log.debug('saveFilter begin');
         if (angular.isDefined(selectedFilterProperty.selectedCriteriaType) && angular.equals({}, selectedFilterProperty.selectedCriteriaType)) {
-          return ;
+          return;
         }
         if (angular.isDefined(selectedFilterProperty) && angular.isDefined(selectedFilterProperty.selectedCriteriaType)) {
           filterItem.$$isNew = false;
