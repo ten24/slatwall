@@ -1,6 +1,6 @@
 "use strict";
 'use strict';
-angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', '$slatwall', 'partialsPath', 'paginationService', function($log, $timeout, $slatwall, partialsPath, paginationService) {
+angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', '$slatwall', 'partialsPath', 'paginationService', 'observerService', function($log, $timeout, $slatwall, partialsPath, paginationService, observerService) {
   return {
     restrict: 'E',
     templateUrl: partialsPath + 'content/contentlist.html',
@@ -11,6 +11,7 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
         pageShow = scope.pageShow;
       }
       scope.loadingCollection = false;
+      scope.selectedSite;
       scope.getCollection = function(isSearching) {
         var columnsConfig = [{
           propertyIdentifier: '_content.contentID',
@@ -53,7 +54,6 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
               "comparisonOperator": "is",
               "value": 'null'
             }]}];
-          options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
           column = {
             propertyIdentifier: '_content.title',
             isVisible: true,
@@ -72,7 +72,6 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
               "comparisonOperator": "is",
               "value": "null"
             }]}];
-          options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
           column = {
             propertyIdentifier: '_content.title',
             isVisible: false,
@@ -88,6 +87,16 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           };
           columnsConfig.unshift(titlePathColumn);
         }
+        if (angular.isDefined(scope.selectedSite)) {
+          var selectedSiteFilter = {
+            logicalOperator: "AND",
+            propertyIdentifier: "_content.site.siteID",
+            comparisonOperator: "=",
+            value: scope.selectedSite.siteID
+          };
+          filterGroupsConfig[0].filterGroup.push(selectedSiteFilter);
+        }
+        options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
         options.columnsConfig = angular.toJson(columnsConfig);
         var collectionListingPromise = $slatwall.getEntity(scope.entityName, options);
         collectionListingPromise.then(function(value) {
@@ -115,6 +124,14 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           scope.getCollection(true);
         }, 500);
       };
+      var siteChanged = function(selectedSiteOption) {
+        scope.selectedSite = selectedSiteOption;
+        scope.getCollection();
+      };
+      observerService.attach(siteChanged, 'optionsChanged', 'siteOptions');
+      scope.$on('$destroy', function handler() {
+        observerService.detachByEvent('optionsChanged');
+      });
     }
   };
 }]);
