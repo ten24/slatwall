@@ -79,6 +79,7 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	// Non-Persistent Properties
 	property name="sitePath" persistent="false";
 	property name="templatesPath" persistent="false";
+	property name="assetsPath" persistent="false"; 
 	
 	public boolean function getAllowAdminAccessFlag() {
 		if(isNull(variables.allowAdminAccessFlag)) {
@@ -99,6 +100,17 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 			variables.templatesPath = getSitePath() & '/' & 'templates';
 		}
 		return variables.templatesPath;
+	}
+	
+	public string function getAssetsPath(){
+		if(!structKeyExists(variables,'assetsPath')){
+			variables.assetsPath = '/custom/apps/' & getApp().getAppCode() & '/' & getSiteCode() & '/assets';
+		}
+		return variables.assetsPath;
+	}
+	
+	public string function getSharedAssetsPath(){
+		return getService('siteService').getSharedAssetsPath();
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================

@@ -53,11 +53,14 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="contentIDPath" ormtype="string" length="4000";
 	property name="activeFlag" ormtype="boolean";
 	property name="title" ormtype="string";
+	property name="titlePath" ormtype="string" length="4000";
 	property name="allowPurchaseFlag" ormtype="boolean";
 	property name="productListingPageFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" length="4000";
 	property name="urlTitlePath" ormtype="string" length="8000";
 	property name="contentBody" ormtype="string" length="4000" ;
+	property name="displayInNavigation" ormtype="boolean";
+	property name="excludeFromSearch" ormtype="boolean";
 
 	// CMS Properties
 	property name="cmsContentID" ormtype="string" index="RI_CMSCONTENTID";
@@ -90,8 +93,10 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	// Non Persistent
 	property name="categoryIDList" persistent="false";
-	property name="fullTitle" persistent="false";
 	property name="siteOptions" persistent="false";
+	property name="assetsPath" persistent="false";
+	property name="sharedAssetsPath" persistent="false";
+	property name="allDescendants" persistent="false";
 	
 	// Deprecated Properties
 	property name="disableProductAssignmentFlag" ormtype="boolean";			// no longer needed because the listingPageFlag is defined for all objects
@@ -101,6 +106,20 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
     
 	
 	// ============ START: Non-Persistent Property Methods =================
+	public string function getAssetsPath(){
+		if(!structKeyExists(variables,'assetsPath')){
+			variables.assetsPath = getSite().getAssetsPath();;
+		}
+		return variables.assetsPath;
+	}
+	
+	public string function getSharedAssetsPath(){
+		if(!structKeyExists(variables,'sharedAssetsPath')){
+			variables.sharedAssetsPath = getService('siteService').getSharedAssetsPath();
+		}
+		return variables.sharedAssetsPath;
+	}
+	
 	public array function getInheritedAttributeSetAssignments(){
 		// Todo get by all the parent contentIDs
 		var attributeSetAssignments = getService("AttributeService").getAttributeSetAssignmentSmartList().getRecords();
@@ -158,34 +177,66 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		return contentOptions;
 	}
 	
-	public string function createURLTitlePath(){
-		
-		var urlTitle = '';
-		if(!isNull(getURLtitle())){
-			urlTitle = getURLtitle();
+	public array function getAllDescendants(){
+		if(!structKeyExists(variables,'allDescendants')){
+			variables.allDescendants = getDao('contentDao').getContentDescendants(this);
 		}
-		
-		var urlTitlePath = '';
-		if(!isNull(getParentContent())){
-			urlTitlePath = getParentContent().getURLTitlePath();
-		}
-		
-		var urlTitlePathString = '';
-		if(len(urlTitlePath)){
-			urlTitlePathString = urlTitlePath & '/' & urlTitle;
-		}else{
-			urlTitlePathString = urlTitle;
-		}
-		
-		setUrlTitlePath(urlTitlePathString);
-		return urlTitlePathString;
+		return variables.allDescendants;
 	}
 	
-	public array function getAllDescendants(){
-		return getDao('contentDao').getContentDescendants(this);
+	public string function setTitle(required string title){
+		//look up all children via lineage
+		var previousTitlePath = '';
+		if(!isNull(this.getTitlePath())){
+			previousTitlePath = this.getTitlePath();
+		}
+		 
+		var allDescendants = getAllDescendants();
+		//set title
+		variables.title = arguments.title;
+		//update titlePath
+		var newTitlePath = this.createTitlePath();
+		
+		for(var descendant in allDescendants){
+			var newTitlePath = '';
+			if(len(previousTitlePath) > 0){
+				newTitlePath = replace(descendant.getTitlePath(),previousTitlePath,newTitlePath);
+			}else{
+				newTitlePath = newTitlePath & ' > ' & descendant.getTitlePath();
+			}
+			
+			descendant.setTitlePath(newTitlePath);
+		}
+	}
+	
+	public string function createTitlePath(){
+		
+		var Title = '';
+		if(!isNull(getTitle())){
+			Title = getTitle();
+		}
+		
+		var TitlePath = '';
+		if(!isNull(getParentContent())){
+			TitlePath = getParentContent().getTitlePath();
+			if(isNull(TitlePath)){
+				TitlePath = '';
+			}
+		}
+		
+		var TitlePathString = '';
+		if(len(TitlePath)){
+			TitlePathString = TitlePath & ' > ' & Title;
+		}else{
+			TitlePathString = Title;
+		}
+		
+		setTitlePath(TitlePathString);
+		return TitlePathString;
 	}
 	
 	public string function setUrlTitle(required string urlTitle){
+		
 		//look up all children via lineage
 		var previousURLTitlePath = '';
 		if(!isNull(this.getURLTitlePath())){
@@ -210,40 +261,77 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		}
 	}
 	
-	public string function getFullTitle(){
-		var titleArray = [getTitle()];
-		if(!isNull(getParentContent())){
-			titleArray = getParentTitle(getParentContent(),titleArray);
+	public string function createURLTitlePath(){
+		
+		var urlTitle = '';
+		if(!isNull(getURLtitle())){
+			urlTitle = getURLtitle();
 		}
-		var fullTitle = '';
-		for(var i = arraylen(titleArray); i > 0; i--){
-			fullTitle &= titleArray[i];
-			if(i != 1){
-				fullTitle &= ' > ';
+		
+		var urlTitlePath = '';
+		if(!isNull(getParentContent())){
+			urlTitlePath = getParentContent().getURLTitlePath();
+			if(isNull(urlTitlePath)){
+				urlTitlePath = '';
 			}
 		}
-		return fullTitle;
+		
+		var urlTitlePathString = '';
+		if(len(urlTitlePath)){
+			urlTitlePathString = urlTitlePath & '/' & urlTitle;
+		}else{
+			urlTitlePathString = urlTitle;
+		}
+		
+		setUrlTitlePath(urlTitlePathString);
+		return urlTitlePathString;
 	}
 	
-	private array function getParentTitle(required any content, required array titleArray){
-		ArrayAppend(arguments.titleArray,arguments.content.getTitle());
-		if(!isNull(arguments.content.getParentContent())){
-			arguments.titleArray = getParentTitle(arguments.content.getParentContent(),arguments.titleArray);
+	public string function isUniqueUrlTitlePathBySite(){
+		var content = getDao('contentDAO').getContentByUrlTitlePathBySite( this.getSite(), this.getURLTitlePath() );
+		//if no content with the url title exists then the content is unique
+		if(isNull(content)){
+			return true;
+		//if on already does exist, check to see if it is the content that we are currently working with
+		}else{
+			return content.getContentID() == this.getContentID();
 		}
-		return arguments.titleArray;
 	}
 	
-	private array function getParentURLTitle(required any content, required array urlTitleArray){
-		var value = '';
-		if(!isNull(arguments.content.getURLTitle())){
-			value = arguments.content.getURLTitle();
-		}
-		if(!isNull(arguments.content.getParentContent())){
-			ArrayAppend(arguments.urlTitleArray,value);
-			arguments.urlTitleArray = getParentUrlTitle(arguments.content.getParentContent(),arguments.urlTitleArray);
-		}
-		return arguments.urlTitleArray;
-	}
+//	public string function getFullTitle(){
+//		var titleArray = [getTitle()];
+//		if(!isNull(getParentContent())){
+//			titleArray = getParentTitle(getParentContent(),titleArray);
+//		}
+//		var fullTitle = '';
+//		for(var i = arraylen(titleArray); i > 0; i--){
+//			fullTitle &= titleArray[i];
+//			if(i != 1){
+//				fullTitle &= ' > ';
+//			}
+//		}
+//		return fullTitle;
+//	}
+//	
+//	private array function getParentTitle(required any content, required array titleArray){
+//		ArrayAppend(arguments.titleArray,arguments.content.getTitle());
+//		if(!isNull(arguments.content.getParentContent())){
+//			arguments.titleArray = getParentTitle(arguments.content.getParentContent(),arguments.titleArray);
+//		}
+//		return arguments.titleArray;
+//	}
+//	
+//	private array function getParentURLTitle(required any content, required array urlTitleArray){
+//		var value = '';
+//		if(!isNull(arguments.content.getURLTitle())){
+//			value = arguments.content.getURLTitle();
+//		}
+//		if(!isNull(arguments.content.getParentContent())){
+//			ArrayAppend(arguments.urlTitleArray,value);
+//			arguments.urlTitleArray = getParentUrlTitle(arguments.content.getParentContent(),arguments.urlTitleArray);
+//		}
+//		return arguments.urlTitleArray;
+//	}
 		
 	public string function getCategoryIDList() {
 		if(!structKeyExists(variables, "categoryIDList")) {
@@ -391,6 +479,20 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			variables.productListingPageFlag = 0;
 		}
 		return variables.productListingPageFlag;
+	}
+	
+	public boolean function getDisplayInNavigation() {
+		if(isNull(variables.displayInNavigation)) {
+			variables.displayInNavigation = 0;
+		}
+		return variables.displayInNavigation;
+	}
+	
+	public boolean function getExcludeFromSearch() {
+		if(isNull(variables.excludeFromSearch)) {
+			variables.excludeFromSearch = 0;
+		}
+		return variables.excludeFromSearch;
 	}
 	
 	public string function getSimpleRepresentationPropertyName() {

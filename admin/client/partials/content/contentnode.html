@@ -1,7 +1,6 @@
 <td ng-click="getChildContent(contentData)" >
-	<i style="margin-left:{{depth*15||0}}px" class="fa fa-caret-{{childOpen ? 'down' : 'right' }}" ng-bind="contentData.fullTitle || contentData.title"></i>
+	<i style="margin-left:{{depth*15||0}}px" class="fa fa-caret-{{childOpen ? 'down' : 'right' }}" ng-bind="contentData.titlePath && contentData.titlePath.trim().length ? contentData.titlePath : contentData.title"></i>
 </td>
-<td ng-bind="contentData.site_siteName"></td>
 <td ng-bind="contentData.contentTemplateFile"></td>
 <td ng-bind="contentData.allowPurchaseFlag"></td>
 <td ng-bind="contentData.productListingPageFlag"></td>
