@@ -7,27 +7,19 @@ angular.module('slatwalladmin')
 	'$slatwall',
 	'partialsPath',
     'paginationService',
-    'optionsService',
+    'observerService',
 	function (
 			$log,
             $timeout,
 			$slatwall,
 			partialsPath,
             paginationService,
-            optionsService
+            observerService
 	) {
 	    return {
 	        restrict: 'E',
 	        templateUrl:partialsPath+'content/contentlist.html',
 	        link: function (scope, element, attr) {
-//                scope.test = optionsService.optionsObjects;
-//                console.log('optionsobjects');
-//                console.log(optionsService.optionsObjects);
-//                scope.$watch('optionsService._optionsObjects', function() {
-//                    console.log('watch occured'); 
-//                    
-//                });
-                scope.options = optionsService.optionsObject;
 	        	$log.debug('slatwallcontentList init');
 	        	var pageShow = 50;
                 if(scope.pageShow !== 'Auto'){
@@ -35,6 +27,8 @@ angular.module('slatwalladmin')
                 }
                 
                 scope.loadingCollection = false;
+                
+                scope.selectedSite;
                 
 	        	scope.getCollection = function(isSearching){
                     var columnsConfig = [
@@ -99,7 +93,6 @@ angular.module('slatwalladmin')
                               ]
                             }
                           ];
-                        options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
                          column = {
                             propertyIdentifier:'_content.title',
                             isVisible:true,
@@ -125,7 +118,6 @@ angular.module('slatwalladmin')
                               ]
                             }
                           ];
-                        options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
                        column = {
                             propertyIdentifier:'_content.title',
                             isVisible:false,
@@ -142,7 +134,16 @@ angular.module('slatwalladmin')
                         };  
                         columnsConfig.unshift(titlePathColumn);
                     }
-                    
+                    if(angular.isDefined(scope.selectedSite)){
+                        var selectedSiteFilter = {
+                            logicalOperator:"AND",
+                            propertyIdentifier:"_content.site.siteID",
+                            comparisonOperator:"=",
+                            value:scope.selectedSite.siteID
+                        };
+                        filterGroupsConfig[0].filterGroup.push(selectedSiteFilter);
+                    }
+                    options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
                     options.columnsConfig = angular.toJson(columnsConfig);
                     
 	        		var collectionListingPromise = $slatwall.getEntity(
@@ -178,7 +179,18 @@ angular.module('slatwalladmin')
                         scope.getCollection(true);
                     }, 500);
                 };
+               
                 
+            var siteChanged = function(selectedSiteOption){
+                scope.selectedSite = selectedSiteOption;
+                scope.getCollection();
+            }
+            
+            observerService.attach(siteChanged,'optionsChanged','siteOptions');
+            
+            scope.$on('$destroy', function handler() {
+                observerService.detachByEvent('optionsChanged');
+            });
 	    }
 	}
 }]);

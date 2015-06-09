@@ -2,12 +2,12 @@ angular.module('slatwalladmin')
 .directive('swOptions', [
 '$log',
 '$slatwall',
-'optionsService',
+'observerService',
 'partialsPath',
 	function(
 	$log,
     $slatwall,
-    optionsService,
+    observerService,
 	partialsPath
 	){
 		return {
@@ -41,7 +41,7 @@ angular.module('slatwalladmin')
                 //use by ng-change to record changes
                 scope.swOptions.selectOption = function(selectedOption){
                     scope.swOptions.selectedOption = selectedOption;
-                    optionsService.setOptionsByObjectName( scope.swOptions );
+                    observerService.notify('optionsChanged',selectedOption);
                 }
 			}
 		};
