@@ -187,6 +187,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
 			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
+			globalAdminDomainNames = {fieldtype="text"},
 			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
