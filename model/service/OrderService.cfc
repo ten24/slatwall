@@ -1203,8 +1203,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var order = arguments.orderFulfillment.getOrder();
 		
-		var newOrderDelivery = this.newOrderDelivery();
-		
 		// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
 		if(
 			arguments.orderFulfillment.getFulfillmentMethodType() == "auto" 
@@ -1215,6 +1213,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		){
 												
 			// Setup the processData
+			var newOrderDelivery = this.newOrderDelivery();
 			var processData = {};
 			processData.order = {};
 			processData.order.orderID = order.getOrderID();
@@ -1222,8 +1221,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			processData.orderFulfillment.orderFulfillmentID = arguments.orderFulfillment.getOrderFulfillmentID();
 			
 			newOrderDelivery = this.processOrderDelivery(newOrderDelivery, processData, 'create');
+			return newOrderDelivery;
 		}
-		return newOrderDelivery;
 	}
 	
 	public any function processOrder_placeOnHold(required any order, struct data={}) {
