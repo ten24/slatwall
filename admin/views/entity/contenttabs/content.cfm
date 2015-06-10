@@ -5,5 +5,5 @@
 <cfparam name="rc.edit" type="boolean" default="false"/>
 
 <cfoutput>
-	<hb:HibachiPropertyDisplay object="#rc.content#" edit="#rc.edit#" property="contentBody" fieldType="wysiwyg" displaytype="plain">
+	<hb:HibachiPropertyDisplay object="#rc.content#" edit="#rc.edit#" property="contentBody" fieldType="wysiwyg" displaytype="plain" fieldAttributes="baseUrl='/custom/assets2'">
 </cfoutput>
