@@ -29,6 +29,8 @@ angular.module('slatwalladmin')
                 scope.loadingCollection = false;
                 
                 scope.selectedSite;
+                scope.orderBy;
+                var orderByConfig;
                 
 	        	scope.getCollection = function(isSearching){
                     var columnsConfig = [
@@ -61,16 +63,19 @@ angular.module('slatwalladmin')
                         {
                             propertyIdentifier:'_content.allowPurchaseFlag',
                             isVisible:true,
+                            ormtype:'boolean',
                             isSearchable:false
                         },
                         {
                             propertyIdentifier:'_content.productListingPageFlag',
                             isVisible:true,
+                            ormtype:'boolean',
                             isSearchable:false
                         },
                         {
                             propertyIdentifier:'_content.activeFlag',
                             isVisible:true,
+                            ormtype:'boolean',
                             isSearchable:false
                         }
                     ];
@@ -134,6 +139,7 @@ angular.module('slatwalladmin')
                         };  
                         columnsConfig.unshift(titlePathColumn);
                     }
+                    //if we have a selected Site add the filter
                     if(angular.isDefined(scope.selectedSite)){
                         var selectedSiteFilter = {
                             logicalOperator:"AND",
@@ -143,6 +149,14 @@ angular.module('slatwalladmin')
                         };
                         filterGroupsConfig[0].filterGroup.push(selectedSiteFilter);
                     }
+                    
+                    if(angular.isDefined(scope.orderBy)){
+                        var orderByConfig = [];
+                        orderByConfig.push(scope.orderBy);    
+                        options.orderByConfig = angular.toJson(orderByConfig);
+                    }
+                    
+                    
                     options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
                     options.columnsConfig = angular.toJson(columnsConfig);
                     
@@ -187,10 +201,20 @@ angular.module('slatwalladmin')
             }
             
             observerService.attach(siteChanged,'optionsChanged','siteOptions');
+                
+            var sortChanged = function(orderBy){
+                scope.orderBy = orderBy;
+                scope.getCollection();
+            };
+            observerService.attach(sortChanged,'sortByColumn','siteSorting');
             
             scope.$on('$destroy', function handler() {
                 observerService.detachByEvent('optionsChanged');
+                observerService.detachByEvent('sortByColumn');
             });
+                
+            
+            
 	    }
 	}
 }]);

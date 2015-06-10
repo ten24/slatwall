@@ -193,6 +193,7 @@ Notes:
 					  				params.columnsConfig = options.columnsConfig || '';
 					  				params.filterGroupsConfig = options.filterGroupsConfig || '';
 					  				params.joinsConfig = options.joinsConfig || '';
+					  				params.orderByConfig = options.orderByConfig || '';
 					  				params.isDistinct = options.isDistinct || false;
 					  				params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 					  				params.allRecords = options.allRecords || '';
