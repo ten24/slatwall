@@ -152,6 +152,16 @@ component {
 				prepareSlatwallScope(arguments.slatwallScope,app,site);
 				prepareSiteForRendering(site=site, argumentsCollection=arguments);
 			}
+       	}else{
+       		//if domain name is not a CMS site check to see if we have admin restricted domains via global setting
+       		var adminDomanNamesSetting = arguments.slatwallScope.getService('SettingService').getSettingValue("globalAdminDomainNames");
+       		//if a list of admin domains has been specified then check to see if the domain exists in the list. if none specified then pass through
+       		if(!isNull(adminDomanNamesSetting) && len(adminDomanNamesSetting)){
+       			if(!ListFind(adminDomanNamesSetting, arguments.slatwallScope.getService('siteService').getCurrentDomain())){
+       				writeOutput('#arguments.slatwallScope.getService('siteService').getCurrentDomain()# is neither a CMS domain or an admin domain and therefore restricted.');
+       				abort;
+       			}
+       		}
        	}
 	}
 	
