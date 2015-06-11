@@ -70,7 +70,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		getService("hibachiUtilityService").copyFile(
 			source= replacenocase(getSkeletonAppPath(),'\','/','all') & '/Application.cfc', 
 			destination=replacenocase(arguments.app.getAppPath(),'\','/','all') & '/Application.cfc', 
-			overwrite=true
+			overwrite=false
 		);
 	}
 	
