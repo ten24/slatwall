@@ -152,7 +152,7 @@ component {
 				//throw('no content for entity');
 			}
 		}else{
-			if(!isNull(arguments.contenturlTitlePath)){
+			if(!isNull(arguments.contenturlTitlePath) && len(arguments.contenturlTitlePath)){
 			
 				//now that we have the site directory, we should see if we can retrieve the content via the urltitle and site
 				var content = arguments.slatwallScope.getService('contentService').getContentBySiteIDAndUrlTitlePath(site.getSiteID(),arguments.contenturlTitlePath);
