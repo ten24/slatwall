@@ -133,11 +133,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	public void function setCollectionObject(required string collectionObject, boolean addDefaultColumns=true){
-		var slatwallBaseEntity = "";
-		if(find('Slatwall',arguments.collectionObject)){
-			slatwallBaseEntity = arguments.collectionObject;
+		var HibachiBaseEntity = "";
+		if(find(getDao('HibachiDao').getApplicationKey(),arguments.collectionObject)){
+			HibachiBaseEntity = arguments.collectionObject;
 		}else{
-			slatwallBaseEntity = getService('hibachiService').getProperlyCasedFullEntityName(arguments.collectionObject);
+			HibachiBaseEntity = getService('hibachiService').getProperlyCasedFullEntityName(arguments.collectionObject);
 		}
 		
 		variables.collectionObject = arguments.collectionObject;
@@ -181,7 +181,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			var columnsJson = serializeJson(columnsArray);
 			variables.collectionConfig = '{
-				"baseEntityName":"#slatwallBaseEntity#",
+				"baseEntityName":"#HibachiBaseEntity#",
 				"baseEntityAlias":"_#lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject))#",
 				"columns":#columnsJson#
 			}';
@@ -422,7 +422,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var attributeIdentifier = listDeleteAt(filter.propertyIdentifier,ListLen(filter.propertyIdentifier,'.'),'.');
 		
 		var HQL = "(SELECT attributeValue 
-					FROM SlatwallAttributeValue 
+					FROM #getDao('hibachiDAO').getApplicationKey()#AttributeValue 
 					WHERE attributeID = '#filter.attributeID#' 
 					AND #filter.attributeSetObject#.#filter.attributeSetObject#ID = #attributeIdentifier#.#filter.attributeSetObject#ID)";
 		return HQL;
@@ -880,7 +880,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var attributeIdentifier = listDeleteAt(column.propertyIdentifier,ListLen(column.propertyIdentifier,'.'),'.');
 		
 		var HQL	=  "(SELECT attributeValue 
-					FROM SlatwallAttributeValue
+					FROM #getDao('hibachiDAO').getApplicationKey()#AttributeValue
 					WHERE attribute.attributeID = '"
 					& column.attributeID & 
 					"' AND #column.attributeSetObject#.#column.attributeSetObject#ID = #attributeIdentifier#.#column.attributeSetObject#ID) as #listLast(column.propertyIdentifier,'.')#";
@@ -945,7 +945,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
 					
 				}else{
-					var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'Slatwall',''))&'_','');
+					var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
 					
 					HQL &= ' #column.propertyIdentifier# as #columnAlias#';
 				}

@@ -232,13 +232,13 @@
 		</cfcase>
 		<cfcase value="yesno">
 			<cfoutput>
-				<div class="radio" style="display: inline-block;">
+				<div class="radio">
 					<input type="radio" name="#attributes.fieldName#" id="#attributes.fieldName#Yes" class="#attributes.fieldClass# yes" value="1" <cfif isBoolean(attributes.value) && attributes.value>checked="checked"</cfif> #attributes.fieldAttributes# />
 					<label for="#attributes.fieldName#Yes">
 						#yesNoFormat(1)#
 					</label>
 				</div>
-				<div class="radio" style="display: inline-block;margin-left: 12px;">
+				<div class="radio">
 					<input type="radio" name="#attributes.fieldName#" id="#attributes.fieldName#No" class="#attributes.fieldClass# yes" value="0" <cfif (isboolean(attributes.value) && not attributes.value) || not isBoolean(attributes.value)>checked="checked"</cfif> #attributes.fieldAttributes# />
 					<label for="#attributes.fieldName#No">
 						#yesNoFormat(0)#

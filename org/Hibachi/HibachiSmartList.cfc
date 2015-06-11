@@ -716,7 +716,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 				for(var attributeProperty in variables.attributeKeywordProperties) {
 					var idProperty = listLast(listFirst(attributeProperty,':'), '.');
 					var fullIDMap = left(idProperty, len(idProperty)-2) & '.' & idProperty;
-					hqlWhere &= " EXISTS(SELECT sav.attributeValue FROM SlatwallAttributeValue as sav WHERE sav.#fullIDMap# = #listFirst(attributeProperty, ":")# AND sav.attribute.attributeCode = '#listLast(attributeProperty,':')#' AND sav.attributeValue LIKE :#paramID# ) OR";
+					hqlWhere &= " EXISTS(SELECT sav.attributeValue FROM #getDao('HibachiDao').getApplicationKey()#AttributeValue as sav WHERE sav.#fullIDMap# = #listFirst(attributeProperty, ":")# AND sav.attribute.attributeCode = '#listLast(attributeProperty,':')#' AND sav.attributeValue LIKE :#paramID# ) OR";
 				}
 				
 				hqlWhere = left(hqlWhere, len(hqlWhere)-3 );

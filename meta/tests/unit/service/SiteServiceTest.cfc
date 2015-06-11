@@ -68,7 +68,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var app = createTestEntity(entityName="app",data=appData);
-		request.slatwallScope.saveEntity( app, {} );
+		request.slatwallScope.saveEntity( app, appData );
 		var siteData = {
 			siteid='',
 			siteName="#createUuid()#",
@@ -78,7 +78,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var site = createTestEntity(entityName="site",data=siteData);
-		request.slatwallScope.saveEntity( site, {} );
+		request.slatwallScope.saveEntity( site, siteData );
 		//here we should assert the default content was created as well as the directories
 		assertTrue(arraylen(site.getContents()));
 		//remove directories as the unit tests do not already do that. Delete outside of validation
@@ -90,7 +90,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		site.removeAllManyToManyRelationships();
 		app.removeAllManyToManyRelationships();
 		app.removeSite(site);
-		site.setApp(javacast('null',''));
+		//site.removeApp(javacast('null',''));
 		// Call delete in the DAO
 		request.slatwallScope.getBean('HibachiDAO').delete(target=app);
 	}

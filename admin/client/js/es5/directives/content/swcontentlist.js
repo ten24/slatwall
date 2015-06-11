@@ -1,6 +1,6 @@
 "use strict";
 'use strict';
-angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', '$slatwall', 'partialsPath', 'paginationService', function($log, $timeout, $slatwall, partialsPath, paginationService) {
+angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', '$slatwall', 'partialsPath', 'paginationService', 'observerService', function($log, $timeout, $slatwall, partialsPath, paginationService, observerService) {
   return {
     restrict: 'E',
     templateUrl: partialsPath + 'content/contentlist.html',
@@ -11,22 +11,20 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
         pageShow = scope.pageShow;
       }
       scope.loadingCollection = false;
+      scope.selectedSite;
+      scope.orderBy;
+      var orderByConfig;
       scope.getCollection = function(isSearching) {
         var columnsConfig = [{
           propertyIdentifier: '_content.contentID',
           isVisible: false,
           ormtype: 'id',
-          isSearchable: false
+          isSearchable: true
         }, {
           propertyIdentifier: '_content.site.siteID',
           isVisible: false,
           ormtype: 'id',
-          isSearchable: true
-        }, {
-          propertyIdentifier: '_content.site.siteName',
-          isVisible: true,
-          ormtype: 'string',
-          isSearchable: true
+          isSearchable: false
         }, {
           propertyIdentifier: '_content.contentTemplateFile',
           persistent: false,
@@ -36,21 +34,19 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
         }, {
           propertyIdentifier: '_content.allowPurchaseFlag',
           isVisible: true,
+          ormtype: 'boolean',
           isSearchable: false
         }, {
           propertyIdentifier: '_content.productListingPageFlag',
           isVisible: true,
+          ormtype: 'boolean',
           isSearchable: false
         }, {
           propertyIdentifier: '_content.activeFlag',
           isVisible: true,
+          ormtype: 'boolean',
           isSearchable: false
         }];
-        var filterGroupsConfig = [{"filterGroup": [{
-            "propertyIdentifier": "_content.parentContent",
-            "comparisonOperator": "is",
-            "value": 'null'
-          }]}];
         var options = {
           currentPage: scope.currentPage,
           pageShow: paginationService.getPageShow(),
@@ -58,22 +54,59 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
         };
         var column = {};
         if (!isSearching || scope.keywords === '') {
-          options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
+          var filterGroupsConfig = [{"filterGroup": [{
+              "propertyIdentifier": "_content.parentContent",
+              "comparisonOperator": "is",
+              "value": 'null'
+            }]}];
           column = {
             propertyIdentifier: '_content.title',
             isVisible: true,
             ormtype: 'string',
             isSearchable: true
           };
+          columnsConfig.unshift(column);
         } else {
+          var filterGroupsConfig = [{"filterGroup": [{
+              "propertyIdentifier": "_content.excludeFromSearch",
+              "comparisonOperator": "=",
+              "value": false
+            }, {
+              "logicalOperator": "OR",
+              "propertyIdentifier": "_content.excludeFromSearch",
+              "comparisonOperator": "is",
+              "value": "null"
+            }]}];
           column = {
-            propertyIdentifier: '_content.fullTitle',
-            isVisible: true,
-            persistent: false,
+            propertyIdentifier: '_content.title',
+            isVisible: false,
+            ormtype: 'string',
             isSearchable: true
           };
+          columnsConfig.unshift(column);
+          var titlePathColumn = {
+            propertyIdentifier: '_content.titlePath',
+            isVisible: true,
+            ormtype: 'string',
+            isSearchable: false
+          };
+          columnsConfig.unshift(titlePathColumn);
         }
-        columnsConfig.unshift(column);
+        if (angular.isDefined(scope.selectedSite)) {
+          var selectedSiteFilter = {
+            logicalOperator: "AND",
+            propertyIdentifier: "_content.site.siteID",
+            comparisonOperator: "=",
+            value: scope.selectedSite.siteID
+          };
+          filterGroupsConfig[0].filterGroup.push(selectedSiteFilter);
+        }
+        if (angular.isDefined(scope.orderBy)) {
+          var orderByConfig = [];
+          orderByConfig.push(scope.orderBy);
+          options.orderByConfig = angular.toJson(orderByConfig);
+        }
+        options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
         options.columnsConfig = angular.toJson(columnsConfig);
         var collectionListingPromise = $slatwall.getEntity(scope.entityName, options);
         collectionListingPromise.then(function(value) {
@@ -101,6 +134,20 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           scope.getCollection(true);
         }, 500);
       };
+      var siteChanged = function(selectedSiteOption) {
+        scope.selectedSite = selectedSiteOption;
+        scope.getCollection();
+      };
+      observerService.attach(siteChanged, 'optionsChanged', 'siteOptions');
+      var sortChanged = function(orderBy) {
+        scope.orderBy = orderBy;
+        scope.getCollection();
+      };
+      observerService.attach(sortChanged, 'sortByColumn', 'siteSorting');
+      scope.$on('$destroy', function handler() {
+        observerService.detachByEvent('optionsChanged');
+        observerService.detachByEvent('sortByColumn');
+      });
     }
   };
 }]);
