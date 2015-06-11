@@ -134,21 +134,8 @@ component {
 				var site = domainNameSite;
        		}
        		
-       		var renderingAdmin = false;
-       		//render slatwall admin if we have access
-	        if(pathArrayLen && pathArray[1] == 'admin' && domainNameSite.getAllowAdminAccessFlag()){
-	        	renderingAdmin = true;
-	        	if(!arraylen(arguments.slatwallScope.getCalledActions())){
-	        		if(isNull(rc.slatAction)){
-	        			writeOutput('#arguments.slatwallScope.doAction('admin:main.default')#');
-	        		}else{
-	        			writeOutput('#arguments.slatwallScope.doAction('#rc.slatAction#')#');
-	        		}
-	        		abort;
-	        	}
-	        }
 	        //if we obtained a site and it is allowed by the domain name then prepare to render content
-			if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID() && !renderingAdmin){
+			if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID()){
 				prepareSlatwallScope(arguments.slatwallScope,app,site);
 				prepareSiteForRendering(site=site, argumentsCollection=arguments);
 			}

@@ -90,6 +90,14 @@ component {
 				}
 			}
 		}
+		if(structKeyExists(form, "slatProcess")) {
+			for(var processAction in listToArray(form.slatProcess)) {
+				var session = getSessionService().processSesion($.slatwall.getSession(), processAction, request);
+				if(session.hasError()) {
+					break;
+				}
+			}
+		}
 	}
 	
 	function generateRenderedContent() {
