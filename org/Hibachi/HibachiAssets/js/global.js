@@ -93,19 +93,23 @@ function initUIElements( scopeSelector ) {
 	jQuery.each(jQuery( scopeSelector ).find(jQuery( '.wysiwyg' )), function(i, v){
 		// Wysiwyg custom config file located in: custom/assets/ckeditor_config.js
 		
-		var editorOverride = {
-		    customConfig: '../../../custom/assets/ckeditor_config.js'
-		};
-		console.log(editorOverride);
-		if($(v).attr('baseUrl')){
-			console.log('got baseUrl');
-			console.log($(v).attr('baseurl'));
-			console.log(CKEDITOR);
-			editorOverride.filebrowserBrowseUrl = '/ckfinder/ckfinder.html?baseurl='+$(v).attr('baseurl');
+		var customConfigLocation = '../../../custom/assets/ckeditor_config.js';
+		
+		var config = {
+			customConfig: customConfigLocation,
 		}
-		var editor = CKEDITOR.replace( v, editorOverride);
+		if($(v).attr('siteCode') && $(v).attr('appCode')){
+			var codeString = 'siteCode='+$(v).attr('siteCode')+'&appCode='+$(v).attr('appCode');
+			config.filebrowserBrowseUrl      =hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?'+codeString;
+			config.filebrowserImageBrowseUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?Type=Images&'+codeString;
+			config.filebrowserUploadUrl      = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Files&'+codeString;
+			config.filebrowserImageUploadUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Images&'+codeString;
+		}
+		var editor = CKEDITOR.replace( v, config);
 		
 		CKFinder.setupCKEditor( editor, 'org/Hibachi/ckfinder/' );
+		//allow override via attributes
+		
 	});
 
 	// Tooltips
