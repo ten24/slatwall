@@ -135,7 +135,7 @@ component {
        		}
        		
 	        //if we obtained a site and it is allowed by the domain name then prepare to render content
-			if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID() && !renderingAdmin){
+			if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID()){
 				prepareSlatwallScope(arguments.slatwallScope,app,site);
 				prepareSiteForRendering(site=site, argumentsCollection=arguments);
 			}
