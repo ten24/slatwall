@@ -46,7 +46,7 @@
 Notes:
 
 */
-component {
+component extends="org.Hibachi.Hibachi"{
 	
 	// Allow For Application Config
 	try{include "../../config/configApplication.cfm";}catch(any e){}
@@ -65,8 +65,7 @@ component {
 	this.ormSettings.automanageSession = false;
 	
 	function onRequestStart() {
-		runRequestActions();
-		
+		runRequestActions(argumentCollection=arguments);
 	}
 	
 	function runRequestActions() {
@@ -98,9 +97,12 @@ component {
 				}
 			}
 		}
+		generateRenderedContent(argumentCollection=arguments);
+		onRequestEnd();
 	}
 	
 	function generateRenderedContent() {
+		
 		var site = arguments.slatwallScope.getSite();
 		var templatePath = site.getApp().getAppRootPath() & '/' & site.getSiteCode() & '/templates/';
 		var contentPath = '';
@@ -170,9 +172,7 @@ component {
 			contentPath = templatePath & contentTemplateFile;
 			arguments.slatwallScope.setContent(content);
 		}
-		var $ = {
-			slatwall=arguments.slatwallScope
-		};
+		var $ = getApplicationScope(argumentCollection=arguments);
 		savecontent variable="templateData"{
 			include "#contentPath#";
 		}
@@ -193,6 +193,77 @@ component {
 			return content;
 		}
 		abort;
+	}
+	
+	public any function getApplicationScope(){
+		var applicationScope = this;
+		applicationScope.slatwall = arguments.slatwallScope;
+		return applicationScope;
+	}
+	
+	//CMS Helper functions that can be called by the cfm
+	public string function renderNavHTML(
+		required any content
+		, numeric viewDepth=1
+		, numeric currDepth=1
+		, string type="default"
+		, date today="#now()#"
+		, string class="navSecondary"
+		, string querystring=""
+		, string sortBy="orderno"
+		, string sortDirection="asc"
+//		, string context="#application.configBean.getContext()#"
+//		, string stub="#application.configBean.getStub()#"
+		, string categoryID=""
+		, string relatedID=""
+		, required contentCollection=arguments.content.getChildContents()
+		, required subNavExpression=""
+		, required liHasKidsClass=""
+		, required liHasKidsAttributes=""
+		, required liCurrentClass="current"
+		, required liCurrentAttributes=""
+		, required liHasKidsNestedClass=""
+		, required aHasKidsClass=""
+		, required aHasKidsAttributes=""
+		, required aCurrentClass="current"
+		, required aCurrentAttributes=""
+		, required ulNestedClass=""
+		, required ulNestedAttributes=""
+		, required openCurrentOnly=""
+		, required aNotCurrentClass=""
+		, required size="50"
+	){
+		
+		
+		//var firstLevelItems = arguments.content.getChildContents();
+
+		savecontent variable="navHTML"{
+			include 'templates/navtemplate.cfm';
+		};
+		
+		return navHTML;
+		
+//		
+//		var navigationHTML = '';
+//		var currentContentIDPath = getHibachiScope().getContent().getContentIDPath();
+//		for(firstLevelItem in firstLevelItems){
+//			//only add item if it passes the flag
+//			if(firstLevelItem.getDisplayInNavigation()){
+//				//get classes
+//				var classList = '';
+//				navigationHTML &= 
+//				'<li class=" dropdown">
+//					<a href="#firstLevelItem.getURLTitlePath()#" class="current">#firstLevelItem.getTitle()#</a>
+//					<!---<ul>
+//						<li><a href="level2link">Link 2 Name A</a></li>
+//						<li><a href="level2link">Link 2 Name A</a></li>
+//						<li><a href="level2link">Link 2 Name A</a></li>
+//						<li><a href="level2link">Link 2 Name A</a></li>
+//					</ul>--->
+//				</li>';
+//			}
+//		}
+//		return navigationHTML;
 	}
 	
 }
