@@ -306,7 +306,7 @@ component  extends="HibachiService" accessors="true" {
 			//deploy skeletonSite
 			deploySite(arguments.site);
 		}
-		
+		arguments.site = super.save(arguments.site, arguments.data);
 		return arguments.site;
 	}
 	
