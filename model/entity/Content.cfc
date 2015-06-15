@@ -491,7 +491,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	public boolean function getDisplayInNavigation() {
 		if(isNull(variables.displayInNavigation)) {
-			variables.displayInNavigation = 0;
+			variables.displayInNavigation = 1;
 		}
 		return variables.displayInNavigation;
 	}
