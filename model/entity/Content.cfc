@@ -113,6 +113,14 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		return variables.assetsPath;
 	}
 	
+	public string function getTitlePath(string delimiter){
+		var titlePath = variables.titlePath;
+		if(!isNull(arguments.delimiter)){
+			titlePath = Replace(titlePath,' >',arguments.delimiter,'ALL');
+		}
+		return titlePath;
+	}
+	
 	public string function getSharedAssetsPath(){
 		if(!structKeyExists(variables,'sharedAssetsPath')){
 			variables.sharedAssetsPath = getService('siteService').getSharedAssetsPath();
