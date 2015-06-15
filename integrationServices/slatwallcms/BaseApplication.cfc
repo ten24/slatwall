@@ -197,8 +197,7 @@ component extends="org.Hibachi.Hibachi"{
 		return applicationScope;
 	}
 	
-	//CMS Helper functions that can be called by the cfm
-	public string function renderNavHTML(
+	public string function renderNav(
 		required any content
 		, numeric viewDepth=1
 		, numeric currDepth=1
