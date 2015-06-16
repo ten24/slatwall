@@ -512,7 +512,7 @@ component extends="FW1.framework" {
 						// Reload ORM
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
 						ormReload();
-						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
+						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful"); 
 							
 						onUpdateRequest();
 						

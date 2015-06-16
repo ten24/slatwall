@@ -193,5 +193,84 @@ Notes:
 		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) >
 	</cffunction>
 	
+	<cffunction name="updateEntitiesWithCustomProperties" returntype="boolean">
+		 <cfscript>
+			try{
+				path = "#ExpandPath('/')#" & "/model/entity";
+				pathCustom = "#ExpandPath('/')#" & "/custom/model/entity";
+				directoryList = directoryList(path, false, "path", "*.cfc", "directory ASC");
+				directoryListByName = directoryList(path, false, "name", "*.cfc", "directory ASC");
+				directoryListCustom = directoryList(pathCustom, false, "name", "*.cfc", "directory ASC");
+				directories = ArrayToList(directoryList);
+				
+				var matches = 0;
+				var matchArray = [];
+				for (var fileName in directoryListCustom){
+				var result = ListFind(ArrayToList(directoryListByName), fileName);
+					if (result >= 1){
+						matches+=1;
+						ArrayAppend(matchArray, fileName);
+					}
+				}	
+				if (matches <= 0){
+					return true;
+				}
+				for (var match in matchArray){
+					var results = mergeProperties("#match#");
+				}
+				return true;
+			}catch(any e){
+				writeLog(file="Slatwall", text="Error reading from the file system while updating properties: #e#");
+				return false;
+			}
+			return true;
+		</cfscript>
+	</cffunction>
+	<cffunction name="mergeProperties" returntype="any">
+	  <cfargument name="fileName" type="String">
+		<cfscript>
+			
+			var fileContent =  "Slatwall/custom/model/entity/#fileName#";
+			var customFileContent =  "Slatwall/model/entity/#fileName#";
+		    
+		    var fileContentName = left(fileContent, len(fileContent)-4);
+		     	  fileContentName = replace(fileContent, "/", ".", "All");
+			var customFileContentName = left(fileContent, len(fileContent)-4);
+		     	  customFileContentName = replace(fileContent, "/", ".", "All"); 	  
+			
+			var baseMeta = getComponentMetaData(fileContentName);
+			var customMeta = getComponentMetaData(customFileContentName);
+			writeDump(customMeta);
+			//Grab the contents of the files and figure our the properties.
+			fileContent = fileRead(fileContent) ;
+			customFileContent = fileRead(customFileContent) ;
+			// check duplicate properties
+			for(var i=1; i <= arraylen(customMeta.properties); i++) {
+				for(var j=1; j <= arraylen(baseMeta.properties); j++ ) {
+					if(baseMeta.properties[j].name == customMeta.properties[i].name) {
+						writeLog("Slatwall", "Custom property names can't be same as core property names");
+					}
+				}
+			}			
+			var propertyStartPos = findNoCase("property ", customFileContent) ;
+			var functionLineStartPos = reFindNoCase('private|public(.*)function',customFileContent) ; 
+			var endPos = customFileContent.lastIndexOf("}") ;
+			var propertyString = mid(customFileContent, propertyStartPos, functionLineStartPos - propertyStartPos) ;
+			var functionString = mid(customFileContent, functionLineStartPos, endPos - functionLineStartPos) ;
+			var newContent = fileContent;
+			
+			// add property
+			if(!findNoCase(propertyString,fileContent)) {
+				functionLineStartPos = reFindNoCase('private|public(.*)function',fileContent) ; 
+				endPos = fileContent.lastIndexOf("}") ;	
+				newContent = left(fileContent,functionLineStartPos-1) & propertyString & mid(fileContent, functionLineStartPos, len(fileContent)-functionLineStartPos);
+				writedump("#newContent#");abort;
+			}
+		return newContent;
+		</cfscript>
+	</cffunction>
+	<cffunction name="addPropertiesToFile" returntype="String">	
+	</cffunction>
+	
 </cfcomponent>
 
