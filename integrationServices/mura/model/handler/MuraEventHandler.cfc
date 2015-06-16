@@ -831,7 +831,7 @@
 						barrierPageTemplateSetting.setSettingName( 'contentRestrictedContentDisplayTemplate' );
 						barrierPageTemplateSetting.setSettingValue( barrierPageTemplate.getContentID() );
 						barrierPageTemplateSetting.setSite( slatwallSite );
-						$.slatwall.getService("settingService").saveSetting( slatwallSite );
+						$.slatwall.getService("settingService").saveSetting( barrierPageTemplateSetting );
 					}
 					
 					// Flush these changes to the content
