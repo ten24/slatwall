@@ -475,6 +475,7 @@ input[type="file"] {display: block;width: auto;height: auto;padding: 0px;backgro
 
 /*Global*/
 body { background-color: @background; font-family: 'Open Sans', sans-serif;color:@black-60; padding-top: 60px; font-size:12px;min-width: 992px /*Remove for responsive*/;}
+body.s-login-screen {background-image: url(/assets/images/login-bg.jpg);background-repeat: no-repeat;background-position: center center; background-size:cover;height:100vh;}
 @media only screen and (max-width: 992px) {
     body {padding:0px /*Remove for responsive*/;}
 }
@@ -545,6 +546,30 @@ input[type="file"] {display: block;width: auto;height: auto;padding: 0px;backgro
 /* Form Validation */
 input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, input.error, select.error {border-color: @brand-danger !important;}
 .error.help-block  {color: @brand-danger !important;}
+
+/* Login */
+#j-forgot-password-wrapper{display:none}
+.s-login-wrapper .alert{margin-bottom:0px;position:fixed;top:0px;left:0px;right:0px;text-align:center}
+.s-login-wrapper h2{color:#FFF;text-align:center;margin-top:0px}
+.s-login-wrapper .col-sm-8{width:100%;padding:0px}
+.s-login-wrapper .col-sm-4{display:inline-block}
+.s-login-wrapper a.s-login-link{color:#fff;}
+.s-login-wrapper .s-other-services {padding: 0px 63px;}
+.s-login-wrapper .s-other-services .btn{width:100%;}
+.s-form-signin.s-other-services:before {content: "or";color: #FFF;font-size: 22px;bottom: 24px;position: relative;top: -12px;text-align: center;width: 100%;display: block;}
+.s-login-wrapper .s-form-signin label{color:#FFF;position:absolute;font-size:15px;margin-top:11px;text-align:right !important;min-width:150px;-webkit-transition:all .3s;-moz-transition:all .3s;-o-transition:all .3s;transition:all .3s;opacity:0;width:200px}
+.s-login-wrapper .s-form-signin label.error{background-color:#DA5757;margin-bottom:0px;width:100%;text-align:center !important;padding:6px 0px;color:##FFF;z-index:0;margin-bottom:6px;margin-top:-2px;border-radius:2px;opacity:1;display:block;position:relative;font-weight:500;font-size:12px}
+.s-login-wrapper .s-form-signin label.s-slide-out{display:block;margin-left:-205px;opacity:1}
+.s-login-container{display:-webkit-box;display:-moz-box;display:-ms-flexbox;display:-webkit-flex;display:flex;align-items:center;justify-content:center;height:70vh}
+.s-login-wrapper{width:450px}
+.s-form-signin{padding:25px 63px;margin:0 auto}
+.s-login-wrapper .s-logo{text-align:center}
+.s-login-wrapper .s-logo img{width:60%;margin-bottom:10px}
+.s-form-signin .form-control{position:relative;height:auto;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:12px;font-size:16px;margin-bottom:0px !important}
+.s-form-signin .form-control:focus{z-index:2}
+.s-form-signin .s-forgot-password-link{position:relative;top:-12px}
+.s-form-signin input{z-index:2;background-color:rgba(255, 255, 255, 0.9);line-height:22px}
+.s-login-wrapper button{font-size:14px;width:100% !important}
 
 /* Navigation Sidebar */
 #menu a > .fa.arrow {-webkit-transition: all .5s ease-out;-moz-transition: all .2s ease-out;-ms-transition: all .2s ease-out;-o-transition: all .2s ease-out;transition: all .2s ease-out;}
@@ -820,8 +845,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-filter-group-style {background-color: white;-webkit-box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),7px 7px   0 rgba(0,   0,   0,   0.1);-moz-box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),7px 7px   0 rgba(0,   0,   0,   0.1);box-shadow:1px 1px   0 rgba(0,   0,   0,   0.100),3px 3px   0 rgba(255, 255, 255, 1.0),4px 4px   0 rgba(0,   0,   0,   0.125),6px 6px   0 rgba(255, 255, 255, 1.0),7px 7px   0 rgba(0,   0,   0,   0.1);margin-right:6px;}
 .s-filter-group-style + .btn-group-vertical {margin-right:19px !important;}
 
-.s-checkbox {-webkit-touch-callout: none;-webki
-	t-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}
+.s-checkbox {-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none;}
 .s-checkbox {margin:0px;}
 .s-checkbox label {padding-left: 0px;margin-top:2px; cursor:pointer;font-weight:normal !important;}
 .s-checkbox label{display:block;position:relative;}
@@ -1730,7 +1754,7 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 .s-image-uploader .thumbnail {padding:0px;border-radius: 2px;}
 .s-image-uploader .thumbnail .s-image {position: relative;}
 .s-image-uploader h4::-webkit-scrollbar {display: none;}
-.s-image-uploader h4 {font-size: 12px;margin-right: 10px;margin-left: 10px;overflow: auto;height: 20px;overflow: -moz-scrollbars-none;}
+.s-image-uploader h4 {font-size: 12px;margin-right: 10px;margin-left: 10px;overflow: auto;height: 20px;overflow: -moz-scrollbars-none;white-space: nowrap}
 .s-image-uploader .s-zoom {display: inline-block;background-color: #fff;opacity:.0;position: absolute;width: 100%;height: 100%;top: 0px;text-align: center;padding-top: 20%;font-size: 45px;}	
 .s-image-uploader .s-zoom:hover {opacity: .8}
 .s-image-uploader .s-caption {margin-top: 10px;}
