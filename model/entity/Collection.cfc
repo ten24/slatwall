@@ -478,7 +478,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		variables.HQLParams = {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
-		HQL = createHQLFromCollectionObject(this,arguments.excludeSelectAndOrderBy);
+		HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy);
 		return HQL;
 	}
 	
@@ -707,6 +707,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public array function getRecords(boolean refresh=false) {
 		try{
+			//If we are returning only the exportable records, then check and pass through.
 			var HQL = '';
 			var HQLParams = {};
 			if( !structKeyExists(variables, "records") || arguments.refresh == true) {
@@ -720,16 +721,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var record = {};
 						
 						for(var column in columns){
+							
 							var listRest = ListRest(column.propertyIdentifier,'.');
 							if(structKeyExists(column,'setting') && column.setting == true){
 								var listRest = ListRest(column.propertyIdentifier,'.');
 								record[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
 							}else{
 								record[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(listRest);
-							}
-						}
+							}//<--end if
+						
+						}//<--end for
 						arrayAppend(variables.records,record);
-					} 
+					}//<--end entity 
 				}else{
 					HQL = getHQL();
 					HQLParams = getHQLParams();
@@ -899,70 +902,65 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		HQL &= ' new Map(';
 		for(var i = 1; i <= columnCount; i++){
 			var column = arguments.columns[i];
-			
-			var currentAlias = '';
-			var currentAliasStepped = '';
-			var columnPropertyIdentiferArray = listToArray(column.propertyIdentifier,'.');
-			var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
-			for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
-				if(columnPropertyIdentiferArrayCount > 2){
-					if(j != 1 && j != columnPropertyIdentiferArrayCount){
-						var dotNeeded = '';
-						if(j >= 3){
-							dotNeeded = '.';
+			//if(!arguments.returnExportableOnly || (arguments.returnExportableOnly && structKeyExists(column,'isExportable') && column.isExportable)){
+				var currentAlias = '';
+				var currentAliasStepped = '';
+				var columnPropertyIdentiferArray = listToArray(column.propertyIdentifier,'.');
+				var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
+				for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
+					if(columnPropertyIdentiferArrayCount > 2){
+						if(j != 1 && j != columnPropertyIdentiferArrayCount){
+							var dotNeeded = '';
+							if(j >= 3){
+								dotNeeded = '.';
+							}
+							
+							var join = {
+									associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
+									alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
+							};
+							
+							currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
+							currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
+							
+							addJoin(join);
+							
 						}
-						
-						var join = {
-								associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
-								alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
-						};
-						
-						currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
-						currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
-						
-						addJoin(join);
-						
+						if(j == columnPropertyIdentiferArrayCount){
+							column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
+						}
 					}
-					if(j == columnPropertyIdentiferArrayCount){
-						column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
+					if(!len(currentAlias)){
+						currentAlias = columnPropertyIdentiferArray[1];
 					}
 				}
-				if(!len(currentAlias)){
-					currentAlias = columnPropertyIdentiferArray[1];
-				};
-				
-			}
-			
-			
-			if(structKeyExists(column,'attributeID')){
-				HQL &= getColumnAttributeHQL(column);
-				
-			}else{
-				//check if we have an aggregate
-				if(!isnull(column.aggregate))
-				{
-					//if we have an aggregate then put wrap the identifier
-					HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
-					
+				if(structKeyExists(column,'attributeID')){
+					HQL &= getColumnAttributeHQL(column);
 				}else{
-					var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
-					
-					HQL &= ' #column.propertyIdentifier# as #columnAlias#';
+					//check if we have an aggregate
+					if(!isnull(column.aggregate))
+					{
+						//if we have an aggregate then put wrap the identifier
+						HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
+					}else{
+						var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
+						HQL &= ' #column.propertyIdentifier# as #columnAlias#';
+					}
 				}
-			}
-			
-			//check whether a comma is needed
-			if(i != columnCount){
-				HQL &= ',';
-			}
-		}
-		
+				
+				//check whether a comma is needed
+				if(i != columnCount){
+					HQL &= ',';
+				}//<--end if
+			//}//<--end exportable	
+		}//<--end for loop
 		HQL &= ')';
-		
 		return HQL;
-	}
+	}//<--end function
 	
-	public any function createHQLFromCollectionObject(required any collectionObject, boolean excludeSelectAndOrderBy=false){
+	public any function createHQLFromCollectionObject(required any collectionObject, 
+		boolean excludeSelectAndOrderBy=false
+	){
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
 		
@@ -981,7 +979,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				//get select columns if we don't have a non-persistent column and a processContext was not supplied
 				if(!this.getNonPersistentColumn() && !len(this.getProcessContext())){
-					selectHQL &= getSelectionsHQL(collectionConfig.columns,isDistinct);
+					selectHQL &= getSelectionsHQL(collectionConfig.columns, isDistinct);
 				}
 				
 				if(!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())){
@@ -992,7 +990,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}else{
 					orderByHQL &= getOrderByHQL();
 				}
-			}
+			}//<--end if build select
 			
 			//where clauses are actually the collection of all parent/child where clauses
 			var filterGroupArray = getFilterGroupArrayFromAncestors(this);

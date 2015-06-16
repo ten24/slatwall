@@ -191,16 +191,19 @@
 	        return arguments.entity;
 	    }
 	    
-		/**
-		* exports the given query/array to file.
+	  /**
+		* Exports the given query/array to file.
 		* 
-		* @param data      Data to export. (Required) (Currently only supports query).
-		* @param columns      list of columns to export. (optional, default: all)
-		* @param columnNames      list of column headers to export. (optional, default: none)
-		* @param fileName      file name for export. (default: uuid)
-		* @param fileType      file type for export. (default: csv)
+		* @param data Data to export. (Required) (Currently only supports query and array of structs).
+		* @param columns List of columns to export. (optional, default: all)
+		* @param columnNames List of column headers to export. (optional, default: none)
+		* @param fileName File name for export. (default: uuid)
+		* @param fileType File type for export. (default: csv)
 		*/
 		public void function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv') {
+			if (isArray(data)){
+				arguments.data = transformArrayOfStructsToQuery( data, ListToArray(columnNames));
+			}
 			if(!structKeyExists(arguments,"fileName")){
 				arguments.fileName = createUUID() ;
 			}
@@ -233,7 +236,29 @@
 			// Open / Download File
 			getHibachiUtilityService().downloadFile(fileNameWithExt,filePath,"application/#arguments.fileType#",true);
 		}
-			
+	
+	private query function transformArrayOfStructsToQuery( required array arrayOfStructs, required array colNames ){
+		var rowsTotal = ArrayLen(arrayOfStructs);
+		var columnsTotal = ArrayLen(colNames); 
+		if (rowsTotal < 1){return QueryNew("");}
+		var columnNames = arguments.colNames;
+		var newQuery = queryNew(arrayToList(columnNames));
+		queryAddRow(newQuery, rowsTotal);
+		for (var i=1; i <= rowsTotal; i++){
+			for(var n=1; n <= columnsTotal; n++){
+				var column = nullReplace(columnNames[n], "");
+				var value = "";
+				//Fixes undefined values
+				if (!StructKeyExists(arrayOfStructs[i], "#column#")){
+					value = "";
+				}else{
+					value = arrayOfStructs[i][column];
+				}
+				querySetCell(newQuery, column, value, i);
+			}
+		}
+		return newQuery;
+	}	
 			    
 	 	/**
 		 * Generic ORM CRUD methods and dynamic methods by convention via onMissingMethod.
