@@ -61,6 +61,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="contentBody" ormtype="string" length="4000" ;
 	property name="displayInNavigation" ormtype="boolean";
 	property name="excludeFromSearch" ormtype="boolean";
+	property name="sortOrder" ormtype="integer";
 
 	// CMS Properties
 	property name="cmsContentID" ormtype="string" index="RI_CMSCONTENTID";
@@ -114,7 +115,10 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	}
 	
 	public string function getTitlePath(string delimiter){
-		var titlePath = variables.titlePath;
+		var titlePath = '';
+		if(!isNull(variables.titlePath)){
+			titlePath = variables.titlePath;
+		}
 		if(!isNull(arguments.delimiter)){
 			titlePath = Replace(titlePath,' >',arguments.delimiter,'ALL');
 		}

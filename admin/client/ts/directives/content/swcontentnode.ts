@@ -67,6 +67,13 @@ angular.module('slatwalladmin')
                                 isSearchable: true
                             }
                         ];
+                        
+                        var childContentOrderBy = [
+                            {
+                                "propertyIdentifier":"_content.sortOrder",
+                                "direction":"DESC"
+                            }
+                        ];
                        
 
                         scope.getChildContent = function(parentContentRecord) {
@@ -78,10 +85,11 @@ angular.module('slatwalladmin')
                                     "value": parentContentRecord.contentID
                                 }]
                             }];
-
+ 
                             var collectionListingPromise = $slatwall.getEntity('Content', {
                                 columnsConfig: angular.toJson(childContentColumnsConfig),
                                 filterGroupsConfig: angular.toJson(childContentfilterGroupsConfig),
+                                orderByConfig: angular.toJson(childContentOrderBy),
                                 allRecords: true
                             });
                             collectionListingPromise.then(function(value) {
