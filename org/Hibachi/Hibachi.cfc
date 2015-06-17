@@ -49,6 +49,7 @@ component extends="FW1.framework" {
 	variables.framework.maxNumContextsPreserved = 10;
 	variables.framework.cacheFileExists = false;
 	variables.framework.trace = false;
+	
 	/* TODO: add solution to api routing for Rest api*/
 	variables.framework.routes = [
 		//api routes
@@ -368,6 +369,7 @@ component extends="FW1.framework" {
 					applicationInitData["applicationRootMappingPath"] = this.mappings[ "/#variables.framework.applicationKey#" ];
 					applicationInitData["applicationReloadKey"] = 		variables.framework.reload;
 					applicationInitData["applicationReloadPassword"] =	variables.framework.password;
+					applicationInitData["updateDestinationContentExclustionList"] = variables.framework.updateDestinationContentExclustionList;
 					applicationInitData["applicationUpdateKey"] = 		variables.framework.hibachi.fullUpdateKey;
 					applicationInitData["applicationUpdatePassword"] =	variables.framework.hibachi.fullUpdatePassword;
 					applicationInitData["debugFlag"] =					variables.framework.hibachi.debugFlag;
