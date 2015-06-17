@@ -473,12 +473,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return fromHQL;
 	}
 	
-	public string function getHQL(boolean excludeSelectAndOrderBy = false){
+	public string function getHQL(boolean excludeSelectAndOrderBy = false, forExport=false){
 		var collectionConfig = getCollectionConfigStruct();
 		variables.HQLParams = {};
 		variables.postFilterGroups = [];
 		variables.postOrderBys = [];
-		HQL = createHQLFromCollectionObject(this,arguments.excludeSelectAndOrderBy);
+		HQL = createHQLFromCollectionObject(this, arguments.excludeSelectAndOrderBy, arguments.forExport);
 		return HQL;
 	}
 	
@@ -705,14 +705,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 	
-	public array function getRecords(boolean refresh=false) {
+	public array function getRecords(boolean refresh=false, boolean forExport=false) {
+		
 		try{
+			//If we are returning only the exportable records, then check and pass through.
 			var HQL = '';
 			var HQLParams = {};
 			if( !structKeyExists(variables, "records") || arguments.refresh == true) {
 				if(this.getNonPersistentColumn()){
 					variables.records = [];
-					HQL = getHQL();
+					HQL = getHQL(forExport=arguments.forExport);
 					HQLParams = getHQLParams();
 					var entities = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 					var columns = getCollectionConfigStruct().columns;
@@ -720,18 +722,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						var record = {};
 						
 						for(var column in columns){
+							
 							var listRest = ListRest(column.propertyIdentifier,'.');
 							if(structKeyExists(column,'setting') && column.setting == true){
 								var listRest = ListRest(column.propertyIdentifier,'.');
 								record[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = getSettingValueFormattedByPropertyIdentifier(listRest,entity);
 							}else{
 								record[Replace(listRest(column.propertyIdentifier,'.'),'.','_','all')] = entity.getValueByPropertyIdentifier(listRest);
-							}
-						}
+							}//<--end if
+						
+						}//<--end for
 						arrayAppend(variables.records,record);
-					} 
+					}//<--end entity 
 				}else{
-					HQL = getHQL();
+					HQL = getHQL(forExport=arguments.forExport);
 					HQLParams = getHQLParams();
 					variables.records = ormExecuteQuery(HQL,HQLParams, false, {ignoreCase="true", cacheable=getCacheable(), cachename="records-#getCacheName()#"});
 				}
@@ -888,81 +892,93 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return HQL;	
 	}
 	
-	private any function getSelectionsHQL(required array columns, boolean isDistinct=false){
+	private any function getColumnCountByExportableColumns(required array columns){
+		var count = 0;
+		for(column in arguments.columns){
+			if(structKeyExists(column,'isExportable') && column.isExportable){
+				count++;
+			}
+		}
+		return count;
+	}
+	
+	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
 		var isDistinctValue = '';
 		if(arguments.isDistinct){
 			isDistinctValue = "DISTINCT";
 		}
 		
 		var HQL = 'SELECT #isDistinctValue#';
-		var columnCount = arraylen(arguments.columns);
+		var columnCount = 0;
+		if(arguments.forExport){
+			columnCount = getColumnCountByExportableColumns(arguments.columns);
+		}else{
+			columnCount = arraylen(arguments.columns);
+		}
+		
 		HQL &= ' new Map(';
 		for(var i = 1; i <= columnCount; i++){
 			var column = arguments.columns[i];
-			
-			var currentAlias = '';
-			var currentAliasStepped = '';
-			var columnPropertyIdentiferArray = listToArray(column.propertyIdentifier,'.');
-			var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
-			for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
-				if(columnPropertyIdentiferArrayCount > 2){
-					if(j != 1 && j != columnPropertyIdentiferArrayCount){
-						var dotNeeded = '';
-						if(j >= 3){
-							dotNeeded = '.';
+			if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
+				var currentAlias = '';
+				var currentAliasStepped = '';
+				var columnPropertyIdentiferArray = listToArray(column.propertyIdentifier,'.');
+				var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
+				for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
+					if(columnPropertyIdentiferArrayCount > 2){
+						if(j != 1 && j != columnPropertyIdentiferArrayCount){
+							var dotNeeded = '';
+							if(j >= 3){
+								dotNeeded = '.';
+							}
+							
+							var join = {
+									associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
+									alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
+							};
+							
+							currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
+							currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
+							
+							addJoin(join);
+							
 						}
-						
-						var join = {
-								associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
-								alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
-						};
-						
-						currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
-						currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
-						
-						addJoin(join);
-						
+						if(j == columnPropertyIdentiferArrayCount){
+							column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
+						}
 					}
-					if(j == columnPropertyIdentiferArrayCount){
-						column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
+					if(!len(currentAlias)){
+						currentAlias = columnPropertyIdentiferArray[1];
 					}
 				}
-				if(!len(currentAlias)){
-					currentAlias = columnPropertyIdentiferArray[1];
-				};
-				
-			}
-			
-			
-			if(structKeyExists(column,'attributeID')){
-				HQL &= getColumnAttributeHQL(column);
-				
-			}else{
-				//check if we have an aggregate
-				if(!isnull(column.aggregate))
-				{
-					//if we have an aggregate then put wrap the identifier
-					HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
-					
+				if(structKeyExists(column,'attributeID')){
+					HQL &= getColumnAttributeHQL(column);
 				}else{
-					var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
-					
-					HQL &= ' #column.propertyIdentifier# as #columnAlias#';
+					//check if we have an aggregate
+					if(!isnull(column.aggregate))
+					{
+						//if we have an aggregate then put wrap the identifier
+						HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
+					}else{
+						var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
+						HQL &= ' #column.propertyIdentifier# as #columnAlias#';
+					}
 				}
-			}
-			
-			//check whether a comma is needed
-			if(i != columnCount){
-				HQL &= ',';
-			}
-		}
-		
+				
+				//check whether a comma is needed
+				if(i != columnCount){
+					HQL &= ',';
+				}//<--end if
+			}//<--end exportable	
+		}//<--end for loop
 		HQL &= ')';
-		
 		return HQL;
-	}
+	}//<--end function
 	
-	public any function createHQLFromCollectionObject(required any collectionObject, boolean excludeSelectAndOrderBy=false){
+	public any function createHQLFromCollectionObject(required any collectionObject, 
+		boolean excludeSelectAndOrderBy=false,
+		boolean forExport=false
+	){
 		var HQL = "";
 		var collectionConfig = arguments.collectionObject.getCollectionConfigStruct();
 		
@@ -981,7 +997,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}
 				//get select columns if we don't have a non-persistent column and a processContext was not supplied
 				if(!this.getNonPersistentColumn() && !len(this.getProcessContext())){
-					selectHQL &= getSelectionsHQL(collectionConfig.columns,isDistinct);
+					selectHQL &= getSelectionsHQL(columns=collectionConfig.columns, isDistinct=isDistinct, forExport=arguments.forExport);
 				}
 				
 				if(!isnull(getPostOrderBys()) && arraylen(getPostOrderBys())){
@@ -992,7 +1008,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				}else{
 					orderByHQL &= getOrderByHQL();
 				}
-			}
+			}//<--end if build select
 			
 			//where clauses are actually the collection of all parent/child where clauses
 			var filterGroupArray = getFilterGroupArrayFromAncestors(this);
