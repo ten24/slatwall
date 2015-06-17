@@ -1,5 +1,4 @@
 <!---
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,9 +39,7 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 --->
 <cfcomponent accessors="true" persistent="false" output="false" extends="HibachiReport">
 	
@@ -174,4 +169,3 @@ Notes:
 	</cffunction>
 	
 </cfcomponent>
-
