@@ -224,12 +224,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	
 	public numeric function getSortOrder(){
 		if(isNull(variables.sortOrder)){
-			var maxSortOrder = ORMExecuteQuery(
-				'SELECT DISTINCT COALESCE(max(sortOrder),0) as maxSortOrder FROM SlatwallContent 
-				where site=:site 
-				and parentContent=:parentContent
-				',{site=this.getSite(),parentContent=this.getParentContent()},true
-			);	
+			var maxSortOrder = getDao('contentDao').getMaxSortOrderByContent(this);	
 			variables.sortOrder = maxSortOrder;
 		}
 		return variables.sortOrder;
@@ -252,14 +247,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 				var max = getSortOrder();
 			}
 			
-			var contentToUpdate = ORMExecuteQuery(
-				'FROM SlatwallContent 
-				where site=:site 
-				and parentContent=:parentContent
-				and sortOrder Between #min# and #max#
-				',
-				{site=this.getSite(),parentContent=this.getParentContent()}
-			);
+			var contentToUpdate = getDao('contentDao').getContentBySortOrderMinAndMax(this,min,max);
 			
 			for(var content in contentToUpdate){
 				if(content.getContentID() != getContentID()){

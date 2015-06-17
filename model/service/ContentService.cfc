@@ -139,12 +139,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getContentDao().getContentBySiteIDAndUrlTitlePath(argumentCollection=arguments);
 	}
 	
-	public any function updateRecordSortOrder(required string recordIDColumn, required string recordID, required string entityName, required numeric newSortOrder) {
-		var entityMetaData = getEntityMetaData( arguments.entityName );
-		arguments.tableName = entityMetaData.table;
-		getDAO('contentDao').updateRecordSortOrder(argumentcollection=arguments);
-	}
-	
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================

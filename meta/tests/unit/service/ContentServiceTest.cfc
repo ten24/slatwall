@@ -71,29 +71,5 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assert(deleteOK);
 	}
-	
-	public void function populateSorstOrderTest(){
-		var sites = ORMExecuteQuery('FROM SlatwallSite');
-		for(var site in sites){
-			var contentParents = ORMExecuteQuery('Select Distinct parentContent.contentID FROM SlatwallContent where site=:site',{site=site});
-			
-			for(var parentContentID in contentParents){
-				if(!isnull(parentContentID)){
-					var childContents = ORMExecuteQuery('FROM SlatwallContent where site=:site and parentContent.contentID = :parentContentID',{site=site,parentContentID=parentContentID});
-				}else{
-					var childContents = ORMExecuteQuery('FROM SlatwallContent where site=:site and parentContent.contentID is Null',{site=site});
-				
-				}
-				
-				var count = 0;
-				for(var childContent in childContents){
-					childContent.setSortOrder(count);
-					request.debug(childCOntent.getSortOrder());
-					count++;
-				}
-			}
-		}
-		ormflush();
-	}
 
 }
