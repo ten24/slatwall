@@ -221,6 +221,20 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		}
 	}
 	
+	
+	public numeric function getSortOrder(){
+		if(isNull(variables.sortOrder)){
+			var maxSortOrder = ORMExecuteQuery(
+				'SELECT DISTINCT COALESCE(max(sortOrder),0) as maxSortOrder FROM SlatwallContent 
+				where site=:site 
+				and parentContent=:parentContent
+				',{site=this.getSite(),parentContent=this.getParentContent()},true
+			);	
+			variables.sortOrder = maxSortOrder;
+		}
+		return variables.sortOrder;
+	}
+	
 	public void function setSortOrder(numeric newSortOrder, boolean intertalUpdate=false){
 		if(!arguments.intertalUpdate){
 			var currentSortOrder = getSortOrder();
