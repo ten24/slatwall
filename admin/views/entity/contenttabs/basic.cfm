@@ -16,6 +16,7 @@
 			<hb:HibachiPropertyDisplay object="#rc.content#" property="contentTemplateType" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.content#" property="productListingPageFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.content#" property="allowPurchaseFlag" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.content#" property="sortOrder" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.content#" property="site" edit="false">
 			<cfif !isnull(rc.content.getParentContent)>
 				<hb:HibachiPropertyDisplay object="#rc.content#" property="parentContent" edit="false">
