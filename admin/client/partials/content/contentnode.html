@@ -1,7 +1,6 @@
-<td ng-click="getChildContent(contentData)">
-	<i style="margin-left:{{depth*15||0}}px" class="fa fa-caret-{{child ? 'down' : 'right' }}" ng-bind="contentData.fullTitle || contentData.title"></i>
+<td ng-click="getChildContent(contentData)" >
+	<i style="margin-left:{{depth*15||0}}px" class="fa fa-caret-{{childOpen ? 'down' : 'right' }}" ng-bind="contentData.titlePath && contentData.titlePath.trim().length ? contentData.titlePath : contentData.title"></i>
 </td>
-<td ng-bind="contentData.site_siteName"></td>
 <td ng-bind="contentData.contentTemplateFile"></td>
 <td ng-bind="contentData.allowPurchaseFlag"></td>
 <td ng-bind="contentData.productListingPageFlag"></td>
@@ -11,8 +10,28 @@
 
 <!--<td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="contentData[column.propertyIdentifier.substring(column.propertyIdentifier.indexOf('.')+1,column.propertyIdentifier.length).replace('.','_')]" ng-show="column.isVisible"></td>-->
    
-    <td class="s-edit-elements">
+<td class="s-edit-elements">
   <ul class="list-unstyled list-inline">
-    <li ng-if="contentData.contentID"><a href="?slatAction=entity.detailContent&contentID={{contentData.contentID}}" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-eye-open"></i></a></li>
+    <li ng-if="contentData.contentID">
+    	<!--<a sw-href="{{'/entity/Content/'+contentData.contentID}}" class="btn btn-default btn-xs">
+    		<i class="glyphicon glyphicon-eye-open"></i>
+    	</a>-->
+    	<!--<a sw-href="{{'/entity/Content/null?parentContentID='+contentData.contentID+'&siteID='+contentData.site_siteID}}" class="btn btn-default btn-xs">
+    		<i class="glyphicon glyphicon-plus-sign"></i>
+    	</a>-->
+    	<a href="?slatAction=entity.detailContent&contentID={{contentData.contentID}}" class="btn btn-default btn-xs">
+    		<i class="glyphicon glyphicon-eye-open"></i>
+    	</a>
+    	<a 	title="Create Content" 
+    		class="adminentitypreprocessorder btn btn-primary modalload" 
+    		target="_self" href="/?slatAction=entity.preprocesscontent&amp;processContext=create&amp;parentContentID={{contentData.contentID}}&amp;siteID={{contentData.site_siteID}}" 
+    		data-toggle="modal" 
+    		data-target="#adminModal">
+    		<i class="glyphicon glyphicon-plus-sign"></i>
+    	</a>
+    	<!--<a href="?slatAction=entity.detailContent&contentID={{contentData.contentID}}&parentContentID={{contentData.contentID}}+'&siteID={{contentData.site_siteID}}" class="btn btn-default btn-xs">
+    		<i class="glyphicon glyphicon-plus-sign"></i>
+    	</a>-->
+    </li>
   </ul>
 </td>

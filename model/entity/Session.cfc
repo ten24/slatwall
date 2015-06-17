@@ -57,6 +57,8 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 	property name="rbLocale" ormtype="string";
 	property name="sessionCookiePSID" ormtype="string" length="64";
 	property name="sessionCookieNPSID" ormtype="string" length="64"; 
+	property name="sessionExpirationDateTime" ormtype="timestamp";
+	property name="deviceID" ormtype="string" default="" ;
 	
 	// Related Entities
 	property name="account" type="any" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID" fetch="join";
@@ -84,6 +86,16 @@ component displayname="Session" entityname="SlatwallSession" table="SwSession" p
 			return variables.order;
 		} else if (!structKeyExists(variables, "requestOrder")) {
 			variables.requestOrder = getService("orderService").newOrder();
+			//check if we are running on a CMS site by domain
+			var site = getService('SiteService').getCurrentRequestSite();
+			if(
+				!isNull(site) 
+				&& !isNull(site.setting('siteOrderOrigin'))
+				&& len(site.setting('siteOrderOrigin'))
+			){
+				var siteOrderOrigin = getService('HibachiService').getOrderOrigin(site.setting('siteOrderOrigin'));
+				requestOrder.setOrderOrigin(siteOrderOrigin);
+			}
 		}
 		return variables.requestOrder;
 	}

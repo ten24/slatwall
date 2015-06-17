@@ -46,9 +46,37 @@
 Notes:
 
 */
-component extends="HibachiService" persistent="false" accessors="true" output="false" {
-
+component extends="HibachiService" accessors="true" output="false" {
+	variables.appsPath = expandPath('/Slatwall/apps');
+	variables.skeletonAppPath = expandPath('/integrationServices/slatwallcms/skeletonapp');
+	
 	// ===================== START: Logical Methods ===========================
+	
+	public void function deployApplication(required any app) {
+		// copy skeletonapp to /apps/{applicationCodeOrID} 
+		if(!directoryExists(arguments.app.getAppPath())){
+			directoryCreate(arguments.app.getAppPath());
+		}
+		getService("hibachiUtilityService").duplicateDirectory(
+			source=getSkeletonAppPath(), 
+			destination=arguments.app.getAppPath(), 
+			overwrite=false, 
+			recurse=false, 
+			copyContentExclusionList=".svn,.git"
+		);
+	}
+	
+	public void function updateCMSApp(required app){
+		getService("hibachiUtilityService").copyFile(
+			source= replacenocase(getSkeletonAppPath(),'\','/','all') & '/Application.cfc', 
+			destination=replacenocase(arguments.app.getAppPath(),'\','/','all') & '/Application.cfc', 
+			overwrite=true
+		);
+	}
+	
+	public string function getSkeletonAppPath(){
+		return variables.skeletonAppPath;
+	} 
 	
 	// =====================  END: Logical Methods ============================
 	
@@ -61,6 +89,34 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
+	
+	public any function saveApp(required any app, struct data={}){
+		//deploy the app if the application is new	
+		if(arguments.app.isNew()){
+			//create directory for app
+			if(!directoryExists(variables.appsPath)){
+				directoryCreate(variables.appsPath);
+			}
+			//need to set the appcode to create the app path 
+			arguments.app.setAppCode(arguments.data.appCode);
+			if(!directoryExists(arguments.app.getAppPath())){
+				directoryCreate(arguments.app.getAppPath());
+			}
+			
+			//deploy skeletonApp
+			deployApplication(arguments.app);
+		}
+		arguments.app = super.save(arguments.app, arguments.data);	
+		return arguments.app;
+	}
+	
+	public any function processApp_create(required any app, required any processObject){
+		//load slatwallCMS Integration
+		var slatwallCMSIntegration = getService('integrationService').getIntegrationByIntegrationPackage('slatwallcms');
+		arguments.app.setIntegration(slatwallCMSIntegration);
+		arguments.app = saveApp(arguments.app, arguments.data);	
+		return arguments.app;
+	}
 	
 	// ======================  END: Save Overrides ============================
 	

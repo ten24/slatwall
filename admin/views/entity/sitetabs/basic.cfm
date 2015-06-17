@@ -7,7 +7,13 @@
 <cfoutput>
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
+			<cfif !isNull(rc.site.getApp())>
+				<hb:HibachiPropertyDisplay object="#rc.site#" property="app" edit="false">
+			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.site#" property="siteName" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.site#" property="siteCode" edit="false">
+			<hb:HibachiPropertyDisplay object="#rc.site#" property="domainNames" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.site#" property="allowAdminAccessFlag" edit="#rc.edit#">
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 </cfoutput>

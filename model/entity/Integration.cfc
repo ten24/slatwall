@@ -56,6 +56,9 @@ component displayname="Integration" entityname="SlatwallIntegration" table="SwIn
 	property name="integrationName" ormtype="string";
 	property name="integrationTypeList" ormtype="string"; 
 	
+	// Related Object Properties (one-to-many)
+	property name="apps" type="array" cfc="App" singularname="app" fieldtype="one-to-many" fkcolumn="integrationID" inverse="true";
+	
 	// Audit Properties
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";

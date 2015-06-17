@@ -1,4 +1,5 @@
-<ul class="col-xs-12 list-unstyled s-no-paddings s-filter-groups" ng-if="filterGroup">
+<div ng-show="!filterGroupItem.length" class="alert alert-info" sw-rbkey="'entity.Collection.filter.norecordsfound'" style="margin-right: 15px; margin-left: 15px;" role="alert"><!-- Message created by rb key --></div>
+<ul class="col-xs-12 list-unstyled s-filter-groups" ng-if="filterGroup">
 	<span ng-repeat="filterGroup in filterGroupItem">
 		<!-- figure out if item is filterItem or filterGroup-->
 		<span ng-switch on="filterGroup.hasOwnProperty('filterGroup')" >

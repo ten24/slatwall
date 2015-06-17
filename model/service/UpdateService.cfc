@@ -59,7 +59,7 @@ Notes:
 			<cfset var downloadURL = "https://github.com/ten24/Slatwall/zipball/#arguments.branch#" />	
 			<cfset var slatwallRootPath = expandPath("/Slatwall") />
 			<cfset var downloadFileName = "slatwall#createUUID()#.zip" />
-			<cfset var deleteDestinationContentExclusionList = "/integrationServices,/custom,/WEB-INF,.project,setting.xml" />
+			<cfset var deleteDestinationContentExclusionList = getHibachiScope().getApplicationValue('updateDestinationContentExclustionList') />
 			<cfset var copyContentExclusionList = "" />
 			<cfset var slatwallDirectoryList = "" />
 			
@@ -105,6 +105,7 @@ Notes:
 			<cffile action="delete" file="#getTempDirectory()##downloadFileName#" >
 			<cfdirectory action="delete" directory="#sourcePath#" recurse="true">
 			
+			<cfset updateCMSApplications()>
 			<!--- if there is any error during update, restore the old files and throw the error --->
 			<cfcatch type="any">
 				<cfif updateCopyStarted>
@@ -115,6 +116,14 @@ Notes:
 			</cfcatch>
 			
 		</cftry>
+	</cffunction>
+	
+	<cffunction name="updateCMSApplications">
+		<!--- Overwrite all CMS Application.cfc's with the latest from the skeletonApp --->
+		<cfset var apps = this.getAppSmartList().getRecords()>
+		<cfloop array="#apps#" index="app">
+			<cfset getService('appService').updateCMSApp(app)>
+		</cfloop>
 	</cffunction>
 	
 	<cffunction name="runScripts">

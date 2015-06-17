@@ -61,7 +61,22 @@ Notes:
 		<cfreturn entityNew("SlatwallContent") />
 	</cffunction>
 	
-	<cffunction name="getContentBySiteIDAndUrlTitle" access="public">
+	<cffunction name="getContentDescendants" access="public" >
+		<cfargument name="content" type="any" required="true">
+		<cfreturn ORMExecuteQuery(
+			'From #getApplicationKey()#Content 
+			where site=:site 
+			and urlTitlePath <> :urlTitlePath 
+			and urlTitlePath like :urlTitlePathLike',
+			{
+				site=arguments.content.getSite(),
+				urlTitlePath=arguments.content.getURLTitlePath(),
+				urlTitlePathLike=arguments.content.getUrlTitlePath() & '%'
+			}
+		)>
+	</cffunction>
+	
+	<cffunction name="getContentBySiteIDAndUrlTitlePath" access="public">
 		<cfargument name="siteID" type="string" required="true">
 		<cfargument name="urlTitlePath" type="string" required="true">
 		
@@ -101,6 +116,17 @@ Notes:
 	<cffunction name="getDefaultContentBySite" access="public">
 		<cfargument name="site" type="any" required="true">
 		<cfreturn ORMExecuteQuery('FROM SlatwallContent Where site = :site AND parentContent IS NULL',{site=arguments.site},true)>
+	</cffunction>
+	
+	<cffunction name="getContentByUrlTitlePathBySite" access="public">
+		<cfargument name="site" type="any" required="true" />
+		<cfargument name="urlTitlePath" type="any" />
+		
+		<cfif isNull(arguments.urlTitlePath)>
+			<cfreturn ORMExecuteQuery("FROM SlatwallContent WHERE site = :site AND urlTitlePath IS Null",{site=arguments.site}, true) />
+		<cfelse>
+			<cfreturn ORMExecuteQuery("FROM SlatwallContent WHERE site = :site AND urlTitlePath = :urlTitlePath",{site=arguments.site,urlTitlePath=arguments.urlTitlePath}, true) />
+		</cfif>
 	</cffunction>
 	
 </cfcomponent>

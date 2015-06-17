@@ -70,12 +70,11 @@ Notes:
 			
 			<base href="#baseHREF#" />
 		</cfif>
-
-		<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/fonts/opensans/opensans.css" rel="stylesheet">
+		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/css/jquery-ui-1.9.2.custom.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/admin/client/css/main.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/assets/flags/css/flag-icon.min.css" rel="stylesheet">
-		<link href='//fonts.googleapis.com/css?family=Open+Sans:400,600,800,700' rel='stylesheet' type='text/css'>
 		<link href="#request.slatwallScope.getBaseURL()#/client/lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" type='text/css'>
 		<link href="#request.slatwallScope.getBaseURL()#/client/lib/metismenu/metismenu.css" rel="stylesheet">
 		<link href="#request.slatwallScope.getBaseURL()#/org/Hibachi/ng-ckeditor/ng-ckeditor.css" rel="stylesheet" type='text/css'>
@@ -94,7 +93,6 @@ Notes:
 		</script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/global.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/assets/js/admin.js"></script>
-
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/ckeditor.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckeditor/adapters/jquery.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ckfinder/ckfinder.js"></script>
@@ -136,7 +134,10 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionterm" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listsubscriptionbenefit" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listcategory" type="list">
-									<hb:HibachiActionCaller action="admin:entity.listcontent" type="list">
+									<cfif $.slatwall.authenticateAction(action='admin:entity.listcontent')>
+										<hb:HibachiActionCaller queryString="ng##!/entity/Content" text="#$.slatwall.rbKey('admin.entity.listcontent')#" type="list">
+									</cfif>
+									<!---<hb:HibachiActionCaller action="admin:entity.listcontent" type="list">--->
 									<li class="divider"></li>
 									<hb:HibachiActionCaller action="admin:entity.listpromotion" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listpricegroup" type="list">
@@ -186,6 +187,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:entity.listattributeset" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listintegration" type="list">
 									<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listapp" type="list">
 									<!---<cfif $.slatwall.authenticateAction(action='admin:entity.listapp')>
 										<hb:HibachiActionCaller queryString="ng##!/entity/App" text="#$.slatwall.rbKey('admin.entity.listapp')#" type="list">
 									</cfif>--->
@@ -396,6 +398,10 @@ Notes:
 			<cfquery name="modules" dbtype="query">
 				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#modules%'
 			</cfquery>
+			<!---model --->
+			<cfquery name="model" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#model%'
+			</cfquery>
 			<!---controllers --->
 			<cfquery name="controllers" dbtype="query">
 				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#controllers%'
@@ -408,6 +414,11 @@ Notes:
 			<cfquery name="services" dbtype="query">
 				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#services%'
 			</cfquery>
+			
+			<cfloop query="model">
+				<cfset scriptRelativePath = replace(model.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & model.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			</cfloop>
 			
 			<cfloop query="modules">
 				<cfset scriptRelativePath = replace(modules.directory,es5scriptPath,'')>

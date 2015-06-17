@@ -193,6 +193,7 @@ Notes:
 					  				params.columnsConfig = options.columnsConfig || '';
 					  				params.filterGroupsConfig = options.filterGroupsConfig || '';
 					  				params.joinsConfig = options.joinsConfig || '';
+					  				params.orderByConfig = options.orderByConfig || '';
 					  				params.isDistinct = options.isDistinct || false;
 					  				params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 					  				params.allRecords = options.allRecords || '';
@@ -324,7 +325,7 @@ Notes:
 					  		},
 					  		saveEntity:function(entityName,id,params,context){
 					  			
-					  			$log.debug('save'+ entityName);
+					  			//$log.debug('save'+ entityName);
 					  			var deferred = $q.defer();
 				
 					  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.post';	
@@ -383,23 +384,23 @@ Notes:
 					  			return _loadedResourceBundle;
 					  		},
 					  		hasResourceBundle:function(){
-					  			$log.debug('hasResourceBundle');
-					  			$log.debug(_loadedResourceBundle);
+					  			////$log.debug('hasResourceBundle');
+					  			////$log.debug(_loadedResourceBundle);
 					  			if(!_loadingResourceBundle && !_loadedResourceBundle){
 					  				_loadingResourceBundle = true;
-					  				$log.debug(slatwallService.getConfigValue('rbLocale').split('_'));
+					  				//$log.debug(slatwallService.getConfigValue('rbLocale').split('_'));
 					  				var localeListArray = slatwallService.getConfigValue('rbLocale').split('_');
 					  				var rbPromise;
 					  				var rbPromises = [];
 									rbPromise = slatwallService.getResourceBundle(slatwallService.getConfigValue('rbLocale'));
 									rbPromises.push(rbPromise);
 									if(localeListArray.length === 2){
-										$log.debug('has two');
+										//$log.debug('has two');
 										rbPromise = slatwallService.getResourceBundle(localeListArray[0]);
 										rbPromises.push(rbPromise);
 									}
 									if(localeListArray[0] !== 'en'){
-										$log.debug('get english');
+										//$log.debug('get english');
 										slatwallService.getResourceBundle('en_us');
 										slatwallService.getResourceBundle('en');
 									}	
@@ -452,31 +453,31 @@ Notes:
 					  			}*/
 					  		}--->
 					  		rbKey:function(key,replaceStringData){
-					  			$log.debug('rbkey');
-					  			$log.debug(key);
-					  			$log.debug(_config.rbLocale);
+					  			////$log.debug('rbkey');
+					  			////$log.debug(key);
+					  			////$log.debug(_config.rbLocale);
 					  		
 					  			var keyValue = this.getRBKey(key,_config.rbLocale);
-					  			$log.debug(keyValue);
+					  			////$log.debug(keyValue);
 					  			<!---if(angular.isDefined(replaceStringData) && ('"${'.toLowerCase().indexOf(keyValue))){
 					  				keyValue = slatwallService.replaceStringTemplate(keyValue,replaceStringData);
 					  			}--->
 					  			return keyValue;
 					  		},
 					  		getRBKey:function(key,locale,checkedKeys,originalKey){
-					  			$log.debug('getRBKey');
-					  			$log.debug('loading:'+_loadingResourceBundle);
-					  			$log.debug('loaded'+_loadedResourceBundle);
+					  			////$log.debug('getRBKey');
+					  			////$log.debug('loading:'+_loadingResourceBundle);
+					  			////$log.debug('loaded'+_loadedResourceBundle);
 					  			if(!_loadingResourceBundle && _loadedResourceBundle){
 					  				key = key.toLowerCase();
 						  			checkedKeys = checkedKeys || "";
 						  			locale = locale || 'en_us';
-						  			$log.debug('locale');
-						  			$log.debug(locale);
+						  			////$log.debug('locale');
+						  			////$log.debug(locale);
 						  			<!---// Check to see if a list was passed in as the key--->
 						  			var keyListArray = key.split(',');
-						  			$log.debug('keylistAray');
-						  			$log.debug(keyListArray);
+						  			////$log.debug('keylistAray');
+						  			////$log.debug(keyListArray);
 									if(keyListArray.length > 1) {
 										
 										<!---// Set up "" as the key value to be passed as 'checkedKeys'--->
@@ -487,7 +488,7 @@ Notes:
 											
 											<!---// Get the keyValue from this iteration--->
 											var keyValue = this.getRBKey(keyListArray[i], locale, keyValue);
-											$log.debug('keyvalue:'+keyValue);
+											////$log.debug('keyvalue:'+keyValue);
 											<!---// If the keyValue was found, then we can break out of the loop--->
 											if(keyValue.slice(-8) != "_missing") {
 												break;
@@ -499,11 +500,11 @@ Notes:
 									
 									<!---// Check the exact bundle file--->
 									var bundle = slatwallService.getResourceBundle(locale);
-									$log.debug('bundle');
-									$log.debug(bundle);
+									//$log.debug('bundle');
+									//$log.debug(bundle);
 									if(!angular.isFunction(bundle.then)){
 										if(angular.isDefined(bundle[key])) {
-											$log.debug('rbkeyfound:'+bundle[key]);
+											//$log.debug('rbkeyfound:'+bundle[key]);
 											return bundle[key];
 										}
 										
@@ -515,15 +516,15 @@ Notes:
 										if(angular.isUndefined(originalKey)){
 											originalKey = key;
 										}
-										$log.debug('originalKey:'+key);
-										$log.debug(checkedKeysListArray);
+										//$log.debug('originalKey:'+key);
+										//$log.debug(checkedKeysListArray);
 										<!---// Check the broader bundle file--->
 										var localeListArray = locale.split('_');
-										$log.debug(localeListArray);
+										//$log.debug(localeListArray);
 										if(localeListArray.length === 2){
 											bundle = slatwallService.getResourceBundle(localeListArray[0]);
 											if(angular.isDefined(bundle[key])){
-												$log.debug('rbkey found:'+bundle[key]);
+												//$log.debug('rbkey found:'+bundle[key]);
 												return bundle[key];
 											}
 											<!---// Add this more broad term to the checked keys--->
@@ -536,14 +537,14 @@ Notes:
 											&& keyDotListArray[keyDotListArray.length - 2] === 'define'
 										){
 											var newKey = key.replace(keyDotListArray[keyDotListArray.length - 3]+'.define','define');
-											$log.debug('newkey1:'+newKey);
+											//$log.debug('newkey1:'+newKey);
 											return this.getRBKey(newKey,locale,checkedKeys,originalKey);
 										}else if( keyDotListArray.length >= 2 && keyDotListArray[keyDotListArray.length - 2] !== 'define'){
 											var newKey = key.replace(keyDotListArray[keyDotListArray.length -2]+'.','define.');
-											$log.debug('newkey:'+newKey);
+											//$log.debug('newkey:'+newKey);
 											return this.getRBKey(newKey,locale,checkedKeys,originalKey);
 										}
-										$log.debug(localeListArray);
+										//$log.debug(localeListArray);
 										
 										if(localeListArray[0] !== "en"){
 											return this.getRBKey(originalKey,'en',checkedKeys);
@@ -882,14 +883,14 @@ Notes:
 	
 				    	var _save = function(entityInstance){
 				    		 var timeoutPromise = $timeout(function(){
-					    		$log.debug('save begin');
-					    		$log.debug(entityInstance);
+					    		//$log.debug('save begin');
+					    		//$log.debug(entityInstance);
 					    		
 					    		var entityID = entityInstance.$$getID();
 					    		
 					    		var modifiedData = _getModifiedData(entityInstance);
-					    		$log.debug('modifiedData complete');
-					    		$log.debug(modifiedData);
+					    		//$log.debug('modifiedData complete');
+					    		//$log.debug(modifiedData);
 					    		timeoutPromise.valid = modifiedData.valid;
 					    		if(modifiedData.valid){
 						    		var params = {};
@@ -918,8 +919,8 @@ Notes:
 						    		//select first, visible, and enabled input with a class of ng-invalid
 								
 						    		var target = $('input.ng-invalid:first:visible:enabled');
-						    		$log.debug('input is invalid');
-									$log.debug(target);
+						    		//$log.debug('input is invalid');
+									//$log.debug(target);
 						    		target.focus();
 								var targetID = target.attr('id');
 						    		$anchorScroll();
@@ -967,14 +968,14 @@ Notes:
 							var valid = true;
 				    		<!--- after finding the object level we will be saving at perform dirty checking object save level--->
 							var forms = entityInstance.forms;
-							$log.debug('process base level data');
+							//$log.debug('process base level data');
 							for(var f in forms){
 								
 				    			var form = forms[f];
 				    			form.$setSubmitted();	//Sets the form to submitted for the validation errors to pop up.
 				    			if(form.$dirty && form.$valid){
 						    		for(var key in form){
-						    			$log.debug('key:'+key);
+						    			//$log.debug('key:'+key);
 						    			if(key.charAt(0) !== '$'){
 						    				var inputField = form[key];
 						    				if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
@@ -998,11 +999,11 @@ Notes:
 					    		}
 				    		}
 				    		modifiedData[entityInstance.$$getIDName()] = entityInstance.$$getID();
-							$log.debug(modifiedData);	
+							//$log.debug(modifiedData);	
 
 
 							<!--- check if we have a parent with an id that we check, and all children --->
-							$log.debug('process parent data');
+							//$log.debug('process parent data');
 							if(angular.isDefined(entityInstance.parents)){
 								for(var p in entityInstance.parents){
 									var parentObject = entityInstance.parents[p];
@@ -1040,13 +1041,13 @@ Notes:
 						    		modifiedData[parentObject.name][parentInstance.$$getIDName()] = parentInstance.$$getID();
 								}
 							}
-							$log.debug(modifiedData);
+							//$log.debug(modifiedData);
 	
 							<!--- dirty check all children --->
-							$log.debug('begin child data');
+							//$log.debug('begin child data');
 							var childrenData = validateChildren(entityInstance);
-							$log.debug('child Data');
-							$log.debug(childrenData);
+							//$log.debug('child Data');
+							//$log.debug(childrenData);
 							angular.extend(modifiedData,childrenData);
 							return {
 								valid:valid,
@@ -1098,8 +1099,8 @@ Notes:
 								data[entityInstance.$$getIDName()] = entityInstance.$$getID();
 			    			}
 			    			
-			    			$log.debug('processParent');
-			    			$log.debug(entityInstance);
+			    			//$log.debug('processParent');
+			    			//$log.debug(entityInstance);
 				    		var forms = entityInstance.forms;
 				    			
 							for(var f in forms){
@@ -1112,7 +1113,7 @@ Notes:
 			    		}
 	
 			    		var processForm = function(form,entityInstance){
-			    			$log.debug('begin process form');
+			    			//$log.debug('begin process form');
 			    			var data = {};
 			    			form.$setSubmitted();	
 			    			for(var key in form){
@@ -1130,8 +1131,8 @@ Notes:
 								}
 							}
 							data[entityInstance.$$getIDName()] = entityInstance.$$getID();
-							$log.debug('process form data');
-							$log.debug(data);
+							//$log.debug('process form data');
+							//$log.debug(data);
 							return data;
 			    		}
 	
@@ -1147,8 +1148,8 @@ Notes:
 											data[parentMetaData.name] = {};
 										}
 										var parentData = processParent(parent);
-										$log.debug('parentData:'+parentMetaData.name);
-										$log.debug(parentData);
+										//$log.debug('parentData:'+parentMetaData.name);
+										//$log.debug(parentData);
 										angular.extend(data[parentMetaData.name],parentData);
 									}else{
 										
@@ -1163,22 +1164,22 @@ Notes:
 				    	var getDataFromChildren = function(entityInstance){
 							var data = {};
 							<!--- loop through all children --->
-							$log.debug('childrenFound');
-							$log.debug(entityInstance.children);
+							//$log.debug('childrenFound');
+							//$log.debug(entityInstance.children);
 				    		for(var c in entityInstance.children){
 				    			var childMetaData = entityInstance.children[c];
 								var children = entityInstance.data[childMetaData.name];
-								$log.debug(childMetaData);
-								$log.debug(children);
+								//$log.debug(childMetaData);
+								//$log.debug(children);
 								if(angular.isArray(entityInstance.data[childMetaData.name])){
 									if(angular.isUndefined(data[childMetaData.name])){
 										data[childMetaData.name] = [];
 									}
 									angular.forEach(entityInstance.data[childMetaData.name],function(child,key){
-										$log.debug('process child array item')
+										//$log.debug('process child array item')
 										var childData = processChild(child,entityInstance);
-										$log.debug('process child return');
-										$log.debug(childData);
+										//$log.debug('process child return');
+										//$log.debug(childData);
 										data[childMetaData.name].push(childData);
 									});
 								}else{
@@ -1186,16 +1187,16 @@ Notes:
 										data[childMetaData.name] = {};
 									}
 									var child = entityInstance.data[childMetaData.name];
-									$log.debug('begin process child');
+									//$log.debug('begin process child');
 									var childData = processChild(child,entityInstance);
-									$log.debug('process child return');
-									$log.debug(childData);
+									//$log.debug('process child return');
+									//$log.debug(childData);
 									angular.extend(data,childData);
 								}
 								 
 							}
-							$log.debug('returning child data');
-							$log.debug(data);
+							//$log.debug('returning child data');
+							//$log.debug(data);
 
 							return data;
 				    	}
@@ -1208,10 +1209,10 @@ Notes:
 				    		
 				    		<!---find top level and validate all forms on the way --->
 				    		var objectSaveLevel = getObjectSaveLevel(entityInstance);
-							$log.debug('objectSaveLevel : ' + objectSaveLevel );
+							//$log.debug('objectSaveLevel : ' + objectSaveLevel );
 							var valueStruct = validateObject(objectSaveLevel);
-							$log.debug('validateObject data');
-							$log.debug(valueStruct.value);
+							//$log.debug('validateObject data');
+							//$log.debug(valueStruct.value);
 							
 							modifiedData = {
 								objectLevel:objectSaveLevel,
@@ -1536,7 +1537,7 @@ Notes:
 													}
 													,$$set#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function(entityInstance) {
 														<!--- check if property is self referencing --->
-														$log.debug('set #local.property.name#');
+														//$log.debug('set #local.property.name#');
 														var thisEntityInstance = this;
 														var metaData = this.metaData;
 														var manyToManyName = '';
@@ -1572,8 +1573,8 @@ Notes:
 															entityInstance.data[manyToManyName].push(thisEntityInstance);
 														}
 	
-														$log.debug(thisEntityInstance);
-														$log.debug(entityInstance);
+														//$log.debug(thisEntityInstance);
+														//$log.debug(entityInstance);
 	
 														thisEntityInstance.data['#local.property.name#'] = entityInstance;
 	

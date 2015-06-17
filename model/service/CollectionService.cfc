@@ -392,7 +392,7 @@ component extends="HibachiService" accessors="true" output="false" {
 		//propertyIdentifers
 		collectionConfigStruct = {};
 		collectionConfigStruct = {
-			baseEntityName = 'Slatwall#arguments.rc.entityName#',
+			baseEntityName = '#getDao('HibachiDao').getApplicationKey()##arguments.rc.entityName#',
 			baseEntityAlias = '_' & lcase(rc.entityName)
 		};
 		
@@ -402,6 +402,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		if(!isNull(arguments.rc.joinsConfig)){
 			collectionConfigStruct.joins = deserializeJson(arguments.rc.joinsConfig);
+		}
+		
+		if(!isNull(arguments.rc.orderByConfig)){
+			collectionConfigStruct.orderBy = deserializeJson(arguments.rc.orderByConfig);
 		}
 		
 		if(!isNull(arguments.rc.columnsConfig)){
@@ -528,6 +532,10 @@ component extends="HibachiService" accessors="true" output="false" {
 		
 		if(structKeyExists(arguments.collectionOptions,'joinsConfig') && len(arguments.collectionOptions.joinsConfig)){
 			collectionEntity.getCollectionConfigStruct().joins = deserializeJson(arguments.collectionOptions.joinsConfig);
+		}
+		
+		if(structKeyExists(arguments.collectionOptions,'orderByConfig') && len(arguments.collectionOptions.orderByConfig)){
+			collectionEntity.getCollectionConfigStruct().orderBy = deserializeJson(arguments.collectionOptions.orderByConfig);
 		}
 		
 		if(structKeyExists(arguments.collectionOptions,'processContext') && len(arguments.collectionOptions.processContext)){

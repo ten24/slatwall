@@ -154,7 +154,7 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', ['$http', '$lo
                     }
                     _loadingCount--;
                     if (_loadingCount == 0) {
-                      scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "type");
+                      scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, ["type", "name"]);
                       $log.debug(scope.productBundleGroupFilters.value);
                     }
                     scope.loading = false;
@@ -217,7 +217,7 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', ['$http', '$lo
       }
       scope.removeProductBundleGroupFilter = function(index) {
         scope.productBundleGroupFilters.value.push(scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup[index]);
-        scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, "type");
+        scope.productBundleGroupFilters.value = utilityService.arraySorter(scope.productBundleGroupFilters.value, ["type", "name"]);
         scope.productBundleGroup.data.skuCollectionConfig.filterGroups[0].filterGroup.splice(index, 1);
         scope.productBundleGroup.forms[scope.formName].skuCollectionConfig.$setDirty();
       };
