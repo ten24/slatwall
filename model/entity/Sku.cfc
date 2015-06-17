@@ -337,6 +337,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public numeric function getPriceByPriceGroup( required any priceGroup) {
 		return getService("priceGroupService").calculateSkuPriceBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
 	}
+
+	public numeric function getPriceByPriceGroupAndCurrencyCode( required any priceGroup,required string currencyCode) {
+		return getService("priceGroupService").calculateSkuPriceBasedOnPriceGroupAndCurrencyCode(sku=this, priceGroup=arguments.priceGroup,currencyCode=arguments.currencyCode);
+	}
 	
 	public any function getAppliedPriceGroupRateByPriceGroup( required any priceGroup) {
 		return getService("priceGroupService").getRateForSkuBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
