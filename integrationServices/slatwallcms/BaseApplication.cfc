@@ -46,7 +46,7 @@
 Notes:
 
 */
-component {
+component extends="org.Hibachi.Hibachi"{
 	
 	// Allow For Application Config
 	try{include "../../config/configApplication.cfm";}catch(any e){}
@@ -65,15 +65,10 @@ component {
 	this.ormSettings.automanageSession = false;
 	
 	function onRequestStart() {
-		runRequestActions();
-		
+		runRequestActions(argumentCollection=arguments);
 	}
 	
 	function runRequestActions() {
-//		if (!structKeyExists(application, "slatwallFW1Application")) {
-//			application.slatwallFW1Application = createObject("component", "Slatwall.Application");
-//		}
-//		application.slatwallFW1Application.bootstrap();
 		
 		if(structKeyExists(form, "slatAction")) {
 			for(var action in listToArray(form.slatAction)) {
@@ -98,9 +93,12 @@ component {
 				}
 			}
 		}
+		generateRenderedContent(argumentCollection=arguments);
+		onRequestEnd();
 	}
 	
 	function generateRenderedContent() {
+		
 		var site = arguments.slatwallScope.getSite();
 		var templatePath = site.getApp().getAppRootPath() & '/' & site.getSiteCode() & '/templates/';
 		var contentPath = '';
@@ -170,9 +168,7 @@ component {
 			contentPath = templatePath & contentTemplateFile;
 			arguments.slatwallScope.setContent(content);
 		}
-		var $ = {
-			slatwall=arguments.slatwallScope
-		};
+		var $ = getApplicationScope(argumentCollection=arguments);
 		savecontent variable="templateData"{
 			include "#contentPath#";
 		}
@@ -194,5 +190,89 @@ component {
 		}
 		abort;
 	}
+	
+	public any function getApplicationScope(){
+		var applicationScope = this;
+		applicationScope.slatwall = arguments.slatwallScope;
+		return applicationScope;
+	}
+	
+	public string function renderNav(
+		required any content
+		, numeric viewDepth=1
+		, numeric currDepth=1
+		, string type="default"
+		, date today="#now()#"
+		, string class="navSecondary"
+		, string querystring=""
+		, array contentCollection=arguments.content.getChildContents()
+		, string subNavExpression=""
+		, string liHasKidsClass=""
+		, string liHasKidsAttributes=""
+		, string liCurrentClass="current"
+		, string liCurrentAttributes=""
+		, string liHasKidsNestedClass=""
+		, string aHasKidsClass=""
+		, string aHasKidsAttributes=""
+		, string aCurrentClass="current"
+		, string aCurrentAttributes=""
+		, string ulNestedClass=""
+		, string ulNestedAttributes=""
+		, string openCurrentOnly=""
+		, string aNotCurrentClass=""
+		, numeric size="50"
+		, string target = ""
+		, string targetParams = ''
+		, string id=""
+	){
+		//var firstLevelItems = arguments.content.getChildContents();
+		savecontent variable="navHTML"{
+			include 'templates/navtemplate.cfm';
+		};
+		return navHTML;
+		
+	}
+	
+	public string function addLink(
+		required any content, 
+		string title, 
+		string class="", 
+		string target="",
+		string id="",
+		boolean showCurrent=true
+	){
+				
+		var link ="";
+		var href ="";
+		var theClass = arguments.class;
+		
+		if(arguments.showCurrent){
+			arguments.showCurrent=listFind(getHibachiScope().content().getContentIDPath(),arguments.content.getContentID());
+		}
+		
+		if(arguments.showCurrent){
+			theClass=listAppend(theClass,arguments.aCurrentClass," ");
+		}else if(len(arguments.aNotCurrentClass)){
+			theClass=listAppend(theClass,arguments.aNotCurrentClass," ");
+		}
+		
+		if(arguments.content.hasChildContent()){
+			theClass=listAppend(theClass,arguments.aHasKidsClass," ");
+		}
+		
+		href=createHREF(
+			arguments.content
+		);
+		
+		link='<a href="#href#"#iif(len(arguments.target) and arguments.target neq '_self',de(' target="#arguments.target#"'),de(""))##iif(len(theClass),de(' class="#theClass#"'),de(""))##iif(len(arguments.id),de(' id="#arguments.id#"'),de(""))##iif(arguments.showCurrent,de(' #replace(arguments.aCurrentAttributes,"##","####","all")#'),de(""))##iif(arguments.content.hasChildContent() and len(arguments.aHasKidsAttributes),de(' #replace(arguments.aHasKidsAttributes,"##","####","all")#'),de(""))#>#HTMLEditFormat(arguments.title)#</a>';
+		return link;
+	}
+	
+	public string function createHref(required any content, string queryString=""){
+		var href=arguments.content.getURLTitlePath();
+	
+		return href;
+	}
+	
 	
 }

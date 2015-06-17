@@ -15,7 +15,8 @@ angular.module('slatwalladmin')
                 return {
                     restrict: 'A',
                     scope:{
-                        contentData:'='
+                        contentData:'=',
+                        loadChildren:"="
                     },
                     templateUrl: partialsPath + 'content/contentnode.html',
                     link: function(scope, element, attr) {
@@ -67,6 +68,13 @@ angular.module('slatwalladmin')
                                 isSearchable: true
                             }
                         ];
+                        
+                        var childContentOrderBy = [
+                            {
+                                "propertyIdentifier":"_content.sortOrder",
+                                "direction":"DESC"
+                            }
+                        ];
                        
 
                         scope.getChildContent = function(parentContentRecord) {
@@ -78,10 +86,11 @@ angular.module('slatwalladmin')
                                     "value": parentContentRecord.contentID
                                 }]
                             }];
-
+ 
                             var collectionListingPromise = $slatwall.getEntity('Content', {
                                 columnsConfig: angular.toJson(childContentColumnsConfig),
                                 filterGroupsConfig: angular.toJson(childContentfilterGroupsConfig),
+                                orderByConfig: angular.toJson(childContentOrderBy),
                                 allRecords: true
                             });
                             collectionListingPromise.then(function(value) {
@@ -93,6 +102,10 @@ angular.module('slatwalladmin')
                                     index++;
                                 });
                             });
+                        }
+                            
+                        if(angular.isDefined(scope.loadChildren) && scope.loadChildren === true){
+                            scope.getChildContent(scope.contentData);    
                         }
 
                     }

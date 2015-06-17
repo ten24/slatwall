@@ -3,7 +3,10 @@
 angular.module('slatwalladmin').directive('swContentNode', ['$log', '$compile', '$slatwall', 'partialsPath', function($log, $compile, $slatwall, partialsPath) {
   return {
     restrict: 'A',
-    scope: {contentData: '='},
+    scope: {
+      contentData: '=',
+      loadChildren: "="
+    },
     templateUrl: partialsPath + 'content/contentnode.html',
     link: function(scope, element, attr) {
       if (angular.isUndefined(scope.depth)) {
@@ -46,6 +49,10 @@ angular.module('slatwalladmin').directive('swContentNode', ['$log', '$compile', 
         isVisible: true,
         isSearchable: true
       }];
+      var childContentOrderBy = [{
+        "propertyIdentifier": "_content.sortOrder",
+        "direction": "DESC"
+      }];
       scope.getChildContent = function(parentContentRecord) {
         scope.childOpen = true;
         var childContentfilterGroupsConfig = [{"filterGroup": [{
@@ -56,6 +63,7 @@ angular.module('slatwalladmin').directive('swContentNode', ['$log', '$compile', 
         var collectionListingPromise = $slatwall.getEntity('Content', {
           columnsConfig: angular.toJson(childContentColumnsConfig),
           filterGroupsConfig: angular.toJson(childContentfilterGroupsConfig),
+          orderByConfig: angular.toJson(childContentOrderBy),
           allRecords: true
         });
         collectionListingPromise.then(function(value) {
@@ -68,6 +76,9 @@ angular.module('slatwalladmin').directive('swContentNode', ['$log', '$compile', 
           });
         });
       };
+      if (angular.isDefined(scope.loadChildren) && scope.loadChildren === true) {
+        scope.getChildContent(scope.contentData);
+      }
     }
   };
 }]);
