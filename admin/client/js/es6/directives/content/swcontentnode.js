@@ -8,7 +8,8 @@ angular.module('slatwalladmin').directive('swContentNode', [
         return {
             restrict: 'A',
             scope: {
-                contentData: '='
+                contentData: '=',
+                loadChildren: "="
             },
             templateUrl: partialsPath + 'content/contentnode.html',
             link: function (scope, element, attr) {
@@ -83,6 +84,9 @@ angular.module('slatwalladmin').directive('swContentNode', [
                         });
                     });
                 };
+                if (angular.isDefined(scope.loadChildren) && scope.loadChildren === true) {
+                    scope.getChildContent(scope.contentData);
+                }
             }
         };
     }

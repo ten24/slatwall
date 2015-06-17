@@ -221,6 +221,42 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		}
 	}
 	
+	public void function setSortOrder(numeric newSortOrder, boolean intertalUpdate=false){
+		if(!arguments.intertalUpdate){
+			var currentSortOrder = getSortOrder();
+			if(currentSortOrder == arguments.newSortOrder){
+				return;
+			}
+			
+			if(currentSortOrder < newSortOrder){
+				var x = -1;
+				var min = getSortOrder();
+				var max = arguments.newSortOrder;		
+			}else{
+				var x = 1;
+				var min = arguments.newSortOrder;
+				var max = getSortOrder();
+			}
+			
+			var contentToUpdate = ORMExecuteQuery(
+				'FROM SlatwallContent 
+				where site=:site 
+				and parentContent=:parentContent
+				and sortOrder Between #min# and #max#
+				',
+				{site=this.getSite(),parentContent=this.getParentContent()}
+			);
+			
+			for(var content in contentToUpdate){
+				if(content.getContentID() != getContentID()){
+					content.setSortOrder(content.getSortOrder() + x,true);
+				}
+			}
+		}
+		
+		variables.sortOrder=newSortOrder;
+	}
+	
 	public string function createTitlePath(){
 		
 		var Title = '';

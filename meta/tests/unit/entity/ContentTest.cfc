@@ -60,4 +60,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var siteOptions = variables.entity.getSiteOptions();
 		request.debug(siteOptions);
 	}
+	
+	
 }

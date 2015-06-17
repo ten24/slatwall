@@ -3,7 +3,10 @@
 angular.module('slatwalladmin').directive('swContentNode', ['$log', '$compile', '$slatwall', 'partialsPath', function($log, $compile, $slatwall, partialsPath) {
   return {
     restrict: 'A',
-    scope: {contentData: '='},
+    scope: {
+      contentData: '=',
+      loadChildren: "="
+    },
     templateUrl: partialsPath + 'content/contentnode.html',
     link: function(scope, element, attr) {
       if (angular.isUndefined(scope.depth)) {
@@ -73,6 +76,9 @@ angular.module('slatwalladmin').directive('swContentNode', ['$log', '$compile', 
           });
         });
       };
+      if (angular.isDefined(scope.loadChildren) && scope.loadChildren === true) {
+        scope.getChildContent(scope.contentData);
+      }
     }
   };
 }]);

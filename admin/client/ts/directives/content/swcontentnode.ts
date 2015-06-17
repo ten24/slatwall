@@ -15,7 +15,8 @@ angular.module('slatwalladmin')
                 return {
                     restrict: 'A',
                     scope:{
-                        contentData:'='
+                        contentData:'=',
+                        loadChildren:"="
                     },
                     templateUrl: partialsPath + 'content/contentnode.html',
                     link: function(scope, element, attr) {
@@ -101,6 +102,10 @@ angular.module('slatwalladmin')
                                     index++;
                                 });
                             });
+                        }
+                            
+                        if(angular.isDefined(scope.loadChildren) && scope.loadChildren === true){
+                            scope.getChildContent(scope.contentData);    
                         }
 
                     }
