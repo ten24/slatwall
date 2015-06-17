@@ -603,7 +603,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			param name="rc.date" default="#dateFormat(now(), 'mm/dd/yyyy')#"; 							//<--The fileName of the report to export.
 			param name="rc.collectionExportID" default="" type="string"; 											//<--The collection to export ID
 			var collectionEntity = this.getCollectionByCollectionID("#rc.collectionExportID#");			//<--This doesn't work'
-			var collectionData = collectionEntity.getRecords();
+			var collectionData = collectionEntity.getRecords(forExport=true);
 			var headers = StructKeyList(collectionData[1]);
 			getService('hibachiService').export( collectionData, headers, headers, "ExportCollection", "csv" );
 	}//<--end function
