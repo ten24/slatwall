@@ -12,6 +12,8 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
       }
       scope.loadingCollection = false;
       scope.selectedSite;
+      scope.orderBy;
+      var orderByConfig;
       scope.getCollection = function(isSearching) {
         var columnsConfig = [{
           propertyIdentifier: '_content.contentID',
@@ -32,14 +34,17 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
         }, {
           propertyIdentifier: '_content.allowPurchaseFlag',
           isVisible: true,
+          ormtype: 'boolean',
           isSearchable: false
         }, {
           propertyIdentifier: '_content.productListingPageFlag',
           isVisible: true,
+          ormtype: 'boolean',
           isSearchable: false
         }, {
           propertyIdentifier: '_content.activeFlag',
           isVisible: true,
+          ormtype: 'boolean',
           isSearchable: false
         }];
         var options = {
@@ -96,6 +101,11 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           };
           filterGroupsConfig[0].filterGroup.push(selectedSiteFilter);
         }
+        if (angular.isDefined(scope.orderBy)) {
+          var orderByConfig = [];
+          orderByConfig.push(scope.orderBy);
+          options.orderByConfig = angular.toJson(orderByConfig);
+        }
         options.filterGroupsConfig = angular.toJson(filterGroupsConfig);
         options.columnsConfig = angular.toJson(columnsConfig);
         var collectionListingPromise = $slatwall.getEntity(scope.entityName, options);
@@ -129,8 +139,14 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
         scope.getCollection();
       };
       observerService.attach(siteChanged, 'optionsChanged', 'siteOptions');
+      var sortChanged = function(orderBy) {
+        scope.orderBy = orderBy;
+        scope.getCollection();
+      };
+      observerService.attach(sortChanged, 'sortByColumn', 'siteSorting');
       scope.$on('$destroy', function handler() {
         observerService.detachByEvent('optionsChanged');
+        observerService.detachByEvent('sortByColumn');
       });
     }
   };

@@ -404,6 +404,10 @@ component extends="HibachiService" accessors="true" output="false" {
 			collectionConfigStruct.joins = deserializeJson(arguments.rc.joinsConfig);
 		}
 		
+		if(!isNull(arguments.rc.orderByConfig)){
+			collectionConfigStruct.orderBy = deserializeJson(arguments.rc.orderByConfig);
+		}
+		
 		if(!isNull(arguments.rc.columnsConfig)){
 			collectionConfigStruct.columns = deserializeJson(arguments.rc.columnsConfig);
 		}
@@ -530,6 +534,10 @@ component extends="HibachiService" accessors="true" output="false" {
 			collectionEntity.getCollectionConfigStruct().joins = deserializeJson(arguments.collectionOptions.joinsConfig);
 		}
 		
+		if(structKeyExists(arguments.collectionOptions,'orderByConfig') && len(arguments.collectionOptions.orderByConfig)){
+			collectionEntity.getCollectionConfigStruct().orderBy = deserializeJson(arguments.collectionOptions.orderByConfig);
+		}
+		
 		if(structKeyExists(arguments.collectionOptions,'processContext') && len(arguments.collectionOptions.processContext)){
 			collectionEntity.setProcessContext(arguments.collectionOptions.processContext);
 		}
@@ -590,7 +598,16 @@ component extends="HibachiService" accessors="true" output="false" {
 		};
 		return columnStruct;
 	}
-	
+
+	public void function collectionsExport(required struct rc) {
+			param name="rc.date" default="#dateFormat(now(), 'mm/dd/yyyy')#"; 							//<--The fileName of the report to export.
+			param name="rc.collectionExportID" default="" type="string"; 											//<--The collection to export ID
+			var collectionEntity = this.getCollectionByCollectionID("#rc.collectionExportID#");			//<--This doesn't work'
+			var collectionData = collectionEntity.getRecords(forExport=true);
+			var headers = StructKeyList(collectionData[1]);
+			getService('hibachiService').export( collectionData, headers, headers, "ExportCollection", "csv" );
+	}//<--end function
+
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================

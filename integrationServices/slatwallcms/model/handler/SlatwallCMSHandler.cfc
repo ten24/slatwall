@@ -134,24 +134,21 @@ component {
 				var site = domainNameSite;
        		}
        		
-       		var renderingAdmin = false;
-       		//render slatwall admin if we have access
-	        if(pathArrayLen && pathArray[1] == 'admin' && domainNameSite.getAllowAdminAccessFlag()){
-	        	renderingAdmin = true;
-	        	if(!arraylen(arguments.slatwallScope.getCalledActions())){
-	        		if(isNull(rc.slatAction)){
-	        			writeOutput('#arguments.slatwallScope.doAction('admin:main.default')#');
-	        		}else{
-	        			writeOutput('#arguments.slatwallScope.doAction('#rc.slatAction#')#');
-	        		}
-	        		abort;
-	        	}
-	        }
 	        //if we obtained a site and it is allowed by the domain name then prepare to render content
-			if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID() && !renderingAdmin){
+			if(!isNull(site) && domainNameSite.getSiteID() == site.getSiteID()){
 				prepareSlatwallScope(arguments.slatwallScope,app,site);
 				prepareSiteForRendering(site=site, argumentsCollection=arguments);
 			}
+       	}else{
+       		//if domain name is not a CMS site check to see if we have admin restricted domains via global setting
+       		var adminDomanNamesSetting = arguments.slatwallScope.getService('SettingService').getSettingValue("globalAdminDomainNames");
+       		//if a list of admin domains has been specified then check to see if the domain exists in the list. if none specified then pass through
+       		if(!isNull(adminDomanNamesSetting) && len(adminDomanNamesSetting)){
+       			if(!ListFind(adminDomanNamesSetting, arguments.slatwallScope.getService('siteService').getCurrentDomain())){
+       				writeOutput('#arguments.slatwallScope.getService('siteService').getCurrentDomain()# is neither a CMS domain or an admin domain and therefore restricted.');
+       				abort;
+       			}
+       		}
        	}
 	}
 	
@@ -175,12 +172,12 @@ component {
 		
 		if(directoryExists(sitePath)) {
 			var slatwallCMSApplication = getSlatwallCMSApplication(site);
-			slatwallCMSApplication.generateRenderedContent(argumentCollection=arguments.argumentsCollection);
-			
+			slatwallCMSApplication.onRequestStart(argumentCollection=arguments.argumentsCollection);
 		}else{
 			throw('site directory does not exist for ' & site.getSiteName());
 		}
 	}
+	
 		/*
 		
         

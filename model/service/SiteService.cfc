@@ -61,6 +61,10 @@ component  extends="HibachiService" accessors="true" {
 		return getDAO('siteDAO').getSiteByDomainName(domain);
 	}
 	
+	public any function getCurrentDomain() {
+		return cgi.HTTP_HOST;
+	}
+	
 	public string function getSkeletonSitePath(){
 		return variables.skeletonSitePath;
 	}
@@ -302,7 +306,7 @@ component  extends="HibachiService" accessors="true" {
 			//deploy skeletonSite
 			deploySite(arguments.site);
 		}
-		
+		arguments.site = super.save(arguments.site, arguments.data);
 		return arguments.site;
 	}
 	
