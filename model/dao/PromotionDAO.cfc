@@ -541,11 +541,11 @@ Notes:
 				'sku' as discountLevel,
 				prSku.amount,
 				prSku.amountType as salePriceDiscountType,
-				CAST(CASE prSku.amountType
+				round(CASE prSku.amountType
 					WHEN 'amount' THEN prSku.amount
 					WHEN 'amountOff' THEN SwSku.price - prSku.amount
 					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prSku.amount / 100))
-				END as DECIMAL(19,2))as salePrice,
+				END *100)/100 as salePrice,
 				prSku.roundingRuleID as roundingRuleID,
 				ppSku.endDateTime as salePriceExpirationDateTime,
 				ppSku.promotionPeriodID as promotionPeriodID,
@@ -577,11 +577,11 @@ Notes:
 				'product' as discountLevel,
 				prProduct.amount,
 				prProduct.amountType as salePriceDiscountType,
-				CAST(CASE prProduct.amountType
+				ROUND(CASE prProduct.amountType
 					WHEN 'amount' THEN prProduct.amount
 					WHEN 'amountOff' THEN SwSku.price - prProduct.amount
 					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prProduct.amount / 100))
-				END as DECIMAL(19,2)) as salePrice,
+				END *100)/100 as salePrice,
 				prProduct.roundingRuleID as roundingRuleID,
 				ppProduct.endDateTime as salePriceExpirationDateTime,
 				ppProduct.promotionPeriodID as promotionPeriodID,
@@ -613,11 +613,11 @@ Notes:
 				'brand' as discountLevel,
 				prBrand.amount,
 				prBrand.amountType as salePriceDiscountType,
-				CAST(CASE prBrand.amountType
+				ROUND(CASE prBrand.amountType
 					WHEN 'amount' THEN prBrand.amount
 					WHEN 'amountOff' THEN SwSku.price - prBrand.amount
 					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prBrand.amount / 100))
-				END as DECIMAL(19,2)) as salePrice,
+				END *100)/100 as salePrice,
 				prBrand.roundingRuleID as roundingRuleID,
 				ppBrand.endDateTime as salePriceExpirationDateTime,
 				ppBrand.promotionPeriodID as promotionPeriodID,
@@ -651,11 +651,11 @@ Notes:
 				'option' as discountLevel,
 				prOption.amount,
 				prOption.amountType as salePriceDiscountType,
-				CAST(CASE prOption.amountType
+				ROUND(CASE prOption.amountType
 					WHEN 'amount' THEN prOption.amount
 					WHEN 'amountOff' THEN SwSku.price - prOption.amount
 					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prOption.amount / 100))
-				END as DECIMAL(19,2)) as salePrice,
+				END *100)/100 as salePrice,
 				prOption.roundingRuleID as roundingRuleID,
 				ppOption.endDateTime as salePriceExpirationDateTime,
 				ppOption.promotionPeriodID as promotionPeriodID,
@@ -689,11 +689,11 @@ Notes:
 				'productType' as discountLevel,
 				prProductType.amount,
 				prProductType.amountType as salePriceDiscountType,
-				CAST(CASE prProductType.amountType
+				ROUND(CASE prProductType.amountType
 					WHEN 'amount' THEN prProductType.amount
 					WHEN 'amountOff' THEN SwSku.price - prProductType.amount
 					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prProductType.amount / 100))
-				END as DECIMAL(19,2)) as salePrice,
+				END *100)/100 as salePrice,
 				prProductType.roundingRuleID as roundingRuleID,
 				ppProductType.endDateTime as salePriceExpirationDateTime,
 				ppProductType.promotionPeriodID as promotionPeriodID,
@@ -735,11 +735,11 @@ Notes:
 				'global' as discountLevel,
 				prGlobal.amount,
 				prGlobal.amountType as salePriceDiscountType,
-				CAST(CASE prGlobal.amountType
+				ROUND(CASE prGlobal.amountType
 					WHEN 'amount' THEN prGlobal.amount
 					WHEN 'amountOff' THEN SwSku.price - prGlobal.amount
 					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prGlobal.amount / 100))
-				END as DECIMAL(19,2)) as salePrice,
+				END *100)/100 as salePrice,
 				prGlobal.roundingRuleID as roundingRuleID,
 				ppGlobal.endDateTime as salePriceExpirationDateTime,
 				ppGlobal.promotionPeriodID as promotionPeriodID,
