@@ -197,6 +197,23 @@ component extends="org.Hibachi.Hibachi"{
 		return applicationScope;
 	}
 	
+	// Implicit onMissingMethod() to handle standard CRUD
+	public any function onMissingMethod(string missingMethodName, struct missingMethodArguments) {
+		if(structKeyExists(arguments, "missingMethodName")) {
+			if( left(arguments.missingMethodName, 6) == "render" ) {
+				var entityName = arguments.missingMethodName.substring( 6 );
+				return genericRenderMethod(entityName=entityName, data={id=arguments.missingMethodArguments[1],propertyIdentifier=arguments.missingMethodArguments[2]});
+			}
+		}
+	}
+	
+	public string function genericRenderMethod(required string entityName, required struct data){
+		// Find the correct service
+		
+		var entityService = getHibachiScope().getService('hibachiService').getServiceByEntityName( entityName=arguments.entityName );
+		return entityService.invokeMethod('get#arguments.entityName#',{1=arguments.data.id}).getValueByPropertyIdentifier(arguments.data.propertyIdentifier);
+	}
+	
 	public string function renderNav(
 		required any content
 		, numeric viewDepth=1
