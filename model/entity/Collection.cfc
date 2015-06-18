@@ -1212,7 +1212,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public void function loadSavedState(required string savedStateID) {
 		var savedStates = [];
-		if(hasSessionValue('collectionSavedState')) {
+		if(getHibachiScope().hasSessionValue('collectionSavedState')) {
 			savedStates = getHibachiScope().getSessionValue('collectionSavedState');	
 		}
 		for(var s=1; s<=arrayLen(savedStates); s++) {
@@ -1226,8 +1226,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	private void function saveState() {
 		// Make sure that the saved states structure and array exists
-		if(!hasSessionValue('collectionSavedState')) {
-			setSessionValue('collectionSavedState', []);
+		if(!getHibachiScope().hasSessionValue('collectionSavedState')) {
+			getHibachiScope().setSessionValue('collectionSavedState', []);
 		}
 		
 		var sessionKey = "";
@@ -1263,7 +1263,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				arrayDeleteAt(states, s);
 			}
 			
-			setSessionValue('collectionSavedState', states);
+			getHibachiScope().setSessionValue('collectionSavedState', states);
 		}
 	}
 	
