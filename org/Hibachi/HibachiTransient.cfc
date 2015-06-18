@@ -779,7 +779,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 			var propertyMeta = getPropertyMetaData( propertyName=arguments.propertyName );
 			setSessionValue("propertySessionDefault_#getClassName()#_#arguments.propertyName#", propertyMeta.hb_sessionDefault);
 		}
-		return getSessionValue("propertySessionDefault_#getClassName()#_#arguments.propertyName#");
+		return getHibachiScope().getSessionValue("propertySessionDefault_#getClassName()#_#arguments.propertyName#");
 	}
 
 	// this method allows for default values to be stored at the session level so that forms re-use the last selection by a user

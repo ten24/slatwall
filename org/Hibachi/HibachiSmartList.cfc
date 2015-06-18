@@ -1032,7 +1032,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 	public void function loadSavedState(required string savedStateID) {
 		var savedStates = [];
 		if(hasSessionValue('smartListSavedState')) {
-			savedStates = getSessionValue('smartListSavedState');	
+			savedStates = getHibachiScope().getSessionValue('smartListSavedState');	
 		}
 		for(var s=1; s<=arrayLen(savedStates); s++) {
 			if(savedStates[s].savedStateID eq arguments.savedStateID) {
@@ -1062,7 +1062,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 		lock name="#sessionKey#_#getHibachiInstanceApplicationScopeKey()#_smartListSavedStateUpdateLogic" timeout="10" {
 		
 			// Get the saved state struct
-			var states = getSessionValue('smartListSavedState');
+			var states = getHibachiScope().getSessionValue('smartListSavedState');
 			
 			// Setup the state
 			var state = getStateStruct();
