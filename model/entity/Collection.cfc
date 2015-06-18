@@ -1213,7 +1213,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function loadSavedState(required string savedStateID) {
 		var savedStates = [];
 		if(hasSessionValue('collectionSavedState')) {
-			savedStates = getSessionValue('collectionSavedState');	
+			savedStates = getHibachiScope().getSessionValue('collectionSavedState');	
 		}
 		for(var s=1; s<=arrayLen(savedStates); s++) {
 			if(savedStates[s].savedStateID eq arguments.savedStateID) {
@@ -1243,7 +1243,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		lock name="#sessionKey#_#getHibachiInstanceApplicationScopeKey()#_collectionSavedStateUpdateLogic" timeout="10" {
 		
 			// Get the saved state struct
-			var states = getSessionValue('collectionSavedState');
+			var states = getHibachiScope().getSessionValue('collectionSavedState');
 			
 			// Setup the state
 			var state = getStateStruct();
