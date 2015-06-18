@@ -205,7 +205,7 @@ component extends="org.Hibachi.Hibachi"{
 		, date today="#now()#"
 		, string class="navSecondary"
 		, string querystring=""
-		, array contentCollection=arguments.content.getChildContents()
+		, array contentCollection=arguments.content.getChildContents(forNavigation=true)
 		, string subNavExpression=""
 		, string liHasKidsClass=""
 		, string liHasKidsAttributes=""
