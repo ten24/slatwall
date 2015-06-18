@@ -183,7 +183,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		if(!hasSessionValue('printQueue')) {
 			setSessionValue('printQueue', []);
 		}
-		return getHibachiScope().getSessionValue('printQueue');
+		return getSessionValue('printQueue');
 	}
 	
 	// Clear Email & Print
@@ -367,7 +367,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		if(structKeyExists(arguments, "property") && structKeyExists(arguments, "value")) {
 			return setSessionValue(arguments.property, arguments.value);
 		} else if (structKeyExists(arguments, "property")) {
-			return getHibachiScope().getSessionValue(arguments.property);
+			return getSessionValue(arguments.property);
 		}
 	}
 	
