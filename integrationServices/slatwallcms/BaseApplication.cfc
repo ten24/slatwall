@@ -202,16 +202,16 @@ component extends="org.Hibachi.Hibachi"{
 		if(structKeyExists(arguments, "missingMethodName")) {
 			if( left(arguments.missingMethodName, 6) == "render" ) {
 				var entityName = arguments.missingMethodName.substring( 6 );
-				return genericRenderMethod(entityName=entityName, data={id=arguments.missingMethodArguments[1],propertyIdentifier=arguments.missingMethodArguments[2]});
+				var genericGetterName = replace(arguments.missingMethodName,'render','get');
+				if(structCount(arguments.missingMethodArguments) == 2){
+					var entity = getHibachiScope().getService('hibachiService').invokeMethod(genericGetterName,{1=arguments.missingMethodArguments[1]});
+					return entity.getValueByPropertyIdentifier(arguments.missingMethodArguments[2]);
+				}else if(structCount(arguments.missingMethodArguments) == 3){
+					var entity = getHibachiScope().getService('hibachiService').invokeMethod(genericGetterName,{1=[arguments.missingMethodArguments[1], arguments.missingMethodArguments[2]]});
+					return entity.getValueByPropertyIdentifier(arguments.missingMethodArguments[3]);
+				}
 			}
 		}
-	}
-	
-	public string function genericRenderMethod(required string entityName, required struct data){
-		// Find the correct service
-		
-		var entityService = getHibachiScope().getService('hibachiService').getServiceByEntityName( entityName=arguments.entityName );
-		return entityService.invokeMethod('get#arguments.entityName#',{1=arguments.data.id}).getValueByPropertyIdentifier(arguments.data.propertyIdentifier);
 	}
 	
 	public string function renderNav(
