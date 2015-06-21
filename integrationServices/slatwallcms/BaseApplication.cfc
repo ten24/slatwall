@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="org.Hibachi.Hibachi"{
+component extends="Slatwall.org.Hibachi.Hibachi"{
 	
 	// Allow For Application Config
 	try{include "../../config/configApplication.cfm";}catch(any e){}

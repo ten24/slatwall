@@ -53,7 +53,6 @@ Notes:
 		
 		<!--- this could take a while... --->
 		<cfsetting requesttimeout="600" />
-		
 		<cftry>
 			<cfset var updateCopyStarted = false />
 			<cfset var downloadURL = "https://github.com/ten24/Slatwall/zipball/#arguments.branch#" />	
@@ -195,34 +194,34 @@ Notes:
 	
 	<cffunction name="updateEntitiesWithCustomProperties" returntype="boolean">
 		 <cfscript>
-			try{
-				path = "#ExpandPath('/')#" & "/model/entity";
-				pathCustom = "#ExpandPath('/')#" & "/custom/model/entity";
-				directoryList = directoryList(path, false, "path", "*.cfc", "directory ASC");
-				directoryListByName = directoryList(path, false, "name", "*.cfc", "directory ASC");
-				directoryListCustom = directoryList(pathCustom, false, "name", "*.cfc", "directory ASC");
-				directories = ArrayToList(directoryList);
-				
-				var matches = 0;
-				var matchArray = [];
-				for (var fileName in directoryListCustom){
-				var result = ListFind(ArrayToList(directoryListByName), fileName);
-					if (result >= 1){
-						matches+=1;
-						ArrayAppend(matchArray, fileName);
-					}
-				}	
-				if (matches <= 0){
-					return true;
-				}
-				for (var match in matchArray){
-					var results = mergeProperties("#match#");
-				}
+//			try{
+//				path = "#ExpandPath('/')#" & "/model/entity";
+//				pathCustom = "#ExpandPath('/')#" & "/custom/model/entity";
+//				directoryList = directoryList(path, false, "path", "*.cfc", "directory ASC");
+//				directoryListByName = directoryList(path, false, "name", "*.cfc", "directory ASC");
+//				directoryListCustom = directoryList(pathCustom, false, "name", "*.cfc", "directory ASC");
+//				directories = ArrayToList(directoryList);
+//				
+//				var matches = 0;
+//				var matchArray = [];
+//				for (var fileName in directoryListCustom){
+//				var result = ListFind(ArrayToList(directoryListByName), fileName);
+//					if (result >= 1){
+//						matches+=1;
+//						ArrayAppend(matchArray, fileName);
+//					}
+//				}	
+//				if (matches <= 0){
+//					return true;
+//				}
+//				for (var match in matchArray){
+//					var results = mergeProperties("#match#");
+//				}
 				return true;
-			}catch(any e){
-				writeLog(file="Slatwall", text="Error reading from the file system while updating properties: #e#");
-				return false;
-			}
+//			}catch(any e){
+//				writeLog(file="Slatwall", text="Error reading from the file system while updating properties: #e#");
+//				return false;
+//			}
 			return true;
 		</cfscript>
 	</cffunction>
