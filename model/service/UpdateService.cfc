@@ -210,6 +210,12 @@ Notes:
 							directoryCreate(compiledPath);
 						}
 						fileCopy('#path#/#fileName#','#compiledPath#/#fileName#');
+					}else if(fileExists(compiledPath & '/#fileName#') && fileName != 'HibachiEntity.cfc'){
+						var compiledFile = fileOpen(compiledPath & '/#fileName#');
+						var sourceFile = fileOpen(path & '/#filename#');
+						if(compiledFile.size != sourceFile.size){
+							fileCopy('#path#/#fileName#','#compiledPath#/#fileName#');
+						}
 					}
 				}
 				
