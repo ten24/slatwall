@@ -57,12 +57,12 @@ component  extends="HibachiService" accessors="true" {
 	}
 	
 	public any function getCurrentRequestSite() {
-		var domain = cgi.HTTP_HOST;
+		var domain = listFirst(cgi.HTTP_HOST,':');
 		return getDAO('siteDAO').getSiteByDomainName(domain);
 	}
 	
 	public any function getCurrentDomain() {
-		return cgi.HTTP_HOST;
+		return listFirst(cgi.HTTP_HOST,':');
 	}
 	
 	public string function getSkeletonSitePath(){
