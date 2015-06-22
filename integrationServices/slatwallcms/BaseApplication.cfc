@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="org.Hibachi.Hibachi"{
+component extends="Slatwall.org.Hibachi.Hibachi"{
 	
 	// Allow For Application Config
 	try{include "../../config/configApplication.cfm";}catch(any e){}
@@ -69,7 +69,6 @@ component extends="org.Hibachi.Hibachi"{
 	}
 	
 	function runRequestActions() {
-		
 		if(structKeyExists(form, "slatAction")) {
 			for(var action in listToArray(form.slatAction)) {
 				request.slatwallScope.doAction( action );
