@@ -97,6 +97,21 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
+	public string function getCollectionObject(string casing){
+		if(!isNull(arguments.casing)){
+			switch(arguments.casing){
+				case 'lower':
+					return lcase(variables.collectionObject);
+					break;
+				case 'camel':
+					return lcase(Left(variables.collectionObject,1)) & right(variables.collectionObject, Len(variables.collectionObject) - 1);
+					break;
+			}
+		}
+		
+		return variables.collectionObject;
+	}
+	
 	//returns an array of name/value structs for 
 	public array function getCollectionObjectOptions() {
 		if(!structKeyExists(variables, "collectionObjectOptions")) {
@@ -1296,7 +1311,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//Utility Functions may even belong in another service altogether based on how universally appliable they are
 	
 	private string function removeCharacters(required string javaUUIDString){
-		return replace(javaUUIDString,'-','','all');
+		return replace(arguments.javaUUIDString,'-','','all');
 	}
 	
 	public any function getCollectionConfigStruct(){
