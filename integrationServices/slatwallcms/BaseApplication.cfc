@@ -69,7 +69,6 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 	}
 	
 	function runRequestActions() {
-		
 		if(structKeyExists(form, "slatAction")) {
 			for(var action in listToArray(form.slatAction)) {
 				request.slatwallScope.doAction( action );
@@ -197,6 +196,23 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		return applicationScope;
 	}
 	
+	// Implicit onMissingMethod() to handle standard CRUD
+	public any function onMissingMethod(string missingMethodName, struct missingMethodArguments) {
+		if(structKeyExists(arguments, "missingMethodName")) {
+			if( left(arguments.missingMethodName, 6) == "render" ) {
+				var entityName = arguments.missingMethodName.substring( 6 );
+				var genericGetterName = replace(arguments.missingMethodName,'render','get');
+				if(structCount(arguments.missingMethodArguments) == 2){
+					var entity = getHibachiScope().getService('hibachiService').invokeMethod(genericGetterName,{1=arguments.missingMethodArguments[1]});
+					return entity.getValueByPropertyIdentifier(arguments.missingMethodArguments[2]);
+				}else if(structCount(arguments.missingMethodArguments) == 3){
+					var entity = getHibachiScope().getService('hibachiService').invokeMethod(genericGetterName,{1=[arguments.missingMethodArguments[1], arguments.missingMethodArguments[2]]});
+					return entity.getValueByPropertyIdentifier(arguments.missingMethodArguments[3]);
+				}
+			}
+		}
+	}
+	
 	public string function renderNav(
 		required any content
 		, numeric viewDepth=1
@@ -205,7 +221,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		, date today="#now()#"
 		, string class="navSecondary"
 		, string querystring=""
-		, array contentCollection=arguments.content.getChildContents()
+		, array contentCollection=arguments.content.getChildContents(forNavigation=true)
 		, string subNavExpression=""
 		, string liHasKidsClass=""
 		, string liHasKidsAttributes=""

@@ -11,15 +11,15 @@ component output="false" accessors="true" extends="HibachiService"  {
 		var requestHeaders = getHTTPRequestData();
 		
 		// Check to see if a session value doesn't exist, then we can check for a cookie... or just set it to blank
-		if(!hasSessionValue("sessionID")) {
-			setSessionValue('sessionID', '');
+		if(!getHibachiScope().hasSessionValue("sessionID")) {
+			getHibachiScope().setSessionValue('sessionID', '');
 		}
 		var foundWithNPSID = false;
 		var foundWithPSID = false;
 		
 		// Check for non-persistent cookie.
-		if( len(getSessionValue('sessionID')) ) {
-			var sessionEntity = this.getSession( getSessionValue('sessionID'), true);
+		if( len(getHibachiScope().getSessionValue('sessionID')) ) {
+			var sessionEntity = this.getSession( getHibachiScope().getSessionValue('sessionID'), true);
 		
 		} else if( (StructKeyExists(request.context, "jsonRequest") && request.context.jsonRequest && StructKeyExists(request.context.deserializedJsonData, "request_token") ) || StructKeyExists(requestHeaders.headers, "request_token") ){
 				//If the API 'cookie' and deviceID were passed directly to the API, we can use that for setting the session if the request token matches
@@ -38,7 +38,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 				var NPSID = rt;
 				var sessionEntity = this.getSessionBySessionCookieNPSID( NPSID, true );
 				foundWithNPSID = true;
-				setSessionValue('sessionID', sessionEntity.getSessionID());
+				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
 				request.context["foundWithRequestToken"] = true;
 				
 				/*
@@ -46,12 +46,12 @@ component output="false" accessors="true" extends="HibachiService"  {
 					//If the device doesn't yet exist, add it.'
 					sessionEntity.setDeviceID("#request.context.deviceID#");
 					foundWithNPSID = true;
-					setSessionValue('sessionID', sessionEntity.getSessionID());
+					getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
 				}else if (( StructKeyExists(requestHeaders.headers, "deviceID") && Len(sessionEntity.getDeviceID()) )){
 					//If the device already exists, check against that device to the new device id.
 					if (requestHeaders.headers.deviceID == sessionEntity.getDeviceID()){
 						foundWithNPSID = true;
-						setSessionValue('sessionID', sessionEntity.getSessionID()); //We have the correct device for this session.
+						getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID()); //We have the correct device for this session.
 					}else{
 						//we don't have the correct device for this session so dont set the session
 						foundWithNPSID = false;
@@ -67,7 +67,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 			} else {
 		
 				foundWithNPSID = true;
-				setSessionValue('sessionID', sessionEntity.getSessionID());
+				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
 		
 			}
 		
@@ -80,7 +80,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 				getHibachiTagService().cfcookie(name="#getApplicationValue('applicationKey')#-PSID", value='', expires="now");
 			} else {
 				foundWithPSID = true;
-				setSessionValue('sessionID', sessionEntity.getSessionID());
+				getHibachiScope().setSessionValue('sessionID', sessionEntity.getSessionID());
 			}
 		
 		
@@ -101,7 +101,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		var previousRequestDateTime = getHibachiScope().getSession().getLastRequestDateTime();
 		
 		// update the sessionScope with the ID for the next request
-		setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
+		getHibachiScope().setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
 		// Update the last request datetime, and IP Address
 		getHibachiScope().getSession().setLastRequestDateTime( now() );
@@ -144,7 +144,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		getHibachiDAO().save( getHibachiScope().getSession() );
 		
 		// Save session ID in the session Scope & cookie scope for next request
-		setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
+		getHibachiScope().setSessionValue('sessionID', getHibachiScope().getSession().getSessionID());
 		
 		//Generate new session cookies for every time the session is persisted (on every login)
 		var npCookieValue = getValueForCookie();

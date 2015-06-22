@@ -9,6 +9,7 @@ angular.module('slatwalladmin')
 '$slatwall',
 'collectionService', 
 'metadataService',
+'selectionService',
 'paginationService',
 	function(
 		$scope,
@@ -18,7 +19,8 @@ $timeout,
 $slatwall,
 collectionService,
 metadataService,
-		paginationService
+selectionService,
+paginationService
 	){
 	
 		//init values
@@ -275,5 +277,17 @@ metadataService,
 		
 		$scope.filterCount = collectionService.getFilterCount;
 		
+        //export action
+        $scope.exportCollection = function(){
+            
+            var url = '/?slatAction=main.collectionExport&collectionExportID='+$scope.collectionID+'&downloadReport=1';
+            var data = {"ids":selectionService.getSelections('collectionSelection')};
+            var target="downloadCollection";
+            $('body').append('<form action="'+url+'" method="post" target="'+target+'" id="postToIframe"></form>');
+            $.each(data,function(n,v){
+                $('#postToIframe').append('<input type="hidden" name="'+n+'" value="'+v+'" />');
+            });
+            $('#postToIframe').submit().remove();
+        }
 	}
 ]);

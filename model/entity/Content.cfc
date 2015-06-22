@@ -61,6 +61,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="contentBody" ormtype="string" length="4000" ;
 	property name="displayInNavigation" ormtype="boolean";
 	property name="excludeFromSearch" ormtype="boolean";
+	property name="sortOrder" ormtype="integer";
 
 	// CMS Properties
 	property name="cmsContentID" ormtype="string" index="RI_CMSCONTENTID";
@@ -114,7 +115,10 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	}
 	
 	public string function getTitlePath(string delimiter){
-		var titlePath = variables.titlePath;
+		var titlePath = '';
+		if(!isNull(variables.titlePath)){
+			titlePath = variables.titlePath;
+		}
 		if(!isNull(arguments.delimiter)){
 			titlePath = Replace(titlePath,' >',arguments.delimiter,'ALL');
 		}
@@ -215,6 +219,44 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			
 			descendant.setTitlePath(newTitlePath);
 		}
+	}
+	
+	
+	public numeric function getSortOrder(){
+		if(isNull(variables.sortOrder)){
+			var maxSortOrder = getDao('contentDao').getMaxSortOrderByContent(this);	
+			variables.sortOrder = maxSortOrder;
+		}
+		return variables.sortOrder;
+	}
+	
+	public void function setSortOrder(numeric newSortOrder, boolean intertalUpdate=false){
+		if(!arguments.intertalUpdate){
+			var currentSortOrder = getSortOrder();
+			if(currentSortOrder == arguments.newSortOrder){
+				return;
+			}
+			
+			if(currentSortOrder < newSortOrder){
+				var x = -1;
+				var min = getSortOrder();
+				var max = arguments.newSortOrder;		
+			}else{
+				var x = 1;
+				var min = arguments.newSortOrder;
+				var max = getSortOrder();
+			}
+			
+			var contentToUpdate = getDao('contentDao').getContentBySortOrderMinAndMax(this,min,max);
+			
+			for(var content in contentToUpdate){
+				if(content.getContentID() != getContentID()){
+					content.setSortOrder(content.getSortOrder() + x,true);
+				}
+			}
+		}
+		
+		variables.sortOrder=newSortOrder;
 	}
 	
 	public string function createTitlePath(){
@@ -340,6 +382,17 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 //		}
 //		return arguments.urlTitleArray;
 //	}
+
+	public array function getChildContents(forNavigation=false){
+		var childContents = [];
+		if(forNavigation){
+			childContents = getDao('contentDao').getChildContentsByDisplayInNavigation(this);
+		}else{
+			childContents = variables.childContents;
+		}
+		
+		return childContents;
+	}
 		
 	public string function getCategoryIDList() {
 		if(!structKeyExists(variables, "categoryIDList")) {

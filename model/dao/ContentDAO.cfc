@@ -129,4 +129,38 @@ Notes:
 		</cfif>
 	</cffunction>
 	
+	<cffunction name="getMaxSortOrderByContent" access="public">
+		<cfargument name="content" type="any" required="true" >
+		<cfreturn ORMExecuteQuery(
+			'SELECT DISTINCT COALESCE(max(sortOrder),0) as maxSortOrder FROM SlatwallContent 
+			where site=:site 
+			and parentContent=:parentContent
+			and sortOrder is not null
+			',
+			{site=arguments.content.getSite(),parentContent=arguments.content.getParentContent()}
+			,true
+		)>
+	</cffunction>
+	
+	<cffunction name="getContentBySortOrderMinAndMax">
+		<cfargument name="content" type="any" required="true">
+		<cfargument name="min" type="numeric" required="true">
+		<cfargument name="max" type="numeric" required="true">
+		<cfreturn ORMExecuteQuery(
+			'FROM SlatwallContent 
+			where site=:site 
+			and parentContent=:parentContent
+			and sortOrder Between #arguments.min# and #arguments.max#
+			',
+			{site=arguments.content.getSite(),parentContent=arguments.content.getParentContent()}
+		)>
+	</cffunction>
+	
+	<cffunction name="getChildContentsByDisplayInNavigation" type="array" access="public">
+		<cfargument name="parentContent" type="any" required="true" />
+		
+		<cfreturn ORMExecuteQuery('FROM SlatwallContent Where displayInNavigation = true and parentContent = :parentContent',{parentContent=arguments.parentContent})/>
+	</cffunction>
+	
+	
 </cfcomponent>

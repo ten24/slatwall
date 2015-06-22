@@ -1,16 +1,22 @@
 <span ng-if="collection.failed === true">Bad Collection Config or Bad Data</span>
-<div  ng-if="!collection.failed" class="table-responsive s-filter-table-box" >
+<div  ng-if="!collection.failed && collectionObject" class="table-responsive s-filter-table-box" >
 	<table class="table table-bordered table-striped" >
 	    <thead >
 	        <tr >
-	            <th style="display:none">Row</span></th>
+	            <th style="">Row</span></th>
 	            <th ng-repeat="(key,column) in collectionConfig.columns" class="s-sortable" ng-bind="column.displayTitle || column.title" title="{{column.title}}" ng-show="column.isVisible"></th>
 	            <th></th>
 	        </tr>
 	    </thead>
 	    <tbody>
 			<tr ng-repeat="pageRecord in collection.pageRecords">
-	            <td style="display:none"> <div class="s-checkbox"><input type="checkbox" id="j-checkbox"><label for="j-checkbox"></label></div></td>
+	            <td style=""> 
+	            	<sw-selection
+	            		data-id="pageRecord[collectionObject.$$getIDName()]"
+	            		data-selectionid="collectionSelection"
+	            		data-selection="pageRecord[collectionObject.$$getIDName()]"
+	            	></sw-selection>
+	            </td>
 	            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[column.propertyIdentifier.substring(column.propertyIdentifier.indexOf('.')+1,column.propertyIdentifier.length).replace('.','_')]" ng-show="column.isVisible"></td>
 	            <td class="s-edit-elements">
 	                <a class="btn btn-default btn-xs" href="{{pageRecord.detailLink}}" target="_self"><i class="glyphicon glyphicon-eye-open"></i></a>
