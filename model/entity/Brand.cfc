@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="brandService" hb_permission="this" {
+component displayname="Brand" entityname="SlatwallBrand" table="SwBrand" persistent=true output=false accessors=true extends="Slatwall.model.entity.HibachiEntity" cacheuse="transactional" hb_serviceName="brandService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="brandID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

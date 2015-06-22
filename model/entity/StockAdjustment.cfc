@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persistent="true" accessors="true" output="false" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" hb_permission="this" hb_processContexts="addItems,processAdjustment,addStockAdjustmentItem" {
+component entityname="SlatwallStockAdjustment" table="SwStockAdjustment" persistent="true" accessors="true" output="false" extends="Slatwall.model.entity.HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" hb_permission="this" hb_processContexts="addItems,processAdjustment,addStockAdjustmentItem" {
 
 	// Persistent Properties
 	property name="stockAdjustmentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

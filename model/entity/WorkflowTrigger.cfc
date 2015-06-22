@@ -36,7 +36,7 @@
 Notes:
 
 */
-component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="workflowService" hb_permission="workflow.workflowTriggers" {
+component entityname="SlatwallWorkflowTrigger" table="SwWorkflowTrigger" persistent="true" accessors="true" extends="Slatwall.model.entity.HibachiEntity" hb_serviceName="workflowService" hb_permission="workflow.workflowTriggers" {
 	
 	// Persistent Properties
 	property name="workflowTriggerID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

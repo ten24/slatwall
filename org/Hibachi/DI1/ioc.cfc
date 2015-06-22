@@ -433,6 +433,7 @@ component {
 	
 	
 	private any function resolveBean( string beanName ) {
+		
 		// do enough resolution to create and initialization this bean
 		// returns a struct of the bean and a struct of beans and setters still to run
 		var partialBean = resolveBeanCreate( beanName, { injection = { } } );

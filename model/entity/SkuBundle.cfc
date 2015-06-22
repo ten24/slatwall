@@ -36,7 +36,7 @@
 Notes:
 
 */
-component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBundle" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" {
+component displayname="Sku Bundle" entityname="SlatwallSkuBundle" table="SwSkuBundle" persistent="true" accessors="true" extends="Slatwall.model.entity.HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="skuBundleID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

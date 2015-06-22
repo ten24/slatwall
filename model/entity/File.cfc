@@ -46,7 +46,7 @@ of the program, but you are not obligated to do so.
 Notes:    
 
 */    
-component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="fileService" {    
+component entityname="SlatwallFile" table="SwFile" persistent="true" accessors="true" extends="Slatwall.model.entity.HibachiEntity" cacheuse="transactional" hb_serviceName="fileService" {    
     
 	// Persistent Properties    
 	property name="fileID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

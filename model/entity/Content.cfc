@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Content" entityname="SlatwallContent" table="SwContent" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="contentService" hb_permission="this" hb_parentPropertyName="parentContent" hb_processContexts="createSku" {
+component displayname="Content" entityname="SlatwallContent" table="SwContent" persistent="true" accessors="true" extends="Slatwall.model.entity.HibachiEntity" cacheuse="transactional" hb_serviceName="contentService" hb_permission="this" hb_parentPropertyName="parentContent" hb_processContexts="createSku" {
 	
 	// Persistent Properties
 	property name="contentID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

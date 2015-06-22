@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,37 +45,20 @@
 
 Notes:
 
-*/
-component displayname="Postal Code" entityname="SlatwallPostalCode" table="SwPostalCode" persistent="true" extends="Slatwall.model.entity.HibachiEntity" cacheuse="transactional" hb_serviceName="addressService" {
-	
-	// Persistent Properties
-	property name="postalCode" ormtype="string" fieldtype="id" displayname="Postal Code";
-	property name="city" ormtype="string";
-	property name="latitude" ormtype="string";
-	property name="longitude" ormtype="string";
-	
-	// Audit Properties
-	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
-	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
-	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-	
-	// Related Object Properties
-	property name="country" cfc="Country" fieldtype="many-to-one" fkcolumn="countryCode" insert="false" update="false";
-	property name="state" cfc="State" fieldtype="many-to-one" fkcolumn="stateCode,countryCode";
-	
-	    
-
-	// ============ START: Non-Persistent Property Methods =================
-	
-	// ============  END:  Non-Persistent Property Methods =================
-		
-	// ============= START: Bidirectional Helper Methods ===================
-	
-	// =============  END:  Bidirectional Helper Methods ===================
-	
-	// =================== START: ORM Event Hooks  =========================
-	
-	// ===================  END:  ORM Event Hooks  =========================
-}
-
+    tabDirectory is the name of the tab directory without the path. It is assumed it lives in the custom/admin/views/entity/tabDirectory/customtabs/tabsName file.
+--->
+<cfimport prefix="swa" taglib="../tags" />
+<cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
+<cfparam name="attributes.tabDirectory" type="any" />
+<cfif thisTag.executionMode is "start">
+	<cfoutput>
+		<!--- Custom --->
+			<cfset root = "#expandPath('/')#"/>
+			<cfset customDirectoryList = DirectoryList("#root#/custom/admin/views/entity/#attributes.tabDirectory#/customtabs/", false, "name", "*.cfm", "directory ASC") />
+			<cfset numberOfTabs = "#ArrayLen(customDirectoryList)#" />
+			<cfloop from="1" to="#numberOfTabs#" index="i" step="1">
+				<cfset nameNoExtension = "#Left(customDirectoryList[i], len(customDirectoryList[i])-4)#" />
+				<swa:SlatwallCustomTab tabDirectory="#attributes.tabDirectory#" tabName="#nameNoExtension#" open="true" rbKey=""></swa:SlatwallCustomTab>				
+			</cfloop>
+		</cfoutput>
+</cfif>

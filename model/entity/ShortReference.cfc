@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallShortReference" table="SwShortReference" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiService" {
+component entityname="SlatwallShortReference" table="SwShortReference" persistent="true" accessors="true" extends="Slatwall.model.entity.HibachiEntity" hb_serviceName="hibachiService" {
 	
 	// Persistent Properties
 	property name="shortReferenceID" ormtype="integer" fieldtype="id" unsavedvalue="0" default="0";

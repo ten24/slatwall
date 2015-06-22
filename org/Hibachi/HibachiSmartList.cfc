@@ -228,7 +228,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 				addEntity(
 					entityName=newEntityName,
 					entityAlias=newEntityAlias,
-					entityFullName="#getApplicationValue('applicationKey')#.model.entity.AttributeValue",
+					entityFullName="#getApplicationValue('applicationKey')#.custom.model.compiled.AttributeValue",
 					entityProperties=getPropertiesStructFromEntityMeta(newEntityMeta),
 					parentAlias=variables.entities[ arguments.parentEntityName ].entityAlias,
 					parentRelatedProperty="attributeValues",
