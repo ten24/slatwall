@@ -7,8 +7,9 @@ angular.module('slatwalladmin').controller('collections', [
     '$slatwall',
     'collectionService',
     'metadataService',
+    'selectionService',
     'paginationService',
-    function ($scope, $location, $log, $timeout, $slatwall, collectionService, metadataService, paginationService) {
+    function ($scope, $location, $log, $timeout, $slatwall, collectionService, metadataService, selectionService, paginationService) {
         //init values
         //$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
         $scope.$id = "collectionsController";
@@ -218,6 +219,17 @@ angular.module('slatwalladmin').controller('collections', [
             $scope.selectedFilterProperty = selectedFilterProperty;
         };
         $scope.filterCount = collectionService.getFilterCount;
+        //export action
+        $scope.exportCollection = function () {
+            var url = '/?slatAction=main.collectionExport&collectionExportID=' + $scope.collectionID + '&downloadReport=1';
+            var data = { "ids": selectionService.getSelections('collectionSelection') };
+            var target = "downloadCollection";
+            $('body').append('<form action="' + url + '" method="post" target="' + target + '" id="postToIframe"></form>');
+            $.each(data, function (n, v) {
+                $('#postToIframe').append('<input type="hidden" name="' + n + '" value="' + v + '" />');
+            });
+            $('#postToIframe').submit().remove();
+        };
     }
 ]);
 

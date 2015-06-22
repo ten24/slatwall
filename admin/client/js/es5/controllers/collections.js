@@ -1,6 +1,6 @@
 "use strict";
 'use strict';
-angular.module('slatwalladmin').controller('collections', ['$scope', '$location', '$log', '$timeout', '$slatwall', 'collectionService', 'metadataService', 'paginationService', function($scope, $location, $log, $timeout, $slatwall, collectionService, metadataService, paginationService) {
+angular.module('slatwalladmin').controller('collections', ['$scope', '$location', '$log', '$timeout', '$slatwall', 'collectionService', 'metadataService', 'selectionService', 'paginationService', function($scope, $location, $log, $timeout, $slatwall, collectionService, metadataService, selectionService, paginationService) {
   $scope.$id = "collectionsController";
   var QueryString = function() {
     var query_string = {};
@@ -188,6 +188,16 @@ angular.module('slatwalladmin').controller('collections', ['$scope', '$location'
     $scope.selectedFilterProperty = selectedFilterProperty;
   };
   $scope.filterCount = collectionService.getFilterCount;
+  $scope.exportCollection = function() {
+    var url = '/?slatAction=main.collectionExport&collectionExportID=' + $scope.collectionID + '&downloadReport=1';
+    var data = {"ids": selectionService.getSelections('collectionSelection')};
+    var target = "downloadCollection";
+    $('body').append('<form action="' + url + '" method="post" target="' + target + '" id="postToIframe"></form>');
+    $.each(data, function(n, v) {
+      $('#postToIframe').append('<input type="hidden" name="' + n + '" value="' + v + '" />');
+    });
+    $('#postToIframe').submit().remove();
+  };
 }]);
 
 //# sourceMappingURL=../controllers/collections.js.map

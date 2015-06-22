@@ -1,4 +1,4 @@
-<div ng-controller="collections">
+<div ng-controller="collections" >
 	<div class="col-xs-12 s-filter-content s-filter-content-table-view">
 		<span sw-export-action>
 			
@@ -172,7 +172,7 @@
 						</li>
 						<li>
 							<!--- Generates an exportable collection --->
-							<a title="Export List" class="btn btn-success"  target="_self" href="/?slatAction=main.collectionExport&collectionExportID={{collectionID}}&downloadReport=1" >Export Collection</a>			
+							<a title="Export List" class="btn btn-success"  target="_self" ng-click="exportCollection()" >Export Collection</a>			
 						</li>
 						<li>
 							<button class="btn btn-default btn-sm" target="_self" ng-click="toggleFiltersAndOptions()"><i class="fa fa-cog"></i></button>
