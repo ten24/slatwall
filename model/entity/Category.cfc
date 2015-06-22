@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Category" entityname="SlatwallCategory" table="SwCategory" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="contentService" hb_permission="this" hb_parentPropertyName="parentCategory" {
+component displayname="Category" entityname="SlatwallCategory" table="SwCategory" persistent="true" accessors="true" extends="Slatwall.model.entity.HibachiEntity" cacheuse="transactional" hb_serviceName="contentService" hb_permission="this" hb_parentPropertyName="parentCategory" {
 	
 	// Persistent Properties
 	property name="categoryID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

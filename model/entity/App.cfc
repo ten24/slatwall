@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="appService" hb_permission="this" hb_processContexts="" {
+component displayname="App" entityname="SlatwallApp" table="SwApp" persistent="true" output="false" accessors="true" extends="Slatwall.model.entity.HibachiEntity" cacheuse="transactional" hb_serviceName="appService" hb_permission="this" hb_processContexts="" {
 	
 	// Persistent Properties
 	property name="appID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

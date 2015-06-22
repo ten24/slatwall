@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallFileRelationship" table="SwFileRelationship" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="fileService" {
+component entityname="SlatwallFileRelationship" table="SwFileRelationship" persistent="true" accessors="true" extends="Slatwall.model.entity.HibachiEntity" hb_serviceName="fileService" {
 	
 	// Persistent Properties
 	property name="fileRelationshipID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

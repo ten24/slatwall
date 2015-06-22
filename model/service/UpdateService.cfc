@@ -195,28 +195,44 @@ Notes:
 	<cffunction name="updateEntitiesWithCustomProperties" returntype="boolean">
 		 <cfscript>
 //			try{
-//				path = "#ExpandPath('/')#" & "/model/entity";
-//				pathCustom = "#ExpandPath('/')#" & "/custom/model/entity";
-//				directoryList = directoryList(path, false, "path", "*.cfc", "directory ASC");
-//				directoryListByName = directoryList(path, false, "name", "*.cfc", "directory ASC");
-//				directoryListCustom = directoryList(pathCustom, false, "name", "*.cfc", "directory ASC");
-//				directories = ArrayToList(directoryList);
-//				
-//				var matches = 0;
-//				var matchArray = [];
-//				for (var fileName in directoryListCustom){
-//				var result = ListFind(ArrayToList(directoryListByName), fileName);
-//					if (result >= 1){
-//						matches+=1;
-//						ArrayAppend(matchArray, fileName);
-//					}
-//				}	
-//				if (matches <= 0){
-//					return true;
-//				}
-//				for (var match in matchArray){
-//					var results = mergeProperties("#match#");
-//				}
+				var path = "#ExpandPath('/')#" & "model/entity";
+				var pathCustom = "#ExpandPath('/')#" & "custom/model/entity";
+				var compiledPath = "#ExpandPath('/')#" & "custom/model/compiled";
+				
+				var directoryList = directoryList(path, false, "path", "*.cfc", "directory ASC");
+				var directoryListByName = directoryList(path, false, "name", "*.cfc", "directory ASC");
+				var directoryListCustom = directoryList(pathCustom, false, "name", "*.cfc", "directory ASC");
+				var directories = ArrayToList(directoryList);
+				
+				for(var fileName in directoryListByName){
+					if(!fileExists(compiledPath & '/#fileName#') && fileName != 'HibachiEntity.cfc'){
+						if(!directoryExists(compiledPath)){
+							directoryCreate(compiledPath);
+						}
+						fileCopy('#path#/#fileName#','#compiledPath#/#fileName#');
+					}
+				}
+				
+				//find which items have an override in the custom folder
+				var matches = 0;
+				var matchArray = [];
+				for (var fileName in directoryListCustom){
+					
+					var result = ListFind(ArrayToList(directoryListByName), fileName);
+					if (result >= 1){
+						matches+=1;
+						ArrayAppend(matchArray, fileName);
+					}
+				}	
+				if (matches <= 0){
+					return true;
+				}
+				
+				//iterate over overrides and merge them
+				for (var match in matchArray){
+					var results = mergeProperties("#match#");
+					filewrite(compiledPath & '/#match#',results);
+				}
 				return true;
 //			}catch(any e){
 //				writeLog(file="Slatwall", text="Error reading from the file system while updating properties: #e#");
@@ -229,20 +245,21 @@ Notes:
 	  <cfargument name="fileName" type="String">
 		<cfscript>
 			
-			var fileContent =  "Slatwall/custom/model/entity/#fileName#";
-			var customFileContent =  "Slatwall/model/entity/#fileName#";
+			var filePath =  "model/entity/#arguments.fileName#";
+			var customFilePath =  "custom/model/entity/#arguments.fileName#";
 		    
-		    var fileContentName = left(fileContent, len(fileContent)-4);
-		     	  fileContentName = replace(fileContent, "/", ".", "All");
-			var customFileContentName = left(fileContent, len(fileContent)-4);
-		     	  customFileContentName = replace(fileContent, "/", ".", "All"); 	  
+		    var fileComponentPath = left(filePath, len(filePath)-4);
+		     	  fileComponentPath = replace(fileComponentPath, "/", ".", "All");
+			var customFileComponentPath = left(customFilePath, len(customFilePath)-4);
+		     	  customFileComponentPath = replace(customFileComponentPath, "/", ".", "All"); 	  
 			
-			var baseMeta = getComponentMetaData(fileContentName);
-			var customMeta = getComponentMetaData(customFileContentName);
-			writeDump(customMeta);
+			var baseMeta = getComponentMetaData(fileComponentPath);
+			var customMeta = getComponentMetaData(customFileComponentPath);
+			
 			//Grab the contents of the files and figure our the properties.
-			fileContent = fileRead(fileContent) ;
-			customFileContent = fileRead(customFileContent) ;
+			var fileContent = fileRead(expandPath(filePath)) ;
+			var customFileContent = fileRead(expandPath(customFilePath)) ;
+			
 			// check duplicate properties
 			for(var i=1; i <= arraylen(customMeta.properties); i++) {
 				for(var j=1; j <= arraylen(baseMeta.properties); j++ ) {
@@ -252,19 +269,46 @@ Notes:
 				}
 			}			
 			var propertyStartPos = findNoCase("property ", customFileContent) ;
-			var functionLineStartPos = reFindNoCase('private|public(.*)function',customFileContent) ; 
-			var endPos = customFileContent.lastIndexOf("}") ;
-			var propertyString = mid(customFileContent, propertyStartPos, functionLineStartPos - propertyStartPos) ;
-			var functionString = mid(customFileContent, functionLineStartPos, endPos - functionLineStartPos) ;
+			var privateFunctionLineStartPos = reFindNoCase('private',customFileContent) ; 
+			var publicFunctionLineStartPos = reFindNoCase('public',customFileContent) ;
+			
+			var functionLineStartPos = 0;
+			if(privateFunctionLineStartPos && publicFunctionLineStartPos){
+				if(privateFunctionLineStartPos > publicFunctionLineStartPos){
+					functionLineStartPos = publicFunctionLineStartPos;
+				}else{
+					functionLineStartPos = privateFunctionLineStartPos;
+				}
+			}else if(privateFunctionLineStartPos){
+				functionLineStartPos = privateFunctionLineStartPos;
+			}else if(publicFunctionLineStartPos){
+				functionLineStartPos = publicFunctionLineStartPos;
+			}
+			
+			var propertyEndPos = functionLineStartPos -1;
+			var componentEndPos = customFileContent.lastIndexOf("}") ;
+			
+			var functionString = '';
+			if(functionLineStartPos){
+				functionString =  mid(customFileContent, functionLineStartPos, abs(componentEndPos - functionLineStartPos));
+			}
+			
+			var propertyString = '';
+			if(propertyStartPos){
+				propertyString = mid(customFileContent, propertyStartPos, abs(propertyEndPos-propertyStartPos));
+			}
+			
 			var newContent = fileContent;
 			
-			// add property
-			if(!findNoCase(propertyString,fileContent)) {
-				functionLineStartPos = reFindNoCase('private|public(.*)function',fileContent) ; 
-				endPos = fileContent.lastIndexOf("}") ;	
-				newContent = left(fileContent,functionLineStartPos-1) & propertyString & mid(fileContent, functionLineStartPos, len(fileContent)-functionLineStartPos);
-				writedump("#newContent#");abort;
-			}
+			
+			//add properties
+			var newContentPropertiesStartPos = findNoCase("property ", newContent) -1;
+			newContent = left(newContent,newContentPropertiesStartPos) & propertyString & right(newContent,len(newContent) - newContentPropertiesStartPos);
+			//add functions
+			var newContentComponentEndPos = newContent.lastIndexOf("}") ;
+			newContent = left(newContent,newContentComponentEndPos) & functionString & '}';
+			
+			
 		return newContent;
 		</cfscript>
 	</cffunction>

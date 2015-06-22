@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persistent="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" {
+component entityname="SlatwallPermissionGroup" table="SwPermissionGroup" persistent="true" extends="Slatwall.model.entity.HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="permissionGroupID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
