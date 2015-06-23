@@ -97,6 +97,21 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
+	public string function getCollectionObject(string casing){
+		if(!isNull(arguments.casing)){
+			switch(arguments.casing){
+				case 'lower':
+					return lcase(variables.collectionObject);
+					break;
+				case 'camel':
+					return lcase(Left(variables.collectionObject,1)) & right(variables.collectionObject, Len(variables.collectionObject) - 1);
+					break;
+			}
+		}
+		
+		return variables.collectionObject;
+	}
+	
 	//returns an array of name/value structs for 
 	public array function getCollectionObjectOptions() {
 		if(!structKeyExists(variables, "collectionObjectOptions")) {
@@ -1212,8 +1227,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public void function loadSavedState(required string savedStateID) {
 		var savedStates = [];
-		if(hasSessionValue('collectionSavedState')) {
-			savedStates = getSessionValue('collectionSavedState');	
+		if(getHibachiScope().hasSessionValue('collectionSavedState')) {
+			savedStates = getHibachiScope().getSessionValue('collectionSavedState');	
 		}
 		for(var s=1; s<=arrayLen(savedStates); s++) {
 			if(savedStates[s].savedStateID eq arguments.savedStateID) {
@@ -1226,8 +1241,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	private void function saveState() {
 		// Make sure that the saved states structure and array exists
-		if(!hasSessionValue('collectionSavedState')) {
-			setSessionValue('collectionSavedState', []);
+		if(!getHibachiScope().hasSessionValue('collectionSavedState')) {
+			getHibachiScope().setSessionValue('collectionSavedState', []);
 		}
 		
 		var sessionKey = "";
@@ -1243,7 +1258,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		lock name="#sessionKey#_#getHibachiInstanceApplicationScopeKey()#_collectionSavedStateUpdateLogic" timeout="10" {
 		
 			// Get the saved state struct
-			var states = getSessionValue('collectionSavedState');
+			var states = getHibachiScope().getSessionValue('collectionSavedState');
 			
 			// Setup the state
 			var state = getStateStruct();
@@ -1263,7 +1278,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				arrayDeleteAt(states, s);
 			}
 			
-			setSessionValue('collectionSavedState', states);
+			getHibachiScope().setSessionValue('collectionSavedState', states);
 		}
 	}
 	
@@ -1296,7 +1311,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	//Utility Functions may even belong in another service altogether based on how universally appliable they are
 	
 	private string function removeCharacters(required string javaUUIDString){
-		return replace(javaUUIDString,'-','','all');
+		return replace(arguments.javaUUIDString,'-','','all');
 	}
 	
 	public any function getCollectionConfigStruct(){

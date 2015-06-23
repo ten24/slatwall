@@ -97,14 +97,14 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	
 	public string function getTemplatesPath(){
 		if(!structKeyExists(variables,'templatesPath')){
-			variables.templatesPath = getSitePath() & '/' & 'templates';
+			variables.templatesPath = getSitePath() & '/templates';
 		}
 		return variables.templatesPath;
 	}
 	
 	public string function getAssetsPath(){
 		if(!structKeyExists(variables,'assetsPath')){
-			variables.assetsPath = '/custom/apps/' & getApp().getAppCode() & '/' & getSiteCode() & '/assets';
+			variables.assetsPath = getSitePath() & '/assets';
 		}
 		return variables.assetsPath;
 	}

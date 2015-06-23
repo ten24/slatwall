@@ -382,6 +382,17 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 //		}
 //		return arguments.urlTitleArray;
 //	}
+
+	public array function getChildContents(forNavigation=false){
+		var childContents = [];
+		if(forNavigation){
+			childContents = getDao('contentDao').getChildContentsByDisplayInNavigation(this);
+		}else{
+			childContents = variables.childContents;
+		}
+		
+		return childContents;
+	}
 		
 	public string function getCategoryIDList() {
 		if(!structKeyExists(variables, "categoryIDList")) {
