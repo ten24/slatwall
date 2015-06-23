@@ -174,6 +174,7 @@ component extends="HibachiService" output="false" accessors="true"{
 			taskHistory.setEndTime( now() );
 			
 			// Persist the info to the DB
+			getHibachiDAO().save(taskHistory);
 			getHibachiDAO().flushORMSession();
 			
 			// If there was a taskSchedule, then we can update it
@@ -188,6 +189,7 @@ component extends="HibachiService" output="false" accessors="true"{
 			
 			// Call save on the task history
 			taskHistory = this.saveTaskHistory( taskHistory );
+			getHibachiDAO().save(taskHistory);
 			
 			// Create success or failure email, and also log results
 			if(taskHistory.getSuccessFlag()) {
