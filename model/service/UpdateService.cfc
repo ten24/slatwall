@@ -291,14 +291,19 @@ Notes:
 				functionLineStartPos = publicFunctionLineStartPos;
 			}
 			
-			var propertyEndPos = functionLineStartPos -1;
 			var componentEndPos = customFileContent.lastIndexOf("}") ;
+			if(functionLineStartPos){
+				var propertyEndPos = functionLineStartPos -1;
+			}else{
+				var propertyEndPos = componentEndPos;
+			}
+			
+			
 			
 			var functionString = '';
 			if(functionLineStartPos){
 				functionString =  mid(customFileContent, functionLineStartPos, abs(componentEndPos - functionLineStartPos));
 			}
-			
 			var propertyString = '';
 			if(propertyStartPos){
 				propertyString = mid(customFileContent, propertyStartPos, abs(propertyEndPos-propertyStartPos));
@@ -306,14 +311,16 @@ Notes:
 			
 			var newContent = fileContent;
 			
-			
 			//add properties
-			var newContentPropertiesStartPos = findNoCase("property ", newContent) -1;
-			newContent = left(newContent,newContentPropertiesStartPos) & propertyString & right(newContent,len(newContent) - newContentPropertiesStartPos);
+			if(len(propertyString)){
+				var newContentPropertiesStartPos = findNoCase("property ", newContent) -1;
+				newContent = left(newContent,newContentPropertiesStartPos) & propertyString & right(newContent,len(newContent) - newContentPropertiesStartPos);
+			}
 			//add functions
-			var newContentComponentEndPos = newContent.lastIndexOf("}") ;
-			newContent = left(newContent,newContentComponentEndPos) & functionString & '}';
-			
+			if(len(functionString)){
+				var newContentComponentEndPos = newContent.lastIndexOf("}") ;
+				newContent = left(newContent,newContentComponentEndPos) & functionString & '}';
+			}
 			
 		return newContent;
 		</cfscript>
