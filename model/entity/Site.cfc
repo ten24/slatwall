@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="true" extends="Slatwall.model.entity.HibachiEntity" cacheuse="transactional" hb_serviceName="siteService" hb_permission="this" {
+component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="siteService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="siteID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -97,14 +97,14 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	
 	public string function getTemplatesPath(){
 		if(!structKeyExists(variables,'templatesPath')){
-			variables.templatesPath = getSitePath() & '/templates';
+			variables.templatesPath = getSitePath() & '/' & 'templates';
 		}
 		return variables.templatesPath;
 	}
 	
 	public string function getAssetsPath(){
 		if(!structKeyExists(variables,'assetsPath')){
-			variables.assetsPath = getSitePath() & '/assets';
+			variables.assetsPath = '/custom/apps/' & getApp().getAppCode() & '/' & getSiteCode() & '/assets';
 		}
 		return variables.assetsPath;
 	}

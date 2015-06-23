@@ -121,7 +121,7 @@ component extends="FW1.framework" {
 	// Defaults
 	this.ormenabled = true;
 	this.ormsettings = {};
-	this.ormsettings.cfclocation = [ "/#variables.framework.applicationKey#/custom/model/compiled" ];
+	this.ormsettings.cfclocation = [ "/#variables.framework.applicationKey#/model/entity" ];
 	this.ormSettings.dbcreate = "update";
 	this.ormSettings.flushAtRequestEnd = false;
 	this.ormsettings.eventhandling = true;
@@ -410,8 +410,7 @@ component extends="FW1.framework" {
 					//========================= IOC SETUP ====================================
 					
 					var coreBF = new DI1.ioc("/#variables.framework.applicationKey#/model", {
-						transients=["process", "transient", "report"],
-						exclude=["entity"],
+						transients=["entity", "process", "transient", "report"],
 						transientPattern="Bean$"
 					});
 					
@@ -471,7 +470,7 @@ component extends="FW1.framework" {
 					// Setup the custom bean factory
 					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
 						var customBF = new DI1.ioc("/#variables.framework.applicationKey#/custom/model", {
-							transients=["compiled","process", "transient", "report"],
+							transients=["process", "transient", "report"],
 							exclude=["entity"]
 						});
 						

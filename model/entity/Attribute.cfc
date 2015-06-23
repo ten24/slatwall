@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttribute" persistent="true" output="false" accessors="true" extends="Slatwall.model.entity.HibachiEntity" cacheuse="transactional" hb_serviceName="attributeService" hb_permission="attributeSet.attributes" {
+component displayname="Attribute" entityname="SlatwallAttribute" table="SwAttribute" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="attributeService" hb_permission="attributeSet.attributes" {
 	
 	
 	// Persistent Properties

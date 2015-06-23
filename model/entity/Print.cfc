@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallPrint" table="SwPrint" persistent="true" accessors="true" extends="Slatwall.model.entity.HibachiEntity" cacheuse="transactional" hb_serviceName="printService" hb_permission="this" hb_processContext="addToQueue" {
+component entityname="SlatwallPrint" table="SwPrint" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="printService" hb_permission="this" hb_processContext="addToQueue" {
 	
 	// Persistent Properties
 	property name="printID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

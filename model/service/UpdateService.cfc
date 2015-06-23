@@ -197,27 +197,12 @@ Notes:
 //			try{
 				var path = "#ExpandPath('/')#" & "model/entity";
 				var pathCustom = "#ExpandPath('/')#" & "custom/model/entity";
-				var compiledPath = "#ExpandPath('/')#" & "custom/model/compiled";
+				var compiledPath = "#ExpandPath('/')#" & "model/entity";
 				
 				var directoryList = directoryList(path, false, "path", "*.cfc", "directory ASC");
 				var directoryListByName = directoryList(path, false, "name", "*.cfc", "directory ASC");
 				var directoryListCustom = directoryList(pathCustom, false, "name", "*.cfc", "directory ASC");
 				var directories = ArrayToList(directoryList);
-				
-				for(var fileName in directoryListByName){
-					if(!fileExists(compiledPath & '/#fileName#') && fileName != 'HibachiEntity.cfc'){
-						if(!directoryExists(compiledPath)){
-							directoryCreate(compiledPath);
-						}
-						fileCopy('#path#/#fileName#','#compiledPath#/#fileName#');
-					}else if(fileExists(compiledPath & '/#fileName#') && fileName != 'HibachiEntity.cfc'){
-						var compiledFile = fileOpen(compiledPath & '/#fileName#');
-						var sourceFile = fileOpen(path & '/#filename#');
-						if(compiledFile.size != sourceFile.size){
-							fileCopy('#path#/#fileName#','#compiledPath#/#fileName#');
-						}
-					}
-				}
 				
 				//find which items have an override in the custom folder
 				var matches = 0;
@@ -255,25 +240,47 @@ Notes:
 			var customFilePath =  "custom/model/entity/#arguments.fileName#";
 		    
 		    var fileComponentPath = left(filePath, len(filePath)-4);
-		     	  fileComponentPath = replace(fileComponentPath, "/", ".", "All");
+		    fileComponentPath = replace(fileComponentPath, "/", ".", "All");
 			var customFileComponentPath = left(customFilePath, len(customFilePath)-4);
-		     	  customFileComponentPath = replace(customFileComponentPath, "/", ".", "All"); 	  
+		    customFileComponentPath = replace(customFileComponentPath, "/", ".", "All"); 	  
 			
 			var baseMeta = getComponentMetaData(fileComponentPath);
 			var customMeta = getComponentMetaData(customFileComponentPath);
 			
 			//Grab the contents of the files and figure our the properties.
 			var fileContent = fileRead(expandPath(filePath)) ;
+			
+			//if they already exists, then remove the custom properties and custom functions
+			var lineBreak = lineBreak = Chr(13) & Chr(10);
+			var customPropertyBeginString = '//CUSTOM PROPERTIES BEGIN #lineBreak#';
+			var customPropertyEndString = '//CUSTOM PROPERTIES END #lineBreak#';
+			var customFunctionBeginString = '//CUSTOM FUNCTIONS BEGIN #lineBreak#';
+			var customFunctionEndString = '//CUSTOM FUNCTIONS END #lineBreak#';
+			if(findNoCase(customPropertyBeginString, fileContent)){
+				var customPropertyStartPos = findNoCase(customPropertyBeginString, fileContent);
+				var customPropertyEndPos = findNoCase(customPropertyEndString, fileContent) + len(customPropertyEndString);
+				fileContent = left(fileContent,customPropertyStartPos) & mid(fileConent,customPropertyEndPos, fileContent - customPropertyEndPos);
+			}
+			
+			if(findNoCase(customFunctionBeginString, fileContent)){
+				var customFunctionStartPos = findNoCase(customPropertyBeginString, fileContent);
+				var customFunctionEndPos = findNoCase(customFunctionEndString, fileContent) + len(customFunctionEndString);
+				fileContent = left(fileContent,customFunctionStartPos) & mid(fileConent,customFunctionEndPos, fileContent - customFunctionEndPos);
+			}
+			
 			var customFileContent = fileRead(expandPath(customFilePath)) ;
 			
 			// check duplicate properties
-			for(var i=1; i <= arraylen(customMeta.properties); i++) {
-				for(var j=1; j <= arraylen(baseMeta.properties); j++ ) {
-					if(baseMeta.properties[j].name == customMeta.properties[i].name) {
-						writeLog("Slatwall", "Custom property names can't be same as core property names");
+			if(structKeyExists(customMeta,'properties')){
+				for(var i=1; i <= arraylen(customMeta.properties); i++) {
+					for(var j=1; j <= arraylen(baseMeta.properties); j++ ) {
+						if(baseMeta.properties[j].name == customMeta.properties[i].name) {
+							writeLog("Slatwall", "Custom property names can't be same as core property names");
+						}
 					}
 				}
-			}			
+			}
+						
 			var propertyStartPos = findNoCase("property ", customFileContent) ;
 			var privateFunctionLineStartPos = reFindNoCase('private',customFileContent) ; 
 			var publicFunctionLineStartPos = reFindNoCase('public',customFileContent) ;
@@ -313,13 +320,21 @@ Notes:
 			
 			//add properties
 			if(len(propertyString)){
+				
+				var customPropertyString = customPropertyBeginString & propertyString & customPropertyEndString;
+				
 				var newContentPropertiesStartPos = findNoCase("property ", newContent) -1;
-				newContent = left(newContent,newContentPropertiesStartPos) & propertyString & right(newContent,len(newContent) - newContentPropertiesStartPos);
+				
+				newContent = left(newContent,newContentPropertiesStartPos) & customPropertyString & right(newContent,len(newContent) - newContentPropertiesStartPos);
 			}
 			//add functions
 			if(len(functionString)){
+				
+				var customFunctionString = customFunctionBeginString & functionString & customfunctionEndString;
+				
 				var newContentComponentEndPos = newContent.lastIndexOf("}") ;
-				newContent = left(newContent,newContentComponentEndPos) & functionString & '}';
+				
+				newContent = left(newContent,newContentComponentEndPos) & customFunctionString & '}';
 			}
 			
 		return newContent;

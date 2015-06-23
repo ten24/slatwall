@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallCurrencyRate" table="SwCurrencyRate" persistent="true" accessors="true" extends="Slatwall.model.entity.HibachiEntity" hb_serviceName="currencyService" {
+component entityname="SlatwallCurrencyRate" table="SwCurrencyRate" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="currencyService" {
 	
 	// Persistent Properties
 	property name="currencyRateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
