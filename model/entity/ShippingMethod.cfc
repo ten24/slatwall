@@ -46,7 +46,7 @@
 Notes:
 
 */
-component displayname="Shipping Method" entityname="SlatwallShippingMethod" table="SwShippingMethod" persistent=true output=false accessors=true extends="Slatwall.model.entity.HibachiEntity" cacheuse="transactional" hb_serviceName="shippingService" hb_permission="fulfillmentMethod.shippingMethods" {
+component displayname="Shipping Method" entityname="SlatwallShippingMethod" table="SwShippingMethod" persistent=true output=false accessors=true extends="HibachiEntity" cacheuse="transactional" hb_serviceName="shippingService" hb_permission="fulfillmentMethod.shippingMethods" {
 	
 	// Persistent Properties
 	property name="shippingMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

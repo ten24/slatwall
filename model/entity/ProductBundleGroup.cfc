@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" persistent="true" accessors="true" extends="Slatwall.model.entity.HibachiEntity" hb_serviceName="productService" hb_permission="productBundleSku.productBundleGroups" {
+component entityname="SlatwallProductBundleGroup" table="SwProductBundleGroup" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="productService" hb_permission="productBundleSku.productBundleGroups" {
 	
 	
 

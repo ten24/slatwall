@@ -198,7 +198,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			var entityPermissions = {};
 			
 			// Get all of the entities in the application
-			var entityDirectoryArray = directoryList(expandPath('/#getApplicationValue('applicationKey')#/custom/model/compiled'));
+			var entityDirectoryArray = directoryList(expandPath('/#getApplicationValue('applicationKey')#/model/entity'));
 			
 			// Loop over each of the entities
 			for(var e=1; e<=arrayLen(entityDirectoryArray); e++) {
@@ -210,7 +210,7 @@ component output="false" accessors="true" extends="HibachiService" {
 					var entityName = listFirst(listLast(replace(entityDirectoryArray[e], '\', '/', 'all'), '/'), '.');
 					
 					// Get the entityMetaData which contains all the important permissions setup stuff
-					var entityMetaData = createObject('component', '#getApplicationValue('applicationKey')#.custom.model.compiled.#entityName#').getThisMetaData();
+					var entityMetaData = createObject('component', '#getApplicationValue('applicationKey')#.model.entity.#entityName#').getThisMetaData();
 					
 					// Setup the permisions of this entity is setup for it
 					if(structKeyExists(entityMetaData, "hb_permission") && (entityMetaData.hb_permission eq "this" || getHasPropertyByEntityNameAndPropertyIdentifier(entityName=entityName, propertyIdentifier=entityMetaData.hb_permission))) {

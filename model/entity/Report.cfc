@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallReport" table="SwReport" persistent="true" accessors="true" extends="Slatwall.model.entity.HibachiEntity" hb_serviceName="hibachiReportService" {
+component entityname="SlatwallReport" table="SwReport" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="hibachiReportService" {
 	
 	// Persistent Properties
 	property name="reportID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

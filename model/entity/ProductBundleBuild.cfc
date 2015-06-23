@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallProductBundleBuild" table="SwProductBundleBuild" persistent="true" accessors="true" extends="Slatwall.model.entity.HibachiEntity" hb_serviceName="productService" hb_permission="this" {
+component entityname="SlatwallProductBundleBuild" table="SwProductBundleBuild" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="productService" hb_permission="this" {
 	
 	// Persistent Properties
 	property name="productBundleBuildID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

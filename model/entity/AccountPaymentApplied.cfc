@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentApplied" persistent="true" accessors="true" extends="Slatwall.model.entity.HibachiEntity" hb_serviceName="accountService" {
+component entityname="SlatwallAccountPaymentApplied" table="SwAccountPaymentApplied" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="accountService" {
 	
 	// Persistent Properties
 	property name="accountPaymentAppliedID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";

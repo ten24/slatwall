@@ -704,7 +704,7 @@
 		}
 		
 		public string function getProperlyCasedFullClassNameByEntityName( required string entityName ) {
-			return "#getApplicationValue('applicationKey')#.custom.model.compiled.#getProperlyCasedShortEntityName( arguments.entityName )#";
+			return "#getApplicationValue('applicationKey')#.model.entity.#getProperlyCasedShortEntityName( arguments.entityName )#";
 		}
 		
 		// =======================  END: Entity Name Helper Methods ===============================
