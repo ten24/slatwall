@@ -104,7 +104,7 @@ Notes:
 				<!--- LOGIN --->
 				<cfset authorizeProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("login") />
 				<form class="s-form-signin" action="?s=1" id="j-login-wrapper" method="post" novalidate="novalidate">
-					<h2>#$.slatwall.rbKey('define.login')#</h2>
+					<!--- <h2>#$.slatwall.rbKey('define.login')#</h2> --->
 					<input type="hidden" name="slatAction" value="admin:main.authorizelogin" />
 					<cfif structKeyExists(rc, "sRedirectURL")>
 						<input type="hidden" name="sRedirectURL" value="#rc.sRedirectURL#" />
