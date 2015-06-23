@@ -114,6 +114,11 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		return variables.assetsPath;
 	}
 	
+	public string function getContentBody(){
+		var contentBody = getService('hibachiUtilityService').replaceStringEvaluateTemplate(variables.contentBody);
+		return contentBody;
+	}
+	
 	public string function getTitlePath(string delimiter){
 		var titlePath = '';
 		if(!isNull(variables.titlePath)){
