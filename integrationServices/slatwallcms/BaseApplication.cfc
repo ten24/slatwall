@@ -133,7 +133,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			var entityTemplateContent = arguments.slatwallScope.getService("contentService").getContent( entityDisplayTemplateSetting );;
 			if(!isnull(entityTemplateContent)){
 				arguments.slatwallScope.setContent( entityTemplateContent );
-				var contentTemplateFile = entityTemplateContent.setting('contentTemplateFile',[content]);
+				var contentTemplateFile = entityTemplateContent.setting('contentTemplateFile',[entityTemplateContent]);
 				if(!isNull(contentTemplateFile)){
 					
 					contentPath = templatePath & contentTemplateFile;
