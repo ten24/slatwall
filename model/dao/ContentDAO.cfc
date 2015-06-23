@@ -159,7 +159,12 @@ Notes:
 	<cffunction name="getChildContentsByDisplayInNavigation" type="array" access="public">
 		<cfargument name="parentContent" type="any" required="true" />
 		
-		<cfreturn ORMExecuteQuery('FROM SlatwallContent Where displayInNavigation = true and parentContent = :parentContent',{parentContent=arguments.parentContent})/>
+		<cfreturn ORMExecuteQuery( 'FROM SlatwallContent 
+									Where displayInNavigation = true 
+									and activeFlag = true
+									and parentContent = :parentContent'
+									,{parentContent=arguments.parentContent}
+								)/>
 	</cffunction>
 	
 	
