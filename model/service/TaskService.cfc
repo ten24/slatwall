@@ -139,8 +139,9 @@ component extends="HibachiService" output="false" accessors="true"{
 			// Initiate the taskHistory data
 			taskHistory.setTask( task );
 			taskHistory.setStartTime( now() );
-			
+
 			// Persist the info to the DB
+			taskHistory = this.saveTaskHistory( taskHistory );
 			getHibachiDAO().flushORMSession();
 			
 			// Run the task inside of a try/catch so that errors are logged
@@ -174,7 +175,7 @@ component extends="HibachiService" output="false" accessors="true"{
 			taskHistory.setEndTime( now() );
 			
 			// Persist the info to the DB
-			getHibachiDAO().save(taskHistory);
+			taskHistory = this.saveTaskHistory( taskHistory );
 			getHibachiDAO().flushORMSession();
 			
 			// If there was a taskSchedule, then we can update it
@@ -189,8 +190,7 @@ component extends="HibachiService" output="false" accessors="true"{
 			
 			// Call save on the task history
 			taskHistory = this.saveTaskHistory( taskHistory );
-			getHibachiDAO().save(taskHistory);
-			
+
 			// Create success or failure email, and also log results
 			if(taskHistory.getSuccessFlag()) {
 				getEmailService().generateAndSendFromEntityAndEmailTemplateID(entity=task,emailTemplateID=task.setting('taskSuccessEmailTemplate'));
