@@ -840,6 +840,40 @@ function setupEventHandlers() {
 		e.preventDefault();
 		jQuery('.panel-collapse:not(".in")').collapse('show');
 	});
+	
+	//function to check form imputs for values and show or hide label text
+	function checkFields(targetObj){
+		if( targetObj.value !== '') {
+			$(targetObj).closest('.form-group').find('.control-label').addClass('s-slide-out');
+		}else{
+			$(targetObj).closest('.form-group').find('.control-label').removeClass('s-slide-out');
+		}
+	};
+	
+	//check all inputs on page load and show or hide label
+	$('.s-login-wrapper .s-form-signin input').each(function(){
+		checkFields(this);
+	});
+	
+	//check input on keyup and show or hide label
+	$('.s-login-wrapper .s-form-signin input').keyup(function(){	
+		var getIDVal = $(this).attr('id');
+		checkFields(this);
+	});
+	
+	//Hide login and show forgot password
+	$('#j-forgot-password').click(function(e){
+		e.preventDefault();
+		$('#j-forgot-password-wrapper').show();
+		$('#j-login-wrapper').hide();
+	});
+	
+	//Show login and hide forgot password
+	$('#j-back-to-login').click(function(e){
+		e.preventDefault();
+		$('#j-forgot-password-wrapper').hide();
+		$('#j-login-wrapper').show();
+	});
 
 	//[TODO]: Change Up JS
 	jQuery('.panel-collapse.in').parent().find('.s-accordion-toggle-icon').removeClass('fa fa-caret-left').addClass('fa fa-caret-down');
