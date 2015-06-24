@@ -135,7 +135,10 @@ Notes:
 										<hb:HibachiActionCaller action="admin:entity.listsubscriptionterm" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listsubscriptionbenefit" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listcategory" type="list">
-										<hb:HibachiActionCaller action="admin:entity.listcontent" type="list">
+									<cfif $.slatwall.authenticateAction(action='admin:entity.listcontent')>
+										<hb:HibachiActionCaller queryString="ng##!/entity/Content" text="#$.slatwall.rbKey('admin.entity.listcontent')#" type="list">
+									</cfif>
+									<!---<hb:HibachiActionCaller action="admin:entity.listcontent" type="list">--->
 										<li class="divider"></li>
 										<hb:HibachiActionCaller action="admin:entity.listpromotion" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listpricegroup" type="list">
@@ -185,6 +188,10 @@ Notes:
 										<hb:HibachiActionCaller action="admin:entity.listattributeset" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listintegration" type="list">
 										<li class="divider"></li>
+									<hb:HibachiActionCaller action="admin:entity.listapp" type="list">
+									<!---<cfif $.slatwall.authenticateAction(action='admin:entity.listapp')>
+										<hb:HibachiActionCaller queryString="ng##!/entity/App" text="#$.slatwall.rbKey('admin.entity.listapp')#" type="list">
+									</cfif>--->
 										<hb:HibachiActionCaller action="admin:entity.listaddresszone" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listcollection" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listcountry" type="list">
@@ -199,6 +206,9 @@ Notes:
 										<hb:HibachiActionCaller action="admin:entity.listprinttemplate" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listroundingrule" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listsite" type="list">
+									<!---<cfif $.slatwall.authenticateAction(action='admin:entity.listsite')>
+										<hb:HibachiActionCaller queryString="ng##!/entity/Site" text="#$.slatwall.rbKey('admin.entity.listsite')#" type="list">
+									</cfif>--->
 										<hb:HibachiActionCaller action="admin:entity.listtaxcategory" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listterm" type="list">
 										<hb:HibachiActionCaller action="admin:entity.listtype" type="list">
