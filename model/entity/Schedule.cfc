@@ -112,7 +112,7 @@ component displayname="Schedule" entityname="SlatwallSchedule" table="SwSchedule
 	public string function getNextRunDateTime(startDateTime, endDateTime){
 		var nextRun='';
 		
-		if( !isDefined('arguments.endDateTime') or endDateTime > now() ){
+		if( isNull(arguments.endDateTime) or endDateTime > now() ){
 			
 			switch(getRecuringType()){
 				
