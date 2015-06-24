@@ -40,6 +40,18 @@ Notes:
 component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Logical Methods ===========================
+	public string function getCollectionObjectByCasing(required collection, required string casing){
+		switch(arguments.casing){
+			case 'lower':
+				return lcase(arguments.collection.getCollectionObject());
+				break;
+			case 'camel':
+				return lcase(Left(arguments.collection.getCollectionObject(),1)) & right(arguments.collection.getCollectionObject(), Len(arguments.collection.getCollectionObject()) - 1);
+				break;
+		}
+		throw('#arguments.casing# not a valid casing.');
+	}
+	
 	//returns meta data about the objects properties
 	public array function getEntityNameOptions() {
 		var entitiesMetaData = getEntitiesMetaData();
@@ -605,7 +617,7 @@ component extends="HibachiService" accessors="true" output="false" {
 			var collectionEntity = this.getCollectionByCollectionID("#arguments.data.collectionExportID#");	
 				
 			if(structKeyExists(arguments.data,'ids') && !isNull(arguments.data.ids) && arguments.data.ids != 'undefined'){
-				var propertyIdentifier = '_' & collectionEntity.getCollectionObject('camel') & '.' & getService('hibachiService').getPrimaryIDPropertyNameByEntityName(collectionEntity.getCollectionObject());
+				var propertyIdentifier = '_' & getService('collectionService').getCollectionObjectByCasing(collectionEntity,'camel') & '.' & getService('hibachiService').getPrimaryIDPropertyNameByEntityName(collectionEntity.getCollectionObject());
 				var filterGroup = {
 					propertyIdentifier = propertyIdentifier,
 					comparisonOperator = 'IN',

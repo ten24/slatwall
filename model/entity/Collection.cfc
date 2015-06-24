@@ -97,21 +97,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public string function getCollectionObject(string casing){
-		if(!isNull(arguments.casing)){
-			switch(arguments.casing){
-				case 'lower':
-					return lcase(variables.collectionObject);
-					break;
-				case 'camel':
-					return lcase(Left(variables.collectionObject,1)) & right(variables.collectionObject, Len(variables.collectionObject) - 1);
-					break;
-			}
-		}
-		
-		return variables.collectionObject;
-	}
-	
 	//returns an array of name/value structs for 
 	public array function getCollectionObjectOptions() {
 		if(!structKeyExists(variables, "collectionObjectOptions")) {
