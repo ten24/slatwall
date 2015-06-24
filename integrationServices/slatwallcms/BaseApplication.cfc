@@ -214,34 +214,43 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 	}
 	
 	public string function renderNav(
-		required any content
+		string startContentId=""
 		, numeric viewDepth=1
 		, numeric currDepth=1
-		, string type=arguments.content.getSite().getSiteCode()
-		, date today="#now()#"
-		, string class="navClass"
-		, string id="navId"
-		, string querystring=""
-		, array contentCollection=arguments.content.getChildContents(forNavigation=true)
-		, string subNavExpression=""
-		, string liHasKidsClass="liKidsClass"
-		, string liHasKidsAttributes="liKidsAttributes"
-		, string liCurrentClass="liActiveClass"
-		, string liCurrentAttributes="liActiveAttributes"
-		, string liHasKidsNestedClass="liKidsNestedClass"
-		, string aHasKidsClass="aKidsClass"
-		, string aHasKidsAttributes="aKidsAttributes"
-		, string aCurrentClass="aActiveClass"
-		, string aCurrentAttributes="aActiveAttributes"
-		, string ulNestedClass=""
-		, string ulNestedAttributes=""
-		, string openCurrentOnly="openActiveOnly"
-		, string aNotCurrentClass=""
-		, numeric size="50"
-		, string target = ""
-		, string targetParams = ''
-		
+		, string siteCode=""
+		, string navClass=""
+		, string navID=""
+		, string liKidsClass=""
+		, string liKidsAttributes=""
+		, string liActiveClass="active"
+		, string liActiveAttributes=""
+		, string liKidsNestedClass=""
+		, string aKidsClass="" 
+		, string aKidsAttributes="" 
+		, string aActiveClass="active"
+		, string aActiveAttributes=""
+		, string ulNestedClass="" 
+		, string ulNestedAttributes="" 
+		, string target = "" 
+		, array contentCollection=[]
 	){
+		//if content id does not exist then get home
+		if(!len(arguments.startContentID)){
+			var currentSite = getHibachiScope().getService('siteService').getCurrentRequestSite();
+			arguments.content = getHibachiScope().getService('contentService').getDefaultContentBySite(currentSite);
+		}else{
+			arguments.content = getHibachiScope().getService('contentService').getContent(arguments.startContentId);
+		}
+		
+		if(!len(arguments.siteCode)){
+			arguments.siteCode = arguments.content.getSite().getSiteCode();
+		}
+		
+		if(!arraylen(arguments.contentCollection)){
+			arguments.contentCollection = arguments.content.getChildContents();
+		}
+		
+		
 		//var firstLevelItems = arguments.content.getChildContents();
 		savecontent variable="navHTML"{
 			include 'templates/navtemplate.cfm';
@@ -253,35 +262,33 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 	public string function addLink(
 		required any content, 
 		string title, 
-		string class="", 
+		string navClass="", 
 		string target="",
-		string id="",
+		string navId="",
 		boolean showCurrent=true
 	){
 				
 		var link ="";
 		var href ="";
-		var theClass = arguments.class;
+		var theClass = arguments.navClass;
 		
 		if(arguments.showCurrent){
 			arguments.showCurrent=listFind(getHibachiScope().content().getContentIDPath(),arguments.content.getContentID());
 		}
 		
 		if(arguments.showCurrent){
-			theClass=listAppend(theClass,arguments.aCurrentClass," ");
-		}else if(len(arguments.aNotCurrentClass)){
-			theClass=listAppend(theClass,arguments.aNotCurrentClass," ");
+			theClass=listAppend(theClass,arguments.aActiveClass," ");
 		}
 		
 		if(arguments.content.hasChildContent()){
-			theClass=listAppend(theClass,arguments.aHasKidsClass," ");
+			theClass=listAppend(theClass,arguments.aKidsClass," ");
 		}
 		
 		href=createHREF(
 			arguments.content
 		);
 		
-		link='<a href="/#href#"#iif(len(arguments.target) and arguments.target neq '_self',de(' target="#arguments.target#"'),de(""))##iif(len(theClass),de(' class="#theClass#"'),de(""))##iif(len(arguments.id),de(' id="#arguments.id#"'),de(""))##iif(arguments.showCurrent,de(' #replace(arguments.aCurrentAttributes,"##","####","all")#'),de(""))##iif(arguments.content.hasChildContent() and len(arguments.aHasKidsAttributes),de(' #replace(arguments.aHasKidsAttributes,"##","####","all")#'),de(""))#>#HTMLEditFormat(arguments.title)#</a>';
+		link='<a href="/#href#"#iif(len(arguments.target) and arguments.target neq '_self',de(' target="#arguments.target#"'),de(""))##iif(len(theClass),de(' class="#theClass#"'),de(""))##iif(len(arguments.navId),de(' id="#arguments.navId#"'),de(""))##iif(arguments.showCurrent,de(' #replace(arguments.aActiveAttributes,"##","####","all")#'),de(""))##iif(arguments.content.hasChildContent() and len(arguments.aKidsAttributes),de(' #replace(arguments.aKidsAttributes,"##","####","all")#'),de(""))#>#HTMLEditFormat(arguments.title)#</a>';
 		return link;
 	}
 	
