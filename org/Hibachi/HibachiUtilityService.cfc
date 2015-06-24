@@ -159,7 +159,7 @@
 		}
 		//evaluate double brackets ${{}} and ${()}
 		public string function replaceStringEvaluateTemplate(required string template){
-			var templateKeys = reMatchNoCase("\${{[^}]+}}|\${([^}]+)}",arguments.template);
+			var templateKeys = reMatchNoCase("\${{[^}]+}}|\${\([^}]+\)}",arguments.template);
 			var replacementArray = [];
 			var returnString = arguments.template;
 			
