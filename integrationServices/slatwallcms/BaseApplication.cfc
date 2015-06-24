@@ -217,29 +217,30 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		required any content
 		, numeric viewDepth=1
 		, numeric currDepth=1
-		, string type="default"
+		, string type=arguments.content.getSite().getSiteCode()
 		, date today="#now()#"
-		, string class="navSecondary"
+		, string class="navClass"
+		, string id="navId"
 		, string querystring=""
 		, array contentCollection=arguments.content.getChildContents(forNavigation=true)
 		, string subNavExpression=""
-		, string liHasKidsClass=""
-		, string liHasKidsAttributes=""
-		, string liCurrentClass="current"
-		, string liCurrentAttributes=""
-		, string liHasKidsNestedClass=""
-		, string aHasKidsClass=""
-		, string aHasKidsAttributes=""
-		, string aCurrentClass="current"
-		, string aCurrentAttributes=""
+		, string liHasKidsClass="liKidsClass"
+		, string liHasKidsAttributes="liKidsAttributes"
+		, string liCurrentClass="liActiveClass"
+		, string liCurrentAttributes="liActiveAttributes"
+		, string liHasKidsNestedClass="liKidsNestedClass"
+		, string aHasKidsClass="aKidsClass"
+		, string aHasKidsAttributes="aKidsAttributes"
+		, string aCurrentClass="aActiveClass"
+		, string aCurrentAttributes="aActiveAttributes"
 		, string ulNestedClass=""
 		, string ulNestedAttributes=""
-		, string openCurrentOnly=""
+		, string openCurrentOnly="openActiveOnly"
 		, string aNotCurrentClass=""
 		, numeric size="50"
 		, string target = ""
 		, string targetParams = ''
-		, string id=""
+		
 	){
 		//var firstLevelItems = arguments.content.getChildContents();
 		savecontent variable="navHTML"{
