@@ -169,6 +169,7 @@
 				replaceDetails.value = templateKeys[i];
 				
 				var valueKey = replace(replace(templateKeys[i], "${{", ""),"}}","");
+				var valueKey = replace(replace(templateKeys[i], "${(", ""),")}","");
 				replaceDetails.value = evaluate(valueKey);
 				arrayAppend(replacementArray, replaceDetails);
 			}
