@@ -57,7 +57,7 @@ Notes:
 <cfoutput>
 	
 	<hb:HibachiEntityProcessForm entity="#rc.processObject.getProduct()#" edit="#rc.edit#">
-	
+		
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.processObject.getProduct()#"></hb:HibachiEntityActionBar>
 
 		<!--- Submit the baseProductType as well in case of a validation error --->
