@@ -64,10 +64,18 @@ Notes:
 		<h1>There was an unexpected error while processing your request.</h1><br />
 		<cftry>
 			<cfif len(local.errorNotifyEmailAddresses)>
-				<cfmail to="#local.errorNotifyEmailAddresses#" from="#listFirst(local.errorNotifyEmailAddresses)#" subject="Slatwall Error Notification">
-					<cfmailpart type="text/html">
-						<cfdump var="#request.exception#" />	
-					</cfmailpart>
+				<cfsavecontent variable="local.errorText">
+					<cfoutput>
+					<h2>An error occurred</h2>
+					Template: http://#cgi.server_name##cgi.script_name#?#cgi.query_string#<br />
+					Time: #dateFormat(now(), "short")# #timeFormat(now(), "short")#<br />
+					Remote IP Address: #cgi.REMOTE_ADDR#<br />
+					<cfdump var="#request.exception#" label="Error">				
+					</cfoutput>
+				</cfsavecontent>
+				
+				<cfmail to="#local.errorNotifyEmailAddresses#" from="#listFirst(local.errorNotifyEmailAddresses)#" subject="Slatwall Error Notification" type="html">
+					#local.errorText#	
 				</cfmail>
 				<strong>An error notification email was sent to the administrator.</strong><br /><br />
 			<cfelse>
