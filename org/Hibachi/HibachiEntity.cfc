@@ -527,7 +527,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		var cacheKey = "#arguments.propertyName#Count";
 			
 		if(!structKeyExists(variables, cacheKey)) {
-			variables[ cacheKey ] = arrayLen(variables[ arguments.propertyName ]);
+			variables[ cacheKey ] = getDao('hibachiDao').getPropertyCountByEntity(this,arguments.propertyName);
 		}
 		
 		return variables[ cacheKey ];

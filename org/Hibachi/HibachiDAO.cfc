@@ -89,6 +89,27 @@
 			return ormExecuteQuery("SELECT count(*) FROM #arguments.entityName#",true);
 		}
 		
+		public numeric function getPropertyCountByEntity(required any entity, required string propertyName){
+			var relatedPropertyMetaData = arguments.entity.getPropertyMetaData(arguments.propertyName);
+			var relatedEntityMetaData = getService('hibachiService').getEntityMetaData(relatedPropertyMetaData.cfc);
+			var alias = lcase('_'&relatedPropertyMetaData.cfc);
+			var primaryIDName = getService('hibachiService').getPrimaryIDPropertyNameByEntityName(relatedPropertyMetaData.cfc);
+			var tableName = relatedEntityMetaData.table;
+			if(structkeyExists(relatedPropertyMetaData,'inversejoincolumn')){
+				var fkcolumn = relatedPropertyMetaData.inversejoincolumn;
+			}else{
+				var fkcolumn = relatedPropertyMetaData.fkcolumn;
+			}
+			var sql = "select count(#alias#.#primaryIDName#) as entityCount from #tableName# #alias# where #alias#.#fkcolumn# = '#arguments.entity.getPrimaryIDValue()#'";
+			var queryService = new query();
+			if(alias == '_content'){
+				writedump(arguments.propertyName);
+				writedump(sql);abort;
+			}
+			
+			return queryService.execute(sql=sql).getResult().entityCount;
+		}
+		
 		public void function reloadEntity(required any entity) {
 	    	entityReload(arguments.entity);
 	    }
@@ -143,6 +164,7 @@
 		// ===================== START: Private Helper Methods ===========================
 		
 		// =====================  END: Private Helper Methods ============================
+		
 		
 	</cfscript>
 	
