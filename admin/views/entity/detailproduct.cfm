@@ -86,7 +86,7 @@ Notes:
 				<hb:HibachiEntityDetailItem view="admin:entity/producttabs/bundlegroups" text="#$.slatwall.rbKey('entity.productBundleGroup_plural')#" />
 			<cfelse>
 				<!--- Skus --->
-				<hb:HibachiEntityDetailItem property="skus" />
+				<hb:HibachiEntityDetailItem property="skus" count="#rc.product.getSkusCount()#" />
 			</cfif>
 			<!--- TODO: END --->
 
