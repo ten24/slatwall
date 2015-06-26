@@ -673,7 +673,7 @@ component extends="HibachiService" accessors="true" {
 	}
 
 	public any function processProduct_create(required any product, required any processObject) {
-
+	
 		// GENERATE - CONTENT ACCESS SKUS
 		if(arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "contentAccess") {
 
@@ -791,14 +791,14 @@ component extends="HibachiService" accessors="true" {
 
 		// GENERATE - SUBSCRIPTION SKUS
 		} else if (arguments.processObject.getGenerateSkusFlag() && arguments.processObject.getBaseProductType() == "subscription") {
-
+		
 			for(var i=1; i <= listLen(arguments.processObject.getSubscriptionTerms()); i++){
 				var thisSku = this.newSku();
 				thisSku.setProduct(arguments.product);
 				thisSku.setPrice(arguments.processObject.getPrice());
 				thisSku.setRenewalPrice(arguments.processObject.getPrice());
 				thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.processObject.getSubscriptionTerms(), i)) );
-				thisSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
+				thisSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus())#");
 				for(var b=1; b <= listLen(arguments.processObject.getSubscriptionBenefits()); b++) {
 					thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getSubscriptionBenefits(), b) ) );
 				}

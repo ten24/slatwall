@@ -55,8 +55,9 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
+	
 	<hb:HibachiEntityProcessForm entity="#rc.processObject.getProduct()#" edit="#rc.edit#">
-
+		
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.processObject.getProduct()#"></hb:HibachiEntityActionBar>
 
 		<!--- Submit the baseProductType as well in case of a validation error --->
@@ -75,7 +76,7 @@ Notes:
 
 				<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productName" fieldName="product.productName" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productName')#">
 				<hb:HibachiPropertyDisplay object="#rc.processObject.getProduct()#" property="productCode" fieldName="product.productCode" edit="true" title="#$.slatwall.rbKey('entity.product.#rc.processObject.getBaseProductType()#.productCode')#">
-
+				
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="true">
 
 			</hb:HibachiPropertyList>
