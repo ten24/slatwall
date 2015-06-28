@@ -127,6 +127,11 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	property name="unenrolledAccountLoyaltyOptions" persistent="false";
 	property name="termOrderPaymentsByDueDateSmartList" persistent="false";
 
+	//CUSTOM PROPERTIES BEGIN 
+	property name="test";
+	property name="newTest";
+		//CUSTOM PROPERTIES END 
+
 	public boolean function isPriceGroupAssigned(required string  priceGroupId) {
 		return structKeyExists(this.getPriceGroupsStruct(), arguments.priceGroupID);	
 	}
@@ -685,6 +690,4 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 	
 	// ==================  END:  Deprecated Methods ========================
-
 }
-

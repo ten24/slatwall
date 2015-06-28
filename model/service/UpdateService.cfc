@@ -194,7 +194,7 @@ Notes:
 	
 	<cffunction name="updateEntitiesWithCustomProperties" returntype="boolean">
 		 <cfscript>
-//			try{
+			try{
 				var path = "#ExpandPath('/')#" & "model/entity";
 				var pathCustom = "#ExpandPath('/')#" & "custom/model/entity";
 				var compiledPath = "#ExpandPath('/')#" & "model/entity";
@@ -225,20 +225,20 @@ Notes:
 					filewrite(compiledPath & '/#match#',results);
 				}
 				return true;
-//			}catch(any e){
-//				writeLog(file="Slatwall", text="Error reading from the file system while updating properties: #e#");
-//				return false;
-//			}
+			}catch(any e){
+				writeLog(file="Slatwall", text="Error reading from the file system while updating properties: #e#");
+				return false;
+			}
 			return true;
 		</cfscript>
 	</cffunction>
 	<cffunction name="mergeProperties" returntype="any">
 	  <cfargument name="fileName" type="String">
 		<cfscript>
-			
+			//declared file paths
 			var filePath =  "model/entity/#arguments.fileName#";
 			var customFilePath =  "custom/model/entity/#arguments.fileName#";
-		    
+		    //declared component paths
 		    var fileComponentPath = left(filePath, len(filePath)-4);
 		    fileComponentPath = replace(fileComponentPath, "/", ".", "All");
 			var customFileComponentPath = left(customFilePath, len(customFilePath)-4);
@@ -250,12 +250,13 @@ Notes:
 			//Grab the contents of the files and figure our the properties.
 			var fileContent = fileRead(expandPath(filePath)) ;
 			
-			//if they already exists, then remove the custom properties and custom functions
+			//declared custom strings
 			var lineBreak = lineBreak = Chr(13) & Chr(10);
 			var customPropertyBeginString = '//CUSTOM PROPERTIES BEGIN #lineBreak#';
-			var customPropertyEndString = '//CUSTOM PROPERTIES END #lineBreak#';
+			var customPropertyEndString = '//CUSTOM PROPERTIES END #lineBreak & lineBreak#';
 			var customFunctionBeginString = chr(9)&'//CUSTOM FUNCTIONS BEGIN #lineBreak#';
 			var customFunctionEndString = '//CUSTOM FUNCTIONS END #lineBreak#';
+			//if they already exists, then remove the custom properties and custom functions
 			if(findNoCase(customPropertyBeginString, fileContent)){
 				var customPropertyStartPos = findNoCase(chr(9)&customPropertyBeginString, fileContent);
 				var customPropertyEndPos = findNoCase(customPropertyEndString, fileContent) + len(customPropertyEndString);
@@ -269,20 +270,24 @@ Notes:
 			}
 			var customFileContent = fileRead(expandPath(customFilePath)) ;
 			
-			// check duplicate properties
+			// check duplicate properties and if there is a duplicate then write it to log
 			if(structKeyExists(customMeta,'properties')){
 				for(var i=1; i <= arraylen(customMeta.properties); i++) {
 					for(var j=1; j <= arraylen(baseMeta.properties); j++ ) {
 						if(baseMeta.properties[j].name == customMeta.properties[i].name) {
-							writeLog("Slatwall", "Custom property names can't be same as core property names");
+							writeLog(
+								file="Slatwall", 
+								text="Custom property names can't be same as core property names"
+							);
 						}
 					}
 				}
 			}
-						
-			var propertyStartPos = findNoCase("property ", customFileContent) ;
-			var privateFunctionLineStartPos = reFindNoCase('private',customFileContent) ; 
-			var publicFunctionLineStartPos = reFindNoCase('public',customFileContent) ;
+			
+			//declare custom positions
+			var propertyStartPos = findNoCase("property name=", customFileContent) ;
+			var privateFunctionLineStartPos = reFindNoCase('\private(.*?)function',customFileContent) ; 
+			var publicFunctionLineStartPos = reFindNoCase('\public(.*?)function',customFileContent) ;
 			
 			var functionLineStartPos = 0;
 			if(privateFunctionLineStartPos && publicFunctionLineStartPos){
@@ -304,8 +309,7 @@ Notes:
 				var propertyEndPos = componentEndPos;
 			}
 			
-			
-			
+			//create function and properties strings
 			var functionString = '';
 			if(functionLineStartPos){
 				functionString =  mid(customFileContent, functionLineStartPos, abs(componentEndPos - functionLineStartPos));
@@ -322,21 +326,43 @@ Notes:
 				
 				var customPropertyString = customPropertyBeginString & chr(9) & propertyString & chr(9) & customPropertyEndString;
 				
-				var newContentPropertiesStartPos = findNoCase("property ", newContent) -1;
+				propertyStartPos = findNoCase("property name=", newContent) ;
+				privateFunctionLineStartPos = reFind('private ',newContent); 
+				publicFunctionLineStartPos = reFind('public ',newContent);
 				
+				if(privateFunctionLineStartPos && publicFunctionLineStartPos){
+					if(privateFunctionLineStartPos > publicFunctionLineStartPos){
+						functionLineStartPos = publicFunctionLineStartPos;
+					}else{
+						functionLineStartPos = privateFunctionLineStartPos;
+					}
+				}else if(privateFunctionLineStartPos){
+					functionLineStartPos = privateFunctionLineStartPos;
+				}else if(publicFunctionLineStartPos){
+					functionLineStartPos = publicFunctionLineStartPos;
+				}
+				
+				componentEndPos = newContent.lastIndexOf("}") ;
+				if(functionLineStartPos){
+					propertyEndPos = functionLineStartPos -1;
+				}else{
+					propertyEndPos = componentEndPos;
+				}
+				
+				var newContentPropertiesStartPos = propertyEndPos; 
 				newContent = left(newContent,newContentPropertiesStartPos) & customPropertyString & chr(9) & right(newContent,len(newContent) - newContentPropertiesStartPos);
 			}
 			//add functions
 			if(len(functionString)){
 				
-				var customFunctionString =  customFunctionBeginString & chr(9) & functionString & customfunctionEndString;
+				var customFunctionString =  customFunctionBeginString & chr(9) & functionString & lineBreak & chr(9) & customfunctionEndString;
 				
 				var newContentComponentEndPos = newContent.lastIndexOf("}") ;
 				
 				newContent = left(newContent,newContentComponentEndPos) & customFunctionString & '}';
 			}
 			
-		return newContent;
+			return newContent;
 		</cfscript>
 	</cffunction>
 	<cffunction name="addPropertiesToFile" returntype="String">	
