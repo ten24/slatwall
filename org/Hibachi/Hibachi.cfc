@@ -701,7 +701,7 @@ component extends="FW1.framework" {
 	}
 	
 	// This method will execute an actions controller, render the view for that action and return it without going through an entire lifecycle
-	public string function doAction(required string action) {
+	public string function doAction(required string action, struct data) {
 		
 		var response = "";
 		var originalFW1 = {};
@@ -750,6 +750,10 @@ component extends="FW1.framework" {
 		
 		// create a new request context to hold simple data, and an empty request services so that the view() function works
 		request.context = {};
+		if(!isnull(arguments.data)){
+			request.context = arguments.data;
+		}
+		
 		request._fw1 = {
 	        cgiScriptName = CGI.SCRIPT_NAME,
 	        cgiRequestMethod = CGI.REQUEST_METHOD,

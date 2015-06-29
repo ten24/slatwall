@@ -132,9 +132,9 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	// ==================== GENERAL API METHODS ===============================
 	
 	// Action Methods ===
-	public string function doAction( required string action ) {
+	public string function doAction( required string action, struct data ) {
 		arrayAppend(getCalledActions(), arguments.action);
-		return getApplicationValue('application').doAction( arguments.action );
+		return getApplicationValue('application').doAction( arguments.action, arguments.data );
 	}
 	
 	public boolean function hasSuccessfulAction( required string action ) {

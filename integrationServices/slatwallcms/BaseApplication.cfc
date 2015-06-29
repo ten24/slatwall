@@ -70,16 +70,19 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 	
 	function runRequestActions() {
 		if(structKeyExists(form, "slatAction")) {
+			request.context['doNotRender'] = true;
 			for(var action in listToArray(form.slatAction)) {
-				request.slatwallScope.doAction( action );
-				if(request.slatwallScope.hasFailureAction(action)) {
+				arguments.slatwallScope.doAction( action, request.context);
+				if(arguments.slatwallScope.hasFailureAction(action)) {
 					break;
 				}
 			}
 		} else if (structKeyExists(url, "slatAction")) {
+			request.context['doNotRender'] = true;
+			
 			for(var action in listToArray(url.slatAction)) {
-				var actionResult = request.slatwallScope.doAction( action );
-				if(request.slatwallScope.hasFailureAction(action)) {
+				var actionResult = arguments.slatwallScope.doAction( action, request.context);
+				if(arguments.slatwallScope.hasFailureAction(action)) {
 					break;
 				}
 			}
@@ -95,6 +98,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		generateRenderedContent(argumentCollection=arguments);
 		onRequestEnd();
 	}
+	
 	
 	function generateRenderedContent() {
 		
@@ -168,6 +172,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 			arguments.slatwallScope.setContent(content);
 		}
 		var $ = getApplicationScope(argumentCollection=arguments);
+		
 		savecontent variable="templateData"{
 			include "#contentPath#";
 		}
