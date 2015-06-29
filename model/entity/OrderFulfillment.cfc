@@ -605,6 +605,26 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	
 	// =================== START: ORM Event Hooks  =========================
 	
+	public void function preUpdate(Struct oldData){
+		//Check to make sure that the previous order is not null and that the new order is different from the old order 
+		if (
+			structKeyExists(arguments.oldData, "order")
+			&& !isNull(arguments.oldData.order.getOrderID()) 
+			&& ( 
+				isNull( this.getOrder() )
+				|| (!isNull(this.getOrder()) &&  this.getOrder().getOrderID() != arguments.oldData.order.getOrderID() )
+			)
+		){
+			//Reset the order to the old Data
+			this.setOrder(arguments.oldData.order);
+			
+			//Log that this occurred in the Slatwall Log
+			logHibachi("Order Fulfillment: #this.getOrderFulfillmentID()# tried to update it's order. This change has been prevented", true);
+		}
+		
+		super.preUpdate(argumentCollection=arguments);
+	}
+	
 	// ===================  END:  ORM Event Hooks  =========================
 	
 	// ================== START: Deprecated Methods ========================
