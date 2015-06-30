@@ -687,7 +687,7 @@
         <!--//filter batch action-->
 
     	<div class="table-responsive s-filter-table-box">
-    		<table class="table table-bordered table-striped">
+    		<table class="table table-bordered table-hover">
     				<thead>
     						<tr>
     								<th>Row</span></th>
