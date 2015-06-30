@@ -55,7 +55,7 @@ Notes:
 <cfoutput>
 <div class="container s-login-container">
 	
-	<div class="s-login-wrapper">
+	<div class="s-login-wrapper col-xs-6 col-xs-offset-3">
 
 		<div class="s-logo">
 			<img src="/assets/images/logo-1x.png" alt="Slatwall"

@@ -274,9 +274,6 @@ hr.s-dotted {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-th {
-  font-family: "open_sansregular", Helvetica, Arial, sans-serif;
-}
 a {
   color: #428bca;
 }
@@ -292,6 +289,9 @@ a:hover {
   overflow: auto;
   display: inline-block;
   width: 100%;
+}
+.table-responsive table th {
+  font-weight: 600;
 }
 .table-responsive .s-table-checkbox {
   width: 40px;
@@ -316,6 +316,10 @@ a:hover {
 .table-responsive .s-table-sort {
   width: 30px;
   text-align: center;
+}
+.table-responsive .dropdown a.dropdown-toggle {
+  color: #666;
+  font-weight: 600;
 }
 button::-moz-focus-inner {
   border: 0;
@@ -350,6 +354,7 @@ a:focus {
 }
 label {
   font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
+  font-weight: normal;
 }
 .s-width-100 {
   width: 100%;
@@ -621,6 +626,7 @@ select.error {
 }
 .s-login-wrapper {
   width: 450px;
+  margin: auto;
 }
 .s-form-signin {
   padding: 25px 63px;
@@ -869,6 +875,9 @@ select.error {
 .s-property-info table {
   border: 1px dotted #e6e6e6;
 }
+.table {
+  background-color: #ffffff;
+}
 .s-property-info .table > thead > tr > th,
 .table > tbody > tr > th,
 .table > tfoot > tr > th,
@@ -917,7 +926,8 @@ select.error {
 .table > tbody > tr > td.admin.admin2,
 .table > thead > tr > td.admin.admin1,
 .table > tbody > tr > td.admin.admin1 {
-  width: 75px;
+  width: 78px;
+  padding: 9px 11px;
 }
 .table > thead > tr > td.admin.admin3,
 .table > tbody > tr > td.admin.admin3 {
@@ -1239,6 +1249,11 @@ select:focus {
   display: inline-block;
   width: 100%;
 }
+.pagination-sm > li:last-child > a,
+.pagination-sm > li:last-child > span {
+  border-top-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
 .pagination > .active > a,
 .pagination > .active > span,
 .pagination > .active > a:hover,
@@ -1304,12 +1319,14 @@ select:focus {
 .table > thead > tr > td,
 .table > tbody > tr > td,
 .table > tfoot > tr > td {
-  padding: 8px 8px 5px 8px;
+  padding: 11px 11px;
 }
 .table-bordered > thead > tr > th,
 .table-bordered > thead > tr > td {
   border-bottom-width: 1px;
   white-space: nowrap;
+  padding: 11px 8px 8px 11px;
+  line-height: 16px;
 }
 .table-striped {
   background-color: #ffffff;
@@ -1937,6 +1954,7 @@ tabel .s-table-header {
 .pagination > li > a,
 .pagination > li > span {
   color: #767676;
+  padding: 6px 12px 6px 12px;
 }
 .s-setting-options-body .s-filter-item {
   vertical-align: top;
@@ -2189,9 +2207,29 @@ tabel .s-table-header {
   text-align: right;
   padding-right: 0px;
 }
-.s-table-header-nav .s-table-view-options select {
-  height: 28px;
-  margin-left: 5px;
+.s-select-wrapper select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  line-height: 13px;
+  padding-right: 23px;
+}
+.s-select-wrapper {
+  position: relative;
+  text-align: right;
+  display: block;
+}
+.s-select-wrapper:after {
+  font-family: fontAwesome;
+  content: "\f0dc";
+  pointer-events: none;
+  position: absolute;
+  margin-top: -22px;
+  margin-left: -16px;
+}
+.s-select-wrapper select::-ms-expand {
+  /* for IE 11 */
+  display: none;
 }
 .s-table-header-nav .s-table-view-options label {
   line-height: 28px;
