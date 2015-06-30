@@ -76,7 +76,7 @@ Notes:
 					<cfif isStruct(messagesStruct)>
 					<dt>#$.slatwall.rbKey('entity.paymentTransaction.message')#</dt>
 						<dl>
-						<table class="table table-striped table-bordered table-condensed">
+						<table class="table table-bordered table-hover">
 							<tbody>
 								<cfloop collection="#messagesStruct#" item="messageKey">
 									<cfset messages = messagesStruct[messageKey] />
