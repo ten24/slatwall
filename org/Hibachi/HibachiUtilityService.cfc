@@ -191,6 +191,11 @@
 			for(var i=1; i<=arrayLen(replacementArray); i++) {
 				returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
 			}
+			
+			if(arraylen(reMatchNoCase("\${{[^}]+}}",returnString))){
+				returnString = replaceStringEvaluateTemplate(returnString);
+			}
+			
 			return returnString;
 		}
 		//replace single brackets ${}
@@ -224,6 +229,9 @@
 			
 			for(var i=1; i<=arrayLen(replacementArray); i++) {
 				returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
+			}
+			if(arraylen(reMatchNoCase("\${[^}]+}",returnString))){
+				returnString = replaceStringTemplate(returnString, arguments.object, arguments.formatValues,arguments.removeMissingKeys);
 			}
 			
 			return returnString;
