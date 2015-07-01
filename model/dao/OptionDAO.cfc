@@ -62,8 +62,10 @@ Notes:
 				SwOptionGroup.optionGroupName
 			FROM
 				SwOption
-			  INNER JOIN
-			  	SwOptionGroup on SwOptionGroup.optionGroupID = SwOption.optionGroupID
+			INNER JOIN
+			  	SwOptionGroup 
+			ON 
+				SwOptionGroup.optionGroupID = SwOption.optionGroupID
 			WHERE
 				SwOption.optionGroupID IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.existingOptionGroupIDList#" list="true">)
 			  AND
@@ -92,6 +94,7 @@ Notes:
 	</cffunction>
 	
 	<cffunction name="getUnusedProductOptionGroups">
+		<cfargument name="productTypeID" type="string" required="true" />
 		<cfargument name="existingOptionGroupIDList" type="string" required="true" />
 		
 		<cfset var result = [] />
@@ -103,8 +106,14 @@ Notes:
 				SwOptionGroup.optionGroupName
 			FROM
 				SwOptionGroup
+			LEFT OUTER JOIN
+				SwOptionGroupProductType
+   			 ON
+       			SwOptionGroup.optionGroupID = SwOptionGroupProductType.optionGroupID
 			WHERE
 				SwOptionGroup.optionGroupID NOT IN (<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.existingOptionGroupIDList#" list="true">)
+			AND
+				( SwOptionGroup.globalFLag = true OR SwOptionGroupProductType.productTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productTypeID#"> )
 			ORDER BY 
 				SwOptionGroup.optionGroupName
 		</cfquery>

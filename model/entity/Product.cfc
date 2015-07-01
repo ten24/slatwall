@@ -814,7 +814,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	public array function getUnusedProductOptionGroups() {
 		if( !structKeyExists(variables, "unusedProductOptionGroups") ) {
-			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( structKeyList(getOptionGroupsStruct()) );
+			variables.unusedProductOptionGroups = getService('optionService').getUnusedProductOptionGroups( getProductType().getProductTypeID(), structKeyList(getOptionGroupsStruct()) );
 		}
 		return variables.unusedProductOptionGroups;
 	}
