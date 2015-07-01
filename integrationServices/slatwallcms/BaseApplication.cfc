@@ -252,7 +252,7 @@ component extends="Slatwall.org.Hibachi.Hibachi"{
 		}
 		
 		if(!arraylen(arguments.contentCollection)){
-			arguments.contentCollection = arguments.content.getChildContents();
+			arguments.contentCollection = arguments.content.getChildContents(forNavigation=true);
 		}
 		
 		
