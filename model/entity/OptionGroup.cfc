@@ -56,6 +56,7 @@ component displayname="Option Group" entityname="SlatwallOptionGroup" table="SwO
 	property name="optionGroupDescription" ormtype="string" length="4000";
 	property name="imageGroupFlag" ormtype="boolean" default="0";
 	property name="sortOrder" ormtype="integer" required="true";
+	property name="globalFlag" ormtype="boolean" default="1";
 
 	// Remote properties
 	property name="remoteID" ormtype="string";
@@ -66,9 +67,12 @@ component displayname="Option Group" entityname="SlatwallOptionGroup" table="SwO
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
-	// Related Object Properties
+	// Related Object Properties (one-many)
 	property name="options" singularname="option" cfc="Option" fieldtype="one-to-many" fkcolumn="optionGroupID" inverse="true" cascade="all-delete-orphan" orderby="sortOrder";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" fieldtype="one-to-many" fkcolumn="optionGroupID" inverse="true" cascade="all-delete-orphan";
+	
+	// Related Object Properties (many-to-many - owner)
+	property name="productTypes" singularname="productType" cfc="ProductType" type="array" fieldtype="many-to-many" linktable="SwOptionGroupProductType" fkcolumn="optionGroupID" inversejoincolumn="productTypeID";
 
 	public array function getOptions(orderby, sortType="text", direction="asc") {
 		if(!structKeyExists(arguments,"orderby")) {
@@ -81,7 +85,7 @@ component displayname="Option Group" entityname="SlatwallOptionGroup" table="SwO
     public any function getOptionsSmartList() {
     	return getPropertySmartList(propertyName="options");
     }
-
+    
     // ============ START: Non-Persistent Property Methods =================
 
 	// ============  END:  Non-Persistent Property Methods =================
@@ -103,11 +107,39 @@ component displayname="Option Group" entityname="SlatwallOptionGroup" table="SwO
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeOptionGroup( this );
 	}
+	
+	// Product Types (many-to-many - owner)
+	public void function addProductType(required any productType) {    
+		if(arguments.productType.isNew() or !hasProductType(arguments.productType)) {    
+			arrayAppend(variables.productTypes, arguments.productType);    
+		}
+		if(isNew() or !arguments.productType.hasOptionGroup( this )) {    
+			arrayAppend(arguments.productType.getOptionGroups(), this);    
+		}    
+	}
+	public void function removeProductType(required any productType) {    
+		var thisIndex = arrayFind(variables.productTypes, arguments.productType);    
+		if(thisIndex > 0) {    
+			arrayDeleteAt(variables.productTypes, thisIndex);    
+		}    
+		var thatIndex = arrayFind(arguments.productType.getOptionGroups(), this);    
+		if(thatIndex > 0) {    
+			arrayDeleteAt(arguments.productType.getOptionGroups(), thatIndex);    
+		}
+	}
 
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// ================== START: Overridden Methods ========================
 
+	public boolean function getGlobalFlag() {
+		if(!structKeyExists(variables, "globalFlag")) {
+			variables.globalFlag = 1;
+		}
+		
+		return variables.globalFlag;
+	}
+	
 	// ==================  END:  Overridden Methods ========================
 
 	// =================== START: ORM Event Hooks  =========================
