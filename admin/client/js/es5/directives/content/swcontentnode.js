@@ -32,11 +32,6 @@ angular.module('slatwalladmin').directive('swContentNode', ['$log', '$compile', 
         isVisible: true,
         isSearchable: true
       }, {
-        propertyIdentifier: '_content.contentTemplateFile',
-        persistent: false,
-        setting: true,
-        isVisible: true
-      }, {
         propertyIdentifier: '_content.allowPurchaseFlag',
         isVisible: true,
         isSearchable: true
