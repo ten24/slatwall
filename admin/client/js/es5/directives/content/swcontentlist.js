@@ -26,12 +26,6 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           ormtype: 'id',
           isSearchable: false
         }, {
-          propertyIdentifier: '_content.contentTemplateFile',
-          persistent: false,
-          setting: true,
-          isVisible: true,
-          isSearchable: false
-        }, {
           propertyIdentifier: '_content.allowPurchaseFlag',
           isVisible: true,
           ormtype: 'boolean',
