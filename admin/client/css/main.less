@@ -386,18 +386,6 @@ fieldset[disabled] .s-button-no-style.active {
 //
 // Mixins: utilities
 // --------------------------------------------------
-
-// Clearfix
-//
-// Source: http://nicolasgallagher.com/micro-clearfix-hack/
-//
-// For modern browsers
-// 1. The space content is one way to avoid an Opera bug when the
-//    contenteditable attribute is included anywhere else in the document.
-//    Otherwise it causes space to appear at the top and bottom of elements
-//    that are clearfixed.
-// 2. The use of `table` rather than `block` is only necessary if using
-//    `:before` to contain the top-margins of child elements.
 .clearfix() {
 	*zoom: 1;
 	&:before,
@@ -461,8 +449,6 @@ fieldset[disabled] .s-button-no-style.active {
 	}
 }
 
-
-
 //
 // Css
 // --------------------------------------------------
@@ -481,11 +467,11 @@ body.s-login-screen {background-image: url(/assets/images/login-bg.jpg);backgrou
 }
 hr {border-color:@black-20;}
 hr.s-dotted {border:none;border-bottom:3px dotted @black-5;margin-top:20px;margin-bottom:20px;}
-th {font-family: @font-family-regular;}
 a {color:@brand-primary;}
 a:hover {color: @link-color-hover;text-decoration:none;}
 .btn,.dropdown-menu {font-size:12px;}
 .table-responsive {width:100%;overflow:auto;display: inline-block;width: 100%;}
+.table-responsive table th {font-weight: 600;}
 .table-responsive .s-table-checkbox {width: 40px;text-align: center;}
 .table-responsive .multiselect {text-align:center;width:40px;}
 .table-responsive .s-table-checkbox a i {margin: 0px;}
@@ -493,6 +479,7 @@ a:hover {color: @link-color-hover;text-decoration:none;}
 .table-responsive .s-table-select {text-align: center;}
 .table-responsive .s-table-select a i {margin:0px;}
 .table-responsive .s-table-sort {width: 30px;text-align: center;}
+.table-responsive .dropdown a.dropdown-toggle {color: #666;font-weight:600;}
 
 button::-moz-focus-inner {border: 0;}
 
@@ -503,7 +490,7 @@ input[type=number]::-webkit-inner-spin-button {-webkit-appearance: none;margin: 
 input[type=number] {-moz-appearance:textfield;}
 
 a, a:active, a:focus {outline: none;}
-label {font-family: @font-family-semibold;}
+label {font-family: @font-family-semibold;font-weight: normal;}
 .s-width-100 {width:100%;}
 .btn {.border-radius();}
 .btn-sm, .btn-group-sm>.btn {.border-radius;}
@@ -561,7 +548,7 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, input.error, select.e
 .s-login-wrapper .s-form-signin label.error{background-color:#DA5757;margin-bottom:0px;width:100%;text-align:center !important;padding:6px 0px;color:##FFF;z-index:0;margin-bottom:6px;margin-top:-2px;border-radius:2px;opacity:1;display:block;position:relative;font-weight:500;font-size:12px}
 .s-login-wrapper .s-form-signin label.s-slide-out{display:block;margin-left:-205px;opacity:1}
 .s-login-container{display:-webkit-box;display:-moz-box;display:-ms-flexbox;display:-webkit-flex;display:flex;align-items:center;justify-content:center;height:70vh}
-.s-login-wrapper{width:450px}
+.s-login-wrapper{width:450px;margin:auto;}
 .s-form-signin{padding:25px 63px;margin:0 auto}
 .s-login-wrapper .s-logo{text-align:center}
 .s-login-wrapper .s-logo img{width:60%;margin-bottom:10px}
@@ -631,6 +618,7 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, input.error, select.e
 
 /* Detail Views */
 .s-property-info table {border:1px dotted @black-10;}
+.table {background-color: #ffffff;}
 .s-property-info .table>thead>tr>th, 
 .table>tbody>tr>th, .table>tfoot>tr>th, 
 .table>thead>tr>td, .table>tbody>tr>td, 
@@ -647,7 +635,7 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, input.error, select.e
 .listing-display-header {background-color:@white;}
 .listing-display-header .s-content-left {padding-left:0px;}
 .listing-display-header .s-content-right {padding-right:0px;}
-.table>thead>tr>td.admin.admin2, .table>tbody>tr>td.admin.admin2, .table>thead>tr>td.admin.admin1, .table>tbody>tr>td.admin.admin1 {width:75px;}
+.table>thead>tr>td.admin.admin2, .table>tbody>tr>td.admin.admin2, .table>thead>tr>td.admin.admin1, .table>tbody>tr>td.admin.admin1 {width:78px;padding: 9px 11px;}
 .table>thead>tr>td.admin.admin3, .table>tbody>tr>td.admin.admin3 {text-align:center;width:100px;}
 table a.btn {background-color: transparent;color:#5E5E5E;border: none;}
 table a.btn i {vertical-align:middle;padding-bottom:3px;}
@@ -736,6 +724,7 @@ input:focus, textarea:focus, select:focus {-webkit-box-shadow: none !important;b
 .alert .close { position: relative;top: 0px;font-size: 17px; }
 .alert-error { background-color: #f2dede; border-color: #ebccd1; color: #a94442;display: inline-block;width: 100%;}
 
+.pagination-sm>li:last-child>a, .pagination-sm>li:last-child>span {border-top-right-radius: 2px;border-bottom-right-radius: 2px;}
 .pagination>.active>a, .pagination>.active>span, .pagination>.active>a:hover, .pagination>.active>span:hover, .pagination>.active>a:focus, .pagination>.active>span:focus {background-color:@black-60;border-color:@black-60;}
 .pagination>.disabled>span, .pagination>.disabled>span:hover, .pagination>.disabled>span:focus, .pagination>.disabled>a, .pagination>.disabled>a:hover, .pagination>.disabled>a:focus {color: @black-20;}
 .pagination>li>a:hover, .pagination>li>span:hover, .pagination>li>a:focus, .pagination>li>span:focus {background-color:@black-60;color:@white;border-color:@black-60;}
@@ -747,8 +736,8 @@ input:focus, textarea:focus, select:focus {-webkit-box-shadow: none !important;b
 .panel, .panel-group .panel {.border-radius(0);}
 .panel-default>.panel-heading {background-color:#606060;color:@white;}
 .panel-group .panel-heading+.panel-collapse>.panel-body {border-top: none;}
-.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {padding: 8px 8px 5px 8px;}
-.table-bordered>thead>tr>th, .table-bordered>thead>tr>td {border-bottom-width:1px;white-space: nowrap;}
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {padding: 11px 11px;}
+.table-bordered>thead>tr>th, .table-bordered>thead>tr>td {border-bottom-width:1px;white-space: nowrap;padding: 11px 8px 8px 11px;line-height: 16px;}
 .table-striped {background-color:@white;}
 table .s-edit-elements {width: 72px;text-align: center;}
 table .s-edit-elements ul {margin:0px;}
@@ -883,7 +872,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-filter-table-box tr td:first-child {width:46px;}
 
 .pagination {margin: 10px 0 20px 0;}
-.pagination>li>a, .pagination>li>span {color:#767676;}
+.pagination>li>a, .pagination>li>span {color:#767676;padding: 6px 12px 6px 12px;}
 
 .s-setting-options-body .s-filter-item {vertical-align:top;display: inline-block;margin-left: 3px;margin-top:2px;}
 .s-setting-options-body .s-filter-item span.s-or-icon {position: relative;top: -10px;left: 22px;}
@@ -949,7 +938,11 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-table-header-nav label {margin-top:0px;margin-bottom:0px;}
 .s-table-header-nav .s-table-header-search button {color:#5E5E5E;background-color:@black-5;border: 1px solid @black-20;}
 .s-table-header-nav .s-table-view-options {text-align:right;padding-right:0px;}
-.s-table-header-nav .s-table-view-options select {height:28px;margin-left:5px;}
+.s-select-wrapper select {-webkit-appearance: none;-moz-appearance: none;appearance: none;line-height: 13px;padding-right: 23px;}
+.s-select-wrapper {position: relative;text-align: right;display: block;}
+.s-select-wrapper:after {font-family: fontAwesome;content: "\f0dc";pointer-events: none;position: absolute;margin-top: -22px;margin-left: -16px;}
+.s-select-wrapper select::-ms-expand { /* for IE 11 */display: none;}
+
 .s-table-header-nav .s-table-view-options label {line-height: 28px;margin:0px;padding:0px;text-align:right;}
 .s-table-header-nav .s-table-header-search {max-width: 200px;}
 .s-table-header-nav .s-page-show {min-width: 150px;vertical-align: middle;margin:0px;}

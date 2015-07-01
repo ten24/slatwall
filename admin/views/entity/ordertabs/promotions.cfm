@@ -63,7 +63,7 @@ Notes:
 	</hb:HibachiListingDisplay>
 	--->
 	<cfif arrayLen(rc.order.getPromotionCodes())>
-		<table class="table table-striped table-bordered table-condensed">
+		<table class="table table-bordered table-hover">
 			<tr>
 				<th>#$.slatwall.rbKey('entity.promotionCode')#</th>
 				<th></th>
