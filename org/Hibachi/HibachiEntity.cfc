@@ -640,6 +640,11 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		} else if( left(arguments.missingMethodName, 6) == "hasAny") {
 			
 			return hasAnyInProperty(propertyName=right(arguments.missingMethodName, len(arguments.missingMethodName) - 6), entityArray=arguments.missingMethodArguments[1]);
+			
+		// getXXX() 			Where XXX is either and attributeID or attributeCode
+		} else if ( left(arguments.missingMethodName, 3) == "get" && structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues") && hasAttributeCode(right(arguments.missingMethodName, len(arguments.missingMethodName)-3)) ) {
+			
+			return getAttributeValue(right(arguments.missingMethodName, len(arguments.missingMethodName)-3));	
 
 		// getXXXAssignedIDList()		Where XXX is a one-to-many or many-to-many property that we need an array of valid options returned 		
 		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 14) == "AssignedIDList") {
@@ -675,11 +680,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 5) == "Count") {
 			
 			return getPropertyCount( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-8) );
-			
-		// getXXX() 			Where XXX is either and attributeID or attributeCode
-		} else if (left(arguments.missingMethodName, 3) == "get" && structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues")) {
-			
-			return getAttributeValue(right(arguments.missingMethodName, len(arguments.missingMethodName)-3));	
 			
 		}
 		
