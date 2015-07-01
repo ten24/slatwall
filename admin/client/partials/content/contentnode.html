@@ -1,4 +1,4 @@
-<td ng-click="getChildContent(contentData)" >
+<td ng-click="toggleChildContent(contentData)" >
 	<i style="margin-left:{{depth*15||0}}px" class="fa fa-caret-{{childOpen ? 'down' : 'right' }}"></i> <span ng-bind="contentData.titlePath && contentData.titlePath.trim().length ? contentData.titlePath : contentData.title"></span>
 </td>
 <td ng-bind="contentData.contentTemplateFile"></td>
