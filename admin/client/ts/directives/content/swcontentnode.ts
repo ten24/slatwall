@@ -116,8 +116,8 @@ angular.module('slatwalladmin')
                         }
                         
                         scope.childrenLoaded = false;
-                        
-                        if(angular.isDefined(scope.loadChildren) && scope.loadChildren === true){
+                        //if the children have never been loaded and we are not in search mode based on the title received
+                        if(angular.isDefined(scope.loadChildren) && scope.loadChildren === true && !(scope.contentData.titlePath && scope.contentData.titlePath.trim().length)){
                             scope.toggleChildContent(scope.contentData);    
                         }
 

@@ -87,7 +87,7 @@ angular.module('slatwalladmin').directive('swContentNode', ['$log', '$compile', 
         });
       };
       scope.childrenLoaded = false;
-      if (angular.isDefined(scope.loadChildren) && scope.loadChildren === true) {
+      if (angular.isDefined(scope.loadChildren) && scope.loadChildren === true && !(scope.contentData.titlePath && scope.contentData.titlePath.trim().length)) {
         scope.toggleChildContent(scope.contentData);
       }
     }
