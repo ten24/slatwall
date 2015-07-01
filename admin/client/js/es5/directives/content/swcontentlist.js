@@ -69,13 +69,8 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
         } else {
           var filterGroupsConfig = [{"filterGroup": [{
               "propertyIdentifier": "_content.excludeFromSearch",
-              "comparisonOperator": "=",
-              "value": false
-            }, {
-              "logicalOperator": "OR",
-              "propertyIdentifier": "_content.excludeFromSearch",
-              "comparisonOperator": "is",
-              "value": "null"
+              "comparisonOperator": "!=",
+              "value": true
             }]}];
           column = {
             propertyIdentifier: '_content.title',

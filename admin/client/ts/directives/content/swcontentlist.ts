@@ -105,14 +105,8 @@ angular.module('slatwalladmin')
                               "filterGroup": [
                                 {
                                   "propertyIdentifier": "_content.excludeFromSearch",
-                                  "comparisonOperator": "=",
-                                  "value": false
-                                },
-                                { 
-                                  "logicalOperator":"OR",
-                                  "propertyIdentifier": "_content.excludeFromSearch",
-                                  "comparisonOperator": "is",
-                                  "value": "null"
+                                  "comparisonOperator": "!=",
+                                  "value": true
                                 }
                               ]
                             }
@@ -205,6 +199,7 @@ angular.module('slatwalladmin')
             
             var optionsLoaded = function(){
                 observerService.notify('selectFirstOption');
+                
             }
             observerService.attach(optionsLoaded,'optionsLoaded','siteOptionsLoaded');
                 

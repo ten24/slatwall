@@ -45,8 +45,6 @@ angular.module('slatwalladmin')
                 
                 observerService.attach(selectFirstOption,'selectFirstOption','selectFirstOption');
                 
-               
-                
                 //use by ng-change to record changes
                 scope.swOptions.selectOption = function(selectedOption){
                     scope.swOptions.selectedOption = selectedOption;
