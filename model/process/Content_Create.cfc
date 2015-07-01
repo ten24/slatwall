@@ -50,7 +50,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	// Injected Entity
 	property name="content";
-	property name="urlTitle";
+	
 	// Lazy / Injected Objects
 	property name="site";
 	property name="parentContent";
@@ -58,6 +58,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// New Properties
 
 	// Data Properties (ID's)
+	property name="title";
+	property name="urlTitle";
 	property name="siteID";			// Only used on new sku
 	property name="parentContentID";		// Only used on new product
 	

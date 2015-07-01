@@ -61,7 +61,7 @@ Notes:
 	
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.content#" property="title" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="title" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="urlTitle" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.content#" property="activeFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.content#" property="contentTemplateType" edit="#rc.edit#">
