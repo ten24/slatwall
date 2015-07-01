@@ -69,13 +69,8 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
         } else {
           var filterGroupsConfig = [{"filterGroup": [{
               "propertyIdentifier": "_content.excludeFromSearch",
-              "comparisonOperator": "=",
-              "value": false
-            }, {
-              "logicalOperator": "OR",
-              "propertyIdentifier": "_content.excludeFromSearch",
-              "comparisonOperator": "is",
-              "value": "null"
+              "comparisonOperator": "!=",
+              "value": true
             }]}];
           column = {
             propertyIdentifier: '_content.title',
@@ -114,10 +109,10 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
           scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
           scope.collectionConfig.columns = columnsConfig;
           scope.collection.collectionConfig = scope.collectionConfig;
+          scope.firstLoad = true;
           scope.loadingCollection = false;
         });
       };
-      scope.getCollection(false);
       scope.keywords = "";
       scope.loadingCollection = false;
       var searchPromise;
@@ -144,6 +139,10 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
         scope.getCollection();
       };
       observerService.attach(sortChanged, 'sortByColumn', 'siteSorting');
+      var optionsLoaded = function() {
+        observerService.notify('selectFirstOption');
+      };
+      observerService.attach(optionsLoaded, 'optionsLoaded', 'siteOptionsLoaded');
       scope.$on('$destroy', function handler() {
         observerService.detachByEvent('optionsChanged');
         observerService.detachByEvent('sortByColumn');
