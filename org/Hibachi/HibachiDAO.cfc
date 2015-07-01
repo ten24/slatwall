@@ -89,6 +89,7 @@
 			return ormExecuteQuery("SELECT count(*) FROM #arguments.entityName#",true);
 		}
 		
+		
 		public void function reloadEntity(required any entity) {
 	    	entityReload(arguments.entity);
 	    }
@@ -143,6 +144,7 @@
 		// ===================== START: Private Helper Methods ===========================
 		
 		// =====================  END: Private Helper Methods ============================
+		
 		
 	</cfscript>
 	

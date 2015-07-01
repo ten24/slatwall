@@ -524,13 +524,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	
 	// @hint returns the count of a given property
 	public numeric function getPropertyCount( required string propertyName ) {
-		var cacheKey = "#arguments.propertyName#Count";
-			
-		if(!structKeyExists(variables, cacheKey)) {
-			variables[ cacheKey ] = arrayLen(variables[ arguments.propertyName ]);
-		}
-		
-		return variables[ cacheKey ];
+		var propertySmartList = this.invokeMethod('get#propertyName#SmartList');
+		return propertySmartList.getRecordsCount();
 	}
 	
 	// @hint handles encrypting a property based on conventions
