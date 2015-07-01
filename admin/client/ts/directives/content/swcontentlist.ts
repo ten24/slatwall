@@ -46,12 +46,6 @@ angular.module('slatwalladmin')
                             ormtype:'id',
                             isSearchable:false
                         },
-//                        {
-//                            propertyIdentifier:'_content.site.siteName',
-//                            isVisible:true,
-//                            ormtype:'string',
-//                            isSearchable:true
-//                        },
                         {
                             propertyIdentifier:'_content.contentTemplateFile',
                             persistent:false,
@@ -169,10 +163,11 @@ angular.module('slatwalladmin')
 	        			scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
 	        			scope.collectionConfig.columns = columnsConfig;
 	        			scope.collection.collectionConfig = scope.collectionConfig;
+                        scope.firstLoad = true;
                         scope.loadingCollection = false;
 	        		});
 	        	};
-	        	scope.getCollection(false);
+	        	//scope.getCollection(false);
                 
                 scope.keywords = "";
                 scope.loadingCollection = false;
@@ -208,6 +203,12 @@ angular.module('slatwalladmin')
             };
             observerService.attach(sortChanged,'sortByColumn','siteSorting');
             
+            var optionsLoaded = function(){
+                observerService.notify('selectFirstOption');
+            }
+            observerService.attach(optionsLoaded,'optionsLoaded','siteOptionsLoaded');
+                
+                
             scope.$on('$destroy', function handler() {
                 observerService.detachByEvent('optionsChanged');
                 observerService.detachByEvent('sortByColumn');

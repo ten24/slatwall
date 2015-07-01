@@ -33,10 +33,19 @@ angular.module('slatwalladmin')
                    $slatwall.getEntity(scope.swOptions.objectName,{allRecords:true, columnsConfig:angular.toJson(columnsConfig)})
                    .then(function(value){
                         scope.swOptions.options = value.records;
+                        observerService.notify('optionsLoaded');
                     });
-                }
+                } 
                 
                 scope.getOptions();
+                
+                var selectFirstOption = function(){
+                    scope.swOptions.selectOption(scope.swOptions.options[0]);
+                };
+                
+                observerService.attach(selectFirstOption,'selectFirstOption','selectFirstOption');
+                
+               
                 
                 //use by ng-change to record changes
                 scope.swOptions.selectOption = function(selectedOption){
