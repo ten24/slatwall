@@ -61,6 +61,28 @@ Notes:
 		<cfreturn entityNew("SlatwallContent") />
 	</cffunction>
 	
+	<cffunction name="getContentDescendants" access="public" >
+		<cfargument name="content" type="any" required="true">
+		<cfreturn ORMExecuteQuery(
+			'From #getApplicationKey()#Content 
+			where site=:site 
+			and urlTitlePath <> :urlTitlePath 
+			and urlTitlePath like :urlTitlePathLike',
+			{
+				site=arguments.content.getSite(),
+				urlTitlePath=arguments.content.getURLTitlePath(),
+				urlTitlePathLike=arguments.content.getUrlTitlePath() & '%'
+			}
+		)>
+	</cffunction>
+	
+	<cffunction name="getContentBySiteIDAndUrlTitlePath" access="public">
+		<cfargument name="siteID" type="string" required="true">
+		<cfargument name="urlTitlePath" type="string" required="true">
+		
+		<cfreturn ormExecuteQuery(" FROM SlatwallContent c Where c.site.siteID = ? AND LOWER(c.urlTitlePath) = ?",[ arguments.siteID,arguments.urlTitlePath],true)>
+	</cffunction>
+	
 	<cffunction name="getCategoriesByCmsCategoryIDs" access="public">
 		<cfargument name="CmsCategoryIDs" type="string" />
 			
@@ -90,5 +112,60 @@ Notes:
 			DELETE FROM SwContentCategory WHERE categoryID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.categoryID#" /> 
 		</cfquery>
 	</cffunction>
+	
+	<cffunction name="getDefaultContentBySite" access="public">
+		<cfargument name="site" type="any" required="true">
+		<cfreturn ORMExecuteQuery('FROM SlatwallContent Where site = :site AND parentContent IS NULL',{site=arguments.site},true)>
+	</cffunction>
+	
+	<cffunction name="getContentByUrlTitlePathBySite" access="public">
+		<cfargument name="site" type="any" required="true" />
+		<cfargument name="urlTitlePath" type="any" />
+		
+		<cfif isNull(arguments.urlTitlePath)>
+			<cfreturn ORMExecuteQuery("FROM SlatwallContent WHERE site = :site AND urlTitlePath IS Null",{site=arguments.site}, true) />
+		<cfelse>
+			<cfreturn ORMExecuteQuery("FROM SlatwallContent WHERE site = :site AND urlTitlePath = :urlTitlePath",{site=arguments.site,urlTitlePath=arguments.urlTitlePath}, true) />
+		</cfif>
+	</cffunction>
+	
+	<cffunction name="getMaxSortOrderByContent" access="public">
+		<cfargument name="content" type="any" required="true" >
+		<cfreturn ORMExecuteQuery(
+			'SELECT DISTINCT COALESCE(max(sortOrder),0) as maxSortOrder FROM SlatwallContent 
+			where site=:site 
+			and parentContent=:parentContent
+			and sortOrder is not null
+			',
+			{site=arguments.content.getSite(),parentContent=arguments.content.getParentContent()}
+			,true
+		)>
+	</cffunction>
+	
+	<cffunction name="getContentBySortOrderMinAndMax">
+		<cfargument name="content" type="any" required="true">
+		<cfargument name="min" type="numeric" required="true">
+		<cfargument name="max" type="numeric" required="true">
+		<cfreturn ORMExecuteQuery(
+			'FROM SlatwallContent 
+			where site=:site 
+			and parentContent=:parentContent
+			and sortOrder Between #arguments.min# and #arguments.max#
+			',
+			{site=arguments.content.getSite(),parentContent=arguments.content.getParentContent()}
+		)>
+	</cffunction>
+	
+	<cffunction name="getChildContentsByDisplayInNavigation" type="array" access="public">
+		<cfargument name="parentContent" type="any" required="true" />
+		
+		<cfreturn ORMExecuteQuery( 'FROM SlatwallContent 
+									Where displayInNavigation = true 
+									and activeFlag = true
+									and parentContent = :parentContent'
+									,{parentContent=arguments.parentContent}
+								)/>
+	</cffunction>
+	
 	
 </cfcomponent>

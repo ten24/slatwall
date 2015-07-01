@@ -53,6 +53,7 @@ component extends="org.Hibachi.Hibachi" output="false" {
 	// @hint this method always fires one time, even if the request is coming from an outside application.
 	public void function onEveryRequest() {
 		
+		
 	}
 	
 	// @hint this will fire 1 time if you are running the application.  If the application is bootstraped then it won't run

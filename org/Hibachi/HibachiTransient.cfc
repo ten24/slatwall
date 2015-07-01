@@ -775,16 +775,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 
 	// this method allows for default values to be pulled at the session level so that forms re-use the last selection by a user
 	public any function getPropertySessionDefault( required string propertyName ) {
-		if(!hasSessionValue("propertySessionDefault_#getClassName()#_#arguments.propertyName#")) {
+		if(!getHibachiScope().hasSessionValue("propertySessionDefault_#getClassName()#_#arguments.propertyName#")) {
 			var propertyMeta = getPropertyMetaData( propertyName=arguments.propertyName );
-			setSessionValue("propertySessionDefault_#getClassName()#_#arguments.propertyName#", propertyMeta.hb_sessionDefault);
+			getHibachiScope().setSessionValue("propertySessionDefault_#getClassName()#_#arguments.propertyName#", propertyMeta.hb_sessionDefault);
 		}
-		return getSessionValue("propertySessionDefault_#getClassName()#_#arguments.propertyName#");
+		return getHibachiScope().getSessionValue("propertySessionDefault_#getClassName()#_#arguments.propertyName#");
 	}
 
 	// this method allows for default values to be stored at the session level so that forms re-use the last selection by a user
 	public any function setPropertySessionDefault( required string propertyName, required any defaultValue ) {
-		setSessionValue("propertySessionDefault_#getClassName()#_#arguments.propertyName#", arguments.defaultValue);
+		getHibachiScope().setSessionValue("propertySessionDefault_#getClassName()#_#arguments.propertyName#", arguments.defaultValue);
 	}
 
 	public boolean function hasProperty(required string propertyName) {

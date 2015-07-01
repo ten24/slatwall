@@ -64,7 +64,6 @@ Notes:
 	<cfimport prefix="swc" taglib="/Slatwall/custom/public/tags" />				
 																				
 --->
-
 <cfoutput>
 	<div class="container">
 		

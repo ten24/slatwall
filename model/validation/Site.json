@@ -1,5 +1,12 @@
 {
+	"conditions":{
+	    "notSlatwallCMS":{
+	        "app.integration.integrationPackage":{"neq":"slatwallcms"}
+	    }
+	},
 	"properties":{
-		"contents":				[{"contexts":"delete","maxCollection":0}]
+		"siteID":				[{"contexts":"save","required":true,"conditions":"notSlatwallCMS"}],
+		"contents":				[{"contexts":"delete","maxCollection":0}],
+		"app":				[{"contexts":"save","required":true}]
 	}
 }

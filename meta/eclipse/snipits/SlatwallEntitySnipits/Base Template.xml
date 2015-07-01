@@ -40,7 +40,7 @@
 Notes:
 
 */
-component entityname="$${EntityName}" table="$${TableName}" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="$${serviceName}" hb_permission="$${permission}" {
+component entityname="$${EntityName}" table="$${TableName}" persistent="true" accessors="true" extends="Slatwall.model.entity.HibachiEntity" hb_serviceName="$${serviceName}" hb_permission="$${permission}" {
 	
 	// Persistent Properties
 	property name="$${idPropertyName}" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
