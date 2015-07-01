@@ -749,7 +749,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.optionsByOptionGroupIDStruct = {};
 			for(var option in getOptions()) {
 				if( !structKeyExists(variables.optionsByOptionGroupIDStruct, option.getOptionGroup().getOptionGroupID())){
-					variables.OptionsByGroupIDStruct[ option.getOptionGroup().getOptionGroupID() ] = option;
+					variables.optionsByOptionGroupIDStruct[ option.getOptionGroup().getOptionGroupID() ] = option;
 				}
 			}
 		}
