@@ -212,14 +212,8 @@
 				var valueKey = replace(replace(templateKeys[i], "${", ""),"}","");
 				if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
 					replaceDetails.value = arguments.object[ valueKey ];
-				} else if (isObject(arguments.object) && (
-					(arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
-						||
-					(arguments.object.isPersistent() && getHasAttributeByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
-						||
-					(!arguments.object.isPersistent() && arguments.object.hasProperty(valueKey))	
-					)) {
-						replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);	
+				} else if (isObject(arguments.object)) {
+					replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);	
 				} else if (arguments.removeMissingKeys) {
 					replaceDetails.value = '';
 				}
