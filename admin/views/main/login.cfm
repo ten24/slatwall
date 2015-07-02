@@ -58,8 +58,8 @@ Notes:
 	<div class="s-login-wrapper col-xs-6 col-xs-offset-3">
 
 		<div class="s-logo">
-			<img src="/assets/images/logo-1x.png" alt="Slatwall"
-				 srcset="/assets/images/logo-2x.png 2x">
+			<img src="#request.slatwallScope.getBaseURL()#/assets/images/logo-1x.png" alt="Slatwall"
+				 srcset="#request.slatwallScope.getBaseURL()#/assets/images/logo-2x.png 2x">
 		</div>
 		<hb:HibachiMessageDisplay />
 		
