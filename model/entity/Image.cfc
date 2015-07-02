@@ -215,10 +215,9 @@ component displayname="Image" entityname="SlatwallImage" table="SwImage" persist
 	public any function getOptionsSmartlist() {
 		var smartList = getService("optionService").getOptionSmartList();
 		smartList.setSelectDistinctFlag(1);
-		smartList.addSelect("optionGroup.sortOrder","optionGroupSortOrder");
 		smartList.addFilter("optionGroup.imageGroupFlag",1);
 		smartList.addFilter("skus.product.productID",this.getProduct().getProductID());
-		smartList.addOrder("optionGroup.sortOrder|ASC,sortOrder|ASC");
+		smartList.addOrder("optionGroup|ASC,sortOrder|ASC");
 		return smartList;
 	}
 	
