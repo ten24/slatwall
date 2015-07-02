@@ -162,7 +162,8 @@ Notes:
 		<cfreturn ORMExecuteQuery( 'FROM SlatwallContent 
 									Where displayInNavigation = true 
 									and activeFlag = true
-									and parentContent = :parentContent'
+									and parentContent = :parentContent
+									order by sortOrder Asc'
 									,{parentContent=arguments.parentContent}
 								)/>
 	</cffunction>
