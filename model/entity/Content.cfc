@@ -385,7 +385,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 
 	public array function getChildContents(forNavigation=false){
 		var childContents = [];
-		if(forNavigation){
+		if(arguments.forNavigation){
 			childContents = getDao('contentDao').getChildContentsByDisplayInNavigation(this);
 		}else{
 			childContents = variables.childContents;
