@@ -20,7 +20,7 @@
 				"contexts":"save,create","conditions":"requireUrlTitle","required":true
 			},
 			{
-				"contexts":"save","conditions":"notNewContent","regex":"^[a-z0-9-]+$"
+				"contexts":"save","conditions":"notNewContent","regex":"^[A-Za-z0-9-]+$"
 			}
 		],
 		"urlTitlePath":			[{"contexts":"save","method":"isUniqueUrlTitlePathBySite"}],
