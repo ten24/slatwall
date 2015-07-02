@@ -22,6 +22,12 @@ angular.module('slatwalladmin').directive('swCollectionTable', ['$http', '$compi
           _pageRecord["editLink"] = _editLink;
         }
       });
+      var escapeRegExp = function(str) {
+        return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+      };
+      scope.replaceAll = function(str, find, replace) {
+        return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+      };
       angular.forEach(scope.collectionConfig.columns, function(column) {
         $log.debug("Config Key : " + column);
         column.key = column.propertyIdentifier.replace(/\./g, '_').replace(scope.collectionConfig.baseEntityAlias + '_', '');
