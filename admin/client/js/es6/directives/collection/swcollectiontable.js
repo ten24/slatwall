@@ -29,6 +29,12 @@ angular.module('slatwalladmin').directive('swCollectionTable', [
                         _pageRecord["editLink"] = _editLink;
                     }
                 });
+                var escapeRegExp = function (str) {
+                    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+                };
+                scope.replaceAll = function (str, find, replace) {
+                    return str.replace(new RegExp(escapeRegExp(find), 'g'), replace);
+                };
                 /*
                  * Handles setting the key on the data.
                  * */
