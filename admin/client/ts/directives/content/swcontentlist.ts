@@ -72,6 +72,13 @@ angular.module('slatwalladmin')
                             ormtype:'boolean',
                             isSearchable:false
                         }
+//                        ,{
+//                        	propertyIdentifier:'_content.childContents',
+//                        	aggregate:{
+//                        		aggregateFunction:'count',
+//                        		aggregateAlias:'childContentsCount'
+//                        	}
+//                        }
                     ];
                     
 	        		var options = {

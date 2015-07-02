@@ -24,7 +24,7 @@ angular.module('slatwalladmin').factory('selectionService', [function() {
       }
       var index = _selection[selectionid].indexOf(selection);
       if (index > -1) {
-        return true; 
+        return true;
       }
     },
     getSelections: function(selectionid) {

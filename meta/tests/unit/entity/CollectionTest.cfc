@@ -81,6 +81,21 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //		var pageRecords = myCollection.getPageRecords();
 //		request.debug(pageRecords);
 //	}
+
+	public void function addDisplayAggregateTest(){
+		var propertyIdentifier = "Account.firstName";
+		var aggregate = {
+			aggregateFunction = "count",
+			aggregateAlias = "Account_firstName"
+		};
+		
+		var myCollection = variables.entityService.getProductCollectionList();
+		myCollection.setDisplayProperties();
+		myCollection.addDisplayAggregate('productCode','count','skuCount');
+		request.debug(myCollection.getCollectionConfigStruct());
+		request.debug(myCollection.getPageRecords());
+	}
+
 //	
 //	public void function loopOverCollectionTest(){
 //		var myCollection = variables.entityService.getProductCollectionList();
@@ -92,6 +107,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //		var pageRecords = myCollection.getPageRecords();
 //		request.debug(pageRecords);
 //	}
+
+	
 	
 	public void function getAggregateHQLTest(){
 		makePublic(variables.entity,"getAggregateHQL");
@@ -102,7 +119,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		
 		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
-		//request.debug(aggregateHQL);
+		request.debug(aggregateHQL);
 		assertFalse(Compare("COUNT(Account.firstName) as Account_firstName",trim(aggregateHQL)));
 	}
 	

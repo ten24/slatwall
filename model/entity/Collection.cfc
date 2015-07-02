@@ -117,7 +117,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		arrayAppend(this.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
 	}
 	
-	public void function setDisplayProperties(required string displayPropertiesList){
+	public void function setDisplayProperties(string displayPropertiesList=""){
 		var collectionConfig = this.getCollectionConfigStruct();
 		collectionConfig.columns = [];
 		this.setCollectionConfigStruct(collectionConfig);
@@ -139,6 +139,27 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		arrayAppend(collectionConfig.columns,column);
 		this.setCollectionConfigStruct(collectionConfig);
+	}
+	
+	public void function addColumn(required column){
+		var collectionConfig = this.getCollectionConfigStruct();
+		if(!structKeyExists(collectionConfig,'columns')){
+			collectionConfig.columns = [];
+		}
+		arrayAppend(collectionConfig.columns,arguments.column);
+		this.setCollectionConfigStruct(collectionConfig);
+	}
+	
+	//add display Aggregate
+	public void function addDisplayAggregate(required string propertyIdentifier, required string aggregateFunction, required string aggregateAlias){
+		var column = {
+			propertyIdentifier=arguments.propertyIdentifier,
+			aggregate = {
+				aggregateFunction = arguments.aggregateFunction,
+				aggregateAlias = arguments.aggregateAlias
+			}
+		};
+		this.addColumn(column);
 	}
 	
 	public void function setOrderBy(required string orderByList){
@@ -711,7 +732,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
-		try{
+		//try{
 			var HQL = '';
 			var HQLParams = {};
 			if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
@@ -750,12 +771,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
 			}
-		}
-		catch(any e){
-			variables.pageRecords = [{'failedCollection'='failedCollection'}];
-			writelog(file="collection",text="Error:#e.message#");
-			writelog(file="collection",text="HQL:#HQL#");
-		}
+//		}
+//		catch(any e){
+//			variables.pageRecords = [{'failedCollection'='failedCollection'}];
+//			writelog(file="collection",text="Error:#e.message#");
+//			writelog(file="collection",text="HQL:#HQL#");
+//		}
 		
 		return variables.pageRecords;
 	}
