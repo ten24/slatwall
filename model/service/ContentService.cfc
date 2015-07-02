@@ -109,6 +109,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function saveContent(required any content, struct data={}){
 		arguments.content = super.save(arguments.content, arguments.data);
+		if(!arguments.content.hasErrors()){
+			arguments.data.urlTitle = reReplace(lcase(trim(arguments.data.urlTitle)), "[^a-z0-9 \-]", "", "all");
+			arguments.data.urlTitle = reReplace(arguments.data.urlTitle, "[-\s]+", "-", "all");
+			arguments.content.setUrlTitle(arguments.data.urlTitle);
+		}
+		
 		return arguments.content;	
 	}
 	

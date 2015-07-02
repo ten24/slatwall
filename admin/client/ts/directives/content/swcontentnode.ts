@@ -47,12 +47,13 @@ angular.module('slatwalladmin')
                                 propertyIdentifier: '_content.site.siteName',
                                 isVisible: true,
                                 isSearchable: true
-                            }, {
-                                propertyIdentifier: '_content.contentTemplateFile',
-                                persistent: false,
-                                setting: true,
-                                isVisible: true
                             },
+//                            {
+//                                propertyIdentifier: '_content.contentTemplateFile',
+//                                persistent: false,
+//                                setting: true,
+//                                isVisible: true
+//                            },
                             //need to get template via settings
                             {
                                 propertyIdentifier: '_content.allowPurchaseFlag',
