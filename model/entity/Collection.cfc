@@ -97,6 +97,76 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
+	//add Filter
+	public void function addFilter(required string propertyIdentifier, required any value, string comparisonOperator="=", string logicalOperator="AND"){
+		if(!structKeyExists(this.getCollectionConfigStruct(),'filterGroups')){
+			this.getCollectionConfigStruct().filterGroups = [{filterGroup=[]}];
+		}
+		
+		//create filter Group
+		var filterGroup = {
+			propertyIdentifier = arguments.propertyIdentifier,
+			comparisonOperator = arguments.comparisonOperator,
+			value = arguments.value
+		};
+		//if we already have a filter group then we need a logicalOperator
+		if(arraylen(this.getCollectionConfigStruct().filterGroups[1].filterGroup)){
+			filterGroup.logicalOperator=arguments.logicalOperator;
+		}
+		
+		arrayAppend(this.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
+	}
+	
+	public void function setDisplayProperties(required string displayPropertiesList){
+		var collectionConfig = this.getCollectionConfigStruct();
+		collectionConfig.columns = [];
+		this.setCollectionConfigStruct(collectionConfig);
+		var displayProperties = listToArray(arguments.displayPropertiesList);
+		for(var displayProperty in displayProperties){
+			addDisplayProperty(displayProperty);
+		}
+		
+	}
+	
+	public void function addDisplayProperty(required string displayProperty){
+		var collectionConfig = this.getCollectionConfigStruct();
+		
+		var column = {
+			propertyIdentifier=arguments.displayProperty
+		};
+		if(!structKeyExists(collectionConfig,'columns')){
+			collectionConfig.columns = [];
+		}
+		arrayAppend(collectionConfig.columns,column);
+		this.setCollectionConfigStruct(collectionConfig);
+	}
+	
+	public void function setOrderBy(required string orderByList){
+		var collectionConfig = this.getCollectionConfigStruct();
+		var orderBys = listToArray(arguments.orderByList);
+		for(var orderBy in orderBys){
+			addOrderBy(orderBy);
+		}
+	}
+	
+	public void function addOrderBy(required string orderByString){
+		var collectionConfig = this.getCollectionConfigStruct();
+		if(!structKeyExists(collectionConfig, 'orderBy')){
+			collectionConfig.orderBy = [];
+		}
+		
+		var propertyIdentifier = listFirst(arguments.orderByString,'|');
+		var direction = listLast(arguments.orderByString,'|');
+		
+		var orderBy = {
+			propertyIdentifier=propertyIdentifier,
+			direction=direction
+		};
+		
+		arrayAppend(collectionConfig.orderBy,orderBy);
+		this.setCollectionConfigStruct(collectionConfig);
+	}
+	
 	//returns an array of name/value structs for 
 	public array function getCollectionObjectOptions() {
 		if(!structKeyExists(variables, "collectionObjectOptions")) {
@@ -641,7 +711,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
-		try{
+		//try{
 			var HQL = '';
 			var HQLParams = {};
 			if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
@@ -680,12 +750,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
 			}
-		}
-		catch(any e){
-			variables.pageRecords = [{'failedCollection'='failedCollection'}];
-			writelog(file="collection",text="Error:#e.message#");
-			writelog(file="collection",text="HQL:#HQL#");
-		}
+//		}
+//		catch(any e){
+//			variables.pageRecords = [{'failedCollection'='failedCollection'}];
+//			writelog(file="collection",text="Error:#e.message#");
+//			writelog(file="collection",text="HQL:#HQL#");
+//		}
 		
 		return variables.pageRecords;
 	}

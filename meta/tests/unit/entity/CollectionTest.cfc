@@ -52,9 +52,46 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.entityService = "collectionService";
-		variables.entity = request.slatwallScope.getService( variables.entityService ).newCollection();
+		variables.entityService = request.slatwallScope.getService("collectionService");
+		variables.entity = variables.entityService.newCollection();
 	}
+	
+//	tests need default data inserted before asserting
+//	public void function addFilterTest(){
+//		var myCollection = variables.entityService.getProductCollectionList();
+//		
+//		myCollection.addFilter('productCode','tester444');
+//		myCollection.addFilter('productName','tester444');
+//		myCollection.addFilter('activeFlag','YES');
+//		var pageRecords = myCollection.getPageRecords();
+//	}
+//	
+//	public void function displayPropertyTest(){
+//		var myCollection = variables.entityService.getProductCollectionList();
+//		myCollection.setDisplayProperties('productCode,activeFlag');
+//		myCollection.addDisplayProperty('productName');
+//		var pageRecords = myCollection.getPageRecords();
+//	}
+
+//	public void function addOrderByTest(){
+//		var myCollection = variables.entityService.getProductCollectionList();
+//		myCollection.setOrderBy('activeFlag|asc,productCode|desc');
+//		//myCollection.addOrderBy('productCode|desc');
+//		request.debug(myCollection.getCollectionConfigStruct());
+//		var pageRecords = myCollection.getPageRecords();
+//		request.debug(pageRecords);
+//	}
+//	
+//	public void function loopOverCollectionTest(){
+//		var myCollection = variables.entityService.getProductCollectionList();
+//
+//		myCollection.addFilter('productCode','tester444');
+//		myCollection.setDisplayProperties('productName,productCode,activeFlag');
+//		
+//		myCollection.setOrderBy('activeFlag|desc,productCode|asc');
+//		var pageRecords = myCollection.getPageRecords();
+//		request.debug(pageRecords);
+//	}
 	
 	public void function getAggregateHQLTest(){
 		makePublic(variables.entity,"getAggregateHQL");
