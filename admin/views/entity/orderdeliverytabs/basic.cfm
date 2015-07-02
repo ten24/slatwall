@@ -54,8 +54,6 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.orderDelivery#" edit="#rc.edit#">
-		
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
 				<hb:HibachiPropertyDisplay object="#rc.orderDelivery#" property="createdDateTime">
@@ -70,6 +68,4 @@ Notes:
 				<hb:HibachiPropertyDisplay object="#rc.orderDelivery.getOrder()#" property="orderNumber"  valuelink="?slatAction=admin:entity.detailorder&orderID=#rc.orderDelivery.getOrder().getOrderID()#">			
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
-
-	</hb:HibachiEntityDetailForm>
 </cfoutput>
