@@ -9,7 +9,7 @@
 	},
 	"properties":{
 		"attributeName":		[{"contexts":"save","required":true}],
-		"attributeCode":		[{"contexts":"save","required":true,"unique":true,"regex":"^[a-zA-Z0-9-_|:~^]+$"}],
+		"attributeCode":		[{"contexts":"save","required":true,"unique":true,"regex":"^[^0-9][a-zA-Z0-9-_|:~^]+$"}],
 		"attributeType":		[{"contexts":"save","required":true}],
 		"relatedObject":		[{"contexts":"save","conditions":"attributeInputTypeRequiresObject","required":true}],
 		"typeSet":				[{"contexts":"save","conditions":"attributeInputTypeRequiresTypeSet","required":true}]
