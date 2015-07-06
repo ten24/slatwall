@@ -60,17 +60,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //	public void function addFilterTest(){
 //		var myCollection = variables.entityService.getProductCollectionList();
 //		
-//		myCollection.addFilter('productCode','tester444');
+//		myCollection.addFilter('asdf','tester444');
 //		myCollection.addFilter('productName','tester444');
 //		myCollection.addFilter('activeFlag','YES');
 //		var pageRecords = myCollection.getPageRecords();
+//		request.debug(myCollection.getHQL());
 //	}
 //	
 //	public void function displayPropertyTest(){
 //		var myCollection = variables.entityService.getProductCollectionList();
 //		myCollection.setDisplayProperties('productCode,activeFlag');
-//		myCollection.addDisplayProperty('productName');
+//		myCollection.addDisplayProperty('asdf');
 //		var pageRecords = myCollection.getPageRecords();
+//		request.debug(myCollection.getHQL());
 //	}
 
 //	public void function addOrderByTest(){
