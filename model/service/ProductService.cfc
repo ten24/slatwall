@@ -66,7 +66,11 @@ component extends="HibachiService" accessors="true" {
 	property name="typeService" type="any";
 
 	// ===================== START: Logical Methods ===========================
-
+	
+	public numeric function getProductRating(required any product){
+		return getDao('productDao').getProductRating(arguments.product);
+	}
+	
 	public void function loadDataFromFile(required string fileURL, string textQualifier = ""){
 		getHibachiTagService().cfSetting(requesttimeout="3600");
 		getProductDAO().loadDataFromFile(arguments.fileURL,arguments.textQualifier);
