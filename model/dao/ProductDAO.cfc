@@ -49,6 +49,15 @@ Notes:
 <cfcomponent accessors="true" extends="HibachiDAO">
 	
 	<cfscript>
+		public numeric function getProductRating(required any product){
+			return OrmExecuteQuery('
+				SELECT avg(pr.rating) 
+				FROM SlatwallProductReview pr 
+				where pr.product = :product
+				',{product=arguments.product},true
+			);
+		}
+		
 		public void function loadDataFromFile(required string fileURL, string textQualifier = ""){
 			var fileType = listLast(arguments.fileURL,".");
 			var delimiter = "";

@@ -269,11 +269,12 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
     	var totalRatingPoints = 0;
     	var averageRating = 0;
     	
-    	if(arrayLen(getProductReviews())) {
-	    	for(var i=1; i<=arrayLen(getProductReviews()); i++) {
-	    		var totalRatingPoints += getProductReviews()[1].getRating();
-	    	}
-	    	averageRating = totalRatingPoints / arrayLen(getProductReviews());
+    	if(this.getProductReviewsCount()) {
+    		averageRating = getService('productService').getProductRating(this);
+//	    	for(var i=1; i<=arrayLen(getProductReviews()); i++) {
+//	    		var totalRatingPoints += getProductReviews()[1].getRating();
+//	    	}
+//	    	averageRating = totalRatingPoints / arrayLen(getProductReviews());
     	}
     	
     	return averageRating;
