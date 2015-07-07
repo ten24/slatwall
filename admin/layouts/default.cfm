@@ -375,13 +375,14 @@ Notes:
 
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngslatwall&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
 		<cfif request.slatwallScope.getApplicationValue('debugFlag')>
-			<cfset es5scriptPath = expandPath('/admin/client/js/es5/')>
+			<cfset es5scriptPath = expandPath('/#request.slatwallScope.getDao('hibachiDao').getApplicationKey()#/admin/client/js/es5/')>
 			<cfdirectory name="es5Javascript" 
 						action="list" 
 						directory="#es5scriptPath#"
 						filter="*.js"
 						recurse="true"
 			>
+			
 			<!---modules --->
 			<cfquery name="modules" dbtype="query">
 				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#modules%'
