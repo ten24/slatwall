@@ -1,6 +1,7 @@
 {
 	"properties":{
 		"locationConfigurationName":		[{"contexts":"save","required":true}],
-		"location":		[{"contexts":"save","required":true}]
+		"location":		[{"contexts":"save","required":true}],
+		"skus":	[{"contexts":"delete","maxCollection":0}]
 	}
 }
