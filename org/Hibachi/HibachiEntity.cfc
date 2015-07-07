@@ -646,11 +646,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			
 			return getPropertyAssignedIDList( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17) );
 		
-		// getXXXID()		Where XXX is a many-to-one property that we want to get the primaryIDValue of that property 		
-		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 2) == "ID") {
-			
-			return getPropertyPrimaryID( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-5) );
-			
 		// getXXXOptions()		Where XXX is a one-to-many or many-to-many property that we need an array of valid options returned 		
 		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 7) == "Options") {
 			
@@ -677,11 +672,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			return getPropertyCount( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-8) );
 			
 		// getXXX() 			Where XXX is either and attributeID or attributeCode
-		} else if (left(arguments.missingMethodName, 3) == "get" && structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues")) {
+		} else if (left(arguments.missingMethodName, 3) == "get" && structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues") && hasAttributeCode(right(arguments.missingMethodName, len(arguments.missingMethodName)-3)) ) {
 			
 			return getAttributeValue(right(arguments.missingMethodName, len(arguments.missingMethodName)-3));	
 			
 		}
+		// getXXXID()		Where XXX is a many-to-one property that we want to get the primaryIDValue of that property 		
+		 else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 2) == "ID") {
+			
+			return getPropertyPrimaryID( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-5) );
+		}	
 		
 		throw('You have called a method #arguments.missingMethodName#() which does not exists in the #getClassName()# entity.');
 	}

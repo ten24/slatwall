@@ -802,7 +802,7 @@ component extends="HibachiService" accessors="true" {
 				thisSku.setPrice(arguments.processObject.getPrice());
 				thisSku.setRenewalPrice(arguments.processObject.getPrice());
 				thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.processObject.getSubscriptionTerms(), i)) );
-				thisSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
+				thisSku.setSkuCode(product.getProductCode() & "-#i#");
 				for(var b=1; b <= listLen(arguments.processObject.getSubscriptionBenefits()); b++) {
 					thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getSubscriptionBenefits(), b) ) );
 				}
