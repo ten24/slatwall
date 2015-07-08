@@ -418,11 +418,8 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function processAccount_resetPassword( required any account, required any processObject ) {
-		var changeProcessData = {
-			password = arguments.processObject.getPassword(),
-			passwordConfirm = arguments.processObject.getPasswordConfirm()
-		};
-		arguments.account = this.processAccount(arguments.account, changeProcessData, 'changePassword');
+
+		arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
 		
 		// If there are no errors
 		if(!arguments.account.hasErrors()) {
