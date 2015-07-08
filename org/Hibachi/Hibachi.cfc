@@ -701,7 +701,7 @@ component extends="FW1.framework" {
 	}
 	
 	// This method will execute an actions controller, render the view for that action and return it without going through an entire lifecycle
-	public string function doAction(required string action, struct data) {
+	public string function doAction(required string action, any data) {
 		
 		var response = "";
 		var originalFW1 = {};
