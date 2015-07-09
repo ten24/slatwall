@@ -68,8 +68,11 @@ Notes:
 					<input type="hidden" name="swprid" value="#rc.swprid#" />
 					<input type="hidden" name="accountID" value="#left(rc.swprid, 32)#" />
 
-					<cfset processObject = rc.fw.getHibachiScope().getAccount().getProcessObject("resetPassword") />
-
+					<cfif structKeyExists(rc,'processObject')>
+						<cfset processObject = rc.processObject />
+					<cfelse>
+						<cfset processObject = rc.fw.getHibachiScope().getAccount().getProcessObject("resetPassword") />
+					</cfif>
 					<hb:HibachiErrorDisplay object="#processObject#" errorName="swprid" />
 
 					<hb:HibachiPropertyDisplay object="#processObject#" property="password" edit="true" />
@@ -89,7 +92,7 @@ Notes:
 					<h3>Password Update Required</h3>
 					<br />
 
-					<form id="adminLoginForm" action="?s=1" class="form-horizontal" method="post">
+					<form id="adminLoginForm" action="?s=1" class="form-horizontal s-login-reset" method="post">
 						<input type="hidden" name="slatAction" value="admin:main.updatePassword" />
 
 								<hb:HibachiPropertyDisplay object="#updateProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" fieldAttributes="autocomplete='off'" />
