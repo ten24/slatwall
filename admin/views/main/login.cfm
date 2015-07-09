@@ -92,7 +92,7 @@ Notes:
 					<h3>Password Update Required</h3>
 					<br />
 
-					<form id="adminLoginForm" action="?s=1" class="form-horizontal" method="post">
+					<form id="adminLoginForm" action="?s=1" class="form-horizontal s-login-reset" method="post">
 						<input type="hidden" name="slatAction" value="admin:main.updatePassword" />
 
 								<hb:HibachiPropertyDisplay object="#updateProcessObject#" property="emailAddress" edit="true" title="#rc.fw.getHibachiScope().rbKey('entity.account.emailAddress')#" fieldAttributes="autocomplete='off'" />
