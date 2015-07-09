@@ -108,8 +108,6 @@ component accessors="true" output="false" displayname="PayFlowPro" implements="S
 		}
 		// END HACK
 		
-		requestData = listAppend(requestData, "BUTTONSOURCE=SlatWall_SP", "&");
-		
 		return requestData;
 	}
 
