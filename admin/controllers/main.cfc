@@ -265,11 +265,13 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var account = getAccountService().getAccount( rc.accountID );
 		
 		if(!isNull(account)) {
-			var account = getAccountService().processAccount(account, rc, "resetPassword");
+			account = getAccountService().processAccount(account, rc, "resetPassword");
 			
 			if(!account.hasErrors()) {
 				rc.emailAddress = account.getEmailAddress();
 				authorizeLogin( rc );
+			} else { 
+				rc.processObject = account.getProcessObject('resetPassword'); 
 			}
 		}
 		
