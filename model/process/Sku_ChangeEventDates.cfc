@@ -76,22 +76,6 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		return options;
 	}
 	
-	public any function getEventStartDateTime() {
-		return dateTimePickerFormat(this.getSku().getEventStartDateTime());	
-	}
-	
-	public any function getEventEndDateTime() {
-		return dateTimePickerFormat(this.getSku().getEventEndDateTime());	
-	}
-	
-	public any function getStartReservationDateTime() {
-		return dateTimePickerFormat(this.getSku().getStartReservationDateTime());
-	}
-	
-	public any function getEndReservationDateTime() {
-		return dateTimePickerFormat(this.getSku().getEndReservationDateTime());	
-	}
-	
 	public any function dateTimePickerFormat(required theDate) {
 		return "#dateFormat(arguments.theDate,'medium')# #timeFormat(arguments.theDate,'hh:mm tt')#";
 	}
