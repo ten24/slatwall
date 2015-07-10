@@ -265,6 +265,13 @@ body.s-login-screen {
     padding: 0px /*Remove for responsive*/;
   }
 }
+.s-loading-icon-fullwidth {
+  width: 100%;
+  text-align: center;
+}
+.s-loading-icon-fullwidth i {
+  font-size: 40px;
+}
 hr {
   border-color: #cccccc;
 }
