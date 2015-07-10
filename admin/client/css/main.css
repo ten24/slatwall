@@ -903,9 +903,6 @@ select.error {
 .form-horizontal .control-label {
   margin-bottom: 4px;
 }
-.form-horizontal .radio {
-  padding-left: 22px;
-}
 .btn-group {
   float: right;
 }
