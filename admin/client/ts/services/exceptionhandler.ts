@@ -3,9 +3,21 @@
 
 module logger{
 	angular.module('logger')
-	.factory('$exceptionHandler', function () {
+	.factory('$exceptionHandler', [ '$injector', function ($injector) {
 	    return function (exception, cause) {
-	        alert(exception.message);
+	    	var $http = $injector.get('$http');
+
+	        $http({
+	        	url:'/api/log',
+	        	method:'POST', 
+	        	data:{
+	        		"exception":exception
+	        	},
+	        	headers:{'Content-Type':'application/json'}
+
+	        }).error(function(data, status, headers, config) {
+    				console.error('failure logging client errors to the server');
+  				});
 	    };
-	});
+	}]);
 }

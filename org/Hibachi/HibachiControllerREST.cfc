@@ -537,6 +537,19 @@ component output="false" accessors="true" extends="HibachiController" {
 		post(arguments.rc);
 	}
 	
+	public any function log(required struct rc) { 
+		var exception = 'There was no reported exception.';
+		if(structKeyExists(arguments.rc.deserializedJSONData,'exception')){
+			exception = arguments.rc.deserializedJsonData.exception;
+		}
+		var cause = 'There was no reported cause';
+		if(structKeyExists(arguments.rc.deserializedJSONData,'cause')){
+			cause = arguments.rc.deserializedJsonData.cause;
+		}
+		writeLog(text="Client Side Exception: #exception# Cause: #cause#",file="Slatwall", type="ClientError");
+		arguments.rc.messages = {type="Error", message="Successfully logged client side exception"};
+	}
+	
 		/*
 		
 		GET http://www.mysite.com/slatwall/api/product/ -> returns a collection of all products

@@ -449,9 +449,9 @@ Notes:
 			try{
 				angular.bootstrap(document.getElementById("ngApp"),['logger','slatwalladmin']);
 			}catch(e){
-				alert(e.message);
+				console.error(e.message);
 			}
-			
+
 		</script>
 	</body>
 </html>
