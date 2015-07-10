@@ -22,6 +22,8 @@ component output="false" accessors="true" extends="HibachiController" {
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'put');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
 	
+	this.publicMethods=listAppend(this.publicMethods, 'log');
+	
 	//	this.secureMethods='';
 	//	this.secureMethods=listAppend(this.secureMethods, 'get');
 	//	this.secureMethods=listAppend(this.secureMethods, 'post');
@@ -546,8 +548,18 @@ component output="false" accessors="true" extends="HibachiController" {
 		if(structKeyExists(arguments.rc.deserializedJSONData,'cause')){
 			cause = arguments.rc.deserializedJsonData.cause;
 		}
-		writeLog(text="Client Side Exception: #exception# Cause: #cause#",file="Slatwall", type="ClientError");
-		arguments.rc.messages = {type="Error", message="Successfully logged client side exception"};
+		try { 
+			throw(type="ClientError", message="Exception: #exception# Cause: #cause#");
+		} catch (any e) { 
+			//pass through
+		}
+		
+		arguments.rc['messages'] = [];
+
+		var message = {};
+		message['message'] = exception;
+		message['messageType'] = "error";
+		arrayAppend(arguments.rc.messages,message);		
 	}
 	
 		/*

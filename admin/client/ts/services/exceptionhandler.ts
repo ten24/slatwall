@@ -15,9 +15,10 @@ module logger{
 	        	},
 	        	headers:{'Content-Type':'application/json'}
 
-	        }).error(function(data, status, headers, config) {
-    				console.error('failure logging client errors to the server');
-  				});
+	        }).success(function(data, status, headers, config) {
+   				var alertService = $injector.get('alertService');
+   				alertService.addAlerts(data.messages);
+  			})
 	    };
 	}]);
 }
