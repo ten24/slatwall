@@ -11,7 +11,8 @@ module logger{
 	        	url:'/api/log',
 	        	method:'POST', 
 	        	data:{
-	        		"exception":exception
+	        		"exception":exception,
+	        		"cause":cause
 	        	},
 	        	headers:{'Content-Type':'application/json'}
 
