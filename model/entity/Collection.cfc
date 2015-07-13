@@ -91,11 +91,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	property name="cacheable" type="boolean" persistent="false";
 	property name="cacheName" type="string" persistent="false";
 	property name="savedStateID" type="string" persistent="false";
+	property name="collectionEntityObject" type="any" persistent="false";
 	
 	//property name="entityNameOptions" persistent="false" hint="an array of name/value structs for the entity's metaData";
 	property name="collectionObjectOptions" persistent="false";
 	
 	// ============ START: Non-Persistent Property Methods =================
+	
+	public any function getCollectionEntityObject(){
+		if(!structKeyExists(variables,'collectionEntityObject')){
+			variables.collectionEntityObject = getService('hibachiService').getEntityObject(getCollectionObject());
+		}
+		return variables.collectionEntityObject;
+	}
 	
 	//add Filter
 	public void function addFilter(required string propertyIdentifier, required any value, string comparisonOperator="=", string logicalOperator="AND"){
@@ -112,6 +120,19 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		//if we already have a filter group then we need a logicalOperator
 		if(arraylen(this.getCollectionConfigStruct().filterGroups[1].filterGroup)){
 			filterGroup.logicalOperator=arguments.logicalOperator;
+		}
+		//check if the property is an attribute
+		var hasAttribute = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(
+			entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
+			propertyIdentifier=arguments.propertyIdentifier
+		); 
+		//if so then add attribute details
+		if(hasAttribute){
+			filterGroup['attributeID'] = getService("attributeService").getAttributeByAttributeCode( listLast(arguments.propertyIdentifier,'.')).getAttributeID();
+			filterGroup['attributeSetObject'] = getService('hibachiService').getLastEntityNameInPropertyIdentifier(
+				entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
+				propertyIdentifier=arguments.propertyIdentifier
+			);
 		}
 		
 		arrayAppend(this.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
@@ -137,6 +158,20 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!structKeyExists(collectionConfig,'columns')){
 			collectionConfig.columns = [];
 		}
+		//check if the property is an attribute
+		var hasAttribute = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(
+			entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
+			propertyIdentifier=arguments.displayProperty
+		); 
+		//if so then add attribute details
+		if(hasAttribute){
+			column['attributeID'] = getService("attributeService").getAttributeByAttributeCode( listLast(arguments.displayProperty,'.')).getAttributeID();
+			column['attributeSetObject'] = getService('hibachiService').getLastEntityNameInPropertyIdentifier(
+				entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
+				propertyIdentifier=arguments.displayProperty
+			);
+		}
+		
 		arrayAppend(collectionConfig.columns,column);
 		this.setCollectionConfigStruct(collectionConfig);
 	}

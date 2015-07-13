@@ -60,17 +60,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //	public void function addFilterTest(){
 //		var myCollection = variables.entityService.getProductCollectionList();
 //		
-//		myCollection.addFilter('productCode','tester444');
+//		myCollection.addFilter('asdf','tester444');
 //		myCollection.addFilter('productName','tester444');
 //		myCollection.addFilter('activeFlag','YES');
 //		var pageRecords = myCollection.getPageRecords();
+//		request.debug(myCollection.getHQL());
 //	}
 //	
 //	public void function displayPropertyTest(){
 //		var myCollection = variables.entityService.getProductCollectionList();
 //		myCollection.setDisplayProperties('productCode,activeFlag');
-//		myCollection.addDisplayProperty('productName');
+//		myCollection.addDisplayProperty('asdf');
 //		var pageRecords = myCollection.getPageRecords();
+//		request.debug(myCollection.getHQL());
 //	}
 
 //	public void function addOrderByTest(){
@@ -90,10 +92,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		
 		var myCollection = variables.entityService.getProductCollectionList();
-		myCollection.setDisplayProperties();
-		myCollection.addDisplayAggregate('productCode','count','skuCount');
-		request.debug(myCollection.getCollectionConfigStruct());
-		request.debug(myCollection.getPageRecords());
+		myCollection.setDisplayProperties('productCode');
+		//myCollection.addDisplayAggregate('skus','count','skuCount');
+		request.debug(myCollection.getHQL());
+//		var skuCount = ORMExecuteQuery('
+//			SELECT new Map( COUNT(_product_skus) as skuCount, _product.productCode) 
+//			FROM SlatwallProduct as _product 
+//			Left Join _product.skus _product_skus
+//			ORDER BY _product.createdDateTime desc
+//			
+//			');
+//		request.debug(skuCount);
+		//request.debug(myCollection.getCollectionConfigStruct());
+		//request.debug(myCollection.getPageRecords());
 	}
 
 //	

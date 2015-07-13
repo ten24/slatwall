@@ -275,16 +275,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Call save on the account now that it is all setup
 		arguments.account = this.saveAccount(arguments.account);
 
-		// Look for eventRegistrationID in the data and attach this account to that eventRegistrationID 
-		var eventRegistration = getEventRegistrationService().getEventRegistration( arguments.account.geteventRegistrationID() );
-	 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
-	 		eventRegistration().setFirstName( javaCast("null", "") );
-	 		eventRegistration().setLastName( javaCast("null", "") );
-	 		eventRegistration().setEmailAddress( javaCast("null", "") );
-	 		eventRegistration().setPhoneNumber( javaCast("null", "") );
-	 		eventRegistration().setAccount( arguments.account );
-	 	}
-		
 		return arguments.account;
 	}
 
@@ -325,18 +315,6 @@ component extends="HibachiService" accessors="true" output="false" {
 					}else{
 						getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
 					}
-					
-					/*
-					// Look for eventRegistrationID in the data and attach this account to that eventRegistrationID 
-					var eventRegistration = getEventRegistrationService().getEventRegistration( arguments.account.geteventRegistrationID() );
-				 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
-				 		eventRegistration().setFirstName( javaCast("null", "") );
-				 		eventRegistration().setLastName( javaCast("null", "") );
-				 		eventRegistration().setEmailAddress( javaCast("null", "") );
-				 		eventRegistration().setPhoneNumber( javaCast("null", "") );
-				 		eventRegistartion().setAccount( accountAuthentications[i].getAccount() );
-				 	}
-					*/
 					
 					accountAuthentication.getAccount().setFailedLoginAttemptCount(0); 
 					accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
@@ -418,14 +396,12 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function processAccount_resetPassword( required any account, required any processObject ) {
-		var changeProcessData = {
-			password = arguments.processObject.getPassword(),
-			passwordConfirm = arguments.processObject.getPasswordConfirm()
-		};
-		arguments.account = this.processAccount(arguments.account, changeProcessData, 'changePassword');
-		
+
 		// If there are no errors
 		if(!arguments.account.hasErrors()) {
+			
+			arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
+			
 			// Get the temporary accountAuth
 			var tempAA = getAccountDAO().getPasswordResetAccountAuthentication(accountID=arguments.account.getAccountID());
 			

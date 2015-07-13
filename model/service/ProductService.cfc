@@ -66,7 +66,11 @@ component extends="HibachiService" accessors="true" {
 	property name="typeService" type="any";
 
 	// ===================== START: Logical Methods ===========================
-
+	
+	public numeric function getProductRating(required any product){
+		return getDao('productDao').getProductRating(arguments.product);
+	}
+	
 	public void function loadDataFromFile(required string fileURL, string textQualifier = ""){
 		getHibachiTagService().cfSetting(requesttimeout="3600");
 		getProductDAO().loadDataFromFile(arguments.fileURL,arguments.textQualifier);
@@ -798,7 +802,7 @@ component extends="HibachiService" accessors="true" {
 				thisSku.setPrice(arguments.processObject.getPrice());
 				thisSku.setRenewalPrice(arguments.processObject.getPrice());
 				thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.processObject.getSubscriptionTerms(), i)) );
-				thisSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
+				thisSku.setSkuCode(product.getProductCode() & "-#i#");
 				for(var b=1; b <= listLen(arguments.processObject.getSubscriptionBenefits()); b++) {
 					thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getSubscriptionBenefits(), b) ) );
 				}
