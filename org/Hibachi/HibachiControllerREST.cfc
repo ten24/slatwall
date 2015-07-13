@@ -548,18 +548,10 @@ component output="false" accessors="true" extends="HibachiController" {
 		if(structKeyExists(arguments.rc.deserializedJSONData,'cause')){
 			cause = arguments.rc.deserializedJsonData.cause;
 		}
-		try { 
-			throw(type="ClientError", message="Exception: #exception# Cause: #cause#");
-		} catch (any e) { 
-			//pass through
-		}
+		//throw the error so it will follow expected lifecycle 
+		throw(type="ClientError", message="Exception: #exception# Cause: #cause#");
 		
-		arguments.rc['messages'] = [];
-
-		var message = {};
-		message['message'] = exception;
-		message['messageType'] = "error";
-		arrayAppend(arguments.rc.messages,message);		
+		
 	}
 	
 		/*

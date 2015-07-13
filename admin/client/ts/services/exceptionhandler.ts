@@ -6,20 +6,15 @@ module logger{
 	.factory('$exceptionHandler', [ '$injector', function ($injector) {
 	    return function (exception, cause) {
 	    	var $http = $injector.get('$http');
-
 	        $http({
-	        	url:'/api/log',
+	        	url:'?slatAction=admin:error&ajaxRequest=true&exception=ClientSideException',
 	        	method:'POST', 
 	        	data:{
 	        		"exception":exception,
 	        		"cause":cause
 	        	},
 	        	headers:{'Content-Type':'application/json'}
-
-	        }).success(function(data, status, headers, config) {
-   				var alertService = $injector.get('alertService');
-   				alertService.addAlerts(data.messages);
-  			})
-	    };
+	        });
+	    }
 	}]);
 }
