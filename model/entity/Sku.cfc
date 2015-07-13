@@ -66,7 +66,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eventCapacity" ormtype="integer";
 	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
 	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
-	property name="redemptionAmountType" ormtype="string" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage";
+	property name="redemptionAmountType" ormtype="string" hb_formFieldType="select" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage";
 	property name="redemptionAmount" ormtype="big_decimal" hint="value to be used in calculation conjuciton with redeptionAmountType";
 	
 	// Calculated Properties
