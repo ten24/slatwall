@@ -46,26 +46,21 @@
 Notes:
 
 */
-component displayname="Fulfillment Method" entityname="SlatwallFulfillmentMethod" table="SwFulfillmentMethod" persistent=true output=false accessors=true extends="HibachiEntity"cacheuse="transactional" hb_serviceName="fulfillmentService" hb_permission="this" {
+component displayname="Gift Card Transaction" entityname="SlatwallGiftCardTransaction" table="SwGiftCardTransaction" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="giftCardService" {
 	
 	// Persistent Properties
-	property name="fulfillmentMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="fulfillmentMethodName" ormtype="string";
-	property name="fulfillmentMethodType" ormtype="string" hb_formFieldType="select";
-	property name="activeFlag" ormtype="boolean" default="false";
-	property name="sortOrder" ormtype="integer";
-	property name="autoFulfillFlag" ormtype="boolean" default="false";
+	property name="giftCardTransactionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="creditAmount" ormtype="numeric";
+	property name="debitAmount" ormtype="numeric";
 	
 	// Related Object Properties (many-to-one)
-	
+	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";
+	property name="giftCard" cfc="GiftCard" fieldtype="many-to-one" fkcolumn="giftCardID";
+		
 	// Related Object Properties (one-to-many)
-	property name="shippingMethods" singularname="shippingMethod" cfc="ShippingMethod" type="array" fieldtype="one-to-many" fkcolumn="fulfillmentMethodID" cascade="all-delete-orphan" inverse="true";
-	property name="orderFulfillments" singularname="orderFulfillment" cfc="OrderFulfillment" fieldtype="one-to-many" fkcolumn="fulfillmentMethodID" inverse="true" lazy="extra";						// Set to lazy, just used for delete validation
+	property name="orderItems" singularname="orderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="giftCardTransactionID" inverse="true" cascade="all-delete-orphan";
 	
-	// Related Object Properties (many-to-many - owner)
-
-	// Related Object Properties (many-to-many - inverse)
-	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualFulfillmentMethod" fkcolumn="fulfillmentMethodID" inversejoincolumn="promotionQualifierID" inverse="true";
+	// Related Object Properties (many-to-many)
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -76,50 +71,37 @@ component displayname="Fulfillment Method" entityname="SlatwallFulfillmentMethod
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
-		
-	public array function getFulfillmentMethodTypeOptions() {
-		var options = [
-			{name="Attend", value="attend"},
-			{name="Auto", value="auto"},
-			{name="Download", value="download"},
-			{name="Email", value="email"},
-			{name="Pickup", value="pickup"},
-			{name="Shipping", value="shipping"}
-		];
+	// Non-Persistent Properties
 
-		return options;
-	}
-	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
-	
+		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Shipping Methods (one-to-many)    
-	public void function addShippingMethod(required any shippingMethod) {    
-		arguments.shippingMethod.setFulfillmentMethod( this );    
-	}    
-	public void function removeShippingMethod(required any shippingMethod) {    
-		arguments.shippingMethod.removeFulfillmentMethod( this );    
-	}
-	
-	// Promotion Qualifiers (many-to-many - inverse)
-	public void function addPromotionQualifier(required any promotionQualifier) {
-		arguments.promotionQualifier.addFulfillmentMethods( this );
-	}
-	public void function removePromotionQualifier(required any promotionQualifier) {
-		arguments.promotionQualifier.removeFulfillmentMethods( this );
-	}
-	
 	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
 	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicet Getters ===================
+	
+	// ==============  END: Overridden Implicet Getters ====================
+
 	// ================== START: Overridden Methods ========================
 	
 	// ==================  END:  Overridden Methods ========================
-		
+	
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
 }
-
