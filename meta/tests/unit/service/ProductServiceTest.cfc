@@ -53,6 +53,35 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getService("productService");
 	}
 	
+	public void function createSingleSkuTest(){
+		var productData = {
+			productID="",
+			productName="unitTestProduct" & createUUID(),
+			productCode="unitTestProductCode" & createUUID()
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var processObject = product.getProcessObject('create');
+		product = variables.service.createSingleSku(product,processObject);
+		assertEquals(arrayLen(product.getSkus()),1);
+	}
+	
+	public void function createGiftCardProduct(){
+		var productData = {
+			productID="",
+			productName="unitTestProduct" & createUUID(),
+			productCode="unitTestProductCode" & createUUID()
+		};
+		var product = createPersistedTestENtity('product',productData);
+		var processObject = product.getProcessObject('create');
+		
+		processObject.setRedemptionAmountType('sameAsPrice');
+		processObject.setRedemptionAmount(0);
+		
+		product = variables.service.createGiftCardProduct(product,processObject);
+		request.debug(product);
+	}
+	
 	
 }
 
