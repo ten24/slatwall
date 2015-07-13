@@ -53,7 +53,7 @@ component displayname="Gift Recipient" entityname="SlatwallGiftRecipient" table=
 	property name="firstName" ormtype="string";
 	property name="lastName" ormtype="string";
 	property name="emailAddress" ormtype="string";
-	property name="quantity" ormtype="numeric";
+	property name="quantity" ormtype="integer";
 	property name="giftMessage" ormtype="string";
 	
 	// Related Object Properties (many-to-one)

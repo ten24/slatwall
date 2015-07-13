@@ -67,7 +67,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
 	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
 	property name="redemptionAmountType" ormtype="string" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage";
-	property name="redemptionAmount" ormtype="numeric" hint="value to be used in calculation conjuciton with redeptionAmountType";
+	property name="redemptionAmount" ormtype="big_decimal" hint="value to be used in calculation conjuciton with redeptionAmountType";
 	
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
@@ -77,7 +77,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="productSchedule" cfc="ProductSchedule" fieldtype="many-to-one" fkcolumn="productScheduleID";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
 	property name="waitlistQueueTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID" hint="Term that a waitlisted registrant has to claim offer.";
-	property name="giftCardExpirationTerm" cfc"Term" fieldType="many-to-one" fkcolumn="termID" hint="Term that is used to set the Expiration Date of the ordered gift card.";
+	property name="giftCardExpirationTerm" cfc="Term" fieldType="many-to-one" fkcolumn="giftCardExpirationTermID" hint="Term that is used to set the Expiration Date of the ordered gift card.";
 	
 	// Related Object Properties (one-to-many)
 	property name="alternateSkuCodes" singularname="alternateSkuCode" fieldtype="one-to-many" fkcolumn="skuID" cfc="AlternateSkuCode" inverse="true" cascade="all-delete-orphan";
