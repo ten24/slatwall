@@ -363,11 +363,10 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processAccount_forgotPassword( required any account, required any processObject ) {
 		var forgotPasswordAccount = getAccountWithAuthenticationByEmailAddress( processObject.getEmailAddress() );
-		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
-		
+
 		if(!isNull(forgotPasswordAccount)) {
 			//check to see if the account is locked
-			if(isNull(accountAuthentication.getAccount().getLoginLockExpiresDateTime()) || DateCompare(Now(), accountAuthentication.getAccount().getLoginLockExpiresDateTime()) == 1 ){
+			if(isNull(forgotPasswordAccount.getLoginLockExpiresDateTime()) || DateCompare(Now(), forgotPasswordAccount.getLoginLockExpiresDateTime()) == 1 ){
 		
 				// Get the site (this will return as a new site if no siteID)
 				var site = getSiteService().getSite(arguments.processObject.getSiteID(), true);
