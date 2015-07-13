@@ -61,6 +61,8 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="subscriptionBenefits";
 	property name="subscriptionTerms";
 	property name="generateSkusFlag" hb_formFieldType="yesno" default="0" hint="If set to 0 skus will not be create when product is.";
+	property name="redemptionAmountType";
+	property name="redemptionAmount";
 	
 	
 	public any function setupDefaults() {

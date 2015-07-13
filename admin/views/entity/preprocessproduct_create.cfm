@@ -225,8 +225,16 @@ Notes:
 				</div>
 				
 			</div>
+			
+		<!--- Gift Card --->
+		<cfelseif rc.baseProductType eq 'gift-card'>
+			<hb:HibachiPropertyList divClass="col-md-6">
 
+				<!--- Select Product Type --->
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="redemptionAmountType" edit="true">
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="redemptionAmount" edit="true">
+
+			</hb:HibachiPropertyList>
 		</cfif>
-
 	</hb:HibachiEntityProcessForm>
 </cfoutput>
