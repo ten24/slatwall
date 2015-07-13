@@ -58,9 +58,9 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="ownerEmailAddress" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
-	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
-	property name="giftCardExpirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID";
-	property name="ownerAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="originalOrderItemID";
+	property name="giftCardExpirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="giftCardExpirationTermID";
+	property name="ownerAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="ownerAccountID";
 		
 	// Related Object Properties (one-to-many)
 	property name="giftCardTransactions" singularname="giftCardTransaction" cfc="GiftCardTransaction" fieldtype="one-to-many" fkcolumn="giftCardID" inverse="true" cascade="all-delete-orphan";
