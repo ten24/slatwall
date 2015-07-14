@@ -50,7 +50,7 @@ Notes:
 <cfimport prefix="hb" taglib="../../org/Hibachi/HibachiTags" />
 <cfoutput>
 <!DOCTYPE html>
-<html lang="en" ng-app="slatwalladmin">
+<html lang="en" id="ngApp">
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -381,7 +381,6 @@ Notes:
 			<cfloop collection="#rc.$.slatwall.getService('hibachiService').getEntitiesMetaData()#" item="local.entityName">
 				slatwallAngular.constantPaths.push('#local.entityName#');
 			</cfloop>
-
 		</script>
 		
 		<!--- Load up the Slatwall Angular Provider --->
@@ -445,6 +444,23 @@ Notes:
 		<cfelse>
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/es5/all.min.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
 		</cfif>
+		<script type="text/javascript">
+			//bootstrap logger
+			try{
+				angular.bootstrap(document.getElementById("ngApp"),['logger','slatwalladmin']);
+			}catch(exception){
+				$.ajax({
+		        	url:'?slatAction=api:main.log',
+		        	method:'POST', 
+		        	data:$.param({
+	                    exception:exception,
+	                    apiRequest:true
+	                }),
+		        	headers:{'Content-Type': 'application/x-www-form-urlencoded'}
+		        });
+			}
+
+		</script>
 	</body>
 </html>
 </cfoutput>
