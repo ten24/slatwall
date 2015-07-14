@@ -1,8 +1,8 @@
 {
 	"properties":{
 		"baseProductType":				[
-				{"contexts":"addSku","inList":"event,merchandise,gift-card"},	
-		    	{"contexts":"addOptionGroup,addOption","inList":"merchandise"},
+				{"contexts":"addOptionGroup,addOption,addSkuBundle","inList":"merchandise"},
+				{"contexts":"addSku","inList":"gift-card,merchandise"}
 		    	{"contexts":"addSubscriptionSku","inList":"subscription"},
 		    	{"contexts":"addEventSchedule","inList":"event"}
 		    	
