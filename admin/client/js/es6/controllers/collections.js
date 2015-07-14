@@ -10,7 +10,7 @@ angular.module('slatwalladmin').controller('collections', [
     'selectionService',
     'paginationService',
     function ($scope, $location, $log, $timeout, $slatwall, collectionService, metadataService, selectionService, paginationService) {
-        //init values
+        //init values 
         //$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
         $scope.$id = "collectionsController";
         /*used til we convert to use route params*/
