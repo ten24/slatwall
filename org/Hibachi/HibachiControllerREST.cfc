@@ -22,6 +22,8 @@ component output="false" accessors="true" extends="HibachiController" {
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'put');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
 	
+	this.publicMethods=listAppend(this.publicMethods, 'log');
+	
 	//	this.secureMethods='';
 	//	this.secureMethods=listAppend(this.secureMethods, 'get');
 	//	this.secureMethods=listAppend(this.secureMethods, 'post');
@@ -535,6 +537,19 @@ component output="false" accessors="true" extends="HibachiController" {
 	public any function delete( required struct rc ) {
 		arguments.rc.context = "delete";
 		post(arguments.rc);
+	}
+	
+	public any function log(required struct rc) { 
+		var exception = 'There was no reported exception.';
+		if(structKeyExists(arguments.rc,'exception')){
+			exception = arguments.rc.exception;
+		}
+		var cause = 'There was no reported cause';
+		if(structKeyExists(arguments.rc,'cause')){
+			cause = arguments.rc.cause;
+		}
+		//throw the error so it will follow expected lifecycle 
+		throw(type="ClientError", message="Exception: #exception# Cause: #cause#");
 	}
 	
 		/*

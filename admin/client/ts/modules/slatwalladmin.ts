@@ -118,6 +118,7 @@ module slatwallAdmin{
     			text = $slatwall.getRBKey('entity.'+text);
     			return text;
     		}
+    		
     	};
     }]);
 }

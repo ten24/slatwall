@@ -58,6 +58,8 @@ component extends="FW1.framework" {
 		,{ "$GET/api/scope/:context/$" = "/api:public/get/context/:context"}
 		,{ "$POST/api/scope/:context/$" = "/api:public/post/context/:context"}
 		
+		,{ "$POST/api/log/$" = "/api:main/log"}
+		
 		,{ "$GET/api/$" = "/api:main/get/" }
 		,{ "$GET/api/:entityName/$" = "/api:main/get/entityName/:entityName"}
 		,{ "$GET/api/:entityName/:entityID/$" = "/api:main/get/entityName/:entityName/entityID/:entityID"}
