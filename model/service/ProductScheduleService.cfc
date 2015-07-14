@@ -48,7 +48,9 @@ Notes:
 */
 
 component  extends="HibachiService" accessors="true" {
-
+	
+	// Slatwall Service Injection
+	property name="productDAO" type="any";
 	property name="dataService" type="any";  
 	property name="contentService" type="any";
 	property name="optionService" type="any";
@@ -162,6 +164,9 @@ component  extends="HibachiService" accessors="true" {
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================
+	public any function getFirstScheduledSku(required string productScheduleID){
+		return getProductDAO().getFirstScheduledSku(arguments.productScheduleID);
+	}
 	
 	// ===================== START: DAO Passthrough ===========================
 	
@@ -186,6 +191,17 @@ component  extends="HibachiService" accessors="true" {
 	// ======================  END: Get Overrides =============================
 	
 	// ===================== START: Delete Overrides ==========================
+	
+	public boolean function deleteProductSchedule(required any productSchedule) {
+	
+		// Check delete validation
+		if(arguments.deleteProductSchedule.isDeletable()) {
+			// Remove the primary fields so that we can delete this entity
+			arguments.productSchedule.setProduct(javaCast("null", ""));
+		}
+		
+		return delete( arguments.productSchedule );
+	}
 	
 	// =====================  END: Delete Overrides ===========================
 	
