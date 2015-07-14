@@ -148,10 +148,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getOrderDAO().getQuantityPriceSkuAlreadyReturned(arguments.orderId, arguments.skuID);
 	}
 	
-	public boolean function getPeerOrderPaymentNullAmountExistsFlag(required string orderID, required string orderPaymentID) {
-		return getOrderDAO().getPeerOrderPaymentNullAmountExistsFlag(argumentcollection=arguments);
-	}
-	
 	public numeric function getPreviouslyReturnedFulfillmentTotal(required any orderID) {
 		return getOrderDAO().getPreviouslyReturnedFulfillmentTotal(arguments.orderId);
 	}
