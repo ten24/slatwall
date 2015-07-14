@@ -195,7 +195,7 @@ component  extends="HibachiService" accessors="true" {
 	public boolean function deleteProductSchedule(required any productSchedule) {
 	
 		// Check delete validation
-		if(arguments.deleteProductSchedule.isDeletable()) {
+		if(arguments.productSchedule.isDeletable()) {
 			// Remove the primary fields so that we can delete this entity
 			arguments.productSchedule.setProduct(javaCast("null", ""));
 		}

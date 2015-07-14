@@ -884,9 +884,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			arguments.productSchedule = variables.productSchedule;    
 		}    
 		var index = arrayFind(arguments.productSchedule.getSkus(), this);    
+
 		if(index > 0) {    
 			arrayDeleteAt(arguments.productSchedule.getSkus(), index);    
-		}    
+		}  
+
+		// Check to see if the are no longer an skus associated to the product schedule.
+		if (!arrayLen(arguments.productSchedule.getSkus())){
+			getService("ProductScheduleService").deleteProductSchedule(variables.productSchedule);
+		}
+		
 		structDelete(variables, "productSchedule");    
 	}
 	
