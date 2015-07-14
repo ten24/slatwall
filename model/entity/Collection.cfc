@@ -105,38 +105,38 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return variables.collectionEntityObject;
 	}
 	
-	//add Filter
-	public void function addFilter(required string propertyIdentifier, required any value, string comparisonOperator="=", string logicalOperator="AND"){
-		if(!structKeyExists(this.getCollectionConfigStruct(),'filterGroups')){
-			this.getCollectionConfigStruct().filterGroups = [{filterGroup=[]}];
-		}
-		
-		//create filter Group
-		var filterGroup = {
-			propertyIdentifier = arguments.propertyIdentifier,
-			comparisonOperator = arguments.comparisonOperator,
-			value = arguments.value
-		};
-		//if we already have a filter group then we need a logicalOperator
-		if(arraylen(this.getCollectionConfigStruct().filterGroups[1].filterGroup)){
-			filterGroup.logicalOperator=arguments.logicalOperator;
-		}
-		//check if the property is an attribute
-		var hasAttribute = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(
-			entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
-			propertyIdentifier=arguments.propertyIdentifier
-		); 
-		//if so then add attribute details
-		if(hasAttribute){
-			filterGroup['attributeID'] = getService("attributeService").getAttributeByAttributeCode( listLast(arguments.propertyIdentifier,'.')).getAttributeID();
-			filterGroup['attributeSetObject'] = getService('hibachiService').getLastEntityNameInPropertyIdentifier(
-				entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
-				propertyIdentifier=arguments.propertyIdentifier
-			);
-		}
-		
-		arrayAppend(this.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
-	}
+//	//add Filter
+//	public void function addFilter(required string propertyIdentifier, required any value, string comparisonOperator="=", string logicalOperator="AND"){
+//		if(!structKeyExists(this.getCollectionConfigStruct(),'filterGroups')){
+//			this.getCollectionConfigStruct().filterGroups = [{filterGroup=[]}];
+//		}
+//		
+//		//create filter Group
+//		var filterGroup = {
+//			propertyIdentifier = arguments.propertyIdentifier,
+//			comparisonOperator = arguments.comparisonOperator,
+//			value = arguments.value
+//		};
+//		//if we already have a filter group then we need a logicalOperator
+//		if(arraylen(this.getCollectionConfigStruct().filterGroups[1].filterGroup)){
+//			filterGroup.logicalOperator=arguments.logicalOperator;
+//		}
+//		//check if the property is an attribute
+//		var hasAttribute = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(
+//			entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
+//			propertyIdentifier=arguments.propertyIdentifier
+//		); 
+//		//if so then add attribute details
+//		if(hasAttribute){
+//			filterGroup['attributeID'] = getService("attributeService").getAttributeByAttributeCode( listLast(arguments.propertyIdentifier,'.')).getAttributeID();
+//			filterGroup['attributeSetObject'] = getService('hibachiService').getLastEntityNameInPropertyIdentifier(
+//				entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
+//				propertyIdentifier=arguments.propertyIdentifier
+//			);
+//		}
+//		
+//		arrayAppend(this.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
+//	}
 	
 	public void function setDisplayProperties(string displayPropertiesList=""){
 		var collectionConfig = this.getCollectionConfigStruct();
@@ -144,9 +144,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		this.setCollectionConfigStruct(collectionConfig);
 		var displayProperties = listToArray(arguments.displayPropertiesList);
 		for(var displayProperty in displayProperties){
-			addDisplayProperty(displayProperty);
+			return addDisplayProperty(displayProperty);
 		}
-		
 	}
 	
 	public void function addDisplayProperty(required string displayProperty){
@@ -162,14 +161,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var hasAttribute = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(
 			entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
 			propertyIdentifier=arguments.displayProperty
-		); 
+				);
 		//if so then add attribute details
 		if(hasAttribute){
 			column['attributeID'] = getService("attributeService").getAttributeByAttributeCode( listLast(arguments.displayProperty,'.')).getAttributeID();
 			column['attributeSetObject'] = getService('hibachiService').getLastEntityNameInPropertyIdentifier(
 				entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
 				propertyIdentifier=arguments.displayProperty
-			);
+					);
+		}else{
+			var alias = collectionConfig.baseEntityAlias;
+			column['propertyIdentifier'] = alias & '.' & column['propertyIdentifier'];
 		}
 		
 		arrayAppend(collectionConfig.columns,column);
@@ -187,14 +189,124 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	//add display Aggregate
 	public void function addDisplayAggregate(required string propertyIdentifier, required string aggregateFunction, required string aggregateAlias){
+		var collectionConfig = this.getCollectionConfigStruct();
+		var alias = collectionConfig.baseEntityAlias;
+		var join = {};
+		
+		var collection = arguments.propertyIdentifier;
+		var property = "";
+		
+		if(arguments.propertyIdentifier.contains('.')){
+			collection = Mid(arguments.propertyIdentifier, 1, arguments.propertyIdentifier.lastIndexOf("."));
+			property = ListLast(arguments.propertyIdentifier, '.');
+		}
+		
+		var isObject= getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(
+			getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),arguments.propertyIdentifier);
+		
+		if(isObject){
+			var newPropertyIdentifier = alias & '_' & Replace(arguments.propertyIdentifier, '.', '_', 'All');
+			join['associationName'] = collection;
+			join['alias'] = alias & '_' & Replace(collection, '.', '_', 'All');
+		}else{
+			var newPropertyIdentifier = alias & '_' & Replace(collection, '.', '_', 'All') & "." & property;
+			join['associationName'] = arguments.propertyIdentifier;
+			join['alias'] = alias & '_' & Replace(arguments.propertyIdentifier, '.', '_', 'All');
+		}
+		
 		var column = {
-			propertyIdentifier=arguments.propertyIdentifier,
+			propertyIdentifier = newPropertyIdentifier,
 			aggregate = {
 				aggregateFunction = arguments.aggregateFunction,
 				aggregateAlias = arguments.aggregateAlias
 			}
 		};
+		//Add columns
 		this.addColumn(column);
+		addJoin(join);
+	}
+	
+	//Check if passed propertyIdentifier is a object or property and do a join
+	public void function addAgreggateJoinIfNeeded(required string alias, required string propertyIdentifier){
+		var entityName = getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject());
+		var join = {};
+		var isObject= getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(entityName,arguments.propertyIdentifier);
+		if(isObject){
+			var collection = arguments.propertyIdentifier;
+			if(arguments.propertyIdentifier.contains('.')){
+				collection = Mid(arguments.propertyIdentifier, 1, arguments.propertyIdentifier.lastIndexOf("."));
+			}
+			join['associationName'] = collection;
+			join['alias'] = alias & '_' & Replace(collection, '.', '_', 'All');
+		}else{
+			join['associationName'] = arguments.propertyIdentifier;
+			join['alias'] = alias & '_' & Replace(arguments.propertyIdentifier, '.', '_', 'All');
+		}
+		addJoin(join);
+	}
+	
+	
+	//add Filter Aggregate
+	public void function addFilter(required string propertyIdentifier, required any value, string comparisonOperator="=", string logicalOperator="AND"){
+		var collectionConfig = this.getCollectionConfigStruct();
+		var alias = collectionConfig.baseEntityAlias;
+		
+		
+		if(!structKeyExists(collectionConfig,'filterGroups')){
+			collectionConfig.filterGroups = [{filterGroup=[]}];
+		}
+		
+		var collection = arguments.propertyIdentifier;
+		var property = '';
+		
+		if(arguments.propertyIdentifier.contains('.')){
+			collection = Mid(arguments.propertyIdentifier, 1, arguments.propertyIdentifier.lastIndexOf("."));
+			property = ListLast(arguments.propertyIdentifier, '.');	
+		}
+		
+		
+		//create filter Group
+		var filterGroup = {
+			comparisonOperator = arguments.comparisonOperator,
+			value = arguments.value
+		};
+		
+		var join = {};
+		
+		var isObject= getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(
+			getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),arguments.propertyIdentifier
+			);
+		if(!isObject){
+			filterGroup['propertyIdentifier'] = alias & '_' & Replace(collection, '.', '_', 'All') & '.' & property;
+			join['associationName'] = collection;
+			join['alias'] = alias & '_' & Replace(collection, '.', '_', 'All');
+		}else{
+			filterGroup['propertyIdentifier'] = alias & '_' & Replace(arguments.propertyIdentifier, '.', '_', 'All');
+			join['associationName'] = arguments.propertyIdentifier;
+			join['alias'] = alias & '_' & Replace(arguments.propertyIdentifier, '.', '_', 'All');
+		}
+	
+		
+		//if we already have a filter group then we need a logicalOperator
+		if(arraylen(collectionConfig.filterGroups[1].filterGroup)){
+			filterGroup.logicalOperator=arguments.logicalOperator;
+		}
+		//check if the property is an attribute
+		var hasAttribute = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(
+			entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
+			propertyIdentifier=arguments.propertyIdentifier
+		); 
+		//if so then add attribute details
+		if(hasAttribute){
+			filterGroup['attributeID'] = getService("attributeService").getAttributeByAttributeCode( listLast(arguments.propertyIdentifier,'.')).getAttributeID();
+			filterGroup['attributeSetObject'] = getService('hibachiService').getLastEntityNameInPropertyIdentifier(
+				entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
+				propertyIdentifier=arguments.propertyIdentifier
+			);
+		}
+		
+		addJoin(join);
+		arrayAppend(collectionConfig.filterGroups[1].filterGroup,filterGroup);
 	}
 	
 	public void function setOrderBy(required string orderByList){
@@ -333,6 +445,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	//join introspects on itself for nested joins to ensure that all joins are added in the correct order
 	private string function addJoinHQL(required string parentAlias, required any join){
+		//Alias_
 		var fullJoinName = "#parentAlias#.#arguments.join.associationName#";
 		addHQLAlias(fullJoinName,arguments.join.alias);
 		var joinHQL = ' left join #fullJoinName# as #arguments.join.alias# ';
@@ -1050,6 +1163,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				var currentAliasStepped = '';
 				var columnPropertyIdentiferArray = listToArray(column.propertyIdentifier,'.');
 				var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
+				
 				for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
 					if(columnPropertyIdentiferArrayCount > 2){
 						if(j != 1 && j != columnPropertyIdentiferArrayCount){
@@ -1071,6 +1185,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}
 						if(j == columnPropertyIdentiferArrayCount){
 							column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
+							//addAgreggateJoinIfNeeded(columnPropertyIdentiferArray[1], column.propertyIdentifier);
 						}
 					}
 					if(!len(currentAlias)){
@@ -1086,8 +1201,15 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						//if we have an aggregate then put wrap the identifier
 						HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
 					}else{
-						var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
+						if(columnPropertyIdentiferArrayCount == 1){
+							var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
+						}else{
+							//Add Collection Alias
+							var columnAlias = columnPropertyIdentiferArray[1] &"_"& Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
+							
+						}
 						HQL &= ' #column.propertyIdentifier# as #columnAlias#';
+						
 					}
 				}
 				

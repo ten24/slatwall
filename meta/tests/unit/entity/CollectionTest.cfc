@@ -85,25 +85,151 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //	}
 
 	public void function addDisplayAggregateTest(){
-		var propertyIdentifier = "Account.firstName";
-		var aggregate = {
-			aggregateFunction = "count",
-			aggregateAlias = "Account_firstName"
+		//Add product 1
+		var productData = {
+			productId="",
+			productName="test" & createUUID(),
+			productCode="test" & createUUID(),
+			skus=[
+				{
+					skuid='',
+					skucode="skutest" & createUUID(),
+					skuname = 'skutest' & createUUID(),
+					price ='10'
+				}
+			]
 		};
+		var product = createPersistedTestEntity('product',productData);
 		
-		var myCollection = variables.entityService.getProductCollectionList();
-		myCollection.setDisplayProperties('productCode');
-		//myCollection.addDisplayAggregate('skus','count','skuCount');
-		request.debug(myCollection.getHQL());
+		//Add Product 2
+		var productData2 = {
+			productId="",
+			productName="test" & createUUID(),
+			productCode="test" & createUUID(),
+			skus=[
+				{
+					skuid='',
+					skucode="skutest" & createUUID(),
+					skuname = 'skutest' & createUUID(),
+					price ='10'
+				}
+			]
+		};
+		var product2 = createPersistedTestEntity('product',productData2);
+		
+		var _brandName = "testbrand" & createUUID();
+		
+		var brandData = {
+			brandid="",
+			brandName=_brandName,
+			brandCode="testbrand" & createUUID()
+		};
+		var brand = createPersistedTestEntity(
+			'brand',
+			brandData
+		);
+		product.setBrand(brand);
+		product2.setBrand(brand);
+		
+		var myCollection = variables.entityService.getSkuCollectionList();
+		myCollection.setDisplayProperties('product.productName');
+		//debug(myCollection.getCollectionConfigStruct().columns);
+		myCollection.addFilter('product.brand.brandName',_brandName);
+		//myCollection.addDisplayAggregate('product','count','productCount');
+
+		var aggregateHQL = myCollection.getHQL();
+		debug(aggregateHQL);
+
+		var pageRecords = myCollection.getPageRecords();
+		debug(pageRecords);
+		//assertEquals(3,pageRecords[1]['productCount']);				
+		
+	}
+
+		
+
+	public void function addDisplayAggregateTestRaw(){
+		var myCollection = variables.entityService.getSkuCollectionList();
+
+		//Add product 1
+		var productData = {
+			productId="",
+			productName="test" & createUUID(),
+			productCode="test" & createUUID(),
+			skus=[
+				{
+					skuid='',
+					skucode="skutest" & createUUID(),
+					skuname = 'skutest' & createUUID(),
+					price ='10'
+				}
+			]
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		//Add Product 2
+		var productData2 = {
+			productId="",
+			productName="test" & createUUID(),
+			productCode="test" & createUUID(),
+			skus=[
+				{
+					skuid='',
+					skucode="skutest" & createUUID(),
+					skuname = 'skutest' & createUUID(),
+					price ='10'
+				}
+			]
+		};
+		var product2 = createPersistedTestEntity('product',productData2);
+		
+		var _brandName = "testbrand" & createUUID();
+		
+		var brandData = {
+			brandid="",
+			brandName=_brandName,
+			brandCode="testbrand" & createUUID()
+		};
+		var brand = createPersistedTestEntity(
+			'brand',
+			brandData
+		);
+		product.setBrand(brand);
+		product2.setBrand(brand);
+
+		var test = ORMExecuteQuery("SELECT 
+										new Map( _sku_product_brand.brandName as _sku_product_brand_brandName) 
+									FROM SlatwallSku as _sku 
+										left join _sku.product as _sku_product 
+										left join _sku.product.brand as _sku_product_brand 
+									ORDER BY _sku.createdDateTime desc");
+		
+		debug(test);
+		
+//		myCollection.setDisplayProperties('product.brand.brandID');
+//		myCollection.addDisplayAggregate('product.brand','count','productReviewsCount');
+//		myCollection.addFilterAggregate('product.productReviews.reviewsID', '1');
+		
+//		var propertyIdentifier = "Account.firstName";
+//		var aggregate = {
+//			aggregateFunction = "count",
+//			aggregateAlias = "Account_firstName"
+//		};
+//		
+//		var myCollection = variables.entityService.getProductCollectionList();
+//		myCollection.setDisplayProperties('productCode');
+//		myCollection.addDisplayAggregate('skus','count','skuCount');
+//
+//		debug(myCollection.getHQL());
 //		var skuCount = ORMExecuteQuery('
-//			SELECT new Map( COUNT(_product_skus) as skuCount, _product.productCode) 
+//			SELECT new Map(_product.productCode, COUNT(_product_skus) as skuCount) 
 //			FROM SlatwallProduct as _product 
 //			Left Join _product.skus _product_skus
 //			ORDER BY _product.createdDateTime desc
 //			
 //			');
 //		request.debug(skuCount);
-		//request.debug(myCollection.getCollectionConfigStruct());
+//		//request.debug(myCollection.getCollectionConfigStruct());
 		//request.debug(myCollection.getPageRecords());
 	}
 
@@ -401,7 +527,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		var collectionEntityHQL = collectionEntity.getHQL();
 		
-		//request.debug(collectionEntityHQL);
+		request.debug(collectionEntityHQL);
 		//request.debug(collectionEntity);
 		//request.debug(collectionEntity.gethqlParams());
 		var testquery = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
@@ -1178,8 +1304,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		sku.setPrice(9.50);
 		orderItem.setQuantity(5);
 		orderItem.setSku(sku);
-		var test = '';
-		test = orderItem.getitemTotalTest();
+		//var test = '';
+		//test = orderItem.getitemTotal();
 		//request.debug(test);
 		
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
@@ -1331,7 +1457,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var selections = deserializeJSON(selectionsJSON);
 		
 		var selectionsHQL = variables.entity.getSelectionsHQL(selections);
-		//request.debug(selectionsHQL);
+		request.debug(selectionsHQL);
 		assertFalse(Compare("SELECT  new Map( firstName as firstName, accountID as accountID)",trim(selectionsHQL)));
 		
 	}
