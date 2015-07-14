@@ -3,7 +3,6 @@
 
 module logger{
 	angular.module('logger', []).run([function() {
-        
     }]);
 }
 

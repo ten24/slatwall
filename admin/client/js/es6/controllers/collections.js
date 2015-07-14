@@ -13,7 +13,6 @@ angular.module('slatwalladmin').controller('collections', [
         //init values
         //$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
         $scope.$id = "collectionsController";
-        asdfasdfsa;
         /*used til we convert to use route params*/
         var QueryString = function () {
             // This function is anonymous, is executed immediately and 

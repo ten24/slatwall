@@ -540,7 +540,6 @@ component output="false" accessors="true" extends="HibachiController" {
 	}
 	
 	public any function log(required struct rc) { 
-		writedump(var=arguments.rc,top=2);abort;
 		var exception = 'There was no reported exception.';
 		if(structKeyExists(arguments.rc,'exception')){
 			exception = arguments.rc.exception;

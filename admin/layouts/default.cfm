@@ -448,8 +448,16 @@ Notes:
 			//bootstrap logger
 			try{
 				angular.bootstrap(document.getElementById("ngApp"),['logger','slatwalladmin']);
-			}catch(e){
-				console.error(e.message);
+			}catch(exception){
+				$.ajax({
+		        	url:'?slatAction=api:main.log',
+		        	method:'POST', 
+		        	data:$.param({
+	                    exception:exception,
+	                    apiRequest:true
+	                }),
+		        	headers:{'Content-Type': 'application/x-www-form-urlencoded'}
+		        });
 			}
 
 		</script>
