@@ -827,7 +827,7 @@ component extends="HibachiService" accessors="true" {
 			}
 		//GENERATE - GIFT SKUS
 		}else if(arguments.processObject.getBaseProductType() == 'gift-card'){
-			createGiftCardProduct(arguments.product,arguments.processObject);
+			arguments.product = createGiftCardProduct(arguments.product,arguments.processObject);
 		}
 
 		// Generate the URL Title

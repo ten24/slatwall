@@ -821,6 +821,10 @@
 			return structKeyExists(getPropertiesStructByEntityName(arguments.entityName), arguments.propertyName );
 		}
 		
+		public boolean function getPropertyIsObjectByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
+			return structKeyExists(getPropertiesStructByEntityName(getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier))[listLast(arguments.propertyIdentifier, ".")],'cfc');
+		}
+		
 		// @hint leverages the getEntityHasPropertyByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 		public boolean function getHasPropertyByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
 			try {

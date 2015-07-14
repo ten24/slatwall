@@ -66,7 +66,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eventCapacity" ormtype="integer";
 	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
 	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
-	property name="redemptionAmountType" ormtype="string" hb_formFieldType="select" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage";
+	property name="redemptionAmountType" ormtype="string" hb_formFieldType="select" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage"  hb_formatType="rbKey";
 	property name="redemptionAmount" ormtype="big_decimal" hint="value to be used in calculation conjuciton with redeptionAmountType";
 	
 	// Calculated Properties
@@ -155,12 +155,43 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="skuDefinition" persistent="false";
 	property name="stocksDeletableFlag" persistent="false" type="boolean";
 	property name="transactionExistsFlag" persistent="false" type="boolean";
-	
+	property name="redemptionAmountTypeOptions" persistent="false";
+	property name="giftCardExpirationTermOptions" persistent="false";	
 	// Deprecated Properties
 	
 	
 	// ==================== START: Logical Methods =========================
 	
+	public array function getGiftCardExpirationTermOptions(){
+		if(!structKeyExists(variables,'giftCardExpirationTermIDOptions')){
+			variables.giftCardExpirationTermIDOptions = [];
+			var termSmartList = getService('hibachiService').getTermSmartList();
+			termSmartList.addSelect('termID','value');
+			termSmartList.addSelect('termName','name');
+			variables.giftCardExpirationTermIDOptions = termSmartList.getRecords();
+			var option = {};
+			option['name'] = 'None';
+			option['value'] = '';
+			arrayPrepend(variables.giftCardExpirationTermIDOptions,option);
+		}
+		return variables.giftCardExpirationTermIDOptions;
+	}
+	
+	public array function getRedemptionAmountTypeOptions(){
+		if(!structKeyExists(variables,'redemptionAmountTypeOptions')){
+			variables.redemptionAmountTypeOptions = [];
+			var optionValues = 'sameAsPrice,fixedAmount,percentage';
+			var optionValuesArray = listToArray(optionValues);
+			for(var optionValue in optionValuesArray){
+				var option = {};
+				option['name'] = rbKey('define.#optionValue#');
+				option['value'] = optionValue;
+				arrayAppend(variables.redemptionAmountTypeOptions,option);
+			}
+		}
+		
+		return variables.redemptionAmountTypeOptions;
+	}
 	
 	// @hint Returns sku purchaseStartDateTime if defined, or product purchaseStartDateTime if not defined in sku.
 	public any function getPurchaseStartDateTime() {

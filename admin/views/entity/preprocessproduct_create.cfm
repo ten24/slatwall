@@ -232,6 +232,7 @@ Notes:
 				<hb:HibachiPropertyList divClass="col-md-6">
 	
 					<!--- Select Product Type --->
+					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="giftCardExpirationTerm" edit="true">
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="redemptionAmountType" edit="true">
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="redemptionAmount" edit="true">
 	
