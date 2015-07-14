@@ -67,6 +67,7 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	property name="modifiedByAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="modifiedByAccountID";
 	
 	// Non-Persistent Properties
+	property name="scheduleStartDate" persistent="false";
 	property name="firstScheduledSku" persistent="false";
 	property name="scheduleSummary" persistent="false";
 	
@@ -120,6 +121,9 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
+	public string function getScheduleStartDate(){
+		return '#dateFormat(getFirstScheduledSku().getEventStartDateTime(), "medium")# #timeFormat(getFirstScheduledSku().getEventStartDateTime(), "short")#';
+	}
 	
 	public string function getScheduleSummary() {
 		var summary = "";
@@ -139,7 +143,7 @@ component displayname="ProductSchedule" entityname="SlatwallProductSchedule" tab
 	
 	public any function getFirstScheduledSku() {
 		if(!structKeyExists(variables,"firstScheduledSku")) {
-			variables.firstScheduledSku = this.getSkus()[1]; 
+			variables.firstScheduledSku = getService("ProductScheduleService").getFirstScheduledSku(this.getProductScheduleID()); 
 		}
 		return variables.firstScheduledSku;
 	}
