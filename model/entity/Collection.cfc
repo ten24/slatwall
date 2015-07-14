@@ -138,15 +138,18 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!isObject){
 			if(property != ''){
 				filterGroup['propertyIdentifier'] =  alias & '_' & Replace(collection, '.', '_', 'All')  & property;
+				join['associationName'] = collection;
+				join['alias'] = alias & '_' & Replace(collection, '.', '_', 'All');
+				addJoin(join);
 			}else{
 				filterGroup['propertyIdentifier'] =  alias & '.' & arguments.propertyIdentifier;
 			}
-			join['associationName'] = collection;
-			join['alias'] = alias & '_' & Replace(collection, '.', '_', 'All');
+			
 		}else{
 			filterGroup['propertyIdentifier'] = alias & '_' & Replace(arguments.propertyIdentifier, '.', '_', 'All');
 			join['associationName'] = arguments.propertyIdentifier;
 			join['alias'] = alias & '_' & Replace(arguments.propertyIdentifier, '.', '_', 'All');
+			addJoin(join);
 		}
 	
 		
@@ -168,7 +171,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			);
 		}
 		
-		addJoin(join);
+		
 		arrayAppend(collectionConfig.filterGroups[1].filterGroup,filterGroup);
 	}
 	

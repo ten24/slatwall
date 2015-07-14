@@ -89,14 +89,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var myCollection = variables.entityService.getSkuCollectionList();
 		myCollection.setDisplayProperties('product.productName');
 		myCollection.addFilter('product.brand.activeFlag',true);
+		myCollection.addFilter('price',20.00);
 		myCollection.addDisplayAggregate('product','count','productCount');
 
-//		var aggregateHQL = myCollection.getHQL();
-//		debug(aggregateHQL);
+		var aggregateHQL = myCollection.getHQL();
+		debug(aggregateHQL);
 
 		var pageRecords = myCollection.getPageRecords();
-//		debug(pageRecords);
-		assertEquals(2,pageRecords[1]['productCount']);		
+		debug(pageRecords);
+		assertEquals(1,pageRecords[1]['productCount']);		
 		
 	
 	}
