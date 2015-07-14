@@ -85,153 +85,75 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 //	}
 
 	public void function addDisplayAggregateTest(){
-		//Add product 1
-		var productData = {
-			productId="",
-			productName="test" & createUUID(),
-			productCode="test" & createUUID(),
-			skus=[
-				{
-					skuid='',
-					skucode="skutest" & createUUID(),
-					skuname = 'skutest' & createUUID(),
-					price ='10'
-				}
-			]
-		};
-		var product = createPersistedTestEntity('product',productData);
-		
-		//Add Product 2
-		var productData2 = {
-			productId="",
-			productName="test" & createUUID(),
-			productCode="test" & createUUID(),
-			skus=[
-				{
-					skuid='',
-					skucode="skutest" & createUUID(),
-					skuname = 'skutest' & createUUID(),
-					price ='10'
-				}
-			]
-		};
-		var product2 = createPersistedTestEntity('product',productData2);
-		
-		var _brandName = "testbrand" & createUUID();
-		
-		var brandData = {
-			brandid="",
-			brandName=_brandName,
-			brandCode="testbrand" & createUUID()
-		};
-		var brand = createPersistedTestEntity(
-			'brand',
-			brandData
-		);
-		product.setBrand(brand);
-		product2.setBrand(brand);
-		
+
 		var myCollection = variables.entityService.getSkuCollectionList();
 		myCollection.setDisplayProperties('product.productName');
-		//debug(myCollection.getCollectionConfigStruct().columns);
-		myCollection.addFilter('product.brand.brandName',_brandName);
-		//myCollection.addDisplayAggregate('product','count','productCount');
+		myCollection.addFilter('product.brand.activeFlag',true);
+		myCollection.addDisplayAggregate('product','count','productCount');
 
-		var aggregateHQL = myCollection.getHQL();
-		debug(aggregateHQL);
+//		var aggregateHQL = myCollection.getHQL();
+//		debug(aggregateHQL);
 
 		var pageRecords = myCollection.getPageRecords();
-		debug(pageRecords);
-		//assertEquals(3,pageRecords[1]['productCount']);				
+//		debug(pageRecords);
+		assertEquals(2,pageRecords[1]['productCount']);		
 		
+	
 	}
-
-		
-
-	public void function addDisplayAggregateTestRaw(){
+	
+	
+	public void function addDisplayAggregateSUMTest(){
 		var myCollection = variables.entityService.getSkuCollectionList();
+		myCollection.addFilter('product.brand.activeFlag',true);
+		myCollection.addDisplayAggregate('price','SUM','productPriceTotal');
 
-		//Add product 1
-		var productData = {
-			productId="",
-			productName="test" & createUUID(),
-			productCode="test" & createUUID(),
-			skus=[
-				{
-					skuid='',
-					skucode="skutest" & createUUID(),
-					skuname = 'skutest' & createUUID(),
-					price ='10'
-				}
-			]
-		};
-		var product = createPersistedTestEntity('product',productData);
-		
-		//Add Product 2
-		var productData2 = {
-			productId="",
-			productName="test" & createUUID(),
-			productCode="test" & createUUID(),
-			skus=[
-				{
-					skuid='',
-					skucode="skutest" & createUUID(),
-					skuname = 'skutest' & createUUID(),
-					price ='10'
-				}
-			]
-		};
-		var product2 = createPersistedTestEntity('product',productData2);
-		
-		var _brandName = "testbrand" & createUUID();
-		
-		var brandData = {
-			brandid="",
-			brandName=_brandName,
-			brandCode="testbrand" & createUUID()
-		};
-		var brand = createPersistedTestEntity(
-			'brand',
-			brandData
-		);
-		product.setBrand(brand);
-		product2.setBrand(brand);
-
-		var test = ORMExecuteQuery("SELECT 
-										new Map( _sku_product_brand.brandName as _sku_product_brand_brandName) 
-									FROM SlatwallSku as _sku 
-										left join _sku.product as _sku_product 
-										left join _sku.product.brand as _sku_product_brand 
-									ORDER BY _sku.createdDateTime desc");
-		
-		debug(test);
-		
-//		myCollection.setDisplayProperties('product.brand.brandID');
-//		myCollection.addDisplayAggregate('product.brand','count','productReviewsCount');
-//		myCollection.addFilterAggregate('product.productReviews.reviewsID', '1');
-		
-//		var propertyIdentifier = "Account.firstName";
-//		var aggregate = {
-//			aggregateFunction = "count",
-//			aggregateAlias = "Account_firstName"
-//		};
-//		
-//		var myCollection = variables.entityService.getProductCollectionList();
-//		myCollection.setDisplayProperties('productCode');
-//		myCollection.addDisplayAggregate('skus','count','skuCount');
-//
-//		debug(myCollection.getHQL());
-//		var skuCount = ORMExecuteQuery('
-//			SELECT new Map(_product.productCode, COUNT(_product_skus) as skuCount) 
-//			FROM SlatwallProduct as _product 
-//			Left Join _product.skus _product_skus
-//			ORDER BY _product.createdDateTime desc
-//			
-//			');
-//		request.debug(skuCount);
-//		//request.debug(myCollection.getCollectionConfigStruct());
-		//request.debug(myCollection.getPageRecords());
+		var pageRecords = myCollection.getPageRecords();
+		//debug(pageRecords);
+		assertEquals(30.00,pageRecords[1]['productPriceTotal']);	
 	}
+	
+	public void function addDisplayAggregateAVGTest(){
+		var myCollection = variables.entityService.getSkuCollectionList();
+		myCollection.addFilter('product.brand.activeFlag',true);
+		myCollection.addDisplayAggregate('price','avg','productMinPrice');
+
+		var pageRecords = myCollection.getPageRecords();
+//		debug(pageRecords);
+		assertEquals(15.00,pageRecords[1]['productMinPrice']);	
+	}
+	
+	
+	public void function addDisplayAggregateMINTest(){
+		var myCollection = variables.entityService.getSkuCollectionList();
+		myCollection.addFilter('product.brand.activeFlag',true);
+		myCollection.addDisplayAggregate('price','min','productMaxPrice');
+
+		var pageRecords = myCollection.getPageRecords();
+//		debug(pageRecords);
+		assertEquals(10.00,pageRecords[1]['productMaxPrice']);	
+	}
+	
+	public void function addDisplayAggregateMAXTest(){
+		var myCollection = variables.entityService.getSkuCollectionList();
+		myCollection.addFilter('product.brand.activeFlag',true);
+		myCollection.addDisplayAggregate('price','max','productPriceTotal');
+
+		var pageRecords = myCollection.getPageRecords();
+//		debug(pageRecords);
+		assertEquals(20.00,pageRecords[1]['productPriceTotal']);	
+	}
+	
+	public void function addDisplayAggregateCOUNTTest(){
+		var myCollection = variables.entityService.getSkuCollectionList();
+		myCollection.addFilter('product.brand.activeFlag',true);
+		myCollection.addDisplayAggregate('product','count','productCountTotal');
+
+		var pageRecords = myCollection.getPageRecords();
+		//debug(pageRecords);
+		assertEquals(2,pageRecords[1]['productCountTotal']);	
+	}
+
+		
 
 //	
 //	public void function loopOverCollectionTest(){
