@@ -16,15 +16,11 @@
 	    },
 	    "paymentTypeTermPayment":{
 	        "paymentMethodType":{"eq":"termPayment"}
-	    },
-	    "peerNullValueAlreadyExists":{
-	        "peerOrderPaymentNullAmountExistsFlag":{"eq":true}
 	    }
 	},
 	"properties":{
 	    "amount":				[
 	    	{"contexts":"save","dataType":"numeric","minValue":0},
-	    	{"contexts":"save","conditions":"peerNullValueAlreadyExists","required":true},
 	    	{"contexts":"save","conditions":"paymentTypeTermPayment","lteProperty":"termPaymentAccount.termAccountAvailableCredit"},
 	    	{"contexts":"save","lteProperty":"maximumPaymentMethodPaymentAmount"}
 	    ],
