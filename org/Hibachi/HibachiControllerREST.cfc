@@ -540,18 +540,17 @@ component output="false" accessors="true" extends="HibachiController" {
 	}
 	
 	public any function log(required struct rc) { 
+		writedump(var=arguments.rc,top=2);abort;
 		var exception = 'There was no reported exception.';
-		if(structKeyExists(arguments.rc.deserializedJSONData,'exception')){
-			exception = arguments.rc.deserializedJsonData.exception;
+		if(structKeyExists(arguments.rc,'exception')){
+			exception = arguments.rc.exception;
 		}
 		var cause = 'There was no reported cause';
-		if(structKeyExists(arguments.rc.deserializedJSONData,'cause')){
-			cause = arguments.rc.deserializedJsonData.cause;
+		if(structKeyExists(arguments.rc,'cause')){
+			cause = arguments.rc.cause;
 		}
 		//throw the error so it will follow expected lifecycle 
 		throw(type="ClientError", message="Exception: #exception# Cause: #cause#");
-		
-		
 	}
 	
 		/*

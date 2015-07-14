@@ -2,6 +2,7 @@
 'use strict';
 angular.module('slatwalladmin').controller('collections', ['$scope', '$location', '$log', '$timeout', '$slatwall', 'collectionService', 'metadataService', 'selectionService', 'paginationService', function($scope, $location, $log, $timeout, $slatwall, collectionService, metadataService, selectionService, paginationService) {
   $scope.$id = "collectionsController";
+  asdfasdfsa;
   var QueryString = function() {
     var query_string = {};
     var query = window.location.search.substring(1);

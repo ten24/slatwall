@@ -7,11 +7,12 @@ module logger{
 	    return function (exception, cause) {
 	    	var $http = $injector.get('$http');
 	        $http({
-	        	url:'?slatAction=admin:error&ajaxRequest=true&exception=ClientSideException',
+	        	url:'?slatAction=api:main.log',
 	        	method:'POST', 
 	        	data:{
-	        		"exception":exception,
-	        		"cause":cause
+	        		exception:exception,
+	        		cause:cause,
+                    apiRequest:true
 	        	},
 	        	headers:{'Content-Type':'application/json'}
 	        });
