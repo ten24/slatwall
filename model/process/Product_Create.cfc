@@ -64,14 +64,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="redemptionAmountType" hb_formFieldType="select";
 	property name="redemptionAmount";
 	property name="redemptionAmountTypeOptions";
-	property name="giftCardExpirationTerm" hb_formFieldType="select";
-	property name="giftCardExpirationTermOptions";
+	property name="giftCardExpirationTermID" hb_rbkey="entity.sku.giftCardExpirationTerm" hb_formFieldType="select";
+	property name="giftCardExpirationTermIDOptions";
 	
 	public any function setupDefaults() {
 		variables.generateSkusFlag = true;
 	}
 	
-	public array function getGiftCardExpirationTermOptions(){
+	public array function getGiftCardExpirationTermIDOptions(){
 		if(!structKeyExists(variables,'giftCardExpirationTermIDOptions')){
 			variables.giftCardExpirationTermIDOptions = [];
 			var termSmartList = getService('hibachiService').getTermSmartList();
