@@ -177,7 +177,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		this.setCollectionConfigStruct(collectionConfig);
 		var displayProperties = listToArray(arguments.displayPropertiesList);
 		for(var displayProperty in displayProperties){
-			addDisplayProperty(displayProperty);
+			addDisplayProperty(displayProperty.trim());
 		}
 	}
 	
@@ -1157,15 +1157,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						//if we have an aggregate then put wrap the identifier
 						HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
 					}else{
-						if(columnPropertyIdentiferArrayCount < 3){
-							var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
-						}else{
-							//Add Collection Alias
-							var columnAlias = columnPropertyIdentiferArray[1] &"_"& Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
-							
-						}
+						var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
 						HQL &= ' #column.propertyIdentifier# as #columnAlias#';
-						
 					}
 				}
 				
