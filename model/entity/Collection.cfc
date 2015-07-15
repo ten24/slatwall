@@ -137,14 +137,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			);
 			
 		if(isObject){
-			filterGroup['propertyIdentifier'] = alias & '_' & Replace(arguments.propertyIdentifier, '.', '_', 'All');
+			filterGroup['propertyIdentifier'] = BuildPropertyIdentifier(alias, arguments.propertyIdentifier);
 			join['associationName'] = arguments.propertyIdentifier;
-			join['alias'] = alias & '_' & Replace(arguments.propertyIdentifier, '.', '_', 'All');
+			join['alias'] = BuildPropertyIdentifier(alias, arguments.propertyIdentifier);
 			doJoin = true;
 		}else if(property != ''){
-			filterGroup['propertyIdentifier'] =  alias & '_' & Replace(collection, '.', '_', 'All')  & property;
+			filterGroup['propertyIdentifier'] =  BuildPropertyIdentifier(alias, collection)  & property;
 			join['associationName'] = collection;
-			join['alias'] = alias & '_' & Replace(collection, '.', '_', 'All');
+			join['alias'] = BuildPropertyIdentifier(alias, collection);
 			doJoin = true;
 		}
 	
@@ -177,7 +177,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		this.setCollectionConfigStruct(collectionConfig);
 		var displayProperties = listToArray(arguments.displayPropertiesList);
 		for(var displayProperty in displayProperties){
-			return addDisplayProperty(displayProperty);
+			addDisplayProperty(displayProperty);
 		}
 	}
 	
@@ -1157,7 +1157,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						//if we have an aggregate then put wrap the identifier
 						HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
 					}else{
-						if(columnPropertyIdentiferArrayCount == 1){
+						if(columnPropertyIdentiferArrayCount < 3){
 							var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
 						}else{
 							//Add Collection Alias

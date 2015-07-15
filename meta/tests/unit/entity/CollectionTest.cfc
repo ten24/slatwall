@@ -89,7 +89,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var myCollection = variables.entityService.getSkuCollectionList();
 		myCollection.setDisplayProperties('product.productName');
 		myCollection.addFilter('product.brand.activeFlag',true);
-		myCollection.addFilter('price',20.00);
+		myCollection.addFilter('skuID','402828904e79c0a5014e8dc30190060c');
 		myCollection.addDisplayAggregate('product','count','productCount');
 
 		var aggregateHQL = myCollection.getHQL();
@@ -100,9 +100,10 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	public void function addDisplayAggregateSUMTest(){
 		var myCollection = variables.entityService.getSkuCollectionList();
-		myCollection.addFilter('product.brand.activeFlag',true);
+		myCollection.setDisplayProperties('skuID,price');
+		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
 		myCollection.addDisplayAggregate('price','SUM','productPriceTotal');
-
+		var aggregateHQL = myCollection.getHQL();
 		var pageRecords = myCollection.getPageRecords();
 
 		assertEquals(30.00,pageRecords[1]['productPriceTotal']);	
@@ -110,7 +111,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	public void function addDisplayAggregateAVGTest(){
 		var myCollection = variables.entityService.getSkuCollectionList();
-		myCollection.addFilter('product.brand.activeFlag',true);
+		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
 		myCollection.addDisplayAggregate('price','avg','productMinPrice');
 
 		var pageRecords = myCollection.getPageRecords();
@@ -121,7 +122,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	public void function addDisplayAggregateMINTest(){
 		var myCollection = variables.entityService.getSkuCollectionList();
-		myCollection.addFilter('product.brand.activeFlag',true);
+		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
 		myCollection.addDisplayAggregate('price','min','productMaxPrice');
 
 		var pageRecords = myCollection.getPageRecords();
@@ -131,7 +132,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	public void function addDisplayAggregateMAXTest(){
 		var myCollection = variables.entityService.getSkuCollectionList();
-		myCollection.addFilter('product.brand.activeFlag',true);
+		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
 		myCollection.addDisplayAggregate('price','max','productPriceTotal');
 
 		var pageRecords = myCollection.getPageRecords();
@@ -141,7 +142,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	
 	public void function addDisplayAggregateCOUNTTest(){
 		var myCollection = variables.entityService.getSkuCollectionList();
-		myCollection.addFilter('product.brand.activeFlag',true);
+		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
 		myCollection.addDisplayAggregate('product','count','productCountTotal');
 
 		var pageRecords = myCollection.getPageRecords();
@@ -174,7 +175,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		
 		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
-		request.debug(aggregateHQL);
 		assertFalse(Compare("COUNT(Account.firstName) as Account_firstName",trim(aggregateHQL)));
 	}
 	
@@ -444,12 +444,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntity2 = createTestEntity('collection',collectionEntityData2);
 		
 		var collectionEntityHQL = collectionEntity.getHQL();
-		
-		request.debug(collectionEntityHQL);
-		//request.debug(collectionEntity);
-		//request.debug(collectionEntity.gethqlParams());
 		var testquery = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
-		//request.debug(testquery);
 		
 	}
 	/* TODO: need default data for the pagination record to be correct*/
@@ -659,8 +654,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		productCollection.setCollectionConfig(serializeJson(collectionConfig));
 		
-		//var pageRecords = productCollection.getPageRecords();
-		request.debug(productCollection.getPageRecords());
 		
 	}
 	
@@ -1375,7 +1368,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var selections = deserializeJSON(selectionsJSON);
 		
 		var selectionsHQL = variables.entity.getSelectionsHQL(selections);
-		request.debug(selectionsHQL);
+		//request.debug(selectionsHQL);
 		assertFalse(Compare("SELECT  new Map( firstName as firstName, accountID as accountID)",trim(selectionsHQL)));
 		
 	}
@@ -1475,8 +1468,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var filterGroup = deserializeJSON(filterGroupJSON);
 		
 		var filterGroupHQL = variables.entity.getFilterGroupHQL(filterGroup);
-		
-		request.debug(filterGroupHQL);
 	}
 	
 	public void function getFilterGroupsHQLTest(){
@@ -1502,8 +1493,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var filterGroups = deserializeJSON(filterGroupsJSON);
 		
 		var filterGroupsHQL = variables.entity.getFilterGroupsHQL(filterGroups);
-		
-		request.debug(filterGroupsHQL);
 	}
 	
 	public void function getOrderByHQLTest(){
@@ -1680,7 +1669,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		
 		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
-		request.debug(collectionEntity.getPageRecords());
+		//request.debug(collectionEntity.getPageRecords());
 	}
 	
 	public void function getHQLForCollectionFilterTest(){
