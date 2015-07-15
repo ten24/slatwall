@@ -9,6 +9,7 @@
 /// <reference path="../../admin/client/ts/controllers/pagedialog.ts" />
 /// <reference path="../../admin/client/ts/controllers/preprocessaccount_addaccountpayment.ts" />
 /// <reference path="../../admin/client/ts/controllers/routercontroller.ts" />
+<<<<<<< HEAD
 /// <reference path="../../admin/client/ts/model/AddressZone.ts" />
 /// <reference path="../../admin/client/ts/model/Comment.ts" />
 /// <reference path="../../admin/client/ts/model/Inventory.ts" />
@@ -19,11 +20,18 @@
 /// <reference path="../../admin/client/ts/model/SubscriptionBenefit.ts" />
 /// <reference path="../../admin/client/ts/model/SubscriptionUsage.ts" />
 /// <reference path="../../admin/client/ts/model/WorkflowTrigger.ts" />
+=======
+>>>>>>> branch 'feature' of https://github.com/ten24/Slatwall
 /// <reference path="../../admin/client/ts/model/alert.ts" />
+<<<<<<< HEAD
+=======
+/// <reference path="../../admin/client/ts/modules/loggingmodule.ts" />
+>>>>>>> branch 'feature' of https://github.com/ten24/Slatwall
 /// <reference path="../../admin/client/ts/modules/slatwalladmin.ts" />
 /// <reference path="../../admin/client/ts/services/alertservice.ts" />
 /// <reference path="../../admin/client/ts/services/collectionservice.ts" />
 /// <reference path="../../admin/client/ts/services/dialogservice.ts" />
+/// <reference path="../../admin/client/ts/services/exceptionhandler.ts" />
 /// <reference path="../../admin/client/ts/services/formservice.ts" />
 /// <reference path="../../admin/client/ts/services/metadataservice.ts" />
 /// <reference path="../../admin/client/ts/services/observerservice.ts" />
@@ -52,6 +60,10 @@
 /// <reference path="../../admin/client/ts/directives/collection/swfiltergroupitem.ts" />
 /// <reference path="../../admin/client/ts/directives/collection/swfiltergroups.ts" />
 /// <reference path="../../admin/client/ts/directives/collection/swfilteritem.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontentbasic.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontenteditor.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontentlist.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontentnode.ts" />
 /// <reference path="../../admin/client/ts/directives/common/swclickoutside.ts" />
 /// <reference path="../../admin/client/ts/directives/common/swcolumnsorter.ts" />
 /// <reference path="../../admin/client/ts/directives/common/swconfirm.ts" />
