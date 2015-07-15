@@ -856,6 +856,19 @@ select.error {
   font-size: 18px;
   font-family: "open_sanssemibold", Helvetica, Arial, sans-serif;
 }
+.s-access-denied {
+  width: 100%;
+  text-align: center;
+  color: #fff;
+}
+.s-access-denied h3 {
+  font-size: 28px;
+}
+.s-access-denied p {
+  font-size: 16px;
+  max-width: 370px;
+  margin: auto;
+}
 .s-access-denied a {
   color: #F9AC68;
 }
