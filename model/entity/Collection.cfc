@@ -183,7 +183,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public void function addDisplayProperty(required string displayProperty){
 		var collectionConfig = this.getCollectionConfigStruct();
-		var alias = collectionConfig.baseEntityAlias;
 		
 		var column = {
 			propertyIdentifier=arguments.displayProperty
@@ -204,7 +203,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				propertyIdentifier=arguments.displayProperty
 			);
 		}else{
-			column['propertyIdentifier'] = alias & '.' & arguments.displayProperty;
+			column['propertyIdentifier'] = collectionConfig.baseEntityAlias & '.' & arguments.displayProperty;
 		}
 		
 		arrayAppend(collectionConfig.columns,column);
@@ -226,7 +225,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var alias = collectionConfig.baseEntityAlias;
 		var join = {};
 		var doJoin = false;
-		
 		var collection = arguments.propertyIdentifier;
 		var property = '';
 		
@@ -247,14 +245,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),arguments.propertyIdentifier);
 		
 		if(isObject){
-			column['propertyIdentifier'] = alias & '_' & Replace(arguments.propertyIdentifier, '.', '_', 'All');
+			column['propertyIdentifier'] = BuildPropertyIdentifier(alias, arguments.propertyIdentifier);
 			join['associationName'] = arguments.propertyIdentifier;
-			join['alias'] = alias & '_' & Replace(arguments.propertyIdentifier, '.', '_', 'All');
+			join['alias'] = column.propertyIdentifier;
 			doJoin = true;
 		}else if(property != ''){
-			column['propertyIdentifier'] = alias & '_' & Replace(collection, '.', '_', 'All')  & property;
+			column['propertyIdentifier'] = BuildPropertyIdentifier(alias, collection)  & property;
 			join['associationName'] = collection;
-			join['alias'] = alias & '_' & Replace(collection, '.', '_', 'All');
+			join['alias'] = BuildPropertyIdentifier(alias, collection);
 			doJoin = true;
 		}
 		//Add columns
@@ -263,8 +261,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(doJoin) addJoin(join);
 	}
 	
-	
-	
+	//Build correct PropertyIdentifier Alias
+	public string function BuildPropertyIdentifier(required string alias, required string pIdentifier, string joinChar = '_'){
+		return arguments.alias & arguments.joinChar & Replace(arguments.pIdentifier, '.', '_', 'All');
+	}
 	
 	public void function setOrderBy(required string orderByList){
 		var collectionConfig = this.getCollectionConfigStruct();
