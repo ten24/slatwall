@@ -109,7 +109,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public void function addFilter(required string propertyIdentifier, required any value, string comparisonOperator="=", string logicalOperator="AND"){
 		var collectionConfig = this.getCollectionConfigStruct();
 		var alias = collectionConfig.baseEntityAlias;
-		
+		var join = {};
+		var doJoin = false;
 		
 		if(!structKeyExists(collectionConfig,'filterGroups')){
 			collectionConfig.filterGroups = [{filterGroup=[]}];
@@ -126,30 +127,25 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		//create filter Group
 		var filterGroup = {
+			propertyIdentifier = alias & '.' & arguments.propertyIdentifier,
 			comparisonOperator = arguments.comparisonOperator,
 			value = arguments.value
 		};
 		
-		var join = {};
-		
 		var isObject= getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(
-			getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),arguments.propertyIdentifier
+				getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),arguments.propertyIdentifier
 			);
-		if(!isObject){
-			if(property != ''){
-				filterGroup['propertyIdentifier'] =  alias & '_' & Replace(collection, '.', '_', 'All')  & property;
-				join['associationName'] = collection;
-				join['alias'] = alias & '_' & Replace(collection, '.', '_', 'All');
-				addJoin(join);
-			}else{
-				filterGroup['propertyIdentifier'] =  alias & '.' & arguments.propertyIdentifier;
-			}
 			
-		}else{
+		if(isObject){
 			filterGroup['propertyIdentifier'] = alias & '_' & Replace(arguments.propertyIdentifier, '.', '_', 'All');
 			join['associationName'] = arguments.propertyIdentifier;
 			join['alias'] = alias & '_' & Replace(arguments.propertyIdentifier, '.', '_', 'All');
-			addJoin(join);
+			doJoin = true;
+		}else if(property != ''){
+			filterGroup['propertyIdentifier'] =  alias & '_' & Replace(collection, '.', '_', 'All')  & property;
+			join['associationName'] = collection;
+			join['alias'] = alias & '_' & Replace(collection, '.', '_', 'All');
+			doJoin = true;
 		}
 	
 		
@@ -171,8 +167,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			);
 		}
 		
-		
 		arrayAppend(collectionConfig.filterGroups[1].filterGroup,filterGroup);
+		if(doJoin) addJoin(join);
 	}
 	
 	public void function setDisplayProperties(string displayPropertiesList=""){
@@ -187,6 +183,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public void function addDisplayProperty(required string displayProperty){
 		var collectionConfig = this.getCollectionConfigStruct();
+		var alias = collectionConfig.baseEntityAlias;
 		
 		var column = {
 			propertyIdentifier=arguments.displayProperty
@@ -198,17 +195,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var hasAttribute = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(
 			entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
 			propertyIdentifier=arguments.displayProperty
-				);
+		);
 		//if so then add attribute details
 		if(hasAttribute){
 			column['attributeID'] = getService("attributeService").getAttributeByAttributeCode( listLast(arguments.displayProperty,'.')).getAttributeID();
 			column['attributeSetObject'] = getService('hibachiService').getLastEntityNameInPropertyIdentifier(
 				entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
 				propertyIdentifier=arguments.displayProperty
-					);
+			);
 		}else{
-			var alias = collectionConfig.baseEntityAlias;
-			column['propertyIdentifier'] = alias & '.' & column['propertyIdentifier'];
+			column['propertyIdentifier'] = alias & '.' & arguments.displayProperty;
 		}
 		
 		arrayAppend(collectionConfig.columns,column);
@@ -229,9 +225,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var collectionConfig = this.getCollectionConfigStruct();
 		var alias = collectionConfig.baseEntityAlias;
 		var join = {};
+		var doJoin = false;
 		
 		var collection = arguments.propertyIdentifier;
-		var property = "";
+		var property = '';
 		
 		if(arguments.propertyIdentifier.contains('.')){
 			collection = Mid(arguments.propertyIdentifier, 1, arguments.propertyIdentifier.lastIndexOf("."));
@@ -239,7 +236,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		
 		var column = {
-			propertyIdentifier = '',
+			propertyIdentifier = alias & '.' & arguments.propertyIdentifier,
 			aggregate = {
 				aggregateFunction = arguments.aggregateFunction,
 				aggregateAlias = arguments.aggregateAlias
@@ -253,24 +250,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			column['propertyIdentifier'] = alias & '_' & Replace(arguments.propertyIdentifier, '.', '_', 'All');
 			join['associationName'] = arguments.propertyIdentifier;
 			join['alias'] = alias & '_' & Replace(arguments.propertyIdentifier, '.', '_', 'All');
-			addJoin(join);
-		}else{
-			/*TODO clean up */
-			if(property != ''){
-				column['propertyIdentifier'] = alias & '_' & Replace(collection, '.', '_', 'All')  & property;
-				join['associationName'] = collection;
-				join['alias'] = alias & '_' & Replace(collection, '.', '_', 'All');
-				addJoin(join);
-			}else{
-				column['propertyIdentifier'] = alias & '.' & arguments.propertyIdentifier;
-			}
-			
+			doJoin = true;
+		}else if(property != ''){
+			column['propertyIdentifier'] = alias & '_' & Replace(collection, '.', '_', 'All')  & property;
+			join['associationName'] = collection;
+			join['alias'] = alias & '_' & Replace(collection, '.', '_', 'All');
+			doJoin = true;
 		}
-		
-		
 		//Add columns
 		this.addColumn(column);
-		
+		//Do Join if Needed
+		if(doJoin) addJoin(join);
 	}
 	
 	

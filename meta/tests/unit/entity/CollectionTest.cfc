@@ -98,8 +98,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var pageRecords = myCollection.getPageRecords();
 		debug(pageRecords);
 		assertEquals(1,pageRecords[1]['productCount']);		
-		
-	
 	}
 	
 	
