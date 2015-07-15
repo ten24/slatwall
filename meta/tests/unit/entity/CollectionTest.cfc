@@ -93,10 +93,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.addDisplayAggregate('product','count','productCount');
 
 		var aggregateHQL = myCollection.getHQL();
-		debug(aggregateHQL);
-
 		var pageRecords = myCollection.getPageRecords();
-		debug(pageRecords);
 		assertEquals(1,pageRecords[1]['productCount']);		
 	}
 	
@@ -107,7 +104,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.addDisplayAggregate('price','SUM','productPriceTotal');
 
 		var pageRecords = myCollection.getPageRecords();
-		//debug(pageRecords);
+
 		assertEquals(30.00,pageRecords[1]['productPriceTotal']);	
 	}
 	
@@ -117,7 +114,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.addDisplayAggregate('price','avg','productMinPrice');
 
 		var pageRecords = myCollection.getPageRecords();
-//		debug(pageRecords);
+
 		assertEquals(15.00,pageRecords[1]['productMinPrice']);	
 	}
 	
@@ -128,7 +125,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.addDisplayAggregate('price','min','productMaxPrice');
 
 		var pageRecords = myCollection.getPageRecords();
-//		debug(pageRecords);
+
 		assertEquals(10.00,pageRecords[1]['productMaxPrice']);	
 	}
 	
@@ -138,7 +135,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.addDisplayAggregate('price','max','productPriceTotal');
 
 		var pageRecords = myCollection.getPageRecords();
-//		debug(pageRecords);
+
 		assertEquals(20.00,pageRecords[1]['productPriceTotal']);	
 	}
 	
@@ -148,7 +145,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		myCollection.addDisplayAggregate('product','count','productCountTotal');
 
 		var pageRecords = myCollection.getPageRecords();
-		//debug(pageRecords);
+
 		assertEquals(2,pageRecords[1]['productCountTotal']);	
 	}
 
