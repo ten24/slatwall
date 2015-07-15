@@ -298,13 +298,22 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		variables.UrlTitle = arguments.urlTitle;
 		//update url titlePath
 		var newURLTitlePath = this.createUrlTitlePath();
-		
 		for(var descendant in allDescendants){
-			var newTitlePath = '';
-			if(len(previousURLTitlePath) > 0){
-				newTitlePath = replace(descendant.getURLTitlePath(),previousURLTitlePath,newURLTitlePath);
+			
+			if(len(previousURLTitlePath)){
+				if(len(newURLTitlePath)){
+					newTitlePath = replace(descendant.getURLTitlePath(),previousURLTitlePath,newURLTitlePath);
+				}else{
+					//if we newURLTitlePath is empty, then strip leading '/'s with regex
+					newTitlePath = REREPLACE(replace(descendant.getURLTitlePath(),previousURLTitlePath,newURLTitlePath),'(^)\/+','');
+				}
 			}else{
-				newTitlePath = newURLTitlePath & '/' & descendant.getURLTitlePath();
+				if(len(newURLTitlePath)){
+					newTitlePath = newURLTitlePath & '/' & descendant.getURLTitlePath();
+				}else{
+					//if we newURLTitlePath is empty, then strip leading '/'s with regex
+					newTitlePath = REREPLACE(descendant.getURLTitlePath(),'(^)\/+','');
+				}
 			}
 			
 			descendant.setURLTitlePath(newTitlePath);
