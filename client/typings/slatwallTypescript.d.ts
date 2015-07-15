@@ -9,8 +9,24 @@
 /// <reference path="../../admin/client/ts/controllers/pagedialog.ts" />
 /// <reference path="../../admin/client/ts/controllers/preprocessaccount_addaccountpayment.ts" />
 /// <reference path="../../admin/client/ts/controllers/routercontroller.ts" />
+<<<<<<< HEAD
+/// <reference path="../../admin/client/ts/model/AddressZone.ts" />
+/// <reference path="../../admin/client/ts/model/Comment.ts" />
+/// <reference path="../../admin/client/ts/model/Inventory.ts" />
+/// <reference path="../../admin/client/ts/model/LoyaltyAccruement.ts" />
+/// <reference path="../../admin/client/ts/model/Option.ts" />
+/// <reference path="../../admin/client/ts/model/Stock.ts" />
+/// <reference path="../../admin/client/ts/model/StockReceiverItem.ts" />
+/// <reference path="../../admin/client/ts/model/SubscriptionBenefit.ts" />
+/// <reference path="../../admin/client/ts/model/SubscriptionUsage.ts" />
+/// <reference path="../../admin/client/ts/model/WorkflowTrigger.ts" />
+=======
+>>>>>>> branch 'feature' of https://github.com/ten24/Slatwall
 /// <reference path="../../admin/client/ts/model/alert.ts" />
+<<<<<<< HEAD
+=======
 /// <reference path="../../admin/client/ts/modules/loggingmodule.ts" />
+>>>>>>> branch 'feature' of https://github.com/ten24/Slatwall
 /// <reference path="../../admin/client/ts/modules/slatwalladmin.ts" />
 /// <reference path="../../admin/client/ts/services/alertservice.ts" />
 /// <reference path="../../admin/client/ts/services/collectionservice.ts" />
@@ -65,6 +81,10 @@
 /// <reference path="../../admin/client/ts/directives/common/swscrolltrigger.ts" />
 /// <reference path="../../admin/client/ts/directives/common/swselection.ts" />
 /// <reference path="../../admin/client/ts/directives/common/swsortable.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontentbasic.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontenteditor.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontentlist.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontentnode.ts" />
 /// <reference path="../../admin/client/ts/directives/orderitem/swchildorderitem.ts" />
 /// <reference path="../../admin/client/ts/directives/orderitem/swoishippinglabelstamp.ts" />
 /// <reference path="../../admin/client/ts/directives/orderitem/sworderitem.ts" />
