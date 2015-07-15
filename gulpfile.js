@@ -62,7 +62,7 @@ gulp.task('watch', function() {
     	'compile-ts'
 		,'gen-ts-refs'
 		
-		,'compress'
+		//,'compress'
 	]);
 	gulp.watch([config.es6Path],
 	[
@@ -234,7 +234,7 @@ gulp.task('default', function(){
 		'compile-ts'
 		,'gen-ts-refs'
 		,'traceur'
-		,'compress'
+		//,'compress'
 		,'watch'
 	);
 });
