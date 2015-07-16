@@ -120,11 +120,14 @@ Notes:
 	</cfif>
 
 	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addEventSchedule" class="btn" icon="plus icon" modal="false" />
-	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSku" class="btn" icon="plus icon" modal="true" />
+	<cfif rc.product.getBaseProductType() NEQ "event">
+		<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSku" class="btn" icon="plus icon" modal="true" />
+	</cfif>
 	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOptionGroup" class="btn" icon="plus icon" modal="true" />
 	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOption" class="btn" icon="plus icon" modal="true" />
 	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSubscriptionSku" class="btn" icon="plus icon" modal="true" />
-	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSkuBundle" class="btn" icon="plus icon" modal="false" />
-
+	<cfif rc.product.getBaseProductType() NEQ "event">
+		<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSkuBundle" class="btn" icon="plus icon" modal="false" />
+	</cfif>
 </cfoutput>
 
