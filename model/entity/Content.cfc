@@ -274,7 +274,6 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		if(previousTitlePath != newTitlePath){
 			for(var descendant in allDescendants){
 				var newTitlePath = replace(descendant.getTitlePath(),previousTitlePath,newTitlePath);
-				
 				descendant.setTitlePath(newTitlePath);
 			}
 		}
@@ -297,8 +296,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		
 		if(previousURLTitlePath != newURLTitlePath){
 			for(var descendant in allDescendants){
-			
-				var newTitlePath = newURLTitlePath & '/' & descendant.getURLTitlePath();
+				var newTitlePath = replace(descendant.getURLTitlePath(),previousURLTitlePath,newURLTitlePath);
 				
 				descendant.setURLTitlePath(newTitlePath);
 			}
