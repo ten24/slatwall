@@ -181,6 +181,17 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 	}
 	
+	public void function addGroupBy(required string groupByAlias){
+		var collectionConfig = this.getCollectionConfigStruct();
+		if(!structKeyExists(collectionConfig,'groupBys')){
+			collectionConfig.groupBys = [];
+		}
+		var groupBy = {
+			alias=arguments.groupByAlias
+		};
+		arrayAppend(collectionConfig.groupBys,groupBy);
+	}
+	
 	public void function addDisplayProperty(required string displayProperty){
 		var collectionConfig = this.getCollectionConfigStruct();
 		
@@ -245,6 +256,14 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),arguments.propertyIdentifier);
 		
 		if(isObject){
+			//check if count is on a one-to-many
+			var lastEntityName = getService('hibachiService').getLastEntityNameInPropertyIdentifier(getCollectionObject(), arguments.propertyIdentifier);
+			var isOneToMany = structKeyExists(getService('hibachiService').getPropertiesStructByEntityName(lastEntityName)[listLast(arguments.propertyIdentifier,'.')],'singularname');
+			//if is a one-to-many property then add a groupby
+			if(isOneToMany){
+				addGroupBy(alias);
+			}
+			
 			column['propertyIdentifier'] = BuildPropertyIdentifier(alias, arguments.propertyIdentifier);
 			join['associationName'] = arguments.propertyIdentifier;
 			join['alias'] = column.propertyIdentifier;
@@ -255,6 +274,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			join['alias'] = BuildPropertyIdentifier(alias, collection);
 			doJoin = true;
 		}
+		
 		//Add columns
 		this.addColumn(column);
 		//Do Join if Needed
@@ -767,6 +787,24 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return 'AND';
 	}
 	
+	private string function getGroupByHQL(array groupBys=[]){
+		var groupByHQL = '';
+		var groupByCount = arrayLen(arguments.groupBys);
+		if(groupByCount){
+			groupByHQL = ' GROUP BY ';
+			for(var i = 1; i <= groupByCount; i++){
+				var groupBy = arguments.groupBys[i];
+				groupByHQL &= ' #groupBy.alias# ';
+			
+				//check whether a comma is needed
+				if(i != groupByCount){
+					groupByHQL &= ',';
+				}
+			}
+		}
+		return groupByHQL;
+	}
+	
 	private string function getOrderByHQL(array orderBy=[]){
 		var orderByHQL = ' ORDER BY ';
 				
@@ -1185,6 +1223,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var filterHQL = "";
 			var postFilterHQL = "";
 			var orderByHQL = "";
+			var groupByHQL = "";
 			
 			//build select
 			if(!isNull(collectionConfig.columns) && arrayLen(collectionConfig.columns) && arguments.excludeSelectAndOrderBy eq false){
@@ -1231,9 +1270,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				joins = collectionConfig.joins;
 			}
 			
+			if(structKeyExists(collectionConfig,'groupBys')){
+				groupByHQL = getGroupByHQL(collectionConfig.groupBys);
+			}
+			
 			fromHQL &= getFromHQL(collectionConfig.baseEntityName, collectionConfig.baseEntityAlias, joins);
 			
-			HQL = SelectHQL & FromHQL & filterHQL  & postFilterHQL  & orderByHQL;
+			HQL = SelectHQL & FromHQL & filterHQL  & postFilterHQL & groupByHQL & orderByHQL;
 		}
 		return HQL;
 	}
