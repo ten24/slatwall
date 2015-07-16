@@ -266,16 +266,13 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			previousTitlePath = this.getTitlePath();
 		}
 		 
-		var allDescendants = getAllDescendants();
+		var allDescendants = arrayToList(getAllDescendants());
 		//set title
 		variables.title = arguments.title;
 		//update titlePath
 		var newTitlePath = this.createTitlePath();
 		if(previousTitlePath != newTitlePath){
-			for(var descendant in allDescendants){
-				var newTitlePath = replace(descendant.getTitlePath(),previousTitlePath,newTitlePath);
-				descendant.setTitlePath(newTitlePath);
-			}
+			getDao('contentDao').updateAllDescendantsTitlePathByUrlTitle(allDescendants,previousTitlePath,newTitlePath);
 		}
 		
 	}
@@ -288,18 +285,14 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			previousURLTitlePath = this.getURLTitlePath();
 		}
 		 
-		var allDescendants = getAllDescendants();
+		var allDescendants = arrayToList(getAllDescendants());
 		//set url title
 		variables.UrlTitle = arguments.urlTitle;
 		//update url titlePath
 		var newURLTitlePath = this.createUrlTitlePath();
 		
 		if(previousURLTitlePath != newURLTitlePath){
-			for(var descendant in allDescendants){
-				var newTitlePath = replace(descendant.getURLTitlePath(),previousURLTitlePath,newURLTitlePath);
-				
-				descendant.setURLTitlePath(newTitlePath);
-			}
+			getDao('contentDao').updateAllDescendantsUrlTitlePathByUrlTitle(allDescendants,previousURLTitlePath,newUrlTitlePath);
 		}
 	}
 	
