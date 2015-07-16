@@ -119,6 +119,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="giftCardNumber" persistent="false" hb_populateEnabled="public";
 	property name="paymentMethodType" persistent="false";
 	property name="paymentMethodOptions" persistent="false";
+	property name="peerOrderPaymentNullAmountExistsFlag" persistent="false";
 	property name="orderStatusCode" persistent="false";
 	property name="originalAuthorizationCode" persistent="false";
 	property name="originalAuthorizationProviderTransactionID" persistent="false";
@@ -401,6 +402,20 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 			return getPaymentMethod().getPaymentMethodType();
 		}
 		return javaCast("null", "");
+	}
+	
+	public any function getPeerOrderPaymentNullAmountExistsFlag() {
+		if(!structKeyExists(variables, "peerOrderPaymentNullAmountExistsFlag")) {
+			variables.peerOrderPaymentNullAmountExistsFlag = false;
+			if(!isNull(getOrder())) {
+				if(!isNull(getOrderPaymentID())) {
+					variables.peerOrderPaymentNullAmountExistsFlag = getService("orderService").getPeerOrderPaymentNullAmountExistsFlag(orderID=getOrder().getOrderID(), orderPaymentID=getOrderPaymentID());	
+				} else {
+					variables.peerOrderPaymentNullAmountExistsFlag = getService("orderService").getPeerOrderPaymentNullAmountExistsFlag(orderID=getOrder().getOrderID());
+				}	
+			}
+		}
+		return variables.peerOrderPaymentNullAmountExistsFlag;
 	}
 	
 	public any function getOrderStatusCode() {
