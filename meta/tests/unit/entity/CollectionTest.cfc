@@ -97,6 +97,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(1,pageRecords[1]['productCount']);		
 	}
 	
+//	public void function addDisplayAggregate_one_to_manyTest(){
+//		var myCollection = variables.entityService.getProductCollectionList();
+//		myCollection.setDisplayProperties('productName');
+//		myCollection.addDisplayAggregate('skus','count','skuCount');
+//		myCollection.addDisplayAggregate('attributeValues','count','attributeValuesCount');
+//		var aggregateHQL = myCollection.getHQL();
+//		debug(aggregateHQL);
+//		var pageRecords = myCollection.getPageRecords();
+//		debug(pageRecords);
+//		//assertEquals(1,pageRecords[1]['skuCount']);		
+//	
+//	}
 	
 	public void function addDisplayAggregateSUMTest(){
 		var myCollection = variables.entityService.getSkuCollectionList();
@@ -1109,6 +1121,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				  		"isSearchable":true,
 				  		"ormtype":"string"
 				  	}
+				  	,
+				  	{
+				  		"propertyIdentifier":"_account_accountEmailAddresses",
+				  		"aggregate":{
+				  			"aggregateFunction":"count",
+				  			"aggregateAlias":"emailcount"
+				  		}
+				  	}
+				  ],
+				  "joins":[
+				  	{
+				  		"associationName":"accountEmailAddresses",
+						"alias":"_account_accountEmailAddresses"
+				  	}
 				  ],
 				  "filterGroups":[
 				  	{
@@ -1120,14 +1146,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				  			}
 				  		]
 				  	}
-				  ]
+				  ],
+				  "groupBys":"_account"
 				}
 			'
 		};
 		
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		
+		
 		collectionEntity.setKeywords('Ryan Marchand');
 		//request.debug(collectionEntity.getHQL());
+		//request.debug(collectionEntity.getRecords());
 	}
 	
 	public void function getHQLTest_keywords_without_filterGroup(){
@@ -1153,15 +1183,24 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				  		"propertyIdentifier":"_account.lastName",
 				  		"isSearchable":true,
 				  		"ormtype":"string"
+				  	},
+				  	{
+				  		"propertyIdentifier":"_account.accountEmailAddresses",
+				  		"isSearchable":true,
+				  		"aggregate":{
+				  			"aggregateFunction":"count",
+				  			"aggregateAlias":"emailcount"
+				  		}
 				  	}
 				  ]
 				}
 			'
 		};
 		
+		
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
-		collectionEntity.setKeywords('Ryan Marchand');
-		//request.debug(collectionEntity.getHQL());
+		//collectionEntity.setKeywords('Ryan Marchand');
+		request.debug(collectionEntity.getHQL());
 	}
 	
 	public void function getHQLTest_notpersistent(){
