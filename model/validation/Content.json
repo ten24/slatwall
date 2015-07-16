@@ -10,7 +10,8 @@
 	    	"parentContent":{"required":true}
 	    },
 	    "notNewContent":{
-	    	"newFlag":{"eq":false}
+	    	"newFlag":{"eq":false},
+	    	"parentContent":{"null":false}
 	    }
 	},
 	"properties":{
