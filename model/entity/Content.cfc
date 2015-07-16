@@ -196,32 +196,6 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		return variables.allDescendants;
 	}
 	
-	public string function setTitle(required string title){
-		//look up all children via lineage
-		var previousTitlePath = '';
-		if(!isNull(this.getTitlePath())){
-			previousTitlePath = this.getTitlePath();
-		}
-		 
-		var allDescendants = getAllDescendants();
-		//set title
-		variables.title = arguments.title;
-		//update titlePath
-		var newTitlePath = this.createTitlePath();
-		
-		for(var descendant in allDescendants){
-			var newTitlePath = '';
-			if(len(previousTitlePath) > 0){
-				newTitlePath = replace(descendant.getTitlePath(),previousTitlePath,newTitlePath);
-			}else{
-				newTitlePath = newTitlePath & ' > ' & descendant.getTitlePath();
-			}
-			
-			descendant.setTitlePath(newTitlePath);
-		}
-	}
-	
-	
 	public numeric function getSortOrder(){
 		if(isNull(variables.sortOrder)){
 			var maxSortOrder = getDao('contentDao').getMaxSortOrderByContent(this);	
@@ -285,6 +259,28 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		return TitlePathString;
 	}
 	
+	public string function setTitle(required string title){
+		//look up all children via lineage
+		var previousTitlePath = '';
+		if(!isNull(this.getTitlePath())){
+			previousTitlePath = this.getTitlePath();
+		}
+		 
+		var allDescendants = getAllDescendants();
+		//set title
+		variables.title = arguments.title;
+		//update titlePath
+		var newTitlePath = this.createTitlePath();
+		if(previousTitlePath != newTitlePath){
+			for(var descendant in allDescendants){
+				var newTitlePath = replace(descendant.getTitlePath(),previousTitlePath,newTitlePath);
+				
+				descendant.setTitlePath(newTitlePath);
+			}
+		}
+		
+	}
+	
 	public string function setUrlTitle(required string urlTitle){
 		
 		//look up all children via lineage
@@ -298,25 +294,14 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		variables.UrlTitle = arguments.urlTitle;
 		//update url titlePath
 		var newURLTitlePath = this.createUrlTitlePath();
-		for(var descendant in allDescendants){
+		
+		if(previousURLTitlePath != newURLTitlePath){
+			for(var descendant in allDescendants){
 			
-			if(len(previousURLTitlePath)){
-				if(len(newURLTitlePath)){
-					newTitlePath = replace(descendant.getURLTitlePath(),previousURLTitlePath,newURLTitlePath);
-				}else{
-					//if we newURLTitlePath is empty, then strip leading '/'s with regex
-					newTitlePath = REREPLACE(replace(descendant.getURLTitlePath(),previousURLTitlePath,newURLTitlePath),'(^)\/+','');
-				}
-			}else{
-				if(len(newURLTitlePath)){
-					newTitlePath = newURLTitlePath & '/' & descendant.getURLTitlePath();
-				}else{
-					//if we newURLTitlePath is empty, then strip leading '/'s with regex
-					newTitlePath = REREPLACE(descendant.getURLTitlePath(),'(^)\/+','');
-				}
+				var newTitlePath = newURLTitlePath & '/' & descendant.getURLTitlePath();
+				
+				descendant.setURLTitlePath(newTitlePath);
 			}
-			
-			descendant.setURLTitlePath(newTitlePath);
 		}
 	}
 	
