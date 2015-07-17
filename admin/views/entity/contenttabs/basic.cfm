@@ -8,7 +8,9 @@
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
 			<hb:HibachiPropertyDisplay object="#rc.content#" property="title" edit="#rc.edit#">
-			<hb:HibachiPropertyDisplay object="#rc.content#" property="URLTitle" edit="#rc.edit#">
+			<cfif !isNull(rc.content.getParentContent())>
+				<hb:HibachiPropertyDisplay object="#rc.content#" property="URLTitle" edit="#rc.edit#">
+			</cfif>
 			<hb:HibachiPropertyDisplay object="#rc.content#" property="URLTitlePath" edit="false">
 			<hb:HibachiPropertyDisplay object="#rc.content#" property="activeFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.content#" property="displayInNavigation" edit="#rc.edit#">

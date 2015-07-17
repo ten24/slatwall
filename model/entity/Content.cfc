@@ -196,32 +196,6 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		return variables.allDescendants;
 	}
 	
-	public string function setTitle(required string title){
-		//look up all children via lineage
-		var previousTitlePath = '';
-		if(!isNull(this.getTitlePath())){
-			previousTitlePath = this.getTitlePath();
-		}
-		 
-		var allDescendants = getAllDescendants();
-		//set title
-		variables.title = arguments.title;
-		//update titlePath
-		var newTitlePath = this.createTitlePath();
-		
-		for(var descendant in allDescendants){
-			var newTitlePath = '';
-			if(len(previousTitlePath) > 0){
-				newTitlePath = replace(descendant.getTitlePath(),previousTitlePath,newTitlePath);
-			}else{
-				newTitlePath = newTitlePath & ' > ' & descendant.getTitlePath();
-			}
-			
-			descendant.setTitlePath(newTitlePath);
-		}
-	}
-	
-	
 	public numeric function getSortOrder(){
 		if(isNull(variables.sortOrder)){
 			var maxSortOrder = getDao('contentDao').getMaxSortOrderByContent(this);	
@@ -285,6 +259,24 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		return TitlePathString;
 	}
 	
+	public string function setTitle(required string title){
+		//look up all children via lineage
+		var previousTitlePath = '';
+		if(!isNull(this.getTitlePath())){
+			previousTitlePath = this.getTitlePath();
+		}
+		 
+		var allDescendants = arrayToList(getAllDescendants());
+		//set title
+		variables.title = arguments.title;
+		//update titlePath
+		var newTitlePath = this.createTitlePath();
+		if(previousTitlePath != newTitlePath){
+			getDao('contentDao').updateAllDescendantsTitlePathByUrlTitle(allDescendants,previousTitlePath,newTitlePath);
+		}
+		
+	}
+	
 	public string function setUrlTitle(required string urlTitle){
 		
 		//look up all children via lineage
@@ -293,21 +285,14 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			previousURLTitlePath = this.getURLTitlePath();
 		}
 		 
-		var allDescendants = getAllDescendants();
+		var allDescendants = arrayToList(getAllDescendants());
 		//set url title
 		variables.UrlTitle = arguments.urlTitle;
 		//update url titlePath
 		var newURLTitlePath = this.createUrlTitlePath();
 		
-		for(var descendant in allDescendants){
-			var newTitlePath = '';
-			if(len(previousURLTitlePath) > 0){
-				newTitlePath = replace(descendant.getURLTitlePath(),previousURLTitlePath,newURLTitlePath);
-			}else{
-				newTitlePath = newURLTitlePath & '/' & descendant.getURLTitlePath();
-			}
-			
-			descendant.setURLTitlePath(newTitlePath);
+		if(previousURLTitlePath != newURLTitlePath){
+			getDao('contentDao').updateAllDescendantsUrlTitlePathByUrlTitle(allDescendants,previousURLTitlePath,newUrlTitlePath);
 		}
 	}
 	
