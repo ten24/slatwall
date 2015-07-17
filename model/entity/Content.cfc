@@ -271,7 +271,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		variables.title = arguments.title;
 		//update titlePath
 		var newTitlePath = this.createTitlePath();
-		if(previousTitlePath != newTitlePath){
+		if(previousTitlePath != newTitlePath && len(allDescendants)){
 			getDao('contentDao').updateAllDescendantsTitlePathByUrlTitle(allDescendants,previousTitlePath,newTitlePath);
 		}
 		
@@ -291,7 +291,7 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		//update url titlePath
 		var newURLTitlePath = this.createUrlTitlePath();
 		
-		if(previousURLTitlePath != newURLTitlePath){
+		if(previousURLTitlePath != newURLTitlePath && len(allDescendants)){
 			getDao('contentDao').updateAllDescendantsUrlTitlePathByUrlTitle(allDescendants,previousURLTitlePath,newUrlTitlePath);
 		}
 	}
