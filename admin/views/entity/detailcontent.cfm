@@ -70,7 +70,9 @@ Notes:
 			<cfif rc.content.getProductListingPageFlag()>
 				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/products">
 			</cfif>
-			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/content">
+			<cfif !isNull(rc.content.getSite()) && !isNull(rc.content.getSite().getApp())>
+				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/content">
+			</cfif>>
 			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/settings">
 			<!--- Custom Attributes --->
 			
