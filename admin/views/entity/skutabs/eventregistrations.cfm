@@ -68,6 +68,6 @@ Notes:
 			<hb:HibachiListingColumn propertyIdentifier="eventRegistrationStatusType.typeName" title="#$.slatwall.rbKey('entity.eventRegistration.eventRegistrationStatusType')#" />
 		</hb:HibachiListingDisplay>
 		
-		<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="addEventRegistration" class="btn" icon="plus icon" modal="true" />
+		<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="addEventRegistration" class="btn btn-primary" modal="true" />
 	
 </cfoutput>
