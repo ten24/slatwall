@@ -6,6 +6,7 @@
 	            <th style="">Row</span></th>
 	            <th ng-repeat="(key,column) in collectionConfig.columns" class="s-sortable" ng-bind="column.displayTitle || column.title" title="{{column.title}}" ng-show="column.isVisible"></th>
 	            <th></th>
+				<th></th>
 	        </tr>
 	    </thead>
 	    <tbody>
@@ -17,7 +18,7 @@
 	            		data-selection="pageRecord[collectionObject.$$getIDName()]"
 	            	></sw-selection>
 	            </td>
-	            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[replaceAll(column.propertyIdentifier.substring(column.propertyIdentifier.indexOf('.')+1,column.propertyIdentifier.length),'.','_')]"></td>
+	            <td ng-repeat="(key,column) in collectionConfig.columns" ng-bind="pageRecord[replaceAll(column.propertyIdentifier.substring(column.propertyIdentifier.indexOf('.')+1,column.propertyIdentifier.length),'.','_')]"  ng-show="column.isVisible"></td>
 	            <td class="s-edit-elements">
 	                <a class="btn btn-default btn-xs" href="{{pageRecord.detailLink}}" target="_self"><i class="glyphicon glyphicon-eye-open"></i></a>
 	                <a class="btn btn-default btn-xs" href="{{pageRecord.editLink}}" target="_self"><i class="glyphicon glyphicon-pencil"></i></a>

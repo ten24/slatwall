@@ -9,6 +9,10 @@
 /// <reference path="../../admin/client/ts/controllers/pagedialog.ts" />
 /// <reference path="../../admin/client/ts/controllers/preprocessaccount_addaccountpayment.ts" />
 /// <reference path="../../admin/client/ts/controllers/routercontroller.ts" />
+<<<<<<< HEAD
+=======
+/// <reference path="../../admin/client/ts/model/alert.ts" /> 
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /// <reference path="../../admin/client/ts/modules/loggingmodule.ts" />
 /// <reference path="../../admin/client/ts/modules/slatwalladmin.ts" />
 /// <reference path="../../admin/client/ts/model/alert.ts" />
@@ -84,8 +88,6 @@
 /// <reference path="../../admin/client/ts/directives/workflow/swworkflowtasks.ts" />
 /// <reference path="../../admin/client/ts/directives/workflow/swworkflowtrigger.ts" />
 /// <reference path="../../admin/client/ts/directives/workflow/swworkflowtriggers.ts" />
-/// <reference path="../../admin/client/ts/directives/common/entity/swdetail.ts" />
-/// <reference path="../../admin/client/ts/directives/common/entity/swlist.ts" />
 /// <reference path="../../admin/client/ts/directives/common/form/swform.ts" />
 /// <reference path="../../admin/client/ts/directives/common/form/swformfield.ts" />
 /// <reference path="../../admin/client/ts/directives/common/form/swformfieldjson.ts" />
@@ -97,6 +99,8 @@
 /// <reference path="../../admin/client/ts/directives/common/form/swformfieldtext.ts" />
 /// <reference path="../../admin/client/ts/directives/common/form/swformregistrar.ts" />
 /// <reference path="../../admin/client/ts/directives/common/form/swinput.ts" />
+/// <reference path="../../admin/client/ts/directives/common/entity/swdetail.ts" />
+/// <reference path="../../admin/client/ts/directives/common/entity/swlist.ts" />
 /// <reference path="../../admin/client/ts/directives/common/validation/swvalidate.ts" />
 /// <reference path="../../admin/client/ts/directives/common/validation/swvalidationdatatype.ts" />
 /// <reference path="../../admin/client/ts/directives/common/validation/swvalidationeq.ts" />

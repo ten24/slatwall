@@ -89,8 +89,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function getPropertyIsObjectByEntityNameAndPropertyIdentifierTest(){
-		var value = variables.service.getPropertyIsObjectByEntityNameAndPropertyIdentifier('sku','product.brand.brandID');
-		assertTrue()
+		assertTrue(variables.service.getPropertyIsObjectByEntityNameAndPropertyIdentifier('sku','product.brand'));
+		assertFalse(variables.service.getPropertyIsObjectByEntityNameAndPropertyIdentifier('sku','product.brand.brandID'));
 	}
 	
 //  need mock attribute data
