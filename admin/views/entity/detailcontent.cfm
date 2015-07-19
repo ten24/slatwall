@@ -64,7 +64,6 @@ Notes:
 			deleteQueryString="?ngRedirectQS=/entity/Content/"
 			
 		/>
-
 		<hb:HibachiEntityDetailGroup object="#rc.content#">
 			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<cfif rc.content.getProductListingPageFlag()>
@@ -72,7 +71,7 @@ Notes:
 			</cfif>
 			<cfif !isNull(rc.content.getSite()) && !isNull(rc.content.getSite().getApp())>
 				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/content">
-			</cfif>>
+			</cfif>
 			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/settings">
 			<!--- Custom Attributes --->
 			
