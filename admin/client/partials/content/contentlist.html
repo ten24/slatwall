@@ -81,7 +81,7 @@
 			</ul>
 		</div>
 	</div>
-	<content class="s-body-box"  sw-loading="firstLoad">
+	<content class="s-body-box"  sw-loading="firstLoad && !loadingCollection">
 		<div class="table-responsive">
 			<table id="contentList" class="table table-bordered table-hover">
 				<thead>
@@ -101,6 +101,7 @@
 					infinite-scroll-disabled="autoScrollDisabled"
 					infinite-scroll-distance="1"
 					id="contentListTable"
+					
 				>	
 					<tr sw-content-node
 						ng-repeat="pageRecord in collection.pageRecords"

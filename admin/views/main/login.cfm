@@ -72,7 +72,11 @@ Notes:
 				<input type="hidden" name="swprid" value="#rc.swprid#" />
 				<input type="hidden" name="accountID" value="#left(rc.swprid, 32)#" />
 
-				<cfset processObject = rc.fw.getHibachiScope().getAccount().getProcessObject("resetPassword") />
+				<cfif structKeyExists(rc,'processObject')>
+					<cfset processObject = rc.processObject />
+				<cfelse>
+					<cfset processObject = rc.fw.getHibachiScope().getAccount().getProcessObject("resetPassword") />
+				</cfif>
 
 				<hb:HibachiErrorDisplay object="#processObject#" errorName="swprid" />
 

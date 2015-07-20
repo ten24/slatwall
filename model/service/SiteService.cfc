@@ -280,15 +280,19 @@ component  extends="HibachiService" accessors="true" {
 	
 	// ====================== START: Save Overrides ===========================
 	public any function processSite_create(required any site, required any processObject){
-		arguments.site.setApp(arguments.processObject.getApp());
-		saveSite(arguments.site,arguments.data);
+		arguments.site = this.saveSite(arguments.site,arguments.data);
 		return arguments.site;
 	}
 	
 	public any function saveSite(required any site, struct data={}){
+		//get new flag before persisting
+		var newFlag = arguments.site.getNewFlag();
+		
+		arguments.site = super.save(arguments.site, arguments.data);
 		
 		if(	
-			arguments.site.getNewFlag() 
+			!arguments.site.hasErrors()
+			&& newFlag
 			&& (
 				!isnull(arguments.site.getApp())
 				&& !isnull(arguments.site.getApp().getIntegration()) 
@@ -296,17 +300,17 @@ component  extends="HibachiService" accessors="true" {
 			)
 		){
 			//need to set sitecode before accessing path
-			arguments.site.setSiteCode(arguments.data.siteCode);
 			//create directory for site
 			if(!directoryExists(arguments.site.getSitePath())){
 				directoryCreate(arguments.site.getSitePath());
 			}
-			arguments.site = super.save(arguments.site, arguments.data);
-			ormflush();
+			
 			//deploy skeletonSite
 			deploySite(arguments.site);
+			arguments.site = super.save(arguments.site, arguments.data);
+			ormflush();
+			
 		}
-		arguments.site = super.save(arguments.site, arguments.data);
 		return arguments.site;
 	}
 	

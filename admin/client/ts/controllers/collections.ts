@@ -22,11 +22,9 @@ metadataService,
 selectionService,
 paginationService
 	){
-	
-		//init values
+		//init values 
 		//$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
 		$scope.$id="collectionsController";
-		
 		/*used til we convert to use route params*/
 		var QueryString = function () {
 		  // This function is anonymous, is executed immediately and 

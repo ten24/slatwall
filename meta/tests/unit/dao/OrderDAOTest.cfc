@@ -1,5 +1,4 @@
-<!---
-
+/*
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -44,30 +43,61 @@
     of the program, but you are not obligated to do so.
 
 Notes:
-
---->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
-
-<cfparam name="rc.sku" type="any" />
-
-<cfoutput>
+*/
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" { 
 	
-	<cfset local.eventRegSmartList = rc.sku.geteventRegistrationsSmartlist()/>
-	
-		<hb:HibachiListingDisplay smartList="#local.eventRegSmartList#"
-				recordEditAction="admin:entity.editeventregistration"
-				recorddetailaction="admin:entity.detaileventregistration">
-			<hb:HibachiListingColumn propertyIdentifier="account.firstname" />
-			<hb:HibachiListingColumn propertyIdentifier="account.lastname" />
-			<hb:HibachiListingColumn propertyIdentifier="sku.product.productName" />
-			<hb:HibachiListingColumn propertyIdentifier="sku.skuCode" />
-			<hb:HibachiListingColumn propertyIdentifier="sku.eventStartDateTime" />
-			<hb:HibachiListingColumn propertyIdentifier="sku.eventEndDateTime" />
-			<hb:HibachiListingColumn propertyIdentifier="sku.skudefinition" />
-			<hb:HibachiListingColumn propertyIdentifier="eventRegistrationStatusType.typeName" title="#$.slatwall.rbKey('entity.eventRegistration.eventRegistrationStatusType')#" />
-		</hb:HibachiListingDisplay>
+	public void function setUp() {
+		super.setup();
 		
-		<hb:HibachiProcessCaller entity="#rc.sku#" action="admin:entity.preprocesssku" processContext="addEventRegistration" class="btn btn-primary" modal="true" />
+		variables.dao = request.slatwallScope.getDAO("orderDAO");
+			
+	}
 	
-</cfoutput>
+	public void function inst_ok() {
+		assert(isObject(variables.dao));
+	}
+	
+	//getPeerOrderPaymentNullAmountExistsFlag()
+	public void function getPeerOrderPaymentNullAmountExistsFlagTest(){
+		var orderTrueData = { 
+			orderID = '',
+			orderPayments=[
+				{
+					orderPaymentID='',
+					orderPaymentStatusType={
+						orderPaymentStatusTypeID = '5accbf57dcf5bb3eb71614febe83a31d'	
+					}
+				},
+				{ 
+					orderPaymentID='', 
+					orderPaymentStatusType={
+						orderPaymentStatusTypeID = '5accbf57dcf5bb3eb71614febe83a31d'	
+					}
+				}
+			]
+		}; 
+		
+		var orderFalseData = { 
+			orderID = '',
+			orderPayments=[
+				{
+					orderPaymentID='',
+					orderPaymentStatusType={
+						orderPaymentStatusTypeID = '5accbf58a94b61fe031f854ffb220f4b'	
+					}
+				}
+			]
+		};
+		
+		var order1 = createPersistedTestEntity('order', orderTrueData);
+		var order2 = createPersistedTestEntity('order', orderFalseData);
+		
+		assertTrue(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order1.getOrderId(), order1.getOrderPayments()[2].getOrderPaymentID)); 
+		assertFalse(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order1.getOrderId(), order1.getOrderPayments()[1].getOrderPaymentID));
+		assertTrue(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order1.getOrderId())); 
+		assertFalse(variables.dao.getPeerOrderPaymentNullAmountExistsFlag(order2.getOrderId(), order2.getOrderPayments()[1].getOrderPaymentID)); 
+	}
+	
+	
+}
+
