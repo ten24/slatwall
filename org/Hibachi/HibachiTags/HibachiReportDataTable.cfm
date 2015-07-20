@@ -7,6 +7,7 @@
 
 	<cfset thisTag.dimentionDefinitions = attributes.report.getDimensions()>
 	<cfset thisTag.metricDefinitions = attributes.report.getMetrics()>
+	<cfset thisTag.orderByType = attributes.report.getOrderByType()> 
 	<cfset thisTag.defaultCurrency = attributes.report.getCurrencyCode()>
 	
 	<cfoutput>
