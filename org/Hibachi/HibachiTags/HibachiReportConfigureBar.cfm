@@ -78,8 +78,8 @@
 						<dt style="width:100px;"><strong>#attributes.hibachiScope.rbKey('define.orderby')#</strong></dt>
 						<dd style="margin-left:100px;">
 							<select id="hibachi-order-by" name="orderbytype">
-								<option value="metrics">#attributes.hibachiScope.rbKey('define.metrics')#</option>
-								<option value="dimensions">#attributes.hibachiScope.rbKey('define.dimensions')#</option>
+								<option value="metrics" <cfif attributes.report.getOrderByType() EQ "metrics">selected</cfif>>#attributes.hibachiScope.rbKey('define.metrics')#</option>
+								<option value="dimensions" <cfif attributes.report.getOrderByType() EQ "dimensions">selected</cfif>>#attributes.hibachiScope.rbKey('define.dimensions')#</option>
 							</select>
 						</dd>
 						

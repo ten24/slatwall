@@ -913,8 +913,7 @@
 				FROM
 					allUnsortedData
 				ORDER BY
-				
-				<cfif getOrderByType() EQ "dimension">
+				<cfif getOrderByType() EQ "dimensions">	
 					<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
 						<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />
 						<cfif d gt 1>,</cfif>#dimensionDefinition.alias# DESC
@@ -925,7 +924,7 @@
 						<cfif m gt 1>,</cfif>#metricDefinition.alias# DESC
 					</cfloop>
 				</cfif>
-			</cfquery>
+			</cfquery>	
 		</cfif>
 		
 		<cfreturn variables.tableDataQuery />
