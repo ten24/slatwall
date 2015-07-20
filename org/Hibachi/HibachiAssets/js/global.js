@@ -249,6 +249,15 @@ function initUIElements( scopeSelector ) {
 			updateReport();
 		}
 	});
+	
+	//sort by metric or dimension
+	jQuery( scopeSelector ).find(jQuery('#hibachi-order-by')).sortable({
+		stop: function( event, ui ) {
+			addLoadingDiv( 'hibachi-report' );
+			jQuery('select[name="orderbytype"]').val( newOrderByTypeValue );
+			updateReport(); 
+		}
+	});
 }
 
 function setupEventHandlers() {
@@ -827,6 +836,12 @@ function setupEventHandlers() {
 		e.preventDefault();
 		addLoadingDiv( 'hibachi-report' );
 		updateReport( jQuery(this).data('page') );
+	});
+	//orderbytype event hook 
+	jQuery('body').on('change', '#hibachi-order-by', function(e){ 
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		updateReport();
 	});
 
 
@@ -1587,7 +1602,8 @@ function updateReport( page ) {
 		reportDateTime: jQuery('select[name="reportDateTime"]').val(),
 		reportCompareFlag: jQuery('input[name="reportCompareFlag"]').val(),
 		dimensions: jQuery('input[name="dimensions"]').val(),
-		metrics: jQuery('input[name="metrics"]').val()
+		metrics: jQuery('input[name="metrics"]').val(),
+		orderByType: jQuery('select[name="orderbytype"]').val()
 	};
 
 	if(page != undefined) {
