@@ -46,10 +46,10 @@
 Notes:
 
 */
-component displayname="Gift Recipient" entityname="SlatwallGiftRecipient" table="SwGiftRecipient" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" {
+component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipient" table="SwOrderItemGiftRecipient" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" {
 	
 	// Persistent Properties
-	property name="giftRecipientID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="orderItemGiftRecipientID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="firstName" ormtype="string";
 	property name="lastName" ormtype="string";
 	property name="emailAddress" ormtype="string";
@@ -80,6 +80,26 @@ component displayname="Gift Recipient" entityname="SlatwallGiftRecipient" table=
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// Order Item (many-to-one)
+	
+	public void function setOrderItem(required any orderItem) {
+		variables.orderItem = arguments.orderItem;
+		if(isNew() or !arguments.orderItem.hasOrderItemGiftRecipient( this )) {
+			arrayAppend(arguments.orderItem.getOrderItemGiftRecipients(), this);
+		}
+	}
+	
+	public void function removeOrderItem(any orderItem) {
+		if(!structKeyExists(arguments, "orderItem")) {
+			arguments.orderItem = variables.orderItem;
+		}
+		var index = arrayFind(arguments.orderItem.getOrderItemGiftRecipients(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderItem.getOrderItemGiftRecipients(), index);
+		}
+		structDelete(variables, "orderItem");
+	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
 

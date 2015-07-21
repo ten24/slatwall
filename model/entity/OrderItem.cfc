@@ -75,8 +75,8 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="stockReceiverItems" singularname="stockReceiverItem" cfc="StockReceiverItem" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" inverse="true";
 	property name="referencingOrderItems" singularname="referencingOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="referencedOrderItemID" inverse="true" cascade="all"; // Used For Returns
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
-	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
-	property name="giftRecpients" singularname="giftRecipeint" cfc="giftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
+	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="originalOrderItemID" cascade="all" inverse="true";
+	property name="orderItemGiftRecipient" singularname="orderItemGiftRecipient" cfc="orderItemGiftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	
 	// Remote properties
 	property name="publicRemoteID" ormtype="string" hb_populateEnabled="public";
@@ -524,6 +524,24 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 			arrayDeleteAt(arguments.referencedOrderItem.getReferencingOrderItems(), index);
 		}
 		structDelete(variables, "referencedOrderItem");
+	}
+	
+	// Gift Cards (one-to-many)
+	public void function addGiftCard(required any giftCard){ 
+		arguments.giftCard.setOriginalOrderItem( this );  
+	}
+	
+	public void function removeGiftCard(required any giftCard){ 
+		arguments.giftCard.removeOriginalOrderItem( this ); 
+	}
+	
+	// OrderItemGiftRecipients (one-to-many)
+	public void function addOrderItemGiftRecipient(required any orderItemGiftRecipient){ 
+		arguments.orderItemGiftRecipient.setOrderItem( this ); 
+	}
+	
+	public void function removeOrderItemGiftRecipient(required any orderItemGiftRecipient){ 
+		arguments.orderItemGiftRecipient.setOrderItem( this ); 
 	}
 	
 	// Applied Promotions (one-to-many)

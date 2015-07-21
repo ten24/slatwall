@@ -49,54 +49,60 @@ Notes:
 component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	// @hint put things in here that you want to run befor EACH test
-	public void function SetUp() {
+	public void function setUp() {
 		super.setup();
 		
-		variables.entity = request.slatwallScope.getService("skuService").newSku();
-	}
-	
-	public void function getRenewalPriceByCurrencyCode_test(){
-		var skuData = {
-			skuID=""		
+		variables.entity = request.slatwallScope.newEntity( 'GiftCard' );
+	}		
+		
+		
+		
+	public void function test_order_item_relation(){ 
+		
+		
+		var orderItemData = { 
+			orderItemID='', 
+			price='5'
 		};
-		var sku = createPersistedTestEntity('sku',skuData);
-		var currencyCode = 'USD';
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
 		
-		var renewalPrice = variables.entity.getRenewalPriceByCurrencyCode(currencyCode);
-		assertEquals(renewalPrice,0);
+		var giftCardData = { 
+			giftCardID='', 
+			giftCardPin='1111'
+		}; 
+		var giftCard = createPersistedTestEntity('giftCard', giftCardData);
+		
+		giftCard.setOriginalOrderItem(orderItem);
+		
+		assertTrue(orderItem.hasGiftCard(giftCard)); 
+		 
+		giftCard.removeOriginalOrderItem(orderItem); 
+		
+		assertFalse(orderItem.hasGiftCard(giftCard));
 	}
 	
-	public void function getRedemptionAmountType_test(){ 
-		var skuData = { 
-			skuID="",
-			redemptionAmountType="sameAsPrice",
-			redemptionAmount="10.00", 
-			price="5.00"
-		}; 
-		var sameAsPrice = createPersistedTestEntity('sku',skuData);
+	public void function test_gift_card_transaction(){ 
 		
-		var skuData = { 
-			skuID="",
-			redemptionAmountType="fixedAmount",
-			redemptionAmount="10.00"
+		var giftCardData = { 
+			giftCardID='', 
+			giftCardPin='1111'
 		}; 
-		var fixedAmount = createPersistedTestEntity('sku',skuData);
+		var giftCard = createPersistedTestEntity('giftCard', giftCardData);
 		
-		var skuData = { 
-			skuID="",
-			redemptionAmountType="percentage",
-			redemptionAmountPercentage=.5,
-			redemptionAmount="10.00"
-		}; 
-		var percentage = createPersistedTestEntity('sku',skuData);
+		var giftCardTransactionData = { 
+			giftCardTransactionID="",
+			credit="100.00"
+		};
 		
-		assertEquals(sameAsPrice.getGiftCardRedemptionAmount(), 5.00);
-		assertEquals(fixedAmount.getGiftCardRedemptionAmount(), 10.00); 
-		assertEquals(percentage.getGiftCardRedemptionAmount(), 5.00); 
-	}
-	
-	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
+		var giftCardTransaction = createPersistedTestEntity('giftCardTransaction', giftCardTransactionData); 
+		
+		giftCard.addGiftCardTransaction(giftCardTransaction); 
+		
+		assertTrue(giftCard.hasGiftCardTransaction(giftCardTransaction)); 
+		
+		giftCard.removeGiftCardTransaction(giftCardTransaction); 
+		
+		assertFalse(giftCard.hasGiftCardTransaction(giftCardTransaction)); 
+		
 	}
 }
-
-

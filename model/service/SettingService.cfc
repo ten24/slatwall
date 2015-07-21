@@ -250,7 +250,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
 			skuGiftCardAutoGenerateCode = {fieldType="yesno", defaultValue=1},
 			skuGiftCardCodeLength = {fieldType="yesno", defaultValue=32},
-			skuGiftRecipientEmailTemplate = {fieldType="select", defaultValue=""},
+			skuOrderItemGiftRecipientEmailTemplate = {fieldType="select", defaultValue=""},
 			skuHoldBackQuantity = {fieldType="text", defaultValue=0},
 			skuMarkAttendanceAsBundle = {fieldType="text", defaultValue=0},
 			skuMinimumPaymentPercentageToWaitlist = {fieldType="text", defaultValue=0},

@@ -1,5 +1,5 @@
 /*
-
+	
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -42,61 +42,21 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
+	
 Notes:
-
+	
 */
-component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
-
-	// @hint put things in here that you want to run befor EACH test
-	public void function SetUp() {
-		super.setup();
-		
-		variables.entity = request.slatwallScope.getService("skuService").newSku();
-	}
+component output="false" accessors="true" extends="HibachiProcess"{
 	
-	public void function getRenewalPriceByCurrencyCode_test(){
-		var skuData = {
-			skuID=""		
-		};
-		var sku = createPersistedTestEntity('sku',skuData);
-		var currencyCode = 'USD';
-		
-		var renewalPrice = variables.entity.getRenewalPriceByCurrencyCode(currencyCode);
-		assertEquals(renewalPrice,0);
-	}
+	// Injected Entity
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderID";
 	
-	public void function getRedemptionAmountType_test(){ 
-		var skuData = { 
-			skuID="",
-			redemptionAmountType="sameAsPrice",
-			redemptionAmount="10.00", 
-			price="5.00"
-		}; 
-		var sameAsPrice = createPersistedTestEntity('sku',skuData);
-		
-		var skuData = { 
-			skuID="",
-			redemptionAmountType="fixedAmount",
-			redemptionAmount="10.00"
-		}; 
-		var fixedAmount = createPersistedTestEntity('sku',skuData);
-		
-		var skuData = { 
-			skuID="",
-			redemptionAmountType="percentage",
-			redemptionAmountPercentage=.5,
-			redemptionAmount="10.00"
-		}; 
-		var percentage = createPersistedTestEntity('sku',skuData);
-		
-		assertEquals(sameAsPrice.getGiftCardRedemptionAmount(), 5.00);
-		assertEquals(fixedAmount.getGiftCardRedemptionAmount(), 10.00); 
-		assertEquals(percentage.getGiftCardRedemptionAmount(), 5.00); 
-	}
-	
-	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
-	}
+	// Data Properties
+ 	property name="firstName" type="string";
+ 	property name="lastName" type="string"; 
+ 	property name="emailAddress" type="string";
+ 	property name="account";
+ 	property name="quantity" type="number"; 
+ 	property name="giftMessage"; 
+ 
 }
-
-

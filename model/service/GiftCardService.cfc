@@ -57,7 +57,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
+	public function processGiftCard_create(required any giftCard, required any processObject){
+		
+	}
 	
+	public function processGiftCard_addCredit(required any giftCard, required any processObject){
+		
+	}
+	
+	public function processGiftCard_addDebit(required any giftCard, required any processObject){
+		
+	}
 	// =====================  END: Process Methods ============================
 	
 	// ====================== START: Save Overrides ===========================

@@ -79,6 +79,44 @@ component displayname="Gift Card Transaction" entityname="SlatwallGiftCardTransa
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
+	// Order Payments (many-to-one)
+	public void function setOrderPayment(required any orderPayment) {
+		variables.orderPayment = arguments.orderPayment;
+		if(isNew() or !arguments.orderPayment.hasGiftCardTransaction( this )) {
+			arrayAppend(arguments.orderPayment.getGiftCardTransactions(), this);
+		}
+	}
+	
+	public void function removeOrderPayment(any orderPayment) {
+		if(!structKeyExists(arguments, "orderPayment")) {
+			arguments.orderPayment = variables.orderPayment;
+		}
+		var index = arrayFind(arguments.orderPayment.getGiftCardTransactions(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderPayment.getGiftCardTransactions(), index);
+		}
+		structDelete(variables, "orderPayment");
+	}
+	
+	// Gift Cards (many-to-one)
+	public void function setGiftCard(required any giftCard) {
+		variables.giftCard = arguments.giftCard;
+		if(isNew() or !arguments.giftCard.hasGiftCardTransaction( this )) {
+			arrayAppend(arguments.giftCard.getGiftCardTransactions(), this);
+		}
+	}
+	
+	public void function removeGiftCard(any giftCard) {
+		if(!structKeyExists(arguments, "giftCard")) {
+			arguments.giftCard = variables.giftCard;
+		}
+		var index = arrayFind(arguments.giftCard.getGiftCardTransactions(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.giftCard.getGiftCardTransactions(), index);
+		}
+		structDelete(variables, "giftCard");
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================

@@ -87,6 +87,33 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
+	// Order Item (many-to-one)
+	public void function setOriginalOrderItem(required any orderItem) {
+		variables.orderItem = arguments.orderItem;
+		if(isNew() or !arguments.orderItem.hasGiftCard( this )) {
+			arrayAppend(arguments.orderItem.getGiftCards(), this);
+		}
+	}
+	public void function removeOriginalOrderItem(any orderItem) {
+		if(!structKeyExists(arguments, "orderItem")) {
+			arguments.orderItem = variables.orderItem;
+		}
+		var index = arrayFind(arguments.orderItem.getGiftCards(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderItem.getGiftCards(), index);
+		}
+		structDelete(variables, "orderItem");
+	}
+	
+	// Gift Card Transactions (one-to-many)
+	public void function addGiftCardTransaction(required any giftCardTransaction){ 
+		arguments.giftCardTransaction.setGiftCard( this );  
+	}
+	
+	public void function removeGiftCardTransaction(required any giftCardTransaction){ 
+		arguments.giftCardTransaction.removeGiftCard( this ); 
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
 	// =============== START: Custom Validation Methods ====================

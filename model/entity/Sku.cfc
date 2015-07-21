@@ -67,7 +67,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
 	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
 	property name="redemptionAmountType" ormtype="string" hb_formFieldType="select" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage"  hb_formatType="rbKey";
-	property name="redemptionAmount" ormtype="big_decimal" hint="value to be used in calculation conjuciton with redeptionAmountType";
+	property name="redemptionAmountPercentage" ormtype="float" hint="the percentage to use if type is set to percentage";
+	property name="redemptionAmount" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
 	
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
@@ -213,6 +214,31 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		} else {
 			return variables.purchaseEndDateTime;
 		}
+	}
+	
+	//returns gift card redemption amount, or 0 if incorrectly configured
+	public any function getGiftCardRedemptionAmount(){
+		if(structKeyExists(variables, "redemptionAmountType")){ 
+			switch(variables.redemptionAmountType){ 
+				case "sameAsPrice": 
+					return variables.price; 
+					break; 
+				case "fixedAmount": 
+					if(structKeyExists(variables, "redemptionAmount")){
+						return variables.redemptionAmount; 
+					}
+					break; 
+				case "percentage": 
+					if(structKeyExists(variables, "redemptionAmountPercentage") && structKeyExists(variables, "redemptionAmount")){ 
+						return variables.redemptionAmount * variables.redemptionAmountPercentage; 
+					}
+					break; 
+				default: 
+					return 0; 
+					break;
+			}
+		} 
+		return 0; 
 	}
 	
 	// START: Image Methods
