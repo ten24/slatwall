@@ -17,6 +17,8 @@ angular.module('slatwalladmin').factory('slatwallInterceptor', ['$q', '$log', 'a
         config.data = $.param(params);
         delete config.params;
         config.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      } else if (config.method == 'GET' && config.url.indexOf('.html') > 0 && config.url.indexOf('admin/client/partials') > 0) {
+        config.url = config.url + '?instantiationKey=' + $.slatwall.getConfig().instantiationKey;
       }
       return config;
     },
