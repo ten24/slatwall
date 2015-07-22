@@ -56,15 +56,15 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 	
 	public void function test_gift_card_relation(){ 
-		termData = {
+		var termData = {
 			termID=""
 		}; 
 
-		giftCardData = { 
+		var giftCardData = { 
 			giftCardID=""
 		}; 
-		term = createPersistedTestEntity('term', termData); 
-		giftCard = createPersistedTestEntity('giftCard', giftCardData); 
+		var term = createPersistedTestEntity('term', termData); 
+		var giftCard = createPersistedTestEntity('giftCard', giftCardData); 
 
 		term.addGiftCard(giftCard); 
 

@@ -107,16 +107,16 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	}
 
 	public void function test_term_relation(){
-		termData = {
+		var termData = {
 			termID=""
 		};
 
-		giftCardData = {
+		var giftCardData = {
 			giftCardID=""
 		};
 
-		term = createPersistedTestEntity('term', termData);
-		giftCard = createPersistedTestEntity('giftCard', giftCardData);
+		var term = createPersistedTestEntity('term', termData);
+		var giftCard = createPersistedTestEntity('giftCard', giftCardData);
 
 		giftCard.setGiftCardExpirationTerm(term);
 
@@ -127,4 +127,24 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertFalse(giftCard.hasGiftCardExpirationTerm(term));
 
 	}
+
+	public void function test_owner_account_relation(){
+		var giftCardData = {
+			giftCardID=""
+		};
+		var ownerAccountData = {
+			accountID=""
+		};
+		var giftCard = createPersistedTestEntity('giftCard', giftCardData);
+		var ownerAccount = createPersistedTestEntity('account', ownerAccountData);
+
+		giftCard.setOwnerAccount(ownerAccount);
+
+		assertTrue(giftCard.hasOwnerAccount(ownerAccount));
+
+		giftCard.removeOwnerAccount(ownerAccount);
+
+		assertFalse(giftCard.hasOwnerAccount(ownerAccount));
+	}
+
 }

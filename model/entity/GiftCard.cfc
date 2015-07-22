@@ -123,6 +123,24 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		structDelete(variables, "giftCardExpirationTerm");
 	}
 
+	// Owner Account (many-to-one)
+	public void function setOwnerAccount(required any ownerAccount) {
+		variables.ownerAccount = arguments.ownerAccount;
+		if(isNew() or !arguments.ownerAccount.hasGiftCard( this )) {
+			arrayAppend(arguments.ownerAccount.getGiftCards(), this);
+		}
+	}
+	public void function removeOwnerAccount(any ownerAccount) {
+		if(!structKeyExists(arguments, "ownerAccount")) {
+			arguments.ownerAccount = variables.ownerAccount;
+		}
+		var index = arrayFind(arguments.ownerAccount.getGiftCards(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.ownerAccount.getGiftCards(), index);
+		}
+		structDelete(variables, "ownerAccount");
+	}
+
 	// Gift Card Transactions (one-to-many)
 	public void function addGiftCardTransaction(required any giftCardTransaction){
 		arguments.giftCardTransaction.setGiftCard( this );
