@@ -2,7 +2,7 @@
 /// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 
 module slatwallAdmin{
-    angular.module('slatwalladmin', ['ngSlatwall','ui.bootstrap','ngAnimate','ngRoute','ngCkeditor']).
+    angular.module('slatwalladmin', ['ngSlatwall','ngModel','ui.bootstrap','ngAnimate','ngRoute','ngCkeditor']).
     config(
     	["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig',
     	function ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$injector,$locationProvider,datepickerConfig, datepickerPopupConfig

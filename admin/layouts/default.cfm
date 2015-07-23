@@ -384,9 +384,11 @@ Notes:
 		</script>
 		
 		<!--- Load up the Slatwall Angular Provider --->
-		
-
 		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngslatwall&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
+		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngmodel&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
+		
+		
+		
 		<cfif request.slatwallScope.getApplicationValue('debugFlag')>
 			<cfset es5scriptPath = expandPath('/#request.slatwallScope.getDao('hibachiDao').getApplicationKey()#/admin/client/js/es5/')>
 			<cfdirectory name="es5Javascript" 
@@ -458,6 +460,7 @@ Notes:
 	                }),
 		        	headers:{'Content-Type': 'application/x-www-form-urlencoded'}
 		        });
+		        console.log(exception);
 			}
 
 		</script>
