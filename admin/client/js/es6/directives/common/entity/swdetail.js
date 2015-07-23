@@ -1,6 +1,7 @@
 'use strict';
 //Thanks to AdamMettro
-angular.module('slatwalladmin').directive('swDetail', [
+angular.module('slatwalladmin')
+    .directive('swDetail', [
     '$location',
     '$log',
     '$slatwall',

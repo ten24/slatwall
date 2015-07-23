@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swColumnItem', [
+angular.module('slatwalladmin')
+    .directive('swColumnItem', [
     '$http',
     '$compile',
     '$templateCache',

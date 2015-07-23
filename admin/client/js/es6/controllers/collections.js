@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').controller('collections', [
+angular.module('slatwalladmin')
+    .controller('collections', [
     '$scope',
     '$location',
     '$log',
@@ -92,8 +93,7 @@ angular.module('slatwalladmin').controller('collections', [
                 if (angular.isUndefined($scope.collectionConfig.filterGroups)) {
                     $scope.collectionConfig.filterGroups = [
                         {
-                            filterGroup: [
-                            ]
+                            filterGroup: []
                         }
                     ];
                 }
@@ -133,9 +133,11 @@ angular.module('slatwalladmin').controller('collections', [
             if (!angular.isDefined(filterGroupArray)) {
                 filterGroupArray = $scope.collectionConfig.filterGroups[0].filterGroup;
             }
+            //Start out loop
             for (var index in filterGroupArray) {
                 //If filter isn't new then increment the count
-                if (!filterGroupArray[index].$$isNew && !angular.isDefined(filterGroupArray[index].filterGroup)) {
+                if (!filterGroupArray[index].$$isNew
+                    && !angular.isDefined(filterGroupArray[index].filterGroup)) {
                     filterItemCount++;
                 }
                 else if (angular.isDefined(filterGroupArray[index].filterGroup)) {

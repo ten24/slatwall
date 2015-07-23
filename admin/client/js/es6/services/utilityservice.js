@@ -1,6 +1,7 @@
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 'use strict';
-angular.module('slatwalladmin').factory('utilityService', [
+angular.module('slatwalladmin')
+    .factory('utilityService', [
     function () {
         //declare public and private variables
         //Define our contexts and validation property enums.

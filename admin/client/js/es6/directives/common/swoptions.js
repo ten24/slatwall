@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swOptions', [
+angular.module('slatwalladmin')
+    .directive('swOptions', [
     '$log',
     '$slatwall',
     'observerService',
@@ -24,7 +25,8 @@ angular.module('slatwalladmin').directive('swOptions', [
                             "propertyIdentifier": scope.swOptions.object.$$getIDName()
                         }
                     ];
-                    $slatwall.getEntity(scope.swOptions.objectName, { allRecords: true, columnsConfig: angular.toJson(columnsConfig) }).then(function (value) {
+                    $slatwall.getEntity(scope.swOptions.objectName, { allRecords: true, columnsConfig: angular.toJson(columnsConfig) })
+                        .then(function (value) {
                         scope.swOptions.options = value.records;
                         observerService.notify('optionsLoaded');
                     });

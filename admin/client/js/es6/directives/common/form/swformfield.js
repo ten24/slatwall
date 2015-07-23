@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swFormField', [
+angular.module('slatwalladmin')
+    .directive('swFormField', [
     '$log',
     '$templateCache',
     '$window',

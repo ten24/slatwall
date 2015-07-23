@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swWorkflowTask', [
+angular.module('slatwalladmin')
+    .directive('swWorkflowTask', [
     '$log',
     '$location',
     '$timeout',

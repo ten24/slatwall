@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swContentBasic', [
+angular.module('slatwalladmin')
+    .directive('swContentBasic', [
     '$log',
     '$routeParams',
     '$slatwall',

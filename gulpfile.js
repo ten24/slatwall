@@ -234,7 +234,7 @@ gulp.task('default', function(){
 		'compile-ts'
 		,'gen-ts-refs'
 		,'traceur'
-		//,'compress'
+		,'compress'
 		,'watch'
 	);
 });

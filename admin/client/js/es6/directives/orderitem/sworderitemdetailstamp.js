@@ -3,7 +3,8 @@
  * @module slatwalladmin
  * @class swOrderItemsShippingLabelStamp
  */
-angular.module('slatwalladmin').directive('swOrderItemDetailStamp', [
+angular.module('slatwalladmin')
+    .directive('swOrderItemDetailStamp', [
     'partialsPath',
     '$log',
     '$slatwall',
@@ -34,6 +35,7 @@ angular.module('slatwalladmin').directive('swOrderItemDetailStamp', [
                  * Subscription: Subscription Term, Subscription Benefits
                  */
                 var getMerchandiseDetails = function (orderItem) {
+                    //Get option and option groups
                     for (var i = 0; i <= orderItem.data.sku.data.options.length - 1; i++) {
                         orderItem.details.push(orderItem.data.sku.data.options[i].optionCode);
                         orderItem.details.push(orderItem.data.sku.data.options[i].optionName);
@@ -44,6 +46,7 @@ angular.module('slatwalladmin').directive('swOrderItemDetailStamp', [
                     var name = orderItem.data.sku.data.subscriptionTerm.data.subscriptionTermName || "";
                     orderItem.detailsName.push("Subscription Term:");
                     orderItem.details.push(name);
+                    //Maybe multiple benefits so show them all.
                     for (var i = 0; i <= orderItem.data.sku.data.subscriptionBenefits.length - 1; i++) {
                         var benefitName = orderItem.data.sku.data.subscriptionBenefits[i].subscriptionBenefitName || "";
                         orderItem.detailsName.push("Subscription Benefit:");
@@ -54,6 +57,7 @@ angular.module('slatwalladmin').directive('swOrderItemDetailStamp', [
                     //get event date, and event location
                     orderItem.detailsName.push("Event Date: ");
                     orderItem.details.push(orderItem.data.sku.data.eventStartDateTime);
+                    //Need to iterate this.
                     for (var i = 0; i <= orderItem.data.sku.data.locations.length - 1; i++) {
                         orderItem.detailsName.push("Location: ");
                         orderItem.details.push(orderItem.data.sku.data.locations[i].locationName);
