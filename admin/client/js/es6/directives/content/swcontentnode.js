@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swContentNode', [
+angular.module('slatwalladmin')
+    .directive('swContentNode', [
     '$log',
     '$compile',
     '$slatwall',
@@ -20,34 +21,46 @@ angular.module('slatwalladmin').directive('swContentNode', [
                     scope.depth = scope.$parent.depth + 1;
                 }
                 var childContentColumnsConfig = [{
-                    propertyIdentifier: '_content.contentID',
-                    isVisible: false,
-                    isSearchable: false
-                }, {
-                    propertyIdentifier: '_content.title',
-                    isVisible: true,
-                    isSearchable: true
-                }, {
-                    propertyIdentifier: '_content.site.siteID',
-                    isVisible: false,
-                    isSearchable: false
-                }, {
-                    propertyIdentifier: '_content.site.siteName',
-                    isVisible: true,
-                    isSearchable: true
-                }, {
-                    propertyIdentifier: '_content.allowPurchaseFlag',
-                    isVisible: true,
-                    isSearchable: true
-                }, {
-                    propertyIdentifier: '_content.productListingPageFlag',
-                    isVisible: true,
-                    isSearchable: true
-                }, {
-                    propertyIdentifier: '_content.activeFlag',
-                    isVisible: true,
-                    isSearchable: true
-                }];
+                        propertyIdentifier: '_content.contentID',
+                        isVisible: false,
+                        isSearchable: false
+                    },
+                    {
+                        propertyIdentifier: '_content.title',
+                        isVisible: true,
+                        isSearchable: true
+                    },
+                    {
+                        propertyIdentifier: '_content.site.siteID',
+                        isVisible: false,
+                        isSearchable: false
+                    },
+                    {
+                        propertyIdentifier: '_content.site.siteName',
+                        isVisible: true,
+                        isSearchable: true
+                    },
+                    //                            {
+                    //                                propertyIdentifier: '_content.contentTemplateFile',
+                    //                                persistent: false,
+                    //                                setting: true,
+                    //                                isVisible: true
+                    //                            },
+                    //need to get template via settings
+                    {
+                        propertyIdentifier: '_content.allowPurchaseFlag',
+                        isVisible: true,
+                        isSearchable: true
+                    }, {
+                        propertyIdentifier: '_content.productListingPageFlag',
+                        isVisible: true,
+                        isSearchable: true
+                    }, {
+                        propertyIdentifier: '_content.activeFlag',
+                        isVisible: true,
+                        isSearchable: true
+                    }
+                ];
                 var childContentOrderBy = [
                     {
                         "propertyIdentifier": "_content.sortOrder",
@@ -67,12 +80,12 @@ angular.module('slatwalladmin').directive('swContentNode', [
                 };
                 scope.getChildContent = function (parentContentRecord) {
                     var childContentfilterGroupsConfig = [{
-                        "filterGroup": [{
-                            "propertyIdentifier": "_content.parentContent.contentID",
-                            "comparisonOperator": "=",
-                            "value": parentContentRecord.contentID
-                        }]
-                    }];
+                            "filterGroup": [{
+                                    "propertyIdentifier": "_content.parentContent.contentID",
+                                    "comparisonOperator": "=",
+                                    "value": parentContentRecord.contentID
+                                }]
+                        }];
                     var collectionListingPromise = $slatwall.getEntity('Content', {
                         columnsConfig: angular.toJson(childContentColumnsConfig),
                         filterGroupsConfig: angular.toJson(childContentfilterGroupsConfig),
@@ -97,7 +110,6 @@ angular.module('slatwalladmin').directive('swContentNode', [
                 }
             }
         };
-    }
-]);
+    }]);
 
 //# sourceMappingURL=../../directives/content/swcontentnode.js.map

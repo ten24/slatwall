@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swContentList', [
+angular.module('slatwalladmin')
+    .directive('swContentList', [
     '$log',
     '$timeout',
     '$slatwall',
@@ -34,6 +35,14 @@ angular.module('slatwalladmin').directive('swContentList', [
                             ormtype: 'id',
                             isSearchable: false
                         },
+                        //                        {
+                        //                            propertyIdentifier:'_content.contentTemplateFile',
+                        //                            persistent:false,
+                        //                            setting:true,
+                        //                            isVisible:true,
+                        //                            isSearchable:false
+                        //                        },
+                        //need to get template via settings
                         {
                             propertyIdentifier: '_content.allowPurchaseFlag',
                             isVisible: true,
@@ -171,7 +180,6 @@ angular.module('slatwalladmin').directive('swContentList', [
                 });
             }
         };
-    }
-]);
+    }]);
 
 //# sourceMappingURL=../../directives/content/swcontentlist.js.map

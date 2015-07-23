@@ -117,11 +117,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}
 		
 		var collection = arguments.propertyIdentifier;
-		var property = '';
+		var propertyKey = '';
 		
 		if(arguments.propertyIdentifier.contains('.')){
 			collection = Mid(arguments.propertyIdentifier, 1, arguments.propertyIdentifier.lastIndexOf("."));
-			property = "." & ListLast(arguments.propertyIdentifier, '.');	
+			propertyKey = "." & ListLast(arguments.propertyIdentifier, '.');	
 		}
 		
 		
@@ -141,8 +141,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			join['associationName'] = arguments.propertyIdentifier;
 			join['alias'] = BuildPropertyIdentifier(alias, arguments.propertyIdentifier);
 			doJoin = true;
-		}else if(property != ''){
-			filterGroup['propertyIdentifier'] =  BuildPropertyIdentifier(alias, collection)  & property;
+		}else if(propertyKey != ''){
+			filterGroup['propertyIdentifier'] =  BuildPropertyIdentifier(alias, collection)  & propertyKey;
 			join['associationName'] = collection;
 			join['alias'] = BuildPropertyIdentifier(alias, collection);
 			doJoin = true;
@@ -153,7 +153,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(arraylen(collectionConfig.filterGroups[1].filterGroup)){
 			filterGroup.logicalOperator=arguments.logicalOperator;
 		}
-		//check if the property is an attribute
+		//check if the propertyKey is an attribute
 		var hasAttribute = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(
 			entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
 			propertyIdentifier=arguments.propertyIdentifier
@@ -199,7 +199,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(!structKeyExists(collectionConfig,'columns')){
 			collectionConfig.columns = [];
 		}
-		//check if the property is an attribute
+		//check if the propertyKey is an attribute
 		var hasAttribute = getService('hibachiService').getHasAttributeByEntityNameAndPropertyIdentifier(
 			entityName=getService('hibachiService').getProperlyCasedFullEntityName(getCollectionObject()),
 			propertyIdentifier=arguments.displayProperty
@@ -235,11 +235,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var join = {};
 		var doJoin = false;
 		var collection = arguments.propertyIdentifier;
-		var property = '';
+		var propertyKey = '';
 		
 		if(arguments.propertyIdentifier.contains('.')){
 			collection = Mid(arguments.propertyIdentifier, 1, arguments.propertyIdentifier.lastIndexOf("."));
-			property = "." & ListLast(arguments.propertyIdentifier, '.');
+			propertyKey = "." & ListLast(arguments.propertyIdentifier, '.');
 		}
 		
 		var column = {
@@ -258,7 +258,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			var lastEntityName = getService('hibachiService').getLastEntityNameInPropertyIdentifier(getCollectionObject(), arguments.propertyIdentifier);
 			var isOneToMany = structKeyExists(getService('hibachiService').getPropertiesStructByEntityName(lastEntityName)[listLast(arguments.propertyIdentifier,'.')],'singularname');
 			
-			//if is a one-to-many property then add a groupby
+			//if is a one-to-many propertyKey then add a groupby
 			if(isOneToMany){
 				addGroupBy(alias);
 			}
@@ -267,8 +267,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			join['associationName'] = arguments.propertyIdentifier;
 			join['alias'] = column.propertyIdentifier;
 			doJoin = true;
-		}else if(property != ''){
-			column['propertyIdentifier'] = BuildPropertyIdentifier(alias, collection)  & property;
+		}else if(propertyKey != ''){
+			column['propertyIdentifier'] = BuildPropertyIdentifier(alias, collection)  & propertyKey;
 			join['associationName'] = collection;
 			join['alias'] = BuildPropertyIdentifier(alias, collection);
 			doJoin = true;
@@ -368,11 +368,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					var columnStruct = {};
 					columnStruct['propertyIdentifier'] = '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject)) & '.' & defaultProperty.name;
 					columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
-					//if property is a primary id, hide it and make it so it can't be deleted
+					//if propertyKey is a primary id, hide it and make it so it can't be deleted
 					if(structKeyExists(defaultProperty,"fieldtype") && defaultProperty.fieldtype == 'id'){
 						columnStruct['isDeletable'] = false;
 						columnStruct['isVisible'] = false;
-					//if property is a config of json hide it
+					//if propertyKey is a config of json hide it
 					}else if(structKeyExists(defaultProperty,"hb_formFieldType") && defaultProperty.hb_formFieldType == 'json'){
 						columnStruct['isDeletable'] = true;
 						columnStruct['isVisible'] = false;
@@ -601,7 +601,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private string function getFilterGroupHQL(required array filterGroup){
 		var filterGroupHQL = '';
 		for(var filter in arguments.filterGroup){
-			//add property and value to HQLParams
+			//add propertyKey and value to HQLParams
 			//if using a like parameter we need to add % to the value using angular
 			var logicalOperator = '';
 			if(structKeyExists(filter,"logicalOperator")){

@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swSelection', [
+angular.module('slatwalladmin')
+    .directive('swSelection', [
     '$log',
     'selectionService',
     'partialsPath',

@@ -17,6 +17,7 @@
 	<!--- Definition Properties --->
 	<cfproperty name="metricDefinitions" />
 	<cfproperty name="dimensionDefinitions" />
+	<cfproperty name="orderByType" />
 	<cfproperty name="reportDateTimeDefinitions" />
 	
 	<!--- Metric / Dimension States --->
@@ -748,6 +749,7 @@
 	</cffunction>
 	
 	<cffunction name="getTableDataQuery" access="public" output="false">
+		
 		<cfif not structKeyExists(variables, "tableDataQuery")>
 			
 			<cfset var data = getData() />
@@ -760,7 +762,6 @@
 			<cfset var m = 1 />
 			<cfset var d = 1 />
 			<cfset var reportEndDateTimePlusOne = dateAdd("d", 1, getReportEndDateTime()) />
-			
 			<cfquery name="unsortedData" dbtype="query">
 				SELECT
 					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
@@ -797,6 +798,7 @@
 			</cfquery>
 			
 			<cfif getReportCompareFlag()>
+				
 				<cfset var reportCompareEndDateTimePlusOne = dateAdd("d", 1, getReportCompareEndDateTime()) />
 				
 				<cfquery name="unsortedCompareData" dbtype="query">
@@ -911,11 +913,18 @@
 				FROM
 					allUnsortedData
 				ORDER BY
+				<cfif getOrderByType() EQ "dimensions">	
+					<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
+						<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />
+						<cfif d gt 1>,</cfif>#dimensionDefinition.alias# DESC
+					</cfloop>
+				<cfelse>
 					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
 						<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
 						<cfif m gt 1>,</cfif>#metricDefinition.alias# DESC
 					</cfloop>
-			</cfquery>
+				</cfif>
+			</cfquery>	
 		</cfif>
 		
 		<cfreturn variables.tableDataQuery />

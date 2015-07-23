@@ -3,7 +3,8 @@
  * @module slatwalladmin
  * @class swOrderItemsShippingLabelStamp
  */
-angular.module('slatwalladmin').directive('swoishippinglabelstamp', [
+angular.module('slatwalladmin')
+    .directive('swoishippinglabelstamp', [
     'partialsPath',
     '$log',
     function (partialsPath, $log) {

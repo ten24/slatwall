@@ -1,7 +1,8 @@
 /**
  * Handles adding, editing, and deleting Workflows Tasks.
  */
-angular.module('slatwalladmin').directive('swWorkflowTasks', [
+angular.module('slatwalladmin')
+    .directive('swWorkflowTasks', [
     '$log',
     '$location',
     '$slatwall',

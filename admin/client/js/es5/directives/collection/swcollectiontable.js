@@ -12,8 +12,8 @@ angular.module('slatwalladmin').directive('swCollectionTable', ['$http', '$compi
       scope.collectionObject = $slatwall['new' + scope.collection.collectionObject]();
       scope.$watch('collection.pageRecords', function() {
         for (var record in scope.collection.pageRecords) {
-          var _detailLink = void 0;
-          var _editLink = void 0;
+          var _detailLink;
+          var _editLink;
           var _pageRecord = scope.collection.pageRecords[record];
           var _objectID = _pageRecord[scope.collectionObject.$$getIDName()];
           _detailLink = "?slatAction=entity.detail" + scope.collection.collectionObject + "&" + scope.collectionObject.$$getIDName() + '=' + _objectID;

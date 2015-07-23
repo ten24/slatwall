@@ -1,6 +1,7 @@
 'use strict';
 //Thanks to AdamMettro
-angular.module('slatwalladmin').directive('swList', [
+angular.module('slatwalladmin')
+    .directive('swList', [
     '$log',
     '$slatwall',
     'partialsPath',

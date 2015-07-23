@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swDirective', [
+angular.module('slatwalladmin')
+    .directive('swDirective', [
     '$compile',
     function ($compile) {
         return {

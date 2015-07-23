@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swCollection', [
+angular.module('slatwalladmin')
+    .directive('swCollection', [
     '$http',
     '$compile',
     '$log',
