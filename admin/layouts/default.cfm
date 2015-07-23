@@ -459,6 +459,7 @@ Notes:
 	                }),
 		        	headers:{'Content-Type': 'application/x-www-form-urlencoded'}
 		        });
+		        console.log(exception);
 			}
 
 		</script>
