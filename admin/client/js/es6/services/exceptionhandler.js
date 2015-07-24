@@ -18,6 +18,7 @@ var logger;
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
                 }).error(function (data) {
                     alertService.addAlert({ msg: exception, type: 'error' });
+                    console.log(exception);
                 });
             };
         }]);

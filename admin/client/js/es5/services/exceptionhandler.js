@@ -19,6 +19,7 @@ var logger;
           msg: exception,
           type: 'error'
         });
+        console.log(exception);
       });
     };
   }]);
