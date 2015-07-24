@@ -68,7 +68,6 @@ Notes:
 			.provider('$slatwall',[ 
 			function(){
 				var _deferred = {};
-				
 				var _config = {
 					dateFormat : 'MM/DD/YYYY',
 					timeFormat : 'HH:MM',
@@ -107,6 +106,12 @@ Notes:
 				    	)
 				    {
 				    	var slatwallService = {
+				    		setJsEntities: function(jsEntities){
+						    	_jsEntities=jsEntities;
+						    },
+						    getJsEntities: function(){
+						    	return _jsEntities;
+						    },
 				    		//service method used to transform collection data to collection objects based on a collectionconfig
 				    		populateCollection:function(collectionData,collectionConfig){
 				    			//create array to hold objects
@@ -607,7 +612,6 @@ Notes:
 								}
 								return metaData.$$getRBKey('entity.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
 							}else if(metaData.isProcessObject){
-								console.log('is porceses boject');
 								if(angular.isDefined(propertyMetaData.fieldtype) 
 									&& angular.isDefined(propertyMetaData.cfc) 
 									&& ["one-to-many","many-to-many"].indexOf(propertyMetaData.fieldtype) > -1
@@ -1244,12 +1248,6 @@ Notes:
 					
 			      return slatwallService;
 		       }],
-			    setJsEntities: function(jsEntities){
-			    	_jsEntities=jsEntities;
-			    },
-			    getJsEntities: function(){
-			    	return _jsEntities;
-			    },
 			    getConfig:function(){
 			    	return _config;
 			    },
