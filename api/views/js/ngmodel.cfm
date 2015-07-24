@@ -73,10 +73,14 @@ Notes:
                 var entities = {};
                 var validations = {};
                 <cfloop array="#rc.entities#" index="local.entity">
+                	<cfcontent type="text/javascript">
+                	<cfdump var="#local.entity.getPropertiesStruct()#">
+                	
                 	entities['#local.entity.getClassName()#'] = #serializeJson(local.entity.getPropertiesStruct())#;
                 	entities['#local.entity.getClassName()#'].className = '#local.entity.getClassName()#';
                 	validations['#local.entity.getClassName()#'] = #serializeJSON($.slatwall.getService('hibachiValidationService').getValidationStruct(local.entity))#;
                 </cfloop>
+                <cfabort>
                 angular.forEach(entities,function(entity){
                 	
                 	$delegate['get'+entity.className] = function(options){
