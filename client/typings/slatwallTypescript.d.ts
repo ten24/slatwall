@@ -12,9 +12,12 @@
 /// <reference path="../../admin/client/ts/controllers/routercontroller.ts" />
 /// <reference path="../../admin/client/ts/model/access.ts" />
 /// <reference path="../../admin/client/ts/model/alert.ts" />
+<<<<<<< HEAD
 /// <reference path="../../admin/client/ts/model/cfcomponent.ts" />
 /// <reference path="../../admin/client/ts/model/cfproperty.ts" />
 /// <reference path="../../admin/client/ts/model/collectionconfig.ts" />
+=======
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
 /// <reference path="../../admin/client/ts/modules/loggingmodule.ts" />
 /// <reference path="../../admin/client/ts/modules/slatwalladmin.ts" />
 /// <reference path="../../admin/client/ts/services/alertservice.ts" />
@@ -31,6 +34,10 @@
 /// <reference path="../../admin/client/ts/services/slatwallInterceptor.ts" />
 /// <reference path="../../admin/client/ts/services/utilityservice.ts" />
 /// <reference path="../../admin/client/ts/services/workflowconditionservice.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontentbasic.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontenteditor.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontentlist.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontentnode.ts" />
 /// <reference path="../../admin/client/ts/directives/collection/swaddfilterbuttons.ts" />
 /// <reference path="../../admin/client/ts/directives/collection/swcollection.ts" />
 /// <reference path="../../admin/client/ts/directives/collection/swcollectiontable.ts" />
