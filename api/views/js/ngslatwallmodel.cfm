@@ -73,16 +73,11 @@ Notes:
                 var entities = {};
                 var validations = {};
                 <cfloop array="#rc.entities#" index="local.entity">
-                	<cfcontent type="text/javascript">
-                	<cfdump var="#local.entity.getPropertiesStruct()#">
-                	
                 	entities['#local.entity.getClassName()#'] = #serializeJson(local.entity.getPropertiesStruct())#;
                 	entities['#local.entity.getClassName()#'].className = '#local.entity.getClassName()#';
                 	validations['#local.entity.getClassName()#'] = #serializeJSON($.slatwall.getService('hibachiValidationService').getValidationStruct(local.entity))#;
                 </cfloop>
-                <cfabort>
                 angular.forEach(entities,function(entity){
-                	
                 	$delegate['get'+entity.className] = function(options){
 						var entityInstance = $delegate.newEntity(entity.className);
 						var entityDataPromise = $delegate.getEntity(entity.className.toLowerCase(),options);
@@ -187,7 +182,7 @@ Notes:
 						
 						
 						angular.forEach(entity,function(property){
-							if(angular.isObject(property)){
+							if(angular.isObject(property) && angular.isDefined(property.name)){
 								<!---original !structKeyExists(local.property, "persistent") && ( !structKeyExists(local.property,"fieldtype") || listFindNoCase("column,id", local.property.fieldtype) ) --->
 								if(angular.isUndefined(property.persistent) && (angular.isUndefined(property.fieldtype) || ['column','id'].indexOf(property.fieldtype) >= 0)){
 									<!--- Find the default value for this property --->
@@ -288,7 +283,7 @@ Notes:
 						}
 					}})(entity);
 					angular.forEach(entity,function(property){
-						if(angular.isObject(property)){
+						if(angular.isObject(property) && angular.isDefined(property.name)){
 							if(angular.isUndefined(property.persistent)){
 								if(angular.isDefined(property.fieldtype)){
 									if(['many-to-one'].indexOf(property.fieldtype) >= 0){
@@ -514,6 +509,7 @@ Notes:
 		 }]);		
 		</cfoutput>
 	</cfsavecontent>
+	
 	<cfset ORMClearSession()>
 	<cfif request.slatwallScope.getApplicationValue('debugFlag')>
 		<cfset getPageContext().getOut().clearBuffer() />
@@ -555,7 +551,11 @@ Notes:
 <cfelse>
 	<cfset local.jsOutput = request.slatwallScope.getApplicationValue('ngModel')>
 </cfif>
-
+<cfscript>
+	local.filePath = expandPath('/') & 'admin/client/ts/modules/ngslatwallmodel.ts';
+	fileWrite(local.filePath,local.jsOutput);	
+</cfscript>
+<!---
 <cfif request.slatwallScope.getApplicationValue('debugFlag')  || !request.slatwallScope.getApplicationValue('gzipJavascript')>
 	<cfoutput>#local.jsOutput#</cfoutput>
 <cfelse>
@@ -563,4 +563,4 @@ Notes:
 	<cfheader name="Content-Length" value="#ArrayLen(local.jsOutput)#" >
 	<cfcontent reset="yes" variable="#local.jsOutput#" />
 	<cfabort />
-</cfif>
+</cfif>--->

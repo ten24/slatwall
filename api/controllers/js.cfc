@@ -135,7 +135,7 @@
 		}
 	
 	</cfscript>
-	<cffunction name="ngmodel">
+	<cffunction name="ngslatwallmodel">
 		<cfscript>
 			rc.entities = [];
 			var processContextsStruct = rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntitiesProcessContexts();
