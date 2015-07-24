@@ -117,7 +117,7 @@ component extends="HibachiService" accessors="true" {
 			for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
 
 				var locationConfiguration = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
-				eventCapacity += val(locationConfiguration.getLocationConfigurationCapacity());
+				eventCapacity += locationConfiguration.getLocationConfigurationCapacity();
 
 				if(preEventRegistrationMinutes < locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime')) {
 					preEventRegistrationMinutes = locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime');
@@ -168,7 +168,7 @@ component extends="HibachiService" accessors="true" {
 				newSku.setEventEndDateTime( createODBCDateTime(arguments.endDateTime) );
 
 				newSku.addLocationConfiguration( locationConfiguration );
-				if(!isNull(locationConfiguration.getLocationConfigurationCapacity()) && locationConfiguration.getLocationConfigurationCapacity() > 0 ){
+				if(locationConfiguration.getLocationConfigurationCapacity() > 0 && !isNull(locationConfiguration.getLocationConfigurationCapacity())){
 					newSku.setEventCapacity( locationConfiguration.getLocationConfigurationCapacity() );
 				} else {
 					newSku.setEventCapacity(1);
