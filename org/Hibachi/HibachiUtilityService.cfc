@@ -157,7 +157,48 @@
 			
 			return arguments.data;
 		}
-		
+		//evaluate double brackets ${{}} and ${()}
+		public string function replaceStringEvaluateTemplate(required string template){
+			var templateKeys = reMatchNoCase("\${{[^}]+}}",arguments.template);
+			var parenthesisTemplateKeys =  reMatchNoCase("\${\([^}]+\)}",arguments.template);
+			
+			var replacementArray = [];
+			var returnString = arguments.template;
+			
+			for(var i=1; i<=arrayLen(templateKeys); i++) {
+				var replaceDetails = {};
+				replaceDetails.key = templateKeys[i];
+				replaceDetails.value = templateKeys[i];
+				
+				var valueKey = replace(replace(templateKeys[i], "${{", ""),"}}","");
+				
+				replaceDetails.value = evaluate(valueKey);
+				arrayAppend(replacementArray, replaceDetails);
+			}
+			
+			for(var i=1; i<=arrayLen(parenthesisTemplateKeys); i++) {
+				var replaceDetails = {};
+				replaceDetails.key = parenthesisTemplateKeys[i];
+				replaceDetails.value = parenthesisTemplateKeys[i];
+				
+				var valueKey = replace(replace(parenthesisTemplateKeys[i], "${(", ""),")}","");
+				
+				replaceDetails.value = evaluate(valueKey);
+				arrayAppend(replacementArray, replaceDetails);
+			}
+			
+			
+			for(var i=1; i<=arrayLen(replacementArray); i++) {
+				returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
+			}
+			
+			if(arraylen(reMatchNoCase("\${{[^}]+}}",returnString))){
+				returnString = replaceStringEvaluateTemplate(returnString);
+			}
+			
+			return returnString;
+		}
+		//replace single brackets ${}
 		public string function replaceStringTemplate(required string template, required any object, boolean formatValues=false, boolean removeMissingKeys=false) {
 			var templateKeys = reMatchNoCase("\${[^}]+}",arguments.template);
 			var replacementArray = [];
@@ -171,14 +212,8 @@
 				var valueKey = replace(replace(templateKeys[i], "${", ""),"}","");
 				if( isStruct(arguments.object) && structKeyExists(arguments.object, valueKey) ) {
 					replaceDetails.value = arguments.object[ valueKey ];
-				} else if (isObject(arguments.object) && (
-					(arguments.object.isPersistent() && getHasPropertyByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
-						||
-					(arguments.object.isPersistent() && getHasAttributeByEntityNameAndPropertyIdentifier(arguments.object.getEntityName(), valueKey))
-						||
-					(!arguments.object.isPersistent() && arguments.object.hasProperty(valueKey))	
-					)) {
-						replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);	
+				} else if (isObject(arguments.object)) {
+					replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);	
 				} else if (arguments.removeMissingKeys) {
 					replaceDetails.value = '';
 				}
@@ -188,6 +223,9 @@
 			
 			for(var i=1; i<=arrayLen(replacementArray); i++) {
 				returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
+			}
+			if(arraylen(reMatchNoCase("\${[^}]+}",returnString))){
+				returnString = replaceStringTemplate(returnString, arguments.object, arguments.formatValues,arguments.removeMissingKeys);
 			}
 			
 			return returnString;
@@ -297,7 +335,7 @@
 			}
 		}
 		
-		private void function copyFile(required string source, required string destination, boolean overwrite=false){
+		public void function copyFile(required string source, required string destination, boolean overwrite=false){
 			var destinationDir = getdirectoryFromPath(arguments.destination);
 			//create directory
 			if(!directoryExists(destinationDir)){

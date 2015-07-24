@@ -20,7 +20,6 @@ angular.module('slatwalladmin').directive('swInput',
 		$log.debug("Name is:" + name + " and form is: " + form);
 		var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
 		$log.debug("Validations: ");
-		console.dir(validations);
 		var validationsForContext = [];
 		
 		//get the form context and the form name.
@@ -37,6 +36,11 @@ angular.module('slatwalladmin').directive('swInput',
 		 * */
 		//check if the contexts match.
 		if (angular.isObject(propertyValidations)){
+            //if this is a procesobject validation then the context is implied
+            if(angular.isUndefined(propertyValidations[0].contexts) && propertyDisplay.object.metaData.isProcessObject){
+                propertyValidations[0].contexts = propertyDisplay.object.metaData.className.split('_')[1];
+            }
+            
 			if (propertyValidations[0].contexts === formContext){
 				$log.debug("Matched");
 				for (var prop in propertyValidations[0]){
@@ -82,10 +86,19 @@ angular.module('slatwalladmin').directive('swInput',
 		    'ng-disabled="!propertyDisplay.editable" '+ 
 		    'ng-show="propertyDisplay.editing" '+
 		    'name="'+propertyDisplay.property+'" ' +
-		    validations+
+		    validations+ 
 		    'id="swinput'+utilityService.createID(26)+'"'+
 			' />';
-		}
+		}else if(propertyDisplay.fieldType === 'password'){
+            template = '<input type="password" class="form-control" '+
+            'ng-model="propertyDisplay.object.data[propertyDisplay.property]" '+
+            'ng-disabled="!propertyDisplay.editable" '+ 
+            'ng-show="propertyDisplay.editing" '+
+            'name="'+propertyDisplay.property+'" ' +
+            validations+
+            'id="swinput'+utilityService.createID(26)+'"'+
+            ' />';
+        }
 		
 		/*else if(propertyDisplay.fieldType === "number"){
 			console.info("Found Number Input");
@@ -114,9 +127,6 @@ angular.module('slatwalladmin').directive('swInput',
 			//renders the template and compiles it
 			element.html(getTemplate(scope.propertyDisplay));
 	        $compile(element.contents())(scope);
-	        
-	        
-	        
 		}
 	};
 } ]);

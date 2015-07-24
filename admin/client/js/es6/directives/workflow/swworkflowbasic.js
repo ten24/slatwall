@@ -10,11 +10,11 @@ angular.module('slatwalladmin').directive('swWorkflowBasic', [
             scope: {
                 workflow: "="
             },
-            templateUrl: workflowPartialsPath + "workflowbasic.html",
+            templateUrl: workflowPartialsPath
+                + "workflowbasic.html",
             link: function (scope, element, attrs) {
             }
         };
-    }
-]);
+    }]);
 
 //# sourceMappingURL=../../directives/workflow/swworkflowbasic.js.map

@@ -57,7 +57,7 @@ Notes:
 		<cfargument name="email" type="any" required="true" />
 		
 		<!--- Send Multipart E-mail --->
-		<cfif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailBodyText())>
+		<cfif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailBodyText()) && len(arguments.email.getEmailTo())>
 			<cfmail to="#arguments.email.getEmailTo()#"
 				from="#arguments.email.getEmailFrom()#"
 				subject="#arguments.email.getEmailSubject()#"
@@ -72,7 +72,7 @@ Notes:
 				</cfmailpart>
 			</cfmail>
 		<!--- Send HTML Only E-mail --->
-		<cfelseif len(arguments.email.getEmailBodyHTML())>
+		<cfelseif len(arguments.email.getEmailBodyHTML()) && len(arguments.email.getEmailTo())>
 			<cfmail to="#arguments.email.getEmailTo()#"
 				from="#arguments.email.getEmailFrom()#"
 				subject="#arguments.email.getEmailSubject()#"
@@ -83,7 +83,7 @@ Notes:
 				<cfoutput>#arguments.email.getEmailBodyHTML()#</cfoutput>
 			</cfmail>
 		<!--- Send Text Only E-mail --->
-		<cfelseif len(arguments.email.getEmailBodyText())>
+		<cfelseif len(arguments.email.getEmailBodyText()) && len(arguments.email.getEmailTo())>
 			<cfmail to="#arguments.email.getEmailTo()#"
 				from="#arguments.email.getEmailFrom()#"
 				subject="#arguments.email.getEmailSubject()#"

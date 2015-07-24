@@ -99,7 +99,7 @@ Notes:
 				
 				<hb:HibachiErrorDisplay object="#rc.processObject#" errorName="orderDeliveryItems" />
 				
-				<table class="table table-striped table-bordered table-condensed">
+				<table class="table table-bordered table-hover">
 					<tr>
 						<th>Sku Code</th>
 						<th class="primary">Product Title</th>

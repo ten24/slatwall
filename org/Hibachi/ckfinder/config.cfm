@@ -50,7 +50,11 @@ config.licenseKey = 'ESB4-VJNP-SPDK-NEJG-X44A-XK1B-S8BC';
  */
 
 //ATTENTION: The trailing slash is required.
-config.baseUrl = "/custom/assets/";
+if(structKeyExists(url,'appCode') && structKeyExists(url,'siteCode')){
+	config.baseUrl = '/custom/apps/#appCode#/#siteCode#/assets/';
+}else{
+	config.baseUrl = "/custom/assets/";
+}
 
 /*
  * config.baseDir : the path to the local directory (in the server) which points to the

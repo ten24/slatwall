@@ -1,0 +1,7 @@
+{
+	"properties":{
+		"appName":								[{"contexts":"save","required":true}],
+		"appCode":								[{"contexts":"save","required":true}],
+		"integration":							[{"contexts":"save","required":true}]
+	}
+}

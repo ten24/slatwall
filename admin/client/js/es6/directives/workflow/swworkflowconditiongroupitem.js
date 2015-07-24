@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swWorkflowConditionGroupItem', [
+angular.module('slatwalladmin')
+    .directive('swWorkflowConditionGroupItem', [
     '$log',
     '$location',
     '$slatwall',

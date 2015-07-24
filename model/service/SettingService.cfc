@@ -100,7 +100,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			sku = ["product.productID", "product.productType.productTypeIDPath&product.brand.brandID", "product.productType.productTypeIDPath"],
 			product = ["productType.productTypeIDPath&brand.brandID", "productType.productTypeIDPath"],
 			productType = ["productTypeIDPath"],
-			content = ["contentIDPath"],
+			content = ["contentIDPath","contentID","site.siteID"],
 			email = ["emailTemplate.emailTemplateID"],
 			shippingMethodRate = ["shippingMethod.shippingMethodID"],
 			accountAuthentication = [ "integration.integrationID" ],
@@ -139,6 +139,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			contentHTMLTitleString = {fieldType="text"},
 			contentMetaDescriptionString = {fieldType="textarea"},
 			contentMetaKeywordsString = {fieldType="textarea"},
+			contentTemplateFile = {fieldType="select",defaultValue="default.cfm"},
 			
 			// Email
 			emailFromAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
@@ -186,6 +187,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
 			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
+			globalAdminDomainNames = {fieldtype="text"},
 			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
@@ -219,6 +221,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			// Site
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
+			siteOrderOrigin = {fieldType="select"},
 			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
@@ -297,6 +300,11 @@ component extends="HibachiService" output="false" accessors="true" {
 	
 	public array function getSettingOptions(required string settingName, any settingObject) {
 		switch(arguments.settingName) {
+			case "contentTemplateFile":
+				if(structKeyExists(arguments, "settingObject")) {
+					return getService('contentService').getCMSTemplateOptions(arguments.settingObject.getContent());
+				}
+				return [];
 			case "accountPaymentTerm" :
 				var optionSL = getPaymentService().getPaymentTermSmartList();
 				optionSL.addFilter('activeFlag', 1);
@@ -307,6 +315,8 @@ component extends="HibachiService" output="false" accessors="true" {
 				if(structKeyExists(arguments, "settingObject")) {
 					return getContentService().getDisplayTemplateOptions( "Brand", arguments.settingObject.getSite().getSiteID() );	
 				}
+				return getContentService().getDisplayTemplateOptions( "brand" );
+			case "contentFileTemplate":
 				return getContentService().getDisplayTemplateOptions( "brand" );
 			case "productDisplayTemplate":
 				if(structKeyExists(arguments, "settingObject")) {
@@ -366,6 +376,11 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getEmailService().getEmailTemplateOptions( "Account" );
 			case "siteVerifyAccountEmailAddressEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "AccountEmailAddress" );
+			case "siteOrderOrigin":
+				var optionSL = getService('HibachiService').getOrderOriginSmartList();
+				optionSL.addSelect('orderOriginName', 'name');
+				optionSL.addSelect('orderOriginID', 'value');
+				return optionSL.getRecords();
 			case "shippingMethodQualifiedRateSelection" :
 				return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
 			case "shippingMethodRateAdjustmentType" :
@@ -384,6 +399,7 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getEmailService().getEmailTemplateOptions( "Task" );
 			case "taskSuccessEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "Task" );
+			
 		}
 		
 		if(structKeyExists(getSettingMetaData(arguments.settingName), "valueOptions")) {
@@ -428,7 +444,7 @@ component extends="HibachiService" output="false" accessors="true" {
 		
 		var settingsRemoved = 0;
 		
-		if( listFindNoCase("brandID,contentID,emailID,emailTemplateID,productTypeID,skuID,shippingMethodRateID,paymentMethodID", arguments.entity.getPrimaryIDPropertyName()) ){
+		if( listFindNoCase("brandID,contentID,emailID,emailTemplateID,productTypeID,skuID,shippingMethodRateID,paymentMethodID,siteID", arguments.entity.getPrimaryIDPropertyName()) ){
 			
 			settingsRemoved = getSettingDAO().removeAllRelatedSettings(columnName=arguments.entity.getPrimaryIDPropertyName(), columnID=arguments.entity.getPrimaryIDValue());
 			
@@ -542,6 +558,12 @@ component extends="HibachiService" output="false" accessors="true" {
 		// Otherwise just return the details
 		return settingDetails.settingValue;
 	}
+	
+	public any function getSettingValueFormatted(required string settingName, any object, array filterEntities=[]) {
+		var settingDetails = getSettingDetails( argumentcollection=arguments );
+		
+		return settingDetails.settingValueFormatted;	
+	}
 		
 	public any function getSettingDetails(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
 		// Build out the cached key
@@ -559,6 +581,22 @@ component extends="HibachiService" output="false" accessors="true" {
 		return getHibachiCacheService().getOrCacheFunctionValue(cacheKey, this, "getSettingDetailsFromDatabase", arguments);
 	}
 	
+	public string function getSettingPrefix(required string settingName){
+		var settingPrefix = "";
+			
+		for(var i=1; i<=arrayLen(getSettingPrefixInOrder()); i++) {
+			if(left(arguments.settingName, len(getSettingPrefixInOrder()[i])) == getSettingPrefixInOrder()[i]) {
+				settingPrefix = getSettingPrefixInOrder()[i];
+				break;
+			}
+		}
+		return settingPrefix;
+	}
+	
+	public boolean function isGlobalSetting(required string settingName){
+		return left(arguments.settingName, 6) == "global" || left(arguments.settingName, 11) == "integration";
+	}
+	
 	public any function getSettingDetailsFromDatabase(required string settingName, any object, array filterEntities=[], boolean disableFormatting=false) {
 		
 		// Create some placeholder Var's
@@ -573,15 +611,17 @@ component extends="HibachiService" output="false" accessors="true" {
 		};
 		var settingMetaData = getSettingMetaData(arguments.settingName);
 		
+		//if we have a default value initialize it
 		if(structKeyExists(settingMetaData, "defaultValue")) {
 			settingDetails.settingValue = settingMetaData.defaultValue;
+			
 			if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
 				settingDetails.settingInherited = true;
 			}
 		}
 		
 		// If this is a global setting there isn't much we need to do because we already know there aren't any relationships
-		if(left(arguments.settingName, 6) == "global" || left(arguments.settingName, 11) == "integration") {
+		if(isGlobalSetting(arguments.settingName)) {
 			settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName);
 			for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {
 				settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
@@ -595,14 +635,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 		// If this is not a global setting, but one with a prefix, then we need to check the relationships
 		} else {
-			var settingPrefix = "";
-			
-			for(var i=1; i<=arrayLen(getSettingPrefixInOrder()); i++) {
-				if(left(arguments.settingName, len(getSettingPrefixInOrder()[i])) == getSettingPrefixInOrder()[i]) {
-					settingPrefix = getSettingPrefixInOrder()[i];
-					break;
-				}
-			}
+			var settingPrefix = getSettingPrefix(arguments.settingName);
 			
 			if(!len(settingPrefix)) {
 				throw("You have asked for a setting with an invalid prefix.  The setting that was asked for was #arguments.settingName#");	
@@ -610,11 +643,13 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 			// If an object was passed in, then first we can look for relationships based on that persistent object
 			if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
+				
 				// First Check to see if there is a setting the is explicitly defined to this object
 				settingDetails.settingRelationships[ arguments.object.getPrimaryIDPropertyName() ] = arguments.object.getPrimaryIDValue();
 				for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {
 					settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 				}
+				
 				settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 				if(settingRecord.recordCount) {
 					foundValue = true;
@@ -624,7 +659,6 @@ component extends="HibachiService" output="false" accessors="true" {
 				} else {
 					structClear(settingDetails.settingRelationships);
 				}
-				
 				// If we haven't found a value yet, check to see if there is a lookup order
 				if(!foundValue && structKeyExists(getSettingLookupOrder(), arguments.object.getClassName()) && structKeyExists(getSettingLookupOrder(), settingPrefix)) {
 					
@@ -635,7 +669,6 @@ component extends="HibachiService" output="false" accessors="true" {
 					var nextLookupOrderIndex = 1;
 					var nextPathListIndex = 0;
 					var settingLookupArray = getSettingLookupOrder()[ arguments.object.getClassName() ];
-					
 					do {
 						// If there was an & in the lookupKey then we should split into multiple relationships
 						var allRelationships = listToArray(settingLookupArray[nextLookupOrderIndex], "&");
@@ -663,6 +696,7 @@ component extends="HibachiService" output="false" accessors="true" {
 						for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {
 							settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 						}
+						
 						settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 						if(settingRecord.recordCount) {
 							foundValue = true;
@@ -726,7 +760,10 @@ component extends="HibachiService" output="false" accessors="true" {
 				// Select
 				} else if (settingMetaData.fieldType == "select") {
 					var options = getSettingOptions(arguments.settingName);	
-					
+							
+					if(!arrayLen(options)){
+						settingDetails.settingValueFormatted = settingDetails.settingValue;
+					}		
 					for(var i=1; i<=arrayLen(options); i++) {
 						if(isStruct(options[i])) {
 							if(options[i]['value'] == settingDetails.settingValue) {
@@ -734,6 +771,7 @@ component extends="HibachiService" output="false" accessors="true" {
 								break;
 							}
 						} else {
+							
 							settingDetails.settingValueFormatted = settingDetails.settingValue;
 							break;
 						}

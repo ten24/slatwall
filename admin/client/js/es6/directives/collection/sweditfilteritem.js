@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swEditFilterItem', [
+angular.module('slatwalladmin')
+    .directive('swEditFilterItem', [
     '$http',
     '$compile',
     '$templateCache',
@@ -191,6 +192,7 @@ angular.module('slatwalladmin').directive('swEditFilterItem', [
                                     }
                                 }
                                 break;
+                            //TODO:simplify timestamp and big decimal to leverage reusable function for null, range, and value
                             case 'timestamp':
                                 //retrieving implied value or user input | ex. implied:prop is null, user input:prop = "Name"
                                 filterItem.comparisonOperator = selectedFilterProperty.selectedCriteriaType.comparisonOperator;

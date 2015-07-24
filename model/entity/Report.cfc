@@ -88,6 +88,7 @@ component entityname="SlatwallReport" table="SwReport" persistent="true" accesso
 	property name="reportEndDateTime" persistent="false";
 	property name="reportCompareStartDateTime" persistent="false";
 	property name="reportCompareEndDateTime" persistent="false";
+	property name="orderByType" persistent="false"; 
 	
 	// Deprecated Properties
 

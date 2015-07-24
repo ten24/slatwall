@@ -1,8 +1,99 @@
-<div ng-controller="collections">
+<div  >
 	<div class="col-xs-12 s-filter-content s-filter-content-table-view">
 		<span sw-export-action>
 			
 		</span>
+
+		<div class="s-table-wrapper" style="margin-bottom:20px;">
+			<div class="s-table-header-nav">
+				<div class="col-md-12 s-header-nav">
+					<div class="col-xs-6" style="padding-left:0px;">
+						<!--TODO: implement keyword searching and bulk actions -->
+						<ul class="list-inline list-unstyled">
+							<li>
+								<div class="s-select-list-wrapper">
+									<div class="form-group">
+										<div class="input-group">
+											<div class="s-input-btn">
+												<input  type="text"
+													class="form-control input-sm"
+													placeholder="Search"
+													name="srch-term"
+													ng-model="keywords"
+													ng-change="searchCollection()"
+													/>
+												<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
+											</div>
+											<div class="input-group-btn">
+												<button   class="btn btn-primary btn-sm"
+													type="button"
+													ng-click="searchCollection()"
+													>
+												<i class="fa fa-search"></i>
+												</button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- s-select-list-wrapper -->
+							</li>
+						</ul>
+					</div>
+					
+					<div class="col-xs-6 s-table-view-options">
+						<ul class="list-inline list-unstyled">
+							<li>
+								<span sw-pagination-bar
+									data-collection="collection"
+									data-current-page="currentPage"
+									data-page-show="pageShow"
+									data-page-start="pageStart"
+									data-page-end="pageEnd"
+									data-records-count="recordsCount"
+									data-get-collection="getCollection()"
+									>
+								</span>
+							</li>
+							<li>
+								<!--- Generates an exportable collection --->
+								<a title="Export List" class="btn btn-success"  target="_self" ng-click="exportCollection()" >Export Collection</a>			
+							</li>
+							<li>
+								<button class="btn btn-default btn-sm" target="_self" ng-click="toggleFiltersAndOptions()"><i class="fa fa-cogs"></i></button>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+			<span sw-loading="collection">
+				<sw-collection-table
+					data-collection="collection"
+					data-collection-config="collectionConfig"
+					sw-scroll-trigger
+					infinite-scroll="appendToCollection()"
+					infinite-scroll-disabled="autoScrollDisabled"
+					infinite-scroll-distance="1">
+				</sw-collection-table> 
+				<div class="row">
+					<div class="col-md-12" span ng-show="pageShow !== 'Auto'">
+						<div class="dataTables_info" id="example3_info" ng-show="recordsCount()">
+							Showing 
+							<b>
+								<span ng-bind="pageStart()">
+									<!-- record start -->
+								</span>
+								to <span ng-bind="pageEnd()"><!--records end -->
+								<span>
+							</b>
+							of <span ng-bind="recordsCount()"><!-- records Count --></span> entries
+						</div>
+						<div ng-hide="recordsCount()" class="alert alert-info" role="alert" sw-rbkey="'admin.define.norecordsfound'"><!-- Message created by rb key --></div>
+					</div>
+				</div>
+			</span>
+		</div>
+
 		<!-- Filters and Display Options -->
 		<div ng-model="toggleCogOpen" ng-show="toggleCogOpen">
 			<!-- Tab panes for menu options start-->
@@ -121,87 +212,5 @@
 		</div>
 		<!--//delete batch action-->
 		
-		<div class="s-table-header-nav">
-			<div class="col-md-12 s-header-nav">
-				<div class="col-xs-6" style="padding-left:0px;">
-					<!--TODO: implement keyword searching and bulk actions -->
-					<ul class="list-inline list-unstyled">
-						<li>
-							<div class="s-select-list-wrapper">
-								<div class="form-group">
-									<div class="input-group">
-										<div class="s-input-btn">
-											<input  type="text"
-												class="form-control input-sm"
-												placeholder="Search"
-												name="srch-term"
-												ng-model="keywords"
-												ng-change="searchCollection()"
-												/>
-											<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
-										</div>
-										<div class="input-group-btn">
-											<button   class="btn btn-primary btn-sm"
-												type="button"
-												ng-click="searchCollection()"
-												>
-											<i class="fa fa-search"></i>
-											</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- s-select-list-wrapper -->
-						</li>
-					</ul>
-				</div>
-				<div class="col-xs-6 s-table-view-options">
-					<ul class="list-inline list-unstyled">
-						<li>
-							<span sw-pagination-bar
-								data-collection="collection"
-								data-current-page="currentPage"
-								data-page-show="pageShow"
-								data-page-start="pageStart"
-								data-page-end="pageEnd"
-								data-records-count="recordsCount"
-								data-get-collection="getCollection()"
-								>
-							</span>
-						</li>
-						<li>
-							<button class="btn btn-default btn-sm" target="_self" ng-click="toggleFiltersAndOptions()"><i class="fa fa-cog"></i></button>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-		
-		<span sw-loading="collection">
-			<sw-collection-table
-				data-collection="collection"
-				data-collection-config="collectionConfig"
-				sw-scroll-trigger
-				infinite-scroll="appendToCollection()"
-				infinite-scroll-disabled="autoScrollDisabled"
-				infinite-scroll-distance="1">
-			</sw-collection-table> 
-			<div class="row">
-				<div class="col-md-12" span ng-show="pageShow !== 'Auto'">
-					<div class="dataTables_info" id="example3_info" ng-show="recordsCount()">
-						Showing 
-						<b>
-							<span ng-bind="pageStart()">
-								<!-- record start -->
-							</span>
-							to <span ng-bind="pageEnd()"><!--records end -->
-							<span>
-						</b>
-						of <span ng-bind="recordsCount()"><!-- records Count --></span> entries
-					</div>
-					<div ng-hide="recordsCount()" class="alert alert-info" role="alert" sw-rbkey="'admin.define.norecordsfound'"><!-- Message created by rb key --></div>
-				</div>
-			</div>
-		</span>
 	</div>
 </div>

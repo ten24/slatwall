@@ -62,5 +62,6 @@ Notes:
 		<swa:SlatwallSetting settingName="contentHTMLTitleString" settingObject="#rc.content#" />
 		<swa:SlatwallSetting settingName="contentMetaDescriptionString" settingObject="#rc.content#" />
 		<swa:SlatwallSetting settingName="contentMetaKeywordsString" settingObject="#rc.content#" />
+		<swa:SlatwallSetting settingName="contentTemplateFile" settingObject="#rc.content#" />
 	</swa:SlatwallSettingTable>
 </cfoutput>

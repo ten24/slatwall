@@ -1,5 +1,5 @@
 "use strict";
-angular.module('slatwalladmin').directive('swFormFieldSelect', ['$log', '$slatwall', 'formService', 'partialsPath', function($log, $slatwall, formService, partialsPath) {
+angular.module('slatwalladmin').directive('swFormFieldSelect', ['$log', '$slatwall', 'formService', 'partialsPath', 'utilityService', function($log, $slatwall, formService, partialsPath, utilityService) {
   return {
     templateUrl: partialsPath + 'formfields/select.html',
     require: "^form",
@@ -9,15 +9,19 @@ angular.module('slatwalladmin').directive('swFormFieldSelect', ['$log', '$slatwa
       var selectType;
       if (angular.isDefined(scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].fieldtype)) {
         selectType = 'object';
+        $log.debug('selectType:object');
       } else {
         selectType = 'string';
+        $log.debug('selectType:string');
       }
       scope.formFieldChanged = function(option) {
         $log.debug('formfieldchanged');
         $log.debug(option);
         if (selectType === 'object') {
           scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = option.value;
-          scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()].$dirty = true;
+          if (angular.isDefined(scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()])) {
+            scope.propertyDisplay.form[scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()].$dirty = true;
+          }
         } else if (selectType === 'string') {
           scope.propertyDisplay.object.data[scope.propertyDisplay.property] = option.value;
           scope.propertyDisplay.form[scope.propertyDisplay.property].$dirty = true;
@@ -29,15 +33,39 @@ angular.module('slatwalladmin').directive('swFormFieldSelect', ['$log', '$slatwa
           optionsPromise.then(function(value) {
             scope.propertyDisplay.options = value.data;
             if (selectType === 'object') {
+              if (angular.isUndefined(scope.propertyDisplay.object.data[scope.propertyDisplay.property])) {
+                scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $slatwall['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
+              }
               if (scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID() === '') {
+                $log.debug('no ID');
+                $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
                 scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
                 scope.propertyDisplay.object.data[scope.propertyDisplay.property] = $slatwall['new' + scope.propertyDisplay.object.metaData[scope.propertyDisplay.property].cfc]();
                 scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[0].value;
               } else {
+                var found = false;
                 for (var i in scope.propertyDisplay.options) {
-                  if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
-                    scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
-                    scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
+                  if (angular.isObject(scope.propertyDisplay.options[i].value)) {
+                    $log.debug('isObject');
+                    $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
+                    if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property]) {
+                      scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
+                      scope.propertyDisplay.object.data[scope.propertyDisplay.property] = scope.propertyDisplay.options[i].value;
+                      found = true;
+                      break;
+                    }
+                  } else {
+                    $log.debug('notisObject');
+                    $log.debug(scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName());
+                    if (scope.propertyDisplay.options[i].value === scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getID()) {
+                      scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[i];
+                      scope.propertyDisplay.object.data[scope.propertyDisplay.property]['data'][scope.propertyDisplay.object.data[scope.propertyDisplay.property].$$getIDName()] = scope.propertyDisplay.options[i].value;
+                      found = true;
+                      break;
+                    }
+                  }
+                  if (!found) {
+                    scope.propertyDisplay.object.data['selected' + scope.propertyDisplay.property] = scope.propertyDisplay.options[0];
                   }
                 }
               }
@@ -57,7 +85,7 @@ angular.module('slatwalladmin').directive('swFormFieldSelect', ['$log', '$slatwa
           });
         }
       };
-      if (scope.propertyDisplay.eagerLoadOptions === true) {
+      if (scope.propertyDisplay.eagerLoadOptions == true) {
         scope.getOptions();
       }
       if (selectType === 'object') {

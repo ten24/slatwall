@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swForm', [
+angular.module('slatwalladmin')
+    .directive('swForm', [
     'formService',
     function (formService) {
         return {

@@ -266,14 +266,10 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
     }
     
     public numeric function getProductRating() {
-    	var totalRatingPoints = 0;
     	var averageRating = 0;
     	
-    	if(arrayLen(getProductReviews())) {
-	    	for(var i=1; i<=arrayLen(getProductReviews()); i++) {
-	    		var totalRatingPoints += getProductReviews()[1].getRating();
-	    	}
-	    	averageRating = totalRatingPoints / arrayLen(getProductReviews());
+    	if(this.getProductReviewsCount()) {
+    		averageRating = getService('productService').getProductRating(this);
     	}
     	
     	return averageRating;
@@ -359,22 +355,37 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	
 	// Start: Functions that delegate to the default sku
     public string function getImageDirectory() {
+    	if(isNull(getDefaultSku())){
+			return getService('skuService').newSku().getImageDirectory();
+		}
     	return getDefaultSku().getImageDirectory();	
     }
     
 	public string function getImagePath() {
+		if(isNull(getDefaultSku())){
+			return getService('skuService').newSku().getImagePath();
+		}
 		return getDefaultSku().getImagePath();
 	}
 	
 	public string function getImage() {
+		if(isNull(getDefaultSku())){
+			return getService('skuService').newSku().getImage();
+		}
 		return getDefaultSku().getImage(argumentCollection = arguments);
 	}
 	
 	public string function getResizedImagePath() {
+		if(isNull(getDefaultSku())){
+			return getService('skuService').newSku().getResizedImagePath();
+		}
 		return getDefaultSku().getResizedImagePath(argumentCollection = arguments);
 	}
 	
 	public boolean function getImageExistsFlag() {
+		if(isNull(getDefaultSku())){
+			return getService('skuService').newSku().getImageExistsFlag();
+		}
 		return getDefaultSku().getImageExistsFlag();
 	}
 	

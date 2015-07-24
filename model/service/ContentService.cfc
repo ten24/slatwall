@@ -59,6 +59,39 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getSettingService().getSettingRecordExistsFlag(settingName="contentRestrictAccessFlag", settingValue=1);
 	}
 	
+	public any function processContent_create(required any content, required any processObject){
+		// Call save on the content
+		arguments.content.setSite(arguments.processObject.getSite());
+		arguments.content.setParentContent(arguments.processObject.getParentContent());
+		if(
+			(isNull(arguments.data.urlTitle) || (!isNull(arguments.data.urlTitle) && !len(arguments.data.urlTitle)))
+			&& !isNull(arguments.content.getParentContent())
+		){
+			arguments.data.urlTitle = arguments.data.title;
+		}
+		arguments.data.urlTitle = reReplace(lcase(trim(arguments.data.urlTitle)), "[^a-z0-9 \-]", "", "all");
+		arguments.data.urlTitle = reReplace(arguments.data.urlTitle, "[-\s]+", "-", "all");
+		arguments.content = this.saveContent(arguments.content,arguments.data);
+		return arguments.content;
+	}
+	
+	public any function getCMSTemplateOptions(required any content){
+		var templateDirectory = arguments.content.getSite().getTemplatesPath();
+		if(directoryExists(templateDirectory)) {
+			var directoryList = directoryList(templateDirectory,false,"query");
+			var templates = [];
+			for(var directory in directoryList){
+				var template ={};
+				template['name'] = directory.name;
+				template['value'] = directory.name;
+				arrayAppend(templates,template);
+			}
+			return templates;
+		}else{
+			throw('site directory does not exist for ' & arguments.content.getSite().getSiteName());
+		}	
+	}
+	
 	public any function getRestrictedContentByCMSContentIDAndCMSSiteID(required any cmsContentID, required any cmsSiteID) {
 		var content = getContentByCMSContentIDAndCMSSiteID(arguments.cmsContentID, arguments.cmsSiteID);
 		if(content.isNew()) {
@@ -72,6 +105,23 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				return this.getContentByCmsContentID(settingDetails.settingRelationships.cmsContentID);
 			}
 		}
+	}
+	
+	public any function saveContent(required any content, struct data={}){
+		arguments.content = super.save(arguments.content, arguments.data);
+		if(!arguments.content.hasErrors()){
+			if(structKeyExists(arguments.data,'urlTitle')){
+				arguments.data.urlTitle = reReplace(lcase(trim(arguments.data.urlTitle)), "[^a-z0-9 \-]", "", "all");
+				arguments.data.urlTitle = reReplace(arguments.data.urlTitle, "[-\s]+", "-", "all");
+				arguments.content.setUrlTitle(arguments.data.urlTitle);
+			}
+		}
+		
+		return arguments.content;	
+	}
+	
+	public any function getDefaultContentBySIte(required any site){
+		return getContentDAO().getDefaultContentBySIte(arguments.site);
 	}
 	
 	public any function getCategoriesByCmsCategoryIDs(required any cmsCategoryIDs) {
@@ -97,6 +147,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return getContentDAO().getContentByCMSContentIDAndCMSSiteID( argumentCollection=arguments );
 	}
 	
+	public any function getContentBySiteIDAndUrlTitlePath(required string siteID, required string urlTitlePath){
+		return getContentDao().getContentBySiteIDAndUrlTitlePath(argumentCollection=arguments);
+	}
 	
 	// ===================== START: DAO Passthrough ===========================
 	

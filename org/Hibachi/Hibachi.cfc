@@ -49,16 +49,31 @@ component extends="FW1.framework" {
 	variables.framework.maxNumContextsPreserved = 10;
 	variables.framework.cacheFileExists = false;
 	variables.framework.trace = false;
+	
 	/* TODO: add solution to api routing for Rest api*/
 	variables.framework.routes = [
-		{ "$GET/api/:entityName/:entityID" = "/api:main.get/entityName/:entityName/entityID/:entityID"},
-		{ "$GET/api/:entityName/" = "/api:main.get/entityName/:entityName/"}
+		//api routes
+
+		 { "$GET/api/scope/$" = "/api:public/get/" }
+		,{ "$GET/api/scope/:context/$" = "/api:public/get/context/:context"}
+		,{ "$POST/api/scope/:context/$" = "/api:public/post/context/:context"}
+		
+		,{ "$POST/api/log/$" = "/api:main/log"}
+		
+		,{ "$GET/api/$" = "/api:main/get/" }
+		,{ "$GET/api/:entityName/$" = "/api:main/get/entityName/:entityName"}
+		,{ "$GET/api/:entityName/:entityID/$" = "/api:main/get/entityName/:entityName/entityID/:entityID"}
+		
+		,{ "$POST/api/" = "/api:main/post/" }
+		,{ "$POST/api/:entityName/:entityID" = "/api:main/post/entityName/:entityName/entityID/:entityID"}
+		
 	];
 	
 	// Hibachi Setup
 	variables.framework.hibachi = {};
 	variables.framework.hibachi.authenticationSubsystems = "admin,public,api";
 	variables.framework.hibachi.debugFlag = false;
+	variables.framework.hibachi.updateDestinationContentExclustionList = '/.git,/apps,/integrationServices,/custom,/WEB-INF,/.project,/setting.xml,/.htaccess,/web.config,/.settings,/.gitignore';
 	variables.framework.hibachi.gzipJavascript = true;
 	variables.framework.hibachi.errorDisplayFlag = false;
 	variables.framework.hibachi.errorNotifyEmailAddresses = '';
@@ -73,7 +88,6 @@ component extends="FW1.framework" {
 	variables.framework.hibachi.noaccessDefaultSubsystem = 'admin';
 	variables.framework.hibachi.noaccessDefaultSection = 'main';
 	variables.framework.hibachi.noaccessDefaultItem = 'noaccess';
-	
 	
 	// Allow For Application Config
 	try{include "../../config/configFramework.cfm";}catch(any e){}
@@ -138,6 +152,8 @@ component extends="FW1.framework" {
 		
 		variables.preupdate.preUpdatesRun = fileRead("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm");
 		
+		
+		
 		// Loop over and run any pre-update files
 		variables.preupdate.preUpdateFiles = directoryList("#this.mappings[ '/#variables.framework.applicationKey#' ]#/config/scripts/preupdate");
 		
@@ -200,16 +216,71 @@ component extends="FW1.framework" {
 			// Call the onEveryRequest() Method for the parent Application.cfc
 			onEveryRequest();
 		}
+		if(structKeyExists(request,'context')){
+			getHibachiScope().getService("hibachiEventService").announceEvent(eventName="setupGlobalRequestComplete",eventData=request.context);
+		}
 	}
-	
-	
 	
 	public void function setupRequest() {
 		setupGlobalRequest();
+		var httpRequestData = getHTTPRequestData();
+
+		//Set an account before checking auth in case the user is trying to login via the REST API
+		/* Handle JSON requests */
+		var hasJsonData = false;
+		request.context["jsonRequest"] = false;
+		if(structKeyExists(httpRequestData.headers, "content-type") && httpRequestData.headers["content-type"] == "application/json") {
+			//Automagically deserialize the JSON data if we can
+			if ( StructKeyExists(httpRequestData, "content") ){
+				//Decode from binary.
+				try {
+					var jsonString = "";
+					if (isBinary(httpRequestData.content)){
+						jsonString = charsetEncode( httpRequestData.content, "utf-8" );
+					}else{	
+						jsonString = httpRequestData.content;
+					}
+					if (isJSON(jsonString)){
+						var deserializedJson = deserializeJson(jsonString);
+						request.context["deserializedJSONData"] = deserializedJson;
+						hasJsonData = true;
+						request.context["jsonRequest"] = true;
+					}
+					}catch(any e){
+						//Could't deserialize the JSON data, should throw an error
+					}
+			}
+		}else if(structKeyExists(request.context, 'serializedJSONData') && isSimpleValue(request.context.serializedJSONData) && isJSON(request.context.serializedJSONData)) {
+			request.context["deserializedJsonData"] = deserializeJSON(request.context.serializedJSONData);
+			hasJsonData = true;
+		} 
+		
+		/* Figure out if this is a public request */
+		request.context["url"] = getHibachiScope().getURL();
+		if (FindNoCase("/api/scope", request.context["url"]) ){
+			//this is a request to the public controller
+			request.context["usePublicAPI"] = true;
+		}else{
+			request.context["usePublicAPI"] = false;
+		}
 		
 		application[ "#variables.framework.applicationKey#Bootstrap" ] = this.bootstrap;
 		
-		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount());	
+		var restInfo = {};
+		//prepare restinfo
+		if(listFirst( request.context[ getAction() ], ":" ) == 'api'){
+			var method = listLast( request.context[ getAction() ], "." );
+			restInfo.method = method;
+			if(structKeyExists(request,'context') && structKeyExists(request.context,'entityName')){
+				restInfo.entityName = request.context.entityName;
+			}
+			if(structKeyExists(request,'context') && structKeyExists(request.context,'context')){
+				restInfo.context = request.context.context;
+			}
+		}
+		
+		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount(), restInfo=restInfo);	
+
 		
 		// Verify Authentication before anything happens
 		if(!authorizationDetails.authorizedFlag) {
@@ -261,9 +332,7 @@ component extends="FW1.framework" {
 		param name="request.context.messages" default="#arrayNew(1)#";
 		
 		request.context.ajaxResponse = {};
-		
-		
-		var httpRequestData = getHTTPRequestData();
+
 		if(structKeyExists(httpRequestData.headers, "X-Hibachi-AJAX") && isBoolean(httpRequestData.headers["X-Hibachi-AJAX"]) && httpRequestData.headers["X-Hibachi-AJAX"]) {
 			request.context.ajaxRequest = true;
 		}
@@ -305,6 +374,7 @@ component extends="FW1.framework" {
 					applicationInitData["applicationRootMappingPath"] = this.mappings[ "/#variables.framework.applicationKey#" ];
 					applicationInitData["applicationReloadKey"] = 		variables.framework.reload;
 					applicationInitData["applicationReloadPassword"] =	variables.framework.password;
+					applicationInitData["updateDestinationContentExclustionList"] = variables.framework.hibachi.updateDestinationContentExclustionList;
 					applicationInitData["applicationUpdateKey"] = 		variables.framework.hibachi.fullUpdateKey;
 					applicationInitData["applicationUpdatePassword"] =	variables.framework.hibachi.fullUpdatePassword;
 					applicationInitData["debugFlag"] =					variables.framework.hibachi.debugFlag;
@@ -398,6 +468,7 @@ component extends="FW1.framework" {
 						coreBF.declareBean("hibachiMessages", "#variables.framework.applicationKey#.org.Hibachi.HibachiMessages", false);
 					}
 					
+					
 					// Setup the custom bean factory
 					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
 						var customBF = new DI1.ioc("/#variables.framework.applicationKey#/custom/model", {
@@ -434,6 +505,7 @@ component extends="FW1.framework" {
 					}
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory Set");
 					
+					
 					//========================= END: IOC SETUP ===============================
 					
 					// Call the onFirstRequest() Method for the parent Application.cfc
@@ -446,10 +518,18 @@ component extends="FW1.framework" {
 						// Set the request timeout to 360
 						getHibachiScope().getService("hibachiTagService").cfsetting(requesttimeout=600);
 						
+						
+						//Update custom properties
+						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();
+						if (success){
+							writeLog(file="Slatwall", text="General Log - Attempting to update entities with custom properties.");
+						}else{
+							writeLog(file="Slatwall", text="General Log - Error updating entities with custom properties");
+						}
 						// Reload ORM
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
 						ormReload();
-						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
+						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful"); 
 							
 						onUpdateRequest();
 						
@@ -623,7 +703,7 @@ component extends="FW1.framework" {
 	}
 	
 	// This method will execute an actions controller, render the view for that action and return it without going through an entire lifecycle
-	public string function doAction(required string action) {
+	public string function doAction(required string action, struct data) {
 		
 		var response = "";
 		var originalFW1 = {};
@@ -672,6 +752,10 @@ component extends="FW1.framework" {
 		
 		// create a new request context to hold simple data, and an empty request services so that the view() function works
 		request.context = {};
+		if(!isnull(arguments.data)){
+			request.context = arguments.data;
+		}
+		
 		request._fw1 = {
 	        cgiScriptName = CGI.SCRIPT_NAME,
 	        cgiRequestMethod = CGI.REQUEST_METHOD,

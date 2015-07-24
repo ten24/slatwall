@@ -15,10 +15,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	public void function ngSlatwall( required struct rc ) {
 		rc.entities = [];
-		var processContextsStruct = rc.$.slatwall.getService('hibachiService').getEntitiesProcessContexts();
-		var entitiesListArray = listToArray(structKeyList(rc.$.slatwall.getService('hibachiService').getEntitiesMetaData()));
+		var processContextsStruct = rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntitiesProcessContexts();
+		var entitiesListArray = listToArray(structKeyList(rc.$[#getDao('hibachiDao').getApplicationKey()#].getService('hibachiService').getEntitiesMetaData()));
 		for(var entityName in entitiesListArray) {
-			var entity = rc.$.slatwall.newEntity(entityName);
+			var entity = rc.$[#getDao('hibachiDao').getApplicationKey()#].newEntity(entityName);
 			arrayAppend(rc.entities, entity);
 			
 			//add process objects to the entites array

@@ -87,6 +87,7 @@
 					</div><!--- j-panel panel-default --->
 				</cfloop>
 				<cfif isObject(attributes.object)>
+					<!---system tab --->
 					<div class="j-panel panel panel-default">
 						<a data-toggle="collapse" href="##tabSystem">
 							<div class="panel-heading">

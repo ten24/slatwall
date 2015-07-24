@@ -8,7 +8,6 @@ angular.module('slatwalladmin').directive('swInput', ['$log', '$compile', 'utili
     $log.debug("Name is:" + name + " and form is: " + form);
     var validations = propertyDisplay.object.validations.properties[propertyDisplay.property];
     $log.debug("Validations: ");
-    console.dir(validations);
     var validationsForContext = [];
     var formContext = propertyDisplay.form.$$swFormInfo.context;
     var formName = propertyDisplay.form.$$swFormInfo.name;
@@ -18,6 +17,9 @@ angular.module('slatwalladmin').directive('swInput', ['$log', '$compile', 'utili
     $log.debug(formName);
     var propertyValidations = propertyDisplay.object.validations.properties[name];
     if (angular.isObject(propertyValidations)) {
+      if (angular.isUndefined(propertyValidations[0].contexts) && propertyDisplay.object.metaData.isProcessObject) {
+        propertyValidations[0].contexts = propertyDisplay.object.metaData.className.split('_')[1];
+      }
       if (propertyValidations[0].contexts === formContext) {
         $log.debug("Matched");
         for (var prop in propertyValidations[0]) {
@@ -48,6 +50,8 @@ angular.module('slatwalladmin').directive('swInput', ['$log', '$compile', 'utili
     }
     if (propertyDisplay.fieldType === 'text') {
       template = '<input type="text" class="form-control" ' + 'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' + 'ng-disabled="!propertyDisplay.editable" ' + 'ng-show="propertyDisplay.editing" ' + 'name="' + propertyDisplay.property + '" ' + validations + 'id="swinput' + utilityService.createID(26) + '"' + ' />';
+    } else if (propertyDisplay.fieldType === 'password') {
+      template = '<input type="password" class="form-control" ' + 'ng-model="propertyDisplay.object.data[propertyDisplay.property]" ' + 'ng-disabled="!propertyDisplay.editable" ' + 'ng-show="propertyDisplay.editing" ' + 'name="' + propertyDisplay.property + '" ' + validations + 'id="swinput' + utilityService.createID(26) + '"' + ' />';
     }
     return template;
   };

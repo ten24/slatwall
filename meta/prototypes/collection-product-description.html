@@ -359,7 +359,7 @@
                                                                                     <ul class="list-inline list-unstyled">
                                                                                         <li>
                                                                                             <div class="form-group s-page-show">
-                                                                                                <label for="inputPassword" class="control-label col-xs-4">View</label>
+                                                                                                <label class="control-label col-xs-4">View</label>
                                                                                                 <div class="col-xs-8">
                                                                                                     <select size="1" class="form-control j-custom-select ng-pristine ng-untouched ng-valid" name="pageShowOptions" aria-controls="" ng-model="pageShowOptions.selectedPageShowOption" ng-options="pageShowOption as pageShowOption.display for pageShowOption in pageShowOptions" ng-change="pageShowOptionChanged(pageShowOptions.selectedPageShowOption)">
                                                                                                         <option value="0" selected="selected" label="10">10</option>
@@ -1481,7 +1481,7 @@
                                                                     <!-- ngIf: collection.failed === true -->
                                                                     <!-- ngIf: !collection.failed -->
                                                                     <div ng-if="!collection.failed" class="table-responsive s-filter-table-box ng-scope">
-                                                                        <table class="table table-bordered table-striped">
+                                                                        <table class="table table-bordered table-hover">
                                                                             <thead>
                                                                                 <tr>
                                                                                     <th style="display:none">Row</th>
@@ -1712,7 +1712,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-xs-12 table-responsive">
-                                                <table class="table table-striped table-bordered table-condensed">
+                                                <table class="table table-bordered table-hover">
                                                     <tbody>
                                                         <tr>
                                                             <th colspan="3">Today, March 23, 2015</th>

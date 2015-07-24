@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swAddFilterButtons', [
+angular.module('slatwalladmin')
+    .directive('swAddFilterButtons', [
     '$http',
     '$compile',
     '$templateCache',
