@@ -109,11 +109,65 @@ Notes:
                 var _jsEntities = {};
                 var entities = {};
                 var validations = {};
+                var defaultValues = {};
                 <cfloop array="#rc.entities#" index="local.entity">
                 	entities['#local.entity.getClassName()#'] = #serializeJson(local.entity.getPropertiesStruct())#;
                 	entities['#local.entity.getClassName()#'].className = '#local.entity.getClassName()#';
                 	validations['#local.entity.getClassName()#'] = #serializeJSON($.slatwall.getService('hibachiValidationService').getValidationStruct(local.entity))#;
+                	defaultValues['#local.entity.getClassName()#'] = {};
+                	<cfset local.isProcessObject = Int(Find('_',local.entity.getClassName()) gt 0)>
+							
+                	<cfloop array="#local.entity.getProperties()#" index="local.property">
+										
+						<!--- Make sure that this property is a persistent one --->
+						<cfif !structKeyExists(local.property, "persistent") && ( !structKeyExists(local.property,"fieldtype") || listFindNoCase("column,id", local.property.fieldtype) )>
+							<!--- Find the default value for this property --->
+							<cfif !local.isProcessObject>
+								<cftry>
+									 
+									<cfset local.defaultValue = local.entity.invokeMethod('get#local.property.name#') />
+									<cfif isNull(local.defaultValue)>
+										defaultValues['#local.entity.getClassName()#'].#local.property.name# = null;
+									<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,big_decimal', local.property.ormType)>
+										defaultValues['#local.entity.getClassName()#'].#local.property.name# = #local.entity.invokeMethod('get#local.property.name#')#;
+									<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('string', local.property.ormType)>
+										<cfif structKeyExists(local.property, "hb_formFieldType") and local.property.hb_formFieldType eq "json">
+											defaultValues['#local.entity.getClassName()#'].#local.property.name# = angular.fromJson('#local.entity.invokeMethod('get#local.property.name#')#');
+										<cfelse>
+											defaultValues['#local.entity.getClassName()#'].#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
+										</cfif>
+									<cfelseif structKeyExists(local.property, "ormType") and local.property.ormType eq 'timestamp'>
+										<cfif local.entity.invokeMethod('get#local.property.name#') eq ''>
+											defaultValues['#local.entity.getClassName()#'].#local.property.name# = '';
+										<cfelse>
+											defaultValues['#local.entity.getClassName()#'].#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#').getTime()#';
+										</cfif>
+									<cfelse>
+										defaultValues['#local.entity.getClassName()#'].#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
+									</cfif>
+									<cfcatch></cfcatch>
+								</cftry>
+							<cfelse>
+								<cftry>
+									<cfset local.defaultValue = local.entity.invokeMethod('get#local.property.name#') />
+									<cfif !isNull(local.defaultValue)>
+										<cfif !isObject(local.defaultValue)>
+											<cfset local.defaultValue = serializeJson(local.defaultValue)/>
+											defaultValues['#local.entity.getClassName()#'].#local.property.name# = #local.defaultValue#;
+										<cfelse>
+											defaultValues['#local.entity.getClassName()#'].#local.property.name# = ''; 
+										</cfif>
+									<cfelse>
+										defaultValues['#local.entity.getClassName()#'].#local.property.name# = ''; 
+									</cfif>
+									<cfcatch></cfcatch>
+								</cftry>
+							</cfif>
+						<cfelse>
+						</cfif>
+					</cfloop>
                 </cfloop>
+                
                 angular.forEach(entities,function(entity){
                 	$delegate['get'+entity.className] = function(options){
 						var entityInstance = $delegate.newEntity(entity.className);
@@ -164,7 +218,7 @@ Notes:
 					
 					entity.isProcessObject = entity.className.indexOf('_') >= 0;
 					
-					 (function(entity){_jsEntities[ entity.className ]=function() {
+					 _jsEntities[ entity.className ]=function() {
 				
 						this.validations = validations[entity.className];
 						
@@ -226,67 +280,31 @@ Notes:
 						this.data = {};
 						this.modifiedData = {};
 						<!---loop over possible attributes --->
-						
-						
-						
+						var jsEntity = this;
+						if(entity.isProcessObject){
+							(function(entity){jsEntities[ entity.className ].prototype = {
+								$$getID:function(){
+									
+									return '';
+								}
+								,$$getIDName:function(){
+									var IDNameString = '';
+									return IDNameString;
+								}
+							}})(entity);
+						}
 						
 						angular.forEach(entity,function(property){
 							if(angular.isObject(property) && angular.isDefined(property.name)){
 								<!---original !structKeyExists(local.property, "persistent") && ( !structKeyExists(local.property,"fieldtype") || listFindNoCase("column,id", local.property.fieldtype) ) --->
-								if(angular.isUndefined(property.persistent) && (angular.isUndefined(property.fieldtype) || ['column','id'].indexOf(property.fieldtype) >= 0)){
-									<!--- Find the default value for this property --->
-									if(entity.isProcessObject){
-									}
+								if(angular.isDefined(defaultValues[entity.className][property.name])){
+									jsEntity.data[property.name] = defaultValues[entity.className][property.name]; 
 								}
 							}
-							<!---
-									<cftry>
-										<cfset local.defaultValue = local.entity.invokeMethod('get#local.property.name#') />
-										<cfif isNull(local.defaultValue)>
-											this.data.#local.property.name# = null;
-										<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,big_decimal', local.property.ormType)>
-											this.data.#local.property.name# = #local.entity.invokeMethod('get#local.property.name#')#;
-										<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('string', local.property.ormType)>
-											<cfif structKeyExists(local.property, "hb_formFieldType") and local.property.hb_formFieldType eq "json">
-												this.data.#local.property.name# = angular.fromJson('#local.entity.invokeMethod('get#local.property.name#')#');
-											<cfelse>
-												this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
-											</cfif>
-										<cfelseif structKeyExists(local.property, "ormType") and local.property.ormType eq 'timestamp'>
-											<cfif local.entity.invokeMethod('get#local.property.name#') eq ''>
-												this.data.#local.property.name# = '';
-											<cfelse>
-												this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#').getTime()#';
-											</cfif>
-										<cfelse>
-											this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
-										</cfif>
-										<cfcatch></cfcatch>
-									</cftry>
-								<cfelse>
-									<cftry>
-										<cfset local.defaultValue = local.entity.invokeMethod('get#local.property.name#') />
-										<cfif !isNull(local.defaultValue)>
-											<cfif !isObject(local.defaultValue)>
-												<cfset local.defaultValue = serializeJson(local.defaultValue)/>
-												this.data.#local.property.name# = #local.defaultValue#;
-											<cfelse>
-												this.data.#local.property.name# = ''; 
-											</cfif>
-										<cfelse>
-											this.data.#local.property.name# = ''; 
-										</cfif>
-										<cfcatch></cfcatch>
-									</cftry>
-								</cfif>
-							<cfelse>
-							</cfif>
-						</cfloop>--->
-						
-							
 						});
-					}})(entity);
-					 (function(entity){_jsEntities[ entity.className ].prototype = {
+							
+					};
+					 _jsEntities[ entity.className ].prototype = {
 						$$getPropertyByName:function(propertyName){
 							return this['$$get'+propertyName.charAt(0).toUpperCase() + propertyName.slice(1)]();
 						},
@@ -330,7 +348,7 @@ Notes:
 								return this.metaData[ propertyName ];
 							}
 						}
-					}})(entity);
+					};
 					angular.forEach(entity,function(property){
 						if(angular.isObject(property) && angular.isDefined(property.name)){
 							if(angular.isUndefined(property.persistent)){
@@ -346,27 +364,28 @@ Notes:
 											return collectionOptionsPromise;
 										}--->
 										<!---get many-to-one  via REST--->
-										(function(entity,property){_jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
+										_jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
+										
 											var thisEntityInstance = this;
-											if(angular.isDefined(this['$$get'+_jsEntities[ entity.className ].$$getIDName().charAt(0).toUpperCase()+_jsEntities[ entity.className ].$$getIDName().slice(1)]())){
+											if(angular.isDefined(this['$$get'+this.$$getIDName().charAt(0).toUpperCase()+this.$$getIDName().slice(1)]())){
 												var options = {
 													columnsConfig:angular.toJson([
 														{
-															"propertyIdentifier":"_"+entity.className.toLowerCase()+"_"+property.name
+															"propertyIdentifier":"_"+this.metaData.className.toLowerCase()+"_"+property.name
 														}
 													]),
 													joinsConfig:angular.toJson([
 														{
 															"associationName":property.name,
-															"alias":"_"+entity.className.toLowerCase()+"_"+property.name
+															"alias":"_"+this.metaData.className.toLowerCase()+"_"+property.name
 														}
 													]),
 													filterGroupsConfig:angular.toJson([{
 														"filterGroup":[
 															{
-																"propertyIdentifier":"_"+entity.className.toLowerCase()+"."+_jsEntities[ entity.className ].$$getIDName(),
+																"propertyIdentifier":"_"+this.metaData.className.toLowerCase()+"."+this.$$getIDName(),
 																"comparisonOperator":"=",
-																"value":this['$$get'+_jsEntities[ entity.className ].$$getIDName()]
+																"value":this['$$get'+this.$$getIDName()]
 															}
 														]
 													}]),
@@ -391,14 +410,15 @@ Notes:
 											}
 											
 											return null;
-										}})(entity,property);
-										(function(entity,property){_jsEntities[ entity.className ].prototype['$$set'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function(entityInstance) {
+										};
+										_jsEntities[ entity.className ].prototype['$$set'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function(entityInstance) {
+										
 											<!--- check if property is self referencing --->
 											var thisEntityInstance = this;
 											var metaData = this.metaData;
 											var manyToManyName = '';
-											if(property.name === 'parent'+entity.className){
-												var childName = 'child'+entity.className;
+											if(property.name === 'parent'+this.metaData.className){
+												var childName = 'child'+this.metaData.className;
 												manyToManyName = entityInstance.metaData.$$getManyToManyName(childName);
 												
 											}else{
@@ -430,12 +450,12 @@ Notes:
 											}
 		
 											thisEntityInstance.data[property.name] = entityInstance;
-										}})(entity,property);
+										};
 									
 									}else if(['one-to-many','many-to-many'].indexOf(property.fieldtype) >= 0){
 									
 									<!--- add method --->
-									(function(entity,property){
+									
 									
 										_jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(){
 										<!--- create related instance --->
@@ -480,20 +500,21 @@ Notes:
 										
 										this.data[property.name].push(entityInstance);
 										return entityInstance;
-									}})(entity,property);
+									};
 									<!--- get one-to-many, many-to-many via REST --->
 									<!--- TODO: ability to add post options to the transient collection --->
-									(function(entity,property){
+									
 										_jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
+
 										var thisEntityInstance = this;
-										if(angular.isDefined(this['$$get'+entity.$$getIDName().charAt(0).toUpperCase()+local.entity.$$getIDName().slice(1)])){
+										if(angular.isDefined(this['$$get'+this.$$getIDName().charAt(0).toUpperCase()+this.$$getIDName().slice(1)])){
 											var options = {
 												filterGroupsConfig:angular.toJson([{
 													"filterGroup":[
 														{
-															"propertyIdentifier":"_"+property.cfc.toLowerCase()+"."+property.fkcolumn.replace('ID','')+"."+entity.$$getIDName(),
+															"propertyIdentifier":"_"+property.cfc.toLowerCase()+"."+property.fkcolumn.replace('ID','')+"."+this.$$getIDName(),
 															"comparisonOperator":"=",
-															"value":this['$$get'+entity.$$getIDName()]
+															"value":this['$$get'+this.$$getIDName()]
 														}
 													]
 												}]),
@@ -515,45 +536,32 @@ Notes:
 											});
 											return collectionPromise;
 										}
-									}})(entity,property)
+									};
 								}else{
 
 									if(['id'].indexOf(property.fieldtype >= 0)){
-										(function(entity,property){_jsEntities[ entity.className ].prototype['$$getID']=function(){
+										_jsEntities[ entity.className ].prototype['$$getID']=function(){
 											//this should retreive id from the metadata
 											return this.data[this.$$getIDName()];
-										}})(entity,property);
-										(function(entity,property){_jsEntities[ entity.className ].prototype['$$getIDName']=function(){
+										};
+										_jsEntities[ entity.className ].prototype['$$getIDName']=function(){
 											var IDNameString = property.name;
 											return IDNameString;
-										}})(entity,property);
+										};
 									}
-									(function(entity,property){
+									
 										_jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function(){
 										return this.data[property.name];
-									}})(entity,property);
+									};
 								}
 							}else{
-								(function(entity,property){_jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
+								_jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
 									return this.data[property.name];
-								}})(entity,property);
+								};
 							}
 						}
 						}
 					});
-					
-					if(entity.isProcessObject){
-						 (function(entity){_jsEntities[ entity.className ].prototype = {
-							$$getID:function(){
-								
-								return '';
-							}
-							,$$getIDName:function(){
-								var IDNameString = '';
-								return IDNameString;
-							}
-						}})(entity);
-					}
                 });
 				$delegate.setJsEntities(_jsEntities);
 				
@@ -1127,7 +1135,70 @@ Notes:
 	                return data;
 	            }
 	
-	            
+	            var getDataFromChildren = function(entityInstance){
+							var data = {};
+							<!--- loop through all children --->
+							//$log.debug('childrenFound');
+							//$log.debug(entityInstance.children);
+				    		for(var c in entityInstance.children){
+				    			var childMetaData = entityInstance.children[c];
+								var children = entityInstance.data[childMetaData.name];
+								//$log.debug(childMetaData);
+								//$log.debug(children);
+								if(angular.isArray(entityInstance.data[childMetaData.name])){
+									if(angular.isUndefined(data[childMetaData.name])){
+										data[childMetaData.name] = [];
+									}
+									angular.forEach(entityInstance.data[childMetaData.name],function(child,key){
+										//$log.debug('process child array item')
+										var childData = processChild(child,entityInstance);
+										//$log.debug('process child return');
+										//$log.debug(childData);
+										data[childMetaData.name].push(childData);
+									});
+								}else{
+									if(angular.isUndefined(data[childMetaData.name])){
+										data[childMetaData.name] = {};
+									}
+									var child = entityInstance.data[childMetaData.name];
+									//$log.debug('begin process child');
+									var childData = processChild(child,entityInstance);
+									//$log.debug('process child return');
+									//$log.debug(childData);
+									angular.extend(data,childData);
+								}
+								 
+							}
+							//$log.debug('returning child data');
+							//$log.debug(data);
+
+							return data;
+				    	}
+				    	
+				    	var getModifiedDataByInstance = function(entityInstance){
+				    		var modifiedData = {};
+				    		
+				    		<!---get all forms at the objects level --->
+				    		
+				    		
+				    		<!---find top level and validate all forms on the way --->
+				    		var objectSaveLevel = getObjectSaveLevel(entityInstance);
+							//$log.debug('objectSaveLevel : ' + objectSaveLevel );
+							var valueStruct = validateObject(objectSaveLevel);
+							//$log.debug('validateObject data');
+							//$log.debug(valueStruct.value);
+							
+							modifiedData = {
+								objectLevel:objectSaveLevel,
+								value:valueStruct.value,
+								valid:valueStruct.valid
+							}
+				    		return modifiedData;
+				    	}
+				    	
+				    	var _getValidationsByProperty = function(entityInstance,property){
+				    		return entityInstance.validations.properties[property];
+				    	}
 	            
 	            var _getValidationByPropertyAndContext = function(entityInstance,property,context){
 	                var validations = _getValidationsByProperty(entityInstance,property);
