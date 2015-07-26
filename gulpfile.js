@@ -18,8 +18,9 @@ var gulp = require('gulp'),
 	request = require('request'),
 	chmod = require('gulp-chmod'),
 	runSequence = require('run-sequence'),
+	 ngmin = require("gulp-ngmin"),
 	changed = require('gulp-changed');
-
+	
 	var config = new Config();
 	
 /*
@@ -106,6 +107,28 @@ gulp.task('compile-ts', function () {
                         .pipe(gulp.dest(config.tsOutputPath));
 });
 
+gulp.task('compile-ts-to5', function () {
+	var sourceTsFiles = [config.allTypeScript,                //path to typescript files
+                         config.libraryTypeScriptDefinitions, //reference to library .d.ts files
+                         config.appTypeScriptReferences];     //reference to app.d.ts files
+
+    var tsResult = gulp.src(sourceTsFiles)
+    					.pipe(changed(config.tsOutputPathto5))
+                       .pipe(sourcemaps.init())
+                       .pipe(tsc({
+                           target: 'ES5',
+                           declarationFiles: false,
+                           noExternalResolve: true
+                       }));
+
+        tsResult.dts.pipe(gulp.dest(config.tsOutputPathto5));
+        return tsResult.js
+        				
+                        .pipe(sourcemaps.write('.'))
+                        .pipe(chmod(777))
+                        .pipe(gulp.dest(config.tsOutputPathto5));
+});
+
 gulp.task('gen-ts-refs', function () {
 	setTimeout(function () {
 	    var target = gulp.src(config.appTypeScriptReferences);
@@ -169,10 +192,10 @@ gulp.task('flattenNgslatwall',function(){
 	    return text;
 	}
 	
-	request('http://cf10.localhost/?slatAction=api:js.ngslatwall&reload=true&instantiationKey='+makeid(), function (error, response, body) {
+	request('http://cf10.localhost/?slatAction=api:js.ngslatwallmodel&reload=true&instantiationKey='+makeid(), function (error, response, body) {
 	  if (!error && response.statusCode == 200) {
 		  var dir = 'admin/client/ts/modules/';
-		  var newFile = dir+'ngslatwall.ts';
+		  var newFile = dir+'ngslatwallmodel.ts';
 		  fs.writeFile(newFile, body, function(){
       		console.log('It\'s saved!');
 		  });
@@ -212,15 +235,9 @@ gulp.task('compress',function(){
       config.compilePath + 'es5/directives/**/*.js'
     ])
   .pipe(sourcemaps.init())
+  .pipe(ngmin())
   .pipe(concat('all.js'))
-  .pipe(uglify({
-      compress: {
-          negate_iife: false
-      },
-      parse:{
-      	strict:true
-      }
-  }))
+  .pipe(uglify())
   .pipe(rename(function(path){
       path.extname = '.min.js'
   }))
@@ -233,7 +250,7 @@ gulp.task('default', function(){
 	runSequence(
 		'compile-ts'
 		,'gen-ts-refs'
-		,'traceur'
+		,'compile-ts-to5'
 		,'compress'
 		,'watch'
 	);

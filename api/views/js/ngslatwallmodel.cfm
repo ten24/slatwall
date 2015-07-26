@@ -1221,42 +1221,8 @@ Notes:
 	</cfsavecontent>
 	
 	<cfset ORMClearSession()>
-	<cfif request.slatwallScope.getApplicationValue('debugFlag')>
-		<cfset getPageContext().getOut().clearBuffer() />
-		<cfset request.slatwallScope.setApplicationValue('ngSlatwallModel',local.jsOutput)>
-	<cfelse>
-		<cfset getPageContext().getOut().clearBuffer() />
-		<!--- perform YUI compression --->
-		<cfset local.oYUICompressor = createObject("component", "Slatwall.org.Hibachi.YUIcompressor.YUICompressor").init(javaLoader = 'Slatwall.org.Hibachi.YUIcompressor.javaloader.JavaLoader', libPath = expandPath('/Slatwall/org/Hibachi/YUIcompressor/lib')) />
-		<cfset local.jsOutputCompressed = oYUICompressor.compress(
-													inputType = 'js'
-													,inputString = local.jsOutput
-													).results />
-		<cfif request.slatwallScope.getApplicationValue('gzipJavascript')>
-			<!---perform GZip Compression --->
-			<cfscript>
-				ioOutput = CreateObject("java","java.io.ByteArrayOutputStream");
-				gzOutput = CreateObject("java","java.util.zip.GZIPOutputStream");
-				
-				ioOutput.init();
-				gzOutput.init(ioOutput);
-				
-				gzOutput.write(local.jsOutputCompressed.getBytes(), 0, Len(local.jsOutputCompressed.getBytes()));
-				
-				gzOutput.finish();
-				gzOutput.close();
-				ioOutput.flush();
-				ioOutput.close();
-				
-				toOutput=ioOutput.toByteArray();
-				
-			</cfscript>
-			<cfset request.slatwallScope.setApplicationValue('ngSlatwallModel',toOutput)>
-			<cfset local.jsOutput = toOutput>
-		<cfelse>
-			<cfset local.jsOutput = local.jsOutputCompressed />
-		</cfif>
-	</cfif>
+	<cfset getPageContext().getOut().clearBuffer() />
+	<cfset request.slatwallScope.setApplicationValue('ngSlatwallModel',local.jsOutput)>
 	
 <cfelse>
 	<cfset local.jsOutput = request.slatwallScope.getApplicationValue('ngSlatwallModel')>

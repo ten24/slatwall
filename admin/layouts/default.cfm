@@ -368,7 +368,6 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-animate.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-route.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/metismenu/metismenu.js"></script>
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/client/lib/traceur/traceur.js" /></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ng-ckeditor/ng-ckeditor.min.js"></script>
 		
 		<!---lib END --->
@@ -442,14 +441,17 @@ Notes:
 				<cfset scriptRelativePath = replace(directives.directory,es5scriptPath,'')>
 				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & directives.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
 			</cfloop>
+			
 		<cfelse>
+			
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/es5/all.min.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
 		</cfif>
+		
 		<script type="text/javascript">
 			//bootstrap logger
-			try{
+			//try{
 				angular.bootstrap(document.getElementById("ngApp"),['logger','slatwalladmin']);
-			}catch(exception){
+			<!---}catch(exception){
 				$.ajax({
 		        	url:'?slatAction=api:main.log',
 		        	method:'POST', 
@@ -460,7 +462,7 @@ Notes:
 		        	headers:{'Content-Type': 'application/x-www-form-urlencoded'}
 		        });
 		        console.log(exception);
-			}
+			}--->
 
 		</script>
 	</body>

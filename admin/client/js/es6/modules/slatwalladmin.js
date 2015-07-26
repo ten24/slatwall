@@ -2,7 +2,7 @@
 /// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 var slatwallAdmin;
 (function (slatwallAdmin) {
-    angular.module('slatwalladmin', ['ui.bootstrap', 'ngAnimate', 'ngRoute', 'ngCkeditor', 'ngSlatwallModel', 'ngSlatwall']).
+    angular.module('slatwalladmin', ['ngSlatwall', 'ui.bootstrap', 'ngAnimate', 'ngRoute', 'ngCkeditor']).
         config(["$provide", '$logProvider', '$filterProvider', '$httpProvider', '$routeProvider', '$injector', '$locationProvider', 'datepickerConfig', 'datepickerPopupConfig',
         function ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig) {
             datepickerConfig.showWeeks = false;

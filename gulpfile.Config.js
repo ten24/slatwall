@@ -6,6 +6,7 @@ var GulpConfig = (function () {
         this.ngSlatwallcfm = './api/views/js/ngslatwall.cfm';
         
         this.tsOutputPath = './admin/client' + '/js/es6';
+        this.tsOutputPathto5 = './admin/client' + '/js/es5';
         this.allJavaScript = ['./admin/client' + '/js/**/*.js'];
         this.allTypeScript = this.source+ '/**/*.ts';
        
