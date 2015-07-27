@@ -10,8 +10,8 @@ angular.module('slatwalladmin').directive('swresizedimage', ["$http", "$log", "$
       var skuID = scope.orderItem.data.sku.data.skuID;
       $slatwall.getResizedImageByProfileName(profileName, skuID).then(function(response) {
         $log.debug('Get the image');
-        $log.debug(response.data.RESIZEDIMAGEPATHS[0]);
-        scope.orderItem.imagePath = response.data.RESIZEDIMAGEPATHS[0];
+        $log.debug(response.data.resizedImagePaths[0]);
+        scope.orderItem.imagePath = response.data.resizedImagePaths[0];
       });
     }
   };
