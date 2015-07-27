@@ -460,6 +460,17 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	// END: Quantity Helper Methods
+
+	// START: Gift Card Logical Methods
+	
+	public boolean function isGiftCardSku() { 
+		if(!isNull(getGiftCardRedemptionAmountType())){ 
+			return true; 
+		}
+		return false; 
+	}
+
+	// END: Gift Card Logical Methods
 	
 	//@hint Generates a unique event attendance code and sets it as this sku's code
 	public string function generateAndSetAttendanceCode() {

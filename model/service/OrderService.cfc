@@ -332,6 +332,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!foundItem && !arguments.order.hasErrors()) {
 			// Create a new Order Item
 			var newOrderItem = this.newOrderItem();
+
 			
 			// Set Header Info
 			newOrderItem.setOrder( arguments.order );
@@ -388,6 +389,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			if(newOrderItem.hasErrors()) {
 				arguments.order.addError('addOrderItem', newOrderItem.getErrors());
+			}
+		}
+
+		// Gift Card Logic
+		if( arguments.processObject.getSku().isGiftCardSku()){
+			for(var i=1; i<=arguments.processObject.getQuantity(); i++ ){
+				var newGiftCard = getGiftCardService().newGiftCard(); 
+				newGiftCard.setGiftCardExpirationTerm(arguments.processObject.getSku().getGiftCardExpirationTermID());
+				newGiftCard.setOriginalOrderItem(newOrderItem); 
+				newGiftCard.setAccount(arguments.order.getAccount()); 
+				newGiftCard = getGiftCardService().saveGiftCard(newGiftCard)
+				if(newGiftCard.hasErrors()){ 
+					arguments.order.addError('addOrderItem', newGiftCard.getErrors());
+					break;
+				}
 			}
 		}
 		
