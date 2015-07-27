@@ -114,7 +114,7 @@ Notes:
                 	entities['#local.entity.getClassName()#'] = #serializeJson(local.entity.getPropertiesStruct())#;
                 	entities['#local.entity.getClassName()#'].className = '#local.entity.getClassName()#';
                 	validations['#local.entity.getClassName()#'] = #serializeJSON($.slatwall.getService('hibachiValidationService').getValidationStruct(local.entity))#;
-                	defaultValues['#local.entity.getClassName()#'] = {};
+                	defaultValues['#local.entity.getClassName()#'] = {
                 	<cfset local.isProcessObject = Int(Find('_',local.entity.getClassName()) gt 0)>
 							
                 	<cfloop array="#local.entity.getProperties()#" index="local.property">
@@ -127,23 +127,23 @@ Notes:
 									 
 									<cfset local.defaultValue = local.entity.invokeMethod('get#local.property.name#') />
 									<cfif isNull(local.defaultValue)>
-										defaultValues['#local.entity.getClassName()#'].#local.property.name# = null;
+										#local.property.name#:null,
 									<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,big_decimal', local.property.ormType)>
-										defaultValues['#local.entity.getClassName()#'].#local.property.name# = #local.entity.invokeMethod('get#local.property.name#')#;
+										#local.property.name#:#local.entity.invokeMethod('get#local.property.name#')#,
 									<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('string', local.property.ormType)>
 										<cfif structKeyExists(local.property, "hb_formFieldType") and local.property.hb_formFieldType eq "json">
-											defaultValues['#local.entity.getClassName()#'].#local.property.name# = angular.fromJson('#local.entity.invokeMethod('get#local.property.name#')#');
+											#local.property.name#:angular.fromJson('#local.entity.invokeMethod('get#local.property.name#')#'),
 										<cfelse>
-											defaultValues['#local.entity.getClassName()#'].#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
+											#local.property.name#:'#local.entity.invokeMethod('get#local.property.name#')#',
 										</cfif>
 									<cfelseif structKeyExists(local.property, "ormType") and local.property.ormType eq 'timestamp'>
 										<cfif local.entity.invokeMethod('get#local.property.name#') eq ''>
-											defaultValues['#local.entity.getClassName()#'].#local.property.name# = '';
+											#local.property.name#:'',
 										<cfelse>
-											defaultValues['#local.entity.getClassName()#'].#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#').getTime()#';
+											#local.property.name#:'#local.entity.invokeMethod('get#local.property.name#').getTime()#',
 										</cfif>
 									<cfelse>
-										defaultValues['#local.entity.getClassName()#'].#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
+										#local.property.name#:'#local.entity.invokeMethod('get#local.property.name#')#',
 									</cfif>
 									<cfcatch></cfcatch>
 								</cftry>
@@ -153,12 +153,12 @@ Notes:
 									<cfif !isNull(local.defaultValue)>
 										<cfif !isObject(local.defaultValue)>
 											<cfset local.defaultValue = serializeJson(local.defaultValue)/>
-											defaultValues['#local.entity.getClassName()#'].#local.property.name# = #local.defaultValue#;
+											#local.property.name#:#local.defaultValue#,
 										<cfelse>
-											defaultValues['#local.entity.getClassName()#'].#local.property.name# = ''; 
+											#local.property.name#:'',
 										</cfif>
 									<cfelse>
-										defaultValues['#local.entity.getClassName()#'].#local.property.name# = ''; 
+										#local.property.name#:'',
 									</cfif>
 									<cfcatch></cfcatch>
 								</cftry>
@@ -166,8 +166,10 @@ Notes:
 						<cfelse>
 						</cfif>
 					</cfloop>
+						z:''
+	                };
                 </cfloop>
-                
+                	
                 angular.forEach(entities,function(entity){
                 	$delegate['get'+entity.className] = function(options){
 						var entityInstance = $delegate.newEntity(entity.className);

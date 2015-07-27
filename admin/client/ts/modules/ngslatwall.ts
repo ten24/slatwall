@@ -47,24 +47,18 @@ function(){
                 getJsEntities: function(){
                     return _jsEntities;
                 },
-                //service method used to transform collection data to collection objects based on a collectionconfig
                 populateCollection:function(collectionData,collectionConfig){
-                    //create array to hold objects
                     var entities = [];
-                    //loop over all collection data to create objects
                     angular.forEach(collectionData, function(collectionItemData, key){
                         //create base Entity
                         var entity = slatwallService['new'+collectionConfig.baseEntityName.replace('Slatwall','')]();
-                        //populate entity with data based on the collectionConfig
                         angular.forEach(collectionConfig.columns, function(column, key){
-                            //get objects base properties
                             var propertyIdentifier = column.propertyIdentifier.replace(collectionConfig.baseEntityAlias.toLowerCase()+'.','');
                             var propertyIdentifierArray = propertyIdentifier.split('.');
                             var propertyIdentifierKey = propertyIdentifier.replace(/\./g,'_');
                             var currentEntity = entity;
                             angular.forEach(propertyIdentifierArray,function(property,key){
                                 if(key === propertyIdentifierArray.length-1){
-                                    //if we are on the last item in the array
                                     if(angular.isObject(collectionItemData[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype === 'many-to-one'){
                                         var relatedEntity = slatwallService['new'+currentEntity.metaData[property].cfc]();
                                         relatedEntity.$$init(collectionItemData[propertyIdentifierKey][0]);
@@ -98,7 +92,6 @@ function(){
                     });
                     return entities;
                 },
-                /*basic entity getter where id is optional, returns a promise*/
                 getDefer:function(deferKey){
                     return _deferred[deferKey];
                 },
@@ -111,14 +104,7 @@ function(){
                 newEntity:function(entityName){
                     return new _jsEntities[entityName];
                 },
-                /*basic entity getter where id is optional, returns a promise*/
                 getEntity:function(entityName, options){
-                    /*
-                     *
-                     * getEntity('Product', '12345-12345-12345-12345');
-                     * getEntity('Product', {keywords='Hello'});
-                     * 
-                     */
                     if(angular.isDefined(options.deferKey)){
                         this.cancelPromise(options.deferKey);
                     }
@@ -147,22 +133,12 @@ function(){
                         urlString += '&entityId='+options.id;   
                     }
 
-                    /*var transformRequest = function(data){    
-                        console.log(data);
-                                                
-                        return data;
-                    };
-                    //check if we are using a service to transform the request
-                    if(angular.isDefined(options.transformRequest)){
-                        transformRequest=options.trasformRequest;
-                    }*/
                     var transformResponse = function(data){
                             
                         var data = JSON.parse(data);
                         
                         return data;
                     };
-                    //check if we are using a service to transform the response
                     if(angular.isDefined(options.transformResponse)){
                         transformResponse=function(data){
                             
@@ -179,7 +155,6 @@ function(){
                         {
                             params:params,
                             timeout:deferred.promise,
-                            //transformRequest:transformRequest,
                             transformResponse:transformResponse
                         }
                     )
@@ -218,15 +193,13 @@ function(){
                     return deferred.promise;
                 },
                 checkUniqueOrNullValue:function (object, property, value) {
-                    return $http.get(_config.baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property + 
-                 '&value=' + escape(value)).then(
+                    return $http.get(_config.baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property + '&value=' + escape(value)).then(
                 function (results) {
                    return results.data.uniqueStatus;
                  })
                 },
                 checkUniqueValue:function (object, property, value) {
-                    return $http.get(_config.baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property + 
-                      '&value=' + escape(value)).then(
+                    return $http.get(_config.baseURL + '/index.cfm/?slatAction=api:main.getValidationPropertyStatus&object=' + object + '&propertyidentifier=' + property + '&value=' + escape(value)).then(
                         function (results) {
                             return results.data.uniqueStatus;
                     });
@@ -265,7 +238,6 @@ function(){
                 },
                 saveEntity:function(entityName,id,params,context){
                     
-                    //$log.debug('save'+ entityName);
                     var deferred = $q.defer();
     
                     var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.post'; 
@@ -324,23 +296,18 @@ function(){
                     return _loadedResourceBundle;
                 },
                 hasResourceBundle:function(){
-                    ////$log.debug('hasResourceBundle');
-                    ////$log.debug(_loadedResourceBundle);
                     if(!_loadingResourceBundle && !_loadedResourceBundle){
                         _loadingResourceBundle = true;
-                        //$log.debug(slatwallService.getConfigValue('rbLocale').split('_'));
                         var localeListArray = slatwallService.getConfigValue('rbLocale').split('_');
                         var rbPromise;
                         var rbPromises = [];
                         rbPromise = slatwallService.getResourceBundle(slatwallService.getConfigValue('rbLocale'));
                         rbPromises.push(rbPromise);
                         if(localeListArray.length === 2){
-                            //$log.debug('has two');
                             rbPromise = slatwallService.getResourceBundle(localeListArray[0]);
                             rbPromises.push(rbPromise);
                         }
                         if(localeListArray[0] !== 'en'){
-                            //$log.debug('get english');
                             slatwallService.getResourceBundle('en_us');
                             slatwallService.getResourceBundle('en');
                         }   
@@ -367,55 +334,37 @@ function(){
                     }
                     
                     var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+_config.instantiationKey;
-                    //var urlString = _config.baseURL+'/config/resourceBundles/'+locale+'.json?instantiationKey='+_config.instantiationKey;
                     var params = {
                         locale:locale
                     };
                     return $http.get(urlString,{params:params}).success(function(response){
                         _resourceBundle[locale] = response.data;
-                        //deferred.resolve(response);
                     }).error(function(response){
                         _resourceBundle[locale] = {};
-                        //deferred.reject(response);
                     });
                 },
                 
                 
                 rbKey:function(key,replaceStringData){
-                    ////$log.debug('rbkey');
-                    ////$log.debug(key);
-                    ////$log.debug(_config.rbLocale);
-                
                     var keyValue = this.getRBKey(key,_config.rbLocale);
-                    ////$log.debug(keyValue);
                     
                     return keyValue;
                 },
                 getRBKey:function(key,locale,checkedKeys,originalKey){
-                    ////$log.debug('getRBKey');
-                    ////$log.debug('loading:'+_loadingResourceBundle);
-                    ////$log.debug('loaded'+_loadedResourceBundle);
                     if(!_loadingResourceBundle && _loadedResourceBundle){
                         key = key.toLowerCase();
                         checkedKeys = checkedKeys || "";
                         locale = locale || 'en_us';
-                        ////$log.debug('locale');
-                        ////$log.debug(locale);
                         
                         var keyListArray = key.split(',');
-                        ////$log.debug('keylistAray');
-                        ////$log.debug(keyListArray);
                         if(keyListArray.length > 1) {
-                            
-                            
                             var keyValue = "";
                             
                             
                             for(var i=0; i<keyListArray.length; i++) {
                                 
                                 
-                                var keyValue = this.getRBKey(keyListArray[i], locale, keyValue);
-                                ////$log.debug('keyvalue:'+keyValue);
+                                keyValue = this.getRBKey(keyListArray[i], locale, keyValue);
                                 
                                 if(keyValue.slice(-8) != "_missing") {
                                     break;
@@ -427,11 +376,8 @@ function(){
                         
                         
                         var bundle = slatwallService.getResourceBundle(locale);
-                        //$log.debug('bundle');
-                        //$log.debug(bundle);
                         if(!angular.isFunction(bundle.then)){
                             if(angular.isDefined(bundle[key])) {
-                                //$log.debug('rbkeyfound:'+bundle[key]);
                                 return bundle[key];
                             }
                             
@@ -443,15 +389,11 @@ function(){
                             if(angular.isUndefined(originalKey)){
                                 originalKey = key;
                             }
-                            //$log.debug('originalKey:'+key);
-                            //$log.debug(checkedKeysListArray);
                             
                             var localeListArray = locale.split('_');
-                            //$log.debug(localeListArray);
                             if(localeListArray.length === 2){
                                 bundle = slatwallService.getResourceBundle(localeListArray[0]);
                                 if(angular.isDefined(bundle[key])){
-                                    //$log.debug('rbkey found:'+bundle[key]);
                                     return bundle[key];
                                 }
                                 
@@ -464,14 +406,11 @@ function(){
                                 && keyDotListArray[keyDotListArray.length - 2] === 'define'
                             ){
                                 var newKey = key.replace(keyDotListArray[keyDotListArray.length - 3]+'.define','define');
-                                //$log.debug('newkey1:'+newKey);
                                 return this.getRBKey(newKey,locale,checkedKeys,originalKey);
                             }else if( keyDotListArray.length >= 2 && keyDotListArray[keyDotListArray.length - 2] !== 'define'){
                                 var newKey = key.replace(keyDotListArray[keyDotListArray.length -2]+'.','define.');
-                                //$log.debug('newkey:'+newKey);
                                 return this.getRBKey(newKey,locale,checkedKeys,originalKey);
                             }
-                            //$log.debug(localeListArray);
                             
                             if(localeListArray[0] !== "en"){
                                 return this.getRBKey(originalKey,'en',checkedKeys);
@@ -500,10 +439,6 @@ function(){
             var _loadedResourceBundle = false;
             var _jsEntities = {};
             
-            
-            
-            
-        
       return slatwallService;
    }],
     getConfig:function(){
@@ -519,9 +454,5 @@ function(){
         _config = config;
     }
 };
-}]).config(function ($slatwallProvider) {
-    /* $slatwallProvider.setConfigValue($.slatwall.getConfig().baseURL); */
-}).run(function($slatwall){
-    
-});
+}]);
         

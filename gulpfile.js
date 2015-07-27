@@ -67,7 +67,7 @@ gulp.task('watch', function() {
 	]);
 	gulp.watch([config.es6Path],
 	[
-		'traceur'
+		'compile-ts-to5'
 	]);
     //gulp.watch([config.es6Path],['traceur']);
     //gulp.watch([config.es5Path],['compress']);
@@ -229,13 +229,15 @@ gulp.task('6to5', function () {
 gulp.task('compress',function(){
     gulp.src([
 	  config.compilePath + 'es5/model/**/*.js',
-      config.compilePath + 'es5/modules/**/*.js',
+	  config.compilePath + 'es5/modules/ngslatwall.js',
+	  config.compilePath + 'es5/modules/ngslatwallmodel.js',
+	  config.compilePath + 'es5/modules/loggingmodule.js',
+      config.compilePath + 'es5/modules/slatwalladmin.js',
       config.compilePath + 'es5/services/*.js',
       config.compilePath + 'es5/controllers/**/*.js',
       config.compilePath + 'es5/directives/**/*.js'
     ])
   .pipe(sourcemaps.init())
-  .pipe(ngmin())
   .pipe(concat('all.js'))
   .pipe(uglify())
   .pipe(rename(function(path){
