@@ -325,7 +325,11 @@ Notes:
 		</cfloop>
 		
 		<!--- get allDiscounts at the sku level --->
-		<cfset allDiscounts = getAllDiscounts(arguments.productID, timenow,arguments.currencyCode)>
+		<cfif structKeyExists(arguments,'currencyCode')>
+			<cfset allDiscounts = getAllDiscounts(arguments.productID, timenow,arguments.currencyCode)>
+		<cfelse>
+			<cfset allDiscounts = getAllDiscounts(arguments.productID, timenow)>
+		</cfif>
 		
 		<!--- join allDiscounts with noQualifierCurrentActivePromotionPeriods to get  only the active prices ---> 
 		<cfset noQualifierDiscounts = getNoQualifierDiscounts(noQualifierCurrentActivePromotionPeriods, allDiscounts)>

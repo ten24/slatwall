@@ -75,7 +75,6 @@ component entityname="SlatwallPromotionRewardCurrency" table="SwPromotionRewardC
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	property name="currencyCode" type="string" persistent="false";
 
 	// ============ START: Non-Persistent Property Methods =================
 	

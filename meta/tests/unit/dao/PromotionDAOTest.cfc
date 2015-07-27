@@ -226,7 +226,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			sku={skuID=sku.getSkuID()},
 			currency={currencyCode='BBB'},
 			price=15
-		}
+		};
 		var skuCurrency = createPersistedTestEntity( 'SkuCurrency' , skuCurrencyData);
 
 		var salePricePromotionRewardsQuery = variables.dao.getSalePricePromotionRewardsQuery( product.getProductID(),'BBB' );
