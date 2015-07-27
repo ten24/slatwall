@@ -189,8 +189,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 					activeflag=1,
 					skuCode = '',
 					redemptionAmountType='fixedAmount',
-					redemptionAmount=5,
-					giftCardExpirationTermID=""
+					redemptionAmount=5
 				}
 			],
 			productType={
@@ -198,6 +197,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			}
 		};
 		var product = createPersistedTestEntity('product',productData);
+
+		var termData = {
+			termID=""
+		};
+
+		var term = createPersistedTestEntity('term', termData);
+
+		product.getSkus()[1].setGiftCardExpirationTerm(term);
 
 		//set up order
 		var orderData = {
@@ -211,12 +218,15 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 						fulfillmentMethodID="444df2fb93d5fa960ba2966ba2017953"
 					}
 				}
-			],
-			account={
-				accountID=""
-			}
+			]
 		};
+		accountData={
+			accountID=""
+		};
+		var account = createPersistedTestEntity('Account', accountData);
 		var order = createPersistedTestEntity('Order',orderData);
+
+		order.setAccount(account);
 
 		var processObjectData = {
 			quantity=1,
