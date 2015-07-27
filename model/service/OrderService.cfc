@@ -600,9 +600,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Save the newOrderPayment
 		newOrderPayment = this.saveOrderPayment( newOrderPayment );
 		
-		/** If the order has a subscription sku on It and that sku has 'AutoPay' setup on it's term  and the 
-		 * orderPayment's paymentMethod is set to allow accounts to save then auto set the save account payment method flag.
-		 **/
+		// If the order has a subscription sku on It and that sku has 'AutoPay' setup on it's term and the 
+		// orderPayment's paymentMethod is set to allow accounts to save then auto set the save account payment method flag.
 		for (var orderItem in arguments.order.getOrderItems()){
 			if (orderItem.getSku().getBaseProductType() == "subscription" && orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()){
 				var orderPayments = orderItem.getOrder().getOrderPayments();
@@ -613,9 +612,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
-		
-		
-		
+
 		// Attach 'createTransaction' errors to the order 
 		if(newOrderPayment.hasError('createTransaction')) {
 			arguments.order.addError('addOrderPayment', newOrderPayment.getError('createTransaction'), true);
