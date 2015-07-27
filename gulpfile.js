@@ -69,6 +69,12 @@ gulp.task('watch', function() {
 	[
 		'compile-ts-to5'
 	]);
+	gulp.watch([config.entityPath,config.processPath],
+	[
+		'flattenNgSlatwallModel'
+	]);	
+	
+	
     //gulp.watch([config.es6Path],['traceur']);
     //gulp.watch([config.es5Path],['compress']);
     //gulp.watch([propertiesPath],['properties2json']);
@@ -180,6 +186,27 @@ gulp.task('clean-ts', function () {
       .pipe(rimraf());
 });
 
+gulp.task('flattenNgSlatwallModel',function(){
+	var makeid = function()
+	{
+	    var text = "";
+	    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	
+	    for( var i=0; i < 5; i++ )
+	        text += possible.charAt(Math.floor(Math.random() * possible.length));
+	
+	    return text;
+	}
+	
+	request('http://cf10.localhost/?slatAction=api:js.ngslatwallmodel&reload=true&instantiationKey='+makeid(), function (error, response, body) {
+	  if (!error && response.statusCode == 200) {
+  		console.log('It\'s saved!');
+	  }else{
+	  	console.log(error);
+	  }
+	});
+});
+
 gulp.task('flattenNgslatwall',function(){
 	var makeid = function()
 	{
@@ -250,7 +277,8 @@ gulp.task('compress',function(){
 
 gulp.task('default', function(){
 	runSequence(
-		'compile-ts'
+		'flattenNgSlatwallModel'
+		,'compile-ts'
 		,'gen-ts-refs'
 		,'compile-ts-to5'
 		,'compress'
