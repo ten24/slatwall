@@ -48,11 +48,11 @@ Notes:
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
-<cfparam name="rc.sku" type="any" />
-<cfparam name="rc.product" type="any">
+<cfparam name="rc.stock" type="any" />
+<cfparam name="rc.sku" type="any">
 
 <cfoutput>
-	<table id="inventory-table" class="table table-bordered table-hover">
+	<table id="inventory-table" class="table table-striped table-bordered table-condensed">
 		<tr>
 			<th>Location</th>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qoh.full')#">#$.slatwall.rbKey('define.qoh')#</div></th>
@@ -70,20 +70,20 @@ Notes:
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qiats.full')#">#$.slatwall.rbKey('define.qiats')#</div></th>
 		</tr>
 		<tr class="sku">
-			<td><a href="##" class="update-inventory-plus depth0" data-depth="0" data-locationid="" data-locationidpath="path" data-skuid="#rc.sku.getskuID()#"><i class="glyphicon glyphicon-plus"></i></a> <strong>All Locations</strong></td>
-			<td>#rc.sku.getQuantity('QOH')#</td>
-			<td>#rc.sku.getQuantity('QOSH')#</td>
-			<td><a href="?slatAction=entity.listorderitem&F:sku.skuid=#rc.sku.getskuID()#&F:order.orderStatusType.systemCode=ostNew,ostOnHold,ostProcessing&F:orderItemType.systemCode=oitSale">#rc.sku.getQuantity('QNDOO')#</a></td>
-			<td>#rc.sku.getQuantity('QNDORVO')#</td>
-			<td>#rc.sku.getQuantity('QNDOSA')#</td>
-			<td><a href="?slatAction=entity.listorderitem&F:sku.skuid=#rc.sku.getskuID()#&F:order.orderStatusType.systemCode=ostNew,ostOnHold,ostProcessing&F:orderItemType.systemCode=oitReturn">#rc.sku.getQuantity('QNRORO')#</a></td>
-			<td><a href="?slatAction=entity.listvendororderitem&F:sku.skuid=#rc.sku.getskuID()#&F:vendorOrderStatusType.systemCode=vostNew,vostPartiallyReceived&F:vendorOrderItemType.systemCode=voitPurchase">#rc.sku.getQuantity('QNROVO')#</a></td>
-			<td><a href="?slatAction=entity.liststockadjustmentitem&F:stockadjustment.stockadjustmentstatustype.systemCode=sastNew&F:toStock.sku.skuID=#rc.sku.getskuID()#">#rc.sku.getQuantity('QNROSA')#</a></td>
-			<td>#rc.sku.getQuantity('QC')#</td>
-			<td>#rc.sku.getQuantity('QE')#</td>
-			<td>#rc.sku.getQuantity('QNC')#</td>
-			<td>#rc.sku.getQuantity('QATS')#</td>
-			<td>#rc.sku.getQuantity('QIATS')#</td>
+			<td><a href="##" class="update-inventory-plus depth0" data-depth="0" data-locationid="" data-skuid="#rc.stock.getskuID()#"><i class="icon-plus"></i></a> <strong>All Locations</strong></td>
+			<td>#rc.stock.getQuantity('QOH')#</td>
+			<td>#rc.stock.getQuantity('QOSH')#</td>
+			<td><a href="?slatAction=entity.listorderitem&F:stock.stockid=#rc.stock.getskuID()#&F:order.orderStatusType.systemCode=ostNew,ostOnHold,ostProcessing&F:orderItemType.systemCode=oitSale">#rc.stock.getQuantity('QNDOO')#</a></td>
+			<td>#rc.stock.getQuantity('QNDORVO')#</td>
+			<td>#rc.stock.getQuantity('QNDOSA')#</td>
+			<td><a href="?slatAction=entity.listorderitem&F:stock.stockid=#rc.stock.getskuID()#&F:order.orderStatusType.systemCode=ostNew,ostOnHold,ostProcessing&F:orderItemType.systemCode=oitReturn">#rc.stock.getQuantity('QNRORO')#</a></td>
+			<td><a href="?slatAction=entity.listvendororderitem&F:stock.stockid=#rc.stock.getskuID()#&F:vendorOrderStatusType.systemCode=vostNew,vostPartiallyReceived&F:vendorOrderItemType.systemCode=voitPurchase">#rc.stock.getQuantity('QNROVO')#</a></td>
+			<td><a href="?slatAction=entity.liststockadjustmentitem&F:stockadjustment.stockadjustmentstatustype.systemCode=sastNew&F:toStock.stock.stockid=#rc.stock.getskuID()#">#rc.stock.getQuantity('QNROSA')#</a></td>
+			<td>#rc.stock.getQuantity('QC')#</td>
+			<td>#rc.stock.getQuantity('QE')#</td>
+			<td>#rc.stock.getQuantity('QNC')#</td>
+			<td>#rc.stock.getQuantity('QATS')#</td>
+			<td>#rc.stock.getQuantity('QIATS')#</td>
 		</tr>
 	</table>
 	

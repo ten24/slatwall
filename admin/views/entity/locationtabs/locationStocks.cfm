@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,46 +45,22 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="HibachiProcess" {
+--->
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-	// Injected Entity
-	property name="stockAdjustment";
-	
-	// Injected, or lazily loaded by ID
-	property name="sku";
-	property name="stock";
+<cfparam name="rc.location" default="any" >
 
-	// Data Properties (IDs)
-	property name="skuID";
-	
-	property name="stockID";
+<cfoutput>
 
-	// Data Properties (Inputs)
-	property name="quantity";
-	
-	public numeric function getQuantity() {
-		if(!structKeyExists(variables, "quantity")) {
-			variables.quantity = 1;
-		}
-		return variables.quantity;
-	}
-	
-	public any function getSku() {
-		if(!structKeyExists(variables, "sku") && !isNull(getSkuID())) {
-			variables.sku = getService("skuService").getSku(getSkuID());
-		} 
+	<hb:HibachiListingDisplay smartList="#rc.location.getStocksSmartList()#" >
+							    
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="sku.skuCode" />
+		<hb:HibachiListingColumn  propertyIdentifier="sku.product.productName" />
+		<hb:HibachiListingColumn  propertyIdentifier="calculatedQOH" />
+		<hb:HibachiListingColumn  propertyIdentifier="calculatedQNC" />
+		
+	</hb:HibachiListingDisplay>
 
-		if(!structKeyExists(variables,"sku") && isNull(getSkuID())){
-			if(structKeyExists(variables, "stock")){
-				variables.sku=variables.stock.getSku()
-			} else if (!isNull(getStockID())){
-				variables.sku = getService("stockService").getStock(getStockID()).getSku();
-			}
-		}
 
-		if(structKeyExists(variables, "sku")) {
-			return variables.sku;
-		}
-	}
-}
+</cfoutput>
