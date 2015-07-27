@@ -524,13 +524,8 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	
 	// @hint returns the count of a given property
 	public numeric function getPropertyCount( required string propertyName ) {
-		var cacheKey = "#arguments.propertyName#Count";
-			
-		if(!structKeyExists(variables, cacheKey)) {
-			variables[ cacheKey ] = arrayLen(variables[ arguments.propertyName ]);
-		}
-		
-		return variables[ cacheKey ];
+		var propertySmartList = this.invokeMethod('get#propertyName#SmartList');
+		return propertySmartList.getRecordsCount();
 	}
 	
 	// @hint handles encrypting a property based on conventions
@@ -651,11 +646,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			
 			return getPropertyAssignedIDList( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-17) );
 		
-		// getXXXID()		Where XXX is a many-to-one property that we want to get the primaryIDValue of that property 		
-		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 2) == "ID") {
-			
-			return getPropertyPrimaryID( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-5) );
-			
 		// getXXXOptions()		Where XXX is a one-to-many or many-to-many property that we need an array of valid options returned 		
 		} else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 7) == "Options") {
 			
@@ -682,11 +672,16 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 			return getPropertyCount( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-8) );
 			
 		// getXXX() 			Where XXX is either and attributeID or attributeCode
-		} else if (left(arguments.missingMethodName, 3) == "get" && structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues")) {
+		} else if (left(arguments.missingMethodName, 3) == "get" && structKeyExists(variables, "getAttributeValue") && hasProperty("attributeValues") && hasAttributeCode(right(arguments.missingMethodName, len(arguments.missingMethodName)-3)) ) {
 			
 			return getAttributeValue(right(arguments.missingMethodName, len(arguments.missingMethodName)-3));	
 			
 		}
+		// getXXXID()		Where XXX is a many-to-one property that we want to get the primaryIDValue of that property 		
+		 else if ( left(arguments.missingMethodName, 3) == "get" && right(arguments.missingMethodName, 2) == "ID") {
+			
+			return getPropertyPrimaryID( propertyName=left(right(arguments.missingMethodName, len(arguments.missingMethodName)-3), len(arguments.missingMethodName)-5) );
+		}	
 		
 		throw('You have called a method #arguments.missingMethodName#() which does not exists in the #getClassName()# entity.');
 	}
@@ -864,6 +859,38 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		
 	}
 	
+	//can be overridden at the entity level in case we need to always return a relationship entity otherwise the default is only non-relationship and non-persistent
+	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID,cmsAccountID,cmsContentID,cmsSiteID"){
+		var properties = getProperties();
+		
+		var defaultProperties = [];
+		for(var p=1; p<=arrayLen(properties); p++) {
+			if(len(arguments.excludesList) && ListFind(arguments.excludesList,properties[p].name)){
+				
+			}else{
+				if((len(arguments.includesList) && ListFind(arguments.includesList,properties[p].name)) || 
+				!structKeyExists(properties[p],'FKColumn') && (!structKeyExists(properties[p], "persistent") || 
+				properties[p].persistent)){
+					arrayAppend(defaultProperties,properties[p]);	
+				}
+			}
+			
+		}
+		return defaultProperties;
+	}
+	
+	public any function getFilterProperties(string includesList = "", string excludesList = ""){
+		var properties = getProperties();
+		var defaultProperties = [];
+		for(var p=1; p<=arrayLen(properties); p++) {
+			if((len(includesList) && ListFind(arguments.includesList,properties[p].name) && !ListFind(arguments.excludesList,properties[p].name)) 
+			|| (!structKeyExists(properties[p], "persistent") || properties[p].persistent)){
+				properties[p]['displayPropertyIdentifier'] = getPropertyTitle(properties[p].name);
+				arrayAppend(defaultProperties,properties[p]);	
+			}
+		}
+		return defaultProperties;
+	}
 	
 	
 	/*

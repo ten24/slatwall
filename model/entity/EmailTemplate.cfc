@@ -55,6 +55,7 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 	property name="emailTemplateFile" ormtype="string" hb_formFieldType="select";
 	property name="emailBodyHTML" ormtype="string" length="4000";
 	property name="emailBodyText" ormtype="string" length="4000";
+	property name="logEmailFlag" ormtype="boolean" default="false";
 	
 	// Related Object Properties (many-to-one)
 	

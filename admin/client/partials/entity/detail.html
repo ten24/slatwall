@@ -1,5 +1,5 @@
 <section class="content s-body-margin" id="j-main-content" >
-	<div ng-if="entity">
+	<div ng-if="entity"> 
 		<div class="row s-body-nav">
 			<nav class="navbar navbar-default" role="navigation">
 				<div class="col-md-6 s-header-info">
@@ -67,7 +67,7 @@
 				</a>
 			</div>
 		</div>
-		<div class="panel-group s-pannel-group" id="accordion">
+		<div class="panel-group s-pannel-group" id="accordion" ng-if="detailTabs && detailTabs.length">
 			<div class="j-panel panel panel-default" ng-repeat="detailTab in detailTabs">
 			
 				<a style="cursor:pointer" ng-click="detailTab.openTab = !detailTab.openTab">
@@ -174,7 +174,7 @@
 
 						<div class="table-responsive">
 							<table
-								class="table table-striped table-bordered table-condensed">
+								class="table table-bordered table-hover">
 								<tbody>
 									
 									<tr>

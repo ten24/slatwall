@@ -1,5 +1,4 @@
 <!---
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,9 +39,7 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 --->
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
@@ -52,28 +47,46 @@ Notes:
 <cfparam name="rc.product" type="any" />
 
 <cfoutput>
-	<ul class="thumbnails list-unstyled s-product-image" >
-		<cfloop array="#rc.product.getDefaultProductImageFiles()#" index="imageFile">
-			<li class="col-md-4 s-image">
-				<div class="thumbnail<cfif not isNull(rc.product.getDefaultSku()) and imageFile eq rc.product.getDefaultSku().getImageFile()> s-default-image</cfif>">
-					<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#imageFile#" />
-					<div class="img-container">
-						<a href="#$.slatwall.getResizedImagePath(imagePath=thisImagePath, width=210, height=210)#" target="_blank">
-							#$.slatwall.getResizedImage(imagePath=thisImagePath, width=210, height=210)#
-						</a>
+	
+	<div class="row s-image-uploader">
+		
+			<cfloop array="#rc.product.getDefaultProductImageFiles()#" index="imageFile">
+				<cfset thisImagePath = "#$.slatwall.getBaseImageURL()#/product/default/#imageFile#" />
+			
+				<cfif fileExists(expandPath(thisImagePath))>
+					<div class="col-xs-3">
+						<div class="thumbnail">
+							<div class="s-image">
+								<a href="#$.slatwall.getResizedImagePath(imagePath=thisImagePath)#" target="_blank" alt="#imageFile#">
+									#$.slatwall.getResizedImage(imagePath=thisImagePath, width=210, height=210)#
+									<span class="s-zoom"><i class="fa fa-search"></i></span>
+								</a>
+							</div>
+							<div class="s-caption">
+								<h4 title="#imageFile#">#imageFile#</h4>
+							</div>
+							<div class="s-controlls">
+								<div class="btn-group btn-group-justified" role="group">
+									<div class="btn-group" role="group">
+										<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="pencil" modal="true" />
+									</div>
+									<div class="btn-group" role="group">
+										<hb:HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn btn-default s-remove" iconOnly="true" icon="trash" />
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
-					<hr />
-					<div class="small em image-caption s-info">
-						<h2>#imageFile#</h2>
-						<ul class="list-unstyled">
-							<li><hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="upload" modal="true" /></li>
-							<cfif fileExists(expandPath(thisImagePath))>
-								<li><hb:HibachiProcessCaller entity="#rc.product#" processContext="deleteDefaultImage" action="admin:entity.processproduct" queryString="imageFile=#imageFile#" class="btn btn-default" iconOnly="true" icon="trash" /></li>
-							</cfif>
-						</ul>
+				<cfelse>
+					<div class="alert alert-info deafult-margin" role="alert" sw-rbkey="'entity.Product.process.image.norecordsfound'"><!-- Message created by rb key --></div>
+					<div class="col-xs-3">
+						<hb:HibachiProcessCaller entity="#rc.product#" processContext="uploadDefaultImage" action="admin:entity.preprocessproduct" queryString="imageFile=#imageFile#" class="btn btn-primary" icon="plus" iconOnly="false"  modal="true" />
 					</div>
-				</div>
-			</li>
-		</cfloop>
-	</ul>
+				</cfif>
+			</cfloop>
+		
+		
+	</div>
+	
+	
 </cfoutput>

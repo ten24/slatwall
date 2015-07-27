@@ -53,6 +53,7 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	property name="siteName" ormtype="string";
 	property name="siteCode" ormtype="string" unique="true" index="PI_SITECODE";
 	property name="domainNames" ormtype="string";
+	property name="allowAdminAccessFlag" ormtype="boolean";
 	// CMS Properties
 	property name="cmsSiteID" ormtype="string" index="RI_CMSSITEID";
 	
@@ -78,6 +79,14 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	// Non-Persistent Properties
 	property name="sitePath" persistent="false";
 	property name="templatesPath" persistent="false";
+	property name="assetsPath" persistent="false"; 
+	
+	public boolean function getAllowAdminAccessFlag() {
+		if(isNull(variables.allowAdminAccessFlag)) {
+			variables.allowAdminAccessFlag = 0;
+		}
+		return variables.allowAdminAccessFlag;
+	}
 	
 	public string function getSitePath(){
 		if(!structKeyExists(variables,'sitePath')){
@@ -88,9 +97,20 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	
 	public string function getTemplatesPath(){
 		if(!structKeyExists(variables,'templatesPath')){
-			variables.templatesPath = getSitePath() & '/' & 'templates';
+			variables.templatesPath = getSitePath() & '/templates';
 		}
 		return variables.templatesPath;
+	}
+	
+	public string function getAssetsPath(){
+		if(!structKeyExists(variables,'assetsPath')){
+			variables.assetsPath = getSitePath() & '/assets';
+		}
+		return variables.assetsPath;
+	}
+	
+	public string function getSharedAssetsPath(){
+		return getService('siteService').getSharedAssetsPath();
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
@@ -98,6 +118,24 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
+	
+	// App (many-to-one)
+	public void function setApp(required any app) {
+		variables.app = arguments.app;
+		if(isNew() or !arguments.app.hasSite( this )) {
+			arrayAppend(arguments.app.getSites(), this);
+		}
+	}
+	public void function removeApp(any app) {
+		if(!structKeyExists(arguments, "app")) {
+			arguments.app = variables.app;
+		}
+		var index = arrayFind(arguments.app.getSites(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.app.getSites(), index);
+		}
+		structDelete(variables, "app");
+	}
 	
 	// Contents (one-to-many)
 	public void function addContent(required any content) {

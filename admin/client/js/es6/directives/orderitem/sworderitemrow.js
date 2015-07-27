@@ -4,7 +4,8 @@
  * @class sworderitemrow
  */
 'use strict';
-angular.module('slatwalladmin').directive('sworderitemrow', [
+angular.module('slatwalladmin')
+    .directive('sworderitemrow', [
     function () {
         var getRow = function (orderItem) {
             var row = "<td>TEST ROW</td>";

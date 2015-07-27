@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swCriteriaDate', [
+angular.module('slatwalladmin')
+    .directive('swCriteriaDate', [
     '$log',
     '$slatwall',
     '$filter',
@@ -210,8 +211,7 @@ angular.module('slatwalladmin').directive('swCriteriaDate', [
                     'dd-MMMM-yyyy',
                     'yyyy/MM/dd',
                     'dd.MM.yyyy',
-                    'shortDate'
-                ];
+                    'shortDate'];
                 scope.format = scope.formats[1];
                 scope.selectedConditionChanged = function (selectedFilterProperty) {
                     $log.debug('selectedConditionChanged Begin');
@@ -235,6 +235,7 @@ angular.module('slatwalladmin').directive('swCriteriaDate', [
                                 var today = Date.parse('today');
                                 var todayEOD = today.setHours(23, 59, 59, 999);
                                 selectedFilterProperty.criteriaRangeEnd = todayEOD;
+                                //get this Measure to date
                                 switch (selectedCondition.dateInfo.measureType) {
                                     case 'd':
                                         var dateBOD = Date.parse('today').add(selectedCondition.dateInfo.measureCount).days();
@@ -367,7 +368,9 @@ angular.module('slatwalladmin').directive('swCriteriaDate', [
                         if (conditionOption.display == scope.filterItem.conditionDisplay) {
                             scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
                             scope.selectedFilterProperty.criteriaValue = scope.filterItem.value;
-                            if (angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType.dateInfo) && angular.isDefined(scope.filterItem.value) && scope.filterItem.value.length) {
+                            if (angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType.dateInfo)
+                                && angular.isDefined(scope.filterItem.value)
+                                && scope.filterItem.value.length) {
                                 var dateRangeArray = scope.filterItem.value.split("-");
                                 scope.selectedFilterProperty.criteriaRangeStart = new Date(parseInt(dateRangeArray[0]));
                                 scope.selectedFilterProperty.criteriaRangeEnd = new Date(parseInt(dateRangeArray[1]));

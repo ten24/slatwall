@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swDisplayItem', [
+angular.module('slatwalladmin')
+    .directive('swDisplayItem', [
     '$http',
     '$compile',
     '$templateCache',

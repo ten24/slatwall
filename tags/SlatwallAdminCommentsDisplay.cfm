@@ -64,7 +64,7 @@
 	
 	<div class="tab-pane" id="tabComments">
 		<cfoutput>
-			<table class="table table-striped table-bordered table-condensed">
+			<table class="table table-bordered table-hover">
 				<tr>
 					<th class="primary">#attributes.hibachiScope.rbKey("entity.comment.comment")#</th>
 					<th>#attributes.hibachiScope.rbKey("entity.comment.publicFlag")#</th>
@@ -108,7 +108,7 @@
 			
 			<!---- ======= Comments from Parent ====== --->
 			<cfif !structIsEmpty(attributes.parentObject)>
-				<table class="table table-striped table-bordered table-condensed">
+				<table class="table table-bordered table-hover">
 					<tr>
 						<th class="primary">#attributes.hibachiScope.rbKey("entity.comment.parentComment")#</th>
 						<th>#attributes.hibachiScope.rbKey("entity.comment.publicFlag")#</th>
@@ -150,7 +150,7 @@
 			
 			<!--- ======= Comments on all Children ====== --->
 			<cfif arrayLen(attributes.childObjects)>
-				<table class="table table-striped table-bordered table-condensed">
+				<table class="table table-bordered table-hover">
 					<tr>
 						<th class="primary">#attributes.hibachiScope.rbKey("entity.comment.childComment")#</th>
 						<th>#attributes.hibachiScope.rbKey("entity.comment.publicFlag")#</th>

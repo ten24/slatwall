@@ -49,6 +49,7 @@ Notes:
 <cfimport prefix="swa" taglib="../tags" />
 <cfimport prefix="hb" taglib="../org/Hibachi/HibachiTags" />
 <cfif thisTag.executionMode is "start">
+	
 	<cfparam name="attributes.hibachiScope" type="any" default="#request.context.fw.getHibachiScope()#" />
 	<cfparam name="attributes.attributeSet" type="any" />
 	<cfparam name="attributes.edit" type="boolean" default="false" />
@@ -75,12 +76,18 @@ Notes:
 		
 		<!--- Setup Value --->
 		<cfset fdAttributes.value = "" />
-		<cfif isObject(attributes.entity)>
-			<cfset thisAttributeValueObject = attributes.entity.getAttributeValue(attribute.getAttributeID(), true) />
-			<cfif attributes.edit>
-				<cfset fdAttributes.value = thisAttributeValueObject.getAttributeValue() />
+		
+		<cfif isObject(attributes.entity)>			
+			<cfset thisAttributeValueObject = attributes.entity.getAttributeValue(attribute.getAttributeCode(), true) />
+			
+			<cfif isObject(thisAttributeValueObject)>
+				<cfif attributes.edit>
+					<cfset fdAttributes.value = thisAttributeValueObject.getAttributeValue() />
+				<cfelse>
+					<cfset fdAttributes.value = thisAttributeValueObject.getAttributeValueFormatted() />
+				</cfif>
 			<cfelse>
-				<cfset fdAttributes.value = thisAttributeValueObject.getAttributeValueFormatted() />
+				<cfset fdAttributes.value = thisAttributeValueObject />
 			</cfif>
 		<cfelseif !isNull(attribute.getDefaultValue())>
 			<cfset fdAttributes.value = attribute.getDefaultValue() />  
@@ -102,7 +109,7 @@ Notes:
 		<!--- Setup file link --->
 		<cfif not attributes.edit and attribute.getAttributeInputType() eq 'file' and len(fdAttributes.value)>
 			<cfset fdAttributes.valueLink = "#attributes.hibachiScope.getURLFromPath(attribute.getAttributeValueUploadDirectory())##fdAttributes.value#" />
-		<cfelseif not isNull(thisAttributeValueObject)>
+		<cfelseif not isNull(thisAttributeValueObject) AND isObject(thisAttributeValueObject)>
 			<cfset removeLink = "?slatAction=admin:entity.deleteattributeValue&attributeValueid=#thisAttributeValueObject.getAttributeValueID()#&redirectAction=admin:entity.detail#attribute.getAttributeSet().getAttributeSetObject()#&#attribute.getAttributeSet().getAttributeSetObject()#ID=#attributes.entity.invokeMethod('get'&attribute.getAttributeSet().getAttributeSetObject()&'ID')#"/>
 			<cfset fdAttributes.removeLink = removeLink/> 
 		</cfif>

@@ -52,7 +52,7 @@ Notes:
 <cfparam name="rc.product" type="any">
 
 <cfoutput>
-	<table id="inventory-table" class="table table-striped table-bordered table-condensed">
+	<table id="inventory-table" class="table table-bordered table-hover">
 		<tr>
 			<th>Location</th>
 			<th style="white-space:normal; vertical-align: text-bottom;"><div class="show-tooltip" data-toggle="tooltip" data-placement="top" title="#$.slatwall.rbKey('define.qoh.full')#">#$.slatwall.rbKey('define.qoh')#</div></th>

@@ -77,6 +77,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			"fulfillmentMethod",
 			"subscriptionUsage",
 			"subscriptionTerm",
+			"orderFulfillment",
 			"shippingMethod",
 			"paymentMethod",
 			"productType",
@@ -100,11 +101,12 @@ component extends="HibachiService" output="false" accessors="true" {
 			sku = ["product.productID", "product.productType.productTypeIDPath&product.brand.brandID", "product.productType.productTypeIDPath"],
 			product = ["productType.productTypeIDPath&brand.brandID", "productType.productTypeIDPath"],
 			productType = ["productTypeIDPath"],
-			content = ["contentIDPath"],
+			content = ["contentIDPath","contentID","site.siteID"],
 			email = ["emailTemplate.emailTemplateID"],
 			shippingMethodRate = ["shippingMethod.shippingMethodID"],
 			accountAuthentication = [ "integration.integrationID" ],
-			subscriptionUsage = [ "subscriptionTerm.subscriptionTermID" ]
+			subscriptionUsage = [ "subscriptionTerm.subscriptionTermID" ],
+			orderFulfillment = [ "orderFulfillment.orderFulfillmentID" ]
 		};
 	}
 	
@@ -187,6 +189,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalPublicAutoLogoutMinutes = {fieldtype="text", defaultValue=30, validate={dataType="numeric", required=true}},
 			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
+			globalAdminDomainNames = {fieldtype="text"},
 			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
@@ -197,6 +200,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			locationConfigurationAdditionalPreReservationTime = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
 			locationConfigurationAdditionalPostReservationTime = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
 
+			//Order Fulfillment
+			orderFulfillmentEmailTemplate = {fieldtype="select", defaultValue=""},
+			
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
 			
@@ -220,6 +226,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			// Site
 			siteForgotPasswordEmailTemplate = {fieldType="select", defaultValue="dbb327e796334dee73fb9d8fd801df91"},
 			siteVerifyAccountEmailAddressEmailTemplate = {fieldType="select", defaultValue="61d29dd9f6ca76d9e352caf55500b458"},
+			siteOrderOrigin = {fieldType="select"},
 			
 			// Shipping Method
 			shippingMethodQualifiedRateSelection = {fieldType="select", defaultValue="lowest"},
@@ -241,6 +248,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuEligibleFulfillmentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="FulfillmentMethod", defaultValue=getFulfillmentService().getAllActiveFulfillmentMethodIDList()},
 			skuEligibleOrderOrigins = {fieldType="listingMultiselect", listingMultiselectEntityName="OrderOrigin", defaultValue=this.getAllActiveOrderOriginIDList()},
 			skuEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
+			skuGiftCardAutoGenerateCode = {fieldType="yesno", defaultValue=1},
+			skuGiftCardCodeLength = {fieldType="yesno", defaultValue=32},
+			skuOrderItemGiftRecipientEmailTemplate = {fieldType="select", defaultValue=""},
 			skuHoldBackQuantity = {fieldType="text", defaultValue=0},
 			skuMarkAttendanceAsBundle = {fieldType="text", defaultValue=0},
 			skuMinimumPaymentPercentageToWaitlist = {fieldType="text", defaultValue=0},
@@ -374,6 +384,11 @@ component extends="HibachiService" output="false" accessors="true" {
 				return getEmailService().getEmailTemplateOptions( "Account" );
 			case "siteVerifyAccountEmailAddressEmailTemplate":
 				return getEmailService().getEmailTemplateOptions( "AccountEmailAddress" );
+			case "siteOrderOrigin":
+				var optionSL = getService('HibachiService').getOrderOriginSmartList();
+				optionSL.addSelect('orderOriginName', 'name');
+				optionSL.addSelect('orderOriginID', 'value');
+				return optionSL.getRecords();
 			case "shippingMethodQualifiedRateSelection" :
 				return [{name='Sort Order', value='sortOrder'}, {name='Lowest Rate', value='lowest'}, {name='Highest Rate', value='highest'}];
 			case "shippingMethodRateAdjustmentType" :
@@ -636,11 +651,13 @@ component extends="HibachiService" output="false" accessors="true" {
 			
 			// If an object was passed in, then first we can look for relationships based on that persistent object
 			if(structKeyExists(arguments, "object") && arguments.object.isPersistent()) {
+				
 				// First Check to see if there is a setting the is explicitly defined to this object
 				settingDetails.settingRelationships[ arguments.object.getPrimaryIDPropertyName() ] = arguments.object.getPrimaryIDValue();
 				for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {
 					settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 				}
+				
 				settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 				if(settingRecord.recordCount) {
 					foundValue = true;
@@ -650,7 +667,6 @@ component extends="HibachiService" output="false" accessors="true" {
 				} else {
 					structClear(settingDetails.settingRelationships);
 				}
-				
 				// If we haven't found a value yet, check to see if there is a lookup order
 				if(!foundValue && structKeyExists(getSettingLookupOrder(), arguments.object.getClassName()) && structKeyExists(getSettingLookupOrder(), settingPrefix)) {
 					
@@ -661,7 +677,6 @@ component extends="HibachiService" output="false" accessors="true" {
 					var nextLookupOrderIndex = 1;
 					var nextPathListIndex = 0;
 					var settingLookupArray = getSettingLookupOrder()[ arguments.object.getClassName() ];
-					
 					do {
 						// If there was an & in the lookupKey then we should split into multiple relationships
 						var allRelationships = listToArray(settingLookupArray[nextLookupOrderIndex], "&");
@@ -689,6 +704,7 @@ component extends="HibachiService" output="false" accessors="true" {
 						for(var fe=1; fe<=arrayLen(arguments.filterEntities); fe++) {
 							settingDetails.settingRelationships[ arguments.filterEntities[fe].getPrimaryIDPropertyName() ] = arguments.filterEntities[fe].getPrimaryIDValue();
 						}
+						
 						settingRecord = getSettingRecordBySettingRelationships(settingName=arguments.settingName, settingRelationships=settingDetails.settingRelationships);
 						if(settingRecord.recordCount) {
 							foundValue = true;
@@ -752,7 +768,10 @@ component extends="HibachiService" output="false" accessors="true" {
 				// Select
 				} else if (settingMetaData.fieldType == "select") {
 					var options = getSettingOptions(arguments.settingName);	
-					
+							
+					if(!arrayLen(options)){
+						settingDetails.settingValueFormatted = settingDetails.settingValue;
+					}		
 					for(var i=1; i<=arrayLen(options); i++) {
 						if(isStruct(options[i])) {
 							if(options[i]['value'] == settingDetails.settingValue) {
@@ -760,6 +779,7 @@ component extends="HibachiService" output="false" accessors="true" {
 								break;
 							}
 						} else {
+							
 							settingDetails.settingValueFormatted = settingDetails.settingValue;
 							break;
 						}

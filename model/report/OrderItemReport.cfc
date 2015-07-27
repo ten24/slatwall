@@ -1,5 +1,4 @@
 <!---
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,9 +39,7 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 --->
 <cfcomponent accessors="true" persistent="false" output="false" extends="HibachiReport">
 	
@@ -78,7 +73,7 @@ Notes:
 			{alias='brandName', title=rbKey('entity.brand.brandName')},
 			{alias='currencyCode', title=rbKey('entity.currency.currencyCode')},
 			{alias='price', formatType="currency", title=rbKey('entity.orderItem.price')},
-			{alias='type', title=rbKey('entity.orderItem.orderItemType')},
+			{alias='typeName', title=rbKey('entity.orderItem.orderItemType')},
 			{alias='orderNumber', title=rbKey('entity.order.orderNumber')},
 			{alias='orderOpenDateTime', title=rbKey('entity.order.orderOpenDateTime')},
 			{alias='orderCloseDateTime', title=rbKey('entity.order.orderCloseDateTime')},
@@ -107,9 +102,9 @@ Notes:
 					SwOrder.orderCloseDateTime,
 					SwOrder.currencyCode,
 					<cfif getApplicationValue('databaseType') eq "Oracle10g">
-						oit."type" as type,
+						oit."typeName" as type,
 					<cfelse>
-						oit.type,
+						oit.typeName,
 					</cfif>
 					SwAddress.city,
 					SwAddress.stateCode,
@@ -174,4 +169,3 @@ Notes:
 	</cffunction>
 	
 </cfcomponent>
-

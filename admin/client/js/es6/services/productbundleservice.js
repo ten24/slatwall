@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').factory('productBundleService', [
+angular.module('slatwalladmin')
+    .factory('productBundleService', [
     '$log',
     '$slatwall',
     'utilityService',
@@ -62,7 +63,6 @@ angular.module('slatwalladmin').factory('productBundleService', [
                         }
                     }
                 }
-                productBundelGroupFilters = utilityService.arraySorter(productBundelGroupFilters, "name");
                 $log.debug(productBundelGroupFilters);
                 return productBundelGroupFilters;
             }

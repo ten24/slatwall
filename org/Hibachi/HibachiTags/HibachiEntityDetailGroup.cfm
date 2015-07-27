@@ -87,6 +87,7 @@
 					</div><!--- j-panel panel-default --->
 				</cfloop>
 				<cfif isObject(attributes.object)>
+					<!---system tab --->
 					<div class="j-panel panel panel-default">
 						<a data-toggle="collapse" href="##tabSystem">
 							<div class="panel-heading">
@@ -103,7 +104,7 @@
 										
 											<hb:HibachiPropertyList> 
 												<hb:HibachiPropertyDisplay object="#attributes.object#" property="#attributes.object.getPrimaryIDPropertyName()#" />
-												<cfif attributes.object.hasProperty('remoteID')>
+												<cfif structKeyExists(attributes.object,'remoteID')>
 													<hb:HibachiPropertyDisplay object="#attributes.object#" property="remoteID" edit="#iif(request.context.edit && attributes.hibachiScope.setting('globalRemoteIDEditFlag'), true, false)#" />
 												</cfif>
 												<cfif len( attributes.object.getShortReferenceID() )>

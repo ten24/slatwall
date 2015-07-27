@@ -67,7 +67,7 @@ Notes:
 <cfinclude template="_slatwall-header.cfm" />
 
 <!--- This import allows for the custom tags required by this page to work --->
-<cfimport prefix="sw" taglib="../../tags" />
+<cfimport prefix="sw" taglib="../tags" />
 
 <!---[DEVELOPER NOTES]															
 																				
@@ -169,19 +169,32 @@ Notes:
 													<cfloop array="#attributeSet.getAttributes()#" index="attribute">
 														
 														<!--- Pull this attribute value object out of the order entity ---> 
-														<cfset attributeValueObject = $.slatwall.getAccount().getAttributeValue(attribute.getAttributeCode(), true) />
+														<cfset thisAttributeValueObject = $.slatwall.getAccount().getAttributeValue(attribute.getAttributeCode(), true) />
 														
-														<!--- Display the attribute value --->
-														<div class="control-group">
-															
-									    					<label class="control-label" for="rating">#attribute.getAttributeName()#</label>
-									    					<div class="controls">
-									    						
-																<sw:FormField type="#attribute.getFormFieldType()#" name="#attribute.getAttributeCode()#" valueObject="#attributeValueObject#" valueObjectProperty="attributeValue" valueOptions="#attributeValueObject.getAttributeValueOptions()#" class="span4" />
-																<sw:ErrorDisplay object="#attributeValueObject#" errorName="password" />
+														<cfif isObject(thisAttributeValueObject)>
+															<!--- Display the attribute value --->
+															<div class="control-group">
 																
-									    					</div>
-									  					</div>
+										    					<label class="control-label" for="rating">#attribute.getAttributeName()#</label>
+										    					<div class="controls">
+										    						
+																	<sw:FormField type="#attribute.getFormFieldType()#" name="#attribute.getAttributeCode()#" valueObject="#thisAttributeValueObject#" valueObjectProperty="attributeValue" valueOptions="#thisattributeValueObject.getAttributeValueOptions()#" class="span4" />
+																	<sw:ErrorDisplay object="#thisAttributeValueObject#" errorName="password" />
+																	
+										    					</div>
+										  					</div>
+										  				<cfelse>
+										  					<div class="control-group">
+																
+										    					<label class="control-label" for="rating">#attribute.getAttributeName()#</label>
+										    					<div class="controls">
+										    						
+											  						<sw:FormField type="#attribute.getFormFieldType()#" valueObject="#$.slatwall.getAccount()#" valueObjectProperty="#attribute.getAttributeCode()#" valueOptions="#attribute.getAttributeOptionsOptions()#" class="span4" />
+																	<sw:ErrorDisplay object="#$.slatwall.getAccount()#" errorName="#attribute.getAttributeCode()#" />
+																	
+										    					</div>
+										  					</div>
+										  				</cfif>
 														
 													</cfloop>
 													

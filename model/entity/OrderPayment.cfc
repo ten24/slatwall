@@ -84,6 +84,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	
 	// Related Object Properties (one-to-many)			
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="orderPaymentID" cascade="all-delete-orphan" inverse="true";
+	property name="giftCardTransactions" singularname="giftCardTransaction" cfc="GiftCardTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderPaymentID" cascade="all-delete-orphan" inverse="true";
 	property name="paymentTransactions" singularname="paymentTransaction" cfc="PaymentTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderPaymentID" cascade="all" inverse="true" orderby="createdDateTime DESC" ;
 	property name="referencingOrderPayments" singularname="referencingOrderPayment" cfc="OrderPayment" fieldType="one-to-many" fkcolumn="referencedOrderPaymentID" cascade="all" inverse="true";
 	property name="appliedAccountPayments" singularname="appliedAccountPayment" cfc="AccountPaymentApplied" type="array" fieldtype="one-to-many" fkcolumn="orderPaymentID" cascade="all" inverse="true";
@@ -119,6 +120,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="giftCardNumber" persistent="false" hb_populateEnabled="public";
 	property name="paymentMethodType" persistent="false";
 	property name="paymentMethodOptions" persistent="false";
+	property name="peerOrderPaymentNullAmountExistsFlag" persistent="false";
 	property name="orderStatusCode" persistent="false";
 	property name="originalAuthorizationCode" persistent="false";
 	property name="originalAuthorizationProviderTransactionID" persistent="false";
@@ -403,6 +405,20 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		return javaCast("null", "");
 	}
 	
+	public any function getPeerOrderPaymentNullAmountExistsFlag() {
+		if(!structKeyExists(variables, "peerOrderPaymentNullAmountExistsFlag")) {
+			variables.peerOrderPaymentNullAmountExistsFlag = false;
+			if(!isNull(getOrder())) {
+				if(!isNull(getOrderPaymentID())) {
+					variables.peerOrderPaymentNullAmountExistsFlag = getService("orderService").getPeerOrderPaymentNullAmountExistsFlag(orderID=getOrder().getOrderID(), orderPaymentID=getOrderPaymentID());	
+				} else {
+					variables.peerOrderPaymentNullAmountExistsFlag = getService("orderService").getPeerOrderPaymentNullAmountExistsFlag(orderID=getOrder().getOrderID());
+				}	
+			}
+		}
+		return variables.peerOrderPaymentNullAmountExistsFlag;
+	}
+	
 	public any function getOrderStatusCode() {
 		return getOrder().getStatusCode();
 	}
@@ -619,6 +635,15 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	}
 	public void function removeAttributeValue(required any attributeValue) {
 		arguments.attributeValue.removeOrderPayment( this );
+	}
+	
+	// Gift Card Transactions (one-to-many)
+	public void function addGiftCardTransaction(required any giftCardTransaction){ 
+		arguments.giftCardTransaction.setOrderPayment( this );  
+	}
+	
+	public void function removeGiftCardTransaction(required any giftCardTransaction){ 
+		arguments.giftCardTransaction.removeOrderPayment( this ); 
 	}
 	
 	// Payment Transactions (one-to-many)

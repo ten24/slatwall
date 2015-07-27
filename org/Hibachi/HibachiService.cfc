@@ -43,6 +43,12 @@
 			return smartList;
 		}
 		
+		public any function getCollectionList(string entityName, struct data={}){
+			var collection = getService('collectionService').newCollection(argumentcollection=arguments);
+			collection.setCollectionObject(arguments.entityName);
+			return collection;
+		}
+		
 		public any function list(required string entityName, struct filterCriteria = {}, string sortOrder = '', struct options = {} ) {
 			return getHibachiDAO().list(argumentcollection=arguments);
 		}
@@ -185,16 +191,19 @@
 	        return arguments.entity;
 	    }
 	    
-		/**
-		* exports the given query/array to file.
+	  /**
+		* Exports the given query/array to file.
 		* 
-		* @param data      Data to export. (Required) (Currently only supports query).
-		* @param columns      list of columns to export. (optional, default: all)
-		* @param columnNames      list of column headers to export. (optional, default: none)
-		* @param fileName      file name for export. (default: uuid)
-		* @param fileType      file type for export. (default: csv)
+		* @param data Data to export. (Required) (Currently only supports query and array of structs).
+		* @param columns List of columns to export. (optional, default: all)
+		* @param columnNames List of column headers to export. (optional, default: none)
+		* @param fileName File name for export. (default: uuid)
+		* @param fileType File type for export. (default: csv)
 		*/
 		public void function export(required any data, string columns, string columnNames, string fileName, string fileType = 'csv') {
+			if (isArray(data)){
+				arguments.data = transformArrayOfStructsToQuery( data, ListToArray(columnNames));
+			}
 			if(!structKeyExists(arguments,"fileName")){
 				arguments.fileName = createUUID() ;
 			}
@@ -227,7 +236,29 @@
 			// Open / Download File
 			getHibachiUtilityService().downloadFile(fileNameWithExt,filePath,"application/#arguments.fileType#",true);
 		}
-			
+	
+	private query function transformArrayOfStructsToQuery( required array arrayOfStructs, required array colNames ){
+		var rowsTotal = ArrayLen(arrayOfStructs);
+		var columnsTotal = ArrayLen(colNames); 
+		if (rowsTotal < 1){return QueryNew("");}
+		var columnNames = arguments.colNames;
+		var newQuery = queryNew(arrayToList(columnNames));
+		queryAddRow(newQuery, rowsTotal);
+		for (var i=1; i <= rowsTotal; i++){
+			for(var n=1; n <= columnsTotal; n++){
+				var column = nullReplace(columnNames[n], "");
+				var value = "";
+				//Fixes undefined values
+				if (!StructKeyExists(arrayOfStructs[i], "#column#")){
+					value = "";
+				}else{
+					value = arrayOfStructs[i][column];
+				}
+				querySetCell(newQuery, column, value, i);
+			}
+		}
+		return newQuery;
+	}	
 			    
 	 	/**
 		 * Generic ORM CRUD methods and dynamic methods by convention via onMissingMethod.
@@ -275,6 +306,8 @@
 			if ( lCaseMissingMethodName.startsWith( 'get' ) ) {
 				if(right(lCaseMissingMethodName,9) == "smartlist") {
 					return onMissingGetSmartListMethod( missingMethodName, missingMethodArguments );
+				} else if(right(lCaseMissingMethodName,14) == "collectionlist"){
+					return onMissingGetCollectionListMethod( missingMethodName, missingMethodArguments );
 				} else {
 					return onMissingGetMethod( missingMethodName, missingMethodArguments );
 				}
@@ -365,6 +398,29 @@
 			}
 			
 			return getSmartList(entityName=entityName, data=data);
+		} 
+		
+		/**
+		 * Provides dynamic getCollection method, by convention, on missing method:
+		 *
+		 *   getXXXCollection( struct data )
+		 *
+		 * ...in which XXX is an ORM entity name
+		 *
+		 * NOTE: Ordered arguments only--named arguments not supported.
+		 */
+		 
+		private function onMissingGetCollectionListMethod( required string missingMethodName, required struct missingMethodArguments ){
+			var collectionArgs = {};
+			var entityNameLength = len(arguments.missingMethodName) - 17;
+			
+			var entityName = missingMethodName.substring( 3,entityNameLength + 3 );
+			var data = {};
+			if( structCount(missingMethodArguments) && !isNull(missingMethodArguments[ 1 ]) && isStruct(missingMethodArguments[ 1 ]) ) {
+				data = missingMethodArguments[ 1 ];
+			}
+			
+			return getCollectionList(entityName=entityName, data=data);
 		} 
 		 
 	
@@ -763,6 +819,10 @@
 		// @hint returns true or false based on an entityName, and checks if that property exists for that entity 
 		public boolean function getEntityHasPropertyByEntityName( required string entityName, required string propertyName ) {
 			return structKeyExists(getPropertiesStructByEntityName(arguments.entityName), arguments.propertyName );
+		}
+		
+		public boolean function getPropertyIsObjectByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
+			return structKeyExists(getPropertiesStructByEntityName(getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier))[listLast(arguments.propertyIdentifier, ".")],'cfc');
 		}
 		
 		// @hint leverages the getEntityHasPropertyByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()

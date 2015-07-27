@@ -49,13 +49,20 @@ Notes:
 
 component  extends="HibachiService" accessors="true" {
 	variables.skeletonSitePath = expandPath('/integrationServices/slatwallcms/skeletonsite');
+	variables.sharedAssetsPath = '/custom/assets';
 	
 	// ===================== START: Logical Methods ===========================
+	public string function getSharedAssetsPath(){
+		return variables.sharedAssetsPath;
+	}
 	
 	public any function getCurrentRequestSite() {
-		var domain = cgi.HTTP_HOST;
-		var site = getDAO('siteDAO').getSiteByDomainName(domain);
-		return site;
+		var domain = listFirst(cgi.HTTP_HOST,':');
+		return getDAO('siteDAO').getSiteByDomainName(domain);
+	}
+	
+	public any function getCurrentDomain() {
+		return listFirst(cgi.HTTP_HOST,':');
 	}
 	
 	public string function getSkeletonSitePath(){
@@ -65,24 +72,32 @@ component  extends="HibachiService" accessors="true" {
 	public void function createSlatwallTemplatesChildren(required any slatwallTemplatesContent, required any site){
 		var slatwallTemplatesChildren = [
 			{
-				name='Barrier Template Page',
-				templateType=getService("typeService").getTypeBySystemCode("cttBarrierPage"),
-				settingName='contentRestrictedContent'
+				title='Barrier Template Page',
+				urlTitle="barrier-template-page",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttBarrierPage"),
+				settingName='contentRestrictedContent',
+				contentTemplateFile='slatwall-barrier-page.cfm'
 			},
 			{
-				name='Product Type Template',
-				templateType=getService("typeService").getTypeBySystemCode("cttProductType"),
-				settingName='productType'
+				title='Product Type Template',
+				urlTitle="product-type-template",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttProductType"),
+				settingName='productType',
+				contentTemplateFile='slatwall-producttype.cfm'
 			},
 			{
-				name='Product Template',
-				templateType=getService("typeService").getTypeBySystemCode("cttProduct"),
-				settingName='product'
+				title='Product Template',
+				urlTitle="product-template",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttProduct"),
+				settingName='product',
+				contentTemplateFile='slatwall-product.cfm'
 			},
 			{
-				name='Brand Template',
-				templateType=getService("typeService").getTypeBySystemCode("cttBrand"),
-				settingName='brand'
+				title='Brand Template',
+				urltitle="brand-template",
+				contentTemplateType=getService("typeService").getTypeBySystemCode("cttBrand"),
+				settingName='brand',
+				contentTemplateFile='slatwall-brand.cfm'
 			}
 		];
 		
@@ -91,50 +106,92 @@ component  extends="HibachiService" accessors="true" {
 				contentID='',
 				contentPathID='',
 				activeFlag=true,
-				title=slatwallTemplatesChild.name,
+				title=slatwallTemplatesChild.title,
+				urlTitle=slatwallTemplatesChild.urlTitle,
+				contentTemplateType=slatwallTemplatesChild.contentTemplateType,
+				siteID=arguments.site.getSiteID(),
+				parentContentID=arguments.slatwallTemplatesContent.getContentID(),
 				allowPurchaseFlag=false,
 				productListingPageFlag=false
 			};
 			var slatwallTemplatesChildContent = getService('contentService').newContent();
-			slatwallTemplatesChildContent.setSite(arguments.site);
-			slatwallTemplatesChildContent.setParentContent(arguments.slatwallTemplatesContent);
-			slatwallTemplatesChildContent.setContentTemplateType(slatwallTemplatesChild.templateType);
-			slatwallTemplatesChildContent = getService('contentService').saveContent(slatwallTemplatesChildContent,slatwallTemplatesChildContentData);
-			
+			slatwallTemplatesChildContent = getService('contentService').processContent(slatwallTemplatesChildContent,slatwallTemplatesChildContentData,"create");
+
 			var templateSetting = getService("settingService").newSetting();
 			templateSetting.setSettingName( slatwallTemplatesChild.settingName & 'DisplayTemplate' );
 			templateSetting.setSettingValue( slatwallTemplatesChildContent.getContentID() );
 			templateSetting.setSite( arguments.site );
 			getService("settingService").saveSetting( templateSetting );
+			
+			var contentTemplateSetting = getService("settingService").newSetting();
+			contentTemplateSetting.setSettingName( 'contentTemplateFile' );
+			contentTemplateSetting.setSettingValue( slatwallTemplatesChild.contentTemplateFile );
+			contentTemplateSetting.setContent( slatwallTemplatesChildContent );
+			getService("settingService").saveSetting( contentTemplateSetting );
 		}
+		ormflush();
 	}
 	
 	public void function createHomePageChildrenContent(required any homePageContent, required any site){
-		var homePageChildNames = [
-			'My Account',
-			'Shopping Cart',
-			'Product Listing',
-			'Checkout'
+		var homePageChildren = [
+			{
+				name='My Account',
+				urltitle="my-account",
+				contentTemplateFile='slatwall-account.cfm'	
+			},
+			{
+				name='Shopping Cart',
+				urltitle="shopping-cart",
+				contentTemplateFile="slatwall-shoppingcart.cfm"	
+			},
+			{
+				name='Product Listing',
+				urltitle='product-listing',
+				contentTemplateFile="slatwall-productlisting.cfm"
+			},
+			{
+				name='Checkout',
+				urlTitle="checkout",
+				contentTemplateFile="slatwall-checkout.cfm"
+			},
+			{
+				name='Order Confirmation',
+				urltitle="order-confirmation",
+				contentTemplateFile="slatwall-orderconfirmation.cfm"
+			},
+			{
+				name='404',
+				urlTitle="404",
+				contentTemplateFile="default.cfm"
+			}
 		];
 		
-		for(var name in homePageChildNames){
+		for(var homePageChild in homePageChildren){
 			productListingPageValue = false;
-			if(name == 'Product Listing'){
+			if(homePageChild.name == 'Product Listing'){
 				productListingPageValue = true;
 			}
 			var homePageChildContentData = {
 				contentID='',
 				contentPathID='',
 				activeFlag=true,
-				title=name,
+				title=homePageChild.name,
+				urlTitle=homePageChild.urlTitle,
 				allowPurchaseFlag=false,
-				productListingPageFlag=productListingPageValue
+				productListingPageFlag=productListingPageValue,
+				siteID=arguments.site.getSiteID(),
+				parentContentID=arguments.homePageContent.getContentID()
 			};
 			var homePageChildContent = getService('contentService').newContent();
-			homePageChildContent.setSite(arguments.site);
-			homePageChildContent.setParentContent(arguments.homePageContent);
-			homePageChildContent = getService('contentService').saveContent(homePageChildContent,homePageChildContentData);
+			homePageChildContent = getService('contentService').processContent(homePageChildContent,homePageChildContentData,'create');
+			
+			var contentTemplateSetting = getService("settingService").newSetting();
+			contentTemplateSetting.setSettingName( 'contentTemplateFile' );
+			contentTemplateSetting.setSettingValue( homePageChild.contentTemplateFile );
+			contentTemplateSetting.setContent( homePageChildContent );
+			getService("settingService").saveSetting( contentTemplateSetting );
 		}
+		ormflush();
 	}
 	
 	public void function createDefaultContentPages(required any site){
@@ -143,25 +200,37 @@ component  extends="HibachiService" accessors="true" {
 			contentPathID='',
 			activeFlag=true,
 			title='Home',
+			urlTitle="",
 			allowPurchaseFlag=false,
 			productListingPageFlag=false
 		};
 		var homePageContent = getService('contentService').newContent();
 		homePageContent.setSite(arguments.site);
-		createHomePageChildrenContent(homePageContent,arguments.site);
 		homePageContent = getService('contentService').saveContent(homePageContent,homePageContentData);
+		ormflush();
+		createHomePageChildrenContent(homePageContent,arguments.site);
+		
+		
+		var contentTemplateSetting = getService("settingService").newSetting();
+		contentTemplateSetting.setSettingName( 'contentTemplateFile' );
+		contentTemplateSetting.setSettingValue( 'default.cfm' );
+		contentTemplateSetting.setContent( homePageContent );
+		getService("settingService").saveSetting( contentTemplateSetting );
+		
 		var slatwallTemplatesContentData = {
 			contentID='',
 			contentPathID='',
 			activeFlag=true,
 			title='Slatwall Templates',
+			urlTitle="slatwall-templates",
 			allowPurchaseFlag=false,
-			productListingPageFlag=false
+			productListingPageFlag=false,
+			siteID=arguments.site.getSiteID(),
+			parentContentID=homePageContent.getContentID()
 		};
 		var slatwallTemplatesContent = getService('contentService').newContent();
-		slatwallTemplatesContent.setSite(arguments.site);
-		slatwallTemplatesContent.setParentContent(homePageContent);
-		slatwallTemplatesContent = getService('contentService').saveContent(slatwallTemplatesContent,slatwallTemplatesContentData);
+		slatwallTemplatesContent = getService('contentService').processContent(slatwallTemplatesContent,slatwallTemplatesContentData,'create');
+		ormflush();
 		createSlatwallTemplatesChildren(slatwallTemplatesContent,arguments.site);
 	}
 	
@@ -210,27 +279,38 @@ component  extends="HibachiService" accessors="true" {
 	// ======================  END: Status Methods ============================
 	
 	// ====================== START: Save Overrides ===========================
+	public any function processSite_create(required any site, required any processObject){
+		arguments.site = this.saveSite(arguments.site,arguments.data);
+		return arguments.site;
+	}
 	
 	public any function saveSite(required any site, struct data={}){
+		//get new flag before persisting
+		var newFlag = arguments.site.getNewFlag();
+		
+		arguments.site = super.save(arguments.site, arguments.data);
 		
 		if(	
-			arguments.site.getNewFlag() 
+			!arguments.site.hasErrors()
+			&& newFlag
 			&& (
 				!isnull(arguments.site.getApp())
 				&& !isnull(arguments.site.getApp().getIntegration()) 
 				&& arguments.site.getApp().getIntegration().getIntegrationPackage() == 'slatwallcms'
 			)
 		){
-			
+			//need to set sitecode before accessing path
 			//create directory for site
 			if(!directoryExists(arguments.site.getSitePath())){
 				directoryCreate(arguments.site.getSitePath());
 			}
-			arguments.site = super.save(arguments.site, arguments.data);
+			
 			//deploy skeletonSite
 			deploySite(arguments.site);
+			arguments.site = super.save(arguments.site, arguments.data);
+			ormflush();
+			
 		}
-		arguments.site = super.save(arguments.site, arguments.data);
 		return arguments.site;
 	}
 	

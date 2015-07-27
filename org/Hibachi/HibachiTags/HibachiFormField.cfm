@@ -19,7 +19,6 @@
 	<cfparam name="attributes.multiselectPropertyIdentifier" type="string" default="" />
 	<!---
 		attributes.fieldType have the following options:
-
 		checkbox			|	As a single checkbox this doesn't require any options, but it will create a hidden field for you so that the key gets submitted even when not checked.  The value of the checkbox will be 1
 		checkboxgroup		|	Requires the valueOptions to be an array of simple value if name and value is same or array of structs with the format of {value="", name=""}
 		date				|	This is still just a textbox, but it adds the jQuery date picker
@@ -232,13 +231,13 @@
 		</cfcase>
 		<cfcase value="yesno">
 			<cfoutput>
-				<div class="radio" style="display: inline-block;">
+				<div class="radio">
 					<input type="radio" name="#attributes.fieldName#" id="#attributes.fieldName#Yes" class="#attributes.fieldClass# yes" value="1" <cfif isBoolean(attributes.value) && attributes.value>checked="checked"</cfif> #attributes.fieldAttributes# />
 					<label for="#attributes.fieldName#Yes">
 						#yesNoFormat(1)#
 					</label>
 				</div>
-				<div class="radio" style="display: inline-block;margin-left: 12px;">
+				<div class="radio">
 					<input type="radio" name="#attributes.fieldName#" id="#attributes.fieldName#No" class="#attributes.fieldClass# yes" value="0" <cfif (isboolean(attributes.value) && not attributes.value) || not isBoolean(attributes.value)>checked="checked"</cfif> #attributes.fieldAttributes# />
 					<label for="#attributes.fieldName#No">
 						#yesNoFormat(0)#

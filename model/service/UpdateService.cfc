@@ -53,13 +53,12 @@ Notes:
 		
 		<!--- this could take a while... --->
 		<cfsetting requesttimeout="600" />
-		
 		<cftry>
 			<cfset var updateCopyStarted = false />
 			<cfset var downloadURL = "https://github.com/ten24/Slatwall/zipball/#arguments.branch#" />	
 			<cfset var slatwallRootPath = expandPath("/Slatwall") />
 			<cfset var downloadFileName = "slatwall#createUUID()#.zip" />
-			<cfset var deleteDestinationContentExclusionList = "/integrationServices,/custom,/WEB-INF,.project,setting.xml" />
+			<cfset var deleteDestinationContentExclusionList = '/.git,/apps,/integrationServices,/custom,/WEB-INF,/.project,/setting.xml,/.htaccess,/web.config,/.settings,/.gitignore' />
 			<cfset var copyContentExclusionList = "" />
 			<cfset var slatwallDirectoryList = "" />
 			
@@ -105,6 +104,7 @@ Notes:
 			<cffile action="delete" file="#getTempDirectory()##downloadFileName#" >
 			<cfdirectory action="delete" directory="#sourcePath#" recurse="true">
 			
+			<cfset updateCMSApplications()>
 			<!--- if there is any error during update, restore the old files and throw the error --->
 			<cfcatch type="any">
 				<cfif updateCopyStarted>
@@ -115,6 +115,14 @@ Notes:
 			</cfcatch>
 			
 		</cftry>
+	</cffunction>
+	
+	<cffunction name="updateCMSApplications">
+		<!--- Overwrite all CMS Application.cfc's with the latest from the skeletonApp --->
+		<cfset var apps = this.getAppSmartList().getRecords()>
+		<cfloop array="#apps#" index="app">
+			<cfset getService('appService').updateCMSApp(app)>
+		</cfloop>
 	</cffunction>
 	
 	<cffunction name="runScripts">
@@ -182,6 +190,182 @@ Notes:
 	
 	<cffunction name="getMetaFolderExistsFlag">
 		<cfreturn directoryExists( expandPath('/Slatwall/meta') ) >
+	</cffunction>
+	
+	<cffunction name="updateEntitiesWithCustomProperties" returntype="boolean">
+		 <cfscript>
+			try{
+				var path = "#ExpandPath('/')#" & "model/entity";
+				var pathCustom = "#ExpandPath('/')#" & "custom/model/entity";
+				var compiledPath = "#ExpandPath('/')#" & "model/entity";
+				
+				var directoryList = directoryList(path, false, "path", "*.cfc", "directory ASC");
+				var directoryListByName = directoryList(path, false, "name", "*.cfc", "directory ASC");
+				var directoryListCustom = directoryList(pathCustom, false, "name", "*.cfc", "directory ASC");
+				var directories = ArrayToList(directoryList);
+				
+				//find which items have an override in the custom folder
+				var matches = 0;
+				var matchArray = [];
+				for (var fileName in directoryListCustom){
+					
+					var result = ListFind(ArrayToList(directoryListByName), fileName);
+					if (result >= 1){
+						matches+=1;
+						ArrayAppend(matchArray, fileName);
+					}
+				}	
+				if (matches <= 0){
+					return true;
+				}
+				
+				//iterate over overrides and merge them
+				for (var match in matchArray){
+					var results = mergeProperties("#match#");
+					filewrite(compiledPath & '/#match#',results);
+				}
+				return true;
+			}catch(any e){
+				writeLog(file="Slatwall", text="Error reading from the file system while updating properties: #e#");
+				return false;
+			}
+			return true;
+		</cfscript>
+	</cffunction>
+	<cffunction name="mergeProperties" returntype="any">
+	  <cfargument name="fileName" type="String">
+		<cfscript>
+			//declared file paths
+			var filePath =  "model/entity/#arguments.fileName#";
+			var customFilePath =  "custom/model/entity/#arguments.fileName#";
+		    //declared component paths
+		    var fileComponentPath = left(filePath, len(filePath)-4);
+		    fileComponentPath = replace(fileComponentPath, "/", ".", "All");
+			var customFileComponentPath = left(customFilePath, len(customFilePath)-4);
+		    customFileComponentPath = replace(customFileComponentPath, "/", ".", "All"); 	  
+			
+			var baseMeta = getComponentMetaData(fileComponentPath);
+			var customMeta = getComponentMetaData(customFileComponentPath);
+			
+			//Grab the contents of the files and figure our the properties.
+			var fileContent = fileRead(expandPath(filePath)) ;
+			
+			//declared custom strings
+			var lineBreak = lineBreak = Chr(13) & Chr(10);
+			var customPropertyBeginString = '//CUSTOM PROPERTIES BEGIN #lineBreak#';
+			var customPropertyEndString = '//CUSTOM PROPERTIES END #lineBreak & lineBreak#';
+			var customFunctionBeginString = chr(9)&'//CUSTOM FUNCTIONS BEGIN #lineBreak#';
+			var customFunctionEndString = '//CUSTOM FUNCTIONS END #lineBreak#';
+			//if they already exists, then remove the custom properties and custom functions
+			if(findNoCase(customPropertyBeginString, fileContent)){
+				var customPropertyStartPos = findNoCase(chr(9)&customPropertyBeginString, fileContent);
+				var customPropertyEndPos = findNoCase(customPropertyEndString, fileContent) + len(customPropertyEndString);
+				fileContent = left(fileContent,customPropertyStartPos-1) & mid(fileContent,customPropertyEndPos, (len(fileContent) - customPropertyEndPos)+1);
+			}
+			
+			if(findNoCase(customFunctionBeginString, fileContent)){
+				var customFunctionStartPos = findNoCase(customFunctionBeginString, fileContent);
+				var customFunctionEndPos = findNoCase(customFunctionEndString, fileContent) + len(customFunctionEndString);
+				fileContent = left(fileContent,customFunctionStartPos-1) & mid(fileContent,customFunctionEndPos, abs(len(fileContent) - customFunctionEndPos) + 1);
+			}
+			var customFileContent = fileRead(expandPath(customFilePath)) ;
+			
+			// check duplicate properties and if there is a duplicate then write it to log
+			if(structKeyExists(customMeta,'properties')){
+				for(var i=1; i <= arraylen(customMeta.properties); i++) {
+					for(var j=1; j <= arraylen(baseMeta.properties); j++ ) {
+						if(baseMeta.properties[j].name == customMeta.properties[i].name) {
+							writeLog(
+								file="Slatwall", 
+								text="Custom property names can't be same as core property names"
+							);
+						}
+					}
+				}
+			}
+			
+			//declare custom positions
+			var propertyStartPos = findNoCase("property name=", customFileContent) ;
+			var privateFunctionLineStartPos = reFindNoCase('\private(.*?)function',customFileContent) ; 
+			var publicFunctionLineStartPos = reFindNoCase('\public(.*?)function',customFileContent) ;
+			
+			var functionLineStartPos = 0;
+			if(privateFunctionLineStartPos && publicFunctionLineStartPos){
+				if(privateFunctionLineStartPos > publicFunctionLineStartPos){
+					functionLineStartPos = publicFunctionLineStartPos;
+				}else{
+					functionLineStartPos = privateFunctionLineStartPos;
+				}
+			}else if(privateFunctionLineStartPos){
+				functionLineStartPos = privateFunctionLineStartPos;
+			}else if(publicFunctionLineStartPos){
+				functionLineStartPos = publicFunctionLineStartPos;
+			}
+			
+			var componentEndPos = customFileContent.lastIndexOf("}") ;
+			if(functionLineStartPos){
+				var propertyEndPos = functionLineStartPos -1;
+			}else{
+				var propertyEndPos = componentEndPos;
+			}
+			
+			//create function and properties strings
+			var functionString = '';
+			if(functionLineStartPos){
+				functionString =  mid(customFileContent, functionLineStartPos, abs(componentEndPos - functionLineStartPos));
+			}
+			var propertyString = '';
+			if(propertyStartPos){
+				propertyString = mid(customFileContent, propertyStartPos, abs(propertyEndPos-propertyStartPos));
+			}
+			
+			var newContent = fileContent;
+			
+			//add properties
+			if(len(propertyString)){
+				
+				var customPropertyString = customPropertyBeginString & chr(9) & propertyString & chr(9) & customPropertyEndString;
+				
+				propertyStartPos = findNoCase("property name=", newContent) ;
+				privateFunctionLineStartPos = reFind('private ',newContent); 
+				publicFunctionLineStartPos = reFind('public ',newContent);
+				
+				if(privateFunctionLineStartPos && publicFunctionLineStartPos){
+					if(privateFunctionLineStartPos > publicFunctionLineStartPos){
+						functionLineStartPos = publicFunctionLineStartPos;
+					}else{
+						functionLineStartPos = privateFunctionLineStartPos;
+					}
+				}else if(privateFunctionLineStartPos){
+					functionLineStartPos = privateFunctionLineStartPos;
+				}else if(publicFunctionLineStartPos){
+					functionLineStartPos = publicFunctionLineStartPos;
+				}
+				
+				componentEndPos = newContent.lastIndexOf("}") ;
+				if(functionLineStartPos){
+					propertyEndPos = functionLineStartPos -1;
+				}else{
+					propertyEndPos = componentEndPos;
+				}
+				
+				var newContentPropertiesStartPos = propertyEndPos; 
+				newContent = left(newContent,newContentPropertiesStartPos) & customPropertyString & chr(9) & right(newContent,len(newContent) - newContentPropertiesStartPos);
+			}
+			//add functions
+			if(len(functionString)){
+				
+				var customFunctionString =  customFunctionBeginString & chr(9) & functionString & lineBreak & chr(9) & customfunctionEndString;
+				
+				var newContentComponentEndPos = newContent.lastIndexOf("}") ;
+				
+				newContent = left(newContent,newContentComponentEndPos) & customFunctionString & '}';
+			}
+			
+			return newContent;
+		</cfscript>
+	</cffunction>
+	<cffunction name="addPropertiesToFile" returntype="String">	
 	</cffunction>
 	
 </cfcomponent>

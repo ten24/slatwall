@@ -56,6 +56,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="emailService";
 	property name="eventRegistrationService";
 	property name="fulfillmentService";
+	property name="giftCardService"; 
 	property name="hibachiUtilityService";
 	property name="locationService";
 	property name="paymentService";
@@ -146,6 +147,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public struct function getQuantityPriceSkuAlreadyReturned(required any orderID, required any skuID) {
 		return getOrderDAO().getQuantityPriceSkuAlreadyReturned(arguments.orderId, arguments.skuID);
+	}
+	
+	public boolean function getPeerOrderPaymentNullAmountExistsFlag(required string orderID, required string orderPaymentID) {
+		return getOrderDAO().getPeerOrderPaymentNullAmountExistsFlag(argumentcollection=arguments);
 	}
 	
 	public numeric function getPreviouslyReturnedFulfillmentTotal(required any orderID) {
@@ -542,6 +547,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.order = this.saveOrder( arguments.order );
 		
 		return arguments.order;
+	}
+	
+	public any function processOrder_addOrderItemGiftRecipient(required any order, required any processObject){ 
+		
+		//Create the gift orderitemgiftrecipient
+		//Attach to the orderitem 
+		
 	}
 	
 	public any function processOrder_addOrderPayment(required any order, required any processObject) {
@@ -1181,8 +1193,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							
 							// Look for 'auto' order fulfillments
 							for(var i=1; i<=arrayLen( arguments.order.getOrderFulfillments() ); i++) {
-								
-								
 								createOrderDeliveryForAutoFulfillmentMethod(arguments.order.getOrderFulfillments()[i]);
 							}
 						}
@@ -1205,8 +1215,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var order = arguments.orderFulfillment.getOrder();
 		
-		var newOrderDelivery = this.newOrderDelivery();
-		
 		// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
 		if(
 			arguments.orderFulfillment.getFulfillmentMethodType() == "auto" 
@@ -1217,6 +1225,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		){
 												
 			// Setup the processData
+			var newOrderDelivery = this.newOrderDelivery();
 			var processData = {};
 			processData.order = {};
 			processData.order.orderID = order.getOrderID();
@@ -1224,8 +1233,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			processData.orderFulfillment.orderFulfillmentID = arguments.orderFulfillment.getOrderFulfillmentID();
 			
 			newOrderDelivery = this.processOrderDelivery(newOrderDelivery, processData, 'create');
+			return newOrderDelivery;
 		}
-		return newOrderDelivery;
 	}
 	
 	public any function processOrder_placeOnHold(required any order, struct data={}) {

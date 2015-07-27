@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swCriteriaNumber', [
+angular.module('slatwalladmin')
+    .directive('swCriteriaNumber', [
     '$log',
     '$slatwall',
     '$filter',
@@ -123,7 +124,7 @@ angular.module('slatwalladmin').directive('swCriteriaNumber', [
                     $log.debug('populate');
                     if (conditionOption.display == scope.filterItem.conditionDisplay) {
                         scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
-                        $log.debuge.log(scope.filterItem);
+                        $log.debug(scope.filterItem);
                         if (scope.filterItem.comparisonOperator === 'between' || scope.filterItem.comparisonOperator === 'not between') {
                             var criteriaRangeArray = scope.filterItem.value.split('-');
                             $log.debug(criteriaRangeArray);

@@ -77,7 +77,7 @@ Notes:
 				<hr />
 				
 				<!--- Items Selector --->
-				<table class="table table-striped table-bordered table-condensed">
+				<table class="table table-bordered table-hover">
 					<tr>
 						<th>#$.slatwall.rbKey('entity.sku.skuCode')#</th>
 						<th class="primary">#$.slatwall.rbKey('entity.product.title')#</th>

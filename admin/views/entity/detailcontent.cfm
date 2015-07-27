@@ -55,16 +55,26 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.content#" edit="#rc.edit#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.content#" edit="#rc.edit#" />
-
+		<hb:HibachiEntityActionBar 
+			type="detail" 
+			object="#rc.content#" 
+			edit="#rc.edit#" 
+			backQueryString="?ng##!/entity/Content/" 
+			showDelete="#!rc.content.hasChildContent()#"
+			deleteQueryString="?ngRedirectQS=/entity/Content/"
+			
+		/>
 		<hb:HibachiEntityDetailGroup object="#rc.content#">
 			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<cfif rc.content.getProductListingPageFlag()>
 				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/products">
 			</cfif>
-			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/content">
+			<cfif !isNull(rc.content.getSite()) && !isNull(rc.content.getSite().getApp())>
+				<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/content">
+			</cfif>
 			<hb:HibachiEntityDetailItem view="admin:entity/contenttabs/settings">
 			<!--- Custom Attributes --->
+			
 			<cfloop array="#rc.content.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
 				<swa:SlatwallAdminTabCustomAttributes object="#rc.content#" attributeSet="#attributeSet#" />
 			</cfloop>

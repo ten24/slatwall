@@ -2,5 +2,7 @@
 default template
 ${{now()}}
 ${site.siteID}
-${site.title}
+${site.siteName}
+${contentBody}
+
 

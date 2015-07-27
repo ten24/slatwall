@@ -52,7 +52,7 @@ Notes:
 <cfparam name="rc.sku" type="any" />
 
 <cfoutput>
-	<table class="table table-striped table-bordered table-condensed">
+	<table class="table table-bordered table-hover">
 		<tr>
 			<th>#$.slatwall.rbKey('entity.currency')#</th>
 			<th>#$.slatwall.rbKey('entity.sku.listPrice')#</th>

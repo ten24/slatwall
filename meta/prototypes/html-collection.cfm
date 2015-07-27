@@ -527,7 +527,7 @@
                                         .s-table-header-nav label, .s-table-header-nav .selectboxit-container {display:inline-block;}
                                     </style>
                 					<form class="form-horizontal" style="width: 170px;">
-                						<label for="inputPassword" class="control-label col-md-4">View</label>
+                						<label class="control-label col-md-4">View</label>
                                         <div class="col-md-8">
                     						<select class="form-control">
                     							<option value="5" selected="selected">5</option>
@@ -729,7 +729,7 @@
                 	<!--//delete batch action-->
 
                 	<div class="table-responsive s-filter-table-box">
-                		<table class="table table-bordered table-striped">
+                		<table class="table table-bordered table-hover">
                 				<thead>
             						<tr>
         								<th>Row</span></th>

@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').factory('paginationService', [
+angular.module('slatwalladmin')
+    .factory('paginationService', [
     function () {
         var _pageRecords = [];
         var _pageShowOptions = [

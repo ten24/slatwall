@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swAdminCreateSuperUser', [
+angular.module('slatwalladmin')
+    .directive('swAdminCreateSuperUser', [
     '$log',
     '$slatwall',
     'partialsPath',

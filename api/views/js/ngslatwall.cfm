@@ -68,7 +68,6 @@ Notes:
 			.provider('$slatwall',[ 
 			function(){
 				var _deferred = {};
-				
 				var _config = {
 					dateFormat : 'MM/DD/YYYY',
 					timeFormat : 'HH:MM',
@@ -107,6 +106,12 @@ Notes:
 				    	)
 				    {
 				    	var slatwallService = {
+				    		setJsEntities: function(jsEntities){
+						    	_jsEntities=jsEntities;
+						    },
+						    getJsEntities: function(){
+						    	return _jsEntities;
+						    },
 				    		//service method used to transform collection data to collection objects based on a collectionconfig
 				    		populateCollection:function(collectionData,collectionConfig){
 				    			//create array to hold objects
@@ -193,6 +198,7 @@ Notes:
 					  				params.columnsConfig = options.columnsConfig || '';
 					  				params.filterGroupsConfig = options.filterGroupsConfig || '';
 					  				params.joinsConfig = options.joinsConfig || '';
+					  				params.orderByConfig = options.orderByConfig || '';
 					  				params.isDistinct = options.isDistinct || false;
 					  				params.propertyIdentifiersList = options.propertyIdentifiersList || '';
 					  				params.allRecords = options.allRecords || '';
@@ -324,7 +330,7 @@ Notes:
 					  		},
 					  		saveEntity:function(entityName,id,params,context){
 					  			
-					  			$log.debug('save'+ entityName);
+					  			//$log.debug('save'+ entityName);
 					  			var deferred = $q.defer();
 				
 					  			var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.post';	
@@ -383,23 +389,23 @@ Notes:
 					  			return _loadedResourceBundle;
 					  		},
 					  		hasResourceBundle:function(){
-					  			$log.debug('hasResourceBundle');
-					  			$log.debug(_loadedResourceBundle);
+					  			////$log.debug('hasResourceBundle');
+					  			////$log.debug(_loadedResourceBundle);
 					  			if(!_loadingResourceBundle && !_loadedResourceBundle){
 					  				_loadingResourceBundle = true;
-					  				$log.debug(slatwallService.getConfigValue('rbLocale').split('_'));
+					  				//$log.debug(slatwallService.getConfigValue('rbLocale').split('_'));
 					  				var localeListArray = slatwallService.getConfigValue('rbLocale').split('_');
 					  				var rbPromise;
 					  				var rbPromises = [];
 									rbPromise = slatwallService.getResourceBundle(slatwallService.getConfigValue('rbLocale'));
 									rbPromises.push(rbPromise);
 									if(localeListArray.length === 2){
-										$log.debug('has two');
+										//$log.debug('has two');
 										rbPromise = slatwallService.getResourceBundle(localeListArray[0]);
 										rbPromises.push(rbPromise);
 									}
 									if(localeListArray[0] !== 'en'){
-										$log.debug('get english');
+										//$log.debug('get english');
 										slatwallService.getResourceBundle('en_us');
 										slatwallService.getResourceBundle('en');
 									}	
@@ -452,31 +458,31 @@ Notes:
 					  			}*/
 					  		}--->
 					  		rbKey:function(key,replaceStringData){
-					  			$log.debug('rbkey');
-					  			$log.debug(key);
-					  			$log.debug(_config.rbLocale);
+					  			////$log.debug('rbkey');
+					  			////$log.debug(key);
+					  			////$log.debug(_config.rbLocale);
 					  		
 					  			var keyValue = this.getRBKey(key,_config.rbLocale);
-					  			$log.debug(keyValue);
+					  			////$log.debug(keyValue);
 					  			<!---if(angular.isDefined(replaceStringData) && ('"${'.toLowerCase().indexOf(keyValue))){
 					  				keyValue = slatwallService.replaceStringTemplate(keyValue,replaceStringData);
 					  			}--->
 					  			return keyValue;
 					  		},
 					  		getRBKey:function(key,locale,checkedKeys,originalKey){
-					  			$log.debug('getRBKey');
-					  			$log.debug('loading:'+_loadingResourceBundle);
-					  			$log.debug('loaded'+_loadedResourceBundle);
+					  			////$log.debug('getRBKey');
+					  			////$log.debug('loading:'+_loadingResourceBundle);
+					  			////$log.debug('loaded'+_loadedResourceBundle);
 					  			if(!_loadingResourceBundle && _loadedResourceBundle){
 					  				key = key.toLowerCase();
 						  			checkedKeys = checkedKeys || "";
 						  			locale = locale || 'en_us';
-						  			$log.debug('locale');
-						  			$log.debug(locale);
+						  			////$log.debug('locale');
+						  			////$log.debug(locale);
 						  			<!---// Check to see if a list was passed in as the key--->
 						  			var keyListArray = key.split(',');
-						  			$log.debug('keylistAray');
-						  			$log.debug(keyListArray);
+						  			////$log.debug('keylistAray');
+						  			////$log.debug(keyListArray);
 									if(keyListArray.length > 1) {
 										
 										<!---// Set up "" as the key value to be passed as 'checkedKeys'--->
@@ -487,7 +493,7 @@ Notes:
 											
 											<!---// Get the keyValue from this iteration--->
 											var keyValue = this.getRBKey(keyListArray[i], locale, keyValue);
-											$log.debug('keyvalue:'+keyValue);
+											////$log.debug('keyvalue:'+keyValue);
 											<!---// If the keyValue was found, then we can break out of the loop--->
 											if(keyValue.slice(-8) != "_missing") {
 												break;
@@ -499,11 +505,11 @@ Notes:
 									
 									<!---// Check the exact bundle file--->
 									var bundle = slatwallService.getResourceBundle(locale);
-									$log.debug('bundle');
-									$log.debug(bundle);
+									//$log.debug('bundle');
+									//$log.debug(bundle);
 									if(!angular.isFunction(bundle.then)){
 										if(angular.isDefined(bundle[key])) {
-											$log.debug('rbkeyfound:'+bundle[key]);
+											//$log.debug('rbkeyfound:'+bundle[key]);
 											return bundle[key];
 										}
 										
@@ -515,15 +521,15 @@ Notes:
 										if(angular.isUndefined(originalKey)){
 											originalKey = key;
 										}
-										$log.debug('originalKey:'+key);
-										$log.debug(checkedKeysListArray);
+										//$log.debug('originalKey:'+key);
+										//$log.debug(checkedKeysListArray);
 										<!---// Check the broader bundle file--->
 										var localeListArray = locale.split('_');
-										$log.debug(localeListArray);
+										//$log.debug(localeListArray);
 										if(localeListArray.length === 2){
 											bundle = slatwallService.getResourceBundle(localeListArray[0]);
 											if(angular.isDefined(bundle[key])){
-												$log.debug('rbkey found:'+bundle[key]);
+												//$log.debug('rbkey found:'+bundle[key]);
 												return bundle[key];
 											}
 											<!---// Add this more broad term to the checked keys--->
@@ -536,14 +542,14 @@ Notes:
 											&& keyDotListArray[keyDotListArray.length - 2] === 'define'
 										){
 											var newKey = key.replace(keyDotListArray[keyDotListArray.length - 3]+'.define','define');
-											$log.debug('newkey1:'+newKey);
+											//$log.debug('newkey1:'+newKey);
 											return this.getRBKey(newKey,locale,checkedKeys,originalKey);
 										}else if( keyDotListArray.length >= 2 && keyDotListArray[keyDotListArray.length - 2] !== 'define'){
 											var newKey = key.replace(keyDotListArray[keyDotListArray.length -2]+'.','define.');
-											$log.debug('newkey:'+newKey);
+											//$log.debug('newkey:'+newKey);
 											return this.getRBKey(newKey,locale,checkedKeys,originalKey);
 										}
-										$log.debug(localeListArray);
+										//$log.debug(localeListArray);
 										
 										if(localeListArray[0] !== "en"){
 											return this.getRBKey(originalKey,'en',checkedKeys);
@@ -606,7 +612,6 @@ Notes:
 								}
 								return metaData.$$getRBKey('entity.'+metaData.className.toLowerCase()+'.'+propertyName.toLowerCase());
 							}else if(metaData.isProcessObject){
-								console.log('is porceses boject');
 								if(angular.isDefined(propertyMetaData.fieldtype) 
 									&& angular.isDefined(propertyMetaData.cfc) 
 									&& ["one-to-many","many-to-many"].indexOf(propertyMetaData.fieldtype) > -1
@@ -882,14 +887,14 @@ Notes:
 	
 				    	var _save = function(entityInstance){
 				    		 var timeoutPromise = $timeout(function(){
-					    		$log.debug('save begin');
-					    		$log.debug(entityInstance);
+					    		//$log.debug('save begin');
+					    		//$log.debug(entityInstance);
 					    		
 					    		var entityID = entityInstance.$$getID();
 					    		
 					    		var modifiedData = _getModifiedData(entityInstance);
-					    		$log.debug('modifiedData complete');
-					    		$log.debug(modifiedData);
+					    		//$log.debug('modifiedData complete');
+					    		//$log.debug(modifiedData);
 					    		timeoutPromise.valid = modifiedData.valid;
 					    		if(modifiedData.valid){
 						    		var params = {};
@@ -918,8 +923,8 @@ Notes:
 						    		//select first, visible, and enabled input with a class of ng-invalid
 								
 						    		var target = $('input.ng-invalid:first:visible:enabled');
-						    		$log.debug('input is invalid');
-									$log.debug(target);
+						    		//$log.debug('input is invalid');
+									//$log.debug(target);
 						    		target.focus();
 								var targetID = target.attr('id');
 						    		$anchorScroll();
@@ -967,14 +972,14 @@ Notes:
 							var valid = true;
 				    		<!--- after finding the object level we will be saving at perform dirty checking object save level--->
 							var forms = entityInstance.forms;
-							$log.debug('process base level data');
+							//$log.debug('process base level data');
 							for(var f in forms){
 								
 				    			var form = forms[f];
 				    			form.$setSubmitted();	//Sets the form to submitted for the validation errors to pop up.
 				    			if(form.$dirty && form.$valid){
 						    		for(var key in form){
-						    			$log.debug('key:'+key);
+						    			//$log.debug('key:'+key);
 						    			if(key.charAt(0) !== '$'){
 						    				var inputField = form[key];
 						    				if(angular.isDefined(inputField.$valid) && inputField.$valid === true && inputField.$dirty === true){
@@ -998,11 +1003,11 @@ Notes:
 					    		}
 				    		}
 				    		modifiedData[entityInstance.$$getIDName()] = entityInstance.$$getID();
-							$log.debug(modifiedData);	
+							//$log.debug(modifiedData);	
 
 
 							<!--- check if we have a parent with an id that we check, and all children --->
-							$log.debug('process parent data');
+							//$log.debug('process parent data');
 							if(angular.isDefined(entityInstance.parents)){
 								for(var p in entityInstance.parents){
 									var parentObject = entityInstance.parents[p];
@@ -1040,13 +1045,13 @@ Notes:
 						    		modifiedData[parentObject.name][parentInstance.$$getIDName()] = parentInstance.$$getID();
 								}
 							}
-							$log.debug(modifiedData);
+							//$log.debug(modifiedData);
 	
 							<!--- dirty check all children --->
-							$log.debug('begin child data');
+							//$log.debug('begin child data');
 							var childrenData = validateChildren(entityInstance);
-							$log.debug('child Data');
-							$log.debug(childrenData);
+							//$log.debug('child Data');
+							//$log.debug(childrenData);
 							angular.extend(modifiedData,childrenData);
 							return {
 								valid:valid,
@@ -1098,8 +1103,8 @@ Notes:
 								data[entityInstance.$$getIDName()] = entityInstance.$$getID();
 			    			}
 			    			
-			    			$log.debug('processParent');
-			    			$log.debug(entityInstance);
+			    			//$log.debug('processParent');
+			    			//$log.debug(entityInstance);
 				    		var forms = entityInstance.forms;
 				    			
 							for(var f in forms){
@@ -1112,7 +1117,7 @@ Notes:
 			    		}
 	
 			    		var processForm = function(form,entityInstance){
-			    			$log.debug('begin process form');
+			    			//$log.debug('begin process form');
 			    			var data = {};
 			    			form.$setSubmitted();	
 			    			for(var key in form){
@@ -1130,8 +1135,8 @@ Notes:
 								}
 							}
 							data[entityInstance.$$getIDName()] = entityInstance.$$getID();
-							$log.debug('process form data');
-							$log.debug(data);
+							//$log.debug('process form data');
+							//$log.debug(data);
 							return data;
 			    		}
 	
@@ -1147,8 +1152,8 @@ Notes:
 											data[parentMetaData.name] = {};
 										}
 										var parentData = processParent(parent);
-										$log.debug('parentData:'+parentMetaData.name);
-										$log.debug(parentData);
+										//$log.debug('parentData:'+parentMetaData.name);
+										//$log.debug(parentData);
 										angular.extend(data[parentMetaData.name],parentData);
 									}else{
 										
@@ -1163,22 +1168,22 @@ Notes:
 				    	var getDataFromChildren = function(entityInstance){
 							var data = {};
 							<!--- loop through all children --->
-							$log.debug('childrenFound');
-							$log.debug(entityInstance.children);
+							//$log.debug('childrenFound');
+							//$log.debug(entityInstance.children);
 				    		for(var c in entityInstance.children){
 				    			var childMetaData = entityInstance.children[c];
 								var children = entityInstance.data[childMetaData.name];
-								$log.debug(childMetaData);
-								$log.debug(children);
+								//$log.debug(childMetaData);
+								//$log.debug(children);
 								if(angular.isArray(entityInstance.data[childMetaData.name])){
 									if(angular.isUndefined(data[childMetaData.name])){
 										data[childMetaData.name] = [];
 									}
 									angular.forEach(entityInstance.data[childMetaData.name],function(child,key){
-										$log.debug('process child array item')
+										//$log.debug('process child array item')
 										var childData = processChild(child,entityInstance);
-										$log.debug('process child return');
-										$log.debug(childData);
+										//$log.debug('process child return');
+										//$log.debug(childData);
 										data[childMetaData.name].push(childData);
 									});
 								}else{
@@ -1186,16 +1191,16 @@ Notes:
 										data[childMetaData.name] = {};
 									}
 									var child = entityInstance.data[childMetaData.name];
-									$log.debug('begin process child');
+									//$log.debug('begin process child');
 									var childData = processChild(child,entityInstance);
-									$log.debug('process child return');
-									$log.debug(childData);
+									//$log.debug('process child return');
+									//$log.debug(childData);
 									angular.extend(data,childData);
 								}
 								 
 							}
-							$log.debug('returning child data');
-							$log.debug(data);
+							//$log.debug('returning child data');
+							//$log.debug(data);
 
 							return data;
 				    	}
@@ -1208,10 +1213,10 @@ Notes:
 				    		
 				    		<!---find top level and validate all forms on the way --->
 				    		var objectSaveLevel = getObjectSaveLevel(entityInstance);
-							$log.debug('objectSaveLevel : ' + objectSaveLevel );
+							//$log.debug('objectSaveLevel : ' + objectSaveLevel );
 							var valueStruct = validateObject(objectSaveLevel);
-							$log.debug('validateObject data');
-							$log.debug(valueStruct.value);
+							//$log.debug('validateObject data');
+							//$log.debug(valueStruct.value);
 							
 							modifiedData = {
 								objectLevel:objectSaveLevel,
@@ -1238,482 +1243,11 @@ Notes:
 				    			
 				    		}
 				    	}
-				    	<!--- js entity specific code here --->
-						<cfloop array="#rc.entities#" index="local.entity">
-							<cfset local.isProcessObject = Int(Find('_',local.entity.getClassName()) gt 0)>
-							<cftry>
-								
-								<!---
-										/*
-							  			 *
-							  			 * getEntity('Product', '12345-12345-12345-12345');
-							  			 * getEntity('Product', {keywords='Hello'});
-							  			 * 
-							  			 */
-									 --->
-								 <!---decorate slatwallService --->
-								slatwallService.get#local.entity.getClassName()# = function(options){
-									var entityInstance = slatwallService.newEntity('#local.entity.getClassName()#');
-									var entityDataPromise = slatwallService.getEntity('#lcase(local.entity.getClassName())#',options);
-									entityDataPromise.then(function(response){
-										<!--- Set the values to the values in the data passed in, or API promisses, excluding methods because they are prefaced with $ --->
-										if(angular.isDefined(response.processData)){
-											entityInstance.$$init(response.data);
-											var processObjectInstance = slatwallService['new#local.entity.getClassName()#_'+options.processContext.charAt(0).toUpperCase()+options.processContext.slice(1)]();
-											processObjectInstance.$$init(response.processData);
-											processObjectInstance.data['#local.entity.getClassName()#'.charAt(0).toLowerCase()+'#local.entity.getClassName()#'.slice(1)] = entityInstance;
-											entityInstance.processObject = processObjectInstance;
-										}else{
-											entityInstance.$$init(response);
-										}
-									});
-									return {
-										promise:entityDataPromise,
-										value:entityInstance	
-									}
-								}
-								
-								slatwallService.new#local.entity.getClassName()# = function(){
-									return slatwallService.newEntity('#local.entity.getClassName()#');
-								}
-								
-								_jsEntities[ '#local.entity.getClassName()#' ]=function() {
-									
-									this.validations = #serializeJSON($.slatwall.getService('hibachiValidationService').getValidationStruct(local.entity))#;
-									
-									this.metaData = #serializeJSON(local.entity.getPropertiesStruct())#;
-									
-									this.metaData.className = '#local.entity.getClassName()#';
-									
-									this.metaData.isProcessObject = #local.isProcessObject#;
-									
-									this.metaData.$$getRBKey = function(rbKey,replaceStringData){
-										return slatwallService.rbKey(rbKey,replaceStringData);
-									};
-									
-									
-									<!---// @hint public method for getting the title to be used for a property from the rbFactory, this is used a lot by the HibachiPropertyDisplay --->
-									this.metaData.$$getPropertyTitle = function(propertyName){
-										return _getPropertyTitle(propertyName,this);
-									}
-									<!---// @hint public method for getting the title hint to be used for a property from the rbFactory, this is used a lot by the HibachiPropertyDisplay --->
-									this.metaData.$$getPropertyHint = function(propertyName){
-										return _getPropertyHint(propertyName,this);
-									}
-	
-									this.metaData.$$getManyToManyName = function(singularname){
-										var metaData = this;
-										for(var i in metaData){
-											if(metaData[i].singularname === singularname){
-												return metaData[i].name;
-											}
-										}
-									}
-									<!---// @hint public method for returning the name of the field for this property, this is used a lot by the PropertyDisplay --->
-									<!---this.metaData.$$getPropertyFieldName = function(propertyName){
-										return _getPropertyFieldName(propertyName,this);
-									}--->
-									<!---// @hint public method for inspecting the property of a given object and determining the most appropriate field type for that property, this is used a lot by the HibachiPropertyDisplay --->
-									this.metaData.$$getPropertyFieldType = function(propertyName){
-										return _getPropertyFieldType(propertyName,this);
-									}
-									<!---// @hint public method for getting the display format for a given property, this is used a lot by the HibachiPropertyDisplay --->
-									this.metaData.$$getPropertyFormatType = function(propertyName){
-										return _getPropertyFormatType(propertyName,this);
-									}
-									
-									this.metaData.$$getDetailTabs = function(){
-										<cfset local.tabsDirectory = expandPath( '/Slatwall/admin/client/partials/entity/#local.entity.getClassName()#/' )>
-										<cfdirectory
-										    action="list"
-										    directory="#local.tabsDirectory#"
-										    listinfo="name"
-										    name="local.tabsFileList"
-										    filter="*.html"
-									    />
-									    var detailTabs = [
-									    	<cfset tabCount = 0 />
-									    	<cfloop query="local.tabsFileList">
-									    		<cfset tabCount++ />
-									    		
-									    		<cfif tabCount neq local.tabsFileList.recordCount>
-									    			{
-									    				tabName:'#name#'
-									    			},
-									    		<cfelse>
-									    			{
-									    				tabName:'#name#'
-									    			}
-									    		</cfif>
-									   		</cfloop>
-									    ];
-									    
-									   	angular.forEach(detailTabs,function(detailTab){
-									   		if(detailTab.tabName === 'basic.html'){
-												detailTab.openTab = true;
-											}else{
-												detailTab.openTab = false;
-											}
-									   	});
-									    
-										return detailTabs;
-									}
-									
-									this.$$getFormattedValue = function(propertyName,formatType){
-										return _getFormattedValue(propertyName,formatType,this);
-									}
-									
-									this.data = {};
-									this.modifiedData = {};
-									<!---loop over possible attributes --->
-									<cfif len($.slatwall.getService('attributeService').getAttributeCodesListByAttributeSetObject(local.entity.getClassName()))>
-										<cfloop list="#$.slatwall.getService('attributeService').getAttributeCodesListByAttributeSetObject(local.entity.getClassName())#" index="local.attributeCode">
-											this.data['#local.attributeCode#'] = null;
-											this.metaData['#local.attributeCode#'] = {
-												name:'#local.attributeCode#'
-											};
-										</cfloop>
-									</cfif>
-									
-									
-									<!--- Loop over properties --->
-									<cfloop array="#local.entity.getProperties()#" index="local.property">
-										
-										<!--- Make sure that this property is a persistent one --->
-										<cfif !structKeyExists(local.property, "persistent") && ( !structKeyExists(local.property,"fieldtype") || listFindNoCase("column,id", local.property.fieldtype) )>
-											<!--- Find the default value for this property --->
-											<cfif !local.isProcessObject>
-												<cftry>
-													<cfset local.defaultValue = local.entity.invokeMethod('get#local.property.name#') />
-													<cfif isNull(local.defaultValue)>
-														this.data.#local.property.name# = null;
-													<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('boolean,int,integer,float,big_int,big_decimal', local.property.ormType)>
-														this.data.#local.property.name# = #local.entity.invokeMethod('get#local.property.name#')#;
-													<cfelseif structKeyExists(local.property, "ormType") and listFindNoCase('string', local.property.ormType)>
-														<cfif structKeyExists(local.property, "hb_formFieldType") and local.property.hb_formFieldType eq "json">
-															this.data.#local.property.name# = angular.fromJson('#local.entity.invokeMethod('get#local.property.name#')#');
-														<cfelse>
-															this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
-														</cfif>
-													<cfelseif structKeyExists(local.property, "ormType") and local.property.ormType eq 'timestamp'>
-														<cfif local.entity.invokeMethod('get#local.property.name#') eq ''>
-															this.data.#local.property.name# = '';
-														<cfelse>
-															this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#').getTime()#';
-														</cfif>
-													<cfelse>
-														this.data.#local.property.name# = '#local.entity.invokeMethod('get#local.property.name#')#';
-													</cfif>
-													<cfcatch></cfcatch>
-												</cftry>
-											<cfelse>
-												<cftry>
-													<cfset local.defaultValue = local.entity.invokeMethod('get#local.property.name#') />
-													<cfif !isNull(local.defaultValue)>
-														<cfif !isObject(local.defaultValue)>
-															<cfset local.defaultValue = serializeJson(local.defaultValue)/>
-															this.data.#local.property.name# = #local.defaultValue#;
-														<cfelse>
-															this.data.#local.property.name# = ''; 
-														</cfif>
-													<cfelse>
-														this.data.#local.property.name# = ''; 
-													</cfif>
-													<cfcatch></cfcatch>
-												</cftry>
-											</cfif>
-										<cfelse>
-										</cfif>
-									</cfloop>
-									
-								};
-								_jsEntities[ '#local.entity.getClassName()#' ].prototype = {
-									$$getPropertyByName:function(propertyName){
-										return this['$$get'+propertyName.charAt(0).toUpperCase() + propertyName.slice(1)]();
-									},
-									$$isPersisted:function(){
-										if(this.$$getID() === ''){
-											return false;
-										}else{
-											return true;
-										}
-									},
-									$$init:function( data ) {
-										_init(this,data);
-									},
-									$$save:function(){
-										return _save(this);
-									},
-									$$delete:function(){
-										var deletePromise =_delete(this)
-										return deletePromise;
-									},
-									<!---$$getProcessObject(){
-										return _getProcessObject(this);
-									}--->
-									$$getValidationsByProperty:function(property){
-										return _getValidationsByProperty(this,property);
-									},
-									$$getValidationByPropertyAndContext:function(property,context){
-										return _getValidationByPropertyAndContext(this,property,context);
-									}
-									<!--- used to retrieve info about the object properties --->
-									,$$getMetaData:function( propertyName ) {
-										if(propertyName === undefined) {
-											return this.metaData
-										}else{
-											if(angular.isDefined(this.metaData[propertyName].name) && angular.isUndefined(this.metaData[propertyName].nameCapitalCase)){
-												this.metaData[propertyName].nameCapitalCase = this.metaData[propertyName].name.charAt(0).toUpperCase() + this.metaData[propertyName].name.slice(1);
-											}
-											if(angular.isDefined(this.metaData[propertyName].cfc) && angular.isUndefined(this.metaData[propertyName].cfcProperCase)){
-												this.metaData[propertyName].cfcProperCase = this.metaData[propertyName].cfc.charAt(0).toLowerCase()+this.metaData[propertyName].cfc.slice(1);
-											}
-											return this.metaData[ propertyName ];
-										}
-									}
-									
-									<cfloop array="#local.entity.getProperties()#" index="local.property">
-										<cfif !structKeyExists(local.property, "persistent")>
-											<cfif structKeyExists(local.property, "fieldtype")>
-												
-												<cfif listFindNoCase('many-to-one', local.property.fieldtype)>
-													<!---get many-to-one options --->
-													<!---,$$get#local.property.name#Options:function(args) {
-														var options = {
-															property:'#local.property.name#',
-															args:args || []
-														};
-														var collectionOptionsPromise = slatwallService.getPropertyDisplayOptions('#local.entity.getClassName()#',options);
-														return collectionOptionsPromise;
-													}--->
-													<!---get many-to-one  via REST--->
-													,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
-														var thisEntityInstance = this;
-														if(angular.isDefined(this.$$get#local.entity.getClassName()#ID())){
-															var options = {
-																columnsConfig:angular.toJson([
-																	{
-																		"propertyIdentifier":"_#lcase(local.entity.getClassName())#_#local.property.name#"
-																	}
-																]),
-																joinsConfig:angular.toJson([
-																	{
-																		"associationName":"#local.property.name#",
-																		"alias":"_#lcase(local.entity.getClassName())#_#local.property.name#"
-																	}
-																]),
-																filterGroupsConfig:angular.toJson([{
-																	"filterGroup":[
-																		{
-																			"propertyIdentifier":"_#lcase(local.entity.getClassName())#.#ReReplace(local.entity.getClassName(),"\b(\w)","\l\1","ALL")#ID",
-																			"comparisonOperator":"=",
-																			"value":this.$$get#local.entity.getClassName()#ID()
-																		}
-																	]
-																}]),
-																allRecords:true
-															};
-															
-															var collectionPromise = slatwallService.getEntity('#local.entity.getClassName()#',options);
-															collectionPromise.then(function(response){
-																for(var i in response.records){
-																	var entityInstance = slatwallService.newEntity(thisEntityInstance.metaData['#local.property.name#'].cfc);
-																	//Removed the array index here at the end of local.property.name.
-																	if(angular.isArray(response.records[i].#local.property.name#)){
-																		entityInstance.$$init(response.records[i].#local.property.name#[0]);
-																	}else{
-																		entityInstance.$$init(response.records[i].#local.property.name#);//Shouldn't have the array index'
-																	}
-																	
-																	thisEntityInstance.$$set#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#(entityInstance);
-																}
-															});
-															return collectionPromise;
-															
-														}
-														
-														return null;
-													}
-													,$$set#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function(entityInstance) {
-														<!--- check if property is self referencing --->
-														$log.debug('set #local.property.name#');
-														var thisEntityInstance = this;
-														var metaData = this.metaData;
-														var manyToManyName = '';
-														if('#local.property.name#' === 'parent#local.entity.getClassName()#'){
-															var childName = 'child#local.entity.getClassName()#';
-															manyToManyName = entityInstance.metaData.$$getManyToManyName(childName);
-															
-														}else{
-															manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1));
-														}
-														
-														if(angular.isUndefined(thisEntityInstance.parents)){
-															thisEntityInstance.parents = [];
-														}
-														
-														thisEntityInstance.parents.push(thisEntityInstance.metaData['#local.property.name#']);
-														
-														<!---only set the property if we can actually find a related property --->
-														if(angular.isDefined(manyToManyName)){
-															if(angular.isUndefined(entityInstance.children)){
-																entityInstance.children = [];
-															}
-															
-															var child = entityInstance.metaData[manyToManyName];;
-															
-															if(entityInstance.children.indexOf(child) === -1){
-																entityInstance.children.push(child);
-															}
-															
-															if(angular.isUndefined(entityInstance.data[manyToManyName])){
-																entityInstance.data[manyToManyName] = [];
-															}
-															entityInstance.data[manyToManyName].push(thisEntityInstance);
-														}
-	
-														$log.debug(thisEntityInstance);
-														$log.debug(entityInstance);
-	
-														thisEntityInstance.data['#local.property.name#'] = entityInstance;
-	
-													}
-												<cfelseif listFindNoCase('one-to-many,many-to-many', local.property.fieldtype)>
-													<!--- add method --->
-													,$$add#ReReplace(local.property.singularname,"\b(\w)","\u\1","ALL")#:function() {
-														<!--- create related instance --->
-														var entityInstance = slatwallService.newEntity(this.metaData['#local.property.name#'].cfc);
-														var metaData = this.metaData;
-														<!--- one-to-many --->
-														if(metaData['#local.property.name#'].fieldtype === 'one-to-many'){
-															entityInstance.data[metaData['#local.property.name#'].fkcolumn.slice(0,-2)] = this;
-														<!--- many-to-many --->
-														}else if(metaData['#local.property.name#'].fieldtype === 'many-to-many'){
-															<!--- if the array hasn't been defined then create it otherwise retrieve it and push the instance --->
-															var manyToManyName = entityInstance.metaData.$$getManyToManyName(metaData.className.charAt(0).toLowerCase() + this.metaData.className.slice(1));
-															if(angular.isUndefined(entityInstance.data[manyToManyName])){
-																entityInstance.data[manyToManyName] = [];
-															}
-															entityInstance.data[manyToManyName].push(this);
-														}
-														
-														if(angular.isDefined(metaData['#local.property.name#'])){
-															if(angular.isDefined(entityInstance.metaData[metaData['#local.property.name#'].fkcolumn.slice(0,-2)])){
-																
-																if(angular.isUndefined(entityInstance.parents)){
-																	entityInstance.parents = [];
-																}
-		
-																entityInstance.parents.push(entityInstance.metaData[metaData['#local.property.name#'].fkcolumn.slice(0,-2)]);
-															}
-															
-															if(angular.isUndefined(this.children)){
-																this.children = [];
-															}
-	
-															var child = metaData['#local.property.name#'];
-															
-															if(this.children.indexOf(child) === -1){
-																this.children.push(child);
-															}
-														}
-														if(angular.isUndefined(this.data['#local.property.name#'])){
-															this.data['#local.property.name#'] = [];
-														}
-														
-														this.data['#local.property.name#'].push(entityInstance);
-														return entityInstance;
-													}
-													<!--- get one-to-many, many-to-many via REST --->
-													<!--- TODO: ability to add post options to the transient collection --->
-													,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
-														var thisEntityInstance = this;
-														if(angular.isDefined(this.$$get#local.entity.getClassName()#ID())){
-															var options = {
-																filterGroupsConfig:angular.toJson([{
-																	"filterGroup":[
-																		{
-																			"propertyIdentifier":"_#lcase(local.property.cfc)#.#Replace(ReReplace(local.property.fkcolumn,"\b(\w)","\l\1","ALL"),'ID','')#.#ReReplace(local.entity.getClassName(),"\b(\w)","\l\1","ALL")#ID",
-																			"comparisonOperator":"=",
-																			"value":this.$$get#local.entity.getClassName()#ID()
-																		}
-																	]
-																}]),
-																allRecords:true
-															};
-															
-															var collectionPromise = slatwallService.getEntity('#local.property.cfc#',options);
-															collectionPromise.then(function(response){
-																<!---returns array of related objects --->
-																for(var i in response.records){
-																	<!---creates new instance --->
-																	var entityInstance = thisEntityInstance['$$add'+thisEntityInstance.metaData['#local.property.name#'].singularname.charAt(0).toUpperCase()+thisEntityInstance.metaData['#local.property.name#'].singularname.slice(1)]();
-																	entityInstance.$$init(response.records[i]);
-																	if(angular.isUndefined(thisEntityInstance['#local.property.name#'])){
-																		thisEntityInstance['#local.property.name#'] = [];
-																	}
-																	thisEntityInstance['#local.property.name#'].push(entityInstance);
-																}
-															});
-															return collectionPromise;
-														}
-													}
-												<cfelse>
-													<cfif listFindNoCase('id', local.property.fieldtype)>
-														,$$getID:function(){
-															//this should retreive id from the metadata
-															return this.data[this.$$getIDName()];
-														}
-														,$$getIDName:function(){
-															var IDNameString = '#local.property.name#';
-															return IDNameString;
-														}
-													
-													</cfif>
-													,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
-														return this.data.#local.property.name#;
-													}
-												</cfif>
-											<cfelse>
-												,$$get#ReReplace(local.property.name,"\b(\w)","\u\1","ALL")#:function() {
-													return this.data.#local.property.name#;
-												}
-											</cfif>
-
-										</cfif>
-									</cfloop>
-									<cfif isProcessObject>
-										,$$getID:function(){
-											
-											return '';
-										}
-										,$$getIDName:function(){
-											var IDNameString = '';
-											return IDNameString;
-										}
-									</cfif>
-								};
-								
-								
-								<cfcatch>
-									<cfcontent type="text/html">
-									<cfdump var="#local.entity.getClassName()#" />
-									<cfdump var="#cfcatch#" />
-									<cfabort />
-								</cfcatch>
-							</cftry>
-							
-						</cfloop>
+				    	
 						
 					
 			      return slatwallService;
 		       }],
-			    setJsEntities: function(jsEntities){
-			    	_jsEntities=jsEntities;
-			    },
-			    getJsEntities: function(){
-			    	return _jsEntities;
-			    },
 			    getConfig:function(){
 			    	return _config;
 			    },

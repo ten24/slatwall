@@ -1,65 +1,65 @@
 
-<content class="s-body-box">
-	<div class="table-responsive"  >
-		<div class="col-xs-12 s-filter-content s-filter-content-table-view">
-			<div class="s-table-header-nav">
-				<div class="col-md-12 s-header-nav">
-					<div class="col-xs-6" style="padding-left:0px;">
-						<!---TODO: implement keyword searching and bulk actions --->
+
+	
+	<div class="s-filter-content-table-view">
+		<div class="s-table-header-nav">
+			<div class="s-header-nav">
+				<div class="col-xs-6" style="padding-left:0px;">
+					<!---TODO: implement keyword searching and bulk actions --->
+					<ul class="list-inline list-unstyled">
+						<li>
+							<div class="s-select-list-wrapper">
+								<div class="form-group">
+									<!--<div class="input-group">
+										<div class="s-input-btn">
+											<input  type="text"
+												class="form-control input-sm"
+												placeholder="Search"
+												name="srch-term"
+												ng-model="keywords"
+												ng-change="searchCollection()"
+												/>
+											<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
+										</div>
+										<div class="input-group-btn">
+											<button   class="btn btn-primary btn-sm"
+												type="button"
+												ng-click="searchCollection()"
+												>
+											<i class="fa fa-search"></i>
+											</button>
+										</div>
+									</div>-->
+								</div>
+							</div>
+							<!--- s-select-list-wrapper --->
+						</li>
+					</ul>
+				</div>
+			
+				<div class="s-header-nav">
+					<div class="col-xs-6 s-table-view-options">
 						<ul class="list-inline list-unstyled">
 							<li>
-								<div class="s-select-list-wrapper">
-									<div class="form-group">
-										<!--<div class="input-group">
-											<div class="s-input-btn">
-												<input  type="text"
-													class="form-control input-sm"
-													placeholder="Search"
-													name="srch-term"
-													ng-model="keywords"
-													ng-change="searchCollection()"
-													/>
-												<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
-											</div>
-											<div class="input-group-btn">
-												<button   class="btn btn-primary btn-sm"
-													type="button"
-													ng-click="searchCollection()"
-													>
-												<i class="fa fa-search"></i>
-												</button>
-											</div>
-										</div>-->
-									</div>
-								</div>
-								<!--- s-select-list-wrapper --->
+								<span   sw-pagination-bar
+									data-collection="collection"
+									data-current-page="currentPage"
+									data-page-show="pageShow"
+									data-page-start="pageStart"
+									data-page-end="pageEnd"
+									data-records-count="recordsCount"
+									data-get-collection="getCollection()"
+								>
+								</span>
 							</li>
 						</ul>
 					</div>
-				
-					<div class="s-header-nav">
-						<div class="col-xs-6 s-table-view-options">
-							<ul class="list-inline list-unstyled">
-								<li>
-									<span   sw-pagination-bar
-										data-collection="collection"
-										data-current-page="currentPage"
-										data-page-show="pageShow"
-										data-page-start="pageStart"
-										data-page-end="pageEnd"
-										data-records-count="recordsCount"
-										data-get-collection="getCollection()"
-									>
-									</span>
-								</li>
-							</ul>
-						</div>
-					</div>
 				</div>
 			</div>
-			<span sw-loading="orderItems" >
-			<content class="s-body-box">
-				<div class="table-responsive">
+		</div>
+		<div sw-loading="orderItems" >
+			
+			<div class="table-responsive">
 				<table class="table table-bordered s-order-item-table" ng-show="recordsCount()">
 					<thead>
 						<tr>
@@ -81,27 +81,25 @@
 						<!-- Begin Merchandise Row -->
 					</tbody>
 				</table>
-				</div>
-				</content>
-				<br>
-				<div class="row">
-					<div class="col-md-12" span ng-show="pageShow !== 'Auto'">
-						<div class="dataTables_info" id="example3_info" ng-show="recordsCount()">
-							Showing 
-							<b>
-								<span ng-bind="pageStart()">
-									<!--- record start --->
-								</span>
-								to <span ng-bind="pageEnd()"><!---records end --->
-								<span>
-							</b>
-							of <span ng-bind="recordsCount()"><!--- records Count ---></span> entries
-						</div>
-						<div ng-hide="recordsCount()" sw-rbkey="'admin.define.norecordsfound'"></div>
+			</div>
+			
+			
+			<div class="row">
+				<div class="col-md-12" span ng-show="pageShow !== 'Auto'">
+					<div class="dataTables_info" id="example3_info" ng-show="recordsCount()">
+						Showing 
+						<b>
+							<span ng-bind="pageStart()">
+								<!--- record start --->
+							</span>
+							to <span ng-bind="pageEnd()"><!---records end --->
+							<span>
+						</b>
+						of <span ng-bind="recordsCount()"><!--- records Count ---></span> entries
 					</div>
+					<div ng-hide="recordsCount()" class="alert alert-info" role="alert" sw-rbkey="'admin.define.norecordsfound'"><!-- Message created by rb key --></div>
 				</div>
-			</span>
+			</div>
 		</div>
 	</div>
-</content>					
-					
+		

@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swFilterItem', [
+angular.module('slatwalladmin')
+    .directive('swFilterItem', [
     '$log',
     'collectionService',
     'collectionPartialsPath',
