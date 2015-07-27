@@ -130,7 +130,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Loop over the orderPayments to see if we can add an accountPaymentMethod
 		for(var orderPayment in arguments.orderItem.getOrder().getOrderPayments()) {
-			if(!isNull(orderPayment.getAccountPaymentMethod())) {
+			if(orderPayment.getStatusCode() == "opstActive" && !isNull(orderPayment.getAccountPaymentMethod())) {
 				subscriptionUsage.setAccountPaymentMethod( orderPayment.getAccountPaymentMethod() );	
 			}
 		}
