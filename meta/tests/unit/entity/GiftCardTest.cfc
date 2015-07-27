@@ -52,54 +52,99 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function setUp() {
 		super.setup();
 
-		variables.entityService = "accountService";
-		variables.entity = request.slatwallScope.getService( variables.entityService ).newAccount();
+		variables.entity = request.slatwallScope.newEntity( 'GiftCard' );
 	}
 
-	public void function accountCanBeDeleted() {
-		var accountService = request.slatwallScope.getService("accountService");
 
-		var accountData = {
-			firstName = "Account",
-			lastName = "Delete",
-			phoneNumber = "1234567890",
-			createAuthenticationFlag = 0
+
+	public void function test_order_item_relation(){
+
+
+		var orderItemData = {
+			orderItemID='',
+			price='5'
 		};
+		var orderItem = createPersistedTestEntity('orderItem',orderItemData);
 
-		var account = entityNew("SlatwallAccount");
+		var giftCardData = {
+			giftCardID='',
+			giftCardPin='1111'
+		};
+		var giftCard = createPersistedTestEntity('giftCard', giftCardData);
 
-		account = accountService.processAccount(account, accountData, 'create');
-		var accountHasErrors = account.hasErrors();
+		giftCard.setOriginalOrderItem(orderItem);
 
-		ormFlush();
+		assertTrue(orderItem.hasGiftCard(giftCard));
 
-		var deleteOK = accountService.deleteAccount(account);
+		giftCard.removeOriginalOrderItem(orderItem);
 
-		assert(deleteOk);
-
-		ormFlush();
+		assertFalse(orderItem.hasGiftCard(giftCard));
 	}
 
-	public void function test_gift_card_relation(){
-		var accountData = {
-			accountID=""
+	public void function test_gift_card_transaction(){
+
+		var giftCardData = {
+			giftCardID='',
+			giftCardPin='1111'
 		};
+		var giftCard = createPersistedTestEntity('giftCard', giftCardData);
+
+		var giftCardTransactionData = {
+			giftCardTransactionID="",
+			credit="100.00"
+		};
+
+		var giftCardTransaction = createPersistedTestEntity('giftCardTransaction', giftCardTransactionData);
+
+		giftCard.addGiftCardTransaction(giftCardTransaction);
+
+		assertTrue(giftCard.hasGiftCardTransaction(giftCardTransaction));
+
+		giftCard.removeGiftCardTransaction(giftCardTransaction);
+
+		assertFalse(giftCard.hasGiftCardTransaction(giftCardTransaction));
+
+	}
+
+	public void function test_term_relation(){
+		var termData = {
+			termID=""
+		};
+
 		var giftCardData = {
 			giftCardID=""
 		};
 
-		var account = createPersistedTestEntity('account', accountData);
+		var term = createPersistedTestEntity('term', termData);
 		var giftCard = createPersistedTestEntity('giftCard', giftCardData);
 
-		account.addGiftCard(giftCard);
+		giftCard.setGiftCardExpirationTerm(term);
 
-		assertTrue(account.hasGiftCard(giftCard));
+		assertTrue(giftCard.hasGiftCardExpirationTerm(term));
 
-		account.removeGiftCard(giftCard);
+		giftCard.removeGiftCardExpirationTerm(term);
 
-		assertFalse(account.hasGiftCard(giftCard));
+		assertFalse(giftCard.hasGiftCardExpirationTerm(term));
+
+	}
+
+	public void function test_owner_account_relation(){
+		var giftCardData = {
+			giftCardID=""
+		};
+		var ownerAccountData = {
+			accountID=""
+		};
+		var giftCard = createPersistedTestEntity('giftCard', giftCardData);
+		var ownerAccount = createPersistedTestEntity('account', ownerAccountData);
+
+		giftCard.setOwnerAccount(ownerAccount);
+
+		assertTrue(giftCard.hasOwnerAccount(ownerAccount));
+
+		giftCard.removeOwnerAccount(ownerAccount);
+
+		assertFalse(giftCard.hasOwnerAccount(ownerAccount));
 	}
 
 }
-
-

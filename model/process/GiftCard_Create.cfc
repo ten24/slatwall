@@ -1,5 +1,4 @@
 /*
-
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +25,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +32,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,48 +39,22 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
 Notes:
-
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
-	public void function setUp() {
-		super.setup();
-		variables.service = request.slatwallScope.getService("productService");
-	}
+component output="false" accessors="true" extends="HibachiProcess"{
 	
-	public void function createSingleSkuTest(){
-		var productData = {
-			productID="",
-			productName="unitTestProduct" & createUUID(),
-			productCode="unitTestProductCode" & createUUID()
-		};
-		var product = createPersistedTestEntity('product',productData);
-		
-		var processObject = product.getProcessObject('create');
-		product = variables.service.createSingleSku(product,processObject);
-		//assert a single sku was created
-		assertEquals(arrayLen(product.getSkus()),1);
-	}
+	// Injected Entity
+	property name="giftCard";	
 	
-	public void function createGiftCardProduct(){
-		var productData = {
-			productID="",
-			productName="unitTestProduct" & createUUID(),
-			productCode="unitTestProductCode" & createUUID()
-		};
-		var product = createPersistedTestEntity('product',productData);
-		var processObject = product.getProcessObject('create');
-		
-		processObject.setRedemptionAmountType('sameAsPrice');
-		processObject.setRedemptionAmount(0);
-		
-		product = variables.service.createGiftCardProduct(product,processObject);
-		//assert values from the process object get populated into the entity
-		assertEquals(product.getDefaultSku().getRedemptionAmountType(),'sameAsPrice');
-		assertEquals(product.getDefaultSku().getRedemptionAmount(),0);
-	}
+	// Data Properties
+	property name="giftCardID"; 
+	property name="expirationDate";
+	property name="giftCardCode"; 
+	property name="giftCardPin"; 
+	property name="ownerAccount"; 
+	property name="ownerFirstName"; 
+	property name="ownerLastName"; 
+	property name="ownerEmailAddress"; 
+	
+	
 }
-
-

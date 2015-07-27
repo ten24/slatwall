@@ -46,44 +46,40 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
-	public void function setUp() {
-		super.setup();
-		variables.service = request.slatwallScope.getService("productService");
+	// ===================== START: Logical Methods ===========================
+	
+	// =====================  END: Logical Methods ============================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: DAO Passthrough ===========================
+	
+	// ===================== START: Process Methods ===========================
+	public function processGiftCard_create(required any giftCard, required any processObject){
+		
 	}
 	
-	public void function createSingleSkuTest(){
-		var productData = {
-			productID="",
-			productName="unitTestProduct" & createUUID(),
-			productCode="unitTestProductCode" & createUUID()
-		};
-		var product = createPersistedTestEntity('product',productData);
+	public function processGiftCard_addCredit(required any giftCard, required any processObject){
 		
-		var processObject = product.getProcessObject('create');
-		product = variables.service.createSingleSku(product,processObject);
-		//assert a single sku was created
-		assertEquals(arrayLen(product.getSkus()),1);
 	}
 	
-	public void function createGiftCardProduct(){
-		var productData = {
-			productID="",
-			productName="unitTestProduct" & createUUID(),
-			productCode="unitTestProductCode" & createUUID()
-		};
-		var product = createPersistedTestEntity('product',productData);
-		var processObject = product.getProcessObject('create');
+	public function processGiftCard_addDebit(required any giftCard, required any processObject){
 		
-		processObject.setRedemptionAmountType('sameAsPrice');
-		processObject.setRedemptionAmount(0);
-		
-		product = variables.service.createGiftCardProduct(product,processObject);
-		//assert values from the process object get populated into the entity
-		assertEquals(product.getDefaultSku().getRedemptionAmountType(),'sameAsPrice');
-		assertEquals(product.getDefaultSku().getRedemptionAmount(),0);
 	}
+	// =====================  END: Process Methods ============================
+	
+	// ====================== START: Save Overrides ===========================
+	
+	// ======================  END: Save Overrides ============================
+	
+	// ==================== START: Smart List Overrides =======================
+	
+	// ====================  END: Smart List Overrides ========================
+	
+	// ====================== START: Get Overrides ============================
+	
+	// ======================  END: Get Overrides =============================
+	
 }
-
-

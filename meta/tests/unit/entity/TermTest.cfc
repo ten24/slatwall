@@ -46,44 +46,36 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
-	public void function setUp() {
+	// @hint put things in here that you want to run before EACH test
+	public void function SetUp() {
 		super.setup();
-		variables.service = request.slatwallScope.getService("productService");
+		
+		variables.entity = request.slatwallScope.newEntity( 'Term' );
 	}
 	
-	public void function createSingleSkuTest(){
-		var productData = {
-			productID="",
-			productName="unitTestProduct" & createUUID(),
-			productCode="unitTestProductCode" & createUUID()
-		};
-		var product = createPersistedTestEntity('product',productData);
+	public void function test_gift_card_relation(){ 
+		var termData = {
+			termID=""
+		}; 
+
+		var giftCardData = { 
+			giftCardID=""
+		}; 
+		var term = createPersistedTestEntity('term', termData); 
+		var giftCard = createPersistedTestEntity('giftCard', giftCardData); 
+
+		term.addGiftCard(giftCard); 
+
+		assertTrue(term.hasGiftCard(giftCard)); 
+
+		term.removeGiftCard(giftCard); 
+
+		assertFalse(term.hasGiftCard(giftCard)); 
 		
-		var processObject = product.getProcessObject('create');
-		product = variables.service.createSingleSku(product,processObject);
-		//assert a single sku was created
-		assertEquals(arrayLen(product.getSkus()),1);
-	}
+	} 
 	
-	public void function createGiftCardProduct(){
-		var productData = {
-			productID="",
-			productName="unitTestProduct" & createUUID(),
-			productCode="unitTestProductCode" & createUUID()
-		};
-		var product = createPersistedTestEntity('product',productData);
-		var processObject = product.getProcessObject('create');
-		
-		processObject.setRedemptionAmountType('sameAsPrice');
-		processObject.setRedemptionAmount(0);
-		
-		product = variables.service.createGiftCardProduct(product,processObject);
-		//assert values from the process object get populated into the entity
-		assertEquals(product.getDefaultSku().getRedemptionAmountType(),'sameAsPrice');
-		assertEquals(product.getDefaultSku().getRedemptionAmount(),0);
-	}
 }
 
 

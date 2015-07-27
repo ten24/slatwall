@@ -56,6 +56,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="emailService";
 	property name="eventRegistrationService";
 	property name="fulfillmentService";
+	property name="giftCardService"; 
 	property name="hibachiUtilityService";
 	property name="locationService";
 	property name="paymentService";
@@ -546,6 +547,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.order = this.saveOrder( arguments.order );
 		
 		return arguments.order;
+	}
+	
+	public any function processOrder_addOrderItemGiftRecipient(required any order, required any processObject){ 
+		
+		//Create the gift orderitemgiftrecipient
+		//Attach to the orderitem 
+		
 	}
 	
 	public any function processOrder_addOrderPayment(required any order, required any processObject) {

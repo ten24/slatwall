@@ -1,5 +1,5 @@
 /*
-
+	
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -42,48 +42,21 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
+	
 Notes:
-
+	
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
-
-	public void function setUp() {
-		super.setup();
-		variables.service = request.slatwallScope.getService("productService");
-	}
+component output="false" accessors="true" extends="HibachiProcess"{
 	
-	public void function createSingleSkuTest(){
-		var productData = {
-			productID="",
-			productName="unitTestProduct" & createUUID(),
-			productCode="unitTestProductCode" & createUUID()
-		};
-		var product = createPersistedTestEntity('product',productData);
-		
-		var processObject = product.getProcessObject('create');
-		product = variables.service.createSingleSku(product,processObject);
-		//assert a single sku was created
-		assertEquals(arrayLen(product.getSkus()),1);
-	}
+	// Injected Entity
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderID";
 	
-	public void function createGiftCardProduct(){
-		var productData = {
-			productID="",
-			productName="unitTestProduct" & createUUID(),
-			productCode="unitTestProductCode" & createUUID()
-		};
-		var product = createPersistedTestEntity('product',productData);
-		var processObject = product.getProcessObject('create');
-		
-		processObject.setRedemptionAmountType('sameAsPrice');
-		processObject.setRedemptionAmount(0);
-		
-		product = variables.service.createGiftCardProduct(product,processObject);
-		//assert values from the process object get populated into the entity
-		assertEquals(product.getDefaultSku().getRedemptionAmountType(),'sameAsPrice');
-		assertEquals(product.getDefaultSku().getRedemptionAmount(),0);
-	}
+	// Data Properties
+ 	property name="firstName" type="string";
+ 	property name="lastName" type="string"; 
+ 	property name="emailAddress" type="string";
+ 	property name="account";
+ 	property name="quantity" type="number"; 
+ 	property name="giftMessage"; 
+ 
 }
-
-

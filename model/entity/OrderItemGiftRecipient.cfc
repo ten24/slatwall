@@ -46,26 +46,23 @@
 Notes:
 
 */
-component displayname="Fulfillment Method" entityname="SlatwallFulfillmentMethod" table="SwFulfillmentMethod" persistent=true output=false accessors=true extends="HibachiEntity"cacheuse="transactional" hb_serviceName="fulfillmentService" hb_permission="this" {
+component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipient" table="SwOrderItemGiftRecipient" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" {
 	
 	// Persistent Properties
-	property name="fulfillmentMethodID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="fulfillmentMethodName" ormtype="string";
-	property name="fulfillmentMethodType" ormtype="string" hb_formFieldType="select";
-	property name="activeFlag" ormtype="boolean" default="false";
-	property name="sortOrder" ormtype="integer";
-	property name="autoFulfillFlag" ormtype="boolean" default="false";
+	property name="orderItemGiftRecipientID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="firstName" ormtype="string";
+	property name="lastName" ormtype="string";
+	property name="emailAddress" ormtype="string";
+	property name="quantity" ormtype="integer";
+	property name="giftMessage" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
-	
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
+	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
+		
 	// Related Object Properties (one-to-many)
-	property name="shippingMethods" singularname="shippingMethod" cfc="ShippingMethod" type="array" fieldtype="one-to-many" fkcolumn="fulfillmentMethodID" cascade="all-delete-orphan" inverse="true";
-	property name="orderFulfillments" singularname="orderFulfillment" cfc="OrderFulfillment" fieldtype="one-to-many" fkcolumn="fulfillmentMethodID" inverse="true" lazy="extra";						// Set to lazy, just used for delete validation
 	
-	// Related Object Properties (many-to-many - owner)
-
-	// Related Object Properties (many-to-many - inverse)
-	property name="promotionQualifiers" singularname="promotionQualifier" cfc="PromotionQualifier" type="array" fieldtype="many-to-many" linktable="SwPromoQualFulfillmentMethod" fkcolumn="fulfillmentMethodID" inversejoincolumn="promotionQualifierID" inverse="true";
+	// Related Object Properties (many-to-many)
 	
 	// Remote Properties
 	property name="remoteID" ormtype="string";
@@ -76,50 +73,57 @@ component displayname="Fulfillment Method" entityname="SlatwallFulfillmentMethod
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
-		
-	public array function getFulfillmentMethodTypeOptions() {
-		var options = [
-			{name="Attend", value="attend"},
-			{name="Auto", value="auto"},
-			{name="Download", value="download"},
-			{name="Email", value="email"},
-			{name="Pickup", value="pickup"},
-			{name="Shipping", value="shipping"}
-		];
-
-		return options;
-	}
+	// Non-Persistent Properties
 	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
-	
+		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Shipping Methods (one-to-many)    
-	public void function addShippingMethod(required any shippingMethod) {    
-		arguments.shippingMethod.setFulfillmentMethod( this );    
-	}    
-	public void function removeShippingMethod(required any shippingMethod) {    
-		arguments.shippingMethod.removeFulfillmentMethod( this );    
+	// Order Item (many-to-one)
+	
+	public void function setOrderItem(required any orderItem) {
+		variables.orderItem = arguments.orderItem;
+		if(isNew() or !arguments.orderItem.hasOrderItemGiftRecipient( this )) {
+			arrayAppend(arguments.orderItem.getOrderItemGiftRecipients(), this);
+		}
 	}
 	
-	// Promotion Qualifiers (many-to-many - inverse)
-	public void function addPromotionQualifier(required any promotionQualifier) {
-		arguments.promotionQualifier.addFulfillmentMethods( this );
-	}
-	public void function removePromotionQualifier(required any promotionQualifier) {
-		arguments.promotionQualifier.removeFulfillmentMethods( this );
+	public void function removeOrderItem(any orderItem) {
+		if(!structKeyExists(arguments, "orderItem")) {
+			arguments.orderItem = variables.orderItem;
+		}
+		var index = arrayFind(arguments.orderItem.getOrderItemGiftRecipients(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderItem.getOrderItemGiftRecipients(), index);
+		}
+		structDelete(variables, "orderItem");
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
 	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicet Getters ===================
+	
+	// ==============  END: Overridden Implicet Getters ====================
+
 	// ================== START: Overridden Methods ========================
 	
 	// ==================  END:  Overridden Methods ========================
-		
+	
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
 }
-

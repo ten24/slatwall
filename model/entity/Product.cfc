@@ -112,6 +112,7 @@ component displayname="Product" entityname="SlatwallProduct" table="SwProduct" p
 	property name="baseProductType" type="string" persistent="false";
 	property name="brandName" type="string" persistent="false";
 	property name="brandOptions" type="array" persistent="false";
+	property name="redemptionAmountTypeOptions" type="array" persistent="false";
 	property name="bundleSkusSmartList" persistent="false";
 	property name="estimatedReceivalDetails" type="struct" persistent="false";
 	property name="eventConflictExistsFlag" type="boolean" persistent="false";

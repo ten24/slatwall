@@ -675,6 +675,29 @@ component extends="HibachiService" accessors="true" {
 
 		return arguments.product;
 	}
+	
+	public any function createSingleSku(required any product, required any processObject){
+		var thisSku = this.newSku();
+		thisSku.setProduct(arguments.product);
+		thisSku.setPrice(arguments.processObject.getPrice());
+		if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
+			thisSku.setListPrice(arguments.product.getlistPrice());
+		}
+		thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
+		arguments.product.setDefaultSku( thisSku );
+		return arguments.product;
+	}
+	
+	public any function createGiftCardProduct(required any product, required any processObject){
+		arguments.product = createSingleSku(arguments.product,arguments.processObject);
+		arguments.product.getDefaultSku().setRedemptionAmountType(arguments.processObject.getRedemptionAmountType());
+		arguments.product.getDefaultSku().setRedemptionAmount(arguments.processObject.getRedemptionAmount());
+		if(!isNull(arguments.processObject.getGiftCardExpirationTermID())){
+			var giftCardExpirationTerm = this.getTerm(arguments.processObject.getGiftCardExpirationTermID());
+			arguments.product.getDefaultSku().setGiftCardExpirationTerm(giftCardExpirationTerm);
+		}
+		return arguments.product;
+	}
 
 	public any function processProduct_create(required any product, required any processObject) {
 
@@ -782,14 +805,7 @@ component extends="HibachiService" accessors="true" {
 			// If no options were passed in we will just create a single sku
 			} else {
 
-				var thisSku = this.newSku();
-				thisSku.setProduct(arguments.product);
-				thisSku.setPrice(arguments.processObject.getPrice());
-				if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
-					thisSku.setListPrice(arguments.product.getlistPrice());
-				}
-				thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
-				arguments.product.setDefaultSku( thisSku );
+				arguments.product = createSingleSku(arguments.product, arguments.processObject);
 
 			}
 
@@ -813,8 +829,10 @@ component extends="HibachiService" accessors="true" {
 					product.setDefaultSku( thisSku );
 				}
 			}
+		//GENERATE - GIFT SKUS
+		}else if(arguments.processObject.getBaseProductType() == 'gift-card'){
+			arguments.product = createGiftCardProduct(arguments.product,arguments.processObject);
 		}
-
 
 		// Generate the URL Title
 		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );

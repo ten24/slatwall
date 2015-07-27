@@ -46,44 +46,61 @@
 Notes:
 
 */
-component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
+	// @hint put things in here that you want to run befor EACH test
 	public void function setUp() {
 		super.setup();
-		variables.service = request.slatwallScope.getService("productService");
+		
+		variables.entity = request.slatwallScope.newEntity( 'GiftCardTransaction' );	
+	}		
+		
+		
+		
+	public void function test_order_payment_relation(){ 
+		var orderPaymentData = { 
+			orderPaymentID="",
+			amount="100.00"
+		};
+		
+		var giftCardTransactionData = { 
+			giftCardTransactionID="",
+			credit="100.00"
+		};
+		
+		var orderPayment = createPersistedTestEntity('orderPayment', orderPaymentData); 
+		var giftCardTransaction = createPersistedTestEntity('giftCardTransaction', giftCardTransactionData);
+		
+		giftCardTransaction.setOrderPayment(orderPayment); 
+		
+		assertTrue(giftCardTransaction.hasOrderPayment(orderPayment)); 
+		
+		giftCardTransaction.removeOrderPayment(orderPayment); 
+		
+		assertFalse(giftCardTransaction.hasOrderPayment(orderPayment));
 	}
 	
-	public void function createSingleSkuTest(){
-		var productData = {
-			productID="",
-			productName="unitTestProduct" & createUUID(),
-			productCode="unitTestProductCode" & createUUID()
+	public void function test_gift_card_transaction(){ 
+		
+		var giftCardData = { 
+			giftCardID='', 
+			giftCardPin='1111'
+		}; 
+		var giftCard = createPersistedTestEntity('giftCard', giftCardData);
+		
+		var giftCardTransactionData = { 
+			giftCardTransactionID="",
+			credit="100.00"
 		};
-		var product = createPersistedTestEntity('product',productData);
 		
-		var processObject = product.getProcessObject('create');
-		product = variables.service.createSingleSku(product,processObject);
-		//assert a single sku was created
-		assertEquals(arrayLen(product.getSkus()),1);
-	}
-	
-	public void function createGiftCardProduct(){
-		var productData = {
-			productID="",
-			productName="unitTestProduct" & createUUID(),
-			productCode="unitTestProductCode" & createUUID()
-		};
-		var product = createPersistedTestEntity('product',productData);
-		var processObject = product.getProcessObject('create');
+		var giftCardTransaction = createPersistedTestEntity('giftCardTransaction', giftCardTransactionData); 
 		
-		processObject.setRedemptionAmountType('sameAsPrice');
-		processObject.setRedemptionAmount(0);
+		giftCardTransaction.setGiftCard(giftCard); 
 		
-		product = variables.service.createGiftCardProduct(product,processObject);
-		//assert values from the process object get populated into the entity
-		assertEquals(product.getDefaultSku().getRedemptionAmountType(),'sameAsPrice');
-		assertEquals(product.getDefaultSku().getRedemptionAmount(),0);
+		assertTrue(giftCardTransaction.hasGiftCard(giftCard)); 
+		
+		giftCardTransaction.removeGiftCard(giftCard);
+		
+		assertFalse(giftCardTransaction.hasGiftCard(giftCard)); 
 	}
 }
-
-

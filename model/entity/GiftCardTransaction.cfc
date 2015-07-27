@@ -46,22 +46,20 @@
 Notes:
 
 */
-component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="SwEmailTemplate" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="templateService" hb_permission="this" {
+component displayname="Gift Card Transaction" entityname="SlatwallGiftCardTransaction" table="SwGiftCardTransaction" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="giftCardService" {
 	
 	// Persistent Properties
-	property name="emailTemplateID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="emailTemplateName" ormtype="string";
-	property name="emailTemplateObject" ormtype="string" hb_formFieldType="select";
-	property name="emailTemplateFile" ormtype="string" hb_formFieldType="select";
-	property name="emailBodyHTML" ormtype="string" length="4000";
-	property name="emailBodyText" ormtype="string" length="4000";
-	property name="logEmailFlag" ormtype="boolean" default="false";
+	property name="giftCardTransactionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="creditAmount" ormtype="big_decimal";
+	property name="debitAmount" ormtype="big_decimal";
 	
 	// Related Object Properties (many-to-one)
-	
+	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";
+	property name="giftCard" cfc="GiftCard" fieldtype="many-to-one" fkcolumn="giftCardID";
+		
 	// Related Object Properties (one-to-many)
-	property name="eventTriggers" singularname="eventTrigger" cfc="EventTrigger" fieldtype="one-to-many" fkcolumn="emailTemplateID" cascade="all" inverse="true" lazy="extra";
-
+	property name="orderItems" singularname="orderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="giftCardTransactionID" inverse="true" cascade="all-delete-orphan";
+	
 	// Related Object Properties (many-to-many)
 	
 	// Remote Properties
@@ -74,58 +72,74 @@ component displayname="EmailTemplate" entityname="SlatwallEmailTemplate" table="
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	property name="emailTemplateObjectOptions" persistent="false";
-	property name="emailTemplateFileOptions" persistent="false";
 
-	
 	// ============ START: Non-Persistent Property Methods =================
-	
-	public array function getEmailTemplateObjectOptions() {
-		if(!structKeyExists(variables, "emailTemplateObjectOptions")) {
-			var emd = getService("hibachiService").getEntitiesMetaData();
-			var enArr = listToArray(structKeyList(emd));
-			arraySort(enArr,"text");
-			variables.emailTemplateObjectOptions = [{name=getHibachiScope().rbKey('define.select'), value=''}];
-			for(var i=1; i<=arrayLen(enArr); i++) {
-				arrayAppend(variables.emailTemplateObjectOptions, {name=rbKey('entity.#enArr[i]#'), value=enArr[i]});
-			}
-		}
-		return variables.emailTemplateObjectOptions;
-	}
-	
-	public array function getEmailTemplateFileOptions() {
-		if(!structKeyExists(variables, "emailTemplateFileOptions")) {
-			variables.emailTemplateFileOptions = getService("templateService").getTemplateFileOptions( templateType="email", objectName=getEmailTemplateObject() );
-			arrayPrepend(variables.emailTemplateFileOptions, {name=getHibachiScope().rbKey('define.none'), value=''});
-		}
-		return variables.emailTemplateFileOptions;
-	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
+	// Order Payments (many-to-one)
+	public void function setOrderPayment(required any orderPayment) {
+		variables.orderPayment = arguments.orderPayment;
+		if(isNew() or !arguments.orderPayment.hasGiftCardTransaction( this )) {
+			arrayAppend(arguments.orderPayment.getGiftCardTransactions(), this);
+		}
+	}
+	
+	public void function removeOrderPayment(any orderPayment) {
+		if(!structKeyExists(arguments, "orderPayment")) {
+			arguments.orderPayment = variables.orderPayment;
+		}
+		var index = arrayFind(arguments.orderPayment.getGiftCardTransactions(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderPayment.getGiftCardTransactions(), index);
+		}
+		structDelete(variables, "orderPayment");
+	}
+	
+	// Gift Cards (many-to-one)
+	public void function setGiftCard(required any giftCard) {
+		variables.giftCard = arguments.giftCard;
+		if(isNew() or !arguments.giftCard.hasGiftCardTransaction( this )) {
+			arrayAppend(arguments.giftCard.getGiftCardTransactions(), this);
+		}
+	}
+	
+	public void function removeGiftCard(any giftCard) {
+		if(!structKeyExists(arguments, "giftCard")) {
+			arguments.giftCard = variables.giftCard;
+		}
+		var index = arrayFind(arguments.giftCard.getGiftCardTransactions(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.giftCard.getGiftCardTransactions(), index);
+		}
+		structDelete(variables, "giftCard");
+	}
+	
 	// =============  END:  Bidirectional Helper Methods ===================
 
+	// =============== START: Custom Validation Methods ====================
+	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+	
+	// ============== START: Overridden Implicet Getters ===================
+	
+	// ==============  END: Overridden Implicet Getters ====================
+
 	// ================== START: Overridden Methods ========================
-	
-	public any function getEmailBodyHTML() {
-		if(!structKeyExists(variables, "emailBodyHTML")) {
-			variables.emailBodyHTML = "";
-		}
-		return variables.emailBodyHTML;
-	}
-	
-	public any function getEmailBodyText() {
-		if(!structKeyExists(variables, "emailBodyText")) {
-			variables.emailBodyText = "";
-		}
-		return variables.emailBodyText;
-	}
 	
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
 }
