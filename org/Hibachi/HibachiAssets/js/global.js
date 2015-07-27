@@ -832,18 +832,25 @@ function setupEventHandlers() {
 		jQuery('input[name="metrics"]').val( vArr.join(',').trim() );
 		updateReport();
 	});
+
 	jQuery('body').on('click', '.hibachi-report-data-table-load', function(e){
 		e.preventDefault();
 		addLoadingDiv( 'hibachi-report' );
 		updateReport( jQuery(this).data('page') );
 	});
-	//orderbytype event hook 
+
 	jQuery('body').on('change', '#hibachi-order-by', function(e){ 
 		e.preventDefault();
 		addLoadingDiv( 'hibachi-report' );
 		updateReport();
 	});
-
+	
+	jQuery('body').on("click",".hibachi-report-pagination", function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' ); 
+		var pagination = $(this).attr("data-pagination"); 
+		updateReport( pagination); 
+	}); 
 
 	//Accordion Binding
 	jQuery('body').on('click','.j-closeall', function(e){
