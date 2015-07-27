@@ -49,11 +49,6 @@ Notes:
 component extends="HibachiService" persistent="false" accessors="true" output="false" {
 
 	// ===================== START: Logical Methods ===========================
-
-	public string function generateNewGiftCardCode(){ 
-		//temporary implementation this should lookup the user-specified code length
-		return toString(randRange(100000000, 999999999)) & toString(randRange(100000000, 999999999));
-	}
 	
 	// =====================  END: Logical Methods ============================
 	

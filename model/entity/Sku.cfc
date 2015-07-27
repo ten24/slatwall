@@ -464,7 +464,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// START: Gift Card Logical Methods
 	
 	public boolean function isGiftCardSku() { 
-		if(!isNull(getGiftCardRedemptionAmountType())){ 
+		if(!isNull(this.getRedemptionAmountType())){ 
 			return true; 
 		}
 		return false; 
@@ -977,6 +977,24 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			arrayDeleteAt(arguments.subscriptionTerm.getSkus(), index);    
 		}    
 		structDelete(variables, "subscriptionTerm");    
+	}
+
+	// GiftCardExpirationTerm (many-to-one)
+	public void function setGiftCardExpirationTerm(required any term) {
+		variables.giftCardExpirationTerm = arguments.term;
+		if(isNew() or !arguments.term.hasGiftCardExpirationSku( this )) {
+			arrayAppend(arguments.term.getGiftCardExpirationSkus(), this);
+		}
+	}
+	public void function removeGiftCardExpirationTerm(any term) {
+		if(!structKeyExists(arguments, "term")) {
+			arguments.term = variables.term;
+		}
+		var index = arrayFind(arguments.term.getGiftCardExpirationSkus(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.term.getGiftCardExpirationSkus(), index);
+		}
+		structDelete(variables, "term");
 	}
 	
 	// Alternate Sku Codes (one-to-many)
