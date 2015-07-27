@@ -27,7 +27,7 @@
 <cfset columns = [{propertyIdentifier="auditType"},{propertyIdentifier="title"},{propertyIdentifier="baseObject"}] />
 <cfset columnCount = arraylen(columns) />
 <cfif true>
-<table id="LD#replace(auditSmartList.getSavedStateID(),'-','','all')#" class="table table-striped table-bordered table-condensed" data-norecordstext="#request.context.fw.getHibachiScope().rbKey("entity.audit.norecords", {entityNamePlural='Audits'})#" data-savedstateid="#auditSmartList.getSavedStateID()#" data-entityname="#auditSmartList.getBaseEntityName()#" data-idproperty="auditID">
+<table id="LD#replace(auditSmartList.getSavedStateID(),'-','','all')#" class="table table-bordered table-hover" data-norecordstext="#request.context.fw.getHibachiScope().rbKey("entity.audit.norecords", {entityNamePlural='Audits'})#" data-savedstateid="#auditSmartList.getSavedStateID()#" data-entityname="#auditSmartList.getBaseEntityName()#" data-idproperty="auditID">
 	<tr>
 		<th class="listing-display-header" colspan="#columnCount#">
 			<!--- Keyword Search --->

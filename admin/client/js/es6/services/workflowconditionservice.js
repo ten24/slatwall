@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').factory('workflowConditionService', [
+angular.module('slatwalladmin')
+    .factory('workflowConditionService', [
     '$log',
     '$slatwall',
     'alertService',

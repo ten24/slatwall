@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swContentEditor', [
+angular.module('slatwalladmin')
+    .directive('swContentEditor', [
     '$log',
     '$location',
     '$http',

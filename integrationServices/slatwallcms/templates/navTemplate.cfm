@@ -12,7 +12,7 @@
 	<cfset started=false>
 	
 	<cfif isDefined("arguments.ulTopClass") and arguments.currDepth eq 1>
-		<cfset arguments.class=arguments.ulTopClass>
+		<cfset arguments.navClass=arguments.ulTopClass>
 	</cfif>
 	
 	<cfloop array="#arguments.contentCollection#" index="contentCollectionItem">
@@ -31,16 +31,15 @@
 			
 			<cfset isCurrent=listFind(getHibachiScope().getContent().getContentIDPath(),"#contentCollectionItem.getContentID()#") />
 		
-			<cfif isCurrent and len(arguments.liCurrentClass)>
-				<cfset itemClass=listAppend(itemClass,arguments.liCurrentClass," ")>
+			<cfif isCurrent and len(arguments.liActiveClass)>
+				<cfset itemClass=listAppend(itemClass,arguments.liActiveClass," ")>
 			</cfif>
 
 			<cfset linkArgs=structNew()>
-			<cfset linkArgs.aHasKidsClass=arguments.aHasKidsClass>
-			<cfset linkArgs.aHasKidsAttributes=arguments.aHasKidsAttributes>
-			<cfset linkArgs.aNotCurrentClass=arguments.aNotCurrentClass>
-			<cfset linkArgs.aCurrentClass=arguments.aCurrentClass>
-			<cfset linkArgs.aCurrentAttributes=arguments.aCurrentAttributes>
+			<cfset linkArgs.aKidsClass=arguments.aKidsClass>
+			<cfset linkArgs.aKidsAttributes=arguments.aKidsAttributes>
+			<cfset linkArgs.aActiveClass=arguments.aActiveClass>
+			<cfset linkArgs.aActiveAttributes=arguments.aActiveAttributes>
 			<cfset linkArgs.title=contentCollectionItem.getTitle()>
 			<cfset linkArgs.content=contentCollectionItem>
 			<cfset linkArgs.site=contentCollectionItem.getSite()>
@@ -49,8 +48,8 @@
 		<cfif not started>
 			<cfset started=true>
 			<ul
-				<cfif arguments.currDepth eq 1 and len(arguments.class)>
-					class="#arguments.class#"
+				<cfif arguments.currDepth eq 1 and len(arguments.navClass)>
+					class="#arguments.navClass#"
 				<cfelse>
 					<cfif len(arguments.ulNestedClass)>
 						class="#arguments.ulNestedClass#"
@@ -65,8 +64,8 @@
 			<cfif len(itemClass)> 
 				class="#itemClass#"
 			</cfif>
-			<cfif len(arguments.liCurrentAttributes)> 
-				#arguments.liCurrentAttributes#
+			<cfif len(arguments.liActiveAttributes)> 
+				#arguments.liActiveAttributes#
 			</cfif>
 		>
 			#link#

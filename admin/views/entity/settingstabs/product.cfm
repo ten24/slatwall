@@ -62,6 +62,13 @@ Notes:
 		<swa:SlatwallSetting settingName="productMetaKeywordsString" />
 		<swa:SlatwallSetting settingName="productAutoApproveReviewsFlag" />
 		
+		<swa:SlatwallSetting settingName="productImageSmallWidth"  />
+		<swa:SlatwallSetting settingName="productImageSmallHeight"/>
+		<swa:SlatwallSetting settingName="productImageMediumWidth"/>
+		<swa:SlatwallSetting settingName="productImageMediumHeight"/>
+		<swa:SlatwallSetting settingName="productImageLargeWidth" />
+		<swa:SlatwallSetting settingName="productImageLargeHeight" />
+		
 		<!--- Site Specific Settings --->
 		<cfloop array="#rc.sitesArray#" index="site">
 			<swa:SlatwallSetting settingName="productDisplayTemplate" settingFilterEntities="#[site]#" />

@@ -52,9 +52,131 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 	public void function setUp() {
 		super.setup();
 		
-		variables.entityService = "collectionService";
-		variables.entity = request.slatwallScope.getService( variables.entityService ).newCollection();
+		variables.entityService = request.slatwallScope.getService("collectionService");
+		variables.entity = variables.entityService.newCollection();
 	}
+	
+//	tests need default data inserted before asserting
+//	public void function addFilterTest(){
+//		var myCollection = variables.entityService.getProductCollectionList();
+//		
+//		myCollection.addFilter('asdf','tester444');
+//		myCollection.addFilter('productName','tester444');
+//		myCollection.addFilter('activeFlag','YES');
+//		var pageRecords = myCollection.getPageRecords();
+//		request.debug(myCollection.getHQL());
+//	}
+//	
+//	public void function displayPropertyTest(){
+//		var myCollection = variables.entityService.getProductCollectionList();
+//		myCollection.setDisplayProperties('productCode,activeFlag');
+//		myCollection.addDisplayProperty('asdf');
+//		var pageRecords = myCollection.getPageRecords();
+//		request.debug(myCollection.getHQL());
+//	}
+
+//	public void function addOrderByTest(){
+//		var myCollection = variables.entityService.getProductCollectionList();
+//		myCollection.setOrderBy('activeFlag|asc,productCode|desc');
+//		//myCollection.addOrderBy('productCode|desc');
+//		request.debug(myCollection.getCollectionConfigStruct());
+//		var pageRecords = myCollection.getPageRecords();
+//		request.debug(pageRecords);
+//	}
+
+	public void function addDisplayAggregateTest(){
+
+		var myCollection = variables.entityService.getSkuCollectionList();
+		myCollection.setDisplayProperties('product.productName,price');
+		myCollection.addFilter('skuID','402828904e79c0a5014e8dc30190060c');
+		myCollection.addDisplayAggregate('product','count','productCount');
+		var aggregateHQL = myCollection.getHQL();
+		//debug(aggregateHQL);
+		var pageRecords = myCollection.getPageRecords();
+		//debug(pageRecords);
+		assertEquals(1,pageRecords[1]['productCount']);		
+	}
+	
+//	public void function addDisplayAggregate_one_to_manyTest(){
+//		var myCollection = variables.entityService.getProductCollectionList();
+//		myCollection.setDisplayProperties('productName');
+//		myCollection.addDisplayAggregate('skus','count','skuCount');
+//		myCollection.addDisplayAggregate('attributeValues','count','attributeValuesCount');
+//		var aggregateHQL = myCollection.getHQL();
+//		debug(aggregateHQL);
+//		var pageRecords = myCollection.getPageRecords();
+//		debug(pageRecords);
+//		//assertEquals(1,pageRecords[1]['skuCount']);		
+//	
+//	}
+	
+	public void function addDisplayAggregateSUMTest(){
+		var myCollection = variables.entityService.getSkuCollectionList();
+		myCollection.setDisplayProperties('skuID,price');
+		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
+		myCollection.addDisplayAggregate('price','SUM','productPriceTotal');
+		var aggregateHQL = myCollection.getHQL();
+		var pageRecords = myCollection.getPageRecords();
+
+		assertEquals(30.00,pageRecords[1]['productPriceTotal']);	
+	}
+	
+	public void function addDisplayAggregateAVGTest(){
+		var myCollection = variables.entityService.getSkuCollectionList();
+		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
+		myCollection.addDisplayAggregate('price','avg','productMinPrice');
+
+		var pageRecords = myCollection.getPageRecords();
+
+		assertEquals(15.00,pageRecords[1]['productMinPrice']);	
+	}
+	
+	
+	public void function addDisplayAggregateMINTest(){
+		var myCollection = variables.entityService.getSkuCollectionList();
+		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
+		myCollection.addDisplayAggregate('price','min','productMaxPrice');
+
+		var pageRecords = myCollection.getPageRecords();
+
+		assertEquals(10.00,pageRecords[1]['productMaxPrice']);	
+	}
+	
+	public void function addDisplayAggregateMAXTest(){
+		var myCollection = variables.entityService.getSkuCollectionList();
+		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
+		myCollection.addDisplayAggregate('price','max','productPriceTotal');
+
+		var pageRecords = myCollection.getPageRecords();
+
+		assertEquals(20.00,pageRecords[1]['productPriceTotal']);	
+	}
+	
+	public void function addDisplayAggregateCOUNTTest(){
+		var myCollection = variables.entityService.getSkuCollectionList();
+		myCollection.addFilter('skuID','402828904e79c0a5014e8dc3016c060a,402828904e79c0a5014e8dc30190060c','IN');
+		myCollection.addDisplayAggregate('product','count','productCountTotal');
+
+		var pageRecords = myCollection.getPageRecords();
+
+		assertEquals(2,pageRecords[1]['productCountTotal']);	
+	}
+
+		
+
+//	
+//	public void function loopOverCollectionTest(){
+//		var myCollection = variables.entityService.getProductCollectionList();
+//
+//		myCollection.addFilter('productCode','tester444');
+//		myCollection.setDisplayProperties('productName,productCode,activeFlag');
+//		
+//		myCollection.setOrderBy('activeFlag|desc,productCode|asc');
+//		var pageRecords = myCollection.getPageRecords();
+//		request.debug(pageRecords);
+//	}
+
+	
 	
 	public void function getAggregateHQLTest(){
 		makePublic(variables.entity,"getAggregateHQL");
@@ -63,9 +185,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			aggregateFunction = "count",
 			aggregateAlias = "Account_firstName"
 		};
-		
+		request.debug(lcase(replace(createUUID(),'-','')));
 		var aggregateHQL = variables.entity.getAggregateHQL(aggregate,propertyIdentifier);
-		//request.debug(aggregateHQL);
 		assertFalse(Compare("COUNT(Account.firstName) as Account_firstName",trim(aggregateHQL)));
 	}
 	
@@ -335,12 +456,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var collectionEntity2 = createTestEntity('collection',collectionEntityData2);
 		
 		var collectionEntityHQL = collectionEntity.getHQL();
-		
-		//request.debug(collectionEntityHQL);
-		//request.debug(collectionEntity);
-		//request.debug(collectionEntity.gethqlParams());
 		var testquery = ORMExecuteQuery(collectionEntityHQL,collectionEntity.gethqlParams());
-		//request.debug(testquery);
 		
 	}
 	/* TODO: need default data for the pagination record to be correct*/
@@ -550,8 +666,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		productCollection.setCollectionConfig(serializeJson(collectionConfig));
 		
-		//var pageRecords = productCollection.getPageRecords();
-		request.debug(productCollection.getPageRecords());
 		
 	}
 	
@@ -1007,6 +1121,20 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				  		"isSearchable":true,
 				  		"ormtype":"string"
 				  	}
+				  	,
+				  	{
+				  		"propertyIdentifier":"_account_accountEmailAddresses",
+				  		"aggregate":{
+				  			"aggregateFunction":"count",
+				  			"aggregateAlias":"emailcount"
+				  		}
+				  	}
+				  ],
+				  "joins":[
+				  	{
+				  		"associationName":"accountEmailAddresses",
+						"alias":"_account_accountEmailAddresses"
+				  	}
 				  ],
 				  "filterGroups":[
 				  	{
@@ -1018,14 +1146,18 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				  			}
 				  		]
 				  	}
-				  ]
+				  ],
+				  "groupBys":"_account"
 				}
 			'
 		};
 		
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		
+		
 		collectionEntity.setKeywords('Ryan Marchand');
 		//request.debug(collectionEntity.getHQL());
+		//request.debug(collectionEntity.getRecords());
 	}
 	
 	public void function getHQLTest_keywords_without_filterGroup(){
@@ -1051,15 +1183,24 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				  		"propertyIdentifier":"_account.lastName",
 				  		"isSearchable":true,
 				  		"ormtype":"string"
+				  	},
+				  	{
+				  		"propertyIdentifier":"_account.accountEmailAddresses",
+				  		"isSearchable":true,
+				  		"aggregate":{
+				  			"aggregateFunction":"count",
+				  			"aggregateAlias":"emailcount"
+				  		}
 				  	}
 				  ]
 				}
 			'
 		};
 		
+		
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
-		collectionEntity.setKeywords('Ryan Marchand');
-		//request.debug(collectionEntity.getHQL());
+		//collectionEntity.setKeywords('Ryan Marchand');
+		request.debug(collectionEntity.getHQL());
 	}
 	
 	public void function getHQLTest_notpersistent(){
@@ -1113,8 +1254,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		sku.setPrice(9.50);
 		orderItem.setQuantity(5);
 		orderItem.setSku(sku);
-		var test = '';
-		test = orderItem.getitemTotalTest();
+		//var test = '';
+		//test = orderItem.getitemTotal();
 		//request.debug(test);
 		
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
@@ -1366,8 +1507,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var filterGroup = deserializeJSON(filterGroupJSON);
 		
 		var filterGroupHQL = variables.entity.getFilterGroupHQL(filterGroup);
-		
-		request.debug(filterGroupHQL);
 	}
 	
 	public void function getFilterGroupsHQLTest(){
@@ -1393,8 +1532,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		var filterGroups = deserializeJSON(filterGroupsJSON);
 		
 		var filterGroupsHQL = variables.entity.getFilterGroupsHQL(filterGroups);
-		
-		request.debug(filterGroupsHQL);
 	}
 	
 	public void function getOrderByHQLTest(){
@@ -1571,7 +1708,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		};
 		
 		var collectionEntity = createPersistedTestEntity('collection',CollectionEntityData);
-		request.debug(collectionEntity.getPageRecords());
+		//request.debug(collectionEntity.getPageRecords());
 	}
 	
 	public void function getHQLForCollectionFilterTest(){

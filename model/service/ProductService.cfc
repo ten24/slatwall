@@ -66,7 +66,11 @@ component extends="HibachiService" accessors="true" {
 	property name="typeService" type="any";
 
 	// ===================== START: Logical Methods ===========================
-
+	
+	public numeric function getProductRating(required any product){
+		return getDao('productDao').getProductRating(arguments.product);
+	}
+	
 	public void function loadDataFromFile(required string fileURL, string textQualifier = ""){
 		getHibachiTagService().cfSetting(requesttimeout="3600");
 		getProductDAO().loadDataFromFile(arguments.fileURL,arguments.textQualifier);
@@ -117,7 +121,7 @@ component extends="HibachiService" accessors="true" {
 			for(var lc=1; lc<=listLen(arguments.processObject.getLocationConfigurations()); lc++) {
 
 				var locationConfiguration = getLocationService().getLocationConfiguration( listGetAt(arguments.processObject.getLocationConfigurations(), lc) );
-				eventCapacity += locationConfiguration.getLocationConfigurationCapacity();
+				eventCapacity += val(locationConfiguration.getLocationConfigurationCapacity());
 
 				if(preEventRegistrationMinutes < locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime')) {
 					preEventRegistrationMinutes = locationConfiguration.setting('locationConfigurationAdditionalPreReservationTime');
@@ -168,7 +172,7 @@ component extends="HibachiService" accessors="true" {
 				newSku.setEventEndDateTime( createODBCDateTime(arguments.endDateTime) );
 
 				newSku.addLocationConfiguration( locationConfiguration );
-				if(locationConfiguration.getLocationConfigurationCapacity() > 0 && !isNull(locationConfiguration.getLocationConfigurationCapacity())){
+				if(!isNull(locationConfiguration.getLocationConfigurationCapacity()) && locationConfiguration.getLocationConfigurationCapacity() > 0 ){
 					newSku.setEventCapacity( locationConfiguration.getLocationConfigurationCapacity() );
 				} else {
 					newSku.setEventCapacity(1);
@@ -671,6 +675,29 @@ component extends="HibachiService" accessors="true" {
 
 		return arguments.product;
 	}
+	
+	public any function createSingleSku(required any product, required any processObject){
+		var thisSku = this.newSku();
+		thisSku.setProduct(arguments.product);
+		thisSku.setPrice(arguments.processObject.getPrice());
+		if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
+			thisSku.setListPrice(arguments.product.getlistPrice());
+		}
+		thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
+		arguments.product.setDefaultSku( thisSku );
+		return arguments.product;
+	}
+	
+	public any function createGiftCardProduct(required any product, required any processObject){
+		arguments.product = createSingleSku(arguments.product,arguments.processObject);
+		arguments.product.getDefaultSku().setRedemptionAmountType(arguments.processObject.getRedemptionAmountType());
+		arguments.product.getDefaultSku().setRedemptionAmount(arguments.processObject.getRedemptionAmount());
+		if(!isNull(arguments.processObject.getGiftCardExpirationTermID())){
+			var giftCardExpirationTerm = this.getTerm(arguments.processObject.getGiftCardExpirationTermID());
+			arguments.product.getDefaultSku().setGiftCardExpirationTerm(giftCardExpirationTerm);
+		}
+		return arguments.product;
+	}
 
 	public any function processProduct_create(required any product, required any processObject) {
 
@@ -778,14 +805,7 @@ component extends="HibachiService" accessors="true" {
 			// If no options were passed in we will just create a single sku
 			} else {
 
-				var thisSku = this.newSku();
-				thisSku.setProduct(arguments.product);
-				thisSku.setPrice(arguments.processObject.getPrice());
-				if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
-					thisSku.setListPrice(arguments.product.getlistPrice());
-				}
-				thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
-				arguments.product.setDefaultSku( thisSku );
+				arguments.product = createSingleSku(arguments.product, arguments.processObject);
 
 			}
 
@@ -798,7 +818,7 @@ component extends="HibachiService" accessors="true" {
 				thisSku.setPrice(arguments.processObject.getPrice());
 				thisSku.setRenewalPrice(arguments.processObject.getPrice());
 				thisSku.setSubscriptionTerm( getSubscriptionService().getSubscriptionTerm(listGetAt(arguments.processObject.getSubscriptionTerms(), i)) );
-				thisSku.setSkuCode(product.getProductCode() & "-#arrayLen(product.getSkus()) + 1#");
+				thisSku.setSkuCode(product.getProductCode() & "-#i#");
 				for(var b=1; b <= listLen(arguments.processObject.getSubscriptionBenefits()); b++) {
 					thisSku.addSubscriptionBenefit( getSubscriptionService().getSubscriptionBenefit( listGetAt(arguments.processObject.getSubscriptionBenefits(), b) ) );
 				}
@@ -809,8 +829,10 @@ component extends="HibachiService" accessors="true" {
 					product.setDefaultSku( thisSku );
 				}
 			}
+		//GENERATE - GIFT SKUS
+		}else if(arguments.processObject.getBaseProductType() == 'gift-card'){
+			arguments.product = createGiftCardProduct(arguments.product,arguments.processObject);
 		}
-
 
 		// Generate the URL Title
 		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );

@@ -248,39 +248,17 @@ component accessors="true" output="false" persistent="false" {
 	
 	// @hint facade method to check the application scope for a value
 	public boolean function hasSessionValue(required any key) {
-		param name="session" default="#structNew()#";
-		if( structKeyExists(session, getHibachiInstanceApplicationScopeKey()) && structKeyExists(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
-			return true;
-		}
-		
-		return false;
+		getHibachiScope().hasSessionValue(arguments.key);
 	}
 	
 	// @hint facade method to get values from the application scope
 	public any function getSessionValue(required any key) {
-		if( structKeyExists(session, getHibachiInstanceApplicationScopeKey()) && structKeyExists(session[ getHibachiInstanceApplicationScopeKey() ], arguments.key)) {
-			return session[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ];
-		}
-		
-		throw("You have requested a value for '#arguments.key#' from the core application that is not setup.  This may be because the verifyApplicationSetup() method has not been called yet")
+		getHibachiScope().getSessionValue(arguments.key);
 	}
 	
 	// @hint facade method to set values in the application scope 
 	public void function setSessionValue(required any key, required any value) {
-		var sessionKey = "";
-		if(structKeyExists(COOKIE, "JSESSIONID")) {
-			sessionKey = COOKIE.JSESSIONID;
-		} else if (structKeyExists(COOKIE, "CFTOKEN")) {
-			sessionKey = COOKIE.CFTOKEN;
-		} else if (structKeyExists(COOKIE, "CFID")) {
-			sessionKey = COOKIE.CFID;
-		}
-		lock name="#sessionKey#_#getHibachiInstanceApplicationScopeKey()#_#arguments.key#" timeout="10" {
-			if(!structKeyExists(session, getHibachiInstanceApplicationScopeKey())) {
-				session[ getHibachiInstanceApplicationScopeKey() ] = {};
-			}
-			session[ getHibachiInstanceApplicationScopeKey() ][ arguments.key ] = arguments.value;
-		}
+		getHibachiScope().setSessionValue(arguments.key,arguments.value);
 	}
 	
 	// ========================= START: APPLICATION VAUES ===========================================

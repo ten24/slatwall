@@ -40,6 +40,18 @@ Notes:
 component extends="HibachiService" accessors="true" output="false" {
 	
 	// ===================== START: Logical Methods ===========================
+	public string function getCollectionObjectByCasing(required collection, required string casing){
+		switch(arguments.casing){
+			case 'lower':
+				return lcase(arguments.collection.getCollectionObject());
+				break;
+			case 'camel':
+				return lcase(Left(arguments.collection.getCollectionObject(),1)) & right(arguments.collection.getCollectionObject(), Len(arguments.collection.getCollectionObject()) - 1);
+				break;
+		}
+		throw('#arguments.casing# not a valid casing.');
+	}
+	
 	//returns meta data about the objects properties
 	public array function getEntityNameOptions() {
 		var entitiesMetaData = getEntitiesMetaData();
@@ -598,7 +610,34 @@ component extends="HibachiService" accessors="true" output="false" {
 		};
 		return columnStruct;
 	}
-	
+
+	public void function collectionsExport(required struct data) {
+			param name="data.date" default="#dateFormat(now(), 'mm/dd/yyyy')#"; 							//<--The fileName of the report to export.
+			param name="data.collectionExportID" default="" type="string"; 											//<--The collection to export ID
+			var collectionEntity = this.getCollectionByCollectionID("#arguments.data.collectionExportID#");	
+				
+			if(structKeyExists(arguments.data,'ids') && !isNull(arguments.data.ids) && arguments.data.ids != 'undefined'){
+				var propertyIdentifier = '_' & getService('collectionService').getCollectionObjectByCasing(collectionEntity,'camel') & '.' & getService('hibachiService').getPrimaryIDPropertyNameByEntityName(collectionEntity.getCollectionObject());
+				var filterGroup = {
+					propertyIdentifier = propertyIdentifier,
+					comparisonOperator = 'IN',
+					value = arguments.data.ids
+				};
+				collectionEntity.getCollectionConfigStruct().filterGroups = [
+					{
+						'filterGroup'=[
+							
+						]
+					}
+				];
+				arrayAppend(collectionEntity.getCollectionConfigStruct().filterGroups[1].filterGroup,filterGroup);
+				
+			}	
+			var collectionData = collectionEntity.getRecords(forExport=true);
+			var headers = StructKeyList(collectionData[1]);
+			getService('hibachiService').export( collectionData, headers, headers, "ExportCollection", "csv" );
+	}//<--end function
+
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================

@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swFormFieldNumber', [
+angular.module('slatwalladmin')
+    .directive('swFormFieldNumber', [
     '$log',
     '$slatwall',
     'formService',

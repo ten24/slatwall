@@ -20,7 +20,6 @@ angular.module('slatwalladmin').controller('routerController', [
                 $scope.entityID = $routeParams.entityID || '';
             }
         }
-    }
-]);
+    }]);
 
 //# sourceMappingURL=../controllers/routercontroller.js.map

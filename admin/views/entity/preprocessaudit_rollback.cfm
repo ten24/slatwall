@@ -69,7 +69,7 @@ Notes:
 	<cfif !isNull(rc.audit.getChangeDetails())>
 		<cfset changeDetails = rc.audit.getChangeDetails() />
 		<cfsavecontent variable="changeDetailsHTML">
-			<table class="table table-striped table-bordered table-condensed">
+			<table class="table table-bordered table-hover">
 				<tbody>
 					<tr>
 						<th>#request.context.fw.getHibachiScope().rbKey("entity.audit.changeDetails.property")#</th>

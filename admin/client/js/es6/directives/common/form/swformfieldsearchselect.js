@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swFormFieldSearchSelect', [
+angular.module('slatwalladmin')
+    .directive('swFormFieldSearchSelect', [
     '$http',
     '$log',
     '$slatwall',
@@ -46,8 +47,20 @@ angular.module('slatwalladmin').directive('swFormFieldSearchSelect', [
                 //set up query function for finding related object
                 scope.cfcProperCase = propertyMetaData.cfcProperCase;
                 scope.selectionOptions.getOptionsByKeyword = function (keyword) {
-                    var filterGroupsConfig = '[' + ' {  ' + '"filterGroup":[  ' + '{' + ' "propertyIdentifier":"_' + scope.cfcProperCase.toLowerCase() + '.' + scope.cfcProperCase + 'Name",' + ' "comparisonOperator":"like",' + ' "ormtype":"string",' + ' "value":"%' + keyword + '%"' + '  }' + ' ]' + ' }' + ']';
-                    return $slatwall.getEntity(propertyMetaData.cfc, { filterGroupsConfig: filterGroupsConfig.trim() }).then(function (value) {
+                    var filterGroupsConfig = '[' +
+                        ' {  ' +
+                        '"filterGroup":[  ' +
+                        '{' +
+                        ' "propertyIdentifier":"_' + scope.cfcProperCase.toLowerCase() + '.' + scope.cfcProperCase + 'Name",' +
+                        ' "comparisonOperator":"like",' +
+                        ' "ormtype":"string",' +
+                        ' "value":"%' + keyword + '%"' +
+                        '  }' +
+                        ' ]' +
+                        ' }' +
+                        ']';
+                    return $slatwall.getEntity(propertyMetaData.cfc, { filterGroupsConfig: filterGroupsConfig.trim() })
+                        .then(function (value) {
                         $log.debug('typesByKeyword');
                         $log.debug(value);
                         scope.selectionOptions.value = value.pageRecords;

@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swConditionCriteria', [
+angular.module('slatwalladmin')
+    .directive('swConditionCriteria', [
     '$http',
     '$compile',
     '$templateCache',
@@ -21,6 +22,7 @@ angular.module('slatwalladmin').directive('swConditionCriteria', [
             else {
                 var criteriaormtype = selectedFilterProperty.ormtype;
                 var criteriafieldtype = selectedFilterProperty.fieldtype;
+                /*TODO: convert all switches to object literals*/
                 switch (criteriaormtype) {
                     case 'boolean':
                         templatePath = collectionPartialsPath + "criteriaboolean.html";
@@ -599,8 +601,7 @@ angular.module('slatwalladmin').directive('swConditionCriteria', [
                                     'dd-MMMM-yyyy',
                                     'yyyy/MM/dd',
                                     'dd.MM.yyyy',
-                                    'shortDate'
-                                ];
+                                    'shortDate'];
                                 scope.format = scope.formats[1];
                                 scope.selectedConditionChanged = function (selectedFilterProperty) {
                                     $log.debug('selectedConditionChanged Begin');
@@ -624,6 +625,7 @@ angular.module('slatwalladmin').directive('swConditionCriteria', [
                                                 var today = Date.parse('today');
                                                 var todayEOD = today.setHours(23, 59, 59, 999);
                                                 selectedFilterProperty.criteriaRangeEnd = todayEOD;
+                                                //get this Measure to date
                                                 switch (selectedCondition.dateInfo.measureType) {
                                                     case 'd':
                                                         var dateBOD = Date.parse('today').add(selectedCondition.dateInfo.measureCount).days();
@@ -818,7 +820,9 @@ angular.module('slatwalladmin').directive('swConditionCriteria', [
                         if (conditionOption.display == scope.workflowCondition.conditionDisplay) {
                             scope.selectedFilterProperty.selectedCriteriaType = conditionOption;
                             scope.selectedFilterProperty.criteriaValue = scope.workflowCondition.value;
-                            if (angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType.dateInfo) && angular.isDefined(scope.workflowCondition.value) && scope.workflowCondition.value.length) {
+                            if (angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType.dateInfo)
+                                && angular.isDefined(scope.workflowCondition.value)
+                                && scope.workflowCondition.value.length) {
                                 var dateRangeArray = scope.workflowCondition.value.split("-");
                                 scope.selectedFilterProperty.criteriaRangeStart = new Date(parseInt(dateRangeArray[0]));
                                 scope.selectedFilterProperty.criteriaRangeEnd = new Date(parseInt(dateRangeArray[1]));

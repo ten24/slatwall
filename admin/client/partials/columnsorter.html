@@ -1,5 +1,5 @@
 <div class="dropdown">
-	<a ng-if="column.ormtype !== 'boolean' && column.persistent != false" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false"><span sw-rbkey="column.propertyIdentifier.replace('_','entity.')"></span><i class="fa fa-sort-desc"></i></a>
+	<a href="##" ng-if="column.ormtype !== 'boolean' && column.persistent != false" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false"><span sw-rbkey="column.propertyIdentifier.replace('_','entity.')"></span> <i class="fa fa-sort"></i></a>
 	<span ng-if="column.ormtype === 'boolean' || column.persistent === false" sw-rbkey="column.propertyIdentifier.replace('_','entity.')"></span>
 	<ul class="dropdown-menu nav scrollable" ng-if="column.ormtype !== 'boolean' && column.persistent != false">
 		<li class="dropdown-header">Sort</li>

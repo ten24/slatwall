@@ -60,6 +60,30 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		assertEquals("/#request.slatwallScope.setting('globalURLKeyProduct')#/nike-air-jorden/", variables.entity.getProductURL());
 	}
+	
+	public void function getProductRatingTest(){
+		var productData = {
+			productid = '',
+			productName='test',
+			productReviews = [
+				{
+					productReviewid='',
+					rating=5
+				},
+				{
+					productReviewid='',
+					rating=1
+				},
+				{
+					productReviewid='',
+					rating=4
+				}
+			]
+		};
+		var product = createPersistedTestEntity('product',productData);
+		var productRating = product.getProductRating();
+		assertEquals(productRating,3.3333);
+	}
 }
 
 
