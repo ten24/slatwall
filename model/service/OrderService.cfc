@@ -600,6 +600,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Save the newOrderPayment
 		newOrderPayment = this.saveOrderPayment( newOrderPayment );
 		
+		/** If the order has a subscription sku on It and that sku has 'AutoPay' setup on it's term  and the 
+		 * orderPayment's paymentMethod is set to allow accounts to save then auto set the save account payment method flag.
+		 **/
+		for (var orderItem in arguments.order.getOrderItems()){
+			if (orderItem.getSku().getBaseProductType() == "subscription" && orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()){
+				var orderPayments = orderItem.getOrder().getOrderPayments();
+				for (var orderPayment in orderPayments){
+					if (orderPayment.getStatusCode() == 'opstActive' && orderPayment.getPaymentMethod().getAllowSaveFlag()){
+						arguments.processObject.setSaveAccountPaymentMethodFlag( true );
+					}
+				}
+			}
+		}
+		
+		
+		
 		// Attach 'createTransaction' errors to the order 
 		if(newOrderPayment.hasError('createTransaction')) {
 			arguments.order.addError('addOrderPayment', newOrderPayment.getError('createTransaction'), true);
@@ -629,8 +645,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		}
 		
-		// WriteDump(var=arguments.order.getOrderStatusType(), top=3, abort=true);
-
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
 			newOrderPayment.setPaymentDueDate( newOrderpayment.getPaymentTerm().getTerm().getEndDate() );
 		}
