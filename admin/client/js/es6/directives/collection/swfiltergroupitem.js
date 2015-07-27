@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swFilterGroupItem', [
+angular.module('slatwalladmin')
+    .directive('swFilterGroupItem', [
     '$http',
     '$compile',
     '$templateCache',

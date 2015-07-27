@@ -385,8 +385,8 @@ Notes:
 		
 		<!--- Load up the Slatwall Angular Provider --->
 		
-
-		<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/?slatAction=api:js.ngslatwall&instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#"></script>
+		
+		
 		<cfif request.slatwallScope.getApplicationValue('debugFlag')>
 			<cfset es5scriptPath = expandPath('/#request.slatwallScope.getDao('hibachiDao').getApplicationKey()#/admin/client/js/es5/')>
 			<cfdirectory name="es5Javascript" 
@@ -441,14 +441,17 @@ Notes:
 				<cfset scriptRelativePath = replace(directives.directory,es5scriptPath,'')>
 				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & directives.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
 			</cfloop>
+			
 		<cfelse>
+			
 			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/es5/all.min.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
 		</cfif>
+		
 		<script type="text/javascript">
 			//bootstrap logger
-			try{
+			//try{
 				angular.bootstrap(document.getElementById("ngApp"),['logger','slatwalladmin']);
-			}catch(exception){
+			<!---}catch(exception){
 				$.ajax({
 		        	url:'?slatAction=api:main.log',
 		        	method:'POST', 
@@ -458,7 +461,8 @@ Notes:
 	                }),
 		        	headers:{'Content-Type': 'application/x-www-form-urlencoded'}
 		        });
-			}
+		        console.log(exception);
+			}--->
 
 		</script>
 	</body>

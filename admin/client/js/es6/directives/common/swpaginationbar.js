@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swPaginationBar', [
+angular.module('slatwalladmin')
+    .directive('swPaginationBar', [
     '$log',
     '$timeout',
     'partialsPath',

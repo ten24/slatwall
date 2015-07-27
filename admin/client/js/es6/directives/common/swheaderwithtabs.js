@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swHeaderWithTabs', [
+angular.module('slatwalladmin')
+    .directive('swHeaderWithTabs', [
     '$http',
     '$compile',
     '$templateCache',
@@ -20,10 +21,10 @@ angular.module('slatwalladmin').directive('swHeaderWithTabs', [
                 });
             },
             controller: ['$scope', '$element', '$attrs', function ($scope, $element, $attrs) {
-                //public functions
-                $scope.selectedTabChanged = function (selectedTab) {
-                };
-            }]
+                    //public functions
+                    $scope.selectedTabChanged = function (selectedTab) {
+                    };
+                }]
         };
     }
 ]);

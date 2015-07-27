@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').factory('slatwallInterceptor', [
+angular.module('slatwalladmin')
+    .factory('slatwallInterceptor', [
     '$q',
     '$log',
     'alertService',

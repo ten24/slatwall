@@ -3,35 +3,34 @@
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 var slatwalladmin;
 (function (slatwalladmin) {
-    var AlertService = (function () {
-        function AlertService($timeout, alerts) {
-            var _this = this;
+    class AlertService {
+        constructor($timeout, alerts) {
             this.$timeout = $timeout;
             this.alerts = alerts;
-            this.get = function () {
-                return _this.alerts || [];
+            this.get = () => {
+                return this.alerts || [];
             };
-            this.addAlert = function (alert) {
-                _this.alerts.push(alert);
-                _this.$timeout(function (alert) {
-                    _this.removeAlert(alert);
+            this.addAlert = (alert) => {
+                this.alerts.push(alert);
+                this.$timeout((alert) => {
+                    this.removeAlert(alert);
                 }, 3500);
             };
-            this.addAlerts = function (alerts) {
-                alerts.forEach(function (alert) {
-                    _this.addAlert(alert);
+            this.addAlerts = (alerts) => {
+                alerts.forEach(alert => {
+                    this.addAlert(alert);
                 });
             };
-            this.removeAlert = function (alert) {
-                var index = _this.alerts.indexOf(alert, 0);
+            this.removeAlert = (alert) => {
+                var index = this.alerts.indexOf(alert, 0);
                 if (index != undefined) {
-                    _this.alerts.splice(index, 1);
+                    this.alerts.splice(index, 1);
                 }
             };
-            this.getAlerts = function () {
-                return _this.alerts;
+            this.getAlerts = () => {
+                return this.alerts;
             };
-            this.formatMessagesToAlerts = function (messages) {
+            this.formatMessagesToAlerts = (messages) => {
                 var alerts = [];
                 for (var message in messages) {
                     var alert = new slatwalladmin.Alert();
@@ -51,21 +50,21 @@ var slatwalladmin;
                 }
                 return alerts;
             };
-            this.removeOldestAlert = function () {
-                _this.alerts.splice(0, 1);
+            this.removeOldestAlert = () => {
+                this.alerts.splice(0, 1);
             };
             this.alerts = [];
         }
-        AlertService.$inject = [
-            '$timeout'
-        ];
-        return AlertService;
-    })();
+    }
+    AlertService.$inject = [
+        '$timeout'
+    ];
     slatwalladmin.AlertService = AlertService;
 })(slatwalladmin || (slatwalladmin = {}));
 var slatwalladmin;
 (function (slatwalladmin) {
-    angular.module('slatwalladmin').service('alertService', slatwalladmin.AlertService);
+    angular.module('slatwalladmin')
+        .service('alertService', slatwalladmin.AlertService);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../services/alertservice.js.map

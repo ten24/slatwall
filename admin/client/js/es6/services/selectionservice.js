@@ -1,6 +1,7 @@
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 'use strict';
-angular.module('slatwalladmin').factory('selectionService', [
+angular.module('slatwalladmin')
+    .factory('selectionService', [
     function () {
         //declare public and private variables
         //selections have a unique identifier for the instance they are related to 
