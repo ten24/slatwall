@@ -104,7 +104,7 @@ Notes:
 	<cfset thisTag.columnCount = 5 />
 	<cfoutput>
 		<div class="col-xs-12 table-responsive">	
-			<table class="table table-striped table-bordered table-condensed">
+			<table class="table table-bordered table-hover">
 				<tbody>
 					<cfif arraylen(thisTag.auditArray)>
 						<!--- Remove time for day comparison --->

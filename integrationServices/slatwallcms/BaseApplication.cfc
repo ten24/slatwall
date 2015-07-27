@@ -46,7 +46,7 @@
 Notes:
 
 */
-component extends="org.Hibachi.Hibachi"{
+component extends="Slatwall.org.Hibachi.Hibachi"{
 	
 	// Allow For Application Config
 	try{include "../../config/configApplication.cfm";}catch(any e){}
@@ -69,18 +69,20 @@ component extends="org.Hibachi.Hibachi"{
 	}
 	
 	function runRequestActions() {
-		
 		if(structKeyExists(form, "slatAction")) {
+			request.context['doNotRender'] = true;
 			for(var action in listToArray(form.slatAction)) {
-				request.slatwallScope.doAction( action );
-				if(request.slatwallScope.hasFailureAction(action)) {
+				arguments.slatwallScope.doAction( action, request.context);
+				if(arguments.slatwallScope.hasFailureAction(action)) {
 					break;
 				}
 			}
 		} else if (structKeyExists(url, "slatAction")) {
+			request.context['doNotRender'] = true;
+			
 			for(var action in listToArray(url.slatAction)) {
-				var actionResult = request.slatwallScope.doAction( action );
-				if(request.slatwallScope.hasFailureAction(action)) {
+				var actionResult = arguments.slatwallScope.doAction( action, request.context);
+				if(arguments.slatwallScope.hasFailureAction(action)) {
 					break;
 				}
 			}
@@ -96,6 +98,7 @@ component extends="org.Hibachi.Hibachi"{
 		generateRenderedContent(argumentCollection=arguments);
 		onRequestEnd();
 	}
+	
 	
 	function generateRenderedContent() {
 		
@@ -134,7 +137,7 @@ component extends="org.Hibachi.Hibachi"{
 			var entityTemplateContent = arguments.slatwallScope.getService("contentService").getContent( entityDisplayTemplateSetting );;
 			if(!isnull(entityTemplateContent)){
 				arguments.slatwallScope.setContent( entityTemplateContent );
-				var contentTemplateFile = entityTemplateContent.setting('contentTemplateFile',[content]);
+				var contentTemplateFile = entityTemplateContent.setting('contentTemplateFile',[entityTemplateContent]);
 				if(!isNull(contentTemplateFile)){
 					
 					contentPath = templatePath & contentTemplateFile;
@@ -169,6 +172,7 @@ component extends="org.Hibachi.Hibachi"{
 			arguments.slatwallScope.setContent(content);
 		}
 		var $ = getApplicationScope(argumentCollection=arguments);
+		
 		savecontent variable="templateData"{
 			include "#contentPath#";
 		}
@@ -197,34 +201,61 @@ component extends="org.Hibachi.Hibachi"{
 		return applicationScope;
 	}
 	
+	// Implicit onMissingMethod() to handle standard CRUD
+	public any function onMissingMethod(string missingMethodName, struct missingMethodArguments) {
+		if(structKeyExists(arguments, "missingMethodName")) {
+			if( left(arguments.missingMethodName, 6) == "render" ) {
+				var entityName = arguments.missingMethodName.substring( 6 );
+				var genericGetterName = replace(arguments.missingMethodName,'render','get');
+				if(structCount(arguments.missingMethodArguments) == 2){
+					var entity = getHibachiScope().getService('hibachiService').invokeMethod(genericGetterName,{1=arguments.missingMethodArguments[1]});
+					return entity.getValueByPropertyIdentifier(arguments.missingMethodArguments[2]);
+				}else if(structCount(arguments.missingMethodArguments) == 3){
+					var entity = getHibachiScope().getService('hibachiService').invokeMethod(genericGetterName,{1=[arguments.missingMethodArguments[1], arguments.missingMethodArguments[2]]});
+					return entity.getValueByPropertyIdentifier(arguments.missingMethodArguments[3]);
+				}
+			}
+		}
+	}
+	
 	public string function renderNav(
-		required any content
+		string startContentId=""
 		, numeric viewDepth=1
 		, numeric currDepth=1
-		, string type="default"
-		, date today="#now()#"
-		, string class="navSecondary"
-		, string querystring=""
-		, array contentCollection=arguments.content.getChildContents()
-		, string subNavExpression=""
-		, string liHasKidsClass=""
-		, string liHasKidsAttributes=""
-		, string liCurrentClass="current"
-		, string liCurrentAttributes=""
-		, string liHasKidsNestedClass=""
-		, string aHasKidsClass=""
-		, string aHasKidsAttributes=""
-		, string aCurrentClass="current"
-		, string aCurrentAttributes=""
-		, string ulNestedClass=""
-		, string ulNestedAttributes=""
-		, string openCurrentOnly=""
-		, string aNotCurrentClass=""
-		, numeric size="50"
-		, string target = ""
-		, string targetParams = ''
-		, string id=""
+		, string siteCode=""
+		, string navClass=""
+		, string navID=""
+		, string liKidsClass=""
+		, string liKidsAttributes=""
+		, string liActiveClass="active"
+		, string liActiveAttributes=""
+		, string liKidsNestedClass=""
+		, string aKidsClass="" 
+		, string aKidsAttributes="" 
+		, string aActiveClass="active"
+		, string aActiveAttributes=""
+		, string ulNestedClass="" 
+		, string ulNestedAttributes="" 
+		, string target = "" 
+		, array contentCollection=[]
 	){
+		//if content id does not exist then get home
+		if(!len(arguments.startContentID)){
+			var currentSite = getHibachiScope().getService('siteService').getCurrentRequestSite();
+			arguments.content = getHibachiScope().getService('contentService').getDefaultContentBySite(currentSite);
+		}else{
+			arguments.content = getHibachiScope().getService('contentService').getContent(arguments.startContentId);
+		}
+		
+		if(!len(arguments.siteCode)){
+			arguments.siteCode = arguments.content.getSite().getSiteCode();
+		}
+		
+		if(!arraylen(arguments.contentCollection)){
+			arguments.contentCollection = arguments.content.getChildContents(forNavigation=true);
+		}
+		
+		
 		//var firstLevelItems = arguments.content.getChildContents();
 		savecontent variable="navHTML"{
 			include 'templates/navtemplate.cfm';
@@ -236,35 +267,33 @@ component extends="org.Hibachi.Hibachi"{
 	public string function addLink(
 		required any content, 
 		string title, 
-		string class="", 
+		string navClass="", 
 		string target="",
-		string id="",
+		string navId="",
 		boolean showCurrent=true
 	){
 				
 		var link ="";
 		var href ="";
-		var theClass = arguments.class;
+		var theClass = arguments.navClass;
 		
 		if(arguments.showCurrent){
 			arguments.showCurrent=listFind(getHibachiScope().content().getContentIDPath(),arguments.content.getContentID());
 		}
 		
 		if(arguments.showCurrent){
-			theClass=listAppend(theClass,arguments.aCurrentClass," ");
-		}else if(len(arguments.aNotCurrentClass)){
-			theClass=listAppend(theClass,arguments.aNotCurrentClass," ");
+			theClass=listAppend(theClass,arguments.aActiveClass," ");
 		}
 		
 		if(arguments.content.hasChildContent()){
-			theClass=listAppend(theClass,arguments.aHasKidsClass," ");
+			theClass=listAppend(theClass,arguments.aKidsClass," ");
 		}
 		
 		href=createHREF(
 			arguments.content
 		);
 		
-		link='<a href="#href#"#iif(len(arguments.target) and arguments.target neq '_self',de(' target="#arguments.target#"'),de(""))##iif(len(theClass),de(' class="#theClass#"'),de(""))##iif(len(arguments.id),de(' id="#arguments.id#"'),de(""))##iif(arguments.showCurrent,de(' #replace(arguments.aCurrentAttributes,"##","####","all")#'),de(""))##iif(arguments.content.hasChildContent() and len(arguments.aHasKidsAttributes),de(' #replace(arguments.aHasKidsAttributes,"##","####","all")#'),de(""))#>#HTMLEditFormat(arguments.title)#</a>';
+		link='<a href="/#href#"#iif(len(arguments.target) and arguments.target neq '_self',de(' target="#arguments.target#"'),de(""))##iif(len(theClass),de(' class="#theClass#"'),de(""))##iif(len(arguments.navId),de(' id="#arguments.navId#"'),de(""))##iif(arguments.showCurrent,de(' #replace(arguments.aActiveAttributes,"##","####","all")#'),de(""))##iif(arguments.content.hasChildContent() and len(arguments.aKidsAttributes),de(' #replace(arguments.aKidsAttributes,"##","####","all")#'),de(""))#>#HTMLEditFormat(arguments.title)#</a>';
 		return link;
 	}
 	

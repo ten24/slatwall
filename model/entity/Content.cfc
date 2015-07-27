@@ -58,9 +58,10 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	property name="productListingPageFlag" ormtype="boolean";
 	property name="urlTitle" ormtype="string" length="4000";
 	property name="urlTitlePath" ormtype="string" length="8000";
-	property name="contentBody" ormtype="string" length="4000" ;
+	property name="contentBody" ormtype="string" length="8000" ;
 	property name="displayInNavigation" ormtype="boolean";
 	property name="excludeFromSearch" ormtype="boolean";
+	property name="sortOrder" ormtype="integer";
 
 	// CMS Properties
 	property name="cmsContentID" ormtype="string" index="RI_CMSCONTENTID";
@@ -114,7 +115,10 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 	}
 	
 	public string function getTitlePath(string delimiter){
-		var titlePath = variables.titlePath;
+		var titlePath = '';
+		if(!isNull(variables.titlePath)){
+			titlePath = variables.titlePath;
+		}
 		if(!isNull(arguments.delimiter)){
 			titlePath = Replace(titlePath,' >',arguments.delimiter,'ALL');
 		}
@@ -192,29 +196,41 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		return variables.allDescendants;
 	}
 	
-	public string function setTitle(required string title){
-		//look up all children via lineage
-		var previousTitlePath = '';
-		if(!isNull(this.getTitlePath())){
-			previousTitlePath = this.getTitlePath();
+	public numeric function getSortOrder(){
+		if(isNull(variables.sortOrder)){
+			var maxSortOrder = getDao('contentDao').getMaxSortOrderByContent(this);	
+			variables.sortOrder = maxSortOrder;
 		}
-		 
-		var allDescendants = getAllDescendants();
-		//set title
-		variables.title = arguments.title;
-		//update titlePath
-		var newTitlePath = this.createTitlePath();
-		
-		for(var descendant in allDescendants){
-			var newTitlePath = '';
-			if(len(previousTitlePath) > 0){
-				newTitlePath = replace(descendant.getTitlePath(),previousTitlePath,newTitlePath);
-			}else{
-				newTitlePath = newTitlePath & ' > ' & descendant.getTitlePath();
+		return variables.sortOrder;
+	}
+	
+	public void function setSortOrder(numeric newSortOrder, boolean intertalUpdate=false){
+		if(!arguments.intertalUpdate){
+			var currentSortOrder = getSortOrder();
+			if(currentSortOrder == arguments.newSortOrder){
+				return;
 			}
 			
-			descendant.setTitlePath(newTitlePath);
+			if(currentSortOrder < newSortOrder){
+				var x = -1;
+				var min = getSortOrder();
+				var max = arguments.newSortOrder;		
+			}else{
+				var x = 1;
+				var min = arguments.newSortOrder;
+				var max = getSortOrder();
+			}
+			
+			var contentToUpdate = getDao('contentDao').getContentBySortOrderMinAndMax(this,min,max);
+			
+			for(var content in contentToUpdate){
+				if(content.getContentID() != getContentID()){
+					content.setSortOrder(content.getSortOrder() + x,true);
+				}
+			}
 		}
+		
+		variables.sortOrder=newSortOrder;
 	}
 	
 	public string function createTitlePath(){
@@ -243,6 +259,24 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 		return TitlePathString;
 	}
 	
+	public string function setTitle(required string title){
+		//look up all children via lineage
+		var previousTitlePath = '';
+		if(!isNull(this.getTitlePath())){
+			previousTitlePath = this.getTitlePath();
+		}
+		 
+		var allDescendants = arrayToList(getAllDescendants());
+		//set title
+		variables.title = arguments.title;
+		//update titlePath
+		var newTitlePath = this.createTitlePath();
+		if(previousTitlePath != newTitlePath && len(allDescendants)){
+			getDao('contentDao').updateAllDescendantsTitlePathByUrlTitle(allDescendants,previousTitlePath,newTitlePath);
+		}
+		
+	}
+	
 	public string function setUrlTitle(required string urlTitle){
 		
 		//look up all children via lineage
@@ -251,21 +285,14 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 			previousURLTitlePath = this.getURLTitlePath();
 		}
 		 
-		var allDescendants = getAllDescendants();
+		var allDescendants = arrayToList(getAllDescendants());
 		//set url title
 		variables.UrlTitle = arguments.urlTitle;
 		//update url titlePath
 		var newURLTitlePath = this.createUrlTitlePath();
 		
-		for(var descendant in allDescendants){
-			var newTitlePath = '';
-			if(len(previousURLTitlePath) > 0){
-				newTitlePath = replace(descendant.getURLTitlePath(),previousURLTitlePath,newURLTitlePath);
-			}else{
-				newTitlePath = newURLTitlePath & '/' & descendant.getURLTitlePath();
-			}
-			
-			descendant.setURLTitlePath(newTitlePath);
+		if(previousURLTitlePath != newURLTitlePath && len(allDescendants)){
+			getDao('contentDao').updateAllDescendantsUrlTitlePathByUrlTitle(allDescendants,previousURLTitlePath,newUrlTitlePath);
 		}
 	}
 	
@@ -340,6 +367,17 @@ component displayname="Content" entityname="SlatwallContent" table="SwContent" p
 //		}
 //		return arguments.urlTitleArray;
 //	}
+
+	public array function getChildContents(forNavigation=false){
+		var childContents = [];
+		if(arguments.forNavigation){
+			childContents = getDao('contentDao').getChildContentsByDisplayInNavigation(this);
+		}else{
+			childContents = variables.childContents;
+		}
+		
+		return childContents;
+	}
 		
 	public string function getCategoryIDList() {
 		if(!structKeyExists(variables, "categoryIDList")) {

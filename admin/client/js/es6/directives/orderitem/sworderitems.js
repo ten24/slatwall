@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swOrderItems', [
+angular.module('slatwalladmin')
+    .directive('swOrderItems', [
     '$log',
     '$timeout',
     '$location',

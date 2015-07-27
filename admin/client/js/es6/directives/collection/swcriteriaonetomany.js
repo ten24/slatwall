@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swCriteriaOneToMany', [
+angular.module('slatwalladmin')
+    .directive('swCriteriaOneToMany', [
     '$log',
     '$slatwall',
     '$filter',
@@ -33,8 +34,7 @@ angular.module('slatwalladmin').directive('swCriteriaOneToMany', [
                         ];
                     }
                     else if (type === 'condition') {
-                        oneToManyOptions = [
-                        ];
+                        oneToManyOptions = [];
                     }
                     return oneToManyOptions;
                 };

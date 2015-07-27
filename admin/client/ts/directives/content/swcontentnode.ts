@@ -15,7 +15,8 @@ angular.module('slatwalladmin')
                 return {
                     restrict: 'A',
                     scope:{
-                        contentData:'='
+                        contentData:'=',
+                        loadChildren:"="
                     },
                     templateUrl: partialsPath + 'content/contentnode.html',
                     link: function(scope, element, attr) {
@@ -46,12 +47,13 @@ angular.module('slatwalladmin')
                                 propertyIdentifier: '_content.site.siteName',
                                 isVisible: true,
                                 isSearchable: true
-                            }, {
-                                propertyIdentifier: '_content.contentTemplateFile',
-                                persistent: false,
-                                setting: true,
-                                isVisible: true
                             },
+//                            {
+//                                propertyIdentifier: '_content.contentTemplateFile',
+//                                persistent: false,
+//                                setting: true,
+//                                isVisible: true
+//                            },
                             //need to get template via settings
                             {
                                 propertyIdentifier: '_content.allowPurchaseFlag',
@@ -67,10 +69,27 @@ angular.module('slatwalladmin')
                                 isSearchable: true
                             }
                         ];
+                        
+                        var childContentOrderBy = [
+                            {
+                                "propertyIdentifier":"_content.sortOrder",
+                                "direction":"DESC"
+                            }
+                        ];
                        
+                        scope.toggleChildContent = function(parentContentRecord){
+                            if(angular.isUndefined(scope.childOpen) || scope.childOpen === false){
+                                scope.childOpen = true;  
+                                if(!scope.childrenLoaded){
+                                    scope.getChildContent(parentContentRecord);    
+                                }
+                            }else{
+                                scope.childOpen = false; 
+                            }
+                             
+                        }
 
                         scope.getChildContent = function(parentContentRecord) {
-                            scope.childOpen = true;
                              var childContentfilterGroupsConfig = [{
                                 "filterGroup": [{
                                     "propertyIdentifier": "_content.parentContent.contentID",
@@ -78,10 +97,11 @@ angular.module('slatwalladmin')
                                     "value": parentContentRecord.contentID
                                 }]
                             }];
-
+ 
                             var collectionListingPromise = $slatwall.getEntity('Content', {
                                 columnsConfig: angular.toJson(childContentColumnsConfig),
                                 filterGroupsConfig: angular.toJson(childContentfilterGroupsConfig),
+                                orderByConfig: angular.toJson(childContentOrderBy),
                                 allRecords: true
                             });
                             collectionListingPromise.then(function(value) {
@@ -89,10 +109,17 @@ angular.module('slatwalladmin')
                                 var index = 0;
                                 angular.forEach(parentContentRecord.children,function(child){
                                     scope['child'+index] = child;
-                                    element.after($compile('<tr class="childNode" style="margin-left:{{depth*15||0}}px"  sw-content-node data-content-data="child'+index+'"></tr>')(scope));
+                                    element.after($compile('<tr class="childNode" style="margin-left:{{depth*15||0}}px" ng-if="childOpen"  sw-content-node data-content-data="child'+index+'"></tr>')(scope));
                                     index++;
                                 });
+                                scope.childrenLoaded = true;
                             });
+                        }
+                        
+                        scope.childrenLoaded = false;
+                        //if the children have never been loaded and we are not in search mode based on the title received
+                        if(angular.isDefined(scope.loadChildren) && scope.loadChildren === true && !(scope.contentData.titlePath && scope.contentData.titlePath.trim().length)){
+                            scope.toggleChildContent(scope.contentData);    
                         }
 
                     }

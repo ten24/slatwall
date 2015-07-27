@@ -3,13 +3,12 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     //model
-    var Alert = (function () {
-        function Alert(msg, type) {
+    class Alert {
+        constructor(msg, type) {
             this.msg = msg;
             this.type = type;
         }
-        return Alert;
-    })();
+    }
     slatwalladmin.Alert = Alert;
 })(slatwalladmin || (slatwalladmin = {}));
 

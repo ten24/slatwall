@@ -516,7 +516,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	// ===================== START: Helper Methods =========================
 	
 	public any function getAssignedOrderItemAttributeSets() {
-		if(!isNull(getSkuID()) && !isNull(getSku())) {
+		if(!isNull(getSku())) {
 			return getSku().getAssignedOrderItemAttributeSetSmartList().getRecords();	
 		}
 		

@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swCriteriaString', [
+angular.module('slatwalladmin')
+    .directive('swCriteriaString', [
     '$log',
     '$slatwall',
     '$filter',

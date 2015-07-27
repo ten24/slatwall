@@ -53,7 +53,37 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		variables.service = request.slatwallScope.getService("productService");
 	}
 	
+	public void function createSingleSkuTest(){
+		var productData = {
+			productID="",
+			productName="unitTestProduct" & createUUID(),
+			productCode="unitTestProductCode" & createUUID()
+		};
+		var product = createPersistedTestEntity('product',productData);
+		
+		var processObject = product.getProcessObject('create');
+		product = variables.service.createSingleSku(product,processObject);
+		//assert a single sku was created
+		assertEquals(arrayLen(product.getSkus()),1);
+	}
 	
+	public void function createGiftCardProduct(){
+		var productData = {
+			productID="",
+			productName="unitTestProduct" & createUUID(),
+			productCode="unitTestProductCode" & createUUID()
+		};
+		var product = createPersistedTestEntity('product',productData);
+		var processObject = product.getProcessObject('create');
+		
+		processObject.setRedemptionAmountType('sameAsPrice');
+		processObject.setRedemptionAmount(0);
+		
+		product = variables.service.createGiftCardProduct(product,processObject);
+		//assert values from the process object get populated into the entity
+		assertEquals(product.getDefaultSku().getRedemptionAmountType(),'sameAsPrice');
+		assertEquals(product.getDefaultSku().getRedemptionAmount(),0);
+	}
 }
 
 

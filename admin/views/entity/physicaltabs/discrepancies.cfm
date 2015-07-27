@@ -53,7 +53,7 @@ Notes:
 <cfset discrepancyQuery = rc.physical.getDiscrepancyQuery() />
 
 <cfoutput>
-	<table class="table table-striped table-bordered table-condensed table-hover">
+	<table class="table table-bordered table-hover">
 		<thead>
 		<tr>
 			<th style="white-space:normal; vertical-align: text-bottom;">#$.slatwall.rbKey("entity.sku.skuCode")#</th>

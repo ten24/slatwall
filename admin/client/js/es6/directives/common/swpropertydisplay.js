@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swPropertyDisplay', [
+angular.module('slatwalladmin')
+    .directive('swPropertyDisplay', [
     '$log',
     'partialsPath',
     function ($log, partialsPath) {

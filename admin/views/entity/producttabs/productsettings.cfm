@@ -65,6 +65,13 @@ Notes:
 		<swa:SlatwallSetting settingName="productMetaDescriptionString" settingObject="#rc.product#" />
 		<swa:SlatwallSetting settingName="productMetaKeywordsString" settingObject="#rc.product#" />
 		<swa:SlatwallSetting settingName="productAutoApproveReviewsFlag" settingObject="#rc.product#" />
+		<swa:SlatwallSetting settingName="productImageSmallWidth" settingObject="#rc.product#" />
+		<swa:SlatwallSetting settingName="productImageSmallHeight" settingObject="#rc.product#" />
+		<swa:SlatwallSetting settingName="productImageMediumWidth" settingObject="#rc.product#" />
+		<swa:SlatwallSetting settingName="productImageMediumHeight" settingObject="#rc.product#" />
+		<swa:SlatwallSetting settingName="productImageLargeWidth" settingObject="#rc.product#" />
+		<swa:SlatwallSetting settingName="productImageLargeHeight" settingObject="#rc.product#" />
+		
 		
 		<!--- Site Specific Settings --->
 		<cfloop array="#rc.sitesArray#" index="site">

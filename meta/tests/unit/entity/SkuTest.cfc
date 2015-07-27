@@ -66,6 +66,35 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		assertEquals(renewalPrice,0);
 	}
 	
+	public void function getRedemptionAmountType_test(){ 
+		var skuData = { 
+			skuID="",
+			redemptionAmountType="sameAsPrice",
+			redemptionAmount="10.00", 
+			price="5.00"
+		}; 
+		var sameAsPrice = createPersistedTestEntity('sku',skuData);
+		
+		var skuData = { 
+			skuID="",
+			redemptionAmountType="fixedAmount",
+			redemptionAmount="10.00"
+		}; 
+		var fixedAmount = createPersistedTestEntity('sku',skuData);
+		
+		var skuData = { 
+			skuID="",
+			redemptionAmountType="percentage",
+			redemptionAmountPercentage=.5,
+			redemptionAmount="10.00"
+		}; 
+		var percentage = createPersistedTestEntity('sku',skuData);
+		
+		assertEquals(sameAsPrice.getGiftCardRedemptionAmount(), 5.00);
+		assertEquals(fixedAmount.getGiftCardRedemptionAmount(), 10.00); 
+		assertEquals(percentage.getGiftCardRedemptionAmount(), 5.00); 
+	}
+	
 	public void function validate_as_save_for_a_new_instance_doesnt_pass() {
 	}
 }

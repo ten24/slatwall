@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').factory('metadataService', [
+angular.module('slatwalladmin')
+    .factory('metadataService', [
     '$filter',
     '$log',
     function ($filter, $log) {

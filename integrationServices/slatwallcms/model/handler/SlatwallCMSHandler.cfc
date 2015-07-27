@@ -29,7 +29,6 @@ component {
 	
 	// This event handler will always get called
 	public void function setupGlobalRequestComplete() {
-		
 		if ( len( getContextRoot() ) ) {
 			variables.cgiScriptName = replace( CGI.SCRIPT_NAME, getContextRoot(), '' );
 			variables.cgiPathInfo = replace( CGI.PATH_INFO, getContextRoot(), '' );
@@ -50,12 +49,12 @@ component {
         var pathArrayLen = arrayLen(pathArray);
         
         //Make sure this isn't a call to the api, if it is, return without using CMS logic
-		if(pathArrayLen && pathArray[1] == 'api'){
+		if(pathArrayLen && pathArray[1] == 'api' || (structkeyExists(request,'context') && structKeyExists(request.context,'doNotRender'))){
         		return;
         }
         //try to get a site form the domain name
 		var domainNameSite = arguments.slatwallScope.getService('siteService').getCurrentRequestSite();
-       
+      
        	if(!isNull(domainNameSite)){
    			//render site via apps route
 	        if(pathArrayLen && pathArray[1] == 'apps'){

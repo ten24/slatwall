@@ -23,7 +23,7 @@
 						</style>
 						<!--- Metrics --->
 						<input type="hidden" name="metrics" value="#trim(attributes.report.getMetrics())#" />
-						<dt style="width:100px;"><strong>Metrics</strong></dt>
+						<dt style="width:100px;"><strong>#attributes.hibachiScope.rbKey('define.metrics')#</strong></dt>
 						<dd style="margin-left:100px;">
 							<span id="hibachi-report-metric-sort">
 								<cfloop from="1" to="#listLen(attributes.report.getMetrics())#" step="1" index="m">
@@ -54,7 +54,7 @@
 						
 						<!--- Dimensions --->
 						<input type="hidden" name="dimensions" value="#trim(attributes.report.getDimensions())#" />
-						<dt style="width:100px;"><strong>Dimensions</strong></dt>
+						<dt style="width:100px;"><strong>#attributes.hibachiScope.rbKey('define.dimensions')#</strong></dt>
 						<dd style="margin-left:100px;">
 							<span id="hibachi-report-dimension-sort">
 								<cfloop list="#attributes.report.getDimensions()#" index="dimension">
@@ -71,6 +71,16 @@
 									</ul>
 								</span>
 							</cfif>
+						</dd>
+						
+						<!--- Order By Metric / Dimension ---> 
+						
+						<dt style="width:100px;"><strong>#attributes.hibachiScope.rbKey('define.orderby')#</strong></dt>
+						<dd style="margin-left:100px;">
+							<select id="hibachi-order-by" name="orderbytype">
+								<option value="metrics" <cfif attributes.report.getOrderByType() EQ "metrics">selected</cfif>>#attributes.hibachiScope.rbKey('define.metrics')#</option>
+								<option value="dimensions" <cfif attributes.report.getOrderByType() EQ "dimensions">selected</cfif>>#attributes.hibachiScope.rbKey('define.dimensions')#</option>
+							</select>
 						</dd>
 						
 						<!--- Action Buttons --->

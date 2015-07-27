@@ -2,14 +2,16 @@
 <section class="content s-body-margin" id="j-main-content">
 	<div class="row s-body-nav">
 	    <nav class="navbar navbar-default" role="navigation">
-	      <div class="col-md-6 s-header-info">
+	      	<div class="col-md-6 s-header-info">
 				<ul class="list-unstyled list-inline"></ul>
 				<h1 class="actionbar-title" sw-rbkey="'entity.'+entityName.toLowerCase()+'_plural'"></h1>
 			</div>
-
 			<div class="col-md-6">
 				<div class="btn-toolbar">
 					<div class="btn-group btn-group-sm">
+						<sw-options
+							data-object-name="Site"
+						></sw-options>
 					</div>
 				</div>
 			</div>
@@ -20,14 +22,11 @@
 		<div class="col-xs-6 s-no-padding-left">
 			{{siteOptions}}
 			{{options}}
+		</div>
+		
+		<div class="col-xs-6 s-table-view-options s-no-padding-right" >
 			<ul class="list-inline list-unstyled">
-				<li>
-					<sw-options
-						data-object-name="Site"
-					></sw-options>
-				</li>
-			</ul>
-			<ul class="list-inline list-unstyled">
+					
 				<li>
 					<span sw-pagination-bar
 						data-collection="collection"
@@ -40,12 +39,7 @@
 						>
 					</span>
 				</li>
-			</ul>
-		</div>
-		
-		<div class="col-xs-6 s-table-view-options s-no-padding-right">
-			<ul class="list-inline list-unstyled">
-				
+			
 				<!-- to implement searching-->
 				<li>
 					<div class="s-select-list-wrapper">
@@ -87,9 +81,9 @@
 			</ul>
 		</div>
 	</div>
-	<content class="s-body-box">
+	<content class="s-body-box"  sw-loading="firstLoad && !loadingCollection">
 		<div class="table-responsive">
-			<table id="contentList" class="table table-bordered table-striped">
+			<table id="contentList" class="table table-bordered table-hover">
 				<thead>
 					<tr>
 						<th class="s-sortable ng-binding ng-scope" 
@@ -98,7 +92,6 @@
 							ng-show="column.isVisible"
 							sw-column-sorter
 							data-column="column">
-							
 						</th>
 						<th></th>
 					</tr>
@@ -108,14 +101,21 @@
 					infinite-scroll-disabled="autoScrollDisabled"
 					infinite-scroll-distance="1"
 					id="contentListTable"
-				>
 					
+				>	
 					<tr sw-content-node
 						ng-repeat="pageRecord in collection.pageRecords"
 						data-content-data="pageRecord"
+						data-load-children="true"
 					></tr>
+					<tr ng-hide="collection.pageRecords.length">
+						<td colspan="100">
+							<div class="alert alert-info" style="margin:0px;" role="alert" sw-rbkey="'admin.define.norecordsfound'"><!-- Message created by rb key --></div>
+						</td>
+					</tr>
 			    </tbody>
 			</table>
+			
 		</div>
 	</content>	
 	

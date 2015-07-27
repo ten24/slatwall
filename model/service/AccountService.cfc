@@ -275,16 +275,6 @@ component extends="HibachiService" accessors="true" output="false" {
 		// Call save on the account now that it is all setup
 		arguments.account = this.saveAccount(arguments.account);
 
-		// Look for eventRegistrationID in the data and attach this account to that eventRegistrationID 
-		var eventRegistration = getEventRegistrationService().getEventRegistration( arguments.account.geteventRegistrationID() );
-	 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
-	 		eventRegistration().setFirstName( javaCast("null", "") );
-	 		eventRegistration().setLastName( javaCast("null", "") );
-	 		eventRegistration().setEmailAddress( javaCast("null", "") );
-	 		eventRegistration().setPhoneNumber( javaCast("null", "") );
-	 		eventRegistration().setAccount( arguments.account );
-	 	}
-		
 		return arguments.account;
 	}
 
@@ -310,7 +300,7 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processAccount_login(required any account, required any processObject) {
 		// Take the email address and get all of the user accounts by primary e-mail address
-		var accountAuthentication =getAccountDAO().getActivePasswordByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
+		var accountAuthentication = getAccountDAO().getActivePasswordByEmailAddress( emailAddress=arguments.processObject.getEmailAddress() );
 		var invalidLoginData = {emailAddress=arguments.processObject.getEmailAddress()};
 		
 		if(!isNull(accountAuthentication)) {
@@ -325,18 +315,6 @@ component extends="HibachiService" accessors="true" output="false" {
 					}else{
 						getHibachiSessionService().loginAccount( accountAuthentication.getAccount(), accountAuthentication);
 					}
-					
-					/*
-					// Look for eventRegistrationID in the data and attach this account to that eventRegistrationID 
-					var eventRegistration = getEventRegistrationService().getEventRegistration( arguments.account.geteventRegistrationID() );
-				 	if(!isNull(eventRegistration) && isNull(eventRegistration.getAccount())) {
-				 		eventRegistration().setFirstName( javaCast("null", "") );
-				 		eventRegistration().setLastName( javaCast("null", "") );
-				 		eventRegistration().setEmailAddress( javaCast("null", "") );
-				 		eventRegistration().setPhoneNumber( javaCast("null", "") );
-				 		eventRegistartion().setAccount( accountAuthentications[i].getAccount() );
-				 	}
-					*/
 					
 					accountAuthentication.getAccount().setFailedLoginAttemptCount(0); 
 					accountAuthentication.getAccount().setLoginLockExpiresDateTime(javacast("null",""));
@@ -364,8 +342,7 @@ component extends="HibachiService" accessors="true" output="false" {
 					this.processAccount(invalidLoginData.account, 'lock');
 				}
 				
-			} 
-			else{
+			} else{
 				arguments.processObject.addError('password',rbKey('validate.account.loginblocked'));
 			}
 		} else {
@@ -386,28 +363,33 @@ component extends="HibachiService" accessors="true" output="false" {
 	
 	public any function processAccount_forgotPassword( required any account, required any processObject ) {
 		var forgotPasswordAccount = getAccountWithAuthenticationByEmailAddress( processObject.getEmailAddress() );
-		
+
 		if(!isNull(forgotPasswordAccount)) {
+			//check to see if the account is locked
+			if(isNull(forgotPasswordAccount.getLoginLockExpiresDateTime()) || DateCompare(Now(), forgotPasswordAccount.getLoginLockExpiresDateTime()) == 1 ){
+		
+				// Get the site (this will return as a new site if no siteID)
+				var site = getSiteService().getSite(arguments.processObject.getSiteID(), true);
 			
-			// Get the site (this will return as a new site if no siteID)
-			var site = getSiteService().getSite(arguments.processObject.getSiteID(), true);
-			
-			if(len(site.setting('siteForgotPasswordEmailTemplate'))) {
+				if(len(site.setting('siteForgotPasswordEmailTemplate'))) {
 				
-				var email = getEmailService().newEmail();
-				var emailData = {
-					accountID = forgotPasswordAccount.getAccountID(),
-					emailTemplateID = site.setting('siteForgotPasswordEmailTemplate')
-				};
+					var email = getEmailService().newEmail();
+					var emailData = {
+						accountID = forgotPasswordAccount.getAccountID(),
+						emailTemplateID = site.setting('siteForgotPasswordEmailTemplate')
+					};
 				
-				email = getEmailService().processEmail(email, emailData, 'createFromTemplate');
+					email = getEmailService().processEmail(email, emailData, 'createFromTemplate');
 				
-				email.setEmailTo( arguments.processObject.getEmailAddress() );
+					email.setEmailTo( arguments.processObject.getEmailAddress() );
 				
-				email = getEmailService().processEmail(email, {}, 'addToQueue');
+					email = getEmailService().processEmail(email, {}, 'addToQueue');
 				
-			} else {
-				throw("No email template could be found.  Please update the site settings to define an 'Forgot Password Email Template'.");
+				} else {
+					throw("No email template could be found.  Please update the site settings to define an 'Forgot Password Email Template'.");
+				}
+			} else { 
+				arguments.processObject.addError('emailAddress', rbKey('validate.account_forgotPassword.loginblocked'));
 			}
 			
 		} else {
@@ -418,14 +400,12 @@ component extends="HibachiService" accessors="true" output="false" {
 	}
 	
 	public any function processAccount_resetPassword( required any account, required any processObject ) {
-		var changeProcessData = {
-			password = arguments.processObject.getPassword(),
-			passwordConfirm = arguments.processObject.getPasswordConfirm()
-		};
-		arguments.account = this.processAccount(arguments.account, changeProcessData, 'changePassword');
-		
+
 		// If there are no errors
 		if(!arguments.account.hasErrors()) {
+			
+			arguments.account = createNewAccountPassword(arguments.account, arguments.processObject);
+			
 			// Get the temporary accountAuth
 			var tempAA = getAccountDAO().getPasswordResetAccountAuthentication(accountID=arguments.account.getAccountID());
 			

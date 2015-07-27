@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swExportAction', [
+angular.module('slatwalladmin')
+    .directive('swExportAction', [
     '$log',
     'partialsPath',
     function ($log, partialsPath) {

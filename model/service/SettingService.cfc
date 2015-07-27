@@ -77,6 +77,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			"fulfillmentMethod",
 			"subscriptionUsage",
 			"subscriptionTerm",
+			"orderFulfillment",
 			"shippingMethod",
 			"paymentMethod",
 			"productType",
@@ -104,7 +105,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			email = ["emailTemplate.emailTemplateID"],
 			shippingMethodRate = ["shippingMethod.shippingMethodID"],
 			accountAuthentication = [ "integration.integrationID" ],
-			subscriptionUsage = [ "subscriptionTerm.subscriptionTermID" ]
+			subscriptionUsage = [ "subscriptionTerm.subscriptionTermID" ],
+			orderFulfillment = [ "orderFulfillment.orderFulfillmentID" ]
 		};
 	}
 	
@@ -198,6 +200,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			locationConfigurationAdditionalPreReservationTime = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
 			locationConfigurationAdditionalPostReservationTime = {fieldType="text", defaultValue=0, validate={dataType="numeric"}},
 
+			//Order Fulfillment
+			orderFulfillmentEmailTemplate = {fieldtype="select", defaultValue=""},
+			
 			// Payment Method
 			paymentMethodMaximumOrderTotalPercentageAmount = {fieldType="text", defaultValue=100, formatType="percentage", validate={dataType="numeric", minValue=0, maxValue=100}},
 			
@@ -243,6 +248,9 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuEligibleFulfillmentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="FulfillmentMethod", defaultValue=getFulfillmentService().getAllActiveFulfillmentMethodIDList()},
 			skuEligibleOrderOrigins = {fieldType="listingMultiselect", listingMultiselectEntityName="OrderOrigin", defaultValue=this.getAllActiveOrderOriginIDList()},
 			skuEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
+			skuGiftCardAutoGenerateCode = {fieldType="yesno", defaultValue=1},
+			skuGiftCardCodeLength = {fieldType="yesno", defaultValue=32},
+			skuOrderItemGiftRecipientEmailTemplate = {fieldType="select", defaultValue=""},
 			skuHoldBackQuantity = {fieldType="text", defaultValue=0},
 			skuMarkAttendanceAsBundle = {fieldType="text", defaultValue=0},
 			skuMinimumPaymentPercentageToWaitlist = {fieldType="text", defaultValue=0},

@@ -72,6 +72,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eventCapacity" ormtype="integer";
 	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
 	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
+	property name="redemptionAmountType" ormtype="string" hb_formFieldType="select" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage"  hb_formatType="rbKey";
+	property name="redemptionAmountPercentage" ormtype="float" hint="the percentage to use if type is set to percentage";
+	property name="redemptionAmount" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
 	
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
@@ -81,6 +84,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="productSchedule" cfc="ProductSchedule" fieldtype="many-to-one" fkcolumn="productScheduleID";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
 	property name="waitlistQueueTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID" hint="Term that a waitlisted registrant has to claim offer.";
+	property name="giftCardExpirationTerm" cfc="Term" fieldType="many-to-one" fkcolumn="giftCardExpirationTermID" hint="Term that is used to set the Expiration Date of the ordered gift card.";
 
 	// Related Object Properties (one-to-many)
 	property name="alternateSkuCodes" singularname="alternateSkuCode" fieldtype="one-to-many" fkcolumn="skuID" cfc="AlternateSkuCode" inverse="true" cascade="all-delete-orphan";
@@ -157,12 +161,43 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="skuDefinition" persistent="false";
 	property name="stocksDeletableFlag" persistent="false" type="boolean";
 	property name="transactionExistsFlag" persistent="false" type="boolean";
-	
+	property name="redemptionAmountTypeOptions" persistent="false";
+	property name="giftCardExpirationTermOptions" persistent="false";	
 	// Deprecated Properties
 	
 	
 	// ==================== START: Logical Methods =========================
 	
+	public array function getGiftCardExpirationTermOptions(){
+		if(!structKeyExists(variables,'giftCardExpirationTermIDOptions')){
+			variables.giftCardExpirationTermIDOptions = [];
+			var termSmartList = getService('hibachiService').getTermSmartList();
+			termSmartList.addSelect('termID','value');
+			termSmartList.addSelect('termName','name');
+			variables.giftCardExpirationTermIDOptions = termSmartList.getRecords();
+			var option = {};
+			option['name'] = 'None';
+			option['value'] = '';
+			arrayPrepend(variables.giftCardExpirationTermIDOptions,option);
+		}
+		return variables.giftCardExpirationTermIDOptions;
+	}
+	
+	public array function getRedemptionAmountTypeOptions(){
+		if(!structKeyExists(variables,'redemptionAmountTypeOptions')){
+			variables.redemptionAmountTypeOptions = [];
+			var optionValues = 'sameAsPrice,fixedAmount,percentage';
+			var optionValuesArray = listToArray(optionValues);
+			for(var optionValue in optionValuesArray){
+				var option = {};
+				option['name'] = rbKey('define.#optionValue#');
+				option['value'] = optionValue;
+				arrayAppend(variables.redemptionAmountTypeOptions,option);
+			}
+		}
+		
+		return variables.redemptionAmountTypeOptions;
+	}
 	
 	// @hint Returns sku purchaseStartDateTime if defined, or product purchaseStartDateTime if not defined in sku.
 	public any function getPurchaseStartDateTime() {
@@ -184,6 +219,31 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		} else {
 			return variables.purchaseEndDateTime;
 		}
+	}
+	
+	//returns gift card redemption amount, or 0 if incorrectly configured
+	public any function getGiftCardRedemptionAmount(){
+		if(structKeyExists(variables, "redemptionAmountType")){ 
+			switch(variables.redemptionAmountType){ 
+				case "sameAsPrice": 
+					return variables.price; 
+					break; 
+				case "fixedAmount": 
+					if(structKeyExists(variables, "redemptionAmount")){
+						return variables.redemptionAmount; 
+					}
+					break; 
+				case "percentage": 
+					if(structKeyExists(variables, "redemptionAmountPercentage") && structKeyExists(variables, "redemptionAmount")){ 
+						return variables.redemptionAmount * variables.redemptionAmountPercentage; 
+					}
+					break; 
+				default: 
+					return 0; 
+					break;
+			}
+		} 
+		return 0; 
 	}
 	
 	// START: Image Methods

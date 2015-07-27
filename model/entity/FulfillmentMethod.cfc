@@ -54,6 +54,7 @@ component displayname="Fulfillment Method" entityname="SlatwallFulfillmentMethod
 	property name="fulfillmentMethodType" ormtype="string" hb_formFieldType="select";
 	property name="activeFlag" ormtype="boolean" default="false";
 	property name="sortOrder" ormtype="integer";
+	property name="autoFulfillFlag" ormtype="boolean" default="false";
 	
 	// Related Object Properties (many-to-one)
 	

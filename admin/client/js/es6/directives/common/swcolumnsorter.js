@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swColumnSorter', [
+angular.module('slatwalladmin')
+    .directive('swColumnSorter', [
     '$log',
     'observerService',
     'partialsPath',

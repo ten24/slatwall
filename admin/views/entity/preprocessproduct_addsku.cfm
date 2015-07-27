@@ -75,6 +75,11 @@ Notes:
 			<hb:HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="userDefinedPriceFlag" fieldName="newSku.userDefinedPriceFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="price" fieldName="newSku.price" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="listPrice" fieldName="newSku.listPrice" edit="#rc.edit#">
+			<cfif rc.product.getBaseProductType() eq 'gift-card'>
+				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="giftCardExpirationTermID" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="redemptionAmountType"  edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="redemptionAmount" edit="#rc.edit#">
+			</cfif>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>
 	

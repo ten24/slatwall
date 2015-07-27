@@ -57,7 +57,7 @@ Notes:
 	<cfparam name="thistag.columns" type="array" default="#arrayNew(1)#" />
 	
 	<cfoutput>
-		<table class="table table-striped table-bordered table-condensed">
+		<table class="table table-bordered table-hover">
 			<thead>
 				<cfloop array="#thistag.columns#" index="column">
 					<cfif !len(column.title)>

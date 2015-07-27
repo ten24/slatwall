@@ -49,6 +49,7 @@ component extends="FW1.framework" {
 	variables.framework.maxNumContextsPreserved = 10;
 	variables.framework.cacheFileExists = false;
 	variables.framework.trace = false;
+	
 	/* TODO: add solution to api routing for Rest api*/
 	variables.framework.routes = [
 		//api routes
@@ -56,6 +57,8 @@ component extends="FW1.framework" {
 		 { "$GET/api/scope/$" = "/api:public/get/" }
 		,{ "$GET/api/scope/:context/$" = "/api:public/get/context/:context"}
 		,{ "$POST/api/scope/:context/$" = "/api:public/post/context/:context"}
+		
+		,{ "$POST/api/log/$" = "/api:main/log"}
 		
 		,{ "$GET/api/$" = "/api:main/get/" }
 		,{ "$GET/api/:entityName/$" = "/api:main/get/entityName/:entityName"}
@@ -70,6 +73,7 @@ component extends="FW1.framework" {
 	variables.framework.hibachi = {};
 	variables.framework.hibachi.authenticationSubsystems = "admin,public,api";
 	variables.framework.hibachi.debugFlag = false;
+	variables.framework.hibachi.updateDestinationContentExclustionList = '/.git,/apps,/integrationServices,/custom,/WEB-INF,/.project,/setting.xml,/.htaccess,/web.config,/.settings,/.gitignore';
 	variables.framework.hibachi.gzipJavascript = true;
 	variables.framework.hibachi.errorDisplayFlag = false;
 	variables.framework.hibachi.errorNotifyEmailAddresses = '';
@@ -147,6 +151,8 @@ component extends="FW1.framework" {
 		}
 		
 		variables.preupdate.preUpdatesRun = fileRead("#this.mappings[ '/#variables.framework.applicationKey#' ]#/custom/config/preUpdatesRun.txt.cfm");
+		
+		
 		
 		// Loop over and run any pre-update files
 		variables.preupdate.preUpdateFiles = directoryList("#this.mappings[ '/#variables.framework.applicationKey#' ]#/config/scripts/preupdate");
@@ -368,6 +374,7 @@ component extends="FW1.framework" {
 					applicationInitData["applicationRootMappingPath"] = this.mappings[ "/#variables.framework.applicationKey#" ];
 					applicationInitData["applicationReloadKey"] = 		variables.framework.reload;
 					applicationInitData["applicationReloadPassword"] =	variables.framework.password;
+					applicationInitData["updateDestinationContentExclustionList"] = variables.framework.hibachi.updateDestinationContentExclustionList;
 					applicationInitData["applicationUpdateKey"] = 		variables.framework.hibachi.fullUpdateKey;
 					applicationInitData["applicationUpdatePassword"] =	variables.framework.hibachi.fullUpdatePassword;
 					applicationInitData["debugFlag"] =					variables.framework.hibachi.debugFlag;
@@ -461,6 +468,7 @@ component extends="FW1.framework" {
 						coreBF.declareBean("hibachiMessages", "#variables.framework.applicationKey#.org.Hibachi.HibachiMessages", false);
 					}
 					
+					
 					// Setup the custom bean factory
 					if(directoryExists("#getHibachiScope().getApplicationValue("applicationRootMappingPath")#/custom/model")) {
 						var customBF = new DI1.ioc("/#variables.framework.applicationKey#/custom/model", {
@@ -497,6 +505,7 @@ component extends="FW1.framework" {
 					}
 					writeLog(file="#variables.framework.applicationKey#", text="General Log - Bean Factory Set");
 					
+					
 					//========================= END: IOC SETUP ===============================
 					
 					// Call the onFirstRequest() Method for the parent Application.cfc
@@ -509,10 +518,18 @@ component extends="FW1.framework" {
 						// Set the request timeout to 360
 						getHibachiScope().getService("hibachiTagService").cfsetting(requesttimeout=600);
 						
+						
+						//Update custom properties
+						var success = getHibachiScope().getService('updateService').updateEntitiesWithCustomProperties();
+						if (success){
+							writeLog(file="Slatwall", text="General Log - Attempting to update entities with custom properties.");
+						}else{
+							writeLog(file="Slatwall", text="General Log - Error updating entities with custom properties");
+						}
 						// Reload ORM
 						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() started");
 						ormReload();
-						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful");
+						writeLog(file="#variables.framework.applicationKey#", text="General Log - ORMReload() was successful"); 
 							
 						onUpdateRequest();
 						
@@ -686,7 +703,7 @@ component extends="FW1.framework" {
 	}
 	
 	// This method will execute an actions controller, render the view for that action and return it without going through an entire lifecycle
-	public string function doAction(required string action) {
+	public string function doAction(required string action, struct data) {
 		
 		var response = "";
 		var originalFW1 = {};
@@ -735,6 +752,10 @@ component extends="FW1.framework" {
 		
 		// create a new request context to hold simple data, and an empty request services so that the view() function works
 		request.context = {};
+		if(!isnull(arguments.data)){
+			request.context = arguments.data;
+		}
+		
 		request._fw1 = {
 	        cgiScriptName = CGI.SCRIPT_NAME,
 	        cgiRequestMethod = CGI.REQUEST_METHOD,

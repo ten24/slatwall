@@ -62,7 +62,7 @@
 	
 	<div class="tab-pane" id="tabFiles">
 		<cfoutput>
-			<table class="table table-striped table-bordered table-condensed">
+			<table class="table table-bordered table-hover">
 				<tr>
 					<th class="primary">#attributes.hibachiScope.rbKey("entity.file.fileName")#</th>
 					<th>#attributes.hibachiScope.rbKey("entity.file.fileType")#</th>
