@@ -46,43 +46,35 @@
 Notes:
 
 --->
-<cfcomponent extends="HibachiDAO" accessors="true" output="false">
-	
-	<cffunction name="getCurrentCurrencyRateByCurrencyCodes" output="false" access="public" returntype="any">
-		<cfargument name="originalCurrencyCode" type="string" required="true" />
-		<cfargument name="convertToCurrencyCode" type="string" required="true" />
-		<cfargument name="conversionDateTime" type="date" default="#now()#" />
-		
-		<!--- Setup HQL --->
-		<cfset var hql="SELECT currencyrate FROM SlatwallCurrencyRate currencyrate
-			WHERE
-			  	currencyrate.effectiveStartDateTime < :conversionDateTime
-			  AND
-			  	(
-					(currencyrate.currencyCode = :originalCurrencyCode AND currencyrate.conversionCurrencyCode = :convertToCurrencyCode)
-				  OR
-				  	(currencyrate.currencyCode = :convertToCurrencyCode AND currencyrate.conversionCurrencyCode = :originalCurrencyCode)			  		
-			  	)
-			ORDER BY
-				currencyrate.effectiveStartDateTime DESC" />
-		
-		<!--- Setup HQL Params --->
-		<cfset var hqlParams = {} />
-		<cfset hqlParams['conversionDateTime'] = arguments.conversionDateTime />
-		<cfset hqlParams['originalCurrencyCode'] = arguments.originalCurrencyCode />
-		<cfset hqlParams['convertToCurrencyCode'] = arguments.convertToCurrencyCode />
-		
-		<!--- Get Results --->
-		<cfset var results = ormExecuteQuery(hql, hqlParams, {maxResults=1}) />
-		
-		<cfif arrayLen(results)>
-			<cfreturn results[1] />
-		</cfif>
-	</cffunction>
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	<cffunction name="getCurrencyByCurrencyCode" output="false" access="public">
-		<cfargument name="currencyCode" type="string" required="true" >
-		<cfreturn ormExecuteQuery("SELECT acurrency FROM SlatwallCurrency acurrency WHERE acurrency.currencyCode = ? ", [arguments.currencyCode], true, {maxResults=1}) />
-	</cffunction>
-	
-</cfcomponent>
+
+<cfparam name="rc.promotionRewardCurrency" type="any" />
+<cfparam name="rc.promotionReward" type="any" default="#rc.promotionRewardCurrency.getPromotionReward()#" />
+<cfparam name="rc.edit" type="boolean" />
+
+<cfoutput>
+	<hb:HibachiEntityDetailForm object="#rc.promotionRewardCurrency#" edit="#rc.edit#" 
+					saveActionQueryString="PromotionRewardID=#rc.promotionReward.getPromotionRewardID()#" 
+					saveActionHash="tabpromotionreward">
+		
+		<hb:HibachiEntityActionBar type="detail" object="#rc.promotionRewardCurrency#" edit="#rc.edit#" 
+					backAction="admin:entity.detailPromotionReward" 
+					backQueryString="promotionRewardID=#rc.promotionReward.getPromotionRewardID()#"
+					cancelAction="admin:entity.detailPromotionReward"
+					cancelQueryString="promotionRewardID=#rc.promotionReward.getPromotionRewardID()#" />
+		
+		<input type="hidden" name="promotionReward.promotionRewardID" value="#rc.promotionReward.getPromotionRewardID()#" />			
+		
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.promotionRewardCurrency#" property="currency" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.promotionRewardCurrency#" property="amount" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+			<cfif !rc.promotionRewardCurrency.isNew()>
+			<hb:HibachiActionCaller action="admin:entity.deletepromotionrewardcurrency" queryString="promotionRewardCurrencyID=#rc.promotionRewardCurrency.getPromotionRewardCurrencyID()#&redirectAction=admin:entity.detailpromotionreward&promotionrewardID=#rc.promotionReward.getPromotionRewardID()#" class="btn btn-danger" />
+		</cfif>
+	</hb:HibachiEntityDetailForm>
+</cfoutput>

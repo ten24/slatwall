@@ -159,7 +159,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		if(!structKeyExists(variables, "price")) {
 			variables.price = 0;
 			if(!isNull(getSku())) {
-				var priceByCurrencyCode = getSku().getPriceByCurrencyCode( getCurrencyCode() );
+				var priceByCurrencyCode = getSku().getLivePriceByCurrencyCode( getCurrencyCode() );
 				if(!isNull(priceByCurrencyCode)) {
 					variables.price = priceByCurrencyCode;
 				} else {

@@ -1,4 +1,5 @@
 /*
+
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -25,6 +26,7 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
+
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -32,6 +34,7 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
+
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -39,7 +42,9 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
+
 Notes:
+
 */
 component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="skuService" hb_permission="this" hb_processContexts="changeEventDates,addLocation,removeLocation" {
 	
@@ -54,6 +59,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="listPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="price" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="renewalPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
+	property name="currencyCode" ormtype="string" length="3";
 	property name="imageFile" ormtype="string" length="50";
 	property name="userDefinedPriceFlag" ormtype="boolean" default="0";
 	property name="eventStartDateTime" ormtype="timestamp" hb_formatType="dateTime";
@@ -79,13 +85,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
 	property name="waitlistQueueTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID" hint="Term that a waitlisted registrant has to claim offer.";
 	property name="giftCardExpirationTerm" cfc="Term" fieldType="many-to-one" fkcolumn="giftCardExpirationTermID" hint="Term that is used to set the Expiration Date of the ordered gift card.";
-	
+
 	// Related Object Properties (one-to-many)
 	property name="alternateSkuCodes" singularname="alternateSkuCode" fieldtype="one-to-many" fkcolumn="skuID" cfc="AlternateSkuCode" inverse="true" cascade="all-delete-orphan";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="orderItems" singularname="orderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="OrderItem" inverse="true" lazy="extra";
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
-	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" cascade="all-delete-orphan";
+	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" hb_cascadeCalculate="true" cascade="all-delete-orphan";
 	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
 	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="skuID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra"; 
 	property name="assignedSkuBundles" singularname="assignedSkuBundle" fieldtype="one-to-many" fkcolumn="bundledSkuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
@@ -127,7 +133,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="availableSeatCount" persistent="false";
 	property name="baseProductType" persistent="false";
 	property name="currentAccountPrice" type="numeric" hb_formatType="currency" persistent="false";
-	property name="currencyCode" type="string" persistent="false";
 	property name="currencyDetails" type="struct" persistent="false";
 	property name="defaultFlag" type="boolean" persistent="false";
 	property name="eligibleFulfillmentMethods" type="array" persistent="false";
@@ -392,6 +397,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public numeric function getPriceByPriceGroup( required any priceGroup) {
 		return getService("priceGroupService").calculateSkuPriceBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
 	}
+
+	public numeric function getPriceByPriceGroupAndCurrencyCode( required any priceGroup,required string currencyCode) {
+		return getService("priceGroupService").calculateSkuPriceBasedOnPriceGroupAndCurrencyCode(sku=this, priceGroup=arguments.priceGroup,currencyCode=arguments.currencyCode);
+	}
 	
 	public any function getAppliedPriceGroupRateByPriceGroup( required any priceGroup) {
 		return getService("priceGroupService").getRateForSkuBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
@@ -562,8 +571,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	public string function getCurrencyCode() {
 		if(!structKeyExists(variables, "currencyCode")) {
-			variables.currencyCode = this.setting('skuCurrency');
-		}
+				this.setCurrencyCode(this.setting('skuCurrency'));
+			
+			}
 		return variables.currencyCode;
 	}
 	
@@ -640,6 +650,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.currentAccountPrice = getService("priceGroupService").calculateSkuPriceBasedOnCurrentAccount(sku=this);
 		}
 		return variables.currentAccountPrice;
+	}
+
+	public any function getCurrentAccountPriceByCurrencyCode(required string currencyCode) {
+		if(!structKeyExists(variables, "currentAccountPrice_#arguments.currencyCode#")) {
+			variables["currentAccountPrice_#arguments.currencyCode#"] = getService("priceGroupService").calculateSkuPriceBasedOnCurrentAccountAndCurrencyCode(sku=this,currencyCode=arguments.currencyCode);
+		}
+		return variables["currentAccountPrice_#arguments.currencyCode#"];
 	}
 	
 	public boolean function getDefaultFlag() {
@@ -740,8 +757,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			}
 			var quantityNeeded = getQuantity("QNC") * -1;
 			var dates = getProduct().getEstimatedReceivalDates( skuID=getSkuID() );
-			for(var i = 1; i<=arrayLen(dates); i++) {
-				
+			for(var i = 1; i<=arrayLen(dates); i++) {	
 				if(quantityNeeded lt dates[i].quantity) {
 					if(dates[i].estimatedReceivalDateTime gt now()) {
 						return dateFormat(dates[i].estimatedReceivalDateTime, setting('globalDateFormat'));	
@@ -760,19 +776,35 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		if(!structKeyExists(variables, "livePrice")) {
 			// Create a prices array, and add the 
 			var prices = [getPrice()];
-			
 			// Add the current account price, and sale price
 			arrayAppend(prices, getSalePrice());
 			arrayAppend(prices, getCurrentAccountPrice());
-			
 			// Sort by best price
 			arraySort(prices, "numeric", "asc");
-			
 			// set that in the variables scope
 			variables.livePrice = prices[1];
 		}
 		return variables.livePrice;
 	}
+
+	public any function getLivePriceByCurrencyCode(required string currencyCode) {
+		if(!structKeyExists(variables, "livePrice_#arguments.currencyCode#")) {
+			// Create a prices array, and add the 
+			var prices = [getPriceByCurrencyCode(arguments.currencyCode)];
+		
+			// Add the current account price, and sale price
+			arrayAppend(prices, getSalePriceByCurrencyCode(currencyCode=arguments.currencyCode));
+			arrayAppend(prices, getCurrentAccountPriceByCurrencyCode(currencyCode=arguments.currencyCode));
+			
+			// Sort by best price
+			arraySort(prices, "numeric", "asc");
+			
+			// set that in the variables scope
+			variables["livePrice_#arguments.currencyCode#"]= prices[1];
+		}
+		return variables["livePrice_#arguments.currencyCode#"];
+	}
+
 	
 	// @hint Returns an array of locations associated with this sku.
 	public any function getLocations() {
@@ -804,7 +836,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.optionsByOptionGroupIDStruct = {};
 			for(var option in getOptions()) {
 				if( !structKeyExists(variables.optionsByOptionGroupIDStruct, option.getOptionGroup().getOptionGroupID())){
-					variables.optionsByOptionGroupIDStruct[ option.getOptionGroup().getOptionGroupID() ] = option;
+					variables.OptionsByGroupIDStruct[ option.getOptionGroup().getOptionGroupID() ] = option;
 				}
 			}
 		}
@@ -838,9 +870,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	public any function getSalePriceDetails() {
 		if(!structKeyExists(variables, "salePriceDetails")) {
-			variables.salePriceDetails = getProduct().getSkuSalePriceDetails( getSkuID() );
+			variables.salePriceDetails = getProduct().getSkuSalePriceDetails(skuID=getSkuID());
 		}
 		return variables.salePriceDetails;
+	}
+
+	public any function getSalePriceDetailsByCurrencyCode(required string currencyCode) {
+		if(!structKeyExists(variables, "salePriceDetailsByCurrencyCode_#currencyCode#")) {
+			variables["salePriceDetails_#currencyCode#"] = getProduct().getSkuSalePriceDetailsByCurrencyCode(skuID=getSkuID(),currencyCode=arguments.currencyCode);
+		}
+		return variables["salePriceDetails_#currencyCode#"] ;
 	}
 	
 	public any function getSalePrice() {
@@ -848,6 +887,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			return getSalePriceDetails()[ "salePrice"];
 		}
 		return getPrice();
+	}
+
+	public any function getSalePriceByCurrencyCode(required string currencyCode) {
+		if(structKeyExists(getSalePriceDetailsByCurrencyCode(arguments.currencyCode), "salePrice")) {
+			return getSalePriceDetailsByCurrencyCode(arguments.currencyCode)[ "salePrice"];
+		}
+		return getPriceByCurrencyCode(arguments.currencyCode);
 	}
 	
 	public any function getSalePriceDiscountType() {
@@ -1372,3 +1418,4 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	
 }
+

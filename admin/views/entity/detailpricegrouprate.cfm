@@ -52,8 +52,13 @@ Notes:
 
 <cfparam name="rc.priceGroupRate" type="any" />
 <cfparam name="rc.priceGroup" type="any" default="#rc.priceGroupRate.getPriceGroup()#" />
+<cfparam name="rc.amountType" type="string" default="percentageOff">
 <cfparam name="rc.edit" type="boolean" default="false" />
 
+
+<cfif not isnull(rc.priceGroupRate.getAmountType())>
+	<cfset rc.amountType=rc.priceGroupRate.getAmountType()>
+</cfif>
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.priceGroupRate#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.priceGroupRate#" edit="#rc.edit#" 
@@ -70,6 +75,9 @@ Notes:
 		
 		<hb:HibachiEntityDetailGroup object="#rc.pricegrouprate#">
 			<hb:HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
+			<cfif rc.amountType neq 'percentageOff'>
+				<hb:HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/currencies"/>
+			</cfif>
 			<hb:HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/producttypes" />
 			<hb:HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/products" />
 			<hb:HibachiEntityDetailItem view="admin:entity/pricegroupratetabs/skus" />
