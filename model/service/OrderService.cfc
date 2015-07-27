@@ -1114,7 +1114,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// As long as the order doesn't have any errors after updating fulfillment & payments we can continue
 				if(!arguments.order.hasErrors()) {
-					
+					//Check if there is an isSubscriptionWithAutoPay
+					var hasSubscriptionWithAutoPay = false;
+					var hasOrderPaymentWithAccountPaymentMethod = false;
+					for (var orderItem in arguments.order.getOrderItems()){
+						if (orderItem.getSku().getBaseProductType() == "subscription" && orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()){
+							//* has subscription with autoPayFlag *
+							for (orderPayment in arguments.order.getOrderPayments()){
+								if (!isNull(orderPayment.getAccountPaymentMethod())){
+									//* has orderPayment with a null account payment method. *
+									hasOrderPaymentWithAccountPaymentMethod = true;
+								}
+							}
+						}
+					}
+					if (hasSubscriptionWithAutoPay && !hasOrderPaymentWithAccountPaymentMethod){
+						arguments.order.addError('account',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod'));	
+					}
+							
 					// If the orderTotal is less than the orderPaymentTotal, then we can look in the data for a "newOrderPayment" record, and if one exists then try to add that orderPayment
 					if(arguments.order.getTotal() != arguments.order.getPaymentAmountTotal()) {
 						arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
