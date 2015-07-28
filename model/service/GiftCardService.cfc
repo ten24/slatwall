@@ -63,8 +63,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.giftCard = this.newGiftCard();
 		}
 		
-		arguments.giftCard.setGiftCardCode(arguments.processObject.getCode()); 
-		arguments.giftCard.setGiftCardPin(arguments.processObject.getPin()); //might be blank
+		arguments.giftCard.setGiftCardCode(arguments.processObject.getGiftCardCode()); 
+		arguments.giftCard.setGiftCardPin(arguments.processObject.getGiftCardPin()); //might be blank
 		arguments.giftCard.setExpirationDate(arguments.processObject.getExpirationDate()); 
 		
 		if(!arguments.giftCard.hasGiftCardExpirationTerm(arguments.processObject.getGiftCardExpirationTerm())){
