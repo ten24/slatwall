@@ -205,6 +205,8 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var term = createPersistedTestEntity('term', termData);
 
 		product.getSkus()[1].setGiftCardExpirationTerm(term);
+		
+		assertTrue(product.getSkus()[1].isGiftCardSku());
 
 		//set up order
 		var orderData = {

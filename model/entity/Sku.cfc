@@ -464,7 +464,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// START: Gift Card Logical Methods
 	
 	public boolean function isGiftCardSku() { 
-		if(!isNull(this.getRedemptionAmountType())){ 
+		if(this.getProduct().getBaseProductType() == "gift-card"){ 
 			return true; 
 		}
 		return false; 
