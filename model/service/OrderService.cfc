@@ -566,11 +566,35 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 	
-	public any function processOrder_addOrderItemGiftRecipient(required any order, required any processObject){ 
+	public any function processOrderItem_addOrderItemGiftRecipient(required any order, required any processObject){ 
 		
-		//Create the gift orderitemgiftrecipient
+		var item = arguments.processObject.getOrderItem(); 
 		
-		//Attach to the orderitem 
+		var recipient = this.newOrderItemGiftRecipient(); 
+		
+		recipient.setFirstName(arguments.processObject.getFirstName()); 
+		recipient.setLastName(arguments.processObject.getLastName()); 
+		
+		if(!arguments.processObject.hasAccount()){
+			recipient.setEmailAddress(arguments.processObject.getEmailAddress());
+		} else { 
+			recipient.setAccount(arguments.processObject.getAccount());
+		}
+		
+		if(arguments.processObject.hasGiftMessage()){ 
+			recipient.setGiftMessage(arguments.processObject.getGiftMessage()); 	
+		}
+		
+		recipient.setOrderItem(item);
+		
+		recipient = this.saveOrderItemGiftRecipient(recipient); 
+		
+		if(!recipient.hasErrors()){ 
+			return this.saveOrder(arguments.order); 
+		} else { 
+			arguments.order.addErrors(recipient.getErrors()); 
+			return arguments.order; 	
+		}
 		
 	}
 	
