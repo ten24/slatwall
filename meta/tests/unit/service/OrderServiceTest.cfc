@@ -243,7 +243,24 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var orderItemsAdded = orderReturn.getOrderItems();
 
 		assertEquals(1, arraylen(orderItemsAdded));
-
+		
+		var orderItemGiftRecipientData = { 
+			orderItemGiftRecipientID="",
+			firstName="Bobby",
+			lastName="Bot"
+		}; 
+		
+		var recipient1 = createPersistedTestEntity("orderItemGiftRecipient", orderItemGiftRecipientData); 
+		
+		var numOfUnassignedGiftCards = orderItemsAdded[1].getNumberOfUnassignedGiftCards();
+		
+		assertEquals(1, numOfUnassignedGiftCards); 
+		
+		orderItemsAdded[1].addOrderItemGiftRecipient(recipient1); 
+		
+		numOfUnassignedGiftCards = orderItemsAdded[1].getNumberOfUnassignedGiftCards();
+		 
+		assertEquals(0, numOfUnassignedGiftCards); 
 	}
 
 }

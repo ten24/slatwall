@@ -399,7 +399,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				newGiftCard.setGiftCardExpirationTerm(arguments.processObject.getSku().getGiftCardExpirationTerm());
 				newGiftCard.setOriginalOrderItem(newOrderItem); 
-				newGiftCard.setOwnerAccount(arguments.order.getAccount()); 
 				newGiftCard = getGiftCardService().saveGiftCard(newGiftCard);
 				
 				if(newGiftCard.hasErrors()){ 
