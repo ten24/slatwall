@@ -18,6 +18,7 @@ angular.module('slatwalladmin')
 				currentPage:"=",
 				pageStart:"&",
 				pageEnd:"&",
+                pageShowOptions:"=",
 				recordsCount:"&",
 				collection:"=",
 				autoScroll:"=",
@@ -30,7 +31,10 @@ angular.module('slatwalladmin')
 				scope.hasNext = paginationService.hasNext;
 				scope.totalPages = paginationService.getTotalPages;
 				
-				scope.pageShowOptions = paginationService.getPageShowOptions();
+                if(angular.isUndefined(scope.pageShowOptions)){
+                    scope.pageShowOptions = paginationService.getPageShowOptions();
+                }
+				
 	          	scope.pageShowOptions.selectedPageShowOption = scope.pageShowOptions[0];
 	          	
 	          	scope.pageShowOptionChanged = function(pageShowOption){
