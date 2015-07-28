@@ -77,7 +77,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 		if(!structKeyExists(variables,"sku") && isNull(getSkuID())){
 			if(structKeyExists(variables, "stock")){
-				variables.sku=variables.stock.getSku()
+				variables.sku=variables.stock.getSku();
 			} else if (!isNull(getStockID())){
 				variables.sku = getService("stockService").getStock(getStockID()).getSku();
 			}
