@@ -10,6 +10,19 @@ angular.module('slatwalladmin').directive('swContentList', ['$log', '$timeout', 
       if (scope.pageShow !== 'Auto') {
         pageShow = scope.pageShow;
       }
+      scope.pageShowOptions = [{
+        display: 10,
+        value: 10
+      }, {
+        display: 20,
+        value: 20
+      }, {
+        display: 50,
+        value: 50
+      }, {
+        display: 250,
+        value: 250
+      }];
       scope.loadingCollection = false;
       scope.selectedSite;
       scope.orderBy;
