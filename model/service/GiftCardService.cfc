@@ -80,6 +80,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var giftCardCreditTransaction = this.createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.giftCard.getOriginalOrderItem().getSku().getGiftCardRedemptionAmount());			
 		}
 		
+		if(arguments.processObject.hasOwnerAccount()){ 
+			arguments.giftCard.setOwnerAccount(arguments.processObject.getOwnerAccount()); 	
+		} else { 
+			arguments.giftCard.setOwnerFirstName(arguments.processObject.getOwnerFirstName()); 
+			arguments.giftCard.setOwnerLastName(arguments.processObject.getOwnerLastName()); 	
+			arguments.giftCard.setOwnerEmailAddress(arguments.processObject.getOwnerEmailAddress()); 
+		}
+		
 		if(!giftCardCreditTransaction.hasErrors()){ 
 			arguments.giftCard = this.saveGiftCard(arguments.giftCard); 	
 		} else { 

@@ -43,5 +43,9 @@ Notes:
 */
 component output="false" accessors="true" extends="HibachiProcess"{
 
-
+	 // Injected Entity
+	 property name="giftCard";
+	 property name="orderPayments"; 
+	 property name="orderItems"; 
+	 
 }
