@@ -570,6 +570,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public any function processOrder_addOrderItemGiftRecipient(required any order, required any processObject){ 
 		
 		//Create the gift orderitemgiftrecipient
+		
 		//Attach to the orderitem 
 		
 	}

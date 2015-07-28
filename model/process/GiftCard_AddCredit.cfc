@@ -43,4 +43,10 @@ Notes:
 */
 component output="false" accessors="true" extends="HibachiProcess"{
 	 
+	 // Injected Entity
+	 property name="giftCard";
+	 
+	 public any function init(){
+		super.init();
+	 } 
 }

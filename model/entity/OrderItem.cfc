@@ -106,6 +106,22 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 	property name="salePrice" type="struct" persistent="false";
 
+
+	public any function getUnassignedGiftCards() { 
+		
+		var giftCards = this.getGiftCards(); 
+		var unassignedGiftCards = []; 
+		for(giftCard in giftCards){ 
+			if(isNull(giftCard.getOrderItemGiftRecipient()){
+				arrayAppend(unassignedGiftCards, giftCard); 
+			}
+		}	
+		
+		if(!ArrayIsEmpty(unassignedGiftCards)){ 
+			return unassignedGiftCards;
+		}
+	}
+
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
 		

@@ -78,8 +78,18 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	// Non-Persistent Properties
 
-
-
+	public string function getBalance(){ 
+		var transactions = this.getGiftCardTransactions(); 
+		var balance = "0"; 
+		for(var transaction in transactions){ 
+			if(!isNull(transaction.getCreditAmount())){
+				balance = precisionEvaluate(balance + transaction.getCreditAmount()); 
+			} else if(!isNull(transaction.getDebitAmount())){ 
+				balance = precisionEvaluate(balance - transaction.getDebitAmount()); 	
+			}
+		}
+		return balance; 
+	}
 
 	// ============ START: Non-Persistent Property Methods =================
 
