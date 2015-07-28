@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,46 +45,36 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="HibachiProcess" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	// Injected Entity
-	property name="stockAdjustment";
-	
-	// Injected, or lazily loaded by ID
-	property name="sku";
-	property name="stock";
 
-	// Data Properties (IDs)
-	property name="skuID";
-	
-	property name="stockID";
+<cfparam name="rc.priceGroupRateCurrency" type="any" />
+<cfparam name="rc.priceGroupRate" type="any" default="#rc.priceGroupRateCurrency.getPriceGroupRate()#" />
+<cfparam name="rc.edit" type="boolean" />
 
-	// Data Properties (Inputs)
-	property name="quantity";
-	
-	public numeric function getQuantity() {
-		if(!structKeyExists(variables, "quantity")) {
-			variables.quantity = 1;
-		}
-		return variables.quantity;
-	}
-	
-	public any function getSku() {
-		if(!structKeyExists(variables, "sku") && !isNull(getSkuID())) {
-			variables.sku = getService("skuService").getSku(getSkuID());
-		} 
-
-		if(!structKeyExists(variables,"sku") && isNull(getSkuID())){
-			if(structKeyExists(variables, "stock")){
-				variables.sku=variables.stock.getSku()
-			} else if (!isNull(getStockID())){
-				variables.sku = getService("stockService").getStock(getStockID()).getSku();
-			}
-		}
-
-		if(structKeyExists(variables, "sku")) {
-			return variables.sku;
-		}
-	}
-}
+<cfoutput>
+	<hb:HibachiEntityDetailForm object="#rc.priceGroupRateCurrency#" edit="#rc.edit#" 
+					saveActionQueryString="PriceGroupRateID=#rc.priceGroupRate.getPriceGroupRateID()#" 
+					saveActionHash="tabpromotionreward">
+		
+		<hb:HibachiEntityActionBar type="detail" object="#rc.priceGroupRateCurrency#" edit="#rc.edit#" 
+					backAction="admin:entity.detailPriceGroupRate" 
+					backQueryString="priceGroupRateID=#rc.priceGroupRate.getPriceGroupRateID()#"
+					cancelAction="admin:entity.detailPriceGroupRate"
+					cancelQueryString="priceGroupRateID=#rc.priceGroupRate.getPriceGroupRateID()#" />
+		
+		<input type="hidden" name="priceGroupRate.priceGroupRateID" value="#rc.priceGroupRate.getPriceGroupRateID()#" />			
+		
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.priceGroupRateCurrency#" property="currency" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.priceGroupRateCurrency#" property="amount" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+			<cfif !rc.priceGroupRateCurrency.isNew()>
+			<hb:HibachiActionCaller action="admin:entity.deletepricegroupratecurrency" queryString="priceGroupRateCurrencyID=#rc.priceGroupRateCurrency.getPriceGroupRateCurrencyID()#&redirectAction=admin:entity.detailpricegrouprate&promotionrewardID=#rc.pricegrouprate.getPriceGroupRateID()#" class="btn btn-danger" />
+		</cfif>
+	</hb:HibachiEntityDetailForm>
+</cfoutput>

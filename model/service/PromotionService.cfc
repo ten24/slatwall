@@ -238,7 +238,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							if( isNull(orderItem.getAppliedPriceGroup()) || arguments.promotionReward.hasEligiblePriceGroup( orderItem.getAppliedPriceGroup() ) ) {
 								
 								// Calculate based on price, which could be a priceGroup price
-								var discountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getPrice(), discountQuantity);
+								var discountAmount = getDiscountAmount(arguments.promotionReward, orderItem.getPrice(), discountQuantity,orderItem.getCurrencyCode());
 								
 							} else {
 								
@@ -336,7 +336,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	private void function processOrderRewards(required any order, required any promotionReward){
 		var totalDiscountableAmount = arguments.order.getSubtotalAfterItemDiscounts() + arguments.order.getFulfillmentChargeAfterDiscountTotal();
 						
-		var discountAmount = getDiscountAmount(arguments.promotionReward, totalDiscountableAmount, 1);
+		var discountAmount = getDiscountAmount(arguments.promotionReward, totalDiscountableAmount, 1, order.getCurrencyCode());
 					
 		var addNew = false;
 			
@@ -996,22 +996,36 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return false;
 	}
 	
-	private numeric function getDiscountAmount(required any reward, required numeric price, required numeric quantity) {
+	private numeric function getDiscountAmount(required any reward, required numeric price, required numeric quantity, string currencyCode) {
 		var discountAmountPreRounding = 0;
 		var roundedFinalAmount = 0;
 		var originalAmount = precisionEvaluate(arguments.price * arguments.quantity);
 		
-		
-		switch(reward.getAmountType()) {
-			case "percentageOff" :
-				discountAmountPreRounding = precisionEvaluate(originalAmount * (reward.getAmount()/100));
-				break;
-			case "amountOff" :
-				discountAmountPreRounding = reward.getAmount() * quantity;
-				break;
-			case "amount" :
-				discountAmountPreRounding = precisionEvaluate((arguments.price - reward.getAmount()) * arguments.quantity);
-				break;
+		if(structKeyExists(arguments, "currencyCode") && len(arguments.currencyCode)){
+			switch(reward.getAmountType()) {
+				case "percentageOff" :
+					discountAmountPreRounding = precisionEvaluate(originalAmount * (reward.getAmountByCurrencyCode(arguments.currencyCode)/100));
+					break;
+				case "amountOff" :
+					discountAmountPreRounding = reward.getAmountByCurrencyCode(arguments.currencyCode) * quantity;
+					break;
+				case "amount" :
+					discountAmountPreRounding = precisionEvaluate((arguments.price - reward.getAmountByCurrencyCode(arguments.currencyCode)) * arguments.quantity);
+					break;
+			}
+
+		}else{
+			switch(reward.getAmountType()) {
+				case "percentageOff" :
+					discountAmountPreRounding = precisionEvaluate(originalAmount * (reward.getAmount()/100));
+					break;
+				case "amountOff" :
+					discountAmountPreRounding = reward.getAmount() * quantity;
+					break;
+				case "amount" :
+					discountAmountPreRounding = precisionEvaluate((arguments.price - reward.getAmount()) * arguments.quantity);
+					break;
+			}
 		}
 		
 		if(!isNull(reward.getRoundingRule())) {
@@ -1031,12 +1045,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// ----------------- END: Apply Promotion Logic -------------------------
 	
-	public struct function getSalePriceDetailsForProductSkus(required string productID) {
-		var priceDetails = getHibachiUtilityService().queryToStructOfStructures(getPromotionDAO().getSalePricePromotionRewardsQuery(productID = arguments.productID), "skuID");
+	public struct function getSalePriceDetailsForProductSkus(required string productID, string currencyCode='') {
+		var priceDetails = getHibachiUtilityService().queryToStructOfStructures(getPromotionDAO().getSalePricePromotionRewardsQuery(productID = arguments.productID,currencyCode = arguments.currencyCode), "skuID");
 		for(var key in priceDetails) {
 			if(priceDetails[key].roundingRuleID != "") {
 				priceDetails[key].salePrice = getRoundingRuleService().roundValueByRoundingRuleID(value=priceDetails[key].salePrice, roundingRuleID=priceDetails[key].roundingRuleID);
 			}
+			priceDetails[key].salePrice=round(priceDetails[key].salePrice*100)/100; //Round to 2 decimals 
 		}
 		return priceDetails;
 	}

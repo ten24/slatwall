@@ -46,20 +46,26 @@
 Notes:
 
 */
-component displayname="Stock" entityname="SlatwallStock" table="swStock" persistent=true accessors=true output=false extends="HibachiEntity" cacheuse="transactional" hb_serviceName="stockService" {
+component entityname="SlatwallPromotionRewardCurrency" table="SwPromotionRewardCurrency" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="promotionService" {
 	
 	// Persistent Properties
-	property name="stockID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="promotionRewardCurrencyID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="amount" ormtype="big_decimal" hb_formatType="currency" hb_rbKey='entity.promotionReward.amount';
 	
 	// Related Object Properties (many-to-one)
-	property name="location" fieldtype="many-to-one" fkcolumn="locationID" cfc="Location";
-	property name="sku" fieldtype="many-to-one" fkcolumn="skuID" cfc="Sku" hb_cascadeCalculate="true"; // We always want sku when we get a stock
+	property name="currency" cfc="Currency" fieldtype="many-to-one" fkcolumn="currencyCode";
+	property name="promotionReward" cfc="PromotionReward" fieldtype="many-to-one" fkcolumn="promotionRewardID";
 	
-	// Related Object Properties (one-to-many). Including this property to allow HQL to do  stock -> vendorOrderItem lookups
-	property name="vendorOrderItems" singularname="vendorOrderItem" cfc="VendorOrderItem" fieldtype="one-to-many" fkcolumn="stockID" inverse="true";
-	property name="inventory" singularname="inventory" cfc="Inventory" fieldtype="one-to-many" fkcolumn="stockID" inverse="true" lazy="extra";
+	// Related Object Properties (one-to-many)
+	
+	// Related Object Properties (many-to-many - owner)
 
-	// Remote properties
+	// Related Object Properties (many-to-many - inverse)
+	
+	// Non Update-Insert Properties
+	property name="currencyCode" insert="false" update="false";
+	
+	// Remote Properties
 	property name="remoteID" ormtype="string";
 	
 	// Audit Properties
@@ -69,62 +75,65 @@ component displayname="Stock" entityname="SlatwallStock" table="swStock" persist
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
 	// Non-Persistent Properties
-	property name="calculatedQATS" ormtype="integer";
-	property name="calculatedQOH" ormtype="integer";
-	property name="calculatedQNC" ormtype="integer";
-	
-	//Derived Properties
-	//property name="derivedQOH" formula="select COALESCE( SUM(inventory.quantityIn), 0 ) - COALESCE( SUM(inventory.quantityOut), 0 ) from swInventory as inventory where inventory.stockID= stockID";
 
-	// Quantity
-	public numeric function getQuantity(required string quantityType) {
-		if( !structKeyExists(variables, arguments.quantityType) ) {
-			if(listFindNoCase("QOH,QOSH,QNDOO,QNDORVO,QNDOSA,QNRORO,QNROVO,QNROSA", arguments.quantityType)) {
-				return getSku().getQuantity(quantityType=arguments.quantityType, stockID=this.getStockID());
-			} else if(listFindNoCase("QC,QE,QNC,QATS,QIATS", arguments.quantityType)) {
-				variables[ arguments.quantityType ] = getService("inventoryService").invokeMethod("get#arguments.quantityType#", {entity=this});
-			} else {
-				throw("The quantity type you passed in '#arguments.quantityType#' is not a valid quantity type.  Valid quantity types are: QOH, QOSH, QNDOO, QNDORVO, QNDOSA, QNRORO, QNROVO, QNROSA, QC, QE, QNC, QATS, QIATS");
-			}	
-		}
-		return variables[ arguments.quantityType ];
-	}
-	
-	
 	// ============ START: Non-Persistent Property Methods =================
 	
-	public any function getQATS() {
-		return getQuantity("QATS");
+	public string function getCurrencyCode(){
+		if(!structKeyExists(variables, "currencyCode")) {
+			if(!isnull(this.getCurrency())){
+				variables.currencyCode=this.getCurrency().getCurrencyCode();
+			}else{
+				variables.currencyCode=this.setting('skuCurrency');
+			}
+		}
+		return variables.currencyCode;
 	}
 
-	public any function getQOH() {
-		return getQuantity("QOH");
-	}
-
-	public any function getQNC() {
-		return getQuantity("QNC");
-	}
-	
 	// ============  END:  Non-Persistent Property Methods =================
-	
+		
 	// ============= START: Bidirectional Helper Methods ===================
 	
-	// Vendor Order Items (one-to-many)
-	public void function addVendorOrderItem(required any vendorOrderItem) {
-		arguments.vendorOrderItem.setStock( this );
+	// Promotion Reward (many-to-one)
+	public void function setPromotionReward(required any promotionReward) {
+		variables.promotionReward = arguments.promotionReward;
+		if(isNew() or !arguments.promotionReward.hasPromotionRewardCurrency( this )) {
+			arrayAppend(arguments.promotionReward.getPromotionRewardCurrencies(), this);
+		}
 	}
-	public void function removeVendorOrderItem(required any vendorOrderItem) {
-		arguments.vendorOrderItem.removeStock( this );
+	public void function removePromotionReward(any promotionReward) {
+		if(!structKeyExists(arguments, "promotionReward")) {
+			arguments.promotionReward = variables.promotionReward;
+		}
+		var index = arrayFind(arguments.promotionReward.getPromotionRewardCurrencies(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.promotionReward.getPromotionRewardCurrencies(), index);
+		}
+		structDelete(variables, "promotionReward");
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================
+
+	// =============== START: Custom Validation Methods ====================
 	
+	// ===============  END: Custom Validation Methods =====================
+	
+	// =============== START: Custom Formatting Methods ====================
+	
+	// ===============  END: Custom Formatting Methods =====================
+
 	// ================== START: Overridden Methods ========================
+	
+	public string function getSimpleRepresentation() {
+		return getPromotionReward().getRewardType() & " - " & getCurrency().getCurrencyCode(); 
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ================== START: Deprecated Methods ========================
+	
+	// ==================  END:  Deprecated Methods ========================
 }
-

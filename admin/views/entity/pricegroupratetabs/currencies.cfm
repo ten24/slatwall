@@ -49,52 +49,56 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfparam name="rc.sku" type="any" />
+<cfparam name="rc.priceGroupRate" type="any" />
+<cfset local.priceGroupRateCurrencyStruct=structNew()>
+<cfloop collection="#rc.priceGroupRate.getPriceGroupRateCurrenciesStruct()#" item="local.priceGroupRateCurrency">
+	<cfset local.currentPriceGroupRateCurrency=rc.priceGroupRate.getPriceGroupRateCurrenciesStruct()[local.priceGroupRateCurrency]>
+	<cfset local.priceGroupRateCurrencyStruct[local.currentPriceGroupRateCurrency.getCurrencyCode()]=local.currentPriceGroupRateCurrency>
+</cfloop>
 
 <cfoutput>
-	<table class="table table-bordered table-hover">
+	<table class="table table-striped table-bordered table-condensed">
 		<tr>
 			<th>#$.slatwall.rbKey('entity.currency')#</th>
-			<th>#$.slatwall.rbKey('entity.sku.listPrice')#</th>
-			<th>#$.slatwall.rbKey('entity.sku.price')#</th>
+			<th>#$.slatwall.rbKey("define."&rc.priceGroupRate.getAmountType())#</th>
 			<th>#$.slatwall.rbKey('entity.currency.currencyCode')#</th>
 			<th class="admin admin1"></th>
 		</tr>
-		<cfloop list="#rc.sku.setting('skuEligibleCurrencies')#" index="local.currencyCode">
+		<cfloop list="#$.slatwall.setting('skuEligibleCurrencies')#" index="local.currencyCode">
 			<cfset local.currency = $.slatwall.getService("currencyService").getCurrency( local.currencyCode ) />
-			<cfif local.currency.getCurrencyCode() eq rc.sku.setting('skuCurrency')>
+			<cfif local.currency.getCurrencyCode() eq rc.priceGroupRate.getCurrencyCode()>
 				<tr class="highlight-yellow">
 			<cfelse>
 				<tr>
 			</cfif>
 				<td class="primary">#local.currency.getCurrencyName()#</td>
-				<cfif structKeyExists(rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ], "listPriceFormatted")>
+				<cfif structKeyExists( local.priceGroupRateCurrencyStruct, local.currency.getCurrencyCode())>
 					<td>
-						#rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].listPriceFormatted#
-						<cfif rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].converted>
-							( #$.slatwall.rbKey('admin.entity.skutabs.currencies.converted')# )
-						</cfif>
+						#$.slatwall.formatValue(local.priceGroupRateCurrencyStruct[ local.currency.getCurrencyCode() ].getAmount(), 'currency', {currencyCode=local.currency.getCurrencyCode()} )#
+						
+					</td>
+				<cfelseif local.currency.getCurrencyCode() eq rc.priceGroupRate.getCurrencyCode()>
+					<td>
+						#$.slatwall.formatValue(rc.priceGroupRate.getAmount(), 'currency', {currencyCode=local.currency.getCurrencyCode()} )#
 					</td>
 				<cfelse>
-					<td></td>
+					<td>
+						#$.slatwall.formatValue($.slatwall.getService("currencyService").convertCurrency(rc.priceGroupRate.getAmount(), rc.priceGroupRate.getCurrencyCode(),local.currency.getCurrencyCode()), 'currency', {currencyCode=local.currency.getCurrencyCode()} )# ( #$.slatwall.rbKey('admin.entity.skutabs.currencies.converted')# )
+					</td>
 				</cfif>
-				<td>
-					#rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].priceFormatted#
-					<cfif rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].converted>
-						( #$.slatwall.rbKey('admin.entity.skutabs.currencies.converted')# )
-					</cfif>
-				</td>
+				
 				<td>#local.currencyCode#</td>
 				<td>
-					<cfif local.currency.getCurrencyCode() eq rc.sku.setting('skuCurrency')>
-						<hb:HibachiActionCaller action="admin:entity.editSkuCurrency" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" disabled="true" />
-					<cfelseif rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].converted>
-						<hb:HibachiActionCaller action="admin:entity.createSkuCurrency" querystring="currencyCode=#local.currencyCode#&skuID=#rc.sku.getSkuID()#&redirectAction=admin:entity.detailsku" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" />
+					<cfif local.currency.getCurrencyCode() eq rc.priceGroupRate.getCurrencyCode()>
+						<hb:HibachiActionCaller action="entity.editpricgroupratecurrency" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" disabled="true" />
+					<cfelseif !structKeyExists( local.priceGroupRateCurrencyStruct, local.currency.getCurrencyCode())>
+						<hb:HibachiActionCaller action="admin:entity.createpricegroupratecurrency" querystring="currencyCode=#local.currencyCode#&priceGroupRateID=#rc.priceGroupRate.getPriceGroupRateID()#&redirectAction=admin:entity.detailpricegrouprate" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" />
 					<cfelse>
-						<hb:HibachiActionCaller action="admin:entity.editSkuCurrency" querystring="skuCurrencyID=#rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].skuCurrencyID#&currencyCode=#local.currencyCode#&skuID=#rc.sku.getSkuID()#&redirectAction=admin:entity.detailsku" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" />
+						<hb:HibachiActionCaller action="admin:entity.editpricegroupratecurrency" querystring="priceGroupRateCurrencyID=#local.priceGroupRateCurrencyStruct[ local.currency.getCurrencyCode() ].getPriceGroupRateCurrencyID()#&pricegrouprateID=#rc.priceGroupRate.getPriceGroupRateID()#&redirectAction=admin:entity.detailpricegrouprate" class="btn btn-default btn-xs" icon="pencil" icononly="true" modal="true" />
 					</cfif>
 				</td>
 			</tr>
 		</cfloop>
 	</table>
 </cfoutput>
+

@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,46 +45,36 @@
 
 Notes:
 
-*/
-component output="false" accessors="true" extends="HibachiProcess" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	// Injected Entity
-	property name="stockAdjustment";
-	
-	// Injected, or lazily loaded by ID
-	property name="sku";
-	property name="stock";
 
-	// Data Properties (IDs)
-	property name="skuID";
-	
-	property name="stockID";
+<cfparam name="rc.promotionRewardCurrency" type="any" />
+<cfparam name="rc.promotionReward" type="any" default="#rc.promotionRewardCurrency.getPromotionReward()#" />
+<cfparam name="rc.edit" type="boolean" />
 
-	// Data Properties (Inputs)
-	property name="quantity";
-	
-	public numeric function getQuantity() {
-		if(!structKeyExists(variables, "quantity")) {
-			variables.quantity = 1;
-		}
-		return variables.quantity;
-	}
-	
-	public any function getSku() {
-		if(!structKeyExists(variables, "sku") && !isNull(getSkuID())) {
-			variables.sku = getService("skuService").getSku(getSkuID());
-		} 
-
-		if(!structKeyExists(variables,"sku") && isNull(getSkuID())){
-			if(structKeyExists(variables, "stock")){
-				variables.sku=variables.stock.getSku()
-			} else if (!isNull(getStockID())){
-				variables.sku = getService("stockService").getStock(getStockID()).getSku();
-			}
-		}
-
-		if(structKeyExists(variables, "sku")) {
-			return variables.sku;
-		}
-	}
-}
+<cfoutput>
+	<hb:HibachiEntityDetailForm object="#rc.promotionRewardCurrency#" edit="#rc.edit#" 
+					saveActionQueryString="PromotionRewardID=#rc.promotionReward.getPromotionRewardID()#" 
+					saveActionHash="tabpromotionreward">
+		
+		<hb:HibachiEntityActionBar type="detail" object="#rc.promotionRewardCurrency#" edit="#rc.edit#" 
+					backAction="admin:entity.detailPromotionReward" 
+					backQueryString="promotionRewardID=#rc.promotionReward.getPromotionRewardID()#"
+					cancelAction="admin:entity.detailPromotionReward"
+					cancelQueryString="promotionRewardID=#rc.promotionReward.getPromotionRewardID()#" />
+		
+		<input type="hidden" name="promotionReward.promotionRewardID" value="#rc.promotionReward.getPromotionRewardID()#" />			
+		
+		<hb:HibachiPropertyRow>
+			<hb:HibachiPropertyList>
+				<hb:HibachiPropertyDisplay object="#rc.promotionRewardCurrency#" property="currency" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.promotionRewardCurrency#" property="amount" edit="#rc.edit#">
+			</hb:HibachiPropertyList>
+		</hb:HibachiPropertyRow>
+			<cfif !rc.promotionRewardCurrency.isNew()>
+			<hb:HibachiActionCaller action="admin:entity.deletepromotionrewardcurrency" queryString="promotionRewardCurrencyID=#rc.promotionRewardCurrency.getPromotionRewardCurrencyID()#&redirectAction=admin:entity.detailpromotionreward&promotionrewardID=#rc.promotionReward.getPromotionRewardID()#" class="btn btn-danger" />
+		</cfif>
+	</hb:HibachiEntityDetailForm>
+</cfoutput>
