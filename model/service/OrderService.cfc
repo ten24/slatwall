@@ -1191,6 +1191,48 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
 							}
 							
+							// Now we can charge up the gift cards				
+							if(arguments.order.hasGiftCardOrderItems()){ 
+								
+								var giftItems = arguments.order.getGiftCardOrderItems(); 
+								
+								for(var item in giftItems){ 
+									
+									var cards = item.getGiftCards(); 	
+									var recipients = item.getOrderItemGiftRecipients(); 		
+									var count = 1; 
+									
+									//recipients and cards have already been validated so put them together
+									for(var card in cards){ 		
+										var createGiftCard = card.getProcessObject( 'Create' );
+										
+										createGiftCard.setGiftCardExpirationTerm(card.getGiftCardExpirationTerm()); 
+										
+										if(!isNull(recipients[count].getAccount())){
+											createGiftCard.setOwnerAccount(recipients[count].getAccount()); 	
+										} else { 
+											createGiftCard.setEmailAddress(recipients[count].getEmailAddress())
+										}
+										
+										if(!isNull(recipients[count].getGiftMessage())){
+											createGiftCard.setGiftMessage(recipients[count].getGiftMessage()); 
+										}
+										
+										if(!isNull(recipients[count].getFirstName())){
+											createGiftCard.setFirstName(recipients[count].getFirstName()); 
+										}
+										
+										if(!isNull(recipients[count].getLastName())){
+											createGiftCard.setLastName(recipients[count].getLastName()); 
+										}
+										
+										createGiftCard.setCreditGiftCard(true); 
+										card = getService("GiftCardService").process(card, createGiftCard, 'Create');
+										count++; 
+									}
+								}
+							}
+							
 							// Clear this order out of all sessions
 							getOrderDAO().removeOrderFromAllSessions(orderID=arguments.order.getOrderID());
 							

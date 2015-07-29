@@ -58,6 +58,7 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	property name="ownerFirstName"; 
 	property name="ownerLastName"; 
 	property name="ownerEmailAddress"; 
+	property name="creditGiftCard"; 
 	
 	//Overridden Getters
 	public string function getGiftCardCode(){ 

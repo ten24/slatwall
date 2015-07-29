@@ -298,6 +298,34 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return arr;
 	}
 	
+	public boolean function hasGiftCardOrderItems(){
+		
+		var giftCardOrderItems = []; 
+		var orderItems = this.getOrderItems(); 
+		
+		for(var item in orderItems){ 
+			if(item.getSku().isGiftCardSku()){ 
+				return true;
+			}
+		}
+		
+		return false;	
+	}
+	
+	public array function getGiftCardOrderItems() {
+		
+		var giftCardOrderItems = []; 
+		var orderItems = this.getOrderItems(); 
+		
+		for(var item in orderItems){ 
+			if(item.getSku().isGiftCardSku()){ 
+				arrayAppend(giftCardOrderItems, item); 	
+			}
+		}
+		
+		return giftcardOrderItems(); 
+	}
+	
 	public void function checkNewBillingAccountAddressSave() {
 		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address
     	if(!isNull(getSaveBillingAccountAddressFlag()) && getSaveBillingAccountAddressFlag() && !isNull(getAccount()) && !getAccount().getGuestAccountFlag() && isNull(getBillingAccountAddress()) && !isNull(getBillingAddress()) && !getBillingAddress().hasErrors()) {

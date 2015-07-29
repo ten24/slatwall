@@ -65,6 +65,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		arguments.giftCard.setGiftCardCode(arguments.processObject.getGiftCardCode()); 
 		arguments.giftCard.setGiftCardPin(arguments.processObject.getGiftCardPin()); //might be blank
+		
 		arguments.giftCard.setExpirationDate(arguments.processObject.getExpirationDate()); 
 		
 		if(!arguments.giftCard.hasGiftCardExpirationTerm(arguments.processObject.getGiftCardExpirationTerm())){
@@ -76,7 +77,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		//is it time to credit the card
-		if(arguments.processObject.creditGiftCard()){
+		if(arguments.processObject.getCreditGiftCard()){
 			var giftCardCreditTransaction = this.createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.giftCard.getOriginalOrderItem().getSku().getGiftCardRedemptionAmount());			
 		}
 		
