@@ -109,7 +109,8 @@ paginationService
 	
 				$scope.collectionInitial = angular.copy($scope.collection);
 				if(angular.isUndefined($scope.collectionConfig)){
-					$scope.collectionConfig = angular.fromJson($scope.collection.collectionConfig);
+                    $scope.collectionConfig = new slatwalladmin.CollectionConfig($slatwall);
+                    $scope.collectionConfig.loadJson($scope.collection.collectionConfig);
 				}
 				
 				//check if we have any filter Groups
