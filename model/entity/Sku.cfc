@@ -1028,17 +1028,17 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	// GiftCardExpirationTerm (many-to-one)
 	public void function setGiftCardExpirationTerm(required any term) {
 		variables.giftCardExpirationTerm = arguments.term;
-		if(isNew() or !arguments.term.hasGiftCardExpirationSku( this )) {
-			arrayAppend(arguments.term.getGiftCardExpirationSkus(), this);
+		if(isNew() or !arguments.term.hasGiftCardExpirationTerm( this )) {
+			arrayAppend(arguments.term.getGiftCardExpirationTerms(), this);
 		}
 	}
 	public void function removeGiftCardExpirationTerm(any term) {
 		if(!structKeyExists(arguments, "term")) {
 			arguments.term = variables.term;
 		}
-		var index = arrayFind(arguments.term.getGiftCardExpirationSkus(), this);
+		var index = arrayFind(arguments.term.getGiftCardExpirationTerms(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.term.getGiftCardExpirationSkus(), index);
+			arrayDeleteAt(arguments.term.getGiftCardExpirationTerms(), index);
 		}
 		structDelete(variables, "term");
 	}
