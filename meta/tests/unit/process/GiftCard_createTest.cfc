@@ -103,6 +103,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		assertTrue(giftCard.hasOwnerAccount(account)); 
 		assertTrue(processGiftCard.getOwnerAccount().getAccountID() == account.getAccountID());
 		
+		giftCard = request.slatwallScope.getService("giftCardService").saveGiftCard(giftCard);
+		
+		assertTrue(!giftCard.hasErrors()); 
+		
+		request.slatwallScope.getService("giftCardService").deleteGiftCard(giftCard);
+		
 	} 
 	
 	private any function getTestTerm(string testterm){

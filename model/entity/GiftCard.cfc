@@ -58,8 +58,8 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="ownerEmailAddress" ormtype="string";
 
 	// Related Object Properties (many-to-one)
-	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="originalOrderItemID";
-	property name="giftCardExpirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="giftCardExpirationTermID";
+	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="originalOrderItemID" cascade="all";
+	property name="giftCardExpirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="giftCardExpirationTermID" cascade="all";
 	property name="ownerAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="ownerAccountID";
 
 	// Related Object Properties (one-to-many)
@@ -90,6 +90,14 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		}
 		return balance; 
 	}
+	
+	public boolean function isActive(){ 
+		if(val(this.getBalance()) > 0){ 
+			return true; 	
+		} else { 
+			return false; 	
+		}
+	}
 
 	// ============ START: Non-Persistent Property Methods =================
 
@@ -113,6 +121,24 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 			arrayDeleteAt(arguments.giftCardExpirationTerm.getGiftCards(), index);
 		}
 		structDelete(variables, "giftCardExpirationTerm");
+	}
+	
+	// Original Order Item - Many - To - One
+	public void function setOriginalOrderItem(required any orderItem) {
+		variables.originalOrderItem = arguments.orderItem;
+		if(isNew() or !arguments.orderItem.hasGiftCard( this )) {
+			arrayAppend(arguments.orderItem.getGiftCards(), this);
+		}
+	}
+	public void function removeOriginalOrderItem(any orderItem) {
+		if(!structKeyExists(arguments, "orderItem")) {
+			arguments.orderItem = variables.originalOrderItem;
+		}
+		var index = arrayFind(arguments.orderItem.getGiftCards(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderItem.getGiftCards(), index);
+		}
+		structDelete(variables, "originalOrderItem");
 	}
 
 	// Owner Account (many-to-one)
