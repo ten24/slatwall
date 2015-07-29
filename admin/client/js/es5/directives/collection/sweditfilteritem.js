@@ -126,7 +126,10 @@ angular.module('slatwalladmin')
                 scope.selectedFilterPropertyChanged = function (selectedFilterProperty) {
                     $log.debug('selectedFilterProperty');
                     $log.debug(selectedFilterProperty);
-                    if (angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType)) {
+                    if (angular.isDefined(scope.selectedFilterProperty) && scope.selectedFilterProperty === null) {
+                        scope.selectedFilterProperty = {};
+                    }
+                    if (angular.isDefined(scope.selectedFilterProperty) && angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType)) {
                         delete scope.selectedFilterProperty.selectedCriteriaType;
                     }
                     if (angular.isDefined(scope.filterItem.value)) {
