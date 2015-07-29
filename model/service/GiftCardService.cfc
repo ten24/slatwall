@@ -138,7 +138,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 		
 		for(var item in orderItems){ 
-			debitGiftTransaction.setOrderItem(item); 
+			debitGiftTransaction.addOrderItem(item); 
 		}
 		
 		return this.saveGiftCardTransaction(debitGiftTransaction); 
