@@ -6,7 +6,7 @@
 	<cfscript>
 		this.publicMethods='';
 		this.publicMethods=listAppend(this.publicMethods, 'ngSlatwall');
-		this.publicMethods=listAppend(this.publicMethods, 'ngModel');
+		this.publicMethods=listAppend(this.publicMethods, 'ngSlatwallModel');
 		this.publicMethods=listAppend(this.publicMethods, 'ngCompressor');
 		
 		public void function init( required any fw ) {

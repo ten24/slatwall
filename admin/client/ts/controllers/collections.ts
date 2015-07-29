@@ -164,7 +164,7 @@ paginationService
 				
 		};
 		
-		var filterItemCounter = function(filterGroupArray){
+		var filterItemCounter = function(filterGroupArray?){
 			var filterItemCount = 0;
 			
 			if(!angular.isDefined(filterGroupArray)){
