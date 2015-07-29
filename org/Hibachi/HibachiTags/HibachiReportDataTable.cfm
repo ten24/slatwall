@@ -89,7 +89,7 @@
 					<cfif attributes.report.getCurrentPage() EQ p>
 						#((p-1)/25)+1#
 					<cfelse>
-						<a class="hibachi-report-pagination" data-pagination="#p#" class="btn-default btn-mini">#((p-1)/25)+1#</a>
+						<a data-pagination="#p#" class="hibachi-report-pagination">#((p-1)/25)+1#</a>
 					</cfif>
 				</cfloop>
 			</nav>
