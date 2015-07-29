@@ -235,7 +235,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 					break; 
 				case "percentage": 
 					if(structKeyExists(variables, "redemptionAmountPercentage") && structKeyExists(variables, "redemptionAmount")){ 
-						return variables.redemptionAmount * variables.redemptionAmountPercentage; 
+						return precisionEvaluate(precisionEvaluate(variables.redemptionAmount * variables.redemptionAmountPercentage)/100); 
 					}
 					break; 
 				default: 
@@ -469,6 +469,17 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	// END: Quantity Helper Methods
+
+	// START: Gift Card Logical Methods
+	
+	public boolean function isGiftCardSku() { 
+		if(this.getProduct().getBaseProductType() == "gift-card"){ 
+			return true; 
+		}
+		return false; 
+	}
+
+	// END: Gift Card Logical Methods
 	
 	//@hint Generates a unique event attendance code and sets it as this sku's code
 	public string function generateAndSetAttendanceCode() {
@@ -1012,6 +1023,24 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			arrayDeleteAt(arguments.subscriptionTerm.getSkus(), index);    
 		}    
 		structDelete(variables, "subscriptionTerm");    
+	}
+
+	// GiftCardExpirationTerm (many-to-one)
+	public void function setGiftCardExpirationTerm(required any term) {
+		variables.giftCardExpirationTerm = arguments.term;
+		if(isNew() or !arguments.term.hasGiftCardExpirationTerm( this )) {
+			arrayAppend(arguments.term.getGiftCardExpirationTerms(), this);
+		}
+	}
+	public void function removeGiftCardExpirationTerm(any term) {
+		if(!structKeyExists(arguments, "term")) {
+			arguments.term = variables.term;
+		}
+		var index = arrayFind(arguments.term.getGiftCardExpirationTerms(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.term.getGiftCardExpirationTerms(), index);
+		}
+		structDelete(variables, "term");
 	}
 	
 	// Alternate Sku Codes (one-to-many)

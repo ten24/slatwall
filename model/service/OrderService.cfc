@@ -332,6 +332,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!foundItem && !arguments.order.hasErrors()) {
 			// Create a new Order Item
 			var newOrderItem = this.newOrderItem();
+
 			
 			// Set Header Info
 			newOrderItem.setOrder( arguments.order );
@@ -388,6 +389,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			if(newOrderItem.hasErrors()) {
 				arguments.order.addError('addOrderItem', newOrderItem.getErrors());
+			}
+		}
+
+		// Gift Card Logic
+		if( arguments.processObject.getSku().isGiftCardSku()){
+			for(var i=1; i<=arguments.processObject.getQuantity(); i++ ){
+				var newGiftCard = getGiftCardService().newGiftCard(); 
+				
+				newGiftCard.setGiftCardExpirationTerm(arguments.processObject.getSku().getGiftCardExpirationTerm());
+				newGiftCard.setOriginalOrderItem(newOrderItem); 
+				newGiftCard = getGiftCardService().saveGiftCard(newGiftCard);
+				
+				if(newGiftCard.hasErrors()){ 
+					arguments.order.addError('addOrderItem', newGiftCard.getErrors());
+					break;
+				}
 			}
 		}
 		
@@ -549,10 +566,35 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 	
-	public any function processOrder_addOrderItemGiftRecipient(required any order, required any processObject){ 
+	public any function processOrderItem_addOrderItemGiftRecipient(required any order, required any processObject){ 
 		
-		//Create the gift orderitemgiftrecipient
-		//Attach to the orderitem 
+		var item = arguments.processObject.getOrderItem(); 
+		
+		var recipient = this.newOrderItemGiftRecipient(); 
+		
+		recipient.setFirstName(arguments.processObject.getFirstName()); 
+		recipient.setLastName(arguments.processObject.getLastName()); 
+		
+		if(!arguments.processObject.hasAccount()){
+			recipient.setEmailAddress(arguments.processObject.getEmailAddress());
+		} else { 
+			recipient.setAccount(arguments.processObject.getAccount());
+		}
+		
+		if(arguments.processObject.hasGiftMessage()){ 
+			recipient.setGiftMessage(arguments.processObject.getGiftMessage()); 	
+		}
+		
+		recipient.setOrderItem(item);
+		
+		recipient = this.saveOrderItemGiftRecipient(recipient); 
+		
+		if(!recipient.hasErrors()){ 
+			return this.saveOrder(arguments.order); 
+		} else { 
+			arguments.order.addErrors(recipient.getErrors()); 
+			return arguments.order; 	
+		}
 		
 	}
 	

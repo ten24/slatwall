@@ -57,16 +57,106 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: DAO Passthrough ===========================
 	
 	// ===================== START: Process Methods ===========================
-	public function processGiftCard_create(required any giftCard, required any processObject){
+	public any function processGiftCard_create(required any giftCard, required any processObject){
+		
+		if(isNull(arguments.giftCard)){ 
+			arguments.giftCard = this.newGiftCard();
+		}
+		
+		arguments.giftCard.setGiftCardCode(arguments.processObject.getGiftCardCode()); 
+		arguments.giftCard.setGiftCardPin(arguments.processObject.getGiftCardPin()); //might be blank
+		arguments.giftCard.setExpirationDate(arguments.processObject.getExpirationDate()); 
+		
+		if(!arguments.giftCard.hasGiftCardExpirationTerm(arguments.processObject.getGiftCardExpirationTerm())){
+			arguments.giftCard.setGiftCardExpirationTerm(arguments.processObject.getGiftCardExpirationTerm());
+		} 
+		
+		if(!arguments.giftCard.hasOriginalOrderItem(arguments.processObject.getOriginalOrderItem())){
+			arguments.giftCard.setOriginalOrderItem(arguments.processObject.getOriginalOrderItem());
+		}
+		
+		//is it time to credit the card
+		if(arguments.processObject.creditGiftCard()){
+			var giftCardCreditTransaction = this.createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.giftCard.getOriginalOrderItem().getSku().getGiftCardRedemptionAmount());			
+		}
+		
+		if(arguments.processObject.hasOwnerAccount()){ 
+			arguments.giftCard.setOwnerAccount(arguments.processObject.getOwnerAccount()); 	
+		} else { 
+			arguments.giftCard.setOwnerFirstName(arguments.processObject.getOwnerFirstName()); 
+			arguments.giftCard.setOwnerLastName(arguments.processObject.getOwnerLastName()); 	
+			arguments.giftCard.setOwnerEmailAddress(arguments.processObject.getOwnerEmailAddress()); 
+		}
+		
+		if(!giftCardCreditTransaction.hasErrors()){ 
+			arguments.giftCard = this.saveGiftCard(arguments.giftCard); 	
+		} else { 
+			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
+		}
+		
+		return arguments.giftCard; 
 		
 	}
 	
-	public function processGiftCard_addCredit(required any giftCard, required any processObject){
+	public any function processGiftCard_addCredit(required any giftCard, required any processObject){
+		
+		var giftCardCreditTransaction = this.createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.giftCard.getOriginalOrderItem().getSku().getGiftCardRedemptionAmount());
+		
+		if(!giftCardCreditTransaction.hasErrors()){ 
+			arguments.giftCard = this.saveGiftCard(arguments.giftCard); 	
+		} else { 
+			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
+		}
+		
+		return arguments.giftCard; 
 		
 	}
 	
-	public function processGiftCard_addDebit(required any giftCard, required any processObject){
+	public any function processGiftCard_addDebit(required any giftCard, required any processObject){
 		
+		var giftCardDebitTransaction = this.createDebitGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.processObject.getOrderItems(), arguments.processObject.getDebitAmount());	
+	
+		if(!giftCardDebitTransaction.hasErrors()){ 
+			arguments.giftCard = this.saveGiftCard(arguments.giftCard); 	
+		} else { 
+			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
+		}
+		
+		return arguments.giftCard; 
+			
+	}
+	
+	private any function createDebitGiftCardTransaction(required any giftCard, required any orderPayments, required any orderItems, required any amountToDebit){ 
+		
+		var debitGiftTransaction = this.newGiftCardTransaction(); 
+		
+		debitGiftTransaction.setDebitAmount(amountToDebit); 
+		debitGiftTransaction.setGiftCard(giftCard);
+		
+		for(var payment in orderPayments){ 
+			debitGiftTransaction.setOrderPayment(payment); 	
+		}
+		
+		for(var item in orderItems){ 
+			debitGiftTransaction.setOrderItem(item); 
+		}
+		
+		return this.saveGiftCardTransaction(debitGiftTransaction); 
+				
+	}
+	
+	private any function createCreditGiftCardTransaction(required any giftCard, required any orderPayments, required any amountToCredit){ 
+		
+		var creditGiftTransaction = this.newGiftCardTransaction(); 
+		
+		creditGiftTransaction.setCreditAmount(amountToCredit); 
+		creditGiftTransaction.setGiftCard(giftCard);
+		
+		for(var payment in orderPayments){ 
+			creditGiftTransaction.setOrderPayment(payment); 	
+		}
+		
+		return this.saveGiftCardTransaction(creditGiftTransaction); 
 	}
 	// =====================  END: Process Methods ============================
 	

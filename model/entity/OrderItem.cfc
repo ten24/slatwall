@@ -76,7 +76,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="referencingOrderItems" singularname="referencingOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="referencedOrderItemID" inverse="true" cascade="all"; // Used For Returns
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="originalOrderItemID" cascade="all" inverse="true";
-	property name="orderItemGiftRecipient" singularname="orderItemGiftRecipient" cfc="orderItemGiftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
+	property name="orderItemGiftRecipients" singularname="orderItemGiftRecipient" cfc="orderItemGiftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	
 	// Remote properties
 	property name="publicRemoteID" ormtype="string" hb_populateEnabled="public";
@@ -105,6 +105,24 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="productBundlePrice" persistent="false" hb_formatType="currency";
 	property name="productBundleGroupPrice" persistent="false" hb_formatType="currency";
 	property name="salePrice" type="struct" persistent="false";
+	
+	public numeric function getNumberOfUnassignedGiftCards(){
+		
+		var giftCards = this.getGiftCards(); 
+		var orderItemGiftRecipients = this.getOrderItemGiftRecipients(); 
+		var count = arraylen(giftCards); 
+		
+		for(var recipient in orderItemGiftRecipients){ 
+			if(!isNull(recipient.getQuantity())){
+				count = count - recipient.getQuantity(); 
+			} else { 
+				count--;
+			}
+		}
+		
+		return count; 
+		
+	}
 
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
@@ -541,7 +559,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	}
 	
 	public void function removeOrderItemGiftRecipient(required any orderItemGiftRecipient){ 
-		arguments.orderItemGiftRecipient.setOrderItem( this ); 
+		arguments.orderItemGiftRecipient.removeOrderItem( this ); 
 	}
 	
 	// Applied Promotions (one-to-many)

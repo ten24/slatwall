@@ -146,6 +146,59 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
+	public void function test_gift_card_add_order_item(){ 
+		
+		var giftProduct = getTestProduct("TestGiftProduct"); 
+		giftProduct.setPrice('10.00');
+		
+		var giftSku = getTestSku('TestGiftSku');
+		giftSku.setCurrencyCode('USD'); 
+		giftSku.setPrice('10.00');
+		
+		var giftExpirationTerm = getTestTerm("expirationTerm"); 
+		
+		giftSku.setGiftCardExpirationTerm(giftExpirationTerm);
+		
+		giftProduct.addSku(giftSku); 
+		
+		var giftOrderItem = request.slatwallScope.newEntity( 'orderItem' );
+		giftOrderItem.setSku(giftProduct.getSkus()[1]); 
+		giftOrderItem.setPrice('10.00'); 
+		giftOrderItem.setQuantity(2); 
+		
+		var order = request.slatwallScope.newEntity( 'order' );
+		var processOrderItem = order.getProcessObject( 'AddOrderItem' );
+		processOrderItem.setSku(giftProduct.getSkus()[1]);
+		processOrderItem.setPrice('10.00');
+		processOrderItem.setQuantity(2);
+		
+		assertTrue(processOrderItem.getSku().getGiftCardExpirationTerm().getTermID() == giftExpirationTerm.getTermID());
+		assertTrue(giftOrderItem.getSku().getGiftCardExpirationTerm().getTermID() == giftExpirationTerm.getTermID()); 
+	
+		var foundMatch = processOrderItem.matchesOrderItem(giftOrderItem);
+		assertTrue(foundMatch);
+		
+	}
+	
+	private any function getTestTerm(string testterm){
+		var term = request.slatwallScope.newEntity('Term');
+		term.setTermName(testterm); 
+		term.setTermHours(10); 
+		term.setTermDays(10); 
+		term.setTermMonths(6);
+		term.setTermYears(1); 
+		return term;
+	}
+	
+	private any function getTestProduct(string testproduct){ 
+		var product = request.slatwallScope.newEntity('Product'); 
+		product.setProductName(arguments.testproduct); 
+		var productType = request.slatwallScope.getService("ProductService").getProductType("50cdfabbc57f7d103538d9e0e37f61e4"); 
+		product.setProductType(productType);
+		product.setProductID(createUUID()); 
+		return product; 	
+	}
+	
 	private any function getTestSku(string testsku){
 		var sku = request.slatwallScope.newEntity('Sku');
 		sku.setSkuName(arguments.testsku);
