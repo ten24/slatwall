@@ -82,7 +82,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			assertTrue(payment.getOrderPaymentID() == orderPayment.getOrderPaymentID()); 	
 		}
 
-		creditTransaction.setCreditAmount(giftCard.getOriginalOrderItem().getSku().getRedemptionAmount()); 
+		creditTransaction.setCreditAmount(processGiftCard.getCreditAmount()); 
 
 		assertEquals("95.50", creditTransaction.getCreditAmount()); 
 		
