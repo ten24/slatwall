@@ -97,24 +97,6 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	// ============= START: Bidirectional Helper Methods ===================
 
-	// Order Item (many-to-one)
-	public void function setOriginalOrderItem(required any orderItem) {
-		variables.orderItem = arguments.orderItem;
-		if(isNew() or !arguments.orderItem.hasGiftCard( this )) {
-			arrayAppend(arguments.orderItem.getGiftCards(), this);
-		}
-	}
-	public void function removeOriginalOrderItem(any orderItem) {
-		if(!structKeyExists(arguments, "orderItem")) {
-			arguments.orderItem = variables.orderItem;
-		}
-		var index = arrayFind(arguments.orderItem.getGiftCards(), this);
-		if(index > 0) {
-			arrayDeleteAt(arguments.orderItem.getGiftCards(), index);
-		}
-		structDelete(variables, "orderItem");
-	}
-
 	// Gift Card Expiration Term (many-to-one)
 	public void function setGiftCardExpirationTerm(required any giftCardExpirationTerm) {
 		variables.giftCardExpirationTerm = arguments.giftCardExpirationTerm;

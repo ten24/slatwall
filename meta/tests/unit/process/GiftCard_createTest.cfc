@@ -80,14 +80,28 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertTrue(giftCard.getExpirationDate() == giftExpirationTerm.getEndDate()); 
 		
-		var orderItem = request.slatwallScope.newEntity('orderItem');
-		orderItem.setOrderItemID(CreateUUID());
-		orderItem.setPrice(10);
+		var orderItemData = {
+			orderItemID='',
+			price='5'
+		};
+		var giftOrderItem = createPersistedTestEntity('orderItem',orderItemData);
 		
-		giftCard.setOriginalOrderItem(orderItem); 		
-		processGiftCard.setOriginalOrderItem(orderItem); 
+		giftCard.setOriginalOrderItem(giftOrderItem); 		
+		processGiftCard.setOriginalOrderItem(giftOrderItem); 
 	
-		assertTrue(giftCard.getOriginalOrderItem().getOrderItemID() == processGiftCard.getOriginalOrderItem().getOrderItemID()); 
+		assertTrue(giftCard.hasOriginalOrderItem(giftOrderItem)); 
+		assertTrue(processGiftCard.getOriginalOrderItem().getOrderItemID() == giftOrderItem.getOrderItemID()); 
+		
+		var accountData = {
+			accountID=''
+		};
+		var account = createPersistedTestEntity('Account', accountData);
+		
+		giftCard.setOwnerAccount(account); 
+		processGiftCard.setOwnerAccount(account);
+		
+		assertTrue(giftCard.hasOwnerAccount(account)); 
+		assertTrue(processGiftCard.getOwnerAccount().getAccountID() == account.getAccountID());
 		
 	} 
 	

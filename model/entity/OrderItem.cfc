@@ -544,15 +544,6 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		structDelete(variables, "referencedOrderItem");
 	}
 	
-	// Gift Cards (one-to-many)
-	public void function addGiftCard(required any giftCard){ 
-		arguments.giftCard.setOriginalOrderItem( this );  
-	}
-	
-	public void function removeGiftCard(required any giftCard){ 
-		arguments.giftCard.removeOriginalOrderItem( this ); 
-	}
-	
 	// OrderItemGiftRecipients (one-to-many)
 	public void function addOrderItemGiftRecipient(required any orderItemGiftRecipient){ 
 		arguments.orderItemGiftRecipient.setOrderItem( this ); 
