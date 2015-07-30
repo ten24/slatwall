@@ -56,10 +56,23 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function test_creating_card(){ 
 		
-		var giftCard = request.slatwallScope.newEntity("GiftCard");
+		var giftCardData = { 
+			giftCardID="";
+		}; 
+		
+		var giftCard = createPersistedTestEntity('GiftCard', giftCardData); 
 		var processGiftCard = giftCard.getProcessObject( 'Create' );
 		
-		var giftExpirationTerm = getTestTerm("giftExpirationTerm"); 
+		var termData = { 
+			termID="",
+			termName="testy",
+			termHours="1",
+			termDays="2", 
+			termMonths="3", 
+			termYears="4"
+		};
+		
+		var giftExpirationTerm = createPersistedTestEntity("giftExpirationTerm", termData); 
 		
 		giftCard.setGiftCardExpirationTerm(giftExpirationTerm); 
 		processGiftCard.setGiftCardExpirationTerm(giftExpirationTerm); 
@@ -110,14 +123,4 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		request.slatwallScope.getService("giftCardService").deleteGiftCard(giftCard);
 		
 	} 
-	
-	private any function getTestTerm(string testterm){
-		var term = request.slatwallScope.newEntity('Term');
-		term.setTermName(testterm); 
-		term.setTermHours(10); 
-		term.setTermDays(10); 
-		term.setTermMonths(6);
-		term.setTermYears(1); 
-		return term;
-	}
 }

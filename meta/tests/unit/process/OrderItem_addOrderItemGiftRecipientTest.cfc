@@ -56,9 +56,21 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function test_add_order_item_gift_recipient(){ 
 		
-		var giftRecipient = request.slatwallScope.newEntity("OrderItemGiftRecipient");
-		var orderItem = request.slatwallScope.newEntity("OrderItem");
-		var account = request.slatwallScope.newEntity("Account");
+		var giftRecipientData = { 
+			orderItemGiftRecipientID=""
+		}; 
+
+		var giftRecipient = createPersistedTestEntity("OrderItemGiftRecipient", giftRecipientData);
+		
+		var orderItemData = {
+			orderItemID=""
+		};
+		var orderItem = createPersistedTestEntity("OrderItem", orderItemData);
+		
+		var accountData = { 
+			accountID=""
+		}
+		var account = createPersistedTestEntity("Account", accountData);
 
 		var processObject = orderItem.getProcessObject("addOrderItemGiftRecipient"); 
 		

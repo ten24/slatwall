@@ -56,13 +56,25 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	
 	public void function test_adding_credit(){ 
 		
-		var giftCard = request.slatwallScope.newEntity("GiftCard");
+		var giftCardData = { 
+			giftCardID="";
+		}; 
+		
+		var giftCard = createPersistedTestEntity('GiftCard', giftCardData); 
+		
 		var processGiftCard = giftCard.getProcessObject( 'addCredit' );
 		
-		var orderItem = request.slatwallScope.newEntity("OrderItem"); 
-		orderItem.setOrderItemID(CreateUUID());	
+		var orderItemData = { 
+			orderItemID="";
+		};
 		
-		var giftSku = request.slatwallScope.newEntity("Sku");
+		var orderItem = createPersistedTestEntity("OrderItem", orderItemData); 
+		
+		var giftSkuData = { 
+			skuID="";
+		};
+		var giftSku = createPersistedTestEntity("Sku");
+		
 		giftSku.setRedemptionAmount("95.50");
 		giftSku.setRedemptionAmountType("fixedAmount"); 
 		giftSku.setPrice("100"); 
@@ -71,11 +83,19 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 		giftCard.setOriginalOrderItem(orderItem); 
 
-		var orderPayment = request.slatwallScope.newEntity("OrderPayment"); 
-		orderPayment.setOrderPaymentID(CreateUUID()); 
+		var orderPaymentData = {
+			orderPaymentID=""; 
+		};
+
+		var orderPayment = createPersistedTestEntity("OrderPayment", orderPaymentData); 
+		
 		processGiftCard.setOrderPayments([orderPayment]); 
 		
-		var creditTransaction = request.slatwallScope.newEntity('giftCardTransaction'); 
+		var creditTransactionData = {
+			giftCardTransaction="";
+		};
+		
+		var creditTransaction = createPersistedTestEntity('giftCardTransaction', creditTransactionData); 
 		
 		for(var payment in processGiftCard.getOrderPayments()){ 
 			creditTransaction.setOrderPayment(payment); 

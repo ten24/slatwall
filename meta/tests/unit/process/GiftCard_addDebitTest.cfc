@@ -55,21 +55,35 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	}
 	
 	public void function test_debiting_card(){ 
-		var giftCard = request.slatwallScope.newEntity("GiftCard");
+		var giftCardData = { 
+			giftCardID="";
+		}; 
+		
+		var giftCard = createPersistedTestEntity('GiftCard', giftCardData); 
 		var processGiftCard = giftCard.getProcessObject( 'addDebit' );
 		processGiftCard.setDebitAmount("10.50"); 
 		
 		request.debug(processGiftCard); 
 		
-		var orderItem = request.slatwallScope.newEntity("orderItem"); 
-		orderItem.setOrderItemID(CreateUUID());
+		var orderItemData = { 
+			orderItemID="";
+		};
+		
+		var orderItem = createPersistedTestEntity("OrderItem", orderItemData);  
 		processGiftCard.setOrderItems([orderItem]);  
 		
-		var orderPayment = request.slatwallScope.newEntity("OrderPayment"); 
-		orderPayment.setOrderPaymentID(CreateUUID()); 
+		var orderPaymentData = {
+			orderPaymentID=""; 
+		};
+
+		var orderPayment = createPersistedTestEntity("OrderPayment", orderPaymentData); 
 		processGiftCard.setOrderPayments([orderPayment]); 
 		
-		var debitTransaction = request.slatwallScope.newEntity("GiftCardTransaction"); 
+		var debitTransactionData = {
+			giftCardTransaction="";
+		};
+		
+		var debitTransaction = createPersistedTestEntity('giftCardTransaction', debitTransactionData); 
 		
 		debitTransaction.setDebitAmount(processGiftCard.getDebitAmount()); 
 		
