@@ -54,7 +54,7 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	property name="expirationDate";
 	property name="giftCardCode"; 
 	property name="giftCardPin"; 
-	property name="ownerAccount" cfc="Account" ; 
+	property name="ownerAccount" cfc="Account"; 
 	property name="ownerFirstName"; 
 	property name="ownerLastName"; 
 	property name="ownerEmailAddress"; 

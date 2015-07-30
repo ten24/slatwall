@@ -57,7 +57,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 	public void function test_creating_card(){ 
 		
 		var giftCardData = { 
-			giftCardID="";
+			giftCardID=""
 		}; 
 		
 		var giftCard = createPersistedTestEntity('GiftCard', giftCardData); 
@@ -72,10 +72,14 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			termYears="4"
 		};
 		
-		var giftExpirationTerm = createPersistedTestEntity("giftExpirationTerm", termData); 
+		var giftExpirationTerm = createPersistedTestEntity("term", termData); 
+		
+		assertFalse(giftCard.hasGiftCardExpirationTerm(giftExpirationTerm)); 
 		
 		giftCard.setGiftCardExpirationTerm(giftExpirationTerm); 
 		processGiftCard.setGiftCardExpirationTerm(giftExpirationTerm); 
+		
+		assertTrue(giftCard.hasGiftCardExpirationTerm(giftExpirationTerm));
 		
 		assertTrue(giftCard.getGiftCardExpirationTerm().getTermID()==processGiftCard.getGiftCardExpirationTerm().getTermID()); 
 		
@@ -99,8 +103,12 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var giftOrderItem = createPersistedTestEntity('orderItem',orderItemData);
 		
+		assertFalse(giftCard.hasOriginalOrderItem(giftOrderItem));
+		
 		giftCard.setOriginalOrderItem(giftOrderItem); 		
 		processGiftCard.setOriginalOrderItem(giftOrderItem); 
+		
+		assertTrue(giftCard.hasOriginalOrderItem(giftOrderItem)); 
 	
 		assertTrue(giftCard.hasOriginalOrderItem(giftOrderItem)); 
 		assertTrue(processGiftCard.getOriginalOrderItem().getOrderItemID() == giftOrderItem.getOrderItemID()); 

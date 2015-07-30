@@ -1213,23 +1213,20 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										var createGiftCard = card.getProcessObject( 'Create' );
 										
 										createGiftCard.setGiftCardExpirationTerm(card.getGiftCardExpirationTerm()); 
+										createGiftCard.setOrderPayments(arguments.order.getOrderPayments());
 										
 										if(!isNull(recipients[count].getAccount())){
 											createGiftCard.setOwnerAccount(recipients[count].getAccount()); 	
 										} else { 
-											createGiftCard.setEmailAddress(recipients[count].getEmailAddress());
-										}
-										
-										if(!isNull(recipients[count].getGiftMessage())){
-											createGiftCard.setGiftMessage(recipients[count].getGiftMessage()); 
+											createGiftCard.setOwnerEmailAddress(recipients[count].getEmailAddress());
 										}
 										
 										if(!isNull(recipients[count].getFirstName())){
-											createGiftCard.setFirstName(recipients[count].getFirstName()); 
+											createGiftCard.setOwnerFirstName(recipients[count].getFirstName()); 
 										}
 										
 										if(!isNull(recipients[count].getLastName())){
-											createGiftCard.setLastName(recipients[count].getLastName()); 
+											createGiftCard.setOwnerLastName(recipients[count].getLastName()); 
 										}
 										
 										createGiftCard.setCreditGiftCard(true); 
