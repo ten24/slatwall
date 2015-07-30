@@ -87,7 +87,7 @@ component output="false" accessors="true" extends="HibachiController" {
     				imageWidth  = 150;
  			}
 			arguments.rc.apiResponse.content = {};
-			arguments.rc.apiResponse.content.resizedImagePaths = [];
+			arguments.rc.apiResponse.content['resizedImagePaths'] = [];
 			var skus = [];
 			
 			//smart list to load up sku array
@@ -98,7 +98,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				var skus = skuSmartList.getRecords();
 				
 				for  (var sku in skus){
-		    		ArrayAppend(arguments.rc.apiResponse.content.resizedImagePaths, sku.getResizedImagePath(width=imageWidth, height=imageHeight));         
+		    		ArrayAppend(arguments.rc.apiResponse.content['resizedImagePaths'], sku.getResizedImagePath(width=imageWidth, height=imageHeight));         
 				}
 			}
  	}
