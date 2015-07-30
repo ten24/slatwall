@@ -572,8 +572,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		var recipient = this.newOrderItemGiftRecipient(); 
 		
-		recipient.setFirstName(arguments.processObject.getFirstName()); 
-		recipient.setLastName(arguments.processObject.getLastName()); 
+		if(!isNull(arguments.processObject.getFirstName())){ 
+			recipient.setFirstName(arguments.processObject.getFirstName()); 
+		}
+		
+		if(!isNull(arguments.processObject.getLastName())){ 
+			recipient.setLastName(arguments.processObject.getLastName()); 
+		}
 		
 		if(!arguments.processObject.hasAccount()){
 			recipient.setEmailAddress(arguments.processObject.getEmailAddress());
@@ -581,7 +586,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			recipient.setAccount(arguments.processObject.getAccount());
 		}
 		
-		if(arguments.processObject.hasGiftMessage()){ 
+		if(!isNull(arguments.processObject.getLastName())){ 
 			recipient.setGiftMessage(arguments.processObject.getGiftMessage()); 	
 		}
 		
@@ -1195,6 +1200,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							if(arguments.order.hasGiftCardOrderItems()){ 
 								
 								var giftItems = arguments.order.getGiftCardOrderItems(); 
+								var giftCardService = getService("GiftCardService"); 
 								
 								for(var item in giftItems){ 
 									
@@ -1211,7 +1217,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										if(!isNull(recipients[count].getAccount())){
 											createGiftCard.setOwnerAccount(recipients[count].getAccount()); 	
 										} else { 
-											createGiftCard.setEmailAddress(recipients[count].getEmailAddress())
+											createGiftCard.setEmailAddress(recipients[count].getEmailAddress());
 										}
 										
 										if(!isNull(recipients[count].getGiftMessage())){
@@ -1227,7 +1233,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 										}
 										
 										createGiftCard.setCreditGiftCard(true); 
-										card = getService("GiftCardService").process(card, createGiftCard, 'Create');
+										card = giftCardService.process(card, createGiftCard, 'Create');
+										
+										if(card.hasErrors()){
+											arguments.order.addErrors(card.getErrors());
+										}
+										
 										count++; 
 									}
 								}

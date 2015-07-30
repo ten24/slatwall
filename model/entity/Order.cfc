@@ -323,7 +323,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			}
 		}
 		
-		return giftcardOrderItems(); 
+		return giftCardOrderItems; 
 	}
 	
 	public void function checkNewBillingAccountAddressSave() {

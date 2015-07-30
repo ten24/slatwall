@@ -1,5 +1,5 @@
 /*
-	
+
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -42,21 +42,51 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-	
+
 Notes:
-	
+
 */
-component output="false" accessors="true" extends="HibachiProcess"{
+component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
+
+	// @hint put things in here that you want to run befor EACH test
+	public void function setUp() {
+		super.setup();
+		
+	}
+
+	public void function test_add_order_item_gift_recipient(){ 
+		
+		var giftRecipient = request.slatwallScope.newEntity("OrderItemGiftRecipient");
+		var orderItem = request.slatwallScope.newEntity("OrderItem");
+		var account = request.slatwallScope.newEntity("Account");
+
+		var processObject = orderItem.getProcessObject("addOrderItemGiftRecipient"); 
+		
+		processObject.setOrderItem(orderItem); 
+		giftRecipient.setOrderItem(processObject.getOrderItem());
+
+		assertTrue(giftRecipient.getOrderItem().getOrderItemID() == orderItem.getOrderItemID());
+
+		processObject.setFirstName("firsty"); 
+		processObject.setLastName("lasty"); 
+		processObject.setGiftMessage("yourwelcome");
+		processObject.setEmailAddress("hootywho@what.snails");
+
+		giftRecipient.setFirstName(processObject.getFirstName()); 
+		giftRecipient.setLastName(processObject.getLastName()); 
+		giftRecipient.setGiftMessage(processObject.getGiftMessage());
+		giftRecipient.setEmailAddress(processObject.getEmailAddress());
+
+		assertTrue(giftRecipient.getFirstName() == "firsty"); 
+		assertTrue(giftRecipient.getLastName() == "lasty");
+		assertTrue(giftRecipient.getGiftMessage() == "yourwelcome"); 
+		assertTrue(giftRecipient.getEmailAddress() == "hootywho@what.snails");
+
+		processObject.setAccount(account); 
+		giftRecipient.setAccount(processObject.getAccount()); 
+
+		assertTrue(giftRecipient.getAccount().getAccountID() == account.getAccountID());
+		
+	}
 	
-	// Injected Entity
-	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one";
-	
-	// Data Properties
- 	property name="firstName" type="string";
- 	property name="lastName" type="string"; 
- 	property name="emailAddress" type="string";
- 	property name="account";
- 	property name="quantity" type="number"; 
- 	property name="giftMessage"; 
- 
 }
