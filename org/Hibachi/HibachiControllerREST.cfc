@@ -66,7 +66,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			arrayAppend(detailTabs,tab);
 		}    
 		
-		arguments.rc.apiResponse.content.data = detailTabs;
+		arguments.rc.apiResponse.content['data'] = detailTabs;
 	}
 	
 	/**
@@ -310,7 +310,6 @@ component output="false" accessors="true" extends="HibachiController" {
 			create a base default properties function that can be overridden at the entity level via function
 			handle accessing collections by id
 		*/
-		
 		param name="arguments.rc.propertyIdentifiers" default="";
 		//first check if we have an entityName value
 		if(!structKeyExists(arguments.rc, "entityName")) {
