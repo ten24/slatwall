@@ -392,21 +392,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 
-		// Gift Card Logic
-		if( arguments.processObject.getSku().isGiftCardSku()){
-			for(var i=1; i<=arguments.processObject.getQuantity(); i++ ){
-				var newGiftCard = getGiftCardService().newGiftCard(); 
-				
-				newGiftCard.setGiftCardExpirationTerm(arguments.processObject.getSku().getGiftCardExpirationTerm());
-				newGiftCard.setOriginalOrderItem(newOrderItem); 
-				newGiftCard = getGiftCardService().saveGiftCard(newGiftCard);
-				
-				if(newGiftCard.hasErrors()){ 
-					arguments.order.addError('addOrderItem', newGiftCard.getErrors());
-					break;
-				}
-			}
-		}
+		
 		
 		// If this is an event then we need to attach accounts and registrations to match the quantity of the order item. 		
 		if(arguments.processObject.getSku().getBaseProductType() == "event" && !isNull(arguments.processObject.getRegistrants())) {
@@ -1196,49 +1182,50 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
 							}
 							
+							var orderItemGiftCards = getDAO("OrderItemDAO").getGiftCardOrderItemsAndQuantity(arguments.order.getOrderID()); 
+							
 							// Now we can charge up the gift cards				
-							if(arguments.order.hasGiftCardOrderItems()){ 
+							if(arrayLen(orderItemGiftCards) > 0){ 			
+								var item = getService("HibachiService").get("OrderItem", orderItemGiftCards[1]); 
+								var quantity = orderItemGiftCards[2]; 
+								var term = getService("HibachiService").get("Term", orderItemGiftCards[3]);	
+								var recipients = item.getOrderItemGiftRecipients(); 		
 								
-								var giftItems = arguments.order.getGiftCardOrderItems(); 
-								var giftCardService = getService("GiftCardService"); 
-								
-								for(var item in giftItems){ 
+								//recipients and cards have already been validated so put them together
+								for(var i=1; i<=quantity; i++){ 		
 									
-									var cards = item.getGiftCards(); 	
-									var recipients = item.getOrderItemGiftRecipients(); 		
-									var count = 1; 
+									var card = getService("GiftCardService").newGiftCard(); 	
+									var createGiftCard = card.getProcessObject( 'Create' );
 									
-									//recipients and cards have already been validated so put them together
-									for(var card in cards){ 		
-										var createGiftCard = card.getProcessObject( 'Create' );
-										
-										createGiftCard.setGiftCardExpirationTerm(card.getGiftCardExpirationTerm()); 
-										createGiftCard.setOrderPayments(arguments.order.getOrderPayments());
-										
-										if(!isNull(recipients[count].getAccount())){
-											createGiftCard.setOwnerAccount(recipients[count].getAccount()); 	
-										} else { 
-											createGiftCard.setOwnerEmailAddress(recipients[count].getEmailAddress());
-										}
-										
-										if(!isNull(recipients[count].getFirstName())){
-											createGiftCard.setOwnerFirstName(recipients[count].getFirstName()); 
-										}
-										
-										if(!isNull(recipients[count].getLastName())){
-											createGiftCard.setOwnerLastName(recipients[count].getLastName()); 
-										}
-										
-										createGiftCard.setCreditGiftCard(true); 
-										card = giftCardService.process(card, createGiftCard, 'Create');
-										
-										if(card.hasErrors()){
-											arguments.order.addErrors(card.getErrors());
-										}
-										
-										count++; 
+									createGiftCard.setOriginalOrderItem(item);
+									createGiftCard.setGiftCardExpirationTerm(term); 
+									createGiftCard.setOrderPayments(arguments.order.getOrderPayments());
+									
+									if(!isNull(recipients[i].getAccount())){
+										createGiftCard.setOwnerAccount(recipients[i].getAccount()); 	
+									} else { 
+										createGiftCard.setOwnerEmailAddress(recipients[i].getEmailAddress());
 									}
-								}
+									
+									if(!isNull(recipients[i].getFirstName())){
+										createGiftCard.setOwnerFirstName(recipients[i].getFirstName()); 
+									}
+									
+									if(!isNull(recipients[i].getLastName())){
+										createGiftCard.setOwnerLastName(recipients[i].getLastName()); 
+									}
+									
+									createGiftCard.setCreditGiftCard(true); 
+									card = giftCardService.process(card, createGiftCard, 'Create');
+									
+									if(card.hasErrors()){
+										arguments.order.addErrors(card.getErrors());
+									} else { 
+										cardData = {}; 
+										cardData.entity=card;
+										getService("hibachiEventService").announceEvent(eventName="afterGiftCard_orderPlacedSuccess", eventData=cardData);
+									}
+								}	
 							}
 							
 							// Clear this order out of all sessions

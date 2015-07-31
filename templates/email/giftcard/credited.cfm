@@ -73,7 +73,13 @@ Notes:
 --->
 <cfparam name="email" type="any" />	
 <cfparam name="emailData" type="struct" default="#structNew()#" />
-<cfparam name="order" type="any" />
+<cfparam name="giftCard" type="any" />
+
+<cfif !isNull(giftCard.getOwnerEmailAddress())>
+	<cfset local.emailTo="#giftCard.getOwnerEmailAddress()#">
+<cfelse>
+	<cfset local.emailTo="#giftCard.getOwnerAccount().getEmailAddress()#">
+</cfif>
 
 <cfsavecontent variable="emailData.emailBodyHTML">
 	<cfoutput>
@@ -89,10 +95,11 @@ Notes:
 					<tbody>
 						<tr>
 							<td>Gift Card Code:</td>
-							<td>#giftCardTransaction.getGiftCard().getGiftCardCode()#</td>
-							
+							<td>#giftCard.getGiftCardCode()#</td>
+						</tr>
+						<tr>
 							<td>Gift Card Amount:</td>
-							<td>#giftCardTransaction.getCreditAmount()#</td>
+							<td>#giftCard.getGiftCardTransactions()[1].getCreditAmount()#</td>
 						</tr>
 					</tbody>
 				</table>
@@ -106,6 +113,11 @@ Notes:
 </cfsavecontent>
 <cfsavecontent variable="emailData.emailBodyText">
 	<cfoutput>
-		
+		=================================
+		Your Gift Card has been credited!
+		=================================
+		Gift Card Code: #giftCard.getGiftCardCode()#
+		Gift Card Amount: #giftCard.getGiftCardTransactions()[1].getCreditAmount()#
+		=================================
 	</cfoutput>
 </cfsavecontent>
