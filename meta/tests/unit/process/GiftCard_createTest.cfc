@@ -56,13 +56,30 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 
 	public void function test_creating_card(){ 
 		
-		var giftCard = request.slatwallScope.newEntity("GiftCard");
+		var giftCardData = { 
+			giftCardID=""
+		}; 
+		
+		var giftCard = createPersistedTestEntity('GiftCard', giftCardData); 
 		var processGiftCard = giftCard.getProcessObject( 'Create' );
 		
-		var giftExpirationTerm = getTestTerm("giftExpirationTerm"); 
+		var termData = { 
+			termID="",
+			termName="testy",
+			termHours="1",
+			termDays="2", 
+			termMonths="3", 
+			termYears="4"
+		};
+		
+		var giftExpirationTerm = createPersistedTestEntity("term", termData); 
+		
+		assertFalse(giftCard.hasGiftCardExpirationTerm(giftExpirationTerm)); 
 		
 		giftCard.setGiftCardExpirationTerm(giftExpirationTerm); 
 		processGiftCard.setGiftCardExpirationTerm(giftExpirationTerm); 
+		
+		assertTrue(giftCard.hasGiftCardExpirationTerm(giftExpirationTerm));
 		
 		assertTrue(giftCard.getGiftCardExpirationTerm().getTermID()==processGiftCard.getGiftCardExpirationTerm().getTermID()); 
 		
@@ -80,24 +97,39 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		assertTrue(giftCard.getExpirationDate() == giftExpirationTerm.getEndDate()); 
 		
-		var orderItem = request.slatwallScope.newEntity('orderItem');
-		orderItem.setOrderItemID(CreateUUID());
-		orderItem.setPrice(10);
+		var orderItemData = {
+			orderItemID='',
+			price='5'
+		};
+		var giftOrderItem = createPersistedTestEntity('orderItem',orderItemData);
 		
-		giftCard.setOriginalOrderItem(orderItem); 		
-		processGiftCard.setOriginalOrderItem(orderItem); 
+		assertFalse(giftCard.hasOriginalOrderItem(giftOrderItem));
+		
+		giftCard.setOriginalOrderItem(giftOrderItem); 		
+		processGiftCard.setOriginalOrderItem(giftOrderItem); 
+		
+		assertTrue(giftCard.hasOriginalOrderItem(giftOrderItem)); 
 	
-		assertTrue(giftCard.getOriginalOrderItem().getOrderItemID() == processGiftCard.getOriginalOrderItem().getOrderItemID()); 
+		assertTrue(giftCard.hasOriginalOrderItem(giftOrderItem)); 
+		assertTrue(processGiftCard.getOriginalOrderItem().getOrderItemID() == giftOrderItem.getOrderItemID()); 
+		
+		var accountData = {
+			accountID=''
+		};
+		var account = createPersistedTestEntity('Account', accountData);
+		
+		giftCard.setOwnerAccount(account); 
+		processGiftCard.setOwnerAccount(account);
+		
+		assertTrue(giftCard.hasOwnerAccount(account)); 
+		assertTrue(processGiftCard.getOwnerAccount().getAccountID() == account.getAccountID());
+		
+		giftCard = request.slatwallScope.getService("giftCardService").saveGiftCard(giftCard);
+		
+		assertTrue(!giftCard.hasErrors()); 
+		
+		request.slatwallScope.getService("giftCardService").deleteGiftCard(giftCard);
+		
 		
 	} 
-	
-	private any function getTestTerm(string testterm){
-		var term = request.slatwallScope.newEntity('Term');
-		term.setTermName(testterm); 
-		term.setTermHours(10); 
-		term.setTermDays(10); 
-		term.setTermMonths(6);
-		term.setTermYears(1); 
-		return term;
-	}
 }

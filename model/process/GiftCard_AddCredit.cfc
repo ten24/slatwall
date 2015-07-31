@@ -48,5 +48,11 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	 property name="orderPayments" fieldtype="many-to-one"; 
 	 property name="originalOrderItem" fieldtype="one-to-one";
 
-	
+	 public any function getCreditAmount(){ 
+	 	if(!isNull(variables.giftCard)){ 
+	 		return variables.giftCard.getOriginalOrderItem().getSku().getGiftCardRedemptionAmount(); 
+	 	} else { 
+	 		return "0"; 	
+	 	}	
+	 }
 }
