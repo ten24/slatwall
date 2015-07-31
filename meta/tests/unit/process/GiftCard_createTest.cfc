@@ -130,5 +130,6 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 		request.slatwallScope.getService("giftCardService").deleteGiftCard(giftCard);
 		
+		
 	} 
 }
