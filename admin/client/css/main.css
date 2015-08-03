@@ -2324,8 +2324,7 @@ tabel .s-table-header {
   font-size: 16px;
   margin: 0px;
   padding: 0px;
-  margin-top: 7px;
-  font-weight: 600;
+  margin-top: 10px;
 }
 .s-table-footer .s-table-footer-right {
   text-align: right;
