@@ -2321,10 +2321,10 @@ tabel .s-table-header {
   min-width: 120px;
 }
 .s-table-wrapper .s-table-header-title {
-  font-size: 16px;
+  font-size: 14px;
   margin: 0px;
   padding: 0px;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 .s-table-footer .s-table-footer-right {
   text-align: right;
