@@ -247,6 +247,15 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		return getSubscriptionOrderItemName();
 	}
 	
+	public any function getShippingAddress() {
+		if(structKeyExists(variables, "shippingAddress")) {
+			return variables.shippingAddress;
+		} else if (!isNull(getShippingAccountAddress())) {
+			setShippingAddress( getShippingAccountAddress().getAddress().copyAddress( true ) );
+			return variables.shippingAddress;
+		}
+		return getService("addressService").newAddress();
+	}
 	// ==================  END:  Overridden Methods ========================
 	
 	// =================== START: ORM Event Hooks  =========================
