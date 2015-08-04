@@ -7,4 +7,5 @@
 		"autoRetryPaymentDays":			[{"contexts":"save","regex":"^([0-9]+,?)+$"}],
 		"renewalReminderDays":			[{"contexts":"save","regex":"^([0-9]+,?)+$"}]
 	}
+	
 }
