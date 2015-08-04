@@ -91,14 +91,32 @@ component entityname="SlatwallSubscriptionTerm" table="SwSubscriptionTerm" persi
 	public void function removeSku(required any sku) {
 		arguments.sku.removeSubscriptionTerm( this );
 	}
-
-	// =============  END:  Bidirectional Helper Methods ===================
+	
+	// =============  END:  Bidirectional Helper Methods =======================
 
 	// ================== START: Overridden Methods ========================
 	
 	// ==================  END:  Overridden Methods ========================
 	
-	// =================== START: ORM Event Hooks  =========================
+	// =================== START: ORM Event Hooks  ========================
 	
 	// ===================  END:  ORM Event Hooks  =========================
+	
+	// ========================== VALIDATION  ============================
+	public boolean function getHasPaymentMethodThatAllowsAccountsToSave(){
+		
+		var paymentMethodSmartList = getService('PaymentService').getPaymentMethodSmartList();
+		paymentMethodSmartList.addFilter('activeFlag', 1);
+		var activePaymentMethods = paymentMethodSmartList.getRecords();
+		
+		var foundPaymentMethodThatAllowsAccountsToSave = false;
+		for (var paymentMethod in activePaymentMethods){
+			if (paymentMethod.getAllowSaveFlag()){
+				foundPaymentMethodThatAllowsAccountsToSave = true;
+				break;
+			}
+		}
+		return foundPaymentMethodThatAllowsAccountsToSave;
+	}
+	
 }
