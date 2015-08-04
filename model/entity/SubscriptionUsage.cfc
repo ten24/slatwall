@@ -179,17 +179,19 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	public any function hasSubscriptionOrderItems(){
 		if ( arrayLen( getSubscriptionOrderItems( ) ) ) {
 			return true;
-		}else{
-			return false;
 		}
+		return false;
 	}
 	
 	public any function getInitialSubscriptionOrderItem(){
-		return getSubscriptionOrderItems()[1];
+		if(hasSubscriptionOrderItems()){
+			return getSubscriptionOrderItems()[1];
+		}
+		return "";
 	}
 	
 	public any function getInitialOrderItem(){
-		return getSubscriptionOrderItems()[1].getOrderItem();
+		return getInitialSubscriptionOrderItem().getOrderItem();
 	}
 	
 	public any function getInitialSku(){
@@ -205,15 +207,18 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 	
 	public any function getMostRecentSubscriptionOrderItem(){
-		return getSubscriptionOrderItems()[ arrayLen( getSubscriptionOrderItems() ) ];
+		if(hasSubscriptionOrderItems()){
+			return getSubscriptionOrderItems()[ arrayLen( getSubscriptionOrderItems() ) ];
+		}
+		return "";
 	}
 	
 	public any function getMostRecentOrderItem(){
-		return getSubscriptionOrderItems()[ arrayLen( getSubscriptionOrderItems() ) ].getOrderItem();
+		return getMostRecentSubscriptionOrderItem().getOrderItem();
 	}
 	
 	public any function getMostRecentOrder(){
-		return getSubscriptionOrderItems()[  arrayLen( getSubscriptionOrderItems() ) ].getOrderItem().getOrder();
+		return getMostRecentOrderItem().getOrder();
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================
