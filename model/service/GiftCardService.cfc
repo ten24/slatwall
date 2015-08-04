@@ -121,7 +121,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	public any function processGiftCard_addDebit(required any giftCard, required any processObject){
 		
-		var giftCardDebitTransaction = this.createDebitGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.processObject.getOrderItems(), arguments.processObject.getDebitAmount());	
+		var giftCardDebitTransaction = createDebitGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.processObject.getOrderItems(), arguments.processObject.getDebitAmount());	
 	
 		if(!giftCardDebitTransaction.hasErrors()){ 
 			arguments.giftCard = this.saveGiftCard(arguments.giftCard); 	

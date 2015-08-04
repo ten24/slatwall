@@ -662,6 +662,37 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		}
 		
+		// Gift card payment
+		if(newOrderPayment.getPaymentMethod().getPaymentMethodType() EQ "giftCard"){
+
+				var giftCard = getService("HibachiService").get("giftCard",  getDAO("giftCardDAO").getIDByCode(arguments.data.newOrderPayment.giftCardNumber));
+				var giftCardProcessObject = giftCard.getProcessObject("AddDebit");
+				var amount = 0;
+				
+				giftCardProcessObject.setOrderPayments(arguments.order.getOrderPayments());
+				giftCardProcessObject.setOrderItems(arguments.order.getOrderItems());
+				
+				if(giftCard.getBalance() >= arguments.order.getTotal()){
+					amount = arguments.order.getTotal();
+				} else { 
+					amount = giftCard.getBalance();
+				}
+				
+				giftCardProcessObject.setDebitAmount(local.amount); 
+				
+				getService("GiftCardService").process(giftCard, giftCardProcessObject, "addDebit");
+				
+				//writeDump(var="#giftCard#", top=2, abort=true);
+				
+				if(!giftCard.hasErrors()){ 
+					newOrderPayment.setAmount(amount);
+				} else { 
+					arguments.order.addErrors(giftCard.getErrors());	
+				}
+				
+				newOrderPayment = this.saveOrderPayment( newOrderPayment );
+		}
+		
 		// WriteDump(var=arguments.order.getOrderStatusType(), top=3, abort=true);
 
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
@@ -1216,7 +1247,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									}
 									
 									createGiftCard.setCreditGiftCard(true); 
-									card = giftCardService.process(card, createGiftCard, 'Create');
+									card = getService("giftCardService").process(card, createGiftCard, 'Create');
 									
 									if(card.hasErrors()){
 										arguments.order.addErrors(card.getErrors());
