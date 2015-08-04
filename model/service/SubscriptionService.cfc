@@ -282,7 +282,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arrayLen(emails) && !isNull(arguments.subscriptionUsage.getExpirationDate())) {
 			var reminderEmail = emails[1];
 			// check if its time to send reminder email
-			var renewalReminderDays = arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getSku().getSubscriptionTerm().getRenewalReminderDays();
+			var renewalReminderDays = arguments.subscriptionUsage.getInitialSku().getSubscriptionTerm().getRenewalReminderDays();
 			if(!isNull(renewalReminderDays) && len(renewalReminderDays)) {
 				renewalReminderDays = listToArray(renewalReminderDays);
 				// loop through the list of reminder days
@@ -395,8 +395,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// add order item to order
 			var itemData = {
 				preProcessDisplayedFlag=1,
-				skuID=arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getSku().getSkuID(),
-				currencyCode=arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getOrder().getCurrencyCode()
+				skuID=arguments.subscriptionUsage.getInitialSku().getSkuID(),
+				currencyCode=arguments.subscriptionUsage.getInitialOrder().getCurrencyCode()
 			};
 			order = getOrderService().processOrder( order, itemData, 'addOrderItem' );
 			

@@ -169,8 +169,8 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	public any function getSubscriptionOrderItemName() {
 		if( hasSubscriptionOrderItems() ) {
 			var subscriptionOrderItem = getInitialSubscriptionOrderItem();
-			if(	!isnull( getInitialOrderItem() ) && !isnull( getInitialOrderItem().getSku() ) && !isnull( getInitialOrderItem().getSku().getProduct() ) ){
-				return subscriptionOrderItem.getOrderItem().getSku().getProduct().getProductName();
+			if( !isnull( getInitialProduct() ) ){
+				return getInitialProduct().getProductName();
 			}
 		}
 		return "";
@@ -192,8 +192,16 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		return getSubscriptionOrderItems()[1].getOrderItem();
 	}
 	
+	public any function getInitialSku(){
+		return getInitialOrderItem().getSku();
+	}
+	
+	public any function getInitialProduct(){
+		return getInitialSku().getProduct();
+	}
+	
 	public any function getInitialOrder(){
-		return getSubscriptionOrderItems()[1].getOrderItem().getOrder();
+		return getInitialOrderItem().getOrder();
 	}
 	
 	public any function getMostRecentSubscriptionOrderItem(){
