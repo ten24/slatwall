@@ -138,6 +138,12 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		setAutoRenewFlag( subscriptionTerm.getAutoRenewFlag() );
 		setAutoPayFlag( subscriptionTerm.getAutoPayFlag() );
 		
+		//Copy the shipping information from order fulfillment.
+		var orderFulfillment = orderItem.getOrderFulfillment();
+		setEmailAddress( orderFulfillment.getEmailAddress() );
+		setShippingAddress( orderFulfillment.getShippingAddress() );
+		setShippingAccountAddress( orderFulfillment.getAccountAddress() );
+		setShippingMethod( orderFulfillment.getShippingMethod() );
 	}
 	
 	// ============ START: Non-Persistent Property Methods =================
