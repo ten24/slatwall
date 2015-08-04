@@ -1141,7 +1141,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					if(len(orderRequirementsList)) {
 						
 						if(listFindNoCase("accountPaymentMethod", orderRequirementsList)) {
-							arguments.order.addError('account', rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod'));
+							arguments.order.addError('payment', rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod'));
 						}
 						if(listFindNoCase("account", orderRequirementsList)) {
 							arguments.order.addError('account',rbKey('entity.order.process.placeOrder.accountRequirementError'));	
