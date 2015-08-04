@@ -81,7 +81,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		for (var orderItem in arguments.order.getOrderItems()){
 			if (orderItem.getSku().getBaseProductType() == "subscription" && orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()){
 				hasSubscriptionWithAutoPay = true;
-				for (orderPayment in arguments.order.getOrderPayments()){
+				for (var orderPayment in arguments.order.getOrderPayments()){
 					if (!isNull(orderPayment.getAccountPaymentMethod())){
 						hasOrderPaymentWithAccountPaymentMethod = true;
 					}
