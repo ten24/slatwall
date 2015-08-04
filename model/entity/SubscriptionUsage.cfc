@@ -58,6 +58,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="nextBillDate" ormtype="timestamp" hb_formatType="date" hb_formFieldType="date";
 	property name="nextReminderEmailDate" ormtype="timestamp" hb_formatType="date" hb_formFieldType="date";
 	property name="expirationDate" ormtype="timestamp" hb_formatType="date" hb_formFieldType="date";
+	property name="emailAddress" hb_populateEnabled="public" ormtype="string";
 	
 	// Related Object Properties (many-to-one)
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
@@ -66,8 +67,10 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="initialTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="initialTermID";
 	property name="renewalTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="renewalTermID";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
+	
 	property name="shippingAccountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="shippingAccountAddressID";
 	property name="shippingAddress" hb_populateEnabled="public" cfc="Address" fieldtype="many-to-one" fkcolumn="shippingAddressID";
+	property name="shippingMethod" hb_populateEnabled="public" cfc="ShippingMethod" fieldtype="many-to-one" fkcolumn="shippingMethodID";
 	
 	// Related Object Properties (one-to-many)
 	property name="subscriptionUsageBenefits" singularname="subscriptionUsageBenefit" cfc="SubscriptionUsageBenefit" type="array" fieldtype="one-to-many" fkcolumn="subscriptionUsageID" cascade="all-delete-orphan";
