@@ -1,5 +1,5 @@
 
-<li ng-class="{'s\-disabled':filterItem.$$disabled}" >
+<li ng-class="{'s\-disabled':filterItem.$$disabled}" ng-if="filterPropertiesList">
  
   <!-- Filter display -->
   <div class="s-filter-item" ng-show="!filterItem.$$isNew">
@@ -47,6 +47,7 @@
   <sw-edit-filter-item
   		data-collection-config="collectionConfig"
   		data-filter-item="filterItem"
+  		ng-if="filterItem && filterPropertiesList"
   		data-filter-properties-list="filterPropertiesList"
   		data-save-collection="saveCollection()"
   		data-filter-item-index="filterItemIndex"

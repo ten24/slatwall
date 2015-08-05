@@ -675,6 +675,29 @@ component extends="HibachiService" accessors="true" {
 
 		return arguments.product;
 	}
+	
+	public any function createSingleSku(required any product, required any processObject){
+		var thisSku = this.newSku();
+		thisSku.setProduct(arguments.product);
+		thisSku.setPrice(arguments.processObject.getPrice());
+		if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
+			thisSku.setListPrice(arguments.product.getlistPrice());
+		}
+		thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
+		arguments.product.setDefaultSku( thisSku );
+		return arguments.product;
+	}
+	
+	public any function createGiftCardProduct(required any product, required any processObject){
+		arguments.product = createSingleSku(arguments.product,arguments.processObject);
+		arguments.product.getDefaultSku().setRedemptionAmountType(arguments.processObject.getRedemptionAmountType());
+		arguments.product.getDefaultSku().setRedemptionAmount(arguments.processObject.getRedemptionAmount());
+		if(!isNull(arguments.processObject.getGiftCardExpirationTermID())){
+			var giftCardExpirationTerm = this.getTerm(arguments.processObject.getGiftCardExpirationTermID());
+			arguments.product.getDefaultSku().setGiftCardExpirationTerm(giftCardExpirationTerm);
+		}
+		return arguments.product;
+	}
 
 	public any function processProduct_create(required any product, required any processObject) {
 
@@ -782,14 +805,7 @@ component extends="HibachiService" accessors="true" {
 			// If no options were passed in we will just create a single sku
 			} else {
 
-				var thisSku = this.newSku();
-				thisSku.setProduct(arguments.product);
-				thisSku.setPrice(arguments.processObject.getPrice());
-				if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
-					thisSku.setListPrice(arguments.product.getlistPrice());
-				}
-				thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
-				arguments.product.setDefaultSku( thisSku );
+				arguments.product = createSingleSku(arguments.product, arguments.processObject);
 
 			}
 
@@ -813,8 +829,10 @@ component extends="HibachiService" accessors="true" {
 					product.setDefaultSku( thisSku );
 				}
 			}
+		//GENERATE - GIFT SKUS
+		}else if(arguments.processObject.getBaseProductType() == 'gift-card'){
+			arguments.product = createGiftCardProduct(arguments.product,arguments.processObject);
 		}
-
 
 		// Generate the URL Title
 		arguments.product.setURLTitle( getDataService().createUniqueURLTitle(titleString=arguments.product.getTitle(), tableName="SwProduct") );
@@ -871,8 +889,9 @@ component extends="HibachiService" accessors="true" {
 	public any function processProduct_updateSkus(required any product, required any processObject) {
 
 		var skus = 	arguments.product.getSkus();
+		var skuCurrencyFound=false;
 		if(arrayLen(skus)){
-			for(i=1; i <= arrayLen(skus); i++){
+			for(var i=1; i <= arrayLen(skus); i++){
 				// Update Price
 				if(arguments.processObject.getUpdatePriceFlag()) {
 					skus[i].setPrice(arguments.processObject.getPrice());
@@ -881,6 +900,46 @@ component extends="HibachiService" accessors="true" {
 				if(arguments.processObject.getUpdateListPriceFlag()) {
 					skus[i].setListPrice(arguments.processObject.getListPrice());
 				}
+
+				//Update currencies
+				for(var processSkuCurrency in processObject.getSkuCurrencies()){
+					skuCurrencyFound=false;
+					skuCurrenciesToRemove=[];
+				
+					for(var skuCurrency in skus[i].getSkuCurrencies()){
+						if(processSkuCurrency.currencyCode eq skuCurrency.getCurrencyCode()){
+							if(len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
+								skuCurrency.setPrice(processSkuCurrency.price);
+							}
+							if(len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag()){
+								skuCurrency.setListPrice(processSkuCurrency.listPrice);
+							}
+							
+							if(!len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag() && !len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
+								arrayAppend(skuCurrenciesToRemove,skuCurrency);
+							}
+
+						 skuCurrencyFound=true;
+						}
+					}
+					for(var j=1; j <= arrayLen(skuCurrenciesToRemove); j++){
+						skuCurrenciesToRemove[j].removeSku(skus[i]);
+					}
+					if(!skuCurrencyFound && ((len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()) || (len(processSkuCurrency.listPrice) && arguments.processObject.getUpdateListPriceFlag())) ){
+						var newSkuCurrency=this.newSkuCurrency();
+						newSkuCurrency.setCurrency(getService('currencyService').getCurrencyByCurrencyCode(processSkuCurrency.currencyCode));
+						if(arguments.processObject.getUpdatePriceFlag()) {
+							newSkuCurrency.setPrice(processSkuCurrency.price);
+						}
+						if(arguments.processObject.getUpdateListPriceFlag()) {
+							newSkuCurrency.setPrice(processSkuCurrency.listPrice);
+						}
+						newSkuCurrency.setSku(skus[i]);
+						save(newSkuCurrency);
+						
+					}
+				}
+
 			}
 		}
 

@@ -821,6 +821,10 @@
 			return structKeyExists(getPropertiesStructByEntityName(arguments.entityName), arguments.propertyName );
 		}
 		
+		public boolean function getPropertyIsObjectByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
+			return structKeyExists(getPropertiesStructByEntityName(getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier))[listLast(arguments.propertyIdentifier, ".")],'cfc');
+		}
+		
 		// @hint leverages the getEntityHasPropertyByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 		public boolean function getHasPropertyByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
 			try {
@@ -854,10 +858,6 @@
 			getHibachiDAO().updateRecordSortOrder(argumentcollection=arguments);
 		}
 		
-		public boolean function getPropertyIsObjectByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
-			return structKeyExists(getPropertiesStructByEntityName(getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier))[listLast(arguments.propertyIdentifier, ".")],'cfc');
-		}
-		
 		// @hint leverages the getEntityHasAttributeByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 		public boolean function getHasAttributeByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
 			return getEntityHasAttributeByEntityName( entityName=getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier), attributeCode=listLast(arguments.propertyIdentifier, "._") );
@@ -872,6 +872,17 @@
 			
 			return false; 
 		}		
+		
+		//used by the rest api to return default property values
+		public any function getDefaultPropertiesByEntityName(required string entityName){
+			// First Check the application cache
+			if( hasApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+				return getApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+			}
+			
+			// Pull the meta data from the object (which in turn will cache it in the application for the next time)
+			return getEntityObject( arguments.entityName ).getDefaultCollectionProperties();
+		}
 		
 	</cfscript>
 </cfcomponent>

@@ -9,7 +9,7 @@
 							ng-model="productBundleGroup.data.productBundleGroupType.data.typeName"
 							placeholder="Search"
 							class="form-control input-sm"
-							typeahead="type.typeName for type in productBundleGroupTypes.getTypesByKeyword($viewValue) | filter:$viewValue"
+							typeahead="type.typeName for type in productBundleGroupTypes.getTypesByKeyword($viewValue) "
 							typeahead-on-select="selectProductBundleGroupType($item, $model, $label)"
 					>
 					

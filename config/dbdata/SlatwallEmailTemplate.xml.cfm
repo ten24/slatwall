@@ -17,5 +17,6 @@
 		<Record emailTemplateID="dbb327eae59c2605eba6ac9a735007b5" emailTemplateName="Subscription Renewal Reminder" emailTemplateObject="SubscriptionUsage" emailBodyHTML="Your subscription needs to be renewed for: ${simpleRepresentation}" />
 		<Record emailTemplateID="dbb327e9ac9051b06c902de4bf83eaa8" emailTemplateName="Task Failure Notification" emailTemplateObject="Task" emailBodyHTML="The task '${taskName}' failed to complete successfully.  Please login to your Slatwall administrator to view the task history details." />
 		<Record emailTemplateID="dbb327e89546f9916ed8316f4fcc70e1" emailTemplateName="Task Success Notification" emailTemplateObject="Task" emailBodyHTML="The task '${taskName}' completed successfully." />
+		<Record emailTemplateID="4028288b4ed11133014ee4950c6a04db" emailTemplateName="Gift Card Credited" emailTemplateObject="GiftCard" emailTemplateFile="credited.cfm" />
 	</Records>
 </Table>

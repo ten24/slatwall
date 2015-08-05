@@ -69,11 +69,21 @@ Notes:
 			</cfif>
 				<td class="primary">#local.currency.getCurrencyName()#</td>
 				<cfif structKeyExists(rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ], "listPriceFormatted")>
-					<td>#rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].listPriceFormatted#</td>
+					<td>
+						#rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].listPriceFormatted#
+						<cfif rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].converted>
+							( #$.slatwall.rbKey('admin.entity.skutabs.currencies.converted')# )
+						</cfif>
+					</td>
 				<cfelse>
 					<td></td>
 				</cfif>
-				<td>#rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].priceFormatted#</td>
+				<td>
+					#rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].priceFormatted#
+					<cfif rc.sku.getCurrencyDetails()[ local.currency.getCurrencyCode() ].converted>
+						( #$.slatwall.rbKey('admin.entity.skutabs.currencies.converted')# )
+					</cfif>
+				</td>
 				<td>#local.currencyCode#</td>
 				<td>
 					<cfif local.currency.getCurrencyCode() eq rc.sku.setting('skuCurrency')>

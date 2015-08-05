@@ -90,6 +90,20 @@
 		public any function formatValue_url( required string value, struct formatDetails={} ) {
 			return '<a href="#arguments.value#" target="_blank">' & arguments.value & '</a>';
 		}
+
+  		public string function generateRandomID( numeric numCharacters = 8){
+  			
+  			var chars="abcdefghijklmnopqrstuvwxyz1234567890";
+  			var random = createObject("java", "java.util.Random" ).init();
+  			var result = createObject("java", "java.lang.StringBuffer").init (javaCast("int",arguments.numCharacters));
+  			var index = 0; 
+
+  			for(var i=0; i<=numCharacters; i++){ 
+  				result.append(chars.charAt(random.nextInt(chars.length())));
+  			}
+
+			return result.toString();
+  		}
 		
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
 			var responseData = {};

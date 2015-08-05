@@ -56,6 +56,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	property name="emailService";
 	property name="eventRegistrationService";
 	property name="fulfillmentService";
+	property name="giftCardService"; 
 	property name="hibachiUtilityService";
 	property name="locationService";
 	property name="paymentService";
@@ -331,6 +332,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!foundItem && !arguments.order.hasErrors()) {
 			// Create a new Order Item
 			var newOrderItem = this.newOrderItem();
+
 			
 			// Set Header Info
 			newOrderItem.setOrder( arguments.order );
@@ -361,13 +363,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			newOrderItem.setSku( arguments.processObject.getSku() );
 			newOrderItem.setCurrencyCode( arguments.order.getCurrencyCode() );
 			newOrderItem.setQuantity( arguments.processObject.getQuantity() );
-			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( newOrderItem.getCurrencyCode() ) );
+			newOrderItem.setSkuPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
 			
 			
 			if(len(newOrderItem.getSku().getUserDefinedPriceFlag()) && newOrderItem.getSku().getUserDefinedPriceFlag() && isNumeric(arguments.processObject.getPrice()) ) {
 				newOrderItem.setPrice( arguments.processObject.getPrice() );	
 			} else {
-				newOrderItem.setPrice( newOrderItem.getSkuPrice() );
+				newOrderItem.setPrice( arguments.processObject.getSku().getPriceByCurrencyCode( arguments.order.getCurrencyCode() ) );
 			}
 			
 			// If a stock was passed in assign it to this new item
@@ -389,6 +391,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.order.addError('addOrderItem', newOrderItem.getErrors());
 			}
 		}
+
+		
 		
 		// If this is an event then we need to attach accounts and registrations to match the quantity of the order item. 		
 		if(arguments.processObject.getSku().getBaseProductType() == "event" && !isNull(arguments.processObject.getRegistrants())) {
@@ -548,6 +552,43 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 	
+	public any function processOrderItem_addOrderItemGiftRecipient(required any order, required any processObject){ 
+		
+		var item = arguments.processObject.getOrderItem(); 
+		
+		var recipient = this.newOrderItemGiftRecipient(); 
+		
+		if(!isNull(arguments.processObject.getFirstName())){ 
+			recipient.setFirstName(arguments.processObject.getFirstName()); 
+		}
+		
+		if(!isNull(arguments.processObject.getLastName())){ 
+			recipient.setLastName(arguments.processObject.getLastName()); 
+		}
+		
+		if(!arguments.processObject.hasAccount()){
+			recipient.setEmailAddress(arguments.processObject.getEmailAddress());
+		} else { 
+			recipient.setAccount(arguments.processObject.getAccount());
+		}
+		
+		if(!isNull(arguments.processObject.getLastName())){ 
+			recipient.setGiftMessage(arguments.processObject.getGiftMessage()); 	
+		}
+		
+		recipient.setOrderItem(item);
+		
+		recipient = this.saveOrderItemGiftRecipient(recipient); 
+		
+		if(!recipient.hasErrors()){ 
+			return this.saveOrder(arguments.order); 
+		} else { 
+			arguments.order.addErrors(recipient.getErrors()); 
+			return arguments.order; 	
+		}
+		
+	}
+	
 	public any function processOrder_addOrderPayment(required any order, required any processObject) {
 		
 		// Get the populated newOrderPayment out of the processObject
@@ -619,6 +660,37 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Save it
 			newAccountPaymentMethod = getAccountService().saveAccountPaymentMethod( newAccountPaymentMethod, {runSaveAccountPaymentMethodTransactionFlag=false} );
 			
+		}
+		
+		// Gift card payment
+		if(newOrderPayment.getPaymentMethod().getPaymentMethodType() EQ "giftCard"){
+
+				var giftCard = getService("HibachiService").get("giftCard",  getDAO("giftCardDAO").getIDByCode(arguments.data.newOrderPayment.giftCardNumber));
+				var giftCardProcessObject = giftCard.getProcessObject("AddDebit");
+				var amount = 0;
+				
+				giftCardProcessObject.setOrderPayments(arguments.order.getOrderPayments());
+				giftCardProcessObject.setOrderItems(arguments.order.getOrderItems());
+				
+				if(giftCard.getBalance() >= arguments.order.getTotal()){
+					amount = arguments.order.getTotal();
+				} else { 
+					amount = giftCard.getBalance();
+				}
+				
+				giftCardProcessObject.setDebitAmount(local.amount); 
+				
+				getService("GiftCardService").process(giftCard, giftCardProcessObject, "addDebit");
+				
+				//writeDump(var="#giftCard#", top=2, abort=true);
+				
+				if(!giftCard.hasErrors()){ 
+					newOrderPayment.setAmount(amount);
+				} else { 
+					arguments.order.addErrors(giftCard.getErrors());	
+				}
+				
+				newOrderPayment = this.saveOrderPayment( newOrderPayment );
 		}
 		
 		// WriteDump(var=arguments.order.getOrderStatusType(), top=3, abort=true);
@@ -1139,6 +1211,52 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							
 							if(arguments.order.hasErrors()) {
 								arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
+							}
+							
+							var orderItemGiftCards = getDAO("OrderItemDAO").getGiftCardOrderItemsAndQuantity(arguments.order.getOrderID()); 
+							
+							// Now we can charge up the gift cards				
+							if(arrayLen(orderItemGiftCards) > 0){ 			
+								var item = getService("HibachiService").get("OrderItem", orderItemGiftCards[1]); 
+								var quantity = orderItemGiftCards[2]; 
+								var term = getService("HibachiService").get("Term", orderItemGiftCards[3]);	
+								var recipients = item.getOrderItemGiftRecipients(); 		
+								
+								//recipients and cards have already been validated so put them together
+								for(var i=1; i<=quantity; i++){ 		
+									
+									var card = getService("GiftCardService").newGiftCard(); 	
+									var createGiftCard = card.getProcessObject( 'Create' );
+									
+									createGiftCard.setOriginalOrderItem(item);
+									createGiftCard.setGiftCardExpirationTerm(term); 
+									createGiftCard.setOrderPayments(arguments.order.getOrderPayments());
+									
+									if(!isNull(recipients[i].getAccount())){
+										createGiftCard.setOwnerAccount(recipients[i].getAccount()); 	
+									} else { 
+										createGiftCard.setOwnerEmailAddress(recipients[i].getEmailAddress());
+									}
+									
+									if(!isNull(recipients[i].getFirstName())){
+										createGiftCard.setOwnerFirstName(recipients[i].getFirstName()); 
+									}
+									
+									if(!isNull(recipients[i].getLastName())){
+										createGiftCard.setOwnerLastName(recipients[i].getLastName()); 
+									}
+									
+									createGiftCard.setCreditGiftCard(true); 
+									card = getService("giftCardService").process(card, createGiftCard, 'Create');
+									
+									if(card.hasErrors()){
+										arguments.order.addErrors(card.getErrors());
+									} else { 
+										cardData = {}; 
+										cardData.entity=card;
+										getService("hibachiEventService").announceEvent(eventName="afterGiftCard_orderPlacedSuccess", eventData=cardData);
+									}
+								}	
 							}
 							
 							// Clear this order out of all sessions

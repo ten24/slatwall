@@ -13,15 +13,19 @@
 
 	<!--- Admin Actions --->
 	<cfparam name="attributes.recordEditAction" type="string" default="" />
+	<cfparam name="attributes.recordEditActionProperty"type="string" default="" />
 	<cfparam name="attributes.recordEditQueryString" type="string" default="" />
 	<cfparam name="attributes.recordEditModal" type="boolean" default="false" />
 	<cfparam name="attributes.recordEditDisabled" type="boolean" default="false" />
 	<cfparam name="attributes.recordDetailAction" type="string" default="" />
+	<cfparam name="attributes.recordDetailActionProperty"type="string" default="" />
 	<cfparam name="attributes.recordDetailQueryString" type="string" default="" />
 	<cfparam name="attributes.recordDetailModal" type="boolean" default="false" />
 	<cfparam name="attributes.recordDeleteAction" type="string" default="" />
+	<cfparam name="attributes.recordDeleteActionProperty"type="string" default="" />
 	<cfparam name="attributes.recordDeleteQueryString" type="string" default="" />
 	<cfparam name="attributes.recordProcessAction" type="string" default="" />
+	<cfparam name="attributes.recordProcessActionProperty"type="string" default="" />
 	<cfparam name="attributes.recordProcessQueryString" type="string" default="" />
 	<cfparam name="attributes.recordProcessContext" type="string" default="" />
 	<cfparam name="attributes.recordProcessEntity" type="any" default="" />
@@ -160,7 +164,11 @@
 			<cfset attributes.administativeCount++ />
 
 			<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-detailaction="#attributes.recordDetailAction#"', " ") />
+			<cfif len(attributes.recordDetailActionProperty)>
+				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-detailactionproperty="#attributes.recordDetailActionProperty#"', " ") />
+			</cfif>
 			<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-detailquerystring="#attributes.recordDetailQueryString#"', " ") />
+
 			<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-detailmodal="#attributes.recordDetailModal#"', " ") />
 		</cfif>
 
@@ -169,6 +177,9 @@
 			<cfset attributes.administativeCount++ />
 
 			<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-editaction="#attributes.recordEditAction#"', " ") />
+			<cfif len(attributes.recordDetailActionProperty)>
+				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-editactionproperty="#attributes.recordEditActionProperty#"', " ") />
+			</cfif>
 			<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-editquerystring="#attributes.recordEditQueryString#"', " ") />
 			<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-editmodal="#attributes.recordEditModal#"', " ") />
 		</cfif>
@@ -178,6 +189,9 @@
 			<cfset attributes.administativeCount++ />
 
 			<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-deleteaction="#attributes.recordDeleteAction#"', " ") />
+			<cfif len(attributes.recordDeleteActionProperty)>
+				<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-deleteactionproperty="#attributes.recordDeleteActionProperty#"', " ") />
+			</cfif>
 			<cfset attributes.adminattributes = listAppend(attributes.adminattributes, 'data-deletequerystring="#attributes.recordDeleteQueryString#"', " ") />
 		</cfif>
 
@@ -518,32 +532,61 @@
 								<td class="admin admin#attributes.administativeCount#">
 									<!--- Detail --->
 									<cfif len(attributes.recordDetailAction)>
+										<cfif len(attributes.recordDetailActionProperty)>
+											<cfset detailActionProperty=listlast(attributes.recordDetailActionProperty,'.')>
+											<cfset detailActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=attributes.recordDetailActionProperty)>
+										<cfelse>
+											<cfset detailActionProperty=record.getPrimaryIDPropertyName()>
+											<cfset detailActionPropertyValue=record.getPrimaryIDValue()>
+										</cfif>
+										
 										<cfset thisID = "#replace(replace(lcase(attributes.recordDetailAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
-										<hb:HibachiActionCaller action="#attributes.recordDetailAction#" queryString="#listPrepend(attributes.recordDetailQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-xs" icon="eye-open" iconOnly="true" modal="#attributes.recordDetailModal#" id="#thisID#" />
+										<hb:HibachiActionCaller action="#attributes.recordDetailAction#" queryString="#listPrepend(attributes.recordDetailQueryString, '#detailActionProperty#=#detailActionPropertyValue#', '&')#" class="btn btn-default btn-xs" icon="eye-open" iconOnly="true" modal="#attributes.recordDetailModal#" id="#thisID#" />
 									</cfif>
 
 									<!--- Edit --->
 									<cfif len(attributes.recordEditAction)>
+										<cfif len(attributes.recordEditActionProperty)>
+											<cfset editActionProperty=listlast(attributes.recordEditActionProperty,'.')>
+											<cfset editActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=attributes.recordEditActionProperty)>
+										<cfelse>
+											<cfset editActionProperty=record.getPrimaryIDPropertyName()>
+											<cfset editActionPropertyValue=record.getPrimaryIDValue()>
+										</cfif>
 										<cfset thisID = "#replace(replace(lcase(attributes.recordEditAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
 										<cfset local.editErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="edit", setErrors=false) />
 										<cfset local.disabled = local.editErrors.hasErrors() />
 										<cfset local.disabledText = local.editErrors.getAllErrorsHTML() />
-										<hb:HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-xs" icon="pencil" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" modal="#attributes.recordEditModal#" id="#thisID#" />
+										<hb:HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#editActionProperty#=#editActionPropertyValue#', '&')#" class="btn btn-default btn-xs" icon="pencil" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" modal="#attributes.recordEditModal#" id="#thisID#" />
 									</cfif>
 
 									<!--- Delete --->
 									<cfif len(attributes.recordDeleteAction)>
+										<cfif len(attributes.recordDeleteActionProperty)>
+											<cfset deleteActionProperty=listlast(attributes.recordDeleteActionProperty,'.')>
+											<cfset deleteActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=attributes.recordDeleteActionProperty)>
+										<cfelse>
+											<cfset deleteActionProperty=record.getPrimaryIDPropertyName()>
+											<cfset deleteActionPropertyValue=record.getPrimaryIDValue()>
+										</cfif>
 										<cfset thisID = "#replace(replace(lcase(attributes.recordDeleteAction), ':', ''), '.', '')#" />
 										<cfset local.deleteErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="delete", setErrors=false) />
 										<cfset local.disabled = local.deleteErrors.hasErrors() />
 										<cfset local.disabledText = local.deleteErrors.getAllErrorsHTML() />
-										<hb:HibachiActionCaller action="#attributes.recordDeleteAction#" queryString="#listPrepend(attributes.recordDeleteQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default btn-xs" icon="trash" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" confirm="true" id="#thisID#" />
+										<hb:HibachiActionCaller action="#attributes.recordDeleteAction#" queryString="#listPrepend(attributes.recordDeleteQueryString, '#deleteActionProperty#=#deleteActionPropertyValue#', '&')#" class="btn btn-default btn-xs" icon="trash" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" confirm="true" id="#thisID#" />
 									</cfif>
 
 									<!--- Process --->
 									<cfif len(attributes.recordProcessAction)>
+										<cfif len(attributes.recordDeleteActionProperty)>
+											<cfset processActionProperty=listlast(attributes.recordProcessActionProperty,'.')>
+											<cfset processActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=attributes.recordProcessActionProperty)>
+										<cfelse>
+											<cfset processActionProperty=record.getPrimaryIDPropertyName()>
+											<cfset processActionPropertyValue=record.getPrimaryIDValue()>
+										</cfif>
 										<cfset thisID = "#replace(replace(lcase(attributes.recordProcessAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
-										<hb:HibachiProcessCaller action="#attributes.recordProcessAction#" entity="#attributes.recordProcessEntity#" processContext="#attributes.recordProcessContext#" queryString="#listPrepend(attributes.recordProcessQueryString, '#record.getPrimaryIDPropertyName()#=#record.getPrimaryIDValue()#', '&')#" class="btn btn-default hibachi-ajax-submit" id="#thisID#" />
+										<hb:HibachiProcessCaller action="#attributes.recordProcessAction#" entity="#attributes.recordProcessEntity#" processContext="#attributes.recordProcessContext#" queryString="#listPrepend(attributes.recordProcessQueryString, '#processActionProperty#=#processActionPropertyValue#', '&')#" class="btn btn-default hibachi-ajax-submit" id="#thisID#" />
 									</cfif>
 								</td>
 							</cfif>

@@ -50,6 +50,25 @@ component output="false" accessors="true" extends="HibachiController" {
 			StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
 		}
 	}
+	
+	public any function getDetailTabs(required struct rc){
+		var detailTabs = [];
+		var tabsDirectory = expandPath( '/' ) & 'admin/client/partials/entity/#lcase(rc.entityName)#/';
+		var tabFilesList = directorylist(tabsDirectory,false,'query','*.html');
+		for(var tabFile in tabFilesList){
+			var tab = {};
+			tab['tabName']='#tabFile.name#';
+			if(tabFile.name == 'basic.html'){
+                tab['openTab'] = true;
+            }else{
+                tab['openTab'] = false;
+            }
+			arrayAppend(detailTabs,tab);
+		}    
+		
+		arguments.rc.apiResponse.content['data'] = detailTabs;
+	}
+	
 	/**
 	 * This will return the path to an image based on the skuIDs (sent as a comma seperated list)
 	 * and a 'profile name' that determines the size of that image.
@@ -291,7 +310,6 @@ component output="false" accessors="true" extends="HibachiController" {
 			create a base default properties function that can be overridden at the entity level via function
 			handle accessing collections by id
 		*/
-		
 		param name="arguments.rc.propertyIdentifiers" default="";
 		//first check if we have an entityName value
 		if(!structKeyExists(arguments.rc, "entityName")) {
