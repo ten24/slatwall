@@ -154,6 +154,36 @@ Notes:
 		<cfreturn total />
 	</cffunction>
 	
+	<cffunction name="matchOrderItemsReturnPaymentMenthods" access="public" returntype="any" output="false">
+		<cfargument name="orderItemIDs" type="array" required="true">
+		<cfargument name="accountID">
+		<cfset var id = "" >
+		<cfset var counter = 1 >
+		<cfquery name="matchOrderItems">
+			SELECT DISTINCT 
+				op.paymentMethodID, op.amount, op.orderID 
+			FROM SwOrder AS o
+        		LEFT JOIN SwOrderPayment as op ON o.orderID=op.orderID 
+				LEFT JOIN SwOrderItem AS oi ON oi.orderID=o.orderID 
+					AND 
+						<cfloop array="#arguments.orderItemIDs#" index="id">
+							oi.orderItemID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#id#" />
+							<cfif counter NEQ 1 AND counter LT arrayLen(arguments.orderItemIDS)>
+								OR
+							</cfif>
+						</cfloop>
+				LEFT JOIN SwSKu AS s ON oi.skuID=s.skuID
+			WHERE 
+				o.accountID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.accountID#" /> 
+			AND 
+				op.paymentMethodID IS NOT NULL
+			ORDER BY 
+				o.modifiedDateTime ASC
+		</cfquery>
+	
+		<cfreturn matchOrderItems>
+	</cffunction>
+	
 	<cffunction name="getOrderItemDBQuantity" access="public" returntype="numeric" output="false">
 		<cfargument name="orderItemID" type="string" required="true" />
 		

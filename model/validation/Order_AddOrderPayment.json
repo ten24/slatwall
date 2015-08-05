@@ -2,10 +2,18 @@
     "conditions":{
     	"noPaymentAmountNeeded":{
     	    "order.orderPaymentAmountNeeded":{"eq":0}
+    	},
+    	"orderTypeReturn":{
+    	    "order.typeCode":{"eq":"otReturnOrder"}
+    	},
+    	"giftCardOrderTypeReturn":{
+    		"order.typeCode":{"eq":"otReturnOrder"}, 
+    		"newOrderPayment":{"method":"isGiftCardReturnOrderPayment"}
     	}
 	},
 	"properties":{
-		"newOrderPayment.dynamicAmountFlag":	[{"conditions":"noPaymentAmountNeeded","eq":false}]
+		"newOrderPayment.dynamicAmountFlag":	[{"conditions":"noPaymentAmountNeeded","eq":false}],
+		"newOrderPayment.PaymentMethodID": [{"conditions":"giftCardOrderTypeReturn", "eq":"50d8cd61009931554764385482347f3a"}]
 	},
 	"populatedPropertyValidation":{
 		"newOrderPayment":		[{"validate":false}]
