@@ -143,6 +143,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	// Owner Account (many-to-one)
 	public void function setOwnerAccount(required any ownerAccount) {
+		
 		variables.ownerAccount = arguments.ownerAccount;
 		if(isNew() or !arguments.ownerAccount.hasGiftCard( this )) {
 			arrayAppend(arguments.ownerAccount.getGiftCards(), this);
