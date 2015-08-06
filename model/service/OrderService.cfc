@@ -564,10 +564,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if(!isNull(arguments.processObject.getLastName())){ 
 			recipient.setLastName(arguments.processObject.getLastName()); 
-		}
+		} 
 		
 		if(!arguments.processObject.hasAccount()){
-			recipient.setEmailAddress(arguments.processObject.getEmailAddress());
+
+			if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(arguments.processObject.getEmailAddress())){
+				recipient.setAccount(getService("HibachiService").get("Account", getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(arguments.processObject.getEmailAddress())));
+			} else {
+				recipient.setEmailAddress(arguments.processObject.getEmailAddress());
+			}
+
 		} else { 
 			recipient.setAccount(arguments.processObject.getAccount());
 		}
@@ -1235,7 +1241,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 									if(!isNull(recipients[i].getAccount())){
 										createGiftCard.setOwnerAccount(recipients[i].getAccount()); 	
 									} else { 
-										createGiftCard.setOwnerEmailAddress(recipients[i].getEmailAddress());
+										if(getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(recipients[i].getEmailAddress())){
+											createGiftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(recipients[i].getEmailAddress())));
+											createGiftCard.setOwnerEmailAddress(recipients[i].getEmailAddress());
+										} else { 
+											createGiftCard.setOwnerEmailAddress(recipients[i].getEmailAddress());
+										}
 									}
 									
 									if(!isNull(recipients[i].getFirstName())){
