@@ -302,7 +302,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 		var orderItemIDs = getDAO("OrderDAO").getGiftCardOrderItems(this.getOrderID());
 
-		if(orderItemID EQ "" AND "orderItemIDs.RecordCount GT 0){
+		if(orderItemID EQ "" AND orderItemIDs.RecordCount GT 0){
 
 			return true;
 
@@ -321,18 +321,18 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public array function getGiftCardOrderItems() {
 
-		var orderItemIDs = getDAO("OrderDAO").getGiftCardOrderItems(this.getOrderID());
+		var orderItemIDs = getDAO('OrderDAO').getGiftCardOrderItems(this.getOrderID());
 		var giftCardOrderItems = [];
 
 		for(row in orderItemIDs){
-				arrayAppend(orderItems, getService("HibachiService").get('orderItem', row.orderItemID));
+				arrayAppend(orderItems, getService('HibachiService').get('orderItem', row.orderItemID));
 		}
 
 		return giftCardOrderItems;
 	}
 
 	public numeric function getGiftCardPaymentAmount(){
-		return getDAO("OrderDAO").getGiftCardPaymentAmount(this.getOrderID());
+		return getDAO('OrderDAO').getGiftCardPaymentAmount(this.getOrderID());
 	}
 
 	public void function checkNewBillingAccountAddressSave() {

@@ -45,14 +45,17 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	 
 	 // Injected Entity
 	 property name="giftCard";
-	 property name="orderPayments" fieldtype="many-to-one"; 
+	 property name="orderPayments" fieldtype="many-to-one";
+	 property name="orderItems" cfc="OrderItem" fieldtype="one-to-many";  
 	 property name="originalOrderItem" fieldtype="one-to-one";
 
+	 property name="creditAmount";
+
 	 public any function getCreditAmount(){ 
-	 	if(!isNull(variables.giftCard)){ 
+	 	if(isNull(variables.creditAmount)){ 
 	 		return variables.giftCard.getOriginalOrderItem().getSku().getGiftCardRedemptionAmount(); 
 	 	} else { 
-	 		return "0"; 	
+	 		return variables.creditAmount; 	
 	 	}	
 	 }
 }
