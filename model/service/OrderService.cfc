@@ -664,23 +664,41 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Gift card payment
 		if(newOrderPayment.getPaymentMethod().getPaymentMethodType() EQ "giftCard"){
-
+				
 				var giftCard = getService("HibachiService").get("giftCard",  getDAO("giftCardDAO").getIDByCode(arguments.data.newOrderPayment.giftCardNumber));
-				var giftCardProcessObject = giftCard.getProcessObject("AddDebit");
+			
 				var amount = 0;
 				
-				giftCardProcessObject.setOrderPayments(arguments.order.getOrderPayments());
-				giftCardProcessObject.setOrderItems(arguments.order.getOrderItems());
 				
-				if(giftCard.getBalance() >= arguments.order.getTotal()){
-					amount = arguments.order.getTotal();
+				if(arguments.order.getTotal() > 0){
+
+					var giftCardProcessObject = giftCard.getProcessObject("AddDebit");
+
+					giftCardProcessObject.setOrderPayments(arguments.order.getOrderPayments());
+					giftCardProcessObject.setOrderItems(arguments.order.getOrderItems());
+
+					if(giftCard.getBalance() >= arguments.order.getTotal()){
+						amount = arguments.order.getTotal();
+					} else { 
+						amount = giftCard.getBalance();
+					}
+
+					giftCardProcessObject.setDebitAmount(local.amount); 
+				
+					getService("GiftCardService").process(giftCard, giftCardProcessObject, "addDebit");
 				} else { 
-					amount = giftCard.getBalance();
+					
+					//then its a refund
+					amount = precisionEvaluate(arguments.order.getTotal() * -1);
+					var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
+
+					giftCardProcessObject.setOrderPayments(arguments.order.getOrderPayments());
+					giftCardProcessObject.setOrderItems(arguments.order.getOrderItems());
+
+					giftCardProcessObject.setCreditAmount(amount); 
+				
+					getService("GiftCardService").process(giftCard, giftCardProcessObject, "addCredit");
 				}
-				
-				giftCardProcessObject.setDebitAmount(local.amount); 
-				
-				getService("GiftCardService").process(giftCard, giftCardProcessObject, "addDebit");
 				
 				//writeDump(var="#giftCard#", top=2, abort=true);
 				
