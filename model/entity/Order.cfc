@@ -298,6 +298,23 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return arr;
 	}
 
+
+	public boolean function hasGiftCardOrderPaymentAmount(){
+
+		var amount = getDAO("OrderDAO").getGiftCardOrderPaymentAmount(this.getOrderID()); 
+
+		if(amount gt 0){
+			return true; 
+		}
+
+		return false; 
+
+	}
+
+	public numeric function getGiftCardOrderPaymentAmount(){
+		return getDAO("OrderDAO").getGiftCardOrderPaymentAmount(this.getOrderID()); 
+	}
+
 	public boolean function hasGiftCardOrderItems(orderItemID=""){
 
 		var orderItemIDs = getDAO("OrderDAO").getGiftCardOrderItems(this.getOrderID());
