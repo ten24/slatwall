@@ -84,7 +84,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.processObject.getOwnerAccount())){
 			arguments.giftCard.setOwnerAccount(arguments.processObject.getOwnerAccount());
 		} else {
-			arguments.giftCard.setOwnerEmailAddress(arguments.processObject.getOwnerEmailAddress());
+			if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(arguments.processObject.getOwnerEmailAddress())){
+				giftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(arguments.processObject.getOwnerEmailAddress())));
+				giftCard.setOwnerEmailAddress(arguments.processObject.getOwnerEmailAddress());
+			} else {
+				giftCard.setOwnerEmailAddress(arguments.processObject.getOwnerEmailAddress());
+			}
 		}
 
 		if(!isNull(arguments.processObject.getOwnerFirstName())){
@@ -135,10 +140,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processGiftCard_changeExpirationDate(required any giftCard, required any processObject){
 
-		giftCard.setExpirationDate(processObject.getNewExpirationDate());
+		arguments.giftCard.setExpirationDate(arguments.processObject.getNewExpirationDate());
 
 		if(!giftCard.hasErrors()){
 			this.saveGiftCard(giftCard);
+		}
+	}
+
+	public any function processGiftCard_updateEmailAddress(required any giftCard, required any processObject){
+
+		if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(processObject.getEmailAddress())){
+			arguments.giftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(arguments.processObject.getEmailAddress())));
+			arguments.giftCard.setOwnerEmailAddress(arguments.processObject.getEmailAddress());
+		} else {
+			arguments.giftCard.setOwnerEmailAddress(arguments.processObject.getEmailAddress());
+		}
+
+		if(!arguments.giftCard.hasErrors()){
+			var cardData = {};
+			cardData.entity=arguments.giftCard;
+			//resend email
+			getService("hibachiEventService").announceEvent(eventName="afterGiftCard_orderPlacedSuccess", eventData=cardData);
 		}
 	}
 
@@ -146,14 +168,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var debitGiftTransaction = this.newGiftCardTransaction();
 
-		debitGiftTransaction.setDebitAmount(amountToDebit);
-		debitGiftTransaction.setGiftCard(giftCard);
+		debitGiftTransaction.setDebitAmount(arguments.amountToDebit);
+		debitGiftTransaction.setGiftCard(arguments.giftCard);
 
-		for(var payment in orderPayments){
+		for(var payment in arguments.orderPayments){
 			debitGiftTransaction.setOrderPayment(payment);
 		}
 
-		for(var item in orderItems){
+		for(var item in arguments.orderItems){
 			debitGiftTransaction.addOrderItem(item);
 		}
 
@@ -165,10 +187,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		var creditGiftTransaction = this.newGiftCardTransaction();
 
-		creditGiftTransaction.setCreditAmount(amountToCredit);
-		creditGiftTransaction.setGiftCard(giftCard);
+		creditGiftTransaction.setCreditAmount(arguments.amountToCredit);
+		creditGiftTransaction.setGiftCard(arguments.giftCard);
 
-		for(var payment in orderPayments){
+		for(var payment in arguments.orderPayments){
 			creditGiftTransaction.setOrderPayment(payment);
 		}
 
