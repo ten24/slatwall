@@ -617,19 +617,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Save the newOrderPayment
 		newOrderPayment = this.saveOrderPayment( newOrderPayment );
 		
-		// If the order has a subscription sku on It and that sku has 'AutoPay' setup on it's term and the 
-		// orderPayment's paymentMethod is set to allow accounts to save then auto set the save account payment method flag.
+		// If the order has a subscription sku on It and that sku has 'AutoPay' setup on it's term AND the orderPayment's paymentMethod
+		//  is set to allow accounts to save... then auto set the 'save account payment method flag'.
+		var foundSubscriptionWithAutoPayFlagSet = false;
 		for (var orderItem in arguments.order.getOrderItems()){
 			if (orderItem.getSku().getBaseProductType() == "subscription" && orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()){
-				var orderPayments = orderItem.getOrder().getOrderPayments();
-				for (var orderPayment in orderPayments){
+				foundSubscriptionWithAutoPayFlagSet = true;
+				break;
+			}
+		}
+		
+		//check if the order payments paymentMethod is set to allow account to save. if true set the saveAccountPaymentMethodFlag to true
+		if (foundSubscriptionWithAutoPayFlagSet){
+			//if we have order payments
+			if (!isNull(arguments.processObject.getOrder().getOrderPayments())){
+				for (var orderPayment in arguments.processObject.getOrder().getOrderPayments() ){
 					if (orderPayment.getStatusCode() == 'opstActive' && orderPayment.getPaymentMethod().getAllowSaveFlag()){
 						arguments.processObject.setSaveAccountPaymentMethodFlag( true );
+						break;
 					}
 				}
 			}
 		}
-
 		// Attach 'createTransaction' errors to the order 
 		if(newOrderPayment.hasError('createTransaction')) {
 			arguments.order.addError('addOrderPayment', newOrderPayment.getError('createTransaction'), true);
