@@ -19,6 +19,9 @@
 	<cfproperty name="dimensionDefinitions" />
 	<cfproperty name="orderByType" />
 	<cfproperty name="reportDateTimeDefinitions" />
+	<cfproperty name="reportType">
+	<cfproperty name="limitResults" default="0">
+	<cfproperty name="showReport" default="false">
 	
 	<!--- Metric / Dimension States --->
 	<cfproperty name="metrics" />
@@ -360,6 +363,38 @@
 			<cfset var data = getData() />
 			<cfset var reportEndDateTimePlusOne = dateAdd("d", 1, getReportEndDateTime()) />
 			
+			<cfif getReportType() NEQ "line">
+				<cfif getLimitResults() EQ 0>
+					<cfset variables.limitResults = 5>
+				</cfif>
+				<cfquery name="variables.sortedPieAndBarChartData" dbtype="query" maxrows="#variables.limitResults#">
+					SELECT
+						<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
+							<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />
+							<cfif d GT "1">,</cfif>
+							#dimensionDefinition.alias#, count(#dimensionDefinition.alias#) AS #dimensionDefinition.alias#Total
+						</cfloop>
+					FROM data
+					WHERE
+						reportDateTime >= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#getReportStartDateTime()#" />
+					AND
+				 	 	reportDateTime <= <cfqueryparam cfsqltype="cf_sql_timestamp" value="#reportEndDateTimePlusOne#" />
+					GROUP BY
+						<cfloop from="1" to="#listLen(getDimensions())#" step="1" index="d">
+							<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), d) ) />
+							<cfif d gt 1>,</cfif>
+							#dimensionDefinition.alias#
+							<cfif structKeyExists(dimensionDefinition, "filterAlias")>
+								,#dimensionDefinition.filterAlias#
+							</cfif>
+						</cfloop>
+					ORDER BY
+						<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), 1) ) />
+						#dimensionDefinition.alias#Total DESC
+				</cfquery>
+				<cfreturn variables.sortedPieAndBarChartData/>
+			</cfif>
+
 			<cfquery name="variables.chartDataQuery" dbtype="query">
 				SELECT
 					<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
@@ -521,19 +556,19 @@
 	</cffunction>
 	
 	<cffunction name="getChartData" access="public" output="false">
-		<cfif not structKeyExists(variables, "chartData")>
-			
+		<cfif NOT structKeyExists(variables, "chartData") AND getReportType NEQ "none">
+
 			<cfset var chartDataStruct = structNew() />
 			<cfset var chartDataQuery = getChartDataQuery() />
 
 			<cfif getReportCompareFlag()>
 				<cfset var chartCompareDataQuery = getChartCompareDataQuery() />
 			</cfif>
-			
+
 			<cfset var thisDate = "" />
 			<cfset var m = 1 />
 			<cfset var loopdatepart = "d" />
-			
+
 			<cfif getReportDateTimeGroupBy() eq 'year'>
 				<cfset loopdatepart = "yyyy" />
 			<cfelseif getReportDateTimeGroupBy() eq 'month'>
@@ -541,105 +576,137 @@
 			<cfelseif getReportDateTimeGroupBy() eq 'week'>
 				<cfset loopdatepart = "ww" />
 			<cfelseif getReportDateTimeGroupBy() eq 'hour'>
-				<cfset loopdatepart = "h" />	
+				<cfset loopdatepart = "h" />
 			</cfif>
-			
+
 			<cfset var chartReportEndDateTime = getReportEndDateTime() />
 			<cfset var chartReportCompareEndDateTime = getReportCompareEndDateTime() />
-			
+
 			<!---
 			<cfif getReportDateTimeGroupBy() eq 'week'>
 				<cfset chartReportEndDateTime = dateAdd('d', 7 - dayOfWeek( getReportEndDateTime() ), getReportEndDateTime()) />
 				<cfset chartReportCompareEndDateTime = dateAdd('d', 7 - dayOfWeek( getReportCompareEndDateTime() ), getReportCompareEndDateTime()) />
 			</cfif>
 			--->
-			
+
 			<cfset variables.chartData = {} />
 			<cfset variables.chartData["chart"] = {} />
-			<cfset variables.chartData["chart"]["type"] = "line" />
+			<cfset variables.chartData["chart"]["type"] = getReportType() />
+			<cfset variables.chartData["chart"]["renderTo"]="hibachi-report-chart" />
 			<cfset variables.chartData["legend"] = {} />
 			<cfset variables.chartData["legend"]["enabled"] = false />
 			<cfset variables.chartData["title"] = {} />
 			<cfset variables.chartData["title"]["text"] = getReportTitle() />
-			
+
+			<cfif getReportType() EQ 'column'>
+				<cfset variables.chartData["plotOptions"] = {} />
+				<cfset variables.chartData["plotOptions"]["column"] = {} />
+				<cfset variables.chartData["plotOptions"]["column"]["pointPadding"] = 0 />
+				<cfset variables.chartData["plotOptions"]["column"]["borderWidth"] = 0 />
+				<cfset variables.chartData["plotOptions"]["column"]["groupPadding"] = 0 />
+				<cfset variables.chartData["plotOptions"]["column"]["shadow"] = false />
+			</cfif>
+
 			<!--- Setup xAxis --->
 			<cfset variables.chartData["xAxis"] = [] />
-			<cfset var xAxisData = {} />
-			<cfset xAxisData["type"] = "datetime" />
-			<cfset arrayAppend(variables.chartData["xAxis"], xAxisData) />
-			
-			<!--- Setup Compare xAxis --->
-			<cfset var xAxisCompareData = {} />
-			<cfset xAxisCompareData["type"] = "datetime" />
-			<cfset xAxisCompareData["opposite"] = true />
-			<cfset arrayAppend(variables.chartData["xAxis"], xAxisCompareData) />
-			
+
+			<cfif getReportCompareFlag()>
+				<cfset var xAxisCompareData = {} />
+				<cfset xAxisCompareData["opposite"] = true />
+			</cfif>
+
 			<!--- Setup yAxis --->
 			<cfset variables.chartData["yAxis"] = {} />
 			<cfset variables.chartData["yAxis"]["title"] = {} />
 			<cfset variables.chartData["yAxis"]["title"]["text"] = '' />
-			
+
 			<cfset variables.chartData["series"] = [] />
-			
+
 			<cfset var dataSeriesID = 0 />
-			<cfset var chartRow = 0 />		
-			
-			<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
-				
-				<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
-				
-				<cfset chartRow = 1 />
-				<cfset dataSeriesID++ />
-				
-				<!--- Setup Data Series --->
-				<cfset arrayAppend(variables.chartData["series"], {})>
-				<cfset variables.chartData["series"][dataSeriesID]["name"] = getMetricTitle(metricDefinition.alias) />
-				<cfset variables.chartData["series"][dataSeriesID]["data"] = [] />
-				<cfset variables.chartData["series"][dataSeriesID]["xAxis"] = 0 />
-				<cfset variables.chartData["series"][dataSeriesID]["color"] = getMetricColorDetails()[m]['color'] />
-				<cfif m eq 1>
-					<cfset variables.chartData["series"][dataSeriesID]["type"] = "area" />
-				</cfif>
-				
-				<hb:HibachiDateLoop index="thisDate" from="#getReportStartDateTime()#" to="#chartReportEndDateTime#" datepart="#loopdatepart#">
-					<cfset var thisData = [] />
-					<cfset arrayAppend(thisData, dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000) />
- 					<cfif addChartSeriesDataCheck(thisDate, getReportDateTimeGroupBy(), chartDataQuery, chartRow)>
-						<cfset arrayAppend(thisData, chartDataQuery[ metricDefinition.alias ][ chartRow ]) />
-						<cfset chartRow ++ />
-					<cfelse>
-						<cfset arrayAppend(thisData, 0) />
-					</cfif>
-					<cfset arrayAppend(variables.chartData["series"][dataSeriesID]["data"], thisData) />
-				</hb:HibachiDateLoop>
-				
-				<!--- Setup Compare data Series --->
-				<cfif getReportCompareFlag()>
-					
+			<cfset var chartRow = 0 />
+			<cfset var xAxisData = {} />
+
+			<cfif getReportType() EQ "line">
+				<cfset xAxisData["type"] = "datetime" />
+				<cfset xAxisData["opposite"] = true />
+				<cfset arrayAppend(variables.chartData["xAxis"], xAxisData) />
+				<cfloop from="1" to="#listLen(getMetrics())#" step="1" index="m">
+
+					<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), m) ) />
+
 					<cfset chartRow = 1 />
 					<cfset dataSeriesID++ />
-					
+
+					<!--- Setup Data Series --->
 					<cfset arrayAppend(variables.chartData["series"], {})>
 					<cfset variables.chartData["series"][dataSeriesID]["name"] = getMetricTitle(metricDefinition.alias) />
 					<cfset variables.chartData["series"][dataSeriesID]["data"] = [] />
-					<cfset variables.chartData["series"][dataSeriesID]["xAxis"] = 1 />
-					<cfset variables.chartData["series"][dataSeriesID]["color"] = getMetricColorDetails()[m]['compareColor'] />
-					
-					<hb:HibachiDateLoop index="thisDate" from="#getReportCompareStartDateTime()#" to="#chartReportEndDateTime#" datepart="#loopdatepart#">
+					<cfset variables.chartData["series"][dataSeriesID]["xAxis"] = 0 />
+					<cfset variables.chartData["series"][dataSeriesID]["color"] = getMetricColorDetails()[m]['color'] />
+					<cfset variables.chartData["series"][dataSeriesID]["type"] = getReportType() />
+
+					<hb:HibachiDateLoop index="thisDate" from="#getReportStartDateTime()#" to="#chartReportEndDateTime#" datepart="#loopdatepart#">
 						<cfset var thisData = [] />
 						<cfset arrayAppend(thisData, dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000) />
-						<cfif addChartSeriesDataCheck(thisDate, getReportDateTimeGroupBy(), chartDataQuery, chartRow)>
-							<cfset arrayAppend(thisData, chartCompareDataQuery[ metricDefinition.alias ][ chartRow ]) />
+	 					<cfif addChartSeriesDataCheck(thisDate, getReportDateTimeGroupBy(), chartDataQuery, chartRow)>
+							<cfset arrayAppend(thisData, chartDataQuery[ metricDefinition.alias ][ chartRow ]) />
 							<cfset chartRow ++ />
 						<cfelse>
 							<cfset arrayAppend(thisData, 0) />
 						</cfif>
 						<cfset arrayAppend(variables.chartData["series"][dataSeriesID]["data"], thisData) />
 					</hb:HibachiDateLoop>
-				</cfif>
-			</cfloop>
-			
+
+					<!--- Setup Compare data Series --->
+					<cfif getReportCompareFlag()>
+
+						<cfset chartRow = 1 />
+						<cfset dataSeriesID++ />
+
+						<cfset arrayAppend(variables.chartData["series"], {})>
+						<cfset variables.chartData["series"][dataSeriesID]["name"] = getMetricTitle(metricDefinition.alias) />
+						<cfset variables.chartData["series"][dataSeriesID]["data"] = [] />
+						<cfset variables.chartData["series"][dataSeriesID]["xAxis"] = 1 />
+						<cfset variables.chartData["series"][dataSeriesID]["color"] = getMetricColorDetails()[m]['compareColor'] />
+
+						<cf_HibachiDateLoop index="thisDate" from="#getReportCompareStartDateTime()#" to="#chartReportEndDateTime#" datepart="#loopdatepart#">
+							<cfset var thisData = [] />
+							<cfset arrayAppend(thisData, dateDiff("s", createdatetime( '1970','01','01','00','00','00' ), dateAdd("h", 1, thisDate))*1000) />
+							<cfif addChartSeriesDataCheck(thisDate, getReportDateTimeGroupBy(), chartDataQuery, chartRow)>
+								<cfset arrayAppend(thisData, chartCompareDataQuery[ metricDefinition.alias ][ chartRow ]) />
+								<cfset chartRow ++ />
+							<cfelse>
+								<cfset arrayAppend(thisData, 0) />
+							</cfif>
+							<cfset structAppend(variables.chartData["series"][dataSeriesID]["data"], thisData) />
+						</cf_HibachiDateLoop>
+					</cfif>
+				</cfloop>
+
+			<cfelse><!---Pie Or Bar Chart--->
+				<cfset var metricDefinition = getMetricDefinition( listGetAt(getMetrics(), 1) ) />
+				<cfset var dimensionDefinition = getDimensionDefinition( listGetAt(getDimensions(), 1) ) />
+				<cfset variables.chartData["series"][1]["name"] = getMetricTitle(metricDefinition.alias) />
+				<cfset variables.chartData["series"][1]["colorByPoint"] = true />
+				<cfset variables.chartData["series"][1]["data"] = [] />
+				<cfset xAxisData["opposite"] = true />
+				<cfset xAxisData["type"] = "category">
+				<cfloop query="#chartDataQuery#">
+					<cfset var data = [] />
+					<cfset arrayAppend(data, evaluate("chartDataQuery.#dimensionDefinition.alias#"))>
+					<cfset arrayAppend(data, evaluate("chartDataQuery.#dimensionDefinition.alias#Total"))>
+					<cfset arrayAppend(variables.chartData["series"][1]["data"], data)/>
+				</cfloop>
+				<cfset arrayAppend(variables.chartData["xAxis"], xAxisData) />
+
+			</cfif>
+
+			<cfif getReportCompareFlag()>
+				<cfset arrayAppend(variables.chartData["xAxis"], xAxisCompareData) />
+			</cfif>
 		</cfif>
+
+
 
 		<cfreturn variables.chartData />
 	</cffunction>
