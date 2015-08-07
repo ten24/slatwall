@@ -174,7 +174,7 @@ Notes:
 	<cffunction name="getGiftCardOrderItems" access="public" returntype="query" output="false">
 		<cfargument name="orderID" type="string" required="true">
 
-		<cfquery name="getGiftCardOrderItems" maxrows="1">
+		<cfquery name="getGiftCardOrderItems">
 			SELECT oi.orderItemID, oi.quantity, s.giftCardExpirationTermID FROM SwOrderItem AS oi
     		LEFT JOIN SwSku AS s ON s.skuID = oi.skuID
     		LEFT JOIN SwProduct AS p ON s.productID = p.productID
