@@ -1237,13 +1237,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
 							}
 							
-							var orderItemGiftCards = getDAO("OrderItemDAO").getGiftCardOrderItemsAndQuantity(arguments.order.getOrderID()); 
+							var orderItemGiftCards = getDAO("OrderDAO").getGiftCardOrderItems(arguments.order.getOrderID()); 
 							
 							// Now we can charge up the gift cards				
 							if(arrayLen(orderItemGiftCards) > 0){ 			
-								var item = getService("HibachiService").get("OrderItem", orderItemGiftCards[1]); 
-								var quantity = orderItemGiftCards[2]; 
-								var term = getService("HibachiService").get("Term", orderItemGiftCards[3]);	
+								var item = getService("HibachiService").get("OrderItem", orderItemGiftCards.orderItemID); 
+								var quantity = orderItemGiftCards.quantity; 
+								var term = getService("HibachiService").get("Term", orderItemGiftCards.giftCardExpirationTermID);	
 								var recipients = item.getOrderItemGiftRecipients(); 		
 								
 								//recipients and cards have already been validated so put them together
