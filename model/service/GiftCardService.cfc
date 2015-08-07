@@ -132,6 +132,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.giftCard; 
 			
 	}
+
+	public any function processGiftCard_changeExpirationDate(required any giftCard, required any processObject){
+
+		giftCard.setExpirationDate(processObject.getNewExpirationDate()); 
+
+		if(!giftCard.hasErrors){ 
+			this.saveGiftCard(giftCard); 
+		}
+	}
 	
 	private any function createDebitGiftCardTransaction(required any giftCard, required any orderPayments, required any orderItems, required any amountToDebit){ 
 		
