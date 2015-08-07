@@ -1240,7 +1240,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							var orderItemGiftCards = getDAO("OrderDAO").getGiftCardOrderItems(arguments.order.getOrderID()); 
 							
 							// Now we can charge up the gift cards				
-							if(arrayLen(orderItemGiftCards) > 0){ 			
+							if(orderItemGiftCards.RecordCount > 0){ 			
 								var item = getService("HibachiService").get("OrderItem", orderItemGiftCards.orderItemID); 
 								var quantity = orderItemGiftCards.quantity; 
 								var term = getService("HibachiService").get("Term", orderItemGiftCards.giftCardExpirationTermID);	
