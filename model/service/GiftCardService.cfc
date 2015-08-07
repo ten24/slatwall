@@ -84,11 +84,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.processObject.getOwnerAccount())){
 			arguments.giftCard.setOwnerAccount(arguments.processObject.getOwnerAccount());
 		} else {
-			if(getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(arguments.processObject.getEmailAddress())){
-				giftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(arguments.processObject.getEmailAddress())));
-				giftCard.setOwnerEmailAddress(arguments.processObject.getEmailAddress());
+			if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(arguments.processObject.getOwnerEmailAddress())){
+				giftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(arguments.processObject.getOwnerEmailAddress())));
+				giftCard.setOwnerEmailAddress(arguments.processObject.getOwnerEmailAddress());
 			} else {
-				giftCard.setOwnerEmailAddress(arguments.processObject.getEmailAddress());
+				giftCard.setOwnerEmailAddress(arguments.processObject.getOwnerEmailAddress());
 			}
 		}
 
@@ -149,7 +149,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processGiftCard_updateEmailAddress(required any giftCard, required any processObject){
 
-		if(getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(processObject.getEmailAddress())){
+		if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(processObject.getEmailAddress())){
 			arguments.giftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(arguments.processObject.getEmailAddress())));
 			arguments.giftCard.setOwnerEmailAddress(arguments.processObject.getEmailAddress());
 		} else {
