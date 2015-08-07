@@ -94,6 +94,15 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="currentStatusCode" persistent="false";
 	property name="currentStatusType" persistent="false";
 	property name="subscriptionOrderItemName" persistent="false";
+	property name="initialSubscriptionOrderItem" persistant="false";
+	property name="initialOrderItem" persistant="false";
+	property name="initialOrder" persistant="false";
+	property name="initialSku" persistant="false";
+	property name="initialProduct" persistant="false";
+	property name="mostRecentSubscriptionOrderItem" persistant="false";
+	property name="mostRecentOrderItem" persistant="false";
+	property name="mostRecentOrder" persistant="false";
+	property name="totalNumberOfSubscriptionOrderItems" persistant="false";
 	
 	public boolean function isActive() {
 		if(!isNull(getCurrentStatus())) {
@@ -146,7 +155,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		setShippingMethod( orderFulfillment.getShippingMethod() );
 	}
 	
-	// ============ START: Non-Persistent Property Methods =================
+	// ============ START: Non-Persistent Property Helper Methods =================
 	
 	public any function getCurrentStatus() {
 		return getService("subscriptionService").getSubscriptionCurrentStatus( variables.subscriptionUsageID );
@@ -207,7 +216,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	
 	public any function getMostRecentSubscriptionOrderItem(){
 		if( hasSubscriptionOrderItems() ){
-			return getSubscriptionOrderItems()[ getSubscriptionOrderItemsTotal() ];
+			return getSubscriptionOrderItems()[ getTotalNumberOfSubscriptionOrderItems() ];
 		}
 		return "";
 	}
@@ -220,7 +229,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		return getMostRecentOrderItem().getOrder();
 	}
 	
-	public any function getSubscriptionOrderItemsTotal(){
+	public any function getTotalNumberOfSubscriptionOrderItems(){
 		return arrayLen( getSubscriptionOrderItems() );
 	}
 	
