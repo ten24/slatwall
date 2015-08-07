@@ -171,19 +171,6 @@ Notes:
 		<cfreturn total />
 	</cffunction>
 
-	<cffunction name="getGiftCardPaymentAmount" access="public" returntype="numeric" output="false">
-		<cfargument name="referencedOrderID" type="string" required="true" />
-
-		<cfquery name="getGiftCardPaymentAmount" maxrows="1">
-			SELECT gct.debitAmount from SwGiftCardTransaction AS gct
-   			 LEFT JOIN SwOrderPayment as op ON op.orderPaymentID = gct.orderPaymentID
-    		WHERE op.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referencedOrderID#" />
-		</cfquery>
-
-		<cfreturn getGiftCardPaymentAmount.debitAmount />
-
-	</cffunction>
-
 	<cffunction name="getGiftCardOrderItems" access="public" returntype="query" output="false">
 		<cfargument name="orderID" type="string" required="true">
 
