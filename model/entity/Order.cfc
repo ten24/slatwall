@@ -332,7 +332,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	public numeric function getGiftCardPaymentAmount(){
-		return getDAO('OrderDAO').getGiftCardPaymentAmount(this.getOrderID());
+		return getDAO('OrderDAO').getGiftCardOrderPaymentAmount(this.getOrderID());
 	}
 
 	public void function checkNewBillingAccountAddressSave() {
