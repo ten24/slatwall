@@ -220,7 +220,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		return getMostRecentOrderItem().getOrder();
 	}
 	
-	public any function getSubscriptoinOrderItemsTotal(){
+	public any function getSubscriptionOrderItemsTotal(){
 		return arrayLen( getSubscriptionOrderItems() );
 	}
 	
