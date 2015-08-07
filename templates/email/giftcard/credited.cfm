@@ -98,8 +98,8 @@ Notes:
 							<td>#giftCard.getGiftCardCode()#</td>
 						</tr>
 						<tr>
-							<td>Gift Card Amount:</td>
-							<td>#giftCard.getGiftCardTransactions()[1].getCreditAmount()#</td>
+							<td>Gift Card Balance:</td>
+							<td>#giftCard.getBalance()#</td>
 						</tr>
 					</tbody>
 				</table>
@@ -117,7 +117,9 @@ Notes:
 		Your Gift Card has been credited!
 		=================================
 		Gift Card Code: #giftCard.getGiftCardCode()#
-		Gift Card Amount: #giftCard.getGiftCardTransactions()[1].getCreditAmount()#
+		Gift Card Balance: #giftCard.getBalance()#
 		=================================
 	</cfoutput>
 </cfsavecontent>
+
+
