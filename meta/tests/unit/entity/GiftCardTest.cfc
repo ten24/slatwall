@@ -59,7 +59,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	public void function test_order_item_relation(){
 
-
 		var orderItemData = {
 			orderItemID='',
 			price='5'
@@ -177,6 +176,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		giftCard.addGiftCardTransaction(debitTransaction2); 
 		
 		assertEquals("1499.25", giftCard.getBalance());
+		assertTrue(giftCard.isActive()); 
 	
 	}
 

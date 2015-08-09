@@ -49,7 +49,7 @@ Notes:
 component output="false" accessors="true" extends="HibachiProcess"{
 	
 	// Injected Entity
-	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderID";
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one";
 	
 	// Data Properties
  	property name="firstName" type="string";

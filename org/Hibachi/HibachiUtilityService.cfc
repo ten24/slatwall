@@ -102,6 +102,7 @@
   				result.append(chars.charAt(random.nextInt(chars.length())));
   			}
 
+			return result.toString();
   		}
 		
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
