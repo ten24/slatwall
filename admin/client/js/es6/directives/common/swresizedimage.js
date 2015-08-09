@@ -1,6 +1,6 @@
 /**
  * Displays an image for an order item.
- * @module slatwalladmin
+ * @module slatwallAdmin
  * @class swoiimage
  */
 'use strict';

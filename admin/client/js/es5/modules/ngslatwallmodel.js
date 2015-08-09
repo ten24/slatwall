@@ -1,3 +1,5 @@
+/// <reference path="../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function ($provide) {
         $provide.decorator('$slatwall', [
             "$delegate",
@@ -200,9 +202,9 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     saveAccountPaymentMethodName: '',
                     currencyCode: '',
                     appliedOrderPayments: '',
-                    accountPaymentMethodIDOptions: [{ "name": "New", "value": "" }],
+                    accountPaymentMethodIDOptions: [{ "NAME": "New", "VALUE": "" }],
                     paymentMethodIDOptions: [{ "value": "444df303dedc6dab69dd7ebcc9b8036a", "allowsave": true, "paymentmethodtype": "creditCard", "name": "Credit Card" }, { "value": "50d8cd61009931554764385482347f3a", "allowsave": false, "paymentmethodtype": "giftCard", "name": "Gift Card" }],
-                    accountAddressIDOptions: [{ "name": "New", "value": "" }],
+                    accountAddressIDOptions: [{ "NAME": "New", "VALUE": "" }],
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
@@ -277,7 +279,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
-                    accountPasswordResetID: "7e5ac0a48d3181325f47c3e80d6b0655",
+                    accountPasswordResetID: "7e218fbbf6cbe09401988f0bb1d990e8",
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
@@ -426,7 +428,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
-                    verificationCode: '918da067b117d4639b8fcce740f3e8c5',
+                    verificationCode: '9a3668ebe132890e7f96ca33c06bf04c',
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -1840,7 +1842,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
-                    auditDateTime: '1438199247202',
+                    auditDateTime: '1439072769324',
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -1938,9 +1940,9 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     accountPaymentMethodIDOptions: [],
                     previousOrderPaymentIDOptions: [],
                     paymentMethodIDOptions: [],
-                    accountAddressIDOptions: [{ "name": "New", "value": "" }],
-                    paymentTermIDOptions: [{ "name": "Select", "value": "" }, { "name": "Net 30", "value": "27f223d1a5b7cba92e783c926e29efc6" }, { "name": "Net 60", "value": "27f223d2f018f5737a2b82838c4027e9" }, { "name": "Net 90", "value": "27f223d3b4b878a2771226a03417a764" }],
-                    copyFromTypeOptions: [{ "name": "New", "value": "" }],
+                    accountAddressIDOptions: [{ "NAME": "New", "VALUE": "" }],
+                    paymentTermIDOptions: [{ "NAME": "Select", "VALUE": "" }, { "NAME": "Net 30", "VALUE": "27f223d1a5b7cba92e783c926e29efc6" }, { "NAME": "Net 60", "VALUE": "27f223d2f018f5737a2b82838c4027e9" }, { "NAME": "Net 90", "VALUE": "27f223d3b4b878a2771226a03417a764" }],
+                    copyFromTypeOptions: [{ "NAME": "New", "VALUE": "" }],
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''

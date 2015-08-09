@@ -1,6 +1,6 @@
 /**
  * Displays a shipping label in the order items row.
- * @module slatwalladmin
+ * @module slatwallAdmin
  * @class swOrderItemsShippingLabelStamp
  */
 angular.module('slatwalladmin')

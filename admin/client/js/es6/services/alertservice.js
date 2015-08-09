@@ -61,10 +61,10 @@ var slatwalladmin;
     ];
     slatwalladmin.AlertService = AlertService;
 })(slatwalladmin || (slatwalladmin = {}));
-var slatwalladmin;
-(function (slatwalladmin) {
+var slatwallAdmin;
+(function (slatwallAdmin) {
     angular.module('slatwalladmin')
-        .service('alertService', slatwalladmin.AlertService);
-})(slatwalladmin || (slatwalladmin = {}));
+        .service('alertService', AlertService);
+})(slatwallAdmin || (slatwallAdmin = {}));
 
 //# sourceMappingURL=../services/alertservice.js.map

@@ -1,6 +1,6 @@
 /**
  * Handles display a single row or multiple rows depending on if the product has children.
- * @module slatwalladmin
+ * @module slatwallAdmin
  * @class sworderitemrow
  */
 'use strict';
