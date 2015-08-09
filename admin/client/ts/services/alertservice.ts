@@ -78,7 +78,7 @@ module slatwalladmin{
     }  
     
 }
-module slatwalladmin{
+module slatwallAdmin{
      angular.module('slatwalladmin')
     .service('alertService',AlertService); 
 }

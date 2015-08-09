@@ -64,6 +64,8 @@ Notes:
 <cfif !request.slatwallScope.hasApplicationValue('ngSlatwallModel')>
 	<cfsavecontent variable="local.jsOutput">
 		<cfoutput>
+			/// <reference path="../../../../client/typings/tsd.d.ts" />
+			/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 			angular.module('ngSlatwallModel',['ngSlatwall']).config(['$provide',function ($provide
 			 ) {
 	    	<!--- js entity specific code here --->

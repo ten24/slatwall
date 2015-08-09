@@ -1,9 +1,8 @@
 /// <reference path="../../../../client/typings/tsd.d.ts" />
 /// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
-var slatwallAdmin;
-(function (slatwallAdmin) {
-    angular.module('slatwalladmin', ['ngSlatwall', 'ngSlatwallModel', 'ui.bootstrap', 'ngAnimate', 'ngRoute', 'ngCkeditor']).
-        config(["$provide", '$logProvider', '$filterProvider', '$httpProvider', '$routeProvider', '$injector', '$locationProvider', 'datepickerConfig', 'datepickerPopupConfig',
+(function () {
+    var app = angular.module('slatwalladmin', ['ngSlatwall', 'ngSlatwallModel', 'ui.bootstrap', 'ngAnimate', 'ngRoute', 'ngCkeditor']);
+    app.config(["$provide", '$logProvider', '$filterProvider', '$httpProvider', '$routeProvider', '$injector', '$locationProvider', 'datepickerConfig', 'datepickerPopupConfig',
         function ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig) {
             datepickerConfig.showWeeks = false;
             datepickerConfig.format = 'MMM dd, yyyy hh:mm a';
@@ -107,6 +106,6 @@ var slatwallAdmin;
                 }
             };
         }]);
-})(slatwallAdmin || (slatwallAdmin = {}));
+})();
 
 //# sourceMappingURL=../modules/slatwalladmin.js.map

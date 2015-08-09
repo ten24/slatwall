@@ -1,3 +1,5 @@
+/// <reference path="../../../../client/typings/tsd.d.ts" />
+/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function ($provide) {
         $provide.decorator('$slatwall', [
             "$delegate",
@@ -200,9 +202,9 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     saveAccountPaymentMethodName: '',
                     currencyCode: '',
                     appliedOrderPayments: '',
-                    accountPaymentMethodIDOptions: [{ "name": "New", "value": "" }],
+                    accountPaymentMethodIDOptions: [{ "NAME": "New", "VALUE": "" }],
                     paymentMethodIDOptions: [{ "value": "444df303dedc6dab69dd7ebcc9b8036a", "allowsave": true, "paymentmethodtype": "creditCard", "name": "Credit Card" }, { "value": "50d8cd61009931554764385482347f3a", "allowsave": false, "paymentmethodtype": "giftCard", "name": "Gift Card" }],
-                    accountAddressIDOptions: [{ "name": "New", "value": "" }],
+                    accountAddressIDOptions: [{ "NAME": "New", "VALUE": "" }],
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
@@ -277,7 +279,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
-                    accountPasswordResetID: "7e5ac0a48d3181325f47c3e80d6b0655",
+                    accountPasswordResetID: "a6789c1840d0c2ec77c565913c221221",
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
@@ -426,7 +428,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
-                    verificationCode: '918da067b117d4639b8fcce740f3e8c5',
+                    verificationCode: 'c986e98ffdbc71f659e2cd1a4e6767f5',
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -619,7 +621,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     modifiedByAccountID: null,
                     z: ''
                 };
-                entities['GiftCard'] = { "expirationDate": { "name": "expirationDate", "ormtype": "timestamp" }, "giftCardCode": { "name": "giftCardCode", "ormtype": "string" }, "emailTemplates": { "name": "emailTemplates", "persistent": false, "type": "struct" }, "createdDateTime": { "name": "createdDateTime", "ormtype": "timestamp", "hb_populateenabled": false }, "printTemplates": { "name": "printTemplates", "persistent": false, "type": "struct" }, "processObjects": { "name": "processObjects", "persistent": false, "type": "struct" }, "settingValueFormatted": { "name": "settingValueFormatted", "persistent": false, "type": "any" }, "auditSmartList": { "name": "auditSmartList", "persistent": false, "type": "any" }, "modifiedDateTime": { "name": "modifiedDateTime", "ormtype": "timestamp", "hb_populateenabled": false }, "newFlag": { "name": "newFlag", "persistent": false, "type": "boolean" }, "validations": { "name": "validations", "persistent": false, "type": "struct" }, "hibachiMessages": { "name": "hibachiMessages", "persistent": false, "type": "any" }, "createdByAccountID": { "name": "createdByAccountID", "ormtype": "string", "hb_populateenabled": false }, "remoteID": { "name": "remoteID", "ormtype": "string" }, "modifiedByAccountID": { "name": "modifiedByAccountID", "ormtype": "string", "hb_populateenabled": false }, "attributeValuesByAttributeIDStruct": { "name": "attributeValuesByAttributeIDStruct", "persistent": false, "type": "struct" }, "hibachiErrors": { "name": "hibachiErrors", "persistent": false, "type": "any" }, "ownerLastName": { "name": "ownerLastName", "ormtype": "string" }, "assignedAttributeSetSmartList": { "name": "assignedAttributeSetSmartList", "persistent": false, "type": "any" }, "giftCardTransactions": { "inverse": true, "name": "giftCardTransactions", "fieldtype": "one-to-many", "singularname": "giftCardTransaction", "cascade": "all-delete-orphan", "cfc": "GiftCardTransaction", "fkcolumn": "giftCardID" }, "modifiedByAccount": { "name": "modifiedByAccount", "persistent": false }, "hibachiInstanceApplicationScopeKey": { "NAME": "hibachiInstanceApplicationScopeKey", "PERSISTENT": false, "TYPE": "string" }, "createdByAccount": { "name": "createdByAccount", "persistent": false }, "simpleRepresentation": { "name": "simpleRepresentation", "persistent": false, "type": "string" }, "giftCardPin": { "name": "giftCardPin", "ormtype": "string" }, "ownerFirstName": { "name": "ownerFirstName", "ormtype": "string" }, "announceEvent": { "name": "announceEvent", "persistent": false, "default": true, "type": "boolean" }, "ownerAccount": { "name": "ownerAccount", "fieldtype": "many-to-one", "cfc": "Account", "fkcolumn": "ownerAccountID" }, "persistableErrors": { "name": "persistableErrors", "persistent": false, "type": "array" }, "originalOrderItem": { "name": "originalOrderItem", "fieldtype": "many-to-one", "cfc": "OrderItem", "fkcolumn": "originalOrderItemID" }, "populatedSubProperties": { "name": "populatedSubProperties", "persistent": false, "type": "struct" }, "giftCardExpirationTerm": { "name": "giftCardExpirationTerm", "fieldtype": "many-to-one", "cfc": "Term", "fkcolumn": "giftCardExpirationTermID" }, "encryptedPropertiesExistFlag": { "name": "encryptedPropertiesExistFlag", "persistent": false, "type": "boolean" }, "rollbackProcessedFlag": { "name": "rollbackProcessedFlag", "persistent": false, "type": "boolean" }, "attributeValuesByAttributeCodeStruct": { "name": "attributeValuesByAttributeCodeStruct", "persistent": false, "type": "struct" }, "ownerEmailAddress": { "name": "ownerEmailAddress", "ormtype": "string" }, "giftCardID": { "generator": "uuid", "name": "giftCardID", "fieldtype": "id", "ormtype": "string", "unsavedvalue": "", "length": 32, "default": "" } };
+                entities['GiftCard'] = { "expirationDate": { "name": "expirationDate", "ormtype": "timestamp" }, "giftCardCode": { "name": "giftCardCode", "ormtype": "string" }, "emailTemplates": { "name": "emailTemplates", "persistent": false, "type": "struct" }, "createdDateTime": { "name": "createdDateTime", "ormtype": "timestamp", "hb_populateenabled": false }, "printTemplates": { "name": "printTemplates", "persistent": false, "type": "struct" }, "processObjects": { "name": "processObjects", "persistent": false, "type": "struct" }, "settingValueFormatted": { "name": "settingValueFormatted", "persistent": false, "type": "any" }, "auditSmartList": { "name": "auditSmartList", "persistent": false, "type": "any" }, "modifiedDateTime": { "name": "modifiedDateTime", "ormtype": "timestamp", "hb_populateenabled": false }, "newFlag": { "name": "newFlag", "persistent": false, "type": "boolean" }, "validations": { "name": "validations", "persistent": false, "type": "struct" }, "hibachiMessages": { "name": "hibachiMessages", "persistent": false, "type": "any" }, "createdByAccountID": { "name": "createdByAccountID", "ormtype": "string", "hb_populateenabled": false }, "remoteID": { "name": "remoteID", "ormtype": "string" }, "modifiedByAccountID": { "name": "modifiedByAccountID", "ormtype": "string", "hb_populateenabled": false }, "attributeValuesByAttributeIDStruct": { "name": "attributeValuesByAttributeIDStruct", "persistent": false, "type": "struct" }, "hibachiErrors": { "name": "hibachiErrors", "persistent": false, "type": "any" }, "ownerLastName": { "name": "ownerLastName", "ormtype": "string" }, "assignedAttributeSetSmartList": { "name": "assignedAttributeSetSmartList", "persistent": false, "type": "any" }, "giftCardTransactions": { "inverse": true, "name": "giftCardTransactions", "fieldtype": "one-to-many", "singularname": "giftCardTransaction", "cascade": "all-delete-orphan", "cfc": "GiftCardTransaction", "fkcolumn": "giftCardID" }, "modifiedByAccount": { "name": "modifiedByAccount", "persistent": false }, "hibachiInstanceApplicationScopeKey": { "NAME": "hibachiInstanceApplicationScopeKey", "PERSISTENT": false, "TYPE": "string" }, "createdByAccount": { "name": "createdByAccount", "persistent": false }, "simpleRepresentation": { "name": "simpleRepresentation", "persistent": false, "type": "string" }, "giftCardPin": { "name": "giftCardPin", "ormtype": "string" }, "ownerFirstName": { "name": "ownerFirstName", "ormtype": "string" }, "announceEvent": { "name": "announceEvent", "persistent": false, "default": true, "type": "boolean" }, "ownerAccount": { "name": "ownerAccount", "fieldtype": "many-to-one", "cfc": "Account", "fkcolumn": "ownerAccountID" }, "persistableErrors": { "name": "persistableErrors", "persistent": false, "type": "array" }, "originalOrderItem": { "name": "originalOrderItem", "fieldtype": "many-to-one", "cascade": "all", "cfc": "OrderItem", "fkcolumn": "originalOrderItemID" }, "populatedSubProperties": { "name": "populatedSubProperties", "persistent": false, "type": "struct" }, "giftCardExpirationTerm": { "name": "giftCardExpirationTerm", "fieldtype": "many-to-one", "cascade": "all", "cfc": "Term", "fkcolumn": "giftCardExpirationTermID" }, "encryptedPropertiesExistFlag": { "name": "encryptedPropertiesExistFlag", "persistent": false, "type": "boolean" }, "rollbackProcessedFlag": { "name": "rollbackProcessedFlag", "persistent": false, "type": "boolean" }, "attributeValuesByAttributeCodeStruct": { "name": "attributeValuesByAttributeCodeStruct", "persistent": false, "type": "struct" }, "ownerEmailAddress": { "name": "ownerEmailAddress", "ormtype": "string" }, "giftCardID": { "generator": "uuid", "name": "giftCardID", "fieldtype": "id", "ormtype": "string", "unsavedvalue": "", "length": 32, "default": "" } };
                 entities['GiftCard'].className = 'GiftCard';
                 validations['GiftCard'] = { "properties": {} };
                 defaultValues['GiftCard'] = {
@@ -1840,7 +1842,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
-                    auditDateTime: '1438199247202',
+                    auditDateTime: '1439152149750',
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -1938,9 +1940,9 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     accountPaymentMethodIDOptions: [],
                     previousOrderPaymentIDOptions: [],
                     paymentMethodIDOptions: [],
-                    accountAddressIDOptions: [{ "name": "New", "value": "" }],
-                    paymentTermIDOptions: [{ "name": "Select", "value": "" }, { "name": "Net 30", "value": "27f223d1a5b7cba92e783c926e29efc6" }, { "name": "Net 60", "value": "27f223d2f018f5737a2b82838c4027e9" }, { "name": "Net 90", "value": "27f223d3b4b878a2771226a03417a764" }],
-                    copyFromTypeOptions: [{ "name": "New", "value": "" }],
+                    accountAddressIDOptions: [{ "NAME": "New", "VALUE": "" }],
+                    paymentTermIDOptions: [{ "NAME": "Select", "VALUE": "" }, { "NAME": "Net 30", "VALUE": "27f223d1a5b7cba92e783c926e29efc6" }, { "NAME": "Net 60", "VALUE": "27f223d2f018f5737a2b82838c4027e9" }, { "NAME": "Net 90", "VALUE": "27f223d3b4b878a2771226a03417a764" }],
+                    copyFromTypeOptions: [{ "NAME": "New", "VALUE": "" }],
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
