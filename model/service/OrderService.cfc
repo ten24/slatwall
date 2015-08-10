@@ -73,24 +73,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Logical Methods ===========================
 	
 	public string function getOrderRequirementsList(required any order) {
-		var orderRequirementsList = "";
-		
-		//Check if there is subscription with autopay flag without order payment with account payment method.
-		var hasSubscriptionWithAutoPay = false;
-		var hasOrderPaymentWithAccountPaymentMethod = false;
-		for (var orderItem in arguments.order.getOrderItems()){
-			if (orderItem.getSku().getBaseProductType() == "subscription" && orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()){
-				hasSubscriptionWithAutoPay = true;
-				for (var orderPayment in arguments.order.getOrderPayments()){
-					if (!isNull(orderPayment.getAccountPaymentMethod())){
-						hasOrderPaymentWithAccountPaymentMethod = true;
-					}
-				}
-			}
-		}
-		if (hasSubscriptionWithAutoPay && !hasOrderPaymentWithAccountPaymentMethod){
-			orderRequirementsList = listAppend(orderRequirementsList, "accountPaymentMethod");
-		}	
+		var orderRequirementsList = "";	
 		
 		// Check if the order still requires a valid account
 		if(isNull(arguments.order.getAccount()) || arguments.order.getAccount().hasErrors()) {
@@ -1149,9 +1132,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// Verify the order requirements list, to make sure that this order has everything it needs to continue
 					if(len(orderRequirementsList)) {
 						
-						if(listFindNoCase("accountPaymentMethod", orderRequirementsList)) {
-							arguments.order.addError('payment', rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod'));
-						}
 						if(listFindNoCase("account", orderRequirementsList)) {
 							arguments.order.addError('account',rbKey('entity.order.process.placeOrder.accountRequirementError'));	
 						}
