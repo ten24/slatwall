@@ -952,6 +952,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-table-header-nav label {margin-top:0px;margin-bottom:0px;}
 .s-table-header-nav .s-table-header-search button {color:#5E5E5E;background-color:@black-5;border: 1px solid @black-20;}
 .s-table-header-nav .s-table-view-options {text-align:right;padding-right:0px;}
+.s-table-header-nav .s-table-view-options button.s-table-header-btn i {font-size: 16px;position: relative;top: 3px;width: 13px;}
 .s-select-wrapper select {-webkit-appearance: none;-moz-appearance: none;appearance: none;line-height: 13px;padding-right: 23px;}
 .s-select-wrapper {position: relative;text-align: right;display: block;}
 .s-select-wrapper:after {font-family: fontAwesome;content: "\f0dc";pointer-events: none;position: absolute;margin-top: -22px;margin-left: -16px;}
@@ -962,6 +963,12 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-table-header-nav .s-page-show {min-width: 150px;vertical-align: middle;margin:0px;}
 .s-table-header-nav .s-select-list-wrapper {max-width:200px;}
 .s-filter-options .selectboxit {min-width:120px;}
+.s-table-wrapper .s-table-header-title {font-size: 14px;margin: 0px;padding: 0px;margin-top: 12px;}
+
+.s-table-footer .s-table-footer-right {text-align: right;}
+.s-table-footer .s-table-footer-right .s-page-show {margin:0px;}
+.s-table-footer .s-table-footer-right ul li {vertical-align: top;}
+.s-table-footer .s-table-footer-right ul li .pagination {margin: 0px;}
 
 .dropdown-toggle .fa-sort-desc:before {top: -2px;position: relative;}
 
@@ -1516,7 +1523,7 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-filter-content-table-view .s-header-bar {margin-top:-15px;border-bottom: 1px solid #ddd;}
 .s-filter-content-table-view .tab-pane {margin-top:15px;}
 .s-filter-content-table-view .s-filter-table-box {margin-top:0px !important;}
-.s-filter-content-table-view .dataTables_info {margin-bottom: 15px;}
+.s-filter-content-table-view .dataTables_info {margin-bottom: 15px;display: inline-block;}
 
 .s-panel-header-info .dl-horizontal {margin-bottom:0px;}
 .s-panel-header-info .dl-horizontal dt {font-family: @font-family-semibold;}
@@ -1700,10 +1707,10 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 .s-select-list-wrapper .form-group {margin:0px;}
 .s-select-list-wrapper .input-group-btn .btn {border-bottom-left-radius: 0px;border-top-left-radius: 0px;}
 .s-search-results-wrapper .s-new-item {background-color:@black-5;}
-.s-select-list-wrapper input {border-right:0px;outline: none;}
 .s-select-list-wrapper input:focus {outline: none;-webkit-box-shadow: none;-moz-box-shadow: none;box-shadow: none;border-color:@black-20;}
 .s-select-list-wrapper .s-selected-item {border:1px solid @black-20;background-color:@black-10;padding: 5px 10px 5px 15px;margin-bottom:5px;.border-radius();}
-//.s-select-list-wrapper .dropdown.s-search-results-wrapper {display:none;}
+.s-select-list-wrapper .form-group.s-table-search {position: relative;}
+.s-select-list-wrapper .form-group.s-table-search i {position: absolute;top: 8px;right: 9px;font-size: 16px;color: #AAA;}
 
 /*-- List Select Component With Dropdown --*/
 .s-search-results-wrapper {width: 100%;.border-radius(0);top:-4px;}

@@ -2270,6 +2270,12 @@ tabel .s-table-header {
   text-align: right;
   padding-right: 0px;
 }
+.s-table-header-nav .s-table-view-options button.s-table-header-btn i {
+  font-size: 16px;
+  position: relative;
+  top: 3px;
+  width: 13px;
+}
 .s-select-wrapper select {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -2313,6 +2319,24 @@ tabel .s-table-header {
 }
 .s-filter-options .selectboxit {
   min-width: 120px;
+}
+.s-table-wrapper .s-table-header-title {
+  font-size: 14px;
+  margin: 0px;
+  padding: 0px;
+  margin-top: 12px;
+}
+.s-table-footer .s-table-footer-right {
+  text-align: right;
+}
+.s-table-footer .s-table-footer-right .s-page-show {
+  margin: 0px;
+}
+.s-table-footer .s-table-footer-right ul li {
+  vertical-align: top;
+}
+.s-table-footer .s-table-footer-right ul li .pagination {
+  margin: 0px;
 }
 .dropdown-toggle .fa-sort-desc:before {
   top: -2px;
@@ -4094,6 +4118,7 @@ tabel .s-table-header {
 }
 .s-filter-content-table-view .dataTables_info {
   margin-bottom: 15px;
+  display: inline-block;
 }
 .s-panel-header-info .dl-horizontal {
   margin-bottom: 0px;
@@ -4417,10 +4442,6 @@ a.disabled > i.hibachi-ui-radio-checked {
 .s-search-results-wrapper .s-new-item {
   background-color: #f2f2f2;
 }
-.s-select-list-wrapper input {
-  border-right: 0px;
-  outline: none;
-}
 .s-select-list-wrapper input:focus {
   outline: none;
   -webkit-box-shadow: none;
@@ -4439,6 +4460,16 @@ a.disabled > i.hibachi-ui-radio-checked {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
+}
+.s-select-list-wrapper .form-group.s-table-search {
+  position: relative;
+}
+.s-select-list-wrapper .form-group.s-table-search i {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  font-size: 16px;
+  color: #AAA;
 }
 /*-- List Select Component With Dropdown --*/
 .s-search-results-wrapper {
