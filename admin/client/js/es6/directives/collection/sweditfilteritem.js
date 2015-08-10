@@ -129,7 +129,6 @@ angular.module('slatwalladmin')
                     if (angular.isDefined(scope.selectedFilterProperty) && scope.selectedFilterProperty === null) {
                         scope.selectedFilterProperty = {};
                     }
-                    console.log(scope.selectedFilterProperty);
                     if (angular.isDefined(scope.selectedFilterProperty) && angular.isDefined(scope.selectedFilterProperty.selectedCriteriaType)) {
                         delete scope.selectedFilterProperty.selectedCriteriaType;
                     }
