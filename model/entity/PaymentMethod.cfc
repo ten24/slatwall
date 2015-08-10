@@ -213,19 +213,19 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 
 		return variables.paymentIntegrationOptions;
 	} 
+	
 	public any function getSubscriptionTermHasAutoPayFlagSet(){
 		var subscriptionTermSmartList = getService("SubscriptionService").getSubscriptionTermSmartList().getRecords();
-		var foundAutoPayFlagSet = false;
-		for (subscriptionTerm in subscriptionTermSmartList){
-			if (subscriptionTerm.getAutoPayFlag()){
-				foundAutoPayFlagSet = true;
-				break;
-			}
-		}
-		if (foundAutoPayFlagSet){
+		subscriptionTermSmartList.addFilter("autoPayFlag", 1);
+		var subscriptionTermsWithAutoPayFlagSetCount = subscriptionTermSmartList.getRecordsCount();
+		
+		if (subscriptionTermsWithAutoPayFlagSetCount){
+			//fails validation...
 			return false;
 		}
+		//passes validation
 		return true;
+		
 	}
 
 	// ============  END:  Non-Persistent Property Methods =================

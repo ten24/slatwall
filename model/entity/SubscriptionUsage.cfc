@@ -249,6 +249,8 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	public any function getTotalNumberOfSubscriptionOrderItems(){
 		if( hasSubscriptionOrderItems() ){
 			return arrayLen( getSubscriptionOrderItems() );
+		}else{
+			return 0;
 		}
 	}
 	
