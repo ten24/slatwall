@@ -78,24 +78,32 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	// Non-Persistent Properties
 
-	public string function getBalance(){ 
-		var transactions = this.getGiftCardTransactions(); 
-		var balance = "0"; 
-		for(var transaction in transactions){ 
+	public string function getBalance(){
+		var transactions = this.getGiftCardTransactions();
+		var balance = "0";
+		for(var transaction in transactions){
 			if(!isNull(transaction.getCreditAmount())){
-				balance = precisionEvaluate(balance + transaction.getCreditAmount()); 
-			} else if(!isNull(transaction.getDebitAmount())){ 
-				balance = precisionEvaluate(balance - transaction.getDebitAmount()); 	
+				balance = precisionEvaluate(balance + transaction.getCreditAmount());
+			} else if(!isNull(transaction.getDebitAmount())){
+				balance = precisionEvaluate(balance - transaction.getDebitAmount());
 			}
 		}
-		return balance; 
+		return balance;
 	}
-	
-	public boolean function isActive(){ 
-		if(val(this.getBalance()) > 0){ 
-			return true; 	
-		} else { 
-			return false; 	
+
+	public string function getEmailAddress(){
+		if(!isNull(this.getOwnerAccount())){
+			return this.getOwnerAccount().getEmailAddress();
+		} else {
+			return this.getOwnerEmailAddress();
+		}
+	}
+
+	public boolean function isActive(){
+		if(val(this.getBalance()) > 0){
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -122,7 +130,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		}
 		structDelete(variables, "giftCardExpirationTerm");
 	}
-	
+
 	// Original Order Item - Many - To - One
 	public void function setOriginalOrderItem(required any orderItem) {
 		variables.originalOrderItem = arguments.orderItem;
@@ -143,7 +151,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	// Owner Account (many-to-one)
 	public void function setOwnerAccount(required any ownerAccount) {
-		
+
 		variables.ownerAccount = arguments.ownerAccount;
 		if(isNew() or !arguments.ownerAccount.hasGiftCard( this )) {
 			arrayAppend(arguments.ownerAccount.getGiftCards(), this);
