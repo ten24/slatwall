@@ -94,6 +94,15 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="currentStatusCode" persistent="false";
 	property name="currentStatusType" persistent="false";
 	property name="subscriptionOrderItemName" persistent="false";
+	property name="initialSubscriptionOrderItem" persistant="false";
+	property name="initialOrderItem" persistant="false";
+	property name="initialOrder" persistant="false";
+	property name="initialSku" persistant="false";
+	property name="initialProduct" persistant="false";
+	property name="mostRecentSubscriptionOrderItem" persistant="false";
+	property name="mostRecentOrderItem" persistant="false";
+	property name="mostRecentOrder" persistant="false";
+	property name="totalNumberOfSubscriptionOrderItems" persistant="false";
 	
 	public boolean function isActive() {
 		if(!isNull(getCurrentStatus())) {
@@ -140,11 +149,12 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		
 		//Copy the shipping information from order fulfillment.
 		var orderFulfillment = orderItem.getOrderFulfillment();
-		setEmailAddress( orderFulfillment.getEmailAddress() );
-		setShippingAddress( orderFulfillment.getShippingAddress() );
-		setShippingAccountAddress( orderFulfillment.getAccountAddress() );
-		setShippingMethod( orderFulfillment.getShippingMethod() );
-	
+		if (!isNull(orderFulfillment)){
+			setEmailAddress( orderFulfillment.getEmailAddress() );
+			setShippingAddress( orderFulfillment.getShippingAddress() );
+			setShippingAccountAddress( orderFulfillment.getAccountAddress() );
+			setShippingMethod( orderFulfillment.getShippingMethod() );
+		}
 	}
 	
 	// ============ START: Non-Persistent Property Helper Methods =================
@@ -168,12 +178,12 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 	
 	public any function getSubscriptionOrderItemName() {
-		if(arrayLen(getSubscriptionOrderItems())) {
-			var subscriptionOrderItem = getSubscriptionOrderItems()[1];
-			if(	!isnull(subscriptionOrderItem.getOrderItem()) && !isnull(subscriptionOrderItem.getOrderItem().getSku()) && !isnull(subscriptionOrderItem.getOrderItem().getSku().getProduct()) ){
-				return subscriptionOrderItem.getOrderItem().getSku().getProduct().getProductName();
+		if( hasSubscriptionOrderItems() ) {
+			if( !isnull( getInitialProduct() ) ){
+				return getInitialProduct().getProductName();
 			}
 		}
+		return "";
 	}
 	
 	public any function hasSubscriptionOrderItems(){
@@ -185,38 +195,42 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	
 	public any function getInitialSubscriptionOrderItem(){
 		if( hasSubscriptionOrderItems() ){
-			return getSubscriptionOrderItems()[1];
+			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionUsageSmartList();
+			subscriptionSmartList.addFilter(propertyIdentifier="subscriptionOrderItem.subscriptionOrderItemType.systemCode", value="soitInitial");
+			return subscriptionSmartList.getRecords();
 		}
 	}
 	
 	public any function getInitialOrderItem(){
-		if( hasSubscriptionOrderItems() && !isNull( getSubscriptionOrderItems()[1].getOrderItem() )){
-			getSubscriptionOrderItems()[1].getOrderItem();
+		if( hasSubscriptionOrderItems() ){
+			getInitialSubscriptionOrderItem().getOrderItem();
 		}
 	}
 	
 	public any function getInitialSku(){
-		if( hasSubscriptionOrderItems() && !isNull(getSubscriptionOrderItems()[1].getOrderItem().getSku() )){
-			return getSubscriptionOrderItems()[1].getOrderItem().getSku();
+		if( hasSubscriptionOrderItems() ){
+			return getInitialOrderItem().getSku();
 		}
 	}
 	
 	public any function getInitialProduct(){
-		if( hasSubscriptionOrderItems() && !isNull( getSubscriptionOrderItems()[1].getOrderItem().getSku().getProduct() )){
+		if( hasSubscriptionOrderItems() ){
 			return getInitialSku().getProduct();
 		}
 	}
 	
 	public any function getInitialOrder(){
-		if( hasSubscriptionOrderItems() && !isNull( getSubscriptionOrderItems()[1].getOrderItem().getOrder() )){
-			return getSubscriptionOrderItems()[1].getOrderItem().getOrder();
+		if( hasSubscriptionOrderItems() ){
+			return getInitialOrderItem().getOrder();
 		}
 		
 	}
 	
 	public any function getMostRecentSubscriptionOrderItem(){
-		if( hasSubscriptionOrderItems() && !isNull( getSubscriptionOrderItems()[ getTotalNumberOfSubscriptionOrderItems() ] )){
-			return getSubscriptionOrderItems()[ getTotalNumberOfSubscriptionOrderItems() ];
+		if( hasSubscriptionOrderItems() ){
+			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionUsageSmartList();
+			subscriptionSmartList.addOrder("createdDateTime|DESC");
+			return subscriptionSmartList.getRecords();
 		}
 	}
 
@@ -235,8 +249,6 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	public any function getTotalNumberOfSubscriptionOrderItems(){
 		if( hasSubscriptionOrderItems() ){
 			return arrayLen( getSubscriptionOrderItems() );
-		}else {
-			return 0;
 		}
 	}
 	

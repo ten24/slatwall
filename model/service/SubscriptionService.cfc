@@ -401,7 +401,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			order = getOrderService().processOrder( order, itemData, 'addOrderItem' );
 			
 			// Grab the shipping information and email address from the subscription usage.
-
 			// If there is a shippingMethod copy it over
 			if(!isNull(arguments.subscriptionUsage.getShippingMethod())) {
 				order.getOrderFulfillments()[1].setShippingMethod(arguments.subscriptionUsage.getShippingMethod());	

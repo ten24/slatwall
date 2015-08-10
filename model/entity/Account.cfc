@@ -47,7 +47,7 @@ Notes:
 
 */
 component displayname="Account" entityname="SlatwallAccount" table="SwAccount" persistent="true" output="false" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="accountService" hb_permission="this" hb_processContexts="addAccountLoyalty,addAccountPayment,createPassword,changePassword,create,forgotPassword,lock,login,logout,resetPassword,setupInitialAdmin,unlock,updatePassword,generateAuthToken" {
-
+ 
 	// Persistent Properties
 	property name="accountID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="superUserFlag" ormtype="boolean";
@@ -695,27 +695,5 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 	}
 
 	// ==================  END:  Deprecated Methods ========================
-	//CUSTOM FUNCTIONS BEGIN 
-	public any function test1 () {
-		
-		return true;
-	}
 	
-	public any function test2 () {
-		
-		return true;
-	}
-	
-	public any function test3 () {
-		
-		return true;
-	}
-	
-	
-	/*
-		test
-	*/
-		
-	
-	//CUSTOM FUNCTIONS END 
 }
