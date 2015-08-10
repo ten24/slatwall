@@ -66,10 +66,8 @@ Notes:
 		<hb:HibachiPropertyRow>
 			<hb:HibachiPropertyList>
 				
-				<hb:HibachiPropertyDisplay object="#rc.productschedule#" property="eventStartTime" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.productschedule#" property="eventEndTime" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.productschedule#" property="reservationStartTime" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.productschedule#" property="reservationEndTime" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.productschedule#" property="scheduleStartDate" edit="#rc.edit#">
+				<hb:HibachiPropertyDisplay object="#rc.productschedule#" property="scheduleEndDate" edit="#rc.edit#">
 				
 			</hb:HibachiPropertyList>
 	
