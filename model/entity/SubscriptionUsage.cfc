@@ -149,10 +149,12 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		
 		//Copy the shipping information from order fulfillment.
 		var orderFulfillment = orderItem.getOrderFulfillment();
-		setEmailAddress( orderFulfillment.getEmailAddress() );
-		setShippingAddress( orderFulfillment.getShippingAddress() );
-		setShippingAccountAddress( orderFulfillment.getAccountAddress() );
-		setShippingMethod( orderFulfillment.getShippingMethod() );
+		if (!isNull(orderFulfillment)){
+			setEmailAddress( orderFulfillment.getEmailAddress() );
+			setShippingAddress( orderFulfillment.getShippingAddress() );
+			setShippingAccountAddress( orderFulfillment.getAccountAddress() );
+			setShippingMethod( orderFulfillment.getShippingMethod() );
+		}
 	}
 	
 	// ============ START: Non-Persistent Property Helper Methods =================
@@ -195,42 +197,55 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		if( hasSubscriptionOrderItems() ){
 			return getSubscriptionOrderItems()[1];
 		}
-		return "";
 	}
 	
 	public any function getInitialOrderItem(){
-		return getInitialSubscriptionOrderItem().getOrderItem();
+		if( hasSubscriptionOrderItems() ){
+			getSubscriptionOrderItems()[1].getOrderItem();
+		}
 	}
 	
 	public any function getInitialSku(){
-		return getInitialOrderItem().getSku();
+		if( hasSubscriptionOrderItems() ){
+			return getInitialOrderItem().getSku();
+		}
 	}
 	
 	public any function getInitialProduct(){
-		return getInitialSku().getProduct();
+		if( hasSubscriptionOrderItems() ){
+			return getInitialSku().getProduct();
+		}
 	}
 	
 	public any function getInitialOrder(){
-		return getInitialOrderItem().getOrder();
+		if( hasSubscriptionOrderItems() ){
+			return getInitialOrderItem().getOrder();
+		}
+		
 	}
 	
 	public any function getMostRecentSubscriptionOrderItem(){
 		if( hasSubscriptionOrderItems() ){
 			return getSubscriptionOrderItems()[ getTotalNumberOfSubscriptionOrderItems() ];
 		}
-		return "";
 	}
 
 	public any function getMostRecentOrderItem(){
-		return getMostRecentSubscriptionOrderItem().getOrderItem();
+		if( hasSubscriptionOrderItems() && getTotalNumberOfSubscriptionOrderItems() > 1){
+			return getMostRecentSubscriptionOrderItem().getOrderItem();
+		}
 	}
 	
 	public any function getMostRecentOrder(){
-		return getMostRecentOrderItem().getOrder();
+		if( hasSubscriptionOrderItems() && getTotalNumberOfSubscriptionOrderItems() > 1){
+			return getMostRecentOrderItem().getOrder();
+		}
 	}
 	
 	public any function getTotalNumberOfSubscriptionOrderItems(){
-		return arrayLen( getSubscriptionOrderItems() );
+		if( hasSubscriptionOrderItems() ){
+			return arrayLen( getSubscriptionOrderItems() );
+		}
 	}
 	
 	// ============  END:  Non-Persistent Property Methods =================

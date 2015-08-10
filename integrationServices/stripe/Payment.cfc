@@ -61,7 +61,6 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 	
 	public any function processCreditCard(required any requestBean){
 		var responseBean = new Slatwall.model.transient.payment.CreditCardTransactionResponseBean();
-		
 		// Notes for future reference
 		// inquiry, void, credit, receive, authorize, authorizeAndCharge, chargePreAuthorization, generateToken
 		// Retrieve URL "#setting(apiUrl)#/#setting(apiVersion)#/charges/${chargeId}"
@@ -107,7 +106,6 @@ component accessors="true" output="false" displayname="Stripe" implements="Slatw
 			
 			// attach card data to request
 			populateRequestParamsWithCardInfo(requestBean, createTokenRequest);
-			
 			responseData = deserializeResponse(createTokenRequest.send().getPrefix());
 			
 			// populate response
