@@ -400,18 +400,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			};
 			order = getOrderService().processOrder( order, itemData, 'addOrderItem' );
 			
-			// Grab the shipping information and email address from the subscription usage.
+			// Grab the original order fulfillment
+			var originalOrderFulfillment = arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getOrderFulfillment();
+			
 			// If there is a shippingMethod copy it over
 			if(!isNull(arguments.subscriptionUsage.getShippingMethod())) {
 				order.getOrderFulfillments()[1].setShippingMethod(arguments.subscriptionUsage.getShippingMethod());	
+ 			}
+ 
+ 			// If there was originally a shippingAddress copy it over a duplicate
+			if(!isNull(originalOrderFulfillment.getShippingAddress()) && !originalOrderFulfillment.getShippingAddress().getNewFlag()) {
+				order.getOrderFulfillments()[1].setShippingAddress( originalOrderFulfillment.getShippingAddress().copyAddress() );
 			}
-			// If there is a shippingAddress copy it over a duplicate
-			if(!isNull(arguments.subscriptionUsage.getShippingAddress()) && !arguments.subscriptionUsage.getShippingAddress().getNewFlag()) {
-				order.getOrderFulfillments()[1].setShippingAddress( arguments.subscriptionUsage.getShippingAddress().copyAddress() );	
-			}
-			// If there is an email address copy it over
-			if(!isNull(arguments.subscriptionUsage.getEmailAddress())) {
-				order.getOrderFulfillments()[1].setEmailAddress(arguments.subscriptionUsage.getEmailAddress());	
+			
+			// If there was originally an email address copy it over
+			if(!isNull(originalOrderFulfillment.getEmailAddress())) {
+				order.getOrderFulfillments()[1].setEmailAddress(originalOrderFulfillment.getEmailAddress());
 			}
 			
 			// Make sure that the orderItem was added to the order without issue

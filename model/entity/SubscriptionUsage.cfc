@@ -187,7 +187,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 	
 	public any function hasSubscriptionOrderItems(){
-		if ( arrayLen( getSubscriptionOrderItems( ) ) ) {
+		if ( arrayLen( getSubscriptionOrderItems() ) ) {
 			return true;
 		}
 		return false;
@@ -195,27 +195,42 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	
 	public any function getInitialSubscriptionOrderItem(){
 		if( hasSubscriptionOrderItems() ){
-			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionUsageSmartList();
-			subscriptionSmartList.addFilter(propertyIdentifier="subscriptionOrderItem.subscriptionOrderItemType.systemCode", value="soitInitial");
+			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionOrderItemSmartList();
+			subscriptionSmartList.addFilter("subscriptionOrderItemType.systemCode", "soitInitial");
 			return subscriptionSmartList.getRecords();
 		}
 	}
 	
 	public any function getInitialOrderItem(){
+		
 		if( hasSubscriptionOrderItems() ){
-			return getInitialSubscriptionOrderItem().getOrderItem();
+			var initialSubscriptionOrderItem = getInitialSubscriptionOrderItem();
+			
+			if(!isNull(initialSubscriptionOrderItem)){
+				var orderitem = initialSubscriptionOrderItem[1].getOrderItem();	
+				return orderitem;
+			}
 		}
 	}
 	
 	public any function getInitialSku(){
 		if( hasSubscriptionOrderItems() ){
-			return getInitialOrderItem().getSku();
+			var initialOrderItem = getInitialOrderItem();
+			
+			if(!isNull(initialOrderItem)){
+				return initialOrderItem.getSku();	
+			}
+			
 		}
 	}
 	
 	public any function getInitialProduct(){
 		if( hasSubscriptionOrderItems() ){
-			return getInitialSku().getProduct();
+			var initialSku = getInitialSku();
+			
+			if(!isNull(initialSku)){
+				return initialSku.getProduct();	
+			}
 		}
 	}
 	
@@ -228,7 +243,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	
 	public any function getMostRecentSubscriptionOrderItem(){
 		if( hasSubscriptionOrderItems() ){
-			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionUsageSmartList();
+			var subscriptionSmartList = getService('SubscriptionService').getSubscriptionOrderItemSmartList();
 			subscriptionSmartList.addOrder("createdDateTime|DESC");
 			return subscriptionSmartList.getRecords();
 		}
