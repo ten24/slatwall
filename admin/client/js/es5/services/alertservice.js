@@ -62,11 +62,8 @@ var slatwalladmin;
         return AlertService;
     })();
     slatwalladmin.AlertService = AlertService;
-})(slatwalladmin || (slatwalladmin = {}));
-var slatwallAdmin;
-(function (slatwallAdmin) {
     angular.module('slatwalladmin')
         .service('alertService', AlertService);
-})(slatwallAdmin || (slatwallAdmin = {}));
+})(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../services/alertservice.js.map
