@@ -107,16 +107,15 @@ component entityname="SlatwallSubscriptionTerm" table="SwSubscriptionTerm" persi
 		
 		var paymentMethodSmartList = getService('PaymentService').getPaymentMethodSmartList();
 		paymentMethodSmartList.addFilter('activeFlag', 1);
-		var activePaymentMethods = paymentMethodSmartList.getRecords();
+		paymentMethodSmartList.addFilter('allowSaveFlag', 1);
+		var paymentMethodsThatAllowAccountsToSave = paymentMethodSmartList.getRecordsCount();
 		
-		var foundPaymentMethodThatAllowsAccountsToSave = false;
-		for (var paymentMethod in activePaymentMethods){
-			if (paymentMethod.getAllowSaveFlag()){
-				foundPaymentMethodThatAllowsAccountsToSave = true;
-				break;
-			}
+		if (paymentMethodsThatAllowAccountsToSave){
+			return true;
 		}
-		return foundPaymentMethodThatAllowsAccountsToSave;
+		else{
+			return false;
+		}
 	}
 	
 }

@@ -203,7 +203,7 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	
 	public any function getInitialOrderItem(){
 		if( hasSubscriptionOrderItems() ){
-			getInitialSubscriptionOrderItem().getOrderItem();
+			return getInitialSubscriptionOrderItem().getOrderItem();
 		}
 	}
 	
