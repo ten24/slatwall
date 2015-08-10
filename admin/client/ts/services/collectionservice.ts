@@ -1,3 +1,5 @@
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
 /*collection service is used to maintain the state of the ui*/
 module slatwalladmin{
     export class CollectionService extends BaseService{

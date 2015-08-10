@@ -313,7 +313,7 @@
 										swprid:'',
 									password:'',
 									passwordConfirm:'',
-									accountPasswordResetID:"9868e845b8d214f869d1740cec632e77",
+									accountPasswordResetID:"a55b11a4bcfd0a868d40a093de01e867",
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
@@ -480,7 +480,7 @@
                 	accountEmailAddressID:'',
 										emailAddress:null,
 									verifiedFlag:0,
-									verificationCode:'fa4e05e90fbc0f22179a910315f28e75',
+									verificationCode:'fd266314c71f028096a31d843f180d21',
 										remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -2020,7 +2020,7 @@
                 	defaultValues['Audit'] = {
                 	auditID:'',
 										auditType:null,
-									auditDateTime:'1439233984997',
+									auditDateTime:'1439238758549',
 										auditArchiveStartDateTime:null,
 									auditArchiveEndDateTime:null,
 									auditArchiveCreatedDateTime:null,
@@ -3291,7 +3291,7 @@
                 angular.forEach(entities,function(entity){
                 	$delegate['get'+entity.className] = function(options){
 						var entityInstance = $delegate.newEntity(entity.className);
-						var entityDataPromise = $delegate.getEntity(entity.className.toLowerCase(),options);
+						var entityDataPromise = $delegate.getEntity(entity.className,options);
 						entityDataPromise.then(function(response){
 							
 							if(angular.isDefined(response.processData)){
@@ -3313,7 +3313,7 @@
 					 
 					$delegate['get'+entity.className] = function(options){
 						var entityInstance = $delegate.newEntity(entity.className);
-						var entityDataPromise = $delegate.getEntity(entity.className.toLowerCase(),options);
+						var entityDataPromise = $delegate.getEntity(entity.className,options);
 						entityDataPromise.then(function(response){
 							
 							if(angular.isDefined(response.processData)){
@@ -3474,8 +3474,9 @@
 										
 										
 										_jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
-										
+
 											var thisEntityInstance = this;
+
 											if(angular.isDefined(this['$$get'+this.$$getIDName().charAt(0).toUpperCase()+this.$$getIDName().slice(1)]())){
 												var options = {
 													columnsConfig:angular.toJson([
@@ -3494,7 +3495,7 @@
 															{
 																"propertyIdentifier":"_"+this.metaData.className.toLowerCase()+"."+this.$$getIDName(),
 																"comparisonOperator":"=",
-																"value":this['$$get'+this.$$getIDName()]
+																"value":this.$$getID()
 															}
 														]
 													}]),
@@ -3567,6 +3568,7 @@
 									
 									
 										_jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(){
+
 										
 										var entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
 										var metaData = this.metaData;
@@ -3614,6 +3616,8 @@
 									
 									
 										_jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
+										console.log('test');
+											console.log(this);
 
 										var thisEntityInstance = this;
 										if(angular.isDefined(this['$$get'+this.$$getIDName().charAt(0).toUpperCase()+this.$$getIDName().slice(1)])){
@@ -3623,7 +3627,7 @@
 														{
 															"propertyIdentifier":"_"+property.cfc.toLowerCase()+"."+property.fkcolumn.replace('ID','')+"."+this.$$getIDName(),
 															"comparisonOperator":"=",
-															"value":this['$$get'+this.$$getIDName()]
+															"value":this.$$getID()
 														}
 													]
 												}]),

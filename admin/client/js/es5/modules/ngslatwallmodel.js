@@ -265,7 +265,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
-                    accountPasswordResetID: "f3582a35cdb89fa86d81d8e714d1818d",
+                    accountPasswordResetID: "9c5bfd6ffe28218c49193b07780bb7ca",
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
@@ -414,7 +414,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
-                    verificationCode: 'fa1a5134922cf14ed995fc163b65ec96',
+                    verificationCode: 'fcd84440deaeca380fc69ddfa5b44e6f',
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -1782,7 +1782,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
-                    auditDateTime: '1439233646307',
+                    auditDateTime: '1439238246756',
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -2908,7 +2908,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                 angular.forEach(entities, function (entity) {
                     $delegate['get' + entity.className] = function (options) {
                         var entityInstance = $delegate.newEntity(entity.className);
-                        var entityDataPromise = $delegate.getEntity(entity.className.toLowerCase(), options);
+                        var entityDataPromise = $delegate.getEntity(entity.className.charAt(0).toLowerCase() + entity.className.slice(1), options);
                         entityDataPromise.then(function (response) {
                             if (angular.isDefined(response.processData)) {
                                 entityInstance.$$init(response.data);
@@ -3084,7 +3084,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                                                                 {
                                                                     "propertyIdentifier": "_" + this.metaData.className.toLowerCase() + "." + this.$$getIDName(),
                                                                     "comparisonOperator": "=",
-                                                                    "value": this['$$get' + this.$$getIDName()]
+                                                                    "value": this.$$getID()
                                                                 }
                                                             ]
                                                         }]),
@@ -3176,6 +3176,8 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                                             return entityInstance;
                                         };
                                         _jsEntities[entity.className].prototype['$$get' + property.name.charAt(0).toUpperCase() + property.name.slice(1)] = function () {
+                                            console.log('test');
+                                            console.log(this);
                                             var thisEntityInstance = this;
                                             if (angular.isDefined(this['$$get' + this.$$getIDName().charAt(0).toUpperCase() + this.$$getIDName().slice(1)])) {
                                                 var options = {
@@ -3184,7 +3186,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                                                                 {
                                                                     "propertyIdentifier": "_" + property.cfc.toLowerCase() + "." + property.fkcolumn.replace('ID', '') + "." + this.$$getIDName(),
                                                                     "comparisonOperator": "=",
-                                                                    "value": this['$$get' + this.$$getIDName()]
+                                                                    "value": this.$$getID()
                                                                 }
                                                             ]
                                                         }]),

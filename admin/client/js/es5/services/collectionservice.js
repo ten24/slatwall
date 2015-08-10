@@ -4,6 +4,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     __.prototype = b.prototype;
     d.prototype = new __();
 };
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
 /*collection service is used to maintain the state of the ui*/
 var slatwalladmin;
 (function (slatwalladmin) {
