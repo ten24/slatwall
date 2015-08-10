@@ -94,15 +94,6 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	property name="currentStatusCode" persistent="false";
 	property name="currentStatusType" persistent="false";
 	property name="subscriptionOrderItemName" persistent="false";
-	property name="initialSubscriptionOrderItem" persistant="false";
-	property name="initialOrderItem" persistant="false";
-	property name="initialOrder" persistant="false";
-	property name="initialSku" persistant="false";
-	property name="initialProduct" persistant="false";
-	property name="mostRecentSubscriptionOrderItem" persistant="false";
-	property name="mostRecentOrderItem" persistant="false";
-	property name="mostRecentOrder" persistant="false";
-	property name="totalNumberOfSubscriptionOrderItems" persistant="false";
 	
 	public boolean function isActive() {
 		if(!isNull(getCurrentStatus())) {
@@ -149,12 +140,11 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 		
 		//Copy the shipping information from order fulfillment.
 		var orderFulfillment = orderItem.getOrderFulfillment();
-		if (!isNull(orderFulfillment)){
-			setEmailAddress( orderFulfillment.getEmailAddress() );
-			setShippingAddress( orderFulfillment.getShippingAddress() );
-			setShippingAccountAddress( orderFulfillment.getAccountAddress() );
-			setShippingMethod( orderFulfillment.getShippingMethod() );
-		}
+		setEmailAddress( orderFulfillment.getEmailAddress() );
+		setShippingAddress( orderFulfillment.getShippingAddress() );
+		setShippingAccountAddress( orderFulfillment.getAccountAddress() );
+		setShippingMethod( orderFulfillment.getShippingMethod() );
+	
 	}
 	
 	// ============ START: Non-Persistent Property Helper Methods =================
@@ -178,12 +168,12 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 	
 	public any function getSubscriptionOrderItemName() {
-		if( hasSubscriptionOrderItems() ) {
-			if( !isnull( getInitialProduct() ) ){
-				return getInitialProduct().getProductName();
+		if(arrayLen(getSubscriptionOrderItems())) {
+			var subscriptionOrderItem = getSubscriptionOrderItems()[1];
+			if(	!isnull(subscriptionOrderItem.getOrderItem()) && !isnull(subscriptionOrderItem.getOrderItem().getSku()) && !isnull(subscriptionOrderItem.getOrderItem().getSku().getProduct()) ){
+				return subscriptionOrderItem.getOrderItem().getSku().getProduct().getProductName();
 			}
 		}
-		return "";
 	}
 	
 	public any function hasSubscriptionOrderItems(){
@@ -200,32 +190,32 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	}
 	
 	public any function getInitialOrderItem(){
-		if( hasSubscriptionOrderItems() ){
+		if( hasSubscriptionOrderItems() && !isNull( getSubscriptionOrderItems()[1].getOrderItem() )){
 			getSubscriptionOrderItems()[1].getOrderItem();
 		}
 	}
 	
 	public any function getInitialSku(){
-		if( hasSubscriptionOrderItems() ){
-			return getInitialOrderItem().getSku();
+		if( hasSubscriptionOrderItems() && !isNull(getSubscriptionOrderItems()[1].getOrderItem().getSku() )){
+			return getSubscriptionOrderItems()[1].getOrderItem().getSku();
 		}
 	}
 	
 	public any function getInitialProduct(){
-		if( hasSubscriptionOrderItems() ){
+		if( hasSubscriptionOrderItems() && !isNull( getSubscriptionOrderItems()[1].getOrderItem().getSku().getProduct() )){
 			return getInitialSku().getProduct();
 		}
 	}
 	
 	public any function getInitialOrder(){
-		if( hasSubscriptionOrderItems() ){
-			return getInitialOrderItem().getOrder();
+		if( hasSubscriptionOrderItems() && !isNull( getSubscriptionOrderItems()[1].getOrderItem().getOrder() )){
+			return getSubscriptionOrderItems()[1].getOrderItem().getOrder();
 		}
 		
 	}
 	
 	public any function getMostRecentSubscriptionOrderItem(){
-		if( hasSubscriptionOrderItems() ){
+		if( hasSubscriptionOrderItems() && !isNull( getSubscriptionOrderItems()[ getTotalNumberOfSubscriptionOrderItems() ] )){
 			return getSubscriptionOrderItems()[ getTotalNumberOfSubscriptionOrderItems() ];
 		}
 	}
@@ -245,6 +235,8 @@ component entityname="SlatwallSubscriptionUsage" table="SwSubsUsage" persistent=
 	public any function getTotalNumberOfSubscriptionOrderItems(){
 		if( hasSubscriptionOrderItems() ){
 			return arrayLen( getSubscriptionOrderItems() );
+		}else {
+			return 0;
 		}
 	}
 	
