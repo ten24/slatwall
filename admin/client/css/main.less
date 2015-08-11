@@ -469,7 +469,7 @@ body.s-login-screen {background-image: url(/assets/images/login-bg.jpg);backgrou
 @media only screen and (max-width: 992px) {
     body {padding:0px /*Remove for responsive*/;}
 }
-.form-control::-webkit-input-placeholder {color: #999;}
+.form-control::-webkit-input-placeholder {color: #B9B8B8;}
 .s-loading-icon-fullwidth {width: 100%; text-align: center;}
 .s-loading-icon-fullwidth i {font-size: 40px;}
 hr {border-color:@black-20;}
@@ -484,6 +484,9 @@ a:hover {color: @link-color-hover;text-decoration:none;}
 .table-responsive .s-table-checkbox a i {margin: 0px;}
 .table-responsive .select {width:65px;}
 .table-responsive .s-table-select {text-align: center;}
+.table-responsive .s-table-input-element {padding: 0px 11px;vertical-align: middle;}
+.table-responsive .s-table-input-element select {min-width: 50px;width: auto;font-size: 12px;}
+.table-responsive .s-table-input-element input {font-size: 12px;}
 .table-responsive .s-table-select a i {margin:0px;}
 .table-responsive .s-table-sort {width: 30px;text-align: center;}
 .table-responsive .dropdown a.dropdown-toggle {color: #666;font-weight:600;}
@@ -1489,8 +1492,25 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-search-filter .s-add-info-dropdown form {background-color: #FFF;border: 1px solid #DDD;padding:15px;border-top:0px;background-color: #FBFBFB;}
 .s-search-filter .s-add-info-dropdown h5 {border-bottom: 1px solid #ddd;margin-top:0px;}
 .s-search-filter .s-add-info-dropdown button {width: auto;}
+.s-search-filter .s-character-count {color: #999;text-align: right;margin-top: 5px;}
 .s-search-filter .s-current-selection-item {position: absolute;top: 2px;left: 2px;z-index: 3000;background-color: #FFF;padding: 5px 0px 5px 9px;}
 .s-add-content .s-workflow-checkbox {display: inline-block;width: 100%;}
+
+.s-search-filter.s-gift-card > .input-group {width: 100%;display:block;}
+.s-search-filter.s-gift-card > .input-group input {border-radius: 2px;border-width: 2px;border-color: #AAA;}
+.s-search-filter.s-gift-card .dropdown-menu > li > a:hover, .s-search-filter.s-gift-card .dropdown-menu > li > a:focus {background-color: #FBFBFB;color: #000 !important;}
+.s-search-filter.s-gift-card .s-add-info-dropdown form {display: inline-block;width: 100%;}
+.s-search-filter.s-gift-card .s-search {position: relative;}
+.s-search-filter.s-gift-card .s-search i {position: absolute;top: 7px;right: 8px;z-index: 2000;color: #AAA;font-size: 15px;}
+.s-gift-card-table .admin {text-align: right !important;}
+.s-gift-card-table .s-save-row {background-color: #DFF0D8;}
+.s-gift-card-table .s-save-row .btn-save {color: #FFF;background: #3C763D!important;}
+.s-gift-card-table .s-save-row .btn-save:hover {color: #FFF;background: #4E884F!important;}
+.s-gift-card-table .s-save-row:hover {background-color: #DFF0D8 !important;}
+.s-gift-card-table .s-save-row:hover td {background: none !important;}
+.s-gift-card-table .alert {margin-bottom: 0px;}
+
+.s-search-filter.s-gift-card .input-group .s-current-selection-item a {margin-left: 8px;}
 
 .s-add-bundle-type {display:none;}
 .s-search-filter .s-search-options {display:none;}
