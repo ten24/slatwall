@@ -353,6 +353,10 @@ a:hover {
 .table-responsive .s-table-input-element select {
   min-width: 50px;
   width: auto;
+  font-size: 12px;
+}
+.table-responsive .s-table-input-element input {
+  font-size: 12px;
 }
 .table-responsive .s-table-select a i {
   margin: 0px;
