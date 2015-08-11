@@ -69,7 +69,7 @@ Notes:
 			<strong>Debugging Details: </strong>Please Copy & Paste these debugging details to any issues submitted<br /><br />
 			<textarea name="debugDetails" style="width:100%; height:500px;">
 		Operating System:	#server.os.name#
-		CFML Server:		#server.coldfusion.productName#: <cfif structKeyExists(server,"railo")>#server.railo.version#<cfelse>#server.coldfusion.productVersion#</cfif>
+		CFML Server:		#server.coldfusion.productName#: <cfif structKeyExists(server,"railo")>#server.railo.version#<cfelseif structKeyExists(server,'lucee')>#server.lucee.version#<cfelse>#server.coldfusion.productVersion#</cfif>
 		DB Dialect: 		#$.slatwall.getApplicationValue('databaseType')#
 		Slatwall Version:	#$.slatwall.getApplicationValue('version')#
 			</textarea>
