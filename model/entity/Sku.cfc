@@ -251,8 +251,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	//@hint Generates the image path based upon product code, and image options for this sku
 	public string function generateImageFileName() {
 		if(getImageExistsFlag()){
-			//-1 is a placeholder to prevent existing product images from being overridden
-			return getService("HibachiUtilityService").createSEOString(getProduct().getProductName()) & "-1.#getProduct().setting('productImageDefaultExtension')#";
+			var ext = "-1.#getProduct().setting('productImageDefaultExtension')#"; 
+			var name = getService("HibachiUtilityService").createSEOString(getProduct().getProductName())
+			var number = 0; 
+			var path = "#getHibachiScope().getBaseImageURL()#/product/default/"; 
+
+			while(fileExists(path & name & "-" & number & ext)){
+				number++; 
+			}
+
+			return path & name & "-" & number & ext ;
 		}
 		return getService("HibachiUtilityService").createSEOString(getProduct().getProductName()) & ".#getProduct().setting('productImageDefaultExtension')#";
 	}
