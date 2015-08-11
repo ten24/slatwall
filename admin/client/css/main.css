@@ -4222,6 +4222,12 @@ a.disabled > i.hibachi-ui-radio-checked {
   z-index: 3001;
   background-color: #f2f2f2 !important;
 }
+.s-dialog-container > .s-swipe-background {
+  position: fixed;
+  background-color: #F2F2F2;
+  height: 100vh;
+  width: 100%;
+}
 .s-dialog-container .s-dialog-content {
   position: absolute;
   top: 40px;

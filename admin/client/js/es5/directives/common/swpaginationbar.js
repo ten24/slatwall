@@ -13,7 +13,7 @@ angular.module('slatwalladmin')
                 currentPage: "=",
                 pageStart: "&",
                 pageEnd: "&",
-                pageShowOptions: "=",
+                pageShowOptions: "=?",
                 recordsCount: "&",
                 collection: "=",
                 autoScroll: "=",
