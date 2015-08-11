@@ -289,7 +289,7 @@
 			return arguments.filename;
 		}
 
-		public string function createSEOString(require string toFormat){
+		public string function createSEOString(required string toFormat){
 
 			//take out all special characters except -
 			arguments.toFormat = reReplace(lcase(trim(arguments.toFormat)), "[^a-z0-9 \-]", "", "all");
