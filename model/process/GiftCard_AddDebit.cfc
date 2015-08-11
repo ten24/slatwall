@@ -43,5 +43,12 @@ Notes:
 */
 component output="false" accessors="true" extends="HibachiProcess"{
 
-
+	 // Injected Entity
+	 property name="giftCard";
+	 property name="orderPayments" cfc="OrderPayment" fieldtype="many-to-one"; 
+	 property name="orderItems" cfc="OrderItem" fieldtype="one-to-many"; 
+	 
+	 // Data Property 
+	 property name="debitAmount";
+	 
 }

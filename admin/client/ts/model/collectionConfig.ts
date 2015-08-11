@@ -58,6 +58,11 @@ module slatwalladmin{
 
 
         loadJson(jsonCollection){
+            //if json then make a javascript object else use the javascript object
+            if(angular.isString(jsonCollection)){
+                jsonCollection = angular.fromJson(jsonCollection);    
+            }
+            
             this.baseEntityAlias = jsonCollection.baseEntityAlias;
             this.baseEntityName = jsonCollection.baseEntityName;
             this.columns = jsonCollection.columns;

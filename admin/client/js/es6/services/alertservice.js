@@ -60,11 +60,8 @@ var slatwalladmin;
         '$timeout'
     ];
     slatwalladmin.AlertService = AlertService;
-})(slatwalladmin || (slatwalladmin = {}));
-var slatwalladmin;
-(function (slatwalladmin) {
     angular.module('slatwalladmin')
-        .service('alertService', slatwalladmin.AlertService);
+        .service('alertService', AlertService);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../services/alertservice.js.map

@@ -45,16 +45,32 @@ component output="false" accessors="true" extends="HibachiProcess"{
 	
 	// Injected Entity
 	property name="giftCard";	
+	property name="giftCardExpirationTerm" cfc="Term" fieldtype="many-to-one";
+	property name="originalOrderItem" cfc="OrderItem"  fieldtype="many-to-one";
+	property name="orderPayments" cfc="OrderPayment" fieldtype="one-to-many"; 
 	
 	// Data Properties
 	property name="giftCardID"; 
 	property name="expirationDate";
 	property name="giftCardCode"; 
 	property name="giftCardPin"; 
-	property name="ownerAccount"; 
+	property name="ownerAccount" cfc="Account"; 
 	property name="ownerFirstName"; 
 	property name="ownerLastName"; 
 	property name="ownerEmailAddress"; 
+	property name="creditGiftCard"; 
 	
+	//Overridden Getters
+	public string function getGiftCardCode(){ 
+		if(getService("settingService").getSettingValue("skuGiftCardAutoGenerateCode")==1){
+			return getService("hibachiUtilityService").generateRandomID(getService("settingService").getSettingValue("skuGiftCardCodeLength"));
+		} else { 
+			return this.giftCardCode;
+		}
+	}
+	
+	public any function getExpirationDate(){
+		return this.getGiftCardExpirationTerm().getEndDate();
+	}	
 	
 }

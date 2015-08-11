@@ -66,7 +66,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			arrayAppend(detailTabs,tab);
 		}    
 		
-		arguments.rc.apiResponse.content.data = detailTabs;
+		arguments.rc.apiResponse.content['data'] = detailTabs;
 	}
 	
 	/**
@@ -87,7 +87,7 @@ component output="false" accessors="true" extends="HibachiController" {
     				imageWidth  = 150;
  			}
 			arguments.rc.apiResponse.content = {};
-			arguments.rc.apiResponse.content.resizedImagePaths = [];
+			arguments.rc.apiResponse.content['resizedImagePaths'] = [];
 			var skus = [];
 			
 			//smart list to load up sku array
@@ -98,7 +98,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				var skus = skuSmartList.getRecords();
 				
 				for  (var sku in skus){
-		    		ArrayAppend(arguments.rc.apiResponse.content.resizedImagePaths, sku.getResizedImagePath(width=imageWidth, height=imageHeight));         
+		    		ArrayAppend(arguments.rc.apiResponse.content['resizedImagePaths'], sku.getResizedImagePath(width=imageWidth, height=imageHeight));         
 				}
 			}
  	}
@@ -310,7 +310,6 @@ component output="false" accessors="true" extends="HibachiController" {
 			create a base default properties function that can be overridden at the entity level via function
 			handle accessing collections by id
 		*/
-		
 		param name="arguments.rc.propertyIdentifiers" default="";
 		//first check if we have an entityName value
 		if(!structKeyExists(arguments.rc, "entityName")) {

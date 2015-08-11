@@ -64,6 +64,8 @@ Notes:
 <cfif !request.slatwallScope.hasApplicationValue('ngSlatwallModel')>
 	<cfsavecontent variable="local.jsOutput">
 		<cfoutput>
+			/// <reference path="../../../../client/typings/tsd.d.ts" />
+			/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 			angular.module('ngSlatwallModel',['ngSlatwall']).config(['$provide',function ($provide
 			 ) {
 	    	<!--- js entity specific code here --->
@@ -173,7 +175,7 @@ Notes:
                 angular.forEach(entities,function(entity){
                 	$delegate['get'+entity.className] = function(options){
 						var entityInstance = $delegate.newEntity(entity.className);
-						var entityDataPromise = $delegate.getEntity(entity.className.toLowerCase(),options);
+						var entityDataPromise = $delegate.getEntity(entity.className,options);
 						entityDataPromise.then(function(response){
 							<!--- Set the values to the values in the data passed in, or API promisses, excluding methods because they are prefaced with $ --->
 							if(angular.isDefined(response.processData)){
@@ -195,7 +197,7 @@ Notes:
 					 <!---decorate $delegate --->
 					$delegate['get'+entity.className] = function(options){
 						var entityInstance = $delegate.newEntity(entity.className);
-						var entityDataPromise = $delegate.getEntity(entity.className.toLowerCase(),options);
+						var entityDataPromise = $delegate.getEntity(entity.className,options);
 						entityDataPromise.then(function(response){
 							<!--- Set the values to the values in the data passed in, or API promisses, excluding methods because they are prefaced with $ --->
 							if(angular.isDefined(response.processData)){
@@ -367,8 +369,9 @@ Notes:
 										}--->
 										<!---get many-to-one  via REST--->
 										_jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
-										
+
 											var thisEntityInstance = this;
+
 											if(angular.isDefined(this['$$get'+this.$$getIDName().charAt(0).toUpperCase()+this.$$getIDName().slice(1)]())){
 												var options = {
 													columnsConfig:angular.toJson([
@@ -387,7 +390,7 @@ Notes:
 															{
 																"propertyIdentifier":"_"+this.metaData.className.toLowerCase()+"."+this.$$getIDName(),
 																"comparisonOperator":"=",
-																"value":this['$$get'+this.$$getIDName()]
+																"value":this.$$getID()
 															}
 														]
 													}]),
@@ -460,6 +463,7 @@ Notes:
 									
 									
 										_jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(){
+
 										<!--- create related instance --->
 										var entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
 										var metaData = this.metaData;
@@ -507,6 +511,8 @@ Notes:
 									<!--- TODO: ability to add post options to the transient collection --->
 									
 										_jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
+										console.log('test');
+											console.log(this);
 
 										var thisEntityInstance = this;
 										if(angular.isDefined(this['$$get'+this.$$getIDName().charAt(0).toUpperCase()+this.$$getIDName().slice(1)])){
@@ -516,7 +522,7 @@ Notes:
 														{
 															"propertyIdentifier":"_"+property.cfc.toLowerCase()+"."+property.fkcolumn.replace('ID','')+"."+this.$$getIDName(),
 															"comparisonOperator":"=",
-															"value":this['$$get'+this.$$getIDName()]
+															"value":this.$$getID()
 														}
 													]
 												}]),

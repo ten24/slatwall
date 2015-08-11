@@ -889,8 +889,9 @@ component extends="HibachiService" accessors="true" {
 	public any function processProduct_updateSkus(required any product, required any processObject) {
 
 		var skus = 	arguments.product.getSkus();
+		var skuCurrencyFound=false;
 		if(arrayLen(skus)){
-			for(i=1; i <= arrayLen(skus); i++){
+			for(var i=1; i <= arrayLen(skus); i++){
 				// Update Price
 				if(arguments.processObject.getUpdatePriceFlag()) {
 					skus[i].setPrice(arguments.processObject.getPrice());
@@ -899,6 +900,46 @@ component extends="HibachiService" accessors="true" {
 				if(arguments.processObject.getUpdateListPriceFlag()) {
 					skus[i].setListPrice(arguments.processObject.getListPrice());
 				}
+
+				//Update currencies
+				for(var processSkuCurrency in processObject.getSkuCurrencies()){
+					skuCurrencyFound=false;
+					skuCurrenciesToRemove=[];
+				
+					for(var skuCurrency in skus[i].getSkuCurrencies()){
+						if(processSkuCurrency.currencyCode eq skuCurrency.getCurrencyCode()){
+							if(len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
+								skuCurrency.setPrice(processSkuCurrency.price);
+							}
+							if(len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag()){
+								skuCurrency.setListPrice(processSkuCurrency.listPrice);
+							}
+							
+							if(!len(processSkuCurrency.listprice) && arguments.processObject.getUpdateListPriceFlag() && !len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()){
+								arrayAppend(skuCurrenciesToRemove,skuCurrency);
+							}
+
+						 skuCurrencyFound=true;
+						}
+					}
+					for(var j=1; j <= arrayLen(skuCurrenciesToRemove); j++){
+						skuCurrenciesToRemove[j].removeSku(skus[i]);
+					}
+					if(!skuCurrencyFound && ((len(processSkuCurrency.price) && arguments.processObject.getUpdatePriceFlag()) || (len(processSkuCurrency.listPrice) && arguments.processObject.getUpdateListPriceFlag())) ){
+						var newSkuCurrency=this.newSkuCurrency();
+						newSkuCurrency.setCurrency(getService('currencyService').getCurrencyByCurrencyCode(processSkuCurrency.currencyCode));
+						if(arguments.processObject.getUpdatePriceFlag()) {
+							newSkuCurrency.setPrice(processSkuCurrency.price);
+						}
+						if(arguments.processObject.getUpdateListPriceFlag()) {
+							newSkuCurrency.setPrice(processSkuCurrency.listPrice);
+						}
+						newSkuCurrency.setSku(skus[i]);
+						save(newSkuCurrency);
+						
+					}
+				}
+
 			}
 		}
 

@@ -249,12 +249,27 @@ function initUIElements( scopeSelector ) {
 			updateReport();
 		}
 	});
+
+	//change to a different type of graph
+	jQuery( scopeSelector ).find(jQuery("#hibachi-report-type")).sortable({
+		stop: function( event, ui ){ 
+			addLoadingDiv( 'hibachi-report' ); 
+			updateReport(); 
+		}
+	});
 	
 	//sort by metric or dimension
 	jQuery( scopeSelector ).find(jQuery('#hibachi-order-by')).sortable({
 		stop: function( event, ui ) {
 			addLoadingDiv( 'hibachi-report' );
 			jQuery('select[name="orderbytype"]').val( newOrderByTypeValue );
+			updateReport(); 
+		}
+	});
+
+	jQuery( scopeSelector ).find(jQuery('#hibachi-limit-results')).sortable({
+		stop: function( event, ui ) {
+			addLoadingDiv( 'hibachi-report' ); 
 			updateReport(); 
 		}
 	});
@@ -832,18 +847,42 @@ function setupEventHandlers() {
 		jQuery('input[name="metrics"]').val( vArr.join(',').trim() );
 		updateReport();
 	});
+
 	jQuery('body').on('click', '.hibachi-report-data-table-load', function(e){
 		e.preventDefault();
 		addLoadingDiv( 'hibachi-report' );
 		updateReport( jQuery(this).data('page') );
 	});
-	//orderbytype event hook 
+
 	jQuery('body').on('change', '#hibachi-order-by', function(e){ 
 		e.preventDefault();
 		addLoadingDiv( 'hibachi-report' );
 		updateReport();
 	});
 
+	jQuery('body').on('change', '#hibachi-report-type', function(e){
+		e.preventDefault(); 
+		addLoadingDiv( 'hibachi-report' )
+		updateReport();
+	});
+	
+	jQuery('body').on("change", "#hibachi-show-report", function(e){ 
+		addLoadingDiv( 'hibachi-report' );
+		updateReport(); 
+	});
+	
+	jQuery('body').on('change', "#hibachi-limit-results", function(e){
+		e.preventDefault(); 
+		addLoadingDiv( 'hibachi-report' ); 
+		updateReport(); 
+	});
+	
+	jQuery('body').on("click",".hibachi-report-pagination", function(e){
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' ); 
+		var pagination = $(this).attr("data-pagination"); 
+		updateReport( pagination); 
+	}); 
 
 	//Accordion Binding
 	jQuery('body').on('click','.j-closeall', function(e){
@@ -1603,8 +1642,19 @@ function updateReport( page ) {
 		reportCompareFlag: jQuery('input[name="reportCompareFlag"]').val(),
 		dimensions: jQuery('input[name="dimensions"]').val(),
 		metrics: jQuery('input[name="metrics"]').val(),
+		reportType: jQuery('select[name="reporttype"]').val(), 
 		orderByType: jQuery('select[name="orderbytype"]').val()
 	};
+
+	if(jQuery('input[name="showReport"]').is(':checked')){
+		data.showReport = true; 
+	} else { 
+		data.showReport = false; 
+	}
+	
+	if(jQuery('select[name="limitresults"]').val() != undefined){ 
+		data.limitResults = jQuery('select[name="limitresults"]').val();
+	}
 
 	if(page != undefined) {
 		data.currentPage = page;
@@ -1621,14 +1671,26 @@ function updateReport( page ) {
 			removeLoadingDiv( 'hibachi-report' );
 		},
 		success: function( r ) {
-			if(r.report.chartData != undefined && r.report.configureBar != undefined && r.report.dataTable != undefined) {
-				jQuery('#hibachi-report-chart').highcharts(r.report.chartData);
-				jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);
-				jQuery('#hibachi-report-table').html(r.report.dataTable);
-			} else if (page != undefined && r.report.dataTable != undefined) {
-				jQuery('#hibachi-report-table').html(r.report.dataTable);
+			if(r.report.hideChart !== undefined){ 
+				jQuery("#hibachi-report-chart").remove();
+				jQuery("#hibachi-report-chart-wrapper").hide();
+			} else { 
+				if(r.report.chartData.series !== undefined){
+					var html = "<div id='hibachi-report-chart'></div>";
+					jQuery("#hibachi-report-chart-wrapper").html(html);
+					var chart = new Highcharts.Chart(r.report.chartData);	
+				}
+				jQuery("#hibachi-report-chart-wrapper").show();
 			}
-
+			
+			if(r.report.hideReport !== undefined){
+				jQuery("#reportDataTable").remove();
+			} else { 
+				jQuery('#hibachi-report-table').html(r.report.dataTable);
+				jQuery("#hibachi-report-table").show();
+			}
+				
+			jQuery('#hibachi-report-configure-bar').html(r.report.configureBar);		
 			initUIElements('#hibachi-report');
 			removeLoadingDiv( 'hibachi-report' );
 		}

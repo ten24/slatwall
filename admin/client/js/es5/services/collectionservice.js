@@ -1,46 +1,54 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
 /*collection service is used to maintain the state of the ui*/
-'use strict';
-angular.module('slatwalladmin')
-    .factory('collectionService', [
-    '$filter',
-    '$log',
-    function ($filter, $log) {
-        /*properties*/
-        var _collection = null;
-        var _collectionConfig = null;
-        var _filterPropertiesList = {};
-        var _filterCount = 0;
-        var _orderBy = $filter('orderBy');
-        var collectionService = {
-            setFilterCount: function (number) {
+var slatwalladmin;
+(function (slatwalladmin) {
+    var CollectionService = (function (_super) {
+        __extends(CollectionService, _super);
+        function CollectionService($filter, $log) {
+            var _this = this;
+            _super.call(this);
+            this.$filter = $filter;
+            this.$log = $log;
+            this.get = function () {
+                return _this._pageDialogs || [];
+            };
+            //test
+            this.setFilterCount = function (count) {
                 $log.debug('incrementFilterCount');
-                _filterCount = number;
-            },
-            getFilterCount: function () {
-                return _filterCount;
-            },
-            getColumns: function () {
-                return _collection.collectionConfig.columns;
-            },
-            getFilterPropertiesList: function () {
-                return _filterPropertiesList;
-            },
-            getFilterPropertiesListByBaseEntityAlias: function (baseEntityAlias) {
-                return _filterPropertiesList[baseEntityAlias];
-            },
-            setFilterPropertiesList: function (value, key) {
-                if (angular.isUndefined(_filterPropertiesList[key])) {
-                    _filterPropertiesList[key] = value;
+                _this._filterCount = count;
+            };
+            this.getFilterCount = function () {
+                return _this._filterCount;
+            };
+            this.getColumns = function () {
+                return _this._collection.collectionConfig.columns;
+            };
+            this.getFilterPropertiesList = function () {
+                return _this._filterPropertiesList;
+            };
+            this.getFilterPropertiesListByBaseEntityAlias = function (baseEntityAlias) {
+                return _this._filterPropertiesList[baseEntityAlias];
+            };
+            this.setFilterPropertiesList = function (value, key) {
+                if (angular.isUndefined(_this._filterPropertiesList[key])) {
+                    _this._filterPropertiesList[key] = value;
                 }
-            },
-            stringifyJSON: function (jsonObject) {
+            };
+            this.stringifyJSON = function (jsonObject) {
                 var jsonString = angular.toJson(jsonObject);
                 return jsonString;
-            },
-            removeFilterItem: function (filterItem, filterGroup) {
+            };
+            this.removeFilterItem = function (filterItem, filterGroup) {
                 filterGroup.pop(filterGroup.indexOf(filterItem));
-            },
-            selectFilterItem: function (filterItem) {
+            };
+            this.selectFilterItem = function (filterItem) {
                 if (filterItem.$$isClosed) {
                     for (var i in filterItem.$$siblingItems) {
                         filterItem.$$siblingItems[i].$$isClosed = true;
@@ -57,8 +65,8 @@ angular.module('slatwalladmin')
                     filterItem.$$isClosed = true;
                     filterItem.setItemInUse(false);
                 }
-            },
-            selectFilterGroupItem: function (filterGroupItem) {
+            };
+            this.selectFilterGroupItem = function (filterGroupItem) {
                 if (filterGroupItem.$$isClosed) {
                     for (var i in filterGroupItem.$$siblingItems) {
                         filterGroupItem.$$siblingItems[i].$$disabled = true;
@@ -73,8 +81,8 @@ angular.module('slatwalladmin')
                     filterGroupItem.$$isClosed = true;
                 }
                 filterGroupItem.setItemInUse(!filterGroupItem.$$isClosed);
-            },
-            newFilterItem: function (filterItemGroup, setItemInUse, prepareForFilterGroup) {
+            };
+            this.newFilterItem = function (filterItemGroup, setItemInUse, prepareForFilterGroup) {
                 if (angular.isUndefined(prepareForFilterGroup)) {
                     prepareForFilterGroup = false;
                 }
@@ -96,9 +104,9 @@ angular.module('slatwalladmin')
                     filterItem.$$prepareForFilterGroup = true;
                 }
                 filterItemGroup.push(filterItem);
-                this.selectFilterItem(filterItem);
-            },
-            newFilterGroupItem: function (filterItemGroup, setItemInUse) {
+                _this.selectFilterItem(filterItem);
+            };
+            this.newFilterGroupItem = function (filterItemGroup, setItemInUse) {
                 var filterGroupItem = {
                     filterGroup: [],
                     $$disabled: "false",
@@ -112,9 +120,9 @@ angular.module('slatwalladmin')
                 }
                 filterItemGroup.push(filterGroupItem);
                 collectionService.selectFilterGroupItem(filterGroupItem);
-                this.newFilterItem(filterGroupItem.filterGroup, setItemInUse);
-            },
-            transplantFilterItemIntoFilterGroup: function (filterGroup, filterItem) {
+                _this.newFilterItem(filterGroupItem.filterGroup, setItemInUse);
+            };
+            this.transplantFilterItemIntoFilterGroup = function (filterGroup, filterItem) {
                 var filterGroupItem = {
                     filterGroup: [],
                     $$disabled: "false",
@@ -132,8 +140,8 @@ angular.module('slatwalladmin')
                 filterItem.$$prepareForFilterGroup = false;
                 filterGroupItem.filterGroup.push(filterItem);
                 filterGroup.push(filterGroupItem);
-            },
-            formatFilterPropertiesList: function (filterPropertiesList, propertyIdentifier) {
+            };
+            this.formatFilterPropertiesList = function (filterPropertiesList, propertyIdentifier) {
                 $log.debug('format Filter Properties List arguments 2');
                 $log.debug(filterPropertiesList);
                 $log.debug(propertyIdentifier);
@@ -180,13 +188,23 @@ angular.module('slatwalladmin')
                     filterPropertiesList.data[i].propertyIdentifier = propertyIdentifier + '.' + filterPropertiesList.data[i].name;
                 }
                 filterPropertiesList.data = _orderBy(filterPropertiesList.data, ['-$$group', 'propertyIdentifier'], false);
-            },
-            orderBy: function (propertiesList, predicate, reverse) {
+            };
+            this.orderBy = function (propertiesList, predicate, reverse) {
                 return _orderBy(propertiesList, predicate, reverse);
-            }
-        };
-        return collectionService;
-    }
-]);
+            };
+            this._collection = null;
+            this._collectionConfig = null;
+            this._filterPropertiesList = {};
+            this._filterCount = 0;
+            this._orderBy = $filter('orderBy');
+        }
+        CollectionService.$inject = [
+            '$filter', '$log'
+        ];
+        return CollectionService;
+    })(slatwalladmin.BaseService);
+    slatwalladmin.CollectionService = CollectionService;
+    angular.module('slatwalladmin').service('collectionService', CollectionService);
+})(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../services/collectionservice.js.map

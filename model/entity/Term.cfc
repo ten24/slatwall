@@ -70,7 +70,8 @@ component entityname="SlatwallTerm" table="SwTerm" persistent="true" accessors="
 	property name="loyaltyAccruementExpirationTerms" singularname="loyaltyAccruementExpirationTerm" cfc="LoyaltyAccruement" type="array" fieldtype="one-to-many" fkcolumn="expirationTermID" cascade="all" inverse="true" lazy="extra";										// Extra Lazy because it is only used for validation
 	//property name="loyaltyRedemptionAutoRedemptionTerms" singularname="loyaltyRedemptionAutoRedemptionTerm" cfc="LoyaltyRedemption" type="array" fieldtype="one-to-many" fkcolumn="autoRedemptionTermID" cascade="all" inverse="true" lazy="extra";							// Extra Lazy because it is only used for validation
 	property name="loyaltyTerms" singularname="loyaltyTerm" cfc="LoyaltyTerm" type="array" fieldtype="one-to-many" fkcolumn="termID" cascade="all-delete-orphan" inverse="true" lazy="extra";
-	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="giftCardExpirationTermID" cascade="all-delete-orphan" inverse="true";
+	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="giftCardExpirationTermID" cascade="all" inverse="true" lazy="extra";
+	property name="giftCardExpirationTerms" singularname="giftCardExpirationTerm" cfc="Sku" type="array" fieldtype="one-to-many" fkcolumn="giftCardExpirationTermID" cascade="all" inverse="true" lazy="extra";
 
 	// Related Object Properties (many-to-many)
 
@@ -107,13 +108,22 @@ component entityname="SlatwallTerm" table="SwTerm" persistent="true" accessors="
 	// ============= START: Bidirectional Helper Methods ===================
 
 	// Gift Cards (one-to-many)
-	public void function addGiftCard(required any giftCard){
-		arguments.giftCard.setOriginalOrderItem( this );
+	/*public void function addGiftCard(required any giftCard){
+		arguments.giftCard.setGiftCardExpirationTerm( this );
 	}
 
 	public void function removeGiftCard(required any giftCard){
-		arguments.giftCard.removeOriginalOrderItem( this );
+		arguments.giftCard.removeGiftCardExpirationTerm( this );
 	}
+
+	// Gift Cards Expiration Skus (one-to-many)
+	public void function addGiftCardExpirationSku(required any giftCardExpirationSku){
+		arguments.giftCardExpirationSku.setGiftCardExpirationTerm( this );
+	}
+
+	public void function removeGiftCardExpirationSku(required any giftCardExpirationSku){
+		arguments.giftCardExpirationSku.removeGiftCardExpirationTerm( this );
+	}*/
 
 	// =============  END:  Bidirectional Helper Methods ===================
 

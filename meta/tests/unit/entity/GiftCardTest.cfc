@@ -59,7 +59,6 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 
 	public void function test_order_item_relation(){
 
-
 		var orderItemData = {
 			orderItemID='',
 			price='5'
@@ -145,6 +144,40 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		giftCard.removeOwnerAccount(ownerAccount);
 
 		assertFalse(giftCard.hasOwnerAccount(ownerAccount));
+	}
+	
+	public void function test_balance(){ 
+		var giftCardData = { 
+			giftCardID="" 	
+		};
+		
+		var giftCard = createPersistedTestEntity('giftCard', giftCardData); 
+		
+		var creditTransactionData = { 
+			giftCardTransactionID="",
+			creditAmount="2000"	
+		};
+		var creditTransaction = createPersistedTestEntity('giftCardTransaction', creditTransactionData);
+		
+		var debitTransactionData = { 
+			giftCardTransactionID="",
+			debitAmount="250.50"	
+		};
+		var debitTransaction = createPersistedTestEntity('giftCardTransaction', debitTransactionData);
+		
+		var debitTransactionData2 = { 
+			giftCardTransactionID="",
+			debitAmount="250.25"	
+		};
+		var debitTransaction2 = createPersistedTestEntity('giftCardTransaction', debitTransactionData2);
+		
+		giftCard.addGiftCardTransaction(creditTransaction); 
+		giftCard.addGiftCardTransaction(debitTransaction); 
+		giftCard.addGiftCardTransaction(debitTransaction2); 
+		
+		assertEquals("1499.25", giftCard.getBalance());
+		assertTrue(giftCard.isActive()); 
+	
 	}
 
 }
