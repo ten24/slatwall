@@ -8,7 +8,7 @@ angular.module('slatwalladmin').directive('swPaginationBar', ['$log', '$timeout'
       currentPage: "=",
       pageStart: "&",
       pageEnd: "&",
-      pageShowOptions: "=",
+      pageShowOptions: "=?",
       recordsCount: "&",
       collection: "=",
       autoScroll: "=",

@@ -52,6 +52,13 @@ Notes:
 
 <cfif structKeyExists(server, "railo")>
 	<cfset local.logFile = expandPath('/') & "WEB-INF/railo/logs/Slatwall.log">
+	<cfif not fileExists(local.logFile) >
+		<!--- try lucee path for those who've upgraded from railo and left railo remnants on server --->
+		<cfset local.logFile = expandPath('/') & "WEB-INF/lucee/logs/Slatwall.log">
+	</cfif>
+<cfelseif structKeyExists(server, "lucee")>
+	<!--- for clean lucee install --->
+	<cfset local.logFile = expandPath('/') & "WEB-INF/lucee/logs/Slatwall.log">
 <cfelse>
 	<cfset local.logFile = Server.ColdFusion.RootDir & "/logs/Slatwall.log">
 </cfif>
