@@ -1,9 +1,6 @@
 /// <reference path="../../../../client/typings/tsd.d.ts" />
 /// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 
-import slatwalladmin = require("slatwalladmin");
-import {auto as ngAuto} from "angular";
-
 module logger { 
 
   exceptionHandlerProvider.$inject = ["$injector"]
