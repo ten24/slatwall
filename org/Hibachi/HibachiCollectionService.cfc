@@ -462,7 +462,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		
 		
-		var propertyIdentifier = '_' & lcase(arguments.entityName) & '.#arguments.entityName#ID';
+		var propertyIdentifier = '_' & lcase(arguments.entityName) & '.#getService("hibachiService").getPrimaryIDPropertyNameByEntityName(arguments.entityName)#';
 		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
 		var filterGroupStruct.filterGroup = [];
 		arrayappend(filterGroupStruct.filterGroup,filterStruct);
@@ -479,7 +479,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		}else{
 			response = collectionResponse.pageRecords[1];
 		}
-		
 		
 		return response;
 	}
