@@ -13,7 +13,7 @@ component accessors="true" output="false" extends="HibachiService" {
 		if(structKeyExists(hibachiConfig, "useCachingEngineFlag") && hibachiConfig.useCachingEngineFlag) {
 			setInternalCacheFlag( false );
 		}
-		if(structKeyExists(server,"railo")) {
+		if(structKeyExists(server,"railo") || structKeyExists(server,'lucee')) {
 			setRailoFlag( true );	
 		}
 		
