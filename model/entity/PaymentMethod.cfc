@@ -215,7 +215,7 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 	} 
 	
 	public any function getSubscriptionTermHasAutoPayFlagSet(){
-		var subscriptionTermSmartList = getService("SubscriptionService").getSubscriptionTermSmartList().getRecords();
+		var subscriptionTermSmartList = getService("SubscriptionService").getSubscriptionTermSmartList();
 		subscriptionTermSmartList.addFilter("autoPayFlag", 1);
 		var subscriptionTermsWithAutoPayFlagSetCount = subscriptionTermSmartList.getRecordsCount();
 		

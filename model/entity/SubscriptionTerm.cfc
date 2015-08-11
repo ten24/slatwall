@@ -76,8 +76,6 @@ component entityname="SlatwallSubscriptionTerm" table="SwSubscriptionTerm" persi
 	
 	// Non-Persistent Properties
 
-
-
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================
