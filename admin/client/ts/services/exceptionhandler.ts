@@ -4,42 +4,31 @@
 import slatwalladmin = require("slatwalladmin");
 import {auto as ngAuto} from "angular";
 
-module logger{
+module logger { 
 
-	export interface IExceptionThrown {
-		paramException: error, 
-		cause: string
-	}; 
+  exceptionHandlerProvider.$inject = ["$injector"]
 
-	export class ClientLoggingService implements ng.IExceptionHandlerService {
+  function exceptionHandlerProvider($injector, exception:any, cause:any) { 
+	  return function(exception: any, cause: any) {
+		  var $http = $injector.get('$http');
+		  var alertService = $injector.get('alertService');
 
-		static $inject = ["$injector"];
+		  $http({
+			  url: '?slatAction=api:main.log',
+			  method: 'POST',
+			  data: $.param({
+				  exception: exception,
+				  cause: cause,
+				  apiRequest: true
+			  }),
+			  headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+		  }).error(function(data) {
+			  alertService.addAlert({ msg: exception, type: 'error' });
+			  console.log(exception);
+		  });
+	  };
+  }
 
-		constructor($injector: ngAuto.IInjectorService) {
-            this.$injector = $injector; 
-        }
+  angular.module('logger').factory('$exceptionHandler', exceptionHandlerProvider);
 
-   		public exception: ng.IExceptionHandlerService = (paramException: Error, cause?: string):func => {
-			return function():IExceptionThrown{ 
-				var $http = this.$injector.get('$http');
-	            var alertService = this.$injector.get('alertService');
-		      	
-		      	$http({
-		        	url:'?slatAction=api:main.log',
-		        	method:'POST', 
-		        	data:$.param({
-	                    exception:paramException,
-	                    cause:cause,
-	                    apiRequest:true
-	                }),
-		        	headers:{'Content-Type': 'application/x-www-form-urlencoded'}
-		        }).error(function(data){
-	                alertService.addAlert({msg:paramException,type:'error'});
-	           	    console.log(paramException);
-	            });
-	    	};	
-    	};
-    	
-	}
-	angular.module('logger').factory('$exceptionHandler', ["$injector", ($injector) => new ClientLoggingService($injector)]);
 }
