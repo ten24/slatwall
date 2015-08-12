@@ -65,6 +65,7 @@ component output="false" accessors="true" extends="HibachiProcess" {
 			var giftCardExpirationTerm = getService('hibachiService').getTerm(variables.giftCardExpirationTermID);
 			variables.newSku.setGiftCardExpirationTerm(giftCardExpirationTerm);
 		}
+		
 		return variables.newSku;
 	}
 	
