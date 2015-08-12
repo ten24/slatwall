@@ -60,7 +60,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="price" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="renewalPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="currencyCode" ormtype="string" length="3";
-	property name="imageFile" ormtype="string" length="50";
+	property name="imageFile" ormtype="string" length="250";
 	property name="userDefinedPriceFlag" ormtype="boolean" default="0";
 	property name="eventStartDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	property name="eventEndDateTime" ormtype="timestamp" hb_formatType="dateTime";
@@ -261,22 +261,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	//@hint Generates the image path based upon product code, and image options for this sku
 	public string function generateImageFileName() {
 
-		var conventionString = getService("HibachiUtilityService").replaceStringTemplate(template=setting("skuDefaultImageNamingConvention"), object=this);
-		var name = getService("HibachiUtilityService").createSEOString(conventionString, getProduct().setting('productImageOptionCodeDelimiter'));
-		var path = "#getHibachiScope().getBaseImageURL()#/product/default/"; 
+		var imageNameString = getService("HibachiUtilityService").replaceStringTemplate(template=setting("skuDefaultImageNamingConvention"), object=this);
+		var name = getService("HibachiUtilityService").createSEOString(imageNameString, getProduct().setting('productImageOptionCodeDelimiter'));
 		var ext = ".#getProduct().setting('productImageDefaultExtension')#"; 
 
-		if(fileExists(path & name & ext)){
-			
-			var number = 0; 
-			
-			while(fileExists(path & name & getProduct().setting('productImageOptionCodeDelimiter') & number & ext)){
-				number++; 
-			}
-			
-			return name & getProduct().setting('productImageOptionCodeDelimiter') & number & ext;
-
-		}
 		return name & ext;
 	}
 	
