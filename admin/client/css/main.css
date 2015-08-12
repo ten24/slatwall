@@ -280,7 +280,7 @@ body {
   min-width: 992px /*Remove for responsive*/;
 }
 body.s-login-screen {
-  background-image: url(../../../../assets/images/login-bg.jpg);
+  background-image: url("../../../assets/images/login-bg.jpg");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
