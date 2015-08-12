@@ -61,7 +61,7 @@
 
 							<!--- ================ Listing =================== --->
 							<cfif attributes.type eq "listing" >
-								
+
 								<cfparam name="request.context.keywords" default="" />
 
 								<!--- Listing: Button Groups --->
@@ -81,13 +81,13 @@
 										<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
 									</cfif>
 								</cfif>
-								
+
 							<!--- ================ Detail ===================== --->
 							<cfelseif attributes.type eq "detail">
 								<div class="btn-group btn-group-sm">
 									<!--- Detail: Back Button --->
 									<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
-	
+
 									<!--- Detail: Actions --->
 									<cfif !attributes.object.isNew() && len( trim( thistag.generatedcontent ) ) gt 1>
 										<button class="btn dropdown-toggle btn-default" data-toggle="dropdown"><i class="icon-list-alt"></i> #attributes.hibachiScope.rbKey('define.actions')# <span class="caret"></span></button>
@@ -101,7 +101,7 @@
 									<!--- Detail: Button Groups --->
 									<cfif structKeyExists(thistag, "buttonGroups") && arrayLen(thistag.buttonGroups)>
 										<cfloop array="#thisTag.buttonGroups#" index="buttonGroup">
-											<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>											
+											<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
 												#buttonGroup.generatedContent#
 											</cfif>
 										</cfloop>
@@ -147,7 +147,7 @@
 								</cfif>
 
 								<!--- Detail: CRUD Buttons --->
-								
+
 								<div class="btn-group btn-group-sm">
 									<!--- Setup delete Details --->
 									<cfset local.deleteErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=attributes.object, context="delete", setErrors=false) />
@@ -186,7 +186,7 @@
 
 								<!--- ================= Process =================== --->
 								<cfelseif attributes.type eq "preprocess">
-	
+
 									<cfif !len(attributes.processContext) and structKeyExists(request.context, "processContext")>
 										<cfset attributes.processContext = request.context.processContext />
 									</cfif>
@@ -197,10 +197,10 @@
 										<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">
 									</div>
 									<div class="btn-group btn-group-sm">
-										<button type="submit" class="btn btn-primary">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
+										<button type="submit" class="btn btn-primary" onsubmit="this.disabled=true">#attributes.hibachiScope.rbKey( "entity.#attributes.object.getClassName()#.process.#attributes.processContext#" )#</button>
 									</div>
 								</cfif>
-							
+
 
 							<!--- Clear the generated content so that it isn't rendered --->
 							<cfset thistag.generatedcontent = "" />
