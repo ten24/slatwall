@@ -74,8 +74,8 @@ Notes:
 				</cfif>
 				<hb:HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="orderPaymentType" value="#orderPaymentTypeID#" fieldName="newOrderPayment.orderPaymentType.typeID" edit="#rc.edit#">
 				
-				<div class="form-group">
-					<label class="control-label col-sm-4" style="text-align:left;">#$.slatwall.rbKey('define.amount')#</label>
+				<div class="form-group s-payment-amount">
+					<label class="control-label col-sm-4">#$.slatwall.rbKey('define.amount')#</label>
 					<div class="col-sm-8">
 						<div id="dynamic-charge-amount" class="hide">
 							#$.slatwall.rbKey('admin.entity.detailOrderPayment.dynamicCharge')#: #rc.order.getFormattedValue('orderPaymentChargeAmountNeeded')#<br />
