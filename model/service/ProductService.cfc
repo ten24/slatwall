@@ -430,8 +430,6 @@ component extends="HibachiService" accessors="true" {
 			}
 		}
 
-		//arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
-
 		return arguments.product;
 	}
 
@@ -458,8 +456,6 @@ component extends="HibachiService" accessors="true" {
 		}
 
 		getSkuService().createSkus(arguments.product, newOptionsData);
-
-		//arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
 
 		return arguments.product;
 	}
@@ -648,8 +644,6 @@ component extends="HibachiService" accessors="true" {
 			arguments.product.addErrors(arguments.processObject.getNewSku().getErrors());
 		}
 
-		//arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
-
 		return arguments.product;
 	}
 
@@ -674,8 +668,6 @@ component extends="HibachiService" accessors="true" {
 		}
 		newSku.setProduct( arguments.product );
 
-		//arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
-
 		return arguments.product;
 	}
 	
@@ -690,6 +682,7 @@ component extends="HibachiService" accessors="true" {
 		if(isNumeric(arguments.product.getlistPrice()) && arguments.product.getlistPrice() > 0) {
 			thisSku.setListPrice(arguments.product.getlistPrice());
 		}
+
 		thisSku.setSkuCode(arguments.product.getProductCode() & "-1");
 		arguments.product.setDefaultSku( thisSku );
 		return arguments.product;
@@ -861,9 +854,6 @@ component extends="HibachiService" accessors="true" {
 		// Call save on the product
 		arguments.product = this.saveProduct(arguments.product);
 
-		// Generate Image Files
-		//arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
-
         // Return the product
 		return arguments.product;
 	}
@@ -871,7 +861,7 @@ component extends="HibachiService" accessors="true" {
 	//routed from processProduct_create
 	public any function processProduct_createBundle(required any product, required any processObject, any data){
 		arguments.product.getSkus()[1].setSkuCode(arguments.product.getProductCode() & "-1");
-		arguments.product.getSku()[1].setImageFile(sku.generateImageFileName());
+		arguments.product.getSkus()[1].setImageFile(sku.generateImageFileName());
 
 		// If some skus were created, then set the default sku to the first one
 		if(arrayLen(arguments.product.getSkus())) {
@@ -881,8 +871,6 @@ component extends="HibachiService" accessors="true" {
 
 		arguments.product = this.saveProduct(arguments.product);
 
-		// Generate Image Files
-		//arguments.product = this.processProduct(arguments.product, {}, 'updateDefaultImageFileNames');
 
 		return arguments.product;
 	}
@@ -898,8 +886,22 @@ component extends="HibachiService" accessors="true" {
 	}
 
 	public any function processProduct_updateDefaultImageFileNames( required any product ) {
+		
 		for(var sku in arguments.product.getSkus()) {
-			sku.setImageFile( sku.generateImageFileName() );
+				var name = sku.generateImageFileName(); 
+				var uploadDirectory = getHibachiScope().setting('globalAssetsImageFolderPath') & "/product/default";
+				var fullFilePath = "#uploadDirectory#/#sku.getImageFile()#";
+				var newPath = "#uploadDirectory#/#name#";
+
+				if(!directoryExists(uploadDirectory)) {
+					directoryCreate(uploadDirectory);
+				}
+
+				if(fileExists(fullFilePath) && !fileExists(newPath)){
+					fileMove(fullFilePath, newPath);
+				}
+
+				sku.setImageFile(name);
 		}
 
 		return arguments.product;

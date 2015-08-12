@@ -1145,7 +1145,7 @@
 		<cfset filename &= "-" />
 		<cfset filename &= replace(getReportEndDateTime(), "-", "", "all") />
 		<cfset filename &= ".#arguments.extension#" />
-		<cfif structKeyExists(server, "railo")>
+		<cfif structKeyExists(server, "railo") || structKeyExists(server,'lucee')>
 			<cfset filename = right(filename, 31) />
 		</cfif>
 		<cfreturn filename />
@@ -1212,7 +1212,7 @@
 			<cfset spreadsheetWrite( spreadsheet, fullFilename ) />
 			<cfset getService("hibachiUtilityService").downloadFile( filename, fullFilename, "application/msexcel", true ) />
 			<cfcatch>
-				<cfif structKeyExists(server, "railo") and cfcatch.message eq "No matching function [SPREADSHEETADDROW] found">
+				<cfif (structKeyExists(server, "railo") or structKeyExists(server, "lucee")) and cfcatch.message eq "No matching function [SPREADSHEETADDROW] found">
 					<cfthrow type="Application" message="It appears that you are running Slatwall on Railo and have tried to export a report, but you do not have the cfspreadsheet extension installed on this instance of Railo.  Please install the cfspreadsheet extension and try again.">
 				</cfif>
 				<cfrethrow />
