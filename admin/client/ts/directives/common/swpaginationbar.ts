@@ -52,11 +52,12 @@ angular.module('slatwalladmin')
 	        		 unbindPageOptionsWatchListener();
 	        	});*/
 	        	
-	        	scope.setCurrentPage = function(number){
+	        	scope.setCurrentPage = function(currentPageNumber){
 	        		$log.debug('setCurrentPage');
-	        		paginationService.setCurrentPage(number);
-	        		scope.currentPage = number;
-	        			        		
+                   
+	        		paginationService.setCurrentPage(currentPageNumber);
+	        		scope.currentPage = paginationService.getCurrentPage();
+	        			        	 $log.debug(paginationService.getCurrentPage());	
 	        		$timeout(function(){
 	        			
 	        			
