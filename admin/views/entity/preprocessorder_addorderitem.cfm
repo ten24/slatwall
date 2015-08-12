@@ -2,45 +2,45 @@
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
-	
+
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
-	
+
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
-	
+
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-    
+
     Linking this program statically or dynamically with other modules is
     making a combined work based on this program.  Thus, the terms and
     conditions of the GNU General Public License cover the whole
     combination.
-	
-    As a special exception, the copyright holders of this program give you
-    permission to combine this program with independent modules and your 
-    custom code, regardless of the license terms of these independent
-    modules, and to copy and distribute the resulting program under terms 
-    of your choice, provided that you follow these specific guidelines: 
 
-	- You also meet the terms and conditions of the license of each 
-	  independent module 
-	- You must not alter the default display of the Slatwall name or logo from  
-	  any part of the application 
-	- Your custom code must not alter or create any files inside Slatwall, 
+    As a special exception, the copyright holders of this program give you
+    permission to combine this program with independent modules and your
+    custom code, regardless of the license terms of these independent
+    modules, and to copy and distribute the resulting program under terms
+    of your choice, provided that you follow these specific guidelines:
+
+	- You also meet the terms and conditions of the license of each
+	  independent module
+	- You must not alter the default display of the Slatwall name or logo from
+	  any part of the application
+	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
 
-	You may copy and distribute the modified version of this program that meets 
-	the above guidelines as a combined work under the terms of GPL for this program, 
-	provided that you include the source code of that other code when and as the 
+	You may copy and distribute the modified version of this program that meets
+	the above guidelines as a combined work under the terms of GPL for this program,
+	provided that you include the source code of that other code when and as the
 	GNU GPL requires distribution of source code.
-    
-    If you modify this program, you may extend this exception to your version 
+
+    If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
 
 Notes:
@@ -55,11 +55,11 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder" disableProcess="#not listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())#">
-		
+	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:main" disableProcess="#not listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())#">
+
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
 		</hb:HibachiEntityActionBar>
-		
+
 			<cfif listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())>
 				<hb:HibachiPropertyRow>
 					<hb:HibachiPropertyList>
@@ -71,17 +71,17 @@ Notes:
 							<input type="hidden" name="skuID" value="#rc.processObject.getSkuID()#" />
 						</cfif>
 						<input type="hidden" name="orderItemTypeSystemCode" value="#rc.processObject.getOrderItemTypeSystemCode()#" />
-						
+
 						<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.itemDetails')#</h5>
 						<!--- Sku Properties --->
 						<hb:HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuCode" edit="false">
 						<hb:HibachiPropertyDisplay object="#rc.processObject.getSku().getProduct()#" property="productName" edit="false">
 						<hb:HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuDefinition" edit="false">
-						
+
 						<!--- Order Item Details --->
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
-						
+
 						<!--- Add form fields to add registrant accounts --->
 						<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event">
 							<cfset currentRegistrantCount = rc.processObject.getSku().getService("EventRegistrationService").getUnavailableSeatCountBySku(rc.processObject.getSku()) />
@@ -111,50 +111,50 @@ Notes:
 								<br>
 							</cfloop>
 						</cfif>
-						
+
 						<!--- Order Item Custom Attributes --->
 						<cfloop array="#rc.processObject.getAssignedOrderItemAttributeSets()#" index="attributeSet">
 							<hr />
 							<h5>#attributeSet.getAttributeSetName()#</h5>
 							<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
 						</cfloop>
-						
+
 						<!--- Order Fulfillment --->
 						<cfif rc.processObject.getOrderItemTypeSystemCode() eq "oitSale">
 							<hr />
 							<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.fulfillmentDetails')#</h5>
 							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderFulfillmentID" edit="#rc.edit#">
-							
+
 							<!--- New Order Fulfillment --->
 							<hb:HibachiDisplayToggle selector="select[name='orderFulfillmentID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderFulfillmentID()) && rc.processObject.getOrderFulfillmentID() eq 'new')#">
-								
+
 								<!--- Fulfillment Method --->
 								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentMethodID" edit="#rc.edit#">
-								
+
 								<cfset loadFulfillmentMethodType = rc.processObject.getFulfillmentMethodIDOptions()[1]['fulfillmentMethodType'] />
 								<cfloop array="#rc.processObject.getFulfillmentMethodIDOptions()#" index="option">
 									<cfif option['value'] eq rc.processObject.getOrderFulfillmentID()>
 										<cfset loadFulfillmentMethodType = option['fulfillmentMethodType'] />
-									</cfif> 	
+									</cfif>
 								</cfloop>
-								
+
 								<!--- Email Fulfillment Details --->
 								<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="email" loadVisable="#loadFulfillmentMethodType eq 'email'#">
-									
+
 									<!--- Email Address --->
 									<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#" />
 								</hb:HibachiDisplayToggle>
-								
+
 								<!--- Pickup Fulfillment Details --->
 								<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="pickup" loadVisable="#loadFulfillmentMethodType eq 'pickup'#">
-									
+
 									<!--- Pickup Location --->
 									<hb:HibachiPropertyDisplay object="#rc.processObject#" property="pickupLocationID" edit="#rc.edit#" />
 								</hb:HibachiDisplayToggle>
-								
+
 								<!--- Shipping Fulfillment Details --->
 								<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="shipping" loadVisable="#loadFulfillmentMethodType eq 'shipping'#">
-									
+
 									<!--- Setup the primary address as the default account address --->
 									<cfset defaultValue = "" />
 									<cfif isNull(rc.processObject.getShippingAccountAddressID()) && !rc.order.getAccount().getPrimaryAddress().isNew()>
@@ -162,55 +162,55 @@ Notes:
 									<cfelseif !isNull(rc.processObject.getShippingAccountAddressID())>
 										<cfset defaultValue = rc.processObject.getShippingAccountAddressID() />
 									</cfif>
-									
+
 									<!--- Account Address --->
 									<hb:HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" />
-									
+
 									<!--- New Address --->
 									<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
-										
+
 										<!--- Address Display --->
 										<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
-										
+
 										<!--- Save New Address --->
 										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressFlag" edit="#rc.edit#" />
-										
+
 										<!--- Save New Address Name --->
 										<hb:HibachiDisplayToggle selector="input[name='saveShippingAccountAddressFlag']" loadVisable="#rc.processObject.getSaveShippingAccountAddressFlag()#">
 											<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressName" edit="#rc.edit#" />
 										</hb:HibachiDisplayToggle>
-										
+
 									</hb:HibachiDisplayToggle>
-									
+
 								</hb:HibachiDisplayToggle>
-								
-								
-								
+
+
+
 							</hb:HibachiDisplayToggle>
 						<cfelse>
 							<!--- Order Return --->
 							<hr />
 							<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.returnDetails')#</h5>
 							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderReturnID" edit="#rc.edit#">
-							
+
 							<!--- New Order Return --->
 							<hb:HibachiDisplayToggle selector="select[name='orderReturnID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderReturnID()) && rc.processObject.getOrderReturnID() eq 'new')#">
-								
+
 								<!--- Return Location --->
 								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="returnLocationID" edit="#rc.edit#">
-								
+
 								<!--- Fulfillment Refund Amount --->
 								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentRefundAmount" edit="#rc.edit#">
-								
+
 							</hb:HibachiDisplayToggle>
 						</cfif>
 					</hb:HibachiPropertyList>
-					
+
 				</hb:HibachiPropertyRow>
 			<cfelse>
 				<p class="text-error">#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.wrongCurrency_info')#</p>
 			</cfif>
-		
+
 	</hb:HibachiEntityProcessForm>
-	
+
 </cfoutput>
