@@ -247,22 +247,37 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	// START: Image Methods
+
+	public string function getAllOptionCodes(){ 
+		var optionString = "";
+		for(var option in getOptions()){
+			if(option.getOptionGroup().getImageGroupFlag()){
+				optionString &= getProduct().setting('productImageOptionCodeDelimiter') & reReplaceNoCase(option.getOptionCode(), "[^a-z0-9\-\_]","","all");
+			}
+		}
+		return optionString; 
+	}
 	
 	//@hint Generates the image path based upon product code, and image options for this sku
 	public string function generateImageFileName() {
-		if(getImageExistsFlag()){
-			var ext = "-1.#getProduct().setting('productImageDefaultExtension')#"; 
-			var name = getService("HibachiUtilityService").createSEOString(getProduct().getProductName())
-			var number = 0; 
-			var path = "#getHibachiScope().getBaseImageURL()#/product/default/"; 
 
-			while(fileExists(path & name & "-" & number & ext)){
+		var conventionString = getService("HibachiUtilityService").replaceStringTemplate(template=setting("skuDefaultImageNamingConvention"), object=this);
+		var name = getService("HibachiUtilityService").createSEOString(conventionString, getProduct().setting('productImageOptionCodeDelimiter'));
+		var path = "#getHibachiScope().getBaseImageURL()#/product/default/"; 
+		var ext = ".#getProduct().setting('productImageDefaultExtension')#"; 
+
+		if(fileExists(path & name & ext)){
+			
+			var number = 0; 
+			
+			while(fileExists(path & name & getProduct().setting('productImageOptionCodeDelimiter') & number & ext)){
 				number++; 
 			}
+			
+			return name & getProduct().setting('productImageOptionCodeDelimiter') & number & ext;
 
-			return path & name & "-" & number & ext ;
 		}
-		return getService("HibachiUtilityService").createSEOString(getProduct().getProductName()) & ".#getProduct().setting('productImageDefaultExtension')#";
+		return name & ext;
 	}
 	
     public string function getImageExtension() {

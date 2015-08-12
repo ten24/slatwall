@@ -244,6 +244,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuBundleAutoMakeupInventoryOnSaleFlag = {fieldType="yesno", defaultValue=0},
 			skuBundleAutoBreakupInventoryOnReturnFlag = {fieldType="yesno", defaultValue=0},
 			skuCurrency = {fieldType="select", defaultValue="USD"},
+			skuDefaultImageNamingConvention = {fieldType="text", defaultValue="${product.productCode} ${allOptionCodes}"},
 			skuEligibleCurrencies = {fieldType="listingMultiselect", listingMultiselectEntityName="Currency", defaultValue=getCurrencyService().getAllActiveCurrencyIDList()},
 			skuEligibleFulfillmentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="FulfillmentMethod", defaultValue=getFulfillmentService().getAllActiveFulfillmentMethodIDList()},
 			skuEligibleOrderOrigins = {fieldType="listingMultiselect", listingMultiselectEntityName="OrderOrigin", defaultValue=this.getAllActiveOrderOriginIDList()},

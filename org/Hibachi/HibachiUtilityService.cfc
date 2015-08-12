@@ -289,13 +289,13 @@
 			return arguments.filename;
 		}
 
-		public string function createSEOString(required string toFormat){
+		public string function createSEOString(required string toFormat, string delimiter="-"){
 
 			//take out all special characters except -
 			arguments.toFormat = reReplace(lcase(trim(arguments.toFormat)), "[^a-z0-9 \-]", "", "all");
 
 			//replate spaces with -
-			return reReplace(arguments.toFormat, "[-\s]+", "-", "all");
+			return reReplace(arguments.toFormat, "[-\s]+", delimiter, "all");
 		}
 
 		public void function duplicateDirectory(required string source, required string destination, boolean overwrite=false, boolean recurse=true, string copyContentExclusionList='', boolean deleteDestinationContent=false, string deleteDestinationContentExclusionList="" ){
