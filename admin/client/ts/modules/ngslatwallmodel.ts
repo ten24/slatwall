@@ -1,4 +1,6 @@
 
+			/// <reference path="../../../../client/typings/tsd.d.ts" />
+			/// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 			angular.module('ngSlatwallModel',['ngSlatwall']).config(['$provide',function ($provide
 			 ) {
 	    	
@@ -134,22 +136,6 @@
 						z:''
 	                };
                 
-                	entities['PriceGroupRateCurrency'] = {"createdDateTime":{"name":"createdDateTime","ormtype":"timestamp","hb_populateenabled":false},"emailTemplates":{"name":"emailTemplates","persistent":false,"type":"struct"},"printTemplates":{"name":"printTemplates","persistent":false,"type":"struct"},"processObjects":{"name":"processObjects","persistent":false,"type":"struct"},"settingValueFormatted":{"name":"settingValueFormatted","persistent":false,"type":"any"},"auditSmartList":{"name":"auditSmartList","persistent":false,"type":"any"},"modifiedDateTime":{"name":"modifiedDateTime","ormtype":"timestamp","hb_populateenabled":false},"newFlag":{"name":"newFlag","persistent":false,"type":"boolean"},"validations":{"name":"validations","persistent":false,"type":"struct"},"hibachiMessages":{"name":"hibachiMessages","persistent":false,"type":"any"},"priceGroupRateCurrencyID":{"generator":"uuid","name":"priceGroupRateCurrencyID","fieldtype":"id","ormtype":"string","unsavedvalue":"","length":32,"default":""},"createdByAccountID":{"name":"createdByAccountID","ormtype":"string","hb_populateenabled":false},"remoteID":{"name":"remoteID","ormtype":"string"},"attributeValuesByAttributeIDStruct":{"name":"attributeValuesByAttributeIDStruct","persistent":false,"type":"struct"},"modifiedByAccountID":{"name":"modifiedByAccountID","ormtype":"string","hb_populateenabled":false},"hibachiErrors":{"name":"hibachiErrors","persistent":false,"type":"any"},"assignedAttributeSetSmartList":{"name":"assignedAttributeSetSmartList","persistent":false,"type":"any"},"modifiedByAccount":{"name":"modifiedByAccount","persistent":false},"hibachiInstanceApplicationScopeKey":{"NAME":"hibachiInstanceApplicationScopeKey","PERSISTENT":false,"TYPE":"string"},"simpleRepresentation":{"name":"simpleRepresentation","persistent":false,"type":"string"},"createdByAccount":{"name":"createdByAccount","persistent":false},"announceEvent":{"name":"announceEvent","persistent":false,"default":true,"type":"boolean"},"persistableErrors":{"name":"persistableErrors","persistent":false,"type":"array"},"amount":{"name":"amount","ormtype":"big_decimal","hb_formattype":"currency","hb_rbkey":"entity.priceGroupRate.amount"},"populatedSubProperties":{"name":"populatedSubProperties","persistent":false,"type":"struct"},"encryptedPropertiesExistFlag":{"name":"encryptedPropertiesExistFlag","persistent":false,"type":"boolean"},"priceGroupRate":{"name":"priceGroupRate","fieldtype":"many-to-one","cfc":"PriceGroupRate","fkcolumn":"priceGroupRateID"},"rollbackProcessedFlag":{"name":"rollbackProcessedFlag","persistent":false,"type":"boolean"},"attributeValuesByAttributeCodeStruct":{"name":"attributeValuesByAttributeCodeStruct","persistent":false,"type":"struct"},"currency":{"name":"currency","fieldtype":"many-to-one","cfc":"Currency","fkcolumn":"currencyCode"},"currencyCode":{"update":false,"name":"currencyCode","insert":false}};
-                	entities['PriceGroupRateCurrency'].className = 'PriceGroupRateCurrency';
-                	validations['PriceGroupRateCurrency'] = {"properties":{}};
-                	defaultValues['PriceGroupRateCurrency'] = {
-                	priceGroupRateCurrencyID:'',
-										amount:null,
-									currencyCode:'USD',
-									remoteID:null,
-									createdDateTime:'',
-										createdByAccountID:null,
-									modifiedDateTime:'',
-										modifiedByAccountID:null,
-									
-						z:''
-	                };
-                
                 	entities['Stock'] = {"calculatedQOH":{"name":"calculatedQOH","ormtype":"integer"},"createdDateTime":{"name":"createdDateTime","ormtype":"timestamp","hb_populateenabled":false},"emailTemplates":{"name":"emailTemplates","persistent":false,"type":"struct"},"printTemplates":{"name":"printTemplates","persistent":false,"type":"struct"},"processObjects":{"name":"processObjects","persistent":false,"type":"struct"},"settingValueFormatted":{"name":"settingValueFormatted","persistent":false,"type":"any"},"auditSmartList":{"name":"auditSmartList","persistent":false,"type":"any"},"modifiedDateTime":{"name":"modifiedDateTime","ormtype":"timestamp","hb_populateenabled":false},"newFlag":{"name":"newFlag","persistent":false,"type":"boolean"},"validations":{"name":"validations","persistent":false,"type":"struct"},"hibachiMessages":{"name":"hibachiMessages","persistent":false,"type":"any"},"createdByAccountID":{"name":"createdByAccountID","ormtype":"string","hb_populateenabled":false},"inventory":{"inverse":true,"name":"inventory","fieldtype":"one-to-many","singularname":"inventory","lazy":"extra","cfc":"Inventory","fkcolumn":"stockID"},"remoteID":{"name":"remoteID","ormtype":"string"},"vendorOrderItems":{"inverse":true,"name":"vendorOrderItems","fieldtype":"one-to-many","singularname":"vendorOrderItem","cfc":"VendorOrderItem","fkcolumn":"stockID"},"modifiedByAccountID":{"name":"modifiedByAccountID","ormtype":"string","hb_populateenabled":false},"attributeValuesByAttributeIDStruct":{"name":"attributeValuesByAttributeIDStruct","persistent":false,"type":"struct"},"hibachiErrors":{"name":"hibachiErrors","persistent":false,"type":"any"},"assignedAttributeSetSmartList":{"name":"assignedAttributeSetSmartList","persistent":false,"type":"any"},"stockID":{"generator":"uuid","name":"stockID","fieldtype":"id","ormtype":"string","unsavedvalue":"","length":32,"default":""},"modifiedByAccount":{"name":"modifiedByAccount","persistent":false},"hibachiInstanceApplicationScopeKey":{"NAME":"hibachiInstanceApplicationScopeKey","PERSISTENT":false,"TYPE":"string"},"createdByAccount":{"name":"createdByAccount","persistent":false},"simpleRepresentation":{"name":"simpleRepresentation","persistent":false,"type":"string"},"sku":{"name":"sku","fieldtype":"many-to-one","hb_cascadecalculate":true,"cfc":"Sku","fkcolumn":"skuID"},"announceEvent":{"name":"announceEvent","persistent":false,"default":true,"type":"boolean"},"calculatedQNC":{"name":"calculatedQNC","ormtype":"integer"},"persistableErrors":{"name":"persistableErrors","persistent":false,"type":"array"},"populatedSubProperties":{"name":"populatedSubProperties","persistent":false,"type":"struct"},"encryptedPropertiesExistFlag":{"name":"encryptedPropertiesExistFlag","persistent":false,"type":"boolean"},"rollbackProcessedFlag":{"name":"rollbackProcessedFlag","persistent":false,"type":"boolean"},"location":{"name":"location","fieldtype":"many-to-one","cfc":"Location","fkcolumn":"locationID"},"attributeValuesByAttributeCodeStruct":{"name":"attributeValuesByAttributeCodeStruct","persistent":false,"type":"struct"},"calculatedQATS":{"name":"calculatedQATS","ormtype":"integer"}};
                 	entities['Stock'].className = 'Stock';
                 	validations['Stock'] = {"properties":{}};
@@ -238,9 +224,9 @@
 										saveAccountPaymentMethodName:'',
 									currencyCode:'',
 									appliedOrderPayments:'',
-									accountPaymentMethodIDOptions:[{"name":"New","value":""}],
+									accountPaymentMethodIDOptions:[{"NAME":"New","VALUE":""}],
 										paymentMethodIDOptions:[{"value":"444df303dedc6dab69dd7ebcc9b8036a","allowsave":true,"paymentmethodtype":"creditCard","name":"Credit Card"},{"value":"50d8cd61009931554764385482347f3a","allowsave":false,"paymentmethodtype":"giftCard","name":"Gift Card"}],
-										accountAddressIDOptions:[{"name":"New","value":""}],
+										accountAddressIDOptions:[{"NAME":"New","VALUE":""}],
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
@@ -327,7 +313,7 @@
 										swprid:'',
 									password:'',
 									passwordConfirm:'',
-									accountPasswordResetID:"7e5ac0a48d3181325f47c3e80d6b0655",
+									accountPasswordResetID:"a55b11a4bcfd0a868d40a093de01e867",
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
@@ -494,7 +480,7 @@
                 	accountEmailAddressID:'',
 										emailAddress:null,
 									verifiedFlag:0,
-									verificationCode:'918da067b117d4639b8fcce740f3e8c5',
+									verificationCode:'fd266314c71f028096a31d843f180d21',
 										remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -704,26 +690,6 @@
 									imageDescription:null,
 									imageFile:null,
 									directory:null,
-									remoteID:null,
-									createdDateTime:'',
-										createdByAccountID:null,
-									modifiedDateTime:'',
-										modifiedByAccountID:null,
-									
-						z:''
-	                };
-                
-                	entities['GiftCard'] = {"expirationDate":{"name":"expirationDate","ormtype":"timestamp"},"giftCardCode":{"name":"giftCardCode","ormtype":"string"},"emailTemplates":{"name":"emailTemplates","persistent":false,"type":"struct"},"createdDateTime":{"name":"createdDateTime","ormtype":"timestamp","hb_populateenabled":false},"printTemplates":{"name":"printTemplates","persistent":false,"type":"struct"},"processObjects":{"name":"processObjects","persistent":false,"type":"struct"},"settingValueFormatted":{"name":"settingValueFormatted","persistent":false,"type":"any"},"auditSmartList":{"name":"auditSmartList","persistent":false,"type":"any"},"modifiedDateTime":{"name":"modifiedDateTime","ormtype":"timestamp","hb_populateenabled":false},"newFlag":{"name":"newFlag","persistent":false,"type":"boolean"},"validations":{"name":"validations","persistent":false,"type":"struct"},"hibachiMessages":{"name":"hibachiMessages","persistent":false,"type":"any"},"createdByAccountID":{"name":"createdByAccountID","ormtype":"string","hb_populateenabled":false},"remoteID":{"name":"remoteID","ormtype":"string"},"modifiedByAccountID":{"name":"modifiedByAccountID","ormtype":"string","hb_populateenabled":false},"attributeValuesByAttributeIDStruct":{"name":"attributeValuesByAttributeIDStruct","persistent":false,"type":"struct"},"hibachiErrors":{"name":"hibachiErrors","persistent":false,"type":"any"},"ownerLastName":{"name":"ownerLastName","ormtype":"string"},"assignedAttributeSetSmartList":{"name":"assignedAttributeSetSmartList","persistent":false,"type":"any"},"giftCardTransactions":{"inverse":true,"name":"giftCardTransactions","fieldtype":"one-to-many","singularname":"giftCardTransaction","cascade":"all-delete-orphan","cfc":"GiftCardTransaction","fkcolumn":"giftCardID"},"modifiedByAccount":{"name":"modifiedByAccount","persistent":false},"hibachiInstanceApplicationScopeKey":{"NAME":"hibachiInstanceApplicationScopeKey","PERSISTENT":false,"TYPE":"string"},"createdByAccount":{"name":"createdByAccount","persistent":false},"simpleRepresentation":{"name":"simpleRepresentation","persistent":false,"type":"string"},"giftCardPin":{"name":"giftCardPin","ormtype":"string"},"ownerFirstName":{"name":"ownerFirstName","ormtype":"string"},"announceEvent":{"name":"announceEvent","persistent":false,"default":true,"type":"boolean"},"ownerAccount":{"name":"ownerAccount","fieldtype":"many-to-one","cfc":"Account","fkcolumn":"ownerAccountID"},"persistableErrors":{"name":"persistableErrors","persistent":false,"type":"array"},"originalOrderItem":{"name":"originalOrderItem","fieldtype":"many-to-one","cfc":"OrderItem","fkcolumn":"originalOrderItemID"},"populatedSubProperties":{"name":"populatedSubProperties","persistent":false,"type":"struct"},"giftCardExpirationTerm":{"name":"giftCardExpirationTerm","fieldtype":"many-to-one","cfc":"Term","fkcolumn":"giftCardExpirationTermID"},"encryptedPropertiesExistFlag":{"name":"encryptedPropertiesExistFlag","persistent":false,"type":"boolean"},"rollbackProcessedFlag":{"name":"rollbackProcessedFlag","persistent":false,"type":"boolean"},"attributeValuesByAttributeCodeStruct":{"name":"attributeValuesByAttributeCodeStruct","persistent":false,"type":"struct"},"ownerEmailAddress":{"name":"ownerEmailAddress","ormtype":"string"},"giftCardID":{"generator":"uuid","name":"giftCardID","fieldtype":"id","ormtype":"string","unsavedvalue":"","length":32,"default":""}};
-                	entities['GiftCard'].className = 'GiftCard';
-                	validations['GiftCard'] = {"properties":{}};
-                	defaultValues['GiftCard'] = {
-                	giftCardID:'',
-										giftCardCode:null,
-									giftCardPin:null,
-									expirationDate:null,
-									ownerFirstName:null,
-									ownerLastName:null,
-									ownerEmailAddress:null,
 									remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -998,15 +964,12 @@
 						z:''
 	                };
                 
-                	entities['TaskHistory'] = {"createdDateTime":{"name":"createdDateTime","ormtype":"timestamp","hb_populateenabled":false},"emailTemplates":{"name":"emailTemplates","persistent":false,"type":"struct"},"printTemplates":{"name":"printTemplates","persistent":false,"type":"struct"},"taskSchedule":{"name":"taskSchedule","fieldtype":"many-to-one","cfc":"TaskSchedule","fkcolumn":"taskScheduleID"},"processObjects":{"name":"processObjects","persistent":false,"type":"struct"},"settingValueFormatted":{"name":"settingValueFormatted","persistent":false,"type":"any"},"auditSmartList":{"name":"auditSmartList","persistent":false,"type":"any"},"modifiedDateTime":{"name":"modifiedDateTime","ormtype":"timestamp","hb_populateenabled":false},"newFlag":{"name":"newFlag","persistent":false,"type":"boolean"},"validations":{"name":"validations","persistent":false,"type":"struct"},"hibachiMessages":{"name":"hibachiMessages","persistent":false,"type":"any"},"taskHistoryID":{"generator":"uuid","name":"taskHistoryID","fieldtype":"id","ormtype":"string","unsavedvalue":"","length":32,"default":""},"createdByAccountID":{"name":"createdByAccountID","ormtype":"string","hb_populateenabled":false},"remoteID":{"name":"remoteID","ormtype":"string"},"task":{"name":"task","fieldtype":"many-to-one","cfc":"Task","fkcolumn":"taskID"},"modifiedByAccountID":{"name":"modifiedByAccountID","ormtype":"string","hb_populateenabled":false},"attributeValuesByAttributeIDStruct":{"name":"attributeValuesByAttributeIDStruct","persistent":false,"type":"struct"},"hibachiErrors":{"name":"hibachiErrors","persistent":false,"type":"any"},"assignedAttributeSetSmartList":{"name":"assignedAttributeSetSmartList","persistent":false,"type":"any"},"duration":{"name":"duration","hb_formattype":"second","persistent":false},"modifiedByAccount":{"name":"modifiedByAccount","persistent":false},"hibachiInstanceApplicationScopeKey":{"NAME":"hibachiInstanceApplicationScopeKey","PERSISTENT":false,"TYPE":"string"},"createdByAccount":{"name":"createdByAccount","persistent":false},"simpleRepresentation":{"name":"simpleRepresentation","persistent":false,"type":"string"},"announceEvent":{"name":"announceEvent","persistent":false,"default":true,"type":"boolean"},"persistableErrors":{"name":"persistableErrors","persistent":false,"type":"array"},"startTime":{"name":"startTime","ormtype":"timestamp"},"populatedSubProperties":{"name":"populatedSubProperties","persistent":false,"type":"struct"},"encryptedPropertiesExistFlag":{"name":"encryptedPropertiesExistFlag","persistent":false,"type":"boolean"},"rollbackProcessedFlag":{"name":"rollbackProcessedFlag","persistent":false,"type":"boolean"},"attributeValuesByAttributeCodeStruct":{"name":"attributeValuesByAttributeCodeStruct","persistent":false,"type":"struct"},"successFlag":{"name":"successFlag","ormtype":"boolean"},"response":{"name":"response","ormtype":"string"},"endTime":{"name":"endTime","ormtype":"timestamp"}};
-                	entities['TaskHistory'].className = 'TaskHistory';
-                	validations['TaskHistory'] = {"properties":{}};
-                	defaultValues['TaskHistory'] = {
-                	taskHistoryID:'',
-										successFlag:null,
-									response:null,
-									startTime:null,
-									endTime:null,
+                	entities['ProductBundleBuildItem'] = {"createdDateTime":{"name":"createdDateTime","ormtype":"timestamp","hb_populateenabled":false},"emailTemplates":{"name":"emailTemplates","persistent":false,"type":"struct"},"printTemplates":{"name":"printTemplates","persistent":false,"type":"struct"},"processObjects":{"name":"processObjects","persistent":false,"type":"struct"},"settingValueFormatted":{"name":"settingValueFormatted","persistent":false,"type":"any"},"auditSmartList":{"name":"auditSmartList","persistent":false,"type":"any"},"modifiedDateTime":{"name":"modifiedDateTime","ormtype":"timestamp","hb_populateenabled":false},"productBundleGroup":{"name":"productBundleGroup","fieldtype":"many-to-one","cfc":"ProductBundleGroup","fkcolumn":"productBundleGroupID"},"newFlag":{"name":"newFlag","persistent":false,"type":"boolean"},"validations":{"name":"validations","persistent":false,"type":"struct"},"hibachiMessages":{"name":"hibachiMessages","persistent":false,"type":"any"},"createdByAccountID":{"name":"createdByAccountID","ormtype":"string","hb_populateenabled":false},"remoteID":{"name":"remoteID","ormtype":"string","hb_populateenabled":false},"attributeValuesByAttributeIDStruct":{"name":"attributeValuesByAttributeIDStruct","persistent":false,"type":"struct"},"modifiedByAccountID":{"name":"modifiedByAccountID","ormtype":"string","hb_populateenabled":false},"hibachiErrors":{"name":"hibachiErrors","persistent":false,"type":"any"},"assignedAttributeSetSmartList":{"name":"assignedAttributeSetSmartList","persistent":false,"type":"any"},"productBundleBuild":{"name":"productBundleBuild","fieldtype":"many-to-one","cfc":"ProductBundleBuild","fkcolumn":"productBundleBuildID"},"quantity":{"name":"quantity","ormtype":"integer"},"modifiedByAccount":{"name":"modifiedByAccount","persistent":false},"hibachiInstanceApplicationScopeKey":{"NAME":"hibachiInstanceApplicationScopeKey","PERSISTENT":false,"TYPE":"string"},"simpleRepresentation":{"name":"simpleRepresentation","persistent":false,"type":"string"},"createdByAccount":{"name":"createdByAccount","persistent":false},"sku":{"name":"sku","fieldtype":"many-to-one","cfc":"Sku","fkcolumn":"skuID"},"announceEvent":{"name":"announceEvent","persistent":false,"default":true,"type":"boolean"},"persistableErrors":{"name":"persistableErrors","persistent":false,"type":"array"},"populatedSubProperties":{"name":"populatedSubProperties","persistent":false,"type":"struct"},"encryptedPropertiesExistFlag":{"name":"encryptedPropertiesExistFlag","persistent":false,"type":"boolean"},"rollbackProcessedFlag":{"name":"rollbackProcessedFlag","persistent":false,"type":"boolean"},"attributeValuesByAttributeCodeStruct":{"name":"attributeValuesByAttributeCodeStruct","persistent":false,"type":"struct"},"productBundleBuildItemID":{"generator":"uuid","name":"productBundleBuildItemID","fieldtype":"id","ormtype":"string","unsavedvalue":"","length":32,"default":""}};
+                	entities['ProductBundleBuildItem'].className = 'ProductBundleBuildItem';
+                	validations['ProductBundleBuildItem'] = {"properties":{}};
+                	defaultValues['ProductBundleBuildItem'] = {
+                	productBundleBuildItemID:'',
+										quantity:null,
 									remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -1016,12 +979,15 @@
 						z:''
 	                };
                 
-                	entities['ProductBundleBuildItem'] = {"createdDateTime":{"name":"createdDateTime","ormtype":"timestamp","hb_populateenabled":false},"emailTemplates":{"name":"emailTemplates","persistent":false,"type":"struct"},"printTemplates":{"name":"printTemplates","persistent":false,"type":"struct"},"processObjects":{"name":"processObjects","persistent":false,"type":"struct"},"settingValueFormatted":{"name":"settingValueFormatted","persistent":false,"type":"any"},"auditSmartList":{"name":"auditSmartList","persistent":false,"type":"any"},"modifiedDateTime":{"name":"modifiedDateTime","ormtype":"timestamp","hb_populateenabled":false},"productBundleGroup":{"name":"productBundleGroup","fieldtype":"many-to-one","cfc":"ProductBundleGroup","fkcolumn":"productBundleGroupID"},"newFlag":{"name":"newFlag","persistent":false,"type":"boolean"},"validations":{"name":"validations","persistent":false,"type":"struct"},"hibachiMessages":{"name":"hibachiMessages","persistent":false,"type":"any"},"createdByAccountID":{"name":"createdByAccountID","ormtype":"string","hb_populateenabled":false},"remoteID":{"name":"remoteID","ormtype":"string","hb_populateenabled":false},"attributeValuesByAttributeIDStruct":{"name":"attributeValuesByAttributeIDStruct","persistent":false,"type":"struct"},"modifiedByAccountID":{"name":"modifiedByAccountID","ormtype":"string","hb_populateenabled":false},"hibachiErrors":{"name":"hibachiErrors","persistent":false,"type":"any"},"assignedAttributeSetSmartList":{"name":"assignedAttributeSetSmartList","persistent":false,"type":"any"},"productBundleBuild":{"name":"productBundleBuild","fieldtype":"many-to-one","cfc":"ProductBundleBuild","fkcolumn":"productBundleBuildID"},"quantity":{"name":"quantity","ormtype":"integer"},"modifiedByAccount":{"name":"modifiedByAccount","persistent":false},"hibachiInstanceApplicationScopeKey":{"NAME":"hibachiInstanceApplicationScopeKey","PERSISTENT":false,"TYPE":"string"},"simpleRepresentation":{"name":"simpleRepresentation","persistent":false,"type":"string"},"createdByAccount":{"name":"createdByAccount","persistent":false},"sku":{"name":"sku","fieldtype":"many-to-one","cfc":"Sku","fkcolumn":"skuID"},"announceEvent":{"name":"announceEvent","persistent":false,"default":true,"type":"boolean"},"persistableErrors":{"name":"persistableErrors","persistent":false,"type":"array"},"populatedSubProperties":{"name":"populatedSubProperties","persistent":false,"type":"struct"},"encryptedPropertiesExistFlag":{"name":"encryptedPropertiesExistFlag","persistent":false,"type":"boolean"},"rollbackProcessedFlag":{"name":"rollbackProcessedFlag","persistent":false,"type":"boolean"},"attributeValuesByAttributeCodeStruct":{"name":"attributeValuesByAttributeCodeStruct","persistent":false,"type":"struct"},"productBundleBuildItemID":{"generator":"uuid","name":"productBundleBuildItemID","fieldtype":"id","ormtype":"string","unsavedvalue":"","length":32,"default":""}};
-                	entities['ProductBundleBuildItem'].className = 'ProductBundleBuildItem';
-                	validations['ProductBundleBuildItem'] = {"properties":{}};
-                	defaultValues['ProductBundleBuildItem'] = {
-                	productBundleBuildItemID:'',
-										quantity:null,
+                	entities['TaskHistory'] = {"createdDateTime":{"name":"createdDateTime","ormtype":"timestamp","hb_populateenabled":false},"emailTemplates":{"name":"emailTemplates","persistent":false,"type":"struct"},"printTemplates":{"name":"printTemplates","persistent":false,"type":"struct"},"taskSchedule":{"name":"taskSchedule","fieldtype":"many-to-one","cfc":"TaskSchedule","fkcolumn":"taskScheduleID"},"processObjects":{"name":"processObjects","persistent":false,"type":"struct"},"settingValueFormatted":{"name":"settingValueFormatted","persistent":false,"type":"any"},"auditSmartList":{"name":"auditSmartList","persistent":false,"type":"any"},"modifiedDateTime":{"name":"modifiedDateTime","ormtype":"timestamp","hb_populateenabled":false},"newFlag":{"name":"newFlag","persistent":false,"type":"boolean"},"validations":{"name":"validations","persistent":false,"type":"struct"},"hibachiMessages":{"name":"hibachiMessages","persistent":false,"type":"any"},"taskHistoryID":{"generator":"uuid","name":"taskHistoryID","fieldtype":"id","ormtype":"string","unsavedvalue":"","length":32,"default":""},"createdByAccountID":{"name":"createdByAccountID","ormtype":"string","hb_populateenabled":false},"remoteID":{"name":"remoteID","ormtype":"string"},"task":{"name":"task","fieldtype":"many-to-one","cfc":"Task","fkcolumn":"taskID"},"modifiedByAccountID":{"name":"modifiedByAccountID","ormtype":"string","hb_populateenabled":false},"attributeValuesByAttributeIDStruct":{"name":"attributeValuesByAttributeIDStruct","persistent":false,"type":"struct"},"hibachiErrors":{"name":"hibachiErrors","persistent":false,"type":"any"},"assignedAttributeSetSmartList":{"name":"assignedAttributeSetSmartList","persistent":false,"type":"any"},"duration":{"name":"duration","hb_formattype":"second","persistent":false},"modifiedByAccount":{"name":"modifiedByAccount","persistent":false},"hibachiInstanceApplicationScopeKey":{"NAME":"hibachiInstanceApplicationScopeKey","PERSISTENT":false,"TYPE":"string"},"createdByAccount":{"name":"createdByAccount","persistent":false},"simpleRepresentation":{"name":"simpleRepresentation","persistent":false,"type":"string"},"announceEvent":{"name":"announceEvent","persistent":false,"default":true,"type":"boolean"},"persistableErrors":{"name":"persistableErrors","persistent":false,"type":"array"},"startTime":{"name":"startTime","ormtype":"timestamp"},"populatedSubProperties":{"name":"populatedSubProperties","persistent":false,"type":"struct"},"encryptedPropertiesExistFlag":{"name":"encryptedPropertiesExistFlag","persistent":false,"type":"boolean"},"rollbackProcessedFlag":{"name":"rollbackProcessedFlag","persistent":false,"type":"boolean"},"attributeValuesByAttributeCodeStruct":{"name":"attributeValuesByAttributeCodeStruct","persistent":false,"type":"struct"},"successFlag":{"name":"successFlag","ormtype":"boolean"},"response":{"name":"response","ormtype":"string"},"endTime":{"name":"endTime","ormtype":"timestamp"}};
+                	entities['TaskHistory'].className = 'TaskHistory';
+                	validations['TaskHistory'] = {"properties":{}};
+                	defaultValues['TaskHistory'] = {
+                	taskHistoryID:'',
+										successFlag:null,
+									response:null,
+									startTime:null,
+									endTime:null,
 									remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -1409,25 +1375,6 @@
 						z:''
 	                };
                 
-                	entities['OrderItemGiftRecipient'] = {"createdDateTime":{"name":"createdDateTime","ormtype":"timestamp","hb_populateenabled":false},"emailTemplates":{"name":"emailTemplates","persistent":false,"type":"struct"},"printTemplates":{"name":"printTemplates","persistent":false,"type":"struct"},"processObjects":{"name":"processObjects","persistent":false,"type":"struct"},"settingValueFormatted":{"name":"settingValueFormatted","persistent":false,"type":"any"},"auditSmartList":{"name":"auditSmartList","persistent":false,"type":"any"},"orderItem":{"name":"orderItem","fieldtype":"many-to-one","cfc":"OrderItem","fkcolumn":"orderItemID"},"modifiedDateTime":{"name":"modifiedDateTime","ormtype":"timestamp","hb_populateenabled":false},"newFlag":{"name":"newFlag","persistent":false,"type":"boolean"},"validations":{"name":"validations","persistent":false,"type":"struct"},"hibachiMessages":{"name":"hibachiMessages","persistent":false,"type":"any"},"account":{"name":"account","fieldtype":"many-to-one","cfc":"Account","fkcolumn":"accountID"},"createdByAccountID":{"name":"createdByAccountID","ormtype":"string","hb_populateenabled":false},"firstName":{"name":"firstName","ormtype":"string"},"orderItemGiftRecipientID":{"generator":"uuid","name":"orderItemGiftRecipientID","fieldtype":"id","ormtype":"string","unsavedvalue":"","length":32,"default":""},"remoteID":{"name":"remoteID","ormtype":"string"},"modifiedByAccountID":{"name":"modifiedByAccountID","ormtype":"string","hb_populateenabled":false},"attributeValuesByAttributeIDStruct":{"name":"attributeValuesByAttributeIDStruct","persistent":false,"type":"struct"},"hibachiErrors":{"name":"hibachiErrors","persistent":false,"type":"any"},"assignedAttributeSetSmartList":{"name":"assignedAttributeSetSmartList","persistent":false,"type":"any"},"quantity":{"name":"quantity","ormtype":"integer"},"emailAddress":{"name":"emailAddress","ormtype":"string"},"modifiedByAccount":{"name":"modifiedByAccount","persistent":false},"hibachiInstanceApplicationScopeKey":{"NAME":"hibachiInstanceApplicationScopeKey","PERSISTENT":false,"TYPE":"string"},"createdByAccount":{"name":"createdByAccount","persistent":false},"giftMessage":{"name":"giftMessage","ormtype":"string"},"simpleRepresentation":{"name":"simpleRepresentation","persistent":false,"type":"string"},"announceEvent":{"name":"announceEvent","persistent":false,"default":true,"type":"boolean"},"persistableErrors":{"name":"persistableErrors","persistent":false,"type":"array"},"populatedSubProperties":{"name":"populatedSubProperties","persistent":false,"type":"struct"},"encryptedPropertiesExistFlag":{"name":"encryptedPropertiesExistFlag","persistent":false,"type":"boolean"},"rollbackProcessedFlag":{"name":"rollbackProcessedFlag","persistent":false,"type":"boolean"},"attributeValuesByAttributeCodeStruct":{"name":"attributeValuesByAttributeCodeStruct","persistent":false,"type":"struct"},"lastName":{"name":"lastName","ormtype":"string"}};
-                	entities['OrderItemGiftRecipient'].className = 'OrderItemGiftRecipient';
-                	validations['OrderItemGiftRecipient'] = {"properties":{}};
-                	defaultValues['OrderItemGiftRecipient'] = {
-                	orderItemGiftRecipientID:'',
-										firstName:null,
-									lastName:null,
-									emailAddress:null,
-									quantity:null,
-									giftMessage:null,
-									remoteID:null,
-									createdDateTime:'',
-										createdByAccountID:null,
-									modifiedDateTime:'',
-										modifiedByAccountID:null,
-									
-						z:''
-	                };
-                
                 	entities['Country'] = {"cityShowFlag":{"name":"cityShowFlag","ormtype":"boolean"},"localityLabel":{"name":"localityLabel","ormtype":"string"},"createdDateTime":{"name":"createdDateTime","ormtype":"timestamp","hb_populateenabled":false},"emailTemplates":{"name":"emailTemplates","persistent":false,"type":"struct"},"settingValueFormatted":{"name":"settingValueFormatted","persistent":false,"type":"any"},"auditSmartList":{"name":"auditSmartList","persistent":false,"type":"any"},"modifiedDateTime":{"name":"modifiedDateTime","ormtype":"timestamp","hb_populateenabled":false},"hibachiMessages":{"name":"hibachiMessages","persistent":false,"type":"any"},"postalCodeShowFlag":{"name":"postalCodeShowFlag","ormtype":"boolean"},"stateCodeOptions":{"name":"stateCodeOptions","persistent":false,"type":"array"},"cityRequiredFlag":{"name":"cityRequiredFlag","ormtype":"boolean"},"cityLabel":{"name":"cityLabel","ormtype":"string"},"hibachiErrors":{"name":"hibachiErrors","persistent":false,"type":"any"},"street2AddressLabel":{"name":"street2AddressLabel","ormtype":"string"},"states":{"name":"states","hb_rbkey":"entity.state_plural","persistent":false,"type":"array"},"modifiedByAccount":{"name":"modifiedByAccount","persistent":false},"simpleRepresentation":{"name":"simpleRepresentation","persistent":false,"type":"string"},"createdByAccount":{"name":"createdByAccount","persistent":false},"announceEvent":{"name":"announceEvent","persistent":false,"default":true,"type":"boolean"},"streetAddressShowFlag":{"name":"streetAddressShowFlag","ormtype":"boolean"},"localityRequiredFlag":{"name":"localityRequiredFlag","ormtype":"boolean"},"street2AddressShowFlag":{"name":"street2AddressShowFlag","ormtype":"boolean"},"rollbackProcessedFlag":{"name":"rollbackProcessedFlag","persistent":false,"type":"boolean"},"countryCode":{"name":"countryCode","fieldtype":"id","ormtype":"string","length":2},"attributeValuesByAttributeCodeStruct":{"name":"attributeValuesByAttributeCodeStruct","persistent":false,"type":"struct"},"street2AddressRequiredFlag":{"name":"street2AddressRequiredFlag","ormtype":"boolean"},"printTemplates":{"name":"printTemplates","persistent":false,"type":"struct"},"countryISONumber":{"name":"countryISONumber","ormtype":"integer"},"processObjects":{"name":"processObjects","persistent":false,"type":"struct"},"localityShowFlag":{"name":"localityShowFlag","ormtype":"boolean"},"stateCodeShowFlag":{"name":"stateCodeShowFlag","ormtype":"boolean"},"defaultCurrencyOptions":{"name":"defaultCurrencyOptions","persistent":false,"type":"array"},"postalCodeLabel":{"name":"postalCodeLabel","ormtype":"string"},"newFlag":{"name":"newFlag","persistent":false,"type":"boolean"},"validations":{"name":"validations","persistent":false,"type":"struct"},"postalCodeRequiredFlag":{"name":"postalCodeRequiredFlag","ormtype":"boolean"},"createdByAccountID":{"name":"createdByAccountID","ormtype":"string","hb_populateenabled":false},"countryName":{"name":"countryName","ormtype":"string"},"modifiedByAccountID":{"name":"modifiedByAccountID","ormtype":"string","hb_populateenabled":false},"attributeValuesByAttributeIDStruct":{"name":"attributeValuesByAttributeIDStruct","persistent":false,"type":"struct"},"assignedAttributeSetSmartList":{"name":"assignedAttributeSetSmartList","persistent":false,"type":"any"},"stateCodeRequiredFlag":{"name":"stateCodeRequiredFlag","ormtype":"boolean"},"stateCodeLabel":{"name":"stateCodeLabel","ormtype":"string"},"hibachiInstanceApplicationScopeKey":{"NAME":"hibachiInstanceApplicationScopeKey","PERSISTENT":false,"TYPE":"string"},"streetAddressLabel":{"name":"streetAddressLabel","ormtype":"string"},"streetAddressRequiredFlag":{"name":"streetAddressRequiredFlag","ormtype":"boolean"},"persistableErrors":{"name":"persistableErrors","persistent":false,"type":"array"},"populatedSubProperties":{"name":"populatedSubProperties","persistent":false,"type":"struct"},"encryptedPropertiesExistFlag":{"name":"encryptedPropertiesExistFlag","persistent":false,"type":"boolean"},"countryCode3Digit":{"name":"countryCode3Digit","ormtype":"string","length":3},"activeFlag":{"name":"activeFlag","ormtype":"boolean"},"defaultCurrency":{"name":"defaultCurrency","fieldtype":"many-to-one","cfc":"Currency","fkcolumn":"defaultCurrencyCode"}};
                 	entities['Country'].className = 'Country';
                 	validations['Country'] = {"properties":{"countryCode":[{"maxLength":3,"required":true,"contexts":"save","minLength":2}],"countryName":[{"required":true,"contexts":"save"}],"countryISONumber":[{"dataType":"numeric","contexts":"save"}],"countryCode3Digit":[{"maxLength":3,"contexts":"save","minLength":3}]}};
@@ -1804,22 +1751,6 @@
 						z:''
 	                };
                 
-                	entities['PromotionRewardCurrency'] = {"createdDateTime":{"name":"createdDateTime","ormtype":"timestamp","hb_populateenabled":false},"emailTemplates":{"name":"emailTemplates","persistent":false,"type":"struct"},"printTemplates":{"name":"printTemplates","persistent":false,"type":"struct"},"processObjects":{"name":"processObjects","persistent":false,"type":"struct"},"settingValueFormatted":{"name":"settingValueFormatted","persistent":false,"type":"any"},"auditSmartList":{"name":"auditSmartList","persistent":false,"type":"any"},"modifiedDateTime":{"name":"modifiedDateTime","ormtype":"timestamp","hb_populateenabled":false},"newFlag":{"name":"newFlag","persistent":false,"type":"boolean"},"validations":{"name":"validations","persistent":false,"type":"struct"},"hibachiMessages":{"name":"hibachiMessages","persistent":false,"type":"any"},"promotionReward":{"name":"promotionReward","fieldtype":"many-to-one","cfc":"PromotionReward","fkcolumn":"promotionRewardID"},"createdByAccountID":{"name":"createdByAccountID","ormtype":"string","hb_populateenabled":false},"remoteID":{"name":"remoteID","ormtype":"string"},"attributeValuesByAttributeIDStruct":{"name":"attributeValuesByAttributeIDStruct","persistent":false,"type":"struct"},"modifiedByAccountID":{"name":"modifiedByAccountID","ormtype":"string","hb_populateenabled":false},"hibachiErrors":{"name":"hibachiErrors","persistent":false,"type":"any"},"assignedAttributeSetSmartList":{"name":"assignedAttributeSetSmartList","persistent":false,"type":"any"},"modifiedByAccount":{"name":"modifiedByAccount","persistent":false},"hibachiInstanceApplicationScopeKey":{"NAME":"hibachiInstanceApplicationScopeKey","PERSISTENT":false,"TYPE":"string"},"simpleRepresentation":{"name":"simpleRepresentation","persistent":false,"type":"string"},"createdByAccount":{"name":"createdByAccount","persistent":false},"announceEvent":{"name":"announceEvent","persistent":false,"default":true,"type":"boolean"},"persistableErrors":{"name":"persistableErrors","persistent":false,"type":"array"},"amount":{"name":"amount","ormtype":"big_decimal","hb_formattype":"currency","hb_rbkey":"entity.promotionReward.amount"},"populatedSubProperties":{"name":"populatedSubProperties","persistent":false,"type":"struct"},"encryptedPropertiesExistFlag":{"name":"encryptedPropertiesExistFlag","persistent":false,"type":"boolean"},"rollbackProcessedFlag":{"name":"rollbackProcessedFlag","persistent":false,"type":"boolean"},"attributeValuesByAttributeCodeStruct":{"name":"attributeValuesByAttributeCodeStruct","persistent":false,"type":"struct"},"currency":{"name":"currency","fieldtype":"many-to-one","cfc":"Currency","fkcolumn":"currencyCode"},"promotionRewardCurrencyID":{"generator":"uuid","name":"promotionRewardCurrencyID","fieldtype":"id","ormtype":"string","unsavedvalue":"","length":32,"default":""},"currencyCode":{"update":false,"name":"currencyCode","insert":false}};
-                	entities['PromotionRewardCurrency'].className = 'PromotionRewardCurrency';
-                	validations['PromotionRewardCurrency'] = {"properties":{"amount":[{"dataType":"numeric","required":false,"contexts":"save"}],"currencyCode":[{"contexts":"save","neqProperty":"promotionReward.currencyCode"}]}};
-                	defaultValues['PromotionRewardCurrency'] = {
-                	promotionRewardCurrencyID:'',
-										amount:null,
-									currencyCode:'USD',
-									remoteID:null,
-									createdDateTime:'',
-										createdByAccountID:null,
-									modifiedDateTime:'',
-										modifiedByAccountID:null,
-									
-						z:''
-	                };
-                
                 	entities['Vendor'] = {"vendorAddresses":{"inverse":true,"name":"vendorAddresses","fieldtype":"one-to-many","singularname":"vendorAddress","cascade":"all-delete-orphan","cfc":"VendorAddress","fkcolumn":"vendorID","type":"array"},"emailTemplates":{"name":"emailTemplates","persistent":false,"type":"struct"},"createdDateTime":{"name":"createdDateTime","ormtype":"timestamp","hb_populateenabled":false},"printTemplates":{"name":"printTemplates","persistent":false,"type":"struct"},"processObjects":{"name":"processObjects","persistent":false,"type":"struct"},"brands":{"name":"brands","fieldtype":"many-to-many","singularname":"brand","inversejoincolumn":"brandID","cfc":"Brand","fkcolumn":"vendorID","linktable":"SwVendorBrand"},"settingValueFormatted":{"name":"settingValueFormatted","persistent":false,"type":"any"},"auditSmartList":{"name":"auditSmartList","persistent":false,"type":"any"},"vendorID":{"generator":"uuid","name":"vendorID","fieldtype":"id","ormtype":"string","unsavedvalue":"","length":32,"default":""},"modifiedDateTime":{"name":"modifiedDateTime","ormtype":"timestamp","hb_populateenabled":false},"newFlag":{"name":"newFlag","persistent":false,"type":"boolean"},"validations":{"name":"validations","persistent":false,"type":"struct"},"hibachiMessages":{"name":"hibachiMessages","persistent":false,"type":"any"},"createdByAccountID":{"name":"createdByAccountID","ormtype":"string","hb_populateenabled":false},"remoteID":{"name":"remoteID","ormtype":"string"},"modifiedByAccountID":{"name":"modifiedByAccountID","ormtype":"string","hb_populateenabled":false},"attributeValuesByAttributeIDStruct":{"name":"attributeValuesByAttributeIDStruct","persistent":false,"type":"struct"},"hibachiErrors":{"name":"hibachiErrors","persistent":false,"type":"any"},"primaryEmailAddress":{"name":"primaryEmailAddress","fieldtype":"many-to-one","cfc":"VendorEmailAddress","fkcolumn":"primaryEmailAddressID"},"primaryAddress":{"name":"primaryAddress","fieldtype":"many-to-one","cfc":"VendorAddress","fkcolumn":"primaryAddressID"},"vendorName":{"name":"vendorName","ormtype":"string"},"assignedAttributeSetSmartList":{"name":"assignedAttributeSetSmartList","persistent":false,"type":"any"},"modifiedByAccount":{"name":"modifiedByAccount","persistent":false},"attributeValues":{"inverse":true,"name":"attributeValues","fieldtype":"one-to-many","singularname":"attributeValue","cascade":"all-delete-orphan","cfc":"AttributeValue","fkcolumn":"vendorID","type":"array"},"hibachiInstanceApplicationScopeKey":{"NAME":"hibachiInstanceApplicationScopeKey","PERSISTENT":false,"TYPE":"string"},"createdByAccount":{"name":"createdByAccount","persistent":false},"simpleRepresentation":{"name":"simpleRepresentation","persistent":false,"type":"string"},"vendorEmailAddresses":{"inverse":true,"name":"vendorEmailAddresses","fieldtype":"one-to-many","singularname":"vendorEmailAddress","cascade":"all-delete-orphan","cfc":"VendorEmailAddress","fkcolumn":"vendorID","type":"array"},"accountNumber":{"name":"accountNumber","ormtype":"string"},"products":{"name":"products","fieldtype":"many-to-many","singularname":"product","inversejoincolumn":"productID","cfc":"Product","fkcolumn":"vendorID","linktable":"SwVendorProduct"},"announceEvent":{"name":"announceEvent","persistent":false,"default":true,"type":"boolean"},"persistableErrors":{"name":"persistableErrors","persistent":false,"type":"array"},"vendorWebsite":{"name":"vendorWebsite","ormtype":"string"},"populatedSubProperties":{"name":"populatedSubProperties","persistent":false,"type":"struct"},"encryptedPropertiesExistFlag":{"name":"encryptedPropertiesExistFlag","persistent":false,"type":"boolean"},"rollbackProcessedFlag":{"name":"rollbackProcessedFlag","persistent":false,"type":"boolean"},"attributeValuesByAttributeCodeStruct":{"name":"attributeValuesByAttributeCodeStruct","persistent":false,"type":"struct"},"vendorOrders":{"inverse":true,"name":"vendorOrders","fieldtype":"one-to-many","singularname":"vendorOrder","cascade":"save-update","cfc":"VendorOrder","fkcolumn":"vendorID","type":"array"},"vendorSkusSmartList":{"name":"vendorSkusSmartList","persistent":false},"vendorPhoneNumbers":{"inverse":true,"name":"vendorPhoneNumbers","fieldtype":"one-to-many","singularname":"vendorPhoneNumber","cascade":"all-delete-orphan","cfc":"VendorPhoneNumber","fkcolumn":"vendorID","type":"array"},"primaryPhoneNumber":{"name":"primaryPhoneNumber","fieldtype":"many-to-one","cfc":"VendorPhoneNumber","fkcolumn":"primaryPhoneNumberID"}};
                 	entities['Vendor'].className = 'Vendor';
                 	validations['Vendor'] = {"properties":{"vendororders":[{"maxCollection":0,"contexts":"delete"}],"vendorWebsite":[{"dataType":"url","contexts":"save"}],"vendorName":[{"required":true,"contexts":"save"}]}};
@@ -2055,7 +1986,7 @@
 						z:''
 	                };
                 
-                	entities['Report'] = {"reportEndDateTime":{"name":"reportEndDateTime","persistent":false},"emailTemplates":{"name":"emailTemplates","persistent":false,"type":"struct"},"createdDateTime":{"name":"createdDateTime","ormtype":"timestamp","hb_populateenabled":false},"printTemplates":{"name":"printTemplates","persistent":false,"type":"struct"},"processObjects":{"name":"processObjects","persistent":false,"type":"struct"},"dynamicDateRangeEndType":{"name":"dynamicDateRangeEndType","ormtype":"string","hb_formattype":"rbKey","hb_formfieldtype":"select"},"settingValueFormatted":{"name":"settingValueFormatted","persistent":false,"type":"any"},"auditSmartList":{"name":"auditSmartList","persistent":false,"type":"any"},"modifiedDateTime":{"name":"modifiedDateTime","ormtype":"timestamp","hb_populateenabled":false},"newFlag":{"name":"newFlag","persistent":false,"type":"boolean"},"validations":{"name":"validations","persistent":false,"type":"struct"},"hibachiMessages":{"name":"hibachiMessages","persistent":false,"type":"any"},"createdByAccountID":{"name":"createdByAccountID","ormtype":"string","hb_populateenabled":false},"remoteID":{"name":"remoteID","ormtype":"string"},"attributeValuesByAttributeIDStruct":{"name":"attributeValuesByAttributeIDStruct","persistent":false,"type":"struct"},"modifiedByAccountID":{"name":"modifiedByAccountID","ormtype":"string","hb_populateenabled":false},"reportCompareEndDateTime":{"name":"reportCompareEndDateTime","persistent":false},"hibachiErrors":{"name":"hibachiErrors","persistent":false,"type":"any"},"dynamicDateRangeFlag":{"name":"dynamicDateRangeFlag","ormtype":"boolean"},"assignedAttributeSetSmartList":{"name":"assignedAttributeSetSmartList","persistent":false,"type":"any"},"metrics":{"name":"metrics","ormtype":"string","length":4000},"reportTitle":{"name":"reportTitle","ormtype":"string"},"dynamicDateRangeType":{"name":"dynamicDateRangeType","ormtype":"string","hb_formattype":"rbKey","hb_formfieldtype":"select"},"dimensions":{"name":"dimensions","ormtype":"string","length":4000},"modifiedByAccount":{"name":"modifiedByAccount","persistent":false},"hibachiInstanceApplicationScopeKey":{"NAME":"hibachiInstanceApplicationScopeKey","PERSISTENT":false,"TYPE":"string"},"createdByAccount":{"name":"createdByAccount","persistent":false},"simpleRepresentation":{"name":"simpleRepresentation","persistent":false,"type":"string"},"reportDateTime":{"name":"reportDateTime","ormtype":"string"},"reportStartDateTime":{"name":"reportStartDateTime","persistent":false},"announceEvent":{"name":"announceEvent","persistent":false,"default":true,"type":"boolean"},"orderByType":{"name":"orderByType","persistent":false},"persistableErrors":{"name":"persistableErrors","persistent":false,"type":"array"},"populatedSubProperties":{"name":"populatedSubProperties","persistent":false,"type":"struct"},"encryptedPropertiesExistFlag":{"name":"encryptedPropertiesExistFlag","persistent":false,"type":"boolean"},"dynamicDateRangeEndTypeOptions":{"name":"dynamicDateRangeEndTypeOptions","persistent":false},"rollbackProcessedFlag":{"name":"rollbackProcessedFlag","persistent":false,"type":"boolean"},"attributeValuesByAttributeCodeStruct":{"name":"attributeValuesByAttributeCodeStruct","persistent":false,"type":"struct"},"reportDateTimeGroupBy":{"name":"reportDateTimeGroupBy","ormtype":"string"},"reportName":{"name":"reportName","ormtype":"string"},"reportCompareFlag":{"name":"reportCompareFlag","ormtype":"boolean"},"reportCompareStartDateTime":{"name":"reportCompareStartDateTime","persistent":false},"dynamicDateRangeInterval":{"name":"dynamicDateRangeInterval","ormtype":"integer"},"reportID":{"generator":"uuid","name":"reportID","fieldtype":"id","ormtype":"string","unsavedvalue":"","length":32,"default":""},"dynamicDateRangeTypeOptions":{"name":"dynamicDateRangeTypeOptions","persistent":false}};
+                	entities['Report'] = {"reportEndDateTime":{"name":"reportEndDateTime","persistent":false},"emailTemplates":{"name":"emailTemplates","persistent":false,"type":"struct"},"createdDateTime":{"name":"createdDateTime","ormtype":"timestamp","hb_populateenabled":false},"printTemplates":{"name":"printTemplates","persistent":false,"type":"struct"},"reportType":{"name":"reportType","ormtype":"string"},"processObjects":{"name":"processObjects","persistent":false,"type":"struct"},"dynamicDateRangeEndType":{"name":"dynamicDateRangeEndType","ormtype":"string","hb_formattype":"rbKey","hb_formfieldtype":"select"},"showReport":{"name":"showReport","ormtype":"boolean","default":false},"settingValueFormatted":{"name":"settingValueFormatted","persistent":false,"type":"any"},"auditSmartList":{"name":"auditSmartList","persistent":false,"type":"any"},"modifiedDateTime":{"name":"modifiedDateTime","ormtype":"timestamp","hb_populateenabled":false},"newFlag":{"name":"newFlag","persistent":false,"type":"boolean"},"validations":{"name":"validations","persistent":false,"type":"struct"},"hibachiMessages":{"name":"hibachiMessages","persistent":false,"type":"any"},"createdByAccountID":{"name":"createdByAccountID","ormtype":"string","hb_populateenabled":false},"remoteID":{"name":"remoteID","ormtype":"string"},"attributeValuesByAttributeIDStruct":{"name":"attributeValuesByAttributeIDStruct","persistent":false,"type":"struct"},"modifiedByAccountID":{"name":"modifiedByAccountID","ormtype":"string","hb_populateenabled":false},"reportCompareEndDateTime":{"name":"reportCompareEndDateTime","persistent":false},"hibachiErrors":{"name":"hibachiErrors","persistent":false,"type":"any"},"dynamicDateRangeFlag":{"name":"dynamicDateRangeFlag","ormtype":"boolean"},"assignedAttributeSetSmartList":{"name":"assignedAttributeSetSmartList","persistent":false,"type":"any"},"metrics":{"name":"metrics","ormtype":"string","length":4000},"reportTitle":{"name":"reportTitle","ormtype":"string"},"limitResults":{"name":"limitResults","ormtype":"integer"},"dynamicDateRangeType":{"name":"dynamicDateRangeType","ormtype":"string","hb_formattype":"rbKey","hb_formfieldtype":"select"},"dimensions":{"name":"dimensions","ormtype":"string","length":4000},"modifiedByAccount":{"name":"modifiedByAccount","persistent":false},"hibachiInstanceApplicationScopeKey":{"NAME":"hibachiInstanceApplicationScopeKey","PERSISTENT":false,"TYPE":"string"},"createdByAccount":{"name":"createdByAccount","persistent":false},"simpleRepresentation":{"name":"simpleRepresentation","persistent":false,"type":"string"},"reportDateTime":{"name":"reportDateTime","ormtype":"string"},"reportStartDateTime":{"name":"reportStartDateTime","persistent":false},"announceEvent":{"name":"announceEvent","persistent":false,"default":true,"type":"boolean"},"orderByType":{"name":"orderByType","persistent":false},"persistableErrors":{"name":"persistableErrors","persistent":false,"type":"array"},"populatedSubProperties":{"name":"populatedSubProperties","persistent":false,"type":"struct"},"encryptedPropertiesExistFlag":{"name":"encryptedPropertiesExistFlag","persistent":false,"type":"boolean"},"dynamicDateRangeEndTypeOptions":{"name":"dynamicDateRangeEndTypeOptions","persistent":false},"rollbackProcessedFlag":{"name":"rollbackProcessedFlag","persistent":false,"type":"boolean"},"attributeValuesByAttributeCodeStruct":{"name":"attributeValuesByAttributeCodeStruct","persistent":false,"type":"struct"},"reportDateTimeGroupBy":{"name":"reportDateTimeGroupBy","ormtype":"string"},"reportName":{"name":"reportName","ormtype":"string"},"reportCompareFlag":{"name":"reportCompareFlag","ormtype":"boolean"},"reportCompareStartDateTime":{"name":"reportCompareStartDateTime","persistent":false},"dynamicDateRangeInterval":{"name":"dynamicDateRangeInterval","ormtype":"integer"},"reportID":{"generator":"uuid","name":"reportID","fieldtype":"id","ormtype":"string","unsavedvalue":"","length":32,"default":""},"dynamicDateRangeTypeOptions":{"name":"dynamicDateRangeTypeOptions","persistent":false}};
                 	entities['Report'].className = 'Report';
                 	validations['Report'] = {"properties":{}};
                 	defaultValues['Report'] = {
@@ -2071,6 +2002,9 @@
 									dynamicDateRangeType:'months',
 										dynamicDateRangeEndType:'now',
 										dynamicDateRangeInterval:1,
+									reportType:null,
+									limitResults:null,
+									showReport:false,
 									remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -2086,7 +2020,7 @@
                 	defaultValues['Audit'] = {
                 	auditID:'',
 										auditType:null,
-									auditDateTime:'1438199247202',
+									auditDateTime:'1439238758549',
 										auditArchiveStartDateTime:null,
 									auditArchiveEndDateTime:null,
 									auditArchiveCreatedDateTime:null,
@@ -2190,9 +2124,9 @@
 									accountPaymentMethodIDOptions:[],
 										previousOrderPaymentIDOptions:[],
 										paymentMethodIDOptions:[],
-										accountAddressIDOptions:[{"name":"New","value":""}],
-										paymentTermIDOptions:[{"name":"Select","value":""},{"name":"Net 30","value":"27f223d1a5b7cba92e783c926e29efc6"},{"name":"Net 60","value":"27f223d2f018f5737a2b82838c4027e9"},{"name":"Net 90","value":"27f223d3b4b878a2771226a03417a764"}],
-										copyFromTypeOptions:[{"name":"New","value":""}],
+										accountAddressIDOptions:[{"NAME":"New","VALUE":""}],
+										paymentTermIDOptions:[{"NAME":"Select","VALUE":""},{"NAME":"Net 30","VALUE":"27f223d1a5b7cba92e783c926e29efc6"},{"NAME":"Net 60","VALUE":"27f223d2f018f5737a2b82838c4027e9"},{"NAME":"Net 90","VALUE":"27f223d3b4b878a2771226a03417a764"}],
+										copyFromTypeOptions:[{"NAME":"New","VALUE":""}],
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
@@ -2508,22 +2442,6 @@
                 	defaultValues['AlternateSkuCode'] = {
                 	alternateSkuCodeID:'',
 										alternateSkuCode:null,
-									createdDateTime:'',
-										createdByAccountID:null,
-									modifiedDateTime:'',
-										modifiedByAccountID:null,
-									
-						z:''
-	                };
-                
-                	entities['GiftCardTransaction'] = {"debitAmount":{"name":"debitAmount","ormtype":"big_decimal"},"createdDateTime":{"name":"createdDateTime","ormtype":"timestamp","hb_populateenabled":false},"emailTemplates":{"name":"emailTemplates","persistent":false,"type":"struct"},"printTemplates":{"name":"printTemplates","persistent":false,"type":"struct"},"processObjects":{"name":"processObjects","persistent":false,"type":"struct"},"orderItems":{"inverse":true,"name":"orderItems","fieldtype":"one-to-many","singularname":"orderItem","cascade":"all-delete-orphan","cfc":"OrderItem","fkcolumn":"giftCardTransactionID"},"settingValueFormatted":{"name":"settingValueFormatted","persistent":false,"type":"any"},"auditSmartList":{"name":"auditSmartList","persistent":false,"type":"any"},"modifiedDateTime":{"name":"modifiedDateTime","ormtype":"timestamp","hb_populateenabled":false},"orderPayment":{"name":"orderPayment","fieldtype":"many-to-one","cfc":"OrderPayment","fkcolumn":"orderPaymentID"},"newFlag":{"name":"newFlag","persistent":false,"type":"boolean"},"validations":{"name":"validations","persistent":false,"type":"struct"},"hibachiMessages":{"name":"hibachiMessages","persistent":false,"type":"any"},"createdByAccountID":{"name":"createdByAccountID","ormtype":"string","hb_populateenabled":false},"remoteID":{"name":"remoteID","ormtype":"string"},"modifiedByAccountID":{"name":"modifiedByAccountID","ormtype":"string","hb_populateenabled":false},"attributeValuesByAttributeIDStruct":{"name":"attributeValuesByAttributeIDStruct","persistent":false,"type":"struct"},"hibachiErrors":{"name":"hibachiErrors","persistent":false,"type":"any"},"assignedAttributeSetSmartList":{"name":"assignedAttributeSetSmartList","persistent":false,"type":"any"},"giftCardTransactionID":{"generator":"uuid","name":"giftCardTransactionID","fieldtype":"id","ormtype":"string","unsavedvalue":"","length":32,"default":""},"modifiedByAccount":{"name":"modifiedByAccount","persistent":false},"hibachiInstanceApplicationScopeKey":{"NAME":"hibachiInstanceApplicationScopeKey","PERSISTENT":false,"TYPE":"string"},"createdByAccount":{"name":"createdByAccount","persistent":false},"simpleRepresentation":{"name":"simpleRepresentation","persistent":false,"type":"string"},"creditAmount":{"name":"creditAmount","ormtype":"big_decimal"},"announceEvent":{"name":"announceEvent","persistent":false,"default":true,"type":"boolean"},"persistableErrors":{"name":"persistableErrors","persistent":false,"type":"array"},"giftCard":{"name":"giftCard","fieldtype":"many-to-one","cfc":"GiftCard","fkcolumn":"giftCardID"},"populatedSubProperties":{"name":"populatedSubProperties","persistent":false,"type":"struct"},"encryptedPropertiesExistFlag":{"name":"encryptedPropertiesExistFlag","persistent":false,"type":"boolean"},"rollbackProcessedFlag":{"name":"rollbackProcessedFlag","persistent":false,"type":"boolean"},"attributeValuesByAttributeCodeStruct":{"name":"attributeValuesByAttributeCodeStruct","persistent":false,"type":"struct"}};
-                	entities['GiftCardTransaction'].className = 'GiftCardTransaction';
-                	validations['GiftCardTransaction'] = {"properties":{}};
-                	defaultValues['GiftCardTransaction'] = {
-                	giftCardTransactionID:'',
-										creditAmount:null,
-									debitAmount:null,
-									remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
 									modifiedDateTime:'',
@@ -3373,7 +3291,7 @@
                 angular.forEach(entities,function(entity){
                 	$delegate['get'+entity.className] = function(options){
 						var entityInstance = $delegate.newEntity(entity.className);
-						var entityDataPromise = $delegate.getEntity(entity.className.toLowerCase(),options);
+						var entityDataPromise = $delegate.getEntity(entity.className,options);
 						entityDataPromise.then(function(response){
 							
 							if(angular.isDefined(response.processData)){
@@ -3395,7 +3313,7 @@
 					 
 					$delegate['get'+entity.className] = function(options){
 						var entityInstance = $delegate.newEntity(entity.className);
-						var entityDataPromise = $delegate.getEntity(entity.className.toLowerCase(),options);
+						var entityDataPromise = $delegate.getEntity(entity.className,options);
 						entityDataPromise.then(function(response){
 							
 							if(angular.isDefined(response.processData)){
@@ -3556,8 +3474,9 @@
 										
 										
 										_jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
-										
+
 											var thisEntityInstance = this;
+
 											if(angular.isDefined(this['$$get'+this.$$getIDName().charAt(0).toUpperCase()+this.$$getIDName().slice(1)]())){
 												var options = {
 													columnsConfig:angular.toJson([
@@ -3576,7 +3495,7 @@
 															{
 																"propertyIdentifier":"_"+this.metaData.className.toLowerCase()+"."+this.$$getIDName(),
 																"comparisonOperator":"=",
-																"value":this['$$get'+this.$$getIDName()]
+																"value":this.$$getID()
 															}
 														]
 													}]),
@@ -3649,6 +3568,7 @@
 									
 									
 										_jsEntities[ entity.className ].prototype['$$add'+property.singularname.charAt(0).toUpperCase()+property.singularname.slice(1)]=function(){
+
 										
 										var entityInstance = $delegate.newEntity(this.metaData[property.name].cfc);
 										var metaData = this.metaData;
@@ -3696,6 +3616,8 @@
 									
 									
 										_jsEntities[ entity.className ].prototype['$$get'+property.name.charAt(0).toUpperCase()+property.name.slice(1)]=function() {
+										console.log('test');
+											console.log(this);
 
 										var thisEntityInstance = this;
 										if(angular.isDefined(this['$$get'+this.$$getIDName().charAt(0).toUpperCase()+this.$$getIDName().slice(1)])){
@@ -3705,7 +3627,7 @@
 														{
 															"propertyIdentifier":"_"+property.cfc.toLowerCase()+"."+property.fkcolumn.replace('ID','')+"."+this.$$getIDName(),
 															"comparisonOperator":"=",
-															"value":this['$$get'+this.$$getIDName()]
+															"value":this.$$getID()
 														}
 													]
 												}]),

@@ -76,10 +76,7 @@ module slatwalladmin{
             this.alerts.splice(0,1);
         }
     }  
-    
-}
-module slatwalladmin{
-     angular.module('slatwalladmin')
+    angular.module('slatwalladmin')
     .service('alertService',AlertService); 
 }
     

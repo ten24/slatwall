@@ -60,14 +60,11 @@ gulp.task('watch', function() {
 	//gulp.watch([config.ngSlatwallcfm],['flattenNgslatwall']);
     gulp.watch([config.allTypeScript], 
     [
+    	'compile-ts-to5',
     	'compile-ts'
 		,'gen-ts-refs'
 		
 		//,'compress'
-	]);
-	gulp.watch([config.es6Path],
-	[
-		'compile-ts-to5'
 	]);
 	gulp.watch([config.entityPath,config.processPath],
 	[
@@ -278,9 +275,9 @@ gulp.task('compress',function(){
 gulp.task('default', function(){
 	runSequence(
 		'flattenNgSlatwallModel'
+		,'compile-ts-to5'
 		,'compile-ts'
 		,'gen-ts-refs'
-		,'compile-ts-to5'
 		,'compress'
 		,'watch'
 	);
