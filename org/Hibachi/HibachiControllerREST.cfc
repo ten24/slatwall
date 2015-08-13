@@ -35,18 +35,6 @@ component output="false" accessors="true" extends="HibachiController" {
 		setFW( arguments.fw );
 	}
 	
-	public void function noaccess(required struct rc){
-		var message = {
-			"message"=arguments.rc.pagetitle
-		};
-		arrayAppend(arguments.rc['messages'],message);
-		arguments.rc.apiResponse.content.success = false;
-		var context = getPageContext();
-		context.getOut().clearBuffer();
-		var response = context.getResponse();
-		response.setStatus(403);
-	}
-	
 	public any function before( required struct rc ) {
 		arguments.rc.apiRequest = true;
 		getFW().setView("public:main.blank");
@@ -63,6 +51,18 @@ component output="false" accessors="true" extends="HibachiController" {
 		) {
 			StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
 		}
+	}
+	
+	public void function noaccess(required struct rc){
+		var message = {};
+		message['message'] =arguments.rc.pagetitle;
+		message['messageType']="error";
+		arrayAppend(arguments.rc['messages'],message);
+		arguments.rc.apiResponse.content.success = false;
+		var context = getPageContext();
+		context.getOut().clearBuffer();
+		var response = context.getResponse();
+		response.setStatus(403);
 	}
 	
 	public any function getDetailTabs(required struct rc){
