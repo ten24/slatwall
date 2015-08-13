@@ -603,7 +603,6 @@ component extends="FW1.framework" {
     		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/xml'){
     			//response String to xml placeholder
     		}
-    		
 			writeOutput( responseString );
 		}		
 		// Check for an Ajax Response

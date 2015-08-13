@@ -23,6 +23,8 @@ component output="false" accessors="true" extends="HibachiController" {
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
 	
 	this.publicMethods=listAppend(this.publicMethods, 'log');
+	this.publicMethods=listAppend(this.publicMethods, 'getDetailTabs');
+	this.publicMethods=listAppend(this.publicMethods, 'noaccess');
 	
 	//	this.secureMethods='';
 	//	this.secureMethods=listAppend(this.secureMethods, 'get');
@@ -31,6 +33,18 @@ component output="false" accessors="true" extends="HibachiController" {
 	
 	public void function init( required any fw ) {
 		setFW( arguments.fw );
+	}
+	
+	public void function noaccess(required struct rc){
+		var message = {
+			"message"=arguments.rc.pagetitle
+		};
+		arrayAppend(arguments.rc['messages'],message);
+		arguments.rc.apiResponse.content.success = false;
+		var context = getPageContext();
+		context.getOut().clearBuffer();
+		var response = context.getResponse();
+		response.setStatus(403);
 	}
 	
 	public any function before( required struct rc ) {
