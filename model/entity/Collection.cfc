@@ -699,36 +699,37 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	private string function getHQLForCollectionFilter(required struct filter){
+		
 		var collectionFilterHQL = '';
 		var filterCriteria = getfilterCriteria(arguments.filter.criteria);
 		collectionFilterHQL &= ' #filterCriteria# (';
-		
 		var collectionEntity = getService('collectionService').getCollectionByCollectionID(arguments.filter.collectionID);
-		var mainCollectionAlias = listFirst(arguments.filter.propertyIdentifier,'.');
-		var mainCollectionObject = replace(listFirst(arguments.filter.propertyIdentifier,'.'),'_','');
+		var relatedPropertyForEntity = getService('hibachiService').getPropertyByEntityNameAndPropertyName(this.getCollectionObject(),listLast(arguments.filter.propertyIdentifier,'.'));
+		
+		if(relatedPropertyForEntity.fieldType == 'one-to-many'){
+			var mainCollectionAlias = getCollectionConfigStruct().baseEntityAlias;
+			var mainCollectionObject = replace(listFirst(arguments.filter.propertyIdentifier,'.'),'_','');
+		}else if(relatedPropertyForEntity.fieldType == 'many-to-many'){
+			var relatedPropertiesForCollectionEntity = getService('hibachiService').getPropertiesByEntityName(collectionEntity.getCollectionObject());
+			for(var propertyItem in relatedPropertiesForCollectionEntity){
+				if(structkeyExists(propertyItem,'linktable') && propertyItem.linktable == relatedPropertyForEntity.linktable){
+					var relatedPropertyForCollectionEntity = propertyItem;
+					break;
+				}
+			}
+			var mainCollectionAlias = getCollectionConfigStruct().baseEntityAlias;
+			var mainCollectionObject = relatedPropertyForCollectionEntity.name;
+		}
+		
 		var collectionProperty = '';
 		if(mainCollectionObject != collectionEntity.getCollectionObject()){
 			collectionProperty = getService('HibachiService').getPropertyByEntityNameAndPropertyName(collectionEntity.getCollectionObject(),mainCollectionObject).name;
 		}else{
 			collectionProperty = mainCollectionObject;
 		}
-		
-		//None,One,All
-		/*withaliases
-		if(arguments.filter.criteria eq 'None' || arguments.filter.criteria eq 'One'){
-			collectionFilterHQL &= ' #collectionEntity.getHQL()# AND #maincollectionAlias# = #collectionEntity.getHQLAliases()['#collectionEntity.getCollectionObject()#']#.#collectionProperty# ';
-		}else{
-			var fullEntityName = getService('hibachiService').getProperlyCasedFullEntityName(collectionEntity.getCollectionObject());
-			
-			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getCollectionObject()#) FROM #fullEntityName# as #collectionEntity.getCollectionObject()# WHERE #collectionEntity.getCollectionObject()#.#collectionProperty# = #mainCollectionAlias#) 
-			= (SELECT count(#collectionEntity.getCollectionObject()#) #collectionEntity.getHQL(true)# AND #collectionEntity.getHQLAliases()['#collectionEntity.getCollectionObject()#']#.#collectionProperty# = #mainCollectionAlias#) ';
-		}
-		*/
-		
-		if(arguments.filter.criteria eq 'None' || arguments.filter.criteria eq 'One'){
+		if(arguments.filter.criteria == 'None' || arguments.filter.criteria == 'One'){
 			var collectionHQL = collectionEntity.getHQL(true);
 			var hasWhereClause = Find('where',collectionHQL);
-			
 			var predicate = 'AND';
 			if(!hasWhereClause){
 				predicate = 'WHERE';
@@ -740,10 +741,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				comparator = replace(collectionEntity.getCollectionConfigStruct().baseEntityAlias,'_','__','ALL');
 			}
 			
-			collectionFilterHQL &= ' #replace(collectionEntity.getHQL(true),'_','__','ALL')# #predicate# #maincollectionAlias# = #comparator# ';
+			var logicalComparator = '';
+			if(relatedPropertyForEntity.fieldType == 'one-to-many'){
+				logicalComparator = '= #comparator#';
+			}else{
+				logicalComparator = 'IN elements(#comparator#)';
+			}
+			
+			collectionFilterHQL &= ' #replace(collectionEntity.getHQL(true),'_','__','ALL')# #predicate# #maincollectionAlias# #logicalComparator# ';
 		}else{
 			var fullEntityName = getService('hibachiService').getProperlyCasedFullEntityName(collectionEntity.getCollectionObject());
-			
 			var collectionHQL = collectionEntity.getHQL(true);
 			var hasWhereClause = Find('where',collectionHQL);
 			
@@ -764,14 +771,28 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}else{
 				innerComparator = '#collectionEntity.getCollectionObject()#.#collectionProperty#';
 			}
+			var logicalComparator = '';
+			if(relatedPropertyForEntity.fieldType == 'one-to-many'){
+				logicalComparator = '= #comparator#';
+			}else{
+				logicalComparator = 'IN elements(#comparator#)';
+			}
 			
-			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getCollectionObject()#) FROM #fullEntityName# as #collectionEntity.getCollectionObject()# WHERE #innerComparator# = #mainCollectionAlias#) = (SELECT count(#collectionEntity.getCollectionConfigStruct().baseEntityAlias#) #collectionHQL# #predicate# #comparator# = #mainCollectionAlias#) ';
-		}
+			var innerLogicalComparator = '';
+			if(relatedPropertyForEntity.fieldType == 'one-to-many'){
+				innerLogicalComparator = '= #innerComparator#';
+			}else{
+				innerLogicalComparator = 'IN elements(#innerComparator#)';
+			}
+			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getCollectionObject()#) FROM #fullEntityName# as #collectionEntity.getCollectionObject()# WHERE #mainCollectionAlias# #innerLogicalComparator#) = (SELECT count(#collectionEntity.getCollectionConfigStruct().baseEntityAlias#) #collectionHQL# #predicate# #mainCollectionAlias# #logicalComparator#) ';
 		
+		}
+			
 		//add all params from subqueries to parent HQL
 		addHQLParamsFromNestedCollection(collectionEntity.getHQLParams());
 		
 		collectionFilterHQL &= ')';
+		
 		return collectionFilterHQL;
 	}
 	
@@ -911,7 +932,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					} 
 				}else{
 					HQL = getHQL();
-					
 					HQLParams = getHQLParams();
 					variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
