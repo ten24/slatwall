@@ -164,7 +164,7 @@ angular.module('slatwalladmin')
                     data.collectionConfig = collectionConfigString;
                     //has to be removed in order to save transient correctly
                     delete data.pageRecords;
-                    var saveCollectionPromise = $slatwall.saveEntity(entityName, collection.collectionID, data);
+                    var saveCollectionPromise = $slatwall.saveEntity(entityName, collection.collectionID, data, 'save');
                     saveCollectionPromise.then(function (value) {
                         $scope.errorMessage = {};
                         //Set current page here so that the pagination does not break when getting collection

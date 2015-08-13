@@ -36,7 +36,7 @@
 Notes:
 
 */
-component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="collectionService" {
+component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="collectionService" {
 	
 	// Persistent Properties
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -876,7 +876,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
-		try{
+//		try{
 			var HQL = '';
 			var HQLParams = {};
 			if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
@@ -916,12 +916,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
 			}
-		}
-		catch(any e){
-			variables.pageRecords = [{'failedCollection'='failedCollection'}];
-			writelog(file="collection",text="Error:#e.message#");
-			writelog(file="collection",text="HQL:#HQL#");
-		}
+//		}
+//		catch(any e){
+//			variables.pageRecords = [{'failedCollection'='failedCollection'}];
+//			writelog(file="collection",text="Error:#e.message#");
+//			writelog(file="collection",text="HQL:#HQL#");
+//		}
 		
 		return variables.pageRecords;
 	}
@@ -1145,8 +1145,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(arguments.isDistinct){
 			isDistinctValue = "DISTINCT";
 		}
-		
-		var HQL = 'SELECT #isDistinctValue#';
+		var HQL = '';
+		var selectHQL = 'SELECT #isDistinctValue#';
 		var columnCount = 0;
 		if(arguments.forExport){
 			columnCount = getColumnCountByExportableColumns(arguments.columns);
@@ -1154,67 +1154,82 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			columnCount = arraylen(arguments.columns);
 		}
 		
-		HQL &= ' new Map(';
-		for(var i = 1; i <= columnCount; i++){
-			var column = arguments.columns[i];
-			if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
-				var currentAlias = '';
-				var currentAliasStepped = '';
-				var columnPropertyIdentiferArray = listToArray(column.propertyIdentifier,'.');
-				var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
-				
-				for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
-					if(columnPropertyIdentiferArrayCount > 2){
-						if(j != 1 && j != columnPropertyIdentiferArrayCount){
-							var dotNeeded = '';
-							if(j >= 3){
-								dotNeeded = '.';
-							}
-							
-							var join = {
-									associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
-									alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
-							};
-							
-							
-							currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
-							currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
-							
-							addJoin(join);
-							
-						}
-						if(j == columnPropertyIdentiferArrayCount){
-							column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
-										
-						}
-					}
-					if(!len(currentAlias)){
-						currentAlias = columnPropertyIdentiferArray[1];
-					}
-				}
-				if(structKeyExists(column,'attributeID')){
-					HQL &= getColumnAttributeHQL(column);
-				}else{
-					//check if we have an aggregate
-					if(!isnull(column.aggregate))
-					{	
-						//if we have an aggregate then put wrap the identifier
-						HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
+		var startMapHQL = ' new Map(';
+		var columnsHQL = '';
+		if(getHibachiScope().authenticateEntity('read', getCollectionObject())){
+			for(var i = 1; i <= columnCount; i++){
+				if(
+					getHibachiScope().authenticateEntityProperty('read', getCollectionObject(), listRest(arguments.columns[i].propertyIdentifier,'.'))
+					
+				){
+					var column = arguments.columns[i];
+					if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
+						var currentAlias = '';
+						var currentAliasStepped = '';
+						var columnPropertyIdentiferArray = listToArray(column.propertyIdentifier,'.');
+						var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
 						
-					}else{
-						var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
-						HQL &= ' #column.propertyIdentifier# as #columnAlias#';
-					}
+						for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
+							if(columnPropertyIdentiferArrayCount > 2){
+								if(j != 1 && j != columnPropertyIdentiferArrayCount){
+									var dotNeeded = '';
+									if(j >= 3){
+										dotNeeded = '.';
+									}
+									
+									var join = {
+											associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
+											alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
+									};
+									
+									
+									currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
+									currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
+									
+									addJoin(join);
+									
+								}
+								if(j == columnPropertyIdentiferArrayCount){
+									column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
+												
+								}
+							}
+							if(!len(currentAlias)){
+								currentAlias = columnPropertyIdentiferArray[1];
+							}
+						}
+						if(structKeyExists(column,'attributeID')){
+							columnsHQL &= getColumnAttributeHQL(column);
+						}else{
+							//check if we have an aggregate
+							if(!isnull(column.aggregate))
+							{	
+								//if we have an aggregate then put wrap the identifier
+								columnsHQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
+								
+							}else{
+								var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
+								columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+							}
+						}
+						
+						//check whether a comma is needed
+						if(i != columnCount){
+							columnsHQL &= ',';
+						}//<--end if
+					}//<--end exportable	
 				}
-				
-				//check whether a comma is needed
-				if(i != columnCount){
-					HQL &= ',';
-				}//<--end if
-			}//<--end exportable	
-			
-		}//<--end for loop
-		HQL &= ')';
+			}//<--end for loop
+		}
+		
+		if(right(columnsHQL,1) == ','){
+			columnsHQL &= left(columnsHQL,len(columnsHQL)-1);
+		}
+		var endMapHQL = ')';
+		
+		if(len(columnsHQL)){
+			HQL &= selectHQL & startMapHQL & columnsHQL & endMapHQL;
+		}
 		return HQL;
 	}//<--end function
 	

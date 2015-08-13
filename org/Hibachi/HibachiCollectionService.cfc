@@ -162,8 +162,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		return collectionEntity;
 		
 	}
-	
-	public any function getFormattedPageRecord(required any pageRecord, required any propertyIdentifier){
+	public any function getFormattedPageRecord(required any pageRecord, required any propertyIdentifier, any collectionEntity){
 		//populate pageRecordStruct with pageRecord info based on the passed in property identifier
 		var pageRecordStruct = {};
 		
@@ -184,7 +183,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			if(structKeyExists(arguments.pageRecord,propertyIdentifier)){
 				if(isObject(arguments.pageRecord[arguments.propertyIdentifier])){
 					var nestedPropertyIdentifiers = arguments.pageRecord[arguments.propertyIdentifier].getDefaultPropertyIdentifierArray();
-					pageRecordStruct[arguments.propertyIdentifier] = getFormattedObjectRecords([arguments.pageRecord[arguments.propertyIdentifier]],nestedPropertyIdentifiers);
+					pageRecordStruct[arguments.propertyIdentifier] = getFormattedObjectRecords([arguments.pageRecord[arguments.propertyIdentifier]],nestedPropertyIdentifiers,arguments.collectionEntity);
 				}else if(isArray(arguments.pageRecord[arguments.propertyIdentifier])){
 					
 					//pageRecordStruct[ arguments.propertyIdentifier ] = value;
@@ -214,17 +213,16 @@ component output="false" accessors="true" extends="HibachiService" {
 		return pageRecordStruct;
 	}
 	
-	public array function getFormattedObjectRecords(required array objectRecords, required array propertyIdentifiers){
-		
+	public array function getFormattedObjectRecords(required array objectRecords, required array propertyIdentifiers, any collectionEntity){
 		//validate columns against entities default property identifiers
 		var formattedObjectRecords = [];
 		for(var i=1; i<=arrayLen(arguments.objectRecords); i++) {
 			var thisRecord = {};
 			for(var p=1; p<=arrayLen(arguments.propertyIdentifiers); p++) {
 				if(arguments.propertyIdentifiers[p] neq 'pageRecords'){
-					//check if page records returns an array of orm objects or hashmap structs and handle them appropriatley
-					
-					structAppend(thisRecord,getFormattedPageRecord(arguments.objectRecords[i],arguments.propertyIdentifiers[p]));
+					if(getHibachiScope().authenticateEntityProperty('read', arguments.collectionEntity.getCollectionObject(),listRest(arguments.propertyIdentifiers[p],'.'))){
+						structAppend(thisRecord,getFormattedPageRecord(arguments.objectRecords[i],arguments.propertyIdentifiers[p],arguments.collectionEntity));
+					}
 				}
 			}
 			arrayAppend(formattedObjectRecords, thisRecord);
@@ -253,7 +251,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			formattedPageRecords = getBadCollectionInfo(arguments.collectionEntity);
 		}else{
 				
-			formattedPageRecords[ "pageRecords" ] = getFormattedObjectRecords(paginatedCollectionOfEntities,arguments.propertyIdentifiers);
+			formattedPageRecords[ "pageRecords" ] = getFormattedObjectRecords(paginatedCollectionOfEntities,arguments.propertyIdentifiers,arguments.collectionEntity);
 			formattedPageRecords[ "recordsCount" ] = arguments.collectionEntity.getRecordsCount();
 			formattedPageRecords[ "pageRecordsCount" ] = arrayLen(arguments.collectionEntity.getPageRecords());
 			formattedPageRecords[ "pageRecordsShow"] = arguments.collectionEntity.getPageRecordsShow();
@@ -263,7 +261,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			formattedPageRecords[ "totalPages" ] = arguments.collectionEntity.getTotalPages();
 			if(arrayLen(arguments.collectionEntity.getProcessObjects())){
 				var processObject = arguments.collectionEntity.getProcessObjects()[1];
-				formattedPageRecords[ "processObjects" ] = getFormattedObjectRecords(arguments.collectionEntity.getProcessObjects(),this.getProcessObjectProperties(processObject,arguments.collectionEntity));
+				formattedPageRecords[ "processObjects" ] = getFormattedObjectRecords(arguments.collectionEntity.getProcessObjects(),this.getProcessObjectProperties(processObject,arguments.collectionEntity),arguments.collectionEntity);
 			}
 			
 		}
@@ -285,7 +283,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		var collectionOfEntities = collectionEntity.getRecords();
 		
-		var formattedRecords[ "records" ] = getFormattedObjectRecords(collectionOfEntities,arguments.propertyIdentifiers);
+		var formattedRecords[ "records" ] = getFormattedObjectRecords(collectionOfEntities,arguments.propertyIdentifiers,arguments.collectionEntity);
 		
 		return formattedRecords;
 	}
@@ -518,6 +516,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		var response = {};
 		var defaultPropertyIdentifiers = getPropertyIdentifierArray('collection');
+		
 		for(var p=1; p<=arrayLen(defaultPropertyIdentifiers); p++) {
 			response[ defaultPropertyIdentifiers[p] ] = arguments.collectionEntity.getValueByPropertyIdentifier( propertyIdentifier=defaultPropertyIdentifiers[p],format=true );
 		}
@@ -526,7 +525,6 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		if(structKeyExists(collectionEntity.getCollectionConfigStruct(),'columns')){
 			for (var column in collectionEntity.getCollectionConfigStruct().columns){
-				
 				var piAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),collectionEntity.getCollectionConfigStruct().baseEntityAlias&'_','');
 				if(!ArrayFind(collectionPropertyIdentifiers,piAlias)){
 					ArrayAppend(collectionPropertyIdentifiers,piAlias);
@@ -535,11 +533,13 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		
 		var collectionStruct = {};
-		if(structKeyExists(arguments.collectionOptions,'allRecords') && arguments.collectionOptions.allRecords == 'true'){
-			collectionStruct = getFormattedRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
-		}else{
-			//paginated collection struct
-			collectionStruct = getFormattedPageRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
+		if(getHibachiScope().authenticateEntity('read', arguments.collectionEntity.getCollectionObject())){
+			if(structKeyExists(arguments.collectionOptions,'allRecords') && arguments.collectionOptions.allRecords == 'true'){
+				collectionStruct = getFormattedRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
+			}else{
+				//paginated collection struct
+				collectionStruct = getFormattedPageRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
+			}
 		}
 		structAppend(response,collectionStruct);
 		return response;
