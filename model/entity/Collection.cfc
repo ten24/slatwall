@@ -1649,6 +1649,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		setCollectionConfig( serializeJSON(getConfigStructure()) );
 	}
 	
+	//validationMethods
+	public any function canSaveCollectionByCollectionObject(){
+		return getHibachiScope().authenticateEntity('read', this.getCollectionObject());
+	}
+	
 }
 
 
