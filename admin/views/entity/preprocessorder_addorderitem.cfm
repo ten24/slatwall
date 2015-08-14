@@ -237,7 +237,7 @@ Notes:
 										<a class="btn btn-default btn-xs" href="##" ng-click="delete(recipient)"><i class="glyphicon glyphicon-trash"></i> </a> 
 					                </td>
 					        	</tr> 
-					            <tr>
+					            <tr class="hide">
 					                <td>Reinaldo Solares</td>
 					                <td>reinaldosolares@gmail.com</td>
 									<td class="s-table-input-element">
@@ -250,7 +250,7 @@ Notes:
 										<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-trash"></i> </a> 
 					                </td>
 					            </tr>
-								<tr class="s-save-row"><!-- s-save-row is added to rows that are being saved and removed after  -->
+								<tr class="s-save-row hide"><!-- s-save-row is added to rows that are being saved and removed after  -->
 									<td class="s-table-input-element">
 										<input type="text" value="John Rowe" class="form-control">
 									</td>
@@ -267,7 +267,7 @@ Notes:
 										<a class="btn btn-default btn-xs btn-save" href="##">Save</a> 
 					                </td>
 					            </tr>
-								<tr>
+								<tr class="hide">
 					                <td>Mark Freeze <a href="##"><i class="fa fa-user"></i></a></td>
 					                <td>mark@gmail.com</td>
 									<td class="s-table-input-element">
@@ -280,6 +280,7 @@ Notes:
 										<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-trash"></i> </a> 
 					                </td>
 					            </tr>
+					       
 					        </tbody>
 					    </table>
 					</div>
@@ -288,10 +289,12 @@ Notes:
 						
 						<div class="s-search-filter s-gift-card">
 	                        <div class="input-group">
-								<div class="s-search">
-	                            	<input type="text" placeholder="search or add recipient..." class="form-control input-sm">
-									<i class="fa fa-search"></i>
-								</div>
+								<form ng-submit="add()">
+									<div class="s-search">
+	                            		<input type="text" placeholder="search or add recipient..." class="form-control input-sm">
+										<i class="fa fa-search"></i>
+									</div>
+								</form>
 								<span href="##" class="s-current-selection-item addDropdown <!---Remove addDropdown---> addDropdown-filledName-input <!--- Remove addDropdown-filledName-input --->"> Reyjay Solares (reinaldosolares@gmail.com) <a href="##" title="edit"><i class="fa fa-pencil"></i></a></span>
 	                            <ul class="dropdown-menu addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->"><!-- display block should be replaced with js(angular) -->
 	                                
@@ -336,7 +339,7 @@ Notes:
 	                            </button>
 	                        </div>
 							<div class="s-add-info-dropdown addDropdown <!---Remove addDropdown---> addDropdown-add-account <!--- Remove addDropdown-add-account --->">
-								<form>
+								<form ng-submit="add()" class="hide">
 									<h5>Create New Recipient</h5>
 									<div class="form-group">
 										<label>First Name<i class="fa fa-asterisk"></i></label>

@@ -4,22 +4,29 @@ module slatwalladmin {
 	export class AddOrderItemGiftRecipient{ 
 
 		public static $inject = [
-			'$scope'
+			'$scope' 
+			
 		];
 
 		constructor(){
-
+			this.orderItemGiftRecipients = []; 
 		}
 
-		public function add(recipient:any){ 
+		function onTodos() {
+			this.$scope.remainingCount = this.totalQuantity - this.orderItemGiftRecipients.length;
+			this.$scope.totalCount = this.orderItemGiftRecipients.length;
+	
+
+		function add() {
+			//process recipient
+			this.orderItemGiftRecipients.push(recipient); 
+		}
+
+		function edit(recipient:any){
 			//todo
 		}
 
-		public function edit(recipient:any){
-			//todo
-		}
-
-		public function delete(recipient:any){ 
+		function delete(recipient:any){ 
 			//todo
 		}
 
