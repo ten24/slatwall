@@ -75,6 +75,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public string function getOrderRequirementsList(required any order) {
 		var orderRequirementsList = "";	
 		
+		
 		// Check if the order still requires a valid account
 		if(isNull(arguments.order.getAccount()) || arguments.order.getAccount().hasErrors()) {
 			orderRequirementsList = listAppend(orderRequirementsList, "account");
@@ -95,7 +96,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				break;
 			}
 		}
-
+		
 		// If not enough payments have been defined then 
 		if(arguments.order.getPaymentAmountTotal() != arguments.order.getTotal()) {
 			orderRequirementsList = listAppend(orderRequirementsList, "payment");
@@ -110,6 +111,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 			
+			
+		}
+		
+		//Check if there is subscription with autopay flag without order payment with account payment method.
+		var result = getSubscriptionService().getHasSubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod(arguments.order);
+		if (result){
+			orderRequirementsList = listAppend(orderRequirementsList, "payment");
 		}
 		
 		return orderRequirementsList;
@@ -669,6 +677,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
+		
 		// Attach 'createTransaction' errors to the order 
 		if(newOrderPayment.hasError('createTransaction')) {
 			arguments.order.addError('addOrderPayment', newOrderPayment.getError('createTransaction'), true);
@@ -1173,6 +1182,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
 					}
 					
+					//Check if we have a Subscription with auto pay without an order payments method that allows accounts to save.
+					if (getSubscriptionService().getHasSubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod(arguments.order)){
+						arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod'));	
+					}
+					
 					// Generate the order requirements list, to see if we still need action to be taken
 					var orderRequirementsList = getOrderRequirementsList( arguments.order );
 					
@@ -1191,6 +1205,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						if(listFindNoCase("payment", orderRequirementsList)) {
 							arguments.order.addError('payment',rbKey('entity.order.process.placeOrder.paymentRequirementError'));
 						}
+						
 						
 					} else {
 						
