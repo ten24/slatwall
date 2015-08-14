@@ -214,20 +214,7 @@ component entityname="SlatwallPaymentMethod" table="SwPaymentMethod" persistent=
 		return variables.paymentIntegrationOptions;
 	} 
 	
-	public any function getSubscriptionTermHasAutoPayFlagSet(){
-		var subscriptionTermSmartList = getService("SubscriptionService").getSubscriptionTermSmartList();
-		subscriptionTermSmartList.addFilter("autoPayFlag", 1);
-		var subscriptionTermsWithAutoPayFlagSetCount = subscriptionTermSmartList.getRecordsCount();
-		
-		if (subscriptionTermsWithAutoPayFlagSetCount){
-			//fails validation...
-			return false;
-		}
-		//passes validation
-		return true;
-		
-	}
-
+	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================

@@ -1,24 +1,10 @@
 {
-	"conditions": {
-                    "autoPayFlagSelected": {
-                        "autoPayFlag": {
-                            "eq": 1
-                        }
-                    }
-                },
 	"properties":{
 		"subscriptionTermName":			[{"contexts":"save","required":true}],
 		"initialTerm":					[{"contexts":"save","required":true}],
 		"renewalTerm":					[{"contexts":"save","required":true}],
 		"skus":							[{"contexts":"delete","maxCollection":0}],
 		"autoRetryPaymentDays":			[{"contexts":"save","regex":"^([0-9]+,?)+$"}],
-		"renewalReminderDays":			[{"contexts":"save","regex":"^([0-9]+,?)+$"}],
-		 "autoPayFlag": [
-            {
-                "contexts": "save",
-                "method": "getHasPaymentMethodThatAllowsAccountsToSave",
-                "conditions":"autoPayFlagSelected"
-            }
-        ]
+		"renewalReminderDays":			[{"contexts":"save","regex":"^([0-9]+,?)+$"}]
 		}
 }

@@ -100,20 +100,6 @@ component entityname="SlatwallSubscriptionTerm" table="SwSubscriptionTerm" persi
 	
 	// ===================  END:  ORM Event Hooks  =========================
 	
-	// ========================== VALIDATION  ============================
-	public boolean function getHasPaymentMethodThatAllowsAccountsToSave(){
-		
-		var paymentMethodSmartList = getService('PaymentService').getPaymentMethodSmartList();
-		paymentMethodSmartList.addFilter('activeFlag', 1);
-		paymentMethodSmartList.addFilter('allowSaveFlag', 1);
-		var paymentMethodsThatAllowAccountsToSave = paymentMethodSmartList.getRecordsCount();
-		
-		if (paymentMethodsThatAllowAccountsToSave){
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
+	
 	
 }
