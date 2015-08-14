@@ -465,7 +465,7 @@ input[type="file"] {display: block;width: auto;height: auto;padding: 0px;backgro
 
 /*Global*/
 body { background-color: @background; font-family: 'Open Sans', sans-serif;color:@black-60; padding-top: 60px; font-size:12px;min-width: 992px /*Remove for responsive*/;}
-body.s-login-screen {background-image: url(../../../../assets/images/login-bg.jpg);background-repeat: no-repeat;background-position: center center; background-size:cover;height:100vh;}
+body.s-login-screen {background-image: url("../../../assets/images/login-bg.jpg");background-repeat: no-repeat;background-position: center center; background-size:cover;height:100vh;}
 @media only screen and (max-width: 992px) {
     body {padding:0px /*Remove for responsive*/;}
 }
@@ -710,6 +710,7 @@ input:focus, textarea:focus, select:focus {-webkit-box-shadow: none !important;b
 .modal-footer {padding: 8px  15px;}
 .modal-header h3 {font-size: 20px;padding: 0px;margin: 0px;line-height: 20px;}
 .modal-header .close {font-size: 26px;margin-top: -1px;}
+.modal-content .s-payment-amount label {text-align: left;}
 
 .navbar-inverse .navbar-nav>li>a { color: @white; padding: 20px 13px; font-size: 12px; }
 .navbar-inverse .navbar-nav>.open>a, .navbar-inverse .navbar-nav>.open>a:hover, .navbar-inverse .navbar-nav>.open>a:focus {background-color: #1B1E24}

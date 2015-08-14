@@ -1,4 +1,5 @@
 //{
+/// <reference path="../../admin/client/ts/model/alert.ts" />
 /// <reference path="../../admin/client/ts/controllers/alertcontroller.ts" />
 /// <reference path="../../admin/client/ts/controllers/collections.ts" />
 /// <reference path="../../admin/client/ts/controllers/collectionstabcontroller.ts" />
@@ -9,8 +10,11 @@
 /// <reference path="../../admin/client/ts/controllers/pagedialog.ts" />
 /// <reference path="../../admin/client/ts/controllers/preprocessaccount_addaccountpayment.ts" />
 /// <reference path="../../admin/client/ts/controllers/routercontroller.ts" />
+<<<<<<< HEAD
 /// <reference path="../../admin/client/ts/model/alert.ts" />
 /// <reference path="../../admin/client/ts/model/collectionConfig.ts" />
+=======
+>>>>>>> refs/remotes/origin/hotfix
 /// <reference path="../../admin/client/ts/modules/loggingmodule.ts" />
 /// <reference path="../../admin/client/ts/modules/ngslatwall.ts" />
 /// <reference path="../../admin/client/ts/modules/ngslatwallmodel.ts" />

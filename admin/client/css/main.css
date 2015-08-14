@@ -280,7 +280,7 @@ body {
   min-width: 992px /*Remove for responsive*/;
 }
 body.s-login-screen {
-  background-image: url(../../../../assets/images/login-bg.jpg);
+  background-image: url("../../../assets/images/login-bg.jpg");
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
@@ -1223,6 +1223,9 @@ select:focus {
 .modal-header .close {
   font-size: 26px;
   margin-top: -1px;
+}
+.modal-content .s-payment-amount label {
+  text-align: left;
 }
 .navbar-inverse .navbar-nav > li > a {
   color: #ffffff;
