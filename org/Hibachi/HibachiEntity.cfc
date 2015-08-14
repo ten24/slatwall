@@ -866,7 +866,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		var defaultProperties = [];
 		if(getHibachiScope().authenticateEntity('read', getClassName())){
 			for(var p=1; p<=arrayLen(properties); p++) {
-				if(getHibachiScope().authenticateEntityProperty('read', getClassName(), properties[p].name)){
+				if(
+					getHibachiScope().authenticateEntityProperty('read', getClassName(), properties[p].name)
+					|| (structKeyExists(properties[p],'fieldtype') && properties[p].fieldtype == 'id') 
+				){
 					if(len(arguments.excludesList) && ListFind(arguments.excludesList,properties[p].name)){
 						
 					}else{
