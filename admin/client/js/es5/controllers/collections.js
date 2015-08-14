@@ -65,6 +65,7 @@ angular.module('slatwalladmin').controller('collections', ['$scope', '$location'
     if ($scope.pageShow !== 'Auto') {
       pageShow = $scope.pageShow;
     }
+    $scope.currentPage = paginationService.getCurrentPage();
     var collectionListingPromise = $slatwall.getEntity('collection', {
       id: $scope.collectionID,
       currentPage: $scope.currentPage,

@@ -32,10 +32,11 @@ angular.module('slatwalladmin').directive('swPaginationBar', ['$log', '$timeout'
         scope.currentPage = 1;
         scope.setCurrentPage(1);
       };
-      scope.setCurrentPage = function(number) {
+      scope.setCurrentPage = function(currentPageNumber) {
         $log.debug('setCurrentPage');
-        paginationService.setCurrentPage(number);
-        scope.currentPage = number;
+        paginationService.setCurrentPage(currentPageNumber);
+        scope.currentPage = paginationService.getCurrentPage();
+        $log.debug(paginationService.getCurrentPage());
         $timeout(function() {
           scope.getCollection();
         });

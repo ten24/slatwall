@@ -74,9 +74,9 @@ Notes:
 				</cfif>
 				<hb:HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="orderPaymentType" value="#orderPaymentTypeID#" fieldName="newOrderPayment.orderPaymentType.typeID" edit="#rc.edit#">
 				
-				<div class="control-group">
-					<label class="control-label">#$.slatwall.rbKey('define.amount')#</label>
-					<div class="controls">
+				<div class="form-group s-payment-amount">
+					<label class="control-label col-sm-4">#$.slatwall.rbKey('define.amount')#</label>
+					<div class="col-sm-8">
 						<div id="dynamic-charge-amount" class="hide">
 							#$.slatwall.rbKey('admin.entity.detailOrderPayment.dynamicCharge')#: #rc.order.getFormattedValue('orderPaymentChargeAmountNeeded')#<br />
 							<a href="##" id='changeChargeAmount'>#$.slatwall.rbKey('admin.entity.detailOrderPayment.changeAmount')#</a>
@@ -86,10 +86,10 @@ Notes:
 							<a href="##" id='changeCreditAmount'>#$.slatwall.rbKey('admin.entity.detailOrderPayment.changeAmount')#</a>
 						</div>
 						<div id="charge-amount" class="hide">
-							<input type="text" name="newOrderPayment.amountplaceholder" value="#rc.order.getOrderPaymentChargeAmountNeeded()#" class="required numeric" />
+							<input type="text" name="newOrderPayment.amountplaceholder" value="#rc.order.getOrderPaymentChargeAmountNeeded()#" class="form-control required numeric" />
 						</div>
 						<div id="credit-amount" class="hide">
-							<input type="text" name="newOrderPayment.amountplaceholder" value="#rc.order.getOrderPaymentCreditAmountNeeded()#" class="required numeric" />
+							<input type="text" name="newOrderPayment.amountplaceholder" value="#rc.order.getOrderPaymentCreditAmountNeeded()#" class="form-control required numeric" />
 						</div>
 					</div>
 					<script type="text/javascript">
