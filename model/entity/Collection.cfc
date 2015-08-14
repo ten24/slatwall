@@ -1181,9 +1181,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var columnsHQL = '';
 		if(getHibachiScope().authenticateEntity('read', getCollectionObject())){
 			for(var i = 1; i <= columnCount; i++){
+				var propertyStruct = getService('hibachiService').getPropertyByEntityNameAndPropertyName(getCollectionObject(), listRest(arguments.columns[i].propertyIdentifier,'.'));
 				if(
 					getHibachiScope().authenticateEntityProperty('read', getCollectionObject(), listRest(arguments.columns[i].propertyIdentifier,'.'))
-					
+					|| (structKeyExists(propertyStruct,'fieldtype') && propertyStruct.fieldtype == 'id') 
 				){
 					var column = arguments.columns[i];
 					if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){

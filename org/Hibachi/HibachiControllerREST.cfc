@@ -195,7 +195,10 @@ component output="false" accessors="true" extends="HibachiController" {
 		
 		var filterProperties = getHibachiService().getPropertiesWithAttributesByEntityName(entityName);
 		for(var filterProperty in filterProperties){
-			if(getHibachiScope().authenticateEntityProperty('read', entityName, filterProperty.name)){
+			if(
+				getHibachiScope().authenticateEntityProperty('read', entityName, filterProperty.name) 
+				|| (structKeyExists(filterProperty,'fieldtype') && filterProperty.fieldtype == 'id') 
+			){
 				arrayAppend(arguments.rc.apiResponse.content['data'],filterProperty);
 			}
 		}
