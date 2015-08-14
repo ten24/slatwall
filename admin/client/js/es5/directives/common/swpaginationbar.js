@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 angular.module('slatwalladmin')
     .directive('swPaginationBar', [
     '$log',
@@ -42,10 +41,11 @@ angular.module('slatwalladmin')
                      $("select").selectBoxIt();
                      unbindPageOptionsWatchListener();
                 });*/
-                scope.setCurrentPage = function (number) {
+                scope.setCurrentPage = function (currentPageNumber) {
                     $log.debug('setCurrentPage');
-                    paginationService.setCurrentPage(number);
-                    scope.currentPage = number;
+                    paginationService.setCurrentPage(currentPageNumber);
+                    scope.currentPage = paginationService.getCurrentPage();
+                    $log.debug(paginationService.getCurrentPage());
                     $timeout(function () {
                         scope.getCollection();
                     });
@@ -148,89 +148,6 @@ angular.module('slatwalladmin')
                     paginationService.nextPage();
                     scope.currentPage = paginationService.getCurrentPage();
                 };
-=======
-"use strict";
-angular.module('slatwalladmin').directive('swPaginationBar', ['$log', '$timeout', 'partialsPath', 'paginationService', function($log, $timeout, partialsPath, paginationService) {
-  return {
-    restrict: 'A',
-    templateUrl: partialsPath + 'paginationbar.html',
-    scope: {
-      pageShow: "=",
-      currentPage: "=",
-      pageStart: "&",
-      pageEnd: "&",
-      pageShowOptions: "=?",
-      recordsCount: "&",
-      collection: "=",
-      autoScroll: "=",
-      getCollection: "&"
-    },
-    link: function(scope, element, attrs) {
-      $log.debug('pagination init');
-      scope.totalPagesArray = [];
-      scope.hasPrevious = paginationService.hasPrevious;
-      scope.hasNext = paginationService.hasNext;
-      scope.totalPages = paginationService.getTotalPages;
-      if (angular.isUndefined(scope.pageShowOptions)) {
-        scope.pageShowOptions = paginationService.getPageShowOptions();
-      }
-      scope.pageShowOptions.selectedPageShowOption = scope.pageShowOptions[0];
-      scope.pageShowOptionChanged = function(pageShowOption) {
-        $log.debug('pageShowOptionChanged');
-        $log.debug(pageShowOption);
-        paginationService.setPageShow(pageShowOption.value);
-        scope.pageShow = paginationService.getPageShow();
-        scope.currentPage = 1;
-        scope.setCurrentPage(1);
-      };
-      scope.setCurrentPage = function(currentPageNumber) {
-        $log.debug('setCurrentPage');
-        paginationService.setCurrentPage(currentPageNumber);
-        scope.currentPage = paginationService.getCurrentPage();
-        $log.debug(paginationService.getCurrentPage());
-        $timeout(function() {
-          scope.getCollection();
-        });
-      };
-      var setPageRecordsInfo = function(recordsCount, pageStart, pageEnd, totalPages) {
-        paginationService.setRecordsCount(recordsCount);
-        if (paginationService.getRecordsCount() === 0) {
-          paginationService.setPageStart(0);
-        } else {
-          paginationService.setPageStart(pageStart);
-        }
-        paginationService.setPageEnd(pageEnd);
-        paginationService.setTotalPages(totalPages);
-      };
-      scope.$watch('collection', function(newValue, oldValue) {
-        $log.debug('collection changed');
-        $log.debug(newValue);
-        if (angular.isDefined(newValue)) {
-          setPageRecordsInfo(newValue.recordsCount, newValue.pageRecordsStart, newValue.pageRecordsEnd, newValue.totalPages);
-          scope.currentPage = paginationService.getCurrentPage();
-          scope.pageShow = paginationService.getPageShow();
-          scope.totalPagesArray = [];
-          for (var i = 0; i < scope.totalPages(); i++) {
-            scope.totalPagesArray.push(i + 1);
-          }
-          scope.pageStart();
-          scope.pageEnd();
-          scope.recordsCount();
-          scope.hasPrevious();
-          scope.hasNext();
-        }
-      });
-      scope.showPreviousJump = function() {
-        if (angular.isDefined(scope.currentPage) && scope.currentPage > 3) {
-          scope.totalPagesArray = [];
-          for (var i = 0; i < scope.totalPages(); i++) {
-            if (scope.currentPage < 7 && scope.currentPage > 3) {
-              if (i !== 0) {
-                scope.totalPagesArray.push(i + 1);
-              }
-            } else {
-              scope.totalPagesArray.push(i + 1);
->>>>>>> refs/remotes/origin/hotfix
             }
         };
     }
