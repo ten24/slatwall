@@ -1224,6 +1224,9 @@ select:focus {
   font-size: 26px;
   margin-top: -1px;
 }
+.modal-content .s-payment-amount label {
+  text-align: left;
+}
 .navbar-inverse .navbar-nav > li > a {
   color: #ffffff;
   padding: 20px 13px;
