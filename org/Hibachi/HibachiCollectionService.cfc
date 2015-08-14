@@ -220,9 +220,7 @@ component output="false" accessors="true" extends="HibachiService" {
 			var thisRecord = {};
 			for(var p=1; p<=arrayLen(arguments.propertyIdentifiers); p++) {
 				if(arguments.propertyIdentifiers[p] neq 'pageRecords'){
-					if(getHibachiScope().authenticateEntityProperty('read', arguments.collectionEntity.getCollectionObject(),listRest(arguments.propertyIdentifiers[p],'.'))){
-						structAppend(thisRecord,getFormattedPageRecord(arguments.objectRecords[i],arguments.propertyIdentifiers[p],arguments.collectionEntity));
-					}
+					structAppend(thisRecord,getFormattedPageRecord(arguments.objectRecords[i],arguments.propertyIdentifiers[p],arguments.collectionEntity));
 				}
 			}
 			arrayAppend(formattedObjectRecords, thisRecord);

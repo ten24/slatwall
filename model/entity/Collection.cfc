@@ -319,7 +319,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			arraySort(entitiesMetaDataArray,"text");
 			variables.collectionObjectOptions = [];
 			for(var i=1; i<=arrayLen(entitiesMetaDataArray); i++) {
-				arrayAppend(variables.collectionObjectOptions, {name=rbKey('entity.#entitiesMetaDataArray[i]#'), value=entitiesMetaDataArray[i]});
+				//only show what you are authenticated to make
+				if(getHibachiScope().authenticateEntity('read', entitiesMetaDataArray[i])){
+					arrayAppend(variables.collectionObjectOptions, {name=rbKey('entity.#entitiesMetaDataArray[i]#'), value=entitiesMetaDataArray[i]});
+				}
 			}
 		}
 		return variables.collectionObjectOptions;
