@@ -3,7 +3,7 @@
 
 module logger { 
 
-  exceptionHandlerProvider.$inject = ["$injector"]
+  exceptionHandlerProvider.$inject = ["$injector"];
 
   function exceptionHandlerProvider($injector, exception:any, cause:any) { 
 	  return function(exception: any, cause: any) {
