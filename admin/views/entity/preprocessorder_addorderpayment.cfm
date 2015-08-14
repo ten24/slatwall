@@ -116,6 +116,7 @@ Notes:
 
 									if(cursor !== ""){
 										$(cursor).toggleClass("hide");
+										$('input[name="newOrderPayment.amount"]').attr('name', 'newOrderPayment.amountplaceholder');
 									}
 
 									if(type === "444df2f0fed139ff94191de8fcd1f61b"){
