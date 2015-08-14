@@ -348,10 +348,16 @@ function setupEventHandlers() {
 
 		var modalLink = initModal( jQuery(this) );
 
-		jQuery('#adminModal').load( modalLink, function(){
+		jQuery('#adminModal').load( modalLink, function(response, status, xhr){
 
+			//returns 401 in the case of unauthorized access and boots to the appropriate login page
+			//Hibachi.cfc 308-311
+			if(xhr.status == 401){
+				window.location.href = "/?slataction=" + xhr.statusText;
+			}
+			
 			initUIElements('#adminModal');
-
+			
 			/*
 			jQuery('#adminModal').css({
 				'width': 'auto',
@@ -371,6 +377,8 @@ function setupEventHandlers() {
 		jQuery('#adminModal').load( modalLink, function(){
 
 			initUIElements('#adminModal');
+			
+			
 
 			/*
 			angularCompileModal();
