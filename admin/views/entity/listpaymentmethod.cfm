@@ -52,7 +52,7 @@ Notes:
 
 <cfparam name="rc.paymentMethodSmartList" type="any" />
 <cfif getHibachiScope().getService('subscriptionService').hasAnySubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod() >
-	<cfset request.slatwallScope.showMessageKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod') />
+	<cfset request.slatwallScope.showMessageKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info') />
 </cfif>	
 	<hb:HibachiEntityActionBar type="listing" object="#rc.paymentMethodSmartList#" showCreate="false">
 			

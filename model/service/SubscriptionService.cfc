@@ -309,27 +309,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 
 	// ===================== START: Logical Methods ===========================
-	public any function getHasSubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod(any order){ 
-		//Check if there is subscription with autopay flag without order payment with account payment method.
-		var hasSubscriptionWithAutoPay = false;
-		var hasOrderPaymentWithAccountPaymentMethod = false;
-		for (var orderItem in arguments.order.getOrderItems()){
-			if (orderItem.getSku().getBaseProductType() == "subscription" && orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()){
-				hasSubscriptionWithAutoPay = true;
-				for (orderPayment in arguments.order.getOrderPayments()){
-					if (!isNull(orderPayment.getAccountPaymentMethod())){
-						hasOrderPaymentWithAccountPaymentMethod = true;
-					}
-				}
-			}
-		}
-		if (hasSubscriptionWithAutoPay && !hasOrderPaymentWithAccountPaymentMethod){
-			return true;
-		}else{
-			return false;
-		}
-	}
-	
+
 	public any function hasAnySubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod(){ 
 		if (getSubscriptionTermHasAutoPayFlagSet() && !getHasPaymentMethodThatAllowsAccountsToSave()){
 			return true;

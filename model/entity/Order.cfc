@@ -936,6 +936,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return arrayLen(getOrderItems());
 	}
 	
+
 	// ============  END:  Non-Persistent Property Methods =================
 	
 	// ============= START: Bidirectional Helper Methods ===================
@@ -1179,6 +1180,27 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 	
 	// ==================  END:  Overridden Methods ========================
+	
+	public any function hasSavableOrderPaymentForSubscription(){ 
+		//Check if there is subscription with autopay flag without order payment with account payment method.
+		var hasSubscriptionWithAutoPay = false;
+		var hasOrderPaymentWithAccountPaymentMethod = false;
+		for (var orderItem in getOrderItems()){
+			if (orderItem.getSku().getBaseProductType() == "subscription" && orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()){
+				hasSubscriptionWithAutoPay = true;
+				for (orderPayment in getOrderPayments()){
+					if (!isNull(orderPayment.getAccountPaymentMethod())){
+						hasOrderPaymentWithAccountPaymentMethod = true;
+					}
+				}
+			}
+		}
+		if (hasSubscriptionWithAutoPay && !hasOrderPaymentWithAccountPaymentMethod){
+			return true;
+		}else{
+			return false;
+		}
+	}
 		
 	// =================== START: ORM Event Hooks  =========================
 	
