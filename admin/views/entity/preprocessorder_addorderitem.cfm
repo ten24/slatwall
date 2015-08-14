@@ -209,21 +209,34 @@ Notes:
 				</hb:HibachiPropertyRow>
 				
 				<cfif rc.processObject.getSku().isGiftCardSku()>
-
+				<div ng-controller="preprocesorderitem_addorderitemgiftrecipient"> 
 					<!--- Process Add Order Item Gift Recipient --->
 					<hr/>
-					<h5>Assign Gift Cards <strong>(5)</strong></h5>
+					<h5>Assign Gift Cards <strong>(<span ng-bind="remainingCount"></span>)</strong></h5>
 					<div class="table-responsive s-gift-card-table">
 					    <table class="table table-bordered table-hover">
 					        <thead>
 					            <tr>
-					                <th>Name / Account</th>
-									<th>Email</th>
-									<th>Qty (5)</th>
+					                <th>#$.slatwall.rbKey('define.name')#</th>
+									<th>#$.slatwall.rbKey('define.email')#</th>
+									<th>#$.slatwall.rbKey('define.giftMessage')#</th>
+									<th>#$.slatwall.rbKey('define.quantity')# (<span ng-bind="totalCount"></span>)</th>
 									<th></th>
 					            </tr>
 					        </thead>
 					        <tbody>
+					        	<tr ng-repeat="recipient in orderItemGiftRecipients">
+					        		<td>
+					        			<span ng-model="recipient.firstName"></span><span ng-model="recipient.lastName"></span>
+					        		</td> 
+					        		<td ng-model="recipient.emailAddress"></td> 
+					        		<td ng-model="recipient.giftMessage"></td> 
+					        		<td ng-model="recipient.quantity"></td> 
+					        		<td class="admin admin2">
+										<a class="btn btn-default btn-xs" href="##" ng-click="edit(recipient)"><i class="glyphicon glyphicon-pencil"></i> </a> 
+										<a class="btn btn-default btn-xs" href="##" ng-click="delete(recipient)"><i class="glyphicon glyphicon-trash"></i> </a> 
+					                </td>
+					        	</tr> 
 					            <tr>
 					                <td>Reinaldo Solares</td>
 					                <td>reinaldosolares@gmail.com</td>
@@ -359,8 +372,8 @@ Notes:
 							
 					</div>
 					<!-- //End -->
-					
 
+				</div> 
 				</cfif>
 
 			<cfelse>
