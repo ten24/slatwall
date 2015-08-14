@@ -102,7 +102,7 @@ paginationService
 			if($scope.pageShow !== 'Auto'){
 				pageShow = $scope.pageShow;
 			}
-			
+			$scope.currentPage = paginationService.getCurrentPage();
 			var collectionListingPromise = $slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.currentPage, pageShow:pageShow, keywords:$scope.keywords});
 			collectionListingPromise.then(function(value){
 				$scope.collection = value;
@@ -208,7 +208,7 @@ paginationService
 					data.collectionConfig = collectionConfigString;
 					//has to be removed in order to save transient correctly
 					delete data.pageRecords;
-					var saveCollectionPromise = $slatwall.saveEntity(entityName,collection.collectionID,data);
+					var saveCollectionPromise = $slatwall.saveEntity(entityName,collection.collectionID,data,'save');
 					saveCollectionPromise.then(function(value){
 						
 						$scope.errorMessage = {};

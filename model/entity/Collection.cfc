@@ -36,7 +36,7 @@
 Notes:
 
 */
-component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" accessors="true" extends="HibachiEntity" hb_serviceName="collectionService" {
+component displayname="Collection" entityname="SlatwallCollection" table="SwCollection" persistent="true" hb_permission="this" accessors="true" extends="HibachiEntity" hb_serviceName="collectionService" {
 	
 	// Persistent Properties
 	property name="collectionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -319,7 +319,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			arraySort(entitiesMetaDataArray,"text");
 			variables.collectionObjectOptions = [];
 			for(var i=1; i<=arrayLen(entitiesMetaDataArray); i++) {
-				arrayAppend(variables.collectionObjectOptions, {name=rbKey('entity.#entitiesMetaDataArray[i]#'), value=entitiesMetaDataArray[i]});
+				//only show what you are authenticated to make
+				if(getHibachiScope().authenticateEntity('read', entitiesMetaDataArray[i])){
+					arrayAppend(variables.collectionObjectOptions, {name=rbKey('entity.#entitiesMetaDataArray[i]#'), value=entitiesMetaDataArray[i]});
+				}
 			}
 		}
 		return variables.collectionObjectOptions;
@@ -699,36 +702,37 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	private string function getHQLForCollectionFilter(required struct filter){
+		
 		var collectionFilterHQL = '';
 		var filterCriteria = getfilterCriteria(arguments.filter.criteria);
 		collectionFilterHQL &= ' #filterCriteria# (';
-		
 		var collectionEntity = getService('collectionService').getCollectionByCollectionID(arguments.filter.collectionID);
-		var mainCollectionAlias = listFirst(arguments.filter.propertyIdentifier,'.');
-		var mainCollectionObject = replace(listFirst(arguments.filter.propertyIdentifier,'.'),'_','');
+		var relatedPropertyForEntity = getService('hibachiService').getPropertyByEntityNameAndPropertyName(this.getCollectionObject(),listLast(arguments.filter.propertyIdentifier,'.'));
+		
+		if(relatedPropertyForEntity.fieldType == 'one-to-many'){
+			var mainCollectionAlias = getCollectionConfigStruct().baseEntityAlias;
+			var mainCollectionObject = replace(listFirst(arguments.filter.propertyIdentifier,'.'),'_','');
+		}else if(relatedPropertyForEntity.fieldType == 'many-to-many'){
+			var relatedPropertiesForCollectionEntity = getService('hibachiService').getPropertiesByEntityName(collectionEntity.getCollectionObject());
+			for(var propertyItem in relatedPropertiesForCollectionEntity){
+				if(structkeyExists(propertyItem,'linktable') && propertyItem.linktable == relatedPropertyForEntity.linktable){
+					var relatedPropertyForCollectionEntity = propertyItem;
+					break;
+				}
+			}
+			var mainCollectionAlias = getCollectionConfigStruct().baseEntityAlias;
+			var mainCollectionObject = relatedPropertyForCollectionEntity.name;
+		}
+		
 		var collectionProperty = '';
 		if(mainCollectionObject != collectionEntity.getCollectionObject()){
 			collectionProperty = getService('HibachiService').getPropertyByEntityNameAndPropertyName(collectionEntity.getCollectionObject(),mainCollectionObject).name;
 		}else{
 			collectionProperty = mainCollectionObject;
 		}
-		
-		//None,One,All
-		/*withaliases
-		if(arguments.filter.criteria eq 'None' || arguments.filter.criteria eq 'One'){
-			collectionFilterHQL &= ' #collectionEntity.getHQL()# AND #maincollectionAlias# = #collectionEntity.getHQLAliases()['#collectionEntity.getCollectionObject()#']#.#collectionProperty# ';
-		}else{
-			var fullEntityName = getService('hibachiService').getProperlyCasedFullEntityName(collectionEntity.getCollectionObject());
-			
-			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getCollectionObject()#) FROM #fullEntityName# as #collectionEntity.getCollectionObject()# WHERE #collectionEntity.getCollectionObject()#.#collectionProperty# = #mainCollectionAlias#) 
-			= (SELECT count(#collectionEntity.getCollectionObject()#) #collectionEntity.getHQL(true)# AND #collectionEntity.getHQLAliases()['#collectionEntity.getCollectionObject()#']#.#collectionProperty# = #mainCollectionAlias#) ';
-		}
-		*/
-		
-		if(arguments.filter.criteria eq 'None' || arguments.filter.criteria eq 'One'){
+		if(arguments.filter.criteria == 'None' || arguments.filter.criteria == 'One'){
 			var collectionHQL = collectionEntity.getHQL(true);
 			var hasWhereClause = Find('where',collectionHQL);
-			
 			var predicate = 'AND';
 			if(!hasWhereClause){
 				predicate = 'WHERE';
@@ -740,10 +744,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				comparator = replace(collectionEntity.getCollectionConfigStruct().baseEntityAlias,'_','__','ALL');
 			}
 			
-			collectionFilterHQL &= ' #replace(collectionEntity.getHQL(true),'_','__','ALL')# #predicate# #maincollectionAlias# = #comparator# ';
+			var logicalComparator = '';
+			if(relatedPropertyForEntity.fieldType == 'one-to-many'){
+				logicalComparator = '= #comparator#';
+			}else{
+				logicalComparator = 'IN elements(#comparator#)';
+			}
+			
+			collectionFilterHQL &= ' #replace(collectionEntity.getHQL(true),'_','__','ALL')# #predicate# #maincollectionAlias# #logicalComparator# ';
 		}else{
 			var fullEntityName = getService('hibachiService').getProperlyCasedFullEntityName(collectionEntity.getCollectionObject());
-			
 			var collectionHQL = collectionEntity.getHQL(true);
 			var hasWhereClause = Find('where',collectionHQL);
 			
@@ -764,14 +774,28 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			}else{
 				innerComparator = '#collectionEntity.getCollectionObject()#.#collectionProperty#';
 			}
+			var logicalComparator = '';
+			if(relatedPropertyForEntity.fieldType == 'one-to-many'){
+				logicalComparator = '= #comparator#';
+			}else{
+				logicalComparator = 'IN elements(#comparator#)';
+			}
 			
-			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getCollectionObject()#) FROM #fullEntityName# as #collectionEntity.getCollectionObject()# WHERE #innerComparator# = #mainCollectionAlias#) = (SELECT count(#collectionEntity.getCollectionConfigStruct().baseEntityAlias#) #collectionHQL# #predicate# #comparator# = #mainCollectionAlias#) ';
-		}
+			var innerLogicalComparator = '';
+			if(relatedPropertyForEntity.fieldType == 'one-to-many'){
+				innerLogicalComparator = '= #innerComparator#';
+			}else{
+				innerLogicalComparator = 'IN elements(#innerComparator#)';
+			}
+			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getCollectionObject()#) FROM #fullEntityName# as #collectionEntity.getCollectionObject()# WHERE #mainCollectionAlias# #innerLogicalComparator#) = (SELECT count(#collectionEntity.getCollectionConfigStruct().baseEntityAlias#) #collectionHQL# #predicate# #mainCollectionAlias# #logicalComparator#) ';
 		
+		}
+			
 		//add all params from subqueries to parent HQL
 		addHQLParamsFromNestedCollection(collectionEntity.getHQLParams());
 		
 		collectionFilterHQL &= ')';
+		
 		return collectionFilterHQL;
 	}
 	
@@ -876,7 +900,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
-		try{
+//		try{
 			var HQL = '';
 			var HQLParams = {};
 			if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
@@ -911,17 +935,16 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					} 
 				}else{
 					HQL = getHQL();
-					
 					HQLParams = getHQLParams();
 					variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
 			}
-		}
-		catch(any e){
-			variables.pageRecords = [{'failedCollection'='failedCollection'}];
-			writelog(file="collection",text="Error:#e.message#");
-			writelog(file="collection",text="HQL:#HQL#");
-		}
+//		}
+//		catch(any e){
+//			variables.pageRecords = [{'failedCollection'='failedCollection'}];
+//			writelog(file="collection",text="Error:#e.message#");
+//			writelog(file="collection",text="HQL:#HQL#");
+//		}
 		
 		return variables.pageRecords;
 	}
@@ -1145,8 +1168,8 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		if(arguments.isDistinct){
 			isDistinctValue = "DISTINCT";
 		}
-		
-		var HQL = 'SELECT #isDistinctValue#';
+		var HQL = '';
+		var selectHQL = 'SELECT #isDistinctValue#';
 		var columnCount = 0;
 		if(arguments.forExport){
 			columnCount = getColumnCountByExportableColumns(arguments.columns);
@@ -1154,67 +1177,83 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			columnCount = arraylen(arguments.columns);
 		}
 		
-		HQL &= ' new Map(';
-		for(var i = 1; i <= columnCount; i++){
-			var column = arguments.columns[i];
-			if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
-				var currentAlias = '';
-				var currentAliasStepped = '';
-				var columnPropertyIdentiferArray = listToArray(column.propertyIdentifier,'.');
-				var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
-				
-				for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
-					if(columnPropertyIdentiferArrayCount > 2){
-						if(j != 1 && j != columnPropertyIdentiferArrayCount){
-							var dotNeeded = '';
-							if(j >= 3){
-								dotNeeded = '.';
-							}
-							
-							var join = {
-									associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
-									alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
-							};
-							
-							
-							currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
-							currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
-							
-							addJoin(join);
-							
-						}
-						if(j == columnPropertyIdentiferArrayCount){
-							column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
-										
-						}
-					}
-					if(!len(currentAlias)){
-						currentAlias = columnPropertyIdentiferArray[1];
-					}
-				}
-				if(structKeyExists(column,'attributeID')){
-					HQL &= getColumnAttributeHQL(column);
-				}else{
-					//check if we have an aggregate
-					if(!isnull(column.aggregate))
-					{	
-						//if we have an aggregate then put wrap the identifier
-						HQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
+		var startMapHQL = ' new Map(';
+		var columnsHQL = '';
+		if(getHibachiScope().authenticateEntity('read', getCollectionObject())){
+			for(var i = 1; i <= columnCount; i++){
+				var propertyStruct = getService('hibachiService').getPropertyByEntityNameAndPropertyName(getCollectionObject(), listRest(arguments.columns[i].propertyIdentifier,'.'));
+				if(
+					getHibachiScope().authenticateEntityProperty('read', getCollectionObject(), listRest(arguments.columns[i].propertyIdentifier,'.'))
+					|| (structKeyExists(propertyStruct,'fieldtype') && propertyStruct.fieldtype == 'id') 
+				){
+					var column = arguments.columns[i];
+					if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
+						var currentAlias = '';
+						var currentAliasStepped = '';
+						var columnPropertyIdentiferArray = listToArray(column.propertyIdentifier,'.');
+						var columnPropertyIdentiferArrayCount = arrayLen(columnPropertyIdentiferArray);
 						
-					}else{
-						var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
-						HQL &= ' #column.propertyIdentifier# as #columnAlias#';
-					}
+						for(var j = 1; j <= columnPropertyIdentiferArrayCount;j++){
+							if(columnPropertyIdentiferArrayCount > 2){
+								if(j != 1 && j != columnPropertyIdentiferArrayCount){
+									var dotNeeded = '';
+									if(j >= 3){
+										dotNeeded = '.';
+									}
+									
+									var join = {
+											associationName=currentAliasStepped&dotNeeded&columnPropertyIdentiferArray[j],
+											alias=currentAlias&'_'&columnPropertyIdentiferArray[j]
+									};
+									
+									
+									currentAlias = currentAlias&'_'&columnPropertyIdentiferArray[j];
+									currentAliasStepped = currentAliasStepped &dotNeeded& columnPropertyIdentiferArray[j];
+									
+									addJoin(join);
+									
+								}
+								if(j == columnPropertyIdentiferArrayCount){
+									column.propertyIdentifier = currentAlias&'.'&columnPropertyIdentiferArray[j];
+												
+								}
+							}
+							if(!len(currentAlias)){
+								currentAlias = columnPropertyIdentiferArray[1];
+							}
+						}
+						if(structKeyExists(column,'attributeID')){
+							columnsHQL &= getColumnAttributeHQL(column);
+						}else{
+							//check if we have an aggregate
+							if(!isnull(column.aggregate))
+							{	
+								//if we have an aggregate then put wrap the identifier
+								columnsHQL &= getAggregateHQL(column.aggregate,column.propertyIdentifier);
+								
+							}else{
+								var columnAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),'_'&lcase(Replace(getCollectionObject(),'#getDao('hibachiDAO').getApplicationKey()#',''))&'_','');
+								columnsHQL &= ' #column.propertyIdentifier# as #columnAlias#';
+							}
+						}
+						
+						//check whether a comma is needed
+						if(i != columnCount){
+							columnsHQL &= ',';
+						}//<--end if
+					}//<--end exportable	
 				}
-				
-				//check whether a comma is needed
-				if(i != columnCount){
-					HQL &= ',';
-				}//<--end if
-			}//<--end exportable	
-			
-		}//<--end for loop
-		HQL &= ')';
+			}//<--end for loop
+		}
+		
+		if(right(columnsHQL,1) == ','){
+			columnsHQL &= left(columnsHQL,len(columnsHQL)-1);
+		}
+		var endMapHQL = ')';
+		
+		if(len(columnsHQL)){
+			HQL &= selectHQL & startMapHQL & columnsHQL & endMapHQL;
+		}
 		return HQL;
 	}//<--end function
 	
@@ -1612,6 +1651,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public any function updateCollectionConfig() {
 		setCollectionConfig( serializeJSON(getConfigStructure()) );
+	}
+	
+	//validationMethods
+	public any function canSaveCollectionByCollectionObject(){
+		return getHibachiScope().authenticateEntity('read', this.getCollectionObject());
 	}
 	
 }

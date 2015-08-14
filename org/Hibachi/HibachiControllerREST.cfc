@@ -23,6 +23,8 @@ component output="false" accessors="true" extends="HibachiController" {
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
 	
 	this.publicMethods=listAppend(this.publicMethods, 'log');
+	this.publicMethods=listAppend(this.publicMethods, 'getDetailTabs');
+	this.publicMethods=listAppend(this.publicMethods, 'noaccess');
 	
 	//	this.secureMethods='';
 	//	this.secureMethods=listAppend(this.secureMethods, 'get');
@@ -49,6 +51,18 @@ component output="false" accessors="true" extends="HibachiController" {
 		) {
 			StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
 		}
+	}
+	
+	public void function noaccess(required struct rc){
+		var message = {};
+		message['message'] =arguments.rc.pagetitle;
+		message['messageType']="error";
+		arrayAppend(arguments.rc['messages'],message);
+		arguments.rc.apiResponse.content.success = false;
+		var context = getPageContext();
+		context.getOut().clearBuffer();
+		var response = context.getResponse();
+		response.setStatus(403);
 	}
 	
 	public any function getDetailTabs(required struct rc){
@@ -177,7 +191,17 @@ component output="false" accessors="true" extends="HibachiController" {
 	
 	public any function getFilterPropertiesByBaseEntityName( required struct rc){
 		var entityName = rereplace(rc.entityName,'_','');
-		arguments.rc.apiResponse.content['data'] = getHibachiService().getPropertiesWithAttributesByEntityName(entityName);
+		arguments.rc.apiResponse.content['data'] = [];
+		
+		var filterProperties = getHibachiService().getPropertiesWithAttributesByEntityName(entityName);
+		for(var filterProperty in filterProperties){
+			if(
+				getHibachiScope().authenticateEntityProperty('read', entityName, filterProperty.name) 
+				|| (structKeyExists(filterProperty,'fieldtype') && filterProperty.fieldtype == 'id') 
+			){
+				arrayAppend(arguments.rc.apiResponse.content['data'],filterProperty);
+			}
+		}
 		arguments.rc.apiResponse.content['entityName'] = rc.entityName;
 	}
 	
