@@ -324,7 +324,40 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		if (hasSubscriptionWithAutoPay && !hasOrderPaymentWithAccountPaymentMethod){
-			orderRequirementsList = listAppend(orderRequirementsList, "placeOrder");
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public any function hasAnySubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod(){ 
+		if (getSubscriptionTermHasAutoPayFlagSet() && !getHasPaymentMethodThatAllowsAccountsToSave()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public boolean function getSubscriptionTermHasAutoPayFlagSet(){
+		var subscriptionTermSmartList = getService("SubscriptionService").getSubscriptionTermSmartList();
+		subscriptionTermSmartList.addFilter("autoPayFlag", 1);
+		var subscriptionTermsWithAutoPayFlagSetCount = subscriptionTermSmartList.getRecordsCount();
+		
+		if (subscriptionTermsWithAutoPayFlagSetCount){
+			return true;//has subscriptiontermwithautopay
+		}
+		return false;
+	}
+	public boolean function getHasPaymentMethodThatAllowsAccountsToSave(){
+		var paymentMethodSmartList = getService('PaymentService').getPaymentMethodSmartList();
+		paymentMethodSmartList.addFilter('activeFlag', 1);
+		paymentMethodSmartList.addFilter('allowSaveFlag', 1);
+		var paymentMethodsThatAllowAccountsToSave = paymentMethodSmartList.getRecordsCount();
+		if (paymentMethodsThatAllowAccountsToSave){
+			return true;//found payment method that allows account to save
+		}
+		else{
+			return false;//didn't find
 		}
 	}
 	// =====================  END: Logical Methods ============================

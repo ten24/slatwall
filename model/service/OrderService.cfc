@@ -1178,7 +1178,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				if(!arguments.order.hasErrors()) {
 						
 					// If the orderTotal is less than the orderPaymentTotal, then we can look in the data for a "newOrderPayment" record, and if one exists then try to add that orderPayment
-					if(arguments.order.getTotal() != arguments.order.getPaymentAmountTotal()) {
+					if(arguments.order.getTotal() != arguments.order.getPaymentAmountTotal() || getSubscriptionService().hasSubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod() ) {
 						arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
 					}
 					
