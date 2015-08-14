@@ -207,6 +207,162 @@ Notes:
 					</hb:HibachiPropertyList>
 					
 				</hb:HibachiPropertyRow>
+				
+				<cfif rc.processObject.getSku().isGiftCardSku()>
+
+					<!--- Process Add Order Item Gift Recipient --->
+					<hr/>
+					<h5>Assign Gift Cards <strong>(5)</strong></h5>
+					<div class="table-responsive s-gift-card-table">
+					    <table class="table table-bordered table-hover">
+					        <thead>
+					            <tr>
+					                <th>Name / Account</th>
+									<th>Email</th>
+									<th>Qty (5)</th>
+									<th></th>
+					            </tr>
+					        </thead>
+					        <tbody>
+					            <tr>
+					                <td>Reinaldo Solares</td>
+					                <td>reinaldosolares@gmail.com</td>
+									<td class="s-table-input-element">
+										<select class="form-control s-table-sm-select" >
+											<option value="" selected>1</option>
+										</select>
+									</td>
+					                <td class="admin admin2">
+										<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-pencil"></i> </a> 
+										<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-trash"></i> </a> 
+					                </td>
+					            </tr>
+								<tr class="s-save-row"><!-- s-save-row is added to rows that are being saved and removed after  -->
+									<td class="s-table-input-element">
+										<input type="text" value="John Rowe" class="form-control">
+									</td>
+					                <td class="s-table-input-element">
+					                	<input type="text" value="johnrowe@yahoo.com" class="form-control">
+					                </td>
+									<td class="s-table-input-element">
+										<select class="form-control" >
+											<option value="">1</option>
+											<option value="" selected>2</option>
+										</select>
+									</td>
+					                <td class="admin admin2">
+										<a class="btn btn-default btn-xs btn-save" href="##">Save</a> 
+					                </td>
+					            </tr>
+								<tr>
+					                <td>Mark Freeze <a href="##"><i class="fa fa-user"></i></a></td>
+					                <td>mark@gmail.com</td>
+									<td class="s-table-input-element">
+										<select class="form-control">
+											<option value="">1</option>
+											<option value="" selected>2</option>
+										</select>
+									</td>
+					                <td class="admin admin2">
+										<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-trash"></i> </a> 
+					                </td>
+					            </tr>
+					        </tbody>
+					    </table>
+					</div>
+					
+					<div class="form-group ">
+						
+						<div class="s-search-filter s-gift-card">
+	                        <div class="input-group">
+								<div class="s-search">
+	                            	<input type="text" placeholder="search or add recipient..." class="form-control input-sm">
+									<i class="fa fa-search"></i>
+								</div>
+								<span href="##" class="s-current-selection-item addDropdown <!---Remove addDropdown---> addDropdown-filledName-input <!--- Remove addDropdown-filledName-input --->"> Reyjay Solares (reinaldosolares@gmail.com) <a href="##" title="edit"><i class="fa fa-pencil"></i></a></span>
+	                            <ul class="dropdown-menu addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->"><!-- display block should be replaced with js(angular) -->
+	                                
+									<!-- Item-->
+									<li>
+										<a>
+											<div class="row">
+												<div class="col-xs-2 s-photo">
+													<img src="http://placehold.it/350x350">	
+												</div>
+												<div class="col-xs-10 s-info">
+													<div class="s-name">Reyjay Solares</div>
+													<div class="s-email">reinaldosolares@gmail.com</div>
+												</div>
+											</div>
+										</a>
+									</li>
+									<!-- //Item-->
+									<!-- Item-->
+									<li>
+										<a>
+											<div class="row">
+												<div class="col-xs-2 s-photo">
+													<img src="http://placehold.it/350x350">	
+												</div>
+												<div class="col-xs-10 s-info">
+													<div class="s-name">Reyjay Solares</div>
+													<div class="s-email">reinaldosolares@gmail.com</div>
+												</div>
+											</div>
+										</a>
+									</li>
+									<!-- //Item-->
+									
+	                            </ul>
+								
+	                        </div>
+	                        <div class="addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->">
+	                            <!-- Only show if there is text -->
+	                            <button type="button" class="btn btn-primary">
+	                            	<i class="fa fa-plus"></i> Add "Bob Johnson"
+	                            </button>
+	                        </div>
+							<div class="s-add-info-dropdown addDropdown <!---Remove addDropdown---> addDropdown-add-account <!--- Remove addDropdown-add-account --->">
+								<form>
+									<h5>Create New Recipient</h5>
+									<div class="form-group">
+										<label>First Name<i class="fa fa-asterisk"></i></label>
+										<input type="text" class="form-control">
+									</div>
+									<div class="form-group">
+										<label>Last Name<i class="fa fa-asterisk"></i></label>
+										<input type="text" class="form-control">
+									</div>
+									<div class="form-group">
+										<label>Email<i class="fa fa-asterisk"></i></label>
+										<input type="text" class="form-control">
+									</div>
+									<div class="form-group">
+										<label>Message (limited to 250)</label>
+										<textarea class="form-control" rows="4"></textarea>
+										<div class="s-character-count">
+											Remaining characters: <strong>250</strong>
+										</div>
+									</div>
+									<div class="form-group">
+										<label>Qty</label>
+										<select class="form-control">
+											<option value="">1</option>
+										</select>
+									</div>
+									<div>
+										<button type="button" class="btn btn-sm btn-primary">Add Recipient</button>
+									</div>
+								</form>
+							</div>
+						</div>
+							
+					</div>
+					<!-- //End -->
+					
+
+				</cfif>
+
 			<cfelse>
 				<p class="text-error">#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.wrongCurrency_info')#</p>
 			</cfif>
