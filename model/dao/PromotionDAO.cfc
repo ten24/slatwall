@@ -325,7 +325,7 @@ Notes:
 		</cfloop>
 		
 		<cfif !structKeyExists(arguments,'currencyCode')>
-			<cfset arguments.currencyCode = defaultSkuCurrency />
+			<cfset arguments.currencyCode = '' />
 		</cfif>
 		
 		<!--- get allDiscounts at the sku level --->
