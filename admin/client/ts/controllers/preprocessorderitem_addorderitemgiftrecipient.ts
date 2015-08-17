@@ -1,35 +1,32 @@
-module slatwalladmin { 
+module slatwalladmin {
 	'use strict';
 
-	export class AddOrderItemGiftRecipient{ 
+	export class AddOrderItemGiftRecipient{
 
 		public static $inject = [
-			'$scope' 
-			
+			'$scope'
 		];
 
 		constructor(){
-			this.orderItemGiftRecipients = []; 
+			this.orderItemGiftRecipients = [];
 		}
 
-		function onTodos() {
+		onTodos() {
 			this.$scope.remainingCount = this.totalQuantity - this.orderItemGiftRecipients.length;
 			this.$scope.totalCount = this.orderItemGiftRecipients.length;
-	
-
-		function add() {
-			//process recipient
-			this.orderItemGiftRecipients.push(recipient); 
 		}
 
-		function edit(recipient:any){
-			//todo
+		add() {
+			this.orderItemGiftRecipients.push(recipient);
 		}
 
-		function delete(recipient:any){ 
-			//todo
+		edit(recipient:any){
+
 		}
 
+		delete(recipient:any){
+
+		}
 	}
 
 	angular.module('slatwalladmin').controller('preprocesorderitem_addorderitemgiftrecipient', AddOrderItemGiftRecipient);
