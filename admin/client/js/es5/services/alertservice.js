@@ -39,7 +39,7 @@ var slatwalladmin;
                     alert.type = messages[message].messageType;
                     alerts.push(alert);
                     if (alert.type === 'success' || alert.type === 'error') {
-                        $timeout(function () {
+                        _this.$timeout(function () {
                             alert.fade = true;
                         }, 3500);
                         alert.dismissable = false;

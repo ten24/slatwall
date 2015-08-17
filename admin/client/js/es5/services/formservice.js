@@ -4,9 +4,15 @@ var slatwalladmin;
 (function (slatwalladmin) {
     var Form = (function () {
         function Form(name, object, editing) {
-            this.name = name;
-            this.object = object;
-            this.editing = editing;
+            this.$addControl = function (control) { };
+            this.$removeControl = function (control) { };
+            this.$setValidity = function (validationErrorKey, isValid, control) { };
+            this.$setDirty = function () { };
+            this.$setPristine = function () { };
+            this.$commitViewValue = function () { };
+            this.$rollbackViewValue = function () { };
+            this.$setSubmitted = function () { };
+            this.$setUntouched = function () { };
             this.name = name;
             this.object = object;
             this.editing = editing;
@@ -25,11 +31,11 @@ var slatwalladmin;
                 return _this._pristinePropertyValue[property];
             };
             this.clearForm = function (form) {
-                $log.debug('clear form');
-                $log.debug(form);
+                _this.$log.debug('clear form');
+                _this.$log.debug(form);
                 for (var key in form) {
                     if (key.charAt(0) !== '$') {
-                        $log.debug(form[key]);
+                        _this.$log.debug(form[key]);
                     }
                 }
             };
@@ -71,6 +77,7 @@ var slatwalladmin;
                 form.$submitted = false;
                 form.$setPristine();
             };
+            this.$log = $log;
             this._forms = {};
             this._pristinePropertyValue = {};
         }

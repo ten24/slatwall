@@ -7,11 +7,19 @@ module slatwalladmin{
             '$filter','$log'
         ];    
         private _pageDialogs;
+        private _collection;
+        private _collectionConfig;
+        private _filterPropertiesList;
+        private _filterCount;
+        private _orderBy;
+        
         constructor(
             private $filter:ng.IFilterService,
             private $log:ng.ILogService
         ){
             super();
+            this.$filter = $filter;
+            this.$log = $log;
             this._collection = null;
             this._collectionConfig = null;
             this._filterPropertiesList = {};
@@ -25,7 +33,7 @@ module slatwalladmin{
         
         //test
         setFilterCount = (count:number):void =>{
-            $log.debug('incrementFilterCount');
+            this.$log.debug('incrementFilterCount');
             this._filterCount = count;
         }
         
@@ -95,7 +103,7 @@ module slatwalladmin{
             filterGroupItem.setItemInUse(!filterGroupItem.$$isClosed);
         }
         
-        newFilterItem = (filterItemGroup:any,setItemInUse:any,prepareForFilterGroup:boolean):void =>{
+        newFilterItem = (filterItemGroup:any,setItemInUse:any,prepareForFilterGroup:any):void =>{
             if(angular.isUndefined(prepareForFilterGroup)){
                 prepareForFilterGroup = false;
             }
@@ -139,7 +147,7 @@ module slatwalladmin{
                 filterGroupItem.logicalOperator = "AND";
             }
             filterItemGroup.push(filterGroupItem);
-            collectionService.selectFilterGroupItem(filterGroupItem);
+            this.selectFilterGroupItem(filterGroupItem);
             
             this.newFilterItem(filterGroupItem.filterGroup,setItemInUse);
         } 
@@ -167,9 +175,9 @@ module slatwalladmin{
         }
         
         formatFilterPropertiesList = (filterPropertiesList:any,propertyIdentifier:string):void =>{
-            $log.debug('format Filter Properties List arguments 2');
-            $log.debug(filterPropertiesList);
-            $log.debug(propertyIdentifier);
+            this.$log.debug('format Filter Properties List arguments 2');
+            this.$log.debug(filterPropertiesList);
+            this.$log.debug(propertyIdentifier);
             var simpleGroup = {
                     $$group:'simple',
                     displayPropertyIdentifier:'-----------------'
@@ -219,11 +227,11 @@ module slatwalladmin{
                 
                 filterPropertiesList.data[i].propertyIdentifier = propertyIdentifier + '.' +filterPropertiesList.data[i].name;
             }
-            filterPropertiesList.data = _orderBy(filterPropertiesList.data,['-$$group','propertyIdentifier'],false);
+            filterPropertiesList.data = this._orderBy(filterPropertiesList.data,['-$$group','propertyIdentifier'],false);
         }
         
         orderBy = (propertiesList:string,predicate:string,reverse:boolean):any =>{
-            return _orderBy(propertiesList,predicate,reverse);
+            return this._orderBy(propertiesList,predicate,reverse);
         }
     }
     angular.module('slatwalladmin').service('collectionService', CollectionService);    

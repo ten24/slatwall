@@ -4,9 +4,15 @@ var slatwalladmin;
 (function (slatwalladmin) {
     class Form {
         constructor(name, object, editing) {
-            this.name = name;
-            this.object = object;
-            this.editing = editing;
+            this.$addControl = (control) => { };
+            this.$removeControl = (control) => { };
+            this.$setValidity = (validationErrorKey, isValid, control) => { };
+            this.$setDirty = () => { };
+            this.$setPristine = () => { };
+            this.$commitViewValue = () => { };
+            this.$rollbackViewValue = () => { };
+            this.$setSubmitted = () => { };
+            this.$setUntouched = () => { };
             this.name = name;
             this.object = object;
             this.editing = editing;
@@ -23,11 +29,11 @@ var slatwalladmin;
                 return this._pristinePropertyValue[property];
             };
             this.clearForm = (form) => {
-                $log.debug('clear form');
-                $log.debug(form);
+                this.$log.debug('clear form');
+                this.$log.debug(form);
                 for (var key in form) {
                     if (key.charAt(0) !== '$') {
-                        $log.debug(form[key]);
+                        this.$log.debug(form[key]);
                     }
                 }
             };
@@ -69,6 +75,7 @@ var slatwalladmin;
                 form.$submitted = false;
                 form.$setPristine();
             };
+            this.$log = $log;
             this._forms = {};
             this._pristinePropertyValue = {};
         }

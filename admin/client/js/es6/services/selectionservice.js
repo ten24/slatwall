@@ -3,6 +3,8 @@ var slatwalladmin;
 (function (slatwalladmin) {
     class SelectionService extends slatwalladmin.BaseService {
         constructor() {
+            super();
+            this._selection = {};
             this.addSelection = (selectionid, selection) => {
                 if (angular.isUndefined(this._selection[selectionid])) {
                     this._selection[selectionid] = [];
@@ -30,7 +32,6 @@ var slatwalladmin;
             this.getSelections = (selectionid) => {
                 return this._selection[selectionid];
             };
-            this._selection = {};
         }
     }
     slatwalladmin.SelectionService = SelectionService;

@@ -8,6 +8,7 @@
  */
 module slatwalladmin{
     export class ObserverService extends BaseService{
+        private observers;
         constructor(){
             /**
              * @ngdoc property
@@ -16,6 +17,7 @@ module slatwalladmin{
              * @description object to store all observers in
              * @returns {object} object
              */
+            super();
             this.observers = {};
         }
         /* Declare methods */
