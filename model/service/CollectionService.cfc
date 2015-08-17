@@ -37,7 +37,7 @@ Notes:
 
 */
 
-component extends="org.Hibachi.HibachiCollectionService" accessors="true" output="false" {
+component extends="Slatwall.org.Hibachi.HibachiCollectionService" accessors="true" output="false" {
 	
 	
 	

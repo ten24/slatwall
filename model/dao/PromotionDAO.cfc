@@ -306,7 +306,7 @@ Notes:
 	<cffunction name="getSalePricePromotionRewardsQuery">
 		<cfargument name="productID" type="string">
 		<cfargument name="currencyCode" type="string">
-
+		
 		<cfset var noQualifierCurrentActivePromotionPeriods = "" />
 		<cfset var allDiscounts = "" />
 		<cfset var noQualifierDiscounts = "" />
@@ -324,12 +324,13 @@ Notes:
 			<cfset salePromotionPeriodIDs = listAppend(salePromotionPeriodIDs, noQualifierCurrentActivePromotionPeriods.promotionPeriodID) />
 		</cfloop>
 		
-		<!--- get allDiscounts at the sku level --->
-		<cfif structKeyExists(arguments,'currencyCode')>
-			<cfset allDiscounts = getAllDiscounts(arguments.productID, timenow,arguments.currencyCode)>
-		<cfelse>
-			<cfset allDiscounts = getAllDiscounts(arguments.productID, timenow)>
+		<cfif !structKeyExists(arguments,'currencyCode')>
+			<cfset arguments.currencyCode = "" />
 		</cfif>
+		
+		<!--- get allDiscounts at the sku level --->
+		
+		<cfset allDiscounts = getAllDiscounts(arguments.productID, timenow,arguments.currencyCode)>
 		
 		<!--- join allDiscounts with noQualifierCurrentActivePromotionPeriods to get  only the active prices ---> 
 		<cfset noQualifierDiscounts = getNoQualifierDiscounts(noQualifierCurrentActivePromotionPeriods, allDiscounts)>
@@ -497,7 +498,7 @@ Notes:
 	<cffunction name="getAllDiscounts" returntype="any" access="public">
 		<cfargument name="productID" type="string">
 		<cfargument name="timeNow" type="date">
-		<cfargument name="currencyCode" type="string" required="false">
+		<cfargument name="currencyCode" type="string">
 
 		<cfset var defaultSkuCurrency=getHibachiScope().setting('skuCurrency') />
 		<cfset var allDiscountsQuery = "" />
@@ -549,7 +550,7 @@ Notes:
 					WHEN 'amount' THEN prSku.amount
 					WHEN 'amountOff' THEN SwSku.price - prSku.amount
 					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prSku.amount / 100))
-				END *100)/100 as salePrice,
+				END *100,0)/100 as salePrice,
 				prSku.roundingRuleID as roundingRuleID,
 				ppSku.endDateTime as salePriceExpirationDateTime,
 				ppSku.promotionPeriodID as promotionPeriodID,
@@ -585,7 +586,7 @@ Notes:
 					WHEN 'amount' THEN prProduct.amount
 					WHEN 'amountOff' THEN SwSku.price - prProduct.amount
 					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prProduct.amount / 100))
-				END *100)/100 as salePrice,
+				END *100,0)/100 as salePrice,
 				prProduct.roundingRuleID as roundingRuleID,
 				ppProduct.endDateTime as salePriceExpirationDateTime,
 				ppProduct.promotionPeriodID as promotionPeriodID,
@@ -621,7 +622,7 @@ Notes:
 					WHEN 'amount' THEN prBrand.amount
 					WHEN 'amountOff' THEN SwSku.price - prBrand.amount
 					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prBrand.amount / 100))
-				END *100)/100 as salePrice,
+				END *100,0)/100 as salePrice,
 				prBrand.roundingRuleID as roundingRuleID,
 				ppBrand.endDateTime as salePriceExpirationDateTime,
 				ppBrand.promotionPeriodID as promotionPeriodID,
@@ -659,7 +660,7 @@ Notes:
 					WHEN 'amount' THEN prOption.amount
 					WHEN 'amountOff' THEN SwSku.price - prOption.amount
 					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prOption.amount / 100))
-				END *100)/100 as salePrice,
+				END *100,0)/100 as salePrice,
 				prOption.roundingRuleID as roundingRuleID,
 				ppOption.endDateTime as salePriceExpirationDateTime,
 				ppOption.promotionPeriodID as promotionPeriodID,
@@ -697,7 +698,7 @@ Notes:
 					WHEN 'amount' THEN prProductType.amount
 					WHEN 'amountOff' THEN SwSku.price - prProductType.amount
 					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prProductType.amount / 100))
-				END *100)/100 as salePrice,
+				END *100,0)/100 as salePrice,
 				prProductType.roundingRuleID as roundingRuleID,
 				ppProductType.endDateTime as salePriceExpirationDateTime,
 				ppProductType.promotionPeriodID as promotionPeriodID,
@@ -743,7 +744,7 @@ Notes:
 					WHEN 'amount' THEN prGlobal.amount
 					WHEN 'amountOff' THEN SwSku.price - prGlobal.amount
 					WHEN 'percentageOff' THEN SwSku.price - (SwSku.price * (prGlobal.amount / 100))
-				END *100)/100 as salePrice,
+				END *100,0)/100 as salePrice,
 				prGlobal.roundingRuleID as roundingRuleID,
 				ppGlobal.endDateTime as salePriceExpirationDateTime,
 				ppGlobal.promotionPeriodID as promotionPeriodID,
@@ -781,7 +782,9 @@ Notes:
 				SwSku.productID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.productID#">	
 			</cfif>
 			<!---END: Original query--->
+			
 			<cfif structKeyExists(arguments, "currencyCode") && len(arguments.currencyCode)>
+			
 			 ) as combinedPromotionLevels
 				LEFT JOIN SwSkuCurrency AS skuCurrency
 					ON combinedPromotionLevels.skuCurrencyCode !=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">  
@@ -817,7 +820,7 @@ Notes:
 							WHERE cr2.currencyRateID IS NULL AND cr1.effectiveStartDateTime < <cfqueryparam cfsqltype="cf_sql_timestamp" value="#timeNow#">
 							
 					) AS prConversionRate 
-					ON prConversionRate.conversionCurrencyCode =<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#"> 
+					ON prConversionRate.conversionCurrencyCode = <cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#"> 
 						AND combinedPromotionLevels.prCurrencyCode=prConversionRate.currencyCode
 				) as convertedDiscounts WHERE 
 					CASE salePriceDiscountType
