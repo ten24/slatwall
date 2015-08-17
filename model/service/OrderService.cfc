@@ -73,7 +73,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	// ===================== START: Logical Methods ===========================
 	
 	public string function getOrderRequirementsList(required any order) {
-		var orderRequirementsList = "";
+		var orderRequirementsList = "";	
+		
 		
 		// Check if the order still requires a valid account
 		if(isNull(arguments.order.getAccount()) || arguments.order.getAccount().hasErrors()) {
@@ -95,7 +96,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				break;
 			}
 		}
-
+		
 		// If not enough payments have been defined then 
 		if(arguments.order.getPaymentAmountTotal() != arguments.order.getTotal()) {
 			orderRequirementsList = listAppend(orderRequirementsList, "payment");
@@ -110,8 +111,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 			
+			
 		}
-		
+		//only do this check if no payment has been added yet.
+		if (!listFindNoCase(orderRequirementsList, "payment")){
+			//Check if there is subscription with autopay flag without order payment with account payment method.
+			var result = arguments.order.hasSavableOrderPaymentForSubscription();
+			if (result){
+				orderRequirementsList = listAppend(orderRequirementsList, "payment");
+			}
+		}
 		return orderRequirementsList;
 	}
 	
@@ -639,6 +648,29 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Save the newOrderPayment
 		newOrderPayment = this.saveOrderPayment( newOrderPayment );
 		
+		// If the order has a subscription sku on It and that sku has 'AutoPay' setup on it's term AND the orderPayment's paymentMethod
+		//  is set to allow accounts to save... then auto set the 'save account payment method flag'.
+		var foundSubscriptionWithAutoPayFlagSet = false;
+		for (var orderItem in arguments.order.getOrderItems()){
+			if (orderItem.getSku().getBaseProductType() == "subscription" && orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()){
+				foundSubscriptionWithAutoPayFlagSet = true;
+				break;
+			}
+		}
+		
+		//check if the order payments paymentMethod is set to allow account to save. if true set the saveAccountPaymentMethodFlag to true
+		if (foundSubscriptionWithAutoPayFlagSet){
+			//if we have order payments
+			if (!isNull(arguments.processObject.getOrder().getOrderPayments())){
+				for (var orderPayment in arguments.processObject.getOrder().getOrderPayments() ){
+					if (orderPayment.getStatusCode() == 'opstActive' && orderPayment.getPaymentMethod().getAllowSaveFlag()){
+						arguments.processObject.setSaveAccountPaymentMethodFlag( true );
+						break;
+					}
+				}
+			}
+		}
+		
 		// Attach 'createTransaction' errors to the order 
 		if(newOrderPayment.hasError('createTransaction')) {
 			arguments.order.addError('addOrderPayment', newOrderPayment.getError('createTransaction'), true);
@@ -717,8 +749,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				newOrderPayment = this.saveOrderPayment( newOrderPayment );
 		}
 		
-		// WriteDump(var=arguments.order.getOrderStatusType(), top=3, abort=true);
-
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
 			newOrderPayment.setPaymentDueDate( newOrderpayment.getPaymentTerm().getTerm().getEndDate() );
 		}
@@ -1188,10 +1218,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				
 				// As long as the order doesn't have any errors after updating fulfillment & payments we can continue
 				if(!arguments.order.hasErrors()) {
-					
+						
 					// If the orderTotal is less than the orderPaymentTotal, then we can look in the data for a "newOrderPayment" record, and if one exists then try to add that orderPayment
-					if(arguments.order.getTotal() != arguments.order.getPaymentAmountTotal()) {
+					if(arguments.order.getTotal() != arguments.order.getPaymentAmountTotal() || arguments.order.hasSavableOrderPaymentForSubscription() ) {
 						arguments.order = this.processOrder(arguments.order, arguments.data, 'addOrderPayment');
+					}
+					
+					//Check if we have a Subscription with auto pay without an order payments method that allows accounts to save.
+					if (arguments.order.hasSavableOrderPaymentForSubscription()){
+						arguments.order.addError('placeOrder',rbKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info'));	
 					}
 					
 					// Generate the order requirements list, to see if we still need action to be taken
@@ -1212,6 +1247,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						if(listFindNoCase("payment", orderRequirementsList)) {
 							arguments.order.addError('payment',rbKey('entity.order.process.placeOrder.paymentRequirementError'));
 						}
+						
 						
 					} else {
 						

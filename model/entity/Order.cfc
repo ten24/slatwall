@@ -961,7 +961,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTotalItems() {
 		return arrayLen(getOrderItems());
 	}
-
+	
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
@@ -1205,7 +1205,32 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	// ==================  END:  Overridden Methods ========================
+<<<<<<< HEAD
 
+=======
+	
+	public any function hasSavableOrderPaymentForSubscription(){ 
+		//Check if there is subscription with autopay flag without order payment with account payment method.
+		var hasSubscriptionWithAutoPay = false;
+		var hasOrderPaymentWithAccountPaymentMethod = false;
+		for (var orderItem in getOrderItems()){
+			if (orderItem.getSku().getBaseProductType() == "subscription" && orderItem.getSku().getSubscriptionTerm().getAutoPayFlag()){
+				hasSubscriptionWithAutoPay = true;
+				for (orderPayment in getOrderPayments()){
+					if (!isNull(orderPayment.getAccountPaymentMethod())){
+						hasOrderPaymentWithAccountPaymentMethod = true;
+					}
+				}
+			}
+		}
+		if (hasSubscriptionWithAutoPay && !hasOrderPaymentWithAccountPaymentMethod){
+			return true;
+		}else{
+			return false;
+		}
+	}
+		
+>>>>>>> branch 'feature' of https://github.com/ten24/slatwall
 	// =================== START: ORM Event Hooks  =========================
 
 	public void function preInsert(){
