@@ -324,7 +324,7 @@ Notes:
 			<cfset salePromotionPeriodIDs = listAppend(salePromotionPeriodIDs, noQualifierCurrentActivePromotionPeriods.promotionPeriodID) />
 		</cfloop>
 		
-		<cfif !structKeyExists(arguments,'currencyCode') || (structKeyExists(arguments,'currencyCode') && isNull(arguments.currencyCode))>
+		<cfif !structKeyExists(arguments,'currencyCode')>
 			<cfset arguments.currencyCode = "" />
 		</cfif>
 		
