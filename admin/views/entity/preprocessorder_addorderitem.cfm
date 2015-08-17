@@ -209,7 +209,7 @@ Notes:
 				</hb:HibachiPropertyRow>
 
 				<cfif rc.processObject.getSku().isGiftCardSku()>
-				<div ng-controller="preprocesorderitem_addorderitemgiftrecipient">
+				<div ng-controller="preprocesorderitem_addorderitemgiftrecipient" class="ng-scope">
 					<!--- Process Add Order Item Gift Recipient --->
 					<hr/>
 					<h5>Assign Gift Cards <strong>(<span ng-bind="remainingCount"></span>)</strong></h5>
@@ -287,7 +287,7 @@ Notes:
 
 					<div class="form-group ">
 
-						<div ng-controller="accountSearch" class="s-search-filter s-gift-card">
+						<div ng-controller="accountSearch" class="ng-scope s-search-filter s-gift-card">
 	                        <div class="input-group">
 								<form ng-submit="add()">
 									<div class="s-search">

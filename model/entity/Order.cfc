@@ -301,18 +301,18 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	public boolean function hasGiftCardOrderPaymentAmount(){
 
-		var amount = getDAO("OrderDAO").getGiftCardOrderPaymentAmount(this.getOrderID()); 
+		var amount = getDAO("OrderDAO").getGiftCardOrderPaymentAmount(this.getOrderID());
 
 		if(amount gt 0){
-			return true; 
+			return true;
 		}
 
-		return false; 
+		return false;
 
 	}
 
 	public numeric function getGiftCardOrderPaymentAmount(){
-		return getDAO("OrderDAO").getGiftCardOrderPaymentAmount(this.getOrderID()); 
+		return getDAO("OrderDAO").getGiftCardOrderPaymentAmount(this.getOrderID());
 	}
 
 	public boolean function hasGiftCardOrderItems(orderItemID=""){
@@ -961,7 +961,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getTotalItems() {
 		return arrayLen(getOrderItems());
 	}
-	
+
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================
@@ -1205,11 +1205,8 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	}
 
 	// ==================  END:  Overridden Methods ========================
-<<<<<<< HEAD
 
-=======
-	
-	public any function hasSavableOrderPaymentForSubscription(){ 
+	public any function hasSavableOrderPaymentForSubscription(){
 		//Check if there is subscription with autopay flag without order payment with account payment method.
 		var hasSubscriptionWithAutoPay = false;
 		var hasOrderPaymentWithAccountPaymentMethod = false;
@@ -1229,8 +1226,7 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 			return false;
 		}
 	}
-		
->>>>>>> branch 'feature' of https://github.com/ten24/slatwall
+	
 	// =================== START: ORM Event Hooks  =========================
 
 	public void function preInsert(){
@@ -1250,4 +1246,3 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 	// ===================  END:  ORM Event Hooks  =========================
 }
-
