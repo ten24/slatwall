@@ -130,7 +130,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Loop over the orderPayments to see if we can add an accountPaymentMethod
 		for(var orderPayment in arguments.orderItem.getOrder().getOrderPayments()) {
-			if(!isNull(orderPayment.getAccountPaymentMethod())) {
+			if(orderPayment.getStatusCode() == "opstActive" && !isNull(orderPayment.getAccountPaymentMethod())) {
 				subscriptionUsage.setAccountPaymentMethod( orderPayment.getAccountPaymentMethod() );	
 			}
 		}
@@ -282,7 +282,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(arrayLen(emails) && !isNull(arguments.subscriptionUsage.getExpirationDate())) {
 			var reminderEmail = emails[1];
 			// check if its time to send reminder email
-			var renewalReminderDays = arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getSku().getSubscriptionTerm().getRenewalReminderDays();
+			var renewalReminderDays = arguments.subscriptionUsage.getInitialSku().getSubscriptionTerm().getRenewalReminderDays();
 			if(!isNull(renewalReminderDays) && len(renewalReminderDays)) {
 				renewalReminderDays = listToArray(renewalReminderDays);
 				// loop through the list of reminder days
@@ -309,7 +309,37 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 
 	// ===================== START: Logical Methods ===========================
+
+	public any function hasAnySubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod(){ 
+		if (getSubscriptionTermHasAutoPayFlagSet() && !getHasPaymentMethodThatAllowsAccountsToSave()){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	
+	public boolean function getSubscriptionTermHasAutoPayFlagSet(){
+		var subscriptionTermSmartList = getService("SubscriptionService").getSubscriptionTermSmartList();
+		subscriptionTermSmartList.addFilter("autoPayFlag", 1);
+		var subscriptionTermsWithAutoPayFlagSetCount = subscriptionTermSmartList.getRecordsCount();
+		
+		if (subscriptionTermsWithAutoPayFlagSetCount){
+			return true;//has subscriptiontermwithautopay
+		}
+		return false;
+	}
+	public boolean function getHasPaymentMethodThatAllowsAccountsToSave(){
+		var paymentMethodSmartList = getService('PaymentService').getPaymentMethodSmartList();
+		paymentMethodSmartList.addFilter('activeFlag', 1);
+		paymentMethodSmartList.addFilter('allowSaveFlag', 1);
+		var paymentMethodsThatAllowAccountsToSave = paymentMethodSmartList.getRecordsCount();
+		if (paymentMethodsThatAllowAccountsToSave){
+			return true;//found payment method that allows account to save
+		}
+		else{
+			return false;//didn't find
+		}
+	}
 	// =====================  END: Logical Methods ============================
 	
 	// ===================== START: DAO Passthrough ===========================
@@ -395,25 +425,27 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// add order item to order
 			var itemData = {
 				preProcessDisplayedFlag=1,
-				skuID=arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getSku().getSkuID(),
-				currencyCode=arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getOrder().getCurrencyCode()
+				skuID=arguments.subscriptionUsage.getInitialSku().getSkuID(),
+				currencyCode=arguments.subscriptionUsage.getInitialOrder().getCurrencyCode()
 			};
 			order = getOrderService().processOrder( order, itemData, 'addOrderItem' );
 			
 			// Grab the original order fulfillment
 			var originalOrderFulfillment = arguments.subscriptionUsage.getSubscriptionOrderItems()[1].getOrderItem().getOrderFulfillment();
 			
-			// If there was originally a shippingMethod copy it over
-			if(!isNull(originalOrderFulfillment.getShippingMethod())) {
-				order.getOrderFulfillments()[1].setShippingMethod(originalOrderFulfillment.getShippingMethod());	
-			}
-			// If there was originally a shippingAddress copy it over a duplicate
+			// If there is a shippingMethod copy it over
+			if(!isNull(arguments.subscriptionUsage.getShippingMethod())) {
+				order.getOrderFulfillments()[1].setShippingMethod(arguments.subscriptionUsage.getShippingMethod());	
+ 			}
+ 
+ 			// If there was originally a shippingAddress copy it over a duplicate
 			if(!isNull(originalOrderFulfillment.getShippingAddress()) && !originalOrderFulfillment.getShippingAddress().getNewFlag()) {
-				order.getOrderFulfillments()[1].setShippingAddress( originalOrderFulfillment.getShippingAddress().copyAddress() );	
+				order.getOrderFulfillments()[1].setShippingAddress( originalOrderFulfillment.getShippingAddress().copyAddress() );
 			}
+			
 			// If there was originally an email address copy it over
 			if(!isNull(originalOrderFulfillment.getEmailAddress())) {
-				order.getOrderFulfillments()[1].setEmailAddress(originalOrderFulfillment.getEmailAddress());	
+				order.getOrderFulfillments()[1].setEmailAddress(originalOrderFulfillment.getEmailAddress());
 			}
 			
 			// Make sure that the orderItem was added to the order without issue
