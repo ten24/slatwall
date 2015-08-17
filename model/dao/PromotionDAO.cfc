@@ -324,12 +324,13 @@ Notes:
 			<cfset salePromotionPeriodIDs = listAppend(salePromotionPeriodIDs, noQualifierCurrentActivePromotionPeriods.promotionPeriodID) />
 		</cfloop>
 		
-		<!--- get allDiscounts at the sku level --->
-		<cfif structKeyExists(arguments,'currencyCode')>
-			<cfset allDiscounts = getAllDiscounts(arguments.productID, timenow,arguments.currencyCode)>
-		<cfelse>
-			<cfset allDiscounts = getAllDiscounts(arguments.productID, timenow)>
+		<cfif !structKeyExists(arguments,'currencyCode')>
+			<cfset arguments.currencyCode = defaultSkuCurrency />
 		</cfif>
+		
+		<!--- get allDiscounts at the sku level --->
+		
+		<cfset allDiscounts = getAllDiscounts(arguments.productID, timenow,arguments.currencyCode)>
 		
 		<!--- join allDiscounts with noQualifierCurrentActivePromotionPeriods to get  only the active prices ---> 
 		<cfset noQualifierDiscounts = getNoQualifierDiscounts(noQualifierCurrentActivePromotionPeriods, allDiscounts)>
@@ -497,7 +498,7 @@ Notes:
 	<cffunction name="getAllDiscounts" returntype="any" access="public">
 		<cfargument name="productID" type="string">
 		<cfargument name="timeNow" type="date">
-		<cfargument name="currencyCode" type="string" required="false">
+		<cfargument name="currencyCode" type="string">
 
 		<cfset var defaultSkuCurrency=getHibachiScope().setting('skuCurrency') />
 		<cfset var allDiscountsQuery = "" />
