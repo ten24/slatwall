@@ -107,6 +107,8 @@ Notes:
 			    if(slatwallAngular.slatwallConfig){
 			        angular.extend(_config, slatwallAngular.slatwallConfig);
 			    }	
+			    
+			    
 	            	
                 var _jsEntities = {};
                 var entities = {};
@@ -171,7 +173,7 @@ Notes:
 						z:''
 	                };
                 </cfloop>
-                	
+                	console.log($delegate);
                 angular.forEach(entities,function(entity){
                 	$delegate['get'+entity.className] = function(options){
 						var entityInstance = $delegate.newEntity(entity.className);

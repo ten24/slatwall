@@ -10,6 +10,14 @@ var slatwalladmin;
 (function (slatwalladmin) {
     class ObserverService extends slatwalladmin.BaseService {
         constructor() {
+            /**
+             * @ngdoc property
+             * @name ObserverService#observers
+             * @propertyOf sdt.models:ObserverService
+             * @description object to store all observers in
+             * @returns {object} object
+             */
+            super();
             /* Declare methods */
             /**
              * @ngdoc method
@@ -84,13 +92,6 @@ var slatwalladmin;
                     });
                 }
             };
-            /**
-             * @ngdoc property
-             * @name ObserverService#observers
-             * @propertyOf sdt.models:ObserverService
-             * @description object to store all observers in
-             * @returns {object} object
-             */
             this.observers = {};
         }
     }

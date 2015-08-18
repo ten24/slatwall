@@ -1,8 +1,9 @@
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 module slatwalladmin{
     export class SelectionService extends BaseService{
+        private _selection ={};
         constructor(){
-            this._selection = {};    
+            super();   
         }
         addSelection=(selectionid:string,selection:any):void =>{
             if(angular.isUndefined(this._selection[selectionid])){

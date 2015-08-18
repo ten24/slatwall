@@ -18,6 +18,14 @@ var slatwalladmin;
         __extends(ObserverService, _super);
         function ObserverService() {
             var _this = this;
+            /**
+             * @ngdoc property
+             * @name ObserverService#observers
+             * @propertyOf sdt.models:ObserverService
+             * @description object to store all observers in
+             * @returns {object} object
+             */
+            _super.call(this);
             /* Declare methods */
             /**
              * @ngdoc method
@@ -92,13 +100,6 @@ var slatwalladmin;
                     });
                 }
             };
-            /**
-             * @ngdoc property
-             * @name ObserverService#observers
-             * @propertyOf sdt.models:ObserverService
-             * @description object to store all observers in
-             * @returns {object} object
-             */
             this.observers = {};
         }
         return ObserverService;
