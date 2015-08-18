@@ -34,9 +34,10 @@ var ngSlatwall;
                 //create array to hold objects
                 var entities = [];
                 //loop over all collection data to create objects
+                var slatwallService = _this;
                 angular.forEach(collectionData, function (collectionItemData, key) {
                     //create base Entity
-                    var entity = this['new' + collectionConfig.baseEntityName.replace('Slatwall', '')]();
+                    var entity = slatwallService['new' + collectionConfig.baseEntityName.replace('Slatwall', '')]();
                     //populate entity with data based on the collectionConfig
                     angular.forEach(collectionConfig.columns, function (column, key) {
                         //get objects base properties
@@ -48,13 +49,13 @@ var ngSlatwall;
                             if (key === propertyIdentifierArray.length - 1) {
                                 //if we are on the last item in the array
                                 if (angular.isObject(collectionItemData[propertyIdentifierKey]) && currentEntity.metaData[property].fieldtype === 'many-to-one') {
-                                    var relatedEntity = this['new' + currentEntity.metaData[property].cfc]();
+                                    var relatedEntity = slatwallService['new' + currentEntity.metaData[property].cfc]();
                                     relatedEntity.$$init(collectionItemData[propertyIdentifierKey][0]);
                                     currentEntity['$$set' + currentEntity.metaData[property].name.charAt(0).toUpperCase() + currentEntity.metaData[property].name.slice(1)](relatedEntity);
                                 }
                                 else if (angular.isArray(collectionItemData[propertyIdentifierKey]) && (currentEntity.metaData[property].fieldtype === 'one-to-many')) {
                                     angular.forEach(collectionItemData[propertyIdentifierKey], function (arrayItem, key) {
-                                        var relatedEntity = this['new' + currentEntity.metaData[property].cfc]();
+                                        var relatedEntity = slatwallService['new' + currentEntity.metaData[property].cfc]();
                                         relatedEntity.$$init(arrayItem);
                                         currentEntity['$$add' + currentEntity.metaData[property].singularname.charAt(0).toUpperCase() + currentEntity.metaData[property].singularname.slice(1)](relatedEntity);
                                     });
@@ -70,7 +71,7 @@ var ngSlatwall;
                                         relatedEntity = [];
                                     }
                                     else {
-                                        relatedEntity = this['new' + propertyMetaData.cfc]();
+                                        relatedEntity = slatwallService['new' + propertyMetaData.cfc]();
                                     }
                                 }
                                 else {

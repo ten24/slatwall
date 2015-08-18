@@ -47,7 +47,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
-                    auditDateTime: '1439913498542',
+                    auditDateTime: '1439923797973',
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -98,7 +98,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
-                    verificationCode: '11fc7625066e47e19f4c6a68d9c699cd',
+                    verificationCode: '1752fbf7f004590dadff56875523d955',
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -881,7 +881,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                 };
                 entities['Order_AddOrderPayment'] = { "newOrderPayment": { "cfc": "OrderPayment", "persistent": false, "fieldtype": "many-to-one", "fkcolumn": "orderPaymentID", "name": "newOrderPayment" }, "preProcessDisplayedFlag": { "name": "preProcessDisplayedFlag" }, "populatedFlag": { "name": "populatedFlag" }, "previousOrderPaymentID": { "hb_rbkey": "entity.previousOrderPayment", "hb_formfieldtype": "select", "name": "previousOrderPaymentID" }, "paymentTermIDOptions": { "name": "paymentTermIDOptions" }, "hibachiErrors": { "persistent": false, "type": "any", "name": "hibachiErrors" }, "saveAccountPaymentMethodFlag": { "hb_formfieldtype": "yesno", "name": "saveAccountPaymentMethodFlag" }, "hibachiMessages": { "persistent": false, "type": "any", "name": "hibachiMessages" }, "copyFromType": { "hb_rbkey": "entity.copyFromType", "hb_formfieldtype": "select", "ormtype": "string", "name": "copyFromType" }, "saveAccountPaymentMethodName": { "hb_rbkey": "entity.accountPaymentMethod.accountPaymentMethodName", "name": "saveAccountPaymentMethodName" }, "copyFromTypeOptions": { "name": "copyFromTypeOptions" }, "accountAddressID": { "hb_rbkey": "entity.accountAddress", "hb_formfieldtype": "select", "name": "accountAddressID" }, "validations": { "persistent": false, "type": "struct", "name": "validations" }, "accountPaymentMethodIDOptions": { "name": "accountPaymentMethodIDOptions" }, "order": { "name": "order" }, "attributeValuesByCodeStruct": { "name": "attributeValuesByCodeStruct" }, "previousOrderPaymentIDOptions": { "name": "previousOrderPaymentIDOptions" }, "paymentMethodIDOptions": { "name": "paymentMethodIDOptions" }, "announceEvent": { "persistent": false, "type": "boolean", "default": true, "name": "announceEvent" }, "populatedSubProperties": { "persistent": false, "type": "struct", "name": "populatedSubProperties" }, "hibachiInstanceApplicationScopeKey": { "PERSISTENT": false, "TYPE": "string", "NAME": "hibachiInstanceApplicationScopeKey" }, "accountPaymentMethodID": { "hb_rbkey": "entity.accountPaymentMethod", "hb_formfieldtype": "select", "name": "accountPaymentMethodID" }, "accountAddressIDOptions": { "name": "accountAddressIDOptions" } };
                 entities['Order_AddOrderPayment'].className = 'Order_AddOrderPayment';
-                validations['Order_AddOrderPayment'] = { "properties": { "newOrderPayment.dynamicAmountFlag": [{ "conditions": "noPaymentAmountNeeded", "eq": false }] }, "conditions": { "noPaymentAmountNeeded": { "order.orderPaymentAmountNeeded": { "eq": 0 } } }, "populatedPropertyValidation": { "newOrderPayment": [{ "validate": false }] } };
+                validations['Order_AddOrderPayment'] = { "properties": { "newOrderPayment.PaymentMethodID": [{ "conditions": "giftCardOrderTypeReturn", "eq": "50d8cd61009931554764385482347f3a" }], "newOrderPayment.dynamicAmountFlag": [{ "conditions": "noPaymentAmountNeeded", "eq": false }] }, "conditions": { "giftCardOrderTypeReturn": { "newOrderPayment": { "method": "isGiftCardReturnOrderPayment" }, "order.typeCode": { "eq": "otReturnOrder" } }, "orderTypeReturn": { "order.typeCode": { "eq": "otReturnOrder" } }, "noPaymentAmountNeeded": { "order.orderPaymentAmountNeeded": { "eq": 0 } } }, "populatedPropertyValidation": { "newOrderPayment": [{ "validate": false }] } };
                 defaultValues['Order_AddOrderPayment'] = {
                     order: '',
                     copyFromType: "",
@@ -1673,7 +1673,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
-                    accountPasswordResetID: "68ead523b1fb46aa2ad6099d751c5501",
+                    accountPasswordResetID: "59d636daea0f81833925ae01929d997c",
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
