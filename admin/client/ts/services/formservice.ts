@@ -2,10 +2,30 @@
 /// <reference path='../../../../client/typings/tsd.d.ts' />
 module slatwalladmin{
     export class Form implements ng.IFormController{
+        [name: string]: any;
+        public name:string;
+        public object:any;
+        public editing:boolean;
+        public $pristine: boolean;
+        public $dirty: boolean;
+        public $valid: boolean;
+        public $invalid: boolean;
+        public $submitted: boolean;
+        public $error: any;
+        $addControl = (control: ng.INgModelController): void =>{}
+        $removeControl = (control: ng.INgModelController): void =>{}
+        $setValidity = (validationErrorKey: string, isValid: boolean, control: ng.INgModelController): void =>{}
+        $setDirty = (): void =>{}
+        $setPristine = (): void =>{}
+        $commitViewValue = (): void =>{}
+        $rollbackViewValue = (): void =>{}
+        $setSubmitted = (): void =>{}
+        $setUntouched = (): void =>{} 
+        
         constructor(
-            public name:string,
-            public object:any,
-            public editing:boolean
+            name:string,
+            object:any,
+            editing:boolean
         ){
             this.name = name;
             this.object = object;
@@ -15,9 +35,13 @@ module slatwalladmin{
     
     export class FormService implements BaseService{
         public static $inject = ['$log'];
+        private _forms;
+        private _pristinePropertyValue;
+        
         constructor(
             private $log:ng.ILogService
         ){
+            this.$log = $log;
             this._forms = {};
             this._pristinePropertyValue = {};
             
@@ -32,11 +56,11 @@ module slatwalladmin{
         }
         
         clearForm = (form:Form):void =>{
-            $log.debug('clear form');
-            $log.debug(form);
+            this.$log.debug('clear form');
+            this.$log.debug(form);
             for(var key in form){
                 if(key.charAt(0) !== '$'){
-                    $log.debug(form[key]);
+                    this.$log.debug(form[key]);
                 }
             }
         }
@@ -86,6 +110,7 @@ module slatwalladmin{
                     
                 }
             }
+            
             form.$submitted = false;
             form.$setPristine();
         }

@@ -47,7 +47,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
-                    auditDateTime: '1439836748098',
+                    auditDateTime: '1439912876366',
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -98,7 +98,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
-                    verificationCode: '06147799c1756a70a2e43a6cb133bbd6',
+                    verificationCode: '119dccffad473adbfb0c77f175d8568c',
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -1673,7 +1673,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
-                    accountPasswordResetID: "4047711b7b14581f55c707ec6e9d5e5f",
+                    accountPasswordResetID: "e6bdbe1d0177d16770f1bc28acf4d3ca",
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
@@ -2992,6 +2992,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     modifiedByAccountID: null,
                     z: ''
                 };
+                console.log($delegate);
                 angular.forEach(entities, function (entity) {
                     $delegate['get' + entity.className] = function (options) {
                         var entityInstance = $delegate.newEntity(entity.className);

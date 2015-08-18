@@ -61,7 +61,7 @@ gulp.task('watch', function() {
     gulp.watch([config.allTypeScript], 
     [
     	'compile-ts-to5',
-    	'compile-ts'
+    	//'compile-ts'
 		,'gen-ts-refs'
 		
 		//,'compress'

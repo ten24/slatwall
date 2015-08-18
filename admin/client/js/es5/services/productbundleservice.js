@@ -1,12 +1,22 @@
-'use strict';
-angular.module('slatwalladmin')
-    .factory('productBundleService', [
-    '$log',
-    '$slatwall',
-    'utilityService',
-    function ($log, $slatwall, utilityService) {
-        var productBundleService = {
-            decorateProductBundleGroup: function (productBundleGroup) {
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var slatwalladmin;
+(function (slatwalladmin) {
+    var ProductBundleService = (function (_super) {
+        __extends(ProductBundleService, _super);
+        function ProductBundleService($log, $slatwall, utilityService) {
+            var _this = this;
+            _super.call(this);
+            this.$log = $log;
+            this.$slatwall = $slatwall;
+            this.utilityService = utilityService;
+            this.decorateProductBundleGroup = function (productBundleGroup) {
                 productBundleGroup.data.$$editing = true;
                 var prototype = {
                     $$setMinimumQuantity: function (quantity) {
@@ -38,10 +48,10 @@ angular.module('slatwalladmin')
                     }
                 };
                 angular.extend(productBundleGroup.data, prototype);
-            },
-            formatProductBundleGroupFilters: function (productBundelGroupFilters, filterTerm) {
-                $log.debug('formatProductBundleGroupFilters');
-                $log.debug(filterTerm);
+            };
+            this.formatProductBundleGroupFilters = function (productBundelGroupFilters, filterTerm) {
+                _this.$log.debug('formatProductBundleGroupFilters');
+                _this.$log.debug(filterTerm);
                 if (filterTerm.value === 'sku') {
                     for (var i in productBundelGroupFilters) {
                         productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value + 'Code'];
@@ -63,12 +73,20 @@ angular.module('slatwalladmin')
                         }
                     }
                 }
-                $log.debug(productBundelGroupFilters);
+                _this.$log.debug(productBundelGroupFilters);
                 return productBundelGroupFilters;
-            }
-        };
-        return productBundleService;
-    }
-]);
+            };
+            this.$log = $log;
+            this.$slatwall = $slatwall;
+            this.utilityService = utilityService;
+        }
+        ProductBundleService.$inject = [
+            '$log', '$slatwall', 'utilityService'
+        ];
+        return ProductBundleService;
+    })(slatwalladmin.BaseService);
+    slatwalladmin.ProductBundleService = ProductBundleService;
+    angular.module('slatwalladmin').service('productBundleService', ProductBundleService);
+})(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../services/productbundleservice.js.map

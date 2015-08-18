@@ -13,7 +13,7 @@ var slatwalladmin;
             };
             //test
             this.setFilterCount = (count) => {
-                $log.debug('incrementFilterCount');
+                this.$log.debug('incrementFilterCount');
                 this._filterCount = count;
             };
             this.getFilterCount = () => {
@@ -111,7 +111,7 @@ var slatwalladmin;
                     filterGroupItem.logicalOperator = "AND";
                 }
                 filterItemGroup.push(filterGroupItem);
-                collectionService.selectFilterGroupItem(filterGroupItem);
+                this.selectFilterGroupItem(filterGroupItem);
                 this.newFilterItem(filterGroupItem.filterGroup, setItemInUse);
             };
             this.transplantFilterItemIntoFilterGroup = (filterGroup, filterItem) => {
@@ -134,9 +134,9 @@ var slatwalladmin;
                 filterGroup.push(filterGroupItem);
             };
             this.formatFilterPropertiesList = (filterPropertiesList, propertyIdentifier) => {
-                $log.debug('format Filter Properties List arguments 2');
-                $log.debug(filterPropertiesList);
-                $log.debug(propertyIdentifier);
+                this.$log.debug('format Filter Properties List arguments 2');
+                this.$log.debug(filterPropertiesList);
+                this.$log.debug(propertyIdentifier);
                 var simpleGroup = {
                     $$group: 'simple',
                     displayPropertyIdentifier: '-----------------'
@@ -179,11 +179,13 @@ var slatwalladmin;
                     }
                     filterPropertiesList.data[i].propertyIdentifier = propertyIdentifier + '.' + filterPropertiesList.data[i].name;
                 }
-                filterPropertiesList.data = _orderBy(filterPropertiesList.data, ['-$$group', 'propertyIdentifier'], false);
+                filterPropertiesList.data = this._orderBy(filterPropertiesList.data, ['-$$group', 'propertyIdentifier'], false);
             };
             this.orderBy = (propertiesList, predicate, reverse) => {
-                return _orderBy(propertiesList, predicate, reverse);
+                return this._orderBy(propertiesList, predicate, reverse);
             };
+            this.$filter = $filter;
+            this.$log = $log;
             this._collection = null;
             this._collectionConfig = null;
             this._filterPropertiesList = {};

@@ -58,7 +58,7 @@ module slatwalladmin{
                 
                 alerts.push(alert);
                 if(alert.type === 'success' || alert.type === 'error'){
-                     $timeout(function() {
+                     this.$timeout(function() {
                       alert.fade = true;
                     }, 3500);
                     

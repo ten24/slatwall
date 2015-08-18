@@ -42,6 +42,8 @@
 			    if(slatwallAngular.slatwallConfig){
 			        angular.extend(_config, slatwallAngular.slatwallConfig);
 			    }	
+			    
+			    
 	            	
                 var _jsEntities = {};
                 var entities = {};
@@ -67,7 +69,7 @@
                 	defaultValues['Audit'] = {
                 	auditID:'',
 										auditType:null,
-									auditDateTime:'1439836748098',
+									auditDateTime:'1439913498542',
 										auditArchiveStartDateTime:null,
 									auditArchiveEndDateTime:null,
 									auditArchiveCreatedDateTime:null,
@@ -124,7 +126,7 @@
                 	accountEmailAddressID:'',
 										emailAddress:null,
 									verifiedFlag:0,
-									verificationCode:'06147799c1756a70a2e43a6cb133bbd6',
+									verificationCode:'11fc7625066e47e19f4c6a68d9c699cd',
 										remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -1901,7 +1903,7 @@
 										swprid:'',
 									password:'',
 									passwordConfirm:'',
-									accountPasswordResetID:"4047711b7b14581f55c707ec6e9d5e5f",
+									accountPasswordResetID:"68ead523b1fb46aa2ad6099d751c5501",
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
@@ -3384,7 +3386,7 @@
 						z:''
 	                };
                 
-                	
+                	console.log($delegate);
                 angular.forEach(entities,function(entity){
                 	$delegate['get'+entity.className] = function(options){
 						var entityInstance = $delegate.newEntity(entity.className);

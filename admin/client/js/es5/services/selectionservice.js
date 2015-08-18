@@ -11,6 +11,8 @@ var slatwalladmin;
         __extends(SelectionService, _super);
         function SelectionService() {
             var _this = this;
+            _super.call(this);
+            this._selection = {};
             this.addSelection = function (selectionid, selection) {
                 if (angular.isUndefined(_this._selection[selectionid])) {
                     _this._selection[selectionid] = [];
@@ -38,7 +40,6 @@ var slatwalladmin;
             this.getSelections = function (selectionid) {
                 return _this._selection[selectionid];
             };
-            this._selection = {};
         }
         return SelectionService;
     })(slatwalladmin.BaseService);
