@@ -290,9 +290,6 @@ Notes:
 						<div class="s-search-filter s-gift-card">
 	                        <div class="input-group">
 								<form ng-submit="giftRecipientControl.add()">
-                                    
-                                    <sw-form-field propertyDisplay="account"></sw-form-field-search-select>
-                                    
 									<div class="s-search">
 	                  <input type="text" placeholder="search or add recipient..." class="form-control input-sm" ng-model="$scope.searchText">
 										<i class="fa fa-search"></i>
