@@ -98,7 +98,7 @@ module ngSlatwall {
         }
         /*basic entity getter where id is optional, returns a promise*/
         getDefer =(deferKey) =>{
-            return _deferred[deferKey];
+            return this._deferred[deferKey];
         }
         cancelPromise= (deferKey) =>{
             var deferred = this.getDefer(deferKey);
@@ -155,8 +155,9 @@ module ngSlatwall {
                 transformRequest=options.trasformRequest;
             }*/
             var transformResponse = (data) => {
-                    
-                var data = JSON.parse(data);
+                if(angular.isString(data)){
+                    data = JSON.parse(data);
+                }
                 
                 return data;
             };
@@ -188,7 +189,7 @@ module ngSlatwall {
             });
             
             if(options.deferKey)  {
-                _deferred[options.deferKey] = deferred;
+                this._deferred[options.deferKey] = deferred;
             }
             return deferred.promise;
             

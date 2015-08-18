@@ -86,7 +86,7 @@ var ngSlatwall;
             };
             /*basic entity getter where id is optional, returns a promise*/
             this.getDefer = (deferKey) => {
-                return _deferred[deferKey];
+                return this._deferred[deferKey];
             };
             this.cancelPromise = (deferKey) => {
                 var deferred = this.getDefer(deferKey);
@@ -141,7 +141,9 @@ var ngSlatwall;
                     transformRequest=options.trasformRequest;
                 }*/
                 var transformResponse = (data) => {
-                    var data = JSON.parse(data);
+                    if (angular.isString(data)) {
+                        data = JSON.parse(data);
+                    }
                     return data;
                 };
                 //check if we are using a service to transform the response
@@ -166,7 +168,7 @@ var ngSlatwall;
                     deferred.reject(reason);
                 });
                 if (options.deferKey) {
-                    _deferred[options.deferKey] = deferred;
+                    this._deferred[options.deferKey] = deferred;
                 }
                 return deferred.promise;
             };
