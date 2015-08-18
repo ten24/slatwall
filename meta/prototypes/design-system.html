@@ -74,6 +74,7 @@
 							<h2>Organisms</h2>
 							<ul class="list-unstyled">
 								<li><a href="#tables-link">Tables</a></li>
+								<li><a href="#add-gift-card-recipient">Add Gift Card Recipient</a></li>
 							</ul>
 						</div>
 						
@@ -416,8 +417,110 @@
 									
 								</div>
 								
+								<div class="s-ds-type-item-obj">
+									<h4>Search users dropdown</h4>
+									<button class="btn btn-default" id="addDropdown-add-btn">Show Add Account</button>
+									<button class="btn btn-default" id="addDropdown-show-dropdown">Show Dropdown</button>
+									<button class="btn btn-default" id="addDropdown-filledName">Show Filled Name</button>
+									<button class="btn btn-default" id="addDropdown-remove-all">Hide All</button><br/><br/>
+									
+									<!-- Start -->            
+				                    <div class="s-search-filter">
+				                        <div class="input-group" >
+				                            <input type="text" placeholder="Search" class="form-control input-sm">
+											<a href="##" class="s-current-selection-item addDropdown <!---Remove addDropdown---> addDropdown-filledName-input <!--- Remove addDropdown-filledName-input --->" title="remove"><i class="fa fa-times"></i> Reyjay Solares</a>
+				                            <ul class="dropdown-menu addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->"><!-- display block should be replaced with js(angular) -->
+				                                
+												<!-- Item-->
+												<li>
+													<a>
+														<div class="row">
+															<div class="col-xs-2 s-photo">
+																<img src="http://placehold.it/350x350">	
+															</div>
+															<div class="col-xs-10 s-info">
+																<div class="s-name">Reyjay Solares</div>
+																<div class="s-email">reinaldosolares@gmail.com</div>
+															</div>
+														</div>
+													</a>
+												</li>
+												<!-- //Item-->
+												<!-- Item-->
+												<li>
+													<a>
+														<div class="row">
+															<div class="col-xs-2 s-photo">
+																<img src="http://placehold.it/350x350">	
+															</div>
+															<div class="col-xs-10 s-info">
+																<div class="s-name">Reyjay Solares</div>
+																<div class="s-email">reinaldosolares@gmail.com</div>
+															</div>
+														</div>
+													</a>
+												</li>
+												<!-- //Item-->
+												
+				                            </ul>
+				                            <div class="input-group-btn">
+				                                <button type="button" class="btn btn-sm btn-default">
+				                                <span class="fa fa-caret-up"></span>
+				                                </button>
+				                            </div>
+				                        </div>
+				                        <div class="addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->">
+				                            <!-- Only show if there is text -->
+				                            <button type="button" class="btn btn-primary">
+				                            	<i class="fa fa-plus"></i> Add "New Name Would Be Here"
+				                            </button>
+				                        </div>
+										<div class="s-add-info-dropdown addDropdown <!---Remove addDropdown---> addDropdown-add-account <!--- Remove addDropdown-add-account --->">
+											<form>
+												<h5>Add New Customer</h5>
+												<div class="form-group has-error">
+													<label>Group Name<i class="fa fa-asterisk"></i></label>
+													<input type="text" class="form-control">
+													<p class="help-block">Example Of Error</p>
+												</div>
+												<div class="form-group">
+													<label>Group Code</label>
+													<input type="text" class="form-control">
+												</div>
+												<div class="form-group">
+													<label>Group Description</label>
+													<textarea class="field form-control" rows="4"></textarea>
+												</div>
+												<div class="form-group">
+													<button type="button" class="btn btn-sm btn-primary"><i class="fa fa-plus"></i> Add Group Type</button>
+												</div>
+											</form>
+										</div>
+									</div>
+									<!-- //End -->
+									
+									<script type="text/javascript">
+										$('.addDropdown').hide();
+										$('#addDropdown-add-btn').click(function(){
+											$('.addDropdown').hide();
+											$('.addDropdown-add-account').show();
+										});
+										$('#addDropdown-filledName').click(function(){
+											$('.addDropdown').hide();
+											$('.addDropdown-filledName-input').show();
+										});
+										$('#addDropdown-show-dropdown').click(function(){
+											$('.addDropdown').hide();
+											$('.addDropdown-dropdown').show();
+										});
+										$('#addDropdown-remove-all').click(function(){
+											$('.addDropdown').hide();
+										});
+									</script>
+									
+									<br/><br/><br/><br/><br/><br/>
+								</div>
 								
-				
 							</div>
 						</div>
 						
@@ -713,6 +816,280 @@
 									</div>
 									<!-- /End -->
 									
+								</div>
+				
+							</div>
+						</div>
+						
+						<!-- Tables -->
+						<div class="s-ds-type-item" id="add-gift-card-recipient">
+							<h3>Add Gift Card Recipient</h3>
+							<div class="s-ds-type-item-objs">
+								
+								<div class="s-ds-type-item-obj">
+									<h4>Gift card table with no data view</h4>
+									
+									<!-- Start -->
+									<hr/>
+									<h5>Assign Gift Cards <strong>(5)</strong></h5>
+									<div class="table-responsive s-gift-card-table">
+									    <div class="alert alert-info" role="alert">Use the recipient add or search field below to add gift recipients for the gift cards selected.  You have selected <strong>5</strong> gift card/s to assign</div>
+									</div>
+									
+									<div class="form-group ">
+										
+										<div class="s-search-filter s-gift-card">
+					                        <div class="input-group">
+												<div class="s-search">
+					                            	<input type="text" placeholder="search or add recipient..." class="form-control input-sm">
+													<i class="fa fa-search"></i>
+												</div>
+												<span href="##" class="s-current-selection-item addDropdown <!---Remove addDropdown---> addDropdown-filledName-input <!--- Remove addDropdown-filledName-input --->"> Reyjay Solares (reinaldosolares@gmail.com) <a href="##" title="edit"><i class="fa fa-pencil"></i></a></span>
+					                            <ul class="dropdown-menu addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->"><!-- display block should be replaced with js(angular) -->
+					                                
+													<!-- Item-->
+													<li>
+														<a>
+															<div class="row">
+																<div class="col-xs-2 s-photo">
+																	<img src="http://placehold.it/350x350">	
+																</div>
+																<div class="col-xs-10 s-info">
+																	<div class="s-name">Reyjay Solares</div>
+																	<div class="s-email">reinaldosolares@gmail.com</div>
+																</div>
+															</div>
+														</a>
+													</li>
+													<!-- //Item-->
+													<!-- Item-->
+													<li>
+														<a>
+															<div class="row">
+																<div class="col-xs-2 s-photo">
+																	<img src="http://placehold.it/350x350">	
+																</div>
+																<div class="col-xs-10 s-info">
+																	<div class="s-name">Reyjay Solares</div>
+																	<div class="s-email">reinaldosolares@gmail.com</div>
+																</div>
+															</div>
+														</a>
+													</li>
+													<!-- //Item-->
+													
+					                            </ul>
+												
+					                        </div>
+					                        <div class="addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->">
+					                            <!-- Only show if there is text -->
+					                            <button type="button" class="btn btn-primary">
+					                            	<i class="fa fa-plus"></i> Add "Bob Johnson"
+					                            </button>
+					                        </div>
+											<div class="s-add-info-dropdown addDropdown <!---Remove addDropdown---> addDropdown-add-account <!--- Remove addDropdown-add-account --->">
+												<form>
+													<h5>Create New Recipient</h5>
+													<div class="form-group">
+														<label>Name<i class="fa fa-asterisk"></i></label>
+														<input type="text" class="form-control">
+													</div>
+													<div class="form-group">
+														<label>Email</label>
+														<input type="text" class="form-control">
+													</div>
+													<div class="form-group">
+														<label>Qty</label>
+														<select class="form-control">
+															<option value="">1</option>
+														</select>
+													</div>
+													<div>
+														<button type="button" class="btn btn-sm btn-primary">Add Recipient</button>
+													</div>
+												</form>
+											</div>
+										</div>
+											
+									</div>
+									<!-- //End -->
+									
+								</div>
+								
+								<div class="s-ds-type-item-obj">
+									<h4>Gift card table with data view</h4>
+									
+									<!-- Start -->
+									<hr/>
+									<h5>Assign Gift Cards <strong>(5)</strong></h5>
+									<div class="table-responsive s-gift-card-table">
+									    <table class="table table-bordered table-hover">
+									        <thead>
+									            <tr>
+									                <th>Name / Account</th>
+													<th>Email</th>
+													<th>Qty (5)</th>
+													<th></th>
+									            </tr>
+									        </thead>
+									        <tbody>
+									            <tr>
+									                <td>Reinaldo Solares</td>
+									                <td>reinaldosolares@gmail.com</td>
+													<td class="s-table-input-element">
+														<select class="form-control s-table-sm-select" >
+															<option value="" selected>1</option>
+														</select>
+													</td>
+									                <td class="admin admin2">
+														<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-pencil"></i> </a> 
+														<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-trash"></i> </a> 
+									                </td>
+									            </tr>
+												<tr class="s-save-row"><!-- s-save-row is added to rows that are being saved and removed after  -->
+													<td class="s-table-input-element">
+														<input type="text" value="John Rowe" class="form-control">
+													</td>
+									                <td class="s-table-input-element">
+									                	<input type="text" value="johnrowe@yahoo.com" class="form-control">
+									                </td>
+													<td class="s-table-input-element">
+														<select class="form-control" >
+															<option value="">1</option>
+															<option value="" selected>2</option>
+														</select>
+													</td>
+									                <td class="admin admin2">
+														<a class="btn btn-default btn-xs btn-save" href="##">Save</a> 
+									                </td>
+									            </tr>
+												<tr>
+									                <td>Mark Freeze <a href="##"><i class="fa fa-user"></i></a></td>
+									                <td>mark@gmail.com</td>
+													<td class="s-table-input-element">
+														<select class="form-control">
+															<option value="">1</option>
+															<option value="" selected>2</option>
+														</select>
+													</td>
+									                <td class="admin admin2">
+														<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-trash"></i> </a> 
+									                </td>
+									            </tr>
+									        </tbody>
+									    </table>
+									</div>
+									
+									<div class="form-group ">
+										
+										<div class="s-search-filter s-gift-card">
+					                        <div class="input-group">
+												<div class="s-search">
+					                            	<input type="text" placeholder="search or add recipient..." class="form-control input-sm">
+													<i class="fa fa-search"></i>
+												</div>
+												<span href="##" class="s-current-selection-item addDropdown <!---Remove addDropdown---> addDropdown-filledName-input <!--- Remove addDropdown-filledName-input --->"> Reyjay Solares (reinaldosolares@gmail.com) <a href="##" title="edit"><i class="fa fa-pencil"></i></a></span>
+					                            <ul class="dropdown-menu addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->"><!-- display block should be replaced with js(angular) -->
+					                                
+													<!-- Item-->
+													<li>
+														<a>
+															<div class="row">
+																<div class="col-xs-2 s-photo">
+																	<img src="http://placehold.it/350x350">	
+																</div>
+																<div class="col-xs-10 s-info">
+																	<div class="s-name">Reyjay Solares</div>
+																	<div class="s-email">reinaldosolares@gmail.com</div>
+																</div>
+															</div>
+														</a>
+													</li>
+													<!-- //Item-->
+													<!-- Item-->
+													<li>
+														<a>
+															<div class="row">
+																<div class="col-xs-2 s-photo">
+																	<img src="http://placehold.it/350x350">	
+																</div>
+																<div class="col-xs-10 s-info">
+																	<div class="s-name">Reyjay Solares</div>
+																	<div class="s-email">reinaldosolares@gmail.com</div>
+																</div>
+															</div>
+														</a>
+													</li>
+													<!-- //Item-->
+													
+					                            </ul>
+												
+					                        </div>
+					                        <div class="addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->">
+					                            <!-- Only show if there is text -->
+					                            <button type="button" class="btn btn-primary">
+					                            	<i class="fa fa-plus"></i> Add "Bob Johnson"
+					                            </button>
+					                        </div>
+											<div class="s-add-info-dropdown addDropdown <!---Remove addDropdown---> addDropdown-add-account <!--- Remove addDropdown-add-account --->">
+												<form>
+													<h5>Create New Recipient</h5>
+													<div class="form-group">
+														<label>First Name<i class="fa fa-asterisk"></i></label>
+														<input type="text" class="form-control">
+													</div>
+													<div class="form-group">
+														<label>Last Name<i class="fa fa-asterisk"></i></label>
+														<input type="text" class="form-control">
+													</div>
+													<div class="form-group">
+														<label>Email<i class="fa fa-asterisk"></i></label>
+														<input type="text" class="form-control">
+													</div>
+													<div class="form-group">
+														<label>Message (limited to 250)</label>
+														<textarea class="form-control" rows="4"></textarea>
+														<div class="s-character-count">
+															Remaining characters: <strong>250</strong>
+														</div>
+													</div>
+													<div class="form-group">
+														<label>Qty</label>
+														<select class="form-control">
+															<option value="">1</option>
+														</select>
+													</div>
+													<div>
+														<button type="button" class="btn btn-sm btn-primary">Add Recipient</button>
+													</div>
+												</form>
+											</div>
+										</div>
+											
+									</div>
+									<!-- //End -->
+									
+									<hr/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+									<button class="btn btn-default" id="card-addDropdown-add-btn2">Show Add Account</button>
+									<button class="btn btn-default" id="card-addDropdown-show-dropdown2">Show Dropdown</button>
+									
+									<button class="btn btn-default" id="card-addDropdown-remove-all2">Hide All</button><br/><br/>
+									<script type="text/javascript">
+										$('.addDropdown').hide();
+										$('#card-addDropdown-add-btn2').click(function(){
+											$('.addDropdown').hide();
+											$('.addDropdown-add-account').show();
+										});
+										
+										$('#card-addDropdown-show-dropdown2').click(function(){
+											$('.addDropdown').hide();
+											$('.addDropdown-dropdown').show();
+										});
+										$('#card-addDropdown-remove-all2').click(function(){
+											$('.addDropdown').hide();
+										});
+									</script>
+
 								</div>
 				
 							</div>

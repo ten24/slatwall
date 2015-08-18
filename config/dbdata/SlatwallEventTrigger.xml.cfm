@@ -12,5 +12,6 @@
 	<Records>
 		<Record eventTriggerID="7d4a464cb2e95da8421c15da9bd6f5e8" eventTriggerName="Send Order Confirmation When Placed" eventTriggerType="email" eventTriggerObject="Order" eventName="afterOrderProcess_placeOrderSuccess" emailTemplateID="dbb327e506090fde08cc4855fa14448d" />
 		<Record eventTriggerID="7d4a464dcd702f7fb37ef7d4b3356c3e" eventTriggerName="Send Delivery Confirmation When Fulfilled" eventTriggerType="email" eventTriggerObject="OrderDelivery" eventName="afterOrderDeliveryProcess_createSuccess" emailTemplateID="dbb327e694534908c60ea354766bf0a8" />
+		<Record eventTriggerID="4028288b4ed11133014ee47b9b7404d5" eventTriggerName="Send Gift Card to Recipient When Credited" eventTriggerType="email" eventTriggerObject="GiftCard" eventName="afterGiftCard_orderPlacedSuccess" emailTemplateID="4028288b4ed11133014ee4950c6a04db" />
 	</Records>
 </Table>

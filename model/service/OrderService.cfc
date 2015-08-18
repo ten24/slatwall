@@ -401,21 +401,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 
-		// Gift Card Logic
-		if( arguments.processObject.getSku().isGiftCardSku()){
-			for(var i=1; i<=arguments.processObject.getQuantity(); i++ ){
-				var newGiftCard = getGiftCardService().newGiftCard(); 
-				
-				newGiftCard.setGiftCardExpirationTerm(arguments.processObject.getSku().getGiftCardExpirationTerm());
-				newGiftCard.setOriginalOrderItem(newOrderItem); 
-				newGiftCard = getGiftCardService().saveGiftCard(newGiftCard);
-				
-				if(newGiftCard.hasErrors()){ 
-					arguments.order.addError('addOrderItem', newGiftCard.getErrors());
-					break;
-				}
-			}
-		}
+		
 		
 		// If this is an event then we need to attach accounts and registrations to match the quantity of the order item. 		
 		if(arguments.processObject.getSku().getBaseProductType() == "event" && !isNull(arguments.processObject.getRegistrants())) {
@@ -587,10 +573,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		if(!isNull(arguments.processObject.getLastName())){ 
 			recipient.setLastName(arguments.processObject.getLastName()); 
-		}
+		} 
 		
 		if(!arguments.processObject.hasAccount()){
-			recipient.setEmailAddress(arguments.processObject.getEmailAddress());
+
+			if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(arguments.processObject.getEmailAddress())){
+				recipient.setAccount(getService("HibachiService").get("Account", getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(arguments.processObject.getEmailAddress())));
+			} else {
+				recipient.setEmailAddress(arguments.processObject.getEmailAddress());
+			}
+
 		} else { 
 			recipient.setAccount(arguments.processObject.getAccount());
 		}
@@ -706,6 +698,55 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Save it
 			newAccountPaymentMethod = getAccountService().saveAccountPaymentMethod( newAccountPaymentMethod, {runSaveAccountPaymentMethodTransactionFlag=false} );
 			
+		}
+		
+		// Gift card payment
+		if(newOrderPayment.getPaymentMethod().getPaymentMethodType() EQ "giftCard"){
+				
+				var giftCard = getService("HibachiService").get("giftCard",  getDAO("giftCardDAO").getIDByCode(arguments.data.newOrderPayment.giftCardNumber));
+			
+				var amount = 0;
+				
+				
+				if(arguments.order.getTotal() > 0){
+
+					var giftCardProcessObject = giftCard.getProcessObject("AddDebit");
+
+					giftCardProcessObject.setOrderPayments(arguments.order.getOrderPayments());
+					giftCardProcessObject.setOrderItems(arguments.order.getOrderItems());
+
+					if(giftCard.getBalance() >= arguments.order.getTotal()){
+						amount = arguments.order.getTotal();
+					} else { 
+						amount = giftCard.getBalance();
+					}
+
+					giftCardProcessObject.setDebitAmount(local.amount); 
+				
+					getService("GiftCardService").process(giftCard, giftCardProcessObject, "addDebit");
+				} else { 
+					
+					//then its a refund
+					amount = precisionEvaluate(arguments.order.getTotal() * -1);
+					var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
+
+					giftCardProcessObject.setOrderPayments(arguments.order.getOrderPayments());
+					giftCardProcessObject.setOrderItems(arguments.order.getOrderItems());
+
+					giftCardProcessObject.setCreditAmount(amount); 
+				
+					getService("GiftCardService").process(giftCard, giftCardProcessObject, "addCredit");
+				}
+				
+				//writeDump(var="#giftCard#", top=2, abort=true);
+				
+				if(!giftCard.hasErrors()){ 
+					newOrderPayment.setAmount(amount);
+				} else { 
+					arguments.order.addErrors(giftCard.getErrors());	
+				}
+				
+				newOrderPayment = this.saveOrderPayment( newOrderPayment );
 		}
 		
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
@@ -1232,48 +1273,56 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
 							}
 							
+							var orderItemGiftCards = getDAO("OrderDAO").getGiftCardOrderItems(arguments.order.getOrderID()); 
+							
 							// Now we can charge up the gift cards				
-							if(arguments.order.hasGiftCardOrderItems()){ 
-								
-								var giftItems = arguments.order.getGiftCardOrderItems(); 
-								var giftCardService = getService("GiftCardService"); 
-								
-								for(var item in giftItems){ 
-									
-									var cards = item.getGiftCards(); 	
+							if(orderItemGiftCards.RecordCount > 0){ 			
+								for(orderItemGiftCard in orderItemGiftCards){
+									var item = getService("HibachiService").get("OrderItem", orderItemGiftCard.orderItemID); 
+									var quantity = orderItemGiftCard.quantity; 
+									var term = getService("HibachiService").get("Term", orderItemGiftCard.giftCardExpirationTermID);	
 									var recipients = item.getOrderItemGiftRecipients(); 		
-									var count = 1; 
 									
 									//recipients and cards have already been validated so put them together
-									for(var card in cards){ 		
+									for(var i=1; i<=quantity; i++){ 		
+										
+										var card = getService("GiftCardService").newGiftCard(); 	
 										var createGiftCard = card.getProcessObject( 'Create' );
 										
-										createGiftCard.setGiftCardExpirationTerm(card.getGiftCardExpirationTerm()); 
+										createGiftCard.setOriginalOrderItem(item);
+										createGiftCard.setGiftCardExpirationTerm(term); 
 										createGiftCard.setOrderPayments(arguments.order.getOrderPayments());
 										
-										if(!isNull(recipients[count].getAccount())){
-											createGiftCard.setOwnerAccount(recipients[count].getAccount()); 	
+										if(!isNull(recipients[i].getAccount())){
+											createGiftCard.setOwnerAccount(recipients[i].getAccount()); 	
 										} else { 
-											createGiftCard.setOwnerEmailAddress(recipients[count].getEmailAddress());
+											if(getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(recipients[i].getEmailAddress())){
+												createGiftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(recipients[i].getEmailAddress())));
+												createGiftCard.setOwnerEmailAddress(recipients[i].getEmailAddress());
+											} else { 
+												createGiftCard.setOwnerEmailAddress(recipients[i].getEmailAddress());
+											}
 										}
 										
-										if(!isNull(recipients[count].getFirstName())){
-											createGiftCard.setOwnerFirstName(recipients[count].getFirstName()); 
+										if(!isNull(recipients[i].getFirstName())){
+											createGiftCard.setOwnerFirstName(recipients[i].getFirstName()); 
 										}
 										
-										if(!isNull(recipients[count].getLastName())){
-											createGiftCard.setOwnerLastName(recipients[count].getLastName()); 
+										if(!isNull(recipients[i].getLastName())){
+											createGiftCard.setOwnerLastName(recipients[i].getLastName()); 
 										}
 										
 										createGiftCard.setCreditGiftCard(true); 
-										card = giftCardService.process(card, createGiftCard, 'Create');
+										card = getService("giftCardService").process(card, createGiftCard, 'Create');
 										
 										if(card.hasErrors()){
 											arguments.order.addErrors(card.getErrors());
+										} else { 
+											var cardData = {}; 
+											cardData.entity=card;
+											getService("hibachiEventService").announceEvent(eventName="afterGiftCard_orderPlacedSuccess", eventData=cardData);
 										}
-										
-										count++; 
-									}
+									}	
 								}
 							}
 							
