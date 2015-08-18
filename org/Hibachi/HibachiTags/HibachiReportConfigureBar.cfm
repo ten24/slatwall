@@ -125,8 +125,8 @@
 								<hb:HibachiActionCaller action="admin:entity.deletereport" queryString="reportID=#attributes.report.getReportEntity().getReportID()#&redirectAction=admin:report.default" icon="remove" class="btn btn-xs s-btn-dgrey" />
 							</cfif>	
 							<hb:HibachiActionCaller action="admin:entity.createreport" queryString="reportName=#attributes.report.getClassName()#&reportDateTime=#attributes.report.getReportDateTime()#&reportDateTimeGroupBy=#attributes.report.getReportDateTimeGroupBy()#&reportCompareFlag=#attributes.report.getReportCompareFlag()#&dimensions=#attributes.report.getDimensions()#&metrics=#attributes.report.getMetrics()#&redirectAction=admin:report.default&reportType=#attributes.report.getReportType()#&limitResults=#attributes.report.getLimitResults()#&showReport=#attributes.report.getShowReport()#&" icon="plus" class="btn btn-xs s-btn-dgrey" modal=true />
-							<hb:HibachiActionCaller action="admin:report.exportxls" name="slatAction" icon="share" type="button" class="btn-xs s-btn-dgrey" submit="true" />
-							<hb:HibachiActionCaller action="admin:report.exportcsv" name="slatAction" icon="share" type="button" class="btn-xs s-btn-dgrey" submit="true" />	
+							<hb:HibachiActionCaller action="admin:report.exportxls" name="slatAction" icon="share" type="button" class="btn btn-xs s-btn-dgrey" submit="true" />
+							<hb:HibachiActionCaller action="admin:report.exportcsv" name="slatAction" icon="share" type="button" class="btn btn-xs s-btn-dgrey" submit="true" />	
 						</dd>
 					</dl>
 				</div>
