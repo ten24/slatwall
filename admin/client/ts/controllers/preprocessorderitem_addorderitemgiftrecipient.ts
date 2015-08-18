@@ -17,6 +17,7 @@ module slatwalladmin {
 
 		constructor(private $scope: IOrderItemGiftRecipientScope){
 			this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
+            console.log('init gift');
 		}
 
 		private add(recipient:any) {

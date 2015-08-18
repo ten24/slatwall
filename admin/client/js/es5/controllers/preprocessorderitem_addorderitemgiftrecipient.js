@@ -4,6 +4,7 @@ var slatwalladmin;
         function OrderItemGiftRecipientControl($scope) {
             this.$scope = $scope;
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
+            console.log('init gift');
         }
         OrderItemGiftRecipientControl.prototype.add = function (recipient) {
             this.orderItemGiftRecipients.push(recipient);

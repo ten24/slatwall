@@ -27,7 +27,6 @@
 	<cfparam name="attributes.recordProcessAction" type="string" default="" />
 	<cfparam name="attributes.recordProcessActionProperty"type="string" default="" />
 	<cfparam name="attributes.recordProcessQueryString" type="string" default="" />
-	<cfparam name="attributes.recordProcessModal" type="boolean" default="false" />
 	<cfparam name="attributes.recordProcessContext" type="string" default="" />
 	<cfparam name="attributes.recordProcessEntity" type="any" default="" />
 	<cfparam name="attributes.recordProcessUpdateTableID" type="any" default="" />
@@ -587,7 +586,7 @@
 											<cfset processActionPropertyValue=record.getPrimaryIDValue()>
 										</cfif>
 										<cfset thisID = "#replace(replace(lcase(attributes.recordProcessAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
-										<hb:HibachiProcessCaller action="#attributes.recordProcessAction#" entity="#attributes.recordProcessEntity#" processContext="#attributes.recordProcessContext#" queryString="#listPrepend(attributes.recordProcessQueryString, '#processActionProperty#=#processActionPropertyValue#', '&')#" modal="#attributes.recordProcessModal#" class="btn btn-default hibachi-ajax-submit" id="#thisID#" />
+										<hb:HibachiProcessCaller action="#attributes.recordProcessAction#" entity="#attributes.recordProcessEntity#" processContext="#attributes.recordProcessContext#" queryString="#listPrepend(attributes.recordProcessQueryString, '#processActionProperty#=#processActionPropertyValue#', '&')#" class="btn btn-default hibachi-ajax-submit" id="#thisID#" />
 									</cfif>
 								</td>
 							</cfif>

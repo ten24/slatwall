@@ -4,6 +4,7 @@ var slatwalladmin;
         constructor($scope) {
             this.$scope = $scope;
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
+            console.log('init gift');
         }
         add(recipient) {
             this.orderItemGiftRecipients.push(recipient);

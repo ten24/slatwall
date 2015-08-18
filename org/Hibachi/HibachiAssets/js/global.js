@@ -345,18 +345,13 @@ function setupEventHandlers() {
 
 	// Modal Loading
 	jQuery('body').on('click', '.modalload', function(e){
-
-		var modalLink = initModal( jQuery(this) );
+		var element = jQuery(this);
+		var modalLink = initModal( element );
 
 		jQuery('#adminModal').load( modalLink, function(){
-
+			
 			initUIElements('#adminModal');
 			
-			var elem = angular.element(document.getElementById('ngApp'));
-		    var injector = elem.injector();
-		    var $compile = injector.get('$compile'); 
-		    var $rootScope = injector.get('$rootScope'); 
-		    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
 		});
 
 	});
@@ -764,6 +759,21 @@ function setupEventHandlers() {
 						jQuery('#adminModal').css({
 							'width': 'auto'
 						});
+						var html = jQuery('#adminModal');
+						//find first ngcontroller
+						var ngController = html.find("#ngController:first");
+						console.log('test');
+						console.log(jQuery('#adminModal'));
+						console.log(ngController);
+						if(ngController.length){
+							console.log('test');
+							var elem = angular.element(document.getElementById('ngApp'));
+						    var injector = elem.injector();
+						    var $compile = injector.get('$compile'); 
+						    var $rootScope = injector.get('$rootScope'); 
+						    console.log(ngController.parent().html());
+						    ngController.parent().html($compile(ngController.parent().html())($rootScope));
+						}
 					} else {
 						jQuery.each(r.messages, function(i, v){
 							jQuery('#' + updateTableID).after('<div class="alert alert-error"><a class="close" data-dismiss="alert">x</a>' + v.MESSAGE + '</div>');

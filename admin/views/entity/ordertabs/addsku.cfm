@@ -56,9 +56,8 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiListingDisplay smartList="#local.addOrderItemSkuOptionsSmartList#"
-							  recordProcessAction="admin:entity.preprocessOrder"
+							  recordProcessAction="admin:entity.processOrder"
 							  recordProcessQueryString="orderItemTypeSystemCode=#rc.addSkuAddStockType#"
-							  recordProcessModal="true"
 							  recordProcessContext="addOrderItem"
 							  recordProcessEntity="#rc.order#"
 							  recordProcessUpdateTableID="LD#replace(rc.order.getSaleItemSmartList().getSavedStateID(),'-','','all')#">
