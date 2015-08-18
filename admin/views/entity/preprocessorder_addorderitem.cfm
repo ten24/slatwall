@@ -55,6 +55,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
+	
 	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" sRedirectAction="admin:entity.editorder" disableProcess="#not listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())#">
 
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
@@ -209,7 +210,7 @@ Notes:
 				</hb:HibachiPropertyRow>
 
 				<cfif rc.processObject.getSku().isGiftCardSku()>
-				<div ng-controller="preprocessorderitem_addorderitemgiftrecipient as giftRecipientControl">
+				<div ng-controller="preprocessorderitem_addorderitemgiftrecipient as giftRecipientControl" id="ngController">
 					<!--- Process Add Order Item Gift Recipient --->
 					<hr/>
 					<h5>Assign Gift Cards <strong>(<span ng-bind="giftRecipientControl.remainingCount"></span>)</strong></h5>
