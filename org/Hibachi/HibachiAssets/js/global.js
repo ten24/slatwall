@@ -351,15 +351,12 @@ function setupEventHandlers() {
 		jQuery('#adminModal').load( modalLink, function(){
 
 			initUIElements('#adminModal');
-
-			/*
-			jQuery('#adminModal').css({
-				'width': 'auto',
-				'margin-left': function () {
-		            return -(jQuery('#adminModal').width() / 2);
-		        }
-			});
-			*/
+			
+			var elem = angular.element(document.getElementById('ngApp'));
+		    var injector = elem.injector();
+		    var $compile = injector.get('$compile'); 
+		    var $rootScope = injector.get('$rootScope'); 
+		    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
 		});
 
 	});
