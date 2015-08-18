@@ -1,34 +1,37 @@
 module slatwalladmin {
-	'use strict';
+	
+	
+	interface IOrderItemGiftRecipientScope extends ng.IScope {
+		orderItemGiftRecipients: GiftRecipient[];
+		remaining: number;
+		total: number;
+	}
 
-	export class AddOrderItemGiftRecipient{
+	export class OrderItemGiftRecipientControl{
 
 		public static $inject = [
 			'$scope'
 		];
+		
+		private orderItemGiftRecipients; 
 
-		constructor(){
-			this.orderItemGiftRecipients = [];
+		constructor(private $scope: IOrderItemGiftRecipientScope){
+			this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
 		}
 
-		onTodos() {
-			this.$scope.remainingCount = this.totalQuantity - this.orderItemGiftRecipients.length;
-			this.$scope.totalCount = this.orderItemGiftRecipients.length;
-		}
-
-		add() {
+		private add(recipient:any) {
 			this.orderItemGiftRecipients.push(recipient);
 		}
 
-		edit(recipient:any){
+		private edit(recipient:any){
 
 		}
 
-		delete(recipient:any){
-
+		private delete(recipient:any){
+			
 		}
 	}
-
-	angular.module('slatwalladmin').controller('preprocesorderitem_addorderitemgiftrecipient', AddOrderItemGiftRecipient);
+	
+	angular.module('slatwalladmin').controller('preprocessorderitem_addorderitemgiftrecipient', OrderItemGiftRecipientControl);
 
 }

@@ -1,15 +1,12 @@
 var slatwalladmin;
 (function (slatwalladmin) {
-    'use strict';
-    class AddOrderItemGiftRecipient {
-        constructor() {
-            this.orderItemGiftRecipients = [];
+    class OrderItemGiftRecipientControl {
+        constructor($scope) {
+            this.$scope = $scope;
+            this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
+            console.log('init gift recipient controller');
         }
-        onTodos() {
-            this.$scope.remainingCount = this.totalQuantity - this.orderItemGiftRecipients.length;
-            this.$scope.totalCount = this.orderItemGiftRecipients.length;
-        }
-        add() {
+        add(recipient) {
             this.orderItemGiftRecipients.push(recipient);
         }
         edit(recipient) {
@@ -17,11 +14,11 @@ var slatwalladmin;
         delete(recipient) {
         }
     }
-    AddOrderItemGiftRecipient.$inject = [
+    OrderItemGiftRecipientControl.$inject = [
         '$scope'
     ];
-    slatwalladmin.AddOrderItemGiftRecipient = AddOrderItemGiftRecipient;
-    angular.module('slatwalladmin').controller('preprocesorderitem_addorderitemgiftrecipient', AddOrderItemGiftRecipient);
+    slatwalladmin.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
+    angular.module('slatwalladmin').controller('preprocessorderitem_addorderitemgiftrecipient', OrderItemGiftRecipientControl);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../controllers/preprocessorderitem_addorderitemgiftrecipient.js.map

@@ -1,28 +1,25 @@
 var slatwalladmin;
 (function (slatwalladmin) {
-    'use strict';
-    var AddOrderItemGiftRecipient = (function () {
-        function AddOrderItemGiftRecipient() {
-            this.orderItemGiftRecipients = [];
+    var OrderItemGiftRecipientControl = (function () {
+        function OrderItemGiftRecipientControl($scope) {
+            this.$scope = $scope;
+            this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
+            console.log('init gift recipient controller');
         }
-        AddOrderItemGiftRecipient.prototype.onTodos = function () {
-            this.$scope.remainingCount = this.totalQuantity - this.orderItemGiftRecipients.length;
-            this.$scope.totalCount = this.orderItemGiftRecipients.length;
-        };
-        AddOrderItemGiftRecipient.prototype.add = function () {
+        OrderItemGiftRecipientControl.prototype.add = function (recipient) {
             this.orderItemGiftRecipients.push(recipient);
         };
-        AddOrderItemGiftRecipient.prototype.edit = function (recipient) {
+        OrderItemGiftRecipientControl.prototype.edit = function (recipient) {
         };
-        AddOrderItemGiftRecipient.prototype.delete = function (recipient) {
+        OrderItemGiftRecipientControl.prototype.delete = function (recipient) {
         };
-        AddOrderItemGiftRecipient.$inject = [
+        OrderItemGiftRecipientControl.$inject = [
             '$scope'
         ];
-        return AddOrderItemGiftRecipient;
+        return OrderItemGiftRecipientControl;
     })();
-    slatwalladmin.AddOrderItemGiftRecipient = AddOrderItemGiftRecipient;
-    angular.module('slatwalladmin').controller('preprocesorderitem_addorderitemgiftrecipient', AddOrderItemGiftRecipient);
+    slatwalladmin.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
+    angular.module('slatwalladmin').controller('preprocessorderitem_addorderitemgiftrecipient', OrderItemGiftRecipientControl);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../controllers/preprocessorderitem_addorderitemgiftrecipient.js.map

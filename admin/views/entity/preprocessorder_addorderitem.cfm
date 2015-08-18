@@ -209,10 +209,10 @@ Notes:
 				</hb:HibachiPropertyRow>
 
 				<cfif rc.processObject.getSku().isGiftCardSku()>
-				<div ng-controller="preprocesorderitem_addorderitemgiftrecipient" class="ng-scope">
+				<div ng-controller="preprocessorderitem_addorderitemgiftrecipient as giftRecipientControl">
 					<!--- Process Add Order Item Gift Recipient --->
 					<hr/>
-					<h5>Assign Gift Cards <strong>(<span ng-bind="remainingCount"></span>)</strong></h5>
+					<h5>Assign Gift Cards <strong>(<span ng-bind="giftRecipientControl.remainingCount"></span>)</strong></h5>
 					<div class="table-responsive s-gift-card-table">
 					    <table class="table table-bordered table-hover">
 					        <thead>
@@ -220,12 +220,12 @@ Notes:
 					                <th>#$.slatwall.rbKey('define.name')#</th>
 									        <th>#$.slatwall.rbKey('define.email')#</th>
 									        <th>#$.slatwall.rbKey('define.giftMessage')#</th>
-									        <th>#$.slatwall.rbKey('define.quantity')# (<span ng-bind="totalCount"></span>)</th>
+									        <th>#$.slatwall.rbKey('define.quantity')# (<span ng-bind="giftRecipientControl.totalCount"></span>)</th>
 									        <th></th>
 					            </tr>
 					        </thead>
 					        <tbody>
-					        	<tr ng-repeat="recipient in $scope.orderItemGiftRecipients" ng-if="$scope.orderItemGiftRecipients.length != 0">
+					        	<tr ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-if="giftRecipientControl.orderItemGiftRecipients.length != 0">
 					        		<td>
 					        			<span ng-bind="recipient.firstName"></span><span ng-bind="recipient.lastName"></span>
 					        		</td>
@@ -233,8 +233,8 @@ Notes:
 					        		<td ng-bind="recipient.giftMessage"></td>
 					        		<td ng-bind="recipient.quantity"></td>
 					        		<td class="admin admin2">
-										<a class="btn btn-default btn-xs" href="##" ng-click="edit(recipient)"><i class="glyphicon glyphicon-pencil"></i> </a>
-										<a class="btn btn-default btn-xs" href="##" ng-click="delete(recipient)"><i class="glyphicon glyphicon-trash"></i> </a>
+										<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientControl.edit(recipient)"><i class="glyphicon glyphicon-pencil"></i> </a>
+										<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientControl.delete(recipient)"><i class="glyphicon glyphicon-trash"></i> </a>
 					                </td>
 					        	</tr>
 					            <tr class="hide">
@@ -286,10 +286,13 @@ Notes:
 					</div>
 
 					<div class="form-group ">
-
-						<div ng-controller="accountSearch" class="ng-scope s-search-filter s-gift-card">
+                        
+						<div class="s-search-filter s-gift-card">
 	                        <div class="input-group">
-								<form ng-submit="add()">
+								<form ng-submit="giftRecipientControl.add()">
+                                    
+                                    <sw-form-field propertyDisplay="account"></sw-form-field-search-select>
+                                    
 									<div class="s-search">
 	                  <input type="text" placeholder="search or add recipient..." class="form-control input-sm" ng-model="$scope.searchText">
 										<i class="fa fa-search"></i>
@@ -299,15 +302,15 @@ Notes:
 
                 <ul class="dropdown-menu addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->"><!-- display block should be replaced with js(angular) -->
   									<!-- Item-->
-  									<li ng-repeat="account in $scope.accounts" ng-if="$scope.accounts.length != 0">
+  									<li>
   										<a>
   											<div class="row">
   												<div class="col-xs-2 s-photo">
   													<img src="http://placehold.it/350x350">
   												</div>
   												<div class="col-xs-10 s-info">
-  													<div class="s-name"><span ng-bind="recipient.firstName"></span><span ng-bind="recipient.lastName"></span></div>
-  													<div class="s-email" ng-bind="recipient.emailAddress"></div>
+  													<div class="s-name"></div>
+  													<div class="s-email"></div>
   												</div>
   											</div>
   										</a>
@@ -318,12 +321,12 @@ Notes:
 	                        </div>
 	                        <div class="addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->">
 	                            <!-- Only show if there is text -->
-	                            <button type="button" class="btn btn-primary" ng-if="$scope.searchText != ''">
-	                            	<i class="fa fa-plus"></i> Add "<span ng-model="$scope.searchText"></span>"
+	                            <button type="button" class="btn btn-primary">
+	                            	<i class="fa fa-plus"></i> Add "<span></span>"
 	                            </button>
 	                        </div>
 							<div class="s-add-info-dropdown addDropdown <!---Remove addDropdown---> addDropdown-add-account <!--- Remove addDropdown-add-account --->">
-								<form ng-submit="add()" class="hide">
+								<form ng-submit="giftRecipientControl.add()" class="hide">
 									<h5>Create New Recipient</h5>
 									<div class="form-group">
 										<label>First Name<i class="fa fa-asterisk"></i></label>
