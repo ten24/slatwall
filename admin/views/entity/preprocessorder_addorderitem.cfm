@@ -225,7 +225,7 @@ Notes:
 					            </tr>
 					        </thead>
 					        <tbody>
-					        	<tr ng-repeat="recipient in orderItemGiftRecipients">
+					        	<tr ng-repeat="recipient in $scope.orderItemGiftRecipients" ng-if="$scope.orderItemGiftRecipients.length != 0">
 					        		<td>
 					        			<span ng-bind="recipient.firstName"></span><span ng-bind="recipient.lastName"></span>
 					        		</td>
@@ -299,7 +299,7 @@ Notes:
 
                 <ul class="dropdown-menu addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->"><!-- display block should be replaced with js(angular) -->
   									<!-- Item-->
-  									<li ng-repeat="account in $scope.accounts">
+  									<li ng-repeat="account in $scope.accounts" ng-if="$scope.accounts.length != 0">
   										<a>
   											<div class="row">
   												<div class="col-xs-2 s-photo">
@@ -318,7 +318,7 @@ Notes:
 	                        </div>
 	                        <div class="addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->">
 	                            <!-- Only show if there is text -->
-	                            <button type="button" class="btn btn-primary">
+	                            <button type="button" class="btn btn-primary" ng-if="$scope.searchText != ''">
 	                            	<i class="fa fa-plus"></i> Add "<span ng-model="$scope.searchText"></span>"
 	                            </button>
 	                        </div>
