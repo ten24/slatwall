@@ -755,20 +755,17 @@ function setupEventHandlers() {
 					if(("preProcessView" in r)) {
 						jQuery('#adminModal').html(r.preProcessView);
 						jQuery('#adminModal').modal();
+						
+						var elem = angular.element(document.getElementById('ngApp'));
+					    var injector = elem.injector();
+					    var $compile = injector.get('$compile'); 
+					    var $rootScope = injector.get('$rootScope'); 
+					    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
+						
 						initUIElements('#adminModal');
 						jQuery('#adminModal').css({
 							'width': 'auto'
 						});
-						var html = jQuery('#adminModal');
-						//find first ngcontroller
-						var ngController = html.find("#ngController:first");
-						if(ngController.length){
-							var elem = angular.element(document.getElementById('ngApp'));
-						    var injector = elem.injector();
-						    var $compile = injector.get('$compile'); 
-						    var $rootScope = injector.get('$rootScope'); 
-						    ngController.parent().html($compile(ngController.parent().html())($rootScope));
-						}
 					} else {
 						jQuery.each(r.messages, function(i, v){
 							jQuery('#' + updateTableID).after('<div class="alert alert-error"><a class="close" data-dismiss="alert">x</a>' + v.MESSAGE + '</div>');
