@@ -7,6 +7,9 @@ module slatwalladmin {
             public lastName: string,
             public email: string, 
             public giftMessage: string
-            ) { }
+            public quantity:number
+        ) { 
+            this.quantity = 1;
+        }
     }
 }
