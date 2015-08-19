@@ -60,313 +60,312 @@ Notes:
 
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
 		</hb:HibachiEntityActionBar>
-
-			<cfif listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())>
-				<hb:HibachiPropertyRow>
-					<hb:HibachiPropertyList>
-						<!--- Add the SkuID & orderItemTypeSystemCode --->
-						<cfif not isNull(rc.processObject.getStockID())>
-							<input type="hidden" name="stockID" value="#rc.processObject.getStockID()#" />
-						</cfif>
-						<cfif not isNull(rc.processObject.getSkuID())>
-							<input type="hidden" name="skuID" value="#rc.processObject.getSkuID()#" />
-						</cfif>
-						<input type="hidden" name="orderItemTypeSystemCode" value="#rc.processObject.getOrderItemTypeSystemCode()#" />
-
-						<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.itemDetails')#</h5>
-						<!--- Sku Properties --->
-						<hb:HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuCode" edit="false">
-						<hb:HibachiPropertyDisplay object="#rc.processObject.getSku().getProduct()#" property="productName" edit="false">
-						<hb:HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuDefinition" edit="false">
-
-						<!--- Order Item Details --->
-						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#">
-						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
-
-						<!--- Add form fields to add registrant accounts --->
-						<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event">
-							<cfset currentRegistrantCount = rc.processObject.getSku().getService("EventRegistrationService").getUnavailableSeatCountBySku(rc.processObject.getSku()) />
-							<cfloop from="1" to="#rc.processObject.getQuantity()#" index="i" >
-								<fieldset>
-									<legend>Registrant #i#</legend>
-									<cfif rc.processObject.getSku().getEventCapacity() LT (currentRegistrantCount + i) >
-										<input type="hidden" id="registrants[#i#].toWaitlistFlag" name="registrants[#i#].toWaitlistFlag" value="1" />
-										<p class="alert-error">#$.slatwall.rbKey('entity.OrderItem.toWaitlist')#</p>
-									<cfelse>
-										<input type="hidden" id="registrants[#i#].toWaitlistFlag" name="registrants[#i#].toWaitlistFlag" value="0" />
-									</cfif>
-									<hb:HibachiFieldDisplay fieldname="registrants[#i#].newAccountFlag" title="New Account" fieldType="yesno" edit="#rc.edit#" value="1">
-									<!--- New Account --->
-									<hb:HibachiDisplayToggle selector="input[name='registrants[#i#].newAccountFlag']" loadVisable="yes">
-										<hb:HibachiFieldDisplay fieldname="registrants[#i#].firstName"  title="#$.slatwall.rbKey('entity.account.firstName')#" fieldType="text" edit="#rc.edit#">
-										<hb:HibachiFieldDisplay fieldname="registrants[#i#].lastName" title="#$.slatwall.rbKey('entity.account.lastName')#" fieldType="text" edit="#rc.edit#">
-										<hb:HibachiFieldDisplay fieldname="registrants[#i#].emailAddress" title="#$.slatwall.rbKey('entity.account.emailAddress')#" fieldType="text" edit="#rc.edit#">
-										<hb:HibachiFieldDisplay fieldname="registrants[#i#].phoneNumber" title="#$.slatwall.rbKey('entity.account.phoneNumber')#" fieldType="text" edit="#rc.edit#">
-									</hb:HibachiDisplayToggle>
-									<!--- Existing Account --->
-									<hb:HibachiDisplayToggle selector="input[name='registrants[#i#].newAccountFlag']" showValues="0" >
-										<cfset fieldAttributes = 'data-acpropertyidentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" data-entityname="Account" data-acvalueproperty="AccountID" data-acnameproperty="simpleRepresentation"' />
-										<hb:HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="registrants[#i#].accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"/>
-									</hb:HibachiDisplayToggle>
-								</fieldset>
-								<br>
-							</cfloop>
-						</cfif>
-
-						<!--- Order Item Custom Attributes --->
-						<cfloop array="#rc.processObject.getAssignedOrderItemAttributeSets()#" index="attributeSet">
-							<hr />
-							<h5>#attributeSet.getAttributeSetName()#</h5>
-							<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
-						</cfloop>
-
-						<!--- Order Fulfillment --->
-						<cfif rc.processObject.getOrderItemTypeSystemCode() eq "oitSale">
-							<hr />
-							<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.fulfillmentDetails')#</h5>
-							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderFulfillmentID" edit="#rc.edit#">
-
-							<!--- New Order Fulfillment --->
-							<hb:HibachiDisplayToggle selector="select[name='orderFulfillmentID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderFulfillmentID()) && rc.processObject.getOrderFulfillmentID() eq 'new')#">
-
-								<!--- Fulfillment Method --->
-								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentMethodID" edit="#rc.edit#">
-
-								<cfset loadFulfillmentMethodType = rc.processObject.getFulfillmentMethodIDOptions()[1]['fulfillmentMethodType'] />
-								<cfloop array="#rc.processObject.getFulfillmentMethodIDOptions()#" index="option">
-									<cfif option['value'] eq rc.processObject.getOrderFulfillmentID()>
-										<cfset loadFulfillmentMethodType = option['fulfillmentMethodType'] />
-									</cfif>
-								</cfloop>
-
-								<!--- Email Fulfillment Details --->
-								<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="email" loadVisable="#loadFulfillmentMethodType eq 'email'#">
-
-									<!--- Email Address --->
-									<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#" />
-								</hb:HibachiDisplayToggle>
-
-								<!--- Pickup Fulfillment Details --->
-								<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="pickup" loadVisable="#loadFulfillmentMethodType eq 'pickup'#">
-
-									<!--- Pickup Location --->
-									<hb:HibachiPropertyDisplay object="#rc.processObject#" property="pickupLocationID" edit="#rc.edit#" />
-								</hb:HibachiDisplayToggle>
-
-								<!--- Shipping Fulfillment Details --->
-								<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="shipping" loadVisable="#loadFulfillmentMethodType eq 'shipping'#">
-
-									<!--- Setup the primary address as the default account address --->
-									<cfset defaultValue = "" />
-									<cfif isNull(rc.processObject.getShippingAccountAddressID()) && !rc.order.getAccount().getPrimaryAddress().isNew()>
-										<cfset defaultValue = rc.order.getAccount().getPrimaryAddress().getAccountAddressID() />
-									<cfelseif !isNull(rc.processObject.getShippingAccountAddressID())>
-										<cfset defaultValue = rc.processObject.getShippingAccountAddressID() />
-									</cfif>
-
-									<!--- Account Address --->
-									<hb:HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" />
-
-									<!--- New Address --->
-									<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
-
-										<!--- Address Display --->
-										<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
-
-										<!--- Save New Address --->
-										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressFlag" edit="#rc.edit#" />
-
-										<!--- Save New Address Name --->
-										<hb:HibachiDisplayToggle selector="input[name='saveShippingAccountAddressFlag']" loadVisable="#rc.processObject.getSaveShippingAccountAddressFlag()#">
-											<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressName" edit="#rc.edit#" />
+			<span <cfif rc.processObject.getSku().isGiftCardSku()>ng-controller="preprocessorderitem_addorderitemgiftrecipient as giftRecipientControl" id="ngController"</cfif>>
+				<cfif listFindNoCase(rc.processObject.getSku().setting('skuEligibleCurrencies'), rc.order.getCurrencyCode())>
+					<hb:HibachiPropertyRow>
+						<hb:HibachiPropertyList>
+							<!--- Add the SkuID & orderItemTypeSystemCode --->
+							<cfif not isNull(rc.processObject.getStockID())>
+								<input type="hidden" name="stockID" value="#rc.processObject.getStockID()#" />
+							</cfif>
+							<cfif not isNull(rc.processObject.getSkuID())>
+								<input type="hidden" name="skuID" value="#rc.processObject.getSkuID()#" />
+							</cfif>
+							<input type="hidden" name="orderItemTypeSystemCode" value="#rc.processObject.getOrderItemTypeSystemCode()#" />
+	
+							<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.itemDetails')#</h5>
+							<!--- Sku Properties --->
+							<hb:HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuCode" edit="false">
+							<hb:HibachiPropertyDisplay object="#rc.processObject.getSku().getProduct()#" property="productName" edit="false">
+							<hb:HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuDefinition" edit="false">
+	
+							<!--- Order Item Details --->
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#" fieldAttributes="ng-model='giftRecipientControl.quantity' ng-change='giftRecipientControl.quantityChanged()'">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
+	
+							<!--- Add form fields to add registrant accounts --->
+							<cfif rc.processObject.getSku().getProduct().getBaseProductType() EQ "event">
+								<cfset currentRegistrantCount = rc.processObject.getSku().getService("EventRegistrationService").getUnavailableSeatCountBySku(rc.processObject.getSku()) />
+								<cfloop from="1" to="#rc.processObject.getQuantity()#" index="i" >
+									<fieldset>
+										<legend>Registrant #i#</legend>
+										<cfif rc.processObject.getSku().getEventCapacity() LT (currentRegistrantCount + i) >
+											<input type="hidden" id="registrants[#i#].toWaitlistFlag" name="registrants[#i#].toWaitlistFlag" value="1" />
+											<p class="alert-error">#$.slatwall.rbKey('entity.OrderItem.toWaitlist')#</p>
+										<cfelse>
+											<input type="hidden" id="registrants[#i#].toWaitlistFlag" name="registrants[#i#].toWaitlistFlag" value="0" />
+										</cfif>
+										<hb:HibachiFieldDisplay fieldname="registrants[#i#].newAccountFlag" title="New Account" fieldType="yesno" edit="#rc.edit#" value="1">
+										<!--- New Account --->
+										<hb:HibachiDisplayToggle selector="input[name='registrants[#i#].newAccountFlag']" loadVisable="yes">
+											<hb:HibachiFieldDisplay fieldname="registrants[#i#].firstName"  title="#$.slatwall.rbKey('entity.account.firstName')#" fieldType="text" edit="#rc.edit#">
+											<hb:HibachiFieldDisplay fieldname="registrants[#i#].lastName" title="#$.slatwall.rbKey('entity.account.lastName')#" fieldType="text" edit="#rc.edit#">
+											<hb:HibachiFieldDisplay fieldname="registrants[#i#].emailAddress" title="#$.slatwall.rbKey('entity.account.emailAddress')#" fieldType="text" edit="#rc.edit#">
+											<hb:HibachiFieldDisplay fieldname="registrants[#i#].phoneNumber" title="#$.slatwall.rbKey('entity.account.phoneNumber')#" fieldType="text" edit="#rc.edit#">
 										</hb:HibachiDisplayToggle>
-
+										<!--- Existing Account --->
+										<hb:HibachiDisplayToggle selector="input[name='registrants[#i#].newAccountFlag']" showValues="0" >
+											<cfset fieldAttributes = 'data-acpropertyidentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,address.simpleRepresentation" data-entityname="Account" data-acvalueproperty="AccountID" data-acnameproperty="simpleRepresentation"' />
+											<hb:HibachiFieldDisplay fieldAttributes="#fieldAttributes#" fieldName="registrants[#i#].accountID" fieldType="textautocomplete" edit="#rc.edit#" title="#$.slatwall.rbKey('entity.account')#"/>
+										</hb:HibachiDisplayToggle>
+									</fieldset>
+									<br>
+								</cfloop>
+							</cfif>
+	
+							<!--- Order Item Custom Attributes --->
+							<cfloop array="#rc.processObject.getAssignedOrderItemAttributeSets()#" index="attributeSet">
+								<hr />
+								<h5>#attributeSet.getAttributeSetName()#</h5>
+								<swa:SlatwallAdminAttributeSetDisplay attributeSet="#attributeSet#" edit="#rc.edit#" />
+							</cfloop>
+	
+							<!--- Order Fulfillment --->
+							<cfif rc.processObject.getOrderItemTypeSystemCode() eq "oitSale">
+								<hr />
+								<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.fulfillmentDetails')#</h5>
+								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderFulfillmentID" edit="#rc.edit#">
+	
+								<!--- New Order Fulfillment --->
+								<hb:HibachiDisplayToggle selector="select[name='orderFulfillmentID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderFulfillmentID()) && rc.processObject.getOrderFulfillmentID() eq 'new')#">
+	
+									<!--- Fulfillment Method --->
+									<hb:HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentMethodID" edit="#rc.edit#">
+	
+									<cfset loadFulfillmentMethodType = rc.processObject.getFulfillmentMethodIDOptions()[1]['fulfillmentMethodType'] />
+									<cfloop array="#rc.processObject.getFulfillmentMethodIDOptions()#" index="option">
+										<cfif option['value'] eq rc.processObject.getOrderFulfillmentID()>
+											<cfset loadFulfillmentMethodType = option['fulfillmentMethodType'] />
+										</cfif>
+									</cfloop>
+	
+									<!--- Email Fulfillment Details --->
+									<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="email" loadVisable="#loadFulfillmentMethodType eq 'email'#">
+	
+										<!--- Email Address --->
+										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#" />
 									</hb:HibachiDisplayToggle>
-
+	
+									<!--- Pickup Fulfillment Details --->
+									<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="pickup" loadVisable="#loadFulfillmentMethodType eq 'pickup'#">
+	
+										<!--- Pickup Location --->
+										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="pickupLocationID" edit="#rc.edit#" />
+									</hb:HibachiDisplayToggle>
+	
+									<!--- Shipping Fulfillment Details --->
+									<hb:HibachiDisplayToggle selector="select[name='fulfillmentMethodID']" valueAttribute="fulfillmentmethodtype" showValues="shipping" loadVisable="#loadFulfillmentMethodType eq 'shipping'#">
+	
+										<!--- Setup the primary address as the default account address --->
+										<cfset defaultValue = "" />
+										<cfif isNull(rc.processObject.getShippingAccountAddressID()) && !rc.order.getAccount().getPrimaryAddress().isNew()>
+											<cfset defaultValue = rc.order.getAccount().getPrimaryAddress().getAccountAddressID() />
+										<cfelseif !isNull(rc.processObject.getShippingAccountAddressID())>
+											<cfset defaultValue = rc.processObject.getShippingAccountAddressID() />
+										</cfif>
+	
+										<!--- Account Address --->
+										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" />
+	
+										<!--- New Address --->
+										<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
+	
+											<!--- Address Display --->
+											<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
+	
+											<!--- Save New Address --->
+											<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressFlag" edit="#rc.edit#" />
+	
+											<!--- Save New Address Name --->
+											<hb:HibachiDisplayToggle selector="input[name='saveShippingAccountAddressFlag']" loadVisable="#rc.processObject.getSaveShippingAccountAddressFlag()#">
+												<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressName" edit="#rc.edit#" />
+											</hb:HibachiDisplayToggle>
+	
+										</hb:HibachiDisplayToggle>
+	
+									</hb:HibachiDisplayToggle>
+	
+	
+	
 								</hb:HibachiDisplayToggle>
-
-
-
-							</hb:HibachiDisplayToggle>
-						<cfelse>
-							<!--- Order Return --->
-							<hr />
-							<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.returnDetails')#</h5>
-							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderReturnID" edit="#rc.edit#">
-
-							<!--- New Order Return --->
-							<hb:HibachiDisplayToggle selector="select[name='orderReturnID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderReturnID()) && rc.processObject.getOrderReturnID() eq 'new')#">
-
-								<!--- Return Location --->
-								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="returnLocationID" edit="#rc.edit#">
-
-								<!--- Fulfillment Refund Amount --->
-								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentRefundAmount" edit="#rc.edit#">
-
-							</hb:HibachiDisplayToggle>
-						</cfif>
-					</hb:HibachiPropertyList>
-
-				</hb:HibachiPropertyRow>
-
-				<cfif rc.processObject.getSku().isGiftCardSku()>
-				<div ng-controller="preprocessorderitem_addorderitemgiftrecipient as giftRecipientControl" id="ngController">
-					<!--- Process Add Order Item Gift Recipient --->
-					<hr/>
-					<h5>Assign Gift Cards <strong>(<span ng-bind="giftRecipientControl.remainingCount"></span>)</strong></h5>
-					<div class="table-responsive s-gift-card-table">
-					    <table class="table table-bordered table-hover">
-					        <thead>
-					            <tr>
-					                <th>#$.slatwall.rbKey('define.name')#</th>
-									        <th>#$.slatwall.rbKey('define.email')#</th>
-									        <th>#$.slatwall.rbKey('define.giftMessage')#</th>
-									        <th>#$.slatwall.rbKey('define.quantity')# (<span ng-bind="giftRecipientControl.totalCount"></span>)</th>
-									        <th></th>
-					            </tr>
-					        </thead>
-					        <tbody>
-					        	<tr ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-if="giftRecipientControl.orderItemGiftRecipients.length != 0">
-					        		<td>
-					        			<span ng-bind="recipient.firstName"></span><span ng-bind="recipient.lastName"></span>
-					        		</td>
-					        		<td ng-bind="recipient.emailAddress"></td>
-					        		<td ng-bind="recipient.giftMessage"></td>
-					        		<td ng-bind="recipient.quantity"></td>
-					        		<td class="admin admin2">
-										<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientControl.edit(recipient)"><i class="glyphicon glyphicon-pencil"></i> </a>
-										<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientControl.delete(recipient)"><i class="glyphicon glyphicon-trash"></i> </a>
-					                </td>
-					        	</tr>
-					            <tr class="hide">
-					                <td>Reinaldo Solares</td>
-					                <td>reinaldosolares@gmail.com</td>
-									<td class="s-table-input-element">
-										<select class="form-control s-table-sm-select" >
-											<option value="" selected>1</option>
-										</select>
-									</td>
-					                <td class="admin admin2">
-										<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-pencil"></i> </a>
-										<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-trash"></i> </a>
-					                </td>
-					            </tr>
-								<tr class="s-save-row hide"><!-- s-save-row is added to rows that are being saved and removed after  -->
-									<td class="s-table-input-element">
-										<input type="text" value="John Rowe" class="form-control">
-									</td>
-					                <td class="s-table-input-element">
-					                	<input type="text" value="johnrowe@yahoo.com" class="form-control">
-					                </td>
-									<td class="s-table-input-element">
-										<select class="form-control" >
-											<option value="">1</option>
-											<option value="" selected>2</option>
-										</select>
-									</td>
-					                <td class="admin admin2">
-										<a class="btn btn-default btn-xs btn-save" href="##">Save</a>
-					                </td>
-					            </tr>
-								<tr class="hide">
-					                <td>Mark Freeze <a href="##"><i class="fa fa-user"></i></a></td>
-					                <td>mark@gmail.com</td>
-									<td class="s-table-input-element">
-										<select class="form-control">
-											<option value="">1</option>
-											<option value="" selected>2</option>
-										</select>
-									</td>
-					                <td class="admin admin2">
-										<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-trash"></i> </a>
-					                </td>
-					            </tr>
-
-					        </tbody>
-					    </table>
-					</div>
-
-					<div class="form-group ">
-                        
-						<div class="s-search-filter s-gift-card">
-	                        <div class="input-group">
-								<form ng-submit="giftRecipientControl.add()">
-									<div class="s-search">
-	                  <input type="text" placeholder="search or add recipient..." class="form-control input-sm" ng-model="$scope.searchText">
-										<i class="fa fa-search"></i>
-									</div>
-								</form>
-								<span href="##" class="s-current-selection-item addDropdown <!---Remove addDropdown---> addDropdown-filledName-input <!--- Remove addDropdown-filledName-input --->"> <!---Reyjay Solares (reinaldosolares@gmail.com) <a href="##" title="edit"><i class="fa fa-pencil"></i></a>---></span>
-
-                <ul class="dropdown-menu addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->"><!-- display block should be replaced with js(angular) -->
-  									<!-- Item-->
-  									<li>
-  										<a>
-  											<div class="row">
-  												<div class="col-xs-2 s-photo">
-  													<img src="http://placehold.it/350x350">
-  												</div>
-  												<div class="col-xs-10 s-info">
-  													<div class="s-name"></div>
-  													<div class="s-email"></div>
-  												</div>
-  											</div>
-  										</a>
-  									</li>
-  									<!-- //Item-->
-	                </ul>
-
-	                        </div>
-	                        <div class="addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->">
-	                            <!-- Only show if there is text -->
-	                            <button type="button" class="btn btn-primary">
-	                            	<i class="fa fa-plus"></i> Add "<span></span>"
-	                            </button>
-	                        </div>
-							<div class="s-add-info-dropdown addDropdown <!---Remove addDropdown---> addDropdown-add-account <!--- Remove addDropdown-add-account --->">
-								<form ng-submit="giftRecipientControl.add()" class="hide">
-									<h5>Create New Recipient</h5>
-									<div class="form-group">
-										<label>First Name<i class="fa fa-asterisk"></i></label>
-										<input type="text" class="form-control">
-									</div>
-									<div class="form-group">
-										<label>Last Name<i class="fa fa-asterisk"></i></label>
-										<input type="text" class="form-control">
-									</div>
-									<div class="form-group">
-										<label>Email<i class="fa fa-asterisk"></i></label>
-										<input type="text" class="form-control">
-									</div>
-									<div class="form-group">
-										<label>Message (limited to 250)</label>
-										<textarea class="form-control" rows="4"></textarea>
-										<div class="s-character-count">
-											Remaining characters: <strong>250</strong>
-										</div>
-									</div>
-									<div class="form-group">
-										<label>Qty</label>
-										<select class="form-control">
-											<option value="">1</option>
-										</select>
-									</div>
-									<div>
-										<button type="button" class="btn btn-sm btn-primary">Add Recipient</button>
-									</div>
-								</form>
-							</div>
+							<cfelse>
+								<!--- Order Return --->
+								<hr />
+								<h5>#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.returnDetails')#</h5>
+								<hb:HibachiPropertyDisplay object="#rc.processObject#" property="orderReturnID" edit="#rc.edit#">
+	
+								<!--- New Order Return --->
+								<hb:HibachiDisplayToggle selector="select[name='orderReturnID']" showValues="new" loadVisable="#(!isNull(rc.processObject.getOrderReturnID()) && rc.processObject.getOrderReturnID() eq 'new')#">
+	
+									<!--- Return Location --->
+									<hb:HibachiPropertyDisplay object="#rc.processObject#" property="returnLocationID" edit="#rc.edit#">
+	
+									<!--- Fulfillment Refund Amount --->
+									<hb:HibachiPropertyDisplay object="#rc.processObject#" property="fulfillmentRefundAmount" edit="#rc.edit#">
+	
+								</hb:HibachiDisplayToggle>
+							</cfif>
+						</hb:HibachiPropertyList>
+	
+					</hb:HibachiPropertyRow>
+	
+					<cfif rc.processObject.getSku().isGiftCardSku()>
+					<div>
+						<!--- Process Add Order Item Gift Recipient --->
+						<hr/>
+						<h5>Assign Gift Cards <strong>(<span ng-bind="giftRecipientControl.getUnassignedCount()"></span>)</strong></h5>
+						<div class="table-responsive s-gift-card-table">
+						    <table class="table table-bordered table-hover">
+						        <thead>
+						            <tr>
+						                <th>#$.slatwall.rbKey('define.name')#</th>
+										        <th>#$.slatwall.rbKey('define.email')#</th>
+										        <th>#$.slatwall.rbKey('define.giftMessage')#</th>
+										        <th>#$.slatwall.rbKey('define.quantity')# (<span ng-bind="giftRecipientControl.getTotalQuantity()"></span>)</th>
+										        <th></th>
+						            </tr>
+						        </thead>
+						        <tbody>
+						        	<tr ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-if="giftRecipientControl.orderItemGiftRecipients.length != 0">
+						        		<td>
+						        			<span ng-bind="recipient.firstName"></span><span ng-bind="recipient.lastName"></span>
+						        		</td>
+						        		<td ng-bind="recipient.emailAddress"></td>
+						        		<td ng-bind="recipient.giftMessage"></td>
+						        		<td ng-bind="recipient.quantity"></td>
+						        		<td class="admin admin2">
+											<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientControl.edit(recipient)"><i class="glyphicon glyphicon-pencil"></i> </a>
+											<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientControl.delete(recipient)"><i class="glyphicon glyphicon-trash"></i> </a>
+						                </td>
+						        	</tr>
+						            <tr class="hide">
+						                <td>Reinaldo Solares</td>
+						                <td>reinaldosolares@gmail.com</td>
+										<td class="s-table-input-element">
+											<select class="form-control s-table-sm-select" >
+												<option value="" selected>1</option>
+											</select>
+										</td>
+						                <td class="admin admin2">
+											<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-pencil"></i> </a>
+											<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-trash"></i> </a>
+						                </td>
+						            </tr>
+									<tr class="s-save-row hide"><!-- s-save-row is added to rows that are being saved and removed after  -->
+										<td class="s-table-input-element">
+											<input type="text" value="John Rowe" class="form-control">
+										</td>
+						                <td class="s-table-input-element">
+						                	<input type="text" value="johnrowe@yahoo.com" class="form-control">
+						                </td>
+										<td class="s-table-input-element">
+											<select class="form-control" >
+												<option value="">1</option>
+												<option value="" selected>2</option>
+											</select>
+										</td>
+						                <td class="admin admin2">
+											<a class="btn btn-default btn-xs btn-save" href="##">Save</a>
+						                </td>
+						            </tr>
+									<tr class="hide">
+						                <td>Mark Freeze <a href="##"><i class="fa fa-user"></i></a></td>
+						                <td>mark@gmail.com</td>
+										<td class="s-table-input-element">
+											<select class="form-control">
+												<option value="">1</option>
+												<option value="" selected>2</option>
+											</select>
+										</td>
+						                <td class="admin admin2">
+											<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-trash"></i> </a>
+						                </td>
+						            </tr>
+	
+						        </tbody>
+						    </table>
 						</div>
-            <!---End Search--->
+	
+						<div class="form-group " ng-show="giftRecipientControl.getUnassignedCount() > 0">
+							<div class="s-search-filter s-gift-card">
+		                        <div class="input-group">
+									<form ng-submit="giftRecipientControl.add()">
+										<div class="s-search">
+		                  					<input type="text" placeholder="search or add recipient..." class="form-control input-sm" ng-model="$scope.searchText">
+											<i class="fa fa-search"></i>
+										</div>
+									</form>
+									<span href="##" class="s-current-selection-item addDropdown <!---Remove addDropdown---> addDropdown-filledName-input <!--- Remove addDropdown-filledName-input --->"> <!---Reyjay Solares (reinaldosolares@gmail.com) <a href="##" title="edit"><i class="fa fa-pencil"></i></a>---></span>
+	
+	                				<ul class="dropdown-menu addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->"><!-- display block should be replaced with js(angular) -->
+	  									<!-- Item-->
+	  									<li>
+	  										<a>
+	  											<div class="row">
+	  												<div class="col-xs-2 s-photo">
+	  													<img src="http://placehold.it/350x350">
+	  												</div>
+	  												<div class="col-xs-10 s-info">
+	  													<div class="s-name"></div>
+	  													<div class="s-email"></div>
+	  												</div>
+	  											</div>
+	  										</a>
+	  									</li>
+	  									<!-- //Item-->
+		                			</ul>
+	
+		                        </div>
+		                        <div class="addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->">
+		                            <!-- Only show if there is text -->
+		                            <button ng-click="giftRecipientControl.addGiftRecipient()" type="button" class="btn btn-primary">
+		                            	<i class="fa fa-plus" ></i> Add "<span></span>"
+		                            </button>
+		                        </div>
+								<div class="s-add-info-dropdown addDropdown <!---Remove addDropdown---> addDropdown-add-account <!--- Remove addDropdown-add-account --->">
+									<form ng-submit="giftRecipientControl.add()" class="hide">
+										<h5>Create New Recipient</h5>
+										<div class="form-group">
+											<label>First Name<i class="fa fa-asterisk"></i></label>
+											<input type="text" class="form-control">
+										</div>
+										<div class="form-group">
+											<label>Last Name<i class="fa fa-asterisk"></i></label>
+											<input type="text" class="form-control">
+										</div>
+										<div class="form-group">
+											<label>Email<i class="fa fa-asterisk"></i></label>
+											<input type="text" class="form-control">
+										</div>
+										<div class="form-group">
+											<label>Message (limited to 250)</label>
+											<textarea class="form-control" rows="4"></textarea>
+											<div class="s-character-count">
+												Remaining characters: <strong>250</strong>
+											</div>
+										</div>
+										<div class="form-group">
+											<label>Qty</label>
+											<select class="form-control">
+												<option value="">1</option>
+											</select>
+										</div>
+										<div>
+											<button type="button" class="btn btn-sm btn-primary">Add Recipient</button>
+										</div>
+									</form>
+								</div>
+							</div>
+	            			<!---End Search--->
+						</div>
+						<!---End Gift Recipient--->
+	
 					</div>
-					<!---End Gift Recipient--->
-
-				</div>
 				</cfif>
-
-			<cfelse>
-				<p class="text-error">#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.wrongCurrency_info')#</p>
-			</cfif>
+			</span>
+		<cfelse>
+			<p class="text-error">#$.slatwall.rbKey('admin.entity.preprocessorder_addorderitem.wrongCurrency_info')#</p>
+		</cfif>
 
 	</hb:HibachiEntityProcessForm>
 

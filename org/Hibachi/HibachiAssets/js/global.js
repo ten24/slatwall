@@ -762,16 +762,11 @@ function setupEventHandlers() {
 						var html = jQuery('#adminModal');
 						//find first ngcontroller
 						var ngController = html.find("#ngController:first");
-						console.log('test');
-						console.log(jQuery('#adminModal'));
-						console.log(ngController);
 						if(ngController.length){
-							console.log('test');
 							var elem = angular.element(document.getElementById('ngApp'));
 						    var injector = elem.injector();
 						    var $compile = injector.get('$compile'); 
 						    var $rootScope = injector.get('$rootScope'); 
-						    console.log(ngController.parent().html());
 						    ngController.parent().html($compile(ngController.parent().html())($rootScope));
 						}
 					} else {
