@@ -172,7 +172,10 @@
 	        
 	        // Validate this object now that it has been populated
 			arguments.entity.validate(context=arguments.context);
-	        
+			if(!isNull(arguments.data)){
+				arguments.entity.validateAttributes(entity=arguments.entity,data=arguments.data,context=arguments.context);
+			}
+			        
 	        // If the object passed validation then call save in the DAO, otherwise set the errors flag
 	        if(!arguments.entity.hasErrors()) {
 	            arguments.entity = getHibachiDAO().save(target=arguments.entity);

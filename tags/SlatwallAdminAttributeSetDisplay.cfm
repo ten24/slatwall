@@ -74,7 +74,7 @@ Notes:
 			<cfset fdAttributes.fieldClass = listAppend(fdAttributes.fieldClass, "required", " ") />
 		</cfif>
 		
-		<!--- Setup Value --->
+		<!--- Setup Value ---> 
 		<cfset fdAttributes.value = "" />
 		
 		<cfif isObject(attributes.entity)>			
