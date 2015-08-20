@@ -226,11 +226,12 @@ Notes:
 						            </tr>
 						        </thead>
 						        <tbody>
-						        	<tr ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-if="giftRecipientControl.orderItemGiftRecipients.length != 0">
+                                    <!---Display Rows--->
+						        	<tr ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-if="giftRecipientControl.orderItemGiftRecipients.length != 0" ng-show="!recipient.editing">
 						        		<td>
-						        			<span ng-bind="recipient.firstName"></span><span ng-bind="recipient.lastName"></span>
+						        			<span ng-bind="recipient.firstName"></span> <span ng-bind="recipient.lastName"></span>
 						        		</td>
-						        		<td ng-bind="recipient.emailAddress"></td>
+						        		<td ng-bind="recipient.email"></td>
 						        		<td ng-bind="recipient.giftMessage"></td>
 						        		<td ng-bind="recipient.quantity"></td>
 						        		<td class="admin admin2">
@@ -238,6 +239,34 @@ Notes:
 											<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientControl.delete(recipient)"><i class="glyphicon glyphicon-trash"></i> </a>
 						                </td>
 						        	</tr>
+                                    
+                                    <!---Editing Rows--->
+                                    <tr class="s-save-row" ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-if="giftRecipientControl.orderItemGiftRecipients.length != 0" ng-show="recipient.editing"><!-- s-save-row is added to rows that are being saved and removed after  -->
+								        <ng-form name="giftRecipientForm">		
+                                            <td class="s-table-input-element">
+                                                <input type="text" class="form-control" ng-model="recipient.firstName">
+                                                <input type="text" class="form-control" ng-model="recipient.lastName">
+                                            </td>
+                                            <td class="s-table-input-element">
+                                                <input type="text" class="form-control" ng-model="recipient.email">
+                                            </td>
+                                            <td class="s-table-input-element">
+                                                <input type="text" class="form-control" ng-model="recipient.giftMessage">
+                                            </td>
+                                            <td class="s-table-input-element">
+                                                <select class="form-control" ng-model="recipient.quantity">
+                                                    <option ng-selected="giftRecipient.quantity == q" 
+                                                        ng-repeat="q in quantityOptions" 
+                                                        ng-value="q">{{q}}</option> 
+                                                </select>
+                                            </td>
+                                            <td class="admin admin2">
+                                                <a class="btn btn-default btn-xs btn-save" href="##" ng-click="giftRecipientControl.saveGiftRecipient(recipient)">Save</a>
+                                            </td>
+                                        </ng-form>
+						            </tr>
+                                    
+                                    
 						            <tr class="hide">
 						                <td>Reinaldo Solares</td>
 						                <td>reinaldosolares@gmail.com</td>
@@ -251,22 +280,22 @@ Notes:
 											<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-trash"></i> </a>
 						                </td>
 						            </tr>
-									<tr class="s-save-row hide"><!-- s-save-row is added to rows that are being saved and removed after  -->
-										<td class="s-table-input-element">
-											<input type="text" value="John Rowe" class="form-control">
-										</td>
-						                <td class="s-table-input-element">
-						                	<input type="text" value="johnrowe@yahoo.com" class="form-control">
-						                </td>
-										<td class="s-table-input-element">
-											<select class="form-control" >
-												<option value="">1</option>
-												<option value="" selected>2</option>
-											</select>
-										</td>
-						                <td class="admin admin2">
-											<a class="btn btn-default btn-xs btn-save" href="##">Save</a>
-						                </td>
+									<tr class="s-save-row hide"><!-- s-save-row is added to rows that are being saved and removed after  -->         
+                                            <td class="s-table-input-element">
+                                                <input type="text" value="John Rowe" class="form-control">
+                                            </td>
+                                            <td class="s-table-input-element">
+                                                <input type="text" value="johnrowe@yahoo.com" class="form-control">
+                                            </td>
+                                            <td class="s-table-input-element">
+                                                <select class="form-control" >
+                                                    <option value="">1</option>
+                                                    <option value="" selected>2</option>
+                                                </select>
+                                            </td>
+                                            <td class="admin admin2">
+                                                <a class="btn btn-default btn-xs btn-save" href="##">Save</a>
+                                            </td>
 						            </tr>
 									<tr class="hide">
 						                <td>Mark Freeze <a href="##"><i class="fa fa-user"></i></a></td>
@@ -323,37 +352,39 @@ Notes:
 		                            </button>
 		                        </div>
 								<div class="s-add-info-dropdown addDropdown <!---Remove addDropdown---> addDropdown-add-account <!--- Remove addDropdown-add-account --->">
-									<form ng-submit="giftRecipientControl.add()" class="hide">
+									<ng-form name="giftRecipientForm">
 										<h5>Create New Recipient</h5>
 										<div class="form-group">
 											<label>First Name<i class="fa fa-asterisk"></i></label>
-											<input type="text" class="form-control">
+											<input type="text" class="form-control" name="giftRecipientFirstName"  ng-model="giftRecipient.firstName"> 
 										</div>
 										<div class="form-group">
 											<label>Last Name<i class="fa fa-asterisk"></i></label>
-											<input type="text" class="form-control">
+											<input type="text" class="form-control" name="giftRecipientLastName"  ng-model="giftRecipient.lastName">
 										</div>
 										<div class="form-group">
 											<label>Email<i class="fa fa-asterisk"></i></label>
-											<input type="text" class="form-control">
+											<input type="text" class="form-control" name="giftRecipientEmail"  ng-model="giftRecipient.email">
 										</div>
 										<div class="form-group">
 											<label>Message (limited to 250)</label>
-											<textarea class="form-control" rows="4"></textarea>
+											<textarea class="form-control" rows="4" name="giftRecipientgiftMessage"  ng-model="giftRecipient.giftMessage"></textarea>
 											<div class="s-character-count">
-												Remaining characters: <strong>250</strong>
+												Remaining characters: <strong></strong>
 											</div>
 										</div>
 										<div class="form-group">
 											<label>Qty</label>
-											<select class="form-control">
-												<option value="">1</option>
+											<select class="form-control" ng-model="giftRecipient.quantity" >
+                                                <option ng-selected="giftRecipient.qunatity == q" 
+                                                        ng-repeat="q in quantityOptions" 
+                                                        ng-value="q">{{q}}</option>
 											</select>
 										</div>
 										<div>
-											<button type="button" class="btn btn-sm btn-primary">Add Recipient</button>
+											<button type="button" class="btn btn-sm btn-primary" ng-click="giftRecipientControl.addGiftRecipient()">Add Recipient</button>
 										</div>
-									</form>
+									</ng-form>
 								</div>
 							</div>
 	            			<!---End Search--->

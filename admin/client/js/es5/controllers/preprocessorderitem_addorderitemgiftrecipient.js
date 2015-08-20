@@ -4,15 +4,21 @@ var slatwalladmin;
         function OrderItemGiftRecipientControl($scope) {
             var _this = this;
             this.$scope = $scope;
-            //        public quantityChanged = (quantity:number) =>{
-            //            this.unassignedCount = this.calculateUnassignedCount();
-            //        }
             this.getUnassignedCount = function () {
                 return _this.quantity - _this.orderItemGiftRecipients.length;
             };
             this.addGiftRecipient = function () {
-                var giftRecipient = new slatwalladmin.GiftRecipient();
-                _this.orderItemGiftRecipients.push(giftRecipient);
+                console.log("adding recipient");
+                var recipient = new slatwalladmin.GiftRecipient();
+                recipient.firstName = _this.$scope.giftRecipient.firstName;
+                recipient.lastName = _this.$scope.giftRecipient.lastName;
+                recipient.email = _this.$scope.giftRecipient.email;
+                recipient.giftMessage = _this.$scope.giftRecipient.giftMessage;
+                _this.orderItemGiftRecipients.push(recipient);
+            };
+            this.saveGiftRecipient = function (recipient) {
+                console.log("saving recipient");
+                recipient.editing = false;
             };
             this.getTotalQuantity = function () {
                 var totalQuantity = 0;
@@ -21,16 +27,28 @@ var slatwalladmin;
                 });
                 return totalQuantity;
             };
-            //		private add = (recipient) =>{
-            //			
-            //            
-            //		}
+            this.getMessageCharactersLeft = function () {
+                var totalChar = 250;
+                //get chars subtract return
+            };
             this.edit = function (recipient) {
+                console.log("editing recipient");
+                if (!recipient.editing) {
+                    recipient.editing = true;
+                }
             };
             this.delete = function (recipient) {
+                console.log("deleting recipient");
+                _this.orderItemGiftRecipients.splice(_this.orderItemGiftRecipients.indexOf(recipient), 1);
             };
+            this.$scope;
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
             this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
+            this.quantityOptions = [];
+            var count = 1;
+            while (count <= this.quantity) {
+                this.quantityOptions.push(count++);
+            }
         }
         OrderItemGiftRecipientControl.$inject = [
             '$scope'
