@@ -217,7 +217,6 @@
 			var templateKeys = reMatchNoCase("\${[^}]+}",arguments.template);
 			var replacementArray = [];
 			var returnString = arguments.template;
-
 			for(var i=1; i<=arrayLen(templateKeys); i++) {
 				var replaceDetails = {};
 				replaceDetails.key = templateKeys[i];
@@ -230,11 +229,10 @@
 					replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);
 				} else if (arguments.removeMissingKeys) {
 					replaceDetails.value = '';
-				}
-
+				} 
+				
 				arrayAppend(replacementArray, replaceDetails);
 			}
-
 			for(var i=1; i<=arrayLen(replacementArray); i++) {
 				returnString = replace(returnString, replacementArray[i].key, replacementArray[i].value, "all");
 			}
