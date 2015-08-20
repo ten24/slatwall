@@ -53,6 +53,7 @@ Notes:
 <cfparam name="rc.attributeOption" type="any">
 <cfparam name="rc.attribute" type="any" default="#rc.attributeOption.getAttribute()#">
 <cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.attributeRecords" default="[]">
 
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.attributeOption#" edit="#rc.edit#"
@@ -74,5 +75,12 @@ Notes:
 		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 	
-	
+	<hb:HibachiListingDisplay smartList="#rc.attributeRecords#">
+        <cfswitch expression="#rc.attributeObject#"> 
+            <cfcase value="Sku">
+                <hb:HibachiListingColumn propertyIdentifier="SkuCode" /> 
+                <hb:HibachiListingColumn propertyIdentifier="SkuName" /> 
+            </cfcase>
+        </cfswitch>
+    </hb:HibachiListingDisplay>
 </cfoutput>

@@ -111,6 +111,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		rc.edit = true;
 	}
 
+    public void function editAttributeOption(required struct rc){ 
+        rc.attributeOption = getService("HibachiService").getAttributeOption(rc.attributeOptionID);
+        rc.attribute = rc.attributeOption.getAttribute(); 
+        rc.attributeObject = rc.attribute.getAttributeSet().getAttributeSetObject(); 
+        rc.attributeRecords = getDAO("HibachiDAO").getSmartList(rc.attributeObject);
+        var attributeValues = rc.attribute.getAttributeValues(); 
+        
+        for(var value in attributeValues){
+            rc.attributeRecords.addWhereCondition(condition=rc.attributeObject & "ID='" & value.invokeMethod("get" & rc.attributeObject & "ID")&"'", conditionOperator="OR");
+        }
+
+        
+    }   
+
 	public void function detailCountry(required struct rc) {
 		rc.country = getAddressService().getCountry(rc.countryCode);
 	}
