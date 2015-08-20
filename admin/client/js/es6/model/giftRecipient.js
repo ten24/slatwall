@@ -9,6 +9,9 @@ var slatwalladmin;
             this.giftMessage = giftMessage;
             this.quantity = quantity;
             this.editing = editing;
+            this.getFullName = () => {
+                return this.firstName + ' ' + this.lastName;
+            };
             this.quantity = 1;
             this.editing = false;
         }

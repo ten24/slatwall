@@ -13,5 +13,8 @@ module slatwalladmin {
             this.quantity = 1;
             this.editing = false; 
         }
+        public getFullName = ():string =>{
+            return this.firstName + ' ' + this.lastName;    
+        }
     }
 }

@@ -219,17 +219,17 @@ Notes:
 						        <thead>
 						            <tr>
 						                <th>#$.slatwall.rbKey('define.name')#</th>
-										        <th>#$.slatwall.rbKey('define.email')#</th>
-										        <th>#$.slatwall.rbKey('define.giftMessage')#</th>
-										        <th>#$.slatwall.rbKey('define.quantity')# (<span ng-bind="giftRecipientControl.getTotalQuantity()"></span>)</th>
-										        <th></th>
+								        <th>#$.slatwall.rbKey('define.email')#</th>
+								        <th>#$.slatwall.rbKey('define.giftMessage')#</th>
+								        <th>#$.slatwall.rbKey('define.quantity')# (<span ng-bind="giftRecipientControl.getTotalQuantity()"></span>)</th>
+								        <th></th>
 						            </tr>
 						        </thead>
 						        <tbody>
-                                    <!---Display Rows--->
-						        	<tr ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-if="giftRecipientControl.orderItemGiftRecipients.length != 0" ng-show="!recipient.editing">
+						        	<tr ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-show="giftRecipientControl.orderItemGiftRecipients.length != 0">
+						        		
 						        		<td>
-						        			<span ng-bind="recipient.firstName"></span> <span ng-bind="recipient.lastName"></span>
+						        			<span ng-bind="recipient.getFullName()"></span>
 						        		</td>
 						        		<td ng-bind="recipient.email"></td>
 						        		<td ng-bind="recipient.giftMessage"></td>
@@ -347,7 +347,7 @@ Notes:
 		                        </div>
 		                        <div class="addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->">
 		                            <!-- Only show if there is text -->
-		                            <button ng-click="giftRecipientControl.addGiftRecipient()" type="button" class="btn btn-primary">
+		                            <button type="button" class="btn btn-primary">
 		                            	<i class="fa fa-plus" ></i> Add "<span></span>"
 		                            </button>
 		                        </div>
@@ -356,29 +356,30 @@ Notes:
 										<h5>Create New Recipient</h5>
 										<div class="form-group">
 											<label>First Name<i class="fa fa-asterisk"></i></label>
-											<input type="text" class="form-control" name="giftRecipientFirstName"  ng-model="giftRecipient.firstName"> 
+											<input type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.firstName">
 										</div>
 										<div class="form-group">
 											<label>Last Name<i class="fa fa-asterisk"></i></label>
-											<input type="text" class="form-control" name="giftRecipientLastName"  ng-model="giftRecipient.lastName">
+											<input type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.lastName">
 										</div>
 										<div class="form-group">
 											<label>Email<i class="fa fa-asterisk"></i></label>
-											<input type="text" class="form-control" name="giftRecipientEmail"  ng-model="giftRecipient.email">
+											<input type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.email">
 										</div>
 										<div class="form-group">
 											<label>Message (limited to 250)</label>
-											<textarea class="form-control" rows="4" name="giftRecipientgiftMessage"  ng-model="giftRecipient.giftMessage"></textarea>
+											<textarea class="form-control" rows="4" ng-model="giftRecipientControl.currentGiftRecipient.giftMessage"></textarea>
 											<div class="s-character-count">
 												Remaining characters: <strong></strong>
 											</div>
 										</div>
 										<div class="form-group">
 											<label>Qty</label>
-											<select class="form-control" ng-model="giftRecipient.quantity" >
-                                                <option ng-selected="giftRecipient.qunatity == q" 
-                                                        ng-repeat="q in quantityOptions" 
-                                                        ng-value="q">{{q}}</option>
+											<select class="form-control" 
+													ng-model="giftRecipientControl.currentGiftRecipient.quantity"
+													ng-options="item for item in giftRecipientControl.getUnassignedCountArray() track by item"
+											>
+												
 											</select>
 										</div>
 										<div>

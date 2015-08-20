@@ -3,12 +3,16 @@ var slatwalladmin;
     'use strict';
     var GiftRecipient = (function () {
         function GiftRecipient(firstName, lastName, email, giftMessage, quantity, editing) {
+            var _this = this;
             this.firstName = firstName;
             this.lastName = lastName;
             this.email = email;
             this.giftMessage = giftMessage;
             this.quantity = quantity;
             this.editing = editing;
+            this.getFullName = function () {
+                return _this.firstName + ' ' + _this.lastName;
+            };
             this.quantity = 1;
             this.editing = false;
         }

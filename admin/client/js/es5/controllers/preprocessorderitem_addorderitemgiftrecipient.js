@@ -4,17 +4,20 @@ var slatwalladmin;
         function OrderItemGiftRecipientControl($scope) {
             var _this = this;
             this.$scope = $scope;
+            this.getUnassignedCountArray = function () {
+                var unassignedCountArray = new Array(_this.getUnassignedCount());
+                for (var i = 0; i < unassignedCountArray.length; i++) {
+                    unassignedCountArray[i] = i + 1;
+                }
+                return unassignedCountArray;
+            };
             this.getUnassignedCount = function () {
                 return _this.quantity - _this.orderItemGiftRecipients.length;
             };
             this.addGiftRecipient = function () {
-                console.log("adding recipient");
-                var recipient = new slatwalladmin.GiftRecipient();
-                recipient.firstName = _this.$scope.giftRecipient.firstName;
-                recipient.lastName = _this.$scope.giftRecipient.lastName;
-                recipient.email = _this.$scope.giftRecipient.email;
-                recipient.giftMessage = _this.$scope.giftRecipient.giftMessage;
-                _this.orderItemGiftRecipients.push(recipient);
+                var giftRecipient = new slatwalladmin.GiftRecipient();
+                angular.extend(giftRecipient, _this.currentGiftRecipient);
+                _this.orderItemGiftRecipients.push(giftRecipient);
             };
             this.saveGiftRecipient = function (recipient) {
                 console.log("saving recipient");
@@ -46,9 +49,7 @@ var slatwalladmin;
             this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
             this.quantityOptions = [];
             var count = 1;
-            while (count <= this.quantity) {
-                this.quantityOptions.push(count++);
-            }
+            this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
         }
         OrderItemGiftRecipientControl.$inject = [
             '$scope'
