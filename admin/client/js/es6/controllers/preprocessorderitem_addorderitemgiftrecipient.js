@@ -4,9 +4,15 @@ var slatwalladmin;
         constructor($scope) {
             this.$scope = $scope;
             this.getUnassignedCountArray = () => {
-                var unassignedCountArray = new Array(this.getUnassignedCount());
-                for (var i = 0; i < unassignedCountArray.length; i++) {
-                    unassignedCountArray[i] = i + 1;
+                if (this.getUnassignedCount() > 0) {
+                    var unassignedCountArray = new Array(this.getUnassignedCount());
+                    for (var i = 0; i < unassignedCountArray.length; i++) {
+                        unassignedCountArray[i] = i + 1;
+                    }
+                }
+                else {
+                    var unassignedCountArray = new Array(this.getUnassignedCount());
+                    unassignedCountArray[0] = 1;
                 }
                 return unassignedCountArray;
             };
@@ -17,10 +23,8 @@ var slatwalladmin;
                 var giftRecipient = new slatwalladmin.GiftRecipient();
                 angular.extend(giftRecipient, this.currentGiftRecipient);
                 this.orderItemGiftRecipients.push(giftRecipient);
-            };
-            this.saveGiftRecipient = (recipient) => {
-                console.log("saving recipient");
-                recipient.editing = false;
+                this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
+                ;
             };
             this.getTotalQuantity = () => {
                 var totalQuantity = 0;
@@ -33,20 +37,9 @@ var slatwalladmin;
                 var totalChar = 250;
                 //get chars subtract return
             };
-            this.edit = (recipient) => {
-                console.log("editing recipient");
-                if (!recipient.editing) {
-                    recipient.editing = true;
-                }
-            };
-            this.delete = (recipient) => {
-                console.log("deleting recipient");
-                this.orderItemGiftRecipients.splice(this.orderItemGiftRecipients.indexOf(recipient), 1);
-            };
             this.$scope;
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
             this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
-            this.quantityOptions = [];
             var count = 1;
             this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
         }

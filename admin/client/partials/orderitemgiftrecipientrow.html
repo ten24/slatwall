@@ -1,0 +1,33 @@
+<td ng-hide="recipient.editing">
+	<span ng-bind="giftRecipientRowControl.recipient.firstName"></span>
+	<span ng-bind="giftRecipientRowControl.recipient.lastName"></span>
+</td>
+
+<td ng-bind="recipient.email"  ng-hide="recipient.editing"></td>
+<td ng-bind="recipient.giftMessage"  ng-hide="recipient.editing"></td>
+<td ng-bind="recipient.quantity"  ng-hide="recipient.editing"></td>
+<td class="admin admin2"  ng-hide="recipient.editing">
+	<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientRowControl.edit(recipient)"><i class="glyphicon glyphicon-pencil"></i> </a>
+	<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientRowControl.delete(recipient)"><i class="glyphicon glyphicon-trash"></i> </a>
+</td>
+
+<td class="s-table-input-element" ng-hide="!recipient.editing">
+	<input type="text" class="form-control" ng-model="giftRecipientRowControl.recipient.firstName">
+	<input type="text" class="form-control" ng-model="giftRecipientRowControl.recipient.lastName">
+</td>
+<td class="s-table-input-element" ng-hide="!recipient.editing">
+	<input type="text" class="form-control" ng-model="giftRecipientRowControl.recipient.email">
+</td>
+<td class="s-table-input-element" ng-hide="!recipient.editing">
+	<input type="text" class="form-control" ng-model="giftRecipientRowControl.recipient.giftMessage">
+</td>
+<td class="s-table-input-element" ng-hide="!recipient.editing">
+	<select class="form-control" 
+		ng-model="giftRecipientRowControl.recipient.quantity"
+		ng-options="item for item in giftRecipientControl.getUnassignedCountArray() track by item"
+>
+	</select>
+</td>
+<td class="admin admin2" ng-hide="!recipient.editing">
+	<a class="btn btn-default btn-xs btn-save" href="##" ng-click="giftRecipientRowControl.saveGiftRecipient(recipient)">Save</a>
+</td>

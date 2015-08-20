@@ -15,42 +15,47 @@ module slatwalladmin {
 		
 		public orderItemGiftRecipients; 
         public quantity:number;
-
         public currentGiftRecipient:slatwalladmin.GiftRecipient;
         
 		constructor(private $scope: IOrderItemGiftRecipientScope){
 			this.$scope
 			this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
-            this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
-			this.quantityOptions = [];
-			
+                        this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
 			var count = 1;
-			
-            this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
+                        this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
 		}
         
-        public getUnassignedCountArray = ():number[] =>{
-            var unassignedCountArray = new Array(this.getUnassignedCount());
-            for(var i = 0; i < unassignedCountArray.length; i++ ){
-                unassignedCountArray[i] = i + 1;
+        private getUnassignedCountArray = ():number[] =>{
+            if(this.getUnassignedCount() != 0){
+                var unassignedCountArray = new Array(this.getUnassignedCount());
+                for(var i = 0; i < unassignedCountArray.length; i++ ){
+                        unassignedCountArray[i] = i + 1;
+                }
+            } else { 
+                var unassignedCountArray = new Array();
+                unassignedCountArray[0] = 1; 
+                console.log("countarray: " + unassignedCountArray);
             }
+            
             return unassignedCountArray; 
         }
         
         private getUnassignedCount = ():number =>{
-            return this.quantity - this.orderItemGiftRecipients.length;
+            var unassignedCount = this.quantity; 
+           
+            angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient)=>{
+                unassignedCount -= orderItemGiftRecipient.quantity;
+            });
+            
+            return unassignedCount;
         }
         
         public addGiftRecipient = ():void =>{
             var giftRecipient = new GiftRecipient();
-            angular.extend(giftRecipient,this.currentGiftRecipient)
+            angular.extend(giftRecipient,this.currentGiftRecipient);
             this.orderItemGiftRecipients.push(giftRecipient);
+			this.currentGiftRecipient = new slatwalladmin.GiftRecipient();; 
         }
-		
-		private saveGiftRecipient = (recipient:any) =>{
-			console.log("saving recipient");
-			recipient.editing = false; 
-		}
         
         private getTotalQuantity = ():number =>{
             var totalQuantity = 0;
@@ -64,19 +69,6 @@ module slatwalladmin {
 			var totalChar = 250;
 			
 			//get chars subtract return
-		}
-
-
-		private edit = (recipient:any) =>{
-			console.log("editing recipient");
-			if(!recipient.editing){
-				recipient.editing=true; 
-			}
-		}
-
-		private delete = (recipient:any) =>{
-			console.log("deleting recipient");
-			this.orderItemGiftRecipients.splice(this.orderItemGiftRecipients.indexOf(recipient), 1);
 		}
 	}
 	

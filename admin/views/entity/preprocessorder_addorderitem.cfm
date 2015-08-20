@@ -226,91 +226,9 @@ Notes:
 						            </tr>
 						        </thead>
 						        <tbody>
-						        	<tr ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-show="giftRecipientControl.orderItemGiftRecipients.length != 0">
-						        		
-						        		<td>
-						        			<span ng-bind="recipient.getFullName()"></span>
-						        		</td>
-						        		<td ng-bind="recipient.email"></td>
-						        		<td ng-bind="recipient.giftMessage"></td>
-						        		<td ng-bind="recipient.quantity"></td>
-						        		<td class="admin admin2">
-											<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientControl.edit(recipient)"><i class="glyphicon glyphicon-pencil"></i> </a>
-											<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientControl.delete(recipient)"><i class="glyphicon glyphicon-trash"></i> </a>
-						                </td>
+						        	<tr sw-order-item-gift-recipient-row ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-show="giftRecipientControl.orderItemGiftRecipients.length != 0" ng-class="{'s-save-row':recipient.editing}" recipient="recipient" recipients="giftRecipientControl.orderItemGiftRecipients">
+                        
 						        	</tr>
-                                    
-                                    <!---Editing Rows--->
-                                    <tr class="s-save-row" ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-if="giftRecipientControl.orderItemGiftRecipients.length != 0" ng-show="recipient.editing"><!-- s-save-row is added to rows that are being saved and removed after  -->
-								        <ng-form name="giftRecipientForm">		
-                                            <td class="s-table-input-element">
-                                                <input type="text" class="form-control" ng-model="recipient.firstName">
-                                                <input type="text" class="form-control" ng-model="recipient.lastName">
-                                            </td>
-                                            <td class="s-table-input-element">
-                                                <input type="text" class="form-control" ng-model="recipient.email">
-                                            </td>
-                                            <td class="s-table-input-element">
-                                                <input type="text" class="form-control" ng-model="recipient.giftMessage">
-                                            </td>
-                                            <td class="s-table-input-element">
-                                                <select class="form-control" ng-model="recipient.quantity">
-                                                    <option ng-selected="giftRecipient.quantity == q" 
-                                                        ng-repeat="q in quantityOptions" 
-                                                        ng-value="q">{{q}}</option> 
-                                                </select>
-                                            </td>
-                                            <td class="admin admin2">
-                                                <a class="btn btn-default btn-xs btn-save" href="##" ng-click="giftRecipientControl.saveGiftRecipient(recipient)">Save</a>
-                                            </td>
-                                        </ng-form>
-						            </tr>
-                                    
-                                    
-						            <tr class="hide">
-						                <td>Reinaldo Solares</td>
-						                <td>reinaldosolares@gmail.com</td>
-										<td class="s-table-input-element">
-											<select class="form-control s-table-sm-select" >
-												<option value="" selected>1</option>
-											</select>
-										</td>
-						                <td class="admin admin2">
-											<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-pencil"></i> </a>
-											<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-trash"></i> </a>
-						                </td>
-						            </tr>
-									<tr class="s-save-row hide"><!-- s-save-row is added to rows that are being saved and removed after  -->         
-                                            <td class="s-table-input-element">
-                                                <input type="text" value="John Rowe" class="form-control">
-                                            </td>
-                                            <td class="s-table-input-element">
-                                                <input type="text" value="johnrowe@yahoo.com" class="form-control">
-                                            </td>
-                                            <td class="s-table-input-element">
-                                                <select class="form-control" >
-                                                    <option value="">1</option>
-                                                    <option value="" selected>2</option>
-                                                </select>
-                                            </td>
-                                            <td class="admin admin2">
-                                                <a class="btn btn-default btn-xs btn-save" href="##">Save</a>
-                                            </td>
-						            </tr>
-									<tr class="hide">
-						                <td>Mark Freeze <a href="##"><i class="fa fa-user"></i></a></td>
-						                <td>mark@gmail.com</td>
-										<td class="s-table-input-element">
-											<select class="form-control">
-												<option value="">1</option>
-												<option value="" selected>2</option>
-											</select>
-										</td>
-						                <td class="admin admin2">
-											<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-trash"></i> </a>
-						                </td>
-						            </tr>
-	
 						        </tbody>
 						    </table>
 						</div>
