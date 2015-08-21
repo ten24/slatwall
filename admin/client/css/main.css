@@ -940,6 +940,19 @@ select.error {
   background-color: #ffffff;
   margin-bottom: 5px;
 }
+.table .s-contents-page-title {
+  color: #666;
+}
+.table .s-contents-page-title:hover {
+  text-decoration: underline;
+}
+.table i.s-listing-arrow {
+  margin-left: 15px;
+  padding: 0px 6px 0px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 2px;
+}
 .s-property-info .table > thead > tr > th,
 .table > tbody > tr > th,
 .table > tfoot > tr > th,
@@ -4643,11 +4656,14 @@ a.disabled > i.hibachi-ui-radio-checked {
   background-color: #fafafa;
   color: #666666 !important;
 }
+.s-select-list-wrapper .s-input-btn {
+  position: relative;
+}
 .s-select-list-wrapper .s-input-btn span,
 .s-select-list-wrapper .s-input-btn i {
   position: absolute;
-  right: 40px;
-  top: 1px;
+  right: 10px;
+  top: 29px;
   bottom: 0;
   height: 14px;
   margin: auto;

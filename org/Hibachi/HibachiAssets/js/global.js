@@ -345,13 +345,28 @@ function setupEventHandlers() {
 
 	// Modal Loading
 	jQuery('body').on('click', '.modalload', function(e){
-		var element = jQuery(this);
-		var modalLink = initModal( element );
+
+		var modalLink = initModal( jQuery(this) );
 
 		jQuery('#adminModal').load( modalLink, function(){
 			
 			initUIElements('#adminModal');
 			
+
+			//returns 401 in the case of unauthorized access and boots to the appropriate login page
+			//Hibachi.cfc 308-311
+			if(xhr.status == 401){
+				window.location.href = "/?slataction=" + xhr.statusText;
+			}
+
+			/*
+			jQuery('#adminModal').css({
+				'width': 'auto',
+				'margin-left': function () {
+		            return -(jQuery('#adminModal').width() / 2);
+		        }
+			});
+			*/
 		});
 
 	});
