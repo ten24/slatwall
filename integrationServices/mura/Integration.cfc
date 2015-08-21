@@ -51,7 +51,7 @@ component accessors="true" output="false" extends="Slatwall.integrationServices.
 	property name="adminNavbarHTML";
 	
 	public string function getIntegrationTypes() {
-		return "authentication,fw1";
+		return "authentication,fw1,app";
 	}
 	
 	public string function getDisplayName() {

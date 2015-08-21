@@ -18,6 +18,7 @@ angular.module('slatwalladmin')
 				currentPage:"=",
 				pageStart:"&",
 				pageEnd:"&",
+                pageShowOptions:"=?",
 				recordsCount:"&",
 				collection:"=",
 				autoScroll:"=",
@@ -30,8 +31,12 @@ angular.module('slatwalladmin')
 				scope.hasNext = paginationService.hasNext;
 				scope.totalPages = paginationService.getTotalPages;
 				
-				scope.pageShowOptions = paginationService.getPageShowOptions();
-	          	scope.pageShowOptions.selectedPageShowOption = scope.pageShowOptions[0];
+                if(angular.isUndefined(scope.pageShowOptions)){
+                    scope.pageShowOptions = paginationService.getPageShowOptions();
+
+                }
+				
+				scope.pageShowOptions.selectedPageShowOption = scope.pageShowOptions[0];
 	          	
 	          	scope.pageShowOptionChanged = function(pageShowOption){
 	          		$log.debug('pageShowOptionChanged');
@@ -47,11 +52,12 @@ angular.module('slatwalladmin')
 	        		 unbindPageOptionsWatchListener();
 	        	});*/
 	        	
-	        	scope.setCurrentPage = function(number){
+	        	scope.setCurrentPage = function(currentPageNumber){
 	        		$log.debug('setCurrentPage');
-	        		paginationService.setCurrentPage(number);
-	        		scope.currentPage = number;
-	        			        		
+                   
+	        		paginationService.setCurrentPage(currentPageNumber);
+	        		scope.currentPage = paginationService.getCurrentPage();
+	        			        	 $log.debug(paginationService.getCurrentPage());	
 	        		$timeout(function(){
 	        			
 	        			
@@ -80,7 +86,7 @@ angular.module('slatwalladmin')
 	            		scope.currentPage= paginationService.getCurrentPage();
 	            		scope.pageShow = paginationService.getPageShow();
 	            		//scope.totalPages()
-	            		scope.totalPagesArray = [];
+						scope.totalPagesArray = [];
 	            		for(var i = 0; i < scope.totalPages(); i++){
 	            			scope.totalPagesArray.push(i+1);
 	            		}
@@ -164,7 +170,6 @@ angular.module('slatwalladmin')
 	        		paginationService.nextPage();
 	        		scope.currentPage = paginationService.getCurrentPage();
 	        	};
- 
 			}
 		};
 	}

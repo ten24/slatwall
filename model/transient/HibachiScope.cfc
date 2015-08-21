@@ -55,6 +55,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 	property name="product" type="any";
 	property name="productType" type="any";
 	property name="site" type="any";
+	property name="app" type="any";
 	
 	// Slatwall specific request smartList properties
 	property name="productSmartList" type="any";
@@ -370,5 +371,8 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiS
 		}
 	}
 	
+	public any function slatProcess(required string slatProcess){
+		return getService('sessionService').processSession(getSession(), arguments.slatProcess);
+	}
 	
 }

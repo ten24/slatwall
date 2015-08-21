@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swFormFieldRadio', [
+angular.module('slatwalladmin')
+    .directive('swFormFieldRadio', [
     '$log',
     '$timeout',
     '$slatwall',

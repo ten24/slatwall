@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swWorkflowTrigger', [
+angular.module('slatwalladmin')
+    .directive('swWorkflowTrigger', [
     '$log',
     '$slatwall',
     'metadataService',

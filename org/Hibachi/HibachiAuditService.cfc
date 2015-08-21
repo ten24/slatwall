@@ -712,7 +712,7 @@ component extends="HibachiService" accessors="true" {
 		if( !getHibachiScope().getAccount().getNewFlag() && getHibachiScope().getAccount().getAdminAccountFlag() ){
 			audit.setSessionAccountID(getHibachiScope().getAccount().getAccountID());
 			audit.setSessionAccountFullName(getHibachiScope().getAccount().getFullName());
-			if (!isNull(getHibachiScope().getAccount().getEmailAddress())) {
+			if (!getHibachiScope().getAccount().hasPrimaryEmailaddress() and !isNull(getHibachiScope().getAccount().getEmailAddress())) {
 				audit.setSessionAccountEmailAddress(getHibachiScope().getAccount().getEmailAddress());
 			}
 		}

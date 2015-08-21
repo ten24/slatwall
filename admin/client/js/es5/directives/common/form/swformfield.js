@@ -6,7 +6,7 @@ angular.module('slatwalladmin').directive('swFormField', ['$log', '$templateCach
     scope: {propertyDisplay: "="},
     templateUrl: partialsPath + 'formfields/formfield.html',
     link: function(scope, element, attrs, formController) {
-      if (scope.propertyDisplay.object.$$getID() === '') {
+      if (angular.isUndefined(scope.propertyDisplay.object.$$getID) || scope.propertyDisplay.object.$$getID() === '') {
         scope.propertyDisplay.isDirty = true;
       }
       if (angular.isDefined(formController[scope.propertyDisplay.property])) {

@@ -7,7 +7,7 @@ var listingUpdateCache = {
 var textAutocompleteCache = {
 	onHold: false,
 	autocompleteField: undefined,
-	data: {},
+	data: {}
 };
 var globalSearchCache = {
 	onHold: false
@@ -92,10 +92,24 @@ function initUIElements( scopeSelector ) {
 	// Wysiwyg
 	jQuery.each(jQuery( scopeSelector ).find(jQuery( '.wysiwyg' )), function(i, v){
 		// Wysiwyg custom config file located in: custom/assets/ckeditor_config.js
-		var editor = CKEDITOR.replace( v, {
-		    customConfig: '../../../custom/assets/ckeditor_config.js'
-		});
+		
+		var customConfigLocation = '../../../custom/assets/ckeditor_config.js';
+		
+		var config = {
+			customConfig: customConfigLocation,
+		}
+		if($(v).attr('siteCode') && $(v).attr('appCode')){
+			var codeString = 'siteCode='+$(v).attr('siteCode')+'&appCode='+$(v).attr('appCode');
+			config.filebrowserBrowseUrl      =hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?'+codeString;
+			config.filebrowserImageBrowseUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/ckfinder.html?Type=Images&'+codeString;
+			config.filebrowserUploadUrl      = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Files&'+codeString;
+			config.filebrowserImageUploadUrl = hibachiConfig['baseURL'] + '/org/Hibachi/ckfinder/core/connector/cfm/connector.cfm?command=QuickUpload&type=Images&'+codeString;
+		}
+		var editor = CKEDITOR.replace( v, config);
+		
 		CKFinder.setupCKEditor( editor, 'org/Hibachi/ckfinder/' );
+		//allow override via attributes
+		
 	});
 
 	// Tooltips
@@ -146,6 +160,8 @@ function initUIElements( scopeSelector ) {
 	jQuery.each(jQuery( scopeSelector ).find(jQuery('form')), function(index, value) {
 		jQuery(value).on('submit', function(e){
 			
+			jQuery ("button[type='submit']").prop('disabled', true);
+			
 			jQuery.each(jQuery( this ).find(jQuery('input[data-emptyvalue]')), function(i, v){
 				if(jQuery(v).val() == jQuery(v).data('emptyvalue')) {
 					jQuery(v).val('');
@@ -167,7 +183,7 @@ function initUIElements( scopeSelector ) {
 	jQuery.each(jQuery( scopeSelector ).find(jQuery('form')), function(index, value){
 		jQuery(value).validate({
 			invalidHandler: function() {
-
+				jQuery ("button[type='submit']").prop('disabled', false);
 			}
 		});
 	});
@@ -233,6 +249,15 @@ function initUIElements( scopeSelector ) {
 			});
 			jQuery('input[name="metrics"]').val( newMetricsValue );
 			updateReport();
+		}
+	});
+	
+	//sort by metric or dimension
+	jQuery( scopeSelector ).find(jQuery('#hibachi-order-by')).sortable({
+		stop: function( event, ui ) {
+			addLoadingDiv( 'hibachi-report' );
+			jQuery('select[name="orderbytype"]').val( newOrderByTypeValue );
+			updateReport(); 
 		}
 	});
 }
@@ -311,6 +336,12 @@ function setupEventHandlers() {
 		jQuery('#adminModal').load( modalLink, function(){
 
 			initUIElements('#adminModal');
+			
+			//returns 401 in the case of unauthorized access and boots to the appropriate login page
+			//Hibachi.cfc 308-311
+			if(xhr.status == 401){
+				window.location.href = "/?slataction=" + xhr.statusText;
+			}
 
 			/*
 			jQuery('#adminModal').css({
@@ -814,6 +845,12 @@ function setupEventHandlers() {
 		addLoadingDiv( 'hibachi-report' );
 		updateReport( jQuery(this).data('page') );
 	});
+	//orderbytype event hook 
+	jQuery('body').on('change', '#hibachi-order-by', function(e){ 
+		e.preventDefault();
+		addLoadingDiv( 'hibachi-report' );
+		updateReport();
+	});
 
 
 	//Accordion Binding
@@ -825,6 +862,40 @@ function setupEventHandlers() {
 	jQuery('body').on('click','.j-openall', function(e){
 		e.preventDefault();
 		jQuery('.panel-collapse:not(".in")').collapse('show');
+	});
+	
+	//function to check form imputs for values and show or hide label text
+	function checkFields(targetObj){
+		if( targetObj.value !== '') {
+			$(targetObj).closest('.form-group').find('.control-label').addClass('s-slide-out');
+		}else{
+			$(targetObj).closest('.form-group').find('.control-label').removeClass('s-slide-out');
+		}
+	};
+	
+	//check all inputs on page load and show or hide label
+	$('.s-login-wrapper .s-form-signin input').each(function(){
+		checkFields(this);
+	});
+	
+	//check input on keyup and show or hide label
+	$('.s-login-wrapper .s-form-signin input').keyup(function(){	
+		var getIDVal = $(this).attr('id');
+		checkFields(this);
+	});
+	
+	//Hide login and show forgot password
+	$('#j-forgot-password').click(function(e){
+		e.preventDefault();
+		$('#j-forgot-password-wrapper').show();
+		$('#j-login-wrapper').hide();
+	});
+	
+	//Show login and hide forgot password
+	$('#j-back-to-login').click(function(e){
+		e.preventDefault();
+		$('#j-forgot-password-wrapper').hide();
+		$('#j-login-wrapper').show();
 	});
 
 	//[TODO]: Change Up JS
@@ -1539,7 +1610,8 @@ function updateReport( page ) {
 		reportDateTime: jQuery('select[name="reportDateTime"]').val(),
 		reportCompareFlag: jQuery('input[name="reportCompareFlag"]').val(),
 		dimensions: jQuery('input[name="dimensions"]').val(),
-		metrics: jQuery('input[name="metrics"]').val()
+		metrics: jQuery('input[name="metrics"]').val(),
+		orderByType: jQuery('select[name="orderbytype"]').val()
 	};
 
 	if(page != undefined) {

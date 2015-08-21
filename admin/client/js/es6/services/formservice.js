@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').factory('formService', [
+angular.module('slatwalladmin')
+    .factory('formService', [
     '$log',
     function ($log) {
         var _forms = {};

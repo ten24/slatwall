@@ -1,6 +1,7 @@
 'use strict';
 //Thanks to AdamMettro
-angular.module('slatwalladmin').directive('swDetail', [
+angular.module('slatwalladmin')
+    .directive('swDetail', [
     '$location',
     '$log',
     '$slatwall',
@@ -14,7 +15,9 @@ angular.module('slatwalladmin').directive('swDetail', [
                 $log.debug('slatwallDetailController');
                 /*Sets the view dirty on save*/
                 scope.setDirty = function (entity) {
-                    entity.forms['Workflow.'].$setSubmitted();
+                    angular.forEach(entity.forms, function (form) {
+                        form.$setSubmitted();
+                    });
                 };
                 var setupMetaData = function () {
                     scope[scope.entityName.toLowerCase()] = scope.entity;

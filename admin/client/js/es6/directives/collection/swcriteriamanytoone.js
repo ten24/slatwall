@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swCriteriaManyToOne', [
+angular.module('slatwalladmin')
+    .directive('swCriteriaManyToOne', [
     '$log',
     '$slatwall',
     '$filter',

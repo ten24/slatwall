@@ -62,6 +62,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalNoSessionPersistDefault" />
 		<swa:SlatwallSetting settingName="globalRemoteIDShowFlag" />
 		<swa:SlatwallSetting settingName="globalRemoteIDEditFlag" />
+		<swa:SlatwallSetting settingName="globalAdminDomainNames" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

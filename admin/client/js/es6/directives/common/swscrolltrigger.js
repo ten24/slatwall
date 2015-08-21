@@ -1,4 +1,6 @@
-angular.module('slatwalladmin').directive('swScrollTrigger', [
+angular
+    .module('slatwalladmin')
+    .directive('swScrollTrigger', [
     '$rootScope',
     '$window',
     '$timeout',
@@ -9,16 +11,19 @@ angular.module('slatwalladmin').directive('swScrollTrigger', [
                 $window = angular.element($window);
                 scrollDistance = 0;
                 if (attrs.infiniteScrollDistance != null) {
-                    scope.$watch(attrs.infiniteScrollDistance, function (value) {
+                    scope
+                        .$watch(attrs.infiniteScrollDistance, function (value) {
                         return scrollDistance = parseInt(value, 10);
                     });
                 }
                 scrollEnabled = true;
                 checkWhenEnabled = false;
                 if (attrs.infiniteScrollDisabled != null) {
-                    scope.$watch(attrs.infiniteScrollDisabled, function (value) {
+                    scope
+                        .$watch(attrs.infiniteScrollDisabled, function (value) {
                         scrollEnabled = !value;
-                        if (scrollEnabled && checkWhenEnabled) {
+                        if (scrollEnabled
+                            && checkWhenEnabled) {
                             checkWhenEnabled = false;
                             return handler();
                         }
@@ -26,16 +31,23 @@ angular.module('slatwalladmin').directive('swScrollTrigger', [
                 }
                 handler = function () {
                     var elementBottom, remaining, shouldScroll, windowBottom;
-                    windowBottom = $window.height() + $window.scrollTop();
-                    elementBottom = elem.offset().top + elem.height();
-                    remaining = elementBottom - windowBottom;
-                    shouldScroll = remaining <= $window.height() * scrollDistance;
+                    windowBottom = $window.height()
+                        + $window.scrollTop();
+                    elementBottom = elem.offset().top
+                        + elem.height();
+                    remaining = elementBottom
+                        - windowBottom;
+                    shouldScroll = remaining <= $window
+                        .height()
+                        * scrollDistance;
                     if (shouldScroll && scrollEnabled) {
                         if ($rootScope.$$phase) {
-                            return scope.$eval(attrs.infiniteScroll);
+                            return scope
+                                .$eval(attrs.infiniteScroll);
                         }
                         else {
-                            return scope.$apply(attrs.infiniteScroll);
+                            return scope
+                                .$apply(attrs.infiniteScroll);
                         }
                     }
                     else if (shouldScroll) {
@@ -48,7 +60,8 @@ angular.module('slatwalladmin').directive('swScrollTrigger', [
                 });
                 return $timeout((function () {
                     if (attrs.infiniteScrollImmediateCheck) {
-                        if (scope.$eval(attrs.infiniteScrollImmediateCheck)) {
+                        if (scope
+                            .$eval(attrs.infiniteScrollImmediateCheck)) {
                             return handler();
                         }
                     }
@@ -58,7 +71,6 @@ angular.module('slatwalladmin').directive('swScrollTrigger', [
                 }), 0);
             }
         };
-    }
-]);
+    }]);
 
 //# sourceMappingURL=../../directives/common/swscrolltrigger.js.map

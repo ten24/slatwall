@@ -7,6 +7,7 @@
 // onApplicationSetup
 // onApplicationFullUpdate
 // onApplicationBootstrapRequestStart
+// onGlobalRequestSetupComplete
 // onApplicationRequestStart
 // onApplicationRequestEnd
 
@@ -64,7 +65,6 @@ component output="false" update="true" extends="HibachiService" {
 	
 	public void function announceEvent(required string eventName, struct eventData={}) {
 		logHibachi("Event Announced: #arguments.eventName#");
-		
 		
 		// Stick the Hibachi Scope in with the rest of the event data
 		arguments.eventData[ "#getApplicationValue('applicationKey')#Scope" ] = getHibachiScope();
@@ -151,6 +151,14 @@ component output="false" update="true" extends="HibachiService" {
 			for(var h=1; h<=arrayLen(dirList); h++) {
 				if(listLast(dirList[h], '.') eq 'cfc') {
 					registerEventHandler( "#getApplicationValue('applicationKey')#.custom.model.handler.#listFirst(listLast(dirList[h], '/\'), '.')#" );
+				}
+			}
+		}
+		if(directoryExists(getApplicationValue('applicationRootMappingPath') & '/integrationServices/slatwallcms/model/handler')) {
+			var dirList = directoryList(getApplicationValue('applicationRootMappingPath') & '/integrationServices/slatwallcms/model/handler');
+			for(var h=1; h<=arrayLen(dirList); h++) {
+				if(listLast(dirList[h], '.') eq 'cfc') {
+					registerEventHandler( "#getApplicationValue('applicationKey')#.integrationServices.slatwallcms.model.handler.#listFirst(listLast(dirList[h], '/\'), '.')#" );
 				}
 			}
 		}

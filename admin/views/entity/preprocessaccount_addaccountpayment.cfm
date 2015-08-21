@@ -151,7 +151,7 @@ Notes:
 		<cfset orderPaymentList = rc.account.getTermOrderPaymentsByDueDateSmartList() />
 
 		<br /><br />
-		<table class="table table-striped table-bordered table-condensed">
+		<table class="table table-bordered table-hover">
 			<tr>
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetOrderNum')#</th>
 				<th>#$.slatwall.rbKey('entity.AccountPayment.termOffsetTerm')#</th>

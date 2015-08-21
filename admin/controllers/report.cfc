@@ -87,6 +87,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			param name="arguments.rc.reportDateTime" default="#reportEntity.getReportDateTime()#";
 			param name="arguments.rc.dimensions" type="any" default="#reportEntity.getDimensions()#";
 			param name="arguments.rc.metrics" type="any" default="#reportEntity.getMetrics()#";
+			param name="arguments.rc.orderByType" type="any" default="metric";
 			
 		} else if (!structKeyExists(arguments.rc, "reportName")) {
 			
@@ -95,7 +96,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 		
 		arguments.rc.report = getHibachiReportService().getReportCFC(arguments.rc.reportName, arguments.rc);
-		
 		if(!isNull(reportEntity)) {
 			arguments.rc.report.setReportEntity( reportEntity );	
 		}

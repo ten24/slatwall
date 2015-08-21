@@ -108,6 +108,17 @@ Notes:
 		public any function getMaxOrderNumber() {
 			return ormExecuteQuery("SELECT max(cast(aslatwallorder.orderNumber as int)) as maxOrderNumber FROM SlatwallOrder aslatwallorder");
 		}
+		
+		public boolean function getPeerOrderPaymentNullAmountExistsFlag(required string orderID, string orderPaymentID) {
+			var result = ormExecuteQuery("SELECT orderPaymentID FROM SlatwallOrderPayment op WHERE op.order.orderID = ? AND op.amount IS NULL AND op.orderPaymentStatusType.systemCode = ?", [arguments.orderID, 'opstActive']);
+			
+			if(arrayLen(result) && (!structKeyExists(arguments, "orderPaymentID") || result[1] neq arguments.orderPaymentID)) {
+				return true;
+			}
+
+			return false;
+		}
+
 	</cfscript>
 	
 	<cffunction name="getOrderPaymentNonNullAmountTotal" access="public" returntype="numeric" output="false">

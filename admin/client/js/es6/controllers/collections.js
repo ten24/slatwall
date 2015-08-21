@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').controller('collections', [
+angular.module('slatwalladmin')
+    .controller('collections', [
     '$scope',
     '$location',
     '$log',
@@ -7,9 +8,10 @@ angular.module('slatwalladmin').controller('collections', [
     '$slatwall',
     'collectionService',
     'metadataService',
+    'selectionService',
     'paginationService',
-    function ($scope, $location, $log, $timeout, $slatwall, collectionService, metadataService, paginationService) {
-        //init values
+    function ($scope, $location, $log, $timeout, $slatwall, collectionService, metadataService, selectionService, paginationService) {
+        //init values 
         //$scope.collectionTabs =[{tabTitle:'PROPERTIES',isActive:true},{tabTitle:'FILTERS ('+filterCount+')',isActive:false},{tabTitle:'DISPLAY OPTIONS',isActive:false}];
         $scope.$id = "collectionsController";
         /*used til we convert to use route params*/
@@ -62,7 +64,7 @@ angular.module('slatwalladmin').controller('collections', [
         $scope.keywords = "";
         $scope.loadingCollection = false;
         var searchPromise;
-        $scope.searchCollection = function ($timout) {
+        $scope.searchCollection = function () {
             if (searchPromise) {
                 $timeout.cancel(searchPromise);
             }
@@ -80,6 +82,7 @@ angular.module('slatwalladmin').controller('collections', [
             if ($scope.pageShow !== 'Auto') {
                 pageShow = $scope.pageShow;
             }
+            $scope.currentPage = paginationService.getCurrentPage();
             var collectionListingPromise = $slatwall.getEntity('collection', { id: $scope.collectionID, currentPage: $scope.currentPage, pageShow: pageShow, keywords: $scope.keywords });
             collectionListingPromise.then(function (value) {
                 $scope.collection = value;
@@ -91,8 +94,7 @@ angular.module('slatwalladmin').controller('collections', [
                 if (angular.isUndefined($scope.collectionConfig.filterGroups)) {
                     $scope.collectionConfig.filterGroups = [
                         {
-                            filterGroup: [
-                            ]
+                            filterGroup: []
                         }
                     ];
                 }
@@ -132,9 +134,11 @@ angular.module('slatwalladmin').controller('collections', [
             if (!angular.isDefined(filterGroupArray)) {
                 filterGroupArray = $scope.collectionConfig.filterGroups[0].filterGroup;
             }
+            //Start out loop
             for (var index in filterGroupArray) {
                 //If filter isn't new then increment the count
-                if (!filterGroupArray[index].$$isNew && !angular.isDefined(filterGroupArray[index].filterGroup)) {
+                if (!filterGroupArray[index].$$isNew
+                    && !angular.isDefined(filterGroupArray[index].filterGroup)) {
                     filterItemCount++;
                 }
                 else if (angular.isDefined(filterGroupArray[index].filterGroup)) {
@@ -218,6 +222,17 @@ angular.module('slatwalladmin').controller('collections', [
             $scope.selectedFilterProperty = selectedFilterProperty;
         };
         $scope.filterCount = collectionService.getFilterCount;
+        //export action
+        $scope.exportCollection = function () {
+            var url = '/?slatAction=main.collectionExport&collectionExportID=' + $scope.collectionID + '&downloadReport=1';
+            var data = { "ids": selectionService.getSelections('collectionSelection') };
+            var target = "downloadCollection";
+            $('body').append('<form action="' + url + '" method="post" target="' + target + '" id="postToIframe"></form>');
+            $.each(data, function (n, v) {
+                $('#postToIframe').append('<input type="hidden" name="' + n + '" value="' + v + '" />');
+            });
+            $('#postToIframe').submit().remove();
+        };
     }
 ]);
 

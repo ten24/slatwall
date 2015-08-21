@@ -258,6 +258,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		isl.addLikeFilter('integrationTypeList', '%authentication%');
 		
 		var authInts = isl.getRecords();
+		
 		for(var i=1; i<=arrayLen(authInts); i++) {
 			var intCFC = getAuthenticationIntegrationCFC(authInts[i]);
 			var adminLoginHTML = intCFC.getAdminLoginHTML();

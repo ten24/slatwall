@@ -37,20 +37,20 @@
 	       			data-selected-filter-property-changed="selectedFilterPropertyChanged(selectedFilterProperty)"
 	       			data-comparison-type="comparisonType"
 	       	></sw-criteria>
-	        <!--- //Filter Criteria End --->
+	        <!-- //Filter Criteria End -->
 	
 	      </div>
 	      <div class="col-xs-3">
 	        <div class="s-button-select-group">
 	          <button 	type="button" 
 	         			ng-click="saveFilter(selectedFilterProperty,filterItem,addFilterItem)"
-	          			class="btn btn-sm s-btn-ten24" 
+	          			class="btn btn-sm btn-primary" 
 						sw-rbkey="'admin.editfilteritem.saveandaddanotherfilter'">
 	          </button>
 	          <div class="s-or-box">-<span sw-rbkey="'admin.define.or'"></span>-</div>
 	          <button 	type="button" 
 	          			ng-click="saveFilter(selectedFilterProperty,filterItem,cancelFilterItem)" 
-	          			class="btn btn-sm s-btn-ten24"
+	          			class="btn btn-sm btn-primary"
 						sw-rbkey="'admin.editfilteritem.saveandfinish'">
 	          </button>
 	        </div>

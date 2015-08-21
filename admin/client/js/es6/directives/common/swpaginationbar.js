@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swPaginationBar', [
+angular.module('slatwalladmin')
+    .directive('swPaginationBar', [
     '$log',
     '$timeout',
     'partialsPath',
@@ -12,6 +13,7 @@ angular.module('slatwalladmin').directive('swPaginationBar', [
                 currentPage: "=",
                 pageStart: "&",
                 pageEnd: "&",
+                pageShowOptions: "=?",
                 recordsCount: "&",
                 collection: "=",
                 autoScroll: "=",
@@ -23,7 +25,9 @@ angular.module('slatwalladmin').directive('swPaginationBar', [
                 scope.hasPrevious = paginationService.hasPrevious;
                 scope.hasNext = paginationService.hasNext;
                 scope.totalPages = paginationService.getTotalPages;
-                scope.pageShowOptions = paginationService.getPageShowOptions();
+                if (angular.isUndefined(scope.pageShowOptions)) {
+                    scope.pageShowOptions = paginationService.getPageShowOptions();
+                }
                 scope.pageShowOptions.selectedPageShowOption = scope.pageShowOptions[0];
                 scope.pageShowOptionChanged = function (pageShowOption) {
                     $log.debug('pageShowOptionChanged');
@@ -37,10 +41,11 @@ angular.module('slatwalladmin').directive('swPaginationBar', [
                      $("select").selectBoxIt();
                      unbindPageOptionsWatchListener();
                 });*/
-                scope.setCurrentPage = function (number) {
+                scope.setCurrentPage = function (currentPageNumber) {
                     $log.debug('setCurrentPage');
-                    paginationService.setCurrentPage(number);
-                    scope.currentPage = number;
+                    paginationService.setCurrentPage(currentPageNumber);
+                    scope.currentPage = paginationService.getCurrentPage();
+                    $log.debug(paginationService.getCurrentPage());
                     $timeout(function () {
                         scope.getCollection();
                     });
