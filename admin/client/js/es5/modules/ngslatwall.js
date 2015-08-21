@@ -480,6 +480,17 @@ var ngSlatwall;
             if (slatwallAngular.slatwallConfig) {
                 angular.extend(this._config, slatwallAngular.slatwallConfig);
             }
+            this.$get.$inject = [
+                '$q',
+                '$http',
+                '$timeout',
+                '$log',
+                '$rootScope',
+                '$location',
+                '$anchorScroll',
+                'utilityService',
+                'formService'
+            ];
         }
         $Slatwall.prototype.$get = function ($q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService) {
             return new SlatwallService($q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, this.getConfig(), this._jsEntities);
