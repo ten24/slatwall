@@ -994,7 +994,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				variables.recordsCount = application.entityCollection[ getCacheName() ].recordsCount;
 			} else {
 				if(!structKeyExists(variables,"records")) {
-					variables.recordsCount = arrayLen(getRecords());
+					var HQL = getSelectionCountHQL() & getHQL(true);
+					var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true"});
+					variables.recordsCount = recordCount;
 					if(getCacheable()) {
 						application.entityCollection[ getCacheName() ] = {};
 						application.entityCollection[ getCacheName() ].recordsCount = variables.recordsCount;
@@ -1140,6 +1142,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return count;
 	}
 	
+	private any function getSelectionCountHQL(){
+		var primaryIDAlias = getCollectionConfigStruct().baseEntityAlias & '.' & getService("hibachiservice").getPrimaryIDPropertyNameByEntityName(getCollectionObject());
+		return 'SELECT COUNT(#primaryIDAlias#) ';
+	}
+	
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
 		var isDistinctValue = '';
 		if(arguments.isDistinct){
@@ -1277,7 +1284,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			if(!isnull(collectionConfig.joins)){
 				joins = collectionConfig.joins;
 			}
-			writedump(collectionConfig);
 			if(structKeyExists(collectionConfig,'groupBys')){
 				groupByHQL = getGroupByHQL(collectionConfig.groupBys);
 			}
@@ -1526,17 +1532,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public struct function getStateStruct() {
 		var stateStruct = {};
 		//TODO:change what the state variables are, evaluate the value of them
-		/*stateStruct.baseEntityName = duplicate(variables.baseEntityName);
-		stateStruct.entities = duplicate(variables.entities);
-		stateStruct.whereGroups = duplicate(variables.whereGroups);
-		stateStruct.whereConditions = duplicate(variables.whereConditions);
-		stateStruct.orders = duplicate(variables.orders);
+		stateStruct.collectionConfig = duplicate(variables.collectionConfig);
 		stateStruct.keywords = duplicate(variables.keywords);
-		stateStruct.keywordProperties = duplicate(variables.keywordProperties);
-		stateStruct.attributeKeywordProperties = duplicate(variables.attributeKeywordProperties);
 		stateStruct.pageRecordsShow = duplicate(variables.pageRecordsShow);
-		stateStruct.entityJoinOrder = duplicate(variables.entityJoinOrder);
-		stateStruct.selectDistinctFlag = duplicate(variables.selectDistinctFlag);*/
 		
 		return stateStruct;
 	}
