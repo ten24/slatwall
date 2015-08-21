@@ -43,13 +43,11 @@ angular.module('slatwalladmin')
 				
 				
 				this.getQuantity = ():number =>{ 
-                
 					if(isNaN(this.quantity)){
 						return 0;
 					} else { 
 						return this.quantity; 
 					}
-             
 				}
 		
 				this.getUnassignedCount = ():number =>{

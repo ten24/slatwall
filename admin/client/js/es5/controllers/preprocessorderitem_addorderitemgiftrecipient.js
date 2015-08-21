@@ -1,7 +1,7 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     var OrderItemGiftRecipientControl = (function () {
-        function OrderItemGiftRecipientControl($scope) {
+        function OrderItemGiftRecipientControl($scope, $slatwall) {
             var _this = this;
             this.$scope = $scope;
             this.getQuantity = function () {
@@ -11,6 +11,30 @@ var slatwalladmin;
                 else {
                     return _this.quantity;
                 }
+            };
+            this.getSearch = function (keyword) {
+                if (keyword === void 0) { keyword = "test"; }
+                var filterAccountsConfig = '[' +
+                    ' {  ' +
+                    '"filterGroup":[  ' +
+                    ' {  ' +
+                    ' "propertyIdentifier":"_account.firstName",' +
+                    ' "comparisonOperator":"like",' +
+                    ' "conditionDisplay":"Equals"' +
+                    ' "ormtype":"string",' +
+                    ' "value":"%' + keyword + '%"' +
+                    '},' +
+                    '{' +
+                    ' "logicalOperator":"AND",' +
+                    ' "propertyIdentifier":"_account.lastName",' +
+                    ' "comparisonOperator":"like",' +
+                    ' "ormtype":"string",' +
+                    ' "value":"%' + keyword + '%"' +
+                    '  }' +
+                    ' ]' +
+                    ' }' +
+                    ']';
+                return _this.$slatwall.getEntity('account', { filterAccountsConfig: filterAccountsConfig.trim() });
             };
             this.getUnassignedCountArray = function () {
                 var unassignedCountArray = new Array();
@@ -51,13 +75,16 @@ var slatwalladmin;
                 //get chars subtract return
             };
             this.$scope;
+            this.$slatwall;
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
             this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
             var count = 1;
             this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
+            console.log(this.getSearch());
         }
         OrderItemGiftRecipientControl.$inject = [
-            '$scope'
+            '$scope',
+            "$slatwall"
         ];
         return OrderItemGiftRecipientControl;
     })();

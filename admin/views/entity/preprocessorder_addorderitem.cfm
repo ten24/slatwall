@@ -266,7 +266,7 @@ Notes:
 		                        <div class="addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->">
 		                            <!-- Only show if there is text -->
 		                            <button type="button" class="btn btn-primary">
-		                            	<i class="fa fa-plus" ></i> Add "<span></span>"
+		                            	<i class="fa fa-plus" ></i> Add "<span ng-bind="$scope.searchText"></span>"
 		                            </button>
 		                        </div>
 								<div class="s-add-info-dropdown addDropdown <!---Remove addDropdown---> addDropdown-add-account <!--- Remove addDropdown-add-account --->">
