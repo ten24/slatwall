@@ -16,7 +16,7 @@
     </li>
     <li>
         <ul class="pagination pagination-sm" ng-show="pageShowOptions.selectedPageShowOption.value !== 'Auto'">
-            <li ng-click="previousPage()" ng-class="{disabled:hasPrevious()}">
+            <li ng-click="previousPage()" ng-class="{disabled:hasPrevious(paginationId)}">
                 <a>&laquo;</a>
             </li>
             <li ng-show="showPreviousJump()">
@@ -32,11 +32,11 @@
                 <a>...</a>
             </li>
             <li ng-show="showNextJump()">
-                <a ng-click="setCurrentPage(totalPages())" ng-bind="totalPages()">
+                <a ng-click="setCurrentPage(totalPages(paginationId))" ng-bind="totalPages(paginationId)">
 
                 </a>
             </li>
-            <li ng-class="{disabled:hasNext()}" ng-click="nextPage()">
+            <li ng-class="{disabled:hasNext(paginationId)}" ng-click="nextPage()">
                 <a>&raquo;</a>
             </li>
 

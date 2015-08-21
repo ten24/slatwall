@@ -50,9 +50,10 @@ paginationService
 		} ();
 		//get url param to retrieve collection listing
 		$scope.collectionID = QueryString.collectionID;
-		
-		$scope.currentPage= paginationService.getCurrentPage();
-		$scope.pageShow = paginationService.getPageShow();
+
+		$scope.pagination_id = paginationService.createPagination();
+		$scope.currentPage= paginationService.getCurrentPage($scope.pagination_id);
+		$scope.pageShow = paginationService.getPageShow($scope.pagination_id);
 		$scope.pageStart = paginationService.getPageStart;
 		$scope.pageEnd = paginationService.getPageEnd;
 		$scope.recordsCount = paginationService.getRecordsCount;
@@ -89,7 +90,7 @@ paginationService
 				$log.debug('search with keywords');
 				$log.debug($scope.keywords);
 				//Set current page here so that the pagination does not break when getting collection
-				paginationService.setCurrentPage(1);
+				paginationService.setCurrentPage($scope.pagination_id, 1);
 				$scope.loadingCollection = true;
 				$scope.getCollection();
 			}, 500);
@@ -102,7 +103,7 @@ paginationService
 			if($scope.pageShow !== 'Auto'){
 				pageShow = $scope.pageShow;
 			}
-			$scope.currentPage = paginationService.getCurrentPage();
+			$scope.currentPage = paginationService.getCurrentPage($scope.pagination_id);
 			var collectionListingPromise = $slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.currentPage, pageShow:pageShow, keywords:$scope.keywords});
 			collectionListingPromise.then(function(value){
 				$scope.collection = value;
@@ -213,7 +214,7 @@ paginationService
 						
 						$scope.errorMessage = {};
 						//Set current page here so that the pagination does not break when getting collection
-						paginationService.setCurrentPage(1);
+						paginationService.setCurrentPage($scope.pagination_id, 1);
 						$scope.getCollection();
 						$scope.collectionDetails.isOpen = false;
 					}, function(reason){

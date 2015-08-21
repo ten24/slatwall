@@ -124,18 +124,18 @@
 				
 				<div class="row s-table-footer">
 					<div class="col-xs-4" span ng-show="pageShow !== 'Auto'">
-						<div class="dataTables_info" id="example3_info" ng-show="recordsCount()">
+						<div class="dataTables_info" id="example3_info" ng-show="recordsCount(pagination_id)">
 							Showing 
 							<b>
-								<span ng-bind="pageStart()">
+								<span ng-bind="pageStart(pagination_id)">
 									<!-- record start -->
 								</span>
-								to <span ng-bind="pageEnd()"><!--records end -->
+								to <span ng-bind="pageEnd(pagination_id)"><!--records end -->
 								<span>
 							</b>
-							of <span ng-bind="recordsCount()"><!-- records Count --></span> entries
+							of <span ng-bind="recordsCount(pagination_id)"><!-- records Count --></span> entries
 						</div>
-						<div ng-hide="recordsCount()" class="alert alert-info" role="alert" sw-rbkey="'admin.define.norecordsfound'"><!-- Message created by rb key --></div>
+						<div ng-hide="recordsCount(pagination_id)" class="alert alert-info" role="alert" sw-rbkey="'admin.define.norecordsfound'"><!-- Message created by rb key --></div>
 					</div>
 					<div class="col-xs-8 s-table-footer-right">
 						<span sw-pagination-bar
@@ -147,6 +147,8 @@
 							data-page-end="pageEnd"
 							data-records-count="recordsCount"
 							data-get-collection="getCollection()"
+							data-pagination-id="pagination_id"
+							ng-if="pagination_id"
 							>
 						</span>
 					</div>

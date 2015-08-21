@@ -22,7 +22,8 @@ angular.module('slatwalladmin')
 				recordsCount:"&",
 				collection:"=",
 				autoScroll:"=",
-				getCollection:"&"
+				getCollection:"&",
+				paginationId:"="
 			},
 			link:function(scope,element,attrs){
 				$log.debug('pagination init');
@@ -32,7 +33,7 @@ angular.module('slatwalladmin')
 				scope.totalPages = paginationService.getTotalPages;
 				
                 if(angular.isUndefined(scope.pageShowOptions)){
-                    scope.pageShowOptions = paginationService.getPageShowOptions();
+                    scope.pageShowOptions = paginationService.getPageShowOptions(scope.paginationId);
 
                 }
 				
@@ -41,8 +42,8 @@ angular.module('slatwalladmin')
 	          	scope.pageShowOptionChanged = function(pageShowOption){
 	          		$log.debug('pageShowOptionChanged');
 	          		$log.debug(pageShowOption);
-	      			paginationService.setPageShow(pageShowOption.value);
-	        		scope.pageShow = paginationService.getPageShow();
+	      			paginationService.setPageShow(scope.paginationId, pageShowOption.value);
+	        		scope.pageShow = paginationService.getPageShow(scope.paginationId);
 	        		scope.currentPage = 1;
 					scope.setCurrentPage(1);
 	        	};
@@ -55,9 +56,9 @@ angular.module('slatwalladmin')
 	        	scope.setCurrentPage = function(currentPageNumber){
 	        		$log.debug('setCurrentPage');
                    
-	        		paginationService.setCurrentPage(currentPageNumber);
-	        		scope.currentPage = paginationService.getCurrentPage();
-	        			        	 $log.debug(paginationService.getCurrentPage());	
+	        		paginationService.setCurrentPage(scope.paginationId, currentPageNumber);
+	        		scope.currentPage = paginationService.getCurrentPage(scope.paginationId);
+	        			        	 $log.debug(paginationService.getCurrentPage(scope.paginationId));
 	        		$timeout(function(){
 	        			
 	        			
@@ -67,14 +68,14 @@ angular.module('slatwalladmin')
 	        	};
 	        	
 	        	var setPageRecordsInfo = function(recordsCount,pageStart,pageEnd,totalPages){
-	    			paginationService.setRecordsCount(recordsCount);
-	    			if(paginationService.getRecordsCount() === 0 ){
-	    				paginationService.setPageStart(0);
+	    			paginationService.setRecordsCount(scope.paginationId, recordsCount);
+	    			if(paginationService.getRecordsCount(scope.paginationId) === 0 ){
+	    				paginationService.setPageStart(scope.paginationId, 0);
 	    			} else{
-	    				paginationService.setPageStart(pageStart);
+	    				paginationService.setPageStart(scope.paginationId, pageStart);
 	    			}
-	    			paginationService.setPageEnd(pageEnd);
-	    			paginationService.setTotalPages(totalPages);
+	    			paginationService.setPageEnd(scope.paginationId, pageEnd);
+	    			paginationService.setTotalPages(scope.paginationId, totalPages);
 	    		};
 	        	
 	        	scope.$watch('collection',function(newValue,oldValue){
@@ -83,16 +84,19 @@ angular.module('slatwalladmin')
 	        		if(angular.isDefined(newValue)){
 	        			setPageRecordsInfo(newValue.recordsCount,newValue.pageRecordsStart,newValue.pageRecordsEnd,newValue.totalPages);
 	        			
-	            		scope.currentPage= paginationService.getCurrentPage();
-	            		scope.pageShow = paginationService.getPageShow();
+	            		scope.currentPage= paginationService.getCurrentPage(scope.paginationId);
+	            		scope.pageShow = paginationService.getPageShow(scope.paginationId);
 	            		//scope.totalPages()
 						scope.totalPagesArray = [];
-	            		for(var i = 0; i < scope.totalPages(); i++){
+	            		for(var i = 0; i < scope.totalPages(scope.paginationId); i++){
 	            			scope.totalPagesArray.push(i+1);
 	            		}
-	            		scope.pageStart();
-	            		scope.pageEnd();
-	            		scope.recordsCount();
+						paginationService.getPageShow(scope.paginationId);
+						//scope.pageStart(scope.paginationId);
+						paginationService.getPageEnd(scope.paginationId);
+						//scope.pageEnd(scope.paginationId);
+						paginationService.getRecordsCount(scope.paginationId);
+						//scope.recordsCount(scope.paginationId);
 	            		scope.hasPrevious();
 	            		scope.hasNext();
 	        		}
@@ -101,7 +105,7 @@ angular.module('slatwalladmin')
 	        	scope.showPreviousJump = function(){
 	        		if(angular.isDefined(scope.currentPage) && scope.currentPage > 3){
 	        			scope.totalPagesArray = [];
-	            		for(var i = 0; i < scope.totalPages(); i++){
+	            		for(var i = 0; i < scope.totalPages(scope.paginationId); i++){
 	            			if(scope.currentPage < 7 && scope.currentPage > 3 ){
 	            				if(i !== 0){
 	            					scope.totalPagesArray.push(i+1);
@@ -117,20 +121,17 @@ angular.module('slatwalladmin')
 	        	};
 	        	
 	        	scope.showNextJump = function(){
-	        		if(scope.currentPage < paginationService.getTotalPages() - 3 && paginationService.getTotalPages() > 6){
-	        			return true;
-	        		}else{
-	        			return false;
-	        		}
+	        		return !!(scope.currentPage < paginationService.getTotalPages(scope.paginationId) - 3
+								&& paginationService.getTotalPages(scope.paginationId) > 6);
 	        	};
 	        	
 	        	scope.previousJump = function(){
-	        		paginationService.setCurrentPage(scope.currentPage - 3);
+	        		paginationService.setCurrentPage(scope.paginationId, scope.currentPage - 3);
 	        		scope.currentPage -= 3;
 	        	};
 	        	
 	        	scope.nextJump = function(){
-	        		paginationService.setCurrentPage(scope.currentPage + 3);
+	        		paginationService.setCurrentPage(scope.paginationId, scope.currentPage + 3);
 	        		scope.currentPage += 3;
 	        	};
 	        	
@@ -141,8 +142,8 @@ angular.module('slatwalladmin')
 	        			}
 	        		}*/
 	        		
-	        		if(scope.currentPage >= scope.totalPages() - 3){
-	        			if(number > scope.totalPages() - 6){
+	        		if(scope.currentPage >= scope.totalPages(scope.paginationId) - 3){
+	        			if(number > scope.totalPages(scope.paginationId) - 6){
 	        				return true;
 	        			}
 	        		}
@@ -162,13 +163,13 @@ angular.module('slatwalladmin')
 	        	};
 	        	
 	        	scope.previousPage = function(){
-	        		paginationService.previousPage();
-	        		scope.currentPage = paginationService.getCurrentPage();
+	        		paginationService.previousPage(scope.paginationId);
+	        		scope.currentPage = paginationService.getCurrentPage(scope.paginationId);
 	        	};
 	        	
 	        	scope.nextPage = function(){
-	        		paginationService.nextPage();
-	        		scope.currentPage = paginationService.getCurrentPage();
+	        		paginationService.nextPage(scope.paginationId);
+	        		scope.currentPage = paginationService.getCurrentPage(scope.paginationId);
 	        	};
 			}
 		};
