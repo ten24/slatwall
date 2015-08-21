@@ -9,12 +9,12 @@
 					<div class="row s-header-bar">
 						<div class="col-md-5 s-header-nav">
 							<ul class="nav nav-tabs s-collection-options" role="tablist">
-								<li class="active"><a href="##j-filters" role="tab" data-toggle="tab">FILTERS <span>(<span ng-bind="filterCount()"></span>)</span></a></li>
-								<li><a href="##j-display-options" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>
+								<li class="active"><a ng-href="#j-filters-{{tabsUniqueID}}" role="tab" data-toggle="tab">FILTERS <span>(<span ng-bind="filterCount()"></span>)</span></a></li>
+								<li><a ng-href="#j-display-options-{{tabsUniqueID}}" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>
 							</ul>
 						</div>
 					</div>
-					<div class="tab-pane active" id="j-filters">
+					<div class="tab-pane active" id="j-filters-{{tabsUniqueID}}">
 						<div class="s-setting-options">
 							<div class="row s-setting-options-body">
 								<!-- Start Filter Group -->
@@ -38,7 +38,7 @@
 						</div>
 					</div>
 					<!-- //Tab Pane -->
-					<div class="tab-pane s-display-options" id="j-display-options">
+					<div class="tab-pane s-display-options" id="j-display-options-{{tabsUniqueID}}">
 						<sw-display-options
 							data-columns="collectionConfig.columns"
 							data-properties-list="filterPropertiesList"
