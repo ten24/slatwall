@@ -4,20 +4,25 @@ var slatwalladmin;
         constructor($scope) {
             this.$scope = $scope;
             this.getUnassignedCountArray = () => {
-                if (this.getUnassignedCount() > 0) {
+                if (this.getUnassignedCount() != 0) {
                     var unassignedCountArray = new Array(this.getUnassignedCount());
                     for (var i = 0; i < unassignedCountArray.length; i++) {
                         unassignedCountArray[i] = i + 1;
                     }
                 }
                 else {
-                    var unassignedCountArray = new Array(this.getUnassignedCount());
+                    var unassignedCountArray = new Array();
                     unassignedCountArray[0] = 1;
+                    console.log("countarray: " + unassignedCountArray);
                 }
                 return unassignedCountArray;
             };
             this.getUnassignedCount = () => {
-                return this.quantity - this.orderItemGiftRecipients.length;
+                var unassignedCount = this.quantity;
+                angular.forEach(this.orderItemGiftRecipients, (orderItemGiftRecipient) => {
+                    unassignedCount -= orderItemGiftRecipient.quantity;
+                });
+                return unassignedCount;
             };
             this.addGiftRecipient = () => {
                 var giftRecipient = new slatwalladmin.GiftRecipient();

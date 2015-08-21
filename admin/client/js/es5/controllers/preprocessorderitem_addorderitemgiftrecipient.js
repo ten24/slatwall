@@ -4,22 +4,29 @@ var slatwalladmin;
         function OrderItemGiftRecipientControl($scope) {
             var _this = this;
             this.$scope = $scope;
+            this.getQuantity = function () {
+                if (isNaN(_this.quantity)) {
+                    return 0;
+                }
+                else {
+                    return _this.quantity;
+                }
+            };
             this.getUnassignedCountArray = function () {
-                if (_this.getUnassignedCount() != 0) {
-                    var unassignedCountArray = new Array(_this.getUnassignedCount());
-                    for (var i = 0; i < unassignedCountArray.length; i++) {
-                        unassignedCountArray[i] = i + 1;
+                var unassignedCountArray = new Array();
+                if (_this.getUnassignedCount() > 1) {
+                    for (var i = 1; i < _this.getUnassignedCount(); i++) {
+                        unassignedCountArray.push(i);
                     }
                 }
                 else {
-                    var unassignedCountArray = new Array();
-                    unassignedCountArray[0] = 1;
-                    console.log("countarray: " + unassignedCountArray);
+                    unassignedCountArray.push(1);
                 }
+                console.log(unassignedCountArray);
                 return unassignedCountArray;
             };
             this.getUnassignedCount = function () {
-                var unassignedCount = _this.quantity;
+                var unassignedCount = _this.getQuantity();
                 angular.forEach(_this.orderItemGiftRecipients, function (orderItemGiftRecipient) {
                     unassignedCount -= orderItemGiftRecipient.quantity;
                 });

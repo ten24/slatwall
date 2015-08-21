@@ -15,11 +15,13 @@ angular.module('slatwalladmin')
 			templateUrl:partialsPath+"orderitemgiftrecipientrow.html",
 			scope:{
 				recipient:"=",
-				recipients:"="
+				recipients:"=",
+				quantity:"="
 			}, 
 			bindToController: {
 				recipient:"=",
-				recipients:"="
+				recipients:"=",
+				quantity:"="
 			},
 			controller: function(){ 
 				this.edit = (recipient:any) =>{
@@ -37,6 +39,38 @@ angular.module('slatwalladmin')
 				this.saveGiftRecipient = (recipient:any) =>{
 						console.log("saving recipient");
 						recipient.editing = false; 
+				}
+				
+				
+				this.getQuantity = ():number =>{ 
+                
+					if(isNaN(this.quantity)){
+						return 0;
+					} else { 
+						return this.quantity; 
+					}
+             
+				}
+		
+				this.getUnassignedCount = ():number =>{
+					var unassignedCount = this.getQuantity(); 
+				
+					angular.forEach(this.recipients,(recipient)=>{
+						unassignedCount -= recipient.quantity;
+					});
+					
+					return unassignedCount;
+				}
+					
+				this.getUnassignedCountArray = ():number[] =>{
+					
+					var unassignedCountArray = new Array();
+							
+					for(var i = 1; i <= this.recipient.quantity + this.getUnassignedCount(); i++ ){			
+						unassignedCountArray.push(i);
+					}		
+					
+					return unassignedCountArray; 
 				}
 			}, 
 			controllerAs: "giftRecipientRowControl"

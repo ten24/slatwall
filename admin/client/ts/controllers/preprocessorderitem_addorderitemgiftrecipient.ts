@@ -14,8 +14,8 @@ module slatwalladmin {
 		];
 		
 		public orderItemGiftRecipients; 
-        public quantity:number;
-        public currentGiftRecipient:slatwalladmin.GiftRecipient;
+                public quantity:number;
+                public currentGiftRecipient:slatwalladmin.GiftRecipient;
         
 		constructor(private $scope: IOrderItemGiftRecipientScope){
 			this.$scope
@@ -25,23 +25,31 @@ module slatwalladmin {
                         this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
 		}
         
+        private getQuantity = ():number =>{ 
+                
+             if(isNaN(this.quantity)){
+                return 0;
+             } else { 
+                return this.quantity; 
+             }
+             
+        }
+        
         private getUnassignedCountArray = ():number[] =>{
-            if(this.getUnassignedCount() != 0){
-                var unassignedCountArray = new Array(this.getUnassignedCount());
-                for(var i = 0; i < unassignedCountArray.length; i++ ){
-                        unassignedCountArray[i] = i + 1;
+            var unassignedCountArray = new Array();
+            if(this.getUnassignedCount() > 1){
+                for(var i = 1; i < this.getUnassignedCount(); i++ ){
+                        unassignedCountArray.push(i);
                 }
             } else { 
-                var unassignedCountArray = new Array();
-                unassignedCountArray[0] = 1; 
-                console.log("countarray: " + unassignedCountArray);
+                unassignedCountArray.push(1); 
             }
-            
+            console.log(unassignedCountArray);
             return unassignedCountArray; 
         }
         
         private getUnassignedCount = ():number =>{
-            var unassignedCount = this.quantity; 
+            var unassignedCount = this.getQuantity(); 
            
             angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient)=>{
                 unassignedCount -= orderItemGiftRecipient.quantity;

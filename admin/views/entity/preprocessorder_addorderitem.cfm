@@ -226,7 +226,7 @@ Notes:
 						            </tr>
 						        </thead>
 						        <tbody>
-						        	<tr sw-order-item-gift-recipient-row ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-show="giftRecipientControl.orderItemGiftRecipients.length != 0" ng-class="{'s-save-row':recipient.editing}" recipient="recipient" recipients="giftRecipientControl.orderItemGiftRecipients">
+						        	<tr sw-order-item-gift-recipient-row ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-show="giftRecipientControl.orderItemGiftRecipients.length != 0" ng-class="{'s-save-row':recipient.editing}" recipient="recipient" recipients="giftRecipientControl.orderItemGiftRecipients" quantity="giftRecipientControl.quantity">
                         
 						        	</tr>
 						        </tbody>
@@ -295,7 +295,7 @@ Notes:
 											<label>Qty</label>
 											<select class="form-control" 
 													ng-model="giftRecipientControl.currentGiftRecipient.quantity"
-													ng-options="item for item in giftRecipientControl.getUnassignedCountArray() track by item"
+													ng-options="quantity for quantity in giftRecipientControl.getUnassignedCountArray() track by quantity"
 											>
 												
 											</select>
