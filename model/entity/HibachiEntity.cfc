@@ -104,9 +104,6 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		if(!arguments.passThrough){
 			validateAttributes(context=arguments.context);
 		}
-//		if(this.getClassName() == 'AttributeValue' && this.hasErrors()){
-//			writedump('test');abort;
-//		}
 		super.validate(argumentCollection=arguments);
 	}
 
