@@ -707,11 +707,6 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 
 	// ================== START: Overridden Methods ========================
 
-	// This overrides the base validation method to dynamically add rules based on setting specific requirements
-	public any function validate( string context="" ) {
-		// Call the base method validate with any additional arguments passed in
-		super.validate(argumentCollection=arguments);
-	}
 	
 	public boolean function regexMatches(){
 		if(isNull(getAttribute().getValidationRegex())){

@@ -8,7 +8,6 @@
 		"attributeValueType":	[{"contexts":"save","required":true}],
 		"attribute":			[{"contexts":"save","required":true}],
 		"attributeValue":		[
-			{"contexts":"save","conditions":"attributeRequired","required":true},
 			{"contexts":"save","method":"regexMatches"}
 		]
 	}

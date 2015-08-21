@@ -431,24 +431,9 @@ component output="false" accessors="true" persistent="false" extends="HibachiObj
 		return getService("hibachiValidationService").getValidationsByContext( object=this, context=arguments.context);
 	}
 	
-	public any function validateAttributes(required any entity, required struct data, string context=""){
-		for(var attributeSet in getAssignedAttributeSetSmartList().getRecords()) {
-			// Loop over attributes
-			for(var attribute in attributeSet.getAttributes()) {
-				if(structKeyExists(arguments.data, attribute.getAttributeCode())) {
-					var attributeValue = arguments.entity.getAttributeValue(attribute.getAttributeCode(),true);
-					attributeValue.validate(arguments.context);
-					for(var key in attributeValue.getErrors()){
-						arguments.entity.addError(key,attributeValue.getErrors()[key]);
-					}
-				}
-			}
-		}
-	}
-
 	// @hint pubic method to validate this object
 	public any function validate( string context="" ) {
-
+		
 		getService("hibachiValidationService").validate(object=this, context=arguments.context);
 		
 		// If there were sub properties that have been populated, then we should validate each of those
