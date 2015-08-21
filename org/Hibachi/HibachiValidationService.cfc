@@ -257,9 +257,7 @@
 				
 			var replaceTemplateStruct = {};
 			replaceTemplateStruct.propertyName = arguments.object.getPropertyTitle(thisPropertyName);
-			if(arguments.object.getClassName() == 'AttributeValue'){
-				replaceTemplateStruct.attributeValidationMessage = arguments.object.getAttribute().getValidationMessage();
-			}
+			
 			if(arguments.object.isPersistent()) {
 				var thisClassName = getLastEntityNameInPropertyIdentifier( arguments.object.getClassName(), arguments.propertyIdentifier);
 				replaceTemplateStruct.className = getHibachiScope().rbKey('entity.#thisClassName#');
@@ -270,11 +268,7 @@
 			replaceTemplateStruct.constraintValue = arguments.constraintDetails.constraintValue;
 			
 			if(arguments.constraintDetails.constraintType eq "method") {
-				if(arguments.object.getClassName() == 'AttributeValue'){
-					var errorMessage = arguments.object.getAttribute().getValidationMessage();
-				}else{
-					var errorMessage = getHibachiScope().rbKey('validate.#arguments.context#.#thisClassName#.#thisPropertyName#.#arguments.constraintDetails.constraintValue#');
-				}
+				var errorMessage = getHibachiScope().rbKey('validate.#arguments.context#.#thisClassName#.#thisPropertyName#.#arguments.constraintDetails.constraintValue#');
 			} else if (arguments.constraintDetails.constraintType eq "dataType") {
 				var errorMessage = getHibachiScope().rbKey('validate.#arguments.context#.#thisClassName#.#thisPropertyName#.#arguments.constraintDetails.constraintType#.#arguments.constraintDetails.constraintValue#');
 			} else if (listFindNoCase("lteProperty,ltProperty,gteProperty,gtProperty", arguments.constraintDetails.constraintType)) {
