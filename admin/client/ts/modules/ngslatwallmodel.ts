@@ -331,7 +331,7 @@
 										swprid:'',
 									password:'',
 									passwordConfirm:'',
-									accountPasswordResetID:"0b063f5ed63cf596cc058c44ddb97c1e",
+									accountPasswordResetID:"3ff5ebb6edb9ea863aba1b26a841ceb6",
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
@@ -498,7 +498,7 @@
                 	accountEmailAddressID:'',
 										emailAddress:null,
 									verifiedFlag:0,
-									verificationCode:'320c1c7ae856da2064930086fbe3e9c0',
+									verificationCode:'c419b473c0afef70b3e3abb507e33d04',
 										remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -2103,7 +2103,7 @@
                 	defaultValues['Audit'] = {
                 	auditID:'',
 										auditType:null,
-									auditDateTime:'1440186499403',
+									auditDateTime:'1440431535379',
 										auditArchiveStartDateTime:null,
 									auditArchiveEndDateTime:null,
 									auditArchiveCreatedDateTime:null,
@@ -4065,55 +4065,60 @@
 	                    }
 	                }
 	            }
-	            
-	            
-	
-	            var _save = function(entityInstance){
-	                 var timeoutPromise = $timeout(function(){
-	                    //$log.debug('save begin');
-	                    //$log.debug(entityInstance);
-	                    
-	                    var entityID = entityInstance.$$getID();
-	                    
-	                    var modifiedData = _getModifiedData(entityInstance);
-	                    //$log.debug('modifiedData complete');
-	                    //$log.debug(modifiedData);
-	                    timeoutPromise.valid = modifiedData.valid;
-	                    if(modifiedData.valid){
-	                        var params = {};
-	                        params.serializedJsonData = angular.toJson(modifiedData.value);
-	                        //if we have a process object then the context is different from the standard save
-	                        var entityName = '';
-	                        var context = 'save';
-	                        if(entityInstance.metaData.isProcessObject === 1){
-	                            var processStruct = modifiedData.objectLevel.metaData.className.split('_');
-	                            entityName = processStruct[0];
-	                            context = processStruct[1];
-	                        }else{
-	                            entityName = modifiedData.objectLevel.metaData.className;
-	                        }
-	                        
-	                        var savePromise = $delegate.saveEntity(entityName,entityInstance.$$getID(),params,context);
-	                        savePromise.then(function(response){
-	                            var returnedIDs = response.data;
-	                            
-	                            
-	                            _addReturnedIDs(returnedIDs,modifiedData.objectLevel);
-	                        });
-	                    }else{
-	                        
-	                        //select first, visible, and enabled input with a class of ng-invalid
-	                    
-	                        var target = $('input.ng-invalid:first:visible:enabled');
-	                        //$log.debug('input is invalid');
-	                        //$log.debug(target);
-	                        target.focus();
-	                    var targetID = target.attr('id');
-	                        $anchorScroll();
-	                        
-	                    }
-	                });
-	                return timeoutPromise;
+
+
+				var _save = function(entityInstance){
+                    var deferred = $q.defer();
+                    $timeout(function(){
+                        //$log.debug('save begin');
+                        //$log.debug(entityInstance);
+
+                        var entityID = entityInstance.$$getID();
+
+                        var modifiedData = _getModifiedData(entityInstance);
+                        //$log.debug('modifiedData complete');
+                        //$log.debug(modifiedData);
+                        //timeoutPromise.valid = modifiedData.valid;
+                        if(modifiedData.valid){
+                            var params = {};
+                            params.serializedJsonData = angular.toJson(modifiedData.value);
+                            //if we have a process object then the context is different from the standard save
+                            var entityName = '';
+                            var context = 'save';
+                        	if(entityInstance.metaData.isProcessObject === 1){
+                            	var processStruct = modifiedData.objectLevel.metaData.className.split('_');
+                            	entityName = processStruct[0];
+								context = processStruct[1];
+                        	}else{
+                            	entityName = modifiedData.objectLevel.metaData.className;
+                            }
+							var savePromise = $delegate.saveEntity(entityName,entityInstance.$$getID(),params,context);
+                        	savePromise.then(function(response){
+                            	var returnedIDs = response.data;
+                            	if(angular.isDefined(response.SUCCESS) && response.SUCCESS === true){
+                                	_addReturnedIDs(returnedIDs,modifiedData.objectLevel);
+                                	deferred.resolve(returnedIDs);
+                            	}else{
+                                	deferred.reject(angular.isDefined(response.messages) ? response.messages : response);
+                            	}
+                        	}, function(reason){
+                            	deferred.reject(reason);
+                        	});
+                    	}else{
+
+                        	//select first, visible, and enabled input with a class of ng-invalid
+
+                        	var target = $('input.ng-invalid:first:visible:enabled');
+                        	//$log.debug('input is invalid');
+                        	//$log.debug(target);
+                        	target.focus();
+                        	var targetID = target.attr('id');
+                        	$anchorScroll();
+                        	deferred.reject('input is invalid');
+                    	}
+                	});
+                	//return timeoutPromise;
+                	return deferred.promise;
 	                /*
 	                
 	                

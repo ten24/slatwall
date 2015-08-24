@@ -7,7 +7,9 @@ angular.module('slatwalladmin')
     'collectionPartialsPath',
     'collectionService',
     'metadataService',
-    function ($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService) {
+    'dialogService',
+    'observerService',
+    function ($log, $slatwall, $filter, collectionPartialsPath, collectionService, metadataService, dialogService, observerService) {
         return {
             restrict: 'E',
             templateUrl: collectionPartialsPath + 'criteriaonetomany.html',
@@ -57,6 +59,12 @@ angular.module('slatwalladmin')
                         }
                     }
                 });
+                function populateUI(collection) {
+                    scope.collectionOptions.push(collection);
+                    scope.selectedFilterProperty.selectedCollection = collection;
+                    scope.selectedFilterProperty.selectedCriteriaType = scope.oneToManyOptions[2];
+                }
+                observerService.attach(populateUI, 'addCollection', 'addCollection');
                 scope.selectedCriteriaChanged = function (selectedCriteria) {
                     $log.debug(selectedCriteria);
                     //update breadcrumbs as array of filterpropertylist keys
@@ -75,6 +83,17 @@ angular.module('slatwalladmin')
                     //populate editfilterinfo with the current level of the filter property we are inspecting by pointing to the new scope key
                     scope.selectedFilterPropertyChanged({ selectedFilterProperty: scope.selectedFilterProperty.selectedCriteriaType });
                     //update criteria to display the condition of the new critera we have selected
+                };
+                scope.addNewCollection = function () {
+                    dialogService.addPageDialog('collection/criteriacreatecollection', {
+                        entityName: scope.selectedFilterProperty.cfc
+                    });
+                };
+                scope.viewSelectedCollection = function () {
+                    dialogService.addPageDialog('collection/criteriacreatecollection', {
+                        entityName: 'collection',
+                        entityId: scope.selectedFilterProperty.selectedCollection.collectionID
+                    });
                 };
             }
         };
