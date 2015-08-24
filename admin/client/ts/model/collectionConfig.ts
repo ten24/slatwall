@@ -7,14 +7,10 @@ module slatwalladmin{
             public title:string,
             public isVisible:boolean,
             public isDeletable:boolean,
+            public isSearchable:boolean,
+            public isExportable:boolean,
             public attributeID?:string,
             public attributeSetObject?:string
-        ){}
-    }
-
-    class FilterGroup{
-        constructor(
-            public filterGroups:Filter[]
         ){}
     }
 
@@ -27,6 +23,18 @@ module slatwalladmin{
         ){}
     }
 
+    class CollectionFilter{
+        constructor(
+            public propertyIdentifier:string,
+            public displayPropertyIdentifier:string,
+            public displayValue:string,
+            public collectionID:string,
+            public criteria:string,
+            public fieldtype?:string,
+            public readOnly:boolean=false
+        ){}
+    }
+
     class Join{
         constructor(
             public associationName:string,
@@ -36,33 +44,43 @@ module slatwalladmin{
 
     class OrderBy{
         constructor(
-           public propertyIdentifier:string,
-           public direction:string
+            public propertyIdentifier:string,
+            public direction:string
         ){}
     }
 
     export class CollectionConfig {
+        private collection: any;
 
         constructor(
             private $slatwall,
             public  baseEntityName:string,
-            private baseEntityAlias:string,
+            public baseEntityAlias?:string,
             private columns?:Column[],
-            private filterGroups:Filter[]=[],
+            private filterGroups:Array=[{filterGroup: []}],
             private joins?:Join[],
             private orderBy?:OrderBy[],
+            private id?:number,
             private currentPage:number = 1,
             private pageShow:number = 10,
-            private keywords:string = ''
-        ){}
+            private keywords:string = '',
+            private defaultColumns:boolean = false
 
+        ){
+            if(!angular.isUndefined(this.baseEntityName)){
+                this.collection = this.$slatwall['new' + this.getEntityName()]();
+                if(angular.isUndefined(this.baseEntityAlias)){
+                    this.baseEntityAlias = '_' + this.baseEntityName.toLowerCase();
+                }
+            }
+        }
 
-        loadJson(jsonCollection){
+        loadJson= (jsonCollection) =>{
             //if json then make a javascript object else use the javascript object
             if(angular.isString(jsonCollection)){
-                jsonCollection = angular.fromJson(jsonCollection);    
+                jsonCollection = angular.fromJson(jsonCollection);
             }
-            
+
             this.baseEntityAlias = jsonCollection.baseEntityAlias;
             this.baseEntityName = jsonCollection.baseEntityName;
             this.columns = jsonCollection.columns;
@@ -72,54 +90,74 @@ module slatwalladmin{
             this.keywords = jsonCollection.keywords;
             this.orderBy = jsonCollection.orderBy;
             this.pageShow = jsonCollection.pageShow;
-        }
+            this.defaultColumns = jsonCollection.defaultColumns
 
-        getJson(){
-            var config = this;
-            delete config['$slatwall'];
-            //config.filterGroups= [{'filterGroup': this.filterGroups}];
-            return angular.toJson(config);
-        }
+        };
 
-        getEntityName(){
+        getCollectionConfig= () =>{
+            return {
+                baseEntityAlias: this.baseEntityAlias,
+                baseEntityName: this.baseEntityName,
+                columns: this.columns,
+                filterGroups: this.filterGroups,
+                joins: this.joins,
+                currentPage: this.currentPage,
+                pageShow: this.pageShow,
+                keywords: this.keywords,
+                defaultColumns: this.defaultColumns
+            };
+        };
+
+        getEntityName= () =>{
             return this.baseEntityName.charAt(0).toUpperCase() + this.baseEntityName.slice(1);
-        }
+        };
 
-        getOptions(){
+        getOptions= () =>{
             return {
                 columnsConfig: angular.toJson(this.columns),
-                filterGroupsConfig: angular.toJson([{'filterGroup': this.filterGroups}]),
+                filterGroupsConfig: angular.toJson(this.filterGroups),
                 joinsConfig: angular.toJson(this.joins),
                 currentPage: this.currentPage,
                 pageShow: this.pageShow,
-                keywords: this.keywords
+                keywords: this.keywords,
+                defaultColumns: this.defaultColumns
             }
-        }
+        };
 
-        debug(){
+        debug= () =>{
             return this;
         }
 
-        private formatCollectionName(propertyIdentifier:string, property:boolean=true){
-            var collection = '';
-            var parts = propertyIdentifier.split('.');
+        private formatCollectionName= (propertyIdentifier:string, property:boolean=true) =>{
+            var collection = '',
+                parts = propertyIdentifier.split('.'),
+                current_collection =  this.collection;
             for (var i = 0; i < parts.length; i++) {
-                if (typeof this.$slatwall['new' + this.capitalize(parts[i])] !== "function"){
-                    if(property) collection += ((i)?'':this.baseEntityAlias)+'.' + parts[i];
-                    break;
+                if (typeof this.$slatwall['new' + this.capitalize(parts[i])] !== "function") {
+                    if (property) collection += ((i)?'':this.baseEntityAlias) + '.' + parts[i];
+                    if(!angular.isObject(current_collection.metaData[parts[i]])) {
+                        break;
+                    }
+                }else{
+                    if(angular.isObject(current_collection.metaData[parts[i]])){
+                        collection += ((i)?'':this.baseEntityAlias+'.')  + parts[i];
+                        current_collection = this.$slatwall['new' + this.capitalize(parts[i])]();
+                    }else{
+                        collection += '_' + parts[i].toLowerCase();
+                    }
                 }
-                collection += '_' + parts[i].toLowerCase();
             }
             return collection;
-        }
+        };
 
-        private addJoin(associationName: string) {
-            var joinFound:boolean = false;
-            if(angular.isUndefined(this.columns)){
+        private addJoin= (associationName: string) =>{
+            var joinFound:boolean = false,
+                parts = associationName.split('.'),
+                collection = '';
+
+            if(angular.isUndefined(this.joins)){
                 this.joins = [];
             }
-            var parts = associationName.split('.');
-            var collection = '';
             for (var i = 0; i < parts.length; i++) {
                 joinFound = false;
                 if (typeof this.$slatwall['new' + this.capitalize(parts[i])] !== "function") break;
@@ -136,23 +174,26 @@ module slatwalladmin{
 
             }
 
-        }
+        };
 
-        private addAlias(propertyIdentifier:string){
+        private addAlias= (propertyIdentifier:string) =>{
             var parts = propertyIdentifier.split('.');
             if(parts.length > 1 && parts[0] !== this.baseEntityAlias){
                 return this.baseEntityAlias+'.'+propertyIdentifier;
             }
             return propertyIdentifier;
-        }
+        };
 
-        private capitalize(s) {
+        private capitalize = (s)  => {
             return s && s[0].toUpperCase() + s.slice(1);
-        }
+        };
 
-        addColumn(column: string, title: string = '', options:Object = {}){
-            var isVisible = true;
-            var isDeletable = true;
+        addColumn= (column: string, title: string = '', options:Object = {}) =>{
+            var isVisible = true,
+                isDeletable = true,
+                isSearchable = true,
+                isExportable = true;
+
             if(angular.isUndefined(this.columns)){
                 this.columns = [];
             }
@@ -162,70 +203,100 @@ module slatwalladmin{
             if(!angular.isUndefined(options['isDeletable'])){
                 isDeletable = options['isDeletable'];
             }
+            if(!angular.isUndefined(options['isSearchable'])){
+                isSearchable = options['isSearchable'];
+            }
+            if(!angular.isUndefined(options['isExportable'])){
+                isExportable = options['isExportable'];
+            }
+            if(angular.isUndefined(options['isExportable']) && !isVisible){
+                isExportable = false;
+            }
+
 
             this.columns.push(new Column(
                 column,
                 title,
                 isVisible,
                 isDeletable,
+                isSearchable,
+                isExportable,
                 options['attributeID'],
                 options['attributeSetObject']
             ));
-        }
+        };
 
 
-        setDisplayProperties(propertyIdentifier: string, title: string = '', options:Object = {}){
+        setDisplayProperties= (propertyIdentifier: string, title: string = '', options:Object = {}) =>{
 
             var _DividedColumns = propertyIdentifier.trim().split(',');
             var _DividedTitles = title.trim().split(',');
             if(_DividedColumns.length > 0) {
                 _DividedColumns.forEach((column:string, index)  => {
                     column = column.trim();
-                    this.addJoin(column);
+                    //this.addJoin(column);
                     if(_DividedTitles[index] !== undefined && _DividedTitles[index] != '') {
                         title = _DividedTitles[index].trim();
                     }else {
-                        var startAlias = new RegExp('^'+this.baseEntityAlias +'\\.');
-                        title = column.replace(startAlias, '').replace(/\./g, '_');
+                        title = this.$slatwall.getRBKey("entity."+this.baseEntityName.toLowerCase()+"."+column.toLowerCase());
                     }
                     this.addColumn(this.formatCollectionName(column),title, options);
 
                 });
             }else{
-                this.addJoin(propertyIdentifier);
+                //this.addJoin(propertyIdentifier);
                 propertyIdentifier = this.addAlias(propertyIdentifier);
-                if(title == '') title = propertyIdentifier.trim().replace(this.baseEntityAlias+'.','').replace(/\./g,'_');
+                if(title == '') title = this.$slatwall.getRBKey("entity."+this.baseEntityName.toLowerCase()+"."+propertyIdentifier.toLowerCase());
                 this.addColumn(this.formatCollectionName(propertyIdentifier),title, options);
             }
-        }
+        };
 
-        addFilter(propertyIdentifier: string, value:string, comparisonOperator: string = '=', logicalOperator: string = ''){
-            this.addJoin(propertyIdentifier);
-            this.filterGroups.push(
+        addFilter= (propertyIdentifier: string, value:string, comparisonOperator: string = '=', logicalOperator?: string) =>{
+            //this.addJoin(propertyIdentifier);
+            if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
+
+            this.filterGroups[0].filterGroup.push(
                 new Filter(this.formatCollectionName(propertyIdentifier), value, comparisonOperator, logicalOperator)
             );
 
-        }
+        };
 
-        setOrderBy(propertyIdentifier:string, direction:string='DESC'){
+        addCollectionFilter= (propertyIdentifier: string, displayPropertyIdentifier:string, displayValue:string,
+                              collectionID: string, criteria:string='One', fieldtype?:string, readOnly:boolean=false
+        ) =>{
+            this.filterGroups[0].filterGroup.push(
+                new CollectionFilter(
+                    this.formatCollectionName(propertyIdentifier),
+                    displayPropertyIdentifier,
+                    displayValue,
+                    collectionID,
+                    criteria,
+                    fieldtype,
+                    readOnly
+                )
+            );
+
+        };
+
+        setOrderBy= (propertyIdentifier:string, direction:string='DESC') =>{
             if(angular.isUndefined(this.orderBy)){
                 this.orderBy = [];
             }
             this.addJoin(propertyIdentifier);
             this.orderBy.push(new OrderBy(this.formatCollectionName(propertyIdentifier), direction));
-        }
+        };
 
-        setCurrentPage(pageNumber){
+        setCurrentPage= (pageNumber) =>{
             this.currentPage = pageNumber;
-        }
+        };
 
-        setPageShow(NumberOfPages){
+        setPageShow= (NumberOfPages) =>{
             this.pageShow = NumberOfPages;
-        }
+        };
 
-        setKeywords(keyword){
+        setKeywords= (keyword) =>{
             this.keywords = keyword;
-        }
+        };
 
-     }
+    }
 }

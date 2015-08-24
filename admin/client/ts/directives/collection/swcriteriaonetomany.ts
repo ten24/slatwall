@@ -7,13 +7,17 @@ angular.module('slatwalladmin')
 	'collectionPartialsPath',
 	'collectionService',
 	'metadataService',
+	'dialogService',
+	'observerService',
 	function(
 		$log,
 		$slatwall,
 		$filter,
 		collectionPartialsPath,
 		collectionService,
-		metadataService
+		metadataService,
+		dialogService,
+		observerService
 	){
 	    
 		return {
@@ -81,6 +85,13 @@ angular.module('slatwalladmin')
 						}
 					}
 				});
+
+				function populateUI(collection) {
+					scope.collectionOptions.push(collection);
+					scope.selectedFilterProperty.selectedCollection = collection;
+					scope.selectedFilterProperty.selectedCriteriaType = scope.oneToManyOptions[2];
+				}
+				observerService.attach(populateUI,'addCollection','addCollection');
 				
 				scope.selectedCriteriaChanged = function(selectedCriteria){
 					$log.debug(selectedCriteria);
@@ -102,6 +113,19 @@ angular.module('slatwalladmin')
 					scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
 					//update criteria to display the condition of the new critera we have selected
 					
+				};
+
+				scope.addNewCollection = function(){
+					dialogService.addPageDialog('collection/criteriacreatecollection', {
+						entityName: scope.selectedFilterProperty.cfc
+					});
+				};
+
+				scope.viewSelectedCollection = function(){
+					dialogService.addPageDialog('collection/criteriacreatecollection', {
+						entityName: 'collection',
+						entityId: scope.selectedFilterProperty.selectedCollection.collectionID
+					});
 				};
 			}
 		};

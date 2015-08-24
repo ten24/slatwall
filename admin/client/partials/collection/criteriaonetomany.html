@@ -12,6 +12,16 @@
       	>
       		<option selected="selected" value="">Select Collection</option>
         </select>
+		  <!-- TEMP BUTTONS TO CREATE/VIEW COLLECTIONS OF COLLETIONS-->
+		  <button type="button" class="btn btn-sm btn-default"
+				  ng-disabled="!selectedFilterProperty.selectedCollection"
+				  ng-click="viewSelectedCollection()">
+			  <i class="glyphicon glyphicon-eye-open"></i>
+		  </button>
+		  <button type="button" class="btn btn-sm btn-default" ng-click="addNewCollection()">
+			  <i class="glyphicon glyphicon-plus"></i>
+		  </button>
+		  <!-- END OF TEMP BUTTONS -->
       	<label class="col-sm-2 control-label s-no-paddings" for="formGroupInputSmall">Select Condition:</label>
       	<select id="u52_input" class="form-control input-sm j-custom-select" style="-webkit-appearance: menulist-button; border-color: rgb(153, 153, 153);"
       			ng-model="selectedFilterProperty.selectedCriteriaType" 
