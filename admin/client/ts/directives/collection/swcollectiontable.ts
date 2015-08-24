@@ -22,7 +22,8 @@ angular.module('slatwalladmin')
 			templateUrl:collectionPartialsPath+"collectiontable.html",
 			scope:{
 				collection:"=",
-				collectionConfig:"="
+				collectionConfig:"=",
+				isRadio:"="
 			},
 			link: function(scope,element,attrs){
                 scope.collectionObject = $slatwall['new'+scope.collection.collectionObject]();

@@ -20,7 +20,7 @@ angular.module('slatwalladmin')
             $scope.autoScrollPage = 1;
             $scope.autoScrollDisabled = false;
 
-
+            //$scope.isRadio = true;
 
             //$scope.closeSaving = true;
 
