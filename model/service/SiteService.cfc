@@ -288,6 +288,10 @@ component  extends="HibachiService" accessors="true" {
 		//get new flag before persisting
 		var newFlag = arguments.site.getNewFlag();
 		
+		if(!arguments.site.isSlatwallCMS()){
+			arguments.site.setSiteCode(getDataService().createUniqueURLTitle(titleString=arguments.site.getSiteName(), tableName="SwSite"));
+		}
+		
 		arguments.site = super.save(arguments.site, arguments.data);
 		
 		if(	
