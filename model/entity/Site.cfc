@@ -88,6 +88,10 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 		return variables.allowAdminAccessFlag;
 	}
 	
+	public boolean function isSlatwallCMS(){
+		return this.getapp().getintegration().getintegrationPackage() == 'slatwallcms';
+	}
+	
 	public string function getSitePath(){
 		if(!structKeyExists(variables,'sitePath')){
 			variables.sitePath = getApp().getAppPath() & '/' & getSiteCode();
