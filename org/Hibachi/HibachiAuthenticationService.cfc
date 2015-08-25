@@ -151,6 +151,10 @@ component output="false" accessors="true" extends="HibachiService" {
 		return authDetails;
 	}
 	
+	public boolean function authenticateCollectionCrudByAccount(required string crudType, required any collection, required any account){
+		return authenticateEntityCrudByAccount(crudType=arguments.crudType, entityName=arguments.collection.getCollectionObject(), account=arguments.account);
+	}
+	
 	public boolean function authenticateEntityCrudByAccount(required string crudType, required string entityName, required any account) {
 		// Check if the user is a super admin, if true no need to worry about security
 		if( arguments.account.getSuperUserFlag() ) {
@@ -167,6 +171,18 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		// If for some reason not of the above were meet then just return false
 		return false;
+	}
+	
+	public boolean function authenticateCollectionPropertyIdentifierCrudByAccount(required crudType, required any collection, required string propertyIdentifier, required any account){
+		var propertyIdentifierWithoutAlias = getService('collectionService').getHibachiPropertyIdentifierByCollectionPropertyIdentifier(arguments..propertyIdentifier);
+		var isObject = getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
+		if(isObject){
+			var lastEntity = getService('hibachiService').getLastEntityNameInPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
+		}else{
+			var lastEntity = getService('hibachiService').getLastEntityNameInPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
+			var propertyStruct = getService('hibachiService').getPropertyByEntityNameAndPropertyName(lastEntity, listLast(propertyIdentifierWithoutAlias,'.'));
+		}
+		return authenticateEntityPropertyCrudByAccount(crudType=arguments.crudType, entityName=lastEntity, propertyName=listLast(propertyIdentifierWithoutAlias,'.'), account=arguments.account);
 	}
 	
 	public boolean function authenticateEntityPropertyCrudByAccount(required string crudType, required string entityName, required string propertyName, required any account) {
@@ -470,6 +486,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		return authenticateEntityByPermissionGroup(crudType=arguments.crudType, entityName=arguments.entityName, permissionGroup=arguments.permissionGroup);
 	}
+	
 	
 	
 }

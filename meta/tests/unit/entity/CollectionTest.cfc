@@ -54,6 +54,8 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		variables.entityService = request.slatwallScope.getService("collectionService");
 		variables.entity = variables.entityService.newCollection();
+		variables.entity.setCollectionObject('Account');
+		
 	}
 	
 //	tests need default data inserted before asserting
@@ -359,24 +361,24 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionConfig = '
 				{
 					"baseEntityName":"SlatwallAccount",
-					"baseEntityAlias":"Account",
+					"baseEntityAlias":"_account",
 					"columns":[
 						{
-							"propertyIdentifier":"Account_orders"
+							"propertyIdentifier":"_account_orders"
 						},
 						{
-							"propertyIdentifier":"Account.firstName"
+							"propertyIdentifier":"_account.firstName"
 						}
 					],
 					"joins":[
 						{
 							"associationName":"orders",
-							"alias":"Account_orders"
+							"alias":"_account_orders"
 						}
 					],
 					"orderBy":[
 						{
-							"propertyIdentifier":"Account.firstName",
+							"propertyIdentifier":"_account.firstName",
 							"direction":"DESC"
 						}
 					],
@@ -389,7 +391,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 						{
 							"filterGroup":[
 								{
-									"propertyIdentifier":"Account.firstName",
+									"propertyIdentifier":"_account.firstName",
 									"comparisonOperator":"=",
 									"value":"Ryan"
 								}
@@ -410,25 +412,25 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 			collectionConfig = '
 				{
 					"baseEntityName":"SlatwallAccount",
-					"baseEntityAlias":"Account",
+					"baseEntityAlias":"_account",
 					"columns":[
 						{
-							"propertyIdentifier":"Account.orders"
+							"propertyIdentifier":"_account.orders"
 						}
 					],
 					"joins":[
 						{
 							"associationName":"orders",
-							"alias":"Account_orders"
+							"alias":"_account_orders"
 						}
 					],
 					"orderBy":[
 						{
-							"propertyIdentifier":"Account.lastName",
+							"propertyIdentifier":"_account.lastName",
 							"direction":"DESC"
 						},
 						{
-							"propertyIdentifier":"Account.firstName",
+							"propertyIdentifier":"_account.firstName",
 							"direction":"DESC"
 						}
 					],
@@ -441,7 +443,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 						{
 							"filterGroup":[
 								{
-									"propertyIdentifier":"Account.firstName",
+									"propertyIdentifier":"_account.firstName",
 									"comparisonOperator":"=",
 									"value":"Ryan"
 								}
