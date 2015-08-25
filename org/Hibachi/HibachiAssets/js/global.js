@@ -501,7 +501,16 @@ function setupEventHandlers() {
 	jQuery('body').on('click', '.listing-sort', function(e) {
 		e.preventDefault();
 		var data = {};
-		data[ 'OrderBy' ] = jQuery(this).closest('th').data('propertyidentifier') + '|' + jQuery(this).data('sortdirection');
+		var propertyIdentifiers = jQuery(this).closest('th').data('propertyidentifier').split('.'); 
+		data[ 'OrderBy' ] = "";
+		var fullPath = ""; 
+		
+		for(var i=propertyIdentifiers.length-1; i>=0; i--){
+			data[ 'OrderBy' ] += propertyIdentifiers[i] + '|' + jQuery(this).data('sortdirection') + ",";
+		}
+		
+		data[ 'OrderBy' ] = data[ 'OrderBy' ].substring(0,data['OrderBy'].length-1);
+		
 		listingDisplayUpdate( jQuery(this).closest('.table').attr('id'), data);
 	});
 
