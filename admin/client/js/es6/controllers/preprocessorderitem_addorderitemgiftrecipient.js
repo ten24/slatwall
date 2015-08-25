@@ -1,24 +1,54 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     class OrderItemGiftRecipientControl {
-        constructor($scope) {
+        constructor($scope, $slatwall) {
             this.$scope = $scope;
+            this.getQuantity = () => {
+                if (isNaN(this.quantity)) {
+                    return 0;
+                }
+                else {
+                    return this.quantity;
+                }
+            };
+            this.getSearch = (keyword = "test") => {
+                var filterAccountsConfig = '[' +
+                    ' {  ' +
+                    '"filterGroup":[  ' +
+                    ' {  ' +
+                    ' "propertyIdentifier":"_account.firstName",' +
+                    ' "comparisonOperator":"like",' +
+                    ' "conditionDisplay":"Equals"' +
+                    ' "ormtype":"string",' +
+                    ' "value":"%' + keyword + '%"' +
+                    '},' +
+                    '{' +
+                    ' "logicalOperator":"AND",' +
+                    ' "propertyIdentifier":"_account.lastName",' +
+                    ' "comparisonOperator":"like",' +
+                    ' "ormtype":"string",' +
+                    ' "value":"%' + keyword + '%"' +
+                    '  }' +
+                    ' ]' +
+                    ' }' +
+                    ']';
+                return this.$slatwall.getEntity('account', { filterAccountsConfig: filterAccountsConfig.trim() });
+            };
             this.getUnassignedCountArray = () => {
-                if (this.getUnassignedCount() != 0) {
-                    var unassignedCountArray = new Array(this.getUnassignedCount());
-                    for (var i = 0; i < unassignedCountArray.length; i++) {
-                        unassignedCountArray[i] = i + 1;
+                var unassignedCountArray = new Array();
+                if (this.getUnassignedCount() > 1) {
+                    for (var i = 1; i < this.getUnassignedCount(); i++) {
+                        unassignedCountArray.push(i);
                     }
                 }
                 else {
-                    var unassignedCountArray = new Array();
-                    unassignedCountArray[0] = 1;
-                    console.log("countarray: " + unassignedCountArray);
+                    unassignedCountArray.push(1);
                 }
+                console.log(unassignedCountArray);
                 return unassignedCountArray;
             };
             this.getUnassignedCount = () => {
-                var unassignedCount = this.quantity;
+                var unassignedCount = this.getQuantity();
                 angular.forEach(this.orderItemGiftRecipients, (orderItemGiftRecipient) => {
                     unassignedCount -= orderItemGiftRecipient.quantity;
                 });
@@ -43,14 +73,17 @@ var slatwalladmin;
                 //get chars subtract return
             };
             this.$scope;
+            this.$slatwall;
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
             this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
             var count = 1;
             this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
+            console.log(this.getSearch());
         }
     }
     OrderItemGiftRecipientControl.$inject = [
-        '$scope'
+        '$scope',
+        "$slatwall"
     ];
     slatwalladmin.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
     angular.module('slatwalladmin').controller('preprocessorderitem_addorderitemgiftrecipient', OrderItemGiftRecipientControl);

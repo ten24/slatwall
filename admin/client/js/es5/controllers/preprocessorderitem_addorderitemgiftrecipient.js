@@ -1,7 +1,7 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     var OrderItemGiftRecipientControl = (function () {
-        function OrderItemGiftRecipientControl($scope, $slatwall) {
+        function OrderItemGiftRecipientControl($scope, injector) {
             var _this = this;
             this.$scope = $scope;
             this.getQuantity = function () {
@@ -34,7 +34,13 @@ var slatwalladmin;
                     ' ]' +
                     ' }' +
                     ']';
-                return _this.$slatwall.getEntity('account', { filterAccountsConfig: filterAccountsConfig.trim() });
+                var accountPromise = _this.$slatwall.getEntity('account', { filterAccountsConfig: filterAccountsConfig.trim() });
+                accountPromise.then(function (response) {
+                    this.$scope.collection = response;
+                    $log.debug("Collection Response");
+                    $log.debug(this.$scope.collection);
+                });
+                return _this.$scope.collection;
             };
             this.getUnassignedCountArray = function () {
                 var unassignedCountArray = new Array();
@@ -74,18 +80,16 @@ var slatwalladmin;
                 var totalChar = 250;
                 //get chars subtract return
             };
-            this.$scope;
-            this.$slatwall;
+            this.$scope = $scope;
+            OrderItemGiftRecipientControl.injector = injector;
+            OrderItemGiftRecipientControl.$slatwall = this.injector.get("$slatwall");
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
             this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
             var count = 1;
             this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
             console.log(this.getSearch());
         }
-        OrderItemGiftRecipientControl.$inject = [
-            '$scope',
-            "$slatwall"
-        ];
+        OrderItemGiftRecipientControl.$inject = ["$scope"];
         return OrderItemGiftRecipientControl;
     })();
     slatwalladmin.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;

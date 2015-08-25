@@ -1,27 +1,29 @@
 module slatwalladmin {
 	
-	
 	interface IOrderItemGiftRecipientScope extends ng.IScope {
 		orderItemGiftRecipients: GiftRecipient[];
 		unassignedCount: number;
 		total: number;
+                collection: any;
+                $log: any; 
 	}
     
 	export class OrderItemGiftRecipientControl{
-
-		public static $inject = [
-			'$scope',
-                        "$slatwall"
-		];
-		
+                
+                private static injector: ng.auto.IInjectorService;
+                private static $slatwall: ngSlatwall.$Slatwall; 
+                
+                static $inject=["$scope"];
+                
 		public orderItemGiftRecipients; 
                 public quantity:number;
                 public currentGiftRecipient:slatwalladmin.GiftRecipient;
         
-		constructor(private $scope: IOrderItemGiftRecipientScope, $slatwall){
-			this.$scope;
-                        this.$slatwall;
-			this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
+		constructor(private $scope: IOrderItemGiftRecipientScope, injector: ng.auto.IInjectorService){
+			this.$scope = $scope;
+                        OrderItemGiftRecipientControl.injector = injector; 
+                        OrderItemGiftRecipientControl.$slatwall = this.injector.get<ngSlatwall.$Slatwall>("$slatwall");
+           	        this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
                         this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
 			var count = 1;
                         this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
@@ -58,7 +60,15 @@ module slatwalladmin {
                                         ' ]'+
                                 ' }'+
                         ']';
-                        return this.$slatwall.getEntity('account', {filterAccountsConfig:filterAccountsConfig.trim()});
+                        
+                        var accountPromise = this.$slatwall.getEntity('account', {filterAccountsConfig:filterAccountsConfig.trim()})
+                        accountPromise.then(function(response){
+                                this.$scope.collection = response;
+                                $log.debug("Collection Response");
+                                $log.debug(this.$scope.collection);
+		        });
+                        
+                        return this.$scope.collection;
                 }
                 
                 private getUnassignedCountArray = ():number[] =>{
