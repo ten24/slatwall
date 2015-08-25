@@ -194,7 +194,8 @@ module slatwalladmin{
                 isDeletable = true,
                 isSearchable = true,
                 isExportable = true,
-                ormtype = 'string';
+                ormtype = 'string',
+                lastProperty=column.split('.').pop();
 
             if(angular.isUndefined(this.columns)){
                 this.columns = [];
@@ -216,8 +217,8 @@ module slatwalladmin{
             }
             if(!angular.isUndefined(options['ormtype'])){
                 ormtype = options['ormtype'];
-            }else if(this.collection.metaData[column] && this.collection.metaData[column].ormtype){
-                ormtype = this.collection.metaData[column].ormtype;
+            }else if(this.collection.metaData[lastProperty] && this.collection.metaData[lastProperty].ormtype){
+                ormtype = this.collection.metaData[lastProperty].ormtype;
             }
 
             this.columns.push(new Column(
