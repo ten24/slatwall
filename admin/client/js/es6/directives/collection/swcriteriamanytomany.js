@@ -14,6 +14,20 @@ angular.module('slatwalladmin')
             restrict: 'E',
             templateUrl: collectionPartialsPath + 'criteriamanytomany.html',
             link: function (scope, element, attrs) {
+                scope.data = {};
+                scope.collectionOptionsOpen = false;
+                scope.toggleCollectionOptions = function (flag) {
+                    scope.collectionOptionsOpen = (!angular.isUndefined(flag)) ? flag : !scope.collectionOptionsOpen;
+                };
+                scope.selectCollection = function (collection) {
+                    scope.toggleCollectionOptions();
+                    scope.selectedFilterProperty.selectedCollection = collection;
+                };
+                scope.cleanSelection = function () {
+                    scope.toggleCollectionOptions(false);
+                    scope.data.collectionName = "";
+                    scope.selectedFilterProperty.selectedCollection = null;
+                };
                 var getManyToManyOptions = function (type) {
                     if (angular.isUndefined(type)) {
                         type = 'filter';
@@ -90,8 +104,10 @@ angular.module('slatwalladmin')
                 };
                 scope.addNewCollection = function () {
                     dialogService.addPageDialog('collection/criteriacreatecollection', {
-                        entityName: scope.selectedFilterProperty.cfc
+                        entityName: scope.selectedFilterProperty.cfc,
+                        collectionName: scope.data.collectionName
                     });
+                    scope.cleanSelection();
                 };
                 scope.viewSelectedCollection = function () {
                     dialogService.addPageDialog('collection/criteriacreatecollection', {
