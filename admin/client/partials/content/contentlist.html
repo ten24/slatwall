@@ -20,6 +20,29 @@
 
 	<div class="s-table-header-nav s-listing-head-margin">
 		<div class="col-xs-6 s-no-padding-left">
+			<ul class="list-inline list-unstyled">
+				<!-- to implement searching-->
+				<li>
+					<div class="s-select-list-wrapper">
+						<div class="form-group">
+							<div class="input-group">
+								<div class="s-input-btn">
+									<input  type="text"
+										class="form-control input-sm"
+										placeholder="Search"
+										name="srch-term"
+										ng-model="keywords"
+										ng-change="searchCollection()"
+										/>
+									<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
+									<i ng-hide="loadingCollection" class="fa fa-search"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- s-select-list-wrapper -->
+				</li>
+			</ul>
 			{{siteOptions}}
 			{{options}}
 		</div>
@@ -39,35 +62,6 @@
 						data-get-collection="getCollection()"
 						>
 					</span>
-				</li>
-			
-				<!-- to implement searching-->
-				<li>
-					<div class="s-select-list-wrapper">
-						<div class="form-group">
-							<div class="input-group">
-								<div class="s-input-btn">
-									<input  type="text"
-										class="form-control input-sm"
-										placeholder="Search"
-										name="srch-term"
-										ng-model="keywords"
-										ng-change="searchCollection()"
-										/>
-									<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
-								</div>
-								<div class="input-group-btn">
-									<button   class="btn btn-primary btn-sm"
-										type="button"
-										ng-click="searchCollection()"
-										>
-									<i class="fa fa-search"></i>
-									</button>
-								</div>
-							</div>
-						</div>
-					</div>
-					<!-- s-select-list-wrapper -->
 				</li>
 				
 				<!--
