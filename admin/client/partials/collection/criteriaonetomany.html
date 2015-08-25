@@ -1,38 +1,111 @@
 <form action="index.html" method="post" ng-if="collectionOptions && selectedFilterProperty">
-  <div class="s-filter-group-item" sw-loading="collectionOptions">
+    <div class="s-filter-group-item" sw-loading="collectionOptions">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label s-no-paddings" for="formGroupInputSmall">Select From Existing Collections:</label>
+                    
+                    <!-- Start -->            
+                    <div class="s-search-filter">
+                        <div class="input-group" >
+                            <input type="text" placeholder="Search or Create Collection" class="form-control input-sm">
+                            <span class="s-current-selection-item" title="remove">
+                                <span>Phone Number Collection</span>
+                                <a href="##" class="s-edit-options" title="View"> <i class="fa fa-eye"></i></a>
+                                <a href="##" class="s-edit-options s-remove" title="remove"> <i class="fa fa-times"></i></a> 
+                            </span>
+                            <ul class="dropdown-menu" style="display:none;">
+                                <!-- display block should be replaced with js(angular) -->
+                                <!-- Item-->
+                                <li>
+                                    <a>
+                                        <div class="row">
+                                            <div class="col-xs-12 s-info">Collection Three</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <!-- //Item-->
+                                <!-- Item-->
+                                <li>
+                                    <a>
+                                        <div class="row">
+                                            <div class="col-xs-12 s-info">Collection Four</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <!-- //Item-->
+                                <!-- Item-->
+                                <li>
+                                    <a>
+                                        <div class="row">
+                                            <div class="col-xs-12 s-info">Collection Five</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <!-- //Item-->
+                                <!-- Item-->
+                                <li>
+                                    <a>
+                                        <div class="row">
+                                            <div class="col-xs-12 s-info">Collection Six</div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <!-- //Item-->
+                            </ul>
+                            <div class="input-group-btn">
+                                <button type="button" class="btn btn-sm btn-default">
+                                <span class="fa fa-caret-up"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="addDropdown" style="display:none;">
+                            <!-- Only show if there is text -->
+                            <button type="button" class="btn btn-primary">
+                            <i class="fa fa-plus"></i> Add "New Name Would Be Here"
+                            </button>
+                        </div>
+                    </div>
+                    <!-- //End -->
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-sm-2 control-label s-no-paddings" for="formGroupInputSmall">Select Condition:</label>
+                    <select id="u52_input" class="form-control input-sm j-custom-select" style="-webkit-appearance: menulist-button; border-color: rgb(153, 153, 153);"
+                        ng-model="selectedFilterProperty.selectedCriteriaType" 
+                        ng-options="oneToManyOption as oneToManyOption.display for oneToManyOption in oneToManyOptions" 	
+                        >
+                        <option selected="selected" value="">Select Condition</option>
+                    </select>
+                </div>
+                
+            </div>
+        </div>
 
-    <div class="form-group form-group-sm">
-      <div class="col-sm-12 s-no-paddings">
-     	<label class="col-sm-2 control-label s-no-paddings" for="formGroupInputSmall">Select From Existing Collections:</label>
-		<select id="u52_input" class="form-control input-sm j-custom-select" style="-webkit-appearance: menulist-button; border-color: rgb(153, 153, 153);"
-      			ng-model="selectedFilterProperty.selectedCollection" 
-        		ng-options="collection as collection.collectionName 
-        					for collection in collectionOptions 
-        					" 	
-      	>
-      		<option selected="selected" value="">Select Collection</option>
-        </select>
-		  <!-- TEMP BUTTONS TO CREATE/VIEW COLLECTIONS OF COLLETIONS-->
-		  <button type="button" class="btn btn-sm btn-default"
-				  ng-disabled="!selectedFilterProperty.selectedCollection"
-				  ng-click="viewSelectedCollection()">
-			  <i class="glyphicon glyphicon-eye-open"></i>
-		  </button>
-		  <button type="button" class="btn btn-sm btn-default" ng-click="addNewCollection()">
-			  <i class="glyphicon glyphicon-plus"></i>
-		  </button>
-		  <!-- END OF TEMP BUTTONS -->
-      	<label class="col-sm-2 control-label s-no-paddings" for="formGroupInputSmall">Select Condition:</label>
-      	<select id="u52_input" class="form-control input-sm j-custom-select" style="-webkit-appearance: menulist-button; border-color: rgb(153, 153, 153);"
-      			ng-model="selectedFilterProperty.selectedCriteriaType" 
-        		ng-options="oneToManyOption as oneToManyOption.display 
-        					for oneToManyOption in oneToManyOptions 
-        					" 	
-      	>
-      		<option selected="selected" value="">Select Condition</option>
-        </select>
-      </div>
-      <div class="clearfix"></div>
     </div>
-  </div>
 </form>
+
+                <label class="col-sm-2 control-label s-no-paddings" for="formGroupInputSmall">Select From Existing Collections:</label>
+                <select id="u52_input" class="form-control input-sm j-custom-select" style="-webkit-appearance: menulist-button; border-color: rgb(153, 153, 153);"
+                    ng-model="selectedFilterProperty.selectedCollection" 
+                    ng-options="collection as collection.collectionName for collection in collectionOptions" 	
+                    >
+                    <option selected="selected" value="">Select Collection</option>
+                </select>
+                <!-- TEMP BUTTONS TO CREATE/VIEW COLLECTIONS OF COLLETIONS-->
+                <button type="button" class="btn btn-sm btn-default"
+                    ng-disabled="!selectedFilterProperty.selectedCollection"
+                    ng-click="viewSelectedCollection()">
+                    <i class="glyphicon glyphicon-eye-open"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-default" ng-click="addNewCollection()">
+                    <i class="glyphicon glyphicon-plus"></i>
+                </button>
+                <!-- END OF TEMP BUTTONS -->
+                <label class="col-sm-2 control-label s-no-paddings" for="formGroupInputSmall">Select Condition:</label>
+                <select id="u52_input" class="form-control input-sm j-custom-select" style="-webkit-appearance: menulist-button; border-color: rgb(153, 153, 153);"
+                    ng-model="selectedFilterProperty.selectedCriteriaType" 
+                    ng-options="oneToManyOption as oneToManyOption.display for oneToManyOption in oneToManyOptions" 	
+                    >
+                    <option selected="selected" value="">Select Condition</option>
+                </select>
