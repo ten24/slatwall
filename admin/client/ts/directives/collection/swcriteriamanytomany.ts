@@ -124,7 +124,7 @@ angular.module('slatwalladmin')
 
 				scope.addNewCollection = function(){
 					dialogService.addPageDialog('collection/criteriacreatecollection', {
-						entityName: scope.selectedFilterProperty.cfc
+						entityName: scope.selectedFilterProperty.cfc,
 						collectionName: scope.data.collectionName
 					});
 					scope.cleanSelection();

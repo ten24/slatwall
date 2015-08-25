@@ -72,18 +72,27 @@ angular.module('slatwalladmin')
                 );
                 collectionListingPromise.then(function (value) {
 
-                    if(angular.isUndefined($scope.myCollection.columns) && value.pageRecords.length){
-                        $scope.myCollection.setDisplayProperties(Object.keys(value.pageRecords[0]).join().replace(/_/g, '.'));
+                    $scope.collection = value;
+                    $scope.collection.collectionObject = $scope.myCollection.baseEntityName;
+                    $scope.collectionInitial = angular.copy($scope.collection);
+                    paginationService.setRecordsCount($scope.pagination_id, $scope.collection.recordsCount);
+
+                    if(angular.isUndefined($scope.myCollection.columns)){
+                        $scope.myCollection.loadJson(value.collectionConfig);
                     }
 
                     if (angular.isUndefined($scope.collectionConfig)) {
                         $scope.collectionConfig = $scope.myCollection.getCollectionConfig();
                     }
+                    if (angular.isUndefined($scope.collectionConfig.filterGroups) || !$scope.collectionConfig.filterGroups.length) {
+                        $scope.collectionConfig.filterGroups = [
+                            {
+                                filterGroup: []
+                            }
+                        ];
+                    }
 
-                    $scope.collection = value;
-                    $scope.collection.collectionObject = $scope.myCollection.baseEntityName;
-                    $scope.collectionInitial = angular.copy($scope.collection);
-                    paginationService.setRecordsCount($scope.pagination_id, $scope.collection.recordsCount);
+
 
                     collectionService.setFilterCount(filterItemCounter());
                     $scope.loadingCollection = false;
@@ -160,7 +169,7 @@ angular.module('slatwalladmin')
                     //$log.debug('search with keywords');
                     //$log.debug($scope.keywords);
                     //Set current page here so that the pagination does not break when getting collection
-                    paginationService.setCurrentPage(1);
+                    paginationService.setCurrentPage($scope.pagination_id,1);
                     $scope.loadingCollection = true;
                     $scope.getCollection();
                 }, 500);
