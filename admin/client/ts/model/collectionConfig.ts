@@ -9,6 +9,7 @@ module slatwalladmin{
             public isDeletable:boolean,
             public isSearchable:boolean,
             public isExportable:boolean,
+            public ormtype?:string,
             public attributeID?:string,
             public attributeSetObject?:string
         ){}
@@ -192,7 +193,8 @@ module slatwalladmin{
             var isVisible = true,
                 isDeletable = true,
                 isSearchable = true,
-                isExportable = true;
+                isExportable = true,
+                ormtype = 'string';
 
             if(angular.isUndefined(this.columns)){
                 this.columns = [];
@@ -212,7 +214,11 @@ module slatwalladmin{
             if(angular.isUndefined(options['isExportable']) && !isVisible){
                 isExportable = false;
             }
-
+            if(!angular.isUndefined(options['ormtype'])){
+                ormtype = options['ormtype'];
+            }else if(this.collection.metaData[column] && this.collection.metaData[column].ormtype){
+                ormtype = this.collection.metaData[column].ormtype;
+            }
 
             this.columns.push(new Column(
                 column,
@@ -221,6 +227,7 @@ module slatwalladmin{
                 isDeletable,
                 isSearchable,
                 isExportable,
+                ormtype,
                 options['attributeID'],
                 options['attributeSetObject']
             ));
