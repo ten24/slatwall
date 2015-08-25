@@ -632,6 +632,9 @@ input.ng-invalid.ng-touched, select.ng-invalid.ng-touched, input.error, select.e
 /* Detail Views */
 .s-property-info table {border:1px dotted @black-10;}
 .table {background-color: #ffffff;margin-bottom: 5px;}
+.table .s-contents-page-title {color: #666;}
+.table .s-contents-page-title:hover {text-decoration: underline;}
+.table i.s-listing-arrow {margin-left: 15px;padding: 0px 6px 0px 10px;cursor: pointer;font-size: 14px;margin-top: 2px;}
 .s-property-info .table>thead>tr>th, 
 .table>tbody>tr>th, .table>tfoot>tr>th, 
 .table>thead>tr>td, .table>tbody>tr>td, 
@@ -1753,7 +1756,8 @@ a.disabled > i.hibachi-ui-radio-checked {background-position:-16px -64px !import
 .s-search-results-wrapper .dropdown-menu a {color:@black-60;border-bottom: 1px solid @black-5;padding:8px 15px;}
 .s-search-results-wrapper .dropdown-menu li:last-child a {border-bottom:0px;}
 .s-search-results-wrapper .dropdown-menu a:hover {background-color:#fafafa;color:@black-60 !important;}
-.s-select-list-wrapper .s-input-btn span, .s-select-list-wrapper .s-input-btn i {position: absolute;right: 40px;top: 1px;bottom: 0;height: 14px;margin: auto;font-size: 14px;cursor: pointer;color: @black-20;z-index: 10;}
+.s-select-list-wrapper .s-input-btn {position:relative;}
+.s-select-list-wrapper .s-input-btn span, .s-select-list-wrapper .s-input-btn i {position: absolute;right: 10px;top: 29px;bottom: 0;height: 14px;margin: auto;font-size: 14px;cursor: pointer;color: @black-20;z-index: 10;}
 .s-select-list-wrapper.s-dropdown .s-input-btn span, .s-select-list-wrapper.s-dropdown .s-input-btn i {right: 68px;}
 .s-select-list-wrapper .s-input-btn span:hover {color:@brand-danger;}
 .s-select-list-wrapper .input-group-btn button.btn-default {border-top:1px solid @black-20;border-bottom:1px solid @black-20;left: -1px;margin-right: -1px;}

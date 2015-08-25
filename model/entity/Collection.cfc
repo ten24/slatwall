@@ -900,7 +900,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
-//		try{
+		try{
 			var HQL = '';
 			var HQLParams = {};
 			if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
@@ -939,12 +939,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
 			}
-//		}
-//		catch(any e){
-//			variables.pageRecords = [{'failedCollection'='failedCollection'}];
-//			writelog(file="collection",text="Error:#e.message#");
-//			writelog(file="collection",text="HQL:#HQL#");
-//		}
+		}
+		catch(any e){
+			variables.pageRecords = [{'failedCollection'='failedCollection'}];
+			writelog(file="collection",text="Error:#e.message#");
+			writelog(file="collection",text="HQL:#HQL#");
+		}
 		
 		return variables.pageRecords;
 	}
@@ -1017,7 +1017,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				variables.recordsCount = application.entityCollection[ getCacheName() ].recordsCount;
 			} else {
 				if(!structKeyExists(variables,"records")) {
-					variables.recordsCount = arrayLen(getRecords());
+					var HQL = getSelectionCountHQL() & getHQL(true);
+					var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true"});
+					variables.recordsCount = recordCount;
 					if(getCacheable()) {
 						application.entityCollection[ getCacheName() ] = {};
 						application.entityCollection[ getCacheName() ].recordsCount = variables.recordsCount;
@@ -1163,6 +1165,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return count;
 	}
 	
+	private any function getSelectionCountHQL(){
+		var primaryIDAlias = getCollectionConfigStruct().baseEntityAlias & '.' & getService("hibachiservice").getPrimaryIDPropertyNameByEntityName(getCollectionObject());
+		return 'SELECT COUNT(#primaryIDAlias#) ';
+	}
+	
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
 		var isDistinctValue = '';
 		if(arguments.isDistinct){
@@ -1179,12 +1186,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		var startMapHQL = ' new Map(';
 		var columnsHQL = '';
-		if(getHibachiScope().authenticateEntity('read', getCollectionObject())){
+		if(getHibachiScope().authenticateCollection('read', this)){
 			for(var i = 1; i <= columnCount; i++){
-				var propertyStruct = getService('hibachiService').getPropertyByEntityNameAndPropertyName(getCollectionObject(), listRest(arguments.columns[i].propertyIdentifier,'.'));
 				if(
-					getHibachiScope().authenticateEntityProperty('read', getCollectionObject(), listRest(arguments.columns[i].propertyIdentifier,'.'))
-					|| (structKeyExists(propertyStruct,'fieldtype') && propertyStruct.fieldtype == 'id') 
+					getHibachiScope().authenticateCollectionPropertyIdentifier('read', this, arguments.columns[i].propertyIdentifier)
+					|| (!isObject && structKeyExists(propertyStruct,'fieldtype') && propertyStruct.fieldtype == 'id') 
 				){
 					var column = arguments.columns[i];
 					if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
@@ -1564,17 +1570,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	public struct function getStateStruct() {
 		var stateStruct = {};
 		//TODO:change what the state variables are, evaluate the value of them
-		/*stateStruct.baseEntityName = duplicate(variables.baseEntityName);
-		stateStruct.entities = duplicate(variables.entities);
-		stateStruct.whereGroups = duplicate(variables.whereGroups);
-		stateStruct.whereConditions = duplicate(variables.whereConditions);
-		stateStruct.orders = duplicate(variables.orders);
+		stateStruct.collectionConfig = duplicate(variables.collectionConfig);
 		stateStruct.keywords = duplicate(variables.keywords);
-		stateStruct.keywordProperties = duplicate(variables.keywordProperties);
-		stateStruct.attributeKeywordProperties = duplicate(variables.attributeKeywordProperties);
 		stateStruct.pageRecordsShow = duplicate(variables.pageRecordsShow);
-		stateStruct.entityJoinOrder = duplicate(variables.entityJoinOrder);
-		stateStruct.selectDistinctFlag = duplicate(variables.selectDistinctFlag);*/
 		
 		return stateStruct;
 	}
@@ -1655,7 +1653,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	//validationMethods
 	public any function canSaveCollectionByCollectionObject(){
-		return getHibachiScope().authenticateEntity('read', this.getCollectionObject());
+		return getHibachiScope().authenticateCollection('read', this);
 	}
 	
 }
