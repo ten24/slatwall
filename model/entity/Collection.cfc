@@ -1186,12 +1186,22 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		var startMapHQL = ' new Map(';
 		var columnsHQL = '';
-		if(getHibachiScope().authenticateEntity('read', getCollectionObject())){
+		if(getHibachiScope().authenticateCollection('read', this)){
 			for(var i = 1; i <= columnCount; i++){
-				var propertyStruct = getService('hibachiService').getPropertyByEntityNameAndPropertyName(getCollectionObject(), listRest(arguments.columns[i].propertyIdentifier,'.'));
+				//check if the propertyIdentifier is prefixed with an alias
+//				var propertyIdentifierWithoutAlias = getService('collectionService').getHibachiPropertyIdentifierByCollectionPropertyIdentifier(arguments.columns[i].propertyIdentifier);
+//				var isObject = getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(entityName=getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
+//				if(isObject){
+//					var lastEntity = getService('hibachiService').getLastEntityNameInPropertyIdentifier(entityName=getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
+//				}else{
+//					var lastEntity = getService('hibachiService').getLastEntityNameInPropertyIdentifier(entityName=getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
+//					var propertyStruct = getService('hibachiService').getPropertyByEntityNameAndPropertyName(lastEntity, listLast(propertyIdentifierWithoutAlias,'.'));
+//				}
+				
 				if(
-					getHibachiScope().authenticateEntityProperty('read', getCollectionObject(), listRest(arguments.columns[i].propertyIdentifier,'.'))
-					|| (structKeyExists(propertyStruct,'fieldtype') && propertyStruct.fieldtype == 'id') 
+					//getHibachiScope().authenticateCProperty('read', lastEntity, propertyIdentifierWithoutAlias)
+					getHibachiScope().authenticateCollectionPropertyIdentifier('read', this, arguments.columns[i].propertyIdentifier)
+					|| (!isObject && structKeyExists(propertyStruct,'fieldtype') && propertyStruct.fieldtype == 'id') 
 				){
 					var column = arguments.columns[i];
 					if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
@@ -1654,7 +1664,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	//validationMethods
 	public any function canSaveCollectionByCollectionObject(){
-		return getHibachiScope().authenticateEntity('read', this.getCollectionObject());
+		return getHibachiScope().authenticateCollection('read', this);
 	}
 	
 }

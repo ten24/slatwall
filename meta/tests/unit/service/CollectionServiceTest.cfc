@@ -118,6 +118,17 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		return collectionOptions;
 	}
 	
+	public void function getHibachiPropertyIdentifierByCollectionPropertyIdentifierTest(){
+		var collectionPropertyIdentifier = '_sku_product.brand.brandID';
+		var hibachiPropertyIdentifier = variables.service.getHibachiPropertyIdentifierByCollectionPropertyIdentifier(collectionPropertyIdentifier);
+		assertEquals(hibachiPropertyIdentifier,'product.brand.brandid');
+		
+		var collectionPropertyIdentifier = 'Account.firstName';
+		var hibachiPropertyIdentifier = variables.service.getHibachiPropertyIdentifierByCollectionPropertyIdentifier(collectionPropertyIdentifier);
+		
+		request.debug(hibachiPropertyIdentifier);
+	}
+	
 	public void function getCapitalCaseTest(){
 		MakePublic(variables.service,'capitalCase');
 		var word = 'testingword';
@@ -225,7 +236,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 			lastName = "rambo"
 		};
 		var account = createPersistedTestEntity('account',accountData);
-		var propertyIdentifiers = "Account.lastName,Account.firstName";
+		var propertyIdentifiers = "lastName,firstName";
 		var collectionOptions = setupCollectionOptions({propertyIdentifiersList=propertyIdentifiers});
 		var apiResponse = variables.service.getAPIResponseForEntityName('account',collectionOptions);
 		
@@ -309,7 +320,7 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		};
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
 		
-		var propertyIdentifiersList = "Account.firstName,Account.lastName";
+		var propertyIdentifiersList = "firstName,lastName";
 		
 		var apiResponse = variables.service.getAPIResponseForCollection(collectionEntity,setupCollectionOptions({propertyIdentifiersList=propertyIdentifiersList}));
 		//request.debug(apiResponse);
