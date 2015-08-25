@@ -503,7 +503,6 @@ function setupEventHandlers() {
 		var data = {};
 		var propertyIdentifiers = jQuery(this).closest('th').data('propertyidentifier').split('.'); 
 		data[ 'OrderBy' ] = "";
-		var fullPath = ""; 
 		
 		for(var i=propertyIdentifiers.length-1; i>=0; i--){
 			data[ 'OrderBy' ] += propertyIdentifiers[i] + '|' + jQuery(this).data('sortdirection') + ",";
