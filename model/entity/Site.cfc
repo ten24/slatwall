@@ -89,7 +89,7 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	}
 	
 	public boolean function isSlatwallCMS(){
-		return this.getapp().getintegration().getintegrationPackage() == 'slatwallcms';
+		return !isNull(this.getApp()) && !isNull(this.getApp().getIntegration()) && !isNull(this.getApp().getIntegration().getintegrationPackage()) && this.getapp().getintegration().getintegrationPackage() == 'slatwallcms';
 	}
 	
 	public string function getSitePath(){
