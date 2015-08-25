@@ -110,8 +110,9 @@ paginationService
 	
 				$scope.collectionInitial = angular.copy($scope.collection);
 				if(angular.isUndefined($scope.collectionConfig)){
-                    $scope.collectionConfig = new slatwalladmin.CollectionConfig($slatwall);
-                    $scope.collectionConfig.loadJson($scope.collection.collectionConfig);
+                    var test = new slatwalladmin.CollectionConfig($slatwall);
+					test.loadJson(value.collectionConfig);
+                    $scope.collectionConfig = test.getCollectionConfig();
 				}
 				
 				//check if we have any filter Groups
@@ -119,7 +120,7 @@ paginationService
 					$scope.collectionConfig.filterGroups = [
 						{
 							filterGroup:[
-								
+
 							]
 						}
 					];
@@ -142,7 +143,7 @@ paginationService
 						metadataService.setPropertiesList(value,$scope.collectionConfig.baseEntityAlias);
 						$scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias] = metadataService.getPropertiesListByBaseEntityAlias($scope.collectionConfig.baseEntityAlias);
 						metadataService.formatPropertiesList($scope.filterPropertiesList[$scope.collectionConfig.baseEntityAlias],$scope.collectionConfig.baseEntityAlias);
-						
+
 					});
 				}
 				unbindCollectionObserver();

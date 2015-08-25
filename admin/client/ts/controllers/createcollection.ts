@@ -30,8 +30,17 @@ angular.module('slatwalladmin')
 
             if(angular.isDefined($scope.params.entityID)){
                 $scope.newCollection.data.collectionID = $scope.params.entityID;
+                $timeout(function(){
+                    $scope.newCollection.forms['form.createCollection'].$setDirty();
+                });
             }
 
+            if(angular.isDefined($scope.params.collectionName)){
+                $scope.newCollection.data.collectionName = $scope.params.collectionName;
+                $timeout(function(){
+                    $scope.newCollection.forms['form.createCollection'].$setDirty();
+                });
+            }
 
             $scope.saveCollection = function () {
                 $scope.myCollection.loadJson($scope.collectionConfig);
@@ -57,7 +66,6 @@ angular.module('slatwalladmin')
                     collectionOptions = $scope.myCollection.getOptions()
                 }
 
-
                 $log.debug($scope.myCollection.getOptions());
                 var collectionListingPromise = $slatwall.getEntity(
                     $scope.myCollection.getEntityName(), collectionOptions
@@ -65,7 +73,7 @@ angular.module('slatwalladmin')
                 collectionListingPromise.then(function (value) {
 
                     if(angular.isUndefined($scope.myCollection.columns) && value.pageRecords.length){
-                        $scope.myCollection.setDisplayProperties(Object.keys(value.pageRecords[0]).join());
+                        $scope.myCollection.setDisplayProperties(Object.keys(value.pageRecords[0]).join().replace(/_/g, '.'));
                     }
 
                     if (angular.isUndefined($scope.collectionConfig)) {
@@ -84,8 +92,6 @@ angular.module('slatwalladmin')
                 });
                 return collectionListingPromise;
             };
-
-
 
             var unbindCollectionObserver = $scope.$watch('collection', function (newValue, oldValue) {
                 if (newValue !== oldValue) {
@@ -127,7 +133,6 @@ angular.module('slatwalladmin')
                 return filterItemCount;
             };
 
-
             $scope.getCollection();
 
 
@@ -162,8 +167,6 @@ angular.module('slatwalladmin')
             };
 
             $scope.filterCount = collectionService.getFilterCount;
-
-
 
             //
             $scope.hideExport = true;
