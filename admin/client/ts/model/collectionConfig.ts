@@ -305,5 +305,9 @@ module slatwalladmin{
             this.keywords = keyword;
         };
 
+        useDefaultColumns=(flag:boolean=true)=>{
+            this.defaultColumns = flag;
+        }
+
     }
 }
