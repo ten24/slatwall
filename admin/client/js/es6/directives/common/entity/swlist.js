@@ -20,6 +20,7 @@ angular.module('slatwalladmin')
                     collectionListingPromise.then(function (value) {
                         scope.collection = value;
                         scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
+                        console.log(scope.collectionConfig);
                     });
                 };
                 scope.getCollection();

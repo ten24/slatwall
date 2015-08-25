@@ -41,13 +41,6 @@ angular.module('slatwalladmin')
                             ormtype: 'id',
                             isSearchable: false
                         },
-                        //                        {
-                        //                            propertyIdentifier:'_content.contentTemplateFile',
-                        //                            persistent:false,
-                        //                            setting:true,
-                        //                            isVisible:true,
-                        //                            isSearchable:false
-                        //                        },
                         //need to get template via settings
                         {
                             propertyIdentifier: '_content.allowPurchaseFlag',

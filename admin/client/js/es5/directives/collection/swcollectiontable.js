@@ -14,25 +14,15 @@ angular.module('slatwalladmin')
             templateUrl: collectionPartialsPath + "collectiontable.html",
             scope: {
                 collection: "=",
-                collectionConfig: "="
+                collectionConfig: "=",
+                //angularLink:true || false
+                angularLinks: "="
             },
             link: function (scope, element, attrs) {
+                if (angular.isUndefined(scope.angularLinks)) {
+                    scope.angularLinks = false;
+                }
                 scope.collectionObject = $slatwall['new' + scope.collection.collectionObject]();
-                //                scope.$watch('collection.pageRecords',function(){
-                //                    for(var record in scope.collection.pageRecords){
-                //                        var _detailLink;
-                //                        var _editLink;
-                //                        
-                //                        var _pageRecord = scope.collection.pageRecords[ record ];
-                //                        var _objectID = _pageRecord[ scope.collectionObject.$$getIDName() ];
-                //                        
-                //                       _detailLink = "?slatAction=entity.detail" + scope.collection.collectionObject + "&" + scope.collectionObject.$$getIDName() + '=' + _objectID;
-                //                       _editLink = "?slatAction=entity.edit" + scope.collection.collectionObject + "&" + scope.collectionObject.$$getIDName() + '=' + _objectID;
-                //                        
-                //                        _pageRecord["detailLink"] = _detailLink;
-                //                        _pageRecord["editLink"] = _editLink;
-                //                    }
-                //                })
                 var escapeRegExp = function (str) {
                     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
                 };
