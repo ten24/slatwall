@@ -89,8 +89,9 @@ angular.module('slatwalladmin')
                 $scope.collection = value;
                 $scope.collectionInitial = angular.copy($scope.collection);
                 if (angular.isUndefined($scope.collectionConfig)) {
-                    $scope.collectionConfig = new slatwalladmin.CollectionConfig($slatwall);
-                    $scope.collectionConfig.loadJson($scope.collection.collectionConfig);
+                    var test = new slatwalladmin.CollectionConfig($slatwall);
+                    test.loadJson(value.collectionConfig);
+                    $scope.collectionConfig = test.getCollectionConfig();
                 }
                 //check if we have any filter Groups
                 if (angular.isUndefined($scope.collectionConfig.filterGroups)) {

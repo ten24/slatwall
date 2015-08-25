@@ -14,6 +14,10 @@ angular.module('slatwalladmin')
             restrict: 'E',
             templateUrl: collectionPartialsPath + 'criteriaonetomany.html',
             link: function (scope, element, attrs) {
+                scope.collectionOptionsOpen = false;
+                scope.toggleCollectionOptions = function (flag) {
+                    scope.collectionOptionsOpen = (!angular.isUndefined(flag)) ? flag : !scope.collectionOptionsOpen;
+                };
                 var getOneToManyOptions = function (type) {
                     if (angular.isUndefined(type)) {
                         type = 'filter';
