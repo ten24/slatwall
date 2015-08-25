@@ -12,6 +12,15 @@ component output="false" accessors="true" extends="HibachiService" {
 		throw('#arguments.casing# not a valid casing.');
 	}
 	
+	public any function getHibachiPropertyIdentifierByCollectionPropertyIdentifier(required string collectionPropertyIdentifier){
+		var hibachiPropertyIdentifier = arguments.collectionPropertyIdentifier;
+		hibachiPropertyIdentifier = Replace(hibachiPropertyIdentifier,'_','.','all');
+		if(left(hibachiPropertyIdentifier,1) == '.'){
+			hibachiPropertyIdentifier = listRest(hibachiPropertyIdentifier,'.');
+		}
+		return hibachiPropertyIdentifier;
+	}
+	
 	//returns meta data about the objects properties
 	public array function getEntityNameOptions() {
 		var entitiesMetaData = getEntitiesMetaData();
@@ -531,7 +540,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		
 		var collectionStruct = {};
-		if(getHibachiScope().authenticateEntity('read', arguments.collectionEntity.getCollectionObject())){
+		if(getHibachiScope().authenticateCollection('read', arguments.collectionEntity)){
 			if(structKeyExists(arguments.collectionOptions,'allRecords') && arguments.collectionOptions.allRecords == 'true'){
 				collectionStruct = getFormattedRecords(arguments.collectionEntity,collectionPropertyIdentifiers);
 			}else{

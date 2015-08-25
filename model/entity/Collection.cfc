@@ -900,7 +900,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	// Paging Methods
 	public array function getPageRecords(boolean refresh=false) {
-//		try{
+		try{
 			var HQL = '';
 			var HQLParams = {};
 			if( !structKeyExists(variables, "pageRecords") || arguments.refresh eq true) {
@@ -939,12 +939,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
 			}
-//		}
-//		catch(any e){
-//			variables.pageRecords = [{'failedCollection'='failedCollection'}];
-//			writelog(file="collection",text="Error:#e.message#");
-//			writelog(file="collection",text="HQL:#HQL#");
-//		}
+		}
+		catch(any e){
+			variables.pageRecords = [{'failedCollection'='failedCollection'}];
+			writelog(file="collection",text="Error:#e.message#");
+			writelog(file="collection",text="HQL:#HQL#");
+		}
 		
 		return variables.pageRecords;
 	}
@@ -1186,12 +1186,11 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		var startMapHQL = ' new Map(';
 		var columnsHQL = '';
-		if(getHibachiScope().authenticateEntity('read', getCollectionObject())){
+		if(getHibachiScope().authenticateCollection('read', this)){
 			for(var i = 1; i <= columnCount; i++){
-				var propertyStruct = getService('hibachiService').getPropertyByEntityNameAndPropertyName(getCollectionObject(), listRest(arguments.columns[i].propertyIdentifier,'.'));
 				if(
-					getHibachiScope().authenticateEntityProperty('read', getCollectionObject(), listRest(arguments.columns[i].propertyIdentifier,'.'))
-					|| (structKeyExists(propertyStruct,'fieldtype') && propertyStruct.fieldtype == 'id') 
+					getHibachiScope().authenticateCollectionPropertyIdentifier('read', this, arguments.columns[i].propertyIdentifier)
+					|| (!isObject && structKeyExists(propertyStruct,'fieldtype') && propertyStruct.fieldtype == 'id') 
 				){
 					var column = arguments.columns[i];
 					if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
@@ -1654,7 +1653,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	//validationMethods
 	public any function canSaveCollectionByCollectionObject(){
-		return getHibachiScope().authenticateEntity('read', this.getCollectionObject());
+		return getHibachiScope().authenticateCollection('read', this);
 	}
 	
 }
