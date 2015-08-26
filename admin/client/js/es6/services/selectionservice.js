@@ -5,6 +5,10 @@ var slatwalladmin;
         constructor() {
             super();
             this._selection = {};
+            this.radioSelection = (selectionid, selection) => {
+                this._selection[selectionid] = [];
+                this._selection[selectionid].push(selection);
+            };
             this.addSelection = (selectionid, selection) => {
                 if (angular.isUndefined(this._selection[selectionid])) {
                     this._selection[selectionid] = [];

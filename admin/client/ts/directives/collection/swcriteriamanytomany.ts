@@ -7,18 +7,41 @@ angular.module('slatwalladmin')
 	'collectionPartialsPath',
 	'collectionService',
 	'metadataService',
+	'dialogService',
+	'observerService',
 	function(
 		$log,
 		$slatwall,
 		$filter,
 		collectionPartialsPath,
 		collectionService,
-		metadataService
+		metadataService,
+		dialogService,
+		observerService
 	){
 		return {
 			restrict: 'E',
 			templateUrl:collectionPartialsPath+'criteriamanytomany.html',
 			link: function(scope, element, attrs){
+				scope.data ={};
+				scope.collectionOptionsOpen = false;
+
+				scope.toggleCollectionOptions = function(flag){
+					scope.collectionOptionsOpen = (!angular.isUndefined(flag)) ? flag : !scope.collectionOptionsOpen;
+				};
+
+
+				scope.selectCollection = function(collection){
+					scope.toggleCollectionOptions();
+					scope.selectedFilterProperty.selectedCollection = collection;
+				};
+
+				scope.cleanSelection = function(){
+					scope.toggleCollectionOptions(false);
+					scope.data.collectionName = "";
+					scope.selectedFilterProperty.selectedCollection = null;
+				};
+
 				var getManyToManyOptions = function(type){
 					if(angular.isUndefined(type)){
 				 		type = 'filter'
@@ -72,6 +95,13 @@ angular.module('slatwalladmin')
 						}
 					}
 				});
+
+				function populateUI(collection) {
+					scope.collectionOptions.push(collection);
+					scope.selectedFilterProperty.selectedCollection = collection;
+					scope.selectedFilterProperty.selectedCriteriaType = scope.manyToManyOptions[2];
+				}
+				observerService.attach(populateUI,'addCollection','addCollection');
 				
 				scope.selectedCriteriaChanged = function(selectedCriteria){
 					$log.debug(selectedCriteria);
@@ -90,6 +120,21 @@ angular.module('slatwalladmin')
 					scope.selectedFilterPropertyChanged({selectedFilterProperty:scope.selectedFilterProperty.selectedCriteriaType});
 					//update criteria to display the condition of the new critera we have selected
 					
+				};
+
+				scope.addNewCollection = function(){
+					dialogService.addPageDialog('collection/criteriacreatecollection', {
+						entityName: scope.selectedFilterProperty.cfc,
+						collectionName: scope.data.collectionName
+					});
+					scope.cleanSelection();
+				};
+
+				scope.viewSelectedCollection = function(){
+					dialogService.addPageDialog('collection/criteriacreatecollection', {
+						entityName: 'collection',
+						entityId: scope.selectedFilterProperty.selectedCollection.collectionID
+					});
 				};
 			}
 		};

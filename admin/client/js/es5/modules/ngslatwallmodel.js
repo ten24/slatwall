@@ -47,7 +47,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
-                    auditDateTime: '1440168131228',
+                    auditDateTime: '1440623535350',
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -98,7 +98,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
-                    verificationCode: '05d70f389d9f430dbb8e37f55ad022b4',
+                    verificationCode: 'f00f6068df4ff6638df7e2d86941addd',
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -1522,10 +1522,10 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     createdByAccountID: null,
                     z: ''
                 };
-                entities['orderItemGiftRecipient'] = { "printTemplates": { "persistent": false, "type": "struct", "name": "printTemplates" }, "simpleRepresentation": { "persistent": false, "type": "string", "name": "simpleRepresentation" }, "quantity": { "ormtype": "integer", "name": "quantity" }, "hibachiErrors": { "persistent": false, "type": "any", "name": "hibachiErrors" }, "emailAddress": { "ormtype": "string", "name": "emailAddress" }, "persistableErrors": { "persistent": false, "type": "array", "name": "persistableErrors" }, "firstName": { "ormtype": "string", "name": "firstName" }, "orderItem": { "cfc": "OrderItem", "fieldtype": "many-to-one", "fkcolumn": "orderItemID", "name": "orderItem" }, "auditSmartList": { "persistent": false, "type": "any", "name": "auditSmartList" }, "settingValueFormatted": { "persistent": false, "type": "any", "name": "settingValueFormatted" }, "account": { "cfc": "Account", "fieldtype": "many-to-one", "fkcolumn": "accountID", "name": "account" }, "lastName": { "ormtype": "string", "name": "lastName" }, "processObjects": { "persistent": false, "type": "struct", "name": "processObjects" }, "giftMessage": { "ormtype": "string", "name": "giftMessage" }, "attributeValuesByAttributeCodeStruct": { "persistent": false, "type": "struct", "name": "attributeValuesByAttributeCodeStruct" }, "emailTemplates": { "persistent": false, "type": "struct", "name": "emailTemplates" }, "populatedSubProperties": { "persistent": false, "type": "struct", "name": "populatedSubProperties" }, "rollbackProcessedFlag": { "persistent": false, "type": "boolean", "name": "rollbackProcessedFlag" }, "modifiedByAccountID": { "ormtype": "string", "hb_populateenabled": false, "name": "modifiedByAccountID" }, "newFlag": { "persistent": false, "type": "boolean", "name": "newFlag" }, "attributeValuesByAttributeIDStruct": { "persistent": false, "type": "struct", "name": "attributeValuesByAttributeIDStruct" }, "encryptedPropertiesExistFlag": { "persistent": false, "type": "boolean", "name": "encryptedPropertiesExistFlag" }, "hibachiMessages": { "persistent": false, "type": "any", "name": "hibachiMessages" }, "orderItemGiftRecipientID": { "generator": "uuid", "unsavedvalue": "", "fieldtype": "id", "length": 32, "ormtype": "string", "default": "", "name": "orderItemGiftRecipientID" }, "modifiedDateTime": { "ormtype": "timestamp", "hb_populateenabled": false, "name": "modifiedDateTime" }, "validations": { "persistent": false, "type": "struct", "name": "validations" }, "remoteID": { "ormtype": "string", "name": "remoteID" }, "createdByAccount": { "persistent": false, "name": "createdByAccount" }, "createdDateTime": { "ormtype": "timestamp", "hb_populateenabled": false, "name": "createdDateTime" }, "announceEvent": { "persistent": false, "type": "boolean", "default": true, "name": "announceEvent" }, "assignedAttributeSetSmartList": { "persistent": false, "type": "any", "name": "assignedAttributeSetSmartList" }, "createdByAccountID": { "ormtype": "string", "hb_populateenabled": false, "name": "createdByAccountID" }, "modifiedByAccount": { "persistent": false, "name": "modifiedByAccount" }, "hibachiInstanceApplicationScopeKey": { "PERSISTENT": false, "TYPE": "string", "NAME": "hibachiInstanceApplicationScopeKey" } };
-                entities['orderItemGiftRecipient'].className = 'orderItemGiftRecipient';
-                validations['orderItemGiftRecipient'] = { "properties": {} };
-                defaultValues['orderItemGiftRecipient'] = {
+                entities['OrderItemGiftRecipient'] = { "printTemplates": { "persistent": false, "type": "struct", "name": "printTemplates" }, "simpleRepresentation": { "persistent": false, "type": "string", "name": "simpleRepresentation" }, "quantity": { "ormtype": "integer", "name": "quantity" }, "hibachiErrors": { "persistent": false, "type": "any", "name": "hibachiErrors" }, "emailAddress": { "ormtype": "string", "name": "emailAddress" }, "persistableErrors": { "persistent": false, "type": "array", "name": "persistableErrors" }, "firstName": { "ormtype": "string", "name": "firstName" }, "orderItem": { "cfc": "OrderItem", "fieldtype": "many-to-one", "fkcolumn": "orderItemID", "name": "orderItem" }, "auditSmartList": { "persistent": false, "type": "any", "name": "auditSmartList" }, "settingValueFormatted": { "persistent": false, "type": "any", "name": "settingValueFormatted" }, "account": { "cfc": "Account", "fieldtype": "many-to-one", "fkcolumn": "accountID", "name": "account" }, "lastName": { "ormtype": "string", "name": "lastName" }, "processObjects": { "persistent": false, "type": "struct", "name": "processObjects" }, "giftMessage": { "ormtype": "string", "name": "giftMessage" }, "attributeValuesByAttributeCodeStruct": { "persistent": false, "type": "struct", "name": "attributeValuesByAttributeCodeStruct" }, "emailTemplates": { "persistent": false, "type": "struct", "name": "emailTemplates" }, "populatedSubProperties": { "persistent": false, "type": "struct", "name": "populatedSubProperties" }, "rollbackProcessedFlag": { "persistent": false, "type": "boolean", "name": "rollbackProcessedFlag" }, "modifiedByAccountID": { "ormtype": "string", "hb_populateenabled": false, "name": "modifiedByAccountID" }, "newFlag": { "persistent": false, "type": "boolean", "name": "newFlag" }, "attributeValuesByAttributeIDStruct": { "persistent": false, "type": "struct", "name": "attributeValuesByAttributeIDStruct" }, "encryptedPropertiesExistFlag": { "persistent": false, "type": "boolean", "name": "encryptedPropertiesExistFlag" }, "hibachiMessages": { "persistent": false, "type": "any", "name": "hibachiMessages" }, "orderItemGiftRecipientID": { "generator": "uuid", "unsavedvalue": "", "fieldtype": "id", "length": 32, "ormtype": "string", "default": "", "name": "orderItemGiftRecipientID" }, "modifiedDateTime": { "ormtype": "timestamp", "hb_populateenabled": false, "name": "modifiedDateTime" }, "validations": { "persistent": false, "type": "struct", "name": "validations" }, "remoteID": { "ormtype": "string", "name": "remoteID" }, "createdByAccount": { "persistent": false, "name": "createdByAccount" }, "createdDateTime": { "ormtype": "timestamp", "hb_populateenabled": false, "name": "createdDateTime" }, "announceEvent": { "persistent": false, "type": "boolean", "default": true, "name": "announceEvent" }, "assignedAttributeSetSmartList": { "persistent": false, "type": "any", "name": "assignedAttributeSetSmartList" }, "createdByAccountID": { "ormtype": "string", "hb_populateenabled": false, "name": "createdByAccountID" }, "modifiedByAccount": { "persistent": false, "name": "modifiedByAccount" }, "hibachiInstanceApplicationScopeKey": { "PERSISTENT": false, "TYPE": "string", "NAME": "hibachiInstanceApplicationScopeKey" } };
+                entities['OrderItemGiftRecipient'].className = 'OrderItemGiftRecipient';
+                validations['OrderItemGiftRecipient'] = { "properties": {} };
+                defaultValues['OrderItemGiftRecipient'] = {
                     orderItemGiftRecipientID: '',
                     firstName: null,
                     lastName: null,
@@ -1673,7 +1673,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
-                    accountPasswordResetID: "5da48ab68d11630f7ba2843231d41f99",
+                    accountPasswordResetID: "5c361ddc20b77a5be7a55c75e57058b8",
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
@@ -3597,14 +3597,15 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     }
                 };
                 var _save = function (entityInstance) {
-                    var timeoutPromise = $timeout(function () {
+                    var deferred = $q.defer();
+                    $timeout(function () {
                         //$log.debug('save begin');
                         //$log.debug(entityInstance);
                         var entityID = entityInstance.$$getID();
                         var modifiedData = _getModifiedData(entityInstance);
                         //$log.debug('modifiedData complete');
                         //$log.debug(modifiedData);
-                        timeoutPromise.valid = modifiedData.valid;
+                        //timeoutPromise.valid = modifiedData.valid;
                         if (modifiedData.valid) {
                             var params = {};
                             params.serializedJsonData = angular.toJson(modifiedData.value);
@@ -3622,7 +3623,15 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                             var savePromise = $delegate.saveEntity(entityName, entityInstance.$$getID(), params, context);
                             savePromise.then(function (response) {
                                 var returnedIDs = response.data;
-                                _addReturnedIDs(returnedIDs, modifiedData.objectLevel);
+                                if (angular.isDefined(response.SUCCESS) && response.SUCCESS === true) {
+                                    _addReturnedIDs(returnedIDs, modifiedData.objectLevel);
+                                    deferred.resolve(returnedIDs);
+                                }
+                                else {
+                                    deferred.reject(angular.isDefined(response.messages) ? response.messages : response);
+                                }
+                            }, function (reason) {
+                                deferred.reject(reason);
                             });
                         }
                         else {
@@ -3633,9 +3642,11 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                             target.focus();
                             var targetID = target.attr('id');
                             $anchorScroll();
+                            deferred.reject('input is invalid');
                         }
                     });
-                    return timeoutPromise;
+                    //return timeoutPromise;
+                    return deferred.promise;
                     /*
                     
                     

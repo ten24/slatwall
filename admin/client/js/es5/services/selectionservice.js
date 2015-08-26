@@ -13,6 +13,10 @@ var slatwalladmin;
             var _this = this;
             _super.call(this);
             this._selection = {};
+            this.radioSelection = function (selectionid, selection) {
+                _this._selection[selectionid] = [];
+                _this._selection[selectionid].push(selection);
+            };
             this.addSelection = function (selectionid, selection) {
                 if (angular.isUndefined(_this._selection[selectionid])) {
                     _this._selection[selectionid] = [];
