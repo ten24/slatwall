@@ -308,7 +308,11 @@ module slatwalladmin{
 
         useDefaultColumns=(flag:boolean=true)=>{
             this.defaultColumns = flag;
-        }
+        };
+
+        getEntity=()=>{
+            return this.$slatwall.getEntity(this.baseEntityName, this.getOptions());
+        };
 
     }
 }
