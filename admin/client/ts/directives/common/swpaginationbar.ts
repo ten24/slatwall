@@ -25,24 +25,3 @@ module slatwalladmin {
 	angular.module('slatwalladmin').directive('swPaginationBar',['$log','$timeout','partialsPath','paginationService',($log,$timeout,partialsPath,paginationService) => new SWPaginationBar($log,$timeout,partialsPath,paginationService)]);
 }
 
-// angular.module('slatwalladmin')
-// .directive('swPaginationBar', [
-// 	'$log',
-// 	'$timeout',
-// 	'partialsPath', 
-// 	'paginationService',
-// 	function(
-// 		$log,
-// 		$timeout,
-// 		partialsPath,
-// 		paginationService
-// 	){
-// 		return {
-// 			
-// 			link:function(scope,element,attrs){
-// 				
-// 			}
-// 		};
-// 	}
-// ]);
-	

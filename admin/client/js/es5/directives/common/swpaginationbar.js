@@ -22,25 +22,5 @@ var slatwalladmin;
     slatwalladmin.SWPaginationBar = SWPaginationBar;
     angular.module('slatwalladmin').directive('swPaginationBar', ['$log', '$timeout', 'partialsPath', 'paginationService', function ($log, $timeout, partialsPath, paginationService) { return new SWPaginationBar($log, $timeout, partialsPath, paginationService); }]);
 })(slatwalladmin || (slatwalladmin = {}));
-// angular.module('slatwalladmin')
-// .directive('swPaginationBar', [
-// 	'$log',
-// 	'$timeout',
-// 	'partialsPath', 
-// 	'paginationService',
-// 	function(
-// 		$log,
-// 		$timeout,
-// 		partialsPath,
-// 		paginationService
-// 	){
-// 		return {
-// 			
-// 			link:function(scope,element,attrs){
-// 				
-// 			}
-// 		};
-// 	}
-// ]);
 
 //# sourceMappingURL=../../directives/common/swpaginationbar.js.map
