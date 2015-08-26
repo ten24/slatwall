@@ -1,120 +1,182 @@
-'use strict';
-angular.module('slatwalladmin')
-    .factory('paginationService', ['utilityService',
-    function (utilityService) {
-        var paginations = {};
-        var paginationService = {
-            createPagination: function () {
-                var uuid = utilityService.createID(10);
-                paginations[uuid] = {
-                    _pageShow: 10,
-                    _currentPage: 1,
-                    _pageStart: 0,
-                    _pageEnd: 0,
-                    _recordsCount: 0,
-                    _totalPages: 0,
-                    _pageShowOptions: [
-                        { display: 10, value: 10 },
-                        { display: 20, value: 20 },
-                        { display: 50, value: 50 },
-                        { display: 250, value: 250 },
-                        { display: "Auto", value: "Auto" }
-                    ]
-                };
-                return uuid;
-            },
-            getPagination: function (uuid) {
-                if (!uuid)
-                    return;
-                return paginations[uuid];
-            },
-            getTotalPages: function (uuid) {
-                if (!uuid)
-                    return;
-                return paginations[uuid]._totalPages;
-            },
-            setTotalPages: function (uuid, totalPages) {
-                if (!uuid)
-                    return;
-                paginations[uuid]._totalPages = totalPages;
-            },
-            getPageStart: function (uuid) {
-                if (!uuid)
-                    return;
-                return paginations[uuid]._pageStart;
-            },
-            setPageStart: function (uuid, pageStart) {
-                if (!uuid)
-                    return;
-                paginations[uuid]._pageStart = pageStart;
-            },
-            getPageEnd: function (uuid) {
-                return paginations[uuid]._pageEnd;
-            },
-            setPageEnd: function (uuid, pageEnd) {
-                if (!uuid)
-                    return;
-                paginations[uuid]._pageEnd = pageEnd;
-            },
-            getRecordsCount: function (uuid) {
-                if (!uuid)
-                    return;
-                return paginations[uuid]._recordsCount;
-            },
-            setRecordsCount: function (uuid, recordsCount) {
-                if (!uuid)
-                    return;
-                paginations[uuid]._recordsCount = recordsCount;
-            },
-            getPageShowOptions: function (uuid) {
-                if (!uuid)
-                    return;
-                return paginations[uuid]._pageShowOptions;
-            },
-            setPageShowOptions: function (uuid, pageShowOptions) {
-                if (!uuid)
-                    return;
-                paginations[uuid]._pageShowOptions = pageShowOptions;
-            },
-            getPageShow: function (uuid) {
-                if (!uuid)
-                    return;
-                return paginations[uuid]._pageShow;
-            },
-            setPageShow: function (uuid, pageShow) {
-                if (!uuid)
-                    return;
-                paginations[uuid]._pageShow = pageShow;
-            },
-            getCurrentPage: function (uuid) {
-                if (!uuid)
-                    return;
-                return paginations[uuid]._currentPage;
-            },
-            setCurrentPage: function (uuid, currentPage) {
-                if (!uuid)
-                    return;
-                paginations[uuid]._currentPage = currentPage;
-            },
-            previousPage: function (uuid) {
-                if (uuid && !this.hasPrevious(uuid)) {
-                    paginations[uuid]._currentPage = this.getCurrentPage(uuid) - 1;
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
+/*collection service is used to maintain the state of the ui*/
+var slatwalladmin;
+(function (slatwalladmin) {
+    class Pagination {
+        constructor(uuid) {
+            this.uuid = uuid;
+            this.pageShow = 10;
+            this.currentPage = 1;
+            this.pageStart = 0;
+            this.pageEnd = 0;
+            this.recordsCount = 0;
+            this.totalPages = 0;
+            this.pageShowOptions = [
+                { display: 10, value: 10 },
+                { display: 20, value: 20 },
+                { display: 50, value: 50 },
+                { display: 250, value: 250 },
+                { display: "Auto", value: "Auto" }
+            ];
+            this.autoScrollPage = 1;
+            this.autoScrollDisabled = false;
+            this.getSelectedPageShowOption = () => {
+                return this.selectedPageShowOption;
+            };
+            this.pageShowOptionChanged = (pageShowOption) => {
+                this.setPageShow(pageShowOption.value);
+                this.setCurrentPage(1);
+            };
+            this.getTotalPages = () => {
+                return this.totalPages;
+            };
+            this.setTotalPages = (totalPages) => {
+                this.totalPages = totalPages;
+            };
+            this.getPageStart = () => {
+                return this.pageStart;
+            };
+            this.setPageStart = (pageStart) => {
+                this.pageStart = pageStart;
+            };
+            this.getPageEnd = () => {
+                return this.pageEnd;
+            };
+            this.setPageEnd = (pageEnd) => {
+                this.pageEnd = pageEnd;
+            };
+            this.getRecordsCount = () => {
+                return this.recordsCount;
+            };
+            this.setRecordsCount = (recordsCount) => {
+                this.recordsCount = recordsCount;
+            };
+            this.getPageShowOptions = () => {
+                return this.pageShowOptions;
+            };
+            this.setPageShowOptions = (pageShowOptions) => {
+                this.pageShowOptions = pageShowOptions;
+            };
+            this.getPageShow = () => {
+                return this.pageShow;
+            };
+            this.setPageShow = (pageShow) => {
+                this.pageShow = pageShow;
+            };
+            this.getCurrentPage = () => {
+                return this.currentPage;
+            };
+            this.setCurrentPage = (currentPage) => {
+                this.currentPage = currentPage;
+            };
+            this.previousPage = () => {
+                if (!this.hasPrevious()) {
+                    this.currentPage = this.getCurrentPage() - 1;
                 }
-            },
-            nextPage: function (uuid) {
-                if (uuid && !this.hasNext(uuid)) {
-                    paginations[uuid]._currentPage = this.getCurrentPage(uuid) + 1;
+            };
+            this.nextPage = () => {
+                if (!this.hasNext()) {
+                    this.currentPage = this.getCurrentPage() + 1;
                 }
-            },
-            hasPrevious: function (uuid) {
-                return !!(uuid && paginationService.getPageStart(uuid) <= 1);
-            },
-            hasNext: function (uuid) {
-                return !!(uuid && paginationService.getPageEnd(uuid) === paginationService.getRecordsCount(uuid));
-            }
-        };
-        return paginationService;
+            };
+            this.hasPrevious = () => {
+                return !!(this.getPageStart() <= 1);
+            };
+            this.hasNext = () => {
+                return !!(this.getPageEnd() === this.getRecordsCount());
+            };
+            this.showPreviousJump = () => {
+                console.log('shorPrev');
+                console.log(this.getCurrentPage());
+                if (angular.isDefined(this.getCurrentPage()) && this.getCurrentPage() > 3) {
+                    this.totalPagesArray = [];
+                    for (var i = 0; i < this.getTotalPages(); i++) {
+                        if (this.getCurrentPage() < 7 && this.getCurrentPage() > 3) {
+                            if (i !== 0) {
+                                this.totalPagesArray.push(i + 1);
+                            }
+                        }
+                        else {
+                            this.totalPagesArray.push(i + 1);
+                        }
+                    }
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            };
+            this.showNextJump = () => {
+                return !!(this.getCurrentPage() < this.getTotalPages() - 3
+                    && this.getTotalPages() > 6);
+            };
+            this.previousJump = () => {
+                this.setCurrentPage(this.currentPage - 3);
+                this.currentPage -= 3;
+            };
+            this.nextJump = () => {
+                this.setCurrentPage(this.getCurrentPage() + 3);
+            };
+            this.showPageNumber = (pageNumber) => {
+                if (this.getCurrentPage() >= this.getTotalPages() - 3) {
+                    if (pageNumber > this.getTotalPages() - 6) {
+                        return true;
+                    }
+                }
+                if (this.getCurrentPage() <= 3) {
+                    if (pageNumber < 6) {
+                        return true;
+                    }
+                }
+                else {
+                    var bottomRange = this.getCurrentPage() - 2;
+                    var topRange = this.getCurrentPage() + 2;
+                    if (pageNumber > bottomRange && pageNumber < topRange) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+            this.setPageRecordsInfo = (recordsCount, pageStart, pageEnd, totalPages) => {
+                this.setRecordsCount(recordsCount);
+                if (this.getRecordsCount() === 0) {
+                    this.setPageStart(0);
+                }
+                else {
+                    this.setPageStart(pageStart);
+                }
+                this.setPageEnd(pageEnd);
+                this.setTotalPages(totalPages);
+            };
+            this.uuid = uuid;
+            this.selectedPageShowOption = this.pageShowOptions[0];
+        }
     }
-]);
+    Pagination.$inject = [];
+    slatwalladmin.Pagination = Pagination;
+    class PaginationService extends slatwalladmin.BaseService {
+        constructor(utilityService) {
+            super();
+            this.utilityService = utilityService;
+            this.paginations = {};
+            this.createPagination = () => {
+                var uuid = this.utilityService.createID(10);
+                this.paginations[uuid] = new Pagination(uuid);
+                return this.paginations[uuid];
+            };
+            this.getPagination = (uuid) => {
+                if (!uuid)
+                    return;
+                return this.paginations[uuid];
+            };
+        }
+    }
+    PaginationService.$inject = [
+        'utilityService'
+    ];
+    slatwalladmin.PaginationService = PaginationService;
+    angular.module('slatwalladmin').service('paginationService', PaginationService);
+})(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../services/paginationservice.js.map

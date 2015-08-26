@@ -1,13 +1,14 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     class Column {
-        constructor(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, attributeID, attributeSetObject) {
+        constructor(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, ormtype, attributeID, attributeSetObject) {
             this.propertyIdentifier = propertyIdentifier;
             this.title = title;
             this.isVisible = isVisible;
             this.isDeletable = isDeletable;
             this.isSearchable = isSearchable;
             this.isExportable = isExportable;
+            this.ormtype = ormtype;
             this.attributeID = attributeID;
             this.attributeSetObject = attributeSetObject;
         }
@@ -157,7 +158,7 @@ var slatwalladmin;
                 return s && s[0].toUpperCase() + s.slice(1);
             };
             this.addColumn = (column, title = '', options = {}) => {
-                var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true;
+                var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, ormtype = 'string';
                 if (angular.isUndefined(this.columns)) {
                     this.columns = [];
                 }
@@ -176,7 +177,13 @@ var slatwalladmin;
                 if (angular.isUndefined(options['isExportable']) && !isVisible) {
                     isExportable = false;
                 }
-                this.columns.push(new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, options['attributeID'], options['attributeSetObject']));
+                if (!angular.isUndefined(options['ormtype'])) {
+                    ormtype = options['ormtype'];
+                }
+                else if (this.collection.metaData[column] && this.collection.metaData[column].ormtype) {
+                    ormtype = this.collection.metaData[column].ormtype;
+                }
+                this.columns.push(new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, ormtype, options['attributeID'], options['attributeSetObject']));
             };
             this.setDisplayProperties = (propertyIdentifier, title = '', options = {}) => {
                 var _DividedColumns = propertyIdentifier.trim().split(',');

@@ -1,13 +1,14 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     var Column = (function () {
-        function Column(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, attributeID, attributeSetObject) {
+        function Column(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, ormtype, attributeID, attributeSetObject) {
             this.propertyIdentifier = propertyIdentifier;
             this.title = title;
             this.isVisible = isVisible;
             this.isDeletable = isDeletable;
             this.isSearchable = isSearchable;
             this.isExportable = isExportable;
+            this.ormtype = ormtype;
             this.attributeID = attributeID;
             this.attributeSetObject = attributeSetObject;
         }
@@ -172,7 +173,7 @@ var slatwalladmin;
             this.addColumn = function (column, title, options) {
                 if (title === void 0) { title = ''; }
                 if (options === void 0) { options = {}; }
-                var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true;
+                var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, ormtype = 'string';
                 if (angular.isUndefined(_this.columns)) {
                     _this.columns = [];
                 }
@@ -191,7 +192,13 @@ var slatwalladmin;
                 if (angular.isUndefined(options['isExportable']) && !isVisible) {
                     isExportable = false;
                 }
-                _this.columns.push(new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, options['attributeID'], options['attributeSetObject']));
+                if (!angular.isUndefined(options['ormtype'])) {
+                    ormtype = options['ormtype'];
+                }
+                else if (_this.collection.metaData[column] && _this.collection.metaData[column].ormtype) {
+                    ormtype = _this.collection.metaData[column].ormtype;
+                }
+                _this.columns.push(new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, ormtype, options['attributeID'], options['attributeSetObject']));
             };
             this.setDisplayProperties = function (propertyIdentifier, title, options) {
                 if (title === void 0) { title = ''; }
