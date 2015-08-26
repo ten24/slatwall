@@ -861,22 +861,69 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	
 	//can be overridden at the entity level in case we need to always return a relationship entity otherwise the default is only non-relationship and non-persistent
 	public any function getDefaultCollectionProperties(string includesList = "", string excludesList="modifiedByAccountID,createdByAccountID,modifiedDateTime,createdDateTime,remoteID,remoteEmployeeID,remoteCustomerID,remoteContactID,cmsAccountID,cmsContentID,cmsSiteID"){
-		var properties = getProperties();
 		
 		var defaultProperties = [];
 		if(getHibachiScope().authenticateEntity('read', getClassName())){
-			for(var p=1; p<=arrayLen(properties); p++) {
-				if(
-					getHibachiScope().authenticateEntityProperty('read', getClassName(), properties[p].name)
-					|| (structKeyExists(properties[p],'fieldtype') && properties[p].fieldtype == 'id') 
-				){
-					if(len(arguments.excludesList) && ListFind(arguments.excludesList,properties[p].name)){
-						
+			var properties = getProperties();
+			//Check if there is any include column
+			if(len(arguments.includesList)){
+				var includesArray = ListToArray(arguments.includesList);
+				for(var inc in includesArray) {
+					//Loop through IncludeList looking for relational
+					inc = trim(inc);
+					if(Find('.', inc) != 0){
+						//Find RelatedE Entity
+						var relatedEntity = getService("hibachiService").getLastEntityNameInPropertyIdentifier(this.getClassName(), inc);
+						//get relational Entity Properties
+						var relatedEntityProperties = getService("hibachiService").getPropertiesByEntityName(relatedEntity);
+
+
+						for(var property in relatedEntityProperties){
+							if(property.name == listLast(inc, '.')){
+								//security checks
+								if(getHibachiScope().authenticateEntityProperty('read', relatedEntity, property.name)
+									|| (structKeyExists(property,'fieldtype') && property.fieldtype == 'id')
+								){
+									//Create a new struct instead of changing the "property" otherwise it will be cached with the changes.
+									var newProperty = {};
+									structAppend(newProperty, property);
+									newProperty.name = inc;
+									newProperty.title = rbKey('entity.' & inc);
+									//append the Column struct with relational name.
+									arrayAppend(defaultProperties, newProperty);
+								}
+							}
+						}
 					}else{
-						if((len(arguments.includesList) && ListFind(arguments.includesList,properties[p].name)) || 
-						!structKeyExists(properties[p],'FKColumn') && (!structKeyExists(properties[p], "persistent") || 
-						properties[p].persistent)){
-							arrayAppend(defaultProperties,properties[p]);	
+						//If its not relationa, just use the current entity struct
+						for(var property in properties){
+							//Security checks
+							if(
+								getHibachiScope().authenticateEntityProperty('read', getClassName(), property.name)
+								|| (structKeyExists(property,'fieldtype') && property.fieldtype == 'id')
+							){
+								//if property is in the list, add
+								if(property.name == inc){
+									arrayAppend(defaultProperties, property);
+								}
+							}
+						}
+					}
+				}
+			}else{
+				//Remove all non Persistent, Relational and Excluded columns
+				for(var property in properties){
+					//Security checks
+					if(
+						getHibachiScope().authenticateEntityProperty('read', getClassName(), property.name)
+						|| (structKeyExists(property,'fieldtype') && property.fieldtype == 'id')
+					){
+						//if not part of exclude list, is persisted and not a relational entity, add to defaultProperties
+						if(
+							!ListContains(excludesList, property.name) && !structKeyExists(property, 'FKColumn') &&
+							(!structKeyExists(property, "persistent") || property.persistent)
+						){
+							arrayAppend(defaultProperties, property);
 						}
 					}
 				}
@@ -884,15 +931,35 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 		}
 		return defaultProperties;
 	}
-	
+
 	public any function getFilterProperties(string includesList = "", string excludesList = ""){
-		var properties = getProperties();
 		var defaultProperties = [];
-		for(var p=1; p<=arrayLen(properties); p++) {
-			if((len(includesList) && ListFind(arguments.includesList,properties[p].name) && !ListFind(arguments.excludesList,properties[p].name)) 
-			|| (!structKeyExists(properties[p], "persistent") || properties[p].persistent)){
-				properties[p]['displayPropertyIdentifier'] = getPropertyTitle(properties[p].name);
-				arrayAppend(defaultProperties,properties[p]);	
+		if(getHibachiScope().authenticateEntity('read', getClassName())){
+			var properties = getProperties();
+
+			for(var p = 1; p <= arrayLen(properties); p++) {
+				if(len(arguments.includesList)){
+					if(ListFind(arguments.includesList, properties[p].name)){
+						if(
+							getHibachiScope().authenticateEntityProperty('read', getClassName(), properties[p].name)
+							|| (structKeyExists(properties[p],'fieldtype') && properties[p].fieldtype == 'id')
+						){
+							properties[p]['displayPropertyIdentifier'] = getPropertyTitle(properties[p].name);
+							arrayAppend(defaultProperties, properties[p]);
+						}
+					}
+				} else if(
+					!ListFind(arguments.excludesList, properties[p].name) &&
+					(!structKeyExists(properties[p], "persistent") || properties[p].persistent)
+				){
+					if(
+						getHibachiScope().authenticateEntityProperty('read', getClassName(), properties[p].name)
+						|| (structKeyExists(properties[p],'fieldtype') && properties[p].fieldtype == 'id')
+					){
+						properties[p]['displayPropertyIdentifier'] = getPropertyTitle(properties[p].name);
+						arrayAppend(defaultProperties, properties[p]);
+					}
+				}
 			}
 		}
 		return defaultProperties;
