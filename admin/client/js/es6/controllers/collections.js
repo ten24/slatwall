@@ -72,6 +72,7 @@ angular.module('slatwalladmin')
             }, 500);
         };
         $scope.getCollection = function () {
+            console.log('getCollection');
             var pageShow = 50;
             if ($scope.paginator.getPageShow() !== 'Auto') {
                 pageShow = $scope.paginator.getPageShow();
@@ -80,6 +81,7 @@ angular.module('slatwalladmin')
             var collectionListingPromise = $slatwall.getEntity('collection', { id: $scope.collectionID, currentPage: $scope.paginator.getCurrentPage(), pageShow: pageShow, keywords: $scope.keywords });
             collectionListingPromise.then(function (value) {
                 $scope.collection = value;
+                $scope.paginator.setPageRecordsInfo($scope.collection.recordsCount, $scope.collection.pageRecordsStart, $scope.collection.pageRecordsEnd, $scope.collection.totalPages);
                 $scope.collectionInitial = angular.copy($scope.collection);
                 if (angular.isUndefined($scope.collectionConfig)) {
                     var test = new slatwalladmin.CollectionConfig($slatwall);
@@ -100,6 +102,7 @@ angular.module('slatwalladmin')
             });
             return collectionListingPromise;
         };
+        $scope.paginator.getCollection = $scope.getCollection;
         $scope.getCollection();
         var unbindCollectionObserver = $scope.$watch('collection', function (newValue, oldValue) {
             if (newValue !== oldValue) {

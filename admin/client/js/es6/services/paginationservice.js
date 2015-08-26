@@ -27,6 +27,7 @@ var slatwalladmin;
             this.pageShowOptionChanged = (pageShowOption) => {
                 this.setPageShow(pageShowOption.value);
                 this.setCurrentPage(1);
+                this.getCollection();
             };
             this.getTotalPages = () => {
                 return this.totalPages;
@@ -69,16 +70,19 @@ var slatwalladmin;
             };
             this.setCurrentPage = (currentPage) => {
                 this.currentPage = currentPage;
+                this.getCollection();
             };
             this.previousPage = () => {
                 if (!this.hasPrevious()) {
                     this.currentPage = this.getCurrentPage() - 1;
                 }
+                this.getCollection();
             };
             this.nextPage = () => {
                 if (!this.hasNext()) {
                     this.currentPage = this.getCurrentPage() + 1;
                 }
+                this.getCollection();
             };
             this.hasPrevious = () => {
                 return !!(this.getPageStart() <= 1);
@@ -87,8 +91,6 @@ var slatwalladmin;
                 return !!(this.getPageEnd() === this.getRecordsCount());
             };
             this.showPreviousJump = () => {
-                console.log('shorPrev');
-                console.log(this.getCurrentPage());
                 if (angular.isDefined(this.getCurrentPage()) && this.getCurrentPage() > 3) {
                     this.totalPagesArray = [];
                     for (var i = 0; i < this.getTotalPages(); i++) {
@@ -113,7 +115,6 @@ var slatwalladmin;
             };
             this.previousJump = () => {
                 this.setCurrentPage(this.currentPage - 3);
-                this.currentPage -= 3;
             };
             this.nextJump = () => {
                 this.setCurrentPage(this.getCurrentPage() + 3);
@@ -148,6 +149,10 @@ var slatwalladmin;
                 }
                 this.setPageEnd(pageEnd);
                 this.setTotalPages(totalPages);
+                this.totalPagesArray = [];
+                for (var i = 0; i < this.getTotalPages(); i++) {
+                    this.totalPagesArray.push(i + 1);
+                }
             };
             this.uuid = uuid;
             this.selectedPageShowOption = this.pageShowOptions[0];
@@ -160,9 +165,9 @@ var slatwalladmin;
             super();
             this.utilityService = utilityService;
             this.paginations = {};
-            this.createPagination = () => {
+            this.createPagination = (collection, getCollection) => {
                 var uuid = this.utilityService.createID(10);
-                this.paginations[uuid] = new Pagination(uuid);
+                this.paginations[uuid] = new Pagination(uuid, collection, getCollection);
                 return this.paginations[uuid];
             };
             this.getPagination = (uuid) => {
