@@ -174,7 +174,7 @@ component output="false" accessors="true" extends="HibachiService" {
 	}
 	
 	public boolean function authenticateCollectionPropertyIdentifierCrudByAccount(required crudType, required any collection, required string propertyIdentifier, required any account){
-		var propertyIdentifierWithoutAlias = getService('collectionService').getHibachiPropertyIdentifierByCollectionPropertyIdentifier(arguments..propertyIdentifier);
+		var propertyIdentifierWithoutAlias = getService('collectionService').getHibachiPropertyIdentifierByCollectionPropertyIdentifier(arguments.propertyIdentifier);
 		var isObject = getService('hibachiService').getPropertyIsObjectByEntityNameAndPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
 		if(isObject){
 			var lastEntity = getService('hibachiService').getLastEntityNameInPropertyIdentifier(entityName=arguments.collection.getCollectionObject(),propertyIdentifier=propertyIdentifierWithoutAlias);
