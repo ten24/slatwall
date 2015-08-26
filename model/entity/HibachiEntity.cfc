@@ -104,7 +104,8 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		if(!arguments.passThrough){
 			validateAttributes(context=arguments.context);
 		}
-		super.validate(argumentCollection=arguments);
+		return super.validate(argumentCollection=arguments);
+		
 	}
 
 	// @hint Returns an array of comments related to this entity
