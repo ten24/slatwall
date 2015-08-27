@@ -1,8 +1,11 @@
 var slatwalladmin;
 (function (slatwalladmin) {
+    'use strict';
     class OrderItemGiftRecipientControl {
-        constructor($scope, $slatwall) {
+        constructor($scope, $injector, $slatwall) {
             this.$scope = $scope;
+            this.$injector = $injector;
+            this.$slatwall = $slatwall;
             this.getQuantity = () => {
                 if (isNaN(this.quantity)) {
                     return 0;
@@ -11,28 +14,20 @@ var slatwalladmin;
                     return this.quantity;
                 }
             };
-            this.getSearch = (keyword = "test") => {
-                var filterAccountsConfig = '[' +
-                    ' {  ' +
-                    '"filterGroup":[  ' +
-                    ' {  ' +
-                    ' "propertyIdentifier":"_account.firstName",' +
-                    ' "comparisonOperator":"like",' +
-                    ' "conditionDisplay":"Equals"' +
-                    ' "ormtype":"string",' +
-                    ' "value":"%' + keyword + '%"' +
-                    '},' +
-                    '{' +
-                    ' "logicalOperator":"AND",' +
-                    ' "propertyIdentifier":"_account.lastName",' +
-                    ' "comparisonOperator":"like",' +
-                    ' "ormtype":"string",' +
-                    ' "value":"%' + keyword + '%"' +
-                    '  }' +
-                    ' ]' +
-                    ' }' +
-                    ']';
-                return this.$slatwall.getEntity('account', { filterAccountsConfig: filterAccountsConfig.trim() });
+            this.updateResults = (keyword) => {
+                console.log("searching for:" + keyword);
+                var accountConfig = new slatwalladmin.CollectionConfig($slatwall, "Account");
+                accountConfig.addFilter("firstName", "%" + keyword + "%", "like", "OR");
+                accountConfig.addFilter("lastName", "%" + keyword + "%", "like", "OR");
+                accountConfig.addFilter("primaryEmailAddress", "%" + keyword + "%", "like", "OR");
+                accountConfig.setDisplayProperties("primaryEmailAddress", "firstName", "lastName");
+                console.log(accountConfig.getJson());
+                var accountPromise = $slatwall.getEntity('account', accountConfig.getJson());
+                accountPromise.then((response) => {
+                    this.$scope.collection = response;
+                    console.log(this.$scope.collection);
+                });
+                return this.$scope.collection;
             };
             this.getUnassignedCountArray = () => {
                 var unassignedCountArray = new Array();
@@ -72,19 +67,14 @@ var slatwalladmin;
                 var totalChar = 250;
                 //get chars subtract return
             };
-            this.$scope;
-            this.$slatwall;
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
+            $scope.collection = {};
             this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
             var count = 1;
             this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
-            console.log(this.getSearch());
         }
     }
-    OrderItemGiftRecipientControl.$inject = [
-        '$scope',
-        "$slatwall"
-    ];
+    OrderItemGiftRecipientControl.$inject = ["$scope", "$injector", "$slatwall"];
     slatwalladmin.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
     angular.module('slatwalladmin').controller('preprocessorderitem_addorderitemgiftrecipient', OrderItemGiftRecipientControl);
 })(slatwalladmin || (slatwalladmin = {}));

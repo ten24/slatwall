@@ -1,9 +1,12 @@
 var slatwalladmin;
 (function (slatwalladmin) {
+    'use strict';
     var OrderItemGiftRecipientControl = (function () {
-        function OrderItemGiftRecipientControl($scope, injector) {
+        function OrderItemGiftRecipientControl($scope, $injector, $slatwall) {
             var _this = this;
             this.$scope = $scope;
+            this.$injector = $injector;
+            this.$slatwall = $slatwall;
             this.getQuantity = function () {
                 if (isNaN(_this.quantity)) {
                     return 0;
@@ -12,33 +15,46 @@ var slatwalladmin;
                     return _this.quantity;
                 }
             };
-            this.getSearch = function (keyword) {
-                if (keyword === void 0) { keyword = "test"; }
-                var filterAccountsConfig = '[' +
-                    ' {  ' +
-                    '"filterGroup":[  ' +
-                    ' {  ' +
-                    ' "propertyIdentifier":"_account.firstName",' +
-                    ' "comparisonOperator":"like",' +
-                    ' "conditionDisplay":"Equals"' +
-                    ' "ormtype":"string",' +
-                    ' "value":"%' + keyword + '%"' +
-                    '},' +
-                    '{' +
-                    ' "logicalOperator":"AND",' +
-                    ' "propertyIdentifier":"_account.lastName",' +
-                    ' "comparisonOperator":"like",' +
-                    ' "ormtype":"string",' +
-                    ' "value":"%' + keyword + '%"' +
-                    '  }' +
-                    ' ]' +
-                    ' }' +
-                    ']';
-                var accountPromise = _this.$slatwall.getEntity('account', { filterAccountsConfig: filterAccountsConfig.trim() });
+            this.updateResults = function (keyword) {
+                console.log("searching for:" + keyword);
+                var options = {
+                    baseEntityName: "SlatwallAccount",
+                    baseEntityAlias: "_account",
+                    keywords: keyword,
+                    defaultColumns: false,
+                    columnsConfig: angular.toJson([
+                        { isDeletable: false,
+                            isSearchable: false,
+                            isVisible: true,
+                            ormtype: "id",
+                            propertyIdentifier: "_account.accountID",
+                        },
+                        { isDeletable: false,
+                            isSearchable: true,
+                            isVisible: true,
+                            ormtype: "string",
+                            propertyIdentifier: "_account.firstName",
+                        },
+                        { isDeletable: false,
+                            isSearchable: true,
+                            isVisible: true,
+                            ormtype: "string",
+                            propertyIdentifier: "_account.lastName",
+                        },
+                        { isDeletable: false,
+                            isSearchable: true,
+                            title: "Email Address",
+                            isVisible: true,
+                            ormtype: "string",
+                            propertyIdentifier: "_account.primaryEmailAddress.emailAddress",
+                        }
+                    ])
+                };
+                console.log(angular.toJson(options));
+                var accountPromise = $slatwall.getEntity('account', options);
                 accountPromise.then(function (response) {
-                    this.$scope.collection = response;
-                    $log.debug("Collection Response");
-                    $log.debug(this.$scope.collection);
+                    _this.$scope.collection = response;
+                    console.log(_this.$scope.collection);
                 });
                 return _this.$scope.collection;
             };
@@ -80,16 +96,13 @@ var slatwalladmin;
                 var totalChar = 250;
                 //get chars subtract return
             };
-            this.$scope = $scope;
-            OrderItemGiftRecipientControl.injector = injector;
-            OrderItemGiftRecipientControl.$slatwall = this.injector.get("$slatwall");
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
+            $scope.collection = {};
             this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
             var count = 1;
             this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
-            console.log(this.getSearch());
         }
-        OrderItemGiftRecipientControl.$inject = ["$scope"];
+        OrderItemGiftRecipientControl.$inject = ["$scope", "$injector", "$slatwall"];
         return OrderItemGiftRecipientControl;
     })();
     slatwalladmin.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;

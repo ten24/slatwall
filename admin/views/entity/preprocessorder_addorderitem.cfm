@@ -236,25 +236,25 @@ Notes:
 						<div class="form-group " ng-show="giftRecipientControl.getUnassignedCount() > 0">
 							<div class="s-search-filter s-gift-card">
 		                        <div class="input-group">
-									<form ng-submit="giftRecipientControl.add()">
+									<form>
 										<div class="s-search">
-		                  					<input type="text" placeholder="search or add recipient..." class="form-control input-sm" ng-model="$scope.searchText">
+		                  					<input type="text" placeholder="search or add recipient..." class="form-control input-sm" ng-model="searchText" ng-change="giftRecipientControl.updateResults(searchText)">
 											<i class="fa fa-search"></i>
 										</div>
 									</form>
 									<span href="##" class="s-current-selection-item addDropdown <!---Remove addDropdown---> addDropdown-filledName-input <!--- Remove addDropdown-filledName-input --->"> <!---Reyjay Solares (reinaldosolares@gmail.com) <a href="##" title="edit"><i class="fa fa-pencil"></i></a>---></span>
 	
-	                				<ul class="dropdown-menu addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->"><!-- display block should be replaced with js(angular) -->
+	                				<ul ng-show="searchText" class="dropdown-menu addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->"><!-- display block should be replaced with js(angular) -->
 	  									<!-- Item-->
-	  									<li>
+	  									<li ng-repeat="account in collection.pageRecords">
 	  										<a>
 	  											<div class="row">
 	  												<div class="col-xs-2 s-photo">
-	  													<img src="http://placehold.it/350x350">
+	  													<img src="{{account.gravatarURl}}">
 	  												</div>
 	  												<div class="col-xs-10 s-info">
-	  													<div class="s-name"></div>
-	  													<div class="s-email"></div>
+	  													<div class="s-name"><span ng-bind="account.firstName"></span> <span ng-bind="account.lastName"></span></div>
+	  													<div class="s-email" ng-bind="account.primaryEmailAddress_emailAddress"></div>
 	  												</div>
 	  											</div>
 	  										</a>
@@ -265,8 +265,8 @@ Notes:
 		                        </div>
 		                        <div class="addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->">
 		                            <!-- Only show if there is text -->
-		                            <button type="button" class="btn btn-primary">
-		                            	<i class="fa fa-plus" ></i> Add "<span ng-bind="$scope.searchText"></span>"
+		                            <button type="button" class="btn btn-primary" ng-show="searchText">
+		                            	<i class="fa fa-plus" ></i> Add "<span ng-bind="searchText"></span>"
 		                            </button>
 		                        </div>
 								<div class="s-add-info-dropdown addDropdown <!---Remove addDropdown---> addDropdown-add-account <!--- Remove addDropdown-add-account --->">

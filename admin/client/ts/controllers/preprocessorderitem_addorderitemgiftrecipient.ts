@@ -1,4 +1,5 @@
 module slatwalladmin {
+        'use strict';
 	
 	interface IOrderItemGiftRecipientScope extends ng.IScope {
 		orderItemGiftRecipients: GiftRecipient[];
@@ -10,27 +11,21 @@ module slatwalladmin {
     
 	export class OrderItemGiftRecipientControl{
                 
-                private static injector: ng.auto.IInjectorService;
-                private static $slatwall: ngSlatwall.$Slatwall; 
                 
-                static $inject=["$scope"];
-                
+                public static $inject=["$scope", "$injector", "$slatwall"];        
 		public orderItemGiftRecipients; 
                 public quantity:number;
                 public currentGiftRecipient:slatwalladmin.GiftRecipient;
         
-		constructor(private $scope: IOrderItemGiftRecipientScope, injector: ng.auto.IInjectorService){
-			this.$scope = $scope;
-                        OrderItemGiftRecipientControl.injector = injector; 
-                        OrderItemGiftRecipientControl.$slatwall = this.injector.get<ngSlatwall.$Slatwall>("$slatwall");
-           	        this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
+		constructor(private $scope: IOrderItemGiftRecipientScope, private $injector: ng.auto.IInjectorService, private $slatwall:ngSlatwall.$Slatwall){
+                        this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
+                        $scope.collection = {};
                         this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
 			var count = 1;
                         this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
-                        console.log(this.getSearch());
 		}
         
-                private getQuantity = ():number =>{      
+                getQuantity = ():number =>{      
                         if(isNaN(this.quantity)){
                                 return 0;
                         } else { 
@@ -38,40 +33,62 @@ module slatwalladmin {
                         }
                 }
                 
-                private getSearch = (keyword="test"):void =>{
-                        var filterAccountsConfig = 
-                        '['+  
-                                ' {  '+
-                                        '"filterGroup":[  '+
-                                                ' {  '+
-                                                        ' "propertyIdentifier":"_account.firstName",'+
-                                                        ' "comparisonOperator":"like",'+
-                                                        ' "conditionDisplay":"Equals"'+
-                                                                ' "ormtype":"string",'+
-                                                        ' "value":"%'+keyword+'%"'+
-                                                '},'+
-                                                '{'+
-                                                        ' "logicalOperator":"AND",'+
-                                                        ' "propertyIdentifier":"_account.lastName",'+
-                                                        ' "comparisonOperator":"like",'+
-                                                                ' "ormtype":"string",'+
-                                                        ' "value":"%'+keyword+'%"'+
-                                                '  }'+
-                                        ' ]'+
-                                ' }'+
-                        ']';
+                updateResults = (keyword):void =>{
+                        console.log("searching for:" + keyword);
+        
+                        var options =  {    
+                                baseEntityName:"SlatwallAccount", 
+                                baseEntityAlias:"_account", 
+                                keywords: keyword,
+                                defaultColumns: false, 
+                                columnsConfig:angular.toJson([
+                                        {isDeletable:false,
+                                        isSearchable:false,
+                           
+                                        isVisible:true,
+                                        ormtype:"id",
+                                        propertyIdentifier:"_account.accountID",
+                                        },
+                                        
+                                        
+                                
+                                        {isDeletable:false,
+                                        isSearchable:true,
+                      
+                                        isVisible:true,
+                                        ormtype:"string",
+                                        propertyIdentifier:"_account.firstName",
+                                        },
+                                
+                                        {isDeletable:false,
+                                        isSearchable:true,
+                                        isVisible:true,
+                                        ormtype:"string",
+                                        propertyIdentifier:"_account.lastName",
+                                        },
+                                
+                                        {isDeletable:false,
+                                        isSearchable:true,
+                                        title:"Email Address",
+                                        isVisible:true,
+                                        ormtype:"string",
+                                        propertyIdentifier:"_account.primaryEmailAddress.emailAddress",
+                                        }
+                                ])
+                        };
+                        console.log(angular.toJson(options));
                         
-                        var accountPromise = this.$slatwall.getEntity('account', {filterAccountsConfig:filterAccountsConfig.trim()})
-                        accountPromise.then(function(response){
+                        var accountPromise = $slatwall.getEntity('account', options);
+                        
+                        accountPromise.then((response:any):void =>{
                                 this.$scope.collection = response;
-                                $log.debug("Collection Response");
-                                $log.debug(this.$scope.collection);
+                                console.log(this.$scope.collection);
 		        });
                         
                         return this.$scope.collection;
                 }
                 
-                private getUnassignedCountArray = ():number[] =>{
+                getUnassignedCountArray = ():number[] =>{
                         var unassignedCountArray = new Array();
                         if(this.getUnassignedCount() > 1){
                                 for(var i = 1; i < this.getUnassignedCount(); i++ ){
@@ -84,7 +101,7 @@ module slatwalladmin {
                         return unassignedCountArray; 
                 }
                 
-                private getUnassignedCount = ():number =>{
+                getUnassignedCount = ():number =>{
                         var unassignedCount = this.getQuantity(); 
                         
                         angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient)=>{
@@ -94,14 +111,14 @@ module slatwalladmin {
                         return unassignedCount;
                 }
                 
-                public addGiftRecipient = ():void =>{
+                addGiftRecipient = ():void =>{
                         var giftRecipient = new GiftRecipient();
                         angular.extend(giftRecipient,this.currentGiftRecipient);
                         this.orderItemGiftRecipients.push(giftRecipient);
                         this.currentGiftRecipient = new slatwalladmin.GiftRecipient();; 
                 }
                 
-                private getTotalQuantity = ():number =>{
+                getTotalQuantity = ():number =>{
                         var totalQuantity = 0;
                         angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient)=>{
                                 totalQuantity += orderItemGiftRecipient.quantity;
@@ -109,7 +126,7 @@ module slatwalladmin {
                         return totalQuantity;
                 }
                         
-		private getMessageCharactersLeft = ():number =>{
+		getMessageCharactersLeft = ():number =>{
 			var totalChar = 250;
 			
 			//get chars subtract return
