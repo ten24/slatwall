@@ -93,6 +93,14 @@ var slatwalladmin;
                 });
                 return totalQuantity;
             };
+            this.getMessageCharactersLeft = function () {
+                if (angular.isDefined(_this.currentGiftRecipient.giftMessage)) {
+                    return 250 - _this.currentGiftRecipient.giftMessage.length;
+                }
+                else {
+                    return 250;
+                }
+            };
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
             $scope.collection = {};
             this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();

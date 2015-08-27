@@ -20,7 +20,6 @@ var slatwalladmin;
                 giftRecipient.lastName = account.lastName;
                 giftRecipient.email = account.primaryEmailAddress_emailAddress;
                 this.orderItemGiftRecipients.push(giftRecipient);
-                console.log(this.orderItemGiftRecipients);
             };
             this.updateResults = (keyword) => {
                 console.log("searching for:" + keyword);
@@ -67,15 +66,9 @@ var slatwalladmin;
             };
             this.getUnassignedCountArray = () => {
                 var unassignedCountArray = new Array();
-                if (this.getUnassignedCount() > 1) {
-                    for (var i = 1; i < this.getUnassignedCount(); i++) {
-                        unassignedCountArray.push(i);
-                    }
+                for (var i = 1; i <= this.getUnassignedCount(); i++) {
+                    unassignedCountArray.push(i);
                 }
-                else {
-                    unassignedCountArray.push(1);
-                }
-                console.log(unassignedCountArray);
                 return unassignedCountArray;
             };
             this.getUnassignedCount = () => {
@@ -108,7 +101,15 @@ var slatwalladmin;
     }
     OrderItemGiftRecipientControl.$inject = ["$scope", "$injector", "$slatwall"];
     slatwalladmin.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
-    angular.module('slatwalladmin').controller('preprocessorderitem_addorderitemgiftrecipient', OrderItemGiftRecipientControl);
+    this.getMessageCharactersLeft = () => {
+        if (angular.isDefined(this.currentGiftRecipient.giftMessage)) {
+            return 250 - this.currentGiftRecipient.giftMessage.length;
+        }
+        else {
+            return 250;
+        }
+    };
 })(slatwalladmin || (slatwalladmin = {}));
+angular.module('slatwalladmin').controller('preprocessorderitem_addorderitemgiftrecipient', OrderItemGiftRecipientControl);
 
 //# sourceMappingURL=../controllers/preprocessorderitem_addorderitemgiftrecipient.js.map

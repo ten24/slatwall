@@ -286,9 +286,9 @@ Notes:
 										</div>
 										<div class="form-group">
 											<label>Message (limited to 250)</label>
-											<textarea class="form-control" rows="4" ng-model="giftRecipientControl.currentGiftRecipient.giftMessage"></textarea>
+											<textarea class="form-control" rows="4" ng-model="giftRecipientControl.currentGiftRecipient.giftMessage" ng-trim="false"></textarea>
 											<div class="s-character-count">
-												Remaining characters: <strong></strong>
+												Remaining characters: <strong><span ng-bind="giftRecipientControl.getMessageCharactersLeft()"></span></strong>
 											</div>
 										</div>
 										<div class="form-group">

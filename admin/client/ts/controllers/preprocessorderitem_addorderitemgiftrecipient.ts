@@ -130,6 +130,14 @@ module slatwalladmin {
                         });
                         return totalQuantity;
                 }
+                
+                getMessageCharactersLeft = ():number =>{				
+                        if(angular.isDefined(this.currentGiftRecipient.giftMessage)){ 
+                                return 250 - this.currentGiftRecipient.giftMessage.length;
+                        } else { 
+                                return 250; 
+                        }
+		}
 	}
 	
 	angular.module('slatwalladmin').controller('preprocessorderitem_addorderitemgiftrecipient', OrderItemGiftRecipientControl);
