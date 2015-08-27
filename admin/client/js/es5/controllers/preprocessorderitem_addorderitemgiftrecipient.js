@@ -15,6 +15,13 @@ var slatwalladmin;
                     return _this.quantity;
                 }
             };
+            this.addGiftRecipientFromAccountList = function (account) {
+                var giftRecipient = new slatwalladmin.GiftRecipient();
+                giftRecipient.firstName = account.firstName;
+                giftRecipient.lastName = account.lastName;
+                giftRecipient.email = account.primaryEmailAddress_emailAddress;
+                _this.orderItemGiftRecipients.push(giftRecipient);
+            };
             this.updateResults = function (keyword) {
                 console.log("searching for:" + keyword);
                 var options = {

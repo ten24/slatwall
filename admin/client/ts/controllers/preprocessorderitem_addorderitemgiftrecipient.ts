@@ -33,6 +33,14 @@ module slatwalladmin {
                         }
                 }
                 
+                addGiftRecipientFromAccountList = (account:any):void =>{
+                        var giftRecipient = new GiftRecipient();
+                        giftRecipient.firstName = account.firstName; 
+                        giftRecipient.lastName = account.lastName; 
+                        giftRecipient.email = account.primaryEmailAddress_emailAddress;
+                        this.orderItemGiftRecipients.push(giftRecipient);      
+                }
+                
                 updateResults = (keyword):void =>{
                         console.log("searching for:" + keyword);
         

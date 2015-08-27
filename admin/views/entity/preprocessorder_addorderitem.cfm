@@ -247,10 +247,10 @@ Notes:
 	                				<ul ng-show="searchText" class="dropdown-menu addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->"><!-- display block should be replaced with js(angular) -->
 	  									<!-- Item-->
 	  									<li ng-repeat="account in collection.pageRecords">
-	  										<a>
+	  										<a ng-click="giftRecipientControl.addGiftRecipientFromAccountList(account)">
 	  											<div class="row">
 	  												<div class="col-xs-2 s-photo">
-	  													<img src="{{account.gravatarURl}}">
+	  													<img src="">
 	  												</div>
 	  												<div class="col-xs-10 s-info">
 	  													<div class="s-name"><span ng-bind="account.firstName"></span> <span ng-bind="account.lastName"></span></div>

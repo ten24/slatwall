@@ -14,15 +14,50 @@ var slatwalladmin;
                     return this.quantity;
                 }
             };
+            this.addGiftRecipientFromAccountList = (account) => {
+                var giftRecipient = new slatwalladmin.GiftRecipient();
+                giftRecipient.firstName = account.firstName;
+                giftRecipient.lastName = account.lastName;
+                giftRecipient.emailAddress = account.primaryEmailAddress_emailAddress;
+                this.orderItemGiftRecipients.push(giftRecipient);
+            };
             this.updateResults = (keyword) => {
                 console.log("searching for:" + keyword);
-                var accountConfig = new slatwalladmin.CollectionConfig($slatwall, "Account");
-                accountConfig.addFilter("firstName", "%" + keyword + "%", "like", "OR");
-                accountConfig.addFilter("lastName", "%" + keyword + "%", "like", "OR");
-                accountConfig.addFilter("primaryEmailAddress", "%" + keyword + "%", "like", "OR");
-                accountConfig.setDisplayProperties("primaryEmailAddress", "firstName", "lastName");
-                console.log(accountConfig.getJson());
-                var accountPromise = $slatwall.getEntity('account', accountConfig.getJson());
+                var options = {
+                    baseEntityName: "SlatwallAccount",
+                    baseEntityAlias: "_account",
+                    keywords: keyword,
+                    defaultColumns: false,
+                    columnsConfig: angular.toJson([
+                        { isDeletable: false,
+                            isSearchable: false,
+                            isVisible: true,
+                            ormtype: "id",
+                            propertyIdentifier: "_account.accountID",
+                        },
+                        { isDeletable: false,
+                            isSearchable: true,
+                            isVisible: true,
+                            ormtype: "string",
+                            propertyIdentifier: "_account.firstName",
+                        },
+                        { isDeletable: false,
+                            isSearchable: true,
+                            isVisible: true,
+                            ormtype: "string",
+                            propertyIdentifier: "_account.lastName",
+                        },
+                        { isDeletable: false,
+                            isSearchable: true,
+                            title: "Email Address",
+                            isVisible: true,
+                            ormtype: "string",
+                            propertyIdentifier: "_account.primaryEmailAddress.emailAddress",
+                        }
+                    ])
+                };
+                console.log(angular.toJson(options));
+                var accountPromise = $slatwall.getEntity('account', options);
                 accountPromise.then((response) => {
                     this.$scope.collection = response;
                     console.log(this.$scope.collection);
