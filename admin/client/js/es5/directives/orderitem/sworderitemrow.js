@@ -6,7 +6,8 @@
 'use strict';
 angular.module('slatwalladmin')
     .directive('sworderitemrow', [
-    function () {
+    'paginationService',
+    function (paginationService) {
         var getRow = function (orderItem) {
             var row = "<td>TEST ROW</td>";
             return row;
@@ -16,7 +17,8 @@ angular.module('slatwalladmin')
             transclude: false,
             scope: {
                 orderItem: "=",
-                orderId: "@"
+                orderId: "@",
+                pagination: "="
             },
             replace: true,
             link: function (scope, element, attrs) {
