@@ -120,7 +120,7 @@ module slatwalladmin {
                         var giftRecipient = new GiftRecipient();
                         angular.extend(giftRecipient,this.currentGiftRecipient);
                         this.orderItemGiftRecipients.push(giftRecipient);
-                        this.currentGiftRecipient = new slatwalladmin.GiftRecipient();; 
+                        this.currentGiftRecipient = new slatwalladmin.GiftRecipient(); 
                 }
                 
                 getTotalQuantity = ():number =>{

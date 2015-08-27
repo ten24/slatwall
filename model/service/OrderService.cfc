@@ -1116,6 +1116,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					break;
 				}
 			}
+
+            for(var recipient in arguments.order.getOrderItems()[i].getOrderItemGiftRecipients()){ 
+                var newRecipient = this.newOrderItemGiftRecipient(); 
+                newRecipient.setFirstName(recipient.getFirstName()); 
+                newRecipient.setLastName(recipient.getLastName()); 
+                newRecipient.setEmailAddress(recipient.getEmailAddress()); 
+                newRecipient.setGiftMessage(recipient.getGiftMessage()); 
+                newRecipient.setQuantity(recipient.getQuantity());
+                if(!isNull(recipient.getAccount())){ 
+                    newRecipient.setAccount(recipient.getAccount()); 
+                }
+                newRecipient.setOrderItem(newOrderItem); 
+            } 
 			
 			// Duplicate Order Fulfillment
 			if(!orderFulfillmentFound) {
