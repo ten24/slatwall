@@ -9,9 +9,10 @@ var slatwalladmin;
             this.get = () => {
                 return this._pageDialogs || [];
             };
-            this.addPageDialog = (name) => {
+            this.addPageDialog = (name, params) => {
                 var newDialog = {
-                    'path': this.partialsPath + name + '.html'
+                    'path': this.partialsPath + name + '.html',
+                    'params': params
                 };
                 this._pageDialogs.push(newDialog);
             };
@@ -20,6 +21,9 @@ var slatwalladmin;
             };
             this.getPageDialogs = () => {
                 return this._pageDialogs;
+            };
+            this.getCurrentDialog = () => {
+                return this._pageDialogs[this._pageDialogs.length - 1];
             };
             this._pageDialogs = [];
         }

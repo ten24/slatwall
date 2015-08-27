@@ -17,6 +17,7 @@ angular.module('slatwalladmin')
 			restrict: 'A',
 			templateUrl:collectionPartialsPath+"collection.html",
 			link: function(scope,$element,$attrs){
+				scope.tabsUniqueID = Math.floor(Math.random()*999);
 				scope.toggleCogOpen = $attrs.toggleoption;
 				//Toggles open/close of filters and display options
 				scope.toggleFiltersAndOptions = function(){

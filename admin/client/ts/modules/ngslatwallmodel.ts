@@ -69,7 +69,7 @@
                 	defaultValues['Audit'] = {
                 	auditID:'',
 										auditType:null,
-									auditDateTime:'1440168196772',
+									auditDateTime:'1440623535350',
 										auditArchiveStartDateTime:null,
 									auditArchiveEndDateTime:null,
 									auditArchiveCreatedDateTime:null,
@@ -126,7 +126,7 @@
                 	accountEmailAddressID:'',
 										emailAddress:null,
 									verifiedFlag:0,
-									verificationCode:'05e10fdbfdd72f12c48478d5c5fe0444',
+									verificationCode:'f00f6068df4ff6638df7e2d86941addd',
 										remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -1732,10 +1732,10 @@
 						z:''
 	                };
                 
-                	entities['orderItemGiftRecipient'] = {"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"quantity":{"ormtype":"integer","name":"quantity"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"emailAddress":{"ormtype":"string","name":"emailAddress"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"firstName":{"ormtype":"string","name":"firstName"},"orderItem":{"cfc":"OrderItem","fieldtype":"many-to-one","fkcolumn":"orderItemID","name":"orderItem"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"account":{"cfc":"Account","fieldtype":"many-to-one","fkcolumn":"accountID","name":"account"},"lastName":{"ormtype":"string","name":"lastName"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"giftMessage":{"ormtype":"string","name":"giftMessage"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"orderItemGiftRecipientID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"orderItemGiftRecipientID"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"validations":{"persistent":false,"type":"struct","name":"validations"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
-                	entities['orderItemGiftRecipient'].className = 'orderItemGiftRecipient';
-                	validations['orderItemGiftRecipient'] = {"properties":{}};
-                	defaultValues['orderItemGiftRecipient'] = {
+                	entities['OrderItemGiftRecipient'] = {"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"quantity":{"ormtype":"integer","name":"quantity"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"emailAddress":{"ormtype":"string","name":"emailAddress"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"firstName":{"ormtype":"string","name":"firstName"},"orderItem":{"cfc":"OrderItem","fieldtype":"many-to-one","fkcolumn":"orderItemID","name":"orderItem"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"account":{"cfc":"Account","fieldtype":"many-to-one","fkcolumn":"accountID","name":"account"},"lastName":{"ormtype":"string","name":"lastName"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"giftMessage":{"ormtype":"string","name":"giftMessage"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"orderItemGiftRecipientID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"orderItemGiftRecipientID"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"validations":{"persistent":false,"type":"struct","name":"validations"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
+                	entities['OrderItemGiftRecipient'].className = 'OrderItemGiftRecipient';
+                	validations['OrderItemGiftRecipient'] = {"properties":{}};
+                	defaultValues['OrderItemGiftRecipient'] = {
                 	orderItemGiftRecipientID:'',
 										firstName:null,
 									lastName:null,
@@ -1903,7 +1903,7 @@
 										swprid:'',
 									password:'',
 									passwordConfirm:'',
-									accountPasswordResetID:"8f3aaad662e374a7c930ec409529682a",
+									accountPasswordResetID:"5c361ddc20b77a5be7a55c75e57058b8",
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
@@ -4065,55 +4065,60 @@
 	                    }
 	                }
 	            }
-	            
-	            
-	
-	            var _save = function(entityInstance){
-	                 var timeoutPromise = $timeout(function(){
-	                    //$log.debug('save begin');
-	                    //$log.debug(entityInstance);
-	                    
-	                    var entityID = entityInstance.$$getID();
-	                    
-	                    var modifiedData = _getModifiedData(entityInstance);
-	                    //$log.debug('modifiedData complete');
-	                    //$log.debug(modifiedData);
-	                    timeoutPromise.valid = modifiedData.valid;
-	                    if(modifiedData.valid){
-	                        var params = {};
-	                        params.serializedJsonData = angular.toJson(modifiedData.value);
-	                        //if we have a process object then the context is different from the standard save
-	                        var entityName = '';
-	                        var context = 'save';
-	                        if(entityInstance.metaData.isProcessObject === 1){
-	                            var processStruct = modifiedData.objectLevel.metaData.className.split('_');
-	                            entityName = processStruct[0];
-	                            context = processStruct[1];
-	                        }else{
-	                            entityName = modifiedData.objectLevel.metaData.className;
-	                        }
-	                        
-	                        var savePromise = $delegate.saveEntity(entityName,entityInstance.$$getID(),params,context);
-	                        savePromise.then(function(response){
-	                            var returnedIDs = response.data;
-	                            
-	                            
-	                            _addReturnedIDs(returnedIDs,modifiedData.objectLevel);
-	                        });
-	                    }else{
-	                        
-	                        //select first, visible, and enabled input with a class of ng-invalid
-	                    
-	                        var target = $('input.ng-invalid:first:visible:enabled');
-	                        //$log.debug('input is invalid');
-	                        //$log.debug(target);
-	                        target.focus();
-	                    var targetID = target.attr('id');
-	                        $anchorScroll();
-	                        
-	                    }
-	                });
-	                return timeoutPromise;
+
+
+				var _save = function(entityInstance){
+                    var deferred = $q.defer();
+                    $timeout(function(){
+                        //$log.debug('save begin');
+                        //$log.debug(entityInstance);
+
+                        var entityID = entityInstance.$$getID();
+
+                        var modifiedData = _getModifiedData(entityInstance);
+                        //$log.debug('modifiedData complete');
+                        //$log.debug(modifiedData);
+                        //timeoutPromise.valid = modifiedData.valid;
+                        if(modifiedData.valid){
+                            var params = {};
+                            params.serializedJsonData = angular.toJson(modifiedData.value);
+                            //if we have a process object then the context is different from the standard save
+                            var entityName = '';
+                            var context = 'save';
+                        	if(entityInstance.metaData.isProcessObject === 1){
+                            	var processStruct = modifiedData.objectLevel.metaData.className.split('_');
+                            	entityName = processStruct[0];
+								context = processStruct[1];
+                        	}else{
+                            	entityName = modifiedData.objectLevel.metaData.className;
+                            }
+							var savePromise = $delegate.saveEntity(entityName,entityInstance.$$getID(),params,context);
+                        	savePromise.then(function(response){
+                            	var returnedIDs = response.data;
+                            	if(angular.isDefined(response.SUCCESS) && response.SUCCESS === true){
+                                	_addReturnedIDs(returnedIDs,modifiedData.objectLevel);
+                                	deferred.resolve(returnedIDs);
+                            	}else{
+                                	deferred.reject(angular.isDefined(response.messages) ? response.messages : response);
+                            	}
+                        	}, function(reason){
+                            	deferred.reject(reason);
+                        	});
+                    	}else{
+
+                        	//select first, visible, and enabled input with a class of ng-invalid
+
+                        	var target = $('input.ng-invalid:first:visible:enabled');
+                        	//$log.debug('input is invalid');
+                        	//$log.debug(target);
+                        	target.focus();
+                        	var targetID = target.attr('id');
+                        	$anchorScroll();
+                        	deferred.reject('input is invalid');
+                    	}
+                	});
+                	//return timeoutPromise;
+                	return deferred.promise;
 	                /*
 	                
 	                

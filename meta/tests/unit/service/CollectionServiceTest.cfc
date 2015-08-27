@@ -177,6 +177,9 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		var entityProperties = variables.service.getPropertiesByEntityName( entityName );
 		var propertyIdentifiersList = variables.service.getPropertyIdentifiersList(entityProperties);
 		assertTrue(listLen(propertyIdentifiersList));
+		
+		var test = request.slatwallScope.getService('hibachiValidationService').getValidationsByContext(request.slatwallScope.getService('collectionService').newCollection(),'delete');
+		request.debug(test);
 	}
 	
 //	public void function getEntityNameColumnProperties_returns_valid_array() {
