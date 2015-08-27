@@ -192,7 +192,6 @@ paginationService
 				var entityName = 'collection';
 				var collection = $scope.collection;
 				$log.debug($scope.collectionConfig);
-				
 				if(isFormValid($scope.collectionForm)){
 					var collectionConfigString = collectionService.stringifyJSON($scope.collectionConfig);
 					$log.debug(collectionConfigString);
