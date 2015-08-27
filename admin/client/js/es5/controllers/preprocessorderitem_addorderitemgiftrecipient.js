@@ -21,6 +21,7 @@ var slatwalladmin;
                 giftRecipient.lastName = account.lastName;
                 giftRecipient.email = account.primaryEmailAddress_emailAddress;
                 _this.orderItemGiftRecipients.push(giftRecipient);
+                console.log(_this.orderItemGiftRecipients);
             };
             this.updateResults = function (keyword) {
                 console.log("searching for:" + keyword);
@@ -98,10 +99,6 @@ var slatwalladmin;
                     totalQuantity += orderItemGiftRecipient.quantity;
                 });
                 return totalQuantity;
-            };
-            this.getMessageCharactersLeft = function () {
-                var totalChar = 250;
-                //get chars subtract return
             };
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
             $scope.collection = {};

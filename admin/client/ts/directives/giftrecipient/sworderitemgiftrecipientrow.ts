@@ -60,6 +60,10 @@ angular.module('slatwalladmin')
 					
 					return unassignedCount;
 				}
+				
+				this.getMessageCharactersLeft = ():number =>{				
+					return 250 - this.recipient.giftMessage.length;
+				}
 					
 				this.getUnassignedCountArray = ():number[] =>{
 					

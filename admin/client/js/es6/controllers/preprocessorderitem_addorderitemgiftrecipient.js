@@ -18,8 +18,9 @@ var slatwalladmin;
                 var giftRecipient = new slatwalladmin.GiftRecipient();
                 giftRecipient.firstName = account.firstName;
                 giftRecipient.lastName = account.lastName;
-                giftRecipient.emailAddress = account.primaryEmailAddress_emailAddress;
+                giftRecipient.email = account.primaryEmailAddress_emailAddress;
                 this.orderItemGiftRecipients.push(giftRecipient);
+                console.log(this.orderItemGiftRecipients);
             };
             this.updateResults = (keyword) => {
                 console.log("searching for:" + keyword);
@@ -97,10 +98,6 @@ var slatwalladmin;
                     totalQuantity += orderItemGiftRecipient.quantity;
                 });
                 return totalQuantity;
-            };
-            this.getMessageCharactersLeft = () => {
-                var totalChar = 250;
-                //get chars subtract return
             };
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
             $scope.collection = {};

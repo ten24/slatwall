@@ -134,12 +134,6 @@ module slatwalladmin {
                         });
                         return totalQuantity;
                 }
-                        
-		getMessageCharactersLeft = ():number =>{
-			var totalChar = 250;
-			
-			//get chars subtract return
-		}
 	}
 	
 	angular.module('slatwalladmin').controller('preprocessorderitem_addorderitemgiftrecipient', OrderItemGiftRecipientControl);

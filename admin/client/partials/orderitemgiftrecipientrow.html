@@ -25,7 +25,8 @@
 	<input type="text" class="form-control" ng-model="giftRecipientRowControl.recipient.email">
 </td>
 <td class="s-table-input-element" ng-hide="!recipient.editing">
-	<input type="text" class="form-control" ng-model="giftRecipientRowControl.recipient.giftMessage">
+	<input type="text" class="form-control" ng-model="giftRecipientRowControl.recipient.giftMessage" ng-trim="false">
+	<span ng-bind="giftRecipientRowControl.getMessageCharactersLeft()"></span>
 </td>
 <td class="s-table-input-element" ng-hide="!recipient.editing">
 	<select class="form-control" 
