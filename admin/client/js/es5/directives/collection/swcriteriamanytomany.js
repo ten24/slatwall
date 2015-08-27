@@ -32,8 +32,9 @@ angular.module('slatwalladmin')
                     if (angular.isUndefined(type)) {
                         type = 'filter';
                     }
+                    $log.debug('type', type);
                     var manyToManyOptions = [];
-                    if (type === 'filter') {
+                    if (type == 'filter') {
                         manyToManyOptions = [
                             {
                                 display: "All Exist In Collection",
@@ -65,6 +66,7 @@ angular.module('slatwalladmin')
                     return manyToManyOptions;
                 };
                 scope.manyToManyOptions = getManyToManyOptions(scope.comparisonType);
+                console.log(scope.manyToManyOptions);
                 var existingCollectionsPromise = $slatwall.getExistingCollectionsByBaseEntity(scope.selectedFilterProperty.cfc);
                 existingCollectionsPromise.then(function (value) {
                     scope.collectionOptions = value.data;
@@ -74,9 +76,9 @@ angular.module('slatwalladmin')
                                 scope.selectedFilterProperty.selectedCollection = scope.collectionOptions[i];
                             }
                         }
-                        for (var i in scope.oneToManyOptions) {
-                            if (scope.oneToManyOptions[i].comparisonOperator === scope.filterItem.criteria) {
-                                scope.selectedFilterProperty.selectedCriteriaType = scope.oneToManyOptions[i];
+                        for (var i in scope.manyToManyOptions) {
+                            if (scope.manyToManyOptions[i].comparisonOperator === scope.filterItem.criteria) {
+                                scope.selectedFilterProperty.selectedCriteriaType = scope.manyToManyOptions[i];
                             }
                         }
                     }
