@@ -348,7 +348,7 @@ function setupEventHandlers() {
 
 		var modalLink = initModal( jQuery(this) );
 
-		jQuery('#adminModal').load( modalLink, function(){
+		jQuery('#adminModal').load( modalLink, function(xhr){
 			
 			initUIElements('#adminModal');
 			
