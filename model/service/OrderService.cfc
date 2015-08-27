@@ -400,6 +400,26 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.order.addError('addOrderItem', newOrderItem.getErrors());
 			}
 		}
+                    
+        if(arguments.processObject.getSku().isGiftCardSku()){ 
+            //look for recipients
+            var totalQuantity = 0; 
+            var count = 0; 
+            
+            while(totalQuantity < arguments.processObject.getQuantity()){ 
+                var currentRecipient = count & "recipient"; 
+                var recipientProcessObject = newOrderItem.getProcessObject("addOrderItemGiftRecipient");
+                recipientProcessObject.setOrderItem(newOrderItem); 
+                recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
+                recipientProcessObject.setLastName(request.context[currentRecipient & "lastName"]); 
+                recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);      
+                recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
+                recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"])); 
+                this.processOrderItem_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
+                totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);  
+                count++; 
+            }
+        } 
 
 		
 		
@@ -575,11 +595,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			recipient.setLastName(arguments.processObject.getLastName()); 
 		} 
 		
-		if(!arguments.processObject.hasAccount()){
-
-			if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(arguments.processObject.getEmailAddress())){
+		if(isNull(arguments.processObject.getAccount())){
+            if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(arguments.processObject.getEmailAddress())){
 				recipient.setAccount(getService("HibachiService").get("Account", getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(arguments.processObject.getEmailAddress())));
-			} else {
+            } else {
 				recipient.setEmailAddress(arguments.processObject.getEmailAddress());
 			}
 

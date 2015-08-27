@@ -38,7 +38,8 @@ module slatwalladmin {
                         giftRecipient.firstName = account.firstName; 
                         giftRecipient.lastName = account.lastName; 
                         giftRecipient.email = account.primaryEmailAddress_emailAddress;
-                        this.orderItemGiftRecipients.push(giftRecipient);      
+                        this.orderItemGiftRecipients.push(giftRecipient);    
+                        console.log(this.orderItemGiftRecipients);  
                 }
                 
                 updateResults = (keyword):void =>{

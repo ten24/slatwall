@@ -1,3 +1,9 @@
+<input type="hidden" name="{{index}}recipientfirstname" ng-value="recipient.firstName">
+<input type="hidden" name="{{index}}recipientlastname" ng-value="recipient.lastName">
+<input type="hidden" name="{{index}}recipientemail" ng-value="recipient.email">
+<input type="hidden" name="{{index}}recipientmessage" ng-value="recipient.giftMessage">
+<input type="hidden" name="{{index}}recipientquantity" ng-value="recipient.quantity">
+
 <td ng-hide="recipient.editing">
 	<span ng-bind="giftRecipientRowControl.recipient.firstName"></span>
 	<span ng-bind="giftRecipientRowControl.recipient.lastName"></span>

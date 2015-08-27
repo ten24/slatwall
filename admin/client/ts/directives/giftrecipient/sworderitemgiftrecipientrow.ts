@@ -16,7 +16,8 @@ angular.module('slatwalladmin')
 			scope:{
 				recipient:"=",
 				recipients:"=",
-				quantity:"="
+				quantity:"=",
+				index:"="
 			}, 
 			bindToController: {
 				recipient:"=",
