@@ -39,7 +39,6 @@ module slatwalladmin {
                         giftRecipient.lastName = account.lastName; 
                         giftRecipient.email = account.primaryEmailAddress_emailAddress;
                         this.orderItemGiftRecipients.push(giftRecipient);    
-                        console.log(this.orderItemGiftRecipients);  
                 }
                 
                 updateResults = (keyword):void =>{
@@ -99,14 +98,11 @@ module slatwalladmin {
                 
                 getUnassignedCountArray = ():number[] =>{
                         var unassignedCountArray = new Array();
-                        if(this.getUnassignedCount() > 1){
-                                for(var i = 1; i < this.getUnassignedCount(); i++ ){
-                                        unassignedCountArray.push(i);
-                                }
-                        } else { 
-                                unassignedCountArray.push(1); 
-                        }
-                        console.log(unassignedCountArray);
+                        		      		
+                        for(var i = 1; i <= this.getUnassignedCount(); i++ ){			
+                                unassignedCountArray.push(i);
+                        }		
+                        
                         return unassignedCountArray; 
                 }
                 

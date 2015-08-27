@@ -21,7 +21,6 @@ var slatwalladmin;
                 giftRecipient.lastName = account.lastName;
                 giftRecipient.email = account.primaryEmailAddress_emailAddress;
                 _this.orderItemGiftRecipients.push(giftRecipient);
-                console.log(_this.orderItemGiftRecipients);
             };
             this.updateResults = function (keyword) {
                 console.log("searching for:" + keyword);
@@ -68,15 +67,9 @@ var slatwalladmin;
             };
             this.getUnassignedCountArray = function () {
                 var unassignedCountArray = new Array();
-                if (_this.getUnassignedCount() > 1) {
-                    for (var i = 1; i < _this.getUnassignedCount(); i++) {
-                        unassignedCountArray.push(i);
-                    }
+                for (var i = 1; i <= _this.getUnassignedCount(); i++) {
+                    unassignedCountArray.push(i);
                 }
-                else {
-                    unassignedCountArray.push(1);
-                }
-                console.log(unassignedCountArray);
                 return unassignedCountArray;
             };
             this.getUnassignedCount = function () {

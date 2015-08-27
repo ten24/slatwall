@@ -26,19 +26,20 @@ angular.module('slatwalladmin')
 			},
 			controller: function(){ 
 				this.edit = (recipient:any) =>{
-					console.log("editing recipient");
+					
+					angular.forEach(this.recipients,(recipient)=>{
+						recipient.editing=false; 
+					});
 					if(!recipient.editing){
 						recipient.editing=true; 
 					}
 				}
 
 				this.delete = (recipient:any) =>{
-					console.log("deleting recipient");
 					this.recipients.splice(this.recipients.indexOf(recipient), 1);
 				}	
 				
 				this.saveGiftRecipient = (recipient:any) =>{
-						console.log("saving recipient");
 						recipient.editing = false; 
 				}
 				
@@ -62,7 +63,11 @@ angular.module('slatwalladmin')
 				}
 				
 				this.getMessageCharactersLeft = ():number =>{				
-					return 250 - this.recipient.giftMessage.length;
+					if(angular.isDefined(this.recipient.giftMessage)){ 
+						return 250 - this.recipient.giftMessage.length;
+					} else { 
+						return 250; 
+					}
 				}
 					
 				this.getUnassignedCountArray = ():number[] =>{
