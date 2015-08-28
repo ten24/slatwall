@@ -18,21 +18,22 @@
 </td>
 
 <td class="s-table-input-element" ng-hide="!recipient.editing">
-	<input type="text" class="form-control" ng-model="giftRecipientRowControl.recipient.firstName">
-	<input type="text" class="form-control" ng-model="giftRecipientRowControl.recipient.lastName">
+	<input type="text" name="_rowRecipientFirstName" class="form-control" ng-model="giftRecipientRowControl.recipient.firstName" required>
+	<input type="text" name="_rowRecipientLastName" class="form-control" ng-model="giftRecipientRowControl.recipient.lastName" required>
 </td>
 <td class="s-table-input-element" ng-hide="!recipient.editing">
-	<input type="text" class="form-control" ng-model="giftRecipientRowControl.recipient.email">
+	<input type="email" name="_rowRecipientEmail" class="form-control" ng-model="giftRecipientRowControl.recipient.email" required>
 </td>
 <td class="s-table-input-element" ng-hide="!recipient.editing">
-	<input type="text" class="form-control" ng-model="giftRecipientRowControl.recipient.giftMessage" ng-trim="false">
+	<input type="text" name="_rowRecipientGiftMessage" class="form-control" ng-model="giftRecipientRowControl.recipient.giftMessage" ng-trim="false">
 	<span ng-bind="giftRecipientRowControl.getMessageCharactersLeft()"></span>
 </td>
 <td class="s-table-input-element" ng-hide="!recipient.editing">
 	<select class="form-control" 
+		name="_rowRecipientQuantity"
 		ng-model="giftRecipientRowControl.recipient.quantity"
 		ng-options="quantity for quantity in giftRecipientRowControl.getUnassignedCountArray() track by quantity"
->
+		required>
 	</select>
 </td>
 <td class="admin admin2" ng-hide="!recipient.editing">
