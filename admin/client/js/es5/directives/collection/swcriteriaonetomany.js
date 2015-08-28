@@ -33,7 +33,7 @@ angular.module('slatwalladmin')
                         type = 'filter';
                     }
                     var oneToManyOptions = [];
-                    if (type === 'filter') {
+                    if (type == 'filter') {
                         oneToManyOptions = [
                             {
                                 display: "All Exist In Collection",
