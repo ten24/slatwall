@@ -96,6 +96,8 @@ component accessors="true" output="false" implements="Slatwall.integrationServic
 		httpRequest.addParam(type="formfield", name="PAYERID", value="#listLast(orderPayment.getProviderToken(), "~")#");
 		httpRequest.addParam(type="formfield", name="token", value="#listFirst(orderPayment.getProviderToken(), "~")#");
 		
+		httpRequest.addParam(type="formfield", name="BUTTONSOURCE", value="SlatWall_SP");
+		
 		var response = httpRequest.send().getPrefix();
 		
 		if(structKeyExists(response, "filecontent") && len(response.fileContent)) {
