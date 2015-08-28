@@ -15,18 +15,20 @@ module slatwalladmin {
                 public static $inject=["$scope", "$injector", "$slatwall"];        
 		public orderItemGiftRecipients; 
                 public quantity:number;
+                public searchText:string; 
                 public currentGiftRecipient:slatwalladmin.GiftRecipient;
         
 		constructor(private $scope: IOrderItemGiftRecipientScope, private $injector: ng.auto.IInjectorService, private $slatwall:ngSlatwall.$Slatwall){
                         this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
                         $scope.collection = {};
                         this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
+                        this.searchText = ""; 
 			var count = 1;
                         this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
 		}
         
                 getQuantity = ():number =>{      
-                        if(isNaN(this.quantity)){
+                        if(angular.isUndefined(this.quantity)){
                                 return 0;
                         } else { 
                                 return this.quantity; 
@@ -38,12 +40,11 @@ module slatwalladmin {
                         giftRecipient.firstName = account.firstName; 
                         giftRecipient.lastName = account.lastName; 
                         giftRecipient.email = account.primaryEmailAddress_emailAddress;
-                        this.orderItemGiftRecipients.push(giftRecipient);    
+                        this.orderItemGiftRecipients.push(giftRecipient); 
+                        this.searchText = "";   
                 }
                 
                 updateResults = (keyword):void =>{
-                        console.log("searching for:" + keyword);
-        
                         var options =  {    
                                 baseEntityName:"SlatwallAccount", 
                                 baseEntityAlias:"_account", 
@@ -84,13 +85,11 @@ module slatwalladmin {
                                         }
                                 ])
                         };
-                        console.log(angular.toJson(options));
                         
                         var accountPromise = $slatwall.getEntity('account', options);
                         
                         accountPromise.then((response:any):void =>{
                                 this.$scope.collection = response;
-                                console.log(this.$scope.collection);
 		        });
                         
                         return this.$scope.collection;
@@ -121,6 +120,16 @@ module slatwalladmin {
                         angular.extend(giftRecipient,this.currentGiftRecipient);
                         this.orderItemGiftRecipients.push(giftRecipient);
                         this.currentGiftRecipient = new slatwalladmin.GiftRecipient(); 
+                        this.searchText = ""; 
+                }
+                
+                startFormWithName = ():void =>{
+                        if(this.searchText == ""){
+                                this.currentGiftRecipient.firstName = this.searchText;
+                        } else { 
+                                this.currentGiftRecipient.firstName = this.searchText; 
+                                this.searchText = ""; 
+                        }
                 }
                 
                 getTotalQuantity = ():number =>{

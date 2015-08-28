@@ -8,7 +8,7 @@ var slatwalladmin;
             this.$injector = $injector;
             this.$slatwall = $slatwall;
             this.getQuantity = function () {
-                if (isNaN(_this.quantity)) {
+                if (angular.isUndefined(_this.quantity)) {
                     return 0;
                 }
                 else {
@@ -21,9 +21,9 @@ var slatwalladmin;
                 giftRecipient.lastName = account.lastName;
                 giftRecipient.email = account.primaryEmailAddress_emailAddress;
                 _this.orderItemGiftRecipients.push(giftRecipient);
+                _this.searchText = "";
             };
             this.updateResults = function (keyword) {
-                console.log("searching for:" + keyword);
                 var options = {
                     baseEntityName: "SlatwallAccount",
                     baseEntityAlias: "_account",
@@ -57,11 +57,9 @@ var slatwalladmin;
                         }
                     ])
                 };
-                console.log(angular.toJson(options));
                 var accountPromise = $slatwall.getEntity('account', options);
                 accountPromise.then(function (response) {
                     _this.$scope.collection = response;
-                    console.log(_this.$scope.collection);
                 });
                 return _this.$scope.collection;
             };
@@ -84,7 +82,16 @@ var slatwalladmin;
                 angular.extend(giftRecipient, _this.currentGiftRecipient);
                 _this.orderItemGiftRecipients.push(giftRecipient);
                 _this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
-                ;
+                _this.searchText = "";
+            };
+            this.startFormWithName = function () {
+                if (_this.searchText == "") {
+                    _this.currentGiftRecipient.firstName = _this.searchText;
+                }
+                else {
+                    _this.currentGiftRecipient.firstName = _this.searchText;
+                    _this.searchText = "";
+                }
             };
             this.getTotalQuantity = function () {
                 var totalQuantity = 0;
@@ -104,6 +111,7 @@ var slatwalladmin;
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
             $scope.collection = {};
             this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
+            this.searchText = "";
             var count = 1;
             this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
         }

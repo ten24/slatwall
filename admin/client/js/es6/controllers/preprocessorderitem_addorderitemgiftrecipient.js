@@ -83,7 +83,6 @@ var slatwalladmin;
                 angular.extend(giftRecipient, this.currentGiftRecipient);
                 this.orderItemGiftRecipients.push(giftRecipient);
                 this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
-                ;
             };
             this.getTotalQuantity = () => {
                 var totalQuantity = 0;
@@ -91,6 +90,14 @@ var slatwalladmin;
                     totalQuantity += orderItemGiftRecipient.quantity;
                 });
                 return totalQuantity;
+            };
+            this.getMessageCharactersLeft = () => {
+                if (angular.isDefined(this.currentGiftRecipient.giftMessage)) {
+                    return 250 - this.currentGiftRecipient.giftMessage.length;
+                }
+                else {
+                    return 250;
+                }
             };
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
             $scope.collection = {};
@@ -101,15 +108,7 @@ var slatwalladmin;
     }
     OrderItemGiftRecipientControl.$inject = ["$scope", "$injector", "$slatwall"];
     slatwalladmin.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
-    this.getMessageCharactersLeft = () => {
-        if (angular.isDefined(this.currentGiftRecipient.giftMessage)) {
-            return 250 - this.currentGiftRecipient.giftMessage.length;
-        }
-        else {
-            return 250;
-        }
-    };
+    angular.module('slatwalladmin').controller('preprocessorderitem_addorderitemgiftrecipient', OrderItemGiftRecipientControl);
 })(slatwalladmin || (slatwalladmin = {}));
-angular.module('slatwalladmin').controller('preprocessorderitem_addorderitemgiftrecipient', OrderItemGiftRecipientControl);
 
 //# sourceMappingURL=../controllers/preprocessorderitem_addorderitemgiftrecipient.js.map
