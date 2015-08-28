@@ -10,8 +10,11 @@
 /// <reference path="../../admin/client/ts/controllers/preprocessaccount_addaccountpayment.ts" />
 /// <reference path="../../admin/client/ts/controllers/routercontroller.ts" />
 /// <reference path="../../admin/client/ts/model/alert.ts" />
+<<<<<<< HEAD
 /// <reference path="../../admin/client/ts/model/collectionConfig.ts" />
 /// <reference path="../../admin/client/ts/model/pagedialog.ts" />
+=======
+>>>>>>> refs/heads/hotfix
 /// <reference path="../../admin/client/ts/modules/loggingmodule.ts" />
 /// <reference path="../../admin/client/ts/modules/ngslatwall.ts" />
 /// <reference path="../../admin/client/ts/modules/ngslatwallmodel.ts" />
@@ -66,6 +69,7 @@
 /// <reference path="../../admin/client/ts/directives/common/swscrolltrigger.ts" />
 /// <reference path="../../admin/client/ts/directives/common/swselection.ts" />
 /// <reference path="../../admin/client/ts/directives/common/swsortable.ts" />
+<<<<<<< HEAD
 /// <reference path="../../admin/client/ts/directives/content/swcontentbasic.ts" />
 /// <reference path="../../admin/client/ts/directives/content/swcontenteditor.ts" />
 /// <reference path="../../admin/client/ts/directives/content/swcontentlist.ts" />
@@ -76,6 +80,19 @@
 /// <reference path="../../admin/client/ts/directives/orderitem/sworderitemdetailstamp.ts" />
 /// <reference path="../../admin/client/ts/directives/orderitem/sworderitemrow.ts" />
 /// <reference path="../../admin/client/ts/directives/orderitem/sworderitems.ts" />
+=======
+/// <reference path="../../admin/client/ts/directives/orderitem/swchildorderitem.ts" />
+/// <reference path="../../admin/client/ts/directives/orderitem/swoishippinglabelstamp.ts" />
+/// <reference path="../../admin/client/ts/directives/orderitem/sworderitem.ts" />
+/// <reference path="../../admin/client/ts/directives/orderitem/sworderitemdetailstamp.ts" />
+/// <reference path="../../admin/client/ts/directives/orderitem/sworderitemrow.ts" />
+/// <reference path="../../admin/client/ts/directives/orderitem/sworderitems.ts" />
+/// <reference path="../../admin/client/ts/directives/product/swlistingpages.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontentbasic.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontenteditor.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontentlist.ts" />
+/// <reference path="../../admin/client/ts/directives/content/swcontentnode.ts" />
+>>>>>>> refs/heads/hotfix
 /// <reference path="../../admin/client/ts/directives/productBundleGroup/swproductbundlegroup.ts" />
 /// <reference path="../../admin/client/ts/directives/productBundleGroup/swproductbundlegroups.ts" />
 /// <reference path="../../admin/client/ts/directives/productBundleGroup/swproductbundlegrouptype.ts" />

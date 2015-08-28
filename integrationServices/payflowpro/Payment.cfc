@@ -107,7 +107,7 @@ component accessors="true" output="false" displayname="PayFlowPro" implements="S
 			requestData = listAppend(requestData, "TRXTYPE=#variables.transactionCodes[arguments.requestBean.getTransactionType()]#", "&");
 		}
 		// END HACK
-		
+		requestData = listAppend(requestData, "BUTTONSOURCE=SlatWall_SP", "&");
 		return requestData;
 	}
 
