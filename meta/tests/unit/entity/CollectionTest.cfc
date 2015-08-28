@@ -1713,10 +1713,42 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//request.debug(collectionEntity.getPageRecords());
 	}
 	
+	public void function getHQLForCollectionFilterSkuTest(){
+		var collectionBestSkuData = {
+			collectionid = '',
+			collectionCode = 'BestSku#createUUID()#',
+			collectionObject="Sku",
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallSku",
+					"baseEntityAlias":"_sku"
+				}
+			'
+		};
+		var collectionBestSkuData = createPersistedTestEntity('collection',collectionBestSkuData);
+		
+		
+		var filter = {
+						propertyIdentifier="_orderItem.sku.product.skus",
+						collectionID=collectionBestSkuData.getCollectionID(),
+						criteria="One"
+					};
+					var propertyIdentifier = 'sku.product.skus';
+		var test = request.slatwallScope.getService('hibachiService').getLastEntityNameInPropertyIdentifier('OrderItem',propertyIdentifier);
+		var property = request.slatwallScope.getService('hibachiService').getPropertyByEntityNameAndPropertyName(test,listlast(propertyIdentifier,'.'));
+		request.debug(test);
+		request.debug(property);
+		variables.entity = variables.entityService.newCollection();
+		MakePublic(variables.entity,'getHQLForCollectionFilter');
+		variables.entity.setCollectionObject('OrderItem');
+		var HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+	}
+	
 	public void function getHQLForCollectionFilterTest(){
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
-			collectionCode = 'BestAccountEmailAddresses',
+			collectionCode = 'BestAccountEmailAddresses#createUUID()#',
 			collectionObject="Account",
 			collectionConfig = '
 				{
@@ -1749,9 +1781,32 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					};
 						
 		MakePublic(variables.entity,'getHQLForCollectionFilter');
-		
 		var HQL = variables.entity.getHQLForCollectionFilter(filter);
-		//request.debug(HQL);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_account.accountEmailAddresses",
+						collectionID=collectionBestAcountEmailAddresses.getCollectionID(),
+						criteria="NONE"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_account.accountEmailAddresses",
+						collectionID=collectionBestAcountEmailAddresses.getCollectionID(),
+						criteria="ALL"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_account.accountEmailAddresses",
+						collectionID=collectionBestAcountEmailAddresses.getCollectionID(),
+						criteria="ALL"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
 	}
 	
 	/*public void function getCollectionObjectParentChildTest(){

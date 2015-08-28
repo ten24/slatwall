@@ -707,20 +707,27 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		var filterCriteria = getfilterCriteria(arguments.filter.criteria);
 		collectionFilterHQL &= ' #filterCriteria# (';
 		var collectionEntity = getService('collectionService').getCollectionByCollectionID(arguments.filter.collectionID);
-		var relatedPropertyForEntity = getService('hibachiService').getPropertyByEntityNameAndPropertyName(this.getCollectionObject(),listLast(arguments.filter.propertyIdentifier,'.'));
-		
+
+		var lastEntity = getService("hibachiService").getLastEntityNameInPropertyIdentifier(
+			this.getCollectionObject(),
+			listRest(arguments.filter.propertyIdentifier, '.')
+		);
+
+		var relatedPropertyForEntity = getService('hibachiService').getPropertyByEntityNameAndPropertyName(lastEntity,listLast(arguments.filter.propertyIdentifier,'.'));
+
 		if(relatedPropertyForEntity.fieldType == 'one-to-many'){
 			var mainCollectionAlias = getCollectionConfigStruct().baseEntityAlias;
 			var mainCollectionObject = replace(listFirst(arguments.filter.propertyIdentifier,'.'),'_','');
 		}else if(relatedPropertyForEntity.fieldType == 'many-to-many'){
-			var relatedPropertiesForCollectionEntity = getService('hibachiService').getPropertiesByEntityName(collectionEntity.getCollectionObject());
+			var relatedPropertiesForCollectionEntity = getService('hibachiService').getPropertiesByEntityName(relatedPropertyForEntity.cfc);
 			for(var propertyItem in relatedPropertiesForCollectionEntity){
 				if(structkeyExists(propertyItem,'linktable') && propertyItem.linktable == relatedPropertyForEntity.linktable){
 					var relatedPropertyForCollectionEntity = propertyItem;
 					break;
 				}
 			}
-			var mainCollectionAlias = getCollectionConfigStruct().baseEntityAlias;
+			var propertyIdentifierLastEntity = ListDeleteAt(arguments.filter.propertyIdentifier, ListLen(arguments.filter.propertyIdentifier,'.'),'.');
+			var mainCollectionAlias = propertyIdentifierLastEntity;
 			var mainCollectionObject = relatedPropertyForCollectionEntity.name;
 		}
 		
