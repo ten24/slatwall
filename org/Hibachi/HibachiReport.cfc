@@ -556,7 +556,7 @@
 	</cffunction>
 
 	<cffunction name="getChartData" access="public" output="false">
-		<cfif NOT structKeyExists(variables, "chartData") AND getReportType NEQ "none">
+		<cfif NOT structKeyExists(variables, "chartData") AND getReportType() NEQ "none">
 
 			<cfset var chartDataStruct = structNew() />
 			<cfset var chartDataQuery = getChartDataQuery() />
