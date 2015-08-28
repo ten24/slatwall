@@ -80,7 +80,7 @@ Notes:
 		<cfargument name="siteID" type="string" required="true">
 		<cfargument name="urlTitlePath" type="string" required="true">
 		
-		<cfreturn ormExecuteQuery(" FROM SlatwallContent c Where c.site.siteID = ? AND LOWER(c.urlTitlePath) = ?",[ arguments.siteID,arguments.urlTitlePath],true)>
+		<cfreturn ormExecuteQuery(" FROM SlatwallContent c Where c.site.siteID = ? AND LOWER(c.urlTitlePath) = ?",[ arguments.siteID,lcase(arguments.urlTitlePath)],true)>
 	</cffunction>
 	
 	<cffunction name="getCategoriesByCmsCategoryIDs" access="public">
