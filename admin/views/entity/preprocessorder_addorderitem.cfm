@@ -265,37 +265,40 @@ Notes:
 		                        </div>
 		                        <div class="addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->">
 		                            <!-- Only show if there is text -->
-		                            <button type="button" class="btn btn-primary" ng-show="giftRecipientControl.searchText.length > 0" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" ng-click="giftRecipientControl.startFormWithName()">
+		                            <button type="button" class="btn btn-primary" ng-show="giftRecipientControl.searchText !== ''" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" ng-click="giftRecipientControl.startFormWithName()">
 		                            	<i class="fa fa-plus" ></i> Add "<span ng-bind="giftRecipientControl.searchText"></span>"
 		                            </button>
 		                        </div>
 								<div class="s-add-info-dropdown addDropdown <!---Remove addDropdown---> addDropdown-add-account <!--- Remove addDropdown-add-account --->">
-									<ng-form name="giftRecipientForm">
+									
 										<h5>Create New Recipient</h5>
 										<div class="form-group">
 											<label>First Name<i class="fa fa-asterisk"></i></label>
-											<input type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.firstName">
+											<input name="_recipientFirstName" type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.firstName" required>
 										</div>
 										<div class="form-group">
 											<label>Last Name<i class="fa fa-asterisk"></i></label>
-											<input type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.lastName">
+											<input name="_recipientLastName" type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.lastName" required>
 										</div>
 										<div class="form-group">
 											<label>Email<i class="fa fa-asterisk"></i></label>
-											<input type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.email">
+											<input name="_recipientEmail" type="email" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.email" required>
 										</div>
 										<div class="form-group">
 											<label>Message (limited to 250)</label>
-											<textarea class="form-control" rows="4" ng-model="giftRecipientControl.currentGiftRecipient.giftMessage" ng-trim="false"></textarea>
+											<textarea name="_recipientMessage" class="form-control" rows="4" ng-model="giftRecipientControl.currentGiftRecipient.giftMessage" ng-trim="false"></textarea>
 											<div class="s-character-count">
 												Remaining characters: <strong><span ng-bind="giftRecipientControl.getMessageCharactersLeft()"></span></strong>
 											</div>
 										</div>
 										<div class="form-group">
 											<label>Qty</label>
-											<select class="form-control" 
+											<select class="form-control"
+                                                    name="_recipientQuantity"
+                                                    type="number"
 													ng-model="giftRecipientControl.currentGiftRecipient.quantity"
 													ng-options="quantity for quantity in giftRecipientControl.getUnassignedCountArray() track by quantity"
+                                                    required
 											>
 												
 											</select>
@@ -303,7 +306,7 @@ Notes:
 										<div>
 											<button type="button" class="btn btn-sm btn-primary" ng-click="giftRecipientControl.addGiftRecipient()">Add Recipient</button>
 										</div>
-									</ng-form>
+								
 								</div>
 							</div>
 	            			<!---End Search--->
