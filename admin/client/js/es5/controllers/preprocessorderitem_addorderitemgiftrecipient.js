@@ -2,10 +2,9 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     var OrderItemGiftRecipientControl = (function () {
-        function OrderItemGiftRecipientControl($scope, $injector, $slatwall) {
+        function OrderItemGiftRecipientControl($scope, $slatwall) {
             var _this = this;
             this.$scope = $scope;
-            this.$injector = $injector;
             this.$slatwall = $slatwall;
             this.getQuantity = function () {
                 if (angular.isUndefined(_this.quantity)) {
@@ -115,7 +114,7 @@ var slatwalladmin;
             var count = 1;
             this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
         }
-        OrderItemGiftRecipientControl.$inject = ["$scope", "$injector", "$slatwall"];
+        OrderItemGiftRecipientControl.$inject = ["$scope", "$slatwall"];
         return OrderItemGiftRecipientControl;
     })();
     slatwalladmin.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;

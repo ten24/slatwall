@@ -12,13 +12,13 @@ module slatwalladmin {
 	export class OrderItemGiftRecipientControl{
                 
                 
-                public static $inject=["$scope", "$injector", "$slatwall"];        
+                public static $inject=["$scope", "$slatwall"];        
 		public orderItemGiftRecipients; 
                 public quantity:number;
                 public searchText:string; 
                 public currentGiftRecipient:slatwalladmin.GiftRecipient;
         
-		constructor(private $scope: IOrderItemGiftRecipientScope, private $injector: ng.auto.IInjectorService, private $slatwall:ngSlatwall.$Slatwall){
+		constructor(private $scope: IOrderItemGiftRecipientScope,  private $slatwall:ngSlatwall.$Slatwall){
                         this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
                         $scope.collection = {};
                         this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();

@@ -1,12 +1,8 @@
 angular.module('slatwalladmin')
 .directive('swOrderItemGiftRecipientRow', [
-	'$http',
-	'$compile',
 	'$templateCache',
 	'partialsPath',
 	function(
-		$http,
-		$compile,
 		$templateCache,
 		partialsPath
 	){
