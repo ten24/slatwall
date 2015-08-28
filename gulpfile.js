@@ -121,7 +121,8 @@ gulp.task('compile-ts-to5', function () {
                        .pipe(tsc({
                            target: 'ES5',
                            declarationFiles: false,
-                           noExternalResolve: true
+                           noExternalResolve: true,
+                           module:'amd'
                        }));
 
         tsResult.dts.pipe(gulp.dest(config.tsOutputPathto5));

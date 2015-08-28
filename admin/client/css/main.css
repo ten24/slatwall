@@ -3980,6 +3980,7 @@ tabel .s-table-header {
 .s-search-filter .dropdown-menu li {
   border-bottom: 1px solid #eee;
   cursor: pointer;
+  display: block;
 }
 .s-search-filter .dropdown-menu li:last-child {
   border: none;
@@ -4065,6 +4066,14 @@ tabel .s-table-header {
   z-index: 3000;
   background-color: #FFF;
   padding: 5px 0px 5px 9px;
+}
+.s-search-filter .s-current-selection-item .s-edit-options {
+  padding: 6px 2px;
+}
+.s-search-filter .s-current-selection-item .s-edit-options.s-remove:hover {
+  color: #DA5757 !important;
+  background: none !important;
+  border: none !important;
 }
 .s-add-content .s-workflow-checkbox {
   display: inline-block;
