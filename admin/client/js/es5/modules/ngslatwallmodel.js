@@ -47,7 +47,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
-                    auditDateTime: '1440877105095',
+                    auditDateTime: '1440890198143',
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -98,7 +98,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
-                    verificationCode: 'cdae822cd69f52898da4e995e458dc2c',
+                    verificationCode: 'cf4b0af9c2954e2ccd2f3b3e7f075ec4',
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -1673,7 +1673,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
-                    accountPasswordResetID: "1bd4b656ec7214d8f4e1f42720e104ff",
+                    accountPasswordResetID: "8470d62dde0f8708bbf12721addb87c2",
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
