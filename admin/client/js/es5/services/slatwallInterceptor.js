@@ -1,13 +1,13 @@
-'use strict';
-angular.module('slatwalladmin')
-    .factory('slatwallInterceptor', [
-    '$q',
-    '$log',
-    'alertService',
-    function ($q, $log, alertService) {
-        var interceptor = {
-            'request': function (config) {
-                $log.debug('request');
+var slatwalladmin;
+(function (slatwalladmin) {
+    var SlatwallInterceptor = (function () {
+        function SlatwallInterceptor($q, $log, alertService) {
+            var _this = this;
+            this.$q = $q;
+            this.$log = $log;
+            this.alertService = alertService;
+            this.request = function (config) {
+                _this.$log.debug('request');
                 if (config.method == 'GET' && (config.url.indexOf('.html') == -1) && config.url.indexOf('.json') == -1) {
                     config.method = 'POST';
                     config.data = {};
@@ -27,39 +27,48 @@ angular.module('slatwalladmin')
                     config.url = config.url + '?instantiationKey=' + $.slatwall.getConfig().instantiationKey;
                 }
                 return config;
-            },
-            'response': function (response) {
-                $log.debug('response');
+            };
+            this.requestError = function (rejection) {
+                _this.$log.debug('requestError');
+                return _this.$q.reject(rejection);
+            };
+            this.response = function (response) {
+                _this.$log.debug('response');
                 var messages = response.data.messages;
-                var alerts = alertService.formatMessagesToAlerts(messages);
-                alertService.addAlerts(alerts);
+                var alerts = _this.alertService.formatMessagesToAlerts(messages);
+                _this.alertService.addAlerts(alerts);
                 return response;
-            },
-            'requestError': function (rejection) {
-                $log.debug('requestError');
-                return $q.reject(rejection);
-            },
-            'responseError': function (rejection) {
-                $log.debug('responseReject');
+            };
+            this.responseError = function (rejection) {
+                _this.$log.debug('responseReject');
                 if (angular.isDefined(rejection.status) && rejection.status !== 404) {
                     if (angular.isDefined(rejection.data) && angular.isDefined(rejection.data.messages)) {
                         var messages = rejection.data.messages;
-                        var alerts = alertService.formatMessagesToAlerts(messages);
-                        alertService.addAlerts(alerts);
+                        var alerts = _this.alertService.formatMessagesToAlerts(messages);
+                        _this.alertService.addAlerts(alerts);
                     }
                     else {
                         var message = {
                             msg: 'there was error retrieving data',
                             type: 'error'
                         };
-                        alertService.addAlert(message);
+                        _this.alertService.addAlert(message);
                     }
                 }
-                return $q.reject(rejection);
-            }
+                return _this.$q.reject(rejection);
+            };
+            this.$q = $q;
+            this.$log = $log;
+            this.alertService = alertService;
+        }
+        SlatwallInterceptor.Factory = function ($q, $log, alertService) {
+            return new SlatwallInterceptor($q, $log, alertService);
         };
-        return interceptor;
-    }
-]);
+        SlatwallInterceptor.$inject = ['$q', '$log', 'alertService'];
+        return SlatwallInterceptor;
+    })();
+    slatwalladmin.SlatwallInterceptor = SlatwallInterceptor;
+    angular.module('slatwalladmin').service('slatwallInterceptor', SlatwallInterceptor);
+})(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../services/slatwallInterceptor.js.map
