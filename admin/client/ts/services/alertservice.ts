@@ -7,6 +7,12 @@ module slatwalladmin{
     
     export interface IAlertService {
         get (): Alert[];
+        addAlert (alert:Alert):void;
+        addAlerts (alerts:Alert[]):void;
+        removeAlert (alert:Alert):void;
+        getAlerts ():Alert[];
+        formatMessagesToAlerts (messages):Alert[];
+        removeOldestAlert ():void;
     }
     
     export class AlertService implements IAlertService{
