@@ -310,6 +310,7 @@ Notes:
 										</div>
 										<div>
 											<button type="button" class="btn btn-sm btn-primary" ng-click="giftRecipientControl.addGiftRecipient()">Add Recipient</button>
+        									<button type="button" class="btn btn-sm btn-default">Cancel</button>
 										</div>
 									</div>
 								</div>
