@@ -75,7 +75,7 @@ Notes:
 <cfparam name="emailData" type="struct" default="#structNew()#" />
 <cfparam name="giftCard" type="any" />
 
-<cfset local.emailTo="#giftCard.getOwnerEmailAddress()#">
+<cfset local.emailTo="#giftCard.getEmailAddress()#">
 
 <cfsavecontent variable="emailData.emailBodyHTML">
 	<cfoutput>

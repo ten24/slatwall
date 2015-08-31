@@ -76,15 +76,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
         if(!isNull(arguments.processObject.getOrderItemGiftRecipient())){
-            arguments.giftCard.setOrderItemGiftRecipient(arguments.processObject.getOrderItemGiftRecipient());
+            arguments.giftCard.setOrderItemGiftRecipient(arguments.recipient);
         }
 
-		//is it time to credit the card
-		if(arguments.processObject.getCreditGiftCard()){
-			var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.giftCard.getOriginalOrderItem().getSku().getGiftCardRedemptionAmount());
-		}
-
-		if(!isNull(arguments.processObject.getOwnerAccount())){
+        if(!isNull(arguments.processObject.getOwnerAccount())){
 			arguments.giftCard.setOwnerAccount(arguments.processObject.getOwnerAccount());
 		} else {
 			if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(arguments.processObject.getOwnerEmailAddress())){
@@ -103,8 +98,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.giftCard.setOwnerLastName(arguments.processObject.getOwnerLastName());
 		}
 
+		//is it time to credit the card
+		if(arguments.processObject.getCreditGiftCard()){
+			var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.giftCard.getOriginalOrderItem().getSku().getGiftCardRedemptionAmount());
+		}
+
 		if(!giftCardCreditTransaction.hasErrors()){
-			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
+            var errorBean = getService("HibachiValidationService").validate(arguments.giftCard, "save", true); 
+            if(!errorBean.hasErrors){
+                arguments.giftCard = this.saveGiftCard(arguments.giftCard); 
+            } else { 
+                arguments.giftCard.addErrors(errorBean.getErrors()); 
+            } 
 		} else {
 			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
 		}

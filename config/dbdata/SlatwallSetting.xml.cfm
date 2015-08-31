@@ -15,6 +15,7 @@
 		<Record settingID="dbb327cbea9fe180f55e9e8a06896138" settingName="skuEligibleFulfillmentMethods" settingValue="444df2ffeca081dc22f69c807d2bd8fe" productTypeID="444df2f9c7deaa1582e021e894c0e299" />
 		<Record settingID="dbb327ccf8fc943529d8fc067bc82886" settingName="skuEligibleFulfillmentMethods" settingValue="444df2ffeca081dc22f69c807d2bd8fe" productTypeID="444df313ec53a08c32d8ae434af5819a" />
 		<Record settingID="dbb32807ff0daeea8e1c9602c367d163" settingName="skuEligibleFulfillmentMethods" settingValue="444df300bf377327cd0e44f4b16be38e" productTypeID="444df315a963bea00867567110d47728" />
+        <Record settingID="402884054f8510dd014f856535c80068" settingName="skuEligibleFulfillmentMethods" settingValue="444df2ffeca081dc22f69c807d2bd8fe" productTypeID="50cdfabbc57f7d103538d9e0e37f61e4" />
 		
 		<Record settingID="dbb32806e5c81c7fd4066c0586bbc648" settingName="subscriptionUsageRenewalReminderEmailTemplate" settingValue="dbb327eae59c2605eba6ac9a735007b5" />
 		
