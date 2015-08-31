@@ -408,14 +408,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             
             while(totalQuantity < arguments.processObject.getQuantity()){ 
                 var currentRecipient = count & "recipient"; 
-                var recipientProcessObject = newOrderItem.getProcessObject("addOrderItemGiftRecipient");
-                recipientProcessObject.setOrderItem(newOrderItem); 
+                if(!isNull(newOrderItem)){    
+                    var recipientProcessObject = newOrderItem.getProcessObject("addOrderItemGiftRecipient");
+                    recipientProcessObject.setOrderItem(newOrderItem); 
+                } 
                 recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
                 recipientProcessObject.setLastName(request.context[currentRecipient & "lastName"]); 
                 recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);      
                 recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
                 recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"])); 
-                this.processOrderItem_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
+                arguments.order = this.processOrderItem_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
                 totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);  
                 count++; 
             }
@@ -582,11 +584,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processOrderItem_addOrderItemGiftRecipient(required any order, required any processObject){ 
-		
+                    
 		var item = arguments.processObject.getOrderItem(); 
-		
 		var recipient = this.newOrderItemGiftRecipient(); 
-		
+        var test = this.newOrderItem();
+                    
 		if(!isNull(arguments.processObject.getFirstName())){ 
 			recipient.setFirstName(arguments.processObject.getFirstName()); 
 		}
@@ -609,12 +611,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.processObject.getGiftMessage())){ 
 			recipient.setGiftMessage(arguments.processObject.getGiftMessage()); 	
 		}
+        
+        recipient.setQuantity(processObject.getQuantity());   
+        recipient = this.saveOrderItemGiftRecipient(recipient);
                     
-        recipient.setQuantity(processObject.getQuantity());            
-		
-		recipient.setOrderItem(item);
-		
-		recipient = this.saveOrderItemGiftRecipient(recipient); 
+        recipient.setOrderItem(item);
+        
 		
 		if(!recipient.hasErrors()){ 
 			return this.saveOrder(arguments.order); 
