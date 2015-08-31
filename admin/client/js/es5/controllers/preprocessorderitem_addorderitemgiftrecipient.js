@@ -109,7 +109,6 @@ var slatwalladmin;
             };
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
             $scope.collection = {};
-            this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
             this.searchText = "";
             var count = 1;
             this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
