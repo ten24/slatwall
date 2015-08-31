@@ -19,12 +19,12 @@ module slatwalladmin {
                 public currentGiftRecipient:slatwalladmin.GiftRecipient;
         
 		constructor(private $scope: IOrderItemGiftRecipientScope,  private $slatwall:ngSlatwall.$Slatwall){
-                        this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
-                        $scope.collection = {};
-                        this.quantity = angular.element("input[ng-model='giftRecipientControl.quantity']").val();
-                        this.searchText = ""; 
+            this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
+            $scope.collection = {};
+            
+            this.searchText = ""; 
 			var count = 1;
-                        this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
+            this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
 		}
         
                 getQuantity = ():number =>{      
