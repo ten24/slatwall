@@ -2,9 +2,8 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     class OrderItemGiftRecipientControl {
-        constructor($scope, $injector, $slatwall) {
+        constructor($scope, $slatwall) {
             this.$scope = $scope;
-            this.$injector = $injector;
             this.$slatwall = $slatwall;
             this.getQuantity = () => {
                 if (angular.isUndefined(this.quantity)) {
@@ -115,7 +114,7 @@ var slatwalladmin;
             this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
         }
     }
-    OrderItemGiftRecipientControl.$inject = ["$scope", "$injector", "$slatwall"];
+    OrderItemGiftRecipientControl.$inject = ["$scope", "$slatwall"];
     slatwalladmin.OrderItemGiftRecipientControl = OrderItemGiftRecipientControl;
     angular.module('slatwalladmin').controller('preprocessorderitem_addorderitemgiftrecipient', OrderItemGiftRecipientControl);
 })(slatwalladmin || (slatwalladmin = {}));
