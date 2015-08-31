@@ -26,8 +26,6 @@ angular.module('slatwalladmin')
 			
 			link: function(scope, element, attrs){
 				
-                
-                
 				scope.keywords = "";
 				scope.loadingCollection = false;
 				var searchPromise;

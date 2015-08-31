@@ -2,20 +2,15 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     class GiftRecipient {
-        constructor(firstName, lastName, email, giftMessage, quantity) {
+        constructor(firstName, lastName, email, giftMessage, quantity, editing) {
             this.firstName = firstName;
             this.lastName = lastName;
             this.email = email;
             this.giftMessage = giftMessage;
             this.quantity = quantity;
-            this.getFullName = () => {
-                return this.firstName + ' ' + this.lastName;
-            };
+            this.editing = editing;
             this.quantity = 1;
-            this.firstName = "";
-            this.lastName = "";
-            this.email = "";
-            this.giftMessage = "";
+            this.editing = false;
         }
     }
     slatwalladmin.GiftRecipient = GiftRecipient;
