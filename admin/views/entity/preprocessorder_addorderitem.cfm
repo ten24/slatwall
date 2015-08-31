@@ -246,7 +246,7 @@ Notes:
 										</div>
 									</form>
 									
-	                				<ul ng-show="giftRecipientControl.searchText.length > 0" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" class="dropdown-menu"><!-- display block should be replaced with js(angular) -->
+	                				<ul ng-show="giftRecipientControl.searchText.length > 0" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" class="dropdown-menu">
 	  									<!-- Item-->
 	  									<li ng-repeat="account in collection.pageRecords">
 	  										<a ng-click="giftRecipientControl.addGiftRecipientFromAccountList(account)">
@@ -255,7 +255,10 @@ Notes:
 	  													<img src="">
 	  												</div>
 	  												<div class="col-xs-10 s-info">
-	  													<div class="s-name"><span ng-bind="account.firstName"></span> <span ng-bind="account.lastName"></span></div>
+	  													<div class="s-name">
+															<span ng-bind="account.firstName"></span> 
+															<span ng-bind="account.lastName"></span>
+														</div>
 	  													<div class="s-email" ng-bind="account.primaryEmailAddress_emailAddress"></div>
 	  												</div>
 	  											</div>
@@ -303,7 +306,6 @@ Notes:
 													ng-options="quantity for quantity in giftRecipientControl.getUnassignedCountArray() track by quantity"
                                                     required
 											>
-												
 											</select>
 										</div>
 										<div>
