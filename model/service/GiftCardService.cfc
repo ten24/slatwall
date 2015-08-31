@@ -75,6 +75,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.giftCard.setOriginalOrderItem(arguments.processObject.getOriginalOrderItem());
 		}
 
+        if(!isNull(arguments.processObject.getOrderItemGiftRecipient())){
+            arguments.giftCard.setOrderItemGiftRecipient(arguments.processObject.getOrderItemGiftRecipient());
+        }
+
 		//is it time to credit the card
 		if(arguments.processObject.getCreditGiftCard()){
 			var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.giftCard.getOriginalOrderItem().getSku().getGiftCardRedemptionAmount());
