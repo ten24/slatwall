@@ -1745,28 +1745,67 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.debug(HQL);
 	}
 	
-	public void function getHQLForCollectionFilterTest(){
+	public void function getHQLForCollectionFilterManyToManyTest(){
+		var collectionPromotionRewardData = {
+			collectionid = '',
+			collectionCode = 'promotionReward#createUUID()#',
+			collectionObject="PromotionReward",
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallPromotionReward",
+					"baseEntityAlias":"_promotionreward"
+				}
+			'
+		};
+		var collectionPromotionReward = createPersistedTestEntity('collection',collectionPromotionRewardData);
+		variables.entity = variables.entityService.newCollection();
+		variables.entity.setCollectionObject('PromotionReward');
+		
+		var filter = {
+						propertyIdentifier="_product.defautlSku.product.promotionRewards",
+						collectionID=collectionPromotionReward.getCollectionID(),
+						criteria="One"
+					};
+						
+		MakePublic(variables.entity,'getHQLForCollectionFilter');
+		var HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_product.defautlSku.product.promotionRewards",
+						collectionID=collectionPromotionReward.getCollectionID(),
+						criteria="NONE"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_product.defautlSku.product.promotionRewards",
+						collectionID=collectionPromotionReward.getCollectionID(),
+						criteria="ALL"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_product.defautlSku.product.promotionRewards",
+						collectionID=collectionPromotionReward.getCollectionID(),
+						criteria="ALL"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+	}
+	
+	public void function getHQLForCollectionFilterOneToManyTest(){
+		
 		var collectionBestAcountEmailAddressesData = {
 			collectionid = '',
 			collectionCode = 'BestAccountEmailAddresses#createUUID()#',
-			collectionObject="Account",
+			collectionObject="AccountEmailAddress",
 			collectionConfig = '
 				{
-					"baseEntityName":"SlatwallAccount",
-					"baseEntityAlias":"_account",
-					
-					"filterGroups":[
-						{
-							"filterGroup":[
-								{
-									"propertyIdentifier":"_account.firstName",
-									"comparisonOperator":"like",
-									"value":"Ryan%"
-								}
-							]
-							
-						}
-					]
+					"baseEntityName":"SlatwallAccountEmailAddress",
+					"baseEntityAlias":"_accountemailaddress"
 					
 				}
 			'
