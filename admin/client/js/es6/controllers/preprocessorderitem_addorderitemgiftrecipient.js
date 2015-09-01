@@ -76,6 +76,7 @@ var slatwalladmin;
                 return unassignedCount;
             };
             this.addGiftRecipient = () => {
+                this.adding = false;
                 var giftRecipient = new slatwalladmin.GiftRecipient();
                 angular.extend(giftRecipient, this.currentGiftRecipient);
                 this.orderItemGiftRecipients.push(giftRecipient);
@@ -83,6 +84,7 @@ var slatwalladmin;
                 this.searchText = "";
             };
             this.startFormWithName = () => {
+                this.adding = true;
                 if (this.searchText == "") {
                     this.currentGiftRecipient.firstName = this.searchText;
                 }
@@ -108,6 +110,7 @@ var slatwalladmin;
             };
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
             $scope.collection = {};
+            this.adding = false;
             this.searchText = "";
             var count = 1;
             this.currentGiftRecipient = new slatwalladmin.GiftRecipient();

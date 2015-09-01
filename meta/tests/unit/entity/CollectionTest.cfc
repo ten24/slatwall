@@ -1713,28 +1713,99 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		//request.debug(collectionEntity.getPageRecords());
 	}
 	
-	public void function getHQLForCollectionFilterTest(){
-		var collectionBestAcountEmailAddressesData = {
+	public void function getHQLForCollectionFilterSkuTest(){
+		var collectionBestSkuData = {
 			collectionid = '',
-			collectionCode = 'BestAccountEmailAddresses',
-			collectionObject="Account",
+			collectionCode = 'BestSku#createUUID()#',
+			collectionObject="Sku",
 			collectionConfig = '
 				{
-					"baseEntityName":"SlatwallAccount",
-					"baseEntityAlias":"_account",
-					
-					"filterGroups":[
-						{
-							"filterGroup":[
-								{
-									"propertyIdentifier":"_account.firstName",
-									"comparisonOperator":"like",
-									"value":"Ryan%"
-								}
-							]
-							
-						}
-					]
+					"baseEntityName":"SlatwallSku",
+					"baseEntityAlias":"_sku"
+				}
+			'
+		};
+		var collectionBestSkuData = createPersistedTestEntity('collection',collectionBestSkuData);
+		
+		
+		var filter = {
+						propertyIdentifier="_orderItem.sku.product.skus",
+						collectionID=collectionBestSkuData.getCollectionID(),
+						criteria="One"
+					};
+					var propertyIdentifier = 'sku.product.skus';
+		var test = request.slatwallScope.getService('hibachiService').getLastEntityNameInPropertyIdentifier('OrderItem',propertyIdentifier);
+		var property = request.slatwallScope.getService('hibachiService').getPropertyByEntityNameAndPropertyName(test,listlast(propertyIdentifier,'.'));
+		request.debug(test);
+		request.debug(property);
+		variables.entity = variables.entityService.newCollection();
+		MakePublic(variables.entity,'getHQLForCollectionFilter');
+		variables.entity.setCollectionObject('OrderItem');
+		var HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+	}
+	
+	public void function getHQLForCollectionFilterManyToManyTest(){
+		var collectionPromotionRewardData = {
+			collectionid = '',
+			collectionCode = 'promotionReward#createUUID()#',
+			collectionObject="PromotionReward",
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallPromotionReward",
+					"baseEntityAlias":"_promotionreward"
+				}
+			'
+		};
+		var collectionPromotionReward = createPersistedTestEntity('collection',collectionPromotionRewardData);
+		variables.entity = variables.entityService.newCollection();
+		variables.entity.setCollectionObject('PromotionReward');
+		
+		var filter = {
+						propertyIdentifier="_product.defautlSku.product.promotionRewards",
+						collectionID=collectionPromotionReward.getCollectionID(),
+						criteria="One"
+					};
+						
+		MakePublic(variables.entity,'getHQLForCollectionFilter');
+		var HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_product.defautlSku.product.promotionRewards",
+						collectionID=collectionPromotionReward.getCollectionID(),
+						criteria="NONE"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_product.defautlSku.product.promotionRewards",
+						collectionID=collectionPromotionReward.getCollectionID(),
+						criteria="ALL"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_product.defautlSku.product.promotionRewards",
+						collectionID=collectionPromotionReward.getCollectionID(),
+						criteria="ALL"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+	}
+	
+	public void function getHQLForCollectionFilterOneToManyTest(){
+		
+		var collectionBestAcountEmailAddressesData = {
+			collectionid = '',
+			collectionCode = 'BestAccountEmailAddresses#createUUID()#',
+			collectionObject="AccountEmailAddress",
+			collectionConfig = '
+				{
+					"baseEntityName":"SlatwallAccountEmailAddress",
+					"baseEntityAlias":"_accountemailaddress"
 					
 				}
 			'
@@ -1749,9 +1820,32 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 					};
 						
 		MakePublic(variables.entity,'getHQLForCollectionFilter');
-		
 		var HQL = variables.entity.getHQLForCollectionFilter(filter);
-		//request.debug(HQL);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_account.accountEmailAddresses",
+						collectionID=collectionBestAcountEmailAddresses.getCollectionID(),
+						criteria="NONE"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_account.accountEmailAddresses",
+						collectionID=collectionBestAcountEmailAddresses.getCollectionID(),
+						criteria="ALL"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
+		
+		filter = {
+						propertyIdentifier="_account.accountEmailAddresses",
+						collectionID=collectionBestAcountEmailAddresses.getCollectionID(),
+						criteria="ALL"
+					};
+		HQL = variables.entity.getHQLForCollectionFilter(filter);
+		request.debug(HQL);
 	}
 	
 	/*public void function getCollectionObjectParentChildTest(){

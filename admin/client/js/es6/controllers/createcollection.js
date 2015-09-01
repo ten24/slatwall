@@ -55,7 +55,9 @@ angular.module('slatwalladmin')
                 $scope.paginator.setRecordsCount($scope.collection.recordsCount);
                 $scope.paginator.setPageRecordsInfo($scope.collection.recordsCount, $scope.collection.pageRecordsStart, $scope.collection.pageRecordsEnd, $scope.collection.totalPages);
                 if (angular.isUndefined($scope.myCollection.columns)) {
-                    $scope.myCollection.loadJson(value.collectionConfig);
+                    var colConfig = angular.fromJson(value.collectionConfig);
+                    colConfig.baseEntityName = colConfig.baseEntityName.replace(new RegExp('^' + hibachiConfig.applicationKey, 'i'), '');
+                    $scope.myCollection.loadJson(colConfig);
                 }
                 if (angular.isUndefined($scope.collectionConfig)) {
                     $scope.collectionConfig = $scope.myCollection.getCollectionConfig();
@@ -159,7 +161,8 @@ angular.module('slatwalladmin')
                 ];
             }
             $scope.newCollection.data.collectionConfig = $scope.collectionConfig;
-            $scope.newCollection.data.collectionConfig.baseEntityName = hibachiConfig.applicationKey + $scope.newCollection.data.collectionConfig.baseEntityName;
+            if (!$scope.newCollection.data.collectionConfig.baseEntityName.startsWith(hibachiConfig.applicationKey))
+                $scope.newCollection.data.collectionConfig.baseEntityName = hibachiConfig.applicationKey + $scope.newCollection.data.collectionConfig.baseEntityName;
             $scope.newCollection.$$save().then(function () {
                 observerService.notify('addCollection', $scope.newCollection.data);
                 dialogService.removePageDialog($index);
