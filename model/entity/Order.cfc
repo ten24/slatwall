@@ -315,6 +315,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return getDAO("OrderDAO").getGiftCardOrderPaymentAmount(this.getOrderID());
 	}
 
+                                                     
+    //alias method for validation 
+    public boolean function canCancel(){
+          return !hasGiftCardOrderItems();                                            
+    }
+
 	public boolean function hasGiftCardOrderItems(orderItemID=""){
 
 		var orderItemIDs = getDAO("OrderDAO").getGiftCardOrderItems(this.getOrderID());

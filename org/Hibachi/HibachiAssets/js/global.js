@@ -783,11 +783,17 @@ function setupEventHandlers() {
 					    var injector = elem.injector();
 					    var $compile = injector.get('$compile'); 
 					    var $rootScope = injector.get('$rootScope'); 
+					    
 					    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
-						
 						initUIElements('#adminModal');
+						
 						jQuery('#adminModal').css({
 							'width': 'auto'
+						});
+						
+						jQuery('#adminModal input').each(function(index,input){
+							//used to digest previous jquery value into the ng-model
+							jQuery(input).trigger('input');
 						});
 					} else {
 						jQuery.each(r.messages, function(i, v){
