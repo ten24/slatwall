@@ -107,6 +107,8 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<!--- Order Items --->
 			<hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderitems" open="true" />
+            
+            <hb:HibachiEntityDetailItem view="admin:entity/ordertabs/orderitemgiftrecipients" open="true" />
 			
 			
 			<!--- Payments --->

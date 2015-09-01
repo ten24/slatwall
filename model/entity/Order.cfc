@@ -357,6 +357,13 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 	public numeric function getGiftCardPaymentAmount(){
 		return getDAO('OrderDAO').getGiftCardOrderPaymentAmount(this.getOrderID());
 	}
+                                                     
+    public any function getAllOrderItemGiftRecipientsSmartList(){ 
+        var orderItemGiftRecipientSmartList = getService("OrderService").getOrderItemGiftRecipientSmartList(); 
+        orderItemGiftRecipientSmartList.joinRelatedProperty("SlatwallOrderItemGiftRecipient", "orderItem", "left", true);
+        orderItemGiftRecipientSmartList.addWhereCondition("aslatwallorderitem.order.orderID='#this.getOrderID()#'"); 
+        return orderItemGiftRecipientSmartList; 
+    }
 
 	public void function checkNewBillingAccountAddressSave() {
 		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address

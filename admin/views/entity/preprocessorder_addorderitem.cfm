@@ -274,7 +274,7 @@ Notes:
 		                            	<i class="fa fa-plus" ></i> Add "<span ng-bind="giftRecipientControl.searchText"></span>"
 		                            </button>
 		                        </div>
-								<div class="s-add-info-dropdown">
+								<div class="s-add-info-dropdown" ng-hide="!giftRecipientControl.adding">
 									<div class="s-add-info-dropdown-inner">
 								
 										<h5>Create New Recipient</h5>
