@@ -1099,8 +1099,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	private any function getSelectionCountHQL(){
-		var primaryIDAlias = getCollectionConfigStruct().baseEntityAlias & '.' & getService("hibachiservice").getPrimaryIDPropertyNameByEntityName(getCollectionObject());
-		return 'SELECT COUNT(#primaryIDAlias#) ';
+		return 'SELECT COUNT(#getCollectionConfigStruct().baseEntityAlias#.id) ';
 	}
 	
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
