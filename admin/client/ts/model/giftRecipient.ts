@@ -7,16 +7,11 @@ module slatwalladmin {
             public lastName: string,
             public email: string, 
             public giftMessage: string,
-            public quantity:number
+            public quantity:number,
+            public editing:boolean
         ) { 
             this.quantity = 1;
-            this.firstName = "";
-            this.lastName = "";
-            this.email = "";
-            this.giftMessage = ""; 
-        }
-        public getFullName = ():string =>{
-            return this.firstName + ' ' + this.lastName;    
+            this.editing = false; 
         }
     }
 }

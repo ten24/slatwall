@@ -348,7 +348,7 @@ function setupEventHandlers() {
 
 		var modalLink = initModal( jQuery(this) );
 
-		jQuery('#adminModal').load( modalLink, function(){
+		jQuery('#adminModal').load( modalLink, function(xhr){
 			
 			initUIElements('#adminModal');
 			
@@ -501,7 +501,15 @@ function setupEventHandlers() {
 	jQuery('body').on('click', '.listing-sort', function(e) {
 		e.preventDefault();
 		var data = {};
-		data[ 'OrderBy' ] = jQuery(this).closest('th').data('propertyidentifier') + '|' + jQuery(this).data('sortdirection');
+		var propertyIdentifiers = jQuery(this).closest('th').data('propertyidentifier').split('.'); 
+		data[ 'OrderBy' ] = "";
+		
+		for(var i=propertyIdentifiers.length-1; i>=0; i--){
+			data[ 'OrderBy' ] += propertyIdentifiers[i] + '|' + jQuery(this).data('sortdirection') + ",";
+		}
+		
+		data[ 'OrderBy' ] = data[ 'OrderBy' ].substring(0,data['OrderBy'].length-1);
+		
 		listingDisplayUpdate( jQuery(this).closest('.table').attr('id'), data);
 	});
 
@@ -775,11 +783,17 @@ function setupEventHandlers() {
 					    var injector = elem.injector();
 					    var $compile = injector.get('$compile'); 
 					    var $rootScope = injector.get('$rootScope'); 
+					    
 					    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
-						
 						initUIElements('#adminModal');
+						
 						jQuery('#adminModal').css({
 							'width': 'auto'
+						});
+						
+						jQuery('#adminModal input').each(function(index,input){
+							//used to digest previous jquery value into the ng-model
+							jQuery(input).trigger('input');
 						});
 					} else {
 						jQuery.each(r.messages, function(i, v){

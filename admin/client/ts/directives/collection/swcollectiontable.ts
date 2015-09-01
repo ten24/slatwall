@@ -23,6 +23,7 @@ angular.module('slatwalladmin')
 			scope:{
 				collection:"=",
 				collectionConfig:"=",
+				isRadio:"=",
                 //angularLink:true || false
                 angularLinks:"="
 			},

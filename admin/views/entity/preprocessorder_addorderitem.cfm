@@ -226,63 +226,9 @@ Notes:
 						            </tr>
 						        </thead>
 						        <tbody>
-						        	<tr ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-show="giftRecipientControl.orderItemGiftRecipients.length != 0">
-						        		
-						        		<td>
-						        			<span ng-bind="recipient.getFullName()"></span>
-						        		</td>
-						        		<td ng-bind="recipient.email"></td>
-						        		<td ng-bind="recipient.giftMessage"></td>
-						        		<td ng-bind="recipient.quantity"></td>
-						        		<td class="admin admin2">
-											<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientControl.edit(recipient)"><i class="glyphicon glyphicon-pencil"></i> </a>
-											<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientControl.delete(recipient)"><i class="glyphicon glyphicon-trash"></i> </a>
-						                </td>
+						        	<tr sw-order-item-gift-recipient-row ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-show="giftRecipientControl.orderItemGiftRecipients.length != 0" ng-class="{'s-save-row':recipient.editing}" recipient="recipient" index="$index" recipients="giftRecipientControl.orderItemGiftRecipients" quantity="giftRecipientControl.quantity">
+                        
 						        	</tr>
-						            <tr class="hide">
-						                <td>Reinaldo Solares</td>
-						                <td>reinaldosolares@gmail.com</td>
-										<td class="s-table-input-element">
-											<select class="form-control s-table-sm-select" >
-												<option value="" selected>1</option>
-											</select>
-										</td>
-						                <td class="admin admin2">
-											<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-pencil"></i> </a>
-											<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-trash"></i> </a>
-						                </td>
-						            </tr>
-									<tr class="s-save-row hide"><!-- s-save-row is added to rows that are being saved and removed after  -->
-										<td class="s-table-input-element">
-											<input type="text" value="John Rowe" class="form-control">
-										</td>
-						                <td class="s-table-input-element">
-						                	<input type="text" value="johnrowe@yahoo.com" class="form-control">
-						                </td>
-										<td class="s-table-input-element">
-											<select class="form-control" >
-												<option value="">1</option>
-												<option value="" selected>2</option>
-											</select>
-										</td>
-						                <td class="admin admin2">
-											<a class="btn btn-default btn-xs btn-save" href="##">Save</a>
-						                </td>
-						            </tr>
-									<tr class="hide">
-						                <td>Mark Freeze <a href="##"><i class="fa fa-user"></i></a></td>
-						                <td>mark@gmail.com</td>
-										<td class="s-table-input-element">
-											<select class="form-control">
-												<option value="">1</option>
-												<option value="" selected>2</option>
-											</select>
-										</td>
-						                <td class="admin admin2">
-											<a class="btn btn-default btn-xs" href="##"><i class="glyphicon glyphicon-trash"></i> </a>
-						                </td>
-						            </tr>
-	
 						        </tbody>
 						    </table>
 						</div>
@@ -290,25 +236,25 @@ Notes:
 						<div class="form-group " ng-show="giftRecipientControl.getUnassignedCount() > 0">
 							<div class="s-search-filter s-gift-card">
 		                        <div class="input-group">
-									<form ng-submit="giftRecipientControl.add()">
+									<form>
 										<div class="s-search">
-		                  					<input type="text" placeholder="search or add recipient..." class="form-control input-sm" ng-model="$scope.searchText">
+		                  					<input type="text" placeholder="search or add recipient..." class="form-control input-sm" ng-model="giftRecipientControl.searchText" ng-change="giftRecipientControl.updateResults(giftRecipientControl.searchText)">
 											<i class="fa fa-search"></i>
 										</div>
 									</form>
 									<span href="##" class="s-current-selection-item addDropdown <!---Remove addDropdown---> addDropdown-filledName-input <!--- Remove addDropdown-filledName-input --->"> <!---Reyjay Solares (reinaldosolares@gmail.com) <a href="##" title="edit"><i class="fa fa-pencil"></i></a>---></span>
 	
-	                				<ul class="dropdown-menu addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->"><!-- display block should be replaced with js(angular) -->
+	                				<ul ng-show="giftRecipientControl.searchText.length > 0" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" class="dropdown-menu addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->"><!-- display block should be replaced with js(angular) -->
 	  									<!-- Item-->
-	  									<li>
-	  										<a>
+	  									<li ng-repeat="account in collection.pageRecords">
+	  										<a ng-click="giftRecipientControl.addGiftRecipientFromAccountList(account)">
 	  											<div class="row">
 	  												<div class="col-xs-2 s-photo">
-	  													<img src="http://placehold.it/350x350">
+	  													<img src="">
 	  												</div>
 	  												<div class="col-xs-10 s-info">
-	  													<div class="s-name"></div>
-	  													<div class="s-email"></div>
+	  													<div class="s-name"><span ng-bind="account.firstName"></span> <span ng-bind="account.lastName"></span></div>
+	  													<div class="s-email" ng-bind="account.primaryEmailAddress_emailAddress"></div>
 	  												</div>
 	  											</div>
 	  										</a>
@@ -319,37 +265,40 @@ Notes:
 		                        </div>
 		                        <div class="addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->">
 		                            <!-- Only show if there is text -->
-		                            <button type="button" class="btn btn-primary">
-		                            	<i class="fa fa-plus" ></i> Add "<span></span>"
+		                            <button type="button" class="btn btn-primary" ng-show="giftRecipientControl.searchText != ''" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" ng-click="giftRecipientControl.startFormWithName()">
+		                            	<i class="fa fa-plus" ></i> Add "<span ng-bind="giftRecipientControl.searchText"></span>"
 		                            </button>
 		                        </div>
 								<div class="s-add-info-dropdown addDropdown <!---Remove addDropdown---> addDropdown-add-account <!--- Remove addDropdown-add-account --->">
-									<form ng-submit="giftRecipientControl.add()" class="hide">
+									
 										<h5>Create New Recipient</h5>
 										<div class="form-group">
 											<label>First Name<i class="fa fa-asterisk"></i></label>
-											<input type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.firstName">
+											<input name="_recipientFirstName" type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.firstName" required>
 										</div>
 										<div class="form-group">
 											<label>Last Name<i class="fa fa-asterisk"></i></label>
-											<input type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.lastName">
+											<input name="_recipientLastName" type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.lastName" required>
 										</div>
 										<div class="form-group">
 											<label>Email<i class="fa fa-asterisk"></i></label>
-											<input type="text" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.email">
+											<input name="_recipientEmail" type="email" class="form-control" ng-model="giftRecipientControl.currentGiftRecipient.email" required>
 										</div>
 										<div class="form-group">
 											<label>Message (limited to 250)</label>
-											<textarea class="form-control" rows="4" ng-model="giftRecipientControl.currentGiftRecipient.giftMessage"></textarea>
+											<textarea name="_recipientMessage" class="form-control" rows="4" ng-model="giftRecipientControl.currentGiftRecipient.giftMessage" ng-trim="false"></textarea>
 											<div class="s-character-count">
-												Remaining characters: <strong>250</strong>
+												Remaining characters: <strong><span ng-bind="giftRecipientControl.getMessageCharactersLeft()"></span></strong>
 											</div>
 										</div>
 										<div class="form-group">
 											<label>Qty</label>
-											<select class="form-control" 
+											<select class="form-control"
+                                                    name="_recipientQuantity"
+                                                    type="number"
 													ng-model="giftRecipientControl.currentGiftRecipient.quantity"
-													ng-options="item for item in giftRecipientControl.getUnassignedCountArray() track by item"
+													ng-options="quantity for quantity in giftRecipientControl.getUnassignedCountArray() track by quantity"
+                                                    required
 											>
 												
 											</select>
@@ -357,7 +306,7 @@ Notes:
 										<div>
 											<button type="button" class="btn btn-sm btn-primary" ng-click="giftRecipientControl.addGiftRecipient()">Add Recipient</button>
 										</div>
-									</form>
+								
 								</div>
 							</div>
 	            			<!---End Search--->
