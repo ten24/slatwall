@@ -22,7 +22,7 @@ angular.module('slatwalladmin')
 	        		if(scope.pageShow !== 'Auto'){
 	        			pageShow = scope.pageShow;
 	        		}
-	        		
+	        		scope.entityName = scope.entityName.charAt(0).toUpperCase()+scope.entityName.slice(1);
 	        		var collectionListingPromise = $slatwall.getEntity(scope.entityName, {currentPage:scope.currentPage, pageShow:pageShow, keywords:scope.keywords});
 	        		collectionListingPromise.then(function(value){
 	        			scope.collection = value;
