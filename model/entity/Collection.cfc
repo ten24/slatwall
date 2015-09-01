@@ -699,19 +699,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return HQL;
 	}
 	
-//	private array function getEntityArrayByPropertyIdentifier(required string entityName, required string propertyIdentifier){
-//		var entityArray = [];
-//		var propertyIdentifierArray = ListToArray(arguments.propertyIdentifier,'.');
-//		var currentEntityName = argument.entityName;
-//		var currentEntity = getService('hibachiService').getEntityObject(arguments.entityName);
-//		arrayAppend(entityArray,currentEntity);
-//		for(var propertyItem in propertyIdentifierArray){
-//			var currentEntity = getService('hibachiService').getEntityByEntityName(arguments.entityName);
-//			var currentEntityName = 
-//		}
-//	}
-
-	
 	
 	private string function getHQLForCollectionFilter(required struct filter){
 		
