@@ -77,6 +77,8 @@ Notes:
 			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" />
 			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/taxes" />
 			<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/promotions" />
+            
+            <hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/orderitemgiftrecipients" /> 
 			
 			<cfif rc.orderItem.getOrderItemType().getSystemCode() eq "oitSale">
 				<hb:HibachiEntityDetailItem view="admin:entity/orderitemtabs/deliveryitems" />
