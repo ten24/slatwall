@@ -42,6 +42,9 @@ jQuery(document).ready(function() {
 });
 
 function initUIElements( scopeSelector ) {
+    
+    jQuery("input[name='redemptionAmount']").hide();
+    jQuery("label[for='redemptionAmount']").hide();
 
 	var convertedDateFormat = convertCFMLDateFormat( hibachiConfig.dateFormat );
 	var convertedTimeFormat = convertCFMLTimeFormat( hibachiConfig.timeFormat );
@@ -408,6 +411,16 @@ function setupEventHandlers() {
 		});
 
 	});
+    
+    jQuery("select[name='redemptionAmountType']").change(function(){
+        if( jQuery("select[name='redemptionAmountType']").val() == "sameAsPrice"){
+            jQuery("input[name='redemptionAmount']").hide();
+            jQuery("label[for='redemptionAmount']").hide();
+        } else { 
+            jQuery("input[name='redemptionAmount']").show();   
+            jQuery("label[for='redemptionAmount']").show();
+        }
+    }); 
 
 	//kill all ckeditor instances on modal window close
 	jQuery('#adminModal ').on('hidden', function(){
