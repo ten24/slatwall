@@ -213,24 +213,27 @@ Notes:
 					<div>
 						<!--- Process Add Order Item Gift Recipient --->
 						<hr/>
-						<h5>Assign Gift Cards <strong>(<span ng-bind="giftRecipientControl.getUnassignedCount()"></span>)</strong></h5>
-						<div class="table-responsive s-gift-card-table">
-						    <table class="table table-bordered table-hover">
-						        <thead>
-						            <tr>
-						                <th>#$.slatwall.rbKey('define.name')#</th>
-								        <th>#$.slatwall.rbKey('define.email')#</th>
-								        <th>#$.slatwall.rbKey('define.giftMessage')#</th>
-								        <th>#$.slatwall.rbKey('define.quantity')# (<span ng-bind="giftRecipientControl.getTotalQuantity()"></span>)</th>
-								        <th></th>
-						            </tr>
-						        </thead>
-						        <tbody>
-						        	<tr sw-order-item-gift-recipient-row ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-show="giftRecipientControl.orderItemGiftRecipients.length != 0" ng-class="{'s-save-row':recipient.editing}" recipient="recipient" index="$index" recipients="giftRecipientControl.orderItemGiftRecipients" quantity="giftRecipientControl.quantity">
-                        
-						        	</tr>
-						        </tbody>
-						    </table>
+						<h5>Assign Gift Cards</h5>
+						<div class="table-responsive s-gift-card-table">			
+							<div ng-show="giftRecipientControl.getUnassignedCount()" class="alert alert-info" role="alert">Use the "search or add recipient" field below to assign recipients to gift cards.  </br><strong>You have ({{giftRecipientControl.getUnassignedCount()}}) gift card<span ng-hide="giftRecipientControl.getUnassignedCount() = 1">s</span> to assign</strong></div>
+							<div ng-show="giftRecipientControl.getUnassignedCount() != giftRecipientControl.quantity">
+								<table class="table table-bordered table-hover">
+							        <thead>
+							            <tr>
+							                <th>#$.slatwall.rbKey('define.name')#</th>
+									        <th>#$.slatwall.rbKey('define.email')#</th>
+									        <th>#$.slatwall.rbKey('define.giftMessage')#</th>
+									        <th>#$.slatwall.rbKey('define.quantity')#</th>
+									        <th></th>
+							            </tr>
+							        </thead>
+							        <tbody>
+							        	<tr sw-order-item-gift-recipient-row ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-show="giftRecipientControl.orderItemGiftRecipients.length != 0" ng-class="{'s-save-row':recipient.editing}" recipient="recipient" index="$index" recipients="giftRecipientControl.orderItemGiftRecipients" quantity="giftRecipientControl.quantity">
+	                        
+							        	</tr>
+							        </tbody>
+							    </table>
+							</div>
 						</div>
 	
 						<div class="form-group " ng-show="giftRecipientControl.getUnassignedCount() > 0">
@@ -242,9 +245,8 @@ Notes:
 											<i class="fa fa-search"></i>
 										</div>
 									</form>
-									<span href="##" class="s-current-selection-item addDropdown <!---Remove addDropdown---> addDropdown-filledName-input <!--- Remove addDropdown-filledName-input --->"> <!---Reyjay Solares (reinaldosolares@gmail.com) <a href="##" title="edit"><i class="fa fa-pencil"></i></a>---></span>
-	
-	                				<ul ng-show="giftRecipientControl.searchText.length > 0" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" class="dropdown-menu addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->"><!-- display block should be replaced with js(angular) -->
+									
+	                				<ul ng-show="giftRecipientControl.searchText.length > 0" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" class="dropdown-menu">
 	  									<!-- Item-->
 	  									<li ng-repeat="account in collection.pageRecords">
 	  										<a ng-click="giftRecipientControl.addGiftRecipientFromAccountList(account)">
@@ -253,7 +255,10 @@ Notes:
 	  													<img src="">
 	  												</div>
 	  												<div class="col-xs-10 s-info">
-	  													<div class="s-name"><span ng-bind="account.firstName"></span> <span ng-bind="account.lastName"></span></div>
+	  													<div class="s-name">
+															<span ng-bind="account.firstName"></span> 
+															<span ng-bind="account.lastName"></span>
+														</div>
 	  													<div class="s-email" ng-bind="account.primaryEmailAddress_emailAddress"></div>
 	  												</div>
 	  											</div>
@@ -263,14 +268,15 @@ Notes:
 		                			</ul>
 	
 		                        </div>
-		                        <div class="addDropdown <!---Remove addDropdown---> addDropdown-dropdown <!--- Remove addDropdown-dropdown --->">
+		                        <div>
 		                            <!-- Only show if there is text -->
 		                            <button type="button" class="btn btn-primary" ng-show="giftRecipientControl.searchText != ''" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" ng-click="giftRecipientControl.startFormWithName()">
 		                            	<i class="fa fa-plus" ></i> Add "<span ng-bind="giftRecipientControl.searchText"></span>"
 		                            </button>
 		                        </div>
-								<div class="s-add-info-dropdown addDropdown <!---Remove addDropdown---> addDropdown-add-account <!--- Remove addDropdown-add-account --->">
-									
+								<div class="s-add-info-dropdown">
+									<div class="s-add-info-dropdown-inner">
+								
 										<h5>Create New Recipient</h5>
 										<div class="form-group">
 											<label>First Name<i class="fa fa-asterisk"></i></label>
@@ -300,13 +306,13 @@ Notes:
 													ng-options="quantity for quantity in giftRecipientControl.getUnassignedCountArray() track by quantity"
                                                     required
 											>
-												
 											</select>
 										</div>
 										<div>
 											<button type="button" class="btn btn-sm btn-primary" ng-click="giftRecipientControl.addGiftRecipient()">Add Recipient</button>
+        									<button type="button" class="btn btn-sm btn-default">Cancel</button>
 										</div>
-								
+									</div>
 								</div>
 							</div>
 	            			<!---End Search--->
