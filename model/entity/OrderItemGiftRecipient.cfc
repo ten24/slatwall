@@ -134,6 +134,14 @@ component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipien
 	// ==============  END: Overridden Implicet Getters ====================
 
 	// ================== START: Overridden Methods ========================
+
+    public string function getSimpleRepresentation() {
+		if(!isNull(this.getFirstName()) && !isNull(this.getLastName())){
+			return this.getFirstName() & " " & this.getLastName();
+		} else {
+			return getEmailAddress();
+		}
+	}
 	
 	// ==================  END:  Overridden Methods ========================
 	
