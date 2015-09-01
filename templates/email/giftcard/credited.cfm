@@ -89,13 +89,13 @@ Notes:
 
 				<table id="giftCardInfo" style="border-spacing: 0px; border-collapse: collapse; border: 1px solid ##d8d8d8; text-align: left; font-size: 12px; width: 350px;">
 					<tbody>
+                        <tr>
+                            <th>Code:</th>
+                            <th>Balance:</th>
+                        </tr>
 						<tr>
-							<td>Gift Card Code:</td>
 							<td>#giftCard.getGiftCardCode()#</td>
-						</tr>
-						<tr>
-							<td>Gift Card Balance:</td>
-							<td>#giftCard.getBalance()#</td>
+							<td>#giftCard.getBalanceAmount()#</td>
 						</tr>
 					</tbody>
 				</table>
@@ -113,7 +113,7 @@ Notes:
 		Your Gift Card has been credited!
 		=================================
 		Gift Card Code: #giftCard.getGiftCardCode()#
-		Gift Card Balance: #giftCard.getBalance()#
+		Gift Card Balance: #giftCard.getBalanceAmount()#
 		=================================
 	</cfoutput>
 </cfsavecontent>

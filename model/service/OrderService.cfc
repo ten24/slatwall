@@ -408,14 +408,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             
             while(totalQuantity < arguments.processObject.getQuantity()){ 
                 var currentRecipient = count & "recipient"; 
-                var recipientProcessObject = newOrderItem.getProcessObject("addOrderItemGiftRecipient");
-                recipientProcessObject.setOrderItem(newOrderItem); 
+                if(!isNull(newOrderItem)){    
+                    var recipientProcessObject = newOrderItem.getProcessObject("addOrderItemGiftRecipient");
+                    recipientProcessObject.setOrderItem(newOrderItem); 
+                } 
                 recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
                 recipientProcessObject.setLastName(request.context[currentRecipient & "lastName"]); 
                 recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);      
                 recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
                 recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"])); 
-                this.processOrderItem_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
+                arguments.order = this.processOrderItem_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
                 totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);  
                 count++; 
             }
@@ -582,11 +584,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 	
 	public any function processOrderItem_addOrderItemGiftRecipient(required any order, required any processObject){ 
-		
+                    
 		var item = arguments.processObject.getOrderItem(); 
-		
 		var recipient = this.newOrderItemGiftRecipient(); 
-		
+        var test = this.newOrderItem();
+                    
 		if(!isNull(arguments.processObject.getFirstName())){ 
 			recipient.setFirstName(arguments.processObject.getFirstName()); 
 		}
@@ -598,6 +600,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(isNull(arguments.processObject.getAccount())){
             if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(arguments.processObject.getEmailAddress())){
 				recipient.setAccount(getService("HibachiService").get("Account", getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(arguments.processObject.getEmailAddress())));
+                recipient.setEmailAddress(arguments.processObject.getEmailAddress());
             } else {
 				recipient.setEmailAddress(arguments.processObject.getEmailAddress());
 			}
@@ -609,12 +612,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(arguments.processObject.getGiftMessage())){ 
 			recipient.setGiftMessage(arguments.processObject.getGiftMessage()); 	
 		}
+        
+        recipient.setQuantity(processObject.getQuantity());   
+        recipient = this.saveOrderItemGiftRecipient(recipient);
                     
-        recipient.setQuantity(processObject.getQuantity());            
-		
-		recipient.setOrderItem(item);
-		
-		recipient = this.saveOrderItemGiftRecipient(recipient); 
+        recipient.setOrderItem(item);
+        
 		
 		if(!recipient.hasErrors()){ 
 			return this.saveOrder(arguments.order); 
@@ -736,10 +739,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					giftCardProcessObject.setOrderPayments(arguments.order.getOrderPayments());
 					giftCardProcessObject.setOrderItems(arguments.order.getOrderItems());
 
-					if(giftCard.getBalance() >= arguments.order.getTotal()){
+					if(giftCard.getBalanceAmount() >= arguments.order.getTotal()){
 						amount = arguments.order.getTotal();
 					} else { 
-						amount = giftCard.getBalance();
+						amount = giftCard.getBalanceAmount();
 					}
 
 					giftCardProcessObject.setDebitAmount(local.amount); 
@@ -1307,60 +1310,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 								arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
 							}
 							
-							var orderItemGiftCards = getDAO("OrderDAO").getGiftCardOrderItems(arguments.order.getOrderID()); 
 							
-							// Now we can charge up the gift cards				
-							if(orderItemGiftCards.RecordCount > 0){ 			
-								for(orderItemGiftCard in orderItemGiftCards){
-									var item = getService("HibachiService").get("OrderItem", orderItemGiftCard.orderItemID); 
-									var quantity = orderItemGiftCard.quantity; 
-									var term = getService("HibachiService").get("Term", orderItemGiftCard.giftCardExpirationTermID);	
-									var recipients = item.getOrderItemGiftRecipients(); 		
-									
-									//recipients and cards have already been validated so put them together
-									for(recipient in recipients){ 
-                                        
-										for(var i=0; i<recipient.getQuantity(); i++){ 
-                                            var card = getService("GiftCardService").newGiftCard(); 	
-                                            var createGiftCard = card.getProcessObject( 'Create' );
-
-                                            createGiftCard.setOriginalOrderItem(item);
-                                            createGiftCard.setGiftCardExpirationTerm(term); 
-                                            createGiftCard.setOrderPayments(arguments.order.getOrderPayments());
-
-                                            if(!isNull(recipient.getAccount())){
-                                                createGiftCard.setOwnerAccount(recipient.getAccount()); 	
-                                            } else { 
-                                                if(getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(recipient.getEmailAddress())){
-                                                    createGiftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(recipient.getEmailAddress())));
-                                                    createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
-                                                } else { 
-                                                    createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
-                                                }
-                                            }
-
-                                            if(!isNull(recipient.getFirstName())){
-                                                createGiftCard.setOwnerFirstName(recipient.getFirstName()); 
-                                            }
-
-                                            if(!isNull(recipient.getLastName())){
-                                                createGiftCard.setOwnerLastName(recipient.getLastName()); 
-                                            }
-
-                                            createGiftCard.setCreditGiftCard(true); 
-                                            card = getService("giftCardService").process(card, createGiftCard, 'Create');
-
-                                            if(card.hasErrors()){
-                                                arguments.order.addErrors(card.getErrors());
-                                            } else { 
-                                                var cardData = {}; 
-                                                cardData.entity=card;
-                                                getService("hibachiEventService").announceEvent(eventName="afterGiftCard_orderPlacedSuccess", eventData=cardData);
-                                            }
-                                        }
-									}	
-								}
-							}
 							// Clear this order out of all sessions
 							getOrderDAO().removeOrderFromAllSessions(orderID=arguments.order.getOrderID());
 							
@@ -1870,12 +1820,79 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					getAccountService().processAccountLoyalty(accountLoyalty, fulfillmentMethodUsedData, 'fulfillmentMethodUsed'); 
 				}
 			}
+                
+            var order = creditGiftCards(arguments.processObject.getOrder()); 
+                
+            if(order.hasErrors()){
+                arguments.orderDelivery.addErrors(order.getErrors());
+            }
 			
 			saveOrderFulfillment( orderFulfillment );
 		}
-		
 		return arguments.orderDelivery;
 	}
+                
+    private any function creditGiftCards(required order){
+        var orderItemGiftCards = getDAO("OrderDAO").getGiftCardOrderItems(arguments.order.getOrderID()); 
+
+        // Now we can charge up the gift cards				
+        if(orderItemGiftCards.RecordCount > 0){ 			
+            for(orderItemGiftCard in orderItemGiftCards){
+                var item = getService("HibachiService").get("OrderItem", orderItemGiftCard.orderItemID); 
+                var quantity = orderItemGiftCard.quantity; 
+                var term = getService("HibachiService").get("Term", orderItemGiftCard.giftCardExpirationTermID);	
+                var recipients = item.getOrderItemGiftRecipients(); 		
+
+                //recipients and cards have already been validated so put them together
+                for(recipient in recipients){ 
+                    if(!recipient.hasAllAssignedGiftCards()){
+                        for(var i=0; i<recipient.getQuantity(); i++){ 
+                            var card = getService("GiftCardService").newGiftCard(); 	
+                            var createGiftCard = card.getProcessObject( 'Create' );
+
+                            createGiftCard.setOriginalOrderItem(item);
+                            createGiftCard.setGiftCardExpirationTerm(term); 
+                            createGiftCard.setOrderPayments(arguments.order.getOrderPayments());
+                            createGiftCard.setOrderItemGiftRecipient(recipient);
+
+                            if(!isNull(recipient.getAccount())){
+                                createGiftCard.setOwnerAccount(recipient.getAccount()); 	
+                            } else { 
+                                if(getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(recipient.getEmailAddress())){
+                                    createGiftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(recipient.getEmailAddress())));
+                                    createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
+                                } else { 
+                                    createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
+                                }
+                            }
+
+                            if(!isNull(recipient.getFirstName())){
+                                createGiftCard.setOwnerFirstName(recipient.getFirstName()); 
+                            }
+
+                            if(!isNull(recipient.getLastName())){
+                                createGiftCard.setOwnerLastName(recipient.getLastName()); 
+                            }
+
+                            createGiftCard.setCreditGiftCard(true); 
+                
+                            card = getService("giftCardService").process(card, createGiftCard, 'Create');
+
+                            if(card.hasErrors()){
+                                arguments.order.addErrors(card.getErrors());
+                            } else { 
+                                var cardData = {}; 
+                                cardData.entity=card;
+                                getService("hibachiEventService").announceEvent(eventName="afterGiftCard_orderPlacedSuccess", eventData=cardData);
+                            }
+                        }
+                    }
+                }	
+            }
+        }
+                
+        return arguments.order; 
+    }
 	
 	private any function populateChildOrderItems(required parentOrderItem, required childOrderItem, required childOrderItemData, required order, required orderFulfillment){
 		// Populate the childOrderItem with the data

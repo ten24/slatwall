@@ -61,6 +61,7 @@ component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipien
 	property name="account" cfc="Account" fieldtype="many-to-one" fkcolumn="accountID";
 		
 	// Related Object Properties (one-to-many)
+    property name="giftCards" singularname="giftCard" cfc="GiftCard" fieldtype="one-to-many" fkcolumn="orderItemGiftRecipientID" cascade="all-delete-orphan";
 	
 	// Related Object Properties (many-to-many)
 	
@@ -76,13 +77,21 @@ component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipien
 	// Non-Persistent Properties
 	
 	// ============ START: Non-Persistent Property Methods =================
+
+    public boolean function hasAllAssignedGiftCards(){
+        if(arrayLen(this.getGiftCards()) == this.getQuantity()){ 
+            return true; 
+        } else { 
+            return false;
+        }
+    } 
 	
 	// ============  END:  Non-Persistent Property Methods =================
 		
 	// ============= START: Bidirectional Helper Methods ===================
 	
 	// Order Item (many-to-one)
-	
+
 	public void function setOrderItem(required any orderItem) {
 		variables.orderItem = arguments.orderItem;
 		if(isNew() or !arguments.orderItem.hasOrderItemGiftRecipient( this )) {
@@ -99,6 +108,15 @@ component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipien
 			arrayDeleteAt(arguments.orderItem.getOrderItemGiftRecipients(), index);
 		}
 		structDelete(variables, "orderItem");
+	}
+
+    // Gift Card (one-to-many)
+	public void function addGiftCard(required any giftCard){
+		arguments.giftCard.setOrderItemGiftRecipient( this );
+	}
+
+	public void function removeGiftCardTransaction(required any giftCard){
+		arguments.giftCard.removeOrderItemGiftRecipient( this );
 	}
 	
 	// =============  END:  Bidirectional Helper Methods ===================

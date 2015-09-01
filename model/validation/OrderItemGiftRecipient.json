@@ -1,0 +1,8 @@
+{
+	"properties":{
+	    "firstName":	            [{"contexts":"save","required":true}],
+        "lastName":	                [{"contexts":"save","required":true}],
+        "emailAddress":           [{"contexts":"save","required":true}],
+        "quantity":                [{"contexts":"save","required":true, "minValue":1}]
+	}
+}
