@@ -50,11 +50,12 @@ Notes:
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
+<cfparam name="rc.orderItem" type="any" />
 <cfparam name="rc.order" type="any" />
 <cfparam name="rc.edit" type="boolean" />
 
 <cfsilent>
-	<cfset local.recipientList = rc.order.getAllOrderItemGiftRecipientsSmartList() />
+	<cfset local.recipientList = rc.orderItem.getAllOrderItemGiftRecipientsSmartList() />
 </cfsilent>
 
 <cfoutput>

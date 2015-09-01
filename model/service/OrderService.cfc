@@ -412,14 +412,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                     var recipientProcessObject = newOrderItem.getProcessObject("addOrderItemGiftRecipient");
                     recipientProcessObject.setOrderItem(newOrderItem); 
                 } 
-                recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
-                recipientProcessObject.setLastName(request.context[currentRecipient & "lastName"]); 
-                recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);      
-                recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
-                recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"])); 
-                arguments.order = this.processOrderItem_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
-                totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);  
-                count++; 
+                if(structKeyExists(request.context, currentRecipient & "firstName")){
+                    recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
+                    recipientProcessObject.setLastName(request.context[currentRecipient & "lastName"]); 
+                    recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);      
+                    recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
+                    recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"])); 
+                    arguments.order = this.processOrderItem_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
+                    totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);  
+                    count++; 
+                } else { 
+                    break;  
+                } 
             }
         } 
 

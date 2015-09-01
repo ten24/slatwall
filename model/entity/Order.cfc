@@ -346,11 +346,11 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 		var orderItemIDs = getDAO('OrderDAO').getGiftCardOrderItems(this.getOrderID());
 		var giftCardOrderItems = [];
-
+        
 		for(row in orderItemIDs){
-				arrayAppend(orderItems, getService('HibachiService').get('orderItem', row.orderItemID));
+				arrayAppend(giftCardOrderItems, getService('HibachiService').get('orderItem', row.orderItemID));
 		}
-
+        
 		return giftCardOrderItems;
 	}
 

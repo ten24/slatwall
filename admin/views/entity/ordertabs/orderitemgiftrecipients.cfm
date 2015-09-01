@@ -51,20 +51,21 @@ Notes:
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 <cfparam name="rc.order" type="any" />
+<cfset giftCardOrderItems = rc.order.getGiftCardOrderItems() />
 <cfparam name="rc.edit" type="boolean" />
 
-<cfsilent>
-	<cfset local.recipientList = rc.order.getAllOrderItemGiftRecipientsSmartList() />
-</cfsilent>
 
-<cfoutput>
-    <hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderitemgiftrecipients')#" smartList="#local.recipientList#" 
-                recordDetailAction="admin:entity.detailorderitemgiftrecipient"
-                recordEditAction="admin:entity.editorderitemgiftrecipient">
-            <hb:HibachiListingColumn propertyIdentifier="firstName" />
-            <hb:HibachiListingColumn propertyIdentifier="lastName" />
-            <hb:HibachiListingColumn propertyIdentifier="emailAddress" />
-            <hb:HibachiListingColumn propertyIdentifier="giftMessage" />
-            <hb:HibachiListingColumn propertyIdentifier="quantity" />
-    </hb:HibachiListingDisplay>
-</cfoutput>
+<cfloop index="i" from="1" to="#arrayLen(giftCardOrderItems)#">
+    <cfset recipientSmartList = giftCardOrderItems[i].getAllOrderItemGiftRecipientsSmartList() />
+    <cfoutput>
+        <hb:HibachiListingDisplay title="#giftCardOrderItems[i].getSku().getSkuCode()#" smartList="#recipientSmartList#" 
+                    recordDetailAction="admin:entity.detailorderitemgiftrecipient"
+                    recordEditAction="admin:entity.editorderitemgiftrecipient">
+                <hb:HibachiListingColumn propertyIdentifier="firstName" />
+                <hb:HibachiListingColumn propertyIdentifier="lastName" />
+                <hb:HibachiListingColumn propertyIdentifier="emailAddress" />
+                <hb:HibachiListingColumn propertyIdentifier="giftMessage" />
+                <hb:HibachiListingColumn propertyIdentifier="quantity" />
+        </hb:HibachiListingDisplay>
+    </cfoutput>
+</cfloop>

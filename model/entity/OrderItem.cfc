@@ -124,6 +124,13 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		
 	}
 
+    public any function getAllOrderItemGiftRecipientsSmartList(){ 
+        var orderItemGiftRecipientSmartList = getService("OrderService").getOrderItemGiftRecipientSmartList(); 
+        orderItemGiftRecipientSmartList.joinRelatedProperty("SlatwallOrderItemGiftRecipient", "orderItem", "left", true);
+        orderItemGiftRecipientSmartList.addWhereCondition("aslatwallorderitem.orderItemID='#this.getOrderItemID()#'"); 
+        return orderItemGiftRecipientSmartList; 
+    }
+
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;
 		
