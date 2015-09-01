@@ -1825,18 +1825,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
                 
-            var order = creditGiftCards(arguments.processObject.getOrder()); 
+            // Loop over the orderDeliveryItems to setup subscriptions and contentAccess
+			for(var di=1; di<=arrayLen(arguments.orderDelivery.getOrderDeliveryItems()); di++) {
+				
+				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];	
+                writeDump(var=orderDeliveryItem, top=2, abort="true"); 
+				var order = creditGiftCards(arguments.processObject.getOrder(), orderDeliveryItem); 
                 
-            if(order.hasErrors()){
-                arguments.orderDelivery.addErrors(order.getErrors());
-            }
-			
+                if(order.hasErrors()){
+                    arguments.orderDelivery.addErrors(order.getErrors());
+                }
+
+			}
+                	
 			saveOrderFulfillment( orderFulfillment );
 		}
 		return arguments.orderDelivery;
 	}
                 
-    private any function creditGiftCards(required order){
+    private any function creditGiftCard(required order, required orderDelivery){
         var orderItemGiftCards = getDAO("OrderDAO").getGiftCardOrderItems(arguments.order.getOrderID()); 
 
         // Now we can charge up the gift cards				

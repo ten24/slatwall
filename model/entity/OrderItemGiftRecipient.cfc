@@ -84,6 +84,10 @@ component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipien
         } else { 
             return false;
         }
+    }
+
+    public numeric function getNumberOfUnassignedGiftCards(){ 
+        return this.getQuantity() - arrayLen(this.getGiftCards());
     } 
 	
 	// ============  END:  Non-Persistent Property Methods =================
