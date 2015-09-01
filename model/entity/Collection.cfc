@@ -946,10 +946,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	public any function getRecordsCount() {
 		if(!structKeyExists(variables, "recordsCount")) {
-//			if(getCacheable() && structKeyExists(application.entityCollection, getCacheName()) && structKeyExists(application.entityCollection[getCacheName()], "recordsCount")) {
-//				variables.recordsCount = application.entityCollection[ getCacheName() ].recordsCount;
-//			} else {
-//				if(!structKeyExists(variables,"records")) {
+			if(getCacheable() && structKeyExists(application.entityCollection, getCacheName()) && structKeyExists(application.entityCollection[getCacheName()], "recordsCount")) {
+				variables.recordsCount = application.entityCollection[ getCacheName() ].recordsCount;
+			} else {
+				if(!structKeyExists(variables,"records")) {
 					var HQL = getSelectionCountHQL() & getHQL(true);
 					var recordCount = ormExecuteQuery(HQL, getHQLParams(), true, {ignoreCase="true"});
 					variables.recordsCount = recordCount;
@@ -957,10 +957,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						application.entityCollection[ getCacheName() ] = {};
 						application.entityCollection[ getCacheName() ].recordsCount = variables.recordsCount;
 					}
-//				} else {
-//					variables.recordsCount = arrayLen(getRecords());	
-//				}
-//			}
+				} else {
+					variables.recordsCount = arrayLen(getRecords());	
+				}
+			}
 		}
 		
 		return variables.recordsCount;
