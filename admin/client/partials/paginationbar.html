@@ -13,7 +13,7 @@
 		</div>
 		<div ng-hide="swPaginationBar.paginator.recordsCount" class="alert alert-info" role="alert" sw-rbkey="'admin.define.norecordsfound'"><!-- Message created by rb key --></div>
 	</div>
-	<div class="col-xs-8 s-table-footer-right">
+	<div class="col-xs-8 s-table-footer-right" ng-if="swPaginationBar.paginator.recordsCount">
 		<ul class="list-inline list-unstyled">
 		    <li>
 		        <form class="form-horizontal">
