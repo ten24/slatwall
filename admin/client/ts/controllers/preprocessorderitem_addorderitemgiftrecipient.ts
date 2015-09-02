@@ -45,37 +45,37 @@ module slatwalladmin {
                         keywords: keyword,
                         defaultColumns: false, 
                         columnsConfig:angular.toJson([
-                                {isDeletable:false,
-                                isSearchable:false,
-
-                                isVisible:true,
-                                ormtype:"id",
-                                propertyIdentifier:"_account.accountID",
+                                {
+                                    isDeletable:false,
+                                    isSearchable:false,
+                                    isVisible:true,
+                                    ormtype:"id",
+                                    propertyIdentifier:"_account.accountID",
                                 },
 
-
-
-                                {isDeletable:false,
-                                isSearchable:true,
-
-                                isVisible:true,
-                                ormtype:"string",
-                                propertyIdentifier:"_account.firstName",
+                                {
+                                    isDeletable:false,
+                                    isSearchable:true,
+                                    isVisible:true,
+                                    ormtype:"string",
+                                    propertyIdentifier:"_account.firstName",
                                 },
 
-                                {isDeletable:false,
-                                isSearchable:true,
-                                isVisible:true,
-                                ormtype:"string",
-                                propertyIdentifier:"_account.lastName",
+                                {
+                                    isDeletable:false,
+                                    isSearchable:true,
+                                    isVisible:true,
+                                    ormtype:"string",
+                                    propertyIdentifier:"_account.lastName",
                                 },
 
-                                {isDeletable:false,
-                                isSearchable:true,
-                                title:"Email Address",
-                                isVisible:true,
-                                ormtype:"string",
-                                propertyIdentifier:"_account.primaryEmailAddress.emailAddress",
+                                {
+                                    isDeletable:false,
+                                    isSearchable:true,
+                                    title:"Email Address",
+                                    isVisible:true,
+                                    ormtype:"string",
+                                    propertyIdentifier:"_account.primaryEmailAddress.emailAddress",
                                 }
                         ])
                 };
@@ -84,7 +84,14 @@ module slatwalladmin {
 
                 accountPromise.then((response:any):void =>{
                         this.$scope.collection = response;
-        });
+                        if(angular.isDefined(this.$scope.collection)){
+                            console.log(this.$scope.collection.pageRecords);
+                            angular.forEach(this.$scope.collection.pageRecords,(account)=>{
+                                account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
+                            });
+                        }
+                });
+                
 
                 return this.$scope.collection;
         }

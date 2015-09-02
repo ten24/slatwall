@@ -90,7 +90,7 @@ component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipien
         return this.getQuantity() - arrayLen(this.getGiftCards());
     } 
 
-    public boolean hasCorrectGiftMessageLength(){ 
+    public boolean function hasCorrectGiftMessageLength(){ 
         return getService("HibachiValidationService").validate_maxLength(this, "giftMessage", getService("SettingService").getSettingValue("globalGiftCardMessageLength")); 
     } 
 	

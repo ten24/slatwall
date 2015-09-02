@@ -21,25 +21,29 @@ var slatwalladmin;
                     keywords: keyword,
                     defaultColumns: false,
                     columnsConfig: angular.toJson([
-                        { isDeletable: false,
+                        {
+                            isDeletable: false,
                             isSearchable: false,
                             isVisible: true,
                             ormtype: "id",
                             propertyIdentifier: "_account.accountID",
                         },
-                        { isDeletable: false,
+                        {
+                            isDeletable: false,
                             isSearchable: true,
                             isVisible: true,
                             ormtype: "string",
                             propertyIdentifier: "_account.firstName",
                         },
-                        { isDeletable: false,
+                        {
+                            isDeletable: false,
                             isSearchable: true,
                             isVisible: true,
                             ormtype: "string",
                             propertyIdentifier: "_account.lastName",
                         },
-                        { isDeletable: false,
+                        {
+                            isDeletable: false,
                             isSearchable: true,
                             title: "Email Address",
                             isVisible: true,

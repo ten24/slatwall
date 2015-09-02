@@ -253,7 +253,7 @@ Notes:
 	  										<a ng-click="giftRecipientControl.addGiftRecipientFromAccountList(account)">
 	  											<div class="row">
 	  												<div class="col-xs-2 s-photo">
-	  													<img src="">
+	  													<img src="{{account.gravatar}}">
 	  												</div>
 	  												<div class="col-xs-10 s-info">
 	  													<div class="s-name">
