@@ -721,17 +721,13 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}else if(arguments.filter.criteria == 'All'){
 			var logicalComparator = 'NOT IN ';
 		}
-		var collectionEntityHQL = replace(collectionEntity.getHQL(true),'_','__');
-		var collectionEntityAlias = replace(collectionEntity.getCollectionConfigStruct().baseEntityAlias,'_','__');
-		collectionFilterHQL &= ' #collectionEntityHQL# #predicate# #collectionEntityAlias# #logicalComparator# elements(#maincollectionAlias#) ';
+			
+		collectionFilterHQL &= ' #rereplace(collectionEntity.getHQL(true),'\b\_','__',"ALL")# #predicate# #replace(collectionEntity.getCollectionConfigStruct().baseEntityAlias,'_','__','ALL')# #logicalComparator# elements(#maincollectionAlias#) ';
 			
 		//add all params from subqueries to parent HQL
 		addHQLParamsFromNestedCollection(collectionEntity.getHQLParams());
 		
-		collectionFilterHQL &= ') ';
-		if(arguments.filter.criteria == 'All'){
-			collectionFilterHQL &= "AND (SELECT COUNT(#collectionEntityAlias#.id) #collectionEntityHQL#)= size(#maincollectionAlias#) ";
-		}
+		collectionFilterHQL &= ')';
 		
 		return collectionFilterHQL;
 	}
