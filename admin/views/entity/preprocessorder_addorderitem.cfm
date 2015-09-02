@@ -80,7 +80,7 @@ Notes:
 							<hb:HibachiPropertyDisplay object="#rc.processObject.getSku()#" property="skuDefinition" edit="false">
 	
 							<!--- Order Item Details --->
-							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#" fieldAttributes="ng-model='giftRecipientControl.quantity' ng-change='giftRecipientControl.quantityChanged()'">
+							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="quantity" edit="#rc.edit#" fieldAttributes="ng-model='giftRecipientControl.quantity' sw-numbers-only min-number='giftRecipientControl.getAssignedCount()'">
 							<hb:HibachiPropertyDisplay object="#rc.processObject#" property="price" edit="#rc.edit#">
 	
 							<!--- Add form fields to add registrant accounts --->
@@ -215,7 +215,7 @@ Notes:
 						<hr/>
 						<h5>Assign Gift Cards</h5>
 						<div class="table-responsive s-gift-card-table">			
-							<div ng-show="giftRecipientControl.getUnassignedCount()" class="alert alert-info" role="alert">Use the "search or add recipient" field below to assign recipients to gift cards.  </br><strong>You have ({{giftRecipientControl.getUnassignedCount()}}) gift card<span ng-hide="giftRecipientControl.getUnassignedCount() = 1">s</span> to assign</strong></div>
+							<div ng-show="giftRecipientControl.getUnassignedCount()" class="alert alert-info" role="alert">Use the "search or add recipient" field below to assign recipients to gift cards.  </br><strong>You have ({{giftRecipientControl.getUnassignedCount()}}) gift card<span ng-hide="giftRecipientControl.getUnassignedCount() == 1">s</span> to assign</strong></div>
 							<div ng-show="giftRecipientControl.getUnassignedCount() != giftRecipientControl.quantity">
 								<table class="table table-bordered table-hover">
 							        <thead>

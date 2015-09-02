@@ -27,14 +27,6 @@ module slatwalladmin {
 			var count = 1;
             this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
 		}
-        
-        getQuantity = ():number =>{      
-                if(angular.isUndefined(this.quantity)){
-                        return 0;
-                } else { 
-                        return this.quantity; 
-                }
-        }
 
         addGiftRecipientFromAccountList = (account:any):void =>{
                 var giftRecipient = new GiftRecipient();
@@ -105,9 +97,21 @@ module slatwalladmin {
 
                 return unassignedCountArray; 
         }
+        
+        getAssignedCount = ():number =>{
+            
+            var assignedCount = 0; 
+            
+            angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient)=>{
+                assignedCount += orderItemGiftRecipient.quantity;
+            });
+            
+            return assignedCount; 
+
+        }
 
         getUnassignedCount = ():number =>{
-                var unassignedCount = this.getQuantity(); 
+                var unassignedCount = this.quantity; 
 
                 angular.forEach(this.orderItemGiftRecipients,(orderItemGiftRecipient)=>{
                         unassignedCount -= orderItemGiftRecipient.quantity;

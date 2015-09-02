@@ -6,12 +6,16 @@ var slatwalladmin;
             this.$scope = $scope;
             this.$slatwall = $slatwall;
             this.getQuantity = () => {
-                if (angular.isUndefined(this.quantity)) {
+                if (isNaN(this.quantity)) {
                     return 0;
                 }
                 else {
                     return this.quantity;
                 }
+            };
+            this.quantityChanged = (oldValue) => {
+                console.log("oldvalue: " + oldValue);
+                console.log("newvalue: " + this.quantity);
             };
             this.addGiftRecipientFromAccountList = (account) => {
                 var giftRecipient = new slatwalladmin.GiftRecipient();

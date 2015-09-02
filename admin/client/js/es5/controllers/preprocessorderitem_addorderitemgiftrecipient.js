@@ -6,14 +6,6 @@ var slatwalladmin;
             var _this = this;
             this.$scope = $scope;
             this.$slatwall = $slatwall;
-            this.getQuantity = function () {
-                if (angular.isUndefined(_this.quantity)) {
-                    return 0;
-                }
-                else {
-                    return _this.quantity;
-                }
-            };
             this.addGiftRecipientFromAccountList = function (account) {
                 var giftRecipient = new slatwalladmin.GiftRecipient();
                 giftRecipient.firstName = account.firstName;
@@ -69,8 +61,15 @@ var slatwalladmin;
                 }
                 return unassignedCountArray;
             };
+            this.getAssignedCount = function () {
+                var assignedCount = 0;
+                angular.forEach(_this.orderItemGiftRecipients, function (orderItemGiftRecipient) {
+                    assignedCount += orderItemGiftRecipient.quantity;
+                });
+                return assignedCount;
+            };
             this.getUnassignedCount = function () {
-                var unassignedCount = _this.getQuantity();
+                var unassignedCount = _this.quantity;
                 angular.forEach(_this.orderItemGiftRecipients, function (orderItemGiftRecipient) {
                     unassignedCount -= orderItemGiftRecipient.quantity;
                 });
