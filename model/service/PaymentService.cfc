@@ -465,12 +465,53 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 					// NO INTEGRATION
 					} else {
-						
-						//GiftCard
+                                          
+						//GiftCard                                      
                         if(arguments.data.transactiontype eq "giftCard"){
-                            arguments.paymentTransaction.setAmountReceived( arguments.data.amount );                 
-                        }
-                    
+				            
+                            var giftCard = getService("HibachiService").get("giftCard",  getDAO("giftCardDAO").getIDByCode(arguments.paymentTransaction.getOrderPayment().getGiftCardNumberEncrypted()));
+                            var amount = arguments.data.amount; 
+                                          
+                            if(amount > 0){
+
+                                var giftCardProcessObject = giftCard.getProcessObject("AddDebit");
+
+                                giftCardProcessObject.setOrderPayments(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderPayments());
+                                giftCardProcessObject.setOrderItems(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderItems());
+
+                                if(giftCard.getBalanceAmount() LTE amount){
+                                    amount = giftCard.getBalanceAmount();
+                                }
+
+                                giftCardProcessObject.setDebitAmount(amount); 
+
+                                var card = getService("GiftCardService").process(giftCard, giftCardProcessObject, "addDebit");
+
+                               
+
+                                if(!card.hasErrors()){
+                                    arguments.paymentTransaction.setAmountReceived( amount );  
+                                } else { 
+                                    arguments.paymentTransaction.addErrors(card.getErrors());
+                                } 
+                            } else { 
+
+                                var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
+
+                                giftCardProcessObject.setOrderPayments(arguments.paymentTransaction.getOrderPayment().getOrderPayments());
+                                giftCardProcessObject.setOrderItems(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderItems());
+
+                                giftCardProcessObject.setCreditAmount(precisionEvaluate(amount * -1)); 
+
+                                var card = getService("GiftCardService").process(giftCard, giftCardProcessObject, "addCredit");
+
+                                if(!card.hasErrors()){
+                                    arguments.paymentTransaction.setAmountCredited( amount );  
+                                } else { 
+                                    arguments.paymentTransaction.addErrors(card.getErrors());
+                                } 
+                            }        
+		              }
 						
 						// Setup amountReceived
 						if( listFindNoCase("receive,receiveOffline", arguments.data.transactionType) ) {

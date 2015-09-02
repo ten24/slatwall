@@ -789,8 +789,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				}
 			}
 		}
-		
-        if(arguments.order.hasGiftCardOrderPaymentAmount()){
+                                                                                                                                   
+         if(arguments.order.hasGiftCardOrderPaymentAmount()){
             var giftCard = getService("HibachiService").get("giftCard",  getDAO("giftCardDAO").getIDByCode(arguments.data.newOrderPayment.giftCardNumber));
             amount = arguments.order.getGiftCardOrderPaymentAmount();
             var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
@@ -798,7 +798,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             giftCardProcessObject.setOrderItems(arguments.order.getOrderItems());
             giftCardProcessObject.setCreditAmount(amount); 
             getService("GiftCardService").process(giftCard, giftCardProcessObject, "addCredit");
-        }                                                                                                                          
+        } 
                                                                                                                                    
 		// Change the status
 		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode("ostCanceled") );
@@ -2200,43 +2200,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(paymentTransaction.hasError('runTransaction')) {
 				arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 			} else { 
-                if(arguments.processObject.getTransactionType() EQ "giftCard"){
-				
-                    var giftCard = getService("HibachiService").get("giftCard",  getDAO("giftCardDAO").getIDByCode(arguments.orderPayment.getGiftCardNumberEncrypted()));
-                    var amount = arguments.processObject.getAmount();
-
-                    if(amount > 0){
-
-                        var giftCardProcessObject = giftCard.getProcessObject("AddDebit");
-
-                        giftCardProcessObject.setOrderPayments(arguments.orderPayment.getOrder().getOrderPayments());
-                        giftCardProcessObject.setOrderItems(arguments.orderPayment.getOrder().getOrderItems());
-
-                        if(giftCard.getBalanceAmount() LTE amount){
-                            amount = giftCard.getBalanceAmount();
-                        }
-
-                        giftCardProcessObject.setDebitAmount(amount); 
-
-                        getService("GiftCardService").process(giftCard, giftCardProcessObject, "addDebit");
-                    } else { 
-
-                        var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
-
-                        giftCardProcessObject.setOrderPayments(arguments.orderPayment.getOrder().getOrderPayments());
-                        giftCardProcessObject.setOrderItems(arguments.orderPayment.getOrder().getOrderItems());
-
-                        giftCardProcessObject.setCreditAmount(precisionEvaluate(amount * -1)); 
-
-                        getService("GiftCardService").process(giftCard, giftCardProcessObject, "addCredit");
-                    }
-
-                    if(!giftCard.hasErrors()){ 
-                        arguments.orderPayment = this.saveOrderPayment( arguments.orderPayment );
-                    } else { 
-                        arguments.orderPayment.addErrors(giftCard.getErrors());	
-                    }
-		          }                                                   
+                                                                  
             }
 		}
 			
