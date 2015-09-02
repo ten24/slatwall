@@ -834,6 +834,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 		
+        if(arguments.order.hasGiftCardOrderPaymentAmount()){
+            var giftCard = getService("HibachiService").get("giftCard",  getDAO("giftCardDAO").getIDByCode(arguments.data.newOrderPayment.giftCardNumber));
+            amount = arguments.order.getGiftCardOrderPaymentAmount();
+            var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
+            giftCardProcessObject.setOrderPayments(arguments.order.getOrderPayments());
+            giftCardProcessObject.setOrderItems(arguments.order.getOrderItems());
+            giftCardProcessObject.setCreditAmount(amount); 
+            getService("GiftCardService").process(giftCard, giftCardProcessObject, "addCredit");
+        }                                                                                                                          
+                                                                                                                                   
 		// Change the status
 		arguments.order.setOrderStatusType( getTypeService().getTypeBySystemCode("ostCanceled") );
 		
@@ -1828,9 +1838,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             // Loop over the orderDeliveryItems to setup subscriptions and contentAccess
 			for(var di=1; di<=arrayLen(arguments.orderDelivery.getOrderDeliveryItems()); di++) {
 				
-				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];	
-                writeDump(var=orderDeliveryItem, top=2, abort="true"); 
-				var order = creditGiftCards(arguments.processObject.getOrder(), orderDeliveryItem); 
+				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];	 
+				var order = creditGiftCard(arguments.processObject.getOrder(), orderDeliveryItem); 
                 
                 if(order.hasErrors()){
                     arguments.orderDelivery.addErrors(order.getErrors());
@@ -1868,6 +1877,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
                             if(!isNull(recipient.getAccount())){
                                 createGiftCard.setOwnerAccount(recipient.getAccount()); 	
+                                createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
                             } else { 
                                 if(getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(recipient.getEmailAddress())){
                                     createGiftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(recipient.getEmailAddress())));
@@ -1888,6 +1898,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                             createGiftCard.setCreditGiftCard(true); 
                 
                             card = getService("giftCardService").process(card, createGiftCard, 'Create');
+                            
 
                             if(card.hasErrors()){
                                 arguments.order.addErrors(card.getErrors());

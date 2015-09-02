@@ -62,7 +62,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="originalOrderItemID" cascade="all";
 	property name="giftCardExpirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="giftCardExpirationTermID" cascade="all";
 	property name="ownerAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="ownerAccountID";
-    property name="orderItemGiftRecipients" singularname="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" fieldtype="many-to-one" fkcolumn="orderItemGiftRecipientID" inverse="true" cascade="all";
+    property name="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" fieldtype="many-to-one" fkcolumn="orderItemGiftRecipientID" inverse="true" cascade="all";
 
 	// Related Object Properties (one-to-many)
 	property name="giftCardTransactions" singularname="giftCardTransaction" cfc="GiftCardTransaction" fieldtype="one-to-many" fkcolumn="giftCardID" inverse="true" cascade="all-delete-orphan";
@@ -129,20 +129,20 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
     // Order Item Gift Recipient (many-to-one)
 	public void function setOrderItemGiftRecipient(required any orderItemGiftRecipient) {
 		variables.orderItemGiftRecipient = arguments.orderItemGiftRecipient;
-		if(isNew() or !arguments.orderItemGiftRecipient.hasOrderItemGiftRecipient( this )) {
-			arrayAppend(arguments.orderItemGiftRecipient.getOrderItemGiftRecipients(), this);
+		if(isNew() or !arguments.orderItemGiftRecipient.hasGiftCard( this )) {
+			arrayAppend(arguments.orderItemGiftRecipient.getGiftCards(), this);
 		}
 	}
 	
-	public void function removeOrderItem(any orderItem) {
+	public void function removeOrderItemGiftRecipient(any orderItemGiftRecipient) {
 		if(!structKeyExists(arguments, "orderItem")) {
 			arguments.orderItem = variables.orderItem;
 		}
-		var index = arrayFind(arguments.orderItem.getOrderItemGiftRecipients(), this);
+		var index = arrayFind(arguments.orderItemGiftRecipient.getGiftCards(), this);
 		if(index > 0) {
-			arrayDeleteAt(arguments.orderItem.getOrderItemGiftRecipients(), index);
+			arrayDeleteAt(arguments.orderItemGiftRecipient.getGiftCards(), index);
 		}
-		structDelete(variables, "orderItem");
+		structDelete(variables, "orderItemGiftRecipient");
 	}
 
 	// Original Order Item (Many-To-One)

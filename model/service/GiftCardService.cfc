@@ -78,11 +78,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
         if(!isNull(arguments.processObject.getOrderItemGiftRecipient())){
-            arguments.giftCard.setOrderItemGiftRecipient(arguments.recipient);
+            arguments.giftCard.setOrderItemGiftRecipient(arguments.processObject.getOrderItemGiftRecipient());
         }
 
         if(!isNull(arguments.processObject.getOwnerAccount())){
 			arguments.giftCard.setOwnerAccount(arguments.processObject.getOwnerAccount());
+            giftCard.setOwnerEmailAddress(arguments.processObject.getOwnerEmailAddress());
 		} else {
 			if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(arguments.processObject.getOwnerEmailAddress())){
 				giftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(arguments.processObject.getOwnerEmailAddress())));
@@ -107,10 +108,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(!giftCardCreditTransaction.hasErrors()){
             var errorBean = getService("HibachiValidationService").validate(arguments.giftCard, "save", true); 
-            if(!errorBean.hasErrors){
+            if(!errorBean.hasErrors()){
                 arguments.giftCard = this.saveGiftCard(arguments.giftCard); 
-            } else { 
-                arguments.giftCard.addErrors(errorBean.getErrors()); 
             } 
 		} else {
 			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
