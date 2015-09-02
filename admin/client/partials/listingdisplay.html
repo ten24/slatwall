@@ -1,114 +1,134 @@
-<div class="s-table-wrapper" style="margin-bottom:20px;">
-	<div class="s-table-header-nav">
-		<div class="col-md-12 s-header-nav">
-			<div class="col-xs-6" style="padding-left:0px;">
-				<!--TODO: implement keyword searching and bulk actions -->
-				<ul class="list-inline list-unstyled">
-					<li><h3 class="s-table-header-title" sw-rbkey="'entity.Collection.collectionTableTitle'"><!--- created by rbkey ---></h3></li>
-				</ul>
+<section class="content s-body-margin" id="j-main-content">
+	<div class="row s-body-nav">
+	    <nav class="navbar navbar-default" role="navigation">
+	      <div class="col-md-6 s-header-info">
+				<ul class="list-unstyled list-inline"></ul>
+				<h1 class="actionbar-title" ng-if="!swListingDisplay.title && swListingDisplay.collectionObject" sw-rbkey="'entity.'+swListingDisplay.collectionObject.toLowerCase()"></h1>
+				<h1 class="actionbar-title" ng-if="swListingDisplay.title" ng-bind="swListingDisplay.title"></h1>
 			</div>
+
+			<div class="col-md-6">
+				<div class="btn-toolbar">
+					<div class="btn-group btn-group-sm">
+						 <a title="Add {{entityDisplayName}}" class="adminentitycreatecollection btn btn-primary"  sw-href="{{'/entity/'+entityName+'/null'}}"><i class="glyphicon glyphicon-plus icon-white"></i> Add <span sw-rbkey="'entity.'+entityName.toLowerCase()"></span></a>  
+					</div>
+				</div>
+			</div>
+		</nav>
+	</div>
+
+	<div class="s-table-wrapper" style="margin-bottom:20px;">
+		<div class="s-table-header-nav">
+			<div class="col-md-12 s-header-nav">
+				<div class="col-xs-6" style="padding-left:0px;">
+					<!--TODO: implement keyword searching and bulk actions -->
+					<ul class="list-inline list-unstyled">
+						<li><h3 class="s-table-header-title" sw-rbkey="'entity.Collection.collectionTableTitle'"><!--- created by rbkey ---></h3></li>
+					</ul>
+				</div>
+				
+				<div class="col-xs-6 s-table-view-options">
+					<ul class="list-inline list-unstyled">
+						<li>
+							<!--- Generates an exportable collection --->
+							<button type="button" title="Export Collection" class="btn btn-default btn-sm s-table-header-btn" ng-click="exportCollection()" ><i class="fa fa-share-square-o"></i></button>			
+						</li>
+						<!-- <li>
+							<button class="btn btn-default btn-sm" target="_self" ng-click="toggleFiltersAndOptions()"><i class="fa fa-cogs"></i></button>
+						</li> -->
+						<li>
+							<div class="s-select-list-wrapper">
+								<div class="form-group s-table-search">
+									<input  type="text"
+										class="form-control input-sm"
+										placeholder="Search"
+										name="srch-term"
+										ng-model="keywords"
+										ng-change="searchCollection()"
+										/>
+										<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
+										<i ng-show="!loadingCollection" class="fa fa-search"></i>
+								</div>
+							</div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	
+		<span sw-loading="collection">
 			
-			<div class="col-xs-6 s-table-view-options">
-				<ul class="list-inline list-unstyled">
-					<li>
-						<!--- Generates an exportable collection --->
-						<button type="button" title="Export Collection" class="btn btn-default btn-sm s-table-header-btn" ng-click="exportCollection()" ><i class="fa fa-share-square-o"></i></button>			
-					</li>
-					<!-- <li>
-						<button class="btn btn-default btn-sm" target="_self" ng-click="toggleFiltersAndOptions()"><i class="fa fa-cogs"></i></button>
-					</li> -->
-					<li>
-						<div class="s-select-list-wrapper">
-							<div class="form-group s-table-search">
-								<input  type="text"
-									class="form-control input-sm"
-									placeholder="Search"
-									name="srch-term"
-									ng-model="keywords"
-									ng-change="searchCollection()"
-									/>
-									<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
-									<i ng-show="!loadingCollection" class="fa fa-search"></i>
-							</div>
-						</div>
-					</li>
-				</ul>
-			</div>
-		</div>
+			<sw-collection-table
+				data-angular-links="false"
+				data-collection="collection"
+				data-collection-config="collectionConfig"
+				data-is-radio="isRadio"
+				sw-scroll-trigger
+				infinite-scroll="appendToCollection()"
+				infinite-scroll-disabled="pagination.autoScrollDisabled"
+				infinite-scroll-distance="1">
+			</sw-collection-table> 
+			<sw-pagination-bar
+				ng-if="paginator"
+				data-collection="collection"
+				data-paginator="paginator"
+				data-get-collection="getCollection()"
+				>
+			</sw-pagination-bar>
+		</span>
 	</div>
-
-	<span sw-loading="collection">
-		
-		<sw-collection-table
-			data-angular-links="false"
-			data-collection="collection"
-			data-collection-config="collectionConfig"
-			data-is-radio="isRadio"
-			sw-scroll-trigger
-			infinite-scroll="appendToCollection()"
-			infinite-scroll-disabled="pagination.autoScrollDisabled"
-			infinite-scroll-distance="1">
-		</sw-collection-table> 
-		<sw-pagination-bar
-			ng-if="paginator"
-			data-collection="collection"
-			data-paginator="paginator"
-			data-get-collection="getCollection()"
-			>
-		</sw-pagination-bar>
-	</span>
-</div>
-
-
-<!--delete batch action-->
-<div id="j-delete-link" class="row collapse s-batch-options">
-	<div class="col-md-12 s-add-filter">
-		<!-- Edit Filter Box -->
-		<h4> Delete:<i class="fa fa-times" data-toggle="collapse" data-target="#j-delete-link"></i></h4>
-		<div class="col-xs-12">
-			<div class="row">
-				<div class="col-xs-2">
-					<div class="form-group form-group-sm">
-						<label class="col-sm-12 control-label s-no-padding" for="formGroupInputSmall">Items To Delete:</label>
-						<div class="col-sm-12 s-no-paddings">
-							<div class="radio">
-								<input type="radio" name="radio1" id="radio7" value="option2" checked="checked">
-								<label for="radio7">
-								All
-								</label>
+	
+	
+	<!--delete batch action-->
+	<div id="j-delete-link" class="row collapse s-batch-options">
+		<div class="col-md-12 s-add-filter">
+			<!-- Edit Filter Box -->
+			<h4> Delete:<i class="fa fa-times" data-toggle="collapse" data-target="#j-delete-link"></i></h4>
+			<div class="col-xs-12">
+				<div class="row">
+					<div class="col-xs-2">
+						<div class="form-group form-group-sm">
+							<label class="col-sm-12 control-label s-no-padding" for="formGroupInputSmall">Items To Delete:</label>
+							<div class="col-sm-12 s-no-paddings">
+								<div class="radio">
+									<input type="radio" name="radio1" id="radio7" value="option2" checked="checked">
+									<label for="radio7">
+									All
+									</label>
+								</div>
+								<div class="radio">
+									<input type="radio" name="radio1" id="radio7" value="option2">
+									<label for="radio7">
+									Visable
+									</label>
+								</div>
+								<div class="radio">
+									<input type="radio" name="radio1" id="radio7" value="option2">
+									<label for="radio7">
+									Selected
+									</label>
+								</div>
 							</div>
-							<div class="radio">
-								<input type="radio" name="radio1" id="radio7" value="option2">
-								<label for="radio7">
-								Visable
-								</label>
-							</div>
-							<div class="radio">
-								<input type="radio" name="radio1" id="radio7" value="option2">
-								<label for="radio7">
-								Selected
-								</label>
-							</div>
-						</div>
-						<div class="clearfix"></div>
-					</div>
-				</div>
-				<div class="col-xs-7 s-criteria">
-					<div class="alert alert-danger" role="alert">
-						<div class="input-group">
-							<label>Confirm action by typing "DELETE" below.</label>
-							<input type="text" class="form-control j-delete-text" placeholder="">
+							<div class="clearfix"></div>
 						</div>
 					</div>
-				</div>
-				<div class="col-xs-2">
-					<div class="s-button-select-group">
-						<button type="button" class="btn btn-sm s-btn-ten24 j-delete-btn" disabled="disabled" style="width:100%;">Delete</button>
+					<div class="col-xs-7 s-criteria">
+						<div class="alert alert-danger" role="alert">
+							<div class="input-group">
+								<label>Confirm action by typing "DELETE" below.</label>
+								<input type="text" class="form-control j-delete-text" placeholder="">
+							</div>
+						</div>
+					</div>
+					<div class="col-xs-2">
+						<div class="s-button-select-group">
+							<button type="button" class="btn btn-sm s-btn-ten24 j-delete-btn" disabled="disabled" style="width:100%;">Delete</button>
+						</div>
 					</div>
 				</div>
 			</div>
+			<!-- //Edit Filter Box -->
 		</div>
-		<!-- //Edit Filter Box -->
 	</div>
-</div>
-<!--//delete batch action-->
+	<!--//delete batch action-->
+</section>

@@ -60,6 +60,7 @@
 						<div class="btn-toolbar">
 
 							<!--- ================ Listing =================== --->
+							
 							<cfif attributes.type eq "listing" >
 								
 								<cfparam name="request.context.keywords" default="" />
@@ -72,7 +73,6 @@
 										</cfif>
 									</cfloop>
 								</cfif>
-
 								<!--- Listing: Create --->
 								<cfif attributes.showCreate>
 									<cfif attributes.createModal>

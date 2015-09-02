@@ -5,6 +5,9 @@ var slatwalladmin;
     'use strict';
     var SWPaginationBarController = (function () {
         function SWPaginationBarController() {
+            if (angular.isUndefined(this.paginator)) {
+                this.paginator = slatwalladmin.PaginationService.createPagination();
+            }
         }
         return SWPaginationBarController;
     })();

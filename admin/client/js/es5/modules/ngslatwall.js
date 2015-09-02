@@ -107,6 +107,9 @@ var ngSlatwall;
                  * getEntity('Product', {keywords='Hello'});
                  *
                  */
+                if (angular.isUndefined(options)) {
+                    options = {};
+                }
                 if (angular.isDefined(options.deferKey)) {
                     _this.cancelPromise(options.deferKey);
                 }
