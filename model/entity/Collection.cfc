@@ -721,7 +721,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		}else if(arguments.filter.criteria == 'All'){
 			var logicalComparator = 'NOT IN ';
 		}
-		var collectionEntityHQL = replace(collectionEntity.getHQL(true),'_','__');
+		var collectionEntityHQL = rereplace(collectionEntity.getHQL(true),'\b\_','__','ALL');
 		var collectionEntityAlias = replace(collectionEntity.getCollectionConfigStruct().baseEntityAlias,'_','__');
 		collectionFilterHQL &= ' #collectionEntityHQL# #predicate# #collectionEntityAlias# #logicalComparator# elements(#maincollectionAlias#) ';
 			
