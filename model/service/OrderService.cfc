@@ -632,8 +632,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 	}
 	
-	public any function processOrder_addOrderPayment(required any order, required any processObject) {
-		
+	public any function processOrder_addOrderPayment(required any order, required any processObject) {         
+                    
 		// Get the populated newOrderPayment out of the processObject
 		var newOrderPayment = processObject.getNewOrderPayment();
 		// If this is an existing account payment method, then we can pull the data from there
@@ -669,6 +669,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!isNull(newOrderPayment.getPaymentMethod()) && newOrderPayment.getPaymentMethod().getPaymentMethodType() eq 'termPayment' && isNull(newOrderPayment.getTermPaymentAccount())) {
 			newOrderPayment.setTermPaymentAccount( arguments.order.getAccount() );
 		}
+                    
+        // If this was a giftCard payment
+        if(!isNull(newOrderPayment.getPaymentMethod()) && newOrderPayment.getPaymentMethod().getPaymentMethodType() eq 'giftCard'){
+            newOrderPayment.setGiftCardNumberEncrypted(processObject.getNewOrderPayment().getGiftCardNumber());           
+        }
 		
 		// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
 		arguments.order = this.processOrder( arguments.order, 'updateOrderAmounts');
@@ -726,55 +731,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Save it
 			newAccountPaymentMethod = getAccountService().saveAccountPaymentMethod( newAccountPaymentMethod, {runSaveAccountPaymentMethodTransactionFlag=false} );
 			
-		}
-		
-		// Gift card payment
-		if(newOrderPayment.getPaymentMethod().getPaymentMethodType() EQ "giftCard"){
-				
-				var giftCard = getService("HibachiService").get("giftCard",  getDAO("giftCardDAO").getIDByCode(arguments.data.newOrderPayment.giftCardNumber));
-			
-				var amount = 0;
-				
-				
-				if(arguments.order.getTotal() > 0){
-
-					var giftCardProcessObject = giftCard.getProcessObject("AddDebit");
-
-					giftCardProcessObject.setOrderPayments(arguments.order.getOrderPayments());
-					giftCardProcessObject.setOrderItems(arguments.order.getOrderItems());
-
-					if(giftCard.getBalanceAmount() >= arguments.order.getTotal()){
-						amount = arguments.order.getTotal();
-					} else { 
-						amount = giftCard.getBalanceAmount();
-					}
-
-					giftCardProcessObject.setDebitAmount(local.amount); 
-				
-					getService("GiftCardService").process(giftCard, giftCardProcessObject, "addDebit");
-				} else { 
-					
-					//then its a refund
-					amount = precisionEvaluate(arguments.order.getTotal() * -1);
-					var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
-
-					giftCardProcessObject.setOrderPayments(arguments.order.getOrderPayments());
-					giftCardProcessObject.setOrderItems(arguments.order.getOrderItems());
-
-					giftCardProcessObject.setCreditAmount(amount); 
-				
-					getService("GiftCardService").process(giftCard, giftCardProcessObject, "addCredit");
-				}
-				
-				
-				
-				if(!giftCard.hasErrors()){ 
-					newOrderPayment.setAmount(amount);
-				} else { 
-					arguments.order.addErrors(giftCard.getErrors());	
-				}
-				
-				newOrderPayment = this.saveOrderPayment( newOrderPayment );
 		}
 		
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
@@ -2180,7 +2136,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// Process: Order Payment
 	public any function processOrderPayment_createTransaction(required any orderPayment, required any processObject) {
-		
+
 		var uncapturedAuthorizations = getPaymentService().getUncapturedPreAuthorizations( arguments.orderPayment );
 		
 		// If we are trying to charge multiple pre-authorizations at once we may need to run multiple transacitons
@@ -2243,7 +2199,47 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// If the paymentTransaction has errors, then add those errors to the orderPayment itself
 			if(paymentTransaction.hasError('runTransaction')) {
 				arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
-			}
+			} else { 
+                if(arguments.processObject.getTransactionType() EQ "giftCard"){
+				
+                    var giftCard = getService("HibachiService").get("giftCard",  getDAO("giftCardDAO").getIDByCode(arguments.orderPayment.getGiftCardNumberEncrypted()));
+                    var amount = arguments.processObject.getAmount();
+
+                    if(amount > 0){
+
+                        var giftCardProcessObject = giftCard.getProcessObject("AddDebit");
+
+                        giftCardProcessObject.setOrderPayments(arguments.orderPayment.getOrder().getOrderPayments());
+                        giftCardProcessObject.setOrderItems(arguments.orderPayment.getOrder().getOrderItems());
+
+                        if(giftCard.getBalanceAmount() LTE amount){
+                            amount = giftCard.getBalanceAmount();
+                        }
+
+                        giftCardProcessObject.setDebitAmount(amount); 
+
+                        getService("GiftCardService").process(giftCard, giftCardProcessObject, "addDebit");
+                    } else { 
+
+                        //then its a refund
+                        amount = precisionEvaluate(arguments.order.getTotal() * -1);
+                        var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
+
+                        giftCardProcessObject.setOrderPayments(arguments.orderPayment.getOrder().getOrderPayments());
+                        giftCardProcessObject.setOrderItems(arguments.orderPayment.getOrder().getOrderItems());
+
+                        giftCardProcessObject.setCreditAmount(amount); 
+
+                        getService("GiftCardService").process(giftCard, giftCardProcessObject, "addCredit");
+                    }
+
+                    if(!giftCard.hasErrors()){ 
+                        arguments.orderPayment = this.saveOrderPayment( arguments.orderPayment );
+                    } else { 
+                        arguments.orderPayment.addErrors(giftCard.getErrors());	
+                    }
+		          }                                                   
+            }
 		}
 			
 		// If this order payment has errors & has never had and amount Authorized, Received or Credited... then we can set it as invalid
@@ -2259,8 +2255,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// If no errors, attempt To Update The Order Status
 		if(!arguments.orderPayment.hasErrors()) {
 			this.processOrder(arguments.orderPayment.getOrder(), {}, 'updateStatus');	
-		}
-		
+        }
+                                                               
 		return arguments.orderPayment;
 		
 	}
@@ -2270,23 +2266,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		var transactionType = "";
 		
 		if(!isNull(arguments.orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType()) && orderPayment.getOrderPaymentType().getSystemCode() eq "optCharge") {
-			var transactionType = arguments.orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType();
+			transactionType = arguments.orderPayment.getPaymentMethod().getPlaceOrderChargeTransactionType();
 		}
 		if(!isNull(arguments.orderPayment.getPaymentMethod().getPlaceOrderCreditTransactionType()) && orderPayment.getOrderPaymentType().getSystemCode() eq "optCredit") {
-			var transactionType = arguments.orderPayment.getPaymentMethod().getPlaceOrderCreditTransactionType();
+			transactionType = arguments.orderPayment.getPaymentMethod().getPlaceOrderCreditTransactionType();
 		}
 		if(
 			!isNull(arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType()) 
 			&& structKeyExists(arguments.data,'isSubscriptionRenewal') 
 			&& arguments.data.isSubscriptionRenewal == true
 		){
-			var transactionType = arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType();
+			transactionType = arguments.orderPayment.getPaymentMethod().getSubscriptionRenewalTransactionType();
 		}
+        if(!isNull(arguments.orderPayment.getPaymentMethod().getPaymentMethodType()) && arguments.orderPayment.getPaymentMethod().getPaymentMethodType() eq "giftCard"){
+            transactionType = arguments.orderPayment.getPaymentMethod().getPaymentMethodType(); 
+        } 
 		
 		//need subscription transactiontype
 		
 		if(transactionType != '' && transactionType != 'none' && arguments.orderPayment.getAmount() > 0) {
-			
 			// Setup payment processing info
 			var processData = {
 				transactionType = transactionType,
