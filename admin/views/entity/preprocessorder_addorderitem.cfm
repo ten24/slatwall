@@ -220,7 +220,8 @@ Notes:
 								<table class="table table-bordered table-hover">
 							        <thead>
 							            <tr>
-							                <th>#$.slatwall.rbKey('define.name')#</th>
+							                <th>#$.slatwall.rbKey('define.firstName')#</th>
+                                            <th>#$.slatwall.rbKey('define.lastName')#</th>
 									        <th>#$.slatwall.rbKey('define.email')#</th>
 									        <th>#$.slatwall.rbKey('define.giftMessage')#</th>
 									        <th>#$.slatwall.rbKey('define.quantity')#</th>

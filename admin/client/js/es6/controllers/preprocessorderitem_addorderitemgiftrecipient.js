@@ -5,23 +5,12 @@ var slatwalladmin;
         constructor($scope, $slatwall) {
             this.$scope = $scope;
             this.$slatwall = $slatwall;
-            this.getQuantity = () => {
-                if (isNaN(this.quantity)) {
-                    return 0;
-                }
-                else {
-                    return this.quantity;
-                }
-            };
-            this.quantityChanged = (oldValue) => {
-                console.log("oldvalue: " + oldValue);
-                console.log("newvalue: " + this.quantity);
-            };
             this.addGiftRecipientFromAccountList = (account) => {
                 var giftRecipient = new slatwalladmin.GiftRecipient();
                 giftRecipient.firstName = account.firstName;
                 giftRecipient.lastName = account.lastName;
                 giftRecipient.email = account.primaryEmailAddress_emailAddress;
+                giftRecipient.account = true;
                 this.orderItemGiftRecipients.push(giftRecipient);
                 this.searchText = "";
             };
@@ -72,8 +61,15 @@ var slatwalladmin;
                 }
                 return unassignedCountArray;
             };
+            this.getAssignedCount = () => {
+                var assignedCount = 0;
+                angular.forEach(this.orderItemGiftRecipients, (orderItemGiftRecipient) => {
+                    assignedCount += orderItemGiftRecipient.quantity;
+                });
+                return assignedCount;
+            };
             this.getUnassignedCount = () => {
-                var unassignedCount = this.getQuantity();
+                var unassignedCount = this.quantity;
                 angular.forEach(this.orderItemGiftRecipients, (orderItemGiftRecipient) => {
                     unassignedCount -= orderItemGiftRecipient.quantity;
                 });

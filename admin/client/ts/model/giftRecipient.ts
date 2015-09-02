@@ -8,10 +8,12 @@ module slatwalladmin {
             public email: string, 
             public giftMessage: string,
             public quantity:number,
+            public account:boolean, 
             public editing:boolean
         ) { 
             this.quantity = 1;
             this.editing = false; 
+            this.account = false; 
         }
     }
 }

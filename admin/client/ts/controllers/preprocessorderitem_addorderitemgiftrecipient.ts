@@ -33,6 +33,7 @@ module slatwalladmin {
                 giftRecipient.firstName = account.firstName; 
                 giftRecipient.lastName = account.lastName; 
                 giftRecipient.email = account.primaryEmailAddress_emailAddress;
+                giftRecipient.account = true; 
                 this.orderItemGiftRecipients.push(giftRecipient); 
                 this.searchText = "";   
         }

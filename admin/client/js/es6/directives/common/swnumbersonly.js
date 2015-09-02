@@ -4,18 +4,21 @@ var slatwalladmin;
         constructor() {
             this.restrict = "A";
             this.require = "ngModel";
-            this.scope = {};
-            this.link = (scope, element, attrs, modelCtrl) => {
-                modelCtrl.$formatters.push(function (inputValue) {
-                    var modelValue = modelCtrl.$modelValue;
-                    console.log("model: " + modelValue);
-                    console.log("input: " + inputValue);
-                    return modelValue;
-                });
+            this.scope = {
+                ngModel: '=',
+                minNumber: '=?'
+            };
+            this.link = ($scope, element, attrs, modelCtrl) => {
                 modelCtrl.$parsers.push(function (inputValue) {
                     var modelValue = modelCtrl.$modelValue;
-                    console.log("model: " + modelValue);
-                    console.log("input: " + inputValue);
+                    if (inputValue != "" && !isNaN(Number(inputValue))) {
+                        if ((angular.isDefined($scope.minNumber) && Number(inputValue) > $scope.minNumber) || !angular.isDefined($scope.minNumber)) {
+                            modelValue = Number(inputValue);
+                        }
+                        else if (angular.isDefined($scope.minNumber)) {
+                            modelValue = $scope.minNumber;
+                        }
+                    }
                     return modelValue;
                 });
             };
