@@ -2221,14 +2221,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                         getService("GiftCardService").process(giftCard, giftCardProcessObject, "addDebit");
                     } else { 
 
-                        //then its a refund
-                        amount = precisionEvaluate(arguments.order.getTotal() * -1);
                         var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
 
                         giftCardProcessObject.setOrderPayments(arguments.orderPayment.getOrder().getOrderPayments());
                         giftCardProcessObject.setOrderItems(arguments.orderPayment.getOrder().getOrderItems());
 
-                        giftCardProcessObject.setCreditAmount(amount); 
+                        giftCardProcessObject.setCreditAmount(precisionEvaluate(amount * -1)); 
 
                         getService("GiftCardService").process(giftCard, giftCardProcessObject, "addCredit");
                     }

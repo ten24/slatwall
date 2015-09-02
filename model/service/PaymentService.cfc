@@ -466,7 +466,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					// NO INTEGRATION
 					} else {
 						
-						// TODO [issue #36]: Add Gift Card Logic Here
+						//GiftCard
+                        if(arguments.data.transactiontype eq "giftCard"){
+                            arguments.paymentTransaction.setAmountReceived( arguments.data.amount );                 
+                        }
+                    
 						
 						// Setup amountReceived
 						if( listFindNoCase("receive,receiveOffline", arguments.data.transactionType) ) {
