@@ -68,7 +68,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		if(!isNull(arguments.processObject.getGiftCardExpirationTerm())){
 			arguments.giftCard.setGiftCardExpirationTerm(arguments.processObject.getGiftCardExpirationTerm());
-            arguments.giftCard.setExpirationDate(arguments.processObject.getExpirationDate());
+            if(getService("SettingService").getSettingValue("skuGiftCardEnforceExpirationTerm")){
+                arguments.giftCard.setExpirationDate(arguments.processObject.getExpirationDate());
+            }
 		}
 
 		if(!isNull(arguments.processObject.getOriginalOrderItem())){

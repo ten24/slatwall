@@ -54,7 +54,7 @@ component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipien
 	property name="lastName" ormtype="string";
 	property name="emailAddress" ormtype="string";
 	property name="quantity" ormtype="integer";
-	property name="giftMessage" ormtype="string";
+	property name="giftMessage" ormtype="string" length="4000";
 	
 	// Related Object Properties (many-to-one)
 	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="orderItemID";
@@ -88,6 +88,10 @@ component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipien
 
     public numeric function getNumberOfUnassignedGiftCards(){ 
         return this.getQuantity() - arrayLen(this.getGiftCards());
+    } 
+
+    public boolean hasCorrectGiftMessageLength(){ 
+        return getService("HibachiValidationService").validate_maxLength(this, "giftMessage", getService("SettingService").getSettingValue("globalGiftCardMessageLength")); 
     } 
 	
 	// ============  END:  Non-Persistent Property Methods =================
