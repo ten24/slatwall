@@ -214,6 +214,7 @@ Notes:
 						<!--- Process Add Order Item Gift Recipient --->
 						<hr/>
 						<h5>Assign Gift Cards</h5>
+                        <input type="hidden" name="assignedGiftRecipientQuantity" ng-value="giftRecipientControl.getAssignedCount()" /> 
 						<div class="table-responsive s-gift-card-table">			
 							<div ng-show="giftRecipientControl.getUnassignedCount()" class="alert alert-info" role="alert">Use the "search or add recipient" field below to assign recipients to gift cards.  </br><strong>You have ({{giftRecipientControl.getUnassignedCount()}}) gift card<span ng-hide="giftRecipientControl.getUnassignedCount() == 1">s</span> to assign</strong></div>
 							<div ng-show="giftRecipientControl.getUnassignedCount() != giftRecipientControl.quantity">

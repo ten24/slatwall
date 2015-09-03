@@ -405,25 +405,28 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             //look for recipients
             var totalQuantity = 0; 
             var count = 0; 
-            
-            while(totalQuantity < arguments.processObject.getQuantity()){ 
-                var currentRecipient = count & "recipient"; 
-                if(!isNull(newOrderItem)){    
-                    var recipientProcessObject = newOrderItem.getProcessObject("addOrderItemGiftRecipient");
-                    recipientProcessObject.setOrderItem(newOrderItem); 
-                } 
-                if(structKeyExists(request.context, currentRecipient & "firstName")){
-                    recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
-                    recipientProcessObject.setLastName(request.context[currentRecipient & "lastName"]); 
-                    recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);      
-                    recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
-                    recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"])); 
-                    arguments.order = this.processOrderItem_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
-                    totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);  
-                    count++; 
-                } else { 
-                    break;  
-                } 
+            if(structKeyExists(request.context, "assignedGiftRecipientQuantity") &&  request.context["assignedGiftRecipientQuantity"] < arguments.processObject.getQuantity()){
+                while(totalQuantity < arguments.processObject.getQuantity()){ 
+                    var currentRecipient = count & "recipient"; 
+                    if(!isNull(newOrderItem)){    
+                        var recipientProcessObject = newOrderItem.getProcessObject("addOrderItemGiftRecipient");
+                        recipientProcessObject.setOrderItem(newOrderItem); 
+                    } 
+                    if(structKeyExists(request.context, currentRecipient & "firstName")){
+                        recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
+                        recipientProcessObject.setLastName(request.context[currentRecipient & "lastName"]); 
+                        recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);      
+                        recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
+                        recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"])); 
+                        arguments.order = this.processOrderItem_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
+                        totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);  
+                        count++; 
+                    } else { 
+                        break;  
+                    } 
+                }
+            } else { 
+                arguments.order.addError("addOrderItemGiftRecipient", "Too many recipients assigned to gift card");  
             }
         } 
 
