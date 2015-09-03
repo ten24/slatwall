@@ -307,7 +307,7 @@
 		
 		var productSmartList = $.slatwall.getSmartList('Product', {
 			'fk:productType.productTypeIDPath':ptid,
-			'p:show':'all',
+			'p:':'all',
 			'propertyIdentifiers':'productID,calculatedTitle'
 		});
 		
@@ -325,7 +325,7 @@
 		if(pid.length) {
 			var skuSmartList = $.slatwall.getSmartList('Sku', {
 				'f:product.productID':pid,
-				'p:show':'all',
+				'p:':'all',
 				'propertyIdentifiers':'skuID,skuCode,price'
 			});
 			
