@@ -426,7 +426,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                     } 
                 }
             } else { 
-                arguments.order.addError("addOrderItemGiftRecipient", "Too many recipients assigned to gift card");  
+                arguments.order.addError("addOrderItemGiftRecipient", "Cannot assign more recipients then there are gift cards.");  
             }
         } 
 
