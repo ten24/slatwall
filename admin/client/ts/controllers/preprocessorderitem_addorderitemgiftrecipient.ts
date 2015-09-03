@@ -85,7 +85,6 @@ module slatwalladmin {
                 accountPromise.then((response:any):void =>{
                         this.$scope.collection = response;
                         if(angular.isDefined(this.$scope.collection)){
-                            console.log(this.$scope.collection.pageRecords);
                             angular.forEach(this.$scope.collection.pageRecords,(account)=>{
                                 account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
                             });

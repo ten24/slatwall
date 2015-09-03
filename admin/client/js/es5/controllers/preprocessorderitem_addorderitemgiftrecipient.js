@@ -57,7 +57,6 @@ var slatwalladmin;
                 accountPromise.then(function (response) {
                     _this.$scope.collection = response;
                     if (angular.isDefined(_this.$scope.collection)) {
-                        console.log(_this.$scope.collection.pageRecords);
                         angular.forEach(_this.$scope.collection.pageRecords, function (account) {
                             account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
                         });
