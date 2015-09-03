@@ -465,12 +465,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 					// NO INTEGRATION
 					} else {
-                                          
+                                       
 						//GiftCard                                      
                         if(arguments.data.transactiontype eq "giftCard"){
 				            
                             var giftCard = getService("HibachiService").get("giftCard",  getDAO("giftCardDAO").getIDByCode(arguments.paymentTransaction.getOrderPayment().getGiftCardNumberEncrypted()));
-                            var amount = arguments.data.amount; 
+                            
+                            if(arguments.paymentTransaction.getOrderPayment().getAmountUncredited() EQ 0){
+                                var amount = arguments.data.amount; 
+                            } else { 
+                                var amount = precisionEvaluate(arguments.paymentTransaction.getOrderPayment().getAmountUncredited() * -1);          
+                            }
                                           
                             if(amount > 0){
 
@@ -483,22 +488,22 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                                     amount = giftCard.getBalanceAmount();
                                 }
 
-                                giftCardProcessObject.setDebitAmount(amount); 
+                                if(amount NEQ 0){
+                                    giftCardProcessObject.setDebitAmount(amount); 
 
-                                var card = getService("GiftCardService").process(giftCard, giftCardProcessObject, "addDebit");
+                                    var card = getService("GiftCardService").process(giftCard, giftCardProcessObject, "addDebit");
 
-                               
-
-                                if(!card.hasErrors()){
-                                    arguments.paymentTransaction.setAmountReceived( amount );  
-                                } else { 
-                                    arguments.paymentTransaction.addErrors(card.getErrors());
-                                } 
+                                    if(!card.hasErrors()){
+                                        arguments.paymentTransaction.setAmountReceived( amount );  
+                                    } else { 
+                                        arguments.paymentTransaction.addErrors(card.getErrors());
+                                    } 
+                                }
                             } else { 
 
                                 var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
 
-                                giftCardProcessObject.setOrderPayments(arguments.paymentTransaction.getOrderPayment().getOrderPayments());
+                                giftCardProcessObject.setOrderPayments(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderPayments());
                                 giftCardProcessObject.setOrderItems(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderItems());
 
                                 giftCardProcessObject.setCreditAmount(precisionEvaluate(amount * -1)); 
@@ -506,7 +511,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                                 var card = getService("GiftCardService").process(giftCard, giftCardProcessObject, "addCredit");
 
                                 if(!card.hasErrors()){
-                                    arguments.paymentTransaction.setAmountCredited( amount );  
+                                    arguments.paymentTransaction.setAmountCredited( precisionEvaluate(amount * -1) );  
                                 } else { 
                                     arguments.paymentTransaction.addErrors(card.getErrors());
                                 } 

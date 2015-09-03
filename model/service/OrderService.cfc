@@ -1827,7 +1827,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                             var createGiftCard = card.getProcessObject( 'Create' );
 
                             createGiftCard.setOriginalOrderItem(item);
-                            createGiftCard.setGiftCardExpirationTerm(term); 
+                            if(!isNull(term)){ 
+                                createGiftCard.setGiftCardExpirationTerm(term); 
+                            }    
                             createGiftCard.setOrderPayments(arguments.order.getOrderPayments());
                             createGiftCard.setOrderItemGiftRecipient(recipient);
 

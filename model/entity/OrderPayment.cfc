@@ -234,7 +234,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		
 		// Gift Card
 		if(listFindNoCase("giftCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
-			setGiftCardNumber( arguments.orderPayment.getGiftCardNumber() );
+			setGiftCardNumberEncrypted( arguments.orderPayment.getGiftCardNumberEncrypted() );
 		}
 		
 		// Term Payment
