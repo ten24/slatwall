@@ -57,6 +57,8 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="ownerLastName" ormtype="string";
 	property name="ownerEmailAddress" ormtype="string";
     property name="activeFlag" ormtype="boolean";
+    //Calculated Properties
+    property name="balanceAmount" ormtype="big_decimal";
 
 	// Related Object Properties (many-to-one)
 	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="originalOrderItemID" cascade="all";
