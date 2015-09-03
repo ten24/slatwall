@@ -11,6 +11,22 @@ var slatwalladmin;
         __extends(UtilityService, _super);
         function UtilityService() {
             _super.call(this);
+            this.listLast = function (list, delimiter) {
+                if (angular.isUndefined(delemiter)) {
+                    delimiter = ',';
+                }
+                var listArray = list.split(delimiter);
+                return listArray[listArray.length - 1];
+            };
+            this.left = function (stringItem, count) {
+                return stringItem.substring(0, count);
+            };
+            this.right = function (stringItem, count) {
+                return stringItem.substring(stringItem.length - count, stringItem.length);
+            };
+            this.escapeRegExp = function (stringItem) {
+                return stringItem.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+            };
             this.createID = function (count) {
                 var count = count || 26;
                 var text = "";
@@ -90,6 +106,9 @@ var slatwalladmin;
                 return returnArray;
             };
         }
+        UtilityService.prototype.replaceAll = function (stringItem, find, replace) {
+            return stringItem.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
+        };
         return UtilityService;
     })(slatwalladmin.BaseService);
     slatwalladmin.UtilityService = UtilityService;

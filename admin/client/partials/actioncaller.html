@@ -1,0 +1,36 @@
+<!--href="#swActionCaller.hibachiScope.buildURL(action=swActionCaller.action,querystring=swActionCaller.querystring)#"
+<cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
+-->
+<a  ng-if="swActionCaller.type === 'link'"
+	ng-attr-title="{{swActionCaller.title}}" 
+	ng-attr-class="{{swActionCaller.class}}" 
+	target="_self" 
+	
+	data-disabled="{{swActionCaller.disabledtext}}"
+	data-confirm="{{swActionCaller.confirmtext}}"
+	ng-bind="swActionCaller.icon+swActionCaller.text">
+	
+</a>
+
+<!--href="#swActionCaller.hibachiScope.buildURL(action=swActionCaller.action,querystring=swActionCaller.querystring)#"
+		<cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
+		<cfif swActionCaller.disabled> data-disabled="#swActionCaller.disabledtext#"<cfelseif swActionCaller.confirm> data-confirm="#swActionCaller.confirmtext#"</cfif>
+		-->
+<li ng-if="swActionCaller.type === 'list'">
+	<a ng-attr-title="{{swActionCaller.title}}" 
+		ng-attr-class="{{swActionCaller.class}}" 
+		target="_self" 
+		ng-bind="{{swActionCaller.icon+swActionCaller.text}}">
+	</a>
+</li>
+
+<!--
+	<cfif len(swActionCaller.name)> name="#swActionCaller.name#" value="#swActionCaller.action#"</cfif>
+	<cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
+	<cfif swActionCaller.disabled> data-disabled="#swActionCaller.disabledtext#"<cfelseif swActionCaller.confirm> data-confirm="#swActionCaller.confirmtext#"</cfif><cfif swActionCaller.submit>type="submit"</cfif><cfif len(swActionCaller.id)>id="#swActionCaller.id#"</cfif>>
+	-->
+<button ng-if="swActionCaller.type ==='button'" 
+	ng-attr-class="{{swActionCaller.class}}" 
+	ng-attr-title="{{swActionCaller.title}}"
+	ng-bind="{{swActionCaller.icon+swActionCaller.text}}">
+</button>

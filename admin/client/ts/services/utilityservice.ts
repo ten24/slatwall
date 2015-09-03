@@ -5,6 +5,30 @@ module slatwalladmin{
             super();
         }
         
+        public listLast = (list:string,delimiter:string):string{
+            if(angular.isUndefined(delemiter)){
+                delimiter = ',';
+            }
+            
+            var listArray = list.split(delimiter);
+			return listArray[listArray.length-1];
+        }
+        
+        public left = (stringItem:string,count:number){
+            return stringItem.substring(0,count);
+        }
+        public right = (stringItem:string,count:number){
+            return stringItem.substring(stringItem.length-count,stringItem.length);
+        }
+        
+        public replaceAll(stringItem:string, find:string, replace:string) {
+        return stringItem.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
+        }
+        
+        public escapeRegExp = (stringItem:string) {
+            return stringItem.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+        }
+        
         public createID = (count:number):string =>{
               var count = count || 26;
               

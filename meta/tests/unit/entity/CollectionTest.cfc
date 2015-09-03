@@ -1745,6 +1745,19 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.debug(HQL);
 	}
 	
+	public void function testest(){
+		var test = ormexecuteQuery("SELECT new Map( _order.orderID as orderID, _order.orderNumber as orderNumber, _order.currencyCode as currencyCode, _order.orderOpenDateTime as orderOpenDateTime, _order.orderOpenIPAddress as orderOpenIPAddress, _order.orderCloseDateTime as orderCloseDateTime, _order.referencedOrderType as referencedOrderType, _order.estimatedDeliveryDateTime as estimatedDeliveryDateTime, _order.estimatedFulfillmentDateTime as estimatedFulfillmentDateTime, _order.calculatedTotal as calculatedTotal) 
+		FROM SlatwallOrder as _order 
+		left join _order.promotionCodes as _order_promotionCodes
+		where ( 
+			EXISTS ( 
+				FROM SlatwallPromotionCode as __promotioncode 
+				where ( __promotioncode.promotionCode = 'testlove2'  ) 
+				AND __promotioncode.id = _order_promotionCodes.id ) 
+			) ORDER BY _order.createdDateTime desc");
+		request.debug(test);
+	}
+	
 	public void function getHQLForCollectionFilterManyToManyTest(){
 		var collectionPromotionRewardData = {
 			collectionid = '',

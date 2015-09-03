@@ -17,7 +17,22 @@ module slatwalladmin {
 		public scope = {};
         public transclude=true;
         public bindToController={
-            
+            action:"=",
+			entity:"=",
+			processContext:"=",
+			hideDisabled:"=",
+			
+			type:"=",
+			querystring:"=",
+			text:"=",
+			title:"=",
+			class:"=",
+			icon:"=",
+			iconOnly:"=",
+			submit:"=",
+			confirm:"=",
+			disabled:"=",
+			modal:"="
         };
         public controller=SWProcessCallerController
         public controllerAs="swProcessCaller";

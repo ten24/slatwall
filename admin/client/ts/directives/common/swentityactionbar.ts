@@ -7,7 +7,7 @@ module slatwalladmin {
     
     export class SWEntityActionBarController{
         constructor(){
-            
+           
         }
     }
 	
@@ -15,10 +15,9 @@ module slatwalladmin {
 		
 		public restrict:string = 'E';
 		public scope = {};
-        public transclude=true;
         public bindToController={
             /*Core settings*/
-            type:"@",
+            type:"=",
             object:"=",
             pageTitle:"=",
             edit:"=",
