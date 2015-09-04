@@ -5,7 +5,7 @@ module slatwalladmin{
             super();
         }
         
-        public listLast = (list:string,delimiter:string):string{
+        public listLast = (list:string,delimiter:string):string =>{
             if(angular.isUndefined(delemiter)){
                 delimiter = ',';
             }
@@ -14,18 +14,18 @@ module slatwalladmin{
 			return listArray[listArray.length-1];
         }
         
-        public left = (stringItem:string,count:number){
+        public left = (stringItem:string,count:number):string =>{
             return stringItem.substring(0,count);
         }
-        public right = (stringItem:string,count:number){
+        public right = (stringItem:string,count:number):string =>{
             return stringItem.substring(stringItem.length-count,stringItem.length);
         }
         
-        public replaceAll(stringItem:string, find:string, replace:string) {
-        return stringItem.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
+        public replaceAll = (stringItem:string, find:string, replace:string):string => {
+            return stringItem.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
         }
         
-        public escapeRegExp = (stringItem:string) {
+        public escapeRegExp = (stringItem:string) =>{
             return stringItem.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
         }
         

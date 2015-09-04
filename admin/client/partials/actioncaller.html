@@ -2,14 +2,14 @@
 <cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
 -->
 <a  ng-if="swActionCaller.type === 'link'"
-	ng-attr-title="{{swActionCaller.title}}" 
+	ng-attr-title="{{swActionCaller.getTitle()}}" 
 	ng-attr-class="{{swActionCaller.class}}" 
 	target="_self" 
 	
-	data-disabled="{{swActionCaller.disabledtext}}"
-	data-confirm="{{swActionCaller.confirmtext}}"
-	ng-bind="swActionCaller.icon+swActionCaller.text">
-	
+	data-disabled="{{swActionCaller.getDisabledText()}}"
+	data-confirm="{{swActionCaller.getConfirmText()}}"
+	>
+	<i ng-show="swActionCaller.icon" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i><span ng-bind="swActionCaller.getText()"></span>
 </a>
 
 <!--href="#swActionCaller.hibachiScope.buildURL(action=swActionCaller.action,querystring=swActionCaller.querystring)#"
@@ -17,10 +17,11 @@
 		<cfif swActionCaller.disabled> data-disabled="#swActionCaller.disabledtext#"<cfelseif swActionCaller.confirm> data-confirm="#swActionCaller.confirmtext#"</cfif>
 		-->
 <li ng-if="swActionCaller.type === 'list'">
-	<a ng-attr-title="{{swActionCaller.title}}" 
+	<a ng-attr-title="{{swActionCaller.getTitle()}}" 
 		ng-attr-class="{{swActionCaller.class}}" 
 		target="_self" 
-		ng-bind="{{swActionCaller.icon+swActionCaller.text}}">
+		>
+		<i ng-show="swActionCaller.icon" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i><span ng-bind="swActionCaller.getText()"></span>
 	</a>
 </li>
 
@@ -31,6 +32,6 @@
 	-->
 <button ng-if="swActionCaller.type ==='button'" 
 	ng-attr-class="{{swActionCaller.class}}" 
-	ng-attr-title="{{swActionCaller.title}}"
-	ng-bind="{{swActionCaller.icon+swActionCaller.text}}">
+	ng-attr-title="{{swActionCaller.getTitle()}}"
+	><i ng-show="swActionCaller.icon" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i><span ng-bind="swActionCaller.getText()"></span>
 </button>

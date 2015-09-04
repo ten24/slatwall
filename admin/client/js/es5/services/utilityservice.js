@@ -10,6 +10,7 @@ var slatwalladmin;
     var UtilityService = (function (_super) {
         __extends(UtilityService, _super);
         function UtilityService() {
+            var _this = this;
             _super.call(this);
             this.listLast = function (list, delimiter) {
                 if (angular.isUndefined(delemiter)) {
@@ -23,6 +24,9 @@ var slatwalladmin;
             };
             this.right = function (stringItem, count) {
                 return stringItem.substring(stringItem.length - count, stringItem.length);
+            };
+            this.replaceAll = function (stringItem, find, replace) {
+                return stringItem.replace(new RegExp(_this.escapeRegExp(find), 'g'), replace);
             };
             this.escapeRegExp = function (stringItem) {
                 return stringItem.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
@@ -106,9 +110,6 @@ var slatwalladmin;
                 return returnArray;
             };
         }
-        UtilityService.prototype.replaceAll = function (stringItem, find, replace) {
-            return stringItem.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
-        };
         return UtilityService;
     })(slatwalladmin.BaseService);
     slatwalladmin.UtilityService = UtilityService;

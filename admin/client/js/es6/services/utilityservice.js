@@ -4,6 +4,25 @@ var slatwalladmin;
     class UtilityService extends slatwalladmin.BaseService {
         constructor() {
             super();
+            this.listLast = (list, delimiter) => {
+                if (angular.isUndefined(delemiter)) {
+                    delimiter = ',';
+                }
+                var listArray = list.split(delimiter);
+                return listArray[listArray.length - 1];
+            };
+            this.left = (stringItem, count) => {
+                return stringItem.substring(0, count);
+            };
+            this.right = (stringItem, count) => {
+                return stringItem.substring(stringItem.length - count, stringItem.length);
+            };
+            this.replaceAll = (stringItem, find, replace) => {
+                return stringItem.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
+            };
+            this.escapeRegExp = (stringItem) => {
+                return stringItem.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+            };
             this.createID = (count) => {
                 var count = count || 26;
                 var text = "";

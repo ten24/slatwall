@@ -13,10 +13,9 @@ var slatwalladmin;
             this.partialsPath = partialsPath;
             this.restrict = 'E';
             this.scope = {};
-            this.transclude = true;
             this.bindToController = {
                 /*Core settings*/
-                type: "@",
+                type: "=",
                 object: "=",
                 pageTitle: "=",
                 edit: "=",
