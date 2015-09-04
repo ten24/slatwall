@@ -1353,6 +1353,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// As long as the amount received for this orderFulfillment is within the treshold of the auto fulfillment setting
 		if(
 			arguments.orderFulfillment.getFulfillmentMethodType() == "auto" 
+            || (
+                !isNull(arguments.orderFulfillment.getFulfillmentMethod().getAutoFulfillFlag()) &&
+                arguments.orderFulfillment.getFulfillmentMethod().getAutoFulfillFlag()                  
+            )
 			&& (
 				order.getTotal() == 0 
 				|| orderFulfillment.getFulfillmentMethod().setting('fulfillmentMethodAutoMinReceivedPercentage') <= precisionEvaluate( order.getPaymentAmountReceivedTotal() * 100 / order.getTotal() ) 
