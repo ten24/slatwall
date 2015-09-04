@@ -56,15 +56,19 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="ownerFirstName" ormtype="string";
 	property name="ownerLastName" ormtype="string";
 	property name="ownerEmailAddress" ormtype="string";
+    property name="activeFlag" ormtype="boolean";
+    //Calculated Properties
+    property name="balanceAmount" ormtype="big_decimal";
 
 	// Related Object Properties (many-to-one)
 	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="originalOrderItemID" cascade="all";
 	property name="giftCardExpirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="giftCardExpirationTermID" cascade="all";
 	property name="ownerAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="ownerAccountID";
+    property name="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" fieldtype="many-to-one" fkcolumn="orderItemGiftRecipientID" inverse="true" cascade="all";
 
 	// Related Object Properties (one-to-many)
 	property name="giftCardTransactions" singularname="giftCardTransaction" cfc="GiftCardTransaction" fieldtype="one-to-many" fkcolumn="giftCardID" inverse="true" cascade="all-delete-orphan";
-
+   
 	// Related Object Properties (many-to-many)
 
 	// Remote Properties
@@ -75,10 +79,11 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
+    
 
 	// Non-Persistent Properties
 
-	public string function getBalance(){
+	public string function getBalanceAmount(){
 		var transactions = this.getGiftCardTransactions();
 		var balance = "0";
 		for(var transaction in transactions){
@@ -96,14 +101,6 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 			return this.getOwnerAccount().getEmailAddress();
 		} else {
 			return this.getOwnerEmailAddress();
-		}
-	}
-
-	public boolean function isActive(){
-		if(val(this.getBalance()) > 0){
-			return true;
-		} else {
-			return false;
 		}
 	}
 
@@ -131,7 +128,26 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		structDelete(variables, "giftCardExpirationTerm");
 	}
 
-	// Original Order Item - Many - To - One
+    // Order Item Gift Recipient (many-to-one)
+	public void function setOrderItemGiftRecipient(required any orderItemGiftRecipient) {
+		variables.orderItemGiftRecipient = arguments.orderItemGiftRecipient;
+		if(isNew() or !arguments.orderItemGiftRecipient.hasGiftCard( this )) {
+			arrayAppend(arguments.orderItemGiftRecipient.getGiftCards(), this);
+		}
+	}
+	
+	public void function removeOrderItemGiftRecipient(any orderItemGiftRecipient) {
+		if(!structKeyExists(arguments, "orderItem")) {
+			arguments.orderItem = variables.orderItem;
+		}
+		var index = arrayFind(arguments.orderItemGiftRecipient.getGiftCards(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderItemGiftRecipient.getGiftCards(), index);
+		}
+		structDelete(variables, "orderItemGiftRecipient");
+	}
+
+	// Original Order Item (Many-To-One)
 	public void function setOriginalOrderItem(required any orderItem) {
 		variables.originalOrderItem = arguments.orderItem;
 		if(isNew() or !arguments.orderItem.hasGiftCard( this )) {

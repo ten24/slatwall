@@ -4,12 +4,12 @@
 <input type="hidden" name="{{index}}recipientmessage" ng-value="recipient.giftMessage">
 <input type="hidden" name="{{index}}recipientquantity" ng-value="recipient.quantity">
 
-<td ng-hide="recipient.editing">
-	<span ng-bind="giftRecipientRowControl.recipient.firstName"></span>
-	<span ng-bind="giftRecipientRowControl.recipient.lastName"></span>
-</td>
-
-<td ng-bind="recipient.email"  ng-hide="recipient.editing"></td>
+<td ng-bind="recipient.firstName" ng-hide="recipient.editing" ng-if="!recipient.account"></td>
+<td ng-bind="recipient.lastName" ng-hide="recipient.editing" ng-if="!recipient.account"></td>
+<td ng-bind="recipient.email"  ng-hide="recipient.editing" ng-if="!recipient.account"></td>
+<td ng-bind="recipient.firstName" ng-if="recipient.account"></td>
+<td ng-bind="recipient.lastName"  ng-if="recipient.account"></td>
+<td ng-bind="recipient.email" ng-if="recipient.account"></td>
 <td ng-bind="recipient.giftMessage"  ng-hide="recipient.editing"></td>
 <td ng-bind="recipient.quantity"  ng-hide="recipient.editing"></td>
 <td class="admin admin2"  ng-hide="recipient.editing">
@@ -17,16 +17,17 @@
 	<a class="btn btn-default btn-xs" href="##" ng-click="giftRecipientRowControl.delete(recipient)"><i class="glyphicon glyphicon-trash"></i> </a>
 </td>
 
-<td class="s-table-input-element" ng-hide="!recipient.editing">
+<td class="s-table-input-element" ng-hide="!recipient.editing" ng-if="!recipient.account">
 	<input type="text" name="_rowRecipientFirstName" class="form-control" ng-model="giftRecipientRowControl.recipient.firstName" required>
-	<input type="text" name="_rowRecipientLastName" class="form-control" ng-model="giftRecipientRowControl.recipient.lastName" required>
 </td>
-<td class="s-table-input-element" ng-hide="!recipient.editing">
+<td class="s-table-input-element" ng-hide="!recipient.editing" ng-if="!recipient.account">
+    <input type="text" name="_rowRecipientLastName" class="form-control" ng-model="giftRecipientRowControl.recipient.lastName" required>
+</td>
+<td class="s-table-input-element" ng-hide="!recipient.editing" ng-if="!recipient.account">
 	<input type="email" name="_rowRecipientEmail" class="form-control" ng-model="giftRecipientRowControl.recipient.email" required>
 </td>
 <td class="s-table-input-element" ng-hide="!recipient.editing">
 	<input type="text" name="_rowRecipientGiftMessage" class="form-control" ng-model="giftRecipientRowControl.recipient.giftMessage" ng-trim="false">
-	<span ng-bind="giftRecipientRowControl.getMessageCharactersLeft()"></span>
 </td>
 <td class="s-table-input-element" ng-hide="!recipient.editing">
 	<select class="form-control" 
