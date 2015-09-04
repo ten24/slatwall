@@ -76,7 +76,7 @@ Notes:
 <cfparam name="giftCard" type="any" />
 
 <cfset email.setEmailTo("#giftCard.getOrderItemGiftRecipient().getEmailAddress()#")>
-<cfset email.logEmailFlag="true">
+<cfset email.setLogEmailFlag("true")>
 
 <cfsavecontent variable="emailData.emailBodyHTML">
 	<cfoutput>
