@@ -47,7 +47,7 @@ var slatwalladmin;
                 }
                 return _this.title;
             };
-            this.getTextByRBKeyByAction = function (actionItemType, plural, boolean) {
+            this.getTextByRBKeyByAction = function (actionItemType, plural) {
                 if (plural === void 0) { plural = false; }
                 var navRBKey = _this.$slatwall.getRBKey('admin.define.' + actionItemType + '_nav');
                 if (plural) {

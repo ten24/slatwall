@@ -103,7 +103,7 @@ module slatwalladmin {
             return this.title;
         }
 		
-		private getTextByRBKeyByAction = (actionItemType:string, plural=false:boolean):string{
+		private getTextByRBKeyByAction = (actionItemType:string, plural:boolean=false):string =>{
 			var navRBKey = this.$slatwall.getRBKey('admin.define.'+actionItemType+'_nav');
 			if(plural){
 				var entityRbKey = this.$slatwall('entity.'+this.getActionItemEntityName()+'_plural');
