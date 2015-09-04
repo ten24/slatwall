@@ -46,30 +46,36 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+
+<cfparam name="rc.orderItemGiftRecipient" type="any" />
+<cfparam name="rc.orderItem" type="any" default="#rc.orderItemGiftRecipient.getOrderItem()#" /> 
+<cfparam name="rc.order" type="any" default="#rc.orderItem.getOrder()#" /> 
+
+<cfparam name="rc.edit" default="false" />
 
 <cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-		<swa:SlatwallSetting settingName="globalUsageStats" />
-		<swa:SlatwallSetting settingName="globalCurrencyLocale" />
-		<swa:SlatwallSetting settingName="globalCurrencyType" />
-		<swa:SlatwallSetting settingName="globalDateFormat" />
-		<swa:SlatwallSetting settingName="globalLogMessages" />
-		<swa:SlatwallSetting settingName="globalTimeFormat" />
-		<swa:SlatwallSetting settingName="globalAuditAutoArchiveVersionLimit" />
-		<swa:SlatwallSetting settingName="globalAuditCommitMode" />
-		<swa:SlatwallSetting settingName="globalAssetsImageFolderPath" />
-		<swa:SlatwallSetting settingName="globalAssetsFileFolderPath" />
-		<swa:SlatwallSetting settingName="globalMissingImagePath" />
-		<swa:SlatwallSetting settingName="globalOrderNumberGeneration" />
-		<swa:SlatwallSetting settingName="globalURLKeyBrand" />
-		<swa:SlatwallSetting settingName="globalURLKeyProduct" />
-		<swa:SlatwallSetting settingName="globalURLKeyProductType" />
-		<swa:SlatwallSetting settingName="globalWeightUnitCode" />
-		<swa:SlatwallSetting settingName="globalAdminAutoLogoutMinutes" />
-		<swa:SlatwallSetting settingName="globalPublicAutoLogoutMinutes" />
-        <swa:SlatwallSetting settingName="globalGiftCardMessageLength" />
-	</swa:SlatwallSettingTable>
-</cfoutput>
+	<hb:HibachiEntityDetailForm object="#rc.orderItem#" edit="#rc.edit#" >
+		<hb:HibachiEntityActionBar type="detail" object="#rc.orderItemGiftRecipient#" edit="#rc.edit#"
+								   backaction="admin:entity.detailorder"
+								   backquerystring="orderID=#rc.order.getOrderID()#"
+								   deleteQueryString="redirectAction=admin:entity.detailorder&orderID=#rc.order.getOrderID()#">
+		</hb:HibachiEntityActionBar>
+		
+        <cfif rc.edit>
+            <input type="hidden" name="orderItemGiftRecipientID" value="#rc.orderItemGiftRecipient.getOrderItemGiftRecipientID()#" />
+		</cfif>
 
+	   <hb:HibachiEntityDetailGroup object="#rc.orderItemGiftRecipient#">
+
+           <hb:HibachiEntityDetailItem property="firstName" />
+           <hb:HibachiEntityDetailItem property="lastName" />
+           <hb:HibachiEntityDetailItem property="emailAddress" />
+           <hb:HibachiEntityDetailITem property="giftMessage" />
+           <hb:HibachiEntityDetailItem property="quantity" />
+		
+		</hb:HibachiEntityDetailGroup>
+		
+    </hb:HibachiEntityDetailForm>
+</cfoutput>

@@ -46,30 +46,26 @@
 Notes:
 
 --->
+
 <cfimport prefix="swa" taglib="../../../../tags" />
 <cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
-<cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-		<swa:SlatwallSetting settingName="globalUsageStats" />
-		<swa:SlatwallSetting settingName="globalCurrencyLocale" />
-		<swa:SlatwallSetting settingName="globalCurrencyType" />
-		<swa:SlatwallSetting settingName="globalDateFormat" />
-		<swa:SlatwallSetting settingName="globalLogMessages" />
-		<swa:SlatwallSetting settingName="globalTimeFormat" />
-		<swa:SlatwallSetting settingName="globalAuditAutoArchiveVersionLimit" />
-		<swa:SlatwallSetting settingName="globalAuditCommitMode" />
-		<swa:SlatwallSetting settingName="globalAssetsImageFolderPath" />
-		<swa:SlatwallSetting settingName="globalAssetsFileFolderPath" />
-		<swa:SlatwallSetting settingName="globalMissingImagePath" />
-		<swa:SlatwallSetting settingName="globalOrderNumberGeneration" />
-		<swa:SlatwallSetting settingName="globalURLKeyBrand" />
-		<swa:SlatwallSetting settingName="globalURLKeyProduct" />
-		<swa:SlatwallSetting settingName="globalURLKeyProductType" />
-		<swa:SlatwallSetting settingName="globalWeightUnitCode" />
-		<swa:SlatwallSetting settingName="globalAdminAutoLogoutMinutes" />
-		<swa:SlatwallSetting settingName="globalPublicAutoLogoutMinutes" />
-        <swa:SlatwallSetting settingName="globalGiftCardMessageLength" />
-	</swa:SlatwallSettingTable>
-</cfoutput>
+<cfparam name="rc.orderItem" type="any" />
+<cfparam name="rc.order" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
+<cfsilent>
+	<cfset local.recipientList = rc.orderItem.getAllOrderItemGiftRecipientsSmartList() />
+</cfsilent>
+
+<cfoutput>
+    <hb:HibachiListingDisplay title="#$.slatwall.rbKey('admin.entity.ordertabs.orderitemgiftrecipients')#" smartList="#local.recipientList#" 
+                recordDetailAction="admin:entity.detailorderitemgiftrecipient"
+                recordEditAction="admin:entity.editorderitemgiftrecipient">
+            <hb:HibachiListingColumn propertyIdentifier="firstName" />
+            <hb:HibachiListingColumn propertyIdentifier="lastName" />
+            <hb:HibachiListingColumn propertyIdentifier="emailAddress" />
+            <hb:HibachiListingColumn propertyIdentifier="giftMessage" />
+            <hb:HibachiListingColumn propertyIdentifier="quantity" />
+    </hb:HibachiListingDisplay>
+</cfoutput>

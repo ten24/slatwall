@@ -66,23 +66,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.giftCard.setGiftCardCode(arguments.processObject.getGiftCardCode());
 		arguments.giftCard.setGiftCardPin(arguments.processObject.getGiftCardPin()); //might be blank
 
-		arguments.giftCard.setExpirationDate(arguments.processObject.getExpirationDate());
-
-		if(!isNull(arguments.processObject.getGiftCardExpirationTerm()) && !arguments.giftCard.hasGiftCardExpirationTerm(arguments.processObject.getGiftCardExpirationTerm())){
+		if(!isNull(arguments.processObject.getGiftCardExpirationTerm())){
 			arguments.giftCard.setGiftCardExpirationTerm(arguments.processObject.getGiftCardExpirationTerm());
+            if(getService("SettingService").getSettingValue("skuGiftCardEnforceExpirationTerm")){
+                arguments.giftCard.setExpirationDate(arguments.processObject.getExpirationDate());
+            }
 		}
 
-		if(!isNull(arguments.processObject.getOriginalOrderItem()) && !arguments.giftCard.hasOriginalOrderItem(arguments.processObject.getOriginalOrderItem())){
+		if(!isNull(arguments.processObject.getOriginalOrderItem())){
 			arguments.giftCard.setOriginalOrderItem(arguments.processObject.getOriginalOrderItem());
 		}
 
-		//is it time to credit the card
-		if(arguments.processObject.getCreditGiftCard()){
-			var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.giftCard.getOriginalOrderItem().getSku().getGiftCardRedemptionAmount());
-		}
+        if(!isNull(arguments.processObject.getOrderItemGiftRecipient())){
+            arguments.giftCard.setOrderItemGiftRecipient(arguments.processObject.getOrderItemGiftRecipient());
+        }
 
-		if(!isNull(arguments.processObject.getOwnerAccount())){
+        if(!isNull(arguments.processObject.getOwnerAccount())){
 			arguments.giftCard.setOwnerAccount(arguments.processObject.getOwnerAccount());
+            giftCard.setOwnerEmailAddress(arguments.processObject.getOwnerEmailAddress());
 		} else {
 			if(!getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(arguments.processObject.getOwnerEmailAddress())){
 				giftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(arguments.processObject.getOwnerEmailAddress())));
@@ -100,8 +101,16 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.giftCard.setOwnerLastName(arguments.processObject.getOwnerLastName());
 		}
 
+		//is it time to credit the card
+		if(arguments.processObject.getCreditGiftCard()){
+			var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.giftCard.getOriginalOrderItem().getSku().getGiftCardRedemptionAmount());
+		}
+
 		if(!giftCardCreditTransaction.hasErrors()){
-			arguments.giftCard = this.saveGiftCard(arguments.giftCard);
+            var errorBean = getService("HibachiValidationService").validate(arguments.giftCard, "save", true); 
+            if(!errorBean.hasErrors()){
+                arguments.giftCard = this.saveGiftCard(arguments.giftCard); 
+            } 
 		} else {
 			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
 		}

@@ -76,7 +76,7 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 	property name="referencingOrderItems" singularname="referencingOrderItem" cfc="OrderItem" fieldtype="one-to-many" fkcolumn="referencedOrderItemID" inverse="true" cascade="all"; // Used For Returns
 	property name="accountLoyaltyTransactions" singularname="accountLoyaltyTransaction" cfc="AccountLoyaltyTransaction" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	property name="giftCards" singularname="giftCard" cfc="GiftCard" type="array" fieldtype="one-to-many" fkcolumn="originalOrderItemID" cascade="all" inverse="true";
-	property name="orderItemGiftRecipients" singularname="orderItemGiftRecipient" cfc="orderItemGiftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
+	property name="orderItemGiftRecipients" singularname="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" type="array" fieldtype="one-to-many" fkcolumn="orderItemID" cascade="all" inverse="true";
 	
 	// Remote properties
 	property name="publicRemoteID" ormtype="string" hb_populateEnabled="public";
@@ -123,6 +123,13 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 		return count; 
 		
 	}
+
+    public any function getAllOrderItemGiftRecipientsSmartList(){ 
+        var orderItemGiftRecipientSmartList = getService("OrderService").getOrderItemGiftRecipientSmartList(); 
+        orderItemGiftRecipientSmartList.joinRelatedProperty("SlatwallOrderItemGiftRecipient", "orderItem", "left", true);
+        orderItemGiftRecipientSmartList.addWhereCondition("aslatwallorderitem.orderItemID='#this.getOrderItemID()#'"); 
+        return orderItemGiftRecipientSmartList; 
+    }
 
 	public numeric function getMaximumOrderQuantity() {
 		var maxQTY = 0;

@@ -77,8 +77,29 @@ Notes:
 			<hb:HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="listPrice" fieldName="newSku.listPrice" edit="#rc.edit#">
 			<cfif rc.product.getBaseProductType() eq 'gift-card'>
 				<hb:HibachiPropertyDisplay object="#rc.processObject#" property="giftCardExpirationTermID" edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="redemptionAmountType"  edit="#rc.edit#">
-				<hb:HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="redemptionAmount" edit="#rc.edit#">
+                <div class="giftCardPriceInfo">
+				    <hb:HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="redemptionAmountType"  edit="#rc.edit#">
+				    <hb:HibachiPropertyDisplay object="#rc.processObject.getNewSku()#" property="redemptionAmount" edit="#rc.edit#">
+                </div>
+                <script type="text/javascript">
+                    jQuery("label[for='newSku.userDefinedPriceFlagYes']").click(function(){
+                        jQuery(".giftCardPriceInfo").hide();
+                    }); 
+                    
+                     jQuery("label[for='newSku.userDefinedPriceFlagNo']").click(function(){
+                        jQuery(".giftCardPriceInfo").show();    
+                    }); 
+                    
+                    jQuery("select[name='redemptionAmountType']").change(function(){
+                        if( jQuery("select[name='redemptionAmountType']").val() == "sameAsPrice"){
+                            jQuery("input[name='redemptionAmount']").hide();
+                            jQuery("label[for='redemptionAmount']").hide();
+                        } else { 
+                            jQuery("input[name='redemptionAmount']").show();   
+                            jQuery("label[for='redemptionAmount']").show();
+                        }
+                    });     
+                </script>
 			</cfif>
 		</hb:HibachiPropertyList>
 	</hb:HibachiPropertyRow>

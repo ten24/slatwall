@@ -1,0 +1,6 @@
+{
+	"properties":{
+	    "giftCardCode":	            [{"contexts":"save","required":true}],
+        "ownerEmailAddress":           [{"contexts":"save","required":true}]
+	}
+}

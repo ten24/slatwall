@@ -86,6 +86,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/HibachiAssets/js/jquery-typewatch-2.0.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/selectBoxIt/selectBoxIt.min.js"></script>
+        <script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/md5/md5.min.js"></script>
 
 		#request.slatwallScope.renderJSObject()#
 		<script type="text/javascript">
