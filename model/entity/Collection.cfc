@@ -565,12 +565,10 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	private string function getFilterCriteria(required string filterCriteria){
 		switch(arguments.filterCriteria){
-			case "All":
-				return "";
-			break;
 			case "One":
 				return "EXISTS";
 			break;
+			case "All":
 			case "None":
 				return "NOT EXISTS";
 			break;
@@ -701,95 +699,30 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return HQL;
 	}
 	
+	
 	private string function getHQLForCollectionFilter(required struct filter){
 		
 		var collectionFilterHQL = '';
 		var filterCriteria = getfilterCriteria(arguments.filter.criteria);
 		collectionFilterHQL &= ' #filterCriteria# (';
 		var collectionEntity = getService('collectionService').getCollectionByCollectionID(arguments.filter.collectionID);
-		var relatedPropertyForEntity = getService('hibachiService').getPropertyByEntityNameAndPropertyName(this.getCollectionObject(),listLast(arguments.filter.propertyIdentifier,'.'));
+		var mainCollectionAlias = arguments.filter.propertyIdentifier;
 		
-		if(relatedPropertyForEntity.fieldType == 'one-to-many'){
-			var mainCollectionAlias = getCollectionConfigStruct().baseEntityAlias;
-			var mainCollectionObject = replace(listFirst(arguments.filter.propertyIdentifier,'.'),'_','');
-		}else if(relatedPropertyForEntity.fieldType == 'many-to-many'){
-			var relatedPropertiesForCollectionEntity = getService('hibachiService').getPropertiesByEntityName(collectionEntity.getCollectionObject());
-			for(var propertyItem in relatedPropertiesForCollectionEntity){
-				if(structkeyExists(propertyItem,'linktable') && propertyItem.linktable == relatedPropertyForEntity.linktable){
-					var relatedPropertyForCollectionEntity = propertyItem;
-					break;
-				}
-			}
-			var mainCollectionAlias = getCollectionConfigStruct().baseEntityAlias;
-			var mainCollectionObject = relatedPropertyForCollectionEntity.name;
+		//defaults befor processing criteria
+		var collectionHQL = collectionEntity.getHQL(true);
+		var hasWhereClause = Find('where',collectionHQL);
+		var predicate = 'AND';
+		if(!hasWhereClause){
+			predicate = 'WHERE';
 		}
-		
-		var collectionProperty = '';
-		if(mainCollectionObject != collectionEntity.getCollectionObject()){
-			collectionProperty = getService('HibachiService').getPropertyByEntityNameAndPropertyName(collectionEntity.getCollectionObject(),mainCollectionObject).name;
-		}else{
-			collectionProperty = mainCollectionObject;
-		}
+		var logicalComparator = '';
 		if(arguments.filter.criteria == 'None' || arguments.filter.criteria == 'One'){
-			var collectionHQL = collectionEntity.getHQL(true);
-			var hasWhereClause = Find('where',collectionHQL);
-			var predicate = 'AND';
-			if(!hasWhereClause){
-				predicate = 'WHERE';
-			}
-			var comparator = '';
-			if(mainCollectionObject != collectionEntity.getCollectionObject()){
-				comparator = replace(collectionEntity.getCollectionConfigStruct().baseEntityAlias&'.'&collectionProperty,'_','__','ALL');
-			}else{
-				comparator = replace(collectionEntity.getCollectionConfigStruct().baseEntityAlias,'_','__','ALL');
-			}
-			
-			var logicalComparator = '';
-			if(relatedPropertyForEntity.fieldType == 'one-to-many'){
-				logicalComparator = '= #comparator#';
-			}else{
-				logicalComparator = 'IN elements(#comparator#)';
-			}
-			
-			collectionFilterHQL &= ' #replace(collectionEntity.getHQL(true),'_','__','ALL')# #predicate# #maincollectionAlias# #logicalComparator# ';
-		}else{
-			var fullEntityName = getService('hibachiService').getProperlyCasedFullEntityName(collectionEntity.getCollectionObject());
-			var collectionHQL = collectionEntity.getHQL(true);
-			var hasWhereClause = Find('where',collectionHQL);
-			
-			var predicate = 'AND';
-			if(!hasWhereClause){
-				predicate = 'WHERE';
-			}
-			
-			var comparator = '';
-			if(mainCollectionObject != collectionEntity.getCollectionObject()){
-				comparator = '#collectionEntity.getCollectionConfigStruct().baseEntityAlias#.#collectionProperty#';
-			}else{
-				comparator = '#collectionEntity.getCollectionConfigStruct().baseEntityAlias#';
-			}
-			var innerComparator = '';
-			if(collectionEntity.getCollectionObject() == collectionProperty){
-				innerComparator = '#collectionEntity.getCollectionObject()#';
-			}else{
-				innerComparator = '#collectionEntity.getCollectionObject()#.#collectionProperty#';
-			}
-			var logicalComparator = '';
-			if(relatedPropertyForEntity.fieldType == 'one-to-many'){
-				logicalComparator = '= #comparator#';
-			}else{
-				logicalComparator = 'IN elements(#comparator#)';
-			}
-			
-			var innerLogicalComparator = '';
-			if(relatedPropertyForEntity.fieldType == 'one-to-many'){
-				innerLogicalComparator = '= #innerComparator#';
-			}else{
-				innerLogicalComparator = 'IN elements(#innerComparator#)';
-			}
-			collectionFilterHQL &= ' (SELECT count(#collectionEntity.getCollectionObject()#) FROM #fullEntityName# as #collectionEntity.getCollectionObject()# WHERE #mainCollectionAlias# #innerLogicalComparator#) = (SELECT count(#collectionEntity.getCollectionConfigStruct().baseEntityAlias#) #collectionHQL# #predicate# #mainCollectionAlias# #logicalComparator#) ';
-		
+			var logicalComparator = 'IN ';
+		}else if(arguments.filter.criteria == 'All'){
+			var logicalComparator = 'NOT IN ';
 		}
+			
+		collectionFilterHQL &= ' #rereplace(collectionEntity.getHQL(true),'\b\_','__',"ALL")# #predicate# #replace(collectionEntity.getCollectionConfigStruct().baseEntityAlias,'_','__','ALL')# #logicalComparator# elements(#maincollectionAlias#) ';
 			
 		//add all params from subqueries to parent HQL
 		addHQLParamsFromNestedCollection(collectionEntity.getHQLParams());
@@ -935,6 +868,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					} 
 				}else{
 					HQL = getHQL();
+					//writedump(HQL);abort;
 					HQLParams = getHQLParams();
 					variables.pageRecords = ormExecuteQuery(HQL, HQLParams, false, {offset=getPageRecordsStart()-1, maxresults=getPageRecordsShow(), ignoreCase="true", cacheable=getCacheable(), cachename="pageRecords-#getCacheName()#"});
 				}
@@ -1166,8 +1100,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 	
 	private any function getSelectionCountHQL(){
-		var primaryIDAlias = getCollectionConfigStruct().baseEntityAlias & '.' & getService("hibachiservice").getPrimaryIDPropertyNameByEntityName(getCollectionObject());
-		return 'SELECT COUNT(#primaryIDAlias#) ';
+		return 'SELECT COUNT(#getCollectionConfigStruct().baseEntityAlias#.id) ';
 	}
 	
 	private any function getSelectionsHQL(required array columns, boolean isDistinct=false, boolean forExport=false){
