@@ -405,7 +405,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             //look for recipients
             var totalQuantity = 0; 
             var count = 0; 
-            if(structKeyExists(request.context, "assignedGiftRecipientQuantity") &&  request.context["assignedGiftRecipientQuantity"] < arguments.processObject.getQuantity()){
+            if(structKeyExists(request.context, "assignedGiftRecipientQuantity") &&  request.context["assignedGiftRecipientQuantity"] <= arguments.processObject.getQuantity()){
                 while(totalQuantity < arguments.processObject.getQuantity()){ 
                     var currentRecipient = count & "recipient"; 
                     if(!isNull(newOrderItem)){    
