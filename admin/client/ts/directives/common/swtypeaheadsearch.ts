@@ -1,9 +1,13 @@
 module slatwalladmin {
+	'use strict';
+	
+	interface ITypeaheadSearchScope extends ng.IScope {
+		
+	}
     
     export class SWTypeaheadSearch implements ng.IDirective{
         
-		public restrict = "E";
-        
+		public restrict = "E"; 
 		public scope = {
 			entity:"=",
 			properties:"=",
@@ -14,6 +18,11 @@ module slatwalladmin {
 			entity:"=",
 			properties:"=",
 			placeholderText:"=?"
+		}
+		public static $inject=["$scope", "$slatwall"];
+		
+		constructor(private $scope: ITypeaheadSearchScope,  private $slatwall:ngSlatwall.$Slatwall){
+			
 		}
 
 		public controller: function(){
