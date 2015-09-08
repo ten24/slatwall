@@ -50,28 +50,5 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.giftCardSmartList" type="any" />
-
-<cfoutput>
-
-	<hb:HibachiEntityActionBar type="listing" object="#rc.giftCardSmartList#" showCreate="false">
-
-		<!--- Create --->
-		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller action="admin:entity.giftcard" entity="giftCard" class="btn btn-primary" icon="plus icon-white" modal="true" />
-		</hb:HibachiEntityActionBarButtonGroup>
-	</hb:HibachiEntityActionBar>
-
-	<hb:HibachiListingDisplay smartList="#rc.giftCardSmartList#"
-							  recordDetailAction="admin:entity.detailgiftcard"
-							  recordEditAction="admin:entity.editgiftcard">
-
-
-		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerFirstName" search="true" />
-        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerLastName" search="true" />
-        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerEmailAddress" search="true" />
-		<hb:HibachiListingColumn propertyIdentifier="balanceAmount" />
-		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
-	</hb:HibachiListingDisplay>
-
-</cfoutput>
+<cfparam name="rc.giftCard" type="any">
+<cfparam name="rc.edit" type="boolean">
