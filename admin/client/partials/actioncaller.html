@@ -9,7 +9,7 @@
 	data-disabled="{{swActionCaller.getDisabledText()}}"
 	data-confirm="{{swActionCaller.getConfirmText()}}"
 	>
-	<i ng-show="swActionCaller.icon" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i><span ng-bind="swActionCaller.getText()"></span>
+	<i ng-show="swActionCaller.icon" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i>{{swActionCaller.getText()}}
 </a>
 
 <!--href="#swActionCaller.hibachiScope.buildURL(action=swActionCaller.action,querystring=swActionCaller.querystring)#"

@@ -9,7 +9,7 @@ module slatwalladmin {
         
         constructor(private utilityService:slatwalladmin.UtilityService, private $slatwall:ngSlatwall.SlatwallService){
 			//if text is blank or undefined
-			if(angular.isUndefined(this.text) || (angular.isDefined(this.text) && this.text.length && angular.isUndefined(this.icon))){
+			//if(angular.isUndefined(this.text) || (angular.isDefined(this.text) && this.text.length && angular.isUndefined(this.icon))){
 				//get rbkey for type
 				/*
 				<cfset attributes.text = attributes.hibachiScope.rbKey("#Replace(attributes.action, ":", ".", "all")#_nav") />
@@ -35,7 +35,7 @@ module slatwalladmin {
 				<cfif right(attributes.text, 8) eq "_missing" >
 					<cfset attributes.text = attributes.hibachiScope.rbKey("#Replace(attributes.action, ":", ".", "all")#") />
 				</cfif>*/
-			}
+			//}
 			
 			
 			
@@ -65,11 +65,11 @@ module slatwalladmin {
         }
         
         public getAction = ():string =>{
-            return this.action;    
+            return this.action || '';    
         }
         
         public getActionItem = ():string =>{
-            return this.utilityService.listLast(this.action,'.');
+            return this.utilityService.listLast(this.getAction(),'.');
         }
         
         public getActionItemEntityName = ():string =>{
@@ -119,7 +119,7 @@ module slatwalladmin {
 		public getText = ():string =>{
 			//if we don't have text then make it up based on rbkeys
 			if(angular.isUndefined(this.text) || (angular.isDefined(this.text) && !this.text.length)){
-				this.text = this.$slatwall.getRBKey(this.utilityService.replaceAll(getAction(),":",".")+'_nav');
+				this.text = this.$slatwall.getRBKey(this.utilityService.replaceAll(this.getAction(),":",".")+'_nav');
 				var minus8letters = this.utilityService.right(this.text,8);
 				//if rbkey is still missing. then can we infer it
 				if(minus8letters === '_missing'){
@@ -147,7 +147,7 @@ module slatwalladmin {
 					}else if(firstSixLetters === 'delete' && this.getActionItem().length > 6){
 						actionItemEntityName = minus6letters;
 					}
-					return actionItemEntityName;
+					//return actionItemEntityName;
 				}
 				
 				

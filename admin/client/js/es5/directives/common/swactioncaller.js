@@ -5,14 +5,42 @@ var slatwalladmin;
     'use strict';
     var SWActionCallerController = (function () {
         function SWActionCallerController(utilityService, $slatwall) {
+            //if text is blank or undefined
+            //if(angular.isUndefined(this.text) || (angular.isDefined(this.text) && this.text.length && angular.isUndefined(this.icon))){
+            //get rbkey for type
+            /*
+            <cfset attributes.text = attributes.hibachiScope.rbKey("#Replace(attributes.action, ":", ".", "all")#_nav") />
+            
+            <cfif right(attributes.text, 8) eq "_missing" >
+                
+                <cfif left(actionItem, 4) eq "list" and len(actionItem) gt 4>
+                    <cfset attributes.text = replace(attributes.hibachiScope.rbKey('admin.define.list_nav'), "${itemEntityNamePlural}", attributes.hibachiScope.rbKey('entity.#actionItemEntityName#_plural'), "all") />
+                <cfelseif left(actionItem, 4) eq "edit" and len(actionItem) gt 4>
+                    <cfset attributes.text = replace(attributes.hibachiScope.rbKey('admin.define.edit_nav'), "${itemEntityName}", attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
+                <cfelseif left(actionItem, 4) eq "save" and len(actionItem) gt 4>
+                    <cfset attributes.text = replace(attributes.hibachiScope.rbKey('admin.define.save_nav'), "${itemEntityName}", attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
+                <cfelseif left(actionItem, 6) eq "create" and len(actionItem) gt 6>
+                    <cfset attributes.text = replace(attributes.hibachiScope.rbKey('admin.define.create_nav'), "${itemEntityName}", attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
+                <cfelseif left(actionItem, 6) eq "detail" and len(actionItem) gt 6>
+                    <cfset attributes.text = replace(attributes.hibachiScope.rbKey('admin.define.detail_nav'), "${itemEntityName}", attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
+                <cfelseif left(actionItem, 6) eq "delete" and len(actionItem) gt 6>
+                    <cfset attributes.text = replace(attributes.hibachiScope.rbKey('admin.define.delete_nav'), "${itemEntityName}", attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
+                </cfif>
+            
+            </cfif>
+            
+            <cfif right(attributes.text, 8) eq "_missing" >
+                <cfset attributes.text = attributes.hibachiScope.rbKey("#Replace(attributes.action, ":", ".", "all")#") />
+            </cfif>*/
+            //}
             var _this = this;
             this.utilityService = utilityService;
             this.$slatwall = $slatwall;
             this.getAction = function () {
-                return _this.action;
+                return _this.action || '';
             };
             this.getActionItem = function () {
-                return _this.utilityService.listLast(_this.action, '.');
+                return _this.utilityService.listLast(_this.getAction(), '.');
             };
             this.getActionItemEntityName = function () {
                 var firstFourLetters = _this.utilityService.left(_this.getActionItem(), 4);
@@ -63,7 +91,7 @@ var slatwalladmin;
             this.getText = function () {
                 //if we don't have text then make it up based on rbkeys
                 if (angular.isUndefined(_this.text) || (angular.isDefined(_this.text) && !_this.text.length)) {
-                    _this.text = _this.$slatwall.getRBKey(_this.utilityService.replaceAll(getAction(), ":", ".") + '_nav');
+                    _this.text = _this.$slatwall.getRBKey(_this.utilityService.replaceAll(_this.getAction(), ":", ".") + '_nav');
                     var minus8letters = _this.utilityService.right(_this.text, 8);
                     //if rbkey is still missing. then can we infer it
                     if (minus8letters === '_missing') {
@@ -95,7 +123,6 @@ var slatwalladmin;
                         else if (firstSixLetters === 'delete' && _this.getActionItem().length > 6) {
                             actionItemEntityName = minus6letters;
                         }
-                        return actionItemEntityName;
                     }
                 }
                 return _this.text;
@@ -142,9 +169,6 @@ var slatwalladmin;
                 }
                 return "";
             };
-            //if text is blank or undefined
-            if (angular.isUndefined(this.text) || (angular.isDefined(this.text) && this.text.length && angular.isUndefined(this.icon))) {
-            }
             /*
             <cfif attributes.modal && not attributes.disabled && not attributes.modalFullWidth >
                 <cfset attributes.class &= " modalload" />
