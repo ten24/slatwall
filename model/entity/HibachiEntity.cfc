@@ -69,6 +69,44 @@ component output="false" accessors="true" persistent="false" extends="Slatwall.o
 		// Return this object
 		return this;
 	}
+	
+	public any function validateAttributes(string context=""){
+		var attributeValues = getAttributeValuesForEntity();
+	    for(var i=1; i < arrayLen(attributeValues); i++) {
+			var attributeValue = attributeValues[i];
+			
+	      // check to make sure it's not a custom property
+	      if( !isNull(attributeValue.getAttribute().getValidationRegEx()) ) {
+	      		
+	             attributeValue.validate(context=arguments.context,passThrough=true);
+	             
+	             if(attributeValue.hasErrors()){
+					for(var errorKey in attributeValue.getErrors()){
+						for(var error in attributeValue.getErrors()[errorKey] ){
+							var message = "";
+							if(findNoCase('regex',error) && !isNull(attributeValue.getAttribute()) && !isNull(attributeValue.getAttribute().getValidationMessage())){
+		             			message = attributeValue.getAttribute().getValidationMessage();
+							}else{
+								message = error;
+							}
+							this.addError(errorKey,htmleditFormat(message));
+						}
+					}
+					
+	             }
+	    	}
+	    }
+		
+	}
+	
+	public any function validate(string context="", passThrough=false){
+		
+		if(!arguments.passThrough){
+			validateAttributes(context=arguments.context);
+		}
+		return super.validate(argumentCollection=arguments);
+		
+	}
 
 	// @hint Returns an array of comments related to this entity
 	public array function getComments( boolean publicFlag ) {

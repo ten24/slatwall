@@ -1,5 +1,5 @@
-<td ng-click="toggleChildContent(contentData)" >
-	<i style="margin-left:{{depth*15||0}}px" class="fa fa-caret-{{childOpen ? 'down' : 'right' }}"></i> <span ng-bind="contentData.titlePath && contentData.titlePath.trim().length ? contentData.titlePath : contentData.title"></span>
+<td>
+	<i ng-click="toggleChildContent(contentData)" style="margin-left:{{depth*15||0}}px" class="fa fa-caret-{{childOpen ? 'down' : 'right' }} s-listing-arrow"></i> <a href="?slatAction=entity.editContent&contentID={{contentData.contentID}}" class="s-contents-page-title"><span ng-bind="contentData.titlePath && contentData.titlePath.trim().length ? contentData.titlePath : contentData.title"></span></a>
 </td>
 <!--<td ng-bind="contentData.contentTemplateFile"></td>-->
 <td ng-bind="contentData.allowPurchaseFlag"></td>

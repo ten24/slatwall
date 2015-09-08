@@ -51,7 +51,7 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 	// Persistent Properties
 	property name="siteID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
 	property name="siteName" ormtype="string";
-	property name="siteCode" ormtype="string" unique="true" index="PI_SITECODE";
+	property name="siteCode" ormtype="string" index="PI_SITECODE";
 	property name="domainNames" ormtype="string";
 	property name="allowAdminAccessFlag" ormtype="boolean";
 	// CMS Properties
@@ -86,6 +86,10 @@ component entityname="SlatwallSite" table="SwSite" persistent="true" accessors="
 			variables.allowAdminAccessFlag = 0;
 		}
 		return variables.allowAdminAccessFlag;
+	}
+	
+	public boolean function isSlatwallCMS(){
+		return !isNull(this.getApp()) && !isNull(this.getApp().getIntegration()) && !isNull(this.getApp().getIntegration().getintegrationPackage()) && this.getapp().getintegration().getintegrationPackage() == 'slatwallcms';
 	}
 	
 	public string function getSitePath(){

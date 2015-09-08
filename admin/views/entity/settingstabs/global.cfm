@@ -69,6 +69,7 @@ Notes:
 		<swa:SlatwallSetting settingName="globalWeightUnitCode" />
 		<swa:SlatwallSetting settingName="globalAdminAutoLogoutMinutes" />
 		<swa:SlatwallSetting settingName="globalPublicAutoLogoutMinutes" />
+        <swa:SlatwallSetting settingName="globalGiftCardMessageLength" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

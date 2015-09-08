@@ -520,7 +520,20 @@ module ngSlatwall {
             if(slatwallAngular.slatwallConfig){
                 angular.extend(this._config, slatwallAngular.slatwallConfig);
             }   
+            
+            this.$get.$inject = [ 
+                '$q',
+                '$http',
+                '$timeout',
+                '$log',
+                '$rootScope',
+                '$location',
+                '$anchorScroll',
+                'utilityService',
+                'formService'
+            ];
         }
+        
         
         public $get(
             $q:ng.IQService,

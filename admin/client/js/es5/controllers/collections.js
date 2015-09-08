@@ -39,20 +39,14 @@ angular.module('slatwalladmin')
         }();
         //get url param to retrieve collection listing
         $scope.collectionID = QueryString.collectionID;
-        $scope.currentPage = paginationService.getCurrentPage();
-        $scope.pageShow = paginationService.getPageShow();
-        $scope.pageStart = paginationService.getPageStart;
-        $scope.pageEnd = paginationService.getPageEnd;
-        $scope.recordsCount = paginationService.getRecordsCount;
-        $scope.autoScrollPage = 1;
-        $scope.autoScrollDisabled = false;
+        $scope.paginator = paginationService.createPagination();
         $scope.appendToCollection = function () {
-            if ($scope.pageShow === 'Auto') {
+            if ($scope.paginator.getPageShow() === 'Auto') {
                 $log.debug('AppendToCollection');
                 if ($scope.autoScrollPage < $scope.collection.totalPages) {
                     $scope.autoScrollDisabled = true;
                     $scope.autoScrollPage++;
-                    var collectionListingPromise = $slatwall.getEntity('collection', { id: $scope.collectionID, currentPage: $scope.autoScrollPage, pageShow: 50 });
+                    var collectionListingPromise = $slatwall.getEntity('collection', { id: $scope.collectionID, currentPage: $scope.paginator.autoScrollPage, pageShow: 50 });
                     collectionListingPromise.then(function (value) {
                         $scope.collection.pageRecords = $scope.collection.pageRecords.concat(value.pageRecords);
                         $scope.autoScrollDisabled = false;
@@ -72,24 +66,27 @@ angular.module('slatwalladmin')
                 $log.debug('search with keywords');
                 $log.debug($scope.keywords);
                 //Set current page here so that the pagination does not break when getting collection
-                paginationService.setCurrentPage(1);
+                $scope.paginator.setCurrentPage(1);
                 $scope.loadingCollection = true;
                 $scope.getCollection();
             }, 500);
         };
         $scope.getCollection = function () {
+            console.log('getCollection');
             var pageShow = 50;
-            if ($scope.pageShow !== 'Auto') {
-                pageShow = $scope.pageShow;
+            if ($scope.paginator.getPageShow() !== 'Auto') {
+                pageShow = $scope.paginator.getPageShow();
             }
-            $scope.currentPage = paginationService.getCurrentPage();
-            var collectionListingPromise = $slatwall.getEntity('collection', { id: $scope.collectionID, currentPage: $scope.currentPage, pageShow: pageShow, keywords: $scope.keywords });
+            //			$scope.currentPage = $scope.pagination.getCurrentPage();
+            var collectionListingPromise = $slatwall.getEntity('collection', { id: $scope.collectionID, currentPage: $scope.paginator.getCurrentPage(), pageShow: pageShow, keywords: $scope.keywords });
             collectionListingPromise.then(function (value) {
                 $scope.collection = value;
+                $scope.paginator.setPageRecordsInfo($scope.collection.recordsCount, $scope.collection.pageRecordsStart, $scope.collection.pageRecordsEnd, $scope.collection.totalPages);
                 $scope.collectionInitial = angular.copy($scope.collection);
                 if (angular.isUndefined($scope.collectionConfig)) {
-                    $scope.collectionConfig = new slatwalladmin.CollectionConfig($slatwall);
-                    $scope.collectionConfig.loadJson($scope.collection.collectionConfig);
+                    var test = new slatwalladmin.CollectionConfig($slatwall);
+                    test.loadJson(value.collectionConfig);
+                    $scope.collectionConfig = test.getCollectionConfig();
                 }
                 //check if we have any filter Groups
                 if (angular.isUndefined($scope.collectionConfig.filterGroups)) {
@@ -105,6 +102,7 @@ angular.module('slatwalladmin')
             });
             return collectionListingPromise;
         };
+        $scope.paginator.getCollection = $scope.getCollection;
         $scope.getCollection();
         var unbindCollectionObserver = $scope.$watch('collection', function (newValue, oldValue) {
             if (newValue !== oldValue) {
@@ -169,7 +167,7 @@ angular.module('slatwalladmin')
                     saveCollectionPromise.then(function (value) {
                         $scope.errorMessage = {};
                         //Set current page here so that the pagination does not break when getting collection
-                        paginationService.setCurrentPage(1);
+                        $scope.paginator.setCurrentPage(1);
                         $scope.getCollection();
                         $scope.collectionDetails.isOpen = false;
                     }, function (reason) {
