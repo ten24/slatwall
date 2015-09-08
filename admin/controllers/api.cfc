@@ -46,7 +46,7 @@
 Notes:
 
 */
-component output="false" accessors="true" extends="HibachiController" {
+component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
 	
 	property name="hibachiService" type="any";
 	
