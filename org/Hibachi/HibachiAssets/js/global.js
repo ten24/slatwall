@@ -42,6 +42,9 @@ jQuery(document).ready(function() {
 });
 
 function initUIElements( scopeSelector ) {
+    
+    jQuery("input[name='redemptionAmount']").hide();
+    jQuery("label[for='redemptionAmount']").hide();
 
 	var convertedDateFormat = convertCFMLDateFormat( hibachiConfig.dateFormat );
 	var convertedTimeFormat = convertCFMLTimeFormat( hibachiConfig.timeFormat );
@@ -408,6 +411,16 @@ function setupEventHandlers() {
 		});
 
 	});
+    
+    jQuery("select[name='redemptionAmountType']").change(function(){
+        if( jQuery("select[name='redemptionAmountType']").val() == "sameAsPrice"){
+            jQuery("input[name='redemptionAmount']").hide();
+            jQuery("label[for='redemptionAmount']").hide();
+        } else { 
+            jQuery("input[name='redemptionAmount']").show();   
+            jQuery("label[for='redemptionAmount']").show();
+        }
+    }); 
 
 	//kill all ckeditor instances on modal window close
 	jQuery('#adminModal ').on('hidden', function(){
@@ -783,11 +796,17 @@ function setupEventHandlers() {
 					    var injector = elem.injector();
 					    var $compile = injector.get('$compile'); 
 					    var $rootScope = injector.get('$rootScope'); 
+					    
 					    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
-						
 						initUIElements('#adminModal');
+						
 						jQuery('#adminModal').css({
 							'width': 'auto'
+						});
+						
+						jQuery('#adminModal input').each(function(index,input){
+							//used to digest previous jquery value into the ng-model
+							jQuery(input).trigger('input');
 						});
 					} else {
 						jQuery.each(r.messages, function(i, v){

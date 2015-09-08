@@ -315,6 +315,12 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 		return getDAO("OrderDAO").getGiftCardOrderPaymentAmount(this.getOrderID());
 	}
 
+                                                     
+    //alias method for validation 
+    public boolean function canCancel(){
+          return !hasGiftCardOrderItems();                                            
+    }
+
 	public boolean function hasGiftCardOrderItems(orderItemID=""){
 
 		var orderItemIDs = getDAO("OrderDAO").getGiftCardOrderItems(this.getOrderID());
@@ -340,17 +346,24 @@ component displayname="Order" entityname="SlatwallOrder" table="SwOrder" persist
 
 		var orderItemIDs = getDAO('OrderDAO').getGiftCardOrderItems(this.getOrderID());
 		var giftCardOrderItems = [];
-
+        
 		for(row in orderItemIDs){
-				arrayAppend(orderItems, getService('HibachiService').get('orderItem', row.orderItemID));
+				arrayAppend(giftCardOrderItems, getService('HibachiService').get('orderItem', row.orderItemID));
 		}
-
+        
 		return giftCardOrderItems;
 	}
 
 	public numeric function getGiftCardPaymentAmount(){
 		return getDAO('OrderDAO').getGiftCardOrderPaymentAmount(this.getOrderID());
 	}
+                                                     
+    public any function getAllOrderItemGiftRecipientsSmartList(){ 
+        var orderItemGiftRecipientSmartList = getService("OrderService").getOrderItemGiftRecipientSmartList(); 
+        orderItemGiftRecipientSmartList.joinRelatedProperty("SlatwallOrderItemGiftRecipient", "orderItem", "left", true);
+        orderItemGiftRecipientSmartList.addWhereCondition("aslatwallorderitem.order.orderID='#this.getOrderID()#'"); 
+        return orderItemGiftRecipientSmartList; 
+    }
 
 	public void function checkNewBillingAccountAddressSave() {
 		// If this isn't a guest, there isn't an accountAddress, save is on - copy over an account address

@@ -3,6 +3,11 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
+    class SWPaginationBarController {
+        constructor() {
+        }
+    }
+    slatwalladmin.SWPaginationBarController = SWPaginationBarController;
     class SWPaginationBar {
         constructor($log, $timeout, partialsPath, paginationService) {
             this.$log = $log;
@@ -10,9 +15,12 @@ var slatwalladmin;
             this.partialsPath = partialsPath;
             this.paginationService = paginationService;
             this.restrict = 'E';
-            this.scope = {
+            this.scope = {};
+            this.bindToController = {
                 paginator: "="
             };
+            this.controller = SWPaginationBarController;
+            this.controllerAs = "swPaginationBar";
             this.link = (scope, element, attrs) => {
             };
             this.templateUrl = partialsPath + 'paginationbar.html';

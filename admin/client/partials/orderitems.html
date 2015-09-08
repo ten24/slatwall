@@ -41,17 +41,18 @@
 					<div class="col-xs-6 s-table-view-options">
 						<ul class="list-inline list-unstyled">
 							<li>
-								<sw-pagination-bar
-									data-paginator="paginator"
-									
-								>
-								</sw-pagination-bar>
+								
 							</li>
 						</ul>
 					</div>
 				</div>
 			</div>
 		</div>
+		<sw-pagination-bar
+									data-paginator="paginator"
+									
+								>
+								</sw-pagination-bar>
 		<div sw-loading="orderItems" >
 			
 			<div class="table-responsive">
@@ -79,22 +80,7 @@
 			</div>
 			
 			
-			<div class="row">
-				<div class="col-md-12" span ng-show="paginator.getPageShow() !== 'Auto'">
-					<div class="dataTables_info" id="example3_info" ng-show="paginator.getRecordsCount()">
-						Showing 
-						<b>
-							<span ng-bind="paginator.getPageStart()">
-								<!--- record start --->
-							</span>
-							to <span ng-bind="paginator.getPageEnd()"><!---records end --->
-							<span>
-						</b>
-						of <span ng-bind="paginator.getRecordsCount()"><!--- records Count ---></span> entries
-					</div>
-					<div ng-hide="paginator.getRecordsCount()" class="alert alert-info" role="alert" sw-rbkey="'admin.define.norecordsfound'"><!-- Message created by rb key --></div>
-				</div>
-			</div>
+			
 		</div>
 	</div>
 		

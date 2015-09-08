@@ -1,19 +1,19 @@
 <div class="row s-table-footer">
-	<div class="col-xs-4" span ng-show="paginator.pageShow !== 'Auto'">
-		<div class="dataTables_info" id="example3_info" ng-show="paginator.recordsCount">
+	<div class="col-xs-4" span ng-show="swPaginationBar.paginator.pageShow !== 'Auto'">
+		<div class="dataTables_info" id="example3_info" ng-show="swPaginationBar.paginator.recordsCount">
 			Showing 
 			<b>
-				<span ng-bind="paginator.pageStart">
+				<span ng-bind="swPaginationBar.paginator.pageStart">
 					<!-- record start -->
 				</span>
-				to <span ng-bind="paginator.pageEnd"><!--records end -->
+				to <span ng-bind="swPaginationBar.paginator.pageEnd"><!--records end -->
 				<span>
 			</b>
-			of <span ng-bind="paginator.recordsCount"><!-- records Count --></span> entries
+			of <span ng-bind="swPaginationBar.paginator.recordsCount"><!-- records Count --></span> entries
 		</div>
-		<div ng-hide="paginator.recordsCount" class="alert alert-info" role="alert" sw-rbkey="'admin.define.norecordsfound'"><!-- Message created by rb key --></div>
+		<div ng-hide="swPaginationBar.paginator.recordsCount" class="alert alert-info" role="alert" sw-rbkey="'admin.define.norecordsfound'"><!-- Message created by rb key --></div>
 	</div>
-	<div class="col-xs-8 s-table-footer-right">
+	<div class="col-xs-8 s-table-footer-right" ng-if="swPaginationBar.paginator.recordsCount">
 		<ul class="list-inline list-unstyled">
 		    <li>
 		        <form class="form-horizontal">
@@ -22,8 +22,8 @@
 		                <label class="control-label col-xs-4">View</label>
 		                <div class="col-xs-8 s-no-padding-right">
 		                    <span class="s-select-wrapper">
-		                        <select size="1" class="form-control input-sm" name="pageShowOptions" aria-controls="" class="form-control" ng-model="paginator.selectedPageShowOption" ng-options="pageShowOption as pageShowOption.display for pageShowOption in paginator.pageShowOptions"
-		                        ng-change="paginator.pageShowOptionChanged(paginator.getSelectedPageShowOption())">
+		                        <select size="1" class="form-control input-sm" name="pageShowOptions" aria-controls="" class="form-control" ng-model="swPaginationBar.paginator.selectedPageShowOption" ng-options="pageShowOption as pageShowOption.display for pageShowOption in swPaginationBar.paginator.pageShowOptions"
+		                        ng-change="swPaginationBar.paginator.pageShowOptionChanged(swPaginationBar.paginator.getSelectedPageShowOption())">
 		                        </select>
 		                    </span>
 		                </div>
@@ -31,28 +31,28 @@
 		        </form>
 		    </li>
 		    <li>
-		        <ul class="pagination pagination-sm" ng-show="paginator.pageShowOptions.selectedPageShowOption.value !== 'Auto'">
-		            <li ng-click="paginator.previousPage()" ng-class="{disabled:paginator.hasPrevious()}">
+		        <ul class="pagination pagination-sm" ng-show="swPaginationBar.paginator.pageShowOptions.selectedPageShowOption.value !== 'Auto'">
+		            <li ng-click="swPaginationBar.paginator.previousPage()" ng-class="{disabled:swPaginationBar.paginator.hasPrevious()}">
 		                <a>&laquo;</a>
 		            </li>
-		            <li ng-show="paginator.showPreviousJump()">
-		                <a ng-click="paginator.setCurrentPage(1)">1</a>
+		            <li ng-show="swPaginationBar.paginator.showPreviousJump()">
+		                <a ng-click="swPaginationBar.paginator.setCurrentPage(1)">1</a>
 		            </li>
-		            <li ng-show="paginator.showPreviousJump()" ng-click="paginator.previousJump()">
+		            <li ng-show="swPaginationBar.paginator.showPreviousJump()" ng-click="swPaginationBar.paginator.previousJump()">
 		                <a>...</a>
 		            </li>
-		            <li ng-repeat="i in paginator.totalPagesArray" ng-class="{active:paginator.getCurrentPage() === i}" ng-click="paginator.setCurrentPage(i)" ng-show="paginator.showPageNumber(i)">
+		            <li ng-repeat="i in swPaginationBar.paginator.totalPagesArray" ng-class="{active:swPaginationBar.paginator.getCurrentPage() === i}" ng-click="swPaginationBar.paginator.setCurrentPage(i)" ng-show="swPaginationBar.paginator.showPageNumber(i)">
 		                <a ng-bind="i"></a>
 		            </li>
-		            <li ng-show="paginator.showNextJump()" ng-click="paginator.nextJump()">
+		            <li ng-show="swPaginationBar.paginator.showNextJump()" ng-click="swPaginationBar.paginator.nextJump()">
 		                <a>...</a>
 		            </li>
-		            <li ng-show="paginator.showNextJump()">
-		                <a ng-click="paginator.setCurrentPage(paginator.getTotalPages())" ng-bind="paginator.getTotalPages()">
+		            <li ng-show="swPaginationBar.paginator.showNextJump()">
+		                <a ng-click="swPaginationBar.paginator.setCurrentPage(swPaginationBar.paginator.getTotalPages())" ng-bind="swPaginationBar.paginator.getTotalPages()">
 		
 		                </a>
 		            </li>
-		            <li ng-class="{disabled:paginator.hasNext()}" ng-click="paginator.nextPage()">
+		            <li ng-class="{disabled:swPaginationBar.paginator.hasNext()}" ng-click="swPaginationBar.paginator.nextPage()">
 		                <a>&raquo;</a>
 		            </li>
 		

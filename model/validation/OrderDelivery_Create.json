@@ -1,7 +1,7 @@
 {
     "conditions":{},
 	"properties":{
-	    "orderDeliveryItems":					[{"method":"hasQuantityOnOneOrderDeliveryItem"}]
+	    "orderDeliveryItems":					[{"method":"hasQuantityOnOneOrderDeliveryItem", "method":"hasRecipientsForAllGiftCardDeliveryItems"}]
 	},
 	"populatedPropertyValidation":{}
 }
