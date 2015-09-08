@@ -9,6 +9,7 @@ module slatwalladmin{
             public isDeletable:boolean,
             public isSearchable:boolean,
             public isExportable:boolean,
+            public persistent?:boolean,
             public ormtype?:string,
             public attributeID?:string,
             public attributeSetObject?:string
@@ -55,8 +56,8 @@ module slatwalladmin{
 
         constructor(
             private $slatwall,
-            public  baseEntityName:string,
-            public baseEntityAlias?:string,
+            public  baseEntityName?:string,
+            public  baseEntityAlias?:string,
             private columns?:Column[],
             private filterGroups:Array=[{filterGroup: []}],
             private joins?:Join[],
@@ -114,7 +115,7 @@ module slatwalladmin{
         };
 
         getOptions= () =>{
-            return {
+            var options= {
                 columnsConfig: angular.toJson(this.columns),
                 filterGroupsConfig: angular.toJson(this.filterGroups),
                 joinsConfig: angular.toJson(this.joins),
@@ -122,7 +123,11 @@ module slatwalladmin{
                 pageShow: this.pageShow,
                 keywords: this.keywords,
                 defaultColumns: this.defaultColumns
+            };
+            if(angular.isDefined(this.id)){
+                options['id'] = this.id;
             }
+            return options;
         };
 
         debug= () =>{
@@ -194,7 +199,9 @@ module slatwalladmin{
                 isDeletable = true,
                 isSearchable = true,
                 isExportable = true,
-                ormtype = 'string';
+                persistent ,
+                ormtype = 'string',
+                lastProperty=column.split('.').pop();
 
             if(angular.isUndefined(this.columns)){
                 this.columns = [];
@@ -216,8 +223,12 @@ module slatwalladmin{
             }
             if(!angular.isUndefined(options['ormtype'])){
                 ormtype = options['ormtype'];
-            }else if(this.collection.metaData[column] && this.collection.metaData[column].ormtype){
-                ormtype = this.collection.metaData[column].ormtype;
+            }else if(this.collection.metaData[lastProperty] && this.collection.metaData[lastProperty].ormtype){
+                ormtype = this.collection.metaData[lastProperty].ormtype;
+            }
+
+            if(angular.isDefined(this.collection.metaData[lastProperty])){
+                persistent = this.collection.metaData[lastProperty].persistent;
             }
 
             this.columns.push(new Column(
@@ -235,27 +246,18 @@ module slatwalladmin{
 
 
         setDisplayProperties= (propertyIdentifier: string, title: string = '', options:Object = {}) =>{
-
             var _DividedColumns = propertyIdentifier.trim().split(',');
             var _DividedTitles = title.trim().split(',');
-            if(_DividedColumns.length > 0) {
-                _DividedColumns.forEach((column:string, index)  => {
-                    column = column.trim();
-                    //this.addJoin(column);
-                    if(_DividedTitles[index] !== undefined && _DividedTitles[index] != '') {
-                        title = _DividedTitles[index].trim();
-                    }else {
-                        title = this.$slatwall.getRBKey("entity."+this.baseEntityName.toLowerCase()+"."+column.toLowerCase());
-                    }
-                    this.addColumn(this.formatCollectionName(column),title, options);
-
-                });
-            }else{
-                //this.addJoin(propertyIdentifier);
-                propertyIdentifier = this.addAlias(propertyIdentifier);
-                if(title == '') title = this.$slatwall.getRBKey("entity."+this.baseEntityName.toLowerCase()+"."+propertyIdentifier.toLowerCase());
-                this.addColumn(this.formatCollectionName(propertyIdentifier),title, options);
-            }
+            _DividedColumns.forEach((column:string, index)  => {
+                column = column.trim();
+                //this.addJoin(column);
+                if(!angular.isUndefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
+                    title = _DividedTitles[index].trim();
+                }else {
+                    title = this.$slatwall.getRBKey("entity."+this.baseEntityName+"."+column);
+                }
+                this.addColumn(this.formatCollectionName(column),title, options);
+            });
         };
 
         addFilter= (propertyIdentifier: string, value:string, comparisonOperator: string = '=', logicalOperator?: string) =>{
@@ -303,6 +305,20 @@ module slatwalladmin{
 
         setKeywords= (keyword) =>{
             this.keywords = keyword;
+        };
+        useDefaultColumns=(flag:boolean=true)=>{
+            this.defaultColumns = flag;
+        };
+
+        setId=(id)=>{
+            this.id = id;
+        };
+
+        getEntity=(id?)=>{
+            if (angular.isDefined(id)){
+                this.setId(id);
+            }
+            return this.$slatwall.getEntity(this.baseEntityName, this.getOptions());
         };
 
     }
