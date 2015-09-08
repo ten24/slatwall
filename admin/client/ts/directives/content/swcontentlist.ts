@@ -82,8 +82,8 @@ angular.module('slatwalladmin')
                     ];
                     
 	        		var options = {
-                        currentPage:scope.currentPage, 
-                        pageShow:paginationService.getPageShow(), 
+                        currentPage:'1', 
+                        pageShow:'1', 
                         keywords:scope.keywords
                     };
                     var column = {};
@@ -184,7 +184,6 @@ angular.module('slatwalladmin')
                         $log.debug(scope.keywords);
                         $('.childNode').remove();
                         //Set current page here so that the pagination does not break when getting collection
-                        paginationService.setCurrentPage(1);
                         scope.loadingCollection = true;
                         scope.getCollection(true);
                     }, 500);

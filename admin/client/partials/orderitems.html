@@ -1,443 +1,86 @@
-<!--/////////////////// START BUNDLE LISTING EXAMPLE///////////////////-->						
-			
-			<content class="s-body-box">
-				<div class="table-responsive">
-					<table class="table table-bordered s-order-item-table">
-						<thead>
-							<tr>
-								<th>Image</th>
-								<th>Title</th>
-								<th>Sku</th>
-								<!--<th>Details</th>
-								<th>Customization</th>-->
-								<th ng-repeat="name in customAttributeNames">{{name}}</th>
-								<th>Price</th>
-								<th>Qty</th>
-								<th>Discount</th>
-								<th>Total</th>
-								<th>Fullfilment</th>
-								<th></th>
-							</tr>
-						</thead>
-						<tbody ng-repeat="orderItem in orderItems">
-							<tr class="s-bundle-product l-1" data-id="B-625TX78">
-								<td rowspan="1000" class="s-image" data-id="j-B-625TX78"><swoiimage data-order-Item="orderItem"></swoiimage></td>
-								<td class="s-title">Charms: Heart Charm <a href="#" class="s-edit-link">edit</a></td>
-								<td class="s-sku">F-JH67GH</td>
-								<td class="s-details">
-									<ul>
-										<li>Color: Red</li>
-									</ul>
-								</td>
-								<td class="s-customization">
-									<ul>
-										<li>Engraving: Reyjay</li>
-									</ul>
-								</td>
-								
-								<td class="s-price">+$10.00</td>
-								<td class="s-qty">2</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">+$50.00</td>
-								<td rowspan="1000" class="s-fullfilment">
-									<ul>
-										<li class="s-header">Ship To: <a href="#" class="s-edit-link">edit</a></li>
-										<li>
-											<swoishippinglabelstamp 
-												ng-if="orderItem.data.orderFulfillment"
-												data-order-fulfillment="orderItem.data.orderFulfillment"
-											></swoishippinglabelstamp>
-										</li>
-									</ul>
-								</td>
-								<td rowspan="1000" class="s-actions">
-									<ul>
-										<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
-										<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
-									</ul>
-								</td>
-							</tr>
-							<tr class="s-product l-2" data-id="B-625TX78">
-								<td class="s-title">Charms: Heart Charm <a href="#" class="s-edit-link">edit</a></td>
-								<td class="s-sku">F-JH67GH</td>
-								<td class="s-details">
-									<ul>
-										<li>Color: Red</li>
-									</ul>
-								</td>
-								<td class="s-customization">
-									<ul>
-										<li>Engraving: Reyjay</li>
-									</ul>
-								</td>
-								
-								<td class="s-price">+$10.00</td>
-								<td class="s-qty">2</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">+$20.00</td>
-							</tr>
-							<tr class="s-product l-3" data-id="B-625TX78">												
-								<td class="s-title">Engraving: Front Engraving <a href="#" class="s-edit-link">edit</a></td>
-								<td class="s-sku">H-JKHG675D</td>
-								<td class="s-details"></td>
-								<td class="s-customization">
-									<ul>
-										<li>Engraving Text: GJM</li>
-										<li>Engraving Font: Arial</li>
-									</ul>
-								</td>
-								<td class="s-price">+$5.00</td>
-								<td class="s-qty">2</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">+$10.00</td>
-							</tr>
-							<tr class="s-product l-3" data-id="B-625TX78">
-								<td class="s-title">Engraving: Back Engraving <a href="#" class="s-edit-link">edit</a></td>
-								<td class="s-sku">T-JKU67GT</td>
-								<td class="s-details"></td>
-								<td class="s-customization">
-									<ul>
-										<li>Engraving Text: Yo</li>
-										<li>Engraving Font: Arial</li>
-									</ul>
-								</td>
-								<td class="s-price">+$5.00</td>
-								<td class="s-qty">2</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">+$10.00</td>
-							</tr>
-							<tr class="s-product l-2" data-id="B-625TX78">
-								<td class="s-title">Chain: Cross-Link Chain <a href="#" class="s-edit-link">edit</a></td>
-								<td class="s-sku">D-67JHGT</td>
-								<td class="s-details"></td>
-								<td class="s-customization"></td>
-								<td class="s-price">+$10.00</td>
-								<td class="s-qty">2</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">+$20.00</td>
-							</tr>
-						</tbody>
-						<!-- <tbody>
-							<tr class="s-product l-1">
-								<td rowspan="1000" class="s-image"><img src="http://placehold.it/90x90"></td>
-								<td class="s-title">Nike - Air Jordans</td>
-								<td class="s-sku">K-5748JH9</td>
-								<td class="s-details">
-									<ul>
-										<li>Size: Mens 12</li>
-										<li>Color: Fire Red</li>
-									</ul>
-								</td>
-								<td class="s-customization">
-									<ul>
-										<li>Embroidery: Big G</li>
-									</ul>
-								</td>
-								<td class="s-price">$89.99</td>
-								<td class="s-qty">1</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">$89.99</td>
-								<td rowspan="1000" class="s-fullfilment">
-									<ul>
-										<li class="s-header">Ship To: <a href="#" class="s-edit-link">edit</a></li>
-										<li>
-											<ul>
-												<li>5748 Pope St.</li>
-												<li>San Diego, CA 83746</li>
-											</ul>
-										</li>
-									</ul>
-								</td>
-								<td rowspan="1000" class="s-actions">
-									<ul>
-										<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
-										<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
-									</ul>
-								</td>
-							</tr>
-						</tbody>
-						<tbody>
-							<tr class="s-product l-1">
-								<td rowspan="1000" class="s-image"><img src="http://placehold.it/90x90"></td>
-								<td class="s-title">Nixon Tide Watch</td>
-								<td class="s-sku">l-3847HJK</td>
-								<td class="s-details">
-									<ul>
-										<li>Color: Green</li>
-									</ul>
-								</td>
-								<td class="s-customization"></td>
-								<td class="s-price">$129.99</td>
-								<td class="s-qty">1</td>
-								<td class="s-discount">-$20.00</td>
-								<td class="s-total">$109.99</td>
-								<td rowspan="1000" class="s-fullfilment">
-									<ul>
-										<li class="s-header">Ship To: <a href="#" class="s-edit-link">edit</a></li>
-										<li>
-											<ul>
-												<li>876 Doomed Folks Dr.</li>
-												<li>Treelock, CA 37647</li>
-											</ul>
-										</li>
-									</ul>
-								</td>
-								<td rowspan="1000" class="s-actions">
-									<ul>
-										<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
-										<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
-									</ul>
-								</td>
-							</tr>
-						</tbody>
-						<tbody>
-							<tr class="s-product l-1">
-								<td rowspan="1000" class="s-image"><img src="http://placehold.it/90x90"></td>
-								<td class="s-title">Michael Jackson & Tupac - Resurection Tour</td>
-								<td class="s-sku">N-389JDG</td>
-								<td class="s-details">
-									<ul>
-										<li>Even Date: 3-12-2014 @ 5pm-9pm</li>
-										<li>Location: Coors Amphitheater</li>
-									</ul>
-								</td>
-								<td class="s-customization"></td>
-								<td class="s-price">$89.99</td>
-								<td class="s-qty">1</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">$89.99</td>
-								<td rowspan="1000" class="s-fullfilment">
-									<ul>
-										<li class="s-header">Ship To: <a href="#" class="s-edit-link">edit</a></li>
-										<li>
-											<ul>
-												<li>666 Dead Rd.</li>
-												<li>Miami, FL 83746</li>
-											</ul>
-										</li>
-									</ul>
-								</td>
-								<td rowspan="1000" class="s-actions">
-									<ul>
-										<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
-										<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
-									</ul>
-								</td>
-							</tr>
-						</tbody>
-						<tbody>
-							<tr class="s-bundle-product l-1" data-id="S-786JRT">
-								<td rowspan="1000" class="s-image"><img src="http://placehold.it/90x90"></td>
-								<td class="s-title">Custom Skateboard Bundle <a href="" class="s-toggle-detail-link">hide detail</a></td>
-								<td class="s-sku">S-786JRT</td>
-								<td class="s-details"></td>
-								<td class="s-customization"></td>
-								<td class="s-price">
-									<ul>
-										<li class="s-price-total">$141.00</li>
-										<li class="s-price-list">
-											<ul>
-												<li>+$100.00 (Base Price)</li>
-												<li>+$41.00 (Extras)</li>
-											</ul>
-										</li>
-									</ul>
-								</td>
-								<td class="s-qty">1</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">
-									<ul>
-										<li class="s-price-total">$159.00</li>
-										<li class="s-price-list">
-											<ul>
-												<li>+$100.00 (Base Price)</li>
-												<li>+$59.00 (Extras)</li>
-											</ul>
-										</li>
-									</ul>
-								</td>
-								<td rowspan="1000" class="s-fullfilment">
-									<ul>
-										<li class="s-header">Ship To: <a href="#" class="s-edit-link">edit</a></li>
-										<li>
-											<ul>
-												<li>123 West Leucadia Blvd</li>
-												<li>Encinitas, CA 92024</li>
-											</ul>
-										</li>
-									</ul>
-								</td>
-								<td rowspan="1000" class="s-actions">
-									<ul>
-										<li class="s-edit-btn"><button><i class="fa fa-eye"></i></button></li>
-										<li class="s-remove-btn"><button><i class="fa fa-trash"></i></button></li>
-									</ul>
-								</td>
-							</tr>
-							<tr class="s-product l-2" data-id="S-786JRT">
-								<td class="s-title">Deck: Tony Hawk <a href="#" class="s-edit-link">edit</a></td>
-								<td class="s-sku">Y-THU7867</td>
-								<td class="s-details">
-									<ul>
-										<li>Size: 8.75</li>
-										<li>Color: Black/Silver</li>
-									</ul>
-								</td>
-								<td class="s-customization">
-									<ul>
-										<li>Signature: Tony Hawk</li>
-									</ul>
-								</td>
-								<td class="s-price">+$20.00</td>
-								<td class="s-qty">1</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">+$20.00</td>
-							</tr>
-							<tr class="s-product l-2" data-id="S-786JRT">
-								<td class="s-title">Trucks: Independent Super Light <a href="#" class="s-edit-link">edit</a></td>
-								<td class="s-sku">N-3647HJ</td>
-								<td class="s-details">
-									<ul>
-										<l1>Color: Black</l1>
-									</ul>
-								</td>
-								<td class="s-customization"></td>
-								<td class="s-price">+$10.00</td>
-								<td class="s-qty">1</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">+$10.00</td>
-							</tr>
-							<tr class="s-product l-2" data-id="S-786JRT">												
-								<td class="s-title">Wheels: Spitfilre <a href="#" class="s-edit-link">edit</a></td>
-								<td class="s-sku">G-HJH678</td>
-								<td class="s-details">
-									<ul>
-										<li>Color: Blue</li>
-									</ul>
-								</td>
-								<td class="s-customization"></td>
-								<td class="s-price">+$5.00</td>
-								<td class="s-qty">4</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">+$20.00</td>
-							</tr>
-							<tr class="s-product l-2" data-id="S-786JRT">
-								<td class="s-title">Add-Ons: Risers <a href="#" class="s-edit-link">edit</a></td>
-								<td class="s-sku">Y-GHGR78</td>
-								<td class="s-details"></td>
-								<td class="s-customization"></td>
-								<td class="s-price">+$1.00</td>
-								<td class="s-qty">4</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">+$4.00</td>
-							</tr>
-							<tr class="s-product l-2" data-id="S-786JRT">
-								<td class="s-title">Add-Ons: Black Magic Griptape <a href="#" class="s-edit-link">edit</a></td>
-								<td class="s-sku">DE-3746YU</td>
-								<td class="s-details"></td>
-								<td class="s-customization"></td>
-								<td class="s-price">+$5.00</td>
-								<td class="s-qty">1</td>
-								<td class="s-discount">-$0.00</td>
-								<td class="s-total">+$5.00</td>
-							</tr></tbody> -->
-					</table>
-				</div>
-				
-				<div class="row s-bundle-group-items">
-					<div class="col-xs-12 s-search-bar">
 
-						<ul class="list-unstyled s-search-bar-box">
-							<li>
-								<div class="dropdown input-group-btn search-panel">
-									<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-										<span id="j-search-concept">Any</span>
-										<span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-										<li><a href="#all">Any</a></li>
-										<li><a href="#less_than">Product</a></li>
-										<li><a href="#all">Skus</a></li>
-									</ul>
-								</div>
-							</li>
-							<li>
-								<input id="j-temp-class-search" type="text" class="form-control s-search-input" name="x" placeholder="Search product or sku">
-								<i class="fa fa-refresh fa-spin"></i>
-							</li>
-							<li>
-								<ul class="list-unstyled">
-									<li>
-										<div class="s-checkbox"><input type="checkbox" id="j-checkbox25" checked="checked"><label for="j-checkbox25"> In stock</label></div>
-									</li>
-									<li>
-										<div class="dropdown input-group-btn search-panel">
-											<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-												<span id="j-search-concept">All Locations</span>
-												<span class="caret"></span>
-											</button>
-											<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-												<li><input type="text" class="form-control" name="x" placeholder="Search"></li>
-												<li><a href="#all">All Locations</a></li>
-												<li><a href="#less_than">San Diego</a></li>
-												<li><a href="#all">New York</a></li>
-												<li><a href="#all">France</a></li>
-											</ul>
+
+	
+	<div class="s-filter-content-table-view">
+		<div class="s-table-header-nav">
+			<div class="s-header-nav">
+				<div class="col-xs-6" style="padding-left:0px;">
+					<!---TODO: implement keyword searching and bulk actions --->
+					<ul class="list-inline list-unstyled">
+						<li>
+							<div class="s-select-list-wrapper">
+								<div class="form-group">
+									<!--<div class="input-group">
+										<div class="s-input-btn">
+											<input  type="text"
+												class="form-control input-sm"
+												placeholder="Search"
+												name="srch-term"
+												ng-model="keywords"
+												ng-change="searchCollection()"
+												/>
+											<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
 										</div>
-									</li>
-								</ul>
+										<div class="input-group-btn">
+											<button   class="btn btn-primary btn-sm"
+												type="button"
+												ng-click="searchCollection()"
+												>
+											<i class="fa fa-search"></i>
+											</button>
+										</div>
+									</div>-->
+								</div>
+							</div>
+							<!--- s-select-list-wrapper --->
+						</li>
+					</ul>
+				</div>
+			
+				<div class="s-header-nav">
+					<div class="col-xs-6 s-table-view-options">
+						<ul class="list-inline list-unstyled">
+							<li>
+								
 							</li>
 						</ul>
-
-					</div>
-
-					<div class="col-xs-12 s-bundle-add-items">
-						<div class="col-xs-12 s-bundle-add-items-inner">
-
-							<ul class="list-unstyled s-order-item-options">
-								<li class="s-bundle-add-obj">
-									<ul class="list-unstyled list-inline s-middle">
-										<li class="j-tool-tip-item s-bundle-details">Subscription</li>
-										<li class="j-tool-tip-item s-bundle-details">Skateboard Magazine 1 Year <span>K-3847UGH</span></li>
-										<li class="j-tool-tip-item s-bundle-details">Qty: <span>1</span></li>
-										<li class="j-tool-tip-item s-bundle-details">Location: <span>San Diego</span></li>
-									</ul>
-									<ul class="s-last">
-										<li class="s-bundle-details-add">
-											<a class="btn btn-default"><i class="fa fa-minus-square-o"></i> <span class="s-action-text">Return Item</span></a>
-										</li>
-										<li class="s-bundle-details-add">
-											<a class="btn btn-primary"><i class="fa fa-plus-square-o"></i> <span class="s-action-text">Add Item</span></a>
-										</li>
-									</ul>
-									<div class="clearfix"></div>
-								</li>
-
-								<li class="s-bundle-add-obj">
-									<ul class="list-unstyled list-inline s-middle">
-										<li class="j-tool-tip-item s-bundle-details">Subscription</li>
-										<li class="j-tool-tip-item s-bundle-details">Skateboard Magazine 1 Year <span>K-3847UGH</span></li>
-										<li class="j-tool-tip-item s-bundle-details">Qty: <span>1</span></li>
-										<li class="j-tool-tip-item s-bundle-details">Location: <span>San Diego</span></li>
-									</ul>
-									<ul class="s-last">
-										<li class="s-bundle-details-add">
-											<a class="btn btn-default"><i class="fa fa-minus-square-o"></i> <span class="s-action-text">Return Item</span></a>
-										</li>
-										<li class="s-bundle-details-add">
-											<a class="btn btn-primary"><i class="fa fa-plus-square-o"></i> <span class="s-action-text">Add Item</span></a>
-										</li>
-									</ul>
-									<div class="clearfix"></div>
-								</li>
-
-							</ul>
-						</div>
 					</div>
 				</div>
-					
-			</content>					
+			</div>
+		</div>
+		<sw-pagination-bar
+									data-paginator="paginator"
+									
+								>
+								</sw-pagination-bar>
+		<div sw-loading="orderItems" >
+			
+			<div class="table-responsive">
+				<table class="table table-bordered s-order-item-table" ng-show="paginator.getRecordsCount()">
+					<thead>
+						<tr>
+							<th sw-rbkey="'define.image'"></th>
+							<th sw-rbkey="'define.title'"></th>
+							<th sw-rbkey="'entity.sku'"></th>
+							<th sw-rbkey="'admin.orderdetail.orderitems.details'"></th>
+							<th ng-show="attributes.length" sw-rbkey="'admin.orderdetail.orderitems.customization'"></th><!-- Only show when we have attributes -->
+							<th sw-rbkey="'define.price'"></th>
+							<th sw-rbkey="'define.qty'"></th>
+							<th sw-rbkey="'define.discount'"></th>
+							<th sw-rbkey="'define.total'"></th>
+							<th sw-rbkey="'define.tax'"></th>
+							<th sw-rbkey="'define.fulfillment'"></th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody ng-repeat="orderItem in orderItems" sw-order-item data-order-item="orderItem" data-attributes="attributes" data-order-id="orderId">
+						<!-- Begin Merchandise Row -->
+					</tbody>
+				</table>
+			</div>
+			
+			
+			
 		</div>
 	</div>
-					
-<!--/////////////////// END BUNDLE LISTING EXAMPLE///////////////////-->
+		

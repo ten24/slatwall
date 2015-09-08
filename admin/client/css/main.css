@@ -3980,6 +3980,7 @@ tabel .s-table-header {
 .s-search-filter .dropdown-menu li {
   border-bottom: 1px solid #eee;
   cursor: pointer;
+  display: block;
 }
 .s-search-filter .dropdown-menu li:last-child {
   border: none;
@@ -4039,12 +4040,15 @@ tabel .s-table-header {
 .s-search-filter .dropdown-menu .s-info .s-name {
   font-weight: 600;
 }
-.s-search-filter .s-add-info-dropdown form {
+.s-search-filter .s-add-info-dropdown form,
+.s-search-filter .s-add-info-dropdown .s-add-info-dropdown-inner {
   background-color: #FFF;
   border: 1px solid #DDD;
   padding: 15px;
   border-top: 0px;
   background-color: #FBFBFB;
+  display: inline-block;
+  width: 100%;
 }
 .s-search-filter .s-add-info-dropdown h5 {
   border-bottom: 1px solid #ddd;
@@ -4065,6 +4069,14 @@ tabel .s-table-header {
   z-index: 3000;
   background-color: #FFF;
   padding: 5px 0px 5px 9px;
+}
+.s-search-filter .s-current-selection-item .s-edit-options {
+  padding: 6px 2px;
+}
+.s-search-filter .s-current-selection-item .s-edit-options.s-remove:hover {
+  color: #DA5757 !important;
+  background: none !important;
+  border: none !important;
 }
 .s-add-content .s-workflow-checkbox {
   display: inline-block;
@@ -4120,7 +4132,7 @@ tabel .s-table-header {
   background: none !important;
 }
 .s-gift-card-table .alert {
-  margin-bottom: 0px;
+  margin-bottom: 10px;
 }
 .s-search-filter.s-gift-card .input-group .s-current-selection-item a {
   margin-left: 8px;

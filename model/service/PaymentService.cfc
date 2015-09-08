@@ -465,8 +465,58 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 						
 					// NO INTEGRATION
 					} else {
-						
-						// TODO [issue #36]: Add Gift Card Logic Here
+                                       
+						//GiftCard                                      
+                        if(arguments.data.transactiontype eq "giftCard"){
+				            
+                            var giftCard = getService("HibachiService").get("giftCard",  getDAO("giftCardDAO").getIDByCode(arguments.paymentTransaction.getOrderPayment().getGiftCardNumberEncrypted()));
+                            
+                            if(arguments.paymentTransaction.getOrderPayment().getAmountUncredited() EQ 0){
+                                var amount = arguments.data.amount; 
+                            } else { 
+                                var amount = precisionEvaluate(arguments.paymentTransaction.getOrderPayment().getAmountUncredited() * -1);          
+                            }
+                                          
+                            if(amount > 0){
+
+                                var giftCardProcessObject = giftCard.getProcessObject("AddDebit");
+
+                                giftCardProcessObject.setOrderPayments(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderPayments());
+                                giftCardProcessObject.setOrderItems(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderItems());
+
+                                if(giftCard.getBalanceAmount() LTE amount){
+                                    amount = giftCard.getBalanceAmount();
+                                }
+
+                                if(amount NEQ 0){
+                                    giftCardProcessObject.setDebitAmount(amount); 
+
+                                    var card = getService("GiftCardService").process(giftCard, giftCardProcessObject, "addDebit");
+
+                                    if(!card.hasErrors()){
+                                        arguments.paymentTransaction.setAmountReceived( amount );  
+                                    } else { 
+                                        arguments.paymentTransaction.addErrors(card.getErrors());
+                                    } 
+                                }
+                            } else { 
+
+                                var giftCardProcessObject = giftCard.getProcessObject("AddCredit");
+
+                                giftCardProcessObject.setOrderPayments(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderPayments());
+                                giftCardProcessObject.setOrderItems(arguments.paymentTransaction.getOrderPayment().getOrder().getOrderItems());
+
+                                giftCardProcessObject.setCreditAmount(precisionEvaluate(amount * -1)); 
+
+                                var card = getService("GiftCardService").process(giftCard, giftCardProcessObject, "addCredit");
+
+                                if(!card.hasErrors()){
+                                    arguments.paymentTransaction.setAmountCredited( precisionEvaluate(amount * -1) );  
+                                } else { 
+                                    arguments.paymentTransaction.addErrors(card.getErrors());
+                                } 
+                            }        
+		              }
 						
 						// Setup amountReceived
 						if( listFindNoCase("receive,receiveOffline", arguments.data.transactionType) ) {

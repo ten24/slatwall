@@ -1,5 +1,5 @@
-<!---
-
+/*
+	
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 	
@@ -26,7 +26,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms 
     of your choice, provided that you follow these specific guidelines: 
-
 	- You also meet the terms and conditions of the license of each 
 	  independent module 
 	- You must not alter the default display of the Slatwall name or logo from  
@@ -34,7 +33,6 @@
 	- Your custom code must not alter or create any files inside Slatwall, 
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets 
 	the above guidelines as a combined work under the terms of GPL for this program, 
 	provided that you include the source code of that other code when and as the 
@@ -42,38 +40,21 @@
     
     If you modify this program, you may extend this exception to your version 
     of the program, but you are not obligated to do so.
-
+	
 Notes:
-
---->
-<cfparam name="this.ormSettings.dialect" />
-<cfparam name="this.datasource.name" />
-<cfparam name="this.datasource.username" default="" />
-<cfparam name="this.datasource.password" default="" />
-
-<cfset local.scriptHasErrors = false />
-<cftry>
-	<cfquery name="hasSiteCode">
-		SELECT TOP 1 * 
-		FROM information_schema.tables
-		WHERE table_name = 'SwSite'
-	</cfquery>
-	<!--- if site table already exists, then we need to update the siteCodes --->
-	<cfloop query="hasSiteCode">
-		<cfquery name="addSiteCode">
-			ALTER TABLE SwSite
-			ADD siteCode varchar(255)
-		</cfquery>
-		
-		<cfquery name="UpdateSiteCode">
-			UPDATE SwSiteCode SET siteCode = siteID
-		</cfquery>
-	</cfloop>
-	<cfcatch>
-		<cflog file="Slatwall" text="ERROR PRE-UPDATE SCRIPT - Update site to set sitecode to siteID">
-		<cfset local.scriptHasErrors = true />
-	</cfcatch>
-</cftry>
-<cfif !local.scriptHasErrors>
-	<cflog file="Slatwall" text="General Log - Preupdate Script v4_1 has run with no errors">
-</cfif>
+	
+*/
+component output="false" accessors="true" extends="HibachiProcess"{
+	
+	// Injected Entity
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one";
+	
+	// Data Properties
+ 	property name="firstName" type="string";
+ 	property name="lastName" type="string"; 
+ 	property name="emailAddress" type="string";
+ 	property name="account";
+ 	property name="quantity" type="numeric"; 
+ 	property name="giftMessage"; 
+ 
+}

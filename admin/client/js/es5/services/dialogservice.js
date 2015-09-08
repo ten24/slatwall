@@ -17,9 +17,10 @@ var slatwalladmin;
             this.get = function () {
                 return _this._pageDialogs || [];
             };
-            this.addPageDialog = function (name) {
+            this.addPageDialog = function (name, params) {
                 var newDialog = {
-                    'path': _this.partialsPath + name + '.html'
+                    'path': _this.partialsPath + name + '.html',
+                    'params': params
                 };
                 _this._pageDialogs.push(newDialog);
             };
@@ -28,6 +29,9 @@ var slatwalladmin;
             };
             this.getPageDialogs = function () {
                 return _this._pageDialogs;
+            };
+            this.getCurrentDialog = function () {
+                return _this._pageDialogs[_this._pageDialogs.length - 1];
             };
             this._pageDialogs = [];
         }

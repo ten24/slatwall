@@ -1,29 +1,40 @@
-'use strict';
-angular.module('slatwalladmin')
-    .factory('workflowConditionService', [
-    '$log',
-    '$slatwall',
-    'alertService',
-    function ($log, $slatwall, alertService) {
-        function _workflowCondition() {
-            this.propertyIdentifier = "";
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    __.prototype = b.prototype;
+    d.prototype = new __();
+};
+var slatwalladmin;
+(function (slatwalladmin) {
+    var workflowCondition = (function () {
+        function workflowCondition() {
+            this.propertyIdentifer = "";
             this.comparisonOperator = "";
             this.value = "";
             this.displayPropertyIdentifier = "";
             this.$$disabled = false;
             this.$$isClosed = true;
             this.$$isNew = true;
-            //$$siblingItems=filterItemGroup,
-            //setItemInUse=setItemInUse	
         }
-        function _workflowConditionGroupItem() {
+        return workflowCondition;
+    })();
+    slatwalladmin.workflowCondition = workflowCondition;
+    var workflowConditionGroupItem = (function () {
+        function workflowConditionGroupItem() {
             this.workflowConditionGroup = [];
         }
-        var workflowConditionService = {
-            newWorkflowCondition: function () {
-                return new _workflowCondition;
-            },
-            addWorkflowCondition: function (groupItem, condition) {
+        return workflowConditionGroupItem;
+    })();
+    slatwalladmin.workflowConditionGroupItem = workflowConditionGroupItem;
+    var WorkflowConditionService = (function (_super) {
+        __extends(WorkflowConditionService, _super);
+        function WorkflowConditionService($log, $slatwall, alertService) {
+            _super.call(this);
+            this.$log = $log;
+            this.newWorkflowCondition = function () {
+                return new workflowCondition;
+            };
+            this.addWorkflowCondition = function (groupItem, condition) {
                 $log.debug('addWorkflowCondition');
                 $log.debug(groupItem);
                 $log.debug(condition);
@@ -31,16 +42,19 @@ angular.module('slatwalladmin')
                     condition.logicalOperator = 'AND';
                 }
                 groupItem.push(condition);
-            },
-            newWorkflowConditionGroupItem: function () {
-                return new _workflowConditionGroupItem;
-            },
-            addWorkflowConditionGroupItem: function (group, groupItem) {
+            };
+            this.newWorkflowConditionGroupItem = function () {
+                return new workflowConditionGroupItem;
+            };
+            this.addWorkflowConditionGroupItem = function (group, groupItem) {
                 group.push(groupItem);
-            }
-        };
-        return workflowConditionService;
-    }
-]);
+            };
+        }
+        WorkflowConditionService.$inject = ["$log", "$slatwall", "alertService"];
+        return WorkflowConditionService;
+    })(slatwalladmin.BaseService);
+    slatwalladmin.WorkflowConditionService = WorkflowConditionService;
+    angular.module('slatwalladmin').service('workflowConditionService', WorkflowConditionService);
+})(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../services/workflowconditionservice.js.map
