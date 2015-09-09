@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,32 +45,33 @@
 
 Notes:
 
-*/
-component accessors="true" output="false" implements="Slatwall.integrationServices.IntegrationInterface" extends="Slatwall.integrationServices.BaseIntegration" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	public any function init() {
-		return this;
-	}
 
-	public string function getIntegrationTypes() {
-		return "payment";
-	}
+<cfparam name="rc.giftCardSmartList" type="any" />
 
-	public string function getDisplayName() {
-		return "Authorize.Net";
-	}
+<cfoutput>
 
-	public struct function getSettings() {
-		var settings = {
-			duplicateWindow = {fieldType="text", defaultValue=600, validate={dataType="numeric", minValue=0, required=true}},
-			loginID = {fieldType="text"},
-			transKey = {fieldType="text"},
-			testModeFlag = {fieldType="yesno", defaultValue="1"},
-			testServerFlag = {fieldType="yesno", defaultValue="0"},
-			gatewayURL = {fieldType="text", defaultValue="https://secure2.authorize.net/gateway/transact.dll"},
-			testGatewayURL = {fieldType="text", defaultValue="https://test2.authorize.net/gateway/transact.dll"}
-		};
+	<hb:HibachiEntityActionBar type="listing" object="#rc.giftCardSmartList#" showCreate="false">
 
-		return settings;
-	}
-}
+		<!--- Create --->
+		<hb:HibachiEntityActionBarButtonGroup>
+			<hb:HibachiActionCaller action="admin:entity.giftcard" entity="giftCard" class="btn btn-primary" icon="plus icon-white" modal="true" />
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+
+	<hb:HibachiListingDisplay smartList="#rc.giftCardSmartList#"
+							  recordDetailAction="admin:entity.detailgiftcard"
+							  recordEditAction="admin:entity.editgiftcard">
+
+
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerFirstName" search="true" />
+        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerLastName" search="true" />
+        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerEmailAddress" search="true" />
+		<hb:HibachiListingColumn propertyIdentifier="balanceAmount" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+	</hb:HibachiListingDisplay>
+
+</cfoutput>

@@ -66,7 +66,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	property name="typeService" type="any";
 
 	this.publicMethods='';
-	this.publicMethods=listAppend(this.publicMethods, 'downloadFile');
 
 	this.anyAdminMethods='';
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'saveSetting');
@@ -76,6 +75,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	this.secureMethods='';
 	this.secureMethods=listAppend(this.secureMethods, 'settings');
+	this.secureMethods=listAppend(this.secureMethods, 'downloadFile');
 
 	// Address Zone Location\
 	public void function createAddressZoneLocation(required struct rc) {

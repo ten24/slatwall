@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,32 +45,10 @@
 
 Notes:
 
-*/
-component accessors="true" output="false" implements="Slatwall.integrationServices.IntegrationInterface" extends="Slatwall.integrationServices.BaseIntegration" {
+--->
+<cfimport prefix="swa" taglib="../../../tags" />
+<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
-	public any function init() {
-		return this;
-	}
 
-	public string function getIntegrationTypes() {
-		return "payment";
-	}
-
-	public string function getDisplayName() {
-		return "Authorize.Net";
-	}
-
-	public struct function getSettings() {
-		var settings = {
-			duplicateWindow = {fieldType="text", defaultValue=600, validate={dataType="numeric", minValue=0, required=true}},
-			loginID = {fieldType="text"},
-			transKey = {fieldType="text"},
-			testModeFlag = {fieldType="yesno", defaultValue="1"},
-			testServerFlag = {fieldType="yesno", defaultValue="0"},
-			gatewayURL = {fieldType="text", defaultValue="https://secure2.authorize.net/gateway/transact.dll"},
-			testGatewayURL = {fieldType="text", defaultValue="https://test2.authorize.net/gateway/transact.dll"}
-		};
-
-		return settings;
-	}
-}
+<cfparam name="rc.giftCard" type="any">
+<cfparam name="rc.edit" type="boolean">
