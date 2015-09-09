@@ -47,7 +47,11 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
+<<<<<<< HEAD
                     auditDateTime: '1441739059887',
+=======
+                    auditDateTime: '1441738514499',
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -98,7 +102,11 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
+<<<<<<< HEAD
                     verificationCode: 'ee0ffe2208cda7f18060125eefa2ab1e',
+=======
+                    verificationCode: 'edbcc0c6dbdc36ec1b0645c187989651',
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -1675,7 +1683,11 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
+<<<<<<< HEAD
                     accountPasswordResetID: "d22e1ed623be036f5834382478d5da60",
+=======
+                    accountPasswordResetID: "4023404fd95f0866ac9328951d973364",
+>>>>>>> branch 'feature' of ssh://git@github.com/ten24/slatwall.git
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''

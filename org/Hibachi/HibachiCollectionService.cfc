@@ -469,6 +469,7 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		var propertyIdentifier = '_' & lcase(arguments.entityName) & '.id';
 		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
+
 		if(!len(arguments.collectionOptions.filterGroupsConfig)){
 			var filterGroupsConfig = [{
 				filterGroup = []
@@ -476,7 +477,6 @@ component output="false" accessors="true" extends="HibachiService" {
 		}else{
 			var filterGroupsConfig = deserializeJson(arguments.collectionOptions.filterGroupsConfig);
 		}
-		
 		
 		arrayAppend(filterGroupsConfig[1].filterGroup,filterStruct);
 
