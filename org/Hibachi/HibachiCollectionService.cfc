@@ -295,12 +295,12 @@ component output="false" accessors="true" extends="HibachiService" {
 		return formattedRecords;
 	}
 	
-	private array function getPropertyIdentifierArray(required string entityName){
+	private array function getPropertyIdentifierArray(required string entityName, boolean showNonPersistent = false){
 		//if we were supplied with a list of property identifiers then we should only return whats on that list
 		/* TODO: validate that the user is allowed to return the column*/
 		
 		//by now we have a baseEntityName and a collectionEntity so now we need to check if we are filtering the collection
-		var defaultEntityProperties = getDefaultPropertiesByEntityName( entityName );
+		var defaultEntityProperties = (showNonPersistent) ? getPropertiesByEntityName(entityName) : getDefaultPropertiesByEntityName(entityName);
 		var propertyIdentifiersList = getPropertyIdentifiersList(defaultEntityProperties);
 		// Turn the property identifiers into an array
 		return listToArray( propertyIdentifiersList );
@@ -467,13 +467,22 @@ component output="false" accessors="true" extends="HibachiService" {
 		}
 		
 		
-		var propertyIdentifier = '_' & lcase(arguments.entityName) & '.#getService("hibachiService").getPrimaryIDPropertyNameByEntityName(arguments.entityName)#';
+		var propertyIdentifier = '_' & lcase(arguments.entityName) & '.id';
 		var filterStruct = createFilterStruct(propertyIdentifier,'=',arguments.entityID);
-		var filterGroupStruct.filterGroup = [];
-		arrayappend(filterGroupStruct.filterGroup,filterStruct);
+
+		if(!len(arguments.collectionOptions.filterGroupsConfig)){
+			var filterGroupsConfig = [{
+				filterGroup = []
+			}];
+		}else{
+			var filterGroupsConfig = deserializeJson(arguments.collectionOptions.filterGroupsConfig);
+		}
 		
-		arrayAppend(collectionConfigStruct.filterGroups,filterGroupStruct);
-		
+		arrayAppend(filterGroupsConfig[1].filterGroup,filterStruct);
+
+
+		arguments.collectionOptions.filterGroupsConfig = serializeJson(filterGroupsConfig);
+
 		var collectionResponse = getAPIResponseForCollection(collectionEntity,arguments.collectionOptions);
 		var response = {};
 		
@@ -504,8 +513,16 @@ component output="false" accessors="true" extends="HibachiService" {
 		
 		if(structKeyExists(arguments.collectionOptions,'columnsConfig') && len(arguments.collectionOptions.columnsConfig)){
 			collectionEntity.getCollectionConfigStruct().columns = deserializeJson(arguments.collectionOptions.columnsConfig);
+			//look for non persistent columns
+			for(column in collectionEntity.getCollectionConfigStruct().columns){
+				if(structKeyExists(column,'persistent') && column.persistent == false){
+					//overide collectionPropertyIdentifiers
+					collectionPropertyIdentifiers = getPropertyIdentifierArray(collectionEntity.getCollectionObject(), true);
+					break;
+				}
+			}
 		}
-		
+
 		if(structKeyExists(arguments.collectionOptions,'joinsConfig') && len(arguments.collectionOptions.joinsConfig)){
 			collectionEntity.getCollectionConfigStruct().joins = deserializeJson(arguments.collectionOptions.joinsConfig);
 		}
@@ -535,6 +552,7 @@ component output="false" accessors="true" extends="HibachiService" {
 				var piAlias = Replace(Replace(column.propertyIdentifier,'.','_','all'),collectionEntity.getCollectionConfigStruct().baseEntityAlias&'_','');
 				if(!ArrayFind(collectionPropertyIdentifiers,piAlias)){
 					ArrayAppend(collectionPropertyIdentifiers,piAlias);
+					arrayDelete(	collectionPropertyIdentifiers, Replace(column.propertyIdentifier,collectionEntity.getCollectionConfigStruct().baseEntityAlias&'.',''));
 				}
 			}
 		}
