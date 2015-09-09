@@ -47,7 +47,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
-                    auditDateTime: '1441738514499',
+                    auditDateTime: '1441821013692',
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -98,7 +98,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
-                    verificationCode: 'edbcc0c6dbdc36ec1b0645c187989651',
+                    verificationCode: 'fec3edb7eb3486ee734278906db40c28',
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -1675,7 +1675,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
-                    accountPasswordResetID: "4023404fd95f0866ac9328951d973364",
+                    accountPasswordResetID: "5b6c3c4bc3ec6a44169a662b1f002571",
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
@@ -3907,6 +3907,14 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                 };
                 return $delegate;
             }]);
+    }]).run(['$rootScope', '$injector', function ($rootScope, $injector) {
+        $injector.get("$http").defaults.transformRequest = function (data, headersGetter) {
+            if ($rootScope.oauth)
+                headersGetter()['Autorization'] = "Bearer " + $rootScope.oauth.access_token;
+            if (data) {
+                return angular.toJson(data);
+            }
+        };
     }]);
 
 //# sourceMappingURL=../modules/ngslatwallmodel.js.map

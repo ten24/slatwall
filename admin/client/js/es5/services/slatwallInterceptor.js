@@ -1,10 +1,14 @@
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
 var slatwalladmin;
 (function (slatwalladmin) {
     var SlatwallInterceptor = (function () {
-        function SlatwallInterceptor($q, $log, alertService) {
+        function SlatwallInterceptor($q, $log, $injector, $rootScope, alertService) {
             var _this = this;
             this.$q = $q;
             this.$log = $log;
+            this.$injector = $injector;
+            this.$rootScope = $rootScope;
             this.alertService = alertService;
             this.request = function (config) {
                 _this.$log.debug('request');
@@ -55,16 +59,46 @@ var slatwalladmin;
                         _this.alertService.addAlert(message);
                     }
                 }
+                else if (angular.isDefined(rejection.status) && rejection.status !== 401) {
+                    var deferred = _this.$q.defer();
+                    // defer until we can re-request a new token 
+                    // Get a new token... (cannot inject $http directly as will cause a circular ref) 
+                    _this.$injector.get("$http").jsonp('/some/endpoint/that/reissues/tokens?cb=JSON_CALLBACK').then(function (loginResponse) {
+                        if (loginResponse.data) {
+                            _this.$rootScope.oauth = loginResponse.data.oauth;
+                            // we have a new oauth token - set at $rootScope 
+                            // now let's retry the original request - transformRequest in .run() below will add the new OAuth token 
+                            _this.$injector.get("$http")(response.config).then(function (response) {
+                                // we have a successful response - resolve it using deferred 
+                                deferred.resolve(response);
+                            }, function (response) {
+                                deferred.reject();
+                                // something went wrong 
+                            });
+                        }
+                        else {
+                            deferred.reject();
+                        }
+                    }, function (response) {
+                        deferred.reject();
+                        // token retry failed, redirect so user can login again 
+                        this.$location.path('/user/sign/in');
+                        return;
+                    });
+                    return deferred.promise;
+                }
                 return _this.$q.reject(rejection);
             };
             this.$q = $q;
             this.$log = $log;
             this.alertService = alertService;
+            this.$injector = $injector;
+            this.$rootScope = $rootScope;
         }
-        SlatwallInterceptor.Factory = function ($q, $log, alertService) {
-            return new SlatwallInterceptor($q, $log, alertService);
+        SlatwallInterceptor.Factory = function ($q, $log, $injector, $rootScope, alertService) {
+            return new SlatwallInterceptor($q, $log, $injector, $rootScope, alertService);
         };
-        SlatwallInterceptor.$inject = ['$q', '$log', 'alertService'];
+        SlatwallInterceptor.$inject = ['$q', '$log', '$injector', '$rootScope', 'alertService'];
         return SlatwallInterceptor;
     })();
     slatwalladmin.SlatwallInterceptor = SlatwallInterceptor;

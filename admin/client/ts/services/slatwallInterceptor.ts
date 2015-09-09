@@ -1,3 +1,5 @@
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
 module slatwalladmin{
 	export interface IInterceptor {
         request: Function;
@@ -7,16 +9,23 @@ module slatwalladmin{
     }
 	
 	export class SlatwallInterceptor implements slatwalladmin.IInterceptor{
-		public static $inject = ['$q','$log','alertService'];
+		public static $inject = ['$q','$log','$injector','$rootScope','alertService'];
 		
-		public static Factory($q:ng.IQService,$log:ng.ILogService,alertService:slatwalladmin.IAlertService) {
-            return new SlatwallInterceptor($q, $log, alertService);
+		public static Factory($q:ng.IQService,$log:ng.ILogService,$injector:ng.auto.IInjectorService,$rootScope:ng.IRootScopeService,alertService:slatwalladmin.IAlertService) {
+            return new SlatwallInterceptor($q, $log, $injector, $rootScope, alertService);
         }
 
-        constructor(public $q:ng.IQService, public $log:ng.ILogService, public alertService:slatwalladmin.IAlertService) {
+        constructor(public $q:ng.IQService, 
+			public $log:ng.ILogService, 
+			public $injector:ng.auto.IInjectorService, 
+			public $rootScope:ng.IRootScopeService,
+			public alertService:slatwalladmin.IAlertService
+		) {
         	this.$q = $q;
 			this.$log = $log;
 			this.alertService = alertService;
+			this.$injector = $injector;
+			this.$rootScope = $rootScope;
         }
 		
 		public request = (config): ng.IPromise<any> => {
@@ -53,7 +62,7 @@ module slatwalladmin{
 			return response;
         }
         public responseError = (rejection): ng.IPromise<any> => {
-           
+			
 			this.$log.debug('responseReject');
 			if(angular.isDefined(rejection.status) && rejection.status !== 404){
 				if(angular.isDefined(rejection.data) && angular.isDefined(rejection.data.messages)){
@@ -67,6 +76,38 @@ module slatwalladmin{
 					};
 					this.alertService.addAlert(message);
 				}
+			}else if(angular.isDefined(rejection.status) && rejection.status !== 401){
+				var deferred = this.$q.defer();
+				// defer until we can re-request a new token 
+				// Get a new token... (cannot inject $http directly as will cause a circular ref) 
+				this.$injector.get("$http").jsonp('/some/endpoint/that/reissues/tokens?cb=JSON_CALLBACK').then(
+					(loginResponse) => { 
+						if (loginResponse.data) { 
+							this.$rootScope.oauth = loginResponse.data.oauth; 
+							// we have a new oauth token - set at $rootScope 
+							// now let's retry the original request - transformRequest in .run() below will add the new OAuth token 
+							this.$injector.get("$http")(response.config).then(
+								(response) =>{ 
+									// we have a successful response - resolve it using deferred 
+									deferred.resolve(response); 
+								},(response) =>{
+									 deferred.reject(); 
+									 // something went wrong 
+								}
+							); 
+						} else { 
+							deferred.reject(); 
+							// login.json didn't give us data 
+						} 
+					}, function(response) { 
+						deferred.reject(); 
+						// token retry failed, redirect so user can login again 
+						this.$location.path('/user/sign/in'); 
+						return; 
+					}
+				); 
+				return deferred.promise; 
+				// return the deferred promise 
 			}
 			
 			return this.$q.reject(rejection);
