@@ -53,13 +53,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 	property name="order";
 
 	// Data Properties
+	property name="accountID" hb_rbKey="entity.account" hb_formFieldType="textautocomplete" cfc="Account";
 	property name="firstName" hb_rbKey="entity.account.firstName";
 	property name="lastName" hb_rbKey="entity.account.lastName";
 	property name="company" hb_rbKey="entity.account.company";
 	property name="phoneNumber";
 	property name="emailAddress";
 	property name="emailAddressConfirm";
-	property name="createAuthenticationFlag" hb_sessionDefault="1";
+	property name="createAuthenticationFlag" hb_sessionDefault="0";
 	property name="newAccountFlag" hb_sessionDefault="1";
 	property name="password";
 	property name="passwordConfirm";

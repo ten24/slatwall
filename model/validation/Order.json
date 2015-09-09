@@ -1,6 +1,5 @@
 {
 	"properties":{
-		"account":							[{"contexts":"addOrderPayment", "required":true}],
 		"orderType":						[{"contexts":"save","required":true}],
 		"orderStatusType":					[{"contexts":"save","required":true}],
 		"statusCode":						[
