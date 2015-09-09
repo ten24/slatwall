@@ -2,14 +2,14 @@
 <cfif swActionCaller.modal && not swActionCaller.disabled> data-toggle="modal" data-target="##adminModal"</cfif>
 -->
 <a  ng-if="swActionCaller.type === 'link'"
-	ng-attr-title="{{swActionCaller.getTitle()}}" 
+	ng-attr-title="{{swActionCaller.title}}" 
 	ng-attr-class="{{swActionCaller.class}}" 
 	target="_self" 
 	
-	data-disabled="{{swActionCaller.getDisabledText()}}"
-	data-confirm="{{swActionCaller.getConfirmText()}}"
+	data-disabled="{{swActionCaller.disabledtext}}"
+	data-confirm="{{swActionCaller.confirmtext}}"
 	>
-	<i ng-show="swActionCaller.icon" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i>{{swActionCaller.getText()}}
+	<i ng-show="swActionCaller.icon" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i>{{swActionCaller.text}}
 </a>
 
 <!--href="#swActionCaller.hibachiScope.buildURL(action=swActionCaller.action,querystring=swActionCaller.querystring)#"
@@ -17,11 +17,11 @@
 		<cfif swActionCaller.disabled> data-disabled="#swActionCaller.disabledtext#"<cfelseif swActionCaller.confirm> data-confirm="#swActionCaller.confirmtext#"</cfif>
 		-->
 <li ng-if="swActionCaller.type === 'list'">
-	<a ng-attr-title="{{swActionCaller.getTitle()}}" 
+	<a ng-attr-title="{{swActionCaller.title}}" 
 		ng-attr-class="{{swActionCaller.class}}" 
 		target="_self" 
 		>
-		<i ng-show="swActionCaller.icon" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i><span ng-bind="swActionCaller.getText()"></span>
+		<i ng-show="swActionCaller.icon" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i><span ng-bind="swActionCaller.text"></span>
 	</a>
 </li>
 
@@ -32,6 +32,6 @@
 	-->
 <button ng-if="swActionCaller.type ==='button'" 
 	ng-attr-class="{{swActionCaller.class}}" 
-	ng-attr-title="{{swActionCaller.getTitle()}}"
-	><i ng-show="swActionCaller.icon" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i><span ng-bind="swActionCaller.getText()"></span>
+	ng-attr-title="{{swActionCaller.title}}"
+	><i ng-show="swActionCaller.icon" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i><span ng-bind="swActionCaller.text"></span>
 </button>

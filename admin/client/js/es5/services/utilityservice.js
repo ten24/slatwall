@@ -13,7 +13,7 @@ var slatwalladmin;
             var _this = this;
             _super.call(this);
             this.listLast = function (list, delimiter) {
-                if (angular.isUndefined(delemiter)) {
+                if (angular.isUndefined(delimiter)) {
                     delimiter = ',';
                 }
                 var listArray = list.split(delimiter);

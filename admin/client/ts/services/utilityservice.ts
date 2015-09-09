@@ -1,16 +1,20 @@
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 module slatwalladmin{
+    
     export class UtilityService extends BaseService{
+        
         constructor(){
             super();
+            
         }
         
         public listLast = (list:string,delimiter:string):string =>{
-            if(angular.isUndefined(delemiter)){
+            if(angular.isUndefined(delimiter)){
                 delimiter = ',';
             }
             
             var listArray = list.split(delimiter);
+           
 			return listArray[listArray.length-1];
         }
         

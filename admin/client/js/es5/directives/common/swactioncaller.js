@@ -4,38 +4,34 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     var SWActionCallerController = (function () {
-        function SWActionCallerController(utilityService, $slatwall) {
-            //if text is blank or undefined
-            //if(angular.isUndefined(this.text) || (angular.isDefined(this.text) && this.text.length && angular.isUndefined(this.icon))){
-            //get rbkey for type
-            /*
-            <cfset attributes.text = attributes.hibachiScope.rbKey("#Replace(attributes.action, ":", ".", "all")#_nav") />
-            
-            <cfif right(attributes.text, 8) eq "_missing" >
-                
-                <cfif left(actionItem, 4) eq "list" and len(actionItem) gt 4>
-                    <cfset attributes.text = replace(attributes.hibachiScope.rbKey('admin.define.list_nav'), "${itemEntityNamePlural}", attributes.hibachiScope.rbKey('entity.#actionItemEntityName#_plural'), "all") />
-                <cfelseif left(actionItem, 4) eq "edit" and len(actionItem) gt 4>
-                    <cfset attributes.text = replace(attributes.hibachiScope.rbKey('admin.define.edit_nav'), "${itemEntityName}", attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
-                <cfelseif left(actionItem, 4) eq "save" and len(actionItem) gt 4>
-                    <cfset attributes.text = replace(attributes.hibachiScope.rbKey('admin.define.save_nav'), "${itemEntityName}", attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
-                <cfelseif left(actionItem, 6) eq "create" and len(actionItem) gt 6>
-                    <cfset attributes.text = replace(attributes.hibachiScope.rbKey('admin.define.create_nav'), "${itemEntityName}", attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
-                <cfelseif left(actionItem, 6) eq "detail" and len(actionItem) gt 6>
-                    <cfset attributes.text = replace(attributes.hibachiScope.rbKey('admin.define.detail_nav'), "${itemEntityName}", attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
-                <cfelseif left(actionItem, 6) eq "delete" and len(actionItem) gt 6>
-                    <cfset attributes.text = replace(attributes.hibachiScope.rbKey('admin.define.delete_nav'), "${itemEntityName}", attributes.hibachiScope.rbKey('entity.#actionItemEntityName#'), "all") />
-                </cfif>
-            
-            </cfif>
-            
-            <cfif right(attributes.text, 8) eq "_missing" >
-                <cfset attributes.text = attributes.hibachiScope.rbKey("#Replace(attributes.action, ":", ".", "all")#") />
-            </cfif>*/
-            //}
+        function SWActionCallerController(partialsPath, utilityService, $slatwall) {
             var _this = this;
+            this.partialsPath = partialsPath;
             this.utilityService = utilityService;
             this.$slatwall = $slatwall;
+            this.init = function () {
+                _this.class = _this.utilityService.replaceAll(_this.utilityService.replaceAll(_this.getAction(), ':', ''), '.', '') + ' ' + _this.class;
+                _this.actionItem = _this.getActionItem();
+                _this.actionItemEntityName = _this.getActionItemEntityName();
+                _this.text = _this.getText();
+                if (_this.getDisabled()) {
+                    _this.getDisabledText();
+                }
+                else if (_this.getConfirm()) {
+                    _this.getConfirmText();
+                }
+                if (_this.modalFullWidth && !_this.getDisabled()) {
+                    _this.class = _this.class + " modalload-fullwidth";
+                }
+                if (_this.modal && !_this.getDisabled() && !_this.modalFullWidth) {
+                    _this.class = _this.class + " modalload";
+                }
+                /*need authentication lookup by api to disable
+                <cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
+                    <cfset attributes.class &= " disabled" />
+                </cfif>
+                */
+            };
             this.getAction = function () {
                 return _this.action || '';
             };
@@ -43,27 +39,27 @@ var slatwalladmin;
                 return _this.utilityService.listLast(_this.getAction(), '.');
             };
             this.getActionItemEntityName = function () {
-                var firstFourLetters = _this.utilityService.left(_this.getActionItem(), 4);
-                var firstSixLetters = _this.utilityService.left(_this.getActionItem(), 6);
-                var minus4letters = _this.utilityService.right(_this.getActionItem(), 4);
-                var minus6letters = _this.utilityService.right(_this.getActionItem(), 6);
+                var firstFourLetters = _this.utilityService.left(_this.actionItem, 4);
+                var firstSixLetters = _this.utilityService.left(_this.actionItem, 6);
+                var minus4letters = _this.utilityService.right(_this.actionItem, 4);
+                var minus6letters = _this.utilityService.right(_this.actionItem, 6);
                 var actionItemEntityName = "";
-                if (firstFourLetters === 'list' && _this.getActionItem().length > 4) {
+                if (firstFourLetters === 'list' && _this.actionItem.length > 4) {
                     actionItemEntityName = minus4letters;
                 }
-                else if (firstFourLetters === 'edit' && _this.getActionItem().length > 4) {
+                else if (firstFourLetters === 'edit' && _this.actionItem.length > 4) {
                     actionItemEntityName = minus4letters;
                 }
-                else if (firstFourLetters === 'save' && _this.getActionItem().length > 4) {
+                else if (firstFourLetters === 'save' && _this.actionItem.length > 4) {
                     actionItemEntityName = minus4letters;
                 }
-                else if (firstSixLetters === 'create' && _this.getActionItem().length > 6) {
+                else if (firstSixLetters === 'create' && _this.actionItem.length > 6) {
                     actionItemEntityName = minus6letters;
                 }
-                else if (firstSixLetters === 'detail' && _this.getActionItem().length > 6) {
+                else if (firstSixLetters === 'detail' && _this.actionItem.length > 6) {
                     actionItemEntityName = minus6letters;
                 }
-                else if (firstSixLetters === 'delete' && _this.getActionItem().length > 6) {
+                else if (firstSixLetters === 'delete' && _this.actionItem.length > 6) {
                     actionItemEntityName = minus6letters;
                 }
                 return actionItemEntityName;
@@ -71,20 +67,22 @@ var slatwalladmin;
             this.getTitle = function () {
                 //if title is undefined then use text
                 if (angular.isUndefined(_this.title) || !_this.title.length) {
-                    _this.title = _this.text;
+                    _this.title = _this.getText();
                 }
                 return _this.title;
             };
             this.getTextByRBKeyByAction = function (actionItemType, plural) {
                 if (plural === void 0) { plural = false; }
                 var navRBKey = _this.$slatwall.getRBKey('admin.define.' + actionItemType + '_nav');
+                var entityRBKey = '';
+                var replaceKey = '';
                 if (plural) {
-                    var entityRbKey = _this.$slatwall('entity.' + _this.getActionItemEntityName() + '_plural');
-                    var replaceKey = '${itemEntityNamePlural}';
+                    entityRBKey = _this.$slatwall.getRBKey('entity.' + _this.actionItemEntityName + '_plural');
+                    replaceKey = '${itemEntityNamePlural}';
                 }
                 else {
-                    var entityRbKey = _this.$slatwall('entity.' + _this.getActionItemEntityName());
-                    var replaceKey = '${itemEntityName}';
+                    entityRBKey = _this.$slatwall.getRBKey('entity.' + _this.actionItemEntityName);
+                    replaceKey = '${itemEntityName}';
                 }
                 return _this.utilityService.replaceAll(navRBKey, replaceKey, entityRBKey);
             };
@@ -95,35 +93,35 @@ var slatwalladmin;
                     var minus8letters = _this.utilityService.right(_this.text, 8);
                     //if rbkey is still missing. then can we infer it
                     if (minus8letters === '_missing') {
-                        var firstFourLetters = _this.utilityService.left(_this.getActionItem(), 4);
-                        var firstSixLetters = _this.utilityService.left(_this.getActionItem(), 6);
-                        var minus4letters = _this.utilityService.right(_this.getActionItem(), 4);
-                        var minus6letters = _this.utilityService.right(_this.getActionItem(), 6);
-                        if (firstFourLetters === 'list' && _this.getActionItem().length > 4) {
+                        var firstFourLetters = _this.utilityService.left(_this.actionItem, 4);
+                        var firstSixLetters = _this.utilityService.left(_this.actionItem, 6);
+                        var minus4letters = _this.utilityService.right(_this.actionItem, 4);
+                        var minus6letters = _this.utilityService.right(_this.actionItem, 6);
+                        if (firstFourLetters === 'list' && _this.actionItem.length > 4) {
                             _this.text = _this.getTextByRBKeyByAction('list', true);
                         }
-                        else if (firstFourLetters === 'edit' && _this.getActionItem().length > 4) {
-                            var navRBKey = _this.$slatwall.getRBKey('admin.define.edit_nav');
-                            var entityRbKey = _this.$slatwall('entity.' + _this.getActionItemEntityName());
-                            _this.text = _this.utilityService.replaceAll(navRBKey, '${itemEntityName}', entityRBKey);
+                        else if (firstFourLetters === 'edit' && _this.actionItem.length > 4) {
+                            _this.text = _this.getTextByRBKeyByAction('edit', false);
                         }
-                        else if (firstFourLetters === 'save' && _this.getActionItem().length > 4) {
-                            var navRBKey = _this.$slatwall.getRBKey('admin.define.save_nav');
-                            var entityRbKey = _this.$slatwall('entity.' + _this.getActionItemEntityName());
-                            _this.text = _this.utilityService.replaceAll(navRBKey, '${itemEntityName}', entityRBKey);
+                        else if (firstFourLetters === 'save' && _this.actionItem.length > 4) {
+                            _this.text = _this.getTextByRBKeyByAction('save', false);
                         }
-                        else if (firstSixLetters === 'create' && _this.getActionItem().length > 6) {
-                            var navRBKey = _this.$slatwall.getRBKey('admin.define.create_nav');
-                            var entityRbKey = _this.$slatwall('entity.' + _this.getActionItemEntityName());
-                            _this.text = _this.utilityService.replaceAll(navRBKey, '${itemEntityName}', entityRBKey);
+                        else if (firstSixLetters === 'create' && _this.actionItem.length > 6) {
+                            _this.text = _this.getTextByRBKeyByAction('create', false);
                         }
-                        else if (firstSixLetters === 'detail' && _this.getActionItem().length > 6) {
-                            actionItemEntityName = minus6letters;
+                        else if (firstSixLetters === 'detail' && _this.actionItem.length > 6) {
+                            _this.text = _this.getTextByRBKeyByAction('detail', false);
                         }
-                        else if (firstSixLetters === 'delete' && _this.getActionItem().length > 6) {
-                            actionItemEntityName = minus6letters;
+                        else if (firstSixLetters === 'delete' && _this.actionItem.length > 6) {
+                            _this.text = _this.getTextByRBKeyByAction('delete', false);
                         }
                     }
+                    if (_this.utilityService.right(_this.text, 8)) {
+                        _this.text = _this.$slatwall.getRBKey(_this.utilityService.replaceAll(_this.getAction(), ":", "."));
+                    }
+                }
+                if (!_this.title || (_this.title && !_this.title.length)) {
+                    _this.title = _this.text;
                 }
                 return _this.text;
             };
@@ -169,28 +167,10 @@ var slatwalladmin;
                 }
                 return "";
             };
-            /*
-            <cfif attributes.modal && not attributes.disabled && not attributes.modalFullWidth >
-                <cfset attributes.class &= " modalload" />
-            </cfif>
-            
-            <cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
-                <cfset attributes.class &= " disabled" />
-            </cfif>
-            */
-            /*
-            <cfif attributes.hibachiScope.authenticateAction(action=attributes.action) || (attributes.type eq "link" && attributes.iconOnly)>
-                <cfif attributes.type eq "link">
-                    <cfoutput><a title="#attributes.title#" class="#attributes.class#" target="_self" href="#attributes.hibachiScope.buildURL(action=attributes.action,querystring=attributes.querystring)#"<cfif attributes.modal && not attributes.disabled> data-toggle="modal" data-target="##adminModal"</cfif><cfif attributes.disabled> data-disabled="#attributes.disabledtext#"<cfelseif attributes.confirm> data-confirm="#attributes.confirmtext#"</cfif><cfif len(attributes.id)>id="#attributes.id#"</cfif>>#attributes.icon##attributes.text#</a></cfoutput>
-                <cfelseif attributes.type eq "list">
-                    <cfoutput><li><a title="#attributes.title#" class="#attributes.class#" target="_self" href="#attributes.hibachiScope.buildURL(action=attributes.action,querystring=attributes.querystring)#"<cfif attributes.modal && not attributes.disabled> data-toggle="modal" data-target="##adminModal"</cfif><cfif attributes.disabled> data-disabled="#attributes.disabledtext#"<cfelseif attributes.confirm> data-confirm="#attributes.confirmtext#"</cfif><cfif len(attributes.id)>id="#attributes.id#"</cfif>>#attributes.icon##attributes.text#</a></li></cfoutput>
-                <cfelseif attributes.type eq "button">
-                    <cfoutput><button class="#attributes.class#" title="#attributes.title#"<cfif len(attributes.name)> name="#attributes.name#" value="#attributes.action#"</cfif><cfif attributes.modal && not attributes.disabled> data-toggle="modal" data-target="##adminModal"</cfif><cfif attributes.disabled> data-disabled="#attributes.disabledtext#"<cfelseif attributes.confirm> data-confirm="#attributes.confirmtext#"</cfif><cfif attributes.submit>type="submit"</cfif><cfif len(attributes.id)>id="#attributes.id#"</cfif>>#attributes.icon##attributes.text#</button></cfoutput>
-                <cfelseif attributes.type eq "submit">
-                    <cfoutput>This action caller type has been discontinued</cfoutput>
-                </cfif>
-            </cfif>
-            */
+            this.$slatwall = $slatwall;
+            this.utilityService = utilityService;
+            //need to perform init after promise completes
+            this.init();
         }
         return SWActionCallerController;
     })();
