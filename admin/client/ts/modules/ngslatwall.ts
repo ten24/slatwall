@@ -123,8 +123,8 @@ module ngSlatwall {
             }
             
             var params = {};
-            if(typeof options === 'String') {
-                var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options.id;
+            if(typeof options === 'string') {
+                var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options;
             } else {
                 params['P:Current'] = options.currentPage || 1;
                 params['P:Show'] = options.pageShow || 10;
