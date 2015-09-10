@@ -258,6 +258,7 @@ gulp.task('compress',function(){
 	  config.compilePath + 'es5/modules/ngslatwallmodel.js',
 	  config.compilePath + 'es5/modules/loggingmodule.js',
       config.compilePath + 'es5/modules/slatwalladmin.js',
+      config.compilePath + 'es5/filters/*.js',
       config.compilePath + 'es5/services/*.js',
       config.compilePath + 'es5/controllers/**/*.js',
       config.compilePath + 'es5/directives/**/*.js'
