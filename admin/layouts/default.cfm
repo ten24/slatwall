@@ -410,6 +410,10 @@ Notes:
 			<cfquery name="model" dbtype="query">
 				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#model%'
 			</cfquery>
+			<!---filters --->
+			<cfquery name="filters" dbtype="query">
+				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#filters%'
+			</cfquery>
 			<!---controllers --->
 			<cfquery name="controllers" dbtype="query">
 				SELECT * FROM es5Javascript Where directory like '#es5scriptPath#controllers%'
@@ -425,30 +429,35 @@ Notes:
 
 			<cfloop query="model">
 				<cfset scriptRelativePath = replace(model.directory,es5scriptPath,'')>
-				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & model.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & model.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" ></script>
+			</cfloop>
+
+			<cfloop query="filters">
+				<cfset scriptRelativePath = replace(model.directory,es5scriptPath,'')>
+			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & filters.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" ></script>
 			</cfloop>
 
 			<cfloop query="modules">
 				<cfset scriptRelativePath = replace(modules.directory,es5scriptPath,'')>
-				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & modules.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & modules.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" ></script>
 			</cfloop>
 
 			<cfloop query="services">
 				<cfset scriptRelativePath = replace(services.directory,es5scriptPath,'')>
-				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & services.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & services.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" ></script>
 			</cfloop>
 
 			<cfloop query="controllers">
 				<cfset scriptRelativePath = replace(controllers.directory,es5scriptPath,'')>
-				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & controllers.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & controllers.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" ></script>
 			</cfloop>
 
 			<cfloop query="directives">
 				<cfset scriptRelativePath = replace(directives.directory,es5scriptPath,'')>
-				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & directives.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & directives.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" ></script>
 			</cfloop>
 		<cfelse>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/es5/all.min.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" /></script>
+			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl()#/admin/client/js/es5/all.min.js?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" ></script>
 		</cfif>
 
 		<script type="text/javascript">
