@@ -6,14 +6,26 @@ module slatwalladmin {
 		public static $inject = ["$slatwall", "$templateCache", "partialsPath"];
 		public restrict:string; 
 		public templateUrl:string;
-		public scope; 	
+		public scope = { 
+			giftCardId:"@",
+			giftCard:"=?"
+		}; 
+		private giftCardPromise; 	
 		
 		constructor(private $slatwall:ngSlatwall.$Slatwall, private $templateCache:ng.ITemplateCache, private partialsPath:slatwalladmin.partialsPath){ 
 			this.templateUrl = partialsPath + "/entity/giftcard/basic.html";
-			this.restrict = "E"; 
-			this.scope = { 
+			this.restrict = "E"; 	
+		}
+		
+		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
 			
-			}; 
+			this.giftCardPromise = $slatwall.getEntity("GiftCard", scope.giftCardId);
+			
+			this.giftCardPromise.then((response:any):void =>{
+            	scope.giftCard = response;
+            });
+			
+			console.log(scope);
 		}
 		
 	}

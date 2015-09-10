@@ -6,14 +6,14 @@ module slatwalladmin {
 		public static $inject = ["$slatwall", "$templateCache", "partialsPath"];
 		public restrict:string; 
 		public templateUrl:string;
-		public scope;
+		public scope = { 
+			giftCard:"=?"
+		}; 
 		public bindToController; 
 			
 		constructor(private $slatwall:ngSlatwall.$Slatwall, private $templateCache:ng.ITemplateCache, private partialsPath:slatwalladmin.partialsPath){ 
 			this.templateUrl = partialsPath + "/entity/giftcard/recipientinfo.html";
-			this.scope = { 
-			
-			}; 	
+			this.restrict = "EA";
 		}
 		
 	}

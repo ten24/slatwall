@@ -53,4 +53,6 @@ Notes:
 <cfparam name="rc.giftCard" type="any">
 <cfparam name="rc.edit" type="boolean">
 
-<sw-gift-card-detail></sw-gift-card-detail>
+<cfoutput>
+<sw-gift-card-detail gift-card-id="#rc.giftCardID#"></sw-gift-card-detail>
+</cfoutput>

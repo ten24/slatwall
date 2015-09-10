@@ -109,8 +109,9 @@ var ngSlatwall;
                 if (angular.isDefined(options.deferKey)) {
                     this.cancelPromise(options.deferKey);
                 }
+                console.log(typeof options === 'string');
                 var params = {};
-                if (typeof options === 'String') {
+                if (typeof options === 'string') {
                     var urlString = this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.get&entityName=' + entityName + '&entityID=' + options.id;
                 }
                 else {
