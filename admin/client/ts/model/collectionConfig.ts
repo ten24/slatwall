@@ -1,7 +1,7 @@
 
 module slatwalladmin{
 
-    class Column{
+    export class Column{
         constructor(
             public propertyIdentifier:string,
             public title:string,
@@ -12,7 +12,46 @@ module slatwalladmin{
             public ormtype?:string,
             public attributeID?:string,
             public attributeSetObject?:string
-        ){}
+        ){
+            return this;
+        }
+        
+        setColumn(propertyIdentifier: string){
+          this.propertyIdentifier = propertyIdentifier;  
+          return this;
+        }; 
+        setTitle(title: string){
+          this.title = title; 
+          return this;
+        }
+        setVisible(isVisible: boolean){
+            this.isVisible = isVisible;
+            return this;
+        }
+        setDeletable(isDeletable: boolean){
+            this.isDeletable = isDeletable;
+            return this;
+        }
+        setSearchable(isSearchable: boolean){
+            this.isSearchable = isSearchable;
+            return this;
+        }
+        setExportable(isExportable: boolean){
+            this.isExportable = isExportable;
+            return this;
+        }
+        setOrmType(ormType: string){
+            this.ormtype = ormType;
+            return this;
+        }
+        setAttributeID(attributeID: string){
+            this.attributeID = attributeID;
+            return this;
+        }
+        setAttributeSetObject(attributeSetObject: string){
+            this.attributeSetObject = attributeSetObject;
+            return this;
+        }
     }
 
     class Filter{
@@ -49,14 +88,23 @@ module slatwalladmin{
             public direction:string
         ){}
     }
-
+    
+    interface IColumnOptions {
+            isVisible?: boolean;
+            isDeletable?: boolean;
+            isSearchable?: boolean;
+            isExportable?: boolean;
+            ormType?: string;
+            attributeID: string;
+            attributeSetObject: string
+    }
     export class CollectionConfig {
         private collection: any;
 
         constructor(
             private $slatwall,
             public  baseEntityName:string,
-            public baseEntityAlias?:string,
+            public  baseEntityAlias?:string,
             private columns?:Column[],
             private filterGroups:Array=[{filterGroup: []}],
             private joins?:Join[],
@@ -68,14 +116,18 @@ module slatwalladmin{
             private defaultColumns:boolean = false
 
         ){
-            if(!angular.isUndefined(this.baseEntityName)){
-                this.collection = this.$slatwall['new' + this.getEntityName()]();
-                if(angular.isUndefined(this.baseEntityAlias)){
+            if(this.baseEntityName){
+                try {
+                    this.collection = this.$slatwall['new' + this.getEntityName()]();
+                }catch(e){
+                    throw "can't instantiate without entity name specified: " + e;
+                }
+                if(!this.baseEntityAlias){
                     this.baseEntityAlias = '_' + this.baseEntityName.toLowerCase();
                 }
             }
+        return this;
         }
-
         loadJson= (jsonCollection) =>{
             //if json then make a javascript object else use the javascript object
             if(angular.isString(jsonCollection)){
@@ -92,7 +144,7 @@ module slatwalladmin{
             this.orderBy = jsonCollection.orderBy;
             this.pageShow = jsonCollection.pageShow;
             this.defaultColumns = jsonCollection.defaultColumns
-
+            return this;
         };
 
         getCollectionConfig= () =>{
@@ -122,7 +174,7 @@ module slatwalladmin{
                 pageShow: this.pageShow,
                 keywords: this.keywords,
                 defaultColumns: this.defaultColumns
-            }
+            };
         };
 
         debug= () =>{
@@ -174,7 +226,7 @@ module slatwalladmin{
                 }
 
             }
-
+            return this;
         };
 
         private addAlias= (propertyIdentifier:string) =>{
@@ -188,49 +240,36 @@ module slatwalladmin{
         private capitalize = (s)  => {
             return s && s[0].toUpperCase() + s.slice(1);
         };
-
-        addColumn= (column: string, title: string = '', options:Object = {}) =>{
-            var isVisible = true,
-                isDeletable = true,
-                isSearchable = true,
-                isExportable = true,
-                ormtype = 'string';
-
-            if(angular.isUndefined(this.columns)){
+        
+        addColumn= (column: any, title: string = '', options: IColumnOptions) =>{
+            if(!this.columns){
                 this.columns = [];
             }
-            if(!angular.isUndefined(options['isVisible'])){
-                isVisible = options['isVisible'];
+            if (!angular.isString(column) && !angular.isUndefined(column)){
+                //using a class column builder.
+                this.columns.push(column);
+                return this;
             }
-            if(!angular.isUndefined(options['isDeletable'])){
-                isDeletable = options['isDeletable'];
+            if(options.isExportable && !options.isVisible){
+                options.isExportable = false;
             }
-            if(!angular.isUndefined(options['isSearchable'])){
-                isSearchable = options['isSearchable'];
-            }
-            if(!angular.isUndefined(options['isExportable'])){
-                isExportable = options['isExportable'];
-            }
-            if(angular.isUndefined(options['isExportable']) && !isVisible){
-                isExportable = false;
-            }
-            if(!angular.isUndefined(options['ormtype'])){
-                ormtype = options['ormtype'];
-            }else if(this.collection.metaData[column] && this.collection.metaData[column].ormtype){
-                ormtype = this.collection.metaData[column].ormtype;
+            
+            if(!options.ormType && this.collection.metaData[column] && this.collection.metaData[column].ormtype){
+                options.ormType = this.collection.metaData[column].ormtype;
             }
 
             this.columns.push(new Column(
                 column,
                 title,
-                isVisible,
-                isDeletable,
-                isSearchable,
-                isExportable,
-                ormtype,
-                options['attributeID'],
-                options['attributeSetObject']
+                options.isVisible,
+                options.isDeletable,
+                options.isSearchable,
+                options.isExportable,
+                options.ormType,
+                options.attributeID,
+                options.attributeSetObject
             ));
+            return this;
         };
 
 
@@ -256,6 +295,7 @@ module slatwalladmin{
                 if(title == '') title = this.$slatwall.getRBKey("entity."+this.baseEntityName.toLowerCase()+"."+propertyIdentifier.toLowerCase());
                 this.addColumn(this.formatCollectionName(propertyIdentifier),title, options);
             }
+            return this;
         };
 
         addFilter= (propertyIdentifier: string, value:string, comparisonOperator: string = '=', logicalOperator?: string) =>{
@@ -265,7 +305,7 @@ module slatwalladmin{
             this.filterGroups[0].filterGroup.push(
                 new Filter(this.formatCollectionName(propertyIdentifier), value, comparisonOperator, logicalOperator)
             );
-
+            return this;
         };
 
         addCollectionFilter= (propertyIdentifier: string, displayPropertyIdentifier:string, displayValue:string,
@@ -282,7 +322,7 @@ module slatwalladmin{
                     readOnly
                 )
             );
-
+            return this;
         };
 
         setOrderBy= (propertyIdentifier:string, direction:string='DESC') =>{
@@ -291,18 +331,22 @@ module slatwalladmin{
             }
             this.addJoin(propertyIdentifier);
             this.orderBy.push(new OrderBy(this.formatCollectionName(propertyIdentifier), direction));
+            return this;
         };
 
         setCurrentPage= (pageNumber) =>{
             this.currentPage = pageNumber;
+            return this;
         };
 
         setPageShow= (NumberOfPages) =>{
             this.pageShow = NumberOfPages;
+            return this;
         };
 
         setKeywords= (keyword) =>{
             this.keywords = keyword;
+            return this;
         };
 
     }
