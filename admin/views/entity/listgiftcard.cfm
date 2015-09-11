@@ -58,7 +58,6 @@ Notes:
 
 		<!--- Create --->
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller action="admin:entity.giftcard" entity="giftCard" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 

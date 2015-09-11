@@ -1,13 +1,14 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     var Column = (function () {
-        function Column(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, ormtype, attributeID, attributeSetObject) {
+        function Column(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, attributeID, attributeSetObject) {
             this.propertyIdentifier = propertyIdentifier;
             this.title = title;
             this.isVisible = isVisible;
             this.isDeletable = isDeletable;
             this.isSearchable = isSearchable;
             this.isExportable = isExportable;
+            this.persistent = persistent;
             this.ormtype = ormtype;
             this.attributeID = attributeID;
             this.attributeSetObject = attributeSetObject;
@@ -51,13 +52,14 @@ var slatwalladmin;
         return OrderBy;
     })();
     var CollectionConfig = (function () {
-        function CollectionConfig($slatwall, baseEntityName, baseEntityAlias, columns, filterGroups, joins, orderBy, id, currentPage, pageShow, keywords, defaultColumns) {
+        function CollectionConfig($slatwall, baseEntityName, baseEntityAlias, columns, filterGroups, joins, orderBy, id, currentPage, pageShow, keywords, defaultColumns, allRecords) {
             var _this = this;
             if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
             if (currentPage === void 0) { currentPage = 1; }
             if (pageShow === void 0) { pageShow = 10; }
             if (keywords === void 0) { keywords = ''; }
             if (defaultColumns === void 0) { defaultColumns = false; }
+            if (allRecords === void 0) { allRecords = false; }
             this.$slatwall = $slatwall;
             this.baseEntityName = baseEntityName;
             this.baseEntityAlias = baseEntityAlias;
@@ -70,6 +72,7 @@ var slatwalladmin;
             this.pageShow = pageShow;
             this.keywords = keywords;
             this.defaultColumns = defaultColumns;
+            this.allRecords = allRecords;
             this.loadJson = function (jsonCollection) {
                 //if json then make a javascript object else use the javascript object
                 if (angular.isString(jsonCollection)) {
@@ -85,6 +88,7 @@ var slatwalladmin;
                 _this.orderBy = jsonCollection.orderBy;
                 _this.pageShow = jsonCollection.pageShow;
                 _this.defaultColumns = jsonCollection.defaultColumns;
+                _this.allRecords = jsonCollection.allRecords;
             };
             this.getCollectionConfig = function () {
                 return {
@@ -96,22 +100,28 @@ var slatwalladmin;
                     currentPage: _this.currentPage,
                     pageShow: _this.pageShow,
                     keywords: _this.keywords,
-                    defaultColumns: _this.defaultColumns
+                    defaultColumns: _this.defaultColumns,
+                    allRecords: _this.allRecords
                 };
             };
             this.getEntityName = function () {
                 return _this.baseEntityName.charAt(0).toUpperCase() + _this.baseEntityName.slice(1);
             };
             this.getOptions = function () {
-                return {
+                var options = {
                     columnsConfig: angular.toJson(_this.columns),
                     filterGroupsConfig: angular.toJson(_this.filterGroups),
                     joinsConfig: angular.toJson(_this.joins),
                     currentPage: _this.currentPage,
                     pageShow: _this.pageShow,
                     keywords: _this.keywords,
-                    defaultColumns: _this.defaultColumns
+                    defaultColumns: _this.defaultColumns,
+                    allRecords: _this.allRecords
                 };
+                if (angular.isDefined(_this.id)) {
+                    options['id'] = _this.id;
+                }
+                return options;
             };
             this.debug = function () {
                 return _this;
@@ -173,7 +183,7 @@ var slatwalladmin;
             this.addColumn = function (column, title, options) {
                 if (title === void 0) { title = ''; }
                 if (options === void 0) { options = {}; }
-                var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, ormtype = 'string';
+                var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
                 if (angular.isUndefined(_this.columns)) {
                     _this.columns = [];
                 }
@@ -195,8 +205,11 @@ var slatwalladmin;
                 if (!angular.isUndefined(options['ormtype'])) {
                     ormtype = options['ormtype'];
                 }
-                else if (_this.collection.metaData[column] && _this.collection.metaData[column].ormtype) {
-                    ormtype = _this.collection.metaData[column].ormtype;
+                else if (_this.collection.metaData[lastProperty] && _this.collection.metaData[lastProperty].ormtype) {
+                    ormtype = _this.collection.metaData[lastProperty].ormtype;
+                }
+                if (angular.isDefined(_this.collection.metaData[lastProperty])) {
+                    persistent = _this.collection.metaData[lastProperty].persistent;
                 }
                 _this.columns.push(new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, ormtype, options['attributeID'], options['attributeSetObject']));
             };
@@ -205,26 +218,17 @@ var slatwalladmin;
                 if (options === void 0) { options = {}; }
                 var _DividedColumns = propertyIdentifier.trim().split(',');
                 var _DividedTitles = title.trim().split(',');
-                if (_DividedColumns.length > 0) {
-                    _DividedColumns.forEach(function (column, index) {
-                        column = column.trim();
-                        //this.addJoin(column);
-                        if (_DividedTitles[index] !== undefined && _DividedTitles[index] != '') {
-                            title = _DividedTitles[index].trim();
-                        }
-                        else {
-                            title = _this.$slatwall.getRBKey("entity." + _this.baseEntityName.toLowerCase() + "." + column.toLowerCase());
-                        }
-                        _this.addColumn(_this.formatCollectionName(column), title, options);
-                    });
-                }
-                else {
-                    //this.addJoin(propertyIdentifier);
-                    propertyIdentifier = _this.addAlias(propertyIdentifier);
-                    if (title == '')
-                        title = _this.$slatwall.getRBKey("entity." + _this.baseEntityName.toLowerCase() + "." + propertyIdentifier.toLowerCase());
-                    _this.addColumn(_this.formatCollectionName(propertyIdentifier), title, options);
-                }
+                _DividedColumns.forEach(function (column, index) {
+                    column = column.trim();
+                    //this.addJoin(column);
+                    if (!angular.isUndefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
+                        title = _DividedTitles[index].trim();
+                    }
+                    else {
+                        title = _this.$slatwall.getRBKey("entity." + _this.baseEntityName + "." + column);
+                    }
+                    _this.addColumn(_this.formatCollectionName(column), title, options);
+                });
             };
             this.addFilter = function (propertyIdentifier, value, comparisonOperator, logicalOperator) {
                 if (comparisonOperator === void 0) { comparisonOperator = '='; }
@@ -246,6 +250,10 @@ var slatwalladmin;
                 _this.addJoin(propertyIdentifier);
                 _this.orderBy.push(new OrderBy(_this.formatCollectionName(propertyIdentifier), direction));
             };
+            this.setAllRecords = function (allFlag) {
+                if (allFlag === void 0) { allFlag = false; }
+                _this.allRecords = allFlag;
+            };
             this.setCurrentPage = function (pageNumber) {
                 _this.currentPage = pageNumber;
             };
@@ -254,6 +262,19 @@ var slatwalladmin;
             };
             this.setKeywords = function (keyword) {
                 _this.keywords = keyword;
+            };
+            this.useDefaultColumns = function (flag) {
+                if (flag === void 0) { flag = true; }
+                _this.defaultColumns = flag;
+            };
+            this.setId = function (id) {
+                _this.id = id;
+            };
+            this.getEntity = function (id) {
+                if (angular.isDefined(id)) {
+                    _this.setId(id);
+                }
+                return _this.$slatwall.getEntity(_this.baseEntityName, _this.getOptions());
             };
             if (!angular.isUndefined(this.baseEntityName)) {
                 this.collection = this.$slatwall['new' + this.getEntityName()]();

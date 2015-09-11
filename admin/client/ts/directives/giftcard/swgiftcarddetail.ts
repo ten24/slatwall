@@ -24,8 +24,6 @@ module slatwalladmin {
 			this.giftCardPromise.then((response:any):void =>{
             	scope.giftCard = response;
             });
-			
-			console.log(scope);
 		}
 		
 	}

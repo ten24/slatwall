@@ -64,9 +64,10 @@ module slatwalladmin{
             private orderBy?:OrderBy[],
             private id?:number,
             private currentPage:number = 1,
-            private pageShow:number = 10,
+            private pageShow:any = 10,
             private keywords:string = '',
-            private defaultColumns:boolean = false
+            private defaultColumns:boolean = false,
+            private allRecords:boolean = false
 
         ){
             if(!angular.isUndefined(this.baseEntityName)){
@@ -92,7 +93,8 @@ module slatwalladmin{
             this.keywords = jsonCollection.keywords;
             this.orderBy = jsonCollection.orderBy;
             this.pageShow = jsonCollection.pageShow;
-            this.defaultColumns = jsonCollection.defaultColumns
+            this.defaultColumns = jsonCollection.defaultColumns;
+            this.allRecords = jsonCollection.allRecords; 
 
         };
 
@@ -106,7 +108,8 @@ module slatwalladmin{
                 currentPage: this.currentPage,
                 pageShow: this.pageShow,
                 keywords: this.keywords,
-                defaultColumns: this.defaultColumns
+                defaultColumns: this.defaultColumns,
+                allRecords: this.allRecords
             };
         };
 
@@ -122,7 +125,8 @@ module slatwalladmin{
                 currentPage: this.currentPage,
                 pageShow: this.pageShow,
                 keywords: this.keywords,
-                defaultColumns: this.defaultColumns
+                defaultColumns: this.defaultColumns,
+                allRecords: this.allRecords
             };
             if(angular.isDefined(this.id)){
                 options['id'] = this.id;
@@ -294,6 +298,10 @@ module slatwalladmin{
             this.addJoin(propertyIdentifier);
             this.orderBy.push(new OrderBy(this.formatCollectionName(propertyIdentifier), direction));
         };
+        
+        setAllRecords= (allFlag:boolean=false) =>{
+            this.allRecords = allFlag; 
+        }; 
 
         setCurrentPage= (pageNumber) =>{
             this.currentPage = pageNumber;
