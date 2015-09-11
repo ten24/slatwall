@@ -24,10 +24,9 @@ module slatwalladmin {
 			giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount, originalOrderItem.order.orderID");
 			giftCardConfig.addFilter('giftCardID', scope.giftCardId);
 			//giftCardConfig.setAllRecords(true);
-			
-			var giftCardPromise = $slatwall.getEntity("GiftCard", giftCardConfig.getOptions());
-			
-			giftCardPromise.then((response:any):void =>{
+
+
+			giftCardConfig.getEntity().then((response:any):void =>{
             	console.log(response);
 				scope.giftCard = response;
             });

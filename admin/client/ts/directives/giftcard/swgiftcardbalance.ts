@@ -26,7 +26,6 @@ module slatwalladmin {
 			var totalDebit:number = 0; 
 			
 			var transactionConfig = new slatwalladmin.CollectionConfig($slatwall, 'GiftCardTransaction');
-			transactionConfig.useDefaultColumns();
 			transactionConfig.addFilter('giftCard.giftCardID', scope.giftCard.giftCardID);
 			transactionConfig.setAllRecords(true);
 			

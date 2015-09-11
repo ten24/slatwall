@@ -22,7 +22,6 @@ module slatwalladmin {
 			console.log(scope.giftCard); 
 			
 			var orderConfig = new slatwalladmin.CollectionConfig($slatwall, 'Order');
-			orderConfig.useDefaultColumns();
 			orderConfig.addFilter('giftCard.giftCardID', scope.giftCard.giftCardID);
 			orderConfig.setAllRecords(true);
 			
