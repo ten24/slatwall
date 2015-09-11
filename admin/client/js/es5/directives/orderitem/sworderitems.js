@@ -234,6 +234,8 @@ angular.module('slatwalladmin').directive('swOrderItems', ['$log', '$timeout', '
             $log.debug(scope.orderItems);
           }
           scope.loadingCollection = false;
+        }, function(value) {
+          scope.orderItems = [];
         });
       };
       var attributesConfig = [{
@@ -286,7 +288,9 @@ angular.module('slatwalladmin').directive('swOrderItems', ['$log', '$timeout', '
             collectionListingPromise.then(function(value) {
               scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
               scope.autoScrollDisabled = false;
-            }, function(reason) {});
+            }, function(reason) {
+              scope.collection.pageRecords = [];
+            });
           }
         }
       };

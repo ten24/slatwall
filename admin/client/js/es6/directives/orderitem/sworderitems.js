@@ -292,6 +292,8 @@ angular.module('slatwalladmin')
                             $log.debug(scope.orderItems);
                         }
                         scope.loadingCollection = false;
+                    }, function (value) {
+                        scope.orderItems = [];
                     });
                 };
                 //get all possible attributes
@@ -359,6 +361,7 @@ angular.module('slatwalladmin')
                                 scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
                                 scope.autoScrollDisabled = false;
                             }, function (reason) {
+                                scope.collection.pageRecords = [];
                             });
                         }
                     }
