@@ -1231,13 +1231,6 @@ Notes:
 				
 				return $delegate;
 			}]);
-		 }]).run(['$rootScope','$injector',function($rootScope,$injector){
-			$injector.get("$http").defaults.transformRequest = function(data, headersGetter){
-				if($rootScope.oauth) headersGetter()['Autorization'] = "Bearer "+$rootScope.oauth.access_token;
-				if(data){
-					return angular.toJson(data);
-				}
-			}
 		 }]);		
 		</cfoutput>
 	</cfsavecontent>

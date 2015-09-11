@@ -25,6 +25,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	this.publicMethods=listAppend(this.publicMethods, 'log');
 	this.publicMethods=listAppend(this.publicMethods, 'getDetailTabs');
 	this.publicMethods=listAppend(this.publicMethods, 'noaccess');
+	this.publicMethods=listAppend(this.publicMethods, 'login');
 	
 	//	this.secureMethods='';
 	//	this.secureMethods=listAppend(this.secureMethods, 'get');
@@ -41,6 +42,11 @@ component output="false" accessors="true" extends="HibachiController" {
 		//could possibly check whether we want a different contentType other than json in the future
 		param name="rc.headers.contentType" default="application/json"; 
 		arguments.rc.headers["Content-Type"] = rc.headers.contentType;
+		
+		if(findnocase(arguments.rc.fw.getItem(),this.publicMethods)){
+			writedump(foundItem);abort;
+		}
+				
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
 		}
@@ -51,6 +57,44 @@ component output="false" accessors="true" extends="HibachiController" {
 		) {
 			StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
 		}
+	}
+	
+	public void function login(required struct rc){
+		//if account doesn't exist than one is created
+		if(!getHibachiScope().getLoggedInFlag()){
+			var account = getService('AccountService').processAccount(rc.$.slatwall.getAccount(), rc, "login");
+			var authorizeProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("login").populate(arguments.rc);
+			arguments.rc.apiResponse.content['messages'] = [];
+			var updateProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("updatePassword");
+			if(account.hasErrors()){
+				for(var processObjectKey in account.getErrors().processObjects){
+					var processObject = account.getProcessObject(processObjectKey);
+					arguments.rc.apiResponse.content['errors'] = processObject.getErrors();
+					for(var errorKey in processObject.getErrors()){
+						var messageStruct = {};
+						messageStruct['message'] = processObject.getErrors()[errorKey];
+						arrayAppend(arguments.rc.apiResponse.content['messages'],messageStruct);
+					}
+				}
+				var pc = getpagecontext().getresponse();
+				pc.getresponse().setstatus(401);	
+				return;
+			}
+		}
+		//create token
+		var key = getService('settingService').getSettingValue('globalClientSecret');
+		var jwt = getService('jwtService').newJwt(key);
+		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
+		var json = '{
+			"iat":"#javaCast( "int", currentTime )#",
+			"exp":"#javaCast( "int", ( currentTime + 60 ))#",
+			"userid":"#getHibachiScope().getAccount().getAccountID()#",
+			"encoding":"iso-8859-1"
+			
+		}';
+		var payload = deserializeJson(json);
+		var token = jwt.encode(payload);
+		arguments.rc.apiResponse.content['token'] = token;
 	}
 	
 	public void function noaccess(required struct rc){

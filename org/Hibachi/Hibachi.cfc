@@ -58,6 +58,8 @@ component extends="FW1.framework" {
 		,{ "$GET/api/scope/:context/$" = "/api:public/get/context/:context"}
 		,{ "$POST/api/scope/:context/$" = "/api:public/post/context/:context"}
 		
+		,{ "$POST/api/auth/login/$" = "/api:main/login"}
+		
 		,{ "$POST/api/log/$" = "/api:main/log"}
 		
 		,{ "$GET/api/$" = "/api:main/get/" }
@@ -591,7 +593,7 @@ component extends="FW1.framework" {
     		
     		var responseString = '';
     		
-    		if(structKeyExists(request.context, "messages")) {
+    		if(structKeyExists(request.context, "messages") && !structKeyExists(request.context.apiResponse.content,'messages')) {
 				request.context.apiResponse.content["messages"] = request.context.messages;	
 			}
     		
