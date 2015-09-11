@@ -1,12 +1,25 @@
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
 var slatwalladmin;
 (function (slatwalladmin) {
     class SlatwallInterceptor {
-        constructor($q, $log, alertService) {
+        constructor($window, $q, $log, alertService) {
+            this.$window = $window;
             this.$q = $q;
             this.$log = $log;
             this.alertService = alertService;
+            this.urlParam = null;
+            this.authHeader = 'Authorization';
+            this.authPrefix = 'Bearer ';
+            this.tokenGetter = () => {
+                return null;
+            };
             this.request = (config) => {
                 this.$log.debug('request');
+                config.headers = config.headers || {};
+                if (this.$window.sessionStorage.token) {
+                    config.headers.Authorization = 'Bearer ' + this.$window.sessionStorage.token;
+                }
                 if (config.method == 'GET' && (config.url.indexOf('.html') == -1) && config.url.indexOf('.json') == -1) {
                     config.method = 'POST';
                     config.data = {};
@@ -33,6 +46,8 @@ var slatwalladmin;
             };
             this.response = (response) => {
                 this.$log.debug('response');
+                if (response.status === 401) {
+                }
                 var messages = response.data.messages;
                 var alerts = this.alertService.formatMessagesToAlerts(messages);
                 this.alertService.addAlerts(alerts);
@@ -54,17 +69,19 @@ var slatwalladmin;
                         this.alertService.addAlert(message);
                     }
                 }
-                return this.$q.reject(rejection);
+                this.$q.reject(rejection);
+                return rejection;
             };
+            this.$window = $window;
             this.$q = $q;
             this.$log = $log;
             this.alertService = alertService;
         }
-        static Factory($q, $log, alertService) {
-            return new SlatwallInterceptor($q, $log, alertService);
+        static Factory($window, $q, $log, alertService) {
+            return new SlatwallInterceptor($window, $q, $log, alertService);
         }
     }
-    SlatwallInterceptor.$inject = ['$q', '$log', 'alertService'];
+    SlatwallInterceptor.$inject = ['$window', '$q', '$log', 'alertService'];
     slatwalladmin.SlatwallInterceptor = SlatwallInterceptor;
     angular.module('slatwalladmin').service('slatwallInterceptor', SlatwallInterceptor);
 })(slatwalladmin || (slatwalladmin = {}));

@@ -111,8 +111,8 @@ var ngSlatwall;
                     _this.cancelPromise(options.deferKey);
                 }
                 var params = {};
-                if (typeof options === 'String') {
-                    var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.get&entityName=' + entityName + '&entityID=' + options.id;
+                if (typeof options === 'string') {
+                    var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.get&entityName=' + entityName + '&entityID=' + options;
                 }
                 else {
                     params['P:Current'] = options.currentPage || 1;

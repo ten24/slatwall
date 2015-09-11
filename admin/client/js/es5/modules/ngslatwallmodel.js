@@ -849,7 +849,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     childOrderItems: [],
                     publicRemoteID: '',
                     attributeValuesByCodeStruct: '',
-                    fulfillmentMethodIDOptions: [{ "fulfillmentMethodType": "shipping", "name": "test shipping method", "value": "4028288d4ae4d10e014aea8bdabc016e" }, { "fulfillmentMethodType": "shipping", "name": "Shipping", "value": "444df2fb93d5fa960ba2966ba2017953" }, { "fulfillmentMethodType": "auto", "name": "Auto", "value": "444df2ffeca081dc22f69c807d2bd8fe" }, { "fulfillmentMethodType": "attend", "name": "Attend Event", "value": "444df300bf377327cd0e44f4b16be38e" }, { "fulfillmentMethodType": "shipping", "name": "TestRunner", "value": "db6b606861a744629ea3a6808a39a161" }],
+                    fulfillmentMethodIDOptions: [{ "fulfillmentMethodType": "email", "name": "Email", "value": "4028288b4f8438a1014f8477188f0095" }, { "fulfillmentMethodType": "shipping", "name": "test shipping method", "value": "4028288d4ae4d10e014aea8bdabc016e" }, { "fulfillmentMethodType": "shipping", "name": "Shipping", "value": "444df2fb93d5fa960ba2966ba2017953" }, { "fulfillmentMethodType": "auto", "name": "Auto", "value": "444df2ffeca081dc22f69c807d2bd8fe" }, { "fulfillmentMethodType": "attend", "name": "Attend Event", "value": "444df300bf377327cd0e44f4b16be38e" }, { "fulfillmentMethodType": "shipping", "name": "TestRunner", "value": "db6b606861a744629ea3a6808a39a161" }],
                     locationIDOptions: [{ "value": "4028288d4b3b616c014b50dff9fa00f6", "name": "testlocation" }, { "value": "402881834b9511fb014bbce4e713066b", "name": "San Diego Retail Store" }, { "value": "88e6d435d3ac2e5947c81ab3da60eba2", "name": "Default" }],
                     orderFulfillmentIDOptions: [{ "value": "new", "name": "New" }],
                     orderReturnIDOptions: [{ "value": "new", "name": "New" }],
@@ -923,7 +923,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     passwordConfirm: '',
                     orderOriginID: '',
                     defaultStockLocationID: '',
-                    fulfillmentMethodIDOptions: [{ "name": "test shipping method", "value": "4028288d4ae4d10e014aea8bdabc016e" }, { "name": "Shipping", "value": "444df2fb93d5fa960ba2966ba2017953" }, { "name": "Auto", "value": "444df2ffeca081dc22f69c807d2bd8fe" }, { "name": "Attend Event", "value": "444df300bf377327cd0e44f4b16be38e" }, { "name": "TestRunner", "value": "db6b606861a744629ea3a6808a39a161" }],
+                    fulfillmentMethodIDOptions: [{ "name": "Email", "value": "4028288b4f8438a1014f8477188f0095" }, { "name": "test shipping method", "value": "4028288d4ae4d10e014aea8bdabc016e" }, { "name": "Shipping", "value": "444df2fb93d5fa960ba2966ba2017953" }, { "name": "Auto", "value": "444df2ffeca081dc22f69c807d2bd8fe" }, { "name": "Attend Event", "value": "444df300bf377327cd0e44f4b16be38e" }, { "name": "TestRunner", "value": "db6b606861a744629ea3a6808a39a161" }],
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
