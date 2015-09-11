@@ -221,8 +221,10 @@ angular.module('slatwalladmin').directive('swOrderItems', ['$log', '$timeout', '
         };
         scope.orderAttributes = [];
         scope.attributeValues = [];
+        console.log('orderitems ss');
         var orderItemsPromise = $slatwall.getEntity('orderItem', options);
         orderItemsPromise.then(function(value) {
+          console.log('orderitems promise');
           scope.collection = value;
           var collectionConfig = {};
           collectionConfig.columns = columnsConfig;
@@ -234,6 +236,9 @@ angular.module('slatwalladmin').directive('swOrderItems', ['$log', '$timeout', '
             $log.debug(scope.orderItems);
           }
           scope.loadingCollection = false;
+        }, function(value) {
+          console.log('failed test');
+          scope.orderItems = [];
         });
       };
       var attributesConfig = [{
@@ -286,7 +291,9 @@ angular.module('slatwalladmin').directive('swOrderItems', ['$log', '$timeout', '
             collectionListingPromise.then(function(value) {
               scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
               scope.autoScrollDisabled = false;
-            }, function(reason) {});
+            }, function(reason) {
+              scope.collection.pageRecords = [];
+            });
           }
         }
       };
