@@ -22,11 +22,14 @@ component output="false" accessors="true" extends="HibachiController" {
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'put');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
 	
+	this.publicMethods=listAppend(this.publicMethods, 'getResizedImageByProfileName');
 	this.publicMethods=listAppend(this.publicMethods, 'log');
+	this.publicMethods=listAppend(this.publicMethods, 'getDetailTabs');
+	this.publicMethods=listAppend(this.publicMethods, 'noaccess');
 	
-	//	this.secureMethods='';
-	//	this.secureMethods=listAppend(this.secureMethods, 'get');
-	//	this.secureMethods=listAppend(this.secureMethods, 'post');
+//	this.secureMethods='';
+//	this.secureMethods=listAppend(this.secureMethods, 'get');
+//	this.secureMethods=listAppend(this.secureMethods, 'post');
 	
 	
 	public void function init( required any fw ) {
@@ -50,6 +53,40 @@ component output="false" accessors="true" extends="HibachiController" {
 			StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
 		}
 	}
+	
+	public void function noaccess(required struct rc){
+		var message = {};
+		message['message'] =arguments.rc.pagetitle;
+		if(structKeyExists(arguments.rc,'entityName')){
+			message['message'] &= ' to #rbKey('entity.'&arguments.rc.entityName&'_plural')#';
+		}
+		message['messageType']="error";
+		arrayAppend(arguments.rc['messages'],message);
+		arguments.rc.apiResponse.content.success = false;
+		var context = getPageContext();
+		context.getOut().clearBuffer();
+		var response = context.getResponse();
+		response.setStatus(403);
+	}
+	
+	public any function getDetailTabs(required struct rc){
+		var detailTabs = [];
+		var tabsDirectory = expandPath( '/' ) & 'admin/client/partials/entity/#lcase(rc.entityName)#/';
+		var tabFilesList = directorylist(tabsDirectory,false,'query','*.html');
+		for(var tabFile in tabFilesList){
+			var tab = {};
+			tab['tabName']='#tabFile.name#';
+			if(tabFile.name == 'basic.html'){
+                tab['openTab'] = true;
+            }else{
+                tab['openTab'] = false;
+            }
+			arrayAppend(detailTabs,tab);
+		}    
+		
+		arguments.rc.apiResponse.content['data'] = detailTabs;
+	}
+	
 	/**
 	 * This will return the path to an image based on the skuIDs (sent as a comma seperated list)
 	 * and a 'profile name' that determines the size of that image.

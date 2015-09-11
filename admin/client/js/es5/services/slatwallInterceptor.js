@@ -37,9 +37,15 @@ angular.module('slatwalladmin').factory('slatwallInterceptor', ['$q', '$log', 'a
       $log.debug('responseReject');
       if (angular.isDefined(rejection.status) && rejection.status !== 404) {
         if (angular.isDefined(rejection.data) && angular.isDefined(rejection.data.messages)) {
-          var messages = rejection.data.messages;
-          var alerts = alertService.formatMessagesToAlerts(messages);
-          alertService.addAlerts(alerts);
+          if (rejection.status === 403) {
+            var messages = rejection.data.messages;
+            var alerts = alertService.formatMessagesToAlerts(messages);
+            alertService.addAlerts(alerts);
+          } else {
+            var messages = rejection.data.messages;
+            var alerts = alertService.formatMessagesToAlerts(messages);
+            alertService.addAlerts(alerts);
+          }
         } else {
           var message = {
             msg: 'there was error retrieving data',
@@ -48,7 +54,8 @@ angular.module('slatwalladmin').factory('slatwallInterceptor', ['$q', '$log', 'a
           alertService.addAlert(message);
         }
       }
-      return $q.reject(rejection);
+      $q.reject(rejection);
+      return rejection;
     }
   };
   return interceptor;
