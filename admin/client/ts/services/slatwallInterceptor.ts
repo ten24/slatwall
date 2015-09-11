@@ -68,8 +68,8 @@ module slatwalladmin{
 					this.alertService.addAlert(message);
 				}
 			}
-			
-			return this.$q.reject(rejection);
+			this.$q.reject(rejection);
+			return rejection;
         }
 		
 	}

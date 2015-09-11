@@ -1,13 +1,14 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     var Column = (function () {
-        function Column(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, ormtype, attributeID, attributeSetObject) {
+        function Column(propertyIdentifier, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, attributeID, attributeSetObject) {
             this.propertyIdentifier = propertyIdentifier;
             this.title = title;
             this.isVisible = isVisible;
             this.isDeletable = isDeletable;
             this.isSearchable = isSearchable;
             this.isExportable = isExportable;
+            this.persistent = persistent;
             this.ormtype = ormtype;
             this.attributeID = attributeID;
             this.attributeSetObject = attributeSetObject;
@@ -103,7 +104,7 @@ var slatwalladmin;
                 return _this.baseEntityName.charAt(0).toUpperCase() + _this.baseEntityName.slice(1);
             };
             this.getOptions = function () {
-                return {
+                var options = {
                     columnsConfig: angular.toJson(_this.columns),
                     filterGroupsConfig: angular.toJson(_this.filterGroups),
                     joinsConfig: angular.toJson(_this.joins),
@@ -112,6 +113,10 @@ var slatwalladmin;
                     keywords: _this.keywords,
                     defaultColumns: _this.defaultColumns
                 };
+                if (angular.isDefined(_this.id)) {
+                    options['id'] = _this.id;
+                }
+                return options;
             };
             this.debug = function () {
                 return _this;
@@ -173,7 +178,7 @@ var slatwalladmin;
             this.addColumn = function (column, title, options) {
                 if (title === void 0) { title = ''; }
                 if (options === void 0) { options = {}; }
-                var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, ormtype = 'string';
+                var isVisible = true, isDeletable = true, isSearchable = true, isExportable = true, persistent, ormtype = 'string', lastProperty = column.split('.').pop();
                 if (angular.isUndefined(_this.columns)) {
                     _this.columns = [];
                 }
@@ -195,8 +200,11 @@ var slatwalladmin;
                 if (!angular.isUndefined(options['ormtype'])) {
                     ormtype = options['ormtype'];
                 }
-                else if (_this.collection.metaData[column] && _this.collection.metaData[column].ormtype) {
-                    ormtype = _this.collection.metaData[column].ormtype;
+                else if (_this.collection.metaData[lastProperty] && _this.collection.metaData[lastProperty].ormtype) {
+                    ormtype = _this.collection.metaData[lastProperty].ormtype;
+                }
+                if (angular.isDefined(_this.collection.metaData[lastProperty])) {
+                    persistent = _this.collection.metaData[lastProperty].persistent;
                 }
                 _this.columns.push(new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, ormtype, options['attributeID'], options['attributeSetObject']));
             };
@@ -205,26 +213,17 @@ var slatwalladmin;
                 if (options === void 0) { options = {}; }
                 var _DividedColumns = propertyIdentifier.trim().split(',');
                 var _DividedTitles = title.trim().split(',');
-                if (_DividedColumns.length > 0) {
-                    _DividedColumns.forEach(function (column, index) {
-                        column = column.trim();
-                        //this.addJoin(column);
-                        if (_DividedTitles[index] !== undefined && _DividedTitles[index] != '') {
-                            title = _DividedTitles[index].trim();
-                        }
-                        else {
-                            title = _this.$slatwall.getRBKey("entity." + _this.baseEntityName.toLowerCase() + "." + column.toLowerCase());
-                        }
-                        _this.addColumn(_this.formatCollectionName(column), title, options);
-                    });
-                }
-                else {
-                    //this.addJoin(propertyIdentifier);
-                    propertyIdentifier = _this.addAlias(propertyIdentifier);
-                    if (title == '')
-                        title = _this.$slatwall.getRBKey("entity." + _this.baseEntityName.toLowerCase() + "." + propertyIdentifier.toLowerCase());
-                    _this.addColumn(_this.formatCollectionName(propertyIdentifier), title, options);
-                }
+                _DividedColumns.forEach(function (column, index) {
+                    column = column.trim();
+                    //this.addJoin(column);
+                    if (!angular.isUndefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
+                        title = _DividedTitles[index].trim();
+                    }
+                    else {
+                        title = _this.$slatwall.getRBKey("entity." + _this.baseEntityName + "." + column);
+                    }
+                    _this.addColumn(_this.formatCollectionName(column), title, options);
+                });
             };
             this.addFilter = function (propertyIdentifier, value, comparisonOperator, logicalOperator) {
                 if (comparisonOperator === void 0) { comparisonOperator = '='; }
@@ -254,6 +253,19 @@ var slatwalladmin;
             };
             this.setKeywords = function (keyword) {
                 _this.keywords = keyword;
+            };
+            this.useDefaultColumns = function (flag) {
+                if (flag === void 0) { flag = true; }
+                _this.defaultColumns = flag;
+            };
+            this.setId = function (id) {
+                _this.id = id;
+            };
+            this.getEntity = function (id) {
+                if (angular.isDefined(id)) {
+                    _this.setId(id);
+                }
+                return _this.$slatwall.getEntity(_this.baseEntityName, _this.getOptions());
             };
             if (!angular.isUndefined(this.baseEntityName)) {
                 this.collection = this.$slatwall['new' + this.getEntityName()]();
