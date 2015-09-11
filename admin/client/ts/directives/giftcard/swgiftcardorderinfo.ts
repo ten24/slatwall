@@ -7,13 +7,34 @@ module slatwalladmin {
 		public restrict:string; 
 		public templateUrl:string;
 		public scope = { 
-			giftCard:"=?"
+			giftCard:"=?", 
+			order:"=?"
 		}; 
 		public bindToController; 
 			
 		constructor(private $slatwall:ngSlatwall.$Slatwall, private $templateCache:ng.ITemplateCache, private partialsPath:slatwalladmin.partialsPath){ 
 			this.templateUrl = partialsPath + "/entity/giftcard/orderinfo.html";
 			this.restrict = "EA";
+		}
+		
+		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+			
+			console.log(scope.giftCard); 
+			
+			var orderConfig = new slatwalladmin.CollectionConfig($slatwall, 'Order');
+			orderConfig.useDefaultColumns();
+			orderConfig.addFilter('giftCard.giftCardID', scope.giftCard.giftCardID);
+			orderConfig.setAllRecords(true);
+			
+			var orderPromise = $slatwall.getEntity("GiftCardTransaction", orderConfig.getOptions());
+			
+			orderPromise.then((response)=>{
+				
+			});
+			
+			
+			
+					
 		}
 		
 	}

@@ -9,8 +9,7 @@ module slatwalladmin {
 		public scope = { 
 			giftCardId:"@",
 			giftCard:"=?"
-		}; 
-		private giftCardPromise; 	
+		}; 	
 		
 		constructor(private $slatwall:ngSlatwall.$Slatwall, private $templateCache:ng.ITemplateCache, private partialsPath:slatwalladmin.partialsPath){ 
 			this.templateUrl = partialsPath + "/entity/giftcard/basic.html";
@@ -19,10 +18,18 @@ module slatwalladmin {
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
 			
-			this.giftCardPromise = $slatwall.getEntity("GiftCard", scope.giftCardId);
+			//this.giftCardPromise = $slatwall.getEntity("GiftCard", scope.giftCardId);
 			
-			this.giftCardPromise.then((response:any):void =>{
-            	scope.giftCard = response;
+			var giftCardConfig = new slatwalladmin.CollectionConfig($slatwall, 'GiftCard');
+			giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount, originalOrderItem.order.orderID");
+			giftCardConfig.addFilter('giftCardID', scope.giftCardId);
+			//giftCardConfig.setAllRecords(true);
+			
+			var giftCardPromise = $slatwall.getEntity("GiftCard", giftCardConfig.getOptions());
+			
+			giftCardPromise.then((response:any):void =>{
+            	console.log(response);
+				scope.giftCard = response;
             });
 		}
 		

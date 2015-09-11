@@ -46,11 +46,7 @@ module slatwalladmin {
 				
 				scope.balancePercentage = ((initialBalance /  currentBalance)*100);					
 				console.log(scope.balancePercentage);
-			});
-			
-			
-			
-					
+			});		
 		}
 		
 	}
