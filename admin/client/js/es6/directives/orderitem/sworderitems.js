@@ -279,10 +279,8 @@ angular.module('slatwalladmin')
                     //scope.orderItems = [];
                     scope.orderAttributes = [];
                     scope.attributeValues = [];
-                    console.log('orderitems ss');
                     var orderItemsPromise = $slatwall.getEntity('orderItem', options);
                     orderItemsPromise.then(function (value) {
-                        console.log('orderitems promise');
                         scope.collection = value;
                         var collectionConfig = {};
                         collectionConfig.columns = columnsConfig;
@@ -295,7 +293,6 @@ angular.module('slatwalladmin')
                         }
                         scope.loadingCollection = false;
                     }, function (value) {
-                        console.log('failed test');
                         scope.orderItems = [];
                     });
                 };
