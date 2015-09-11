@@ -54,16 +54,8 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 <cfparam name="rc.processObject" type="any" default="#rc.order.getProcessObject('addAccount')#" />
 
-<cfif isNull(rc.order.getAccount())>
-	<cfset rc.processContext = "addAccount" />
-<cfelse>
-	<cfset rc.processContext = "placeOrder" />
-</cfif>
-
-<cfset rc.placeOrderNeedsFulifllmentCharge = false />
-
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" processContext="#rc.processContext#" forceSSLFlag="#$.slatwall.setting('globalForceCreditCardOverSSL')#">
+	<hb:HibachiEntityProcessForm entity="#rc.order#" edit="#rc.edit#" processContext="addAccount">
 
 
 		<hb:HibachiEntityActionBar type="preprocess" object="#rc.order#">
@@ -74,7 +66,6 @@ Notes:
 
 				<h3>Required Details</h3>
 				<hr />
-				<cfif isNull(rc.order.getAccount())>
 					<hb:HibachiPropertyDisplay object="#rc.processObject#" property="newAccountFlag" edit="#rc.edit#" fieldType="yesno">
 					<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']"  loadVisable="#rc.processObject.getNewAccountFlag()#">
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="firstName" edit="#rc.edit#">
@@ -92,70 +83,6 @@ Notes:
 					<hb:HibachiDisplayToggle selector="input[name='newAccountFlag']" showValues="0" loadVisable="#!rc.processObject.getNewAccountFlag()#">
 						<hb:HibachiPropertyDisplay object="#rc.processObject#" property="accountID" autocompletePropertyIdentifiers="adminIcon,fullName,company,emailAddress,phoneNumber,primaryAddress.simpleRepresentation" edit="true">
 					</hb:HibachiDisplayToggle>
-				<cfelse>
-					<!--- Update Order Fulfillment Details --->
-					<cfif listFindNoCase(rc.order.getOrderRequirementsList(), 'fulfillment')>
-						<cfset ofIndex=0 />
-
-						<cfloop array="#rc.order.getOrderFulfillments()#" index="orderFulfillment">
-							<cfset thisErrorBean = $.slatwall.getService("HibachiValidationService").validate(object=orderFulfillment, context='placeOrder', setErrors=false) />
-							<cfif thisErrorBean.hasErrors()>
-
-								<cfset ofIndex++ />
-
-								<h5>#orderFulfillment.getSimpleRepresentation()#</h5>
-								<input type="hidden" name="orderFulfillments[#ofIndex#].orderFulfillmentID" value="#orderFulfillment.getOrderFulfillmentID()#" />
-
-								<!--- Email --->
-								<cfif orderFulfillment.getFulfillmentMethodType() eq "email">
-									<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="emailAddress" fieldName="orderFulfillments[#ofIndex#].emailAddress" fieldClass="required" edit="#rc.edit#" />
-
-								<!--- Pickup --->
-								<cfelseif orderFulfillment.getFulfillmentMethodType() eq "pickup">
-									<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="pickupLocation" fieldName="orderFulfillments[#ofIndex#].pickupLocation.locationID" fieldClass="required" edit="#rc.edit#" />
-
-								<!--- Shippint --->
-								<cfelseif orderFulfillment.getFulfillmentMethodType() eq "shipping">
-									<cfif structKeyExists(thisErrorBean.getErrors(), "shippingMethod")>
-										<cfset rc.placeOrderNeedsFulifllmentCharge = true />
-										<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="shippingMethod" fieldName="orderFulfillments[#ofIndex#].shippingMethod.shippingMethodID" fieldClass="required" edit="#rc.edit#" />
-									</cfif>
-									<cfif structKeyExists(thisErrorBean.getErrors(), "shippingAddress")>
-										<swa:SlatwallAdminAddressDisplay address="#orderFulfillment.getAddress()#" fieldNamePrefix="orderFulfillments[#ofIndex#].shippingAddress" edit="#rc.edit#" />
-									</cfif>
-								</cfif>
-								<hr />
-							</cfif>
-						</cfloop>
-					</cfif>
-
-					<!--- Update Order Payments --->
-					<cfif listFindNoCase(rc.order.getOrderRequirementsList(), 'payment')>
-
-						<cfset rc.addOrderPaymentProcessObject = rc.order.getProcessObject("addOrderPayment") />
-
-						<!--- Add an order payment for the remaining amount if needed --->
-						<cfif rc.order.getPaymentAmountTotal() neq rc.order.getTotal()>
-							<h5>Add Order Payment</h5>
-
-							<!--- Add a hidden field for the orderID --->
-							<input type="hidden" name="newOrderPayment.order.orderID" value="#rc.order.getOrderID()#" />
-
-							<!--- Display the amount that is going to be used --->
-							<cfset amountToChargeDisplay = $.slatwall.formatValue(rc.order.getAddPaymentRequirementDetails().amount, 'currency', {currencyCode=rc.order.getCurrencyCode()}) />
-							<cfif rc.placeOrderNeedsFulifllmentCharge>
-								<cfset amountToChargeDisplay &= " + #$.slatwall.rbKey('entity.orderFulfillment.fulfillmentCharge')#" />
-							</cfif>
-							<hb:HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="amount" value="#amountToChargeDisplay#" edit="false">
-
-							<!--- Add hidden value for payment type, and display what it is going to be --->
-							<input type="hidden" name="newOrderPayment.orderPaymentType.typeID" value="#rc.order.getAddPaymentRequirementDetails().orderPaymentType.getTypeID()#" />
-							<hb:HibachiPropertyDisplay object="#rc.addOrderPaymentProcessObject.getNewOrderPayment()#" property="orderPaymentType" value="#rc.order.getAddPaymentRequirementDetails().orderPaymentType.getType()#" edit="false">
-
-							<cfinclude template="preprocessorder_include/addorderpayment.cfm" />
-						</cfif>
-					</cfif>
-				</cfif>
 			</hb:HibachiPropertyList>
 		</hb:HibachiPropertyRow>
 
