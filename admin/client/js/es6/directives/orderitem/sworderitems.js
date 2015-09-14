@@ -286,6 +286,8 @@ angular.module('slatwalladmin')
                         }
                         scope.paginator.setPageRecordsInfo(scope.collection.recordsCount, scope.collection.pageRecordsStart, scope.collection.pageRecordsEnd, scope.collection.totalPages);
                         scope.loadingCollection = false;
+                    }, function (value) {
+                        scope.orderItems = [];
                     });
                 };
                 //get all possible attributes
@@ -353,6 +355,7 @@ angular.module('slatwalladmin')
                                 scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
                                 scope.autoScrollDisabled = false;
                             }, function (reason) {
+                                scope.collection.pageRecords = [];
                             });
                         }
                     }

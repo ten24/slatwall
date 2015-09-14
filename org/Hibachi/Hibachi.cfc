@@ -302,7 +302,7 @@ component extends="FW1.framework" {
 			
 			//Route the user to the noaccess page if they are already logged in
 			if( getHibachiScope().getLoggedInFlag() ) {
-				redirect(action="#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.noaccessDefaultSection#.#hibachiConfig.noaccessDefaultItem#", preserve="swprid,sRedirectURL");
+				redirect(action="#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.noaccessDefaultSection#.#hibachiConfig.noaccessDefaultItem#", preserve="swprid,sRedirectURL,entityName");
 			} else {
 					// If the current subsystem is a 'login' subsystem, then we can use the current subsystem
 				if(find("ajaxsubmit=1", request.context.sRedirectURL)!=0 || find("modal=1", request.context.sRedirectURL)!=0 ){

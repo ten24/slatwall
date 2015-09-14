@@ -22,6 +22,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'put');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
 	
+	this.publicMethods=listAppend(this.publicMethods, 'getResizedImageByProfileName');
 	this.publicMethods=listAppend(this.publicMethods, 'log');
 	this.publicMethods=listAppend(this.publicMethods, 'getDetailTabs');
 	this.publicMethods=listAppend(this.publicMethods, 'noaccess');
