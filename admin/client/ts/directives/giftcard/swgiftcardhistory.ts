@@ -35,15 +35,24 @@ module slatwalladmin {
 				var initialCreditIndex = scope.transactions.length-1;
 				console.log(initialCreditIndex);
 				var initialBalance = scope.transactions[initialCreditIndex].creditAmount; 
-				console.log(initialBalance);
+				var currentBalance = initialBalance; 
 				
 				angular.forEach(scope.transactions, function(transaction, index){
-					
+				
 					if(typeof transaction.debitAmount !== "string"){
+						transaction.debit = true;
 						totalDebit += transaction.debitAmount; 
+						transaction.debitAmount = "$" + parseFloat(transaction.debitAmount.toString()).toFixed(2);
+					} else { 
+						if(index != initialCreditIndex){
+							currentBalance += transaction.creditAmount; 
+						}
+						
+						transaction.debit = false;
+						transaction.creditAmount = "$" + parseFloat(transaction.creditAmount.toString()).toFixed(2);
 					}
 					
-					var currentBalance = initialBalance - totalDebit; 
+					currentBalance -= totalDebit; 
 					transaction.balanceFormatted = "$" + parseFloat(currentBalance.toString()).toFixed(2);
 				});
 				
