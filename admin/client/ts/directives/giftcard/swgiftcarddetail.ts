@@ -18,17 +18,13 @@ module slatwalladmin {
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
 			
-			//this.giftCardPromise = $slatwall.getEntity("GiftCard", scope.giftCardId);
-			
 			var giftCardConfig = new slatwalladmin.CollectionConfig($slatwall, 'GiftCard');
-			giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount, originalOrderItem.order.orderID");
+			giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage");
 			giftCardConfig.addFilter('giftCardID', scope.giftCardId);
-			//giftCardConfig.setAllRecords(true);
-
+			giftCardConfig.setAllRecords(true);
 
 			giftCardConfig.getEntity().then((response:any):void =>{
-            	console.log(response);
-				scope.giftCard = response;
+				scope.giftCard = response.records[0];
             });
 		}
 		

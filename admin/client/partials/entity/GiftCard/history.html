@@ -26,6 +26,36 @@
 							</tr>
 						</thead>
 						<tbody>
+							<tr ng-repeat="transaction in transactions">
+								<!--- Initial Transactions --->
+								<td ng-if="$index==transactions.length-1"><i class="fa fa-plus"></i></td>
+								<td ng-if="$index==transactions.length-1">Card Purchased </td>
+								<td ng-if="$index==transactions.length-1" ng-bind="order.orderOpenDateTime"></td>
+								<td ng-if="$index==transactions.length-1">Customer: <a href="##"><span ng-bind="order.account_firstName"></span> <span ng-bind="order.account_lastName"></span> (<span ng-bind="order.account_primaryEmailAddress_emailAddress"></span>)</a></td>
+								<td ng-if="$index==transactions.length-1">
+									+ <span ng-bind="transaction.creditAmount"></span>
+								</td>
+								<td ng-if="$index==transactions.length-1">
+									$ <span ng-bind="transaction.creditAmount"></span>
+								</td>
+								
+								<!--- All Other Transactions --->
+								<td ng-if="$index!=transactions.length-1"><i class="fa fa-shopping-cart"></i></td>
+								<td ng-if="$index!=transactions.length-1">
+									<span ng-if="!isString(transaction.debitAmount)">Purchase Applied</span>
+									<span ng-if="isString(transaction.debitAmount)">Return Applied</span> 
+								</td>
+								<td ng-if="$index!=transactions.length-1" ng-bind="transaction.orderPayment_order_orderOpenDateTime"></td>
+								<td ng-if="$index!=transactions.length-1">Order: <span ng-bind="transaction.orderPayment_order_orderNumber"></span></td>
+								<td ng-if="$index!=transactions.length-1">
+									<span ng-if="isString(transaction.debitAmount)">+</span>
+									<span ng-if="isString(transaction.debitAmount)" ng-bind="transaction.creditAmount"></span>
+									<span ng-if="!isString(transaction.debitAmount)">-</span>
+									<span ng-if="!isString(transaction.debitAmount)" ng-bind="transaction.debitAmount"></span>
+								</td>
+								<td ng-if="$index!=transactions.length-1" ng-bind="transaction.balanceFormatted"></td>
+							</tr>
+							
 							<tr class="s-purchase">
 								<td><i class="fa fa-shopping-cart"></i></td>
 								<td>Purchase Applied </td>

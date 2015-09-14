@@ -26,6 +26,7 @@ module slatwalladmin {
 			var totalDebit:number = 0; 
 			
 			var transactionConfig = new slatwalladmin.CollectionConfig($slatwall, 'GiftCardTransaction');
+			transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, giftCard.giftCardID");
 			transactionConfig.addFilter('giftCard.giftCardID', scope.giftCard.giftCardID);
 			transactionConfig.setAllRecords(true);
 			
@@ -33,18 +34,23 @@ module slatwalladmin {
 			
 			transactionPromise.then((response)=>{
 				scope.transactions = response.records; 
-				
+
 				angular.forEach(scope.transactions, function(transaction, index){
-					initialBalance += transaction.creditAmount;
-					totalDebit += transaction.debitAmount; 
+					
+					if(typeof transaction.creditAmount !== "string"){
+						initialBalance += transaction.creditAmount;
+					}
+					
+					if(typeof transaction.debitAmount !== "string"){
+						totalDebit += transaction.debitAmount; 
+					}
 				});
 				
 				var currentBalance = initialBalance - totalDebit; 
 				scope.currentBalanceFormatted = "$" + parseFloat(currentBalance.toString()).toFixed(2);
 				scope.initialBalanceFormatted = "$" + parseFloat(initialBalance.toString()).toFixed(2);
 				
-				scope.balancePercentage = ((initialBalance /  currentBalance)*100);					
-				console.log(scope.balancePercentage);
+				scope.balancePercentage = ((currentBalance / initialBalance)*100);					
 			});		
 		}
 		

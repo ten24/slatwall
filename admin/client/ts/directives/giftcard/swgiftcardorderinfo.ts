@@ -19,21 +19,14 @@ module slatwalladmin {
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
 			
-			console.log(scope.giftCard); 
-			
 			var orderConfig = new slatwalladmin.CollectionConfig($slatwall, 'Order');
-			orderConfig.addFilter('giftCard.giftCardID', scope.giftCard.giftCardID);
+			orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName");
+			orderConfig.addFilter('orderID', scope.giftCard.originalOrderItem_order_orderID);
 			orderConfig.setAllRecords(true);
-			
-			var orderPromise = $slatwall.getEntity("GiftCardTransaction", orderConfig.getOptions());
-			
-			orderPromise.then((response)=>{
-				
-			});
-			
-			
-			
-					
+		
+			orderConfig.getEntity().then((response)=>{
+				scope.order = response.records[0];
+			});			
 		}
 		
 	}
