@@ -46,18 +46,13 @@
 Notes:
 
 */
-component entityname="SlatwallEmail" table="SwEmail" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="emailService" hb_permission="this" {
+component entityname="SlatwallEmailBounce" table="SwEmailBounce" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="emailService" hb_permission="this" {
 
 	// Persistent Properties
-	property name="emailID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="emailTo" hb_populateEnabled="public" ormtype="string";
-	property name="emailFrom" hb_populateEnabled="public" ormtype="string";
-	property name="emailFailTo" hb_populateEnabled="public" ormtype="string";
-	property name="emailCC" hb_populateEnabled="public" ormtype="string";
-	property name="emailBCC" hb_populateEnabled="public" ormtype="string";
-	property name="emailSubject" hb_populateEnabled="public" ormtype="string";
-	property name="emailBodyHTML" hb_populateEnabled="public" ormtype="string" length="4000";
-	property name="emailBodyText" hb_populateEnabled="public" ormtype="string" length="4000";
+	property name="emailBounceID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="rejectedEmailTo" ormtype="string";
+	property name="rejectedEmailSubject" ormtype="string";
+	property name="rejectedEmailSendTime"  ormtype="timestamp";
 
 	// Related Object Properties (many-to-one)
 
@@ -72,25 +67,7 @@ component entityname="SlatwallEmail" table="SwEmail" persistent="true" accessors
 	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 
-	// Non-Persistent Properties
-	property name="logEmailFlag" persistent="false";
-	property name="voidSendFlag" persistent="false";
-
 	// ============ START: Non-Persistent Property Methods =================
-
-	public boolean function getLogEmailFlag() {
-		if(!structKeyExists(variables, "logEmailFlag")) {
-			variables.logEmailFlag = false;
-		}
-		return variables.logEmailFlag;
-	}
-
-	public boolean function getVoidSendFlag() {
-		if(!structKeyExists(variables, "voidSendFlag")) {
-			variables.voidSendFlag = false;
-		}
-		return variables.voidSendFlag;
-	}
 
 	// ============  END:  Non-Persistent Property Methods =================
 
