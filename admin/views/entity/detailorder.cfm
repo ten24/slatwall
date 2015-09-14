@@ -74,9 +74,9 @@ Notes:
 			<!--- Place Order --->
 			<cfif rc.order.getOrderStatusType().getSystemCode() eq "ostNotPlaced">
 				<cfif len(rc.order.getOrderRequirementsList())>
-					<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="placeOrder" queryString="sRedirectAction=admin:entity.detailorder" type="list" modal="true" />
+					<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="placeOrder" queryString="sRedirectAction=admin:entity.detailorder" type="list" modal="true" hideDisabled="false" />
 				<cfelse>
-					<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="placeOrder" type="list" />
+					<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="placeOrder" type="list" hideDisabled="false" />
 				</cfif>
 			</cfif>
 			
@@ -92,7 +92,7 @@ Notes:
 			<li class="divider"></li>
 			
 			<!--- Add Elements --->
-			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addOrderPayment" type="list" modal="true" />
+			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addOrderPayment" type="list" modal="true" hideDisabled="false" />
 			<hb:HibachiProcessCaller action="admin:entity.preProcessOrder" entity="#rc.order#" processContext="addPromotionCode" type="list" modal="true" />
 			<hb:HibachiActionCaller action="admin:entity.createcomment" querystring="orderID=#rc.order.getOrderID()#&redirectAction=#request.context.slatAction#" modal="true" type="list" />
 		
