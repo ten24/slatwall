@@ -89,9 +89,10 @@ Notes:
 
 				fromAddress = emails.from[i];
 				emailSubject = emails.subject[i];
-				report &= "From: " & fromAddress & " Subject: " & emailSubject & "<br>";
+				report &= 'From: ' & fromAddress & ' Subject: ' & emailSubject & '<br>';
 				isAllowedFromAddress = ReFindNoCase(allowedFromAddress,fromAddress);
 				isAllowedSubject = ReFindNoCase(allowedSubjects,emailSubject);
+
 				if(isAllowedFromAddress && isAllowedSubject){
 					emailBody = emails.body[i];
 
@@ -110,9 +111,9 @@ Notes:
 					}
 
 				} else {
-					report &= "Status: Not processed [From Allowed: #isAllowedFromAddress#, Subject Allowed: #isAllowedSubject#]" & "<br>";
+					report &= "Status: Not processed [From Allowed: #isAllowedFromAddress#, Subject Allowed: #isAllowedSubject#]" & '<br>';
 				}
-				report &= "<br>";
+				report &= '<br>';
 
 				//create a bounced email record
 			}
