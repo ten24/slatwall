@@ -55,8 +55,7 @@ var slatwalladmin;
                         _this.alertService.addAlert(message);
                     }
                 }
-                _this.$q.reject(rejection);
-                return rejection;
+                return _this.$q.reject(rejection);
             };
             this.$q = $q;
             this.$log = $log;

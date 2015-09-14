@@ -192,8 +192,8 @@ Notes:
 				    	  		}
 
 					  			var params = {};
-					  			if(typeof options === 'string') {
-					  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options;
+					  			if(typeof options === 'String') {
+					  				var urlString = _config.baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options.id;
 					  			} else {
 					  				params['P:Current'] = options.currentPage || 1;
 					  				params['P:Show'] = options.pageShow || 10;
