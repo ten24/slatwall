@@ -27,6 +27,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	this.publicMethods=listAppend(this.publicMethods, 'getDetailTabs');
 	this.publicMethods=listAppend(this.publicMethods, 'noaccess');
 	this.publicMethods=listAppend(this.publicMethods, 'login');
+	this.publicMethods=listAppend(this.publicMethods, 'getResourceBundle');
 	
 	//	this.secureMethods='';
 	//	this.secureMethods=listAppend(this.secureMethods, 'get');
@@ -44,10 +45,6 @@ component output="false" accessors="true" extends="HibachiController" {
 		param name="rc.headers.contentType" default="application/json"; 
 		arguments.rc.headers["Content-Type"] = rc.headers.contentType;
 		
-//		if(findnocase(arguments.rc.fw.getItem(),this.publicMethods)){
-//			writedump(foundItem);abort;
-//		}
-				
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
 		}
@@ -59,8 +56,6 @@ component output="false" accessors="true" extends="HibachiController" {
 			StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
 		}
 	}
-	
-	
 	
 	public void function login(required struct rc){
 		if(!getHibachiScope().getLoggedInFlag()){

@@ -83,15 +83,14 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
 		//hard coded to 15 minutes
 		var tokenExpirationTime = 5;
-		var json = '{
-			"iat":"#javaCast( "int", currentTime )#",
-			"exp":"#javaCast( "int", ( currentTime + tokenExpirationTime))#",
-			"accountid":"#getHibachiScope().getAccount().getAccountID()#",
-			"encoding":"UTF-8"
-			
-		}';
-		var payload = deserializeJson(json);
+		var payload = {
+			"iat"="#javaCast( "int", currentTime )#",
+			"exp"="#javaCast( "int", ( currentTime + tokenExpirationTime))#",
+			"accountid"="#getHibachiScope().getAccount().getAccountID()#",
+			"encoding"="UTF-8"
+		};
 		var token = jwt.encode(payload);
+		
 		return token;
 	}
 	

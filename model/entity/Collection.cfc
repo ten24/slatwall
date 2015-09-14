@@ -1119,12 +1119,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		var startMapHQL = ' new Map(';
 		var columnsHQL = '';
-		if(getHibachiScope().authenticateCollection('read', this)){
+		//if(getHibachiScope().authenticateCollection('read', this)){
 			for(var i = 1; i <= columnCount; i++){
-				if(
-					getHibachiScope().authenticateCollectionPropertyIdentifier('read', this, arguments.columns[i].propertyIdentifier)
-					|| (!isObject && structKeyExists(propertyStruct,'fieldtype') && propertyStruct.fieldtype == 'id') 
-				){
+//				if(
+//					getHibachiScope().authenticateCollectionPropertyIdentifier('read', this, arguments.columns[i].propertyIdentifier)
+//					|| (!isObject && structKeyExists(propertyStruct,'fieldtype') && propertyStruct.fieldtype == 'id') 
+//				){
 					var column = arguments.columns[i];
 					if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
 						var currentAlias = '';
@@ -1181,9 +1181,9 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							columnsHQL &= ',';
 						}//<--end if
 					}//<--end exportable	
-				}
+//				}
 			}//<--end for loop
-		}
+//		}
 		
 		if(right(columnsHQL,1) == ','){
 			columnsHQL &= left(columnsHQL,len(columnsHQL)-1);

@@ -213,7 +213,7 @@ component extends="FW1.framework" {
 				var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
 				
 				var payload = getHibachiScope().getService('jwtService').verifyToken(token);
-				//if payload is not empty then validate
+				//if payload is not empty then set account to session
 				if(!structIsEmpty(payload)){
 					var account = getHibachiScope().getService('accountService').getAccountByAccountID(payload.accountid);
 					if(!isNull(account)){
