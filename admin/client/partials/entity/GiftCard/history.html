@@ -26,7 +26,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-class="{'s-purchase':transaction.debit}" ng-repeat="transaction in transactions">
+							<tr ng-class="{'s-purchase':transaction.debit, 's-success':transaction.activated}" ng-repeat="transaction in transactions">
 								<!--- Initial Transactions --->
 								<td ng-if="$index==transactions.length-1"><i class="fa fa-plus"></i></td>
 								<td ng-if="$index==transactions.length-1">Card Purchased </td>
@@ -39,21 +39,37 @@
 									<span ng-bind="transaction.creditAmount"></span>
 								</td>
 								
+								<!--- Notification Email --->
+								<td ng-if="transaction.emailSent"><i class="fa fa-envelope"></i></td>
+								<td ng-if="transaction.emailSent">Recipient notification sent </td>
+								<td ng-if="transaction.emailSent" ng-bind="transaction.sentAt"></td>
+								<td ng-if="transaction.emailSent">Recipient: <span ng-bind="giftCard.orderItemGiftRecipient_firstName"></span> <span ng-bind="giftCard.orderItemGiftRecipient_lastName"></span> ( <span ng-bind="giftCard.orderItemGiftRecipient_emailAddress"></span> )</td>
+								<td ng-if="transaction.emailSent">--</td>
+								<td ng-if="transaction.emailSent" ng-bind="transaction.balanceFormatted"></td>
+								
+								<!--- Activated --->
+								<td ng-if="transaction.activated"><i class="fa fa-check"></i></td>
+								<td ng-if="transaction.activated">Card Activated</td>
+								<td ng-if="transaction.activated" ng-bind="transaction.activeAt"></td>
+								<td ng-if="transaction.activated"></td>
+								<td ng-if="transaction.activated">--</td>
+								<td ng-if="transaction.activated" ng-bind="transaction.balanceFormatted"></td>
+							
 								<!--- All Other Transactions --->
-								<td ng-if="$index!=transactions.length-1"><i class="fa fa-shopping-cart"></i></td>
-								<td ng-if="$index!=transactions.length-1">
+								<td ng-if="$index!=transactions.length-1 && !transaction.emailSent && !transaction.activated"><i class="fa fa-shopping-cart"></i></td>
+								<td ng-if="$index!=transactions.length-1 && !transaction.emailSent && !transaction.activated">
 									<span ng-if="transaction.debit">Purchase Applied</span>
 									<span ng-if="!transaction.debit">Return Applied</span> 
 								</td>
-								<td ng-if="$index!=transactions.length-1" ng-bind="transaction.orderPayment_order_orderOpenDateTime"></td>
-								<td ng-if="$index!=transactions.length-1">Order: <span ng-bind="transaction.orderPayment_order_orderNumber"></span></td>
-								<td ng-if="$index!=transactions.length-1">
-									<span ng-if="!transaction.debit">+</span>
-									<span ng-if="!transaction.debit" ng-bind="transaction.creditAmount"></span>
-									<span ng-if="transaction.debit">-</span>
-									<span ng-if="transaction.debit" ng-bind="transaction.debitAmount"></span>
+								<td ng-if="$index!=transactions.length-1 && !transaction.emailSent && !transaction.activated" ng-bind="transaction.orderPayment_order_orderOpenDateTime"></td>
+								<td ng-if="$index!=transactions.length-1 && !transaction.emailSent && !transaction.activated">Order: <span ng-bind="transaction.orderPayment_order_orderNumber"></span></td>
+								<td ng-if="$index!=transactions.length-1 && !transaction.emailSent && !transaction.activated">
+									<span ng-if="!transaction.debit && !transaction.emailSent && !transaction.activated">+</span>
+									<span ng-if="!transaction.debit && !transaction.emailSent && !transaction.activated" ng-bind="transaction.creditAmount"></span>
+									<span ng-if="transaction.debit && !transaction.emailSent && !transaction.activated">-</span>
+									<span ng-if="transaction.debit && !transaction.emailSent && !transaction.activated" ng-bind="transaction.debitAmount"></span>
 								</td>
-								<td ng-if="$index!=transactions.length-1" ng-bind="transaction.balanceFormatted"></td>
+								<td ng-if="$index!=transactions.length-1 && !transaction.emailSent && !transaction.activated" ng-bind="transaction.balanceFormatted"></td>
 							</tr>
 							<!---
 							<tr class="s-purchase">
@@ -131,7 +147,7 @@
 							--->
 						</tbody>
 					</table>
-					<div class="s-load-more-wrapper">
+					<div class="s-load-more-wrapper" ng-hide="transactions.length < 10">
 						<button type="button" name="button" class="btn btn-default btn-sm s-load-more">Load More <span>(showing 9 of 200)</span></button>
 					</div>
 				</div>

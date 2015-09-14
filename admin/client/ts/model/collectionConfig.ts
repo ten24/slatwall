@@ -69,12 +69,14 @@ module slatwalladmin{
             private allRecords:boolean = false
 
         ){
+            
             if(!angular.isUndefined(this.baseEntityName)){
                 this.collection = this.$slatwall['new' + this.getEntityName()]();
                 if(angular.isUndefined(this.baseEntityAlias)){
                     this.baseEntityAlias = '_' + this.baseEntityName.toLowerCase();
                 }
             }
+           
         }
 
         loadJson= (jsonCollection) =>{

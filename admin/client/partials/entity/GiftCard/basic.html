@@ -4,28 +4,18 @@
 		<strong>Recipient Email Failure!</strong> There was an issue sending your gift card to the provided recipient email <button class="btn btn-danger btn-xs">Resend Recipient Email</button>
 	</div>
 	<div class="row s-detail-modules-wrapper">
-
-		<!--- Overview --->
 		
 		<sw-gift-card-overview ng-if="giftCard"  gift-card="giftCard"></sw-gift-card-overview>
 		
-		<!--- Balance --->
-		
 		<sw-gift-card-balance ng-if="giftCard"  gift-card="giftCard"></sw-gift-card-balance>
 		
-		<!--- Order Info ---> 
-		
 		<sw-gift-card-order-info ng-if="giftCard"  gift-card="giftCard"></sw-gift-card-order-info>
-		
-		<!--- Recipient Info --->
 		
 		<sw-gift-card-recipient-info ng-if="giftCard"  gift-card="giftCard"></sw-gift-card-recipient-info>
 		
 	</div>
 
 	<div class="row s-detail-content-wrapper">
-
-		<!--- History --->
 		
 		<sw-gift-card-history ng-if="giftCard" gift-card="giftCard"></sw-gift-card-history>
 		

@@ -33,7 +33,6 @@ module slatwalladmin {
 				scope.transactions = response.records; 
 				
 				var initialCreditIndex = scope.transactions.length-1;
-				console.log(initialCreditIndex);
 				var initialBalance = scope.transactions[initialCreditIndex].creditAmount; 
 				var currentBalance = initialBalance; 
 				
@@ -52,8 +51,28 @@ module slatwalladmin {
 						transaction.creditAmount = "$" + parseFloat(transaction.creditAmount.toString()).toFixed(2);
 					}
 					
-					currentBalance -= totalDebit; 
-					transaction.balanceFormatted = "$" + parseFloat(currentBalance.toString()).toFixed(2);
+					var tempCurrentBalance = currentBalance - totalDebit; 
+					transaction.balanceFormatted = "$" + parseFloat(tempCurrentBalance.toString()).toFixed(2);
+					
+					if(index == initialCreditIndex){
+						var emailSent = { 
+							emailSent: true, 
+							debit:false, 
+							sentAt: transaction.orderPayment_order_orderOpenDateTime,
+							balanceFormatted:  "$" + parseFloat(initialBalance.toString()).toFixed(2)
+						};
+						
+						var activeCard = {
+							activated: true, 
+							debit: false,
+							activeAt: transaction.orderPayment_order_orderOpenDateTime,
+							balanceFormatted:  "$" + parseFloat(initialBalance.toString()).toFixed(2)
+						}
+						
+						scope.transactions.splice(index, 0, activeCard); 
+						scope.transactions.splice(index, 0, emailSent); 
+					}
+				
 				});
 				
 				console.log(scope); 
@@ -66,8 +85,6 @@ module slatwalladmin {
 		
 			orderConfig.getEntity().then((response)=>{
 				scope.order = response.records[0];
-				
-				console.log(scope);
 			});	
 		}
 		
