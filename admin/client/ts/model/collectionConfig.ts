@@ -120,8 +120,7 @@ module slatwalladmin{
                 currentPage: this.currentPage,
                 pageShow: this.pageShow,
                 keywords: this.keywords,
-                defaultColumns: (!this.columns || !this.columns.length),
-                allRecords: this.allRecords
+                defaultColumns: (!this.columns || !this.columns.length)
             };
             if(angular.isDefined(this.id)){
                 options['id'] = this.id;
