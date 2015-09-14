@@ -1229,6 +1229,47 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		request.debug(collectionEntity.getHQL());
 	}
 
+	public void function getHQLTest_keywords_without_ormtype(){
+
+		//acount data
+
+		var collectionEntityData = {
+		collectionid = '12',
+		collectionCode = 'keywordAccount',
+		collectionObject = 'account',
+
+		collectionConfig = '
+						{
+						  "baseEntityName": "SlatwallAccount",
+						  "baseEntityAlias": "_account",
+						  "columns": [
+							{
+								"propertyIdentifier":"_account.firstName",
+								"isSearchable":true
+							},
+							{
+								"propertyIdentifier":"_account.lastName",
+								"isSearchable":true
+							},
+							{
+								"propertyIdentifier":"_account.accountEmailAddresses",
+								"isSearchable":true,
+								"aggregate":{
+									"aggregateFunction":"count",
+									"aggregateAlias":"emailcount"
+								}
+							}
+						  ]
+						}
+					'
+		};
+
+
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		collectionEntity.setKeywords('Ryan Marchand');
+		request.debug(collectionEntity.getHQL());
+	}
+
 	
 	public void function getHQLTest_notpersistent(){
 	

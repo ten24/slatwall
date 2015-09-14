@@ -1238,7 +1238,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				filterHQL &= getFilterHQL(filterGroupArray);
 			}
 
-			addPostFiltersFromKeywords(collectionConfig,len(filterHQL));
+			addPostFiltersFromKeywords(collectionConfig);
 
 //check if the user has applied any filters from the ui list view
 			if(arraylen(getPostFilterGroups())){
@@ -1266,7 +1266,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return HQL;
 	}
 
-	public void function addPostFiltersFromKeywords(required any collectionConfig, numeric hasFilterHQL) {
+	public void function addPostFiltersFromKeywords(required any collectionConfig) {
 		var columnIndex = 0;
 		var keywordArray = getKeywordArray();
 		var keywordCount = arraylen(keywordArray);
@@ -1282,23 +1282,28 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		for(var column in columns) {
 
 			if ((
-				!defaultColumns && (
-					!structKeyExists(column, 'isSearchable')
-					|| !column.isSearchable
-					|| !structKeyExists(column, 'ormtype')
-					|| column.ormtype eq 'boolean'
-					|| column.ormtype eq 'timestamp'
-					)
+					!defaultColumns && ( !structKeyExists(column, 'isSearchable') || !column.isSearchable)
 				) || (
-				defaultColumns && (
-					structKeyExists(column, 'fkcolumn')
-					|| (structKeyExists(column, 'persistent') && column.persistent == false)
-					|| (structKeyExists(column, 'fieldtype') && column.fieldtype == 'id')
-					|| !structKeyExists(column, 'ormtype')
-					|| column.ormtype eq 'boolean'
-					|| column.ormtype eq 'timestamp'
+					defaultColumns && (
+						structKeyExists(column, 'fkcolumn')
+						|| (structKeyExists(column, 'persistent') && column.persistent == false)
+						|| !structKeyExists(column, 'ormtype')
 				))
 			) continue;
+
+
+			if(!structKeyExists(column, 'ormtype')){
+				var allColumns = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
+				for( col in allColumns){
+					if(col.name == ListLast(column.propertyIdentifier, '.') && structKeyExists(col, 'ormtype')){
+						column.ormtype = col.ormtype;
+						break;
+					}
+				}
+			}
+
+			if(!structKeyExists(column, 'ormtype') || column.ormtype eq 'boolean' || column.ormtype eq 'timestamp') continue;
+
 
 			var formatter = (column.ormtype eq 'big_decimal' || column.ormtype eq 'integer') ? 'STR' : 'LOWER';
 			var propertyIdentifier = (!defaultColumns)? column.propertyIdentifier : arguments.collectionConfig.baseEntityAlias&'.'&column.name;
