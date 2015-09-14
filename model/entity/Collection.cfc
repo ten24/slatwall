@@ -1266,8 +1266,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return HQL;
 	}
 
-	public any function addPostFiltersFromKeywords(required any collectionConfig, numeric hasFilterHQL)
-	{
+	public void function addPostFiltersFromKeywords(required any collectionConfig, numeric hasFilterHQL) {
 		var columnIndex = 0;
 		var keywordArray = getKeywordArray();
 		var keywordCount = arraylen(keywordArray);
@@ -1300,7 +1299,6 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 					|| column.ormtype eq 'timestamp'
 				))
 			) continue;
-
 
 			var formatter = (column.ormtype eq 'big_decimal' || column.ormtype eq 'integer') ? 'STR' : 'LOWER';
 			var propertyIdentifier = (!defaultColumns)? column.propertyIdentifier : arguments.collectionConfig.baseEntityAlias&'.'&column.name;
