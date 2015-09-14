@@ -51,7 +51,17 @@
 		<cfif signature neq sign(signInput,algorithmMap[header.alg])>
 			<cfthrow type="Invalid Token" message="signature verification failed">
 		</cfif>
-
+		
+		<!--- need valid iat --->
+		<cfif !structKeyExists(payload,'iat')>
+			<cfthrow type="No Valid issue at time date">
+		</cfif>
+		
+		<!--- need valid exp --->
+		<cfif !structKeyExists(payload,'exp')>
+			<cfthrow type="No Valid expiration time date">
+		</cfif>
+		
 		<cfreturn payload>
 	</cffunction>
 
@@ -72,9 +82,9 @@
 		</cfif>
 
 		<!--- Add Header - typ and alg fields--->
-		<cfset segments = listAppend(segments, base64UrlEscape(toBase64(serializeJSON({ "typ" =  "JWT", "alg" = hashAlgorithm }))),".")>
+		<cfset segments = listAppend(segments, base64UrlEscape(toBase64(serializeJSON({ "typ" =  "JWT", "alg" = hashAlgorithm }),'UTF-8')),".")>
 		<!--- Add payload --->
-		<cfset segments = listAppend(segments, base64UrlEscape(toBase64(serializeJSON(arguments.payload))),".")>
+		<cfset segments = listAppend(segments, base64UrlEscape(toBase64(serializeJSON(arguments.payload),'UTF-8')),".")>
 		<cfset segments = listAppend(segments, sign(segments,algorithmMap[hashAlgorithm]),".")>
 
 		<cfreturn segments>
@@ -107,7 +117,7 @@
 
 		<cfset var result = hash(variables.key,arguments.algorithm)>
 
-		<cfreturn base64UrlEscape(toBase64(result))>
+		<cfreturn base64UrlEscape(toBase64(result,'UTF-8'))>
 	</cffunction>
 
 	<!--- 	base64UrlEscape(String) as String

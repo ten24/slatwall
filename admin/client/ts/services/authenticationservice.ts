@@ -25,7 +25,7 @@ module slatwalladmin{
             return true;
           }
         }
-        public isAuthenticated = () {
+        public isAuthenticated = () =>{
           return this.$window.sessionStorage.token;
         }
         public login = (credentials) =>{

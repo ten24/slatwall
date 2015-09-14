@@ -58,5 +58,41 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 	public any function newJWT(required string key){
 		return new Slatwall.org.Hibachi.jwt.jwt(key);
 	}
+	//returns payload if it is valid
+	public struct function verifyToken(required string token){
+		var key = getService('settingService').getSettingValue('globalClientSecret');
+		var jwt = newJwt(key);
+		//validate that the token hasn't been tampered with
+		var isValid = jwt.verify(token);
+		if(!isValid){
+			return {};
+		}
+		var payload = jwt.decode(token);
+		//verify payload
+		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
+		if(currentTime > payload.iat && currentTime < payload.exp){
+			return payload;
+		}
+		return {};
+	}
+	
+	public string function createToken(){
+		//create token
+		var key = getService('settingService').getSettingValue('globalClientSecret');
+		var jwt = newJwt(key);
+		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
+		//hard coded to 15 minutes
+		var tokenExpirationTime = 5;
+		var json = '{
+			"iat":"#javaCast( "int", currentTime )#",
+			"exp":"#javaCast( "int", ( currentTime + tokenExpirationTime))#",
+			"accountid":"#getHibachiScope().getAccount().getAccountID()#",
+			"encoding":"UTF-8"
+			
+		}';
+		var payload = deserializeJson(json);
+		var token = jwt.encode(payload);
+		return token;
+	}
 	
 }

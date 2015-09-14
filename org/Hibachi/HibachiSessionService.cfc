@@ -92,7 +92,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// Populate the hibachi scope with the session
 		getHibachiScope().setSession( sessionEntity );
-		
 		// Let the hibachiScope know how we found the proper sessionID
 		getHibachiScope().setSessionFoundNPSIDCookieFlag( foundWithNPSID );
 		getHibachiScope().setSessionFoundPSIDCookieFlag( foundWithPSID );

@@ -203,9 +203,24 @@ component extends="FW1.framework" {
 			
 			// Verify that the application is setup
 			verifyApplicationSetup();
-			
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setPropperSession();
+			//check if we have the authorization header
+			if(structKeyExists(GetHttpRequestData().Headers,'Authorization')){
+				var authorizationHeader = GetHttpRequestData().Headers.authorization;
+				var prefix = 'Bearer ';
+				//get token by stripping prefix
+				var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
+				
+				var payload = getHibachiScope().getService('jwtService').verifyToken(token);
+				//if payload is not empty then validate
+				if(!structIsEmpty(payload)){
+					var account = getHibachiScope().getService('accountService').getAccountByAccountID(payload.accountid);
+					if(!isNull(account)){
+						getHibachiScope().getSession().setAccount( account );
+					}
+				}
+			}
 			
 			// If there is no account on the session, then we can look for an authToken to setup that account for this one request
 			if(!getHibachiScope().getLoggedInFlag() && structKeyExists(request, "context") && structKeyExists(request.context, "authToken") && len(request.context.authToken)) {
@@ -282,7 +297,6 @@ component extends="FW1.framework" {
 		}
 		
 		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount(), restInfo=restInfo);	
-
 		
 		// Verify Authentication before anything happens
 		if(!authorizationDetails.authorizedFlag) {
@@ -302,8 +316,13 @@ component extends="FW1.framework" {
 				request.context.sRedirectURL = left(request.context.sRedirectURL, len(request.context.sRedirectURL) - 1);
 			}
 			
+			if(getSubsystem(request.context[ getAction() ]) == 'api'){
+				//rc.messages = [{message=rbkey('define.noaccess')}];
+				var context = getPageContext().getResponse();
+				context.getResponse().setStatus(401, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+			}
 			//Route the user to the noaccess page if they are already logged in
-			if( getHibachiScope().getLoggedInFlag() ) {
+			else if( getHibachiScope().getLoggedInFlag() ) {
 				redirect(action="#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.noaccessDefaultSection#.#hibachiConfig.noaccessDefaultItem#", preserve="swprid,sRedirectURL,entityName");
 			} else {
 					// If the current subsystem is a 'login' subsystem, then we can use the current subsystem

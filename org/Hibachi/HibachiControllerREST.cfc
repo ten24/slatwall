@@ -44,9 +44,9 @@ component output="false" accessors="true" extends="HibachiController" {
 		param name="rc.headers.contentType" default="application/json"; 
 		arguments.rc.headers["Content-Type"] = rc.headers.contentType;
 		
-		if(findnocase(arguments.rc.fw.getItem(),this.publicMethods)){
-			writedump(foundItem);abort;
-		}
+//		if(findnocase(arguments.rc.fw.getItem(),this.publicMethods)){
+//			writedump(foundItem);abort;
+//		}
 				
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
@@ -60,9 +60,11 @@ component output="false" accessors="true" extends="HibachiController" {
 		}
 	}
 	
+	
+	
 	public void function login(required struct rc){
-		//if account doesn't exist than one is created
 		if(!getHibachiScope().getLoggedInFlag()){
+			//if account doesn't exist than one is create
 			var account = getService('AccountService').processAccount(rc.$.slatwall.getAccount(), rc, "login");
 			var authorizeProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("login").populate(arguments.rc);
 			arguments.rc.apiResponse.content['messages'] = [];
@@ -82,20 +84,9 @@ component output="false" accessors="true" extends="HibachiController" {
 				return;
 			}
 		}
-		//create token
-		var key = getService('settingService').getSettingValue('globalClientSecret');
-		var jwt = getService('jwtService').newJwt(key);
-		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
-		var json = '{
-			"iat":"#javaCast( "int", currentTime )#",
-			"exp":"#javaCast( "int", ( currentTime + 60 ))#",
-			"userid":"#getHibachiScope().getAccount().getAccountID()#",
-			"encoding":"iso-8859-1"
-			
-		}';
-		var payload = deserializeJson(json);
-		var token = jwt.encode(payload);
-		arguments.rc.apiResponse.content['token'] = token;
+		if(getHibachiScope().getLoggedinFlag()){
+			arguments.rc.apiResponse.content['token'] = getService('jwtService').createToken();
+		}
 	}
 	
 	public void function noaccess(required struct rc){
