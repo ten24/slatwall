@@ -864,9 +864,9 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-checkbox input[type=checkbox]:disabled + label{opacity:0.65;}
 .s-checkbox input[type=checkbox]:disabled + label:before{background-color:@black-5;cursor:not-allowed;}
 .radio {margin-top:0px !important;margin-bottom:5px;margin-right: 20px;display: inline-block;}
-.radio label{display:inline-block;position:relative;padding-left:5px;font-weight:normal !important;}
+.radio label{display:inline-block;position:relative;margin-left:5px;font-weight:normal !important;padding-left:0px;}
 .radio label:before{content:"";display:inline-block;position:absolute;width:17px;height:17px;left:0;border:1px solid @black-20;.border-radius(50%);background-color:@white;-webkit-transition:border .15s ease-in-out;-o-transition:border .15s ease-in-out;transition:border .15s ease-in-out;position: relative;left: -3px;top: 3px;}
-.radio label:after{display:inline-block;position:absolute;content:" ";width:11px;height:11px;left:3px;top:3px;.border-radius(50%);background-color:#555;-webkit-transform:scale(0,0);-ms-transform:scale(0,0);-o-transform:scale(0,0);transform:scale(0,0);-webkit-transition:-webkit-transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);-moz-transition:-moz-transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);-o-transition:-o-transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);transition:transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);position: absolute;top: 6px;left: 5px;}
+.radio label:after{display:inline-block;position:absolute;content:" ";width:11px;height:11px;.border-radius(50%);background-color:#555;-webkit-transform:scale(0,0);-ms-transform:scale(0,0);-o-transform:scale(0,0);transform:scale(0,0);-webkit-transition:-webkit-transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);-moz-transition:-moz-transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);-o-transition:-o-transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);transition:transform .1s cubic-bezier(0.8,-0.33,0.2,1.33);position: absolute;top: 6px;left: 0px;}
 .radio input[type=radio]{display:none}
 .radio input[type=radio]:checked + label:after{-webkit-transform:scale(1,1);-ms-transform:scale(1,1);-o-transform:scale(1,1);transform:scale(1,1)}
 .radio input[type=radio]:disabled + label{opacity:.65}
@@ -922,6 +922,9 @@ tabel .s-table-header {margin-bottom:10px;}
 .s-filter-group-item h4 {font-size:16px;font-wieght:normal;}
 .s-filter-group-item .select.input-sm {display: inline-block;width: 100%;}
 .s-filter-group-item input, .s-filter-group-item select {display: inline-block;width: 100%;}
+.s-filter-group-item .s-radio-block .radio {display:block;}
+.s-filter-group-item select {margin-bottom: 10px;}
+.s-filter-group-item .s-radio-block .radio .s-radio-select {margin-top:8px;}
 .s-add-filter-box .s-and-or-box {margin-top: 20px;margin-bottom: 8px;}
 .s-and-or-box {text-align:center;height:40px;}
 .s-and-or-box hr {border: 0;border-top: 3px dotted @black-10;position: relative;top: -36px;z-index: 0;}
