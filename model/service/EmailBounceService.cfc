@@ -115,7 +115,9 @@ Notes:
 				}
 				report &= '<br>';
 
-				//create a bounced email record
+				//todo add gift card ID pickup
+
+				//todo create a bounced email record
 			}
 
 			writeoutput(report);
