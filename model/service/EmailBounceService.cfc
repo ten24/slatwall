@@ -83,7 +83,6 @@ Notes:
 			var unsubscribeResult = "";
 			var isAllowedFromAddress = false;
 			var isAllowedSubject = false;
-			var listOwnerInfo = getListOwnerInfoService().getListOwnerInfo();
 
 			for(var i=1; i <= emails.recordcount; i++){
 
@@ -118,6 +117,24 @@ Notes:
 				//todo add gift card ID pickup
 
 				//todo create a bounced email record
+				var header = emails.header[i];
+				var emailBounce = this.newEmailBounce();
+
+				if(structKeyExists(header, "X-Failed-Recipients")){
+					emailBounce.setRejectedEmailTo(header["X-Failed-Recipients"]);
+				}
+				emailBounce.setRejectedEmailFrom(emails.from[i]);
+				emailBounce.setRejectedEmailSubject(emails.subject[i]);
+				emailBounce.setRejectedEmailSendTime(emails.date[i]);
+				emailBounce.setRejectedBody(emails.body[i])
+
+				var errors = this.saveEmailBounce(emailBounce);
+
+				if(errors){
+
+				} else {
+
+				}
 			}
 
 			writeoutput(report);
