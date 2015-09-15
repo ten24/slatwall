@@ -2,13 +2,13 @@
 <!--- Filter Criteria Start --->
 <form action="index.html" method="post" ng-if="selectedFilterProperty">
   <div class="s-filter-group-item">
-    <div class="s-options-group">
-      <div class="radio" style="border-bottom: 3px dotted #DDD;padding-bottom: 15px;margin-bottom: 20px;">
-        <input class="s-account-field-radio" type="radio" name="radio1" id="radio1" ng-model="selectedFilterProperty.selectedCriteriaType"  ng-value="conditionOptions.drillEntity" checked>
+    <div class="s-options-group s-radio-block">
+      <div class="radio">
+        <input class="s-account-field-radio" type="radio" name="radio1" id="radio1" ng-model="selectedFilterProperty.selectedCriteriaType"  ng-value="conditionOptions.drillEntity" >
         <label for="radio1">
             Use  {{selectedFilterProperty.displayPropertyIdentifier}} field:
         </label>
-        <div class="col-sm-12 s-no-paddings s-account-field-select" style="padding-left:5px !important;" sw-loading="filterPropertiesList[selectedFilterProperty.propertyIdentifier].data">
+        <div class="s-radio-select" sw-loading="filterPropertiesList[selectedFilterProperty.propertyIdentifier].data">
           <select ng-model="selectedFilterProperty.selectedCriteriaType" 
           		ng-change="selectedCriteriaChanged(selectedFilterProperty.selectedCriteriaType)" 
           		ng-options="filterProperty as filterProperty.displayPropertyIdentifier
@@ -19,7 +19,6 @@
             <option value="">Select From {{selectedFilterProperty.displayPropertyIdentifier}}:</option>
           </select>
         </div>
-        <div class="clearfix"></div>
       </div>
       <div class="radio">
         <input type="radio" name="radio1" id="radio2" ng-value="conditionOptions.hasEntity" ng-model="selectedFilterProperty.selectedCriteriaType" >

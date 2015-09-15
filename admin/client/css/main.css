@@ -1914,8 +1914,9 @@ tabel .s-table-header {
 .radio label {
   display: inline-block;
   position: relative;
-  padding-left: 5px;
+  margin-left: 5px;
   font-weight: normal !important;
+  padding-left: 0px;
 }
 .radio label:before {
   content: "";
@@ -1944,8 +1945,6 @@ tabel .s-table-header {
   content: " ";
   width: 11px;
   height: 11px;
-  left: 3px;
-  top: 3px;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
@@ -1963,7 +1962,7 @@ tabel .s-table-header {
   transition: transform 0.1s cubic-bezier(0.8, -0.33, 0.2, 1.33);
   position: absolute;
   top: 6px;
-  left: 5px;
+  left: 0px;
 }
 .radio input[type=radio] {
   display: none;
@@ -2164,6 +2163,15 @@ tabel .s-table-header {
 .s-filter-group-item select {
   display: inline-block;
   width: 100%;
+}
+.s-filter-group-item .s-radio-block .radio {
+  display: block;
+}
+.s-filter-group-item select {
+  margin-bottom: 10px;
+}
+.s-filter-group-item .s-radio-block .radio .s-radio-select {
+  margin-top: 8px;
 }
 .s-add-filter-box .s-and-or-box {
   margin-top: 20px;
