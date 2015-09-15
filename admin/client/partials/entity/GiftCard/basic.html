@@ -1,23 +1,19 @@
-<div class="col-md-12">
-	<div class="alert alert-danger alert-dismissible" role="alert">
-		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		<strong>Recipient Email Failure!</strong> There was an issue sending your gift card to the provided recipient email <button class="btn btn-danger btn-xs">Resend Recipient Email</button>
-	</div>
+<div ng-if="giftCard" class="col-md-12">
 	<div class="row s-detail-modules-wrapper">
 		
-		<sw-gift-card-overview ng-if="giftCard"  gift-card="giftCard"></sw-gift-card-overview>
+		<sw-gift-card-overview gift-card="giftCard"></sw-gift-card-overview>
 		
-		<sw-gift-card-balance ng-if="giftCard"  gift-card="giftCard"></sw-gift-card-balance>
+		<sw-gift-card-balance gift-card="giftCard"></sw-gift-card-balance>
 		
-		<sw-gift-card-order-info ng-if="giftCard"  gift-card="giftCard"></sw-gift-card-order-info>
+		<sw-gift-card-order-info gift-card="giftCard"></sw-gift-card-order-info>
 		
-		<sw-gift-card-recipient-info ng-if="giftCard"  gift-card="giftCard"></sw-gift-card-recipient-info>
+		<sw-gift-card-recipient-info gift-card="giftCard"></sw-gift-card-recipient-info>
 		
 	</div>
 
 	<div class="row s-detail-content-wrapper">
 		
-		<sw-gift-card-history ng-if="giftCard" gift-card="giftCard"></sw-gift-card-history>
+		<sw-gift-card-history gift-card="giftCard"></sw-gift-card-history>
 		
 	</div>
 </div>

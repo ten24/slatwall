@@ -9,7 +9,6 @@ module slatwalladmin {
 		public scope = { 
 			giftCard:"=?"
 		}; 
-		public bindToController; 
 			
 		constructor(private $slatwall:ngSlatwall.$Slatwall, private $templateCache:ng.ITemplateCache, private partialsPath:slatwalladmin.partialsPath){ 
 			this.templateUrl = partialsPath + "/entity/giftcard/history.html";
@@ -17,7 +16,6 @@ module slatwalladmin {
 		}
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-			
 			var initialBalance:number = 0;
 			var totalDebit:number = 0; 
 			
@@ -26,9 +24,8 @@ module slatwalladmin {
 			transactionConfig.addFilter('giftCard.giftCardID', scope.giftCard.giftCardID);
 			transactionConfig.setAllRecords(true);
 			transactionConfig.setOrderBy("orderPayment.order.orderOpenDateTime", "DESC");
-			
 			var transactionPromise = $slatwall.getEntity("GiftCardTransaction", transactionConfig.getOptions());
-			
+		
 			transactionPromise.then((response)=>{
 				scope.transactions = response.records; 
 				
@@ -74,8 +71,6 @@ module slatwalladmin {
 					}
 				
 				});
-				
-				console.log(scope); 
 			});		
 			
 			var orderConfig = new slatwalladmin.CollectionConfig($slatwall, 'Order');
@@ -86,6 +81,8 @@ module slatwalladmin {
 			orderConfig.getEntity().then((response)=>{
 				scope.order = response.records[0];
 			});	
+			
+			
 		}
 		
 	}

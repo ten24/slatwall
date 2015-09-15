@@ -54,5 +54,12 @@ Notes:
 <cfparam name="rc.edit" type="boolean">
 
 <cfoutput>
-<sw-gift-card-detail gift-card-id="#rc.giftCardID#"></sw-gift-card-detail>
+	<hb:HibachiEntityActionBar type="detail" object="#rc.giftCard#" showEdit="false">
+
+		<!--- Create --->
+		<hb:HibachiEntityActionBarButtonGroup>
+		</hb:HibachiEntityActionBarButtonGroup>
+	</hb:HibachiEntityActionBar>
+
+	<sw-gift-card-detail gift-card-id="#rc.giftCardID#"></sw-gift-card-detail>
 </cfoutput>
