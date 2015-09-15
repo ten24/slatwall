@@ -1267,78 +1267,77 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	}
 
 	public void function addPostFiltersFromKeywords(required any collectionConfig) {
-		var columnIndex = 0;
 		var keywordArray = getKeywordArray();
 		var keywordCount = arraylen(keywordArray);
 		var defaultColumns = false;
-
-		if (structKeyExists(arguments.collectionConfig, 'columns') && arrayLen(arguments.collectionConfig.columns)) {
+		//If columns config is not passed in, use all the columns
+		if(structKeyExists(arguments.collectionConfig,'columns') && arrayLen(arguments.collectionConfig.columns)){
 			var columns = arguments.collectionConfig.columns;
 		} else {
 			defaultColumns = true;
 			var columns = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
 		}
-
-		for(var column in columns) {
-
-			if ((
-					!defaultColumns && ( !structKeyExists(column, 'isSearchable') || !column.isSearchable)
-				) || (
-					defaultColumns && (
-						structKeyExists(column, 'fkcolumn')
-						|| (structKeyExists(column, 'persistent') && column.persistent == false)
-						|| !structKeyExists(column, 'ormtype')
-				))
-			) continue;
-
-
-			if(!structKeyExists(column, 'ormtype')){
-				var allColumns = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
-				for( col in allColumns){
-					if(col.name == ListLast(column.propertyIdentifier, '.') && structKeyExists(col, 'ormtype')){
-						column.ormtype = col.ormtype;
-						break;
-					}
-				}
-			}
-
-			if(!structKeyExists(column, 'ormtype') || column.ormtype eq 'boolean' || column.ormtype eq 'timestamp') continue;
-
-
-			var formatter = (column.ormtype eq 'big_decimal' || column.ormtype eq 'integer') ? 'STR' : 'LOWER';
-			var propertyIdentifier = (!defaultColumns)? column.propertyIdentifier : arguments.collectionConfig.baseEntityAlias&'.'&column.name;
-
-			var keywordIndex = 0;
-			for(var keyword in keywordArray) {
-
+		var keywordIndex = 0;
+		//loop through keywords
+		for(var keyword in keywordArray) {
+			var columnIndex = 0;
+			//loop through columns
+			for(var column in columns) {
 				var postFilterGroup = {
 					filterGroup = [
 						{
 							comparisonOperator = "like",
-							value = "%#keyword#%"
+							value="%#keyword#%"
 						}
 					]
 				};
+				if ((
+					!defaultColumns && ( !structKeyExists(column, 'isSearchable') || !column.isSearchable)
+					) || (
+					defaultColumns && (
+						structKeyExists(column, 'fkcolumn')
+					|| (structKeyExists(column, 'persistent') && column.persistent == false)
+					|| !structKeyExists(column, 'ormtype')
+					))
+				) continue;
+				//if ormtype is not set, find it
+				if(!structKeyExists(column, 'ormtype')){
+					var allColumns = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
+					for( col in allColumns){
+						if(col.name == ListLast(column.propertyIdentifier, '.') && structKeyExists(col, 'ormtype')){
+							column.ormtype = col.ormtype;
+							break;
+						}
+					}
+				}
+				//skip booleans and timestamps
+				if(!structKeyExists(column, 'ormtype') || column.ormtype eq 'boolean' || column.ormtype eq 'timestamp') continue;
 
+				var formatter = (column.ormtype eq 'big_decimal' || column.ormtype eq 'integer') ? 'STR' : 'LOWER';
+				//Create a propertyIdentifier for DefaultColumns
+				var propertyIdentifier = (!defaultColumns)? column.propertyIdentifier : arguments.collectionConfig.baseEntityAlias&'.'&column.name;
+				//If is Attributes
 				if (structKeyExists(column, 'attributeID')) {
 					postFilterGroup.filterGroup[1].propertyIdentifier = propertyIdentifier;
 					postFilterGroup.filterGroup[1].attributeID = column.attributeID;
 					postFilterGroup.filterGroup[1].attributeSetObject = column.attributeSetObject;
 					if (keywordCount != 0) postFilterGroup.logicalOperator = "OR";
-				} else {
+				}else{
 					postFilterGroup.filterGroup[1].propertyIdentifier = formatter & '(#propertyIdentifier#)';
-				}
-
-				if (columnIndex != 0) {
-					postFilterGroup.logicalOperator = "AND";
-				}
-				if (keywordCount > 1 && keywordIndex > 0) {
-					postFilterGroup.logicalOperator = "OR";
+					if(keywordCount == 1){
+						postFilterGroup.logicalOperator = "OR";
+					}else{
+						postFilterGroup.logicalOperator = (columnIndex) ? "OR" : "AND";
+					}
+					//remove AND from the frist filterGroup
+					if(columnIndex == 0 && keywordIndex == 0) {
+						structDelete(postFilterGroup, "logicalOperator");
+					}
 				}
 				addPostFilterGroup(postFilterGroup);
-				keywordIndex++;
+				columnIndex++;
 			}
-			columnIndex++;
+			keywordIndex++;
 		}
 	}
 
