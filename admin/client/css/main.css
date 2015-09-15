@@ -357,6 +357,15 @@ a:hover {
   color: #666;
   font-weight: 600;
 }
+.s-table-title {
+  font-size: 14px;
+  color: #666;
+}
+.s-table-alternate-title {
+  position: absolute;
+  font-size: 14px;
+  color: #666;
+}
 button::-moz-focus-inner {
   border: 0;
 }
@@ -1157,6 +1166,10 @@ table tr th .glyphicon {
   border-color: #888;
   border-top-right-radius: 2px;
   border-top-left-radius: 2px;
+}
+/*Listing Display*/
+.s-listing-display-table-wrapper {
+  margin-bottom: 10px;
 }
 /*File attr*/
 .s-file-upload a span {
