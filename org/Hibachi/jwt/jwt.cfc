@@ -8,11 +8,16 @@
 			
 --->
 
-<cfcomponent output="false">
+<cfcomponent accessors="true" output="false" persistent="false" extends="Slatwall.org.Hibachi.HibachiObject">
+	<cfproperty name="algorithmMap" persistent="false"/>
+	<cfproperty name="payload" persistent="false"/>
+	<cfproperty name="header" persistent="false"/>
+	<cfproperty name="signature" persistent="false"/>
+	<cfproperty name="tokenString" persistent="false"/>
 	
 	<cffunction name="init" output="false">
 		<cfargument name="key" required="true">
-
+		
 		<cfset variables.key = arguments.key>
 		<!--- Supported algorithms --->
 		<cfset variables.algorithmMap = {
@@ -24,49 +29,78 @@
 
 		<cfreturn this>
 	</cffunction>
+	
+	<cffunction name="getPayload" output="false">
+		<cfif !structKeyExists(variables,'payload')>
+			<cftry>
+				<cfset decode(variables.TokenString)>
+			<cfcatch></cfcatch>
+			</cftry>
+		</cfif>
+		<cfreturn variables.payload>
+	</cffunction>
+	
+	<cffunction name="getHeader" output="false">
+		<cfif !structKeyExists(variables,'header')>
+			<cfset decode(variables.TokenString)>
+		</cfif>
+		<cfreturn variables.header>
+	</cffunction>
+	
+	<cffunction name="getSignature" output="false">
+		<cfif !structKeyExists(variables,'signature')>
+			<cfset decode(variables.TokenString)>
+		</cfif>
+		<cfreturn variables.signature>
+	</cffunction>
+	
 
 	<!--- 	decode(string) as struct
-			Description:  Decode a JSON Web Token
+			Description:  Decode a JSON Web TokenString
 	---> 
 	<cffunction name="decode" output="false">
-		<cfargument name="token" required="true">
-
-		<!--- Token should contain 3 segments --->
-		<cfif listLen(arguments.token,".") neq 3>
+		
+		<!--- TokenString should contain 3 segments --->
+		<cfif listLen(getTokenString(),".") neq 3>
 			<cfthrow type="Invalid Token" message="Token should contain 3 segments">
 		</cfif>
 
 		<!--- Get  --->
-		<cfset var header = deserializeJSON(base64UrlDecode(listGetAt(arguments.token,1,".")))>
-		<cfset var payload = deserializeJSON(base64UrlDecode(listGetAt(arguments.token,2,".")))>
-		<cfset var signature = listGetAt(arguments.token,3,".")>
+		<cfset setHeader(deserializeJSON(base64UrlDecode(listGetAt(getTokenString(),1,"."))))>
+		<cfset setPayload(deserializeJSON(base64UrlDecode(listGetAt(getTokenString(),2,"."))))>
+		<cfset setSignature(listGetAt(getTokenString(),3,"."))>
 
 		<!--- Make sure the algorithm listed in the header is supported --->
-		<cfif listFindNoCase(structKeyList(algorithmMap),header.alg) eq false>
+		<cfif listFindNoCase(structKeyList(getAlgorithmMap()),getHeader().alg) eq false>
 			<cfthrow type="Invalid Token" message="Algorithm not supported">
 		</cfif>
 
 		<!--- Verify signature --->
-		<cfset var signInput = listGetAt(arguments.token,1,".") & "." & listGetAt(arguments.token,2,".")>
-		<cfif signature neq sign(signInput,algorithmMap[header.alg])>
+		<cfset var signInput = listGetAt(getTokenString(),1,".") & "." & listGetAt(getTokenString(),2,".")>
+		<cfif signature neq sign(signInput,getAlgorithmMap()[getHeader().alg])>
 			<cfthrow type="Invalid Token" message="signature verification failed">
 		</cfif>
 		
 		<!--- need valid iat --->
-		<cfif !structKeyExists(payload,'iat')>
+		<cfif !structKeyExists(getPayload(),'iat')>
 			<cfthrow type="No Valid issue at time date">
 		</cfif>
 		
 		<!--- need valid exp --->
-		<cfif !structKeyExists(payload,'exp')>
+		<cfif !structKeyExists(getPayload(),'exp')>
 			<cfthrow type="No Valid expiration time date">
 		</cfif>
 		
-		<cfreturn payload>
+		<cfset var currentTime = getService('hibachiUtilityService').getCurrentUtcTime()/>
+		<cfif currentTime lt getPayload().iat || currentTime gt getPayload().exp>
+			<cfthrow type="Token is expired"/>
+		</cfif>
+		
+		<cfreturn this>
 	</cffunction>
-
+	
 	<!--- 	encode(struct,[string]) as String
-			Description:  encode a data structure as a JSON Web Token
+			Description:  encode a data structure as a JSON Web TokenString
 	---> 
 	<cffunction name="encode" output="false">
 		<cfargument name="payload" required="true">
@@ -77,7 +111,7 @@
 		<cfset var segments = "">
 
 		<!--- Make sure only supported algorithms are used --->
-		<cfif listFindNoCase(structKeyList(algorithmMap),arguments.algorithm)>
+		<cfif listFindNoCase(structKeyList(getAlgorithmMap()),arguments.algorithm)>
 			<cfset hashAlgorithm = arguments.algorithm>
 		</cfif>
 
@@ -85,7 +119,7 @@
 		<cfset segments = listAppend(segments, base64UrlEscape(toBase64(serializeJSON({ "typ" =  "JWT", "alg" = hashAlgorithm }),'UTF-8')),".")>
 		<!--- Add payload --->
 		<cfset segments = listAppend(segments, base64UrlEscape(toBase64(serializeJSON(arguments.payload),'UTF-8')),".")>
-		<cfset segments = listAppend(segments, sign(segments,algorithmMap[hashAlgorithm]),".")>
+		<cfset segments = listAppend(segments, sign(segments,getAlgorithmMap()[hashAlgorithm]),".")>
 
 		<cfreturn segments>
 	</cffunction>
@@ -94,12 +128,9 @@
 			Description:  Verify the token signature
 	---> 
 	<cffunction name="verify" output="false">
-		<cfargument name="token" required="true">
-
 		<cfset var isValid = true>
-
 		<cftry>
-			<cfset decode(token)>
+			<cfset decode(getTokenString())>
 			<cfcatch>
 				<cfset isValid = false>
 			</cfcatch>

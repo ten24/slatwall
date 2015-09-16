@@ -17,10 +17,12 @@ var slatwalladmin;
             this.get = function () {
                 return _this._pageDialogs || [];
             };
-            this.addPageDialog = function (name, params) {
+            this.addPageDialog = function (name, params, deferred) {
                 var newDialog = {
                     'path': _this.partialsPath + name + '.html',
-                    'params': params
+                    'params': params,
+                    //able to add deferred promises
+                    'deferred': deferred
                 };
                 _this._pageDialogs.push(newDialog);
             };
@@ -29,6 +31,9 @@ var slatwalladmin;
             };
             this.getPageDialogs = function () {
                 return _this._pageDialogs;
+            };
+            this.removeCurrentDialog = function () {
+                _this._pageDialogs.splice(_this._pageDialogs.length - 1, 1);
             };
             this.getCurrentDialog = function () {
                 return _this._pageDialogs[_this._pageDialogs.length - 1];

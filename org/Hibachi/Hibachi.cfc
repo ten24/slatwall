@@ -59,6 +59,7 @@ component extends="FW1.framework" {
 		,{ "$POST/api/scope/:context/$" = "/api:public/post/context/:context"}
 		
 		,{ "$POST/api/auth/login/$" = "/api:main/login"}
+		,{ "$GET/api/auth/login/$" = "/api:main/login"}
 		
 		,{ "$POST/api/log/$" = "/api:main/log"}
 		
@@ -211,15 +212,15 @@ component extends="FW1.framework" {
 				var prefix = 'Bearer ';
 				//get token by stripping prefix
 				var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
+				request.context.jwt = getHibachiScope().getService('jwtService').getJwtByToken(token);
 				
-				var payload = getHibachiScope().getService('jwtService').verifyToken(token);
-				//if payload is not empty then set account to session
-				if(!structIsEmpty(payload)){
-					var account = getHibachiScope().getService('accountService').getAccountByAccountID(payload.accountid);
+				if(request.context.jwt.verify()){
+					var account = getHibachiScope().getService('accountService').getAccountByAccountID(request.context.jwt.getPayload().accountid);
 					if(!isNull(account)){
 						getHibachiScope().getSession().setAccount( account );
 					}
 				}
+				
 			}
 			
 			// If there is no account on the session, then we can look for an authToken to setup that account for this one request
@@ -315,11 +316,24 @@ component extends="FW1.framework" {
 			if(right(request.context.sRedirectURL, 1) == "?" || right(request.context.sRedirectURL, 1) == "&") {
 				request.context.sRedirectURL = left(request.context.sRedirectURL, len(request.context.sRedirectURL) - 1);
 			}
-			
-			if(getSubsystem(request.context[ getAction() ]) == 'api'){
+			//detect if we are on an angular hashbang page
+			if(structKeyExists(url,'ng') || getSubsystem(request.context[ getAction() ]) == 'api'){
 				//rc.messages = [{message=rbkey('define.noaccess')}];
 				var context = getPageContext().getResponse();
-				context.getResponse().setStatus(401, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+				request.context.messages = [];
+				var message = {};
+				var message['messageType'] = 'error';
+				if(getHibachiScope().getLoggedInFlag()){
+					if(structKeyExists(request.context,'jwt') && request.context.jwt.verify()){
+						context.getResponse().setStatus(403, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+					}else{
+						context.getResponse().setStatus(401, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+						message['message'] = 'invalid_token';
+					}
+				}else{
+					message['message'] = 'timeout';
+				}
+				arrayAppend(request.context.messages,message);
 			}
 			//Route the user to the noaccess page if they are already logged in
 			else if( getHibachiScope().getLoggedInFlag() ) {

@@ -49,31 +49,16 @@ Notes:
 component  output="false" accessors="true" extends="HibachiService" hint="Allows for easily checking signatures, keys, uuid, as well as generating them."
 {
 	//list of supported algorithms
-	variables.algorithmMap = {
-		"HS256" = "HmacSHA256",
-		"HS384" = "HmacSHA384",
-		"HS512" = "HmacSHA512"
-	};
 	
 	public any function newJWT(required string key){
 		return new Slatwall.org.Hibachi.jwt.jwt(key);
 	}
-	//returns payload if it is valid
-	public struct function verifyToken(required string token){
+	
+	public any function getJwtByToken(required string token){
 		var key = getService('settingService').getSettingValue('globalClientSecret');
 		var jwt = newJwt(key);
-		//validate that the token hasn't been tampered with
-		var isValid = jwt.verify(token);
-		if(!isValid){
-			return {};
-		}
-		var payload = jwt.decode(token);
-		//verify payload
-		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
-		if(currentTime > payload.iat && currentTime < payload.exp){
-			return payload;
-		}
-		return {};
+		jwt.setTokenString(arguments.token);
+		return jwt;
 	}
 	
 	public string function createToken(){
@@ -82,13 +67,12 @@ component  output="false" accessors="true" extends="HibachiService" hint="Allows
 		var jwt = newJwt(key);
 		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
 		//hard coded to 15 minutes
-		var tokenExpirationTime = 5;
-		var payload = {
-			"iat"="#javaCast( "int", currentTime )#",
-			"exp"="#javaCast( "int", ( currentTime + tokenExpirationTime))#",
-			"accountid"="#getHibachiScope().getAccount().getAccountID()#",
-			"encoding"="UTF-8"
-		};
+		var tokenExpirationTime = 900;
+		var payload = {};
+		payload['iat'] = javaCast( "int", currentTime );
+		payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
+		payload['accountid'] = getHibachiScope().getAccount().getAccountID();
+		payload['encoding'] = "UTF-8";
 		var token = jwt.encode(payload);
 		
 		return token;

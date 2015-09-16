@@ -3,24 +3,24 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     class SlatwallInterceptor {
-        constructor($window, $q, $log, alertService) {
+        constructor($window, $q, $log, $injector, alertService, baseURL, dialogService) {
             this.$window = $window;
             this.$q = $q;
             this.$log = $log;
+            this.$injector = $injector;
             this.alertService = alertService;
+            this.baseURL = baseURL;
+            this.dialogService = dialogService;
             this.urlParam = null;
             this.authHeader = 'Authorization';
             this.authPrefix = 'Bearer ';
-            this.tokenGetter = () => {
-                return null;
-            };
             this.request = (config) => {
                 this.$log.debug('request');
-                config.headers = config.headers || {};
-                if (this.$window.sessionStorage.token) {
-                    config.headers.Authorization = 'Bearer ' + this.$window.sessionStorage.token;
-                }
                 if (config.method == 'GET' && (config.url.indexOf('.html') == -1) && config.url.indexOf('.json') == -1) {
+                    config.headers = config.headers || {};
+                    if (this.$window.localStorage.token) {
+                        config.headers.Authorization = 'Bearer ' + this.$window.localStorage.token;
+                    }
                     config.method = 'POST';
                     config.data = {};
                     var data = {};
@@ -46,8 +46,6 @@ var slatwalladmin;
             };
             this.response = (response) => {
                 this.$log.debug('response');
-                if (response.status === 401) {
-                }
                 var messages = response.data.messages;
                 var alerts = this.alertService.formatMessagesToAlerts(messages);
                 this.alertService.addAlerts(alerts);
@@ -69,19 +67,42 @@ var slatwalladmin;
                         this.alertService.addAlert(message);
                     }
                 }
+                if (rejection.status === 401) {
+                    // handle the case where the user is not authenticated
+                    if (rejection.data && rejection.data.messages) {
+                        var deferred = $q.defer();
+                        var $http = this.$injector.get('$http');
+                        if (rejection.data.messages[0].message === 'timeout') {
+                            //open dialog
+                            this.dialogService.addPageDialog('preprocesslogin', {}, deferred);
+                        }
+                        else if (rejection.data.messages[0].message === 'invalid_token') {
+                            $http.get(baseURL + '/index.cfm/api/auth/login').then((loginResponse) => {
+                                console.log('test');
+                                console.log(loginResponse);
+                                this.$window.localStorage.token = loginResponse.data.token.token;
+                            }, function () {
+                                console.log('token failure');
+                            });
+                        }
+                    }
+                }
                 this.$q.reject(rejection);
                 return rejection;
             };
             this.$window = $window;
             this.$q = $q;
             this.$log = $log;
+            this.$injector = $injector;
             this.alertService = alertService;
+            this.baseURL = baseURL;
+            this.dialogService = dialogService;
         }
-        static Factory($window, $q, $log, alertService) {
-            return new SlatwallInterceptor($window, $q, $log, alertService);
+        static Factory($window, $q, $log, $injector, alertService, baseURL, dialogService) {
+            return new SlatwallInterceptor($window, $q, $log, $injector, alertService, baseURL, dialogService);
         }
     }
-    SlatwallInterceptor.$inject = ['$window', '$q', '$log', 'alertService'];
+    SlatwallInterceptor.$inject = ['$window', '$q', '$log', '$injector', 'alertService', 'baseURL', 'dialogService'];
     slatwalladmin.SlatwallInterceptor = SlatwallInterceptor;
     angular.module('slatwalladmin').service('slatwallInterceptor', SlatwallInterceptor);
 })(slatwalladmin || (slatwalladmin = {}));

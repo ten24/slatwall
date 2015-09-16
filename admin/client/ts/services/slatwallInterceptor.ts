@@ -9,36 +9,52 @@ module slatwalladmin{
     }
 	
 	export class SlatwallInterceptor implements slatwalladmin.IInterceptor{
-		public static $inject = ['$window','$q','$log','alertService'];
+		public static $inject = ['$window','$q','$log','$injector','alertService','baseURL','dialogService'];
 		
-		public static Factory($window:ng.IWindowService ,$q:ng.IQService,$log:ng.ILogService,alertService:slatwalladmin.IAlertService) {
-            return new SlatwallInterceptor($window, $q, $log, alertService);
+		public static Factory(
+			$window:ng.IWindowService ,
+			$q:ng.IQService,
+			$log:ng.ILogService,
+			$injector:ng.auto.IInjectorService,
+			alertService:slatwalladmin.IAlertService,
+			baseURL,
+			dialogService:slatwalladmin.IDialogService
+		) {
+            return new SlatwallInterceptor($window, $q, $log, $injector, alertService,baseURL,dialogService);
         }
         
         public urlParam = null;
         public authHeader = 'Authorization';
         public authPrefix = 'Bearer ';
 
-        constructor(public $window:ng.IWindowService, public $q:ng.IQService, public $log:ng.ILogService, public alertService:slatwalladmin.IAlertService) {
+        constructor(
+			public $window:ng.IWindowService, 
+			public $q:ng.IQService, 
+			public $log:ng.ILogService,
+			public $injector:ng.auto.IInjectorService, 
+			public alertService:slatwalladmin.IAlertService,
+			public baseURL,
+			public dialogService:slatwalladmin.IDialogService
+		) {
         	this.$window = $window;
 			this.$q = $q;
 			this.$log = $log;
+			this.$injector = $injector;
 			this.alertService = alertService;
-            
+			this.baseURL = baseURL;
+			this.dialogService = dialogService;
         }
         
-        public tokenGetter = () =>{
-          return null;
-        }
-		
 		public request = (config): ng.IPromise<any> => {
             this.$log.debug('request');
-            config.headers = config.headers || {};
-            if (this.$window.sessionStorage.token) {
-               config.headers.Authorization = 'Bearer ' + this.$window.sessionStorage.token;
-            }
+            
             
 			if(config.method == 'GET' && (config.url.indexOf('.html') == -1) && config.url.indexOf('.json') == -1){
+				config.headers = config.headers || {};
+				if (this.$window.localStorage.getItem('token') && this.$window.localStorage.getItem('token') !== "undefined") {
+					config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
+				}
+				
 				config.method = 'POST';
 				config.data = {};
 				var data = {};
@@ -64,10 +80,7 @@ module slatwalladmin{
         }
         public response = (response): ng.IPromise<any> => {
             this.$log.debug('response');
-            if (response.status === 401) {
-               // handle the case where the user is not authenticated
-            }
-              
+			
 			var messages = response.data.messages;
 			var alerts = this.alertService.formatMessagesToAlerts(messages);
 			this.alertService.addAlerts(alerts);
@@ -89,7 +102,35 @@ module slatwalladmin{
 					this.alertService.addAlert(message);
 				}
 			}
-			this.$q.reject(rejection);
+			if (rejection.status === 401) {
+				// handle the case where the user is not authenticated
+				if(rejection.data && rejection.data.messages){
+					var deferred = $q.defer(); 
+					var $http = this.$injector.get('$http');
+					if(rejection.data.messages[0].message === 'timeout'){
+						//open dialog
+						this.dialogService.addPageDialog('preprocesslogin',{},deferred);
+					}else if(rejection.data.messages[0].message === 'invalid_token'){
+						$http.get(baseURL+'/index.cfm/api/auth/login').then((loginResponse)=>{
+                            console.log('test');
+                            console.log(loginResponse);
+                            this.$window.localStorage.setItem('token',loginResponse.data.token);
+                            console.log(rejection);
+                            rejection.config.headers = rejection.config.headers || {};
+                            rejection.config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
+                            $http(rejection.config).then(function(response) {
+                                console.log('repsonse');
+                                console.log(response);
+                                this.$q.resolve(response);
+                            });
+						},function(){
+                            this.$q.reject(rejection);
+                            console.log('token failure');                            
+                        });
+					}
+				}
+            }
+			
 			return rejection;
         }
 		

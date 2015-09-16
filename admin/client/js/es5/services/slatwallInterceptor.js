@@ -3,25 +3,25 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     var SlatwallInterceptor = (function () {
-        function SlatwallInterceptor($window, $q, $log, alertService) {
+        function SlatwallInterceptor($window, $q, $log, $injector, alertService, baseURL, dialogService) {
             var _this = this;
             this.$window = $window;
             this.$q = $q;
             this.$log = $log;
+            this.$injector = $injector;
             this.alertService = alertService;
+            this.baseURL = baseURL;
+            this.dialogService = dialogService;
             this.urlParam = null;
             this.authHeader = 'Authorization';
             this.authPrefix = 'Bearer ';
-            this.tokenGetter = function () {
-                return null;
-            };
             this.request = function (config) {
                 _this.$log.debug('request');
-                config.headers = config.headers || {};
-                if (_this.$window.sessionStorage.token) {
-                    config.headers.Authorization = 'Bearer ' + _this.$window.sessionStorage.token;
-                }
                 if (config.method == 'GET' && (config.url.indexOf('.html') == -1) && config.url.indexOf('.json') == -1) {
+                    config.headers = config.headers || {};
+                    if (_this.$window.localStorage.getItem('token') && _this.$window.localStorage.getItem('token') !== "undefined") {
+                        config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
+                    }
                     config.method = 'POST';
                     config.data = {};
                     var data = {};
@@ -47,8 +47,6 @@ var slatwalladmin;
             };
             this.response = function (response) {
                 _this.$log.debug('response');
-                if (response.status === 401) {
-                }
                 var messages = response.data.messages;
                 var alerts = _this.alertService.formatMessagesToAlerts(messages);
                 _this.alertService.addAlerts(alerts);
@@ -70,18 +68,49 @@ var slatwalladmin;
                         _this.alertService.addAlert(message);
                     }
                 }
-                _this.$q.reject(rejection);
+                if (rejection.status === 401) {
+                    // handle the case where the user is not authenticated
+                    if (rejection.data && rejection.data.messages) {
+                        var deferred = $q.defer();
+                        var $http = _this.$injector.get('$http');
+                        if (rejection.data.messages[0].message === 'timeout') {
+                            //open dialog
+                            _this.dialogService.addPageDialog('preprocesslogin', {}, deferred);
+                        }
+                        else if (rejection.data.messages[0].message === 'invalid_token') {
+                            $http.get(baseURL + '/index.cfm/api/auth/login').then(function (loginResponse) {
+                                console.log('test');
+                                console.log(loginResponse);
+                                _this.$window.localStorage.setItem('token', loginResponse.data.token);
+                                console.log(rejection);
+                                rejection.config.headers = rejection.config.headers || {};
+                                rejection.config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
+                                $http(rejection.config).then(function (response) {
+                                    console.log('repsonse');
+                                    console.log(response);
+                                    this.$q.resolve(response);
+                                });
+                            }, function () {
+                                this.$q.reject(rejection);
+                                console.log('token failure');
+                            });
+                        }
+                    }
+                }
                 return rejection;
             };
             this.$window = $window;
             this.$q = $q;
             this.$log = $log;
+            this.$injector = $injector;
             this.alertService = alertService;
+            this.baseURL = baseURL;
+            this.dialogService = dialogService;
         }
-        SlatwallInterceptor.Factory = function ($window, $q, $log, alertService) {
-            return new SlatwallInterceptor($window, $q, $log, alertService);
+        SlatwallInterceptor.Factory = function ($window, $q, $log, $injector, alertService, baseURL, dialogService) {
+            return new SlatwallInterceptor($window, $q, $log, $injector, alertService, baseURL, dialogService);
         };
-        SlatwallInterceptor.$inject = ['$window', '$q', '$log', 'alertService'];
+        SlatwallInterceptor.$inject = ['$window', '$q', '$log', '$injector', 'alertService', 'baseURL', 'dialogService'];
         return SlatwallInterceptor;
     })();
     slatwalladmin.SlatwallInterceptor = SlatwallInterceptor;

@@ -14,7 +14,6 @@ component output="false" accessors="true" extends="HibachiController" {
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getFilterPropertiesByBaseEntityName');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getProcessObject');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayData');
-	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getResourceBundle');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayOptions');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
@@ -39,15 +38,17 @@ component output="false" accessors="true" extends="HibachiController" {
 	}
 	
 	public any function before( required struct rc ) {
+		
 		arguments.rc.apiRequest = true;
+		
 		getFW().setView("public:main.blank");
-		//could possibly check whether we want a different contentType other than json in the future
 		param name="rc.headers.contentType" default="application/json"; 
 		arguments.rc.headers["Content-Type"] = rc.headers.contentType;
 		
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
 		}
+		
 		if(!isNull(arguments.rc.context) && arguments.rc.context == 'GET' 
 			&& structKEyExists(arguments.rc, 'serializedJSONData') 
 			&& isSimpleValue(arguments.rc.serializedJSONData) 
@@ -55,6 +56,9 @@ component output="false" accessors="true" extends="HibachiController" {
 		) {
 			StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
 		}
+		
+		//could possibly check whether we want a different contentType other than json in the future example:xml
+		
 	}
 	
 	public void function login(required struct rc){

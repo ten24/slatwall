@@ -47,7 +47,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
-                    auditDateTime: '1442258842274',
+                    auditDateTime: '1442429541775',
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -98,7 +98,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
-                    verificationCode: '3d49f6fcaf17c4a08002cc3ee96a35df',
+                    verificationCode: '60e9ade99705735ce994c3925a2a8098',
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -1675,7 +1675,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
-                    accountPasswordResetID: "343889373be115de6e6f29fd0b86c612",
+                    accountPasswordResetID: "5c2ef9f2f391d9a8f9af3df33029967a",
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
@@ -3087,7 +3087,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                         var jsEntity = this;
                         if (entity.isProcessObject) {
                             (function (entity) {
-                                jsEntities[entity.className].prototype = {
+                                _jsEntities[entity.className].prototype = {
                                     $$getID: function () {
                                         return '';
                                     },

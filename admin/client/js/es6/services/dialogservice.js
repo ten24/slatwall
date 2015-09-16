@@ -9,10 +9,12 @@ var slatwalladmin;
             this.get = () => {
                 return this._pageDialogs || [];
             };
-            this.addPageDialog = (name, params) => {
+            this.addPageDialog = (name, params, deferred) => {
                 var newDialog = {
                     'path': this.partialsPath + name + '.html',
-                    'params': params
+                    'params': params,
+                    //able to add deferred promises
+                    'deferred': deferred
                 };
                 this._pageDialogs.push(newDialog);
             };
@@ -21,6 +23,9 @@ var slatwalladmin;
             };
             this.getPageDialogs = () => {
                 return this._pageDialogs;
+            };
+            this.removeCurrentDialog = () => {
+                this._pageDialogs.splice(this._pageDialogs.length - 1, 1);
             };
             this.getCurrentDialog = () => {
                 return this._pageDialogs[this._pageDialogs.length - 1];

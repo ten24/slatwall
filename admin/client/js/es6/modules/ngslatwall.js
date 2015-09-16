@@ -1,17 +1,7 @@
 /// <reference path="../../../../client/typings/tsd.d.ts" />
 /// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 (() => {
-    var ngSlatwall = angular.module('ngSlatwall', [])
-        .run(['$rootScope', '$injector', function ($rootScope, $injector) {
-            $injector.get("$http").defaults.transformRequest = function (data, headersGetter) {
-                if ($rootScope.oauth)
-                    headersGetter()['Authorization'] = "Bearer " + $rootScope.oauth.access_token;
-                if (data) {
-                    return angular.toJson(data);
-                }
-            };
-        }
-    ]);
+    var ngSlatwall = angular.module('ngSlatwall', []);
 })();
 var ngSlatwall;
 (function (ngSlatwall) {
@@ -327,6 +317,19 @@ var ngSlatwall;
                     });
                 }
                 return this._loadedResourceBundle;
+            };
+            this.login = (emailAddress, password) => {
+                var deferred = this.$q.defer();
+                var urlString = this.getConfig().baseURL + '/index.cfm/api/auth/login';
+                var params = {
+                    emailAddress: emailAddress,
+                    password: password
+                };
+                return $http.get(urlString, { params: params }).success((response) => {
+                    deferred.resolve(response);
+                }).error((response) => {
+                    deferred.reject(response);
+                });
             };
             this.getResourceBundle = (locale) => {
                 var deferred = this.$q.defer();

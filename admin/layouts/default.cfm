@@ -109,9 +109,9 @@ Notes:
 	</head>
 
 	<!--- Start old navbar --->
-	<body <cfif !$.slatwall.getLoggedInAsAdminFlag()>class="s-login-screen"</cfif>>
+	<body <cfif !$.slatwall.getLoggedInAsAdminFlag() && !structKeyExists(url,'ng')>class="s-login-screen"</cfif>>
 		<span>
-			<cfif $.slatwall.getLoggedInAsAdminFlag()>
+			<cfif $.slatwall.getLoggedInAsAdminFlag() || structKeyExists(url,'ng')>
 			<div class="navbar navbar-fixed-top navbar-inverse" role="navigation" id="slatwall-navbar">
 				<div class="container-fluid" style="text-align:left;">
 
@@ -347,7 +347,12 @@ Notes:
 				<div id="topOfPageDialog" >
 					<div ng-style="{pageDialogStyle:pageDialogs.length}" ng-hide="!pageDialogs.length" ng-class="{'s-dialog-container':pageDialogs.length}" ng-repeat="pageDialog in pageDialogs" >
 						<div class="s-swipe-background"></div>
-						<div  ng-include="pageDialog.path" ></div>
+						<div ng-include="pageDialog.path" ></div>
+						<!--{{pageDialog}}
+						<sw-page-dialog
+							ng-if="pageDialog"
+							data-page-dialog="pageDialog"
+						></sw-page-dialog>-->
 					</div>
 				</div>
 			</div>
@@ -433,14 +438,14 @@ Notes:
 				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & model.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" ></script>
 			</cfloop>
 
-			<cfloop query="filters">
-				<cfset scriptRelativePath = replace(model.directory,es5scriptPath,'')>
-			<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & filters.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" ></script>
-			</cfloop>
-
 			<cfloop query="modules">
 				<cfset scriptRelativePath = replace(modules.directory,es5scriptPath,'')>
 				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & modules.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" ></script>
+			</cfloop>
+			
+			<cfloop query="filters">
+				<cfset scriptRelativePath = replace(filters.directory,es5scriptPath,'')>
+				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & filters.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" ></script>
 			</cfloop>
 
 			<cfloop query="services">
