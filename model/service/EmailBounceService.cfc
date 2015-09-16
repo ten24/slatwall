@@ -122,7 +122,14 @@ Notes:
 				if(structKeyExists(header, "Related-Object")){
 					emailBounce.setRelatedObject(header["Related-Object"]);
 					emailBounce.setRelatedObjectID(header["Related-Object-ID"]);
+				} else {
+					//is this a gift card bounce
+					if(FindNoCase("Gift Card Code:", body)){
+						//grab the code associate the entity
+					}
 				}
+
+
 				if(structKeyExists(header, "X-Failed-Recipients")){
 					emailBounce.setRejectedEmailTo(header["X-Failed-Recipients"]);
 				}
