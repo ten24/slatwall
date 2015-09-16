@@ -1,16 +1,41 @@
 module slatwalladmin { 
 	'use strict'; 
 	
+	export class SWGiftCardOrderInfoController{
+		public order; 
+		public giftCard;  
+		
+		
+		constructor(private $slatwall:ngSlatwall.$Slatwall){
+			this.$slatwall = $slatwall; 
+			this.init(); 	
+		} 
+		
+		public init = ():void =>{
+
+			var orderConfig = new slatwalladmin.CollectionConfig($slatwall, 'Order');
+			orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName");
+			orderConfig.addFilter('orderID', this.giftCard.originalOrderItem_order_orderID);
+			orderConfig.setAllRecords(true);
+		
+			orderConfig.getEntity().then((response)=>{
+				this.order = response.records[0];
+			});	
+		}
+	}
+	
 	export class GiftCardOrderInfo implements ng.IDirective { 
 		
 		public static $inject = ["$slatwall", "$templateCache", "partialsPath"];
 		public restrict:string; 
 		public templateUrl:string;
-		public scope = { 
+		public scope = {};  
+		public bindToController = { 
 			giftCard:"=?", 
 			order:"=?"
 		}; 
-		public bindToController; 
+		public controller = SWGiftCardOrderInfoController; 
+		public controllerAs = "swGiftCardOrderInfo";
 			
 		constructor(private $slatwall:ngSlatwall.$Slatwall, private $templateCache:ng.ITemplateCache, private partialsPath:slatwalladmin.partialsPath){ 
 			this.templateUrl = partialsPath + "/entity/giftcard/orderinfo.html";
@@ -18,15 +43,6 @@ module slatwalladmin {
 		}
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-			
-			var orderConfig = new slatwalladmin.CollectionConfig($slatwall, 'Order');
-			orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName");
-			orderConfig.addFilter('orderID', scope.giftCard.originalOrderItem_order_orderID);
-			orderConfig.setAllRecords(true);
-		
-			orderConfig.getEntity().then((response)=>{
-				scope.order = response.records[0];
-			});			
 		}
 		
 	}

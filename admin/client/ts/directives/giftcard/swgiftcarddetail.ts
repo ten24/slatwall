@@ -1,15 +1,39 @@
 module slatwalladmin { 
 	'use strict'; 
 	
+	export class SWGiftCardDetailController{
+		public giftCardId; 
+		public giftCard; 
+		
+		constructor(private $slatwall:ngSlatwall.$Slatwall){
+			this.$slatwall = $slatwall; 
+			this.init();
+		} 
+		
+		public init = ():void =>{
+			var giftCardConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'GiftCard');
+			giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.sku.product.productID, originalOrderItem.order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage");
+			giftCardConfig.addFilter('giftCardID', this.giftCardId);
+			giftCardConfig.setAllRecords(true);
+
+			giftCardConfig.getEntity().then((response:any):void =>{
+				this.giftCard = response.records[0];
+            });
+		}
+	}
+	
 	export class GiftCardDetail implements ng.IDirective { 
 		
 		public static $inject = ["$slatwall", "$templateCache", "partialsPath"];
 		public restrict:string; 
 		public templateUrl:string;
-		public scope = { 
+		public scope = {}; 	
+		public bindToController = {
 			giftCardId:"@",
 			giftCard:"=?"
-		}; 	
+		};
+		public controller= SWGiftCardDetailController;
+        public controllerAs="swGiftCardDetail";
 		
 		constructor(private $slatwall:ngSlatwall.$Slatwall, private $templateCache:ng.ITemplateCache, private partialsPath:slatwalladmin.partialsPath){ 
 			this.templateUrl = partialsPath + "/entity/giftcard/basic.html";
@@ -19,14 +43,7 @@ module slatwalladmin {
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
 			
-			var giftCardConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'GiftCard');
-			giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage");
-			giftCardConfig.addFilter('giftCardID', scope.giftCardId);
-			giftCardConfig.setAllRecords(true);
-
-			giftCardConfig.getEntity().then((response:any):void =>{
-				scope.giftCard = response.records[0];
-            });
+			
 		}
 		
 	}

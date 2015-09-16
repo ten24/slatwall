@@ -1,39 +1,35 @@
 module slatwalladmin { 
 	'use strict'; 
 	
-	export class GiftCardHistory implements ng.IDirective { 
+	export class SWGiftCardHistoryController{
+		public transactions;
+		public giftCard; 
+		public order; 
 		
-		public static $inject = ["$slatwall", "$templateCache", "partialsPath"];
-		public restrict:string; 
-		public templateUrl:string;
-		public scope = { 
-			giftCard:"=?"
-		}; 
-			
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private $templateCache:ng.ITemplateCache, private partialsPath:slatwalladmin.partialsPath){ 
-			this.templateUrl = partialsPath + "/entity/giftcard/history.html";
-			this.restrict = "EA";
-		}
 		
-		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+		constructor(private $slatwall:ngSlatwall.$Slatwall){
+			this.$slatwall = $slatwall; 
+			this.init();
+		} 
+		
+		public init = ():void =>{
 			var initialBalance:number = 0;
 			var totalDebit:number = 0; 
 			
-			var transactionConfig = new slatwalladmin.CollectionConfig($slatwall, 'GiftCardTransaction');
+			var transactionConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'GiftCardTransaction');
 			transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, createdDateTime, giftCard.giftCardID, orderPayment.order.orderNumber, orderPayment.order.orderOpenDateTime");
-			transactionConfig.addFilter('giftCard.giftCardID', scope.giftCard.giftCardID);
+			transactionConfig.addFilter('giftCard.giftCardID', this.giftCard.giftCardID);
 			transactionConfig.setAllRecords(true);
 			transactionConfig.setOrderBy("orderPayment.order.orderOpenDateTime", "DESC");
-			var transactionPromise = $slatwall.getEntity("GiftCardTransaction", transactionConfig.getOptions());
+			var transactionPromise = this.$slatwall.getEntity("GiftCardTransaction", transactionConfig.getOptions());
 		
 			transactionPromise.then((response)=>{
-				scope.transactions = response.records; 
+				this.transactions = response.records; 
 				
-				var initialCreditIndex = scope.transactions.length-1;
-				var initialBalance = scope.transactions[initialCreditIndex].creditAmount; 
+				var initialCreditIndex = this.transactions.length-1;
+				var initialBalance = this.transactions[initialCreditIndex].creditAmount; 
 				var currentBalance = initialBalance; 
-				
-				angular.forEach(scope.transactions, function(transaction, index){
+				angular.forEach(this.transactions, (transaction, index)=>{
 				
 					if(typeof transaction.debitAmount !== "string"){
 						transaction.debit = true;
@@ -52,6 +48,7 @@ module slatwalladmin {
 					transaction.balanceFormatted = "$" + parseFloat(tempCurrentBalance.toString()).toFixed(2);
 					
 					if(index == initialCreditIndex){
+								
 						var emailSent = { 
 							emailSent: true, 
 							debit:false, 
@@ -66,22 +63,44 @@ module slatwalladmin {
 							balanceFormatted:  "$" + parseFloat(initialBalance.toString()).toFixed(2)
 						}
 						
-						scope.transactions.splice(index, 0, activeCard); 
-						scope.transactions.splice(index, 0, emailSent); 
+						this.transactions.splice(index, 0, activeCard); 
+						this.transactions.splice(index, 0, emailSent); 
+						
+						
 					}
 				
 				});
 			});		
 			
-			var orderConfig = new slatwalladmin.CollectionConfig($slatwall, 'Order');
+			var orderConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'Order');
 			orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName, account.primaryEmailAddress.emailAddress");
-			orderConfig.addFilter('orderID', scope.giftCard.originalOrderItem_order_orderID);
+			orderConfig.addFilter('orderID', this.giftCard.originalOrderItem_order_orderID);
 			orderConfig.setAllRecords(true);
 		
 			orderConfig.getEntity().then((response)=>{
-				scope.order = response.records[0];
+				this.order = response.records[0];
 			});	
+		}
+	}
+	
+	export class GiftCardHistory implements ng.IDirective { 
+		
+		public static $inject = ["$slatwall", "$templateCache", "partialsPath"];
+		public restrict:string; 
+		public templateUrl:string;
+		public scope = {};
+		public bindToController = {
+			giftCard:"=?"		
+		}; 
+		public controller=SWGiftCardHistoryController;
+		public controllerAs="swGiftCardHistory"; 
 			
+		constructor(private $slatwall:ngSlatwall.$Slatwall, private $templateCache:ng.ITemplateCache, private partialsPath:slatwalladmin.partialsPath){ 
+			this.templateUrl = partialsPath + "/entity/giftcard/history.html";
+			this.restrict = "EA";
+		}
+		
+		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
 			
 		}
 		

@@ -4,11 +4,6 @@
 		<div class="row">
 			<div class="col-xs-3 s-detail-info">
 				<p>This timeline provides details on all actions that have taken place on this gift card.</p>
-				<div class="s-search-table">
-					<input placeholder="Search timeline" class="form-control">
-					<i class="fa fa-search"></i>
-					<i class="fa fa-spinner fa-spin"></i>
-				</div>
 			</div>
 			<div class="col-xs-9 s-detail-header-table">
 
@@ -26,12 +21,12 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr ng-class="{'s-purchase':transaction.debit, 's-success':transaction.activated}" ng-repeat="transaction in transactions">
+							<tr ng-class="{'s-purchase':transaction.debit, 's-success':transaction.activated}" ng-repeat="transaction in swGiftCardHistory.transactions">
 								<!-- Initial Transactions -->
-								<td ng-if-start="$index==transactions.length-1"><i class="fa fa-plus"></i></td>
+								<td ng-if-start="$index==swGiftCardHistory.transactions.length-1"><i class="fa fa-plus"></i></td>
 								<td>Card Purchased </td>
-								<td ng-bind="order.orderOpenDateTime"></td>
-								<td>Customer: <a href="##"><span ng-bind="order.account_firstName"></span> <span ng-bind="order.account_lastName"></span> (<span ng-bind="order.account_primaryEmailAddress_emailAddress"></span>)</a></td>
+								<td ng-bind="swGiftCardHistory.order.orderOpenDateTime"></td>
+								<td>Customer: <a href="##"><span ng-bind="swGiftCardHistory.order.account_firstName"></span> <span ng-bind="swGiftCardHistory.order.account_lastName"></span> (<span ng-bind="swGiftCardHistory.order.account_primaryEmailAddress_emailAddress"></span>)</a></td>
 								<td>
 									+ <span ng-bind="transaction.creditAmount"></span>
 								</td>
@@ -43,7 +38,9 @@
 								<td ng-if-start="transaction.emailSent"><i class="fa fa-envelope"></i></td>
 								<td>Recipient notification sent </td>
 								<td ng-bind="transaction.sentAt"></td>
-								<td>Recipient: <span ng-bind="giftCard.orderItemGiftRecipient_firstName"></span> <span ng-bind="giftCard.orderItemGiftRecipient_lastName"></span> ( <span ng-bind="giftCard.orderItemGiftRecipient_emailAddress"></span> )</td>
+								<td>Recipient: 
+									<span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_firstName"></span> <span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_lastName"></span> ( <span ng-bind="swGiftCardHistory.giftCard.orderItemGiftRecipient_emailAddress"></span> )
+								</td>
 								<td>--</td>
 								<td ng-if-end ng-bind="transaction.balanceFormatted"></td>
 								
@@ -56,12 +53,12 @@
 								<td ng-if-end ng-bind="transaction.balanceFormatted"></td>
 							
 								<!-- All Other Transactions -->
-								<td ng-if-start="$index!=transactions.length-1 && !transaction.emailSent && !transaction.activated"><i class="fa fa-shopping-cart"></i></td>
+								<td ng-if-start="$index!=swGiftCardHistory.transactions.length-1 && !transaction.emailSent && !transaction.activated"><i class="fa fa-shopping-cart"></i></td>
 								<td ng-if-end>
 									<span ng-if="transaction.debit">Purchase Applied</span>
 									<span ng-if="!transaction.debit">Return Applied</span> 
 								</td>
-								<td ng-if-start="$index!=transactions.length-1 && !transaction.emailSent && !transaction.activated" ng-bind="transaction.orderPayment_order_orderOpenDateTime"></td>
+								<td ng-if-start="$index!=swGiftCardHistory.transactions.length-1 && !transaction.emailSent && !transaction.activated" ng-bind="transaction.orderPayment_order_orderOpenDateTime"></td>
 								<td>Order: <span ng-bind="transaction.orderPayment_order_orderNumber"></span></td>
 								<td>
 									<span ng-if-start="!transaction.debit && !transaction.emailSent && !transaction.activated">+</span>
@@ -147,8 +144,8 @@
 							-->
 						</tbody>
 					</table>
-					<div class="s-load-more-wrapper" ng-hide="transactions.length < 10">
-						<button type="button" name="button" class="btn btn-default btn-sm s-load-more">Load More <span>(showing 9 of 200)</span></button>
+					<div class="s-load-more-wrapper" ng-hide="swGiftCardHistory.transactions.length < 10">
+						<button type="button" name="button" class="btn btn-default btn-sm s-load-more">Load More <span>(showing 10 of <span ng-bind="swGiftCardHistory.transactions.length"></span>)</span></button>
 					</div>
 				</div>
 			</div>

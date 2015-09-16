@@ -16,28 +16,28 @@
 				<li>
 					<div class="row s-line-item">
 						<div class="col-xs-6">Customer Name:</div>
-						<div class="col-xs-6"><span ng-bind="order.account_firstName"></span> <span ng-bind="order.account_lastName"></span></div>
+						<div class="col-xs-6"><span ng-bind="swGiftCardOrderInfo.order.account_firstName"></span> <span ng-bind="swGiftCardOrderInfo.order.account_lastName"></span></div>
 					</div>
 				</li>
 
 				<li>
 					<div class="row s-line-item">
 						<div class="col-xs-6">Order Number:</div>
-						<div class="col-xs-6"><a href="##"><span ng-bind="order.orderNumber"></span></a></div>
+						<div class="col-xs-6"><a href=""><span ng-bind="swGiftCardOrderInfo.order.orderNumber"></span></a></div>
 					</div>
 				</li>
 
 				<li>
 					<div class="row s-line-item">
 						<div class="col-xs-6">Order Date:</div>
-						<div class="col-xs-6" ng-bind="order.orderOpenDateTime"></div>
+						<div class="col-xs-6" ng-bind="swGiftCardOrderInfo.order.orderOpenDateTime"></div>
 					</div>
 				</li>
 
 				<li>
 					<div class="row s-line-item">
 						<div class="col-xs-6">Product:</div>
-						<div class="col-xs-6"><a href="##"><span ng-bind="giftCard.originalOrderItem_sku_product_productName"></span></a></div>
+						<div class="col-xs-6"><a href=""><span ng-bind="swGiftCardOrderInfo.giftCard.originalOrderItem_sku_product_productName"></span></a></div>
 					</div>
 				</li>
 
