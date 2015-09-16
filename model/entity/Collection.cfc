@@ -367,7 +367,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 //check to see if we are supposed to add default columns
 			if(addDefaultColumns){
 //loop through all defaultProperties
-				for(defaultProperty in defaultProperties){
+				for(var defaultProperty in defaultProperties){
 					var columnStruct = {};
 					columnStruct['propertyIdentifier'] = '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject)) & '.' & defaultProperty.name;
 					columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
@@ -417,7 +417,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 //this is used when we get params from another collection that we need to apply to this collection
 	private void function addHQLParamsFromNestedCollection(required collectionHQLParams){
-		for(key in arguments.collectionHQLParams){
+		for(var key in arguments.collectionHQLParams){
 			addHQLParam(key,arguments.collectionHQLParams[key]);
 		}
 	}
@@ -429,7 +429,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		addHQLAlias(fullJoinName,arguments.join.alias);
 		var joinHQL = ' left join #fullJoinName# as #arguments.join.alias# ';
 		if(!isnull(arguments.join.joins)){
-			for(childJoin in arguments.join.joins){
+			for(var childJoin in arguments.join.joins){
 				joinHQL &= addJoinHQL(join.alias,childJoin);
 			}
 		}
@@ -442,7 +442,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				getCollectionConfigStruct().joins = [];
 		}
 		var joinFound = false;
-		for(configJoin in getCollectionConfigStruct().joins){
+		for(var configJoin in getCollectionConfigStruct().joins){
 			if(configJoin.alias == arguments.join.alias){
 				joinFound = true;
 			}
@@ -586,7 +586,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 			var parentFilterGroupArray = getFilterGroupArrayFromAncestors(arguments.collectionEntity.getParentCollection());
 
-			for(parentFilterGroup in parentFilterGroupArray){
+			for(var parentFilterGroup in parentFilterGroupArray){
 				if(!arrayFind(filterGroupArray,parentFilterGroup)){
 					if(!structKeyExists(parentFilterGroup,"logicalOperator")){
 						parentFilterGroup.logicalOperator = ' AND ';
@@ -683,7 +683,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private string function getFromHQL(required string baseEntityName, required string baseEntityAlias, required any joins){
 		var fromHQL = ' FROM #arguments.baseEntityName# as #arguments.baseEntityAlias#';
 		addHQLAlias(arguments.baseEntityName,arguments.baseEntityAlias);
-		for(join in arguments.joins){
+		for(var join in arguments.joins){
 			fromHQL &= addJoinHQL(arguments.baseEntityAlias,join);
 		}
 
@@ -1091,7 +1091,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 
 	private any function getColumnCountByExportableColumns(required array columns){
 		var count = 0;
-		for(column in arguments.columns){
+		for(var column in arguments.columns){
 			if(structKeyExists(column,'isExportable') && column.isExportable){
 				count++;
 			}
@@ -1303,7 +1303,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				//if ormtype is not set, find it
 				if(!structKeyExists(column, 'ormtype')){
 					var allColumns = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
-					for( col in allColumns){
+					for(var col in allColumns){
 						if(col.name == ListLast(column.propertyIdentifier, '.') && structKeyExists(col, 'ormtype')){
 							column.ormtype = col.ormtype;
 							break;
