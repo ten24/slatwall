@@ -2192,6 +2192,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Setup the orderPayment in the transaction to be used by the 'runTransaction'
 			paymentTransaction.setOrderPayment( arguments.orderPayment );
+                                                               
+            // Is this a gift card                                                   
+            if(!isNull(arguments.orderPayment.getPaymentMethod().getPaymentMethodType()) && arguments.orderPayment.getPaymentMethodType() eq "giftCard"){ 
+                arguments.processObject.setTransactionType("giftCard");                                          
+            }
 			
 			// Setup the transaction data
 			transactionData = {
@@ -2209,7 +2214,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(paymentTransaction.hasError('runTransaction')) {
 				arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
 			} else { 
-                                                                  
+                if(!isNull(arguments.orderPayment.getPaymentMethod().getPaymentMethodType()) && arguments.orderPayment.getPaymentMethodType() eq "giftCard"){ 
+                    if(paymentTransaction.getAmountReceived() gt 0){
+                         arguments.orderPayment.setAmount(paymentTransaction.getAmountRecieved());
+                    } else if(paymentTransaction.getAmountCredited() gt 0){
+                         arguments.orderPayment.setAmount(paymentTransaction.getAmountCredited());                                           
+                    } else { 
+                         arguments.orderPayment.setAmount(0);                                   
+                    }
+                       
+                    arguments.orderPayment = this.saveOrderPayment(arguments.OrderPayment);
+                }                                              
             }
 		}
 			
