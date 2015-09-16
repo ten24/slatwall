@@ -303,19 +303,17 @@
 	<cfoutput>
 
 		<div class="s-table-header-nav s-listing-head-margin">
-			<div class="col-xs-6 s-no-padding-left">
-				<ul class="list-inline list-unstyled">
-					<li>
-						<h4>
-							<cfif len(attributes.title)>
-								<span style="font-size:14px;color:##666666;">#attributes.title#</span>
-							</cfif>
-						</h4>
-					</li>
-				</ul>
-			</div>
+			<cfif len(attributes.title)>
+				<div class="col-xs-6 s-no-padding-left">
+					<ul class="list-inline list-unstyled">
+						<li>
+							<h4 class="s-table-title">#attributes.title#</h4>
+						</li>
+					</ul>
+				</div>
+			</cfif>
 
-			<div class="col-xs-6 s-table-view-options s-no-padding-right">
+			<div class="col-xs-6 s-table-view-options s-no-padding-right pull-right">
 				<ul class="list-inline list-unstyled">
 					<li class="s-table-header-search">
 						<cfif not thistag.expandable>
@@ -363,7 +361,7 @@
 			</div>
 		</div><!--- reyjay's class --->
 
-		<div class="table-responsive">
+		<div class="table-responsive s-listing-display-table-wrapper">
 			<table id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" class="#attributes.tableclass#" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="#attributes.smartList.getBaseEntityName()#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="#thistag.allprocessobjectproperties#" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" #attributes.tableattributes#>
 				<thead>
 
