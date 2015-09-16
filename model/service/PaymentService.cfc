@@ -520,13 +520,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 						// Setup amountReceived
 						if( listFindNoCase("receive,receiveOffline", arguments.data.transactionType) ) {
-							arguments.paymentTransaction.setAmount( arguments.data.amount );
                             arguments.paymentTransaction.setAmountReceived( arguments.data.amount );
 						}
 
 						// Setup amountCredited
 						if( listFindNoCase("credit,creditOffline", arguments.data.transactionType) ) {
-                            arguments.paymentTransaction.setAmount( arguments.data.amount );
 							arguments.paymentTransaction.setAmountCredited( arguments.data.amount );
 						}
 
