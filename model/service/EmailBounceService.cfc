@@ -1,4 +1,4 @@
-/*
+<!---
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,10 +45,11 @@
 
 Notes:
 
-*/
-<cfcomponent displayname="EmailBounceService" output="false" accessors="true" extends="HibachiService">
+--->
 
-	<cffunction name="processBouncedEmails" access="public" returntype="void" output="false">
+<cfcomponent output="false" accessors="true" extends="HibachiService">
+
+<cffunction name="processBouncedEmails" access="public" returntype="void">
 
 		<cfscript>
 			var mailServer = getService("SettingService").getSettingValue("emailPOPServer");
@@ -88,7 +89,7 @@ Notes:
 
 				fromAddress = emails.from[i];
 				emailSubject = emails.subject[i];
-				report &= 'From: ' & fromAddress & ' Subject: ' & emailSubject & '<br>';
+				report &= "From: " & fromAddress & " Subject: " & emailSubject & "<br>";
 				isAllowedFromAddress = ReFindNoCase(allowedFromAddress,fromAddress);
 				isAllowedSubject = ReFindNoCase(allowedSubjects,emailSubject);
 
@@ -110,31 +111,28 @@ Notes:
 					}
 
 				} else {
-					report &= "Status: Not processed [From Allowed: #isAllowedFromAddress#, Subject Allowed: #isAllowedSubject#]" & '<br>';
+					report &= "Status: Not processed [From Allowed: #isAllowedFromAddress#, Subject Allowed: #isAllowedSubject#]" & "<br>";
 				}
-				report &= '<br>';
-
-				//todo add gift card ID pickup
+				report &= "<br>";
 
 				//todo create a bounced email record
 				var header = emails.header[i];
 				var emailBounce = this.newEmailBounce();
 
+				if(structKeyExists(header, "Related-Object")){
+					emailBounce.setRelatedObject(header["Related-Object"]);
+					emailBounce.setRelatedObjectID(header["Related-Object-ID"]);
+				}
 				if(structKeyExists(header, "X-Failed-Recipients")){
 					emailBounce.setRejectedEmailTo(header["X-Failed-Recipients"]);
 				}
 				emailBounce.setRejectedEmailFrom(emails.from[i]);
 				emailBounce.setRejectedEmailSubject(emails.subject[i]);
 				emailBounce.setRejectedEmailSendTime(emails.date[i]);
-				emailBounce.setRejectedBody(emails.body[i])
+				emailBounce.setRejectedBody(emails.body[i]);
 
 				var errors = this.saveEmailBounce(emailBounce);
 
-				if(errors){
-
-				} else {
-
-				}
 			}
 
 			writeoutput(report);
@@ -142,8 +140,7 @@ Notes:
 		</cfscript>
 
 		<cfpop action="delete" uid="#deleteMsgIds#" server="#mailServer#" port="#mailServerPort#" username="#mailServerUsername#" password="#mailServerPassword#" />
-		<cfmail from="" to="" subject="" type="html">#report#</cfmail>
-		<cfabort/>
+
 	</cffunction>
 
 </cfcomponent>

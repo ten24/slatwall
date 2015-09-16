@@ -46,7 +46,7 @@
 Notes:
 
 */
-component entityname="SlatwallEmailBounce" table="SwEmailBounce" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="emailService" hb_permission="this" {
+component entityname="SlatwallEmailBounce" table="SwEmailBounce" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="EmailBounceService" hb_permission="this" {
 
 	// Persistent Properties
 	property name="emailBounceID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
@@ -54,6 +54,9 @@ component entityname="SlatwallEmailBounce" table="SwEmailBounce" persistent="tru
 	property name="rejectedEmailFrom" ormtype="string";
 	property name="rejectedEmailSubject" ormtype="string";
 	property name="rejectedEmailSendTime"  ormtype="timestamp";
+
+	property name="relatedObject" ormtype="string";
+	property name="relatedObjectID" ormtype="string";
 
 	// Related Object Properties (many-to-one)
 

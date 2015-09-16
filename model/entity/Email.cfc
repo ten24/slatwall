@@ -59,6 +59,9 @@ component entityname="SlatwallEmail" table="SwEmail" persistent="true" accessors
 	property name="emailBodyHTML" hb_populateEnabled="public" ormtype="string" length="4000";
 	property name="emailBodyText" hb_populateEnabled="public" ormtype="string" length="4000";
 
+	property name="relatedObject" ormtype="string";
+	property name="relatedObjectID" ormtype="string";
+
 	// Related Object Properties (many-to-one)
 
 	// Related Object Properties (one-to-many)
