@@ -66,8 +66,6 @@ Notes:
 			} else {
 				javaSystemProps.setProperty("mail.pop3.socketFactory.class","");
 			}
-			var allowedFromAddress = "scomp@aol.net|feedback@feedback.comcast.net|feedbackloop@fbl.apps.rackspace.com|feedbackloop@comcastfbl.senderscore.net|feedbackloop@feedback.bluetie.com|feedbackloop@fbl.usa.net|feedbackloop@fbl.hostedemail.com|feedbackloop@fbl.cox.net|do-not-reply@junkemailfilter.com|feedbackloop@feedback.postmaster.rr.com";
-			var allowedSubjects = "";
 			var report = "";
 			var deleteMsgIds = "";
 		</cfscript>
@@ -90,25 +88,22 @@ Notes:
 				fromAddress = emails.from[i];
 				emailSubject = emails.subject[i];
 				report &= "From: " & fromAddress & " Subject: " & emailSubject & "<br>";
-				isAllowedFromAddress = ReFindNoCase(allowedFromAddress,fromAddress);
-				isAllowedSubject = ReFindNoCase(allowedSubjects,emailSubject);
 
-				if(isAllowedFromAddress && isAllowedSubject){
-					emailBody = emails.body[i];
+				emailBody = emails.body[i];
 
-					// read all the attachments as well
-					if(trim(emails.attachmentfiles[i]) NEQ ""){
-						var attachmentArray = listToArray(emails.attachmentfiles[i],"#chr(9)#") ;
-						var attachmentFile = "";
-						for(attachmentFile in attachmentArray){
-							try{
-								emailBody &= fileread(attachmentFile);
-							}
-							catch(Any e){
-								//WriteOutput("Error: " & e.message);
-							}
+				// read all the attachments as well
+				if(trim(emails.attachmentfiles[i]) NEQ ""){
+					var attachmentArray = listToArray(emails.attachmentfiles[i],"#chr(9)#") ;
+					var attachmentFile = "";
+					for(attachmentFile in attachmentArray){
+						try{
+							emailBody &= fileread(attachmentFile);
+						}
+						catch(Any e){
+							//WriteOutput("Error: " & e.message);
 						}
 					}
+				}
 
 				} else {
 					report &= "Status: Not processed [From Allowed: #isAllowedFromAddress#, Subject Allowed: #isAllowedSubject#]" & "<br>";
@@ -123,9 +118,19 @@ Notes:
 					emailBounce.setRelatedObject(header["Related-Object"]);
 					emailBounce.setRelatedObjectID(header["Related-Object-ID"]);
 				} else {
-					//is this a gift card bounce
-					if(FindNoCase("Gift Card Code:", body)){
-						//grab the code associate the entity
+
+					if(FindNoCase("Gift Card Code:", emailBody)){
+
+						var startingIndex = FindNoCase("Gift Card Code:", emailBody);
+						startingIndex = startingIndex + 16;
+						var giftCardCode = Mid(body, startingIndex, getService("SettingService").getSettingValue("skuGiftCardCodeLength"));
+
+						var giftCardID = getDAO("GiftCardDAO").getIDbyCode(giftCardCode);
+
+						if(giftCardID != false){
+							emailBounce.setRelatedObject("giftCard");
+							emailBounce.setRelatedObjectID(giftCardID);
+						}
 					}
 				}
 
@@ -136,9 +141,11 @@ Notes:
 				emailBounce.setRejectedEmailFrom(emails.from[i]);
 				emailBounce.setRejectedEmailSubject(emails.subject[i]);
 				emailBounce.setRejectedEmailSendTime(emails.date[i]);
-				emailBounce.setRejectedBody(emails.body[i]);
-
-				var errors = this.saveEmailBounce(emailBounce);
+				emailBounce.setRejectedBody(emailBody);
+				emailBounce = this.saveEmailBounce(emailBounce);
+				if(emailBounce.hasErrors()){
+					report &=  emailBounce.getErrors() & "<br>";
+				}
 
 			}
 
