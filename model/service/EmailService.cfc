@@ -84,12 +84,12 @@ Notes:
 				cc="#arguments.email.getEmailCC()#"
 				bcc="#arguments.email.getEmailBCC()#"
 				failto="#getService('SettingService').getSettingValue('emailFailToAddress')#"
+				charset="utf-8"
+				type="text/html">
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
 					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
 				</cfif>
-				charset="utf-8"
-				type="text/html">
 				<cfoutput>#arguments.email.getEmailBodyHTML()#</cfoutput>
 			</cfmail>
 		<!--- Send Text Only E-mail --->
@@ -100,12 +100,12 @@ Notes:
 				cc="#arguments.email.getEmailCC()#"
 				bcc="#arguments.email.getEmailBCC()#"
 				failto="#getService('SettingService').getSettingValue('emailFailToAddress')#"
+				charset="utf-8"
+				type="text/plain">
 				<cfif !isNull(arguments.email.getRelatedObject())>
 					<cfmailparam name="Related-Object" value="#arguments.email.getRelatedObject()#">
 					<cfmailparam name="Related-Object-ID" value="#arguments.email.getRelatedObjectID()#">
 				</cfif>
-				charset="utf-8"
-				type="text/plain">
 				<cfoutput>#arguments.email.getEmailBodyText()#</cfoutput>
 			</cfmail>
 		</cfif>
