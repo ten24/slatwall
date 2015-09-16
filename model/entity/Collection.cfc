@@ -1310,8 +1310,12 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 						}
 					}
 				}
-				//skip booleans and timestamps
-				if(!structKeyExists(column, 'ormtype') || column.ormtype eq 'boolean' || column.ormtype eq 'timestamp') continue;
+				//Only allow search on string, integer or big_decimal (for now)
+				if(!structKeyExists(column, 'ormtype') ||
+					(column.ormtype neq 'string'
+					&& column.ormtype neq 'integer'
+					&& column.ormtype neq 'big_decimal')
+				) continue;
 
 				var formatter = (column.ormtype eq 'big_decimal' || column.ormtype eq 'integer') ? 'STR' : 'LOWER';
 				//Create a propertyIdentifier for DefaultColumns
