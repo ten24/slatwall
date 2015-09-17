@@ -1,31 +1,47 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
-    class GiftCardDetail {
-        constructor($slatwall, $templateCache, partialsPath) {
+    class SWGiftCardDetailController {
+        constructor($slatwall) {
             this.$slatwall = $slatwall;
-            this.$templateCache = $templateCache;
+            this.init = () => {
+                var giftCardConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'GiftCard');
+                giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.sku.product.productID, originalOrderItem.order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage");
+                giftCardConfig.addFilter('giftCardID', this.giftCardId);
+                giftCardConfig.setAllRecords(true);
+                giftCardConfig.getEntity().then((response) => {
+                    this.giftCard = response.records[0];
+                });
+            };
+            this.$slatwall = $slatwall;
+            this.init();
+        }
+    }
+    slatwalladmin.SWGiftCardDetailController = SWGiftCardDetailController;
+    class GiftCardDetail {
+        constructor($slatwall, partialsPath) {
+            this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
-            this.scope = {
+            this.scope = {};
+            this.bindToController = {
                 giftCardId: "@",
                 giftCard: "=?"
             };
+            this.controller = SWGiftCardDetailController;
+            this.controllerAs = "swGiftCardDetail";
             this.link = (scope, element, attrs) => {
-                var giftCardConfig = new slatwalladmin.CollectionConfig($slatwall, 'GiftCard');
-                giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage");
-                giftCardConfig.addFilter('giftCardID', scope.giftCardId);
-                giftCardConfig.setAllRecords(true);
-                giftCardConfig.getEntity().then((response) => {
-                    scope.giftCard = response.records[0];
-                });
             };
             this.templateUrl = partialsPath + "/entity/giftcard/basic.html";
             this.restrict = "E";
+            this.$slatwall = $slatwall;
         }
     }
-    GiftCardDetail.$inject = ["$slatwall", "$templateCache", "partialsPath"];
+    GiftCardDetail.$inject = ["$slatwall", "partialsPath"];
     slatwalladmin.GiftCardDetail = GiftCardDetail;
-    angular.module('slatwalladmin').directive('swGiftCardDetail', ["$slatwall", "$templateCache", "partialsPath", ($slatwall, $templateCache, partialsPath) => new GiftCardDetail($slatwall, $templateCache, partialsPath)]);
+    angular.module('slatwalladmin')
+        .directive('swGiftCardDetail', ["$slatwall", "partialsPath",
+            ($slatwall, partialsPath) => new GiftCardDetail($slatwall, partialsPath)
+    ]);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../../directives/giftcard/swgiftcarddetail.js.map

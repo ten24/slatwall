@@ -102,7 +102,7 @@
   				result.append(chars.charAt(random.nextInt(chars.length())));
   			}
 
-			return result.toString();
+			return result.toString().toUppercase();
   		}
 
 		public any function buildPropertyIdentifierListDataStruct(required any object, required string propertyIdentifierList, required string availablePropertyIdentifierList) {
@@ -229,8 +229,8 @@
 					replaceDetails.value = arguments.object.getValueByPropertyIdentifier(valueKey, arguments.formatValues);
 				} else if (arguments.removeMissingKeys) {
 					replaceDetails.value = '';
-				} 
-				
+				}
+
 				arrayAppend(replacementArray, replaceDetails);
 			}
 			for(var i=1; i<=arrayLen(replacementArray); i++) {

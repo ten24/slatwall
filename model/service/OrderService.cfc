@@ -301,7 +301,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Check for the sku in the orderFulfillment already, so long that the order doens't have any errors
 			if(!arguments.order.hasErrors()) {
-				for(orderItem in orderFulfillment.getOrderFulfillmentItems()){
+				for(var orderItem in orderFulfillment.getOrderFulfillmentItems()){
 					// If the sku, price, attributes & stock all match then just increase the quantity
 					
 					if(arguments.processObject.matchesOrderItem( orderItem ) ){
@@ -1622,7 +1622,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// Loop over the orderItems to see if the skuPrice Changed
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
-				for(orderItem in arguments.order.getOrderItems()){
+				for(var orderItem in arguments.order.getOrderItems()){
 					var skuPrice = val(orderItem.getSkuPrice());
 					var SkuPriceByCurrencyCode = val(orderItem.getSku().getPriceByCurrencyCode(orderItem.getCurrencyCode()));
  					if(listFindNoCase("oitSale,oitDeposit",orderItem.getOrderItemType().getSystemCode()) && skuPrice != SkuPriceByCurrencyCode){
@@ -1820,14 +1820,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
         // Now we can charge up the gift cards				
         if(orderItemGiftCards.RecordCount > 0){ 			
-            for(orderItemGiftCard in orderItemGiftCards){
+            for(var orderItemGiftCard in orderItemGiftCards){
                 var item = getService("HibachiService").get("OrderItem", orderItemGiftCard.orderItemID); 
                 var quantity = orderItemGiftCard.quantity; 
                 var term = getService("HibachiService").get("Term", orderItemGiftCard.giftCardExpirationTermID);	
                 var recipients = item.getOrderItemGiftRecipients(); 		
 
                 //recipients and cards have already been validated so put them together
-                for(recipient in recipients){ 
+                for(var recipient in recipients){ 
                     if(!recipient.hasAllAssignedGiftCards()){
                         for(var i=0; i<recipient.getQuantity(); i++){ 
                             var card = getService("GiftCardService").newGiftCard(); 	

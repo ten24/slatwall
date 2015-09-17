@@ -1,23 +1,30 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
+    class swGiftCardOverviewController {
+        constructor() {
+        }
+    }
+    slatwalladmin.swGiftCardOverviewController = swGiftCardOverviewController;
     class GiftCardOverview {
-        constructor($slatwall, $templateCache, partialsPath) {
+        constructor($slatwall, partialsPath) {
             this.$slatwall = $slatwall;
-            this.$templateCache = $templateCache;
             this.partialsPath = partialsPath;
-            this.scope = {
+            this.scope = {};
+            this.bindToController = {
                 giftCard: "=?"
             };
+            this.controller = swGiftCardOverviewController;
+            this.controllerAs = "swGiftCardOverview";
             this.templateUrl = partialsPath + "/entity/giftcard/overview.html";
             this.restrict = "EA";
         }
     }
-    GiftCardOverview.$inject = ["$slatwall", "$templateCache", "partialsPath"];
+    GiftCardOverview.$inject = ["$slatwall", "partialsPath"];
     slatwalladmin.GiftCardOverview = GiftCardOverview;
     angular.module('slatwalladmin')
-        .directive('swGiftCardOverview', ["$slatwall", "$templateCache", "partialsPath",
-            ($slatwall, $templateCache, partialsPath) => new GiftCardOverview($slatwall, $templateCache, partialsPath)
+        .directive('swGiftCardOverview', ["$slatwall", "partialsPath",
+            ($slatwall, partialsPath) => new GiftCardOverview($slatwall, partialsPath)
     ]);
 })(slatwalladmin || (slatwalladmin = {}));
 

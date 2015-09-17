@@ -1,31 +1,46 @@
 var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
-    class GiftCardOrderInfo {
-        constructor($slatwall, $templateCache, partialsPath) {
+    class SWGiftCardOrderInfoController {
+        constructor($slatwall) {
             this.$slatwall = $slatwall;
-            this.$templateCache = $templateCache;
+            this.init = () => {
+                var orderConfig = new slatwalladmin.CollectionConfig($slatwall, 'Order');
+                orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName");
+                orderConfig.addFilter('orderID', this.giftCard.originalOrderItem_order_orderID);
+                orderConfig.setAllRecords(true);
+                orderConfig.getEntity().then((response) => {
+                    this.order = response.records[0];
+                });
+            };
+            this.$slatwall = $slatwall;
+            this.init();
+        }
+    }
+    slatwalladmin.SWGiftCardOrderInfoController = SWGiftCardOrderInfoController;
+    class GiftCardOrderInfo {
+        constructor($slatwall, partialsPath) {
+            this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
-            this.scope = {
+            this.scope = {};
+            this.bindToController = {
                 giftCard: "=?",
                 order: "=?"
             };
+            this.controller = SWGiftCardOrderInfoController;
+            this.controllerAs = "swGiftCardOrderInfo";
             this.link = (scope, element, attrs) => {
-                var orderConfig = new slatwalladmin.CollectionConfig($slatwall, 'Order');
-                orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName");
-                orderConfig.addFilter('orderID', scope.giftCard.originalOrderItem_order_orderID);
-                orderConfig.setAllRecords(true);
-                orderConfig.getEntity().then((response) => {
-                    scope.order = response.records[0];
-                });
             };
             this.templateUrl = partialsPath + "/entity/giftcard/orderinfo.html";
             this.restrict = "EA";
         }
     }
-    GiftCardOrderInfo.$inject = ["$slatwall", "$templateCache", "partialsPath"];
+    GiftCardOrderInfo.$inject = ["$slatwall", "partialsPath"];
     slatwalladmin.GiftCardOrderInfo = GiftCardOrderInfo;
-    angular.module('slatwalladmin').directive('swGiftCardOrderInfo', ["$slatwall", "$templateCache", "partialsPath", ($slatwall, $templateCache, partialsPath) => new GiftCardOrderInfo($slatwall, $templateCache, partialsPath)]);
+    angular.module('slatwalladmin')
+        .directive('swGiftCardOrderInfo', ["$slatwall", "partialsPath",
+            ($slatwall, partialsPath) => new GiftCardOrderInfo($slatwall, partialsPath)
+    ]);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../../directives/giftcard/swgiftcardorderinfo.js.map
