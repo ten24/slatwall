@@ -69,17 +69,15 @@ Notes:
 		</hb:HibachiPropertyRow>
 		
 		<div class="row">
-			<div class="col-md-6">
-				<h5>#$.slatwall.rbKey('admin.entity.sku.subscriptionBenefits')#</h5>
-				<br />
+			<div class="col-md-12">
+				<h4 class="s-table-alternate-title">#$.slatwall.rbKey('admin.entity.sku.subscriptionBenefits')#</h4>
 				<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="subscriptionBenefits" />
 				<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="subscriptionBenefits" edit="true">
 					<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
 				</hb:HibachiListingDisplay>
 			</div>
-			<div class="col-md-6">
-				<h5>#$.slatwall.rbKey('admin.entity.sku.renewalSubscriptionBenefits')#</h5>
-				<br />
+			<div class="col-md-12">
+				<h4 class="s-table-alternate-title">#$.slatwall.rbKey('admin.entity.sku.renewalSubscriptionBenefits')#</h4>
 				<swa:SlatwallErrorDisplay object="#rc.processObject#" errorName="renewalsubscriptionBenefits" />
 				<hb:HibachiListingDisplay smartList="SubscriptionBenefit" multiselectFieldName="renewalSubscriptionBenefits" edit="true">
 					<hb:HibachiListingColumn propertyIdentifier="subscriptionBenefitName" />
