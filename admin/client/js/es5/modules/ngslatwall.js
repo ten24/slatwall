@@ -319,6 +319,19 @@ var ngSlatwall;
                 }
                 return _this._loadedResourceBundle;
             };
+            this.login = function (emailAddress, password) {
+                var deferred = _this.$q.defer();
+                var urlString = _this.getConfig().baseURL + '/index.cfm/api/auth/login';
+                var params = {
+                    emailAddress: emailAddress,
+                    password: password
+                };
+                return $http.get(urlString, { params: params }).success(function (response) {
+                    deferred.resolve(response);
+                }).error(function (response) {
+                    deferred.reject(response);
+                });
+            };
             this.getResourceBundle = function (locale) {
                 var deferred = _this.$q.defer();
                 var locale = locale || _this.getConfig().rbLocale;

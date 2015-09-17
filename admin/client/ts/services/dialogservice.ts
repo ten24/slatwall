@@ -37,6 +37,10 @@ module slatwalladmin{
         getPageDialogs = ():any =>{
             return this._pageDialogs;
         };
+        
+        removeCurrentDialog = ():void =>{
+            this._pageDialogs.splice(this._pageDialogs.length -1, 1);
+        };
 
         getCurrentDialog = ():any =>{
             return this._pageDialogs[this._pageDialogs.length -1];

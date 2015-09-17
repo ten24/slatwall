@@ -1,14 +1,27 @@
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
 var slatwalladmin;
 (function (slatwalladmin) {
     var SlatwallInterceptor = (function () {
-        function SlatwallInterceptor($q, $log, alertService) {
+        function SlatwallInterceptor($window, $q, $log, $injector, alertService, baseURL, dialogService) {
             var _this = this;
+            this.$window = $window;
             this.$q = $q;
             this.$log = $log;
+            this.$injector = $injector;
             this.alertService = alertService;
+            this.baseURL = baseURL;
+            this.dialogService = dialogService;
+            this.urlParam = null;
+            this.authHeader = 'Authorization';
+            this.authPrefix = 'Bearer ';
             this.request = function (config) {
                 _this.$log.debug('request');
                 if (config.method == 'GET' && (config.url.indexOf('.html') == -1) && config.url.indexOf('.json') == -1) {
+                    config.headers = config.headers || {};
+                    if (_this.$window.localStorage.getItem('token') && _this.$window.localStorage.getItem('token') !== "undefined") {
+                        config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
+                    }
                     config.method = 'POST';
                     config.data = {};
                     var data = {};
@@ -34,17 +47,17 @@ var slatwalladmin;
             };
             this.response = function (response) {
                 _this.$log.debug('response');
-                var messages = response.data.messages;
-                var alerts = _this.alertService.formatMessagesToAlerts(messages);
-                _this.alertService.addAlerts(alerts);
+                if (response.data.messages) {
+                    var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
+                    _this.alertService.addAlerts(alerts);
+                }
                 return response;
             };
             this.responseError = function (rejection) {
                 _this.$log.debug('responseReject');
-                if (angular.isDefined(rejection.status) && rejection.status !== 404) {
-                    if (angular.isDefined(rejection.data) && angular.isDefined(rejection.data.messages)) {
-                        var messages = rejection.data.messages;
-                        var alerts = _this.alertService.formatMessagesToAlerts(messages);
+                if (angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 401) {
+                    if (rejection.data && rejection.data.messages) {
+                        var alerts = _this.alertService.formatMessagesToAlerts(rejection.data.messages);
                         _this.alertService.addAlerts(alerts);
                     }
                     else {
@@ -55,17 +68,43 @@ var slatwalladmin;
                         _this.alertService.addAlert(message);
                     }
                 }
-                _this.$q.reject(rejection);
+                if (rejection.status === 401) {
+                    // handle the case where the user is not authenticated
+                    if (rejection.data && rejection.data.messages) {
+                        //var deferred = $q.defer(); 
+                        var $http = _this.$injector.get('$http');
+                        if (rejection.data.messages[0].message === 'timeout') {
+                            //open dialog
+                            _this.dialogService.addPageDialog('preprocesslogin', {});
+                        }
+                        else if (rejection.data.messages[0].message === 'invalid_token') {
+                            return $http.get(baseURL + '/index.cfm/api/auth/login').then(function (loginResponse) {
+                                _this.$window.localStorage.setItem('token', loginResponse.data.token);
+                                rejection.config.headers = rejection.config.headers || {};
+                                rejection.config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
+                                return $http(rejection.config).then(function (response) {
+                                    return response;
+                                });
+                            }, function (rejection) {
+                                return rejection;
+                            });
+                        }
+                    }
+                }
                 return rejection;
             };
+            this.$window = $window;
             this.$q = $q;
             this.$log = $log;
+            this.$injector = $injector;
             this.alertService = alertService;
+            this.baseURL = baseURL;
+            this.dialogService = dialogService;
         }
-        SlatwallInterceptor.Factory = function ($q, $log, alertService) {
-            return new SlatwallInterceptor($q, $log, alertService);
+        SlatwallInterceptor.Factory = function ($window, $q, $log, $injector, alertService, baseURL, dialogService) {
+            return new SlatwallInterceptor($window, $q, $log, $injector, alertService, baseURL, dialogService);
         };
-        SlatwallInterceptor.$inject = ['$q', '$log', 'alertService'];
+        SlatwallInterceptor.$inject = ['$window', '$q', '$log', '$injector', 'alertService', 'baseURL', 'dialogService'];
         return SlatwallInterceptor;
     })();
     slatwalladmin.SlatwallInterceptor = SlatwallInterceptor;

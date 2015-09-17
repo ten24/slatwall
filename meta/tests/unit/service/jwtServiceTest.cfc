@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,25 +45,55 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+*/ 
+component  extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" hint="Tests that the crypto for comparing signatures for API are valid."
+{
+	public void function setUp() {
+		super.setup();
+		variables.service = request.slatwallScope.getService("jwtService");
+		variables.key = "abcdefg";
+		variables.jwt = variables.service.newJwt(key);
+		variables.json = '{"ts":"February, 05 2014 12:08:05","userid":"jdoe"}';
+		variables.payload = deserializeJSON(json);
+		
+		variables.testTokenInvalid = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0cyI6IkZlYnJ1YXJ5LCAwNSAyMDE0IDEyOjA4OjA1IiwidXNlcmlkIjoiamRvZSJ9.mL2-sQ2xeC4PidmV-uEvlINiI0mlpq5KRKsmO9EDTYx";
+	
+	}
+	
+	public void function setupTest(){
+		request.debug(variables.jwt);
+	}
+	
+	
+	public void function encodeTest(){
 
-<cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-		<swa:SlatwallSetting settingName="globalAdminDomainNames" />
-		<swa:SlatwallSetting settingName="globalAllowedOutsideRedirectSites" />
-		<swa:SlatwallSetting settingName="globalClientSecret" />
-		<swa:SlatwallSetting settingName="globalEncryptionAlgorithm" />
-		<swa:SlatwallSetting settingName="globalEncryptionEncoding" />
-		<swa:SlatwallSetting settingName="globalEncryptionKeySize" />
-		<swa:SlatwallSetting settingName="globalEncryptionKeyLocation" />
-		<swa:SlatwallSetting settingName="globalEncryptionService" />
-		<swa:SlatwallSetting settingName="globalForceCreditCardOverSSL" />
-		<swa:SlatwallSetting settingName="globalNoSessionIPRegex" />
-		<swa:SlatwallSetting settingName="globalNoSessionPersistDefault" />
-		<swa:SlatwallSetting settingName="globalRemoteIDShowFlag" />
-		<swa:SlatwallSetting settingName="globalRemoteIDEditFlag" />
-	</swa:SlatwallSettingTable>
-</cfoutput>
+		var token = variables.jwt.encode(variables.payload);
+		
+		assert(listLen(token,".") eq 3);
+	}
 
+	public void function decodeTest(){
+		var token = variables.jwt.encode(variables.payload);
+		var result = variables.jwt.decode(token);
+		
+		assert(result.userid eq "jdoe");
+	}
+
+	public void function decodeInvalidSignitureTest(){
+		
+		result = variables.jwt.decode(variables.testTokenInvalid);
+	}
+
+	public void function verifyTest(){
+		var token = variables.jwt.encode(variables.payload);
+		var result = variables.jwt.verify(token);
+		
+		assert(result eq true);
+	}
+	public void function verifyInvalidTokenTest(){
+		
+		var result = variables.jwt.verify(variables.testTokenInvalid);
+
+		assert(result eq false);
+	}
+}
