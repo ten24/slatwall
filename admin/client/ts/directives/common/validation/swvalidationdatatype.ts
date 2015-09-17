@@ -10,7 +10,7 @@ angular.module('slatwalladmin').directive("swvalidationdatatype", [function() {
         require: "^ngModel",
          
         link: function(scope, element, attributes, ngModel) {
-                var MY_EMAIL_REGEXP =  /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+                var MY_EMAIL_REGEXP =  /^[a-zA-Z0-9_.]+@[a-zA-Z0-9_]+?\.[a-zA-Z]{2,3}$/;
         		ngModel.$validators.swvalidationdatatype = 
             	function(modelValue) {
         			if (angular.isString(modelValue) && attributes.swvalidationdatatype === "string"){return true;}

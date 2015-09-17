@@ -119,33 +119,41 @@ component output="false" accessors="true" extends="HibachiService" {
 				}
 			}
 			// Check to see if the controller is for rest, and then verify against the entity itself
-			
 			if(getActionPermissionDetails()[ subsystemName ].sections[ sectionName ].restController){
-				if (StructKeyExists(arguments.restInfo, "context")){
-					var hasProcess = invokeMethod('new'&arguments.restInfo.entityName).hasProcessObject(arguments.restInfo.context);
-				}else{
-					var hasProcess = false;
-				}
-				if(hasProcess){
-					authDetails.authorizedFlag = true;
-				}else if(itemName == 'get'){
-					authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read",entityName=arguments.restInfo.entityName,account=arguments.account);
-				}else if(itemName == 'post'){
-					if(arguments.restInfo.context == 'get'){
-						authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read",entityName=arguments.restInfo.entityName,account=arguments.account);
-					}else if(arguments.restInfo.context == 'save'){
-						authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=arguments.restInfo.entityName, account=arguments.account);
-						if(!authDetails.authorizedFlag) {
-							authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="update", entityName=arguments.restInfo.entityName, account=arguments.account); 	
-						}
+				//require a token to validate
+				if(!isNull(arguments.account.getJwtToken()) && arguments.account.getJwtToken().verify()){
+					if (StructKeyExists(arguments.restInfo, "context")){
+						var hasProcess = invokeMethod('new'&arguments.restInfo.entityName).hasProcessObject(arguments.restInfo.context);
 					}else{
-						authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType=arguments.restInfo.context,entityName=arguments.restInfo.entityName,account=arguments.account);
+						var hasProcess = false;
 					}
-				}
-				if(authDetails.authorizedFlag) {
-					authDetails.entityPermissionAccessFlag = true;
+					if(hasProcess){
+						authDetails.authorizedFlag = true;
+					}else if(itemName == 'get'){
+						authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read",entityName=arguments.restInfo.entityName,account=arguments.account);
+					}else if(itemName == 'post'){
+						if(arguments.restInfo.context == 'get'){
+							authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="read",entityName=arguments.restInfo.entityName,account=arguments.account);
+						}else if(arguments.restInfo.context == 'save'){
+							authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="create", entityName=arguments.restInfo.entityName, account=arguments.account);
+							if(!authDetails.authorizedFlag) {
+								authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType="update", entityName=arguments.restInfo.entityName, account=arguments.account); 	
+							}
+						}else{
+							authDetails.authorizedFlag = authenticateEntityCrudByAccount(crudType=arguments.restInfo.context,entityName=arguments.restInfo.entityName,account=arguments.account);
+						}
+					}
+					if(authDetails.authorizedFlag) {
+						authDetails.entityPermissionAccessFlag = true;
+					}else{
+						authDetails.forbidden = true;
+					}
+				}else{
+					authDetails.invalidToken = true;
 				}
 			}
+		}else{
+			authDetails.timeout = true;
 		}
 		
 		return authDetails;
