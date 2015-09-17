@@ -24,7 +24,7 @@ var slatwalladmin;
     slatwalladmin.GiftCardRecipientInfo = GiftCardRecipientInfo;
     angular.module('slatwalladmin')
         .directive('swGiftCardRecipientInfo', ["$slatwall", "partialsPath",
-            ($slatwall, $templateCache, partialsPath) => new GiftCardRecipientInfo($slatwall, partialsPath)
+            ($slatwall, partialsPath) => new GiftCardRecipientInfo($slatwall, partialsPath)
     ]);
 })(slatwalladmin || (slatwalladmin = {}));
 
