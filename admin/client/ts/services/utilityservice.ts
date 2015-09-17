@@ -1,3 +1,5 @@
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 module slatwalladmin{
     

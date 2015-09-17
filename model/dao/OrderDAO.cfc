@@ -125,7 +125,7 @@ Notes:
 
 		<cfargument name="referencedOrderID" required="true">
 
-		<cfquery name="giftCardOrderPayment">
+		<cfquery name="local.giftCardOrderPayment">
 			SELECT SUM(gct.debitAmount) AS amount FROM SwGiftCardTransaction AS gct
 			    LEFT JOIN SwOrderPayment AS op on gct.orderPaymentID=op.orderPaymentID
 			WHERE
@@ -134,7 +134,7 @@ Notes:
 				op.orderID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referencedOrderID#" />
 		</cfquery>
 
-		<cfreturn giftCardOrderPayment.amount />
+		<cfreturn local.giftCardOrderPayment.amount />
 
 	</cffunction>
 
@@ -174,7 +174,7 @@ Notes:
 	<cffunction name="getGiftCardOrderItems" access="public" returntype="query" output="false">
 		<cfargument name="orderID" type="string" required="true">
 
-		<cfquery name="getGiftCardOrderItems">
+		<cfquery name="local.giftCardOrderItems">
 			SELECT oi.orderItemID, oi.quantity, s.giftCardExpirationTermID FROM SwOrderItem AS oi
     		LEFT JOIN SwSku AS s ON s.skuID = oi.skuID
     		LEFT JOIN SwProduct AS p ON s.productID = p.productID
@@ -182,7 +182,7 @@ Notes:
     		AND oi.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 		</cfquery>
 
-		<cfreturn getGiftCardOrderItems />
+		<cfreturn local.giftCardOrderItems />
 
 	</cffunction>
 

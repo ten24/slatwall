@@ -1,3 +1,5 @@
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 var slatwalladmin;
 (function (slatwalladmin) {
@@ -5,7 +7,7 @@ var slatwalladmin;
         constructor() {
             super();
             this.listLast = (list, delimiter) => {
-                if (angular.isUndefined(delemiter)) {
+                if (angular.isUndefined(delimiter)) {
                     delimiter = ',';
                 }
                 var listArray = list.split(delimiter);
