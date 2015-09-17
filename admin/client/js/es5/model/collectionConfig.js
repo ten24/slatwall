@@ -16,11 +16,13 @@ var slatwalladmin;
         return Column;
     })();
     var Filter = (function () {
-        function Filter(propertyIdentifier, value, comparisonOperator, logicalOperator) {
+        function Filter(propertyIdentifier, value, comparisonOperator, logicalOperator, displayPropertyIdentifier, displayValue) {
             this.propertyIdentifier = propertyIdentifier;
             this.value = value;
             this.comparisonOperator = comparisonOperator;
             this.logicalOperator = logicalOperator;
+            this.displayPropertyIdentifier = displayPropertyIdentifier;
+            this.displayValue = displayValue;
         }
         return Filter;
     })();
@@ -52,13 +54,13 @@ var slatwalladmin;
         return OrderBy;
     })();
     var CollectionConfig = (function () {
-        function CollectionConfig($slatwall, baseEntityName, baseEntityAlias, columns, filterGroups, joins, orderBy, id, currentPage, pageShow, keywords, defaultColumns) {
+        function CollectionConfig($slatwall, baseEntityName, baseEntityAlias, columns, filterGroups, joins, orderBy, id, currentPage, pageShow, keywords, allRecords) {
             var _this = this;
             if (filterGroups === void 0) { filterGroups = [{ filterGroup: [] }]; }
             if (currentPage === void 0) { currentPage = 1; }
             if (pageShow === void 0) { pageShow = 10; }
             if (keywords === void 0) { keywords = ''; }
-            if (defaultColumns === void 0) { defaultColumns = false; }
+            if (allRecords === void 0) { allRecords = false; }
             this.$slatwall = $slatwall;
             this.baseEntityName = baseEntityName;
             this.baseEntityAlias = baseEntityAlias;
@@ -70,7 +72,7 @@ var slatwalladmin;
             this.currentPage = currentPage;
             this.pageShow = pageShow;
             this.keywords = keywords;
-            this.defaultColumns = defaultColumns;
+            this.allRecords = allRecords;
             this.loadJson = function (jsonCollection) {
                 //if json then make a javascript object else use the javascript object
                 if (angular.isString(jsonCollection)) {
@@ -79,13 +81,11 @@ var slatwalladmin;
                 _this.baseEntityAlias = jsonCollection.baseEntityAlias;
                 _this.baseEntityName = jsonCollection.baseEntityName;
                 _this.columns = jsonCollection.columns;
-                _this.currentPage = jsonCollection.currentPage;
-                _this.filterGroups = jsonCollection.filterGroups;
                 _this.joins = jsonCollection.joins;
                 _this.keywords = jsonCollection.keywords;
                 _this.orderBy = jsonCollection.orderBy;
                 _this.pageShow = jsonCollection.pageShow;
-                _this.defaultColumns = jsonCollection.defaultColumns;
+                _this.allRecords = jsonCollection.allRecords;
             };
             this.getCollectionConfig = function () {
                 return {
@@ -97,7 +97,8 @@ var slatwalladmin;
                     currentPage: _this.currentPage,
                     pageShow: _this.pageShow,
                     keywords: _this.keywords,
-                    defaultColumns: _this.defaultColumns
+                    defaultColumns: (!_this.columns || !_this.columns.length),
+                    allRecords: _this.allRecords
                 };
             };
             this.getEntityName = function () {
@@ -111,7 +112,8 @@ var slatwalladmin;
                     currentPage: _this.currentPage,
                     pageShow: _this.pageShow,
                     keywords: _this.keywords,
-                    defaultColumns: _this.defaultColumns
+                    defaultColumns: (!_this.columns || !_this.columns.length),
+                    allRecords: _this.allRecords
                 };
                 if (angular.isDefined(_this.id)) {
                     options['id'] = _this.id;
@@ -121,6 +123,7 @@ var slatwalladmin;
             this.debug = function () {
                 return _this;
             };
+            /*TODO: CLEAN THIS FUNCTION */
             this.formatCollectionName = function (propertyIdentifier, property) {
                 if (property === void 0) { property = true; }
                 var collection = '', parts = propertyIdentifier.split('.'), current_collection = _this.collection;
@@ -131,10 +134,13 @@ var slatwalladmin;
                         if (!angular.isObject(current_collection.metaData[parts[i]])) {
                             break;
                         }
+                        else if (current_collection.metaData[parts[i]].fkcolumn) {
+                            current_collection = _this.$slatwall['new' + current_collection.metaData[parts[i]].cfc]();
+                        }
                     }
                     else {
                         if (angular.isObject(current_collection.metaData[parts[i]])) {
-                            collection += ((i) ? '' : _this.baseEntityAlias + '.') + parts[i];
+                            collection += ((i) ? '' : _this.baseEntityAlias) + '.' + parts[i];
                             current_collection = _this.$slatwall['new' + _this.capitalize(parts[i])]();
                         }
                         else {
@@ -206,7 +212,7 @@ var slatwalladmin;
                 if (angular.isDefined(_this.collection.metaData[lastProperty])) {
                     persistent = _this.collection.metaData[lastProperty].persistent;
                 }
-                _this.columns.push(new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, ormtype, options['attributeID'], options['attributeSetObject']));
+                _this.columns.push(new Column(column, title, isVisible, isDeletable, isSearchable, isExportable, persistent, ormtype, options['attributeID'], options['attributeSetObject']));
             };
             this.setDisplayProperties = function (propertyIdentifier, title, options) {
                 if (title === void 0) { title = ''; }
@@ -230,7 +236,7 @@ var slatwalladmin;
                 //this.addJoin(propertyIdentifier);
                 if (_this.filterGroups[0].filterGroup.length && !logicalOperator)
                     logicalOperator = 'AND';
-                _this.filterGroups[0].filterGroup.push(new Filter(_this.formatCollectionName(propertyIdentifier), value, comparisonOperator, logicalOperator));
+                _this.filterGroups[0].filterGroup.push(new Filter(_this.formatCollectionName(propertyIdentifier), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value));
             };
             this.addCollectionFilter = function (propertyIdentifier, displayPropertyIdentifier, displayValue, collectionID, criteria, fieldtype, readOnly) {
                 if (criteria === void 0) { criteria = 'One'; }
@@ -251,12 +257,12 @@ var slatwalladmin;
             this.setPageShow = function (NumberOfPages) {
                 _this.pageShow = NumberOfPages;
             };
+            this.setAllRecords = function (allFlag) {
+                if (allFlag === void 0) { allFlag = false; }
+                _this.allRecords = allFlag;
+            };
             this.setKeywords = function (keyword) {
                 _this.keywords = keyword;
-            };
-            this.useDefaultColumns = function (flag) {
-                if (flag === void 0) { flag = true; }
-                _this.defaultColumns = flag;
             };
             this.setId = function (id) {
                 _this.id = id;

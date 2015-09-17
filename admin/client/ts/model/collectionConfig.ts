@@ -1,64 +1,64 @@
-
 module slatwalladmin{
 
     class Column{
         constructor(
-            public propertyIdentifier:string,
-            public title:string,
-            public isVisible:boolean,
-            public isDeletable:boolean,
-            public isSearchable:boolean,
-            public isExportable:boolean,
-            public persistent?:boolean,
-            public ormtype?:string,
-            public attributeID?:string,
-            public attributeSetObject?:string
+            private propertyIdentifier:string,
+            private title:string,
+            private isVisible:boolean,
+            private isDeletable:boolean,
+            private isSearchable:boolean,
+            private isExportable:boolean,
+            private persistent?:boolean,
+            private ormtype?:string,
+            private attributeID?:string,
+            private attributeSetObject?:string
         ){}
     }
 
     class Filter{
         constructor(
-            public propertyIdentifier:string,
-            public value:string,
-            public comparisonOperator:string,
-            public logicalOperator?:string
+            private propertyIdentifier:string,
+            private value:string,
+            private comparisonOperator:string,
+            private logicalOperator?:string,
+            private displayPropertyIdentifier?:string,
+            private displayValue?:string
         ){}
     }
 
     class CollectionFilter{
         constructor(
-            public propertyIdentifier:string,
-            public displayPropertyIdentifier:string,
-            public displayValue:string,
-            public collectionID:string,
-            public criteria:string,
-            public fieldtype?:string,
-            public readOnly:boolean=false
+            private propertyIdentifier:string,
+            private displayPropertyIdentifier:string,
+            private displayValue:string,
+            private collectionID:string,
+            private criteria:string,
+            private fieldtype?:string,
+            private readOnly:boolean=false
         ){}
     }
 
     class Join{
-        constructor(
-            public associationName:string,
-            public alias:string
+        constructor(public associationName:string,
+                    private alias:string
         ){}
     }
 
     class OrderBy{
         constructor(
-            public propertyIdentifier:string,
-            public direction:string
+            private propertyIdentifier:string,
+            private direction:string
         ){}
     }
 
     export class CollectionConfig {
-        private collection: any;
+        public collection: any;
 
         constructor(
-            private $slatwall,
+            private $slatwall:any,
             public  baseEntityName?:string,
             public  baseEntityAlias?:string,
-            private columns?:Column[],
+            public  columns?:Column[],
             private filterGroups:Array=[{filterGroup: []}],
             private joins?:Join[],
             private orderBy?:OrderBy[],
@@ -66,15 +66,17 @@ module slatwalladmin{
             private currentPage:number = 1,
             private pageShow:number = 10,
             private keywords:string = '',
-            private defaultColumns:boolean = false
+            private allRecords:boolean = false
 
         ){
+            
             if(!angular.isUndefined(this.baseEntityName)){
                 this.collection = this.$slatwall['new' + this.getEntityName()]();
                 if(angular.isUndefined(this.baseEntityAlias)){
                     this.baseEntityAlias = '_' + this.baseEntityName.toLowerCase();
                 }
             }
+           
         }
 
         loadJson= (jsonCollection) =>{
@@ -86,14 +88,11 @@ module slatwalladmin{
             this.baseEntityAlias = jsonCollection.baseEntityAlias;
             this.baseEntityName = jsonCollection.baseEntityName;
             this.columns = jsonCollection.columns;
-            this.currentPage = jsonCollection.currentPage;
-            this.filterGroups = jsonCollection.filterGroups;
             this.joins = jsonCollection.joins;
             this.keywords = jsonCollection.keywords;
             this.orderBy = jsonCollection.orderBy;
             this.pageShow = jsonCollection.pageShow;
-            this.defaultColumns = jsonCollection.defaultColumns
-
+            this.allRecords = jsonCollection.allRecords;
         };
 
         getCollectionConfig= () =>{
@@ -106,7 +105,8 @@ module slatwalladmin{
                 currentPage: this.currentPage,
                 pageShow: this.pageShow,
                 keywords: this.keywords,
-                defaultColumns: this.defaultColumns
+                defaultColumns: (!this.columns || !this.columns.length),
+                allRecords: this.allRecords
             };
         };
 
@@ -122,7 +122,8 @@ module slatwalladmin{
                 currentPage: this.currentPage,
                 pageShow: this.pageShow,
                 keywords: this.keywords,
-                defaultColumns: this.defaultColumns
+                defaultColumns: (!this.columns || !this.columns.length),
+                allRecords: this.allRecords
             };
             if(angular.isDefined(this.id)){
                 options['id'] = this.id;
@@ -133,7 +134,7 @@ module slatwalladmin{
         debug= () =>{
             return this;
         }
-
+        /*TODO: CLEAN THIS FUNCTION */
         private formatCollectionName= (propertyIdentifier:string, property:boolean=true) =>{
             var collection = '',
                 parts = propertyIdentifier.split('.'),
@@ -143,10 +144,12 @@ module slatwalladmin{
                     if (property) collection += ((i)?'':this.baseEntityAlias) + '.' + parts[i];
                     if(!angular.isObject(current_collection.metaData[parts[i]])) {
                         break;
+                    }else if(current_collection.metaData[parts[i]].fkcolumn){
+                        current_collection = this.$slatwall['new' + current_collection.metaData[parts[i]].cfc]();
                     }
                 }else{
                     if(angular.isObject(current_collection.metaData[parts[i]])){
-                        collection += ((i)?'':this.baseEntityAlias+'.')  + parts[i];
+                        collection += ((i)?'':this.baseEntityAlias) +'.' + parts[i];
                         current_collection = this.$slatwall['new' + this.capitalize(parts[i])]();
                     }else{
                         collection += '_' + parts[i].toLowerCase();
@@ -194,7 +197,7 @@ module slatwalladmin{
             return s && s[0].toUpperCase() + s.slice(1);
         };
 
-        addColumn= (column: string, title: string = '', options:Object = {}) =>{
+        private addColumn= (column: string, title: string = '', options:Object = {}) =>{
             var isVisible = true,
                 isDeletable = true,
                 isSearchable = true,
@@ -238,6 +241,7 @@ module slatwalladmin{
                 isDeletable,
                 isSearchable,
                 isExportable,
+                persistent,
                 ormtype,
                 options['attributeID'],
                 options['attributeSetObject']
@@ -265,7 +269,14 @@ module slatwalladmin{
             if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
 
             this.filterGroups[0].filterGroup.push(
-                new Filter(this.formatCollectionName(propertyIdentifier), value, comparisonOperator, logicalOperator)
+                new Filter(
+                    this.formatCollectionName(propertyIdentifier),
+                    value,
+                    comparisonOperator,
+                    logicalOperator,
+                    propertyIdentifier.split('.').pop(),
+                    value
+                )
             );
 
         };
@@ -303,14 +314,15 @@ module slatwalladmin{
             this.pageShow = NumberOfPages;
         };
 
+        setAllRecords= (allFlag:boolean=false) =>{
+            this.allRecords = allFlag;
+        };
+
         setKeywords= (keyword) =>{
             this.keywords = keyword;
         };
-        useDefaultColumns=(flag:boolean=true)=>{
-            this.defaultColumns = flag;
-        };
 
-        setId=(id)=>{
+        private setId=(id)=>{
             this.id = id;
         };
 

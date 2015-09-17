@@ -2205,7 +2205,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			};
 			if(arguments.processObject.getTransactionType() eq "chargePreAuthorization" && arrayLen(uncapturedAuthorizations)) {
 				transactionData.preAuthorizationCode = uncapturedAuthorizations[1].authorizationCode;
-				transactionData.preAuthorizationProviderTransactionID = uncapturedAuthorizations[1].providerTransactionID;
+				transactionData.preAuthorizationProvirederTransactionID = uncapturedAuthorizations[1].providerTransactionID;
 			}
 			
 			// Run the transaction
@@ -2216,7 +2216,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			} else { 
                 if(!isNull(arguments.orderPayment.getPaymentMethod().getPaymentMethodType()) && arguments.orderPayment.getPaymentMethodType() eq "giftCard"){ 
                     if(paymentTransaction.getAmountReceived() gt 0){
-                         arguments.orderPayment.setAmount(paymentTransaction.getAmountRecieved());
+                         arguments.orderPayment.setAmount(paymentTransaction.getAmountReceived());
                     } else if(paymentTransaction.getAmountCredited() gt 0){
                          arguments.orderPayment.setAmount(paymentTransaction.getAmountCredited());                                           
                     } else { 
