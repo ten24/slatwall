@@ -24,7 +24,7 @@ module slatwalladmin {
 	
 	export class GiftCardDetail implements ng.IDirective { 
 		
-		public static $inject = ["$slatwall", "$templateCache", "partialsPath"];
+		public static $inject = ["$slatwall", "partialsPath"];
 		public restrict:string; 
 		public templateUrl:string;
 		public scope = {}; 	
@@ -35,7 +35,7 @@ module slatwalladmin {
 		public controller= SWGiftCardDetailController;
         public controllerAs="swGiftCardDetail";
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private $templateCache:ng.ITemplateCache, private partialsPath:slatwalladmin.partialsPath){ 
+		constructor(private $slatwall:ngSlatwall.$Slatwall, private partialsPath:slatwalladmin.partialsPath){ 
 			this.templateUrl = partialsPath + "/entity/giftcard/basic.html";
 			this.restrict = "E"; 
 			this.$slatwall = $slatwall;	
@@ -48,5 +48,10 @@ module slatwalladmin {
 		
 	}
 	
-	angular.module('slatwalladmin').directive('swGiftCardDetail',["$slatwall", "$templateCache", "partialsPath", ($slatwall, $templateCache, partialsPath) => new GiftCardDetail($slatwall, $templateCache, partialsPath)]);
+	angular.module('slatwalladmin')
+	.directive('swGiftCardDetail',
+		["$slatwall", "partialsPath", 
+			($slatwall, partialsPath) => 
+				new GiftCardDetail($slatwall, partialsPath)
+			]);
 }
