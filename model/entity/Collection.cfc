@@ -367,7 +367,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			//check to see if we are supposed to add default columns 
 			if(addDefaultColumns){
 				//loop through all defaultProperties
-				for(defaultProperty in defaultProperties){
+				for(var defaultProperty in defaultProperties){
 					var columnStruct = {};
 					columnStruct['propertyIdentifier'] = '_' & lcase(getService('hibachiService').getProperlyCasedShortEntityName(arguments.collectionObject)) & '.' & defaultProperty.name;
 					columnStruct['title'] = newEntity.getPropertyTitle(defaultProperty.name);
@@ -417,7 +417,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	//this is used when we get params from another collection that we need to apply to this collection
 	private void function addHQLParamsFromNestedCollection(required collectionHQLParams){
-		for(key in arguments.collectionHQLParams){
+		for(var key in arguments.collectionHQLParams){
 			addHQLParam(key,arguments.collectionHQLParams[key]);
 		}
 	}
@@ -429,7 +429,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		addHQLAlias(fullJoinName,arguments.join.alias);
 		var joinHQL = ' left join #fullJoinName# as #arguments.join.alias# ';
 		if(!isnull(arguments.join.joins)){
-			for(childJoin in arguments.join.joins){
+			for(var childJoin in arguments.join.joins){
 				joinHQL &= addJoinHQL(join.alias,childJoin);
 			}
 		}
@@ -442,7 +442,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			getCollectionConfigStruct().joins = [];
 		}
 		var joinFound = false;
-		for(configJoin in getCollectionConfigStruct().joins){
+		for(var configJoin in getCollectionConfigStruct().joins){
 			if(configJoin.alias == arguments.join.alias){
 				joinFound = true;
 			}
@@ -586,7 +586,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 			
 			var parentFilterGroupArray = getFilterGroupArrayFromAncestors(arguments.collectionEntity.getParentCollection());
 			
-			for(parentFilterGroup in parentFilterGroupArray){
+			for(var parentFilterGroup in parentFilterGroupArray){
 				if(!arrayFind(filterGroupArray,parentFilterGroup)){
 					if(!structKeyExists(parentFilterGroup,"logicalOperator")){
 						parentFilterGroup.logicalOperator = ' AND ';
@@ -683,7 +683,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	private string function getFromHQL(required string baseEntityName, required string baseEntityAlias, required any joins){
 		var fromHQL = ' FROM #arguments.baseEntityName# as #arguments.baseEntityAlias#';
 		addHQLAlias(arguments.baseEntityName,arguments.baseEntityAlias);
-		for(join in arguments.joins){
+		for(var join in arguments.joins){
 			fromHQL &= addJoinHQL(arguments.baseEntityAlias,join);
 		}
 		
@@ -1091,7 +1091,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 	
 	private any function getColumnCountByExportableColumns(required array columns){
 		var count = 0;
-		for(column in arguments.columns){
+		for(var column in arguments.columns){
 			if(structKeyExists(column,'isExportable') && column.isExportable){
 				count++;
 			}
@@ -1119,12 +1119,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		
 		var startMapHQL = ' new Map(';
 		var columnsHQL = '';
-		//if(getHibachiScope().authenticateCollection('read', this)){
 			for(var i = 1; i <= columnCount; i++){
-//				if(
-//					getHibachiScope().authenticateCollectionPropertyIdentifier('read', this, arguments.columns[i].propertyIdentifier)
-//					|| (!isObject && structKeyExists(propertyStruct,'fieldtype') && propertyStruct.fieldtype == 'id') 
-//				){
 					var column = arguments.columns[i];
 					if(!arguments.forExport || (arguments.forExport && structKeyExists(column,'isExportable') && column.isExportable)){
 						var currentAlias = '';
@@ -1181,9 +1176,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 							columnsHQL &= ',';
 						}//<--end if
 					}//<--end exportable	
-//				}
 			}//<--end for loop
-//		}
 		
 		if(right(columnsHQL,1) == ','){
 			columnsHQL &= left(columnsHQL,len(columnsHQL)-1);
@@ -1238,7 +1231,7 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 				filterHQL &= getFilterHQL(filterGroupArray);
 			}
 			
-			addPostFiltersFromKeywords(collectionConfig,len(filterHQL));
+			addPostFiltersFromKeywords(collectionConfig);
 			
 			//check if the user has applied any filters from the ui list view
 			if(arraylen(getPostFilterGroups())){
@@ -1266,161 +1259,82 @@ component displayname="Collection" entityname="SlatwallCollection" table="SwColl
 		return HQL;
 	}
 	
-	public void function addPostFiltersFromKeywords(required any collectionConfig, numeric hasFilterHQL){
-		var keywordCount = 0;
-		
-		//if our collection config has columns then check if any of them are searchable
+	public void function addPostFiltersFromKeywords(required any collectionConfig) {
+		var keywordArray = getKeywordArray();
+		var keywordCount = arraylen(keywordArray);
+		var defaultColumns = false;
+		//If columns config is not passed in, use all the columns
 		if(structKeyExists(arguments.collectionConfig,'columns') && arrayLen(arguments.collectionConfig.columns)){
-			
-			for(keyword in getKeywordArray()){
-				var columnCount = 0;
-				for(column in arguments.collectionConfig.columns){
-					
-					//which ones have been flagged as searchable
-					if(structKeyExists(column,'isSearchable') && column.isSearchable){
-						//use keywords to create some post filters
-						
-						if(structKeyExists(column,'ormtype') 
-							&& column.ormtype neq 'boolean' 
-							&& column.ormtype neq 'timestamp'
-						
-						){
-						
-							if(column.ormtype eq 'big_decimal'
-							|| column.ormtype eq 'integer'){
-								var postFilterGroup = {
-									filterGroup = [
-										{
-											propertyIdentifier = 'STR(#column.propertyIdentifier#)',
-											comparisonOperator = "like",
-											value="%#keyword#%"
-										}
-									]
-								};
+			var columns = arguments.collectionConfig.columns;
 							}else{
-								
-								var postFilterGroup = {
-									filterGroup = [
-										{
-											propertyIdentifier = 'LOWER(#column.propertyIdentifier#)',
-											comparisonOperator = "like",
-											value="%#keyword#%"
+			defaultColumns = true;
+			var columns = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
 										}
-									]
-								};
-							}
-							
-							if (columnCount != 0 && columnCount < arrayLen(arguments.collectionConfig.columns)+1){
-								postFilterGroup.logicalOperator = "OR";
-							}else if(keywordCount != 0 && keywordCount < arrayLen(getKeywordArray())){
-								postFilterGroup.logicalOperator = "AND";
-							}else{
-								arguments.hasFilterHQL = 1;
-							}
-							//add post filter per column that is searchable
-							addPostFilterGroup(postFilterGroup);
-							
-						}
-						columnCount++;
-					}
-					if(structKeyExists(column,'attributeID')){
-						for(keyword in getKeywordArray()){
-							
+		var keywordIndex = 0;
+		//loop through keywords
+		for(var keyword in keywordArray) {
+			var columnIndex = 0;
+			//loop through columns
+			for(var column in columns) {
 							var postFilterGroup = {
 								filterGroup = [
 									{
-										propertyIdentifier = column.propertyIdentifier,
-										attributeID = column.attributeID,
-					               		attributeSetObject = column.attributeSetObject,
 										comparisonOperator = "like",
 										value="%#keyword#%"
 									}
 								] 
 							};
-							
-							if(keywordCount != 0){
-								postFilterGroup.logicalOperator = "OR";
-							}else{
-								arguments.hasFilterHQL = 1;
+				if ((
+					!defaultColumns && ( !structKeyExists(column, 'isSearchable') || !column.isSearchable)
+					) || (
+					defaultColumns && (
+						structKeyExists(column, 'fkcolumn')
+					|| (structKeyExists(column, 'persistent') && column.persistent == false)
+					|| !structKeyExists(column, 'ormtype')
+					))
+				) continue;
+				//if ormtype is not set, find it
+				if(!structKeyExists(column, 'ormtype')){
+					var allColumns = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
+					for(var col in allColumns){
+						if(col.name == ListLast(column.propertyIdentifier, '.') && structKeyExists(col, 'ormtype')){
+							column.ormtype = col.ormtype;
+							break;
 							}
-							
-							//add post filter per column that is searchable
-							addPostFilterGroup(postFilterGroup);
-							keywordCount++;
 						}
-						keywordCount++;
 					}
+				//Only allow search on string, integer or big_decimal (for now)
+				if(!structKeyExists(column, 'ormtype') ||
+					(column.ormtype neq 'string'
+					&& column.ormtype neq 'integer'
+					&& column.ormtype neq 'big_decimal')
+				) continue;
 					
-				}
-				keywordCount++;
-			}
+				var formatter = (column.ormtype eq 'big_decimal' || column.ormtype eq 'integer') ? 'STR' : 'LOWER';
+				//Create a propertyIdentifier for DefaultColumns
+				var propertyIdentifier = (!defaultColumns)? column.propertyIdentifier : arguments.collectionConfig.baseEntityAlias&'.'&column.name;
+				//If is Attributes
+				if (structKeyExists(column, 'attributeID')) {
+					postFilterGroup.filterGroup[1].propertyIdentifier = propertyIdentifier;
+					postFilterGroup.filterGroup[1].attributeID = column.attributeID;
+					postFilterGroup.filterGroup[1].attributeSetObject = column.attributeSetObject;
+					if (keywordCount != 0) postFilterGroup.logicalOperator = "OR";
 		}else{
-			//if we don't have columns then we need default properties searching
-			var defaultPropertiesWithAttributes = getService('HibachiService').getPropertiesWithAttributesByEntityName(arguments.collectionConfig.baseEntityName);
-			for(propertyItem in defaultPropertiesWithAttributes){
-				if(structKeyExists(propertyItem,'ormtype') 
-					&& propertyItem.ormtype neq 'boolean' 
-					&& propertyItem.ormtype neq 'timestamp' 
-					&& !structKeyExists(propertyItem,'attributeID') ){
-					for(keyword in getKeywordArray()){
-						if(column.ormtype eq 'big_decimal'
-						|| column.ormtype eq 'integer'){
-							var postFilterGroup = {
-								filterGroup = [
-									{
-										propertyIdentifier = 'STR(#column.propertyIdentifier#)',
-										comparisonOperator = "like",
-										value="%#keyword#%"
-									}
-								]
-							};
-						}else{
-							var postFilterGroup = {
-								filterGroup = [
-									{
-										propertyIdentifier = 'LOWER(#arguments.collectionConfig.baseEntityAlias#.#propertyItem.name#)',
-										comparisonOperator = "like",
-										value="%#keyword#%"
-									}
-								]
-							};
-						}
-						if(keywordCount != 0){
+					postFilterGroup.filterGroup[1].propertyIdentifier = formatter & '(#propertyIdentifier#)';
+					if(keywordCount == 1){
 							postFilterGroup.logicalOperator = "OR";
 						}else{
-							arguments.hasFilterHQL = 1;
+						postFilterGroup.logicalOperator = (columnIndex) ? "OR" : "AND";
 						}
-						//add post filter per column that is searchable
-						addPostFilterGroup(postFilterGroup);
-						keywordCount++;
-					}
+					//remove AND from the frist filterGroup
+					if(columnIndex == 0 && keywordIndex == 0) {
+						structDelete(postFilterGroup, "logicalOperator");
 				}
-				if(structKeyExists(propertyItem,'attributeID')){
-					for(keyword in getKeywordArray()){
-						var postFilterGroup = {
-							filterGroup = [
-								{
-									propertyIdentifier = '#arguments.collectionConfig.baseEntityAlias#.#propertyItem.name#',
-									attributeID = propertyItem.attributeID,
-				               		attributeSetObject = propertyItem.attributeSetObject,
-									comparisonOperator = "like",
-									value="%#keyword#%"
 								}
-							] 
-						};
-						if(keywordCount != 0){
-							postFilterGroup.logicalOperator = "OR";
-						}else{
-							arguments.hasFilterHQL = 1;
-						}
-						//add post filter per propertyItem that is searchable
 						addPostFilterGroup(postFilterGroup);
-						keywordCount++;
+				columnIndex++;
 					}
-					keywordCount++;
-				}
-				
-			}
+			keywordIndex++;
 		}
 	}
 	
