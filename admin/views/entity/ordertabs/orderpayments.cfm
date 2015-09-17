@@ -100,6 +100,6 @@ Notes:
 		<hb:HibachiListingColumn propertyIdentifier="amountCredited" />
 	</hb:HibachiListingDisplay>
 	
-	<hb:HibachiProcessCaller action="admin:entity.preprocessorder" entity="#rc.order#" processContext="addOrderPayment" class="btn btn-default" icon="plus" modal="true" />
+	<hb:HibachiProcessCaller action="admin:entity.preprocessorder" entity="#rc.order#" processContext="addOrderPayment" class="btn btn-default" icon="plus" modal="true" hideDisabled="false" />
 	
 </cfoutput>
