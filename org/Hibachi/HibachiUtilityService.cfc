@@ -967,6 +967,12 @@
 	    <!--- Return the CSV value. --->
 	    <cfreturn LOCAL.Buffer.ToString() />
 	</cffunction>
+	
+	<cffunction name="getCurrentUtcTime" returntype="Numeric" >
+        <cfset local.currentDate = Now()>
+        <cfset local.utcDate = dateConvert( "local2utc", local.currentDate )>
+        <cfreturn round( local.utcDate.getTime() / 1000 )>
+    </cffunction>
 
 
 </cfcomponent>

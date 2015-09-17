@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,25 +45,37 @@
 
 Notes:
 
---->
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
-
-<cfoutput>
-	<swa:SlatwallSettingTable showInheritance="false">
-		<swa:SlatwallSetting settingName="globalAdminDomainNames" />
-		<swa:SlatwallSetting settingName="globalAllowedOutsideRedirectSites" />
-		<swa:SlatwallSetting settingName="globalClientSecret" />
-		<swa:SlatwallSetting settingName="globalEncryptionAlgorithm" />
-		<swa:SlatwallSetting settingName="globalEncryptionEncoding" />
-		<swa:SlatwallSetting settingName="globalEncryptionKeySize" />
-		<swa:SlatwallSetting settingName="globalEncryptionKeyLocation" />
-		<swa:SlatwallSetting settingName="globalEncryptionService" />
-		<swa:SlatwallSetting settingName="globalForceCreditCardOverSSL" />
-		<swa:SlatwallSetting settingName="globalNoSessionIPRegex" />
-		<swa:SlatwallSetting settingName="globalNoSessionPersistDefault" />
-		<swa:SlatwallSetting settingName="globalRemoteIDShowFlag" />
-		<swa:SlatwallSetting settingName="globalRemoteIDEditFlag" />
-	</swa:SlatwallSettingTable>
-</cfoutput>
-
+*/
+component  output="false" accessors="true" extends="HibachiService" hint="Allows for easily checking signatures, keys, uuid, as well as generating them."
+{
+	//list of supported algorithms
+	
+	public any function newJWT(required string key){
+		return new Slatwall.org.Hibachi.jwt.jwt(key);
+	}
+	
+	public any function getJwtByToken(required string token){
+		var key = getService('settingService').getSettingValue('globalClientSecret');
+		var jwt = newJwt(key);
+		jwt.setTokenString(arguments.token);
+		return jwt;
+	}
+	
+	public string function createToken(){
+		//create token
+		var key = getService('settingService').getSettingValue('globalClientSecret');
+		var jwt = newJwt(key);
+		var currentTime = getService('hibachiUtilityService').getCurrentUtcTime();
+		//hard coded to 15 minutes
+		var tokenExpirationTime = 900;
+		var payload = {};
+		payload['iat'] = javaCast( "int", currentTime );
+		payload['exp'] = javaCast( "int", ( currentTime + tokenExpirationTime));
+		payload['accountid'] = getHibachiScope().getAccount().getAccountID();
+		payload['encoding'] = "UTF-8";
+		var token = jwt.encode(payload);
+		
+		return token;
+	}
+	
+}
