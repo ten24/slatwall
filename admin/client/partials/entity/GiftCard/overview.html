@@ -52,7 +52,8 @@
 				Expiration
 			</div>
 			<div class="s-body">
-				<span ng-bind="swGiftCardOverview.giftCard.expirationDate"></span>
+				<span ng-if="swGiftCardOverview.giftCard.expirationDate.trim().length > 0" ng-bind="swGiftCardOverview.giftCard.expirationDate"></span>
+				<span ng-if="swGiftCardOverview.giftCard.expirationDate.trim().length == 0">Never</span>
 				<a href="##" class="s-action" title="edit">
 					<i class="fa fa-pencil"></i>
 				</a>
