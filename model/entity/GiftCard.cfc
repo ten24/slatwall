@@ -68,7 +68,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	// Related Object Properties (one-to-many)
 	property name="giftCardTransactions" singularname="giftCardTransaction" cfc="GiftCardTransaction" fieldtype="one-to-many" fkcolumn="giftCardID" inverse="true" cascade="all-delete-orphan";
-   
+
 	// Related Object Properties (many-to-many)
 
 	// Remote Properties
@@ -79,9 +79,17 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-    
+
 
 	// Non-Persistent Properties
+
+	public any function getOrder(){
+		if(!isNull(this.getOriginalOrderItem())){
+			return this.getOriginalOrderItem().getOrder();
+		} else {
+			return false;
+		}
+	}
 
 	public string function getBalanceAmount(){
 		var transactions = this.getGiftCardTransactions();
@@ -135,7 +143,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 			arrayAppend(arguments.orderItemGiftRecipient.getGiftCards(), this);
 		}
 	}
-	
+
 	public void function removeOrderItemGiftRecipient(any orderItemGiftRecipient) {
 		if(!structKeyExists(arguments, "orderItem")) {
 			arguments.orderItem = variables.orderItem;

@@ -52,3 +52,17 @@ Notes:
 
 <cfparam name="rc.giftCard" type="any">
 <cfparam name="rc.edit" type="boolean">
+
+<cfoutput>
+	<hb:HibachiEntityActionBar type="detail" object="#rc.giftCard#" showEdit="false">
+
+		<!--- Create --->
+		<hb:HibachiEntityActionBarButtonGroup>
+		</hb:HibachiEntityActionBarButtonGroup>
+
+		<hb:HibachiProcessCaller action="admin:entity.processGiftCard" entity="#rc.giftCard#" processContext="updateEmail" type="list" />
+		<hb:HibachiProcessCaller action="admin:entity.processGiftCard" entity="#rc.giftCard#" processContext="changeRecipient" type="list" />
+	</hb:HibachiEntityActionBar>
+
+	<sw-gift-card-detail gift-card-id="#rc.giftCardID#"></sw-gift-card-detail>
+</cfoutput>

@@ -178,7 +178,7 @@ Notes:
 			SELECT oi.orderItemID, oi.quantity, s.giftCardExpirationTermID FROM SwOrderItem AS oi
     		LEFT JOIN SwSku AS s ON s.skuID = oi.skuID
     		LEFT JOIN SwProduct AS p ON s.productID = p.productID
-    		WHERE p.productTypeID = "50cdfabbc57f7d103538d9e0e37f61e4"
+    		WHERE p.productTypeID = <cfqueryparam cfsqltype="cf_sql_varchar" value="50cdfabbc57f7d103538d9e0e37f61e4" />
     		AND oi.orderID = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.orderID#" />
 		</cfquery>
 
