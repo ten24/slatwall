@@ -47,17 +47,17 @@ var slatwalladmin;
             };
             this.response = function (response) {
                 _this.$log.debug('response');
-                var messages = response.data.messages;
-                var alerts = _this.alertService.formatMessagesToAlerts(messages);
-                _this.alertService.addAlerts(alerts);
+                if (response.data.messages) {
+                    var alerts = _this.alertService.formatMessagesToAlerts(response.data.messages);
+                    _this.alertService.addAlerts(alerts);
+                }
                 return response;
             };
             this.responseError = function (rejection) {
                 _this.$log.debug('responseReject');
-                if (angular.isDefined(rejection.status) && rejection.status !== 404) {
-                    if (angular.isDefined(rejection.data) && angular.isDefined(rejection.data.messages)) {
-                        var messages = rejection.data.messages;
-                        var alerts = _this.alertService.formatMessagesToAlerts(messages);
+                if (angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 401) {
+                    if (rejection.data && rejection.data.messages) {
+                        var alerts = _this.alertService.formatMessagesToAlerts(rejection.data.messages);
                         _this.alertService.addAlerts(alerts);
                     }
                     else {
@@ -71,28 +71,22 @@ var slatwalladmin;
                 if (rejection.status === 401) {
                     // handle the case where the user is not authenticated
                     if (rejection.data && rejection.data.messages) {
-                        var deferred = $q.defer();
+                        //var deferred = $q.defer(); 
                         var $http = _this.$injector.get('$http');
                         if (rejection.data.messages[0].message === 'timeout') {
                             //open dialog
-                            _this.dialogService.addPageDialog('preprocesslogin', {}, deferred);
+                            _this.dialogService.addPageDialog('preprocesslogin', {});
                         }
                         else if (rejection.data.messages[0].message === 'invalid_token') {
-                            $http.get(baseURL + '/index.cfm/api/auth/login').then(function (loginResponse) {
-                                console.log('test');
-                                console.log(loginResponse);
+                            return $http.get(baseURL + '/index.cfm/api/auth/login').then(function (loginResponse) {
                                 _this.$window.localStorage.setItem('token', loginResponse.data.token);
-                                console.log(rejection);
                                 rejection.config.headers = rejection.config.headers || {};
                                 rejection.config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
-                                $http(rejection.config).then(function (response) {
-                                    console.log('repsonse');
-                                    console.log(response);
-                                    this.$q.resolve(response);
+                                return $http(rejection.config).then(function (response) {
+                                    return response;
                                 });
-                            }, function () {
-                                this.$q.reject(rejection);
-                                console.log('token failure');
+                            }, function (rejection) {
+                                return rejection;
                             });
                         }
                     }

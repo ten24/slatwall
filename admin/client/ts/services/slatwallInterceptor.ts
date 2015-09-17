@@ -80,19 +80,18 @@ module slatwalladmin{
         }
         public response = (response): ng.IPromise<any> => {
             this.$log.debug('response');
-			
-			var messages = response.data.messages;
-			var alerts = this.alertService.formatMessagesToAlerts(messages);
-			this.alertService.addAlerts(alerts);
+			if(response.data.messages){
+                var alerts = this.alertService.formatMessagesToAlerts(response.data.messages);
+                this.alertService.addAlerts(alerts);
+            }
 			return response;
         }
         public responseError = (rejection): ng.IPromise<any> => {
            
 			this.$log.debug('responseReject');
-			if(angular.isDefined(rejection.status) && rejection.status !== 404){
-				if(angular.isDefined(rejection.data) && angular.isDefined(rejection.data.messages)){
-					var messages = rejection.data.messages;
-					var alerts = this.alertService.formatMessagesToAlerts(messages);
+			if(angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 401){
+				if(rejection.data && rejection.data.messages){
+					var alerts = this.alertService.formatMessagesToAlerts(rejection.data.messages);
 					this.alertService.addAlerts(alerts);
 				}else{
 					var message = {
@@ -105,32 +104,25 @@ module slatwalladmin{
 			if (rejection.status === 401) {
 				// handle the case where the user is not authenticated
 				if(rejection.data && rejection.data.messages){
-					var deferred = $q.defer(); 
+					//var deferred = $q.defer(); 
 					var $http = this.$injector.get('$http');
 					if(rejection.data.messages[0].message === 'timeout'){
 						//open dialog
-						this.dialogService.addPageDialog('preprocesslogin',{},deferred);
+						this.dialogService.addPageDialog('preprocesslogin',{} );
 					}else if(rejection.data.messages[0].message === 'invalid_token'){
-						$http.get(baseURL+'/index.cfm/api/auth/login').then((loginResponse)=>{
-                            console.log('test');
-                            console.log(loginResponse);
+                        return $http.get(baseURL+'/index.cfm/api/auth/login').then((loginResponse)=>{
                             this.$window.localStorage.setItem('token',loginResponse.data.token);
-                            console.log(rejection);
                             rejection.config.headers = rejection.config.headers || {};
                             rejection.config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
-                            $http(rejection.config).then(function(response) {
-                                console.log('repsonse');
-                                console.log(response);
-                                this.$q.resolve(response);
+                            return $http(rejection.config).then(function(response) {
+                               return response;
                             });
-						},function(){
-                            this.$q.reject(rejection);
-                            console.log('token failure');                            
+						},function(rejection){
+                            return rejection;
                         });
 					}
 				}
             }
-			
 			return rejection;
         }
 		

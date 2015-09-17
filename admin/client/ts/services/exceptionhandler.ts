@@ -33,7 +33,8 @@ module logger {
         }
 
         private static handle(exception: any, cause: any) {
-            
+            console.log('exception');
+            console.log(exception);
             /** get $http and alertService from the injector */
             var http = this.injector.get<ng.IHttpService>('$http');
             var alertService = this.injector.get<slatwalladmin.AlertService>('alertService');

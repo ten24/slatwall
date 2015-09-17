@@ -15,7 +15,7 @@ var slatwalladmin;
                 var loginPromise = this.$slatwall.login(this.account_login.data.emailAddress, this.account_login.data.password);
                 loginPromise.then((loginResponse) => {
                     if (loginResponse && loginResponse.data && loginResponse.data.token) {
-                        this.$window.localStorage.token = loginResponse.data.token.token;
+                        this.$window.localStorage.setItem('token', loginResponse.data.token);
                         this.$route.reload();
                         this.dialogService.removeCurrentDialog();
                     }

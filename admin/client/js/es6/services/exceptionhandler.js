@@ -19,6 +19,8 @@ var logger;
             return ExceptionHandler.handle.bind(ExceptionHandler);
         }
         static handle(exception, cause) {
+            console.log('exception');
+            console.log(exception);
             /** get $http and alertService from the injector */
             var http = this.injector.get('$http');
             var alertService = this.injector.get('alertService');
