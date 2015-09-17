@@ -54,7 +54,7 @@ var slatwalladmin;
             };
             this.responseError = (rejection) => {
                 this.$log.debug('responseReject');
-                if (angular.isDefined(rejection.status) && rejection.status !== 404) {
+                if (angular.isDefined(rejection.status) && rejection.status !== 404 && rejection.status !== 403 && rejection.status !== 401) {
                     if (rejection.data && rejection.data.messages) {
                         var alerts = this.alertService.formatMessagesToAlerts(rejection.data.messages);
                         this.alertService.addAlerts(alerts);
@@ -74,23 +74,18 @@ var slatwalladmin;
                         var $http = this.$injector.get('$http');
                         if (rejection.data.messages[0].message === 'timeout') {
                             //open dialog
-                            this.dialogService.addPageDialog('preprocesslogin', {}, deferred);
+                            this.dialogService.addPageDialog('preprocesslogin', {});
                         }
                         else if (rejection.data.messages[0].message === 'invalid_token') {
                             return $http.get(baseURL + '/index.cfm/api/auth/login').then((loginResponse) => {
-                                console.log('test');
-                                console.log(loginResponse);
                                 this.$window.localStorage.setItem('token', loginResponse.data.token);
-                                console.log(rejection);
                                 rejection.config.headers = rejection.config.headers || {};
                                 rejection.config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
                                 return $http(rejection.config).then(function (response) {
-                                    console.log('repsonse');
-                                    console.log(response);
+                                    return response;
                                 });
-                            }, function () {
-                                // this.$q.reject(rejection);
-                                console.log('token failure');
+                            }, function (rejection) {
+                                return rejection;
                             });
                         }
                     }

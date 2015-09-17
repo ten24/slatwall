@@ -22,12 +22,10 @@ module slatwalladmin{
             return this._pageDialogs || [];
         };
         
-        addPageDialog = ( name:PageDialog, params?:any, deferred?:ng.IPromise ):void =>{
+        addPageDialog = ( name:PageDialog, params?:any ):void =>{
             var newDialog = {
                 'path' : this.partialsPath + name + '.html',
-                'params' : params,
-                //able to add deferred promises
-                'deferred': deferred
+                'params' : params
             };
             this._pageDialogs.push( newDialog );
         };

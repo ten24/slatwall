@@ -348,11 +348,6 @@ Notes:
 					<div ng-style="{pageDialogStyle:pageDialogs.length}" ng-hide="!pageDialogs.length" ng-class="{'s-dialog-container':pageDialogs.length}" ng-repeat="pageDialog in pageDialogs" >
 						<div class="s-swipe-background"></div>
 						<div ng-include="pageDialog.path" ></div>
-						<!--{{pageDialog}}
-						<sw-page-dialog
-							ng-if="pageDialog"
-							data-page-dialog="pageDialog"
-						></sw-page-dialog>-->
 					</div>
 				</div>
 			</div>

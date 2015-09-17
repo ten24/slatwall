@@ -9,12 +9,10 @@ var slatwalladmin;
             this.get = () => {
                 return this._pageDialogs || [];
             };
-            this.addPageDialog = (name, params, deferred) => {
+            this.addPageDialog = (name, params) => {
                 var newDialog = {
                     'path': this.partialsPath + name + '.html',
-                    'params': params,
-                    //able to add deferred promises
-                    'deferred': deferred
+                    'params': params
                 };
                 this._pageDialogs.push(newDialog);
             };

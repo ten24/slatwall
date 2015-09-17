@@ -17,12 +17,10 @@ var slatwalladmin;
             this.get = function () {
                 return _this._pageDialogs || [];
             };
-            this.addPageDialog = function (name, params, deferred) {
+            this.addPageDialog = function (name, params) {
                 var newDialog = {
                     'path': _this.partialsPath + name + '.html',
-                    'params': params,
-                    //able to add deferred promises
-                    'deferred': deferred
+                    'params': params
                 };
                 _this._pageDialogs.push(newDialog);
             };
