@@ -129,7 +129,7 @@ Notes:
 			SELECT SUM(gct.debitAmount) AS amount FROM SwGiftCardTransaction AS gct
 			    LEFT JOIN SwOrderPayment AS op on gct.orderPaymentID=op.orderPaymentID
 			WHERE
-				op.paymentMethodID="50d8cd61009931554764385482347f3a"
+				op.paymentMethodID=<cfqueryparam cfsqltype="cf_sql_varchar" value="50d8cd61009931554764385482347f3a" />
 			AND
 				op.orderID=<cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.referencedOrderID#" />
 		</cfquery>
