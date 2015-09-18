@@ -1,2 +1,24 @@
-<sw-action-caller>
+<!--
+	TODO: figure out the context of entity as an object
+<cfif !isObject(attributes.entity) || (isObject(attributes.entity) && ( !attributes.disabled || !attributes.hideDisabled ) )>
+		<hb:HibachiActionCaller attributecollection="#attributes#" />
+	</cfif>-->
+<sw-action-caller
+	data-action="{{swProcessCaller.action}}"
+	data-text="{{swProcessCaller.text}}"
+	data-type="swProcessCaller.type"
+	data-queryString="swProcessCaller.queryString"
+	data-title="swProcessCaller.title"
+	data-class="swProcessCaller.class"
+	data-icon="swProcessCaller.icon"
+	data-iconOnly="swProcessCaller.iconOnly"
+	data-name="swProcessCaller.name"
+	data-confirm="swProcessCaller.confirm"
+	data-confirmtext="swProcessCaller.confirmtext"
+	data-disabled="swProcessCaller.disabled"
+	data-disabledtext="swProcessCaller.disabledtext"
+	data-modal="swProcessCaller.modal"
+	data-modalFullWidth="swProcessCaller.modalFullWidth"
+	data-id="swProcessCaller.id"
+>
 </sw-action-caller>

@@ -6,8 +6,14 @@ module slatwalladmin {
     'use strict';
     
     export class SWActionCallerDropdownController{
+        
         constructor(){
-            
+            this.title = this.title || '';
+            this.icon = this.icon || 'plus';
+            this.type = this.type || 'button';
+            this.dropdownClass = this.dropdownClass || '';
+            this.dropdownId = this.dropdownId || '';
+            this.buttonClass = this.buttonClass || 'btn-primary';
         }
     }
 	
@@ -17,7 +23,12 @@ module slatwalladmin {
 		public scope = {};
         public transclude=true;
         public bindToController={
-            
+            title:"@",
+            icon:"@",
+            type:"=",
+            dropdownClass:"=",
+            dropdownId:"@",
+            buttonClass:"="
         };
         public controller=SWActionCallerDropdownController
         public controllerAs="swActionCallerDropdown";

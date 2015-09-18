@@ -8,38 +8,39 @@ module slatwalladmin {
     export class SWActionCallerController{
         
         constructor(private partialsPath, private utilityService:slatwalladmin.UtilityService, private $slatwall:ngSlatwall.SlatwallService){
+            console.log('actioncaller');
 			this.$slatwall = $slatwall;
 			this.utilityService = utilityService;
-			
 			//need to perform init after promise completes
 			this.init();
-			
         }
 		
 		public init = ():void =>{
-			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
-			this.actionItem = this.getActionItem();
-			this.actionItemEntityName = this.getActionItemEntityName();
-			this.text = this.getText();
-			if(this.getDisabled()){
-				this.getDisabledText();
-			}else if(this.getConfirm()){
-				this.getConfirmText();
-			}
-			
-			if(this.modalFullWidth && !this.getDisabled()){
-				this.class = this.class + " modalload-fullwidth";
-			}
-			
-			if(this.modal && !this.getDisabled() && !this.modalFullWidth){
-				this.class = this.class + " modalload";
-			}
+//			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
+//			this.type = this.type || 'link';
+//			this.actionItem = this.getActionItem();
+//			this.actionItemEntityName = this.getActionItemEntityName();
+//			this.text = this.getText();
+//			if(this.getDisabled()){
+//				this.getDisabledText();
+//			}else if(this.getConfirm()){
+//				this.getConfirmText();
+//			}
+//			
+//			if(this.modalFullWidth && !this.getDisabled()){
+//				this.class = this.class + " modalload-fullwidth";
+//			}
+//			
+//			if(this.modal && !this.getDisabled() && !this.modalFullWidth){
+//				this.class = this.class + " modalload";
+//			}
 			
 			/*need authentication lookup by api to disable
 			<cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
 				<cfset attributes.class &= " disabled" />
 			</cfif>
 			*/
+            console.log(this);
 		}
         
         public getAction = ():string =>{
@@ -187,11 +188,9 @@ module slatwalladmin {
     }
 	
 	export class SWActionCaller implements ng.IDirective{
-		
-		public restrict:string = 'E';
-		public scope = {};
-        public transclude=true;
-        public bindToController={
+		public restrict:string = 'EA';
+        public scope:{}; 
+		public bindToController={
             action:"@",
 			text:"@",
 			type:"@",
@@ -209,16 +208,17 @@ module slatwalladmin {
 			modalFullWidth:"=",
 			id:"@"
         };
-        public controller=SWActionCallerController
+        public controller=SWActionCallerController;
         public controllerAs="swActionCaller";
 		public templateUrl;
 		
 		constructor(private partialsPath:slatwalladmin.partialsPath,private utiltiyService:slatwalladmin.UtilityService,private $slatwall:ngSlatwall.SlatwallService){
-			this.templateUrl = partialsPath+'actioncaller.html';
+            this.templateUrl = partialsPath+'actioncaller.html';
 		}
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-			
+			console.log('scope');
+            console.log(scope);
 		}
 	}
     

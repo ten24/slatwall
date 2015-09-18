@@ -5,6 +5,9 @@ var slatwalladmin;
     'use strict';
     var SWProcessCallerController = (function () {
         function SWProcessCallerController() {
+            this.type = this.type || 'link';
+            console.log('init process caller controller');
+            console.log(this);
         }
         return SWProcessCallerController;
     })();
@@ -16,13 +19,13 @@ var slatwalladmin;
             this.scope = {};
             this.transclude = true;
             this.bindToController = {
-                action: "=",
-                entity: "=",
-                processContext: "=",
+                action: "@",
+                entity: "@",
+                processContext: "@",
                 hideDisabled: "=",
-                type: "=",
-                querystring: "=",
-                text: "=",
+                type: "@",
+                querystring: "@",
+                text: "@",
                 title: "=",
                 class: "=",
                 icon: "=",
@@ -30,6 +33,7 @@ var slatwalladmin;
                 submit: "=",
                 confirm: "=",
                 disabled: "=",
+                disabledText: "@",
                 modal: "="
             };
             this.controller = SWProcessCallerController;

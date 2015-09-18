@@ -5,6 +5,12 @@ var slatwalladmin;
     'use strict';
     var SWActionCallerDropdownController = (function () {
         function SWActionCallerDropdownController() {
+            this.title = this.title || '';
+            this.icon = this.icon || 'plus';
+            this.type = this.type || 'button';
+            this.dropdownClass = this.dropdownClass || '';
+            this.dropdownId = this.dropdownId || '';
+            this.buttonClass = this.buttonClass || 'btn-primary';
         }
         return SWActionCallerDropdownController;
     })();
@@ -15,7 +21,14 @@ var slatwalladmin;
             this.restrict = 'E';
             this.scope = {};
             this.transclude = true;
-            this.bindToController = {};
+            this.bindToController = {
+                title: "@",
+                icon: "@",
+                type: "=",
+                dropdownClass: "=",
+                dropdownId: "@",
+                buttonClass: "="
+            };
             this.controller = SWActionCallerDropdownController;
             this.controllerAs = "swActionCallerDropdown";
             this.link = function (scope, element, attrs) {

@@ -7,7 +7,9 @@ module slatwalladmin {
     
     export class SWProcessCallerController{
         constructor(){
-            
+            this.type = this.type || 'link';
+			console.log('init process caller controller');
+            console.log(this);
         }
     }
 	
@@ -17,14 +19,13 @@ module slatwalladmin {
 		public scope = {};
         public transclude=true;
         public bindToController={
-            action:"=",
-			entity:"=",
-			processContext:"=",
+            action:"@",
+			entity:"@",
+			processContext:"@",
 			hideDisabled:"=",
-			
-			type:"=",
-			querystring:"=",
-			text:"=",
+			type:"@",
+			querystring:"@",
+			text:"@",
 			title:"=",
 			class:"=",
 			icon:"=",
@@ -32,6 +33,7 @@ module slatwalladmin {
 			submit:"=",
 			confirm:"=",
 			disabled:"=",
+            disabledText:"@",
 			modal:"="
         };
         public controller=SWProcessCallerController

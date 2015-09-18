@@ -6,8 +6,12 @@ module slatwalladmin {
     'use strict';
     
     export class SWEntityActionBarController{
+        public init = () =>{
+            console.log('init entity action Bar controller');
+        }
+        
         constructor(){
-           
+           this.init();
         }
     }
 	
@@ -15,9 +19,10 @@ module slatwalladmin {
 		
 		public restrict:string = 'E';
 		public scope = {};
+        public transclude = true;
         public bindToController={
             /*Core settings*/
-            type:"=",
+            type:"@",
             object:"=",
             pageTitle:"=",
             edit:"=",

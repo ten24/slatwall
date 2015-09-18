@@ -5,6 +5,10 @@ var slatwalladmin;
     'use strict';
     class SWEntityActionBarController {
         constructor() {
+            this.init = () => {
+                console.log('init entity action Bar controller');
+            };
+            this.init();
         }
     }
     slatwalladmin.SWEntityActionBarController = SWEntityActionBarController;
@@ -13,9 +17,10 @@ var slatwalladmin;
             this.partialsPath = partialsPath;
             this.restrict = 'E';
             this.scope = {};
+            this.transclude = true;
             this.bindToController = {
                 /*Core settings*/
-                type: "=",
+                type: "@",
                 object: "=",
                 pageTitle: "=",
                 edit: "=",

@@ -20,7 +20,7 @@
 	<cfparam name="attributes.modalFullWidth" type="boolean" default="false" />
 	<cfparam name="attributes.id" type="string" default="" />
 	
-	<cfoutput><sw-action-caller
+	<!---<cfoutput><sw-action-caller
 		action="#attributes.action#"
 	data-text="#attributes.text#"
 	data-type="#attributes.type#"
@@ -40,7 +40,7 @@
 	data-id="#attributes.id#"
 	>
 		
-	</sw-action-caller></cfoutput>
+	</sw-action-caller></cfoutput>--->
 	
 	<cfset attributes.class = Replace(Replace(attributes.action, ":", "", "all"), ".", "", "all") & " " & attributes.class />
 	

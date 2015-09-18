@@ -10,27 +10,30 @@ var slatwalladmin;
             this.utilityService = utilityService;
             this.$slatwall = $slatwall;
             this.init = function () {
-                _this.class = _this.utilityService.replaceAll(_this.utilityService.replaceAll(_this.getAction(), ':', ''), '.', '') + ' ' + _this.class;
-                _this.actionItem = _this.getActionItem();
-                _this.actionItemEntityName = _this.getActionItemEntityName();
-                _this.text = _this.getText();
-                if (_this.getDisabled()) {
-                    _this.getDisabledText();
-                }
-                else if (_this.getConfirm()) {
-                    _this.getConfirmText();
-                }
-                if (_this.modalFullWidth && !_this.getDisabled()) {
-                    _this.class = _this.class + " modalload-fullwidth";
-                }
-                if (_this.modal && !_this.getDisabled() && !_this.modalFullWidth) {
-                    _this.class = _this.class + " modalload";
-                }
+                //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
+                //			this.type = this.type || 'link';
+                //			this.actionItem = this.getActionItem();
+                //			this.actionItemEntityName = this.getActionItemEntityName();
+                //			this.text = this.getText();
+                //			if(this.getDisabled()){
+                //				this.getDisabledText();
+                //			}else if(this.getConfirm()){
+                //				this.getConfirmText();
+                //			}
+                //			
+                //			if(this.modalFullWidth && !this.getDisabled()){
+                //				this.class = this.class + " modalload-fullwidth";
+                //			}
+                //			
+                //			if(this.modal && !this.getDisabled() && !this.modalFullWidth){
+                //				this.class = this.class + " modalload";
+                //			}
                 /*need authentication lookup by api to disable
                 <cfif not attributes.hibachiScope.authenticateAction(action=attributes.action)>
                     <cfset attributes.class &= " disabled" />
                 </cfif>
                 */
+                console.log(_this);
             };
             this.getAction = function () {
                 return _this.action || '';
@@ -167,6 +170,7 @@ var slatwalladmin;
                 }
                 return "";
             };
+            console.log('actioncaller');
             this.$slatwall = $slatwall;
             this.utilityService = utilityService;
             //need to perform init after promise completes
@@ -180,9 +184,7 @@ var slatwalladmin;
             this.partialsPath = partialsPath;
             this.utiltiyService = utiltiyService;
             this.$slatwall = $slatwall;
-            this.restrict = 'E';
-            this.scope = {};
-            this.transclude = true;
+            this.restrict = 'EA';
             this.bindToController = {
                 action: "@",
                 text: "@",
@@ -204,6 +206,8 @@ var slatwalladmin;
             this.controller = SWActionCallerController;
             this.controllerAs = "swActionCaller";
             this.link = function (scope, element, attrs) {
+                console.log('scope');
+                console.log(scope);
             };
             this.templateUrl = partialsPath + 'actioncaller.html';
         }

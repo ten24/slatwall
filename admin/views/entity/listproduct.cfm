@@ -55,6 +55,33 @@ Notes:
 <cfset subscriptionDisabled = "" />
 
 <cfoutput>
+	<sw-entity-action-bar
+		data-type="listing"
+		data-object=""
+		showCreate="false"
+	>
+		<sw-entity-action-bar-button-group>
+			<sw-action-caller-dropdown
+				data-title="#$.slatwall.rbKey('define.create')#"
+				data-icon="plus"
+				data-dropdownClass="pull-right">
+				<sw-process-caller 
+					data-action="admin:entity.preprocessproduct" 
+					data-entity="product" 
+					data-processContext="create" 
+					data-text="#rc.$.slatwall.rbKey('define.contentAccess')# #rc.$.slatwall.rbKey('entity.product')#" 
+					data-querystring="baseProductType=contentAccess" 
+					data-disabled="#!$.slatwall.getSmartList("Content").getRecordsCount()#" 
+					data-disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoContent')#" 
+					data-type="list" />
+				<!--<sw-process-caller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=event" type="list" />
+				-->
+			</sw-action-caller-dropdown>
+		</sw-entity-action-bar-button-group>
+	</sw-entity-action-bar>
+	
+	
+	
 	<hb:HibachiEntityActionBar type="listing" object="#rc.productSmartList#" showCreate="false">
 	
 		<!--- Create ---> 
