@@ -566,14 +566,14 @@ component output="false" accessors="true" extends="HibachiController" {
 		
 		entityService.invokeMethod("export#arguments.entityName#");
 	}
-	
+
 	// ============================= PRIVATE HELPER METHODS
 	
 	private void function loadEntitiesFromRCIDs(required struct rc) {
 		try{
 			for(var key in arguments.rc) {
 				if(!find('.',key) && right(key, 2) == "ID" && len(arguments.rc[key]) == "32") {
-					var entityName = left(key, len(key)-2);
+					var entityName = arguments.rc.entityActionDetails.itemEntityName;
 					if( getHibachiService().getEntityNameIsValidFlag(entityName) && ( !structKeyExists(arguments.rc, entityName) || !isObject(arguments.rc[entityName]) ) ) {
 						var entityService = getHibachiService().getServiceByEntityName( entityName=entityName );
 						var entity = entityService.invokeMethod("get#entityName#", {1=arguments.rc[key]});
