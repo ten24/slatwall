@@ -2756,7 +2756,7 @@ tabel .s-table-header {
   width: 300px;
 }
 .s-bundle-group .s-bundle-group-item {
-  background-color: #ffffff;
+  background-color: #F9F9F9;
   border: 1px solid #e6e6e6;
   margin-bottom: 4px;
   -webkit-border-radius: 2px;
@@ -2815,11 +2815,11 @@ tabel .s-table-header {
   margin: 0px !important;
 }
 .s-bundle-group .s-bundle-group-item .s-bundle-group-options a.s-remove {
-  background-color: #606060;
-  color: #ffffff;
+  background-color: #F9F9F9;
+  color: #666;
   position: absolute;
   display: block;
-  right: -1px;
+  right: 0px;
   -webkit-border-top-right-radius: 2px;
   -webkit-border-bottom-right-radius: 2px;
   -webkit-border-bottom-left-radius: 0;
@@ -2837,7 +2837,7 @@ tabel .s-table-header {
   background-clip: padding-box;
 }
 .s-bundle-group .s-bundle-group-item .s-bundle-group-options a.s-edit {
-  background-color: #ffffff;
+  background-color: #F9F9F9;
   color: #767676;
   right: 32px;
 }
@@ -2877,6 +2877,12 @@ tabel .s-table-header {
 }
 .s-bundle-group .s-bundle-group-item .s-bundle-group-dropdown-content .s-bundle-group-items .s-title button:focus {
   outline: none;
+}
+.s-bundle-group-dropdown .s-form-input,
+.s-bundle-group-dropdown .s-search-filter,
+.s-bundle-group-dropdown label {
+  width: 100%;
+  padding-left: 0px;
 }
 .s-bundle-add-items .s-load-more {
   text-align: center;
@@ -3306,6 +3312,9 @@ tabel .s-table-header {
   display: inline-block;
   margin-right: 10px;
   padding-left: 22px;
+}
+.s-bundle-group-dropdown-content .s-options .radio:first-child {
+  padding-left: 0px;
 }
 .s-workflow-objs .s-order-item-options .s-bundle-add-obj .s-item-type {
   width: 32px;
