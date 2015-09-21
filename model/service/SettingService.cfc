@@ -196,7 +196,8 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalForceCreditCardOverSSL = {fieldtype="yesno",defaultValue=1},
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
 			globalAdminDomainNames = {fieldtype="text"},
-
+			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
+			
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},

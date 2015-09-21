@@ -58,6 +58,9 @@ component extends="FW1.framework" {
 		,{ "$GET/api/scope/:context/$" = "/api:public/get/context/:context"}
 		,{ "$POST/api/scope/:context/$" = "/api:public/post/context/:context"}
 		
+		,{ "$POST/api/auth/login/$" = "/api:main/login"}
+		,{ "$GET/api/auth/login/$" = "/api:main/login"}
+		
 		,{ "$POST/api/log/$" = "/api:main/log"}
 		
 		,{ "$GET/api/$" = "/api:main/get/" }
@@ -201,9 +204,24 @@ component extends="FW1.framework" {
 			
 			// Verify that the application is setup
 			verifyApplicationSetup();
-			
 			// Verify that the session is setup
 			getHibachiScope().getService("hibachiSessionService").setPropperSession();
+			//check if we have the authorization header
+			if(structKeyExists(GetHttpRequestData().Headers,'Authorization')){
+				var authorizationHeader = GetHttpRequestData().Headers.authorization;
+				var prefix = 'Bearer ';
+				//get token by stripping prefix
+				var token = right(authorizationHeader,len(authorizationHeader) - len(prefix));
+				var jwt = getHibachiScope().getService('jwtService').getJwtByToken(token);
+				
+				if(jwt.verify()){
+					var account = getHibachiScope().getService('accountService').getAccountByAccountID(jwt.getPayload().accountid);
+					if(!isNull(account)){
+						account.setJwtToken(jwt);
+						getHibachiScope().getSession().setAccount( account );
+					}
+				}
+			}
 			
 			// If there is no account on the session, then we can look for an authToken to setup that account for this one request
 			if(!getHibachiScope().getLoggedInFlag() && structKeyExists(request, "context") && structKeyExists(request.context, "authToken") && len(request.context.authToken)) {
@@ -280,11 +298,10 @@ component extends="FW1.framework" {
 		}
 		
 		var authorizationDetails = getHibachiScope().getService("hibachiAuthenticationService").getActionAuthenticationDetailsByAccount(action=request.context[ getAction() ] , account=getHibachiScope().getAccount(), restInfo=restInfo);	
-
-		
 		// Verify Authentication before anything happens
-		if(!authorizationDetails.authorizedFlag) {
-			
+		if(
+			!authorizationDetails.authorizedFlag 
+		) {
 			// Get the hibachiConfig out of the application scope in case any changes were made to it
 			var hibachiConfig = getHibachiScope().getApplicationValue("hibachiConfig");
 			
@@ -299,9 +316,29 @@ component extends="FW1.framework" {
 			if(right(request.context.sRedirectURL, 1) == "?" || right(request.context.sRedirectURL, 1) == "&") {
 				request.context.sRedirectURL = left(request.context.sRedirectURL, len(request.context.sRedirectURL) - 1);
 			}
-			
+			//detect if we are on an angular hashbang page
+			if(structKeyExists(url,'ng')){
+			}else if(getSubsystem(request.context[ getAction() ]) == 'api'){
+				var context = getPageContext().getResponse();
+				request.context.messages = [];
+				var message = {};
+				var message['messageType'] = 'error';
+				if(structKeyExists(authorizationDetails,'forbidden') && authorizationDetails.forbidden == true){
+					context.getResponse().setStatus(403, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+					message['message'] = 'forbidden';
+				}else if(structKeyExists(authorizationDetails,'timeout') && authorizationDetails.timeout == true){
+					context.getResponse().setStatus(401, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+					message['message'] = 'timeout';
+				}else if(structKeyExists(authorizationDetails,'invalidToken') && authorizationDetails.invalidToken == true){
+					context.getResponse().setStatus(401, "#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.loginDefaultSection#.#hibachiConfig.loginDefaultItem#");
+					message['message'] = 'invalid_token';
+				}
+				arrayAppend(request.context.messages,message);
+				renderApiResponse();
+				abort;
+			}
 			//Route the user to the noaccess page if they are already logged in
-			if( getHibachiScope().getLoggedInFlag() ) {
+			else if( getHibachiScope().getLoggedInFlag() ) {
 				redirect(action="#getSubsystem(request.context[ getAction() ])#:#hibachiConfig.noaccessDefaultSection#.#hibachiConfig.noaccessDefaultItem#", preserve="swprid,sRedirectURL,entityName");
 			} else {
 					// If the current subsystem is a 'login' subsystem, then we can use the current subsystem
@@ -566,6 +603,38 @@ component extends="FW1.framework" {
 		}
 	}
 	
+	public void function renderApiResponse(){
+		param name="request.context.headers.contentType" default="application/json";
+		param name="request.context.apiResponse.content" default="#structNew()#"; 
+		//need response header for api
+		var context = getPageContext();
+		context.getOut().clearBuffer();
+		var response = context.getResponse();
+		for(header in request.context.headers){
+			response.setHeader(header,request.context.headers[header]);
+		}
+		
+		var responseString = '';
+		
+		if(structKeyExists(request.context, "messages") && !structKeyExists(request.context.apiResponse.content,'messages')) {
+			request.context.apiResponse.content["messages"] = request.context.messages;	
+		}
+		
+		//leaving a note here in case we ever wish to support XML for api responses
+		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/json'){
+			responseString = serializeJSON(request.context.apiResponse.content);
+			
+			// If running CF9 we need to fix strings that were improperly cast to numbers
+			if(left(server.coldFusion.productVersion, 1) eq 9) {
+				responseString = getHibachiScope().getService("hibachiUtilityService").updateCF9SerializeJSONOutput(responseString);
+			}
+		}
+		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/xml'){
+			//response String to xml placeholder
+		}
+		writeOutput( responseString );
+	}
+	
 	public void function setupResponse() {
 		param name="request.context.ajaxRequest" default="false";
 		param name="request.context.ajaxResponse" default="#structNew()#";
@@ -579,35 +648,7 @@ component extends="FW1.framework" {
 		
 		// Check for an API Response
 		if(request.context.apiRequest) {
-				
-			param name="request.context.headers.contentType" default="application/json"; 
-    		//need response header for api
-    		var context = getPageContext();
-    		context.getOut().clearBuffer();
-    		var response = context.getResponse();
-    		for(header in request.context.headers){
-    			response.setHeader(header,request.context.headers[header]);
-    		}
-    		
-    		var responseString = '';
-    		
-    		if(structKeyExists(request.context, "messages")) {
-				request.context.apiResponse.content["messages"] = request.context.messages;	
-			}
-    		
-    		//leaving a note here in case we ever wish to support XML for api responses
-    		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/json'){
-    			responseString = serializeJSON(request.context.apiResponse.content);
-    			
-    			// If running CF9 we need to fix strings that were improperly cast to numbers
-    			if(left(server.coldFusion.productVersion, 1) eq 9) {
-    				responseString = getHibachiScope().getService("hibachiUtilityService").updateCF9SerializeJSONOutput(responseString);
-    			}
-    		}
-    		if(isStruct(request.context.apiResponse.content) && request.context.headers.contentType eq 'application/xml'){
-    			//response String to xml placeholder
-    		}
-			writeOutput( responseString );
+			renderApiResponse();
 		}		
 		// Check for an Ajax Response
 		if(request.context.ajaxRequest && !structKeyExists(request, "exception")) {

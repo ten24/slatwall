@@ -158,6 +158,8 @@ Notes:
 	
 										<!--- Setup the primary address as the default account address --->
 										<cfset defaultValue = "" />
+									
+									<cfif !isNull(rc.order.getAccount())>
 										<cfif isNull(rc.processObject.getShippingAccountAddressID()) && !rc.order.getAccount().getPrimaryAddress().isNew()>
 											<cfset defaultValue = rc.order.getAccount().getPrimaryAddress().getAccountAddressID() />
 										<cfelseif !isNull(rc.processObject.getShippingAccountAddressID())>
@@ -166,6 +168,7 @@ Notes:
 	
 										<!--- Account Address --->
 										<hb:HibachiPropertyDisplay object="#rc.processObject#" property="shippingAccountAddressID" edit="#rc.edit#" value="#defaultValue#" />
+									</cfif>
 	
 										<!--- New Address --->
 										<hb:HibachiDisplayToggle selector="select[name='shippingAccountAddressID']" showValues="" loadVisable="#!len(defaultValue)#">
@@ -173,6 +176,7 @@ Notes:
 											<!--- Address Display --->
 											<swa:SlatwallAdminAddressDisplay address="#rc.processObject.getShippingAddress()#" fieldNamePrefix="shippingAddress." />
 	
+										<cfif !isNull(rc.order.getAccount())>
 											<!--- Save New Address --->
 											<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressFlag" edit="#rc.edit#" />
 	
@@ -180,6 +184,7 @@ Notes:
 											<hb:HibachiDisplayToggle selector="input[name='saveShippingAccountAddressFlag']" loadVisable="#rc.processObject.getSaveShippingAccountAddressFlag()#">
 												<hb:HibachiPropertyDisplay object="#rc.processObject#" property="saveShippingAccountAddressName" edit="#rc.edit#" />
 											</hb:HibachiDisplayToggle>
+										</cfif>
 	
 										</hb:HibachiDisplayToggle>
 	

@@ -58,7 +58,6 @@ Notes:
 
 		<!--- Create --->
 		<hb:HibachiEntityActionBarButtonGroup>
-			<hb:HibachiActionCaller action="admin:entity.giftcard" entity="giftCard" class="btn btn-primary" icon="plus icon-white" modal="true" />
 		</hb:HibachiEntityActionBarButtonGroup>
 	</hb:HibachiEntityActionBar>
 
@@ -70,6 +69,7 @@ Notes:
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerFirstName" search="true" />
         <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerLastName" search="true" />
         <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerEmailAddress" search="true" />
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
 		<hb:HibachiListingColumn propertyIdentifier="balanceAmount" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 	</hb:HibachiListingDisplay>

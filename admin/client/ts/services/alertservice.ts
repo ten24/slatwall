@@ -57,22 +57,24 @@ module slatwalladmin{
         
         formatMessagesToAlerts = (messages): Alert[] =>{
             var alerts = [];
-            for(var message in messages){
-                var alert = new Alert();
-               	alert.msg=messages[message].message;
-                alert.type=messages[message].messageType;
-                
-                alerts.push(alert);
-                if(alert.type === 'success' || alert.type === 'error'){
-                     this.$timeout(function() {
-                      alert.fade = true;
-                    }, 3500);
+            if(messages){
+                for(var message in messages){
+                    var alert = new Alert();
+                   	alert.msg=messages[message].message;
+                    alert.type=messages[message].messageType;
                     
-                    alert.dismissable = false;
-                    
-                }else{
-                    alert.fade = false;
-                    alert.dismissable = true;
+                    alerts.push(alert);
+                    if(alert.type === 'success' || alert.type === 'error'){
+                         this.$timeout(function() {
+                          alert.fade = true;
+                        }, 3500);
+                        
+                        alert.dismissable = false;
+                        
+                    }else{
+                        alert.fade = false;
+                        alert.dismissable = true;
+                    }
                 }
             }
             return alerts;
