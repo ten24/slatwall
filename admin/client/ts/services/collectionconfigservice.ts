@@ -58,7 +58,7 @@ module slatwalladmin{
             private $slatwall:any,
             public  baseEntityName?:string,
             public  baseEntityAlias?:string,
-            public  columns?:Column[],
+            private columns?:Column[],
             private filterGroups:Array=[{filterGroup: []}],
             private joins?:Join[],
             private orderBy?:OrderBy[],
@@ -69,15 +69,17 @@ module slatwalladmin{
             private allRecords:boolean = false
 
         ){
-            
-            if(!angular.isUndefined(this.baseEntityName)){
+            if(angular.isDefined(this.baseEntityName)){
                 this.collection = this.$slatwall['new' + this.getEntityName()]();
                 if(angular.isUndefined(this.baseEntityAlias)){
                     this.baseEntityAlias = '_' + this.baseEntityName.toLowerCase();
                 }
             }
-           
         }
+
+        newCollectionConfig=(baseEntityName?:string,baseEntityAlias?:string)=>{
+            return new CollectionConfig(this.$slatwall, baseEntityName, baseEntityAlias);
+        };
 
         loadJson= (jsonCollection) =>{
             //if json then make a javascript object else use the javascript object
@@ -87,6 +89,9 @@ module slatwalladmin{
 
             this.baseEntityAlias = jsonCollection.baseEntityAlias;
             this.baseEntityName = jsonCollection.baseEntityName;
+            if(angular.isDefined(jsonCollection.filterGroups)){
+                this.filterGroups = jsonCollection.filterGroups;
+            }
             this.columns = jsonCollection.columns;
             this.joins = jsonCollection.joins;
             this.keywords = jsonCollection.keywords;
@@ -324,7 +329,7 @@ module slatwalladmin{
 
         private setId=(id)=>{
             this.id = id;
-        };
+        }
 
         getEntity=(id?)=>{
             if (angular.isDefined(id)){
@@ -334,4 +339,6 @@ module slatwalladmin{
         };
 
     }
+    angular.module('slatwalladmin')
+        .factory('CollectionConfigService', ['$slatwall', ($slatwall: any) => new CollectionConfig($slatwall)]);
 }

@@ -465,7 +465,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 					// NO INTEGRATION
 					} else {
-                        
+                    
 						//GiftCard
                         if(arguments.data.transactiontype eq "giftCard"){
 
@@ -516,17 +516,19 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                                     arguments.paymentTransaction.addErrors(card.getErrors());
                                 }
                             }
-		              }
+		               
+                        } else { 
 
-						// Setup amountReceived
-						if( listFindNoCase("receive,receiveOffline", arguments.data.transactionType) ) {
-                            arguments.paymentTransaction.setAmountReceived( arguments.data.amount );
-						}
+                            // Setup amountReceived
+                            if( listFindNoCase("receive,receiveOffline", arguments.data.transactionType) ) {
+                                arguments.paymentTransaction.setAmountReceived( arguments.data.amount );
+                            }
 
-						// Setup amountCredited
-						if( listFindNoCase("credit,creditOffline", arguments.data.transactionType) ) {
-							arguments.paymentTransaction.setAmountCredited( arguments.data.amount );
-						}
+                            // Setup amountCredited
+                            if( listFindNoCase("credit,creditOffline", arguments.data.transactionType) ) {
+                                arguments.paymentTransaction.setAmountCredited( arguments.data.amount );
+                            }
+                        }
 
 					}
 
