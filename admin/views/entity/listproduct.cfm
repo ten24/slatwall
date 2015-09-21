@@ -64,7 +64,7 @@ Notes:
 			<sw-action-caller-dropdown
 				data-title="#$.slatwall.rbKey('define.create')#"
 				data-icon="plus"
-				data-dropdownClass="pull-right">
+				data-dropdown-class="pull-right">
 				<sw-process-caller 
 					data-action="admin:entity.preprocessproduct" 
 					data-entity="product" 
@@ -79,6 +79,22 @@ Notes:
 			</sw-action-caller-dropdown>
 		</sw-entity-action-bar-button-group>
 	</sw-entity-action-bar>
+	
+	<sw-listing-display 
+		smartList=""
+		recordEditAction="admin:entity.editproduct"
+		recorddetailaction="admin:entity.detailproduct"
+		showCreate="false">
+			
+		<sw-listing-column data-propertyIdentifier="productType.productTypeName"></sw-listing-column>
+		<sw-listing-column data-propertyIdentifier="brand.brandName"></sw-listing-column>
+		<!---<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="productName"  />
+		<hb:HibachiListingColumn propertyIdentifier="productCode" />
+		<hb:HibachiListingColumn propertyIdentifier="defaultSku.price" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="publishedFlag" />
+		<hb:HibachiListingColumn propertyIdentifier="calculatedQATS" />--->
+	</sw-listing-display>
 	
 	
 	

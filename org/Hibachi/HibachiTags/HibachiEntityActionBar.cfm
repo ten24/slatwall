@@ -84,6 +84,7 @@
 								
 							<!--- ================ Detail ===================== --->
 							<cfelseif attributes.type eq "detail">
+							
 								<div class="btn-group btn-group-sm">
 									<!--- Detail: Back Button --->
 									<hb:HibachiActionCaller action="#attributes.backAction#" queryString="#attributes.backQueryString#" class="btn btn-default" icon="arrow-left">

@@ -4,21 +4,22 @@
 		<hb:HibachiActionCaller attributecollection="#attributes#" />
 	</cfif>-->
 <sw-action-caller
+	
+	data-type="{{swProcessCaller.type}}"
 	data-action="{{swProcessCaller.action}}"
 	data-text="{{swProcessCaller.text}}"
-	data-type="swProcessCaller.type"
-	data-queryString="swProcessCaller.queryString"
-	data-title="swProcessCaller.title"
-	data-class="swProcessCaller.class"
-	data-icon="swProcessCaller.icon"
+	data-query-string="{{swProcessCaller.queryString}}"
+	data-title="{{swProcessCaller.title}}"
+	data-class="{{swProcessCaller.class}}"
+	data-icon="{{swProcessCaller.icon}}"
 	data-iconOnly="swProcessCaller.iconOnly"
-	data-name="swProcessCaller.name"
+	data-name="{{swProcessCaller.name}}"
 	data-confirm="swProcessCaller.confirm"
-	data-confirmtext="swProcessCaller.confirmtext"
+	data-confirmtext="{{swProcessCaller.confirmtext}}"
 	data-disabled="swProcessCaller.disabled"
-	data-disabledtext="swProcessCaller.disabledtext"
+	data-disabledtext="{{swProcessCaller.disabledtext}}"
 	data-modal="swProcessCaller.modal"
-	data-modalFullWidth="swProcessCaller.modalFullWidth"
-	data-id="swProcessCaller.id"
+	data-modal-full-width="swProcessCaller.modalFullWidth"
+	data-id="{{swProcessCaller.id}}"
 >
 </sw-action-caller>

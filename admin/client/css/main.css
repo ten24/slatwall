@@ -1213,7 +1213,7 @@ table tr th .glyphicon {
   background-clip: padding-box !important;
   background-color: #ffffff;
 }
-.dropdown-menu > li > a {
+.dropdown-menu li a {
   padding: 5px 15px;
 }
 .dropdown-menu .dropdown-header {
@@ -3732,12 +3732,12 @@ tabel .s-table-header {
 .dropdown-menu {
   background-color: #ffffff;
 }
-.dropdown-menu > li > a {
+.dropdown-menu li a {
   cursor: pointer;
   text-align: left;
 }
-.dropdown-menu > li > a:hover,
-.dropdown-menu > li > a:focus {
+.dropdown-menu li a:hover,
+.dropdown-menu li a:focus {
   background-color: #428bca;
 }
 .dropdown-menu li a.s-btn-disabled {
@@ -3749,18 +3749,18 @@ tabel .s-table-header {
 .navbar-s-navbar-ten24 {
   background-image: none;
 }
-.dropdown-menu > li > a:hover,
-.dropdown-menu > li > a:focus {
+.dropdown-menu li a:hover,
+.dropdown-menu li a:focus {
   background-image: none;
 }
 .navbar-s-navbar-ten24 {
   border-: #f58620;
 }
-.dropdown-menu > li > a {
+.dropdown-menu li a {
   color: #000000;
 }
-.dropdown-menu > li > a:hover,
-.dropdown-menu > li > a:focus {
+.dropdown-menu li a:hover,
+.dropdown-menu li a:focus {
   color: #ffffff;
 }
 .navbar-s-navbar-ten24 .navbar-nav > .dropdown > a .caret {
@@ -4112,8 +4112,8 @@ tabel .s-table-header {
   border-width: 2px;
   border-color: #AAA;
 }
-.s-search-filter.s-gift-card .dropdown-menu > li > a:hover,
-.s-search-filter.s-gift-card .dropdown-menu > li > a:focus {
+.s-search-filter.s-gift-card .dropdown-menu li a:hover,
+.s-search-filter.s-gift-card .dropdown-menu li a:focus {
   background-color: #FBFBFB;
   color: #000 !important;
 }

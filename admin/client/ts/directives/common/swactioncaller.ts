@@ -13,6 +13,7 @@ module slatwalladmin {
 			this.utilityService = utilityService;
 			//need to perform init after promise completes
 			this.init();
+            
         }
 		
 		public init = ():void =>{
@@ -186,10 +187,20 @@ module slatwalladmin {
             return "";    
         }
     }
+        
+    export class compileTest{
+        constructor(public tElement,public tAttributes,public linker){
+            console.log('compiler');
+            console.log(this.tElement);
+            console.log(this.linker);
+        }
+        
+    }
 	
 	export class SWActionCaller implements ng.IDirective{
 		public restrict:string = 'EA';
-        public scope:{}; 
+        public scope={}; 
+        public compile=compileTest;
 		public bindToController={
             action:"@",
 			text:"@",
@@ -211,14 +222,12 @@ module slatwalladmin {
         public controller=SWActionCallerController;
         public controllerAs="swActionCaller";
 		public templateUrl;
-		
+        
 		constructor(private partialsPath:slatwalladmin.partialsPath,private utiltiyService:slatwalladmin.UtilityService,private $slatwall:ngSlatwall.SlatwallService){
             this.templateUrl = partialsPath+'actioncaller.html';
 		}
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-			console.log('scope');
-            console.log(scope);
 		}
 	}
     

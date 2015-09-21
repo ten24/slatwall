@@ -8,9 +8,9 @@
 		</div>
 
 		<div class="col-md-6">
-			<div class="btn-toolbar">
-				<!--- ================ Listing =================== --->
-				<ng-transclude ng-if="swEntityActionBar.type === 'listing'"></ng-transclude>
+			<!--- ================ Listing =================== --->
+			<div class="btn-toolbar" ng-transclude ng-if="swEntityActionBar.type === 'listing'">
+				
 				<!--- ================ Detail ===================== --->
 				<div ng-if="swEntityActionBar.type === 'detail'">
 					<div class="btn-group btn-group-sm">

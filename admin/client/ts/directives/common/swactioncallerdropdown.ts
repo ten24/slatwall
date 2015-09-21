@@ -26,9 +26,9 @@ module slatwalladmin {
             title:"@",
             icon:"@",
             type:"=",
-            dropdownClass:"=",
+            dropdownClass:"@",
             dropdownId:"@",
-            buttonClass:"="
+            buttonClass:"@"
         };
         public controller=SWActionCallerDropdownController
         public controllerAs="swActionCallerDropdown";
