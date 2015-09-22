@@ -1,134 +1,329 @@
-<section class="content s-body-margin" id="j-main-content">
-	<div class="row s-body-nav">
-	    <nav class="navbar navbar-default" role="navigation">
-	      <div class="col-md-6 s-header-info">
-				<ul class="list-unstyled list-inline"></ul>
-				<h1 class="actionbar-title" ng-if="!swListingDisplay.title && swListingDisplay.collectionObject" sw-rbkey="'entity.'+swListingDisplay.collectionObject.toLowerCase()"></h1>
-				<h1 class="actionbar-title" ng-if="swListingDisplay.title" ng-bind="swListingDisplay.title"></h1>
-			</div>
-
-			<div class="col-md-6">
-				<div class="btn-toolbar">
-					<div class="btn-group btn-group-sm">
-						 <a title="Add {{entityDisplayName}}" class="adminentitycreatecollection btn btn-primary"  sw-href="{{'/entity/'+entityName+'/null'}}"><i class="glyphicon glyphicon-plus icon-white"></i> Add <span sw-rbkey="'entity.'+entityName.toLowerCase()"></span></a>  
-					</div>
-				</div>
-			</div>
-		</nav>
+<div class="s-table-header-nav s-listing-head-margin">
+	<div class="col-xs-6 s-no-padding-left" ng-if="swListingDisplay.title">
+		<ul class="list-inline list-unstyled">
+			<li>
+				<h4 class="s-table-title" ng-bind="swListingDisplay.title"></h4>
+			</li>
+		</ul>
 	</div>
 
-	<div class="s-table-wrapper" style="margin-bottom:20px;">
-		<div class="s-table-header-nav">
-			<div class="col-md-12 s-header-nav">
-				<div class="col-xs-6" style="padding-left:0px;">
-					<!--TODO: implement keyword searching and bulk actions -->
-					<ul class="list-inline list-unstyled">
-						<li><h3 class="s-table-header-title" sw-rbkey="'entity.Collection.collectionTableTitle'"><!--- created by rbkey ---></h3></li>
-					</ul>
+	<!--<div class="col-xs-6 s-table-view-options s-no-padding-right pull-right">
+		<ul class="list-inline list-unstyled">
+			<li class="s-table-header-search">
+				<cfif not thistag.expandable>
+					<input type="text" name="search" class="form-control input-sm general-listing-search" placeholder="#attributes.hibachiScope.rbKey('define.search')#" value="" tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" >
+				</cfif>
+			</li>
+			<li>
+				<div class="btn-group navbar-left dropdown">
+
+					<button type="button" class="btn btn-sm s-btn-dgrey dropdown-toggle"><i class="fa fa-cog"></i></button>
+
+						<ul class="dropdown-menu pull-right" role="menu">
+							<hb:HibachiActionCaller action="#attributes.exportAction#" text="#attributes.hibachiScope.rbKey('define.exportlist')#" type="list">
+						</ul>
+						<!--- Listing: Button Groups 
+						<cfif structKeyExists(thistag, "buttonGroup") && arrayLen(thistag.buttonGroup)>
+							<cfloop array="#thisTag.buttonGroup#" index="buttonGroup">
+								<cfif structKeyExists(buttonGroup, "generatedContent") && len(buttonGroup.generatedContent)>
+									<cfif findNoCase('dropdown', #buttonGroup.generatedContent#)>
+											#buttonGroup.generatedContent#
+									<cfelse>
+										<div class="btn-group">
+											#buttonGroup.generatedContent#
+										</div>
+									</cfif>
+								</cfif>
+							</cfloop>
+						</cfif>
+
+						<!--- Listing: Create 
+						<cfif len(attributes.createAction)>
+							<div class="btn-group">
+								<cfif attributes.createModal>
+									<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white" modal="true">
+								<cfelse>
+									<hb:HibachiActionCaller action="#attributes.createAction#" queryString="#attributes.createQueryString#" class="btn btn-primary" icon="plus icon-white">
+								</cfif>
+							</div>
+						</cfif>
+
 				</div>
+			</li>
+		</ul>
+
+	</div>-->
+</div><!--- reyjay's class --->
+
+
+
+<div class="table-responsive s-listing-display-table-wrapper">
+	<!--<table 
+	id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" ng-class="swListingDisplay.tableclass" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="swListingDisplay.collection.data.collectionObject#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="{{swListingDisplay.allprocessobjectproperties}}" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" {{this.tableattributes}}>
+-->
+	<table ng-class="swListingDisplay.tableclass"  data-processobjectproperties="{{swListingDisplay.allprocessobjectproperties}}"  {{swListingDisplay.tableattributes}}>
+		<thead>
+			<tr>
+				<!--- Selectable --->
+				<input ng-if-start="swListingDisplay.selectable" type="hidden" ng-name="swListingDisplay.selectFieldName" ng-value="swListingDisplay.selectValue" />
+				<th ng-if-end ng-class="{'disabled':!swListingDisplay.edit,'select':1===1}" ng-bind="swListingDisplay.selectTitle"></th>
+				<!--- Multiselectable --->
+				<input ng-if-start="swListingDisplay.multiselectable" type="hidden" ng-name="swListingDisplay.multiselectFieldName" ng-value="swListingDisplay.multiselectValues" />
+				<th ng-if-end ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
+					<div ="!swListingDisplay.expandable && swListinDisplay.multiselectPropertyIdentifier && swListinDisplay.multiselectPropertyIdentifier.length" class="dropdown">
+						<a href="##" class="dropdown-toggle" data-toggle="dropdown">&nbsp;<i class="glyphicon glyphicon-check"></i> </a>
+						<ul class="dropdown-menu nav">
+							<li>
+								<a href="##" class="multiselect-checked-filter">
+									<i class="hibachi-ui-checkbox{{!swListingDisplay.edit ? '-checked':''}}"></i> Show Selected
+								</a>
+							</li>
+						</ul>
+					</div>
+					<span ng-if="!(!swListingDisplay.expandable && swListinDisplay.multiselectPropertyIdentifier && swListinDisplay.multiselectPropertyIdentifier.length)">&nbsp;</span>
+				</th>
+				<!--- Sortable -->
+				<th class="sort" ng-if="swListingDisplay.sortable">&nbsp;</th>
+				<!-- Columns -->
 				
-				<div class="col-xs-6 s-table-view-options">
-					<ul class="list-inline list-unstyled">
-						<li>
-							<!--- Generates an exportable collection --->
-							<button type="button" title="Export Collection" class="btn btn-default btn-sm s-table-header-btn" ng-click="exportCollection()" ><i class="fa fa-share-square-o"></i></button>			
-						</li>
-						<!-- <li>
-							<button class="btn btn-default btn-sm" target="_self" ng-click="toggleFiltersAndOptions()"><i class="fa fa-cogs"></i></button>
-						</li> -->
-						<li>
-							<div class="s-select-list-wrapper">
-								<div class="form-group s-table-search">
-									<input  type="text"
-										class="form-control input-sm"
-										placeholder="Search"
-										name="srch-term"
-										ng-model="keywords"
-										ng-change="searchCollection()"
-										/>
-										<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
-										<i ng-show="!loadingCollection" class="fa fa-search"></i>
-								</div>
+				<!--
+				<!--- Columns 
+				<cfloop array="#thistag.columns#" index="column">
+					<cfsilent>
+						<cfif not len(column.title) and len(column.propertyIdentifier)>
+							<cfset column.title = thistag.exampleEntity.getTitleByPropertyIdentifier(column.propertyIdentifier) />
+						</cfif>
+					</cfsilent>
+					<th class="data #column.tdClass#" <cfif len(column.propertyIdentifier)>data-propertyIdentifier="#column.propertyIdentifier#"<cfelseif len(column.processObjectProperty)>data-processobjectproperty="#column.processObjectProperty#"<cfif structKeyExists(column, "fieldClass")> data-fieldclass="#column.fieldClass#"</cfif></cfif>>
+						<cfif (not column.sort or thistag.expandable) and (not column.search or thistag.expandable) and (not column.filter or thistag.expandable) and (not column.range or thistag.expandable)>
+							#column.title#
+						<cfelse>
+							<div class="dropdown">
+								<a href="##" class="dropdown-toggle">#column.title# <i class="fa fa-sort"></i></a>
+								<ul class="dropdown-menu nav scrollable">
+									<hb:HibachiDividerHider>
+										<cfif column.sort and not thistag.expandable>
+											<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.sort')#</li>
+											<li><a href="##" class="listing-sort" data-sortdirection="ASC"><i class="icon-arrow-down"></i> Sort Ascending</a></li>
+											<li><a href="##" class="listing-sort" data-sortdirection="DESC"><i class="icon-arrow-up"></i> Sort Descending</a></li>
+											<li class="divider"></li>
+										</cfif>
+										<cfif column.search and not thistag.expandable>
+											<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.search')#</li>
+											<li class="search-filter"><input type="text" class="listing-search form-control" name="FK:#column.propertyIdentifier#" value="" /> <i class="icon-search"></i></li>
+											<li class="divider"></li>
+										</cfif>
+										<cfif column.range and not thistag.expandable>
+											<cfsilent>
+												<cfset local.rangeClass = "text" />
+												<cfset local.fieldType = thistag.exampleEntity.getFieldTypeByPropertyIdentifier(column.propertyIdentifier) />
+												<cfif local.fieldType eq "dateTime">
+													<cfset local.rangeClass = "datetimepicker" />
+												</cfif>
+											</cfsilent>
+											<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.range')#</li>
+											<li class="range-filter"><label for="From Date" class="col-md-12 s-zero-left">From</label><input type="text" class="#local.rangeClass# form-control range-filter-lower col-md-12" name="R:#column.propertyIdentifier#" value="" /></li>
+											<li class="range-filter"><label for="To Date" class="col-md-12 s-zero-left">To</label><input type="text" class="#local.rangeClass# form-control range-filter-upper col-md-12" name="R:#column.propertyIdentifier#" value="" /></li>
+											<li class="divider"></li>
+										</cfif>
+										<cfif column.filter and not thistag.expandable>
+											<li class="dropdown-header">#attributes.hibachiScope.rbKey('define.filter')#</li>
+											<cfset filterOptions = attributes.smartList.getFilterOptions(valuePropertyIdentifier=column.propertyIdentifier, namePropertyIdentifier=column.propertyIdentifier) />
+											<input type="hidden" name="F:#column.propertyIdentifier#" value="#attributes.smartList.getFilters(column.propertyIdentifier)#" />
+											<cfloop array="#filterOptions#" index="filter">
+												<li><a href="##" class="listing-filter" data-filtervalue="#filter['value']#"><i class="hibachi-ui-checkbox"></i> #filter['name']#</a></li>
+											</cfloop>
+										</cfif>
+									</hb:HibachiDividerHider>
+								</ul>
 							</div>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
+						</cfif>
+					</th>
+				</cfloop>-->
+				<!--- Admin -->
+				<th ng-if="swListingDisplay.administrativeCount" class="admin admin{{swListingDisplay.administativeCount}}" {{swListingDisplay.adminattributes}}>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody ng-class="{'sortable':swListingDisplay.sortable}">
+			<!--<cfset thistag.loopIndex = 0 />
+			<cfif not attributes.edit and thistag.multiselectable and not len(attributes.parentPropertyName) and len(attributes.multiselectPropertyIdentifier)>
+				<cfif len(attributes.multiselectValues)>
+					<cfset attributes.smartList.addInFilter(attributes.multiselectPropertyIdentifier, attributes.multiselectValues) />
+				<cfelse>
+					<cfset attributes.smartList.addInFilter(attributes.multiselectPropertyIdentifier, '_') />
+				</cfif>
+			</cfif>
+			<cfloop array="#attributes.smartList.getPageRecords()#" index="record">
+				<cfset thistag.loopIndex++ />
+				<!--- If there is a recordProcessEntity then find the processObject and inject the necessary values 
+				<cfif isObject(attributes.recordProcessEntity)>
+					<cfset injectValues = structNew() />
+					<cfset injectValues[ "#record.getClassName()#" ] = record />
+					<cfset injectValues[ "#record.getPrimaryIDPropertyName()#" ] = record.getPrimaryIDValue() />
+					<cfset attributes.recordProcessEntity.clearProcessObject( attributes.recordProcessContext ) />
+					<cfset thisRecordProcessObject = attributes.recordProcessEntity.getProcessObject( attributes.recordProcessContext, injectValues ) />
+				</cfif>
+				<tr id="#record.getPrimaryIDValue()#" <cfif thistag.expandable>idPath="#record.getValueByPropertyIdentifier( propertyIdentifier="#thistag.exampleEntity.getPrimaryIDPropertyName()#Path" )#"</cfif>>
+					<!--- Selectable
+					<cfif thistag.selectable>
+						<td class="s-table-select"><a href="##" class="table-action-select#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-radio"></i></a></td>
+					</cfif>
+					<!--- Multiselectable 
+					<cfif thistag.multiselectable>
+						<td class="s-table-checkbox"><a href="##" class="table-action-multiselect#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-checkbox"></i></a></td>
+					</cfif>
+					<!--- Sortable 
+					<cfif thistag.sortable>
+						<td class="s-table-sort"><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="fa fa-arrows"></i></a></td>
+					</cfif>
+					<cfloop array="#thistag.columns#" index="column">
+						<!--- Expandable Check 
+						<cfif column.tdclass eq "primary" and thistag.expandable>
+							<td class="#column.tdclass#"><a href="##" class="table-action-expand depth0" data-depth="0"><i class="glyphicon glyphicon-plus"></i></a> #record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#</td>
+						<cfelse>
+							<td class="#column.tdclass#">
+								<cfif len(column.propertyIdentifier)>
+									#record.getValueByPropertyIdentifier( propertyIdentifier=column.propertyIdentifier, formatValue=true )#
+								<cfelseif len(column.processObjectProperty)>
+									<cfset attData = duplicate(column) />
+									<cfset attData.object = thisRecordProcessObject />
+									<cfset attData.property = column.processObjectProperty />
+									<cfset attData.edit = attributes.edit />
+									<cfset attData.displayType = "plain" />
+									<cfif structKeyExists(attData, "recordFieldNamePrefix") and len(attData.recordFieldNamePrefix)>
+										<cfset attData.fieldName = "#attData.recordFieldNamePrefix#[#thistag.loopIndex#].#attData.fieldName#" />
+									</cfif>
+									<hb:HibachiPropertyDisplay attributeCollection="#attData#" />
+								</cfif>
+							</td>
+						</cfif>
+					</cfloop>
+					<cfif attributes.administativeCount>
+						<td class="admin admin#attributes.administativeCount#">
+							<!--- Detail 
+							<cfif len(attributes.recordDetailAction)>
+								<cfif len(attributes.recordDetailActionProperty)>
+									<cfset detailActionProperty=listlast(attributes.recordDetailActionProperty,'.')>
+									<cfset detailActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=attributes.recordDetailActionProperty)>
+								<cfelse>
+									<cfset detailActionProperty=record.getPrimaryIDPropertyName()>
+									<cfset detailActionPropertyValue=record.getPrimaryIDValue()>
+								</cfif>
+
+								<cfset thisID = "#replace(replace(lcase(attributes.recordDetailAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
+								<hb:HibachiActionCaller action="#attributes.recordDetailAction#" queryString="#listPrepend(attributes.recordDetailQueryString, '#detailActionProperty#=#detailActionPropertyValue#', '&')#" class="btn btn-default btn-xs" icon="eye-open" iconOnly="true" modal="#attributes.recordDetailModal#" id="#thisID#" />
+							</cfif>
+
+							<!--- Edit 
+							<cfif len(attributes.recordEditAction)>
+								<cfif len(attributes.recordEditActionProperty)>
+									<cfset editActionProperty=listlast(attributes.recordEditActionProperty,'.')>
+									<cfset editActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=attributes.recordEditActionProperty)>
+								<cfelse>
+									<cfset editActionProperty=record.getPrimaryIDPropertyName()>
+									<cfset editActionPropertyValue=record.getPrimaryIDValue()>
+								</cfif>
+								<cfset thisID = "#replace(replace(lcase(attributes.recordEditAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
+								<cfset local.editErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="edit", setErrors=false) />
+								<cfset local.disabled = local.editErrors.hasErrors() />
+								<cfset local.disabledText = local.editErrors.getAllErrorsHTML() />
+								<hb:HibachiActionCaller action="#attributes.recordEditAction#" queryString="#listPrepend(attributes.recordEditQueryString, '#editActionProperty#=#editActionPropertyValue#', '&')#" class="btn btn-default btn-xs" icon="pencil" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" modal="#attributes.recordEditModal#" id="#thisID#" />
+							</cfif>
+
+							<!--- Delete 
+							<cfif len(attributes.recordDeleteAction)>
+								<cfif len(attributes.recordDeleteActionProperty)>
+									<cfset deleteActionProperty=listlast(attributes.recordDeleteActionProperty,'.')>
+									<cfset deleteActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=attributes.recordDeleteActionProperty)>
+								<cfelse>
+									<cfset deleteActionProperty=record.getPrimaryIDPropertyName()>
+									<cfset deleteActionPropertyValue=record.getPrimaryIDValue()>
+								</cfif>
+								<cfset thisID = "#replace(replace(lcase(attributes.recordDeleteAction), ':', ''), '.', '')#" />
+								<cfset local.deleteErrors = attributes.hibachiScope.getService("hibachiValidationService").validate(object=record, context="delete", setErrors=false) />
+								<cfset local.disabled = local.deleteErrors.hasErrors() />
+								<cfset local.disabledText = local.deleteErrors.getAllErrorsHTML() />
+								<hb:HibachiActionCaller action="#attributes.recordDeleteAction#" queryString="#listPrepend(attributes.recordDeleteQueryString, '#deleteActionProperty#=#deleteActionPropertyValue#', '&')#" class="btn btn-default btn-xs" icon="trash" iconOnly="true" disabled="#local.disabled#" disabledText="#local.disabledText#" confirm="true" id="#thisID#" />
+							</cfif>
+
+							<!--- Process 
+							<cfif len(attributes.recordProcessAction)>
+								<cfif len(attributes.recordDeleteActionProperty)>
+									<cfset processActionProperty=listlast(attributes.recordProcessActionProperty,'.')>
+									<cfset processActionPropertyValue=record.getValueByPropertyIdentifier( propertyIdentifier=attributes.recordProcessActionProperty)>
+								<cfelse>
+									<cfset processActionProperty=record.getPrimaryIDPropertyName()>
+									<cfset processActionPropertyValue=record.getPrimaryIDValue()>
+								</cfif>
+								<cfset thisID = "#replace(replace(lcase(attributes.recordProcessAction), ':', ''), '.', '')#_#record.getPrimaryIDValue()#" />
+								<hb:HibachiProcessCaller action="#attributes.recordProcessAction#" entity="#attributes.recordProcessEntity#" processContext="#attributes.recordProcessContext#" queryString="#listPrepend(attributes.recordProcessQueryString, '#processActionProperty#=#processActionPropertyValue#', '&')#" class="btn btn-default hibachi-ajax-submit" id="#thisID#" />
+							</cfif>
+						</td>
+					</cfif>
+				</tr>
+			</cfloop>
+			<cfif !arrayLen(attributes.smartList.getPageRecords())>
+				<tr><td colspan="#thistag.columnCount#" style="text-align:center;"><em>#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#</em></td></tr>
+			</cfif>
+			--->
+		</tbody>
+	</table>
+
+	</div><!--- table-responsive --->
 	
-		<span sw-loading="collection">
-			
-			<sw-collection-table
-				data-angular-links="false"
-				data-collection="collection"
-				data-collection-config="collectionConfig"
-				data-is-radio="isRadio"
-				sw-scroll-trigger
-				infinite-scroll="appendToCollection()"
-				infinite-scroll-disabled="pagination.autoScrollDisabled"
-				infinite-scroll-distance="1">
-			</sw-collection-table> 
-			<sw-pagination-bar
-				ng-if="paginator"
-				data-collection="collection"
-				data-paginator="paginator"
-				data-get-collection="getCollection()"
-				>
-			</sw-pagination-bar>
-		</span>
-	</div>
-	
-	
-	<!--delete batch action-->
-	<div id="j-delete-link" class="row collapse s-batch-options">
-		<div class="col-md-12 s-add-filter">
-			<!-- Edit Filter Box -->
-			<h4> Delete:<i class="fa fa-times" data-toggle="collapse" data-target="#j-delete-link"></i></h4>
-			<div class="col-xs-12">
-				<div class="row">
-					<div class="col-xs-2">
-						<div class="form-group form-group-sm">
-							<label class="col-sm-12 control-label s-no-padding" for="formGroupInputSmall">Items To Delete:</label>
-							<div class="col-sm-12 s-no-paddings">
-								<div class="radio">
-									<input type="radio" name="radio1" id="radio7" value="option2" checked="checked">
-									<label for="radio7">
-									All
-									</label>
-								</div>
-								<div class="radio">
-									<input type="radio" name="radio1" id="radio7" value="option2">
-									<label for="radio7">
-									Visable
-									</label>
-								</div>
-								<div class="radio">
-									<input type="radio" name="radio1" id="radio7" value="option2">
-									<label for="radio7">
-									Selected
-									</label>
-								</div>
-							</div>
-							<div class="clearfix"></div>
-						</div>
-					</div>
-					<div class="col-xs-7 s-criteria">
-						<div class="alert alert-danger" role="alert">
-							<div class="input-group">
-								<label>Confirm action by typing "DELETE" below.</label>
-								<input type="text" class="form-control j-delete-text" placeholder="">
-							</div>
-						</div>
-					</div>
-					<div class="col-xs-2">
-						<div class="s-button-select-group">
-							<button type="button" class="btn btn-sm s-btn-ten24 j-delete-btn" disabled="disabled" style="width:100%;">Delete</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- //Edit Filter Box -->
-		</div>
-	</div>
-	<!--//delete batch action-->
-</section>
+
+<!--- Pager --->
+<!--<cfsilent>
+	<cfset local.pageStart = 1 />
+	<cfset local.pageCount = 2 />
+
+	<cfif attributes.smartList.getTotalPages() gt 6>
+		<cfif attributes.smartList.getCurrentPage() lte 3>
+			<cfset local.pageCount = 4 />
+		<cfelseif attributes.smartList.getCurrentPage() gt 3 and attributes.smartList.getCurrentPage() lt attributes.smartList.getTotalPages() - 3>
+			<cfset local.pageStart = attributes.smartList.getCurrentPage()-1 />
+		<cfelseif attributes.smartList.getCurrentPage() gte attributes.smartList.getTotalPages() - 3>
+			<cfset local.pageStart = attributes.smartList.getTotalPages()-3 />
+			<cfset local.pageCount = 4 />
+		</cfif>
+	<cfelse>
+		<cfset local.pageCount = attributes.smartList.getTotalPages() - 1 />
+	</cfif>
+
+	<cfset local.pageEnd = local.pageStart + local.pageCount />
+</cfsilent>
+
+
+<div class="j-pagination" data-tableid="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#">
+	<ul class="pagination paginationpages#attributes.smartList.getTotalPages()#">
+		<li><a href="##" class="paging-show-toggle">#attributes.hibachiScope.rbKey('define.show')# <span class="details">(#attributes.smartList.getPageRecordsStart()# - #attributes.smartList.getPageRecordsEnd()# #lcase(attributes.hibachiScope.rbKey('define.of'))# #attributes.smartList.getRecordsCount()#)</span></a></li>
+		<li><a href="##" class="show-option" data-show="10">10</a></li>
+		<li><a href="##" class="show-option" data-show="25">25</a></li>
+		<li><a href="##" class="show-option" data-show="50">50</a></li>
+		<li><a href="##" class="show-option" data-show="100">100</a></li>
+		<li><a href="##" class="show-option" data-show="500">500</a></li>
+		<li><a href="##" class="show-option" data-show="ALL">ALL</a></li>
+
+		<cfif attributes.smartList.getCurrentPage() gt 1>
+			<li><a href="##" class="listing-pager page-option prev" data-page="#attributes.smartList.getCurrentPage() - 1#">&laquo;</a></li>
+		<cfelse>
+			<li class="disabled"><a href="##" class="page-option prev">&laquo;</a></li>
+		</cfif>
+		<cfif attributes.smartList.getTotalPages() gt 6 and attributes.smartList.getCurrentPage() gt 3>
+			<li><a href="##" class="listing-pager page-option" data-page="1">1</a></li>
+			<li><a href="##" class="listing-pager page-option" data-page="#attributes.smartList.getCurrentPage()-3#">...</a></li>
+		</cfif>
+		<cfloop from="#local.pageStart#" to="#local.pageEnd#" index="i" step="1">
+			<li <cfif attributes.smartList.getCurrentPage() eq i>class="active"</cfif>><a href="##" class="listing-pager page-option" data-page="#i#">#i#</a></li>
+		</cfloop>
+		<cfif attributes.smartList.getTotalPages() gt 6 and attributes.smartList.getCurrentPage() lt attributes.smartList.getTotalPages() - 3>
+			<li><a href="##" class="listing-pager page-option" data-page="#attributes.smartList.getCurrentPage()+3#">...</a></li>
+			<li><a href="##" class="listing-pager page-option" data-page="#attributes.smartList.getTotalPages()#">#attributes.smartList.getTotalPages()#</a></li>
+		</cfif>
+		<cfif attributes.smartList.getCurrentPage() lt attributes.smartList.getTotalPages()>
+			<li><a href="##" class="listing-pager page-option next" data-page="#attributes.smartList.getCurrentPage() + 1#">&raquo;</a></li>
+		<cfelse>
+			<li class="disabled"><a href="##" class="page-option next">&raquo;</a></li>
+		</cfif>
+	</ul>
+</div>-->

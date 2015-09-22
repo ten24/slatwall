@@ -51,8 +51,8 @@ module logger {
             /** notice I use the fat arrow for the anon function which preserves lexical scope. */
             http(requestConfig).error(
                 data => {
-                    alertService.addAlert({ msg: exception, type: 'error' });
                     console.log(exception);
+                    alertService.addAlert({ msg: exception, type: 'error' });
                 }
             );
         }//<--end handle method

@@ -179,18 +179,6 @@ var slatwalladmin;
         return SWActionCallerController;
     })();
     slatwalladmin.SWActionCallerController = SWActionCallerController;
-    var compileTest = (function () {
-        function compileTest(tElement, tAttributes, linker) {
-            this.tElement = tElement;
-            this.tAttributes = tAttributes;
-            this.linker = linker;
-            console.log('compiler');
-            console.log(this.tElement);
-            console.log(this.linker);
-        }
-        return compileTest;
-    })();
-    slatwalladmin.compileTest = compileTest;
     var SWActionCaller = (function () {
         function SWActionCaller(partialsPath, utiltiyService, $slatwall) {
             this.partialsPath = partialsPath;
@@ -198,7 +186,6 @@ var slatwalladmin;
             this.$slatwall = $slatwall;
             this.restrict = 'EA';
             this.scope = {};
-            this.compile = compileTest;
             this.bindToController = {
                 action: "@",
                 text: "@",

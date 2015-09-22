@@ -24,9 +24,9 @@ var slatwalladmin;
                 title: "@",
                 icon: "@",
                 type: "=",
-                dropdownClass: "=",
+                dropdownClass: "@",
                 dropdownId: "@",
-                buttonClass: "="
+                buttonClass: "@"
             };
             this.controller = SWActionCallerDropdownController;
             this.controllerAs = "swActionCallerDropdown";

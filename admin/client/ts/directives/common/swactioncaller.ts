@@ -188,19 +188,9 @@ module slatwalladmin {
         }
     }
         
-    export class compileTest{
-        constructor(public tElement,public tAttributes,public linker){
-            console.log('compiler');
-            console.log(this.tElement);
-            console.log(this.linker);
-        }
-        
-    }
-	
 	export class SWActionCaller implements ng.IDirective{
 		public restrict:string = 'EA';
         public scope={}; 
-        public compile=compileTest;
 		public bindToController={
             action:"@",
 			text:"@",

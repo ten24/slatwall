@@ -20,6 +20,32 @@ module slatwalladmin{
 			return listArray[listArray.length-1];
         }
         
+        public listPrepend = (list:string, substring:string, delimiter:string):string =>{
+            if(angular.isUndefined(delimiter)){
+                delimiter = ',';
+            }
+            
+            var listArray = list.split(delimiter);
+            if(listArray.length){
+                return substring + delimiter + list;
+            }else{
+                return substring
+            }
+        }
+        
+        public listAppend = (list:string, substring:string, delimiter:string):string =>{
+            if(angular.isUndefined(delimiter)){
+                delimiter = ',';
+            }
+            var listArray = list.split(delimiter);
+            if(listArray.length){
+                return list + delimiter + substring;
+            }else{
+                return substring
+            }
+            
+        }
+        
         public left = (stringItem:string,count:number):string =>{
             return stringItem.substring(0,count);
         }

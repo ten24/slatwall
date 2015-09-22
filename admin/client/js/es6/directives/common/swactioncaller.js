@@ -182,6 +182,7 @@ var slatwalladmin;
             this.utiltiyService = utiltiyService;
             this.$slatwall = $slatwall;
             this.restrict = 'EA';
+            this.scope = {};
             this.bindToController = {
                 action: "@",
                 text: "@",
@@ -203,8 +204,6 @@ var slatwalladmin;
             this.controller = SWActionCallerController;
             this.controllerAs = "swActionCaller";
             this.link = (scope, element, attrs) => {
-                console.log('scope');
-                console.log(scope);
             };
             this.templateUrl = partialsPath + 'actioncaller.html';
         }

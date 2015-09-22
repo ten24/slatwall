@@ -73,7 +73,7 @@ Notes:
 					data-querystring="baseProductType=contentAccess" 
 					data-disabled="#!$.slatwall.getSmartList("Content").getRecordsCount()#" 
 					data-disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoContent')#" 
-					data-type="list" />
+					data-type="list" /></sw-process-caller>
 				<!--<sw-process-caller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=event" type="list" />
 				-->
 			</sw-action-caller-dropdown>
@@ -81,13 +81,13 @@ Notes:
 	</sw-entity-action-bar>
 	
 	<sw-listing-display 
-		smartList=""
-		recordEditAction="admin:entity.editproduct"
-		recorddetailaction="admin:entity.detailproduct"
-		showCreate="false">
+		collection=""
+		data-record-edit-action="admin:entity.editproduct"
+		data-record-detail-action="admin:entity.detailproduct"
+		data-show-create="false">
 			
-		<sw-listing-column data-propertyIdentifier="productType.productTypeName"></sw-listing-column>
-		<sw-listing-column data-propertyIdentifier="brand.brandName"></sw-listing-column>
+		<!---<sw-listing-column data-propertyIdentifier="productType.productTypeName"></sw-listing-column>
+		<sw-listing-column data-propertyIdentifier="brand.brandName"></sw-listing-column>--->
 		<!---<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="productName"  />
 		<hb:HibachiListingColumn propertyIdentifier="productCode" />
 		<hb:HibachiListingColumn propertyIdentifier="defaultSku.price" />

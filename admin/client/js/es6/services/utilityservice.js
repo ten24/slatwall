@@ -13,6 +13,30 @@ var slatwalladmin;
                 var listArray = list.split(delimiter);
                 return listArray[listArray.length - 1];
             };
+            this.listPrepend = (list, substring, delimiter) => {
+                if (angular.isUndefined(delimiter)) {
+                    delimiter = ',';
+                }
+                var listArray = list.split(delimiter);
+                if (listArray.length) {
+                    return substring + delimiter + list;
+                }
+                else {
+                    return substring;
+                }
+            };
+            this.listAppend = (list, substring, delimiter) => {
+                if (angular.isUndefined(delimiter)) {
+                    delimiter = ',';
+                }
+                var listArray = list.split(delimiter);
+                if (listArray.length) {
+                    return list + delimiter + substring;
+                }
+                else {
+                    return substring;
+                }
+            };
             this.left = (stringItem, count) => {
                 return stringItem.substring(0, count);
             };
