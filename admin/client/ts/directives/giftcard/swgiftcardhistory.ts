@@ -109,7 +109,10 @@ module slatwalladmin {
 		public templateUrl:string;
 		public scope = {};
 		public bindToController = {
-			giftCard:"=?"		
+			giftCard:"=?",
+			transactions:"=?",
+			bouncedEmails:"=?",
+			order:"=?"
 		}; 
 		public controller=SWGiftCardHistoryController;
 		public controllerAs="swGiftCardHistory"; 
