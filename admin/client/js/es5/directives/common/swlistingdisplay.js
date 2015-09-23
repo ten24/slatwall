@@ -4,8 +4,11 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     var SWListingDisplayController = (function () {
-        function SWListingDisplayController($slatwall, partialsPath, utilityService) {
+        function SWListingDisplayController($scope, $element, $transclude, $slatwall, partialsPath, utilityService) {
             var _this = this;
+            this.$scope = $scope;
+            this.$element = $element;
+            this.$transclude = $transclude;
             this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
             this.utilityService = utilityService;
@@ -20,20 +23,14 @@ var slatwalladmin;
             this.exampleEntity = "";
             this.buttonGroup = [];
             this.init = function () {
-                //if collection Value is string instead of an object then create a collection
-                if (angular.isString(_this.collection)) {
-                    _this.collectionPromise = _this.$slatwall.getEntity(_this.collection);
-                    _this.collectionPromise.then(function (data) {
-                        _this.collectionConfig = data.collectionConfig;
-                        _this.collection = data.pageRecords;
-                        _this.collectionID = data.collectionID;
-                        _this.collectionObject = data.collectionObject;
-                        //prepare an exampleEntity for use
-                        _this.exampleEntity = _this.$slatwall.newEntity(_this.collectionObject);
-                    });
-                }
-                else {
-                }
+                //set defaults if value is not specified
+                //this.edit = this.edit || $location.edit
+                _this.exampleEntity = _this.$slatwall.newEntity(_this.collectionData.collectionObject);
+                _this.recordProcessButtonDisplayFlag = _this.recordProcessButtonDisplayFlag || true;
+                _this.collectionConfig = _this.collectionData.collectionConfig;
+                _this.collectionID = _this.collectionData.collectionID;
+                _this.collectionObject = _this.collectionData.collectionObject;
+                _this.norecordstext = _this.$slatwall.getRBKey('entity.' + _this.collectionObject + '.norecords');
                 //setup export action
                 if (angular.isDefined(_this.exportAction)) {
                     _this.exportAction = "/?slatAction=main.collectionExport&collectionExportID=";
@@ -89,17 +86,17 @@ var slatwalladmin;
                 //Detail
                 if (_this.recordDetailAction && _this.recordDetailAction.length) {
                     _this.administrativeCount++;
-                    _this.adminattributes = _this.getAdminAttributesByRecordAction('detail');
+                    _this.adminattributes = _this.getAdminAttributesByType('detail');
                 }
                 //Edit
                 if (_this.recordEditAction && _this.recordEditAction.length) {
                     _this.administrativeCount++;
-                    _this.adminattributes = _this.getAdminAttributesByRecordAction('edit');
+                    _this.adminattributes = _this.getAdminAttributesByType('edit');
                 }
                 //Delete
                 if (_this.recordDeleteAction && _this.recordDeleteAction.length) {
                     _this.administrativeCount++;
-                    _this.adminattributes = _this.getAdminAttributesByRecordAction('delete');
+                    _this.adminattributes = _this.getAdminAttributesByType('delete');
                 }
                 //Process
                 if (_this.recordProcessAction && _this.recordProcessAction.length && _this.recordProcessButtonDisplayFlag) {
@@ -234,13 +231,31 @@ var slatwalladmin;
             this.getExportAction = function () {
                 return _this.exportAction + _this.collectionID;
             };
-            console.log('listingDisplayTest');
-            console.log(this);
             this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
             this.utilityService = utilityService;
-            // this.init();
+            this.$scope = $scope;
+            this.$element = $element;
+            this.$transclude = $transclude;
+            this.$transclude();
+            //             this.$transclude((transElem,transScope)=>{
+            //                 console.log('tranclude');
+            //                 console.log(transElem);
+            //                 console.log(transScope);
+            //             });
+            console.log('listingDisplayTest');
+            console.log(this);
+            //if collection Value is string instead of an object then create a collection
+            if (angular.isString(this.collection)) {
+                this.collectionPromise = this.$slatwall.getEntity(this.collection);
+            }
+            this.collectionPromise.then(function (data) {
+                _this.collectionData = data;
+                //prepare an exampleEntity for use
+                _this.init();
+            });
         }
+        SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$slatwall', 'partialsPath', 'utilityService'];
         return SWListingDisplayController;
     })();
     slatwalladmin.SWListingDisplayController = SWListingDisplayController;
@@ -251,6 +266,7 @@ var slatwalladmin;
             this.utilityService = utilityService;
             this.restrict = 'E';
             this.scope = {};
+            this.transclude = true;
             this.bindToController = {
                 isRadio: "=",
                 //angularLink:true || false
@@ -262,57 +278,60 @@ var slatwalladmin;
                 /*Optional*/
                 title: "@",
                 /*Admin Actions*/
-                recordEditAction: "=",
-                recordEditActionProperty: "=",
-                recordEditQueryString: "=",
+                recordEditAction: "@",
+                recordEditActionProperty: "@",
+                recordEditQueryString: "@",
                 recordEditModal: "=",
                 recordEditDisabled: "=",
-                recordDetailAction: "=",
-                recordDetailActionProperty: "=",
+                recordDetailAction: "@",
+                recordDetailActionProperty: "@",
+                recordDetailQueryString: "@",
                 recordDetailModal: "=",
-                recordDeleteAction: "=",
-                recordDeleteActionProperty: "=",
-                recordDeleteQueryString: "=",
-                recordProcessAction: "=",
-                recordProcessActionProperty: "=",
-                recordProcessQueryString: "=",
-                recordProcessContext: "=",
+                recordDeleteAction: "@",
+                recordDeleteActionProperty: "@",
+                recordDeleteQueryString: "@",
+                recordProcessAction: "@",
+                recordProcessActionProperty: "@",
+                recordProcessQueryString: "@",
+                recordProcessContext: "@",
                 recordProcessEntity: "=",
                 recordProcessUpdateTableID: "=",
                 recordProcessButtonDisplayFlag: "=",
                 /*Hierachy Expandable*/
-                parentPropertyName: "=",
+                parentPropertyName: "@",
                 /*Sorting*/
-                sortProperty: "=",
-                sortContextIDColumn: "=",
-                sortContextIDValue: "=",
+                sortProperty: "@",
+                sortContextIDColumn: "@",
+                sortContextIDValue: "@",
                 /*Single Select*/
-                selectFiledName: "=",
-                selectValue: "=",
-                selectTitle: "=",
+                selectFiledName: "@",
+                selectValue: "@",
+                selectTitle: "@",
                 /*Multiselect*/
-                multiselectFieldName: "=",
-                multiselectPropertyIdentifier: "=",
-                multiselectValues: "=",
+                multiselectFieldName: "@",
+                multiselectPropertyIdentifier: "@",
+                multiselectValues: "@",
                 /*Helper / Additional / Custom*/
-                tableattributes: "=",
-                tableclass: "=",
-                adminattributes: "=",
+                tableattributes: "@",
+                tableclass: "@",
+                adminattributes: "@",
                 /* Settings */
                 showheader: "=",
                 /* Basic Action Caller Overrides*/
                 createModal: "=",
-                createAction: "=",
-                createQueryString: "=",
-                exportAction: "="
+                createAction: "@",
+                createQueryString: "@",
+                exportAction: "@"
             };
             this.controller = SWListingDisplayController;
             this.controllerAs = "swListingDisplay";
             this.link = function (scope, element, attrs) {
+                console.log('listingDisplay scope');
             };
             console.log('listingDisplay constructor');
             this.templateUrl = this.partialsPath + 'listingdisplay.html';
         }
+        SWListingDisplay.$inject = ['$slatwall', 'partialsPath', 'utilityService'];
         return SWListingDisplay;
     })();
     slatwalladmin.SWListingDisplay = SWListingDisplay;

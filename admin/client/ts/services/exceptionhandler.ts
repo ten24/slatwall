@@ -33,6 +33,14 @@ module logger {
         }
 
         private static handle(exception: any, cause: any) {
+        	
+        	if(exception){
+        		this.exception = exception.toString();
+        	}
+        	if(cause){
+        		this.cause = cause.toString();
+        	}
+        	console.error(exception);
             /** get $http and alertService from the injector */
             var http = this.injector.get<ng.IHttpService>('$http');
             var alertService = this.injector.get<slatwalladmin.AlertService>('alertService');
@@ -41,18 +49,19 @@ module logger {
             /* we use the IRequestConfig type here to get type protection on the object literal.
                alternativly, we could just cast to the correct type and drop the extra interface by
                using url: <string> "?slatAction=api:main.log" notation which does the same thing. */
+            
+            
             var requestConfig: IRequestConfig = {
                 url : "?slatAction=api:main.log",
                 method : "POST",
-                data : serializer({exception: exception, cause: cause, apiRequest: true}),
+                data : serializer({exception: this.exception, cause: this.cause, apiRequest: true}),
                 headers : {'Content-Type' : "application/x-www-form-urlencoded"}
             }; 
             
             /** notice I use the fat arrow for the anon function which preserves lexical scope. */
             http(requestConfig).error(
                 data => {
-                    console.log(exception);
-                    alertService.addAlert({ msg: exception, type: 'error' });
+                    alertService.addAlert({ msg: this.exception, type: 'error' });
                 }
             );
         }//<--end handle method

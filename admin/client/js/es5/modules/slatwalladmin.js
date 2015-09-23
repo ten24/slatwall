@@ -81,7 +81,7 @@
                 //controller:'otherwiseController'        
                 templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
             });
-        }]).run(['$rootScope', '$filter', '$anchorScroll', '$slatwall', 'dialogService', function ($rootScope, $filter, $anchorScroll, $slatwall, dialogService) {
+        }]).run(['$rootScope', '$filter', '$anchorScroll', '$slatwall', 'dialogService', 'observerService', function ($rootScope, $filter, $anchorScroll, $slatwall, dialogService, observerService) {
             $anchorScroll.yOffset = 100;
             $rootScope.openPageDialog = function (partial) {
                 dialogService.addPageDialog(partial);
@@ -93,8 +93,9 @@
             $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
             var rbListener = $rootScope.$watch('loadedResourceBundle', function (newValue, oldValue) {
                 if (newValue !== oldValue) {
-                    $rootScope.$broadcast('hasResourceBundle');
                     rbListener();
+                    observerService.notify('hasResourceBundle');
+                    observerService.detachByEvent('hasResourceBundle');
                 }
             });
         }]).filter('entityRBKey', ['$slatwall', function ($slatwall) {

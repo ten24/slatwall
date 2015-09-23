@@ -15,16 +15,14 @@ var slatwalladmin;
             var _this = this;
             _super.call(this);
             this.listLast = function (list, delimiter) {
-                if (angular.isUndefined(delimiter)) {
-                    delimiter = ',';
-                }
+                if (list === void 0) { list = ''; }
+                if (delimiter === void 0) { delimiter = ','; }
                 var listArray = list.split(delimiter);
                 return listArray[listArray.length - 1];
             };
             this.listPrepend = function (list, substring, delimiter) {
-                if (angular.isUndefined(delimiter)) {
-                    delimiter = ',';
-                }
+                if (list === void 0) { list = ''; }
+                if (delimiter === void 0) { delimiter = ','; }
                 var listArray = list.split(delimiter);
                 if (listArray.length) {
                     return substring + delimiter + list;
@@ -34,9 +32,8 @@ var slatwalladmin;
                 }
             };
             this.listAppend = function (list, substring, delimiter) {
-                if (angular.isUndefined(delimiter)) {
-                    delimiter = ',';
-                }
+                if (list === void 0) { list = ''; }
+                if (delimiter === void 0) { delimiter = ','; }
                 var listArray = list.split(delimiter);
                 if (listArray.length) {
                     return list + delimiter + substring;
@@ -67,9 +64,8 @@ var slatwalladmin;
             };
             //list functions
             this.listFind = function (list, value, delimiter) {
-                if (angular.isUndefined(delimiter)) {
-                    delimiter = ',';
-                }
+                if (list === void 0) { list = ''; }
+                if (delimiter === void 0) { delimiter = ','; }
                 var splitString = list.split(delimiter);
                 var stringFound = -1;
                 for (var i = 0; i < splitString.length; i++) {
@@ -81,9 +77,8 @@ var slatwalladmin;
                 }
             };
             this.listLen = function (list, delimiter) {
-                if (angular.isUndefined(delimiter)) {
-                    delimiter = ',';
-                }
+                if (list === void 0) { list = ''; }
+                if (delimiter === void 0) { delimiter = ','; }
                 var splitString = list.split(delimiter);
                 return splitString.length;
             };

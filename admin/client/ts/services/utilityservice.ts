@@ -10,20 +10,14 @@ module slatwalladmin{
             
         }
         
-        public listLast = (list:string,delimiter:string):string =>{
-            if(angular.isUndefined(delimiter)){
-                delimiter = ',';
-            }
+        public listLast = (list:string='',delimiter:string=','):string =>{
             
             var listArray = list.split(delimiter);
            
 			return listArray[listArray.length-1];
         }
         
-        public listPrepend = (list:string, substring:string, delimiter:string):string =>{
-            if(angular.isUndefined(delimiter)){
-                delimiter = ',';
-            }
+        public listPrepend = (list:string='', substring:string, delimiter:string=','):string =>{
             
             var listArray = list.split(delimiter);
             if(listArray.length){
@@ -33,10 +27,8 @@ module slatwalladmin{
             }
         }
         
-        public listAppend = (list:string, substring:string, delimiter:string):string =>{
-            if(angular.isUndefined(delimiter)){
-                delimiter = ',';
-            }
+        public listAppend = (list:string='', substring:string, delimiter:string=','):string =>{
+            
             var listArray = list.split(delimiter);
             if(listArray.length){
                 return list + delimiter + substring;
@@ -73,10 +65,7 @@ module slatwalladmin{
               return text;
           }
           //list functions
-         public listFind = (list:string,value:string,delimiter:string):void =>{
-              if(angular.isUndefined(delimiter)){
-                  delimiter = ',';
-              }
+         public listFind = (list:string='',value:string,delimiter:string=','):void =>{
               var splitString = list.split(delimiter);
               var stringFound = -1;
               for (var i = 0; i < splitString.length; i++) {
@@ -87,11 +76,8 @@ module slatwalladmin{
                   break;
               }
           }
-          public listLen = (list:string,delimiter:string):number =>{
+          public listLen = (list:string='',delimiter:string=','):number =>{
               
-              if(angular.isUndefined(delimiter)){
-                  delimiter = ',';
-              }
               var splitString = list.split(delimiter);
               return splitString.length;
           }

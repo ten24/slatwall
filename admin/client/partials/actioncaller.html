@@ -10,7 +10,7 @@
 	data-confirm="{{swActionCaller.confirmtext}}"
 	href="##"
 	>
-	<i ng-if="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i>{{swActionCaller.text}}
+	<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i>{{swActionCaller.text}}
 </a>
 
 <!--href="#swActionCaller.hibachiScope.buildURL(action=swActionCaller.action,querystring=swActionCaller.querystring)#"
@@ -23,7 +23,7 @@
 		target="_self" 
 		href="##"
 		>
-		<i ng-if="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i>{{swActionCaller.text}}
+		<i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i>{{swActionCaller.text}}
 	</a>
 </li>
 
@@ -35,5 +35,5 @@
 <button ng-if="swActionCaller.type ==='button'" 
 	ng-attr-class="{{swActionCaller.class}}" 
 	ng-attr-title="{{swActionCaller.title}}"
-	><i ng-if="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i><span ng-bind="swActionCaller.text"></span>
+	><i ng-show="swActionCaller.icon && swActionCaller.icon.length" class="glyphicon glyphicon-{{swActionCaller.icon}}"></i><span ng-bind="swActionCaller.text"></span>
 </button>

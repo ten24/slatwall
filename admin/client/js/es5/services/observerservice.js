@@ -16,7 +16,7 @@ var slatwalladmin;
 (function (slatwalladmin) {
     var ObserverService = (function (_super) {
         __extends(ObserverService, _super);
-        function ObserverService() {
+        function ObserverService(utilityService) {
             var _this = this;
             /**
              * @ngdoc property
@@ -26,6 +26,7 @@ var slatwalladmin;
              * @returns {object} object
              */
             _super.call(this);
+            this.utilityService = utilityService;
             /* Declare methods */
             /**
              * @ngdoc method
@@ -37,14 +38,15 @@ var slatwalladmin;
              * @description adds events listeners
              */
             this.attach = function (callback, event, id) {
-                if (id) {
-                    if (!_this.observers[event]) {
-                        _this.observers[event] = {};
-                    }
-                    if (!_this.observers[event][id])
-                        _this.observers[event][id] = [];
-                    _this.observers[event][id].push(callback);
+                if (!id) {
+                    id = _this.utilityService.createID();
                 }
+                if (!_this.observers[event]) {
+                    _this.observers[event] = {};
+                }
+                if (!_this.observers[event][id])
+                    _this.observers[event][id] = [];
+                _this.observers[event][id].push(callback);
             };
             /**
              * @ngdoc method
@@ -102,6 +104,7 @@ var slatwalladmin;
             };
             this.observers = {};
         }
+        ObserverService.$inject = ['utilityService'];
         return ObserverService;
     })(slatwalladmin.BaseService);
     slatwalladmin.ObserverService = ObserverService;

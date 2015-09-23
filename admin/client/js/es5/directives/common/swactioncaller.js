@@ -4,8 +4,12 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     var SWActionCallerController = (function () {
-        function SWActionCallerController(partialsPath, utilityService, $slatwall) {
+        function SWActionCallerController($scope, $element, $templateRequest, $compile, partialsPath, utilityService, $slatwall) {
             var _this = this;
+            this.$scope = $scope;
+            this.$element = $element;
+            this.$templateRequest = $templateRequest;
+            this.$compile = $compile;
             this.partialsPath = partialsPath;
             this.utilityService = utilityService;
             this.$slatwall = $slatwall;
@@ -171,11 +175,25 @@ var slatwalladmin;
                 return "";
             };
             console.log('actioncaller');
+            this.$scope = $scope;
+            this.$element = $element;
+            this.$templateRequest = $templateRequest;
+            this.$compile = $compile;
+            this.partialsPath = partialsPath;
             this.$slatwall = $slatwall;
             this.utilityService = utilityService;
-            //need to perform init after promise completes
-            this.init();
+            this.$templateRequest(this.partialsPath + "actioncaller.html").then(function (html) {
+                var template = angular.element(html);
+                console.log(html);
+                console.log(template);
+                console.log(_this.$element);
+                _this.$element.parent().append(template);
+                $compile(template)($scope);
+                //need to perform init after promise completes
+                _this.init();
+            });
         }
+        SWActionCallerController.$inject = ['$scope', '$element', '$templateRequest', '$compile', 'partialsPath', 'utilityService', '$slatwall'];
         return SWActionCallerController;
     })();
     slatwalladmin.SWActionCallerController = SWActionCallerController;
@@ -208,12 +226,11 @@ var slatwalladmin;
             this.controllerAs = "swActionCaller";
             this.link = function (scope, element, attrs) {
             };
-            this.templateUrl = partialsPath + 'actioncaller.html';
         }
         return SWActionCaller;
     })();
     slatwalladmin.SWActionCaller = SWActionCaller;
-    angular.module('slatwalladmin').directive('swActionCaller', ['partialsPath', 'utilityService', '$slatwall', function (partialsPath, utilityService, $slatwall) { return new SWActionCaller(partialsPath, utilityService, $slatwall); }]);
+    angular.module('slatwalladmin').directive('swActionCaller', [function () { return new SWActionCaller(); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../../directives/common/swactioncaller.js.map

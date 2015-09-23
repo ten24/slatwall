@@ -68,26 +68,33 @@ Notes:
 				<sw-process-caller 
 					data-action="admin:entity.preprocessproduct" 
 					data-entity="product" 
-					data-processContext="create" 
+					data-process-context="create" 
 					data-text="#rc.$.slatwall.rbKey('define.contentAccess')# #rc.$.slatwall.rbKey('entity.product')#" 
 					data-querystring="baseProductType=contentAccess" 
 					data-disabled="#!$.slatwall.getSmartList("Content").getRecordsCount()#" 
-					data-disabledText="#$.slatwall.rbKey('admin.entity.listproduct.createNoContent')#" 
-					data-type="list" /></sw-process-caller>
-				<!--<sw-process-caller action="admin:entity.preprocessproduct" entity="product" processContext="create" text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.product')#" querystring="baseProductType=event" type="list" />
-				-->
+					data-disabled-text="#$.slatwall.rbKey('admin.entity.listproduct.createNoContent')#" 
+					data-type="list" />
+				</sw-process-caller>
+				<sw-process-caller 
+					data-action="admin:entity.preprocessproduct" 
+					data-entity="product" 
+					data-process-context="create"
+					data-text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.product')#" 
+					data-querystring="baseProductType=event" 
+					type="list" 
+				/></sw-process-caller>
 			</sw-action-caller-dropdown>
 		</sw-entity-action-bar-button-group>
 	</sw-entity-action-bar>
 	
 	<sw-listing-display 
-		collection=""
+		collection="'Product'"
 		data-record-edit-action="admin:entity.editproduct"
 		data-record-detail-action="admin:entity.detailproduct"
 		data-show-create="false">
 			
-		<!---<sw-listing-column data-propertyIdentifier="productType.productTypeName"></sw-listing-column>
-		<sw-listing-column data-propertyIdentifier="brand.brandName"></sw-listing-column>--->
+		<sw-listing-column data-propertyIdentifier="productType.productTypeName"></sw-listing-column>
+		<sw-listing-column data-propertyIdentifier="brand.brandName"></sw-listing-column>
 		<!---<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="productName"  />
 		<hb:HibachiListingColumn propertyIdentifier="productCode" />
 		<hb:HibachiListingColumn propertyIdentifier="defaultSku.price" />

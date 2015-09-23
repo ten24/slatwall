@@ -9,7 +9,8 @@
 module slatwalladmin{
     export class ObserverService extends BaseService{
         private observers;
-        constructor(){
+        public static $inject = ['utilityService'];
+        constructor(private utilityService:slatwalladmin.UtilityService){
             /**
              * @ngdoc property
              * @name ObserverService#observers
@@ -31,16 +32,17 @@ module slatwalladmin{
          * @description adds events listeners
          */
         attach = (callback:any, event:string, id:string):void => {
-            if(id) {
-                if (!this.observers[event]) {
-                  this.observers[event] = {};
-                }
-        
-                if(!this.observers[event][id])
-                  this.observers[event][id] = [];
-        
-                this.observers[event][id].push(callback);
-            } 
+            if(!id){
+                id = this.utilityService.createID();
+            }
+            if (!this.observers[event]) {
+              this.observers[event] = {};
+            }
+    
+            if(!this.observers[event][id])
+              this.observers[event][id] = [];
+    
+            this.observers[event][id].push(callback);
         }
         
         /**

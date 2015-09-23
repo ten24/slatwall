@@ -18,31 +18,54 @@ module slatwalladmin {
         private buttonGroup = [];
         private collectionPromise;
         private collectionObject;
-        
-        constructor(public $slatwall:ngSlatwall.SlatwallService, public partialsPath:slatwalladmin.partialsPath, public utilityService:slatwalladmin.UtilityService){
-            console.log('listingDisplayTest');
-            console.log(this);
+        public static $inject = ['$scope','$element','$transclude','$slatwall','partialsPath','utilityService'];
+        constructor(
+            public $scope,
+            public $element,
+            public $transclude,
+            public $slatwall:ngSlatwall.SlatwallService, 
+            public partialsPath:slatwalladmin.partialsPath, 
+            public utilityService:slatwalladmin.UtilityService
+        ){
+            
             this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
             this.utilityService = utilityService;
-           // this.init();
+            this.$scope = $scope;
+            this.$element = $element;
+            this.$transclude = $transclude;
+            this.$transclude();
+//             this.$transclude((transElem,transScope)=>{
+//                 console.log('tranclude');
+//                 console.log(transElem);
+//                 console.log(transScope);
+//             });
+            
+            console.log('listingDisplayTest');
+            console.log(this);
+            
+             //if collection Value is string instead of an object then create a collection
+            if(angular.isString(this.collection)){
+                this.collectionPromise = this.$slatwall.getEntity(this.collection);
+            }
+            this.collectionPromise.then((data)=>{
+                this.collectionData = data;
+                //prepare an exampleEntity for use
+                this.init();
+            });
+            
         }
         
         public init = () =>{
-            //if collection Value is string instead of an object then create a collection
-            if(angular.isString(this.collection)){
-                this.collectionPromise = this.$slatwall.getEntity(this.collection);
-                this.collectionPromise.then((data)=>{
-                    this.collectionConfig = data.collectionConfig;
-                    this.collection = data.pageRecords;
-                    this.collectionID = data.collectionID;
-                    this.collectionObject = data.collectionObject;
-                    //prepare an exampleEntity for use
-                    this.exampleEntity = this.$slatwall.newEntity(this.collectionObject);
-                });
-            }else{
-                //use collection that was passed in
-            }
+            
+            //set defaults if value is not specified
+            //this.edit = this.edit || $location.edit
+            this.exampleEntity = this.$slatwall.newEntity(this.collectionData.collectionObject);
+            this.recordProcessButtonDisplayFlag = this.recordProcessButtonDisplayFlag || true;
+            this.collectionConfig = this.collectionData.collectionConfig;
+            this.collectionID = this.collectionData.collectionID;
+            this.collectionObject = this.collectionData.collectionObject;
+            this.norecordstext = this.$slatwall.getRBKey('entity.'+this.collectionObject+'.norecords');
             
             //setup export action
             if(angular.isDefined(this.exportAction)){
@@ -127,19 +150,19 @@ module slatwalladmin {
             //Detail
             if(this.recordDetailAction && this.recordDetailAction.length){
                 this.administrativeCount++;
-                this.adminattributes = this.getAdminAttributesByRecordAction('detail');
+                this.adminattributes = this.getAdminAttributesByType('detail');
             }
             
             //Edit
             if(this.recordEditAction && this.recordEditAction.length){
                 this.administrativeCount++;
-                this.adminattributes = this.getAdminAttributesByRecordAction('edit');
+                this.adminattributes = this.getAdminAttributesByType('edit');
             }
             
             //Delete
             if(this.recordDeleteAction && this.recordDeleteAction.length){
                 this.administrativeCount++;
-                this.adminattributes = this.getAdminAttributesByRecordAction('delete');
+                this.adminattributes = this.getAdminAttributesByType('delete');
             }
             
             //Process
@@ -287,6 +310,7 @@ module slatwalladmin {
 		
 		public restrict:string = 'E';
 		public scope = {};
+        public transclude=true;
         public bindToController={
             
              isRadio:"=",
@@ -302,68 +326,74 @@ module slatwalladmin {
              title:"@",
             
              /*Admin Actions*/
-             recordEditAction:"=",
-             recordEditActionProperty:"=",
-             recordEditQueryString:"=",
+             recordEditAction:"@",
+             recordEditActionProperty:"@",
+             recordEditQueryString:"@",
              recordEditModal:"=",
              recordEditDisabled:"=",
-             recordDetailAction:"=",
-             recordDetailActionProperty:"=",
+             recordDetailAction:"@",
+             recordDetailActionProperty:"@",
+             recordDetailQueryString:"@",
              recordDetailModal:"=",
-             recordDeleteAction:"=",
-             recordDeleteActionProperty:"=",
-             recordDeleteQueryString:"=",
-             recordProcessAction:"=",
-             recordProcessActionProperty:"=",
-             recordProcessQueryString:"=",
-             recordProcessContext:"=",
+             recordDeleteAction:"@",
+             recordDeleteActionProperty:"@",
+             recordDeleteQueryString:"@",
+             recordProcessAction:"@",
+             recordProcessActionProperty:"@",
+             recordProcessQueryString:"@",
+             recordProcessContext:"@",
              recordProcessEntity:"=",
              recordProcessUpdateTableID:"=",
              recordProcessButtonDisplayFlag:"=",
             
              /*Hierachy Expandable*/
-             parentPropertyName:"=",
+             parentPropertyName:"@",
             
              /*Sorting*/
-             sortProperty:"=",
-             sortContextIDColumn:"=",
-             sortContextIDValue:"=",
+             sortProperty:"@",
+             sortContextIDColumn:"@",
+             sortContextIDValue:"@",
             
              /*Single Select*/
-             selectFiledName:"=",
-             selectValue:"=",
-             selectTitle:"=",
+             selectFiledName:"@",
+             selectValue:"@",
+             selectTitle:"@",
             
              /*Multiselect*/
-             multiselectFieldName:"=",
-             multiselectPropertyIdentifier:"=",
-             multiselectValues:"=",
+             multiselectFieldName:"@",
+             multiselectPropertyIdentifier:"@",
+             multiselectValues:"@",
             
              /*Helper / Additional / Custom*/
-             tableattributes:"=",
-             tableclass:"=",
-             adminattributes:"=",
+             tableattributes:"@",
+             tableclass:"@",
+             adminattributes:"@",
             
              /* Settings */
              showheader:"=",
-            
+             
              /* Basic Action Caller Overrides*/
              createModal:"=",
-             createAction:"=",
-             createQueryString:"=",
-             exportAction:"="
+             createAction:"@",
+             createQueryString:"@",
+             exportAction:"@"
         };
         public controller=SWListingDisplayController;
         public controllerAs="swListingDisplay";
 		public templateUrl;
+        public static $inject = ['$slatwall','partialsPath','utilityService'];
 		
-		constructor(private $slatwall:ngSlatwall.SlatwallService,private partialsPath:slatwalladmin.partialsPath, private utilityService:slatwalladmin.UtilityService){
+		constructor(
+            private $slatwall:ngSlatwall.SlatwallService,
+            private partialsPath:slatwalladmin.partialsPath, 
+            private utilityService:slatwalladmin.UtilityService
+        ){
             console.log('listingDisplay constructor');
 			this.templateUrl = this.partialsPath+'listingdisplay.html';
 		}
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-			
+			console.log('listingDisplay scope');
 		}
 	}
     
