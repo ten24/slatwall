@@ -53,6 +53,7 @@ component entityname="SlatwallEmailBounce" table="SwEmailBounce" persistent="tru
 	property name="rejectedEmailTo" ormtype="string";
 	property name="rejectedEmailFrom" ormtype="string";
 	property name="rejectedEmailSubject" ormtype="string";
+	property name="rejectedEmailBody" ormtype="text";
 	property name="rejectedEmailSendTime"  ormtype="timestamp";
 
 	property name="relatedObject" ormtype="string";
