@@ -182,13 +182,12 @@ Notes:
 
 				}
 
-				writeoutput(report);
+
 
 			</cfscript>
 
 			<cfcatch type="Any">
 				<cfset report &= "Error Reading Mailbox" />
-				<cfset writeoutput(report) />
 			</cfcatch>
 		</cftry>
 
@@ -198,7 +197,6 @@ Notes:
 
 			<cfcatch type="Any">
 				<cfset report &= "Error Deleting Mailbox" />
-				<cfset writeoutput(report) />
 			</cfcatch>
 
 		</cftry>
@@ -209,7 +207,7 @@ Notes:
 			cc="#getService("SettingService").getSettingValue("emailCCAddress")#"
 			bcc="#getService("SettingService").getSettingValue("emailBCCAddress")#"
 			charset="utf-8">
-			<cfoutput>#report#</cfoutput>
+			<cfoutput>#writeoutput(report)#</cfoutput>
 		</cfmail>
 
 	</cffunction>

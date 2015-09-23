@@ -291,8 +291,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	}
 
 	public void function processBouncedEmails(required struct rc){
-		getService("EmailBounceService").processBouncedEmails();
+
+		try {
+			getService("EmailBounceService").processBouncedEmails();
+			rc.$.slatwall.showMessageKey( "admin.processBouncedEmails_success" );
+		} catch (any e) {
+			rc.$.slatwall.showMessageKey( "admin.processBouncedEmails_failure" );
+		}
+
 		getFW().redirect(action="admin:main.default", preserve="messages");
+
 
 	}
 
