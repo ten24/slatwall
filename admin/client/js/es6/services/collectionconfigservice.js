@@ -61,6 +61,9 @@ var slatwalladmin;
             this.pageShow = pageShow;
             this.keywords = keywords;
             this.allRecords = allRecords;
+            this.newCollectionConfig = (baseEntityName, baseEntityAlias) => {
+                return new CollectionConfig(this.$slatwall, baseEntityName, baseEntityAlias);
+            };
             this.loadJson = (jsonCollection) => {
                 //if json then make a javascript object else use the javascript object
                 if (angular.isString(jsonCollection)) {
@@ -68,6 +71,9 @@ var slatwalladmin;
                 }
                 this.baseEntityAlias = jsonCollection.baseEntityAlias;
                 this.baseEntityName = jsonCollection.baseEntityName;
+                if (angular.isDefined(jsonCollection.filterGroups)) {
+                    this.filterGroups = jsonCollection.filterGroups;
+                }
                 this.columns = jsonCollection.columns;
                 this.joins = jsonCollection.joins;
                 this.keywords = jsonCollection.keywords;
@@ -251,7 +257,7 @@ var slatwalladmin;
                 }
                 return this.$slatwall.getEntity(this.baseEntityName, this.getOptions());
             };
-            if (!angular.isUndefined(this.baseEntityName)) {
+            if (angular.isDefined(this.baseEntityName)) {
                 this.collection = this.$slatwall['new' + this.getEntityName()]();
                 if (angular.isUndefined(this.baseEntityAlias)) {
                     this.baseEntityAlias = '_' + this.baseEntityName.toLowerCase();
@@ -260,6 +266,8 @@ var slatwalladmin;
         }
     }
     slatwalladmin.CollectionConfig = CollectionConfig;
+    angular.module('slatwalladmin')
+        .factory('CollectionConfigService', ['$slatwall', ($slatwall) => new CollectionConfig($slatwall)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../model/collectionConfig.js.map
+//# sourceMappingURL=../services/collectionconfigservice.js.map
