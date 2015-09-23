@@ -70,7 +70,7 @@ Notes:
 			var deleteMsgIds = "";
 		</cfscript>
 
-		<cfpop name="local.emails" action="getAll" server="#mailServer#" port="#mailServerPort#" username="#mailServerUsername#" password="#mailServerPassword#" generateuniquefilenames="true" attachmentpath="#attachmentPath#"  />
+		<cfimap name="local.emails" action="getAll" server="imap-mail.outlook.com" port="993" username="#mailServerUsername#" password="#mailServerPassword#" generateuniquefilenames="true" secure="yes" attachmentpath="#getTempDirectory()#" />
 
 		<cfscript>
 
@@ -103,8 +103,6 @@ Notes:
 							//WriteOutput("Error: " & e.message);
 						}
 					}
-				}
-
 				} else {
 					report &= "Status: Not processed [From Allowed: #isAllowedFromAddress#, Subject Allowed: #isAllowedSubject#]" & "<br>";
 				}
@@ -114,20 +112,23 @@ Notes:
 				var header = emails.header[i];
 				var emailBounce = this.newEmailBounce();
 
-				if(structKeyExists(header, "Related-Object")){
-					emailBounce.setRelatedObject(header["Related-Object"]);
-					emailBounce.setRelatedObjectID(header["Related-Object-ID"]);
+				if(getHeaderValue(header, "Related-Object") NEQ ""){
+					emailBounce.setRelatedObject(getHeaderValue(header, "Related-Object"));
+					emailBounce.setRelatedObjectID(getHeaderValue(header, "Related-Object-ID"));
 				} else {
 
 					if(FindNoCase("Gift Card Code:", emailBody)){
 
 						var startingIndex = FindNoCase("Gift Card Code:", emailBody);
 						startingIndex = startingIndex + 16;
-						var giftCardCode = Mid(body, startingIndex, getService("SettingService").getSettingValue("skuGiftCardCodeLength"));
+
+						var giftCardCode = Mid(emailBody, startingIndex, getService("SettingService").getSettingValue("skuGiftCardCodeLength")+1);
 
 						var giftCardID = getDAO("GiftCardDAO").getIDbyCode(giftCardCode);
 
-						if(giftCardID != false){
+
+
+						if(giftCardID NEQ false){
 							emailBounce.setRelatedObject("giftCard");
 							emailBounce.setRelatedObjectID(giftCardID);
 						}
@@ -135,13 +136,33 @@ Notes:
 				}
 
 
-				if(structKeyExists(header, "X-Failed-Recipients")){
-					emailBounce.setRejectedEmailTo(header["X-Failed-Recipients"]);
+				if(getHeaderValue(header, "X-Failed-Recipients") NEQ ""){
+					emailBounce.setRejectedEmailTo(getHeaderValue(header, "X-Failed-Recipients"));
+				} else {
+
+					if(FindNoCase("To:", emailBody)){
+
+						var startingIndex = FindNoCase("To:", emailBody);
+						startingIndex = startingIndex + 4;
+
+						var parsing = true;
+						var toEmail = "";
+
+						while(Mid(emailBody, startingIndex, 1) NEQ Chr(10)){
+							toEmail &= Mid(emailBody, startingIndex, 1);
+							startingIndex++;
+						}
+
+						emailBounce.setRejectedEmailTo(toEmail);
+
+					}
+
 				}
+
 				emailBounce.setRejectedEmailFrom(emails.from[i]);
 				emailBounce.setRejectedEmailSubject(emails.subject[i]);
-				emailBounce.setRejectedEmailSendTime(emails.date[i]);
-				emailBounce.setRejectedBody(emailBody);
+				emailBounce.setRejectedEmailSendTime(emails.sentdate[i]);
+				emailBounce.setRejectedEmailBody(emailBody);
 				emailBounce = this.saveEmailBounce(emailBounce);
 				if(emailBounce.hasErrors()){
 					report &=  emailBounce.getErrors() & "<br>";
@@ -149,12 +170,32 @@ Notes:
 
 			}
 
+
 			writeoutput(report);
-
+			return;
 		</cfscript>
+<!---
+		<cfpop action="delete" uid="#deleteMsgIds#" server="imap-mail.outlook.com" port="#mailServerPort#" username="#mailServerUsername#" password="#mailServerPassword#" />
+--->
+	</cffunction>
 
-		<cfpop action="delete" uid="#deleteMsgIds#" server="#mailServer#" port="#mailServerPort#" username="#mailServerUsername#" password="#mailServerPassword#" />
+	<cffunction name="getHeaderValue" access="private" output="false" returntype="string">
+		<cfargument name="fullHeader" required="yes" type="string">
+		<cfargument name="headerKey" required="yes" type="string">
 
+		<cfset var headerValues = ArrayNew(1)>
+		<cfset var currentHeaderValue = "">
+
+		<cfset headerValues = ListToArray(arguments.fullHeader, chr(10))>
+
+		<cfloop from="1" to="#ArrayLen(headerValues)#" index="value">
+			<cfif Left(headerValues[value], Len(arguments.headerKey)) IS arguments.headerKey>
+				<cfset currentHeaderValue = Mid(headerValues[value], Len(arguments.headerKey) + 3, Len(headerValues[value]))>
+				<cfbreak>
+			</cfif>
+		</cfloop>
+
+		<cfreturn currentHeaderValue>
 	</cffunction>
 
 </cfcomponent>
