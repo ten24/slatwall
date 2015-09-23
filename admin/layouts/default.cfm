@@ -233,6 +233,7 @@ Notes:
 									<hb:HibachiActionCaller action="admin:main.ckfinder" type="list" modal="true" />
 									<hb:HibachiActionCaller action="admin:main.log" type="list">
 									<hb:HibachiActionCaller action="admin:entity.listaudit" type="list">
+									<hb:HibachiActionCaller action="admin:main.processBouncedEmails" type="list">
 									<hb:HibachiActionCaller action="admin:main.update" type="list">
 									<cfif $.slatwall.getAccount().getSuperUserFlag()>
 										<hb:HibachiActionCaller action="admin:main.encryptionupdatepassword" type="list">
@@ -375,7 +376,7 @@ Notes:
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/angular/angular-route.min.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/client/lib/metismenu/metismenu.js"></script>
 		<script type="text/javascript" src="#request.slatwallScope.getBaseURL()#/org/Hibachi/ng-ckeditor/ng-ckeditor.min.js"></script>
-		
+
 
 		<!---lib END --->
 		<script type="text/javascript">
@@ -437,7 +438,7 @@ Notes:
 				<cfset scriptRelativePath = replace(modules.directory,es5scriptPath,'')>
 				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & modules.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" ></script>
 			</cfloop>
-			
+
 			<cfloop query="filters">
 				<cfset scriptRelativePath = replace(filters.directory,es5scriptPath,'')>
 				<script type="text/javascript" src="#request.slatwallScope.getBaseUrl() & '/admin/client/js/es5/' & scriptRelativePath & '/' & filters.name#?instantiationKey=#$.slatwall.getApplicationValue('instantiationKey')#" ></script>

@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -45,31 +45,46 @@
 
 Notes:
 
---->
-<cfcomponent extends="HibachiDAO" output="false">
+*/
+component entityname="SlatwallEmailBounce" table="SwEmailBounce" persistent="true" accessors="true" extends="HibachiEntity" cacheuse="transactional" hb_serviceName="EmailBounceService" hb_permission="this" {
 
-	<cffunction name="getIDByCode" access="public" returntype="string" output="false">
-		<cfargument name="code" type="string" required="true" />
+	// Persistent Properties
+	property name="emailBounceID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
+	property name="rejectedEmailTo" ormtype="string";
+	property name="rejectedEmailFrom" ormtype="string";
+	property name="rejectedEmailSubject" ormtype="string";
+	property name="rejectedEmailBody" ormtype="text";
+	property name="rejectedEmailSendTime"  ormtype="timestamp";
 
-		<cfquery name="getGiftCardID" maxrows="1">
-			SELECT giftCardID FROM swGiftCard WHERE giftCardCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.code#">
-		</cfquery>
-		<cfif getGiftCardID.RecordCount GT 0>
-			<cfreturn getGiftCardID.giftCardID>
-		<cfelse>
-			<cfreturn false>
-		</cfif>
-	</cffunction>
+	property name="relatedObject" ormtype="string";
+	property name="relatedObjectID" ormtype="string";
 
-	<cffunction name="activeLiability" access="public" returntype="numeric" output="false">
+	// Related Object Properties (many-to-one)
 
-		<cfquery name="getLiability">
-			SELECT sum(creditAmount) AS totalCredit, sum(debitamount) AS totalDebit FROM SwGiftCardTransaction
-		</cfquery>
+	// Related Object Properties (one-to-many)
 
-		<cfset var totalLiability = getLiability.totalCredit - getLiability.totalDebit />
+	// Related Object Properties (many-to-many)
 
-		<cfreturn totalLiability />
-	</cffunction>
-</cfcomponent>
+	// Remote Properties
+	property name="remoteID" ormtype="string";
 
+	// Audit Properties
+	property name="createdDateTime" hb_populateEnabled="false" ormtype="timestamp";
+	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
+
+	// ============ START: Non-Persistent Property Methods =================
+
+	// ============  END:  Non-Persistent Property Methods =================
+
+	// ============= START: Bidirectional Helper Methods ===================
+
+	// =============  END:  Bidirectional Helper Methods ===================
+
+	// ================== START: Overridden Methods ========================
+
+	// ==================  END:  Overridden Methods ========================
+
+	// =================== START: ORM Event Hooks  =========================
+
+	// ===================  END:  ORM Event Hooks  =========================
+}
