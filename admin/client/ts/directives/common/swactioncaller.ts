@@ -13,14 +13,11 @@ module slatwalladmin {
             this.$element = $element;
 			this.$templateRequest = $templateRequest;
             this.$compile = $compile;
-            this.partialsPath = partialsPath;
+            this.partialsPath = partialsPath; 
             this.$slatwall = $slatwall;
 			this.utilityService = utilityService;
             this.$templateRequest(this.partialsPath+"actioncaller.html").then((html)=>{
 				var template = angular.element(html);
-				console.log(html);
-				console.log(template);
-				console.log(this.$element);
 				this.$element.parent().append(template);
 				$compile(template)($scope);
                 //need to perform init after promise completes

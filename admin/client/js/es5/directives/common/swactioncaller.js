@@ -184,9 +184,6 @@ var slatwalladmin;
             this.utilityService = utilityService;
             this.$templateRequest(this.partialsPath + "actioncaller.html").then(function (html) {
                 var template = angular.element(html);
-                console.log(html);
-                console.log(template);
-                console.log(_this.$element);
                 _this.$element.parent().append(template);
                 $compile(template)($scope);
                 //need to perform init after promise completes

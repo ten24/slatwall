@@ -236,13 +236,12 @@ var slatwalladmin;
             this.utilityService = utilityService;
             this.$scope = $scope;
             this.$element = $element;
+            console.log('transclude');
             this.$transclude = $transclude;
-            this.$transclude();
-            //             this.$transclude((transElem,transScope)=>{
-            //                 console.log('tranclude');
-            //                 console.log(transElem);
-            //                 console.log(transScope);
-            //             });
+            this.$transclude(this.$scope, function (transElem, transScope) {
+                console.log(transElem);
+                console.log(transScope);
+            });
             console.log('listingDisplayTest');
             console.log(this);
             //if collection Value is string instead of an object then create a collection
@@ -325,8 +324,12 @@ var slatwalladmin;
             };
             this.controller = SWListingDisplayController;
             this.controllerAs = "swListingDisplay";
-            this.link = function (scope, element, attrs) {
+            this.link = function (scope, element, attrs, controller, transclude) {
                 console.log('listingDisplay scope');
+                // transclude(scope,(transElem,transScope)=>{
+                //     console.log(transElem);
+                //     console.log(transScope);
+                // });
             };
             console.log('listingDisplay constructor');
             this.templateUrl = this.partialsPath + 'listingdisplay.html';

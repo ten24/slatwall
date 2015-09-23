@@ -93,8 +93,8 @@ Notes:
 		data-record-detail-action="admin:entity.detailproduct"
 		data-show-create="false">
 			
-		<sw-listing-column data-propertyIdentifier="productType.productTypeName"></sw-listing-column>
-		<sw-listing-column data-propertyIdentifier="brand.brandName"></sw-listing-column>
+		<sw-listing-column data-property-identifier="productType.productTypeName"></sw-listing-column>
+		<sw-listing-column data-property-identifier="brand.brandName"></sw-listing-column>
 		<!---<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="productName"  />
 		<hb:HibachiListingColumn propertyIdentifier="productCode" />
 		<hb:HibachiListingColumn propertyIdentifier="defaultSku.price" />

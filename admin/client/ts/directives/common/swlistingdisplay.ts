@@ -33,13 +33,14 @@ module slatwalladmin {
             this.utilityService = utilityService;
             this.$scope = $scope;
             this.$element = $element;
+            console.log('transclude');
+            
             this.$transclude = $transclude;
-            this.$transclude();
-//             this.$transclude((transElem,transScope)=>{
-//                 console.log('tranclude');
-//                 console.log(transElem);
-//                 console.log(transScope);
-//             });
+            this.$transclude(this.$scope,(transElem,transScope)=>{
+                console.log(transElem);
+                console.log(transScope);
+                
+            });
             
             console.log('listingDisplayTest');
             console.log(this);
@@ -392,8 +393,13 @@ module slatwalladmin {
 			this.templateUrl = this.partialsPath+'listingdisplay.html';
 		}
 		
-		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
+		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes,controller, transclude) =>{
 			console.log('listingDisplay scope');
+            // transclude(scope,(transElem,transScope)=>{
+            //     console.log(transElem);
+            //     console.log(transScope);
+            // });
+            
 		}
 	}
     

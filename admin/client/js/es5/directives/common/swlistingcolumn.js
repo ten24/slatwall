@@ -4,78 +4,74 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     var SWListingColumnController = (function () {
-        function SWListingColumnController(partialsPath, utilityService, $slatwall) {
+        function SWListingColumnController($scope, utilityService, $slatwall) {
             var _this = this;
-            this.partialsPath = partialsPath;
+            this.$scope = $scope;
             this.utilityService = utilityService;
             this.$slatwall = $slatwall;
             this.init = function () {
                 _this.editable = _this.editable || false;
-                // var column ={
-                //     propertyIdentifier:this.proopertyIdentifier    
-                // }
-                // this.swListingDisplay.columns(column);
             };
+            this.$scope = $scope;
             this.$slatwall = $slatwall;
             this.utilityService = utilityService;
             console.log('ListingColumn');
             console.log(this);
+            // if(angular.isUndefined(this.$scope.$parent.$parent.swListingDisplay.columns)){
+            //     this.$scope.$parent.$parent.swListingDisplay.columns = [];
+            // }
+            // if(!this.$scope.$parent.$parent.swListingDisplay.columns){
+            //     this.$scope.$parent.$parent.swListingDisplay.columns = [];
+            // }
+            // this.$scope.$parent.$parent.swListingDisplay.columns.push(column);
             //need to perform init after promise completes
             this.init();
         }
-        SWListingColumnController.$inject = ['partialsPath', 'utilityService', '$slatwall'];
+        SWListingColumnController.$inject = ['$scope', 'utilityService', '$slatwall'];
         return SWListingColumnController;
     })();
     slatwalladmin.SWListingColumnController = SWListingColumnController;
     var SWListingColumn = (function () {
-        function SWListingColumn(partialsPath, utiltiyService, $slatwall, $scope) {
-            this.partialsPath = partialsPath;
-            this.utiltiyService = utiltiyService;
-            this.$slatwall = $slatwall;
-            this.$scope = $scope;
+        function SWListingColumn() {
             this.restrict = 'EA';
-            //public bindToController=true;
-            // public scope = {
-            //     propertyIdentifier:"@",
-            //     processObjectProperty:"@",
-            //     title:"@",
-            //     tdclass:"@",
-            //     search:"=",
-            //     sort:"=",
-            //     filter:"=",
-            //     range:"=",
-            //     editable:"=",
-            //     buttonGroup:"="    
+            // public scope={}; 
+            // public bindToController={
+            //    propertyIdentifier:"@",
+            //    processObjectProperty:"@",
+            //    title:"@",
+            //    tdclass:"@",
+            //    search:"=",
+            //    sort:"=",
+            //    filter:"=",
+            //    range:"=",
+            //    editable:"=",
+            //    buttonGroup:"="
             // };
-            this.scope = {};
-            this.bindToController = {
-                propertyIdentifier: "@",
-                processObjectProperty: "@",
-                title: "@",
-                tdclass: "@",
-                search: "=",
-                sort: "=",
-                filter: "=",
-                range: "=",
-                editable: "=",
-                buttonGroup: "="
-            };
             this.controller = SWListingColumnController;
             this.controllerAs = "swListingColumn";
-            this.link = function (scope, element, attrs, swListingDisplay) {
-                //this.swListingDisplay = swListingDisplay;
-                // console.log('scopelistingcolumn');
-                // console.log(scope);
-                // console.log(this);
+            this.link = function (scope, element, attrs) {
+                console.log('column scope');
+                console.log(scope);
+                var column = {
+                    propertyIdentifier: scope.propertyIdentifier,
+                    processObjectProperty: scope.processObjectProperty,
+                    title: scope.title,
+                    tdclass: scope.tdclass,
+                    search: scope.search,
+                    sort: scope.sort,
+                    filter: scope.filter,
+                    range: scope.range,
+                    editable: scope.editable,
+                    buttonGroup: scope.buttonGroup
+                };
+                scope.swListingDisplay.columns.push(column);
             };
-            console.log('listing column constructor');
-            console.log(this);
+            console.log('column cons');
         }
-        SWListingColumn.$inject = ['partialsPath', 'utilityService', '$slatwall'];
         return SWListingColumn;
     })();
     slatwalladmin.SWListingColumn = SWListingColumn;
-    angular.module('slatwalladmin').directive('swListingColumn', ['partialsPath', 'utilityService', '$slatwall', function (partialsPath, utilityService, $slatwall) { return new SWListingColumn(partialsPath, utilityService, $slatwall); }]);
+    angular.module('slatwalladmin').directive('swListingColumn', [function () { return new SWListingColumn(); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../../directives/common/swlistingcolumn.js.map

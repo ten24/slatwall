@@ -17,9 +17,6 @@ module slatwalladmin {
             this.type = this.type || 'link';
 			this.$templateRequest(this.partialsPath+"processcaller.html").then((html)=>{
 				var template = angular.element(html);
-				console.log(html);
-				console.log(template);
-				console.log(this.$element);
 				this.$element.parent().append(template);
 				$compile(template)($scope);
 			});

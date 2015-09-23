@@ -21,9 +21,6 @@ var slatwalladmin;
             this.type = this.type || 'link';
             this.$templateRequest(this.partialsPath + "processcaller.html").then(function (html) {
                 var template = angular.element(html);
-                console.log(html);
-                console.log(template);
-                console.log(_this.$element);
                 _this.$element.parent().append(template);
                 $compile(template)($scope);
             });
