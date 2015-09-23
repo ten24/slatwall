@@ -3,6 +3,7 @@ module slatwalladmin {
 	
 	export class SWGiftCardHistoryController{
 		public transactions;
+		public bouncedEmails; 
 		public giftCard; 
 		public order; 
 		
@@ -22,6 +23,18 @@ module slatwalladmin {
 			transactionConfig.setAllRecords(true);
 			transactionConfig.setOrderBy("orderPayment.order.orderOpenDateTime", "DESC");
 			var transactionPromise = this.$slatwall.getEntity("GiftCardTransaction", transactionConfig.getOptions());
+			
+			var emailBounceConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'EmailBounce');
+			emailBounceConfig.setDisplayProperties("emailBounceID, rejectedEmailTo, rejectedEmailSendTime, relatedObject, relatedObjectID");
+			emailBounceConfig.addFilter('relatedObject', "giftCard");
+			emailBounceConfig.addFilter('relatedObjectID', this.giftCard.giftCardID);
+			emailBounceConfig.setAllRecords(true);
+			emailBounceConfig.setOrderBy("rejectedEmailSendTime", "DESC");
+			var emailBouncePromise = this.$slatwall.getEntity("EmailBounce", emailBounceConfig.getOptions());
+			
+			emailBouncePromise.then((response)=>{
+				this.bouncedEmails = response.records; 
+			});
 		
 			transactionPromise.then((response)=>{
 				this.transactions = response.records; 
@@ -48,6 +61,8 @@ module slatwalladmin {
 					transaction.balanceFormatted = "$" + parseFloat(tempCurrentBalance.toString()).toFixed(2);
 					
 					if(index == initialCreditIndex){
+						
+						
 								
 						var emailSent = { 
 							emailSent: true, 
@@ -66,7 +81,11 @@ module slatwalladmin {
 						this.transactions.splice(index, 0, activeCard); 
 						this.transactions.splice(index, 0, emailSent); 
 						
-						
+						angular.forEach(this.bouncedEmails, (email, bouncedEmailIndex)=>{
+							email.bouncedEmail = true; 
+							email.balanceFormatted =  "$" + parseFloat(initialBalance.toString()).toFixed(2);
+							this.transactions.splice(index, 0, email);
+						}); 
 					}
 				
 				});
