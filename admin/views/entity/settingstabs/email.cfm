@@ -57,9 +57,9 @@ Notes:
 		<swa:SlatwallSetting settingName="emailBCCAddress" />
 		<swa:SlatwallSetting settingName="emailFailToAddress" />
 		<swa:SlatwallSetting settingName="emailSubject" />
-		<swa:SlatwallSetting settingName="emailPOPServer" />
-		<swa:SlatwallSetting settingName="emailPOPServerPort" />
-		<swa:SlatwallSetting settingName="emailPOPServerUsername" />
-		<swa:SlatwallSetting settingName="emailPOPServerPassword">
+		<swa:SlatwallSetting settingName="emailIMAPServer" />
+		<swa:SlatwallSetting settingName="emailIMAPServerPort" />
+		<swa:SlatwallSetting settingName="emailIMAPServerUsername" />
+		<swa:SlatwallSetting settingName="emailIMAPServerPassword">
 	</swa:SlatwallSettingTable>
 </cfoutput>

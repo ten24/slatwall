@@ -52,10 +52,10 @@ Notes:
 <cffunction name="processBouncedEmails" access="public" returntype="void">
 
 		<cfscript>
-			var mailServer = getService("SettingService").getSettingValue("emailPOPServer");
-			var mailServerPort = getService("SettingService").getSettingValue("emailPOPServerPort");
-			var mailServerUsername = getService("SettingService").getSettingValue("emailPOPServerUsername");
-			var mailServerPassword = getService("SettingService").getSettingValue("emailPOPServerPassword");
+			var mailServer = getService("SettingService").getSettingValue("emailIMAPServer");
+			var mailServerPort = getService("SettingService").getSettingValue("emailIMAPServerPort");
+			var mailServerUsername = getService("SettingService").getSettingValue("emailIMAPServerUsername");
+			var mailServerPassword = getService("SettingService").getSettingValue("emailIMAPServerPassword");
 			var useSSL = true;
 
 			var javaSystem = createObject("java", "java.lang.System");
@@ -69,114 +69,149 @@ Notes:
 			var report = "";
 			var deleteMsgIds = "";
 		</cfscript>
+		<cftry>
+			<cfimap name="local.emails" action="getAll" server="#mailServer#" port="#mailServerPort#" username="#mailServerUsername#" password="#mailServerPassword#" generateuniquefilenames="true" secure="yes" attachmentpath="#getTempDirectory()#" />
 
-		<cfimap name="local.emails" action="getAll" server="imap-mail.outlook.com" port="993" username="#mailServerUsername#" password="#mailServerPassword#" generateuniquefilenames="true" secure="yes" attachmentpath="#getTempDirectory()#" />
+			<cfscript>
 
-		<cfscript>
+				var fromAddress = "";
+				var emailSubject = "";
+				var emailBody = "";
 
-			var fromAddress = "";
-			var emailSubject = "";
-			var emailBody = "";
-			var unsubscribeLinkArray = [];
-			var unsubscribeLink = "";
-			var unsubscribeResult = "";
-			var isAllowedFromAddress = false;
-			var isAllowedSubject = false;
+				for(var i=1; i <= emails.recordcount; i++){
 
-			for(var i=1; i <= emails.recordcount; i++){
+					fromAddress = emails.from[i];
+					emailSubject = emails.subject[i];
+					report &= "From: " & fromAddress & " Subject: " & emailSubject & "<br>";
 
-				fromAddress = emails.from[i];
-				emailSubject = emails.subject[i];
-				report &= "From: " & fromAddress & " Subject: " & emailSubject & "<br>";
+					emailBody = emails.body[i];
 
-				emailBody = emails.body[i];
-
-				// read all the attachments as well
-				if(trim(emails.attachmentfiles[i]) NEQ ""){
-					var attachmentArray = listToArray(emails.attachmentfiles[i],"#chr(9)#") ;
-					var attachmentFile = "";
-					for(attachmentFile in attachmentArray){
-						try{
-							emailBody &= fileread(attachmentFile);
+					// read all the attachments as well
+					if(trim(emails.attachmentfiles[i]) NEQ ""){
+						var attachmentArray = listToArray(emails.attachmentfiles[i],"#chr(9)#") ;
+						var attachmentFile = "";
+						for(attachmentFile in attachmentArray){
+							try{
+								emailBody &= fileread(attachmentFile);
+							}
+							catch(Any e){
+								//WriteOutput("Error: " & e.message);
+							}
 						}
-						catch(Any e){
-							//WriteOutput("Error: " & e.message);
+					} else {
+						report &= "Status: Not processed [From Allowed: #isAllowedFromAddress#, Subject Allowed: #isAllowedSubject#]" & "<br>";
+					}
+					report &= "<br>";
+
+					//todo create a bounced email record
+					var header = emails.header[i];
+					var emailBounce = this.newEmailBounce();
+
+					if(getHeaderValue(header, "Related-Object") NEQ ""){
+						emailBounce.setRelatedObject(getHeaderValue(header, "Related-Object"));
+						emailBounce.setRelatedObjectID(getHeaderValue(header, "Related-Object-ID"));
+						var giftCardBounce = true;
+					} else {
+
+						if(FindNoCase("Gift Card Code:", emailBody)){
+
+							var startingIndex = FindNoCase("Gift Card Code:", emailBody);
+							startingIndex = startingIndex + 16;
+
+							var giftCardCode = Mid(emailBody, startingIndex, getService("SettingService").getSettingValue("skuGiftCardCodeLength")+1);
+
+							var giftCardID = getDAO("GiftCardDAO").getIDbyCode(giftCardCode);
+
+							if(giftCardID NEQ false){
+								emailBounce.setRelatedObject("giftCard");
+								emailBounce.setRelatedObjectID(giftCardID);
+							}
+
+							var giftCardBounce = true;
 						}
 					}
-				} else {
-					report &= "Status: Not processed [From Allowed: #isAllowedFromAddress#, Subject Allowed: #isAllowedSubject#]" & "<br>";
-				}
-				report &= "<br>";
 
-				//todo create a bounced email record
-				var header = emails.header[i];
-				var emailBounce = this.newEmailBounce();
+					if(getHeaderValue(header, "X-Failed-Recipients") NEQ ""){
+						emailBounce.setRejectedEmailTo(getHeaderValue(header, "X-Failed-Recipients"));
 
-				if(getHeaderValue(header, "Related-Object") NEQ ""){
-					emailBounce.setRelatedObject(getHeaderValue(header, "Related-Object"));
-					emailBounce.setRelatedObjectID(getHeaderValue(header, "Related-Object-ID"));
-				} else {
+						var failedRecipient = true;
+					} else {
 
-					if(FindNoCase("Gift Card Code:", emailBody)){
+						if(FindNoCase("To:", emailBody)){
 
-						var startingIndex = FindNoCase("Gift Card Code:", emailBody);
-						startingIndex = startingIndex + 16;
+							var startingIndex = FindNoCase("To:", emailBody);
+							startingIndex = startingIndex + 4;
 
-						var giftCardCode = Mid(emailBody, startingIndex, getService("SettingService").getSettingValue("skuGiftCardCodeLength")+1);
+							var parsing = true;
+							var toEmail = "";
 
-						var giftCardID = getDAO("GiftCardDAO").getIDbyCode(giftCardCode);
+							while(Mid(emailBody, startingIndex, 1) NEQ Chr(10)){
+								toEmail &= Mid(emailBody, startingIndex, 1);
+								startingIndex++;
+							}
 
+							emailBounce.setRejectedEmailTo(toEmail);
 
+							var failedRecipient = true;
 
-						if(giftCardID NEQ false){
-							emailBounce.setRelatedObject("giftCard");
-							emailBounce.setRelatedObjectID(giftCardID);
 						}
+
 					}
-				}
+
+					emailBounce.setRejectedEmailFrom(emails.from[i]);
+					emailBounce.setRejectedEmailSubject(emails.subject[i]);
+					emailBounce.setRejectedEmailSendTime(emails.sentdate[i]);
+					emailBounce.setRejectedEmailBody(emailBody);
+					emailBounce = this.saveEmailBounce(emailBounce);
 
 
-				if(getHeaderValue(header, "X-Failed-Recipients") NEQ ""){
-					emailBounce.setRejectedEmailTo(getHeaderValue(header, "X-Failed-Recipients"));
-				} else {
+					if(failedRecipient){
+						report &= "Failed Recipient: " & emailBounce.getRejectedEmailTo() & " ";
+						deleteMsgIds = listAppend(deleteMsgIds,emails.uid[i]);
+					}
 
-					if(FindNoCase("To:", emailBody)){
+					if(giftCardBounce){
+						report &= "Gift Card Bounce " & emailBounce.getRelatedObjectID() & " ";
+					}
 
-						var startingIndex = FindNoCase("To:", emailBody);
-						startingIndex = startingIndex + 4;
-
-						var parsing = true;
-						var toEmail = "";
-
-						while(Mid(emailBody, startingIndex, 1) NEQ Chr(10)){
-							toEmail &= Mid(emailBody, startingIndex, 1);
-							startingIndex++;
-						}
-
-						emailBounce.setRejectedEmailTo(toEmail);
-
+					if(emailBounce.hasErrors()){
+						report &= "Email Bounce Save Errors" &  emailBounce.getErrors() & "<br>";
+					} else {
+						report &= "Email Bounce Save Success" & "<br>";
 					}
 
 				}
 
-				emailBounce.setRejectedEmailFrom(emails.from[i]);
-				emailBounce.setRejectedEmailSubject(emails.subject[i]);
-				emailBounce.setRejectedEmailSendTime(emails.sentdate[i]);
-				emailBounce.setRejectedEmailBody(emailBody);
-				emailBounce = this.saveEmailBounce(emailBounce);
-				if(emailBounce.hasErrors()){
-					report &=  emailBounce.getErrors() & "<br>";
-				}
+				writeoutput(report);
 
-			}
+			</cfscript>
 
+			<cfcatch type="Any">
+				<cfset report &= "Error Reading Mailbox" />
+				<cfset writeoutput(report) />
+			</cfcatch>
+		</cftry>
 
-			writeoutput(report);
-			return;
-		</cfscript>
-<!---
-		<cfpop action="delete" uid="#deleteMsgIds#" server="imap-mail.outlook.com" port="#mailServerPort#" username="#mailServerUsername#" password="#mailServerPassword#" />
---->
+		<cftry>
+
+			<cfimap action="delete" uid="#deleteMsgIds#" server="#mailServer#" port="#mailServerPort#" username="#mailServerUsername#" password="#mailServerPassword#" secure="yes"  />
+
+			<cfcatch type="Any">
+				<cfset report &= "Error Deleting Mailbox" />
+				<cfset writeoutput(report) />
+			</cfcatch>
+
+		</cftry>
+
+		<cfmail to="#getService("SettingService").getSettingValue("emailToAddress")#"
+			from="#getService("SettingService").getSettingValue("emailFromAddress")#"
+			subject="Bounced Email Processing Report"
+			cc="#getService("SettingService").getSettingValue("emailCCAddress")#"
+			bcc="#getService("SettingService").getSettingValue("emailBCCAddress")#"
+			charset="utf-8">
+			<cfoutput>#report#</cfoutput>
+		</cfmail>
+
 	</cffunction>
 
 	<cffunction name="getHeaderValue" access="private" output="false" returntype="string">

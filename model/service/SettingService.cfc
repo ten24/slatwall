@@ -150,10 +150,10 @@ component extends="HibachiService" output="false" accessors="true" {
 			emailBCCAddress = {fieldType="text"},
 			emailFailToAddress = {fieldType="text", defaultValue="email@youremaildomain.com"},
 			emailSubject = {fieldType="text", defaultValue="Notification From Slatwall"},
-			emailPOPServer = {fieldType="text"},
-			emailPOPServerPort = {fieldType="text"},
-			emailPOPServerUsername = {fieldType="text"},
-			emailPOPServerPassword = {fieldType="password"},
+			emailIMAPServer = {fieldType="text"},
+			emailIMAPServerPort = {fieldType="text"},
+			emailIMAPServerUsername = {fieldType="text"},
+			emailIMAPServerPassword = {fieldType="password"},
 
 			// Fulfillment Method
 			fulfillmentMethodShippingOptionSortType = {fieldType="select", defaultValue="sortOrder"},
@@ -197,7 +197,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
 			globalAdminDomainNames = {fieldtype="text"},
 			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
-			
+
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
 			imageMissingImagePath = {fieldType="text",defaultValue="/assets/images/missingimage.jpg"},
