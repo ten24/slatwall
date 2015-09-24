@@ -721,6 +721,9 @@
 				// If this is a new site, then we can set the site name
 				if(slatwallSiteWasNew) {
 					slatwallSite.setSiteName( cmsSiteName );
+					slatwallSite.setSiteCode( 
+						$.slatwall.getService('DataService').createUniqueColumn(titleString='mura-#cmsSiteID#', tableName="SwSite",columnName="siteCode")	 
+					);
 					$.slatwall.getService("siteService").saveSite( slatwallSite );
 					slatwallSite.setCMSSiteID( cmsSiteID );
 					$.slatwall.getDAO("hibachiDAO").flushORMSession();
