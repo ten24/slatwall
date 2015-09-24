@@ -73,6 +73,9 @@ var slatwalladmin;
             this.pageShow = pageShow;
             this.keywords = keywords;
             this.allRecords = allRecords;
+            this.newCollectionConfig = function (baseEntityName, baseEntityAlias) {
+                return new CollectionConfig(_this.$slatwall, baseEntityName, baseEntityAlias);
+            };
             this.loadJson = function (jsonCollection) {
                 //if json then make a javascript object else use the javascript object
                 if (angular.isString(jsonCollection)) {
@@ -80,6 +83,9 @@ var slatwalladmin;
                 }
                 _this.baseEntityAlias = jsonCollection.baseEntityAlias;
                 _this.baseEntityName = jsonCollection.baseEntityName;
+                if (angular.isDefined(jsonCollection.filterGroups)) {
+                    _this.filterGroups = jsonCollection.filterGroups;
+                }
                 _this.columns = jsonCollection.columns;
                 _this.joins = jsonCollection.joins;
                 _this.keywords = jsonCollection.keywords;
@@ -273,7 +279,7 @@ var slatwalladmin;
                 }
                 return _this.$slatwall.getEntity(_this.baseEntityName, _this.getOptions());
             };
-            if (!angular.isUndefined(this.baseEntityName)) {
+            if (angular.isDefined(this.baseEntityName)) {
                 this.collection = this.$slatwall['new' + this.getEntityName()]();
                 if (angular.isUndefined(this.baseEntityAlias)) {
                     this.baseEntityAlias = '_' + this.baseEntityName.toLowerCase();
@@ -283,6 +289,8 @@ var slatwalladmin;
         return CollectionConfig;
     })();
     slatwalladmin.CollectionConfig = CollectionConfig;
+    angular.module('slatwalladmin')
+        .factory('CollectionConfigService', ['$slatwall', function ($slatwall) { return new CollectionConfig($slatwall); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../model/collectionConfig.js.map
+//# sourceMappingURL=../services/collectionconfigservice.js.map

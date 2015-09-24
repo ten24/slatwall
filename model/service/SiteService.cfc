@@ -288,8 +288,17 @@ component  extends="HibachiService" accessors="true" {
 		//get new flag before persisting
 		var newFlag = arguments.site.getNewFlag();
 		
+		//handle mura logic
 		if(!arguments.site.isSlatwallCMS()){
-			arguments.site.setSiteCode(getService('DataService').createUniqueColumn(titleString=arguments.data.siteName, tableName="SwSite",columnName="siteCode"));
+			var siteName = '';
+			if(!structKeyExists(arguments.data,'siteName')){
+				if(isNull(arguments.site.getSiteName())){
+					siteName = arguments.site.getSiteName();
+				}
+			}else{
+				siteName = arguments.data.siteName;
+			}
+			arguments.site.setSiteCode(getService('DataService').createUniqueColumn(titleString=siteName, tableName="SwSite",columnName="siteCode"));
 		}
 		
 		arguments.site = super.save(arguments.site, arguments.data);
