@@ -4,30 +4,13 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     var SWListingColumnController = (function () {
-        function SWListingColumnController($scope, utilityService, $slatwall) {
+        function SWListingColumnController() {
             var _this = this;
-            this.$scope = $scope;
-            this.utilityService = utilityService;
-            this.$slatwall = $slatwall;
             this.init = function () {
                 _this.editable = _this.editable || false;
             };
-            this.$scope = $scope;
-            this.$slatwall = $slatwall;
-            this.utilityService = utilityService;
-            console.log('ListingColumn');
-            console.log(this);
-            // if(angular.isUndefined(this.$scope.$parent.$parent.swListingDisplay.columns)){
-            //     this.$scope.$parent.$parent.swListingDisplay.columns = [];
-            // }
-            // if(!this.$scope.$parent.$parent.swListingDisplay.columns){
-            //     this.$scope.$parent.$parent.swListingDisplay.columns = [];
-            // }
-            // this.$scope.$parent.$parent.swListingDisplay.columns.push(column);
-            //need to perform init after promise completes
             this.init();
         }
-        SWListingColumnController.$inject = ['$scope', 'utilityService', '$slatwall'];
         return SWListingColumnController;
     })();
     slatwalladmin.SWListingColumnController = SWListingColumnController;
@@ -35,23 +18,21 @@ var slatwalladmin;
         function SWListingColumn() {
             this.restrict = 'EA';
             // public scope={}; 
-            // public bindToController={
-            //    propertyIdentifier:"@",
-            //    processObjectProperty:"@",
-            //    title:"@",
-            //    tdclass:"@",
-            //    search:"=",
-            //    sort:"=",
-            //    filter:"=",
-            //    range:"=",
-            //    editable:"=",
-            //    buttonGroup:"="
-            // };
+            this.bindToController = {
+                propertyIdentifier: "@",
+                processObjectProperty: "@",
+                title: "@",
+                tdclass: "@",
+                search: "=",
+                sort: "=",
+                filter: "=",
+                range: "=",
+                editable: "=",
+                buttonGroup: "="
+            };
             this.controller = SWListingColumnController;
             this.controllerAs = "swListingColumn";
             this.link = function (scope, element, attrs) {
-                console.log('column scope');
-                console.log(scope);
                 var column = {
                     propertyIdentifier: scope.propertyIdentifier,
                     processObjectProperty: scope.processObjectProperty,
@@ -66,7 +47,6 @@ var slatwalladmin;
                 };
                 scope.swListingDisplay.columns.push(column);
             };
-            console.log('column cons');
         }
         return SWListingColumn;
     })();

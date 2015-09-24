@@ -6,17 +6,11 @@ var slatwalladmin;
     class UtilityService extends slatwalladmin.BaseService {
         constructor() {
             super();
-            this.listLast = (list, delimiter) => {
-                if (angular.isUndefined(delimiter)) {
-                    delimiter = ',';
-                }
+            this.listLast = (list = '', delimiter = ',') => {
                 var listArray = list.split(delimiter);
                 return listArray[listArray.length - 1];
             };
-            this.listPrepend = (list, substring, delimiter) => {
-                if (angular.isUndefined(delimiter)) {
-                    delimiter = ',';
-                }
+            this.listPrepend = (list = '', substring, delimiter = ',') => {
                 var listArray = list.split(delimiter);
                 if (listArray.length) {
                     return substring + delimiter + list;
@@ -25,10 +19,7 @@ var slatwalladmin;
                     return substring;
                 }
             };
-            this.listAppend = (list, substring, delimiter) => {
-                if (angular.isUndefined(delimiter)) {
-                    delimiter = ',';
-                }
+            this.listAppend = (list = '', substring, delimiter = ',') => {
                 var listArray = list.split(delimiter);
                 if (listArray.length) {
                     return list + delimiter + substring;
@@ -58,10 +49,7 @@ var slatwalladmin;
                 return text;
             };
             //list functions
-            this.listFind = (list, value, delimiter) => {
-                if (angular.isUndefined(delimiter)) {
-                    delimiter = ',';
-                }
+            this.listFind = (list = '', value, delimiter = ',') => {
                 var splitString = list.split(delimiter);
                 var stringFound = -1;
                 for (var i = 0; i < splitString.length; i++) {
@@ -72,10 +60,7 @@ var slatwalladmin;
                     break;
                 }
             };
-            this.listLen = (list, delimiter) => {
-                if (angular.isUndefined(delimiter)) {
-                    delimiter = ',';
-                }
+            this.listLen = (list = '', delimiter = ',') => {
                 var splitString = list.split(delimiter);
                 return splitString.length;
             };

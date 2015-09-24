@@ -33,17 +33,9 @@ module slatwalladmin {
             this.utilityService = utilityService;
             this.$scope = $scope;
             this.$element = $element;
-            console.log('transclude');
             
             this.$transclude = $transclude;
-            this.$transclude(this.$scope,(transElem,transScope)=>{
-                console.log(transElem);
-                console.log(transScope);
-                
-            });
-            
-            console.log('listingDisplayTest');
-            console.log(this);
+            this.$transclude(this.$scope,()=>{});
             
              //if collection Value is string instead of an object then create a collection
             if(angular.isString(this.collection)){
@@ -382,27 +374,19 @@ module slatwalladmin {
         public controller=SWListingDisplayController;
         public controllerAs="swListingDisplay";
 		public templateUrl;
-        public static $inject = ['$slatwall','partialsPath','utilityService'];
-		
+        public static $inject = ['partialsPath'];
 		constructor(
-            private $slatwall:ngSlatwall.SlatwallService,
-            private partialsPath:slatwalladmin.partialsPath, 
-            private utilityService:slatwalladmin.UtilityService
+            private partialsPath:slatwalladmin.partialsPath 
         ){
-            console.log('listingDisplay constructor');
+            this.partialsPath = partialsPath;
 			this.templateUrl = this.partialsPath+'listingdisplay.html';
-		}
+		} 
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes,controller, transclude) =>{
-			console.log('listingDisplay scope');
-            // transclude(scope,(transElem,transScope)=>{
-            //     console.log(transElem);
-            //     console.log(transScope);
-            // });
-            
+			
 		}
 	}
     
-	angular.module('slatwalladmin').directive('swListingDisplay',['$slatwall','partialsPath', 'utilityService', ($slatwall,partialsPath,utilityService) => new SWListingDisplay($slatwall,partialsPath,utilityService)]);
+	angular.module('slatwalladmin').directive('swListingDisplay',[() => new SWListingDisplay()]);
 }
 

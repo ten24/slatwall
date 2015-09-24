@@ -4,28 +4,25 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     class SWListingColumnController {
-        constructor(partialsPath, utilityService, $slatwall) {
-            this.partialsPath = partialsPath;
+        constructor($scope, utilityService, $slatwall) {
+            this.$scope = $scope;
             this.utilityService = utilityService;
             this.$slatwall = $slatwall;
             this.init = () => {
                 this.editable = this.editable || false;
             };
-            console.log('ListingColumn');
+            this.$scope = $scope;
             this.$slatwall = $slatwall;
             this.utilityService = utilityService;
-            //need to perform init after promise completes
             this.init();
         }
     }
+    SWListingColumnController.$inject = ['$scope', 'utilityService', '$slatwall'];
     slatwalladmin.SWListingColumnController = SWListingColumnController;
     class SWListingColumn {
-        constructor(partialsPath, utiltiyService, $slatwall) {
-            this.partialsPath = partialsPath;
-            this.utiltiyService = utiltiyService;
-            this.$slatwall = $slatwall;
+        constructor() {
             this.restrict = 'EA';
-            this.scope = {};
+            // public scope={}; 
             this.bindToController = {
                 propertyIdentifier: "@",
                 processObjectProperty: "@",
@@ -41,12 +38,27 @@ var slatwalladmin;
             this.controller = SWListingColumnController;
             this.controllerAs = "swListingColumn";
             this.link = (scope, element, attrs) => {
+                console.log('column scope');
+                console.log(scope);
+                var column = {
+                    propertyIdentifier: scope.propertyIdentifier,
+                    processObjectProperty: scope.processObjectProperty,
+                    title: scope.title,
+                    tdclass: scope.tdclass,
+                    search: scope.search,
+                    sort: scope.sort,
+                    filter: scope.filter,
+                    range: scope.range,
+                    editable: scope.editable,
+                    buttonGroup: scope.buttonGroup
+                };
+                scope.swListingDisplay.columns.push(column);
             };
-            this.templateUrl = partialsPath + 'listingcolumn.html';
+            console.log('column cons');
         }
     }
     slatwalladmin.SWListingColumn = SWListingColumn;
-    angular.module('slatwalladmin').directive('swListingColumn', ['partialsPath', 'utilityService', '$slatwall', (partialsPath, utilityService, $slatwall) => new SWListingColumn(partialsPath, utilityService, $slatwall)]);
+    angular.module('slatwalladmin').directive('swListingColumn', [() => new SWListingColumn()]);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../../directives/common/swlistingcolumn.js.map
