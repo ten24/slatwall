@@ -176,6 +176,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	}
 
 	public any function processGiftCard_redeemForAccount(required any giftCard, required any processObject){
+
 		arguments.giftCard.setOwnerAcount(processObject.getAccount());
 		arguments.giftCard.setOwnerEmailAddress(processObject.getEmailAddress());
 
