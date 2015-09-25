@@ -70,7 +70,12 @@ Notes:
 			var deleteMsgIds = "";
 		</cfscript>
 		<cftry>
-			<cfimap name="local.emails" action="getAll" server="#mailServer#" port="#mailServerPort#" username="#mailServerUsername#" password="#mailServerPassword#" generateuniquefilenames="true" secure="yes" attachmentpath="#getTempDirectory()#" />
+
+			<cfif structKeyExists(server, "railo") || structKeyExists(server, "lucee")>
+				<cfimap name="local.emails" action="getAll" server="#mailServer#" port="#mailServerPort#" username="#mailServerUsername#" password="#mailServerPassword#" generateuniquefilenames="true" attachmentpath="#getTempDirectory()#" />
+			<cfelse>
+				<cfinclude template="../cfimap_emailbouncegetall.cfm" />
+			</cfif>
 
 			<cfscript>
 
@@ -181,9 +186,6 @@ Notes:
 					}
 
 				}
-
-
-
 			</cfscript>
 
 			<cfcatch type="Any">
@@ -193,7 +195,11 @@ Notes:
 
 		<cftry>
 
-			<cfimap action="delete" uid="#deleteMsgIds#" server="#mailServer#" port="#mailServerPort#" username="#mailServerUsername#" password="#mailServerPassword#" secure="yes"  />
+			<cfif structKeyExists(server, "railo") || structKeyExists(server, "lucee")>
+				<cfimap action="delete" uid="#deleteMsgIds#" server="#mailServer#" port="#mailServerPort#" username="#mailServerUsername#" password="#mailServerPassword#" />
+			<cfelse>
+				<cfinclude template="../cfimap_emailbouncedelete.cfm" />
+			</cfif>
 
 			<cfcatch type="Any">
 				<cfset report &= "Error Deleting Mailbox" />
