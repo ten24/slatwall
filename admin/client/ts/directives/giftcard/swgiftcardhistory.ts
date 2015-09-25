@@ -60,10 +60,7 @@ module slatwalladmin {
 					var tempCurrentBalance = currentBalance - totalDebit; 
 					transaction.balanceFormatted = "$" + parseFloat(tempCurrentBalance.toString()).toFixed(2);
 					
-					if(index == initialCreditIndex){
-						
-						
-								
+					if(index == initialCreditIndex){			
 						var emailSent = { 
 							emailSent: true, 
 							debit:false, 
@@ -81,11 +78,13 @@ module slatwalladmin {
 						this.transactions.splice(index, 0, activeCard); 
 						this.transactions.splice(index, 0, emailSent); 
 						
-						angular.forEach(this.bouncedEmails, (email, bouncedEmailIndex)=>{
-							email.bouncedEmail = true; 
-							email.balanceFormatted =  "$" + parseFloat(initialBalance.toString()).toFixed(2);
-							this.transactions.splice(index, 0, email);
-						}); 
+						if(this.bouncedEmails.length > 0){
+							angular.forEach(this.bouncedEmails, (email, bouncedEmailIndex)=>{
+								email.bouncedEmail = true; 
+								email.balanceFormatted =  "$" + parseFloat(initialBalance.toString()).toFixed(2);
+								this.transactions.splice(index, 0, email);
+							}); 
+						}
 					}
 				
 				});

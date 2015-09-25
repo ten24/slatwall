@@ -46,21 +46,24 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfcomponent extends="HibachiDAO" output="false">
 
+	<cffunction name="rejectedEmailExists" access="public" returntype="boolean" output="false">
+		<cfargument name="email" type="string" required="true" />
 
-<cfparam name="rc.giftCard" type="any" />
-<cfparam name="rc.processObject" type="any" />
-<cfparam name="rc.edit" type="boolean" />
+		<cfquery name="getGiftCardEmailBounce">
+			SELECT * FROM swEmailBounce
+			WHERE relatedObject='giftCard'
+			 AND rejectedEmailTo Like <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.email#%">
+		</cfquery>
 
-<cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.giftCard#" edit="#rc.edit#" sRedirectAction="admin:entity.listgiftcard">
+		<cfif getGiftCardEmailBounce.RecordCount GT 0>
+			<cfreturn True>
+		<cfelse>
+			<cfreturn False>
+		</cfif>
 
-		<hb:HibachiEntityActionBar type="preprocess" object="#rc.giftCard#">
-		</hb:HibachiEntityActionBar>
+	</cffunction>
 
-		<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#">
+</cfcomponent>
 
-	</hb:HibachiEntityProcessForm>
-</cfoutput>
