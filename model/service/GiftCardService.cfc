@@ -107,10 +107,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		if(!giftCardCreditTransaction.hasErrors()){
-            var errorBean = getService("HibachiValidationService").validate(arguments.giftCard, "save", true); 
+            var errorBean = getService("HibachiValidationService").validate(arguments.giftCard, "save", true);
             if(!errorBean.hasErrors()){
-                arguments.giftCard = this.saveGiftCard(arguments.giftCard); 
-            } 
+                arguments.giftCard = this.saveGiftCard(arguments.giftCard);
+            }
 		} else {
 			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
 		}
@@ -165,11 +165,24 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.giftCard.setOwnerEmailAddress(arguments.processObject.getEmailAddress());
 		}
 
+		this.save(arguments.giftCard);
+
 		if(!arguments.giftCard.hasErrors()){
 			var cardData = {};
 			cardData.entity=arguments.giftCard;
 			//resend email
 			getService("hibachiEventService").announceEvent(eventName="afterGiftCard_orderPlacedSuccess", eventData=cardData);
+		}
+	}
+
+	public any function processGiftCard_redeemForAccount(required any giftCard, required any processObject){
+		arguments.giftCard.setOwnerAcount(processObject.getAccount());
+		arguments.giftCard.setOwnerEmailAddress(processObject.getEmailAddress());
+
+		this.save(arguments.giftCard);
+
+		if(!arguments.giftCard.hasErrors()){
+
 		}
 	}
 
