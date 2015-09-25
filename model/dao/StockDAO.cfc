@@ -52,7 +52,7 @@ Notes:
 		<cfargument name="fromLocationID" type="string" required="true" >
 		<cfargument name="toLocationID" type="string" required="true" >
 		<cfquery name="updatestock" >
-			UPDATE swStock 
+			UPDATE SwStock 
 			SET locationID = <cfqueryparam value="#arguments.toLocationID#" cfsqltype="cf_sql_varchar" >
 			WHERE locationID = <cfqueryparam value="#arguments.fromLocationID#" cfsqltype="cf_sql_varchar" >
 		</cfquery>
