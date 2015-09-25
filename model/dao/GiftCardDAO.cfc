@@ -52,7 +52,7 @@ Notes:
 		<cfargument name="code" type="string" required="true" />
 
 		<cfquery name="getGiftCardID" maxrows="1">
-			SELECT giftCardID FROM swGiftCard WHERE giftCardCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.code#">
+			SELECT giftCardID FROM SwGiftCard WHERE giftCardCode = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.code#">
 		</cfquery>
 		<cfif getGiftCardID.RecordCount GT 0>
 			<cfreturn getGiftCardID.giftCardID>
