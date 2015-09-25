@@ -18,28 +18,55 @@ module slatwalladmin {
         private buttonGroup = [];
         private collectionPromise;
         private collectionObject;
-        public static $inject = ['$scope','$element','$transclude','$slatwall','partialsPath','utilityService'];
+        public static $inject = ['$scope','$element','$transclude','$slatwall','partialsPath','utilityService','collectionConfigService'];
         constructor(
             public $scope,
             public $element,
             public $transclude,
             public $slatwall:ngSlatwall.SlatwallService, 
             public partialsPath:slatwalladmin.partialsPath, 
-            public utilityService:slatwalladmin.UtilityService
+            public utilityService:slatwalladmin.UtilityService,
+            public collectionConfig:slatwalladmin.CollectionConfig
         ){
-            
             this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
             this.utilityService = utilityService;
             this.$scope = $scope;
             this.$element = $element;
-            
+            this.collectionConfig = collectionConfig;
+            //this is performed early to populate columns with swlistingcolumn info
             this.$transclude = $transclude;
             this.$transclude(this.$scope,()=>{});
             
              //if collection Value is string instead of an object then create a collection
             if(angular.isString(this.collection)){
-                this.collectionPromise = this.$slatwall.getEntity(this.collection);
+                var collectionConfig = this.collectionConfigService.newCollectionConfig(this.collection);
+                /*
+                propertyIdentifier:"@",
+                processObjectProperty:"@",
+                title:"@",
+                tdclass:"@",
+                search:"=",
+                sort:"=",
+                filter:"=",
+                range:"=",
+                editable:"=",
+                buttonGroup:"="
+                */
+                
+                for(var column in this.columns){
+                    var columnOptions = {};
+                    
+                    collectionConfig.setDisplayProperty(
+                        column.propertyIdentifier,
+                        column.title,
+                        columnOptions
+                        /*
+                        ,*/
+                    );
+                }
+                
+                this.collectionPromise = collectionConfig.getEntity(this.collection);
             }
             this.collectionPromise.then((data)=>{
                 this.collectionData = data;
@@ -376,9 +403,11 @@ module slatwalladmin {
 		public templateUrl;
         public static $inject = ['partialsPath'];
 		constructor(
-            private partialsPath:slatwalladmin.partialsPath 
+            public partialsPath:slatwalladmin.partialsPath 
         ){
             this.partialsPath = partialsPath;
+            console.log('partialsPath');
+            console.log(this.partialsPath);
 			this.templateUrl = this.partialsPath+'listingdisplay.html';
 		} 
 		
@@ -387,6 +416,6 @@ module slatwalladmin {
 		}
 	}
     
-	angular.module('slatwalladmin').directive('swListingDisplay',[() => new SWListingDisplay()]);
+	angular.module('slatwalladmin').directive('swListingDisplay',['partialsPath',(partialsPath) => new SWListingDisplay(partialsPath)]);
 }
 

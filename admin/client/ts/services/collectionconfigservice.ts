@@ -268,6 +268,21 @@ module slatwalladmin{
                 this.addColumn(this.formatCollectionName(column),title, options);
             });
         };
+        
+        addDisplayProperty= (propertyIdentifier: string, title: string = '', options:Object = {}) =>{
+            var _DividedColumns = propertyIdentifier.trim().split(',');
+            var _DividedTitles = title.trim().split(',');
+            _DividedColumns.forEach((column:string, index)  => {
+                column = column.trim();
+                //this.addJoin(column);
+                if(!angular.isUndefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
+                    title = _DividedTitles[index].trim();
+                }else {
+                    title = this.$slatwall.getRBKey("entity."+this.baseEntityName+"."+column);
+                }
+                this.addColumn(this.formatCollectionName(column),title, options);
+            });
+        };
 
         addFilter= (propertyIdentifier: string, value:string, comparisonOperator: string = '=', logicalOperator?: string) =>{
             //this.addJoin(propertyIdentifier);

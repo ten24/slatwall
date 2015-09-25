@@ -4,20 +4,13 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     class SWListingColumnController {
-        constructor($scope, utilityService, $slatwall) {
-            this.$scope = $scope;
-            this.utilityService = utilityService;
-            this.$slatwall = $slatwall;
+        constructor() {
             this.init = () => {
                 this.editable = this.editable || false;
             };
-            this.$scope = $scope;
-            this.$slatwall = $slatwall;
-            this.utilityService = utilityService;
             this.init();
         }
     }
-    SWListingColumnController.$inject = ['$scope', 'utilityService', '$slatwall'];
     slatwalladmin.SWListingColumnController = SWListingColumnController;
     class SWListingColumn {
         constructor() {
@@ -38,8 +31,6 @@ var slatwalladmin;
             this.controller = SWListingColumnController;
             this.controllerAs = "swListingColumn";
             this.link = (scope, element, attrs) => {
-                console.log('column scope');
-                console.log(scope);
                 var column = {
                     propertyIdentifier: scope.propertyIdentifier,
                     processObjectProperty: scope.processObjectProperty,
@@ -54,7 +45,6 @@ var slatwalladmin;
                 };
                 scope.swListingDisplay.columns.push(column);
             };
-            console.log('column cons');
         }
     }
     slatwalladmin.SWListingColumn = SWListingColumn;

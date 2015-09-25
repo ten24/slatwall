@@ -237,6 +237,23 @@ var slatwalladmin;
                     _this.addColumn(_this.formatCollectionName(column), title, options);
                 });
             };
+            this.addDisplayProperty = function (propertyIdentifier, title, options) {
+                if (title === void 0) { title = ''; }
+                if (options === void 0) { options = {}; }
+                var _DividedColumns = propertyIdentifier.trim().split(',');
+                var _DividedTitles = title.trim().split(',');
+                _DividedColumns.forEach(function (column, index) {
+                    column = column.trim();
+                    //this.addJoin(column);
+                    if (!angular.isUndefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
+                        title = _DividedTitles[index].trim();
+                    }
+                    else {
+                        title = _this.$slatwall.getRBKey("entity." + _this.baseEntityName + "." + column);
+                    }
+                    _this.addColumn(_this.formatCollectionName(column), title, options);
+                });
+            };
             this.addFilter = function (propertyIdentifier, value, comparisonOperator, logicalOperator) {
                 if (comparisonOperator === void 0) { comparisonOperator = '='; }
                 //this.addJoin(propertyIdentifier);

@@ -69,7 +69,7 @@
                 	defaultValues['Audit'] = {
                 	auditID:'',
 										auditType:null,
-									auditDateTime:'1443040874237',
+									auditDateTime:'1443120621004',
 										auditArchiveStartDateTime:null,
 									auditArchiveEndDateTime:null,
 									auditArchiveCreatedDateTime:null,
@@ -126,7 +126,7 @@
                 	accountEmailAddressID:'',
 										emailAddress:null,
 									verifiedFlag:0,
-									verificationCode:'c45f313e9234784e1fc0afa4efc2dd71',
+									verificationCode:'06ebd15b9a4f7647230b4e48b0fc3efb',
 										remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -229,28 +229,6 @@
                 	loyaltyID:'',
 										loyaltyName:null,
 									activeFlag:1,
-									remoteID:null,
-									createdDateTime:'',
-										createdByAccountID:null,
-									modifiedDateTime:'',
-										modifiedByAccountID:null,
-									
-						z:''
-	                };
-                
-                	entities['GiftCard'] = {"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"ownerEmailAddress":{"ormtype":"string","name":"ownerEmailAddress"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"balanceAmount":{"ormtype":"big_decimal","name":"balanceAmount"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"ownerAccount":{"cfc":"Account","fieldtype":"many-to-one","fkcolumn":"ownerAccountID","name":"ownerAccount"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"originalOrderItem":{"cfc":"OrderItem","fieldtype":"many-to-one","cascade":"all","fkcolumn":"originalOrderItemID","name":"originalOrderItem"},"orderItemGiftRecipient":{"cfc":"OrderItemGiftRecipient","fieldtype":"many-to-one","cascade":"all","fkcolumn":"orderItemGiftRecipientID","inverse":true,"name":"orderItemGiftRecipient"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"giftCardID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"giftCardID"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"giftCardCode":{"ormtype":"string","name":"giftCardCode"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"ownerLastName":{"ormtype":"string","name":"ownerLastName"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"expirationDate":{"ormtype":"timestamp","name":"expirationDate"},"validations":{"persistent":false,"type":"struct","name":"validations"},"giftCardExpirationTerm":{"cfc":"Term","fieldtype":"many-to-one","cascade":"all","fkcolumn":"giftCardExpirationTermID","name":"giftCardExpirationTerm"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"activeFlag":{"ormtype":"boolean","name":"activeFlag"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"giftCardTransactions":{"cfc":"GiftCardTransaction","fieldtype":"one-to-many","singularname":"giftCardTransaction","cascade":"all-delete-orphan","fkcolumn":"giftCardID","inverse":true,"name":"giftCardTransactions"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"ownerFirstName":{"ormtype":"string","name":"ownerFirstName"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"giftCardPin":{"ormtype":"string","name":"giftCardPin"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
-                	entities['GiftCard'].className = 'GiftCard';
-                	validations['GiftCard'] = {"properties":{"ownerEmailAddress":[{"contexts":"save","required":true}],"giftCardCode":[{"contexts":"save","required":true}]}};
-                	defaultValues['GiftCard'] = {
-                	giftCardID:'',
-										giftCardCode:null,
-									giftCardPin:null,
-									expirationDate:null,
-									ownerFirstName:null,
-									ownerLastName:null,
-									ownerEmailAddress:null,
-									activeFlag:1,
-									balanceAmount:0,
 									remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -1524,22 +1502,6 @@
 						z:''
 	                };
                 
-                	entities['GiftCardTransaction'] = {"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"giftCard":{"cfc":"GiftCard","fieldtype":"many-to-one","fkcolumn":"giftCardID","name":"giftCard"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"creditAmount":{"ormtype":"big_decimal","name":"creditAmount"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"debitAmount":{"ormtype":"big_decimal","name":"debitAmount"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"validations":{"persistent":false,"type":"struct","name":"validations"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"giftCardTransactionID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"giftCardTransactionID"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"orderPayment":{"cfc":"OrderPayment","fieldtype":"many-to-one","fkcolumn":"orderPaymentID","name":"orderPayment"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"},"orderItems":{"cfc":"OrderItem","fieldtype":"one-to-many","singularname":"orderItem","cascade":"all-delete-orphan","fkcolumn":"giftCardTransactionID","inverse":true,"name":"orderItems"}};
-                	entities['GiftCardTransaction'].className = 'GiftCardTransaction';
-                	validations['GiftCardTransaction'] = {"properties":{}};
-                	defaultValues['GiftCardTransaction'] = {
-                	giftCardTransactionID:'',
-										creditAmount:null,
-									debitAmount:null,
-									remoteID:null,
-									createdDateTime:'',
-										createdByAccountID:null,
-									modifiedDateTime:'',
-										modifiedByAccountID:null,
-									
-						z:''
-	                };
-                
                 	entities['Workflow'] = {"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"workflowObjectOptions":{"persistent":false,"name":"workflowObjectOptions"},"workflowObject":{"hb_formfieldtype":"select","ormtype":"string","name":"workflowObject"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"workflowTasks":{"cfc":"WorkflowTask","fieldtype":"one-to-many","singularname":"workflowTask","cascade":"all-delete-orphan","fkcolumn":"workflowID","type":"array","inverse":true,"name":"workflowTasks"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"workflowName":{"ormtype":"string","name":"workflowName"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"workflowTriggers":{"cfc":"WorkflowTrigger","fieldtype":"one-to-many","singularname":"workflowTrigger","cascade":"all-delete-orphan","fkcolumn":"workflowID","type":"array","inverse":true,"name":"workflowTriggers"},"validations":{"persistent":false,"type":"struct","name":"validations"},"remoteID":{"ormtype":"string","hb_populateenabled":false,"name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"workflowID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"workflowID"},"activeFlag":{"ormtype":"boolean","hb_formattype":"yesno","name":"activeFlag"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
                 	entities['Workflow'].className = 'Workflow';
                 	validations['Workflow'] = {"properties":{"workflowName":[{"contexts":"save","required":true}],"workflowObject":[{"contexts":"save","required":true}]}};
@@ -1734,25 +1696,6 @@
 						z:''
 	                };
                 
-                	entities['OrderItemGiftRecipient'] = {"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"quantity":{"ormtype":"integer","name":"quantity"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"emailAddress":{"ormtype":"string","name":"emailAddress"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"firstName":{"ormtype":"string","name":"firstName"},"orderItem":{"cfc":"OrderItem","fieldtype":"many-to-one","fkcolumn":"orderItemID","name":"orderItem"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"account":{"cfc":"Account","fieldtype":"many-to-one","fkcolumn":"accountID","name":"account"},"lastName":{"ormtype":"string","name":"lastName"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"giftMessage":{"length":4000,"ormtype":"string","name":"giftMessage"},"giftCards":{"cfc":"GiftCard","fieldtype":"one-to-many","singularname":"giftCard","cascade":"all-delete-orphan","fkcolumn":"orderItemGiftRecipientID","name":"giftCards"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"orderItemGiftRecipientID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"orderItemGiftRecipientID"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"validations":{"persistent":false,"type":"struct","name":"validations"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
-                	entities['OrderItemGiftRecipient'].className = 'OrderItemGiftRecipient';
-                	validations['OrderItemGiftRecipient'] = {"properties":{"lastName":[{"contexts":"save","required":true}],"quantity":[{"contexts":"save","required":true,"minValue":1}],"emailAddress":[{"contexts":"save","required":true}],"giftMessage":[{"contexts":"save","method":"hasCorrectGiftMessageLength"}],"firstName":[{"contexts":"save","required":true}]}};
-                	defaultValues['OrderItemGiftRecipient'] = {
-                	orderItemGiftRecipientID:'',
-										firstName:null,
-									lastName:null,
-									emailAddress:null,
-									quantity:null,
-									giftMessage:null,
-									remoteID:null,
-									createdDateTime:'',
-										createdByAccountID:null,
-									modifiedDateTime:'',
-										modifiedByAccountID:null,
-									
-						z:''
-	                };
-                
                 	entities['PermissionGroup'] = {"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"permissions":{"cfc":"Permission","fieldtype":"one-to-many","singularname":"permission","cascade":"all-delete-orphan","fkcolumn":"permissionGroupID","type":"array","inverse":true,"name":"permissions"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"permissionGroupName":{"ormtype":"string","name":"permissionGroupName"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"accounts":{"cfc":"Account","linktable":"SwAccountPermissionGroup","fieldtype":"many-to-many","singularname":"account","inversejoincolumn":"accountID","fkcolumn":"permissionGroupID","inverse":true,"name":"accounts"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"validations":{"persistent":false,"type":"struct","name":"validations"},"permissionsByDetails":{"persistent":false,"name":"permissionsByDetails"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"permissionGroupID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"permissionGroupID"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
                 	entities['PermissionGroup'].className = 'PermissionGroup';
                 	validations['PermissionGroup'] = {"properties":{}};
@@ -1905,7 +1848,7 @@
 										swprid:'',
 									password:'',
 									passwordConfirm:'',
-									accountPasswordResetID:"22e60c3f4df6c18715aba9d1552114cd",
+									accountPasswordResetID:"14bf5c4edfbc80fe4e7e306072604a25",
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
@@ -2310,22 +2253,6 @@
                 	defaultValues['StockAdjustmentDeliveryItem'] = {
                 	stockAdjustmentDeliveryItemID:'',
 										quantity:null,
-									createdDateTime:'',
-										createdByAccountID:null,
-									modifiedDateTime:'',
-										modifiedByAccountID:null,
-									
-						z:''
-	                };
-                
-                	entities['PriceGroupRateCurrency'] = {"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"amount":{"hb_rbkey":"entity.priceGroupRate.amount","ormtype":"big_decimal","hb_formattype":"currency","name":"amount"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"currency":{"cfc":"Currency","fieldtype":"many-to-one","fkcolumn":"currencyCode","name":"currency"},"priceGroupRate":{"cfc":"PriceGroupRate","fieldtype":"many-to-one","fkcolumn":"priceGroupRateID","name":"priceGroupRate"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"priceGroupRateCurrencyID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"priceGroupRateCurrencyID"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"currencyCode":{"insert":false,"update":false,"name":"currencyCode"},"validations":{"persistent":false,"type":"struct","name":"validations"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
-                	entities['PriceGroupRateCurrency'].className = 'PriceGroupRateCurrency';
-                	validations['PriceGroupRateCurrency'] = {"properties":{}};
-                	defaultValues['PriceGroupRateCurrency'] = {
-                	priceGroupRateCurrencyID:'',
-										amount:null,
-									currencyCode:'USD',
-									remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
 									modifiedDateTime:'',
@@ -3064,22 +2991,6 @@
 									reportType:null,
 									limitResults:null,
 									showReport:false,
-									remoteID:null,
-									createdDateTime:'',
-										createdByAccountID:null,
-									modifiedDateTime:'',
-										modifiedByAccountID:null,
-									
-						z:''
-	                };
-                
-                	entities['PromotionRewardCurrency'] = {"printTemplates":{"persistent":false,"type":"struct","name":"printTemplates"},"simpleRepresentation":{"persistent":false,"type":"string","name":"simpleRepresentation"},"hibachiErrors":{"persistent":false,"type":"any","name":"hibachiErrors"},"persistableErrors":{"persistent":false,"type":"array","name":"persistableErrors"},"auditSmartList":{"persistent":false,"type":"any","name":"auditSmartList"},"settingValueFormatted":{"persistent":false,"type":"any","name":"settingValueFormatted"},"amount":{"hb_rbkey":"entity.promotionReward.amount","ormtype":"big_decimal","hb_formattype":"currency","name":"amount"},"processObjects":{"persistent":false,"type":"struct","name":"processObjects"},"attributeValuesByAttributeCodeStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeCodeStruct"},"emailTemplates":{"persistent":false,"type":"struct","name":"emailTemplates"},"populatedSubProperties":{"persistent":false,"type":"struct","name":"populatedSubProperties"},"promotionReward":{"cfc":"PromotionReward","fieldtype":"many-to-one","fkcolumn":"promotionRewardID","name":"promotionReward"},"rollbackProcessedFlag":{"persistent":false,"type":"boolean","name":"rollbackProcessedFlag"},"currency":{"cfc":"Currency","fieldtype":"many-to-one","fkcolumn":"currencyCode","name":"currency"},"modifiedByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"modifiedByAccountID"},"newFlag":{"persistent":false,"type":"boolean","name":"newFlag"},"attributeValuesByAttributeIDStruct":{"persistent":false,"type":"struct","name":"attributeValuesByAttributeIDStruct"},"encryptedPropertiesExistFlag":{"persistent":false,"type":"boolean","name":"encryptedPropertiesExistFlag"},"hibachiMessages":{"persistent":false,"type":"any","name":"hibachiMessages"},"modifiedDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"modifiedDateTime"},"currencyCode":{"insert":false,"update":false,"name":"currencyCode"},"validations":{"persistent":false,"type":"struct","name":"validations"},"remoteID":{"ormtype":"string","name":"remoteID"},"createdByAccount":{"persistent":false,"name":"createdByAccount"},"promotionRewardCurrencyID":{"generator":"uuid","unsavedvalue":"","fieldtype":"id","length":32,"ormtype":"string","default":"","name":"promotionRewardCurrencyID"},"createdDateTime":{"ormtype":"timestamp","hb_populateenabled":false,"name":"createdDateTime"},"announceEvent":{"persistent":false,"type":"boolean","default":true,"name":"announceEvent"},"assignedAttributeSetSmartList":{"persistent":false,"type":"any","name":"assignedAttributeSetSmartList"},"createdByAccountID":{"ormtype":"string","hb_populateenabled":false,"name":"createdByAccountID"},"modifiedByAccount":{"persistent":false,"name":"modifiedByAccount"},"hibachiInstanceApplicationScopeKey":{"PERSISTENT":false,"TYPE":"string","NAME":"hibachiInstanceApplicationScopeKey"}};
-                	entities['PromotionRewardCurrency'].className = 'PromotionRewardCurrency';
-                	validations['PromotionRewardCurrency'] = {"properties":{"amount":[{"contexts":"save","dataType":"numeric","required":false}],"currencyCode":[{"contexts":"save","neqProperty":"promotionReward.currencyCode"}]}};
-                	defaultValues['PromotionRewardCurrency'] = {
-                	promotionRewardCurrencyID:'',
-										amount:null,
-									currencyCode:'USD',
 									remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,

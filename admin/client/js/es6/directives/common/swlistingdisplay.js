@@ -235,14 +235,8 @@ var slatwalladmin;
             this.utilityService = utilityService;
             this.$scope = $scope;
             this.$element = $element;
-            console.log('transclude');
             this.$transclude = $transclude;
-            this.$transclude(this.$scope, (transElem, transScope) => {
-                console.log(transElem);
-                console.log(transScope);
-            });
-            console.log('listingDisplayTest');
-            console.log(this);
+            this.$transclude(this.$scope, () => { });
             //if collection Value is string instead of an object then create a collection
             if (angular.isString(this.collection)) {
                 this.collectionPromise = this.$slatwall.getEntity(this.collection);
@@ -257,10 +251,8 @@ var slatwalladmin;
     SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$slatwall', 'partialsPath', 'utilityService'];
     slatwalladmin.SWListingDisplayController = SWListingDisplayController;
     class SWListingDisplay {
-        constructor($slatwall, partialsPath, utilityService) {
-            this.$slatwall = $slatwall;
+        constructor(partialsPath) {
             this.partialsPath = partialsPath;
-            this.utilityService = utilityService;
             this.restrict = 'E';
             this.scope = {};
             this.transclude = true;
@@ -323,19 +315,14 @@ var slatwalladmin;
             this.controller = SWListingDisplayController;
             this.controllerAs = "swListingDisplay";
             this.link = (scope, element, attrs, controller, transclude) => {
-                console.log('listingDisplay scope');
-                // transclude(scope,(transElem,transScope)=>{
-                //     console.log(transElem);
-                //     console.log(transScope);
-                // });
             };
-            console.log('listingDisplay constructor');
+            this.partialsPath = partialsPath;
             this.templateUrl = this.partialsPath + 'listingdisplay.html';
         }
     }
-    SWListingDisplay.$inject = ['$slatwall', 'partialsPath', 'utilityService'];
+    SWListingDisplay.$inject = ['partialsPath'];
     slatwalladmin.SWListingDisplay = SWListingDisplay;
-    angular.module('slatwalladmin').directive('swListingDisplay', ['$slatwall', 'partialsPath', 'utilityService', ($slatwall, partialsPath, utilityService) => new SWListingDisplay($slatwall, partialsPath, utilityService)]);
+    angular.module('slatwalladmin').directive('swListingDisplay', [() => new SWListingDisplay()]);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../../directives/common/swlistingdisplay.js.map
