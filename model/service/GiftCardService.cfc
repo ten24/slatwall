@@ -107,13 +107,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		if(!giftCardCreditTransaction.hasErrors()){
-            var errorBean = getService("HibachiValidationService").validate(arguments.giftCard, "save", true);
-            if(!errorBean.hasErrors()){
-                arguments.giftCard = this.saveGiftCard(arguments.giftCard);
-            }
+            arguments.giftCard = this.saveGiftCard(arguments.giftCard);
 		} else {
 			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
 		}
+
 
 		return arguments.giftCard;
 

@@ -47,6 +47,7 @@ module slatwalladmin {
 					if(typeof transaction.debitAmount !== "string"){
 						transaction.debit = true;
 						totalDebit += transaction.debitAmount; 
+						//temporarily hardcoded to $
 						transaction.debitAmount = "$" + parseFloat(transaction.debitAmount.toString()).toFixed(2);
 					} else { 
 						if(index != initialCreditIndex){
@@ -54,10 +55,13 @@ module slatwalladmin {
 						}
 						
 						transaction.debit = false;
+						//temporarily hardcoded to $
 						transaction.creditAmount = "$" + parseFloat(transaction.creditAmount.toString()).toFixed(2);
 					}
 					
 					var tempCurrentBalance = currentBalance - totalDebit; 
+					
+					//temporarily hardcoded to $
 					transaction.balanceFormatted = "$" + parseFloat(tempCurrentBalance.toString()).toFixed(2);
 					
 					if(index == initialCreditIndex){			
@@ -65,6 +69,7 @@ module slatwalladmin {
 							emailSent: true, 
 							debit:false, 
 							sentAt: transaction.orderPayment_order_orderOpenDateTime,
+							//temporarily hardcoded to $
 							balanceFormatted:  "$" + parseFloat(initialBalance.toString()).toFixed(2)
 						};
 						
@@ -72,6 +77,7 @@ module slatwalladmin {
 							activated: true, 
 							debit: false,
 							activeAt: transaction.orderPayment_order_orderOpenDateTime,
+							//temporarily hardcoded to $
 							balanceFormatted:  "$" + parseFloat(initialBalance.toString()).toFixed(2)
 						}
 						
@@ -81,6 +87,7 @@ module slatwalladmin {
 						if(this.bouncedEmails.length > 0){
 							angular.forEach(this.bouncedEmails, (email, bouncedEmailIndex)=>{
 								email.bouncedEmail = true; 
+								//temporarily hardcoded to $
 								email.balanceFormatted =  "$" + parseFloat(initialBalance.toString()).toFixed(2);
 								this.transactions.splice(index, 0, email);
 							}); 
