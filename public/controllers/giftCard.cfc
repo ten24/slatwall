@@ -55,7 +55,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var giftCardToRedeem = getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(rc.giftCardCode));
 
 		if(isNull(giftCardToRedeem.getOwnerAccount())){
-
+			arguments.rc.$.slatwall.getAccount()
 		} else {
 			arguments.rc.$.slatwall.addActionResult("public:giftCard.redeemForAccount", false);
 		}
