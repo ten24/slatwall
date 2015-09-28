@@ -50,8 +50,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 
 	public any function redeemForAccount(required struct rc){
 
-		writedump(var=rc, top=2);abort;
-
 		var giftCardToRedeem = getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(rc.giftCardCode));
 
 		if(isNull(giftCardToRedeem.getOwnerAccount())){
