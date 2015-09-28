@@ -64,7 +64,8 @@ Notes:
 			<sw-action-caller-dropdown
 				data-title="#$.slatwall.rbKey('define.create')#"
 				data-icon="plus"
-				data-dropdown-class="pull-right">
+				data-dropdown-class="pull-right"
+				>
 				<sw-process-caller 
 					data-action="admin:entity.preprocessproduct" 
 					data-entity="product" 

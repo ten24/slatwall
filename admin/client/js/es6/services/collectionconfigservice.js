@@ -220,6 +220,21 @@ var slatwalladmin;
                     this.addColumn(this.formatCollectionName(column), title, options);
                 });
             };
+            this.addDisplayProperty = (propertyIdentifier, title = '', options = {}) => {
+                var _DividedColumns = propertyIdentifier.trim().split(',');
+                var _DividedTitles = title.trim().split(',');
+                _DividedColumns.forEach((column, index) => {
+                    column = column.trim();
+                    //this.addJoin(column);
+                    if (!angular.isUndefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
+                        title = _DividedTitles[index].trim();
+                    }
+                    else {
+                        title = this.$slatwall.getRBKey("entity." + this.baseEntityName + "." + column);
+                    }
+                    this.addColumn(this.formatCollectionName(column), title, options);
+                });
+            };
             this.addFilter = (propertyIdentifier, value, comparisonOperator = '=', logicalOperator) => {
                 //this.addJoin(propertyIdentifier);
                 if (this.filterGroups[0].filterGroup.length && !logicalOperator)

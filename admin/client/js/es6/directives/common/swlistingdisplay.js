@@ -4,13 +4,14 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     class SWListingDisplayController {
-        constructor($scope, $element, $transclude, $slatwall, partialsPath, utilityService) {
+        constructor($scope, $element, $transclude, $slatwall, partialsPath, utilityService, collectionConfig) {
             this.$scope = $scope;
             this.$element = $element;
             this.$transclude = $transclude;
             this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
             this.utilityService = utilityService;
+            this.collectionConfig = collectionConfig;
             /* local state variables */
             this.columns = [];
             this.allpropertyidentifiers = "";
@@ -235,11 +236,30 @@ var slatwalladmin;
             this.utilityService = utilityService;
             this.$scope = $scope;
             this.$element = $element;
+            this.collectionConfig = collectionConfig;
+            //this is performed early to populate columns with swlistingcolumn info
             this.$transclude = $transclude;
             this.$transclude(this.$scope, () => { });
             //if collection Value is string instead of an object then create a collection
             if (angular.isString(this.collection)) {
-                this.collectionPromise = this.$slatwall.getEntity(this.collection);
+                var collectionConfig = this.collectionConfigService.newCollectionConfig(this.collection);
+                /*
+                propertyIdentifier:"@",
+                processObjectProperty:"@",
+                title:"@",
+                tdclass:"@",
+                search:"=",
+                sort:"=",
+                filter:"=",
+                range:"=",
+                editable:"=",
+                buttonGroup:"="
+                */
+                for (var column in this.columns) {
+                    var columnOptions = {};
+                    collectionConfig.setDisplayProperty(column.propertyIdentifier, column.title, columnOptions);
+                }
+                this.collectionPromise = collectionConfig.getEntity(this.collection);
             }
             this.collectionPromise.then((data) => {
                 this.collectionData = data;
@@ -248,7 +268,7 @@ var slatwalladmin;
             });
         }
     }
-    SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$slatwall', 'partialsPath', 'utilityService'];
+    SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$slatwall', 'partialsPath', 'utilityService', 'collectionConfigService'];
     slatwalladmin.SWListingDisplayController = SWListingDisplayController;
     class SWListingDisplay {
         constructor(partialsPath) {
@@ -317,12 +337,14 @@ var slatwalladmin;
             this.link = (scope, element, attrs, controller, transclude) => {
             };
             this.partialsPath = partialsPath;
+            console.log('partialsPath');
+            console.log(this.partialsPath);
             this.templateUrl = this.partialsPath + 'listingdisplay.html';
         }
     }
     SWListingDisplay.$inject = ['partialsPath'];
     slatwalladmin.SWListingDisplay = SWListingDisplay;
-    angular.module('slatwalladmin').directive('swListingDisplay', [() => new SWListingDisplay()]);
+    angular.module('slatwalladmin').directive('swListingDisplay', ['partialsPath', (partialsPath) => new SWListingDisplay(partialsPath)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../../directives/common/swlistingdisplay.js.map
