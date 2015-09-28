@@ -112,6 +112,10 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		}
 	}
 
+	public string function hasEmailBounce(){
+		return getDAO("EmailBounceDAO").rejectedEmailExists(this.getorderItemGiftRecipient().getEmailAddress());
+	}
+
 	// ============ START: Non-Persistent Property Methods =================
 
 	// ============  END:  Non-Persistent Property Methods =================

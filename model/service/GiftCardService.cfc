@@ -107,13 +107,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		}
 
 		if(!giftCardCreditTransaction.hasErrors()){
-            var errorBean = getService("HibachiValidationService").validate(arguments.giftCard, "save", true); 
-            if(!errorBean.hasErrors()){
-                arguments.giftCard = this.saveGiftCard(arguments.giftCard); 
-            } 
+            arguments.giftCard = this.saveGiftCard(arguments.giftCard);
 		} else {
 			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
 		}
+
 
 		return arguments.giftCard;
 
@@ -165,12 +163,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.giftCard.setOwnerEmailAddress(arguments.processObject.getEmailAddress());
 		}
 
+		arguments.giftCard.getOrderItemGiftRecipient().setEmailAddress(arguments.processObject.getEmailAddress());
+
+		arguments.giftCard = this.save(arguments.giftCard);
+
 		if(!arguments.giftCard.hasErrors()){
 			var cardData = {};
 			cardData.entity=arguments.giftCard;
 			//resend email
 			getService("hibachiEventService").announceEvent(eventName="afterGiftCard_orderPlacedSuccess", eventData=cardData);
 		}
+
+		return arguments.giftCard;
 	}
 
 	private any function createDebitGiftCardTransaction(required any giftCard, required any orderPayments, required any orderItems, required any amountToDebit){
