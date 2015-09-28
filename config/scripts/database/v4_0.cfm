@@ -104,7 +104,7 @@ Notes:
 <cftry>
 	<cfquery name="local.updateData">
 		UPDATE
-			SwSKU
+			SwSku
 		SET
 			bundleFlag = 0
 		WHERE
@@ -122,7 +122,7 @@ Notes:
 <cftry>
 	<cfquery name="local.updateData">
 		UPDATE
-			SwSKU
+			SwSku
 		SET
 			eventCapacity = 1
 		WHERE
