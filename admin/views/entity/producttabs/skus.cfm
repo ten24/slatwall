@@ -83,7 +83,7 @@ Notes:
 	</cfif>
 
 	<cfset local.skusSmartList = rc.product.getSkusSmartList() />
-	<cfset local.skusSmartList.addFilter("bundleFlag", "false")>
+	<cfset local.skusSmartList.addWhereCondition("bundleFlag != true")>
 	<cfif local.skusSmartList.getRecordsCount() gt 0>
 		<hb:HibachiListingDisplay smartList="#local.skusSmartList#"
 								   edit="#rc.edit#"
