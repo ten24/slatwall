@@ -634,14 +634,14 @@ Notes:
 											<div class="control-group">
 						    					<div class="controls">
 
-													<cfset giftCard = getHibachiScope().getService("GiftCardService").newGiftCard() />
+													<cfset newGiftCardAcountPaymentMethod = $.slatwall.getAccount().getNewPropertyEntity( 'accountPaymentMethods' ) />
 
 					    							<div class="input-append">
-					    								<sw:FormField type="text" name="giftCardCode" valueObject="#giftCard#" valueObjectProperty="giftCardCode" fieldAttributes='placeholder="Redeem a Gift Card"' class="span3" />
+					    								<sw:FormField type="text" name="giftCardCode" valueObject="#newGiftCardAcountPaymentMethod#" valueObjectProperty="giftCardCode" fieldAttributes='placeholder="Redeem a Gift Card"' class="span3" />
 														<button type="submit" class="btn btn-primary"><i class="icon-plus icon-white"></i></button>
 													</div>
 
-													<sw:ErrorDisplay object="#giftCard#" errorName="giftCardCode" />
+													<sw:ErrorDisplay object="#newGiftCardAcountPaymentMethod#" errorName="giftCardCode" />
 
 						    					</div>
 						  					</div>
