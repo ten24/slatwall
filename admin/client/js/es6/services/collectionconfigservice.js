@@ -282,7 +282,7 @@ var slatwalladmin;
     }
     slatwalladmin.CollectionConfig = CollectionConfig;
     angular.module('slatwalladmin')
-        .factory('CollectionConfigService', ['$slatwall', ($slatwall) => new CollectionConfig($slatwall)]);
+        .factory('collectionConfigService', ['$slatwall', ($slatwall) => new CollectionConfig($slatwall)]);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../services/collectionconfigservice.js.map
