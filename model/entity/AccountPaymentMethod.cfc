@@ -90,6 +90,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 
 	// Non-Persistent Properties
 	property name="creditCardNumber" hb_populateEnabled="public" persistent="false";
+	property name="giftCardBalanceAmount" persistent="false";
 	property name="giftCardNumber" hb_populateEnabled="public" persistent="false";
 	property name="bankRoutingNumber" hb_populateEnabled="public" persistent="false";
 	property name="bankAccountNumber" hb_populateEnabled="public" persistent="false";
@@ -268,7 +269,7 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		return false;
 	}
 
-	public any function getGiftCardBalance(){
+	public any function getGiftCardBalanceAmount(){
 
 		if(this.isGiftCardAccountPaymentMethod()){
 			return this.getGiftCard().getBalanceAmount();
