@@ -27,6 +27,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	this.publicMethods=listAppend(this.publicMethods, 'noaccess');
 	this.publicMethods=listAppend(this.publicMethods, 'login');
 	this.publicMethods=listAppend(this.publicMethods, 'getResourceBundle');
+	this.publicMethods=listAppend(this.publicMethods, 'getCurrencies');
 	
 	//	this.secureMethods='';
 	//	this.secureMethods=listAppend(this.secureMethods, 'get');
@@ -59,6 +60,16 @@ component output="false" accessors="true" extends="HibachiController" {
 		
 		//could possibly check whether we want a different contentType other than json in the future example:xml
 		
+	}
+	
+	public void function getCurrencies(required struct rc){
+		var currenciesCollection = getHibachiScope().getService('collectionService').getCurrencyCollectionList();
+		var currencyStruct = {};
+		for(var currency in currenciesCollection.getRecords()){
+			currencyStruct[currency['currencyCode']] = currency['currencySymbol'];
+		}
+		
+		arguments.rc.apiResponse.content['data'] = currencyStruct;
 	}
 	
 	public void function login(required struct rc){

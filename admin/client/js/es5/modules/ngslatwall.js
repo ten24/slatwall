@@ -23,6 +23,7 @@ var ngSlatwall;
             this._loadingResourceBundle = false;
             this._loadedResourceBundle = false;
             this._deferred = {};
+            this._currencies = {};
             this.getJsEntities = function () {
                 return _this._jsEntities;
             };
@@ -343,13 +344,24 @@ var ngSlatwall;
                 var params = {
                     locale: locale
                 };
-                return $http.get(urlString, { params: params }).success(function (response) {
+                $http.get(urlString, { params: params }).success(function (response) {
                     _this._resourceBundle[locale] = response.data;
-                    //deferred.resolve(response);
+                    deferred.resolve(response);
                 }).error(function (response) {
                     _this._resourceBundle[locale] = {};
-                    //deferred.reject(response);
+                    deferred.reject(response);
                 });
+                return deferred.promise;
+            };
+            this.getCurrencies = function () {
+                var deferred = _this.$q.defer();
+                var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getCurrencies&instantiationKey=' + _this.getConfig().instantiationKey;
+                $http.get(urlString).success(function (response) {
+                    deferred.resolve(response);
+                }).error(function (response) {
+                    deferred.reject(response);
+                });
+                return deferred.promise;
             };
             this.rbKey = function (key, replaceStringData) {
                 ////$log.debug('rbkey');

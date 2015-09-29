@@ -9,6 +9,7 @@ module ngSlatwall {
         public _loadingResourceBundle = false;
         public _loadedResourceBundle = false;
         public _deferred = {};
+        public _currencies = {};
         
         public static $inject = ['$q','$http','$timeout','$log','$rootScope','$location','$anchorScroll','utilityService','formService'];
         
@@ -372,7 +373,7 @@ module ngSlatwall {
             });
         }
         
-        getResourceBundle= (locale) => {
+        getResourceBundle = (locale) => {
             var deferred = this.$q.defer();
             var locale = locale || this.getConfig().rbLocale;
             
@@ -385,15 +386,27 @@ module ngSlatwall {
             var params = {
                 locale:locale
             };
-            return $http.get(urlString,{params:params}).success((response) => {
+            $http.get(urlString,{params:params}).success((response) => {
                 this._resourceBundle[locale] = response.data;
-                //deferred.resolve(response);
+                deferred.resolve(response);
             }).error((response) => {
                 this._resourceBundle[locale] = {};
-                //deferred.reject(response);
+                deferred.reject(response);
             });
+            return deferred.promise
         }
         
+        getCurrencies = () =>{
+            var deferred = this.$q.defer();
+            
+            var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getCurrencies&instantiationKey='+this.getConfig().instantiationKey;
+            $http.get(urlString).success((response) => {
+                deferred.resolve(response);
+            }).error((response) => {
+                deferred.reject(response);
+            });
+            return deferred.promise;
+        }
         
         rbKey= (key,replaceStringData) => {
             ////$log.debug('rbkey');
