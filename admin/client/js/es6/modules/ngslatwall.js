@@ -351,9 +351,14 @@ var ngSlatwall;
                     return this._resourceBundle[locale];
                 }
                 var urlString = this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + this.getConfig().instantiationKey + '&locale=' + locale;
-                $http.get(urlString, { cache: true }).success((response, status, headersGetter) => {
+                console.log(this.$window.localStorage.getItem('resourceBundleLastModified'));
+                var headers = {};
+                $http({
+                    url: urlString,
+                    method: "GET",
+                    headers: headers
+                }).success((response, status, headersGetter) => {
                     this._resourceBundle[locale] = response.data;
-                    // this.$window.localStorage.setItem('resourceBundleLastModified',headersGetter()['Last-Modified']);
                     deferred.resolve(response);
                 }).error((response) => {
                     this._resourceBundle[locale] = {};
@@ -503,6 +508,7 @@ var ngSlatwall;
                 angular.extend(this._config, slatwallAngular.slatwallConfig);
             }
             this.$get.$inject = [
+                '$window',
                 '$q',
                 '$http',
                 '$timeout',
@@ -514,8 +520,8 @@ var ngSlatwall;
                 'formService'
             ];
         }
-        $get($q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService) {
-            return new SlatwallService($q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, this.getConfig(), this._jsEntities);
+        $get($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService) {
+            return new SlatwallService($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, this.getConfig(), this._jsEntities);
         }
     }
     ngSlatwall.$Slatwall = $Slatwall;
