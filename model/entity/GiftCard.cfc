@@ -57,6 +57,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="ownerLastName" ormtype="string";
 	property name="ownerEmailAddress" ormtype="string";
     property name="activeFlag" ormtype="boolean";
+    property name="issuedDate" ormtype="timestamp";
     //Calculated Properties
     property name="balanceAmount" ormtype="big_decimal";
 
@@ -82,12 +83,19 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 
 	// Non-Persistent Properties
-
 	public any function getOrder(){
 		if(!isNull(this.getOriginalOrderItem())){
 			return this.getOriginalOrderItem().getOrder();
 		} else {
 			return false;
+		}
+	}
+
+	public boolean function canEditOrDelete(){
+		if(isNull(this.getActiveFlag())||this.getActiveFlag()){
+			return false;
+		} else {
+			return true;
 		}
 	}
 

@@ -106,6 +106,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.giftCard.getOriginalOrderItem().getSku().getGiftCardRedemptionAmount());
 		}
 
+		arguments.giftCard.setIssuedDate(now());
+
 		if(!giftCardCreditTransaction.hasErrors()){
             		arguments.giftCard = this.saveGiftCard(arguments.giftCard);
 		} else {
@@ -150,8 +152,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.giftCard.setExpirationDate(arguments.processObject.getNewExpirationDate());
 
 		if(!giftCard.hasErrors()){
-			this.saveGiftCard(giftCard);
+			this.saveGiftCard(arguments.giftCard);
 		}
+
+		return arguments.giftCard;
 	}
 
 	public any function processGiftCard_updateEmailAddress(required any giftCard, required any processObject){
@@ -177,16 +181,14 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.giftCard;
 	}
 
-	public any function processGiftCard_redeemForAccount(required any giftCard, required any processObject){
+	public any function processGiftCard_redeemToAccount(required any giftCard, required any processObject){
 
-		arguments.giftCard.setOwnerAcount(processObject.getAccount());
-		arguments.giftCard.setOwnerEmailAddress(processObject.getEmailAddress());
+		arguments.giftCard.setOwnerAccount(arguments.processObject.getAccount());
 
-		this.save(arguments.giftCard);
+		this.saveGiftCard(arguments.giftCard);
 
-		if(!arguments.giftCard.hasErrors()){
+		return arguments.giftCard;
 
-		}
 	}
 
 	private any function createDebitGiftCardTransaction(required any giftCard, required any orderPayments, required any orderItems, required any amountToDebit){
