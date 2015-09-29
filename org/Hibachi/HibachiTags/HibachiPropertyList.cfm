@@ -6,7 +6,7 @@
 	<cfparam name="attributes.edit" type="boolean" default="#request.context.edit#" />
 
 	<cfoutput>
-		<div class="#attributes.divClass#">
+		<div class="<cfif len(attributes.divClass)>#attributes.divClass#<cfelse>col-md-12</cfif>">
 			<cfif attributes.edit>
 				<div class="form-horizontal">
 			<cfelse>

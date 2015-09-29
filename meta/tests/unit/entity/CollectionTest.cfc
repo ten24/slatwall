@@ -1144,7 +1144,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 				  			{
 								"propertyIdentifier":"_account.firstName",
 								"comparisonOperator":"=",
-								"value":"Ryan"				  				
+								"value":"Ryan"
 				  			}
 				  		]
 				  	}
@@ -1159,7 +1159,7 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		collectionEntity.setKeywords('Ryan Marchand');
 		//request.debug(collectionEntity.getHQL());
-		//request.debug(collectionEntity.getRecords());
+		request.debug(collectionEntity.getRecords());
 	}
 	
 	public void function getHQLTest_keywords_without_filterGroup(){
@@ -1201,9 +1201,75 @@ component extends="Slatwall.meta.tests.unit.entity.SlatwallEntityTestBase" {
 		
 		
 		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
-		//collectionEntity.setKeywords('Ryan Marchand');
+		collectionEntity.setKeywords('Ryan Marchand');
 		request.debug(collectionEntity.getHQL());
 	}
+
+	public void function getHQLTest_keywords_without_defaultColumns(){
+
+		//acount data
+
+		var collectionEntityData = {
+		collectionid = '12',
+		collectionCode = 'keywordAccount',
+		collectionObject = 'account',
+
+		collectionConfig = '
+						{
+						  "baseEntityName": "SlatwallAccount",
+						  "baseEntityAlias": "_account",
+						  "columns": []
+						}
+					'
+		};
+
+
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		collectionEntity.setKeywords('Miguel Targa');
+		request.debug(collectionEntity.getHQL());
+	}
+
+	public void function getHQLTest_keywords_without_ormtype(){
+
+		//acount data
+
+		var collectionEntityData = {
+		collectionid = '12',
+		collectionCode = 'keywordAccount',
+		collectionObject = 'account',
+
+		collectionConfig = '
+						{
+						  "baseEntityName": "SlatwallAccount",
+						  "baseEntityAlias": "_account",
+						  "columns": [
+							{
+								"propertyIdentifier":"_account.firstName",
+								"isSearchable":true
+							},
+							{
+								"propertyIdentifier":"_account.lastName",
+								"isSearchable":true
+							},
+							{
+								"propertyIdentifier":"_account.accountEmailAddresses",
+								"isSearchable":true,
+								"aggregate":{
+									"aggregateFunction":"count",
+									"aggregateAlias":"emailcount"
+								}
+							}
+						  ]
+						}
+					'
+		};
+
+
+		var collectionEntity = createPersistedTestEntity('collection',collectionEntityData);
+		collectionEntity.setKeywords('Ryan Marchand');
+		request.debug(collectionEntity.getHQL());
+	}
+
 	
 	public void function getHQLTest_notpersistent(){
 	

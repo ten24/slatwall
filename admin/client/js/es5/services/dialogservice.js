@@ -30,6 +30,9 @@ var slatwalladmin;
             this.getPageDialogs = function () {
                 return _this._pageDialogs;
             };
+            this.removeCurrentDialog = function () {
+                _this._pageDialogs.splice(_this._pageDialogs.length - 1, 1);
+            };
             this.getCurrentDialog = function () {
                 return _this._pageDialogs[_this._pageDialogs.length - 1];
             };

@@ -68,6 +68,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 	property name="paymentDueDate" hb_populateEnabled="public" ormtype="timestamp";
 	property name="providerToken" ormType="string";
 	property name="purchaseOrderNumber" hb_populateEnabled="public" ormType="string";
+    property name="giftCardPaymentProcessedFlag" hb_populateEnabled="public" ormType="boolean" default="false";
 	
 	
 	// Related Object Properties (many-to-one)
@@ -234,7 +235,7 @@ component entityname="SlatwallOrderPayment" table="SwOrderPayment" persistent="t
 		
 		// Gift Card
 		if(listFindNoCase("giftCard", arguments.orderPayment.getPaymentMethod().getPaymentMethodType())) {
-			setGiftCardNumber( arguments.orderPayment.getGiftCardNumber() );
+			setGiftCardNumberEncrypted( arguments.orderPayment.getGiftCardNumberEncrypted() );
 		}
 		
 		// Term Payment

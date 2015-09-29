@@ -2,7 +2,8 @@ angular.module('slatwalladmin')
     .directive('swPropertyDisplay', [
     '$log',
     'partialsPath',
-    function ($log, partialsPath) {
+    '$filter',
+    function ($log, partialsPath, $filter) {
         return {
             require: '^form',
             restrict: 'AE',
@@ -13,7 +14,7 @@ angular.module('slatwalladmin')
                 editing: "=",
                 isHidden: "=",
                 title: "=",
-                hint: "=",
+                hint: "@",
                 optionsArguments: "=",
                 eagerLoadOptions: "=",
                 isDirty: "=",
@@ -27,6 +28,9 @@ angular.module('slatwalladmin')
                 $log.debug('editingproper');
                 $log.debug(scope.property);
                 $log.debug(scope.title);
+                if (!angular.isDefined(scope.object)) {
+                    scope.object = formController.$$swFormInfo.object;
+                }
                 /**
                  * Configuration for property display object.
                  */
@@ -58,6 +62,14 @@ angular.module('slatwalladmin')
                 if (angular.isUndefined(scope.propertyDisplay.isHidden)) {
                     scope.propertyDisplay.isHidden = false;
                 }
+                scope.applyFilter = function (model, filter) {
+                    try {
+                        return $filter(filter)(model);
+                    }
+                    catch (e) {
+                        return model;
+                    }
+                };
                 scope.$id = 'propertyDisplay:' + scope.property;
                 /* register form that the propertyDisplay belongs to*/
                 scope.propertyDisplay.form = formController;
