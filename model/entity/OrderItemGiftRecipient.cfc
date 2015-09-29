@@ -86,6 +86,16 @@ component displayname="Gift Recipient" entityname="SlatwallOrderItemGiftRecipien
         }
     }
 
+	//May only edit or delete recipient if all attached cards are eligible for this action
+    public boolean function canEditOrDelete(){
+    	for(var card in this.getGiftCards()){
+    		if(!card.canEditOrDelete()){
+    			return false;
+    		}
+    	}
+    	return true;
+   	}
+
     public numeric function getNumberOfUnassignedGiftCards(){
         return this.getQuantity() - arrayLen(this.getGiftCards());
     }

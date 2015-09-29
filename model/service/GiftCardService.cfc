@@ -106,11 +106,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var giftCardCreditTransaction = createCreditGiftCardTransaction(arguments.giftCard, arguments.processObject.getOrderPayments(), arguments.giftCard.getOriginalOrderItem().getSku().getGiftCardRedemptionAmount());
 		}
 
+		arguments.giftCard.setIssuedDate(now());
+
 		if(!giftCardCreditTransaction.hasErrors()){
-            var errorBean = getService("HibachiValidationService").validate(arguments.giftCard, "save", true); 
+            var errorBean = getService("HibachiValidationService").validate(arguments.giftCard, "save", true);
             if(!errorBean.hasErrors()){
-                arguments.giftCard = this.saveGiftCard(arguments.giftCard); 
-            } 
+                arguments.giftCard = this.saveGiftCard(arguments.giftCard);
+            }
 		} else {
 			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
 		}
@@ -152,8 +154,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.giftCard.setExpirationDate(arguments.processObject.getNewExpirationDate());
 
 		if(!giftCard.hasErrors()){
-			this.saveGiftCard(giftCard);
+			this.saveGiftCard(arguments.giftCard);
 		}
+
+		return arguments.giftCard;
 	}
 
 	public any function processGiftCard_updateEmailAddress(required any giftCard, required any processObject){
@@ -171,6 +175,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			//resend email
 			getService("hibachiEventService").announceEvent(eventName="afterGiftCard_orderPlacedSuccess", eventData=cardData);
 		}
+
+		return arguments.giftCard;
+	}
+
+	public any function processGiftCard_redeemToAccount(required any giftCard, required any processObject){
+
+		arguments.giftCard.setOwnerAccount(arguments.processObject.getAccount());
+
+		this.saveGiftCard(arguments.giftCard);
+
+		return arguments.giftCard;
+
 	}
 
 	private any function createDebitGiftCardTransaction(required any giftCard, required any orderPayments, required any orderItems, required any amountToDebit){

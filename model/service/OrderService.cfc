@@ -682,12 +682,12 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// We need to call updateOrderAmounts so that if the tax is updated from the billingAddress that change is put in place.
 		arguments.order = this.processOrder( arguments.order, 'updateOrderAmounts');
 
-      
-                    
+
+
 		// Save the newOrderPayment
 		newOrderPayment = this.saveOrderPayment( newOrderPayment );
-                    
-       
+
+
 
 		// If the order has a subscription sku on It and that sku has 'AutoPay' setup on it's term AND the orderPayment's paymentMethod
 		//  is set to allow accounts to save... then auto set the 'save account payment method flag'.
@@ -712,6 +712,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 		}
 
+		if(arguments.processObject.getSaveGiftCardToAccountFlag()){
+			var giftCard = arguments.processObject.getGiftCard();
+		}
+
 		// Attach 'createTransaction' errors to the order
 		if(newOrderPayment.hasError('createTransaction')) {
 			arguments.order.addError('addOrderPayment', newOrderPayment.getError('createTransaction'), true);
@@ -720,8 +724,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			arguments.order.addError('addOrderPayment', newOrderPayment.getErrors());
 
 		// Otherwise if no errors, and we are supposed to save as accountpayment, and an accountPaymentMethodID doesn't already exist then we can create one.
-		} else if (!newOrderPayment.hasErrors() && arguments.processObject.getSaveAccountPaymentMethodFlag() && isNull(newOrderPayment.getAccountPaymentMethod())) {
-
+		} else if (!newOrderPayment.hasErrors()
+				&& ( arguments.processObject.getSaveAccountPaymentMethodFlag()
+				|| (arguments.processObject.getSaveGiftCardToAccountFlag() && isNull(giftCard.getOwnerAccount()) ))
+				&& isNull(newOrderPayment.getAccountPaymentMethod())) {
 			// Create a new Account Payment Method
 			var newAccountPaymentMethod = getAccountService().newAccountPaymentMethod();
 
@@ -731,6 +737,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Setup name if exists
 			if(!isNull(arguments.processObject.getSaveAccountPaymentMethodName())) {
 				newAccountPaymentMethod.setAccountPaymentMethodName( arguments.processObject.getSaveAccountPaymentMethodName() );
+			} else if (arguments.processObject.getSaveGiftCardToAccountFlag()){
+				newAccountPaymentMethod.setAccountPaymentMethodName( "Gift Card Ending " & left(giftCard.getGiftCardCode(), 4) );
+			}
+
+			// Attach Account To Gift Card
+			if(arguments.processObject.getSaveGiftCardToAccountFlag()){
+				var giftCardRedeemProcessObject = giftCard.getProcessObject("RedeemToAccount");
+				giftCardRedeemProcessObject.setAccount( arguments.order.getAccount() );
+				giftCard = this.getService("GiftCardService").processGiftCard(giftCard, giftCardRedeemProcessObject, "redeemToAccount");
 			}
 
 			// Copy over details
@@ -744,7 +759,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		if(!newOrderPayment.hasErrors() && arguments.order.getOrderStatusType().getSystemCode() != 'ostNotPlaced' && newOrderPayment.getPaymentMethodType() == 'termPayment' && !isNull(newOrderPayment.getPaymentTerm())) {
 			newOrderPayment.setPaymentDueDate( newOrderpayment.getPaymentTerm().getTerm().getEndDate() );
 		}
-        
+
 		return arguments.order;
 	}
 
@@ -2214,7 +2229,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
             if(!arguments.orderPayment.getGiftCardPaymentProcessedFlag()){
                 paymentTransaction = getPaymentService().processPaymentTransaction(paymentTransaction, transactionData, 'runTransaction');
 			}
-            
+
             // If the paymentTransaction has errors, then add those errors to the orderPayment itself
 			if(paymentTransaction.hasError('runTransaction')) {
 				arguments.orderPayment.addError('createTransaction', paymentTransaction.getError('runTransaction'), true);
@@ -2227,7 +2242,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                          arguments.orderPayment.setGiftCardPaymentProcessedFlag("True");
                          arguments.orderPayment.setAmount(paymentTransaction.getAmountCredited());
                     } else if (!arguments.orderPayment.getGiftCardPaymentProcessedFlag()){
-                         arguments.orderPayment.setOrderPaymentStatusType( getTypeService().getTypeBySystemCode('opstInvalid') );                               
+                         arguments.orderPayment.setOrderPaymentStatusType( getTypeService().getTypeBySystemCode('opstInvalid') );
                          arguments.orderPayment.setAmount(0);
                     }
                     arguments.orderPayment = this.saveOrderPayment(arguments.OrderPayment);
@@ -2508,7 +2523,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Call the generic save method to populate and validate
 		arguments.orderPayment = save(arguments.orderPayment, arguments.data, arguments.context);
-                    
+
 		if(!isNull(arguments.orderPayment.getPaymentTerm())) {
 			var newPaymentTermID = arguments.orderPayment.getPaymentTerm().getPaymentTermID();
 		}
@@ -2542,10 +2557,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				amount = arguments.orderPayment.getAmount(),
 				transactionType = arguments.orderPayment.getPaymentMethod().getSaveOrderPaymentTransactionType()
 			};
-           
+
 			// Clear out any previous 'createTransaction' process objects
 			arguments.orderPayment.clearProcessObject( 'createTransaction' );
-                                                                                                                                
+
             arguments.orderPayment = this.processOrderPayment(arguments.orderPayment, transactionData, 'createTransaction');
 
 
