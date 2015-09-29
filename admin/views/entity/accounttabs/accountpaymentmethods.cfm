@@ -65,7 +65,7 @@ Notes:
 
 		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="simpleRepresentation" title="#$.slatwall.rbKey('entity.accountPaymentMethod')#" />
 		<hb:HibachiListingColumn propertyIdentifier="paymentMethod.paymentMethodName" />
-		<hb:HibachiListingColumn propertyIdentifier="giftCardBalanceAmount" />
+		<hb:HibachiListingColumn propertyIdentifier="giftCardBalanceAmountFormatted" />
 		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
 	</hb:HibachiListingDisplay>
 
