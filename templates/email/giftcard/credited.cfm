@@ -75,10 +75,12 @@ Notes:
 <cfparam name="emailData" type="struct" default="#structNew()#" />
 <cfparam name="giftCard" type="any" />
 
-<cfset email.setEmailTo("#giftCard.getOrderItemGiftRecipient().getEmailAddress()#")>
-<cfset email.setRelatedObject("giftCard")>
-<cfset email.setRelatedObjectID("#giftCard.getGiftCardID()#")>
-<cfset email.setLogEmailFlag("true")>
+<cfsilent>
+	<cfset email.setEmailTo("#giftCard.getOrderItemGiftRecipient().getEmailAddress()#")>
+	<cfset email.setRelatedObject("giftCard")>
+	<cfset email.setRelatedObjectID("#giftCard.getGiftCardID()#")>
+	<cfset email.setLogEmailFlag("True")>
+</cfsilent>
 
 <cfsavecontent variable="emailData.emailBodyHTML">
 	<cfoutput>
