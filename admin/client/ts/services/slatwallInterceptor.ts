@@ -55,6 +55,8 @@ module slatwalladmin{
                 
                 config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
             }
+            
+            this.$window.localStorage.setItem('resourceBundleLastModified',headersGetter()['etag']);
 			if(config.method == 'GET' && (this.$location.search().slatAction && this.$location.search().slatAction === 'api:main.get')){
 				config.method = 'POST';
 				config.data = {};

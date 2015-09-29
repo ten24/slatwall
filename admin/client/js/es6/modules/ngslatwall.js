@@ -6,7 +6,8 @@
 var ngSlatwall;
 (function (ngSlatwall) {
     class SlatwallService {
-        constructor($q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, _config, _jsEntities) {
+        constructor($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, _config, _jsEntities) {
+            this.$window = $window;
             this.$q = $q;
             this.$http = $http;
             this.$timeout = $timeout;
@@ -19,6 +20,7 @@ var ngSlatwall;
             this._config = _config;
             this._jsEntities = _jsEntities;
             this._resourceBundle = {};
+            this._resourceBundleLastModified = '';
             this._loadingResourceBundle = false;
             this._loadedResourceBundle = false;
             this._deferred = {};
@@ -348,18 +350,16 @@ var ngSlatwall;
                 if (this._resourceBundle[locale]) {
                     return this._resourceBundle[locale];
                 }
-                var urlString = this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + this.getConfig().instantiationKey;
-                //var urlString = this.getConfig().baseURL+'/config/resourceBundles/'+locale+'.json?instantiationKey='+this.getConfig().instantiationKey;
-                var params = {
-                    locale: locale
-                };
-                return $http.get(urlString, { params: params }).success((response) => {
+                var urlString = this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + this.getConfig().instantiationKey + '&locale=' + locale;
+                $http.get(urlString, { cache: true }).success((response, status, headersGetter) => {
                     this._resourceBundle[locale] = response.data;
-                    //deferred.resolve(response);
+                    // this.$window.localStorage.setItem('resourceBundleLastModified',headersGetter()['Last-Modified']);
+                    deferred.resolve(response);
                 }).error((response) => {
                     this._resourceBundle[locale] = {};
-                    //deferred.reject(response);
+                    deferred.reject(response);
                 });
+                return deferred.promise;
             };
             this.rbKey = (key, replaceStringData) => {
                 ////$log.debug('rbkey');
@@ -453,6 +453,7 @@ var ngSlatwall;
             this.setConfig = (config) => {
                 this._config = config;
             };
+            this.$window = $window;
             this.$q = $q;
             this.$http = $http;
             this.$timeout = $timeout;
@@ -466,7 +467,7 @@ var ngSlatwall;
             this._jsEntities = _jsEntities;
         }
     }
-    SlatwallService.$inject = ['$q', '$http', '$timeout', '$log', '$rootScope', '$location', '$anchorScroll', 'utilityService', 'formService'];
+    SlatwallService.$inject = ['$window', '$q', '$http', '$timeout', '$log', '$rootScope', '$location', '$anchorScroll', 'utilityService', 'formService'];
     ngSlatwall.SlatwallService = SlatwallService;
     class $Slatwall {
         constructor() {

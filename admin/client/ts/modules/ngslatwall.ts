@@ -6,13 +6,15 @@
 module ngSlatwall {
     export class SlatwallService{
         public _resourceBundle = {};
+        public _resourceBundleLastModified = '';
         public _loadingResourceBundle = false;
         public _loadedResourceBundle = false;
         public _deferred = {};
         
-        public static $inject = ['$q','$http','$timeout','$log','$rootScope','$location','$anchorScroll','utilityService','formService'];
+        public static $inject = ['$window','$q','$http','$timeout','$log','$rootScope','$location','$anchorScroll','utilityService','formService'];
         
         constructor(
+            private $window:ng.IWindowService,
             private $q:ng.IQService,
             private $http:ng.IHttpService,
             private $timeout:ng.ITimeoutService,
@@ -25,6 +27,7 @@ module ngSlatwall {
             private _config:any,
             private _jsEntities:any
          ){
+            this.$window = $window;
             this.$q = $q;
             this.$http = $http;
             this.$timeout = $timeout;
@@ -395,12 +398,20 @@ module ngSlatwall {
             }
             
             var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+this.getConfig().instantiationKey+'&locale='+locale;
+            console.log(this.$window.localStorage.getItem('resourceBundleLastModified'));
+            var headers = {};
             
-            $http.get(urlString,{cache:true}).success((response) => {
-                
+            $http(
+                {
+                    url:urlString,
+                    method:"GET",
+                    headers:headers
+                }
+            ).success((response,status,headersGetter) => {
+                this._resourceBundle[locale] = response.data;
                 deferred.resolve(response);
             }).error((response) => {
-                
+                this._resourceBundle[locale] = {};
                 deferred.reject(response);
             });
             return deferred.promise
@@ -548,6 +559,7 @@ module ngSlatwall {
             }   
             
             this.$get.$inject = [ 
+                '$window',
                 '$q',
                 '$http',
                 '$timeout',
@@ -562,6 +574,7 @@ module ngSlatwall {
         
         
         public $get(
+            $window:ng.IWindowService,
             $q:ng.IQService,
             $http:ng.IHttpService,
             $timeout:ng.ITimeoutService,
@@ -573,6 +586,7 @@ module ngSlatwall {
             formService:slatwalladmin.FormService
         ) {
           return new SlatwallService(
+            $window,
             $q,
             $http,
             $timeout,
