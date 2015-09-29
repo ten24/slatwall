@@ -9,7 +9,6 @@ module ngSlatwall {
         public _loadingResourceBundle = false;
         public _loadedResourceBundle = false;
         public _deferred = {};
-        public _currencies = {};
         
         public static $inject = ['$q','$http','$timeout','$log','$rootScope','$location','$anchorScroll','utilityService','formService'];
         

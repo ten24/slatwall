@@ -124,7 +124,6 @@
         }; 
     }]).filter('swcurrency',['$slatwall','$sce',($slatwall,$sce)=>{
             var data = null, serviceInvoked = false;
-    
             function realFilter(value) {
                 // REAL FILTER LOGIC, DISREGARDING PROMISES
                 return data + value;
@@ -134,11 +133,8 @@
             function filterStub(value,currencyCode) {
                 if( data === null ) {
                     if( !serviceInvoked ) {
-                        console.log("SIMULATION OF ASYNC CALL");
                         serviceInvoked = true;
                          $slatwall.getCurrencies().then((currencies)=>{
-                             console.log('test');
-                             console.log(currencies);
                             var result = currencies.data;
                             data = result[currencyCode];
                         });
@@ -149,40 +145,5 @@
             }
             
             return filterStub;        
-//        var data = null, serviceInvoked = false;
-    
-//        function realFilter(value) {
-//            // REAL FILTER LOGIC, DISREGARDING PROMISES
-//            return data[currencyCode] + value;
-//        }
-//        
-//        return function(value) {
-//            if( data === null ) {
-//                if( !serviceInvoked ) {
-//                    console.log("SIMULATION OF ASYNC CALL");
-//                    serviceInvoked = true;
-//                    $slatwall.getCurrencies().then((result)=> {
-//                        data = result;
-//                        $timeout(function(){});
-//                        
-//                        
-//                    });
-//                    return "-";
-//                }
-//                
-//            }
-//            else return realFilter(value);
-//        }  
-        
-//        return (text,currencyCode)=>{
-//               console.log('filterrus');
-//               console.log(text);
-//               console.log(currencyCode);
-//               console.log($rootScope.currencies[currencyCode]);
-//                if(angular.isDefined(text) && angular.isString(text)){
-//                    text = $rootScope.currencies[currencyCode] + text;
-//                    return text;
-//                }
-//            }; 
     }]);
 })();

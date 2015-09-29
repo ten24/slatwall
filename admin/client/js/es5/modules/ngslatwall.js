@@ -23,7 +23,6 @@ var ngSlatwall;
             this._loadingResourceBundle = false;
             this._loadedResourceBundle = false;
             this._deferred = {};
-            this._currencies = {};
             this.getJsEntities = function () {
                 return _this._jsEntities;
             };

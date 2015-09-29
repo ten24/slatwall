@@ -64,6 +64,7 @@ component output="false" accessors="true" extends="HibachiController" {
 	
 	public void function getCurrencies(required struct rc){
 		var currenciesCollection = getHibachiScope().getService('collectionService').getCurrencyCollectionList();
+		currenciesCollection.setDisplayProperties('currencyCode,currencySymbol');
 		var currencyStruct = {};
 		for(var currency in currenciesCollection.getRecords()){
 			currencyStruct[currency['currencyCode']] = currency['currencySymbol'];
