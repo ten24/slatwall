@@ -10,6 +10,10 @@
     		"order.typeCode":{"eq":"otReturnOrder"}, 
     		"newOrderPayment":{"method":"isGiftCardReturnOrderPayment"}
     	}, 
+    	"giftCardPayment":{
+    		"newOrderPayment.paymentMethodID":{"eq":"50d8cd61009931554764385482347f3a"}, 
+    		"saveGiftCardToAccountFlag":{"eq":"false"}
+    	},
     	"redeemGiftCardToAccount":{
     		"newOrderPayment.paymentMethodID":{"eq":"50d8cd61009931554764385482347f3a"}, 
     		"saveGiftCardToAccountFlag":{"eq":"true"}
@@ -18,7 +22,8 @@
 	"properties":{
 		"newOrderPayment.dynamicAmountFlag":	[{"conditions":"noPaymentAmountNeeded","eq":false}],
 		"newOrderPayment.paymentMethodID": [{"conditions":"giftCardOrderTypeReturn", "eq":"50d8cd61009931554764385482347f3a"}],
-		"newOrderPayment.giftCardNumberEncrypted": [{"conditions":"redeemGiftCardToAccountFlag", "method":"canRedeemGiftCardToAccount"}]
+		"newOrderPayment.giftCardNumberEncrypted": [{"conditions":"redeemGiftCardToAccount", "method":"canRedeemGiftCardToAccount"}
+		"newOrderPayment.currencyCode": [{"conditions":"giftCardPayment,redeemGiftCardToAccount,giftCardOrderTypeReturn", "method":"giftCardCurrencyMatches"}]
 	},
 	"populatedPropertyValidation":{
 		"newOrderPayment":		[{"validate":false}]
