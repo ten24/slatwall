@@ -294,6 +294,14 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	}
 
+	public boolean function giftCardCurrencyMatches(){
+		if(this.getGiftCard() != false){
+			return variables.order.getCurrencyCode() EQ this.getGiftCard().getCurrencyCode();
+		} else {
+			return false;
+		}
+	}
+
 	public boolean function isGiftCardReturnOrderPayment(){
 
 		var account = variables.order.getAccount();

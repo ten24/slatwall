@@ -1877,10 +1877,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                                 createGiftCard.setOwnerLastName(recipient.getLastName());
                             }
 
-                            createGiftCard.setCreditGiftCard(true);
+                            createGiftCard.setCreditGiftCardFlag(true);
+                            createGiftCard.setCurrencyCode(arguments.order.getCurrencyCode());
 
                             card = getService("giftCardService").process(card, createGiftCard, 'Create');
-
 
                             if(card.hasErrors()){
                                 arguments.order.addErrors(card.getErrors());
