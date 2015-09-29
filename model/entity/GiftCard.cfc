@@ -102,7 +102,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	public numeric function getBalanceAmount(){
 		var transactions = this.getGiftCardTransactions();
-		var balance = "0";
+		var balance = 0;
 		for(var transaction in transactions){
 			if(!isNull(transaction.getCreditAmount())){
 				balance = precisionEvaluate(balance + transaction.getCreditAmount());
