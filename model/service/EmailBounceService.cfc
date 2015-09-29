@@ -68,9 +68,24 @@ Notes:
 			}
 			var report = "";
 			var deleteMsgIds = "";
+
+			var imapAttributes = StructNew();
+			imapAttributes.name = "local.emails";
+			imapAttributes.action = "getAll";
+			imapAttributes.server = mailServer;
+			imapAttributes.port = mailServerPort;
+			imapAttributes.username = mailServerUsername;
+			imapAttributes.password = mailServerPassword;
+			imapAttributes.generateuniquefilenames = "True";
+			imapAttributes.attachmentpath = getTempDirectory();
+
+			if(!structKeyExists(server, "railo") && !structKeyExists(server, "lucee")){
+				imapAttributes.secure="true";
+			}
 		</cfscript>
 		<cftry>
-			<cfimap name="local.emails" action="getAll" server="#mailServer#" port="#mailServerPort#" username="#mailServerUsername#" password="#mailServerPassword#" generateuniquefilenames="true" secure="yes" attachmentpath="#getTempDirectory()#" />
+
+			<cfimap attributeCollection="#imapAttributes#" />
 
 			<cfscript>
 
@@ -181,9 +196,6 @@ Notes:
 					}
 
 				}
-
-
-
 			</cfscript>
 
 			<cfcatch type="Any">
@@ -191,9 +203,14 @@ Notes:
 			</cfcatch>
 		</cftry>
 
+		<cfscript>
+			imap.action="delete";
+			imap.uid=deleteMsgIds;
+		</cfscript>
+
 		<cftry>
 
-			<cfimap action="delete" uid="#deleteMsgIds#" server="#mailServer#" port="#mailServerPort#" username="#mailServerUsername#" password="#mailServerPassword#" secure="yes"  />
+			<cfimap attributeCollection="#imapAttributes#" />
 
 			<cfcatch type="Any">
 				<cfset report &= "Error Deleting Mailbox" />

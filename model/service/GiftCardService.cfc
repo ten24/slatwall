@@ -109,13 +109,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		arguments.giftCard.setIssuedDate(now());
 
 		if(!giftCardCreditTransaction.hasErrors()){
-            var errorBean = getService("HibachiValidationService").validate(arguments.giftCard, "save", true);
-            if(!errorBean.hasErrors()){
-                arguments.giftCard = this.saveGiftCard(arguments.giftCard);
-            }
+            		arguments.giftCard = this.saveGiftCard(arguments.giftCard);
 		} else {
 			arguments.giftCard.addErrors(giftCardCreditTransaction.getErrors());
 		}
+
 
 		return arguments.giftCard;
 
@@ -168,6 +166,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		} else {
 			arguments.giftCard.setOwnerEmailAddress(arguments.processObject.getEmailAddress());
 		}
+
+		arguments.giftCard.getOrderItemGiftRecipient().setEmailAddress(arguments.processObject.getEmailAddress());
+
+		arguments.giftCard = this.save(arguments.giftCard);
 
 		if(!arguments.giftCard.hasErrors()){
 			var cardData = {};
