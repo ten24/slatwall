@@ -699,6 +699,8 @@ Notes:
 															<!--- Gift Card Display --->
 															<cfelseif accountPaymentMethod.getPaymentMethod().getPaymentMethodType() eq "giftCard">
 
+																#accountPaymentMethod.getGiftCardBalance()#
+
 															<!--- Term Payment Display --->
 															<cfelseif accountPaymentMethod.getPaymentMethod().getPaymentMethodType() eq "termPayment">
 
