@@ -23,7 +23,9 @@ var slatwalladmin;
                         }
                     });
                     var currentBalance = initialBalance - totalDebit;
+                    //temporarily hardcoded to $
                     this.currentBalanceFormatted = "$" + parseFloat(currentBalance.toString()).toFixed(2);
+                    //temporarily hardcoded to $
                     this.initialBalanceFormatted = "$" + parseFloat(initialBalance.toString()).toFixed(2);
                     this.balancePercentage = ((currentBalance / initialBalance) * 100);
                 });

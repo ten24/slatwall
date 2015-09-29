@@ -64,12 +64,15 @@ angular.module('slatwalladmin')
 					   "title":"Order Item ID",
 					    "isSearchable":true
 					},
+                    {
+                        "isVisible":false,
+                        "ormtype":"string",
+                        "propertyIdentifier":"_orderitem.currencyCode"    
+                    },
 					{
 					   "title":"Order Item Type",
 					   "propertyIdentifier":"_orderitem.orderItemType",
 					   "isVisible":true,
-					   
-					   
 					},
 					{
 					   "title":"Order Item Price",
