@@ -630,7 +630,7 @@ Notes:
 
 										<!--- Start: Redeem Gift Card Form --->
 										<form action="?s=1" method="post">
-											<input type="hidden" name="slatAction" value="public:giftCard.redeemForAccount" />
+											<input type="hidden" name="slatAction" value="public:giftCard.redeemToAccount" />
 											<div class="control-group">
 						    					<div class="controls">
 

@@ -48,16 +48,19 @@ Notes:
 */
 component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiController" {
 
-	public any function redeemForAccount(required struct rc){
+	public any function redeemToAccount(required struct rc){
 
 		var giftCardToRedeem = getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDByCode(rc.giftCardCode));
+		var giftCardRedeemProcessObject = giftCardToRedeem.getProcessObject("RedeemToAccount");
 
 		if(isNull(giftCardToRedeem.getOwnerAccount())){
-			arguments.rc.$.slatwall.getAccount()
+			giftCardRedeemProcessObject.setAccount(arguments.rc.$.slatwall.getAccount());
+			giftCardToRedeem = getService("GiftCardService").processGiftCard(giftCardToRedeem, giftCardRedeemProcessObject, "RedeemToAccount");
+
+			arguments.rc.$.slatwall.addActionResult("public:giftCard.redeemForAccount", giftCardToRedeem.hasErrors());
 		} else {
 			arguments.rc.$.slatwall.addActionResult("public:giftCard.redeemForAccount", false);
 		}
-
 	}
 
 }
