@@ -50,18 +50,17 @@ Notes:
 <cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.giftCard" type="any">
-<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.giftCard" type="any" />
+<cfparam name="rc.processObject" type="any" />
+<cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityActionBar type="detail" object="#rc.giftCard#" showEdit="false">
+	<hb:HibachiEntityProcessForm entity="#rc.giftCard#" edit="#rc.edit#" sRedirectAction="admin:entity.listgiftcard">
 
-		<!--- Create --->
-		<hb:HibachiEntityActionBarButtonGroup>
-		</hb:HibachiEntityActionBarButtonGroup>
+		<hb:HibachiEntityActionBar type="preprocess" object="#rc.giftCard#">
+		</hb:HibachiEntityActionBar>
 
-		<hb:HibachiProcessCaller action="admin:entity.preProcessGiftCard" entity="#rc.giftCard#" processContext="updateEmailAddress" type="list" modal="true" />
-	</hb:HibachiEntityActionBar>
+		<hb:HibachiPropertyDisplay object="#rc.processObject#" property="emailAddress" edit="#rc.edit#">
 
-	<sw-gift-card-detail gift-card-id="#rc.giftCardID#"></sw-gift-card-detail>
+	</hb:HibachiEntityProcessForm>
 </cfoutput>
