@@ -25,18 +25,18 @@ module slatwalladmin {
 	export class SWListingColumn implements ng.IDirective{
 	   public restrict:string = 'EA';
        // public scope={}; 
-	   public bindToController={
-           propertyIdentifier:"@",
-           processObjectProperty:"@",
-           title:"@",
-           tdclass:"@",
-           search:"=",
-           sort:"=",
-           filter:"=",
-           range:"=",
-           editable:"=",
-           buttonGroup:"="
-       };
+//	   public bindToController={
+//           propertyIdentifier:"@",
+//           processObjectProperty:"@",
+//           title:"@",
+//           tdclass:"@",
+//           search:"=",
+//           sort:"=",
+//           filter:"=",
+//           range:"=",
+//           editable:"=",
+//           buttonGroup:"="
+//       };
         public controller=SWListingColumnController;
         public controllerAs="swListingColumn";
         

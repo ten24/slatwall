@@ -42,8 +42,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		arguments.rc.apiRequest = true;
 		
 		getFW().setView("public:main.blank");
-		param name="rc.headers.contentType" default="application/json"; 
-		arguments.rc.headers["Content-Type"] = rc.headers.contentType;
+		arguments.rc.headers["Content-Type"] = "application/json";
 		
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
@@ -303,22 +302,20 @@ component output="false" accessors="true" extends="HibachiController" {
 	}
 	
 	public any function getResourceBundle(required struct rc){
-		var dtExpires = (Now() + 60);
- 
- 		var strExpires = GetHTTPTimeString( dtExpires );
- 
-		getPageContext().getResponse().setHeader('expires',strExpires);
 		
 		var resourceBundle = getService('HibachiRBService').getResourceBundle(arguments.rc.locale);
 		var data = {};
+		//cache RB for 1 day or until a reload
+		getPageContext().getResponse().setHeader('Cache-Control', 'max-age=86400');
+		getPageContext().getResponse().setHeader('Pragma', 'max-age=86400');
 		
-		getPageContext().getResponse().setHeader('expires', GetHTTPTimeString( now() + 60 ));
 		//lcase all the resourceBundle keys so we can have consistent casing for the js
 		for(var key in resourceBundle){
 			data[lcase(key)] = resourceBundle[key];
 		}
 		
 		arguments.rc.apiResponse.content['data'] = data;
+		
 	}
 	
 	public any function getPropertyDisplayOptions(required struct rc){

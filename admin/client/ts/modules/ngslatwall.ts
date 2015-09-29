@@ -394,18 +394,16 @@ module ngSlatwall {
                 return this._resourceBundle[locale];
             }
             
-            var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+this.getConfig().instantiationKey;
-            //var urlString = this.getConfig().baseURL+'/config/resourceBundles/'+locale+'.json?instantiationKey='+this.getConfig().instantiationKey;
-            var params = {
-                locale:locale
-            };
-            return $http.get(urlString,{params:params}).success((response) => {
-                this._resourceBundle[locale] = response.data;
-                //deferred.resolve(response);
+            var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+this.getConfig().instantiationKey+'&locale='+locale;
+            
+            $http.get(urlString,{cache:true}).success((response) => {
+                
+                deferred.resolve(response);
             }).error((response) => {
-                this._resourceBundle[locale] = {};
-                //deferred.reject(response);
+                
+                deferred.reject(response);
             });
+            return deferred.promise
         }
         
         

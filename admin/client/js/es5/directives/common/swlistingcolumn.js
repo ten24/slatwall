@@ -18,18 +18,18 @@ var slatwalladmin;
         function SWListingColumn() {
             this.restrict = 'EA';
             // public scope={}; 
-            this.bindToController = {
-                propertyIdentifier: "@",
-                processObjectProperty: "@",
-                title: "@",
-                tdclass: "@",
-                search: "=",
-                sort: "=",
-                filter: "=",
-                range: "=",
-                editable: "=",
-                buttonGroup: "="
-            };
+            //	   public bindToController={
+            //           propertyIdentifier:"@",
+            //           processObjectProperty:"@",
+            //           title:"@",
+            //           tdclass:"@",
+            //           search:"=",
+            //           sort:"=",
+            //           filter:"=",
+            //           range:"=",
+            //           editable:"=",
+            //           buttonGroup:"="
+            //       };
             this.controller = SWListingColumnController;
             this.controllerAs = "swListingColumn";
             this.link = function (scope, element, attrs) {

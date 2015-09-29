@@ -4,7 +4,7 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     var SWListingDisplayController = (function () {
-        function SWListingDisplayController($scope, $element, $transclude, $slatwall, partialsPath, utilityService, collectionConfig) {
+        function SWListingDisplayController($scope, $element, $transclude, $slatwall, partialsPath, utilityService, collectionConfigService) {
             var _this = this;
             this.$scope = $scope;
             this.$element = $element;
@@ -12,7 +12,7 @@ var slatwalladmin;
             this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
             this.utilityService = utilityService;
-            this.collectionConfig = collectionConfig;
+            this.collectionConfigService = collectionConfigService;
             /* local state variables */
             this.columns = [];
             this.allpropertyidentifiers = "";
@@ -237,7 +237,7 @@ var slatwalladmin;
             this.utilityService = utilityService;
             this.$scope = $scope;
             this.$element = $element;
-            this.collectionConfig = collectionConfig;
+            this.collectionConfigService = collectionConfigService;
             //this is performed early to populate columns with swlistingcolumn info
             this.$transclude = $transclude;
             this.$transclude(this.$scope, function () { });
@@ -256,10 +256,12 @@ var slatwalladmin;
                 editable:"=",
                 buttonGroup:"="
                 */
-                for (var column in this.columns) {
+                console.log(this.columns);
+                angular.forEach(this.columns, function (column) {
                     var columnOptions = {};
-                    collectionConfig.setDisplayProperty(column.propertyIdentifier, column.title, columnOptions);
-                }
+                    console.log(column);
+                    collectionConfig.setDisplayProperties(column.propertyIdentifier, column.title, columnOptions);
+                });
                 this.collectionPromise = collectionConfig.getEntity(this.collection);
             }
             this.collectionPromise.then(function (data) {

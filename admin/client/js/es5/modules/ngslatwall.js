@@ -349,18 +349,13 @@ var ngSlatwall;
                 if (_this._resourceBundle[locale]) {
                     return _this._resourceBundle[locale];
                 }
-                var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + _this.getConfig().instantiationKey;
-                //var urlString = this.getConfig().baseURL+'/config/resourceBundles/'+locale+'.json?instantiationKey='+this.getConfig().instantiationKey;
-                var params = {
-                    locale: locale
-                };
-                return $http.get(urlString, { params: params }).success(function (response) {
-                    _this._resourceBundle[locale] = response.data;
-                    //deferred.resolve(response);
+                var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + _this.getConfig().instantiationKey + '&locale=' + locale;
+                $http.get(urlString, { cache: true }).success(function (response) {
+                    deferred.resolve(response);
                 }).error(function (response) {
-                    _this._resourceBundle[locale] = {};
-                    //deferred.reject(response);
+                    deferred.reject(response);
                 });
+                return deferred.promise;
             };
             this.rbKey = function (key, replaceStringData) {
                 ////$log.debug('rbkey');

@@ -50,8 +50,9 @@ component displayname="Gift Card Transaction" entityname="SlatwallGiftCardTransa
 
 	// Persistent Properties
 	property name="giftCardTransactionID" ormtype="string" length="32" fieldtype="id" generator="uuid" unsavedvalue="" default="";
-	property name="creditAmount" ormtype="big_decimal";
-	property name="debitAmount" ormtype="big_decimal";
+	property name="creditAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="debitAmount" ormtype="big_decimal" hb_formatType="currency";
+	property name="currencyCode" ormtype="string" length="3";
 
 	// Related Object Properties (many-to-one)
 	property name="orderPayment" cfc="OrderPayment" fieldtype="many-to-one" fkcolumn="orderPaymentID";

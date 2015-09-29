@@ -26,14 +26,14 @@ module slatwalladmin {
             public $slatwall:ngSlatwall.SlatwallService, 
             public partialsPath:slatwalladmin.partialsPath, 
             public utilityService:slatwalladmin.UtilityService,
-            public collectionConfig:slatwalladmin.CollectionConfig
+            public collectionConfigService:slatwalladmin.CollectionConfig
         ){
             this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
             this.utilityService = utilityService;
             this.$scope = $scope;
             this.$element = $element;
-            this.collectionConfig = collectionConfig;
+            this.collectionConfigService = collectionConfigService;
             //this is performed early to populate columns with swlistingcolumn info
             this.$transclude = $transclude;
             this.$transclude(this.$scope,()=>{});
@@ -53,18 +53,18 @@ module slatwalladmin {
                 editable:"=",
                 buttonGroup:"="
                 */
-                
-                for(var column in this.columns){
+                console.log(this.columns); 
+                angular.forEach(this.columns, (column)=>{
                     var columnOptions = {};
-                    
-                    collectionConfig.setDisplayProperty(
+                    console.log(column);
+                    collectionConfig.setDisplayProperties(
                         column.propertyIdentifier,
                         column.title,
                         columnOptions
                         /*
                         ,*/
                     );
-                }
+                });
                 
                 this.collectionPromise = collectionConfig.getEntity(this.collection);
             }
