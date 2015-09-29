@@ -58,6 +58,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="ownerEmailAddress" ormtype="string";
     property name="activeFlag" ormtype="boolean";
     property name="issuedDate" ormtype="timestamp";
+    property name="currencyCode" ormtype="string" length="3";
     //Calculated Properties
     property name="balanceAmount" ormtype="big_decimal";
 
