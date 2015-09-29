@@ -256,6 +256,30 @@ component displayname="Account Payment Method" entityname="SlatwallAccountPaymen
 		return variables.paymentMethodOptions;
 	}
 
+	public boolean function isGiftCardAccountPaymentMethod(){
+		if(!isNull(this.getGiftCardNumberEncrypted())){
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public any function getGiftCard(){
+		if(this.isGiftCardAccountPaymentMethod()){
+			return getService("HibachiService").getGiftCard(getDAO("GiftCardDAO").getIDbyCode(this.getGiftCardNumberEncrypted()));
+		}
+		return false;
+	}
+
+	public any function getGiftCardBalance(){
+
+		if(this.isGiftCardAccountPaymentMethod()){
+			return this.getGiftCard().getBalanceAmount();
+		} else {
+			return false;
+		}
+	}
+
 	// ============  END:  Non-Persistent Property Methods =================
 
 	// ============= START: Bidirectional Helper Methods ===================

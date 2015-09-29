@@ -99,7 +99,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		}
 	}
 
-	public string function getBalanceAmount(){
+	public numeric function getBalanceAmount(){
 		var transactions = this.getGiftCardTransactions();
 		var balance = "0";
 		for(var transaction in transactions){
