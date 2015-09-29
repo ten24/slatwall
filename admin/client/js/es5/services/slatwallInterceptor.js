@@ -22,7 +22,6 @@ var slatwalladmin;
                 if (_this.$window.localStorage.getItem('token') && _this.$window.localStorage.getItem('token') !== "undefined") {
                     config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
                 }
-                _this.$window.localStorage.setItem('resourceBundleLastModified', headersGetter()['etag']);
                 if (config.method == 'GET' && (_this.$location.search().slatAction && _this.$location.search().slatAction === 'api:main.get')) {
                     config.method = 'POST';
                     config.data = {};

@@ -302,25 +302,12 @@ component output="false" accessors="true" extends="HibachiController" {
 	}
 	
 	public any function getResourceBundle(required struct rc){
-		
-		
-		
 		var resourceBundle = getService('HibachiRBService').getResourceBundle(arguments.rc.locale);
 		var data = {};
 		//cache RB for 1 day or until a reload
-		//getPageContext().getResponse().setHeader('Cache-Control', 'max-age=86400');
-		//getPageContext().getResponse().setHeader('Pragma', 'max-age=86400');
-		//getPageContext().getResponse().setHeader('Last-Modified',GetHTTPTimeString(getService('HibachiRBService').getInstantiated()));
 		//lcase all the resourceBundle keys so we can have consistent casing for the js
 		for(var key in resourceBundle){
 			data[lcase(key)] = resourceBundle[key];
-		}
-		var EtagValue = hash(serializeJson(data));
-		getPageContext().getResponse().setHeader('ETag',ETagValue);
-		if(GetHttpRequestData().headers['If-None-Matched'] == ETagValue){
-			var pc = getpagecontext().getresponse();
-			pc.getresponse().setstatus(304);	
-			return;
 		}
 		arguments.rc.apiResponse.content['data'] = data;
 	}

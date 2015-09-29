@@ -398,14 +398,11 @@ module ngSlatwall {
             }
             
             var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey='+this.getConfig().instantiationKey+'&locale='+locale;
-            console.log(this.$window.localStorage.getItem('resourceBundleLastModified'));
-            var headers = {};
             
             $http(
                 {
                     url:urlString,
-                    method:"GET",
-                    headers:headers
+                    method:"GET"
                 }
             ).success((response,status,headersGetter) => {
                 this._resourceBundle[locale] = response.data;

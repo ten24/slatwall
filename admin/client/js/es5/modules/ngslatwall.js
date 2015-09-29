@@ -352,12 +352,9 @@ var ngSlatwall;
                     return _this._resourceBundle[locale];
                 }
                 var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + _this.getConfig().instantiationKey + '&locale=' + locale;
-                console.log(_this.$window.localStorage.getItem('resourceBundleLastModified'));
-                var headers = {};
                 $http({
                     url: urlString,
-                    method: "GET",
-                    headers: headers
+                    method: "GET"
                 }).success(function (response, status, headersGetter) {
                     _this._resourceBundle[locale] = response.data;
                     deferred.resolve(response);
