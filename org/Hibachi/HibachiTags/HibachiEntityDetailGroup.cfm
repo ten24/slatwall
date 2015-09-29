@@ -104,7 +104,7 @@
 										
 											<hb:HibachiPropertyList> 
 												<hb:HibachiPropertyDisplay object="#attributes.object#" property="#attributes.object.getPrimaryIDPropertyName()#" />
-												<cfif structKeyExists(attributes.object,'remoteID')>
+												<cfif attributes.object.hasProperty('remoteID') and attributes.hibachiScope.setting('globalRemoteIDShowFlag')>
 													<hb:HibachiPropertyDisplay object="#attributes.object#" property="remoteID" edit="#iif(request.context.edit && attributes.hibachiScope.setting('globalRemoteIDEditFlag'), true, false)#" />
 												</cfif>
 												<cfif len( attributes.object.getShortReferenceID() )>
