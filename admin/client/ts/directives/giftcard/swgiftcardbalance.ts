@@ -4,8 +4,8 @@ module slatwalladmin {
 		export class SWGiftCardBalanceController{
 			public transactions; 
 			public giftCard;
-			public currentBalanceFormatted; 
-			public initialBalanceFormatted; 
+			public currentBalance:number; 
+			public initialBalance:number; 
 			public balancePercentage;
 			
 			constructor(private $slatwall:ngSlatwall.SlatwallService){
@@ -14,7 +14,7 @@ module slatwalladmin {
 			} 
 			
 			public init = ():void =>{
-				var initialBalance:number = 0;
+				this.initialBalance = 0;
 				var totalDebit:number = 0; 
 				
 				var transactionConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'GiftCardTransaction');
@@ -27,23 +27,19 @@ module slatwalladmin {
 				transactionPromise.then((response)=>{
 					this.transactions = response.records; 
 	
-					angular.forEach(this.transactions, function(transaction, index){
+					angular.forEach(this.transactions,(transaction, index)=>{
 						
 						if(typeof transaction.creditAmount !== "string"){
-							initialBalance += transaction.creditAmount;
+							this.initialBalance += transaction.creditAmount;
 						}
 						
 						if(typeof transaction.debitAmount !== "string"){
 							totalDebit += transaction.debitAmount; 
 						}
 					});
-					
-					var currentBalance = initialBalance - totalDebit; 
-					//temporarily hardcoded to $
-					this.currentBalanceFormatted = "$" + parseFloat(currentBalance.toString()).toFixed(2);
-					//temporarily hardcoded to $
-					this.initialBalanceFormatted = "$" + parseFloat(initialBalance.toString()).toFixed(2);			
-					this.balancePercentage = ((currentBalance / initialBalance)*100);					
+					this.currentBalance = this.initialBalance - totalDebit; 
+		
+					this.balancePercentage = ((this.currentBalance / this.initialBalance)*100);					
 				});	
 			}
 		}
@@ -57,8 +53,8 @@ module slatwalladmin {
 		public bindToController = {
 			giftCard:"=?", 
 			transactions:"=?", 
-			initialBalanceFormatted:"=?", 
-			currentBalanceFormatted:"=?",
+			initialBalance:"=?", 
+			currentBalance:"=?",
 			balancePercentage:"=?"
 		};
 		public controller=SWGiftCardBalanceController;
