@@ -80,7 +80,7 @@ Notes:
 			imapAttributes.attachmentpath = getTempDirectory();
 
 			if(!structKeyExists(server, "railo") && !structKeyExists(server, "lucee")){
-				imapAttributes.secure="true"
+				imapAttributes.secure="true";
 			}
 		</cfscript>
 		<cftry>

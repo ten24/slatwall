@@ -13,6 +13,16 @@ var slatwalladmin;
                 transactionConfig.setAllRecords(true);
                 transactionConfig.setOrderBy("orderPayment.order.orderOpenDateTime", "DESC");
                 var transactionPromise = this.$slatwall.getEntity("GiftCardTransaction", transactionConfig.getOptions());
+                var emailBounceConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'EmailBounce');
+                emailBounceConfig.setDisplayProperties("emailBounceID, rejectedEmailTo, rejectedEmailSendTime, relatedObject, relatedObjectID");
+                emailBounceConfig.addFilter('relatedObject', "giftCard");
+                emailBounceConfig.addFilter('relatedObjectID', this.giftCard.giftCardID);
+                emailBounceConfig.setAllRecords(true);
+                emailBounceConfig.setOrderBy("rejectedEmailSendTime", "DESC");
+                var emailBouncePromise = this.$slatwall.getEntity("EmailBounce", emailBounceConfig.getOptions());
+                emailBouncePromise.then((response) => {
+                    this.bouncedEmails = response.records;
+                });
                 transactionPromise.then((response) => {
                     this.transactions = response.records;
                     var initialCreditIndex = this.transactions.length - 1;
@@ -22,6 +32,7 @@ var slatwalladmin;
                         if (typeof transaction.debitAmount !== "string") {
                             transaction.debit = true;
                             totalDebit += transaction.debitAmount;
+                            //temporarily hardcoded to $
                             transaction.debitAmount = "$" + parseFloat(transaction.debitAmount.toString()).toFixed(2);
                         }
                         else {
@@ -29,25 +40,37 @@ var slatwalladmin;
                                 currentBalance += transaction.creditAmount;
                             }
                             transaction.debit = false;
+                            //temporarily hardcoded to $
                             transaction.creditAmount = "$" + parseFloat(transaction.creditAmount.toString()).toFixed(2);
                         }
                         var tempCurrentBalance = currentBalance - totalDebit;
+                        //temporarily hardcoded to $
                         transaction.balanceFormatted = "$" + parseFloat(tempCurrentBalance.toString()).toFixed(2);
                         if (index == initialCreditIndex) {
                             var emailSent = {
                                 emailSent: true,
                                 debit: false,
                                 sentAt: transaction.orderPayment_order_orderOpenDateTime,
+                                //temporarily hardcoded to $
                                 balanceFormatted: "$" + parseFloat(initialBalance.toString()).toFixed(2)
                             };
                             var activeCard = {
                                 activated: true,
                                 debit: false,
                                 activeAt: transaction.orderPayment_order_orderOpenDateTime,
+                                //temporarily hardcoded to $
                                 balanceFormatted: "$" + parseFloat(initialBalance.toString()).toFixed(2)
                             };
                             this.transactions.splice(index, 0, activeCard);
                             this.transactions.splice(index, 0, emailSent);
+                            if (this.bouncedEmails.length > 0) {
+                                angular.forEach(this.bouncedEmails, (email, bouncedEmailIndex) => {
+                                    email.bouncedEmail = true;
+                                    //temporarily hardcoded to $
+                                    email.balanceFormatted = "$" + parseFloat(initialBalance.toString()).toFixed(2);
+                                    this.transactions.splice(index, 0, email);
+                                });
+                            }
                         }
                     });
                 });
@@ -70,7 +93,10 @@ var slatwalladmin;
             this.partialsPath = partialsPath;
             this.scope = {};
             this.bindToController = {
-                giftCard: "=?"
+                giftCard: "=?",
+                transactions: "=?",
+                bouncedEmails: "=?",
+                order: "=?"
             };
             this.controller = SWGiftCardHistoryController;
             this.controllerAs = "swGiftCardHistory";

@@ -73,7 +73,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
 	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
 	property name="redemptionAmountType" ormtype="string" hb_formFieldType="select" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage"  hb_formatType="rbKey";
-	property name="redemptionAmountPercentage" ormtype="float" hint="the percentage to use if type is set to percentage";
 	property name="redemptionAmount" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
 	
 	// Calculated Properties
@@ -235,7 +234,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 					break; 
 				case "percentage": 
 					if(structKeyExists(variables, "redemptionAmountPercentage") && structKeyExists(variables, "redemptionAmount")){ 
-						return precisionEvaluate(precisionEvaluate(variables.redemptionAmount * variables.redemptionAmountPercentage)/100); 
+						return precisionEvaluate(precisionEvaluate(variables.price * variables.redemptionAmount)/100); 
 					}
 					break; 
 				default: 
