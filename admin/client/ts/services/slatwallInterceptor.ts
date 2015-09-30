@@ -59,7 +59,6 @@ module slatwalladmin{
                 config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
             }
             var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
-            console.log(queryParams);
 			if(config.method == 'GET' && (queryParams.slatAction && queryParams.slatAction === 'api:main.get')){
 				config.method = 'POST';
 				config.data = {};

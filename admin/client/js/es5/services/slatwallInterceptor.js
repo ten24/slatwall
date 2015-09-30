@@ -24,7 +24,6 @@ var slatwalladmin;
                     config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');
                 }
                 var queryParams = _this.utilityService.getQueryParamsFromUrl(config.url);
-                console.log(queryParams);
                 if (config.method == 'GET' && (queryParams.slatAction && queryParams.slatAction === 'api:main.get')) {
                     config.method = 'POST';
                     config.data = {};

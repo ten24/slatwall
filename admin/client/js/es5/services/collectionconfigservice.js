@@ -232,7 +232,10 @@ var slatwalladmin;
                         title = _DividedTitles[index].trim();
                     }
                     else {
+                        console.log(column);
                         title = _this.$slatwall.getRBKey("entity." + _this.baseEntityName + "." + column);
+                        console.log('getTitle');
+                        console.log(title);
                     }
                     _this.addColumn(_this.formatCollectionName(column), title, options);
                 });

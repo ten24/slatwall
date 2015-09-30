@@ -389,7 +389,7 @@ var ngSlatwall;
                         var keyValue = "";
                         for (var i = 0; i < keyListArray.length; i++) {
                             var keyValue = _this.getRBKey(keyListArray[i], locale, keyValue);
-                            ////$log.debug('keyvalue:'+keyValue);
+                            //$log.debug('keyvalue:'+keyValue);
                             if (keyValue.slice(-8) != "_missing") {
                                 break;
                             }
@@ -401,7 +401,7 @@ var ngSlatwall;
                     //$log.debug(bundle);
                     if (!bundle.then) {
                         if (angular.isDefined(bundle[key])) {
-                            //$log.debug('rbkeyfound:'+bundle[key]);
+                            $log.debug('rbkeyfound:' + bundle[key]);
                             return bundle[key];
                         }
                         var checkedKeysListArray = checkedKeys.split(',');

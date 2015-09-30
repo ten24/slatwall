@@ -17,36 +17,37 @@ var slatwalladmin;
     var SWListingColumn = (function () {
         function SWListingColumn() {
             this.restrict = 'EA';
-            // public scope={}; 
-            //	   public bindToController={
-            //           propertyIdentifier:"@",
-            //           processObjectProperty:"@",
-            //           title:"@",
-            //           tdclass:"@",
-            //           search:"=",
-            //           sort:"=",
-            //           filter:"=",
-            //           range:"=",
-            //           editable:"=",
-            //           buttonGroup:"="
-            //       };
+            this.scope = true;
+            this.bindToController = {
+                propertyIdentifier: "@",
+                processObjectProperty: "@",
+                title: "@",
+                tdclass: "@",
+                search: "=",
+                sort: "=",
+                filter: "=",
+                range: "=",
+                editable: "=",
+                buttonGroup: "="
+            };
             this.controller = SWListingColumnController;
             this.controllerAs = "swListingColumn";
             this.link = function (scope, element, attrs) {
                 var column = {
-                    propertyIdentifier: scope.propertyIdentifier,
-                    processObjectProperty: scope.processObjectProperty,
-                    title: scope.title,
-                    tdclass: scope.tdclass,
-                    search: scope.search,
-                    sort: scope.sort,
-                    filter: scope.filter,
-                    range: scope.range,
-                    editable: scope.editable,
-                    buttonGroup: scope.buttonGroup
+                    propertyIdentifier: scope.swListingColumn.propertyIdentifier,
+                    processObjectProperty: scope.swListingColumn.processObjectProperty,
+                    title: scope.swListingColumn.title,
+                    tdclass: scope.swListingColumn.tdclass,
+                    search: scope.swListingColumn.search,
+                    sort: scope.swListingColumn.sort,
+                    filter: scope.swListingColumn.filter,
+                    range: scope.swListingColumn.range,
+                    editable: scope.swListingColumn.editable,
+                    buttonGroup: scope.swListingColumn.buttonGroup
                 };
+                console.log('columsnscope');
                 console.log(scope);
-                //scope.swListingDisplay.columns.push(column);
+                scope.$parent.swListingDisplay.columns.push(column);
             };
         }
         return SWListingColumn;

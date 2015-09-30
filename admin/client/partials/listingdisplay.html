@@ -93,7 +93,13 @@
 				<!--- Sortable -->
 				<th class="sort" ng-if="swListingDisplay.sortable">&nbsp;</th>
 				<!-- Columns -->
-				
+				<th ng-repeat="column in swListingDisplay.collectionConfig.columns" 
+					class="data {{column.tdClass}}" 
+					
+					
+				>
+				{{column.title}}
+				</th>
 				<!--
 				<!--- Columns 
 				<cfloop array="#thistag.columns#" index="column">

@@ -28,7 +28,7 @@ var slatwalladmin;
                 //this.edit = this.edit || $location.edit
                 _this.exampleEntity = _this.$slatwall.newEntity(_this.collectionData.collectionObject);
                 _this.recordProcessButtonDisplayFlag = _this.recordProcessButtonDisplayFlag || true;
-                _this.collectionConfig = _this.collectionData.collectionConfig;
+                _this.collectionConfig = _this.collectionConfig || _this.collectionData.collectionConfig;
                 _this.collectionID = _this.collectionData.collectionID;
                 _this.collectionObject = _this.collectionData.collectionObject;
                 _this.norecordstext = _this.$slatwall.getRBKey('entity.' + _this.collectionObject + '.norecords');
@@ -243,7 +243,7 @@ var slatwalladmin;
             this.$transclude(this.$scope, function () { });
             //if collection Value is string instead of an object then create a collection
             if (angular.isString(this.collection)) {
-                var collectionConfig = this.collectionConfigService.newCollectionConfig(this.collection);
+                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collection);
                 /*
                 propertyIdentifier:"@",
                 processObjectProperty:"@",
@@ -256,13 +256,11 @@ var slatwalladmin;
                 editable:"=",
                 buttonGroup:"="
                 */
-                console.log(this.columns);
                 angular.forEach(this.columns, function (column) {
                     var columnOptions = {};
-                    console.log(column);
-                    collectionConfig.setDisplayProperties(column.propertyIdentifier, column.title, columnOptions);
+                    _this.collectionConfig.setDisplayProperties(column.propertyIdentifier, column.title, columnOptions);
                 });
-                this.collectionPromise = collectionConfig.getEntity();
+                this.collectionPromise = this.collectionConfig.getEntity();
             }
             this.collectionPromise.then(function (data) {
                 _this.collectionData = data;

@@ -430,6 +430,7 @@ module ngSlatwall {
             ////$log.debug('loading:'+this._loadingResourceBundle);
             ////$log.debug('loaded'+this._loadedResourceBundle);
             if(!this._loadingResourceBundle && this._loadedResourceBundle) {
+                
                 key = key.toLowerCase();
                 checkedKeys = checkedKeys || "";
                 locale = locale || 'en_us';
@@ -440,16 +441,13 @@ module ngSlatwall {
                 ////$log.debug('keylistAray');
                 ////$log.debug(keyListArray);
                 if(keyListArray.length > 1) {
-                    
-                    
                     var keyValue = "";
-                    
                     
                     for(var i=0; i<keyListArray.length; i++) {
                         
                         
                         var keyValue = this.getRBKey(keyListArray[i], locale, keyValue);
-                        ////$log.debug('keyvalue:'+keyValue);
+                        //$log.debug('keyvalue:'+keyValue);
                         
                         if(keyValue.slice(-8) != "_missing") {
                             break;
@@ -465,7 +463,7 @@ module ngSlatwall {
                 //$log.debug(bundle);
                 if(!bundle.then) {
                     if(angular.isDefined(bundle[key])) {
-                        //$log.debug('rbkeyfound:'+bundle[key]);
+                        $log.debug('rbkeyfound:'+bundle[key]);
                         return bundle[key];
                     }
                     
