@@ -3,7 +3,7 @@
 
 ((): void => {
     
-    var app = angular.module('slatwalladmin', ['ngSlatwall','ngSlatwallModel','ui.bootstrap','ngAnimate','ngRoute','ngCkeditor']);
+    var app = angular.module('slatwalladmin', ['ngSlatwall','ngSlatwallModel','ui.bootstrap','ngAnimate','ngRoute','ngSanitize','ngCkeditor']);
     app.config(
         ["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig',
         ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$injector,$locationProvider,datepickerConfig, datepickerPopupConfig) =>
@@ -121,6 +121,29 @@
                 return text;
             }
             
-        };
+        }; 
+    }]).filter('swcurrency',['$slatwall','$sce',($slatwall,$sce)=>{
+            var data = null, serviceInvoked = false;
+            function realFilter(value) {
+                // REAL FILTER LOGIC, DISREGARDING PROMISES
+                return data + value;
+            }
+            
+            filterStub.$stateful = true;
+            function filterStub(value,currencyCode) {
+                if( data === null ) {
+                    if( !serviceInvoked ) {
+                        serviceInvoked = true;
+                         $slatwall.getCurrencies().then((currencies)=>{
+                            var result = currencies.data;
+                            data = result[currencyCode];
+                        });
+                    }
+                    return "-";
+                }
+                else return realFilter(value);
+            }
+            
+            return filterStub;        
     }]);
 })();
