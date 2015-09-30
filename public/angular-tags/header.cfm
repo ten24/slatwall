@@ -3,16 +3,12 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> 
 	<script src="/assets/js/angular.min.js"></script>
 	<script src="/assets/js/slatwall.js"></script>
+	<script src="/public/angular-tags/controllers/frontend-controller.js"></script>
+	<script src="/admin/client/js/es5/modules/ngslatwall.js"></script>
+	<script src="/admin/client/js/es5/modules/ngslatwallmodel.js"></script>
+	<script src="/admin/client/js/es5/modules/loggingmodule.js"></script>
 	
-	<script src="/custom/apps/slatwallcms/incstore/assets/js/sw-controllers/hibachi-scope-controller.js"></script>
-	<script src="/custom/apps/slatwallcms/incstore/assets/js/sw-services/hibachi-scope-service.js"></script>
-	<script src="/custom/apps/slatwallcms/incstore/assets/js/sw-services/slatwall-service.js"></script>
-	<script src="/custom/apps/slatwallcms/incstore/assets/js/sw-directives/swPromoCodeEdit.js"></script>
-	<script src="/custom/apps/slatwallcms/incstore/assets/js/sw-directives/swPromoCodeDisplay.js"></script>
-	<script src="/custom/apps/slatwallcms/incstore/assets/js/sw-directives/swLoading.js"></script>
-	
-<html lang="en" ng-app="hibachiScope">
-	
+<html lang="en" ng-app="ngSlatwall">
 <head>
 	
 	<meta charset="utf-8">
