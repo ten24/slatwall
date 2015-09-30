@@ -66,7 +66,7 @@ module slatwalladmin {
                     );
                 });
                 
-                this.collectionPromise = collectionConfig.getEntity(this.collection);
+                this.collectionPromise = collectionConfig.getEntity();
             }
             this.collectionPromise.then((data)=>{
                 this.collectionData = data;

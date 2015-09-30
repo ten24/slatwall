@@ -45,7 +45,8 @@ var slatwalladmin;
                     editable: scope.editable,
                     buttonGroup: scope.buttonGroup
                 };
-                scope.swListingDisplay.columns.push(column);
+                console.log(scope);
+                //scope.swListingDisplay.columns.push(column);
             };
         }
         return SWListingColumn;

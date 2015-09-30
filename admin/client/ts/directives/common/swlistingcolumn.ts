@@ -6,20 +6,15 @@ module slatwalladmin {
     'use strict';
     
     export class SWListingColumnController{
-        
         constructor(
             
         ){
-           
             this.init();
-            
         } 
         
         public init = () =>{
             this.editable = this.editable || false;
-            
         }
-		
     }
         
 	export class SWListingColumn implements ng.IDirective{
@@ -58,7 +53,8 @@ module slatwalladmin {
                 editable:scope.editable,
                 buttonGroup:scope.buttonGroup
             };
-            scope.swListingDisplay.columns.push(column);
+            console.log(scope);
+            //scope.swListingDisplay.columns.push(column);
             
 		}
 	}

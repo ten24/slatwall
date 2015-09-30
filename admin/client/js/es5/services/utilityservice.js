@@ -14,6 +14,37 @@ var slatwalladmin;
         function UtilityService() {
             var _this = this;
             _super.call(this);
+            this.getQueryParamsFromUrl = function (url) {
+                // This function is anonymous, is executed immediately and 
+                // the return value is assigned to QueryString!
+                var query_string = {};
+                if (url && url.split) {
+                    spliturl = url.split('?');
+                    if (spliturl.length) {
+                        url = spliturl[1];
+                        if (url && url.split) {
+                            var vars = url.split("&");
+                            if (vars && vars.length) {
+                                for (var i = 0; i < vars.length; i++) {
+                                    var pair = vars[i].split("=");
+                                    // If first entry with this name
+                                    if (typeof query_string[pair[0]] === "undefined") {
+                                        query_string[pair[0]] = pair[1];
+                                    }
+                                    else if (typeof query_string[pair[0]] === "string") {
+                                        var arr = [query_string[pair[0]], pair[1]];
+                                        query_string[pair[0]] = arr;
+                                    }
+                                    else {
+                                        query_string[pair[0]].push(pair[1]);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                return query_string;
+            };
             this.listLast = function (list, delimiter) {
                 if (list === void 0) { list = ''; }
                 if (delimiter === void 0) { delimiter = ','; }

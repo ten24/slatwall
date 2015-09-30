@@ -9,7 +9,7 @@ module slatwalladmin{
     }
 	
 	export class SlatwallInterceptor implements slatwalladmin.IInterceptor{
-		public static $inject = ['$location','$window','$q','$log','$injector','alertService','baseURL','dialogService'];
+		public static $inject = ['$location','$window','$q','$log','$injector','alertService','baseURL','dialogService','utilityService'];
 		
 		public static Factory(
             $location:ng.ILocationService,
@@ -19,9 +19,10 @@ module slatwalladmin{
 			$injector:ng.auto.IInjectorService,
 			alertService:slatwalladmin.IAlertService,
 			baseURL,
-			dialogService:slatwalladmin.IDialogService
+			dialogService:slatwalladmin.IDialogService,
+            utilityService:slatwalladmin.IUtilityService
 		) {
-            return new SlatwallInterceptor($location, $window, $q, $log, $injector, alertService,baseURL,dialogService);
+            return new SlatwallInterceptor($location, $window, $q, $log, $injector, alertService,baseURL,dialogService,utilityService);
         }
         
         public urlParam = null;
@@ -36,7 +37,8 @@ module slatwalladmin{
 			public $injector:ng.auto.IInjectorService, 
 			public alertService:slatwalladmin.IAlertService,
 			public baseURL,
-			public dialogService:slatwalladmin.IDialogService
+			public dialogService:slatwalladmin.IDialogService, 
+            public utilityService
 		) {
             this.$location = $location;
         	this.$window = $window;
@@ -46,6 +48,7 @@ module slatwalladmin{
 			this.alertService = alertService;
 			this.baseURL = baseURL;
 			this.dialogService = dialogService;
+            this.utilityService = utilityService;
         }
         
 		public request = (config): ng.IPromise<any> => {
@@ -55,8 +58,9 @@ module slatwalladmin{
                 
                 config.headers.Authorization = 'Bearer ' + this.$window.localStorage.getItem('token');
             }
-            
-			if(config.method == 'GET' && (this.$location.search().slatAction && this.$location.search().slatAction === 'api:main.get')){
+            var queryParams = this.utilityService.getQueryParamsFromUrl(config.url);
+            console.log(queryParams);
+			if(config.method == 'GET' && (queryParams.slatAction && queryParams.slatAction === 'api:main.get')){
 				config.method = 'POST';
 				config.data = {};
 				var data = {};

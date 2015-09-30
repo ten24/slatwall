@@ -262,7 +262,7 @@ var slatwalladmin;
                     console.log(column);
                     collectionConfig.setDisplayProperties(column.propertyIdentifier, column.title, columnOptions);
                 });
-                this.collectionPromise = collectionConfig.getEntity(this.collection);
+                this.collectionPromise = collectionConfig.getEntity();
             }
             this.collectionPromise.then(function (data) {
                 _this.collectionData = data;
