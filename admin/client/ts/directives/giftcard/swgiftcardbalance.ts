@@ -38,7 +38,7 @@ module slatwalladmin {
 						}
 					});
 					this.currentBalance = this.initialBalance - totalDebit; 
-					console.log(this.currentBalance);			
+		
 					this.balancePercentage = ((this.currentBalance / this.initialBalance)*100);					
 				});	
 			}

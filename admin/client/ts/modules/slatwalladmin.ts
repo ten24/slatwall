@@ -130,9 +130,13 @@
                     $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
                     data="$";
                 }
-                if(angular.isDefined(value) && angular.isDefined(decimalPlace)){
-                    value = parseFloat(value.toString()).toFixed(decimalPlace) 
-                };
+                if(angular.isDefined(value)){
+                    if(angular.isDefined(decimalPlace)){
+                        value = parseFloat(value.toString()).toFixed(decimalPlace) 
+                    } else { 
+                        value = parseFloat(value.toString()).toFixed(2)
+                    }
+                }
                 return data + value;
             }
             
