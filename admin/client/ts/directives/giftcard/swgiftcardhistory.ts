@@ -47,33 +47,31 @@ module slatwalladmin {
 					if(typeof transaction.debitAmount !== "string"){
 						transaction.debit = true;
 						totalDebit += transaction.debitAmount; 
-						transaction.debitAmount = parseFloat(transaction.debitAmount.toString()).toFixed(2);
 					} else { 
 						if(index != initialCreditIndex){
 							currentBalance += transaction.creditAmount; 
 						}
 						
 						transaction.debit = false;
-						transaction.creditAmount = parseFloat(transaction.creditAmount.toString()).toFixed(2);
 					}
 					
 					var tempCurrentBalance = currentBalance - totalDebit; 
 				
-					transaction.balanceFormatted = parseFloat(tempCurrentBalance.toString()).toFixed(2);
+					transaction.balance = tempCurrentBalance;
 					
 					if(index == initialCreditIndex){			
 						var emailSent = { 
 							emailSent: true, 
 							debit:false, 
 							sentAt: transaction.orderPayment_order_orderOpenDateTime,
-							balanceFormatted: parseFloat(initialBalance.toString()).toFixed(2)
+							balance: initialBalance
 						};
 						
 						var activeCard = {
 							activated: true, 
 							debit: false,
 							activeAt: transaction.orderPayment_order_orderOpenDateTime,
-							balanceFormatted: parseFloat(initialBalance.toString()).toFixed(2)
+							balance: initialBalance
 						}
 						
 						this.transactions.splice(index, 0, activeCard); 
@@ -82,7 +80,7 @@ module slatwalladmin {
 						if(angular.isDefined(this.bouncedEmails)){
 							angular.forEach(this.bouncedEmails, (email, bouncedEmailIndex)=>{
 								email.bouncedEmail = true; 
-								email.balanceFormatted = parseFloat(initialBalance.toString()).toFixed(2);
+								email.balance = initialBalance; 
 								this.transactions.splice(index, 0, email);
 							}); 
 						}
