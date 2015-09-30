@@ -1884,10 +1884,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
                             if(card.hasErrors()){
                                 arguments.order.addErrors(card.getErrors());
-                            } else {
-                                var cardData = {};
-                                cardData.entity=card;
-                                getService("hibachiEventService").announceEvent(eventName="afterGiftCard_orderPlacedSuccess", eventData=cardData);
                             }
                         }
                     }
