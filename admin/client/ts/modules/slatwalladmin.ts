@@ -122,10 +122,14 @@
             }
             
         }; 
-    }]).filter('swcurrency',['$slatwall','$sce',($slatwall,$sce)=>{
+    }]).filter('swcurrency',['$slatwall','$sce' ,'$log',($slatwall,$sce, $log)=>{
             var data = null, serviceInvoked = false;
             function realFilter(value) {
                 // REAL FILTER LOGIC, DISREGARDING PROMISES
+                if(!angular.isDefined(data)){
+                    $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
+                    data="$";
+                }
                 return data + value;
             }
             
