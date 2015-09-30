@@ -16,14 +16,14 @@
 				<li>
 					<div class="row s-line-item s-strong">
 						<div class="col-xs-6">Remaining Balance:</div>
-						<div class="col-xs-6" ng-bind="swGiftCardBalance.currentBalanceFormatted"></div>
+						<div class="col-xs-6" ng-bind-html="swGiftCardBalance.currentBalance | swcurrency:swGiftCardBalance.giftCard.currencyCode"></div>
 					</div>
 				</li>
 
 				<li>
 					<div class="row s-line-item">
 						<div class="col-xs-6">Original Balance:</div>
-						<div class="col-xs-6" ng-bind="swGiftCardBalance.initialBalanceFormatted"></div>
+						<div class="col-xs-6" ng-bind-html="swGiftCardBalance.initialBalance | swcurrency:swGiftCardBalance.giftCard.currencyCode"></div>
 					</div>
 				</li>
 

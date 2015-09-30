@@ -257,7 +257,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			skuEligibleOrderOrigins = {fieldType="listingMultiselect", listingMultiselectEntityName="OrderOrigin", defaultValue=this.getAllActiveOrderOriginIDList()},
 			skuEligiblePaymentMethods = {fieldType="listingMultiselect", listingMultiselectEntityName="PaymentMethod", defaultValue=getPaymentService().getAllActivePaymentMethodIDList()},
 			skuGiftCardAutoGenerateCode = {fieldType="yesno", defaultValue=1},
-			skuGiftCardCodeLength = {fieldType="text", defaultValue=32},
+			skuGiftCardCodeLength = {fieldType="text", defaultValue=16},
             skuGiftCardEnforceExpirationTerm = {fieldType="yesno", defaultValue=0},
 			skuOrderItemGiftRecipientEmailTemplate = {fieldType="select", defaultValue=""},
 			skuHoldBackQuantity = {fieldType="text", defaultValue=0},
