@@ -84,6 +84,18 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 		return totalDelivered;
 	}
 
+	public any function getOrderDeliveryGiftCardSmartList() {
+		var giftCardSmartList = getService("HibachiService").getGiftCardSmartList();
+
+		for(var item in this.getOrderDeliveryItems()){
+			for(var card in item.getOrderItem().getGiftCards()){
+				giftCardSmartList.addWhereCondition("giftCardID='" & card.getGiftCardID() & "'");
+			}
+		}
+
+		return giftCardSmartList;
+	}
+
 	public any function getOrderFulfillment(){
 		return this.getOrderDeliveryItems()[1].getOrderItem().getOrderFulfillment();
 	}
