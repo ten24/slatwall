@@ -1,0 +1,6 @@
+This directory is for front end development using angular directives.
+
+Login/Logout
+
+<slatwall:login>
+
