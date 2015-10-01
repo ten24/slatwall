@@ -526,7 +526,7 @@ component accessors="true" persistent="false" output="false" extends="HibachiObj
 			if(getSelectDistinctFlag()) {
 					hqlSelect &= "distinct ";
 			}
-			hqlSelect &= "#variables.entities[getBaseEntityName()].entityAlias#.id)";
+			hqlSelect &= "#getBaseEntityPrimaryAliase()#)";
 		} else {
 			if(structCount(variables.selects)) {
 				hqlSelect = "SELECT";
