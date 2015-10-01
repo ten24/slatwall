@@ -1,7 +1,7 @@
 /// <reference path="../../../../client/typings/tsd.d.ts" />
 /// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 ((): void => {
-     var ngSlatwall = angular.module('ngSlatwall',[])
+     var ngSlatwall = angular.module('ngSlatwall',['hibachi'])
 })();
 module ngSlatwall {
     export class SlatwallService{
@@ -429,6 +429,7 @@ module ngSlatwall {
             ////$log.debug('getRBKey');
             ////$log.debug('loading:'+this._loadingResourceBundle);
             ////$log.debug('loaded'+this._loadedResourceBundle);
+            
             if(!this._loadingResourceBundle && this._loadedResourceBundle) {
                 
                 key = key.toLowerCase();
@@ -480,9 +481,17 @@ module ngSlatwall {
                     
                     var localeListArray = locale.split('_');
                     //$log.debug(localeListArray);
+                    console.log('localeListArray');
+                    console.log(localeListArray);
                     if(localeListArray.length === 2)  {
+                        
                         bundle = this.getResourceBundle(localeListArray[0]);
+                        
+                        console.log(bundle);
+                        console.log(key);
                         if(angular.isDefined(bundle[key])) {
+                            console.log('bundle');
+                            console.log(bundle[key]);
                             //$log.debug('rbkey found:'+bundle[key]);
                             return bundle[key];
                         }

@@ -89,6 +89,7 @@ Notes:
 	</sw-entity-action-bar>
 	
 	<sw-listing-display 
+		ng-if="$root.loadedResourceBundle"
 		collection="'Product'"
 		data-record-edit-action="admin:entity.editproduct"
 		data-record-detail-action="admin:entity.detailproduct"

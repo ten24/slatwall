@@ -1,7 +1,7 @@
 /// <reference path="../../../../client/typings/tsd.d.ts" />
 /// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 (() => {
-    var ngSlatwall = angular.module('ngSlatwall', []);
+    var ngSlatwall = angular.module('ngSlatwall', ['hibachi']);
 })();
 var ngSlatwall;
 (function (ngSlatwall) {
@@ -351,11 +351,9 @@ var ngSlatwall;
                     return this._resourceBundle[locale];
                 }
                 var urlString = this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getResourceBundle&instantiationKey=' + this.getConfig().instantiationKey + '&locale=' + locale;
-                var headers = {};
                 $http({
                     url: urlString,
-                    method: "GET",
-                    headers: headers
+                    method: "GET"
                 }).success((response, status, headersGetter) => {
                     this._resourceBundle[locale] = response.data;
                     deferred.resolve(response);
@@ -390,7 +388,7 @@ var ngSlatwall;
                         var keyValue = "";
                         for (var i = 0; i < keyListArray.length; i++) {
                             var keyValue = this.getRBKey(keyListArray[i], locale, keyValue);
-                            ////$log.debug('keyvalue:'+keyValue);
+                            //$log.debug('keyvalue:'+keyValue);
                             if (keyValue.slice(-8) != "_missing") {
                                 break;
                             }
@@ -402,7 +400,7 @@ var ngSlatwall;
                     //$log.debug(bundle);
                     if (!bundle.then) {
                         if (angular.isDefined(bundle[key])) {
-                            //$log.debug('rbkeyfound:'+bundle[key]);
+                            $log.debug('rbkeyfound:' + bundle[key]);
                             return bundle[key];
                         }
                         var checkedKeysListArray = checkedKeys.split(',');
@@ -415,9 +413,15 @@ var ngSlatwall;
                         //$log.debug(checkedKeysListArray);
                         var localeListArray = locale.split('_');
                         //$log.debug(localeListArray);
+                        console.log('localeListArray');
+                        console.log(localeListArray);
                         if (localeListArray.length === 2) {
                             bundle = this.getResourceBundle(localeListArray[0]);
+                            console.log(bundle);
+                            console.log(key);
                             if (angular.isDefined(bundle[key])) {
+                                console.log('bundle');
+                                console.log(bundle[key]);
                                 //$log.debug('rbkey found:'+bundle[key]);
                                 return bundle[key];
                             }

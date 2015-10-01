@@ -99,7 +99,7 @@ var slatwalladmin;
     }
     ObserverService.$inject = ['utilityService'];
     slatwalladmin.ObserverService = ObserverService;
-    angular.module('slatwalladmin').service('observerService', ObserverService);
+    angular.module('hibachi').service('observerService', ObserverService);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../services/observerservice.js.map

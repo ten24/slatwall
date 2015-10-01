@@ -18,7 +18,7 @@ module slatwalladmin {
         private buttonGroup = [];
         private collectionPromise;
         private collectionObject;
-        public static $inject = ['$scope','$element','$transclude','$slatwall','partialsPath','utilityService','collectionConfigService'];
+        public static $inject = ['$scope','$element','$transclude','$slatwall','partialsPath','utilityService','collectionConfigService','paginationService'];
         constructor(
             public $scope,
             public $element,
@@ -26,7 +26,8 @@ module slatwalladmin {
             public $slatwall:ngSlatwall.SlatwallService, 
             public partialsPath:slatwalladmin.partialsPath, 
             public utilityService:slatwalladmin.UtilityService,
-            public collectionConfigService:slatwalladmin.CollectionConfig
+            public collectionConfigService:slatwalladmin.CollectionConfig,
+            public paginationService:slatwadmin.paginationService
         ){
             this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
@@ -34,9 +35,13 @@ module slatwalladmin {
             this.$scope = $scope;
             this.$element = $element;
             this.collectionConfigService = collectionConfigService;
+            this.paginationService = paginationService;
             //this is performed early to populate columns with swlistingcolumn info
             this.$transclude = $transclude;
             this.$transclude(this.$scope,()=>{});
+            
+            this.paginator = paginationService.createPagination();
+            this.paginator.getCollection = this.getCollection;
             
              //if collection Value is string instead of an object then create a collection
             if(angular.isString(this.collection)){
@@ -63,14 +68,33 @@ module slatwalladmin {
                         ,*/
                     );
                 });
-                this.collectionPromise = this.collectionConfig.getEntity();
+                this.collectionConfig.setPageShow(this.paginator.pageShow);
+                this.collectionConfig.setCurrentPage(this.paginator.currentPage);
             }
+            
+            this.getCollection();
+            
+        }
+        
+        public getCollection = ()=>{
+            
+            this.collectionPromise = this.collectionConfig.getEntity();
+            
             this.collectionPromise.then((data)=>{
                 this.collectionData = data;
+                this.paginator.setPageRecordsInfo(this.collectionData);
                 //prepare an exampleEntity for use
                 this.init();
-            });
-            
+            });    
+            return this.collectionPromise;
+        }
+        
+        public escapeRegExp = (str)=> {
+            return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+        }
+        
+        public replaceAll = (str, find, replace)=> {
+           return str.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
         }
         
         public init = () =>{

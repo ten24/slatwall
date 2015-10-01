@@ -1,6 +1,6 @@
 /// <reference path="../../../../client/typings/tsd.d.ts" />
 /// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
-angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function ($provide) {
+angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide', function ($provide) {
         $provide.decorator('$slatwall', [
             "$delegate",
             '$http',
@@ -47,7 +47,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
-                    auditDateTime: '1443557240350',
+                    auditDateTime: '1443712132560',
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -98,7 +98,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
-                    verificationCode: 'fbe368c6fc7cfa050d9c9e829896da2a',
+                    verificationCode: '12d11626da9772d1ac2cd1d383fb7d55',
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -1624,7 +1624,7 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
-                    accountPasswordResetID: "bd495d9cc5be4076c64a088ac9f1660a",
+                    accountPasswordResetID: "d48a8241697b3655ebaf162631d99549",
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
@@ -2916,7 +2916,6 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     modifiedByAccountID: null,
                     z: ''
                 };
-                console.log($delegate);
                 angular.forEach(entities, function (entity) {
                     $delegate['get' + entity.className] = function (options) {
                         var entityInstance = $delegate.newEntity(entity.className);
@@ -3055,6 +3054,15 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                         },
                         $$getValidationByPropertyAndContext: function (property, context) {
                             return _getValidationByPropertyAndContext(this, property, context);
+                        },
+                        $$getTitleByPropertyIdentifier(propertyIdentifier) {
+                            if (propertyIdentifier.split('.').length > 1) {
+                                var listFirst = utilityService.listFirst(propertyIdentifier, '.');
+                                var relatedEntityName = this.metaData[listFirst].cfc;
+                                var exampleEntity = $delegate.newEntity(relatedEntityName);
+                                return exampleEntity = exampleEntity.$$getTitleByPropertyIdentifier(propertyIdentifier.replace(listFirst, ''));
+                            }
+                            return this.metaData.$$getPropertyTitle(propertyIdentifier);
                         },
                         $$getMetaData: function (propertyName) {
                             if (propertyName === undefined) {
@@ -3384,49 +3392,6 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
                     }
                     else {
                         return false;
-                    }
-                };
-                var utilityService = {
-                    formatValue: function (value, formatType, formatDetails, entityInstance) {
-                        if (angular.isUndefined(formatDetails)) {
-                            formatDetails = {};
-                        }
-                        var typeList = ["currency", "date", "datetime", "pixels", "percentage", "second", "time", "truefalse", "url", "weight", "yesno"];
-                        if (typeList.indexOf(formatType)) {
-                            utilityService['format_' + formatType](value, formatDetails, entityInstance);
-                        }
-                        return value;
-                    },
-                    format_currency: function (value, formatDetails, entityInstance) {
-                        if (angular.isUndefined) {
-                            formatDetails = {};
-                        }
-                    },
-                    format_date: function (value, formatDetails, entityInstance) {
-                        if (angular.isUndefined) {
-                            formatDetails = {};
-                        }
-                    },
-                    format_datetime: function (value, formatDetails, entityInstance) {
-                        if (angular.isUndefined) {
-                            formatDetails = {};
-                        }
-                    },
-                    format_pixels: function (value, formatDetails, entityInstance) {
-                        if (angular.isUndefined) {
-                            formatDetails = {};
-                        }
-                    },
-                    format_yesno: function (value, formatDetails, entityInstance) {
-                        if (angular.isUndefined) {
-                            formatDetails = {};
-                        }
-                        if (Boolean(value) === true) {
-                            return entityInstance.metaData.$$getRBKey("define.yes");
-                        }
-                        else if (value === false || value.trim() === 'No' || value.trim === 'NO' || value.trim() === '0') {
-                            return entityInstance.metaData.$$getRBKey("define.no");
-                        }
                     }
                 };
                 var _getFormattedValue = function (propertyName, formatType, entityInstance) {

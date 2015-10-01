@@ -50,6 +50,26 @@ module slatwalladmin{
 			return listArray[listArray.length-1];
         }
         
+        public listRest = (list:string='',delimiter:string=','):string =>{
+            
+            var listArray = list.split(delimiter);
+            var listRestString = ''
+            angular.forEach(listArray,(listItem, index)=>{
+                if(index !== 0){
+                    listRestString += listItem;
+                }
+            });
+            
+			return listRestString;
+        }
+        
+        public listFirst = (list:string='',delimiter:string=','):string =>{
+            
+            var listArray = list.split(delimiter);
+           
+            return listArray[0];
+        }
+        
         public listPrepend = (list:string='', substring:string, delimiter:string=','):string =>{
             
             var listArray = list.split(delimiter);
@@ -69,6 +89,48 @@ module slatwalladmin{
                 return substring
             }
             
+        }
+        
+        public formatValue=(value,formatType,formatDetails,entityInstance)=>{
+            if(angular.isUndefined(formatDetails)){
+                formatDetails = {};
+            }
+            var typeList = ["currency","date","datetime","pixels","percentage","second","time","truefalse","url","weight","yesno"];
+            
+            if(typeList.indexOf(formatType)){
+                this['format_'+formatType](value,formatDetails,entityInstance);
+            }
+            return value;
+        }
+        public format_currency=(value,formatDetails,entityInstance)=>{
+            if(angular.isUndefined){
+                formatDetails = {};
+            }
+        }
+        public format_date=(value,formatDetails,entityInstance)=>{
+            if(angular.isUndefined){
+                formatDetails = {};
+            }
+        }
+       public format_datetime=(value,formatDetails,entityInstance)=>{
+            if(angular.isUndefined){
+                formatDetails = {};
+            }
+        }
+        public format_pixels=(value,formatDetails,entityInstance)=>{
+            if(angular.isUndefined){
+                formatDetails = {};
+            }
+        }
+       public  format_yesno=(value,formatDetails,entityInstance)=>{
+            if(angular.isUndefined){
+                formatDetails = {};
+            }
+            if(Boolean(value) === true ){
+                return entityInstance.metaData.$$getRBKey("define.yes");
+            }else if(value === false || value.trim() === 'No' || value.trim === 'NO' || value.trim() === '0'){
+                return entityInstance.metaData.$$getRBKey("define.no");
+            }
         }
         
         public left = (stringItem:string,count:number):string =>{
@@ -165,5 +227,5 @@ module slatwalladmin{
                 return returnArray;
           }
     }
-    angular.module('slatwalladmin').service('utilityService',UtilityService);    
+    angular.module('hibachi').service('utilityService',UtilityService);    
 }

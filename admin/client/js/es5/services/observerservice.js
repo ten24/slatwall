@@ -108,7 +108,7 @@ var slatwalladmin;
         return ObserverService;
     })(slatwalladmin.BaseService);
     slatwalladmin.ObserverService = ObserverService;
-    angular.module('slatwalladmin').service('observerService', ObserverService);
+    angular.module('hibachi').service('observerService', ObserverService);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../services/observerservice.js.map

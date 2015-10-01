@@ -27,7 +27,7 @@ var slatwalladmin;
                 //this.edit = this.edit || $location.edit
                 this.exampleEntity = this.$slatwall.newEntity(this.collectionData.collectionObject);
                 this.recordProcessButtonDisplayFlag = this.recordProcessButtonDisplayFlag || true;
-                this.collectionConfig = this.collectionData.collectionConfig;
+                this.collectionConfig = this.collectionConfig || this.collectionData.collectionConfig;
                 this.collectionID = this.collectionData.collectionID;
                 this.collectionObject = this.collectionData.collectionObject;
                 this.norecordstext = this.$slatwall.getRBKey('entity.' + this.collectionObject + '.norecords');
@@ -242,7 +242,7 @@ var slatwalladmin;
             this.$transclude(this.$scope, () => { });
             //if collection Value is string instead of an object then create a collection
             if (angular.isString(this.collection)) {
-                var collectionConfig = this.collectionConfigService.newCollectionConfig(this.collection);
+                this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collection);
                 /*
                 propertyIdentifier:"@",
                 processObjectProperty:"@",
@@ -255,13 +255,11 @@ var slatwalladmin;
                 editable:"=",
                 buttonGroup:"="
                 */
-                console.log(this.columns);
                 angular.forEach(this.columns, (column) => {
                     var columnOptions = {};
-                    console.log(column);
-                    collectionConfig.setDisplayProperties(column.propertyIdentifier, column.title, columnOptions);
+                    this.collectionConfig.setDisplayProperties(column.propertyIdentifier, column.title, columnOptions);
                 });
-                this.collectionPromise = collectionConfig.getEntity(this.collection);
+                this.collectionPromise = this.collectionConfig.getEntity();
             }
             this.collectionPromise.then((data) => {
                 this.collectionData = data;

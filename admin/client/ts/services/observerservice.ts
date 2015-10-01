@@ -104,5 +104,5 @@ module slatwalladmin{
           }
         }
     }
-    angular.module('slatwalladmin').service('observerService', ObserverService);
+    angular.module('hibachi').service('observerService', ObserverService);
 }

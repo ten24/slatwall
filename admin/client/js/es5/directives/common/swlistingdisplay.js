@@ -4,7 +4,7 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     var SWListingDisplayController = (function () {
-        function SWListingDisplayController($scope, $element, $transclude, $slatwall, partialsPath, utilityService, collectionConfigService) {
+        function SWListingDisplayController($scope, $element, $transclude, $slatwall, partialsPath, utilityService, collectionConfigService, paginationService) {
             var _this = this;
             this.$scope = $scope;
             this.$element = $element;
@@ -13,6 +13,7 @@ var slatwalladmin;
             this.partialsPath = partialsPath;
             this.utilityService = utilityService;
             this.collectionConfigService = collectionConfigService;
+            this.paginationService = paginationService;
             /* local state variables */
             this.columns = [];
             this.allpropertyidentifiers = "";
@@ -23,6 +24,22 @@ var slatwalladmin;
             this.sortable = false;
             this.exampleEntity = "";
             this.buttonGroup = [];
+            this.getCollection = function () {
+                _this.collectionPromise = _this.collectionConfig.getEntity();
+                _this.collectionPromise.then(function (data) {
+                    _this.collectionData = data;
+                    _this.paginator.setPageRecordsInfo(_this.collectionData);
+                    //prepare an exampleEntity for use
+                    _this.init();
+                });
+                return _this.collectionPromise;
+            };
+            this.escapeRegExp = function (str) {
+                return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+            };
+            this.replaceAll = function (str, find, replace) {
+                return str.replace(new RegExp(_this.escapeRegExp(find), 'g'), replace);
+            };
             this.init = function () {
                 //set defaults if value is not specified
                 //this.edit = this.edit || $location.edit
@@ -238,9 +255,12 @@ var slatwalladmin;
             this.$scope = $scope;
             this.$element = $element;
             this.collectionConfigService = collectionConfigService;
+            this.paginationService = paginationService;
             //this is performed early to populate columns with swlistingcolumn info
             this.$transclude = $transclude;
             this.$transclude(this.$scope, function () { });
+            this.paginator = paginationService.createPagination();
+            this.paginator.getCollection = this.getCollection;
             //if collection Value is string instead of an object then create a collection
             if (angular.isString(this.collection)) {
                 this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collection);
@@ -260,15 +280,13 @@ var slatwalladmin;
                     var columnOptions = {};
                     _this.collectionConfig.setDisplayProperties(column.propertyIdentifier, column.title, columnOptions);
                 });
-                this.collectionPromise = this.collectionConfig.getEntity();
+                //$slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.paginator.getCurrentPage(), pageShow:pageShow, keywords:$scope.keywords});
+                this.collectionConfig.setPageShow(this.paginator.pageShow);
+                this.collectionConfig.setCurrentPage(this.paginator.currentPage);
             }
-            this.collectionPromise.then(function (data) {
-                _this.collectionData = data;
-                //prepare an exampleEntity for use
-                _this.init();
-            });
+            this.getCollection();
         }
-        SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$slatwall', 'partialsPath', 'utilityService', 'collectionConfigService'];
+        SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$slatwall', 'partialsPath', 'utilityService', 'collectionConfigService', 'paginationService'];
         return SWListingDisplayController;
     })();
     slatwalladmin.SWListingDisplayController = SWListingDisplayController;

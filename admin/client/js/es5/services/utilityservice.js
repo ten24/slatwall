@@ -51,6 +51,24 @@ var slatwalladmin;
                 var listArray = list.split(delimiter);
                 return listArray[listArray.length - 1];
             };
+            this.listRest = function (list, delimiter) {
+                if (list === void 0) { list = ''; }
+                if (delimiter === void 0) { delimiter = ','; }
+                var listArray = list.split(delimiter);
+                var listRestString = '';
+                angular.forEach(listArray, function (listItem, index) {
+                    if (index !== 0) {
+                        listRestString += listItem;
+                    }
+                });
+                return listRestString;
+            };
+            this.listFirst = function (list, delimiter) {
+                if (list === void 0) { list = ''; }
+                if (delimiter === void 0) { delimiter = ','; }
+                var listArray = list.split(delimiter);
+                return listArray[0];
+            };
             this.listPrepend = function (list, substring, delimiter) {
                 if (list === void 0) { list = ''; }
                 if (delimiter === void 0) { delimiter = ','; }
@@ -71,6 +89,47 @@ var slatwalladmin;
                 }
                 else {
                     return substring;
+                }
+            };
+            this.formatValue = function (value, formatType, formatDetails, entityInstance) {
+                if (angular.isUndefined(formatDetails)) {
+                    formatDetails = {};
+                }
+                var typeList = ["currency", "date", "datetime", "pixels", "percentage", "second", "time", "truefalse", "url", "weight", "yesno"];
+                if (typeList.indexOf(formatType)) {
+                    _this['format_' + formatType](value, formatDetails, entityInstance);
+                }
+                return value;
+            };
+            this.format_currency = function (value, formatDetails, entityInstance) {
+                if (angular.isUndefined) {
+                    formatDetails = {};
+                }
+            };
+            this.format_date = function (value, formatDetails, entityInstance) {
+                if (angular.isUndefined) {
+                    formatDetails = {};
+                }
+            };
+            this.format_datetime = function (value, formatDetails, entityInstance) {
+                if (angular.isUndefined) {
+                    formatDetails = {};
+                }
+            };
+            this.format_pixels = function (value, formatDetails, entityInstance) {
+                if (angular.isUndefined) {
+                    formatDetails = {};
+                }
+            };
+            this.format_yesno = function (value, formatDetails, entityInstance) {
+                if (angular.isUndefined) {
+                    formatDetails = {};
+                }
+                if (Boolean(value) === true) {
+                    return entityInstance.metaData.$$getRBKey("define.yes");
+                }
+                else if (value === false || value.trim() === 'No' || value.trim === 'NO' || value.trim() === '0') {
+                    return entityInstance.metaData.$$getRBKey("define.no");
                 }
             };
             this.left = function (stringItem, count) {
@@ -165,7 +224,7 @@ var slatwalladmin;
         return UtilityService;
     })(slatwalladmin.BaseService);
     slatwalladmin.UtilityService = UtilityService;
-    angular.module('slatwalladmin').service('utilityService', UtilityService);
+    angular.module('hibachi').service('utilityService', UtilityService);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../services/utilityservice.js.map

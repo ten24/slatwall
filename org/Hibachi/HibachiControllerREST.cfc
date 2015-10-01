@@ -310,6 +310,7 @@ component output="false" accessors="true" extends="HibachiController" {
 			data[lcase(key)] = resourceBundle[key];
 		}
 		arguments.rc.apiResponse.content['data'] = data;
+		arguments.rc.headers['Expires'] = 900;
 	}
 	
 	public any function getPropertyDisplayOptions(required struct rc){

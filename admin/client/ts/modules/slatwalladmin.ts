@@ -3,7 +3,7 @@
 
 ((): void => {
     
-    var app = angular.module('slatwalladmin', ['ngSlatwall','ngSlatwallModel','ui.bootstrap','ngAnimate','ngRoute','ngCkeditor']);
+    var app = angular.module('slatwalladmin', ['hibachi','ngSlatwall','ngSlatwallModel','ui.bootstrap','ngAnimate','ngRoute','ngCkeditor']);
     app.config(
         ["$provide",'$logProvider','$filterProvider','$httpProvider','$routeProvider','$injector','$locationProvider','datepickerConfig', 'datepickerPopupConfig',
         ($provide, $logProvider,$filterProvider,$httpProvider,$routeProvider,$injector,$locationProvider,datepickerConfig, datepickerPopupConfig) =>
@@ -107,9 +107,8 @@
         
         var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
             if(newValue !== oldValue){
+                $rootScope.$broadcast('hasResourceBundle');
                 rbListener();
-                observerService.notify('hasResourceBundle');
-                observerService.detachByEvent('hasResourceBundle');
             }
         });
     

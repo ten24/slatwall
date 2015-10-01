@@ -19,6 +19,7 @@ var slatwalladmin;
             this.authPrefix = 'Bearer ';
             this.request = function (config) {
                 _this.$log.debug('request');
+                config.cache = true;
                 config.headers = config.headers || {};
                 if (_this.$window.localStorage.getItem('token') && _this.$window.localStorage.getItem('token') !== "undefined") {
                     config.headers.Authorization = 'Bearer ' + _this.$window.localStorage.getItem('token');

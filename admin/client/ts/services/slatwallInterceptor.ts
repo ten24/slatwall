@@ -53,6 +53,7 @@ module slatwalladmin{
         
 		public request = (config): ng.IPromise<any> => {
             this.$log.debug('request');
+            config.cache = true;
             config.headers = config.headers || {};
             if (this.$window.localStorage.getItem('token') && this.$window.localStorage.getItem('token') !== "undefined") {
                 
