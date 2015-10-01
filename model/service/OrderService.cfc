@@ -1832,28 +1832,30 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderDelivery;
 	}
 
-    private any function creditGiftCard(required order, required orderDelivery){
+    private any function creditGiftCard(required any order, required any orderDelivery){
         var orderItemGiftCards = getDAO("OrderDAO").getGiftCardOrderItems(arguments.order.getOrderID());
 
         // Now we can charge up the gift cards
         if(orderItemGiftCards.RecordCount > 0){
             for(var orderItemGiftCard in orderItemGiftCards){
-                var item = getService("HibachiService").get("OrderItem", orderItemGiftCard.orderItemID);
+                var item = getOrderItem(orderItemGiftCard.orderItemID);
                 var quantity = orderItemGiftCard.quantity;
-                var term = getService("HibachiService").get("Term", orderItemGiftCard.giftCardExpirationTermID);
+                var term = getTerm(orderItemGiftCard.giftCardExpirationTermID);
                 var recipients = item.getOrderItemGiftRecipients();
 
                 //recipients and cards have already been validated so put them together
                 for(var recipient in recipients){
                     if(!recipient.hasAllAssignedGiftCards()){
                         for(var i=0; i<recipient.getQuantity(); i++){
-                            var card = getService("GiftCardService").newGiftCard();
+                            var card = newGiftCard();
                             var createGiftCard = card.getProcessObject( 'Create' );
 
                             createGiftCard.setOriginalOrderItem(item);
+
                             if(!isNull(term)){
                                 createGiftCard.setGiftCardExpirationTerm(term);
                             }
+
                             createGiftCard.setOrderPayments(arguments.order.getOrderPayments());
                             createGiftCard.setOrderItemGiftRecipient(recipient);
 
