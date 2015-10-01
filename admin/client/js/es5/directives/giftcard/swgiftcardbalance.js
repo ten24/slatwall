@@ -6,7 +6,7 @@ var slatwalladmin;
             var _this = this;
             this.$slatwall = $slatwall;
             this.init = function () {
-                var initialBalance = 0;
+                _this.initialBalance = 0;
                 var totalDebit = 0;
                 var transactionConfig = new slatwalladmin.CollectionConfig(_this.$slatwall, 'GiftCardTransaction');
                 transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, giftCard.giftCardID");
@@ -17,23 +17,20 @@ var slatwalladmin;
                     _this.transactions = response.records;
                     angular.forEach(_this.transactions, function (transaction, index) {
                         if (typeof transaction.creditAmount !== "string") {
-                            initialBalance += transaction.creditAmount;
+                            _this.initialBalance += transaction.creditAmount;
                         }
                         if (typeof transaction.debitAmount !== "string") {
                             totalDebit += transaction.debitAmount;
                         }
                     });
-                    var currentBalance = initialBalance - totalDebit;
-                    //temporarily hardcoded to $
-                    _this.currentBalanceFormatted = "$" + parseFloat(currentBalance.toString()).toFixed(2);
-                    //temporarily hardcoded to $
-                    _this.initialBalanceFormatted = "$" + parseFloat(initialBalance.toString()).toFixed(2);
-                    _this.balancePercentage = ((currentBalance / initialBalance) * 100);
+                    _this.currentBalance = _this.initialBalance - totalDebit;
+                    _this.balancePercentage = ((_this.currentBalance / _this.initialBalance) * 100);
                 });
             };
             this.$slatwall = $slatwall;
             this.init();
         }
+        SWGiftCardBalanceController.$inject = ["$slatwall"];
         return SWGiftCardBalanceController;
     })();
     slatwalladmin.SWGiftCardBalanceController = SWGiftCardBalanceController;
@@ -45,8 +42,8 @@ var slatwalladmin;
             this.bindToController = {
                 giftCard: "=?",
                 transactions: "=?",
-                initialBalanceFormatted: "=?",
-                currentBalanceFormatted: "=?",
+                initialBalance: "=?",
+                currentBalance: "=?",
                 balancePercentage: "=?"
             };
             this.controller = SWGiftCardBalanceController;

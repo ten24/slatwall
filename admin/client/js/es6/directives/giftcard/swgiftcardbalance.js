@@ -5,7 +5,7 @@ var slatwalladmin;
         constructor($slatwall) {
             this.$slatwall = $slatwall;
             this.init = () => {
-                var initialBalance = 0;
+                this.initialBalance = 0;
                 var totalDebit = 0;
                 var transactionConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'GiftCardTransaction');
                 transactionConfig.setDisplayProperties("giftCardTransactionID, creditAmount, debitAmount, giftCard.giftCardID");
@@ -14,26 +14,23 @@ var slatwalladmin;
                 var transactionPromise = this.$slatwall.getEntity("GiftCardTransaction", transactionConfig.getOptions());
                 transactionPromise.then((response) => {
                     this.transactions = response.records;
-                    angular.forEach(this.transactions, function (transaction, index) {
+                    angular.forEach(this.transactions, (transaction, index) => {
                         if (typeof transaction.creditAmount !== "string") {
-                            initialBalance += transaction.creditAmount;
+                            this.initialBalance += transaction.creditAmount;
                         }
                         if (typeof transaction.debitAmount !== "string") {
                             totalDebit += transaction.debitAmount;
                         }
                     });
-                    var currentBalance = initialBalance - totalDebit;
-                    //temporarily hardcoded to $
-                    this.currentBalanceFormatted = "$" + parseFloat(currentBalance.toString()).toFixed(2);
-                    //temporarily hardcoded to $
-                    this.initialBalanceFormatted = "$" + parseFloat(initialBalance.toString()).toFixed(2);
-                    this.balancePercentage = ((currentBalance / initialBalance) * 100);
+                    this.currentBalance = this.initialBalance - totalDebit;
+                    this.balancePercentage = ((this.currentBalance / this.initialBalance) * 100);
                 });
             };
             this.$slatwall = $slatwall;
             this.init();
         }
     }
+    SWGiftCardBalanceController.$inject = ["$slatwall"];
     slatwalladmin.SWGiftCardBalanceController = SWGiftCardBalanceController;
     class GiftCardBalance {
         constructor($slatwall, partialsPath) {
@@ -43,8 +40,8 @@ var slatwalladmin;
             this.bindToController = {
                 giftCard: "=?",
                 transactions: "=?",
-                initialBalanceFormatted: "=?",
-                currentBalanceFormatted: "=?",
+                initialBalance: "=?",
+                currentBalance: "=?",
                 balancePercentage: "=?"
             };
             this.controller = SWGiftCardBalanceController;
