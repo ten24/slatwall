@@ -195,9 +195,9 @@ Notes:
 	<cffunction name="updateEntitiesWithCustomProperties" returntype="boolean">
 		 <cfscript>
 			try{
-				var path = "#ExpandPath('/')#" & "model/entity";
-				var pathCustom = "#ExpandPath('/')#" & "custom/model/entity";
-				var compiledPath = "#ExpandPath('/')#" & "model/entity";
+				var path = "#ExpandPath('/Slatwall/')#" & "model/entity";
+				var pathCustom = "#ExpandPath('/Slatwall/')#" & "custom/model/entity";
+				var compiledPath = "#ExpandPath('/Slatwall/')#" & "model/entity";
 				
 				var directoryList = directoryList(path, false, "path", "*.cfc", "directory ASC");
 				var directoryListByName = directoryList(path, false, "name", "*.cfc", "directory ASC");
