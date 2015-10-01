@@ -161,18 +161,24 @@
 			<tr ng-repeat="pageRecord in swListingDisplay.collectionData.pageRecords" >
 				<!--Selectable-->
 				<td ng-if="swListingDisplay.selectable" class="s-table-select">
-					<a href="##" class="table-action-select{{swListingDisplay.edit ? '' : 'disabled'}}">
+					<a href="##" class="table-action-select{{swListingDisplay.edit ? '' : 'disabled'}}" data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]">
 						<i class="hibachi-ui-radio"></i>
 					</a>
 				</td>
-				<!--- Multiselectable 
-				<cfif thistag.multiselectable>
-					<td class="s-table-checkbox"><a href="##" class="table-action-multiselect#IIF(attributes.edit, DE(""), DE(" disabled"))#" data-idvalue="#record.getPrimaryIDValue()#"><i class="hibachi-ui-checkbox"></i></a></td>
-				</cfif>
-				<!--- Sortable 
-				<cfif thistag.sortable>
-					<td class="s-table-sort"><a href="##" class="table-action-sort" data-idvalue="#record.getPrimaryIDValue()#" data-sortPropertyValue="#record.getValueByPropertyIdentifier( attributes.sortProperty )#"><i class="fa fa-arrows"></i></a></td>
-				</cfif>-->
+				<!-- Multiselectable-->
+				<td ng-if="swListingDisplay.multiselectable" 
+					class="s-table-checkbox">
+					<a href="##" class="table-action-multiselect{{swListingDisplay.edit ? '' : 'disabled'}}" ng-data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]">
+						<i class="hibachi-ui-checkbox"></i>
+					</a>
+				</td>
+				<!--- Sortable -->
+				<!--<td ng-if="swListingDisplay.sortable" 
+					class="s-table-sort">
+					<a href="##" class="table-action-sort" ng-data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]" data-sortPropertyValue="{{record.getValueByPropertyIdentifier( attributes.sortProperty )}}">
+						<i class="fa fa-arrows"></i>
+					</a>
+				</td>-->
 				
 				<!--Expandable Check-->
 				<td 
@@ -204,11 +210,6 @@
 							</td>
 						</cfif>
 					</cfloop>-->
-			</tr>
-			<tr ng-if="swListingDisplay.collectionData.pageRecords && !swListingDisplay.collectionData.pageRecords.length">
-				<td colspan="#thistag.columnCount#" style="text-align:center;">
-					no records
-				</td>
 			</tr>
 			
 			<!--<cfset thistag.loopIndex = 0 />
@@ -327,8 +328,13 @@
 						</td>
 					</cfif>
 				</tr>
-			</cfloop>
-			<cfif !arrayLen(attributes.smartList.getPageRecords())>
+			</cfloop>-->
+			<tr ng-if="swListingDisplay.collectionData.pageRecords && !swListingDisplay.collectionData.pageRecords.length">
+				<td colspan="#thistag.columnCount#" style="text-align:center;">
+					no records
+				</td>
+			</tr>
+			<!--<cfif !arrayLen(attributes.smartList.getPageRecords())>
 				<tr><td colspan="#thistag.columnCount#" style="text-align:center;"><em>#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#</em></td></tr>
 			</cfif>
 			--->

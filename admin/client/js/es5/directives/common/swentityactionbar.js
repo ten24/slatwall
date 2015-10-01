@@ -23,7 +23,7 @@ var slatwalladmin;
                 /*Core settings*/
                 type: "@",
                 object: "=",
-                pageTitle: "=",
+                pageTitle: "@",
                 edit: "=",
                 /*Action Callers (top buttons)*/
                 showcancel: "=",

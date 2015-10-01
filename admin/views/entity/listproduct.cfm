@@ -57,7 +57,7 @@ Notes:
 <cfoutput>
 	<sw-entity-action-bar
 		data-type="listing"
-		data-object=""
+		data-page-title="Products"
 		showCreate="false"
 	>
 		<sw-entity-action-bar-button-group>

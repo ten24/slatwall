@@ -280,7 +280,6 @@ var slatwalladmin;
                     var columnOptions = {};
                     _this.collectionConfig.setDisplayProperties(column.propertyIdentifier, column.title, columnOptions);
                 });
-                //$slatwall.getEntity('collection', {id:$scope.collectionID, currentPage:$scope.paginator.getCurrentPage(), pageShow:pageShow, keywords:$scope.keywords});
                 this.collectionConfig.setPageShow(this.paginator.pageShow);
                 this.collectionConfig.setCurrentPage(this.paginator.currentPage);
             }
