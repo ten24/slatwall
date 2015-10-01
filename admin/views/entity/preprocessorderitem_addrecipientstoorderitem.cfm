@@ -56,20 +56,20 @@ Notes:
 
 <cfoutput>
 	<hb:HibachiEntityProcessForm entity="#rc.orderItem#" edit="#rc.edit#" sRedirectAction="admin:entity.detailorder">
-		
-		<span ng-controller="preprocessorderitem_addorderitemgiftrecipient as giftRecipientControl"> 
+
+		<span ng-controller="preprocessorderitem_addorderitemgiftrecipient as giftRecipientControl">
 			<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderItem#">
 			</hb:HibachiEntityActionBar>
-	
+
 			<hb:HibachiPropertyRow>
 				<hb:HibachiPropertyList>
-					<input value="#rc.orderItem.getNumberOfUnassignedGiftCards()#" ng-model="giftRecipientControl.quantity" sw-numbers-only min-number="giftRecipientControl.getAssignedCount()" class="hide" readonly>
+					<input value="#rc.orderItem.getNumberOfUnassignedGiftCards()#" name="quantity" ng-model="giftRecipientControl.quantity" sw-numbers-only min-number="giftRecipientControl.getAssignedCount()" class="hide" readonly>
 					<!--- Process Add Order Item Gift Recipient --->
-					
-			
+
+
 					<h5>Assign Gift Cards</h5>
-	                <input type="hidden" name="assignedGiftRecipientQuantity" ng-value="giftRecipientControl.getAssignedCount()" /> 
-					<div class="table-responsive s-gift-card-table">			
+	                <input type="hidden" name="assignedGiftRecipientQuantity" ng-value="giftRecipientControl.getAssignedCount()" />
+					<div class="table-responsive s-gift-card-table">
 						<div ng-show="giftRecipientControl.getUnassignedCount()" class="alert alert-info" role="alert">Use the "search or add recipient" field below to assign recipients to gift cards.  </br><strong>You have ({{giftRecipientControl.getUnassignedCount()}}) gift card<span ng-hide="giftRecipientControl.getUnassignedCount() == 1">s</span> to assign</strong></div>
 						<div ng-show="giftRecipientControl.getUnassignedCount() != giftRecipientControl.quantity">
 							<table class="table table-bordered table-hover">
@@ -85,13 +85,13 @@ Notes:
 						        </thead>
 						        <tbody>
 						        	<tr sw-order-item-gift-recipient-row ng-repeat="recipient in giftRecipientControl.orderItemGiftRecipients" ng-show="giftRecipientControl.orderItemGiftRecipients.length != 0" ng-class="{'s-save-row':recipient.editing}" recipient="recipient" index="$index" recipients="giftRecipientControl.orderItemGiftRecipients" quantity="giftRecipientControl.quantity">
-	                    
+
 						        	</tr>
 						        </tbody>
 						    </table>
 						</div>
 					</div>
-	
+
 					<div class="form-group " ng-show="giftRecipientControl.getUnassignedCount() > 0">
 						<div class="s-search-filter s-gift-card">
 	                        <div class="input-group">
@@ -101,7 +101,7 @@ Notes:
 										<i class="fa fa-search"></i>
 									</div>
 								</form>
-								
+
 	            				<ul ng-show="giftRecipientControl.searchText.length > 0" ng-hide="giftRecipientControl.currentGiftRecipient.firstName" class="dropdown-menu">
 									<!-- Item-->
 									<li ng-repeat="account in collection.pageRecords">
@@ -112,7 +112,7 @@ Notes:
 												</div>
 												<div class="col-xs-10 s-info">
 													<div class="s-name">
-														<span ng-bind="account.firstName"></span> 
+														<span ng-bind="account.firstName"></span>
 														<span ng-bind="account.lastName"></span>
 													</div>
 													<div class="s-email" ng-bind="account.primaryEmailAddress_emailAddress"></div>
@@ -122,7 +122,7 @@ Notes:
 									</li>
 									<!-- //Item-->
 	                			</ul>
-	
+
 	                        </div>
 	                        <div>
 	                            <!-- Only show if there is text -->
@@ -132,7 +132,7 @@ Notes:
 	                        </div>
 							<div class="s-add-info-dropdown" ng-hide="!giftRecipientControl.adding">
 								<div class="s-add-info-dropdown-inner">
-							
+
 									<h5>Create New Recipient</h5>
 									<div class="form-group">
 										<label>First Name<i class="fa fa-asterisk"></i></label>
@@ -174,7 +174,7 @@ Notes:
 	        			<!---End Search--->
 					</div>
 					<!---End Gift Recipient--->
-				</span>	
+				</span>
 			</hb:HibachiPropertyList>
 
 		</hb:HibachiPropertyRow>

@@ -589,6 +589,36 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 
+	public any function processOrderItem_AddRecipientsToOrderItem(required any orderItem, required any processObject){
+		var totalQuantity = 0;
+        var count = 0;
+        if(structKeyExists(request.context, "assignedGiftRecipientQuantity") &&  request.context["assignedGiftRecipientQuantity"] <= request.context["quantity"]){
+            while(totalQuantity < request.context["quantity"]){
+                var currentRecipient = count & "recipient";
+                if(!isNull(orderItem)){
+                    var recipientProcessObject = orderItem.getProcessObject("addOrderItemGiftRecipient");
+                    recipientProcessObject.setOrderItem(orderItem);
+                }
+                if(structKeyExists(request.context, currentRecipient & "firstName")){
+                    recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
+                    recipientProcessObject.setLastName(request.context[currentRecipient & "lastName"]);
+                    recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);
+                    recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
+                    recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"]));
+                    var order = this.processOrderItem_addOrderItemGiftRecipient(arguments.orderItem.getOrder(), recipientProcessObject);
+                    totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);
+                    count++;
+                } else {
+                    break;
+                }
+            }
+        } else {
+            order.addError("addOrderItemGiftRecipient", "Cannot assign more recipients then there are gift cards.");
+        }
+
+        return order;
+	}
+
 	public any function processOrderItem_addOrderItemGiftRecipient(required any order, required any processObject){
 
 		var item = arguments.processObject.getOrderItem();
