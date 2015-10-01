@@ -27,7 +27,7 @@ module slatwalladmin {
 		
 		public init = ():void =>{
 //			this.class = this.utilityService.replaceAll(this.utilityService.replaceAll(this.getAction(),':',''),'.','') + ' ' + this.class;
-//			this.type = this.type || 'link';
+			this.type = this.type || 'link';
 //			this.actionItem = this.getActionItem();
 //			this.actionItemEntityName = this.getActionItemEntityName();
 //			this.text = this.getText();
