@@ -70,43 +70,8 @@ module slatwalladmin {
                 });
                 this.collectionConfig.setPageShow(this.paginator.pageShow);
                 this.collectionConfig.setCurrentPage(this.paginator.currentPage);
+                this.exampleEntity = this.$slatwall.newEntity(this.collection);
             }
-            
-            this.getCollection();
-            
-        }
-        
-        public getCollection = ()=>{
-            
-            this.collectionPromise = this.collectionConfig.getEntity();
-            
-            this.collectionPromise.then((data)=>{
-                this.collectionData = data;
-                this.paginator.setPageRecordsInfo(this.collectionData);
-                //prepare an exampleEntity for use
-                this.init();
-            });    
-            return this.collectionPromise;
-        }
-        
-        public escapeRegExp = (str)=> {
-            return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
-        }
-        
-        public replaceAll = (str, find, replace)=> {
-           return str.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
-        }
-        
-        public init = () =>{
-            
-            //set defaults if value is not specified
-            //this.edit = this.edit || $location.edit
-            this.exampleEntity = this.$slatwall.newEntity(this.collectionData.collectionObject);
-            this.recordProcessButtonDisplayFlag = this.recordProcessButtonDisplayFlag || true;
-            this.collectionConfig = this.collectionConfig || this.collectionData.collectionConfig;
-            this.collectionID = this.collectionData.collectionID;
-            this.collectionObject = this.collectionData.collectionObject;
-            this.norecordstext = this.$slatwall.getRBKey('entity.'+this.collectionObject+'.norecords');
             
             //setup export action
             if(angular.isDefined(this.exportAction)){
@@ -132,12 +97,16 @@ module slatwalladmin {
             }
             if(this.multiselectable && !this.columns.length){
                 //check if it has an active flag and if so then add the active flag
-                /*<cfif thistag.exampleEntity.hasProperty('activeFlag')>
-                    <cfset attributes.smartList.addFilter("activeFlag", 1) />
-                </cfif>*/ 
+                if(this.exampleEntity.metaData.activeProperty){
+                    this.collectionConfig.addFilter('activeFlag',1);
+                }
             }
             
             //Look for Hierarchy in example entity
+            if(!this.parentPropertyName || (this.parentPropertyName && !this.parentProopertyName.length) ){
+                
+            }
+            
             /*
             <cfif not len(attributes.parentPropertyName)>
                 <cfset thistag.entityMetaData = getMetaData(thisTag.exampleEntity) />
@@ -146,6 +115,44 @@ module slatwalladmin {
                 </cfif>
             </cfif>
             */
+            
+            this.getCollection();
+            
+        }
+        
+        public getCollection = ()=>{
+            this.collectionConfig.setPageShow(this.paginator.getPageShow());
+            this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
+            this.collectionConfig.setKeywords(this.paginator.keywords);
+            this.collectionPromise = this.collectionConfig.getEntity();
+            
+            this.collectionPromise.then((data)=>{
+                this.collectionData = data;
+                this.paginator.setPageRecordsInfo(this.collectionData);
+                //prepare an exampleEntity for use
+                this.init();
+            });    
+            return this.collectionPromise;
+        }
+        
+        public escapeRegExp = (str)=> {
+            return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+        }
+        
+        public replaceAll = (str, find, replace)=> {
+           return str.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
+        }
+        
+        public init = () =>{
+            
+            //set defaults if value is not specified
+            //this.edit = this.edit || $location.edit
+            
+            this.recordProcessButtonDisplayFlag = this.recordProcessButtonDisplayFlag || true;
+            this.collectionConfig = this.collectionConfig || this.collectionData.collectionConfig;
+            this.collectionID = this.collectionData.collectionID;
+            this.collectionObject = this.collectionData.collectionObject;
+            this.norecordstext = this.$slatwall.getRBKey('entity.'+this.collectionObject+'.norecords');
             
             //Setup Hierachy Expandable
             /*
@@ -424,11 +431,9 @@ module slatwalladmin {
 		public templateUrl;
         public static $inject = ['partialsPath'];
 		constructor(
-            public partialsPath:slatwalladmin.partialsPath 
+            public partialsPath:hibachi.partialsPath 
         ){
             this.partialsPath = partialsPath;
-            console.log('partialsPath');
-            console.log(this.partialsPath);
 			this.templateUrl = this.partialsPath+'listingdisplay.html';
 		} 
 		

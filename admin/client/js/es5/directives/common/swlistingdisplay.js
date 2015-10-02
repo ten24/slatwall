@@ -25,6 +25,9 @@ var slatwalladmin;
             this.exampleEntity = "";
             this.buttonGroup = [];
             this.getCollection = function () {
+                _this.collectionConfig.setPageShow(_this.paginator.getPageShow());
+                _this.collectionConfig.setCurrentPage(_this.paginator.getCurrentPage());
+                _this.collectionConfig.setKeywords(_this.paginator.keywords);
                 _this.collectionPromise = _this.collectionConfig.getEntity();
                 _this.collectionPromise.then(function (data) {
                     _this.collectionData = data;
@@ -43,42 +46,11 @@ var slatwalladmin;
             this.init = function () {
                 //set defaults if value is not specified
                 //this.edit = this.edit || $location.edit
-                _this.exampleEntity = _this.$slatwall.newEntity(_this.collectionData.collectionObject);
                 _this.recordProcessButtonDisplayFlag = _this.recordProcessButtonDisplayFlag || true;
                 _this.collectionConfig = _this.collectionConfig || _this.collectionData.collectionConfig;
                 _this.collectionID = _this.collectionData.collectionID;
                 _this.collectionObject = _this.collectionData.collectionObject;
                 _this.norecordstext = _this.$slatwall.getRBKey('entity.' + _this.collectionObject + '.norecords');
-                //setup export action
-                if (angular.isDefined(_this.exportAction)) {
-                    _this.exportAction = "/?slatAction=main.collectionExport&collectionExportID=";
-                }
-                //Setup table class
-                _this.tableclass = _this.tableclass || '';
-                _this.tableclass = _this.utilityService.listPrepend(_this.tableclass, 'table table-bordered table-hover', ' ');
-                //Setup Select
-                if (_this.selectFieldName && _this.selectFieldName.length) {
-                    _this.selectable = true;
-                    _this.tableclass = _this.utilityService.listAppend(_this.tableclass, 'table-select', ' ');
-                    _this.tableattributes = _this.utilityService.listAppend(_this.tableattributes, 'data-selectfield="' + _this.selectFieldName + '"', ' ');
-                }
-                //Setup MultiSelect
-                if (_this.multiselectFieldName && _this.multiselectFieldName.length) {
-                    _this.multiselectable = true;
-                    _this.tableclass = _this.utilityService.listAppend(_this.tableclass, 'table-multiselect', ' ');
-                    _this.tableattributes = _this.utiltiyService.listAppend(_this.tableattributes, 'data-multiselectpropertyidentifier="' + _this.multiselectPropertyIdentifier + '"', ' ');
-                }
-                if (_this.multiselectable && !_this.columns.length) {
-                }
-                //Look for Hierarchy in example entity
-                /*
-                <cfif not len(attributes.parentPropertyName)>
-                    <cfset thistag.entityMetaData = getMetaData(thisTag.exampleEntity) />
-                    <cfif structKeyExists(thisTag.entityMetaData, "hb_parentPropertyName")>
-                        <cfset attributes.parentPropertyName = thisTag.entityMetaData.hb_parentPropertyName />
-                    </cfif>
-                </cfif>
-                */
                 //Setup Hierachy Expandable
                 /*
                 <cfif len(attributes.parentPropertyName) && attributes.parentPropertyName neq 'false'>
@@ -282,7 +254,44 @@ var slatwalladmin;
                 });
                 this.collectionConfig.setPageShow(this.paginator.pageShow);
                 this.collectionConfig.setCurrentPage(this.paginator.currentPage);
+                this.exampleEntity = this.$slatwall.newEntity(this.collection);
             }
+            //setup export action
+            if (angular.isDefined(this.exportAction)) {
+                this.exportAction = "/?slatAction=main.collectionExport&collectionExportID=";
+            }
+            //Setup table class
+            this.tableclass = this.tableclass || '';
+            this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
+            //Setup Select
+            if (this.selectFieldName && this.selectFieldName.length) {
+                this.selectable = true;
+                this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-select', ' ');
+                this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-selectfield="' + this.selectFieldName + '"', ' ');
+            }
+            //Setup MultiSelect
+            if (this.multiselectFieldName && this.multiselectFieldName.length) {
+                this.multiselectable = true;
+                this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-multiselect', ' ');
+                this.tableattributes = this.utiltiyService.listAppend(this.tableattributes, 'data-multiselectpropertyidentifier="' + this.multiselectPropertyIdentifier + '"', ' ');
+            }
+            if (this.multiselectable && !this.columns.length) {
+                //check if it has an active flag and if so then add the active flag
+                if (this.exampleEntity.metaData.activeProperty) {
+                    this.collectionConfig.addFilter('activeFlag', 1);
+                }
+            }
+            //Look for Hierarchy in example entity
+            if (!this.parentPropertyName || (this.parentPropertyName && !this.parentProopertyName.length)) {
+            }
+            /*
+            <cfif not len(attributes.parentPropertyName)>
+                <cfset thistag.entityMetaData = getMetaData(thisTag.exampleEntity) />
+                <cfif structKeyExists(thisTag.entityMetaData, "hb_parentPropertyName")>
+                    <cfset attributes.parentPropertyName = thisTag.entityMetaData.hb_parentPropertyName />
+                </cfif>
+            </cfif>
+            */
             this.getCollection();
         }
         SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$slatwall', 'partialsPath', 'utilityService', 'collectionConfigService', 'paginationService'];
@@ -356,8 +365,6 @@ var slatwalladmin;
             this.link = function (scope, element, attrs, controller, transclude) {
             };
             this.partialsPath = partialsPath;
-            console.log('partialsPath');
-            console.log(this.partialsPath);
             this.templateUrl = this.partialsPath + 'listingdisplay.html';
         }
         SWListingDisplay.$inject = ['partialsPath'];

@@ -117,6 +117,10 @@ Notes:
                 <cfloop array="#rc.entities#" index="local.entity">
                 	entities['#local.entity.getClassName()#'] = #serializeJson(local.entity.getPropertiesStruct())#;
                 	entities['#local.entity.getClassName()#'].className = '#local.entity.getClassName()#';
+                	<cfset local.metaData = getMetaData(local.entity)>
+                	<cfif structKeyExists(local.metaData,'hb_parentPropertyName')>
+                		entities['#local.entity.getClassName()#'].hb_parentPropertyName = '#local.metaData.hb_parentPropertyName#';
+                	</cfif>
                 	validations['#local.entity.getClassName()#'] = #serializeJSON($.slatwall.getService('hibachiValidationService').getValidationStruct(local.entity))#;
                 	defaultValues['#local.entity.getClassName()#'] = {
                 	<cfset local.isProcessObject = Int(Find('_',local.entity.getClassName()) gt 0)>
@@ -173,7 +177,6 @@ Notes:
 						z:''
 	                };
                 </cfloop>
-                	
                 angular.forEach(entities,function(entity){
 					
                 	$delegate['get'+entity.className] = function(options){
@@ -231,6 +234,9 @@ Notes:
 						
 						this.metaData = entity;
 						this.metaData.className = entity.className;
+						if(entity.hb_parentPropertyName){
+							this.metaData.hb_parentPropertyName = entity.hb_parentPropertyName;
+						}
 						
 						this.metaData.$$getRBKey = function(rbKey,replaceStringData){
 							return $delegate.rbKey(rbKey,replaceStringData);
@@ -1210,7 +1216,7 @@ Notes:
 	<cfset local.jsOutput = request.slatwallScope.getApplicationValue('ngSlatwallModel')>
 </cfif>
 <cfscript>
-	local.filePath = expandPath('/') & 'admin/client/ts/modules/ngslatwallmodel.ts';
+	local.filePath = expandPath('/Slatwall/') & 'admin/client/ts/modules/ngslatwallmodel.ts';
 	fileWrite(local.filePath,local.jsOutput);	
 </cfscript>
 <!---

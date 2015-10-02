@@ -289,6 +289,7 @@ module slatwalladmin{
 
         addFilter= (propertyIdentifier: string, value:string, comparisonOperator: string = '=', logicalOperator?: string) =>{
             //this.addJoin(propertyIdentifier);
+          
             if(this.filterGroups[0].filterGroup.length && !logicalOperator) logicalOperator = 'AND';
 
             this.filterGroups[0].filterGroup.push(

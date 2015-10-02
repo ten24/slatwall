@@ -258,8 +258,8 @@ var slatwalladmin;
                 });
             };
             this.addFilter = function (propertyIdentifier, value, comparisonOperator, logicalOperator) {
-                if (comparisonOperator === void 0) { comparisonOperator = '='; }
                 //this.addJoin(propertyIdentifier);
+                if (comparisonOperator === void 0) { comparisonOperator = '='; }
                 if (_this.filterGroups[0].filterGroup.length && !logicalOperator)
                     logicalOperator = 'AND';
                 _this.filterGroups[0].filterGroup.push(new Filter(_this.formatCollectionName(propertyIdentifier), value, comparisonOperator, logicalOperator, propertyIdentifier.split('.').pop(), value));

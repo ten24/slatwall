@@ -42,42 +42,11 @@ var slatwalladmin;
             this.init = () => {
                 //set defaults if value is not specified
                 //this.edit = this.edit || $location.edit
-                this.exampleEntity = this.$slatwall.newEntity(this.collectionData.collectionObject);
                 this.recordProcessButtonDisplayFlag = this.recordProcessButtonDisplayFlag || true;
                 this.collectionConfig = this.collectionConfig || this.collectionData.collectionConfig;
                 this.collectionID = this.collectionData.collectionID;
                 this.collectionObject = this.collectionData.collectionObject;
                 this.norecordstext = this.$slatwall.getRBKey('entity.' + this.collectionObject + '.norecords');
-                //setup export action
-                if (angular.isDefined(this.exportAction)) {
-                    this.exportAction = "/?slatAction=main.collectionExport&collectionExportID=";
-                }
-                //Setup table class
-                this.tableclass = this.tableclass || '';
-                this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
-                //Setup Select
-                if (this.selectFieldName && this.selectFieldName.length) {
-                    this.selectable = true;
-                    this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-select', ' ');
-                    this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-selectfield="' + this.selectFieldName + '"', ' ');
-                }
-                //Setup MultiSelect
-                if (this.multiselectFieldName && this.multiselectFieldName.length) {
-                    this.multiselectable = true;
-                    this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-multiselect', ' ');
-                    this.tableattributes = this.utiltiyService.listAppend(this.tableattributes, 'data-multiselectpropertyidentifier="' + this.multiselectPropertyIdentifier + '"', ' ');
-                }
-                if (this.multiselectable && !this.columns.length) {
-                }
-                //Look for Hierarchy in example entity
-                /*
-                <cfif not len(attributes.parentPropertyName)>
-                    <cfset thistag.entityMetaData = getMetaData(thisTag.exampleEntity) />
-                    <cfif structKeyExists(thisTag.entityMetaData, "hb_parentPropertyName")>
-                        <cfset attributes.parentPropertyName = thisTag.entityMetaData.hb_parentPropertyName />
-                    </cfif>
-                </cfif>
-                */
                 //Setup Hierachy Expandable
                 /*
                 <cfif len(attributes.parentPropertyName) && attributes.parentPropertyName neq 'false'>
@@ -281,7 +250,44 @@ var slatwalladmin;
                 });
                 this.collectionConfig.setPageShow(this.paginator.pageShow);
                 this.collectionConfig.setCurrentPage(this.paginator.currentPage);
+                this.exampleEntity = this.$slatwall.newEntity(this.collection);
             }
+            //setup export action
+            if (angular.isDefined(this.exportAction)) {
+                this.exportAction = "/?slatAction=main.collectionExport&collectionExportID=";
+            }
+            //Setup table class
+            this.tableclass = this.tableclass || '';
+            this.tableclass = this.utilityService.listPrepend(this.tableclass, 'table table-bordered table-hover', ' ');
+            //Setup Select
+            if (this.selectFieldName && this.selectFieldName.length) {
+                this.selectable = true;
+                this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-select', ' ');
+                this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-selectfield="' + this.selectFieldName + '"', ' ');
+            }
+            //Setup MultiSelect
+            if (this.multiselectFieldName && this.multiselectFieldName.length) {
+                this.multiselectable = true;
+                this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-multiselect', ' ');
+                this.tableattributes = this.utiltiyService.listAppend(this.tableattributes, 'data-multiselectpropertyidentifier="' + this.multiselectPropertyIdentifier + '"', ' ');
+            }
+            if (this.multiselectable && !this.columns.length) {
+                //check if it has an active flag and if so then add the active flag
+                if (this.exampleEntity.metaData.activeProperty) {
+                    this.collectionConfig.addFilter('activeFlag', 1);
+                }
+            }
+            //Look for Hierarchy in example entity
+            if (!this.parentPropertyName || (this.parentPropertyName && !this.parentProopertyName.length)) {
+            }
+            /*
+            <cfif not len(attributes.parentPropertyName)>
+                <cfset thistag.entityMetaData = getMetaData(thisTag.exampleEntity) />
+                <cfif structKeyExists(thisTag.entityMetaData, "hb_parentPropertyName")>
+                    <cfset attributes.parentPropertyName = thisTag.entityMetaData.hb_parentPropertyName />
+                </cfif>
+            </cfif>
+            */
             this.getCollection();
         }
     }
@@ -354,8 +360,6 @@ var slatwalladmin;
             this.link = (scope, element, attrs, controller, transclude) => {
             };
             this.partialsPath = partialsPath;
-            console.log('partialsPath');
-            console.log(this.partialsPath);
             this.templateUrl = this.partialsPath + 'listingdisplay.html';
         }
     }

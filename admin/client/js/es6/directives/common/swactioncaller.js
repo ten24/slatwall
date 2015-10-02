@@ -36,7 +36,6 @@ var slatwalladmin;
                     <cfset attributes.class &= " disabled" />
                 </cfif>
                 */
-                console.log(this);
             };
             this.getAction = () => {
                 return this.action || '';
@@ -172,7 +171,6 @@ var slatwalladmin;
                 }
                 return "";
             };
-            console.log('actioncaller');
             this.$scope = $scope;
             this.$element = $element;
             this.$templateRequest = $templateRequest;
@@ -180,6 +178,8 @@ var slatwalladmin;
             this.partialsPath = partialsPath;
             this.$slatwall = $slatwall;
             this.utilityService = utilityService;
+            console.log('actionCaller');
+            console.log(this.queryString);
             this.$templateRequest(this.partialsPath + "actioncaller.html").then((html) => {
                 var template = angular.element(html);
                 this.$element.parent().append(template);
