@@ -1292,6 +1292,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 
+						if(arguments.order.getPaymentAmountDue() > 0){
+							arguments.order.addMessage('paymentProcessedMessage', rbKey('entity.order.process.placeOrder.paymentProcessedMessage'));
+						}
 
 						// After all of the processing, double check that the order does not have errors.  If one of the payments didn't go through, then an error would have been set on the order.
 						if((!arguments.order.hasErrors() || amountAuthorizeCreditReceive gt 0) && arguments.order.getOrderPaymentAmountNeeded() == 0) {
@@ -1884,10 +1887,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
                             if(card.hasErrors()){
                                 arguments.order.addErrors(card.getErrors());
-                            } else {
-                                var cardData = {};
-                                cardData.entity=card;
-                                getService("hibachiEventService").announceEvent(eventName="afterGiftCard_orderPlacedSuccess", eventData=cardData);
                             }
                         }
                     }

@@ -46,8 +46,9 @@
 Notes:
 
 --->
-
 <cfcomponent output="false" accessors="true" extends="HibachiService">
+
+	<cfproperty name="orderService" />
 
 <cffunction name="processBouncedEmails" access="public" returntype="void">
 
@@ -57,6 +58,7 @@ Notes:
 			var mailServerUsername = getService("SettingService").getSettingValue("emailIMAPServerUsername");
 			var mailServerPassword = getService("SettingService").getSettingValue("emailIMAPServerPassword");
 			var useSSL = true;
+			var giftCardBounce = false;
 
 			var javaSystem = createObject("java", "java.lang.System");
 			var javaSystemProps = javaSystem.getProperties();
@@ -125,7 +127,7 @@ Notes:
 					if(getHeaderValue(header, "Related-Object") NEQ ""){
 						emailBounce.setRelatedObject(getHeaderValue(header, "Related-Object"));
 						emailBounce.setRelatedObjectID(getHeaderValue(header, "Related-Object-ID"));
-						var giftCardBounce = true;
+						giftCardBounce = true;
 					} else {
 
 						if(FindNoCase("Gift Card Code:", emailBody)){
@@ -142,7 +144,7 @@ Notes:
 								emailBounce.setRelatedObjectID(giftCardID);
 							}
 
-							var giftCardBounce = true;
+							giftCardBounce = true;
 						}
 					}
 
@@ -187,6 +189,12 @@ Notes:
 
 					if(giftCardBounce){
 						report &= "Gift Card Bounce " & emailBounce.getRelatedObjectID() & " ";
+
+						var giftCard = getGiftCard(emailBounce.getRelatedObjectID());
+						var processObject = giftCard.getOrder().getProcessObject("failedGiftRecipient");
+						processObject.setGiftCard(giftCard);
+						getOrderService().process(giftCard.getOrder(), processObject);
+
 					}
 
 					if(emailBounce.hasErrors()){

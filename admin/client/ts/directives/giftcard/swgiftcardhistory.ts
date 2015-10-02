@@ -7,6 +7,8 @@ module slatwalladmin {
 		public giftCard; 
 		public order; 
 		
+		public static $inject = ["$slatwall"];
+		
 		
 		constructor(private $slatwall:ngSlatwall.$Slatwall){
 			this.$slatwall = $slatwall; 
@@ -103,6 +105,7 @@ module slatwalladmin {
 	export class GiftCardHistory implements ng.IDirective { 
 		
 		public static $inject = ["$slatwall", "partialsPath"];
+		
 		public restrict:string; 
 		public templateUrl:string;
 		public scope = {};

@@ -13,6 +13,7 @@ module slatwalladmin {
 	export class GiftCardOverview implements ng.IDirective { 
 		
 		public static $inject = ["$slatwall", "partialsPath"];
+		
 		public restrict:string; 
 		public templateUrl:string;
 		public scope = {}; 
