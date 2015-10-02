@@ -176,7 +176,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			var cardData = {};
 			cardData.entity=arguments.giftCard;
 			//resend email
-			getService("hibachiEventService").announceEvent(eventName="afterGiftCard_orderPlacedSuccess", eventData=cardData);
+			getService("hibachiEventService").announceEvent(eventName="afterGiftCardProcess_createSuccess", eventData=cardData);
 		}
 
 		return arguments.giftCard;
@@ -186,7 +186,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		arguments.giftCard.setOwnerAccount(arguments.processObject.getAccount());
 
-		this.saveGiftCard(arguments.giftCard);
+		arguments.giftCard = this.saveGiftCard(arguments.giftCard);
+
+		return arguments.giftCard;
+
+	}
+
+	public any function processOrder_failedGiftRecipient(required any giftCard, required any processObject){
+
+		//Set the gift card to the orderer's email temporarily
+		arguments.giftCard.setOwnerAddress(giftCard.getOrder().getAccount().getPrimaryEmailAddress().getEmailAddress());
+
+		arguments.giftCard = this.saveGiftCard(arguments.giftCard);
 
 		return arguments.giftCard;
 
