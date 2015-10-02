@@ -34,4 +34,4 @@ angular.module('slatwalladmin')
         };
     }]);
 
-//# sourceMappingURL=../../directives/common/swrbkey.js.map
+//# sourceMappingURL=swrbkey.js.map

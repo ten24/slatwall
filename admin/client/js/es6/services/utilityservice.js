@@ -90,4 +90,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').service('utilityService', UtilityService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/utilityservice.js.map
+//# sourceMappingURL=utilityservice.js.map

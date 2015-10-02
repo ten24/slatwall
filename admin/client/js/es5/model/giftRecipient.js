@@ -19,4 +19,4 @@ var slatwalladmin;
     slatwalladmin.GiftRecipient = GiftRecipient;
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../model/giftRecipient.js.map
+//# sourceMappingURL=giftRecipient.js.map

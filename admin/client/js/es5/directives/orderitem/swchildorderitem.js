@@ -269,4 +269,4 @@ angular.module('slatwalladmin').directive('swChildOrderItem', ['$log',
         };
     }]);
 
-//# sourceMappingURL=../../directives/orderitem/swchildorderitem.js.map
+//# sourceMappingURL=swchildorderitem.js.map

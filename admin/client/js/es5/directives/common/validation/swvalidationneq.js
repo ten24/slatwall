@@ -17,4 +17,4 @@ angular.module('slatwalladmin').directive("swvalidationneq", [function () {
         };
     }]);
 
-//# sourceMappingURL=../../../directives/common/validation/swvalidationneq.js.map
+//# sourceMappingURL=swvalidationneq.js.map

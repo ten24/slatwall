@@ -99,4 +99,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').service('observerService', ObserverService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/observerservice.js.map
+//# sourceMappingURL=observerservice.js.map
