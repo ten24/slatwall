@@ -42,13 +42,13 @@ module ngSlatwall {
         }
         
         public buildUrl = (action:string,queryString:string):string =>{
-            //actionName example: slatAction. defined in FW1
+            //actionName example: slatAction. defined in FW1 and populated to config
             var actionName = this.getConfigValue('action');
             var baseUrl = this.getConfigValue('baseURL')
             if(angular.isDefined(queryString)){
                 
             }
-            return baseUrl + '?' + actionName + '=' + action;
+            return baseUrl + '?' + actionName + '=' + action + queryString;
         }
         
         getJsEntities= () =>{

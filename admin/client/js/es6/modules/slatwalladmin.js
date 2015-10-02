@@ -91,6 +91,7 @@
             };
             $rootScope.loadedResourceBundle = false;
             $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
+            $rootScope.buildUrl = $slatwall.buildUrl;
             var rbListener = $rootScope.$watch('loadedResourceBundle', function (newValue, oldValue) {
                 if (newValue !== oldValue) {
                     $rootScope.$broadcast('hasResourceBundle');

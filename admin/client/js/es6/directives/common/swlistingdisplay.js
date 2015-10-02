@@ -4,7 +4,7 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     class SWListingDisplayController {
-        constructor($scope, $element, $transclude, $slatwall, partialsPath, utilityService, collectionConfigService) {
+        constructor($scope, $element, $transclude, $slatwall, partialsPath, utilityService, collectionConfigService, paginationService) {
             this.$scope = $scope;
             this.$element = $element;
             this.$transclude = $transclude;
@@ -12,6 +12,7 @@ var slatwalladmin;
             this.partialsPath = partialsPath;
             this.utilityService = utilityService;
             this.collectionConfigService = collectionConfigService;
+            this.paginationService = paginationService;
             /* local state variables */
             this.columns = [];
             this.allpropertyidentifiers = "";
@@ -22,6 +23,22 @@ var slatwalladmin;
             this.sortable = false;
             this.exampleEntity = "";
             this.buttonGroup = [];
+            this.getCollection = () => {
+                this.collectionPromise = this.collectionConfig.getEntity();
+                this.collectionPromise.then((data) => {
+                    this.collectionData = data;
+                    this.paginator.setPageRecordsInfo(this.collectionData);
+                    //prepare an exampleEntity for use
+                    this.init();
+                });
+                return this.collectionPromise;
+            };
+            this.escapeRegExp = (str) => {
+                return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+            };
+            this.replaceAll = (str, find, replace) => {
+                return str.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
+            };
             this.init = () => {
                 //set defaults if value is not specified
                 //this.edit = this.edit || $location.edit
@@ -237,9 +254,12 @@ var slatwalladmin;
             this.$scope = $scope;
             this.$element = $element;
             this.collectionConfigService = collectionConfigService;
+            this.paginationService = paginationService;
             //this is performed early to populate columns with swlistingcolumn info
             this.$transclude = $transclude;
             this.$transclude(this.$scope, () => { });
+            this.paginator = paginationService.createPagination();
+            this.paginator.getCollection = this.getCollection;
             //if collection Value is string instead of an object then create a collection
             if (angular.isString(this.collection)) {
                 this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collection);
@@ -259,16 +279,13 @@ var slatwalladmin;
                     var columnOptions = {};
                     this.collectionConfig.setDisplayProperties(column.propertyIdentifier, column.title, columnOptions);
                 });
-                this.collectionPromise = this.collectionConfig.getEntity();
+                this.collectionConfig.setPageShow(this.paginator.pageShow);
+                this.collectionConfig.setCurrentPage(this.paginator.currentPage);
             }
-            this.collectionPromise.then((data) => {
-                this.collectionData = data;
-                //prepare an exampleEntity for use
-                this.init();
-            });
+            this.getCollection();
         }
     }
-    SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$slatwall', 'partialsPath', 'utilityService', 'collectionConfigService'];
+    SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$slatwall', 'partialsPath', 'utilityService', 'collectionConfigService', 'paginationService'];
     slatwalladmin.SWListingDisplayController = SWListingDisplayController;
     class SWListingDisplay {
         constructor(partialsPath) {

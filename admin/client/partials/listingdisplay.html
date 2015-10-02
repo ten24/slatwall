@@ -183,7 +183,7 @@
 					<sw-action-caller 
 						ng-if="swListingDisplay.recordDetailAction && swListingDisplay.recordDetailAction.length"
 						data-action="{{swListingDisplay.recordDetailAction}}" 
-						data-queryString="" 
+						data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}" 
 						data-class="btn btn-default btn-xs" 
 						data-icon="eye-open" 
 						data-iconOnly="true" 
@@ -194,7 +194,7 @@
 					<sw-action-caller 
 						ng-if="swListingDisplay.recordEditAction && swListingDisplay.recordEditAction.length"
 						data-action="{{swListingDisplay.recordEditAction}}" 
-						data-queryString="" 
+						data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}" 
 						data-class="btn btn-default btn-xs" 
 						data-icon="pencil" 
 						data-iconOnly="true" 
@@ -206,7 +206,7 @@
 					<sw-action-caller 
 						ng-if="swListingDisplay.recordDeleteAction && swListingDisplay.recordDeleteAction.length"
 						data-action="{{swListingDisplay.recordDeleteAction}}" 
-						data-queryString="" 
+						data-query-string="{{'&'+swListingDisplay.exampleEntity.$$getIDName()+'='+pageRecord[swListingDisplay.exampleEntity.$$getIDName()]+swListingDisplay.recordDetailQueryString}}" 
 						data-class="btn btn-default btn-xs" 
 						data-icon="trash" 
 						data-iconOnly="true" 

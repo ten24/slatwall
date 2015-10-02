@@ -26,12 +26,12 @@ var ngSlatwall;
             this._loadedResourceBundle = false;
             this._deferred = {};
             this.buildUrl = function (action, queryString) {
-                //actionName example: slatAction. defined in FW1
+                //actionName example: slatAction. defined in FW1 and populated to config
                 var actionName = _this.getConfigValue('action');
                 var baseUrl = _this.getConfigValue('baseURL');
                 if (angular.isDefined(queryString)) {
                 }
-                return baseUrl + '?' + actionName + '=' + action;
+                return baseUrl + '?' + actionName + '=' + action + queryString;
             };
             this.getJsEntities = function () {
                 return _this._jsEntities;

@@ -41,6 +41,16 @@ var slatwalladmin;
                 var listArray = list.split(delimiter);
                 return listArray[listArray.length - 1];
             };
+            this.listRest = (list = '', delimiter = ',') => {
+                var listArray = list.split(delimiter);
+                var listRestString = '';
+                angular.forEach(listArray, (listItem, index) => {
+                    if (index !== 0) {
+                        listRestString += listItem;
+                    }
+                });
+                return listRestString;
+            };
             this.listFirst = (list = '', delimiter = ',') => {
                 var listArray = list.split(delimiter);
                 return listArray[0];

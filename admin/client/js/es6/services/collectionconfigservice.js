@@ -215,10 +215,10 @@ var slatwalladmin;
                         title = _DividedTitles[index].trim();
                     }
                     else {
-                        var exampleEntity = this.$slatwall.newEntity(this.baseEntityName);
-                        console.log(exampleEntity);
                         console.log(column);
-                        title = exampleEntity.$$getTitleByPropertyIdentifier(column);
+                        title = this.$slatwall.getRBKey("entity." + this.baseEntityName + "." + column);
+                        console.log('getTitle');
+                        console.log(title);
                     }
                     this.addColumn(this.formatCollectionName(column), title, options);
                 });
@@ -283,7 +283,6 @@ var slatwalladmin;
             }
         }
     }
-    CollectionConfig.$inject = ['$slatwall'];
     slatwalladmin.CollectionConfig = CollectionConfig;
     angular.module('slatwalladmin')
         .factory('collectionConfigService', ['$slatwall', ($slatwall) => new CollectionConfig($slatwall)]);
