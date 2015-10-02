@@ -1085,12 +1085,6 @@ function initModal( modalWin ){
 	return modalLink;
 }
 
-function initAngularInModal( response ){
-	
-	
-	
-}
-
 function updatePermissionCheckboxDisplay( checkbox ) {
 	jQuery.each( jQuery('.hibachi-permission-checkbox[data-hibachi-parentcheckbox="' + jQuery( checkbox ).attr('name') + '"]'), function(i, v) {
 
