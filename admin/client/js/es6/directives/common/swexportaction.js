@@ -13,4 +13,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../directives/common/swexportaction.js.map
+//# sourceMappingURL=swexportaction.js.map

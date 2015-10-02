@@ -57,4 +57,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../directives/content/swcontentbasic.js.map
+//# sourceMappingURL=swcontentbasic.js.map

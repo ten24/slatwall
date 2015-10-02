@@ -7,9 +7,8 @@
 			</div>
 			<div class="col-xs-9 s-detail-header-table">
 
-
 				<div class="responsive-table">
-					<table class="table">
+					<table ng-class="{'s-more-results': swGiftCardHistory.transactions.length > 10}" class="table">
 						<thead>
 							<tr>
 								<th></th>
@@ -20,7 +19,6 @@
 								<th>Balance</th>
 							</tr>
 						</thead>
-						<tbody>
 							<tr ng-class="{'s-purchase':transaction.debit, 's-success':transaction.activated, 's-error':transaction.bouncedEmail}" ng-repeat="transaction in swGiftCardHistory.transactions">
 								<!-- Initial Transactions -->
 								<td ng-if-start="$index==swGiftCardHistory.transactions.length-1"><i class="fa fa-plus"></i></td>
