@@ -5,4 +5,4 @@
         }]);
 })();
 
-//# sourceMappingURL=../modules/loggingmodule.js.map
+//# sourceMappingURL=loggingmodule.js.map
