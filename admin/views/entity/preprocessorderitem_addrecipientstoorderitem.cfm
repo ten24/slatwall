@@ -55,7 +55,7 @@ Notes:
 <cfparam name="rc.edit" type="boolean" />
 
 <cfoutput>
-	<hb:HibachiEntityProcessForm entity="#rc.orderItem#" edit="#rc.edit#" sRedirectAction="admin:entity.detailorder">
+	<hb:HibachiEntityProcessForm entity="#rc.orderItem#" edit="#rc.edit#" sRedirectAction="admin:entity.detailorderitem">
 
 		<span ng-controller="preprocessorderitem_addorderitemgiftrecipient as giftRecipientControl">
 			<hb:HibachiEntityActionBar type="preprocess" object="#rc.orderItem#">

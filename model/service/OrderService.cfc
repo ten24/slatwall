@@ -408,7 +408,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                 while(totalQuantity < arguments.processObject.getQuantity()){
                     var currentRecipient = count & "recipient";
                     if(!isNull(newOrderItem)){
-                        var recipientProcessObject = newOrderItem.getProcessObject("addOrderItemGiftRecipient");
+                        var recipientProcessObject = newOrderItem.getOrder().getProcessObject("addOrderItemGiftRecipient");
                         recipientProcessObject.setOrderItem(newOrderItem);
                     }
                     if(structKeyExists(request.context, currentRecipient & "firstName")){
@@ -417,7 +417,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                         recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);
                         recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
                         recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"]));
-                        arguments.order = this.processOrderItem_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
+                        arguments.order = this.processOrder_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
                         totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);
                         count++;
                     } else {
@@ -595,9 +595,9 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
         if(structKeyExists(request.context, "assignedGiftRecipientQuantity") &&  request.context["assignedGiftRecipientQuantity"] <= request.context["quantity"]){
             while(totalQuantity < request.context["quantity"]){
                 var currentRecipient = count & "recipient";
-                if(!isNull(orderItem)){
-                    var recipientProcessObject = orderItem.getProcessObject("addOrderItemGiftRecipient");
-                    recipientProcessObject.setOrderItem(orderItem);
+                if(!isNull(arguments.orderItem)){
+                    var recipientProcessObject = arguments.orderItem.getOrder().getProcessObject("addOrderItemGiftRecipient");
+                    recipientProcessObject.setOrderItem(arguments.orderItem);
                 }
                 if(structKeyExists(request.context, currentRecipient & "firstName")){
                     recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
@@ -605,7 +605,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                     recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);
                     recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
                     recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"]));
-                    var order = this.processOrderItem_addOrderItemGiftRecipient(arguments.orderItem.getOrder(), recipientProcessObject);
+                    var order = this.processOrder_addOrderItemGiftRecipient(arguments.orderItem.getOrder(), recipientProcessObject);
                     totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);
                     count++;
                 } else {
@@ -613,13 +613,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                 }
             }
         } else {
-            order.addError("addOrderItemGiftRecipient", "Cannot assign more recipients then there are gift cards.");
+             arguments.orderItem.getOrder().addError("addOrderItemGiftRecipient", "Cannot assign more recipients then there are gift cards.");
         }
 
-        return order;
+        return arguments.orderItem;
 	}
 
-	public any function processOrderItem_addOrderItemGiftRecipient(required any order, required any processObject){
+	public any function processOrder_addOrderItemGiftRecipient(required any order, required any processObject){
 
 		var item = arguments.processObject.getOrderItem();
 		var recipient = this.newOrderItemGiftRecipient();
