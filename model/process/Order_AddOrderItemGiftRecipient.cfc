@@ -1,4 +1,4 @@
-<!---
+/*
 
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
@@ -26,7 +26,6 @@
     custom code, regardless of the license terms of these independent
     modules, and to copy and distribute the resulting program under terms
     of your choice, provided that you follow these specific guidelines:
-
 	- You also meet the terms and conditions of the license of each
 	  independent module
 	- You must not alter the default display of the Slatwall name or logo from
@@ -34,7 +33,6 @@
 	- Your custom code must not alter or create any files inside Slatwall,
 	  except in the following directories:
 		/integrationServices/
-
 	You may copy and distribute the modified version of this program that meets
 	the above guidelines as a combined work under the terms of GPL for this program,
 	provided that you include the source code of that other code when and as the
@@ -45,29 +43,19 @@
 
 Notes:
 
---->
+*/
+component output="false" accessors="true" extends="HibachiProcess"{
 
-<cfimport prefix="swa" taglib="../../../../tags" />
-<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
+	// Injected Entity
+	property name="order" cfc="Order";
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one";
 
-<cfparam name="rc.order" type="any" />
-<cfset giftCardOrderItems = rc.order.getGiftCardOrderItems() />
-<cfparam name="rc.edit" type="boolean" />
+	// Data Properties
+ 	property name="firstName" type="string";
+ 	property name="lastName" type="string";
+ 	property name="emailAddress" type="string";
+ 	property name="account";
+ 	property name="quantity" type="numeric";
+ 	property name="giftMessage";
 
-
-<cfloop index="i" from="1" to="#arrayLen(giftCardOrderItems)#">
-    <cfset recipientSmartList = giftCardOrderItems[i].getAllOrderItemGiftRecipientsSmartList() />
-    <cfoutput>
-        <hb:HibachiListingDisplay title="#giftCardOrderItems[i].getSku().getSkuCode()#" smartList="#recipientSmartList#"
-                    recordDetailAction="admin:entity.detailorderitemgiftrecipient"
-                    recordEditAction="admin:entity.editorderitemgiftrecipient">
-                <hb:HibachiListingColumn propertyIdentifier="firstName" />
-                <hb:HibachiListingColumn propertyIdentifier="lastName" />
-                <hb:HibachiListingColumn propertyIdentifier="emailAddress" />
-                <hb:HibachiListingColumn propertyIdentifier="giftMessage" />
-                <hb:HibachiListingColumn propertyIdentifier="quantity" />
-        </hb:HibachiListingDisplay>
-
-		<hb:HibachiProcessCaller action="admin:entity.preprocessorderitem" entity="#giftCardOrderItems[i]#" processContext="addRecipientsToOrderItem" class="btn btn-default" icon="plus" modal="true" hideDisabled="false" />
-    </cfoutput>
-</cfloop>
+}
