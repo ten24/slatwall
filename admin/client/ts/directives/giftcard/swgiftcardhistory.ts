@@ -92,7 +92,7 @@ module slatwalladmin {
 			});		
 			
 			var orderConfig = new slatwalladmin.CollectionConfig(this.$slatwall, 'Order');
-			orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName, account.primaryEmailAddress.emailAddress");
+			orderConfig.setDisplayProperties("orderID, orderNumber, orderOpenDateTime, account.firstName, account.lastName, account.accountID, account.primaryEmailAddress.emailAddress");
 			orderConfig.addFilter('orderID', this.giftCard.originalOrderItem_order_orderID);
 			orderConfig.setAllRecords(true);
 		
