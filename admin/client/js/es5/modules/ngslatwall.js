@@ -29,7 +29,11 @@ var ngSlatwall;
                 //actionName example: slatAction. defined in FW1 and populated to config
                 var actionName = _this.getConfigValue('action');
                 var baseUrl = _this.getConfigValue('baseURL');
-                if (angular.isDefined(queryString)) {
+                queryString = queryString || '';
+                if (angular.isDefined(queryString) && queryString.length) {
+                    if (queryString.indexOf('&') !== 0) {
+                        queryString = '&' + queryString;
+                    }
                 }
                 return baseUrl + '?' + actionName + '=' + action + queryString;
             };

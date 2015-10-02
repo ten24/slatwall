@@ -71,7 +71,7 @@ Notes:
 					data-entity="product" 
 					data-process-context="create" 
 					data-text="#rc.$.slatwall.rbKey('define.contentAccess')# #rc.$.slatwall.rbKey('entity.product')#" 
-					data-querystring="baseProductType=contentAccess" 
+					data-query-string="baseProductType=contentAccess" 
 					data-disabled="#!$.slatwall.getSmartList("Content").getRecordsCount()#" 
 					data-disabled-text="#$.slatwall.rbKey('admin.entity.listproduct.createNoContent')#" 
 					data-type="list" />
@@ -81,7 +81,7 @@ Notes:
 					data-entity="product" 
 					data-process-context="create"
 					data-text="#rc.$.slatwall.rbKey('define.event')# #rc.$.slatwall.rbKey('entity.product')#" 
-					data-querystring="baseProductType=event" 
+					data-query-string="baseProductType=event" 
 					type="list" 
 				/></sw-process-caller>
 			</sw-action-caller-dropdown>

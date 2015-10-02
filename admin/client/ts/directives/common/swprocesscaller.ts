@@ -6,31 +6,22 @@ module slatwalladmin {
     'use strict';
     
     export class SWProcessCallerController{
-		public static $inject = ['$templateRequest','$compile','partialsPath','$scope','$element','$transclude'];
-        constructor(public $templateRequest:ng.ITemplateRequestService, public $compile:ng.ICompileService,public partialsPath,public $scope,public $element,public $transclude:ng.ITranscludeFunction){
+		public static $inject = ['$templateRequest','$compile','partialsPath','$scope','$element','$transclude','utilityService'];
+        constructor(public $templateRequest:ng.ITemplateRequestService, public $compile:ng.ICompileService,public partialsPath,public $scope,public $element,public $transclude:ng.ITranscludeFunction,utilityService){
 			this.$templateRequest = $templateRequest;
 			this.$compile = $compile;
 			this.partialsPath = partialsPath;
-			this.$scope = $scope;
-			this.$element = $element;
-			this.$transclude = this.$transclude;
+            this.utilityService = utilityService;
             this.type = this.type || 'link';
+            this.queryString = this.queryString || '';
+            this.$scope = $scope;
+            this.$element = $element;
+            this.$transclude = this.$transclude;
 			this.$templateRequest(this.partialsPath+"processcaller.html").then((html)=>{
 				var template = angular.element(html);
 				this.$element.parent().append(template);
-				$compile(template)($scope);
+				$compile(template)(this.$scope);
 			});
-			// this.$transclude();
-            // this.$transclude((transElem,transScope)=>{
-			// 	$element.append(transElem);
-            //     console.log('tranclude');
-            //     console.log(transElem);
-            //     console.log(transScope);
-            // });
-
-			console.log('init process caller controller');
-            console.log(this);
-			
         }
     }
 	
@@ -44,7 +35,7 @@ module slatwalladmin {
 			processContext:"@",
 			hideDisabled:"=",
 			type:"@",
-			querystring:"@",
+			queryString:"@",
 			text:"@",
 			title:"@",
 			class:"@",
@@ -58,15 +49,16 @@ module slatwalladmin {
         };
         public controller=SWProcessCallerController
         public controllerAs="swProcessCaller";
-		
-		constructor(){
+		public static $inject = ['partialsPath','utilityService'];
+		constructor(private partialsPath,private utilityService){
+            this.partialsPath = partialsPath;
+            this.utilityService = utilityService;
 		}
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-			
 		}
 	}
     
-	angular.module('slatwalladmin').directive('swProcessCaller',[() => new SWProcessCaller()]);
+	angular.module('slatwalladmin').directive('swProcessCaller',['partialsPath','utilityService',(partialsPath,utilityService) => new SWProcessCaller(partialsPath,utilityService)]);
 }
 

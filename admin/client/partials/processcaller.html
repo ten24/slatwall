@@ -3,12 +3,13 @@
 <cfif !isObject(attributes.entity) || (isObject(attributes.entity) && ( !attributes.disabled || !attributes.hideDisabled ) )>
 		<hb:HibachiActionCaller attributecollection="#attributes#" />
 	</cfif>-->
+	{{swProcessCaller.queryString}}
 <sw-action-caller
 	
 	data-type="{{swProcessCaller.type}}"
 	data-action="{{swProcessCaller.action}}"
 	data-text="{{swProcessCaller.text}}"
-	data-query-string="{{swProcessCaller.queryString}}"
+	data-query-string="{{swProcessCaller.queryString+'&processContext='+swProcessCaller.processContext}}"
 	data-title="{{swProcessCaller.title}}"
 	data-class="{{swProcessCaller.class}}"
 	data-icon="{{swProcessCaller.icon}}"

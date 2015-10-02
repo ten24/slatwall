@@ -8,7 +8,6 @@ module slatwalladmin {
     export class SWActionCallerController{
         public static $inject = ['$scope','$element','$templateRequest','$compile','partialsPath','utilityService','$slatwall'];
         constructor(private $scope,private $element,private $templateRequest:ng.ITemplateRequestService, private $compile:ng.ICompileService,private partialsPath, private utilityService:slatwalladmin.UtilityService, private $slatwall:ngSlatwall.SlatwallService){
-            console.log('actioncaller');
             this.$scope = $scope;
             this.$element = $element;
 			this.$templateRequest = $templateRequest;
@@ -16,6 +15,8 @@ module slatwalladmin {
             this.partialsPath = partialsPath; 
             this.$slatwall = $slatwall;
 			this.utilityService = utilityService;
+            console.log('actionCaller');
+            console.log(this.queryString);
             this.$templateRequest(this.partialsPath+"actioncaller.html").then((html)=>{
 				var template = angular.element(html);
 				this.$element.parent().append(template);
@@ -50,7 +51,6 @@ module slatwalladmin {
 				<cfset attributes.class &= " disabled" />
 			</cfif>
 			*/
-            console.log(this);
 		}
         
         public getAction = ():string =>{

@@ -4,7 +4,7 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     var SWProcessCallerController = (function () {
-        function SWProcessCallerController($templateRequest, $compile, partialsPath, $scope, $element, $transclude) {
+        function SWProcessCallerController($templateRequest, $compile, partialsPath, $scope, $element, $transclude, utilityService) {
             var _this = this;
             this.$templateRequest = $templateRequest;
             this.$compile = $compile;
@@ -15,31 +15,26 @@ var slatwalladmin;
             this.$templateRequest = $templateRequest;
             this.$compile = $compile;
             this.partialsPath = partialsPath;
+            this.utilityService = utilityService;
+            this.type = this.type || 'link';
+            this.queryString = this.queryString || '';
             this.$scope = $scope;
             this.$element = $element;
             this.$transclude = this.$transclude;
-            this.type = this.type || 'link';
             this.$templateRequest(this.partialsPath + "processcaller.html").then(function (html) {
                 var template = angular.element(html);
                 _this.$element.parent().append(template);
-                $compile(template)($scope);
+                $compile(template)(_this.$scope);
             });
-            // this.$transclude();
-            // this.$transclude((transElem,transScope)=>{
-            // 	$element.append(transElem);
-            //     console.log('tranclude');
-            //     console.log(transElem);
-            //     console.log(transScope);
-            // });
-            console.log('init process caller controller');
-            console.log(this);
         }
-        SWProcessCallerController.$inject = ['$templateRequest', '$compile', 'partialsPath', '$scope', '$element', '$transclude'];
+        SWProcessCallerController.$inject = ['$templateRequest', '$compile', 'partialsPath', '$scope', '$element', '$transclude', 'utilityService'];
         return SWProcessCallerController;
     })();
     slatwalladmin.SWProcessCallerController = SWProcessCallerController;
     var SWProcessCaller = (function () {
-        function SWProcessCaller() {
+        function SWProcessCaller(partialsPath, utilityService) {
+            this.partialsPath = partialsPath;
+            this.utilityService = utilityService;
             this.restrict = 'E';
             this.scope = {};
             this.bindToController = {
@@ -48,7 +43,7 @@ var slatwalladmin;
                 processContext: "@",
                 hideDisabled: "=",
                 type: "@",
-                querystring: "@",
+                queryString: "@",
                 text: "@",
                 title: "@",
                 class: "@",
@@ -64,11 +59,14 @@ var slatwalladmin;
             this.controllerAs = "swProcessCaller";
             this.link = function (scope, element, attrs) {
             };
+            this.partialsPath = partialsPath;
+            this.utilityService = utilityService;
         }
+        SWProcessCaller.$inject = ['partialsPath', 'utilityService'];
         return SWProcessCaller;
     })();
     slatwalladmin.SWProcessCaller = SWProcessCaller;
-    angular.module('slatwalladmin').directive('swProcessCaller', [function () { return new SWProcessCaller(); }]);
+    angular.module('slatwalladmin').directive('swProcessCaller', ['partialsPath', 'utilityService', function (partialsPath, utilityService) { return new SWProcessCaller(partialsPath, utilityService); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
 //# sourceMappingURL=../../directives/common/swprocesscaller.js.map

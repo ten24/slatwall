@@ -44,9 +44,12 @@ module ngSlatwall {
         public buildUrl = (action:string,queryString:string):string =>{
             //actionName example: slatAction. defined in FW1 and populated to config
             var actionName = this.getConfigValue('action');
-            var baseUrl = this.getConfigValue('baseURL')
-            if(angular.isDefined(queryString)){
-                
+            var baseUrl = this.getConfigValue('baseURL');
+            queryString = queryString || '';
+            if(angular.isDefined(queryString) && queryString.length){
+                if(queryString.indexOf('&') !== 0){
+                    queryString = '&'+ queryString;
+                }    
             }
             return baseUrl + '?' + actionName + '=' + action + queryString;
         }
