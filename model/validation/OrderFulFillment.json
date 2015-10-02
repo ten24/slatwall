@@ -23,7 +23,7 @@
 		"order":							[{"contexts":"save","required":true}],
 		"fulfillmentCharge":				[{"contexts":"save","dataType":"numeric","minValue":0}],
 		"fulfillmentMethod":				[{"contexts":"save","required":true,"method":"allOrderFulfillmentItemsAreEligibleForFulfillmentMethod"}],
-		"orderFulfillmentItems":			[{"contexts":"placeOrder,fulfillItems","minCollection":1}],
+		"orderFulfillmentItems":			[{"contexts":"placeOrder,fulfillItems","minCollection":1, "method":"hasGiftCardCodes"}],
 		"quantityUndelivered":				[{"contexts":"fulfillItems","minValue":0}],
 		"emailAddress":						[{"contexts":"placeOrder","conditions":"fulfillmentTypeEmail","required":true}],
 		"pickupLocation":					[{"contexts":"placeOrder","conditions":"fulfillmentTypePickup","required":true}],

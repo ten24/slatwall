@@ -124,6 +124,10 @@ component entityname="SlatwallOrderItem" table="SwOrderItem" persistent="true" a
 
 	}
 
+	public boolean function isGiftCardOrderItem(){
+		return this.getSku().isGiftCardSku();
+	}
+
     public any function getAllOrderItemGiftRecipientsSmartList(){
         var orderItemGiftRecipientSmartList = getService("OrderService").getOrderItemGiftRecipientSmartList();
         orderItemGiftRecipientSmartList.joinRelatedProperty("SlatwallOrderItemGiftRecipient", "orderItem", "left", true);
