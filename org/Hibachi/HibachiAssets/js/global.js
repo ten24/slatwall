@@ -383,44 +383,6 @@ function setupEventHandlers() {
 				}
 			}
 		});
-		
-//		jQuery('#adminModal').load( modalLink, function(response, status, xhr){
-//			
-//			initUIElements('#adminModal');
-//			
-//			jQuery('#adminModal').html(response);
-//			jQuery('#adminModal').modal();
-//			
-//			var elem = angular.element(document.getElementById('ngApp'));
-//		    var injector = elem.injector();
-//		    var $compile = injector.get('$compile'); 
-//		    var $rootScope = injector.get('$rootScope'); 
-//		    
-//		    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
-//			initUIElements('#adminModal');
-//			
-//			jQuery('#adminModal').css({
-//				'width': 'auto'
-//			});
-//			
-//			jQuery('#adminModal input').each(function(index,input){
-//				//used to digest previous jquery value into the ng-model
-//				jQuery(input).trigger('input');
-//			});
-//			
-//
-//			
-//
-//			/*
-//			jQuery('#adminModal').css({
-//				'width': 'auto',
-//				'margin-left': function () {
-//		            return -(jQuery('#adminModal').width() / 2);
-//		        }
-//			});
-//			*/
-//		});
-
 	});
 
 	jQuery('body').on('click', '.modalload-fullwidth', function(e){
