@@ -1,0 +1,15 @@
+<input type="number" class="form-control" 
+		    		 ng-model="propertyDisplay.object.data[propertyDisplay.property]"
+		    		 ng-disabled="!propertyDisplay.editable"
+		    		 ng-show="propertyDisplay.editing"
+		    		 ng-change="propertyDisplay.onChange"
+		    		 name="{{propertyDisplay.property}}"
+/>
+<!-- Error Messages -->
+    
+<span style="color:red"
+	ng-repeat="(key,value) in propertyDisplay.errors"
+	ng-show="(propertyDisplay.form.$submitted && propertyDisplay.form[propertyDisplay.property].$invalid) || (propertyDisplay.form[propertyDisplay.property].$invalid && propertyDisplay.form[propertyDisplay.property].$dirty)"
+>
+  <span  ng-show="key === 'required'">{{propertyDisplay.title}} is a required field<br></span>
+</span>

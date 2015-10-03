@@ -342,13 +342,24 @@ var ngSlatwall;
                 var params = {
                     locale: locale
                 };
-                return $http.get(urlString, { params: params }).success((response) => {
+                $http.get(urlString, { params: params }).success((response) => {
                     this._resourceBundle[locale] = response.data;
-                    //deferred.resolve(response);
+                    deferred.resolve(response);
                 }).error((response) => {
                     this._resourceBundle[locale] = {};
-                    //deferred.reject(response);
+                    deferred.reject(response);
                 });
+                return deferred.promise;
+            };
+            this.getCurrencies = () => {
+                var deferred = this.$q.defer();
+                var urlString = this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getCurrencies&instantiationKey=' + this.getConfig().instantiationKey;
+                $http.get(urlString).success((response) => {
+                    deferred.resolve(response);
+                }).error((response) => {
+                    deferred.reject(response);
+                });
+                return deferred.promise;
             };
             this.rbKey = (key, replaceStringData) => {
                 ////$log.debug('rbkey');
