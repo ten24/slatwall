@@ -45,7 +45,7 @@
                                                  </dd>
                     
                     <dt> Yesno</dt>               <dd>   This is used by booleans and flags to create a radio group of Yes and No
-                                                        <br><swf:form-field type="yesno" name="yesno label:" class="formControl" options="yes,no"></swf:form-field>
+                                                        <br><swf:form-field type="yesno" name="yesno" class="formControl"></swf:form-field>
                                                  </dd>
                                                  
                      <hr>                            

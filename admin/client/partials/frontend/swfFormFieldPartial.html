@@ -1,7 +1,7 @@
 <div class="form-group">
 	<p class="text-center loader {{class}}" ng-if="loader"><i class="fa fa-spinner fa-spin" ng-if="loader"></i></p>
 	<!--- handle the label and loader  --->
-    <label ng-bind="name" ng-if="name" class="{{class}}" for="{{name}}"></label>
+    <label ng-bind="name" ng-if="name && type !== 'yesno'" class="{{class}}" for="{{name}}"></label>
     <!-- handle the actual element -->
     <ng-switch on="type">
     	
@@ -34,11 +34,9 @@
             </div>
         </div>
         
-        <div ng-switch-when="yesno" class="{{class}}" name="{{name}}">
-        	<div ng-if="!selected">
-                <input type="radio" name="{{name}}" value="1" text="Yes"/>
-                <input type="radio" name="{{name}}" value="0" text="No" checked="true"/>
-            </div>	
+        <div ng-switch-when="yesno" name="{{name}}">
+                <label class="radio-inline"><input type="radio" name="{{name}}" value="1" text="Yes"/>Yes</label>
+                <label class="radio-inline"><input type="radio" name="{{name}}" value="0" text="No" checked="true"/>No</label>
         </div>
         
     </ng-switch>
