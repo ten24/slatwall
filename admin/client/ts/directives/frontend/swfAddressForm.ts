@@ -1,5 +1,5 @@
 angular.module('slatwalladmin')
-.directive('slatwallAddressForm', [
+.directive('swfAddressForm', [
 '$log',
 '$templateCache',
 '$window',
@@ -22,7 +22,7 @@ angular.module('slatwalladmin')
 				fieldList:"@",
 				fieldClass:"@"
 			},
-			templateUrl:partialsPath+'/frontend/addressFormPartial.html',
+			templateUrl:partialsPath+'/frontend/swfAddressFormPartial.html',
 			link: function(scope, element, attrs, formCtrl){
 				scope.fieldList 		= attrs.fieldList || "countryCode,name,company,streetAddress,street2Address,locality,city,stateCode,postalCode"
 				scope.address   		= attrs.address   || {};

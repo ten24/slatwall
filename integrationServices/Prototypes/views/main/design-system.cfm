@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" ng-app="slatwalladmin" class="ng-scope">
+
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -41,7 +41,7 @@
 		<section class="s-ds-header">
 			<div class="container">
 				<h1>Slatwall Design System</h1>
-				<p>Slatwall's design system was created to help our team solve some of the pain points of maintaing, test, and evloveing our current css & HTML structures.  The system is based on Brad Frost's <a href="http://bradfrost.com/blog/post/atomic-web-design/">Atomic Design Concept</a>.</p>
+				<p>Slatwall's design system was created to help our team solve some of the pain points of maintaing, test, and evolveing our current css & HTML structures.  The system is based on Brad Frost's <a href="http://bradfrost.com/blog/post/atomic-web-design/">Atomic Design Concept</a>.</p>
 			</div>
 		</section>
 		
@@ -1449,14 +1449,15 @@
 		<style>
 			/*Overwirtes*/
 			body {
-				padding:0px;
+				padding:50px;
 			}
 					
 			/*Header*/
 			.s-ds-header {
 				background: #F58620;
 				color: #fff;
-				padding: 30px;
+				padding: 100px;
+				margin:20px;
 			}
 			.s-ds-header h1 {
 				margin-top:0px;
@@ -1492,4 +1493,3 @@
 		</style>
 		
 	</body>
-</html>
