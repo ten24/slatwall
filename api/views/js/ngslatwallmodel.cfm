@@ -108,9 +108,8 @@ Notes:
 			        angular.extend(_config, slatwallAngular.slatwallConfig);
 			    }	
 			    
-			    
-	            	
                 var _jsEntities = {};
+				var _jsEntityInstances = {};
                 var entities = {};
                 var validations = {};
                 var defaultValues = {};
@@ -588,8 +587,10 @@ Notes:
 						}
 						}
 					});
+					//_jsEntityInstances[entity.className] = $delegate.newEntity(entity.className);
                 });
 				$delegate.setJsEntities(_jsEntities);
+				$delegate.setJsEntityInstances(_jsEntityInstances);
 				
 				var _init = function(entityInstance,data){
 	                for(var key in data) {

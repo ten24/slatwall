@@ -6,7 +6,7 @@
 var ngSlatwall;
 (function (ngSlatwall) {
     class SlatwallService {
-        constructor($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, _config, _jsEntities) {
+        constructor($window, $q, $http, $timeout, $log, $rootScope, $location, $anchorScroll, utilityService, formService, _config, _jsEntities, _jsEntityInstances) {
             this.$window = $window;
             this.$q = $q;
             this.$http = $http;
@@ -19,6 +19,7 @@ var ngSlatwall;
             this.formService = formService;
             this._config = _config;
             this._jsEntities = _jsEntities;
+            this._jsEntityInstances = _jsEntityInstances;
             this._resourceBundle = {};
             this._resourceBundleLastModified = '';
             this._loadingResourceBundle = false;
@@ -41,6 +42,12 @@ var ngSlatwall;
             };
             this.setJsEntities = (jsEntities) => {
                 this._jsEntities = jsEntities;
+            };
+            this.getJsEntityInstances = () => {
+                return this._jsEntityInstances;
+            };
+            this.setJsEntityInstances = (jsEntityInstances) => {
+                this._jsEntityInstances = jsEntityInstances;
             };
             //service method used to transform collection data to collection objects based on a collectionconfig
             this.populateCollection = (collectionData, collectionConfig) => {
@@ -477,6 +484,7 @@ var ngSlatwall;
             this.formService = formService;
             this._config = _config;
             this._jsEntities = _jsEntities;
+            this._jsEntityInstances = _jsEntityInstances;
         }
     }
     SlatwallService.$inject = ['$window', '$q', '$http', '$timeout', '$log', '$rootScope', '$location', '$anchorScroll', 'utilityService', 'formService'];

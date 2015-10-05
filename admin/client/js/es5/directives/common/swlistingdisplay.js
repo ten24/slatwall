@@ -31,6 +31,7 @@ var slatwalladmin;
                 _this.collectionPromise = _this.collectionConfig.getEntity();
                 _this.collectionPromise.then(function (data) {
                     _this.collectionData = data;
+                    _this.collectionData.pageRecords = _this.collectionData.pageRecords || _this.collectionData.records;
                     _this.paginator.setPageRecordsInfo(_this.collectionData);
                     //prepare an exampleEntity for use
                     _this.init();
@@ -51,23 +52,6 @@ var slatwalladmin;
                 _this.collectionID = _this.collectionData.collectionID;
                 _this.collectionObject = _this.collectionData.collectionObject;
                 _this.norecordstext = _this.$slatwall.getRBKey('entity.' + _this.collectionObject + '.norecords');
-                //Setup Hierachy Expandable
-                /*
-                <cfif len(attributes.parentPropertyName) && attributes.parentPropertyName neq 'false'>
-                    <cfset thistag.expandable = true />
-        
-                    <cfset attributes.tableclass = listAppend(attributes.tableclass, 'table-expandable', ' ') />
-        
-                    <cfset attributes.smartList.joinRelatedProperty( attributes.smartList.getBaseEntityName() , attributes.parentPropertyName, "LEFT") />
-                    <cfset attributes.smartList.addFilter("#attributes.parentPropertyName#.#thistag.exampleEntity.getPrimaryIDPropertyName()#", "NULL") />
-        
-                    <cfset thistag.allpropertyidentifiers = listAppend(thistag.allpropertyidentifiers, "#thisTag.exampleEntity.getPrimaryIDPropertyName()#Path") />
-        
-                    <cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-parentidproperty="#attributes.parentPropertyName#.#thistag.exampleEntity.getPrimaryIDPropertyName()#"', " ") />
-        
-                    <cfset attributes.smartList.setPageRecordsShow(1000000) />
-                </cfif>
-                */
                 //Setup Sortability
                 if (_this.sortProperty && _this.sortProperty.length) {
                 }
@@ -283,15 +267,33 @@ var slatwalladmin;
             }
             //Look for Hierarchy in example entity
             if (!this.parentPropertyName || (this.parentPropertyName && !this.parentProopertyName.length)) {
+                console.log('noparent');
+                console.log(this.exampleEntity);
+                if (this.exampleEntity.metaData.hb_parentPropertyName) {
+                    console.log('getparent');
+                    this.parentPropertyName = this.exampleEntity.metaData.hb_parentPropertyName;
+                }
             }
-            /*
-            <cfif not len(attributes.parentPropertyName)>
-                <cfset thistag.entityMetaData = getMetaData(thisTag.exampleEntity) />
-                <cfif structKeyExists(thisTag.entityMetaData, "hb_parentPropertyName")>
-                    <cfset attributes.parentPropertyName = thisTag.entityMetaData.hb_parentPropertyName />
-                </cfif>
-            </cfif>
-            */
+            //Setup Hierachy Expandable
+            if (this.parentPropertyName && this.parentPropertyName.length) {
+                this.expandable = true;
+                this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-expandable', ' ');
+                this.collectionConfig.addFilter(this.parentPropertyName + '.' + this.exampleEntity.$$getIDName(), 'NULL', 'IS');
+                this.allpropertyidentifiers = this.utilityService.listAppend(this.allpropertyidentifiers, this.exampleEntity.$$getIDName() + 'Path');
+                this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty=' + this.parentPropertyname + '.' + this.exampleEntity.$$getIDName(), ' ');
+                this.collectionConfig.setAllRecords(true);
+            }
+            //Setup the list of all property identifiers to be used later 
+            angular.forEach(this.columns, function (column) {
+                //If this is a standard propertyIdentifier
+                if (_this.column.propertyIdentifier) {
+                    //Add to the all property identifiers
+                    _this.allpropertyIdentifiers = _this.utilityService.listAppend(_this.allpropertyidentifiers, column.propertyIdentifier);
+                    //Check to see if we need to setup the dynamic filters, ect
+                    if (!_this.column.searchable || !_this.column.sortable || !_this.column.filter || !_this.column.range) {
+                    }
+                }
+            });
             this.getCollection();
         }
         SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$slatwall', 'partialsPath', 'utilityService', 'collectionConfigService', 'paginationService'];

@@ -25,7 +25,8 @@ module ngSlatwall {
             private utilityService:slatwalladmin.UtilityService,
             private formService:slatwalladmin.FormService,
             private _config:any,
-            private _jsEntities:any
+            private _jsEntities:any,
+            private _jsEntityInstances:any
          ){
             this.$window = $window;
             this.$q = $q;
@@ -39,6 +40,7 @@ module ngSlatwall {
             this.formService = formService;
             this._config = _config;
             this._jsEntities = _jsEntities;
+            this._jsEntityInstances = _jsEntityInstances;
         }
         
         public buildUrl = (action:string,queryString:string):string =>{
@@ -59,6 +61,13 @@ module ngSlatwall {
         }
          setJsEntities= (jsEntities) =>{
             this._jsEntities = jsEntities;    
+        }
+        
+        getJsEntityInstances= () =>{
+            return this._jsEntityInstances;   
+        }
+         setJsEntityInstances= (jsEntityInstances) =>{
+            this._jsEntityInstances = jsEntityInstances;    
         }
         //service method used to transform collection data to collection objects based on a collectionconfig
         populateCollection = (collectionData,collectionConfig) =>{

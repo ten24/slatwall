@@ -43,9 +43,8 @@
 			        angular.extend(_config, slatwallAngular.slatwallConfig);
 			    }	
 			    
-			    
-	            	
                 var _jsEntities = {};
+				var _jsEntityInstances = {};
                 var entities = {};
                 var validations = {};
                 var defaultValues = {};
@@ -71,7 +70,7 @@
                 	defaultValues['Audit'] = {
                 	auditID:'',
 										auditType:null,
-									auditDateTime:'1443815347117',
+									auditDateTime:'1444057602782',
 										auditArchiveStartDateTime:null,
 									auditArchiveEndDateTime:null,
 									auditArchiveCreatedDateTime:null,
@@ -131,7 +130,7 @@
                 	accountEmailAddressID:'',
 										emailAddress:null,
 									verifiedFlag:0,
-									verificationCode:'a5031afacf3c6bf591997aa9c7926068',
+									verificationCode:'b345acd5d115f06092852901bb650aa2',
 										remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -2018,7 +2017,7 @@
 										swprid:'',
 									password:'',
 									passwordConfirm:'',
-									accountPasswordResetID:"14402f375c43c4819835bb8fd0f3e0c4",
+									accountPasswordResetID:"033253a857d8c66658218319a76524dd",
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
@@ -3987,8 +3986,10 @@
 						}
 						}
 					});
+					_jsEntityInstances[entity.className] = $delegate.newEntity(entity.className);
                 });
 				$delegate.setJsEntities(_jsEntities);
+				$delegate.setJsEntityInstances(_jsEntityInstances);
 				
 				var _init = function(entityInstance,data){
 	                for(var key in data) {

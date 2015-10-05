@@ -27,6 +27,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                     angular.extend(_config, slatwallAngular.slatwallConfig);
                 }
                 var _jsEntities = {};
+                var _jsEntityInstances = {};
                 var entities = {};
                 var validations = {};
                 var defaultValues = {};
@@ -47,7 +48,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
-                    auditDateTime: '1443815347117',
+                    auditDateTime: '1444057546258',
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -98,7 +99,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
-                    verificationCode: 'a5031afacf3c6bf591997aa9c7926068',
+                    verificationCode: 'b33d133df465ccb8ebc07fab8e6b4aaf',
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -1679,7 +1680,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
-                    accountPasswordResetID: "14402f375c43c4819835bb8fd0f3e0c4",
+                    accountPasswordResetID: "e61e63607cef542ffe3c24f811233d14",
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
@@ -3339,8 +3340,10 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                             }
                         }
                     });
+                    _jsEntityInstances[entity.className] = $delegate.newEntity(entity.className);
                 });
                 $delegate.setJsEntities(_jsEntities);
+                $delegate.setJsEntityInstances(_jsEntityInstances);
                 var _init = function (entityInstance, data) {
                     for (var key in data) {
                         if (key.charAt(0) !== '$' && angular.isDefined(entityInstance.metaData[key])) {

@@ -104,17 +104,93 @@ module slatwalladmin {
             
             //Look for Hierarchy in example entity
             if(!this.parentPropertyName || (this.parentPropertyName && !this.parentProopertyName.length) ){
-                
+                console.log('noparent');
+                console.log(this.exampleEntity);
+                if(this.exampleEntity.metaData.hb_parentPropertyName){
+                    console.log('getparent');
+                    this.parentPropertyName = this.exampleEntity.metaData.hb_parentPropertyName;
+                }
+            }
+             //Setup Hierachy Expandable
+            if(this.parentPropertyName && this.parentPropertyName.length){
+                this.expandable = true;
+                this.tableclass = this.utilityService.listAppend(this.tableclass,'table-expandable',' ');
+                this.collectionConfig.addFilter(this.parentPropertyName+'.'+this.exampleEntity.$$getIDName(),'NULL','IS');
+                this.allpropertyidentifiers = this.utilityService.listAppend(this.allpropertyidentifiers,this.exampleEntity.$$getIDName()+'Path');
+                this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty='+this.parentPropertyname+'.'+this.exampleEntity.$$getIDName(),' ');
+                this.collectionConfig.setAllRecords(true);    
             }
             
-            /*
-            <cfif not len(attributes.parentPropertyName)>
-                <cfset thistag.entityMetaData = getMetaData(thisTag.exampleEntity) />
-                <cfif structKeyExists(thisTag.entityMetaData, "hb_parentPropertyName")>
-                    <cfset attributes.parentPropertyName = thisTag.entityMetaData.hb_parentPropertyName />
-                </cfif>
-            </cfif>
-            */
+            //Setup the list of all property identifiers to be used later 
+            angular.forEach(this.columns,(column)=>{
+                //If this is a standard propertyIdentifier
+                if(this.column.propertyIdentifier){
+                    //Add to the all property identifiers
+                    this.allpropertyIdentifiers = this.utilityService.listAppend(this.allpropertyidentifiers,column.propertyIdentifier);
+        
+                    //Check to see if we need to setup the dynamic filters, ect
+                    if(!this.column.searchable || !this.column.sortable || !this.column.filter || !this.column.range){
+                        //Get the entity object to get property metaData 
+                        /*<cfset thisEntityName = attributes.hibachiScope.getService("hibachiService").getLastEntityNameInPropertyIdentifier( attributes.smartList.getBaseEntityName(), column.propertyIdentifier ) />
+                        <cfset thisPropertyName = listLast( column.propertyIdentifier, "." ) />
+                        <cfset thisPropertyMeta = attributes.hibachiScope.getService("hibachiService").getPropertyByEntityNameAndPropertyName( thisEntityName, thisPropertyName ) />
+    
+                        <!--- Setup automatic search, sort, filter & range 
+                        <cfif not len(column.search) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent) && (!structKeyExists(thisPropertyMeta, "ormType") || thisPropertyMeta.ormType eq 'string')>
+                            <cfset column.search = true />
+                        <cfelseif !isBoolean(column.search)>
+                            <cfset column.search = false />
+                        </cfif>
+                        <cfif not len(column.sort) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent)>
+                            <cfset column.sort = true />
+                        <cfelseif !isBoolean(column.sort)>
+                            <cfset column.sort = false />
+                        </cfif>
+                        <cfif not len(column.filter) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent)>
+                            <cfset column.filter = false />
+    
+                            <cfif structKeyExists(thisPropertyMeta, "ormtype") && thisPropertyMeta.ormtype eq 'boolean'>
+                                <cfset column.filter = true />
+                            </cfif>
+                            <!---
+                            <cfif !column.filter && listLen(column.propertyIdentifier, '._') gt 1>
+    
+                                <cfset oneUpPropertyIdentifier = column.propertyIdentifier />
+                                <cfset oneUpPropertyIdentifier = listDeleteAt(oneUpPropertyIdentifier, listLen(oneUpPropertyIdentifier, '._'), '._') />
+                                <cfset oneUpPropertyName = listLast(oneUpPropertyIdentifier, '.') />
+                                <cfset twoUpEntityName = attributes.hibachiScope.getService("hibachiService").getLastEntityNameInPropertyIdentifier( attributes.smartList.getBaseEntityName(), oneUpPropertyIdentifier ) />
+                                <cfset oneUpPropertyMeta = attributes.hibachiScope.getService("hibachiService").getPropertyByEntityNameAndPropertyName( twoUpEntityName, oneUpPropertyName ) />
+                                <cfif structKeyExists(oneUpPropertyMeta, "fieldtype") && oneUpPropertyMeta.fieldtype eq 'many-to-one' && (!structKeyExists(thisPropertyMeta, "ormtype") || listFindNoCase("boolean,string", thisPropertyMeta.ormtype))>
+                                    <cfset column.filter = true />
+                                </cfif>
+                            </cfif>
+                            --->
+                        <cfelseif !isBoolean(column.filter)>
+                            <cfset column.filter = false />
+                        </cfif>
+                        <cfif not len(column.range) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent) && structKeyExists(thisPropertyMeta, "ormType") && (thisPropertyMeta.ormType eq 'integer' || thisPropertyMeta.ormType eq 'big_decimal' || thisPropertyMeta.ormType eq 'timestamp')>
+                            <cfset column.range = true />
+                        <cfelseif !isBoolean(column.range)>
+                            <cfset column.range = false />
+                        </cfif>*/
+                    }
+    
+                        
+                    //Otherwise this is a processObject property --->
+                    /*<cfelseif len(column.processObjectProperty)>
+                        <cfset column.search = false />
+                        <cfset column.sort = false />
+                        <cfset column.filter = false />
+                        <cfset column.range = false />
+        
+                        <cfset thistag.allprocessobjectproperties = listAppend(thistag.allprocessobjectproperties, column.processObjectProperty) />
+                    </cfif>
+                    <cfif findNoCase("primary", column.tdClass) and thistag.expandable>
+                        <cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-expandsortproperty="#column.propertyIdentifier#"', " ") />
+                        <cfset column.sort = false />
+                    </cfif>*/
+                }
+            });
             
             this.getCollection();
             
@@ -128,6 +204,7 @@ module slatwalladmin {
             
             this.collectionPromise.then((data)=>{
                 this.collectionData = data;
+                this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records
                 this.paginator.setPageRecordsInfo(this.collectionData);
                 //prepare an exampleEntity for use
                 this.init();
@@ -154,23 +231,7 @@ module slatwalladmin {
             this.collectionObject = this.collectionData.collectionObject;
             this.norecordstext = this.$slatwall.getRBKey('entity.'+this.collectionObject+'.norecords');
             
-            //Setup Hierachy Expandable
-            /*
-            <cfif len(attributes.parentPropertyName) && attributes.parentPropertyName neq 'false'>
-                <cfset thistag.expandable = true />
-    
-                <cfset attributes.tableclass = listAppend(attributes.tableclass, 'table-expandable', ' ') />
-    
-                <cfset attributes.smartList.joinRelatedProperty( attributes.smartList.getBaseEntityName() , attributes.parentPropertyName, "LEFT") />
-                <cfset attributes.smartList.addFilter("#attributes.parentPropertyName#.#thistag.exampleEntity.getPrimaryIDPropertyName()#", "NULL") />
-    
-                <cfset thistag.allpropertyidentifiers = listAppend(thistag.allpropertyidentifiers, "#thisTag.exampleEntity.getPrimaryIDPropertyName()#Path") />
-    
-                <cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-parentidproperty="#attributes.parentPropertyName#.#thistag.exampleEntity.getPrimaryIDPropertyName()#"', " ") />
-    
-                <cfset attributes.smartList.setPageRecordsShow(1000000) />
-            </cfif>
-            */
+           
             
             //Setup Sortability
             if(this.sortProperty && this.sortProperty.length){
