@@ -86,12 +86,10 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 
 	public any function getOrderDeliveryGiftCardSmartList() {
 		var giftCardSmartList = getService("GiftCardService").getGiftCardSmartList();
-		for(var item in this.getOrderDeliveryItems()){
-			for(var card in item.getOrderItem().getGiftCards()){
-				giftCardSmartList.addWhereCondition("giftCardID='" & card.getGiftCardID() & "'");
-			}
-		}
-
+		giftcardSmartList.joinRelatedProperty("SlatwallGiftCard", "originalOrderItem");
+		giftcardSmartList.joinRelatedProperty("SlatwallOrderItem","orderDeliveryItems");
+		giftcardSmartList.joinRelatedProperty("SlatwallOrderDeliveryItem", "orderDelivery");
+		giftcardsmartlist.addFilter("originalOrderItem.orderDeliveryItems.orderDelivery.orderDeliveryID", this.getOrderDeliveryID());
 		return giftCardSmartList;
 	}
 
