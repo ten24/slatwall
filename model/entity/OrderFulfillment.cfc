@@ -182,6 +182,20 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		return count ;
 	}
 
+	public array function getGiftCardListLabels(){
+		var labels = [];
+		if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode")){
+			for(var item in this.getOrderFulfillmentItems()){
+				if(item.isGiftCardOrderItem()){
+					for(var i=0; i < item.getQuantityUndelivered(); i++){
+						ArrayAppend(labels, item.getSku().getSkuCode());
+					}
+				}
+			}
+		}
+		return labels;
+	}
+
 	// ====================  END: Logical Methods ==========================
 
 	// ============ START: Non-Persistent Property Methods =================

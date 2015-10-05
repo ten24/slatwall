@@ -83,7 +83,7 @@ Notes:
 							<cfif listFindNoCase(rc.order.getOrderRequirementsList(), 'giftCardCode')>
 								<cfloop index="codeCount" from="1" to="#orderFulfillment.getNumberOfNeededGiftCardCodes()#">
 									<div class="form-group">
-										<label for="orderFulfillments[#ofIndex#].giftCardCodes[#codeCount#]">Gift Card #codeCount#</label>
+										<label for="orderFulfillments[#ofIndex#].giftCardCodes[#codeCount#]">#orderFulfillment.getGiftCardListLabels()[codeCount]# Gift Card Code</label>
 										<input type="text" name="orderFulfillments[#ofIndex#].giftCardCodes[#codeCount#]" />
 									</div>
 								</cfloop>
