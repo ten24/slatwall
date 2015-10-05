@@ -48,7 +48,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
-                    auditDateTime: '1444057546258',
+                    auditDateTime: '1444063431378',
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -99,7 +99,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
-                    verificationCode: 'b33d133df465ccb8ebc07fab8e6b4aaf',
+                    verificationCode: 'b6baf527a578f76566456f384e0101bd',
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -1680,7 +1680,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
-                    accountPasswordResetID: "e61e63607cef542ffe3c24f811233d14",
+                    accountPasswordResetID: "ea8b1cd312d43e81a19ffa6c74cd097b",
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
@@ -3340,7 +3340,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                             }
                         }
                     });
-                    _jsEntityInstances[entity.className] = $delegate.newEntity(entity.className);
+                    _jsEntityInstances[entity.className] = new _jsEntities[entity.className];
                 });
                 $delegate.setJsEntities(_jsEntities);
                 $delegate.setJsEntityInstances(_jsEntityInstances);

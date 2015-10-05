@@ -587,9 +587,15 @@ Notes:
 						}
 						}
 					});
-					//_jsEntityInstances[entity.className] = $delegate.newEntity(entity.className);
+					
                 });
 				$delegate.setJsEntities(_jsEntities);
+				
+				angular.forEach(_jsEntities,(jsEntity)=>{
+					var jsEntityInstance = new jsEntity;
+					_jsEntityInstances[jsEntityInstance.metaData.className] = jsEntityInstance;
+				});
+				
 				$delegate.setJsEntityInstances(_jsEntityInstances);
 				
 				var _init = function(entityInstance,data){

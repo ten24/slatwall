@@ -70,7 +70,7 @@
                 	defaultValues['Audit'] = {
                 	auditID:'',
 										auditType:null,
-									auditDateTime:'1444057602782',
+									auditDateTime:'1444063666396',
 										auditArchiveStartDateTime:null,
 									auditArchiveEndDateTime:null,
 									auditArchiveCreatedDateTime:null,
@@ -130,7 +130,7 @@
                 	accountEmailAddressID:'',
 										emailAddress:null,
 									verifiedFlag:0,
-									verificationCode:'b345acd5d115f06092852901bb650aa2',
+									verificationCode:'b6ded6e79e11d78f789b1ac5d39fac06',
 										remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -2017,7 +2017,7 @@
 										swprid:'',
 									password:'',
 									passwordConfirm:'',
-									accountPasswordResetID:"033253a857d8c66658218319a76524dd",
+									accountPasswordResetID:"bcd59b1841b34d55ab6e93b315e3782d",
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
@@ -3986,9 +3986,15 @@
 						}
 						}
 					});
-					_jsEntityInstances[entity.className] = $delegate.newEntity(entity.className);
+					
                 });
 				$delegate.setJsEntities(_jsEntities);
+				
+				angular.forEach(_jsEntities,(jsEntity)=>{
+					var jsEntityInstance = new jsEntity;
+					_jsEntityInstances[jsEntityInstance.metaData.className] = jsEntityInstance;
+				});
+				
 				$delegate.setJsEntityInstances(_jsEntityInstances);
 				
 				var _init = function(entityInstance,data){
