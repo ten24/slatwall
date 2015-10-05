@@ -290,8 +290,10 @@ component output="false" accessors="true" extends="HibachiProcess" {
 		}
 
 		return false;
+	}
 
-
+	public boolean function canPurchaseWithGiftCard(){
+		return !this.getGiftCard().isExpired() && this.getGiftCard().getActiveFlag();
 	}
 
 	public boolean function giftCardCurrencyMatches(){

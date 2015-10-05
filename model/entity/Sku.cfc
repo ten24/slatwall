@@ -233,7 +233,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 					}
 					break; 
 				case "percentage": 
-					if(structKeyExists(variables, "redemptionAmountPercentage") && structKeyExists(variables, "redemptionAmount")){ 
+					if(structKeyExists(variables, "redemptionAmount")){ 
 						return precisionEvaluate(precisionEvaluate(variables.price * variables.redemptionAmount)/100); 
 					}
 					break; 

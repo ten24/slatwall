@@ -92,6 +92,14 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		}
 	}
 
+	public boolean function isExpired(){
+		if(getService("SettingService").getSettingValue("skuGiftCardEnforceExpirationTerm")){
+			return !dateCompare(this.getExpirationDate(), now()) == 1;
+		} else {
+			return false;
+		}
+	}
+
 	public boolean function canEditOrDelete(){
 		if(isNull(this.getActiveFlag())||this.getActiveFlag()){
 			return false;

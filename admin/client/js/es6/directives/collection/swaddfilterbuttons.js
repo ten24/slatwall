@@ -27,4 +27,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../directives/collection/swaddfilterbuttons.js.map
+//# sourceMappingURL=swaddfilterbuttons.js.map

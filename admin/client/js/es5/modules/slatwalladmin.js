@@ -1,7 +1,7 @@
 /// <reference path="../../../../client/typings/tsd.d.ts" />
 /// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 (function () {
-    var app = angular.module('slatwalladmin', ['ngSlatwall', 'ngSlatwallModel', 'ui.bootstrap', 'ngAnimate', 'ngRoute', 'ngSanitize', 'ngCkeditor']);
+    var app = angular.module('slatwalladmin', ['ngSlatwall', 'ngSlatwallModel', 'ui.bootstrap', 'ngAnimate', 'ngRoute', 'ngSanitize', 'ngCkeditor', 'ngClipboard']);
     app.config(["$provide", '$logProvider', '$filterProvider', '$httpProvider', '$routeProvider', '$injector', '$locationProvider', 'datepickerConfig', 'datepickerPopupConfig',
         function ($provide, $logProvider, $filterProvider, $httpProvider, $routeProvider, $injector, $locationProvider, datepickerConfig, datepickerPopupConfig) {
             datepickerConfig.showWeeks = false;
@@ -105,14 +105,26 @@
                     return text;
                 }
             };
-        }]).filter('swcurrency', ['$slatwall', '$sce', function ($slatwall, $sce) {
+        }]).filter('swcurrency', ['$slatwall', '$sce', '$log', function ($slatwall, $sce, $log) {
             var data = null, serviceInvoked = false;
-            function realFilter(value) {
+            function realFilter(value, decimalPlace) {
                 // REAL FILTER LOGIC, DISREGARDING PROMISES
+                if (!angular.isDefined(data)) {
+                    $log.debug("Please provide a valid currencyCode, swcurrency defaults to $");
+                    data = "$";
+                }
+                if (angular.isDefined(value)) {
+                    if (angular.isDefined(decimalPlace)) {
+                        value = parseFloat(value.toString()).toFixed(decimalPlace);
+                    }
+                    else {
+                        value = parseFloat(value.toString()).toFixed(2);
+                    }
+                }
                 return data + value;
             }
             filterStub.$stateful = true;
-            function filterStub(value, currencyCode) {
+            function filterStub(value, currencyCode, decimalPlace) {
                 if (data === null) {
                     if (!serviceInvoked) {
                         serviceInvoked = true;
@@ -124,10 +136,10 @@
                     return "-";
                 }
                 else
-                    return realFilter(value);
+                    return realFilter(value, decimalPlace);
             }
             return filterStub;
         }]);
 })();
 
-//# sourceMappingURL=../modules/slatwalladmin.js.map
+//# sourceMappingURL=slatwalladmin.js.map
