@@ -1279,7 +1279,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
 
 				var orderRequirementsList = getOrderRequirementsList( arguments.order );
-				if(listFindNoCase(getOrderRequirementsList( arguments.order ), "giftCardCode")){
+				if(listFindNoCase(getOrderRequirementsList( arguments.order ), "giftCardCode") && !isNull(data.orderFulfillments)){
 
 					for(var fulfillment in data.orderFulfillments){
 
@@ -1293,6 +1293,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 					}
+				} else {
+					arguments.order.addError("specifyGiftCardCode", rbKey('validate.processOrder_placeOrder.giftCardCode'));
 				}
 
 				// Call the saveOrder method so that accounts, fulfillments & payments are updated
