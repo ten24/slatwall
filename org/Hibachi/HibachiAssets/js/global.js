@@ -351,27 +351,38 @@ function setupEventHandlers() {
 
 		var modalLink = initModal( jQuery(this) );
 
-		jQuery('#adminModal').load( modalLink, function(xhr){
-			
-			initUIElements('#adminModal');
-			
-
-			//returns 401 in the case of unauthorized access and boots to the appropriate login page
-			//Hibachi.cfc 308-311
-			if(xhr.status == 401){
-				window.location.href = "/?slataction=" + xhr.statusText;
+		jQuery.ajax({
+			url:modalLink,
+			method:'get',
+			success: function(response){
+				jQuery('#adminModal').html(response);
+				jQuery('#adminModal').modal();
+				
+				var elem = angular.element(document.getElementById('ngApp'));
+			    var injector = elem.injector();
+			    var $compile = injector.get('$compile'); 
+			    var $rootScope = injector.get('$rootScope'); 
+			    
+			    jQuery('#adminModal').html($compile(jQuery('#adminModal').html())($rootScope));
+				initUIElements('#adminModal');
+				
+				jQuery('#adminModal').css({
+					'width': 'auto'
+				});
+				
+				jQuery('#adminModal input').each(function(index,input){
+					//used to digest previous jquery value into the ng-model
+					jQuery(input).trigger('input');
+				});
+			},
+			error:function(response,status){
+				//returns 401 in the case of unauthorized access and boots to the appropriate login page
+				//Hibachi.cfc 308-311
+				if(xhr.status == 401){
+					window.location.href = "/?slataction=" + xhr.statusText;
+				}
 			}
-
-			/*
-			jQuery('#adminModal').css({
-				'width': 'auto',
-				'margin-left': function () {
-		            return -(jQuery('#adminModal').width() / 2);
-		        }
-			});
-			*/
 		});
-
 	});
 
 	jQuery('body').on('click', '.modalload-fullwidth', function(e){
