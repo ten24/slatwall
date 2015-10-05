@@ -7,7 +7,7 @@ var slatwalladmin;
             this.$slatwall = $slatwall;
             this.init = function () {
                 var giftCardConfig = new slatwalladmin.CollectionConfig(_this.$slatwall, 'GiftCard');
-                giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.sku.product.productID, originalOrderItem.order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage");
+                giftCardConfig.setDisplayProperties("giftCardID, giftCardCode, currencyCode, giftCardPin, expirationDate, ownerFirstName, ownerLastName, ownerEmailAddress, activeFlag, balanceAmount,  originalOrderItem.sku.product.productName, originalOrderItem.sku.product.productID, originalOrderItem.order.orderID, originalOrderItem.orderItemID, orderItemGiftRecipient.firstName, orderItemGiftRecipient.lastName, orderItemGiftRecipient.emailAddress, orderItemGiftRecipient.giftMessage");
                 giftCardConfig.addFilter('giftCardID', _this.giftCardId);
                 giftCardConfig.setAllRecords(true);
                 giftCardConfig.getEntity().then(function (response) {
@@ -49,4 +49,4 @@ var slatwalladmin;
     ]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/giftcard/swgiftcarddetail.js.map
+//# sourceMappingURL=swgiftcarddetail.js.map

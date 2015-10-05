@@ -1,51 +1,54 @@
-<div class="col-md-3">
+<!--Small content block-->
+<div class="s-sm-content-block">
+	<div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
+		<i class="fa fa-credit-card"></i>
+	</div>
+	<div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content">
+		<div class="s-title">
+			Gift Card Number
+		</div>
+		<div class="s-body">
+			
+			<span title="{{swGiftCardOverview.giftCard.giftCardCode}}">{{swGiftCardOverview.giftCard.giftCardCode}} <a href="##" title="Click to copy card number" clipboard text="swGiftCardOverview.giftCard.giftCardCode" on-copied="success()" on-error="fail(err)"> copy</a></span>
+			
+		</div>
+	</div>
+</div>
 
-	<!--Small content block-->
-	<div class="s-sm-content-block">
-	
-		<div class="col-xs-1 col-sm-2 col-md-3 s-icon">
-			<i class="fa fa-credit-card"></i>
+<!--Small content block-->
+<div class="s-sm-content-block s-status s-active">
+	<div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
+		<i class="fa fa-circle"></i>
+	</div>
+	<div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content">
+		<div class="s-title">
+			Status
 		</div>
-		<div class="col-xs-11 col-sm-10 col-md-9 s-content">
-			<div class="s-title">
-				Gift Card Number
-			</div>
-			<div class="s-body">
-				<span ng-bind="swGiftCardOverview.giftCard.giftCardCode"></span>
+		<div class="s-body">
+			<span ng-show="swGiftCardOverview.giftCard.activeFlag">Active</span>
+			<span ng-show="!swGiftCardOverview.giftCard.activeFlag">Inactive</span> 
+			<div class="dropdown s-action">
+				<a href="##" class="dropdown-toggle hide" id="dropdownMenu1" data-toggle="dropdown">
+					<i class="fa fa-ellipsis-h" title="actions"></i>
+				</a>
+				<ul class="dropdown-menu pull-right hide" aria-labelledby="dropdownMenu1">
+					<li><a href="#">Activate</a></li>
+					<li><a href="#">Close</a></li>
+					<li><a href="#">Pause</a></li>
+				</ul>
 			</div>
 		</div>
 	</div>
-	
-	<!--Small content block-->
-	<div class="s-sm-content-block s-status s-active">
-		<div class="col-xs-1 col-sm-2 col-md-3 s-icon">
-			<i class="fa fa-circle"></i>
-		</div>
-		<div class="col-xs-11 col-sm-10 col-md-9 s-content">
-			<div class="s-title">
-				Status
-			</div>
-			<div class="s-body">
-				<span ng-show="swGiftCardOverview.giftCard.activeFlag">Active</span>
-				<span ng-show="!swGiftCardOverview.giftCard.activeFlag">Inactive</span> 
-				<div class="dropdown s-action">
-					<a href="##" class="dropdown-toggle hide" id="dropdownMenu1" data-toggle="dropdown">
-						<i class="fa fa-ellipsis-h" title="actions"></i>
-					</a>
-					<ul class="dropdown-menu pull-right hide" aria-labelledby="dropdownMenu1">
-						<li><a href="#">Activate</a></li>
-						<li><a href="#">Close</a></li>
-						<li><a href="#">Pause</a></li>
-					</ul>
-				</div>
-			</div>
-		</div>
+</div>
+
+<!--Small content block-->
+<div class="s-sm-content-block">
+	<div class="col-xs-1 col-sm-1 col-md-2 col-lg-3 s-icon">
+		<i class="fa fa-clock-o"></i>
 	</div>
-	
-	<!--Small content block-->
-	<div class="s-sm-content-block">
-		<div class="col-xs-1 col-sm-2 col-md-3 s-icon">
-			<i class="fa fa-clock-o"></i>
+	<div class="col-xs-11 col-sm-11 col-md-10 col-lg-9 s-content">
+		<div class="s-title">
+			Expiration
 		</div>
 		<div class="col-xs-11 col-sm-10 col-md-9 s-content">
 			<div class="s-title">

@@ -293,4 +293,4 @@ var slatwalladmin;
         .factory('CollectionConfigService', ['$slatwall', function ($slatwall) { return new CollectionConfig($slatwall); }]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/collectionconfigservice.js.map
+//# sourceMappingURL=collectionconfigservice.js.map
