@@ -85,8 +85,7 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 	}
 
 	public any function getOrderDeliveryGiftCardSmartList() {
-		var giftCardSmartList = getService("HibachiService").getGiftCardSmartList();
-
+		var giftCardSmartList = getService("GiftCardService").getGiftCardSmartList();
 		for(var item in this.getOrderDeliveryItems()){
 			for(var card in item.getOrderItem().getGiftCards()){
 				giftCardSmartList.addWhereCondition("giftCardID='" & card.getGiftCardID() & "'");
