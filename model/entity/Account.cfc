@@ -226,7 +226,8 @@ component displayname="Account" entityname="SlatwallAccount" table="SwAccount" p
 
 	public any function getGiftCardSmartList(){
 		var giftCardSmartList = getService("GiftCardService").getGiftCardSmartList();
-		giftCardSmartList.addFilter("OwnerAccountID", this.getAccountID());
+		giftCardSmartList.joinRelatedProperty("SlatwallGiftCard", "ownerAccount");
+		giftCardSmartList.addFilter("ownerAccount.AccountID", this.getAccountID());
 
 		return giftCardSmartList;
 	}
