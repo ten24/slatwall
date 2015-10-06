@@ -120,36 +120,14 @@ Notes:
 		<cfargument name="priceGroupID" type="string">
 		<cfargument name="skuID" type="string">
 		
-		<cfif getApplicationValue("databaseType") eq "mySQL">
-			<cfquery name="getReturnRateBySkuID">
-				SELECT SwPriceGroupRate.priceGroupRateID
-				FROM SwPriceGroupRate
-				INNER JOIN SwPriceGroupRateSku
-				ON SwPriceGroupRate.priceGroupRateID = SwPriceGroupRateSku.priceGroupRateID
-				WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-				AND SwPriceGroupRateSku.skuID = <cfqueryparam value="#arguments.skuID#" cfsqltype="cf_sql_varchar" />
-				LIMIT 1
-			</cfquery>
-		<cfelseif getApplicationValue("databaseType") eq "Oracle10g">
-			<cfquery name="getReturnRateBySkuID">
-				SELECT SwPriceGroupRate.priceGroupRateID
-				FROM SwPriceGroupRate
-				INNER JOIN SwPriceGroupRateSku
-				ON SwPriceGroupRate.priceGroupRateID = SwPriceGroupRateSku.priceGroupRateID
-				WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-				AND SwPriceGroupRateSku.skuID = <cfqueryparam value="#arguments.skuID#" cfsqltype="cf_sql_varchar" />
-				AND ROWNUM = 1
-			</cfquery>
-		<cfelse>
-			<cfquery name="getReturnRateBySkuID">
-				SELECT TOP 1 SwPriceGroupRate.priceGroupRateID
-				FROM SwPriceGroupRate
-				INNER JOIN SwPriceGroupRateSku
-				ON SwPriceGroupRate.priceGroupRateID = SwPriceGroupRateSku.priceGroupRateID
-				WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-				AND SwPriceGroupRateSku.skuID = <cfqueryparam value="#arguments.skuID#" cfsqltype="cf_sql_varchar" />
-			</cfquery>
-		</cfif>
+		<cfquery name="getReturnRateBySkuID" maxrows="1" >
+			SELECT SwPriceGroupRate.priceGroupRateID
+			FROM SwPriceGroupRate
+			INNER JOIN SwPriceGroupRateSku
+			ON SwPriceGroupRate.priceGroupRateID = SwPriceGroupRateSku.priceGroupRateID
+			WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
+			AND SwPriceGroupRateSku.skuID = <cfqueryparam value="#arguments.skuID#" cfsqltype="cf_sql_varchar" />
+		</cfquery>
 
 		<cfreturn getReturnRateBySkuID["priceGroupRateID"][1] >
 		
@@ -159,36 +137,14 @@ Notes:
 		<cfargument name="priceGroupID" type="string">
 		<cfargument name="productID" type="string">
 		
-		<cfif getApplicationValue("databaseType") eq "mySQL">
-			<cfquery name="getReturnRateByProductID">
-				SELECT SwPriceGroupRate.priceGroupRateID
-				FROM SwPriceGroupRate
-				INNER JOIN SwPriceGroupRateProduct
-				ON SwPriceGroupRate.priceGroupRateID = SwPriceGroupRateProduct.priceGroupRateID
-				WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-				AND SwPriceGroupRateProduct.productID = <cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_varchar" />
-				LIMIT 1
-			</cfquery>
-		<cfelseif getApplicationValue("databaseType") eq "Oracle10g">
-			<cfquery name="getReturnRateByProductID">
-				SELECT TOP 1 SwPriceGroupRate.priceGroupRateID
-				FROM SwPriceGroupRate
-				INNER JOIN SwPriceGroupRateProduct
-				ON SwPriceGroupRate.priceGroupRateID = SwPriceGroupRateProduct.priceGroupRateID
-				WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-				AND SwPriceGroupRateProduct.productID = <cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_varchar" />
-				AND ROWNUM = 1
-			</cfquery>
-		<cfelse>
-			<cfquery name="getReturnRateByProductID">
-				SELECT TOP 1 SwPriceGroupRate.priceGroupRateID
-				FROM SwPriceGroupRate
-				INNER JOIN SwPriceGroupRateProduct
-				ON SwPriceGroupRate.priceGroupRateID = SwPriceGroupRateProduct.priceGroupRateID
-				WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-				AND SwPriceGroupRateProduct.productID = <cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_varchar" />
-			</cfquery>
-		</cfif>
+		<cfquery name="getReturnRateByProductID" maxrows="1">
+			SELECT SwPriceGroupRate.priceGroupRateID
+			FROM SwPriceGroupRate
+			INNER JOIN SwPriceGroupRateProduct
+			ON SwPriceGroupRate.priceGroupRateID = SwPriceGroupRateProduct.priceGroupRateID
+			WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
+			AND SwPriceGroupRateProduct.productID = <cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_varchar" />
+		</cfquery>
 		
 		<cfreturn getReturnRateByProductID["priceGroupRateID"][1] >
 		
@@ -198,36 +154,15 @@ Notes:
 		<cfargument name="priceGroupID" type="string">
 		<cfargument name="productTypeID" type="string">
 		
-		<cfif getApplicationValue("databaseType") eq "mySQL">
-			<cfquery name="getReturnRateByProductTypeID">
-				SELECT SwPriceGroupRate.priceGroupRateID
-				FROM SwPriceGroupRate
-				INNER JOIN SwPriceGroupRateProductType
-				ON SwPriceGroupRate.priceGroupRateID = SwPriceGroupRateProductType.priceGroupRateID
-				WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-				AND SwPriceGroupRateProductType.productTypeID = <cfqueryparam value="#arguments.productTypeID#" cfsqltype="cf_sql_varchar" />
-				LIMIT 1
-			</cfquery>
-		<cfelseif getApplicationValue("databaseType") eq "Oracle10g">
-			<cfquery name="getReturnRateByProductTypeID">
-				SELECT SwPriceGroupRate.priceGroupRateID
-				FROM SwPriceGroupRate
-				INNER JOIN SwPriceGroupRateProductType
-				ON SwPriceGroupRate.priceGroupRateID = SwPriceGroupRateProductType.priceGroupRateID
-				WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-				AND SwPriceGroupRateProductType.productTypeID = <cfqueryparam value="#arguments.productTypeID#" cfsqltype="cf_sql_varchar" />
-				AND ROWNUM = 1
-			</cfquery>
-		<cfelse>
-			<cfquery name="getReturnRateByProductTypeID">
-				SELECT TOP 1 SwPriceGroupRate.priceGroupRateID
-				FROM SwPriceGroupRate
-				INNER JOIN SwPriceGroupRateProductType
-				ON SwPriceGroupRate.priceGroupRateID = SwPriceGroupRateProductType.priceGroupRateID
-				WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-				AND SwPriceGroupRateProductType.productTypeID = <cfqueryparam value="#arguments.productTypeID#" cfsqltype="cf_sql_varchar" />
-			</cfquery>
-		</cfif>
+		<cfquery name="getReturnRateByProductTypeID" maxrows="1">
+			SELECT SwPriceGroupRate.priceGroupRateID
+			FROM SwPriceGroupRate
+			INNER JOIN SwPriceGroupRateProductType
+			ON SwPriceGroupRate.priceGroupRateID = SwPriceGroupRateProductType.priceGroupRateID
+			WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
+			AND SwPriceGroupRateProductType.productTypeID = <cfqueryparam value="#arguments.productTypeID#" cfsqltype="cf_sql_varchar" />
+		</cfquery>
+		
 		<cfreturn getReturnRateByProductTypeID["priceGroupRateID"][1] >
 		
 	</cffunction>
@@ -235,30 +170,12 @@ Notes:
 	<cffunction name="getGlobalPriceGroupRate">
 		<cfargument name="priceGroupID" type="string">
 		
-		<cfif getApplicationValue("databaseType") eq "mySQL">
-			<cfquery name="getGlobalPriceGroupRate">
-				SELECT SwPriceGroupRate.priceGroupRateID
-				FROM SwPriceGroupRate
-				WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-				AND globalFlag = 1
-				LIMIT 1
-			</cfquery>
-		<cfelseif getApplicationValue("databaseType") eq "Oracle10g">
-			<cfquery name="getGlobalPriceGroupRate">
-				SELECT SwPriceGroupRate.priceGroupRateID
-				FROM SwPriceGroupRate
-				WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-				AND globalFlag = 1
-				AND ROWNUM = 1
-			</cfquery>
-		<cfelse>
-			<cfquery name="getGlobalPriceGroupRate">
-				SELECT TOP 1 SwPriceGroupRate.priceGroupRateID
-				FROM SwPriceGroupRate
-				WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-				AND globalFlag = 1
-			</cfquery>
-		</cfif>
+		<cfquery name="getGlobalPriceGroupRate" maxrows="1">
+			SELECT SwPriceGroupRate.priceGroupRateID
+			FROM SwPriceGroupRate
+			WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
+			AND globalFlag = 1
+		</cfquery>
 		
 		<cfreturn getGlobalPriceGroupRate["priceGroupRateID"][1] >
 		
