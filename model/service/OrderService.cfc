@@ -87,7 +87,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				|| arguments.order.getOrderFulfillments()[i].hasErrors()
 				|| !arguments.order.getOrderFulfillments()[i].hasGiftCardCodes()) {
 				orderRequirementsList = listAppend(orderRequirementsList, "fulfillment");
-				if( !arguments.order.getOrderFulfillments()[i].hasGiftCardCodes()){
+				if(getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode") && !arguments.order.getOrderFulfillments()[i].hasGiftCardCodes()){
 					orderRequirementsList = listAppend(orderRequirementsList, "giftCardCode");
 				}
 				break;
