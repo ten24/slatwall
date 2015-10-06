@@ -22,6 +22,9 @@ var slatwalladmin;
             this.getPageDialogs = () => {
                 return this._pageDialogs;
             };
+            this.removeCurrentDialog = () => {
+                this._pageDialogs.splice(this._pageDialogs.length - 1, 1);
+            };
             this.getCurrentDialog = () => {
                 return this._pageDialogs[this._pageDialogs.length - 1];
             };
@@ -35,4 +38,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').service('dialogService', DialogService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/dialogservice.js.map
+//# sourceMappingURL=dialogservice.js.map

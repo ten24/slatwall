@@ -32,20 +32,22 @@ var slatwalladmin;
             };
             this.formatMessagesToAlerts = (messages) => {
                 var alerts = [];
-                for (var message in messages) {
-                    var alert = new slatwalladmin.Alert();
-                    alert.msg = messages[message].message;
-                    alert.type = messages[message].messageType;
-                    alerts.push(alert);
-                    if (alert.type === 'success' || alert.type === 'error') {
-                        this.$timeout(function () {
-                            alert.fade = true;
-                        }, 3500);
-                        alert.dismissable = false;
-                    }
-                    else {
-                        alert.fade = false;
-                        alert.dismissable = true;
+                if (messages) {
+                    for (var message in messages) {
+                        var alert = new slatwalladmin.Alert();
+                        alert.msg = messages[message].message;
+                        alert.type = messages[message].messageType;
+                        alerts.push(alert);
+                        if (alert.type === 'success' || alert.type === 'error') {
+                            this.$timeout(function () {
+                                alert.fade = true;
+                            }, 3500);
+                            alert.dismissable = false;
+                        }
+                        else {
+                            alert.fade = false;
+                            alert.dismissable = true;
+                        }
                     }
                 }
                 return alerts;
@@ -64,4 +66,4 @@ var slatwalladmin;
         .service('alertService', AlertService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/alertservice.js.map
+//# sourceMappingURL=alertservice.js.map

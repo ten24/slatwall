@@ -65,6 +65,8 @@ component entityname="SlatwallVendorSkuStock" table="SwVendorSkuStock" persisten
 	property name="sku" cfc="Sku" fieldtype="many-to-one" fkcolumn="skuID";
 	property name="vendor" cfc="Vendor" fieldtype="many-to-one" fkcolumn="vendorID";	
 	
+	// Remote properties
+	property name="remoteID" ormtype="string";
 	
 	// ============ START: Non-Persistent Property Methods =================
 	

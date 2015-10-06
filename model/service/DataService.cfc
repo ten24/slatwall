@@ -51,6 +51,10 @@ component output="false" accessors="true" extends="HibachiService" {
 	property name="dataDAO" type="any";
 
 	public string function createUniqueURLTitle(required string titleString, required string tableName) {
+		return createUniqueColumn(arguments.titleString,arguments.tableName,'urlTitle');
+	}
+	
+	public string function createUniqueColumn(required string titleString, required string tableName, required string columnName) {
 
 		var addon = 1;
 
@@ -58,12 +62,12 @@ component output="false" accessors="true" extends="HibachiService" {
 
 		var returnTitle = urlTitle;
 
-		var unique = getDataDAO().verifyUniqueTableValue(tableName=arguments.tableName, column="urlTitle", value=returnTitle);
+		var unique = getDataDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.columnName, value=returnTitle);
 
 		while(!unique) {
 			addon++;
 			returnTitle = "#urlTitle#-#addon#";
-			unique = getDataDAO().verifyUniqueTableValue(tableName=arguments.tableName, column="urlTitle", value=returnTitle);
+			unique = getDataDAO().verifyUniqueTableValue(tableName=arguments.tableName, column=arguments.columnName, value=returnTitle);
 		}
 
 		return returnTitle;

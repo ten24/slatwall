@@ -1,3 +1,5 @@
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
 var slatwalladmin;
 (function (slatwalladmin) {
@@ -88,4 +90,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').service('utilityService', UtilityService);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/utilityservice.js.map
+//# sourceMappingURL=utilityservice.js.map

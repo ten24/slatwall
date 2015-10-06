@@ -34,4 +34,4 @@ angular.module('slatwalladmin').directive("swvalidationuniqueornull", ['$http', 
         };
     }]);
 
-//# sourceMappingURL=../../../directives/common/validation/swvalidationuniqueornull.js.map
+//# sourceMappingURL=swvalidationuniqueornull.js.map

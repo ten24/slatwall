@@ -290,6 +290,20 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		login(rc);
 	}
 
+	public void function processBouncedEmails(required struct rc){
+
+		try {
+			getService("EmailBounceService").processBouncedEmails();
+			rc.$.slatwall.showMessageKey( "admin.processBouncedEmails_success" );
+		} catch (any e) {
+			rc.$.slatwall.showMessageKey( "admin.processBouncedEmails_failure" );
+		}
+
+		getFW().redirect(action="admin:main.default", preserve="messages");
+
+
+	}
+
 	public void function changeLanguage( required struct rc ){
 		param name="arguments.rc.rbLocale" default="";
 		param name="arguments.rc.redirectURL" default="";

@@ -796,8 +796,8 @@ Notes:
 					AND prCurrency.currencyCode=<cfqueryparam cfsqltype="cf_sql_string" value="#arguments.currencyCode#">   
 				LEFT JOIN (
 					SELECT cr1.currencyCode, cr1.conversionRate
-					FROM swcurrencyrate AS cr1
-						LEFT JOIN swcurrencyrate AS cr2
+					FROM SwCurrencyRate AS cr1
+						LEFT JOIN SwCurrencyRate AS cr2
 							ON (cr1.conversionCurrencyCode=cr2.conversionCurrencyCode 
 								AND cr1.currencyCode=cr2.currencyCode 
 								AND cr1.effectiveStartDateTime < cr2.effectiveStartDateTime 
@@ -809,8 +809,8 @@ Notes:
 					) AS skuConversionRate ON skuCurrencyCode=skuConversionRate.currencyCode
 				LEFT JOIN (
 					SELECT cr1.currencyCode, cr1.conversionCurrencyCode, cr1.conversionRate
-					FROM swcurrencyrate AS cr1
-						LEFT JOIN swcurrencyrate AS cr2
+					FROM SwCurrencyRate AS cr1
+						LEFT JOIN SwCurrencyRate AS cr2
 							ON (cr1.conversionCurrencyCode=cr2.conversionCurrencyCode 
 								AND cr1.currencyCode=cr2.currencyCode 
 								AND cr1.effectiveStartDateTime < cr2.effectiveStartDateTime 

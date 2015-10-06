@@ -49,6 +49,11 @@ angular.module('slatwalladmin')
                             "isSearchable": true
                         },
                         {
+                            "isVisible": false,
+                            "ormtype": "string",
+                            "propertyIdentifier": "_orderitem.currencyCode"
+                        },
+                        {
                             "title": "Order Item Type",
                             "propertyIdentifier": "_orderitem.orderItemType",
                             "isVisible": true,
@@ -286,6 +291,8 @@ angular.module('slatwalladmin')
                         }
                         scope.paginator.setPageRecordsInfo(scope.collection.recordsCount, scope.collection.pageRecordsStart, scope.collection.pageRecordsEnd, scope.collection.totalPages);
                         scope.loadingCollection = false;
+                    }, function (value) {
+                        scope.orderItems = [];
                     });
                 };
                 //get all possible attributes
@@ -353,6 +360,7 @@ angular.module('slatwalladmin')
                                 scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
                                 scope.autoScrollDisabled = false;
                             }, function (reason) {
+                                scope.collection.pageRecords = [];
                             });
                         }
                     }
@@ -365,4 +373,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../directives/orderitem/sworderitems.js.map
+//# sourceMappingURL=sworderitems.js.map

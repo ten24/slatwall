@@ -111,8 +111,8 @@ var ngSlatwall;
                     _this.cancelPromise(options.deferKey);
                 }
                 var params = {};
-                if (typeof options === 'String') {
-                    var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.get&entityName=' + entityName + '&entityID=' + options.id;
+                if (typeof options === 'string') {
+                    var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.get&entityName=' + entityName + '&entityID=' + options;
                 }
                 else {
                     params['P:Current'] = options.currentPage || 1;
@@ -319,6 +319,19 @@ var ngSlatwall;
                 }
                 return _this._loadedResourceBundle;
             };
+            this.login = function (emailAddress, password) {
+                var deferred = _this.$q.defer();
+                var urlString = _this.getConfig().baseURL + '/index.cfm/api/auth/login';
+                var params = {
+                    emailAddress: emailAddress,
+                    password: password
+                };
+                return $http.get(urlString, { params: params }).success(function (response) {
+                    deferred.resolve(response);
+                }).error(function (response) {
+                    deferred.reject(response);
+                });
+            };
             this.getResourceBundle = function (locale) {
                 var deferred = _this.$q.defer();
                 var locale = locale || _this.getConfig().rbLocale;
@@ -330,13 +343,24 @@ var ngSlatwall;
                 var params = {
                     locale: locale
                 };
-                return $http.get(urlString, { params: params }).success(function (response) {
+                $http.get(urlString, { params: params }).success(function (response) {
                     _this._resourceBundle[locale] = response.data;
-                    //deferred.resolve(response);
+                    deferred.resolve(response);
                 }).error(function (response) {
                     _this._resourceBundle[locale] = {};
-                    //deferred.reject(response);
+                    deferred.reject(response);
                 });
+                return deferred.promise;
+            };
+            this.getCurrencies = function () {
+                var deferred = _this.$q.defer();
+                var urlString = _this.getConfig().baseURL + '/index.cfm/?slatAction=api:main.getCurrencies&instantiationKey=' + _this.getConfig().instantiationKey;
+                $http.get(urlString).success(function (response) {
+                    deferred.resolve(response);
+                }).error(function (response) {
+                    deferred.reject(response);
+                });
+                return deferred.promise;
             };
             this.rbKey = function (key, replaceStringData) {
                 ////$log.debug('rbkey');
@@ -501,4 +525,4 @@ var ngSlatwall;
     angular.module('ngSlatwall').provider('$slatwall', $Slatwall);
 })(ngSlatwall || (ngSlatwall = {}));
 
-//# sourceMappingURL=../modules/ngslatwall.js.map
+//# sourceMappingURL=ngslatwall.js.map

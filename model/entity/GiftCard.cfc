@@ -57,6 +57,8 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="ownerLastName" ormtype="string";
 	property name="ownerEmailAddress" ormtype="string";
     property name="activeFlag" ormtype="boolean";
+    property name="issuedDate" ormtype="timestamp";
+    property name="currencyCode" ormtype="string" length="3";
     //Calculated Properties
     property name="balanceAmount" ormtype="big_decimal";
 
@@ -68,7 +70,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 
 	// Related Object Properties (one-to-many)
 	property name="giftCardTransactions" singularname="giftCardTransaction" cfc="GiftCardTransaction" fieldtype="one-to-many" fkcolumn="giftCardID" inverse="true" cascade="all-delete-orphan";
-   
+
 	// Related Object Properties (many-to-many)
 
 	// Remote Properties
@@ -79,13 +81,36 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="createdByAccountID" hb_populateEnabled="false" ormtype="string";
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
-    
+
 
 	// Non-Persistent Properties
+	public any function getOrder(){
+		if(!isNull(this.getOriginalOrderItem())){
+			return this.getOriginalOrderItem().getOrder();
+		} else {
+			return false;
+		}
+	}
 
-	public string function getBalanceAmount(){
+	public boolean function isExpired(){
+		if(getService("SettingService").getSettingValue("skuGiftCardEnforceExpirationTerm")){
+			return !dateCompare(this.getExpirationDate(), now()) == 1;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean function canEditOrDelete(){
+		if(isNull(this.getActiveFlag())||this.getActiveFlag()){
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public numeric function getBalanceAmount(){
 		var transactions = this.getGiftCardTransactions();
-		var balance = "0";
+		var balance = 0;
 		for(var transaction in transactions){
 			if(!isNull(transaction.getCreditAmount())){
 				balance = precisionEvaluate(balance + transaction.getCreditAmount());
@@ -102,6 +127,10 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		} else {
 			return this.getOwnerEmailAddress();
 		}
+	}
+
+	public string function hasEmailBounce(){
+		return getDAO("EmailBounceDAO").rejectedEmailExists(this.getorderItemGiftRecipient().getEmailAddress());
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
@@ -135,7 +164,7 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 			arrayAppend(arguments.orderItemGiftRecipient.getGiftCards(), this);
 		}
 	}
-	
+
 	public void function removeOrderItemGiftRecipient(any orderItemGiftRecipient) {
 		if(!structKeyExists(arguments, "orderItem")) {
 			arguments.orderItem = variables.orderItem;
