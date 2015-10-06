@@ -11,9 +11,9 @@ module slatwalladmin {
 		public collection;  
         public currentGiftRecipient:slatwalladmin.GiftRecipient;
 		
-		public static $inject=["$slatwall", "collectionConfigService"];
+		public static $inject=["$slatwall"];
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private collectionConfigService:slatwalladmin.collectionConfigService){
+		constructor(private $slatwall:ngSlatwall.$Slatwall){
 			this.adding = false; 
 			this.searchText = ""; 
 			var count = 1;
@@ -129,12 +129,13 @@ module slatwalladmin {
 			this.searchText = ""; 
 		}
 
-		startFormWithName = ():void =>{
+		startFormWithName = (searchString = this.searchText):void =>{
 			this.adding = true; 
-			if(this.searchText == ""){
-					this.currentGiftRecipient.firstName = this.searchText;
+			
+			if(searchString == ""){
+					this.currentGiftRecipient.firstName = searchString;
 			} else { 
-					this.currentGiftRecipient.firstName = this.searchText; 
+					this.currentGiftRecipient.firstName = searchString; 
 					this.searchText = ""; 
 			}
 		}
@@ -159,7 +160,7 @@ module slatwalladmin {
     
     export class SWAddOrderItemGiftRecipient implements ng.IDirective{
         
-		public static $inject=["$slatwall", "collectionConfigService"];
+		public static $inject=["$slatwall"];
 		public templateUrl; 
 		public restrict = "EA"; 
 		public transclude = true; 
@@ -177,7 +178,7 @@ module slatwalladmin {
         public controllerAs="addGiftRecipientControl";
 		
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private collectionConfigService:slatwalladmin.collectionConfigService, private partialsPath:slatwalladmin.partialsPath){
+		constructor(private $slatwall:ngSlatwall.$Slatwall, private partialsPath:slatwalladmin.partialsPath){
 			this.templateUrl = partialsPath + "entity/OrderItemGiftRecipient/addorderitemgiftrecipient.html";
 		}
 
@@ -187,8 +188,8 @@ module slatwalladmin {
     }
     
     angular.module('slatwalladmin').directive('swAddOrderItemGiftRecipient',
-		["$slatwall", "collectionConfigService", "partialsPath", 
-			($slatwall, collectionConfigService, partialsPath) => 
-				new SWAddOrderItemGiftRecipient($slatwall, collectionConfigService, partialsPath)]); 
+		["$slatwall", "partialsPath", 
+			($slatwall, partialsPath) => 
+				new SWAddOrderItemGiftRecipient($slatwall, partialsPath)]); 
 
 }

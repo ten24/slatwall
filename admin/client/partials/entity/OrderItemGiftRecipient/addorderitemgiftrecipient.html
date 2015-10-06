@@ -1,5 +1,5 @@
 <div>
-	<!--- Process Add Order Item Gift Recipient --->
+	<!-- Process Add Order Item Gift Recipient -->
 	<h5>Assign Gift Cards</h5>
 	<input name="quantity" ng-model="addGiftRecipientControl.quantity" sw-numbers-only min-number="giftRecipientControl.getAssignedCount()" class="hide" readonly>
 	<input type="hidden" name="assignedGiftRecipientQuantity" ng-value="addGiftRecipientControl.getAssignedCount()" /> 
@@ -33,15 +33,11 @@
 				 properties="accountID,firstName,lastName,primaryEmailAddress.emailAddress" 
 				 properties-to-display="firstName,lastName"
 				 placeholder-text="Search or Add Recipient..." 
-				 add-function="addGiftRecipientControl.addGiftRecipientFromAccountList(item)">
+				 add-function="addGiftRecipientControl.addGiftRecipientFromAccountList(item)"
+				 add-button-function="addGiftRecipientControl.startFormWithName(searchString)"
+				 hide-search="addGiftRecipientControl.adding">
 			</div> 
 			
-			<div>
-				<!-- Only show if there is text -->
-				<button type="button" class="btn btn-primary" ng-show="addGiftRecipientControl.searchText != ''" ng-hide="addGiftRecipientControl.currentGiftRecipient.firstName" ng-click="addGiftRecipientControl.startFormWithName()">
-					<i class="fa fa-plus" ></i> Add "<span ng-bind="addGiftRecipientControl.searchText"></span>"
-				</button>
-			</div>
 			<div class="s-add-info-dropdown" ng-hide="!addGiftRecipientControl.adding">
 				<div class="s-add-info-dropdown-inner">
 			

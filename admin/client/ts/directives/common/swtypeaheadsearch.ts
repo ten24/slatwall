@@ -12,6 +12,8 @@ module slatwalladmin {
 		public searchText:string; 
 		public results; 
 		public addFunction; 
+		public addButtonFunction;
+		public hideSearch;  
 		public displayList; 
 		private typeaheadCollectionConfig; 
 		
@@ -32,6 +34,12 @@ module slatwalladmin {
 		
 		public search = (search:string)=>{
 			
+			if(this.hideSearch){
+				this.hideSearch = false; 
+			} else if(this.search.length == 0){
+				this.hideSearch = true; 
+			}
+			
 			this.typeaheadCollectionConfig.setKeywords(search); 
 			var promise = this.typeaheadCollectionConfig.getEntity();
 			
@@ -42,6 +50,7 @@ module slatwalladmin {
 					this.results = response.records;
 				}	 
 
+				//Custom method for gravatar on accounts (non-persistant-property)
 				if(angular.isDefined(this.results) && this.entity == "Account"){
 					angular.forEach(this.results,(account)=>{
 							account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
@@ -52,6 +61,10 @@ module slatwalladmin {
 		
 		public addItem = (item)=>{
 			this.addFunction({item: item}); 
+		}
+		
+		public addButtonItem = ()=>{
+			this.addButtonFunction({searchString: this.searchText});
 		}
 		
 	}
@@ -70,7 +83,9 @@ module slatwalladmin {
 			placeholderText:"@?",
 			searchText:"=?",
 			results:"=?",
-			addFunction:"&?"
+			addFunction:"&?",
+			addButtonFunction:"&?", 
+			hideSearch:"="
 		}
 		public controller=SWTypeaheadSearchController;
         public controllerAs="swTypeaheadSearch";

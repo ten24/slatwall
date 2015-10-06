@@ -6,7 +6,14 @@
 		</div>
 	</form>
 	
-	<ul ng-show="swTypeaheadSearch.searchText.length > 0" class="dropdown-menu">
+	<div>
+		<!-- Only show if there is text -->
+		<button type="button" class="btn btn-primary" ng-show="swTypeaheadSearch.searchText != ''" ng-hide="swTypeaheadSearch.hideSearch" ng-click="swTypeaheadSearch.addButtonItem(item)">
+			<i class="fa fa-plus" ></i> Add "<span ng-bind="swTypeaheadSearch.searchText"></span>"
+		</button>
+	</div>
+	
+	<ul ng-show="swTypeaheadSearch.searchText.length > 0" ng-hide="swTypeaheadSearch.hideSearch" class="dropdown-menu">
 		<li ng-repeat="item in swTypeaheadSearch.results">
 			<a ng-click="swTypeaheadSearch.addItem(item)">
 				<div ng-if="swTypeaheadSearch.entity == 'Account'" class="row">
