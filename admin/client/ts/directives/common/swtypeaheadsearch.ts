@@ -6,14 +6,22 @@ module slatwalladmin {
 		public static $inject=["$slatwall", "collectionConfigService"];
 		public entity:string;
 		public properties:string;
+		public propertiesToDisplay:string; 
 		public allRecords:boolean; 
 		public placeholderText:string;  
 		public searchText:string; 
 		public results; 
+		public addFunction; 
+		public displayList; 
 		private typeaheadCollectionConfig; 
 		
 		constructor(private $slatwall:ngSlatwall.$Slatwall, private collectionConfigService:slatwalladmin.collectionConfigService){
-			this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity, this.properties);
+			this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity);
+			this.typeaheadCollectionConfig.setDisplayProperties(this.properties); 
+				
+			if(angular.isDefined(this.propertiesToDisplay)){
+				this.displayList = this.propertiesToDisplay.split(",");
+			}
 			
 			if(angular.isDefined(this.allRecords)){
 				this.typeaheadCollectionConfig.setAllRecords(this.allRecords)
@@ -31,9 +39,19 @@ module slatwalladmin {
 				if(angular.isDefined(this.allRecords) && this.allRecords == false){
 					this.results = response.pageRecords;
 				} else {
-					this.results = response;
+					this.results = response.records;
 				}	 
+
+				if(angular.isDefined(this.results) && this.entity == "Account"){
+					angular.forEach(this.results,(account)=>{
+							account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
+					});
+				}
 			});
+		}
+		
+		public addItem = (item)=>{
+			this.addFunction({item: item}); 
 		}
 		
 	}
@@ -46,11 +64,13 @@ module slatwalladmin {
 		public scope = {}	
 		
 		public bindToController = {
-			entity:"=",
-			properties:"=",
-			placeholderText:"=?",
+			entity:"@",
+			properties:"@",
+			propertiesToDisplay:"@",
+			placeholderText:"@?",
 			searchText:"=?",
-			results:"=?"
+			results:"=?",
+			addFunction:"&?"
 		}
 		public controller=SWTypeaheadSearchController;
         public controllerAs="swTypeaheadSearch";

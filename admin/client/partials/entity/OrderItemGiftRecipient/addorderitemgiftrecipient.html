@@ -1,6 +1,7 @@
 <div>
 	<!--- Process Add Order Item Gift Recipient --->
 	<h5>Assign Gift Cards</h5>
+	<input name="quantity" ng-model="addGiftRecipientControl.quantity" sw-numbers-only min-number="giftRecipientControl.getAssignedCount()" class="hide" readonly>
 	<input type="hidden" name="assignedGiftRecipientQuantity" ng-value="addGiftRecipientControl.getAssignedCount()" /> 
 	<div class="table-responsive s-gift-card-table">			
 		<div ng-show="addGiftRecipientControl.getUnassignedCount()" class="alert alert-info" role="alert">Use the "search or add recipient" field below to assign recipients to gift cards.  </br><strong>You have ({{addGiftRecipientControl.getUnassignedCount()}}) gift card<span ng-hide="addGiftRecipientControl.getUnassignedCount() == 1">s</span> to assign</strong></div>
@@ -27,36 +28,14 @@
 
 	<div class="form-group " ng-show="addGiftRecipientControl.getUnassignedCount() > 0">
 		<div class="s-search-filter s-gift-card">
-			<div class="input-group">
-				<form>
-					<div class="s-search">
-						<input type="text" placeholder="search or add recipient..." class="form-control input-sm" ng-model="addGiftRecipientControl.searchText" ng-change="addGiftRecipientControl.updateResults(addGiftRecipientControl.searchText)">
-						<i class="fa fa-search"></i>
-					</div>
-				</form>
-				
-				<ul ng-show="addGiftRecipientControl.searchText.length > 0" ng-hide="addGiftRecipientControl.currentGiftRecipient.firstName" class="dropdown-menu">
-					<!-- Item-->
-					<li ng-repeat="account in collection.pageRecords">
-						<a ng-click="addGiftRecipientControl.addGiftRecipientFromAccountList(account)">
-							<div class="row">
-								<div class="col-xs-2 s-photo">
-									<img src="{{account.gravatar}}">
-								</div>
-								<div class="col-xs-10 s-info">
-									<div class="s-name">
-										<span ng-bind="account.firstName"></span> 
-										<span ng-bind="account.lastName"></span>
-									</div>
-									<div class="s-email" ng-bind="account.primaryEmailAddress_emailAddress"></div>
-								</div>
-							</div>
-						</a>
-					</li>
-					<!-- //Item-->
-				</ul>
-
-			</div>
+			
+			<div sw-typeahead-search entity="Account" 
+				 properties="accountID,firstName,lastName,primaryEmailAddress.emailAddress" 
+				 properties-to-display="firstName,lastName"
+				 placeholder-text="Search or Add Recipient..." 
+				 add-function="addGiftRecipientControl.addGiftRecipientFromAccountList(item)">
+			</div> 
+			
 			<div>
 				<!-- Only show if there is text -->
 				<button type="button" class="btn btn-primary" ng-show="addGiftRecipientControl.searchText != ''" ng-hide="addGiftRecipientControl.currentGiftRecipient.firstName" ng-click="addGiftRecipientControl.startFormWithName()">

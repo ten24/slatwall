@@ -5,20 +5,20 @@ module slatwalladmin {
 		
 
 		public adding:boolean; 
-        public orderItemGiftRecipients; 
+        public orderItemGiftRecipients:[]; 
         public quantity:number;
         public searchText:string; 
+		public collection;  
         public currentGiftRecipient:slatwalladmin.GiftRecipient;
 		
 		public static $inject=["$slatwall", "collectionConfigService"];
-
-		private typeaheadCollectionConfig; 
 		
 		constructor(private $slatwall:ngSlatwall.$Slatwall, private collectionConfigService:slatwalladmin.collectionConfigService){
 			this.adding = false; 
 			this.searchText = ""; 
 			var count = 1;
 			this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
+			this.orderItemGiftRecipients = [];
 		}
 		
 		addGiftRecipientFromAccountList = (account:any):void =>{
@@ -76,16 +76,16 @@ module slatwalladmin {
 			var accountPromise = $slatwall.getEntity('account', options);
 
 			accountPromise.then((response:any):void =>{
-					this.$scope.collection = response;
-					if(angular.isDefined(this.$scope.collection)){
-					angular.forEach(this.$scope.collection.pageRecords,(account)=>{
+					this.collection = response;
+					if(angular.isDefined(this.collection)){
+					angular.forEach(this.collection.pageRecords,(account)=>{
 							account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
 					});
 					}
 			});
 			
 
-			return this.$scope.collection;
+			return this.collection;
 		}
 
 		getUnassignedCountArray = ():number[] =>{
@@ -162,6 +162,7 @@ module slatwalladmin {
 		public static $inject=["$slatwall", "collectionConfigService"];
 		public templateUrl; 
 		public restrict = "EA"; 
+		public transclude = true; 
 		public scope = {}; 	
 		
 		public bindToController = {
