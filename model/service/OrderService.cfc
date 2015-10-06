@@ -87,9 +87,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				|| arguments.order.getOrderFulfillments()[i].hasErrors()
 				|| !arguments.order.getOrderFulfillments()[i].hasGiftCardCodes()) {
 				orderRequirementsList = listAppend(orderRequirementsList, "fulfillment");
-				if( !arguments.order.getOrderFulfillments()[i].hasGiftCardCodes()){
-					orderRequirementsList = listAppend(orderRequirementsList, "giftCardCode");
-				}
 				break;
 			}
 		}
@@ -1278,25 +1275,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			// Make sure that the entity is notPlaced before going any further
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
 
-				var orderRequirementsList = getOrderRequirementsList( arguments.order );
-				if(listFindNoCase(getOrderRequirementsList( arguments.order ), "giftCardCode") && !isNull(data.orderFulfillments)){
-
-					for(var fulfillment in data.orderFulfillments){
-
-						if(structKeyExists(fulfillment,"GiftCardCodes")){
-							realFulfillment = this.getOrderFulfillment(fulfillment.orderFulfillmentID);
-							realFulfillment.setGiftCardCodeList(ArrayToList(fulfillment.giftCardCodes));
-							realFulfillment = this.save(realFulfillment);
-
-							if(realFulfillment.hasErrors()){
-								arguments.order.addErrors(realFulfillment.getErrors());
-							}
-						}
-					}
-				} else {
-					arguments.order.addError("specifyGiftCardCode", rbKey('validate.processOrder_placeOrder.giftCardCode'));
-				}
-
 				// Call the saveOrder method so that accounts, fulfillments & payments are updated
 				arguments.order = this.saveOrder(arguments.order, arguments.data);
 
@@ -1314,7 +1292,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 
 					// Generate the order requirements list, to see if we still need action to be taken
-					orderRequirementsList = getOrderRequirementsList( arguments.order );
+					var orderRequirementsList = getOrderRequirementsList( arguments.order );
 
 					// Verify the order requirements list, to make sure that this order has everything it needs to continue
 					if(len(orderRequirementsList)) {
