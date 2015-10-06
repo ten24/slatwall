@@ -87,7 +87,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				|| arguments.order.getOrderFulfillments()[i].hasErrors()
 				|| !arguments.order.getOrderFulfillments()[i].hasGiftCardCodes()) {
 				orderRequirementsList = listAppend(orderRequirementsList, "fulfillment");
-				if(getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode") && !arguments.order.getOrderFulfillments()[i].hasGiftCardCodes()){
+				if(!arguments.order.getOrderFulfillments()[i].hasGiftCardCodes()){
 					orderRequirementsList = listAppend(orderRequirementsList, "giftCardCode");
 				}
 				break;
@@ -1293,7 +1293,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 							}
 						}
 					}
-				} else {
+				} else if (listFindNoCase(getOrderRequirementsList( arguments.order ), "giftCardCode") && isNull(data.orderFulfillments)) {
 					arguments.order.addError("specifyGiftCardCode", rbKey('validate.processOrder_placeOrder.giftCardCode'));
 				}
 
