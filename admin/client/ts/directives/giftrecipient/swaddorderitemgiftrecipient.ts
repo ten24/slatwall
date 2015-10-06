@@ -31,63 +31,6 @@ module slatwalladmin {
 			this.searchText = "";   
 		}
         
-		updateResults = (keyword):void =>{
-			var options =  {    
-					baseEntityName:"SlatwallAccount", 
-					baseEntityAlias:"_account", 
-					keywords: keyword,
-					defaultColumns: false, 
-					columnsConfig:angular.toJson([
-							{
-							isDeletable:false,
-							isSearchable:false,
-							isVisible:true,
-							ormtype:"id",
-							propertyIdentifier:"_account.accountID",
-							},
-
-							{
-							isDeletable:false,
-							isSearchable:true,
-							isVisible:true,
-							ormtype:"string",
-							propertyIdentifier:"_account.firstName",
-							},
-
-							{
-							isDeletable:false,
-							isSearchable:true,
-							isVisible:true,
-							ormtype:"string",
-							propertyIdentifier:"_account.lastName",
-							},
-
-							{
-							isDeletable:false,
-							isSearchable:true,
-							title:"Email Address",
-							isVisible:true,
-							ormtype:"string",
-							propertyIdentifier:"_account.primaryEmailAddress.emailAddress",
-							}
-					])
-			};
-
-			var accountPromise = $slatwall.getEntity('account', options);
-
-			accountPromise.then((response:any):void =>{
-					this.collection = response;
-					if(angular.isDefined(this.collection)){
-					angular.forEach(this.collection.pageRecords,(account)=>{
-							account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
-					});
-					}
-			});
-			
-
-			return this.collection;
-		}
-
 		getUnassignedCountArray = ():number[] =>{
 			var unassignedCountArray = new Array();
 
@@ -133,10 +76,10 @@ module slatwalladmin {
 			this.adding = true; 
 			
 			if(searchString == ""){
-					this.currentGiftRecipient.firstName = searchString;
+				this.currentGiftRecipient.firstName = searchString;
 			} else { 
-					this.currentGiftRecipient.firstName = searchString; 
-					this.searchText = ""; 
+				this.currentGiftRecipient.firstName = searchString; 
+				this.searchText = ""; 
 			}
 		}
 
@@ -150,9 +93,9 @@ module slatwalladmin {
 
 		getMessageCharactersLeft = ():number =>{				
 			if(angular.isDefined(this.currentGiftRecipient.giftMessage)){ 
-					return 250 - this.currentGiftRecipient.giftMessage.length;
+				return 250 - this.currentGiftRecipient.giftMessage.length;
 			} else { 
-					return 250; 
+				return 250; 
 			}
 		}
 		
