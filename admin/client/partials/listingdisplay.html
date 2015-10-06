@@ -101,7 +101,7 @@
 				<!-- Columns -->
 				<th ng-repeat="column in swListingDisplay.collectionConfig.columns" 
 					class="data {{column.tdClass}}" 
-					
+					ng-if="column.isVisible"
 					ng-cloak
 				>
 					<span 
@@ -186,6 +186,7 @@
 					ng-repeat="(key,column) in swListingDisplay.collectionConfig.columns" 
 					class="column.tdclass"
 					ng-cloak
+					ng-if="column.isVisible"
 				>
 					<a ng-if="column.tdclass === 'primary' && swListingDisplay.expandable" href="##" class="table-action-expand depth0" data-depth="0"><i class="glyphicon glyphicon-plus"></i></a> {{pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]}}
 				</td>

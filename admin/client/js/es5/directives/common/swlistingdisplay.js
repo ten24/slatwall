@@ -197,6 +197,7 @@ var slatwalladmin;
                 angular.forEach(this.columns, function (column) {
                     var lastEntity = _this.$slatwall.getLastEntityNameInPropertyIdentifier(_this.collection, column.propertyIdentifier);
                     column.title = _this.$slatwall.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + _this.utilityService.listLast(column.propertyIdentifier, '.'));
+                    column.isVisible = column.isVisible || true;
                     _this.collectionConfig.columns.push(column);
                 });
                 this.collectionConfig.setPageShow(this.paginator.pageShow);

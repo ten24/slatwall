@@ -54,6 +54,7 @@ module slatwalladmin {
                 angular.forEach(this.columns, (column)=>{
                     var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collection,column.propertyIdentifier);
                     column.title = this.$slatwall.getRBKey('entity.'+lastEntity.toLowerCase()+'.'+this.utilityService.listLast(column.propertyIdentifier,'.'));
+                    column.isVisible = column.isVisible || true;
                     this.collectionConfig.columns.push(column);
                 });
                 this.collectionConfig.setPageShow(this.paginator.pageShow);
