@@ -16,17 +16,17 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	
 	public any function before( required struct rc ) {
 		getFW().setView("public:main.blank");
-		arguments.rc["APIRequest"] = true;
+		//arguments.rc["APIRequest"] = true;
 		
 		arguments.rc.requestHeaderData = getHTTPRequestData();
 		
 		//Set the header for response
 		param name="rc.headers.contentType" default="application/json"; 
 		arguments.rc.headers["Content-Type"] = rc.headers.contentType;
-		
+		/*
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
-		}
+		}*/
 	}
 	
 	public any function get( required struct rc ) {
@@ -38,6 +38,9 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 		//Call the public method
 		var publicService = getService('PublicService');
+		if (StructKeyExists(arguments.rc, "processObject")){
+			publicService.invokeMethod("processObject()", {rc=rc});
+		}
 		if ( StructKeyExists(arguments.rc, "context") ){
 			publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
 		}else{
@@ -52,7 +55,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var structuredData = {};
 		
 		if(isNull(arguments.rc.apiResponse.content.messages)){
-			arguments.rc.apiResponse.content['messages'] = [];
+			//arguments.rc.apiResponse.content['messages'] = [];
 		}
 		
 		if (StructKeyExists(arguments.rc, "jsonRequest")){

@@ -112,30 +112,36 @@ component extends="HibachiService"  accessors="true" output="false"
 	  @example  testuser@slatwalltest.com:Vah7cIxXe would become dGVzdHVzZXJAc2xhdHdhbGx0ZXN0LmNvbTpWYWg3Y0l4WGU=				
 	 */
 	public any function login( required struct rc ){
-		//If this is an api request, decode the basic auth heading and put the email and password back into request context.
-		if (arguments.rc.APIRequest){
-			//Check for the basic auth heading
-			try {
-				if (StructKeyExists(arguments.rc.requestHeaderData.headers, "authorization")){
-					var plaintextArray = ListToArray( ToString( ToBinary( arguments.rc.requestHeaderData.headers.authorization ) ), ":" );
-					var email = plaintextArray[1];
-					var password = plaintextArray[2];
-					arguments.rc["emailAddress"] = email;
-					arguments.rc["password"] = password;
-				}
-			} catch (any e){
-				addDataToResponse("errors", "Unable to decode Basic Authorization Header to usable data", arguments.rc);		
-			}
-		}
-		//Login the user
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'login' );
 		arguments.rc.$.slatwall.addActionResult( "public:account.login", account.hasErrors() );
-		//If this is a request from the api, setup the response header and populate it with data.
-		//any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc
-		handlePublicAPICall(200, 400, account, arguments.rc.$.slatwall.invokeMethod("getAccountData"), getHibachiScope().getSession().getSessionCookieNPSID(),  arguments.rc);
 		return account;
-	}	
-
+	}
+	
+	/** returns meta data as well as validation information for a process object. */	
+	public any function getProcessObjectDefinition(required struct rc){
+    
+        var processObject = evaluate("rc.$.slatwall.get#rc.entityName#().getProcessObject('#rc.processObject#')");
+        arguments.rc.ajaxResponse['processObject']['validations'] = processObject.getValidations();
+        arguments.rc.ajaxResponse['processObject']['meta'] = processObject.getThisMetaData();
+        
+    }
+    
+    /** returns the result of a processObject based action including error information */    
+    public any function doProcess(required struct rc){
+        
+        if (structKeyExists(rc, "doAction")){
+        	var processObject = this.evokeMethod("#rc.doAction#");
+        }else{
+        	var processObject = evaluate("rc.$.slatwall.get#rc.entityName#().getProcessObject('#rc.processObject#')");
+        }
+        
+        arguments.rc.ajaxResponse['processObject']['validations']   = processObject.getValidations();
+        arguments.rc.ajaxResponse['processObject']['meta']          = processObject.getThisMetaData();
+        arguments.rc.ajaxResponse['processObject']['hasErrors']     = processObject.hasErrors();
+        arguments.rc.ajaxResponse['processObject']['errors']        = processObject.getErrors();
+        arguments.rc.ajaxResponse['processObject']['messages']      = processObject.getMessages();
+        
+    }
 	/** 
 	 * @method Logout <b>Log a user account outof Slatwall given the users request_token and deviceID</b>
 	 * @http-context Logout Use this context in conjunction with the listed http-verb to use this resource.
@@ -796,35 +802,36 @@ component extends="HibachiService"  accessors="true" output="false"
 	 * @param data @type Struct
 	 * @param returnJson @type Boolean
 	 */
-	any function setResponse(any success=false, any statusCode=400, any data, required struct rc, any returnJson=true){
+	public any function setResponse(any success=false, any statusCode=400, any data, required struct rc, any returnJson=true) {
+		
 		//Setup defaults.
-		if (!StructKeyExists(arguments.rc, "data") || isNull(arguments.rc.apiResponse.content.data)){
-				arguments.rc.apiResponse.content["data"] = "";
+		/*if (!StructKeyExists(arguments.rc, "data") || isNull(arguments.rc.apiResponse.content.data)){
+			
 		}
 		if (!StructKeyExists(arguments.rc, "status_code_message") || isNull(arguments.rc.apiResponse.content.messages)){
 				arguments.rc.apiResponse.content["status_code_message"] = "";
 		}
 		if (!StructKeyExists(arguments.rc, "errors") || isNull(arguments.rc.apiResponse.content.errors)){
 				arguments.rc.apiResponse.content["errors"] = "";
-		}
+		}*/
 		
 		arguments.rc.headers.contentType = "application/json";
 		arguments.rc.apiResponse.content["success"] = arguments.success;
 		//Add the status code message to our messages if success and to errors otherwise.
 		if (arguments.success){
-			arguments.rc.apiResponse.content['status_code_message'] &= "#serializeJson(getHTTPMsgByStatus(arguments.statusCode), true)#";
+			arguments.rc.apiResponse.content['status_code_message'] &= "#getHTTPMsgByStatus(arguments.statusCode)#";
 		}else{
 			arguments.rc.apiResponse.content["errors"] = getHTTPMsgByStatus(arguments.statusCode);
 		}
 		if (!isNull(arguments.data) && arguments.returnJson){
 			try {	
-			arguments.rc.apiResponse.content["data"] = serializeJson(arguments.data, true);
+			     arguments.rc.apiResponse.content["data"] = arguments.data;
 			}catch(any e){
 				//can't serialize the data so just return it.
 				setResponse(true, arguments.statusCode, arguments.data, arguments.rc, false);
 			}
 		}else if ( isNull(arguments.data) || isNull(arguments.returnJson) || arguments.returnJson ){
-			arguments.rc.apiResponse.content["data"] = "";
+			throw("isNull");
 		}
 		//Set the page context.
 		var context = getPageContext();
@@ -845,18 +852,18 @@ component extends="HibachiService"  accessors="true" output="false"
 		@param rc (Request Context)
 	*/
 	private any function handlePublicAPICall(any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc){
-		if (arguments.rc.APIRequest){
-			var errors = genericObject.hasErrors();
-			if (!isNull(genericObject) && errors){
-				setResponse(false, onErrorCode, genericObject.getErrors(), arguments.rc, true);
-				return;
-			}
-			//Add the account data to the response
-			setResponse(true, onSuccessCode, arguments.responseData, arguments.rc, true);	
-			if (Len(extraData)){
-				addDataToResponse("status_code_message", arguments.extraData, arguments.rc);	
-			}
+		
+		/** handle errors */
+		if (!isNull(genericObject.hasErrors()) && genericObject.hasErrors()){
+			setResponse(false, onErrorCode, genericObject.getErrors(), arguments.rc, true);
+			return;
 		}
+		//Add the data to the response
+		setResponse(true, onSuccessCode, arguments.responseData, arguments.rc, true);	
+		if (Len(extraData)){
+			addDataToResponse("status_code_message", arguments.extraData, arguments.rc);	
+		}
+		
 	}
 	
 	/* Add data to the http response 
@@ -869,7 +876,7 @@ component extends="HibachiService"  accessors="true" output="false"
 			arguments.rc.apiResponse.content["#arguments.key#"] = "";
 		}
 		
-		arguments.rc.apiResponse.content["#arguments.key#"] = serializeJson(arguments.data, true);
+		arguments.rc.apiResponse.content["#arguments.key#"] = arguments.data;
 		return true;	
 	}
 	
