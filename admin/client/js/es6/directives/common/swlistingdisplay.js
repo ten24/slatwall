@@ -44,14 +44,17 @@ var slatwalladmin;
                 return str.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
             };
             this.getPageRecordKey = (propertyIdentifier) => {
-                var propertyIdentifierWithoutAlias = '';
-                if (propertyIdentifier.indexOf('_') === 0) {
-                    propertyIdentifierWithoutAlias = propertyIdentifier.substring(propertyIdentifier.indexOf('.') + 1, propertyIdentifier.length);
+                if (propertyIdentifier) {
+                    var propertyIdentifierWithoutAlias = '';
+                    if (propertyIdentifier.indexOf('_') === 0) {
+                        propertyIdentifierWithoutAlias = propertyIdentifier.substring(propertyIdentifier.indexOf('.') + 1, propertyIdentifier.length);
+                    }
+                    else {
+                        propertyIdentifierWithoutAlias = propertyIdentifier;
+                    }
+                    return this.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
                 }
-                else {
-                    propertyIdentifierWithoutAlias = propertyIdentifier;
-                }
-                return this.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
+                return '';
             };
             this.init = () => {
                 //set defaults if value is not specified
@@ -111,8 +114,6 @@ var slatwalladmin;
                 */
                 //Setup the list of all property identifiers to be used later
                 angular.forEach(this.columns, (column) => {
-                    console.log('column');
-                    console.log(column);
                     //If this is a standard propertyIdentifier
                     if (column.propertyIdentifier) {
                         //Add to the all property identifiers
@@ -135,12 +136,8 @@ var slatwalladmin;
                         */
                         this.allprocessobjectproperties = this.utilityService.listAppend(this.allprocessobjectproperties, column.processObjectProperty);
                     }
-                    console.log('tdclass');
-                    console.log(column.tdclass);
                     if (column.tdclass) {
                         var tdclassArray = column.tdclass.split(' ');
-                        console.log(tdclassArray);
-                        console.log(tdclassArray.indexOf("primary"));
                         if (tdclassArray.indexOf("primary") >= 0 && this.expandable) {
                             this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-expandsortproperty=' + column.propertyIdentifier, " ");
                             column.sort = false;
@@ -196,9 +193,7 @@ var slatwalladmin;
                     this.collectionConfig.columns = [];
                 }
                 angular.forEach(this.columns, (column) => {
-                    console.log(column.propertyIdentifier);
                     var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collection, column.propertyIdentifier);
-                    console.log(lastEntity);
                     column.title = this.$slatwall.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + this.utilityService.listLast(column.propertyIdentifier, '.'));
                     this.collectionConfig.columns.push(column);
                 });
@@ -223,7 +218,7 @@ var slatwalladmin;
             if (this.multiselectFieldName && this.multiselectFieldName.length) {
                 this.multiselectable = true;
                 this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-multiselect', ' ');
-                this.tableattributes = this.utiltiyService.listAppend(this.tableattributes, 'data-multiselectpropertyidentifier="' + this.multiselectPropertyIdentifier + '"', ' ');
+                this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-multiselectpropertyidentifier="' + this.multiselectPropertyIdentifier + '"', ' ');
             }
             if (this.multiselectable && !this.columns.length) {
                 //check if it has an active flag and if so then add the active flag
@@ -233,10 +228,7 @@ var slatwalladmin;
             }
             //Look for Hierarchy in example entity
             if (!this.parentPropertyName || (this.parentPropertyName && !this.parentProopertyName.length)) {
-                console.log('noparent');
-                console.log(this.exampleEntity);
                 if (this.exampleEntity.metaData.hb_parentPropertyName) {
-                    console.log('getparent');
                     this.parentPropertyName = this.exampleEntity.metaData.hb_parentPropertyName;
                 }
             }
@@ -248,6 +240,17 @@ var slatwalladmin;
                 this.allpropertyidentifiers = this.utilityService.listAppend(this.allpropertyidentifiers, this.exampleEntity.$$getIDName() + 'Path');
                 this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty=' + this.parentPropertyname + '.' + this.exampleEntity.$$getIDName(), ' ');
                 this.collectionConfig.setAllRecords(true);
+            }
+            if (!this.edit
+                && this.multiselectable
+                && (!this.parentPropertyName || !!this.parentPropertyName.length)
+                && (this.multiselectPropertyIdentifier && this.multiselectPropertyIdentifier.length)) {
+                if (this.multiselectValues && this.multiselectValues.length) {
+                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier, this.multiselectValues, 'IN');
+                }
+                else {
+                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier, '_', 'IN');
+                }
             }
             this.getCollection();
         }

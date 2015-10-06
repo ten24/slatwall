@@ -69,6 +69,7 @@
 	data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" {{this.tableattributes}}>
 -->
 	<table  ng-class="swListingDisplay.tableclass" 
+			ng-attr-id="{{swListingDisplay.tableID}}"
 			data-norecordstext="{{swListingDisplay.norecordstext}}" 
 			data-entityname="{{swListingDisplay.collectionObject}}" 
 			data-idproperty="{{swListingDisplay.exampleEntity.$$getIDName()}}" 
@@ -83,7 +84,7 @@
 				<!--- Multiselectable --->
 				<input ng-if-start="swListingDisplay.multiselectable" type="hidden" ng-name="swListingDisplay.multiselectFieldName" ng-value="swListingDisplay.multiselectValues" />
 				<th ng-if-end ng-class="{'multiselect':1===1,'disabled':!swListingDisplay.edit}">
-					<div ="!swListingDisplay.expandable && swListinDisplay.multiselectPropertyIdentifier && swListinDisplay.multiselectPropertyIdentifier.length" class="dropdown">
+					<div ng-if="!swListingDisplay.expandable && swListinDisplay.multiselectPropertyIdentifier && swListinDisplay.multiselectPropertyIdentifier.length" class="dropdown">
 						<a href="##" class="dropdown-toggle" data-toggle="dropdown">&nbsp;<i class="glyphicon glyphicon-check"></i> </a>
 						<ul class="dropdown-menu nav">
 							<li>
@@ -162,9 +163,15 @@
 				<!-- Multiselectable-->
 				<td ng-if="swListingDisplay.multiselectable" 
 					class="s-table-checkbox">
-					<a href="##" class="table-action-multiselect{{swListingDisplay.edit ? '' : 'disabled'}}" ng-data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]">
+					<sw-selection
+						data-id="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
+						data-is-radio="false"
+	            		data-selectionid="ListingDisplay"
+	            		data-selection="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
+					></sw-selection>
+					<!--<a href="##" class="table-action-multiselect {{swListingDisplay.edit ? '' : 'disabled'}}" ng-data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]">
 						<i class="hibachi-ui-checkbox"></i>
-					</a>
+					</a>-->
 				</td>
 				<!--- Sortable -->
 				<!--<td ng-if="swListingDisplay.sortable" 

@@ -187,6 +187,7 @@ var slatwalladmin;
             this.$transclude(this.$scope, function () { });
             this.paginator = paginationService.createPagination();
             this.paginator.getCollection = this.getCollection;
+            this.tableID = 'LD' + this.utilityService.createID();
             //if collection Value is string instead of an object then create a collection
             if (angular.isString(this.collection)) {
                 this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collection);
@@ -201,6 +202,11 @@ var slatwalladmin;
                 this.collectionConfig.setPageShow(this.paginator.pageShow);
                 this.collectionConfig.setCurrentPage(this.paginator.currentPage);
                 this.exampleEntity = this.$slatwall.newEntity(this.collection);
+                var primarycolumn = {
+                    propertyIdentifier: this.exampleEntity.$$getIDName(),
+                    isVisible: false
+                };
+                this.collectionConfig.columns.push(primarycolumn);
             }
             //setup export action
             if (angular.isDefined(this.exportAction)) {
@@ -241,6 +247,17 @@ var slatwalladmin;
                 this.allpropertyidentifiers = this.utilityService.listAppend(this.allpropertyidentifiers, this.exampleEntity.$$getIDName() + 'Path');
                 this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty=' + this.parentPropertyname + '.' + this.exampleEntity.$$getIDName(), ' ');
                 this.collectionConfig.setAllRecords(true);
+            }
+            if (!this.edit
+                && this.multiselectable
+                && (!this.parentPropertyName || !!this.parentPropertyName.length)
+                && (this.multiselectPropertyIdentifier && this.multiselectPropertyIdentifier.length)) {
+                if (this.multiselectValues && this.multiselectValues.length) {
+                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier, this.multiselectValues, 'IN');
+                }
+                else {
+                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier, '_', 'IN');
+                }
             }
             this.getCollection();
         }

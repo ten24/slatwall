@@ -90,7 +90,7 @@
             templateUrl: $.slatwall.getConfig().baseURL + '/admin/client/js/partials/otherwise.html',
         });  
     
-    }]).run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService','observerService', ($rootScope,$filter,$anchorScroll,$slatwall,dialogService,observerService) => {
+    }]).run(['$rootScope','$filter','$anchorScroll','$slatwall','dialogService','observerService','utilityService', ($rootScope,$filter,$anchorScroll,$slatwall,dialogService,observerService,utilityService) => {
         $anchorScroll.yOffset = 100;
     
         $rootScope.openPageDialog = function( partial ) {
@@ -104,7 +104,7 @@
         $rootScope.loadedResourceBundle = false;
         $rootScope.loadedResourceBundle = $slatwall.hasResourceBundle();
         $rootScope.buildUrl = $slatwall.buildUrl;
-        
+        $rootScope.createID = utilityService.createID;
         
         var rbListener = $rootScope.$watch('loadedResourceBundle',function(newValue,oldValue){
             if(newValue !== oldValue){
