@@ -1,8 +1,7 @@
 /// <reference path="../../../../client/typings/tsd.d.ts" />
 /// <reference path="../../../../client/typings/slatwallTypeScript.d.ts" />
 ((): void => {
-     var ngSlatwall = angular.module('ngSlatwall',[]);
-    
+     var ngSlatwall = angular.module('ngSlatwall',[])
 })();
 module ngSlatwall {
     export class SlatwallService{
@@ -123,8 +122,8 @@ module ngSlatwall {
             }
             
             var params = {};
-            if(typeof options === 'String') {
-                var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options.id;
+            if(typeof options === 'string') {
+                var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.get&entityName='+entityName+'&entityID='+options;
             } else {
                 params['P:Current'] = options.currentPage || 1;
                 params['P:Show'] = options.pageShow || 10;
@@ -358,7 +357,22 @@ module ngSlatwall {
             return this._loadedResourceBundle;
             
         }
-        getResourceBundle= (locale) => {
+        
+        login = (emailAddress,password) => {
+            var deferred = this.$q.defer();
+            var urlString = this.getConfig().baseURL+'/index.cfm/api/auth/login';
+            var params = {
+                emailAddress:emailAddress,
+                password:password
+            };
+            return $http.get(urlString,{params:params}).success((response) => {
+                deferred.resolve(response);
+            }).error((response) => {
+                deferred.reject(response);
+            });
+        }
+        
+        getResourceBundle = (locale) => {
             var deferred = this.$q.defer();
             var locale = locale || this.getConfig().rbLocale;
             
@@ -371,15 +385,27 @@ module ngSlatwall {
             var params = {
                 locale:locale
             };
-            return $http.get(urlString,{params:params}).success((response) => {
+            $http.get(urlString,{params:params}).success((response) => {
                 this._resourceBundle[locale] = response.data;
-                //deferred.resolve(response);
+                deferred.resolve(response);
             }).error((response) => {
                 this._resourceBundle[locale] = {};
-                //deferred.reject(response);
+                deferred.reject(response);
             });
+            return deferred.promise
         }
         
+        getCurrencies = () =>{
+            var deferred = this.$q.defer();
+            
+            var urlString = this.getConfig().baseURL+'/index.cfm/?slatAction=api:main.getCurrencies&instantiationKey='+this.getConfig().instantiationKey;
+            $http.get(urlString).success((response) => {
+                deferred.resolve(response);
+            }).error((response) => {
+                deferred.reject(response);
+            });
+            return deferred.promise;
+        }
         
         rbKey= (key,replaceStringData) => {
             ////$log.debug('rbkey');

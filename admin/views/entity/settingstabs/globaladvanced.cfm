@@ -51,7 +51,9 @@ Notes:
 
 <cfoutput>
 	<swa:SlatwallSettingTable showInheritance="false">
+		<swa:SlatwallSetting settingName="globalAdminDomainNames" />
 		<swa:SlatwallSetting settingName="globalAllowedOutsideRedirectSites" />
+		<swa:SlatwallSetting settingName="globalClientSecret" />
 		<swa:SlatwallSetting settingName="globalEncryptionAlgorithm" />
 		<swa:SlatwallSetting settingName="globalEncryptionEncoding" />
 		<swa:SlatwallSetting settingName="globalEncryptionKeySize" />
@@ -62,7 +64,6 @@ Notes:
 		<swa:SlatwallSetting settingName="globalNoSessionPersistDefault" />
 		<swa:SlatwallSetting settingName="globalRemoteIDShowFlag" />
 		<swa:SlatwallSetting settingName="globalRemoteIDEditFlag" />
-		<swa:SlatwallSetting settingName="globalAdminDomainNames" />
 	</swa:SlatwallSettingTable>
 </cfoutput>
 

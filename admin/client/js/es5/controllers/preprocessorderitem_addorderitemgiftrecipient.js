@@ -6,19 +6,12 @@ var slatwalladmin;
             var _this = this;
             this.$scope = $scope;
             this.$slatwall = $slatwall;
-            this.getQuantity = function () {
-                if (angular.isUndefined(_this.quantity)) {
-                    return 0;
-                }
-                else {
-                    return _this.quantity;
-                }
-            };
             this.addGiftRecipientFromAccountList = function (account) {
                 var giftRecipient = new slatwalladmin.GiftRecipient();
                 giftRecipient.firstName = account.firstName;
                 giftRecipient.lastName = account.lastName;
                 giftRecipient.email = account.primaryEmailAddress_emailAddress;
+                giftRecipient.account = true;
                 _this.orderItemGiftRecipients.push(giftRecipient);
                 _this.searchText = "";
             };
@@ -29,25 +22,29 @@ var slatwalladmin;
                     keywords: keyword,
                     defaultColumns: false,
                     columnsConfig: angular.toJson([
-                        { isDeletable: false,
+                        {
+                            isDeletable: false,
                             isSearchable: false,
                             isVisible: true,
                             ormtype: "id",
                             propertyIdentifier: "_account.accountID",
                         },
-                        { isDeletable: false,
+                        {
+                            isDeletable: false,
                             isSearchable: true,
                             isVisible: true,
                             ormtype: "string",
                             propertyIdentifier: "_account.firstName",
                         },
-                        { isDeletable: false,
+                        {
+                            isDeletable: false,
                             isSearchable: true,
                             isVisible: true,
                             ormtype: "string",
                             propertyIdentifier: "_account.lastName",
                         },
-                        { isDeletable: false,
+                        {
+                            isDeletable: false,
                             isSearchable: true,
                             title: "Email Address",
                             isVisible: true,
@@ -59,6 +56,11 @@ var slatwalladmin;
                 var accountPromise = $slatwall.getEntity('account', options);
                 accountPromise.then(function (response) {
                     _this.$scope.collection = response;
+                    if (angular.isDefined(_this.$scope.collection)) {
+                        angular.forEach(_this.$scope.collection.pageRecords, function (account) {
+                            account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
+                        });
+                    }
                 });
                 return _this.$scope.collection;
             };
@@ -69,14 +71,22 @@ var slatwalladmin;
                 }
                 return unassignedCountArray;
             };
+            this.getAssignedCount = function () {
+                var assignedCount = 0;
+                angular.forEach(_this.orderItemGiftRecipients, function (orderItemGiftRecipient) {
+                    assignedCount += orderItemGiftRecipient.quantity;
+                });
+                return assignedCount;
+            };
             this.getUnassignedCount = function () {
-                var unassignedCount = _this.getQuantity();
+                var unassignedCount = _this.quantity;
                 angular.forEach(_this.orderItemGiftRecipients, function (orderItemGiftRecipient) {
                     unassignedCount -= orderItemGiftRecipient.quantity;
                 });
                 return unassignedCount;
             };
             this.addGiftRecipient = function () {
+                _this.adding = false;
                 var giftRecipient = new slatwalladmin.GiftRecipient();
                 angular.extend(giftRecipient, _this.currentGiftRecipient);
                 _this.orderItemGiftRecipients.push(giftRecipient);
@@ -84,6 +94,7 @@ var slatwalladmin;
                 _this.searchText = "";
             };
             this.startFormWithName = function () {
+                _this.adding = true;
                 if (_this.searchText == "") {
                     _this.currentGiftRecipient.firstName = _this.searchText;
                 }
@@ -109,6 +120,7 @@ var slatwalladmin;
             };
             this.orderItemGiftRecipients = $scope.orderItemGiftRecipients = [];
             $scope.collection = {};
+            this.adding = false;
             this.searchText = "";
             var count = 1;
             this.currentGiftRecipient = new slatwalladmin.GiftRecipient();
@@ -120,4 +132,4 @@ var slatwalladmin;
     angular.module('slatwalladmin').controller('preprocessorderitem_addorderitemgiftrecipient', OrderItemGiftRecipientControl);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../controllers/preprocessorderitem_addorderitemgiftrecipient.js.map
+//# sourceMappingURL=preprocessorderitem_addorderitemgiftrecipient.js.map

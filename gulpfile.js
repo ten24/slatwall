@@ -196,7 +196,7 @@ gulp.task('flattenNgSlatwallModel',function(){
 	    return text;
 	}
 	
-	request('http://cf10.localhost/?slatAction=api:js.ngslatwallmodel&reload=true&instantiationKey='+makeid(), function (error, response, body) {
+	request('http://cf10.slatwall/?slatAction=api:js.ngslatwallmodel&reload=true&instantiationKey='+makeid(), function (error, response, body) {
 	  if (!error && response.statusCode == 200) {
   		console.log('It\'s saved!');
 	  }else{
@@ -217,7 +217,7 @@ gulp.task('flattenNgslatwall',function(){
 	    return text;
 	}
 	
-	request('http://cf10.localhost/?slatAction=api:js.ngslatwallmodel&reload=true&instantiationKey='+makeid(), function (error, response, body) {
+	request('http://cf10.slatwall/?slatAction=api:js.ngslatwallmodel&reload=true&instantiationKey='+makeid(), function (error, response, body) {
 	  if (!error && response.statusCode == 200) {
 		  var dir = 'admin/client/ts/modules/';
 		  var newFile = dir+'ngslatwallmodel.ts';
@@ -258,6 +258,7 @@ gulp.task('compress',function(){
 	  config.compilePath + 'es5/modules/ngslatwallmodel.js',
 	  config.compilePath + 'es5/modules/loggingmodule.js',
       config.compilePath + 'es5/modules/slatwalladmin.js',
+      config.compilePath + 'es5/filters/*.js',
       config.compilePath + 'es5/services/*.js',
       config.compilePath + 'es5/controllers/**/*.js',
       config.compilePath + 'es5/directives/**/*.js'

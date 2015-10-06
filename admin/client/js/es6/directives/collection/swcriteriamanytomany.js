@@ -122,4 +122,4 @@ angular.module('slatwalladmin')
     }
 ]);
 
-//# sourceMappingURL=../../directives/collection/swcriteriamanytomany.js.map
+//# sourceMappingURL=swcriteriamanytomany.js.map

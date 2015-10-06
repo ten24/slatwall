@@ -288,7 +288,7 @@ Notes:
 						<!---loop over possible attributes --->
 						var jsEntity = this;
 						if(entity.isProcessObject){
-							(function(entity){jsEntities[ entity.className ].prototype = {
+							(function(entity){_jsEntities[ entity.className ].prototype = {
 								$$getID:function(){
 									
 									return '';

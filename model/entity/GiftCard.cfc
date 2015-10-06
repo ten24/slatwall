@@ -56,11 +56,17 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="ownerFirstName" ormtype="string";
 	property name="ownerLastName" ormtype="string";
 	property name="ownerEmailAddress" ormtype="string";
+    property name="activeFlag" ormtype="boolean";
+    property name="issuedDate" ormtype="timestamp";
+    property name="currencyCode" ormtype="string" length="3";
+    //Calculated Properties
+    property name="balanceAmount" ormtype="big_decimal";
 
 	// Related Object Properties (many-to-one)
 	property name="originalOrderItem" cfc="OrderItem" fieldtype="many-to-one" fkcolumn="originalOrderItemID" cascade="all";
 	property name="giftCardExpirationTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="giftCardExpirationTermID" cascade="all";
 	property name="ownerAccount" cfc="Account" fieldtype="many-to-one" fkcolumn="ownerAccountID";
+    property name="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" fieldtype="many-to-one" fkcolumn="orderItemGiftRecipientID" inverse="true" cascade="all";
 
 	// Related Object Properties (one-to-many)
 	property name="giftCardTransactions" singularname="giftCardTransaction" cfc="GiftCardTransaction" fieldtype="one-to-many" fkcolumn="giftCardID" inverse="true" cascade="all-delete-orphan";
@@ -76,11 +82,35 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 
-	// Non-Persistent Properties
 
-	public string function getBalance(){
+	// Non-Persistent Properties
+	public any function getOrder(){
+		if(!isNull(this.getOriginalOrderItem())){
+			return this.getOriginalOrderItem().getOrder();
+		} else {
+			return false;
+		}
+	}
+
+	public boolean function isExpired(){
+		if(getService("SettingService").getSettingValue("skuGiftCardEnforceExpirationTerm")){
+			return !dateCompare(this.getExpirationDate(), now()) == 1;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean function canEditOrDelete(){
+		if(isNull(this.getActiveFlag())||this.getActiveFlag()){
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	public numeric function getBalanceAmount(){
 		var transactions = this.getGiftCardTransactions();
-		var balance = "0";
+		var balance = 0;
 		for(var transaction in transactions){
 			if(!isNull(transaction.getCreditAmount())){
 				balance = precisionEvaluate(balance + transaction.getCreditAmount());
@@ -99,12 +129,8 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		}
 	}
 
-	public boolean function isActive(){
-		if(val(this.getBalance()) > 0){
-			return true;
-		} else {
-			return false;
-		}
+	public string function hasEmailBounce(){
+		return getDAO("EmailBounceDAO").rejectedEmailExists(this.getorderItemGiftRecipient().getEmailAddress());
 	}
 
 	// ============ START: Non-Persistent Property Methods =================
@@ -131,7 +157,26 @@ component displayname="Gift Card" entityname="SlatwallGiftCard" table="SwGiftCar
 		structDelete(variables, "giftCardExpirationTerm");
 	}
 
-	// Original Order Item - Many - To - One
+    // Order Item Gift Recipient (many-to-one)
+	public void function setOrderItemGiftRecipient(required any orderItemGiftRecipient) {
+		variables.orderItemGiftRecipient = arguments.orderItemGiftRecipient;
+		if(isNew() or !arguments.orderItemGiftRecipient.hasGiftCard( this )) {
+			arrayAppend(arguments.orderItemGiftRecipient.getGiftCards(), this);
+		}
+	}
+
+	public void function removeOrderItemGiftRecipient(any orderItemGiftRecipient) {
+		if(!structKeyExists(arguments, "orderItem")) {
+			arguments.orderItem = variables.orderItem;
+		}
+		var index = arrayFind(arguments.orderItemGiftRecipient.getGiftCards(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.orderItemGiftRecipient.getGiftCards(), index);
+		}
+		structDelete(variables, "orderItemGiftRecipient");
+	}
+
+	// Original Order Item (Many-To-One)
 	public void function setOriginalOrderItem(required any orderItem) {
 		variables.originalOrderItem = arguments.orderItem;
 		if(isNew() or !arguments.orderItem.hasGiftCard( this )) {

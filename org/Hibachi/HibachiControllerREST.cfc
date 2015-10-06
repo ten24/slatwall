@@ -14,7 +14,6 @@ component output="false" accessors="true" extends="HibachiController" {
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getFilterPropertiesByBaseEntityName');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getProcessObject');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayData');
-	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getResourceBundle');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayOptions');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
@@ -22,9 +21,13 @@ component output="false" accessors="true" extends="HibachiController" {
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'put');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
 	
+	this.publicMethods=listAppend(this.publicMethods, 'getResizedImageByProfileName');
 	this.publicMethods=listAppend(this.publicMethods, 'log');
 	this.publicMethods=listAppend(this.publicMethods, 'getDetailTabs');
 	this.publicMethods=listAppend(this.publicMethods, 'noaccess');
+	this.publicMethods=listAppend(this.publicMethods, 'login');
+	this.publicMethods=listAppend(this.publicMethods, 'getResourceBundle');
+	this.publicMethods=listAppend(this.publicMethods, 'getCurrencies');
 	
 	//	this.secureMethods='';
 	//	this.secureMethods=listAppend(this.secureMethods, 'get');
@@ -36,20 +39,64 @@ component output="false" accessors="true" extends="HibachiController" {
 	}
 	
 	public any function before( required struct rc ) {
+		
 		arguments.rc.apiRequest = true;
+		
 		getFW().setView("public:main.blank");
-		//could possibly check whether we want a different contentType other than json in the future
 		param name="rc.headers.contentType" default="application/json"; 
 		arguments.rc.headers["Content-Type"] = rc.headers.contentType;
+		
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
 		}
+		
 		if(!isNull(arguments.rc.context) && arguments.rc.context == 'GET' 
 			&& structKEyExists(arguments.rc, 'serializedJSONData') 
 			&& isSimpleValue(arguments.rc.serializedJSONData) 
 			&& isJSON(arguments.rc.serializedJSONData)
 		) {
 			StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
+		}
+		
+		//could possibly check whether we want a different contentType other than json in the future example:xml
+		
+	}
+	
+	public void function getCurrencies(required struct rc){
+		var currenciesCollection = getHibachiScope().getService('collectionService').getCurrencyCollectionList();
+		currenciesCollection.setDisplayProperties('currencyCode,currencySymbol');
+		var currencyStruct = {};
+		for(var currency in currenciesCollection.getRecords()){
+			currencyStruct[currency['currencyCode']] = currency['currencySymbol'];
+		}
+		
+		arguments.rc.apiResponse.content['data'] = currencyStruct;
+	}
+	
+	public void function login(required struct rc){
+		if(!getHibachiScope().getLoggedInFlag()){
+			//if account doesn't exist than one is create
+			var account = getService('AccountService').processAccount(rc.$.slatwall.getAccount(), rc, "login");
+			var authorizeProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("login").populate(arguments.rc);
+			arguments.rc.apiResponse.content['messages'] = [];
+			var updateProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("updatePassword");
+			if(account.hasErrors()){
+				for(var processObjectKey in account.getErrors().processObjects){
+					var processObject = account.getProcessObject(processObjectKey);
+					arguments.rc.apiResponse.content['errors'] = processObject.getErrors();
+					for(var errorKey in processObject.getErrors()){
+						var messageStruct = {};
+						messageStruct['message'] = processObject.getErrors()[errorKey];
+						arrayAppend(arguments.rc.apiResponse.content['messages'],messageStruct);
+					}
+				}
+				var pc = getpagecontext().getresponse();
+				pc.getresponse().setstatus(401);	
+				return;
+			}
+		}
+		if(getHibachiScope().getLoggedinFlag()){
+			arguments.rc.apiResponse.content['token'] = getService('jwtService').createToken();
 		}
 	}
 	
