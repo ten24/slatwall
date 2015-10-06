@@ -58,7 +58,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Setup a var'd value for returnRateID but default it to an empty string
 		var returnRateID = '';
-		
+
 		// Loop over rates to see if productType applies
 		var currentProductType = arguments.productType;
 			
@@ -73,10 +73,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 			// This sets the product type to the parent, so the while loop will run again
 			currentProductType = currentProductType.getParentProductType();
+			
 		}
 		
 		// If the returnRateID is still an empty string, then loop through the rates looking for a global rate
-		if(!len(returnRate)) {
+		if(!len(returnRateID)) {
 			returnRateID = getPriceGroupDAO().getGlobalPriceGroupRate(arguments.priceGroup.getPriceGroupID());
 		}
 		
@@ -85,10 +86,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			returnRateID = getRateForProductTypeBasedOnPriceGroup(productType=arguments.productType, priceGroup=arguments.priceGroup.getParentPriceGroup());
 		}
 		
-		// As long as the returnRateID is not an empty string, then return it.
-		if(len(returnRateID)) {
-			return this.getPriceGroupRate( returnRateID );
-		}
+		return returnRateID;
 	}
 	
 	// This method will return the rate that a product has for a given price group
@@ -96,7 +94,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Setup a var'd value for returnRateID but default it to an empty string
 		var returnRateID = '';
-		
+
 		// Query to get returnRateID by productID
 		returnRateID = getPriceGroupDAO().getPriceGroupRateByProductID(arguments.priceGroup.getPriceGroupID(), arguments.product.getProductID());
 		
@@ -110,10 +108,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			returnRateID = getRateForProductBasedOnPriceGroup(product=arguments.product, priceGroup=arguments.priceGroup.getParentPriceGroup());
 		}
 		
-		// As long as the returnRateID is not an empty string, then return it.
-		if(len(returnRateID)) {
-			return this.getPriceGroupRate( returnRateID );
-		}
+		return returnRateID;
 	}
 	
 	public any function getRateForSkuBasedOnPriceGroup(required any sku, required any priceGroup, checkParentFlag = true ) {
@@ -123,15 +118,15 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		
 		// Query to get returnRate by skuID
 		returnRateID = getPriceGroupDAO().getPriceGroupRateBySkuID(arguments.priceGroup.getPriceGroupID(), arguments.sku.getSkuID());
-		
+
 		// If the returnRateID is still empty, then check the product
 		if(!len(returnRateID)) {
 			returnRateID = getRateForProductBasedOnPriceGroup(product=arguments.sku.getProduct(), priceGroup=arguments.priceGroup, checkParentFlag=false);
 		}
 		
 		// If the returnRateID is still empty, then check the sku against the parent priceGroup which will check product and productType (this is done with recursion)
-		if(isNull(returnRate) && !isNull(arguments.priceGroup.getParentPriceGroup())) {
-			returnRate = getRateForSkuBasedOnPriceGroup(product=arguments.sku.getProduct(), priceGroup=arguments.priceGroup.getParentPriceGroup());
+		if(!len(returnRateID) && !isNull(arguments.priceGroup.getParentPriceGroup())) {
+			returnRateID = getRateForSkuBasedOnPriceGroup(product=arguments.sku.getProduct(), priceGroup=arguments.priceGroup.getParentPriceGroup());
 		}
 		
 		// As long as the returnRateID is no empty, then return it.
@@ -425,7 +420,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	public void function updateOrderAmountsWithPriceGroups(required any order) {
 		if( !isNull(arguments.order.getAccount()) && arrayLen(arguments.order.getAccount().getPriceGroups()) ) {
 			for(orderItem in arguments.order.getOrderItems()){
-				if(len(getService("currencyService").getCurrencyOptions()) gt 1){
+				if(arrayLen(getService("currencyService").getCurrencyOptions()) gt 1){
 					var priceGroupDetails = getBestPriceGroupDetailsBasedOnSkuAndAccountAndCurrencyCode(orderItem.getSku(), arguments.order.getAccount(),arguments.order.getCurrencyCode());
 					if(priceGroupDetails.price < orderItem.getPrice() && isObject(priceGroupDetails.priceGroup)) {
 						orderItem.setPrice( priceGroupDetails.price );
