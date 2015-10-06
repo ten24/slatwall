@@ -340,5 +340,5 @@ module slatwalladmin{
 
     }
     angular.module('slatwalladmin')
-        .factory('CollectionConfigService', ['$slatwall', ($slatwall: any) => new CollectionConfig($slatwall)]);
+        .factory('collectionConfigService', ['$slatwall', ($slatwall: any) => new CollectionConfig($slatwall)]);
 }
