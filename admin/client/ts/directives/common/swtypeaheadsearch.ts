@@ -41,8 +41,8 @@ module slatwalladmin {
     export class SWTypeaheadSearch implements ng.IDirective{
         
 		public static $inject=["$slatwall", "collectionConfigService"];
-		
-		public restrict = "E"; 
+		public templateUrl; 
+		public restrict = "EA"; 
 		public scope = {}	
 		
 		public bindToController = {
@@ -57,8 +57,7 @@ module slatwalladmin {
 		
 		
 		constructor(private $slatwall:ngSlatwall.$Slatwall, private collectionConfigService:slatwalladmin.collectionConfigService, private partialsPath:slatwalladmin.partialsPath){
-			this.templateUrl = partialsPath + "typeaheadsearch.html";
-			this.restrict = "EA";	
+			this.templateUrl = partialsPath + "typeaheadsearch.html";	
 		}
 
         public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
