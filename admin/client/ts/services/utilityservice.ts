@@ -50,17 +50,12 @@ module slatwalladmin{
 			return listArray[listArray.length-1];
         }
         
-        public listRest = (list:string='',delimiter:string=','):string =>{
-            
-            var listArray = list.split(delimiter);
-            var listRestString = ''
-            angular.forEach(listArray,(listItem, index)=>{
-                if(index !== 0){
-                    listRestString += listItem;
-                }
-            });
-            
-			return listRestString;
+        public listRest = (list:string='',delimiter:string=","):string =>{
+            var listArray = list.split(delimiter);   
+            if(listArray.length){
+                listArray.splice(0,1);    
+            }
+            return listArray.join(delimiter);
         }
         
         public listFirst = (list:string='',delimiter:string=','):string =>{
@@ -90,6 +85,7 @@ module slatwalladmin{
             }
             
         }
+        
         
         public formatValue=(value,formatType,formatDetails,entityInstance)=>{
             if(angular.isUndefined(formatDetails)){

@@ -53,15 +53,12 @@ var slatwalladmin;
             };
             this.listRest = function (list, delimiter) {
                 if (list === void 0) { list = ''; }
-                if (delimiter === void 0) { delimiter = ','; }
+                if (delimiter === void 0) { delimiter = ","; }
                 var listArray = list.split(delimiter);
-                var listRestString = '';
-                angular.forEach(listArray, function (listItem, index) {
-                    if (index !== 0) {
-                        listRestString += listItem;
-                    }
-                });
-                return listRestString;
+                if (listArray.length) {
+                    listArray.splice(0, 1);
+                }
+                return listArray.join(delimiter);
             };
             this.listFirst = function (list, delimiter) {
                 if (list === void 0) { list = ''; }

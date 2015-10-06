@@ -50,6 +50,32 @@ var ngSlatwall;
             this.setJsEntityInstances = function (jsEntityInstances) {
                 _this._jsEntityInstances = jsEntityInstances;
             };
+            this.getEntityMetaData = function (entityName) {
+                return _this._jsEntityInstances[entityName].metaData;
+            };
+            this.getPropertyByEntityNameAndPropertyName = function (entityName, propertyName) {
+                return _this.getEntityMetaData(entityName)[propertyName];
+            };
+            this.getPrimaryIDPropertyNameByEntityName = function (entityName) {
+                return _this.getEntityMetaData(entityName).$$getIDName();
+            };
+            this.getEntityHasPropertyByEntityName = function (entityName, propertyName) {
+                return angular.isDefined(_this.getEntityMetaData(entityName)[propertyName]);
+            };
+            this.getLastEntityNameInPropertyIdentifier = function (entityName, propertyIdentifier) {
+                console.log(propertyIdentifier);
+                if (propertyIdentifier.split('.').length > 1) {
+                    var propertiesStruct = _this.getEntityMetaData(entityName);
+                    if (!propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')]
+                        || !propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')].cfc) {
+                        throw ("The Property Identifier " + propertyIdentifier + " is invalid for the entity " + entityName);
+                    }
+                    console.log('listRest');
+                    console.log(_this.utilityService.listRest(propertyIdentifier, '.'));
+                    return _this.getLastEntityNameInPropertyIdentifier(propertiesStruct[_this.utilityService.listFirst(propertyIdentifier, '.')].cfc, _this.utilityService.listRest(propertyIdentifier, '.'));
+                }
+                return entityName;
+            };
             //service method used to transform collection data to collection objects based on a collectionconfig
             this.populateCollection = function (collectionData, collectionConfig) {
                 //create array to hold objects

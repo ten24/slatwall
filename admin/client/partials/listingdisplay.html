@@ -59,11 +59,17 @@
 
 <div class="table-responsive s-listing-display-table-wrapper" >
 	<!--<table 
-	id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" ng-class="swListingDisplay.tableclass" data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" data-savedstateid="#attributes.smartList.getSavedStateID()#" data-entityname="swListingDisplay.collection.data.collectionObject#" data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" data-processobjectproperties="{{swListingDisplay.allprocessobjectproperties}}" data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" {{this.tableattributes}}>
+	id="LD#replace(attributes.smartList.getSavedStateID(),'-','','all')#" 
+	ng-class="swListingDisplay.tableclass" 
+	data-norecordstext="#attributes.hibachiScope.rbKey("entity.#thistag.exampleEntity.getClassName()#.norecords", {entityNamePlural=attributes.hibachiScope.rbKey('entity.#thistag.exampleEntity.getClassName()#_plural')})#" 
+	data-savedstateid="#attributes.smartList.getSavedStateID()#" 
+	data-entityname="swListingDisplay.collection.data.collectionObject#" 
+	data-idproperty="#thistag.exampleEntity.getPrimaryIDPropertyName()#" 
+	data-processobjectproperties="{{swListingDisplay.allprocessobjectproperties}}" 
+	data-propertyidentifiers="#thistag.exampleEntity.getPrimaryIDPropertyName()#,#thistag.allpropertyidentifiers#" {{this.tableattributes}}>
 -->
 	<table  ng-class="swListingDisplay.tableclass" 
 			data-norecordstext="{{swListingDisplay.norecordstext}}" 
-			data-processobjectproperties="{{swListingDisplay.allprocessobjectproperties}}" 
 			data-entityname="{{swListingDisplay.collectionObject}}" 
 			data-idproperty="{{swListingDisplay.exampleEntity.$$getIDName()}}" 
 			data-processobjectproperties="{{swListingDisplay.allprocessobjectproperties}}" 
@@ -174,7 +180,7 @@
 					class="column.tdclass"
 					ng-cloak
 				>
-					<a ng-if="column.tdclass === 'primary' && swListingDisplay.expandable" href="##" class="table-action-expand depth0" data-depth="0"><i class="glyphicon glyphicon-plus"></i></a> {{pageRecord[swListingDisplay.replaceAll(column.propertyIdentifier.substring(column.propertyIdentifier.indexOf('.')+1,column.propertyIdentifier.length),'.','_')]}}
+					<a ng-if="column.tdclass === 'primary' && swListingDisplay.expandable" href="##" class="table-action-expand depth0" data-depth="0"><i class="glyphicon glyphicon-plus"></i></a> {{pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]}}
 				</td>
 				
 				<td class="admin admin#attributes.administativeCount#" ng-if="swListingDisplay.administrativeCount">

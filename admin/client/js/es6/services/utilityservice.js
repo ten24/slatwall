@@ -41,15 +41,12 @@ var slatwalladmin;
                 var listArray = list.split(delimiter);
                 return listArray[listArray.length - 1];
             };
-            this.listRest = (list = '', delimiter = ',') => {
+            this.listRest = (list = '', delimiter = ",") => {
                 var listArray = list.split(delimiter);
-                var listRestString = '';
-                angular.forEach(listArray, (listItem, index) => {
-                    if (index !== 0) {
-                        listRestString += listItem;
-                    }
-                });
-                return listRestString;
+                if (listArray.length) {
+                    listArray.splice(0, 1);
+                }
+                return listArray.join(delimiter);
             };
             this.listFirst = (list = '', delimiter = ',') => {
                 var listArray = list.split(delimiter);

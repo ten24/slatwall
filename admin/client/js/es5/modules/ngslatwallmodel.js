@@ -48,7 +48,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                 defaultValues['Audit'] = {
                     auditID: '',
                     auditType: null,
-                    auditDateTime: '1444063431378',
+                    auditDateTime: '1444150284100',
                     auditArchiveStartDateTime: null,
                     auditArchiveEndDateTime: null,
                     auditArchiveCreatedDateTime: null,
@@ -99,7 +99,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                     accountEmailAddressID: '',
                     emailAddress: null,
                     verifiedFlag: 0,
-                    verificationCode: 'b6baf527a578f76566456f384e0101bd',
+                    verificationCode: 'c753d50900c7ff7c3f145d989cf02de8',
                     remoteID: null,
                     createdDateTime: '',
                     createdByAccountID: null,
@@ -1680,7 +1680,7 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                     swprid: '',
                     password: '',
                     passwordConfirm: '',
-                    accountPasswordResetID: "ea8b1cd312d43e81a19ffa6c74cd097b",
+                    accountPasswordResetID: "3a2d8d8504748a4f6d1a13580d0dcb2a",
                     preProcessDisplayedFlag: 0,
                     populatedFlag: 0,
                     z: ''
@@ -3340,9 +3340,12 @@ angular.module('ngSlatwallModel', ['hibachi', 'ngSlatwall']).config(['$provide',
                             }
                         }
                     });
-                    _jsEntityInstances[entity.className] = new _jsEntities[entity.className];
                 });
                 $delegate.setJsEntities(_jsEntities);
+                angular.forEach(_jsEntities, function (jsEntity) {
+                    var jsEntityInstance = new jsEntity;
+                    _jsEntityInstances[jsEntityInstance.metaData.className] = jsEntityInstance;
+                });
                 $delegate.setJsEntityInstances(_jsEntityInstances);
                 var _init = function (entityInstance, data) {
                     for (var key in data) {

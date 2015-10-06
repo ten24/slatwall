@@ -569,6 +569,7 @@ Notes:
 											//this should retreive id from the metadata
 											return this.data[this.$$getIDName()];
 										};
+										
 										_jsEntities[ entity.className ].prototype['$$getIDName']=function(){
 											var IDNameString = property.name;
 											return IDNameString;

@@ -70,7 +70,7 @@
                 	defaultValues['Audit'] = {
                 	auditID:'',
 										auditType:null,
-									auditDateTime:'1444063666396',
+									auditDateTime:'1444150284100',
 										auditArchiveStartDateTime:null,
 									auditArchiveEndDateTime:null,
 									auditArchiveCreatedDateTime:null,
@@ -130,7 +130,7 @@
                 	accountEmailAddressID:'',
 										emailAddress:null,
 									verifiedFlag:0,
-									verificationCode:'b6ded6e79e11d78f789b1ac5d39fac06',
+									verificationCode:'c753d50900c7ff7c3f145d989cf02de8',
 										remoteID:null,
 									createdDateTime:'',
 										createdByAccountID:null,
@@ -2017,7 +2017,7 @@
 										swprid:'',
 									password:'',
 									passwordConfirm:'',
-									accountPasswordResetID:"bcd59b1841b34d55ab6e93b315e3782d",
+									accountPasswordResetID:"3a2d8d8504748a4f6d1a13580d0dcb2a",
 										preProcessDisplayedFlag:0,
 										populatedFlag:0,
 										
@@ -3968,6 +3968,7 @@
 											//this should retreive id from the metadata
 											return this.data[this.$$getIDName()];
 										};
+										
 										_jsEntities[ entity.className ].prototype['$$getIDName']=function(){
 											var IDNameString = property.name;
 											return IDNameString;

@@ -43,9 +43,20 @@ var slatwalladmin;
             this.replaceAll = (str, find, replace) => {
                 return str.replace(new RegExp(this.escapeRegExp(find), 'g'), replace);
             };
+            this.getPageRecordKey = (propertyIdentifier) => {
+                var propertyIdentifierWithoutAlias = '';
+                if (propertyIdentifier.indexOf('_') === 0) {
+                    propertyIdentifierWithoutAlias = propertyIdentifier.substring(propertyIdentifier.indexOf('.') + 1, propertyIdentifier.length);
+                }
+                else {
+                    propertyIdentifierWithoutAlias = propertyIdentifier;
+                }
+                return this.replaceAll(propertyIdentifierWithoutAlias, '.', '_');
+            };
             this.init = () => {
                 //set defaults if value is not specified
                 //this.edit = this.edit || $location.edit
+                this.processObjectProperties = this.processObjectProperties || '';
                 this.recordProcessButtonDisplayFlag = this.recordProcessButtonDisplayFlag || true;
                 this.collectionConfig = this.collectionConfig || this.collectionData.collectionConfig;
                 this.collectionID = this.collectionData.collectionID;
@@ -88,7 +99,7 @@ var slatwalladmin;
                     <cfset arrayAppend(thistag.columns, {
                         propertyIdentifier = thistag.exampleentity.getSimpleRepresentationPropertyName(),
                         title = "",
-                        tdClass="primary",
+                        tdclass="primary",
                         search = true,
                         sort = true,
                         filter = false,
@@ -98,96 +109,58 @@ var slatwalladmin;
                     }) />
                 </cfif>
                 */
-                /*
-                <!--- Setup the list of all property identifiers to be used later --->
-                <cfloop array="#thistag.columns#" index="column">
-        
-                    <!--- If this is a standard propertyIdentifier --->
-                    <cfif len(column.propertyIdentifier)>
-        
-                        <!--- Add to the all property identifiers --->
-                        <cfset thistag.allpropertyidentifiers = listAppend(thistag.allpropertyidentifiers, column.propertyIdentifier) />
-        
-                        <!--- Check to see if we need to setup the dynamic filters, ect --->
-                        <cfif not len(column.search) || not len(column.sort) || not len(column.filter) || not len(column.range)>
-        
-                            <!--- Get the entity object to get property metaData --->
-                            <cfset thisEntityName = attributes.hibachiScope.getService("hibachiService").getLastEntityNameInPropertyIdentifier( attributes.smartList.getBaseEntityName(), column.propertyIdentifier ) />
-                            <cfset thisPropertyName = listLast( column.propertyIdentifier, "." ) />
-                            <cfset thisPropertyMeta = attributes.hibachiScope.getService("hibachiService").getPropertyByEntityNameAndPropertyName( thisEntityName, thisPropertyName ) />
-        
-                            <!--- Setup automatic search, sort, filter & range --->
-                            <cfif not len(column.search) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent) && (!structKeyExists(thisPropertyMeta, "ormType") || thisPropertyMeta.ormType eq 'string')>
-                                <cfset column.search = true />
-                            <cfelseif !isBoolean(column.search)>
-                                <cfset column.search = false />
-                            </cfif>
-                            <cfif not len(column.sort) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent)>
-                                <cfset column.sort = true />
-                            <cfelseif !isBoolean(column.sort)>
-                                <cfset column.sort = false />
-                            </cfif>
-                            <cfif not len(column.filter) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent)>
-                                <cfset column.filter = false />
-        
-                                <cfif structKeyExists(thisPropertyMeta, "ormtype") && thisPropertyMeta.ormtype eq 'boolean'>
-                                    <cfset column.filter = true />
-                                </cfif>
-                                <!---
-                                <cfif !column.filter && listLen(column.propertyIdentifier, '._') gt 1>
-        
-                                    <cfset oneUpPropertyIdentifier = column.propertyIdentifier />
-                                    <cfset oneUpPropertyIdentifier = listDeleteAt(oneUpPropertyIdentifier, listLen(oneUpPropertyIdentifier, '._'), '._') />
-                                    <cfset oneUpPropertyName = listLast(oneUpPropertyIdentifier, '.') />
-                                    <cfset twoUpEntityName = attributes.hibachiScope.getService("hibachiService").getLastEntityNameInPropertyIdentifier( attributes.smartList.getBaseEntityName(), oneUpPropertyIdentifier ) />
-                                    <cfset oneUpPropertyMeta = attributes.hibachiScope.getService("hibachiService").getPropertyByEntityNameAndPropertyName( twoUpEntityName, oneUpPropertyName ) />
-                                    <cfif structKeyExists(oneUpPropertyMeta, "fieldtype") && oneUpPropertyMeta.fieldtype eq 'many-to-one' && (!structKeyExists(thisPropertyMeta, "ormtype") || listFindNoCase("boolean,string", thisPropertyMeta.ormtype))>
-                                        <cfset column.filter = true />
-                                    </cfif>
-                                </cfif>
-                                --->
-                            <cfelseif !isBoolean(column.filter)>
-                                <cfset column.filter = false />
-                            </cfif>
-                            <cfif not len(column.range) && (!structKeyExists(thisPropertyMeta, "persistent") || thisPropertyMeta.persistent) && structKeyExists(thisPropertyMeta, "ormType") && (thisPropertyMeta.ormType eq 'integer' || thisPropertyMeta.ormType eq 'big_decimal' || thisPropertyMeta.ormType eq 'timestamp')>
-                                <cfset column.range = true />
-                            <cfelseif !isBoolean(column.range)>
-                                <cfset column.range = false />
-                            </cfif>
-                        </cfif>
-                    <!--- Otherwise this is a processObject property --->
-                    <cfelseif len(column.processObjectProperty)>
-                        <cfset column.search = false />
-                        <cfset column.sort = false />
+                //Setup the list of all property identifiers to be used later
+                angular.forEach(this.columns, (column) => {
+                    console.log('column');
+                    console.log(column);
+                    //If this is a standard propertyIdentifier
+                    if (column.propertyIdentifier) {
+                        //Add to the all property identifiers
+                        this.allpropertyidentifiers = this.utilityService.listAppend(this.allpropertyidentifiers, column.propertyIdentifier);
+                        //Check to see if we need to setup the dynamic filters, etc
+                        //<cfif not len(column.search) || not len(column.sort) || not len(column.filter) || not len(column.range)>
+                        if (!column.searchable || !!column.searchable.length || !column.sort || !column.sort.length) {
+                            //Get the entity object to get property metaData
+                            var thisEntityName = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.exampleEntity.metaData.className, column.propertyIdentifier);
+                            var thisPropertyName = this.utilityService.listLast(column.propertyIdentifier, '.');
+                            var thisPropertyMeta = this.$slatwall.getPropertyByEntityNameAndPropertyName(thisEntityName, thisPropertyName);
+                        }
+                    }
+                    else if (column.processObjectProperty) {
+                        column.searchable = false;
+                        column.sort = false;
+                        /*
                         <cfset column.filter = false />
                         <cfset column.range = false />
-        
-                        <cfset thistag.allprocessobjectproperties = listAppend(thistag.allprocessobjectproperties, column.processObjectProperty) />
-                    </cfif>
-                    <cfif findNoCase("primary", column.tdClass) and thistag.expandable>
-                        <cfset attributes.tableattributes = listAppend(attributes.tableattributes, 'data-expandsortproperty="#column.propertyIdentifier#"', " ") />
-                        <cfset column.sort = false />
-                    </cfif>
-                </cfloop>
-                */
-                /*
-                <!--- Setup a variable for the number of columns so that the none can have a proper colspan --->
-                <cfset thistag.columnCount = arrayLen(thisTag.columns) />
-                <cfif thistag.selectable>
-                    <cfset thistag.columnCount += 1 />
-                </cfif>
-                <cfif thistag.multiselectable>
-                    <cfset thistag.columnCount += 1 />
-                </cfif>
-                <cfif thistag.sortable>
-                    <cfset thistag.columnCount += 1 />
-                </cfif>
-                <cfif attributes.administativeCount>
-                    <cfset thistag.columnCount += 1 />
-                </cfif>
-                <cfif attributes.administativeCount>
-                </cfif>
-                */
+                        */
+                        this.allprocessobjectproperties = this.utilityService.listAppend(this.allprocessobjectproperties, column.processObjectProperty);
+                    }
+                    console.log('tdclass');
+                    console.log(column.tdclass);
+                    if (column.tdclass) {
+                        var tdclassArray = column.tdclass.split(' ');
+                        console.log(tdclassArray);
+                        console.log(tdclassArray.indexOf("primary"));
+                        if (tdclassArray.indexOf("primary") >= 0 && this.expandable) {
+                            this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-expandsortproperty=' + column.propertyIdentifier, " ");
+                            column.sort = false;
+                        }
+                    }
+                });
+                //Setup a variable for the number of columns so that the none can have a proper colspan
+                this.columnCount = this.columns.length;
+                if (this.selectable) {
+                    this.columnCount++;
+                }
+                if (this.multiselectable) {
+                    this.columnCount++;
+                }
+                if (this.sortable) {
+                    this.columnCount++;
+                }
+                if (this.administrativeCount) {
+                    this.administrativeCount++;
+                }
             };
             this.getAdminAttributesByType = (type) => {
                 var recordActionName = 'record' + type.toUpperCase() + 'Action';
@@ -219,21 +192,15 @@ var slatwalladmin;
             //if collection Value is string instead of an object then create a collection
             if (angular.isString(this.collection)) {
                 this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collection);
-                /*
-                propertyIdentifier:"@",
-                processObjectProperty:"@",
-                title:"@",
-                tdclass:"@",
-                search:"=",
-                sort:"=",
-                filter:"=",
-                range:"=",
-                editable:"=",
-                buttonGroup:"="
-                */
+                if (!this.collectionConfig.columns) {
+                    this.collectionConfig.columns = [];
+                }
                 angular.forEach(this.columns, (column) => {
-                    var columnOptions = {};
-                    this.collectionConfig.setDisplayProperties(column.propertyIdentifier, column.title, columnOptions);
+                    console.log(column.propertyIdentifier);
+                    var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collection, column.propertyIdentifier);
+                    console.log(lastEntity);
+                    column.title = this.$slatwall.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + this.utilityService.listLast(column.propertyIdentifier, '.'));
+                    this.collectionConfig.columns.push(column);
                 });
                 this.collectionConfig.setPageShow(this.paginator.pageShow);
                 this.collectionConfig.setCurrentPage(this.paginator.currentPage);
@@ -282,17 +249,6 @@ var slatwalladmin;
                 this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty=' + this.parentPropertyname + '.' + this.exampleEntity.$$getIDName(), ' ');
                 this.collectionConfig.setAllRecords(true);
             }
-            //Setup the list of all property identifiers to be used later 
-            angular.forEach(this.columns, (column) => {
-                //If this is a standard propertyIdentifier
-                if (this.column.propertyIdentifier) {
-                    //Add to the all property identifiers
-                    this.allpropertyIdentifiers = this.utilityService.listAppend(this.allpropertyidentifiers, column.propertyIdentifier);
-                    //Check to see if we need to setup the dynamic filters, ect
-                    if (!this.column.searchable || !this.column.sortable || !this.column.filter || !this.column.range) {
-                    }
-                }
-            });
             this.getCollection();
         }
     }

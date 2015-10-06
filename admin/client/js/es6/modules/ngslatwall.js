@@ -49,6 +49,32 @@ var ngSlatwall;
             this.setJsEntityInstances = (jsEntityInstances) => {
                 this._jsEntityInstances = jsEntityInstances;
             };
+            this.getEntityMetaData = (entityName) => {
+                return this._jsEntityInstances[entityName].metaData;
+            };
+            this.getPropertyByEntityNameAndPropertyName = (entityName, propertyName) => {
+                return this.getEntityMetaData(entityName)[propertyName];
+            };
+            this.getPrimaryIDPropertyNameByEntityName = (entityName) => {
+                return this.getEntityMetaData(entityName).$$getIDName();
+            };
+            this.getEntityHasPropertyByEntityName = (entityName, propertyName) => {
+                return angular.isDefined(this.getEntityMetaData(entityName)[propertyName]);
+            };
+            this.getLastEntityNameInPropertyIdentifier = (entityName, propertyIdentifier) => {
+                console.log(propertyIdentifier);
+                if (propertyIdentifier.split('.').length > 1) {
+                    var propertiesStruct = this.getEntityMetaData(entityName);
+                    if (!propertiesStruct[this.utilityService.listFirst(propertyIdentifier, '.')]
+                        || !propertiesStruct[this.utilityService.listFirst(propertyIdentifier, '.')].cfc) {
+                        throw ("The Property Identifier " + propertyIdentifier + " is invalid for the entity " + entityName);
+                    }
+                    console.log('listRest');
+                    console.log(this.utilityService.listRest(propertyIdentifier, '.'));
+                    return this.getLastEntityNameInPropertyIdentifier(propertiesStruct[this.utilityService.listFirst(propertyIdentifier, '.')].cfc, this.utilityService.listRest(propertyIdentifier, '.'));
+                }
+                return entityName;
+            };
             //service method used to transform collection data to collection objects based on a collectionconfig
             this.populateCollection = (collectionData, collectionConfig) => {
                 //create array to hold objects
