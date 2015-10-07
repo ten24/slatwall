@@ -4,7 +4,7 @@ module slatwalladmin {
 	export class SWTypeaheadSearchController {
 		
 		public static $inject=["$slatwall", "collectionConfigService"];
-		public entity:string;
+		public entities:string;
 		public properties:string;
 		public propertiesToDisplay:string; 
 		public allRecords:boolean; 
@@ -14,21 +14,34 @@ module slatwalladmin {
 		public addFunction; 
 		public addButtonFunction;
 		public hideSearch;  
-		public displayList; 
+		
+		private displayList;
+		private entityList;  
 		private typeaheadCollectionConfig; 
+		private typeaheadCollectionConfigs; 
 		
 		constructor(private $slatwall:ngSlatwall.$Slatwall, private collectionConfigService:slatwalladmin.collectionConfigService){
-			this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity);
-			this.typeaheadCollectionConfig.setDisplayProperties(this.properties); 
-				
+			
+			if(angular.isDefined(this.entities)){
+				this.entityList = this.entities.split(",");
+				this.typeaheadCollectionConfigs = new Array(); 
+				angular.forEach(this.entityList, function(entity){
+					this.typeaheadCollectionConfigs.push(collectionConfigService.newCollectionConfig(entity)); 
+				});
+			}	
+			
 			if(angular.isDefined(this.propertiesToDisplay)){
 				this.displayList = this.propertiesToDisplay.split(",");
 			}
 			
 			if(angular.isDefined(this.allRecords)){
-				this.typeaheadCollectionConfig.setAllRecords(this.allRecords)
+				angular.forEach(this.typeaheadCollectionConfigs, function(config){
+					config.setAllRecords(this.allRecords);
+				}); 
 			} else {
-				this.typeaheadCollectionConfig.setAllRecords(true); 
+				angular.forEach(this.typeaheadCollectionConfigs, function(config){
+					config.setAllRecords(true);
+				}); 
 			}
 		}
 		
@@ -40,22 +53,27 @@ module slatwalladmin {
 				this.hideSearch = true; 
 			}
 			
-			this.typeaheadCollectionConfig.setKeywords(search); 
-			var promise = this.typeaheadCollectionConfig.getEntity();
+			this.results = new Array(); 
 			
-			promise.then((response)=>{
-				if(angular.isDefined(this.allRecords) && this.allRecords == false){
-					this.results = response.pageRecords;
-				} else {
-					this.results = response.records;
-				}	 
-
-				//Custom method for gravatar on accounts (non-persistant-property)
-				if(angular.isDefined(this.results) && this.entity == "Account"){
-					angular.forEach(this.results,(account)=>{
-							account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
-					});
-				}
+			angular.forEach(this.typeaheadCollectionConfigs, function(config){
+				
+				config.setKeywords(search);
+				var promise = config.getEntity();
+				
+				promise.then((response)=>{
+					if(angular.isDefined(this.allRecords) && this.allRecords == false){
+						this.results.concat(response.pageRecords);
+					} else {
+						this.results.concat(response.records);
+					}	 
+	
+					//Custom method for gravatar on accounts (non-persistant-property)
+					if(angular.isDefined(this.results) && this.entity == "Account"){
+						angular.forEach(this.results,(account)=>{
+								account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
+						});
+					}
+				});
 			});
 		}
 		
@@ -77,7 +95,7 @@ module slatwalladmin {
 		public scope = {}	
 		
 		public bindToController = {
-			entity:"@",
+			entities:"@",
 			properties:"@",
 			propertiesToDisplay:"@",
 			placeholderText:"@?",
