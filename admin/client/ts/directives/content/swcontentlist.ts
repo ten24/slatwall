@@ -53,6 +53,16 @@ angular.module('slatwalladmin')
                             ormtype:'id',
                             isSearchable:false
                         },
+                        {
+                                propertyIdentifier: '_content.site.domainNames',
+                                isVisible: false,
+                                isSearchable: true
+                        },
+                        {
+                                propertyIdentifier: '_content.urlTitlePath',
+                                isVisible: false,
+                                isSearchable: true
+                        },
 //                        {
 //                            propertyIdentifier:'_content.contentTemplateFile',
 //                            persistent:false,

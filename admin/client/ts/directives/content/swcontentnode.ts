@@ -39,6 +39,11 @@ angular.module('slatwalladmin')
                                 isSearchable: true
                             },
                             {
+                                propertyIdentifier: '_content.urlTitlePath',
+                                isVisible: true,
+                                isSearchable: true
+                            },
+                            {
                                 propertyIdentifier: '_content.site.siteID',
                                 isVisible: false,
                                 isSearchable: false
@@ -47,6 +52,11 @@ angular.module('slatwalladmin')
                                 propertyIdentifier: '_content.site.siteName',
                                 isVisible: true,
                                 isSearchable: true
+                            },
+                            {
+                                propertyIdentifier: '_content.site.domainNames',
+                                isVisible: true, 
+                                isSearchable: true  
                             },
 //                            {
 //                                propertyIdentifier: '_content.contentTemplateFile',
@@ -121,6 +131,8 @@ angular.module('slatwalladmin')
                         if(angular.isDefined(scope.loadChildren) && scope.loadChildren === true && !(scope.contentData.titlePath && scope.contentData.titlePath.trim().length)){
                             scope.toggleChildContent(scope.contentData);    
                         }
+                        
+                        console.log(scope.contentData);
 
                     }
                 }
