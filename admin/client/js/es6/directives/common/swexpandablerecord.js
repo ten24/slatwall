@@ -31,14 +31,14 @@ var slatwalladmin;
                     this.collectionPromise.then((data) => {
                         this.collectionData = data;
                         this.collectionData.pageRecords = this.collectionData.pageRecords || this.collectionData.records;
-                        if (this.collectionData.pageRecords.length) {
-                            angular.forEach(this.collectionData.pageRecords, (pageRecord) => {
-                                pageRecord.dataparentID = this.recordID;
-                                pageRecord.depth = this.recordDepth || 0;
-                                pageRecord.depth++;
-                                this.records.splice(this.recordIndex + 1, 0, pageRecord);
-                            });
-                        }
+                        /* if(this.collectionData.pageRecords.length){
+                             angular.forEach(this.collectionData.pageRecords,(pageRecord)=>{
+                                 pageRecord.dataparentID = this.recordID;
+                                 pageRecord.depth = this.recordDepth || 0;
+                                 pageRecord.depth++;
+                                 this.records.splice(this.recordIndex+1,0,pageRecord);
+                             });
+                         }*/
                         console.log('page records');
                         console.log(this.records);
                         console.log(this.recordIndex);
@@ -46,11 +46,11 @@ var slatwalladmin;
                         this.init();
                     });
                 }
-                angular.forEach(this.records, (record) => {
-                    if (record.dataparentID === this.recordID) {
-                        record.dataIsVisible = false;
-                    }
-                });
+                /*angular.forEach(this.records,(record)=>{
+                   if(record.dataparentID === this.recordID){
+                    record.dataIsVisible = false;
+                   }
+                });*/
                 return this.collectionPromise;
             };
             this.init = () => {
@@ -80,7 +80,7 @@ var slatwalladmin;
             this.utiltiyService = utiltiyService;
             this.$slatwall = $slatwall;
             this.restrict = 'A';
-            this.scope = true;
+            this.scope = {};
             this.bindToController = {
                 //ID of parent record
                 id: "=",

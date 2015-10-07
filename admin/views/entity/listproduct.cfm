@@ -94,7 +94,6 @@ Notes:
 		data-record-edit-action="admin:entity.editproduct"
 		data-record-detail-action="admin:entity.detailproduct"
 		data-show-create="false">
-		<sw-listing-column data-tdclass="primary" data-property-identifier="productID"></sw-listing-column>
 		<sw-listing-column data-tdclass="primary" data-property-identifier="productName"></sw-listing-column>
 		<sw-listing-column data-property-identifier="productCode"></sw-listing-column>
 		<!---<sw-listing-column data-property-identifier="productType.productTypeName"></sw-listing-column>

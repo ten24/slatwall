@@ -187,32 +187,13 @@
 					ng-repeat="(key,column) in swListingDisplay.collectionConfig.columns" 
 					class="column.tdclass"
 					ng-cloak
-					ng-if="column.isVisible"
+					ng-if="column.isVisible && swListingDisplay.expandable"
+					sw-expandable-record
+					
 				>
-					<!--<a ng-if="column.tdclass === 'primary' && swListingDisplay.expandable" href="##" class="table-action-expand depth0" data-depth="0"><i class="glyphicon glyphicon-plus"></i></a> {{pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]}}
-					ng-click="swListingDisplay.toggleChild($event,pageRecord[swListingDisplay.exampleEntity.$$getIDName()])"
-					-->
-					<i 	ng-if="column.tdclass === 'primary' && swListingDisplay.expandable"
-						sw-expandable-record
-						data-id="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
-						data-entity="swListingDisplay.exampleEntity"
-						data-collection-config="swListingDisplay.collectionConfig"
-						data-records="swListingDisplay.collectionData.pageRecords"
-						data-record-index="pageRecordKey"
-						data-record-depth="pageRecord.depth"
-						ng-class="{
-							'fa-caret-down':swExpandableRecordController.childrenOpen,
-							'fa-caret-right':!swExpandableRecordController.childrenOpen
-						}"
-						class="fa {{swListingDisplay.edit ? '' : 'disabled'}} s-listing-arrow"
-					>
-					{{swExpandableRecordController.childrenOpen}}
-					</i> 
-					<a ng-if="swListingDisplay.recordEditAction && column.tdclass  && column.tdclass === 'primary' && swListingDisplay.expandable" ng-href="{{$root.buildUrl(swListingDisplay.recordEditAction,swListingDisplay.recordEditQueryString)}}" class="s-contents-page-title">
-						<span ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"></span>
-					</a>
-					<span ng-if="!swListingDisplay.recordEditAction || !column.tdclass || !column.tdclass === 'primary' || !swListingDisplay.expandable" ng-bind="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"></span>
+					test
 				</td>
+				<td>{{swListingDisplay.expandable}}</td>
 				
 				<td class="admin admin#attributes.administativeCount#" ng-if="swListingDisplay.administrativeCount">
 					<!--- Detail -->
