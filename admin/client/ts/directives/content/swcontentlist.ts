@@ -170,6 +170,9 @@ angular.module('slatwalladmin')
                         options
                     );
 	        		collectionListingPromise.then(function(value){
+                        angular.foreach(value, function(node){
+                            node = node.site_domainNames.split(",")[0];
+                        });
 	        			scope.collection = value;
 	        			scope.collectionConfig = angular.fromJson(scope.collection.collectionConfig);
 	        			scope.collectionConfig.columns = columnsConfig;
