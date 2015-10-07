@@ -56,6 +56,25 @@ angular.module('slatwalladmin')
 				};
 				
 				$scope.showAddProductBundleGroupTypeBtn = false;
+				
+				
+				$scope.filterGroupsConfig = [{"filterGroup": [ 
+												{  
+													"propertyIdentifier":"_type.parentType.systemCode",
+													"comparisonOperator":"=",
+													"conditionDisplay":"Equals",
+													"ormtype":"string",
+													"value":"productBundleGroupType"
+												},
+												{
+													"logicalOperator":"AND",
+													"propertyIdentifier":"_type.typeName",
+													"comparisonOperator":"like",
+													"ormtype":"string",
+													"value":"%replaceWithSearchString%",
+												}
+											]}];
+				
 				/**
 				 * Handles looking up the keyword and populating the dropdown as a user types.
 				 */

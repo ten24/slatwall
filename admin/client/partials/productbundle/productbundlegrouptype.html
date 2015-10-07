@@ -2,32 +2,13 @@
 			<label class="col-md-3 control-label" for=""><span sw-rbkey="'admin.productBundle.bundleGroupType'"></span>:</label>
 			<div class="col-md-9 s-search-filter" id="j-inside-product-bundle-group-type" sw-click-outside="closeThis(clickOutsideArgs)">
 			
-				<div class="input-group" >
-					<input  type="text"
-							ng-model="productBundleGroup.data.productBundleGroupType.data.typeName"
-							placeholder="Search"
-							class="form-control input-sm"
-							typeahead="type.typeName for type in productBundleGroupTypes.getTypesByKeyword($viewValue) "
-							typeahead-on-select="selectProductBundleGroupType($item, $model, $label)"
-					>
-					
-					<div class="input-group-btn">
-						<button type="button" class="btn btn-sm btn-default" ng-click="closeAddScreen();clearTypeName();">
-							<span ng-show="showAddProductBundleGroupTypeBtn" class="fa fa-caret-up"></span>
-							<span ng-show="!showAddProductBundleGroupTypeBtn" class="fa fa-caret-down"></span>
-						</button>
-					</div>
-					
+				<div sw-typeahead-search
+						entity="Type"
+						filter-groups-config="{{filterGroupsConfig}}"
+						properties="typeID, typeName, typeCode, parentType.systemCode"
+						properties-to-display="typeName, typeCode"
+				>
 				</div>
-
-				<div ng-if="showAddProductBundleGroupTypeBtn && productBundleGroup.data.productBundleGroupType.data.typeName.length">
-					<button type="button"
-							class="btn s-btn-dgrey"
-							ng-show="showAddProductBundleGroupTypeBtn"
-							ng-click="productBundleGroupTypes.setAdding(true)"
-					>
-						<i class="fa fa-plus"></i> <span sw-rbkey="'define.add'"></span> "{{productBundleGroup.data.productBundleGroupType.data.typeName}}"
-					</button>
 					<div class="s-add-content" ng-show="productBundleGroupTypes.$$adding">
 						
 

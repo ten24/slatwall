@@ -4,9 +4,10 @@ module slatwalladmin {
 	export class SWTypeaheadSearchController {
 		
 		public static $inject=["$slatwall", "collectionConfigService"];
-		public entities:string;
+		public entity:string;
 		public properties:string;
 		public propertiesToDisplay:string; 
+		public filterGroupsConfig:any; 
 		public allRecords:boolean; 
 		public placeholderText:string;  
 		public searchText:string; 
@@ -22,26 +23,16 @@ module slatwalladmin {
 		
 		constructor(private $slatwall:ngSlatwall.$Slatwall, private collectionConfigService:slatwalladmin.collectionConfigService){
 			
-			if(angular.isDefined(this.entities)){
-				this.entityList = this.entities.split(",");
-				this.typeaheadCollectionConfigs = new Array(); 
-				angular.forEach(this.entityList, function(entity){
-					this.typeaheadCollectionConfigs.push(collectionConfigService.newCollectionConfig(entity)); 
-				});
-			}	
+			this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity); 
 			
 			if(angular.isDefined(this.propertiesToDisplay)){
 				this.displayList = this.propertiesToDisplay.split(",");
 			}
 			
-			if(angular.isDefined(this.allRecords)){
-				angular.forEach(this.typeaheadCollectionConfigs, function(config){
-					config.setAllRecords(this.allRecords);
-				}); 
+			if(angular.isDefined(this.allRecords)){			
+				this.typeaheadCollectionConfig.setAllRecords(this.allRecords);				
 			} else {
-				angular.forEach(this.typeaheadCollectionConfigs, function(config){
-					config.setAllRecords(true);
-				}); 
+				this.typeaheadCollectionConfig.setAllRecords(true);		
 			}
 		}
 		
@@ -54,35 +45,49 @@ module slatwalladmin {
 			}
 			
 			this.results = new Array(); 
+			this.typeaheadCollectionConfig.setKeywords(search);
+
+			if(angular.isDefined(this.filterGroupsConfig)){
+				
+				var filterConfigString = JSON.stringify(this.filterGroupsConfig);
+				
+				//allows for filtering on search text
+				var filterConfig = filterConfigString.replace("replaceWithSearchString", search); 
+				this.typeaheadCollectionConfig.loadFilterGroups(JSON.parse(filterConfig)); 
+			}
 			
-			angular.forEach(this.typeaheadCollectionConfigs, function(config){
+			var promise = this.typeaheadCollectionConfig.getEntity();
 				
-				config.setKeywords(search);
-				var promise = config.getEntity();
+			promise.then((response)=>{
 				
-				promise.then((response)=>{
-					if(angular.isDefined(this.allRecords) && this.allRecords == false){
-						this.results.concat(response.pageRecords);
-					} else {
-						this.results.concat(response.records);
-					}	 
-	
-					//Custom method for gravatar on accounts (non-persistant-property)
-					if(angular.isDefined(this.results) && this.entity == "Account"){
-						angular.forEach(this.results,(account)=>{
-								account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
-						});
-					}
-				});
+				if(angular.isDefined(this.allRecords) && this.allRecords == false){
+					this.results = response.pageRecords;
+				} else {
+					this.results = response.records;
+				}	 
+				
+				console.log(this.results);
+
+				//Custom method for gravatar on accounts (non-persistant-property)
+				if(angular.isDefined(this.results) && this.entity == "Account"){
+					angular.forEach(this.results,(account)=>{
+						account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
+					});
+				}
 			});
+
 		}
 		
 		public addItem = (item)=>{
-			this.addFunction({item: item}); 
+			if(angular.isDefined(this.addFunction)){
+				this.addFunction({item: item}); 
+			}
 		}
 		
 		public addButtonItem = ()=>{
-			this.addButtonFunction({searchString: this.searchText});
+			if(angular.isDefined(this.addButtonFunction)){
+				this.addButtonFunction({searchString: this.searchText});
+			}
 		}
 		
 	}
@@ -95,9 +100,10 @@ module slatwalladmin {
 		public scope = {}	
 		
 		public bindToController = {
-			entities:"@",
+			entity:"@",
 			properties:"@",
-			propertiesToDisplay:"@",
+			propertiesToDisplay:"@?",
+			filterGroupsConfig:"@?", 
 			placeholderText:"@?",
 			searchText:"=?",
 			results:"=?",
@@ -114,7 +120,7 @@ module slatwalladmin {
 		}
 
         public link:ng.IDirectiveLinkFn = ($scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes) =>{
-
+			
 		}
     }
     

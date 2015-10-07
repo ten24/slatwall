@@ -99,6 +99,10 @@ module slatwalladmin{
             this.pageShow = jsonCollection.pageShow;
             this.allRecords = jsonCollection.allRecords;
         };
+        
+        loadFilterGroups= (filterGroupsConfig:Array=[{filterGroup: []}]) =>{
+            this.filterGroups = filterGroupsConfig;
+        }
 
         getCollectionConfig= () =>{
             return {
