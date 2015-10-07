@@ -46,45 +46,21 @@
 Notes:
 
 --->
-<cfimport prefix="swa" taglib="../../../tags" />
-<cfimport prefix="hb" taglib="../../../org/Hibachi/HibachiTags" />
+<cfimport prefix="swa" taglib="../../../../tags" />
+<cfimport prefix="hb" taglib="../../../../org/Hibachi/HibachiTags" />
 
 
-<cfparam name="rc.attributeOption" type="any">
-<cfparam name="rc.attribute" type="any" default="#rc.attributeOption.getAttribute()#">
-<cfparam name="rc.edit" type="boolean">
+<cfparam name="rc.account" type="any" />
 
-<cfoutput>
-	<hb:HibachiEntityDetailForm object="#rc.attributeOption#" edit="#rc.edit#"
-								saveActionQueryString="attributeID=#rc.attribute.getAttributeID()#">
-		<hb:HibachiEntityActionBar type="detail" object="#rc.attributeOption#" edit="#rc.edit#"
-									backAction="admin:entity.detailAttribute"
-								    backQueryString="attributeID=#rc.attribute.getAttributeID()#"
-								    cancelAction="admin:entity.detailAttribute"
-									cancelQueryString="attributeID=#rc.attribute.getAttributeID()#" />
+<hb:HibachiListingDisplay smartList="#rc.account.getGiftCardSmartList()#"
+						  recordDetailAction="admin:entity.detailgiftcard"
+						  recordEditAction="admin:entity.editgiftcard">
 
-
-
-		<hb:HibachiEntityDetailGroup object="#rc.attributeOption#">
-			<hb:HibachiEntityDetailItem view="admin:entity/attributeoptiontabs/basic" open="true" text="#$.slatwall.rbKey('admin.define.basic')#" showOnCreateFlag=true />
-			<!--- Custom Attributes --->
-			<cfloop array="#rc.attributeOption.getAssignedAttributeSetSmartList().getRecords()#" index="attributeSet">
-				<swa:SlatwallAdminTabCustomAttributes object="#rc.attributeOption#" attributeSet="#attributeSet#" />
-			</cfloop>
-		</hb:HibachiEntityDetailGroup>
-	</hb:HibachiEntityDetailForm>
-
-	<cfif not rc.attributeOption.getNewFlag()>
-		<hb:HibachiListingDisplay smartList="#rc.attributeOption.getEntityWithOptionSmartList()#">
-	        <cfswitch expression="#rc.attribute.getAttributeSet().getAttributeSetObject()#">
-				<cfcase value="Sku">
-	                <hb:HibachiListingColumn propertyIdentifier="SkuCode" />
-	                <hb:HibachiListingColumn propertyIdentifier="product.productName" />
-	            </cfcase>
-				<cfdefaultcase>
-					<hb:HibachiListingColumn propertyIdentifier="simpleRepresentation" title="#$.slatwall.rbKey('entity.' & rc.attribute.getAttributeSet().getAttributeSetObject())#"/>"
-				</cfdefaultcase>
-	        </cfswitch>
-	    </hb:HibachiListingDisplay>
-	</cfif>
-</cfoutput>
+		<hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerFirstName" search="true" />
+        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerLastName" search="true" />
+        <hb:HibachiListingColumn tdclass="primary" propertyIdentifier="ownerEmailAddress" search="true" />
+		<hb:HibachiListingColumn propertyIdentifier="createdDateTime" />
+		<hb:HibachiListingColumn propertyIdentifier="balanceAmount" />
+		<hb:HibachiListingColumn propertyIdentifier="activeFlag" />
+</hb:HibachiListingDisplay>
+<hb:HibachiActionCaller action="admin:entity.preprocessorder" entity="order" class="btn btn-default" icon="plus" querystring="sRedirectAction=admin:entity.detailaccount&accountID=#rc.account.getAccountID()#&processcontext=create&newAccountFlag=false" modal=true />

@@ -84,6 +84,15 @@ component displayname="Order Delivery" entityname="SlatwallOrderDelivery" table=
 		return totalDelivered;
 	}
 
+	public any function getOrderDeliveryGiftCardSmartList() {
+		var giftCardSmartList = getService("GiftCardService").getGiftCardSmartList();
+		giftcardSmartList.joinRelatedProperty("SlatwallGiftCard", "originalOrderItem");
+		giftcardSmartList.joinRelatedProperty("SlatwallOrderItem","orderDeliveryItems");
+		giftcardSmartList.joinRelatedProperty("SlatwallOrderDeliveryItem", "orderDelivery");
+		giftcardsmartlist.addFilter("originalOrderItem.orderDeliveryItems.orderDelivery.orderDeliveryID", this.getOrderDeliveryID());
+		return giftCardSmartList;
+	}
+
 	public any function getOrderFulfillment(){
 		return this.getOrderDeliveryItems()[1].getOrderItem().getOrderFulfillment();
 	}

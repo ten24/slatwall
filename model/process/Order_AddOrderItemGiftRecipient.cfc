@@ -1,4 +1,5 @@
 /*
+
     Slatwall - An Open Source eCommerce Platform
     Copyright (C) ten24, LLC
 
@@ -39,40 +40,22 @@
 
     If you modify this program, you may extend this exception to your version
     of the program, but you are not obligated to do so.
+
 Notes:
+
 */
 component output="false" accessors="true" extends="HibachiProcess"{
 
 	// Injected Entity
-	property name="giftCard";
-	property name="giftCardExpirationTerm" cfc="Term" fieldtype="many-to-one";
-    property name="orderItemGiftRecipient" cfc="OrderItemGiftRecipient" fieldtype="many-to-one";
-	property name="originalOrderItem" cfc="OrderItem"  fieldtype="many-to-one";
-	property name="orderPayments" cfc="OrderPayment" fieldtype="one-to-many";
+	property name="order" cfc="Order";
+	property name="orderItem" cfc="OrderItem" fieldtype="many-to-one";
 
 	// Data Properties
-	property name="giftCardID";
-	property name="currencyCode";
-	property name="expirationDate";
-	property name="giftCardCode";
-	property name="giftCardPin";
-	property name="ownerAccount" cfc="Account";
-	property name="ownerFirstName";
-	property name="ownerLastName";
-	property name="ownerEmailAddress";
-	property name="creditGiftCardFlag";
-
-	//Overridden Getters
-	public string function getGiftCardCode(){
-		if(getService("settingService").getSettingValue("skuGiftCardAutoGenerateCode")==1){
-			return getService("hibachiUtilityService").generateRandomID(getService("settingService").getSettingValue("skuGiftCardCodeLength"));
-		} else {
-			return variables.giftCardCode;
-		}
-	}
-
-	public any function getExpirationDate(){
-		return this.getGiftCardExpirationTerm().getEndDate();
-	}
+ 	property name="firstName" type="string";
+ 	property name="lastName" type="string";
+ 	property name="emailAddress" type="string";
+ 	property name="account";
+ 	property name="quantity" type="numeric";
+ 	property name="giftMessage";
 
 }

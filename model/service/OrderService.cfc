@@ -31,7 +31,7 @@
 	  independent module
 	- You must not alter the default display of the Slatwall name or logo from
 	  any part of the application
-	- Your custom code must not alter or create any files inside Slatwall,
+	- Your custom code must not alter or
 	  except in the following directories:
 		/integrationServices/
 
@@ -83,8 +83,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 		// Check each of the orderFulfillments to see if they are ready to process
 		for(var i = 1; i <= arrayLen(arguments.order.getOrderFulfillments()); i++) {
-			if(!arguments.order.getOrderFulfillments()[i].isProcessable( context="placeOrder" ) || arguments.order.getOrderFulfillments()[i].hasErrors()) {
+			if(!arguments.order.getOrderFulfillments()[i].isProcessable( context="placeOrder" )
+				|| arguments.order.getOrderFulfillments()[i].hasErrors()
+				|| !arguments.order.getOrderFulfillments()[i].hasGiftCardCodes()) {
 				orderRequirementsList = listAppend(orderRequirementsList, "fulfillment");
+				if( !arguments.order.getOrderFulfillments()[i].hasGiftCardCodes()){
+					orderRequirementsList = listAppend(orderRequirementsList, "giftCardCode");
+				}
 				break;
 			}
 		}
@@ -112,6 +117,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 
 		}
+
 		//only do this check if no payment has been added yet.
 		if (!listFindNoCase(orderRequirementsList, "payment")){
 			//Check if there is subscription with autopay flag without order payment with account payment method.
@@ -408,7 +414,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                 while(totalQuantity < arguments.processObject.getQuantity()){
                     var currentRecipient = count & "recipient";
                     if(!isNull(newOrderItem)){
-                        var recipientProcessObject = newOrderItem.getProcessObject("addOrderItemGiftRecipient");
+                        var recipientProcessObject = newOrderItem.getOrder().getProcessObject("addOrderItemGiftRecipient");
                         recipientProcessObject.setOrderItem(newOrderItem);
                     }
                     if(structKeyExists(request.context, currentRecipient & "firstName")){
@@ -417,7 +423,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                         recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);
                         recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
                         recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"]));
-                        arguments.order = this.processOrderItem_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
+                        arguments.order = this.processOrder_addOrderItemGiftRecipient(arguments.order, recipientProcessObject);
                         totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);
                         count++;
                     } else {
@@ -589,7 +595,37 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.order;
 	}
 
-	public any function processOrderItem_addOrderItemGiftRecipient(required any order, required any processObject){
+	public any function processOrderItem_AddRecipientsToOrderItem(required any orderItem, required any processObject){
+		var totalQuantity = 0;
+        var count = 0;
+        if(structKeyExists(request.context, "assignedGiftRecipientQuantity") &&  request.context["assignedGiftRecipientQuantity"] <= request.context["quantity"]){
+            while(totalQuantity < request.context["quantity"]){
+                var currentRecipient = count & "recipient";
+                if(!isNull(arguments.orderItem)){
+                    var recipientProcessObject = arguments.orderItem.getOrder().getProcessObject("addOrderItemGiftRecipient");
+                    recipientProcessObject.setOrderItem(arguments.orderItem);
+                }
+                if(structKeyExists(request.context, currentRecipient & "firstName")){
+                    recipientProcessObject.setFirstName(request.context[currentRecipient & "firstName"]);
+                    recipientProcessObject.setLastName(request.context[currentRecipient & "lastName"]);
+                    recipientProcessObject.setEmailAddress(request.context[currentRecipient & "email"]);
+                    recipientProcessObject.setGiftMessage(request.context[currentRecipient & "message"]);
+                    recipientProcessObject.setQuantity(LSParseNumber(request.context[currentRecipient & "quantity"]));
+                    var order = this.processOrder_addOrderItemGiftRecipient(arguments.orderItem.getOrder(), recipientProcessObject);
+                    totalQuantity += LSParseNumber(request.context[currentRecipient & "quantity"]);
+                    count++;
+                } else {
+                    break;
+                }
+            }
+        } else {
+             arguments.orderItem.getOrder().addError("addOrderItemGiftRecipient", "Cannot assign more recipients then there are gift cards.");
+        }
+
+        return arguments.orderItem;
+	}
+
+	public any function processOrder_addOrderItemGiftRecipient(required any order, required any processObject){
 
 		var item = arguments.processObject.getOrderItem();
 		var recipient = this.newOrderItemGiftRecipient();
@@ -1233,6 +1269,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 	public any function processOrder_placeOrder(required any order, required struct data) {
 		// First we need to lock the session so that this order doesn't get placed twice.
+
 		lock scope="session" timeout="60" {
 
 			// Reload the order in case it was already in cache
@@ -1240,6 +1277,25 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 
 			// Make sure that the entity is notPlaced before going any further
 			if(arguments.order.getOrderStatusType().getSystemCode() == "ostNotPlaced") {
+
+				var orderRequirementsList = getOrderRequirementsList( arguments.order );
+				if(listFindNoCase(getOrderRequirementsList( arguments.order ), "giftCardCode") && !isNull(data.orderFulfillments)){
+
+					for(var fulfillment in data.orderFulfillments){
+
+						if(structKeyExists(fulfillment,"GiftCardCodes")){
+							realFulfillment = this.getOrderFulfillment(fulfillment.orderFulfillmentID);
+							realFulfillment.setGiftCardCodeList(ArrayToList(fulfillment.giftCardCodes));
+							realFulfillment = this.save(realFulfillment);
+
+							if(realFulfillment.hasErrors()){
+								arguments.order.addErrors(realFulfillment.getErrors());
+							}
+						}
+					}
+				} else {
+					arguments.order.addError("specifyGiftCardCode", rbKey('validate.processOrder_placeOrder.giftCardCode'));
+				}
 
 				// Call the saveOrder method so that accounts, fulfillments & payments are updated
 				arguments.order = this.saveOrder(arguments.order, arguments.data);
@@ -1258,21 +1314,21 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					}
 
 					// Generate the order requirements list, to see if we still need action to be taken
-					var orderRequirementsList = getOrderRequirementsList( arguments.order );
+					orderRequirementsList = getOrderRequirementsList( arguments.order );
 
 					// Verify the order requirements list, to make sure that this order has everything it needs to continue
 					if(len(orderRequirementsList)) {
 
-						if(listFindNoCase("account", orderRequirementsList)) {
+						if(listFindNoCase(orderRequirementsList, "account")) {
 							arguments.order.addError('account',rbKey('entity.order.process.placeOrder.accountRequirementError'));
 						}
-						if(listFindNoCase("fulfillment", orderRequirementsList)) {
+						if(listFindNoCase(orderRequirementsList, "fulfillment")) {
 							arguments.order.addError('fulfillment',rbKey('entity.order.process.placeOrder.fulfillmentRequirementError'));
 						}
-						if(listFindNoCase("return", orderRequirementsList)) {
+						if(listFindNoCase(orderRequirementsList, "return")) {
 							arguments.order.addError('return',rbKey('entity.order.process.placeOrder.returnRequirementError'));
 						}
-						if(listFindNoCase("payment", orderRequirementsList)) {
+						if(listFindNoCase(orderRequirementsList, "payment")) {
 							arguments.order.addError('payment',rbKey('entity.order.process.placeOrder.paymentRequirementError'));
 						}
 
@@ -1718,7 +1774,10 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			}
 
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"
-			if(arguments.orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() eq "auto" && !arrayLen(arguments.processObject.getOrderDeliveryItems())) {
+			if((arguments.orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() eq "auto"
+				|| (!isNull(arguments.orderDelivery.getFulfillmentMethod().getAutoFulfillFlag())
+					&& arguments.orderDelivery.getFulfillmentMethod().getAutoFulfillFlag()))
+				&& !arrayLen(arguments.processObject.getOrderDeliveryItems())) {
 
 				// Loop over delivery items from processObject and add them with stock to the orderDelivery
 				for(var i=1; i<=arrayLen(arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()); i++) {
@@ -1822,11 +1881,11 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var di=1; di<=arrayLen(arguments.orderDelivery.getOrderDeliveryItems()); di++) {
 
 				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];
-				var order = creditGiftCard(arguments.processObject.getOrder(), orderDeliveryItem);
+				var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.processObject.getOrderFulfillment());
 
-                if(order.hasErrors()){
-                    arguments.orderDelivery.addErrors(order.getErrors());
-                }
+               	if(order.hasErrors()){
+                   	arguments.orderDelivery.addErrors(order.getErrors());
+               	}
 
 			}
 
@@ -1835,65 +1894,70 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderDelivery;
 	}
 
-    private any function creditGiftCard(required order, required orderDelivery){
-        var orderItemGiftCards = getDAO("OrderDAO").getGiftCardOrderItems(arguments.order.getOrderID());
+    private any function creditGiftCardForOrderDeliveryItem(required any order, required any orderDelivery, required any orderFulfillment){
 
-        // Now we can charge up the gift cards
-        if(orderItemGiftCards.RecordCount > 0){
-            for(var orderItemGiftCard in orderItemGiftCards){
-                var item = getService("HibachiService").get("OrderItem", orderItemGiftCard.orderItemID);
-                var quantity = orderItemGiftCard.quantity;
-                var term = getService("HibachiService").get("Term", orderItemGiftCard.giftCardExpirationTermID);
-                var recipients = item.getOrderItemGiftRecipients();
+		var item = orderDelivery.getOrderItem();
+        var quantity = item.getQuantity();
+        var term = item.getSku().getGiftCardExpirationTerm();
+        var recipients = item.getOrderItemGiftRecipients();
+        var orderFulfillmentGiftCardCodeIndex = 1;
 
-                //recipients and cards have already been validated so put them together
-                for(var recipient in recipients){
-                    if(!recipient.hasAllAssignedGiftCards()){
-                        for(var i=0; i<recipient.getQuantity(); i++){
-                            var card = getService("GiftCardService").newGiftCard();
-                            var createGiftCard = card.getProcessObject( 'Create' );
+        //recipients and cards have already been validated so put them together
+        for(var recipient in recipients){
+            if(!recipient.hasAllAssignedGiftCards()){
+                for(var i=0; i<recipient.getQuantity(); i++){
+                    var card = this.newGiftCard();
+                    var createGiftCard = card.getProcessObject( 'Create' );
 
-                            createGiftCard.setOriginalOrderItem(item);
-                            if(!isNull(term)){
-                                createGiftCard.setGiftCardExpirationTerm(term);
-                            }
-                            createGiftCard.setOrderPayments(arguments.order.getOrderPayments());
-                            createGiftCard.setOrderItemGiftRecipient(recipient);
+                    createGiftCard.setOriginalOrderItem(item);
 
-                            if(!isNull(recipient.getAccount())){
-                                createGiftCard.setOwnerAccount(recipient.getAccount());
-                                createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
-                            } else {
-                                if(getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(recipient.getEmailAddress())){
-                                    createGiftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(recipient.getEmailAddress())));
-                                    createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
-                                } else {
-                                    createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
-                                }
-                            }
+                    if(!isNull(term)){
+                        createGiftCard.setGiftCardExpirationTerm(term);
+                    }
 
-                            if(!isNull(recipient.getFirstName())){
-                                createGiftCard.setOwnerFirstName(recipient.getFirstName());
-                            }
+                    createGiftCard.setOrderPayments(arguments.order.getOrderPayments());
+                    createGiftCard.setOrderItemGiftRecipient(recipient);
 
-                            if(!isNull(recipient.getLastName())){
-                                createGiftCard.setOwnerLastName(recipient.getLastName());
-                            }
+                    if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")){
+						createGiftCard.setGiftCardCode(ListGetAt(orderFulfillment.getGiftCardCodeList(), orderFulfillmentGiftCardCodeIndex));
+						orderFulfillmentGiftCardCodeIndex++;
+                    }
 
-                            createGiftCard.setCreditGiftCardFlag(true);
-                            createGiftCard.setCurrencyCode(arguments.order.getCurrencyCode());
-
-                            card = getService("giftCardService").process(card, createGiftCard, 'Create');
-
-                            if(card.hasErrors()){
-                                arguments.order.addErrors(card.getErrors());
-                            }
+                    if(!isNull(recipient.getAccount())){
+                        createGiftCard.setOwnerAccount(recipient.getAccount());
+                        createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
+                    } else {
+                        if(getDAO("AccountDAO").getPrimaryEmailAddressNotInUseFlag(recipient.getEmailAddress())){
+                            createGiftCard.setOwnerAccount(getService("HibachiService").get('Account', getDAO("AccountDAO").getAccountIDByPrimaryEmailAddress(recipient.getEmailAddress())));
+                            createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
+                        } else {
+                            createGiftCard.setOwnerEmailAddress(recipient.getEmailAddress());
                         }
+                    }
+
+                    if(!isNull(recipient.getFirstName())){
+                        createGiftCard.setOwnerFirstName(recipient.getFirstName());
+                    }
+
+                    if(!isNull(recipient.getLastName())){
+                        createGiftCard.setOwnerLastName(recipient.getLastName());
+                    }
+
+                    createGiftCard.setCreditGiftCardFlag(true);
+                    createGiftCard.setCurrencyCode(arguments.order.getCurrencyCode());
+
+                    card = getService("giftCardService").process(card, createGiftCard, 'Create');
+
+                    if(card.hasErrors()){
+                        arguments.order.addErrors(card.getErrors());
+                    } else {
+                        var cardData = {};
+                        cardData.entity=card;
+                        getService("hibachiEventService").announceEvent(eventName="afterGiftCard_orderPlacedSuccess", eventData=cardData);
                     }
                 }
             }
         }
-
         return arguments.order;
     }
 
