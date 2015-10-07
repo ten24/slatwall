@@ -153,7 +153,7 @@
 			</tr>
 		</thead>
 		<tbody ng-class="{'sortable':swListingDisplay.sortable}">
-			<tr ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords" ng-hide="pageRecord.dataIsVisible === false">
+			<tr ng-repeat="(pageRecordKey, pageRecord) in swListingDisplay.collectionData.pageRecords" ng-show="pageRecord.dataIsVisible !== false">
 				<!--Selectable-->
 				<td ng-if="swListingDisplay.selectable" class="s-table-select">
 					<a href="##" class="table-action-select{{swListingDisplay.edit ? '' : 'disabled'}}" data-idvalue="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]">
@@ -187,13 +187,20 @@
 					ng-repeat="(key,column) in swListingDisplay.collectionConfig.columns" 
 					class="column.tdclass"
 					ng-cloak
-					ng-if="column.isVisible && swListingDisplay.expandable"
+					ng-if="column.isVisible"
 					sw-expandable-record
-					
+					data-expandable="swListingDisplay.expandable && column.tdclass && column.tdclass === 'primary' "
+					data-link="$root.buildUrl(swListingDisplay.recordEditAction,swListingDisplay.recordEditQueryString)"
+					data-record-value="pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]"
+					data-parent-id="pageRecord[swListingDisplay.exampleEntity.$$getIDName()]"
+					data-entity="swListingDisplay.exampleEntity"
+					data-collection-config="swListingDisplay.collectionConfig"
+					data-records="swListingDisplay.collectionData.pageRecords"
+					data-record-index="pageRecordKey"
+					data-record-depth="pageRecord.depth"
 				>
-					test
+					{{pageRecord[swListingDisplay.getPageRecordKey(column.propertyIdentifier)]}}
 				</td>
-				<td>{{swListingDisplay.expandable}}</td>
 				
 				<td class="admin admin#attributes.administativeCount#" ng-if="swListingDisplay.administrativeCount">
 					<!--- Detail -->
