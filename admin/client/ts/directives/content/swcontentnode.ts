@@ -131,9 +131,6 @@ angular.module('slatwalladmin')
                         if(angular.isDefined(scope.loadChildren) && scope.loadChildren === true && !(scope.contentData.titlePath && scope.contentData.titlePath.trim().length)){
                             scope.toggleChildContent(scope.contentData);    
                         }
-                        
-                        console.log(scope.contentData);
-
                     }
                 }
 
