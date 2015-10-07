@@ -169,7 +169,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 		}
 	}
 
-	public numeric function getNumberOfNeededGiftCardCodes(){
+	public any function getNumberOfNeededGiftCardCodes(){
 		var count = 0;
 		if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode")){
 			for(var item in this.getOrderFulfillmentItems()){
@@ -179,7 +179,7 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 			}
 			count -= listlen(this.getGiftCardCodeList());
 		}
-		return count ;
+		return count;
 	}
 
 	public array function getGiftCardListLabels(){

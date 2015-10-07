@@ -84,8 +84,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		// Check each of the orderFulfillments to see if they are ready to process
 		for(var i = 1; i <= arrayLen(arguments.order.getOrderFulfillments()); i++) {
 			if(!arguments.order.getOrderFulfillments()[i].isProcessable( context="placeOrder" )
-				|| arguments.order.getOrderFulfillments()[i].hasErrors()
-				|| !arguments.order.getOrderFulfillments()[i].hasGiftCardCodes()) {
+				|| arguments.order.getOrderFulfillments()[i].hasErrors()) {
 				orderRequirementsList = listAppend(orderRequirementsList, "fulfillment");
 				break;
 			}
@@ -1751,11 +1750,17 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderDelivery.setTrackingNumber(arguments.processObject.getTrackingNumber());
 			}
 
+			// Is this a manual gift card code generation
+			if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && false){
+
+			}
+
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"
 			if((arguments.orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() eq "auto"
 				|| (!isNull(arguments.orderDelivery.getFulfillmentMethod().getAutoFulfillFlag())
 					&& arguments.orderDelivery.getFulfillmentMethod().getAutoFulfillFlag()))
-				&& !arrayLen(arguments.processObject.getOrderDeliveryItems())) {
+				&& !arrayLen(arguments.processObject.getOrderDeliveryItems())
+				&& getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")) {
 
 				// Loop over delivery items from processObject and add them with stock to the orderDelivery
 				for(var i=1; i<=arrayLen(arguments.processObject.getOrderFulfillment().getOrderFulfillmentItems()); i++) {
@@ -1859,11 +1864,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			for(var di=1; di<=arrayLen(arguments.orderDelivery.getOrderDeliveryItems()); di++) {
 
 				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];
-				var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.processObject.getOrderFulfillment());
 
-               	if(order.hasErrors()){
-                   	arguments.orderDelivery.addErrors(order.getErrors());
-               	}
+				//bypass auto fulfillment for non auto generated codes
+				var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
+
+				if(order.hasErrors()){
+                 	arguments.orderDelivery.addErrors(order.getErrors());
+              	}
 
 			}
 
@@ -1872,13 +1879,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderDelivery;
 	}
 
-    private any function creditGiftCardForOrderDeliveryItem(required any order, required any orderDelivery, required any orderFulfillment){
+    private any function creditGiftCardForOrderDeliveryItem(required any order, required any orderDelivery, required any giftCardCodes){
 
 		var item = orderDelivery.getOrderItem();
         var quantity = item.getQuantity();
         var term = item.getSku().getGiftCardExpirationTerm();
         var recipients = item.getOrderItemGiftRecipients();
-        var orderFulfillmentGiftCardCodeIndex = 1;
+        var giftCardCodeIndex = 1;
 
         //recipients and cards have already been validated so put them together
         for(var recipient in recipients){
@@ -1897,8 +1904,8 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
                     createGiftCard.setOrderItemGiftRecipient(recipient);
 
                     if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")){
-						createGiftCard.setGiftCardCode(ListGetAt(orderFulfillment.getGiftCardCodeList(), orderFulfillmentGiftCardCodeIndex));
-						orderFulfillmentGiftCardCodeIndex++;
+						createGiftCard.setGiftCardCode(giftCardCodes[giftCardCodeIndex]);
+						giftCardCodeIndex++;
                     }
 
                     if(!isNull(recipient.getAccount())){
