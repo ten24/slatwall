@@ -118,7 +118,7 @@ angular.module('slatwalladmin')
                                 parentContentRecord.children = value.records;
                                 var index = 0;
                                 angular.forEach(parentContentRecord.children,function(child){
-                                    child = child.site_domainNames.split(",")[0];
+                                    child.site_domainNames = child.site_domainNames.split(",")[0];
                                     scope['child'+index] = child;
                                     element.after($compile('<tr class="childNode" style="margin-left:{{depth*15||0}}px" ng-if="childOpen"  sw-content-node data-content-data="child'+index+'"></tr>')(scope));
                                     index++;
