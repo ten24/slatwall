@@ -186,6 +186,7 @@ var slatwalladmin;
             this.$transclude(this.$scope, () => { });
             this.paginator = paginationService.createPagination();
             this.paginator.getCollection = this.getCollection;
+            this.tableID = 'LD' + this.utilityService.createID();
             //if collection Value is string instead of an object then create a collection
             if (angular.isString(this.collection)) {
                 this.collectionConfig = this.collectionConfigService.newCollectionConfig(this.collection);
@@ -195,11 +196,17 @@ var slatwalladmin;
                 angular.forEach(this.columns, (column) => {
                     var lastEntity = this.$slatwall.getLastEntityNameInPropertyIdentifier(this.collection, column.propertyIdentifier);
                     column.title = this.$slatwall.getRBKey('entity.' + lastEntity.toLowerCase() + '.' + this.utilityService.listLast(column.propertyIdentifier, '.'));
+                    column.isVisible = column.isVisible || true;
                     this.collectionConfig.columns.push(column);
                 });
                 this.collectionConfig.setPageShow(this.paginator.pageShow);
                 this.collectionConfig.setCurrentPage(this.paginator.currentPage);
                 this.exampleEntity = this.$slatwall.newEntity(this.collection);
+                var primarycolumn = {
+                    propertyIdentifier: this.exampleEntity.$$getIDName(),
+                    isVisible: false
+                };
+                this.collectionConfig.columns.push(primarycolumn);
             }
             //setup export action
             if (angular.isDefined(this.exportAction)) {

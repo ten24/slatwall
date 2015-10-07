@@ -73,6 +73,9 @@ var slatwalladmin;
             this.pageShow = pageShow;
             this.keywords = keywords;
             this.allRecords = allRecords;
+            this.clearFilterGroups = function () {
+                _this.filterGroups = [{ filterGroup: [] }];
+            };
             this.newCollectionConfig = function (baseEntityName, baseEntityAlias) {
                 return new CollectionConfig(_this.$slatwall, baseEntityName, baseEntityAlias);
             };

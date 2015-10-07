@@ -49,6 +49,9 @@ var ngSlatwall;
             this.setJsEntityInstances = (jsEntityInstances) => {
                 this._jsEntityInstances = jsEntityInstances;
             };
+            this.getEntityExample = (entityName) => {
+                return this._jsEntityInstances[entityName];
+            };
             this.getEntityMetaData = (entityName) => {
                 return this._jsEntityInstances[entityName].metaData;
             };

@@ -76,6 +76,10 @@ module slatwalladmin{
                 }
             }
         }
+        
+        clearFilterGroups=()=>{
+            this.filterGroups = [{filterGroup: []}];    
+        };
 
         newCollectionConfig=(baseEntityName?:string,baseEntityAlias?:string)=>{
             return new CollectionConfig(this.$slatwall, baseEntityName, baseEntityAlias);

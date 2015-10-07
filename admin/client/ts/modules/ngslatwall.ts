@@ -69,6 +69,9 @@ module ngSlatwall {
          setJsEntityInstances= (jsEntityInstances) =>{
             this._jsEntityInstances = jsEntityInstances;    
         }
+        getEntityExample = (entityName)=>{
+            return this._jsEntityInstances[entityName];  
+        }
         getEntityMetaData = (entityName)=>{
             return this._jsEntityInstances[entityName].metaData;
         }
