@@ -56,7 +56,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 	property name="manualFulfillmentChargeFlag" ormtype="boolean" hb_populateEnabled="false";
 	property name="estimatedDeliveryDateTime" ormtype="timestamp";
 	property name="estimatedFulfillmentDateTime" ormtype="timestamp";
-	property name="giftCardCodeList" ormtype="string";
 
 	// Related Object Properties (many-to-one)
 	property name="accountAddress" hb_populateEnabled="public" cfc="AccountAddress" fieldtype="many-to-one" fkcolumn="accountAddressID";
@@ -177,7 +176,6 @@ component displayname="Order Fulfillment" entityname="SlatwallOrderFulfillment" 
 					count += item.getQuantityUndelivered();
 				}
 			}
-			count -= listlen(this.getGiftCardCodeList());
 		}
 		return count;
 	}

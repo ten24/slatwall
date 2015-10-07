@@ -1750,11 +1750,6 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				arguments.orderDelivery.setTrackingNumber(arguments.processObject.getTrackingNumber());
 			}
 
-			// Is this a manual gift card code generation
-			if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && false){
-
-			}
-
 			// If the orderFulfillmentMethod is auto, and there aren't any delivery items then we can just fulfill all that are "undelivered"
 			if((arguments.orderDelivery.getFulfillmentMethod().getFulfillmentMethodType() eq "auto"
 				|| (!isNull(arguments.orderDelivery.getFulfillmentMethod().getAutoFulfillFlag())
