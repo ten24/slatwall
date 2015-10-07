@@ -197,6 +197,7 @@ component extends="HibachiService" output="false" accessors="true" {
 			globalAllowedOutsideRedirectSites = {fieldtype="text"},
 			globalAdminDomainNames = {fieldtype="text"},
 			globalClientSecret = {fieldtype="text",defaultValue="#createUUID()#"},
+			globalDisplayIntegrationProcessingErrors = {fieldtype="yesno", defaultValue=0},
 
 			// Image
 			imageAltString = {fieldType="text",defaultValue=""},
