@@ -124,15 +124,41 @@ component extends="HibachiService"  accessors="true" output="false"
         arguments.rc.ajaxResponse['processObject']['validations'] = processObject.getValidations();
         arguments.rc.ajaxResponse['processObject']['meta'] = processObject.getThisMetaData();
         
+        
     }
+    
+    /** returns meta data as well as validation information for a process object. */    
+    public any function getEntityMetaData(required struct rc){
+    	
+    	var entity = evaluate("rc.$.slatwall.get#rc.entityName#()");
+    	arguments.rc.ajaxResponse["#rc.entityName#"] = entity.getThisMetaData();
+    	
+    }
+    
+    
     
     /** returns the result of a processObject based action including error information */    
     public any function doProcess(required struct rc){
         
-        if (structKeyExists(rc, "doAction")){
-        	var processObject = this.evokeMethod("#rc.doAction#");
+        if (structKeyExists(rc, "processObject") && !structKeyExists(rc, "entityName")){
+        	try{
+            	var processObject = evaluate("this.#rc.processObject#(rc)");
+            	
+        	}catch(any e){
+        		
+        	}
         }else{
-        	var processObject = evaluate("rc.$.slatwall.get#rc.entityName#().getProcessObject('#rc.processObject#')");
+        	try{
+        	   var processObject = evaluate("rc.$.slatwall.get#rc.entityName#().getProcessObject('#rc.processObject#')");
+        	   
+        	   if (structKeyExists(rc, "entityName")){
+        	       var entity        = evaluate('rc.$.slatwall.get#rc.entityName#()');
+        	        arguments.rc.ajaxResponse['entity']['meta']  = entity.getThisMetaData();
+        	   }
+              
+        	}catch(any e){
+        	   var processObject = evaluate("this.#rc.processObject#(rc)");
+        	}
         }
         
         arguments.rc.ajaxResponse['processObject']['validations']   = processObject.getValidations();
@@ -142,6 +168,7 @@ component extends="HibachiService"  accessors="true" output="false"
         arguments.rc.ajaxResponse['processObject']['messages']      = processObject.getMessages();
         
     }
+    
 	/** 
 	 * @method Logout <b>Log a user account outof Slatwall given the users request_token and deviceID</b>
 	 * @http-context Logout Use this context in conjunction with the listed http-verb to use this resource.
@@ -156,9 +183,6 @@ component extends="HibachiService"  accessors="true" output="false"
 		
 		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'logout' );
 		arguments.rc.$.slatwall.addActionResult( "public:account.logout", false );
-		
-		//any onSuccessCode, any onErrorCode, any genericObject, any responseData, any extraData, required struct rc
-		handlePublicAPICall(200, 500, account, arguments.rc.$.slatwall.invokeMethod("getAccountData"), "Logout Successful",  arguments.rc);
 		return account;
 	}	
 	

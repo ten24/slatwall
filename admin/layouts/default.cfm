@@ -484,3 +484,4 @@ Notes:
 	</body>
 </html>
 </cfoutput>
+<script src="/client/lib/angular/angular-resource.min.js">

@@ -36,12 +36,21 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 				arguments.rc["#data#"] = arguments.rc.deserializedJSONData["#data#"];
 			}
 		}
+		
 		//Call the public method
 		var publicService = getService('PublicService');
-		if (StructKeyExists(arguments.rc, "processObject")){
-			publicService.invokeMethod("processObject()", {rc=rc});
-		}
-		if ( StructKeyExists(arguments.rc, "context") ){
+		
+		if (arguments.rc.url contains "doProcess"){
+            publicService.doProcess(rc);
+        }
+        else if(arguments.rc.url contains "getEntityMetaData"){
+            publicService.getEntityMetaData(rc);
+        }
+        else if (arguments.rc.url contains "getProcessObjectDefinition"){
+            publicService.getProcessObjectDefinition(rc);
+        }
+		else if ( StructKeyExists(arguments.rc, "context") ){
+			
 			publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
 		}else{
 			publicService.invokeMethod("getPublicContexts", {rc=arguments.rc});
@@ -53,25 +62,28 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		param name="arguments.rc.entityID" default="";
 		param name="arguments.rc.apiResponse.content.errors" default="";
 		var structuredData = {};
-		
-		if(isNull(arguments.rc.apiResponse.content.messages)){
-			//arguments.rc.apiResponse.content['messages'] = [];
+		if(arguments.rc.context == "get"){
+			this.get(rc);
 		}
 		
-		if (StructKeyExists(arguments.rc, "jsonRequest")){
-			//If the data for public request was sent as json data, then add that data to arguments.rc as key value pairs.
-			for (data in arguments.rc.deserializedJSONData){
-				arguments.rc["#data#"] = arguments.rc.deserializedJSONData["#data#"];
-			}
-		}
-		
-		//Call the public service to do work.
-		var publicService = getService('PublicService');
-		if ( StructKeyExists(arguments.rc, "context") ){
-			publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
-		}else{
-			publicService.invokeMethod("getPublicContexts", {rc=arguments.rc});
-		}
+		//Call the public method
+        var publicService = getService('PublicService');
+        
+        if (arguments.rc.url contains "doProcess"){
+            publicService.doProcess(rc);
+        }
+        else if(arguments.rc.url contains "getEntityMetaData"){
+            publicService.getEntityMetaData(rc);
+        }
+        else if (arguments.rc.url contains "getProcessObjectDefinition"){
+            publicService.getProcessObjectDefinition(rc);
+        }
+        else if ( StructKeyExists(arguments.rc, "context") ){
+            
+            publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
+        }else{
+            publicService.invokeMethod("getPublicContexts", {rc=arguments.rc});
+        }
 		
 	}
 	

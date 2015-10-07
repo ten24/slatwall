@@ -1,7 +1,8 @@
 <cfoutput>
+<div ng-controller="frontEndController as frontEndCtrl">
 <section>
     <div>           
-        <div class="container" ng-controller="frontEndController as frontEndCtrl">
+        <div class="container" >
             <div class="s-ds-header">
                 <h2>Form Field Display:</h2>
                 <h3>This directive is used to build all the other frontend tags.</h3>
@@ -82,7 +83,7 @@
     <hr>
     	<br>
     <div>           
-        <div class="container" ng-controller="frontEndController as frontEndCtrl"> 
+        <div class="container"> 
             <h2>Login:</h2>
             <swf:login></swf:login>
         </div>
@@ -91,7 +92,7 @@
 
 <section>
     <div>           
-        <div class="container" ng-controller="frontEndController as frontEndCtrl"> 
+        <div class="container" > 
             <h2>Shipping Address</h2>
             <swf:address-form></swf:address-form>
         </div>
@@ -100,13 +101,13 @@
 
 <section>
     <div>           
-        <div class="container" ng-controller="frontEndController as frontEndCtrl"> 
+        <div class="container" > 
             <h2>Billing Address</h2>
             <swf:address-form></swf:address-form>
         </div>
     </div>
 </section>
-
+</div>
 </cfoutput>
 <style >
     dl {
