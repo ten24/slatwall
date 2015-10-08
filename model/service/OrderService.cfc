@@ -1867,7 +1867,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 					var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem);
 				}
 
-				if(order.hasErrors()){
+				if(!isNull(order) && order.hasErrors()){
                  	arguments.orderDelivery.addErrors(order.getErrors());
               	}
 

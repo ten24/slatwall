@@ -81,13 +81,12 @@ component output="false" accessors="true" extends="HibachiProcess" {
 
 	public boolean function hasAllGiftCardCodes(){
 
-		if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode") && !isNull(this.getGiftCardCodes())){
-			return this.getOrderFulfillment().getNumberOfNeededGiftCardCodes() == ArrayLen(this.getGiftCardCodes());
-		} else if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode")) {
-			return false;
-		} else {
+			if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode") && !isNull(this.getGiftCardCodes())){
+				return this.getOrderFulfillment().getNumberOfNeededGiftCardCodes() == ArrayLen(this.getGiftCardCodes());
+			} else if(!getService("SettingService").getSettingValue("skuGiftCardAutoGenerateCode")) {
+				return this.getOrderFulfillment().hasGiftCardCodes();
+			}
 			return true;
-		}
 	}
 
 	public boolean function hasRecipientsForAllGiftCardDeliveryItems(){
