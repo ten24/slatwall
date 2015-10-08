@@ -1,11 +1,12 @@
 <div class="form-group">
 	<p class="text-center loader {{class}}" ng-if="loader"><i class="fa fa-spinner fa-spin" ng-if="loader"></i></p>
 	<!--- handle the label and loader  --->
-    <label ng-bind="name" ng-if="name && type !== 'yesno'" class="{{class}}" for="{{name}}"></label>
+    <label ng-bind="name" ng-if="name && type !== 'yesno' && type !== 'submit'" class="control-label" for="{{name}}"></label>
     <!-- handle the actual element -->
     <ng-switch on="type">
     	
     	<input type="text" ng-switch-when="text" ng-model="value" class="{{class}}" name="{{name}}"></input>
+    	<input type="email" ng-switch-when="email" ng-model="value" class="{{class}}" name="{{name}}"></input>
     	<input type="password" ng-switch-when="password" ng-model="value" class="{{class}}" name="{{name}}"></input>
     	<input type="file" ng-switch-when="file" ng-model="value" class="{{class}}" name="{{name}}"></input>
     	<textarea ng-switch-when="textarea" class="{{class}}" id="{{name}}TextArea" ng-model="value" name="{{name}}"></textarea>
@@ -20,27 +21,31 @@
               <option value="{{option.value}}" ng-repeat="option in optionValues">{{option.name}}</option>
         </select>
         
-        <div ng-switch-when="radiogroup" class="{{class}}" name="{{name}}">
-        	<div ng-repeat="option in optionValues">
-        	  <label ng-bind="option.name" ng-if="option.name" class="{{class}}"></label>
-              <input type="radio" id="{{option.name}}_{{option.value}}" name="{{name}}"/>
+        <div ng-switch-when="radiogroup" name="{{name}}">
+        	<div ng-repeat="option in optionValues" class="{{class}}">
+        	  <label ng-bind="option.name" ng-if="option.name" class="control-label"></label>
+              <input type="radio" id="{{option.name}}_{{option.value}}" name="{{name}}" class="radio"/>
             </div>
         </div>
         
-        <div ng-switch-when="checkboxgroup" class="{{class}}" name="{{name}}">
-            <div ng-repeat="option in optionValues">
+        <div ng-switch-when="checkboxgroup" name="{{name}}">
+            <div ng-repeat="option in optionValues" class="{{class}}">
               <label ng-bind="option.name" ng-if="option.name" class="{{class}}"></label>
               <input type="checkbox" id="{{option.name}}_{{option.value}}" name="{{name}}"/>
             </div>
         </div>
         
         <div ng-switch-when="yesno" name="{{name}}">
+        	<label ng-bind="name"></label>
                 <label class="radio-inline"><input type="radio" name="{{name}}" value="1" text="Yes"/>Yes</label>
                 <label class="radio-inline"><input type="radio" name="{{name}}" value="0" text="No" checked="true"/>No</label>
         </div>
         
+        <div ng-switch-when="submit" name="submit">
+                <input type="submit" class="btn" name="submit" text="{{name}}" ng-click="form.$save()"/>
+        </div>
     </ng-switch>
     <!-- handle the error display for this element -->
-    <swf:error-display errorObj=""></swf:error-display>
+    <div class="error" ng-show="formName.$invalid && form.$submitted">This is a required field</div>
 </div>
 <!--- ng-model-options="{updateOn: 'blur'}" --->

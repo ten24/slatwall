@@ -39,7 +39,7 @@
                     
                     <dt> Text</dt>                <dd>   Simple Text Field
                                                         <br><swf:form-field name="Text label:" type="text" class="formControl" value="someValue" value-object-property="test"></swf:form-field>
-                                                 </dd>
+                                                 </dd>you have entered a 
                     
                     <dt> Textarea</dt>            <dd>   Simple Textarea
                                                         <br><swf:form-field type="textarea" name="textArea label:" class="formControl"></swf:form-field>
@@ -48,7 +48,9 @@
                     <dt> Yesno</dt>               <dd>   This is used by booleans and flags to create a radio group of Yes and No
                                                         <br><swf:form-field type="yesno" name="yesno" class="formControl"></swf:form-field>
                                                  </dd>
-                                                 
+                     <dt>Submit</dt>               <dd>  Used by a form (added to the end of all forms when using processDisplay)
+                                                        <br><swf:form-field type="submit" name="submit" class="formControl" doprocess="Account_login"></swf:form-field>
+                                                 </dd>                            
                      <hr>                            
                      
                      <div>
@@ -84,8 +86,8 @@
     	<br>
     <div>           
         <div class="container"> 
-            <h2>Login:</h2>
-            <swf:login></swf:login>
+            <h2>Create Account:</h2>
+            <swf:form entity-name="Account" process-object="create"></swf:process>
         </div>
     </div>
 </section>
@@ -93,20 +95,20 @@
 <section>
     <div>           
         <div class="container" > 
-            <h2>Shipping Address</h2>
-            <swf:address-form></swf:address-form>
+            <h2>Login Account:</h2>
+            <swf:form entity-name="Account" process-object="login"></swf:process>
+        </div>
+    </div>
+</section>
+<section>
+    <div>           
+        <div class="container" > 
+            <h2>Add Promotion Code:</h2>
+            <swf:form entity-name="Cart" process-object="addPromotionCode"></swf:process>
         </div>
     </div>
 </section>
 
-<section>
-    <div>           
-        <div class="container" > 
-            <h2>Billing Address</h2>
-            <swf:address-form></swf:address-form>
-        </div>
-    </div>
-</section>
 </div>
 </cfoutput>
 <style >

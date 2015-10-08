@@ -13,7 +13,7 @@
 		text				|	Simple Text Field
 		textarea			|	Simple Textarea
 		yesno				|	This is used by booleans and flags to create a radio group of Yes and No
-
+		submit				|	submit button to post these properties back to the server.
 		------------------------------------------------------------------------------------------------------
 		
 		
@@ -45,7 +45,8 @@ angular.module('slatwalladmin')
 				valueObject: "=?",
 				valueObjectProperty: "=?",
 				options: "@?",
-				fieldAttributes: "@?"
+				fieldAttributes: "@?",
+				doProcess: "@?"
 			},
 			transclude: true,
 			templateUrl:partialsPath+'/frontend/swfFormFieldPartial.html',
@@ -58,6 +59,7 @@ angular.module('slatwalladmin')
 				scope.valueObject		  = attrs.valueObject;
 				scope.valueObjectProperty = attrs.valueObjectProperty;
 				scope.fieldAttributes     = attrs.fieldAttributes || "";
+				scope.doProcess	      	  = attrs.doProcess || "";
 				scope.optionValues = [];
 				
 				/** if no default is set for  */

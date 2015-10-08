@@ -112,57 +112,54 @@ component extends="HibachiService"  accessors="true" output="false"
 	  @example  testuser@slatwalltest.com:Vah7cIxXe would become dGVzdHVzZXJAc2xhdHdhbGx0ZXN0LmNvbTpWYWg3Y0l4WGU=				
 	 */
 	public any function login( required struct rc ){
-		var account = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'login' );
-		arguments.rc.$.slatwall.addActionResult( "public:account.login", account.hasErrors() );
-		return account;
+		var accountProcess = getAccountService().processAccount( rc.$.slatwall.getAccount(), arguments.rc, 'login' );
+		arguments.rc.$.slatwall.addActionResult( "public:account.login", accountProcess.hasErrors() );
+		if (accountProcess.hasErrors()){
+			//find the errors - are they on account or cart?
+			if (rc.$.slatwall.getAccount().hasErrors()){
+				acountProcess.$errors = rc.$.slatwall.getAccount().getErrors();
+			}
+		}
+		return accountProcess;
 	}
 	
-	/** returns meta data as well as validation information for a process object. */	
+	/** returns meta data as well as validation information for a process object. This is
+	    the default behavior for a GET request to process context /api/scope/process/*/	
 	public any function getProcessObjectDefinition(required struct rc){
-    
-        var processObject = evaluate("rc.$.slatwall.get#rc.entityName#().getProcessObject('#rc.processObject#')");
+        
+        if (structKeyExists(rc, entityName) && lCase(rc.entityName) == "account"){
+        	var processObject = evaluate("rc.$.slatwall.getAccount().getProcessObject('#rc.processObject#')");
+        }else if(structKeyExists(rc, entityName) && (lCase(rc.entityName) == "order" || lCase(rc.entityName) == "cart")){
+        	var processObject = evaluate("rc.$.slatwall.cart().getProcessObject('#rc.processObject#')");
+        }else{
+        	var processObject = evaluate("rc.$.slatwall.#rc.entityName#().getProcessObject('#rc.processObject#')");
+        }
+        
+        arguments.rc.ajaxResponse['processObject'] = processObject.getThisMetaData();
         arguments.rc.ajaxResponse['processObject']['validations'] = processObject.getValidations();
-        arguments.rc.ajaxResponse['processObject']['meta'] = processObject.getThisMetaData();
+        arguments.rc.ajaxResponse['processObject']['hasErrors']     = processObject.hasErrors();
+        arguments.rc.ajaxResponse['processObject']['errors']        = processObject.getErrors();
         
-        
+        var entity = evaluate('rc.$.slatwall.get#rc.entityName#()');
+        var entityMeta = entity.getThisMetaData();
+        arguments.rc.ajaxResponse['processObject']["entityMeta"] = entityMeta.properties;
     }
     
-    /** returns meta data as well as validation information for a process object. */    
-    public any function getEntityMetaData(required struct rc){
-    	
-    	var entity = evaluate("rc.$.slatwall.get#rc.entityName#()");
-    	arguments.rc.ajaxResponse["#rc.entityName#"] = entity.getThisMetaData();
-    	
-    }
-    
-    
-    
-    /** returns the result of a processObject based action including error information */    
+    /** returns the result of a processObject based action including error information. A form submit.
+        This is the default behavior for a POST request to process context /api/scope/process/ */    
     public any function doProcess(required struct rc){
         
-        if (structKeyExists(rc, "processObject") && !structKeyExists(rc, "entityName")){
+        if (structKeyExists(rc, "processObject")){
         	try{
             	var processObject = evaluate("this.#rc.processObject#(rc)");
             	
         	}catch(any e){
-        		
-        	}
-        }else{
-        	try{
-        	   var processObject = evaluate("rc.$.slatwall.get#rc.entityName#().getProcessObject('#rc.processObject#')");
-        	   
-        	   if (structKeyExists(rc, "entityName")){
-        	       var entity        = evaluate('rc.$.slatwall.get#rc.entityName#()');
-        	        arguments.rc.ajaxResponse['entity']['meta']  = entity.getThisMetaData();
-        	   }
-              
-        	}catch(any e){
-        	   var processObject = evaluate("this.#rc.processObject#(rc)");
+        		writeDump("#e#");
         	}
         }
         
+        arguments.rc.ajaxResponse['processObject']                  = processObject.getThisMetaData();
         arguments.rc.ajaxResponse['processObject']['validations']   = processObject.getValidations();
-        arguments.rc.ajaxResponse['processObject']['meta']          = processObject.getThisMetaData();
         arguments.rc.ajaxResponse['processObject']['hasErrors']     = processObject.hasErrors();
         arguments.rc.ajaxResponse['processObject']['errors']        = processObject.getErrors();
         arguments.rc.ajaxResponse['processObject']['messages']      = processObject.getMessages();
