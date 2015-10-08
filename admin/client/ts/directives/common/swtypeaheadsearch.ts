@@ -101,8 +101,10 @@ module slatwalladmin {
 				this.hideSearch = true; 
 			}
 			
-			if(angular.isDefined(this.displayList)){
-				this.searchText = item[this.displayList[0]]; 
+			if(angular.isDefined(this.modelBind)){
+				this.searchTest = this.modelBind; 
+			} else { 
+				this.searchText = "";
 			}
 			
 			if(angular.isDefined(this.addButtonFunction)){
