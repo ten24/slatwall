@@ -15,6 +15,7 @@ module slatwalladmin {
 		public addFunction; 
 		public addButtonFunction;
 		public hideSearch;  
+		public modelBind; 
 		
 		private displayList;
 		private entityList;  
@@ -38,6 +39,11 @@ module slatwalladmin {
 		}
 		
 		public search = (search:string)=>{
+			
+			if(angular.isDefined(this.modelBind)){
+				this.modelBind = search;
+				console.log(this.modelBind);
+			}
 			
 			if(this.hideSearch){
 				this.hideSearch = false; 
@@ -75,12 +81,30 @@ module slatwalladmin {
 		}
 		
 		public addItem = (item)=>{
+			
+			if(!this.hideSearch){
+				this.hideSearch = true; 
+			}
+			
+			if(angular.isDefined(this.displayList)){
+				this.searchText = item[this.displayList[0]]; 
+			}
+			
 			if(angular.isDefined(this.addFunction)){
 				this.addFunction({item: item}); 
 			}
 		}
 		
 		public addButtonItem = ()=>{
+			
+			if(!this.hideSearch){
+				this.hideSearch = true; 
+			}
+			
+			if(angular.isDefined(this.displayList)){
+				this.searchText = item[this.displayList[0]]; 
+			}
+			
 			if(angular.isDefined(this.addButtonFunction)){
 				this.addButtonFunction({searchString: this.searchText});
 			}
@@ -105,7 +129,8 @@ module slatwalladmin {
 			results:"=?",
 			addFunction:"&?",
 			addButtonFunction:"&?", 
-			hideSearch:"="
+			hideSearch:"=", 
+			modelBind:"=?"
 		}
 		public controller=SWTypeaheadSearchController;
         public controllerAs="swTypeaheadSearch";
