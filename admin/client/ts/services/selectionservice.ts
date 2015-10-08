@@ -15,6 +15,9 @@ module slatwalladmin{
             }
             this._selection[selectionid].push(selection);
         };
+        setSelection=(seleciontid:string,selections:any[]):void =>{
+            this.selection[selectionid] = selections;
+        };
         removeSelection=(selectionid:string,selection:any):void =>{
             if(angular.isUndefined(this._selection[selectionid])){
                 this._selection[selectionid] = [];    

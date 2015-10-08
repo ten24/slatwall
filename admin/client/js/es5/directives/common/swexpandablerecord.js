@@ -45,7 +45,6 @@ var slatwalladmin;
                     angular.forEach(_this.children, function (child) {
                         child.dataIsVisible = _this.childrenOpen;
                     });
-                    //return this.collectionPromise;
                 });
             };
             this.$timeout = $timeout;

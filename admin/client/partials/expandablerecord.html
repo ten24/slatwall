@@ -5,7 +5,7 @@
 
 </i> 
 
-<a ng-href="{{swExpandableRecord.link}}" class="s-contents-page-title">
+<a ng-if="swExpandableRecord.link" ng-href="{{swExpandableRecord.link}}" class="s-contents-page-title">
 	<span ng-bind="swExpandableRecord.recordValue"></span>
 </a>
 <span ng-if="!swExpandableRecord.link" ng-bind="swExpandableRecord.recordValue"></span>

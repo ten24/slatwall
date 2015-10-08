@@ -23,6 +23,9 @@ var slatwalladmin;
                 }
                 _this._selection[selectionid].push(selection);
             };
+            this.setSelection = function (seleciontid, selections) {
+                _this.selection[selectionid] = selections;
+            };
             this.removeSelection = function (selectionid, selection) {
                 if (angular.isUndefined(_this._selection[selectionid])) {
                     _this._selection[selectionid] = [];
