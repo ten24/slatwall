@@ -55,19 +55,18 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 	
 	// This method will return the rate that a given productType has based on a priceGroup, also this looks up to parent productTypes as well.
 	public any function getRateForProductTypeBasedOnPriceGroup(required any productType, required any priceGroup, checkParentFlag = true) {
-		
-		// Setup a var'd value for returnRateID but default it to an empty string
-		var returnRateID = '';
+		// Setup a var'd value for returnRate 
+		var returnRate = '';
 
 		// Loop over rates to see if productType applies
 		var currentProductType = arguments.productType;
 			
 		while (!isNull(currentProductType)) {
 			// Query to get returnRate by productTypeID
-			returnRateID = getPriceGroupDAO().getPriceGroupRateByProductTypeID(arguments.priceGroup.getPriceGroupID(), currentProductType.getProductTypeID());
+			returnRate = getPriceGroupDAO().getPriceGroupRateByProductTypeID(arguments.priceGroup.getPriceGroupID(), currentProductType.getProductTypeID());
 			
 			// Check if this productType is applied in the rate
-			if(len(returnRateID)) {
+			if(!isNull(returnRate)) {
 				break;
 			}	
 			
@@ -76,63 +75,61 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			
 		}
 		
-		// If the returnRateID is still an empty string, then loop through the rates looking for a global rate
-		if(!len(returnRateID)) {
-			returnRateID = getPriceGroupDAO().getGlobalPriceGroupRate(arguments.priceGroup.getPriceGroupID());
+		// If the returnRate is null an empty string, then loop through the rates looking for a global rate
+		if(isNull(returnRate)) {
+			returnRate = getPriceGroupDAO().getGlobalPriceGroupRate(arguments.priceGroup.getPriceGroupID());
 		}
 		
-		// If the returnRateID is still an empty string, then check the productType against the parent priceGroup which will check product and productType (this is done with recursion)
-		if(!len(returnRateID) && !isNull(arguments.priceGroup.getParentPriceGroup()) && arguments.checkParentFlag){
-			returnRateID = getRateForProductTypeBasedOnPriceGroup(productType=arguments.productType, priceGroup=arguments.priceGroup.getParentPriceGroup());
+		// If the returnRate is still null, then check the productType against the parent priceGroup which will check product and productType (this is done with recursion)
+		if(isNull(returnRate) && !isNull(arguments.priceGroup.getParentPriceGroup()) && arguments.checkParentFlag){
+			returnRate = getRateForProductTypeBasedOnPriceGroup(productType=arguments.productType, priceGroup=arguments.priceGroup.getParentPriceGroup());
 		}
 		
-		return returnRateID;
+		if(!isNull(returnRate)){
+			return returnRate;
+		}
+		
 	}
 	
 	// This method will return the rate that a product has for a given price group
 	public any function getRateForProductBasedOnPriceGroup(required any product, required any priceGroup, checkParentFlag = true) {
+		// Query to get returnRate by productID
+		var returnRate = getPriceGroupDAO().getPriceGroupRateByProductID(arguments.priceGroup.getPriceGroupID(), arguments.product.getProductID());
 		
-		// Setup a var'd value for returnRateID but default it to an empty string
-		var returnRateID = '';
-
-		// Query to get returnRateID by productID
-		returnRateID = getPriceGroupDAO().getPriceGroupRateByProductID(arguments.priceGroup.getPriceGroupID(), arguments.product.getProductID());
-		
-		// If the returnRateID is still an empty string, then check the productType
-		if(!len(returnRateID)) {
-			returnRateID = getRateForProductTypeBasedOnPriceGroup(productType=arguments.product.getProductType(), priceGroup=arguments.priceGroup);
+		// If the returnRate is null, then check the productType
+		if(isNull(returnRate)) {
+			returnRate = getRateForProductTypeBasedOnPriceGroup(productType=arguments.product.getProductType(), priceGroup=arguments.priceGroup);
 		}
 		
-		// If the returnRateID is still an empty string, then check the productType against the parent priceGroup which will check product and productType (this is done with recursion)
-		if(!len(returnRateID) && !isNull(arguments.priceGroup.getParentPriceGroup()) && arguments.checkParentFlag) {
-			returnRateID = getRateForProductBasedOnPriceGroup(product=arguments.product, priceGroup=arguments.priceGroup.getParentPriceGroup());
+		// If the returnRate is still null, then check the productType against the parent priceGroup which will check product and productType (this is done with recursion)
+		if(isNull(returnRate) && !isNull(arguments.priceGroup.getParentPriceGroup()) && arguments.checkParentFlag) {
+			returnRate = getRateForProductBasedOnPriceGroup(product=arguments.product, priceGroup=arguments.priceGroup.getParentPriceGroup());
 		}
 		
-		return returnRateID;
+		if(!isNull(returnRate)){
+			return returnRate;
+		}
 	}
 	
 	public any function getRateForSkuBasedOnPriceGroup(required any sku, required any priceGroup, checkParentFlag = true ) {
-		
-		// Setup a var'd value for returnRateID but default it to an empty string
-		var returnRateID = '';
-		
 		// Query to get returnRate by skuID
-		returnRateID = getPriceGroupDAO().getPriceGroupRateBySkuID(arguments.priceGroup.getPriceGroupID(), arguments.sku.getSkuID());
-
-		// If the returnRateID is still empty, then check the product
-		if(!len(returnRateID)) {
-			returnRateID = getRateForProductBasedOnPriceGroup(product=arguments.sku.getProduct(), priceGroup=arguments.priceGroup, checkParentFlag=false);
+		var returnRate = getPriceGroupDAO().getPriceGroupRateBySkuID(arguments.priceGroup.getPriceGroupID(), arguments.sku.getSkuID());
+		
+		// If the returnRate is null, then check the product
+		if(isNull(returnRate)) {
+			returnRate = getRateForProductBasedOnPriceGroup(product=arguments.sku.getProduct(), priceGroup=arguments.priceGroup, checkParentFlag=false);
 		}
 		
-		// If the returnRateID is still empty, then check the sku against the parent priceGroup which will check product and productType (this is done with recursion)
-		if(!len(returnRateID) && !isNull(arguments.priceGroup.getParentPriceGroup())) {
-			returnRateID = getRateForSkuBasedOnPriceGroup(product=arguments.sku.getProduct(), priceGroup=arguments.priceGroup.getParentPriceGroup());
+		// If the returnRate is null, then check the sku against the parent priceGroup which will check product and productType (this is done with recursion)
+		if(isNull(returnRate) && !isNull(arguments.priceGroup.getParentPriceGroup())) {
+			returnRate = getRateForSkuBasedOnPriceGroup(product=arguments.sku.getProduct(), priceGroup=arguments.priceGroup.getParentPriceGroup());
 		}
 		
-		// As long as the returnRateID is no empty, then return it.
-		if(len(returnRateID)) {
-			return this.getPriceGroupRate( returnRateID );
+		// As long as the returnRate is not null, then return it.
+		if(!isNull(returnRate)){
+			return returnRate;
 		}
+		
 	}
 	
 	// This function has two optional arguments, newAmount and priceGroupRateId. Calling this function either other of these mutually exclusively determines the function's logic 

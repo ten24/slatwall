@@ -120,16 +120,8 @@ Notes:
 		<cfargument name="priceGroupID" type="string">
 		<cfargument name="skuID" type="string">
 		
-		<cfquery name="getReturnRateBySkuID" maxrows="1" >
-			SELECT SwPriceGroupRate.priceGroupRateID
-			FROM SwPriceGroupRate
-			INNER JOIN SwPriceGroupRateSku
-			ON SwPriceGroupRate.priceGroupRateID = SwPriceGroupRateSku.priceGroupRateID
-			WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-			AND SwPriceGroupRateSku.skuID = <cfqueryparam value="#arguments.skuID#" cfsqltype="cf_sql_varchar" />
-		</cfquery>
-
-		<cfreturn getReturnRateBySkuID["priceGroupRateID"][1] >
+		<!--- The results should be unique but previous code made me unsure if that is true. --->
+		<cfreturn ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr INNER JOIN FETCH pgr.skus pgrs WHERE pgr.priceGroup.priceGroupID=:priceGroupID AND pgrs.skuID=:skuID", {priceGroupID=arguments.priceGroupID, skuID=arguments.skuID}, true ) >
 		
 	</cffunction>
 	
@@ -137,16 +129,8 @@ Notes:
 		<cfargument name="priceGroupID" type="string">
 		<cfargument name="productID" type="string">
 		
-		<cfquery name="getReturnRateByProductID" maxrows="1">
-			SELECT SwPriceGroupRate.priceGroupRateID
-			FROM SwPriceGroupRate
-			INNER JOIN SwPriceGroupRateProduct
-			ON SwPriceGroupRate.priceGroupRateID = SwPriceGroupRateProduct.priceGroupRateID
-			WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-			AND SwPriceGroupRateProduct.productID = <cfqueryparam value="#arguments.productID#" cfsqltype="cf_sql_varchar" />
-		</cfquery>
-		
-		<cfreturn getReturnRateByProductID["priceGroupRateID"][1] >
+		<!--- The results should be unique but previous code made me unsure if that is true. --->
+		<cfreturn ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr INNER JOIN FETCH pgr.products pgrp WHERE pgr.priceGroup.priceGroupID=:priceGroupID AND pgrp.productID=:productID", {priceGroupID=arguments.priceGroupID,productID=arguments.productID}, true) >
 		
 	</cffunction>
 	
@@ -154,30 +138,16 @@ Notes:
 		<cfargument name="priceGroupID" type="string">
 		<cfargument name="productTypeID" type="string">
 		
-		<cfquery name="getReturnRateByProductTypeID" maxrows="1">
-			SELECT SwPriceGroupRate.priceGroupRateID
-			FROM SwPriceGroupRate
-			INNER JOIN SwPriceGroupRateProductType
-			ON SwPriceGroupRate.priceGroupRateID = SwPriceGroupRateProductType.priceGroupRateID
-			WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-			AND SwPriceGroupRateProductType.productTypeID = <cfqueryparam value="#arguments.productTypeID#" cfsqltype="cf_sql_varchar" />
-		</cfquery>
-		
-		<cfreturn getReturnRateByProductTypeID["priceGroupRateID"][1] >
+		<!--- The results should be unique but previous code made me unsure if that is true. --->
+		<cfreturn ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr INNER JOIN FETCH pgr.productTypes pgrpt WHERE pgr.priceGroup.priceGroupID=:priceGroupID AND pgrpt.productTypeID=:productTypeID", {priceGroupID=arguments.priceGroupID, productTypeID=arguments.productTypeID}, true) >
 		
 	</cffunction>
 	
 	<cffunction name="getGlobalPriceGroupRate">
 		<cfargument name="priceGroupID" type="string">
 		
-		<cfquery name="getGlobalPriceGroupRate" maxrows="1">
-			SELECT SwPriceGroupRate.priceGroupRateID
-			FROM SwPriceGroupRate
-			WHERE SwPriceGroupRate.priceGroupID = <cfqueryparam value="#arguments.PriceGroupID#" cfsqltype="cf_sql_varchar" />
-			AND globalFlag = 1
-		</cfquery>
-		
-		<cfreturn getGlobalPriceGroupRate["priceGroupRateID"][1] >
+		<!--- The results should be unique but previous code made me unsure if that is true. --->
+		<cfreturn ormExecuteQuery("SELECT pgr FROM SlatwallPriceGroupRate pgr WHERE pgr.priceGroup.priceGroupID=:priceGroupID AND pgr.globalFlag=1", {priceGroupID=arguments.priceGroupID}, true) >
 		
 	</cffunction>
 </cfcomponent>
