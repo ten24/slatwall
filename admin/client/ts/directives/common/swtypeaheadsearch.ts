@@ -3,7 +3,7 @@ module slatwalladmin {
 	
 	export class SWTypeaheadSearchController {
 		
-		public static $inject=["$slatwall", "collectionConfigService"];
+		public static $inject=["$slatwall", "$timeout", "collectionConfigService"];
 		public entity:string;
 		public properties:string;
 		public propertiesToDisplay:string; 
@@ -17,12 +17,13 @@ module slatwalladmin {
 		public hideSearch;  
 		public modelBind; 
 		
+		private _timeoutPromise; 
 		private displayList;
 		private entityList;  
 		private typeaheadCollectionConfig; 
 		private typeaheadCollectionConfigs; 
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private collectionConfigService:slatwalladmin.collectionConfigService){
+		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService:slatwalladmin.collectionConfigService){
 			
 			this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity); 
 			this.typeaheadCollectionConfig.setDisplayProperties(this.properties);
@@ -40,44 +41,53 @@ module slatwalladmin {
 		
 		public search = (search:string)=>{
 			
-			if(angular.isDefined(this.modelBind)){
-				this.modelBind = search;
-				console.log(this.modelBind);
-			}
-			
-			if(this.hideSearch){
-				this.hideSearch = false; 
-			} else if(this.search.length == 0){
-				this.hideSearch = true; 
-			}
-			
-			this.results = new Array(); 
-			this.typeaheadCollectionConfig.setKeywords(search);
-
-			if(angular.isDefined(this.filterGroupsConfig)){		
-				//allows for filtering on search text
-				var filterConfig = this.filterGroupsConfig.replace("replaceWithSearchString", search); 
-				filterConfig = filterConfig.trim();
-				this.typeaheadCollectionConfig.loadFilterGroups(JSON.parse(filterConfig)); 
-			}
-			
-			var promise = this.typeaheadCollectionConfig.getEntity();
+			if(search.length > 2){			
 				
-			promise.then((response)=>{
-				
-				if(angular.isDefined(this.allRecords) && this.allRecords == false){
-					this.results = response.pageRecords;
-				} else {
-					this.results = response.records;
-				}	 
-
-				//Custom method for gravatar on accounts (non-persistant-property)
-				if(angular.isDefined(this.results) && this.entity == "Account"){
-					angular.forEach(this.results,(account)=>{
-						account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
-					});
+				if(this._timeoutPromise){
+					$timeout.cancel(this._timeoutPromise); 
 				}
-			});
+				
+				this._timeoutPromise = $timeout(()=>{
+					if(angular.isDefined(this.modelBind)){
+						this.modelBind = search;
+					}
+					
+					if(this.hideSearch){
+						this.hideSearch = false; 
+					} else if(this.search.length == 0){
+						this.hideSearch = true; 
+					}
+					
+					this.results = new Array(); 
+					this.typeaheadCollectionConfig.setKeywords(search);
+		
+					if(angular.isDefined(this.filterGroupsConfig)){		
+						//allows for filtering on search text
+						var filterConfig = this.filterGroupsConfig.replace("replaceWithSearchString", search); 
+						filterConfig = filterConfig.trim();
+						this.typeaheadCollectionConfig.loadFilterGroups(JSON.parse(filterConfig)); 
+					}
+					
+					var promise = this.typeaheadCollectionConfig.getEntity();
+						
+					promise.then( (response) =>{
+					
+							if(angular.isDefined(this.allRecords) && this.allRecords == false){
+								this.results = response.pageRecords;
+							} else {
+								this.results = response.records;
+							}	 
+			
+							//Custom method for gravatar on accounts (non-persistant-property)
+							if(angular.isDefined(this.results) && this.entity == "Account"){
+								angular.forEach(this.results,(account)=>{
+									account.gravatar = "http://www.gravatar.com/avatar/" + md5(account.primaryEmailAddress_emailAddress.toLowerCase().trim());
+								});
+							}
+						
+					});
+				}, 500); 
+			}
 		}
 		
 		public addItem = (item)=>{
@@ -116,7 +126,7 @@ module slatwalladmin {
     
     export class SWTypeaheadSearch implements ng.IDirective{
         
-		public static $inject=["$slatwall", "collectionConfigService"];
+		public static $inject=["$slatwall", "$timeout", "collectionConfigService", "partialsPath"];
 		public templateUrl; 
 		public restrict = "EA"; 
 		public scope = {}	
@@ -138,7 +148,7 @@ module slatwalladmin {
         public controllerAs="swTypeaheadSearch";
 		
 		
-		constructor(private $slatwall:ngSlatwall.$Slatwall, private collectionConfigService:slatwalladmin.collectionConfigService, private partialsPath:slatwalladmin.partialsPath){
+		constructor(private $slatwall:ngSlatwall.$Slatwall, private $timeout:ng.ITimeoutService, private collectionConfigService:slatwalladmin.collectionConfigService, private partialsPath:slatwalladmin.partialsPath){
 			this.templateUrl = partialsPath + "typeaheadsearch.html";	
 		}
 
@@ -148,8 +158,8 @@ module slatwalladmin {
     }
     
     angular.module('slatwalladmin').directive('swTypeaheadSearch',
-		["$slatwall", "collectionConfigService", "partialsPath", 
-			($slatwall, collectionConfigService, partialsPath) => 
-				new SWTypeaheadSearch($slatwall, collectionConfigService, partialsPath)]); 
+		["$slatwall", "$timeout", "collectionConfigService", "partialsPath", 
+			($slatwall, $timeout, collectionConfigService, partialsPath) => 
+				new SWTypeaheadSearch($slatwall, $timeout, collectionConfigService, partialsPath)]); 
 
 }
