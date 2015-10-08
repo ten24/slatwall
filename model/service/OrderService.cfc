@@ -1863,7 +1863,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				//bypass auto fulfillment for non auto generated codes
 				if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && !isNull(arguments.data.giftCardCodes)){
 					var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
-				} else if(getSettingService().getSettingValue("skuGiftCardAutoGenerateCode")){
+				} else if(getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && orderDeliveryItem.getOrderItem().isGiftCardOrderItem()){
 					var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem);
 				}
 
