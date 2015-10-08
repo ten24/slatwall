@@ -42,10 +42,10 @@
         </div>
         
         <div ng-switch-when="submit" name="submit">
-                <input type="submit" class="btn" name="submit" text="{{name}}" ng-click="form.$save()"/>
+                <input type="submit" class="btn" name="submit" text="{{name}}" ng-click="form.$save({ entityName: entityName, processObject: pObject })"/>
         </div>
     </ng-switch>
     <!-- handle the error display for this element -->
-    <div class="error" ng-show="formName.$invalid && form.$submitted">This is a required field</div>
+    <div class="error" ng-show="form.failureActions.length || form.processObject.errors.length">There were errors saving this form: </div>
 </div>
 <!--- ng-model-options="{updateOn: 'blur'}" --->

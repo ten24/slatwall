@@ -9,28 +9,26 @@ angular.module('slatwalladmin').directive('swfForm', [
         '$templateCache', 
         function($slatwall, ProcessObject, $compile, $templateCache) {
              var getTemplate = function(scope, data) {
-                    console.log("Data is...", data);
-                    console.log("Scope Form", scope.form);
-                    var loginProcess = data;
+                    
                     var template = "";
-                    template += "<form name='"+loginProcess['NAME']+"' novalidate class='form'>";
+                    template += "<form name='"+data['NAME']+"' novalidate class='form'>";
                     //should pass in accountID and or orderID for this user when using
-                    for (var p in loginProcess["PROPERTIES"]){
+                    for (var p in data["PROPERTIES"]){
                         
-                        if (loginProcess["PROPERTIES"][p]['NAME'].indexOf("email") != -1){
-                            template += "<swf:form-field name='"+loginProcess["PROPERTIES"][p]['NAME']+":' type='email' class='' value-object-property='"+loginProcess["PROPERTIES"][p]['NAME']+"'></swf:form-field> ";
-                        }else if(loginProcess["PROPERTIES"][p]['NAME'].indexOf("password") != -1){
-                            template += "<swf:form-field name='"+loginProcess["PROPERTIES"][p]['NAME']+":' type='password' class='' value-object-property='"+loginProcess["PROPERTIES"][p]['NAME']+"'></swf:form-field> ";
-                        }else if(loginProcess["PROPERTIES"][p]['NAME'].indexOf("Flag") != -1){
-                            template += "<swf:form-field name='"+loginProcess["PROPERTIES"][p]['NAME']+":' type='yesno' class='' value-object-property='"+loginProcess["PROPERTIES"][p]['NAME']+"'></swf:form-field> ";
-                        }else if(loginProcess["PROPERTIES"][p]['NAME'] == "account" || loginProcess["PROPERTIES"][p]['NAME'] == "order"){
+                        if (data["PROPERTIES"][p]['NAME'].indexOf("email") != -1){
+                            template += "<swf:form-field name='"+data["PROPERTIES"][p]['NAME']+":' type='email' class='' value-object-property='"+data["PROPERTIES"][p]['NAME']+"'></swf:form-field> ";
+                        }else if(data["PROPERTIES"][p]['NAME'].indexOf("password") != -1){
+                            template += "<swf:form-field name='"+data["PROPERTIES"][p]['NAME']+":' type='password' class='' value-object-property='"+data["PROPERTIES"][p]['NAME']+"'></swf:form-field> ";
+                        }else if(data["PROPERTIES"][p]['NAME'].indexOf("Flag") != -1){
+                            template += "<swf:form-field name='"+data["PROPERTIES"][p]['NAME']+":' type='yesno' class='' value-object-property='"+data["PROPERTIES"][p]['NAME']+"'></swf:form-field> ";
+                        }else if(data["PROPERTIES"][p]['NAME'] == "account" || data["PROPERTIES"][p]['NAME'] == "order"){
                            //do nothing with these. in future will make hidden with the id as the value. 
                         }else{
-                           template += "<swf:form-field name='"+loginProcess["PROPERTIES"][p]['NAME']+"' type='text' class='' value-object-property='"+loginProcess["PROPERTIES"][p]['NAME']+"'></swf:form-field> "; 
+                           template += "<swf:form-field name='"+data["PROPERTIES"][p]['NAME']+"' type='text' class='' value-object-property='"+data["PROPERTIES"][p]['NAME']+"'></swf:form-field> "; 
                         }
                     }
                     //now add the submit for this processObject.
-                    template += "<swf:form-field name='"+loginProcess["PROPERTIES"][p]['NAME']+":' type='submit' class='btn btn-default' value-object-property='"+loginProcess["PROPERTIES"][p]['NAME']+"' submit='"+data["NAME"]+"' ng-click='form.$save()'></swf:form-field> ";
+                    template += "<swf:form-field name='"+data["PROPERTIES"][p]['NAME']+":' type='submit' class='btn btn-default' value-object-property='"+data["PROPERTIES"][p]['NAME']+"' submit='"+data["NAME"]+"' ng-click='form.$save({ entityName: entityName, processObject: pObject, form: getFormData() })'></swf:form-field> ";
                     template += "</form>";
                     console.log("Template", template);
                     return template;
@@ -58,6 +56,7 @@ angular.module('slatwalladmin').directive('swfForm', [
                         function() {
                             form.processObject["meta"] = [];
                             for (var p in form.processObject["PROPERTIES"]){
+                                 
                                  angular.forEach(form.processObject["entityMeta"], function(n){
                                      if (n["NAME"] == form.processObject["PROPERTIES"][p]["NAME"]){
                                          form.processObject["meta"].push(n);
@@ -69,6 +68,9 @@ angular.module('slatwalladmin').directive('swfForm', [
                             formName = formName[formName.length-1];
                             console.log("FormName", formName);
                             form.processObject["NAME"] = formName;
+                            
+                            
+                            
                             var template = getTemplate(scope, form.processObject);
                             element.html(template);
                             $compile(element.contents())(scope);
@@ -76,7 +78,10 @@ angular.module('slatwalladmin').directive('swfForm', [
                             return form.processObject;
                         });
                         scope.form = form;
-                        
+                        scope.form.data = {};
+                        scope.getFormData = function(){
+                            return angular.toJson(scope.form.data);
+                        }
                         
                     }
             };

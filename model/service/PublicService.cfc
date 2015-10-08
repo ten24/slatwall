@@ -154,15 +154,17 @@ component extends="HibachiService"  accessors="true" output="false"
             	var processObject = evaluate("this.#rc.processObject#(rc)");
             	
         	}catch(any e){
-        		writeDump("#e#");
+        		arguments.rc.ajaxResponse['processObject']['errors'] = "#e#";
         	}
         }
+        if (!isNull(processObject)){
+            arguments.rc.ajaxResponse['processObject']                  = processObject.getThisMetaData();
+            arguments.rc.ajaxResponse['processObject']['validations']   = processObject.getValidations();
+            arguments.rc.ajaxResponse['processObject']['hasErrors']     = processObject.hasErrors();
+            arguments.rc.ajaxResponse['processObject']['errors']        = processObject.getErrors();
+            arguments.rc.ajaxResponse['processObject']['messages']      = processObject.getMessages();	
+        }
         
-        arguments.rc.ajaxResponse['processObject']                  = processObject.getThisMetaData();
-        arguments.rc.ajaxResponse['processObject']['validations']   = processObject.getValidations();
-        arguments.rc.ajaxResponse['processObject']['hasErrors']     = processObject.hasErrors();
-        arguments.rc.ajaxResponse['processObject']['errors']        = processObject.getErrors();
-        arguments.rc.ajaxResponse['processObject']['messages']      = processObject.getMessages();
         
     }
     

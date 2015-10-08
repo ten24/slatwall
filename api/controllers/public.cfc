@@ -37,7 +37,6 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 	public any function post( required struct rc ) {
 		param name="arguments.rc.context" default="save";
         var publicService = getService('PublicService');
-		var structuredData = {};
 		
 		if(arguments.rc.context == "get" && arguments.rc.url contains "process"){
 			rc.context = "getProcessObjectDefinition";
