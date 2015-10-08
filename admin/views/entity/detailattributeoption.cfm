@@ -74,15 +74,17 @@ Notes:
 		</hb:HibachiEntityDetailGroup>
 	</hb:HibachiEntityDetailForm>
 
-	<hb:HibachiListingDisplay smartList="#rc.attributeoption.getEntityWithOptionSmartList()#">
-        <cfswitch expression="#rc.attribute.getAttributeSet().getAttributeSetObject()#">
-			<cfcase value="Sku">
-                <hb:HibachiListingColumn propertyIdentifier="SkuCode" />
-                <hb:HibachiListingColumn propertyIdentifier="product.productName" />
-            </cfcase>
-			<cfdefaultcase>
-				<hb:HibachiListingColumn propertyIdentifier="simpleRepresentation" title="#$.slatwall.rbKey('entity.' & rc.attribute.getAttributeSet().getAttributeSetObject())#"/>"
-			</cfdefaultcase>
-        </cfswitch>
-    </hb:HibachiListingDisplay>
+	<cfif not rc.attributeOption.getNewFlag()>
+		<hb:HibachiListingDisplay smartList="#rc.attributeOption.getEntityWithOptionSmartList()#">
+	        <cfswitch expression="#rc.attribute.getAttributeSet().getAttributeSetObject()#">
+				<cfcase value="Sku">
+	                <hb:HibachiListingColumn propertyIdentifier="SkuCode" />
+	                <hb:HibachiListingColumn propertyIdentifier="product.productName" />
+	            </cfcase>
+				<cfdefaultcase>
+					<hb:HibachiListingColumn propertyIdentifier="simpleRepresentation" title="#$.slatwall.rbKey('entity.' & rc.attribute.getAttributeSet().getAttributeSetObject())#"/>"
+				</cfdefaultcase>
+	        </cfswitch>
+	    </hb:HibachiListingDisplay>
+	</cfif>
 </cfoutput>

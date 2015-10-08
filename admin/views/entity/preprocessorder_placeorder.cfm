@@ -79,16 +79,6 @@ Notes:
 							<h5>#orderFulfillment.getSimpleRepresentation()#</h5>
 							<input type="hidden" name="orderFulfillments[#ofIndex#].orderFulfillmentID" value="#orderFulfillment.getOrderFulfillmentID()#" />
 
-							<!--- Gift Card --->
-							<cfif listFindNoCase(rc.order.getOrderRequirementsList(), 'giftCardCode')>
-								<cfloop index="codeCount" from="1" to="#orderFulfillment.getNumberOfNeededGiftCardCodes()#">
-									<div class="form-group">
-										<label for="orderFulfillments[#ofIndex#].giftCardCodes[#codeCount#]">#orderFulfillment.getGiftCardListLabels()[codeCount]# Gift Card Code</label>
-										<input type="text" name="orderFulfillments[#ofIndex#].giftCardCodes[#codeCount#]" />
-									</div>
-								</cfloop>
-							</cfif>
-
 							<!--- Email --->
 							<cfif orderFulfillment.getFulfillmentMethodType() eq "email">
 								<hb:HibachiPropertyDisplay object="#orderFulfillment#" property="emailAddress" fieldName="orderFulfillments[#ofIndex#].emailAddress" fieldClass="required" edit="#rc.edit#" />
