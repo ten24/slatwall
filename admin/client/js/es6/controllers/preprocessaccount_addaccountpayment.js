@@ -62,4 +62,4 @@ angular.module('slatwalladmin')
         };
     }]);
 
-//# sourceMappingURL=../controllers/preprocessaccount_addaccountpayment.js.map
+//# sourceMappingURL=preprocessaccount_addaccountpayment.js.map

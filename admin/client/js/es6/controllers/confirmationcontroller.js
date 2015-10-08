@@ -19,4 +19,4 @@ angular.module('slatwalladmin').controller("confirmationController", ["$scope", 
         };
     }]);
 
-//# sourceMappingURL=../controllers/confirmationcontroller.js.map
+//# sourceMappingURL=confirmationcontroller.js.map

@@ -3922,4 +3922,4 @@ angular.module('ngSlatwallModel', ['ngSlatwall']).config(['$provide', function (
             }]);
     }]);
 
-//# sourceMappingURL=../modules/ngslatwallmodel.js.map
+//# sourceMappingURL=ngslatwallmodel.js.map

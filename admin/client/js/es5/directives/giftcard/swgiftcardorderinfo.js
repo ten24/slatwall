@@ -49,4 +49,4 @@ var slatwalladmin;
     ]);
 })(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../../directives/giftcard/swgiftcardorderinfo.js.map
+//# sourceMappingURL=swgiftcardorderinfo.js.map
