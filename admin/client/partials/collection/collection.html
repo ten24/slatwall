@@ -1,8 +1,6 @@
-<div ng-controller="collections" >
+<div  >
 	<div class="col-xs-12 s-filter-content s-filter-content-table-view">
-		<span sw-export-action>
-			
-		</span>
+
 		<!-- Filters and Display Options -->
 		<div ng-model="toggleCogOpen" ng-show="toggleCogOpen">
 			<!-- Tab panes for menu options start-->
@@ -11,12 +9,12 @@
 					<div class="row s-header-bar">
 						<div class="col-md-5 s-header-nav">
 							<ul class="nav nav-tabs s-collection-options" role="tablist">
-								<li class="active"><a href="##j-filters" role="tab" data-toggle="tab">FILTERS <span>(<span ng-bind="filterCount()"></span>)</span></a></li>
-								<li><a href="##j-display-options" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>
+								<li class="active"><a ng-href="#j-filters-{{tabsUniqueID}}" role="tab" data-toggle="tab">FILTERS <span>(<span ng-bind="filterCount()"></span>)</span></a></li>
+								<li><a ng-href="#j-display-options-{{tabsUniqueID}}" role="tab" data-toggle="tab">DISPLAY OPTIONS</a></li>
 							</ul>
 						</div>
 					</div>
-					<div class="tab-pane active" id="j-filters">
+					<div class="tab-pane active" id="j-filters-{{tabsUniqueID}}">
 						<div class="s-setting-options">
 							<div class="row s-setting-options-body">
 								<!-- Start Filter Group -->
@@ -40,7 +38,7 @@
 						</div>
 					</div>
 					<!-- //Tab Pane -->
-					<div class="tab-pane s-display-options" id="j-display-options">
+					<div class="tab-pane s-display-options" id="j-display-options-{{tabsUniqueID}}">
 						<sw-display-options
 							data-columns="collectionConfig.columns"
 							data-properties-list="filterPropertiesList"
@@ -67,7 +65,74 @@
 			</div>
 			<!-- //Row -->
 		</div>
-		<!-- toggleCogOpen -->
+		<!-- //Filters and Display Options -->
+
+		<br/>
+		<span sw-export-action>
+			
+		</span>
+
+		<div class="s-table-wrapper" style="margin-bottom:20px;">
+			<div class="s-table-header-nav">
+				<div class="col-md-12 s-header-nav">
+					<div class="col-xs-6" style="padding-left:0px;">
+						<!--TODO: implement keyword searching and bulk actions -->
+						<ul class="list-inline list-unstyled">
+							<li><h3 class="s-table-header-title" sw-rbkey="'entity.Collection.collectionTableTitle'"><!--- created by rbkey ---></h3></li>
+						</ul>
+					</div>
+					
+					<div class="col-xs-6 s-table-view-options">
+						<ul class="list-inline list-unstyled">
+							<li>
+								<!--- Generates an exportable collection --->
+								<button type="button" title="Export Collection" class="btn btn-default btn-sm s-table-header-btn" ng-click="exportCollection()" ><i class="fa fa-share-square-o"></i></button>			
+							</li>
+							<!-- <li>
+								<button class="btn btn-default btn-sm" target="_self" ng-click="toggleFiltersAndOptions()"><i class="fa fa-cogs"></i></button>
+							</li> -->
+							<li>
+								<div class="s-select-list-wrapper">
+									<div class="form-group s-table-search">
+										<input  type="text"
+											class="form-control input-sm"
+											placeholder="Search"
+											name="srch-term"
+											ng-model="keywords"
+											ng-change="searchCollection()"
+											/>
+											<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
+											<i ng-show="!loadingCollection" class="fa fa-search"></i>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+			<span sw-loading="collection">
+				
+				<sw-collection-table
+					data-collection="collection"
+					data-collection-config="collectionConfig"
+					data-is-radio="isRadio"
+					sw-scroll-trigger
+					infinite-scroll="appendToCollection()"
+					infinite-scroll-disabled="pagination.autoScrollDisabled"
+					infinite-scroll-distance="1">
+				</sw-collection-table> 
+				<sw-pagination-bar
+					ng-if="paginator"
+					data-collection="collection"
+					data-paginator="paginator"
+					data-get-collection="getCollection()"
+					>
+				</sw-pagination-bar>
+			</span>
+		</div>
+
+		
 		<!--delete batch action-->
 		<div id="j-delete-link" class="row collapse s-batch-options">
 			<div class="col-md-12 s-add-filter">
@@ -121,92 +186,5 @@
 		</div>
 		<!--//delete batch action-->
 		
-		<div class="s-table-header-nav">
-			<div class="col-md-12 s-header-nav">
-				<div class="col-xs-6" style="padding-left:0px;">
-					<!--TODO: implement keyword searching and bulk actions -->
-					<ul class="list-inline list-unstyled">
-						<li>
-							<div class="s-select-list-wrapper">
-								<div class="form-group">
-									<div class="input-group">
-										<div class="s-input-btn">
-											<input  type="text"
-												class="form-control input-sm"
-												placeholder="Search"
-												name="srch-term"
-												ng-model="keywords"
-												ng-change="searchCollection()"
-												/>
-											<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
-										</div>
-										<div class="input-group-btn">
-											<button   class="btn btn-primary btn-sm"
-												type="button"
-												ng-click="searchCollection()"
-												>
-											<i class="fa fa-search"></i>
-											</button>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- s-select-list-wrapper -->
-						</li>
-					</ul>
-				</div>
-				
-				<div class="col-xs-6 s-table-view-options">
-					<ul class="list-inline list-unstyled">
-						<li>
-							<span sw-pagination-bar
-								data-collection="collection"
-								data-current-page="currentPage"
-								data-page-show="pageShow"
-								data-page-start="pageStart"
-								data-page-end="pageEnd"
-								data-records-count="recordsCount"
-								data-get-collection="getCollection()"
-								>
-							</span>
-						</li>
-						<li>
-							<!--- Generates an exportable collection --->
-							<a title="Export List" class="btn btn-success"  target="_self" ng-click="exportCollection()" >Export Collection</a>			
-						</li>
-						<li>
-							<button class="btn btn-default btn-sm" target="_self" ng-click="toggleFiltersAndOptions()"><i class="fa fa-cog"></i></button>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-		
-		<span sw-loading="collection">
-			<sw-collection-table
-				data-collection="collection"
-				data-collection-config="collectionConfig"
-				sw-scroll-trigger
-				infinite-scroll="appendToCollection()"
-				infinite-scroll-disabled="autoScrollDisabled"
-				infinite-scroll-distance="1">
-			</sw-collection-table> 
-			<div class="row">
-				<div class="col-md-12" span ng-show="pageShow !== 'Auto'">
-					<div class="dataTables_info" id="example3_info" ng-show="recordsCount()">
-						Showing 
-						<b>
-							<span ng-bind="pageStart()">
-								<!-- record start -->
-							</span>
-							to <span ng-bind="pageEnd()"><!--records end -->
-							<span>
-						</b>
-						of <span ng-bind="recordsCount()"><!-- records Count --></span> entries
-					</div>
-					<div ng-hide="recordsCount()" class="alert alert-info" role="alert" sw-rbkey="'admin.define.norecordsfound'"><!-- Message created by rb key --></div>
-				</div>
-			</div>
-		</span>
 	</div>
 </div>

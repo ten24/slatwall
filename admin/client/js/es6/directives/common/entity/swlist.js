@@ -1,6 +1,7 @@
 'use strict';
 //Thanks to AdamMettro
-angular.module('slatwalladmin').directive('swList', [
+angular.module('slatwalladmin')
+    .directive('swList', [
     '$log',
     '$slatwall',
     'partialsPath',
@@ -27,4 +28,4 @@ angular.module('slatwalladmin').directive('swList', [
     }
 ]);
 
-//# sourceMappingURL=../../../directives/common/entity/swlist.js.map
+//# sourceMappingURL=swlist.js.map

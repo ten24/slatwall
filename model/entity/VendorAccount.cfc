@@ -62,6 +62,10 @@ component entityname="SlatwallVendorAccount" table="SwVendorAccount" persistent=
 	property name="modifiedDateTime" hb_populateEnabled="false" ormtype="timestamp";
 	property name="modifiedByAccountID" hb_populateEnabled="false" ormtype="string";
 	
+	// Remote properties
+	property name="remoteID" ormtype="string";
+	
+	
 	// ============ START: Non-Persistent Property Methods =================
 	
 	// ============  END:  Non-Persistent Property Methods =================

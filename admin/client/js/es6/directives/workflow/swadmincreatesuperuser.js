@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swAdminCreateSuperUser', [
+angular.module('slatwalladmin')
+    .directive('swAdminCreateSuperUser', [
     '$log',
     '$slatwall',
     'partialsPath',
@@ -16,4 +17,4 @@ angular.module('slatwalladmin').directive('swAdminCreateSuperUser', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/workflow/swadmincreatesuperuser.js.map
+//# sourceMappingURL=swadmincreatesuperuser.js.map

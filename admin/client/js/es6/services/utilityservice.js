@@ -1,21 +1,21 @@
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
 /*services return promises which can be handled uniquely based on success or failure by the controller*/
-'use strict';
-angular.module('slatwalladmin').factory('utilityService', [
-    function () {
-        //declare public and private variables
-        //Define our contexts and validation property enums.
-        //declare service we are returning
-        var utilityService = {
-            createID: function (count) {
+var slatwalladmin;
+(function (slatwalladmin) {
+    class UtilityService extends slatwalladmin.BaseService {
+        constructor() {
+            super();
+            this.createID = (count) => {
                 var count = count || 26;
                 var text = "";
                 var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
                 for (var i = 0; i < count; i++)
                     text += possible.charAt(Math.floor(Math.random() * possible.length));
                 return text;
-            },
+            };
             //list functions
-            listFind: function (list, value, delimiter) {
+            this.listFind = (list, value, delimiter) => {
                 if (angular.isUndefined(delimiter)) {
                     delimiter = ',';
                 }
@@ -28,16 +28,16 @@ angular.module('slatwalladmin').factory('utilityService', [
                     stringFound = i;
                     break;
                 }
-            },
-            listLen: function (list, delimiter) {
+            };
+            this.listLen = (list, delimiter) => {
                 if (angular.isUndefined(delimiter)) {
                     delimiter = ',';
                 }
                 var splitString = list.split(delimiter);
                 return splitString.length;
-            },
+            };
             //This will enable you to sort by two separate keys in the order they are passed in
-            arraySorter: function (array, keysToSortBy) {
+            this.arraySorter = (array, keysToSortBy) => {
                 var arrayOfTypes = [], returnArray = [], firstKey = keysToSortBy[0];
                 if (angular.isDefined(keysToSortBy[1])) {
                     var secondKey = keysToSortBy[1];
@@ -83,10 +83,11 @@ angular.module('slatwalladmin').factory('utilityService', [
                     }
                 }
                 return returnArray;
-            }
-        };
-        return utilityService;
+            };
+        }
     }
-]);
+    slatwalladmin.UtilityService = UtilityService;
+    angular.module('slatwalladmin').service('utilityService', UtilityService);
+})(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/utilityservice.js.map
+//# sourceMappingURL=utilityservice.js.map

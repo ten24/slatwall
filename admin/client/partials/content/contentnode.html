@@ -1,7 +1,7 @@
-<td ng-click="getChildContent(contentData)" >
-	<i style="margin-left:{{depth*15||0}}px" class="fa fa-caret-{{childOpen ? 'down' : 'right' }}"></i> <span ng-bind="contentData.titlePath && contentData.titlePath.trim().length ? contentData.titlePath : contentData.title"></span>
+<td>
+	<i ng-click="toggleChildContent(contentData)" style="margin-left:{{depth*15||0}}px" class="fa fa-caret-{{childOpen ? 'down' : 'right' }} s-listing-arrow"></i> <a href="http://{{contentData.site_domainNames}}/{{contentData.urlTitlePath}}" class="s-contents-page-title"><span ng-bind="contentData.titlePath && contentData.titlePath.trim().length ? contentData.titlePath : contentData.title"></span></a>
 </td>
-<td ng-bind="contentData.contentTemplateFile"></td>
+<!--<td ng-bind="contentData.contentTemplateFile"></td>-->
 <td ng-bind="contentData.allowPurchaseFlag"></td>
 <td ng-bind="contentData.productListingPageFlag"></td>
 <td ng-bind="contentData.activeFlag"></td>
@@ -25,7 +25,7 @@
 
     	<a 	title="Create Content" 
     		class="adminentitypreprocessorder btn btn-default btn-xs modalload" 
-    		target="_self" href="/?slatAction=entity.preprocesscontent&amp;processContext=create&amp;parentContentID={{contentData.contentID}}&amp;siteID={{contentData.site_siteID}}" 
+    		target="_self" href="?slatAction=entity.preprocesscontent&amp;processContext=create&amp;parentContentID={{contentData.contentID}}&amp;siteID={{contentData.site_siteID}}" 
     		data-toggle="modal" 
     		data-target="#adminModal">
     		<i class="fa fa-plus"></i>

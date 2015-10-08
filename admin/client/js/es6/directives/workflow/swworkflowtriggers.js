@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swWorkflowTriggers', [
+angular.module('slatwalladmin')
+    .directive('swWorkflowTriggers', [
     '$log',
     '$location',
     '$slatwall',
@@ -55,7 +56,17 @@ angular.module('slatwalladmin').directive('swWorkflowTriggers', [
                 scope.showCollections = false;
                 scope.collections = [];
                 scope.getCollectionByWorkflowObject = function () {
-                    var filterGroupsConfig = '[' + '{' + '"filterGroup":[' + '{' + '"propertyIdentifier":"_collection.collectionObject",' + '"comparisonOperator":"=",' + '"value":"' + scope.workflow.data.workflowObject + '"' + '}' + ']' + '}' + ']';
+                    var filterGroupsConfig = '[' +
+                        '{' +
+                        '"filterGroup":[' +
+                        '{' +
+                        '"propertyIdentifier":"_collection.collectionObject",' +
+                        '"comparisonOperator":"=",' +
+                        '"value":"' + scope.workflow.data.workflowObject + '"' +
+                        '}' +
+                        ']' +
+                        '}' +
+                        ']';
                     var collectionsPromise = $slatwall.getEntity('Collection', { filterGroupsConfig: filterGroupsConfig });
                     collectionsPromise.then(function (value) {
                         $log.debug('getcollections');
@@ -161,4 +172,4 @@ angular.module('slatwalladmin').directive('swWorkflowTriggers', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/workflow/swworkflowtriggers.js.map
+//# sourceMappingURL=swworkflowtriggers.js.map

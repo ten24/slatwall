@@ -172,7 +172,7 @@
 	        
 	        // Validate this object now that it has been populated
 			arguments.entity.validate(context=arguments.context);
-	        
+			        
 	        // If the object passed validation then call save in the DAO, otherwise set the errors flag
 	        if(!arguments.entity.hasErrors()) {
 	            arguments.entity = getHibachiDAO().save(target=arguments.entity);
@@ -821,6 +821,10 @@
 			return structKeyExists(getPropertiesStructByEntityName(arguments.entityName), arguments.propertyName );
 		}
 		
+		public boolean function getPropertyIsObjectByEntityNameAndPropertyIdentifier(required string entityName, required string propertyIdentifier){
+			return structKeyExists(getPropertiesStructByEntityName(getLastEntityNameInPropertyIdentifier(arguments.entityName, arguments.propertyIdentifier))[listLast(arguments.propertyIdentifier, ".")],'cfc');
+		}
+		
 		// @hint leverages the getEntityHasPropertyByEntityName() by traverses a propertyIdentifier first using getLastEntityNameInPropertyIdentifier()
 		public boolean function getHasPropertyByEntityNameAndPropertyIdentifier( required string entityName, required string propertyIdentifier ) {
 			try {
@@ -868,6 +872,17 @@
 			
 			return false; 
 		}		
+		
+		//used by the rest api to return default property values
+		public any function getDefaultPropertiesByEntityName(required string entityName){
+			// First Check the application cache
+			if( hasApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#") ) {
+				return getApplicationValue("classDefaultPropertyCache_#getProperlyCasedFullClassNameByEntityName( arguments.entityName )#");
+			}
+			
+			// Pull the meta data from the object (which in turn will cache it in the application for the next time)
+			return getEntityObject( arguments.entityName ).getDefaultCollectionProperties();
+		}
 		
 	</cfscript>
 </cfcomponent>

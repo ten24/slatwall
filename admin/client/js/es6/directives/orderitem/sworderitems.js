@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swOrderItems', [
+angular.module('slatwalladmin')
+    .directive('swOrderItems', [
     '$log',
     '$timeout',
     '$location',
@@ -12,15 +13,8 @@ angular.module('slatwalladmin').directive('swOrderItems', [
             scope: {
                 orderId: "@"
             },
-            templateUrl: partialsPath + "orderitemrows.html",
+            templateUrl: partialsPath + "orderitems.html",
             link: function (scope, element, attrs) {
-                scope.currentPage = paginationService.getCurrentPage();
-                scope.pageShow = paginationService.getPageShow();
-                scope.pageStart = paginationService.getPageStart;
-                scope.pageEnd = paginationService.getPageEnd;
-                scope.recordsCount = paginationService.getRecordsCount;
-                scope.autoScrollPage = 1;
-                scope.autoScrollDisabled = false;
                 scope.keywords = "";
                 scope.loadingCollection = false;
                 var searchPromise;
@@ -32,7 +26,7 @@ angular.module('slatwalladmin').directive('swOrderItems', [
                         $log.debug('search with keywords');
                         $log.debug(scope.keywords);
                         //Set current page here so that the pagination does not break when getting collection
-                        paginationService.setCurrentPage(1);
+                        scope.paginator.setCurrentPage(1);
                         scope.loadingCollection = true;
                         scope.getCollection();
                     }, 500);
@@ -53,6 +47,11 @@ angular.module('slatwalladmin').directive('swOrderItems', [
                             "isVisible": true,
                             "title": "Order Item ID",
                             "isSearchable": true
+                        },
+                        {
+                            "isVisible": false,
+                            "ormtype": "string",
+                            "propertyIdentifier": "_orderitem.currencyCode"
                         },
                         {
                             "title": "Order Item Type",
@@ -270,8 +269,8 @@ angular.module('slatwalladmin').directive('swOrderItems', [
                     var options = {
                         columnsConfig: angular.toJson(columnsConfig),
                         filterGroupsConfig: angular.toJson(filterGroupsConfig),
-                        currentPage: scope.currentPage,
-                        pageShow: scope.pageShow,
+                        currentPage: scope.paginator.getCurrentPage(),
+                        pageShow: scope.paginator.getPageShow(),
                         keywords: scope.keywords
                     };
                     //Create a list of order items.
@@ -290,7 +289,10 @@ angular.module('slatwalladmin').directive('swOrderItems', [
                             $log.debug("OrderItem Product Type");
                             $log.debug(scope.orderItems);
                         }
+                        scope.paginator.setPageRecordsInfo(scope.collection.recordsCount, scope.collection.pageRecordsStart, scope.collection.pageRecordsEnd, scope.collection.totalPages);
                         scope.loadingCollection = false;
+                    }, function (value) {
+                        scope.orderItems = [];
                     });
                 };
                 //get all possible attributes
@@ -346,25 +348,29 @@ angular.module('slatwalladmin').directive('swOrderItems', [
                 scope.appendToCollection = function () {
                     if (scope.pageShow === 'Auto') {
                         $log.debug('AppendToCollection');
-                        if (scope.autoScrollPage < scope.collection.totalPages) {
-                            scope.autoScrollDisabled = true;
-                            scope.autoScrollPage++;
+                        if (scope.paginator.autoScrollPage < scope.collection.totalPages) {
+                            scope.paginator.autoScrollDisabled = true;
+                            scope.paginator.autoScrollPage++;
                             var appendOptions = {};
                             angular.extend(appendOptions, options);
                             appendOptions.pageShow = 50;
-                            appendOptions.currentPage = scope.autoScrollPage;
+                            appendOptions.currentPage = scope.paginator.autoScrollPage;
                             var collectionListingPromise = $slatwall.getEntity('orderItem', appendOptions);
                             collectionListingPromise.then(function (value) {
                                 scope.collection.pageRecords = scope.collection.pageRecords.concat(value.pageRecords);
                                 scope.autoScrollDisabled = false;
                             }, function (reason) {
+                                scope.collection.pageRecords = [];
                             });
                         }
                     }
                 };
+                scope.paginator = paginationService.createPagination();
+                scope.paginator.collection = scope.collection;
+                scope.paginator.getCollection = scope.getCollection;
             } //<--End link
         };
     }
 ]);
 
-//# sourceMappingURL=../../directives/orderitem/sworderitems.js.map
+//# sourceMappingURL=sworderitems.js.map

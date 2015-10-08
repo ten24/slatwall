@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swHref', [
+angular.module('slatwalladmin')
+    .directive('swHref', [
     function () {
         return {
             restrict: 'A',
@@ -13,7 +14,6 @@ angular.module('slatwalladmin').directive('swHref', [
                 element.attr('href', hrefValue);
             }
         };
-    }
-]);
+    }]);
 
-//# sourceMappingURL=../../directives/common/swhref.js.map
+//# sourceMappingURL=swhref.js.map

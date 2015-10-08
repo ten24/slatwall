@@ -1,0 +1,19 @@
+<div ng-if="swGiftCardDetail.giftCard">
+	<div class="row s-detail-modules-wrapper">
+		
+		<sw-gift-card-overview gift-card="swGiftCardDetail.giftCard" class="col-sm-6 col-md-6 col-lg-3 s-detail-module"></sw-gift-card-overview>
+		
+		<sw-gift-card-balance gift-card="swGiftCardDetail.giftCard" class="col-sm-6 col-md-6 col-lg-3 s-detail-module s-md-content-block"></sw-gift-card-balance>
+		
+		<sw-gift-card-order-info gift-card="swGiftCardDetail.giftCard" class="col-sm-6 col-md-6 col-lg-3 s-detail-module s-md-content-block"></sw-gift-card-order-info>
+		
+		<sw-gift-card-recipient-info gift-card="swGiftCardDetail.giftCard" class="col-sm-6 col-md-6 col-lg-3 s-detail-module s-md-content-block"></sw-gift-card-recipient-info>
+		
+	</div>
+
+	<div class="row s-detail-content-wrapper">
+		
+		<sw-gift-card-history gift-card="swGiftCardDetail.giftCard"></sw-gift-card-history>
+		
+	</div>
+</div>

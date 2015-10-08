@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swWorkflowTask', [
+angular.module('slatwalladmin')
+    .directive('swWorkflowTask', [
     '$log',
     '$location',
     '$timeout',
@@ -32,4 +33,4 @@ angular.module('slatwalladmin').directive('swWorkflowTask', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/workflow/swworkflowtask.js.map
+//# sourceMappingURL=swworkflowtask.js.map

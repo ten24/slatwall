@@ -1,11 +1,14 @@
-'use strict';
-angular.module('slatwalladmin').factory('productBundleService', [
-    '$log',
-    '$slatwall',
-    'utilityService',
-    function ($log, $slatwall, utilityService) {
-        var productBundleService = {
-            decorateProductBundleGroup: function (productBundleGroup) {
+/// <reference path='../../../../client/typings/slatwallTypescript.d.ts' />
+/// <reference path='../../../../client/typings/tsd.d.ts' />
+var slatwalladmin;
+(function (slatwalladmin) {
+    class ProductBundleService extends slatwalladmin.BaseService {
+        constructor($log, $slatwall, utilityService) {
+            super();
+            this.$log = $log;
+            this.$slatwall = $slatwall;
+            this.utilityService = utilityService;
+            this.decorateProductBundleGroup = (productBundleGroup) => {
                 productBundleGroup.data.$$editing = true;
                 var prototype = {
                     $$setMinimumQuantity: function (quantity) {
@@ -37,10 +40,10 @@ angular.module('slatwalladmin').factory('productBundleService', [
                     }
                 };
                 angular.extend(productBundleGroup.data, prototype);
-            },
-            formatProductBundleGroupFilters: function (productBundelGroupFilters, filterTerm) {
-                $log.debug('formatProductBundleGroupFilters');
-                $log.debug(filterTerm);
+            };
+            this.formatProductBundleGroupFilters = (productBundelGroupFilters, filterTerm) => {
+                this.$log.debug('formatProductBundleGroupFilters');
+                this.$log.debug(filterTerm);
                 if (filterTerm.value === 'sku') {
                     for (var i in productBundelGroupFilters) {
                         productBundelGroupFilters[i].name = productBundelGroupFilters[i][filterTerm.value + 'Code'];
@@ -62,12 +65,19 @@ angular.module('slatwalladmin').factory('productBundleService', [
                         }
                     }
                 }
-                $log.debug(productBundelGroupFilters);
+                this.$log.debug(productBundelGroupFilters);
                 return productBundelGroupFilters;
-            }
-        };
-        return productBundleService;
+            };
+            this.$log = $log;
+            this.$slatwall = $slatwall;
+            this.utilityService = utilityService;
+        }
     }
-]);
+    ProductBundleService.$inject = [
+        '$log', '$slatwall', 'utilityService'
+    ];
+    slatwalladmin.ProductBundleService = ProductBundleService;
+    angular.module('slatwalladmin').service('productBundleService', ProductBundleService);
+})(slatwalladmin || (slatwalladmin = {}));
 
-//# sourceMappingURL=../services/productbundleservice.js.map
+//# sourceMappingURL=productbundleservice.js.map

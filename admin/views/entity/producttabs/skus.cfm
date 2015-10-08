@@ -83,7 +83,7 @@ Notes:
 	</cfif>
 
 	<cfset local.skusSmartList = rc.product.getSkusSmartList() />
-	<cfset local.skusSmartList.addFilter("bundleFlag", "false")>
+	<cfset local.skusSmartList.addWhereCondition("bundleFlag != true")>
 	<cfif local.skusSmartList.getRecordsCount() gt 0>
 		<hb:HibachiListingDisplay smartList="#local.skusSmartList#"
 								   edit="#rc.edit#"
@@ -119,12 +119,12 @@ Notes:
 		</hb:HibachiListingDisplay>
 	</cfif>
 
-	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addEventSchedule" class="btn" icon="plus icon" modal="false" />
-	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSku" class="btn" icon="plus icon" modal="true" />
-	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOptionGroup" class="btn" icon="plus icon" modal="true" />
-	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOption" class="btn" icon="plus icon" modal="true" />
-	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSubscriptionSku" class="btn" icon="plus icon" modal="true" />
-	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSkuBundle" class="btn" icon="plus icon" modal="false" />
+	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addEventSchedule" class="btn btn-primary" modal="false" />
+	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSku" class="btn btn-primary" modal="true" />
+	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOptionGroup" class="btn btn-primary" modal="true" />
+	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addOption" class="btn btn-primary" modal="true" />
+	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSubscriptionSku" class="btn btn-primary" modal="true" />
+	<hb:HibachiProcessCaller entity="#rc.product#" action="admin:entity.preprocessproduct" processContext="addSkuBundle" class="btn btn-primary" modal="false" />
 
 </cfoutput>
 

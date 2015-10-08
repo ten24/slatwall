@@ -87,6 +87,10 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			param name="arguments.rc.reportDateTime" default="#reportEntity.getReportDateTime()#";
 			param name="arguments.rc.dimensions" type="any" default="#reportEntity.getDimensions()#";
 			param name="arguments.rc.metrics" type="any" default="#reportEntity.getMetrics()#";
+			param name="arguments.rc.orderByType" type="any" default="metric";
+			param name="arguments.rc.reportType" type="any" default="#reportEntity.getReportType()#";
+			param name="arguments.rc.limitResults" type="any" default="#reportEntity.getLimitResults()#";
+			param name="arguments.rc.showReport" type="any" default="#reportEntity.getShowReport()#";
 			
 		} else if (!structKeyExists(arguments.rc, "reportName")) {
 			
@@ -101,14 +105,23 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		}
 		
 		if(arguments.rc.ajaxRequest && structKeyExists(arguments.rc, "reportName")) {
-			arguments.rc.ajaxResponse["report"] = {};
-			if(structKeyExists(arguments.rc, "currentPage") && len(arguments.rc.currentPage) && isNumeric(arguments.rc.currentPage)) {
-				arguments.rc.ajaxResponse["report"]["dataTable"] = arguments.rc.report.getReportDataTable();
-			} else {
+			
+			arguments.rc.ajaxResponse["report"] = {};		
+			
+			if(arguments.rc.report.getReportType() NEQ "none"){
 				arguments.rc.ajaxResponse["report"]["chartData"] = arguments.rc.report.getChartData();
-				arguments.rc.ajaxResponse["report"]["configureBar"] = arguments.rc.report.getReportConfigureBar();
-				arguments.rc.ajaxResponse["report"]["dataTable"] = arguments.rc.report.getReportDataTable();	
+			} else { 
+				arguments.rc.ajaxResponse["report"]["hideChart"] = true; 
 			}
+			
+			arguments.rc.ajaxResponse["report"]["configureBar"] = arguments.rc.report.getReportConfigureBar();
+			
+			if(arguments.rc.report.getShowReport()){ 
+				arguments.rc.ajaxResponse["report"]["dataTable"] = arguments.rc.report.getReportDataTable();
+			} else { 
+				arguments.rc.ajaxResponse["report"]["hideReport"] = true; 	
+			}
+			
 		} else {
 			arguments.rc.pageTitle = arguments.rc.report.getReportTitle();
 		}

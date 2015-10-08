@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swCriteriaManyToOne', [
+angular.module('slatwalladmin')
+    .directive('swCriteriaManyToOne', [
     '$log',
     '$slatwall',
     '$filter',
@@ -67,4 +68,4 @@ angular.module('slatwalladmin').directive('swCriteriaManyToOne', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/collection/swcriteriamanytoone.js.map
+//# sourceMappingURL=swcriteriamanytoone.js.map

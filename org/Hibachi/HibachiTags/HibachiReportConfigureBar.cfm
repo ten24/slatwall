@@ -21,9 +21,10 @@
 							.s-report-info dd, .s-report-info dt {line-height:30px;}
 							.s-report-info dt {margin-right:10px;}
 						</style>
+						
 						<!--- Metrics --->
 						<input type="hidden" name="metrics" value="#trim(attributes.report.getMetrics())#" />
-						<dt style="width:100px;"><strong>Metrics</strong></dt>
+						<dt style="width:100px;"><strong>#attributes.hibachiScope.rbKey('define.metrics')#</strong></dt>
 						<dd style="margin-left:100px;">
 							<span id="hibachi-report-metric-sort">
 								<cfloop from="1" to="#listLen(attributes.report.getMetrics())#" step="1" index="m">
@@ -54,7 +55,7 @@
 						
 						<!--- Dimensions --->
 						<input type="hidden" name="dimensions" value="#trim(attributes.report.getDimensions())#" />
-						<dt style="width:100px;"><strong>Dimensions</strong></dt>
+						<dt style="width:100px;"><strong>#attributes.hibachiScope.rbKey('define.dimensions')#</strong></dt>
 						<dd style="margin-left:100px;">
 							<span id="hibachi-report-dimension-sort">
 								<cfloop list="#attributes.report.getDimensions()#" index="dimension">
@@ -73,16 +74,59 @@
 							</cfif>
 						</dd>
 						
+						<!--- Order By Metric / Dimension ---> 
+						
+						<dt style="width:100px;"><strong>#attributes.hibachiScope.rbKey('define.orderby')#</strong></dt>
+						<dd style="margin-left:100px;">
+							<select id="hibachi-order-by" name="orderbytype">
+								<option value="metrics" <cfif attributes.report.getOrderByType() EQ "metrics">selected</cfif>>#attributes.hibachiScope.rbKey('define.metrics')#</option>
+								<option value="dimensions" <cfif attributes.report.getOrderByType() EQ "dimensions">selected</cfif>>#attributes.hibachiScope.rbKey('define.dimensions')#</option>
+							</select>
+						</dd>
+
+						<!--- Limit Results --->
+						<cfif attributes.report.getReportType() EQ "column" OR attributes.report.getReportType() EQ "pie">
+							<!--- Order By Metric / Dimension --->
+							<dt style="width:100px;"><strong>#attributes.hibachiScope.rbKey('define.limitResults')#</strong></dt>
+							<dd style="margin-left:100px;">
+								<select id="hibachi-limit-results" name="limitresults">
+									<option value="5" <cfif attributes.report.getLimitResults() EQ 5>selected</cfif>>5</option>
+									<option value="10" <cfif attributes.report.getLimitResults() EQ 10>selected</cfif>>10</option>
+									<option value="15" <cfif attributes.report.getLimitResults() EQ 15>selected</cfif>>15</option>
+									<option value="20" <cfif attributes.report.getLimitResults() EQ 20>selected</cfif>>20</option>
+									<option value="25" <cfif attributes.report.getLimitResults() EQ 25>selected</cfif>>25</option>
+									<option value="50" <cfif attributes.report.getLimitResults() EQ 50>selected</cfif>>50</option>
+								</select>
+							</dd>
+						</cfif>
+						
+						<!--- Graph Type --->
+						<dt style="width:100px;"><strong>#attributes.hibachiScope.rbKey('define.reportType')#</strong></dt>
+						<dd style="margin-left:100px;">
+							<select id="hibachi-report-type" name="reporttype">
+								<option value="line" <cfif attributes.report.getReportType() EQ "line">selected</cfif>>#attributes.hibachiScope.rbKey('define.line')#</option>
+								<option value="column" <cfif attributes.report.getReportType() EQ "column">selected</cfif>>#attributes.hibachiScope.rbKey('define.bar')#</option>
+								<option value="pie" <cfif attributes.report.getReportType() EQ "pie">selected</cfif>>#attributes.hibachiScope.rbKey('define.pie')#</option>
+								<option value="none" <cfif attributes.report.getReportType() EQ "none">selected</cfif>>#attributes.hibachiScope.rbKey('define.none')#</option>
+							</select>
+						</dd>
+						
+						<!--- Show/Hide Report --->
+						<dt style="width:100px;"><strong>#attributes.hibachiScope.rbKey('define.showReport')#</strong></dt>
+						<dd style="margin-left:100px;">
+							<input id="hibachi-show-report" type="checkbox" name="showReport" value="true" <cfif attributes.report.getShowReport()>checked</cfif> />
+						</dd>
+						
 						<!--- Action Buttons --->
 						<dt style="width:100px;"><strong>#attributes.hibachiScope.rbKey('define.actions')#</strong></dt>
 						<dd style="margin-left:100px;">
 							<cfif not isNull(attributes.report.getReportEntity())>
-								<hb:HibachiActionCaller action="admin:entity.editreport" queryString="reportID=#attributes.report.getReportEntity().getReportID()#&reportName=#attributes.report.getClassName()#&reportDateTime=#attributes.report.getReportDateTime()#&reportDateTimeGroupBy=#attributes.report.getReportDateTimeGroupBy()#&reportCompareFlag=#attributes.report.getReportCompareFlag()#&dimensions=#attributes.report.getDimensions()#&metrics=#attributes.report.getMetrics()#&redirectAction=admin:report.default" icon="pencil" class="btn btn-xs s-btn-dgrey" modal=true />
+								<hb:HibachiActionCaller action="admin:entity.editreport" queryString="reportID=#attributes.report.getReportEntity().getReportID()#&reportName=#attributes.report.getClassName()#&reportDateTime=#attributes.report.getReportDateTime()#&reportDateTimeGroupBy=#attributes.report.getReportDateTimeGroupBy()#&reportCompareFlag=#attributes.report.getReportCompareFlag()#&dimensions=#attributes.report.getDimensions()#&metrics=#attributes.report.getMetrics()#&redirectAction=admin:report.default&reportType=#attributes.report.getReportType()#&limitResults=#attributes.report.getLimitResults()#&showReport=#attributes.report.getShowReport()#&" icon="pencil" class="btn btn-xs s-btn-dgrey" modal=true />
 								<hb:HibachiActionCaller action="admin:entity.deletereport" queryString="reportID=#attributes.report.getReportEntity().getReportID()#&redirectAction=admin:report.default" icon="remove" class="btn btn-xs s-btn-dgrey" />
 							</cfif>	
-							<hb:HibachiActionCaller action="admin:entity.createreport" queryString="reportName=#attributes.report.getClassName()#&reportDateTime=#attributes.report.getReportDateTime()#&reportDateTimeGroupBy=#attributes.report.getReportDateTimeGroupBy()#&reportCompareFlag=#attributes.report.getReportCompareFlag()#&dimensions=#attributes.report.getDimensions()#&metrics=#attributes.report.getMetrics()#&redirectAction=admin:report.default" icon="plus" class="btn btn-xs s-btn-dgrey" modal=true />
-							<hb:HibachiActionCaller action="admin:report.exportxls" name="slatAction" icon="share" type="button" class="btn-xs s-btn-dgrey" submit="true" />
-							<hb:HibachiActionCaller action="admin:report.exportcsv" name="slatAction" icon="share" type="button" class="btn-xs s-btn-dgrey" submit="true" />	
+							<hb:HibachiActionCaller action="admin:entity.createreport" queryString="reportName=#attributes.report.getClassName()#&reportDateTime=#attributes.report.getReportDateTime()#&reportDateTimeGroupBy=#attributes.report.getReportDateTimeGroupBy()#&reportCompareFlag=#attributes.report.getReportCompareFlag()#&dimensions=#attributes.report.getDimensions()#&metrics=#attributes.report.getMetrics()#&redirectAction=admin:report.default&reportType=#attributes.report.getReportType()#&limitResults=#attributes.report.getLimitResults()#&showReport=#attributes.report.getShowReport()#&" icon="plus" class="btn btn-xs s-btn-dgrey" modal=true />
+							<hb:HibachiActionCaller action="admin:report.exportxls" name="slatAction" icon="share" type="button" class="btn btn-xs s-btn-dgrey" submit="true" />
+							<hb:HibachiActionCaller action="admin:report.exportcsv" name="slatAction" icon="share" type="button" class="btn btn-xs s-btn-dgrey" submit="true" />	
 						</dd>
 					</dl>
 				</div>

@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swColumnItem', [
+angular.module('slatwalladmin')
+    .directive('swColumnItem', [
     '$http',
     '$compile',
     '$templateCache',
@@ -182,4 +183,4 @@ angular.module('slatwalladmin').directive('swColumnItem', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/collection/swcolumnitem.js.map
+//# sourceMappingURL=swcolumnitem.js.map

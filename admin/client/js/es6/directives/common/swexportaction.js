@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swExportAction', [
+angular.module('slatwalladmin')
+    .directive('swExportAction', [
     '$log',
     'partialsPath',
     function ($log, partialsPath) {
@@ -12,4 +13,4 @@ angular.module('slatwalladmin').directive('swExportAction', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/common/swexportaction.js.map
+//# sourceMappingURL=swexportaction.js.map

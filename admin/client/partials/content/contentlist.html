@@ -20,26 +20,7 @@
 
 	<div class="s-table-header-nav s-listing-head-margin">
 		<div class="col-xs-6 s-no-padding-left">
-			{{siteOptions}}
-			{{options}}
-		</div>
-		
-		<div class="col-xs-6 s-table-view-options s-no-padding-right">
 			<ul class="list-inline list-unstyled">
-					
-				<li>
-					<span sw-pagination-bar
-						data-collection="collection"
-						data-current-page="currentPage"
-						data-page-show="pageShow"
-						data-page-start="pageStart"
-						data-page-end="pageEnd"
-						data-records-count="recordsCount"
-						data-get-collection="getCollection()"
-						>
-					</span>
-				</li>
-			
 				<!-- to implement searching-->
 				<li>
 					<div class="s-select-list-wrapper">
@@ -54,19 +35,33 @@
 										ng-change="searchCollection()"
 										/>
 									<i ng-show="loadingCollection" class="fa fa-refresh fa-spin"></i>
-								</div>
-								<div class="input-group-btn">
-									<button   class="btn btn-primary btn-sm"
-										type="button"
-										ng-click="searchCollection()"
-										>
-									<i class="fa fa-search"></i>
-									</button>
+									<i ng-hide="loadingCollection" class="fa fa-search"></i>
 								</div>
 							</div>
 						</div>
 					</div>
 					<!-- s-select-list-wrapper -->
+				</li>
+			</ul>
+			{{siteOptions}}
+			{{options}}
+		</div>
+		
+		<div class="col-xs-6 s-table-view-options s-no-padding-right" >
+			<ul class="list-inline list-unstyled">
+					
+				<li>
+					<span sw-pagination-bar
+						data-collection="collection"
+						data-current-page="currentPage"
+						data-page-show="pageShow"
+						data-page-show-options="pageShowOptions"
+						data-page-start="pageStart"
+						data-page-end="pageEnd"
+						data-records-count="recordsCount"
+						data-get-collection="getCollection()"
+						>
+					</span>
 				</li>
 				
 				<!--
@@ -81,7 +76,7 @@
 			</ul>
 		</div>
 	</div>
-	<content class="s-body-box">
+	<content class="s-body-box"  sw-loading="firstLoad && !loadingCollection">
 		<div class="table-responsive">
 			<table id="contentList" class="table table-bordered table-hover">
 				<thead>
@@ -101,6 +96,7 @@
 					infinite-scroll-disabled="autoScrollDisabled"
 					infinite-scroll-distance="1"
 					id="contentListTable"
+					
 				>	
 					<tr sw-content-node
 						ng-repeat="pageRecord in collection.pageRecords"

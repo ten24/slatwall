@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swAddFilterButtons', [
+angular.module('slatwalladmin')
+    .directive('swAddFilterButtons', [
     '$http',
     '$compile',
     '$templateCache',
@@ -26,4 +27,4 @@ angular.module('slatwalladmin').directive('swAddFilterButtons', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/collection/swaddfilterbuttons.js.map
+//# sourceMappingURL=swaddfilterbuttons.js.map

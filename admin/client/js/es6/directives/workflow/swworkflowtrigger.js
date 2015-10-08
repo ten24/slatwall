@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swWorkflowTrigger', [
+angular.module('slatwalladmin')
+    .directive('swWorkflowTrigger', [
     '$log',
     '$slatwall',
     'metadataService',
@@ -70,4 +71,4 @@ angular.module('slatwalladmin').directive('swWorkflowTrigger', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/workflow/swworkflowtrigger.js.map
+//# sourceMappingURL=swworkflowtrigger.js.map

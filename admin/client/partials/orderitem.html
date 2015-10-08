@@ -1,3 +1,5 @@
+
+
 <tr class="s-bundle-product l-1" ng-if="orderItem && attributes" 
 	ng-class="{
 		's-event l-1': orderItem.data.sku.data.baseProductType == 'event', 
@@ -9,7 +11,6 @@
 		's-deposit':orderItem.onWaitlist === true,
 		's-pending-payment':orderItem.isPending === true
 	}">
-	
 	<!-- Image 90x90 -->
 	<td rowspan="1000" class='s-image' style="width:90px;height:90px;">
 		<swresizedimage profilename="orderItem" data-order-item="orderItem"></swresizedimage>
@@ -74,49 +75,49 @@
 		<!-- Handle if this is a event pricing scheme-->
 		<span ng-if="orderItem.onWaitlist !== true" class="s-price">
 			<ul>
-				<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-total">{{orderItem.data.productBundlePrice | currency}} 
+				<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-total" ng-bind-html="orderItem.data.productBundlePrice | swcurrency:orderItem.data.currencyCode">
 				</li>
-				<li ng-show="orderItem.data.sku.data.baseProductType !== 'productBundle'" class="s-price-total">{{orderItem.data.price | currency}} 
+				<li ng-show="orderItem.data.sku.data.baseProductType !== 'productBundle'" class="s-price-total"  ng-bind-html="orderItem.data.price | swcurrency:orderItem.data.currencyCode">
 				</li>
 				<li ng-show="orderItem.data.sku.data.baseProductType === 'productBundle'" class="s-price-list">
 					<ul>
-						<li>+<span ng-bind="orderItem.data.skuPrice | currency"></span> (Base Price)</li>
-						<li>+<span ng-bind="orderItem.data.skuPrice - orderItem.data.extendedPrice / orderItem.data.quantity | currency"></span> (Extras)</li>
+						<li>+<span ng-bind-html="orderItem.data.skuPrice | swcurrency:orderItem.data.currencyCode"></span> (Base Price)</li>
+						<li>+<span ng-bind-html="orderItem.data.skuPrice - orderItem.data.extendedPrice / orderItem.data.quantity | swcurrency:orderItem.data.currencyCode"></span> (Extras)</li>
 					</ul>
 				</li>
 			</ul>
 		</span>
 		<span ng-if="orderItem.onWaitlist === true && !orderItem.eligible">
-			<span class="s-price"></span>{{ 0 | currency }} (Deposit)<br>
-			<span class="s-price-list">{{orderItem.data.skuPrice | currency}} (Event Price)</span>
+			<span class="s-price"></span><span ng-bind-html="'0  (Deposit)' | swcurrency:orderItem.data.currencyCode"></span><br>
+			<span class="s-price-list" ng-bind-html="orderItem.data.skuPrice + ' (Event Price)' | swcurrency:orderItem.data.currencyCode"></span>
 		</span>
 	</td>
 	
-	<td class="s-price" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-{{orderItem.data.skuPrice | currency}}) <span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span></td>
+	<td class="s-price" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-<span ng-bind-html="orderItem.data.skuPrice | swcurrency:orderItem.data.currencyCode"></span>) <span ng-show="orderItem.data.orderItemType.data.systemCode === 'oitDeposit'">(Event Price)</span></td>
 	
 	<td class="s-qty">{{orderItem.data.quantity}}</td>
 	
 	<!-- Handle both cases of this 'discount' being a Return Item -->
-	<td class="s-discount" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">-{{ orderItem.data.discountAmount | currency }}</td>
-	<td class="s-discount" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">({{ orderItem.data.discountAmount | currency }})</td>
+	<td class="s-discount" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">-<span ng-bind-html="orderItem.data.discountAmount | swcurrency:orderItem.data.currencyCode"></span></td>
+	<td class="s-discount" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(<span ng-bind-html="orderItem.data.discountAmount | swcurrency:orderItem.data.currencyCode"></span>)</td>
 	
 	<!-- Handle both cases of this 'total' being a Return Item -->
 	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">
 		<ul>
-			<li class="s-price-total">{{orderItem.data.itemTotal | currency}}</li>
+			<li class="s-price-total" ng-bind-html="orderItem.data.itemTotal | swcurrency:orderItem.data.currencyCode"></li>
 			<li ng-show="orderItem.data.sku.data.baseProductType == 'productBundle'" class="s-price-list">
 				<ul>
-					<li>+<span ng-bind="orderItem.data.skuPrice * orderItem.data.quantity | currency"></span> (Base Price)</li>
-					<li>+<span ng-bind="orderItem.data.skuPrice * orderItem.data.quantity - orderItem.data.extendedPrice | currency"></span> (Extras)</li>
+					<li>+<span ng-bind-html="orderItem.data.skuPrice * orderItem.data.quantity | swcurrency:orderItem.data.currencyCode"></span> (Base Price)</li>
+					<li>+<span ng-bind-html="orderItem.data.skuPrice * orderItem.data.quantity - orderItem.data.extendedPrice | swcurrency:orderItem.data.currencyCode"></span> (Extras)</li>
 				</ul>
 			</li>
 		</ul>
 	</td>
-	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-{{orderItem.data.itemTotal | currency}})</td>
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(-<span ng-bind-html="orderItem.data.itemTotal | swcurrency:orderItem.data.currencyCode"></span>)</td>
 	
 	<!-- Handle Tax Information -->
-	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'">{{orderItem.data.taxAmount | currency}}</td>
-	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">({{orderItem.data.taxAmount | currency}})</td>
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode != 'oitReturn'" ng-bind-html="orderItem.data.taxAmount | swcurrency:orderItem.data.currencyCode"></td>
+	<td class="s-total" ng-if="orderItem.data.orderItemType.data.systemCode == 'oitReturn'">(<span ng-bind-html="orderItem.data.taxAmount | swcurrency:orderItem.data.currencyCode"></span>)</td>
 	
 	<!-- Handle Fulfillment Items -->
 	<td rowspan="1000" class="s-fullfilment">
@@ -132,7 +133,7 @@
 	<!-- Handle Buttons - These should be replaced with the directives that do the same thing -->
 	<td rowspan="1000" class="s-actions">
 		<ul>
-			<li class="s-edit-btn"><a ng-href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}"><button type="button"><i class="fa fa-eye"></i></button></a></li>
+			<li class="s-edit-btn"><a ng-href="{{'?slatAction=entity.detailorderitem&orderitemid='+orderItem.data.orderItemID}}"><button type="button" class="btn btn-default"><i class="fa fa-eye"></i></button></a></li>
 			<li class="s-remove-btn">
 				<a 		sw-confirm 
     							class="s-remove-btn"
@@ -143,7 +144,7 @@
 							data-simple=false
 							data-yes-text="Yes"
 							data-no-text="No"
-							data-entity="orderItem"><button type="button"><i class="fa fa-trash"></i></button></a></li>
+							data-entity="orderItem"><button class="btn btn-default" type="button"><i class="fa fa-trash"></i></button></a></li>
 		</ul>
 	</td>
 </tr>

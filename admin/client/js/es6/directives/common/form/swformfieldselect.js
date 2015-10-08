@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swFormFieldSelect', [
+angular.module('slatwalladmin')
+    .directive('swFormFieldSelect', [
     '$log',
     '$slatwall',
     'formService',
@@ -129,4 +130,4 @@ angular.module('slatwalladmin').directive('swFormFieldSelect', [
     }
 ]);
 
-//# sourceMappingURL=../../../directives/common/form/swformfieldselect.js.map
+//# sourceMappingURL=swformfieldselect.js.map

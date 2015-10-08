@@ -155,7 +155,7 @@
 		<cftry>
 			
 			<!---[SEVER CONDITIONAL]--->
-			<cfif structKeyExists(server, "railo")>
+			<cfif structKeyExists(server, "railo") || structKeyExists(server, "lucee")>
 				<cfftp action="putfile" server="#integration.setting('syncFTPSite')#" username="#integration.setting('syncFTPSiteUsername')#" password="#integration.setting('syncFTPSitePassword')#" port="#integration.setting('syncFTPSitePort')#" remotefile="#remoteFullFilePath#" localfile="#localFullFilePath#">
 			<cfelse>
 				<cfinclude template="cfftp_acfonly.cfm" />

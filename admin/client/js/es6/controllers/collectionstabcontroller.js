@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').controller('collectionsTabController', [
+angular.module('slatwalladmin')
+    .controller('collectionsTabController', [
     '$scope',
     function ($scope) {
         //$scope.tabSelected = function(tab,tabArray){
@@ -6,4 +7,4 @@ angular.module('slatwalladmin').controller('collectionsTabController', [
     }
 ]);
 
-//# sourceMappingURL=../controllers/collectionstabcontroller.js.map
+//# sourceMappingURL=collectionstabcontroller.js.map

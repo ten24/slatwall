@@ -71,8 +71,8 @@ Notes:
 			<cfloop array="#rc.order.getPromotionCodes()#" index="appliedPromotionCode">
 				<tr>
 					<td class="primary">#appliedPromotionCode.getPromotionCode()#</td>
-					<td>
-						<hb:HibachiActionCaller action="admin:entity.detailPromotion" queryString="promotionID=#appliedpromotionCode.getPromotion().getPromotionID()#" class="btn btn-default" icon="eye-open" iconOnly="true"  />
+					<td class="admin admin2">
+						<hb:HibachiActionCaller action="admin:entity.detailPromotion" queryString="promotionID=#appliedpromotionCode.getPromotion().getPromotionID()#" class="btn btn-default btn-xs" icon="eye-open" iconOnly="true"  />
 						<hb:HibachiProcessCaller action="admin:entity.processOrder" entity="#rc.order#" processContext="removePromotionCode" queryString="promotionCodeID=#appliedPromotionCode.getPromotionCodeID()#" class="btn btn-default btn-xs" iconOnly="true" icon="trash">
 					</td>
 				</tr>

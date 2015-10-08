@@ -53,15 +53,14 @@ Notes:
 <cfparam name="rc.content" type="any" />
 <cfparam name="rc.processObject" type="any" />
 <cfparam name="rc.edit" type="boolean" />
-
 <hb:HibachiEntityProcessForm entity="#rc.content#" edit="#rc.edit#" sRedirectAction="admin:entity.editcontent">
 	
-	<hb:HibachiEntityActionBar type="preprocess" object="#rc.processObject#">
+	<hb:HibachiEntityActionBar type="preprocess" object="#rc.processObject#" backQueryString="?ng##!/entity/Content/" >
 	</hb:HibachiEntityActionBar>
 	
 	<hb:HibachiPropertyRow>
 		<hb:HibachiPropertyList>
-			<hb:HibachiPropertyDisplay object="#rc.content#" property="title" edit="#rc.edit#">
+			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="title" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.processObject#" property="urlTitle" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.content#" property="activeFlag" edit="#rc.edit#">
 			<hb:HibachiPropertyDisplay object="#rc.content#" property="contentTemplateType" edit="#rc.edit#">

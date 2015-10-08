@@ -17,7 +17,7 @@
 	            		ng-change="selectedFilterPropertyChanged(selectedFilterProperty)" 
 	            		ng-options="filterProperty as filterProperty.displayPropertyIdentifier
 	            					for filterProperty in filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].data 
-	            					
+	            					track by filterProperty.propertyIdentifier
 	            					" 
 	            		class="form-control input-sm j-custom-select">
 	              	<option value="">  {{filterPropertiesList[filterItem.breadCrumbs[filterItem.breadCrumbs.length-1].propertyIdentifier].entityName | entityRBKey}}:</option>

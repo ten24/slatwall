@@ -61,6 +61,9 @@ component entityname="SlatwallReport" table="SwReport" persistent="true" accesso
 	property name="dynamicDateRangeType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="dynamicDateRangeEndType" ormtype="string" hb_formFieldType="select" hb_formatType="rbKey";
 	property name="dynamicDateRangeInterval" ormtype="integer";
+	property name="reportType" ormtype="string";
+	property name="limitResults" ormtype="integer";
+	property name="showReport" ormtype="boolean" default="false";
 	
 	// Calculated Properties
 
@@ -88,6 +91,7 @@ component entityname="SlatwallReport" table="SwReport" persistent="true" accesso
 	property name="reportEndDateTime" persistent="false";
 	property name="reportCompareStartDateTime" persistent="false";
 	property name="reportCompareEndDateTime" persistent="false";
+	property name="orderByType" persistent="false"; 
 	
 	// Deprecated Properties
 

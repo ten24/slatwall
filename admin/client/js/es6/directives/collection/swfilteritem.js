@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swFilterItem', [
+angular.module('slatwalladmin')
+    .directive('swFilterItem', [
     '$log',
     'collectionService',
     'collectionPartialsPath',
@@ -47,4 +48,4 @@ angular.module('slatwalladmin').directive('swFilterItem', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/collection/swfilteritem.js.map
+//# sourceMappingURL=swfilteritem.js.map

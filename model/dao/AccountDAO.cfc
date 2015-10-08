@@ -57,7 +57,19 @@ Notes:
 		</cfif>
 		<cfreturn not arrayLen(ormExecuteQuery("SELECT aa FROM #getApplicationKey()#AccountAuthentication aa INNER JOIN FETCH aa.account a INNER JOIN a.primaryEmailAddress pea WHERE lower(pea.emailAddress)=:emailAddress", {emailAddress=lcase(arguments.emailAddress)})) />
 	</cffunction>
-	
+
+	<cffunction name="getAccountIDByPrimaryEmailAddress">
+		<cfargument name="emailAddress" required="true" type="string" />
+
+		<cfquery name="getAccountIDByPrimaryEmailAddress" maxrows="1">
+			SELECT a.accountID FROM SwAccount AS a LEFT JOIN SwAccountEmailAddress AS aea ON aea.accountID=a.accountID
+			WHERE emailAddress = <cfqueryparam cfsqltype="cf_sql_varchar" value="#arguments.emailAddress#" /> 
+		</cfquery>
+		
+		<cfreturn getAccountIDByPrimaryEmailAddress.accountID />
+
+	</cffunction> 
+		
 	<cffunction name="removeAccountAuthenticationFromSessions">
 		<cfargument name="accountAuthenticationID" type="string" required="true" >
 		

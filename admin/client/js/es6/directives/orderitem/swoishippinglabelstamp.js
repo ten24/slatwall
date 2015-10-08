@@ -3,7 +3,8 @@
  * @module slatwalladmin
  * @class swOrderItemsShippingLabelStamp
  */
-angular.module('slatwalladmin').directive('swoishippinglabelstamp', [
+angular.module('slatwalladmin')
+    .directive('swoishippinglabelstamp', [
     'partialsPath',
     '$log',
     function (partialsPath, $log) {
@@ -23,4 +24,4 @@ angular.module('slatwalladmin').directive('swoishippinglabelstamp', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/orderitem/swoishippinglabelstamp.js.map
+//# sourceMappingURL=swoishippinglabelstamp.js.map

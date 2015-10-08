@@ -59,7 +59,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="listPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="price" ormtype="big_decimal" hb_formatType="currency" default="0";
 	property name="renewalPrice" ormtype="big_decimal" hb_formatType="currency" default="0";
-	property name="imageFile" ormtype="string" length="50";
+	property name="currencyCode" ormtype="string" length="3";
+	property name="imageFile" ormtype="string" length="250";
 	property name="userDefinedPriceFlag" ormtype="boolean" default="0";
 	property name="eventStartDateTime" ormtype="timestamp" hb_formatType="dateTime";
 	property name="eventEndDateTime" ormtype="timestamp" hb_formatType="dateTime";
@@ -71,6 +72,8 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="eventCapacity" ormtype="integer";
 	property name="attendedQuantity" ormtype="integer" hint="Optional field for manually entered event attendance.";
 	property name="allowEventWaitlistingFlag" ormtype="boolean" default="0";
+	property name="redemptionAmountType" ormtype="string" hb_formFieldType="select" hint="used for gift card credit calculation. Values sameAsPrice, fixedAmount, Percentage"  hb_formatType="rbKey";
+	property name="redemptionAmount" ormtype="big_decimal" hint="value to be used in calculation conjunction with redeptionAmountType";
 	
 	// Calculated Properties
 	property name="calculatedQATS" ormtype="integer";
@@ -80,13 +83,14 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="productSchedule" cfc="ProductSchedule" fieldtype="many-to-one" fkcolumn="productScheduleID";
 	property name="subscriptionTerm" cfc="SubscriptionTerm" fieldtype="many-to-one" fkcolumn="subscriptionTermID";
 	property name="waitlistQueueTerm" cfc="Term" fieldtype="many-to-one" fkcolumn="termID" hint="Term that a waitlisted registrant has to claim offer.";
-	
+	property name="giftCardExpirationTerm" cfc="Term" fieldType="many-to-one" fkcolumn="giftCardExpirationTermID" hint="Term that is used to set the Expiration Date of the ordered gift card.";
+
 	// Related Object Properties (one-to-many)
 	property name="alternateSkuCodes" singularname="alternateSkuCode" fieldtype="one-to-many" fkcolumn="skuID" cfc="AlternateSkuCode" inverse="true" cascade="all-delete-orphan";
 	property name="attributeValues" singularname="attributeValue" cfc="AttributeValue" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
 	property name="orderItems" singularname="orderItem" fieldtype="one-to-many" fkcolumn="skuID" cfc="OrderItem" inverse="true" lazy="extra";
 	property name="skuCurrencies" singularname="skuCurrency" cfc="SkuCurrency" type="array" fieldtype="one-to-many" fkcolumn="skuID" cascade="all-delete-orphan" inverse="true";
-	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" cascade="all-delete-orphan";
+	property name="stocks" singularname="stock" fieldtype="one-to-many" fkcolumn="skuID" cfc="Stock" inverse="true" hb_cascadeCalculate="true" cascade="all-delete-orphan";
 	property name="bundledSkus" singularname="bundledSku" fieldtype="one-to-many" fkcolumn="skuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan";
 	property name="eventRegistrations" singularname="eventRegistration" fieldtype="one-to-many" fkcolumn="skuID" cfc="EventRegistration" inverse="true" cascade="all-delete-orphan" lazy="extra"; 
 	property name="assignedSkuBundles" singularname="assignedSkuBundle" fieldtype="one-to-many" fkcolumn="bundledSkuID" cfc="SkuBundle" inverse="true" cascade="all-delete-orphan" lazy="extra"; // No Bi-Directional
@@ -128,7 +132,6 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="availableSeatCount" persistent="false";
 	property name="baseProductType" persistent="false";
 	property name="currentAccountPrice" type="numeric" hb_formatType="currency" persistent="false";
-	property name="currencyCode" type="string" persistent="false";
 	property name="currencyDetails" type="struct" persistent="false";
 	property name="defaultFlag" type="boolean" persistent="false";
 	property name="eligibleFulfillmentMethods" type="array" persistent="false";
@@ -157,12 +160,43 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	property name="skuDefinition" persistent="false";
 	property name="stocksDeletableFlag" persistent="false" type="boolean";
 	property name="transactionExistsFlag" persistent="false" type="boolean";
-	
+	property name="redemptionAmountTypeOptions" persistent="false";
+	property name="giftCardExpirationTermOptions" persistent="false";	
 	// Deprecated Properties
 	
 	
 	// ==================== START: Logical Methods =========================
 	
+	public array function getGiftCardExpirationTermOptions(){
+		if(!structKeyExists(variables,'giftCardExpirationTermIDOptions')){
+			variables.giftCardExpirationTermIDOptions = [];
+			var termSmartList = getService('hibachiService').getTermSmartList();
+			termSmartList.addSelect('termID','value');
+			termSmartList.addSelect('termName','name');
+			variables.giftCardExpirationTermIDOptions = termSmartList.getRecords();
+			var option = {};
+			option['name'] = 'None';
+			option['value'] = '';
+			arrayPrepend(variables.giftCardExpirationTermIDOptions,option);
+		}
+		return variables.giftCardExpirationTermIDOptions;
+	}
+	
+	public array function getRedemptionAmountTypeOptions(){
+		if(!structKeyExists(variables,'redemptionAmountTypeOptions')){
+			variables.redemptionAmountTypeOptions = [];
+			var optionValues = 'sameAsPrice,fixedAmount,percentage';
+			var optionValuesArray = listToArray(optionValues);
+			for(var optionValue in optionValuesArray){
+				var option = {};
+				option['name'] = rbKey('define.#optionValue#');
+				option['value'] = optionValue;
+				arrayAppend(variables.redemptionAmountTypeOptions,option);
+			}
+		}
+		
+		return variables.redemptionAmountTypeOptions;
+	}
 	
 	// @hint Returns sku purchaseStartDateTime if defined, or product purchaseStartDateTime if not defined in sku.
 	public any function getPurchaseStartDateTime() {
@@ -186,18 +220,51 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		}
 	}
 	
-	// START: Image Methods
+	//returns gift card redemption amount, or 0 if incorrectly configured
+	public any function getGiftCardRedemptionAmount(){
+		if(structKeyExists(variables, "redemptionAmountType")){ 
+			switch(variables.redemptionAmountType){ 
+				case "sameAsPrice": 
+					return variables.price; 
+					break; 
+				case "fixedAmount": 
+					if(structKeyExists(variables, "redemptionAmount")){
+						return variables.redemptionAmount; 
+					}
+					break; 
+				case "percentage": 
+					if(structKeyExists(variables, "redemptionAmount")){ 
+						return precisionEvaluate(precisionEvaluate(variables.price * variables.redemptionAmount)/100); 
+					}
+					break; 
+				default: 
+					return 0; 
+					break;
+			}
+		} 
+		return 0; 
+	}
 	
-	//@hint Generates the image path based upon product code, and image options for this sku
-	public string function generateImageFileName() {
+	// START: Image Methods
+
+	public string function getAllOptionCodes(){ 
 		var optionString = "";
 		for(var option in getOptions()){
 			if(option.getOptionGroup().getImageGroupFlag()){
 				optionString &= getProduct().setting('productImageOptionCodeDelimiter') & reReplaceNoCase(option.getOptionCode(), "[^a-z0-9\-\_]","","all");
 			}
 		}
-		
-		return reReplaceNoCase(getProduct().getProductCode(), "[^a-z0-9\-\_]","","all") & optionString & ".#getProduct().setting('productImageDefaultExtension')#";
+		return optionString; 
+	}
+	
+	//@hint Generates the image path based upon product code, and image options for this sku
+	public string function generateImageFileName() {
+
+		var imageNameString = getService("HibachiUtilityService").replaceStringTemplate(template=setting("skuDefaultImageNamingConvention"), object=this);
+		var name = getService("HibachiUtilityService").createSEOString(imageNameString, getProduct().setting('productImageOptionCodeDelimiter'));
+		var ext = ".#getProduct().setting('productImageDefaultExtension')#"; 
+
+		return name & ext;
 	}
 	
     public string function getImageExtension() {
@@ -337,6 +404,10 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	public numeric function getPriceByPriceGroup( required any priceGroup) {
 		return getService("priceGroupService").calculateSkuPriceBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
 	}
+
+	public numeric function getPriceByPriceGroupAndCurrencyCode( required any priceGroup,required string currencyCode) {
+		return getService("priceGroupService").calculateSkuPriceBasedOnPriceGroupAndCurrencyCode(sku=this, priceGroup=arguments.priceGroup,currencyCode=arguments.currencyCode);
+	}
 	
 	public any function getAppliedPriceGroupRateByPriceGroup( required any priceGroup) {
 		return getService("priceGroupService").getRateForSkuBasedOnPriceGroup(sku=this, priceGroup=arguments.priceGroup);
@@ -405,6 +476,17 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	}
 	
 	// END: Quantity Helper Methods
+
+	// START: Gift Card Logical Methods
+	
+	public boolean function isGiftCardSku() { 
+		if(this.getProduct().getBaseProductType() == "gift-card"){ 
+			return true; 
+		}
+		return false; 
+	}
+
+	// END: Gift Card Logical Methods
 	
 	//@hint Generates a unique event attendance code and sets it as this sku's code
 	public string function generateAndSetAttendanceCode() {
@@ -507,8 +589,9 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	public string function getCurrencyCode() {
 		if(!structKeyExists(variables, "currencyCode")) {
-			variables.currencyCode = this.setting('skuCurrency');
-		}
+				this.setCurrencyCode(this.setting('skuCurrency'));
+			
+			}
 		return variables.currencyCode;
 	}
 	
@@ -585,6 +668,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			variables.currentAccountPrice = getService("priceGroupService").calculateSkuPriceBasedOnCurrentAccount(sku=this);
 		}
 		return variables.currentAccountPrice;
+	}
+
+	public any function getCurrentAccountPriceByCurrencyCode(required string currencyCode) {
+		if(!structKeyExists(variables, "currentAccountPrice_#arguments.currencyCode#")) {
+			variables["currentAccountPrice_#arguments.currencyCode#"] = getService("priceGroupService").calculateSkuPriceBasedOnCurrentAccountAndCurrencyCode(sku=this,currencyCode=arguments.currencyCode);
+		}
+		return variables["currentAccountPrice_#arguments.currencyCode#"];
 	}
 	
 	public boolean function getDefaultFlag() {
@@ -685,8 +775,7 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			}
 			var quantityNeeded = getQuantity("QNC") * -1;
 			var dates = getProduct().getEstimatedReceivalDates( skuID=getSkuID() );
-			for(var i = 1; i<=arrayLen(dates); i++) {
-				
+			for(var i = 1; i<=arrayLen(dates); i++) {	
 				if(quantityNeeded lt dates[i].quantity) {
 					if(dates[i].estimatedReceivalDateTime gt now()) {
 						return dateFormat(dates[i].estimatedReceivalDateTime, setting('globalDateFormat'));	
@@ -705,19 +794,35 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 		if(!structKeyExists(variables, "livePrice")) {
 			// Create a prices array, and add the 
 			var prices = [getPrice()];
-			
 			// Add the current account price, and sale price
 			arrayAppend(prices, getSalePrice());
 			arrayAppend(prices, getCurrentAccountPrice());
-			
 			// Sort by best price
 			arraySort(prices, "numeric", "asc");
-			
 			// set that in the variables scope
 			variables.livePrice = prices[1];
 		}
 		return variables.livePrice;
 	}
+
+	public any function getLivePriceByCurrencyCode(required string currencyCode) {
+		if(!structKeyExists(variables, "livePrice_#arguments.currencyCode#")) {
+			// Create a prices array, and add the 
+			var prices = [getPriceByCurrencyCode(arguments.currencyCode)];
+		
+			// Add the current account price, and sale price
+			arrayAppend(prices, getSalePriceByCurrencyCode(currencyCode=arguments.currencyCode));
+			arrayAppend(prices, getCurrentAccountPriceByCurrencyCode(currencyCode=arguments.currencyCode));
+			
+			// Sort by best price
+			arraySort(prices, "numeric", "asc");
+			
+			// set that in the variables scope
+			variables["livePrice_#arguments.currencyCode#"]= prices[1];
+		}
+		return variables["livePrice_#arguments.currencyCode#"];
+	}
+
 	
 	// @hint Returns an array of locations associated with this sku.
 	public any function getLocations() {
@@ -783,9 +888,16 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 	
 	public any function getSalePriceDetails() {
 		if(!structKeyExists(variables, "salePriceDetails")) {
-			variables.salePriceDetails = getProduct().getSkuSalePriceDetails( getSkuID() );
+			variables.salePriceDetails = getProduct().getSkuSalePriceDetails(skuID=getSkuID());
 		}
 		return variables.salePriceDetails;
+	}
+
+	public any function getSalePriceDetailsByCurrencyCode(required string currencyCode) {
+		if(!structKeyExists(variables, "salePriceDetailsByCurrencyCode_#currencyCode#")) {
+			variables["salePriceDetails_#currencyCode#"] = getProduct().getSkuSalePriceDetailsByCurrencyCode(skuID=getSkuID(),currencyCode=arguments.currencyCode);
+		}
+		return variables["salePriceDetails_#currencyCode#"] ;
 	}
 	
 	public any function getSalePrice() {
@@ -793,6 +905,13 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			return getSalePriceDetails()[ "salePrice"];
 		}
 		return getPrice();
+	}
+
+	public any function getSalePriceByCurrencyCode(required string currencyCode) {
+		if(structKeyExists(getSalePriceDetailsByCurrencyCode(arguments.currencyCode), "salePrice")) {
+			return getSalePriceDetailsByCurrencyCode(arguments.currencyCode)[ "salePrice"];
+		}
+		return getPriceByCurrencyCode(arguments.currencyCode);
 	}
 	
 	public any function getSalePriceDiscountType() {
@@ -911,6 +1030,24 @@ component entityname="SlatwallSku" table="SwSku" persistent=true accessors=true 
 			arrayDeleteAt(arguments.subscriptionTerm.getSkus(), index);    
 		}    
 		structDelete(variables, "subscriptionTerm");    
+	}
+
+	// GiftCardExpirationTerm (many-to-one)
+	public void function setGiftCardExpirationTerm(required any term) {
+		variables.giftCardExpirationTerm = arguments.term;
+		if(isNew() or !arguments.term.hasGiftCardExpirationTerm( this )) {
+			arrayAppend(arguments.term.getGiftCardExpirationTerms(), this);
+		}
+	}
+	public void function removeGiftCardExpirationTerm(any term) {
+		if(!structKeyExists(arguments, "term")) {
+			arguments.term = variables.term;
+		}
+		var index = arrayFind(arguments.term.getGiftCardExpirationTerms(), this);
+		if(index > 0) {
+			arrayDeleteAt(arguments.term.getGiftCardExpirationTerms(), index);
+		}
+		structDelete(variables, "term");
 	}
 	
 	// Alternate Sku Codes (one-to-many)

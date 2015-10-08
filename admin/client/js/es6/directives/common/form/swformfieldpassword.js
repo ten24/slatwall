@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swFormFieldPassword', [
+angular.module('slatwalladmin')
+    .directive('swFormFieldPassword', [
     '$log',
     '$slatwall',
     'formService',
@@ -19,4 +20,4 @@ angular.module('slatwalladmin').directive('swFormFieldPassword', [
     }
 ]);
 
-//# sourceMappingURL=../../../directives/common/form/swformfieldpassword.js.map
+//# sourceMappingURL=swformfieldpassword.js.map

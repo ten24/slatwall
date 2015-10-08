@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swFilterGroupItem', [
+angular.module('slatwalladmin')
+    .directive('swFilterGroupItem', [
     '$http',
     '$compile',
     '$templateCache',
@@ -53,4 +54,4 @@ angular.module('slatwalladmin').directive('swFilterGroupItem', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/collection/swfiltergroupitem.js.map
+//# sourceMappingURL=swfiltergroupitem.js.map

@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swColumnSorter', [
+angular.module('slatwalladmin')
+    .directive('swColumnSorter', [
     '$log',
     'observerService',
     'partialsPath',
@@ -26,4 +27,4 @@ angular.module('slatwalladmin').directive('swColumnSorter', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/common/swcolumnsorter.js.map
+//# sourceMappingURL=swcolumnsorter.js.map

@@ -64,7 +64,7 @@ Notes:
 	<cffunction name="getContentDescendants" access="public" >
 		<cfargument name="content" type="any" required="true">
 		<cfreturn ORMExecuteQuery(
-			'From #getApplicationKey()#Content 
+			'Select contentID From #getApplicationKey()#Content 
 			where site=:site 
 			and urlTitlePath <> :urlTitlePath 
 			and urlTitlePath like :urlTitlePathLike',
@@ -80,7 +80,7 @@ Notes:
 		<cfargument name="siteID" type="string" required="true">
 		<cfargument name="urlTitlePath" type="string" required="true">
 		
-		<cfreturn ormExecuteQuery(" FROM SlatwallContent c Where c.site.siteID = ? AND LOWER(c.urlTitlePath) = ?",[ arguments.siteID,arguments.urlTitlePath],true)>
+		<cfreturn ormExecuteQuery(" FROM SlatwallContent c Where c.site.siteID = ? AND LOWER(c.urlTitlePath) = ?",[ arguments.siteID,lcase(arguments.urlTitlePath)],true)>
 	</cffunction>
 	
 	<cffunction name="getCategoriesByCmsCategoryIDs" access="public">
@@ -162,10 +162,25 @@ Notes:
 		<cfreturn ORMExecuteQuery( 'FROM SlatwallContent 
 									Where displayInNavigation = true 
 									and activeFlag = true
-									and parentContent = :parentContent'
+									and parentContent = :parentContent
+									order by sortOrder Asc'
 									,{parentContent=arguments.parentContent}
 								)/>
 	</cffunction>
-	
+	<cfscript>
+		public void function updateAllDescendantsUrlTitlePathByUrlTitle(required string contentIDs,required string previousURLTitlePath, required string newUrlTitlePath){
+			var queryService = new query();
+			arguments.contentIDs = listQualify(arguments.contentIDs,"'",",");
+			var sql = "UPDATE SwContent s SET UrlTitlePath=REPLACE(s.urlTitlePath,'#arguments.previousURLTitlePath#','#arguments.newUrlTitlePath#') Where s.contentID IN (#arguments.contentIDs#) ";
+			queryService.execute(sql=sql); 
+		}
+		
+		public void function updateAllDescendantsTitlePathByUrlTitle(required string contentIDs,required string previousTitlePath, required string newTitlePath){
+			var queryService = new query();
+			arguments.contentIDs = listQualify(arguments.contentIDs,"'",",");
+			var sql = "UPDATE SwContent s SET titlePath=REPLACE(s.titlePath,'#arguments.previousTitlePath#','#arguments.newTitlePath#') Where s.contentID IN (#arguments.contentIDs#) ";
+			queryService.execute(sql=sql); 
+		}
+	</cfscript>
 	
 </cfcomponent>

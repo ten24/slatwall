@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swSelection', [
+angular.module('slatwalladmin')
+    .directive('swSelection', [
     '$log',
     'selectionService',
     'partialsPath',
@@ -10,13 +11,18 @@ angular.module('slatwalladmin').directive('swSelection', [
             scope: {
                 selection: "=",
                 selectionid: "@",
-                id: "="
+                id: "=",
+                isRadio: "="
             },
             link: function (scope, $element, $attrs) {
                 if (selectionService.hasSelection(scope.selectionid, scope.selection)) {
                     scope.toggleValue = true;
                 }
                 scope.toggleSelection = function (toggleValue, selectionid, selection) {
+                    if (scope.isRadio) {
+                        selectionService.radioSelection(selectionid, selection);
+                        return;
+                    }
                     if (toggleValue) {
                         selectionService.addSelection(selectionid, selection);
                     }
@@ -29,4 +35,4 @@ angular.module('slatwalladmin').directive('swSelection', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/common/swselection.js.map
+//# sourceMappingURL=swselection.js.map

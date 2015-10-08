@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swProductBundleGroup', [
+angular.module('slatwalladmin')
+    .directive('swProductBundleGroup', [
     '$http',
     '$log',
     '$timeout',
@@ -160,7 +161,8 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', [
                                 if (i > 0) {
                                     var option = scope.searchOptions.options[i];
                                     (function (keyword, option) {
-                                        $slatwall.getEntity(scope.searchOptions.options[i].value, { keywords: keyword, deferKey: 'getProductBundleGroupFilterByTerm' + option.value, currentPage: scope.currentPage, pageShow: scope.pageShow }).then(function (value) {
+                                        $slatwall.getEntity(scope.searchOptions.options[i].value, { keywords: keyword, deferKey: 'getProductBundleGroupFilterByTerm' + option.value, currentPage: scope.currentPage, pageShow: scope.pageShow })
+                                            .then(function (value) {
                                             $log.debug(value);
                                             $log.debug("Total: " + value.recordsCount);
                                             $log.debug("Records Start: " + value.pageRecordsStart);
@@ -189,7 +191,8 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', [
                         }
                         else {
                             scope.showAll = false; //We want to display a count when using specific filter type so, set to false.
-                            $slatwall.getEntity(filterTerm.value, { keywords: keyword, deferKey: 'getProductBundleGroupFilterByTerm' + filterTerm.value, currentPage: scope.currentPage, pageShow: scope.pageShow }).then(function (value) {
+                            $slatwall.getEntity(filterTerm.value, { keywords: keyword, deferKey: 'getProductBundleGroupFilterByTerm' + filterTerm.value, currentPage: scope.currentPage, pageShow: scope.pageShow })
+                                .then(function (value) {
                                 scope.recordsCount = value.recordsCount;
                                 scope.pageRecordsStart = value.pageRecordsStart;
                                 scope.pageRecordsEnd = value.pageRecordsEnd;
@@ -252,4 +255,4 @@ angular.module('slatwalladmin').directive('swProductBundleGroup', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/productBundleGroup/swproductbundlegroup.js.map
+//# sourceMappingURL=swproductbundlegroup.js.map

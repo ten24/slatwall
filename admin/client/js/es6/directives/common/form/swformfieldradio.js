@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swFormFieldRadio', [
+angular.module('slatwalladmin')
+    .directive('swFormFieldRadio', [
     '$log',
     '$timeout',
     '$slatwall',
@@ -62,4 +63,4 @@ angular.module('slatwalladmin').directive('swFormFieldRadio', [
     }
 ]);
 
-//# sourceMappingURL=../../../directives/common/form/swformfieldradio.js.map
+//# sourceMappingURL=swformfieldradio.js.map

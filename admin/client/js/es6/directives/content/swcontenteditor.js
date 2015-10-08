@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swContentEditor', [
+angular.module('slatwalladmin')
+    .directive('swContentEditor', [
     '$log',
     '$location',
     '$http',
@@ -42,4 +43,4 @@ angular.module('slatwalladmin').directive('swContentEditor', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/content/swcontenteditor.js.map
+//# sourceMappingURL=swcontenteditor.js.map

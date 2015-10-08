@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swDisplayItem', [
+angular.module('slatwalladmin')
+    .directive('swDisplayItem', [
     '$http',
     '$compile',
     '$templateCache',
@@ -60,4 +61,4 @@ angular.module('slatwalladmin').directive('swDisplayItem', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/collection/swdisplayitem.js.map
+//# sourceMappingURL=swdisplayitem.js.map

@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swContentBasic', [
+angular.module('slatwalladmin')
+    .directive('swContentBasic', [
     '$log',
     '$routeParams',
     '$slatwall',
@@ -56,4 +57,4 @@ angular.module('slatwalladmin').directive('swContentBasic', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/content/swcontentbasic.js.map
+//# sourceMappingURL=swcontentbasic.js.map

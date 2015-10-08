@@ -21,7 +21,7 @@ component output="false" accessors="true" extends="HibachiService"  {
 		if( len(getHibachiScope().getSessionValue('sessionID')) ) {
 			var sessionEntity = this.getSession( getHibachiScope().getSessionValue('sessionID'), true);
 		
-		} else if( (StructKeyExists(request.context, "jsonRequest") && request.context.jsonRequest && StructKeyExists(request.context.deserializedJsonData, "request_token") ) || StructKeyExists(requestHeaders.headers, "request_token") ){
+		} else if( (StructKeyExists(request,'context') && StructKeyExists(request.context, "jsonRequest") && request.context.jsonRequest && StructKeyExists(request.context.deserializedJsonData, "request_token") ) || StructKeyExists(requestHeaders.headers, "request_token") ){
 				//If the API 'cookie' and deviceID were passed directly to the API, we can use that for setting the session if the request token matches
 				//the token we already have.
 				
@@ -92,7 +92,6 @@ component output="false" accessors="true" extends="HibachiService"  {
 		
 		// Populate the hibachi scope with the session
 		getHibachiScope().setSession( sessionEntity );
-		
 		// Let the hibachiScope know how we found the proper sessionID
 		getHibachiScope().setSessionFoundNPSIDCookieFlag( foundWithNPSID );
 		getHibachiScope().setSessionFoundPSIDCookieFlag( foundWithPSID );

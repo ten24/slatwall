@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swRbkey', [
+angular.module('slatwalladmin')
+    .directive('swRbkey', [
     '$slatwall',
     '$rootScope',
     '$log',
@@ -31,7 +32,6 @@ angular.module('slatwalladmin').directive('swRbkey', [
                 }
             }
         };
-    }
-]);
+    }]);
 
-//# sourceMappingURL=../../directives/common/swrbkey.js.map
+//# sourceMappingURL=swrbkey.js.map

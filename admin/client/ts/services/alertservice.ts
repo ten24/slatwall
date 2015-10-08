@@ -7,6 +7,12 @@ module slatwalladmin{
     
     export interface IAlertService {
         get (): Alert[];
+        addAlert (alert:Alert):void;
+        addAlerts (alerts:Alert[]):void;
+        removeAlert (alert:Alert):void;
+        getAlerts ():Alert[];
+        formatMessagesToAlerts (messages):Alert[];
+        removeOldestAlert ():void;
     }
     
     export class AlertService implements IAlertService{
@@ -51,22 +57,24 @@ module slatwalladmin{
         
         formatMessagesToAlerts = (messages): Alert[] =>{
             var alerts = [];
-            for(var message in messages){
-                var alert = new Alert();
-               	alert.msg=messages[message].message;
-                alert.type=messages[message].messageType;
-                
-                alerts.push(alert);
-                if(alert.type === 'success' || alert.type === 'error'){
-                     $timeout(function() {
-                      alert.fade = true;
-                    }, 3500);
+            if(messages){
+                for(var message in messages){
+                    var alert = new Alert();
+                   	alert.msg=messages[message].message;
+                    alert.type=messages[message].messageType;
                     
-                    alert.dismissable = false;
-                    
-                }else{
-                    alert.fade = false;
-                    alert.dismissable = true;
+                    alerts.push(alert);
+                    if(alert.type === 'success' || alert.type === 'error'){
+                         this.$timeout(function() {
+                          alert.fade = true;
+                        }, 3500);
+                        
+                        alert.dismissable = false;
+                        
+                    }else{
+                        alert.fade = false;
+                        alert.dismissable = true;
+                    }
                 }
             }
             return alerts;
@@ -76,10 +84,7 @@ module slatwalladmin{
             this.alerts.splice(0,1);
         }
     }  
-    
-}
-module slatwalladmin{
-     angular.module('slatwalladmin')
+    angular.module('slatwalladmin')
     .service('alertService',AlertService); 
 }
     

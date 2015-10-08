@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swCollection', [
+angular.module('slatwalladmin')
+    .directive('swCollection', [
     '$http',
     '$compile',
     '$log',
@@ -10,6 +11,7 @@ angular.module('slatwalladmin').directive('swCollection', [
             restrict: 'A',
             templateUrl: collectionPartialsPath + "collection.html",
             link: function (scope, $element, $attrs) {
+                scope.tabsUniqueID = Math.floor(Math.random() * 999);
                 scope.toggleCogOpen = $attrs.toggleoption;
                 //Toggles open/close of filters and display options
                 scope.toggleFiltersAndOptions = function () {
@@ -25,4 +27,4 @@ angular.module('slatwalladmin').directive('swCollection', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/collection/swcollection.js.map
+//# sourceMappingURL=swcollection.js.map

@@ -146,17 +146,92 @@ component extends="Slatwall.meta.tests.unit.SlatwallUnitTestBase" {
 		
 	}
 	
+	public void function test_gift_card_add_order_item(){ 
+		
+		var giftProduct = getTestProduct("TestGiftProduct"); 
+		giftProduct.setPrice('10.00');
+		
+		var giftSku = getTestSku('TestGiftSku');
+		giftSku.setCurrencyCode('USD'); 
+		giftSku.setPrice('10.00');
+		
+		var giftExpirationTerm = getTestTerm("expirationTerm"); 
+		
+		giftSku.setGiftCardExpirationTerm(giftExpirationTerm);
+		
+		giftProduct.addSku(giftSku); 
+		
+		var giftOrderItem = request.slatwallScope.newEntity( 'orderItem' );
+		giftOrderItem.setSku(giftProduct.getSkus()[1]); 
+		giftOrderItem.setPrice('10.00'); 
+		giftOrderItem.setQuantity(2); 
+		
+		var order = request.slatwallScope.newEntity( 'order' );
+		var processOrderItem = order.getProcessObject( 'AddOrderItem' );
+		processOrderItem.setSku(giftProduct.getSkus()[1]);
+		processOrderItem.setPrice('10.00');
+		processOrderItem.setQuantity(2);
+		
+		assertTrue(processOrderItem.getSku().getGiftCardExpirationTerm().getTermID() == giftExpirationTerm.getTermID());
+		assertTrue(giftOrderItem.getSku().getGiftCardExpirationTerm().getTermID() == giftExpirationTerm.getTermID()); 
+	
+		var foundMatch = processOrderItem.matchesOrderItem(giftOrderItem);
+		assertTrue(foundMatch);
+		
+	}
+	
+	private any function getTestTerm(string testterm){
+		var termData = { 
+			termID="",
+			termName=arguments.testterm,
+			termHours="1",
+			termDays="2", 
+			termMonths="3", 
+			termYears="4"
+		};
+		
+		var giftExpirationTerm = createPersistedTestEntity("giftExpirationTerm", termData); 
+		
+		return giftExpirationTerm;
+	}
+	
+	private any function getTestProduct(string testproduct){ 
+	
+		var productData = { 
+			productID="", 
+			productName=arguments.testproduct, 
+			
+		}; 
+	
+		var product = createPersistedTestEntity('Product'); 
+		var productType = request.slatwallScope.getService("ProductService").getProductType("50cdfabbc57f7d103538d9e0e37f61e4"); 
+
+		product.setProductType(productType);
+		
+		return product; 	
+	}
+	
 	private any function getTestSku(string testsku){
-		var sku = request.slatwallScope.newEntity('Sku');
-		sku.setSkuName(arguments.testsku);
-		sku.setSkuCode(arguments.testsku);
-		sku.setSkuID(createUUID());
+		
+		var skuData = {
+			skuID=""
+			skuName=arguments.testsku, 
+			skuCode=arguments.testsku,
+		};
+		
+		var sku = createPersistedTestEntity('Sku', skuData);
+
 		return sku;
 	}
 	
 	private any function getTestStock(){
-		var stock = request.slatwallScope.newEntity('Stock');
-		stock.setStockID(CreateUUID());
+		
+		var stockData = {
+			stockID="";
+		};
+
+		var stock = createPersistedTestEntity('Stock', stockData);
+
 		return stock;
 	}
 	

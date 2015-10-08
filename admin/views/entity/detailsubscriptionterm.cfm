@@ -52,7 +52,9 @@ Notes:
 
 <cfparam name="rc.subscriptionTerm" type="any">
 <cfparam name="rc.edit" type="boolean">
-
+<cfif getHibachiScope().getService('subscriptionService').hasAnySubscriptionWithAutoPayWithoutOrderPaymentWithAccountPaymentMethod() >
+	<cfset request.slatwallScope.showMessageKey('entity.order.process.placeOrder.hasSubscriptionWithAutoPayFlagWithoutOrderPaymentWithAccountPaymentMethod_info') />
+</cfif>
 <cfoutput>
 	<hb:HibachiEntityDetailForm object="#rc.subscriptionTerm#" edit="#rc.edit#">
 		<hb:HibachiEntityActionBar type="detail" object="#rc.subscriptionTerm#" edit="#rc.edit#" />

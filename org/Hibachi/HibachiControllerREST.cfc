@@ -14,13 +14,20 @@ component output="false" accessors="true" extends="HibachiController" {
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getFilterPropertiesByBaseEntityName');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getProcessObject');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayData');
-	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getResourceBundle');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getPropertyDisplayOptions');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getValidation');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'getEventOptionsByEntityName');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'put');
 	this.anyAdminMethods=listAppend(this.anyAdminMethods, 'delete');
+	
+	this.publicMethods=listAppend(this.publicMethods, 'getResizedImageByProfileName');
+	this.publicMethods=listAppend(this.publicMethods, 'log');
+	this.publicMethods=listAppend(this.publicMethods, 'getDetailTabs');
+	this.publicMethods=listAppend(this.publicMethods, 'noaccess');
+	this.publicMethods=listAppend(this.publicMethods, 'login');
+	this.publicMethods=listAppend(this.publicMethods, 'getResourceBundle');
+	this.publicMethods=listAppend(this.publicMethods, 'getCurrencies');
 	
 	//	this.secureMethods='';
 	//	this.secureMethods=listAppend(this.secureMethods, 'get');
@@ -32,14 +39,17 @@ component output="false" accessors="true" extends="HibachiController" {
 	}
 	
 	public any function before( required struct rc ) {
+		
 		arguments.rc.apiRequest = true;
+		
 		getFW().setView("public:main.blank");
-		//could possibly check whether we want a different contentType other than json in the future
 		param name="rc.headers.contentType" default="application/json"; 
 		arguments.rc.headers["Content-Type"] = rc.headers.contentType;
+		
 		if(isnull(arguments.rc.apiResponse.content)){
 			arguments.rc.apiResponse.content = {};
 		}
+		
 		if(!isNull(arguments.rc.context) && arguments.rc.context == 'GET' 
 			&& structKEyExists(arguments.rc, 'serializedJSONData') 
 			&& isSimpleValue(arguments.rc.serializedJSONData) 
@@ -47,7 +57,79 @@ component output="false" accessors="true" extends="HibachiController" {
 		) {
 			StructAppend(arguments.rc,deserializeJSON(arguments.rc.serializedJSONData));
 		}
+		
+		//could possibly check whether we want a different contentType other than json in the future example:xml
+		
 	}
+	
+	public void function getCurrencies(required struct rc){
+		var currenciesCollection = getHibachiScope().getService('collectionService').getCurrencyCollectionList();
+		currenciesCollection.setDisplayProperties('currencyCode,currencySymbol');
+		var currencyStruct = {};
+		for(var currency in currenciesCollection.getRecords()){
+			currencyStruct[currency['currencyCode']] = currency['currencySymbol'];
+		}
+		
+		arguments.rc.apiResponse.content['data'] = currencyStruct;
+	}
+	
+	public void function login(required struct rc){
+		if(!getHibachiScope().getLoggedInFlag()){
+			//if account doesn't exist than one is create
+			var account = getService('AccountService').processAccount(rc.$.slatwall.getAccount(), rc, "login");
+			var authorizeProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("login").populate(arguments.rc);
+			arguments.rc.apiResponse.content['messages'] = [];
+			var updateProcessObject = rc.fw.getHibachiScope().getAccount().getProcessObject("updatePassword");
+			if(account.hasErrors()){
+				for(var processObjectKey in account.getErrors().processObjects){
+					var processObject = account.getProcessObject(processObjectKey);
+					arguments.rc.apiResponse.content['errors'] = processObject.getErrors();
+					for(var errorKey in processObject.getErrors()){
+						var messageStruct = {};
+						messageStruct['message'] = processObject.getErrors()[errorKey];
+						arrayAppend(arguments.rc.apiResponse.content['messages'],messageStruct);
+					}
+				}
+				var pc = getpagecontext().getresponse();
+				pc.getresponse().setstatus(401);	
+				return;
+			}
+		}
+		if(getHibachiScope().getLoggedinFlag()){
+			arguments.rc.apiResponse.content['token'] = getService('jwtService').createToken();
+		}
+	}
+	
+	public void function noaccess(required struct rc){
+		var message = {};
+		message['message'] =arguments.rc.pagetitle;
+		message['messageType']="error";
+		arrayAppend(arguments.rc['messages'],message);
+		arguments.rc.apiResponse.content.success = false;
+		var context = getPageContext();
+		context.getOut().clearBuffer();
+		var response = context.getResponse();
+		response.setStatus(403);
+	}
+	
+	public any function getDetailTabs(required struct rc){
+		var detailTabs = [];
+		var tabsDirectory = expandPath( '/' ) & 'admin/client/partials/entity/#lcase(rc.entityName)#/';
+		var tabFilesList = directorylist(tabsDirectory,false,'query','*.html');
+		for(var tabFile in tabFilesList){
+			var tab = {};
+			tab['tabName']='#tabFile.name#';
+			if(tabFile.name == 'basic.html'){
+                tab['openTab'] = true;
+            }else{
+                tab['openTab'] = false;
+            }
+			arrayAppend(detailTabs,tab);
+		}    
+		
+		arguments.rc.apiResponse.content['data'] = detailTabs;
+	}
+	
 	/**
 	 * This will return the path to an image based on the skuIDs (sent as a comma seperated list)
 	 * and a 'profile name' that determines the size of that image.
@@ -66,7 +148,7 @@ component output="false" accessors="true" extends="HibachiController" {
     				imageWidth  = 150;
  			}
 			arguments.rc.apiResponse.content = {};
-			arguments.rc.apiResponse.content.resizedImagePaths = [];
+			arguments.rc.apiResponse.content['resizedImagePaths'] = [];
 			var skus = [];
 			
 			//smart list to load up sku array
@@ -77,7 +159,7 @@ component output="false" accessors="true" extends="HibachiController" {
 				var skus = skuSmartList.getRecords();
 				
 				for  (var sku in skus){
-		    		ArrayAppend(arguments.rc.apiResponse.content.resizedImagePaths, sku.getResizedImagePath(width=imageWidth, height=imageHeight));         
+		    		ArrayAppend(arguments.rc.apiResponse.content['resizedImagePaths'], sku.getResizedImagePath(width=imageWidth, height=imageHeight));         
 				}
 			}
  	}
@@ -156,7 +238,17 @@ component output="false" accessors="true" extends="HibachiController" {
 	
 	public any function getFilterPropertiesByBaseEntityName( required struct rc){
 		var entityName = rereplace(rc.entityName,'_','');
-		arguments.rc.apiResponse.content['data'] = getHibachiService().getPropertiesWithAttributesByEntityName(entityName);
+		arguments.rc.apiResponse.content['data'] = [];
+		
+		var filterProperties = getHibachiService().getPropertiesWithAttributesByEntityName(entityName);
+		for(var filterProperty in filterProperties){
+			if(
+				getHibachiScope().authenticateEntityProperty('read', entityName, filterProperty.name) 
+				|| (structKeyExists(filterProperty,'fieldtype') && filterProperty.fieldtype == 'id') 
+			){
+				arrayAppend(arguments.rc.apiResponse.content['data'],filterProperty);
+			}
+		}
 		arguments.rc.apiResponse.content['entityName'] = rc.entityName;
 	}
 	
@@ -289,7 +381,6 @@ component output="false" accessors="true" extends="HibachiController" {
 			create a base default properties function that can be overridden at the entity level via function
 			handle accessing collections by id
 		*/
-		
 		param name="arguments.rc.propertyIdentifiers" default="";
 		//first check if we have an entityName value
 		if(!structKeyExists(arguments.rc, "entityName")) {
@@ -535,6 +626,19 @@ component output="false" accessors="true" extends="HibachiController" {
 	public any function delete( required struct rc ) {
 		arguments.rc.context = "delete";
 		post(arguments.rc);
+	}
+	
+	public any function log(required struct rc) { 
+		var exception = 'There was no reported exception.';
+		if(structKeyExists(arguments.rc,'exception')){
+			exception = arguments.rc.exception;
+		}
+		var cause = 'There was no reported cause';
+		if(structKeyExists(arguments.rc,'cause')){
+			cause = arguments.rc.cause;
+		}
+		//throw the error so it will follow expected lifecycle 
+		throw(type="ClientError", message="Exception: #exception# Cause: #cause#");
 	}
 	
 		/*

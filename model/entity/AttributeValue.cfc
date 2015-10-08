@@ -132,6 +132,10 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 
 		return "";
 	}
+	
+	public string function getPropertyTitle(){
+		return getAttribute().getAttributeSet().getAttributeSetName() & ': ' & getAttribute().getAttributeName();
+	}
 
 	public array function getAttributeValueOptions() {
 		if(!structKeyExists(variables, "attributeValueOptions")) {
@@ -703,21 +707,13 @@ component displayname="Attribute Value" entityname="SlatwallAttributeValue" tabl
 
 	// ================== START: Overridden Methods ========================
 
-	// This overrides the base validation method to dynamically add rules based on setting specific requirements
-	public any function validate( string context="" ) {
-
-		// Call the base method validate with any additional arguments passed in
-		super.validate(argumentCollection=arguments);
-
-		// If the attribute is required
-		if(!isNull(getAttribute()) && getAttribute().getRequiredFlag()){
-			var constraintDetail = {
-				constraintType = "required",
-				constraintValue = true
-			};
-			getService("hibachiValidationService").validateConstraint(object=this, propertyIdentifier="settingValue", constraintDetails=constraintDetail, errorBean=getHibachiErrors(), context=arguments.context);
+	
+	public boolean function regexMatches(){
+		if(isNull(getAttribute().getValidationRegex())){
+			return true;
+		}else{
+			return getService('HibachiValidationService').validate_regex(this, 'attributeValue', getAttribute().getValidationRegex());
 		}
-
 	}
 
 	public any function getSimpleRepresentationPropertyName() {

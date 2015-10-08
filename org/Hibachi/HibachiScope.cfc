@@ -132,7 +132,7 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	// ==================== GENERAL API METHODS ===============================
 	
 	// Action Methods ===
-	public string function doAction( required string action, struct data ) {
+	public string function doAction( required string action, struct data={} ) {
 		arrayAppend(getCalledActions(), arguments.action);
 		return getApplicationValue('application').doAction( arguments.action, arguments.data );
 	}
@@ -280,5 +280,13 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	
 	public boolean function authenticateEntityProperty( required string crudType, required string entityName, required string propertyName ) {
 		return getService("hibachiAuthenticationService").authenticateEntityPropertyCrudByAccount( crudType=arguments.crudType, entityName=arguments.entityName, propertyName=arguments.propertyName, account=getAccount() );
+	}
+	
+	public boolean function authenticateCollection(required string crudType, required any collection){
+		return getService("hibachiAuthenticationService").authenticateCollectionCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, account=getAccount() );
+	}
+	
+	public boolean function authenticateCollectionPropertyIdentifier(required string crudType, required any collection, required string propertyIdentifier){
+		return getService("hibachiAuthenticationService").authenticateCollectionPropertyIdentifierCrudByAccount( crudType=arguments.crudType, collection=arguments.collection, propertyIdentifier=arguments.propertyIdentifier, account=getAccount() );
 	}
 }

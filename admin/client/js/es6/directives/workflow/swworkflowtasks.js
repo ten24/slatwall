@@ -1,7 +1,8 @@
 /**
  * Handles adding, editing, and deleting Workflows Tasks.
  */
-angular.module('slatwalladmin').directive('swWorkflowTasks', [
+angular.module('slatwalladmin')
+    .directive('swWorkflowTasks', [
     '$log',
     '$location',
     '$slatwall',
@@ -24,6 +25,7 @@ angular.module('slatwalladmin').directive('swWorkflowTasks', [
                 /**
                  * Sets workflowTasks on the scope by populating with $$getWorkflowTasks()
                  */
+                console.log(scope.workflow);
                 scope.getWorkflowTasks = function () {
                     logger("getWorkflowTasks", "Retrieving items");
                     logger("getWorkflowTasks", "Workflow Tasks");
@@ -172,4 +174,4 @@ angular.module('slatwalladmin').directive('swWorkflowTasks', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/workflow/swworkflowtasks.js.map
+//# sourceMappingURL=swworkflowtasks.js.map

@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swForm', [
+angular.module('slatwalladmin')
+    .directive('swForm', [
     'formService',
     function (formService) {
         return {
@@ -19,4 +20,4 @@ angular.module('slatwalladmin').directive('swForm', [
     }
 ]);
 
-//# sourceMappingURL=../../../directives/common/form/swform.js.map
+//# sourceMappingURL=swform.js.map

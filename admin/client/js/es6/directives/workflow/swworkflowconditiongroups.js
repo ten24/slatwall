@@ -1,4 +1,5 @@
-angular.module('slatwalladmin').directive('swWorkflowConditionGroups', [
+angular.module('slatwalladmin')
+    .directive('swWorkflowConditionGroups', [
     '$log',
     'workflowConditionService',
     'workflowPartialsPath',
@@ -29,4 +30,4 @@ angular.module('slatwalladmin').directive('swWorkflowConditionGroups', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/workflow/swworkflowconditiongroups.js.map
+//# sourceMappingURL=swworkflowconditiongroups.js.map

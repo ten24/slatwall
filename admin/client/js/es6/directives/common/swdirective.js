@@ -1,5 +1,6 @@
 'use strict';
-angular.module('slatwalladmin').directive('swDirective', [
+angular.module('slatwalladmin')
+    .directive('swDirective', [
     '$compile',
     function ($compile) {
         return {
@@ -25,4 +26,4 @@ angular.module('slatwalladmin').directive('swDirective', [
     }
 ]);
 
-//# sourceMappingURL=../../directives/common/swdirective.js.map
+//# sourceMappingURL=swdirective.js.map

@@ -639,7 +639,7 @@ component output="false" accessors="true" extends="HibachiController" {
 		
 		// Next look for a sRedirectAction in the rc, and do a redirect on that
 		} else if (structKeyExists(arguments.rc, "sRedirectAction")) {
-			getFW().redirect( action=arguments.rc.sRedirectAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString) );
+			getFW().redirect( action=arguments.rc.sRedirectAction, preserve="messages", queryString=buildRedirectQueryString(arguments.rc.sRedirectQS, arguments.maintainQueryString, arguments.keysToRemoveOnRedirect) );
 			
 		// Next look for a sRenderItem in the rc, set the view to that, and then call the controller for that action
 		} else if (structKeyExists(arguments.rc, "sRenderItem")) {
