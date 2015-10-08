@@ -24,6 +24,7 @@ module slatwalladmin {
 		constructor(private $slatwall:ngSlatwall.$Slatwall, private collectionConfigService:slatwalladmin.collectionConfigService){
 			
 			this.typeaheadCollectionConfig = collectionConfigService.newCollectionConfig(this.entity); 
+			this.typeaheadCollectionConfig.setDisplayProperties(this.properties);
 			
 			if(angular.isDefined(this.propertiesToDisplay)){
 				this.displayList = this.propertiesToDisplay.split(",");
@@ -47,12 +48,10 @@ module slatwalladmin {
 			this.results = new Array(); 
 			this.typeaheadCollectionConfig.setKeywords(search);
 
-			if(angular.isDefined(this.filterGroupsConfig)){
-				
-				var filterConfigString = JSON.stringify(this.filterGroupsConfig);
-				
+			if(angular.isDefined(this.filterGroupsConfig)){		
 				//allows for filtering on search text
-				var filterConfig = filterConfigString.replace("replaceWithSearchString", search); 
+				var filterConfig = this.filterGroupsConfig.replace("replaceWithSearchString", search); 
+				filterConfig = filterConfig.trim();
 				this.typeaheadCollectionConfig.loadFilterGroups(JSON.parse(filterConfig)); 
 			}
 			
@@ -65,8 +64,6 @@ module slatwalladmin {
 				} else {
 					this.results = response.records;
 				}	 
-				
-				console.log(this.results);
 
 				//Custom method for gravatar on accounts (non-persistant-property)
 				if(angular.isDefined(this.results) && this.entity == "Account"){
@@ -75,7 +72,6 @@ module slatwalladmin {
 					});
 				}
 			});
-
 		}
 		
 		public addItem = (item)=>{
