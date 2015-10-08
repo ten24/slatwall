@@ -1861,9 +1861,13 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 				var orderDeliveryItem = arguments.orderDelivery.getOrderDeliveryItems()[di];
 
 				//bypass auto fulfillment for non auto generated codes
-				var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
+				if(!getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && StructKeyExists(arguments.data, "giftCardCodes")){
+					var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem, arguments.data.giftCardCodes);
+				} else if(getSettingService().getSettingValue("skuGiftCardAutoGenerateCode") && orderDeliveryItem.getOrderItem().isGiftCardOrderItem()){
+					var order = creditGiftCardForOrderDeliveryItem(arguments.processObject.getOrder(), orderDeliveryItem);
+				}
 
-				if(order.hasErrors()){
+				if(!isNull(order) && order.hasErrors()){
                  	arguments.orderDelivery.addErrors(order.getErrors());
               	}
 
@@ -1874,7 +1878,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 		return arguments.orderDelivery;
 	}
 
-    private any function creditGiftCardForOrderDeliveryItem(required any order, required any orderDelivery, required any giftCardCodes){
+    private any function creditGiftCardForOrderDeliveryItem(required any order, required any orderDelivery, any giftCardCodes){
 
 		var item = orderDelivery.getOrderItem();
         var quantity = item.getQuantity();
