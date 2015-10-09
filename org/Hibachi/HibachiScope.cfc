@@ -20,6 +20,8 @@ component output="false" accessors="true" extends="HibachiTransient" {
 	
 	property name="auditsToCommitStruct" type="struct";
 	property name="modifiedEntities" type="array";
+	property name="calculationUpdateRunQueue" persistent="false" type="array";
+	
 	
 	public any function init() {
 		setORMHasErrors( false );
@@ -39,6 +41,44 @@ component output="false" accessors="true" extends="HibachiTransient" {
 		
 		return super.init();
 	}
+	
+	/** returns true if calculated updates have run for the given id - false otherwise. */
+	public any function idExistsInCalculationUpdatesRunQueue(any id){
+		return arrayFind(calculationUpdateRun, id) ? true : false;
+	}
+	
+	/** adds a calculation update run if the id is not already on the stack */
+	public any function addCalculationUpdateRun(any id){
+    	if(!idExistsInCalculationUpdatesRunQueue( arguments.id )){
+           arrayPrepend(addCalculationUpdateRunQueue, arguments.id );
+        }
+	}
+	
+	/** runs a update calculated properties only once per request per object for each id set in the array. */
+    public void function updateCalculatedProperties() {
+        if(arrayLen(calculationUpdateRunQueue)) {    
+        	for (var id in calculationUpdateRunQueue){
+                // Loop over all properties
+                for(var property in getProperties()) {
+                    
+                    // Look for any that start with the calculatedXXX naming convention
+                    if(left(property.name, 10) == "calculated" && (!structKeyExists(property, "persistent") || property.persistent == "true")) {
+                        
+                        var value = this.invokeMethod("get#right(property.name, len(property.name)-10)#");
+                        if(!isNull(value)) {
+                            variables[ property.name ] = value; 
+                        }
+    
+                    } else if (structKeyExists(property, "hb_cascadeCalculate") && property.hb_cascadeCalculate && structKeyExists(variables, property.name) && isObject( variables[ property.name ] ) ) {
+                        
+                        variables[ property.name ].updateCalculatedProperties();
+                        
+                    }//<--end else
+                }//<--end for
+            }//<--end for 
+        }//<--end if
+    }//<--end function
+
 	
 	// @hint facade method to check the application scope for a value
 	public boolean function hasSessionValue(required any key) {

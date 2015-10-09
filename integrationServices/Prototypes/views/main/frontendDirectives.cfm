@@ -108,7 +108,39 @@
         </div>
     </div>
 </section>
-
+<section>
+    <div>           
+        <div class="container" > 
+            <h2>Cart Data</h2>
+            <pre><small>{{cart | json}}</small></pre>
+        </div>
+    </div>
+</section>
+<section>
+    <div>           
+        <div class="container" > 
+            <h2>Account Data</h2>
+            <pre><small>{{account | json}}</small></pre>
+        </div>
+    </div>
+</section>
+<section>
+    <div>           
+        <div class="container" > 
+            <h2>Testing</h2>
+            <b>Basic Info:</b>
+            {{account.firstName}} {{account.lastName}}
+            
+            <b>Shipping Address:</b>
+            {{cart.shippingAddress | json}}
+            
+            <b>OrderItems:</b>
+            <ul>
+            <div ng-repeat="item in cart.orderitems"><li>{{item}}</li></div>
+            </ul>
+        </div>
+    </div>
+</section>
 </div>
 </cfoutput>
 <style >

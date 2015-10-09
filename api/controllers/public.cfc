@@ -26,8 +26,7 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 		var publicService = getService('PublicService');
 	    if (structKeyExists(arguments.rc, "context") && arguments.rc.context == "getProcessObjectDefinition"){
             publicService.getProcessObjectDefinition(rc);
-        }
-		else if ( structKeyExists(arguments.rc, "context") ){
+        }else if ( structKeyExists(arguments.rc, "context") ){
 			publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
 		}else{
 			publicService.invokeMethod("getPublicContexts", {rc=arguments.rc});
@@ -43,12 +42,16 @@ component output="false" accessors="true" extends="Slatwall.org.Hibachi.HibachiC
 			this.get(rc);
 		}else if (arguments.rc.context != "get" && arguments.rc.url contains "process"){
 			publicService.doProcess(rc);
-		}
-        
-        if ( StructKeyExists(arguments.rc, "context") ){
+		}else if (arguments.rc.url contains "getCart"){
+        	rc.context = "getCartData";
+        	this.get(rc);
+        }else if(arguments.rc.url contains "getAccount"){
+        	rc.context = "getAccountData";
+            this.get(rc);
+        }else if ( StructKeyExists(arguments.rc, "context") && rc.context != "get"){
             publicService.invokeMethod("#arguments.rc.context#", {rc=arguments.rc});
         }else{
-            publicService.invokeMethod("getPublicContexts", {rc=arguments.rc});
+            this.get(rc);
         }
 	}
 }

@@ -63,42 +63,6 @@ component extends="HibachiService"  accessors="true" output="false"
 	variables.responseType = "json";
 	
 	/**
-	 * @method getPublicContexts
-	 * @http-context getPublicContexts 
-	 * @description Returns a JSON list of all public contexts available to this request. 
-	 * @example ...GET request to /api/scope/GetPublicContext
-	 * @http-return <b>(200)</b> Request Successful, <b>(400)</b> Bad or Missing Input Data
-	 **/
-	public void function getPublicContexts( required struct rc ) {
-		var data = {};
-		var publicMetaData = getComponentMetaData("PublicService");
-		var publicContexts = publicMetaData.functions;
-		if (!isNull(publicContexts)){
-			
-			for (context in publicContexts){
-				if (StructKeyExists(context, "name") && StructKeyExists(context, "description") && StructKeyExists(context, "http-context") && StructKeyExists(context, "http-return")){
-					var info["#context.name#"] = formatMetaData({name=context.name, description=context.description, context=context["http-context"], httpReturn=context["http-return"]});
-   					StructAppend(data, info);
-				}
-			}
-			
-		}
-		
-		setResponse(true, 200, data, arguments.rc, true);
-	}
-	
-	private string function formatMetaData(struct contextData){
-		var stringBuilder = "<br><p><ul style='background:##ffffd5;color:black;'><li>Context-Name: #arguments.contextData.name#</li>" 
-								   & "<li>Description: <br><p>#arguments.contextData.description#</p></li>" 
-								   & "<li>Resource: <br><p>.../api/scope/#arguments.contextData.context#</p></li>" 
-								   & "<li>Http Return: <ul>"
-								   & "<li>#arguments.contextData.httpReturn#</li>"
-								   &"</ul></li>"
-								   &"</ul></p><br>";
-		return stringBuilder;
-	}
-	
-	/**
 	 @method Login <b>Log a user account into Slatwall given the users emailAddress and password</b>
 	 @http-context <b>Login</b> Use this context in conjunction with the listed http-verb to use this resource.
 	 @http-verb POST
@@ -538,6 +502,15 @@ component extends="HibachiService"  accessors="true" output="false"
 			arguments.rc.$.slatwall.addActionResult( "public:account.updateSubscriptionUsage", true );
 		}
 	}
+	
+	/** exposes the cart and account */
+	public void function getCartData(any rc) {
+		arguments.rc.ajaxResponse = rc.$.slatwall.getHibachiScope().getCartData();
+	}
+	
+	public void function getAccountData(any rc) {
+        arguments.rc.ajaxResponse = rc.$.slatwall.getHibachiScope().getAccountData();
+    }
 	
 	/** 
 	 * @http-context duplicateOrder
