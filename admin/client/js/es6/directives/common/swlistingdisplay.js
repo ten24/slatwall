@@ -4,7 +4,7 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     class SWListingDisplayController {
-        constructor($scope, $element, $transclude, $slatwall, partialsPath, utilityService, collectionConfigService, paginationService) {
+        constructor($scope, $element, $transclude, $slatwall, partialsPath, utilityService, collectionConfigService, paginationService, selectionService, observerService) {
             this.$scope = $scope;
             this.$element = $element;
             this.$transclude = $transclude;
@@ -13,6 +13,8 @@ var slatwalladmin;
             this.utilityService = utilityService;
             this.collectionConfigService = collectionConfigService;
             this.paginationService = paginationService;
+            this.selectionService = selectionService;
+            this.observerService = observerService;
             /* local state variables */
             this.columns = [];
             this.allpropertyidentifiers = "";
@@ -23,6 +25,10 @@ var slatwalladmin;
             this.sortable = false;
             this.exampleEntity = "";
             this.buttonGroup = [];
+            this.updateMultiselectValues = () => {
+                console.log('updateMultiselect');
+                this.mulitSelectValues = this.selectionService.getSelections('ListingDisplay');
+            };
             this.getCollection = () => {
                 this.collectionConfig.setPageShow(this.paginator.getPageShow());
                 this.collectionConfig.setCurrentPage(this.paginator.getCurrentPage());
@@ -181,6 +187,8 @@ var slatwalladmin;
             this.$element = $element;
             this.collectionConfigService = collectionConfigService;
             this.paginationService = paginationService;
+            this.selectionService = selectionService;
+            this.observerService = observerService;
             //this is performed early to populate columns with swlistingcolumn info
             this.$transclude = $transclude;
             this.$transclude(this.$scope, () => { });
@@ -248,21 +256,31 @@ var slatwalladmin;
                 this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty=' + this.parentPropertyname + '.' + this.exampleEntity.$$getIDName(), ' ');
                 this.collectionConfig.setAllRecords(true);
             }
-            if (!this.edit
-                && this.multiselectable
-                && (!this.parentPropertyName || !!this.parentPropertyName.length)
-                && (this.multiselectPropertyIdentifier && this.multiselectPropertyIdentifier.length)) {
-                if (this.multiselectValues && this.multiselectValues.length) {
-                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier, this.multiselectValues, 'IN');
-                }
-                else {
-                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier, '_', 'IN');
-                }
+            //            if(
+            //                !this.edit 
+            //                && this.multiselectable 
+            //                && (!this.parentPropertyName || !!this.parentPropertyName.length)
+            //                && (this.multiselectPropertyIdentifier && this.multiselectPropertyIdentifier.length)
+            //            ){
+            //                if(this.multiselectValues && this.multiselectValues.length){
+            //                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,this.multiselectValues,'IN');   
+            //                }else{
+            //                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,'_','IN');
+            //                }
+            //            }
+            if (this.multiselectValues && this.multiselectValues.length) {
+                //select all owned ids
+                angular.forEach(this.multiselectValues.split(','), (value) => {
+                    this.selectionService.addSelection('ListingDisplay', value);
+                });
+                //attach observer
+                console.log('attach event');
+                this.observerService.attach(updateMultiselectValues, 'swSelectionToggleSelection', this.collection);
             }
             this.getCollection();
         }
     }
-    SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$slatwall', 'partialsPath', 'utilityService', 'collectionConfigService', 'paginationService'];
+    SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$slatwall', 'partialsPath', 'utilityService', 'collectionConfigService', 'paginationService', 'selectionService', 'observerService'];
     slatwalladmin.SWListingDisplayController = SWListingDisplayController;
     class SWListingDisplay {
         constructor(partialsPath) {
@@ -329,6 +347,9 @@ var slatwalladmin;
             this.controller = SWListingDisplayController;
             this.controllerAs = "swListingDisplay";
             this.link = (scope, element, attrs, controller, transclude) => {
+                scope.$on('$destroy', () => {
+                    observerService.detachByID(scope.collection);
+                });
             };
             this.partialsPath = partialsPath;
             this.templateUrl = this.partialsPath + 'listingdisplay.html';

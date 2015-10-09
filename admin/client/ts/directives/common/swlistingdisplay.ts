@@ -18,7 +18,7 @@ module slatwalladmin {
         private buttonGroup = [];
         private collectionPromise;
         private collectionObject;
-        public static $inject = ['$scope','$element','$transclude','$slatwall','partialsPath','utilityService','collectionConfigService','paginationService'];
+        public static $inject = ['$scope','$element','$transclude','$slatwall','partialsPath','utilityService','collectionConfigService','paginationService','selectionService','observerService'];
         constructor(
             public $scope,
             public $element,
@@ -27,7 +27,9 @@ module slatwalladmin {
             public partialsPath:slatwalladmin.partialsPath, 
             public utilityService:slatwalladmin.UtilityService,
             public collectionConfigService:slatwalladmin.CollectionConfig,
-            public paginationService:slatwadmin.paginationService
+            public paginationService:slatwadmin.paginationService,
+            public selectionService:slatwalladmin.SelectionService,
+            public observerService:slatwalladmin.ObserverService
         ){
             this.$slatwall = $slatwall;
             this.partialsPath = partialsPath;
@@ -36,10 +38,12 @@ module slatwalladmin {
             this.$element = $element;
             this.collectionConfigService = collectionConfigService;
             this.paginationService = paginationService;
+            this.selectionService = selectionService;
+            this.observerService = observerService;
             //this is performed early to populate columns with swlistingcolumn info
             this.$transclude = $transclude;
             this.$transclude(this.$scope,()=>{});
-            
+             
             this.paginator = paginationService.createPagination();
             this.paginator.getCollection = this.getCollection;
             this.tableID = 'LD'+this.utilityService.createID();
@@ -87,12 +91,25 @@ module slatwalladmin {
                 this.multiselectable = true;
                 this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-multiselect',' ');
                 this.tableattributes = this.utilityService.listAppend(this.tableattributes,'data-multiselectpropertyidentifier="'+this.multiselectPropertyIdentifier+'"',' ');    
+                //add column so we can get child count
+                var column = { 
+                    propertyIdentifier:'_content.'+this.multiselectFieldName,
+                    aggregate:{
+                        aggregateFunction:'COUNT',
+                        aggregateAlias:'listingPageCount'
+                    }
+                };
+                this.collectionConfig.columns.push(column);
+                
+                //attach observer so we know when a selection occurs
+                this.observerService.attach(this.updateMultiselectValues,'swSelectionToggleSelection',this.collection);
             }
             if(this.multiselectable && !this.columns.length){
                 //check if it has an active flag and if so then add the active flag
                 if(this.exampleEntity.metaData.activeProperty){
                     this.collectionConfig.addFilter('activeFlag',1);
                 }
+                
             }
             
             //Look for Hierarchy in example entity
@@ -111,21 +128,37 @@ module slatwalladmin {
                 this.collectionConfig.setAllRecords(true);    
             }
             
-            if(
-                !this.edit 
-                && this.multiselectable 
-                && (!this.parentPropertyName || !!this.parentPropertyName.length)
-                && (this.multiselectPropertyIdentifier && this.multiselectPropertyIdentifier.length)
-            ){
-                if(this.multiselectValues && this.multiselectValues.length){
-                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,this.multiselectValues,'IN');    
-                }else{
-                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,'_','IN');
-                }
+//            if(
+//                !this.edit 
+//                && this.multiselectable 
+//                && (!this.parentPropertyName || !!this.parentPropertyName.length)
+//                && (this.multiselectPropertyIdentifier && this.multiselectPropertyIdentifier.length)
+//            ){
+//                if(this.multiselectValues && this.multiselectValues.length){
+//                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,this.multiselectValues,'IN');   
+//                }else{
+//                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,'_','IN');
+//                }
+//            }
+            if(this.multiselectValues && this.multiselectValues.length){
+                //select all owned ids
+                angular.forEach(this.multiselectValues.split(','),(value)=>{
+                    this.selectionService.addSelection('ListingDisplay',value);
+                });
+                
+                
             }
+            
             
             this.getCollection();
             
+        }
+        
+        public updateMultiselectValues = ()=>{
+            console.log('updateMultiselect');
+            this.multiselectValues = this.selectionService.getSelections('ListingDisplay');   
+            console.log('msv');
+            console.log(this.multiselectValues); 
         }
         
         public getCollection = ()=>{
@@ -140,6 +173,7 @@ module slatwalladmin {
                 this.paginator.setPageRecordsInfo(this.collectionData);
                 //prepare an exampleEntity for use
                 this.init();
+                
             });    
             return this.collectionPromise;
         }
@@ -337,11 +371,6 @@ module slatwalladmin {
             if(this.administrativeCount){
                 this.administrativeCount++;
             }
-            
-            
-            
-            
-            
         }
         
         private getAdminAttributesByType = (type:string):string =>{
@@ -446,7 +475,9 @@ module slatwalladmin {
 		} 
 		
 		public link:ng.IDirectiveLinkFn = (scope: ng.IScope, element: ng.IAugmentedJQuery, attrs:ng.IAttributes,controller, transclude) =>{
-			
+			scope.$on('$destroy',()=>{
+               observerService.detachByID(scope.collection); 
+            });
 		}
 	}
     

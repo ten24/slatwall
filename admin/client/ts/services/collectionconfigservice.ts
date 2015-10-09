@@ -267,10 +267,7 @@ module slatwalladmin{
                 if(!angular.isUndefined(_DividedTitles[index]) && _DividedTitles[index].trim() != '') {
                     title = _DividedTitles[index].trim();
                 }else {
-                    console.log(column);
                     title = this.$slatwall.getRBKey("entity."+this.baseEntityName+"."+column);
-                    console.log('getTitle');
-                    console.log(title);
                 }
                 this.addColumn(this.formatCollectionName(column),title, options);
             });

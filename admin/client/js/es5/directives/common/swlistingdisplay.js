@@ -4,7 +4,7 @@ var slatwalladmin;
 (function (slatwalladmin) {
     'use strict';
     var SWListingDisplayController = (function () {
-        function SWListingDisplayController($scope, $element, $transclude, $slatwall, partialsPath, utilityService, collectionConfigService, paginationService) {
+        function SWListingDisplayController($scope, $element, $transclude, $slatwall, partialsPath, utilityService, collectionConfigService, paginationService, selectionService, observerService) {
             var _this = this;
             this.$scope = $scope;
             this.$element = $element;
@@ -14,6 +14,8 @@ var slatwalladmin;
             this.utilityService = utilityService;
             this.collectionConfigService = collectionConfigService;
             this.paginationService = paginationService;
+            this.selectionService = selectionService;
+            this.observerService = observerService;
             /* local state variables */
             this.columns = [];
             this.allpropertyidentifiers = "";
@@ -24,6 +26,12 @@ var slatwalladmin;
             this.sortable = false;
             this.exampleEntity = "";
             this.buttonGroup = [];
+            this.updateMultiselectValues = function () {
+                console.log('updateMultiselect');
+                _this.multiselectValues = _this.selectionService.getSelections('ListingDisplay');
+                console.log('msv');
+                console.log(_this.multiselectValues);
+            };
             this.getCollection = function () {
                 _this.collectionConfig.setPageShow(_this.paginator.getPageShow());
                 _this.collectionConfig.setCurrentPage(_this.paginator.getCurrentPage());
@@ -182,6 +190,8 @@ var slatwalladmin;
             this.$element = $element;
             this.collectionConfigService = collectionConfigService;
             this.paginationService = paginationService;
+            this.selectionService = selectionService;
+            this.observerService = observerService;
             //this is performed early to populate columns with swlistingcolumn info
             this.$transclude = $transclude;
             this.$transclude(this.$scope, function () { });
@@ -227,6 +237,17 @@ var slatwalladmin;
                 this.multiselectable = true;
                 this.tableclass = this.utilityService.listAppend(this.tableclass, 'table-multiselect', ' ');
                 this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-multiselectpropertyidentifier="' + this.multiselectPropertyIdentifier + '"', ' ');
+                //add column so we can get child count
+                var column = {
+                    propertyIdentifier: '_content.' + this.multiselectFieldName,
+                    aggregate: {
+                        aggregateFunction: 'COUNT',
+                        aggregateAlias: 'listingPageCount'
+                    }
+                };
+                this.collectionConfig.columns.push(column);
+                //attach observer so we know when a selection occurs
+                this.observerService.attach(this.updateMultiselectValues, 'swSelectionToggleSelection', this.collection);
             }
             if (this.multiselectable && !this.columns.length) {
                 //check if it has an active flag and if so then add the active flag
@@ -249,20 +270,27 @@ var slatwalladmin;
                 this.tableattributes = this.utilityService.listAppend(this.tableattributes, 'data-parentidproperty=' + this.parentPropertyname + '.' + this.exampleEntity.$$getIDName(), ' ');
                 this.collectionConfig.setAllRecords(true);
             }
-            if (!this.edit
-                && this.multiselectable
-                && (!this.parentPropertyName || !!this.parentPropertyName.length)
-                && (this.multiselectPropertyIdentifier && this.multiselectPropertyIdentifier.length)) {
-                if (this.multiselectValues && this.multiselectValues.length) {
-                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier, this.multiselectValues, 'IN');
-                }
-                else {
-                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier, '_', 'IN');
-                }
+            //            if(
+            //                !this.edit 
+            //                && this.multiselectable 
+            //                && (!this.parentPropertyName || !!this.parentPropertyName.length)
+            //                && (this.multiselectPropertyIdentifier && this.multiselectPropertyIdentifier.length)
+            //            ){
+            //                if(this.multiselectValues && this.multiselectValues.length){
+            //                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,this.multiselectValues,'IN');   
+            //                }else{
+            //                    this.collectionConfig.addFilter(this.multiselectPropertyIdentifier,'_','IN');
+            //                }
+            //            }
+            if (this.multiselectValues && this.multiselectValues.length) {
+                //select all owned ids
+                angular.forEach(this.multiselectValues.split(','), function (value) {
+                    _this.selectionService.addSelection('ListingDisplay', value);
+                });
             }
             this.getCollection();
         }
-        SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$slatwall', 'partialsPath', 'utilityService', 'collectionConfigService', 'paginationService'];
+        SWListingDisplayController.$inject = ['$scope', '$element', '$transclude', '$slatwall', 'partialsPath', 'utilityService', 'collectionConfigService', 'paginationService', 'selectionService', 'observerService'];
         return SWListingDisplayController;
     })();
     slatwalladmin.SWListingDisplayController = SWListingDisplayController;
@@ -331,6 +359,9 @@ var slatwalladmin;
             this.controller = SWListingDisplayController;
             this.controllerAs = "swListingDisplay";
             this.link = function (scope, element, attrs, controller, transclude) {
+                scope.$on('$destroy', function () {
+                    observerService.detachByID(scope.collection);
+                });
             };
             this.partialsPath = partialsPath;
             this.templateUrl = this.partialsPath + 'listingdisplay.html';

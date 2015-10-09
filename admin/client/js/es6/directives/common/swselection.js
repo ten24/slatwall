@@ -3,8 +3,9 @@ angular.module('slatwalladmin')
     .directive('swSelection', [
     '$log',
     'selectionService',
+    'observerService',
     'partialsPath',
-    function ($log, selectionService, partialsPath) {
+    function ($log, selectionService, observerService, partialsPath) {
         return {
             restrict: 'E',
             templateUrl: partialsPath + "selection.html",
@@ -19,6 +20,7 @@ angular.module('slatwalladmin')
                     scope.toggleValue = true;
                 }
                 scope.toggleSelection = function (toggleValue, selectionid, selection) {
+                    observerService.notify('swSelectionToggleSelection', { selectionid, selection });
                     if (scope.isRadio) {
                         selectionService.radioSelection(selectionid, selection);
                         return;
