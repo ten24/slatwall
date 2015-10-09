@@ -16,6 +16,7 @@ module slatwalladmin {
 		public addButtonFunction;
 		public hideSearch;  
 		public modelBind; 
+		public clickOutsideArgs; 
 		
 		private _timeoutPromise; 
 		private displayList;
@@ -41,6 +42,10 @@ module slatwalladmin {
 		
 		public search = (search:string)=>{
 			
+			if(angular.isDefined(this.modelBind)){
+				this.modelBind = search;
+			}
+			
 			if(search.length > 2){			
 				
 				if(this._timeoutPromise){
@@ -48,9 +53,6 @@ module slatwalladmin {
 				}
 				
 				this._timeoutPromise = $timeout(()=>{
-					if(angular.isDefined(this.modelBind)){
-						this.modelBind = search;
-					}
 					
 					if(this.hideSearch){
 						this.hideSearch = false; 
@@ -122,6 +124,18 @@ module slatwalladmin {
 			}
 		}
 		
+		public closeThis = (clickOutsideArgs) =>{
+
+			this.hideSearch = true; 
+						
+			if(angular.isDefined(clickOutsideArgs)){ 
+				for(var callBackAction in clickOutsideArgs.callBackActions){
+					clickOutsideArgs.callBackActions[callBackAction]();
+				}
+			}
+
+		};
+		
 	}
     
     export class SWTypeaheadSearch implements ng.IDirective{
@@ -142,7 +156,8 @@ module slatwalladmin {
 			addFunction:"&?",
 			addButtonFunction:"&?", 
 			hideSearch:"=", 
-			modelBind:"=?"
+			modelBind:"=?",
+			clickOutsideArgs:"@"
 		}
 		public controller=SWTypeaheadSearchController;
         public controllerAs="swTypeaheadSearch";
