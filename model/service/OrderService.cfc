@@ -1497,8 +1497,7 @@ component extends="HibachiService" persistent="false" accessors="true" output="f
 			getTaxService().updateOrderAmountsWithTaxes( arguments.order );
 			
 			//update the calculated properties
-			arguments.order.setUpdateRunFlag(false);
-			arguments.order.updateCalculatedProperties();
+			arguments.order.updateCalculatedProperties(true);
 			
 		}
 		return arguments.order;

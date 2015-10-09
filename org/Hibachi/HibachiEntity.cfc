@@ -13,7 +13,6 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	// Audit Properties
 	property name="createdByAccount" persistent="false";
 	property name="modifiedByAccount" persistent="false";
-	property name="updateRunFlag" persistent="false";
 	   
 	// @hint global constructor arguments.  All Extended entities should call super.init() so that this gets called
 	public any function init() {
@@ -37,10 +36,10 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 
 	/** runs a update calculated properties only once per request unless explicitly set to false before calling. */
-	public void function updateCalculatedProperties() {
-        if(!structKeyExists(variables, "updateRunFlag") || variables.updateRunFlag == false) {
+	public void function updateCalculatedProperties(var runMultipleFlag) {
+        if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runMultipleFlag) {
             // Set calculated to true so that this only runs 1 time per request unless explicitly told to run again.
-            
+            variables.calculatedUpdateRunFlag = true;
             // Loop over all properties
             for(var property in getProperties()) {
                 
@@ -60,8 +59,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
             }
             variables.updateRunFlag = true;
         }
-    }
-	
+    }	
 	// @hint return a simple representation of this entity
 	public string function getSimpleRepresentation() {
 		
