@@ -1,0 +1,5 @@
+<div class="col-sm-5 col">
+    <select required="true" name="countries" class="form-control" ng-init="selectedCountry = countries[234]"  ng-model="selectedCountry" ng-options="country as country.name for country in countries" ng-change="updateCountry(selectedCountry)">
+         <option value=""> Country * </option>
+    </select>
+</div>

@@ -1,0 +1,64 @@
+<!--- PAYMENT FORM - When adding billing for first time we use newOrderPayment.billingAddress --->
+        <section class="col-sm-12 payment_sec"id="payment_sec" ng-if="cart.orderPayments.length <= 0">
+            <cfparam name="form.expirationMonth" default="" />
+            <cfparam name="form.expirationYear" default="" />
+            
+            <h2>Payment Details</h2>
+            <section class="col-sm-8 payment_details">
+                <div>
+                    <!--- Displays all the credit card data as a list of deletable errors. --->
+                    <div  class="error" ng-show="hasErrors">
+                        <ul style="list-style-type:none;"><li ng-repeat="error in errors.ERRORS.cart.addOrderPayment track by $index" style="color:##C83F4F" ng-if="errors.ERRORS.cart.addOrderPayment[$index]" ng-bind="error"> <a  ng-click="deleteServerError($index)"><i class="fa fa-trash-o"></i></a></li></ul>
+                    </div>
+                    <div class="col-sm-3 col2">
+                        <label>Card Number <small>(no dashes/spaces)</small></label>
+                        <input type="text" placeholder="" class="form-control" name="cardNumber" ng-model="newOrderPayment.creditCardNumber">   
+                    </div>
+            
+                    <div class="col-sm-2 col3">
+                        <label>CCV</label>
+                        <input type="text" placeholder="" class="form-control" name="ccv" ng-model="newOrderPayment.securityCode">  
+                    </div>
+                    
+                    <div class="col-sm-3 col4">
+                        <label>Expires</label>
+                        
+                        <div class="select_box">
+                            <cfset monthsList = "January,February,March,April,May,June,July,August,September,October,November,December" />
+                            <select name="expirationMonth" id="expirationMonth" ng-model="newOrderPayment.expirationMonth">
+                                <option>Month</option>
+                                <cfset monthCount = "1" />
+                                <cfloop list="#monthsList#" index="month">
+                                    <option value="#monthCount#" <cfif monthCount EQ form.expirationMonth>selected</cfif>>#month#</option>
+                                    <cfset monthCount = monthCount + 1 />
+                                </cfloop>
+                            </select>
+                        </div>
+                        <input type='hidden' ng-model="newOrderPayment.nameOnCreditCard" value=""/>
+                        <input type='hidden' ng-model="newOrderPayment.orderPaymentID" value=" "/>
+                        <div class="select_box select_box2">
+                            <cfset expirationYear = dateformat(now(),'yyyy') />
+                            <select name="expirationYear" id="expirationYear" ng-model="newOrderPayment.expirationYear">
+                                <option value="">Year</option>
+                                <cfloop from="0" to="9" index="year">
+                                    <cfset year = expirationYear + year />
+                                    <option value="#year#" <cfif expirationYear EQ form.expirationYear>selected</cfif>>#year#</option>
+                                </cfloop>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!--- Billing Goes here--->
+                
+                <!--- ------------------------- ------>
+                <!--- OPTIONAL SHIPPING 1 ---->
+                <!--- ------------------------- ------>
+                
+                <span class="ship_address" ng-click="toggleShippingAddress()">Ship to a Different Address</span>
+                
+                <!--- Shipping directive goes here--->
+               
+                </section>
+            <a class="payment_btn"><span ng-click="finish()">continue</span></a><!--- href="order-summary.html"--->
+        </section>

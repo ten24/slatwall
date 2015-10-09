@@ -1,0 +1,14 @@
+<!--- Edit PROMO CODE --->
+<div>
+    <label> Enter promo code:</label>
+    <div id="promoSuccessBlock">Promotion applied successfully</div>
+    <div class="form-group" id="applyPromoCode">
+        <input type="text" placeholder="" class="form-control" ng-model="promoCode" ng-click="promotionCodeError = ''">
+        <a ng-click="addPromotionCode(promoCode);" class="link"> Apply </a>
+    </div>
+    <small><div style="color:red" ng-if="promotionCodeError" ng-bind="promotionCodeError"></div></small>
+</div>
+
+            
+
+

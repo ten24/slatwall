@@ -1,17 +1,10 @@
 /** Public Frontend Controller */
-angular.module('slatwalladmin').controller('frontEndController', ['$scope','$window','$location','$timeout','Cart','Account', function($scope, $window, $location, $timeout, Cart, Account) {
+angular.module('frontEndApplication').controller('frontEndController', ['$scope','$window','$location','Cart','Account', function($scope, $window, $location, Cart, Account) {
     
    console.log("Grabbing Cart and Account");
    /** grab the cart that we are acting on */
    $scope.cart = Cart.get({data:"test data"},function() {}); // get() returns a single entry
    $scope.account = Account.get({data:"test data"}, function() {}); 
-   //$scope.cart = new Cart(); //You can instantiate resource class
-   //$scope.cart.data = 'TestFirstName';
-   
-   /*Cart.save($scope.cart, function() {
-        //saved firstName
-        console.log($scope.cart);
-   });*/
    
    /** grab the account that we are acting on */
    

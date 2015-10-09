@@ -1,0 +1,37 @@
+<!--- SIGN IN --->
+<section class="col-sm-12 signin_sec" id="signin_sec">
+    <h2>Sign In</h2>
+    <div  class="error" ng-show="hasErrors">
+        <ul style="list-style-type:none;"><li ng-repeat="error in account.errors track by $index" style="color:#C83F4F" ng-if="account.errors[$index]" ><a  ng-click="deleteServerError($index)"><i class="fa fa-trash-o"></i></a></li></ul>
+    </div>
+    <div class="form-group">
+           <div ng-if="validationLoginError" ng-bind="validationLoginError" class="error"></div>
+    </div>
+    <div class="col-sm-5 form_details">
+        <div class="form-group">
+            <label>Email Address </label>
+            <p class="text-center loader" ng-show="emailSpinner"><i class="fa fa-spinner fa-spin"></i></p>
+            <input type="email" class="form-control" ng-change="lookupAccountByEmailAddress()" ng-model="emailAddress" ng-model-options="{updateOn: 'blur'}" name="emailAddress">
+        </div>
+        <div class="form-group" ng-if="!hasAccount">
+            <label>&nbsp;</label>
+            <span class="error" style="color:#C83F4F" ng-show="!hasAccount">Invalid username or password</span>
+        </div>
+        <div class="form-group" ng-if="hasAccount">
+            <label>Password</label>
+            <input type="password" class="form-control" placeholder="" ng-model="password" name="password">
+        </div>
+        <div class="form-group" ng-if="!hasAccount">
+            <label>Enter Password to create inc.com account</label>
+            <input type="password" class="form-control" placeholder="" ng-model="password" name="password">
+        </div>
+        <div class="form-group" ng-if="!hasAccount">
+            <label ng-if="!hasAccount">Confirm Password</label>
+            <input type="password" class="form-control" placeholder="" ng-model="confirmPassword" name="confirmPassword" ng-if="!hasAccount">
+        </div>
+    </div>
+    <div>
+        <a href="##payment_sec" class="cmn_nextbtn" ng-click="login(emailAddress, password);" ng-if="hasAccount">next </a>
+        <a href="##payment_sec" class="cmn_nextbtn" ng-click="login(emailAddress, password, passwordConfirm);" ng-if="!hasAccount">next </a>
+    </div>
+</section>
