@@ -36,7 +36,7 @@ component output="false" accessors="true" persistent="false" extends="HibachiTra
 	}
 
 	/** runs a update calculated properties only once per request unless explicitly set to false before calling. */
-	public void function updateCalculatedProperties(var runMultipleFlag) {
+	public void function updateCalculatedProperties(any runMultipleFlag) {
         if(!structKeyExists(variables, "calculatedUpdateRunFlag") || runMultipleFlag) {
             // Set calculated to true so that this only runs 1 time per request unless explicitly told to run again.
             variables.calculatedUpdateRunFlag = true;
